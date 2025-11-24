@@ -4,7 +4,7 @@ import { z } from "zod";
 /**
  * List of valid facing directions for a unit.
  */
-const unitFacing = [
+export const unitFacings = [
   "north",
   "northEast",
   "east",
@@ -18,7 +18,7 @@ const unitFacing = [
 /**
  * The schema for the facing direction of a unit.
  */
-export const unitFacingSchema = z.enum(unitFacing);
+export const unitFacingSchema = z.enum(unitFacings);
 
 // Helper type to check match of type against schema
 type unitFacingSchemaType = z.infer<typeof unitFacingSchema>;
@@ -26,7 +26,7 @@ type unitFacingSchemaType = z.infer<typeof unitFacingSchema>;
 /**
  * The facing direction of a unit.
  */
-export type UnitFacing = (typeof unitFacing)[number];
+export type UnitFacing = (typeof unitFacings)[number];
 
 const _assertExactUnitFacing: AssertExact<UnitFacing, unitFacingSchemaType> =
   true;
