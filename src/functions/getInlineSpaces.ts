@@ -2,6 +2,7 @@ import type {
   StandardBoardCoordinate,
   UnitFacing,
 } from "src/entities/index.js";
+import { filterUndefinedSpaces } from "./filterUndefinedSpaces.js";
 import { getForwardSpacesToEdge } from "./getForwardSpacesToEdge.js";
 import { getOrthogonalFacings } from "./getOrthogonalFacings.js";
 
@@ -22,10 +23,8 @@ export const getInlineSpaces = (
   }
 
   // Filter out undefined values
-  const validInlineSpaces = [...inlineSpaces.values()].filter(
-    (space) => space !== undefined
-  ) as StandardBoardCoordinate[];
+  const validInlineSpaces = filterUndefinedSpaces(inlineSpaces);
 
   // Return set of valid inline spaces
-  return new Set(validInlineSpaces);
+  return validInlineSpaces;
 };

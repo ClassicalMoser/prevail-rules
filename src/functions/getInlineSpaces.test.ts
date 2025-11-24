@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { getInlineSpaces } from "./getInlineSpaces.js";
 
 describe("getInlineSpaces", () => {
-  it("should return the inline spaces for a given coordinate with an orthogonal facing", () => {
+  it("should return the inline spaces when facing south from A1", () => {
     expect(getInlineSpaces("A1", "south")).toEqual(
       new Set([
         "A1",
@@ -25,6 +25,8 @@ describe("getInlineSpaces", () => {
         "A18",
       ])
     );
+  });
+  it("should return the inline spaces when facing east from E5", () => {
     expect(getInlineSpaces("E5", "east")).toEqual(
       new Set([
         "A5",
@@ -42,7 +44,7 @@ describe("getInlineSpaces", () => {
       ])
     );
   });
-  it("should return the inline spaces for a given coordinate with a diagonal facing", () => {
+  it("should return the inline spaces when facing northEast from E5", () => {
     expect(getInlineSpaces("E5", "northEast")).toEqual(
       new Set([
         "A1",
@@ -59,6 +61,8 @@ describe("getInlineSpaces", () => {
         "L12",
       ])
     );
+  });
+  it("should return the inline spaces when facing southEast from E5", () => {
     expect(getInlineSpaces("E5", "southEast")).toEqual(
       new Set(["A9", "B8", "C7", "D6", "E5", "F4", "G3", "H2", "I1"])
     );

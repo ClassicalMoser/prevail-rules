@@ -1,5 +1,6 @@
 import type { StandardBoardCoordinate } from "src/entities/board/standardBoard/standardCoordinates.js";
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
+import { filterUndefinedSpaces } from "./filterUndefinedSpaces.js";
 import { getForwardSpace } from "./getForwardSpace.js";
 import { getOrthogonalFacings } from "./getOrthogonalFacings.js";
 
@@ -15,14 +16,12 @@ export const getFlankingSpaces = (
       `Expected 2 orthogonal facings, but got ${orthogonalFacings.length}`
     );
   }
-  // Array of coordinates and undefined values
-  const flankingSpaces = orthogonalFacings.map((facing) =>
-    getForwardSpace(coordinate, facing)
+  // Set of coordinates and undefined values
+  const flankingSpaces = new Set(
+    orthogonalFacings.map((facing) => getForwardSpace(coordinate, facing))
   );
-  // Filter out undefined values and convert to set
-  const validFlankingSpaces: Set<StandardBoardCoordinate> = new Set(
-    flankingSpaces.filter((space) => space !== undefined)
-  );
+  // Filter out undefined values
+  const validFlankingSpaces = filterUndefinedSpaces(flankingSpaces);
   // Return set of valid flanking spaces
   return validFlankingSpaces;
 };

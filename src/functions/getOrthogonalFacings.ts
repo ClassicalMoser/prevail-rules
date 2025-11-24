@@ -24,6 +24,7 @@ export const getOrthogonalFacings = (facing: UnitFacing): Set<UnitFacing> => {
     }
   };
   const orthogonalFacings = parseOrthogonalFacings(facing);
+  // This error case should remain unreachable if prior validation is correct
   if (orthogonalFacings.size !== 2) {
     throw new Error(`Invalid facing: ${facing}`);
   }

@@ -7,7 +7,10 @@ export const getRearwardSpace = (
   coordinate: StandardBoardCoordinate,
   facing: UnitFacing
 ): StandardBoardCoordinate | undefined => {
+  // Get the opposite facing
   const oppositeFacing = getOppositeFacing(facing);
+  // Get the rearward space
   const rearwardSpace = getForwardSpace(coordinate, oppositeFacing);
+  // Return the rearward space
   return rearwardSpace;
 };
