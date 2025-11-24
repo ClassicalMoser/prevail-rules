@@ -1,30 +1,30 @@
 import type { UnitFacing } from "../entities/unit/unitFacing.js";
 
-export const getOrthogonalFacings = (facing: UnitFacing): UnitFacing[] => {
-  const parseOrthogonalFacings = (facing: UnitFacing): UnitFacing[] => {
+export const getOrthogonalFacings = (facing: UnitFacing): Set<UnitFacing> => {
+  const parseOrthogonalFacings = (facing: UnitFacing): Set<UnitFacing> => {
     switch (facing) {
       case "north":
-        return ["west", "east"];
+        return new Set(["west", "east"]);
       case "northEast":
-        return ["northWest", "southEast"];
+        return new Set(["northWest", "southEast"]);
       case "east":
-        return ["north", "south"];
+        return new Set(["north", "south"]);
       case "southEast":
-        return ["northEast", "southWest"];
+        return new Set(["northEast", "southWest"]);
       case "south":
-        return ["east", "west"];
+        return new Set(["east", "west"]);
       case "southWest":
-        return ["southEast", "northWest"];
+        return new Set(["southEast", "northWest"]);
       case "west":
-        return ["south", "north"];
+        return new Set(["south", "north"]);
       case "northWest":
-        return ["southWest", "northEast"];
+        return new Set(["southWest", "northEast"]);
       default:
         throw new Error(`Invalid facing: ${facing}`);
     }
   };
   const orthogonalFacings = parseOrthogonalFacings(facing);
-  if (orthogonalFacings.length !== 2) {
+  if (orthogonalFacings.size !== 2) {
     throw new Error(`Invalid facing: ${facing}`);
   }
   return orthogonalFacings;

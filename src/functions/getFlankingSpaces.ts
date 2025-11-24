@@ -6,18 +6,23 @@ import { getOrthogonalFacings } from "./getOrthogonalFacings.js";
 export const getFlankingSpaces = (
   coordinate: StandardBoardCoordinate,
   facing: UnitFacing
-): StandardBoardCoordinate[] => {
-  const orthogonalFacings = getOrthogonalFacings(facing);
+): Set<StandardBoardCoordinate> => {
+  // Get orthogonal facings to get the flanking directions
+  const orthogonalFacings = [...getOrthogonalFacings(facing)];
+  // This error case should remain unreachable if prior validation is correct
+  if (orthogonalFacings.length !== 2) {
+    throw new Error(
+      `Expected 2 orthogonal facings, but got ${orthogonalFacings.length}`
+    );
+  }
+  // Array of coordinates and undefined values
   const flankingSpaces = orthogonalFacings.map((facing) =>
     getForwardSpace(coordinate, facing)
   );
-  if (flankingSpaces.length !== 2) {
-    throw new Error(
-      `Expected 2 flanking spaces, but got ${flankingSpaces.length}`
-    );
-  }
-  const validFlankingSpaces = flankingSpaces.filter(
-    (space) => space !== undefined
+  // Filter out undefined values and convert to set
+  const validFlankingSpaces: Set<StandardBoardCoordinate> = new Set(
+    flankingSpaces.filter((space) => space !== undefined)
   );
+  // Return set of valid flanking spaces
   return validFlankingSpaces;
 };

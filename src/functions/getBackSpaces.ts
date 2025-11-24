@@ -6,7 +6,7 @@ import { getOppositeFacing } from "./getOppositeFacing.js";
 export const getBackSpaces = (
   coordinate: StandardBoardCoordinate,
   facing: UnitFacing
-): StandardBoardCoordinate[] => {
+): Set<StandardBoardCoordinate> => {
   const oppositeFacing = getOppositeFacing(facing);
   const backSpaces = getFrontSpaces(coordinate, oppositeFacing);
   return backSpaces;

@@ -1,30 +1,30 @@
 import type { UnitFacing } from "../entities/unit/unitFacing.js";
 
-export const getAdjacentFacings = (facing: UnitFacing): UnitFacing[] => {
-  const parseAdjacentFacings = (facing: UnitFacing): UnitFacing[] => {
+export const getAdjacentFacings = (facing: UnitFacing): Set<UnitFacing> => {
+  const parseAdjacentFacings = (facing: UnitFacing): Set<UnitFacing> => {
     switch (facing) {
       case "north":
-        return ["northWest", "northEast"];
+        return new Set(["northWest", "northEast"]);
       case "northEast":
-        return ["north", "east"];
+        return new Set(["north", "east"]);
       case "east":
-        return ["northEast", "southEast"];
+        return new Set(["northEast", "southEast"]);
       case "southEast":
-        return ["east", "south"];
+        return new Set(["east", "south"]);
       case "south":
-        return ["southEast", "southWest"];
+        return new Set(["southEast", "southWest"]);
       case "southWest":
-        return ["south", "west"];
+        return new Set(["south", "west"]);
       case "west":
-        return ["southWest", "northWest"];
+        return new Set(["southWest", "northWest"]);
       case "northWest":
-        return ["west", "north"];
+        return new Set(["west", "north"]);
       default:
         throw new Error(`Invalid facing: ${facing}`);
     }
   };
   const adjacentFacings = parseAdjacentFacings(facing);
-  if (adjacentFacings.length !== 2) {
+  if (adjacentFacings.size !== 2) {
     throw new Error(`Invalid facing: ${facing}`);
   }
   return adjacentFacings;
