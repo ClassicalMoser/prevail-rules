@@ -12,7 +12,7 @@ export const unitPresenceType = ["none", "single", "engaged"] as const;
 export const unitPresenceTypeSchema = z.enum(unitPresenceType);
 
 // Helper type to check match of type against schema
-type unitPresenceTypeSchemaType = z.infer<typeof unitPresenceTypeSchema>;
+type UnitPresenceTypeSchemaType = z.infer<typeof unitPresenceTypeSchema>;
 
 /**
  * The type of unit presence in a space.
@@ -21,5 +21,5 @@ export type UnitPresenceType = (typeof unitPresenceType)[number];
 
 const _assertExactUnitPresenceType: AssertExact<
   UnitPresenceType,
-  unitPresenceTypeSchemaType
+  UnitPresenceTypeSchemaType
 > = true;

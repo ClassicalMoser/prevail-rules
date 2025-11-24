@@ -1,15 +1,15 @@
 import type { AssertExact } from "../../../utils/assertExact.js";
 import type { BoardSpace } from "../boardSpace.js";
-import type { BoardCoordinate } from "./coordinates.js";
+import type { StandardBoardCoordinate } from "./standardCoordinates.js";
 import { z } from "zod";
 import { boardSpaceSchema } from "../boardSpace.js";
-import { boardCoordinatesSchema } from "./coordinates.js";
+import { standardBoardCoordinatesSchema } from "./standardCoordinates.js";
 
 /**
  * The schema for a standard board.
  */
 export const standardBoardSchema = z.record(
-  boardCoordinatesSchema,
+  standardBoardCoordinatesSchema,
   boardSpaceSchema
 );
 
@@ -28,10 +28,10 @@ type StandardBoardSchemaType = z.infer<typeof standardBoardSchema>;
  * Access spaces by coordinate: `board["A1"]`, `board["F3"]`, etc.
  */
 export type StandardBoard = {
-  [K in BoardCoordinate]: BoardSpace;
+  [K in StandardBoardCoordinate]: BoardSpace;
 };
 
 const _assertExactStandardBoard: AssertExact<
-  StandardBoard,
+  StandardBoardSchemaType,
   StandardBoardSchemaType
 > = true;

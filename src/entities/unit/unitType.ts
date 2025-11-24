@@ -33,7 +33,7 @@ export const unitTypeSchema = z.object({
 });
 
 // Helper type to check match of type against schema
-type UnitTypeFromSchema = z.infer<typeof unitTypeSchema>;
+type UnitTypeSchemaType = z.infer<typeof unitTypeSchema>;
 
 /**
  * A unit of troops.
@@ -67,4 +67,4 @@ export interface UnitType {
   routPenalty: number;
 }
 
-const _assertExactUnitType: AssertExact<UnitType, UnitTypeFromSchema> = true;
+const _assertExactUnitType: AssertExact<UnitType, UnitTypeSchemaType> = true;

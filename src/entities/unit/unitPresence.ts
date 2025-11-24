@@ -1,10 +1,10 @@
 import type { AssertExact } from "../../utils/assertExact.js";
 import type { UnitFacing } from "./unitFacing.js";
-import type { UnitType } from "./unitType.js";
+import type { UnitInstance } from "./unitInstance.js";
 import { z } from "zod";
 import { unitFacingSchema } from "./unitFacing.js";
+import { unitInstanceSchema } from "./unitInstance.js";
 import { unitPresenceType } from "./unitPresenceType.js";
-import { unitTypeSchema } from "./unitType.js";
 
 /**
  * The schema for unit presence in a space.
@@ -15,6 +15,8 @@ export const unitPresenceSchema = z.discriminatedUnion("presenceType", [
   /** A single unit is present in the space. */
   z.object({
     presenceType: z.literal(unitPresenceType[1]),
+    /** The unit in the space. */
+    unit: unitInstanceSchema,
     /** The facing direction of the unit. */
     facing: unitFacingSchema,
   }),
@@ -22,15 +24,16 @@ export const unitPresenceSchema = z.discriminatedUnion("presenceType", [
   z.object({
     presenceType: z.literal(unitPresenceType[2]),
     /** The primary unit in the engagement. */
-    primaryUnit: unitTypeSchema,
+    primaryUnit: unitInstanceSchema,
     /** The facing direction of the primary unit. */
     primaryFacing: unitFacingSchema,
     /** The secondary unit in the engagement (facing opposite the primary unit). */
-    secondaryUnit: unitTypeSchema,
+    secondaryUnit: unitInstanceSchema,
   }),
 ]);
 
-type UnitPresenceFromSchema = z.infer<typeof unitPresenceSchema>;
+// Helper type to check match of type against schema
+type UnitPresenceTypeSchemaType = z.infer<typeof unitPresenceSchema>;
 
 /**
  * Unit presence in a space.
@@ -43,6 +46,8 @@ export type UnitPresence =
   | {
       /** A single unit is present in the space. */
       presenceType: "single";
+      /** The unit in the space. */
+      unit: UnitInstance;
       /** The facing direction of the unit. */
       facing: UnitFacing;
     }
@@ -50,14 +55,14 @@ export type UnitPresence =
       /** Two units are engaged in combat in the space. */
       presenceType: "engaged";
       /** The primary unit in the engagement. */
-      primaryUnit: UnitType;
+      primaryUnit: UnitInstance;
       /** The facing direction of the primary unit. */
       primaryFacing: UnitFacing;
       /** The secondary unit in the engagement (facing opposite the primary unit). */
-      secondaryUnit: UnitType;
+      secondaryUnit: UnitInstance;
     };
 
 const _assertExactUnitPresence: AssertExact<
   UnitPresence,
-  UnitPresenceFromSchema
+  UnitPresenceTypeSchemaType
 > = true;

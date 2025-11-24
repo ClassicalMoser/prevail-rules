@@ -1,4 +1,4 @@
-export * from "./columnNumbers.js";
-export * from "./coordinates.js";
-export * from "./rowLetters.js";
+export * from "./standardColumnNumbers.js";
+export * from "./standardCoordinates.js";
+export * from "./standardRowLetters.js";
 export * from "./standardBoard.js";
