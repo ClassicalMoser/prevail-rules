@@ -1,4 +1,4 @@
-import type { AssertExact } from "../../assertExact.js";
+import type { AssertExact } from "../../utils/assertExact.js";
 import { z } from "zod";
 
 /**
@@ -22,12 +22,14 @@ export const unitTypeSchema = z.object({
   reverse: z.number().min(0).max(10),
   // The attack value required to retreat the unit.
   retreat: z.number().min(0).max(10),
-  // The attack value required to defeat the unit.
-  defeat: z.number().min(0).max(10),
+  // The attack value required to rout the unit.
+  rout: z.number().min(0).max(10),
   // The cost of the unit.
   cost: z.number().min(5).max(100),
   // The limit of units that can be included in a standard army.
   limit: z.number().min(1).max(20),
+  // The number of cards the owner must discard when the unit is routed.
+  routPenalty: z.number().min(0).max(5),
 });
 
 // Helper type to check match of type against schema
@@ -55,12 +57,14 @@ export interface UnitType {
   reverse: number;
   /** The attack value required to retreat the unit. */
   retreat: number;
-  /** The attack value required to defeat the unit. */
-  defeat: number;
+  /** The attack value required to rout the unit. */
+  rout: number;
   /** The cost of the unit. */
   cost: number;
   /** The limit of units that can be included in a standard army. */
   limit: number;
+  /** The number of cards the owner must discard when the unit is routed. */
+  routPenalty: number;
 }
 
 const _assertExactUnitType: AssertExact<UnitType, UnitTypeFromSchema> = true;

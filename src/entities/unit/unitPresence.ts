@@ -1,4 +1,4 @@
-import type { AssertExact } from "../../assertExact.js";
+import type { AssertExact } from "../../utils/assertExact.js";
 import type { UnitFacing } from "./unitFacing.js";
 import type { UnitType } from "./unitType.js";
 import { z } from "zod";

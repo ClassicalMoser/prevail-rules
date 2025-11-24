@@ -1,4 +1,4 @@
-import type { AssertExact } from "../../../assertExact.js";
+import type { AssertExact } from "../../../utils/assertExact.js";
 import type { BoardSpace } from "../boardSpace.js";
 import type { BoardCoordinate } from "./coordinates.js";
 import { z } from "zod";

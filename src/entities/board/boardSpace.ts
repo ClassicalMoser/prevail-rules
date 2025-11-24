@@ -1,4 +1,4 @@
-import type { AssertExact } from "../../assertExact.js";
+import type { AssertExact } from "../../utils/assertExact.js";
 import type { UnitPresence } from "../unit/unitPresence.js";
 import type { Elevation } from "./elevation.js";
 import type { TerrainType } from "./terrainTypes.js";

@@ -1,4 +1,4 @@
-import type { AssertExact } from "../../../assertExact.js";
+import type { AssertExact } from "../../../utils/assertExact.js";
 import { z } from "zod";
 import { boardRowLetters } from "./rowLetters.js";
 
@@ -6,11 +6,11 @@ import { boardRowLetters } from "./rowLetters.js";
  * All valid board coordinates (A1 through L18), generated from row letters and column numbers.
  */
 export const boardCoordinates = boardRowLetters.flatMap((row) =>
-  Array.from({ length: 18 }, (_, i) => `${row}${i + 1}`),
+  Array.from({ length: 18 }, (_, i) => `${row}${i + 1}`)
 ) as unknown as readonly string[];
 
 export const boardCoordinatesSchema = z.enum(
-  boardCoordinates as [string, ...string[]] as [string, ...string[]],
+  boardCoordinates as [string, ...string[]] as [string, ...string[]]
 );
 
 // Helper type to check match of type against schema
