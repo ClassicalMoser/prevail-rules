@@ -1,3 +1,4 @@
+import type { AssertExact } from "../../../assertExact.js";
 import type { BoardSpace } from "../boardSpace.js";
 import type { BoardCoordinate } from "./coordinates.js";
 import { z } from "zod";
@@ -9,10 +10,10 @@ import { boardCoordinatesSchema } from "./coordinates.js";
  */
 export const standardBoardSchema = z.record(
   boardCoordinatesSchema,
-  boardSpaceSchema,
+  boardSpaceSchema
 );
 
-type _standardBoardSchemaType = z.infer<typeof standardBoardSchema>;
+type StandardBoardSchemaType = z.infer<typeof standardBoardSchema>;
 
 /**
  * A standard board for the game.
@@ -30,7 +31,7 @@ export type StandardBoard = {
   [K in BoardCoordinate]: BoardSpace;
 };
 
-// Note: AssertExact would fail here because z.record() infers Record<string, BoardSpace>
-// while StandardBoard is a mapped type with exact coordinate keys. Runtime validation
-// via the enum in z.record() ensures all keys are valid coordinates, and we can add
-// a refinement to ensure all 216 coordinates are present if needed.
+const _assertExactStandardBoard: AssertExact<
+  StandardBoard,
+  StandardBoardSchemaType
+> = true;
