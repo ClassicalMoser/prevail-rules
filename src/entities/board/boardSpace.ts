@@ -1,11 +1,11 @@
 import type { AssertExact } from "../../utils/assertExact.js";
-import type { UnitPresence } from "../unit/unitPresence.js";
+import type { UnitPresence } from "./unitPresence.js";
 import type { Elevation } from "./elevation.js";
 import type { TerrainType } from "./terrainTypes.js";
 import type { WaterCover } from "./waterCover.js";
 
 import { z } from "zod";
-import { unitPresenceSchema } from "../unit/unitPresence.js";
+import { unitPresenceSchema } from "./unitPresence.js";
 import { elevationSchema } from "./elevation.js";
 import { terrainTypeSchema } from "./terrainTypes.js";
 import { waterCoverSchema } from "./waterCover.js";

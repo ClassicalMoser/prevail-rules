@@ -2,23 +2,8 @@ import { z } from "zod";
 /**
  * Valid row letters for a standard board (A through L).
  */
-export declare const standardBoardRowLetters: readonly [
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "I",
-  "J",
-  "K",
-  "L",
-];
-export declare const standardBoardRowLettersSchema: z.ZodEnum<
-  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
->;
+export declare const standardBoardRowLetters: readonly ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+export declare const standardBoardRowLettersSchema: z.ZodEnum<["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]>;
 /**
  * A row letter on the board (A-L).
  */

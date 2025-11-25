@@ -1,9 +1,9 @@
 import type { AssertExact } from "../../utils/assertExact.js";
-import type { UnitFacing } from "./unitFacing.js";
-import type { UnitInstance } from "./unitInstance.js";
+import type { UnitFacing } from "../unit/unitFacing.js";
+import type { UnitInstance } from "../unit/unitInstance.js";
 import { z } from "zod";
-import { unitFacingSchema } from "./unitFacing.js";
-import { unitInstanceSchema } from "./unitInstance.js";
+import { unitFacingSchema } from "../unit/unitFacing.js";
+import { unitInstanceSchema } from "../unit/unitInstance.js";
 import { unitPresenceType } from "./unitPresenceType.js";
 
 /**

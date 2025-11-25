@@ -7,9 +7,5 @@
  * Typical usage example:
  * const _aMatchesBExactly: AssertExact<TypeA, TypeB> = true;
  */
-export type AssertExact<A, B> = [A] extends [B]
-  ? [B] extends [A]
-    ? true
-    : never
-  : never;
+export type AssertExact<A, B> = [A] extends [B] ? [B] extends [A] ? true : never : never;
 //# sourceMappingURL=assertExact.d.ts.map

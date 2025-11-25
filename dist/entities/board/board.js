@@ -6,9 +6,9 @@ import { standardBoardSchema } from "./standardBoard/index.js";
  * The schema for a board.
  */
 export const boardSchema = z.discriminatedUnion("boardType", [
-  standardBoardSchema,
-  smallBoardSchema,
-  largeBoardSchema,
+    standardBoardSchema,
+    smallBoardSchema,
+    largeBoardSchema,
 ]);
 // Verify manual type matches schema inference
 const _assertExactBoard = true;

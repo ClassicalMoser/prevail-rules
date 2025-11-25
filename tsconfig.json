@@ -15,6 +15,6 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/domain/example"],
+  "include": ["src/**/*.ts", "src/domain/example", "src/entities/army"],
   "exclude": ["node_modules"]
 }

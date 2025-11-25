@@ -1,0 +1,1 @@
+{"version":3,"file":"getForwardSpacesToEdge.d.ts","sourceRoot":"","sources":["../../../src/functions/boardSpace/getForwardSpacesToEdge.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,KAAK,EAAE,eAAe,EAAE,UAAU,EAAE,MAAM,uBAAuB,CAAC;AAIhF;;;;;;;;GAQG;AACH,eAAO,MAAM,sBAAsB,GACjC,OAAO,KAAK,EACZ,YAAY,eAAe,CAAC,KAAK,CAAC,EAClC,QAAQ,UAAU,KACjB,GAAG,CAAC,eAAe,CAAC,KAAK,CAAC,CAwB5B,CAAC"}

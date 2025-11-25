@@ -5,7 +5,5 @@ import type { UnitFacing } from "../../entities/unit/unitFacing.js";
  * @param facing - The facing to get the adjacent facings for
  * @returns A set of the two adjacent facings (45 degrees away from the given facing)
  */
-export declare const getAdjacentFacings: (
-  facing: UnitFacing,
-) => Set<UnitFacing>;
+export declare const getAdjacentFacings: (facing: UnitFacing) => Set<UnitFacing>;
 //# sourceMappingURL=getAdjacentFacings.d.ts.map

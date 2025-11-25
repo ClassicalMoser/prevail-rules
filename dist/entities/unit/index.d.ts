@@ -1,5 +1,6 @@
+export * from "./tempUnits.js";
+export * from "./traits.js";
 export * from "./unitFacing.js";
-export * from "./unitPresence.js";
-export * from "./unitPresenceType.js";
+export * from "./unitInstance.js";
 export * from "./unitType.js";
 //# sourceMappingURL=index.d.ts.map

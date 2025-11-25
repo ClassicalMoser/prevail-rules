@@ -1,0 +1,707 @@
+import type { Army } from "../army/army.js";
+import type { GameType } from "../gameType.js";
+import type { Round } from "./round.js";
+import type { Setup } from "./setup.js";
+import { z } from "zod";
+/**
+ * The schema for a complete game of Prevail: Ancient Battles.
+ */
+export declare const gameSchema: z.ZodObject<{
+    /** The unique identifier of the game. */
+    id: z.ZodString;
+    /** The type of game. */
+    gameType: z.ZodEnum<["standard", "mini", "tutorial"]>;
+    /** The unique identifier of the player on the black side of the game. */
+    blackPlayer: z.ZodString;
+    /** The unique identifier of the player on the white side of the game. */
+    whitePlayer: z.ZodString;
+    /** The army brought by the black player. */
+    blackArmy: z.ZodObject<{
+        id: z.ZodString;
+        units: z.ZodArray<z.ZodObject<{
+            unitType: z.ZodObject<{
+                id: z.ZodString;
+                name: z.ZodString;
+                traits: z.ZodArray<z.ZodEnum<["formation", "sword", "spear", "phalanx", "skirmish", "javelin", "mounted", "horse"]>, "many">;
+                attack: z.ZodNumber;
+                range: z.ZodNumber;
+                speed: z.ZodNumber;
+                flexibility: z.ZodNumber;
+                reverse: z.ZodNumber;
+                retreat: z.ZodNumber;
+                rout: z.ZodNumber;
+                cost: z.ZodNumber;
+                limit: z.ZodNumber;
+                routPenalty: z.ZodNumber;
+            }, "strip", z.ZodTypeAny, {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            }, {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            }>;
+            count: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }, {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }>, "many">;
+        commandCards: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            name: z.ZodString;
+            initiative: z.ZodNumber;
+            ranged: z.ZodBoolean;
+            command: z.ZodObject<{
+                size: z.ZodEnum<["units", "lines", "groups"]>;
+                number: z.ZodNumber;
+                traitRestrictions: z.ZodArray<z.ZodString, "many">;
+                unitRestrictions: z.ZodArray<z.ZodString, "many">;
+            }, "strip", z.ZodTypeAny, {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            }, {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            }>;
+            inspirationRange: z.ZodNumber;
+            inspirationEffectText: z.ZodString;
+            inspirationEffect: z.ZodFunction<z.ZodTuple<[], z.ZodUnknown>, z.ZodVoid>;
+            globalEffectText: z.ZodOptional<z.ZodString>;
+            globalEffect: z.ZodOptional<z.ZodFunction<z.ZodTuple<[], z.ZodUnknown>, z.ZodVoid>>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }, {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        units: {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }[];
+        id: string;
+        commandCards: {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }[];
+    }, {
+        units: {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }[];
+        id: string;
+        commandCards: {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }[];
+    }>;
+    /** The army brought by the white player. */
+    whiteArmy: z.ZodObject<{
+        id: z.ZodString;
+        units: z.ZodArray<z.ZodObject<{
+            unitType: z.ZodObject<{
+                id: z.ZodString;
+                name: z.ZodString;
+                traits: z.ZodArray<z.ZodEnum<["formation", "sword", "spear", "phalanx", "skirmish", "javelin", "mounted", "horse"]>, "many">;
+                attack: z.ZodNumber;
+                range: z.ZodNumber;
+                speed: z.ZodNumber;
+                flexibility: z.ZodNumber;
+                reverse: z.ZodNumber;
+                retreat: z.ZodNumber;
+                rout: z.ZodNumber;
+                cost: z.ZodNumber;
+                limit: z.ZodNumber;
+                routPenalty: z.ZodNumber;
+            }, "strip", z.ZodTypeAny, {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            }, {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            }>;
+            count: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }, {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }>, "many">;
+        commandCards: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            name: z.ZodString;
+            initiative: z.ZodNumber;
+            ranged: z.ZodBoolean;
+            command: z.ZodObject<{
+                size: z.ZodEnum<["units", "lines", "groups"]>;
+                number: z.ZodNumber;
+                traitRestrictions: z.ZodArray<z.ZodString, "many">;
+                unitRestrictions: z.ZodArray<z.ZodString, "many">;
+            }, "strip", z.ZodTypeAny, {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            }, {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            }>;
+            inspirationRange: z.ZodNumber;
+            inspirationEffectText: z.ZodString;
+            inspirationEffect: z.ZodFunction<z.ZodTuple<[], z.ZodUnknown>, z.ZodVoid>;
+            globalEffectText: z.ZodOptional<z.ZodString>;
+            globalEffect: z.ZodOptional<z.ZodFunction<z.ZodTuple<[], z.ZodUnknown>, z.ZodVoid>>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }, {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        units: {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }[];
+        id: string;
+        commandCards: {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }[];
+    }, {
+        units: {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }[];
+        id: string;
+        commandCards: {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }[];
+    }>;
+    /** The setup of the game. */
+    setup: z.ZodObject<{
+        players: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            name: z.ZodString;
+            isBot: z.ZodBoolean;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            name: string;
+            isBot: boolean;
+        }, {
+            id: string;
+            name: string;
+            isBot: boolean;
+        }>, "many">;
+        firstChoice: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        players: {
+            id: string;
+            name: string;
+            isBot: boolean;
+        }[];
+        firstChoice: string;
+    }, {
+        players: {
+            id: string;
+            name: string;
+            isBot: boolean;
+        }[];
+        firstChoice: string;
+    }>;
+    /** The rounds of the game. */
+    rounds: z.ZodArray<z.ZodObject<{
+        roundNumber: z.ZodNumber;
+        completedPhases: z.ZodSet<z.ZodEnum<["cards", "initiative", "command", "ranged", "movement", "melee", "cleanup"]>>;
+        startTime: z.ZodDate;
+    }, "strip", z.ZodTypeAny, {
+        roundNumber: number;
+        completedPhases: Set<"initiative" | "ranged" | "command" | "cards" | "movement" | "melee" | "cleanup">;
+        startTime: Date;
+    }, {
+        roundNumber: number;
+        completedPhases: Set<"initiative" | "ranged" | "command" | "cards" | "movement" | "melee" | "cleanup">;
+        startTime: Date;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    gameType: "standard" | "mini" | "tutorial";
+    blackPlayer: string;
+    whitePlayer: string;
+    blackArmy: {
+        units: {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }[];
+        id: string;
+        commandCards: {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }[];
+    };
+    whiteArmy: {
+        units: {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }[];
+        id: string;
+        commandCards: {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }[];
+    };
+    setup: {
+        players: {
+            id: string;
+            name: string;
+            isBot: boolean;
+        }[];
+        firstChoice: string;
+    };
+    rounds: {
+        roundNumber: number;
+        completedPhases: Set<"initiative" | "ranged" | "command" | "cards" | "movement" | "melee" | "cleanup">;
+        startTime: Date;
+    }[];
+}, {
+    id: string;
+    gameType: "standard" | "mini" | "tutorial";
+    blackPlayer: string;
+    whitePlayer: string;
+    blackArmy: {
+        units: {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }[];
+        id: string;
+        commandCards: {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }[];
+    };
+    whiteArmy: {
+        units: {
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            count: number;
+        }[];
+        id: string;
+        commandCards: {
+            id: string;
+            name: string;
+            initiative: number;
+            ranged: boolean;
+            command: {
+                number: number;
+                size: "units" | "lines" | "groups";
+                traitRestrictions: string[];
+                unitRestrictions: string[];
+            };
+            inspirationRange: number;
+            inspirationEffectText: string;
+            inspirationEffect: (...args: unknown[]) => void;
+            globalEffectText?: string | undefined;
+            globalEffect?: ((...args: unknown[]) => void) | undefined;
+        }[];
+    };
+    setup: {
+        players: {
+            id: string;
+            name: string;
+            isBot: boolean;
+        }[];
+        firstChoice: string;
+    };
+    rounds: {
+        roundNumber: number;
+        completedPhases: Set<"initiative" | "ranged" | "command" | "cards" | "movement" | "melee" | "cleanup">;
+        startTime: Date;
+    }[];
+}>;
+/**
+ * A complete game of Prevail: Ancient Battles.
+ */
+export interface Game {
+    /** The unique identifier of the game. */
+    id: string;
+    /** The type of game. */
+    gameType: GameType;
+    /** The unique identifier of the player on the black side of the game. */
+    blackPlayer: string;
+    /** The unique identifier of the player on the white side of the game. */
+    whitePlayer: string;
+    /** The army brought by the black player. */
+    blackArmy: Army;
+    /** The army brought by the white player. */
+    whiteArmy: Army;
+    /** The setup of the game. */
+    setup: Setup;
+    /** The rounds of the game. */
+    rounds: Round[];
+}
+//# sourceMappingURL=game.d.ts.map

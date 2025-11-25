@@ -6,9 +6,7 @@ import { largeBoardRowLetters } from "./largeRowLetters.js";
  *
  * Runtime validation ensures all coordinates match the LargeBoardCoordinate type pattern.
  */
-const _computedCoordinates = largeBoardRowLetters.flatMap((row) =>
-  largeBoardColumnNumbers.map((column) => `${row}-${column}`),
-);
+const _computedCoordinates = largeBoardRowLetters.flatMap((row) => largeBoardColumnNumbers.map((column) => `${row}-${column}`));
 export const largeBoardCoordinates = _computedCoordinates;
 /**
  * The schema for a valid coordinate on a large board (A-1 through X-36).
