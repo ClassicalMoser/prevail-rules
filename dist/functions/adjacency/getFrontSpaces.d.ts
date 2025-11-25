@@ -7,5 +7,9 @@ import type { Board, BoardCoordinate } from "../../entities/board/board.js";
  * @param facing - The facing to get the front spaces for
  * @returns A set of the front space coordinates (up to 3 spaces, including diagonals)
  */
-export declare function getFrontSpaces(board: Board, coordinate: BoardCoordinate<Board>, facing: UnitFacing): Set<BoardCoordinate<Board>>;
+export declare function getFrontSpaces(
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
+  facing: UnitFacing,
+): Set<BoardCoordinate<Board>>;
 //# sourceMappingURL=getFrontSpaces.d.ts.map

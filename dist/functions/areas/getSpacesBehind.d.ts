@@ -9,5 +9,9 @@ import type { Board, BoardCoordinate } from "../../entities/board/board.js";
  * @returns A set of the space coordinates
  * (all spaces on the board behind the facing's inline spaces)
  */
-export declare function getSpacesBehind(board: Board, coordinate: BoardCoordinate<Board>, facing: UnitFacing): Set<BoardCoordinate<Board>>;
+export declare function getSpacesBehind(
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
+  facing: UnitFacing,
+): Set<BoardCoordinate<Board>>;
 //# sourceMappingURL=getSpacesBehind.d.ts.map

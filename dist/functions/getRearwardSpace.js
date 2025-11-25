@@ -12,9 +12,9 @@ import { getForwardSpace } from "./getForwardSpace.js";
  * or undefined if the space is out of bounds
  */
 export function getRearwardSpace(board, coordinate, facing) {
-    // Get the opposite facing
-    const oppositeFacing = getOppositeFacing(facing);
-    // Get the rearward space
-    const rearwardSpace = getForwardSpace(board, coordinate, oppositeFacing);
-    return rearwardSpace;
+  // Get the opposite facing
+  const oppositeFacing = getOppositeFacing(facing);
+  // Get the rearward space
+  const rearwardSpace = getForwardSpace(board, coordinate, oppositeFacing);
+  return rearwardSpace;
 }

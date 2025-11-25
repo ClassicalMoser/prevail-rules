@@ -3,6 +3,6 @@
  * @param spaces - The set of space coordinates to filter
  * @returns A set of the space coordinates with undefined values removed
  */
-export const filterUndefinedSpaces = (spaces) => {
-    return new Set([...spaces.values()].filter((space) => space !== undefined));
-};
+export function filterUndefinedSpaces(spaces) {
+  return new Set([...spaces.values()].filter((space) => space !== undefined));
+}

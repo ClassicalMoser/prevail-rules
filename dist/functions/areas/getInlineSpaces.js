@@ -12,18 +12,17 @@ import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
  * (unlimited, straight line to the left and right, including the origin space)
  */
 export function getInlineSpaces(board, coordinate, facing) {
-    // Initialize set with the starting coordinate
-    const inlineSpaces = new Set([coordinate]);
-    // Get the two orthogonal facings (directions perpendicular to the facing)
-    const orthogonalFacings = [...getOrthogonalFacings(facing)];
-    // Get the forward spaces to the edge for each orthogonal facing
-    for (const orthogonalFacing of orthogonalFacings) {
-        const spaces = getForwardSpacesToEdge(board, coordinate, orthogonalFacing);
-        for (const space of spaces)
-            inlineSpaces.add(space);
-    }
-    // Filter out undefined values
-    const validInlineSpaces = filterUndefinedSpaces(inlineSpaces);
-    // Return set of valid inline spaces
-    return validInlineSpaces;
+  // Initialize set with the starting coordinate
+  const inlineSpaces = new Set([coordinate]);
+  // Get the two orthogonal facings (directions perpendicular to the facing)
+  const orthogonalFacings = [...getOrthogonalFacings(facing)];
+  // Get the forward spaces to the edge for each orthogonal facing
+  for (const orthogonalFacing of orthogonalFacings) {
+    const spaces = getForwardSpacesToEdge(board, coordinate, orthogonalFacing);
+    for (const space of spaces) inlineSpaces.add(space);
+  }
+  // Filter out undefined values
+  const validInlineSpaces = filterUndefinedSpaces(inlineSpaces);
+  // Return set of valid inline spaces
+  return validInlineSpaces;
 }

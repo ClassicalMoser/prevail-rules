@@ -6,5 +6,8 @@ import type { Board, BoardCoordinate } from "../../entities/board/board.js";
  * @param coordinate - The coordinate to get the adjacent spaces for
  * @returns A set of the adjacent space coordinates (up to 8 spaces)
  */
-export declare function getAdjacentSpaces(board: Board, coordinate: BoardCoordinate<Board>): Set<BoardCoordinate<Board>>;
+export declare function getAdjacentSpaces(
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
+): Set<BoardCoordinate<Board>>;
 //# sourceMappingURL=getAdjacentSpaces.d.ts.map

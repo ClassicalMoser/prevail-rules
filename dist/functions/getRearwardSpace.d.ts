@@ -11,5 +11,9 @@ import type { UnitFacing } from "../entities/unit/unitFacing.js";
  * (directly behind the given coordinate in the given facing direction)
  * or undefined if the space is out of bounds
  */
-export declare function getRearwardSpace(board: Board, coordinate: BoardCoordinate<Board>, facing: UnitFacing): BoardCoordinate<Board> | undefined;
+export declare function getRearwardSpace(
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
+  facing: UnitFacing,
+): BoardCoordinate<Board> | undefined;
 //# sourceMappingURL=getRearwardSpace.d.ts.map

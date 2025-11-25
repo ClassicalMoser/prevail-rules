@@ -13,24 +13,22 @@ import { getInlineSpaces } from "./getInlineSpaces.js";
  * (all spaces on the board behind the facing's inline spaces)
  */
 export function getSpacesBehind(board, coordinate, facing) {
-    // Start with the back spaces
-    const spacesBehind = getBackSpaces(board, coordinate, facing);
-    // Add the inline spaces for all three (prevents checkerboard for diagonal facings)
-    for (const space of spacesBehind) {
-        const inlineSpaces = getInlineSpaces(board, space, facing);
-        for (const inlineSpace of inlineSpaces)
-            spacesBehind.add(inlineSpace);
-    }
-    // Get the direction backward from the facing
-    const backwardFacing = getOppositeFacing(facing);
-    // Add all spaces behind the solid line.
-    for (const space of spacesBehind) {
-        const spacesToEdge = getForwardSpacesToEdge(board, space, backwardFacing);
-        for (const spaceToEdge of spacesToEdge)
-            spacesBehind.add(spaceToEdge);
-    }
-    // Filter out undefined values
-    const validSpacesBehind = filterUndefinedSpaces(spacesBehind);
-    // Return set of valid spaces behind
-    return validSpacesBehind;
+  // Start with the back spaces
+  const spacesBehind = getBackSpaces(board, coordinate, facing);
+  // Add the inline spaces for all three (prevents checkerboard for diagonal facings)
+  for (const space of spacesBehind) {
+    const inlineSpaces = getInlineSpaces(board, space, facing);
+    for (const inlineSpace of inlineSpaces) spacesBehind.add(inlineSpace);
+  }
+  // Get the direction backward from the facing
+  const backwardFacing = getOppositeFacing(facing);
+  // Add all spaces behind the solid line.
+  for (const space of spacesBehind) {
+    const spacesToEdge = getForwardSpacesToEdge(board, space, backwardFacing);
+    for (const spaceToEdge of spacesToEdge) spacesBehind.add(spaceToEdge);
+  }
+  // Filter out undefined values
+  const validSpacesBehind = filterUndefinedSpaces(spacesBehind);
+  // Return set of valid spaces behind
+  return validSpacesBehind;
 }

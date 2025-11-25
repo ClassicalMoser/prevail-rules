@@ -7,5 +7,9 @@ import type { Board, BoardCoordinate } from "../../entities/board/board.js";
  * @param facing - The facing to get the back spaces for
  * @returns A set of the back space coordinates (up to 3 spaces, including diagonals)
  */
-export declare function getBackSpaces(board: Board, coordinate: BoardCoordinate<Board>, facing: UnitFacing): Set<BoardCoordinate<Board>>;
+export declare function getBackSpaces(
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
+  facing: UnitFacing,
+): Set<BoardCoordinate<Board>>;
 //# sourceMappingURL=getBackSpaces.d.ts.map

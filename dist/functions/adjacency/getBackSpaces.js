@@ -8,7 +8,7 @@ import { getFrontSpaces } from "./getFrontSpaces.js";
  * @returns A set of the back space coordinates (up to 3 spaces, including diagonals)
  */
 export function getBackSpaces(board, coordinate, facing) {
-    const oppositeFacing = getOppositeFacing(facing);
-    const backSpaces = getFrontSpaces(board, coordinate, oppositeFacing);
-    return backSpaces;
+  const oppositeFacing = getOppositeFacing(facing);
+  const backSpaces = getFrontSpaces(board, coordinate, oppositeFacing);
+  return backSpaces;
 }

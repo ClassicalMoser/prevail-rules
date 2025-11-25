@@ -1,8 +1,10 @@
 import type { BoardConfig } from "../entities/board/boardConfig.js";
 import type { BoardSpace } from "../entities/board/boardSpace.js";
+import type { LargeBoard } from "../entities/board/largeBoard/index.js";
 import type { SmallBoard } from "../entities/board/smallBoard/index.js";
 import type { StandardBoard } from "../entities/board/standardBoard/index.js";
 import {
+  largeBoardConfig,
   smallBoardConfig,
   standardBoardConfig,
 } from "../entities/board/boardConfig.js";
@@ -41,9 +43,9 @@ function createEmptyBoardSpace(): BoardSpace {
  * Generates all coordinates and initializes them with empty spaces.
  */
 function createEmptyBoardWithConfig<TCoordinate extends string>(
-  boardType: "standard" | "small",
+  boardType: "standard" | "small" | "large",
   config: BoardConfig<TCoordinate>,
-): StandardBoard | SmallBoard {
+): StandardBoard | SmallBoard | LargeBoard {
   const board: Record<string, BoardSpace> = {};
 
   // Generate all coordinates by combining row letters and column numbers
@@ -57,7 +59,7 @@ function createEmptyBoardWithConfig<TCoordinate extends string>(
   return {
     boardType,
     board: board as Record<TCoordinate, BoardSpace>,
-  } as StandardBoard | SmallBoard;
+  } as StandardBoard | SmallBoard | LargeBoard;
 }
 
 /**
@@ -75,4 +77,11 @@ export function createEmptyStandardBoard(): StandardBoard {
  */
 export function createEmptySmallBoard(): SmallBoard {
   return createEmptyBoardWithConfig("small", smallBoardConfig) as SmallBoard;
+}
+
+/**
+ * Creates an empty large board with all coordinates initialized to default spaces.
+ */
+export function createEmptyLargeBoard(): LargeBoard {
+  return createEmptyBoardWithConfig("large", largeBoardConfig) as LargeBoard;
 }

@@ -5,24 +5,24 @@
  * @returns The opposite facing (180 degrees away from the given facing)
  */
 export function getOppositeFacing(facing) {
-    switch (facing) {
-        case "north":
-            return "south";
-        case "northEast":
-            return "southWest";
-        case "east":
-            return "west";
-        case "southEast":
-            return "northWest";
-        case "south":
-            return "north";
-        case "southWest":
-            return "northEast";
-        case "west":
-            return "east";
-        case "northWest":
-            return "southEast";
-        default:
-            throw new Error(`Invalid facing: ${facing}`);
-    }
+  switch (facing) {
+    case "north":
+      return "south";
+    case "northEast":
+      return "southWest";
+    case "east":
+      return "west";
+    case "southEast":
+      return "northWest";
+    case "south":
+      return "north";
+    case "southWest":
+      return "northEast";
+    case "west":
+      return "east";
+    case "northWest":
+      return "southEast";
+    default:
+      throw new Error(`Invalid facing: ${facing}`);
+  }
 }

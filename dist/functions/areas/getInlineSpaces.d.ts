@@ -10,5 +10,9 @@ import type { Board, BoardCoordinate } from "../../entities/board/board.js";
  * @returns A set of the inline space coordinates
  * (unlimited, straight line to the left and right, including the origin space)
  */
-export declare function getInlineSpaces(board: Board, coordinate: BoardCoordinate<Board>, facing: UnitFacing): Set<BoardCoordinate<Board>>;
+export declare function getInlineSpaces(
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
+  facing: UnitFacing,
+): Set<BoardCoordinate<Board>>;
 //# sourceMappingURL=getInlineSpaces.d.ts.map

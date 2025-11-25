@@ -1,3 +1,4 @@
+import type { LargeBoard } from "../entities/board/largeBoard/index.js";
 import type { SmallBoard } from "../entities/board/smallBoard/index.js";
 import type { StandardBoard } from "../entities/board/standardBoard/index.js";
 /**
@@ -8,4 +9,8 @@ export declare function createEmptyStandardBoard(): StandardBoard;
  * Creates an empty small board with all coordinates initialized to default spaces.
  */
 export declare function createEmptySmallBoard(): SmallBoard;
+/**
+ * Creates an empty large board with all coordinates initialized to default spaces.
+ */
+export declare function createEmptyLargeBoard(): LargeBoard;
 //# sourceMappingURL=createEmptyBoard.d.ts.map

@@ -13,7 +13,7 @@ import { getFrontSpaces } from "./getFrontSpaces.js";
 export function getBackSpaces(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   const oppositeFacing = getOppositeFacing(facing);
   const backSpaces = getFrontSpaces(board, coordinate, oppositeFacing);

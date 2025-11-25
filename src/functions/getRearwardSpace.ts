@@ -17,7 +17,7 @@ import { getForwardSpace } from "./getForwardSpace.js";
 export function getRearwardSpace(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): BoardCoordinate<Board> | undefined {
   // Get the opposite facing
   const oppositeFacing = getOppositeFacing(facing);

@@ -6,7 +6,9 @@ export declare const unitPresenceType: readonly ["none", "single", "engaged"];
 /**
  * The schema for the type of unit presence in a space.
  */
-export declare const unitPresenceTypeSchema: z.ZodEnum<["none", "single", "engaged"]>;
+export declare const unitPresenceTypeSchema: z.ZodEnum<
+  ["none", "single", "engaged"]
+>;
 /**
  * The type of unit presence in a space.
  */

@@ -10,28 +10,27 @@ import { getForwardSpace } from "./getForwardSpace.js";
  * (all spaces on the board in a direct line from the given coordinate in the given facing direction)
  */
 export const getForwardSpacesToEdge = (board, coordinate, facing) => {
-    // Initialize set with the starting coordinate
-    const spaces = new Set([coordinate]);
-    // Iterate until the current space is undefined
-    let currentSpace = coordinate;
-    while (currentSpace !== undefined) {
-        // Get the next space
-        const nextSpace = getForwardSpace(board, currentSpace, facing);
-        // If the next space is not undefined, add it to the set
-        if (nextSpace !== undefined) {
-            spaces.add(nextSpace);
-            // Update the current space
-            currentSpace = nextSpace;
-        }
-        else {
-            // Break the loop if the next space is undefined
-            break;
-        }
+  // Initialize set with the starting coordinate
+  const spaces = new Set([coordinate]);
+  // Iterate until the current space is undefined
+  let currentSpace = coordinate;
+  while (currentSpace !== undefined) {
+    // Get the next space
+    const nextSpace = getForwardSpace(board, currentSpace, facing);
+    // If the next space is not undefined, add it to the set
+    if (nextSpace !== undefined) {
+      spaces.add(nextSpace);
+      // Update the current space
+      currentSpace = nextSpace;
+    } else {
+      // Break the loop if the next space is undefined
+      break;
     }
-    // Remove the starting coordinate
-    spaces.delete(coordinate);
-    // Filter out undefined values
-    const validSpaces = filterUndefinedSpaces(spaces);
-    // Return set of valid forward spaces to the edge
-    return validSpaces;
+  }
+  // Remove the starting coordinate
+  spaces.delete(coordinate);
+  // Filter out undefined values
+  const validSpaces = filterUndefinedSpaces(spaces);
+  // Return set of valid forward spaces to the edge
+  return validSpaces;
 };

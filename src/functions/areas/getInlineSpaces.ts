@@ -17,7 +17,7 @@ import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
 export function getInlineSpaces(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   // Initialize set with the starting coordinate
   const inlineSpaces: Set<BoardCoordinate<Board>> = new Set([coordinate]);

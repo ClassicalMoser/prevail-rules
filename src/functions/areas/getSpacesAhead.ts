@@ -17,7 +17,7 @@ import { getInlineSpaces } from "./getInlineSpaces.js";
 export function getSpacesAhead(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   // Start with the front spaces
   const spacesAhead = getFrontSpaces(board, coordinate, facing);

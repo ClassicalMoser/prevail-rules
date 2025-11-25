@@ -12,11 +12,11 @@ import { getForwardSpace } from "../getForwardSpace.js";
  */
 export function getAdjacentSpaces(
   board: Board,
-  coordinate: BoardCoordinate<Board>
+  coordinate: BoardCoordinate<Board>,
 ): Set<BoardCoordinate<Board>> {
   // One space in each of the eight directions from the given coordinate
   const adjacentSpaces = new Set(
-    unitFacings.map((facing) => getForwardSpace(board, coordinate, facing))
+    unitFacings.map((facing) => getForwardSpace(board, coordinate, facing)),
   ) as Set<BoardCoordinate<Board> | undefined>;
 
   // Filter out undefined values

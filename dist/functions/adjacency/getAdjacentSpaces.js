@@ -9,10 +9,12 @@ import { getForwardSpace } from "../getForwardSpace.js";
  * @returns A set of the adjacent space coordinates (up to 8 spaces)
  */
 export function getAdjacentSpaces(board, coordinate) {
-    // One space in each of the eight directions from the given coordinate
-    const adjacentSpaces = new Set(unitFacings.map((facing) => getForwardSpace(board, coordinate, facing)));
-    // Filter out undefined values
-    const validAdjacentSpaces = filterUndefinedSpaces(adjacentSpaces);
-    // Return set of valid adjacent spaces
-    return new Set(validAdjacentSpaces);
+  // One space in each of the eight directions from the given coordinate
+  const adjacentSpaces = new Set(
+    unitFacings.map((facing) => getForwardSpace(board, coordinate, facing)),
+  );
+  // Filter out undefined values
+  const validAdjacentSpaces = filterUndefinedSpaces(adjacentSpaces);
+  // Return set of valid adjacent spaces
+  return new Set(validAdjacentSpaces);
 }

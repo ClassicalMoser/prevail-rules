@@ -6,7 +6,9 @@ import { smallBoardRowLetters } from "./smallRowLetters.js";
  *
  * Runtime validation ensures all coordinates match the StandardBoardCoordinate type pattern.
  */
-const _computedCoordinates = smallBoardRowLetters.flatMap((row) => smallBoardColumnNumbers.map((column) => `${row}-${column}`));
+const _computedCoordinates = smallBoardRowLetters.flatMap((row) =>
+  smallBoardColumnNumbers.map((column) => `${row}-${column}`),
+);
 export const smallBoardCoordinates = _computedCoordinates;
 /**
  * The schema for a valid coordinate on a small board (A-1 through H-12).

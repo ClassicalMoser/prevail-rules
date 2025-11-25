@@ -7,40 +7,42 @@ import { getColumnDelta, getRowDelta } from "./deltas.js";
  * Trusts the types - validation happens at boundaries, not here.
  */
 export function getForwardSpaceWithConfig(coordinate, facing, config) {
-    // Parse coordinate - already validated at boundary, so we trust the format
-    // Coordinates are formatted as "Row-Column" (e.g., "E-5" = row E, column 5)
-    const inputRow = coordinate.split("-")[0];
-    const inputColumn = coordinate.split("-")[1];
-    // Convert string coordinates to array indices for mathematical operations
-    const currentRowIndex = config.rowLetters.indexOf(inputRow);
-    const currentColumnIndex = config.columnNumbers.indexOf(inputColumn);
-    // Validate row and column (defensive check for invalid coordinates that bypass TypeScript)
-    if (currentRowIndex === -1) {
-        throw new Error(`Invalid row: ${inputRow}`);
-    }
-    if (currentColumnIndex === -1) {
-        throw new Error(`Invalid column: ${inputColumn}`);
-    }
-    // Validate facing (defensive check for invalid facings that bypass TypeScript)
-    const facingResult = unitFacingSchema.safeParse(facing);
-    if (!facingResult.success) {
-        throw new Error(`Invalid facing: ${facing}`);
-    }
-    // Calculate the new position by applying the movement deltas
-    const newRowIndex = currentRowIndex + getRowDelta(facing);
-    const newColumnIndex = currentColumnIndex + getColumnDelta(facing);
-    // Boundary check
-    if (newRowIndex < 0 ||
-        newRowIndex >= config.rowLetters.length ||
-        newColumnIndex < 0 ||
-        newColumnIndex >= config.columnNumbers.length) {
-        return undefined;
-    }
-    // Convert the calculated indices back to string coordinates
-    const newRow = config.rowLetters[newRowIndex];
-    const newColumn = config.columnNumbers[newColumnIndex];
-    // Reconstruct the coordinate string
-    return config.createCoordinate(newRow, newColumn);
+  // Parse coordinate - already validated at boundary, so we trust the format
+  // Coordinates are formatted as "Row-Column" (e.g., "E-5" = row E, column 5)
+  const inputRow = coordinate.split("-")[0];
+  const inputColumn = coordinate.split("-")[1];
+  // Convert string coordinates to array indices for mathematical operations
+  const currentRowIndex = config.rowLetters.indexOf(inputRow);
+  const currentColumnIndex = config.columnNumbers.indexOf(inputColumn);
+  // Validate row and column (defensive check for invalid coordinates that bypass TypeScript)
+  if (currentRowIndex === -1) {
+    throw new Error(`Invalid row: ${inputRow}`);
+  }
+  if (currentColumnIndex === -1) {
+    throw new Error(`Invalid column: ${inputColumn}`);
+  }
+  // Validate facing (defensive check for invalid facings that bypass TypeScript)
+  const facingResult = unitFacingSchema.safeParse(facing);
+  if (!facingResult.success) {
+    throw new Error(`Invalid facing: ${facing}`);
+  }
+  // Calculate the new position by applying the movement deltas
+  const newRowIndex = currentRowIndex + getRowDelta(facing);
+  const newColumnIndex = currentColumnIndex + getColumnDelta(facing);
+  // Boundary check
+  if (
+    newRowIndex < 0 ||
+    newRowIndex >= config.rowLetters.length ||
+    newColumnIndex < 0 ||
+    newColumnIndex >= config.columnNumbers.length
+  ) {
+    return undefined;
+  }
+  // Convert the calculated indices back to string coordinates
+  const newRow = config.rowLetters[newRowIndex];
+  const newColumn = config.columnNumbers[newColumnIndex];
+  // Reconstruct the coordinate string
+  return config.createCoordinate(newRow, newColumn);
 }
 /**
  * Calculates the coordinate of the space directly forward from a given coordinate
@@ -66,6 +68,6 @@ export function getForwardSpaceWithConfig(coordinate, facing, config) {
  * getForwardSpace(board, "A-1", "north") // Returns undefined (out of bounds)
  */
 export function getForwardSpace(board, coordinate, facing) {
-    const config = boardConfigMap[board.boardType];
-    return getForwardSpaceWithConfig(coordinate, facing, config);
+  const config = boardConfigMap[board.boardType];
+  return getForwardSpaceWithConfig(coordinate, facing, config);
 }

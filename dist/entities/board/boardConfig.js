@@ -1,34 +1,40 @@
 /**
  * Type-safe board configuration system.
- *
- * This module provides compile-time board configurations that eliminate
- * runtime branching and redundant validation. Since boards are validated
- * at boundaries (via Zod schemas), internal functions can trust the types.
+ * Provides compile-time configurations for coordinate calculations.
+ * Boards are validated at boundaries (via Zod schemas), so internal functions trust types.
  */
-import { smallBoardColumnNumbers, smallBoardRowLetters, standardBoardColumnNumbers, standardBoardRowLetters, } from "src/entities/index.js";
-/**
- * Standard board configuration.
- * Type-safe and compile-time only - no runtime overhead.
- */
+import {
+  largeBoardColumnNumbers,
+  largeBoardRowLetters,
+} from "./largeBoard/index.js";
+import {
+  smallBoardColumnNumbers,
+  smallBoardRowLetters,
+} from "./smallBoard/index.js";
+import {
+  standardBoardColumnNumbers,
+  standardBoardRowLetters,
+} from "./standardBoard/index.js";
 export const standardBoardConfig = {
-    rowLetters: standardBoardRowLetters,
-    columnNumbers: standardBoardColumnNumbers,
-    createCoordinate: (row, column) => `${row}-${column}`,
+  rowLetters: standardBoardRowLetters,
+  columnNumbers: standardBoardColumnNumbers,
+  createCoordinate: (row, column) => `${row}-${column}`,
 };
-/**
- * Small board configuration.
- * Type-safe and compile-time only - no runtime overhead.
- */
 export const smallBoardConfig = {
-    rowLetters: smallBoardRowLetters,
-    columnNumbers: smallBoardColumnNumbers,
-    createCoordinate: (row, column) => `${row}-${column}`,
+  rowLetters: smallBoardRowLetters,
+  columnNumbers: smallBoardColumnNumbers,
+  createCoordinate: (row, column) => `${row}-${column}`,
+};
+export const largeBoardConfig = {
+  rowLetters: largeBoardRowLetters,
+  columnNumbers: largeBoardColumnNumbers,
+  createCoordinate: (row, column) => `${row}-${column}`,
 };
 /**
  * Type-safe map from board type to configuration.
- * Used for compile-time lookup - no runtime branching needed.
  */
 export const boardConfigMap = {
-    standard: standardBoardConfig,
-    small: smallBoardConfig,
+  standard: standardBoardConfig,
+  small: smallBoardConfig,
+  large: largeBoardConfig,
 };

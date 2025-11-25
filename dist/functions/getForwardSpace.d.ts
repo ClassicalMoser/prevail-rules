@@ -6,7 +6,11 @@ import type { UnitFacing } from "../entities/unit/unitFacing.js";
  * Can be called directly with config for efficiency when called multiple times.
  * Trusts the types - validation happens at boundaries, not here.
  */
-export declare function getForwardSpaceWithConfig<TCoordinate extends string>(coordinate: TCoordinate, facing: UnitFacing, config: BoardConfig<TCoordinate>): TCoordinate | undefined;
+export declare function getForwardSpaceWithConfig<TCoordinate extends string>(
+  coordinate: TCoordinate,
+  facing: UnitFacing,
+  config: BoardConfig<TCoordinate>,
+): TCoordinate | undefined;
 /**
  * Calculates the coordinate of the space directly forward from a given coordinate
  * in the specified facing direction.
@@ -30,5 +34,9 @@ export declare function getForwardSpaceWithConfig<TCoordinate extends string>(co
  * getForwardSpace(board, "E-5", "north") // Returns "D-5"
  * getForwardSpace(board, "A-1", "north") // Returns undefined (out of bounds)
  */
-export declare function getForwardSpace(board: Board, coordinate: BoardCoordinate<Board>, facing: UnitFacing): BoardCoordinate<Board> | undefined;
+export declare function getForwardSpace(
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
+  facing: UnitFacing,
+): BoardCoordinate<Board> | undefined;
 //# sourceMappingURL=getForwardSpace.d.ts.map

@@ -8,5 +8,9 @@ import type { Board, BoardCoordinate, UnitFacing } from "src/entities/index.js";
  * @returns A set of the space coordinates
  * (all spaces on the board in a direct line from the given coordinate in the given facing direction)
  */
-export declare const getForwardSpacesToEdge: (board: Board, coordinate: BoardCoordinate<Board>, facing: UnitFacing) => Set<BoardCoordinate<Board>>;
+export declare const getForwardSpacesToEdge: (
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
+  facing: UnitFacing,
+) => Set<BoardCoordinate<Board>>;
 //# sourceMappingURL=getForwardSpacesToEdge.d.ts.map

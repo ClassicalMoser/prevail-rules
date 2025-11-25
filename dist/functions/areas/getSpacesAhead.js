@@ -12,22 +12,20 @@ import { getInlineSpaces } from "./getInlineSpaces.js";
  * (all spaces on the board in front of the facing's inline spaces)
  */
 export function getSpacesAhead(board, coordinate, facing) {
-    // Start with the front spaces
-    const spacesAhead = getFrontSpaces(board, coordinate, facing);
-    // Add the inline spaces for all three (prevents checkerboard for diagonal facings)
-    for (const space of spacesAhead) {
-        const inlineSpaces = getInlineSpaces(board, space, facing);
-        for (const inlineSpace of inlineSpaces)
-            spacesAhead.add(inlineSpace);
-    }
-    // Get the rest of the spaces ahead
-    for (const space of spacesAhead) {
-        const spacesToEdge = getForwardSpacesToEdge(board, space, facing);
-        for (const spaceToEdge of spacesToEdge)
-            spacesAhead.add(spaceToEdge);
-    }
-    // Filter out undefined values
-    const validSpacesAhead = filterUndefinedSpaces(spacesAhead);
-    // Return set of valid spaces ahead
-    return validSpacesAhead;
+  // Start with the front spaces
+  const spacesAhead = getFrontSpaces(board, coordinate, facing);
+  // Add the inline spaces for all three (prevents checkerboard for diagonal facings)
+  for (const space of spacesAhead) {
+    const inlineSpaces = getInlineSpaces(board, space, facing);
+    for (const inlineSpace of inlineSpaces) spacesAhead.add(inlineSpace);
+  }
+  // Get the rest of the spaces ahead
+  for (const space of spacesAhead) {
+    const spacesToEdge = getForwardSpacesToEdge(board, space, facing);
+    for (const spaceToEdge of spacesToEdge) spacesAhead.add(spaceToEdge);
+  }
+  // Filter out undefined values
+  const validSpacesAhead = filterUndefinedSpaces(spacesAhead);
+  // Return set of valid spaces ahead
+  return validSpacesAhead;
 }

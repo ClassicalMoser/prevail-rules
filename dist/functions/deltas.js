@@ -11,22 +11,22 @@
  * @returns The row delta: -1 for north, +1 for south, 0 for east/west
  */
 export const getRowDelta = (facing) => {
-    switch (facing) {
-        case "northWest":
-            return -1;
-        case "north":
-            return -1;
-        case "northEast":
-            return -1;
-        case "southWest":
-            return 1;
-        case "south":
-            return 1;
-        case "southEast":
-            return 1;
-        default:
-            return 0;
-    }
+  switch (facing) {
+    case "northWest":
+      return -1;
+    case "north":
+      return -1;
+    case "northEast":
+      return -1;
+    case "southWest":
+      return 1;
+    case "south":
+      return 1;
+    case "southEast":
+      return 1;
+    default:
+      return 0;
+  }
 };
 /**
  * Calculates the column delta (horizontal movement) for a given facing direction.
@@ -41,20 +41,20 @@ export const getRowDelta = (facing) => {
  * @returns The column delta: +1 for east, -1 for west, 0 for north/south
  */
 export const getColumnDelta = (facing) => {
-    switch (facing) {
-        case "northEast":
-            return 1;
-        case "east":
-            return 1;
-        case "southEast":
-            return 1;
-        case "northWest":
-            return -1;
-        case "west":
-            return -1;
-        case "southWest":
-            return -1;
-        default:
-            return 0;
-    }
+  switch (facing) {
+    case "northEast":
+      return 1;
+    case "east":
+      return 1;
+    case "southEast":
+      return 1;
+    case "northWest":
+      return -1;
+    case "west":
+      return -1;
+    case "southWest":
+      return -1;
+    default:
+      return 0;
+  }
 };
