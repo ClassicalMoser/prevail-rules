@@ -1,9 +1,16 @@
 import type { StandardBoardCoordinate } from "src/entities/board/standardBoard/standardCoordinates.js";
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import { filterUndefinedSpaces } from "./filterUndefinedSpaces.js";
-import { getForwardSpace } from "./getForwardSpace.js";
-import { getOrthogonalFacings } from "./getOrthogonalFacings.js";
+import { getOrthogonalFacings } from "../facings/getOrthogonalFacings.js";
+import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
+import { getForwardSpace } from "../getForwardSpace.js";
 
+/**
+ * Get the flanking spaces for a given coordinate and facing,
+ * the spaces directly to the right and left of the facing
+ * @param coordinate - The coordinate to get the flanking spaces for
+ * @param facing - The facing to get the flanking spaces for
+ * @returns A set of the flanking space coordinates (up to 2 spaces, directly to the right and left)
+ */
 export const getFlankingSpaces = (
   coordinate: StandardBoardCoordinate,
   facing: UnitFacing

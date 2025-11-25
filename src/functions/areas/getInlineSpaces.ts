@@ -2,10 +2,19 @@ import type {
   StandardBoardCoordinate,
   UnitFacing,
 } from "src/entities/index.js";
-import { filterUndefinedSpaces } from "./filterUndefinedSpaces.js";
-import { getForwardSpacesToEdge } from "./getForwardSpacesToEdge.js";
-import { getOrthogonalFacings } from "./getOrthogonalFacings.js";
+import { getOrthogonalFacings } from "../facings/getOrthogonalFacings.js";
+import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
+import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
 
+/**
+ * Get the inline spaces for a given coordinate and facing,
+ * continuing in a straight line to the left and right of the facing.
+ * This includes the origin space.
+ * @param coordinate - The coordinate to get the inline spaces for
+ * @param facing - The facing to get the inline spaces for
+ * @returns A set of the inline space coordinates
+ * (unlimited, straight line to the left and right, including the origin space)
+ */
 export const getInlineSpaces = (
   coordinate: StandardBoardCoordinate,
   facing: UnitFacing

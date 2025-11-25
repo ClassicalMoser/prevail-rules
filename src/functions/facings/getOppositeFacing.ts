@@ -1,7 +1,10 @@
-import type { UnitFacing } from "../entities/unit/unitFacing.js";
+import type { UnitFacing } from "../../entities/unit/unitFacing.js";
 
 /**
- * Get the opposite facing of a unit.
+ * Get the opposite facing of a given facing.
+ * This is the facing directly opposite the given facing.
+ * @param facing - The facing to get the opposite facing for
+ * @returns The opposite facing (180 degrees away from the given facing)
  */
 export function getOppositeFacing(facing: UnitFacing): UnitFacing {
   switch (facing) {

@@ -2,12 +2,20 @@ import type {
   StandardBoardCoordinate,
   UnitFacing,
 } from "src/entities/index.js";
-import { filterUndefinedSpaces } from "./filterUndefinedSpaces.js";
-import { getBackSpaces } from "./getBackSpaces.js";
-import { getForwardSpacesToEdge } from "./getForwardSpacesToEdge.js";
+import { getBackSpaces } from "../adjacency/getBackSpaces.js";
+import { getOppositeFacing } from "../facings/getOppositeFacing.js";
+import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
+import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
 import { getInlineSpaces } from "./getInlineSpaces.js";
-import { getOppositeFacing } from "./getOppositeFacing.js";
 
+/**
+ * Get the spaces behind for a given coordinate and facing.
+ * This includes all spaces on the board behind the facing's inline spaces.
+ * @param coordinate - The coordinate to get the spaces behind for
+ * @param facing - The facing to get the spaces behind for
+ * @returns A set of the space coordinates
+ * (all spaces on the board behind the facing's inline spaces)
+ */
 export const getSpacesBehind = (
   coordinate: StandardBoardCoordinate,
   facing: UnitFacing
