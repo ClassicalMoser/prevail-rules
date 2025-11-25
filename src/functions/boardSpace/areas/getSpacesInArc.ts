@@ -1,7 +1,8 @@
 import type { Board, BoardCoordinate } from "src/entities/board/board.js";
 
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import { filterUndefinedSpaces, getFrontSpaces } from "../index.js";
+import { getFrontSpaces } from "../adjacency/getFrontSpaces.js";
+import { filterUndefinedSpaces } from "../index.js";
 
 export function getSpacesInArc(
   board: Board,

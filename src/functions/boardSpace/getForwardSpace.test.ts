@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 import {
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from "./createEmptyBoard.js";
+} from "../createEmptyBoard.js";
 import { getForwardSpace } from "./getForwardSpace.js";
 
 const standardBoard: StandardBoard = createEmptyStandardBoard();

@@ -68,4 +68,3 @@ describe("getColumnDelta", () => {
     expect(getColumnDelta("south")).toBe(0);
   });
 });
-

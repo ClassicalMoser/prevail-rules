@@ -2,7 +2,7 @@ import type { StandardBoard } from "src/entities/board/standardBoard/index.js";
 import type { StandardBoardCoordinate } from "src/entities/board/standardBoard/standardCoordinates.js";
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
 import { describe, expect, it } from "vitest";
-import { createEmptyStandardBoard } from "./createEmptyBoard.js";
+import { createEmptyStandardBoard } from "../createEmptyBoard.js";
 import { getRearwardSpace } from "./getRearwardSpace.js";
 
 const standardBoard: StandardBoard = createEmptyStandardBoard();

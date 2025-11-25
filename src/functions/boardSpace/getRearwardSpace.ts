@@ -1,6 +1,6 @@
-import type { Board, BoardCoordinate } from "../entities/board/board.js";
-import type { UnitFacing } from "../entities/unit/unitFacing.js";
-import { getOppositeFacing } from "./facings/getOppositeFacing.js";
+import type { Board, BoardCoordinate } from "../../entities/board/board.js";
+import type { UnitFacing } from "../../entities/unit/unitFacing.js";
+import { getOppositeFacing } from "../facings/getOppositeFacing.js";
 import { getForwardSpace } from "./getForwardSpace.js";
 
 /**

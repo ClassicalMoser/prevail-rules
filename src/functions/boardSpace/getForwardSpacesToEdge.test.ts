@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createEmptyStandardBoard } from "./createEmptyBoard.js";
+import { createEmptyStandardBoard } from "../createEmptyBoard.js";
 import { getForwardSpacesToEdge } from "./getForwardSpacesToEdge.js";
 
 const standardBoard = createEmptyStandardBoard();
@@ -19,7 +19,7 @@ describe("getForwardSpacesToEdge", () => {
         "J-1",
         "K-1",
         "L-1",
-      ]),
+      ])
     );
   });
   it("should return the forward spaces to the edge when facing east from E5", () => {
@@ -38,27 +38,27 @@ describe("getForwardSpacesToEdge", () => {
         "E-16",
         "E-17",
         "E-18",
-      ]),
+      ])
     );
   });
   it("should return the forward spaces to the edge when facing northEast from E5", () => {
     expect(getForwardSpacesToEdge(standardBoard, "E-5", "northEast")).toEqual(
-      new Set(["D-6", "C-7", "B-8", "A-9"]),
+      new Set(["D-6", "C-7", "B-8", "A-9"])
     );
   });
   it("should return the forward spaces to the edge when facing southEast from E5", () => {
     expect(getForwardSpacesToEdge(standardBoard, "E-5", "southEast")).toEqual(
-      new Set(["F-6", "G-7", "H-8", "I-9", "J-10", "K-11", "L-12"]),
+      new Set(["F-6", "G-7", "H-8", "I-9", "J-10", "K-11", "L-12"])
     );
   });
   it("should return the forward spaces to the edge when facing southWest from G9", () => {
     expect(getForwardSpacesToEdge(standardBoard, "G-9", "southWest")).toEqual(
-      new Set(["H-8", "I-7", "J-6", "K-5", "L-4"]),
+      new Set(["H-8", "I-7", "J-6", "K-5", "L-4"])
     );
   });
   it("should return the forward spaces to the edge when facing northWest from G9", () => {
     expect(getForwardSpacesToEdge(standardBoard, "G-9", "northWest")).toEqual(
-      new Set(["F-8", "E-7", "D-6", "C-5", "B-4", "A-3"]),
+      new Set(["F-8", "E-7", "D-6", "C-5", "B-4", "A-3"])
     );
   });
 });

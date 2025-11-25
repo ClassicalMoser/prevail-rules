@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from "../createEmptyBoard.js";
+} from "../../createEmptyBoard.js";
 import { getSpacesInArc } from "./getSpacesInArc.js";
 
 describe("getSpacesInArc", () => {

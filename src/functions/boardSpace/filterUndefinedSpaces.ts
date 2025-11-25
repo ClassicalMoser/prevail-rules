@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate } from "../entities/board/board.js";
+import type { Board, BoardCoordinate } from "../../entities/board/board.js";
 
 /**
  * Filter out undefined spaces from a set of space coordinates.

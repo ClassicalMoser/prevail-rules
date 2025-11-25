@@ -1,8 +1,8 @@
-import type { Board, BoardCoordinate } from "../entities/board/board.js";
-import type { BoardConfig } from "../entities/board/boardConfig.js";
-import type { UnitFacing } from "../entities/unit/unitFacing.js";
-import { boardConfigMap } from "../entities/board/boardConfig.js";
-import { unitFacingSchema } from "../entities/unit/unitFacing.js";
+import type { Board, BoardCoordinate } from "../../entities/board/board.js";
+import type { BoardConfig } from "../../entities/board/boardConfig.js";
+import type { UnitFacing } from "../../entities/unit/unitFacing.js";
+import { boardConfigMap } from "../../entities/board/boardConfig.js";
+import { unitFacingSchema } from "../../entities/unit/unitFacing.js";
 import { getColumnDelta, getRowDelta } from "./deltas.js";
 
 /**
