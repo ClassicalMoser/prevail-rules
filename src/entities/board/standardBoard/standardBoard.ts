@@ -8,30 +8,39 @@ import { standardBoardCoordinatesSchema } from "./standardCoordinates.js";
 /**
  * The schema for a standard board.
  */
-export const standardBoardSchema = z.record(
-  standardBoardCoordinatesSchema,
-  boardSpaceSchema
-);
+export const standardBoardSchema = z.object({
+  boardType: z.literal("standard"),
+  board: z.record(standardBoardCoordinatesSchema, boardSpaceSchema),
+});
 
-type StandardBoardSchemaType = z.infer<typeof standardBoardSchema>;
+type StandardBoardSchemaType = z.infer<typeof standardBoardSchema> & {
+  board: Record<StandardBoardCoordinate, BoardSpace>;
+};
 
 /**
  * A standard board for the game.
- * A unique map of exactly 216 coordinates (A1 through L18), where each coordinate
- * exists exactly once (e.g., there is only one "A11", only one "F3", etc.).
+ * A unique map of exactly 216 coordinates (A-1 through L-18), where each coordinate
+ * exists exactly once (e.g., there is only one "A-11", only one "F-3", etc.).
  *
  * Coordinate system:
  * - Rows are lettered A through L (12 rows)
  * - Columns are numbered 1 through 18 (1-indexed)
- * - Example: "A1" is the top-left space, "L18" is the bottom-right space
+ * - Example: "A-1" is the top-left space, "L-18" is the bottom-right space
  *
- * Access spaces by coordinate: `board["A1"]`, `board["F3"]`, etc.
+ * Access spaces by coordinate: `board["A-1"]`, `board["F-3"]`, etc.
  */
-export type StandardBoard = {
-  [K in StandardBoardCoordinate]: BoardSpace;
-};
+export interface StandardBoard {
+  /**
+   * The type of board.
+   */
+  boardType: "standard";
+  /**
+   * The board.
+   */
+  board: Record<StandardBoardCoordinate, BoardSpace>;
+}
 
 const _assertExactStandardBoard: AssertExact<
-  StandardBoardSchemaType,
+  StandardBoard,
   StandardBoardSchemaType
 > = true;

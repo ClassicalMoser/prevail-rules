@@ -6,17 +6,18 @@ import { getInlineSpaces } from "./getInlineSpaces.js";
 /**
  * Get the spaces behind for a given coordinate and facing.
  * This includes all spaces on the board behind the facing's inline spaces.
+ * @param board - The board object
  * @param coordinate - The coordinate to get the spaces behind for
  * @param facing - The facing to get the spaces behind for
  * @returns A set of the space coordinates
  * (all spaces on the board behind the facing's inline spaces)
  */
-export const getSpacesBehind = (coordinate, facing) => {
+export function getSpacesBehind(board, coordinate, facing) {
     // Start with the back spaces
-    const spacesBehind = getBackSpaces(coordinate, facing);
+    const spacesBehind = getBackSpaces(board, coordinate, facing);
     // Add the inline spaces for all three (prevents checkerboard for diagonal facings)
     for (const space of spacesBehind) {
-        const inlineSpaces = getInlineSpaces(space, facing);
+        const inlineSpaces = getInlineSpaces(board, space, facing);
         for (const inlineSpace of inlineSpaces)
             spacesBehind.add(inlineSpace);
     }
@@ -24,7 +25,7 @@ export const getSpacesBehind = (coordinate, facing) => {
     const backwardFacing = getOppositeFacing(facing);
     // Add all spaces behind the solid line.
     for (const space of spacesBehind) {
-        const spacesToEdge = getForwardSpacesToEdge(space, backwardFacing);
+        const spacesToEdge = getForwardSpacesToEdge(board, space, backwardFacing);
         for (const spaceToEdge of spacesToEdge)
             spacesBehind.add(spaceToEdge);
     }
@@ -32,4 +33,4 @@ export const getSpacesBehind = (coordinate, facing) => {
     const validSpacesBehind = filterUndefinedSpaces(spacesBehind);
     // Return set of valid spaces behind
     return validSpacesBehind;
-};
+}

@@ -1,7 +1,5 @@
-import type {
-  StandardBoardCoordinate,
-  UnitFacing,
-} from "src/entities/index.js";
+import type { UnitFacing } from "src/entities/unit/unitFacing.js";
+import type { Board, BoardCoordinate } from "../../entities/board/board.js";
 import { getBackSpaces } from "../adjacency/getBackSpaces.js";
 import { getOppositeFacing } from "../facings/getOppositeFacing.js";
 import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
@@ -11,21 +9,23 @@ import { getInlineSpaces } from "./getInlineSpaces.js";
 /**
  * Get the spaces behind for a given coordinate and facing.
  * This includes all spaces on the board behind the facing's inline spaces.
+ * @param board - The board object
  * @param coordinate - The coordinate to get the spaces behind for
  * @param facing - The facing to get the spaces behind for
  * @returns A set of the space coordinates
  * (all spaces on the board behind the facing's inline spaces)
  */
-export const getSpacesBehind = (
-  coordinate: StandardBoardCoordinate,
-  facing: UnitFacing
-): Set<StandardBoardCoordinate> => {
+export function getSpacesBehind(
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
+  facing: UnitFacing,
+): Set<BoardCoordinate<Board>> {
   // Start with the back spaces
-  const spacesBehind = getBackSpaces(coordinate, facing);
+  const spacesBehind = getBackSpaces(board, coordinate, facing);
 
   // Add the inline spaces for all three (prevents checkerboard for diagonal facings)
   for (const space of spacesBehind) {
-    const inlineSpaces = getInlineSpaces(space, facing);
+    const inlineSpaces = getInlineSpaces(board, space, facing);
     for (const inlineSpace of inlineSpaces) spacesBehind.add(inlineSpace);
   }
 
@@ -34,7 +34,7 @@ export const getSpacesBehind = (
 
   // Add all spaces behind the solid line.
   for (const space of spacesBehind) {
-    const spacesToEdge = getForwardSpacesToEdge(space, backwardFacing);
+    const spacesToEdge = getForwardSpacesToEdge(board, space, backwardFacing);
     for (const spaceToEdge of spacesToEdge) spacesBehind.add(spaceToEdge);
   }
 
@@ -43,4 +43,4 @@ export const getSpacesBehind = (
 
   // Return set of valid spaces behind
   return validSpacesBehind;
-};
+}

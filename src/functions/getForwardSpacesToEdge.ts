@@ -1,29 +1,28 @@
-import type {
-  StandardBoardCoordinate,
-  UnitFacing,
-} from "src/entities/index.js";
+import type { Board, BoardCoordinate, UnitFacing } from "src/entities/index.js";
 import { filterUndefinedSpaces } from "./filterUndefinedSpaces.js";
 import { getForwardSpace } from "./getForwardSpace.js";
 
 /**
  * Get the forward spaces to the edge for a given coordinate and facing.
  * This includes all spaces on the board ina direct line from the given coordinate in the given facing direction.
+ * @param board - The board object (used to infer coordinate type)
  * @param coordinate - The coordinate to get the forward spaces to the edge for
  * @param facing - The facing to get the forward spaces to the edge for
  * @returns A set of the space coordinates
  * (all spaces on the board in a direct line from the given coordinate in the given facing direction)
  */
 export const getForwardSpacesToEdge = (
-  coordinate: StandardBoardCoordinate,
-  facing: UnitFacing
-): Set<StandardBoardCoordinate> => {
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
+  facing: UnitFacing,
+): Set<BoardCoordinate<Board>> => {
   // Initialize set with the starting coordinate
-  const spaces: Set<StandardBoardCoordinate> = new Set([coordinate]);
+  const spaces: Set<BoardCoordinate<Board>> = new Set([coordinate]);
   // Iterate until the current space is undefined
-  let currentSpace: StandardBoardCoordinate | undefined = coordinate;
+  let currentSpace: BoardCoordinate<Board> | undefined = coordinate;
   while (currentSpace !== undefined) {
     // Get the next space
-    const nextSpace = getForwardSpace(currentSpace, facing);
+    const nextSpace = getForwardSpace(board, currentSpace, facing);
     // If the next space is not undefined, add it to the set
     if (nextSpace !== undefined) {
       spaces.add(nextSpace);

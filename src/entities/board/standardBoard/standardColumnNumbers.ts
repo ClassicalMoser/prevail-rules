@@ -29,7 +29,7 @@ export const standardBoardColumnNumbers = [
  * The schema for a valid column number on a standard board (1-18).
  */
 export const standardBoardColumnNumbersSchema = z.enum(
-  standardBoardColumnNumbers
+  standardBoardColumnNumbers,
 );
 
 // Helper type to check match of type against schema

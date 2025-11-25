@@ -5,11 +5,13 @@ import { filterUndefinedSpaces } from "./filterUndefinedSpaces.js";
 describe("filterUndefinedSpaces", () => {
   it("should filter out undefined spaces", () => {
     const spaces = new Set<StandardBoardCoordinate | undefined>([
-      "A1",
-      "A2",
+      "A-1",
+      "A-2",
       undefined,
-      "A3",
+      "A-3",
     ]) as Set<StandardBoardCoordinate>;
-    expect(filterUndefinedSpaces(spaces)).toEqual(new Set(["A1", "A2", "A3"]));
+    expect(filterUndefinedSpaces(spaces)).toEqual(
+      new Set(["A-1", "A-2", "A-3"]),
+    );
   });
 });

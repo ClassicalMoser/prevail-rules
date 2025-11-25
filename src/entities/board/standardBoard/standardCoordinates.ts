@@ -7,31 +7,31 @@ import { standardBoardColumnNumbers } from "./standardColumnNumbers.js";
 import { standardBoardRowLetters } from "./standardRowLetters.js";
 
 /**
- * A valid coordinate on a standard board (A1 through L18).
+ * A valid coordinate on a standard board (A-1 through L-18).
  */
 export type StandardBoardCoordinate =
-  `${StandardBoardRowLetter}${StandardBoardColumnNumber}`;
+  `${StandardBoardRowLetter}-${StandardBoardColumnNumber}`;
 
 /**
- * An iterable array of all valid coordinates on a standard board (A1 through L18), generated from row letters and column numbers.
+ * An iterable array of all valid coordinates on a standard board (A-1 through L-18), generated from row letters and column numbers.
  *
  * Runtime validation ensures all coordinates match the StandardBoardCoordinate type pattern.
  */
 const _computedCoordinates = standardBoardRowLetters.flatMap((row) =>
-  standardBoardColumnNumbers.map((column) => `${row}${column}`)
+  standardBoardColumnNumbers.map((column) => `${row}-${column}`),
 );
 
 export const standardBoardCoordinates =
   _computedCoordinates as readonly StandardBoardCoordinate[];
 
 /**
- * The schema for a valid coordinate on a standard board (A1 through L18).
+ * The schema for a valid coordinate on a standard board (A-1 through L-18).
  */
 export const standardBoardCoordinatesSchema = z.enum(
   standardBoardCoordinates as readonly [
     StandardBoardCoordinate,
     ...StandardBoardCoordinate[],
-  ]
+  ],
 );
 
 // Helper type to check match of type against schema

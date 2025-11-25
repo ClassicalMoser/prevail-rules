@@ -1,7 +1,5 @@
-import type {
-  StandardBoardCoordinate,
-  UnitFacing,
-} from "src/entities/index.js";
+import type { UnitFacing } from "src/entities/unit/unitFacing.js";
+import type { Board, BoardCoordinate } from "../../entities/board/board.js";
 import { getOrthogonalFacings } from "../facings/getOrthogonalFacings.js";
 import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
 import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
@@ -10,24 +8,26 @@ import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
  * Get the inline spaces for a given coordinate and facing,
  * continuing in a straight line to the left and right of the facing.
  * This includes the origin space.
+ * @param board - The board object
  * @param coordinate - The coordinate to get the inline spaces for
  * @param facing - The facing to get the inline spaces for
  * @returns A set of the inline space coordinates
  * (unlimited, straight line to the left and right, including the origin space)
  */
-export const getInlineSpaces = (
-  coordinate: StandardBoardCoordinate,
+export function getInlineSpaces(
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
   facing: UnitFacing
-): Set<StandardBoardCoordinate> => {
+): Set<BoardCoordinate<Board>> {
   // Initialize set with the starting coordinate
-  const inlineSpaces: Set<StandardBoardCoordinate> = new Set([coordinate]);
+  const inlineSpaces: Set<BoardCoordinate<Board>> = new Set([coordinate]);
 
   // Get the two orthogonal facings (directions perpendicular to the facing)
   const orthogonalFacings = [...getOrthogonalFacings(facing)];
 
   // Get the forward spaces to the edge for each orthogonal facing
   for (const orthogonalFacing of orthogonalFacings) {
-    const spaces = getForwardSpacesToEdge(coordinate, orthogonalFacing);
+    const spaces = getForwardSpacesToEdge(board, coordinate, orthogonalFacing);
     for (const space of spaces) inlineSpaces.add(space);
   }
 
@@ -36,4 +36,4 @@ export const getInlineSpaces = (
 
   // Return set of valid inline spaces
   return validInlineSpaces;
-};
+}

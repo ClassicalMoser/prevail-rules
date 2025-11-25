@@ -1,5 +1,5 @@
-import type { StandardBoardCoordinate } from "src/entities/board/standardBoard/standardCoordinates.js";
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
+import type { Board, BoardCoordinate } from "../../entities/board/board.js";
 import { getOrthogonalFacings } from "../facings/getOrthogonalFacings.js";
 import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
 import { getForwardSpace } from "../getForwardSpace.js";
@@ -7,14 +7,16 @@ import { getForwardSpace } from "../getForwardSpace.js";
 /**
  * Get the flanking spaces for a given coordinate and facing,
  * the spaces directly to the right and left of the facing
+ * @param board - The board object
  * @param coordinate - The coordinate to get the flanking spaces for
  * @param facing - The facing to get the flanking spaces for
  * @returns A set of the flanking space coordinates (up to 2 spaces, directly to the right and left)
  */
-export const getFlankingSpaces = (
-  coordinate: StandardBoardCoordinate,
+export function getFlankingSpaces(
+  board: Board,
+  coordinate: BoardCoordinate<Board>,
   facing: UnitFacing
-): Set<StandardBoardCoordinate> => {
+): Set<BoardCoordinate<Board>> {
   // Get orthogonal facings to get the flanking directions
   const orthogonalFacings = [...getOrthogonalFacings(facing)];
   // This error case should remain unreachable if prior validation is correct
@@ -25,10 +27,12 @@ export const getFlankingSpaces = (
   }
   // Set of coordinates and undefined values
   const flankingSpaces = new Set(
-    orthogonalFacings.map((facing) => getForwardSpace(coordinate, facing))
+    orthogonalFacings.map((facing) =>
+      getForwardSpace(board, coordinate, facing)
+    )
   );
   // Filter out undefined values
   const validFlankingSpaces = filterUndefinedSpaces(flankingSpaces);
   // Return set of valid flanking spaces
   return validFlankingSpaces;
-};
+}
