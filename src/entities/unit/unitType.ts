@@ -5,8 +5,10 @@ import { z } from "zod";
  * The schema for a unit of troops.
  */
 export const unitTypeSchema = z.object({
+  // Not sure yet how the units will be identified,
+  // but we need to have a unique identifier for each unit type.
   id: z.string(),
-  // The capitalized name of the unit.
+  // The name of the unit, capitalized with spaces.
   name: z.string(),
   // The traits of the unit.
   traits: z.array(z.string()),
