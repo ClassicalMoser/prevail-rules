@@ -12,9 +12,9 @@ export const armySchema = z.object({
   /** The unique identifier of the army. */
   id: z.string().uuid(),
   /** The units in the army. */
-  units: z.array(unitCountSchema),
+  units: z.set(unitCountSchema),
   /** The command cards in the army. */
-  commandCards: z.array(cardSchema),
+  commandCards: z.set(cardSchema),
 });
 
 // Helper type to check match of type against schema
@@ -27,9 +27,9 @@ export interface Army {
   /** The unique identifier of the army. */
   id: string;
   /** The units in the army. */
-  units: UnitCount[];
+  units: Set<UnitCount>;
   /** The command cards in the army. */
-  commandCards: Card[];
+  commandCards: Set<Card>;
 }
 
 /**

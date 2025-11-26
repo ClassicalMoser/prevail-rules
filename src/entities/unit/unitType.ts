@@ -72,4 +72,5 @@ export interface UnitType {
   routPenalty: number;
 }
 
+/** Helper function to assert that a value matches the schema. */
 const _assertExactUnitType: AssertExact<UnitType, UnitTypeSchemaType> = true;

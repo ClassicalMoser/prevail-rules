@@ -1,5 +1,4 @@
 import type { AssertExact } from "../../utils/assertExact.js";
-import type { BoardSpace } from "./boardSpace.js";
 import type { LargeBoard, LargeBoardCoordinate } from "./largeBoard/index.js";
 import type { SmallBoard, SmallBoardCoordinate } from "./smallBoard/index.js";
 
@@ -29,42 +28,19 @@ export type BoardSize = (typeof boardSizeType)[number];
 const _assertExactBoardSize: AssertExact<BoardSize, BoardSizeEnumType> = true;
 
 /**
- * Mapping from board size types to their schemas.
- * This ensures the discriminated union stays in sync with boardSizeType.
- */
-const boardSchemas = {
-  standard: standardBoardSchema,
-  small: smallBoardSchema,
-  large: largeBoardSchema,
-} as const satisfies Record<(typeof boardSizeType)[number], z.ZodObject<any>>;
-
-/**
  * The schema for a board.
- * Uses boardSizeType to ensure all board types are included in the discriminated union.
  */
-export const boardSchema = z.discriminatedUnion(
-  "boardType",
-  boardSizeType.map((size) => boardSchemas[size]) as [
-    typeof standardBoardSchema,
-    typeof smallBoardSchema,
-    typeof largeBoardSchema,
-  ]
-);
+export const boardSchema = z.discriminatedUnion("boardType", [
+  smallBoardSchema,
+  standardBoardSchema,
+  largeBoardSchema,
+]);
 
 /**
  * Schema-inferred type with strict coordinate types via intersection override.
  * Matches the pattern used in individual board files.
  */
-type BoardSchemaType = z.infer<typeof boardSchema> &
-  (
-    | {
-        boardType: "standard";
-        board: Record<StandardBoardCoordinate, BoardSpace>;
-      }
-    | { boardType: "small"; board: Record<SmallBoardCoordinate, BoardSpace> }
-    | { boardType: "large"; board: Record<LargeBoardCoordinate, BoardSpace> }
-  );
-
+export type BoardSchemaType = z.infer<typeof boardSchema>;
 /**
  * A board of the game.
  */
