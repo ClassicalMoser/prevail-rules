@@ -1,14 +1,10 @@
 import type { AssertExact } from "src/utils/assertExact.js";
-import type { Army } from "../army/army.js";
-import type { GameType } from "../gameType.js";
-import type { Round } from "./round.js";
-import type { Setup } from "./setup.js";
+import type { Army } from "./army/army.js";
+import type { GameType } from "./gameType.js";
 
 import { z } from "zod";
-import { armySchema } from "../army/army.js";
-import { gameTypeSchema } from "../gameType.js";
-import { roundSchema } from "./round.js";
-import { setupSchema } from "./setup.js";
+import { armySchema } from "./army/army.js";
+import { gameTypeEnum } from "./gameType.js";
 
 /**
  * The schema for a complete game of Prevail: Ancient Battles.
@@ -17,7 +13,7 @@ export const gameSchema = z.object({
   /** The unique identifier of the game. */
   id: z.string().uuid(),
   /** The type of game. */
-  gameType: gameTypeSchema,
+  gameType: gameTypeEnum,
   /** The unique identifier of the player on the black side of the game. */
   blackPlayer: z.string().uuid(),
   /** The unique identifier of the player on the white side of the game. */
@@ -26,10 +22,6 @@ export const gameSchema = z.object({
   blackArmy: armySchema,
   /** The army brought by the white player. */
   whiteArmy: armySchema,
-  /** The setup of the game. */
-  setup: setupSchema,
-  /** The rounds of the game. */
-  rounds: z.array(roundSchema),
 });
 
 // Helper type to check match of type against schema
@@ -51,10 +43,6 @@ export interface Game {
   blackArmy: Army;
   /** The army brought by the white player. */
   whiteArmy: Army;
-  /** The setup of the game. */
-  setup: Setup;
-  /** The rounds of the game. */
-  rounds: Round[];
 }
 
 const _assertExactGame: AssertExact<Game, GameSchemaType> = true;
