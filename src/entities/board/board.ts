@@ -1,11 +1,8 @@
 import type { AssertExact } from "../../utils/assertExact.js";
-import type { LargeBoard, LargeBoardCoordinate } from "./largeBoard/index.js";
-import type { SmallBoard, SmallBoardCoordinate } from "./smallBoard/index.js";
+import type { LargeBoard } from "./largeBoard/index.js";
+import type { SmallBoard } from "./smallBoard/index.js";
 
-import type {
-  StandardBoard,
-  StandardBoardCoordinate,
-} from "./standardBoard/index.js";
+import type { StandardBoard } from "./standardBoard/index.js";
 import { z } from "zod";
 import { largeBoardSchema } from "./largeBoard/index.js";
 import { smallBoardSchema } from "./smallBoard/index.js";
@@ -48,14 +45,3 @@ export type Board = StandardBoard | SmallBoard | LargeBoard;
 
 // Verify manual type matches schema inference
 const _assertExactBoard: AssertExact<Board, BoardSchemaType> = true;
-
-/**
- * Helper type to extract the coordinate type from a board type
- */
-export type BoardCoordinate<T extends Board> = T extends StandardBoard
-  ? StandardBoardCoordinate
-  : T extends SmallBoard
-    ? SmallBoardCoordinate
-    : T extends LargeBoard
-      ? LargeBoardCoordinate
-      : never;
