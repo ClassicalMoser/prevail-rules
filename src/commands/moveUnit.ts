@@ -9,7 +9,6 @@ import { z } from "zod";
 import { playerSideSchema } from "../entities/player/playerSide.js";
 
 /** The schema for a move unit command. */
-
 export const moveUnitCommandSchema = z.object({
   /** The player who is moving the unit. */
   player: playerSideSchema,

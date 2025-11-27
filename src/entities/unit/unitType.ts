@@ -5,6 +5,7 @@ import { traitSchema } from "../../sampleValues/traits.js";
 
 /**
  * The schema for a unit of troops.
+ * A unit is the atomic element of an army in this game.
  */
 export const unitTypeSchema = z.object({
   /** Not sure yet how the units will be identified,
@@ -42,6 +43,7 @@ type UnitTypeSchemaType = z.infer<typeof unitTypeSchema>;
 
 /**
  * A unit of troops.
+ * A unit is the atomic element of an army in this game.
  */
 export interface UnitType {
   /** The unique identifier of the unit. */

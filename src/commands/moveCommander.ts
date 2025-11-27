@@ -8,8 +8,11 @@ import { z } from "zod";
 
 /** The schema for a move commander command. */
 export const moveCommanderCommandSchema = z.object({
+  /** The player who is moving the commander. */
   player: playerSideSchema,
+  /** The space the commander is currently in. */
   from: boardCoordinateSchema,
+  /** The space the commander is moving to. */
   to: boardCoordinateSchema,
 });
 
@@ -20,8 +23,11 @@ type MoveCommanderCommandSchemaType = z.infer<
 
 /** A command to move a commander from one space to another. */
 export interface MoveCommanderCommand {
+  /** The player who is moving the commander. */
   player: PlayerSide;
+  /** The space the commander is currently in. */
   from: BoardCoordinate<Board>;
+  /** The space the commander is moving to. */
   to: BoardCoordinate<Board>;
 }
 

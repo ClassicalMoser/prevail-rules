@@ -4,14 +4,13 @@ import type { UnitInstance } from "../unit/unitInstance.js";
 import { z } from "zod";
 import { unitFacingSchema } from "../unit/unitFacing.js";
 import { unitInstanceSchema } from "../unit/unitInstance.js";
-import { unitPresenceType } from "./unitPresenceType.js";
 
 /**
  * The schema for two units engaged in combat in a space.
  */
 export const engagedUnitPresenceSchema = z.object({
   /** Two units are engaged in combat in the space. */
-  presenceType: z.literal(unitPresenceType[2]),
+  presenceType: z.literal("engaged" as const),
   /** The primary unit in the engagement. */
   primaryUnit: unitInstanceSchema,
   /** The facing direction of the primary unit. */
