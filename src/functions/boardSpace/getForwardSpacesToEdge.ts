@@ -1,4 +1,6 @@
-import type { Board, BoardCoordinate, UnitFacing } from "src/entities/index.js";
+import type { Board } from "src/entities/board/board.js";
+import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
+import type { UnitFacing } from "src/entities/unit/unitFacing.js";
 import { filterUndefinedSpaces } from "./filterUndefinedSpaces.js";
 import { getForwardSpace } from "./getForwardSpace.js";
 

@@ -15,7 +15,7 @@ export type StandardBoardCoordinate =
  * Runtime validation ensures all coordinates match the StandardBoardCoordinate type pattern.
  */
 const computedCoordinates = standardBoardRowLetters.flatMap((row) =>
-  standardBoardColumnNumbers.map((column) => `${row}-${column}`)
+  standardBoardColumnNumbers.map((column) => `${row}-${column}`),
 );
 
 export const standardBoardCoordinates =

@@ -1,5 +1,6 @@
+import type { Board } from "src/entities/board/board.js";
+import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import type { Board, BoardCoordinate } from "../../../entities/board/board.js";
 /**
  * Get the flanking spaces for a given coordinate and facing,
  * the spaces directly to the right and left of the facing

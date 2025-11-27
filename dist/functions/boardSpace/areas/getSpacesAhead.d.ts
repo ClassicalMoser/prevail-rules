@@ -1,5 +1,6 @@
+import type { Board } from "src/entities/board/board.js";
+import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import type { Board, BoardCoordinate } from "../../../entities/board/board.js";
 /**
  * Get the spaces ahead for a given coordinate and facing.
  * This includes all spaces on the board in front of the facing's inline spaces.

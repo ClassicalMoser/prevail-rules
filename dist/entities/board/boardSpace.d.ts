@@ -1,4 +1,4 @@
-import type { UnitPresence } from "./unitPresence.js";
+import type { UnitPresence } from "../unitPresence/unitPresence.js";
 import type { Elevation } from "./elevation.js";
 import type { TerrainType } from "./terrainTypes.js";
 import type { WaterCover } from "./waterCover.js";
@@ -73,7 +73,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
     }>, z.ZodObject<{
         presenceType: z.ZodLiteral<"single">;
         unit: z.ZodObject<{
-            instanceNumber: z.ZodNumber;
+            playerSide: z.ZodEnum<["black", "white"]>;
             unitType: z.ZodObject<{
                 id: z.ZodString;
                 name: z.ZodString;
@@ -117,7 +117,9 @@ export declare const boardSpaceSchema: z.ZodObject<{
                 limit: number;
                 routPenalty: number;
             }>;
+            instanceNumber: z.ZodNumber;
         }, "strip", z.ZodTypeAny, {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -135,6 +137,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         }, {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -156,6 +159,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         presenceType: "single";
         unit: {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -177,6 +181,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
     }, {
         presenceType: "single";
         unit: {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -198,7 +203,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
     }>, z.ZodObject<{
         presenceType: z.ZodLiteral<"engaged">;
         primaryUnit: z.ZodObject<{
-            instanceNumber: z.ZodNumber;
+            playerSide: z.ZodEnum<["black", "white"]>;
             unitType: z.ZodObject<{
                 id: z.ZodString;
                 name: z.ZodString;
@@ -242,7 +247,9 @@ export declare const boardSpaceSchema: z.ZodObject<{
                 limit: number;
                 routPenalty: number;
             }>;
+            instanceNumber: z.ZodNumber;
         }, "strip", z.ZodTypeAny, {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -260,6 +267,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         }, {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -279,7 +287,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
         }>;
         primaryFacing: z.ZodEnum<["north", "northEast", "east", "southEast", "south", "southWest", "west", "northWest"]>;
         secondaryUnit: z.ZodObject<{
-            instanceNumber: z.ZodNumber;
+            playerSide: z.ZodEnum<["black", "white"]>;
             unitType: z.ZodObject<{
                 id: z.ZodString;
                 name: z.ZodString;
@@ -323,7 +331,9 @@ export declare const boardSpaceSchema: z.ZodObject<{
                 limit: number;
                 routPenalty: number;
             }>;
+            instanceNumber: z.ZodNumber;
         }, "strip", z.ZodTypeAny, {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -341,6 +351,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         }, {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -361,6 +372,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         presenceType: "engaged";
         primaryUnit: {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -380,6 +392,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
         };
         primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
         secondaryUnit: {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -400,6 +413,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
     }, {
         presenceType: "engaged";
         primaryUnit: {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -419,6 +433,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
         };
         primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
         secondaryUnit: {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -456,31 +471,9 @@ export declare const boardSpaceSchema: z.ZodObject<{
         northWest: boolean;
     };
     unitPresence: {
-        presenceType: "none";
-    } | {
-        presenceType: "single";
-        unit: {
-            unitType: {
-                reverse: number;
-                id: string;
-                name: string;
-                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
-                attack: number;
-                range: number;
-                speed: number;
-                flexibility: number;
-                retreat: number;
-                rout: number;
-                cost: number;
-                limit: number;
-                routPenalty: number;
-            };
-            instanceNumber: number;
-        };
-        facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
-    } | {
         presenceType: "engaged";
         primaryUnit: {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -500,6 +493,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
         };
         primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
         secondaryUnit: {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -517,6 +511,30 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         };
+    } | {
+        presenceType: "none";
+    } | {
+        presenceType: "single";
+        unit: {
+            playerSide: "black" | "white";
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            instanceNumber: number;
+        };
+        facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
     };
 }, {
     elevation: {
@@ -536,31 +554,9 @@ export declare const boardSpaceSchema: z.ZodObject<{
         northWest?: boolean | undefined;
     };
     unitPresence: {
-        presenceType: "none";
-    } | {
-        presenceType: "single";
-        unit: {
-            unitType: {
-                reverse: number;
-                id: string;
-                name: string;
-                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
-                attack: number;
-                range: number;
-                speed: number;
-                flexibility: number;
-                retreat: number;
-                rout: number;
-                cost: number;
-                limit: number;
-                routPenalty: number;
-            };
-            instanceNumber: number;
-        };
-        facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
-    } | {
         presenceType: "engaged";
         primaryUnit: {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -580,6 +576,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
         };
         primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
         secondaryUnit: {
+            playerSide: "black" | "white";
             unitType: {
                 reverse: number;
                 id: string;
@@ -597,6 +594,30 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         };
+    } | {
+        presenceType: "none";
+    } | {
+        presenceType: "single";
+        unit: {
+            playerSide: "black" | "white";
+            unitType: {
+                reverse: number;
+                id: string;
+                name: string;
+                traits: ("formation" | "sword" | "spear" | "phalanx" | "skirmish" | "javelin" | "mounted" | "horse")[];
+                attack: number;
+                range: number;
+                speed: number;
+                flexibility: number;
+                retreat: number;
+                rout: number;
+                cost: number;
+                limit: number;
+                routPenalty: number;
+            };
+            instanceNumber: number;
+        };
+        facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
     };
     terrainType?: "plain" | "rocks" | "scrub" | "lightForest" | "denseForest" | undefined;
 }>;

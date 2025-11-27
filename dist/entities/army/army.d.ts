@@ -8,7 +8,7 @@ export declare const armySchema: z.ZodObject<{
     /** The unique identifier of the army. */
     id: z.ZodString;
     /** The units in the army. */
-    units: z.ZodArray<z.ZodObject<{
+    units: z.ZodSet<z.ZodObject<{
         unitType: z.ZodObject<{
             id: z.ZodString;
             name: z.ZodString;
@@ -87,9 +87,9 @@ export declare const armySchema: z.ZodObject<{
             routPenalty: number;
         };
         count: number;
-    }>, "many">;
+    }>>;
     /** The command cards in the army. */
-    commandCards: z.ZodArray<z.ZodObject<{
+    commandCards: z.ZodSet<z.ZodObject<{
         id: z.ZodString;
         name: z.ZodString;
         initiative: z.ZodNumber;
@@ -147,9 +147,9 @@ export declare const armySchema: z.ZodObject<{
         inspirationEffect: (...args: unknown[]) => void;
         globalEffectText?: string | undefined;
         globalEffect?: ((...args: unknown[]) => void) | undefined;
-    }>, "many">;
+    }>>;
 }, "strip", z.ZodTypeAny, {
-    units: {
+    units: Set<{
         unitType: {
             reverse: number;
             id: string;
@@ -166,9 +166,9 @@ export declare const armySchema: z.ZodObject<{
             routPenalty: number;
         };
         count: number;
-    }[];
+    }>;
     id: string;
-    commandCards: {
+    commandCards: Set<{
         id: string;
         name: string;
         initiative: number;
@@ -184,9 +184,9 @@ export declare const armySchema: z.ZodObject<{
         inspirationEffect: (...args: unknown[]) => void;
         globalEffectText?: string | undefined;
         globalEffect?: ((...args: unknown[]) => void) | undefined;
-    }[];
+    }>;
 }, {
-    units: {
+    units: Set<{
         unitType: {
             reverse: number;
             id: string;
@@ -203,9 +203,9 @@ export declare const armySchema: z.ZodObject<{
             routPenalty: number;
         };
         count: number;
-    }[];
+    }>;
     id: string;
-    commandCards: {
+    commandCards: Set<{
         id: string;
         name: string;
         initiative: number;
@@ -221,7 +221,7 @@ export declare const armySchema: z.ZodObject<{
         inspirationEffect: (...args: unknown[]) => void;
         globalEffectText?: string | undefined;
         globalEffect?: ((...args: unknown[]) => void) | undefined;
-    }[];
+    }>;
 }>;
 /**
  * An army of troops.
@@ -230,8 +230,8 @@ export interface Army {
     /** The unique identifier of the army. */
     id: string;
     /** The units in the army. */
-    units: UnitCount[];
+    units: Set<UnitCount>;
     /** The command cards in the army. */
-    commandCards: Card[];
+    commandCards: Set<Card>;
 }
 //# sourceMappingURL=army.d.ts.map

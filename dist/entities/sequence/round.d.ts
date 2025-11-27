@@ -5,15 +5,15 @@ import { z } from "zod";
  */
 export declare const roundSchema: z.ZodObject<{
     roundNumber: z.ZodNumber;
-    completedPhases: z.ZodSet<z.ZodEnum<["cards", "initiative", "command", "ranged", "movement", "melee", "cleanup"]>>;
+    completedPhases: z.ZodSet<z.ZodEnum<["cards", "commanders", "ranged", "movement", "melee", "cleanup"]>>;
     startTime: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
     roundNumber: number;
-    completedPhases: Set<"initiative" | "ranged" | "command" | "cards" | "movement" | "melee" | "cleanup">;
+    completedPhases: Set<"ranged" | "cards" | "commanders" | "movement" | "melee" | "cleanup">;
     startTime: Date;
 }, {
     roundNumber: number;
-    completedPhases: Set<"initiative" | "ranged" | "command" | "cards" | "movement" | "melee" | "cleanup">;
+    completedPhases: Set<"ranged" | "cards" | "commanders" | "movement" | "melee" | "cleanup">;
     startTime: Date;
 }>;
 /**

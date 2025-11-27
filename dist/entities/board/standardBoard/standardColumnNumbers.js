@@ -1,4 +1,3 @@
-import { z } from "zod";
 /**
  * Valid column numbers for a standard board (1-18).
  */
@@ -22,9 +21,3 @@ export const standardBoardColumnNumbers = [
     "17",
     "18",
 ];
-/**
- * The schema for a valid column number on a standard board (1-18).
- */
-export const standardBoardColumnNumbersSchema = z.enum(standardBoardColumnNumbers);
-// assert that the type matches the schema
-const _boardColumnNumberAssertExact = true;

@@ -26,7 +26,7 @@ describe("getInlineSpaces", () => {
         "A-16",
         "A-17",
         "A-18",
-      ])
+      ]),
     );
   });
   it("should return the inline spaces when facing east from E5", () => {
@@ -44,7 +44,7 @@ describe("getInlineSpaces", () => {
         "J-5",
         "K-5",
         "L-5",
-      ])
+      ]),
     );
   });
   it("should return the inline spaces when facing northEast from E5", () => {
@@ -62,12 +62,12 @@ describe("getInlineSpaces", () => {
         "J-10",
         "K-11",
         "L-12",
-      ])
+      ]),
     );
   });
   it("should return the inline spaces when facing southEast from E5", () => {
     expect(getInlineSpaces(standardBoard, "E-5", "southEast")).toEqual(
-      new Set(["A-9", "B-8", "C-7", "D-6", "E-5", "F-4", "G-3", "H-2", "I-1"])
+      new Set(["A-9", "B-8", "C-7", "D-6", "E-5", "F-4", "G-3", "H-2", "I-1"]),
     );
   });
 });

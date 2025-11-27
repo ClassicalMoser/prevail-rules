@@ -1,8 +1,9 @@
+import type { Board } from "src/entities/board/board.js";
+import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import type { Board, BoardCoordinate } from "../../../entities/board/board.js";
+import { getOrthogonalFacings } from "../../facings/getOrthogonalFacings.js";
 import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
 import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
-import { getOrthogonalFacings } from "../../facings/getOrthogonalFacings.js";
 
 /**
  * Get the inline spaces for a given coordinate and facing,
@@ -17,7 +18,7 @@ import { getOrthogonalFacings } from "../../facings/getOrthogonalFacings.js";
 export function getInlineSpaces(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   // Initialize set with the starting coordinate
   const inlineSpaces: Set<BoardCoordinate<Board>> = new Set([coordinate]);

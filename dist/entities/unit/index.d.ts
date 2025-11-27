@@ -1,5 +1,5 @@
-export * from "./tempUnits.js";
-export * from "./traits.js";
+export * from "../../sampleValues/tempUnits.js";
+export * from "../../sampleValues/traits.js";
 export * from "./unitFacing.js";
 export * from "./unitInstance.js";
 export * from "./unitType.js";

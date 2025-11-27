@@ -1,5 +1,6 @@
+import type { Board } from "src/entities/board/board.js";
+import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import type { Board, BoardCoordinate } from "../../../entities/board/board.js";
 import { getOppositeFacing } from "../../facings/getOppositeFacing.js";
 import { getFrontSpaces } from "./getFrontSpaces.js";
 
@@ -13,7 +14,7 @@ import { getFrontSpaces } from "./getFrontSpaces.js";
 export function getBackSpaces(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   const oppositeFacing = getOppositeFacing(facing);
   const backSpaces = getFrontSpaces(board, coordinate, oppositeFacing);

@@ -1,4 +1,5 @@
-import type { Board, BoardCoordinate } from "../../entities/board/board.js";
+import type { Board } from "src/entities/board/board.js";
+import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
 import type { UnitFacing } from "../../entities/unit/unitFacing.js";
 /**
  * Get the rearward space for a given coordinate and facing.

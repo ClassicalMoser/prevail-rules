@@ -1,4 +1,6 @@
-import type { Board, BoardCoordinate, UnitFacing } from "src/entities/index.js";
+import type { Board } from "src/entities/board/board.js";
+import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
+import type { UnitFacing } from "src/entities/unit/unitFacing.js";
 /**
  * Get the forward spaces to the edge for a given coordinate and facing.
  * This includes all spaces on the board ina direct line from the given coordinate in the given facing direction.

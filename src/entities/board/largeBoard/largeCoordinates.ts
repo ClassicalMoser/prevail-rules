@@ -15,7 +15,7 @@ export type LargeBoardCoordinate =
  * Runtime validation ensures all coordinates match the LargeBoardCoordinate type pattern.
  */
 const computedCoordinates = largeBoardRowLetters.flatMap((row) =>
-  largeBoardColumnNumbers.map((column) => `${row}-${column}`)
+  largeBoardColumnNumbers.map((column) => `${row}-${column}`),
 );
 
 export const largeBoardCoordinates =

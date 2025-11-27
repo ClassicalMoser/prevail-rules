@@ -15,7 +15,7 @@ export type SmallBoardCoordinate =
  * Runtime validation ensures all coordinates match the SmallBoardCoordinate type pattern.
  */
 const computedCoordinates = smallBoardRowLetters.flatMap((row) =>
-  smallBoardColumnNumbers.map((column) => `${row}-${column}`)
+  smallBoardColumnNumbers.map((column) => `${row}-${column}`),
 );
 
 export const smallBoardCoordinates =

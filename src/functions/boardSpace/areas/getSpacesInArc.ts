@@ -1,4 +1,5 @@
-import type { Board, BoardCoordinate } from "src/entities/board/board.js";
+import type { Board } from "src/entities/board/board.js";
+import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
 
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
 import { getFrontSpaces } from "../adjacency/getFrontSpaces.js";
@@ -8,7 +9,7 @@ export function getSpacesInArc(
   board: Board,
   coordinate: BoardCoordinate<Board>,
   facing: UnitFacing,
-  range: number
+  range: number,
 ): Set<BoardCoordinate<Board>> {
   // Start with the origin space
   const spacesInArc = new Set<BoardCoordinate<Board>>([coordinate]);

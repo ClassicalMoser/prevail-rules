@@ -1,6 +1,6 @@
+import { getOrthogonalFacings } from "../../facings/getOrthogonalFacings.js";
 import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
 import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
-import { getOrthogonalFacings } from "../../facings/getOrthogonalFacings.js";
 /**
  * Get the inline spaces for a given coordinate and facing,
  * continuing in a straight line to the left and right of the facing.

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { unitPresenceSchema } from "./unitPresence.js";
+import { unitPresenceSchema } from "../unitPresence/unitPresence.js";
 import { elevationSchema } from "./elevation.js";
 import { terrainTypeSchema } from "./terrainTypes.js";
 import { waterCoverSchema } from "./waterCover.js";

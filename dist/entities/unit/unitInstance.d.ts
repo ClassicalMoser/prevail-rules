@@ -1,10 +1,13 @@
+import type { PlayerSide } from "../player/playerSide.js";
 import type { UnitType } from "./unitType.js";
 import { z } from "zod";
 /**
  * The schema for a unit instance.
  */
 export declare const unitInstanceSchema: z.ZodObject<{
-    instanceNumber: z.ZodNumber;
+    /** Which player the unit belongs to. */
+    playerSide: z.ZodEnum<["black", "white"]>;
+    /** The type of unit this is an instance of. */
     unitType: z.ZodObject<{
         id: z.ZodString;
         name: z.ZodString;
@@ -48,7 +51,10 @@ export declare const unitInstanceSchema: z.ZodObject<{
         limit: number;
         routPenalty: number;
     }>;
+    /** Which instance of the unit this is. */
+    instanceNumber: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
+    playerSide: "black" | "white";
     unitType: {
         reverse: number;
         id: string;
@@ -66,6 +72,7 @@ export declare const unitInstanceSchema: z.ZodObject<{
     };
     instanceNumber: number;
 }, {
+    playerSide: "black" | "white";
     unitType: {
         reverse: number;
         id: string;
@@ -87,9 +94,11 @@ export declare const unitInstanceSchema: z.ZodObject<{
  * An individual instance of a unit.
  */
 export interface UnitInstance {
-    /** Which instance of the unit this is. */
-    instanceNumber: number;
+    /** Which player the unit belongs to. */
+    playerSide: PlayerSide;
     /** The type of unit this is an instance of. */
     unitType: UnitType;
+    /** Which instance of the unit this is. */
+    instanceNumber: number;
 }
 //# sourceMappingURL=unitInstance.d.ts.map

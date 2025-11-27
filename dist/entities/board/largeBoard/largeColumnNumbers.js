@@ -1,4 +1,3 @@
-import { z } from "zod";
 /**
  * Valid column numbers for a large board (1-36).
  */
@@ -40,9 +39,3 @@ export const largeBoardColumnNumbers = [
     "35",
     "36",
 ];
-/**
- * The schema for a valid column number on a large board (1-36).
- */
-export const largeBoardColumnNumbersSchema = z.enum(largeBoardColumnNumbers);
-// assert that the type matches the schema
-const _largeBoardColumnNumberAssertExact = true;

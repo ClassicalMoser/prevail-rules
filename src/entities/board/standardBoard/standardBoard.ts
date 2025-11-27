@@ -21,7 +21,7 @@ import { standardBoardCoordinates } from "./standardCoordinates.js";
  * - Output/Input: Record<T, BoardSpace> - TypeScript infers the exact coordinate type
  */
 function createBoardSchema<T extends string>(
-  coordinates: readonly T[]
+  coordinates: readonly T[],
 ): z.ZodObject<
   Record<T, typeof boardSpaceSchema>,
   "strip",

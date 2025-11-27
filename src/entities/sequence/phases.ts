@@ -6,8 +6,7 @@ import { z } from "zod";
  */
 export const phases = [
   "cards",
-  "initiative",
-  "command",
+  "commanders",
   "ranged",
   "movement",
   "melee",

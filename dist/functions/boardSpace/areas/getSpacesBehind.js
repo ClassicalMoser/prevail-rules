@@ -1,7 +1,7 @@
+import { getOppositeFacing } from "../../facings/getOppositeFacing.js";
 import { getBackSpaces } from "../adjacency/getBackSpaces.js";
 import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
 import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
-import { getOppositeFacing } from "../../facings/getOppositeFacing.js";
 import { getInlineSpaces } from "./getInlineSpaces.js";
 /**
  * Get the spaces behind for a given coordinate and facing.

@@ -1,13 +1,13 @@
 import { z } from "zod";
 export const traits = [
-    "formation",
-    "sword",
-    "spear",
-    "phalanx",
-    "skirmish",
-    "javelin",
-    "mounted",
-    "horse",
+  "formation",
+  "sword",
+  "spear",
+  "phalanx",
+  "skirmish",
+  "javelin",
+  "mounted",
+  "horse",
 ];
 export const traitSchema = z.enum(traits);
 /**

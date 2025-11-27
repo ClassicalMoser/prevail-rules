@@ -1,6 +1,6 @@
+import { getAdjacentFacings } from "../../facings/getAdjacentFacings.js";
 import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
 import { getForwardSpace } from "../getForwardSpace.js";
-import { getAdjacentFacings } from "../../facings/getAdjacentFacings.js";
 /**
  * Get the front spaces for a given coordinate and facing, including diagonals
  * @param board - The board object
