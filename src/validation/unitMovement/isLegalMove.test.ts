@@ -4,7 +4,7 @@ import type { UnitFacing } from "src/entities/unit/unitFacing.js";
 import { tempUnits } from "src/sampleValues/tempUnits.js";
 import { createUnitInstance } from "src/utils/createUnitInstance.js";
 import { describe, expect, it } from "vitest";
-import { createBoardWithUnits } from "../functions/createBoard.js";
+import { createBoardWithUnits } from "../../functions/createBoard.js";
 import { isLegalMove } from "./isLegalMove.js";
 
 describe("isLegalMove", () => {
@@ -217,7 +217,7 @@ describe("isLegalMove", () => {
 
     it("should return false for engaging enemy from front without flexibility to rotate", () => {
       const lowFlexibilityUnitType = tempUnits.find(
-        (unit) => unit.flexibility === 1
+        (unit) => unit.flexibility === 1,
       );
       if (!lowFlexibilityUnitType) {
         throw new Error("Unit with flexibility 0 not found");

@@ -9,8 +9,8 @@ import { describe, expect, it, vi } from "vitest";
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
-} from "../functions/createBoard.js";
-import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
+} from "../../functions/createBoard.js";
+import { createEmptyStandardBoard } from "../../functions/createEmptyBoard.js";
 import { canMoveInto } from "./canMoveInto.js";
 
 describe("canMoveInto", () => {
@@ -121,7 +121,7 @@ describe("canMoveInto", () => {
 
       expect(result).toBe(false);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Invalid unit presence type"
+        "Invalid unit presence type",
       );
       consoleErrorSpy.mockRestore();
     });

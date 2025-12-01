@@ -9,8 +9,8 @@ import { describe, expect, it } from "vitest";
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
-} from "../functions/createBoard.js";
-import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
+} from "../../functions/createBoard.js";
+import { createEmptyStandardBoard } from "../../functions/createEmptyBoard.js";
 import { canMoveThrough } from "./canMoveThrough.js";
 
 describe("canMoveThrough", () => {
@@ -20,7 +20,7 @@ describe("canMoveThrough", () => {
   // Helper function to create a unit instance with a specific player side and flexibility value.
   const createUnitInstance = (
     playerSide: PlayerSide,
-    flexibility: number
+    flexibility: number,
   ): UnitInstance => {
     return createTestUnit(playerSide, { flexibility });
   };
@@ -30,7 +30,7 @@ describe("canMoveThrough", () => {
       const unit = createUnitInstance("black", 2);
       const invalidCoordinate = "Z-99" as StandardBoardCoordinate;
       expect(canMoveThrough(unit, standardBoard, invalidCoordinate)).toBe(
-        false
+        false,
       );
     });
   });

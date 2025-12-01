@@ -5,10 +5,10 @@ import type { UnitFacing } from "src/entities/unit/unitFacing.js";
 import type { UnitInstance } from "src/entities/unit/unitInstance.js";
 import type { UnitPlacement } from "src/entities/unitLocation/unitPlacement.js";
 import { unitFacings } from "src/entities/unit/unitFacing.js";
-import { canEngageEnemy } from "src/validation/canEngageEnemy.js";
-import { canMoveInto } from "src/validation/canMoveInto.js";
-import { canMoveThrough } from "src/validation/canMoveThrough.js";
 import { isDiagonalFacing } from "src/validation/isDiagonalFacing.js";
+import { canEngageEnemy } from "src/validation/unitMovement/canEngageEnemy.js";
+import { canMoveInto } from "src/validation/unitMovement/canMoveInto.js";
+import { canMoveThrough } from "src/validation/unitMovement/canMoveThrough.js";
 import { getBoardSpace } from "./boardSpace/getBoardSpace.js";
 
 import { getForwardSpace } from "./boardSpace/getForwardSpace.js";

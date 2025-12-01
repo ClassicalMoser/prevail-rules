@@ -24,7 +24,7 @@ export function createTestUnit(
     instanceNumber?: number;
     flexibility?: number;
     attack?: number;
-  }
+  },
 ): UnitInstance {
   const instanceNumber = options?.instanceNumber ?? 1;
 
@@ -36,7 +36,7 @@ export function createTestUnit(
     const unitType = getUnitByStatValue("flexibility", options.flexibility);
     if (!unitType) {
       throw new Error(
-        `No unit found with flexibility value ${options.flexibility}.`
+        `No unit found with flexibility value ${options.flexibility}.`,
       );
     }
     return createUnitInstance(playerSide, unitType, instanceNumber);
@@ -72,7 +72,7 @@ export function createUnitByStat(
   playerSide: PlayerSide,
   stat: keyof UnitType,
   value: number,
-  instanceNumber: number = 1
+  instanceNumber: number = 1,
 ): UnitInstance {
   const unitType = getUnitByStatValue(stat, value);
   if (!unitType) {

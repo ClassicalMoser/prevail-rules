@@ -30,7 +30,7 @@ describe("getLegalUnitMoves", () => {
       // Spearmen have speed 2 and flexibility 1
       expect(legalMoves.size).toBeGreaterThan(0);
       expect(hasMove(legalMoves, startingCoordinate, startingFacing)).toBe(
-        true
+        true,
       );
     });
   });
@@ -58,7 +58,7 @@ describe("getLegalUnitMoves", () => {
 
     it("should be able to move through friendly unit with sufficient flexibility", () => {
       const highFlexibilityUnitType = tempUnits.find(
-        (unit) => unit.flexibility === 2
+        (unit) => unit.flexibility === 2,
       );
       if (!highFlexibilityUnitType) {
         throw new Error("Unit with flexibility 2 not found");
@@ -70,7 +70,7 @@ describe("getLegalUnitMoves", () => {
       const friendlyUnit = createUnitInstance(
         "black",
         highFlexibilityUnitType,
-        2
+        2,
       );
       const board = createBoardWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },

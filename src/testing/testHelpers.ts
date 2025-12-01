@@ -15,11 +15,11 @@ import type {
 export function hasMove(
   legalMoves: Set<{ coordinate: string; facing: UnitFacing }>,
   coordinate: StandardBoardCoordinate,
-  facing?: UnitFacing
+  facing?: UnitFacing,
 ): boolean {
   return Array.from(legalMoves).some(
     (move) =>
       move.coordinate === coordinate &&
-      (facing === undefined || move.facing === facing)
+      (facing === undefined || move.facing === facing),
   );
 }
