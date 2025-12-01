@@ -2,9 +2,16 @@ import type { ChooseCardCommand } from "src/commands/chooseCard.js";
 import type { Card } from "src/entities/card/card.js";
 import type { CardState } from "src/entities/card/cardState.js";
 
+/**
+ * Validates whether a card choice command is legal.
+ *
+ * @param cardState - The current state of all players' cards
+ * @param chooseCardCommand - The card choice command to validate
+ * @returns True if the card is in the player's hand, false otherwise
+ */
 export function isLegalCardChoice(
   cardState: CardState,
-  chooseCardCommand: ChooseCardCommand,
+  chooseCardCommand: ChooseCardCommand
 ): boolean {
   const { card } = chooseCardCommand;
   let playerHand: Card[];

@@ -3,11 +3,20 @@ import type { Board, UnitInstance } from "src/entities/index.js";
 import { getBoardSpace } from "src/functions/boardSpace/getBoardSpace.js";
 import { MIN_FLEXIBILITY_THRESHOLD } from "src/sampleValues/ruleValues.js";
 
+/**
+ * Determines whether a unit can move through (pass over) a specific coordinate.
+ * Requires combined flexibility >= MIN_FLEXIBILITY_THRESHOLD for friendly units.
+ *
+ * @param unit - The unit attempting to move through
+ * @param board - The board state
+ * @param coordinate - The coordinate to check
+ * @returns True if the unit can pass through this coordinate, false otherwise
+ */
 export function canMoveThrough<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
-) {
+  coordinate: BoardCoordinate<TBoard>
+): boolean {
   try {
     // Find the board space at the given coordinate.
     const space = getBoardSpace(board, coordinate);
