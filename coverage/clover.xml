@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1764550314898" clover="3.2.0">
+  <project timestamp="1764550314898" name="All files">
+    <metrics statements="718" coveredstatements="698" conditionals="186" coveredconditionals="178" methods="37" coveredmethods="37" elements="941" coveredelements="913" complexity="0" loc="718" ncloc="718" packages="7" files="27" classes="27"/>
+    <package name="functions">
+      <metrics statements="186" coveredstatements="180" conditionals="31" coveredconditionals="28" methods="8" coveredmethods="8"/>
+      <file name="createEmptyBoard.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/createEmptyBoard.ts">
+        <metrics statements="53" coveredstatements="53" conditionals="7" coveredconditionals="7" methods="5" coveredmethods="5"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="16" count="15816" type="cond" truecount="1" falsecount="0"/>
+        <line num="17" count="15816" type="stmt"/>
+        <line num="18" count="15816" type="stmt"/>
+        <line num="19" count="15816" type="stmt"/>
+        <line num="20" count="15816" type="stmt"/>
+        <line num="21" count="15816" type="stmt"/>
+        <line num="22" count="15816" type="stmt"/>
+        <line num="23" count="15816" type="stmt"/>
+        <line num="24" count="15816" type="stmt"/>
+        <line num="25" count="15816" type="stmt"/>
+        <line num="26" count="15816" type="stmt"/>
+        <line num="27" count="15816" type="stmt"/>
+        <line num="28" count="15816" type="stmt"/>
+        <line num="29" count="15816" type="stmt"/>
+        <line num="30" count="15816" type="stmt"/>
+        <line num="31" count="15816" type="stmt"/>
+        <line num="32" count="15816" type="stmt"/>
+        <line num="33" count="15816" type="stmt"/>
+        <line num="34" count="15816" type="stmt"/>
+        <line num="35" count="15816" type="stmt"/>
+        <line num="36" count="15816" type="stmt"/>
+        <line num="37" count="15816" type="stmt"/>
+        <line num="38" count="15816" type="stmt"/>
+        <line num="39" count="15816" type="stmt"/>
+        <line num="45" count="73" type="cond" truecount="1" falsecount="0"/>
+        <line num="46" count="73" type="stmt"/>
+        <line num="47" count="73" type="stmt"/>
+        <line num="48" count="73" type="stmt"/>
+        <line num="49" count="73" type="stmt"/>
+        <line num="52" count="73" type="cond" truecount="1" falsecount="0"/>
+        <line num="53" count="868" type="cond" truecount="1" falsecount="0"/>
+        <line num="54" count="15816" type="stmt"/>
+        <line num="55" count="15816" type="stmt"/>
+        <line num="56" count="15816" type="stmt"/>
+        <line num="57" count="868" type="stmt"/>
+        <line num="59" count="73" type="stmt"/>
+        <line num="60" count="73" type="stmt"/>
+        <line num="61" count="73" type="stmt"/>
+        <line num="62" count="73" type="stmt"/>
+        <line num="63" count="73" type="stmt"/>
+        <line num="68" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="69" count="67" type="stmt"/>
+        <line num="70" count="67" type="stmt"/>
+        <line num="71" count="67" type="stmt"/>
+        <line num="72" count="67" type="stmt"/>
+        <line num="73" count="67" type="stmt"/>
+        <line num="78" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="79" count="5" type="stmt"/>
+        <line num="80" count="5" type="stmt"/>
+        <line num="85" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="86" count="1" type="stmt"/>
+        <line num="87" count="1" type="stmt"/>
+      </file>
+      <file name="getLegalMoves.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/getLegalMoves.ts">
+        <metrics statements="133" coveredstatements="127" conditionals="24" coveredconditionals="21" methods="3" coveredmethods="3"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="13" count="2" type="stmt"/>
+        <line num="15" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="16" count="18" type="stmt"/>
+        <line num="17" count="18" type="stmt"/>
+        <line num="18" count="18" type="stmt"/>
+        <line num="19" count="18" type="stmt"/>
+        <line num="21" count="18" type="stmt"/>
+        <line num="22" count="18" type="stmt"/>
+        <line num="23" count="18" type="stmt"/>
+        <line num="24" count="18" type="stmt"/>
+        <line num="26" count="18" type="cond" truecount="0" falsecount="1"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="30" count="18" type="cond" truecount="0" falsecount="1"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="34" count="18" type="cond" truecount="0" falsecount="1"/>
+        <line num="35" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="38" count="18" type="stmt"/>
+        <line num="39" count="18" type="stmt"/>
+        <line num="45" count="18" type="cond" truecount="1" falsecount="0"/>
+        <line num="46" count="1378" type="stmt"/>
+        <line num="47" count="1378" type="stmt"/>
+        <line num="48" count="1378" type="stmt"/>
+        <line num="49" count="1378" type="stmt"/>
+        <line num="50" count="1378" type="stmt"/>
+        <line num="51" count="1378" type="stmt"/>
+        <line num="52" count="1378" type="stmt"/>
+        <line num="55" count="18" type="cond" truecount="1" falsecount="0"/>
+        <line num="56" count="1378" type="stmt"/>
+        <line num="57" count="1378" type="stmt"/>
+        <line num="58" count="1378" type="stmt"/>
+        <line num="59" count="1378" type="stmt"/>
+        <line num="60" count="1378" type="stmt"/>
+        <line num="61" count="1378" type="stmt"/>
+        <line num="63" count="1378" type="stmt"/>
+        <line num="64" count="1378" type="stmt"/>
+        <line num="65" count="1378" type="stmt"/>
+        <line num="66" count="1378" type="stmt"/>
+        <line num="67" count="1378" type="stmt"/>
+        <line num="68" count="1378" type="stmt"/>
+        <line num="71" count="1378" type="cond" truecount="1" falsecount="0"/>
+        <line num="72" count="304" type="stmt"/>
+        <line num="73" count="304" type="cond" truecount="1" falsecount="0"/>
+        <line num="74" count="1074" type="stmt"/>
+        <line num="79" count="1074" type="stmt"/>
+        <line num="80" count="1074" type="stmt"/>
+        <line num="81" count="1378" type="cond" truecount="1" falsecount="0"/>
+        <line num="83" count="1378" type="cond" truecount="1" falsecount="0"/>
+        <line num="85" count="1036" type="stmt"/>
+        <line num="86" count="1036" type="stmt"/>
+        <line num="87" count="1036" type="cond" truecount="1" falsecount="0"/>
+        <line num="88" count="223" type="stmt"/>
+        <line num="90" count="1036" type="cond" truecount="2" falsecount="0"/>
+        <line num="92" count="63" type="stmt"/>
+        <line num="93" count="63" type="stmt"/>
+        <line num="94" count="63" type="stmt"/>
+        <line num="95" count="63" type="stmt"/>
+        <line num="96" count="63" type="stmt"/>
+        <line num="97" count="63" type="stmt"/>
+        <line num="98" count="63" type="stmt"/>
+        <line num="99" count="63" type="stmt"/>
+        <line num="100" count="63" type="stmt"/>
+        <line num="101" count="63" type="stmt"/>
+        <line num="102" count="63" type="cond" truecount="1" falsecount="0"/>
+        <line num="103" count="25" type="stmt"/>
+        <line num="104" count="25" type="stmt"/>
+        <line num="105" count="25" type="stmt"/>
+        <line num="106" count="25" type="stmt"/>
+        <line num="107" count="25" type="stmt"/>
+        <line num="108" count="1036" type="cond" truecount="1" falsecount="0"/>
+        <line num="110" count="973" type="stmt"/>
+        <line num="111" count="973" type="stmt"/>
+        <line num="112" count="973" type="stmt"/>
+        <line num="113" count="973" type="stmt"/>
+        <line num="114" count="973" type="stmt"/>
+        <line num="115" count="1036" type="cond" truecount="1" falsecount="0"/>
+        <line num="118" count="1378" type="cond" truecount="1" falsecount="0"/>
+        <line num="119" count="481" type="stmt"/>
+        <line num="120" count="481" type="stmt"/>
+        <line num="121" count="481" type="stmt"/>
+        <line num="122" count="481" type="stmt"/>
+        <line num="123" count="481" type="stmt"/>
+        <line num="124" count="481" type="stmt"/>
+        <line num="128" count="481" type="stmt"/>
+        <line num="129" count="481" type="stmt"/>
+        <line num="131" count="481" type="cond" truecount="1" falsecount="0"/>
+        <line num="133" count="453" type="stmt"/>
+        <line num="134" count="453" type="stmt"/>
+        <line num="135" count="453" type="stmt"/>
+        <line num="136" count="453" type="stmt"/>
+        <line num="137" count="453" type="stmt"/>
+        <line num="138" count="453" type="stmt"/>
+        <line num="139" count="453" type="stmt"/>
+        <line num="140" count="481" type="cond" truecount="2" falsecount="0"/>
+        <line num="143" count="18" type="stmt"/>
+        <line num="144" count="18" type="stmt"/>
+        <line num="145" count="18" type="stmt"/>
+        <line num="146" count="18" type="stmt"/>
+        <line num="147" count="18" type="stmt"/>
+        <line num="148" count="18" type="stmt"/>
+        <line num="149" count="18" type="stmt"/>
+        <line num="150" count="18" type="stmt"/>
+        <line num="151" count="481" type="stmt"/>
+        <line num="152" count="481" type="cond" truecount="1" falsecount="0"/>
+        <line num="155" count="1378" type="cond" truecount="1" falsecount="0"/>
+        <line num="156" count="127" type="cond" truecount="1" falsecount="0"/>
+        <line num="158" count="1016" type="cond" truecount="1" falsecount="0"/>
+        <line num="159" count="889" type="stmt"/>
+        <line num="160" count="889" type="stmt"/>
+        <line num="161" count="889" type="stmt"/>
+        <line num="162" count="889" type="stmt"/>
+        <line num="163" count="889" type="stmt"/>
+        <line num="164" count="889" type="stmt"/>
+        <line num="165" count="889" type="stmt"/>
+        <line num="166" count="889" type="stmt"/>
+        <line num="167" count="1016" type="stmt"/>
+        <line num="168" count="127" type="stmt"/>
+        <line num="169" count="1378" type="stmt"/>
+        <line num="172" count="18" type="stmt"/>
+        <line num="173" count="18" type="stmt"/>
+        <line num="174" count="18" type="stmt"/>
+        <line num="175" count="18" type="stmt"/>
+        <line num="176" count="18" type="stmt"/>
+        <line num="177" count="18" type="stmt"/>
+        <line num="179" count="18" type="stmt"/>
+        <line num="180" count="18" type="stmt"/>
+      </file>
+    </package>
+    <package name="functions.boardSpace">
+      <metrics statements="134" coveredstatements="134" conditionals="41" coveredconditionals="41" methods="8" coveredmethods="8"/>
+      <file name="deltas.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/deltas.ts">
+        <metrics statements="36" coveredstatements="36" conditionals="16" coveredconditionals="16" methods="2" coveredmethods="2"/>
+        <line num="15" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="16" count="5857" type="stmt"/>
+        <line num="17" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="18" count="224" type="stmt"/>
+        <line num="19" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="20" count="513" type="stmt"/>
+        <line num="21" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="22" count="268" type="stmt"/>
+        <line num="23" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="24" count="295" type="stmt"/>
+        <line num="25" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="26" count="2030" type="stmt"/>
+        <line num="27" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="28" count="337" type="stmt"/>
+        <line num="29" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="30" count="2190" type="stmt"/>
+        <line num="31" count="5857" type="stmt"/>
+        <line num="32" count="5857" type="stmt"/>
+        <line num="46" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="47" count="5857" type="stmt"/>
+        <line num="48" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="49" count="268" type="stmt"/>
+        <line num="50" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="51" count="1141" type="stmt"/>
+        <line num="52" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="53" count="337" type="stmt"/>
+        <line num="54" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="55" count="224" type="stmt"/>
+        <line num="56" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="57" count="1049" type="stmt"/>
+        <line num="58" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="59" count="295" type="stmt"/>
+        <line num="60" count="5857" type="cond" truecount="1" falsecount="0"/>
+        <line num="61" count="2543" type="stmt"/>
+        <line num="62" count="5857" type="stmt"/>
+        <line num="63" count="5857" type="stmt"/>
+      </file>
+      <file name="filterUndefinedSpaces.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/filterUndefinedSpaces.ts">
+        <metrics statements="9" coveredstatements="9" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="9" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="10" count="1435" type="stmt"/>
+        <line num="11" count="1435" type="stmt"/>
+        <line num="12" count="1435" type="stmt"/>
+        <line num="13" count="1435" type="stmt"/>
+        <line num="14" count="1435" type="cond" truecount="1" falsecount="0"/>
+        <line num="15" count="1435" type="stmt"/>
+        <line num="16" count="1435" type="stmt"/>
+        <line num="17" count="1435" type="stmt"/>
+      </file>
+      <file name="getBoardSpace.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/getBoardSpace.ts">
+        <metrics statements="12" coveredstatements="12" conditionals="3" coveredconditionals="3" methods="1" coveredmethods="1"/>
+        <line num="21" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="22" count="3117" type="stmt"/>
+        <line num="23" count="3117" type="stmt"/>
+        <line num="24" count="3117" type="stmt"/>
+        <line num="28" count="3117" type="stmt"/>
+        <line num="31" count="3117" type="cond" truecount="1" falsecount="0"/>
+        <line num="32" count="6" type="stmt"/>
+        <line num="33" count="6" type="stmt"/>
+        <line num="34" count="6" type="stmt"/>
+        <line num="35" count="6" type="cond" truecount="1" falsecount="0"/>
+        <line num="38" count="3111" type="stmt"/>
+        <line num="39" count="3111" type="stmt"/>
+      </file>
+      <file name="getForwardSpace.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/getForwardSpace.ts">
+        <metrics statements="44" coveredstatements="44" conditionals="15" coveredconditionals="15" methods="2" coveredmethods="2"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="14" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="15" count="5865" type="stmt"/>
+        <line num="16" count="5865" type="stmt"/>
+        <line num="17" count="5865" type="stmt"/>
+        <line num="18" count="5865" type="stmt"/>
+        <line num="21" count="5865" type="stmt"/>
+        <line num="22" count="5865" type="stmt"/>
+        <line num="25" count="5865" type="stmt"/>
+        <line num="26" count="5865" type="stmt"/>
+        <line num="29" count="5865" type="cond" truecount="1" falsecount="0"/>
+        <line num="30" count="7" type="stmt"/>
+        <line num="31" count="7" type="cond" truecount="1" falsecount="0"/>
+        <line num="32" count="5865" type="cond" truecount="1" falsecount="0"/>
+        <line num="33" count="7" type="stmt"/>
+        <line num="34" count="7" type="cond" truecount="1" falsecount="0"/>
+        <line num="37" count="5851" type="stmt"/>
+        <line num="38" count="5865" type="cond" truecount="1" falsecount="0"/>
+        <line num="39" count="2" type="stmt"/>
+        <line num="40" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="43" count="5849" type="stmt"/>
+        <line num="44" count="5849" type="stmt"/>
+        <line num="47" count="5849" type="stmt"/>
+        <line num="48" count="5849" type="cond" truecount="1" falsecount="0"/>
+        <line num="49" count="5706" type="cond" truecount="1" falsecount="0"/>
+        <line num="50" count="5181" type="cond" truecount="1" falsecount="0"/>
+        <line num="51" count="5023" type="stmt"/>
+        <line num="52" count="5865" type="cond" truecount="2" falsecount="0"/>
+        <line num="53" count="1000" type="stmt"/>
+        <line num="54" count="1000" type="cond" truecount="1" falsecount="0"/>
+        <line num="57" count="4849" type="stmt"/>
+        <line num="58" count="4849" type="stmt"/>
+        <line num="61" count="4849" type="stmt"/>
+        <line num="62" count="4849" type="stmt"/>
+        <line num="87" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="88" count="5865" type="stmt"/>
+        <line num="89" count="5865" type="stmt"/>
+        <line num="90" count="5865" type="stmt"/>
+        <line num="91" count="5865" type="stmt"/>
+        <line num="92" count="5865" type="stmt"/>
+        <line num="93" count="5865" type="stmt"/>
+        <line num="96" count="5865" type="stmt"/>
+      </file>
+      <file name="getForwardSpacesToEdge.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/getForwardSpacesToEdge.ts">
+        <metrics statements="22" coveredstatements="22" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="16" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="17" count="918" type="stmt"/>
+        <line num="18" count="918" type="stmt"/>
+        <line num="19" count="918" type="stmt"/>
+        <line num="20" count="918" type="stmt"/>
+        <line num="22" count="918" type="stmt"/>
+        <line num="24" count="918" type="stmt"/>
+        <line num="25" count="918" type="cond" truecount="1" falsecount="0"/>
+        <line num="27" count="4435" type="stmt"/>
+        <line num="29" count="4435" type="cond" truecount="1" falsecount="0"/>
+        <line num="30" count="3517" type="stmt"/>
+        <line num="32" count="3517" type="stmt"/>
+        <line num="33" count="4435" type="cond" truecount="1" falsecount="0"/>
+        <line num="35" count="918" type="stmt"/>
+        <line num="36" count="918" type="stmt"/>
+        <line num="37" count="4435" type="stmt"/>
+        <line num="39" count="918" type="stmt"/>
+        <line num="41" count="918" type="stmt"/>
+        <line num="43" count="918" type="stmt"/>
+        <line num="44" count="918" type="stmt"/>
+      </file>
+      <file name="getRearwardSpace.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/getRearwardSpace.ts">
+        <metrics statements="11" coveredstatements="11" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="18" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="19" count="19" type="stmt"/>
+        <line num="20" count="19" type="stmt"/>
+        <line num="21" count="19" type="stmt"/>
+        <line num="22" count="19" type="stmt"/>
+        <line num="24" count="19" type="stmt"/>
+        <line num="26" count="19" type="stmt"/>
+        <line num="27" count="19" type="stmt"/>
+        <line num="28" count="19" type="stmt"/>
+      </file>
+    </package>
+    <package name="functions.boardSpace.adjacency">
+      <metrics statements="67" coveredstatements="59" conditionals="11" coveredconditionals="9" methods="4" coveredmethods="4"/>
+      <file name="getAdjacentSpaces.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/adjacency/getAdjacentSpaces.ts">
+        <metrics statements="13" coveredstatements="13" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="14" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="16" count="3" type="stmt"/>
+        <line num="17" count="3" type="stmt"/>
+        <line num="19" count="3" type="stmt"/>
+        <line num="20" count="3" type="cond" truecount="1" falsecount="0"/>
+        <line num="21" count="3" type="stmt"/>
+        <line num="24" count="3" type="stmt"/>
+        <line num="27" count="3" type="stmt"/>
+        <line num="28" count="3" type="stmt"/>
+      </file>
+      <file name="getBackSpaces.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/adjacency/getBackSpaces.ts">
+        <metrics statements="11" coveredstatements="11" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="14" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="15" count="99" type="stmt"/>
+        <line num="16" count="99" type="stmt"/>
+        <line num="17" count="99" type="stmt"/>
+        <line num="18" count="99" type="stmt"/>
+        <line num="19" count="99" type="stmt"/>
+        <line num="20" count="99" type="stmt"/>
+        <line num="21" count="99" type="stmt"/>
+        <line num="22" count="99" type="stmt"/>
+      </file>
+      <file name="getFlankingSpaces.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/adjacency/getFlankingSpaces.ts">
+        <metrics statements="22" coveredstatements="18" conditionals="4" coveredconditionals="3" methods="1" coveredmethods="1"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="16" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="17" count="93" type="stmt"/>
+        <line num="18" count="93" type="stmt"/>
+        <line num="19" count="93" type="stmt"/>
+        <line num="20" count="93" type="stmt"/>
+        <line num="22" count="93" type="stmt"/>
+        <line num="24" count="93" type="cond" truecount="0" falsecount="1"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="28" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="30" count="92" type="stmt"/>
+        <line num="31" count="92" type="cond" truecount="1" falsecount="0"/>
+        <line num="32" count="182" type="stmt"/>
+        <line num="33" count="92" type="stmt"/>
+        <line num="34" count="92" type="stmt"/>
+        <line num="36" count="92" type="stmt"/>
+        <line num="38" count="92" type="stmt"/>
+        <line num="39" count="92" type="stmt"/>
+      </file>
+      <file name="getFrontSpaces.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/adjacency/getFrontSpaces.ts">
+        <metrics statements="21" coveredstatements="17" conditionals="4" coveredconditionals="3" methods="1" coveredmethods="1"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="15" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="16" count="229" type="stmt"/>
+        <line num="17" count="229" type="stmt"/>
+        <line num="18" count="229" type="stmt"/>
+        <line num="19" count="229" type="stmt"/>
+        <line num="21" count="229" type="stmt"/>
+        <line num="22" count="229" type="stmt"/>
+        <line num="25" count="229" type="cond" truecount="0" falsecount="1"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="29" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="31" count="228" type="stmt"/>
+        <line num="32" count="228" type="cond" truecount="1" falsecount="0"/>
+        <line num="33" count="228" type="stmt"/>
+        <line num="36" count="228" type="stmt"/>
+        <line num="39" count="228" type="stmt"/>
+        <line num="40" count="228" type="stmt"/>
+      </file>
+    </package>
+    <package name="functions.boardSpace.areas">
+      <metrics statements="83" coveredstatements="83" conditionals="17" coveredconditionals="17" methods="4" coveredmethods="4"/>
+      <file name="getInlineSpaces.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/areas/getInlineSpaces.ts">
+        <metrics statements="17" coveredstatements="17" conditionals="3" coveredconditionals="3" methods="1" coveredmethods="1"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="18" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="19" count="178" type="stmt"/>
+        <line num="20" count="178" type="stmt"/>
+        <line num="21" count="178" type="stmt"/>
+        <line num="22" count="178" type="stmt"/>
+        <line num="24" count="178" type="stmt"/>
+        <line num="27" count="178" type="stmt"/>
+        <line num="30" count="178" type="cond" truecount="1" falsecount="0"/>
+        <line num="31" count="356" type="stmt"/>
+        <line num="32" count="356" type="cond" truecount="1" falsecount="0"/>
+        <line num="33" count="356" type="stmt"/>
+        <line num="36" count="178" type="stmt"/>
+        <line num="39" count="178" type="stmt"/>
+        <line num="40" count="178" type="stmt"/>
+      </file>
+      <file name="getSpacesAhead.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/areas/getSpacesAhead.ts">
+        <metrics statements="21" coveredstatements="21" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="18" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="19" count="5" type="stmt"/>
+        <line num="20" count="5" type="stmt"/>
+        <line num="21" count="5" type="stmt"/>
+        <line num="22" count="5" type="stmt"/>
+        <line num="24" count="5" type="stmt"/>
+        <line num="27" count="5" type="cond" truecount="1" falsecount="0"/>
+        <line num="28" count="52" type="stmt"/>
+        <line num="29" count="52" type="cond" truecount="1" falsecount="0"/>
+        <line num="30" count="52" type="stmt"/>
+        <line num="33" count="5" type="cond" truecount="1" falsecount="0"/>
+        <line num="34" count="67" type="stmt"/>
+        <line num="35" count="67" type="cond" truecount="1" falsecount="0"/>
+        <line num="36" count="67" type="stmt"/>
+        <line num="39" count="5" type="stmt"/>
+        <line num="42" count="5" type="stmt"/>
+        <line num="43" count="5" type="stmt"/>
+      </file>
+      <file name="getSpacesBehind.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/areas/getSpacesBehind.ts">
+        <metrics statements="23" coveredstatements="23" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="19" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="20" count="10" type="stmt"/>
+        <line num="21" count="10" type="stmt"/>
+        <line num="22" count="10" type="stmt"/>
+        <line num="23" count="10" type="stmt"/>
+        <line num="25" count="10" type="stmt"/>
+        <line num="28" count="10" type="cond" truecount="1" falsecount="0"/>
+        <line num="29" count="122" type="stmt"/>
+        <line num="30" count="122" type="cond" truecount="1" falsecount="0"/>
+        <line num="31" count="122" type="stmt"/>
+        <line num="34" count="10" type="stmt"/>
+        <line num="37" count="10" type="cond" truecount="1" falsecount="0"/>
+        <line num="38" count="489" type="stmt"/>
+        <line num="39" count="489" type="cond" truecount="1" falsecount="0"/>
+        <line num="40" count="489" type="stmt"/>
+        <line num="43" count="10" type="stmt"/>
+        <line num="46" count="10" type="stmt"/>
+        <line num="47" count="10" type="stmt"/>
+      </file>
+      <file name="getSpacesInArc.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/boardSpace/areas/getSpacesInArc.ts">
+        <metrics statements="22" coveredstatements="22" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="8" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="9" count="6" type="stmt"/>
+        <line num="10" count="6" type="stmt"/>
+        <line num="11" count="6" type="stmt"/>
+        <line num="12" count="6" type="stmt"/>
+        <line num="13" count="6" type="stmt"/>
+        <line num="15" count="6" type="stmt"/>
+        <line num="17" count="6" type="cond" truecount="1" falsecount="0"/>
+        <line num="19" count="12" type="stmt"/>
+        <line num="20" count="12" type="cond" truecount="1" falsecount="0"/>
+        <line num="22" count="33" type="stmt"/>
+        <line num="24" count="33" type="cond" truecount="1" falsecount="0"/>
+        <line num="25" count="83" type="stmt"/>
+        <line num="26" count="83" type="stmt"/>
+        <line num="27" count="33" type="stmt"/>
+        <line num="28" count="12" type="stmt"/>
+        <line num="30" count="6" type="stmt"/>
+        <line num="32" count="6" type="stmt"/>
+        <line num="34" count="6" type="stmt"/>
+        <line num="35" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="functions.facings">
+      <metrics statements="80" coveredstatements="76" conditionals="36" coveredconditionals="34" methods="5" coveredmethods="5"/>
+      <file name="getAdjacentFacings.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/facings/getAdjacentFacings.ts">
+        <metrics statements="29" coveredstatements="27" conditionals="13" coveredconditionals="12" methods="2" coveredmethods="2"/>
+        <line num="9" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="10" count="238" type="cond" truecount="1" falsecount="0"/>
+        <line num="11" count="238" type="stmt"/>
+        <line num="12" count="238" type="cond" truecount="1" falsecount="0"/>
+        <line num="13" count="90" type="stmt"/>
+        <line num="14" count="238" type="cond" truecount="1" falsecount="0"/>
+        <line num="15" count="4" type="stmt"/>
+        <line num="16" count="238" type="cond" truecount="1" falsecount="0"/>
+        <line num="17" count="13" type="stmt"/>
+        <line num="18" count="238" type="cond" truecount="1" falsecount="0"/>
+        <line num="19" count="19" type="stmt"/>
+        <line num="20" count="238" type="cond" truecount="1" falsecount="0"/>
+        <line num="21" count="90" type="stmt"/>
+        <line num="22" count="238" type="cond" truecount="1" falsecount="0"/>
+        <line num="23" count="8" type="stmt"/>
+        <line num="24" count="238" type="cond" truecount="1" falsecount="0"/>
+        <line num="25" count="7" type="stmt"/>
+        <line num="26" count="238" type="cond" truecount="1" falsecount="0"/>
+        <line num="27" count="5" type="stmt"/>
+        <line num="28" count="238" type="cond" truecount="1" falsecount="0"/>
+        <line num="29" count="2" type="stmt"/>
+        <line num="30" count="238" type="stmt"/>
+        <line num="31" count="238" type="stmt"/>
+        <line num="32" count="238" type="stmt"/>
+        <line num="33" count="238" type="cond" truecount="0" falsecount="1"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="35" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="36" count="236" type="stmt"/>
+        <line num="37" count="236" type="stmt"/>
+      </file>
+      <file name="getOppositeFacing.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/facings/getOppositeFacing.ts">
+        <metrics statements="22" coveredstatements="22" conditionals="10" coveredconditionals="10" methods="1" coveredmethods="1"/>
+        <line num="9" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="10" count="189" type="stmt"/>
+        <line num="11" count="189" type="cond" truecount="1" falsecount="0"/>
+        <line num="12" count="106" type="stmt"/>
+        <line num="13" count="189" type="cond" truecount="1" falsecount="0"/>
+        <line num="14" count="6" type="stmt"/>
+        <line num="15" count="189" type="cond" truecount="1" falsecount="0"/>
+        <line num="16" count="8" type="stmt"/>
+        <line num="17" count="189" type="cond" truecount="1" falsecount="0"/>
+        <line num="18" count="6" type="stmt"/>
+        <line num="19" count="189" type="cond" truecount="1" falsecount="0"/>
+        <line num="20" count="43" type="stmt"/>
+        <line num="21" count="189" type="cond" truecount="1" falsecount="0"/>
+        <line num="22" count="4" type="stmt"/>
+        <line num="23" count="189" type="cond" truecount="1" falsecount="0"/>
+        <line num="24" count="6" type="stmt"/>
+        <line num="25" count="189" type="cond" truecount="1" falsecount="0"/>
+        <line num="26" count="8" type="stmt"/>
+        <line num="27" count="189" type="cond" truecount="1" falsecount="0"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="29" count="189" type="stmt"/>
+        <line num="30" count="189" type="stmt"/>
+      </file>
+      <file name="getOrthogonalFacings.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/functions/facings/getOrthogonalFacings.ts">
+        <metrics statements="29" coveredstatements="27" conditionals="13" coveredconditionals="12" methods="2" coveredmethods="2"/>
+        <line num="9" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="10" count="280" type="cond" truecount="1" falsecount="0"/>
+        <line num="11" count="280" type="stmt"/>
+        <line num="12" count="280" type="cond" truecount="1" falsecount="0"/>
+        <line num="13" count="134" type="stmt"/>
+        <line num="14" count="280" type="cond" truecount="1" falsecount="0"/>
+        <line num="15" count="10" type="stmt"/>
+        <line num="16" count="280" type="cond" truecount="1" falsecount="0"/>
+        <line num="17" count="29" type="stmt"/>
+        <line num="18" count="280" type="cond" truecount="1" falsecount="0"/>
+        <line num="19" count="6" type="stmt"/>
+        <line num="20" count="280" type="cond" truecount="1" falsecount="0"/>
+        <line num="21" count="40" type="stmt"/>
+        <line num="22" count="280" type="cond" truecount="1" falsecount="0"/>
+        <line num="23" count="10" type="stmt"/>
+        <line num="24" count="280" type="cond" truecount="1" falsecount="0"/>
+        <line num="25" count="27" type="stmt"/>
+        <line num="26" count="280" type="cond" truecount="1" falsecount="0"/>
+        <line num="27" count="22" type="stmt"/>
+        <line num="28" count="280" type="cond" truecount="1" falsecount="0"/>
+        <line num="29" count="2" type="stmt"/>
+        <line num="30" count="280" type="stmt"/>
+        <line num="31" count="280" type="stmt"/>
+        <line num="32" count="280" type="stmt"/>
+        <line num="34" count="280" type="cond" truecount="0" falsecount="1"/>
+        <line num="35" count="0" type="stmt"/>
+        <line num="36" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="37" count="278" type="stmt"/>
+        <line num="38" count="278" type="stmt"/>
+      </file>
+    </package>
+    <package name="utils">
+      <metrics statements="18" coveredstatements="16" conditionals="5" coveredconditionals="4" methods="3" coveredmethods="3"/>
+      <file name="assertExact.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/utils/assertExact.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
+      </file>
+      <file name="createUnitInstance.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/utils/createUnitInstance.ts">
+        <metrics statements="7" coveredstatements="7" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <line num="9" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="10" count="32" type="stmt"/>
+        <line num="11" count="32" type="stmt"/>
+        <line num="12" count="32" type="stmt"/>
+        <line num="13" count="32" type="stmt"/>
+        <line num="14" count="32" type="stmt"/>
+        <line num="15" count="32" type="stmt"/>
+      </file>
+      <file name="getUnitByStatValue.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/utils/getUnitByStatValue.ts">
+        <metrics statements="11" coveredstatements="9" conditionals="3" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="8" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="9" count="74" type="stmt"/>
+        <line num="10" count="74" type="stmt"/>
+        <line num="11" count="74" type="stmt"/>
+        <line num="12" count="74" type="cond" truecount="1" falsecount="0"/>
+        <line num="13" count="74" type="cond" truecount="0" falsecount="1"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="16" count="74" type="stmt"/>
+        <line num="17" count="74" type="stmt"/>
+      </file>
+    </package>
+    <package name="validation">
+      <metrics statements="150" coveredstatements="150" conditionals="45" coveredconditionals="45" methods="5" coveredmethods="5"/>
+      <file name="canEngageEnemy.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/validation/canEngageEnemy.ts">
+        <metrics statements="74" coveredstatements="74" conditionals="20" coveredconditionals="20" methods="1" coveredmethods="1"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="24" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="25" count="80" type="stmt"/>
+        <line num="26" count="80" type="stmt"/>
+        <line num="27" count="80" type="stmt"/>
+        <line num="28" count="80" type="stmt"/>
+        <line num="29" count="80" type="stmt"/>
+        <line num="30" count="80" type="stmt"/>
+        <line num="31" count="80" type="stmt"/>
+        <line num="32" count="80" type="stmt"/>
+        <line num="34" count="80" type="stmt"/>
+        <line num="35" count="80" type="stmt"/>
+        <line num="36" count="80" type="stmt"/>
+        <line num="37" count="80" type="stmt"/>
+        <line num="38" count="80" type="cond" truecount="1" falsecount="0"/>
+        <line num="39" count="78" type="stmt"/>
+        <line num="40" count="80" type="cond" truecount="1" falsecount="0"/>
+        <line num="43" count="2" type="stmt"/>
+        <line num="44" count="2" type="stmt"/>
+        <line num="45" count="80" type="cond" truecount="1" falsecount="0"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="48" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="51" count="77" type="stmt"/>
+        <line num="54" count="77" type="stmt"/>
+        <line num="55" count="77" type="stmt"/>
+        <line num="56" count="80" type="cond" truecount="1" falsecount="0"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="59" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="62" count="76" type="stmt"/>
+        <line num="63" count="76" type="stmt"/>
+        <line num="64" count="76" type="stmt"/>
+        <line num="65" count="76" type="stmt"/>
+        <line num="66" count="76" type="stmt"/>
+        <line num="67" count="76" type="stmt"/>
+        <line num="68" count="76" type="stmt"/>
+        <line num="69" count="76" type="stmt"/>
+        <line num="70" count="76" type="stmt"/>
+        <line num="71" count="76" type="stmt"/>
+        <line num="72" count="76" type="stmt"/>
+        <line num="73" count="76" type="stmt"/>
+        <line num="74" count="76" type="stmt"/>
+        <line num="75" count="76" type="stmt"/>
+        <line num="76" count="76" type="stmt"/>
+        <line num="80" count="80" type="cond" truecount="1" falsecount="0"/>
+        <line num="81" count="19" type="stmt"/>
+        <line num="82" count="19" type="cond" truecount="1" falsecount="0"/>
+        <line num="85" count="80" type="cond" truecount="1" falsecount="0"/>
+        <line num="86" count="3" type="stmt"/>
+        <line num="87" count="3" type="stmt"/>
+        <line num="88" count="3" type="stmt"/>
+        <line num="89" count="3" type="stmt"/>
+        <line num="90" count="3" type="stmt"/>
+        <line num="91" count="3" type="cond" truecount="1" falsecount="0"/>
+        <line num="93" count="2" type="stmt"/>
+        <line num="94" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="96" count="1" type="stmt"/>
+        <line num="97" count="1" type="cond" truecount="2" falsecount="0"/>
+        <line num="100" count="64" type="cond" truecount="1" falsecount="0"/>
+        <line num="101" count="53" type="stmt"/>
+        <line num="103" count="53" type="cond" truecount="1" falsecount="0"/>
+        <line num="104" count="10" type="stmt"/>
+        <line num="105" count="10" type="cond" truecount="1" falsecount="0"/>
+        <line num="107" count="53" type="cond" truecount="1" falsecount="0"/>
+        <line num="109" count="4" type="stmt"/>
+        <line num="110" count="4" type="cond" truecount="1" falsecount="0"/>
+        <line num="113" count="39" type="stmt"/>
+        <line num="114" count="39" type="cond" truecount="1" falsecount="0"/>
+        <line num="117" count="1" type="stmt"/>
+        <line num="118" count="1" type="stmt"/>
+      </file>
+      <file name="canMoveInto.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/validation/canMoveInto.ts">
+        <metrics statements="27" coveredstatements="27" conditionals="9" coveredconditionals="9" methods="1" coveredmethods="1"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="5" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="6" count="1402" type="stmt"/>
+        <line num="7" count="1402" type="stmt"/>
+        <line num="8" count="1402" type="stmt"/>
+        <line num="9" count="1402" type="stmt"/>
+        <line num="10" count="1402" type="stmt"/>
+        <line num="12" count="1402" type="stmt"/>
+        <line num="14" count="1402" type="stmt"/>
+        <line num="15" count="1402" type="cond" truecount="1" falsecount="0"/>
+        <line num="16" count="1244" type="stmt"/>
+        <line num="17" count="1244" type="cond" truecount="1" falsecount="0"/>
+        <line num="19" count="1402" type="cond" truecount="1" falsecount="0"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="21" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="23" count="156" type="stmt"/>
+        <line num="25" count="156" type="stmt"/>
+        <line num="26" count="156" type="stmt"/>
+        <line num="28" count="156" type="cond" truecount="2" falsecount="0"/>
+        <line num="29" count="73" type="stmt"/>
+        <line num="30" count="73" type="cond" truecount="1" falsecount="0"/>
+        <line num="32" count="83" type="stmt"/>
+        <line num="33" count="83" type="stmt"/>
+        <line num="34" count="1402" type="cond" truecount="1" falsecount="0"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="38" count="1402" type="stmt"/>
+      </file>
+      <file name="canMoveThrough.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/validation/canMoveThrough.ts">
+        <metrics statements="34" coveredstatements="34" conditionals="12" coveredconditionals="12" methods="1" coveredmethods="1"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="6" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="7" count="496" type="stmt"/>
+        <line num="8" count="496" type="stmt"/>
+        <line num="9" count="496" type="stmt"/>
+        <line num="10" count="496" type="stmt"/>
+        <line num="11" count="496" type="stmt"/>
+        <line num="13" count="496" type="stmt"/>
+        <line num="15" count="496" type="stmt"/>
+        <line num="16" count="496" type="cond" truecount="1" falsecount="0"/>
+        <line num="17" count="431" type="stmt"/>
+        <line num="18" count="431" type="cond" truecount="1" falsecount="0"/>
+        <line num="20" count="496" type="cond" truecount="1" falsecount="0"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="22" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="24" count="63" type="stmt"/>
+        <line num="25" count="63" type="stmt"/>
+        <line num="26" count="63" type="stmt"/>
+        <line num="28" count="63" type="cond" truecount="1" falsecount="0"/>
+        <line num="29" count="19" type="stmt"/>
+        <line num="30" count="19" type="cond" truecount="2" falsecount="0"/>
+        <line num="33" count="44" type="stmt"/>
+        <line num="34" count="44" type="stmt"/>
+        <line num="35" count="44" type="stmt"/>
+        <line num="36" count="57" type="cond" truecount="1" falsecount="0"/>
+        <line num="37" count="14" type="stmt"/>
+        <line num="38" count="14" type="stmt"/>
+        <line num="39" count="63" type="cond" truecount="2" falsecount="0"/>
+        <line num="40" count="30" type="stmt"/>
+        <line num="41" count="277" type="cond" truecount="1" falsecount="0"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="45" count="496" type="stmt"/>
+      </file>
+      <file name="isDiagonalFacing.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/validation/isDiagonalFacing.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="9" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="10" count="3" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+      </file>
+      <file name="isLegalMove.ts" path="/Users/Josiah/Documents/GitHub/prevail-rules/src/validation/isLegalMove.ts">
+        <metrics statements="11" coveredstatements="11" conditionals="3" coveredconditionals="3" methods="1" coveredmethods="1"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="5" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="6" count="11" type="stmt"/>
+        <line num="7" count="11" type="stmt"/>
+        <line num="8" count="11" type="stmt"/>
+        <line num="9" count="11" type="stmt"/>
+        <line num="10" count="11" type="stmt"/>
+        <line num="12" count="11" type="stmt"/>
+        <line num="13" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="14" count="11" type="stmt"/>
+        <line num="15" count="11" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

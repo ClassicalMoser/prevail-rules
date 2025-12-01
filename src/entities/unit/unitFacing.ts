@@ -1,19 +1,20 @@
 import type { AssertExact } from "../../utils/assertExact.js";
 import { z } from "zod";
 
+/** List of orthogonal facings. */
+export const orthogonalFacings = ["north", "east", "south", "west"] as const;
+/** List of diagonal facings. */
+export const diagonalFacings = [
+  "northEast",
+  "southEast",
+  "southWest",
+  "northWest",
+] as const;
+
 /**
  * List of valid facing directions for a unit.
  */
-export const unitFacings = [
-  "north",
-  "northEast",
-  "east",
-  "southEast",
-  "south",
-  "southWest",
-  "west",
-  "northWest",
-] as const;
+export const unitFacings = [...orthogonalFacings, ...diagonalFacings] as const;
 
 /**
  * The schema for the facing direction of a unit.
