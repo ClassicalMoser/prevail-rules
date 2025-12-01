@@ -19,6 +19,9 @@ node_modules/
 # Output of 'vitest coverage'
 coverage/
 
+# TypeScript build output
+dist/
+
 # dotenv environment variable files
 .env
 .env.*
