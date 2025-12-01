@@ -4,8 +4,12 @@ import type {
   UnitInstance,
 } from "src/entities/index.js";
 import type { PlayerSide } from "src/entities/player/playerSide.js";
-import { getUnitByStatValue } from "src/utils/getUnitByStatValue.js";
+import { createTestUnit } from "src/testing/unitHelpers.js";
 import { describe, expect, it, vi } from "vitest";
+import {
+  createBoardWithEngagedUnits,
+  createBoardWithSingleUnit,
+} from "../functions/createBoard.js";
 import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
 import { canMoveInto } from "./canMoveInto.js";
 
@@ -15,48 +19,8 @@ describe("canMoveInto", () => {
 
   // Helper function to create a unit instance with a specific player side.
   const createUnitInstance = (playerSide: PlayerSide): UnitInstance => {
-    const unitType = getUnitByStatValue("attack", 3);
-    if (!unitType) {
-      throw new Error(`No unit found with attack value 3.`);
-    }
-    return { playerSide, unitType, instanceNumber: 1 };
+    return createTestUnit(playerSide, { attack: 3 });
   };
-
-  // Helper function to create a board with a single unit at a coordinate
-  function createBoardWithSingleUnit(
-    coord: StandardBoardCoordinate = coordinate,
-    playerSide: PlayerSide
-  ): StandardBoard {
-    const board = createEmptyStandardBoard();
-    board.board[coord] = {
-      ...board.board[coord],
-      unitPresence: {
-        presenceType: "single",
-        unit: createUnitInstance(playerSide),
-        facing: "north",
-      },
-    };
-    return board;
-  }
-
-  // Helper function to create a board with engaged units at a coordinate
-  function createBoardWithEngagedUnits(
-    primaryUnit: UnitInstance,
-    secondaryUnit: UnitInstance,
-    coord: StandardBoardCoordinate = coordinate
-  ): StandardBoard {
-    const board = createEmptyStandardBoard();
-    board.board[coord] = {
-      ...board.board[coord],
-      unitPresence: {
-        presenceType: "engaged",
-        primaryUnit,
-        primaryFacing: "north",
-        secondaryUnit,
-      },
-    };
-    return board;
-  }
 
   describe("invalid inputs", () => {
     it("should return false for a non-existent coordinate", () => {

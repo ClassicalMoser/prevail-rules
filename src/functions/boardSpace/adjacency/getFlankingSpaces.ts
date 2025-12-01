@@ -16,15 +16,15 @@ import { getForwardSpace } from "../getForwardSpace.js";
 export function getFlankingSpaces(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   // Get orthogonal facings to get the flanking directions
   const orthogonalFacings = [...getOrthogonalFacings(facing)];
   // Set of coordinates and undefined values
   const flankingSpaces = new Set(
     orthogonalFacings.map((facing) =>
-      getForwardSpace(board, coordinate, facing)
-    )
+      getForwardSpace(board, coordinate, facing),
+    ),
   );
   // Filter out undefined values
   const validFlankingSpaces = filterUndefinedSpaces(flankingSpaces);

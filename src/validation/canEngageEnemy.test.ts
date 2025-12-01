@@ -2,11 +2,11 @@ import type {
   StandardBoard,
   StandardBoardCoordinate,
   UnitFacing,
-  UnitInstance,
 } from "src/entities/index.js";
 import type { PlayerSide } from "src/entities/player/playerSide.js";
-import { getUnitByStatValue } from "src/utils/getUnitByStatValue.js";
+import { createTestUnit } from "src/testing/unitHelpers.js";
 import { describe, expect, it } from "vitest";
+import { createBoardWithUnits } from "../functions/createBoard.js";
 import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
 import { canEngageEnemy } from "./canEngageEnemy.js";
 
@@ -15,12 +15,8 @@ describe("canEngageEnemy", () => {
   const enemyCoordinate: StandardBoardCoordinate = "E-5";
 
   // Helper function to create a unit instance with a specific player side
-  const createUnitInstance = (playerSide: PlayerSide): UnitInstance => {
-    const unitType = getUnitByStatValue("attack", 3);
-    if (!unitType) {
-      throw new Error(`No unit found with attack value 3.`);
-    }
-    return { playerSide, unitType, instanceNumber: 1 };
+  const createUnitInstance = (playerSide: PlayerSide) => {
+    return createTestUnit(playerSide, { attack: 3 });
   };
 
   // Helper function to create a board with an enemy unit at a coordinate
@@ -29,16 +25,13 @@ describe("canEngageEnemy", () => {
     enemyPlayerSide: PlayerSide,
     enemyFacing: UnitFacing = "north"
   ): StandardBoard {
-    const board = createEmptyStandardBoard();
-    board.board[coord] = {
-      ...board.board[coord],
-      unitPresence: {
-        presenceType: "single",
+    return createBoardWithUnits([
+      {
         unit: createUnitInstance(enemyPlayerSide),
+        coordinate: coord,
         facing: enemyFacing,
       },
-    };
-    return board;
+    ]);
   }
 
   describe("invalid inputs", () => {

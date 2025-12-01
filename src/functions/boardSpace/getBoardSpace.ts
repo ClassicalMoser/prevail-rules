@@ -20,7 +20,7 @@ import type { BoardSpace } from "src/entities/board/boardSpace.js";
  */
 export function getBoardSpace<TBoard extends Board>(
   board: TBoard,
-  coordinate: BoardCoordinate<TBoard>
+  coordinate: BoardCoordinate<TBoard>,
 ): BoardSpace {
   // TypeScript needs help here: we know TBoard and BoardCoordinate<TBoard> align,
   // but the union type of board.board prevents direct indexing.
@@ -30,7 +30,7 @@ export function getBoardSpace<TBoard extends Board>(
   // If the space is undefined, the coordinate does not exist on the board.
   if (space === undefined) {
     throw new Error(
-      `Coordinate ${coordinate} does not exist on ${board.boardType} board.`
+      `Coordinate ${coordinate} does not exist on ${board.boardType} board.`,
     );
   }
 

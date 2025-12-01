@@ -28,7 +28,7 @@ export function canEngageEnemy<TBoard extends Board>(
   adjacentFacing: UnitFacing,
   adjacentCoordinate: BoardCoordinate<TBoard>,
   remainingFlexibility: number,
-  moveStartCoordinate: BoardCoordinate<TBoard>
+  moveStartCoordinate: BoardCoordinate<TBoard>,
 ): boolean {
   // Check if the destination has an enemy unit
   let destinationSpace;
@@ -62,17 +62,17 @@ export function canEngageEnemy<TBoard extends Board>(
   const enemyFrontSpaces = getFrontSpaces(
     board,
     destinationCoordinate,
-    enemyFacing
+    enemyFacing,
   );
   const enemyFlankSpaces = getFlankingSpaces(
     board,
     destinationCoordinate,
-    enemyFacing
+    enemyFacing,
   );
   const enemyBackSpaces = getBackSpaces(
     board,
     destinationCoordinate,
-    enemyFacing
+    enemyFacing,
   );
 
   // If coming from flank: no further checks needed.
@@ -86,7 +86,7 @@ export function canEngageEnemy<TBoard extends Board>(
     const spacesBehindEnemy = getSpacesBehind(
       board,
       destinationCoordinate,
-      enemyFacing
+      enemyFacing,
     );
     if (spacesBehindEnemy.has(moveStartCoordinate)) {
       // We can engage an enemy from the back if we started the move behind them.
@@ -116,4 +116,3 @@ export function canEngageEnemy<TBoard extends Board>(
   // We're not adjacent to the enemy, so we can't validate engagement.
   return false;
 }
-

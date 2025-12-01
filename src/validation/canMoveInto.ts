@@ -5,7 +5,7 @@ import { getBoardSpace } from "src/functions/boardSpace/getBoardSpace.js";
 export function canMoveInto<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
-  coordinate: BoardCoordinate<TBoard>
+  coordinate: BoardCoordinate<TBoard>,
 ): boolean {
   // Block for errors.
   try {

@@ -1,32 +1,14 @@
 import { tempUnits } from "src/sampleValues/tempUnits.js";
+import { hasMove } from "src/testing/testHelpers.js";
 import { createUnitInstance } from "src/utils/createUnitInstance.js";
 import { describe, expect, it } from "vitest";
+import { createBoardWithUnits } from "./createBoard.js";
 import { createEmptyStandardBoard } from "./createEmptyBoard.js";
 import { getLegalUnitMoves } from "./getLegalUnitMoves.js";
 describe("getLegalUnitMoves", () => {
     const spearmenUnitType = tempUnits.find((unit) => unit.name === "Spearmen");
     if (!spearmenUnitType) {
         throw new Error("Spearmen unit type not found");
-    }
-    // Helper function to check if a coordinate is in legal moves
-    function hasMove(legalMoves, coordinate, facing) {
-        return Array.from(legalMoves).some((move) => move.coordinate === coordinate &&
-            (facing === undefined || move.facing === facing));
-    }
-    // Helper function to create a board with units at specified positions
-    function createBoardWithUnits(units) {
-        const board = createEmptyStandardBoard();
-        for (const { unit, coordinate, facing } of units) {
-            board.board[coordinate] = {
-                ...board.board[coordinate],
-                unitPresence: {
-                    presenceType: "single",
-                    unit,
-                    facing,
-                },
-            };
-        }
-        return board;
     }
     describe("spearmen unit on blank board", () => {
         it("should return legal moves for a spearmen unit at center of board facing north", () => {

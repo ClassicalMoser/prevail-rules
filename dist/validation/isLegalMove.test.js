@@ -1,27 +1,12 @@
 import { tempUnits } from "src/sampleValues/tempUnits.js";
 import { createUnitInstance } from "src/utils/createUnitInstance.js";
 import { describe, expect, it } from "vitest";
-import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
+import { createBoardWithUnits } from "../functions/createBoard.js";
 import { isLegalMove } from "./isLegalMove.js";
 describe("isLegalMove", () => {
     const spearmenUnitType = tempUnits.find((unit) => unit.name === "Spearmen");
     if (!spearmenUnitType) {
         throw new Error("Spearmen unit type not found");
-    }
-    // Helper function to create a board with units at specified positions
-    function createBoardWithUnits(units) {
-        const board = createEmptyStandardBoard();
-        for (const { unit, coordinate, facing } of units) {
-            board.board[coordinate] = {
-                ...board.board[coordinate],
-                unitPresence: {
-                    presenceType: "single",
-                    unit,
-                    facing,
-                },
-            };
-        }
-        return board;
     }
     describe("valid moves", () => {
         it("should return true for staying in place", () => {

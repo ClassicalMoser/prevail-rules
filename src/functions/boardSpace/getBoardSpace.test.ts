@@ -53,7 +53,7 @@ describe("getBoardSpace", () => {
       expect(() => {
         getBoardSpace(standardBoard, "Y-55" as StandardBoardCoordinate);
       }).toThrow(
-        new Error("Coordinate Y-55 does not exist on standard board.")
+        new Error("Coordinate Y-55 does not exist on standard board."),
       );
     });
   });

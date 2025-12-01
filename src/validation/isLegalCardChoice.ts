@@ -4,7 +4,7 @@ import type { CardState } from "src/entities/card/cardState.js";
 
 export function isLegalCardChoice(
   cardState: CardState,
-  chooseCardCommand: ChooseCardCommand
+  chooseCardCommand: ChooseCardCommand,
 ): boolean {
   const { card } = chooseCardCommand;
   let playerHand: Card[];

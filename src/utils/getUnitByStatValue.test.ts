@@ -24,17 +24,17 @@ describe("getUnitByStatValue", () => {
     // Test coverage for lines 14-15: error case when no unit matches the stat value
     // This tests the error handling when tempUnits.find returns undefined
     expect(() => getUnitByStatValue("attack", 999)).toThrow(
-      new Error("No unit found with attack value 999.")
+      new Error("No unit found with attack value 999."),
     );
   });
 
   it("should throw an error with correct message format for different stats", () => {
     // Test coverage for lines 14-15: ensure error message includes the stat name and value
     expect(() => getUnitByStatValue("speed", 999)).toThrow(
-      new Error("No unit found with speed value 999.")
+      new Error("No unit found with speed value 999."),
     );
     expect(() => getUnitByStatValue("flexibility", 999)).toThrow(
-      new Error("No unit found with flexibility value 999.")
+      new Error("No unit found with flexibility value 999."),
     );
   });
 });

@@ -7,13 +7,13 @@ const standardBoard = createEmptyStandardBoard();
 describe("getSpacesWithinDistance", () => {
   it("should return only the starting coordinate when distance is 0", () => {
     expect(getSpacesWithinDistance(standardBoard, "E-5", 0)).toEqual(
-      new Set(["E-5"])
+      new Set(["E-5"]),
     );
   });
 
   it("should return only the starting coordinate when distance is negative", () => {
     expect(getSpacesWithinDistance(standardBoard, "E-5", -1)).toEqual(
-      new Set(["E-5"])
+      new Set(["E-5"]),
     );
   });
 
@@ -31,7 +31,7 @@ describe("getSpacesWithinDistance", () => {
         "F-4",
         "F-5",
         "F-6", // SouthWest, South, SouthEast
-      ])
+      ]),
     );
     expect(result.size).toBe(9);
   });
