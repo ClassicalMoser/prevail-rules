@@ -2,6 +2,7 @@ import { z } from "zod";
 import { traitSchema } from "../../sampleValues/traits.js";
 /**
  * The schema for a unit of troops.
+ * A unit is the atomic element of an army in this game.
  */
 export const unitTypeSchema = z.object({
     /** Not sure yet how the units will be identified,

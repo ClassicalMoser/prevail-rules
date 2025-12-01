@@ -25,6 +25,7 @@ function createEmptyBoardSpace() {
         unitPresence: {
             presenceType: "none",
         },
+        commanders: new Set(),
     };
 }
 /**

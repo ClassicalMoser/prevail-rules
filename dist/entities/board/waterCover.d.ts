@@ -37,21 +37,21 @@ export declare const waterCoverSchema: z.ZodObject<{
     northWest: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
     north: boolean;
-    northEast: boolean;
     east: boolean;
-    southEast: boolean;
     south: boolean;
-    southWest: boolean;
     west: boolean;
+    northEast: boolean;
+    southEast: boolean;
+    southWest: boolean;
     northWest: boolean;
 }, {
     north?: boolean | undefined;
-    northEast?: boolean | undefined;
     east?: boolean | undefined;
-    southEast?: boolean | undefined;
     south?: boolean | undefined;
-    southWest?: boolean | undefined;
     west?: boolean | undefined;
+    northEast?: boolean | undefined;
+    southEast?: boolean | undefined;
+    southWest?: boolean | undefined;
     northWest?: boolean | undefined;
 }>;
 /**

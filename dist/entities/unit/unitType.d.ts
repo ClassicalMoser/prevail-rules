@@ -2,6 +2,7 @@ import type { Trait } from "../../sampleValues/traits.js";
 import { z } from "zod";
 /**
  * The schema for a unit of troops.
+ * A unit is the atomic element of an army in this game.
  */
 export declare const unitTypeSchema: z.ZodObject<{
     /** Not sure yet how the units will be identified,
@@ -63,6 +64,7 @@ export declare const unitTypeSchema: z.ZodObject<{
 }>;
 /**
  * A unit of troops.
+ * A unit is the atomic element of an army in this game.
  */
 export interface UnitType {
     /** The unique identifier of the unit. */

@@ -12,10 +12,6 @@ export function getFrontSpaces(board, coordinate, facing) {
     // Get adjacent facings and add the facing to get the forward facings
     const adjacentFacings = getAdjacentFacings(facing);
     const forwardFacings = [...adjacentFacings, facing];
-    // This error case should remain unreachable if prior validation is correct
-    if (forwardFacings.length !== 3) {
-        throw new Error(`Expected 3 forward facings, but got ${forwardFacings.length}`);
-    }
     // Array of coordinates and undefined values
     const forwardSpaces = new Set(forwardFacings.map((facing) => getForwardSpace(board, coordinate, facing)));
     // Filter out undefined values

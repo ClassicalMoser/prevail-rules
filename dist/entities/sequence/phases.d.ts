@@ -1,6 +1,6 @@
 import { z } from "zod";
 /**
- * List of valid phases for a round.
+ * Iterable list of valid phases for a round.
  */
 export declare const phases: readonly ["cards", "commanders", "ranged", "movement", "melee", "cleanup"];
 /**

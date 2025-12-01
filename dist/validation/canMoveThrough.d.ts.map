@@ -1,0 +1,1 @@
+{"version":3,"file":"canMoveThrough.d.ts","sourceRoot":"","sources":["../../src/validation/canMoveThrough.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,wCAAwC,CAAC;AAC9E,OAAO,KAAK,EAAE,KAAK,EAAE,YAAY,EAAE,MAAM,uBAAuB,CAAC;AAIjE,wBAAgB,cAAc,CAAC,MAAM,SAAS,KAAK,EACjD,IAAI,EAAE,YAAY,EAClB,KAAK,EAAE,MAAM,EACb,UAAU,EAAE,eAAe,CAAC,MAAM,CAAC,WAoCpC"}

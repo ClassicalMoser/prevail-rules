@@ -96,7 +96,7 @@ export declare const unitPresenceSchema: z.ZodDiscriminatedUnion<"presenceType",
         };
         instanceNumber: number;
     }>;
-    facing: z.ZodEnum<["north", "northEast", "east", "southEast", "south", "southWest", "west", "northWest"]>;
+    facing: z.ZodEnum<["north", "east", "south", "west", "northEast", "southEast", "southWest", "northWest"]>;
 }, "strip", z.ZodTypeAny, {
     presenceType: "single";
     unit: {
@@ -118,7 +118,7 @@ export declare const unitPresenceSchema: z.ZodDiscriminatedUnion<"presenceType",
         };
         instanceNumber: number;
     };
-    facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+    facing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
 }, {
     presenceType: "single";
     unit: {
@@ -140,7 +140,7 @@ export declare const unitPresenceSchema: z.ZodDiscriminatedUnion<"presenceType",
         };
         instanceNumber: number;
     };
-    facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+    facing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
 }>, z.ZodObject<{
     presenceType: z.ZodLiteral<"engaged">;
     primaryUnit: z.ZodObject<{
@@ -226,7 +226,7 @@ export declare const unitPresenceSchema: z.ZodDiscriminatedUnion<"presenceType",
         };
         instanceNumber: number;
     }>;
-    primaryFacing: z.ZodEnum<["north", "northEast", "east", "southEast", "south", "southWest", "west", "northWest"]>;
+    primaryFacing: z.ZodEnum<["north", "east", "south", "west", "northEast", "southEast", "southWest", "northWest"]>;
     secondaryUnit: z.ZodObject<{
         playerSide: z.ZodEnum<["black", "white"]>;
         unitType: z.ZodObject<{
@@ -331,7 +331,7 @@ export declare const unitPresenceSchema: z.ZodDiscriminatedUnion<"presenceType",
         };
         instanceNumber: number;
     };
-    primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+    primaryFacing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
     secondaryUnit: {
         playerSide: "black" | "white";
         unitType: {
@@ -372,7 +372,7 @@ export declare const unitPresenceSchema: z.ZodDiscriminatedUnion<"presenceType",
         };
         instanceNumber: number;
     };
-    primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+    primaryFacing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
     secondaryUnit: {
         playerSide: "black" | "white";
         unitType: {

@@ -9,11 +9,11 @@ export declare const roundSchema: z.ZodObject<{
     startTime: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
     roundNumber: number;
-    completedPhases: Set<"ranged" | "cards" | "commanders" | "movement" | "melee" | "cleanup">;
+    completedPhases: Set<"ranged" | "commanders" | "cards" | "movement" | "melee" | "cleanup">;
     startTime: Date;
 }, {
     roundNumber: number;
-    completedPhases: Set<"ranged" | "cards" | "commanders" | "movement" | "melee" | "cleanup">;
+    completedPhases: Set<"ranged" | "commanders" | "cards" | "movement" | "melee" | "cleanup">;
     startTime: Date;
 }>;
 /**

@@ -92,7 +92,7 @@ export declare const singleUnitPresenceSchema: z.ZodObject<{
         instanceNumber: number;
     }>;
     /** The facing direction of the unit. */
-    facing: z.ZodEnum<["north", "northEast", "east", "southEast", "south", "southWest", "west", "northWest"]>;
+    facing: z.ZodEnum<["north", "east", "south", "west", "northEast", "southEast", "southWest", "northWest"]>;
 }, "strip", z.ZodTypeAny, {
     presenceType: "single";
     unit: {
@@ -114,7 +114,7 @@ export declare const singleUnitPresenceSchema: z.ZodObject<{
         };
         instanceNumber: number;
     };
-    facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+    facing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
 }, {
     presenceType: "single";
     unit: {
@@ -136,7 +136,7 @@ export declare const singleUnitPresenceSchema: z.ZodObject<{
         };
         instanceNumber: number;
     };
-    facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+    facing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
 }>;
 /**
  * A single unit is present in the space.

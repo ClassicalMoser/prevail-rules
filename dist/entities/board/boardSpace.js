@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { playerSideSchema } from "../player/playerSide.js";
 import { unitPresenceSchema } from "../unitPresence/unitPresence.js";
 import { elevationSchema } from "./elevation.js";
 import { terrainTypeSchema } from "./terrainTypes.js";
@@ -23,5 +24,9 @@ export const boardSpaceSchema = z.object({
      * The unit presence in the space.
      */
     unitPresence: unitPresenceSchema,
+    /**
+     * The commanders in the space.
+     */
+    commanders: z.set(playerSideSchema),
 });
 const _assertExactBoardSpace = true;

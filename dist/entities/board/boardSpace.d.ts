@@ -1,3 +1,4 @@
+import type { PlayerSide } from "../player/playerSide.js";
 import type { UnitPresence } from "../unitPresence/unitPresence.js";
 import type { Elevation } from "./elevation.js";
 import type { TerrainType } from "./terrainTypes.js";
@@ -44,21 +45,21 @@ export declare const boardSpaceSchema: z.ZodObject<{
         northWest: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         north: boolean;
-        northEast: boolean;
         east: boolean;
-        southEast: boolean;
         south: boolean;
-        southWest: boolean;
         west: boolean;
+        northEast: boolean;
+        southEast: boolean;
+        southWest: boolean;
         northWest: boolean;
     }, {
         north?: boolean | undefined;
-        northEast?: boolean | undefined;
         east?: boolean | undefined;
-        southEast?: boolean | undefined;
         south?: boolean | undefined;
-        southWest?: boolean | undefined;
         west?: boolean | undefined;
+        northEast?: boolean | undefined;
+        southEast?: boolean | undefined;
+        southWest?: boolean | undefined;
         northWest?: boolean | undefined;
     }>;
     /**
@@ -155,7 +156,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         }>;
-        facing: z.ZodEnum<["north", "northEast", "east", "southEast", "south", "southWest", "west", "northWest"]>;
+        facing: z.ZodEnum<["north", "east", "south", "west", "northEast", "southEast", "southWest", "northWest"]>;
     }, "strip", z.ZodTypeAny, {
         presenceType: "single";
         unit: {
@@ -177,7 +178,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         };
-        facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+        facing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
     }, {
         presenceType: "single";
         unit: {
@@ -199,7 +200,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         };
-        facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+        facing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
     }>, z.ZodObject<{
         presenceType: z.ZodLiteral<"engaged">;
         primaryUnit: z.ZodObject<{
@@ -285,7 +286,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         }>;
-        primaryFacing: z.ZodEnum<["north", "northEast", "east", "southEast", "south", "southWest", "west", "northWest"]>;
+        primaryFacing: z.ZodEnum<["north", "east", "south", "west", "northEast", "southEast", "southWest", "northWest"]>;
         secondaryUnit: z.ZodObject<{
             playerSide: z.ZodEnum<["black", "white"]>;
             unitType: z.ZodObject<{
@@ -390,7 +391,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         };
-        primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+        primaryFacing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
         secondaryUnit: {
             playerSide: "black" | "white";
             unitType: {
@@ -431,7 +432,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         };
-        primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+        primaryFacing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
         secondaryUnit: {
             playerSide: "black" | "white";
             unitType: {
@@ -452,6 +453,10 @@ export declare const boardSpaceSchema: z.ZodObject<{
             instanceNumber: number;
         };
     }>]>;
+    /**
+     * The commanders in the space.
+     */
+    commanders: z.ZodSet<z.ZodEnum<["black", "white"]>>;
 }, "strip", z.ZodTypeAny, {
     terrainType: "plain" | "rocks" | "scrub" | "lightForest" | "denseForest";
     elevation: {
@@ -462,12 +467,12 @@ export declare const boardSpaceSchema: z.ZodObject<{
     };
     waterCover: {
         north: boolean;
-        northEast: boolean;
         east: boolean;
-        southEast: boolean;
         south: boolean;
-        southWest: boolean;
         west: boolean;
+        northEast: boolean;
+        southEast: boolean;
+        southWest: boolean;
         northWest: boolean;
     };
     unitPresence: {
@@ -491,7 +496,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         };
-        primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+        primaryFacing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
         secondaryUnit: {
             playerSide: "black" | "white";
             unitType: {
@@ -534,8 +539,9 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         };
-        facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+        facing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
     };
+    commanders: Set<"black" | "white">;
 }, {
     elevation: {
         northEast?: number | undefined;
@@ -545,12 +551,12 @@ export declare const boardSpaceSchema: z.ZodObject<{
     };
     waterCover: {
         north?: boolean | undefined;
-        northEast?: boolean | undefined;
         east?: boolean | undefined;
-        southEast?: boolean | undefined;
         south?: boolean | undefined;
-        southWest?: boolean | undefined;
         west?: boolean | undefined;
+        northEast?: boolean | undefined;
+        southEast?: boolean | undefined;
+        southWest?: boolean | undefined;
         northWest?: boolean | undefined;
     };
     unitPresence: {
@@ -574,7 +580,7 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         };
-        primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+        primaryFacing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
         secondaryUnit: {
             playerSide: "black" | "white";
             unitType: {
@@ -617,8 +623,9 @@ export declare const boardSpaceSchema: z.ZodObject<{
             };
             instanceNumber: number;
         };
-        facing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+        facing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
     };
+    commanders: Set<"black" | "white">;
     terrainType?: "plain" | "rocks" | "scrub" | "lightForest" | "denseForest" | undefined;
 }>;
 /**
@@ -641,5 +648,9 @@ export interface BoardSpace {
      * The unit presence in the space.
      */
     unitPresence: UnitPresence;
+    /**
+     * The commanders in the space.
+     */
+    commanders: Set<PlayerSide>;
 }
 //# sourceMappingURL=boardSpace.d.ts.map

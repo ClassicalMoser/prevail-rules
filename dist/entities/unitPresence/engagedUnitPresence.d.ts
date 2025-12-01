@@ -92,7 +92,7 @@ export declare const engagedUnitPresenceSchema: z.ZodObject<{
         instanceNumber: number;
     }>;
     /** The facing direction of the primary unit. */
-    primaryFacing: z.ZodEnum<["north", "northEast", "east", "southEast", "south", "southWest", "west", "northWest"]>;
+    primaryFacing: z.ZodEnum<["north", "east", "south", "west", "northEast", "southEast", "southWest", "northWest"]>;
     /** The secondary unit in the engagement (facing opposite the primary unit). */
     secondaryUnit: z.ZodObject<{
         playerSide: z.ZodEnum<["black", "white"]>;
@@ -198,7 +198,7 @@ export declare const engagedUnitPresenceSchema: z.ZodObject<{
         };
         instanceNumber: number;
     };
-    primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+    primaryFacing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
     secondaryUnit: {
         playerSide: "black" | "white";
         unitType: {
@@ -239,7 +239,7 @@ export declare const engagedUnitPresenceSchema: z.ZodObject<{
         };
         instanceNumber: number;
     };
-    primaryFacing: "north" | "northEast" | "east" | "southEast" | "south" | "southWest" | "west" | "northWest";
+    primaryFacing: "north" | "east" | "south" | "west" | "northEast" | "southEast" | "southWest" | "northWest";
     secondaryUnit: {
         playerSide: "black" | "white";
         unitType: {
