@@ -1,1 +1,0 @@
-{"version":3,"file":"isLegalCommanderMove.d.ts","sourceRoot":"","sources":["../../src/validation/isLegalCommanderMove.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,oBAAoB,EAAE,MAAM,+BAA+B,CAAC;AAC1E,OAAO,KAAK,EAAE,KAAK,EAAE,MAAM,6BAA6B,CAAC;AAKzD;;;;;;;;GAQG;AACH,wBAAgB,oBAAoB,CAClC,oBAAoB,EAAE,oBAAoB,EAC1C,UAAU,EAAE,KAAK,GAChB,OAAO,CAuBT"}
