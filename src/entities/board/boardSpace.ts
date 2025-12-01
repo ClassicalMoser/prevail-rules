@@ -1,10 +1,12 @@
 import type { AssertExact } from "../../utils/assertExact.js";
+import type { PlayerSide } from "../player/playerSide.js";
 import type { UnitPresence } from "../unitPresence/unitPresence.js";
 import type { Elevation } from "./elevation.js";
 import type { TerrainType } from "./terrainTypes.js";
-import type { WaterCover } from "./waterCover.js";
 
+import type { WaterCover } from "./waterCover.js";
 import { z } from "zod";
+import { playerSideSchema } from "../player/playerSide.js";
 import { unitPresenceSchema } from "../unitPresence/unitPresence.js";
 import { elevationSchema } from "./elevation.js";
 import { terrainTypeSchema } from "./terrainTypes.js";
@@ -30,6 +32,10 @@ export const boardSpaceSchema = z.object({
    * The unit presence in the space.
    */
   unitPresence: unitPresenceSchema,
+  /**
+   * The commanders in the space.
+   */
+  commanders: z.set(playerSideSchema),
 });
 
 // Helper type to check match of type against schema
@@ -55,6 +61,10 @@ export interface BoardSpace {
    * The unit presence in the space.
    */
   unitPresence: UnitPresence;
+  /**
+   * The commanders in the space.
+   */
+  commanders: Set<PlayerSide>;
 }
 
 const _assertExactBoardSpace: AssertExact<BoardSpace, boardSpaceSchemaType> =

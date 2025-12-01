@@ -35,6 +35,7 @@ function createEmptyBoardSpace(): BoardSpace {
     unitPresence: {
       presenceType: "none",
     },
+    commanders: new Set(),
   };
 }
 
@@ -44,7 +45,7 @@ function createEmptyBoardSpace(): BoardSpace {
  */
 function createEmptyBoardWithConfig<TCoordinate extends string>(
   boardType: "standard" | "small" | "large",
-  config: BoardConfig<TCoordinate>,
+  config: BoardConfig<TCoordinate>
 ): StandardBoard | SmallBoard | LargeBoard {
   const board: Record<string, BoardSpace> = {};
 
@@ -68,7 +69,7 @@ function createEmptyBoardWithConfig<TCoordinate extends string>(
 export function createEmptyStandardBoard(): StandardBoard {
   return createEmptyBoardWithConfig(
     "standard",
-    standardBoardConfig,
+    standardBoardConfig
   ) as StandardBoard;
 }
 
