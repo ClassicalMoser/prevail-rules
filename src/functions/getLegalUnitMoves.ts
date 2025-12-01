@@ -14,7 +14,7 @@ import { getBoardSpace } from "./boardSpace/getBoardSpace.js";
 import { getForwardSpace } from "./boardSpace/getForwardSpace.js";
 import { getAdjacentFacings } from "./facings/getAdjacentFacings.js";
 
-export function getLegalMoves<TBoard extends Board>(
+export function getLegalUnitMoves<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
   startingPosition: UnitPlacement<TBoard>

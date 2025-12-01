@@ -1,6 +1,6 @@
 import type { MoveUnitCommand } from "src/commands/moveUnit.js";
 import type { Board } from "src/entities/board/board.js";
-import { getLegalMoves } from "src/functions/getLegalMoves.js";
+import { getLegalMoves } from "src/functions/getLegalUnitMoves.js";
 
 export function isLegalMove(
   moveCommand: MoveUnitCommand,

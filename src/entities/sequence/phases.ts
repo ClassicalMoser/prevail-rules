@@ -2,7 +2,7 @@ import type { AssertExact } from "src/utils/assertExact.js";
 import { z } from "zod";
 
 /**
- * List of valid phases for a round.
+ * Iterable list of valid phases for a round.
  */
 export const phases = [
   "cards",

@@ -8,9 +8,9 @@ import { tempUnits } from "src/sampleValues/tempUnits.js";
 import { createUnitInstance } from "src/utils/createUnitInstance.js";
 import { describe, expect, it } from "vitest";
 import { createEmptyStandardBoard } from "./createEmptyBoard.js";
-import { getLegalMoves } from "./getLegalMoves.js";
+import { getLegalUnitMoves } from "./getLegalUnitMoves.js";
 
-describe("getLegalMoves", () => {
+describe("getLegalUnitMoves", () => {
   const spearmenUnitType = tempUnits.find((unit) => unit.name === "Spearmen");
   if (!spearmenUnitType) {
     throw new Error("Spearmen unit type not found");
@@ -60,7 +60,7 @@ describe("getLegalMoves", () => {
         { unit, coordinate: startingCoordinate, facing: startingFacing },
       ]);
 
-      const legalMoves = getLegalMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, board, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -85,7 +85,7 @@ describe("getLegalMoves", () => {
         { unit: friendlyUnit, coordinate: "D-5", facing: "north" },
       ]);
 
-      const legalMoves = getLegalMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, board, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -115,7 +115,7 @@ describe("getLegalMoves", () => {
         { unit: friendlyUnit, coordinate: "D-5", facing: "north" },
       ]);
 
-      const legalMoves = getLegalMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, board, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -135,7 +135,7 @@ describe("getLegalMoves", () => {
         { unit: enemyUnit, coordinate: "E-5", facing: "north" },
       ]);
 
-      const legalMoves = getLegalMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, board, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -153,7 +153,7 @@ describe("getLegalMoves", () => {
         { unit: enemyUnit, coordinate: "E-5", facing: "north" },
       ]);
 
-      const legalMoves = getLegalMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, board, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -175,7 +175,7 @@ describe("getLegalMoves", () => {
         { unit: enemyUnit, coordinate: "E-5", facing: "north" },
       ]);
 
-      const legalMoves = getLegalMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, board, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -201,7 +201,7 @@ describe("getLegalMoves", () => {
         { unit: enemyUnit3, coordinate: "D-6", facing: "south" },
       ]);
 
-      const legalMoves = getLegalMoves(friendlyUnit, board, {
+      const legalMoves = getLegalUnitMoves(friendlyUnit, board, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -237,7 +237,7 @@ describe("getLegalMoves", () => {
       };
 
       expect(() => {
-        getLegalMoves(unit, board, {
+        getLegalUnitMoves(unit, board, {
           coordinate: startingCoordinate,
           facing: startingFacing,
         });
@@ -256,7 +256,7 @@ describe("getLegalMoves", () => {
       };
 
       expect(() => {
-        getLegalMoves(unit, board, {
+        getLegalUnitMoves(unit, board, {
           coordinate: startingCoordinate,
           facing: startingFacing,
         });
@@ -278,7 +278,7 @@ describe("getLegalMoves", () => {
       ]);
 
       expect(() => {
-        getLegalMoves(unit, board, {
+        getLegalUnitMoves(unit, board, {
           coordinate: startingCoordinate,
           facing: startingFacing,
         });
@@ -296,7 +296,7 @@ describe("getLegalMoves", () => {
       ]);
 
       expect(() => {
-        getLegalMoves(unit, board, {
+        getLegalUnitMoves(unit, board, {
           coordinate: startingCoordinate,
           facing: reportedFacing,
         });
