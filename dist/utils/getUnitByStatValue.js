@@ -1,7 +1,11 @@
 import { tempUnits } from "src/sampleValues/tempUnits.js";
-/** Basic utility function to get a unit by a specific stat value.
- * This helps to write tests that consider unit values without making
- * them too brittle.
+/**
+ * Finds a unit type by matching a specific stat value.
+ *
+ * @param stat - The stat name to search by
+ * @param value - The stat value to match
+ * @returns The matching unit type, or undefined if no match is found
+ * @throws {Error} If no unit is found with the specified stat value
  */
 export function getUnitByStatValue(stat, value) {
     const unit = tempUnits.find((unit) => unit[stat] === value);

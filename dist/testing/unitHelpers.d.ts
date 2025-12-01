@@ -6,7 +6,7 @@ import type { UnitType } from "src/entities/unit/unitType.js";
  * This is a convenience wrapper around createUnitInstance that makes tests
  * less verbose while maintaining flexibility.
  *
- * @param playerSide - The player side of the unit
+ * @param playerSide - Which player the unit belongs to
  * @param options - Optional configuration for the unit
  * @param options.unitType - Specific unit type to use (if not provided, will use stat-based lookup)
  * @param options.instanceNumber - Unit instance number (defaults to 1)

@@ -1,11 +1,22 @@
 import { unitFacings } from "src/entities/unit/unitFacing.js";
-import { canEngageEnemy } from "src/validation/canEngageEnemy.js";
-import { canMoveInto } from "src/validation/canMoveInto.js";
-import { canMoveThrough } from "src/validation/canMoveThrough.js";
 import { isDiagonalFacing } from "src/validation/isDiagonalFacing.js";
+import { canEngageEnemy } from "src/validation/unitMovement/canEngageEnemy.js";
+import { canMoveInto } from "src/validation/unitMovement/canMoveInto.js";
+import { canMoveThrough } from "src/validation/unitMovement/canMoveThrough.js";
 import { getBoardSpace } from "./boardSpace/getBoardSpace.js";
 import { getForwardSpace } from "./boardSpace/getForwardSpace.js";
 import { getAdjacentFacings } from "./facings/getAdjacentFacings.js";
+/**
+ * Calculates all legal moves for a unit from a given starting position.
+ * Uses recursive exploration with memoization to find all combinations of
+ * movement and facing changes within the unit's speed and flexibility limits.
+ *
+ * @param unit - The unit for which to calculate legal moves
+ * @param board - The board state to evaluate moves on
+ * @param startingPosition - The current position and facing of the unit
+ * @returns A set of all legal unit placements (coordinate + facing) the unit can reach
+ * @throws {Error} If the unit is not free to move, not present, or facing mismatch
+ */
 export function getLegalUnitMoves(unit, board, startingPosition) {
     // The reported starting position must be a valid board space
     const boardSpace = getBoardSpace(board, startingPosition.coordinate);

@@ -1,8 +1,8 @@
 import { createTestUnit } from "src/testing/unitHelpers.js";
 import { describe, expect, it } from "vitest";
-import { createBoardWithUnits } from "../functions/createBoard.js";
-import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
-import { canEngageEnemy } from "./unitMovement/canEngageEnemy.js";
+import { createBoardWithUnits } from "../../functions/createBoard.js";
+import { createEmptyStandardBoard } from "../../functions/createEmptyBoard.js";
+import { canEngageEnemy } from "./canEngageEnemy.js";
 describe("canEngageEnemy", () => {
     const standardBoard = createEmptyStandardBoard();
     const enemyCoordinate = "E-5";
