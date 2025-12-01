@@ -11,7 +11,7 @@ import { tempUnits } from "src/sampleValues/tempUnits.js";
  */
 export function getUnitByStatValue(
   stat: keyof UnitType,
-  value: number
+  value: number,
 ): UnitType | undefined {
   const unit = tempUnits.find((unit) => unit[stat] === value);
   if (!unit) {

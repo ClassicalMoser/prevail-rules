@@ -15,7 +15,7 @@ import { MIN_FLEXIBILITY_THRESHOLD } from "src/sampleValues/ruleValues.js";
 export function canMoveThrough<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
-  coordinate: BoardCoordinate<TBoard>
+  coordinate: BoardCoordinate<TBoard>,
 ): boolean {
   try {
     // Find the board space at the given coordinate.

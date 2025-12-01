@@ -15,7 +15,7 @@ import { COMMANDER_MOVE_DISTANCE } from "src/sampleValues/ruleValues.js";
  */
 export function isLegalCommanderMove(
   moveCommanderCommand: MoveCommanderCommand,
-  boardState: Board
+  boardState: Board,
 ): boolean {
   const { player, from, to } = moveCommanderCommand;
 
@@ -35,7 +35,7 @@ export function isLegalCommanderMove(
   const spacesWithinDistance = getSpacesWithinDistance(
     boardState,
     from,
-    COMMANDER_MOVE_DISTANCE
+    COMMANDER_MOVE_DISTANCE,
   );
 
   return spacesWithinDistance.has(to);

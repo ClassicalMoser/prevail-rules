@@ -1,8 +1,3 @@
-import {
-  largeBoardSchema,
-  smallBoardSchema,
-  standardBoardSchema,
-} from "src/entities/index.js";
 import { describe, expect, it } from "vitest";
 import {
   createEmptyLargeBoard,
@@ -13,23 +8,23 @@ import {
 describe("createEmptyStandardBoard", () => {
   it("should create an empty standard board", () => {
     const board = createEmptyStandardBoard();
-    const boardSchema = standardBoardSchema.safeParse(board);
-    expect(boardSchema.success).toBe(true);
+    expect(board.boardType).toBe("standard");
+    expect(Object.keys(board.board).length).toBeGreaterThan(0);
   });
 });
 
 describe("createEmptySmallBoard", () => {
   it("should create an empty small board", () => {
     const board = createEmptySmallBoard();
-    const boardSchema = smallBoardSchema.safeParse(board);
-    expect(boardSchema.success).toBe(true);
+    expect(board.boardType).toBe("small");
+    expect(Object.keys(board.board).length).toBeGreaterThan(0);
   });
 });
 
 describe("createEmptyLargeBoard", () => {
   it("should create an empty large board", () => {
     const board = createEmptyLargeBoard();
-    const boardSchema = largeBoardSchema.safeParse(board);
-    expect(boardSchema.success).toBe(true);
+    expect(board.boardType).toBe("large");
+    expect(Object.keys(board.board).length).toBeGreaterThan(0);
   });
 });

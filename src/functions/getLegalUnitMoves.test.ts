@@ -84,6 +84,46 @@ describe("getLegalUnitMoves", () => {
 
       expect(hasMove(legalMoves, "C-5")).toBe(true);
     });
+
+    it("should not be able to move diagonally between two friendly units with insufficient flexibility", () => {
+      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const friendlyUnit1 = createUnitInstance("black", spearmenUnitType, 1);
+      const friendlyUnit2 = createUnitInstance("black", spearmenUnitType, 2);
+      const board = createBoardWithUnits([
+        { unit, coordinate: "E-5", facing: "northWest" },
+        { unit: friendlyUnit1, coordinate: "D-5", facing: "north" },
+        { unit: friendlyUnit2, coordinate: "E-4", facing: "east" },
+      ]);
+
+      const legalMoves = getLegalUnitMoves(unit, board, {
+        coordinate: "E-5",
+        facing: "northWest",
+      });
+
+      expect(hasMove(legalMoves, "D-4")).toBe(false);
+    });
+
+    it("should be able to move diagonally between two friendly units with sufficient flexibility", () => {
+      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const flexibleUnitType = tempUnits.find((unit) => unit.flexibility === 3);
+      if (!flexibleUnitType) {
+        throw new Error("Unit with flexibility 3 not found");
+      }
+      const friendlyUnit1 = createUnitInstance("black", flexibleUnitType, 1);
+      const friendlyUnit2 = createUnitInstance("black", flexibleUnitType, 2);
+      const board = createBoardWithUnits([
+        { unit, coordinate: "E-5", facing: "northWest" },
+        { unit: friendlyUnit1, coordinate: "D-5", facing: "north" },
+        { unit: friendlyUnit2, coordinate: "E-4", facing: "east" },
+      ]);
+
+      const legalMoves = getLegalUnitMoves(unit, board, {
+        coordinate: "E-5",
+        facing: "northWest",
+      });
+
+      expect(hasMove(legalMoves, "D-4")).toBe(true);
+    });
   });
 
   describe("with enemy units on board", () => {
@@ -176,6 +216,24 @@ describe("getLegalUnitMoves", () => {
       expect(hasMove(legalMoves, "D-5", "east")).toBe(false);
       // Cannot move into enemy unit with incorrect facing
       expect(hasMove(legalMoves, "D-5", "southWest")).toBe(false);
+    });
+
+    it("should not be able to move diagonally between two enemy units", () => {
+      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const enemy1 = createUnitInstance("white", spearmenUnitType, 1);
+      const enemy2 = createUnitInstance("white", spearmenUnitType, 2);
+      const board = createBoardWithUnits([
+        { unit, coordinate: "E-5", facing: "northWest" },
+        { unit: enemy1, coordinate: "D-5", facing: "south" },
+        { unit: enemy2, coordinate: "E-4", facing: "east" },
+      ]);
+
+      const legalMoves = getLegalUnitMoves(unit, board, {
+        coordinate: "E-5",
+        facing: "northWest",
+      });
+
+      expect(hasMove(legalMoves, "D-4")).toBe(false);
     });
   });
 

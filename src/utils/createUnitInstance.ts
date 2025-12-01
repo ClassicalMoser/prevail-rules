@@ -13,7 +13,7 @@ import type { UnitType } from "src/entities/unit/unitType.js";
 export function createUnitInstance(
   playerSide: PlayerSide,
   unitType: UnitType,
-  instanceNumber: number
+  instanceNumber: number,
 ): UnitInstance {
   return { playerSide, unitType, instanceNumber };
 }

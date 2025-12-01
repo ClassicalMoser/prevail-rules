@@ -28,12 +28,12 @@ import { getAdjacentFacings } from "./facings/getAdjacentFacings.js";
 export function getLegalUnitMoves<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
-  startingPosition: UnitPlacement<TBoard>
+  startingPosition: UnitPlacement<TBoard>,
 ): Set<UnitPlacement<TBoard>> {
   // The reported starting position must be a valid board space
   const boardSpace: BoardSpace = getBoardSpace(
     board,
-    startingPosition.coordinate
+    startingPosition.coordinate,
   );
   // Check if the unit is free to move
   if (boardSpace.unitPresence.presenceType !== "single") {
@@ -59,7 +59,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
     coordinate: BoardCoordinate<BoardType>,
     facing: UnitFacing,
     remainingSpeed: number,
-    remainingFlexibility: number
+    remainingFlexibility: number,
   ): string => {
     return `${coordinate}|${facing}|${remainingSpeed}|${remainingFlexibility}`;
   };
@@ -70,14 +70,14 @@ export function getLegalUnitMoves<TBoard extends Board>(
     currentFacing: UnitFacing,
     remainingSpeed: number,
     remainingFlexibility: number,
-    previousCoordinate: BoardCoordinate<BoardType> | undefined = undefined
+    previousCoordinate: BoardCoordinate<BoardType> | undefined = undefined,
   ): void => {
     // Create state key for this position
     const stateKey = getStateKey(
       currentCoordinate,
       currentFacing,
       remainingSpeed,
-      remainingFlexibility
+      remainingFlexibility,
     );
 
     // If we've already explored this state, skip it
@@ -110,7 +110,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
             currentFacing,
             previousCoordinate,
             remainingFlexibility,
-            startingPosition.coordinate
+            startingPosition.coordinate,
           )
         ) {
           legalMoves.add({
@@ -132,7 +132,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
       const forwardCoordinate = getForwardSpace(
         board,
         currentCoordinate,
-        currentFacing
+        currentFacing,
       ) as BoardCoordinate<BoardType> | undefined;
       if (forwardCoordinate !== undefined) {
         // We can move forward if we can either:
@@ -145,13 +145,13 @@ export function getLegalUnitMoves<TBoard extends Board>(
           // We can make a diagonal move if we can pass through any of the adjacent spaces.
           // First, get the adjacent facings.
           const adjacentFacings = getAdjacentFacings(currentFacing);
-          // Then, get the forward spaces for each adjacent facing.
+          // Then, get the forward spaces for each adjacent facing from the current position.
           const orthogonalPassThroughSpaces = Array.from(adjacentFacings)
-            .map((facing) => getForwardSpace(board, forwardCoordinate, facing))
+            .map((facing) => getForwardSpace(board, currentCoordinate, facing))
             .filter((space) => space !== undefined);
           // Then, filter out the spaces that we can't move through.
           const validPassThroughSpaces = orthogonalPassThroughSpaces.filter(
-            (space) => canMoveThrough(unit, board, space)
+            (space) => canMoveThrough(unit, board, space),
           );
           // Then, check if we can make a diagonal move.
           const canMakeDiagonalMove = validPassThroughSpaces.length > 0;
@@ -173,7 +173,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
             currentFacing,
             remainingSpeed - 1,
             remainingFlexibility,
-            currentCoordinate
+            currentCoordinate,
           );
         } else if (canEnd) {
           // Can move into but not through (e.g., enemy space) - explore to add as destination
@@ -183,7 +183,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
             currentFacing,
             0,
             remainingFlexibility,
-            currentCoordinate
+            currentCoordinate,
           );
         }
       }
@@ -199,7 +199,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
             newFacing,
             remainingSpeed,
             remainingFlexibility - 1,
-            previousCoordinate
+            previousCoordinate,
           );
         }
       }
@@ -211,7 +211,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
     startingPosition.coordinate,
     startingPosition.facing,
     unit.unitType.speed,
-    unit.unitType.flexibility
+    unit.unitType.flexibility,
   );
 
   return legalMoves;
