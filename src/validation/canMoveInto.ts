@@ -6,12 +6,16 @@ export function canMoveInto<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
   coordinate: BoardCoordinate<TBoard>
-) {
+): boolean {
+  // Block for errors.
   try {
     // Find the board space at the given coordinate.
     const space = getBoardSpace(board, coordinate);
     // If the space has no unit presence, any unit can move into it.
     const spaceUnitPresence = space.unitPresence;
+    if (!spaceUnitPresence) {
+      return false;
+    }
     if (spaceUnitPresence.presenceType === "none") {
       return true;
     }
@@ -31,8 +35,12 @@ export function canMoveInto<TBoard extends Board>(
       // Player can move into a space with an enemy unit.
       return true;
     }
+    // This should never happen.
+    console.error("Invalid unit presence type");
+    return false as never;
   } catch {
-    // If the coordinate doesn't exist, the unit cannot move through it.
+    // Any error will always fail the validation.
+    console.error("Error getting board space");
     return false;
   }
 }

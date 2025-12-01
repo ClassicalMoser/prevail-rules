@@ -18,28 +18,28 @@ describe("getOrthogonalFacings", () => {
 
   it("should return the orthogonal facings for northEast", () => {
     expect(getOrthogonalFacings("northEast")).toEqual(
-      new Set(["northWest", "southEast"]),
+      new Set(["northWest", "southEast"])
     );
   });
   it("should return the orthogonal facings for southEast", () => {
     expect(getOrthogonalFacings("southEast")).toEqual(
-      new Set(["northEast", "southWest"]),
+      new Set(["northEast", "southWest"])
     );
   });
   it("should return the orthogonal facings for southWest", () => {
     expect(getOrthogonalFacings("southWest")).toEqual(
-      new Set(["southEast", "northWest"]),
+      new Set(["southEast", "northWest"])
     );
   });
   it("should return the orthogonal facings for northWest", () => {
     expect(getOrthogonalFacings("northWest")).toEqual(
-      new Set(["southWest", "northEast"]),
+      new Set(["southWest", "northEast"])
     );
   });
 
   it("should throw an error if the facing is invalid", () => {
     expect(() => getOrthogonalFacings("invalid" as UnitFacing)).toThrow(
-      new Error("Invalid facing: invalid"),
+      new Error("Invalid facing: invalid")
     );
   });
 });

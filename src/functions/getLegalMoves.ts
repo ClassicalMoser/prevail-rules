@@ -8,9 +8,11 @@ import { unitFacings } from "src/entities/unit/unitFacing.js";
 import { canEngageEnemy } from "src/validation/canEngageEnemy.js";
 import { canMoveInto } from "src/validation/canMoveInto.js";
 import { canMoveThrough } from "src/validation/canMoveThrough.js";
+import { isDiagonalFacing } from "src/validation/isDiagonalFacing.js";
 import { getBoardSpace } from "./boardSpace/getBoardSpace.js";
 
 import { getForwardSpace } from "./boardSpace/getForwardSpace.js";
+import { getAdjacentFacings } from "./facings/getAdjacentFacings.js";
 
 export function getLegalMoves<TBoard extends Board>(
   unit: UnitInstance,
@@ -125,8 +127,33 @@ export function getLegalMoves<TBoard extends Board>(
         // We can move forward if we can either:
         // 1. Move through the space (to continue moving), OR
         // 2. Move into the space (to end our move there, e.g., engaging an enemy)
-        const canContinue = canMoveThrough(unit, board, forwardCoordinate);
-        const canEnd = canMoveInto(unit, board, forwardCoordinate);
+        let canContinue = false;
+        let canEnd = false;
+        if (isDiagonalFacing(currentFacing)) {
+          // If the facing is diagonal, we need to check if we can make a diagonal move.
+          // We can make a diagonal move if we can pass through any of the adjacent spaces.
+          // First, get the adjacent facings.
+          const adjacentFacings = getAdjacentFacings(currentFacing);
+          // Then, get the forward spaces for each adjacent facing.
+          const orthogonalPassThroughSpaces = Array.from(adjacentFacings)
+            .map((facing) => getForwardSpace(board, forwardCoordinate, facing))
+            .filter((space) => space !== undefined);
+          // Then, filter out the spaces that we can't move through.
+          const validPassThroughSpaces = orthogonalPassThroughSpaces.filter(
+            (space) => canMoveThrough(unit, board, space)
+          );
+          // Then, check if we can make a diagonal move.
+          const canMakeDiagonalMove = validPassThroughSpaces.length > 0;
+          canContinue =
+            canMoveThrough(unit, board, forwardCoordinate) &&
+            canMakeDiagonalMove;
+          canEnd =
+            canMoveInto(unit, board, forwardCoordinate) && canMakeDiagonalMove;
+        } else {
+          // If the facing is not diagonal,we can just check if we can move through and into the space.
+          canContinue = canMoveThrough(unit, board, forwardCoordinate);
+          canEnd = canMoveInto(unit, board, forwardCoordinate);
+        }
 
         if (canContinue) {
           // Can move through - explore and continue moving from there

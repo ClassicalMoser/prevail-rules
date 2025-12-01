@@ -5,7 +5,7 @@ import type {
 } from "src/entities/index.js";
 import type { PlayerSide } from "src/entities/player/playerSide.js";
 import { getUnitByStatValue } from "src/utils/getUnitByStatValue.js";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
 import { canMoveInto } from "./canMoveInto.js";
 
@@ -108,6 +108,58 @@ describe("canMoveInto", () => {
       const unit = createUnitInstance("white");
       const board = createBoardWithSingleUnit(coordinate, "black");
       expect(canMoveInto(unit, board, coordinate)).toBe(true);
+    });
+  });
+
+  describe("edge cases and error handling", () => {
+    it("should return false when coordinate is invalid (defensive check)", () => {
+      // Test coverage for lines 15-16: defensive check for undefined space
+      // Using invalid coordinate causes getBoardSpace to throw, which is caught and returns false
+      const unit = createUnitInstance("black");
+      const invalidCoordinate = "Z-99" as StandardBoardCoordinate;
+
+      const result = canMoveInto(unit, standardBoard, invalidCoordinate);
+
+      expect(result).toBe(false);
+    });
+
+    it("should return false when space has falsy unitPresence (defensive check)", () => {
+      // Test coverage for lines 20-21: defensive check for falsy unitPresence
+      // Using type assertion to create a board space with null unitPresence, which tests
+      // the defensive check even though unitPresence is always defined in normal operation
+      const unit = createUnitInstance("black");
+      const board = createEmptyStandardBoard();
+      // Use type assertion to bypass TypeScript's type checking and set unitPresence to null
+      (board.board[coordinate] as any).unitPresence = null;
+
+      const result = canMoveInto(unit, board, coordinate);
+
+      expect(result).toBe(false);
+    });
+
+    it("should return false and log error for invalid unit presence type", () => {
+      // Test coverage for lines 42-43: invalid unit presence type error handling
+      // This tests the defensive check for unexpected unit presence types
+      const unit = createUnitInstance("black");
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      // Create a board with an invalid unit presence type by directly modifying the board
+      const board = createEmptyStandardBoard();
+      board.board[coordinate] = {
+        ...board.board[coordinate],
+        unitPresence: {
+          presenceType: "invalid" as any, // Invalid presence type to test defensive check
+        },
+      };
+
+      const result = canMoveInto(unit, board, coordinate);
+
+      expect(result).toBe(false);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Invalid unit presence type"
+      );
+      consoleErrorSpy.mockRestore();
     });
   });
 });

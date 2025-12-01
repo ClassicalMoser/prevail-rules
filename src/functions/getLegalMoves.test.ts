@@ -216,4 +216,91 @@ describe("getLegalMoves", () => {
       expect(hasMove(legalMoves, "D-5", "southWest")).toBe(false);
     });
   });
+
+  describe("error cases for invalid starting position", () => {
+    it("should throw error when unit at starting position is not free to move (engaged)", () => {
+      // Test coverage for lines 29-30: unit is not free to move (engaged state)
+      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const startingCoordinate: StandardBoardCoordinate = "E-5";
+      const startingFacing = "north";
+      const enemyUnit = createUnitInstance("white", spearmenUnitType, 2);
+      const board = createBoardWithUnits([
+        { unit, coordinate: startingCoordinate, facing: startingFacing },
+        { unit: enemyUnit, coordinate: startingCoordinate, facing: "south" },
+      ]);
+      // Manually set the unit presence to engaged state
+      board.board[startingCoordinate].unitPresence = {
+        presenceType: "engaged",
+        primaryUnit: unit,
+        primaryFacing: startingFacing,
+        secondaryUnit: enemyUnit,
+      };
+
+      expect(() => {
+        getLegalMoves(unit, board, {
+          coordinate: startingCoordinate,
+          facing: startingFacing,
+        });
+      }).toThrow(new Error("Unit at starting position is not free to move"));
+    });
+
+    it("should throw error when unit at starting position is not free to move (none presence)", () => {
+      // Test coverage for lines 29-30: unit is not free to move (none presence type)
+      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const startingCoordinate: StandardBoardCoordinate = "E-5";
+      const startingFacing = "north";
+      const board = createEmptyStandardBoard();
+      // Set unit presence to "none" instead of "single"
+      board.board[startingCoordinate].unitPresence = {
+        presenceType: "none",
+      };
+
+      expect(() => {
+        getLegalMoves(unit, board, {
+          coordinate: startingCoordinate,
+          facing: startingFacing,
+        });
+      }).toThrow(new Error("Unit at starting position is not free to move"));
+    });
+
+    it("should throw error when unit is not present at the starting position", () => {
+      // Test coverage for lines 33-34: unit mismatch at starting position
+      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const differentUnit = createUnitInstance("black", spearmenUnitType, 2);
+      const startingCoordinate: StandardBoardCoordinate = "E-5";
+      const startingFacing = "north";
+      const board = createBoardWithUnits([
+        {
+          unit: differentUnit,
+          coordinate: startingCoordinate,
+          facing: startingFacing,
+        },
+      ]);
+
+      expect(() => {
+        getLegalMoves(unit, board, {
+          coordinate: startingCoordinate,
+          facing: startingFacing,
+        });
+      }).toThrow(new Error("Unit is not present at the starting position"));
+    });
+
+    it("should throw error when reported facing is inaccurate", () => {
+      // Test coverage for lines 37-38: facing mismatch at starting position
+      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const startingCoordinate: StandardBoardCoordinate = "E-5";
+      const actualFacing = "north";
+      const reportedFacing = "south"; // Different from actual facing
+      const board = createBoardWithUnits([
+        { unit, coordinate: startingCoordinate, facing: actualFacing },
+      ]);
+
+      expect(() => {
+        getLegalMoves(unit, board, {
+          coordinate: startingCoordinate,
+          facing: reportedFacing,
+        });
+      }).toThrow(new Error("Reported facing is inaccurate"));
+    });
+  });
 });
