@@ -6,6 +6,7 @@ import { matchesUnitRequirements } from "src/validation/matchesUnitRequirements.
 import { getInlineSpaces } from "./boardSpace/areas/getInlineSpaces.js";
 import { getPlayerUnitWithPosition } from "./boardSpace/getPlayerUnitWithPosition.js";
 import { getOppositeFacing } from "./facings/getOppositeFacing.js";
+import { areSameSide } from "./unit/index.js";
 
 /** Get the lines from a unit.
  * A line is a group of up to 8 friendly units that are exactly beside each other
@@ -21,7 +22,7 @@ export function getLinesFromUnit(
   board: Board,
   unit: UnitWithPlacement<Board>,
   traits: Trait[] = [],
-  unitTypes: UnitType[] = []
+  unitTypes: UnitType[] = [],
 ): Set<Line> {
   const notAtPlacement = !isAtPlacement(board, unit);
   if (notAtPlacement) {
@@ -41,7 +42,7 @@ export function getLinesFromUnit(
     const inlineSpaces = getInlineSpaces(
       board,
       unit.placement.coordinate,
-      potentialFacing
+      potentialFacing,
     );
 
     // Build contiguous segments - gaps break the line
@@ -53,7 +54,7 @@ export function getLinesFromUnit(
         const playerUnit = getPlayerUnitWithPosition(
           board,
           coordinate,
-          friendlySide
+          friendlySide,
         );
 
         // If there's no friendly unit, it breaks the current segment
@@ -109,10 +110,10 @@ export function getLinesFromUnit(
       // Find the index of the given unit in this segment
       const unitIndex = segment.findIndex(
         (u) =>
-          u.unit.playerSide === unit.unit.playerSide &&
+          areSameSide(u.unit, unit.unit) &&
           u.unit.unitType === unit.unit.unitType &&
           u.unit.instanceNumber === unit.unit.instanceNumber &&
-          u.placement.coordinate === unit.placement.coordinate
+          u.placement.coordinate === unit.placement.coordinate,
       );
 
       // If the unit is not in this segment, skip it

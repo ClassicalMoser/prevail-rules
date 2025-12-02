@@ -3,6 +3,12 @@ import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
 import type { UnitWithPlacement } from "src/entities/index.js";
 import type { PlayerSide } from "src/entities/player/playerSide.js";
 import { getOppositeFacing } from "../facings/getOppositeFacing.js";
+import { isFriendlyUnit } from "../unit/index.js";
+import {
+  hasEngagedUnits,
+  hasNoUnit,
+  hasSingleUnit,
+} from "../unitPresence/index.js";
 import { getBoardSpace } from "./getBoardSpace.js";
 
 /**
@@ -16,18 +22,18 @@ import { getBoardSpace } from "./getBoardSpace.js";
 export function getPlayerUnitWithPosition<TBoard extends Board>(
   board: TBoard,
   coordinate: BoardCoordinate<TBoard>,
-  playerSide: PlayerSide
+  playerSide: PlayerSide,
 ): UnitWithPlacement<TBoard> | undefined {
   const unitPresence = getBoardSpace(board, coordinate).unitPresence;
 
   // If there's no unit, return undefined
-  if (unitPresence.presenceType === "none") {
+  if (hasNoUnit(unitPresence)) {
     return undefined;
   }
 
   // Handle single unit presence
-  if (unitPresence.presenceType === "single") {
-    if (unitPresence.unit.playerSide === playerSide) {
+  if (hasSingleUnit(unitPresence)) {
+    if (isFriendlyUnit(unitPresence.unit, playerSide)) {
       return {
         unit: unitPresence.unit,
         placement: {
@@ -41,9 +47,9 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
   }
 
   // Handle engaged unit presence
-  else {
+  if (hasEngagedUnits(unitPresence)) {
     // Check primary unit first
-    if (unitPresence.primaryUnit.playerSide === playerSide) {
+    if (isFriendlyUnit(unitPresence.primaryUnit, playerSide)) {
       return {
         unit: unitPresence.primaryUnit,
         placement: {

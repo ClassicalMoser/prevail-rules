@@ -10,9 +10,10 @@ import { canEngageEnemy } from "src/validation/unitMovement/canEngageEnemy.js";
 import { canMoveInto } from "src/validation/unitMovement/canMoveInto.js";
 import { canMoveThrough } from "src/validation/unitMovement/canMoveThrough.js";
 import { getBoardSpace } from "./boardSpace/getBoardSpace.js";
-
 import { getForwardSpace } from "./boardSpace/getForwardSpace.js";
 import { getAdjacentFacings } from "./facings/getAdjacentFacings.js";
+import { areSameSide } from "./unit/index.js";
+import { hasSingleUnit } from "./unitPresence/index.js";
 
 /**
  * Calculates all legal moves for a unit from a given starting position.
@@ -36,7 +37,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
     startingPosition.coordinate,
   );
   // Check if the unit is free to move
-  if (boardSpace.unitPresence.presenceType !== "single") {
+  if (!hasSingleUnit(boardSpace.unitPresence)) {
     throw new Error("Unit at starting position is not free to move");
   }
   // Check if the reported unit is present at the starting position
@@ -97,8 +98,8 @@ export function getLegalUnitMoves<TBoard extends Board>(
       // Check if this is an enemy space that requires engagement validation
       const currentSpace = getBoardSpace(board, currentCoordinate);
       const isEnemySpace =
-        currentSpace.unitPresence.presenceType === "single" &&
-        currentSpace.unitPresence.unit.playerSide !== unit.playerSide;
+        hasSingleUnit(currentSpace.unitPresence) &&
+        !areSameSide(currentSpace.unitPresence.unit, unit);
 
       if (isEnemySpace && previousCoordinate !== undefined) {
         // Check enemy engagement rules if moving into an enemy space

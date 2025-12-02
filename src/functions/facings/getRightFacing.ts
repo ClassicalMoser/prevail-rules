@@ -28,4 +28,3 @@ export function getRightFacing(facing: UnitFacing): UnitFacing {
       throw new Error(`Invalid facing: ${facing}`);
   }
 }
-

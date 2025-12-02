@@ -62,19 +62,19 @@ describe("getLeftSpace", () => {
 
   it("should throw an error if the row is invalid", () => {
     expect(() =>
-      getLeftSpace(standardBoard, "R-12" as StandardBoardCoordinate, "north")
+      getLeftSpace(standardBoard, "R-12" as StandardBoardCoordinate, "north"),
     ).toThrow(new Error("Invalid row: R"));
   });
 
   it("should throw an error if the column is invalid", () => {
     expect(() =>
-      getLeftSpace(standardBoard, "A-19" as StandardBoardCoordinate, "north")
+      getLeftSpace(standardBoard, "A-19" as StandardBoardCoordinate, "north"),
     ).toThrow(new Error("Invalid column: 19"));
   });
 
   it("should throw an error if the facing is invalid", () => {
     expect(() =>
-      getLeftSpace(standardBoard, "E-9", "random" as UnitFacing)
+      getLeftSpace(standardBoard, "E-9", "random" as UnitFacing),
     ).toThrow(new Error("Invalid facing: random"));
   });
 });

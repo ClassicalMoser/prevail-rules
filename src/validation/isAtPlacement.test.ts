@@ -30,7 +30,7 @@ describe("isAtPlacement", () => {
   const createUnit = (
     playerSide: PlayerSide,
     unitType = spearmenUnitType,
-    instanceNumber = 1
+    instanceNumber = 1,
   ): UnitInstance => {
     return createUnitInstance(playerSide, unitType, instanceNumber);
   };
@@ -39,7 +39,7 @@ describe("isAtPlacement", () => {
   const createUnitWithPlacement = (
     unit: UnitInstance,
     coord: StandardBoardCoordinate,
-    facing: UnitFacing
+    facing: UnitFacing,
   ): UnitWithPlacement<StandardBoard> => {
     return {
       unit,
@@ -57,7 +57,7 @@ describe("isAtPlacement", () => {
       const unitWithPlacement = createUnitWithPlacement(
         unit,
         invalidCoordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(standardBoard, unitWithPlacement)).toBe(false);
@@ -70,7 +70,7 @@ describe("isAtPlacement", () => {
       const unitWithPlacement = createUnitWithPlacement(
         unit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(standardBoard, unitWithPlacement)).toBe(false);
@@ -86,7 +86,7 @@ describe("isAtPlacement", () => {
       const unitWithPlacement = createUnitWithPlacement(
         unit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(true);
@@ -100,7 +100,7 @@ describe("isAtPlacement", () => {
       const unitWithPlacement = createUnitWithPlacement(
         unit,
         coordinate,
-        "south"
+        "south",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -115,7 +115,7 @@ describe("isAtPlacement", () => {
       const unitWithPlacement = createUnitWithPlacement(
         differentPlayerUnit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -130,7 +130,7 @@ describe("isAtPlacement", () => {
       const unitWithPlacement = createUnitWithPlacement(
         differentTypeUnit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -145,7 +145,7 @@ describe("isAtPlacement", () => {
       const unitWithPlacement = createUnitWithPlacement(
         differentInstanceUnit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -161,7 +161,7 @@ describe("isAtPlacement", () => {
       const unitWithPlacement = createUnitWithPlacement(
         sameUnit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(true);
@@ -178,7 +178,7 @@ describe("isAtPlacement", () => {
       const unitWithPlacement = createUnitWithPlacement(
         friendlyUnit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -193,12 +193,12 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
       const unitWithPlacement = createUnitWithPlacement(
         primaryUnit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(true);
@@ -211,12 +211,12 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
       const unitWithPlacement = createUnitWithPlacement(
         primaryUnit,
         coordinate,
-        "south"
+        "south",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -230,12 +230,12 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
       const unitWithPlacement = createUnitWithPlacement(
         differentPlayerUnit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -249,12 +249,12 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
       const unitWithPlacement = createUnitWithPlacement(
         differentTypeUnit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -268,12 +268,12 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
       const unitWithPlacement = createUnitWithPlacement(
         differentInstanceUnit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -288,13 +288,13 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
       // Secondary unit facing is opposite of primary facing
       const unitWithPlacement = createUnitWithPlacement(
         secondaryUnit,
         coordinate,
-        "south" // opposite of "north"
+        "south", // opposite of "north"
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(true);
@@ -307,13 +307,13 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
       // Wrong facing (should be "south" which is opposite of "north")
       const unitWithPlacement = createUnitWithPlacement(
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -327,12 +327,12 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
       const unitWithPlacement = createUnitWithPlacement(
         differentPlayerUnit,
         coordinate,
-        "south"
+        "south",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -346,12 +346,12 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
       const unitWithPlacement = createUnitWithPlacement(
         differentTypeUnit,
         coordinate,
-        "south"
+        "south",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -365,12 +365,12 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north"
+        "north",
       );
       const unitWithPlacement = createUnitWithPlacement(
         differentInstanceUnit,
         coordinate,
-        "south"
+        "south",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
@@ -383,13 +383,13 @@ describe("isAtPlacement", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "northEast"
+        "northEast",
       );
       // Secondary unit facing is opposite of primary facing ("northEast" -> "southWest")
       const unitWithPlacement = createUnitWithPlacement(
         secondaryUnit,
         coordinate,
-        "southWest"
+        "southWest",
       );
 
       expect(isAtPlacement(board, unitWithPlacement)).toBe(true);

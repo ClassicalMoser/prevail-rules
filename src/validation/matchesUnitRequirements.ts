@@ -18,7 +18,7 @@ import type { Trait } from "src/sampleValues/traits.js";
 export function matchesUnitRequirements(
   unitType: UnitType,
   traits: Trait[],
-  unitTypes: UnitType[]
+  unitTypes: UnitType[],
 ): boolean {
   if (!traits.length && !unitTypes.length) {
     return true;

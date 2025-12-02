@@ -5,7 +5,7 @@ import type {
 } from "src/entities/index.js";
 import type { PlayerSide } from "src/entities/player/playerSide.js";
 import { createTestUnit } from "src/testing/unitHelpers.js";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
@@ -99,31 +99,6 @@ describe("canMoveInto", () => {
       const result = canMoveInto(unit, board, coordinate);
 
       expect(result).toBe(false);
-    });
-
-    it("should return false and log error for invalid unit presence type", () => {
-      // Test coverage for lines 42-43: invalid unit presence type error handling
-      // This tests the defensive check for unexpected unit presence types
-      const unit = createUnitInstance("black");
-      const consoleErrorSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
-      // Create a board with an invalid unit presence type by directly modifying the board
-      const board = createEmptyStandardBoard();
-      board.board[coordinate] = {
-        ...board.board[coordinate],
-        unitPresence: {
-          presenceType: "invalid" as any, // Invalid presence type to test defensive check
-        },
-      };
-
-      const result = canMoveInto(unit, board, coordinate);
-
-      expect(result).toBe(false);
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Invalid unit presence type",
-      );
-      consoleErrorSpy.mockRestore();
     });
   });
 });

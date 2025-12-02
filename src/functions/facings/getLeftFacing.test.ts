@@ -29,7 +29,7 @@ describe("getLeftFacing", () => {
   });
   it("should throw an error for an invalid facing", () => {
     expect(() => getLeftFacing("invalid" as UnitFacing)).toThrow(
-      "Invalid facing: invalid"
+      "Invalid facing: invalid",
     );
   });
 });

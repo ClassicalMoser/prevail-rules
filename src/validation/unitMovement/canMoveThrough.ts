@@ -1,6 +1,12 @@
 import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
 import type { Board, UnitInstance } from "src/entities/index.js";
 import { getBoardSpace } from "src/functions/boardSpace/getBoardSpace.js";
+import { areSameSide } from "src/functions/unit/index.js";
+import {
+  hasEngagedUnits,
+  hasNoUnit,
+  hasSingleUnit,
+} from "src/functions/unitPresence/index.js";
 import { MIN_FLEXIBILITY_THRESHOLD } from "src/sampleValues/ruleValues.js";
 
 /**
@@ -20,21 +26,22 @@ export function canMoveThrough<TBoard extends Board>(
   try {
     // Find the board space at the given coordinate.
     const space = getBoardSpace(board, coordinate);
-    // If the space has no unit presence, any unit can move through it.
     const spaceUnitPresence = space.unitPresence;
-    if (spaceUnitPresence.presenceType === "none") {
+
+    // If the space has no unit presence, any unit can move through it.
+    if (hasNoUnit(spaceUnitPresence)) {
       return true;
     }
+
     // If the space has two units engaged in combat, no unit can move through it.
-    if (spaceUnitPresence.presenceType === "engaged") {
+    if (hasEngagedUnits(spaceUnitPresence)) {
       return false;
     }
+
     // If the space has a single unit, further checks are needed.
-    if (spaceUnitPresence.presenceType === "single") {
-      const unitOwner = unit.playerSide;
-      const spaceUnitOwner = spaceUnitPresence.unit.playerSide;
+    if (hasSingleUnit(spaceUnitPresence)) {
       // Player cannot move through an unfriendly unit.
-      if (spaceUnitOwner !== unitOwner) {
+      if (!areSameSide(spaceUnitPresence.unit, unit)) {
         return false;
       }
       // A player can only move through their own unit if the combined
@@ -46,6 +53,7 @@ export function canMoveThrough<TBoard extends Board>(
         return false;
       }
     }
+
     return true;
   } catch {
     // If the coordinate doesn't exist, the unit cannot move through it.

@@ -40,5 +40,5 @@ export default antfu(
   {
     ignores: ["pnpm-lock.yaml", "node_modules/", "*.yml"],
   },
-  prettierConfig
+  prettierConfig,
 );

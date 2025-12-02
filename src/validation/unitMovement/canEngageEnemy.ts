@@ -8,6 +8,8 @@ import { getFrontSpaces } from "src/functions/boardSpace/adjacency/getFrontSpace
 import { getSpacesBehind } from "src/functions/boardSpace/areas/getSpacesBehind.js";
 import { getBoardSpace } from "src/functions/boardSpace/getBoardSpace.js";
 import { getOppositeFacing } from "src/functions/facings/getOppositeFacing.js";
+import { areSameSide } from "src/functions/unit/index.js";
+import { hasSingleUnit } from "src/functions/unitPresence/index.js";
 
 /**
  * Incremental function to check whether engagement is legal from an adjacent space.
@@ -28,14 +30,14 @@ export function canEngageEnemy<TBoard extends Board>(
   adjacentFacing: UnitFacing,
   adjacentCoordinate: BoardCoordinate<TBoard>,
   remainingFlexibility: number,
-  moveStartCoordinate: BoardCoordinate<TBoard>
+  moveStartCoordinate: BoardCoordinate<TBoard>,
 ): boolean {
   try {
     // Check if the destination has an enemy unit
     const destinationSpace = getBoardSpace(board, destinationCoordinate);
     if (
-      destinationSpace.unitPresence.presenceType !== "single" ||
-      destinationSpace.unitPresence.unit.playerSide === unit.playerSide
+      !hasSingleUnit(destinationSpace.unitPresence) ||
+      areSameSide(destinationSpace.unitPresence.unit, unit)
     ) {
       // Destination space is not a single enemy unit
       // so we can't engage an enemy here
@@ -52,17 +54,17 @@ export function canEngageEnemy<TBoard extends Board>(
     const enemyFrontSpaces = getFrontSpaces(
       board,
       destinationCoordinate,
-      enemyFacing
+      enemyFacing,
     );
     const enemyFlankSpaces = getFlankingSpaces(
       board,
       destinationCoordinate,
-      enemyFacing
+      enemyFacing,
     );
     const enemyBackSpaces = getBackSpaces(
       board,
       destinationCoordinate,
-      enemyFacing
+      enemyFacing,
     );
 
     // If coming from flank: no further checks needed.
@@ -76,7 +78,7 @@ export function canEngageEnemy<TBoard extends Board>(
       const spacesBehindEnemy = getSpacesBehind(
         board,
         destinationCoordinate,
-        enemyFacing
+        enemyFacing,
       );
       if (spacesBehindEnemy.has(moveStartCoordinate)) {
         // We can engage an enemy from the back if we started the move behind them.

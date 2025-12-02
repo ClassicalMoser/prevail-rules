@@ -27,14 +27,14 @@ All validation functions in this directory follow this pattern:
 ```typescript
 export function isAtPlacement<TBoard extends Board>(
   board: TBoard,
-  unitWithPlacement: UnitWithPlacement<TBoard>
+  unitWithPlacement: UnitWithPlacement<TBoard>,
 ): boolean {
   try {
     // All validation logic here
     const friendlyUnit = getPlayerUnitWithPosition(
       board,
       coordinate,
-      playerSide
+      playerSide,
     );
     // ... validation checks ...
     return true;

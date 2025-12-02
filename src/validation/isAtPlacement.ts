@@ -11,7 +11,7 @@ import { getPlayerUnitWithPosition } from "src/functions/boardSpace/getPlayerUni
  */
 export function isAtPlacement<TBoard extends Board>(
   board: TBoard,
-  unitWithPlacement: UnitWithPlacement<TBoard>
+  unitWithPlacement: UnitWithPlacement<TBoard>,
 ): boolean {
   try {
     // Get the declared coordinate of the unit on the board.
@@ -22,7 +22,7 @@ export function isAtPlacement<TBoard extends Board>(
     const friendlyUnitWithPlacement = getPlayerUnitWithPosition(
       board,
       boardCoordinate,
-      friendlySide
+      friendlySide,
     );
 
     // If there's no friendly unit at the coordinate, the unit is not at the placement.

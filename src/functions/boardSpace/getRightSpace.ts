@@ -19,7 +19,7 @@ import { getForwardSpace } from "./getForwardSpace.js";
 export function getRightSpace(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): BoardCoordinate<Board> | undefined {
   // Get the right-facing direction
   const rightFacing = getRightFacing(facing);
@@ -27,4 +27,3 @@ export function getRightSpace(
   const rightSpace = getForwardSpace(board, coordinate, rightFacing);
   return rightSpace;
 }
-
