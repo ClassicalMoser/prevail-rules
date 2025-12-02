@@ -1,17 +1,16 @@
 import type { MoveUnitCommand } from "src/commands/moveUnit.js";
 import type { StandardBoardCoordinate } from "src/entities/index.js";
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import { tempUnits } from "src/sampleValues/tempUnits.js";
 import { createUnitInstance } from "src/utils/createUnitInstance.js";
+import { getUnitByStatValue } from "src/utils/getUnitByStatValue.js";
 import { describe, expect, it } from "vitest";
 import { createBoardWithUnits } from "../../testing/createBoard.js";
 import { isLegalMove } from "./isLegalMove.js";
 
 describe("isLegalMove", () => {
-  const spearmenUnitType = tempUnits.find((unit) => unit.name === "Spearmen");
-  if (!spearmenUnitType) {
-    throw new Error("Spearmen unit type not found");
-  }
+  // Use stat-based lookup instead of name to avoid brittleness
+  // Spearmen have flexibility: 1
+  const spearmenUnitType = getUnitByStatValue("flexibility", 1);
 
   describe("valid moves", () => {
     it("should return true for staying in place", () => {
@@ -216,12 +215,8 @@ describe("isLegalMove", () => {
     });
 
     it("should return false for engaging enemy from front without flexibility to rotate", () => {
-      const lowFlexibilityUnitType = tempUnits.find(
-        (unit) => unit.flexibility === 1
-      );
-      if (!lowFlexibilityUnitType) {
-        throw new Error("Unit with flexibility 0 not found");
-      }
+      // Use stat-based lookup: flexibility 1 (Spearmen)
+      const lowFlexibilityUnitType = getUnitByStatValue("flexibility", 1);
       const unit = createUnitInstance("black", lowFlexibilityUnitType, 1);
       const fromCoordinate: StandardBoardCoordinate = "D-5";
       const toCoordinate: StandardBoardCoordinate = "E-5";

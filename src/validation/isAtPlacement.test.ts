@@ -6,8 +6,8 @@ import type {
   UnitWithPlacement,
 } from "src/entities/index.js";
 import type { PlayerSide } from "src/entities/player/playerSide.js";
-import { tempUnits } from "src/sampleValues/tempUnits.js";
 import { createUnitInstance } from "src/utils/createUnitInstance.js";
+import { getUnitByStatValue } from "src/utils/getUnitByStatValue.js";
 import { describe, expect, it } from "vitest";
 import {
   createBoardWithEngagedUnits,
@@ -20,11 +20,10 @@ describe("isAtPlacement", () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();
   const coordinate: StandardBoardCoordinate = "E-5";
 
-  const spearmenUnitType = tempUnits.find((unit) => unit.name === "Spearmen");
-  const swordsmenUnitType = tempUnits.find((unit) => unit.name === "Swordsmen");
-  if (!spearmenUnitType || !swordsmenUnitType) {
-    throw new Error("Required unit types not found");
-  }
+  // Use stat-based lookups instead of names to avoid brittleness
+  // Spearmen have flexibility: 1, Swordsmen have flexibility: 2
+  const spearmenUnitType = getUnitByStatValue("flexibility", 1);
+  const swordsmenUnitType = getUnitByStatValue("flexibility", 2);
 
   // Helper function to create a unit instance
   const createUnit = (

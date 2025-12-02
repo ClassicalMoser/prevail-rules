@@ -1,17 +1,16 @@
 import type { StandardBoardCoordinate } from "src/entities/index.js";
-import { tempUnits } from "src/sampleValues/tempUnits.js";
 import { hasMove } from "src/testing/testHelpers.js";
 import { createUnitInstance } from "src/utils/createUnitInstance.js";
+import { getUnitByStatValue } from "src/utils/getUnitByStatValue.js";
 import { describe, expect, it } from "vitest";
 import { createBoardWithUnits } from "../testing/createBoard.js";
 import { createEmptyStandardBoard } from "./createEmptyBoard.js";
 import { getLegalUnitMoves } from "./getLegalUnitMoves.js";
 
 describe("getLegalUnitMoves", () => {
-  const spearmenUnitType = tempUnits.find((unit) => unit.name === "Spearmen");
-  if (!spearmenUnitType) {
-    throw new Error("Spearmen unit type not found");
-  }
+  // Use stat-based lookup instead of name to avoid brittleness
+  // Spearmen have flexibility: 1
+  const spearmenUnitType = getUnitByStatValue("flexibility", 1);
 
   describe("spearmen unit on blank board", () => {
     it("should return legal moves for a spearmen unit at center of board facing north", () => {
@@ -57,9 +56,8 @@ describe("getLegalUnitMoves", () => {
     });
 
     it("should be able to move through friendly unit with sufficient flexibility", () => {
-      const highFlexibilityUnitType = tempUnits.find(
-        (unit) => unit.flexibility === 2,
-      );
+      // Use stat-based lookup: flexibility 2 (Swordsmen)
+      const highFlexibilityUnitType = getUnitByStatValue("flexibility", 2);
       if (!highFlexibilityUnitType) {
         throw new Error("Unit with flexibility 2 not found");
       }
@@ -105,10 +103,8 @@ describe("getLegalUnitMoves", () => {
 
     it("should be able to move diagonally between two friendly units with sufficient flexibility", () => {
       const unit = createUnitInstance("black", spearmenUnitType, 1);
-      const flexibleUnitType = tempUnits.find((unit) => unit.flexibility === 3);
-      if (!flexibleUnitType) {
-        throw new Error("Unit with flexibility 3 not found");
-      }
+      // Use stat-based lookup: flexibility 3 (Skirmishers)
+      const flexibleUnitType = getUnitByStatValue("flexibility", 3);
       const friendlyUnit1 = createUnitInstance("black", flexibleUnitType, 1);
       const friendlyUnit2 = createUnitInstance("black", flexibleUnitType, 2);
       const board = createBoardWithUnits([
@@ -164,10 +160,8 @@ describe("getLegalUnitMoves", () => {
     });
 
     it("should be able to engage enemy unit from front with flexibility to rotate", () => {
-      const flexibleUnitType = tempUnits.find((unit) => unit.flexibility === 2);
-      if (!flexibleUnitType) {
-        throw new Error("Unit with flexibility 2 not found");
-      }
+      // Use stat-based lookup: flexibility 2 (Swordsmen)
+      const flexibleUnitType = getUnitByStatValue("flexibility", 2);
       const unit = createUnitInstance("black", flexibleUnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "D-5";
       const startingFacing = "east";
