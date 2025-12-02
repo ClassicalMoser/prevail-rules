@@ -1,7 +1,11 @@
 import type { AssertExact } from "../../utils/assertExact.js";
 import type { Command } from "./command.js";
+import type { Modifier } from "./modifiers.js";
+import type { RoundEffect } from "./roundEffect.js";
 import { z } from "zod";
 import { commandSchema } from "./command.js";
+import { modifierSchema } from "./modifiers.js";
+import { roundEffectSchema } from "./roundEffect.js";
 
 /**
  * The schema for a card.
@@ -9,24 +13,20 @@ import { commandSchema } from "./command.js";
 export const cardSchema = z.object({
   /** The unique identifier of the card. */
   id: z.string().uuid(),
+  /** The version of the card. */
+  version: z.string().regex(/^\d+\.\d+\.\d+$/, {
+    message: "Version must be a valid semver string (e.g., 1.0.0, 1.12.35)",
+  }),
   /** The name of the card, regardless of version. */
   name: z.string(),
   /** The initiative value of the card. */
   initiative: z.number().int().min(1).max(4),
-  /** Whether the card allows ranged attacks. */
-  ranged: z.boolean(),
-  /** The command to be used on the card. */
+  /** The modifiers the card can discard for. */
+  modifiers: z.array(modifierSchema),
+  /** The command of the card. */
   command: commandSchema,
-  /** The range of the inspiration effect. */
-  inspirationRange: z.number().int().min(1).max(10),
-  /** The text describing the effect of the inspiration. */
-  inspirationEffectText: z.string(),
-  /** The effect of the inspiration. */
-  inspirationEffect: z.function().returns(z.void()),
-  /** The text describing the global effect, if any. */
-  globalEffectText: z.string().optional(),
-  /** The global effect, if any. */
-  globalEffect: z.function().returns(z.void()).optional(),
+  /** The round effect of the card, if any. */
+  roundEffect: roundEffectSchema.optional(),
 });
 
 // Helper type to check match of type against schema
@@ -38,24 +38,18 @@ type CardSchemaType = z.infer<typeof cardSchema>;
 export interface Card {
   /** The unique identifier of the card. */
   id: string;
+  /** The version of the card. */
+  version: string;
   /** The name of the card, regardless of version. */
   name: string;
   /** The initiative value of the card. */
   initiative: number;
-  /** Whether the card allows ranged attacks. */
-  ranged: boolean;
+  /** The modifiers the card can discard for. */
+  modifiers: Modifier[];
   /** The command to be used on the card. */
   command: Command;
-  /** The range of the inspiration effect. */
-  inspirationRange: number;
-  /** The text describing the effect of the inspiration. */
-  inspirationEffectText: string;
-  /** The effect of the inspiration. */
-  inspirationEffect: () => void;
-  /** The text describing the global effect, if any. */
-  globalEffectText?: string;
-  /** The global effect, if any. */
-  globalEffect?: () => void;
+  /** The round effect of the card, if any. */
+  roundEffect?: RoundEffect;
 }
 
 // Verify manual type matches schema inference

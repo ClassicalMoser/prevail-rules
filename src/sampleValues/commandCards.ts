@@ -2,71 +2,132 @@ import type { Card } from "src/entities/card/card.js";
 
 export const commandCards: readonly Card[] = [
   {
-    id: "1",
+    id: "card-1",
+    version: "1.0.0",
     name: "Command Card 1",
     initiative: 1,
-    ranged: false,
+    modifiers: [
+      {
+        type: "attack",
+        value: 1,
+      },
+    ],
     command: {
       size: "units",
+      type: "movement",
       number: 1,
-      traitRestrictions: [],
-      unitRestrictions: [],
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      modifiers: [],
     },
-    inspirationRange: 1,
-    inspirationEffectText: "Inspiration Effect Text",
-    inspirationEffect: () => {},
-    globalEffectText: "Global Effect Text",
-    globalEffect: () => {},
+    roundEffect: {
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      modifiers: [
+        {
+          type: "attack",
+          value: 1,
+        },
+      ],
+    },
   },
   {
     id: "2",
     name: "Command Card 2",
+    version: "1.0.0",
     initiative: 2,
-    ranged: false,
+    modifiers: [
+      {
+        type: "attack",
+        value: 1,
+      },
+    ],
     command: {
       size: "units",
+      type: "movement",
       number: 1,
-      traitRestrictions: [],
-      unitRestrictions: [],
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      modifiers: [],
     },
-    inspirationRange: 1,
-    inspirationEffectText: "Inspiration Effect Text",
-    inspirationEffect: () => {},
-    globalEffectText: "Global Effect Text",
-    globalEffect: () => {},
+    roundEffect: {
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      modifiers: [],
+    },
   },
   {
     id: "3",
     name: "Command Card 3",
+    version: "1.0.0",
     initiative: 3,
-    ranged: false,
+    modifiers: [
+      {
+        type: "attack",
+        value: 1,
+      },
+    ],
     command: {
       size: "units",
+      type: "movement",
       number: 1,
-      traitRestrictions: [],
-      unitRestrictions: [],
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      modifiers: [],
     },
-    inspirationRange: 1,
-    inspirationEffectText: "Inspiration Effect Text",
-    inspirationEffect: () => {},
-    globalEffectText: "Global Effect Text",
-    globalEffect: () => {},
+    roundEffect: {
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      modifiers: [],
+    },
   },
   {
     id: "4",
     name: "Command Card 4",
+    version: "1.0.0",
     initiative: 4,
-    ranged: false,
+    modifiers: [
+      {
+        type: "attack",
+        value: 1,
+      },
+    ],
     command: {
       size: "units",
+      type: "movement",
       number: 1,
-      traitRestrictions: [],
-      unitRestrictions: [],
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      modifiers: [],
     },
-    inspirationRange: 1,
-    inspirationEffectText: "Inspiration Effect Text",
-    inspirationEffect: () => {},
-    globalEffectText: "Global Effect Text",
-    globalEffect: () => {},
+    roundEffect: {
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      modifiers: [],
+    },
   },
 ];

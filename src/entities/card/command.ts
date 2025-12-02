@@ -1,10 +1,37 @@
 import type { AssertExact } from "src/utils/assertExact.js";
+import type { Modifier } from "./modifiers.js";
+import type { Restrictions } from "./restrictions.js";
 import { z } from "zod";
+import { modifierSchema } from "./modifiers.js";
+import { restrictionsSchema } from "./restrictions.js";
+
+/**
+ * The iterable list of types of commands that can be used on a card.
+ */
+export const commandTypes = ["movement", "rangedAttack"] as const;
+
+/**
+ * The schema for the types of commands that can be used on a card.
+ */
+export const commandTypesSchema = z.enum(commandTypes);
+
+// Helper type to check match of type against schema
+type CommandTypesSchemaType = z.infer<typeof commandTypesSchema>;
+
+/**
+ * The types of commands that can be used on a card.
+ */
+export type CommandType = (typeof commandTypes)[number];
+
+const _assertExactCommandType: AssertExact<
+  CommandType,
+  CommandTypesSchemaType
+> = true;
 
 /**
  * The iterable list of sizes of commands that can be used on a card.
  */
-export const commandSizes = ["units", "lines", "groups"] as const;
+export const commandSizes = ["units", "lines"] as const;
 
 /**
  * The schema for the sizes of commands that can be used on a card.
@@ -30,29 +57,33 @@ const _assertExactCommandSize: AssertExact<
 export const commandSchema = z.object({
   /** The size of the command. */
   size: commandSizesSchema,
+  /** The type of the command. */
+  type: commandTypesSchema,
   /** The number of commands of this size to be used. */
   number: z.number().int().min(1).max(10),
-  /** The traits that must be present on the units in the command. */
-  traitRestrictions: z.array(z.string()),
-  /** The unique identifiers of the unit types that can be included in the command. */
-  unitRestrictions: z.array(z.string().uuid()),
+  /** The restrictions on the command */
+  restrictions: restrictionsSchema,
+  /** The modifiers the command applies. */
+  modifiers: z.array(modifierSchema),
 });
 
 // Helper type to check match of type against schema
 type CommandSchemaType = z.infer<typeof commandSchema>;
 
 /**
- * A command on a card.
+ * The restrictions of a card command on a card.
  */
 export interface Command {
   /** The size of the command. */
   size: CommandSize;
+  /** The type of the command. */
+  type: CommandType;
   /** The number of commands of this size to be used. */
   number: number;
-  /** The traits that must be present on the units in the command. */
-  traitRestrictions: string[];
-  /** The unique identifiers of the unit types that can be included in the command. */
-  unitRestrictions: string[]; // UUIDs of unit types
+  /** The restrictions on the command */
+  restrictions: Restrictions;
+  /** The modifiers the command applies. */
+  modifiers: Modifier[];
 }
 
 const _assertExactCommand: AssertExact<Command, CommandSchemaType> = true;
