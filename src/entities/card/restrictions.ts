@@ -4,14 +4,14 @@ import { z } from "zod";
 import { traitSchema } from "../../sampleValues/traits.js";
 
 /**
- * The schema for the restrictions on a card command.
+ * The schema for the restrictions on a card command or round effect.
  */
 export const restrictionsSchema = z.object({
-  /** The maximum range from the commander. */
-  inspirationRangeRestriction: z.number().int().min(1).max(10).nullable(),
-  /** The traits that must be present on the units in the command. */
+  /** The maximum range from the commander allowed for the command or round effect to be applied. */
+  inspirationRangeRestriction: z.number().int().min(0).max(10).nullable(),
+  /** The traits that must be present on the unit for the command or round effect to be applied. */
   traitRestrictions: z.array(traitSchema),
-  /** The unique identifiers of the unit types that can be included in the command. */
+  /** The unique identifiers of the unit types that can be included in the command or round effect. */
   unitRestrictions: z.array(z.string().uuid()),
 });
 
@@ -19,14 +19,14 @@ export const restrictionsSchema = z.object({
 type RestrictionsSchemaType = z.infer<typeof restrictionsSchema>;
 
 /**
- * The restrictions of a card command on a card.
+ * The restrictions of a card command or round effect.
  */
 export interface Restrictions {
-  /** The maximum range from the commander. */
+  /** The maximum range from the commander allowed for the command or round effect to be applied. */
   inspirationRangeRestriction: number | null;
-  /** The traits that must be present on the units in the command. */
+  /** The traits that must be present on the unit for the command or round effect to be applied. */
   traitRestrictions: Trait[];
-  /** The unique identifiers of the unit types that can be included in the command. */
+  /** The unique identifiers of the unit types that can be included in the command or round effect. */
   unitRestrictions: string[];
 }
 
