@@ -8,7 +8,7 @@ import type { UnitPresence } from "src/entities/unitPresence/unitPresence.js";
  * @returns True if the unit presence has engaged units, false otherwise
  */
 export function hasEngagedUnits(
-  unitPresence: UnitPresence,
+  unitPresence: UnitPresence
 ): unitPresence is EngagedUnitPresence {
   return unitPresence.presenceType === "engaged";
 }

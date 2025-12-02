@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
-} from "../../functions/createBoard.js";
+} from "../../testing/createBoard.js";
 import { createEmptyStandardBoard } from "../../functions/createEmptyBoard.js";
 import { canMoveInto } from "./canMoveInto.js";
 
@@ -87,14 +87,17 @@ describe("canMoveInto", () => {
       expect(result).toBe(false);
     });
 
-    it("should return false when space has falsy unitPresence (defensive check)", () => {
-      // Test coverage for lines 20-21: defensive check for falsy unitPresence
-      // Using type assertion to create a board space with null unitPresence, which tests
-      // the defensive check even though unitPresence is always defined in normal operation
+    it("should return false when unitPresence has invalid type", () => {
+      // Test coverage for else block: handles unexpected unitPresence state
+      // Using type assertion to create a board space with invalid unitPresence type,
+      // which tests the else block even though this should never happen in normal operation
       const unit = createUnitInstance("black");
       const board = createEmptyStandardBoard();
-      // Use type assertion to bypass TypeScript's type checking and set unitPresence to null
-      (board.board[coordinate] as any).unitPresence = null;
+      // Use type assertion to bypass TypeScript's type checking and set unitPresence to an invalid value
+      // This causes all type guards to fail and fall through to the else block
+      (board.board[coordinate] as any).unitPresence = {
+        presenceType: "invalid" as any,
+      };
 
       const result = canMoveInto(unit, board, coordinate);
 

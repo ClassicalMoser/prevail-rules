@@ -1,6 +1,7 @@
 import type { Board } from "src/entities/board/board.js";
 import type { UnitWithPlacement } from "src/entities/index.js";
 import { getPlayerUnitWithPosition } from "src/functions/boardSpace/getPlayerUnitWithPosition.js";
+import { areSameSide } from "src/functions/unit/index.js";
 
 /**
  * Determines whether a unit is at a specific placement on the board.
@@ -11,7 +12,7 @@ import { getPlayerUnitWithPosition } from "src/functions/boardSpace/getPlayerUni
  */
 export function isAtPlacement<TBoard extends Board>(
   board: TBoard,
-  unitWithPlacement: UnitWithPlacement<TBoard>,
+  unitWithPlacement: UnitWithPlacement<TBoard>
 ): boolean {
   try {
     // Get the declared coordinate of the unit on the board.
@@ -22,7 +23,7 @@ export function isAtPlacement<TBoard extends Board>(
     const friendlyUnitWithPlacement = getPlayerUnitWithPosition(
       board,
       boardCoordinate,
-      friendlySide,
+      friendlySide
     );
 
     // If there's no friendly unit at the coordinate, the unit is not at the placement.
@@ -41,8 +42,7 @@ export function isAtPlacement<TBoard extends Board>(
     // If the friendly unit is not the same as the unit on the board, the unit is not at the placement.
     // Compare by value since UnitInstance is identified by playerSide, unitType, and instanceNumber.
     if (
-      friendlyUnitWithPlacement.unit.playerSide !==
-        unitWithPlacement.unit.playerSide ||
+      !areSameSide(friendlyUnitWithPlacement.unit, unitWithPlacement.unit) ||
       friendlyUnitWithPlacement.unit.unitType !==
         unitWithPlacement.unit.unitType ||
       friendlyUnitWithPlacement.unit.instanceNumber !==

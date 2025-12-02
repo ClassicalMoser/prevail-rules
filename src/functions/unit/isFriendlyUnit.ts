@@ -10,7 +10,7 @@ import type { UnitInstance } from "src/entities/unit/unitInstance.js";
  */
 export function isFriendlyUnit(
   unit: UnitInstance,
-  playerSide: PlayerSide,
+  playerSide: PlayerSide
 ): boolean {
   return unit.playerSide === playerSide;
 }

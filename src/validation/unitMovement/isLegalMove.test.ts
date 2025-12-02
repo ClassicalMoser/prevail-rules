@@ -4,7 +4,7 @@ import type { UnitFacing } from "src/entities/unit/unitFacing.js";
 import { tempUnits } from "src/sampleValues/tempUnits.js";
 import { createUnitInstance } from "src/utils/createUnitInstance.js";
 import { describe, expect, it } from "vitest";
-import { createBoardWithUnits } from "../../functions/createBoard.js";
+import { createBoardWithUnits } from "../../testing/createBoard.js";
 import { isLegalMove } from "./isLegalMove.js";
 
 describe("isLegalMove", () => {
@@ -217,7 +217,7 @@ describe("isLegalMove", () => {
 
     it("should return false for engaging enemy from front without flexibility to rotate", () => {
       const lowFlexibilityUnitType = tempUnits.find(
-        (unit) => unit.flexibility === 1,
+        (unit) => unit.flexibility === 1
       );
       if (!lowFlexibilityUnitType) {
         throw new Error("Unit with flexibility 0 not found");
@@ -239,6 +239,29 @@ describe("isLegalMove", () => {
         to: { coordinate: toCoordinate, facing },
       };
 
+      expect(isLegalMove(moveCommand, board)).toBe(false);
+    });
+
+    it("should return false when getLegalUnitMoves throws (invalid starting position)", () => {
+      // Test coverage for catch block: when getLegalUnitMoves throws
+      // This tests the case where the unit is not at the reported starting position
+      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const fromCoordinate: StandardBoardCoordinate = "E-5";
+      const toCoordinate: StandardBoardCoordinate = "D-5";
+      const facing: UnitFacing = "north";
+      // Create board with unit at a different coordinate than the "from" position
+      const board = createBoardWithUnits([
+        { unit, coordinate: "F-5", facing }, // Unit is at F-5, but command says from E-5
+      ]);
+
+      const moveCommand: MoveUnitCommand = {
+        player: "black",
+        unit,
+        from: { coordinate: fromCoordinate, facing },
+        to: { coordinate: toCoordinate, facing },
+      };
+
+      // getLegalUnitMoves will throw because unit is not at the starting position
       expect(isLegalMove(moveCommand, board)).toBe(false);
     });
   });

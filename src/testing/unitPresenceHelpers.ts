@@ -22,7 +22,7 @@ export function createNoneUnitPresence(): NoneUnitPresence {
  */
 export function createSingleUnitPresence(
   unit: UnitInstance,
-  facing: UnitFacing,
+  facing: UnitFacing
 ): SingleUnitPresence {
   return {
     presenceType: "single",
@@ -42,7 +42,7 @@ export function createSingleUnitPresence(
 export function createEngagedUnitPresence(
   primaryUnit: UnitInstance,
   primaryFacing: UnitFacing,
-  secondaryUnit: UnitInstance,
+  secondaryUnit: UnitInstance
 ): EngagedUnitPresence {
   return {
     presenceType: "engaged",

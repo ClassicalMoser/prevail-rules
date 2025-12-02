@@ -1,6 +1,6 @@
 import type { MoveCommanderCommand } from "src/commands/moveCommander.js";
 import type { StandardBoardCoordinate } from "src/entities/index.js";
-import { createBoardWithCommander } from "src/functions/createBoard.js";
+import { createBoardWithCommander } from "src/testing/createBoard.js";
 import { describe, expect, it } from "vitest";
 import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
 import { isLegalCommanderMove } from "./isLegalCommanderMove.js";

@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-} from "../createBoard.js";
+} from "../../testing/createBoard.js";
 import { createEmptyStandardBoard } from "../createEmptyBoard.js";
 import { getOppositeFacing } from "../facings/getOppositeFacing.js";
 import { getPlayerUnitWithPosition } from "./getPlayerUnitWithPosition.js";

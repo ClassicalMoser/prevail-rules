@@ -8,7 +8,7 @@ import type { PlayerSide } from "src/entities/player/playerSide.js";
 import type { UnitType } from "src/entities/unit/unitType.js";
 import { createUnitInstance } from "src/utils/createUnitInstance.js";
 import { getUnitByStatValue } from "src/utils/getUnitByStatValue.js";
-import { createEmptyStandardBoard } from "./createEmptyBoard.js";
+import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
 
 /**
  * Creates a board with units at specified positions.
@@ -22,7 +22,7 @@ export function createBoardWithUnits(
     unit: UnitInstance;
     coordinate: StandardBoardCoordinate;
     facing: UnitFacing;
-  }>,
+  }>
 ): StandardBoard {
   const board = createEmptyStandardBoard();
   for (const { unit, coordinate, facing } of units) {
@@ -61,7 +61,7 @@ export function createBoardWithSingleUnit(
     attack?: number;
     facing?: UnitFacing;
     instanceNumber?: number;
-  },
+  }
 ): StandardBoard {
   const board = createEmptyStandardBoard();
   const facing = options?.facing ?? "north";
@@ -74,7 +74,7 @@ export function createBoardWithSingleUnit(
     const unitType = getUnitByStatValue("flexibility", options.flexibility);
     if (!unitType) {
       throw new Error(
-        `No unit found with flexibility value ${options.flexibility}.`,
+        `No unit found with flexibility value ${options.flexibility}.`
       );
     }
     unit = createUnitInstance(playerSide, unitType, instanceNumber);
@@ -118,7 +118,7 @@ export function createBoardWithEngagedUnits(
   primaryUnit: UnitInstance,
   secondaryUnit: UnitInstance,
   coord: StandardBoardCoordinate = "E-5",
-  primaryFacing: UnitFacing = "north",
+  primaryFacing: UnitFacing = "north"
 ): StandardBoard {
   const board = createEmptyStandardBoard();
   board.board[coord] = {
@@ -145,7 +145,7 @@ export function createBoardWithEngagedUnits(
 export function createBoardWithCommander(
   playerSide: PlayerSide,
   coordinate: StandardBoardCoordinate,
-  board?: StandardBoard,
+  board?: StandardBoard
 ): StandardBoard {
   const targetBoard = board ?? createEmptyStandardBoard();
   targetBoard.board[coordinate] = {

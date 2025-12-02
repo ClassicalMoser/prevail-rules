@@ -25,7 +25,7 @@ export const gameStateSchema = z.object({
   /** Which player currently has initiative. */
   initiative: playerSideSchema,
   /** Which player is currently taking their turn. */
-  playerTurn: playerSideSchema.nullable(),
+  playerTurn: playerSideSchema.optional(),
   /** The ranged attacks that are still due to be resolved this phase. */
   remainingRangedAttacks: z.set(unitInstanceSchema),
   /** The commands that are still due to be resolved this phase. */
@@ -58,7 +58,7 @@ export interface GameState {
   /** Which player currently has initiative. */
   initiative: PlayerSide;
   /** Which player is currently taking their turn. */
-  playerTurn: PlayerSide | null;
+  playerTurn?: PlayerSide;
   /** The ranged attacks that are still due to be resolved this phase. */
   remainingRangedAttacks: Set<UnitInstance>;
   /** The commands that are still due to be resolved this phase. */

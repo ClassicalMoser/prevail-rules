@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
-} from "../../functions/createBoard.js";
+} from "../../testing/createBoard.js";
 import { createEmptyStandardBoard } from "../../functions/createEmptyBoard.js";
 import { canMoveThrough } from "./canMoveThrough.js";
 

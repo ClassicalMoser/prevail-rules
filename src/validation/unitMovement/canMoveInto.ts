@@ -19,7 +19,7 @@ import {
 export function canMoveInto<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+  coordinate: BoardCoordinate<TBoard>
 ): boolean {
   try {
     // Find the board space at the given coordinate.
@@ -44,10 +44,11 @@ export function canMoveInto<TBoard extends Board>(
       }
       // Player can move into a space with an enemy unit.
       return true;
+    } else {
+      // All unit presence types have been handled (none, engaged, single).
+      // This else block handles any unexpected state by returning false.
+      return false;
     }
-
-    // This should never happen (TypeScript exhaustiveness check).
-    return false;
   } catch {
     // Any error means the unit cannot move into this coordinate.
     return false;

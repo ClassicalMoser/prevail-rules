@@ -12,7 +12,7 @@ import { describe, expect, it } from "vitest";
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-} from "../functions/createBoard.js";
+} from "../testing/createBoard.js";
 import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
 import { isAtPlacement } from "./isAtPlacement.js";
 

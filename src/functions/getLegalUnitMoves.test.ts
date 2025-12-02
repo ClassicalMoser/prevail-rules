@@ -3,7 +3,7 @@ import { tempUnits } from "src/sampleValues/tempUnits.js";
 import { hasMove } from "src/testing/testHelpers.js";
 import { createUnitInstance } from "src/utils/createUnitInstance.js";
 import { describe, expect, it } from "vitest";
-import { createBoardWithUnits } from "./createBoard.js";
+import { createBoardWithUnits } from "../testing/createBoard.js";
 import { createEmptyStandardBoard } from "./createEmptyBoard.js";
 import { getLegalUnitMoves } from "./getLegalUnitMoves.js";
 

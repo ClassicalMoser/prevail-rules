@@ -6,7 +6,7 @@ import type {
 import type { PlayerSide } from "src/entities/player/playerSide.js";
 import { createTestUnit } from "src/testing/unitHelpers.js";
 import { describe, expect, it } from "vitest";
-import { createBoardWithUnits } from "../../functions/createBoard.js";
+import { createBoardWithUnits } from "../../testing/createBoard.js";
 import { createEmptyStandardBoard } from "../../functions/createEmptyBoard.js";
 import { canEngageEnemy } from "./canEngageEnemy.js";
 

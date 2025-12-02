@@ -3,9 +3,7 @@ import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
 import type { UnitFacing } from "src/entities/unit/unitFacing.js";
 import { getOppositeFacing } from "../../facings/getOppositeFacing.js";
 import { getBackSpaces } from "../adjacency/getBackSpaces.js";
-import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
-import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
-import { getInlineSpaces } from "./getInlineSpaces.js";
+import { getSpacesInDirection } from "./getSpacesInDirection.js";
 
 /**
  * Get the spaces behind for a given coordinate and facing.
@@ -22,26 +20,11 @@ export function getSpacesBehind(
   facing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   // Start with the back spaces
-  const spacesBehind = getBackSpaces(board, coordinate, facing);
-
-  // Add the inline spaces for all three (prevents checkerboard for diagonal facings)
-  for (const space of spacesBehind) {
-    const inlineSpaces = getInlineSpaces(board, space, facing);
-    for (const inlineSpace of inlineSpaces) spacesBehind.add(inlineSpace);
-  }
+  const backSpaces = getBackSpaces(board, coordinate, facing);
 
   // Get the direction backward from the facing
   const backwardFacing = getOppositeFacing(facing);
 
-  // Add all spaces behind the solid line.
-  for (const space of spacesBehind) {
-    const spacesToEdge = getForwardSpacesToEdge(board, space, backwardFacing);
-    for (const spaceToEdge of spacesToEdge) spacesBehind.add(spaceToEdge);
-  }
-
-  // Filter out undefined values
-  const validSpacesBehind = filterUndefinedSpaces(spacesBehind);
-
-  // Return set of valid spaces behind
-  return validSpacesBehind;
+  // Extend spaces in the backward direction
+  return getSpacesInDirection(board, backSpaces, facing, backwardFacing);
 }

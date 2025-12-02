@@ -8,7 +8,7 @@ import type { UnitPresence } from "src/entities/unitPresence/unitPresence.js";
  * @returns True if the unit presence has a single unit, false otherwise
  */
 export function hasSingleUnit(
-  unitPresence: UnitPresence,
+  unitPresence: UnitPresence
 ): unitPresence is SingleUnitPresence {
   return unitPresence.presenceType === "single";
 }
