@@ -2,6 +2,7 @@ export * from "./army/index.js";
 export * from "./board/index.js";
 export * from "./card/index.js";
 export * from "./gameType.js";
+export * from "./line.js";
 export * from "./player/index.js";
 export * from "./sequence/index.js";
 export * from "./unit/index.js";

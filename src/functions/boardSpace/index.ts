@@ -3,4 +3,7 @@ export * from "./filterUndefinedSpaces.js";
 export * from "./getBoardSpace.js";
 export * from "./getForwardSpace.js";
 export * from "./getForwardSpacesToEdge.js";
+export * from "./getLeftSpace.js";
+export * from "./getPlayerUnitWithPosition.js";
 export * from "./getRearwardSpace.js";
+export * from "./getRightSpace.js";

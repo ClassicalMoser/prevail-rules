@@ -13,9 +13,8 @@ import { getBoardSpace } from "src/functions/boardSpace/getBoardSpace.js";
 export function canMoveInto<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+  coordinate: BoardCoordinate<TBoard>
 ): boolean {
-  // Block for errors.
   try {
     // Find the board space at the given coordinate.
     const space = getBoardSpace(board, coordinate);
@@ -47,8 +46,7 @@ export function canMoveInto<TBoard extends Board>(
     console.error("Invalid unit presence type");
     return false as never;
   } catch {
-    // Any error will always fail the validation.
-    console.error("Error getting board space");
+    // Any error means the unit cannot move into this coordinate.
     return false;
   }
 }

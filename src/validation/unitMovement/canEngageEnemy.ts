@@ -28,12 +28,11 @@ export function canEngageEnemy<TBoard extends Board>(
   adjacentFacing: UnitFacing,
   adjacentCoordinate: BoardCoordinate<TBoard>,
   remainingFlexibility: number,
-  moveStartCoordinate: BoardCoordinate<TBoard>,
+  moveStartCoordinate: BoardCoordinate<TBoard>
 ): boolean {
-  // Check if the destination has an enemy unit
-  let destinationSpace;
   try {
-    destinationSpace = getBoardSpace(board, destinationCoordinate);
+    // Check if the destination has an enemy unit
+    const destinationSpace = getBoardSpace(board, destinationCoordinate);
     if (
       destinationSpace.unitPresence.presenceType !== "single" ||
       destinationSpace.unitPresence.unit.playerSide === unit.playerSide
@@ -42,77 +41,72 @@ export function canEngageEnemy<TBoard extends Board>(
       // so we can't engage an enemy here
       return false;
     }
-  } catch {
-    // Invalid coordinate
-    return false;
-  }
 
-  // We're moving into an enemy space - need to check engagement rules
-  const enemyFacing = destinationSpace.unitPresence.facing;
+    // We're moving into an enemy space - need to check engagement rules
+    const enemyFacing = destinationSpace.unitPresence.facing;
 
-  // Validate adjacent coordinate exists
-  try {
+    // Validate adjacent coordinate exists
     getBoardSpace(board, adjacentCoordinate);
-  } catch {
-    // Invalid adjacent coordinate
-    return false;
-  }
 
-  // We're moving from a different space - check if we're coming from front/flank/back
-  const enemyFrontSpaces = getFrontSpaces(
-    board,
-    destinationCoordinate,
-    enemyFacing,
-  );
-  const enemyFlankSpaces = getFlankingSpaces(
-    board,
-    destinationCoordinate,
-    enemyFacing,
-  );
-  const enemyBackSpaces = getBackSpaces(
-    board,
-    destinationCoordinate,
-    enemyFacing,
-  );
-
-  // If coming from flank: no further checks needed.
-  // Defending unit will be forced to face this unit.
-  if (enemyFlankSpaces.has(adjacentCoordinate)) {
-    return true;
-  }
-
-  // If coming from back: must have started move behind the enemy.
-  if (enemyBackSpaces.has(adjacentCoordinate)) {
-    const spacesBehindEnemy = getSpacesBehind(
+    // We're moving from a different space - check if we're coming from front/flank/back
+    const enemyFrontSpaces = getFrontSpaces(
       board,
       destinationCoordinate,
-      enemyFacing,
+      enemyFacing
     );
-    if (spacesBehindEnemy.has(moveStartCoordinate)) {
-      // We can engage an enemy from the back if we started the move behind them.
+    const enemyFlankSpaces = getFlankingSpaces(
+      board,
+      destinationCoordinate,
+      enemyFacing
+    );
+    const enemyBackSpaces = getBackSpaces(
+      board,
+      destinationCoordinate,
+      enemyFacing
+    );
+
+    // If coming from flank: no further checks needed.
+    // Defending unit will be forced to face this unit.
+    if (enemyFlankSpaces.has(adjacentCoordinate)) {
       return true;
     }
-    // We can't engage an enemy from the back if we didn't start the move behind them.
+
+    // If coming from back: must have started move behind the enemy.
+    if (enemyBackSpaces.has(adjacentCoordinate)) {
+      const spacesBehindEnemy = getSpacesBehind(
+        board,
+        destinationCoordinate,
+        enemyFacing
+      );
+      if (spacesBehindEnemy.has(moveStartCoordinate)) {
+        // We can engage an enemy from the back if we started the move behind them.
+        return true;
+      }
+      // We can't engage an enemy from the back if we didn't start the move behind them.
+      return false;
+    }
+
+    // If coming from front: must end facing opposite to the enemy
+    if (enemyFrontSpaces.has(adjacentCoordinate)) {
+      const requiredFacing = getOppositeFacing(enemyFacing);
+      // If we're already facing the required direction, we can engage the enemy.
+      if (adjacentFacing === requiredFacing) {
+        return true;
+      }
+      // If we're coming from an angle and need to rotate, we need at least 1 flexibility
+      if (remainingFlexibility > 0) {
+        // We have flexibility to rotate, so we can engage the enemy.
+        return true;
+      }
+
+      // Can't rotate to face the enemy, so we can't engage the enemy.
+      return false;
+    }
+
+    // We're not adjacent to the enemy, so we can't validate engagement.
+    return false;
+  } catch {
+    // Any error means we cannot engage the enemy.
     return false;
   }
-
-  // If coming from front: must end facing opposite to the enemy
-  if (enemyFrontSpaces.has(adjacentCoordinate)) {
-    const requiredFacing = getOppositeFacing(enemyFacing);
-    // If we're already facing the required direction, we can engage the enemy.
-    if (adjacentFacing === requiredFacing) {
-      return true;
-    }
-    // If we're coming from an angle and need to rotate, we need at least 1 flexibility
-    if (remainingFlexibility > 0) {
-      // We have flexibility to rotate, so we can engage the enemy.
-      return true;
-    }
-
-    // Can't rotate to face the enemy, so we can't engage the enemy.
-    return false;
-  }
-
-  // We're not adjacent to the enemy, so we can't validate engagement.
-  return false;
 }
