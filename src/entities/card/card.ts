@@ -1,7 +1,9 @@
 import type { Command, Modifier, RoundEffect } from "@entities";
 import type { AssertExact } from "@utils";
-import { commandSchema, modifierSchema, roundEffectSchema } from "@entities";
 import { z } from "zod";
+import { commandSchema } from "./command";
+import { modifierSchema } from "./modifiers";
+import { roundEffectSchema } from "./roundEffect";
 
 /**
  * The schema for a card.

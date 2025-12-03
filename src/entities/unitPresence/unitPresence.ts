@@ -4,12 +4,10 @@ import type {
   SingleUnitPresence,
 } from "@entities";
 import type { AssertExact } from "@utils";
-import {
-  engagedUnitPresenceSchema,
-  noneUnitPresenceSchema,
-  singleUnitPresenceSchema,
-} from "@entities";
 import { z } from "zod";
+import { engagedUnitPresenceSchema } from "./engagedUnitPresence";
+import { noneUnitPresenceSchema } from "./noneUnitPresence";
+import { singleUnitPresenceSchema } from "./singleUnitPresence";
 
 /**
  * The schema for unit presence in a space.

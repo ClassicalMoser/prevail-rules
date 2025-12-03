@@ -1,10 +1,10 @@
-import { hasSingleUnit } from "@functions/unitPresence/hasSingleUnit";
-import { createTestUnit } from "@testing/unitHelpers";
+import { hasSingleUnit } from "@functions";
 import {
   createEngagedUnitPresence,
   createNoneUnitPresence,
   createSingleUnitPresence,
-} from "@testing/unitPresenceHelpers";
+  createTestUnit,
+} from "@testing";
 import { describe, expect, it } from "vitest";
 
 describe("hasSingleUnit", () => {

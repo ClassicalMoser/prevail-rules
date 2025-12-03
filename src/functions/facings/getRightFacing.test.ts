@@ -1,5 +1,5 @@
 import type { UnitFacing } from "@entities";
-import { getRightFacing } from "@functions/facings";
+import { getRightFacing } from "@functions";
 import { describe, expect, it } from "vitest";
 
 describe("getRightFacing", () => {

@@ -1,3 +1,5 @@
+export * from "./adjacency";
+export * from "./areas";
 export * from "./deltas";
 export * from "./filterUndefinedSpaces";
 export * from "./getBoardSpace";

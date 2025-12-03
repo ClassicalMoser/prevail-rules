@@ -1,17 +1,17 @@
-import type { PlayerSide } from "@entities";
 import type {
+  PlayerSide,
   StandardBoard,
   StandardBoardCoordinate,
   UnitFacing,
   UnitInstance,
   UnitWithPlacement,
-} from "@entities/index";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
+} from "@entities";
+import { createEmptyStandardBoard } from "@functions";
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-} from "@testing/createBoard";
-import { getUnitByStatValue } from "@testing/getUnitByStatValue";
+  getUnitByStatValue,
+} from "@testing";
 import { createUnitInstance } from "@utils/createUnitInstance";
 import { isAtPlacement } from "@validation";
 import { describe, expect, it } from "vitest";

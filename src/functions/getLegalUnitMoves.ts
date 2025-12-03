@@ -7,12 +7,19 @@ import type {
   UnitPlacement,
 } from "@entities";
 import { unitFacings } from "@entities";
-import { getBoardSpace, getForwardSpace } from "@functions/boardSpace";
-import { getAdjacentFacings } from "@functions/facings";
-import { areSameSide } from "@functions/unit";
-import { hasSingleUnit } from "@functions/unitPresence";
-import { isDiagonalFacing } from "@validation";
-import { canEngageEnemy, canMoveInto , canMoveThrough  } from "@validation/unitMovement";
+import {
+  areSameSide,
+  getAdjacentFacings,
+  getBoardSpace,
+  getForwardSpace,
+  hasSingleUnit,
+} from "@functions";
+import {
+  canEngageEnemy,
+  canMoveInto,
+  canMoveThrough,
+  isDiagonalFacing,
+} from "@validation";
 
 /**
  * Calculates all legal moves for a unit from a given starting position.

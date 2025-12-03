@@ -1,7 +1,8 @@
-import type { Modifier, Restrictions  } from "@entities";
+import type { Modifier, Restrictions } from "@entities";
 import type { AssertExact } from "@utils";
-import { modifierSchema, restrictionsSchema  } from "@entities";
 import { z } from "zod";
+import { modifierSchema } from "./modifiers";
+import { restrictionsSchema } from "./restrictions";
 
 export const roundEffectSchema = z.object({
   /** The restrictions on the round effect. */

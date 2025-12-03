@@ -1,4 +1,4 @@
-import type { SingleUnitPresence, UnitPresence  } from "@entities";
+import type { SingleUnitPresence, UnitPresence } from "@entities";
 
 /**
  * Type guard to check if a unit presence has a single unit.

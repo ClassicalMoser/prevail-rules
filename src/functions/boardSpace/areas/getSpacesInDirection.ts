@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate, UnitFacing } from "@entities";
-import { filterUndefinedSpaces, getForwardSpacesToEdge } from "@functions/boardSpace";
-import { getInlineSpaces } from "@functions/boardSpace/areas";
+import { filterUndefinedSpaces, getForwardSpacesToEdge } from "@functions";
+import { getInlineSpaces } from "./getInlineSpaces";
 
 /**
  * Internal helper that extends spaces in a given direction.

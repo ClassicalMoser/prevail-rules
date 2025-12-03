@@ -1,7 +1,8 @@
-import type { BoardSpace, LargeBoardCoordinate } from "@entities/board";
+import type { BoardSpace, LargeBoardCoordinate } from "@entities";
 import type { AssertExact } from "@utils";
-import { boardSpaceSchema, largeBoardCoordinates  } from "@entities/board";
+import { boardSpaceSchema } from "@entities";
 import { z } from "zod";
+import { largeBoardCoordinates } from "./largeCoordinates";
 
 /**
  * Creates a Zod object schema for a board with all required coordinates.

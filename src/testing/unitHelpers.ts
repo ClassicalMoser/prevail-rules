@@ -1,4 +1,4 @@
-import type { PlayerSide, UnitInstance , UnitType  } from "@entities";
+import type { PlayerSide, UnitInstance, UnitType } from "@entities";
 import { getUnitByStatValue } from "@testing";
 import { createUnitInstance } from "@utils/createUnitInstance";
 

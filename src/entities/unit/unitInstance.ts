@@ -1,7 +1,8 @@
-import type { PlayerSide, UnitType  } from "@entities";
+import type { PlayerSide, UnitType } from "@entities";
 import type { AssertExact } from "@utils";
-import { playerSideSchema, unitTypeSchema  } from "@entities";
+import { playerSideSchema } from "@entities";
 import { z } from "zod";
+import { unitTypeSchema } from "./unitType";
 
 /**
  * The schema for a unit instance.

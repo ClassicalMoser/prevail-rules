@@ -9,16 +9,14 @@ import type {
   UnitInstance,
 } from "@entities";
 import type { AssertExact } from "@utils";
-import {
-  boardSchema,
-  cardStateSchema,
-  commandSchema,
-  engagedUnitPresenceSchema,
-  phaseSchema,
-  playerSideSchema,
-  unitInstanceSchema,
-} from "@entities";
 import { z } from "zod";
+import { boardSchema } from "./board";
+import { cardStateSchema } from "./card/cardState";
+import { commandSchema } from "./card/command";
+import { playerSideSchema } from "./player/playerSide";
+import { phaseSchema } from "./sequence/phases";
+import { unitInstanceSchema } from "./unit/unitInstance";
+import { engagedUnitPresenceSchema } from "./unitPresence/engagedUnitPresence";
 
 /** The schema for a game state. */
 export const gameStateSchema = z.object({

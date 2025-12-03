@@ -1,8 +1,8 @@
-import { getSpacesInArc } from "@functions/boardSpace/areas";
 import {
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from "@functions/createEmptyBoard";
+  getSpacesInArc,
+} from "@functions";
 import { describe, expect, it } from "vitest";
 
 describe("getSpacesInArc", () => {

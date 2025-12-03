@@ -34,9 +34,9 @@ export default antfu(
         {
           patterns: [
             {
-              group: ["./**", "./*", "../**"],
+              group: ["../**"],
               message:
-                "Use aliased imports (e.g., @entities/*, @functions/*) instead of relative paths.",
+                "Use aliased imports (e.g., @entities/*, @functions/*) instead of relative paths that go up directories.",
             },
             {
               group: ["src/**"],
@@ -83,5 +83,5 @@ export default antfu(
   {
     ignores: ["pnpm-lock.yaml", "node_modules/", "*.yml"],
   },
-  prettierConfig
+  prettierConfig,
 );

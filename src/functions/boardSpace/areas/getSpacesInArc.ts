@@ -1,6 +1,5 @@
 import type { Board, BoardCoordinate, UnitFacing } from "@entities";
-import { filterUndefinedSpaces } from "@functions/boardSpace";
-import { getFrontSpaces } from "@functions/boardSpace/adjacency";
+import { filterUndefinedSpaces, getFrontSpaces } from "@functions";
 
 export function getSpacesInArc<TBoard extends Board>(
   board: TBoard,

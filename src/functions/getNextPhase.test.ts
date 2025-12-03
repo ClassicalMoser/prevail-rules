@@ -1,5 +1,5 @@
 import { phases } from "@entities";
-import { getNextPhase } from "@functions/getNextPhase";
+import { getNextPhase } from "@functions";
 import { describe, expect, it } from "vitest";
 
 describe("getNextPhase", () => {

@@ -1,4 +1,4 @@
-import { getOppositeFacing } from "@functions/facings";
+import { getOppositeFacing } from "@functions";
 import { describe, expect, it } from "vitest";
 
 describe("getOppositeFacing", () => {

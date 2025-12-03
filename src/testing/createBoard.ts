@@ -1,11 +1,12 @@
-import type { PlayerSide, UnitType  } from "@entities";
 import type {
+  PlayerSide,
   StandardBoard,
   StandardBoardCoordinate,
   UnitFacing,
   UnitInstance,
-} from "@entities/index";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
+  UnitType,
+} from "@entities";
+import { createEmptyStandardBoard } from "@functions";
 import { getUnitByStatValue } from "@testing";
 import { createUnitInstance } from "@utils/createUnitInstance";
 

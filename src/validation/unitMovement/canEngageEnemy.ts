@@ -1,10 +1,19 @@
-import type { Board, BoardCoordinate, UnitFacing, UnitInstance } from "@entities";
-import { getBoardSpace } from "@functions/boardSpace";
-import { getBackSpaces, getFlankingSpaces, getFrontSpaces } from "@functions/boardSpace/adjacency";
-import { getSpacesBehind } from "@functions/boardSpace/areas";
-import { getOppositeFacing } from "@functions/facings";
-import { areSameSide } from "@functions/unit";
-import { hasSingleUnit } from "@functions/unitPresence";
+import type {
+  Board,
+  BoardCoordinate,
+  UnitFacing,
+  UnitInstance,
+} from "@entities";
+import {
+  areSameSide,
+  getBackSpaces,
+  getBoardSpace,
+  getFlankingSpaces,
+  getFrontSpaces,
+  getOppositeFacing,
+  getSpacesBehind,
+  hasSingleUnit,
+} from "@functions";
 
 /**
  * Incremental function to check whether engagement is legal from an adjacent space.

@@ -1,6 +1,5 @@
 import type { Board, BoardCoordinate, UnitFacing } from "@entities";
-import { getForwardSpace } from "@functions/boardSpace";
-import { getLeftFacing } from "@functions/facings";
+import { getForwardSpace, getLeftFacing } from "@functions";
 
 /**
  * Get the left space for a given coordinate and facing.
@@ -17,7 +16,7 @@ import { getLeftFacing } from "@functions/facings";
 export function getLeftSpace<TBoard extends Board>(
   board: TBoard,
   coordinate: BoardCoordinate<TBoard>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): BoardCoordinate<TBoard> | undefined {
   // Get the left-facing direction
   const leftFacing = getLeftFacing(facing);

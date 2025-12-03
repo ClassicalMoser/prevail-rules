@@ -4,12 +4,12 @@ import type {
   LargeBoard,
   SmallBoard,
   StandardBoard,
-} from "@entities/board";
+} from "@entities";
 import {
   largeBoardConfig,
   smallBoardConfig,
   standardBoardConfig,
-} from "@entities/board";
+} from "@entities";
 
 /**
  * Creates an empty board space with default values.

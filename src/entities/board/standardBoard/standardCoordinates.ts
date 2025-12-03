@@ -1,11 +1,7 @@
-import type {
-  StandardBoardColumnNumber,
-  StandardBoardRowLetter,
-} from "@entities/board";
-import {
-  standardBoardColumnNumbers,
-  standardBoardRowLetters,
-} from "@entities/board";
+import type { StandardBoardColumnNumber } from "./standardColumnNumbers";
+import type { StandardBoardRowLetter } from "./standardRowLetters";
+import { standardBoardColumnNumbers } from "./standardColumnNumbers";
+import { standardBoardRowLetters } from "./standardRowLetters";
 
 /**
  * A valid coordinate on a standard board (A-1 through L-18).

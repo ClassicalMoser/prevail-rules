@@ -1,7 +1,8 @@
-import type { Modifier, Restrictions  } from "@entities";
+import type { Modifier, Restrictions } from "@entities";
 import type { AssertExact } from "@utils";
-import { modifierSchema, restrictionsSchema  } from "@entities";
 import { z } from "zod";
+import { modifierSchema } from "./modifiers";
+import { restrictionsSchema } from "./restrictions";
 
 /**
  * The iterable list of types of commands that can be used on a card.

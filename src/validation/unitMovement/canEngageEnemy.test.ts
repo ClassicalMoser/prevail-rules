@@ -1,13 +1,12 @@
-import type { PlayerSide } from "@entities";
 import type {
+  PlayerSide,
   StandardBoard,
   StandardBoardCoordinate,
   UnitFacing,
-} from "@entities/index";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
-import { createBoardWithUnits } from "@testing/createBoard";
-import { createTestUnit } from "@testing/unitHelpers";
-import { canEngageEnemy } from "@validation/unitMovement";
+} from "@entities";
+import { createEmptyStandardBoard } from "@functions";
+import { createBoardWithUnits, createTestUnit } from "@testing";
+import { canEngageEnemy } from "@validation";
 import { describe, expect, it } from "vitest";
 
 describe("canEngageEnemy", () => {

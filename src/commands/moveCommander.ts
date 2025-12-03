@@ -1,7 +1,6 @@
 import type { Board, BoardCoordinate, PlayerSide } from "@entities";
 import type { AssertExact } from "@utils";
-import { playerSideSchema } from "@entities";
-import { boardCoordinateSchema } from "@entities/board";
+import { boardCoordinateSchema, playerSideSchema } from "@entities";
 import { z } from "zod";
 
 /** The schema for a move commander command. */

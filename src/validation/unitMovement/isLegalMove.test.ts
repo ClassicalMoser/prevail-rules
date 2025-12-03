@@ -1,10 +1,8 @@
 import type { MoveUnitCommand } from "@commands";
-import type { UnitFacing } from "@entities";
-import type { StandardBoardCoordinate } from "@entities/index";
-import { createBoardWithUnits } from "@testing/createBoard";
-import { getUnitByStatValue } from "@testing/getUnitByStatValue";
+import type { StandardBoardCoordinate, UnitFacing } from "@entities";
+import { createBoardWithUnits, getUnitByStatValue } from "@testing";
 import { createUnitInstance } from "@utils/createUnitInstance";
-import { isLegalMove } from "@validation/unitMovement";
+import { isLegalMove } from "@validation";
 import { describe, expect, it } from "vitest";
 
 describe("isLegalMove", () => {

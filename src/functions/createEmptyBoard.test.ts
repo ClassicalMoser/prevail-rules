@@ -2,7 +2,7 @@ import {
   createEmptyLargeBoard,
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from "@functions/createEmptyBoard";
+} from "@functions";
 import { describe, expect, it } from "vitest";
 
 describe("createEmptyStandardBoard", () => {

@@ -1,8 +1,6 @@
-import type { Board, UnitInstance } from "@entities";
-import type { UnitPlacement } from "@entities/unitLocation";
+import type { Board, UnitInstance, UnitPlacement } from "@entities";
 import type { AssertExact } from "@utils";
-import { unitInstanceSchema } from "@entities";
-import { unitPlacementSchema } from "@entities/unitLocation";
+import { unitInstanceSchema, unitPlacementSchema } from "@entities";
 import { z } from "zod";
 export const unitWithPlacementSchema = z.object({
   unit: unitInstanceSchema,

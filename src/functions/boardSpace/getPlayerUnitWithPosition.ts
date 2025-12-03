@@ -1,8 +1,17 @@
-import type { Board, BoardCoordinate, PlayerSide, UnitWithPlacement } from "@entities";
-import { getBoardSpace } from "@functions/boardSpace";
-import { getOppositeFacing } from "@functions/facings";
-import { isFriendlyUnit } from "@functions/unit";
-import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from "@functions/unitPresence";
+import type {
+  Board,
+  BoardCoordinate,
+  PlayerSide,
+  UnitWithPlacement,
+} from "@entities";
+import {
+  getBoardSpace,
+  getOppositeFacing,
+  hasEngagedUnits,
+  hasNoUnit,
+  hasSingleUnit,
+  isFriendlyUnit,
+} from "@functions";
 
 /**
  * Extracts the friendly unit and its placement from a board space for a given player side.

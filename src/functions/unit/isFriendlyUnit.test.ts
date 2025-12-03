@@ -1,5 +1,5 @@
-import { isFriendlyUnit } from "@functions/unit/isFriendlyUnit";
-import { createTestUnit } from "@testing/unitHelpers";
+import { isFriendlyUnit } from "@functions";
+import { createTestUnit } from "@testing";
 import { describe, expect, it } from "vitest";
 
 describe("isFriendlyUnit", () => {

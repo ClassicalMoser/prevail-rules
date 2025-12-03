@@ -1,12 +1,14 @@
-import type { StandardBoardCoordinate, UnitFacing } from "@entities/index";
-import { getPlayerUnitWithPosition } from "@functions/boardSpace";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
-import { getOppositeFacing } from "@functions/facings";
+import type { StandardBoardCoordinate, UnitFacing } from "@entities";
+import {
+  createEmptyStandardBoard,
+  getOppositeFacing,
+  getPlayerUnitWithPosition,
+} from "@functions";
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-} from "@testing/createBoard";
-import { createTestUnit } from "@testing/unitHelpers";
+  createTestUnit,
+} from "@testing";
 import { describe, expect, it } from "vitest";
 
 describe("getPlayerUnitWithPosition", () => {

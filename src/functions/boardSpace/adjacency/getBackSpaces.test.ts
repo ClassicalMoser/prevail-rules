@@ -1,7 +1,5 @@
-import type { UnitFacing } from "@entities";
-import type { StandardBoardCoordinate } from "@entities/board";
-import { getBackSpaces } from "@functions/boardSpace/adjacency";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
+import type { StandardBoardCoordinate, UnitFacing } from "@entities";
+import { createEmptyStandardBoard, getBackSpaces } from "@functions";
 import { describe, expect, it } from "vitest";
 
 const standardBoard = createEmptyStandardBoard();

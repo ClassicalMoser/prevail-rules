@@ -1,6 +1,5 @@
 import type { UnitType } from "@entities";
-import { getUnitByStatValue } from "@testing/getUnitByStatValue";
-import { getUnitByTrait } from "@testing/getUnitByTrait";
+import { getUnitByStatValue, getUnitByTrait } from "@testing";
 import { matchesUnitRequirements } from "@validation";
 import { describe, expect, it } from "vitest";
 

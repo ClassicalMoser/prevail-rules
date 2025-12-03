@@ -1,8 +1,6 @@
-import type {
-  SmallBoardColumnNumber,
-  SmallBoardRowLetter,
-} from "@entities/board";
-import { smallBoardColumnNumbers, smallBoardRowLetters } from "@entities/board";
+import type { SmallBoardColumnNumber, SmallBoardRowLetter } from "@entities";
+import { smallBoardColumnNumbers } from "./smallColumnNumbers";
+import { smallBoardRowLetters } from "./smallRowLetters";
 
 /**
  * A valid coordinate on a small board (A-1 through H-12).

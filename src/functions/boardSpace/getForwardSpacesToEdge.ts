@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate, UnitFacing } from "@entities";
-import { filterUndefinedSpaces, getForwardSpace } from "@functions/boardSpace";
+import { filterUndefinedSpaces, getForwardSpace } from "@functions";
 
 /**
  * Get the forward spaces to the edge for a given coordinate and facing.
@@ -13,7 +13,7 @@ import { filterUndefinedSpaces, getForwardSpace } from "@functions/boardSpace";
 export function getForwardSpacesToEdge<TBoard extends Board>(
   board: TBoard,
   coordinate: BoardCoordinate<TBoard>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<TBoard>> {
   // Initialize set with the starting coordinate
   const spaces: Set<BoardCoordinate<TBoard>> = new Set([coordinate]);
@@ -24,7 +24,7 @@ export function getForwardSpacesToEdge<TBoard extends Board>(
     const nextSpace: BoardCoordinate<TBoard> | undefined = getForwardSpace(
       board,
       currentSpace,
-      facing
+      facing,
     );
     // If the next space is not undefined, add it to the set
     if (nextSpace !== undefined) {

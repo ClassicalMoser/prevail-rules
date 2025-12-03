@@ -1,5 +1,4 @@
-import { getForwardSpacesToEdge } from "@functions/boardSpace";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
+import { createEmptyStandardBoard, getForwardSpacesToEdge } from "@functions";
 import { describe, expect, it } from "vitest";
 
 const standardBoard = createEmptyStandardBoard();

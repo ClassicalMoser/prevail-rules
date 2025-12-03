@@ -1,7 +1,6 @@
 import type { ChooseCardCommand } from "@commands";
-import type { Card } from "@entities/card/card";
-import type { CardState } from "@entities/card/cardState";
-import { commandCards } from "@sampleValues/commandCards";
+import type { Card, CardState } from "@entities";
+import { commandCards } from "@sampleValues";
 import { isLegalCardChoice } from "@validation";
 import { describe, expect, it } from "vitest";
 

@@ -1,6 +1,6 @@
 import type { UnitFacing, UnitInstance } from "@entities";
 import type { AssertExact } from "@utils";
-import { unitFacingSchema, unitInstanceSchema  } from "@entities";
+import { unitFacingSchema, unitInstanceSchema } from "@entities";
 import { z } from "zod";
 
 /**

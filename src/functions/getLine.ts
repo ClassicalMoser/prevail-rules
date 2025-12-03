@@ -1,8 +1,16 @@
-import type { Board, Line, Trait, UnitType, UnitWithPlacement } from "@entities";
-import { getPlayerUnitWithPosition } from "@functions/boardSpace";
-import { getInlineSpaces } from "@functions/boardSpace/areas";
-import { getOppositeFacing } from "@functions/facings";
-import { areSameSide } from "@functions/unit";
+import type {
+  Board,
+  Line,
+  Trait,
+  UnitType,
+  UnitWithPlacement,
+} from "@entities";
+import {
+  areSameSide,
+  getInlineSpaces,
+  getOppositeFacing,
+  getPlayerUnitWithPosition,
+} from "@functions";
 import { isAtPlacement, matchesUnitRequirements } from "@validation";
 
 /** Get the lines from a unit.

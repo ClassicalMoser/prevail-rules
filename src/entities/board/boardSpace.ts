@@ -1,13 +1,16 @@
-import type { Elevation, PlayerSide, TerrainType, UnitPresence, WaterCover } from "@entities";
-import type { AssertExact } from "@utils";
-import {
-  elevationSchema,
-  playerSideSchema,
-  terrainTypeSchema,
-  unitPresenceSchema,
-  waterCoverSchema,
+import type {
+  Elevation,
+  PlayerSide,
+  TerrainType,
+  UnitPresence,
+  WaterCover,
 } from "@entities";
+import type { AssertExact } from "@utils";
+import { playerSideSchema, unitPresenceSchema } from "@entities";
 import { z } from "zod";
+import { elevationSchema } from "./elevation";
+import { terrainTypeSchema } from "./terrainTypes";
+import { waterCoverSchema } from "./waterCover";
 
 /**
  * The schema for a space of the game board.

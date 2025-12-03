@@ -1,8 +1,11 @@
-import type { Board, BoardConfig, BoardCoordinate } from "@entities/board";
-import type { UnitFacing } from "@entities/unit";
-import { getBoardConfig } from "@entities/board";
-import { unitFacingSchema } from "@entities/unit";
-import { getColumnDelta, getRowDelta } from "@functions/boardSpace";
+import type {
+  Board,
+  BoardConfig,
+  BoardCoordinate,
+  UnitFacing,
+} from "@entities";
+import { getBoardConfig, unitFacingSchema } from "@entities";
+import { getColumnDelta, getRowDelta } from "@functions";
 
 /**
  * Internal helper that performs the coordinate calculation.
@@ -12,7 +15,7 @@ import { getColumnDelta, getRowDelta } from "@functions/boardSpace";
 export function getForwardSpaceWithConfig<TCoordinate extends string>(
   coordinate: TCoordinate,
   facing: UnitFacing,
-  config: BoardConfig<TCoordinate>
+  config: BoardConfig<TCoordinate>,
 ): TCoordinate | undefined {
   if (!coordinate.includes("-")) {
     throw new Error(`Invalid coordinate: ${coordinate}`);
@@ -88,12 +91,12 @@ export function getForwardSpaceWithConfig<TCoordinate extends string>(
 export function getForwardSpace<TBoard extends Board>(
   board: TBoard,
   coordinate: BoardCoordinate<TBoard>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): BoardCoordinate<TBoard> | undefined {
   const config = getBoardConfig(board);
   return getForwardSpaceWithConfig<BoardCoordinate<TBoard>>(
     coordinate,
     facing,
-    config
+    config,
   );
 }

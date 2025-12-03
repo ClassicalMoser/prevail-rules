@@ -1,16 +1,16 @@
-import type { PlayerSide } from "@entities";
 import type {
+  PlayerSide,
   StandardBoard,
   StandardBoardCoordinate,
   UnitInstance,
-} from "@entities/index";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
+} from "@entities";
+import { createEmptyStandardBoard } from "@functions";
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
-} from "@testing/createBoard";
-import { createTestUnit } from "@testing/unitHelpers";
-import { canMoveInto } from "@validation/unitMovement";
+  createTestUnit,
+} from "@testing";
+import { canMoveInto } from "@validation";
 import { describe, expect, it } from "vitest";
 
 describe("canMoveInto", () => {

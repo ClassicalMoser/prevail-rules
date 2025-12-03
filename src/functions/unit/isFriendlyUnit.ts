@@ -1,4 +1,4 @@
-import type { PlayerSide, UnitInstance  } from "@entities";
+import type { PlayerSide, UnitInstance } from "@entities";
 
 /**
  * Checks if a unit belongs to the given player side (is friendly).

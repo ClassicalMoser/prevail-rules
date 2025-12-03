@@ -1,4 +1,4 @@
-import type { Army, GameType  } from "@entities";
+import type { Army, GameType } from "@entities";
 import type { AssertExact } from "@utils";
 import { armySchema, gameTypeEnum } from "@entities";
 import { z } from "zod";

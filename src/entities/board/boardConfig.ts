@@ -10,15 +10,13 @@ import type {
   LargeBoardCoordinate,
   SmallBoardCoordinate,
   StandardBoardCoordinate,
-} from "@entities/board";
-import {
-  largeBoardColumnNumbers,
-  largeBoardRowLetters,
-  smallBoardColumnNumbers,
-  smallBoardRowLetters,
-  standardBoardColumnNumbers,
-  standardBoardRowLetters,
-} from "@entities/board";
+} from "@entities";
+import { largeBoardColumnNumbers } from "./largeBoard/largeColumnNumbers";
+import { largeBoardRowLetters } from "./largeBoard/largeRowLetters";
+import { smallBoardColumnNumbers } from "./smallBoard/smallColumnNumbers";
+import { smallBoardRowLetters } from "./smallBoard/smallRowLetters";
+import { standardBoardColumnNumbers } from "./standardBoard/standardColumnNumbers";
+import { standardBoardRowLetters } from "./standardBoard/standardRowLetters";
 
 /**
  * Board configuration for coordinate calculations.
@@ -62,7 +60,7 @@ export const boardConfigMap = {
  * This eliminates the need for type assertions when working with generic board types.
  */
 export function getBoardConfig<TBoard extends Board>(
-  board: TBoard
+  board: TBoard,
 ): BoardConfig<BoardCoordinate<TBoard>> {
   return boardConfigMap[board.boardType] as BoardConfig<
     BoardCoordinate<TBoard>

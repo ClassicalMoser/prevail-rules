@@ -1,7 +1,11 @@
 import type { Board, BoardCoordinate, UnitInstance } from "@entities";
-import { getBoardSpace } from "@functions/boardSpace";
-import { areSameSide } from "@functions/unit";
-import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from "@functions/unitPresence";
+import {
+  areSameSide,
+  getBoardSpace,
+  hasEngagedUnits,
+  hasNoUnit,
+  hasSingleUnit,
+} from "@functions";
 import { MIN_FLEXIBILITY_THRESHOLD } from "@sampleValues";
 
 /**
