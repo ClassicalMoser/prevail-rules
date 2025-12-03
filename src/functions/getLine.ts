@@ -1,147 +1,154 @@
 import type {
   Board,
+  BoardCoordinate,
   Line,
   Trait,
   UnitType,
   UnitWithPlacement,
 } from "@entities";
 import {
-  areSameSide,
-  getInlineSpaces,
+  getForwardSpacesToEdge,
+  getLeftFacing,
   getOppositeFacing,
   getPlayerUnitWithPosition,
+  getRightFacing,
 } from "@functions";
+import { MAX_LINE_LENGTH } from "@sampleValues";
 import { isAtPlacement, matchesUnitRequirements } from "@validation";
 
-/** Get the lines from a unit.
- * A line is a group of up to 8 friendly units that are exactly beside each other
- * and facing either the same direction or the opposite direction.
+/**
+ * Get all possible lines that include a given unit.
  *
- * For any given unit, there are up to 8 possible lines, one for each position the
- * unit itself could potentially occupy
+ * A line is a group of up to MAX_LINE_LENGTH friendly units that are:
+ * - Contiguous (no gaps between units)
+ * - Facing the same or opposite direction
+ * - Matching optional trait/unitType requirements
  *
- * We need a way to iterate over all possible lines and return the set of all eligible lines.
+ * Lines form perpendicular to a unit's facing. For example, a unit facing
+ * "north" forms lines going "east-west" (perpendicular to north).
+ *
+ * If the contiguous segment is longer than MAX_LINE_LENGTH units,
+ * multiple MAX_LINE_LENGTH-unit lines are generated,
+ * each including the given unit.
+ *
+ * @param board - The board state
+ * @param unit - The unit to find lines for
+ * @param traits - Optional trait requirements (units must have all traits)
+ * @param unitTypes - Optional unit type requirements (units must be one of these types)
+ * @returns Set of all lines that include the given unit
+ * @throws {Error} If the unit is not at its reported placement
  */
-
-export function getLinesFromUnit(
-  board: Board,
-  unit: UnitWithPlacement<Board>,
+export function getLinesFromUnit<TBoard extends Board>(
+  board: TBoard,
+  unit: UnitWithPlacement<TBoard>,
   traits: Trait[] = [],
-  unitTypes: UnitType[] = [],
+  unitTypes: UnitType[] = []
 ): Set<Line> {
-  const notAtPlacement = !isAtPlacement(board, unit);
-  if (notAtPlacement) {
+  // Validate that the unit is actually at the reported position
+  if (!isAtPlacement(board, unit)) {
     throw new Error("Unit is not at reported placement");
   }
 
   const friendlySide = unit.unit.playerSide;
   const lines = new Set<Line>();
-
-  // Only consider the unit's actual facing and its opposite
   const unitFacing = unit.placement.facing;
-  const oppositeFacing = getOppositeFacing(unitFacing);
-  const facingsToCheck = [unitFacing, oppositeFacing];
+  const oppositeUnitFacing = getOppositeFacing(unitFacing);
 
-  for (const potentialFacing of facingsToCheck) {
-    // Get all spaces in a straight line perpendicular to this facing (the "inline" spaces)
-    const inlineSpaces = getInlineSpaces(
+  // Get the two directions along the perpendicular line (left and right relative to facing)
+  // Example: If unit faces "north", left is "west" and right is "east"
+  const leftDirection = getLeftFacing(unitFacing);
+  const rightDirection = getRightFacing(unitFacing);
+
+  /**
+   * Check if a unit at the given coordinate can join the line.
+   * Returns:
+   * - The unit if it can join (friendly, correct facing, matches requirements)
+   * - undefined if we should stop expanding (empty space, enemy unit, wrong facing, or doesn't match requirements)
+   */
+  const canJoinLine = (
+    coordinate: BoardCoordinate<TBoard>
+  ): UnitWithPlacement<TBoard> | undefined => {
+    const playerUnit = getPlayerUnitWithPosition(
       board,
-      unit.placement.coordinate,
-      potentialFacing,
+      coordinate,
+      friendlySide
     );
-
-    // Build contiguous segments - gaps break the line
-    const contiguousSegments: UnitWithPlacement<Board>[][] = [];
-    let currentSegment: UnitWithPlacement<Board>[] = [];
-
-    for (const coordinate of inlineSpaces) {
-      try {
-        const playerUnit = getPlayerUnitWithPosition(
-          board,
-          coordinate,
-          friendlySide,
-        );
-
-        // If there's no friendly unit, it breaks the current segment
-        if (!playerUnit) {
-          if (currentSegment.length > 0) {
-            contiguousSegments.push(currentSegment);
-            currentSegment = [];
-          }
-          continue;
-        }
-
-        // Check if facing matches (same or opposite direction)
-        const facingMatches =
-          playerUnit.placement.facing === potentialFacing ||
-          playerUnit.placement.facing === getOppositeFacing(potentialFacing);
-
-        if (facingMatches) {
-          // Check if unit matches requirements (traits/unitTypes)
-          if (
-            matchesUnitRequirements(playerUnit.unit.unitType, traits, unitTypes)
-          ) {
-            currentSegment.push(playerUnit);
-          } else {
-            // Unit doesn't match requirements - breaks the line
-            if (currentSegment.length > 0) {
-              contiguousSegments.push(currentSegment);
-              currentSegment = [];
-            }
-          }
-        } else {
-          // Facing doesn't match - breaks the line
-          if (currentSegment.length > 0) {
-            contiguousSegments.push(currentSegment);
-            currentSegment = [];
-          }
-        }
-      } catch {
-        // If coordinate doesn't exist, it breaks the line
-        if (currentSegment.length > 0) {
-          contiguousSegments.push(currentSegment);
-          currentSegment = [];
-        }
-      }
+    // No friendly unit: stop expanding (empty space or enemy unit)
+    if (!playerUnit) {
+      return undefined;
     }
 
-    // Don't forget the last segment
-    if (currentSegment.length > 0) {
-      contiguousSegments.push(currentSegment);
+    // Check facing: must match our unit's facing or its opposite
+    const playerFacing = playerUnit.placement.facing;
+    if (playerFacing !== unitFacing && playerFacing !== oppositeUnitFacing) {
+      // Wrong facing: stop expanding
+      return undefined;
     }
 
-    // Process each contiguous segment
-    for (const segment of contiguousSegments) {
-      // Find the index of the given unit in this segment
-      const unitIndex = segment.findIndex(
-        (u) =>
-          areSameSide(u.unit, unit.unit) &&
-          u.unit.unitType === unit.unit.unitType &&
-          u.unit.instanceNumber === unit.unit.instanceNumber &&
-          u.placement.coordinate === unit.placement.coordinate,
-      );
-
-      // If the unit is not in this segment, skip it
-      if (unitIndex === -1) {
-        continue;
-      }
-
-      // If segment is 1-8 units, add it as a single line
-      if (segment.length <= 8) {
-        lines.add({ unitPlacements: segment });
-      } else {
-        // If segment is longer than 8 units, create all possible 8-unit lines that include the given unit
-        // The unit can be at positions 0-7 within each 8-unit window
-        const maxStart = Math.min(unitIndex, segment.length - 8);
-        const minStart = Math.max(0, unitIndex - 7);
-
-        for (let start = minStart; start <= maxStart; start++) {
-          const end = start + 8;
-          const lineSegment = segment.slice(start, end);
-          lines.add({ unitPlacements: lineSegment });
-        }
-      }
+    // Check requirements: must match traits/unitTypes if specified
+    if (!matchesUnitRequirements(playerUnit.unit.unitType, traits, unitTypes)) {
+      // Doesn't match requirements: stop expanding
+      return undefined;
     }
+
+    // Unit matches all requirements: can join
+    return playerUnit;
+  };
+
+  // Build the contiguous segment containing our unit
+  // Structure: [units left] + [our unit] + [units right]
+  const segment: UnitWithPlacement<TBoard>[] = [unit];
+
+  // Tracking where the unit will end up in the segment
+  let unitIndex = 0;
+
+  // Expand leftward: add units sequentially to the beginning of the segment
+  // Stop immediately when we hit: empty space, enemy unit, wrong facing, or non-matching requirements
+  for (const coordinate of getForwardSpacesToEdge(
+    board,
+    unit.placement.coordinate,
+    leftDirection
+  )) {
+    const joiningUnit = canJoinLine(coordinate);
+    if (!joiningUnit) {
+      break;
+    }
+    // Add the unit to the beginning of the segment
+    segment.unshift(joiningUnit);
+    unitIndex++;
+  }
+
+  // Expand rightward: add units sequentially to the end of the segment
+  // Stop immediately when we hit: empty space, enemy unit, wrong facing, or non-matching requirements
+  for (const coordinate of getForwardSpacesToEdge(
+    board,
+    unit.placement.coordinate,
+    rightDirection
+  )) {
+    const joiningUnit = canJoinLine(coordinate);
+    if (!joiningUnit) {
+      break;
+    }
+    // Add the unit to the end of the segment
+    segment.push(joiningUnit);
+  }
+
+  // If segment fits (≤MAX_LINE_LENGTH units), it's a single valid line
+  if (segment.length <= MAX_LINE_LENGTH) {
+    lines.add({ unitPlacements: segment });
+    return lines;
+  }
+
+  // Segment is longer than MAX_LINE_LENGTH units: create multiple MAX_LINE_LENGTH-unit lines
+  // Each line must include our unit, so we slide a MAX_LINE_LENGTH-unit window across the segment
+  // Our unit is at index leftCount, so we calculate valid window start positions
+  const maxStart = Math.min(unitIndex, segment.length - MAX_LINE_LENGTH);
+  const minStart = Math.max(0, unitIndex - (MAX_LINE_LENGTH - 1));
+
+  for (let start = minStart; start <= maxStart; start++) {
+    lines.add({
+      unitPlacements: segment.slice(start, start + MAX_LINE_LENGTH),
+    });
   }
 
   return lines;
