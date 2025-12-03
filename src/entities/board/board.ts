@@ -7,7 +7,7 @@ import { standardBoardSchema } from './standardBoard/standardBoard';
 
 export const boardSizeType = ['standard', 'small', 'large'] as const;
 
-export const boardSizeEnum = z.enum(boardSizeType);
+export const boardSizeEnum: z.ZodType<BoardSize> = z.enum(boardSizeType);
 
 type BoardSizeEnumType = z.infer<typeof boardSizeEnum>;
 
@@ -39,7 +39,7 @@ const _assertExactBoardSize: AssertExact<BoardSize, BoardSizeEnumType> = true;
  * }
  * ```
  */
-export const boardSchema = z.discriminatedUnion('boardType', [
+export const boardSchema: z.ZodType<Board> = z.discriminatedUnion('boardType', [
   smallBoardSchema,
   standardBoardSchema,
   largeBoardSchema,

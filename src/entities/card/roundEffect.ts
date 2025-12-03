@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { modifierSchema } from './modifiers';
 import { restrictionsSchema } from './restrictions';
 
-export const roundEffectSchema = z.object({
+export const roundEffectSchema: z.ZodType<RoundEffect> = z.object({
   /** The restrictions on the round effect. */
   restrictions: restrictionsSchema,
   /** The modifiers the round effect applies. */

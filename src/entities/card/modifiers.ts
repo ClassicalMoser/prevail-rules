@@ -9,7 +9,7 @@ export const valueTypes = [
   'flexibility',
 ] as const;
 
-export const valueTypesSchema = z.enum(valueTypes);
+export const valueTypesSchema: z.ZodType<ValueType> = z.enum(valueTypes);
 
 // Helper type to check match of type against schema
 type ValueTypesSchemaType = z.infer<typeof valueTypesSchema>;
@@ -25,7 +25,7 @@ const _assertExactValueType: AssertExact<ValueType, ValueTypesSchemaType> =
 /**
  * The schema for a modifier on a card.
  */
-export const modifierSchema = z.object({
+export const modifierSchema: z.ZodType<Modifier> = z.object({
   /** The type of the modifier. */
   type: valueTypesSchema,
   /** The value of the modifier. */

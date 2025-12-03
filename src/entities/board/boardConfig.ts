@@ -11,6 +11,8 @@ import type {
   SmallBoardCoordinate,
   StandardBoardCoordinate,
 } from '@entities';
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 import { largeBoardColumnNumbers } from './largeBoard/largeColumnNumbers';
 import { largeBoardRowLetters } from './largeBoard/largeRowLetters';
 import { smallBoardColumnNumbers } from './smallBoard/smallColumnNumbers';
@@ -47,13 +49,51 @@ export const largeBoardConfig: BoardConfig<LargeBoardCoordinate> = {
 } as const;
 
 /**
+ * Schema for board configuration map.
+ * Note: Functions cannot be validated by Zod at runtime, so createCoordinate uses z.any().
+ * The schema validates the data structure (rowLetters, columnNumbers) while the function is type-checked via z.ZodType constraint.
+ */
+export const boardConfigMapSchema: z.ZodType<BoardConfigMap> = z.object({
+  standard: z.object({
+    rowLetters: z.array(z.string()),
+    columnNumbers: z.array(z.string()),
+    createCoordinate: z.any(), // Function cannot be validated at runtime
+  }),
+  small: z.object({
+    rowLetters: z.array(z.string()),
+    columnNumbers: z.array(z.string()),
+    createCoordinate: z.any(), // Function cannot be validated at runtime
+  }),
+  large: z.object({
+    rowLetters: z.array(z.string()),
+    columnNumbers: z.array(z.string()),
+    createCoordinate: z.any(), // Function cannot be validated at runtime
+  }),
+});
+
+// Helper type to check match of type against schema
+type BoardConfigMapSchemaType = z.infer<typeof boardConfigMapSchema>;
+
+export interface BoardConfigMap {
+  standard: BoardConfig<StandardBoardCoordinate>;
+  small: BoardConfig<SmallBoardCoordinate>;
+  large: BoardConfig<LargeBoardCoordinate>;
+}
+
+/**
  * Type-safe map from board type to configuration.
  */
-export const boardConfigMap = {
+export const boardConfigMap: BoardConfigMap = {
   standard: standardBoardConfig,
   small: smallBoardConfig,
   large: largeBoardConfig,
 } as const;
+
+// Helper type to check match of type against schema
+const _assertExactBoardConfigMap: AssertExact<
+  typeof boardConfigMap,
+  BoardConfigMapSchemaType
+> = true;
 
 /**
  * Gets the board config for a given board type with proper type narrowing.

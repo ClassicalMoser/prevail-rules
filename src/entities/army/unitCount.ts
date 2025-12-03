@@ -3,7 +3,7 @@ import type { AssertExact } from '@utils';
 import { unitTypeSchema } from '@entities';
 import { z } from 'zod';
 
-export const unitCountSchema = z.object({
+export const unitCountSchema: z.ZodType<UnitCount> = z.object({
   /** The unit type. */
   unitType: unitTypeSchema,
   /** The number of units. */

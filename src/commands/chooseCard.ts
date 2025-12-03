@@ -4,7 +4,7 @@ import { cardSchema, playerSideSchema } from '@entities';
 import { z } from 'zod';
 
 /** The schema for a choose card command. */
-export const chooseCardCommandSchema = z.object({
+export const chooseCardCommandSchema: z.ZodType<ChooseCardCommand> = z.object({
   /** The player who is choosing the card. */
   player: playerSideSchema,
   /** The card to choose from the player's hand. */

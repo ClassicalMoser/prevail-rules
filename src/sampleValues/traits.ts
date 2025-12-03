@@ -12,7 +12,7 @@ export const traits = [
   'horse',
 ] as const;
 
-export const traitSchema = z.enum(traits);
+export const traitSchema: z.ZodType<Trait> = z.enum(traits);
 
 type TraitSchemaType = z.infer<typeof traitSchema>;
 

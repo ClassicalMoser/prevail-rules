@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { playerCardStateSchema } from './playerCardState';
 
 /** The schema for the state of all cards in the game. */
-export const cardStateSchema = z.object({
+export const cardStateSchema: z.ZodType<CardState> = z.object({
   /** The state of the cards for the black player. */
   blackPlayer: playerCardStateSchema,
   /** The state of the cards for the white player. */

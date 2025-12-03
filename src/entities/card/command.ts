@@ -12,7 +12,7 @@ export const commandTypes = ['movement', 'rangedAttack'] as const;
 /**
  * The schema for the types of commands that can be used on a card.
  */
-export const commandTypesSchema = z.enum(commandTypes);
+export const commandTypesSchema: z.ZodType<CommandType> = z.enum(commandTypes);
 
 // Helper type to check match of type against schema
 type CommandTypesSchemaType = z.infer<typeof commandTypesSchema>;
@@ -35,7 +35,7 @@ export const commandSizes = ['units', 'lines'] as const;
 /**
  * The schema for the sizes of commands that can be used on a card.
  */
-export const commandSizesSchema = z.enum(commandSizes);
+export const commandSizesSchema: z.ZodType<CommandSize> = z.enum(commandSizes);
 
 // Helper type to check match of type against schema
 type CommandSizesSchemaType = z.infer<typeof commandSizesSchema>;
@@ -53,7 +53,7 @@ const _assertExactCommandSize: AssertExact<
 /**
  * The schema for a command on a card.
  */
-export const commandSchema = z.object({
+export const commandSchema: z.ZodType<Command> = z.object({
   /** The size of the command. */
   size: commandSizesSchema,
   /** The type of the command. */

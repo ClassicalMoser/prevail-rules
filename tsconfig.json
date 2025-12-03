@@ -30,6 +30,7 @@
     "emitDeclarationOnly": false,
     "outDir": "dist",
     "esModuleInterop": true,
+    "isolatedDeclarations": true,
     "isolatedModules": true,
     "skipLibCheck": true
   },

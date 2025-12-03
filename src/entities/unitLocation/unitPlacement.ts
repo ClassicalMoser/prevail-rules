@@ -3,7 +3,7 @@ import type { AssertExact } from '@utils';
 import { boardCoordinateSchema, unitFacingSchema } from '@entities';
 import z from 'zod';
 
-export const unitPlacementSchema = z.object({
+export const unitPlacementSchema: z.ZodType<UnitPlacement<Board>> = z.object({
   coordinate: boardCoordinateSchema,
   facing: unitFacingSchema,
 });

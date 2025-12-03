@@ -42,7 +42,7 @@ const allBoardCoordinates = [
  * Commands must still be validated against the specific board type schema, and for rule compliance.
  *
  */
-export const boardCoordinateSchema = z.enum(
+export const boardCoordinateSchema: z.ZodType<BoardCoordinate<Board>> = z.enum(
   allBoardCoordinates as [
     StandardBoardCoordinate | SmallBoardCoordinate | LargeBoardCoordinate,
     ...(

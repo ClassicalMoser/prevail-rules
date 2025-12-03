@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { cardSchema } from './card';
 
 /** The schema for a player's card state. */
-export const playerCardStateSchema = z.object({
+export const playerCardStateSchema: z.ZodType<PlayerCardState> = z.object({
   /** The cards in the player's hand, eligible to be played. */
   inHand: z.array(cardSchema),
   /** The facedown card that the player is currently playing. */

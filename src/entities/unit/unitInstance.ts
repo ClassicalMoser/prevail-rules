@@ -7,7 +7,7 @@ import { unitTypeSchema } from './unitType';
 /**
  * The schema for a unit instance.
  */
-export const unitInstanceSchema = z.object({
+export const unitInstanceSchema: z.ZodType<UnitInstance> = z.object({
   /** Which player the unit belongs to. */
   playerSide: playerSideSchema,
   /** The type of unit this is an instance of. */

@@ -6,7 +6,7 @@ import { z } from 'zod';
 /**
  * The schema for a line.
  */
-export const lineSchema = z.object({
+export const lineSchema: z.ZodType<Line> = z.object({
   unitPlacements: z.array(unitWithPlacementSchema),
 });
 

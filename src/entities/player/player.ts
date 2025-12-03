@@ -1,7 +1,7 @@
 import type { AssertExact } from '@utils';
 import { z } from 'zod';
 
-export const playerSchema = z.object({
+export const playerSchema: z.ZodType<Player> = z.object({
   /** The unique identifier of the player. */
   id: z.string().uuid(),
   /** The name of the player. */

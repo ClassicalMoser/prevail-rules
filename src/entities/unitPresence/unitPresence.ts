@@ -41,11 +41,10 @@ import { singleUnitPresenceSchema } from './singleUnitPresence';
  * }
  * ```
  */
-export const unitPresenceSchema = z.discriminatedUnion('presenceType', [
-  noneUnitPresenceSchema,
-  singleUnitPresenceSchema,
-  engagedUnitPresenceSchema,
-]);
+export const unitPresenceSchema: z.ZodType<UnitPresence> = z.discriminatedUnion(
+  'presenceType',
+  [noneUnitPresenceSchema, singleUnitPresenceSchema, engagedUnitPresenceSchema],
+);
 
 // Helper type to check match of type against schema
 type UnitPresenceTypeSchemaType = z.infer<typeof unitPresenceSchema>;

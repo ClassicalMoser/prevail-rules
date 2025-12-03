@@ -6,7 +6,7 @@ import { z } from 'zod';
 /**
  * The schema for an army of troops.
  */
-export const armySchema = z.object({
+export const armySchema: z.ZodType<Army> = z.object({
   /** The unique identifier of the army. */
   id: z.string().uuid(),
   /** The units in the army. */

@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 export const gameType = ['standard', 'mini', 'tutorial'] as const;
 
-export const gameTypeEnum = z.enum(gameType);
+export const gameTypeEnum: z.ZodType<GameType> = z.enum(gameType);
 
 type GameTypeEnumType = z.infer<typeof gameTypeEnum>;
 
@@ -19,7 +19,7 @@ export type GameType = (typeof gameType)[number];
  */
 const _assertExactGameType: AssertExact<GameType, GameTypeEnumType> = true;
 
-export const gameTypeStructureSchema = z.object({
+export const gameTypeStructureSchema: z.ZodType<GameTypeStructure> = z.object({
   type: gameTypeEnum,
   boardSize: boardSizeEnum,
 });

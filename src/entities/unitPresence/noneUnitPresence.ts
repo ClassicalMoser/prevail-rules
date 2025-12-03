@@ -4,7 +4,9 @@ import { z } from 'zod';
 /**
  * The schema for no unit presence in a space.
  */
-export const noneUnitPresenceSchema = z.object({
+export const noneUnitPresenceSchema: z.ZodObject<{
+  presenceType: z.ZodLiteral<'none'>;
+}> = z.object({
   /** No unit is present in the space. */
   presenceType: z.literal('none' as const),
 });

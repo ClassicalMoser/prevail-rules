@@ -4,14 +4,15 @@ import { boardCoordinateSchema, playerSideSchema } from '@entities';
 import { z } from 'zod';
 
 /** The schema for a move commander command. */
-export const moveCommanderCommandSchema = z.object({
-  /** The player who is moving the commander. */
-  player: playerSideSchema,
-  /** The space the commander is currently in. */
-  from: boardCoordinateSchema,
-  /** The space the commander is moving to. */
-  to: boardCoordinateSchema,
-});
+export const moveCommanderCommandSchema: z.ZodType<MoveCommanderCommand> =
+  z.object({
+    /** The player who is moving the commander. */
+    player: playerSideSchema,
+    /** The space the commander is currently in. */
+    from: boardCoordinateSchema,
+    /** The space the commander is moving to. */
+    to: boardCoordinateSchema,
+  });
 
 // Helper type to check match of type against schema.
 type MoveCommanderCommandSchemaType = z.infer<

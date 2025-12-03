@@ -6,7 +6,12 @@ import { z } from 'zod';
 /**
  * The schema for two units engaged in combat in a space.
  */
-export const engagedUnitPresenceSchema = z.object({
+export const engagedUnitPresenceSchema: z.ZodObject<{
+  presenceType: z.ZodLiteral<'engaged'>;
+  primaryUnit: typeof unitInstanceSchema;
+  primaryFacing: typeof unitFacingSchema;
+  secondaryUnit: typeof unitInstanceSchema;
+}> = z.object({
   /** Two units are engaged in combat in the space. */
   presenceType: z.literal('engaged' as const),
   /** The primary unit in the engagement. */

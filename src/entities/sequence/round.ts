@@ -6,9 +6,12 @@ import { z } from 'zod';
 /**
  * The schema for a round.
  */
-export const roundSchema = z.object({
+export const roundSchema: z.ZodType<Round> = z.object({
+  /** The number of the round. */
   roundNumber: z.number().int().positive(),
+  /** The phases that have been completed in the round. */
   completedPhases: z.set(phaseSchema),
+  /** The start time of the round. */
   startTime: z.date(),
 });
 

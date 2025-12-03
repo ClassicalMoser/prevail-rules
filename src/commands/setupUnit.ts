@@ -13,7 +13,7 @@ import {
 import { z } from 'zod';
 
 /** The schema for a setup unit command. */
-export const setupUnitCommandSchema = z.object({
+export const setupUnitCommandSchema: z.ZodType<SetupUnitCommand> = z.object({
   /** The player who is setting up the unit. */
   player: playerSideSchema,
   /** The unit to setup. */

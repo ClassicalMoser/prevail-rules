@@ -4,7 +4,7 @@ import { z } from 'zod';
 /**
  * The schema for the water cover of a space.
  */
-export const waterCoverSchema = z.object({
+export const waterCoverSchema: z.ZodType<WaterCover> = z.object({
   /**
    * Whether the space is covered by water from the north.
    */

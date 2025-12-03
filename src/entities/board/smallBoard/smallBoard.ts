@@ -15,14 +15,14 @@ import { smallBoardCoordinates } from './smallCoordinates';
  * @returns A ZodObject schema that validates an object with all coordinates as required keys
  *
  * The return type explicitly specifies:
- * - Shape: Record<T, typeof boardSpaceSchema> - each coordinate maps to boardSpaceSchema
+ * - Shape: Record<T, z.ZodType<BoardSpace>> - each coordinate maps to a BoardSpace schema
  * - Unknown keys: "strip" - extra keys are removed during parsing
  * - Output/Input: Record<T, BoardSpace> - TypeScript infers the exact coordinate type
  */
 function createBoardSchema<T extends string>(
   coordinates: readonly T[],
-): z.ZodObject<Record<T, typeof boardSpaceSchema>> {
-  const shape = {} as Record<T, typeof boardSpaceSchema>;
+): z.ZodObject<Record<T, z.ZodType<BoardSpace>>> {
+  const shape = {} as Record<T, z.ZodType<BoardSpace>>;
   // Ensure all coordinates are included in the schema
   for (const coord of coordinates) {
     shape[coord] = boardSpaceSchema;
@@ -32,11 +32,21 @@ function createBoardSchema<T extends string>(
 }
 
 /**
+ * The schema for the board coordinate map.
+ */
+const smallBoardCoordinateMapSchema: z.ZodObject<
+  Record<SmallBoardCoordinate, z.ZodType<BoardSpace>>
+> = createBoardSchema(smallBoardCoordinates);
+
+/**
  * The schema for a small board.
  */
-export const smallBoardSchema = z.object({
+export const smallBoardSchema: z.ZodObject<{
+  boardType: z.ZodLiteral<'small'>;
+  board: typeof smallBoardCoordinateMapSchema;
+}> = z.object({
   boardType: z.literal('small'),
-  board: createBoardSchema(smallBoardCoordinates),
+  board: smallBoardCoordinateMapSchema,
 });
 
 type SmallBoardSchemaType = z.infer<typeof smallBoardSchema>;

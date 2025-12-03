@@ -16,7 +16,9 @@ const terrainTypes = [
  * The schema for the type of terrain in a space.
  * Terrain focuses on ground cover. Elevation and water cover are handled separately.
  */
-export const terrainTypeSchema = z.enum(terrainTypes).default(terrainTypes[0]);
+export const terrainTypeSchema: z.ZodType<TerrainType> = z
+  .enum(terrainTypes)
+  .default(terrainTypes[0]);
 
 // Helper type to check match of type against schema
 type terrainTypeSchemaType = z.infer<typeof terrainTypeSchema>;

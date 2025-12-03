@@ -6,7 +6,7 @@ import { z } from 'zod';
 /**
  * The schema for a complete game of Prevail: Ancient Battles.
  */
-export const gameSchema = z.object({
+export const gameSchema: z.ZodType<Game> = z.object({
   /** The unique identifier of the game. */
   id: z.string().uuid(),
   /** The type of game. */

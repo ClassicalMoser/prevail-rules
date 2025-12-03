@@ -8,7 +8,7 @@ import {
 import { z } from 'zod';
 
 /** The schema for a move unit command. */
-export const moveUnitCommandSchema = z.object({
+export const moveUnitCommandSchema: z.ZodType<MoveUnitCommand> = z.object({
   /** The player who is moving the unit. */
   player: playerSideSchema,
   /** The unit to move. */

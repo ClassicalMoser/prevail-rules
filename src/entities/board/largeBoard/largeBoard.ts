@@ -15,14 +15,14 @@ import { largeBoardCoordinates } from './largeCoordinates';
  * @returns A ZodObject schema that validates an object with all coordinates as required keys
  *
  * The return type explicitly specifies:
- * - Shape: Record<T, typeof boardSpaceSchema> - each coordinate maps to boardSpaceSchema
+ * - Shape: Record<T, z.ZodType<BoardSpace>> - each coordinate maps to a BoardSpace schema
  * - Unknown keys: "strip" - extra keys are removed during parsing
  * - Output/Input: Record<T, BoardSpace> - TypeScript infers the exact coordinate type
  */
 function createBoardSchema<T extends string>(
   coordinates: readonly T[],
-): z.ZodObject<Record<T, typeof boardSpaceSchema>> {
-  const shape = {} as Record<T, typeof boardSpaceSchema>;
+): z.ZodObject<Record<T, z.ZodType<BoardSpace>>> {
+  const shape = {} as Record<T, z.ZodType<BoardSpace>>;
   // Ensure all coordinates are included in the schema
   for (const coord of coordinates) {
     shape[coord] = boardSpaceSchema;
@@ -32,11 +32,21 @@ function createBoardSchema<T extends string>(
 }
 
 /**
+ * The schema for the board coordinate map.
+ */
+const largeBoardCoordinateMapSchema: z.ZodObject<
+  Record<LargeBoardCoordinate, z.ZodType<BoardSpace>>
+> = createBoardSchema(largeBoardCoordinates);
+
+/**
  * The schema for a large board.
  */
-export const largeBoardSchema = z.object({
+export const largeBoardSchema: z.ZodObject<{
+  boardType: z.ZodLiteral<'large'>;
+  board: typeof largeBoardCoordinateMapSchema;
+}> = z.object({
   boardType: z.literal('large'),
-  board: createBoardSchema(largeBoardCoordinates),
+  board: largeBoardCoordinateMapSchema,
 });
 
 type LargeBoardSchemaType = z.infer<typeof largeBoardSchema>;

@@ -6,7 +6,11 @@ import { z } from 'zod';
 /**
  * The schema for a single unit presence in a space.
  */
-export const singleUnitPresenceSchema = z.object({
+export const singleUnitPresenceSchema: z.ZodObject<{
+  presenceType: z.ZodLiteral<'single'>;
+  unit: typeof unitInstanceSchema;
+  facing: typeof unitFacingSchema;
+}> = z.object({
   /** A single unit is present in the space. */
   presenceType: z.literal('single' as const),
   /** The unit in the space. */

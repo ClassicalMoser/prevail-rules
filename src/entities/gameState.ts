@@ -19,7 +19,7 @@ import { unitInstanceSchema } from './unit/unitInstance';
 import { engagedUnitPresenceSchema } from './unitPresence/engagedUnitPresence';
 
 /** The schema for a game state. */
-export const gameStateSchema = z.object({
+export const gameStateSchema: z.ZodType<GameState> = z.object({
   /** The current round number of the game. */
   currentRound: z.number().int().min(0),
   /** The current phase of the game. */

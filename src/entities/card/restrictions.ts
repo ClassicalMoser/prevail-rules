@@ -6,7 +6,7 @@ import { z } from 'zod';
 /**
  * The schema for the restrictions on a card command or round effect.
  */
-export const restrictionsSchema = z.object({
+export const restrictionsSchema: z.ZodType<Restrictions> = z.object({
   /** The maximum range from the commander allowed for the command or round effect to be applied. */
   inspirationRangeRestriction: z.number().int().min(0).max(10).optional(),
   /** The traits that must be present on the unit for the command or round effect to be applied. */

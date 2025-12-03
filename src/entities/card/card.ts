@@ -17,7 +17,7 @@ import { roundEffectSchema } from './roundEffect';
  * This ensures type-schema alignment: if the interface doesn't match the schema,
  * TypeScript will error at compile time.
  */
-export const cardSchema = z.object({
+export const cardSchema: z.ZodType<Card> = z.object({
   /** The unique identifier of the card. */
   id: z.string().uuid(),
   /** The version of the card. */

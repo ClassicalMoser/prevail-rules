@@ -4,7 +4,7 @@ import { z } from 'zod';
 /**
  * The schema for the elevation of a space.
  */
-export const elevationSchema = z.object({
+export const elevationSchema: z.ZodType<Elevation> = z.object({
   /**
    * The elevation of the north-west corner of the space.
    */

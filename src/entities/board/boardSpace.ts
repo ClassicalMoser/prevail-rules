@@ -15,7 +15,7 @@ import { waterCoverSchema } from './waterCover';
 /**
  * The schema for a space of the game board.
  */
-export const boardSpaceSchema = z.object({
+export const boardSpaceSchema: z.ZodType<BoardSpace> = z.object({
   /**
    * The type of terrain in the space.
    */

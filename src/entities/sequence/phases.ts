@@ -15,7 +15,7 @@ export const phases = [
 /**
  * The schema for a phase of a round.
  */
-export const phaseSchema = z.enum(phases);
+export const phaseSchema: z.ZodType<Phase> = z.enum(phases);
 
 // Helper type to check match of type against schema
 type PhaseSchemaType = z.infer<typeof phaseSchema>;
