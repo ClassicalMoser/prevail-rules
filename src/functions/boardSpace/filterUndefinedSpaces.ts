@@ -1,17 +1,14 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { Board, BoardCoordinate } from "@entities";
 
 /**
  * Filter out undefined spaces from a set of space coordinates.
  * @param spaces - The set of space coordinates to filter
  * @returns A set of the space coordinates with undefined values removed
  */
-export function filterUndefinedSpaces(
-  spaces: Set<BoardCoordinate<Board> | undefined>,
-): Set<BoardCoordinate<Board>> {
+export function filterUndefinedSpaces<T extends BoardCoordinate<Board>>(
+  spaces: Set<T | undefined>,
+): Set<T> {
   return new Set(
-    [...spaces.values()].filter(
-      (space) => space !== undefined,
-    ) as BoardCoordinate<Board>[],
-  ) as Set<BoardCoordinate<Board>>;
+    [...spaces.values()].filter((space) => space !== undefined) as T[],
+  );
 }

@@ -1,8 +1,7 @@
-import type { BoardSpace } from "@entities/board/boardSpace.js";
-import type { SmallBoardCoordinate } from "@entities/board/smallBoard/smallCoordinates.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { boardSpaceSchema } from "@entities/board/boardSpace.js";
-import { smallBoardCoordinates } from "@entities/board/smallBoard/smallCoordinates.js";
+import type { BoardSpace, SmallBoardCoordinate } from "@entities/board";
+import type { AssertExact } from "@utils";
+import { boardSpaceSchema } from "@entities/board/boardSpace";
+import { smallBoardCoordinates } from "@entities/board";
 import { z } from "zod";
 
 /**

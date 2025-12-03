@@ -1,13 +1,17 @@
-import type { Board } from "@entities/board/board.js";
-import type { LargeBoard } from "@entities/board/largeBoard/index.js";
-import type { LargeBoardCoordinate } from "@entities/board/largeBoard/largeCoordinates.js";
-import type { SmallBoard } from "@entities/board/smallBoard/index.js";
-import type { SmallBoardCoordinate } from "@entities/board/smallBoard/smallCoordinates.js";
-import type { StandardBoard } from "@entities/board/standardBoard/index.js";
-import type { StandardBoardCoordinate } from "@entities/board/standardBoard/standardCoordinates.js";
-import { largeBoardCoordinates } from "@entities/board/largeBoard/largeCoordinates.js";
-import { smallBoardCoordinates } from "@entities/board/smallBoard/smallCoordinates.js";
-import { standardBoardCoordinates } from "@entities/board/standardBoard/standardCoordinates.js";
+import type {
+  Board,
+  LargeBoard,
+  LargeBoardCoordinate,
+  SmallBoard,
+  SmallBoardCoordinate,
+  StandardBoard,
+  StandardBoardCoordinate,
+} from "@entities/board";
+import {
+  largeBoardCoordinates,
+  smallBoardCoordinates,
+  standardBoardCoordinates,
+} from "@entities/board";
 import { z } from "zod";
 
 /**

@@ -1,8 +1,6 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import { getForwardSpace } from "@functions/boardSpace/getForwardSpace.js";
-import { getLeftFacing } from "@functions/facings/getLeftFacing.js";
+import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import { getForwardSpace } from "@functions/boardSpace";
+import { getLeftFacing } from "@functions/facings";
 
 /**
  * Get the left space for a given coordinate and facing.
@@ -16,11 +14,11 @@ import { getLeftFacing } from "@functions/facings/getLeftFacing.js";
  * (directly to the left of the given coordinate relative to the facing direction)
  * or undefined if the space is out of bounds
  */
-export function getLeftSpace(
-  board: Board,
-  coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing,
-): BoardCoordinate<Board> | undefined {
+export function getLeftSpace<TBoard extends Board>(
+  board: TBoard,
+  coordinate: BoardCoordinate<TBoard>,
+  facing: UnitFacing
+): BoardCoordinate<TBoard> | undefined {
   // Get the left-facing direction
   const leftFacing = getLeftFacing(facing);
   // Get the left space

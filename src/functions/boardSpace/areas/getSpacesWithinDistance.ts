@@ -1,6 +1,5 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
-import { getAdjacentSpaces } from "@functions/boardSpace/adjacency/getAdjacentSpaces.js";
+import type { Board, BoardCoordinate } from "@entities";
+import { getAdjacentSpaces } from "@functions/boardSpace/adjacency";
 
 /**
  * Get all spaces within a given distance from a coordinate.
@@ -10,20 +9,20 @@ import { getAdjacentSpaces } from "@functions/boardSpace/adjacency/getAdjacentSp
  * @param distance - The maximum distance (inclusive)
  * @returns A set of all space coordinates within the distance
  */
-export function getSpacesWithinDistance(
-  board: Board,
-  coordinate: BoardCoordinate<Board>,
+export function getSpacesWithinDistance<TBoard extends Board>(
+  board: TBoard,
+  coordinate: BoardCoordinate<TBoard>,
   distance: number,
-): Set<BoardCoordinate<Board>> {
+): Set<BoardCoordinate<TBoard>> {
   // If distance is 0 or negative, return only the starting coordinate
   if (distance <= 0) {
     return new Set([coordinate]);
   }
 
   // Set to track all spaces within distance
-  const spacesWithinDistance = new Set<BoardCoordinate<Board>>([coordinate]);
+  const spacesWithinDistance = new Set<BoardCoordinate<TBoard>>([coordinate]);
   // Set to track spaces at the current distance level
-  let currentLevel = new Set<BoardCoordinate<Board>>([coordinate]);
+  let currentLevel = new Set<BoardCoordinate<TBoard>>([coordinate]);
 
   // Iterate through each distance level
   for (
@@ -32,7 +31,7 @@ export function getSpacesWithinDistance(
     currentDistance++
   ) {
     // Set to track spaces at the next distance level
-    const nextLevel = new Set<BoardCoordinate<Board>>();
+    const nextLevel = new Set<BoardCoordinate<TBoard>>();
 
     // For each space at the current level, get its adjacent spaces
     for (const space of currentLevel) {

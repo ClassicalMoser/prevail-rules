@@ -1,13 +1,15 @@
-import type { BoardConfig } from "@entities/board/boardConfig.js";
-import type { BoardSpace } from "@entities/board/boardSpace.js";
-import type { LargeBoard } from "@entities/board/largeBoard/index.js";
-import type { SmallBoard } from "@entities/board/smallBoard/index.js";
-import type { StandardBoard } from "@entities/board/standardBoard/index.js";
+import type {
+  BoardConfig,
+  BoardSpace,
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+} from "@entities/board";
 import {
   largeBoardConfig,
   smallBoardConfig,
   standardBoardConfig,
-} from "@entities/board/boardConfig.js";
+} from "@entities/board";
 
 /**
  * Creates an empty board space with default values.

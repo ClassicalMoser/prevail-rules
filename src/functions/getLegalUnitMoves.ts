@@ -1,19 +1,20 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
-import type { BoardSpace } from "@entities/board/boardSpace.js";
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import type { UnitInstance } from "@entities/unit/unitInstance.js";
-import type { UnitPlacement } from "@entities/unitLocation/unitPlacement.js";
-import { unitFacings } from "@entities/unit/unitFacing.js";
-import { getBoardSpace } from "@functions/boardSpace/getBoardSpace.js";
-import { getForwardSpace } from "@functions/boardSpace/getForwardSpace.js";
-import { getAdjacentFacings } from "@functions/facings/getAdjacentFacings.js";
-import { areSameSide } from "@functions/unit/index.js";
-import { hasSingleUnit } from "@functions/unitPresence/index.js";
-import { isDiagonalFacing } from "@validation/isDiagonalFacing.js";
-import { canEngageEnemy } from "@validation/unitMovement/canEngageEnemy.js";
-import { canMoveInto } from "@validation/unitMovement/canMoveInto.js";
-import { canMoveThrough } from "@validation/unitMovement/canMoveThrough.js";
+import type {
+  Board,
+  BoardCoordinate,
+  BoardSpace,
+  UnitFacing,
+  UnitInstance,
+  UnitPlacement,
+} from "@entities";
+import { unitFacings } from "@entities";
+import { getBoardSpace, getForwardSpace } from "@functions/boardSpace";
+import { getAdjacentFacings } from "@functions/facings";
+import { areSameSide } from "@functions/unit";
+import { hasSingleUnit } from "@functions/unitPresence";
+import { isDiagonalFacing } from "@validation/isDiagonalFacing";
+import { canEngageEnemy } from "@validation/unitMovement/canEngageEnemy";
+import { canMoveInto } from "@validation/unitMovement/canMoveInto";
+import { canMoveThrough } from "@validation/unitMovement/canMoveThrough";
 
 /**
  * Calculates all legal moves for a unit from a given starting position.
@@ -134,7 +135,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
         board,
         currentCoordinate,
         currentFacing,
-      ) as BoardCoordinate<BoardType> | undefined;
+      );
       if (forwardCoordinate !== undefined) {
         // We can move forward if we can either:
         // 1. Move through the space (to continue moving), OR

@@ -1,8 +1,6 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import { getForwardSpace } from "@functions/boardSpace/getForwardSpace.js";
-import { getRightFacing } from "@functions/facings/getRightFacing.js";
+import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import { getForwardSpace } from "@functions/boardSpace";
+import { getRightFacing } from "@functions/facings";
 
 /**
  * Get the right space for a given coordinate and facing.
@@ -16,11 +14,11 @@ import { getRightFacing } from "@functions/facings/getRightFacing.js";
  * (directly to the right of the given coordinate relative to the facing direction)
  * or undefined if the space is out of bounds
  */
-export function getRightSpace(
-  board: Board,
-  coordinate: BoardCoordinate<Board>,
+export function getRightSpace<TBoard extends Board>(
+  board: TBoard,
+  coordinate: BoardCoordinate<TBoard>,
   facing: UnitFacing,
-): BoardCoordinate<Board> | undefined {
+): BoardCoordinate<TBoard> | undefined {
   // Get the right-facing direction
   const rightFacing = getRightFacing(facing);
   // Get the right space

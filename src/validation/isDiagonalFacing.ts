@@ -1,5 +1,5 @@
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import { diagonalFacings } from "@entities/unit/unitFacing.js";
+import type { UnitFacing } from "@entities";
+import { diagonalFacings } from "@entities";
 
 /**
  * Check if a facing is a diagonal facing.

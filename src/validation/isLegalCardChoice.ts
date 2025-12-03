@@ -1,6 +1,5 @@
-import type { ChooseCardCommand } from "@commands/chooseCard.js";
-import type { Card } from "@entities/card/card.js";
-import type { CardState } from "@entities/card/cardState.js";
+import type { ChooseCardCommand } from "@commands";
+import type { Card, CardState } from "@entities";
 
 /**
  * Validates whether a card choice command is legal.

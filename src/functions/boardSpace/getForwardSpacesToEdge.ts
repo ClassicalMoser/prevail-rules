@@ -1,8 +1,5 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import { filterUndefinedSpaces } from "@functions/boardSpace/filterUndefinedSpaces.js";
-import { getForwardSpace } from "@functions/boardSpace/getForwardSpace.js";
+import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import { filterUndefinedSpaces, getForwardSpace } from "@functions/boardSpace";
 
 /**
  * Get the forward spaces to the edge for a given coordinate and facing.
@@ -13,18 +10,22 @@ import { getForwardSpace } from "@functions/boardSpace/getForwardSpace.js";
  * @returns A set of the space coordinates
  * (all spaces on the board in a direct line from the given coordinate in the given facing direction)
  */
-export const getForwardSpacesToEdge = (
-  board: Board,
-  coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing,
-): Set<BoardCoordinate<Board>> => {
+export function getForwardSpacesToEdge<TBoard extends Board>(
+  board: TBoard,
+  coordinate: BoardCoordinate<TBoard>,
+  facing: UnitFacing
+): Set<BoardCoordinate<TBoard>> {
   // Initialize set with the starting coordinate
-  const spaces: Set<BoardCoordinate<Board>> = new Set([coordinate]);
+  const spaces: Set<BoardCoordinate<TBoard>> = new Set([coordinate]);
   // Iterate until the current space is undefined
-  let currentSpace: BoardCoordinate<Board> | undefined = coordinate;
+  let currentSpace: BoardCoordinate<TBoard> | undefined = coordinate;
   while (currentSpace !== undefined) {
     // Get the next space
-    const nextSpace = getForwardSpace(board, currentSpace, facing);
+    const nextSpace: BoardCoordinate<TBoard> | undefined = getForwardSpace(
+      board,
+      currentSpace,
+      facing
+    );
     // If the next space is not undefined, add it to the set
     if (nextSpace !== undefined) {
       spaces.add(nextSpace);
@@ -41,4 +42,4 @@ export const getForwardSpacesToEdge = (
   const validSpaces = filterUndefinedSpaces(spaces);
   // Return set of valid forward spaces to the edge
   return validSpaces;
-};
+}

@@ -1,8 +1,7 @@
-import type { Card } from "@entities/card/card.js";
-import type { PlayerSide } from "@entities/player/playerSide.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { cardSchema } from "@entities/card/card.js";
-import { playerSideSchema } from "@entities/player/playerSide.js";
+import type { Card, PlayerSide } from "@entities";
+import type { AssertExact } from "@utils";
+import { cardSchema } from "@entities/card/card";
+import { playerSideSchema } from "@entities/player/playerSide";
 import { z } from "zod";
 
 /** The schema for a choose card command. */

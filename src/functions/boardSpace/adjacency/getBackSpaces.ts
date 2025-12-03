@@ -1,8 +1,6 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import { getFrontSpaces } from "@functions/boardSpace/adjacency/getFrontSpaces.js";
-import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
+import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import { getFrontSpaces } from "@functions/boardSpace/adjacency";
+import { getOppositeFacing } from "@functions/facings";
 
 /**
  * Get the back spaces for a given coordinate and facing, including diagonals
@@ -11,11 +9,11 @@ import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
  * @param facing - The facing to get the back spaces for
  * @returns A set of the back space coordinates (up to 3 spaces, including diagonals)
  */
-export function getBackSpaces(
-  board: Board,
-  coordinate: BoardCoordinate<Board>,
+export function getBackSpaces<TBoard extends Board>(
+  board: TBoard,
+  coordinate: BoardCoordinate<TBoard>,
   facing: UnitFacing,
-): Set<BoardCoordinate<Board>> {
+): Set<BoardCoordinate<TBoard>> {
   const oppositeFacing = getOppositeFacing(facing);
   const backSpaces = getFrontSpaces(board, coordinate, oppositeFacing);
   return backSpaces;

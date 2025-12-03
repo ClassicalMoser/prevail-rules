@@ -1,19 +1,23 @@
-import type { Board, BoardSchemaType } from "@entities/board/board.js";
-import type { CardState } from "@entities/card/cardState.js";
-import type { Command } from "@entities/card/command.js";
-import type { PlayerSide } from "@entities/player/playerSide.js";
-import type { Phase } from "@entities/sequence/phases.js";
-
-import type { UnitInstance } from "@entities/unit/unitInstance.js";
-import type { EngagedUnitPresence } from "@entities/unitPresence/engagedUnitPresence.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { boardSchema } from "@entities/board/board.js";
-import { cardStateSchema } from "@entities/card/cardState.js";
-import { commandSchema } from "@entities/card/command.js";
-import { playerSideSchema } from "@entities/player/playerSide.js";
-import { phaseSchema } from "@entities/sequence/phases.js";
-import { unitInstanceSchema } from "@entities/unit/unitInstance.js";
-import { engagedUnitPresenceSchema } from "@entities/unitPresence/engagedUnitPresence.js";
+import type {
+  Board,
+  BoardSchemaType,
+  CardState,
+  Command,
+  EngagedUnitPresence,
+  Phase,
+  PlayerSide,
+  UnitInstance,
+} from "@entities";
+import type { AssertExact } from "@utils";
+import {
+  boardSchema,
+  cardStateSchema,
+  commandSchema,
+  engagedUnitPresenceSchema,
+  phaseSchema,
+  playerSideSchema,
+  unitInstanceSchema,
+} from "@entities";
 import { z } from "zod";
 
 /** The schema for a game state. */

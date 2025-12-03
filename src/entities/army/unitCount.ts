@@ -1,6 +1,6 @@
-import type { UnitType } from "@entities/unit/unitType.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { unitTypeSchema } from "@entities/unit/unitType.js";
+import type { UnitType } from "@entities";
+import type { AssertExact } from "@utils";
+import { unitTypeSchema } from "@entities/unit/unitType";
 import { z } from "zod";
 
 export const unitCountSchema = z.object({

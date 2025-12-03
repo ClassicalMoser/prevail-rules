@@ -1,8 +1,8 @@
-import type { MoveCommanderCommand } from "@commands/moveCommander.js";
-import type { StandardBoardCoordinate } from "@entities/index.js";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
-import { createBoardWithCommander } from "@testing/createBoard.js";
-import { isLegalCommanderMove } from "@validation/isLegalCommanderMove.js";
+import type { MoveCommanderCommand } from "@commands";
+import type { StandardBoardCoordinate } from "@entities";
+import { createEmptyStandardBoard } from "@functions";
+import { createBoardWithCommander } from "@testing";
+import { isLegalCommanderMove } from "@validation";
 import { describe, expect, it } from "vitest";
 
 describe("valid moves", () => {

@@ -1,7 +1,6 @@
-import type { Board } from "@entities/board/board.js";
-import type { UnitWithPlacement } from "@entities/index.js";
-import { getPlayerUnitWithPosition } from "@functions/boardSpace/getPlayerUnitWithPosition.js";
-import { areSameSide } from "@functions/unit/index.js";
+import type { Board, UnitWithPlacement } from "@entities";
+import { getPlayerUnitWithPosition } from "@functions/boardSpace";
+import { areSameSide } from "@functions/unit";
 
 /**
  * Determines whether a unit is at a specific placement on the board.

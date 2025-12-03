@@ -1,9 +1,7 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { boardCoordinateSchema } from "@entities/board/boardCoordinates.js";
-import { unitFacingSchema } from "@entities/unit/unitFacing.js";
+import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import type { AssertExact } from "@utils";
+import { boardCoordinateSchema } from "@entities/board/boardCoordinates";
+import { unitFacingSchema } from "@entities/unit/unitFacing";
 import z from "zod";
 
 export const unitPlacementSchema = z.object({

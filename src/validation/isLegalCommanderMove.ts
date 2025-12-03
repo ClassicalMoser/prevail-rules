@@ -1,8 +1,8 @@
-import type { MoveCommanderCommand } from "@commands/moveCommander.js";
-import type { Board } from "@entities/board/board.js";
-import { getSpacesWithinDistance } from "@functions/boardSpace/areas/getSpacesWithinDistance.js";
-import { getBoardSpace } from "@functions/boardSpace/getBoardSpace.js";
-import { COMMANDER_MOVE_DISTANCE } from "@sampleValues/ruleValues.js";
+import type { MoveCommanderCommand } from "@commands";
+import type { Board } from "@entities";
+import { getSpacesWithinDistance } from "@functions/boardSpace/areas";
+import { getBoardSpace } from "@functions/boardSpace";
+import { COMMANDER_MOVE_DISTANCE } from "@sampleValues/ruleValues";
 
 /**
  * Validates whether a commander move command is legal.

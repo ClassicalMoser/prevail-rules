@@ -1,6 +1,6 @@
-import type { Trait } from "@sampleValues/traits.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { traitSchema } from "@sampleValues/traits.js";
+import type { Trait } from "@sampleValues/traits";
+import type { AssertExact } from "@utils";
+import { traitSchema } from "@sampleValues/traits";
 import { z } from "zod";
 
 /**

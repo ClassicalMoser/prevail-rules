@@ -1,8 +1,7 @@
-import type { UnitCount } from "@entities/army/unitCount.js";
-import type { Card } from "@entities/card/card.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { unitCountSchema } from "@entities/army/unitCount.js";
-import { cardSchema } from "@entities/card/card.js";
+import type { Card, UnitCount } from "@entities";
+import type { AssertExact } from "@utils";
+import { unitCountSchema } from "@entities/army/unitCount";
+import { cardSchema } from "@entities/card/card";
 import { z } from "zod";
 
 /**

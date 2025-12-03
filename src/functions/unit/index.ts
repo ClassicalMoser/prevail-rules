@@ -1,2 +1,2 @@
-export { areSameSide } from "@functions/unit/areSameSide.js";
-export { isFriendlyUnit } from "@functions/unit/isFriendlyUnit.js";
+export { areSameSide } from "./areSameSide";
+export { isFriendlyUnit } from "./isFriendlyUnit";

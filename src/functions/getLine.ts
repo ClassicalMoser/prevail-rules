@@ -1,12 +1,9 @@
-import type { Board, UnitType, UnitWithPlacement } from "@entities/index.js";
-import type { Line } from "@entities/line.js";
-import type { Trait } from "@sampleValues/traits.js";
-import { getInlineSpaces } from "@functions/boardSpace/areas/getInlineSpaces.js";
-import { getPlayerUnitWithPosition } from "@functions/boardSpace/getPlayerUnitWithPosition.js";
-import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
-import { areSameSide } from "@functions/unit/index.js";
-import { isAtPlacement } from "@validation/isAtPlacement.js";
-import { matchesUnitRequirements } from "@validation/matchesUnitRequirements.js";
+import type { Board, Line, Trait, UnitType, UnitWithPlacement } from "@entities";
+import { getInlineSpaces } from "@functions/boardSpace/areas";
+import { getPlayerUnitWithPosition } from "@functions/boardSpace";
+import { getOppositeFacing } from "@functions/facings";
+import { areSameSide } from "@functions/unit";
+import { isAtPlacement, matchesUnitRequirements } from "@validation";
 
 /** Get the lines from a unit.
  * A line is a group of up to 8 friendly units that are exactly beside each other

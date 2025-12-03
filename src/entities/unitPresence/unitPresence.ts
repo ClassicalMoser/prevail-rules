@@ -1,10 +1,12 @@
-import type { EngagedUnitPresence } from "@entities/unitPresence/engagedUnitPresence.js";
-import type { NoneUnitPresence } from "@entities/unitPresence/noneUnitPresence.js";
-import type { SingleUnitPresence } from "@entities/unitPresence/singleUnitPresence.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { engagedUnitPresenceSchema } from "@entities/unitPresence/engagedUnitPresence.js";
-import { noneUnitPresenceSchema } from "@entities/unitPresence/noneUnitPresence.js";
-import { singleUnitPresenceSchema } from "@entities/unitPresence/singleUnitPresence.js";
+import type {
+  EngagedUnitPresence,
+  NoneUnitPresence,
+  SingleUnitPresence,
+} from "@entities";
+import type { AssertExact } from "@utils";
+import { engagedUnitPresenceSchema } from "@entities/unitPresence/engagedUnitPresence";
+import { noneUnitPresenceSchema } from "@entities/unitPresence/noneUnitPresence";
+import { singleUnitPresenceSchema } from "@entities/unitPresence/singleUnitPresence";
 import { z } from "zod";
 
 /**

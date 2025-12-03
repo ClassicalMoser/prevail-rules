@@ -1,6 +1,6 @@
-import type { MoveUnitCommand } from "@commands/moveUnit.js";
-import type { Board } from "@entities/board/board.js";
-import { getLegalUnitMoves } from "@functions/getLegalUnitMoves.js";
+import type { MoveUnitCommand } from "@commands";
+import type { Board } from "@entities";
+import { getLegalUnitMoves } from "@functions";
 
 /**
  * Validates whether a unit move command is legal according to game rules.

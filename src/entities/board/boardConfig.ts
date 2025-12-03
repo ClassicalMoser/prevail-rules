@@ -4,21 +4,21 @@
  * Boards are validated at boundaries (via Zod schemas), so internal functions trust types.
  */
 
-import type { LargeBoardCoordinate } from "@entities/board/largeBoard/index.js";
-import type { SmallBoardCoordinate } from "@entities/board/smallBoard/index.js";
-import type { StandardBoardCoordinate } from "@entities/board/standardBoard/index.js";
+import type {
+  Board,
+  BoardCoordinate,
+  LargeBoardCoordinate,
+  SmallBoardCoordinate,
+  StandardBoardCoordinate,
+} from "@entities/board";
 import {
   largeBoardColumnNumbers,
   largeBoardRowLetters,
-} from "@entities/board/largeBoard/index.js";
-import {
   smallBoardColumnNumbers,
   smallBoardRowLetters,
-} from "@entities/board/smallBoard/index.js";
-import {
   standardBoardColumnNumbers,
   standardBoardRowLetters,
-} from "@entities/board/standardBoard/index.js";
+} from "@entities/board";
 
 /**
  * Board configuration for coordinate calculations.
@@ -56,3 +56,15 @@ export const boardConfigMap = {
   small: smallBoardConfig,
   large: largeBoardConfig,
 } as const;
+
+/**
+ * Gets the board config for a given board type with proper type narrowing.
+ * This eliminates the need for type assertions when working with generic board types.
+ */
+export function getBoardConfig<TBoard extends Board>(
+  board: TBoard
+): BoardConfig<BoardCoordinate<TBoard>> {
+  return boardConfigMap[board.boardType] as BoardConfig<
+    BoardCoordinate<TBoard>
+  >;
+}

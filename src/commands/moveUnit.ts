@@ -1,11 +1,9 @@
-import type { Board } from "@entities/board/board.js";
-import type { PlayerSide } from "@entities/player/playerSide.js";
-import type { UnitInstance } from "@entities/unit/unitInstance.js";
-import type { UnitPlacement } from "@entities/unitLocation/unitPlacement.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { playerSideSchema } from "@entities/player/playerSide.js";
-import { unitInstanceSchema } from "@entities/unit/unitInstance.js";
-import { unitPlacementSchema } from "@entities/unitLocation/unitPlacement.js";
+import type { Board, PlayerSide, UnitInstance } from "@entities";
+import type { UnitPlacement } from "@entities/unitLocation";
+import type { AssertExact } from "@utils";
+import { playerSideSchema } from "@entities/player/playerSide";
+import { unitInstanceSchema } from "@entities/unit/unitInstance";
+import { unitPlacementSchema } from "@entities/unitLocation/unitPlacement";
 import { z } from "zod";
 
 /** The schema for a move unit command. */

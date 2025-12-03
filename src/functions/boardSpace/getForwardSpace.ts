@@ -1,10 +1,8 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardConfig } from "@entities/board/boardConfig.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import { boardConfigMap } from "@entities/board/boardConfig.js";
-import { unitFacingSchema } from "@entities/unit/unitFacing.js";
-import { getColumnDelta, getRowDelta } from "@functions/boardSpace/deltas.js";
+import type { Board, BoardConfig, BoardCoordinate } from "@entities/board";
+import type { UnitFacing } from "@entities/unit";
+import { getBoardConfig } from "@entities/board";
+import { unitFacingSchema } from "@entities/unit";
+import { getColumnDelta, getRowDelta } from "@functions/boardSpace";
 
 /**
  * Internal helper that performs the coordinate calculation.
@@ -14,12 +12,15 @@ import { getColumnDelta, getRowDelta } from "@functions/boardSpace/deltas.js";
 export function getForwardSpaceWithConfig<TCoordinate extends string>(
   coordinate: TCoordinate,
   facing: UnitFacing,
-  config: BoardConfig<TCoordinate>,
+  config: BoardConfig<TCoordinate>
 ): TCoordinate | undefined {
+  if (!coordinate.includes("-")) {
+    throw new Error(`Invalid coordinate: ${coordinate}`);
+  }
   // Parse coordinate - already validated at boundary, so we trust the format
   // Coordinates are formatted as "Row-Column" (e.g., "E-5" = row E, column 5)
-  const inputRow = coordinate.split("-")[0]!;
-  const inputColumn = coordinate.split("-")[1]!;
+  const inputRow = coordinate.split("-")[0];
+  const inputColumn = coordinate.split("-")[1];
 
   // Convert string coordinates to array indices for mathematical operations
   const currentRowIndex = config.rowLetters.indexOf(inputRow);
@@ -84,13 +85,15 @@ export function getForwardSpaceWithConfig<TCoordinate extends string>(
  * getForwardSpace(board, "E-5", "north") // Returns "D-5"
  * getForwardSpace(board, "A-1", "north") // Returns undefined (out of bounds)
  */
-export function getForwardSpace(
-  board: Board,
-  coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing,
-): BoardCoordinate<Board> | undefined {
-  const config = boardConfigMap[board.boardType];
-  return getForwardSpaceWithConfig(coordinate, facing, config) as
-    | BoardCoordinate<Board>
-    | undefined;
+export function getForwardSpace<TBoard extends Board>(
+  board: TBoard,
+  coordinate: BoardCoordinate<TBoard>,
+  facing: UnitFacing
+): BoardCoordinate<TBoard> | undefined {
+  const config = getBoardConfig(board);
+  return getForwardSpaceWithConfig<BoardCoordinate<TBoard>>(
+    coordinate,
+    facing,
+    config
+  );
 }

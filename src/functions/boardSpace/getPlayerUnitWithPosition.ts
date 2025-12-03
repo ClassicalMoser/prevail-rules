@@ -1,15 +1,8 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
-import type { UnitWithPlacement } from "@entities/index.js";
-import type { PlayerSide } from "@entities/player/playerSide.js";
-import { getBoardSpace } from "@functions/boardSpace/getBoardSpace.js";
-import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
-import { isFriendlyUnit } from "@functions/unit/index.js";
-import {
-  hasEngagedUnits,
-  hasNoUnit,
-  hasSingleUnit,
-} from "@functions/unitPresence/index.js";
+import type { Board, BoardCoordinate, PlayerSide, UnitWithPlacement } from "@entities";
+import { getBoardSpace } from "@functions/boardSpace";
+import { getOppositeFacing } from "@functions/facings";
+import { isFriendlyUnit } from "@functions/unit";
+import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from "@functions/unitPresence";
 
 /**
  * Extracts the friendly unit and its placement from a board space for a given player side.

@@ -1,8 +1,6 @@
-import type { Board } from "@entities/board/board";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates";
-import { unitFacings } from "@entities/index";
-import { filterUndefinedSpaces } from "@functions/boardSpace/filterUndefinedSpaces";
-import { getForwardSpace } from "@functions/boardSpace/getForwardSpace";
+import type { Board, BoardCoordinate } from "@entities";
+import { unitFacings } from "@entities";
+import { filterUndefinedSpaces, getForwardSpace } from "@functions/boardSpace";
 
 /**
  * Get the adjacent spaces for a given coordinate.
@@ -11,18 +9,18 @@ import { getForwardSpace } from "@functions/boardSpace/getForwardSpace";
  * @param coordinate - The coordinate to get the adjacent spaces for
  * @returns A set of the adjacent space coordinates (up to 8 spaces)
  */
-export function getAdjacentSpaces(
-  board: Board,
-  coordinate: BoardCoordinate<Board>,
-): Set<BoardCoordinate<Board>> {
+export function getAdjacentSpaces<TBoard extends Board>(
+  board: TBoard,
+  coordinate: BoardCoordinate<TBoard>,
+): Set<BoardCoordinate<TBoard>> {
   // One space in each of the eight directions from the given coordinate
   const adjacentSpaces = new Set(
     unitFacings.map((facing) => getForwardSpace(board, coordinate, facing)),
-  ) as Set<BoardCoordinate<Board> | undefined>;
+  );
 
   // Filter out undefined values
   const validAdjacentSpaces = filterUndefinedSpaces(adjacentSpaces);
 
   // Return set of valid adjacent spaces
-  return new Set(validAdjacentSpaces) as Set<BoardCoordinate<Board>>;
+  return validAdjacentSpaces;
 }

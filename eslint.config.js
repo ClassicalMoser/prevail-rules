@@ -25,6 +25,7 @@ export default antfu(
   },
   {
     files: ["**/*.ts", "**/*.js"],
+    ignores: ["**/index.ts"],
     rules: {
       // Ban all relative imports; require aliases (@entities/*, @functions/*, etc.)
       "no-restricted-imports": "off",
@@ -41,6 +42,27 @@ export default antfu(
               group: ["src/**"],
               message:
                 "Use aliased imports (@entities/*, @functions/*, etc.) instead of src/* paths.",
+            },
+            {
+              group: ["**/*.js"],
+              message: "Omit file extensions from imports.",
+            },
+            {
+              group: ["**/*.test.{ts,js}"],
+              message: "No importing from test files.",
+            },
+            {
+              group: [
+                "@entities/**/*",
+                "@functions/**/*",
+                "@commands/**/*",
+                "@contracts/**/*",
+                "@validation/**/*",
+                "@testing/**/*",
+                "@sampleValues/**/*",
+              ],
+              message:
+                "Omit directory separators from imports; import from the barrel file (e.g., use '@entities' instead of '@entities/board/board').",
             },
           ],
         },
@@ -61,5 +83,5 @@ export default antfu(
   {
     ignores: ["pnpm-lock.yaml", "node_modules/", "*.yml"],
   },
-  prettierConfig,
+  prettierConfig
 );

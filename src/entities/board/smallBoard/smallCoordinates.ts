@@ -1,7 +1,8 @@
-import type { SmallBoardColumnNumber } from "@entities/board/smallBoard/smallColumnNumbers.js";
-import type { SmallBoardRowLetter } from "@entities/board/smallBoard/smallRowLetters.js";
-import { smallBoardColumnNumbers } from "@entities/board/smallBoard/smallColumnNumbers.js";
-import { smallBoardRowLetters } from "@entities/board/smallBoard/smallRowLetters.js";
+import type {
+  SmallBoardColumnNumber,
+  SmallBoardRowLetter,
+} from "@entities/board";
+import { smallBoardColumnNumbers, smallBoardRowLetters } from "@entities/board";
 
 /**
  * A valid coordinate on a small board (A-1 through H-12).

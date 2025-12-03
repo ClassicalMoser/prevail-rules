@@ -1,15 +1,10 @@
-import type { Board } from "@entities/board/board.js";
-import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import type { UnitInstance } from "@entities/unit/unitInstance.js";
-import { getBackSpaces } from "@functions/boardSpace/adjacency/getBackSpaces.js";
-import { getFlankingSpaces } from "@functions/boardSpace/adjacency/getFlankingSpaces.js";
-import { getFrontSpaces } from "@functions/boardSpace/adjacency/getFrontSpaces.js";
-import { getSpacesBehind } from "@functions/boardSpace/areas/getSpacesBehind.js";
-import { getBoardSpace } from "@functions/boardSpace/getBoardSpace.js";
-import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
-import { areSameSide } from "@functions/unit/index.js";
-import { hasSingleUnit } from "@functions/unitPresence/index.js";
+import type { Board, BoardCoordinate, UnitFacing, UnitInstance } from "@entities";
+import { getBackSpaces, getFlankingSpaces, getFrontSpaces } from "@functions/boardSpace/adjacency";
+import { getSpacesBehind } from "@functions/boardSpace/areas";
+import { getBoardSpace } from "@functions/boardSpace";
+import { getOppositeFacing } from "@functions/facings";
+import { areSameSide } from "@functions/unit";
+import { hasSingleUnit } from "@functions/unitPresence";
 
 /**
  * Incremental function to check whether engagement is legal from an adjacent space.

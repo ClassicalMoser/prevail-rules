@@ -1,8 +1,7 @@
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import type { UnitInstance } from "@entities/unit/unitInstance.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { unitFacingSchema } from "@entities/unit/unitFacing.js";
-import { unitInstanceSchema } from "@entities/unit/unitInstance.js";
+import type { UnitFacing, UnitInstance } from "@entities";
+import type { AssertExact } from "@utils";
+import { unitFacingSchema } from "@entities/unit/unitFacing";
+import { unitInstanceSchema } from "@entities/unit/unitInstance";
 import { z } from "zod";
 
 /**
