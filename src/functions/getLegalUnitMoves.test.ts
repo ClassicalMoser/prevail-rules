@@ -25,7 +25,7 @@ describe("getLegalUnitMoves", () => {
       // Unit has speed 2 and flexibility 1
       expect(legalMoves.size).toBeGreaterThan(0);
       expect(hasMove(legalMoves, startingCoordinate, startingFacing)).toBe(
-        true,
+        true
       );
     });
   });
@@ -61,7 +61,7 @@ describe("getLegalUnitMoves", () => {
       const friendlyUnit = createUnitInstance(
         "black",
         highFlexibilityUnitType,
-        2,
+        2
       );
       const board = createBoardWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
@@ -81,12 +81,12 @@ describe("getLegalUnitMoves", () => {
       const friendlyUnit1 = createUnitInstance(
         "black",
         flexibility1UnitType,
-        1,
+        1
       );
       const friendlyUnit2 = createUnitInstance(
         "black",
         flexibility1UnitType,
-        2,
+        2
       );
       const board = createBoardWithUnits([
         { unit, coordinate: "E-5", facing: "northWest" },
@@ -232,6 +232,52 @@ describe("getLegalUnitMoves", () => {
     });
   });
 
+  describe("edge of board (out of bounds forward space)", () => {
+    it("should handle unit at edge of board where forward space is undefined", () => {
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
+      const startingCoordinate: StandardBoardCoordinate = "A-1";
+      const startingFacing = "north"; // Moving north from A-1 is out of bounds
+      const board = createBoardWithUnits([
+        { unit, coordinate: startingCoordinate, facing: startingFacing },
+      ]);
+
+      const legalMoves = getLegalUnitMoves(unit, board, {
+        coordinate: startingCoordinate,
+        facing: startingFacing,
+      });
+
+      // Unit can still change facing and move in other directions
+      // Should not crash when forwardCoordinate is undefined
+      expect(legalMoves.size).toBeGreaterThan(0);
+      // Should include the starting position (can stay in place)
+      expect(hasMove(legalMoves, startingCoordinate, startingFacing)).toBe(
+        true
+      );
+      // Should not include spaces north of A-1 (out of bounds)
+      expect(hasMove(legalMoves, "A-0" as StandardBoardCoordinate)).toBe(false);
+    });
+
+    it("should handle unit at different edge with undefined forward space", () => {
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
+      const startingCoordinate: StandardBoardCoordinate = "L-18";
+      const startingFacing = "south"; // Moving south from L-18 is out of bounds
+      const board = createBoardWithUnits([
+        { unit, coordinate: startingCoordinate, facing: startingFacing },
+      ]);
+
+      const legalMoves = getLegalUnitMoves(unit, board, {
+        coordinate: startingCoordinate,
+        facing: startingFacing,
+      });
+
+      // Should not crash and should return valid moves
+      expect(legalMoves.size).toBeGreaterThan(0);
+      expect(hasMove(legalMoves, startingCoordinate, startingFacing)).toBe(
+        true
+      );
+    });
+  });
+
   describe("error cases for invalid starting position", () => {
     it("should throw error when unit at starting position is not free to move (engaged)", () => {
       // Test coverage for lines 29-30: unit is not free to move (engaged state)
@@ -284,7 +330,7 @@ describe("getLegalUnitMoves", () => {
       const differentUnit = createUnitInstance(
         "black",
         flexibility1UnitType,
-        2,
+        2
       );
       const startingCoordinate: StandardBoardCoordinate = "E-5";
       const startingFacing = "north";

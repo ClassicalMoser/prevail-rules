@@ -5,11 +5,7 @@ import type {
   UnitWithPlacement,
 } from "@entities";
 import { getBoardSpace, getOppositeFacing, isFriendlyUnit } from "@functions";
-import {
-  hasEngagedUnits,
-  hasNoUnit,
-  hasSingleUnit,
-} from "@validation";
+import { hasNoUnit, hasSingleUnit } from "@validation";
 
 /**
  * Extracts the friendly unit and its placement from a board space for a given player side.
@@ -46,7 +42,7 @@ import {
 export function getPlayerUnitWithPosition<TBoard extends Board>(
   board: TBoard,
   coordinate: BoardCoordinate<TBoard>,
-  playerSide: PlayerSide,
+  playerSide: PlayerSide
 ): UnitWithPlacement<TBoard> | undefined {
   const unitPresence = getBoardSpace(board, coordinate).unitPresence;
 
@@ -70,8 +66,9 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
     return undefined;
   }
 
-  // Handle engaged unit presence
-  if (hasEngagedUnits(unitPresence)) {
+  // If not, units must be engaged; return the friendly unit
+  // (primary or secondary) with correct facing
+  else {
     // Check primary unit first
     if (isFriendlyUnit(unitPresence.primaryUnit, playerSide)) {
       return {
