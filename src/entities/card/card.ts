@@ -7,6 +7,15 @@ import { roundEffectSchema } from "./roundEffect";
 
 /**
  * The schema for a card.
+ *
+ * This follows the schema-first type safety pattern used throughout the codebase:
+ * 1. Define Zod schema for runtime validation
+ * 2. Infer type from schema
+ * 3. Define interface manually (for better IDE support and documentation)
+ * 4. Assert type match at compile time using AssertExact
+ *
+ * This ensures type-schema alignment: if the interface doesn't match the schema,
+ * TypeScript will error at compile time.
  */
 export const cardSchema = z.object({
   /** The unique identifier of the card. */

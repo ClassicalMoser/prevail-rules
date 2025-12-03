@@ -12,8 +12,8 @@ import {
   getAdjacentFacings,
   getBoardSpace,
   getForwardSpace,
-  hasSingleUnit,
 } from "@functions";
+import { hasSingleUnit } from "@validation";
 import {
   canEngageEnemy,
   canMoveInto,
@@ -26,11 +26,49 @@ import {
  * Uses recursive exploration with memoization to find all combinations of
  * movement and facing changes within the unit's speed and flexibility limits.
  *
+ * This function explores all possible move sequences by:
+ * 1. Moving forward (consuming speed)
+ * 2. Changing facing (consuming flexibility)
+ * 3. Combining both in any order
+ *
+ * The algorithm uses memoization to avoid revisiting the same state
+ * (coordinate + facing + remaining speed + remaining flexibility).
+ *
  * @param unit - The unit for which to calculate legal moves
  * @param board - The board state to evaluate moves on
  * @param startingPosition - The current position and facing of the unit
  * @returns A set of all legal unit placements (coordinate + facing) the unit can reach
  * @throws {Error} If the unit is not free to move, not present, or facing mismatch
+ *
+ * @example
+ * ```typescript
+ * // Get legal moves for a unit at position E-5 facing north
+ * const unit = createUnitInstance("black", someUnitType, 1);
+ * const board = createEmptyStandardBoard();
+ * const legalMoves = getLegalUnitMoves(unit, board, {
+ *   coordinate: "E-5",
+ *   facing: "north",
+ * });
+ *
+ * // Check if a specific move is legal
+ * const isLegal = Array.from(legalMoves).some(
+ *   (move) => move.coordinate === "F-5" && move.facing === "north"
+ * );
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // Unit with speed 3 and flexibility 2 can:
+ * // - Move up to 3 spaces forward
+ * // - Change facing up to 2 times
+ * // - Combine movement and facing changes
+ * const fastUnit = createUnitInstance("black", fastUnitType, 1);
+ * const moves = getLegalUnitMoves(fastUnit, board, {
+ *   coordinate: "E-5",
+ *   facing: "north",
+ * });
+ * // Returns all reachable positions with any valid facing
+ * ```
  */
 export function getLegalUnitMoves<TBoard extends Board>(
   unit: UnitInstance,

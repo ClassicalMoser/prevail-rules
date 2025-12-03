@@ -6,6 +6,5 @@ export * from "./getBoardSpace";
 export * from "./getForwardSpace";
 export * from "./getForwardSpacesToEdge";
 export * from "./getLeftSpace";
-export * from "./getPlayerUnitWithPosition";
 export * from "./getRearwardSpace";
 export * from "./getRightSpace";

@@ -1,11 +1,10 @@
 import type { Board, BoardCoordinate, UnitInstance } from "@entities";
+import { areSameSide, getBoardSpace } from "@functions";
 import {
-  areSameSide,
-  getBoardSpace,
   hasEngagedUnits,
   hasNoUnit,
   hasSingleUnit,
-} from "@functions";
+} from "@validation";
 
 /**
  * Determines whether a unit can move into (end its movement at) a specific coordinate.

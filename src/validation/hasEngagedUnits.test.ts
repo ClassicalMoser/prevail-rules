@@ -1,4 +1,4 @@
-import { hasEngagedUnits } from "@functions";
+import { hasEngagedUnits } from "@validation";
 import {
   createEngagedUnitPresence,
   createNoneUnitPresence,
@@ -26,3 +26,4 @@ describe("hasEngagedUnits", () => {
     expect(hasEngagedUnits(unitPresence)).toBe(true);
   });
 });
+

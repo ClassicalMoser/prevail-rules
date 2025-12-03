@@ -1,12 +1,7 @@
 import type { Board, BoardCoordinate, UnitInstance } from "@entities";
-import {
-  areSameSide,
-  getBoardSpace,
-  hasEngagedUnits,
-  hasNoUnit,
-  hasSingleUnit,
-} from "@functions";
+import { areSameSide, getBoardSpace } from "@functions";
 import { MIN_FLEXIBILITY_THRESHOLD } from "@sampleValues";
+import { hasEngagedUnits, hasNoUnit } from "@validation";
 
 /**
  * Determines whether a unit can move through (pass over) a specific coordinate.
@@ -20,7 +15,7 @@ import { MIN_FLEXIBILITY_THRESHOLD } from "@sampleValues";
 export function canMoveThrough<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+  coordinate: BoardCoordinate<TBoard>
 ): boolean {
   try {
     // Find the board space at the given coordinate.
@@ -38,7 +33,7 @@ export function canMoveThrough<TBoard extends Board>(
     }
 
     // If the space has a single unit, further checks are needed.
-    if (hasSingleUnit(spaceUnitPresence)) {
+    else {
       // Player cannot move through an unfriendly unit.
       if (!areSameSide(spaceUnitPresence.unit, unit)) {
         return false;
@@ -52,7 +47,6 @@ export function canMoveThrough<TBoard extends Board>(
         return false;
       }
     }
-
     return true;
   } catch {
     // If the coordinate doesn't exist, the unit cannot move through it.

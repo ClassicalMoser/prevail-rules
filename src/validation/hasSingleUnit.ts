@@ -11,3 +11,4 @@ export function hasSingleUnit(
 ): unitPresence is SingleUnitPresence {
   return unitPresence.presenceType === "single";
 }
+

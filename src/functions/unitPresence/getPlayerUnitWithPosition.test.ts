@@ -94,7 +94,7 @@ describe("getPlayerUnitWithPosition", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north",
+        "north"
       );
 
       const result = getPlayerUnitWithPosition(board, coordinate, "black");
@@ -112,7 +112,7 @@ describe("getPlayerUnitWithPosition", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        "north",
+        "north"
       );
 
       const result = getPlayerUnitWithPosition(board, coordinate, "black");
@@ -131,7 +131,7 @@ describe("getPlayerUnitWithPosition", () => {
         primaryUnit,
         secondaryUnit,
         coordinate,
-        primaryFacing,
+        primaryFacing
       );
 
       const result = getPlayerUnitWithPosition(board, coordinate, "black");
@@ -160,7 +160,7 @@ describe("getPlayerUnitWithPosition", () => {
           primaryUnit,
           secondaryUnit,
           coordinate,
-          primaryFacing,
+          primaryFacing
         );
 
         const result = getPlayerUnitWithPosition(board, coordinate, "black");
@@ -262,10 +262,10 @@ describe("getPlayerUnitWithPosition", () => {
         getPlayerUnitWithPosition(
           board,
           "invalid" as StandardBoardCoordinate,
-          "black",
-        ),
+          "black"
+        )
       ).toThrow(
-        new Error("Coordinate invalid does not exist on standard board."),
+        new Error("Coordinate invalid does not exist on standard board.")
       );
     });
   });

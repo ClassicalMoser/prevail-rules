@@ -1,4 +1,4 @@
-import { hasNoUnit } from "@functions";
+import { hasNoUnit } from "@validation";
 import {
   createEngagedUnitPresence,
   createNoneUnitPresence,
@@ -26,3 +26,4 @@ describe("hasNoUnit", () => {
     expect(hasNoUnit(unitPresence)).toBe(false);
   });
 });
+

@@ -23,6 +23,21 @@ const _assertExactBoardSize: AssertExact<BoardSize, BoardSizeEnumType> = true;
 
 /**
  * The schema for a board.
+ *
+ * Uses a discriminated union based on the `boardType` field to ensure type safety.
+ * Each board type has different coordinate systems:
+ * - Standard: A-1 through L-18
+ * - Small: Smaller coordinate range
+ * - Large: Larger coordinate range
+ *
+ * @example
+ * ```typescript
+ * // TypeScript will narrow the type based on boardType
+ * if (board.boardType === "standard") {
+ *   // board is StandardBoard
+ *   const space = board.board["E-5"]; // ✅ Type-safe
+ * }
+ * ```
  */
 export const boardSchema = z.discriminatedUnion("boardType", [
   smallBoardSchema,

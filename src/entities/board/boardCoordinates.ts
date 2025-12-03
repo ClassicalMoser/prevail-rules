@@ -50,11 +50,38 @@ export const boardCoordinateSchema = z.enum(
       | SmallBoardCoordinate
       | LargeBoardCoordinate
     )[],
-  ],
+  ]
 );
 
 /**
- * Helper type to extract the coordinate type from a board type
+ * Helper type to extract the coordinate type from a board type.
+ *
+ * This generic type ensures type safety by matching board types to their
+ * corresponding coordinate types. This prevents using the wrong coordinate
+ * type with a board.
+ *
+ * @example
+ * ```typescript
+ * // ✅ Type-safe: coordinate matches board type
+ * const standardBoard: StandardBoard = createEmptyStandardBoard();
+ * const coord: BoardCoordinate<StandardBoard> = "E-5"; // StandardBoardCoordinate
+ * const space = getBoardSpace(standardBoard, coord);
+ *
+ * // ❌ Type error: coordinate doesn't match board type
+ * const smallCoord: SmallBoardCoordinate = "A-1";
+ * const space = getBoardSpace(standardBoard, smallCoord); // Error!
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // Generic functions use this to ensure type safety
+ * function getSpace<TBoard extends Board>(
+ *   board: TBoard,
+ *   coordinate: BoardCoordinate<TBoard>
+ * ): BoardSpace {
+ *   // TypeScript ensures coordinate matches board type
+ * }
+ * ```
  */
 export type BoardCoordinate<T extends Board> = T extends StandardBoard
   ? StandardBoardCoordinate

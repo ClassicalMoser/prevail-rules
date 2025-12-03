@@ -1,3 +1,6 @@
+export * from "./hasEngagedUnits";
+export * from "./hasNoUnit";
+export * from "./hasSingleUnit";
 export * from "./isAtPlacement";
 export * from "./isDiagonalFacing";
 export * from "./isLegalCardChoice";

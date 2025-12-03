@@ -11,3 +11,4 @@ export function hasNoUnit(
 ): unitPresence is NoneUnitPresence {
   return unitPresence.presenceType === "none";
 }
+

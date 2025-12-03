@@ -11,3 +11,4 @@ export function hasEngagedUnits(
 ): unitPresence is EngagedUnitPresence {
   return unitPresence.presenceType === "engaged";
 }
+
