@@ -6,7 +6,7 @@ import type {
   UnitInstance,
 } from "@entities/index";
 import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
-import { getUnitByStatValue } from "@testing/getUnitByStatValue";
+import { getUnitByStatValue } from "@testing";
 import { createUnitInstance } from "@utils/createUnitInstance";
 
 /**
