@@ -1,7 +1,7 @@
 import type { Board, BoardCoordinate, UnitFacing, UnitInstance } from "@entities";
+import { getBoardSpace } from "@functions/boardSpace";
 import { getBackSpaces, getFlankingSpaces, getFrontSpaces } from "@functions/boardSpace/adjacency";
 import { getSpacesBehind } from "@functions/boardSpace/areas";
-import { getBoardSpace } from "@functions/boardSpace";
 import { getOppositeFacing } from "@functions/facings";
 import { areSameSide } from "@functions/unit";
 import { hasSingleUnit } from "@functions/unitPresence";

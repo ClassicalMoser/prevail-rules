@@ -1,4 +1,4 @@
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import type { UnitFacing } from "@entities";
 
 /**
  * Get the opposite facing of a given facing.

@@ -1,8 +1,8 @@
-import type { ChooseCardCommand } from "@commands/chooseCard.js";
-import type { Card } from "@entities/card/card.js";
-import type { CardState } from "@entities/card/cardState.js";
-import { commandCards } from "@sampleValues/commandCards.js";
-import { isLegalCardChoice } from "@validation/isLegalCardChoice.js";
+import type { ChooseCardCommand } from "@commands";
+import type { Card } from "@entities/card/card";
+import type { CardState } from "@entities/card/cardState";
+import { commandCards } from "@sampleValues/commandCards";
+import { isLegalCardChoice } from "@validation";
 import { describe, expect, it } from "vitest";
 
 describe("isLegalCardChoice", () => {

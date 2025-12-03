@@ -1,5 +1,5 @@
-import { getAdjacentSpaces } from "@functions/boardSpace/adjacency/getAdjacentSpaces.js";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
+import { getAdjacentSpaces } from "@functions/boardSpace/adjacency";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
 import { describe, expect, it } from "vitest";
 
 const standardBoard = createEmptyStandardBoard();

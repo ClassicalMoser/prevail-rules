@@ -1,12 +1,12 @@
-import type { StandardBoardCoordinate, UnitFacing } from "@entities/index.js";
-import { getPlayerUnitWithPosition } from "@functions/boardSpace/getPlayerUnitWithPosition.js";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
-import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
+import type { StandardBoardCoordinate, UnitFacing } from "@entities/index";
+import { getPlayerUnitWithPosition } from "@functions/boardSpace";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
+import { getOppositeFacing } from "@functions/facings";
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-} from "@testing/createBoard.js";
-import { createTestUnit } from "@testing/unitHelpers.js";
+} from "@testing/createBoard";
+import { createTestUnit } from "@testing/unitHelpers";
 import { describe, expect, it } from "vitest";
 
 describe("getPlayerUnitWithPosition", () => {

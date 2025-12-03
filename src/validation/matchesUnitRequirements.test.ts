@@ -1,7 +1,7 @@
-import type { UnitType } from "@entities/unit/unitType.js";
-import { getUnitByStatValue } from "@testing/getUnitByStatValue.js";
-import { getUnitByTrait } from "@testing/getUnitByTrait.js";
-import { matchesUnitRequirements } from "@validation/matchesUnitRequirements.js";
+import type { UnitType } from "@entities";
+import { getUnitByStatValue } from "@testing/getUnitByStatValue";
+import { getUnitByTrait } from "@testing/getUnitByTrait";
+import { matchesUnitRequirements } from "@validation";
 import { describe, expect, it } from "vitest";
 
 describe("matchesUnitRequirements", () => {

@@ -1,10 +1,10 @@
 import type { BoardCoordinate } from "@entities/board/boardCoordinates";
 import type { SmallBoard } from "@entities/board/smallBoard/smallBoard";
-import { getSpacesBehind } from "@functions/boardSpace/areas/getSpacesBehind.js";
+import { getSpacesBehind } from "@functions/boardSpace/areas";
 import {
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from "@functions/createEmptyBoard.js";
+} from "@functions/createEmptyBoard";
 import { describe, expect, it } from "vitest";
 
 const standardBoard = createEmptyStandardBoard();

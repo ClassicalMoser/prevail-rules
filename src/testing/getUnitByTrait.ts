@@ -1,6 +1,6 @@
-import type { UnitType } from "@entities/unit/unitType.js";
-import type { Trait } from "@sampleValues/traits.js";
-import { tempUnits } from "@sampleValues/tempUnits.js";
+import type { UnitType } from "@entities";
+import type { Trait } from "@sampleValues";
+import { tempUnits } from "@sampleValues";
 
 /**
  * Finds a unit type by matching one or more traits.

@@ -1,10 +1,10 @@
-import type { MoveUnitCommand } from "@commands/moveUnit.js";
-import type { StandardBoardCoordinate } from "@entities/index.js";
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import { createBoardWithUnits } from "@testing/createBoard.js";
-import { getUnitByStatValue } from "@testing/getUnitByStatValue.js";
-import { createUnitInstance } from "@utils/createUnitInstance.js";
-import { isLegalMove } from "@validation/unitMovement/isLegalMove.js";
+import type { MoveUnitCommand } from "@commands";
+import type { UnitFacing } from "@entities";
+import type { StandardBoardCoordinate } from "@entities/index";
+import { createBoardWithUnits } from "@testing/createBoard";
+import { getUnitByStatValue } from "@testing/getUnitByStatValue";
+import { createUnitInstance } from "@utils/createUnitInstance";
+import { isLegalMove } from "@validation/unitMovement";
 import { describe, expect, it } from "vitest";
 
 describe("isLegalMove", () => {

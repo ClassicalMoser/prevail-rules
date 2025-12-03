@@ -1,5 +1,4 @@
-import type { NoneUnitPresence } from "@entities/unitPresence/noneUnitPresence.js";
-import type { UnitPresence } from "@entities/unitPresence/unitPresence.js";
+import type { NoneUnitPresence, UnitPresence  } from "@entities";
 
 /**
  * Type guard to check if a unit presence has no unit.

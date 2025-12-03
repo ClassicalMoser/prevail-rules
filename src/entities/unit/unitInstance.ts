@@ -1,8 +1,6 @@
-import type { PlayerSide } from "@entities/player/playerSide.js";
-import type { UnitType } from "@entities/unit/unitType.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { playerSideSchema } from "@entities/player/playerSide.js";
-import { unitTypeSchema } from "@entities/unit/unitType.js";
+import type { PlayerSide, UnitType  } from "@entities";
+import type { AssertExact } from "@utils";
+import { playerSideSchema, unitTypeSchema  } from "@entities";
 import { z } from "zod";
 
 /**

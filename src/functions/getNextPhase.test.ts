@@ -1,5 +1,5 @@
-import { phases } from "@entities/sequence/phases.js";
-import { getNextPhase } from "@functions/getNextPhase.js";
+import { phases } from "@entities";
+import { getNextPhase } from "@functions/getNextPhase";
 import { describe, expect, it } from "vitest";
 
 describe("getNextPhase", () => {

@@ -1,6 +1,6 @@
 import type { PlayerSide } from "@entities";
 import type { AssertExact } from "@utils";
-import { playerSideSchema } from "@entities/player/playerSide";
+import { playerSideSchema } from "@entities";
 import { z } from "zod";
 
 /** The schema for a choose rally command. */

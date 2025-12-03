@@ -1,7 +1,6 @@
 import type { BoardSpace, SmallBoardCoordinate } from "@entities/board";
 import type { AssertExact } from "@utils";
-import { boardSpaceSchema } from "@entities/board/boardSpace";
-import { smallBoardCoordinates } from "@entities/board";
+import { boardSpaceSchema, smallBoardCoordinates  } from "@entities/board";
 import { z } from "zod";
 
 /**

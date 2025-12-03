@@ -1,14 +1,13 @@
+import type { PlayerSide, UnitType  } from "@entities";
 import type {
   StandardBoard,
   StandardBoardCoordinate,
   UnitFacing,
   UnitInstance,
-} from "@entities/index.js";
-import type { PlayerSide } from "@entities/player/playerSide.js";
-import type { UnitType } from "@entities/unit/unitType.js";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
-import { getUnitByStatValue } from "@testing/getUnitByStatValue.js";
-import { createUnitInstance } from "@utils/createUnitInstance.js";
+} from "@entities/index";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
+import { getUnitByStatValue } from "@testing/getUnitByStatValue";
+import { createUnitInstance } from "@utils/createUnitInstance";
 
 /**
  * Creates a board with units at specified positions.

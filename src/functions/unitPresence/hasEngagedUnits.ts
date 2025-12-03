@@ -1,5 +1,4 @@
-import type { EngagedUnitPresence } from "@entities/unitPresence/engagedUnitPresence.js";
-import type { UnitPresence } from "@entities/unitPresence/unitPresence.js";
+import type { EngagedUnitPresence, UnitPresence  } from "@entities";
 
 /**
  * Type guard to check if a unit presence has engaged units.

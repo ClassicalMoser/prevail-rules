@@ -4,9 +4,11 @@ import type {
   SingleUnitPresence,
 } from "@entities";
 import type { AssertExact } from "@utils";
-import { engagedUnitPresenceSchema } from "@entities/unitPresence/engagedUnitPresence";
-import { noneUnitPresenceSchema } from "@entities/unitPresence/noneUnitPresence";
-import { singleUnitPresenceSchema } from "@entities/unitPresence/singleUnitPresence";
+import {
+  engagedUnitPresenceSchema,
+  noneUnitPresenceSchema,
+  singleUnitPresenceSchema,
+} from "@entities";
 import { z } from "zod";
 
 /**

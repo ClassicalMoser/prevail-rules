@@ -1,8 +1,8 @@
 import type { MoveCommanderCommand } from "@commands";
 import type { Board } from "@entities";
-import { getSpacesWithinDistance } from "@functions/boardSpace/areas";
 import { getBoardSpace } from "@functions/boardSpace";
-import { COMMANDER_MOVE_DISTANCE } from "@sampleValues/ruleValues";
+import { getSpacesWithinDistance } from "@functions/boardSpace/areas";
+import { COMMANDER_MOVE_DISTANCE } from "@sampleValues";
 
 /**
  * Validates whether a commander move command is legal.

@@ -1,6 +1,6 @@
 import type { Board, Line, Trait, UnitType, UnitWithPlacement } from "@entities";
-import { getInlineSpaces } from "@functions/boardSpace/areas";
 import { getPlayerUnitWithPosition } from "@functions/boardSpace";
+import { getInlineSpaces } from "@functions/boardSpace/areas";
 import { getOppositeFacing } from "@functions/facings";
 import { areSameSide } from "@functions/unit";
 import { isAtPlacement, matchesUnitRequirements } from "@validation";

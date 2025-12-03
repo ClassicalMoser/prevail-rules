@@ -1,6 +1,6 @@
 import type { Phase } from "@entities";
 import type { AssertExact } from "@utils";
-import { phaseSchema } from "@entities/sequence/phases";
+import { phaseSchema } from "@entities";
 import { z } from "zod";
 
 /**

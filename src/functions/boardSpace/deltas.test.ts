@@ -1,4 +1,4 @@
-import { getColumnDelta, getRowDelta } from "@functions/boardSpace/deltas.js";
+import { getColumnDelta, getRowDelta } from "@functions/boardSpace/deltas";
 import { describe, expect, it } from "vitest";
 
 describe("getRowDelta", () => {

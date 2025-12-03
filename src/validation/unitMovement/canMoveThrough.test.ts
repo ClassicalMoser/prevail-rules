@@ -3,14 +3,14 @@ import type {
   StandardBoard,
   StandardBoardCoordinate,
   UnitInstance,
-} from "@entities/index.js";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
+} from "@entities/index";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
-} from "@testing/createBoard.js";
-import { createTestUnit } from "@testing/unitHelpers.js";
-import { canMoveThrough } from "@validation/unitMovement/canMoveThrough.js";
+} from "@testing/createBoard";
+import { createTestUnit } from "@testing/unitHelpers";
+import { canMoveThrough } from "@validation/unitMovement";
 import { describe, expect, it } from "vitest";
 
 describe("canMoveThrough", () => {

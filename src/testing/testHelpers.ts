@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate, UnitFacing } from "@entities/index.js";
+import type { StandardBoardCoordinate, UnitFacing } from "@entities/index";
 
 /**
  * Checks if a coordinate (and optionally facing) is present in a set of legal moves.

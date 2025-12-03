@@ -1,4 +1,4 @@
-import type { Card } from "@entities/card/card.js";
+import type { Card } from "@entities";
 
 export const commandCards: readonly Card[] = [
   {

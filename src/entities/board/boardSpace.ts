@@ -1,15 +1,12 @@
-import type { Elevation } from "@entities/board/elevation.js";
-import type { TerrainType } from "@entities/board/terrainTypes.js";
-import type { WaterCover } from "@entities/board/waterCover.js";
-import type { PlayerSide } from "@entities/player/playerSide.js";
-import type { UnitPresence } from "@entities/unitPresence/unitPresence.js";
-
-import type { AssertExact } from "@utils/assertExact.js";
-import { elevationSchema } from "@entities/board/elevation.js";
-import { terrainTypeSchema } from "@entities/board/terrainTypes.js";
-import { waterCoverSchema } from "@entities/board/waterCover.js";
-import { playerSideSchema } from "@entities/player/playerSide.js";
-import { unitPresenceSchema } from "@entities/unitPresence/unitPresence.js";
+import type { Elevation, PlayerSide, TerrainType, UnitPresence, WaterCover } from "@entities";
+import type { AssertExact } from "@utils";
+import {
+  elevationSchema,
+  playerSideSchema,
+  terrainTypeSchema,
+  unitPresenceSchema,
+  waterCoverSchema,
+} from "@entities";
 import { z } from "zod";
 
 /**

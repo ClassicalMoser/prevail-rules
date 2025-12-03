@@ -1,7 +1,6 @@
 import type { Card, PlayerSide } from "@entities";
 import type { AssertExact } from "@utils";
-import { cardSchema } from "@entities/card/card";
-import { playerSideSchema } from "@entities/player/playerSide";
+import { cardSchema, playerSideSchema  } from "@entities";
 import { z } from "zod";
 
 /** The schema for a choose card command. */

@@ -1,19 +1,19 @@
+import type { PlayerSide } from "@entities";
 import type {
   StandardBoard,
   StandardBoardCoordinate,
   UnitFacing,
   UnitInstance,
   UnitWithPlacement,
-} from "@entities/index.js";
-import type { PlayerSide } from "@entities/player/playerSide.js";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
+} from "@entities/index";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-} from "@testing/createBoard.js";
-import { getUnitByStatValue } from "@testing/getUnitByStatValue.js";
-import { createUnitInstance } from "@utils/createUnitInstance.js";
-import { isAtPlacement } from "@validation/isAtPlacement.js";
+} from "@testing/createBoard";
+import { getUnitByStatValue } from "@testing/getUnitByStatValue";
+import { createUnitInstance } from "@utils/createUnitInstance";
+import { isAtPlacement } from "@validation";
 import { describe, expect, it } from "vitest";
 
 describe("isAtPlacement", () => {

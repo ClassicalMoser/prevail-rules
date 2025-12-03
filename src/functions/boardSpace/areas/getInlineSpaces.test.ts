@@ -1,5 +1,5 @@
-import { getInlineSpaces } from "@functions/boardSpace/areas/getInlineSpaces.js";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
+import { getInlineSpaces } from "@functions/boardSpace/areas";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
 import { describe, expect, it } from "vitest";
 
 const standardBoard = createEmptyStandardBoard();

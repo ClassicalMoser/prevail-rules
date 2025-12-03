@@ -1,8 +1,7 @@
 import type { Board, BoardCoordinate, PlayerSide, UnitInstance } from "@entities";
 import type { AssertExact } from "@utils";
-import { boardCoordinateSchema } from "@entities/board/boardCoordinates";
-import { playerSideSchema } from "@entities/player/playerSide";
-import { unitInstanceSchema } from "@entities/unit/unitInstance";
+import { playerSideSchema, unitInstanceSchema  } from "@entities";
+import { boardCoordinateSchema } from "@entities/board";
 import { z } from "zod";
 
 /** The schema for a setup unit command. */

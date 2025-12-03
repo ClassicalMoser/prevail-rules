@@ -1,5 +1,5 @@
-import { areSameSide } from "@functions/unit/areSameSide.js";
-import { createTestUnit } from "@testing/unitHelpers.js";
+import { areSameSide } from "@functions/unit/areSameSide";
+import { createTestUnit } from "@testing/unitHelpers";
 import { describe, expect, it } from "vitest";
 
 describe("areSameSide", () => {

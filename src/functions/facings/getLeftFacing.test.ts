@@ -1,5 +1,5 @@
-import type { UnitFacing } from "@entities/unit/unitFacing.js";
-import { getLeftFacing } from "@functions/facings/getLeftFacing.js";
+import type { UnitFacing } from "@entities";
+import { getLeftFacing } from "@functions/facings";
 import { describe, expect, it } from "vitest";
 
 describe("getLeftFacing", () => {

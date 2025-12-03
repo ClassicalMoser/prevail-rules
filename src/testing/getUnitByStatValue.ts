@@ -1,5 +1,5 @@
-import type { UnitType } from "@entities/unit/unitType.js";
-import { tempUnits } from "@sampleValues/tempUnits.js";
+import type { UnitType } from "@entities";
+import { tempUnits } from "@sampleValues";
 
 /**
  * Finds a unit type by matching a specific stat value.

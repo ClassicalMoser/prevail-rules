@@ -1,8 +1,6 @@
-import type { Modifier } from "@entities/card/modifiers.js";
-import type { Restrictions } from "@entities/card/restrictions.js";
-import type { AssertExact } from "@utils/assertExact.js";
-import { modifierSchema } from "@entities/card/modifiers.js";
-import { restrictionsSchema } from "@entities/card/restrictions.js";
+import type { Modifier, Restrictions  } from "@entities";
+import type { AssertExact } from "@utils";
+import { modifierSchema, restrictionsSchema  } from "@entities";
 import { z } from "zod";
 
 /**

@@ -1,9 +1,6 @@
-import type { Army } from "@entities/army/army.js";
-import type { GameType } from "@entities/gameType.js";
-import type { AssertExact } from "@utils/assertExact.js";
-
-import { armySchema } from "@entities/army/army.js";
-import { gameTypeEnum } from "@entities/gameType.js";
+import type { Army, GameType  } from "@entities";
+import type { AssertExact } from "@utils";
+import { armySchema, gameTypeEnum } from "@entities";
 import { z } from "zod";
 
 /**

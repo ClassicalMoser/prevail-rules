@@ -1,10 +1,10 @@
-import type { StandardBoardCoordinate } from "@entities/index.js";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
-import { getLegalUnitMoves } from "@functions/getLegalUnitMoves.js";
-import { createBoardWithUnits } from "@testing/createBoard.js";
-import { getUnitByStatValue } from "@testing/getUnitByStatValue.js";
-import { hasMove } from "@testing/testHelpers.js";
-import { createUnitInstance } from "@utils/createUnitInstance.js";
+import type { StandardBoardCoordinate } from "@entities/index";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
+import { getLegalUnitMoves } from "@functions/getLegalUnitMoves";
+import { createBoardWithUnits } from "@testing/createBoard";
+import { getUnitByStatValue } from "@testing/getUnitByStatValue";
+import { hasMove } from "@testing/testHelpers";
+import { createUnitInstance } from "@utils/createUnitInstance";
 import { describe, expect, it } from "vitest";
 
 describe("getLegalUnitMoves", () => {

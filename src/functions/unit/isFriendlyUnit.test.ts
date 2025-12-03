@@ -1,5 +1,5 @@
-import { isFriendlyUnit } from "@functions/unit/isFriendlyUnit.js";
-import { createTestUnit } from "@testing/unitHelpers.js";
+import { isFriendlyUnit } from "@functions/unit/isFriendlyUnit";
+import { createTestUnit } from "@testing/unitHelpers";
 import { describe, expect, it } from "vitest";
 
 describe("isFriendlyUnit", () => {

@@ -1,5 +1,4 @@
-import type { PlayerSide } from "@entities/player/playerSide.js";
-import type { UnitInstance } from "@entities/unit/unitInstance.js";
+import type { PlayerSide, UnitInstance  } from "@entities";
 
 /**
  * Checks if a unit belongs to the given player side (is friendly).

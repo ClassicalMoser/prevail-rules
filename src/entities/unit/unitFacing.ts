@@ -1,4 +1,4 @@
-import type { AssertExact } from "@utils/assertExact.js";
+import type { AssertExact } from "@utils";
 import { z } from "zod";
 
 /** List of orthogonal facings. */

@@ -1,4 +1,4 @@
-import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
+import { getOppositeFacing } from "@functions/facings";
 import { describe, expect, it } from "vitest";
 
 describe("getOppositeFacing", () => {

@@ -1,9 +1,8 @@
 import type { Board, PlayerSide, UnitInstance } from "@entities";
 import type { UnitPlacement } from "@entities/unitLocation";
 import type { AssertExact } from "@utils";
-import { playerSideSchema } from "@entities/player/playerSide";
-import { unitInstanceSchema } from "@entities/unit/unitInstance";
-import { unitPlacementSchema } from "@entities/unitLocation/unitPlacement";
+import { playerSideSchema, unitInstanceSchema  } from "@entities";
+import { unitPlacementSchema } from "@entities/unitLocation";
 import { z } from "zod";
 
 /** The schema for a move unit command. */

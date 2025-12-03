@@ -1,5 +1,5 @@
-import { getSpacesWithinDistance } from "@functions/boardSpace/areas/getSpacesWithinDistance.js";
-import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
+import { getSpacesWithinDistance } from "@functions/boardSpace/areas";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard";
 import { describe, expect, it } from "vitest";
 
 const standardBoard = createEmptyStandardBoard();

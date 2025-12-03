@@ -1,6 +1,6 @@
 import type { UnitWithPlacement } from "@entities";
 import type { AssertExact } from "@utils";
-import { unitWithPlacementSchema } from "@entities/unitLocation/unitWithPlacement";
+import { unitWithPlacementSchema } from "@entities/unitLocation";
 import { z } from "zod";
 
 /**

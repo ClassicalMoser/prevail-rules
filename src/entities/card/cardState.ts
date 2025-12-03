@@ -1,7 +1,7 @@
-import type { PlayerCardState } from "@entities/card/playerCardState.js";
-import type { AssertExact } from "@utils/assertExact.js";
+import type { PlayerCardState } from "@entities";
+import type { AssertExact } from "@utils";
 
-import { playerCardStateSchema } from "@entities/card/playerCardState.js";
+import { playerCardStateSchema } from "@entities";
 import { z } from "zod";
 
 /** The schema for the state of all cards in the game. */
