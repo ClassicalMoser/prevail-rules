@@ -121,7 +121,7 @@ All area calculation functions (`getSpacesAhead`, `getSpacesBehind`, `getFrontSp
 3. **Review `filterUndefinedSpaces`**: This propagates type loss. Consider making it generic:
    ```typescript
    export function filterUndefinedSpaces<T extends BoardCoordinate<Board>>(
-     spaces: Set<T | undefined>,
+     spaces: Set<T | undefined>
    ): Set<T>;
    ```
 
@@ -133,7 +133,7 @@ All area calculation functions (`getSpacesAhead`, `getSpacesBehind`, `getFrontSp
    export function getSpacesAhead<TBoard extends Board>(
      board: TBoard,
      coordinate: BoardCoordinate<TBoard>,
-     facing: UnitFacing,
+     facing: UnitFacing
    ): Set<BoardCoordinate<TBoard>>;
    ```
 
@@ -156,5 +156,3 @@ All area calculation functions (`getSpacesAhead`, `getSpacesBehind`, `getFrontSp
 The codebase has a **consistent pattern** for core functions (using generics) and a **consistent pattern** for utility functions (using union types). The main issue is that utility functions lose type information, which requires type assertions in some call chains.
 
 **Recommendation**: Document the two patterns clearly and decide whether the type loss in utility functions is acceptable or if we should add generic versions for commonly-used functions.
-
-

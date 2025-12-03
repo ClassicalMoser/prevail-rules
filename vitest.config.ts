@@ -21,6 +21,8 @@ export default defineConfig({
   },
   test: {
     watch: false,
+    include: ["src/**/*.test.{js,ts}"],
+    exclude: ["dist/**", "node_modules/**"],
     coverage: {
       provider: "v8",
       include: ["src/**/*.{js,ts}"],

@@ -1,9 +1,9 @@
 import type {
+  PlayerSide,
   StandardBoard,
   StandardBoardCoordinate,
   UnitInstance,
 } from "@entities/index.js";
-import type { PlayerSide } from "@entities/player/playerSide.js";
 import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
 import {
   createBoardWithEngagedUnits,

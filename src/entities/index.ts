@@ -7,3 +7,4 @@ export * from "@entities/player/index.js";
 export * from "@entities/sequence/index.js";
 export * from "@entities/unit/index.js";
 export * from "@entities/unitLocation/index.js";
+export * from "@entities/unitPresence/index.js";

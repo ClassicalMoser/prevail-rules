@@ -13,7 +13,7 @@ import { getAdjacentSpaces } from "@functions/boardSpace/adjacency/getAdjacentSp
 export function getSpacesWithinDistance(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  distance: number
+  distance: number,
 ): Set<BoardCoordinate<Board>> {
   // If distance is 0 or negative, return only the starting coordinate
   if (distance <= 0) {

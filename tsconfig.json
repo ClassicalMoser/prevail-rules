@@ -3,8 +3,8 @@
     "target": "ESNext",
     "lib": ["esnext"],
     "baseUrl": ".",
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "paths": {
       "@entities/*": ["./src/entities/*"],
       "@functions/*": ["./src/functions/*"],

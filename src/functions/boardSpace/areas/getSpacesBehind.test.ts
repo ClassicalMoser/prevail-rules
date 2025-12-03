@@ -24,7 +24,7 @@ describe("getSpacesBehind", () => {
         "J-1",
         "K-1",
         "L-1",
-      ])
+      ]),
     );
   });
   it("should return the spaces behind when facing south from B7", () => {
@@ -48,7 +48,7 @@ describe("getSpacesBehind", () => {
         "A-16",
         "A-17",
         "A-18",
-      ])
+      ]),
     );
   });
   it("should return the spaces behind when facing west from F16", () => {
@@ -78,12 +78,12 @@ describe("getSpacesBehind", () => {
         "K-18",
         "L-17",
         "L-18",
-      ])
+      ]),
     );
   });
   it("should return the spaces behind when facing southEast from B2", () => {
     expect(getSpacesBehind(standardBoard, "B-2", "southEast")).toEqual(
-      new Set(["A-1", "B-1", "A-2"])
+      new Set(["A-1", "B-1", "A-2"]),
     );
   });
   it("should return the spaces behind when facing northEast from J3", () => {
@@ -99,7 +99,7 @@ describe("getSpacesBehind", () => {
         "L-2",
         "L-3",
         "L-4",
-      ])
+      ]),
     );
   });
 
@@ -109,7 +109,7 @@ describe("getSpacesBehind", () => {
       // Back spaces are the front spaces when facing southEast
       // But H-12 is the corner, so facing southEast has no valid front spaces (all out of bounds)
       expect(getSpacesBehind(smallBoard, "H-12", "northWest")).toEqual(
-        new Set([])
+        new Set([]),
       );
     });
 

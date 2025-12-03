@@ -17,7 +17,7 @@ import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
 export function getSpacesBehind(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   // Start with the back spaces
   const backSpaces = getBackSpaces(board, coordinate, facing);

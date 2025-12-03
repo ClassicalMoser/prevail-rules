@@ -9,7 +9,7 @@ export function getSpacesInArc(
   board: Board,
   coordinate: BoardCoordinate<Board>,
   facing: UnitFacing,
-  range: number
+  range: number,
 ): Set<BoardCoordinate<Board>> {
   // Start with the origin space
   const spacesInArc = new Set<BoardCoordinate<Board>>([coordinate]);

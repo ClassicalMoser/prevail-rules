@@ -16,7 +16,7 @@ import { getSpacesInDirection } from "@functions/boardSpace/areas/getSpacesInDir
 export function getSpacesAhead(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   // Start with the front spaces
   const frontSpaces = getFrontSpaces(board, coordinate, facing);

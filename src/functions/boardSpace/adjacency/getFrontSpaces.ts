@@ -15,7 +15,7 @@ import { getAdjacentFacings } from "@functions/facings/getAdjacentFacings.js";
 export function getFrontSpaces(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   // Get adjacent facings and add the facing to get the forward facings
   const adjacentFacings = getAdjacentFacings(facing);
@@ -23,7 +23,7 @@ export function getFrontSpaces(
 
   // Array of coordinates and undefined values
   const forwardSpaces = new Set(
-    forwardFacings.map((facing) => getForwardSpace(board, coordinate, facing))
+    forwardFacings.map((facing) => getForwardSpace(board, coordinate, facing)),
   );
 
   // Filter out undefined values

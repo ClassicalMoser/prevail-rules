@@ -1,7 +1,4 @@
-import type {
-  StandardBoardCoordinate,
-  UnitFacing,
-} from "@entities/index.js";
+import type { StandardBoardCoordinate, UnitFacing } from "@entities/index.js";
 import { getPlayerUnitWithPosition } from "@functions/boardSpace/getPlayerUnitWithPosition.js";
 import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
 import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
