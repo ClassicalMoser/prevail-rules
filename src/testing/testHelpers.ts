@@ -1,7 +1,7 @@
 import type {
   StandardBoardCoordinate,
   UnitFacing,
-} from "src/entities/index.js";
+} from "@entities/index.js";
 
 /**
  * Checks if a coordinate (and optionally facing) is present in a set of legal moves.

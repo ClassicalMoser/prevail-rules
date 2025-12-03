@@ -1,2 +1,2 @@
-export * from "./army.js";
-export * from "./unitCount.js";
+export * from "@entities/army/army.js";
+export * from "@entities/army/unitCount.js";

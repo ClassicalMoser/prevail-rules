@@ -1,7 +1,7 @@
-import type { Trait } from "../../sampleValues/traits.js";
-import type { AssertExact } from "../../utils/assertExact.js";
+import type { Trait } from "@sampleValues/traits.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { traitSchema } from "@sampleValues/traits.js";
 import { z } from "zod";
-import { traitSchema } from "../../sampleValues/traits.js";
 
 /**
  * The schema for a unit of troops.

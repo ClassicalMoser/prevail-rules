@@ -1,9 +1,9 @@
-import type { AssertExact } from "src/utils/assertExact.js";
-import type { Modifier } from "./modifiers.js";
-import type { Restrictions } from "./restrictions.js";
+import type { Modifier } from "@entities/card/modifiers.js";
+import type { Restrictions } from "@entities/card/restrictions.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { modifierSchema } from "@entities/card/modifiers.js";
+import { restrictionsSchema } from "@entities/card/restrictions.js";
 import { z } from "zod";
-import { modifierSchema } from "./modifiers.js";
-import { restrictionsSchema } from "./restrictions.js";
 
 export const roundEffectSchema = z.object({
   /** The restrictions on the round effect. */

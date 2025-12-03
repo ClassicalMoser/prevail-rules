@@ -1,10 +1,10 @@
-import type { Board } from "src/entities/board/board.js";
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import type { BoardConfig } from "../../entities/board/boardConfig.js";
-import type { UnitFacing } from "../../entities/unit/unitFacing.js";
-import { boardConfigMap } from "../../entities/board/boardConfig.js";
-import { unitFacingSchema } from "../../entities/unit/unitFacing.js";
-import { getColumnDelta, getRowDelta } from "./deltas.js";
+import type { Board } from "@entities/board/board.js";
+import type { BoardConfig } from "@entities/board/boardConfig.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import { boardConfigMap } from "@entities/board/boardConfig.js";
+import { unitFacingSchema } from "@entities/unit/unitFacing.js";
+import { getColumnDelta, getRowDelta } from "@functions/boardSpace/deltas.js";
 
 /**
  * Internal helper that performs the coordinate calculation.

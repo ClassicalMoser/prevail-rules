@@ -1,4 +1,4 @@
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
 
 /**
  * Calculates the row delta (vertical movement) for a given facing direction.

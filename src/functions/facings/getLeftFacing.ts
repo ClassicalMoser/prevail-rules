@@ -1,4 +1,4 @@
-import type { UnitFacing } from "../../entities/unit/unitFacing.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
 
 /**
  * Get the left-facing direction for a given facing.

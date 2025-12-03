@@ -1,1 +1,1 @@
-export * from "./player.js";
+export * from "@entities/player/player.js";

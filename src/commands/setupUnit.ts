@@ -1,11 +1,11 @@
-import type { Board } from "src/entities/board/board.js";
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import type { PlayerSide } from "src/entities/player/playerSide.js";
-import type { UnitInstance } from "src/entities/unit/unitInstance.js";
-import type { AssertExact } from "src/utils/assertExact.js";
-import { boardCoordinateSchema } from "src/entities/board/boardCoordinates.js";
-import { playerSideSchema } from "src/entities/player/playerSide.js";
-import { unitInstanceSchema } from "src/entities/unit/unitInstance.js";
+import type { Board } from "@entities/board/board.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { PlayerSide } from "@entities/player/playerSide.js";
+import type { UnitInstance } from "@entities/unit/unitInstance.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { boardCoordinateSchema } from "@entities/board/boardCoordinates.js";
+import { playerSideSchema } from "@entities/player/playerSide.js";
+import { unitInstanceSchema } from "@entities/unit/unitInstance.js";
 import { z } from "zod";
 
 /** The schema for a setup unit command. */

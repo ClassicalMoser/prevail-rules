@@ -1,20 +1,19 @@
-import type { StandardBoardCoordinate } from "src/entities/index.js";
-import { hasMove } from "src/testing/testHelpers.js";
-import { createUnitInstance } from "src/utils/createUnitInstance.js";
-import { getUnitByStatValue } from "src/utils/getUnitByStatValue.js";
+import type { StandardBoardCoordinate } from "@entities/index.js";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
+import { getLegalUnitMoves } from "@functions/getLegalUnitMoves.js";
+import { createBoardWithUnits } from "@testing/createBoard.js";
+import { getUnitByStatValue } from "@testing/getUnitByStatValue.js";
+import { hasMove } from "@testing/testHelpers.js";
+import { createUnitInstance } from "@utils/createUnitInstance.js";
 import { describe, expect, it } from "vitest";
-import { createBoardWithUnits } from "../testing/createBoard.js";
-import { createEmptyStandardBoard } from "./createEmptyBoard.js";
-import { getLegalUnitMoves } from "./getLegalUnitMoves.js";
 
 describe("getLegalUnitMoves", () => {
   // Use stat-based lookup instead of name to avoid brittleness
-  // Spearmen have flexibility: 1
-  const spearmenUnitType = getUnitByStatValue("flexibility", 1);
+  const flexibility1UnitType = getUnitByStatValue("flexibility", 1);
 
-  describe("spearmen unit on blank board", () => {
-    it("should return legal moves for a spearmen unit at center of board facing north", () => {
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
+  describe("unit with flexibility 1 on blank board", () => {
+    it("should return legal moves for a unit at center of board facing north", () => {
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "E-5";
       const startingFacing = "north";
       const board = createBoardWithUnits([
@@ -26,7 +25,7 @@ describe("getLegalUnitMoves", () => {
         facing: startingFacing,
       });
 
-      // Spearmen have speed 2 and flexibility 1
+      // Unit has speed 2 and flexibility 1
       expect(legalMoves.size).toBeGreaterThan(0);
       expect(hasMove(legalMoves, startingCoordinate, startingFacing)).toBe(
         true,
@@ -36,11 +35,11 @@ describe("getLegalUnitMoves", () => {
 
   describe("with friendly units on board", () => {
     it("should not be able to move through friendly unit with insufficient flexibility", () => {
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "E-5";
       const startingFacing = "north";
-      // Spearmen have flexibility 1, so combined flexibility would be 2 (need 4+)
-      const friendlyUnit = createUnitInstance("black", spearmenUnitType, 2);
+      // Unit has flexibility 1, so combined flexibility would be 2 (need 4+)
+      const friendlyUnit = createUnitInstance("black", flexibility1UnitType, 2);
       const board = createBoardWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: friendlyUnit, coordinate: "D-5", facing: "north" },
@@ -56,11 +55,8 @@ describe("getLegalUnitMoves", () => {
     });
 
     it("should be able to move through friendly unit with sufficient flexibility", () => {
-      // Use stat-based lookup: flexibility 2 (Swordsmen)
+      // Use stat-based lookup: flexibility 2
       const highFlexibilityUnitType = getUnitByStatValue("flexibility", 2);
-      if (!highFlexibilityUnitType) {
-        throw new Error("Unit with flexibility 2 not found");
-      }
       const unit = createUnitInstance("black", highFlexibilityUnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "E-5";
       const startingFacing = "north";
@@ -84,9 +80,17 @@ describe("getLegalUnitMoves", () => {
     });
 
     it("should not be able to move diagonally between two friendly units with insufficient flexibility", () => {
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
-      const friendlyUnit1 = createUnitInstance("black", spearmenUnitType, 1);
-      const friendlyUnit2 = createUnitInstance("black", spearmenUnitType, 2);
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
+      const friendlyUnit1 = createUnitInstance(
+        "black",
+        flexibility1UnitType,
+        1,
+      );
+      const friendlyUnit2 = createUnitInstance(
+        "black",
+        flexibility1UnitType,
+        2,
+      );
       const board = createBoardWithUnits([
         { unit, coordinate: "E-5", facing: "northWest" },
         { unit: friendlyUnit1, coordinate: "D-5", facing: "north" },
@@ -102,7 +106,7 @@ describe("getLegalUnitMoves", () => {
     });
 
     it("should be able to move diagonally between two friendly units with sufficient flexibility", () => {
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
       // Use stat-based lookup: flexibility 3 (Skirmishers)
       const flexibleUnitType = getUnitByStatValue("flexibility", 3);
       const friendlyUnit1 = createUnitInstance("black", flexibleUnitType, 1);
@@ -124,10 +128,10 @@ describe("getLegalUnitMoves", () => {
 
   describe("with enemy units on board", () => {
     it("should be able to engage enemy unit from flank", () => {
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "E-4";
       const startingFacing = "east";
-      const enemyUnit = createUnitInstance("white", spearmenUnitType, 1);
+      const enemyUnit = createUnitInstance("white", flexibility1UnitType, 1);
       const board = createBoardWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: enemyUnit, coordinate: "E-5", facing: "north" },
@@ -142,10 +146,10 @@ describe("getLegalUnitMoves", () => {
     });
 
     it("should be able to engage enemy unit from front with correct facing", () => {
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "D-5";
       const startingFacing = "south";
-      const enemyUnit = createUnitInstance("white", spearmenUnitType, 1);
+      const enemyUnit = createUnitInstance("white", flexibility1UnitType, 1);
       const board = createBoardWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: enemyUnit, coordinate: "E-5", facing: "north" },
@@ -165,7 +169,7 @@ describe("getLegalUnitMoves", () => {
       const unit = createUnitInstance("black", flexibleUnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "D-5";
       const startingFacing = "east";
-      const enemyUnit = createUnitInstance("white", spearmenUnitType, 1);
+      const enemyUnit = createUnitInstance("white", flexibility1UnitType, 1);
       const board = createBoardWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: enemyUnit, coordinate: "E-5", facing: "north" },
@@ -180,12 +184,12 @@ describe("getLegalUnitMoves", () => {
     });
 
     it("should not be able to move through enemy unit", () => {
-      const friendlyUnit = createUnitInstance("black", spearmenUnitType, 1);
+      const friendlyUnit = createUnitInstance("black", flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "E-5";
       const startingFacing = "north";
-      const enemyUnit1 = createUnitInstance("white", spearmenUnitType, 1);
-      const enemyUnit2 = createUnitInstance("white", spearmenUnitType, 2);
-      const enemyUnit3 = createUnitInstance("white", spearmenUnitType, 3);
+      const enemyUnit1 = createUnitInstance("white", flexibility1UnitType, 1);
+      const enemyUnit2 = createUnitInstance("white", flexibility1UnitType, 2);
+      const enemyUnit3 = createUnitInstance("white", flexibility1UnitType, 3);
       const board = createBoardWithUnits([
         {
           unit: friendlyUnit,
@@ -213,9 +217,9 @@ describe("getLegalUnitMoves", () => {
     });
 
     it("should not be able to move diagonally between two enemy units", () => {
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
-      const enemy1 = createUnitInstance("white", spearmenUnitType, 1);
-      const enemy2 = createUnitInstance("white", spearmenUnitType, 2);
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
+      const enemy1 = createUnitInstance("white", flexibility1UnitType, 1);
+      const enemy2 = createUnitInstance("white", flexibility1UnitType, 2);
       const board = createBoardWithUnits([
         { unit, coordinate: "E-5", facing: "northWest" },
         { unit: enemy1, coordinate: "D-5", facing: "south" },
@@ -234,10 +238,10 @@ describe("getLegalUnitMoves", () => {
   describe("error cases for invalid starting position", () => {
     it("should throw error when unit at starting position is not free to move (engaged)", () => {
       // Test coverage for lines 29-30: unit is not free to move (engaged state)
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "E-5";
       const startingFacing = "north";
-      const enemyUnit = createUnitInstance("white", spearmenUnitType, 2);
+      const enemyUnit = createUnitInstance("white", flexibility1UnitType, 2);
       const board = createBoardWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: enemyUnit, coordinate: startingCoordinate, facing: "south" },
@@ -260,7 +264,7 @@ describe("getLegalUnitMoves", () => {
 
     it("should throw error when unit at starting position is not free to move (none presence)", () => {
       // Test coverage for lines 29-30: unit is not free to move (none presence type)
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "E-5";
       const startingFacing = "north";
       const board = createEmptyStandardBoard();
@@ -279,8 +283,12 @@ describe("getLegalUnitMoves", () => {
 
     it("should throw error when unit is not present at the starting position", () => {
       // Test coverage for lines 33-34: unit mismatch at starting position
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
-      const differentUnit = createUnitInstance("black", spearmenUnitType, 2);
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
+      const differentUnit = createUnitInstance(
+        "black",
+        flexibility1UnitType,
+        2,
+      );
       const startingCoordinate: StandardBoardCoordinate = "E-5";
       const startingFacing = "north";
       const board = createBoardWithUnits([
@@ -301,7 +309,7 @@ describe("getLegalUnitMoves", () => {
 
     it("should throw error when reported facing is inaccurate", () => {
       // Test coverage for lines 37-38: facing mismatch at starting position
-      const unit = createUnitInstance("black", spearmenUnitType, 1);
+      const unit = createUnitInstance("black", flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = "E-5";
       const actualFacing = "north";
       const reportedFacing = "south"; // Different from actual facing

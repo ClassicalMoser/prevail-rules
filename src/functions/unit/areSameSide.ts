@@ -1,4 +1,4 @@
-import type { UnitInstance } from "src/entities/unit/unitInstance.js";
+import type { UnitInstance } from "@entities/unit/unitInstance.js";
 
 /**
  * Checks if two units belong to the same player side.

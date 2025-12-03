@@ -1,7 +1,7 @@
-import type { StandardBoardColumnNumber } from "./standardColumnNumbers.js";
-import type { StandardBoardRowLetter } from "./standardRowLetters.js";
-import { standardBoardColumnNumbers } from "./standardColumnNumbers.js";
-import { standardBoardRowLetters } from "./standardRowLetters.js";
+import type { StandardBoardColumnNumber } from "@entities/board/standardBoard/standardColumnNumbers.js";
+import type { StandardBoardRowLetter } from "@entities/board/standardBoard/standardRowLetters.js";
+import { standardBoardColumnNumbers } from "@entities/board/standardBoard/standardColumnNumbers.js";
+import { standardBoardRowLetters } from "@entities/board/standardBoard/standardRowLetters.js";
 
 /**
  * A valid coordinate on a standard board (A-1 through L-18).

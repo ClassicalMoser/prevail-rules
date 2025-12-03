@@ -2,16 +2,16 @@ import type {
   StandardBoard,
   StandardBoardCoordinate,
   UnitInstance,
-} from "src/entities/index.js";
-import type { PlayerSide } from "src/entities/player/playerSide.js";
-import { createTestUnit } from "src/testing/unitHelpers.js";
-import { describe, expect, it } from "vitest";
+} from "@entities/index.js";
+import type { PlayerSide } from "@entities/player/playerSide.js";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
-} from "../../testing/createBoard.js";
-import { createEmptyStandardBoard } from "../../functions/createEmptyBoard.js";
-import { canMoveInto } from "./canMoveInto.js";
+} from "@testing/createBoard.js";
+import { createTestUnit } from "@testing/unitHelpers.js";
+import { canMoveInto } from "@validation/unitMovement/canMoveInto.js";
+import { describe, expect, it } from "vitest";
 
 describe("canMoveInto", () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();

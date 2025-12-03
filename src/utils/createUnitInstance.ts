@@ -1,6 +1,6 @@
-import type { PlayerSide } from "src/entities/player/playerSide.js";
-import type { UnitInstance } from "src/entities/unit/unitInstance.js";
-import type { UnitType } from "src/entities/unit/unitType.js";
+import type { PlayerSide } from "@entities/player/playerSide.js";
+import type { UnitInstance } from "@entities/unit/unitInstance.js";
+import type { UnitType } from "@entities/unit/unitType.js";
 
 /**
  * Creates a unit instance with the specified properties.

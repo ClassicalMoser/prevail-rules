@@ -1,20 +1,20 @@
-import type { AssertExact } from "src/utils/assertExact.js";
-import type { Board, BoardSchemaType } from "./board/board.js";
-import type { CardState } from "./card/cardState.js";
-import type { Command } from "./card/command.js";
-import type { PlayerSide } from "./player/playerSide.js";
+import type { Board, BoardSchemaType } from "@entities/board/board.js";
+import type { CardState } from "@entities/card/cardState.js";
+import type { Command } from "@entities/card/command.js";
+import type { PlayerSide } from "@entities/player/playerSide.js";
+import type { Phase } from "@entities/sequence/phases.js";
 
-import type { Phase } from "./sequence/phases.js";
-import type { UnitInstance } from "./unit/unitInstance.js";
-import type { EngagedUnitPresence } from "./unitPresence/engagedUnitPresence.js";
+import type { UnitInstance } from "@entities/unit/unitInstance.js";
+import type { EngagedUnitPresence } from "@entities/unitPresence/engagedUnitPresence.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { boardSchema } from "@entities/board/board.js";
+import { cardStateSchema } from "@entities/card/cardState.js";
+import { commandSchema } from "@entities/card/command.js";
+import { playerSideSchema } from "@entities/player/playerSide.js";
+import { phaseSchema } from "@entities/sequence/phases.js";
+import { unitInstanceSchema } from "@entities/unit/unitInstance.js";
+import { engagedUnitPresenceSchema } from "@entities/unitPresence/engagedUnitPresence.js";
 import { z } from "zod";
-import { boardSchema } from "./board/board.js";
-import { cardStateSchema } from "./card/cardState.js";
-import { commandSchema } from "./card/command.js";
-import { playerSideSchema } from "./player/playerSide.js";
-import { phaseSchema } from "./sequence/phases.js";
-import { unitInstanceSchema } from "./unit/unitInstance.js";
-import { engagedUnitPresenceSchema } from "./unitPresence/engagedUnitPresence.js";
 
 /** The schema for a game state. */
 export const gameStateSchema = z.object({

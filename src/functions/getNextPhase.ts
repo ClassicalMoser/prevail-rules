@@ -1,5 +1,5 @@
-import type { Phase } from "src/entities/sequence/phases.js";
-import { phases } from "src/entities/sequence/phases.js";
+import type { Phase } from "@entities/sequence/phases.js";
+import { phases } from "@entities/sequence/phases.js";
 
 /**
  * Get the next phase in the round.

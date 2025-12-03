@@ -1,5 +1,5 @@
+import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
 import { describe, expect, it } from "vitest";
-import { getOppositeFacing } from "./getOppositeFacing.js";
 
 describe("getOppositeFacing", () => {
   it("should return south for north", () => {

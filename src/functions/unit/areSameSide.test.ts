@@ -1,6 +1,6 @@
-import { createTestUnit } from "src/testing/unitHelpers.js";
+import { areSameSide } from "@functions/unit/areSameSide.js";
+import { createTestUnit } from "@testing/unitHelpers.js";
 import { describe, expect, it } from "vitest";
-import { areSameSide } from "./areSameSide.js";
 
 describe("areSameSide", () => {
   it("should return true when both units belong to the same side", () => {

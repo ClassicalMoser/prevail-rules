@@ -1,10 +1,10 @@
-import type { AssertExact } from "src/utils/assertExact.js";
-import type { Board } from "../board/board.js";
-import type { BoardCoordinate } from "../board/boardCoordinates.js";
-import type { UnitFacing } from "../unit/unitFacing.js";
+import type { Board } from "@entities/board/board.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { boardCoordinateSchema } from "@entities/board/boardCoordinates.js";
+import { unitFacingSchema } from "@entities/unit/unitFacing.js";
 import z from "zod";
-import { boardCoordinateSchema } from "../board/boardCoordinates.js";
-import { unitFacingSchema } from "../unit/unitFacing.js";
 
 export const unitPlacementSchema = z.object({
   coordinate: boardCoordinateSchema,

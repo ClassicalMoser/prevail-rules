@@ -5,6 +5,16 @@
     "baseUrl": ".",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
+    "paths": {
+      "@entities/*": ["./src/entities/*"],
+      "@functions/*": ["./src/functions/*"],
+      "@commands/*": ["./src/commands/*"],
+      "@contracts/*": ["./src/contracts/*"],
+      "@testing/*": ["./src/testing/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@validation/*": ["./src/validation/*"],
+      "@sampleValues/*": ["./src/sampleValues/*"]
+    },
     "types": ["node"],
     "strict": true,
     "declaration": true,

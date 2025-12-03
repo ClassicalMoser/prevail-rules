@@ -1,11 +1,11 @@
-export type * from "./smallBoard.js";
-export * from "./smallBoard.js";
+export type * from "@entities/board/smallBoard/smallBoard.js";
+export * from "@entities/board/smallBoard/smallBoard.js";
 
-export type * from "./smallColumnNumbers.js";
-export * from "./smallColumnNumbers.js";
+export type * from "@entities/board/smallBoard/smallColumnNumbers.js";
+export * from "@entities/board/smallBoard/smallColumnNumbers.js";
 
-export type * from "./smallCoordinates.js";
-export * from "./smallCoordinates.js";
+export type * from "@entities/board/smallBoard/smallCoordinates.js";
+export * from "@entities/board/smallBoard/smallCoordinates.js";
 
-export type * from "./smallRowLetters.js";
-export * from "./smallRowLetters.js";
+export type * from "@entities/board/smallBoard/smallRowLetters.js";
+export * from "@entities/board/smallBoard/smallRowLetters.js";

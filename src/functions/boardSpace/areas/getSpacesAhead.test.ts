@@ -1,6 +1,6 @@
+import { getSpacesAhead } from "@functions/boardSpace/areas/getSpacesAhead.js";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
 import { describe, expect, it } from "vitest";
-import { createEmptyStandardBoard } from "../../createEmptyBoard.js";
-import { getSpacesAhead } from "./getSpacesAhead.js";
 
 const standardBoard = createEmptyStandardBoard();
 
@@ -20,7 +20,7 @@ describe("getSpacesAhead", () => {
         "J-1",
         "K-1",
         "L-1",
-      ]),
+      ])
     );
   });
   it("should return the spaces behind when facing north from B7", () => {
@@ -44,7 +44,7 @@ describe("getSpacesAhead", () => {
         "A-16",
         "A-17",
         "A-18",
-      ]),
+      ])
     );
   });
   it("should return the spaces ahead when facing East from F16", () => {
@@ -74,12 +74,12 @@ describe("getSpacesAhead", () => {
         "K-18",
         "L-17",
         "L-18",
-      ]),
+      ])
     );
   });
   it("should return the spaces ahead when facing northWest from B2", () => {
     expect(getSpacesAhead(standardBoard, "B-2", "northWest")).toEqual(
-      new Set(["A-1", "B-1", "A-2"]),
+      new Set(["A-1", "B-1", "A-2"])
     );
   });
   it("should return the spaces ahead when facing southWest from J3", () => {
@@ -95,7 +95,7 @@ describe("getSpacesAhead", () => {
         "L-2",
         "L-3",
         "L-4",
-      ]),
+      ])
     );
   });
 });

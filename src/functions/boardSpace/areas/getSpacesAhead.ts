@@ -1,8 +1,8 @@
-import type { Board } from "src/entities/board/board.js";
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import { getFrontSpaces } from "../adjacency/getFrontSpaces.js";
-import { getSpacesInDirection } from "./getSpacesInDirection.js";
+import type { Board } from "@entities/board/board.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import { getFrontSpaces } from "@functions/boardSpace/adjacency/getFrontSpaces.js";
+import { getSpacesInDirection } from "@functions/boardSpace/areas/getSpacesInDirection.js";
 
 /**
  * Get the spaces ahead for a given coordinate and facing.
@@ -16,7 +16,7 @@ import { getSpacesInDirection } from "./getSpacesInDirection.js";
 export function getSpacesAhead(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing,
+  facing: UnitFacing
 ): Set<BoardCoordinate<Board>> {
   // Start with the front spaces
   const frontSpaces = getFrontSpaces(board, coordinate, facing);

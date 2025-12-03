@@ -1,9 +1,9 @@
-import type { AssertExact } from "../../../utils/assertExact.js";
-import type { BoardSpace } from "../boardSpace.js";
-import type { LargeBoardCoordinate } from "./largeCoordinates.js";
+import type { BoardSpace } from "@entities/board/boardSpace.js";
+import type { LargeBoardCoordinate } from "@entities/board/largeBoard/largeCoordinates.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { boardSpaceSchema } from "@entities/board/boardSpace.js";
+import { largeBoardCoordinates } from "@entities/board/largeBoard/largeCoordinates.js";
 import { z } from "zod";
-import { boardSpaceSchema } from "../boardSpace.js";
-import { largeBoardCoordinates } from "./largeCoordinates.js";
 
 /**
  * Creates a Zod object schema for a board with all required coordinates.
@@ -22,26 +22,14 @@ import { largeBoardCoordinates } from "./largeCoordinates.js";
  */
 function createBoardSchema<T extends string>(
   coordinates: readonly T[],
-): z.ZodObject<
-  Record<T, typeof boardSpaceSchema>,
-  "strip",
-  z.ZodTypeAny,
-  Record<T, BoardSpace>,
-  Record<T, BoardSpace>
-> {
+): z.ZodObject<Record<T, typeof boardSpaceSchema>> {
   const shape = {} as Record<T, typeof boardSpaceSchema>;
   // Ensure all coordinates are included in the schema
   for (const coord of coordinates) {
     shape[coord] = boardSpaceSchema;
   }
-  // Return the schema with explicit types
-  return z.object(shape) as z.ZodObject<
-    Record<T, typeof boardSpaceSchema>,
-    "strip",
-    z.ZodTypeAny,
-    Record<T, BoardSpace>,
-    Record<T, BoardSpace>
-  >;
+  // Return the schema - TypeScript will infer the correct types
+  return z.object(shape);
 }
 
 /**

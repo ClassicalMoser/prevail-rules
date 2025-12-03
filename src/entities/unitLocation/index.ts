@@ -1,2 +1,2 @@
-export * from "./unitPlacement.js";
-export * from "./unitWithPlacement.js";
+export * from "@entities/unitLocation/unitPlacement.js";
+export * from "@entities/unitLocation/unitWithPlacement.js";

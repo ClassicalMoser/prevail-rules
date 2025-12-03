@@ -1,19 +1,19 @@
-import type { Board } from "src/entities/board/board.js";
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import type { BoardSpace } from "src/entities/board/boardSpace.js";
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import type { UnitInstance } from "src/entities/unit/unitInstance.js";
-import type { UnitPlacement } from "src/entities/unitLocation/unitPlacement.js";
-import { unitFacings } from "src/entities/unit/unitFacing.js";
-import { isDiagonalFacing } from "src/validation/isDiagonalFacing.js";
-import { canEngageEnemy } from "src/validation/unitMovement/canEngageEnemy.js";
-import { canMoveInto } from "src/validation/unitMovement/canMoveInto.js";
-import { canMoveThrough } from "src/validation/unitMovement/canMoveThrough.js";
-import { getBoardSpace } from "./boardSpace/getBoardSpace.js";
-import { getForwardSpace } from "./boardSpace/getForwardSpace.js";
-import { getAdjacentFacings } from "./facings/getAdjacentFacings.js";
-import { areSameSide } from "./unit/index.js";
-import { hasSingleUnit } from "./unitPresence/index.js";
+import type { Board } from "@entities/board/board.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { BoardSpace } from "@entities/board/boardSpace.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import type { UnitInstance } from "@entities/unit/unitInstance.js";
+import type { UnitPlacement } from "@entities/unitLocation/unitPlacement.js";
+import { unitFacings } from "@entities/unit/unitFacing.js";
+import { getBoardSpace } from "@functions/boardSpace/getBoardSpace.js";
+import { getForwardSpace } from "@functions/boardSpace/getForwardSpace.js";
+import { getAdjacentFacings } from "@functions/facings/getAdjacentFacings.js";
+import { areSameSide } from "@functions/unit/index.js";
+import { hasSingleUnit } from "@functions/unitPresence/index.js";
+import { isDiagonalFacing } from "@validation/isDiagonalFacing.js";
+import { canEngageEnemy } from "@validation/unitMovement/canEngageEnemy.js";
+import { canMoveInto } from "@validation/unitMovement/canMoveInto.js";
+import { canMoveThrough } from "@validation/unitMovement/canMoveThrough.js";
 
 /**
  * Calculates all legal moves for a unit from a given starting position.

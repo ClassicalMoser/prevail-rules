@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { getSpacesInArc } from "@functions/boardSpace/areas/getSpacesInArc.js";
 import {
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from "../../createEmptyBoard.js";
-import { getSpacesInArc } from "./getSpacesInArc.js";
+} from "@functions/createEmptyBoard.js";
+import { describe, expect, it } from "vitest";
 
 describe("getSpacesInArc", () => {
   const board = createEmptyStandardBoard();
@@ -16,13 +16,13 @@ describe("getSpacesInArc", () => {
     it("should return the spaces in the arc when facing east from B-5", () => {
       const spacesInArc = getSpacesInArc(board, "B-5", "east", 2);
       expect(spacesInArc).toEqual(
-        new Set(["A-6", "B-6", "C-6", "A-7", "B-7", "C-7", "D-7"]),
+        new Set(["A-6", "B-6", "C-6", "A-7", "B-7", "C-7", "D-7"])
       );
     });
     it("should return the spaces in the arc when facing south from E-7", () => {
       const spacesInArc = getSpacesInArc(board, "E-7", "south", 2);
       expect(spacesInArc).toEqual(
-        new Set(["F-6", "F-7", "F-8", "G-5", "G-6", "G-7", "G-8", "G-9"]),
+        new Set(["F-6", "F-7", "F-8", "G-5", "G-6", "G-7", "G-8", "G-9"])
       );
     });
     describe("facing diagonally on a standard board", () => {
@@ -49,7 +49,7 @@ describe("getSpacesInArc", () => {
             "E-11",
             "E-12",
             "E-13",
-          ]),
+          ])
         );
       });
     });

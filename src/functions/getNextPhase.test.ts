@@ -1,6 +1,6 @@
-import { phases } from "src/entities/sequence/phases.js";
+import { phases } from "@entities/sequence/phases.js";
+import { getNextPhase } from "@functions/getNextPhase.js";
 import { describe, expect, it } from "vitest";
-import { getNextPhase } from "./getNextPhase.js";
 
 describe("getNextPhase", () => {
   it("should return the next phase for each phase and wrap around", () => {

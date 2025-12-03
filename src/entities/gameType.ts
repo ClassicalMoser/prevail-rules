@@ -1,7 +1,7 @@
-import type { AssertExact } from "src/utils/assertExact.js";
-import type { BoardSize } from "./board/board.js";
+import type { BoardSize } from "@entities/board/board.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { boardSizeEnum } from "@entities/board/board.js";
 import { z } from "zod";
-import { boardSizeEnum } from "./board/board.js";
 
 export const gameType = ["standard", "mini", "tutorial"] as const;
 

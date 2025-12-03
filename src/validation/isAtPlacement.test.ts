@@ -4,31 +4,30 @@ import type {
   UnitFacing,
   UnitInstance,
   UnitWithPlacement,
-} from "src/entities/index.js";
-import type { PlayerSide } from "src/entities/player/playerSide.js";
-import { createUnitInstance } from "src/utils/createUnitInstance.js";
-import { getUnitByStatValue } from "src/utils/getUnitByStatValue.js";
-import { describe, expect, it } from "vitest";
+} from "@entities/index.js";
+import type { PlayerSide } from "@entities/player/playerSide.js";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-} from "../testing/createBoard.js";
-import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
-import { isAtPlacement } from "./isAtPlacement.js";
+} from "@testing/createBoard.js";
+import { getUnitByStatValue } from "@testing/getUnitByStatValue.js";
+import { createUnitInstance } from "@utils/createUnitInstance.js";
+import { isAtPlacement } from "@validation/isAtPlacement.js";
+import { describe, expect, it } from "vitest";
 
 describe("isAtPlacement", () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();
   const coordinate: StandardBoardCoordinate = "E-5";
 
   // Use stat-based lookups instead of names to avoid brittleness
-  // Spearmen have flexibility: 1, Swordsmen have flexibility: 2
-  const spearmenUnitType = getUnitByStatValue("flexibility", 1);
-  const swordsmenUnitType = getUnitByStatValue("flexibility", 2);
+  const flexibility1UnitType = getUnitByStatValue("flexibility", 1);
+  const flexibility2UnitType = getUnitByStatValue("flexibility", 2);
 
   // Helper function to create a unit instance
   const createUnit = (
     playerSide: PlayerSide,
-    unitType = spearmenUnitType,
+    unitType = flexibility1UnitType,
     instanceNumber = 1,
   ): UnitInstance => {
     return createUnitInstance(playerSide, unitType, instanceNumber);
@@ -121,8 +120,8 @@ describe("isAtPlacement", () => {
     });
 
     it("should return false when unitType does not match", () => {
-      const unit = createUnit("black", spearmenUnitType);
-      const differentTypeUnit = createUnit("black", swordsmenUnitType);
+      const unit = createUnit("black", flexibility1UnitType);
+      const differentTypeUnit = createUnit("black", flexibility2UnitType);
       const board = createBoardWithUnits([
         { unit, coordinate, facing: "north" },
       ]);
@@ -136,8 +135,12 @@ describe("isAtPlacement", () => {
     });
 
     it("should return false when instanceNumber does not match", () => {
-      const unit = createUnit("black", spearmenUnitType, 1);
-      const differentInstanceUnit = createUnit("black", spearmenUnitType, 2);
+      const unit = createUnit("black", flexibility1UnitType, 1);
+      const differentInstanceUnit = createUnit(
+        "black",
+        flexibility1UnitType,
+        2,
+      );
       const board = createBoardWithUnits([
         { unit, coordinate, facing: "north" },
       ]);
@@ -151,12 +154,12 @@ describe("isAtPlacement", () => {
     });
 
     it("should return true when unit matches by value (different object reference)", () => {
-      const unit = createUnit("black", spearmenUnitType, 1);
+      const unit = createUnit("black", flexibility1UnitType, 1);
       const board = createBoardWithUnits([
         { unit, coordinate, facing: "north" },
       ]);
       // Create a new unit instance with the same properties
-      const sameUnit = createUnit("black", spearmenUnitType, 1);
+      const sameUnit = createUnit("black", flexibility1UnitType, 1);
       const unitWithPlacement = createUnitWithPlacement(
         sameUnit,
         coordinate,
@@ -241,9 +244,9 @@ describe("isAtPlacement", () => {
     });
 
     it("should return false when primary unit unitType does not match", () => {
-      const primaryUnit = createUnit("black", spearmenUnitType);
+      const primaryUnit = createUnit("black", flexibility1UnitType);
       const secondaryUnit = createUnit("white");
-      const differentTypeUnit = createUnit("black", swordsmenUnitType);
+      const differentTypeUnit = createUnit("black", flexibility2UnitType);
       const board = createBoardWithEngagedUnits(
         primaryUnit,
         secondaryUnit,
@@ -260,9 +263,13 @@ describe("isAtPlacement", () => {
     });
 
     it("should return false when primary unit instanceNumber does not match", () => {
-      const primaryUnit = createUnit("black", spearmenUnitType, 1);
+      const primaryUnit = createUnit("black", flexibility1UnitType, 1);
       const secondaryUnit = createUnit("white");
-      const differentInstanceUnit = createUnit("black", spearmenUnitType, 2);
+      const differentInstanceUnit = createUnit(
+        "black",
+        flexibility1UnitType,
+        2,
+      );
       const board = createBoardWithEngagedUnits(
         primaryUnit,
         secondaryUnit,
@@ -339,8 +346,8 @@ describe("isAtPlacement", () => {
 
     it("should return false when secondary unit unitType does not match", () => {
       const primaryUnit = createUnit("white");
-      const secondaryUnit = createUnit("black", spearmenUnitType);
-      const differentTypeUnit = createUnit("black", swordsmenUnitType);
+      const secondaryUnit = createUnit("black", flexibility1UnitType);
+      const differentTypeUnit = createUnit("black", flexibility2UnitType);
       const board = createBoardWithEngagedUnits(
         primaryUnit,
         secondaryUnit,
@@ -358,8 +365,12 @@ describe("isAtPlacement", () => {
 
     it("should return false when secondary unit instanceNumber does not match", () => {
       const primaryUnit = createUnit("white");
-      const secondaryUnit = createUnit("black", spearmenUnitType, 1);
-      const differentInstanceUnit = createUnit("black", spearmenUnitType, 2);
+      const secondaryUnit = createUnit("black", flexibility1UnitType, 1);
+      const differentInstanceUnit = createUnit(
+        "black",
+        flexibility1UnitType,
+        2,
+      );
       const board = createBoardWithEngagedUnits(
         primaryUnit,
         secondaryUnit,

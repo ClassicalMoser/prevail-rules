@@ -1,9 +1,9 @@
-import type { AssertExact } from "../../utils/assertExact.js";
-import type { Card } from "../card/card.js";
-import type { UnitCount } from "./unitCount.js";
+import type { UnitCount } from "@entities/army/unitCount.js";
+import type { Card } from "@entities/card/card.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { unitCountSchema } from "@entities/army/unitCount.js";
+import { cardSchema } from "@entities/card/card.js";
 import { z } from "zod";
-import { cardSchema } from "../card/card.js";
-import { unitCountSchema } from "./unitCount.js";
 
 /**
  * The schema for an army of troops.

@@ -1,4 +1,4 @@
-import type { AssertExact } from "src/utils/assertExact.js";
+import type { AssertExact } from "@utils/assertExact.js";
 import { z } from "zod";
 
 export const playerSchema = z.object({

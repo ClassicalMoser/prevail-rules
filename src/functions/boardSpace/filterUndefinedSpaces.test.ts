@@ -1,6 +1,6 @@
-import type { StandardBoardCoordinate } from "src/entities/index.js";
+import type { StandardBoardCoordinate } from "@entities/index.js";
+import { filterUndefinedSpaces } from "@functions/boardSpace/filterUndefinedSpaces.js";
 import { describe, expect, it } from "vitest";
-import { filterUndefinedSpaces } from "./filterUndefinedSpaces.js";
 
 describe("filterUndefinedSpaces", () => {
   it("should filter out undefined spaces", () => {

@@ -1,10 +1,10 @@
-import type { AssertExact } from "src/utils/assertExact.js";
-import type { Army } from "./army/army.js";
-import type { GameType } from "./gameType.js";
+import type { Army } from "@entities/army/army.js";
+import type { GameType } from "@entities/gameType.js";
+import type { AssertExact } from "@utils/assertExact.js";
 
+import { armySchema } from "@entities/army/army.js";
+import { gameTypeEnum } from "@entities/gameType.js";
 import { z } from "zod";
-import { armySchema } from "./army/army.js";
-import { gameTypeEnum } from "./gameType.js";
 
 /**
  * The schema for a complete game of Prevail: Ancient Battles.

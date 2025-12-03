@@ -1,11 +1,11 @@
-import { createTestUnit } from "src/testing/unitHelpers.js";
+import { hasNoUnit } from "@functions/unitPresence/hasNoUnit.js";
+import { createTestUnit } from "@testing/unitHelpers.js";
 import {
   createEngagedUnitPresence,
   createNoneUnitPresence,
   createSingleUnitPresence,
-} from "src/testing/unitPresenceHelpers.js";
+} from "@testing/unitPresenceHelpers.js";
 import { describe, expect, it } from "vitest";
-import { hasNoUnit } from "./hasNoUnit.js";
 
 describe("hasNoUnit", () => {
   it("should return true for none unit presence", () => {

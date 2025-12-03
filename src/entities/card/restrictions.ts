@@ -1,7 +1,7 @@
-import type { AssertExact } from "src/utils/assertExact.js";
-import type { Trait } from "../../sampleValues/traits.js";
+import type { Trait } from "@sampleValues/traits.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { traitSchema } from "@sampleValues/traits.js";
 import { z } from "zod";
-import { traitSchema } from "../../sampleValues/traits.js";
 
 /**
  * The schema for the restrictions on a card command or round effect.

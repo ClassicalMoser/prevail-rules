@@ -1,5 +1,5 @@
+import { getColumnDelta, getRowDelta } from "@functions/boardSpace/deltas.js";
 import { describe, expect, it } from "vitest";
-import { getColumnDelta, getRowDelta } from "./deltas.js";
 
 describe("getRowDelta", () => {
   it("should return -1 for north facing", () => {

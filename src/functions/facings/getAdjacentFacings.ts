@@ -1,4 +1,4 @@
-import type { UnitFacing } from "../../entities/unit/unitFacing.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
 
 /**
  * Get the adjacent facings for a given facing.

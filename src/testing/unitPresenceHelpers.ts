@@ -1,8 +1,8 @@
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import type { UnitInstance } from "src/entities/unit/unitInstance.js";
-import type { EngagedUnitPresence } from "src/entities/unitPresence/engagedUnitPresence.js";
-import type { NoneUnitPresence } from "src/entities/unitPresence/noneUnitPresence.js";
-import type { SingleUnitPresence } from "src/entities/unitPresence/singleUnitPresence.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import type { UnitInstance } from "@entities/unit/unitInstance.js";
+import type { EngagedUnitPresence } from "@entities/unitPresence/engagedUnitPresence.js";
+import type { NoneUnitPresence } from "@entities/unitPresence/noneUnitPresence.js";
+import type { SingleUnitPresence } from "@entities/unitPresence/singleUnitPresence.js";
 
 /**
  * Creates a none unit presence for testing.
@@ -22,7 +22,7 @@ export function createNoneUnitPresence(): NoneUnitPresence {
  */
 export function createSingleUnitPresence(
   unit: UnitInstance,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): SingleUnitPresence {
   return {
     presenceType: "single",
@@ -42,7 +42,7 @@ export function createSingleUnitPresence(
 export function createEngagedUnitPresence(
   primaryUnit: UnitInstance,
   primaryFacing: UnitFacing,
-  secondaryUnit: UnitInstance
+  secondaryUnit: UnitInstance,
 ): EngagedUnitPresence {
   return {
     presenceType: "engaged",

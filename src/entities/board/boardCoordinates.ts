@@ -1,14 +1,14 @@
-import type { Board } from "./board.js";
-import type { LargeBoard } from "./largeBoard/index.js";
-import type { LargeBoardCoordinate } from "./largeBoard/largeCoordinates.js";
-import type { SmallBoard } from "./smallBoard/index.js";
-import type { SmallBoardCoordinate } from "./smallBoard/smallCoordinates.js";
-import type { StandardBoard } from "./standardBoard/index.js";
-import type { StandardBoardCoordinate } from "./standardBoard/standardCoordinates.js";
+import type { Board } from "@entities/board/board.js";
+import type { LargeBoard } from "@entities/board/largeBoard/index.js";
+import type { LargeBoardCoordinate } from "@entities/board/largeBoard/largeCoordinates.js";
+import type { SmallBoard } from "@entities/board/smallBoard/index.js";
+import type { SmallBoardCoordinate } from "@entities/board/smallBoard/smallCoordinates.js";
+import type { StandardBoard } from "@entities/board/standardBoard/index.js";
+import type { StandardBoardCoordinate } from "@entities/board/standardBoard/standardCoordinates.js";
+import { largeBoardCoordinates } from "@entities/board/largeBoard/largeCoordinates.js";
+import { smallBoardCoordinates } from "@entities/board/smallBoard/smallCoordinates.js";
+import { standardBoardCoordinates } from "@entities/board/standardBoard/standardCoordinates.js";
 import { z } from "zod";
-import { largeBoardCoordinates } from "./largeBoard/largeCoordinates.js";
-import { smallBoardCoordinates } from "./smallBoard/smallCoordinates.js";
-import { standardBoardCoordinates } from "./standardBoard/standardCoordinates.js";
 
 /**
  * All valid coordinates across all board types, deduplicated.

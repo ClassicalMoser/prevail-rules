@@ -1,5 +1,5 @@
-import type { EngagedUnitPresence } from "src/entities/unitPresence/engagedUnitPresence.js";
-import type { UnitPresence } from "src/entities/unitPresence/unitPresence.js";
+import type { EngagedUnitPresence } from "@entities/unitPresence/engagedUnitPresence.js";
+import type { UnitPresence } from "@entities/unitPresence/unitPresence.js";
 
 /**
  * Type guard to check if a unit presence has engaged units.
@@ -8,7 +8,7 @@ import type { UnitPresence } from "src/entities/unitPresence/unitPresence.js";
  * @returns True if the unit presence has engaged units, false otherwise
  */
 export function hasEngagedUnits(
-  unitPresence: UnitPresence
+  unitPresence: UnitPresence,
 ): unitPresence is EngagedUnitPresence {
   return unitPresence.presenceType === "engaged";
 }

@@ -1,9 +1,9 @@
-import type { Board } from "src/entities/board/board.js";
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import { getAdjacentFacings } from "../../facings/getAdjacentFacings.js";
-import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
-import { getForwardSpace } from "../getForwardSpace.js";
+import type { Board } from "@entities/board/board.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import { filterUndefinedSpaces } from "@functions/boardSpace/filterUndefinedSpaces.js";
+import { getForwardSpace } from "@functions/boardSpace/getForwardSpace.js";
+import { getAdjacentFacings } from "@functions/facings/getAdjacentFacings.js";
 
 /**
  * Get the front spaces for a given coordinate and facing, including diagonals
@@ -15,7 +15,7 @@ import { getForwardSpace } from "../getForwardSpace.js";
 export function getFrontSpaces(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  facing: UnitFacing,
+  facing: UnitFacing
 ): Set<BoardCoordinate<Board>> {
   // Get adjacent facings and add the facing to get the forward facings
   const adjacentFacings = getAdjacentFacings(facing);
@@ -23,7 +23,7 @@ export function getFrontSpaces(
 
   // Array of coordinates and undefined values
   const forwardSpaces = new Set(
-    forwardFacings.map((facing) => getForwardSpace(board, coordinate, facing)),
+    forwardFacings.map((facing) => getForwardSpace(board, coordinate, facing))
   );
 
   // Filter out undefined values

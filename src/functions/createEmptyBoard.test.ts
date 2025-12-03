@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
 import {
   createEmptyLargeBoard,
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from "./createEmptyBoard.js";
+} from "@functions/createEmptyBoard.js";
+import { describe, expect, it } from "vitest";
 
 describe("createEmptyStandardBoard", () => {
   it("should create an empty standard board", () => {

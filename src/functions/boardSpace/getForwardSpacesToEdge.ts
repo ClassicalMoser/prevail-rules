@@ -1,8 +1,8 @@
-import type { Board } from "src/entities/board/board.js";
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import { filterUndefinedSpaces } from "./filterUndefinedSpaces.js";
-import { getForwardSpace } from "./getForwardSpace.js";
+import type { Board } from "@entities/board/board.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import { filterUndefinedSpaces } from "@functions/boardSpace/filterUndefinedSpaces.js";
+import { getForwardSpace } from "@functions/boardSpace/getForwardSpace.js";
 
 /**
  * Get the forward spaces to the edge for a given coordinate and facing.

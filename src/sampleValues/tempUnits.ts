@@ -1,4 +1,4 @@
-import type { UnitType } from "../entities/unit/unitType.js";
+import type { UnitType } from "@entities/unit/unitType.js";
 
 export const tempUnits: UnitType[] = [
   {

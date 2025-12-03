@@ -1,9 +1,9 @@
-import type { AssertExact } from "../../utils/assertExact.js";
-import type { UnitFacing } from "../unit/unitFacing.js";
-import type { UnitInstance } from "../unit/unitInstance.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import type { UnitInstance } from "@entities/unit/unitInstance.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { unitFacingSchema } from "@entities/unit/unitFacing.js";
+import { unitInstanceSchema } from "@entities/unit/unitInstance.js";
 import { z } from "zod";
-import { unitFacingSchema } from "../unit/unitFacing.js";
-import { unitInstanceSchema } from "../unit/unitInstance.js";
 
 /**
  * The schema for two units engaged in combat in a space.

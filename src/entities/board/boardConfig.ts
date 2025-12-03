@@ -4,21 +4,21 @@
  * Boards are validated at boundaries (via Zod schemas), so internal functions trust types.
  */
 
-import type { LargeBoardCoordinate } from "./largeBoard/index.js";
-import type { SmallBoardCoordinate } from "./smallBoard/index.js";
-import type { StandardBoardCoordinate } from "./standardBoard/index.js";
+import type { LargeBoardCoordinate } from "@entities/board/largeBoard/index.js";
+import type { SmallBoardCoordinate } from "@entities/board/smallBoard/index.js";
+import type { StandardBoardCoordinate } from "@entities/board/standardBoard/index.js";
 import {
   largeBoardColumnNumbers,
   largeBoardRowLetters,
-} from "./largeBoard/index.js";
+} from "@entities/board/largeBoard/index.js";
 import {
   smallBoardColumnNumbers,
   smallBoardRowLetters,
-} from "./smallBoard/index.js";
+} from "@entities/board/smallBoard/index.js";
 import {
   standardBoardColumnNumbers,
   standardBoardRowLetters,
-} from "./standardBoard/index.js";
+} from "@entities/board/standardBoard/index.js";
 
 /**
  * Board configuration for coordinate calculations.

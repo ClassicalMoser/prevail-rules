@@ -1,5 +1,5 @@
-import type { UnitType } from "src/entities/unit/unitType.js";
-import type { Trait } from "src/sampleValues/traits.js";
+import type { UnitType } from "@entities/unit/unitType.js";
+import type { Trait } from "@sampleValues/traits.js";
 
 /**
  * Determines whether a unit type matches the specified requirements.

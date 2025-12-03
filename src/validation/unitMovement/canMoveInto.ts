@@ -1,12 +1,12 @@
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import type { Board, UnitInstance } from "src/entities/index.js";
-import { getBoardSpace } from "src/functions/boardSpace/getBoardSpace.js";
-import { areSameSide } from "src/functions/unit/index.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { Board, UnitInstance } from "@entities/index.js";
+import { getBoardSpace } from "@functions/boardSpace/getBoardSpace.js";
+import { areSameSide } from "@functions/unit/index.js";
 import {
   hasEngagedUnits,
   hasNoUnit,
   hasSingleUnit,
-} from "src/functions/unitPresence/index.js";
+} from "@functions/unitPresence/index.js";
 
 /**
  * Determines whether a unit can move into (end its movement at) a specific coordinate.
@@ -19,7 +19,7 @@ import {
 export function canMoveInto<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
-  coordinate: BoardCoordinate<TBoard>
+  coordinate: BoardCoordinate<TBoard>,
 ): boolean {
   try {
     // Find the board space at the given coordinate.

@@ -25,6 +25,27 @@ export default antfu(
   },
   {
     files: ["**/*.ts", "**/*.js"],
+    rules: {
+      // Ban all relative imports; require aliases (@entities/*, @functions/*, etc.)
+      "no-restricted-imports": "off",
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["./**", "./*", "../**"],
+              message:
+                "Use aliased imports (e.g., @entities/*, @functions/*) instead of relative paths.",
+            },
+            {
+              group: ["src/**"],
+              message:
+                "Use aliased imports (@entities/*, @functions/*, etc.) instead of src/* paths.",
+            },
+          ],
+        },
+      ],
+    },
   },
   {
     files: ["**/*.test.{ts,js}"],
@@ -40,5 +61,5 @@ export default antfu(
   {
     ignores: ["pnpm-lock.yaml", "node_modules/", "*.yml"],
   },
-  prettierConfig,
+  prettierConfig
 );

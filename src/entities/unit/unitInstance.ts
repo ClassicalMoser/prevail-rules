@@ -1,9 +1,9 @@
-import type { AssertExact } from "../../utils/assertExact.js";
-import type { PlayerSide } from "../player/playerSide.js";
-import type { UnitType } from "./unitType.js";
+import type { PlayerSide } from "@entities/player/playerSide.js";
+import type { UnitType } from "@entities/unit/unitType.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { playerSideSchema } from "@entities/player/playerSide.js";
+import { unitTypeSchema } from "@entities/unit/unitType.js";
 import { z } from "zod";
-import { playerSideSchema } from "../player/playerSide.js";
-import { unitTypeSchema } from "./unitType.js";
 
 /**
  * The schema for a unit instance.

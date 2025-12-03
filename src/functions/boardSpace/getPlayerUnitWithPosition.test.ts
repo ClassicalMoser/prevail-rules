@@ -1,16 +1,16 @@
 import type {
   StandardBoardCoordinate,
   UnitFacing,
-} from "src/entities/index.js";
-import { createTestUnit } from "src/testing/unitHelpers.js";
-import { describe, expect, it } from "vitest";
+} from "@entities/index.js";
+import { getPlayerUnitWithPosition } from "@functions/boardSpace/getPlayerUnitWithPosition.js";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
+import { getOppositeFacing } from "@functions/facings/getOppositeFacing.js";
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-} from "../../testing/createBoard.js";
-import { createEmptyStandardBoard } from "../createEmptyBoard.js";
-import { getOppositeFacing } from "../facings/getOppositeFacing.js";
-import { getPlayerUnitWithPosition } from "./getPlayerUnitWithPosition.js";
+} from "@testing/createBoard.js";
+import { createTestUnit } from "@testing/unitHelpers.js";
+import { describe, expect, it } from "vitest";
 
 describe("getPlayerUnitWithPosition", () => {
   const coordinate: StandardBoardCoordinate = "E-5";

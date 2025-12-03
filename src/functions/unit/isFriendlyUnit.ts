@@ -1,5 +1,5 @@
-import type { PlayerSide } from "src/entities/player/playerSide.js";
-import type { UnitInstance } from "src/entities/unit/unitInstance.js";
+import type { PlayerSide } from "@entities/player/playerSide.js";
+import type { UnitInstance } from "@entities/unit/unitInstance.js";
 
 /**
  * Checks if a unit belongs to the given player side (is friendly).
@@ -10,7 +10,7 @@ import type { UnitInstance } from "src/entities/unit/unitInstance.js";
  */
 export function isFriendlyUnit(
   unit: UnitInstance,
-  playerSide: PlayerSide
+  playerSide: PlayerSide,
 ): boolean {
   return unit.playerSide === playerSide;
 }

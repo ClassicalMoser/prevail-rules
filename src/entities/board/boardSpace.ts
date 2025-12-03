@@ -1,16 +1,16 @@
-import type { AssertExact } from "../../utils/assertExact.js";
-import type { PlayerSide } from "../player/playerSide.js";
-import type { UnitPresence } from "../unitPresence/unitPresence.js";
-import type { Elevation } from "./elevation.js";
-import type { TerrainType } from "./terrainTypes.js";
+import type { Elevation } from "@entities/board/elevation.js";
+import type { TerrainType } from "@entities/board/terrainTypes.js";
+import type { WaterCover } from "@entities/board/waterCover.js";
+import type { PlayerSide } from "@entities/player/playerSide.js";
+import type { UnitPresence } from "@entities/unitPresence/unitPresence.js";
 
-import type { WaterCover } from "./waterCover.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { elevationSchema } from "@entities/board/elevation.js";
+import { terrainTypeSchema } from "@entities/board/terrainTypes.js";
+import { waterCoverSchema } from "@entities/board/waterCover.js";
+import { playerSideSchema } from "@entities/player/playerSide.js";
+import { unitPresenceSchema } from "@entities/unitPresence/unitPresence.js";
 import { z } from "zod";
-import { playerSideSchema } from "../player/playerSide.js";
-import { unitPresenceSchema } from "../unitPresence/unitPresence.js";
-import { elevationSchema } from "./elevation.js";
-import { terrainTypeSchema } from "./terrainTypes.js";
-import { waterCoverSchema } from "./waterCover.js";
 
 /**
  * The schema for a space of the game board.

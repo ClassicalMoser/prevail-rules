@@ -3,14 +3,14 @@ import type {
   SmallBoardCoordinate,
   StandardBoard,
   StandardBoardCoordinate,
-} from "src/entities/index.js";
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import { describe, expect, it } from "vitest";
+} from "@entities/index.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import { getForwardSpace } from "@functions/boardSpace/getForwardSpace.js";
 import {
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from "../createEmptyBoard.js";
-import { getForwardSpace } from "./getForwardSpace.js";
+} from "@functions/createEmptyBoard.js";
+import { describe, expect, it } from "vitest";
 
 const standardBoard: StandardBoard = createEmptyStandardBoard();
 const smallBoard: SmallBoard = createEmptySmallBoard();

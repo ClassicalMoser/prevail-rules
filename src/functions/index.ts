@@ -1,3 +1,3 @@
-export * from "./boardSpace/index.js";
-export * from "./createEmptyBoard.js";
-export * from "./facings/index.js";
+export * from "@functions/boardSpace/index.js";
+export * from "@functions/createEmptyBoard.js";
+export * from "@functions/facings/index.js";

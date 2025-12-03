@@ -1,11 +1,11 @@
-export * from "./standardBoard.js";
-export type * from "./standardBoard.js";
+export * from "@entities/board/standardBoard/standardBoard.js";
+export type * from "@entities/board/standardBoard/standardBoard.js";
 
-export * from "./standardColumnNumbers.js";
-export type * from "./standardColumnNumbers.js";
+export * from "@entities/board/standardBoard/standardColumnNumbers.js";
+export type * from "@entities/board/standardBoard/standardColumnNumbers.js";
 
-export * from "./standardCoordinates.js";
-export type * from "./standardCoordinates.js";
+export * from "@entities/board/standardBoard/standardCoordinates.js";
+export type * from "@entities/board/standardBoard/standardCoordinates.js";
 
-export * from "./standardRowLetters.js";
-export type * from "./standardRowLetters.js";
+export * from "@entities/board/standardBoard/standardRowLetters.js";
+export type * from "@entities/board/standardBoard/standardRowLetters.js";

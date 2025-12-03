@@ -1,12 +1,12 @@
-import type { AssertExact } from "../../utils/assertExact.js";
-import type { LargeBoard } from "./largeBoard/index.js";
-import type { SmallBoard } from "./smallBoard/index.js";
+import type { LargeBoard } from "@entities/board/largeBoard/index.js";
+import type { SmallBoard } from "@entities/board/smallBoard/index.js";
+import type { StandardBoard } from "@entities/board/standardBoard/index.js";
 
-import type { StandardBoard } from "./standardBoard/index.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { largeBoardSchema } from "@entities/board/largeBoard/index.js";
+import { smallBoardSchema } from "@entities/board/smallBoard/index.js";
+import { standardBoardSchema } from "@entities/board/standardBoard/index.js";
 import { z } from "zod";
-import { largeBoardSchema } from "./largeBoard/index.js";
-import { smallBoardSchema } from "./smallBoard/index.js";
-import { standardBoardSchema } from "./standardBoard/index.js";
 
 export const boardSizeType = ["standard", "small", "large"] as const;
 

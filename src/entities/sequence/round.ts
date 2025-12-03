@@ -1,7 +1,7 @@
-import type { AssertExact } from "../../utils/assertExact.js";
-import type { Phase } from "./phases.js";
+import type { Phase } from "@entities/sequence/phases.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { phaseSchema } from "@entities/sequence/phases.js";
 import { z } from "zod";
-import { phaseSchema } from "./phases.js";
 
 /**
  * The schema for a round.

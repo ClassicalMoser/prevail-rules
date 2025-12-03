@@ -1,39 +1,18 @@
-import type { UnitType } from "src/entities/unit/unitType.js";
-import { tempUnits } from "src/sampleValues/tempUnits.js";
+import type { UnitType } from "@entities/unit/unitType.js";
+import { getUnitByStatValue } from "@testing/getUnitByStatValue.js";
+import { getUnitByTrait } from "@testing/getUnitByTrait.js";
+import { matchesUnitRequirements } from "@validation/matchesUnitRequirements.js";
 import { describe, expect, it } from "vitest";
-import { matchesUnitRequirements } from "./matchesUnitRequirements.js";
 
 describe("matchesUnitRequirements", () => {
   // Find units by their unique traits rather than by name
   // This makes tests more resilient to changes in sample data
-  const unitWithSwordTrait = tempUnits.find((unit) =>
-    unit.traits.includes("sword"),
-  );
-
-  const unitWithFormationAndSwordTraits = tempUnits.find(
-    (unit) =>
-      unit.traits.includes("formation") && unit.traits.includes("sword"),
-  );
-  const unitWithPhalanxTrait = tempUnits.find((unit) =>
-    unit.traits.includes("phalanx"),
-  );
-  const unitWithSkirmishTrait = tempUnits.find((unit) =>
-    unit.traits.includes("skirmish"),
-  );
-  const firstUnit = tempUnits[0];
-
-  if (
-    !unitWithSwordTrait ||
-    !unitWithPhalanxTrait ||
-    !unitWithSkirmishTrait ||
-    !unitWithFormationAndSwordTraits
-  ) {
-    throw new Error("Required unit types not found");
-  }
-
-  // unitWithSwordTrait: has "sword" trait (e.g., Swordsmen)
-  // unitWithPhalanxTrait: has "phalanx" trait (e.g., Spearmen)
-  // unitWithSkirmishTrait: has "skirmish" trait (e.g., Skirmishers)
+  // getUnitByTrait throws if not found, ensuring test failures are clear
+  const unitWithSwordTrait = getUnitByTrait("sword");
+  const unitWithFormationAndSwordTraits = getUnitByTrait("formation", "sword");
+  const unitWithPhalanxTrait = getUnitByTrait("phalanx");
+  // Use stat-based lookup for first unit (attack 3 is common)
+  const firstUnit = getUnitByStatValue("attack", 3);
 
   describe("no requirements", () => {
     it("should return true when both traits and unitTypes are empty", () => {

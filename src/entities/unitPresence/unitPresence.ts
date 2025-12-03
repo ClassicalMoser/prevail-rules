@@ -1,11 +1,11 @@
-import type { AssertExact } from "../../utils/assertExact.js";
-import type { EngagedUnitPresence } from "./engagedUnitPresence.js";
-import type { NoneUnitPresence } from "./noneUnitPresence.js";
-import type { SingleUnitPresence } from "./singleUnitPresence.js";
+import type { EngagedUnitPresence } from "@entities/unitPresence/engagedUnitPresence.js";
+import type { NoneUnitPresence } from "@entities/unitPresence/noneUnitPresence.js";
+import type { SingleUnitPresence } from "@entities/unitPresence/singleUnitPresence.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { engagedUnitPresenceSchema } from "@entities/unitPresence/engagedUnitPresence.js";
+import { noneUnitPresenceSchema } from "@entities/unitPresence/noneUnitPresence.js";
+import { singleUnitPresenceSchema } from "@entities/unitPresence/singleUnitPresence.js";
 import { z } from "zod";
-import { engagedUnitPresenceSchema } from "./engagedUnitPresence.js";
-import { noneUnitPresenceSchema } from "./noneUnitPresence.js";
-import { singleUnitPresenceSchema } from "./singleUnitPresence.js";
 
 /**
  * The schema for unit presence in a space.

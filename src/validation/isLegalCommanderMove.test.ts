@@ -1,9 +1,9 @@
-import type { MoveCommanderCommand } from "src/commands/moveCommander.js";
-import type { StandardBoardCoordinate } from "src/entities/index.js";
-import { createBoardWithCommander } from "src/testing/createBoard.js";
+import type { MoveCommanderCommand } from "@commands/moveCommander.js";
+import type { StandardBoardCoordinate } from "@entities/index.js";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
+import { createBoardWithCommander } from "@testing/createBoard.js";
+import { isLegalCommanderMove } from "@validation/isLegalCommanderMove.js";
 import { describe, expect, it } from "vitest";
-import { createEmptyStandardBoard } from "../functions/createEmptyBoard.js";
-import { isLegalCommanderMove } from "./isLegalCommanderMove.js";
 
 describe("valid moves", () => {
   it("should return true when commander moves within distance 1", () => {

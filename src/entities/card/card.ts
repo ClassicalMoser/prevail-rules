@@ -1,11 +1,11 @@
-import type { AssertExact } from "../../utils/assertExact.js";
-import type { Command } from "./command.js";
-import type { Modifier } from "./modifiers.js";
-import type { RoundEffect } from "./roundEffect.js";
+import type { Command } from "@entities/card/command.js";
+import type { Modifier } from "@entities/card/modifiers.js";
+import type { RoundEffect } from "@entities/card/roundEffect.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { commandSchema } from "@entities/card/command.js";
+import { modifierSchema } from "@entities/card/modifiers.js";
+import { roundEffectSchema } from "@entities/card/roundEffect.js";
 import { z } from "zod";
-import { commandSchema } from "./command.js";
-import { modifierSchema } from "./modifiers.js";
-import { roundEffectSchema } from "./roundEffect.js";
 
 /**
  * The schema for a card.

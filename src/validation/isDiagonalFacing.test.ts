@@ -1,6 +1,6 @@
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import { isDiagonalFacing } from "@validation/isDiagonalFacing.js";
 import { describe, expect, it } from "vitest";
-import { isDiagonalFacing } from "./isDiagonalFacing.js";
 
 describe("isDiagonalFacing", () => {
   it("should return true for a diagonal facing", () => {

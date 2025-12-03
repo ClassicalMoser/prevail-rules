@@ -1,6 +1,6 @@
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import { getRightFacing } from "@functions/facings/getRightFacing.js";
 import { describe, expect, it } from "vitest";
-import { getRightFacing } from "./getRightFacing.js";
 
 describe("getRightFacing", () => {
   it("should return east for north", () => {

@@ -1,6 +1,6 @@
-import { createTestUnit } from "src/testing/unitHelpers.js";
+import { isFriendlyUnit } from "@functions/unit/isFriendlyUnit.js";
+import { createTestUnit } from "@testing/unitHelpers.js";
 import { describe, expect, it } from "vitest";
-import { isFriendlyUnit } from "./isFriendlyUnit.js";
 
 describe("isFriendlyUnit", () => {
   it("should return true when unit belongs to the player side", () => {

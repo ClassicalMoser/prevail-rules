@@ -1,8 +1,8 @@
-import type { PlayerSide } from "src/entities/player/playerSide.js";
-import type { UnitInstance } from "src/entities/unit/unitInstance.js";
-import type { UnitType } from "src/entities/unit/unitType.js";
-import { createUnitInstance } from "src/utils/createUnitInstance.js";
-import { getUnitByStatValue } from "src/utils/getUnitByStatValue.js";
+import type { PlayerSide } from "@entities/player/playerSide.js";
+import type { UnitInstance } from "@entities/unit/unitInstance.js";
+import type { UnitType } from "@entities/unit/unitType.js";
+import { getUnitByStatValue } from "@testing/getUnitByStatValue.js";
+import { createUnitInstance } from "@utils/createUnitInstance.js";
 
 /**
  * Creates a unit instance for testing with sensible defaults.

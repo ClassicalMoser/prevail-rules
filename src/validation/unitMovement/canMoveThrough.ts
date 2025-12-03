@@ -1,13 +1,13 @@
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import type { Board, UnitInstance } from "src/entities/index.js";
-import { getBoardSpace } from "src/functions/boardSpace/getBoardSpace.js";
-import { areSameSide } from "src/functions/unit/index.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { Board, UnitInstance } from "@entities/index.js";
+import { getBoardSpace } from "@functions/boardSpace/getBoardSpace.js";
+import { areSameSide } from "@functions/unit/index.js";
 import {
   hasEngagedUnits,
   hasNoUnit,
   hasSingleUnit,
-} from "src/functions/unitPresence/index.js";
-import { MIN_FLEXIBILITY_THRESHOLD } from "src/sampleValues/ruleValues.js";
+} from "@functions/unitPresence/index.js";
+import { MIN_FLEXIBILITY_THRESHOLD } from "@sampleValues/ruleValues.js";
 
 /**
  * Determines whether a unit can move through (pass over) a specific coordinate.

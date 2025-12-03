@@ -1,7 +1,7 @@
-import type { LargeBoardColumnNumber } from "./largeColumnNumbers.js";
-import type { LargeBoardRowLetter } from "./largeRowLetters.js";
-import { largeBoardColumnNumbers } from "./largeColumnNumbers.js";
-import { largeBoardRowLetters } from "./largeRowLetters.js";
+import type { LargeBoardColumnNumber } from "@entities/board/largeBoard/largeColumnNumbers.js";
+import type { LargeBoardRowLetter } from "@entities/board/largeBoard/largeRowLetters.js";
+import { largeBoardColumnNumbers } from "@entities/board/largeBoard/largeColumnNumbers.js";
+import { largeBoardRowLetters } from "@entities/board/largeBoard/largeRowLetters.js";
 
 /**
  * A valid coordinate on a large board (A-1 through X-36).

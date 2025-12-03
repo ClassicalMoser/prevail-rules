@@ -1,6 +1,6 @@
-import type { Board } from "src/entities/board/board.js";
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import { getAdjacentSpaces } from "../adjacency/getAdjacentSpaces.js";
+import type { Board } from "@entities/board/board.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import { getAdjacentSpaces } from "@functions/boardSpace/adjacency/getAdjacentSpaces.js";
 
 /**
  * Get all spaces within a given distance from a coordinate.
@@ -13,7 +13,7 @@ import { getAdjacentSpaces } from "../adjacency/getAdjacentSpaces.js";
 export function getSpacesWithinDistance(
   board: Board,
   coordinate: BoardCoordinate<Board>,
-  distance: number,
+  distance: number
 ): Set<BoardCoordinate<Board>> {
   // If distance is 0 or negative, return only the starting coordinate
   if (distance <= 0) {

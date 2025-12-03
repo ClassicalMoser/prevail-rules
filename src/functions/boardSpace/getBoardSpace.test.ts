@@ -2,13 +2,13 @@ import type {
   SmallBoard,
   StandardBoard,
   StandardBoardCoordinate,
-} from "src/entities/index.js";
-import { describe, expect, it } from "vitest";
+} from "@entities/index.js";
+import { getBoardSpace } from "@functions/boardSpace/getBoardSpace.js";
 import {
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from "../createEmptyBoard.js";
-import { getBoardSpace } from "./getBoardSpace.js";
+} from "@functions/createEmptyBoard.js";
+import { describe, expect, it } from "vitest";
 
 const standardBoard: StandardBoard = createEmptyStandardBoard();
 const smallBoard: SmallBoard = createEmptySmallBoard();

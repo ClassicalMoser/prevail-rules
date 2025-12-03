@@ -1,9 +1,9 @@
-import type { StandardBoard } from "src/entities/board/standardBoard/index.js";
-import type { StandardBoardCoordinate } from "src/entities/board/standardBoard/standardCoordinates.js";
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
+import type { StandardBoard } from "@entities/board/standardBoard/index.js";
+import type { StandardBoardCoordinate } from "@entities/board/standardBoard/standardCoordinates.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import { getLeftSpace } from "@functions/boardSpace/getLeftSpace.js";
+import { createEmptyStandardBoard } from "@functions/createEmptyBoard.js";
 import { describe, expect, it } from "vitest";
-import { createEmptyStandardBoard } from "../createEmptyBoard.js";
-import { getLeftSpace } from "./getLeftSpace.js";
 
 const standardBoard: StandardBoard = createEmptyStandardBoard();
 

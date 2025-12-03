@@ -1,9 +1,9 @@
-import type { Board } from "src/entities/board/board.js";
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import type { UnitFacing } from "src/entities/unit/unitFacing.js";
-import { filterUndefinedSpaces } from "../filterUndefinedSpaces.js";
-import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge.js";
-import { getInlineSpaces } from "./getInlineSpaces.js";
+import type { Board } from "@entities/board/board.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { UnitFacing } from "@entities/unit/unitFacing.js";
+import { getInlineSpaces } from "@functions/boardSpace/areas/getInlineSpaces.js";
+import { filterUndefinedSpaces } from "@functions/boardSpace/filterUndefinedSpaces.js";
+import { getForwardSpacesToEdge } from "@functions/boardSpace/getForwardSpacesToEdge.js";
 
 /**
  * Internal helper that extends spaces in a given direction.
@@ -19,7 +19,7 @@ function getSpacesInDirection(
   board: Board,
   initialSpaces: Set<BoardCoordinate<Board>>,
   facing: UnitFacing,
-  extensionFacing: UnitFacing
+  extensionFacing: UnitFacing,
 ): Set<BoardCoordinate<Board>> {
   const spaces = new Set(initialSpaces);
 

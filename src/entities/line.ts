@@ -1,7 +1,7 @@
-import type { AssertExact } from "src/utils/assertExact.js";
-import type { UnitWithPlacement } from "./unitLocation/unitWithPlacement.js";
+import type { UnitWithPlacement } from "@entities/unitLocation/unitWithPlacement.js";
+import type { AssertExact } from "@utils/assertExact.js";
+import { unitWithPlacementSchema } from "@entities/unitLocation/unitWithPlacement.js";
 import { z } from "zod";
-import { unitWithPlacementSchema } from "./unitLocation/unitWithPlacement.js";
 
 /**
  * The schema for a line.

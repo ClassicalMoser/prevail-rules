@@ -1,6 +1,6 @@
-import type { Board } from "src/entities/board/board.js";
-import type { BoardCoordinate } from "src/entities/board/boardCoordinates.js";
-import type { BoardSpace } from "src/entities/board/boardSpace.js";
+import type { Board } from "@entities/board/board.js";
+import type { BoardCoordinate } from "@entities/board/boardCoordinates.js";
+import type { BoardSpace } from "@entities/board/boardSpace.js";
 
 /**
  * Gets the board space at the given coordinate.
