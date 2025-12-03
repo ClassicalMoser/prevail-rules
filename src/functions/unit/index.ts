@@ -1,2 +1,2 @@
-export { areSameSide } from "./areSameSide";
-export { isFriendlyUnit } from "./isFriendlyUnit";
+export { areSameSide } from './areSameSide';
+export { isFriendlyUnit } from './isFriendlyUnit';

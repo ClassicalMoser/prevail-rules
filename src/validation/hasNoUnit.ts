@@ -1,4 +1,4 @@
-import type { NoneUnitPresence, UnitPresence } from "@entities";
+import type { NoneUnitPresence, UnitPresence } from '@entities';
 
 /**
  * Type guard to check if a unit presence has no unit.
@@ -9,6 +9,5 @@ import type { NoneUnitPresence, UnitPresence } from "@entities";
 export function hasNoUnit(
   unitPresence: UnitPresence,
 ): unitPresence is NoneUnitPresence {
-  return unitPresence.presenceType === "none";
+  return unitPresence.presenceType === 'none';
 }
-

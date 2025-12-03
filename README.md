@@ -36,19 +36,19 @@ npm install @classicalmoser/prevail-rules
 import {
   createEmptyStandardBoard,
   getLegalUnitMoves,
-} from "@classicalmoser/prevail-rules";
-import { canMoveInto } from "@classicalmoser/prevail-rules/validation";
+} from '@classicalmoser/prevail-rules';
+import { canMoveInto } from '@classicalmoser/prevail-rules/validation';
 
 // Create a board
 const board = createEmptyStandardBoard();
 
 // Check if a unit can move into a space
-const canMove = canMoveInto(unit, board, "F-5");
+const canMove = canMoveInto(unit, board, 'F-5');
 
 // Get all legal moves for a unit (considers speed, flexibility, facing, terrain)
 const legalMoves = getLegalUnitMoves(unit, board, {
-  coordinate: "E-5",
-  facing: "north",
+  coordinate: 'E-5',
+  facing: 'north',
 });
 ```
 
@@ -61,10 +61,10 @@ The library uses TypeScript generics to ensure board types match their coordinat
 ```typescript
 // ✅ Type-safe
 const standardBoard: StandardBoard = createEmptyStandardBoard();
-const space = getBoardSpace(standardBoard, "E-5");
+const space = getBoardSpace(standardBoard, 'E-5');
 
 // ❌ Type error
-const space = getBoardSpace(standardBoard, "A-1" as SmallBoardCoordinate);
+const space = getBoardSpace(standardBoard, 'A-1' as SmallBoardCoordinate);
 ```
 
 ### Validation Functions

@@ -1,9 +1,9 @@
-import type { Command, Modifier, RoundEffect } from "@entities";
-import type { AssertExact } from "@utils";
-import { z } from "zod";
-import { commandSchema } from "./command";
-import { modifierSchema } from "./modifiers";
-import { roundEffectSchema } from "./roundEffect";
+import type { Command, Modifier, RoundEffect } from '@entities';
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
+import { commandSchema } from './command';
+import { modifierSchema } from './modifiers';
+import { roundEffectSchema } from './roundEffect';
 
 /**
  * The schema for a card.
@@ -22,7 +22,7 @@ export const cardSchema = z.object({
   id: z.string().uuid(),
   /** The version of the card. */
   version: z.string().regex(/^\d+\.\d+\.\d+$/, {
-    message: "Version must be a valid semver string (e.g., 1.0.0, 1.12.35)",
+    message: 'Version must be a valid semver string (e.g., 1.0.0, 1.12.35)',
   }),
   /** The name of the card, regardless of version. */
   name: z.string(),

@@ -4,7 +4,7 @@ import type {
   SingleUnitPresence,
   UnitFacing,
   UnitInstance,
-} from "@entities";
+} from '@entities';
 
 /**
  * Creates a none unit presence for testing.
@@ -12,7 +12,7 @@ import type {
  * @returns A none unit presence
  */
 export function createNoneUnitPresence(): NoneUnitPresence {
-  return { presenceType: "none" };
+  return { presenceType: 'none' };
 }
 
 /**
@@ -27,7 +27,7 @@ export function createSingleUnitPresence(
   facing: UnitFacing,
 ): SingleUnitPresence {
   return {
-    presenceType: "single",
+    presenceType: 'single',
     unit,
     facing,
   };
@@ -47,7 +47,7 @@ export function createEngagedUnitPresence(
   secondaryUnit: UnitInstance,
 ): EngagedUnitPresence {
   return {
-    presenceType: "engaged",
+    presenceType: 'engaged',
     primaryUnit,
     primaryFacing,
     secondaryUnit,

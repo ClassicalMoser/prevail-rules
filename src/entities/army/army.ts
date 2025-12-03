@@ -1,7 +1,7 @@
-import type { Card, UnitCount } from "@entities";
-import type { AssertExact } from "@utils";
-import { cardSchema, unitCountSchema } from "@entities";
-import { z } from "zod";
+import type { Card, UnitCount } from '@entities';
+import type { AssertExact } from '@utils';
+import { cardSchema, unitCountSchema } from '@entities';
+import { z } from 'zod';
 
 /**
  * The schema for an army of troops.

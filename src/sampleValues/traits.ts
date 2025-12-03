@@ -1,15 +1,15 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
 export const traits = [
-  "formation",
-  "sword",
-  "spear",
-  "phalanx",
-  "skirmish",
-  "javelin",
-  "mounted",
-  "horse",
+  'formation',
+  'sword',
+  'spear',
+  'phalanx',
+  'skirmish',
+  'javelin',
+  'mounted',
+  'horse',
 ] as const;
 
 export const traitSchema = z.enum(traits);

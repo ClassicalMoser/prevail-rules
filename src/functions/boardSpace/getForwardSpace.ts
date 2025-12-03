@@ -3,9 +3,9 @@ import type {
   BoardConfig,
   BoardCoordinate,
   UnitFacing,
-} from "@entities";
-import { getBoardConfig, unitFacingSchema } from "@entities";
-import { getColumnDelta, getRowDelta } from "@functions";
+} from '@entities';
+import { getBoardConfig, unitFacingSchema } from '@entities';
+import { getColumnDelta, getRowDelta } from '@functions';
 
 /**
  * Internal helper that performs the coordinate calculation.
@@ -17,13 +17,13 @@ export function getForwardSpaceWithConfig<TCoordinate extends string>(
   facing: UnitFacing,
   config: BoardConfig<TCoordinate>,
 ): TCoordinate | undefined {
-  if (!coordinate.includes("-")) {
+  if (!coordinate.includes('-')) {
     throw new Error(`Invalid coordinate: ${coordinate}`);
   }
   // Parse coordinate - already validated at boundary, so we trust the format
   // Coordinates are formatted as "Row-Column" (e.g., "E-5" = row E, column 5)
-  const inputRow = coordinate.split("-")[0];
-  const inputColumn = coordinate.split("-")[1];
+  const inputRow = coordinate.split('-')[0];
+  const inputColumn = coordinate.split('-')[1];
 
   // Convert string coordinates to array indices for mathematical operations
   const currentRowIndex = config.rowLetters.indexOf(inputRow);

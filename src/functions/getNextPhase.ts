@@ -1,5 +1,5 @@
-import type { Phase } from "@entities";
-import { phases } from "@entities";
+import type { Phase } from '@entities';
+import { phases } from '@entities';
 
 /**
  * Get the next phase in the round.

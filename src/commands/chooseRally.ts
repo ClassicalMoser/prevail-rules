@@ -1,7 +1,7 @@
-import type { PlayerSide } from "@entities";
-import type { AssertExact } from "@utils";
-import { playerSideSchema } from "@entities";
-import { z } from "zod";
+import type { PlayerSide } from '@entities';
+import type { AssertExact } from '@utils';
+import { playerSideSchema } from '@entities';
+import { z } from 'zod';
 
 /** The schema for a choose rally command. */
 export const chooseRallyCommandSchema = z.object({

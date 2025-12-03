@@ -1,14 +1,14 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
 /** List of orthogonal facings. */
-export const orthogonalFacings = ["north", "east", "south", "west"] as const;
+export const orthogonalFacings = ['north', 'east', 'south', 'west'] as const;
 /** List of diagonal facings. */
 export const diagonalFacings = [
-  "northEast",
-  "southEast",
-  "southWest",
-  "northWest",
+  'northEast',
+  'southEast',
+  'southWest',
+  'northWest',
 ] as const;
 
 /**

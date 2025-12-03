@@ -5,16 +5,16 @@ import type {
   Trait,
   UnitType,
   UnitWithPlacement,
-} from "@entities";
+} from '@entities';
 import {
   getForwardSpacesToEdge,
   getLeftFacing,
   getOppositeFacing,
   getPlayerUnitWithPosition,
   getRightFacing,
-} from "@functions";
-import { MAX_LINE_LENGTH } from "@sampleValues";
-import { isAtPlacement, matchesUnitRequirements } from "@validation";
+} from '@functions';
+import { MAX_LINE_LENGTH } from '@sampleValues';
+import { isAtPlacement, matchesUnitRequirements } from '@validation';
 
 /**
  * Get all possible lines that include a given unit.
@@ -42,11 +42,11 @@ export function getLinesFromUnit<TBoard extends Board>(
   board: TBoard,
   unit: UnitWithPlacement<TBoard>,
   traits: Trait[] = [],
-  unitTypes: UnitType[] = []
+  unitTypes: UnitType[] = [],
 ): Set<Line> {
   // Validate that the unit is actually at the reported position
   if (!isAtPlacement(board, unit)) {
-    throw new Error("Unit is not at reported placement");
+    throw new Error('Unit is not at reported placement');
   }
 
   const friendlySide = unit.unit.playerSide;
@@ -66,12 +66,12 @@ export function getLinesFromUnit<TBoard extends Board>(
    * - undefined if we should stop expanding (empty space, enemy unit, wrong facing, or doesn't match requirements)
    */
   const canJoinLine = (
-    coordinate: BoardCoordinate<TBoard>
+    coordinate: BoardCoordinate<TBoard>,
   ): UnitWithPlacement<TBoard> | undefined => {
     const playerUnit = getPlayerUnitWithPosition(
       board,
       coordinate,
-      friendlySide
+      friendlySide,
     );
     // No friendly unit: stop expanding (empty space or enemy unit)
     if (!playerUnit) {
@@ -107,7 +107,7 @@ export function getLinesFromUnit<TBoard extends Board>(
   for (const coordinate of getForwardSpacesToEdge(
     board,
     unit.placement.coordinate,
-    leftDirection
+    leftDirection,
   )) {
     const joiningUnit = canJoinLine(coordinate);
     if (!joiningUnit) {
@@ -123,7 +123,7 @@ export function getLinesFromUnit<TBoard extends Board>(
   for (const coordinate of getForwardSpacesToEdge(
     board,
     unit.placement.coordinate,
-    rightDirection
+    rightDirection,
   )) {
     const joiningUnit = canJoinLine(coordinate);
     if (!joiningUnit) {

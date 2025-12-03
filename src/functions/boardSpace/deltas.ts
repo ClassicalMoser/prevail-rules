@@ -1,4 +1,4 @@
-import type { UnitFacing } from "@entities";
+import type { UnitFacing } from '@entities';
 
 /**
  * Calculates the row delta (vertical movement) for a given facing direction.
@@ -14,17 +14,17 @@ import type { UnitFacing } from "@entities";
  */
 export const getRowDelta = (facing: UnitFacing): number => {
   switch (facing) {
-    case "northWest":
+    case 'northWest':
       return -1;
-    case "north":
+    case 'north':
       return -1;
-    case "northEast":
+    case 'northEast':
       return -1;
-    case "southWest":
+    case 'southWest':
       return 1;
-    case "south":
+    case 'south':
       return 1;
-    case "southEast":
+    case 'southEast':
       return 1;
     default:
       return 0;
@@ -45,17 +45,17 @@ export const getRowDelta = (facing: UnitFacing): number => {
  */
 export const getColumnDelta = (facing: UnitFacing): number => {
   switch (facing) {
-    case "northEast":
+    case 'northEast':
       return 1;
-    case "east":
+    case 'east':
       return 1;
-    case "southEast":
+    case 'southEast':
       return 1;
-    case "northWest":
+    case 'northWest':
       return -1;
-    case "west":
+    case 'west':
       return -1;
-    case "southWest":
+    case 'southWest':
       return -1;
     default:
       return 0;

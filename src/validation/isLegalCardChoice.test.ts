@@ -1,10 +1,10 @@
-import type { ChooseCardCommand } from "@commands";
-import type { Card, CardState } from "@entities";
-import { commandCards } from "@sampleValues";
-import { isLegalCardChoice } from "@validation";
-import { describe, expect, it } from "vitest";
+import type { ChooseCardCommand } from '@commands';
+import type { Card, CardState } from '@entities';
+import { commandCards } from '@sampleValues';
+import { isLegalCardChoice } from '@validation';
+import { describe, expect, it } from 'vitest';
 
-describe("isLegalCardChoice", () => {
+describe('isLegalCardChoice', () => {
   // Helper to create a card state with cards in hand
   function createCardState(blackHand: Card[], whiteHand: Card[]): CardState {
     return {
@@ -25,11 +25,11 @@ describe("isLegalCardChoice", () => {
     };
   }
 
-  describe("valid card choices", () => {
-    it("should return true when black player chooses a card in their hand", () => {
+  describe('valid card choices', () => {
+    it('should return true when black player chooses a card in their hand', () => {
       const cardState = createCardState([commandCards[0], commandCards[1]], []);
       const chooseCardCommand: ChooseCardCommand = {
-        player: "black",
+        player: 'black',
         card: commandCards[0],
       };
 
@@ -38,10 +38,10 @@ describe("isLegalCardChoice", () => {
       expect(result).toBe(true);
     });
 
-    it("should return true when white player chooses a card in their hand", () => {
+    it('should return true when white player chooses a card in their hand', () => {
       const cardState = createCardState([], [commandCards[0], commandCards[1]]);
       const chooseCardCommand: ChooseCardCommand = {
-        player: "white",
+        player: 'white',
         card: commandCards[1],
       };
 
@@ -51,11 +51,11 @@ describe("isLegalCardChoice", () => {
     });
   });
 
-  describe("invalid card choices", () => {
-    it("should return false when black player chooses a card not in their hand", () => {
+  describe('invalid card choices', () => {
+    it('should return false when black player chooses a card not in their hand', () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
       const chooseCardCommand: ChooseCardCommand = {
-        player: "black",
+        player: 'black',
         card: commandCards[1], // Card is in white player's hand, not black's
       };
 
@@ -64,10 +64,10 @@ describe("isLegalCardChoice", () => {
       expect(result).toBe(false);
     });
 
-    it("should return false when white player chooses a card not in their hand", () => {
+    it('should return false when white player chooses a card not in their hand', () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
       const chooseCardCommand: ChooseCardCommand = {
-        player: "white",
+        player: 'white',
         card: commandCards[0], // Card is in black player's hand, not white's
       };
 
@@ -79,7 +79,7 @@ describe("isLegalCardChoice", () => {
     it("should return false when player chooses a card that doesn't exist in any hand", () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
       const chooseCardCommand: ChooseCardCommand = {
-        player: "black",
+        player: 'black',
         card: commandCards[2], // Card is not in either player's hand
       };
 

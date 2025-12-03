@@ -1,11 +1,11 @@
-import type { LargeBoard, SmallBoard, StandardBoard } from "@entities";
-import type { AssertExact } from "@utils";
-import { z } from "zod";
-import { largeBoardSchema } from "./largeBoard/largeBoard";
-import { smallBoardSchema } from "./smallBoard/smallBoard";
-import { standardBoardSchema } from "./standardBoard/standardBoard";
+import type { LargeBoard, SmallBoard, StandardBoard } from '@entities';
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
+import { largeBoardSchema } from './largeBoard/largeBoard';
+import { smallBoardSchema } from './smallBoard/smallBoard';
+import { standardBoardSchema } from './standardBoard/standardBoard';
 
-export const boardSizeType = ["standard", "small", "large"] as const;
+export const boardSizeType = ['standard', 'small', 'large'] as const;
 
 export const boardSizeEnum = z.enum(boardSizeType);
 
@@ -39,7 +39,7 @@ const _assertExactBoardSize: AssertExact<BoardSize, BoardSizeEnumType> = true;
  * }
  * ```
  */
-export const boardSchema = z.discriminatedUnion("boardType", [
+export const boardSchema = z.discriminatedUnion('boardType', [
   smallBoardSchema,
   standardBoardSchema,
   largeBoardSchema,

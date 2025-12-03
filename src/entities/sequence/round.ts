@@ -1,7 +1,7 @@
-import type { Phase } from "@entities";
-import type { AssertExact } from "@utils";
-import { phaseSchema } from "@entities";
-import { z } from "zod";
+import type { Phase } from '@entities';
+import type { AssertExact } from '@utils';
+import { phaseSchema } from '@entities';
+import { z } from 'zod';
 
 /**
  * The schema for a round.

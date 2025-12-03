@@ -2,12 +2,12 @@ import type {
   EngagedUnitPresence,
   NoneUnitPresence,
   SingleUnitPresence,
-} from "@entities";
-import type { AssertExact } from "@utils";
-import { z } from "zod";
-import { engagedUnitPresenceSchema } from "./engagedUnitPresence";
-import { noneUnitPresenceSchema } from "./noneUnitPresence";
-import { singleUnitPresenceSchema } from "./singleUnitPresence";
+} from '@entities';
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
+import { engagedUnitPresenceSchema } from './engagedUnitPresence';
+import { noneUnitPresenceSchema } from './noneUnitPresence';
+import { singleUnitPresenceSchema } from './singleUnitPresence';
 
 /**
  * The schema for unit presence in a space.
@@ -41,7 +41,7 @@ import { singleUnitPresenceSchema } from "./singleUnitPresence";
  * }
  * ```
  */
-export const unitPresenceSchema = z.discriminatedUnion("presenceType", [
+export const unitPresenceSchema = z.discriminatedUnion('presenceType', [
   noneUnitPresenceSchema,
   singleUnitPresenceSchema,
   engagedUnitPresenceSchema,

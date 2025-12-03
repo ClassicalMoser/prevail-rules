@@ -1,15 +1,15 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
 /**
  * List of valid terrain types.
  */
 const terrainTypes = [
-  "plain",
-  "rocks",
-  "scrub",
-  "lightForest",
-  "denseForest",
+  'plain',
+  'rocks',
+  'scrub',
+  'lightForest',
+  'denseForest',
 ] as const;
 
 /**

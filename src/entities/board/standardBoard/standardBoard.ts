@@ -1,8 +1,8 @@
-import type { BoardSpace, StandardBoardCoordinate } from "@entities";
-import type { AssertExact } from "@utils";
-import { boardSpaceSchema } from "@entities";
-import { z } from "zod";
-import { standardBoardCoordinates } from "./standardCoordinates";
+import type { BoardSpace, StandardBoardCoordinate } from '@entities';
+import type { AssertExact } from '@utils';
+import { boardSpaceSchema } from '@entities';
+import { z } from 'zod';
+import { standardBoardCoordinates } from './standardCoordinates';
 
 /**
  * Creates a Zod object schema for a board with all required coordinates.
@@ -35,7 +35,7 @@ function createBoardSchema<T extends string>(
  * The schema for a standard board.
  */
 export const standardBoardSchema = z.object({
-  boardType: z.literal("standard"),
+  boardType: z.literal('standard'),
   board: createBoardSchema(standardBoardCoordinates),
 });
 
@@ -57,7 +57,7 @@ export interface StandardBoard {
   /**
    * The type of board.
    */
-  boardType: "standard";
+  boardType: 'standard';
   /**
    * The board.
    */

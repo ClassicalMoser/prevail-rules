@@ -5,10 +5,10 @@ import type {
   UnitFacing,
   UnitInstance,
   UnitType,
-} from "@entities";
-import { createEmptyStandardBoard } from "@functions";
-import { getUnitByStatValue } from "@testing";
-import { createUnitInstance } from "@utils/createUnitInstance";
+} from '@entities';
+import { createEmptyStandardBoard } from '@functions';
+import { getUnitByStatValue } from '@testing';
+import { createUnitInstance } from '@utils/createUnitInstance';
 
 /**
  * Creates a board with units at specified positions.
@@ -29,7 +29,7 @@ export function createBoardWithUnits(
     board.board[coordinate] = {
       ...board.board[coordinate],
       unitPresence: {
-        presenceType: "single",
+        presenceType: 'single',
         unit,
         facing,
       },
@@ -64,14 +64,14 @@ export function createBoardWithSingleUnit(
   },
 ): StandardBoard {
   const board = createEmptyStandardBoard();
-  const facing = options?.facing ?? "north";
+  const facing = options?.facing ?? 'north';
   const instanceNumber = options?.instanceNumber ?? 1;
 
   let unit: UnitInstance;
   if (options?.unitType) {
     unit = createUnitInstance(playerSide, options.unitType, instanceNumber);
   } else if (options?.flexibility !== undefined) {
-    const unitType = getUnitByStatValue("flexibility", options.flexibility);
+    const unitType = getUnitByStatValue('flexibility', options.flexibility);
     if (!unitType) {
       throw new Error(
         `No unit found with flexibility value ${options.flexibility}.`,
@@ -79,16 +79,16 @@ export function createBoardWithSingleUnit(
     }
     unit = createUnitInstance(playerSide, unitType, instanceNumber);
   } else if (options?.attack !== undefined) {
-    const unitType = getUnitByStatValue("attack", options.attack);
+    const unitType = getUnitByStatValue('attack', options.attack);
     if (!unitType) {
       throw new Error(`No unit found with attack value ${options.attack}.`);
     }
     unit = createUnitInstance(playerSide, unitType, instanceNumber);
   } else {
     // Default: use attack value 3 (common in tests)
-    const unitType = getUnitByStatValue("attack", 3);
+    const unitType = getUnitByStatValue('attack', 3);
     if (!unitType) {
-      throw new Error("No unit found with attack value 3.");
+      throw new Error('No unit found with attack value 3.');
     }
     unit = createUnitInstance(playerSide, unitType, instanceNumber);
   }
@@ -96,7 +96,7 @@ export function createBoardWithSingleUnit(
   board.board[coord] = {
     ...board.board[coord],
     unitPresence: {
-      presenceType: "single",
+      presenceType: 'single',
       unit,
       facing,
     },
@@ -117,14 +117,14 @@ export function createBoardWithSingleUnit(
 export function createBoardWithEngagedUnits(
   primaryUnit: UnitInstance,
   secondaryUnit: UnitInstance,
-  coord: StandardBoardCoordinate = "E-5",
-  primaryFacing: UnitFacing = "north",
+  coord: StandardBoardCoordinate = 'E-5',
+  primaryFacing: UnitFacing = 'north',
 ): StandardBoard {
   const board = createEmptyStandardBoard();
   board.board[coord] = {
     ...board.board[coord],
     unitPresence: {
-      presenceType: "engaged",
+      presenceType: 'engaged',
       primaryUnit,
       primaryFacing,
       secondaryUnit,

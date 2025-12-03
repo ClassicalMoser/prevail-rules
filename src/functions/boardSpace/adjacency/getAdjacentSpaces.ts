@@ -1,6 +1,6 @@
-import type { Board, BoardCoordinate } from "@entities";
-import { unitFacings } from "@entities";
-import { filterUndefinedSpaces, getForwardSpace } from "@functions";
+import type { Board, BoardCoordinate } from '@entities';
+import { unitFacings } from '@entities';
+import { filterUndefinedSpaces, getForwardSpace } from '@functions';
 
 /**
  * Get the adjacent spaces for a given coordinate.

@@ -1,7 +1,7 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
-export const playerSide = ["black", "white"] as const;
+export const playerSide = ['black', 'white'] as const;
 
 /** The schema for a player's side. */
 export const playerSideSchema = z.enum(playerSide);

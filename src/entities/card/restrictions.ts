@@ -1,7 +1,7 @@
-import type { Trait } from "@sampleValues";
-import type { AssertExact } from "@utils";
-import { traitSchema } from "@sampleValues";
-import { z } from "zod";
+import type { Trait } from '@sampleValues';
+import type { AssertExact } from '@utils';
+import { traitSchema } from '@sampleValues';
+import { z } from 'zod';
 
 /**
  * The schema for the restrictions on a card command or round effect.

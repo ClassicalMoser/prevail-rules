@@ -1,5 +1,5 @@
-import antfu from "@antfu/eslint-config";
-import prettierConfig from "eslint-config-prettier";
+import antfu from '@antfu/eslint-config';
+import prettierConfig from 'eslint-config-prettier';
 
 export default antfu(
   {
@@ -19,47 +19,47 @@ export default antfu(
       },
     },
     rules: {
-      "no-console": ["error", { allow: ["error"] }],
+      'no-console': ['error', { allow: ['error'] }],
     },
-    extends: ["eslint-config-prettier"],
+    extends: ['eslint-config-prettier'],
   },
   {
-    files: ["**/*.ts", "**/*.js"],
-    ignores: ["**/index.ts"],
+    files: ['**/*.ts', '**/*.js'],
+    ignores: ['**/index.ts'],
     rules: {
       // Ban all relative imports; require aliases (@entities/*, @functions/*, etc.)
-      "no-restricted-imports": "off",
-      "@typescript-eslint/no-restricted-imports": [
-        "error",
+      'no-restricted-imports': 'off',
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
         {
           patterns: [
             {
-              group: ["../**"],
+              group: ['../**'],
               message:
-                "Use aliased imports (e.g., @entities/*, @functions/*) instead of relative paths that go up directories.",
+                'Use aliased imports (e.g., @entities/*, @functions/*) instead of relative paths that go up directories.',
             },
             {
-              group: ["src/**"],
+              group: ['src/**'],
               message:
-                "Use aliased imports (@entities/*, @functions/*, etc.) instead of src/* paths.",
+                'Use aliased imports (@entities/*, @functions/*, etc.) instead of src/* paths.',
             },
             {
-              group: ["**/*.js"],
-              message: "Omit file extensions from imports.",
+              group: ['**/*.js'],
+              message: 'Omit file extensions from imports.',
             },
             {
-              group: ["**/*.test.{ts,js}"],
-              message: "No importing from test files.",
+              group: ['**/*.test.{ts,js}'],
+              message: 'No importing from test files.',
             },
             {
               group: [
-                "@entities/**/*",
-                "@functions/**/*",
-                "@commands/**/*",
-                "@contracts/**/*",
-                "@validation/**/*",
-                "@testing/**/*",
-                "@sampleValues/**/*",
+                '@entities/**/*',
+                '@functions/**/*',
+                '@commands/**/*',
+                '@contracts/**/*',
+                '@validation/**/*',
+                '@testing/**/*',
+                '@sampleValues/**/*',
               ],
               message:
                 "Omit directory separators from imports; import from the barrel file (e.g., use '@entities' instead of '@entities/board/board').",
@@ -70,7 +70,7 @@ export default antfu(
     },
   },
   {
-    files: ["**/*.test.{ts,js}"],
+    files: ['**/*.test.{ts,js}'],
     languageOptions: {
       globals: {
         describe: true,
@@ -81,7 +81,7 @@ export default antfu(
     },
   },
   {
-    ignores: ["pnpm-lock.yaml", "node_modules/", "*.yml"],
+    ignores: ['pnpm-lock.yaml', 'node_modules/', '*.yml'],
   },
   prettierConfig,
 );

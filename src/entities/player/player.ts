@@ -1,5 +1,5 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
 export const playerSchema = z.object({
   /** The unique identifier of the player. */

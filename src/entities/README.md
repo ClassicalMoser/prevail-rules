@@ -58,14 +58,15 @@ Represents three possible states of unit presence in a board space:
 
 ```typescript
 export type UnitPresence =
-  | NoneUnitPresence      // No unit
-  | SingleUnitPresence    // One unit
-  | EngagedUnitPresence;  // Two units engaged
+  | NoneUnitPresence // No unit
+  | SingleUnitPresence // One unit
+  | EngagedUnitPresence; // Two units engaged
 ```
 
 Each variant has a `presenceType` field that acts as the discriminator.
 
 **Type guards** are available in `@validation`:
+
 - `hasNoUnit(unitPresence)` - checks for none
 - `hasSingleUnit(unitPresence)` - checks for single
 - `hasEngagedUnits(unitPresence)` - checks for engaged
@@ -99,10 +100,10 @@ This prevents using the wrong coordinate type with a board:
 ```typescript
 // ✅ Type-safe
 const standardBoard: StandardBoard = createEmptyStandardBoard();
-const space = getBoardSpace(standardBoard, "E-5"); // StandardBoardCoordinate
+const space = getBoardSpace(standardBoard, 'E-5'); // StandardBoardCoordinate
 
 // ❌ Type error
-const smallCoord: SmallBoardCoordinate = "A-1";
+const smallCoord: SmallBoardCoordinate = 'A-1';
 const space = getBoardSpace(standardBoard, smallCoord); // Error!
 ```
 
@@ -146,4 +147,3 @@ const space = getBoardSpace(standardBoard, smallCoord); // Error!
 4. **Use `AssertExact`** to verify type-schema alignment
 5. **Export schemas** for runtime validation
 6. **Export types** for compile-time checking
-

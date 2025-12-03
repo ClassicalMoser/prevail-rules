@@ -1,4 +1,4 @@
-import type { UnitInstance } from "@entities";
+import type { UnitInstance } from '@entities';
 
 /**
  * Checks if two units belong to the same player side.

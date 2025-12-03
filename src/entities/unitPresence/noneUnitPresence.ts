@@ -1,12 +1,12 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
 /**
  * The schema for no unit presence in a space.
  */
 export const noneUnitPresenceSchema = z.object({
   /** No unit is present in the space. */
-  presenceType: z.literal("none" as const),
+  presenceType: z.literal('none' as const),
 });
 
 // Helper type to check match of type against schema
@@ -17,7 +17,7 @@ type NoneUnitPresenceSchemaType = z.infer<typeof noneUnitPresenceSchema>;
  */
 export interface NoneUnitPresence {
   /** No unit is present in the space. */
-  presenceType: "none";
+  presenceType: 'none';
 }
 
 const _assertExactNoneUnitPresence: AssertExact<

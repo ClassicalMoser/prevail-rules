@@ -1,9 +1,9 @@
-import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import type { Board, BoardCoordinate, UnitFacing } from '@entities';
 import {
   filterUndefinedSpaces,
   getForwardSpacesToEdge,
   getOrthogonalFacings,
-} from "@functions";
+} from '@functions';
 
 /**
  * Get the inline spaces for a given coordinate and facing,

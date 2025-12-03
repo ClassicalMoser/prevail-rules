@@ -1,6 +1,6 @@
-import type { Board, BoardCoordinate, UnitFacing } from "@entities";
-import { getBackSpaces, getOppositeFacing } from "@functions";
-import { getSpacesInDirection } from "./getSpacesInDirection";
+import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import { getBackSpaces, getOppositeFacing } from '@functions';
+import { getSpacesInDirection } from './getSpacesInDirection';
 
 /**
  * Get the spaces behind for a given coordinate and facing.
@@ -14,7 +14,7 @@ import { getSpacesInDirection } from "./getSpacesInDirection";
 export function getSpacesBehind<TBoard extends Board>(
   board: TBoard,
   coordinate: BoardCoordinate<TBoard>,
-  facing: UnitFacing
+  facing: UnitFacing,
 ): Set<BoardCoordinate<TBoard>> {
   // Start with the back spaces
   const backSpaces = getBackSpaces(board, coordinate, facing);

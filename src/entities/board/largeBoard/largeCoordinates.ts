@@ -1,6 +1,6 @@
-import type { LargeBoardColumnNumber, LargeBoardRowLetter } from "@entities";
-import { largeBoardColumnNumbers } from "./largeColumnNumbers";
-import { largeBoardRowLetters } from "./largeRowLetters";
+import type { LargeBoardColumnNumber, LargeBoardRowLetter } from '@entities';
+import { largeBoardColumnNumbers } from './largeColumnNumbers';
+import { largeBoardRowLetters } from './largeRowLetters';
 
 /**
  * A valid coordinate on a large board (A-1 through X-36).

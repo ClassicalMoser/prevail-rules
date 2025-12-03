@@ -1,7 +1,7 @@
-import type { Card } from "@entities";
-import type { AssertExact } from "@utils";
-import { z } from "zod";
-import { cardSchema } from "./card";
+import type { Card } from '@entities';
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
+import { cardSchema } from './card';
 
 /** The schema for a player's card state. */
 export const playerCardStateSchema = z.object({

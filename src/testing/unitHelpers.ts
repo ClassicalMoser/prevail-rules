@@ -1,6 +1,6 @@
-import type { PlayerSide, UnitInstance, UnitType } from "@entities";
-import { getUnitByStatValue } from "@testing";
-import { createUnitInstance } from "@utils/createUnitInstance";
+import type { PlayerSide, UnitInstance, UnitType } from '@entities';
+import { getUnitByStatValue } from '@testing';
+import { createUnitInstance } from '@utils/createUnitInstance';
 
 /**
  * Creates a unit instance for testing with sensible defaults.
@@ -31,7 +31,7 @@ export function createTestUnit(
   }
 
   if (options?.flexibility !== undefined) {
-    const unitType = getUnitByStatValue("flexibility", options.flexibility);
+    const unitType = getUnitByStatValue('flexibility', options.flexibility);
     if (!unitType) {
       throw new Error(
         `No unit found with flexibility value ${options.flexibility}.`,
@@ -41,7 +41,7 @@ export function createTestUnit(
   }
 
   if (options?.attack !== undefined) {
-    const unitType = getUnitByStatValue("attack", options.attack);
+    const unitType = getUnitByStatValue('attack', options.attack);
     if (!unitType) {
       throw new Error(`No unit found with attack value ${options.attack}.`);
     }
@@ -49,9 +49,9 @@ export function createTestUnit(
   }
 
   // Default: use attack value 3 (common in tests)
-  const unitType = getUnitByStatValue("attack", 3);
+  const unitType = getUnitByStatValue('attack', 3);
   if (!unitType) {
-    throw new Error("No unit found with attack value 3.");
+    throw new Error('No unit found with attack value 3.');
   }
   return createUnitInstance(playerSide, unitType, instanceNumber);
 }

@@ -1,9 +1,9 @@
-import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import type { Board, BoardCoordinate, UnitFacing } from '@entities';
 import {
   filterUndefinedSpaces,
   getAdjacentFacings,
   getForwardSpace,
-} from "@functions";
+} from '@functions';
 
 /**
  * Get the front spaces for a given coordinate and facing, including diagonals

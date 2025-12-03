@@ -1,2 +1,2 @@
-export * from "./army";
-export * from "./unitCount";
+export * from './army';
+export * from './unitCount';

@@ -1,6 +1,6 @@
-import type { UnitType } from "@entities";
-import type { Trait } from "@sampleValues";
-import { tempUnits } from "@sampleValues";
+import type { UnitType } from '@entities';
+import type { Trait } from '@sampleValues';
+import { tempUnits } from '@sampleValues';
 
 /**
  * Finds a unit type by matching one or more traits.
@@ -17,7 +17,7 @@ export function getUnitByTrait(...traits: Trait[]): UnitType {
     const traitsStr =
       traits.length === 1
         ? `trait "${traits[0]}"`
-        : `traits [${traits.map((t) => `"${t}"`).join(", ")}]`;
+        : `traits [${traits.map((t) => `"${t}"`).join(', ')}]`;
     throw new Error(`No unit found with ${traitsStr}.`);
   }
   return unit;

@@ -1,5 +1,5 @@
-import type { UnitType } from "@entities";
-import type { Trait } from "@sampleValues";
+import type { UnitType } from '@entities';
+import type { Trait } from '@sampleValues';
 
 /**
  * Determines whether a unit type matches the specified requirements.

@@ -1,7 +1,7 @@
-import type { StandardBoardColumnNumber } from "./standardColumnNumbers";
-import type { StandardBoardRowLetter } from "./standardRowLetters";
-import { standardBoardColumnNumbers } from "./standardColumnNumbers";
-import { standardBoardRowLetters } from "./standardRowLetters";
+import type { StandardBoardColumnNumber } from './standardColumnNumbers';
+import type { StandardBoardRowLetter } from './standardRowLetters';
+import { standardBoardColumnNumbers } from './standardColumnNumbers';
+import { standardBoardRowLetters } from './standardRowLetters';
 
 /**
  * A valid coordinate on a standard board (A-1 through L-18).
@@ -15,7 +15,7 @@ export type StandardBoardCoordinate =
  * Runtime validation ensures all coordinates match the StandardBoardCoordinate type pattern.
  */
 const computedCoordinates = standardBoardRowLetters.flatMap((row) =>
-  standardBoardColumnNumbers.map((column) => `${row}-${column}`)
+  standardBoardColumnNumbers.map((column) => `${row}-${column}`),
 );
 
 export const standardBoardCoordinates =

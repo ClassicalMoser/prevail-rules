@@ -1,1 +1,1 @@
-export * from "./getPlayerUnitWithPosition";
+export * from './getPlayerUnitWithPosition';

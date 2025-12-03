@@ -1,12 +1,12 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
 export const valueTypes = [
-  "attack",
-  "defense",
-  "range",
-  "speed",
-  "flexibility",
+  'attack',
+  'defense',
+  'range',
+  'speed',
+  'flexibility',
 ] as const;
 
 export const valueTypesSchema = z.enum(valueTypes);

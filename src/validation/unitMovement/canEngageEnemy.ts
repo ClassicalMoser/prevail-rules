@@ -3,7 +3,7 @@ import type {
   BoardCoordinate,
   UnitFacing,
   UnitInstance,
-} from "@entities";
+} from '@entities';
 import {
   areSameSide,
   getBackSpaces,
@@ -12,8 +12,8 @@ import {
   getFrontSpaces,
   getOppositeFacing,
   getSpacesBehind,
-} from "@functions";
-import { hasSingleUnit } from "@validation";
+} from '@functions';
+import { hasSingleUnit } from '@validation';
 
 /**
  * Incremental function to check whether engagement is legal from an adjacent space.

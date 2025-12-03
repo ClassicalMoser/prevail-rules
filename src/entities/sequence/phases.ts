@@ -1,15 +1,15 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
 /**
  * Iterable list of valid phases for a round.
  */
 export const phases = [
-  "cards",
-  "commanders",
-  "commands",
-  "melee",
-  "cleanup",
+  'cards',
+  'commanders',
+  'commands',
+  'melee',
+  'cleanup',
 ] as const;
 
 /**

@@ -1,4 +1,4 @@
-import type { EngagedUnitPresence, UnitPresence } from "@entities";
+import type { EngagedUnitPresence, UnitPresence } from '@entities';
 
 /**
  * Type guard to check if a unit presence has engaged units.
@@ -9,6 +9,5 @@ import type { EngagedUnitPresence, UnitPresence } from "@entities";
 export function hasEngagedUnits(
   unitPresence: UnitPresence,
 ): unitPresence is EngagedUnitPresence {
-  return unitPresence.presenceType === "engaged";
+  return unitPresence.presenceType === 'engaged';
 }
-

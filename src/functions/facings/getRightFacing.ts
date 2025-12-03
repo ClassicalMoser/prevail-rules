@@ -1,4 +1,4 @@
-import type { UnitFacing } from "@entities";
+import type { UnitFacing } from '@entities';
 
 /**
  * Get the right-facing direction for a given facing.
@@ -8,22 +8,22 @@ import type { UnitFacing } from "@entities";
  */
 export function getRightFacing(facing: UnitFacing): UnitFacing {
   switch (facing) {
-    case "north":
-      return "east";
-    case "northEast":
-      return "southEast";
-    case "east":
-      return "south";
-    case "southEast":
-      return "southWest";
-    case "south":
-      return "west";
-    case "southWest":
-      return "northWest";
-    case "west":
-      return "north";
-    case "northWest":
-      return "northEast";
+    case 'north':
+      return 'east';
+    case 'northEast':
+      return 'southEast';
+    case 'east':
+      return 'south';
+    case 'southEast':
+      return 'southWest';
+    case 'south':
+      return 'west';
+    case 'southWest':
+      return 'northWest';
+    case 'west':
+      return 'north';
+    case 'northWest':
+      return 'northEast';
     default:
       throw new Error(`Invalid facing: ${facing}`);
   }

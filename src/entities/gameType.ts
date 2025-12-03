@@ -1,9 +1,9 @@
-import type { BoardSize } from "@entities";
-import type { AssertExact } from "@utils";
-import { boardSizeEnum } from "@entities";
-import { z } from "zod";
+import type { BoardSize } from '@entities';
+import type { AssertExact } from '@utils';
+import { boardSizeEnum } from '@entities';
+import { z } from 'zod';
 
-export const gameType = ["standard", "mini", "tutorial"] as const;
+export const gameType = ['standard', 'mini', 'tutorial'] as const;
 
 export const gameTypeEnum = z.enum(gameType);
 

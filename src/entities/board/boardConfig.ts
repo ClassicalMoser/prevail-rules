@@ -10,13 +10,13 @@ import type {
   LargeBoardCoordinate,
   SmallBoardCoordinate,
   StandardBoardCoordinate,
-} from "@entities";
-import { largeBoardColumnNumbers } from "./largeBoard/largeColumnNumbers";
-import { largeBoardRowLetters } from "./largeBoard/largeRowLetters";
-import { smallBoardColumnNumbers } from "./smallBoard/smallColumnNumbers";
-import { smallBoardRowLetters } from "./smallBoard/smallRowLetters";
-import { standardBoardColumnNumbers } from "./standardBoard/standardColumnNumbers";
-import { standardBoardRowLetters } from "./standardBoard/standardRowLetters";
+} from '@entities';
+import { largeBoardColumnNumbers } from './largeBoard/largeColumnNumbers';
+import { largeBoardRowLetters } from './largeBoard/largeRowLetters';
+import { smallBoardColumnNumbers } from './smallBoard/smallColumnNumbers';
+import { smallBoardRowLetters } from './smallBoard/smallRowLetters';
+import { standardBoardColumnNumbers } from './standardBoard/standardColumnNumbers';
+import { standardBoardRowLetters } from './standardBoard/standardRowLetters';
 
 /**
  * Board configuration for coordinate calculations.

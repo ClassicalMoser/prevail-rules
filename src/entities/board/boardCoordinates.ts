@@ -6,11 +6,11 @@ import type {
   SmallBoardCoordinate,
   StandardBoard,
   StandardBoardCoordinate,
-} from "@entities";
-import { z } from "zod";
-import { largeBoardCoordinates } from "./largeBoard";
-import { smallBoardCoordinates } from "./smallBoard";
-import { standardBoardCoordinates } from "./standardBoard";
+} from '@entities';
+import { z } from 'zod';
+import { largeBoardCoordinates } from './largeBoard';
+import { smallBoardCoordinates } from './smallBoard';
+import { standardBoardCoordinates } from './standardBoard';
 
 /**
  * All valid coordinates across all board types, deduplicated.
@@ -50,7 +50,7 @@ export const boardCoordinateSchema = z.enum(
       | SmallBoardCoordinate
       | LargeBoardCoordinate
     )[],
-  ]
+  ],
 );
 
 /**

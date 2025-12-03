@@ -1,13 +1,13 @@
-import type { Modifier, Restrictions } from "@entities";
-import type { AssertExact } from "@utils";
-import { z } from "zod";
-import { modifierSchema } from "./modifiers";
-import { restrictionsSchema } from "./restrictions";
+import type { Modifier, Restrictions } from '@entities';
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
+import { modifierSchema } from './modifiers';
+import { restrictionsSchema } from './restrictions';
 
 /**
  * The iterable list of types of commands that can be used on a card.
  */
-export const commandTypes = ["movement", "rangedAttack"] as const;
+export const commandTypes = ['movement', 'rangedAttack'] as const;
 
 /**
  * The schema for the types of commands that can be used on a card.
@@ -30,7 +30,7 @@ const _assertExactCommandType: AssertExact<
 /**
  * The iterable list of sizes of commands that can be used on a card.
  */
-export const commandSizes = ["units", "lines"] as const;
+export const commandSizes = ['units', 'lines'] as const;
 
 /**
  * The schema for the sizes of commands that can be used on a card.

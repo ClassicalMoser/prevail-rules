@@ -1,5 +1,5 @@
-import type { ChooseCardCommand } from "@commands";
-import type { Card, CardState } from "@entities";
+import type { ChooseCardCommand } from '@commands';
+import type { Card, CardState } from '@entities';
 
 /**
  * Validates whether a card choice command is legal.
@@ -15,10 +15,10 @@ export function isLegalCardChoice(
   const { card } = chooseCardCommand;
   let playerHand: Card[];
   switch (chooseCardCommand.player) {
-    case "black":
+    case 'black':
       playerHand = cardState.blackPlayer.inHand;
       break;
-    case "white":
+    case 'white':
       playerHand = cardState.whitePlayer.inHand;
       break;
   }

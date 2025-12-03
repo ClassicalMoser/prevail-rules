@@ -3,14 +3,14 @@ import type {
   BoardCoordinate,
   PlayerSide,
   UnitInstance,
-} from "@entities";
-import type { AssertExact } from "@utils";
+} from '@entities';
+import type { AssertExact } from '@utils';
 import {
   boardCoordinateSchema,
   playerSideSchema,
   unitInstanceSchema,
-} from "@entities";
-import { z } from "zod";
+} from '@entities';
+import { z } from 'zod';
 
 /** The schema for a setup unit command. */
 export const setupUnitCommandSchema = z.object({

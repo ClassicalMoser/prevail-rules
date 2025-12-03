@@ -1,7 +1,7 @@
-import type { Army, GameType } from "@entities";
-import type { AssertExact } from "@utils";
-import { armySchema, gameTypeEnum } from "@entities";
-import { z } from "zod";
+import type { Army, GameType } from '@entities';
+import type { AssertExact } from '@utils';
+import { armySchema, gameTypeEnum } from '@entities';
+import { z } from 'zod';
 
 /**
  * The schema for a complete game of Prevail: Ancient Battles.

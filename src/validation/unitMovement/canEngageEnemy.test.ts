@@ -3,15 +3,15 @@ import type {
   StandardBoard,
   StandardBoardCoordinate,
   UnitFacing,
-} from "@entities";
-import { createEmptyStandardBoard } from "@functions";
-import { createBoardWithUnits, createTestUnit } from "@testing";
-import { canEngageEnemy } from "@validation";
-import { describe, expect, it } from "vitest";
+} from '@entities';
+import { createEmptyStandardBoard } from '@functions';
+import { createBoardWithUnits, createTestUnit } from '@testing';
+import { canEngageEnemy } from '@validation';
+import { describe, expect, it } from 'vitest';
 
-describe("canEngageEnemy", () => {
+describe('canEngageEnemy', () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();
-  const enemyCoordinate: StandardBoardCoordinate = "E-5";
+  const enemyCoordinate: StandardBoardCoordinate = 'E-5';
 
   // Helper function to create a unit instance with a specific player side
   const createUnitInstance = (playerSide: PlayerSide) => {
@@ -22,7 +22,7 @@ describe("canEngageEnemy", () => {
   function createBoardWithEnemyUnit(
     coord: StandardBoardCoordinate = enemyCoordinate,
     enemyPlayerSide: PlayerSide,
-    enemyFacing: UnitFacing = "north",
+    enemyFacing: UnitFacing = 'north',
   ): StandardBoard {
     return createBoardWithUnits([
       {
@@ -33,17 +33,17 @@ describe("canEngageEnemy", () => {
     ]);
   }
 
-  describe("invalid inputs", () => {
-    it("should return false for a non-existent destination coordinate", () => {
-      const unit = createUnitInstance("black");
-      const invalidCoordinate = "Z-99" as StandardBoardCoordinate;
-      const adjacentCoordinate: StandardBoardCoordinate = "E-4";
+  describe('invalid inputs', () => {
+    it('should return false for a non-existent destination coordinate', () => {
+      const unit = createUnitInstance('black');
+      const invalidCoordinate = 'Z-99' as StandardBoardCoordinate;
+      const adjacentCoordinate: StandardBoardCoordinate = 'E-4';
       expect(
         canEngageEnemy(
           unit,
           standardBoard,
           invalidCoordinate,
-          "north",
+          'north',
           adjacentCoordinate,
           1,
           adjacentCoordinate,
@@ -51,16 +51,16 @@ describe("canEngageEnemy", () => {
       ).toBe(false);
     });
 
-    it("should return false for a non-existent adjacent coordinate", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white");
-      const invalidCoordinate = "Z-99" as StandardBoardCoordinate;
+    it('should return false for a non-existent adjacent coordinate', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white');
+      const invalidCoordinate = 'Z-99' as StandardBoardCoordinate;
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "north",
+          'north',
           invalidCoordinate,
           1,
           invalidCoordinate,
@@ -69,16 +69,16 @@ describe("canEngageEnemy", () => {
     });
   });
 
-  describe("not an enemy space", () => {
-    it("should return false for an empty space", () => {
-      const unit = createUnitInstance("black");
-      const adjacentCoordinate: StandardBoardCoordinate = "E-4";
+  describe('not an enemy space', () => {
+    it('should return false for an empty space', () => {
+      const unit = createUnitInstance('black');
+      const adjacentCoordinate: StandardBoardCoordinate = 'E-4';
       expect(
         canEngageEnemy(
           unit,
           standardBoard,
           enemyCoordinate,
-          "north",
+          'north',
           adjacentCoordinate,
           1,
           adjacentCoordinate,
@@ -86,16 +86,16 @@ describe("canEngageEnemy", () => {
       ).toBe(false);
     });
 
-    it("should return false for a friendly unit", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "black");
-      const adjacentCoordinate: StandardBoardCoordinate = "E-4";
+    it('should return false for a friendly unit', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'black');
+      const adjacentCoordinate: StandardBoardCoordinate = 'E-4';
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "south",
+          'south',
           adjacentCoordinate,
           1,
           adjacentCoordinate,
@@ -104,18 +104,18 @@ describe("canEngageEnemy", () => {
     });
   });
 
-  describe("coming from flank", () => {
-    it("should return true when coming from a flank space", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
+  describe('coming from flank', () => {
+    it('should return true when coming from a flank space', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
       // E-5 is enemy facing north, so E-4 (west) and E-6 (east) are flank spaces
-      const flankCoordinate: StandardBoardCoordinate = "E-4";
+      const flankCoordinate: StandardBoardCoordinate = 'E-4';
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "east",
+          'east',
           flankCoordinate,
           0,
           flankCoordinate,
@@ -123,16 +123,16 @@ describe("canEngageEnemy", () => {
       ).toBe(true);
     });
 
-    it("should return true when coming from a flank space with any facing", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
-      const flankCoordinate: StandardBoardCoordinate = "E-6";
+    it('should return true when coming from a flank space with any facing', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
+      const flankCoordinate: StandardBoardCoordinate = 'E-6';
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "southWest",
+          'southWest',
           flankCoordinate,
           0,
           flankCoordinate,
@@ -141,18 +141,18 @@ describe("canEngageEnemy", () => {
     });
   });
 
-  describe("coming from back", () => {
-    it("should return true when coming from back and started behind enemy", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
+  describe('coming from back', () => {
+    it('should return true when coming from back and started behind enemy', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
       // E-5 is enemy facing north, so F-5 is directly behind
-      const backCoordinate: StandardBoardCoordinate = "F-5";
+      const backCoordinate: StandardBoardCoordinate = 'F-5';
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "north",
+          'north',
           backCoordinate,
           0,
           backCoordinate,
@@ -161,18 +161,18 @@ describe("canEngageEnemy", () => {
     });
 
     it("should return false when coming from back but didn't start behind enemy", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
       // F-6 is a back space
-      const backCoordinate: StandardBoardCoordinate = "F-6";
+      const backCoordinate: StandardBoardCoordinate = 'F-6';
       // Started at C-8, which is not behind the enemy
-      const startCoordinate: StandardBoardCoordinate = "C-8";
+      const startCoordinate: StandardBoardCoordinate = 'C-8';
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "southEast",
+          'southEast',
           backCoordinate,
           0,
           startCoordinate,
@@ -180,19 +180,19 @@ describe("canEngageEnemy", () => {
       ).toBe(false);
     });
 
-    it("should return true when coming from back diagonal and started behind enemy", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
+    it('should return true when coming from back diagonal and started behind enemy', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
       // F-6 is a back diagonal space
-      const backCoordinate: StandardBoardCoordinate = "F-6";
+      const backCoordinate: StandardBoardCoordinate = 'F-6';
       // Started at G-7, which is behind the enemy (southEast of enemy facing north)
-      const startCoordinate: StandardBoardCoordinate = "G-7";
+      const startCoordinate: StandardBoardCoordinate = 'G-7';
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "northWest",
+          'northWest',
           backCoordinate,
           0,
           startCoordinate,
@@ -201,19 +201,19 @@ describe("canEngageEnemy", () => {
     });
   });
 
-  describe("coming from front", () => {
-    it("should return true when already facing opposite to enemy", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
+  describe('coming from front', () => {
+    it('should return true when already facing opposite to enemy', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
       // E-5 is enemy facing north, so D-5 is forward space
-      const frontCoordinate: StandardBoardCoordinate = "D-5";
+      const frontCoordinate: StandardBoardCoordinate = 'D-5';
       // Facing south (opposite of north)
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "south",
+          'south',
           frontCoordinate,
           0,
           frontCoordinate,
@@ -221,17 +221,17 @@ describe("canEngageEnemy", () => {
       ).toBe(true);
     });
 
-    it("should return true when need to rotate and have flexibility", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
-      const frontCoordinate: StandardBoardCoordinate = "D-4";
+    it('should return true when need to rotate and have flexibility', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
+      const frontCoordinate: StandardBoardCoordinate = 'D-4';
       // Facing southEast, need to rotate to south, have flexibility
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "southEast",
+          'southEast',
           frontCoordinate,
           1,
           frontCoordinate,
@@ -239,17 +239,17 @@ describe("canEngageEnemy", () => {
       ).toBe(true);
     });
 
-    it("should return false when need to rotate but no flexibility", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
-      const frontCoordinate: StandardBoardCoordinate = "D-4";
+    it('should return false when need to rotate but no flexibility', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
+      const frontCoordinate: StandardBoardCoordinate = 'D-4';
       // Facing southEast, need to rotate to south, but no flexibility
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "southEast",
+          'southEast',
           frontCoordinate,
           0,
           frontCoordinate,
@@ -257,18 +257,18 @@ describe("canEngageEnemy", () => {
       ).toBe(false);
     });
 
-    it("should handle diagonal front spaces", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
+    it('should handle diagonal front spaces', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
       // F-5 is a front space
-      const frontDiagonalCoordinate: StandardBoardCoordinate = "D-4";
+      const frontDiagonalCoordinate: StandardBoardCoordinate = 'D-4';
       // Facing south (opposite of north)
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "southEast",
+          'southEast',
           frontDiagonalCoordinate,
           2,
           frontDiagonalCoordinate,
@@ -276,18 +276,18 @@ describe("canEngageEnemy", () => {
       ).toBe(true);
     });
 
-    it("should handle different enemy facings", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "east");
+    it('should handle different enemy facings', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'east');
       // E-5 is enemy facing east, so E-6 is front space
-      const frontCoordinate: StandardBoardCoordinate = "E-6";
+      const frontCoordinate: StandardBoardCoordinate = 'E-6';
       // Facing west (opposite of east)
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "west",
+          'west',
           frontCoordinate,
           0,
           frontCoordinate,
@@ -296,18 +296,18 @@ describe("canEngageEnemy", () => {
     });
   });
 
-  describe("not adjacent to enemy", () => {
-    it("should return false when not adjacent to enemy", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
+  describe('not adjacent to enemy', () => {
+    it('should return false when not adjacent to enemy', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
       // G-5 is not adjacent to E-5
-      const nonAdjacentCoordinate: StandardBoardCoordinate = "G-5";
+      const nonAdjacentCoordinate: StandardBoardCoordinate = 'G-5';
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "north",
+          'north',
           nonAdjacentCoordinate,
           1,
           nonAdjacentCoordinate,
@@ -316,17 +316,17 @@ describe("canEngageEnemy", () => {
     });
   });
 
-  describe("edge cases", () => {
-    it("should work with white player units", () => {
-      const unit = createUnitInstance("white");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "black", "north");
-      const flankCoordinate: StandardBoardCoordinate = "E-4";
+  describe('edge cases', () => {
+    it('should work with white player units', () => {
+      const unit = createUnitInstance('white');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'black', 'north');
+      const flankCoordinate: StandardBoardCoordinate = 'E-4';
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "east",
+          'east',
           flankCoordinate,
           0,
           flankCoordinate,
@@ -334,17 +334,17 @@ describe("canEngageEnemy", () => {
       ).toBe(true);
     });
 
-    it("should handle multiple flexibility values", () => {
-      const unit = createUnitInstance("black");
-      const board = createBoardWithEnemyUnit(enemyCoordinate, "white", "north");
-      const frontCoordinate: StandardBoardCoordinate = "D-4";
+    it('should handle multiple flexibility values', () => {
+      const unit = createUnitInstance('black');
+      const board = createBoardWithEnemyUnit(enemyCoordinate, 'white', 'north');
+      const frontCoordinate: StandardBoardCoordinate = 'D-4';
       // Needs to rotate, has 2 flexibility
       expect(
         canEngageEnemy(
           unit,
           board,
           enemyCoordinate,
-          "southEast",
+          'southEast',
           frontCoordinate,
           2,
           frontCoordinate,

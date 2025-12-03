@@ -1,4 +1,4 @@
-import type { UnitFacing } from "@entities";
+import type { UnitFacing } from '@entities';
 
 /**
  * Get the orthogonal facings for a given facing.
@@ -8,22 +8,22 @@ import type { UnitFacing } from "@entities";
  */
 export const getOrthogonalFacings = (facing: UnitFacing): Set<UnitFacing> => {
   switch (facing) {
-    case "north":
-      return new Set(["west", "east"]);
-    case "northEast":
-      return new Set(["northWest", "southEast"]);
-    case "east":
-      return new Set(["north", "south"]);
-    case "southEast":
-      return new Set(["northEast", "southWest"]);
-    case "south":
-      return new Set(["east", "west"]);
-    case "southWest":
-      return new Set(["southEast", "northWest"]);
-    case "west":
-      return new Set(["south", "north"]);
-    case "northWest":
-      return new Set(["southWest", "northEast"]);
+    case 'north':
+      return new Set(['west', 'east']);
+    case 'northEast':
+      return new Set(['northWest', 'southEast']);
+    case 'east':
+      return new Set(['north', 'south']);
+    case 'southEast':
+      return new Set(['northEast', 'southWest']);
+    case 'south':
+      return new Set(['east', 'west']);
+    case 'southWest':
+      return new Set(['southEast', 'northWest']);
+    case 'west':
+      return new Set(['south', 'north']);
+    case 'northWest':
+      return new Set(['southWest', 'northEast']);
     default:
       throw new Error(`Invalid facing: ${facing}`);
   }

@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate } from "@entities";
+import type { Board, BoardCoordinate } from '@entities';
 
 /**
  * Filter out undefined spaces from a set of space coordinates.

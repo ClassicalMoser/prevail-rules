@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate, UnitFacing } from "@entities";
-import type { AssertExact } from "@utils";
-import { boardCoordinateSchema, unitFacingSchema } from "@entities";
-import z from "zod";
+import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import type { AssertExact } from '@utils';
+import { boardCoordinateSchema, unitFacingSchema } from '@entities';
+import z from 'zod';
 
 export const unitPlacementSchema = z.object({
   coordinate: boardCoordinateSchema,

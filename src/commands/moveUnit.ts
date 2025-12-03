@@ -1,11 +1,11 @@
-import type { Board, PlayerSide, UnitInstance, UnitPlacement } from "@entities";
-import type { AssertExact } from "@utils";
+import type { Board, PlayerSide, UnitInstance, UnitPlacement } from '@entities';
+import type { AssertExact } from '@utils';
 import {
   playerSideSchema,
   unitInstanceSchema,
   unitPlacementSchema,
-} from "@entities";
-import { z } from "zod";
+} from '@entities';
+import { z } from 'zod';
 
 /** The schema for a move unit command. */
 export const moveUnitCommandSchema = z.object({

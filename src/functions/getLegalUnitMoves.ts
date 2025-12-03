@@ -5,21 +5,21 @@ import type {
   UnitFacing,
   UnitInstance,
   UnitPlacement,
-} from "@entities";
-import { unitFacings } from "@entities";
+} from '@entities';
+import { unitFacings } from '@entities';
 import {
   areSameSide,
   getAdjacentFacings,
   getBoardSpace,
   getForwardSpace,
-} from "@functions";
+} from '@functions';
 import {
   canEngageEnemy,
   canMoveInto,
   canMoveThrough,
   hasSingleUnit,
   isDiagonalFacing,
-} from "@validation";
+} from '@validation';
 
 /**
  * Calculates all legal moves for a unit from a given starting position.
@@ -73,24 +73,24 @@ import {
 export function getLegalUnitMoves<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
-  startingPosition: UnitPlacement<TBoard>
+  startingPosition: UnitPlacement<TBoard>,
 ): Set<UnitPlacement<TBoard>> {
   // The reported starting position must be a valid board space
   const boardSpace: BoardSpace = getBoardSpace(
     board,
-    startingPosition.coordinate
+    startingPosition.coordinate,
   );
   // Check if the unit is free to move
   if (!hasSingleUnit(boardSpace.unitPresence)) {
-    throw new Error("Unit at starting position is not free to move");
+    throw new Error('Unit at starting position is not free to move');
   }
   // Check if the reported unit is present at the starting position
   if (boardSpace.unitPresence.unit !== unit) {
-    throw new Error("Unit is not present at the starting position");
+    throw new Error('Unit is not present at the starting position');
   }
   // Check if the reported facing is valid
   if (boardSpace.unitPresence.facing !== startingPosition.facing) {
-    throw new Error("Reported facing is inaccurate");
+    throw new Error('Reported facing is inaccurate');
   }
   // Get the legal moves by exploring all combinations of speed and flexibility
   const legalMoves = new Set<UnitPlacement<TBoard>>();
@@ -104,7 +104,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
     coordinate: BoardCoordinate<BoardType>,
     facing: UnitFacing,
     remainingSpeed: number,
-    remainingFlexibility: number
+    remainingFlexibility: number,
   ): string => {
     return `${coordinate}|${facing}|${remainingSpeed}|${remainingFlexibility}`;
   };
@@ -115,14 +115,14 @@ export function getLegalUnitMoves<TBoard extends Board>(
     currentFacing: UnitFacing,
     remainingSpeed: number,
     remainingFlexibility: number,
-    previousCoordinate: BoardCoordinate<BoardType> | undefined = undefined
+    previousCoordinate: BoardCoordinate<BoardType> | undefined = undefined,
   ): void => {
     // Create state key for this position
     const stateKey = getStateKey(
       currentCoordinate,
       currentFacing,
       remainingSpeed,
-      remainingFlexibility
+      remainingFlexibility,
     );
 
     // If we've already explored this state, skip it
@@ -155,7 +155,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
             currentFacing,
             previousCoordinate,
             remainingFlexibility,
-            startingPosition.coordinate
+            startingPosition.coordinate,
           )
         ) {
           legalMoves.add({
@@ -177,7 +177,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
       const forwardCoordinate = getForwardSpace(
         board,
         currentCoordinate,
-        currentFacing
+        currentFacing,
       );
       if (forwardCoordinate !== undefined) {
         // We can move forward if we can either:
@@ -196,7 +196,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
             .filter((space) => space !== undefined);
           // Then, filter out the spaces that we can't move through.
           const validPassThroughSpaces = orthogonalPassThroughSpaces.filter(
-            (space) => canMoveThrough(unit, board, space)
+            (space) => canMoveThrough(unit, board, space),
           );
           // Then, check if we can make a diagonal move.
           const canMakeDiagonalMove = validPassThroughSpaces.length > 0;
@@ -218,7 +218,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
             currentFacing,
             remainingSpeed - 1,
             remainingFlexibility,
-            currentCoordinate
+            currentCoordinate,
           );
         } else if (canEnd) {
           // Can move into but not through (e.g., enemy space) - explore to add as destination
@@ -228,7 +228,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
             currentFacing,
             0,
             remainingFlexibility,
-            currentCoordinate
+            currentCoordinate,
           );
         }
       }
@@ -244,7 +244,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
             newFacing,
             remainingSpeed,
             remainingFlexibility - 1,
-            previousCoordinate
+            previousCoordinate,
           );
         }
       }
@@ -256,7 +256,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
     startingPosition.coordinate,
     startingPosition.facing,
     unit.unitType.speed,
-    unit.unitType.flexibility
+    unit.unitType.flexibility,
   );
 
   return legalMoves;

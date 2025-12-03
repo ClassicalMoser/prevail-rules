@@ -4,12 +4,12 @@ import type {
   LargeBoard,
   SmallBoard,
   StandardBoard,
-} from "@entities";
+} from '@entities';
 import {
   largeBoardConfig,
   smallBoardConfig,
   standardBoardConfig,
-} from "@entities";
+} from '@entities';
 
 /**
  * Creates an empty board space with default values.
@@ -17,7 +17,7 @@ import {
  */
 function createEmptyBoardSpace(): BoardSpace {
   return {
-    terrainType: "plain",
+    terrainType: 'plain',
     elevation: {
       northWest: 0,
       northEast: 0,
@@ -35,7 +35,7 @@ function createEmptyBoardSpace(): BoardSpace {
       northWest: false,
     },
     unitPresence: {
-      presenceType: "none",
+      presenceType: 'none',
     },
     commanders: new Set(),
   };
@@ -46,7 +46,7 @@ function createEmptyBoardSpace(): BoardSpace {
  * Generates all coordinates and initializes them with empty spaces.
  */
 function createEmptyBoardWithConfig<TCoordinate extends string>(
-  boardType: "standard" | "small" | "large",
+  boardType: 'standard' | 'small' | 'large',
   config: BoardConfig<TCoordinate>,
 ): StandardBoard | SmallBoard | LargeBoard {
   const board: Record<string, BoardSpace> = {};
@@ -70,7 +70,7 @@ function createEmptyBoardWithConfig<TCoordinate extends string>(
  */
 export function createEmptyStandardBoard(): StandardBoard {
   return createEmptyBoardWithConfig(
-    "standard",
+    'standard',
     standardBoardConfig,
   ) as StandardBoard;
 }
@@ -79,12 +79,12 @@ export function createEmptyStandardBoard(): StandardBoard {
  * Creates an empty small board with all coordinates initialized to default spaces.
  */
 export function createEmptySmallBoard(): SmallBoard {
-  return createEmptyBoardWithConfig("small", smallBoardConfig) as SmallBoard;
+  return createEmptyBoardWithConfig('small', smallBoardConfig) as SmallBoard;
 }
 
 /**
  * Creates an empty large board with all coordinates initialized to default spaces.
  */
 export function createEmptyLargeBoard(): LargeBoard {
-  return createEmptyBoardWithConfig("large", largeBoardConfig) as LargeBoard;
+  return createEmptyBoardWithConfig('large', largeBoardConfig) as LargeBoard;
 }

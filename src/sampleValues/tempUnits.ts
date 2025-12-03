@@ -1,10 +1,10 @@
-import type { UnitType } from "@entities";
+import type { UnitType } from '@entities';
 
 export const tempUnits: UnitType[] = [
   {
-    id: "1",
-    name: "Swordsmen",
-    traits: ["formation", "sword"],
+    id: '1',
+    name: 'Swordsmen',
+    traits: ['formation', 'sword'],
     attack: 3,
     range: 0,
     speed: 2,
@@ -17,9 +17,9 @@ export const tempUnits: UnitType[] = [
     routPenalty: 1,
   },
   {
-    id: "2",
-    name: "Spearmen",
-    traits: ["formation", "spear", "phalanx"],
+    id: '2',
+    name: 'Spearmen',
+    traits: ['formation', 'spear', 'phalanx'],
     attack: 3,
     range: 0,
     speed: 2,
@@ -32,9 +32,9 @@ export const tempUnits: UnitType[] = [
     routPenalty: 2,
   },
   {
-    id: "3",
-    name: "Skirmishers",
-    traits: ["skirmish", "javelin"],
+    id: '3',
+    name: 'Skirmishers',
+    traits: ['skirmish', 'javelin'],
     attack: 2,
     range: 1,
     speed: 3,
@@ -47,9 +47,9 @@ export const tempUnits: UnitType[] = [
     routPenalty: 0,
   },
   {
-    id: "4",
-    name: "Cavalry",
-    traits: ["mounted", "horse"],
+    id: '4',
+    name: 'Cavalry',
+    traits: ['mounted', 'horse'],
     attack: 4,
     range: 0,
     speed: 4,

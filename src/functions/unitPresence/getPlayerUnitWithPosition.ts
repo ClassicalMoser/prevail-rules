@@ -3,9 +3,9 @@ import type {
   BoardCoordinate,
   PlayerSide,
   UnitWithPlacement,
-} from "@entities";
-import { getBoardSpace, getOppositeFacing, isFriendlyUnit } from "@functions";
-import { hasNoUnit, hasSingleUnit } from "@validation";
+} from '@entities';
+import { getBoardSpace, getOppositeFacing, isFriendlyUnit } from '@functions';
+import { hasNoUnit, hasSingleUnit } from '@validation';
 
 /**
  * Extracts the friendly unit and its placement from a board space for a given player side.
@@ -42,7 +42,7 @@ import { hasNoUnit, hasSingleUnit } from "@validation";
 export function getPlayerUnitWithPosition<TBoard extends Board>(
   board: TBoard,
   coordinate: BoardCoordinate<TBoard>,
-  playerSide: PlayerSide
+  playerSide: PlayerSide,
 ): UnitWithPlacement<TBoard> | undefined {
   const unitPresence = getBoardSpace(board, coordinate).unitPresence;
 

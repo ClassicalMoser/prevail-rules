@@ -1,7 +1,7 @@
-import type { UnitWithPlacement } from "@entities";
-import type { AssertExact } from "@utils";
-import { unitWithPlacementSchema } from "@entities";
-import { z } from "zod";
+import type { UnitWithPlacement } from '@entities';
+import type { AssertExact } from '@utils';
+import { unitWithPlacementSchema } from '@entities';
+import { z } from 'zod';
 
 /**
  * The schema for a line.

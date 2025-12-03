@@ -1,4 +1,4 @@
-import type { SingleUnitPresence, UnitPresence } from "@entities";
+import type { SingleUnitPresence, UnitPresence } from '@entities';
 
 /**
  * Type guard to check if a unit presence has a single unit.
@@ -9,6 +9,5 @@ import type { SingleUnitPresence, UnitPresence } from "@entities";
 export function hasSingleUnit(
   unitPresence: UnitPresence,
 ): unitPresence is SingleUnitPresence {
-  return unitPresence.presenceType === "single";
+  return unitPresence.presenceType === 'single';
 }
-

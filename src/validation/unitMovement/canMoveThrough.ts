@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate, UnitInstance } from "@entities";
-import { areSameSide, getBoardSpace } from "@functions";
-import { MIN_FLEXIBILITY_THRESHOLD } from "@sampleValues";
-import { hasEngagedUnits, hasNoUnit } from "@validation";
+import type { Board, BoardCoordinate, UnitInstance } from '@entities';
+import { areSameSide, getBoardSpace } from '@functions';
+import { MIN_FLEXIBILITY_THRESHOLD } from '@sampleValues';
+import { hasEngagedUnits, hasNoUnit } from '@validation';
 
 /**
  * Determines whether a unit can move through (pass over) a specific coordinate.
@@ -15,7 +15,7 @@ import { hasEngagedUnits, hasNoUnit } from "@validation";
 export function canMoveThrough<TBoard extends Board>(
   unit: UnitInstance,
   board: TBoard,
-  coordinate: BoardCoordinate<TBoard>
+  coordinate: BoardCoordinate<TBoard>,
 ): boolean {
   try {
     // Find the board space at the given coordinate.

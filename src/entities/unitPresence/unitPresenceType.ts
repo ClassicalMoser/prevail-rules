@@ -1,10 +1,10 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
 /**
  * List of valid unit presence types.
  */
-export const unitPresenceType = ["none", "single", "engaged"] as const;
+export const unitPresenceType = ['none', 'single', 'engaged'] as const;
 
 /**
  * The schema for the type of unit presence in a space.

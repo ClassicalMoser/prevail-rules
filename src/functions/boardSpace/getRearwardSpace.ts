@@ -1,5 +1,5 @@
-import type { Board, BoardCoordinate, UnitFacing } from "@entities";
-import { getForwardSpace, getOppositeFacing } from "@functions";
+import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import { getForwardSpace, getOppositeFacing } from '@functions';
 
 /**
  * Get the rearward space for a given coordinate and facing.

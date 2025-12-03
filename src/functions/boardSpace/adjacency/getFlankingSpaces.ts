@@ -1,9 +1,9 @@
-import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import type { Board, BoardCoordinate, UnitFacing } from '@entities';
 import {
   filterUndefinedSpaces,
   getForwardSpace,
   getOrthogonalFacings,
-} from "@functions";
+} from '@functions';
 
 /**
  * Get the flanking spaces for a given coordinate and facing,

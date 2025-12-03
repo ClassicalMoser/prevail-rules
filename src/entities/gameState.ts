@@ -7,16 +7,16 @@ import type {
   Phase,
   PlayerSide,
   UnitInstance,
-} from "@entities";
-import type { AssertExact } from "@utils";
-import { z } from "zod";
-import { boardSchema } from "./board";
-import { cardStateSchema } from "./card/cardState";
-import { commandSchema } from "./card/command";
-import { playerSideSchema } from "./player/playerSide";
-import { phaseSchema } from "./sequence/phases";
-import { unitInstanceSchema } from "./unit/unitInstance";
-import { engagedUnitPresenceSchema } from "./unitPresence/engagedUnitPresence";
+} from '@entities';
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
+import { boardSchema } from './board';
+import { cardStateSchema } from './card/cardState';
+import { commandSchema } from './card/command';
+import { playerSideSchema } from './player/playerSide';
+import { phaseSchema } from './sequence/phases';
+import { unitInstanceSchema } from './unit/unitInstance';
+import { engagedUnitPresenceSchema } from './unitPresence/engagedUnitPresence';
 
 /** The schema for a game state. */
 export const gameStateSchema = z.object({
@@ -46,7 +46,7 @@ export const gameStateSchema = z.object({
 // Override boardState with strict coordinate types
 type GameStateSchemaType = Omit<
   z.infer<typeof gameStateSchema>,
-  "boardState"
+  'boardState'
 > & {
   boardState: BoardSchemaType;
 };

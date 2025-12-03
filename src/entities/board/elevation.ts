@@ -1,5 +1,5 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
 /**
  * The schema for the elevation of a space.

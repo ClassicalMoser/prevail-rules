@@ -1,8 +1,8 @@
-import type { BoardSpace, SmallBoardCoordinate } from "@entities";
-import type { AssertExact } from "@utils";
-import { boardSpaceSchema } from "@entities";
-import { z } from "zod";
-import { smallBoardCoordinates } from "./smallCoordinates";
+import type { BoardSpace, SmallBoardCoordinate } from '@entities';
+import type { AssertExact } from '@utils';
+import { boardSpaceSchema } from '@entities';
+import { z } from 'zod';
+import { smallBoardCoordinates } from './smallCoordinates';
 
 /**
  * Creates a Zod object schema for a board with all required coordinates.
@@ -35,7 +35,7 @@ function createBoardSchema<T extends string>(
  * The schema for a small board.
  */
 export const smallBoardSchema = z.object({
-  boardType: z.literal("small"),
+  boardType: z.literal('small'),
   board: createBoardSchema(smallBoardCoordinates),
 });
 
@@ -57,7 +57,7 @@ export interface SmallBoard {
   /**
    * The type of board.
    */
-  boardType: "small";
+  boardType: 'small';
   /**
    * The board.
    */
