@@ -3,28 +3,22 @@ import type { AssertExact } from '@utils';
 import { boardSizeEnum } from '@entities';
 import { z } from 'zod';
 
+/** Iterable list of game types. */
 export const gameType = ['standard', 'mini', 'tutorial'] as const;
-
-export const gameTypeEnum: z.ZodType<GameType> = z.enum(gameType);
-
-type GameTypeEnumType = z.infer<typeof gameTypeEnum>;
 
 /**
  * A type of game.
  */
 export type GameType = (typeof gameType)[number];
 
-/**
- * Check that the game type type matches the schema.
- */
+const _gameTypeEnumSchemaObject = z.enum(gameType);
+type GameTypeEnumType = z.infer<typeof _gameTypeEnumSchemaObject>;
+
+/** The schema for a game type. */
+export const gameTypeEnum: z.ZodType<GameType> = _gameTypeEnumSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactGameType: AssertExact<GameType, GameTypeEnumType> = true;
-
-export const gameTypeStructureSchema: z.ZodType<GameTypeStructure> = z.object({
-  type: gameTypeEnum,
-  boardSize: boardSizeEnum,
-});
-
-type GameTypeStructureSchemaType = z.infer<typeof gameTypeStructureSchema>;
 
 /**
  * The structure of a game type.
@@ -34,9 +28,22 @@ export interface GameTypeStructure {
   boardSize: BoardSize;
 }
 
+const _gameTypeStructureSchemaObject = z.object({
+  type: gameTypeEnum,
+  boardSize: boardSizeEnum,
+});
+
+type GameTypeStructureSchemaType = z.infer<
+  typeof _gameTypeStructureSchemaObject
+>;
+
 /**
- * Assert that the game type structure matches the schema.
+ * The schema for a game type structure.
  */
+export const gameTypeStructureSchema: z.ZodType<GameTypeStructure> =
+  _gameTypeStructureSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactGameTypeStructure: AssertExact<
   GameTypeStructure,
   GameTypeStructureSchemaType

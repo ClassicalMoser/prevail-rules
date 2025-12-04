@@ -4,15 +4,15 @@ import { z } from 'zod';
 import { playerCardStateSchema } from './playerCardState';
 
 /** The schema for the state of all cards in the game. */
-export const cardStateSchema: z.ZodType<CardState> = z.object({
+const _cardStateSchemaObject = z.object({
   /** The state of the cards for the black player. */
   blackPlayer: playerCardStateSchema,
   /** The state of the cards for the white player. */
   whitePlayer: playerCardStateSchema,
 });
 
-// Helper type to check match of type against schema
-type CardStateSchemaType = z.infer<typeof cardStateSchema>;
+type CardStateSchemaType = z.infer<typeof _cardStateSchemaObject>;
+export const cardStateSchema: z.ZodType<CardState> = _cardStateSchemaObject;
 
 /** The state of all cards in the game. */
 export interface CardState {

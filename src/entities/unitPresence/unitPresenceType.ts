@@ -7,19 +7,20 @@ import { z } from 'zod';
 export const unitPresenceType = ['none', 'single', 'engaged'] as const;
 
 /**
- * The schema for the type of unit presence in a space.
- */
-export const unitPresenceTypeSchema: z.ZodType<UnitPresenceType> =
-  z.enum(unitPresenceType);
-
-// Helper type to check match of type against schema
-type UnitPresenceTypeSchemaType = z.infer<typeof unitPresenceTypeSchema>;
-
-/**
  * The type of unit presence in a space.
  */
 export type UnitPresenceType = (typeof unitPresenceType)[number];
 
+const _unitPresenceTypeSchemaObject = z.enum(unitPresenceType);
+type UnitPresenceTypeSchemaType = z.infer<typeof _unitPresenceTypeSchemaObject>;
+
+/**
+ * The schema for the type of unit presence in a space.
+ */
+export const unitPresenceTypeSchema: z.ZodType<UnitPresenceType> =
+  _unitPresenceTypeSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactUnitPresenceType: AssertExact<
   UnitPresenceType,
   UnitPresenceTypeSchemaType

@@ -9,31 +9,22 @@ export const valueTypes = [
   'flexibility',
 ] as const;
 
-export const valueTypesSchema: z.ZodType<ValueType> = z.enum(valueTypes);
-
-// Helper type to check match of type against schema
-type ValueTypesSchemaType = z.infer<typeof valueTypesSchema>;
-
 /**
  * The types of values that can be used on a card.
  */
 export type ValueType = (typeof valueTypes)[number];
 
-const _assertExactValueType: AssertExact<ValueType, ValueTypesSchemaType> =
-  true;
+const _valueTypesSchemaObject = z.enum(valueTypes);
+type ValueTypesSchemaType = z.infer<typeof _valueTypesSchemaObject>;
 
 /**
- * The schema for a modifier on a card.
+ * The schema for value types.
  */
-export const modifierSchema: z.ZodType<Modifier> = z.object({
-  /** The type of the modifier. */
-  type: valueTypesSchema,
-  /** The value of the modifier. */
-  value: z.number().int().min(-2).max(2),
-});
+export const valueTypesSchema: z.ZodType<ValueType> = _valueTypesSchemaObject;
 
-// Helper type to check match of type against schema
-type ModifierSchemaType = z.infer<typeof modifierSchema>;
+// Verify manual type matches schema inference
+const _assertExactValueType: AssertExact<ValueType, ValueTypesSchemaType> =
+  true;
 
 /**
  * A modifier on a card.
@@ -45,4 +36,19 @@ export interface Modifier {
   value: number;
 }
 
+const _modifierSchemaObject = z.object({
+  /** The type of the modifier. */
+  type: valueTypesSchema,
+  /** The value of the modifier. */
+  value: z.number().int().min(-2).max(2),
+});
+
+type ModifierSchemaType = z.infer<typeof _modifierSchemaObject>;
+
+/**
+ * The schema for a modifier on a card.
+ */
+export const modifierSchema: z.ZodType<Modifier> = _modifierSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactModifier: AssertExact<Modifier, ModifierSchemaType> = true;

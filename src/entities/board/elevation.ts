@@ -4,7 +4,7 @@ import { z } from 'zod';
 /**
  * The schema for the elevation of a space.
  */
-export const elevationSchema: z.ZodType<Elevation> = z.object({
+const _elevationSchemaObject = z.object({
   /**
    * The elevation of the north-west corner of the space.
    */
@@ -23,8 +23,8 @@ export const elevationSchema: z.ZodType<Elevation> = z.object({
   southEast: z.number().min(0).max(5).default(0),
 });
 
-// Helper type to check match of type against schema
-type elevationSchemaType = z.infer<typeof elevationSchema>;
+type elevationSchemaType = z.infer<typeof _elevationSchemaObject>;
+export const elevationSchema: z.ZodType<Elevation> = _elevationSchemaObject;
 
 /**
  * The elevation of each corner of a space.

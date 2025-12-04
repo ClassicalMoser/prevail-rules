@@ -1,18 +1,6 @@
 import type { AssertExact } from '@utils';
 import { z } from 'zod';
 
-export const playerSchema: z.ZodType<Player> = z.object({
-  /** The unique identifier of the player. */
-  id: z.string().uuid(),
-  /** The name of the player. */
-  name: z.string(),
-  /** Whether the player is a bot. */
-  isBot: z.boolean(),
-});
-
-// Helper type to check match of type against schema
-type PlayerSchemaType = z.infer<typeof playerSchema>;
-
 /**
  * A player in the game.
  */
@@ -25,7 +13,21 @@ export interface Player {
   isBot: boolean;
 }
 
+const _playerSchemaObject = z.object({
+  /** The unique identifier of the player. */
+  id: z.string().uuid(),
+  /** The name of the player. */
+  name: z.string(),
+  /** Whether the player is a bot. */
+  isBot: z.boolean(),
+});
+
+type PlayerSchemaType = z.infer<typeof _playerSchemaObject>;
+
 /**
- * Assert that the player matches the schema.
+ * The schema for a player.
  */
-export const _assertExactPlayer: AssertExact<Player, PlayerSchemaType> = true;
+export const playerSchema: z.ZodType<Player> = _playerSchemaObject;
+
+// Verify manual type matches schema inference
+const _assertExactPlayer: AssertExact<Player, PlayerSchemaType> = true;

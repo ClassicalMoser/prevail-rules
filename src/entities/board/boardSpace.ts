@@ -15,7 +15,7 @@ import { waterCoverSchema } from './waterCover';
 /**
  * The schema for a space of the game board.
  */
-export const boardSpaceSchema: z.ZodType<BoardSpace> = z.object({
+const _boardSpaceSchemaObject = z.object({
   /**
    * The type of terrain in the space.
    */
@@ -38,8 +38,8 @@ export const boardSpaceSchema: z.ZodType<BoardSpace> = z.object({
   commanders: z.set(playerSideSchema),
 });
 
-// Helper type to check match of type against schema
-type boardSpaceSchemaType = z.infer<typeof boardSpaceSchema>;
+type boardSpaceSchemaType = z.infer<typeof _boardSpaceSchemaObject>;
+export const boardSpaceSchema: z.ZodType<BoardSpace> = _boardSpaceSchemaObject;
 
 /**
  * A space of the game board.

@@ -1,6 +1,5 @@
 import type {
   Board,
-  BoardSchemaType,
   CardState,
   Command,
   EngagedUnitPresence,
@@ -19,7 +18,7 @@ import { unitInstanceSchema } from './unit/unitInstance';
 import { engagedUnitPresenceSchema } from './unitPresence/engagedUnitPresence';
 
 /** The schema for a game state. */
-export const gameStateSchema: z.ZodType<GameState> = z.object({
+const _gameStateSchemaObject = z.object({
   /** The current round number of the game. */
   currentRound: z.number().int().min(0),
   /** The current phase of the game. */
@@ -28,12 +27,16 @@ export const gameStateSchema: z.ZodType<GameState> = z.object({
   initiative: playerSideSchema,
   /** Which player is currently taking their turn. */
   playerTurn: playerSideSchema.optional(),
-  /** The ranged attacks that are still due to be resolved this phase. */
-  remainingRangedAttacks: z.set(unitInstanceSchema),
   /** The commands that are still due to be resolved this phase. */
   remainingCommands: z.set(commandSchema),
+  /** Units that have moved this round. */
+  unitsThatMoved: z.set(unitInstanceSchema),
+  /** Units that have made ranged attacks this round. */
+  unitsThatMadeRangedAttacks: z.set(unitInstanceSchema),
   /** The units that are still eligible to be moved this phase. */
   remainingMovements: z.set(unitInstanceSchema),
+  /** The ranged attacks that are still due to be resolved this phase. */
+  remainingRangedAttacks: z.set(unitInstanceSchema),
   /** The engagements that are still due to be resolved this phase. */
   remainingEngagements: z.set(engagedUnitPresenceSchema),
   /** The state of the board. */
@@ -44,12 +47,8 @@ export const gameStateSchema: z.ZodType<GameState> = z.object({
 
 // Helper type to check match of type against schema
 // Override boardState with strict coordinate types
-type GameStateSchemaType = Omit<
-  z.infer<typeof gameStateSchema>,
-  'boardState'
-> & {
-  boardState: BoardSchemaType;
-};
+type GameStateSchemaType = z.infer<typeof _gameStateSchemaObject>;
+export const gameStateSchema: z.ZodType<GameState> = _gameStateSchemaObject;
 
 /** The state of a game of Prevail: Ancient Battles. */
 export interface GameState {
@@ -61,10 +60,14 @@ export interface GameState {
   initiative: PlayerSide;
   /** Which player is currently taking their turn. */
   playerTurn?: PlayerSide;
-  /** The ranged attacks that are still due to be resolved this phase. */
-  remainingRangedAttacks: Set<UnitInstance>;
   /** The commands that are still due to be resolved this phase. */
   remainingCommands: Set<Command>;
+  /** Units that have moved this round. */
+  unitsThatMoved: Set<UnitInstance>;
+  /** Units that have made ranged attacks this round. */
+  unitsThatMadeRangedAttacks: Set<UnitInstance>;
+  /** The ranged attacks that are still due to be resolved this phase. */
+  remainingRangedAttacks: Set<UnitInstance>;
   /** The units that are still eligible to be moved this phase. */
   remainingMovements: Set<UnitInstance>;
   /** The engagements that are still due to be resolved this phase. */

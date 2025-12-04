@@ -13,21 +13,22 @@ const terrainTypes = [
 ] as const;
 
 /**
- * The schema for the type of terrain in a space.
- * Terrain focuses on ground cover. Elevation and water cover are handled separately.
- */
-export const terrainTypeSchema: z.ZodType<TerrainType> = z
-  .enum(terrainTypes)
-  .default(terrainTypes[0]);
-
-// Helper type to check match of type against schema
-type terrainTypeSchemaType = z.infer<typeof terrainTypeSchema>;
-
-/**
  * The type of terrain in a space.
  * Terrain focuses on ground cover. Elevation and water cover are handled separately.
  */
 export type TerrainType = (typeof terrainTypes)[number];
 
+const _terrainTypeSchemaObject = z
+  .enum(terrainTypes)
+  .default(terrainTypes[0]);
+type terrainTypeSchemaType = z.infer<typeof _terrainTypeSchemaObject>;
+
+/**
+ * The schema for the type of terrain in a space.
+ * Terrain focuses on ground cover. Elevation and water cover are handled separately.
+ */
+export const terrainTypeSchema: z.ZodType<TerrainType> = _terrainTypeSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactTerrainType: AssertExact<TerrainType, terrainTypeSchemaType> =
   true;

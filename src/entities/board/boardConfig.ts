@@ -53,26 +53,27 @@ export const largeBoardConfig: BoardConfig<LargeBoardCoordinate> = {
  * Note: Functions cannot be validated by Zod at runtime, so createCoordinate uses z.any().
  * The schema validates the data structure (rowLetters, columnNumbers) while the function is type-checked via z.ZodType constraint.
  */
-export const boardConfigMapSchema: z.ZodType<BoardConfigMap> = z.object({
+const _boardConfigMapSchemaObject = z.object({
   standard: z.object({
-    rowLetters: z.array(z.string()),
-    columnNumbers: z.array(z.string()),
+    rowLetters: z.array(z.string()).readonly(),
+    columnNumbers: z.array(z.string()).readonly(),
     createCoordinate: z.any(), // Function cannot be validated at runtime
   }),
   small: z.object({
-    rowLetters: z.array(z.string()),
-    columnNumbers: z.array(z.string()),
+    rowLetters: z.array(z.string()).readonly(),
+    columnNumbers: z.array(z.string()).readonly(),
     createCoordinate: z.any(), // Function cannot be validated at runtime
   }),
   large: z.object({
-    rowLetters: z.array(z.string()),
-    columnNumbers: z.array(z.string()),
+    rowLetters: z.array(z.string()).readonly(),
+    columnNumbers: z.array(z.string()).readonly(),
     createCoordinate: z.any(), // Function cannot be validated at runtime
   }),
 });
 
-// Helper type to check match of type against schema
-type BoardConfigMapSchemaType = z.infer<typeof boardConfigMapSchema>;
+type BoardConfigMapSchemaType = z.infer<typeof _boardConfigMapSchemaObject>;
+export const boardConfigMapSchema: z.ZodType<BoardConfigMap> =
+  _boardConfigMapSchemaObject;
 
 export interface BoardConfigMap {
   standard: BoardConfig<StandardBoardCoordinate>;
@@ -91,7 +92,7 @@ export const boardConfigMap: BoardConfigMap = {
 
 // Helper type to check match of type against schema
 const _assertExactBoardConfigMap: AssertExact<
-  typeof boardConfigMap,
+  BoardConfigMap,
   BoardConfigMapSchemaType
 > = true;
 

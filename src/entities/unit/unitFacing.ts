@@ -26,13 +26,14 @@ export const unitFacings: readonly UnitFacing[] = [
   ...diagonalFacings,
 ];
 
+const _unitFacingSchemaObject = z.enum(unitFacings);
+type unitFacingSchemaType = z.infer<typeof _unitFacingSchemaObject>;
+
 /**
  * The schema for the facing direction of a unit.
  */
-export const unitFacingSchema: z.ZodType<UnitFacing> = z.enum(unitFacings);
+export const unitFacingSchema: z.ZodType<UnitFacing> = _unitFacingSchemaObject;
 
-// Helper type to check match of type against schema
-type unitFacingSchemaType = z.infer<typeof unitFacingSchema>;
-
+// Verify manual type matches schema inference
 const _assertExactUnitFacing: AssertExact<UnitFacing, unitFacingSchemaType> =
   true;

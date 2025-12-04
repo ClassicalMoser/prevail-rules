@@ -16,34 +16,50 @@ export interface Entity {
   // ... other fields
 }
 
-// 2. Define Zod schema with z.ZodType<T> constraint for isolatedDeclarations compatibility
-export const entitySchema: z.ZodType<Entity> = z.object({
+// 2. Define unconstrained schema object (for type inference)
+const _entitySchemaObject = z.object({
   id: z.string().uuid(),
   name: z.string(),
   // ... other fields
 });
 
-// 3. Infer type from schema
-type EntitySchemaType = z.infer<typeof entitySchema>;
+// 3. Infer type from unconstrained schema object
+type EntitySchemaType = z.infer<typeof _entitySchemaObject>;
 
-// 4. Assert type match at compile time (bidirectional check)
+// 4. Export schema with constraint for isolatedDeclarations compatibility
+/**
+ * The schema for an entity.
+ */
+export const entitySchema: z.ZodType<Entity> = _entitySchemaObject;
+
+// 5. Assert type match at compile time (bidirectional check)
 const _assertExact: AssertExact<Entity, EntitySchemaType> = true;
 ```
 
+**Declaration Ordering Convention:**
+
+1. **Exported interface/type** - Public API, what consumers see
+2. **Unexported schema object** - Implementation detail for type inference
+3. **Inferred type** - Implementation detail for AssertExact
+4. **Exported schema with JSDoc** - Public API with documentation
+5. **AssertExact check** - Internal verification (never exported)
+
 **Key Requirements:**
 
-- Use `z.ZodType<T>` constraint on schemas for `isolatedDeclarations` compatibility
+- Use `z.ZodType<T>` constraint on **exported** schemas for `isolatedDeclarations` compatibility
 - Define interface before schema to avoid circular references
-- Use explicit type annotations (avoid `typeof` in type annotations)
-- Keep `AssertExact` for bidirectional type safety
+- Infer type from **unconstrained** schema object to ensure type drift detection works
+- **Never export** `AssertExact` assertions or inferred `SchemaType` types (causes `isolatedDeclarations` errors)
+- Place JSDoc comments on the **exported** schema, not the unexported schema object
 
 ### Why This Pattern?
 
 1. **Runtime Validation**: Zod schemas validate data at runtime (e.g., from API responses)
 2. **Compile-Time Safety**: TypeScript interfaces provide type checking during development
 3. **Type-Schema Alignment**: The `AssertExact` assertion ensures bidirectional type equality
-4. **isolatedDeclarations Compatibility**: `z.ZodType<T>` constraint provides explicit type annotations required for fast declaration file generation
-5. **Build Performance**: Explicit annotations enable faster builds (tsdown can work directly from declarations)
+4. **Type Drift Detection**: Inferring from unconstrained schema object ensures `AssertExact` catches mismatches
+5. **isolatedDeclarations Compatibility**: `z.ZodType<T>` constraint on exports provides explicit type annotations required for fast declaration file generation
+6. **Build Performance**: Explicit annotations enable faster builds (tsdown can work directly from declarations)
 
 ### Benefits
 
@@ -64,28 +80,41 @@ Many entities use **discriminated unions** for type-safe variants.
 
 ### Pattern for Discriminated Unions
 
-For discriminated unions, individual schemas use `z.ZodObject<...>` with explicit type annotations, while the parent union uses `z.ZodType<T>`:
+For discriminated unions, follow the same pattern with an unconstrained schema object:
 
 ```typescript
-// Individual schema (plain Zod object, not z.ZodType<T>)
-export const noneUnitPresenceSchema: z.ZodObject<{
-  presenceType: z.ZodLiteral<'none'>;
-}> = z.object({
-  presenceType: z.literal('none' as const),
-});
+// 1. Define the union type
+export type UnitPresence =
+  | NoneUnitPresence
+  | SingleUnitPresence
+  | EngagedUnitPresence;
 
-// Parent discriminated union (uses z.ZodType<T>)
-export const unitPresenceSchema: z.ZodType<UnitPresence> = z.discriminatedUnion(
-  'presenceType',
-  [noneUnitPresenceSchema, singleUnitPresenceSchema, engagedUnitPresenceSchema],
-);
+// 2. Define unconstrained discriminated union schema object
+const _unitPresenceSchemaObject = z.discriminatedUnion('presenceType', [
+  noneUnitPresenceSchema,
+  singleUnitPresenceSchema,
+  engagedUnitPresenceSchema,
+]);
+
+// 3. Infer type from unconstrained schema object
+type UnitPresenceSchemaType = z.infer<typeof _unitPresenceSchemaObject>;
+
+// 4. Export schema with constraint
+/**
+ * The schema for unit presence in a space.
+ */
+export const unitPresenceSchema: z.ZodType<UnitPresence> = _unitPresenceSchemaObject;
+
+// 5. Assert type match
+const _assertExactUnitPresence: AssertExact<UnitPresence, UnitPresenceSchemaType> = true;
 ```
 
 **Why this pattern?**
 
 - `z.discriminatedUnion` requires plain Zod object schemas (not `z.ZodType<T>` wrappers)
-- The parent union uses `z.ZodType<T>` for `isolatedDeclarations` compatibility
+- The parent union uses `z.ZodType<T>` on export for `isolatedDeclarations` compatibility
 - Individual schemas use explicit `z.ZodObject<...>` annotations for type safety
+- Inferring from unconstrained schema object ensures type drift detection works
 
 ### UnitPresence
 
@@ -177,14 +206,15 @@ const space = getBoardSpace(standardBoard, smallCoord); // Error!
 ## Best Practices
 
 1. **Always use the schema-first pattern** for new entities
-2. **Use `z.ZodType<T>` constraint** on schemas for `isolatedDeclarations` compatibility
-3. **Define interfaces before schemas** to avoid circular references
-4. **Use explicit type annotations** - avoid `typeof` in type annotations
-5. **Use discriminated unions** for type-safe variants (with `z.ZodObject<...>` for individual schemas)
-6. **Add JSDoc comments** explaining the entity's purpose
-7. **Use `AssertExact`** to verify bidirectional type-schema alignment
-8. **Export schemas** for runtime validation
-9. **Export types** for compile-time checking
+2. **Follow the declaration ordering convention** - interface, schema object, inferred type, exported schema, AssertExact
+3. **Use `z.ZodType<T>` constraint** on **exported** schemas for `isolatedDeclarations` compatibility
+4. **Infer from unconstrained schema object** to ensure type drift detection works correctly
+5. **Never export** `AssertExact` assertions or inferred `SchemaType` types
+6. **Place JSDoc on exported schema**, not the unexported schema object
+7. **Use discriminated unions** for type-safe variants (with `z.ZodObject<...>` for individual schemas)
+8. **Define interfaces before schemas** to avoid circular references
+9. **Export schemas** for runtime validation
+10. **Export types/interfaces** for compile-time checking
 
 ### Type Annotation Rules
 

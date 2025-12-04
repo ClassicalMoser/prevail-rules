@@ -13,16 +13,17 @@ export const phases = [
 ] as const;
 
 /**
- * The schema for a phase of a round.
- */
-export const phaseSchema: z.ZodType<Phase> = z.enum(phases);
-
-// Helper type to check match of type against schema
-type PhaseSchemaType = z.infer<typeof phaseSchema>;
-
-/**
  * The type of a phase of a round.
  */
 export type Phase = (typeof phases)[number];
 
+const _phaseSchemaObject = z.enum(phases);
+type PhaseSchemaType = z.infer<typeof _phaseSchemaObject>;
+
+/**
+ * The schema for a phase of a round.
+ */
+export const phaseSchema: z.ZodType<Phase> = _phaseSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactPhase: AssertExact<Phase, PhaseSchemaType> = true;

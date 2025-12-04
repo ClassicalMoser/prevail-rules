@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { cardSchema } from './card';
 
 /** The schema for a player's card state. */
-export const playerCardStateSchema: z.ZodType<PlayerCardState> = z.object({
+const _playerCardStateSchemaObject = z.object({
   /** The cards in the player's hand, eligible to be played. */
   inHand: z.array(cardSchema),
   /** The facedown card that the player is currently playing. */
@@ -17,8 +17,9 @@ export const playerCardStateSchema: z.ZodType<PlayerCardState> = z.object({
   burnt: z.array(cardSchema),
 });
 
-// Helper type to check match of type against schema
-type PlayerCardStateSchemaType = z.infer<typeof playerCardStateSchema>;
+type PlayerCardStateSchemaType = z.infer<typeof _playerCardStateSchemaObject>;
+export const playerCardStateSchema: z.ZodType<PlayerCardState> =
+  _playerCardStateSchemaObject;
 
 /** The state of a player's cards. */
 export interface PlayerCardState {

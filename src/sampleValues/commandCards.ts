@@ -36,6 +36,7 @@ export const commandCards: readonly Card[] = [
         },
       ],
     },
+    unitPreservation: [],
   },
   {
     id: '2',
@@ -67,6 +68,7 @@ export const commandCards: readonly Card[] = [
       },
       modifiers: [],
     },
+    unitPreservation: [],
   },
   {
     id: '3',
@@ -98,6 +100,7 @@ export const commandCards: readonly Card[] = [
       },
       modifiers: [],
     },
+    unitPreservation: [],
   },
   {
     id: '4',
@@ -129,5 +132,6 @@ export const commandCards: readonly Card[] = [
       },
       modifiers: [],
     },
+    unitPreservation: [],
   },
 ];

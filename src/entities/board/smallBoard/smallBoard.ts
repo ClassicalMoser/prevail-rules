@@ -41,15 +41,16 @@ const smallBoardCoordinateMapSchema: z.ZodObject<
 /**
  * The schema for a small board.
  */
-export const smallBoardSchema: z.ZodObject<{
-  boardType: z.ZodLiteral<'small'>;
-  board: typeof smallBoardCoordinateMapSchema;
-}> = z.object({
+const _smallBoardSchemaObject = z.object({
   boardType: z.literal('small'),
   board: smallBoardCoordinateMapSchema,
 });
 
-type SmallBoardSchemaType = z.infer<typeof smallBoardSchema>;
+type SmallBoardSchemaType = z.infer<typeof _smallBoardSchemaObject>;
+export const smallBoardSchema: z.ZodObject<{
+  boardType: z.ZodLiteral<'small'>;
+  board: typeof smallBoardCoordinateMapSchema;
+}> = _smallBoardSchemaObject;
 
 /**
  * A small board for the game.

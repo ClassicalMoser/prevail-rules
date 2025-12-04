@@ -41,15 +41,16 @@ const largeBoardCoordinateMapSchema: z.ZodObject<
 /**
  * The schema for a large board.
  */
-export const largeBoardSchema: z.ZodObject<{
-  boardType: z.ZodLiteral<'large'>;
-  board: typeof largeBoardCoordinateMapSchema;
-}> = z.object({
+const _largeBoardSchemaObject = z.object({
   boardType: z.literal('large'),
   board: largeBoardCoordinateMapSchema,
 });
 
-type LargeBoardSchemaType = z.infer<typeof largeBoardSchema>;
+type LargeBoardSchemaType = z.infer<typeof _largeBoardSchemaObject>;
+export const largeBoardSchema: z.ZodObject<{
+  boardType: z.ZodLiteral<'large'>;
+  board: typeof largeBoardCoordinateMapSchema;
+}> = _largeBoardSchemaObject;
 
 /**
  * A large board for the game.

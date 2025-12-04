@@ -6,7 +6,7 @@ import { z } from 'zod';
 /**
  * The schema for an army of troops.
  */
-export const armySchema: z.ZodType<Army> = z.object({
+const _armySchemaObject = z.object({
   /** The unique identifier of the army. */
   id: z.string().uuid(),
   /** The units in the army. */
@@ -16,7 +16,8 @@ export const armySchema: z.ZodType<Army> = z.object({
 });
 
 // Helper type to check match of type against schema
-type ArmySchemaType = z.infer<typeof armySchema>;
+type ArmySchemaType = z.infer<typeof _armySchemaObject>;
+export const armySchema: z.ZodType<Army> = _armySchemaObject;
 
 /**
  * An army of troops.

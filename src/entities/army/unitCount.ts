@@ -3,15 +3,15 @@ import type { AssertExact } from '@utils';
 import { unitTypeSchema } from '@entities';
 import { z } from 'zod';
 
-export const unitCountSchema: z.ZodType<UnitCount> = z.object({
+const _unitCountSchemaObject = z.object({
   /** The unit type. */
   unitType: unitTypeSchema,
   /** The number of units. */
   count: z.number().int().min(1).max(20),
 });
 
-// Helper type to check match of type against schema
-type UnitCountSchemaType = z.infer<typeof unitCountSchema>;
+type UnitCountSchemaType = z.infer<typeof _unitCountSchemaObject>;
+export const unitCountSchema: z.ZodType<UnitCount> = _unitCountSchemaObject;
 
 /**
  * A count of units of a specific type.

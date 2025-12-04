@@ -4,16 +4,6 @@ import { z } from 'zod';
 import { modifierSchema } from './modifiers';
 import { restrictionsSchema } from './restrictions';
 
-export const roundEffectSchema: z.ZodType<RoundEffect> = z.object({
-  /** The restrictions on the round effect. */
-  restrictions: restrictionsSchema,
-  /** The modifiers the round effect applies. */
-  modifiers: z.array(modifierSchema),
-});
-
-// Helper type to check match of type against schema
-type RoundEffectSchemaType = z.infer<typeof roundEffectSchema>;
-
 /**
  * The round effect of a card.
  */
@@ -24,5 +14,21 @@ export interface RoundEffect {
   modifiers: Modifier[];
 }
 
+const _roundEffectSchemaObject = z.object({
+  /** The restrictions on the round effect. */
+  restrictions: restrictionsSchema,
+  /** The modifiers the round effect applies. */
+  modifiers: z.array(modifierSchema),
+});
+
+type RoundEffectSchemaType = z.infer<typeof _roundEffectSchemaObject>;
+
+/**
+ * The schema for a round effect.
+ */
+export const roundEffectSchema: z.ZodType<RoundEffect> =
+  _roundEffectSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactRoundEffect: AssertExact<RoundEffect, RoundEffectSchemaType> =
   true;

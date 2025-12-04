@@ -41,15 +41,16 @@ const standardBoardCoordinateMapSchema: z.ZodObject<
 /**
  * The schema for a standard board.
  */
-export const standardBoardSchema: z.ZodObject<{
-  boardType: z.ZodLiteral<'standard'>;
-  board: typeof standardBoardCoordinateMapSchema;
-}> = z.object({
+const _standardBoardSchemaObject = z.object({
   boardType: z.literal('standard'),
   board: standardBoardCoordinateMapSchema,
 });
 
-type StandardBoardSchemaType = z.infer<typeof standardBoardSchema>;
+type StandardBoardSchemaType = z.infer<typeof _standardBoardSchemaObject>;
+export const standardBoardSchema: z.ZodObject<{
+  boardType: z.ZodLiteral<'standard'>;
+  board: typeof standardBoardCoordinateMapSchema;
+}> = _standardBoardSchemaObject;
 
 /**
  * A standard board for the game.

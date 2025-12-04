@@ -4,7 +4,7 @@ import { z } from 'zod';
 /**
  * The schema for the water cover of a space.
  */
-export const waterCoverSchema: z.ZodType<WaterCover> = z.object({
+const _waterCoverSchemaObject = z.object({
   /**
    * Whether the space is covered by water from the north.
    */
@@ -39,8 +39,8 @@ export const waterCoverSchema: z.ZodType<WaterCover> = z.object({
   northWest: z.boolean().default(false),
 });
 
-// Helper type to check match of type against schema
-type waterCoverSchemaType = z.infer<typeof waterCoverSchema>;
+type waterCoverSchemaType = z.infer<typeof _waterCoverSchemaObject>;
+export const waterCoverSchema: z.ZodType<WaterCover> = _waterCoverSchemaObject;
 
 /**
  * Whether the space is covered by water.

@@ -6,7 +6,7 @@ import { z } from 'zod';
 /**
  * The schema for a round.
  */
-export const roundSchema: z.ZodType<Round> = z.object({
+const _roundSchemaObject = z.object({
   /** The number of the round. */
   roundNumber: z.number().int().positive(),
   /** The phases that have been completed in the round. */
@@ -15,8 +15,8 @@ export const roundSchema: z.ZodType<Round> = z.object({
   startTime: z.date(),
 });
 
-// Helper type to check match of type against schema
-type RoundSchemaType = z.infer<typeof roundSchema>;
+type RoundSchemaType = z.infer<typeof _roundSchemaObject>;
+export const roundSchema: z.ZodType<Round> = _roundSchemaObject;
 
 /**
  * A round of the game.

@@ -7,7 +7,7 @@ import { unitTypeSchema } from './unitType';
 /**
  * The schema for a unit instance.
  */
-export const unitInstanceSchema: z.ZodType<UnitInstance> = z.object({
+const _unitInstanceSchemaObject = z.object({
   /** Which player the unit belongs to. */
   playerSide: playerSideSchema,
   /** The type of unit this is an instance of. */
@@ -16,8 +16,9 @@ export const unitInstanceSchema: z.ZodType<UnitInstance> = z.object({
   instanceNumber: z.number().min(1).max(20),
 });
 
-// Helper type to check match of type against schema
-type UnitInstanceSchemaType = z.infer<typeof unitInstanceSchema>;
+type UnitInstanceSchemaType = z.infer<typeof _unitInstanceSchemaObject>;
+export const unitInstanceSchema: z.ZodType<UnitInstance> =
+  _unitInstanceSchemaObject;
 
 /**
  * An individual instance of a unit.

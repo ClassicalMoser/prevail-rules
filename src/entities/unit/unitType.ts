@@ -7,7 +7,7 @@ import { z } from 'zod';
  * The schema for a unit of troops.
  * A unit is the atomic element of an army in this game.
  */
-export const unitTypeSchema: z.ZodType<UnitType> = z.object({
+const _unitTypeSchemaObject = z.object({
   /** Not sure yet how the units will be identified,
    * but we need to have a unique identifier for each unit type.
    */
@@ -38,8 +38,8 @@ export const unitTypeSchema: z.ZodType<UnitType> = z.object({
   routPenalty: z.number().int().min(0).max(5),
 });
 
-// Helper type to check match of type against schema
-type UnitTypeSchemaType = z.infer<typeof unitTypeSchema>;
+type UnitTypeSchemaType = z.infer<typeof _unitTypeSchemaObject>;
+export const unitTypeSchema: z.ZodType<UnitType> = _unitTypeSchemaObject;
 
 /**
  * A unit of troops.

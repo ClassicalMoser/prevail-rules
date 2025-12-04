@@ -272,4 +272,11 @@ describe('isValidLine', () => {
       expect(isValidLine(standardBoard, invalidLine)).toBe(false);
     });
   });
+  describe('edge cases', () => {
+    it('should return false instead of throwing for a bad input type', () => {
+      const board = undefined as unknown as StandardBoard;
+      const line = undefined as unknown as Line;
+      expect(isValidLine(board, line)).toBe(false);
+    });
+  });
 });
