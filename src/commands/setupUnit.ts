@@ -12,19 +12,6 @@ import {
 } from '@entities';
 import { z } from 'zod';
 
-/** The schema for a setup unit command. */
-export const setupUnitCommandSchema: z.ZodType<SetupUnitCommand> = z.object({
-  /** The player who is setting up the unit. */
-  player: playerSideSchema,
-  /** The unit to setup. */
-  unit: unitInstanceSchema,
-  /** The space to setup the unit on. */
-  space: boardCoordinateSchema,
-});
-
-// Helper type to check match of type against schema.
-type SetupUnitCommandSchemaType = z.infer<typeof setupUnitCommandSchema>;
-
 /** A command to setup a unit on the board. */
 export interface SetupUnitCommand {
   /** The player who is setting up the unit. */
@@ -35,7 +22,22 @@ export interface SetupUnitCommand {
   space: BoardCoordinate<Board>;
 }
 
-// Helper type to check match of type against schema.
+const _setupUnitCommandSchemaObject = z.object({
+  /** The player who is setting up the unit. */
+  player: playerSideSchema,
+  /** The unit to setup. */
+  unit: unitInstanceSchema,
+  /** The space to setup the unit on. */
+  space: boardCoordinateSchema,
+});
+
+type SetupUnitCommandSchemaType = z.infer<typeof _setupUnitCommandSchemaObject>;
+
+/** The schema for a setup unit command. */
+export const setupUnitCommandSchema: z.ZodType<SetupUnitCommand> =
+  _setupUnitCommandSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactSetupUnitCommand: AssertExact<
   SetupUnitCommand,
   SetupUnitCommandSchemaType

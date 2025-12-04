@@ -7,21 +7,6 @@ import {
 } from '@entities';
 import { z } from 'zod';
 
-/** The schema for a move unit command. */
-export const moveUnitCommandSchema: z.ZodType<MoveUnitCommand> = z.object({
-  /** The player who is moving the unit. */
-  player: playerSideSchema,
-  /** The unit to move. */
-  unit: unitInstanceSchema,
-  /** The space the unit is currently in. */
-  from: unitPlacementSchema,
-  /** The space the unit is moving to. */
-  to: unitPlacementSchema,
-});
-
-// Helper type to check match of type against schema
-type MoveUnitCommandSchemaType = z.infer<typeof moveUnitCommandSchema>;
-
 /** A command to move a unit from one space to another. */
 export interface MoveUnitCommand {
   /** The player who is moving the unit. */
@@ -34,7 +19,24 @@ export interface MoveUnitCommand {
   to: UnitPlacement<Board>;
 }
 
-// Helper type to check match of type against schema.
+const _moveUnitCommandSchemaObject = z.object({
+  /** The player who is moving the unit. */
+  player: playerSideSchema,
+  /** The unit to move. */
+  unit: unitInstanceSchema,
+  /** The space the unit is currently in. */
+  from: unitPlacementSchema,
+  /** The space the unit is moving to. */
+  to: unitPlacementSchema,
+});
+
+type MoveUnitCommandSchemaType = z.infer<typeof _moveUnitCommandSchemaObject>;
+
+/** The schema for a move unit command. */
+export const moveUnitCommandSchema: z.ZodType<MoveUnitCommand> =
+  _moveUnitCommandSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactMoveUnitCommand: AssertExact<
   MoveUnitCommand,
   MoveUnitCommandSchemaType

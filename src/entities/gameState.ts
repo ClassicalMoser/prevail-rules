@@ -43,6 +43,8 @@ export interface GameState {
   boardState: Board;
   /** The state of both players' cards. */
   cardState: CardState;
+  /** The units that have been defeated during the game. */
+  defeatedUnits: Set<UnitInstance>;
 }
 
 const _gameStateSchemaObject = z.object({
@@ -70,6 +72,8 @@ const _gameStateSchemaObject = z.object({
   boardState: boardSchema,
   /** The state of both players' cards. */
   cardState: cardStateSchema,
+  /** The units that have been defeated during the game. */
+  defeatedUnits: z.set(unitInstanceSchema),
 });
 
 type GameStateSchemaType = z.infer<typeof _gameStateSchemaObject>;
