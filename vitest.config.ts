@@ -29,17 +29,26 @@ export default defineConfig({
   },
   test: {
     watch: false,
+    // Only run test files in the domain folder
     include: ['src/domain/**/*.test.{js,ts}'],
+    // Exclude build output and node_modules
     exclude: ['dist/**', 'node_modules/**'],
     coverage: {
       provider: 'v8',
-      include: ['src/**/*.{js,ts}'],
+      // Only run coverage on testable files in the domain folder
+      include: ['src/domain/**/*.{js,ts}'],
       exclude: [
+        // Exclude build output
         'dist/**/*.{js,ts}',
+        // Exclude declaration-only entities
         'src/domain/entities/**/*.{js,ts}',
+        // Exclude declaration-only events
         'src/domain/events/**/*.{js,ts}',
+        // Exclude test helper files
         'src/domain/testing/**/*.{js,ts}',
+        // Exclude sample value files
         'src/domain/sampleValues/**/*.{js,ts}',
+        // Exclude barrel files
         '**/index.{js,ts}',
       ],
     },
