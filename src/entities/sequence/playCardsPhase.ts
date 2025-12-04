@@ -1,0 +1,59 @@
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
+
+/** Iterable list of valid steps in the card phase. */
+export const playCardsPhaseSteps = [
+  'chooseCards',
+  'revealCards',
+  'assignInitiative',
+  'complete',
+] as const;
+
+/** The type of a step in the card phase. */
+export type PlayCardsPhaseStep = (typeof playCardsPhaseSteps)[number];
+
+const _playCardsPhaseStepSchemaObject = z.enum(playCardsPhaseSteps);
+type PlayCardsPhaseStepSchemaType = z.infer<
+  typeof _playCardsPhaseStepSchemaObject
+>;
+
+/** The schema for a step in the card phase. */
+export const playCardsPhaseStepSchema: z.ZodType<PlayCardsPhaseStep> =
+  _playCardsPhaseStepSchemaObject;
+
+// Verify manual type matches schema inference
+const _assertExactCardPhaseStep: AssertExact<
+  PlayCardsPhaseStep,
+  PlayCardsPhaseStepSchemaType
+> = true;
+
+/** The state of the card phase. */
+export interface PlayCardsPhaseState {
+  /** The current phase of the round. */
+  phase: 'playCards';
+  /** The step of the card phase. */
+  step: PlayCardsPhaseStep;
+}
+
+const _playCardsPhaseStateSchemaObject = z.object({
+  /** The current phase of the round. */
+  phase: z.literal('playCards' as const),
+  /** The step of the card phase. */
+  step: playCardsPhaseStepSchema,
+});
+
+type PlayCardsPhaseStateSchemaType = z.infer<
+  typeof _playCardsPhaseStateSchemaObject
+>;
+
+// Verify manual type matches schema inference
+const _assertExactPlayCardsPhaseState: AssertExact<
+  PlayCardsPhaseState,
+  PlayCardsPhaseStateSchemaType
+> = true;
+
+/** The schema for the state of the card phase. */
+export const playCardsPhaseStateSchema: z.ZodObject<{
+  phase: z.ZodLiteral<'playCards'>;
+  step: z.ZodType<PlayCardsPhaseStep>;
+}> = _playCardsPhaseStateSchemaObject;

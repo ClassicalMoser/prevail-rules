@@ -1,0 +1,56 @@
+import type { AssertExact } from '@utils';
+
+import { z } from 'zod';
+
+/** Iterable list of valid steps in the move commanders phase. */
+export const moveCommandersPhaseSteps = [
+  'moveFirstCommander',
+  'moveSecondCommander',
+  'complete',
+] as const;
+
+/** The step of the move commanders phase. */
+export type MoveCommandersPhaseStep = (typeof moveCommandersPhaseSteps)[number];
+
+const _moveCommandersPhaseStepSchemaObject = z.enum(moveCommandersPhaseSteps);
+type MoveCommandersPhaseStepSchemaType = z.infer<
+  typeof _moveCommandersPhaseStepSchemaObject
+>;
+
+const _assertExactMoveCommandersPhaseStep: AssertExact<
+  MoveCommandersPhaseStep,
+  MoveCommandersPhaseStepSchemaType
+> = true;
+
+export const moveCommandersPhaseStepSchema: z.ZodType<MoveCommandersPhaseStep> =
+  _moveCommandersPhaseStepSchemaObject;
+
+/** The state of the move commanders phase. */
+export interface MoveCommandersPhaseState {
+  /** The current phase of the round. */
+  phase: 'moveCommanders';
+  /** The step of the move commanders phase. */
+  step: MoveCommandersPhaseStep;
+}
+
+const _moveCommandersPhaseStateSchemaObject = z.object({
+  /** The current phase of the round. */
+  phase: z.literal('moveCommanders' as const),
+  /** The step of the move commanders phase. */
+  step: moveCommandersPhaseStepSchema,
+});
+
+type MoveCommandersPhaseStateSchemaType = z.infer<
+  typeof _moveCommandersPhaseStateSchemaObject
+>;
+
+const _assertExactMoveCommandersPhaseState: AssertExact<
+  MoveCommandersPhaseState,
+  MoveCommandersPhaseStateSchemaType
+> = true;
+
+/** The schema for the state of the move commanders phase. */
+export const moveCommandersPhaseStateSchema: z.ZodObject<{
+  phase: z.ZodLiteral<'moveCommanders'>;
+  step: z.ZodType<MoveCommandersPhaseStep>;
+}> = _moveCommandersPhaseStateSchemaObject;

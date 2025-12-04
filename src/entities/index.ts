@@ -2,7 +2,6 @@ export * from './army';
 export * from './board';
 export * from './card';
 export * from './game';
-export * from './gameState';
 export * from './gameType';
 export * from './line';
 export * from './player';
