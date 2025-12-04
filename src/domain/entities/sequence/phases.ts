@@ -6,14 +6,12 @@ import type {
   ResolveMeleePhaseState,
 } from '@entities';
 import type { AssertExact } from '@utils';
-import {
-  cleanupPhaseStateSchema,
-  issueCommandsPhaseStateSchema,
-  moveCommandersPhaseStateSchema,
-  playCardsPhaseStateSchema,
-  resolveMeleePhaseStateSchema,
-} from '@entities';
 import { z } from 'zod';
+import { cleanupPhaseStateSchema } from './cleanupPhase';
+import { issueCommandsPhaseStateSchema } from './issueCommandsPhase';
+import { moveCommandersPhaseStateSchema } from './moveCommandersPhase';
+import { playCardsPhaseStateSchema } from './playCardsPhase';
+import { resolveMeleePhaseStateSchema } from './resolveMeleePhase';
 
 /**
  * Iterable list of valid phases for a round.

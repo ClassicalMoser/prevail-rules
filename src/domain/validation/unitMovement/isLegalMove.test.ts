@@ -1,5 +1,5 @@
-import type { MoveUnitCommand } from '@commands';
 import type { StandardBoardCoordinate, UnitFacing } from '@entities';
+import type { MoveUnitEvent } from '@events';
 import { createBoardWithUnits, getUnitByStatValue } from '@testing';
 import { createUnitInstance } from '@utils/createUnitInstance';
 import { isLegalMove } from '@validation';
@@ -16,14 +16,15 @@ describe('isLegalMove', () => {
       const facing: UnitFacing = 'north';
       const board = createBoardWithUnits([{ unit, coordinate, facing }]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate, facing },
         to: { coordinate, facing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(true);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(true);
     });
 
     it('should return true for moving forward', () => {
@@ -35,14 +36,15 @@ describe('isLegalMove', () => {
         { unit, coordinate: fromCoordinate, facing },
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
         to: { coordinate: toCoordinate, facing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(true);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(true);
     });
 
     it('should return true for changing facing without moving', () => {
@@ -54,14 +56,15 @@ describe('isLegalMove', () => {
         { unit, coordinate, facing: fromFacing },
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate, facing: fromFacing },
         to: { coordinate, facing: toFacing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(true);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(true);
     });
 
     it('should return true for engaging enemy from flank', () => {
@@ -75,14 +78,15 @@ describe('isLegalMove', () => {
         { unit: enemyUnit, coordinate: toCoordinate, facing: 'north' },
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
         to: { coordinate: toCoordinate, facing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(true);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(true);
     });
 
     it('should return true for engaging enemy from front with correct facing', () => {
@@ -96,14 +100,15 @@ describe('isLegalMove', () => {
         { unit: enemyUnit, coordinate: toCoordinate, facing: 'north' },
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
         to: { coordinate: toCoordinate, facing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(true);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(true);
     });
   });
 
@@ -119,14 +124,15 @@ describe('isLegalMove', () => {
         { unit, coordinate: fromCoordinate, facing },
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
         to: { coordinate: toCoordinate as StandardBoardCoordinate, facing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(false);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(false);
     });
 
     it('should return false for moving beyond speed limit', () => {
@@ -138,14 +144,15 @@ describe('isLegalMove', () => {
         { unit, coordinate: fromCoordinate, facing },
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
         to: { coordinate: toCoordinate, facing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(false);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(false);
     });
 
     it('should return false for moving to friendly unit', () => {
@@ -159,14 +166,15 @@ describe('isLegalMove', () => {
         { unit: friendlyUnit, coordinate: toCoordinate, facing },
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
         to: { coordinate: toCoordinate, facing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(false);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(false);
     });
 
     it('should return false for moving through enemy unit', () => {
@@ -180,14 +188,15 @@ describe('isLegalMove', () => {
         { unit: enemyUnit, coordinate: 'D-5', facing: 'south' },
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
         to: { coordinate: toCoordinate, facing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(false);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(false);
     });
 
     it('should return false for engaging enemy from front with wrong facing', () => {
@@ -201,14 +210,15 @@ describe('isLegalMove', () => {
         { unit: enemyUnit, coordinate: toCoordinate, facing: 'north' },
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
         to: { coordinate: toCoordinate, facing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(false);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(false);
     });
 
     it('should return false for engaging enemy from front without flexibility to rotate', () => {
@@ -224,14 +234,15 @@ describe('isLegalMove', () => {
         { unit: enemyUnit, coordinate: toCoordinate, facing: 'north' },
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
         to: { coordinate: toCoordinate, facing },
       };
 
-      expect(isLegalMove(moveCommand, board)).toBe(false);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(false);
     });
 
     it('should return false when getLegalUnitMoves throws (invalid starting position)', () => {
@@ -246,7 +257,8 @@ describe('isLegalMove', () => {
         { unit, coordinate: 'F-5', facing }, // Unit is at F-5, but command says from E-5
       ]);
 
-      const moveCommand: MoveUnitCommand = {
+      const moveUnitEvent: MoveUnitEvent = {
+        eventType: 'playerChoice',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
@@ -254,7 +266,7 @@ describe('isLegalMove', () => {
       };
 
       // getLegalUnitMoves will throw because unit is not at the starting position
-      expect(isLegalMove(moveCommand, board)).toBe(false);
+      expect(isLegalMove(moveUnitEvent, board)).toBe(false);
     });
   });
 });

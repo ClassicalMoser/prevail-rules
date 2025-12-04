@@ -1,7 +1,8 @@
 import type { PhaseState, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
-import { phaseStateSchema, unitInstanceSchema } from '@entities';
+import { unitInstanceSchema } from '@entities';
 import { z } from 'zod';
+import { phaseStateSchema } from './phases';
 
 /**
  * The state of a round of the game.

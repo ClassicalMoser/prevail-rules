@@ -3,8 +3,10 @@ import type { AssertExact } from '@utils';
 import { boardCoordinateSchema, playerSideSchema } from '@entities';
 import { z } from 'zod';
 
-/** A command to move a commander from one space to another. */
-export interface MoveCommanderCommand {
+/** An event to move a commander from one space to another. */
+export interface MoveCommanderEvent {
+  /** The type of the event. */
+  eventType: 'playerChoice';
   /** The player who is moving the commander. */
   player: PlayerSide;
   /** The space the commander is currently in. */
@@ -13,7 +15,9 @@ export interface MoveCommanderCommand {
   to: BoardCoordinate<Board>;
 }
 
-const _moveCommanderCommandSchemaObject = z.object({
+const _moveCommanderEventSchemaObject = z.object({
+  /** The type of the event. */
+  eventType: z.literal('playerChoice' as const),
   /** The player who is moving the commander. */
   player: playerSideSchema,
   /** The space the commander is currently in. */
@@ -22,16 +26,16 @@ const _moveCommanderCommandSchemaObject = z.object({
   to: boardCoordinateSchema,
 });
 
-type MoveCommanderCommandSchemaType = z.infer<
-  typeof _moveCommanderCommandSchemaObject
+type MoveCommanderEventSchemaType = z.infer<
+  typeof _moveCommanderEventSchemaObject
 >;
 
-/** The schema for a move commander command. */
-export const moveCommanderCommandSchema: z.ZodType<MoveCommanderCommand> =
-  _moveCommanderCommandSchemaObject;
+/** The schema for a move commander event. */
+export const moveCommanderEventSchema: z.ZodType<MoveCommanderEvent> =
+  _moveCommanderEventSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactMoveCommanderCommand: AssertExact<
-  MoveCommanderCommand,
-  MoveCommanderCommandSchemaType
+const _assertExactMoveCommanderEvent: AssertExact<
+  MoveCommanderEvent,
+  MoveCommanderEventSchemaType
 > = true;

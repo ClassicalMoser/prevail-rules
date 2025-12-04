@@ -7,8 +7,10 @@ import {
 } from '@entities';
 import { z } from 'zod';
 
-/** A command to move a unit from one space to another. */
-export interface MoveUnitCommand {
+/** An event to move a unit from one space to another. */
+export interface MoveUnitEvent {
+  /** The type of the event. */
+  eventType: 'playerChoice';
   /** The player who is moving the unit. */
   player: PlayerSide;
   /** The unit to move. */
@@ -19,7 +21,9 @@ export interface MoveUnitCommand {
   to: UnitPlacement<Board>;
 }
 
-const _moveUnitCommandSchemaObject = z.object({
+const _moveUnitEventSchemaObject = z.object({
+  /** The type of the event. */
+  eventType: z.literal('playerChoice' as const),
   /** The player who is moving the unit. */
   player: playerSideSchema,
   /** The unit to move. */
@@ -30,14 +34,14 @@ const _moveUnitCommandSchemaObject = z.object({
   to: unitPlacementSchema,
 });
 
-type MoveUnitCommandSchemaType = z.infer<typeof _moveUnitCommandSchemaObject>;
-
-/** The schema for a move unit command. */
-export const moveUnitCommandSchema: z.ZodType<MoveUnitCommand> =
-  _moveUnitCommandSchemaObject;
+type MoveUnitEventSchemaType = z.infer<typeof _moveUnitEventSchemaObject>;
 
 // Verify manual type matches schema inference
-const _assertExactMoveUnitCommand: AssertExact<
-  MoveUnitCommand,
-  MoveUnitCommandSchemaType
+const _assertExactMoveUnitEvent: AssertExact<
+  MoveUnitEvent,
+  MoveUnitEventSchemaType
 > = true;
+
+/** The schema for a move unit event. */
+export const moveUnitEventSchema: z.ZodType<MoveUnitEvent> =
+  _moveUnitEventSchemaObject;

@@ -12,8 +12,10 @@ import {
 } from '@entities';
 import { z } from 'zod';
 
-/** A command to setup a unit on the board. */
-export interface SetupUnitCommand {
+/** An event to setup a unit on the board. */
+export interface SetupUnitEvent {
+  /** The type of the event. */
+  eventType: 'playerChoice';
   /** The player who is setting up the unit. */
   player: PlayerSide;
   /** The unit to setup. */
@@ -22,7 +24,9 @@ export interface SetupUnitCommand {
   space: BoardCoordinate<Board>;
 }
 
-const _setupUnitCommandSchemaObject = z.object({
+const _setupUnitEventSchemaObject = z.object({
+  /** The type of the event. */
+  eventType: z.literal('playerChoice' as const),
   /** The player who is setting up the unit. */
   player: playerSideSchema,
   /** The unit to setup. */
@@ -31,14 +35,14 @@ const _setupUnitCommandSchemaObject = z.object({
   space: boardCoordinateSchema,
 });
 
-type SetupUnitCommandSchemaType = z.infer<typeof _setupUnitCommandSchemaObject>;
-
-/** The schema for a setup unit command. */
-export const setupUnitCommandSchema: z.ZodType<SetupUnitCommand> =
-  _setupUnitCommandSchemaObject;
+type SetupUnitEventSchemaType = z.infer<typeof _setupUnitEventSchemaObject>;
 
 // Verify manual type matches schema inference
-const _assertExactSetupUnitCommand: AssertExact<
-  SetupUnitCommand,
-  SetupUnitCommandSchemaType
+const _assertExactSetupUnitEvent: AssertExact<
+  SetupUnitEvent,
+  SetupUnitEventSchemaType
 > = true;
+
+/** The schema for a setup unit event. */
+export const setupUnitEventSchema: z.ZodType<SetupUnitEvent> =
+  _setupUnitEventSchemaObject;

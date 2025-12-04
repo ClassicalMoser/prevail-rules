@@ -1,19 +1,19 @@
-import type { MoveUnitCommand } from '@commands';
 import type { Board } from '@entities';
+import type { MoveUnitEvent } from '@events';
 import { getLegalUnitMoves } from '@functions';
 
 /**
- * Validates whether a unit move command is legal according to game rules.
+ * Validates whether a unit move event is legal according to game rules.
  *
- * @param moveCommand - The move command to validate
+ * @param moveUnitEvent - The move unit event to validate
  * @param boardState - The current board state
  * @returns True if the move is legal, false otherwise
  */
 export function isLegalMove(
-  moveCommand: MoveUnitCommand,
+  moveUnitEvent: MoveUnitEvent,
   boardState: Board,
 ): boolean {
-  const { unit, from, to } = moveCommand;
+  const { unit, from, to } = moveUnitEvent;
   try {
     const legalMoves = getLegalUnitMoves(unit, boardState, from);
     // Set.has() uses reference equality, so we need to check by value

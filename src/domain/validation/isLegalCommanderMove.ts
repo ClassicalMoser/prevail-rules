@@ -1,23 +1,23 @@
-import type { MoveCommanderCommand } from '@commands';
 import type { Board } from '@entities';
+import type { MoveCommanderEvent } from '@events';
 import { getBoardSpace, getSpacesWithinDistance } from '@functions';
 import { COMMANDER_MOVE_DISTANCE } from '@sampleValues';
 
 /**
- * Validates whether a commander move command is legal.
+ * Validates whether a commander move event is legal.
  * Checks that the commander is at the starting position and the destination
  * is within COMMANDER_MOVE_DISTANCE.
  *
- * @param moveCommanderCommand - The commander move command to validate
+ * @param moveCommanderEvent - The commander move event to validate
  * @param boardState - The current board state
  * @returns True if the move is legal, false otherwise
  */
 export function isLegalCommanderMove(
-  moveCommanderCommand: MoveCommanderCommand,
+  moveCommanderEvent: MoveCommanderEvent,
   boardState: Board,
 ): boolean {
   try {
-    const { player, from, to } = moveCommanderCommand;
+    const { player, from, to } = moveCommanderEvent;
 
     // Validate that the commander is at the starting position
     const fromSpace = getBoardSpace(boardState, from);
