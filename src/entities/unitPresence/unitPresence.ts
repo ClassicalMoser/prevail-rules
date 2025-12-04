@@ -10,6 +10,22 @@ import { noneUnitPresenceSchema } from './noneUnitPresence';
 import { singleUnitPresenceSchema } from './singleUnitPresence';
 
 /**
+ * Unit presence in a space.
+ */
+export type UnitPresence =
+  | NoneUnitPresence
+  | SingleUnitPresence
+  | EngagedUnitPresence;
+
+const _unitPresenceSchemaObject = z.discriminatedUnion('presenceType', [
+  noneUnitPresenceSchema,
+  singleUnitPresenceSchema,
+  engagedUnitPresenceSchema,
+]);
+
+type UnitPresenceTypeSchemaType = z.infer<typeof _unitPresenceSchemaObject>;
+
+/**
  * The schema for unit presence in a space.
  *
  * Uses a discriminated union based on the `presenceType` field to represent
@@ -41,24 +57,10 @@ import { singleUnitPresenceSchema } from './singleUnitPresence';
  * }
  * ```
  */
-const _unitPresenceSchemaObject = z.discriminatedUnion('presenceType', [
-  noneUnitPresenceSchema,
-  singleUnitPresenceSchema,
-  engagedUnitPresenceSchema,
-]);
-
-type UnitPresenceTypeSchemaType = z.infer<typeof _unitPresenceSchemaObject>;
 export const unitPresenceSchema: z.ZodType<UnitPresence> =
   _unitPresenceSchemaObject;
 
-/**
- * Unit presence in a space.
- */
-export type UnitPresence =
-  | NoneUnitPresence
-  | SingleUnitPresence
-  | EngagedUnitPresence;
-
+// Verify manual type matches schema inference
 const _assertExactUnitPresence: AssertExact<
   UnitPresence,
   UnitPresenceTypeSchemaType

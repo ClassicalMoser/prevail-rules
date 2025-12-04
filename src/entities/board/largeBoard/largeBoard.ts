@@ -39,20 +39,6 @@ const largeBoardCoordinateMapSchema: z.ZodObject<
 > = createBoardSchema(largeBoardCoordinates);
 
 /**
- * The schema for a large board.
- */
-const _largeBoardSchemaObject = z.object({
-  boardType: z.literal('large'),
-  board: largeBoardCoordinateMapSchema,
-});
-
-type LargeBoardSchemaType = z.infer<typeof _largeBoardSchemaObject>;
-export const largeBoardSchema: z.ZodObject<{
-  boardType: z.ZodLiteral<'large'>;
-  board: typeof largeBoardCoordinateMapSchema;
-}> = _largeBoardSchemaObject;
-
-/**
  * A large board for the game.
  * A unique map of exactly 864 coordinates (A-1 through X-36), where each coordinate
  * exists exactly once (e.g., there is only one "A-11", only one "F-3", etc.).
@@ -75,5 +61,21 @@ export interface LargeBoard {
   board: Record<LargeBoardCoordinate, BoardSpace>;
 }
 
+const _largeBoardSchemaObject = z.object({
+  boardType: z.literal('large'),
+  board: largeBoardCoordinateMapSchema,
+});
+
+type LargeBoardSchemaType = z.infer<typeof _largeBoardSchemaObject>;
+
+/**
+ * The schema for a large board.
+ */
+export const largeBoardSchema: z.ZodObject<{
+  boardType: z.ZodLiteral<'large'>;
+  board: typeof largeBoardCoordinateMapSchema;
+}> = _largeBoardSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactLargeBoard: AssertExact<LargeBoard, LargeBoardSchemaType> =
   true;

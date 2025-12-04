@@ -13,35 +13,6 @@ import { terrainTypeSchema } from './terrainTypes';
 import { waterCoverSchema } from './waterCover';
 
 /**
- * The schema for a space of the game board.
- */
-const _boardSpaceSchemaObject = z.object({
-  /**
-   * The type of terrain in the space.
-   */
-  terrainType: terrainTypeSchema,
-  /**
-   * The elevation of the space.
-   */
-  elevation: elevationSchema,
-  /**
-   * The water cover of the space.
-   */
-  waterCover: waterCoverSchema,
-  /**
-   * The unit presence in the space.
-   */
-  unitPresence: unitPresenceSchema,
-  /**
-   * The commanders in the space.
-   */
-  commanders: z.set(playerSideSchema),
-});
-
-type boardSpaceSchemaType = z.infer<typeof _boardSpaceSchemaObject>;
-export const boardSpaceSchema: z.ZodType<BoardSpace> = _boardSpaceSchemaObject;
-
-/**
  * A space of the game board.
  */
 export interface BoardSpace {
@@ -67,5 +38,36 @@ export interface BoardSpace {
   commanders: Set<PlayerSide>;
 }
 
+const _boardSpaceSchemaObject = z.object({
+  /**
+   * The type of terrain in the space.
+   */
+  terrainType: terrainTypeSchema,
+  /**
+   * The elevation of the space.
+   */
+  elevation: elevationSchema,
+  /**
+   * The water cover of the space.
+   */
+  waterCover: waterCoverSchema,
+  /**
+   * The unit presence in the space.
+   */
+  unitPresence: unitPresenceSchema,
+  /**
+   * The commanders in the space.
+   */
+  commanders: z.set(playerSideSchema),
+});
+
+type boardSpaceSchemaType = z.infer<typeof _boardSpaceSchemaObject>;
+
+/**
+ * The schema for a space of the game board.
+ */
+export const boardSpaceSchema: z.ZodType<BoardSpace> = _boardSpaceSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactBoardSpace: AssertExact<BoardSpace, boardSpaceSchemaType> =
   true;

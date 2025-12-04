@@ -39,20 +39,6 @@ const smallBoardCoordinateMapSchema: z.ZodObject<
 > = createBoardSchema(smallBoardCoordinates);
 
 /**
- * The schema for a small board.
- */
-const _smallBoardSchemaObject = z.object({
-  boardType: z.literal('small'),
-  board: smallBoardCoordinateMapSchema,
-});
-
-type SmallBoardSchemaType = z.infer<typeof _smallBoardSchemaObject>;
-export const smallBoardSchema: z.ZodObject<{
-  boardType: z.ZodLiteral<'small'>;
-  board: typeof smallBoardCoordinateMapSchema;
-}> = _smallBoardSchemaObject;
-
-/**
  * A small board for the game.
  * A unique map of exactly 96 coordinates (A-1 through H-12), where each coordinate
  * exists exactly once (e.g., there is only one "A-11", only one "F-3", etc.).
@@ -75,5 +61,21 @@ export interface SmallBoard {
   board: Record<SmallBoardCoordinate, BoardSpace>;
 }
 
+const _smallBoardSchemaObject = z.object({
+  boardType: z.literal('small'),
+  board: smallBoardCoordinateMapSchema,
+});
+
+type SmallBoardSchemaType = z.infer<typeof _smallBoardSchemaObject>;
+
+/**
+ * The schema for a small board.
+ */
+export const smallBoardSchema: z.ZodObject<{
+  boardType: z.ZodLiteral<'small'>;
+  board: typeof smallBoardCoordinateMapSchema;
+}> = _smallBoardSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactSmallBoard: AssertExact<SmallBoard, SmallBoardSchemaType> =
   true;

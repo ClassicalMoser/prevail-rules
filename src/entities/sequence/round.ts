@@ -4,8 +4,14 @@ import { phaseSchema } from '@entities';
 import { z } from 'zod';
 
 /**
- * The schema for a round.
+ * A round of the game.
  */
+export interface Round {
+  roundNumber: number;
+  completedPhases: Set<Phase>;
+  startTime: Date;
+}
+
 const _roundSchemaObject = z.object({
   /** The number of the round. */
   roundNumber: z.number().int().positive(),
@@ -16,15 +22,11 @@ const _roundSchemaObject = z.object({
 });
 
 type RoundSchemaType = z.infer<typeof _roundSchemaObject>;
-export const roundSchema: z.ZodType<Round> = _roundSchemaObject;
 
 /**
- * A round of the game.
+ * The schema for a round.
  */
-export interface Round {
-  roundNumber: number;
-  completedPhases: Set<Phase>;
-  startTime: Date;
-}
+export const roundSchema: z.ZodType<Round> = _roundSchemaObject;
 
+// Verify manual type matches schema inference
 const _assertExactRound: AssertExact<Round, RoundSchemaType> = true;

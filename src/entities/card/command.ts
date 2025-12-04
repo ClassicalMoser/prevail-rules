@@ -20,7 +20,8 @@ type CommandTypesSchemaType = z.infer<typeof _commandTypesSchemaObject>;
 /**
  * The schema for the types of commands that can be used on a card.
  */
-export const commandTypesSchema: z.ZodType<CommandType> = _commandTypesSchemaObject;
+export const commandTypesSchema: z.ZodType<CommandType> =
+  _commandTypesSchemaObject;
 
 // Verify manual type matches schema inference
 const _assertExactCommandType: AssertExact<
@@ -44,7 +45,8 @@ type CommandSizesSchemaType = z.infer<typeof _commandSizesSchemaObject>;
 /**
  * The schema for the sizes of commands that can be used on a card.
  */
-export const commandSizesSchema: z.ZodType<CommandSize> = _commandSizesSchemaObject;
+export const commandSizesSchema: z.ZodType<CommandSize> =
+  _commandSizesSchemaObject;
 
 // Verify manual type matches schema inference
 const _assertExactCommandSize: AssertExact<

@@ -4,27 +4,6 @@ import { armySchema, gameTypeEnum } from '@entities';
 import { z } from 'zod';
 
 /**
- * The schema for a complete game of Prevail: Ancient Battles.
- */
-const _gameSchemaObject = z.object({
-  /** The unique identifier of the game. */
-  id: z.string().uuid(),
-  /** The type of game. */
-  gameType: gameTypeEnum,
-  /** The unique identifier of the player on the black side of the game. */
-  blackPlayer: z.string().uuid(),
-  /** The unique identifier of the player on the white side of the game. */
-  whitePlayer: z.string().uuid(),
-  /** The army brought by the black player. */
-  blackArmy: armySchema,
-  /** The army brought by the white player. */
-  whiteArmy: armySchema,
-});
-
-type GameSchemaType = z.infer<typeof _gameSchemaObject>;
-export const gameSchema: z.ZodType<Game> = _gameSchemaObject;
-
-/**
  * A complete game of Prevail: Ancient Battles.
  */
 export interface Game {
@@ -42,4 +21,27 @@ export interface Game {
   whiteArmy: Army;
 }
 
+const _gameSchemaObject = z.object({
+  /** The unique identifier of the game. */
+  id: z.string().uuid(),
+  /** The type of game. */
+  gameType: gameTypeEnum,
+  /** The unique identifier of the player on the black side of the game. */
+  blackPlayer: z.string().uuid(),
+  /** The unique identifier of the player on the white side of the game. */
+  whitePlayer: z.string().uuid(),
+  /** The army brought by the black player. */
+  blackArmy: armySchema,
+  /** The army brought by the white player. */
+  whiteArmy: armySchema,
+});
+
+type GameSchemaType = z.infer<typeof _gameSchemaObject>;
+
+/**
+ * The schema for a complete game of Prevail: Ancient Battles.
+ */
+export const gameSchema: z.ZodType<Game> = _gameSchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactGame: AssertExact<Game, GameSchemaType> = true;

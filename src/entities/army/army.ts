@@ -4,22 +4,6 @@ import { cardSchema, unitCountSchema } from '@entities';
 import { z } from 'zod';
 
 /**
- * The schema for an army of troops.
- */
-const _armySchemaObject = z.object({
-  /** The unique identifier of the army. */
-  id: z.string().uuid(),
-  /** The units in the army. */
-  units: z.set(unitCountSchema),
-  /** The command cards in the army. */
-  commandCards: z.set(cardSchema),
-});
-
-// Helper type to check match of type against schema
-type ArmySchemaType = z.infer<typeof _armySchemaObject>;
-export const armySchema: z.ZodType<Army> = _armySchemaObject;
-
-/**
  * An army of troops.
  */
 export interface Army {
@@ -31,7 +15,21 @@ export interface Army {
   commandCards: Set<Card>;
 }
 
+const _armySchemaObject = z.object({
+  /** The unique identifier of the army. */
+  id: z.string().uuid(),
+  /** The units in the army. */
+  units: z.set(unitCountSchema),
+  /** The command cards in the army. */
+  commandCards: z.set(cardSchema),
+});
+
+type ArmySchemaType = z.infer<typeof _armySchemaObject>;
+
 /**
- * Check that the army type matches the schema.
+ * The schema for an army of troops.
  */
+export const armySchema: z.ZodType<Army> = _armySchemaObject;
+
+// Verify manual type matches schema inference
 const _assertExactArmy: AssertExact<Army, ArmySchemaType> = true;

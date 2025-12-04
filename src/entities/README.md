@@ -103,10 +103,14 @@ type UnitPresenceSchemaType = z.infer<typeof _unitPresenceSchemaObject>;
 /**
  * The schema for unit presence in a space.
  */
-export const unitPresenceSchema: z.ZodType<UnitPresence> = _unitPresenceSchemaObject;
+export const unitPresenceSchema: z.ZodType<UnitPresence> =
+  _unitPresenceSchemaObject;
 
 // 5. Assert type match
-const _assertExactUnitPresence: AssertExact<UnitPresence, UnitPresenceSchemaType> = true;
+const _assertExactUnitPresence: AssertExact<
+  UnitPresence,
+  UnitPresenceSchemaType
+> = true;
 ```
 
 **Why this pattern?**
