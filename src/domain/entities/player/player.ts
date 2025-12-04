@@ -15,7 +15,7 @@ export interface Player {
 
 const _playerSchemaObject = z.object({
   /** The unique identifier of the player. */
-  id: z.string().uuid(),
+  id: z.uuid(),
   /** The name of the player. */
   name: z.string(),
   /** Whether the player is a bot. */

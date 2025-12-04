@@ -22,7 +22,7 @@ export interface RoundState {
 
 const _roundStateSchemaObject = z.object({
   /** The number of the round. */
-  roundNumber: z.number().int().positive(),
+  roundNumber: z.int().positive(),
   /** The phases that have been completed in the round. */
   completedPhases: z.set(phaseStateSchema),
   /** The state of the current phase of the round. */

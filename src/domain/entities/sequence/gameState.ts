@@ -33,7 +33,7 @@ export interface GameState {
 
 const _gameStateSchemaObject = z.object({
   /** The current round number of the game. */
-  currentRoundNumber: z.number().int().min(0),
+  currentRoundNumber: z.int().min(0),
   /** The state of the current round of the game. */
   currentRoundState: roundStateSchema,
   /** Which player currently has initiative. */

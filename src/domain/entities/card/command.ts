@@ -76,7 +76,7 @@ const _commandSchemaObject = z.object({
   /** The type of the command. */
   type: commandTypesSchema,
   /** The number of commands of this size to be used. */
-  number: z.number().int().min(1).max(10),
+  number: z.int().min(1).max(10),
   /** The restrictions on the command */
   restrictions: restrictionsSchema,
   /** The modifiers the command applies. */

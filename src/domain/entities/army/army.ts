@@ -17,7 +17,7 @@ export interface Army {
 
 const _armySchemaObject = z.object({
   /** The unique identifier of the army. */
-  id: z.string().uuid(),
+  id: z.uuid(),
   /** The units in the army. */
   units: z.set(unitCountSchema),
   /** The command cards in the army. */

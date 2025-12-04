@@ -18,7 +18,7 @@ export interface Entity {
 
 // 2. Define unconstrained schema object (for type inference)
 const _entitySchemaObject = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   name: z.string(),
   // ... other fields
 });

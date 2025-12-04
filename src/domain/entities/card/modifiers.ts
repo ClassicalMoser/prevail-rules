@@ -40,7 +40,7 @@ const _modifierSchemaObject = z.object({
   /** The type of the modifier. */
   type: valueTypesSchema,
   /** The value of the modifier. */
-  value: z.number().int().min(-2).max(2),
+  value: z.int().min(-2).max(2),
 });
 
 type ModifierSchemaType = z.infer<typeof _modifierSchemaObject>;

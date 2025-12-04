@@ -46,25 +46,25 @@ const _unitTypeSchemaObject = z.object({
   /** The traits of the unit. */
   traits: z.array(traitSchema),
   /** The attack strength of the unit. */
-  attack: z.number().int().min(1).max(5),
+  attack: z.int().min(1).max(5),
   /** The normal attack range of the unit. */
-  range: z.number().int().min(0).max(5),
+  range: z.int().min(0).max(5),
   /** The maximum movement speed of the unit. */
-  speed: z.number().int().min(1).max(5),
+  speed: z.int().min(1).max(5),
   /** The flexibility value of the unit. */
-  flexibility: z.number().int().min(0).max(5),
+  flexibility: z.int().min(0).max(5),
   /** The attack value required to reverse the unit. */
-  reverse: z.number().int().min(0).max(10),
+  reverse: z.int().min(0).max(10),
   /** The attack value required to retreat the unit. */
-  retreat: z.number().int().min(0).max(10),
+  retreat: z.int().min(0).max(10),
   /** The attack value required to rout the unit. */
-  rout: z.number().int().min(0).max(10),
+  rout: z.int().min(0).max(10),
   /** The cost of the unit. */
-  cost: z.number().int().min(5).max(100),
+  cost: z.int().min(5).max(100),
   /** The limit of units that can be included in a standard army. */
-  limit: z.number().int().min(1).max(20),
+  limit: z.int().min(1).max(20),
   /** The number of cards the owner must discard when the unit is routed. */
-  routPenalty: z.number().int().min(0).max(5),
+  routPenalty: z.int().min(0).max(5),
 });
 
 type UnitTypeSchemaType = z.infer<typeof _unitTypeSchemaObject>;

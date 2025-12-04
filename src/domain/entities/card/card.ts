@@ -29,7 +29,7 @@ export interface Card {
 
 const _cardSchemaObject = z.object({
   /** The unique identifier of the card. */
-  id: z.string().uuid(),
+  id: z.uuid(),
   /** The version of the card. */
   version: z.string().regex(/^\d+\.\d+\.\d+$/, {
     message: 'Version must be a valid semver string (e.g., 1.0.0, 1.12.35)',
@@ -37,7 +37,7 @@ const _cardSchemaObject = z.object({
   /** The name of the card, regardless of version. */
   name: z.string(),
   /** The initiative value of the card. */
-  initiative: z.number().int().min(1).max(4),
+  initiative: z.int().min(1).max(4),
   /** The modifiers the card can discard for. */
   modifiers: z.array(modifierSchema),
   /** The command of the card. */

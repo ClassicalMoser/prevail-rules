@@ -1,48 +1,35 @@
-import type {
-  Board,
-  BoardCoordinate,
-  PlayerSide,
-  UnitInstance,
-} from '@entities';
+import type { Board, PlayerSide, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
-import {
-  boardCoordinateSchema,
-  playerSideSchema,
-  unitInstanceSchema,
-} from '@entities';
+import { playerSideSchema, unitWithPlacementSchema } from '@entities';
 import { z } from 'zod';
 
-/** An event to setup a unit on the board. */
-export interface SetupUnitEvent {
+/** An event to setup multiple units on the board. */
+export interface SetupUnitsEvent {
   /** The type of the event. */
   eventType: 'playerChoice';
-  /** The player who is setting up the unit. */
+  /** The player who is setting up the units. */
   player: PlayerSide;
-  /** The unit to setup. */
-  unit: UnitInstance;
-  /** The space to setup the unit on. */
-  space: BoardCoordinate<Board>;
+  /** The units to setup, each with its placement. */
+  unitPlacements: Set<UnitWithPlacement<Board>>;
 }
 
-const _setupUnitEventSchemaObject = z.object({
+const _setupUnitsEventSchemaObject = z.object({
   /** The type of the event. */
   eventType: z.literal('playerChoice' as const),
-  /** The player who is setting up the unit. */
+  /** The player who is setting up the units. */
   player: playerSideSchema,
-  /** The unit to setup. */
-  unit: unitInstanceSchema,
-  /** The space to setup the unit on. */
-  space: boardCoordinateSchema,
+  /** The units to setup, each with its placement. */
+  unitPlacements: z.set(unitWithPlacementSchema),
 });
 
-type SetupUnitEventSchemaType = z.infer<typeof _setupUnitEventSchemaObject>;
+type SetupUnitsEventSchemaType = z.infer<typeof _setupUnitsEventSchemaObject>;
 
 // Verify manual type matches schema inference
-const _assertExactSetupUnitEvent: AssertExact<
-  SetupUnitEvent,
-  SetupUnitEventSchemaType
+const _assertExactSetupUnitsEvent: AssertExact<
+  SetupUnitsEvent,
+  SetupUnitsEventSchemaType
 > = true;
 
-/** The schema for a setup unit event. */
-export const setupUnitEventSchema: z.ZodType<SetupUnitEvent> =
-  _setupUnitEventSchemaObject;
+/** The schema for a setup units event. */
+export const setupUnitsEventSchema: z.ZodType<SetupUnitsEvent> =
+  _setupUnitsEventSchemaObject;

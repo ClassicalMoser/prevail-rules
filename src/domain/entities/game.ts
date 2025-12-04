@@ -23,13 +23,13 @@ export interface Game {
 
 const _gameSchemaObject = z.object({
   /** The unique identifier of the game. */
-  id: z.string().uuid(),
+  id: z.uuid(),
   /** The type of game. */
   gameType: gameTypeEnum,
   /** The unique identifier of the player on the black side of the game. */
-  blackPlayer: z.string().uuid(),
+  blackPlayer: z.uuid(),
   /** The unique identifier of the player on the white side of the game. */
-  whitePlayer: z.string().uuid(),
+  whitePlayer: z.uuid(),
   /** The army brought by the black player. */
   blackArmy: armySchema,
   /** The army brought by the white player. */

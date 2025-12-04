@@ -17,7 +17,7 @@ const _unitCountSchemaObject = z.object({
   /** The unit type. */
   unitType: unitTypeSchema,
   /** The number of units. */
-  count: z.number().int().min(1).max(20),
+  count: z.int().min(1).max(20),
 });
 
 type UnitCountSchemaType = z.infer<typeof _unitCountSchemaObject>;

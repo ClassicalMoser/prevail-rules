@@ -22,7 +22,7 @@ const _unitInstanceSchemaObject = z.object({
   /** The type of unit this is an instance of. */
   unitType: unitTypeSchema,
   /** Which instance of the unit this is. */
-  instanceNumber: z.number().min(1).max(20),
+  instanceNumber: z.int().min(1).max(20),
 });
 
 type UnitInstanceSchemaType = z.infer<typeof _unitInstanceSchemaObject>;

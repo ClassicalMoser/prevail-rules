@@ -27,19 +27,19 @@ const _elevationSchemaObject = z.object({
   /**
    * The elevation of the north-west corner of the space.
    */
-  northWest: z.number().min(0).max(5).default(0),
+  northWest: z.int().min(0).max(5).default(0),
   /**
    * The elevation of the north-east corner of the space.
    */
-  northEast: z.number().min(0).max(5).default(0),
+  northEast: z.int().min(0).max(5).default(0),
   /**
    * The elevation of the south-west corner of the space.
    */
-  southWest: z.number().min(0).max(5).default(0),
+  southWest: z.int().min(0).max(5).default(0),
   /**
    * The elevation of the south-east corner of the space.
    */
-  southEast: z.number().min(0).max(5).default(0),
+  southEast: z.int().min(0).max(5).default(0),
 });
 
 type elevationSchemaType = z.infer<typeof _elevationSchemaObject>;

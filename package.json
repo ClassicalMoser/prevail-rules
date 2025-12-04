@@ -21,13 +21,9 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./commands": {
-      "types": "./dist/commands/index.d.ts",
-      "import": "./dist/commands/index.js"
-    },
-    "./entities": {
-      "types": "./dist/entities/index.d.ts",
-      "import": "./dist/entities/index.js"
+    "./domain": {
+      "types": "./dist/domain/index.d.ts",
+      "import": "./dist/domain/index.js"
     },
     "./contracts": {
       "types": "./dist/contracts/index.d.ts",
