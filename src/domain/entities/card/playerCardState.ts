@@ -11,6 +11,8 @@ export interface PlayerCardState {
   awaitingPlay: Card;
   /** The faceup card that is in play.*/
   inPlay: Card;
+  /** The cards that have been played and are not currently accessible to the player. */
+  played: Card[];
   /** The cards that have been discarded and are not currently accessible to the player. */
   discarded: Card[];
   /** The cards that have been burnt and cannot be recovered. */
@@ -24,6 +26,8 @@ const _playerCardStateSchemaObject = z.object({
   awaitingPlay: cardSchema,
   /** The faceup card that is in play.*/
   inPlay: cardSchema,
+  /** The cards that have been played and are not currently accessible to the player. */
+  played: z.array(cardSchema),
   /** The cards that have been discarded and are not currently accessible to the player. */
   discarded: z.array(cardSchema),
   /** The cards that have been burnt and cannot be recovered. */
