@@ -31,3 +31,5 @@ dist/
 .cache
 .parcel-cache
 
+# macOS system files
+.DS_Store
