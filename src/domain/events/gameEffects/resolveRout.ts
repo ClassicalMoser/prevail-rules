@@ -1,6 +1,7 @@
 import type { UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitInstanceSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** An event to resolve a rout.
@@ -9,7 +10,7 @@ import { z } from 'zod';
  */
 export interface ResolveRoutEvent {
   /** The type of the event. */
-  eventType: 'gameEffect';
+  eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The unit instance that is being routed. */
   unitInstance: UnitInstance;
   /** The penalty for routing the unit. */
@@ -18,7 +19,7 @@ export interface ResolveRoutEvent {
 
 const _resolveRoutEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('gameEffect' as const),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The unit instance that is being routed. */
   unitInstance: unitInstanceSchema,
   /** The penalty for routing the unit. */

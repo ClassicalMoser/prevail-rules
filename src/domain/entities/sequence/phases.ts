@@ -29,6 +29,21 @@ export const phases = [
  */
 export type Phase = (typeof phases)[number];
 
+/** The play cards phase. */
+export const PLAY_CARDS_PHASE: 'playCards' = phases[0];
+
+/** The move commanders phase. */
+export const MOVE_COMMANDERS_PHASE: 'moveCommanders' = phases[1];
+
+/** The issue commands phase. */
+export const ISSUE_COMMANDS_PHASE: 'issueCommands' = phases[2];
+
+/** The resolve melee phase. */
+export const RESOLVE_MELEE_PHASE: 'resolveMelee' = phases[3];
+
+/** The cleanup phase. */
+export const CLEANUP_PHASE: 'cleanup' = phases[4];
+
 const _phaseSchemaObject = z.enum(phases);
 type PhaseSchemaType = z.infer<typeof _phaseSchemaObject>;
 

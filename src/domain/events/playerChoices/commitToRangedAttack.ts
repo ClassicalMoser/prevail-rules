@@ -1,12 +1,13 @@
 import type { Card, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** An event to commit a card to a ranged attack. */
 export interface CommitToRangedAttackEvent {
   /** The type of the event. */
-  eventType: 'playerChoice';
+  eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The player who is committing the card. */
   player: PlayerSide;
   /** The card to commit from the player's hand. */
@@ -17,7 +18,7 @@ export interface CommitToRangedAttackEvent {
 
 const _commitToRangedAttackEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('playerChoice' as const),
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   /** The player who is committing the card. */
   player: playerSideSchema,
   /** The card to commit from the player's hand. */

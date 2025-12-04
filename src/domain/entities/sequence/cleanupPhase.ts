@@ -1,5 +1,6 @@
 import type { AssertExact } from '@utils';
 import { z } from 'zod';
+import { CLEANUP_PHASE } from './phases';
 
 /** Iterable list of valid steps in the cleanup phase. */
 export const cleanupPhaseSteps = [
@@ -29,14 +30,14 @@ export const cleanupPhaseStepSchema: z.ZodType<CleanupPhaseStep> =
 /** The state of the cleanup phase. */
 export interface CleanupPhaseState {
   /** The current phase of the round. */
-  phase: 'cleanup';
+  phase: typeof CLEANUP_PHASE;
   /** The step of the cleanup phase. */
   step: CleanupPhaseStep;
 }
 
 const _cleanupPhaseStateSchemaObject = z.object({
   /** The current phase of the round. */
-  phase: z.literal('cleanup' as const),
+  phase: z.literal(CLEANUP_PHASE),
   /** The step of the cleanup phase. */
   step: cleanupPhaseStepSchema,
 });

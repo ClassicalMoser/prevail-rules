@@ -7,6 +7,12 @@ export const eventTypes = ['playerChoice', 'gameEffect'] as const;
 /** The type of an event. */
 export type EventType = (typeof eventTypes)[number];
 
+/** The player choice event type. */
+export const PLAYER_CHOICE_EVENT_TYPE: 'playerChoice' = eventTypes[0];
+
+/** The game effect event type. */
+export const GAME_EFFECT_EVENT_TYPE: 'gameEffect' = eventTypes[1];
+
 const _eventTypeSchemaObject = z.enum(eventTypes);
 type EventTypeSchemaType = z.infer<typeof _eventTypeSchemaObject>;
 

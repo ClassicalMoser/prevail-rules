@@ -1,6 +1,7 @@
 import type { Board, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitWithPlacementSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** An event to resolve a reverse.
@@ -9,14 +10,14 @@ import { z } from 'zod';
  */
 export interface ResolveReverseEvent {
   /** The type of the event. */
-  eventType: 'gameEffect';
+  eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The new unit placement after the reverse. */
   newUnitPlacement: UnitWithPlacement<Board>;
 }
 
 const _resolveReverseEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('gameEffect' as const),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The new unit placement after the reverse. */
   newUnitPlacement: unitWithPlacementSchema,
 });

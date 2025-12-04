@@ -1,6 +1,7 @@
 import type { UnitPresence } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitPresenceSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** The event to resolve an engagement.
@@ -12,7 +13,7 @@ import { z } from 'zod';
  */
 export interface ResolveEngagementEvent {
   /** The type of the event. */
-  eventType: 'gameEffect';
+  eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The resulting unit presence after the engagement. */
   engagement: UnitPresence;
   /** Whether the defending unit is routed. */
@@ -21,7 +22,7 @@ export interface ResolveEngagementEvent {
 
 const _resolveEngagementEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('gameEffect' as const),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The resulting unit presence after the engagement. */
   engagement: unitPresenceSchema,
   /** Whether the defending unit is routed. */

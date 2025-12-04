@@ -1,11 +1,12 @@
 import type { Card, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** An eventto choose a card from the player's hand. */
 export interface ChooseCardEvent {
-  eventType: 'playerChoice';
+  eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The player who is choosing the card. */
   player: PlayerSide;
   /** The card to choose from the player's hand. */
@@ -14,7 +15,7 @@ export interface ChooseCardEvent {
 
 const _chooseCardEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('playerChoice' as const),
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   /** The player who is choosing the card. */
   player: playerSideSchema,
   /** The card to choose from the player's hand. */

@@ -1,6 +1,7 @@
 import type { Card, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** To perform a rally, a player must burn a random card from their played commands.
@@ -11,7 +12,7 @@ import { z } from 'zod';
 /** A command to resolve a rally. */
 export interface ResolveRallyEvent {
   /** The type of the event. */
-  eventType: 'gameEffect';
+  eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The player who is resolving the rally. */
   player: PlayerSide;
   /** The card to burn */
@@ -20,7 +21,7 @@ export interface ResolveRallyEvent {
 
 const _resolveRallyEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('gameEffect' as const),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The player who is resolving the rally. */
   player: playerSideSchema,
   /** The card to burn */

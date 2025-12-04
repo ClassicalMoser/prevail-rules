@@ -1,5 +1,6 @@
 import type { AssertExact } from '@utils';
 import { z } from 'zod';
+import { PLAY_CARDS_PHASE } from './phases';
 
 /** Iterable list of valid steps in the card phase. */
 export const playCardsPhaseSteps = [
@@ -30,14 +31,14 @@ const _assertExactCardPhaseStep: AssertExact<
 /** The state of the card phase. */
 export interface PlayCardsPhaseState {
   /** The current phase of the round. */
-  phase: 'playCards';
+  phase: typeof PLAY_CARDS_PHASE;
   /** The step of the card phase. */
   step: PlayCardsPhaseStep;
 }
 
 const _playCardsPhaseStateSchemaObject = z.object({
   /** The current phase of the round. */
-  phase: z.literal('playCards' as const),
+  phase: z.literal(PLAY_CARDS_PHASE),
   /** The step of the card phase. */
   step: playCardsPhaseStepSchema,
 });

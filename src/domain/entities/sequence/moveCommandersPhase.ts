@@ -1,6 +1,7 @@
 import type { AssertExact } from '@utils';
 
 import { z } from 'zod';
+import { MOVE_COMMANDERS_PHASE } from './phases';
 
 /** Iterable list of valid steps in the move commanders phase. */
 export const moveCommandersPhaseSteps = [
@@ -28,14 +29,14 @@ export const moveCommandersPhaseStepSchema: z.ZodType<MoveCommandersPhaseStep> =
 /** The state of the move commanders phase. */
 export interface MoveCommandersPhaseState {
   /** The current phase of the round. */
-  phase: 'moveCommanders';
+  phase: typeof MOVE_COMMANDERS_PHASE;
   /** The step of the move commanders phase. */
   step: MoveCommandersPhaseStep;
 }
 
 const _moveCommandersPhaseStateSchemaObject = z.object({
   /** The current phase of the round. */
-  phase: z.literal('moveCommanders' as const),
+  phase: z.literal(MOVE_COMMANDERS_PHASE),
   /** The step of the move commanders phase. */
   step: moveCommandersPhaseStepSchema,
 });

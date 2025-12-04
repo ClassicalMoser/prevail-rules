@@ -2,6 +2,7 @@ import type { Command } from '@entities';
 import type { AssertExact } from '@utils';
 import { commandSchema } from '@entities';
 import { z } from 'zod';
+import { ISSUE_COMMANDS_PHASE } from './phases';
 
 /** Iterable list of valid steps in the issue commands phase. */
 export const issueCommandsPhaseSteps = [
@@ -32,7 +33,7 @@ export const issueCommandsPhaseStepSchema: z.ZodType<IssueCommandsPhaseStep> =
 /** The state of the issue commands phase. */
 export interface IssueCommandsPhaseState {
   /** The current phase of the round. */
-  phase: 'issueCommands';
+  phase: typeof ISSUE_COMMANDS_PHASE;
   /** The step of the issue commands phase. */
   step: IssueCommandsPhaseStep;
   /** The remaining commands for the first player. */
@@ -43,7 +44,7 @@ export interface IssueCommandsPhaseState {
 
 const _issueCommandsPhaseStateSchemaObject = z.object({
   /** The current phase of the round. */
-  phase: z.literal('issueCommands' as const),
+  phase: z.literal(ISSUE_COMMANDS_PHASE),
   /** The step of the issue commands phase. */
   step: issueCommandsPhaseStepSchema,
   /** The remaining commands for the first player. */

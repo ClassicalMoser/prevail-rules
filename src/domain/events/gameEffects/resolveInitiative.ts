@@ -1,6 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** The event to resolve the initiative.
@@ -10,14 +11,14 @@ import { z } from 'zod';
  */
 export interface ResolveInitiativeEvent {
   /** The type of the event. */
-  eventType: 'gameEffect';
+  eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The player with initiative. */
   player: PlayerSide;
 }
 
 const _resolveInitiativeEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('gameEffect' as const),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The player with initiative. */
   player: playerSideSchema,
 });

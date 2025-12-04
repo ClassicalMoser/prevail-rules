@@ -1,12 +1,13 @@
 import type { Board, PlayerSide, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema, unitWithPlacementSchema } from '@entities';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** An event to setup multiple units on the board. */
 export interface SetupUnitsEvent {
   /** The type of the event. */
-  eventType: 'playerChoice';
+  eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The player who is setting up the units. */
   player: PlayerSide;
   /** The units to setup, each with its placement. */
@@ -15,7 +16,7 @@ export interface SetupUnitsEvent {
 
 const _setupUnitsEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('playerChoice' as const),
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   /** The player who is setting up the units. */
   player: playerSideSchema,
   /** The units to setup, each with its placement. */

@@ -5,12 +5,13 @@ import {
   unitInstanceSchema,
   unitPlacementSchema,
 } from '@entities';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** An event to move a unit from one space to another. */
 export interface MoveUnitEvent {
   /** The type of the event. */
-  eventType: 'playerChoice';
+  eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The player who is moving the unit. */
   player: PlayerSide;
   /** The unit to move. */
@@ -23,7 +24,7 @@ export interface MoveUnitEvent {
 
 const _moveUnitEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('playerChoice' as const),
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   /** The player who is moving the unit. */
   player: playerSideSchema,
   /** The unit to move. */

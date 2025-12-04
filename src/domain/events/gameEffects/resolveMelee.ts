@@ -1,4 +1,5 @@
 import type { AssertExact } from '@utils';
+import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** The event for the game resolution of a melee.
@@ -10,7 +11,7 @@ import { z } from 'zod';
 
 export interface ResolveMeleeEvent {
   /** The type of the event. */
-  eventType: 'gameEffect';
+  eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: boolean;
   /** Whether the black player's unit is routed. */
@@ -27,7 +28,7 @@ export interface ResolveMeleeEvent {
 
 const _resolveMeleeEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('gameEffect' as const),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: z.boolean(),
   /** Whether the black player's unit is routed. */

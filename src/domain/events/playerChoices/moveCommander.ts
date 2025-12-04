@@ -1,12 +1,13 @@
 import type { Board, BoardCoordinate, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { boardCoordinateSchema, playerSideSchema } from '@entities';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** An event to move a commander from one space to another. */
 export interface MoveCommanderEvent {
   /** The type of the event. */
-  eventType: 'playerChoice';
+  eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The player who is moving the commander. */
   player: PlayerSide;
   /** The space the commander is currently in. */
@@ -17,7 +18,7 @@ export interface MoveCommanderEvent {
 
 const _moveCommanderEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('playerChoice' as const),
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   /** The player who is moving the commander. */
   player: playerSideSchema,
   /** The space the commander is currently in. */

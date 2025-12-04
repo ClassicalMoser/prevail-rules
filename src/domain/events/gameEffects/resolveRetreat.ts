@@ -2,6 +2,7 @@ import type { Board, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 
 import { unitWithPlacementSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** An event to resolve a retreat.
@@ -11,14 +12,14 @@ import { z } from 'zod';
  */
 export interface ResolveRetreatEvent {
   /** The type of the event. */
-  eventType: 'gameEffect';
+  eventType: typeof GAME_EFFECT_EVENT_TYPE;
   startingPosition: UnitWithPlacement<Board>;
   endingPositionOptions: Set<UnitWithPlacement<Board>>;
   unitRouted: boolean;
 }
 
 const _resolveRetreatEventSchemaObject = z.object({
-  eventType: z.literal('gameEffect' as const),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   startingPosition: unitWithPlacementSchema,
   endingPositionOptions: z.set(unitWithPlacementSchema),
   unitRouted: z.boolean(),

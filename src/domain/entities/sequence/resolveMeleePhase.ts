@@ -3,6 +3,7 @@ import type { AssertExact } from '@utils';
 
 import { engagedUnitPresenceSchema } from '@entities';
 import { z } from 'zod';
+import { RESOLVE_MELEE_PHASE } from './phases';
 
 /** Iterable list of valid steps in the resolve melee phase. */
 export const resolveMeleePhaseSteps = ['resolveMelee', 'complete'] as const;
@@ -27,7 +28,7 @@ export const resolveMeleePhaseStepSchema: z.ZodType<ResolveMeleePhaseStep> =
 /** The state of the resolve melee phase. */
 export interface ResolveMeleePhaseState {
   /** The current phase of the round. */
-  phase: 'resolveMelee';
+  phase: typeof RESOLVE_MELEE_PHASE;
   /** The step of the resolve melee phase. */
   step: ResolveMeleePhaseStep;
   /** The remaining engagements that need to be resolved. */
@@ -36,7 +37,7 @@ export interface ResolveMeleePhaseState {
 
 const _resolveMeleePhaseStateSchemaObject = z.object({
   /** The current phase of the round. */
-  phase: z.literal('resolveMelee' as const),
+  phase: z.literal(RESOLVE_MELEE_PHASE),
   /** The step of the resolve melee phase. */
   step: resolveMeleePhaseStepSchema,
   /** The remaining engagements that need to be resolved. */

@@ -1,6 +1,7 @@
 import type { PlayerSide, UnitType } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema, unitTypeSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
 
 /** After a player performs a rally, they must check that their
@@ -12,7 +13,7 @@ import { z } from 'zod';
 /** An eventto resolve units that are no longer supported. */
 export interface ResolveUnitsBrokenEvent {
   /** The type of the event. */
-  eventType: 'gameEffect';
+  eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The player whose units are being checked. */
   player: PlayerSide;
   /** The unit types that are broken. */
@@ -21,7 +22,7 @@ export interface ResolveUnitsBrokenEvent {
 
 const _resolveUnitsBrokenEventSchemaObject = z.object({
   /** The type of the event. */
-  eventType: z.literal('gameEffect' as const),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The player whose units are being checked. */
   player: playerSideSchema,
   /** The unit types that are broken. */
