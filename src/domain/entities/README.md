@@ -120,6 +120,34 @@ const _assertExactUnitPresence: AssertExact<
 - Individual schemas use explicit `z.ZodObject<...>` annotations for type safety
 - Inferring from unconstrained schema object ensures type drift detection works
 
+### Import Pattern for Discriminated Union Schemas
+
+**Important:** When creating discriminated unions, import schemas directly using `./` relative imports to avoid module initialization order issues:
+
+```typescript
+// ✅ Still use barrel for types (no initialization issues)
+import type { CleanupPhaseState, PlayCardsPhaseState } from '@entities';
+
+// ✅ Correct - direct import for schemas used in discriminated unions
+import { cleanupPhaseStateSchema } from './cleanupPhase';
+import { moveCommandersPhaseStateSchema } from './moveCommandersPhase';
+import { playCardsPhaseStateSchema } from './playCardsPhase';
+
+const _phaseStateSchemaObject = z.discriminatedUnion('phase', [
+  playCardsPhaseStateSchema,
+  moveCommandersPhaseStateSchema,
+  cleanupPhaseStateSchema,
+]);
+```
+
+**Why direct imports?** `z.discriminatedUnion` requires fully initialized schemas at module evaluation time. Importing schemas through barrel files can cause initialization order issues, even without circular dependencies. This pattern is used in:
+
+- `board.ts` - imports board schemas directly
+- `unitPresence.ts` - imports presence schemas directly
+- `phases.ts` - imports phase state schemas directly
+
+This is an exception to the general barrel file import pattern, but it's necessary for correct module initialization.
+
 ### UnitPresence
 
 Represents three possible states of unit presence in a board space:
