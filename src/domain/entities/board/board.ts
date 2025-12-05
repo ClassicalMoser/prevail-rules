@@ -21,6 +21,25 @@ export type BoardSize = (typeof boardSizeType)[number];
  */
 const _assertExactBoardSize: AssertExact<BoardSize, BoardSizeEnumType> = true;
 
+/**
+ * List of valid board types.
+ */
+export const boardType = ['small', 'standard', 'large'] as const;
+
+/**
+ * The type of a board.
+ */
+export type BoardType = (typeof boardType)[number];
+
+/** The small board type. */
+export const SMALL_BOARD_TYPE: 'small' = boardType[0];
+
+/** The standard board type. */
+export const STANDARD_BOARD_TYPE: 'standard' = boardType[1];
+
+/** The large board type. */
+export const LARGE_BOARD_TYPE: 'large' = boardType[2];
+
 const _boardSchemaObject = z.discriminatedUnion('boardType', [
   smallBoardSchema,
   standardBoardSchema,

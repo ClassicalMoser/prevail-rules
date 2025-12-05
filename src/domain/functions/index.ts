@@ -1,6 +1,7 @@
 export * from './boardSpace';
 export * from './createEmptyBoard';
 export * from './facings';
+export * from './getLegalRetreats';
 export * from './getLegalUnitMoves';
 export * from './getLine';
 export * from './getNextPhase';

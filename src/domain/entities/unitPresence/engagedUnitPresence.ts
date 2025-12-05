@@ -2,13 +2,14 @@ import type { UnitFacing, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitFacingSchema, unitInstanceSchema } from '@entities';
 import { z } from 'zod';
+import { ENGAGED_UNIT_PRESENCE_TYPE } from './unitPresenceType';
 
 /**
  * Two units are engaged in combat in the space.
  */
 export interface EngagedUnitPresence {
   /** Two units are engaged in combat in the space. */
-  presenceType: 'engaged';
+  presenceType: typeof ENGAGED_UNIT_PRESENCE_TYPE;
   /** The primary unit in the engagement. */
   primaryUnit: UnitInstance;
   /** The facing direction of the primary unit. */
@@ -19,7 +20,7 @@ export interface EngagedUnitPresence {
 
 const _engagedUnitPresenceSchemaObject = z.object({
   /** Two units are engaged in combat in the space. */
-  presenceType: z.literal('engaged' as const),
+  presenceType: z.literal(ENGAGED_UNIT_PRESENCE_TYPE),
   /** The primary unit in the engagement. */
   primaryUnit: unitInstanceSchema,
   /** The facing direction of the primary unit. */

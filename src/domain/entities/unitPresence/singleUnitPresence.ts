@@ -2,13 +2,14 @@ import type { UnitFacing, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitFacingSchema, unitInstanceSchema } from '@entities';
 import { z } from 'zod';
+import { SINGLE_UNIT_PRESENCE_TYPE } from './unitPresenceType';
 
 /**
  * A single unit is present in the space.
  */
 export interface SingleUnitPresence {
   /** A single unit is present in the space. */
-  presenceType: 'single';
+  presenceType: typeof SINGLE_UNIT_PRESENCE_TYPE;
   /** The unit in the space. */
   unit: UnitInstance;
   /** The facing direction of the unit. */
@@ -17,7 +18,7 @@ export interface SingleUnitPresence {
 
 const _singleUnitPresenceSchemaObject = z.object({
   /** A single unit is present in the space. */
-  presenceType: z.literal('single' as const),
+  presenceType: z.literal(SINGLE_UNIT_PRESENCE_TYPE),
   /** The unit in the space. */
   unit: unitInstanceSchema,
   /** The facing direction of the unit. */

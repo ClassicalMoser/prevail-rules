@@ -10,6 +10,9 @@ import { z } from 'zod';
  * If the defending unit is engaged from the flank, it must face the attacking unit.
  * If the defending unit is engaged from the front,
  * the attacking unit must turn to face the defending unit.
+ *
+ * Additionally, if the defending unit has a speed greater than that of the attacking unit,
+ * the defending unit can retreat.
  */
 export interface ResolveEngagementEvent {
   /** The type of the event. */
@@ -18,6 +21,8 @@ export interface ResolveEngagementEvent {
   engagement: UnitPresence;
   /** Whether the defending unit is routed. */
   defendingUnitRouted: boolean;
+  /** Whether the defending unit can retreat. */
+  defendingUnitCanRetreat: boolean;
 }
 
 const _resolveEngagementEventSchemaObject = z.object({
@@ -27,6 +32,8 @@ const _resolveEngagementEventSchemaObject = z.object({
   engagement: unitPresenceSchema,
   /** Whether the defending unit is routed. */
   defendingUnitRouted: z.boolean(),
+  /** Whether the defending unit can retreat. */
+  defendingUnitCanRetreat: z.boolean(),
 });
 
 type ResolveEngagementEventSchemaType = z.infer<

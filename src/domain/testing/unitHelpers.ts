@@ -13,6 +13,14 @@ import { createUnitInstance } from '@utils/createUnitInstance';
  * @param options.instanceNumber - Unit instance number (defaults to 1)
  * @param options.flexibility - Flexibility stat value (used if unitType not provided)
  * @param options.attack - Attack stat value (used if unitType not provided)
+ * @param options.speed - Speed stat value (used if unitType not provided)
+ * @param options.range - Range stat value (used if unitType not provided)
+ * @param options.reverse - Reverse stat value (used if unitType not provided)
+ * @param options.retreat - Retreat stat value (used if unitType not provided)
+ * @param options.rout - Rout stat value (used if unitType not provided)
+ * @param options.cost - Cost stat value (used if unitType not provided)
+ * @param options.limit - Limit stat value (used if unitType not provided)
+ * @param options.routPenalty - Rout penalty stat value (used if unitType not provided)
  * @returns A unit instance configured for testing
  */
 export function createTestUnit(
@@ -22,6 +30,14 @@ export function createTestUnit(
     instanceNumber?: number;
     flexibility?: number;
     attack?: number;
+    speed?: number;
+    range?: number;
+    reverse?: number;
+    retreat?: number;
+    rout?: number;
+    cost?: number;
+    limit?: number;
+    routPenalty?: number;
   },
 ): UnitInstance {
   const instanceNumber = options?.instanceNumber ?? 1;
