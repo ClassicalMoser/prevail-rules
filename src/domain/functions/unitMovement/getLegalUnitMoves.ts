@@ -7,7 +7,7 @@ import type {
 } from '@entities';
 import { areSameSide, getBoardSpace, getForwardSpace } from '@functions';
 import { canEngageEnemy, canMoveInto, hasSingleUnit } from '@validation';
-import { exploreMoves } from './unitMovement/exploreMoves';
+import { exploreMoves } from './exploreMoves';
 
 /**
  * Calculates all legal moves for a unit from a given starting position.

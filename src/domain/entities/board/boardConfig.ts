@@ -103,7 +103,11 @@ const _assertExactBoardConfigMap: AssertExact<
 export function getBoardConfig<TBoard extends Board>(
   board: TBoard,
 ): BoardConfig<BoardCoordinate<TBoard>> {
-  return boardConfigMap[board.boardType] as BoardConfig<
-    BoardCoordinate<TBoard>
-  >;
+  const config = boardConfigMap[board.boardType];
+  if (!config) {
+    throw new Error(
+      `Invalid board type: ${board.boardType}. Expected 'standard', 'small', or 'large'.`,
+    );
+  }
+  return config as BoardConfig<BoardCoordinate<TBoard>>;
 }

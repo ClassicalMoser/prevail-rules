@@ -14,7 +14,7 @@ import {
   getSpacesBehind,
 } from '@functions';
 import { hasNoUnit, hasSingleUnit } from '@validation';
-import { exploreMoves } from './unitMovement/exploreMoves';
+import { exploreMoves } from './exploreMoves';
 
 /**
  * Finds all legal retreat moves for a unit.
@@ -129,6 +129,7 @@ export function getLegalRetreats<TBoard extends Board>(
         flexibilityUsed: number,
         speedUsed: number,
       ) => {
+        // Only explore paths that could reach exactly our target cost level
         // Stop if we've exceeded the cost limits for this search
         return (
           flexibilityUsed <= targetFlexibility &&
@@ -144,19 +145,12 @@ export function getLegalRetreats<TBoard extends Board>(
         _remainingFlexibility: number,
       ) => {
         // Retreat requires movement: Only add if we've moved (not starting position)
-        // Note: exploreMoves only calls this when previousCoordinate is defined
-        if (previousCoordinate !== undefined) {
-          // Note: canEndAt already validates that the coordinate is behind
-          // the starting position, so we don't need to check again here
-
-          // Check if this matches our target cost level
-          if (
-            flexibilityUsed === targetFlexibility &&
-            speedUsed === targetSpeed
-          ) {
-            foundRetreats.add(placement);
-          }
+        if (previousCoordinate === undefined) {
+          return;
         }
+
+        // Collect the valid retreat
+        foundRetreats.add(placement);
       };
 
       // Explore at this cost level

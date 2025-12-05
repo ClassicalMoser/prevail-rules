@@ -2,6 +2,7 @@ export * from './adjacency';
 export * from './areas';
 export * from './deltas';
 export * from './filterUndefinedSpaces';
+export * from './getBoardCoordinates';
 export * from './getBoardSpace';
 export * from './getForwardSpace';
 export * from './getForwardSpacesToEdge';
