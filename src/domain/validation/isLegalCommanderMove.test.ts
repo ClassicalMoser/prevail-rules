@@ -1,6 +1,6 @@
 import type { StandardBoardCoordinate } from '@entities';
 import type { MoveCommanderEvent } from '@events';
-import { createEmptyStandardBoard } from '@functions';
+import { createEmptyStandardBoard } from '@queries';
 import { createBoardWithCommander } from '@testing';
 import { isLegalCommanderMove } from '@validation';
 import { describe, expect, it } from 'vitest';

@@ -9,8 +9,10 @@ export default defineConfig({
     alias: {
       '@entities': path.resolve(__dirname, './src/domain/entities'),
       '@entities/*': path.resolve(__dirname, './src/domain/entities/*'),
-      '@functions': path.resolve(__dirname, './src/domain/functions'),
-      '@functions/*': path.resolve(__dirname, './src/domain/functions/*'),
+      '@queries': path.resolve(__dirname, './src/domain/queries'),
+      '@queries/*': path.resolve(__dirname, './src/domain/queries/*'),
+      '@transformers': path.resolve(__dirname, './src/domain/transformers'),
+      '@transformers/*': path.resolve(__dirname, './src/domain/transformers/*'),
       '@commands': path.resolve(__dirname, './src/domain/events'),
       '@commands/*': path.resolve(__dirname, './src/domain/events/*'),
       '@contracts': path.resolve(__dirname, './src/contracts'),

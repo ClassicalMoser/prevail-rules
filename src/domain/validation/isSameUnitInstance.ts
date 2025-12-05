@@ -1,5 +1,5 @@
 import type { UnitInstance } from '@entities';
-import { areSameSide } from '@functions';
+import { areSameSide } from '@queries';
 import { isSameInstanceNumber } from './isSameInstanceNumber';
 import { isSameUnitType } from './isSameUnitType';
 

@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { MoveCommanderEvent } from '@events';
-import { getBoardSpace, getSpacesWithinDistance } from '@functions';
+import { getBoardSpace, getSpacesWithinDistance } from '@queries';
 import { COMMANDER_MOVE_DISTANCE } from '@sampleValues';
 
 /**

@@ -28,7 +28,7 @@ export default antfu(
     files: ['**/*.ts', '**/*.js'],
     ignores: ['**/index.ts'],
     rules: {
-      // Ban all relative imports; require aliases (@entities/*, @functions/*, etc.)
+      // Ban all relative imports; require aliases (@entities/*, @queries/*, etc.)
       'no-restricted-imports': 'off',
       '@typescript-eslint/no-restricted-imports': [
         'error',
@@ -37,12 +37,12 @@ export default antfu(
             {
               group: ['../**'],
               message:
-                'Use aliased imports (e.g., @entities/*, @functions/*) instead of relative paths that go up directories.',
+                'Use aliased imports (e.g., @entities/*, @queries/*) instead of relative paths that go up directories.',
             },
             {
               group: ['src/**'],
               message:
-                'Use aliased imports (@entities/*, @functions/*, etc.) instead of src/* paths.',
+                'Use aliased imports (@entities/*, @queries/*, etc.) instead of src/* paths.',
             },
             {
               group: ['**/*.js'],
@@ -55,7 +55,7 @@ export default antfu(
             {
               group: [
                 '@entities/**/*',
-                '@functions/**/*',
+                '@queries/**/*',
                 '@commands/**/*',
                 '@contracts/**/*',
                 '@validation/**/*',

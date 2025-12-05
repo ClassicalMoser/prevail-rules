@@ -5,7 +5,7 @@
 
 import type { Board, GameState, UnitPlacement } from '@entities';
 import type { MoveUnitEvent } from '@events';
-import { getBoardSpace } from '@functions';
+import { getBoardSpace } from '@queries';
 import { hasNoUnit, hasSingleUnit } from '@validation';
 
 /**

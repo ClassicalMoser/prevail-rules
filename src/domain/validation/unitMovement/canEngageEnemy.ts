@@ -12,7 +12,7 @@ import {
   getFrontSpaces,
   getOppositeFacing,
   getSpacesBehind,
-} from '@functions';
+} from '@queries';
 import { hasSingleUnit } from '@validation';
 
 /**

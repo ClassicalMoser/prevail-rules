@@ -113,7 +113,7 @@ pnpm test
 pnpm validate
 ```
 
-The project uses path aliases (`@entities`, `@functions`, `@validation`, etc.) - see `tsconfig.json` for the full list.
+The project uses path aliases (`@entities`, `@queries`, `@validation`, etc.) - see `tsconfig.json` for the full list.
 
 ## Documentation
 

@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate, UnitInstance } from '@entities';
-import { areSameSide, getBoardSpace } from '@functions';
+import { areSameSide, getBoardSpace } from '@queries';
 import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from '@validation';
 
 /**

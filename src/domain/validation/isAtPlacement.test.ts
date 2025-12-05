@@ -6,7 +6,7 @@ import type {
   UnitInstance,
   UnitWithPlacement,
 } from '@entities';
-import { createEmptyStandardBoard } from '@functions';
+import { createEmptyStandardBoard } from '@queries';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,

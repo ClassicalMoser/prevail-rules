@@ -4,7 +4,7 @@ import type {
   StandardBoardCoordinate,
   UnitInstance,
 } from '@entities';
-import { createEmptyStandardBoard } from '@functions';
+import { createEmptyStandardBoard } from '@queries';
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,

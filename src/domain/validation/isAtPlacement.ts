@@ -1,5 +1,5 @@
 import type { Board, UnitWithPlacement } from '@entities';
-import { areSameSide, getPlayerUnitWithPosition } from '@functions';
+import { areSameSide, getPlayerUnitWithPosition } from '@queries';
 
 /**
  * Determines whether a unit is at a specific placement on the board.

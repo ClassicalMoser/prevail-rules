@@ -3,7 +3,7 @@ import {
   createEmptyStandardBoard,
   getLinesFromUnit,
   getPlayerUnitWithPosition,
-} from '@functions';
+} from '@queries';
 import { createBoardWithUnits, createTestUnit } from '@testing';
 import { isValidLine } from '@validation';
 import { describe, expect, it } from 'vitest';

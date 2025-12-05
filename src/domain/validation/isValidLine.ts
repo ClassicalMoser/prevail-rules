@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate, Line } from '@entities';
-import { areSameSide, getFlankingSpaces, getOppositeFacing } from '@functions';
+import { areSameSide, getFlankingSpaces, getOppositeFacing } from '@queries';
 import { MAX_LINE_LENGTH } from '@sampleValues';
 
 /**

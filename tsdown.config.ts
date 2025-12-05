@@ -16,7 +16,7 @@ export default defineConfig({
   }),
   alias: {
     '@entities': './src/entities',
-    '@functions': './src/functions',
+    '@queries': './src/functions',
     '@commands': './src/commands',
     '@contracts': './src/contracts',
     '@testing': './src/testing',

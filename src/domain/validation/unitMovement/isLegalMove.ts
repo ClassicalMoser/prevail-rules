@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { MoveUnitEvent } from '@events';
-import { getLegalUnitMoves } from '@functions';
+import { getLegalUnitMoves } from '@queries';
 
 /**
  * Validates whether a unit move event is legal according to game rules.

@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate, UnitInstance } from '@entities';
-import { areSameSide, getBoardSpace } from '@functions';
+import { areSameSide, getBoardSpace } from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@sampleValues';
 import { hasEngagedUnits, hasNoUnit } from '@validation';
 
