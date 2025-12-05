@@ -1,6 +1,9 @@
+import type { Board, BoardCoordinate } from '@entities';
 import type { AssertExact } from '@utils';
+import { boardCoordinateSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { RESOLVE_MELEE_EFFECT_TYPE } from './gameEffect';
 
 /** The event for the game resolution of a melee.
  * After the engagement is chosen, supports are applied,
@@ -12,6 +15,10 @@ import { z } from 'zod';
 export interface ResolveMeleeEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
+  /** The type of game effect. */
+  effectType: typeof RESOLVE_MELEE_EFFECT_TYPE;
+  /** The location of the melee. */
+  location: BoardCoordinate<Board>;
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: boolean;
   /** Whether the black player's unit is routed. */
@@ -29,6 +36,10 @@ export interface ResolveMeleeEvent {
 const _resolveMeleeEventSchemaObject = z.object({
   /** The type of the event. */
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  /** The type of game effect. */
+  effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
+  /** The location of the melee. */
+  location: boardCoordinateSchema,
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: z.boolean(),
   /** Whether the black player's unit is routed. */
@@ -53,5 +64,14 @@ const _assertExactResolveMeleeEvent: AssertExact<
 > = true;
 
 /** The schema for a resolve melee event. */
-export const resolveMeleeEventSchema: z.ZodType<ResolveMeleeEvent> =
-  _resolveMeleeEventSchemaObject;
+export const resolveMeleeEventSchema: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_MELEE_EFFECT_TYPE>;
+  location: typeof boardCoordinateSchema;
+  whiteUnitRouted: z.ZodBoolean;
+  blackUnitRouted: z.ZodBoolean;
+  whiteUnitRetreated: z.ZodBoolean;
+  blackUnitRetreated: z.ZodBoolean;
+  whiteUnitReversed: z.ZodBoolean;
+  blackUnitReversed: z.ZodBoolean;
+}> = _resolveMeleeEventSchemaObject;

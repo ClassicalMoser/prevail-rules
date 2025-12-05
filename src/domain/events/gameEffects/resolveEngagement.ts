@@ -3,6 +3,7 @@ import type { AssertExact } from '@utils';
 import { unitPresenceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { RESOLVE_ENGAGEMENT_EFFECT_TYPE } from './gameEffect';
 
 /** The event to resolve an engagement.
  * When a unit is moved into an enemy unit's space, the engagement is resolved.
@@ -17,6 +18,8 @@ import { z } from 'zod';
 export interface ResolveEngagementEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
+  /** The type of game effect. */
+  effectType: typeof RESOLVE_ENGAGEMENT_EFFECT_TYPE;
   /** The resulting unit presence after the engagement. */
   engagement: UnitPresence;
   /** Whether the defending unit is routed. */
@@ -28,6 +31,8 @@ export interface ResolveEngagementEvent {
 const _resolveEngagementEventSchemaObject = z.object({
   /** The type of the event. */
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  /** The type of game effect. */
+  effectType: z.literal(RESOLVE_ENGAGEMENT_EFFECT_TYPE),
   /** The resulting unit presence after the engagement. */
   engagement: unitPresenceSchema,
   /** Whether the defending unit is routed. */
@@ -46,5 +51,10 @@ const _assertExactResolveEngagementEvent: AssertExact<
 > = true;
 
 /** The schema for a resolve engagement event. */
-export const resolveEngagementEventSchema: z.ZodType<ResolveEngagementEvent> =
-  _resolveEngagementEventSchemaObject;
+export const resolveEngagementEventSchema: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_ENGAGEMENT_EFFECT_TYPE>;
+  engagement: typeof unitPresenceSchema;
+  defendingUnitRouted: z.ZodBoolean;
+  defendingUnitCanRetreat: z.ZodBoolean;
+}> = _resolveEngagementEventSchemaObject;

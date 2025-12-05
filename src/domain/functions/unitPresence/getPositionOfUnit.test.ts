@@ -1,8 +1,5 @@
 import type { StandardBoardCoordinate } from '@entities';
-import {
-  createEmptyStandardBoard,
-  getPositionOfUnit,
-} from '@functions';
+import { createEmptyStandardBoard, getPositionOfUnit } from '@functions';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
@@ -16,9 +13,7 @@ describe('getPositionOfUnit', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: StandardBoardCoordinate = 'E-5';
       const facing = 'north';
-      const board = createBoardWithUnits([
-        { unit, coordinate, facing },
-      ]);
+      const board = createBoardWithUnits([{ unit, coordinate, facing }]);
 
       const placement = getPositionOfUnit(board, unit);
 
@@ -30,9 +25,7 @@ describe('getPositionOfUnit', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: StandardBoardCoordinate = 'E-5';
       const facing = 'southEast';
-      const board = createBoardWithUnits([
-        { unit, coordinate, facing },
-      ]);
+      const board = createBoardWithUnits([{ unit, coordinate, facing }]);
 
       const placement = getPositionOfUnit(board, unit);
 
@@ -134,4 +127,3 @@ describe('getPositionOfUnit', () => {
     });
   });
 });
-

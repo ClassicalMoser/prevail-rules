@@ -32,6 +32,7 @@ describe('isLegalCardChoice', () => {
       const cardState = createCardState([commandCards[0], commandCards[1]], []);
       const chooseCardEvent: ChooseCardEvent = {
         eventType: 'playerChoice',
+        choiceType: 'chooseCard',
         player: 'black',
         card: commandCards[0],
       };
@@ -45,6 +46,7 @@ describe('isLegalCardChoice', () => {
       const cardState = createCardState([], [commandCards[0], commandCards[1]]);
       const chooseCardEvent: ChooseCardEvent = {
         eventType: 'playerChoice',
+        choiceType: 'chooseCard',
         player: 'white',
         card: commandCards[1],
       };
@@ -60,6 +62,7 @@ describe('isLegalCardChoice', () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
       const chooseCardEvent: ChooseCardEvent = {
         eventType: 'playerChoice',
+        choiceType: 'chooseCard',
         player: 'black',
         card: commandCards[1], // Card is in white player's hand, not black's
       };
@@ -73,6 +76,7 @@ describe('isLegalCardChoice', () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
       const chooseCardEvent: ChooseCardEvent = {
         eventType: 'playerChoice',
+        choiceType: 'chooseCard',
         player: 'white',
         card: commandCards[0], // Card is in black player's hand, not white's
       };
@@ -86,6 +90,7 @@ describe('isLegalCardChoice', () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
       const chooseCardEvent: ChooseCardEvent = {
         eventType: 'playerChoice',
+        choiceType: 'chooseCard',
         player: 'black',
         card: commandCards[2], // Card is not in either player's hand
       };

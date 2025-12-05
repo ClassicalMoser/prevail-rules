@@ -27,5 +27,3 @@ export function getBoardCoordinates<TBoard extends Board>(
   }
   return coordinates;
 }
-
-

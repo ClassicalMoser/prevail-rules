@@ -6,6 +6,7 @@ export default antfu(
     react: false,
     typescript: true,
     stylistic: false,
+    markdown: false,
     languageOptions: {
       globals: {
         describe: true,
@@ -81,7 +82,13 @@ export default antfu(
     },
   },
   {
-    ignores: ['pnpm-lock.yaml', 'node_modules/', '*.yml'],
+    ignores: [
+      'pnpm-lock.yaml',
+      'node_modules/',
+      '*.yml',
+      '**/*.md',
+      '**/*.mdx',
+    ],
   },
   prettierConfig,
 );

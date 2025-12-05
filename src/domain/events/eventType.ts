@@ -1,5 +1,10 @@
 import type { AssertExact } from '@utils';
+import type { GameEffectEvent } from './gameEffects/gameEffect';
+import type { PlayerChoiceEvent } from './playerChoices/playerChoice';
 import { z } from 'zod';
+// Direct imports for nested discriminated union schemas to avoid initialization order issues
+import { gameEffectEventSchema } from './gameEffects/gameEffect';
+import { playerChoiceEventSchema } from './playerChoices/playerChoice';
 
 /** Iterable list of valid types of events. */
 export const eventTypes = ['playerChoice', 'gameEffect'] as const;
@@ -20,3 +25,31 @@ const _assertExactEventType: AssertExact<EventType, EventTypeSchemaType> = true;
 
 /** The schema for the type of an event. */
 export const eventTypeSchema: z.ZodType<EventType> = _eventTypeSchemaObject;
+
+export type Event = PlayerChoiceEvent | GameEffectEvent;
+
+/**
+ * Unconstrained union schema object for all events.
+ * Uses union to combine the nested discriminated unions:
+ * - playerChoiceEventSchema (discriminated by 'choiceType')
+ * - gameEffectEventSchema (discriminated by 'effectType')
+ *
+ * This provides effective double-discrimination:
+ * - Top level: `eventType` field distinguishes playerChoice vs gameEffect
+ * - Nested level: `choiceType`/`effectType` distinguish specific events
+ *
+ * TypeScript provides compile-time type safety, and Zod validates the shape
+ * at runtime - a gameEffect with wrong eventType won't match playerChoice schemas.
+ * The nested discriminated unions provide efficient validation within each category.
+ */
+const _eventSchemaObject = z.union([
+  playerChoiceEventSchema,
+  gameEffectEventSchema,
+]);
+
+type EventSchemaType = z.infer<typeof _eventSchemaObject>;
+
+const _assertExactEvent: AssertExact<Event, EventSchemaType> = true;
+
+/** The schema for all game events. */
+export const eventSchema: z.ZodType<Event> = _eventSchemaObject;

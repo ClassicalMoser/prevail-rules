@@ -3,6 +3,7 @@ import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { RESOLVE_INITIATIVE_EFFECT_TYPE } from './gameEffect';
 
 /** The event to resolve the initiative.
  * Which player has initiative for the round.
@@ -12,6 +13,8 @@ import { z } from 'zod';
 export interface ResolveInitiativeEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
+  /** The type of game effect. */
+  effectType: typeof RESOLVE_INITIATIVE_EFFECT_TYPE;
   /** The player with initiative. */
   player: PlayerSide;
 }
@@ -19,6 +22,8 @@ export interface ResolveInitiativeEvent {
 const _resolveInitiativeEventSchemaObject = z.object({
   /** The type of the event. */
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  /** The type of game effect. */
+  effectType: z.literal(RESOLVE_INITIATIVE_EFFECT_TYPE),
   /** The player with initiative. */
   player: playerSideSchema,
 });
@@ -33,5 +38,8 @@ const _assertExactResolveInitiativeEvent: AssertExact<
 > = true;
 
 /** The schema for a resolve initiative event. */
-export const resolveInitiativeEventSchema: z.ZodType<ResolveInitiativeEvent> =
-  _resolveInitiativeEventSchemaObject;
+export const resolveInitiativeEventSchema: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_INITIATIVE_EFFECT_TYPE>;
+  player: typeof playerSideSchema;
+}> = _resolveInitiativeEventSchemaObject;

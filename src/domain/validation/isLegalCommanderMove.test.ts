@@ -10,6 +10,7 @@ describe('valid moves', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent = {
       eventType: 'playerChoice',
+      choiceType: 'moveCommander',
       player: 'black',
       from: 'E-5',
       to: 'E-6', // Adjacent space
@@ -24,6 +25,7 @@ describe('valid moves', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent = {
       eventType: 'playerChoice',
+      choiceType: 'moveCommander',
       player: 'black',
       from: 'E-5',
       to: 'E-9', // Exactly 4 spaces away
@@ -38,6 +40,7 @@ describe('valid moves', () => {
     const board = createBoardWithCommander('white', 'F-6');
     const moveCommanderEvent: MoveCommanderEvent = {
       eventType: 'playerChoice',
+      choiceType: 'moveCommander',
       player: 'white',
       from: 'F-6',
       to: 'F-5', // Adjacent space
@@ -52,6 +55,7 @@ describe('valid moves', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent = {
       eventType: 'playerChoice',
+      choiceType: 'moveCommander',
       player: 'black',
       from: 'E-5',
       to: 'D-4', // Diagonal, distance 1
@@ -68,6 +72,7 @@ describe('invalid moves', () => {
     const board = createEmptyStandardBoard(); // No commander on board
     const moveCommanderEvent: MoveCommanderEvent = {
       eventType: 'playerChoice',
+      choiceType: 'moveCommander',
       player: 'black',
       from: 'E-5',
       to: 'E-6',
@@ -82,6 +87,7 @@ describe('invalid moves', () => {
     const board = createBoardWithCommander('white', 'E-5'); // White commander, not black
     const moveCommanderEvent: MoveCommanderEvent = {
       eventType: 'playerChoice',
+      choiceType: 'moveCommander',
       player: 'black',
       from: 'E-5',
       to: 'E-6',
@@ -96,6 +102,7 @@ describe('invalid moves', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent = {
       eventType: 'playerChoice',
+      choiceType: 'moveCommander',
       player: 'black',
       from: 'E-5',
       to: 'E-10', // 5 spaces away, beyond COMMANDER_MOVE_DISTANCE (4)
@@ -110,6 +117,7 @@ describe('invalid moves', () => {
     const board = createEmptyStandardBoard();
     const moveCommanderEvent: MoveCommanderEvent = {
       eventType: 'playerChoice',
+      choiceType: 'moveCommander',
       player: 'black',
       from: 'Z-99' as StandardBoardCoordinate, // Invalid coordinate
       to: 'E-5',
@@ -124,6 +132,7 @@ describe('invalid moves', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent = {
       eventType: 'playerChoice',
+      choiceType: 'moveCommander',
       player: 'black',
       from: 'E-5',
       to: 'Z-99' as StandardBoardCoordinate, // Invalid coordinate

@@ -39,5 +39,8 @@ const _assertExactResolveUnitsBrokenEvent: AssertExact<
 > = true;
 
 /** The schema for a resolve units broken event. */
-export const resolveUnitsBrokenEventSchema: z.ZodType<ResolveUnitsBrokenEvent> =
-  _resolveUnitsBrokenEventSchemaObject;
+export const resolveUnitsBrokenEventSchema: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  player: typeof playerSideSchema;
+  unitTypes: z.ZodArray<typeof unitTypeSchema>;
+}> = _resolveUnitsBrokenEventSchemaObject;

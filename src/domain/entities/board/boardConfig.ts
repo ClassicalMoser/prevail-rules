@@ -105,9 +105,7 @@ export function getBoardConfig<TBoard extends Board>(
 ): BoardConfig<BoardCoordinate<TBoard>> {
   const config = boardConfigMap[board.boardType];
   if (!config) {
-    throw new Error(
-      `Invalid board type: ${board.boardType}. Expected 'standard', 'small', or 'large'.`,
-    );
+    throw new Error(`Invalid board type: ${board.boardType}.`);
   }
   return config as BoardConfig<BoardCoordinate<TBoard>>;
 }

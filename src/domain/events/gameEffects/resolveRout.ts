@@ -3,6 +3,7 @@ import type { AssertExact } from '@utils';
 import { unitInstanceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { RESOLVE_ROUT_EFFECT_TYPE } from './gameEffect';
 
 /** An event to resolve a rout.
  * A unit that is routed is permanently removed from the game.
@@ -11,6 +12,8 @@ import { z } from 'zod';
 export interface ResolveRoutEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
+  /** The type of game effect. */
+  effectType: typeof RESOLVE_ROUT_EFFECT_TYPE;
   /** The unit instance that is being routed. */
   unitInstance: UnitInstance;
   /** The penalty for routing the unit. */
@@ -20,6 +23,8 @@ export interface ResolveRoutEvent {
 const _resolveRoutEventSchemaObject = z.object({
   /** The type of the event. */
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  /** The type of game effect. */
+  effectType: z.literal(RESOLVE_ROUT_EFFECT_TYPE),
   /** The unit instance that is being routed. */
   unitInstance: unitInstanceSchema,
   /** The penalty for routing the unit. */
@@ -34,5 +39,9 @@ const _assertExactResolveRoutEvent: AssertExact<
 > = true;
 
 /** The schema for a resolve rout event. */
-export const resolveRoutEventSchema: z.ZodType<ResolveRoutEvent> =
-  _resolveRoutEventSchemaObject;
+export const resolveRoutEventSchema: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_ROUT_EFFECT_TYPE>;
+  unitInstance: typeof unitInstanceSchema;
+  penalty: z.ZodNumber;
+}> = _resolveRoutEventSchemaObject;

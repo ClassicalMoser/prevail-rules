@@ -18,6 +18,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate, facing },
@@ -38,6 +39,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
@@ -58,6 +60,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate, facing: fromFacing },
@@ -80,6 +83,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
@@ -102,6 +106,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
@@ -126,6 +131,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
@@ -146,6 +152,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
@@ -168,6 +175,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
@@ -190,6 +198,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
@@ -212,6 +221,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
@@ -236,6 +246,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },
@@ -259,6 +270,7 @@ describe('isLegalMove', () => {
 
       const moveUnitEvent: MoveUnitEvent = {
         eventType: 'playerChoice',
+        choiceType: 'moveUnit',
         player: 'black',
         unit,
         from: { coordinate: fromCoordinate, facing },

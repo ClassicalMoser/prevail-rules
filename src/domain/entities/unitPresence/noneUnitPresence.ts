@@ -17,15 +17,15 @@ const _noneUnitPresenceSchemaObject = z.object({
 
 type NoneUnitPresenceSchemaType = z.infer<typeof _noneUnitPresenceSchemaObject>;
 
+// Verify manual type matches schema inference
+const _assertExactNoneUnitPresence: AssertExact<
+  NoneUnitPresence,
+  NoneUnitPresenceSchemaType
+> = true;
+
 /**
  * The schema for no unit presence in a space.
  */
 export const noneUnitPresenceSchema: z.ZodObject<{
   presenceType: z.ZodLiteral<'none'>;
 }> = _noneUnitPresenceSchemaObject;
-
-// Verify manual type matches schema inference
-const _assertExactNoneUnitPresence: AssertExact<
-  NoneUnitPresence,
-  NoneUnitPresenceSchemaType
-> = true;
