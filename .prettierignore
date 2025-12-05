@@ -1,8 +1,19 @@
-dist/
+# Dependencies
 node_modules/
+
+# Build outputs
+dist/
+.stryker-tmp/
 coverage/
-.git/
-.gitignore
-.prettierignore
-.prettierrc
-.prettierignore
+reports/
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Generated files
+*.tsbuildinfo
+
+# System files
+.DS_Store

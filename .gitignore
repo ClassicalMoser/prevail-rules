@@ -22,6 +22,12 @@ coverage/
 # TypeScript build output
 dist/
 
+# Stryker sandbox output
+.stryker-tmp/
+
+# Stryker mutation output
+reports/
+
 # dotenv environment variable files
 .env
 .env.*

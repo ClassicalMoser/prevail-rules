@@ -7,6 +7,13 @@ export default antfu(
     typescript: true,
     stylistic: false,
     markdown: false,
+    ignores: [
+      'reports/**',
+      'dist/**',
+      '.stryker-tmp/**',
+      'coverage/**',
+      'node_modules/**',
+    ],
     languageOptions: {
       globals: {
         describe: true,
@@ -84,7 +91,11 @@ export default antfu(
   {
     ignores: [
       'pnpm-lock.yaml',
-      'node_modules/',
+      'node_modules/**',
+      'reports/**',
+      'dist/**',
+      '.stryker-tmp/**',
+      'coverage/**',
       '*.yml',
       '**/*.md',
       '**/*.mdx',
