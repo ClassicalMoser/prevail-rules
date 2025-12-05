@@ -116,7 +116,7 @@ export function getLegalRetreats<TBoard extends Board>(
         b: TBoard,
         coord: BoardCoordinate<TBoard>,
       ) => {
-        // Requirement 1: Ending position must be behind starting position and facing
+        // Ending position must be behind starting position and facing
         if (!spacesBehind.has(coord)) {
           return false;
         }
@@ -143,22 +143,9 @@ export function getLegalRetreats<TBoard extends Board>(
         previousCoordinate: BoardCoordinate<TBoard> | undefined,
         _remainingFlexibility: number,
       ) => {
-        // Only add if we've moved (not starting position)
+        // Retreat requires movement: Only add if we've moved (not starting position)
         // Note: exploreMoves only calls this when previousCoordinate is defined
         if (previousCoordinate !== undefined) {
-          // Requirement 2: Unit cannot change facing before the first move
-          // If we used flexibility but haven't moved yet, this is invalid
-          // We check this by seeing if we're still at the starting coordinate
-          // and used flexibility
-          if (
-            previousCoordinate === startingPosition.coordinate &&
-            flexibilityUsed > 0 &&
-            speedUsed === 0
-          ) {
-            // Changed facing before moving - invalid retreat
-            return;
-          }
-
           // Note: canEndAt already validates that the coordinate is behind
           // the starting position, so we don't need to check again here
 
