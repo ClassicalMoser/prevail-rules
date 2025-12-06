@@ -1,7 +1,11 @@
+import type { AssertExact } from '@utils';
 import type { StandardBoardColumnNumber } from './standardColumnNumbers';
 import type { StandardBoardRowLetter } from './standardRowLetters';
+
+import { z } from 'zod';
 import { standardBoardColumnNumbers } from './standardColumnNumbers';
 import { standardBoardRowLetters } from './standardRowLetters';
+
 
 /**
  * A valid coordinate on a standard board (A-1 through L-18).
@@ -14,9 +18,23 @@ export type StandardBoardCoordinate =
  *
  * Runtime validation ensures all coordinates match the StandardBoardCoordinate type pattern.
  */
-const computedCoordinates = standardBoardRowLetters.flatMap((row) =>
-  standardBoardColumnNumbers.map((column) => `${row}-${column}`),
-);
+export const standardBoardCoordinates: readonly StandardBoardCoordinate[] =
+  standardBoardRowLetters.flatMap((row) =>
+    standardBoardColumnNumbers.map((column) => `${row}-${column}`),
+  ) as readonly StandardBoardCoordinate[];
 
-export const standardBoardCoordinates =
-  computedCoordinates as readonly StandardBoardCoordinate[];
+const _standardBoardCoordinatesSchema = z.enum(standardBoardCoordinates);
+type StandardBoardCoordinatesSchemaType = z.infer<
+  typeof _standardBoardCoordinatesSchema
+>;
+
+const _assertExactStandardBoardCoordinates: AssertExact<
+  StandardBoardCoordinate,
+  StandardBoardCoordinatesSchemaType
+> = true;
+
+/**
+ * The schema for a standard board coordinate.
+ */
+export const standardBoardCoordinateSchema: z.ZodType<StandardBoardCoordinate> =
+  _standardBoardCoordinatesSchema;

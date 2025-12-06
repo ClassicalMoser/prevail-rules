@@ -1,9 +1,9 @@
 import type { StandardBoardCoordinate, UnitFacing } from '@entities';
 import type { MoveUnitEvent } from '@events';
 import { createBoardWithUnits, getUnitByStatValue } from '@testing';
-import { createUnitInstance } from '@utils/createUnitInstance';
-import { isLegalMove } from '@validation';
+import { createUnitInstance } from '@utils';
 import { describe, expect, it } from 'vitest';
+import { isLegalMove } from './isLegalMove';
 
 describe('isLegalMove', () => {
   // Use stat-based lookup instead of name to avoid brittleness

@@ -1,9 +1,10 @@
 import type { Board, BoardCoordinate } from '@entities';
 import type { AssertExact } from '@utils';
 import { boardCoordinateSchema } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { GAME_EFFECT_EVENT_TYPE } from '../eventType';
 import { RESOLVE_MELEE_EFFECT_TYPE } from './gameEffect';
+
 
 /** The event for the game resolution of a melee.
  * After the engagement is chosen, supports are applied,

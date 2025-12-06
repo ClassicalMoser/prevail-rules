@@ -1,5 +1,5 @@
-import type { PlayerCardState } from '@entities';
 import type { AssertExact } from '@utils';
+import type { PlayerCardState } from './playerCardState';
 import { z } from 'zod';
 import { playerCardStateSchema } from './playerCardState';
 

@@ -3,8 +3,10 @@ import type {
   StandardBoardCoordinate,
   UnitFacing,
 } from '@entities';
-import { createEmptyStandardBoard, getRearwardSpace } from '@queries';
 import { describe, expect, it } from 'vitest';
+import { createEmptyStandardBoard } from '../createEmptyBoard';
+import { getRearwardSpace } from './getRearwardSpace';
+
 
 const standardBoard: StandardBoard = createEmptyStandardBoard();
 

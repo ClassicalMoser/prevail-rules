@@ -1,9 +1,10 @@
 import type { Command, PlayerSide, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import { commandSchema, playerSideSchema, unitInstanceSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { PLAYER_CHOICE_EVENT_TYPE } from '../eventType';
 import { ISSUE_COMMAND_CHOICE_TYPE } from './playerChoice';
+
 
 export interface IssueCommandEvent {
   /** The type of the event. */

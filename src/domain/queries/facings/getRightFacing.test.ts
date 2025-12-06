@@ -1,6 +1,6 @@
 import type { UnitFacing } from '@entities';
-import { getRightFacing } from '@queries';
 import { describe, expect, it } from 'vitest';
+import { getRightFacing } from './getRightFacing';
 
 describe('getRightFacing', () => {
   it('should return east for north', () => {

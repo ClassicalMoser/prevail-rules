@@ -6,8 +6,8 @@ import type {
 } from '@entities';
 import { createEmptyStandardBoard } from '@queries';
 import { createBoardWithUnits, createTestUnit } from '@testing';
-import { canEngageEnemy } from '@validation';
 import { describe, expect, it } from 'vitest';
+import { canEngageEnemy } from './canEngageEnemy';
 
 describe('canEngageEnemy', () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();

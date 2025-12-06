@@ -1,5 +1,7 @@
-import { createEmptyStandardBoard, getForwardSpacesToEdge } from '@queries';
 import { describe, expect, it } from 'vitest';
+import { createEmptyStandardBoard } from '../createEmptyBoard';
+import { getForwardSpacesToEdge } from './getForwardSpacesToEdge';
+
 
 const standardBoard = createEmptyStandardBoard();
 

@@ -1,5 +1,7 @@
 import type { Board, BoardCoordinate, UnitFacing } from '@entities';
-import { getForwardSpace, getRightFacing } from '@queries';
+import { getRightFacing } from '../facings';
+import { getForwardSpace } from './getForwardSpace';
+
 
 /**
  * Get the right space for a given coordinate and facing.

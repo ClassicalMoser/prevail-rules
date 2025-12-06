@@ -1,9 +1,8 @@
-import type {
-  EngagedUnitPresence,
-  NoneUnitPresence,
-  SingleUnitPresence,
-} from '@entities';
 import type { AssertExact } from '@utils';
+import type { EngagedUnitPresence } from './engagedUnitPresence';
+import type { NoneUnitPresence } from './noneUnitPresence';
+import type { SingleUnitPresence } from './singleUnitPresence';
+
 import { z } from 'zod';
 import { engagedUnitPresenceSchema } from './engagedUnitPresence';
 import { noneUnitPresenceSchema } from './noneUnitPresence';

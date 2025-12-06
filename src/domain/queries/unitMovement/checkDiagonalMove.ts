@@ -4,8 +4,8 @@ import type {
   UnitFacing,
   UnitInstance,
 } from '@entities';
-import { getAdjacentFacings } from '@queries';
 import { canMoveThrough, isDiagonalFacing } from '@validation';
+import { getAdjacentFacings } from '../facings';
 
 /**
  * Result of checking if a diagonal move is possible and what the unit can do.

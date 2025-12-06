@@ -1,8 +1,9 @@
-import type { UnitFacing, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
-import { unitFacingSchema, unitInstanceSchema } from '@entities';
+import type { UnitFacing, UnitInstance } from '../unit';
 import { z } from 'zod';
+import { unitFacingSchema, unitInstanceSchema } from '../unit';
 import { ENGAGED_UNIT_PRESENCE_TYPE } from './unitPresenceType';
+
 
 /**
  * Two units are engaged in combat in the space.

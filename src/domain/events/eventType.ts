@@ -1,10 +1,11 @@
 import type { AssertExact } from '@utils';
-import type { GameEffectEvent } from './gameEffects/gameEffect';
-import type { PlayerChoiceEvent } from './playerChoices/playerChoice';
+import type { GameEffectEvent } from './gameEffects';
+import type { PlayerChoiceEvent } from './playerChoices';
+
 import { z } from 'zod';
 // Direct imports for nested discriminated union schemas to avoid initialization order issues
-import { gameEffectEventSchema } from './gameEffects/gameEffect';
-import { playerChoiceEventSchema } from './playerChoices/playerChoice';
+import { gameEffectEventSchema } from './gameEffects';
+import { playerChoiceEventSchema } from './playerChoices';
 
 /** Iterable list of valid types of events. */
 export const eventTypes = ['playerChoice', 'gameEffect'] as const;

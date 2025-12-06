@@ -1,10 +1,8 @@
 import type { SmallBoard, StandardBoard } from '@entities';
-import {
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-  getBoardCoordinates,
-} from '@queries';
 import { describe, expect, it } from 'vitest';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '../createEmptyBoard';
+import { getBoardCoordinates } from './getBoardCoordinates';
+
 
 describe('getBoardCoordinates', () => {
   describe('standard board', () => {

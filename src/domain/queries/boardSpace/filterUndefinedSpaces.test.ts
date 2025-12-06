@@ -1,6 +1,6 @@
 import type { StandardBoardCoordinate } from '@entities';
-import { filterUndefinedSpaces } from '@queries';
 import { describe, expect, it } from 'vitest';
+import { filterUndefinedSpaces } from './filterUndefinedSpaces';
 
 describe('filterUndefinedSpaces', () => {
   it('should filter out undefined spaces', () => {

@@ -2,8 +2,8 @@ import type { StandardBoardCoordinate } from '@entities';
 import type { MoveCommanderEvent } from '@events';
 import { createEmptyStandardBoard } from '@queries';
 import { createBoardWithCommander } from '@testing';
-import { isLegalCommanderMove } from '@validation';
 import { describe, expect, it } from 'vitest';
+import { isLegalCommanderMove } from './isLegalCommanderMove';
 
 describe('valid moves', () => {
   it('should return true when commander moves within distance 1', () => {

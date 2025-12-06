@@ -1,6 +1,6 @@
-import { areSameSide } from '@queries';
 import { createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
+import { areSameSide } from './areSameSide';
 
 describe('areSameSide', () => {
   it('should return true when both units belong to the same side', () => {

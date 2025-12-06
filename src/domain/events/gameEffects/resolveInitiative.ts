@@ -1,9 +1,10 @@
 import type { PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { GAME_EFFECT_EVENT_TYPE } from '../eventType';
 import { RESOLVE_INITIATIVE_EFFECT_TYPE } from './gameEffect';
+
 
 /** The event to resolve the initiative.
  * Which player has initiative for the round.

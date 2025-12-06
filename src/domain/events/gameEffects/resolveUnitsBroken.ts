@@ -1,8 +1,8 @@
 import type { PlayerSide, UnitType } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema, unitTypeSchema } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { GAME_EFFECT_EVENT_TYPE } from '../eventType';
 
 /** After a player performs a rally, they must check that their
  * hand still supports all unit types in their army. If any unit type

@@ -7,8 +7,8 @@ import type {
   UnitType,
 } from '@entities';
 import { createEmptyStandardBoard } from '@queries';
-import { getUnitByStatValue } from '@testing';
-import { createUnitInstance } from '@utils/createUnitInstance';
+import { createUnitInstance } from '@utils';
+import { getUnitByStatValue } from './getUnitByStatValue';
 
 /**
  * Creates a board with units at specified positions.

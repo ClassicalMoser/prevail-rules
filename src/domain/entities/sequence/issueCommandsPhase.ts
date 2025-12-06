@@ -1,8 +1,9 @@
-import type { Command } from '@entities';
 import type { AssertExact } from '@utils';
-import { commandSchema } from '@entities';
+import type { Command } from '../card';
 import { z } from 'zod';
+import { commandSchema } from '../card';
 import { ISSUE_COMMANDS_PHASE } from './phases';
+
 
 /** Iterable list of valid steps in the issue commands phase. */
 export const issueCommandsPhaseSteps = [

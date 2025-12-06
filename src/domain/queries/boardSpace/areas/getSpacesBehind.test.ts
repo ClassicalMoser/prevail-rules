@@ -1,10 +1,8 @@
 import type { BoardCoordinate, SmallBoard } from '@entities';
-import {
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-  getSpacesBehind,
-} from '@queries';
 import { describe, expect, it } from 'vitest';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '../../createEmptyBoard';
+import { getSpacesBehind } from './getSpacesBehind';
+
 
 const standardBoard = createEmptyStandardBoard();
 const smallBoard = createEmptySmallBoard();

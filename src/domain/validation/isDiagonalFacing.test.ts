@@ -1,6 +1,6 @@
 import type { UnitFacing } from '@entities';
-import { isDiagonalFacing } from '@validation';
 import { describe, expect, it } from 'vitest';
+import { isDiagonalFacing } from './isDiagonalFacing';
 
 describe('isDiagonalFacing', () => {
   it('should return true for a diagonal facing', () => {

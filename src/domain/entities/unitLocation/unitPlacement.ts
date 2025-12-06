@@ -1,7 +1,11 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
 import type { AssertExact } from '@utils';
-import { boardCoordinateSchema, unitFacingSchema } from '@entities';
+import type { Board, BoardCoordinate } from '../board';
+import type { UnitFacing } from '../unit';
+
 import z from 'zod';
+import { boardCoordinateSchema } from '../board';
+import { unitFacingSchema } from '../unit';
+
 
 /** The position and facing of a unit on the board. */
 export interface UnitPlacement<TBoard extends Board> {

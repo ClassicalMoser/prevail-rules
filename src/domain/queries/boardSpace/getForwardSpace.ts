@@ -5,7 +5,7 @@ import type {
   UnitFacing,
 } from '@entities';
 import { getBoardConfig, unitFacingSchema } from '@entities';
-import { getColumnDelta, getRowDelta } from '@queries';
+import { getColumnDelta, getRowDelta } from './deltas';
 
 /**
  * Internal helper that performs the coordinate calculation.

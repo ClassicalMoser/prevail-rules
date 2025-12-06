@@ -1,6 +1,6 @@
 import type { UnitFacing } from '@entities';
-import { getOrthogonalFacings } from '@queries';
 import { describe, expect, it } from 'vitest';
+import { getOrthogonalFacings } from './getOrthogonalFacings';
 
 describe('getOrthogonalFacings', () => {
   it('should return the orthogonal facings for north', () => {

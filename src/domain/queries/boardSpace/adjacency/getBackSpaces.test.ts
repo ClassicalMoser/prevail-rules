@@ -1,6 +1,8 @@
 import type { StandardBoardCoordinate, UnitFacing } from '@entities';
-import { createEmptyStandardBoard, getBackSpaces } from '@queries';
 import { describe, expect, it } from 'vitest';
+import { createEmptyStandardBoard } from '../../createEmptyBoard';
+import { getBackSpaces } from './getBackSpaces';
+
 
 const standardBoard = createEmptyStandardBoard();
 

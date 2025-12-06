@@ -1,9 +1,10 @@
 import type { Board, BoardCoordinate, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { boardCoordinateSchema, playerSideSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { PLAYER_CHOICE_EVENT_TYPE } from '../eventType';
 import { MOVE_COMMANDER_CHOICE_TYPE } from './playerChoice';
+
 
 /** An event to move a commander from one space to another. */
 export interface MoveCommanderEvent {

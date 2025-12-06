@@ -1,5 +1,8 @@
-import type { Command, Modifier, RoundEffect } from '@entities';
 import type { AssertExact } from '@utils';
+import type { Command } from './command';
+import type { Modifier } from './modifiers';
+import type { RoundEffect } from './roundEffect';
+
 import { z } from 'zod';
 import { commandSchema } from './command';
 import { modifierSchema } from './modifiers';

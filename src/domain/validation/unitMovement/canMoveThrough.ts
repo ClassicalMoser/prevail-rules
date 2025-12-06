@@ -1,7 +1,9 @@
 import type { Board, BoardCoordinate, UnitInstance } from '@entities';
 import { areSameSide, getBoardSpace } from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@sampleValues';
-import { hasEngagedUnits, hasNoUnit } from '@validation';
+import { hasEngagedUnits } from '../hasEngagedUnits';
+import { hasNoUnit } from '../hasNoUnit';
+
 
 /**
  * Determines whether a unit can move through (pass over) a specific coordinate.

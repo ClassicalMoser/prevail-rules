@@ -1,7 +1,8 @@
-import { createEmptyStandardBoard, getForwardSpace } from '@queries';
 import { createTestUnit } from '@testing';
 import { canMoveInto } from '@validation';
 import { describe, expect, it } from 'vitest';
+import { getForwardSpace } from '../boardSpace';
+import { createEmptyStandardBoard } from '../createEmptyBoard';
 import { checkDiagonalMove } from './checkDiagonalMove';
 
 describe('checkDiagonalMove', () => {

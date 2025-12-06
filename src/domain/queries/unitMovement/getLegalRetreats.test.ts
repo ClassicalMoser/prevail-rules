@@ -3,7 +3,6 @@ import type {
   StandardBoardCoordinate,
   UnitPlacement,
 } from '@entities';
-import { createEmptySmallBoard, getLegalRetreats } from '@queries';
 import {
   createBoardWithEngagedUnits,
   createSingleUnitPresence,
@@ -11,6 +10,9 @@ import {
   getUnitByStatValue,
 } from '@testing';
 import { describe, expect, it } from 'vitest';
+import { createEmptySmallBoard } from '../createEmptyBoard';
+import { getLegalRetreats } from './getLegalRetreats';
+
 
 describe('getLegalRetreats', () => {
   describe('basic retreat scenarios', () => {

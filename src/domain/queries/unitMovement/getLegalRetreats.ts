@@ -5,16 +5,12 @@ import type {
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
-import {
-  areSameSide,
-  getBoardSpace,
-  getFrontSpaces,
-  getPlayerUnitWithPosition,
-  getRearwardSpace,
-  getSpacesBehind,
-} from '@queries';
 import { hasNoUnit, hasSingleUnit } from '@validation';
+import { getBoardSpace, getFrontSpaces, getRearwardSpace, getSpacesBehind } from '../boardSpace';
+import { areSameSide } from '../unit';
+import { getPlayerUnitWithPosition } from '../unitPresence';
 import { exploreMoves } from './exploreMoves';
+
 
 /**
  * Finds all legal retreat moves for a unit.

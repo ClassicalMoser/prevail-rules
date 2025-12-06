@@ -4,21 +4,20 @@
  * Boards are validated at boundaries (via Zod schemas), so internal functions trust types.
  */
 
-import type {
-  Board,
-  BoardCoordinate,
-  LargeBoardCoordinate,
-  SmallBoardCoordinate,
-  StandardBoardCoordinate,
-} from '@entities';
 import type { AssertExact } from '@utils';
+import type { Board } from './board';
+import type { BoardCoordinate } from './boardCoordinates';
+import type { LargeBoardCoordinate } from './largeBoard';
+import type { SmallBoardCoordinate } from './smallBoard';
+import type { StandardBoardCoordinate } from './standardBoard';
+
 import { z } from 'zod';
-import { largeBoardColumnNumbers } from './largeBoard/largeColumnNumbers';
-import { largeBoardRowLetters } from './largeBoard/largeRowLetters';
-import { smallBoardColumnNumbers } from './smallBoard/smallColumnNumbers';
-import { smallBoardRowLetters } from './smallBoard/smallRowLetters';
-import { standardBoardColumnNumbers } from './standardBoard/standardColumnNumbers';
-import { standardBoardRowLetters } from './standardBoard/standardRowLetters';
+import { largeBoardColumnNumbers, largeBoardRowLetters } from './largeBoard';
+import { smallBoardColumnNumbers, smallBoardRowLetters } from './smallBoard';
+import {
+  standardBoardColumnNumbers,
+  standardBoardRowLetters,
+} from './standardBoard';
 
 /**
  * Board configuration for coordinate calculations.

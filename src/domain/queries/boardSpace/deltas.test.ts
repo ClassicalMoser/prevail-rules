@@ -1,5 +1,5 @@
-import { getColumnDelta, getRowDelta } from '@queries';
 import { describe, expect, it } from 'vitest';
+import { getColumnDelta, getRowDelta } from './deltas';
 
 describe('getRowDelta', () => {
   it('should return -1 for north facing', () => {

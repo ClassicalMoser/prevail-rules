@@ -1,42 +1,9 @@
-import type { BoardSpace, LargeBoardCoordinate } from '@entities';
 import type { AssertExact } from '@utils';
-import { boardSpaceSchema, LARGE_BOARD_TYPE } from '@entities';
+import type { LargeBoardCoordinateMap } from './largeBoardMap';
 import { z } from 'zod';
-import { largeBoardCoordinates } from './largeCoordinates';
+import { LARGE_BOARD_TYPE } from '../board';
+import { largeBoardCoordinateMapSchema } from './largeBoardMap';
 
-/**
- * Creates a Zod object schema for a board with all required coordinates.
- *
- * This builds a schema where each coordinate is a required key mapping to a BoardSpace.
- * By using z.object() with explicit keys (instead of z.record()), TypeScript can infer
- * the exact coordinate types rather than falling back to Record<string, BoardSpace>.
- *
- * @param coordinates - Array of coordinate strings (e.g., ["A-1", "A-2", ...])
- * @returns A ZodObject schema that validates an object with all coordinates as required keys
- *
- * The return type explicitly specifies:
- * - Shape: Record<T, z.ZodType<BoardSpace>> - each coordinate maps to a BoardSpace schema
- * - Unknown keys: "strip" - extra keys are removed during parsing
- * - Output/Input: Record<T, BoardSpace> - TypeScript infers the exact coordinate type
- */
-function createBoardSchema<T extends string>(
-  coordinates: readonly T[],
-): z.ZodObject<Record<T, z.ZodType<BoardSpace>>> {
-  const shape = {} as Record<T, z.ZodType<BoardSpace>>;
-  // Ensure all coordinates are included in the schema
-  for (const coord of coordinates) {
-    shape[coord] = boardSpaceSchema;
-  }
-  // Return the schema - TypeScript will infer the correct types
-  return z.object(shape);
-}
-
-/**
- * The schema for the board coordinate map.
- */
-const largeBoardCoordinateMapSchema: z.ZodObject<
-  Record<LargeBoardCoordinate, z.ZodType<BoardSpace>>
-> = createBoardSchema(largeBoardCoordinates);
 
 /**
  * A large board for the game.
@@ -58,7 +25,7 @@ export interface LargeBoard {
   /**
    * The board.
    */
-  board: Record<LargeBoardCoordinate, BoardSpace>;
+  board: LargeBoardCoordinateMap;
 }
 
 const _largeBoardSchemaObject = z.object({

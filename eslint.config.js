@@ -1,5 +1,6 @@
 import antfu from '@antfu/eslint-config';
 import prettierConfig from 'eslint-config-prettier';
+import boundaryAliasVsRelative from './eslint-rules/boundaryAliasVsRelative.js';
 
 export default antfu(
   {
@@ -28,49 +29,59 @@ export default antfu(
     },
     rules: {
       'no-console': ['error', { allow: ['error'] }],
+      'import/no-duplicates': ['error', { 'prefer-inline': false }],
     },
-    extends: ['eslint-config-prettier'],
   },
   {
-    files: ['**/*.ts', '**/*.js'],
-    ignores: ['**/index.ts'],
+    files: ['src/**/*.ts', 'src/**/*.js'],
+    plugins: {
+      boundary: {
+        rules: {
+          'boundary-alias-vs-relative': boundaryAliasVsRelative,
+        },
+      },
+    },
     rules: {
-      // Ban all relative imports; require aliases (@entities/*, @queries/*, etc.)
-      'no-restricted-imports': 'off',
-      '@typescript-eslint/no-restricted-imports': [
+      'boundary/boundary-alias-vs-relative': [
         'error',
         {
-          patterns: [
+          rootDir: 'src',
+          boundaries: [
             {
-              group: ['../**'],
-              message:
-                'Use aliased imports (e.g., @entities/*, @queries/*) instead of relative paths that go up directories.',
+              dir: 'domain/entities',
+              alias: '@entities',
             },
             {
-              group: ['src/**'],
-              message:
-                'Use aliased imports (@entities/*, @queries/*, etc.) instead of src/* paths.',
+              dir: 'domain/queries',
+              alias: '@queries',
             },
             {
-              group: ['**/*.js'],
-              message: 'Omit file extensions from imports.',
+              dir: 'domain/utils',
+              alias: '@utils',
             },
             {
-              group: ['**/*.test.{ts,js}'],
-              message: 'No importing from test files.',
+              dir: 'domain/validation',
+              alias: '@validation',
             },
             {
-              group: [
-                '@entities/**/*',
-                '@queries/**/*',
-                '@commands/**/*',
-                '@contracts/**/*',
-                '@validation/**/*',
-                '@testing/**/*',
-                '@sampleValues/**/*',
-              ],
-              message:
-                "Omit directory separators from imports; import from the barrel file (e.g., use '@entities' instead of '@entities/board/board').",
+              dir: 'domain/sampleValues',
+              alias: '@sampleValues',
+            },
+            {
+              dir: 'domain/transforms',
+              alias: '@transforms',
+            },
+            {
+              dir: 'domain/events',
+              alias: '@events',
+            },
+            {
+              dir: 'domain/testing',
+              alias: '@testing',
+            },
+            {
+              dir: 'contracts',
+              alias: '@contracts',
             },
           ],
         },

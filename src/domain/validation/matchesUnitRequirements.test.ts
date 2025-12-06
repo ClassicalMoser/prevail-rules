@@ -1,7 +1,7 @@
 import type { UnitType } from '@entities';
 import { getUnitByStatValue, getUnitByTrait } from '@testing';
-import { matchesUnitRequirements } from '@validation';
 import { describe, expect, it } from 'vitest';
+import { matchesUnitRequirements } from './matchesUnitRequirements';
 
 describe('matchesUnitRequirements', () => {
   // Find units by their unique traits rather than by name

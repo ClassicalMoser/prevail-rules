@@ -1,7 +1,11 @@
-import type { Board, UnitInstance, UnitPlacement } from '@entities';
 import type { AssertExact } from '@utils';
-import { unitInstanceSchema, unitPlacementSchema } from '@entities';
+import type { Board } from '../board';
+import type { UnitInstance } from '../unit';
+import type { UnitPlacement } from './unitPlacement';
+
 import { z } from 'zod';
+import { unitInstanceSchema } from '../unit';
+import { unitPlacementSchema } from './unitPlacement';
 
 export interface UnitWithPlacement<TBoard extends Board> {
   unit: UnitInstance;

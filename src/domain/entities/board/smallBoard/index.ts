@@ -1,6 +1,9 @@
 export type * from './smallBoard';
 export * from './smallBoard';
 
+export * from './smallBoardMap';
+export type * from './smallBoardMap';
+
 export type * from './smallColumnNumbers';
 export * from './smallColumnNumbers';
 

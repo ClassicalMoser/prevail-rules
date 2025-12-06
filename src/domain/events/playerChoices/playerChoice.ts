@@ -10,20 +10,20 @@ import type { MoveCommanderEvent } from './moveCommander';
 import type { MoveUnitEvent } from './moveUnit';
 import type { PerformRangedAttackEvent } from './performRangedAttack';
 import type { SetupUnitsEvent } from './setupUnit';
-import {
-  chooseCardEventSchema,
-  chooseMeleeResolutionEventSchema,
-  chooseRallyEventSchema,
-  commitToMeleeEventSchema,
-  commitToMovementEventSchema,
-  commitToRangedAttackEventSchema,
-  issueCommandEventSchema,
-  moveCommanderEventSchema,
-  moveUnitEventSchema,
-  performRangedAttackEventSchema,
-  setupUnitsEventSchema,
-} from '@events';
+
 import { z } from 'zod';
+import { chooseCardEventSchema } from './chooseCard';
+import { chooseMeleeResolutionEventSchema } from './chooseMeleeResolution';
+import { chooseRallyEventSchema } from './chooseRally';
+import { commitToMeleeEventSchema } from './commitToMelee';
+import { commitToMovementEventSchema } from './commitToMovement';
+import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
+import { issueCommandEventSchema } from './issueCommand';
+import { moveCommanderEventSchema } from './moveCommander';
+import { moveUnitEventSchema } from './moveUnit';
+import { performRangedAttackEventSchema } from './performRangedAttack';
+import { setupUnitsEventSchema } from './setupUnit';
+
 
 /** Iterable list of valid player choices. */
 export const playerChoices = [

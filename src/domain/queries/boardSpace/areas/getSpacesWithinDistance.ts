@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate } from '@entities';
-import { getAdjacentSpaces } from '@queries';
+import { getAdjacentSpaces } from '../adjacency';
 
 /**
  * Get all spaces within a given distance from a coordinate.

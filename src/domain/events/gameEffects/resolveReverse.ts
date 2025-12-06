@@ -1,9 +1,10 @@
 import type { Board, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitWithPlacementSchema } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { GAME_EFFECT_EVENT_TYPE } from '../eventType';
 import { RESOLVE_REVERSE_EFFECT_TYPE } from './gameEffect';
+
 
 /** An event to resolve a reverse.
  * A unit that is reversed changes its facing to the opposite

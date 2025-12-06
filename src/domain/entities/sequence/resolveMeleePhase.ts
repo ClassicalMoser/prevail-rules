@@ -1,9 +1,10 @@
-import type { EngagedUnitPresence } from '@entities';
 import type { AssertExact } from '@utils';
+import type { EngagedUnitPresence } from '../unitPresence';
 
-import { engagedUnitPresenceSchema } from '@entities';
 import { z } from 'zod';
+import { engagedUnitPresenceSchema } from '../unitPresence';
 import { RESOLVE_MELEE_PHASE } from './phases';
+
 
 /** Iterable list of valid steps in the resolve melee phase. */
 export const resolveMeleePhaseSteps = ['resolveMelee', 'complete'] as const;

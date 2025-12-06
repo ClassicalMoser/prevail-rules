@@ -1,12 +1,8 @@
-import type {
-  Board,
-  LargeBoard,
-  LargeBoardCoordinate,
-  SmallBoard,
-  SmallBoardCoordinate,
-  StandardBoard,
-  StandardBoardCoordinate,
-} from '@entities';
+import type { Board } from './board';
+import type { LargeBoard, LargeBoardCoordinate } from './largeBoard';
+import type { SmallBoard, SmallBoardCoordinate } from './smallBoard';
+import type { StandardBoard, StandardBoardCoordinate } from './standardBoard';
+
 import { z } from 'zod';
 import { largeBoardCoordinates } from './largeBoard';
 import { smallBoardCoordinates } from './smallBoard';

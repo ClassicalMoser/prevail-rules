@@ -4,8 +4,8 @@ import {
   createSingleUnitPresence,
   createTestUnit,
 } from '@testing';
-import { hasSingleUnit } from '@validation';
 import { describe, expect, it } from 'vitest';
+import { hasSingleUnit } from './hasSingleUnit';
 
 describe('hasSingleUnit', () => {
   it('should return false for none unit presence', () => {

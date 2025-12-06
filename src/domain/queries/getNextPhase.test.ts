@@ -1,6 +1,6 @@
 import { phases } from '@entities';
-import { getNextPhase } from '@queries';
 import { describe, expect, it } from 'vitest';
+import { getNextPhase } from './getNextPhase';
 
 describe('getNextPhase', () => {
   it('should return the next phase for each phase and wrap around', () => {

@@ -1,5 +1,5 @@
-import type { Card } from '@entities';
 import type { AssertExact } from '@utils';
+import type { Card } from './card';
 import { z } from 'zod';
 import { cardSchema } from './card';
 

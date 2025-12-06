@@ -1,7 +1,9 @@
 import type { StandardBoardCoordinate } from '@entities';
-import { getLinesFromUnit, getPlayerUnitWithPosition } from '@queries';
 import { createBoardWithUnits, createTestUnit, getUnitByTrait } from '@testing';
 import { describe, expect, it } from 'vitest';
+
+import { getLinesFromUnit } from './getLine';
+import { getPlayerUnitWithPosition } from './unitPresence';
 
 describe('getLinesFromUnit', () => {
   describe('single unit', () => {

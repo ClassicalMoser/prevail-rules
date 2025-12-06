@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate, UnitFacing } from '@entities';
-import { getFrontSpaces } from '@queries';
-import { getSpacesInDirection } from './getSpacesInDirection';
+import { getFrontSpaces } from '../adjacency';
+import { getSpacesInDirection } from './';
 
 /**
  * Get the spaces ahead for a given coordinate and facing.

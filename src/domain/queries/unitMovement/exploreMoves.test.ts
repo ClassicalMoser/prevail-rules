@@ -4,14 +4,11 @@ import type {
   UnitPlacement,
 } from '@entities';
 import type { MoveExplorationConfig } from './exploreMoves';
-import {
-  createEmptyStandardBoard,
-  getForwardSpace,
-  getRearwardSpace,
-} from '@queries';
 import { createTestUnit } from '@testing';
 import { canMoveInto } from '@validation';
 import { describe, expect, it } from 'vitest';
+import { getForwardSpace, getRearwardSpace } from '../boardSpace';
+import { createEmptyStandardBoard } from '../createEmptyBoard';
 import { exploreMoves } from './exploreMoves';
 
 describe('exploreMoves', () => {

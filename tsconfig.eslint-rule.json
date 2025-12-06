@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "rootDir": "eslint-rules",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "declaration": false,
+    "declarationMap": false,
+    "outDir": "eslint-rules",
+    "isolatedDeclarations": false
+  },
+  "include": ["eslint-rules/boundaryAliasVsRelative.ts"],
+  "exclude": []
+}

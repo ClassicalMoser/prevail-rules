@@ -1,9 +1,7 @@
-import {
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-  getSpacesInArc,
-} from '@queries';
 import { describe, expect, it } from 'vitest';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '../../createEmptyBoard';
+import { getSpacesInArc } from './getSpacesInArc';
+
 
 describe('getSpacesInArc', () => {
   const board = createEmptyStandardBoard();

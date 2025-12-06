@@ -5,9 +5,11 @@ import type {
   UnitInstance,
   UnitPlacement,
 } from '@entities';
-import { areSameSide, getBoardSpace, getForwardSpace } from '@queries';
 import { canEngageEnemy, canMoveInto, hasSingleUnit } from '@validation';
+import { getBoardSpace, getForwardSpace } from '../boardSpace';
+import { areSameSide } from '../unit';
 import { exploreMoves } from './exploreMoves';
+
 
 /**
  * Calculates all legal moves for a unit from a given starting position.

@@ -1,9 +1,13 @@
-import type { LargeBoard, SmallBoard, StandardBoard } from '@entities';
 import type { AssertExact } from '@utils';
+import type { LargeBoard } from './largeBoard';
+import type { SmallBoard } from './smallBoard';
+import type { StandardBoard } from './standardBoard';
+
 import { z } from 'zod';
-import { largeBoardSchema } from './largeBoard/largeBoard';
-import { smallBoardSchema } from './smallBoard/smallBoard';
-import { standardBoardSchema } from './standardBoard/standardBoard';
+import { largeBoardSchema } from './largeBoard';
+import { smallBoardSchema } from './smallBoard';
+import { standardBoardSchema } from './standardBoard';
+
 
 export const boardSizeType = ['standard', 'small', 'large'] as const;
 

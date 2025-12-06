@@ -43,6 +43,7 @@
     "test:mutation": "stryker run",
     "typecheck": "tsc --noEmit",
     "build": "tsdown",
+    "build:eslint-rule": "tsc --project tsconfig.eslint-rule.json",
     "prepublishOnly": "npm run build",
     "validate": "npm run lint:fix && npm run format && npm run typecheck",
     "version:patch": "tsx scripts/version-bump.ts patch",
@@ -52,7 +53,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.3.0",
+    "@antfu/eslint-config": "^6.4.2",
     "@rolldown/binding-darwin-x64": "1.0.0-beta.53",
     "@stryker-mutator/core": "^9.4.0",
     "@stryker-mutator/typescript-checker": "^9.4.0",
@@ -61,9 +62,10 @@
     "@vitest/coverage-v8": "^4.0.15",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-node": "^11.1.0",
     "prettier": "^3.7.4",
-    "tsdown": "0.17.0-beta.6",
+    "tsdown": "0.17.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "4.0.15"

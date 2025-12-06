@@ -1,6 +1,8 @@
 import type { Board, BoardCoordinate } from '@entities';
 import { unitFacings } from '@entities';
-import { filterUndefinedSpaces, getForwardSpace } from '@queries';
+import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
+import { getForwardSpace } from '../getForwardSpace';
+
 
 /**
  * Get the adjacent spaces for a given coordinate.

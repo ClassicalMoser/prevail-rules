@@ -1,11 +1,12 @@
 import type { StandardBoardCoordinate } from '@entities';
-import { createEmptyStandardBoard, getPositionOfUnit } from '@queries';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
   createTestUnit,
 } from '@testing';
 import { describe, expect, it } from 'vitest';
+import { createEmptyStandardBoard } from '../createEmptyBoard';
+import { getPositionOfUnit } from './getPositionOfUnit';
 
 describe('getPositionOfUnit', () => {
   describe('single unit presence', () => {

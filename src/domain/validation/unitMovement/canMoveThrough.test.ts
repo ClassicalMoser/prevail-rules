@@ -10,8 +10,8 @@ import {
   createBoardWithSingleUnit,
   createTestUnit,
 } from '@testing';
-import { canMoveThrough } from '@validation';
 import { describe, expect, it } from 'vitest';
+import { canMoveThrough } from './canMoveThrough';
 
 describe('canMoveThrough', () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();

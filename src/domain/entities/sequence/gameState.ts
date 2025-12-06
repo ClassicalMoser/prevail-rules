@@ -1,19 +1,16 @@
-import type {
-  Board,
-  CardState,
-  PlayerSide,
-  RoundState,
-  UnitInstance,
-} from '@entities';
 import type { AssertExact } from '@utils';
-import {
-  boardSchema,
-  cardStateSchema,
-  playerSideSchema,
-  roundStateSchema,
-  unitInstanceSchema,
-} from '@entities';
+import type { Board } from '../board';
+import type { CardState } from '../card';
+import type { PlayerSide } from '../player';
+import type { UnitInstance } from '../unit';
+import type { RoundState } from './roundState';
+
 import { z } from 'zod';
+import { boardSchema } from '../board';
+import { cardStateSchema } from '../card';
+import { playerSideSchema } from '../player';
+import { unitInstanceSchema } from '../unit';
+import { roundStateSchema } from './roundState';
 
 /** The state of a game of Prevail: Ancient Battles. */
 export interface GameState {

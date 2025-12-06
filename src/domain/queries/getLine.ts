@@ -6,15 +6,11 @@ import type {
   UnitType,
   UnitWithPlacement,
 } from '@entities';
-import {
-  getForwardSpacesToEdge,
-  getLeftFacing,
-  getOppositeFacing,
-  getPlayerUnitWithPosition,
-  getRightFacing,
-} from '@queries';
 import { MAX_LINE_LENGTH } from '@sampleValues';
 import { isAtPlacement, matchesUnitRequirements } from '@validation';
+import { getForwardSpacesToEdge } from './boardSpace';
+import { getLeftFacing, getOppositeFacing, getRightFacing } from './facings';
+import { getPlayerUnitWithPosition } from './unitPresence';
 
 /**
  * Get all possible lines that include a given unit.

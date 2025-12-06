@@ -12,9 +12,9 @@ import {
   createBoardWithUnits,
   getUnitByStatValue,
 } from '@testing';
-import { createUnitInstance } from '@utils/createUnitInstance';
-import { isAtPlacement } from '@validation';
+import { createUnitInstance } from '@utils';
 import { describe, expect, it } from 'vitest';
+import { isAtPlacement } from './isAtPlacement';
 
 describe('isAtPlacement', () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();

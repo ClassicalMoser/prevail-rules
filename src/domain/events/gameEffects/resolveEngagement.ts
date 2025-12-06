@@ -1,9 +1,10 @@
 import type { UnitPresence } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitPresenceSchema } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { GAME_EFFECT_EVENT_TYPE } from '../eventType';
 import { RESOLVE_ENGAGEMENT_EFFECT_TYPE } from './gameEffect';
+
 
 /** The event to resolve an engagement.
  * When a unit is moved into an enemy unit's space, the engagement is resolved.

@@ -1,9 +1,9 @@
+import { describe, expect, it } from 'vitest';
 import {
   createEmptyLargeBoard,
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from '@queries';
-import { describe, expect, it } from 'vitest';
+} from './createEmptyBoard';
 
 describe('createEmptyStandardBoard', () => {
   it('should create an empty standard board', () => {

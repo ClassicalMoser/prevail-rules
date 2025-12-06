@@ -1,8 +1,8 @@
 import type { Card, CardState } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import { commandCards } from '@sampleValues';
-import { isLegalCardChoice } from '@validation';
 import { describe, expect, it } from 'vitest';
+import { isLegalCardChoice } from './isLegalCardChoice';
 
 describe('isLegalCardChoice', () => {
   // Helper to create a card state with cards in hand

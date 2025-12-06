@@ -5,8 +5,8 @@ import {
   getPlayerUnitWithPosition,
 } from '@queries';
 import { createBoardWithUnits, createTestUnit } from '@testing';
-import { isValidLine } from '@validation';
 import { describe, expect, it } from 'vitest';
+import { isValidLine } from './isValidLine';
 
 describe('isValidLine', () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();

@@ -1,6 +1,6 @@
-import { isFriendlyUnit } from '@queries';
 import { createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
+import { isFriendlyUnit } from './isFriendlyUnit';
 
 describe('isFriendlyUnit', () => {
   it('should return true when unit belongs to the player side', () => {

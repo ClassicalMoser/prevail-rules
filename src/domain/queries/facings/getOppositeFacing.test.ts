@@ -1,5 +1,5 @@
-import { getOppositeFacing } from '@queries';
 import { describe, expect, it } from 'vitest';
+import { getOppositeFacing } from './getOppositeFacing';
 
 describe('getOppositeFacing', () => {
   it('should return south for north', () => {

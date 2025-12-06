@@ -1,5 +1,7 @@
-import type { Modifier, Restrictions } from '@entities';
 import type { AssertExact } from '@utils';
+import type { Modifier } from './modifiers';
+import type { Restrictions } from './restrictions';
+
 import { z } from 'zod';
 import { modifierSchema } from './modifiers';
 import { restrictionsSchema } from './restrictions';

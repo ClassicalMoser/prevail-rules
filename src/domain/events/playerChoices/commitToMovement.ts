@@ -1,9 +1,10 @@
 import type { Card, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { z } from 'zod';
+import { PLAYER_CHOICE_EVENT_TYPE } from '../eventType';
 import { COMMIT_TO_MOVEMENT_CHOICE_TYPE } from './playerChoice';
+
 
 /** An event to commit a card to a unit's movement. */
 export interface CommitToMovementEvent {
