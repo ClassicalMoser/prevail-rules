@@ -5,10 +5,10 @@ import type {
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
+import { getBoardSpace, getFrontSpaces, getRearwardSpace, getSpacesBehind } from '@queries/boardSpace';
+import { areSameSide } from '@queries/unit';
+import { getPlayerUnitWithPosition } from '@queries/unitPresence';
 import { hasNoUnit, hasSingleUnit } from '@validation';
-import { getBoardSpace, getFrontSpaces, getRearwardSpace, getSpacesBehind } from '../boardSpace';
-import { areSameSide } from '../unit';
-import { getPlayerUnitWithPosition } from '../unitPresence';
 import { exploreMoves } from './exploreMoves';
 
 

@@ -1,6 +1,6 @@
-import type { Trait } from '@sampleValues';
+import type { Trait } from '@ruleValues';
 import type { AssertExact } from '@utils';
-import { traitSchema } from '@sampleValues';
+import { traitSchema } from '@ruleValues';
 import { z } from 'zod';
 
 /**

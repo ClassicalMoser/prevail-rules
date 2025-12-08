@@ -4,10 +4,10 @@ import type {
   PlayerSide,
   UnitWithPlacement,
 } from '@entities';
+import { getBoardSpace } from '@queries/boardSpace';
+import { getOppositeFacing } from '@queries/facings';
+import { isFriendlyUnit } from '@queries/unit';
 import { hasNoUnit, hasSingleUnit } from '@validation';
-import { getBoardSpace } from '../boardSpace';
-import { getOppositeFacing } from '../facings';
-import { isFriendlyUnit } from '../unit';
 
 
 /**

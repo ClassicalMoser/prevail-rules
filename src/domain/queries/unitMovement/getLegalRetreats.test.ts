@@ -3,6 +3,7 @@ import type {
   StandardBoardCoordinate,
   UnitPlacement,
 } from '@entities';
+import { createEmptySmallBoard } from '@queries/createEmptyBoard';
 import {
   createBoardWithEngagedUnits,
   createSingleUnitPresence,
@@ -10,7 +11,6 @@ import {
   getUnitByStatValue,
 } from '@testing';
 import { describe, expect, it } from 'vitest';
-import { createEmptySmallBoard } from '../createEmptyBoard';
 import { getLegalRetreats } from './getLegalRetreats';
 
 

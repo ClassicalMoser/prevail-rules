@@ -1,5 +1,6 @@
 import antfu from '@antfu/eslint-config';
 import prettierConfig from 'eslint-config-prettier';
+import { boundaries } from './boundaries.js';
 import boundaryAliasVsRelative from './eslint-rules/boundaryAliasVsRelative.js';
 
 export default antfu(
@@ -14,6 +15,7 @@ export default antfu(
       '.stryker-tmp/**',
       'coverage/**',
       'node_modules/**',
+      'eslint-rules/**/*.js', // Ignore compiled ESLint rule files
     ],
     languageOptions: {
       globals: {
@@ -46,50 +48,19 @@ export default antfu(
         'error',
         {
           rootDir: 'src',
-          boundaries: [
-            {
-              dir: 'domain/entities',
-              alias: '@entities',
-            },
-            {
-              dir: 'domain/queries',
-              alias: '@queries',
-            },
-            {
-              dir: 'domain/utils',
-              alias: '@utils',
-            },
-            {
-              dir: 'domain/validation',
-              alias: '@validation',
-            },
-            {
-              dir: 'domain/sampleValues',
-              alias: '@sampleValues',
-            },
-            {
-              dir: 'domain/transforms',
-              alias: '@transforms',
-            },
-            {
-              dir: 'domain/events',
-              alias: '@events',
-            },
-            {
-              dir: 'domain/testing',
-              alias: '@testing',
-            },
-            {
-              dir: 'contracts',
-              alias: '@contracts',
-            },
-          ],
+          boundaries,
         },
       ],
     },
   },
   {
-    files: ['**/*.test.{ts,js}'],
+    files: [
+      '**/*.test.{ts,js}',
+      '**/*.spec.{ts,js}',
+      '**/*.mock.{ts,js}',
+      '**/__tests__/**',
+      '**/__mocks__/**',
+    ],
     languageOptions: {
       globals: {
         describe: true,
@@ -97,6 +68,16 @@ export default antfu(
         expect: true,
         vi: true,
       },
+    },
+    rules: {
+      'boundary/boundary-alias-vs-relative': [
+        'error',
+        {
+          rootDir: 'src',
+          skipBoundaryRulesForTestFiles: true, // Skip boundary allow/deny rules, but still enforce path format
+          boundaries,
+        },
+      ],
     },
   },
   {
@@ -110,6 +91,7 @@ export default antfu(
       '*.yml',
       '**/*.md',
       '**/*.mdx',
+      'eslint-rules/**/*.js', // Ignore compiled ESLint rule files
     ],
   },
   prettierConfig,

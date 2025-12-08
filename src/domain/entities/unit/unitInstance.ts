@@ -1,9 +1,9 @@
+import type { PlayerSide } from '@entities/player';
 import type { AssertExact } from '@utils';
-import type { PlayerSide } from '../player';
 import type { UnitType } from './unitType';
 
+import { playerSideSchema } from '@entities/player';
 import { z } from 'zod';
-import { playerSideSchema } from '../player';
 import { unitTypeSchema } from './unitType';
 
 /**

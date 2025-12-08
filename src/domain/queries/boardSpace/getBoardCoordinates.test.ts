@@ -1,6 +1,6 @@
 import type { SmallBoard, StandardBoard } from '@entities';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '@queries/createEmptyBoard';
 import { describe, expect, it } from 'vitest';
-import { createEmptySmallBoard, createEmptyStandardBoard } from '../createEmptyBoard';
 import { getBoardCoordinates } from './getBoardCoordinates';
 
 

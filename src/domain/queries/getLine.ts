@@ -2,11 +2,11 @@ import type {
   Board,
   BoardCoordinate,
   Line,
-  Trait,
   UnitType,
   UnitWithPlacement,
 } from '@entities';
-import { MAX_LINE_LENGTH } from '@sampleValues';
+import type { Trait } from '@ruleValues';
+import { MAX_LINE_LENGTH } from '@ruleValues';
 import { isAtPlacement, matchesUnitRequirements } from '@validation';
 import { getForwardSpacesToEdge } from './boardSpace';
 import { getLeftFacing, getOppositeFacing, getRightFacing } from './facings';

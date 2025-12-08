@@ -1,7 +1,10 @@
 import type { StandardBoardCoordinate, UnitFacing } from '@entities';
 import type { MoveUnitEvent } from '@events';
-import { createBoardWithUnits, getUnitByStatValue } from '@testing';
-import { createUnitInstance } from '@utils';
+import {
+  createBoardWithUnits,
+  createUnitInstance,
+  getUnitByStatValue,
+} from '@testing';
 import { describe, expect, it } from 'vitest';
 import { isLegalMove } from './isLegalMove';
 

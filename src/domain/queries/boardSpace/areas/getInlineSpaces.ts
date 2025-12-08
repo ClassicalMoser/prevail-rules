@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate, UnitFacing } from '@entities';
-import { getOrthogonalFacings } from '../../facings';
+import { getOrthogonalFacings } from '@queries/facings';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpacesToEdge } from '../getForwardSpacesToEdge';
 

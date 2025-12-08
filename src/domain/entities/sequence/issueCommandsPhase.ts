@@ -1,7 +1,7 @@
+import type { Command } from '@entities/card';
 import type { AssertExact } from '@utils';
-import type { Command } from '../card';
+import { commandSchema } from '@entities/card';
 import { z } from 'zod';
-import { commandSchema } from '../card';
 import { ISSUE_COMMANDS_PHASE } from './phases';
 
 

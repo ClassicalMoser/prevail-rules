@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate, Line } from '@entities';
 import { areSameSide, getFlankingSpaces, getOppositeFacing } from '@queries';
-import { MAX_LINE_LENGTH } from '@sampleValues';
+import { MAX_LINE_LENGTH } from '@ruleValues';
 
 /**
  * Determines whether a line is valid according to game rules.

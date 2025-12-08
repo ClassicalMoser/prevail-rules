@@ -5,9 +5,9 @@ import type {
   UnitInstance,
   UnitPlacement,
 } from '@entities';
+import { getBoardSpace, getForwardSpace } from '@queries/boardSpace';
+import { areSameSide } from '@queries/unit';
 import { canEngageEnemy, canMoveInto, hasSingleUnit } from '@validation';
-import { getBoardSpace, getForwardSpace } from '../boardSpace';
-import { areSameSide } from '../unit';
 import { exploreMoves } from './exploreMoves';
 
 

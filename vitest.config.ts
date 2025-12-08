@@ -7,29 +7,36 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   resolve: {
     alias: {
-      '@entities': path.resolve(__dirname, './src/domain/entities/index'),
+      // Entities
+      '@entities': path.resolve(__dirname, './src/domain/entities'),
       '@entities/*': path.resolve(__dirname, './src/domain/entities/*'),
-      '@queries': path.resolve(__dirname, './src/domain/queries/index'),
+      // Queries
+      '@queries': path.resolve(__dirname, './src/domain/queries'),
       '@queries/*': path.resolve(__dirname, './src/domain/queries/*'),
-      '@transforms': path.resolve(__dirname, './src/domain/transforms/index'),
+      // Transforms
+      '@transforms': path.resolve(__dirname, './src/domain/transforms'),
       '@transforms/*': path.resolve(__dirname, './src/domain/transforms/*'),
-      '@commands': path.resolve(__dirname, './src/domain/events/index'),
+      // Events
+      '@commands': path.resolve(__dirname, './src/domain/events'),
       '@commands/*': path.resolve(__dirname, './src/domain/events/*'),
-      '@contracts': path.resolve(__dirname, './src/contracts/index'),
+      // Contracts
+      '@contracts': path.resolve(__dirname, './src/contracts'),
       '@contracts/*': path.resolve(__dirname, './src/contracts/*'),
-      '@testing': path.resolve(__dirname, './src/domain/testing/index'),
+      // Testing
+      '@testing': path.resolve(__dirname, './src/domain/testing'),
       '@testing/*': path.resolve(__dirname, './src/domain/testing/*'),
-      '@utils': path.resolve(__dirname, './src/domain/utils/index'),
+      // Utils
+      '@utils': path.resolve(__dirname, './src/domain/utils'),
       '@utils/*': path.resolve(__dirname, './src/domain/utils/*'),
-      '@validation': path.resolve(__dirname, './src/domain/validation/index'),
+      // Validation
+      '@validation': path.resolve(__dirname, './src/domain/validation'),
       '@validation/*': path.resolve(__dirname, './src/domain/validation/*'),
-      '@sampleValues': path.resolve(
-        __dirname,
-        './src/domain/sampleValues/index',
-      ),
+      // Sample Values
+      '@sampleValues': path.resolve(__dirname, './src/domain/sampleValues'),
       '@sampleValues/*': path.resolve(__dirname, './src/domain/sampleValues/*'),
-      // Keep src alias for backward compatibility
-      src: path.resolve(__dirname, './src'),
+      // Rule Values
+      '@ruleValues': path.resolve(__dirname, './src/domain/ruleValues'),
+      '@ruleValues/*': path.resolve(__dirname, './src/domain/ruleValues/*'),
     },
   },
   test: {

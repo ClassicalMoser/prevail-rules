@@ -10,9 +10,9 @@ import { createEmptyStandardBoard } from '@queries';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
+  createUnitInstance,
   getUnitByStatValue,
 } from '@testing';
-import { createUnitInstance } from '@utils';
 import { describe, expect, it } from 'vitest';
 import { isAtPlacement } from './isAtPlacement';
 

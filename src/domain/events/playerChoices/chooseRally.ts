@@ -1,8 +1,8 @@
 import type { PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { PLAYER_CHOICE_EVENT_TYPE } from '../eventType';
 import { CHOOSE_RALLY_CHOICE_TYPE } from './playerChoice';
 
 

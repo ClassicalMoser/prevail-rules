@@ -1,8 +1,8 @@
+import type { EngagedUnitPresence } from '@entities/unitPresence';
 import type { AssertExact } from '@utils';
-import type { EngagedUnitPresence } from '../unitPresence';
 
+import { engagedUnitPresenceSchema } from '@entities/unitPresence';
 import { z } from 'zod';
-import { engagedUnitPresenceSchema } from '../unitPresence';
 import { RESOLVE_MELEE_PHASE } from './phases';
 
 

@@ -1,10 +1,13 @@
 import type { StandardBoardCoordinate } from '@entities';
-import { createBoardWithUnits, getUnitByStatValue, hasMove } from '@testing';
-import { createUnitInstance } from '@utils';
+import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
+import {
+  createBoardWithUnits,
+  createUnitInstance,
+  getUnitByStatValue,
+  hasMove,
+} from '@testing';
 import { describe, expect, it } from 'vitest';
-import { createEmptyStandardBoard } from '../createEmptyBoard';
 import { getLegalUnitMoves } from './getLegalUnitMoves';
-
 
 describe('getLegalUnitMoves', () => {
   // Use stat-based lookup instead of name to avoid brittleness

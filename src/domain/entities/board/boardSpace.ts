@@ -1,13 +1,13 @@
+import type { PlayerSide } from '@entities/player';
+import type { UnitPresence } from '@entities/unitPresence';
 import type { AssertExact } from '@utils';
-import type { PlayerSide } from '../player';
-import type { UnitPresence } from '../unitPresence';
 import type { Elevation } from './elevation';
 import type { TerrainType } from './terrainTypes';
 import type { WaterCover } from './waterCover';
 
+import { playerSideSchema } from '@entities/player';
+import { unitPresenceSchema } from '@entities/unitPresence';
 import { z } from 'zod';
-import { playerSideSchema } from '../player';
-import { unitPresenceSchema } from '../unitPresence';
 import { elevationSchema } from './elevation';
 import { terrainTypeSchema } from './terrainTypes';
 import { waterCoverSchema } from './waterCover';

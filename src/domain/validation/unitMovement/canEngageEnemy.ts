@@ -13,7 +13,7 @@ import {
   getOppositeFacing,
   getSpacesBehind,
 } from '@queries';
-import { hasSingleUnit } from '../hasSingleUnit';
+import { hasSingleUnit } from '@validation/hasSingleUnit';
 
 /**
  * Incremental function to check whether engagement is legal from an adjacent space.

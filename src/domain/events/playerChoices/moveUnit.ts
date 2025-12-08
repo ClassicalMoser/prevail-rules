@@ -5,8 +5,8 @@ import {
   unitInstanceSchema,
   unitPlacementSchema,
 } from '@entities';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { PLAYER_CHOICE_EVENT_TYPE } from '../eventType';
 import { MOVE_UNIT_CHOICE_TYPE } from './playerChoice';
 
 

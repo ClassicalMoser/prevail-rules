@@ -1,8 +1,8 @@
 import type { Board, BoardCoordinate } from '@entities';
 import type { AssertExact } from '@utils';
 import { boardCoordinateSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { GAME_EFFECT_EVENT_TYPE } from '../eventType';
 import { RESOLVE_MELEE_EFFECT_TYPE } from './gameEffect';
 
 

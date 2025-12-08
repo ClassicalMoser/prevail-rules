@@ -1,9 +1,9 @@
+import type { Card } from '@entities/card';
 import type { AssertExact } from '@utils';
-import type { Card } from '../card';
 import type { UnitCount } from './unitCount';
 
+import { cardSchema } from '@entities/card';
 import { z } from 'zod';
-import { cardSchema } from '../card';
 import { unitCountSchema } from './unitCount';
 
 /**

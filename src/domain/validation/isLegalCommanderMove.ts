@@ -1,7 +1,7 @@
 import type { Board } from '@entities';
 import type { MoveCommanderEvent } from '@events';
 import { getBoardSpace, getSpacesWithinDistance } from '@queries';
-import { COMMANDER_MOVE_DISTANCE } from '@sampleValues';
+import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';
 
 /**
  * Validates whether a commander move event is legal.

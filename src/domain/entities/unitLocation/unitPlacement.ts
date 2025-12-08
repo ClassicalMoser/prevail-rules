@@ -1,10 +1,10 @@
+import type { Board, BoardCoordinate } from '@entities/board';
+import type { UnitFacing } from '@entities/unit';
 import type { AssertExact } from '@utils';
-import type { Board, BoardCoordinate } from '../board';
-import type { UnitFacing } from '../unit';
 
+import { boardCoordinateSchema } from '@entities/board';
+import { unitFacingSchema } from '@entities/unit';
 import z from 'zod';
-import { boardCoordinateSchema } from '../board';
-import { unitFacingSchema } from '../unit';
 
 
 /** The position and facing of a unit on the board. */

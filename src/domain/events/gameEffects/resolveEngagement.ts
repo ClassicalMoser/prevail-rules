@@ -1,8 +1,8 @@
 import type { UnitPresence } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitPresenceSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { GAME_EFFECT_EVENT_TYPE } from '../eventType';
 import { RESOLVE_ENGAGEMENT_EFFECT_TYPE } from './gameEffect';
 
 

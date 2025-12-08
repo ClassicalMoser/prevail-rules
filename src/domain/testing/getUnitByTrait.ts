@@ -1,5 +1,5 @@
 import type { UnitType } from '@entities';
-import type { Trait } from '@sampleValues';
+import type { Trait } from '@ruleValues';
 import { tempUnits } from '@sampleValues';
 
 /**

@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate, UnitFacing } from '@entities';
-import { getLeftFacing } from '../facings';
+import { getLeftFacing } from '@queries/facings';
 import { getForwardSpace } from './getForwardSpace';
 
 

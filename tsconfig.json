@@ -23,7 +23,9 @@
       "@validation": ["./src/domain/validation/index"],
       "@validation/*": ["./src/domain/validation/*"],
       "@sampleValues": ["./src/domain/sampleValues/index"],
-      "@sampleValues/*": ["./src/domain/sampleValues/*"]
+      "@sampleValues/*": ["./src/domain/sampleValues/*"],
+      "@ruleValues": ["./src/domain/ruleValues/index"],
+      "@ruleValues/*": ["./src/domain/ruleValues/*"]
     },
     "types": ["node"],
     "strict": true,

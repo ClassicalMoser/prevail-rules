@@ -7,7 +7,7 @@ import type {
   UnitType,
 } from '@entities';
 import { createEmptyStandardBoard } from '@queries';
-import { createUnitInstance } from '@utils';
+import { createUnitInstance } from './createUnitInstance';
 import { getUnitByStatValue } from './getUnitByStatValue';
 
 /**

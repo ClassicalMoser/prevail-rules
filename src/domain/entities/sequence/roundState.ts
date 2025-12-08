@@ -1,9 +1,9 @@
+import type { UnitInstance } from '@entities/unit';
 import type { AssertExact } from '@utils';
-import type { UnitInstance } from '../unit';
 import type { PhaseState } from './phases';
 
+import { unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
-import { unitInstanceSchema } from '../unit';
 import { phaseStateSchema } from './phases';
 
 

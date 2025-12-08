@@ -1,8 +1,8 @@
 import type { Board, BoardCoordinate, UnitInstance } from '@entities';
 import { areSameSide, getBoardSpace } from '@queries';
-import { hasEngagedUnits } from '../hasEngagedUnits';
-import { hasNoUnit } from '../hasNoUnit';
-import { hasSingleUnit } from '../hasSingleUnit';
+import { hasEngagedUnits } from '@validation/hasEngagedUnits';
+import { hasNoUnit } from '@validation/hasNoUnit';
+import { hasSingleUnit } from '@validation/hasSingleUnit';
 
 
 /**

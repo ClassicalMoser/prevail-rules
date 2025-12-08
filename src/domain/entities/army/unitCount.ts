@@ -1,7 +1,7 @@
+import type { UnitType } from '@entities/unit';
 import type { AssertExact } from '@utils';
-import type { UnitType } from '../unit';
+import { unitTypeSchema } from '@entities/unit';
 import { z } from 'zod';
-import { unitTypeSchema } from '../unit';
 
 /**
  * A count of units of a specific type.
