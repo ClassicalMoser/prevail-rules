@@ -35,7 +35,7 @@ export default antfu(
     },
   },
   {
-    files: ['src/**/*.ts', 'src/**/*.js'],
+    // Define plugin once for all config blocks
     plugins: {
       boundary: {
         rules: {
@@ -43,11 +43,27 @@ export default antfu(
         },
       },
     },
+  },
+  {
+    files: ['src/**/*.ts', 'src/**/*.js'],
     rules: {
       'boundary/boundary-alias-vs-relative': [
         'error',
         {
           rootDir: 'src',
+          boundaries,
+        },
+      ],
+    },
+  },
+  {
+    files: ['eslint-rules/**/*.test.{ts,js}', 'eslint-rules/**/*.spec.{ts,js}'],
+    rules: {
+      'boundary/boundary-alias-vs-relative': [
+        'error',
+        {
+          rootDir: 'src',
+          allowUnknownBoundaries: true, // Allow imports in eslint-rules test files
           boundaries,
         },
       ],
@@ -92,6 +108,8 @@ export default antfu(
       '**/*.md',
       '**/*.mdx',
       'eslint-rules/**/*.js', // Ignore compiled ESLint rule files
+      'eslint-rules/**/*.test.{ts,js}', // Ignore test files in eslint-rules
+      'eslint-rules/**/*.spec.{ts,js}', // Ignore spec files in eslint-rules
     ],
   },
   prettierConfig,

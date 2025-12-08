@@ -42,7 +42,11 @@ describe('relationshipDetection', () => {
 
   describe('resolveTargetPath', () => {
     it('should resolve alias imports without subpath', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries');
       const result = resolveTargetPath(
         '@entities',
@@ -59,7 +63,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should resolve alias imports with directory subpath', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries');
       const result = resolveTargetPath(
         '@entities/army',
@@ -76,7 +84,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should resolve alias imports with file subpath', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries');
       const result = resolveTargetPath(
         '@entities/army.ts',
@@ -93,7 +105,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should resolve relative imports', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const result = resolveTargetPath(
         './sibling',
@@ -108,7 +124,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should resolve relative imports with ../', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const result = resolveTargetPath(
         '../cousin',
@@ -125,7 +145,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should resolve absolute paths', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries');
       const result = resolveTargetPath(
         'src/domain/entities',
@@ -142,7 +166,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should return empty strings for unknown aliases', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries');
       const result = resolveTargetPath(
         '@unknown',
@@ -159,7 +187,11 @@ describe('relationshipDetection', () => {
 
   describe('calculateCorrectImportPath - cross-boundary', () => {
     it('should return alias for cross-boundary imports (alias style)', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const fileBoundary = queriesBoundary;
 
@@ -177,7 +209,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should return absolute path for cross-boundary imports (absolute style)', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const fileBoundary = queriesBoundary;
 
@@ -195,7 +231,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should return UNKNOWN_BOUNDARY for paths outside all boundaries', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries');
       const fileBoundary = queriesBoundary;
 
@@ -213,7 +253,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should return null for ancestor barrel imports', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const fileBoundary = queriesBoundary;
 
@@ -233,7 +277,11 @@ describe('relationshipDetection', () => {
 
   describe('calculateCorrectImportPath - same boundary', () => {
     it('should return ./sibling for same directory files', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const fileBoundary = queriesBoundary;
 
@@ -251,7 +299,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should return ./subdir for subdirectories in same directory', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const fileBoundary = queriesBoundary;
 
@@ -269,7 +321,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should return ../cousin for parent sibling (non-top-level)', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(
         cwd,
         rootDir,
@@ -293,7 +349,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should return @boundary/segment for top-level paths', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const fileBoundary = queriesBoundary;
 
@@ -311,7 +371,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should return @boundary/rootFile for boundary root files', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const fileBoundary = queriesBoundary;
 
@@ -329,7 +393,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should return null for ancestor barrel (index.ts in same directory)', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const fileBoundary = queriesBoundary;
 
@@ -351,7 +419,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should return @boundary/index for boundary root index (not null)', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries', 'subdir');
       const fileBoundary = queriesBoundary;
 
@@ -372,7 +444,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should handle deeply nested paths correctly', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(
         cwd,
         rootDir,
@@ -399,7 +475,11 @@ describe('relationshipDetection', () => {
     });
 
     it('should handle boundary root correctly', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, rootDir, 'domain/queries');
       const fileBoundary = queriesBoundary;
 
@@ -422,7 +502,11 @@ describe('relationshipDetection', () => {
 
   describe('calculateCorrectImportPath - edge cases', () => {
     it('should handle files outside boundaries', () => {
-      const boundaries = [entitiesBoundary, queriesBoundary, transformsBoundary];
+      const boundaries = [
+        entitiesBoundary,
+        queriesBoundary,
+        transformsBoundary,
+      ];
       const fileDir = path.resolve(cwd, 'other');
       const fileBoundary = null;
 

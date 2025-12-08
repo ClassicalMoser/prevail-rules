@@ -16,26 +16,46 @@ import {
 } from './relationshipDetection';
 
 /**
+ * Options for handleImport function.
+ */
+export interface HandleImportOptions {
+  node: Rule.Node;
+  rawSpec: string;
+  fileDir: string;
+  fileBoundary: Boundary | null;
+  boundaries: Boundary[];
+  rootDir: string;
+  cwd: string;
+  context: Rule.RuleContext;
+  crossBoundaryStyle?: 'alias' | 'absolute';
+  defaultSeverity?: 'error' | 'warn';
+  allowUnknownBoundaries?: boolean;
+  isTypeOnly?: boolean;
+  skipBoundaryRules?: boolean;
+}
+
+/**
  * Main handler for all import statements.
  * Validates import paths against boundary rules and enforces correct path format.
  *
  * @returns true if a violation was reported, false otherwise
  */
-export function handleImport(
-  node: Rule.Node,
-  rawSpec: string,
-  fileDir: string,
-  fileBoundary: Boundary | null,
-  boundaries: Boundary[],
-  rootDir: string,
-  cwd: string,
-  context: Rule.RuleContext,
-  crossBoundaryStyle: 'alias' | 'absolute' = 'alias',
-  defaultSeverity: 'error' | 'warn' | undefined,
-  allowUnknownBoundaries: boolean = false,
-  isTypeOnly: boolean = false,
-  skipBoundaryRules: boolean = false,
-): boolean {
+export function handleImport(options: HandleImportOptions): boolean {
+  const {
+    node,
+    rawSpec,
+    fileDir,
+    fileBoundary,
+    boundaries,
+    rootDir,
+    cwd,
+    context,
+    crossBoundaryStyle = 'alias',
+    defaultSeverity,
+    allowUnknownBoundaries = false,
+    isTypeOnly = false,
+    skipBoundaryRules = false,
+  } = options;
   // Skip checking for external packages (node_modules, etc.)
   // External packages are:
   // - Not relative imports (don't start with .)
@@ -138,6 +158,11 @@ export function handleImport(
 
   if (!correctPath) {
     // Check if it's ancestor barrel (not fixable)
+    // calculateCorrectImportPath returns null only for ancestor barrels:
+    // - rawSpec === fileBoundary.alias (line 115)
+    // - Target is boundary root index.ts (line 142)
+    // - Same directory index.ts (line 164)
+    // - Defensive: firstDifferingSegment is falsy (line 170, should be unreachable)
     if (fileBoundary && rawSpec === fileBoundary.alias) {
       const severity = fileBoundary.severity || defaultSeverity;
       const reportOptions: Rule.ReportDescriptor = {
@@ -152,6 +177,9 @@ export function handleImport(
       context.report(reportOptions);
       return true;
     }
+    // Defensive: should never reach here in practice
+    // calculateCorrectImportPath only returns null for ancestor barrels
+    // which are all handled above. This branch exists for type safety.
     return false;
   }
 

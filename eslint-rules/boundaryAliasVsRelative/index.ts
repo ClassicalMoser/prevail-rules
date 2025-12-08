@@ -76,10 +76,6 @@ const rule: Rule.RuleModule = {
             type: 'boolean',
             default: true,
           },
-          testFilePatterns: {
-            type: 'array',
-            items: { type: 'string' },
-          },
         },
         required: ['boundaries'],
       },
@@ -104,37 +100,31 @@ const rule: Rule.RuleModule = {
         'boundary-alias-vs-relative requires boundaries configuration',
       );
     }
-    const [
-      {
-        rootDir = 'src',
-        boundaries,
-        crossBoundaryStyle = 'alias',
-        defaultSeverity,
-        allowUnknownBoundaries = false,
-        skipBoundaryRulesForTestFiles = true,
-        testFilePatterns = [
-          '\\.test\\.(ts|tsx|js|jsx)$',
-          '\\.spec\\.(ts|tsx|js|jsx)$',
-          '\\.mock\\.(ts|tsx|js|jsx)$',
-          '__tests__/',
-          '__mocks__/',
-        ],
-      },
-    ] = context.options as [RuleOptions];
+    const options: RuleOptions = context.options[0];
+    const {
+      rootDir = 'src',
+      boundaries,
+      crossBoundaryStyle = 'alias',
+      defaultSeverity,
+      allowUnknownBoundaries = false,
+      skipBoundaryRulesForTestFiles = true,
+    } = options;
     const cwd = context.getCwd?.() ?? process.cwd();
 
     // Pre-resolve all boundary directories to absolute paths for efficient comparison
     // This avoids repeated path resolution during linting
-    const resolvedBoundaries: Boundary[] = boundaries.map((b) => ({
-      dir: b.dir,
-      alias: b.alias,
-      absDir: path.resolve(cwd, rootDir, b.dir),
-      allowImportsFrom: b.allowImportsFrom,
-      denyImportsFrom: b.denyImportsFrom,
-      allowTypeImportsFrom: b.allowTypeImportsFrom,
-      nestedPathFormat: b.nestedPathFormat,
-      severity: b.severity,
-    }));
+    const resolvedBoundaries: Boundary[] = boundaries.map(
+      (b: RuleOptions['boundaries'][number]) => ({
+        dir: b.dir,
+        alias: b.alias,
+        absDir: path.resolve(cwd, rootDir, b.dir),
+        allowImportsFrom: b.allowImportsFrom,
+        denyImportsFrom: b.denyImportsFrom,
+        allowTypeImportsFrom: b.allowTypeImportsFrom,
+        nestedPathFormat: b.nestedPathFormat,
+        severity: b.severity,
+      }),
+    );
 
     // Cache file metadata per file to avoid recomputation
     // Cleared at the start of each Program node
@@ -182,12 +172,12 @@ const rule: Rule.RuleModule = {
 
       // Main import handler (no file I/O, pure path math)
       // skipBoundaryRulesForTestFiles is set via ESLint config blocks for test files
-      handleImport(
+      handleImport({
         node,
         rawSpec,
         fileDir,
-        fileBoundary ?? null,
-        resolvedBoundaries,
+        fileBoundary: fileBoundary ?? null,
+        boundaries: resolvedBoundaries,
         rootDir,
         cwd,
         context,
@@ -195,8 +185,8 @@ const rule: Rule.RuleModule = {
         defaultSeverity,
         allowUnknownBoundaries,
         isTypeOnly,
-        skipBoundaryRulesForTestFiles,
-      );
+        skipBoundaryRules: skipBoundaryRulesForTestFiles,
+      });
     }
 
     // ========================================================================
@@ -220,8 +210,9 @@ const rule: Rule.RuleModule = {
         const spec = (node.source as { value?: string })?.value;
         if (typeof spec === 'string') {
           // Check if this is a type-only import (TypeScript ESLint parser adds importKind)
-          const importKind = (node as { importKind?: 'type' | 'value' | 'type-value' })
-            .importKind;
+          const importKind = (
+            node as { importKind?: 'type' | 'value' | 'type-value' }
+          ).importKind;
           const isTypeOnly = importKind === 'type';
           handleImportStatement(node, spec, isTypeOnly);
         }
@@ -250,7 +241,7 @@ const rule: Rule.RuleModule = {
           node.arguments[0]?.type === 'Literal' &&
           typeof node.arguments[0].value === 'string'
         ) {
-          handleImport(node, node.arguments[0].value, false);
+          handleImportStatement(node, node.arguments[0].value, false);
         }
       },
 
