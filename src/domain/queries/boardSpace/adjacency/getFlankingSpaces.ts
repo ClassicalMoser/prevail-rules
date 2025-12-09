@@ -3,7 +3,6 @@ import { getOrthogonalFacings } from '@queries/facings';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpace } from '../getForwardSpace';
 
-
 /**
  * Get the flanking spaces for a given coordinate and facing,
  * the spaces directly to the right and left of the facing

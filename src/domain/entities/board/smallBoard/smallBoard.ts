@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { SMALL_BOARD_TYPE } from '../board';
 import { smallBoardCoordinateMapSchema } from './smallBoardMap';
 
-
 /**
  * A small board for the game.
  * A unique map of exactly 96 coordinates (A-1 through H-12), where each coordinate

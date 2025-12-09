@@ -5,10 +5,12 @@ import type {
   StandardBoardCoordinate,
   UnitFacing,
 } from '@entities';
-import { createEmptySmallBoard, createEmptyStandardBoard } from '@queries/createEmptyBoard';
+import {
+  createEmptySmallBoard,
+  createEmptyStandardBoard,
+} from '@queries/createEmptyBoard';
 import { describe, expect, it } from 'vitest';
 import { getForwardSpace } from './getForwardSpace';
-
 
 const standardBoard: StandardBoard = createEmptyStandardBoard();
 const smallBoard: SmallBoard = createEmptySmallBoard();

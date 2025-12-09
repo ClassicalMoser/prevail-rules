@@ -10,7 +10,6 @@ import { areSameSide } from '@queries/unit';
 import { canEngageEnemy, canMoveInto, hasSingleUnit } from '@validation';
 import { exploreMoves } from './exploreMoves';
 
-
 /**
  * Calculates all legal moves for a unit from a given starting position.
  * Uses recursive exploration with memoization to find all combinations of

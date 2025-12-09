@@ -3,7 +3,6 @@ import { getAdjacentFacings } from '@queries/facings';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpace } from '../getForwardSpace';
 
-
 /**
  * Get the front spaces for a given coordinate and facing, including diagonals
  * @param board - The board object

@@ -4,7 +4,6 @@ import type { LargeBoardRowLetter } from './largeRowLetters';
 import { largeBoardColumnNumbers } from './largeColumnNumbers';
 import { largeBoardRowLetters } from './largeRowLetters';
 
-
 /**
  * A valid coordinate on a large board (A-1 through X-36).
  */

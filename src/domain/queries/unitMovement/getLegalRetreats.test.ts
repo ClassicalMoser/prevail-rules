@@ -13,7 +13,6 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getLegalRetreats } from './getLegalRetreats';
 
-
 describe('getLegalRetreats', () => {
   describe('basic retreat scenarios', () => {
     it('should find simple backward retreat with no facing change', () => {

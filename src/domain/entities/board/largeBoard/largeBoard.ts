@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { LARGE_BOARD_TYPE } from '../board';
 import { largeBoardCoordinateMapSchema } from './largeBoardMap';
 
-
 /**
  * A large board for the game.
  * A unique map of exactly 864 coordinates (A-1 through X-36), where each coordinate

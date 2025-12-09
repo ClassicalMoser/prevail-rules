@@ -4,7 +4,6 @@ import { hasEngagedUnits } from '@validation/hasEngagedUnits';
 import { hasNoUnit } from '@validation/hasNoUnit';
 import { hasSingleUnit } from '@validation/hasSingleUnit';
 
-
 /**
  * Determines whether a unit can move into (end its movement at) a specific coordinate.
  *

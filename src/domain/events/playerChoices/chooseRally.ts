@@ -5,7 +5,6 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { CHOOSE_RALLY_CHOICE_TYPE } from './playerChoice';
 
-
 /** An event to choose a rally from the player's hand. */
 export interface ChooseRallyEvent {
   /** The type of the event. */

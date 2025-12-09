@@ -5,7 +5,6 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE } from './playerChoice';
 
-
 /** An event to commit a card to a ranged attack. */
 export interface CommitToRangedAttackEvent {
   /** The type of the event. */

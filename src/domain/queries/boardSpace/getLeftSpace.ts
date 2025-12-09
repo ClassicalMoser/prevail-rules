@@ -2,7 +2,6 @@ import type { Board, BoardCoordinate, UnitFacing } from '@entities';
 import { getLeftFacing } from '@queries/facings';
 import { getForwardSpace } from './getForwardSpace';
 
-
 /**
  * Get the left space for a given coordinate and facing.
  * This is the space directly to the left of the given coordinate

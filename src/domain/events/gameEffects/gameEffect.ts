@@ -20,7 +20,6 @@ import { resolveReverseEventSchema } from './resolveReverse';
 import { resolveRoutEventSchema } from './resolveRout';
 import { resolveUnitsBrokenEventSchema } from './resolveUnitsBroken';
 
-
 /** Iterable list of valid game effects. */
 export const gameEffects = [
   'resolveEngagement',

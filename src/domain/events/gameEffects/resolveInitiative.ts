@@ -5,7 +5,6 @@ import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { RESOLVE_INITIATIVE_EFFECT_TYPE } from './gameEffect';
 
-
 /** The event to resolve the initiative.
  * Which player has initiative for the round.
  * The player with the lower initiative value receives initiative.

@@ -24,7 +24,6 @@ import { moveUnitEventSchema } from './moveUnit';
 import { performRangedAttackEventSchema } from './performRangedAttack';
 import { setupUnitsEventSchema } from './setupUnit';
 
-
 /** Iterable list of valid player choices. */
 export const playerChoices = [
   'chooseCard',

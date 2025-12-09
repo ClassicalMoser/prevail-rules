@@ -4,7 +4,6 @@ import { unitFacingSchema, unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
 import { ENGAGED_UNIT_PRESENCE_TYPE } from './unitPresenceType';
 
-
 /**
  * Two units are engaged in combat in the space.
  */

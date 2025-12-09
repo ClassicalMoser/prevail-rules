@@ -5,7 +5,6 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE } from './playerChoice';
 
-
 export interface ChooseMeleeResolutionEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;

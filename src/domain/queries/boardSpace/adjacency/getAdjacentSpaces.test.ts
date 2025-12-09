@@ -2,7 +2,6 @@ import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
 import { describe, expect, it } from 'vitest';
 import { getAdjacentSpaces } from './getAdjacentSpaces';
 
-
 const standardBoard = createEmptyStandardBoard();
 
 describe('getAdjacentSpaces', () => {

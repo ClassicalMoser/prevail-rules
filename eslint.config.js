@@ -1,7 +1,7 @@
 import antfu from '@antfu/eslint-config';
 import prettierConfig from 'eslint-config-prettier';
+import importBoundaries from 'eslint-plugin-import-boundaries';
 import { boundaries } from './boundaries.js';
-import boundaryAliasVsRelative from './eslint-rules/boundaryAliasVsRelative.js';
 
 export default antfu(
   {
@@ -37,17 +37,13 @@ export default antfu(
   {
     // Define plugin once for all config blocks
     plugins: {
-      boundary: {
-        rules: {
-          'boundary-alias-vs-relative': boundaryAliasVsRelative,
-        },
-      },
+      'import-boundaries': importBoundaries,
     },
   },
   {
     files: ['src/**/*.ts', 'src/**/*.js'],
     rules: {
-      'boundary/boundary-alias-vs-relative': [
+      'import-boundaries/enforce': [
         'error',
         {
           rootDir: 'src',
@@ -59,7 +55,7 @@ export default antfu(
   {
     files: ['eslint-rules/**/*.test.{ts,js}', 'eslint-rules/**/*.spec.{ts,js}'],
     rules: {
-      'boundary/boundary-alias-vs-relative': [
+      'import-boundaries/enforce': [
         'error',
         {
           rootDir: 'src',
@@ -86,7 +82,7 @@ export default antfu(
       },
     },
     rules: {
-      'boundary/boundary-alias-vs-relative': [
+      'import-boundaries/enforce': [
         'error',
         {
           rootDir: 'src',

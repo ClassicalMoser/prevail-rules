@@ -6,7 +6,6 @@ import { boardCoordinateSchema } from '@entities/board';
 import { unitFacingSchema } from '@entities/unit';
 import z from 'zod';
 
-
 /** The position and facing of a unit on the board. */
 export interface UnitPlacement<TBoard extends Board> {
   coordinate: BoardCoordinate<TBoard>;

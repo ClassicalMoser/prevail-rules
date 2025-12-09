@@ -3,7 +3,6 @@ import { getOrthogonalFacings } from '@queries/facings';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpacesToEdge } from '../getForwardSpacesToEdge';
 
-
 /**
  * Get the inline spaces for a given coordinate and facing,
  * continuing in a straight line to the left and right of the facing.

@@ -8,7 +8,6 @@ import { largeBoardSchema } from './largeBoard';
 import { smallBoardSchema } from './smallBoard';
 import { standardBoardSchema } from './standardBoard';
 
-
 export const boardSizeType = ['standard', 'small', 'large'] as const;
 
 export const boardSizeEnum: z.ZodType<BoardSize> = z.enum(boardSizeType);

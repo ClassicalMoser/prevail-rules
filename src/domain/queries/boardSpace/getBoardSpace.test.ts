@@ -3,10 +3,12 @@ import type {
   StandardBoard,
   StandardBoardCoordinate,
 } from '@entities';
-import { createEmptySmallBoard, createEmptyStandardBoard } from '@queries/createEmptyBoard';
+import {
+  createEmptySmallBoard,
+  createEmptyStandardBoard,
+} from '@queries/createEmptyBoard';
 import { describe, expect, it } from 'vitest';
 import { getBoardSpace } from './getBoardSpace';
-
 
 const standardBoard: StandardBoard = createEmptyStandardBoard();
 const smallBoard: SmallBoard = createEmptySmallBoard();

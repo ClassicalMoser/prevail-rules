@@ -9,7 +9,6 @@ import { getOppositeFacing } from '@queries/facings';
 import { isFriendlyUnit } from '@queries/unit';
 import { hasNoUnit, hasSingleUnit } from '@validation';
 
-
 /**
  * Extracts the friendly unit and its placement from a board space for a given player side.
  *

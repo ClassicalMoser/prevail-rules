@@ -12,7 +12,6 @@ import { moveCommandersPhaseStateSchema } from './moveCommandersPhase';
 import { playCardsPhaseStateSchema } from './playCardsPhase';
 import { resolveMeleePhaseStateSchema } from './resolveMeleePhase';
 
-
 /**
  * Iterable list of valid phases for a round.
  */

@@ -2,7 +2,6 @@ import type { Board, BoardCoordinate, UnitFacing } from '@entities';
 import { getOppositeFacing } from '@queries/facings';
 import { getForwardSpace } from './getForwardSpace';
 
-
 /**
  * Get the rearward space for a given coordinate and facing.
  * This is the space directly behind the given coordinate in the given facing direction.

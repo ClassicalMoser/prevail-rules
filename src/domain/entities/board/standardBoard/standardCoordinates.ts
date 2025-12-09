@@ -6,7 +6,6 @@ import { z } from 'zod';
 import { standardBoardColumnNumbers } from './standardColumnNumbers';
 import { standardBoardRowLetters } from './standardRowLetters';
 
-
 /**
  * A valid coordinate on a standard board (A-1 through L-18).
  */

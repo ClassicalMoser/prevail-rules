@@ -7,7 +7,6 @@ import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
 import { describe, expect, it } from 'vitest';
 import { getLeftSpace } from './getLeftSpace';
 
-
 const standardBoard: StandardBoard = createEmptyStandardBoard();
 
 describe('getLeftSpace', () => {

@@ -5,7 +5,6 @@ import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { RESOLVE_REVERSE_EFFECT_TYPE } from './gameEffect';
 
-
 /** An event to resolve a reverse.
  * A unit that is reversed changes its facing to the opposite
  * of its current facing.

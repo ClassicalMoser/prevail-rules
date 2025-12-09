@@ -5,7 +5,6 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { MOVE_COMMANDER_CHOICE_TYPE } from './playerChoice';
 
-
 /** An event to move a commander from one space to another. */
 export interface MoveCommanderEvent {
   /** The type of the event. */

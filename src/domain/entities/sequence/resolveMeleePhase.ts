@@ -5,7 +5,6 @@ import { engagedUnitPresenceSchema } from '@entities/unitPresence';
 import { z } from 'zod';
 import { RESOLVE_MELEE_PHASE } from './phases';
 
-
 /** Iterable list of valid steps in the resolve melee phase. */
 export const resolveMeleePhaseSteps = ['resolveMelee', 'complete'] as const;
 

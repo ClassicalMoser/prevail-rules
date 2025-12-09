@@ -5,7 +5,6 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { CHOOSE_CARD_CHOICE_TYPE } from './playerChoice';
 
-
 /** An eventto choose a card from the player's hand. */
 export interface ChooseCardEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;

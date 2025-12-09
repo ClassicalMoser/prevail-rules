@@ -6,7 +6,6 @@ import { unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
 import { phaseStateSchema } from './phases';
 
-
 /**
  * The state of a round of the game.
  */

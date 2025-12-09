@@ -1,1 +1,1 @@
-export * from './assertExact';
+export type * from './assertExact';

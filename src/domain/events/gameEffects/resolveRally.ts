@@ -5,7 +5,6 @@ import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { RESOLVE_RALLY_EFFECT_TYPE } from './gameEffect';
 
-
 /** To perform a rally, a player must burn a random card from their played commands.
  * Afterwards, they return all discarded and played cards to their hand.
  * After performing a rally, they must check unit support.

@@ -5,7 +5,6 @@ import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { RESOLVE_ROUT_EFFECT_TYPE } from './gameEffect';
 
-
 /** An event to resolve a rout.
  * A unit that is routed is permanently removed from the game.
  * The player must discard a number of cards equal to its rout penalty.

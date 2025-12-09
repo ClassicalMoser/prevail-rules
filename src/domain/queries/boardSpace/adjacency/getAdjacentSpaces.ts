@@ -3,7 +3,6 @@ import { unitFacings } from '@entities';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpace } from '../getForwardSpace';
 
-
 /**
  * Get the adjacent spaces for a given coordinate.
  *

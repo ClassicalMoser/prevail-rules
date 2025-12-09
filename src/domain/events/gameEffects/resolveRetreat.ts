@@ -6,7 +6,6 @@ import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { RESOLVE_RETREAT_EFFECT_TYPE } from './gameEffect';
 
-
 /** An event to resolve a retreat.
  * A retreat is a unit's smallest legal backward movement.
  * If there are multiple legal retreats, the player must choose one.

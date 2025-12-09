@@ -5,7 +5,6 @@ import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { RESOLVE_ENGAGEMENT_EFFECT_TYPE } from './gameEffect';
 
-
 /** The event to resolve an engagement.
  * When a unit is moved into an enemy unit's space, the engagement is resolved.
  * If the defending unit is engaged from behind, it is routed.

@@ -4,7 +4,6 @@ import { commandSchema } from '@entities/card';
 import { z } from 'zod';
 import { ISSUE_COMMANDS_PHASE } from './phases';
 
-
 /** Iterable list of valid steps in the issue commands phase. */
 export const issueCommandsPhaseSteps = [
   'firstPlayerIssueCommands',

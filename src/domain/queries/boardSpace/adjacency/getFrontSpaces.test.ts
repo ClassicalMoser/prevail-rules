@@ -3,7 +3,6 @@ import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
 import { describe, expect, it } from 'vitest';
 import { getFrontSpaces } from './getFrontSpaces';
 
-
 const standardBoard = createEmptyStandardBoard();
 
 describe('getFrontSpaces', () => {

@@ -4,7 +4,6 @@ import { unitFacingSchema, unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
 import { SINGLE_UNIT_PRESENCE_TYPE } from './unitPresenceType';
 
-
 /**
  * A single unit is present in the space.
  */

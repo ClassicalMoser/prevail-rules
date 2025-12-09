@@ -3,7 +3,6 @@ import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
 import { describe, expect, it } from 'vitest';
 import { getFlankingSpaces } from './getFlankingSpaces';
 
-
 const standardBoard = createEmptyStandardBoard();
 
 describe('getFlankingSpaces', () => {
