@@ -24,6 +24,7 @@
  */
 export const boundaries = [
   {
+    identifier: '@utils',
     dir: 'domain/utils',
     alias: '@utils',
     // Pure utility types and functions
@@ -31,12 +32,14 @@ export const boundaries = [
     // No structures or schemas
   },
   {
+    identifier: '@ruleValues',
     dir: 'domain/ruleValues',
     alias: '@ruleValues',
     allowTypeImportsFrom: ['@entities', '@events', '@utils'],
     // Type imports ONLY, strictly for core rule definitions
   },
   {
+    identifier: '@entities',
     dir: 'domain/entities',
     alias: '@entities',
     allowImportsFrom: ['@events', '@ruleValues'],
@@ -45,6 +48,7 @@ export const boundaries = [
     // No functions, no tests, pure declarative structures.
   },
   {
+    identifier: '@events',
     dir: 'domain/events',
     alias: '@events',
     allowImportsFrom: ['@entities', '@ruleValues'],
@@ -53,6 +57,7 @@ export const boundaries = [
     // No functions, no tests, pure declarative structures.
   },
   {
+    identifier: '@queries',
     dir: 'domain/queries',
     alias: '@queries',
     allowImportsFrom: ['@entities', '@ruleValues', '@validation'],
@@ -62,6 +67,7 @@ export const boundaries = [
     // Queries are pure functions, no runtime.
   },
   {
+    identifier: '@validation',
     dir: 'domain/validation',
     alias: '@validation',
     allowImportsFrom: ['@entities', '@queries', '@ruleValues', '@events'],
@@ -72,6 +78,7 @@ export const boundaries = [
     // ALWAYS returns boolean, never throws errors.
   },
   {
+    identifier: '@sampleValues',
     dir: 'domain/sampleValues',
     alias: '@sampleValues',
     allowTypeImportsFrom: ['@entities'],
@@ -80,6 +87,7 @@ export const boundaries = [
     // Pure declarative structures.
   },
   {
+    identifier: '@transforms',
     dir: 'domain/transforms',
     alias: '@transforms',
     allowImportsFrom: [
@@ -95,6 +103,7 @@ export const boundaries = [
     // No runtime, pure functions.
   },
   {
+    identifier: '@testing',
     dir: 'domain/testing',
     alias: '@testing',
     allowImportsFrom: [
@@ -110,6 +119,7 @@ export const boundaries = [
     // May only be used in tests.
   },
   {
+    identifier: '@contracts',
     dir: 'contracts',
     alias: '@contracts',
     // Placeholder for future DTOs, currently empty.

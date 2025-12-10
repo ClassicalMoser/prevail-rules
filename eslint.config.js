@@ -42,24 +42,12 @@ export default antfu(
   },
   {
     files: ['src/**/*.ts', 'src/**/*.js'],
+    ignores: ['**/*.test.ts'],
     rules: {
       'import-boundaries/enforce': [
         'error',
         {
           rootDir: 'src',
-          boundaries,
-        },
-      ],
-    },
-  },
-  {
-    files: ['eslint-rules/**/*.test.{ts,js}', 'eslint-rules/**/*.spec.{ts,js}'],
-    rules: {
-      'import-boundaries/enforce': [
-        'error',
-        {
-          rootDir: 'src',
-          allowUnknownBoundaries: true, // Allow imports in eslint-rules test files
           boundaries,
         },
       ],
@@ -86,7 +74,7 @@ export default antfu(
         'error',
         {
           rootDir: 'src',
-          skipBoundaryRulesForTestFiles: true, // Skip boundary allow/deny rules, but still enforce path format
+          enforceBoundaries: false, // Skip boundary allow/deny rules, but still enforce path format
           boundaries,
         },
       ],
