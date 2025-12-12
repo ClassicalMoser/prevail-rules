@@ -1,6 +1,6 @@
 # Domain Layer: Prevail: Ancient Battles Rules Engine
 
-This directory contains the **unified source of truth** for all game rules and business logic for Prevail: Ancient Battles. This codebase serves as the authoritative rules engine that can be shared across:
+This directory contains the **unified source of truth** for all game rules and business logic for the digital adaptation of the board game Prevail: Ancient Battles. This codebase serves as the authoritative rules engine that can be shared across:
 
 - **Browser clients** (React or Solid.js web app)
 - **Web server** (Node.js backend via WS)
@@ -18,14 +18,16 @@ This domain layer provides a **runtime-agnostic, pure function-based rules engin
 
 ## Game Distinctives
 
-Prevail: Ancient Battles is designed with several key principles:
+Prevail: Ancient Battles is designed as a response to the typical rules bloat that comes with many existing historical battlefield miniatures games:
 
 ### High Abstraction
 
-- **Unit-based combat**: Units are the atomic element of armies, not individual soldiers
-- **Command-driven**: Actions are issued through command cards, not direct unit control
-- **Phase-based rounds**: Game flow is structured into clear phases (Play Cards → Move Commanders → Issue Commands → Resolve Melee → Cleanup)
-- **Deterministic resolution**: Combat outcomes are calculated from unit stats and positioning plus granular player inputs, not random chance
+- **Singular Win Condition**: If at any moment a player's hand has no cards remaining, they have lost the battle. Your hand represents your army's will to fight—when it's gone, the battle is over. No complex victory point calculations or unit elimination tracking needed.
+- **Morale/Casualty/Fatigue Abstraction**: The hand cards represent all of these together through a simple combination of key traits. Cards are discarded on important unit routs, and spent for commands or additional commitments. No separate tracking systems are needed.
+- **Unit Support System**: Units must be "preserved" by cards in your hand. If you can't maintain support for a unit type (by having cards that preserve them), those units break and rout. This elegantly models the historical reality that armies need command structure to function.
+- **Card-Based Command**: Every action requires committing a card. Cards provide both the command capability (what you can order) and the initiative value (when you act). This dual-purpose design eliminates separate command point systems.
+- **Commander Representation**: Commanders move on the board to provide "inspiration range" for issuing commands. Position your commanders strategically to extend your command reach, but risk them in the fighting. This creates meaningful tactical decisions without complex command radius rules or separate command phase mechanics.
+- **Realistic Modeling**: Certain historical tactics and unit types which normally require additional rules overhead can be expressed more straightforwardly under this flexible system. The card system's restrictions and modifiers handle special cases naturally, keeping the core rules simple while allowing for historical authenticity.
 
 ### Historical Accuracy
 
@@ -36,9 +38,9 @@ Prevail: Ancient Battles is designed with several key principles:
 
 ### No Tokens, No Measurement, No Dice
 
-- **No tokens**: Game state is represented purely in unit positions and command cards.
-- **No measurement**: Movement and ranges are discrete board spaces, not measured distances
-- **No dice**: All outcomes are deterministic calculations based on unit stats, positioning, and card effects
+- **No tokens**: Game state is represented purely in unit positions and command cards—no status markers, wound counters, or resource tokens cluttering the board.
+- **No measurement**: Movement and ranges are discrete board spaces, not measured distances. No rulers or templates needed.
+- **No dice**: All outcomes are deterministic calculations based on unit stats, positioning, and card effects. Combat resolution is predictable and skill-based, not luck-based.
 
 ## Architecture Overview
 
@@ -110,7 +112,10 @@ Pure functions that extract information from game state without modifying it. Th
   - `getLegalUnitMoves()` - Calculate all legal moves for a unit
   - `getLegalRetreats()` - Calculate legal retreat paths
   - `getPlayerUnitWithPosition()` - Find friendly unit at position
-  - `getLine()` - Get units in a line formation
+  - `getLinesFromUnit()` - Get all line formations that include a given unit
+
+- **Phase Operations**: Round and phase queries
+  - `getNextPhase()` - Get the next phase in the round sequence
 
 - **Facing Operations** (`facings/`): Direction calculations
   - `getOppositeFacing()` - Get opposite direction
