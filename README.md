@@ -32,17 +32,6 @@ Prevail: Ancient Battles is a two-player tactical board game designed as a respo
 - **No measurement**: Movement and ranges are discrete board spaces, not measured distances. No rulers or templates needed.
 - **No dice**: All outcomes are deterministic calculations based on unit stats, positioning, and card effects. Combat resolution is predictable and skill-based, not luck-based.
 
-### Gameplay Overview
-
-Prevail: Ancient Battles is a two-player tactical board game featuring:
-
-- **Unit-based combat** with facing, movement, and engagement mechanics
-- **Command cards** that determine initiative and available actions each round
-- **Tactical positioning** where unit facing, flanking, and engagement rules matter
-- **Multiple board sizes** (standard, small, large) for different game scenarios
-
-Units have stats like speed, flexibility, attack, and range. Movement is constrained by terrain, unit facing, and the ability to pass through friendly units. Combat involves engagements where units face off, with rules for flanking, rear attacks, and facing changes.
-
 ## What This Library Does
 
 This library provides a **type-safe, pure function-based rules engine** that:
