@@ -1,7 +1,5 @@
 # Domain Layer: Prevail: Ancient Battles Rules Engine
 
-> **⚠️ Work In Progress:** This project is in active development. The domain layer provides a solid foundation with entities, events, queries, and validation, but the Rules Engine and some state transitions are still being implemented. See the [Transforms section](#5-transforms-transforms) for current status. Expect documentation to be incomplete and all changes to be breaking.
-
 This directory contains the **unified source of truth** for all game rules and business logic for the digital adaptation of the board game Prevail: Ancient Battles. This codebase serves as the authoritative rules engine that can be shared across:
 
 - **Browser clients** (React or Solid.js web app)
@@ -17,32 +15,6 @@ This domain layer provides a **runtime-agnostic, pure function-based rules engin
 - **Portable**: Works in any JavaScript/TypeScript runtime
 - **Reliable**: No hidden state or side effects means predictable behavior
 - **Type-safe**: Full TypeScript coverage with compile-time guarantees
-
-## Game Distinctives
-
-Prevail: Ancient Battles is designed as a response to the typical rules bloat that comes with many existing historical battlefield miniatures games:
-
-### High Abstraction
-
-- **Singular Win Condition**: If at any moment a player's hand has no cards remaining, they have lost the battle. Your hand represents your army's will to fight—when it's gone, the battle is over. No complex victory point calculations or unit elimination tracking needed.
-- **Morale/Casualty/Fatigue Abstraction**: The hand cards represent all of these together through a simple combination of key traits. Cards are discarded on important unit routs, and spent for commands or additional commitments. No separate tracking systems are needed.
-- **Unit Support System**: Units must be "preserved" by cards in your hand. If you can't maintain support for a unit type (by having cards that preserve them), those units break and rout. This elegantly models the historical reality that armies need command structure to function.
-- **Card-Based Command**: Every action requires committing a card. Cards provide both the command capability (what you can order) and the initiative value (when you act). This dual-purpose design eliminates separate command point systems.
-- **Commander Representation**: Commanders move on the board to provide "inspiration range" for issuing commands. Position your commanders strategically to extend your command reach, but risk them in the fighting. This creates meaningful tactical decisions without complex command radius rules or separate command phase mechanics.
-- **Realistic Modeling**: Certain historical tactics and unit types which normally require additional rules overhead can be expressed more straightforwardly under this flexible system. The card system's restrictions and modifiers handle special cases naturally, keeping the core rules simple while allowing for historical authenticity.
-
-### Historical Accuracy
-
-- **Authentic unit types**: Units represent historical formations (Polybian Hastatii, Hellenistic Thureophoroi, etc.)
-- **Tactical positioning**: Facing, flanking, and engagement rules reflect historical combat dynamics
-- **Command structure**: Command cards and initiative system model historical command and control
-- **Terrain effects**: Board terrain (elevation, water, terrain types) affects movement and combat
-
-### No Tokens, No Measurement, No Dice
-
-- **No tokens**: Game state is represented purely in unit positions and command cards—no status markers, wound counters, or resource tokens cluttering the board.
-- **No measurement**: Movement and ranges are discrete board spaces, not measured distances. No rulers or templates needed.
-- **No dice**: All outcomes are deterministic calculations based on unit stats, positioning, and card effects. Combat resolution is predictable and skill-based, not luck-based.
 
 ## Architecture Overview
 
