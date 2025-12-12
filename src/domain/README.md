@@ -1,5 +1,7 @@
 # Domain Layer: Prevail: Ancient Battles Rules Engine
 
+> **⚠️ Work In Progress:** This project is in active development. The domain layer provides a solid foundation with entities, events, queries, and validation, but the Rules Engine and some state transitions are still being implemented. See the [Transforms section](#5-transforms-transforms) for current status. Expect documentation to be incomplete and all changes to be breaking.
+
 This directory contains the **unified source of truth** for all game rules and business logic for the digital adaptation of the board game Prevail: Ancient Battles. This codebase serves as the authoritative rules engine that can be shared across:
 
 - **Browser clients** (React or Solid.js web app)
@@ -9,7 +11,7 @@ This directory contains the **unified source of truth** for all game rules and b
 
 ## Purpose
 
-This domain layer provides a **runtime-agnostic, pure function-based rules engine** that enforces game rules deterministically without side effects. All game logic is implemented as pure functions that take a game state and a player choice, and return the new game state or a rejection, making it:
+This domain layer provides a **runtime-agnostic, pure function-based rules engine** that enforces game rules deterministically without side effects. All game logic is implemented as pure functions that take a game state and an event (player choice or game effect), and return the new game state or a rejection, making it:
 
 - **Testable**: Pure functions are easy to test in isolation
 - **Portable**: Works in any JavaScript/TypeScript runtime
