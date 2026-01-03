@@ -1,10 +1,10 @@
 import type { StandardBoardCoordinate } from '@entities';
-import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
   createTestUnit,
 } from '@testing';
+import { createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getPositionOfUnit } from './getPositionOfUnit';
 

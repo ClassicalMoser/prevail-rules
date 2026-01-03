@@ -70,7 +70,13 @@ export const boundaries = [
     identifier: '@validation',
     dir: 'domain/validation',
     alias: '@validation',
-    allowImportsFrom: ['@entities', '@queries', '@ruleValues', '@events'],
+    allowImportsFrom: [
+      '@entities',
+      '@queries',
+      '@ruleValues',
+      '@events',
+      '@transforms',
+    ],
     allowTypeImportsFrom: ['@utils'],
     // Mutual dependency layer with queries
     // Inwardly dependent on entities, events, and rule values
@@ -114,6 +120,7 @@ export const boundaries = [
       '@utils',
       '@validation',
       '@sampleValues',
+      '@transforms',
     ],
     // May depend on all layers, no restrictions.
     // May only be used in tests.

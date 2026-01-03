@@ -104,7 +104,7 @@ export function applyMoveUnitEvent(
   const newRoundState = {
     ...state.currentRoundState,
     unitsThatMoved: new Set([
-      ...state.currentRoundState.unitsThatMoved,
+      ...state.currentRoundState.commandedUnits,
       event.unit,
     ]),
   };

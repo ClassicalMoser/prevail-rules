@@ -1,11 +1,6 @@
 import type { StandardBoardCoordinate } from '@entities';
-import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
-import {
-  createBoardWithUnits,
-  createUnitInstance,
-  getUnitByStatValue,
-  hasMove,
-} from '@testing';
+import { createBoardWithUnits, getUnitByStatValue, hasMove } from '@testing';
+import { createEmptyStandardBoard, createUnitInstance } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getLegalUnitMoves } from './getLegalUnitMoves';
 

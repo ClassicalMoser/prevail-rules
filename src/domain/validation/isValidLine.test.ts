@@ -1,10 +1,7 @@
 import type { Line, StandardBoard, StandardBoardCoordinate } from '@entities';
-import {
-  createEmptyStandardBoard,
-  getLinesFromUnit,
-  getPlayerUnitWithPosition,
-} from '@queries';
+import { getLinesFromUnit, getPlayerUnitWithPosition } from '@queries';
 import { createBoardWithUnits, createTestUnit } from '@testing';
+import { createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { isValidLine } from './isValidLine';
 

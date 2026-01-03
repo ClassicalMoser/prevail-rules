@@ -5,10 +5,7 @@ import type {
   StandardBoardCoordinate,
   UnitFacing,
 } from '@entities';
-import {
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-} from '@queries/createEmptyBoard';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getForwardSpace } from './getForwardSpace';
 

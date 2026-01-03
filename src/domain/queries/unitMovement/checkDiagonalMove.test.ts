@@ -1,6 +1,6 @@
 import { getForwardSpace } from '@queries/boardSpace';
-import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
 import { createTestUnit } from '@testing';
+import { createEmptyStandardBoard } from '@transforms';
 import { canMoveInto } from '@validation';
 import { describe, expect, it } from 'vitest';
 import { checkDiagonalMove } from './checkDiagonalMove';

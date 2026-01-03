@@ -3,7 +3,7 @@ import type {
   StandardBoardCoordinate,
   UnitFacing,
 } from '@entities';
-import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
+import { createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getRightSpace } from './getRightSpace';
 

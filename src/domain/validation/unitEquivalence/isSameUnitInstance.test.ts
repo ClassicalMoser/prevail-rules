@@ -1,5 +1,6 @@
 import type { UnitInstance } from '@entities';
-import { createUnitInstance, getUnitByStatValue } from '@testing';
+import { getUnitByStatValue } from '@testing';
+import { createUnitInstance } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { isSameUnitInstance } from './isSameUnitInstance';
 

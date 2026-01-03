@@ -1,7 +1,4 @@
-import {
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-} from '@queries/createEmptyBoard';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getSpacesInArc } from './getSpacesInArc';
 

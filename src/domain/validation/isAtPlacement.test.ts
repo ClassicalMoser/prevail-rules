@@ -6,13 +6,12 @@ import type {
   UnitInstance,
   UnitWithPlacement,
 } from '@entities';
-import { createEmptyStandardBoard } from '@queries';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-  createUnitInstance,
   getUnitByStatValue,
 } from '@testing';
+import { createEmptyStandardBoard, createUnitInstance } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { isAtPlacement } from './isAtPlacement';
 

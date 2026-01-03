@@ -1,5 +1,5 @@
 import type { PlayerSide, UnitInstance, UnitType } from '@entities';
-import { createUnitInstance } from './createUnitInstance';
+import { createUnitInstance } from '@transforms';
 import { getUnitByStatValue } from './getUnitByStatValue';
 
 /**

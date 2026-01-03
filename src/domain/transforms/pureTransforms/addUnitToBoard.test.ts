@@ -5,10 +5,10 @@ import type {
   UnitInstance,
   UnitWithPlacement,
 } from '@entities';
-import { createEmptyStandardBoard } from '@queries';
 import { createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { addUnitToBoard } from './addUnitToBoard';
+import { createEmptyStandardBoard } from './createEmptyBoard';
 
 describe('addUnitToBoard', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';

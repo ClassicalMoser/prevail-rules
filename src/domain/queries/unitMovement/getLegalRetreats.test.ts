@@ -3,13 +3,13 @@ import type {
   StandardBoardCoordinate,
   UnitPlacement,
 } from '@entities';
-import { createEmptySmallBoard } from '@queries/createEmptyBoard';
 import {
   createBoardWithEngagedUnits,
   createSingleUnitPresence,
   createTestUnit,
   getUnitByStatValue,
 } from '@testing';
+import { createEmptySmallBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getLegalRetreats } from './getLegalRetreats';
 

@@ -1,5 +1,4 @@
 export * from './boardSpace';
-export * from './createEmptyBoard';
 export * from './facings';
 export * from './getLine';
 export * from './getNextPhase';

@@ -4,12 +4,12 @@ import type {
   StandardBoardCoordinate,
   UnitInstance,
 } from '@entities';
-import { createEmptyStandardBoard } from '@queries';
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
   createTestUnit,
 } from '@testing';
+import { createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { canMoveThrough } from './canMoveThrough';
 

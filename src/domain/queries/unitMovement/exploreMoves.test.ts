@@ -5,8 +5,8 @@ import type {
 } from '@entities';
 import type { MoveExplorationConfig } from './exploreMoves';
 import { getForwardSpace, getRearwardSpace } from '@queries/boardSpace';
-import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
 import { createTestUnit } from '@testing';
+import { createEmptyStandardBoard } from '@transforms';
 import { canMoveInto } from '@validation';
 import { describe, expect, it } from 'vitest';
 import { exploreMoves } from './exploreMoves';

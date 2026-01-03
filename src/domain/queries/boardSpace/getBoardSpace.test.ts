@@ -3,10 +3,7 @@ import type {
   StandardBoard,
   StandardBoardCoordinate,
 } from '@entities';
-import {
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-} from '@queries/createEmptyBoard';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getBoardSpace } from './getBoardSpace';
 

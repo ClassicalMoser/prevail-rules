@@ -4,8 +4,8 @@ import type {
   StandardBoardCoordinate,
   UnitFacing,
 } from '@entities';
-import { createEmptyStandardBoard } from '@queries';
 import { createBoardWithUnits, createTestUnit } from '@testing';
+import { createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { canEngageEnemy } from './canEngageEnemy';
 

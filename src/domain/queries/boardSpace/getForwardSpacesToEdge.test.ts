@@ -1,4 +1,4 @@
-import { createEmptyStandardBoard } from '@queries/createEmptyBoard';
+import { createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getForwardSpacesToEdge } from './getForwardSpacesToEdge';
 
