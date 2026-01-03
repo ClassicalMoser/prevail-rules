@@ -16,10 +16,8 @@ export interface RoundState {
   completedPhases: Set<PhaseState>;
   /** The state of the current phase of the round. */
   currentPhaseState?: PhaseState;
-  /** Units that have moved this round. */
-  unitsThatMoved: Set<UnitInstance>;
-  /** Units that have made ranged attacks this round. */
-  unitsThatMadeRangedAttacks: Set<UnitInstance>;
+  /** Units that have been commanded this round. */
+  commandedUnits: Set<UnitInstance>;
 }
 
 const _roundStateSchemaObject = z.object({
@@ -29,10 +27,8 @@ const _roundStateSchemaObject = z.object({
   completedPhases: z.set(phaseStateSchema),
   /** The state of the current phase of the round. */
   currentPhaseState: phaseStateSchema.optional(),
-  /** Units that have moved this round. */
-  unitsThatMoved: z.set(unitInstanceSchema),
-  /** Units that have made ranged attacks this round. */
-  unitsThatMadeRangedAttacks: z.set(unitInstanceSchema),
+  /** Units that have been commanded this round. */
+  commandedUnits: z.set(unitInstanceSchema),
 });
 
 type RoundStateSchemaType = z.infer<typeof _roundStateSchemaObject>;

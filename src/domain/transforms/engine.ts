@@ -70,11 +70,6 @@ export class RulesEngine {
       };
     }
 
-    // Step 3: Check for triggered events
-    // For example, moving into an enemy space triggers engagement
-    const triggered = this.checkTriggers(event, newState);
-    triggeredEvents.push(...triggered);
-
     return {
       success: true,
       newState,
@@ -153,28 +148,5 @@ export class RulesEngine {
       valid: errors.length === 0,
       errors,
     };
-  }
-
-  /**
-   * Checks if an event triggers other events.
-   * For example, moving into an enemy space triggers an engagement event.
-   */
-  private checkTriggers(event: Event, _state: GameState): Event[] {
-    const triggered: Event[] = [];
-
-    // Example: Moving into enemy space triggers engagement
-    // This is a simplified version - in a full implementation,
-    // you'd have a registry of trigger rules
-    if (
-      event.eventType === 'playerChoice' &&
-      'unit' in event &&
-      'to' in event
-    ) {
-      // Check if destination has enemy unit
-      // If so, trigger ResolveEngagementEvent
-      // For now, return empty - this would be implemented with proper rules
-    }
-
-    return triggered;
   }
 }
