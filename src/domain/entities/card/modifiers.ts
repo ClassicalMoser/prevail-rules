@@ -1,44 +1,48 @@
 import type { AssertExact } from '@utils';
 import { z } from 'zod';
 
-export const valueTypes = [
+/** All stat modifiers that can be used on a card.
+ * This includes all unit stats except the defense stats (reverse, retreat, rout),
+ * which are replaced with a single 'defense' type.
+ */
+export const statModifiers = [
   'attack',
-  'defense',
   'range',
   'speed',
   'flexibility',
+  'defense',
 ] as const;
 
-/**
- * The types of values that can be used on a card.
- */
-export type ValueType = (typeof valueTypes)[number];
+export type StatModifier = (typeof statModifiers)[number];
 
-const _valueTypesSchemaObject = z.enum(valueTypes);
-type ValueTypesSchemaType = z.infer<typeof _valueTypesSchemaObject>;
+const _statModifierSchemaObject = z.enum(statModifiers);
+type StatModifierSchemaType = z.infer<typeof _statModifierSchemaObject>;
 
 /**
- * The schema for value types.
+ * The schema for a stat modifier.
  */
-export const valueTypesSchema: z.ZodType<ValueType> = _valueTypesSchemaObject;
+export const statModifierSchema: z.ZodType<StatModifier> =
+  _statModifierSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactValueType: AssertExact<ValueType, ValueTypesSchemaType> =
-  true;
+const _assertExactStatModifier: AssertExact<
+  StatModifier,
+  StatModifierSchemaType
+> = true;
 
 /**
  * A modifier on a card.
  */
 export interface Modifier {
   /** The type of the modifier. */
-  type: ValueType;
+  type: StatModifier;
   /** The value of the modifier. */
   value: number;
 }
 
 const _modifierSchemaObject = z.object({
   /** The type of the modifier. */
-  type: valueTypesSchema,
+  type: statModifierSchema,
   /** The value of the modifier. */
   value: z.int().min(-2).max(2),
 });

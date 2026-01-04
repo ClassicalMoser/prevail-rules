@@ -3,32 +3,33 @@
  * Each function is pure and returns a new game state without mutating the input.
  */
 
-import type { GameState } from '@entities';
+import type { Board, GameState } from '@entities';
 import type { Event } from '@events';
 import { applyMoveUnitEvent } from './applyMoveUnitEvent';
 
 /**
  * Type for a state transition function.
  * Takes an event and current state, returns new state.
+ * Preserves the board type through the transition.
  */
-export type StateTransition<TEvent extends Event> = (
-  event: TEvent,
-  state: GameState,
-) => GameState;
+export type StateTransition<
+  TEvent extends Event,
+  TBoard extends Board = Board,
+> = (event: TEvent, state: GameState<TBoard>) => GameState<TBoard>;
 
 /**
  * Gets the appropriate state transition function for an event.
  * Returns undefined if no transition is found for the event type.
  */
-export function getStateTransition(
+export function getStateTransition<TBoard extends Board = Board>(
   event: Event,
-): StateTransition<Event> | undefined {
+): StateTransition<Event, TBoard> | undefined {
   // Use type narrowing to determine which transition to use
   if (event.eventType === 'playerChoice') {
     // Handle player choice events
     if ('unit' in event && 'from' in event && 'to' in event) {
       // This is a MoveUnitEvent
-      return applyMoveUnitEvent as StateTransition<Event>;
+      return applyMoveUnitEvent as StateTransition<Event, TBoard>;
     }
     // Add other player choice event transitions here
     // if ('card' in event && 'player' in event) {
@@ -48,14 +49,18 @@ export function getStateTransition(
 /**
  * Applies an event to game state using the appropriate transition function.
  * Throws an error if no transition is found for the event type.
+ * Preserves the board type through the transition.
  *
  * @param event - The event to apply
  * @param state - The current game state
  * @returns A new game state with the event applied
  * @throws {Error} If no transition is found for the event type
  */
-export function applyEvent(event: Event, state: GameState): GameState {
-  const transition = getStateTransition(event);
+export function applyEvent<TBoard extends Board>(
+  event: Event,
+  state: GameState<TBoard>,
+): GameState<TBoard> {
+  const transition = getStateTransition<TBoard>(event);
   if (!transition) {
     throw new Error(
       `No state transition found for event type: ${JSON.stringify(event)}`,

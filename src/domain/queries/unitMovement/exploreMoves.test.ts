@@ -5,8 +5,8 @@ import type {
 } from '@entities';
 import type { MoveExplorationConfig } from './exploreMoves';
 import { getForwardSpace, getRearwardSpace } from '@queries/boardSpace';
-import { createTestUnit } from '@testing';
-import { createEmptyStandardBoard } from '@transforms';
+import { getCurrentUnitStat } from '@queries/getCurrentUnitStat';
+import { createEmptyGameState, createTestUnit } from '@testing';
 import { canMoveInto } from '@validation';
 import { describe, expect, it } from 'vitest';
 import { exploreMoves } from './exploreMoves';
@@ -20,7 +20,7 @@ describe('exploreMoves', () => {
 
   describe('callback contract', () => {
     it('should call onValidDestination for the starting position', () => {
-      const board = createEmptyStandardBoard();
+      const gameState = createEmptyGameState();
       let startingPositionCalled = false;
 
       const config: MoveExplorationConfig<StandardBoard> = {
@@ -38,19 +38,24 @@ describe('exploreMoves', () => {
         },
       };
 
-      exploreMoves(unit, board, startingPosition, config);
+      exploreMoves(unit, gameState, startingPosition, config);
 
       expect(startingPositionCalled).toBe(true);
     });
 
     it('should call onValidDestination with correct cost tracking', () => {
-      const board = createEmptyStandardBoard();
+      const gameState = createEmptyGameState();
       const calls: Array<{
         flexibilityUsed: number;
         speedUsed: number;
         previousCoordinate: StandardBoardCoordinate | undefined;
       }> = [];
-
+      const currentUnitFlexibility = getCurrentUnitStat(
+        unit,
+        'flexibility',
+        gameState,
+      );
+      const currentUnitSpeed = getCurrentUnitStat(unit, 'speed', gameState);
       const config: MoveExplorationConfig<StandardBoard> = {
         getSpaceInDirection: getForwardSpace,
         canEndAt: canMoveInto,
@@ -68,7 +73,7 @@ describe('exploreMoves', () => {
         },
       };
 
-      exploreMoves(unit, board, startingPosition, config);
+      exploreMoves(unit, gameState, startingPosition, config);
 
       // Starting position should have 0 costs and no previous coordinate
       const startingCall = calls.find(
@@ -87,17 +92,17 @@ describe('exploreMoves', () => {
       calls.forEach((call) => {
         expect(call.flexibilityUsed).toBeGreaterThanOrEqual(0);
         expect(call.flexibilityUsed).toBeLessThanOrEqual(
-          unit.unitType.stats.flexibility,
+          currentUnitFlexibility,
         );
         expect(call.speedUsed).toBeGreaterThanOrEqual(0);
-        expect(call.speedUsed).toBeLessThanOrEqual(unit.unitType.stats.speed);
+        expect(call.speedUsed).toBeLessThanOrEqual(currentUnitSpeed);
       });
     });
   });
 
   describe('configuration respect', () => {
     it('should respect canEndAt when determining valid destinations', () => {
-      const board = createEmptyStandardBoard();
+      const gameState = createEmptyGameState();
       const validDestinations: StandardBoardCoordinate[] = [];
 
       const config: MoveExplorationConfig<StandardBoard> = {
@@ -111,7 +116,7 @@ describe('exploreMoves', () => {
         },
       };
 
-      exploreMoves(unit, board, startingPosition, config);
+      exploreMoves(unit, gameState, startingPosition, config);
 
       // Should only call for starting position
       expect(
@@ -120,7 +125,7 @@ describe('exploreMoves', () => {
     });
 
     it('should respect shouldContinueExploring to limit exploration', () => {
-      const board = createEmptyStandardBoard();
+      const gameState = createEmptyGameState();
       let maxSpeedUsed = 0;
 
       const config: MoveExplorationConfig<StandardBoard> = {
@@ -134,14 +139,14 @@ describe('exploreMoves', () => {
         },
       };
 
-      exploreMoves(unit, board, startingPosition, config);
+      exploreMoves(unit, gameState, startingPosition, config);
 
       // Should not explore beyond speed 1
       expect(maxSpeedUsed).toBeLessThanOrEqual(1);
     });
 
     it('should use getSpaceInDirection to determine movement direction', () => {
-      const board = createEmptyStandardBoard();
+      const gameState = createEmptyGameState();
       const forwardDestinations: StandardBoardCoordinate[] = [];
       const backwardDestinations: StandardBoardCoordinate[] = [];
 
@@ -156,7 +161,7 @@ describe('exploreMoves', () => {
         },
       };
 
-      exploreMoves(unit, board, startingPosition, forwardConfig);
+      exploreMoves(unit, gameState, startingPosition, forwardConfig);
 
       const backwardConfig: MoveExplorationConfig<StandardBoard> = {
         getSpaceInDirection: getRearwardSpace,
@@ -171,7 +176,7 @@ describe('exploreMoves', () => {
         },
       };
 
-      exploreMoves(unit, board, startingPosition, backwardConfig);
+      exploreMoves(unit, gameState, startingPosition, backwardConfig);
 
       // Both should explore some destinations
       expect(forwardDestinations.length).toBeGreaterThan(0);
@@ -181,7 +186,7 @@ describe('exploreMoves', () => {
 
   describe('state management', () => {
     it('should not call onValidDestination multiple times for the same state (coordinate, facing, costs)', () => {
-      const board = createEmptyStandardBoard();
+      const gameState = createEmptyGameState();
       const callCounts = new Map<string, number>();
 
       const config: MoveExplorationConfig<StandardBoard> = {
@@ -199,7 +204,7 @@ describe('exploreMoves', () => {
         },
       };
 
-      exploreMoves(unit, board, startingPosition, config);
+      exploreMoves(unit, gameState, startingPosition, config);
 
       // Each unique state (coordinate + facing + costs) should be called at most once
       callCounts.forEach((count) => {

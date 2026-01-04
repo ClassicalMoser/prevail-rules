@@ -13,7 +13,7 @@ import { z } from 'zod';
 import { roundStateSchema } from './roundState';
 
 /** The state of a game of Prevail: Ancient Battles. */
-export interface GameState {
+export interface GameState<TBoard extends Board> {
   /** The current round number of the game. */
   currentRoundNumber: number;
   /** The state of the current round of the game. */
@@ -21,7 +21,7 @@ export interface GameState {
   /** Which player currently has initiative. */
   currentInitiative: PlayerSide;
   /** The state of the board. */
-  boardState: Board;
+  boardState: TBoard;
   /** The state of both players' cards. */
   cardState: CardState;
   /** The units that have been routed during the game. */
@@ -45,7 +45,16 @@ const _gameStateSchemaObject = z.object({
 
 type GameStateSchemaType = z.infer<typeof _gameStateSchemaObject>;
 
-const _assertExactGameState: AssertExact<GameState, GameStateSchemaType> = true;
+// Schema validates GameState<Board> (the base union type)
+const _assertExactGameState: AssertExact<
+  GameState<Board>,
+  GameStateSchemaType
+> = true;
 
-/** The schema for the state of a game of Prevail: Ancient Battles. */
-export const gameStateSchema: z.ZodType<GameState> = _gameStateSchemaObject;
+/**
+ * The schema for the state of a game of Prevail: Ancient Battles.
+ * This schema validates GameState<Board> (the base union type).
+ * For type-safe usage, use the generic GameState<TBoard> interface.
+ */
+export const gameStateSchema: z.ZodType<GameState<Board>> =
+  _gameStateSchemaObject;

@@ -1,4 +1,5 @@
 import type {
+  GameState,
   PlayerSide,
   StandardBoard,
   StandardBoardCoordinate,
@@ -7,6 +8,7 @@ import type {
   UnitType,
 } from '@entities';
 import { createEmptyStandardBoard, createUnitInstance } from '@transforms';
+import { createEmptyGameState } from './createEmptyGameState';
 import { getUnitByStatValue } from './getUnitByStatValue';
 
 /**
@@ -152,4 +154,88 @@ export function createBoardWithCommander(
     commanders: new Set([playerSide]),
   };
   return targetBoard;
+}
+
+/**
+ * Creates a game state with a single unit at a coordinate.
+ * This is a convenience function for tests that need a GameState with units.
+ *
+ * @param coord - The coordinate where the unit should be placed
+ * @param playerSide - The player side of the unit
+ * @param options - Optional configuration for the unit
+ * @param options.unitType - Specific unit type to use (if not provided, will use stat-based lookup)
+ * @param options.flexibility - Flexibility stat value (used if unitType not provided)
+ * @param options.attack - Attack stat value (used if unitType not provided)
+ * @param options.facing - Unit facing (defaults to "north")
+ * @param options.instanceNumber - Unit instance number (defaults to 1)
+ * @returns A game state with the specified unit placed
+ */
+export function createGameStateWithSingleUnit(
+  coord: StandardBoardCoordinate,
+  playerSide: PlayerSide,
+  options?: {
+    unitType?: UnitType;
+    flexibility?: number;
+    attack?: number;
+    facing?: UnitFacing;
+    instanceNumber?: number;
+  },
+): GameState<StandardBoard> {
+  const gameState = createEmptyGameState();
+  const board = createBoardWithSingleUnit(coord, playerSide, options);
+  return {
+    ...gameState,
+    boardState: board,
+  };
+}
+
+/**
+ * Creates a game state with engaged units at a coordinate.
+ * This represents two units in combat at the same space.
+ *
+ * @param primaryUnit - The primary unit in the engagement
+ * @param secondaryUnit - The secondary unit in the engagement
+ * @param coord - The coordinate where the engagement occurs (defaults to "E-5")
+ * @param primaryFacing - The facing of the primary unit (defaults to "north")
+ * @returns A game state with the engaged units placed
+ */
+export function createGameStateWithEngagedUnits(
+  primaryUnit: UnitInstance,
+  secondaryUnit: UnitInstance,
+  coord: StandardBoardCoordinate = 'E-5',
+  primaryFacing: UnitFacing = 'north',
+): GameState<StandardBoard> {
+  const gameState = createEmptyGameState();
+  const board = createBoardWithEngagedUnits(
+    primaryUnit,
+    secondaryUnit,
+    coord,
+    primaryFacing,
+  );
+  return {
+    ...gameState,
+    boardState: board,
+  };
+}
+
+/**
+ * Creates a game state with units at specified positions.
+ * This is a convenience function for tests that need a GameState with multiple units.
+ *
+ * @param units - Array of unit placements, each specifying unit, coordinate, and facing
+ * @returns A game state with the specified units placed
+ */
+export function createGameStateWithUnits(
+  units: Array<{
+    unit: UnitInstance;
+    coordinate: StandardBoardCoordinate;
+    facing: UnitFacing;
+  }>,
+): GameState<StandardBoard> {
+  const gameState = createEmptyGameState();
+  const board = createBoardWithUnits(units);
+  return {
+    ...gameState,
+    boardState: board,
+  };
 }

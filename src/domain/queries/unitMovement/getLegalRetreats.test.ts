@@ -4,12 +4,12 @@ import type {
   UnitPlacement,
 } from '@entities';
 import {
-  createBoardWithEngagedUnits,
+  createEmptyGameState,
+  createGameStateWithEngagedUnits,
   createSingleUnitPresence,
   createTestUnit,
   getUnitByStatValue,
 } from '@testing';
-import { createEmptySmallBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getLegalRetreats } from './getLegalRetreats';
 
@@ -20,14 +20,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -49,14 +49,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'northEast';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -78,20 +78,20 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
       // Block the direct backward path
-      board.board['F-5'].unitPresence = {
+      gameState.boardState.board['F-5'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('black', { flexibility: 1, instanceNumber: 2 }),
         facing: 'north',
       };
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -117,7 +117,7 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
@@ -125,7 +125,7 @@ describe('getLegalRetreats', () => {
       );
 
       // Block direct backward with a friendly unit
-      board.board['F-5'].unitPresence = {
+      gameState.boardState.board['F-5'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('black', {
           flexibility: 3,
@@ -135,7 +135,7 @@ describe('getLegalRetreats', () => {
         facing: 'north',
       };
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -158,14 +158,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -189,26 +189,26 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
       // Block direct backward
-      board.board['F-5'].unitPresence = {
+      gameState.boardState.board['F-5'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('black', { flexibility: 1, instanceNumber: 2 }),
         facing: 'north',
       };
       // Block diagonal backward (F-4 and F-6)
-      board.board['F-4'].unitPresence = {
+      gameState.boardState.board['F-4'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('black', { flexibility: 1, instanceNumber: 3 }),
         facing: 'north',
       };
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -233,20 +233,20 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
       // Place enemy unit behind us, facing toward us
-      board.board['F-5'].unitPresence = {
+      gameState.boardState.board['F-5'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('white', { flexibility: 1, instanceNumber: 2 }),
         facing: 'north', // Facing toward E-5 (our starting position)
       };
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -260,20 +260,20 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
       // Place enemy unit behind us, but facing away from us
-      board.board['F-5'].unitPresence = {
+      gameState.boardState.board['F-5'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('white', { flexibility: 1, instanceNumber: 2 }),
         facing: 'south', // Facing away from E-5
       };
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -295,21 +295,21 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
 
       // All retreat destinations should be empty
       for (const retreat of retreats) {
-        const space = board.board[retreat.placement.coordinate];
+        const space = gameState.boardState.board[retreat.placement.coordinate];
         expect(space.unitPresence.presenceType).toBe('none');
       }
     });
@@ -320,15 +320,13 @@ describe('getLegalRetreats', () => {
       const unit = createTestUnit('black', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      // Create empty small board
-      const board = createEmptySmallBoard();
+      // Create empty game state
+      const gameState = createEmptyGameState();
       // Add single unit (not engaged)
-      board.board[startingCoordinate].unitPresence = createSingleUnitPresence(
-        unit,
-        startingFacing,
-      );
+      gameState.boardState.board[startingCoordinate].unitPresence =
+        createSingleUnitPresence(unit, startingFacing);
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -349,14 +347,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -369,14 +367,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('black', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'south'; // Secondary unit faces opposite
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         enemyUnit, // primary
         unit, // secondary
         startingCoordinate,
         'north', // primary facing
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -395,7 +393,7 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         differentUnit, // Different unit
         enemyUnit,
         startingCoordinate,
@@ -403,7 +401,7 @@ describe('getLegalRetreats', () => {
       );
 
       expect(() => {
-        getLegalRetreats(unit, board, {
+        getLegalRetreats(unit, gameState, {
           coordinate: startingCoordinate,
           facing: startingFacing,
         });
@@ -416,7 +414,7 @@ describe('getLegalRetreats', () => {
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const actualFacing = 'north';
       const reportedFacing = 'south'; // Different from actual
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
@@ -424,7 +422,7 @@ describe('getLegalRetreats', () => {
       );
 
       expect(() => {
-        getLegalRetreats(unit, board, {
+        getLegalRetreats(unit, gameState, {
           coordinate: startingCoordinate,
           facing: reportedFacing,
         });
@@ -438,14 +436,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'east';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -467,14 +465,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'south';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -496,14 +494,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'northEast';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -526,14 +524,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'A-15';
       const startingFacing = 'south'; // Backward (south) from A-1 is out of bounds
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -548,7 +546,7 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1, speed: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
@@ -565,8 +563,8 @@ describe('getLegalRetreats', () => {
         'G-6', // Further diagonal backward
       ];
       for (const space of blockedSpaces) {
-        if (board.board[space]) {
-          board.board[space].unitPresence = {
+        if (gameState.boardState.board[space]) {
+          gameState.boardState.board[space].unitPresence = {
             presenceType: 'single',
             unit: createTestUnit('black', {
               flexibility: 1,
@@ -578,7 +576,7 @@ describe('getLegalRetreats', () => {
         }
       }
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -592,14 +590,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -622,14 +620,14 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -654,25 +652,25 @@ describe('getLegalRetreats', () => {
       const enemyUnit = createTestUnit('white', { flexibility: 1 });
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithEngagedUnits(
+      const gameState = createGameStateWithEngagedUnits(
         unit,
         enemyUnit,
         startingCoordinate,
         startingFacing,
       );
 
-      board.board['F-5'].unitPresence = {
+      gameState.boardState.board['F-5'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('black', { flexibility: 1, instanceNumber: 2 }),
         facing: 'north',
       };
-      board.board['F-6'].unitPresence = {
+      gameState.boardState.board['F-6'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('black', { flexibility: 1, instanceNumber: 4 }),
         facing: 'north',
       };
 
-      const retreats = getLegalRetreats(unit, board, {
+      const retreats = getLegalRetreats(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });

@@ -1,6 +1,7 @@
 import type {
   Board,
   BoardCoordinate,
+  GameState,
   UnitInstance,
   UnitPlacement,
   UnitWithPlacement,
@@ -11,6 +12,7 @@ import {
   getRearwardSpace,
   getSpacesBehind,
 } from '@queries/boardSpace';
+import { getCurrentUnitStat } from '@queries/getCurrentUnitStat';
 import { areSameSide } from '@queries/unit';
 import { getPlayerUnitWithPosition } from '@queries/unitPresence';
 import { hasNoUnit, hasSingleUnit } from '@validation';
@@ -28,7 +30,7 @@ import { exploreMoves } from './exploreMoves';
  * If multiple equal options exist, all are returned.
  *
  * @param unit - The unit to find retreat moves for (must be engaged)
- * @param board - The board state
+ * @param gameState - The current game state
  * @param startingPosition - The current position and facing of the unit
  * @returns A set of all legal retreat moves (unit placements), or empty set if no retreat is possible
  * @throws {Error} If the unit is not engaged, not present, or facing mismatch
@@ -47,9 +49,11 @@ import { exploreMoves } from './exploreMoves';
  */
 export function getLegalRetreats<TBoard extends Board>(
   unit: UnitInstance,
-  board: TBoard,
+  gameState: GameState<TBoard>,
   startingPosition: UnitPlacement<TBoard>,
 ): Set<UnitWithPlacement<TBoard>> {
+  // Get the board state
+  const board = gameState.boardState;
   // Validate starting position - unit must be present (engaged or single)
   const unitWithPlacement = getPlayerUnitWithPosition(
     board,
@@ -70,6 +74,14 @@ export function getLegalRetreats<TBoard extends Board>(
     startingPosition.facing,
   );
 
+  // Get the current flexibility of the unit
+  const currentUnitFlexibility = getCurrentUnitStat(
+    unit,
+    'flexibility',
+    gameState,
+  );
+  // Get the current speed of the unit
+  const currentUnitSpeed = getCurrentUnitStat(unit, 'speed', gameState);
   // If there is an enemy unit facing us in the spaces behind the starting position,
   // we cannot retreat
   for (const space of spacesBehind) {
@@ -100,10 +112,10 @@ export function getLegalRetreats<TBoard extends Board>(
   // Then try flexibility=1, speed=1, etc.
   for (
     let maxFlexibility = 0;
-    maxFlexibility <= unit.unitType.stats.flexibility;
+    maxFlexibility <= currentUnitFlexibility;
     maxFlexibility++
   ) {
-    for (let maxSpeed = 1; maxSpeed <= unit.unitType.stats.speed; maxSpeed++) {
+    for (let maxSpeed = 1; maxSpeed <= currentUnitSpeed; maxSpeed++) {
       // Clear found retreats for this cost level
       foundRetreats.clear();
 
@@ -154,7 +166,7 @@ export function getLegalRetreats<TBoard extends Board>(
       };
 
       // Explore at this cost level
-      exploreMoves(unit, board, startingPosition, {
+      exploreMoves(unit, gameState, startingPosition, {
         getSpaceInDirection: getRearwardSpace,
         canEndAt,
         shouldContinueExploring,

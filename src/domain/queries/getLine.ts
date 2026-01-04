@@ -82,7 +82,13 @@ export function getLinesFromUnit<TBoard extends Board>(
     }
 
     // Check requirements: must match traits/unitTypes if specified
-    if (!matchesUnitRequirements(playerUnit.unit.unitType, traits, unitTypes)) {
+    if (
+      !matchesUnitRequirements(
+        playerUnit.unit.unitType,
+        traits,
+        unitTypes.map((unitType) => unitType.id),
+      )
+    ) {
       // Doesn't match requirements: stop expanding
       return undefined;
     }

@@ -1,6 +1,11 @@
 import type { StandardBoardCoordinate } from '@entities';
-import { createBoardWithUnits, getUnitByStatValue, hasMove } from '@testing';
-import { createEmptyStandardBoard, createUnitInstance } from '@transforms';
+import {
+  createEmptyGameState,
+  createGameStateWithUnits,
+  getUnitByStatValue,
+  hasMove,
+} from '@testing';
+import { createUnitInstance } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getLegalUnitMoves } from './getLegalUnitMoves';
 
@@ -13,11 +18,11 @@ describe('getLegalUnitMoves', () => {
       const unit = createUnitInstance('black', flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -37,12 +42,12 @@ describe('getLegalUnitMoves', () => {
       const startingFacing = 'north';
       // Unit has flexibility 1, so combined flexibility would be 2 (need 4+)
       const friendlyUnit = createUnitInstance('black', flexibility1UnitType, 2);
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: friendlyUnit, coordinate: 'D-5', facing: 'north' },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -63,12 +68,12 @@ describe('getLegalUnitMoves', () => {
         highFlexibilityUnitType,
         2,
       );
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: friendlyUnit, coordinate: 'D-5', facing: 'north' },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -88,13 +93,13 @@ describe('getLegalUnitMoves', () => {
         flexibility1UnitType,
         2,
       );
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: 'E-5', facing: 'northWest' },
         { unit: friendlyUnit1, coordinate: 'D-5', facing: 'north' },
         { unit: friendlyUnit2, coordinate: 'E-4', facing: 'east' },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: 'E-5',
         facing: 'northWest',
       });
@@ -108,13 +113,13 @@ describe('getLegalUnitMoves', () => {
       const flexibleUnitType = getUnitByStatValue('flexibility', 3);
       const friendlyUnit1 = createUnitInstance('black', flexibleUnitType, 1);
       const friendlyUnit2 = createUnitInstance('black', flexibleUnitType, 2);
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: 'E-5', facing: 'northWest' },
         { unit: friendlyUnit1, coordinate: 'D-5', facing: 'north' },
         { unit: friendlyUnit2, coordinate: 'E-4', facing: 'east' },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: 'E-5',
         facing: 'northWest',
       });
@@ -129,12 +134,12 @@ describe('getLegalUnitMoves', () => {
       const startingCoordinate: StandardBoardCoordinate = 'E-4';
       const startingFacing = 'east';
       const enemyUnit = createUnitInstance('white', flexibility1UnitType, 1);
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: enemyUnit, coordinate: 'E-5', facing: 'north' },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -147,12 +152,12 @@ describe('getLegalUnitMoves', () => {
       const startingCoordinate: StandardBoardCoordinate = 'D-5';
       const startingFacing = 'south';
       const enemyUnit = createUnitInstance('white', flexibility1UnitType, 1);
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: enemyUnit, coordinate: 'E-5', facing: 'north' },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -167,12 +172,12 @@ describe('getLegalUnitMoves', () => {
       const startingCoordinate: StandardBoardCoordinate = 'D-5';
       const startingFacing = 'east';
       const enemyUnit = createUnitInstance('white', flexibility1UnitType, 1);
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: enemyUnit, coordinate: 'E-5', facing: 'north' },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -187,7 +192,7 @@ describe('getLegalUnitMoves', () => {
       const enemyUnit1 = createUnitInstance('white', flexibility1UnitType, 1);
       const enemyUnit2 = createUnitInstance('white', flexibility1UnitType, 2);
       const enemyUnit3 = createUnitInstance('white', flexibility1UnitType, 3);
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         {
           unit: friendlyUnit,
           coordinate: startingCoordinate,
@@ -198,7 +203,7 @@ describe('getLegalUnitMoves', () => {
         { unit: enemyUnit3, coordinate: 'D-6', facing: 'south' },
       ]);
 
-      const legalMoves = getLegalUnitMoves(friendlyUnit, board, {
+      const legalMoves = getLegalUnitMoves(friendlyUnit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -217,13 +222,13 @@ describe('getLegalUnitMoves', () => {
       const unit = createUnitInstance('black', flexibility1UnitType, 1);
       const enemy1 = createUnitInstance('white', flexibility1UnitType, 1);
       const enemy2 = createUnitInstance('white', flexibility1UnitType, 2);
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: 'E-5', facing: 'northWest' },
         { unit: enemy1, coordinate: 'D-5', facing: 'south' },
         { unit: enemy2, coordinate: 'E-4', facing: 'east' },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: 'E-5',
         facing: 'northWest',
       });
@@ -237,11 +242,11 @@ describe('getLegalUnitMoves', () => {
       const unit = createUnitInstance('black', flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = 'A-1';
       const startingFacing = 'north'; // Moving north from A-1 is out of bounds
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -261,11 +266,11 @@ describe('getLegalUnitMoves', () => {
       const unit = createUnitInstance('black', flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = 'L-18';
       const startingFacing = 'south'; // Moving south from L-18 is out of bounds
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
       ]);
 
-      const legalMoves = getLegalUnitMoves(unit, board, {
+      const legalMoves = getLegalUnitMoves(unit, gameState, {
         coordinate: startingCoordinate,
         facing: startingFacing,
       });
@@ -285,12 +290,12 @@ describe('getLegalUnitMoves', () => {
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
       const enemyUnit = createUnitInstance('white', flexibility1UnitType, 2);
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: startingCoordinate, facing: startingFacing },
         { unit: enemyUnit, coordinate: startingCoordinate, facing: 'south' },
       ]);
       // Manually set the unit presence to engaged state
-      board.board[startingCoordinate].unitPresence = {
+      gameState.boardState.board[startingCoordinate].unitPresence = {
         presenceType: 'engaged',
         primaryUnit: unit,
         primaryFacing: startingFacing,
@@ -298,7 +303,7 @@ describe('getLegalUnitMoves', () => {
       };
 
       expect(() => {
-        getLegalUnitMoves(unit, board, {
+        getLegalUnitMoves(unit, gameState, {
           coordinate: startingCoordinate,
           facing: startingFacing,
         });
@@ -310,14 +315,14 @@ describe('getLegalUnitMoves', () => {
       const unit = createUnitInstance('black', flexibility1UnitType, 1);
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createEmptyStandardBoard();
+      const gameState = createEmptyGameState();
       // Set unit presence to "none" instead of "single"
-      board.board[startingCoordinate].unitPresence = {
+      gameState.boardState.board[startingCoordinate].unitPresence = {
         presenceType: 'none',
       };
 
       expect(() => {
-        getLegalUnitMoves(unit, board, {
+        getLegalUnitMoves(unit, gameState, {
           coordinate: startingCoordinate,
           facing: startingFacing,
         });
@@ -334,7 +339,7 @@ describe('getLegalUnitMoves', () => {
       );
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const startingFacing = 'north';
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         {
           unit: differentUnit,
           coordinate: startingCoordinate,
@@ -343,7 +348,7 @@ describe('getLegalUnitMoves', () => {
       ]);
 
       expect(() => {
-        getLegalUnitMoves(unit, board, {
+        getLegalUnitMoves(unit, gameState, {
           coordinate: startingCoordinate,
           facing: startingFacing,
         });
@@ -356,12 +361,12 @@ describe('getLegalUnitMoves', () => {
       const startingCoordinate: StandardBoardCoordinate = 'E-5';
       const actualFacing = 'north';
       const reportedFacing = 'south'; // Different from actual facing
-      const board = createBoardWithUnits([
+      const gameState = createGameStateWithUnits([
         { unit, coordinate: startingCoordinate, facing: actualFacing },
       ]);
 
       expect(() => {
-        getLegalUnitMoves(unit, board, {
+        getLegalUnitMoves(unit, gameState, {
           coordinate: startingCoordinate,
           facing: reportedFacing,
         });

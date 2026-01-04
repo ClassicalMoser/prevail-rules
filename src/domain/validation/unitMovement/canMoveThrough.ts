@@ -1,5 +1,10 @@
-import type { Board, BoardCoordinate, UnitInstance } from '@entities';
-import { areSameSide, getBoardSpace } from '@queries';
+import type {
+  Board,
+  BoardCoordinate,
+  GameState,
+  UnitInstance,
+} from '@entities';
+import { areSameSide, getBoardSpace, getCurrentUnitStat } from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
 import { hasEngagedUnits, hasNoUnit } from '@validation/unitPresence';
 
@@ -8,15 +13,23 @@ import { hasEngagedUnits, hasNoUnit } from '@validation/unitPresence';
  * Requires combined flexibility >= MIN_FLEXIBILITY_THRESHOLD for friendly units.
  *
  * @param unit - The unit attempting to move through
- * @param board - The board state
  * @param coordinate - The coordinate to check
+ * @param gameState - The current game state
  * @returns True if the unit can pass through this coordinate, false otherwise
  */
 export function canMoveThrough<TBoard extends Board>(
   unit: UnitInstance,
-  board: TBoard,
   coordinate: BoardCoordinate<TBoard>,
+  gameState: GameState<TBoard>,
 ): boolean {
+  // Get the board state
+  const board = gameState.boardState;
+  // Get the current flexibility of the unit
+  const currentUnitFlexibility = getCurrentUnitStat(
+    unit,
+    'flexibility',
+    gameState,
+  );
   try {
     // Find the board space at the given coordinate.
     const space = getBoardSpace(board, coordinate);
@@ -40,10 +53,13 @@ export function canMoveThrough<TBoard extends Board>(
       }
       // A player can only move through their own unit if the combined
       // flexibility value of the two units totals 4 or more.
-      const unitFlexibility = unit.unitType.stats.flexibility;
-      const spaceUnitFlexibility =
-        spaceUnitPresence.unit.unitType.stats.flexibility;
-      const combinedFlexibility = unitFlexibility + spaceUnitFlexibility;
+      const currentSpaceUnitFlexibility = getCurrentUnitStat(
+        spaceUnitPresence.unit,
+        'flexibility',
+        gameState,
+      );
+      const combinedFlexibility =
+        currentUnitFlexibility + currentSpaceUnitFlexibility;
       if (combinedFlexibility < MIN_FLEXIBILITY_THRESHOLD) {
         return false;
       }

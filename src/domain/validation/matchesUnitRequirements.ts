@@ -6,7 +6,7 @@ import type { Trait } from '@ruleValues';
  *
  * @param unitType - The unit type to check
  * @param traits - Array of traits that the unit must have (all traits must be present)
- * @param unitTypes - Array of unit types that the unit must match (unit must be in the array)
+ * @param unitTypeIds - Array of unit type ids that the unit must match (unit must be in the array)
  * @returns True if the unit matches all requirements, false otherwise
  *
  * @remarks
@@ -18,21 +18,21 @@ import type { Trait } from '@ruleValues';
 export function matchesUnitRequirements(
   unitType: UnitType,
   traits: Trait[],
-  unitTypes: UnitType[],
+  unitTypeIds: string[],
 ): boolean {
-  if (!traits.length && !unitTypes.length) {
+  if (!traits.length && !unitTypeIds.length) {
     return true;
   }
-  if (traits.length && !unitTypes.length) {
+  if (traits.length && !unitTypeIds.length) {
     return traits.every((trait) => unitType.traits.includes(trait));
   }
-  if (!traits.length && unitTypes.length) {
+  if (!traits.length && unitTypeIds.length) {
     // Compare by id since UnitType is identified by its unique id field
-    return unitTypes.some((ut) => ut.id === unitType.id);
+    return unitTypeIds.includes(unitType.id);
   }
   return (
     traits.every((trait) => unitType.traits.includes(trait)) &&
     // Compare by id since UnitType is identified by its unique id field
-    unitTypes.some((ut) => ut.id === unitType.id)
+    unitTypeIds.includes(unitType.id)
   );
 }

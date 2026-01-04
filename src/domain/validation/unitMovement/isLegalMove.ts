@@ -1,4 +1,4 @@
-import type { Board } from '@entities';
+import type { Board, GameState } from '@entities';
 import type { MoveUnitEvent } from '@events';
 import { getLegalUnitMoves } from '@queries';
 
@@ -6,16 +6,17 @@ import { getLegalUnitMoves } from '@queries';
  * Validates whether a unit move event is legal according to game rules.
  *
  * @param moveUnitEvent - The move unit event to validate
- * @param boardState - The current board state
+ * @param gameState - The current game state
  * @returns True if the move is legal, false otherwise
  */
-export function isLegalMove(
+export function isLegalMove<TBoard extends Board>(
   moveUnitEvent: MoveUnitEvent,
-  boardState: Board,
+  gameState: GameState<TBoard>,
 ): boolean {
+  // Get the move unit event
   const { unit, from, to } = moveUnitEvent;
   try {
-    const legalMoves = getLegalUnitMoves(unit, boardState, from);
+    const legalMoves = getLegalUnitMoves(unit, gameState, from);
     // Set.has() uses reference equality, so we need to check by value
     return Array.from(legalMoves).some(
       (move) => move.coordinate === to.coordinate && move.facing === to.facing,

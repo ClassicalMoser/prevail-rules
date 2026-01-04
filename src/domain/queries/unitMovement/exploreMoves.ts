@@ -1,11 +1,13 @@
 import type {
   Board,
   BoardCoordinate,
+  GameState,
   UnitFacing,
   UnitInstance,
   UnitPlacement,
 } from '@entities';
 import { unitFacings } from '@entities';
+import { getCurrentUnitStat } from '@queries/getCurrentUnitStat';
 import { canMoveThrough, isDiagonalFacing } from '@validation';
 import { checkDiagonalMove } from './checkDiagonalMove';
 
@@ -45,22 +47,31 @@ export interface MoveExplorationConfig<TBoard extends Board> {
  * Handles both forward and backward movement based on configuration.
  *
  * @param unit - The unit to explore moves for
- * @param board - The board state
+ * @param gameState - The current game state
  * @param startingPosition - The starting position and facing
  * @param config - Configuration for movement exploration
  */
 export function exploreMoves<TBoard extends Board>(
   unit: UnitInstance,
-  board: TBoard,
+  gameState: GameState<TBoard>,
   startingPosition: UnitPlacement<TBoard>,
   config: MoveExplorationConfig<TBoard>,
 ): void {
-  type BoardType = TBoard;
+  // Get the board state
+  const board = gameState.boardState;
+
+  // Get the base values
+  const currentUnitFlexibility = getCurrentUnitStat(
+    unit,
+    'flexibility',
+    gameState,
+  );
+  const currentUnitSpeed = getCurrentUnitStat(unit, 'speed', gameState);
 
   // Track visited states to avoid revisiting
   const visitedStates = new Set<string>();
   const getStateKey = (
-    coordinate: BoardCoordinate<BoardType>,
+    coordinate: BoardCoordinate<TBoard>,
     facing: UnitFacing,
     remainingSpeed: number,
     remainingFlexibility: number,
@@ -70,16 +81,15 @@ export function exploreMoves<TBoard extends Board>(
 
   // Recursive function to explore moves
   const explore = (
-    currentCoordinate: BoardCoordinate<BoardType>,
+    currentCoordinate: BoardCoordinate<TBoard>,
     currentFacing: UnitFacing,
     remainingSpeed: number,
     remainingFlexibility: number,
-    previousCoordinate: BoardCoordinate<BoardType> | undefined = undefined,
+    previousCoordinate: BoardCoordinate<TBoard> | undefined = undefined,
   ): void => {
     // Calculate costs used
-    const flexibilityUsed =
-      unit.unitType.stats.flexibility - remainingFlexibility;
-    const speedUsed = unit.unitType.stats.speed - remainingSpeed;
+    const flexibilityUsed = currentUnitFlexibility - remainingFlexibility;
+    const speedUsed = currentUnitSpeed - remainingSpeed;
 
     // Check if we should continue exploring
     if (
@@ -139,7 +149,7 @@ export function exploreMoves<TBoard extends Board>(
         if (isDiagonalFacing(currentFacing)) {
           const diagonalCheck = checkDiagonalMove(
             unit,
-            board,
+            gameState,
             currentCoordinate,
             nextCoordinate,
             currentFacing,
@@ -149,7 +159,7 @@ export function exploreMoves<TBoard extends Board>(
           canContinue = diagonalCheck.canContinue;
           canEnd = diagonalCheck.canEnd;
         } else {
-          canContinue = canMoveThrough(unit, board, nextCoordinate);
+          canContinue = canMoveThrough(unit, nextCoordinate, gameState);
           canEnd = config.canEndAt(unit, board, nextCoordinate);
         }
 
@@ -193,7 +203,7 @@ export function exploreMoves<TBoard extends Board>(
   explore(
     startingPosition.coordinate,
     startingPosition.facing,
-    unit.unitType.stats.speed,
-    unit.unitType.stats.flexibility,
+    currentUnitSpeed,
+    currentUnitFlexibility,
   );
 }

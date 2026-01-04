@@ -3,7 +3,7 @@
  * This is a runtime-agnostic, pure function-based rules engine.
  */
 
-import type { GameState } from '@entities';
+import type { Board, GameState } from '@entities';
 import type { Event } from '@events';
 import { isLegalMove } from '@validation';
 import { applyEvent } from './stateTransitions';
@@ -11,11 +11,11 @@ import { applyEvent } from './stateTransitions';
 /**
  * Result of executing an event through the rules engine.
  */
-export interface RuleExecutionResult {
+export interface RuleExecutionResult<TBoard extends Board = Board> {
   /** Whether the event was successfully executed */
   success: boolean;
   /** The new game state after applying the event */
-  newState: GameState;
+  newState: GameState<TBoard>;
   /** Events that were triggered by this event (e.g., engagement from move) */
   triggeredEvents: Event[];
   /** Any errors that occurred during execution */
@@ -34,12 +34,16 @@ export class RulesEngine {
   /**
    * Execute an event against the current game state.
    * This is a pure function - no side effects.
+   * Preserves the board type through execution.
    *
    * @param event - The event to execute
    * @param state - The current game state
    * @returns The result of executing the event
    */
-  execute(event: Event, state: GameState): RuleExecutionResult {
+  execute<TBoard extends Board>(
+    event: Event,
+    state: GameState<TBoard>,
+  ): RuleExecutionResult<TBoard> {
     const errors: string[] = [];
     const triggeredEvents: Event[] = [];
 
@@ -55,7 +59,7 @@ export class RulesEngine {
     }
 
     // Step 2: Apply state transition
-    let newState: GameState;
+    let newState: GameState<TBoard>;
     try {
       newState = applyEvent(event, state);
     } catch (error) {
@@ -81,15 +85,16 @@ export class RulesEngine {
   /**
    * Execute multiple events in sequence.
    * Each event is applied to the state resulting from the previous event.
+   * Preserves the board type through execution.
    *
    * @param events - The events to execute in order
    * @param initialState - The initial game state
    * @returns The result of executing all events
    */
-  executeSequence(
+  executeSequence<TBoard extends Board>(
     events: Event[],
-    initialState: GameState,
-  ): RuleExecutionResult {
+    initialState: GameState<TBoard>,
+  ): RuleExecutionResult<TBoard> {
     let currentState = initialState;
     const allTriggeredEvents: Event[] = [];
     const allErrors: string[] = [];
@@ -123,9 +128,9 @@ export class RulesEngine {
    * Validates an event against the current game state.
    * Returns validation result with any errors.
    */
-  private validateEvent(
+  private validateEvent<TBoard extends Board>(
     event: Event,
-    state: GameState,
+    state: GameState<TBoard>,
   ): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
@@ -137,7 +142,7 @@ export class RulesEngine {
           Event,
           { unit: unknown; from: unknown; to: unknown }
         >;
-        if (!isLegalMove(moveEvent as any, state.boardState)) {
+        if (!isLegalMove<TBoard>(moveEvent as any, state)) {
           errors.push('Move is not legal according to game rules');
         }
       }

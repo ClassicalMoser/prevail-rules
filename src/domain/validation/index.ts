@@ -8,3 +8,4 @@ export * from './matchesUnitRequirements';
 export * from './unitEquivalence';
 export * from './unitMovement';
 export * from './unitPresence';
+export * from './unitStat';

@@ -72,7 +72,11 @@ describe('matchesUnitRequirements', () => {
   describe('unitTypes only', () => {
     it('should return true when unit is in the unitTypes array', () => {
       expect(
-        matchesUnitRequirements(unitWithSwordTrait, [], [unitWithSwordTrait]),
+        matchesUnitRequirements(
+          unitWithSwordTrait,
+          [],
+          [unitWithSwordTrait.id],
+        ),
       ).toBe(true);
     });
 
@@ -81,14 +85,18 @@ describe('matchesUnitRequirements', () => {
         matchesUnitRequirements(
           unitWithSwordTrait,
           [],
-          [unitWithSwordTrait, unitWithPhalanxTrait],
+          [unitWithSwordTrait.id, unitWithPhalanxTrait.id],
         ),
       ).toBe(true);
     });
 
     it('should return false when unit is not in the unitTypes array', () => {
       expect(
-        matchesUnitRequirements(unitWithSwordTrait, [], [unitWithPhalanxTrait]),
+        matchesUnitRequirements(
+          unitWithSwordTrait,
+          [],
+          [unitWithPhalanxTrait.id],
+        ),
       ).toBe(false);
     });
 
@@ -101,7 +109,7 @@ describe('matchesUnitRequirements', () => {
         matchesUnitRequirements(
           sameUnitTypeDifferentRef,
           [],
-          [unitWithSwordTrait],
+          [unitWithSwordTrait.id],
         ),
       ).toBe(true);
     });
@@ -118,7 +126,7 @@ describe('matchesUnitRequirements', () => {
         matchesUnitRequirements(
           unitWithSwordTrait,
           ['formation'],
-          [unitWithSwordTrait],
+          [unitWithSwordTrait.id],
         ),
       ).toBe(true);
     });
@@ -128,7 +136,7 @@ describe('matchesUnitRequirements', () => {
         matchesUnitRequirements(
           unitWithSwordTrait,
           ['formation', 'sword'],
-          [unitWithSwordTrait, unitWithPhalanxTrait],
+          [unitWithSwordTrait.id, unitWithPhalanxTrait.id],
         ),
       ).toBe(true);
     });
@@ -138,7 +146,7 @@ describe('matchesUnitRequirements', () => {
         matchesUnitRequirements(
           unitWithSwordTrait,
           ['formation'],
-          [unitWithPhalanxTrait],
+          [unitWithPhalanxTrait.id],
         ),
       ).toBe(false);
     });
@@ -148,7 +156,7 @@ describe('matchesUnitRequirements', () => {
         matchesUnitRequirements(
           unitWithSwordTrait,
           ['spear'],
-          [unitWithSwordTrait],
+          [unitWithSwordTrait.id],
         ),
       ).toBe(false);
     });
@@ -158,7 +166,7 @@ describe('matchesUnitRequirements', () => {
         matchesUnitRequirements(
           unitWithSwordTrait,
           ['spear'],
-          [unitWithPhalanxTrait],
+          [unitWithPhalanxTrait.id],
         ),
       ).toBe(false);
     });
@@ -168,7 +176,7 @@ describe('matchesUnitRequirements', () => {
         matchesUnitRequirements(
           unitWithPhalanxTrait,
           ['formation', 'sword'],
-          [unitWithPhalanxTrait],
+          [unitWithPhalanxTrait.id],
         ),
       ).toBe(false);
     });
@@ -182,7 +190,7 @@ describe('matchesUnitRequirements', () => {
         matchesUnitRequirements(
           sameUnitTypeDifferentRef,
           ['formation'],
-          [unitWithSwordTrait],
+          [unitWithSwordTrait.id],
         ),
       ).toBe(true);
     });
@@ -212,7 +220,11 @@ describe('matchesUnitRequirements', () => {
 
     it('should handle empty traits array with unitTypes', () => {
       expect(
-        matchesUnitRequirements(unitWithSwordTrait, [], [unitWithSwordTrait]),
+        matchesUnitRequirements(
+          unitWithSwordTrait,
+          [],
+          [unitWithSwordTrait.id],
+        ),
       ).toBe(true);
     });
 

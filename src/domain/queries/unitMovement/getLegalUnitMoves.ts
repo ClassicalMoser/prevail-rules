@@ -2,6 +2,7 @@ import type {
   Board,
   BoardCoordinate,
   BoardSpace,
+  GameState,
   UnitInstance,
   UnitPlacement,
 } from '@entities';
@@ -24,46 +25,18 @@ import { exploreMoves } from './exploreMoves';
  * (coordinate + facing + remaining speed + remaining flexibility).
  *
  * @param unit - The unit for which to calculate legal moves
- * @param board - The board state to evaluate moves on
+ * @param gameState - The current game state
  * @param startingPosition - The current position and facing of the unit
  * @returns A set of all legal unit placements (coordinate + facing) the unit can reach
  * @throws {Error} If the unit is not free to move, not present, or facing mismatch
- *
- * @example
- * ```typescript
- * // Get legal moves for a unit at position E-5 facing north
- * const unit = createUnitInstance("black", someUnitType, 1);
- * const board = createEmptyStandardBoard();
- * const legalMoves = getLegalUnitMoves(unit, board, {
- *   coordinate: "E-5",
- *   facing: "north",
- * });
- *
- * // Check if a specific move is legal
- * const isLegal = Array.from(legalMoves).some(
- *   (move) => move.coordinate === "F-5" && move.facing === "north"
- * );
- * ```
- *
- * @example
- * ```typescript
- * // Unit with speed 3 and flexibility 2 can:
- * // - Move up to 3 spaces forward
- * // - Change facing up to 2 times
- * // - Combine movement and facing changes
- * const fastUnit = createUnitInstance("black", fastUnitType, 1);
- * const moves = getLegalUnitMoves(fastUnit, board, {
- *   coordinate: "E-5",
- *   facing: "north",
- * });
- * // Returns all reachable positions with any valid facing
- * ```
  */
 export function getLegalUnitMoves<TBoard extends Board>(
   unit: UnitInstance,
-  board: TBoard,
+  gameState: GameState<TBoard>,
   startingPosition: UnitPlacement<TBoard>,
 ): Set<UnitPlacement<TBoard>> {
+  // Get the board state
+  const board = gameState.boardState;
   // The reported starting position must be a valid board space
   const boardSpace: BoardSpace = getBoardSpace(
     board,
@@ -130,7 +103,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
     }
   };
 
-  exploreMoves(unit, board, startingPosition, {
+  exploreMoves(unit, gameState, startingPosition, {
     getSpaceInDirection: getForwardSpace,
     canEndAt,
     onValidDestination,

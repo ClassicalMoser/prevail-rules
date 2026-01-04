@@ -1,12 +1,12 @@
+import type { GameState, StandardBoard } from '@entities';
 import { getForwardSpace } from '@queries/boardSpace';
-import { createTestUnit } from '@testing';
-import { createEmptyStandardBoard } from '@transforms';
+import { createEmptyGameState, createTestUnit } from '@testing';
 import { canMoveInto } from '@validation';
 import { describe, expect, it } from 'vitest';
 import { checkDiagonalMove } from './checkDiagonalMove';
 
 describe('checkDiagonalMove', () => {
-  const board = createEmptyStandardBoard();
+  const gameState: GameState<StandardBoard> = createEmptyGameState();
   const unit = createTestUnit('black', { flexibility: 1 });
 
   describe('error cases', () => {
@@ -14,7 +14,7 @@ describe('checkDiagonalMove', () => {
       expect(() => {
         checkDiagonalMove(
           unit,
-          board,
+          gameState,
           'E-5',
           'D-5',
           'north', // Not diagonal
@@ -29,7 +29,7 @@ describe('checkDiagonalMove', () => {
     it('should allow diagonal move when orthogonal pass-through space is clear', () => {
       const result = checkDiagonalMove(
         unit,
-        board,
+        gameState,
         'E-5',
         'D-6', // northEast diagonal
         'northEast',
@@ -43,16 +43,16 @@ describe('checkDiagonalMove', () => {
     });
 
     it('should block diagonal move when both orthogonal pass-through spaces are blocked', () => {
-      const boardWithBlocked = createEmptyStandardBoard();
-      // Block both orthogonal spaces (D-5 and E-4) with units that have insufficient combined flexibility
+      const gameStateWithBlocked = createEmptyGameState();
+      // Block both orthogonal spaces (D-5 and E-6) with units that have insufficient combined flexibility
       // Unit has flexibility 1, friendly units have flexibility 1 each
       // Combined flexibility = 1 + 1 = 2, need 4+ to move through
-      boardWithBlocked.board['D-5'].unitPresence = {
+      gameStateWithBlocked.boardState.board['D-5'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('black', { flexibility: 1, instanceNumber: 2 }),
         facing: 'north',
       };
-      boardWithBlocked.board['E-6'].unitPresence = {
+      gameStateWithBlocked.boardState.board['E-6'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('black', { flexibility: 1, instanceNumber: 3 }),
         facing: 'north',
@@ -60,7 +60,7 @@ describe('checkDiagonalMove', () => {
 
       const result = checkDiagonalMove(
         unit,
-        boardWithBlocked,
+        gameStateWithBlocked,
         'E-5',
         'D-6', // northEast diagonal
         'northEast',
@@ -74,9 +74,9 @@ describe('checkDiagonalMove', () => {
     });
 
     it('should allow diagonal move when one orthogonal pass-through space is clear', () => {
-      const boardWithPartialBlock = createEmptyStandardBoard();
+      const gameStateWithPartialBlock = createEmptyGameState();
       // Block one orthogonal space (D-5) with enemy but leave E-4 clear
-      boardWithPartialBlock.board['D-5'].unitPresence = {
+      gameStateWithPartialBlock.boardState.board['D-5'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('white', { flexibility: 1 }),
         facing: 'north',
@@ -84,7 +84,7 @@ describe('checkDiagonalMove', () => {
 
       const result = checkDiagonalMove(
         unit,
-        boardWithPartialBlock,
+        gameStateWithPartialBlock,
         'E-5',
         'D-4', // northEast diagonal
         'northEast',
@@ -98,9 +98,9 @@ describe('checkDiagonalMove', () => {
     });
 
     it('should handle diagonal move when target space cannot be moved through but can be ended at', () => {
-      const boardWithEnemy = createEmptyStandardBoard();
+      const gameStateWithEnemy = createEmptyGameState();
       // Place enemy at target (D-4)
-      boardWithEnemy.board['D-4'].unitPresence = {
+      gameStateWithEnemy.boardState.board['D-4'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('white', { flexibility: 1 }),
         facing: 'south',
@@ -108,7 +108,7 @@ describe('checkDiagonalMove', () => {
 
       const result = checkDiagonalMove(
         unit,
-        boardWithEnemy,
+        gameStateWithEnemy,
         'E-5',
         'D-4', // northEast diagonal
         'northEast',
@@ -126,7 +126,7 @@ describe('checkDiagonalMove', () => {
     it('should work for northWest diagonal', () => {
       const result = checkDiagonalMove(
         unit,
-        board,
+        gameState,
         'E-5',
         'D-6', // northWest diagonal
         'northWest',
@@ -141,7 +141,7 @@ describe('checkDiagonalMove', () => {
     it('should work for southEast diagonal', () => {
       const result = checkDiagonalMove(
         unit,
-        board,
+        gameState,
         'E-5',
         'F-4', // southEast diagonal
         'southEast',
@@ -156,7 +156,7 @@ describe('checkDiagonalMove', () => {
     it('should work for southWest diagonal', () => {
       const result = checkDiagonalMove(
         unit,
-        board,
+        gameState,
         'E-5',
         'F-6', // southWest diagonal
         'southWest',

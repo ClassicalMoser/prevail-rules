@@ -1,6 +1,7 @@
 import type {
   Board,
   BoardCoordinate,
+  GameState,
   UnitFacing,
   UnitInstance,
 } from '@entities';
@@ -22,7 +23,7 @@ export interface DiagonalMoveCheck {
  * Diagonal moves require passing through adjacent orthogonal spaces.
  *
  * @param unit - The unit attempting to move
- * @param board - The board state
+ * @param gameState - The current game state
  * @param currentCoordinate - The current position
  * @param targetCoordinate - The target diagonal space
  * @param facing - The facing direction (must be diagonal)
@@ -32,7 +33,7 @@ export interface DiagonalMoveCheck {
  */
 export function checkDiagonalMove<TBoard extends Board>(
   unit: UnitInstance,
-  board: TBoard,
+  gameState: GameState<TBoard>,
   currentCoordinate: BoardCoordinate<TBoard>,
   targetCoordinate: BoardCoordinate<TBoard>,
   facing: UnitFacing,
@@ -47,6 +48,9 @@ export function checkDiagonalMove<TBoard extends Board>(
     coordinate: BoardCoordinate<TBoard>,
   ) => boolean,
 ): DiagonalMoveCheck {
+  // Get the board state
+  const board = gameState.boardState;
+  // Check if the facing is diagonal
   if (!isDiagonalFacing(facing)) {
     throw new Error('Facing must be diagonal');
   }
@@ -61,14 +65,14 @@ export function checkDiagonalMove<TBoard extends Board>(
 
   // Filter out spaces that we can't move through
   const validPassThroughSpaces = orthogonalPassThroughSpaces.filter((space) =>
-    canMoveThrough(unit, board, space),
+    canMoveThrough(unit, space, gameState),
   );
 
   // We can make a diagonal move if we can pass through any of the adjacent orthogonal spaces
   const canMakeDiagonalMove = validPassThroughSpaces.length > 0;
 
   const canContinue =
-    canMoveThrough(unit, board, targetCoordinate) && canMakeDiagonalMove;
+    canMoveThrough(unit, targetCoordinate, gameState) && canMakeDiagonalMove;
   const canEnd =
     canMoveIntoTarget(unit, board, targetCoordinate) && canMakeDiagonalMove;
 
