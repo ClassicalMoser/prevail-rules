@@ -9,37 +9,39 @@ export function eachUnitPresentOnce(
   whiteArmy: Set<UnitCount>,
   blackArmy: Set<UnitCount>,
   board: Board,
+  routedUnits: Set<UnitInstance>,
 ): boolean {
-  // Build expected units array (we'll use isSameUnitInstance for equality checks)
-  const expectedUnits: UnitInstance[] = [];
+  // Build expected units set (we'll use isSameUnitInstance for equality checks)
+  const expectedUnits = new Set<UnitInstance>();
   // Unit Instances are 1-indexed for UI purposes
   for (const unitCount of whiteArmy) {
     for (let i = 1; i <= unitCount.count; i++) {
-      expectedUnits.push(createUnitInstance('white', unitCount.unitType, i));
+      expectedUnits.add(createUnitInstance('white', unitCount.unitType, i));
     }
   }
   for (const unitCount of blackArmy) {
     for (let i = 1; i <= unitCount.count; i++) {
-      expectedUnits.push(createUnitInstance('black', unitCount.unitType, i));
+      expectedUnits.add(createUnitInstance('black', unitCount.unitType, i));
     }
   }
 
-  // Track which expected units we've seen (by index to avoid reference issues)
-  const remainingExpectedIndices = new Set(
-    expectedUnits.map((_, index) => index),
-  );
-  const seenOnBoard: UnitInstance[] = [];
+  const seenInGame: UnitInstance[] = [];
 
-  // Helper to find expected unit index by value equality
-  const findExpectedUnitIndex = (unit: UnitInstance): number | undefined => {
-    return expectedUnits.findIndex((expected) =>
-      isSameUnitInstance(expected, unit),
-    );
+  // Helper to find and remove expected unit by value equality
+  // Since Sets use referential equality, we need to find the matching unit first
+  const removeExpectedUnit = (unit: UnitInstance): boolean => {
+    for (const expected of expectedUnits) {
+      if (isSameUnitInstance(expected, unit)) {
+        expectedUnits.delete(expected);
+        return true;
+      }
+    }
+    return false;
   };
 
   // Helper to check if unit was already seen
   const hasSeenUnit = (unit: UnitInstance): boolean => {
-    return seenOnBoard.some((seen) => isSameUnitInstance(seen, unit));
+    return seenInGame.some((seen) => isSameUnitInstance(seen, unit));
   };
 
   // Single pass through board: check duplicates and validate against expected
@@ -52,13 +54,11 @@ export function eachUnitPresentOnce(
         // Unit is present more than once
         return false;
       }
-      const expectedIndex = findExpectedUnitIndex(unit);
-      if (expectedIndex === undefined || expectedIndex === -1) {
+      if (!removeExpectedUnit(unit)) {
         // Unexpected unit on board
         return false;
       }
-      seenOnBoard.push(unit);
-      remainingExpectedIndices.delete(expectedIndex);
+      seenInGame.push(unit);
     } else if (hasEngagedUnits(space.unitPresence)) {
       const primaryUnit = space.unitPresence.primaryUnit;
       const secondaryUnit = space.unitPresence.secondaryUnit;
@@ -66,24 +66,27 @@ export function eachUnitPresentOnce(
         // Unit is present more than once
         return false;
       }
-      const primaryIndex = findExpectedUnitIndex(primaryUnit);
-      const secondaryIndex = findExpectedUnitIndex(secondaryUnit);
       if (
-        primaryIndex === undefined ||
-        primaryIndex === -1 ||
-        secondaryIndex === undefined ||
-        secondaryIndex === -1
+        !removeExpectedUnit(primaryUnit) ||
+        !removeExpectedUnit(secondaryUnit)
       ) {
         // Unexpected unit on board
         return false;
       }
-      seenOnBoard.push(primaryUnit);
-      seenOnBoard.push(secondaryUnit);
-      remainingExpectedIndices.delete(primaryIndex);
-      remainingExpectedIndices.delete(secondaryIndex);
+      seenInGame.push(primaryUnit);
+      seenInGame.push(secondaryUnit);
     }
   }
 
-  // If remainingExpectedIndices is empty, all expected units were found
-  return remainingExpectedIndices.size === 0;
+  // Check for routed units
+  for (const unit of routedUnits) {
+    if (!removeExpectedUnit(unit)) {
+      // Unexpected routed unit
+      return false;
+    }
+    seenInGame.push(unit);
+  }
+
+  // If expectedUnits is empty, all expected units were found and no routed units were unexpected
+  return expectedUnits.size === 0;
 }

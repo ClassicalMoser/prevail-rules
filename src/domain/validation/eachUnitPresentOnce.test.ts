@@ -32,7 +32,12 @@ describe('eachUnitPresentOnce', () => {
   describe('valid cases', () => {
     it('should return true when all units are present once on empty board with empty armies', () => {
       expect(
-        eachUnitPresentOnce(new Set(), new Set(), createBoardWithUnits([])),
+        eachUnitPresentOnce(
+          new Set(),
+          new Set(),
+          createBoardWithUnits([]),
+          new Set(),
+        ),
       ).toBe(true);
     });
 
@@ -45,7 +50,9 @@ describe('eachUnitPresentOnce', () => {
         { unit: unit2, coordinate: 'E-6', facing: 'north' },
       ]);
 
-      expect(eachUnitPresentOnce(whiteArmy, new Set(), board)).toBe(true);
+      expect(eachUnitPresentOnce(whiteArmy, new Set(), board, new Set())).toBe(
+        true,
+      );
     });
 
     it('should return true when all black units are present once', () => {
@@ -55,7 +62,9 @@ describe('eachUnitPresentOnce', () => {
         { unit: unit1, coordinate: 'E-5', facing: 'north' },
       ]);
 
-      expect(eachUnitPresentOnce(new Set(), blackArmy, board)).toBe(true);
+      expect(eachUnitPresentOnce(new Set(), blackArmy, board, new Set())).toBe(
+        true,
+      );
     });
 
     it('should return true when both white and black units are present once', () => {
@@ -68,7 +77,9 @@ describe('eachUnitPresentOnce', () => {
         { unit: blackUnit, coordinate: 'E-6', facing: 'south' },
       ]);
 
-      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board)).toBe(true);
+      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board, new Set())).toBe(
+        true,
+      );
     });
 
     it('should return true when engaged units are present', () => {
@@ -83,7 +94,9 @@ describe('eachUnitPresentOnce', () => {
         'north',
       );
 
-      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board)).toBe(true);
+      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board, new Set())).toBe(
+        true,
+      );
     });
 
     it('should return true with multiple unit types', () => {
@@ -98,7 +111,9 @@ describe('eachUnitPresentOnce', () => {
         { unit: whiteUnit2, coordinate: 'E-6', facing: 'north' },
       ]);
 
-      expect(eachUnitPresentOnce(whiteArmy, new Set(), board)).toBe(true);
+      expect(eachUnitPresentOnce(whiteArmy, new Set(), board, new Set())).toBe(
+        true,
+      );
     });
   });
 
@@ -111,7 +126,9 @@ describe('eachUnitPresentOnce', () => {
         { unit: unit1, coordinate: 'E-6', facing: 'north' },
       ]);
 
-      expect(eachUnitPresentOnce(whiteArmy, new Set(), board)).toBe(false);
+      expect(eachUnitPresentOnce(whiteArmy, new Set(), board, new Set())).toBe(
+        false,
+      );
     });
 
     it('should return false when primary unit in engagement appears elsewhere', () => {
@@ -136,7 +153,9 @@ describe('eachUnitPresentOnce', () => {
         },
       };
 
-      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board)).toBe(false);
+      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board, new Set())).toBe(
+        false,
+      );
     });
 
     it('should return false when secondary unit in engagement appears elsewhere', () => {
@@ -161,7 +180,9 @@ describe('eachUnitPresentOnce', () => {
         },
       };
 
-      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board)).toBe(false);
+      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board, new Set())).toBe(
+        false,
+      );
     });
   });
 
@@ -173,7 +194,9 @@ describe('eachUnitPresentOnce', () => {
         { unit: unit1, coordinate: 'E-5', facing: 'north' },
       ]);
 
-      expect(eachUnitPresentOnce(whiteArmy, new Set(), board)).toBe(false);
+      expect(eachUnitPresentOnce(whiteArmy, new Set(), board, new Set())).toBe(
+        false,
+      );
     });
 
     it('should return false when white unit is missing', () => {
@@ -184,7 +207,9 @@ describe('eachUnitPresentOnce', () => {
         { unit: blackUnit, coordinate: 'E-5', facing: 'south' },
       ]);
 
-      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board)).toBe(false);
+      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board, new Set())).toBe(
+        false,
+      );
     });
 
     it('should return false when black unit is missing', () => {
@@ -195,7 +220,9 @@ describe('eachUnitPresentOnce', () => {
         { unit: whiteUnit, coordinate: 'E-5', facing: 'north' },
       ]);
 
-      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board)).toBe(false);
+      expect(eachUnitPresentOnce(whiteArmy, blackArmy, board, new Set())).toBe(
+        false,
+      );
     });
   });
 
@@ -209,7 +236,9 @@ describe('eachUnitPresentOnce', () => {
         { unit: unexpectedUnit, coordinate: 'E-6', facing: 'north' },
       ]);
 
-      expect(eachUnitPresentOnce(whiteArmy, new Set(), board)).toBe(false);
+      expect(eachUnitPresentOnce(whiteArmy, new Set(), board, new Set())).toBe(
+        false,
+      );
     });
 
     it('should return false when board has unit with wrong instance number', () => {
@@ -221,7 +250,112 @@ describe('eachUnitPresentOnce', () => {
         { unit: wrongInstanceUnit, coordinate: 'E-6', facing: 'north' },
       ]);
 
-      expect(eachUnitPresentOnce(whiteArmy, new Set(), board)).toBe(false);
+      expect(eachUnitPresentOnce(whiteArmy, new Set(), board, new Set())).toBe(
+        false,
+      );
+    });
+  });
+
+  describe('routed units', () => {
+    it('should return true when all expected units are routed and none on board', () => {
+      const routedUnit1 = createExpectedUnit('white', attack2UnitType, 1);
+      const routedUnit2 = createExpectedUnit('white', attack2UnitType, 2);
+      const whiteArmy = createArmy(attack2UnitType, 2);
+      const routedUnits = new Set([routedUnit1, routedUnit2]);
+      const board = createBoardWithUnits([]);
+
+      expect(
+        eachUnitPresentOnce(whiteArmy, new Set(), board, routedUnits),
+      ).toBe(true);
+    });
+
+    it('should return true when some units are on board and some are routed', () => {
+      const boardUnit = createExpectedUnit('white', attack2UnitType, 1);
+      const routedUnit = createExpectedUnit('white', attack2UnitType, 2);
+      const whiteArmy = createArmy(attack2UnitType, 2);
+      const routedUnits = new Set([routedUnit]);
+      const board = createBoardWithUnits([
+        { unit: boardUnit, coordinate: 'E-5', facing: 'north' },
+      ]);
+
+      expect(
+        eachUnitPresentOnce(whiteArmy, new Set(), board, routedUnits),
+      ).toBe(true);
+    });
+
+    it('should return true when routed units from both sides are valid', () => {
+      const whiteRoutedUnit = createExpectedUnit('white', attack2UnitType, 1);
+      const blackRoutedUnit = createExpectedUnit('black', attack2UnitType, 1);
+      const whiteArmy = createArmy(attack2UnitType, 1);
+      const blackArmy = createArmy(attack2UnitType, 1);
+      const routedUnits = new Set([whiteRoutedUnit, blackRoutedUnit]);
+      const board = createBoardWithUnits([]);
+
+      expect(
+        eachUnitPresentOnce(whiteArmy, blackArmy, board, routedUnits),
+      ).toBe(true);
+    });
+
+    it('should return false when routed unit is not in expected units', () => {
+      const unexpectedRoutedUnit = createExpectedUnit(
+        'white',
+        attack3UnitType,
+        1,
+      );
+      const whiteArmy = createArmy(attack2UnitType, 1);
+      const routedUnits = new Set([unexpectedRoutedUnit]);
+      const board = createBoardWithUnits([]);
+
+      expect(
+        eachUnitPresentOnce(whiteArmy, new Set(), board, routedUnits),
+      ).toBe(false);
+    });
+
+    it('should return false when routed unit has wrong instance number', () => {
+      const wrongInstanceRoutedUnit = createUnitInstance(
+        'white',
+        attack2UnitType,
+        3,
+      ); // Should be 1 or 2
+      const whiteArmy = createArmy(attack2UnitType, 2);
+      const routedUnits = new Set([wrongInstanceRoutedUnit]);
+      const board = createBoardWithUnits([]);
+
+      expect(
+        eachUnitPresentOnce(whiteArmy, new Set(), board, routedUnits),
+      ).toBe(false);
+    });
+
+    it('should return false when routed unit also appears on board', () => {
+      const unit = createExpectedUnit('white', attack2UnitType, 1);
+      const whiteArmy = createArmy(attack2UnitType, 1);
+      const routedUnits = new Set([unit]);
+      const board = createBoardWithUnits([
+        { unit, coordinate: 'E-5', facing: 'north' },
+      ]);
+
+      expect(
+        eachUnitPresentOnce(whiteArmy, new Set(), board, routedUnits),
+      ).toBe(false);
+    });
+
+    it('should return false when same unit is routed twice', () => {
+      const routedUnit = createExpectedUnit('white', attack2UnitType, 1);
+      const whiteArmy = createArmy(attack2UnitType, 1);
+      // Create a duplicate unit with same properties (different object reference)
+      const routedUnitDuplicate = createExpectedUnit(
+        'white',
+        attack2UnitType,
+        1,
+      );
+      const routedUnits = new Set([routedUnit, routedUnitDuplicate]);
+      const board = createBoardWithUnits([]);
+
+      // First routed unit will be removed from expectedUnits successfully
+      // Second routed unit will fail removeExpectedUnit (already removed) and return false
+      expect(
+        eachUnitPresentOnce(whiteArmy, new Set(), board, routedUnits),
+      ).toBe(false);
     });
   });
 });

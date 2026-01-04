@@ -1,3 +1,5 @@
+export * from './eachCardPresentOnce';
+export * from './eachUnitPresentOnce';
 export * from './hasEngagedUnits';
 export * from './hasNoUnit';
 export * from './hasSingleUnit';
