@@ -1,7 +1,9 @@
 import type { Trait } from '@ruleValues';
 import type { AssertExact } from '@utils';
+import type { UnitStats } from './unitStat';
 import { traitSchema } from '@ruleValues';
 import { z } from 'zod';
+import { unitStatsSchema } from './unitStat';
 
 /**
  * A unit of troops.
@@ -14,20 +16,8 @@ export interface UnitType {
   name: string;
   /** The traits of the unit. */
   traits: Trait[];
-  /** The attack strength of the unit. */
-  attack: number;
-  /** The normal attack range of the unit. */
-  range: number;
-  /** The maximum movement speed of the unit. */
-  speed: number;
-  /** The flexibility value of the unit. */
-  flexibility: number;
-  /** The attack value required to reverse the unit. */
-  reverse: number;
-  /** The attack value required to retreat the unit. */
-  retreat: number;
-  /** The attack value required to rout the unit. */
-  rout: number;
+  /** The stats of the unit. */
+  stats: UnitStats;
   /** The cost of the unit. */
   cost: number;
   /** The limit of units that can be included in a standard army. */
@@ -45,20 +35,8 @@ const _unitTypeSchemaObject = z.object({
   name: z.string(),
   /** The traits of the unit. */
   traits: z.array(traitSchema),
-  /** The attack strength of the unit. */
-  attack: z.int().min(1).max(5),
-  /** The normal attack range of the unit. */
-  range: z.int().min(0).max(5),
-  /** The maximum movement speed of the unit. */
-  speed: z.int().min(1).max(5),
-  /** The flexibility value of the unit. */
-  flexibility: z.int().min(0).max(5),
-  /** The attack value required to reverse the unit. */
-  reverse: z.int().min(0).max(10),
-  /** The attack value required to retreat the unit. */
-  retreat: z.int().min(0).max(10),
-  /** The attack value required to rout the unit. */
-  rout: z.int().min(0).max(10),
+  /** The stats of the unit. */
+  stats: unitStatsSchema,
   /** The cost of the unit. */
   cost: z.int().min(5).max(100),
   /** The limit of units that can be included in a standard army. */

@@ -1,8 +1,7 @@
 import type { Board, BoardCoordinate, UnitInstance } from '@entities';
 import { areSameSide, getBoardSpace } from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
-import { hasEngagedUnits } from '@validation/hasEngagedUnits';
-import { hasNoUnit } from '@validation/hasNoUnit';
+import { hasEngagedUnits, hasNoUnit } from '@validation/unitPresence';
 
 /**
  * Determines whether a unit can move through (pass over) a specific coordinate.
@@ -41,8 +40,9 @@ export function canMoveThrough<TBoard extends Board>(
       }
       // A player can only move through their own unit if the combined
       // flexibility value of the two units totals 4 or more.
-      const unitFlexibility = unit.unitType.flexibility;
-      const spaceUnitFlexibility = spaceUnitPresence.unit.unitType.flexibility;
+      const unitFlexibility = unit.unitType.stats.flexibility;
+      const spaceUnitFlexibility =
+        spaceUnitPresence.unit.unitType.stats.flexibility;
       const combinedFlexibility = unitFlexibility + spaceUnitFlexibility;
       if (combinedFlexibility < MIN_FLEXIBILITY_THRESHOLD) {
         return false;

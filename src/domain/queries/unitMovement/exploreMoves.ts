@@ -77,8 +77,9 @@ export function exploreMoves<TBoard extends Board>(
     previousCoordinate: BoardCoordinate<BoardType> | undefined = undefined,
   ): void => {
     // Calculate costs used
-    const flexibilityUsed = unit.unitType.flexibility - remainingFlexibility;
-    const speedUsed = unit.unitType.speed - remainingSpeed;
+    const flexibilityUsed =
+      unit.unitType.stats.flexibility - remainingFlexibility;
+    const speedUsed = unit.unitType.stats.speed - remainingSpeed;
 
     // Check if we should continue exploring
     if (
@@ -192,7 +193,7 @@ export function exploreMoves<TBoard extends Board>(
   explore(
     startingPosition.coordinate,
     startingPosition.facing,
-    unit.unitType.speed,
-    unit.unitType.flexibility,
+    unit.unitType.stats.speed,
+    unit.unitType.stats.flexibility,
   );
 }

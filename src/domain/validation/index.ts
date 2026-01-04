@@ -1,8 +1,4 @@
-export * from './eachCardPresentOnce';
-export * from './eachUnitPresentOnce';
-export * from './hasEngagedUnits';
-export * from './hasNoUnit';
-export * from './hasSingleUnit';
+export * from './gameState';
 export * from './isAtPlacement';
 export * from './isDiagonalFacing';
 export * from './isLegalCardChoice';
@@ -11,3 +7,4 @@ export * from './isValidLine';
 export * from './matchesUnitRequirements';
 export * from './unitEquivalence';
 export * from './unitMovement';
+export * from './unitPresence';

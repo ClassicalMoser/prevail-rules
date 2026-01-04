@@ -11,7 +11,7 @@ import type { Trait } from '@ruleValues';
  *
  * @remarks
  * - If both traits and unitTypes are empty arrays, returns true (no requirements)
- * - If only traits are specified, checks that the unit has all specified traits
+ * - If only traits are specified, checks that the unit has at least one of the specified traits
  * - If only unitTypes are specified, checks that the unit is in the specified array
  * - If both are specified, both conditions must be satisfied
  */

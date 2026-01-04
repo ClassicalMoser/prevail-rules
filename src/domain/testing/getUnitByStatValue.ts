@@ -1,4 +1,4 @@
-import type { UnitType } from '@entities';
+import type { UnitStatName, UnitType } from '@entities';
 import { tempUnits } from '@sampleValues';
 
 /**
@@ -10,10 +10,10 @@ import { tempUnits } from '@sampleValues';
  * @throws {Error} If no unit is found with the specified stat value
  */
 export function getUnitByStatValue(
-  stat: keyof UnitType,
+  stat: UnitStatName,
   value: number,
 ): UnitType {
-  const unit = tempUnits.find((unit) => unit[stat] === value);
+  const unit = tempUnits.find((unit) => unit.stats[stat] === value);
   if (!unit) {
     throw new Error(`No unit found with ${stat} value ${value}.`);
   }

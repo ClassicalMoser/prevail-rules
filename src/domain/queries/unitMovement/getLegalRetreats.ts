@@ -100,10 +100,10 @@ export function getLegalRetreats<TBoard extends Board>(
   // Then try flexibility=1, speed=1, etc.
   for (
     let maxFlexibility = 0;
-    maxFlexibility <= unit.unitType.flexibility;
+    maxFlexibility <= unit.unitType.stats.flexibility;
     maxFlexibility++
   ) {
-    for (let maxSpeed = 1; maxSpeed <= unit.unitType.speed; maxSpeed++) {
+    for (let maxSpeed = 1; maxSpeed <= unit.unitType.stats.speed; maxSpeed++) {
       // Clear found retreats for this cost level
       foundRetreats.clear();
 

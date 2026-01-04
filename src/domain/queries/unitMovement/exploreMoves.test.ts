@@ -87,10 +87,10 @@ describe('exploreMoves', () => {
       calls.forEach((call) => {
         expect(call.flexibilityUsed).toBeGreaterThanOrEqual(0);
         expect(call.flexibilityUsed).toBeLessThanOrEqual(
-          unit.unitType.flexibility,
+          unit.unitType.stats.flexibility,
         );
         expect(call.speedUsed).toBeGreaterThanOrEqual(0);
-        expect(call.speedUsed).toBeLessThanOrEqual(unit.unitType.speed);
+        expect(call.speedUsed).toBeLessThanOrEqual(unit.unitType.stats.speed);
       });
     });
   });

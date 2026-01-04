@@ -1,4 +1,9 @@
-import type { PlayerSide, UnitInstance, UnitType } from '@entities';
+import type {
+  PlayerSide,
+  UnitInstance,
+  UnitStatName,
+  UnitType,
+} from '@entities';
 import { createUnitInstance } from '@transforms';
 import { getUnitByStatValue } from './getUnitByStatValue';
 
@@ -84,7 +89,7 @@ export function createTestUnit(
  */
 export function createUnitByStat(
   playerSide: PlayerSide,
-  stat: keyof UnitType,
+  stat: UnitStatName,
   value: number,
   instanceNumber: number = 1,
 ): UnitInstance {

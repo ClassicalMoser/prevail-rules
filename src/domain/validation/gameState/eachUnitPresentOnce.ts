@@ -1,9 +1,8 @@
 import type { Board, UnitCount, UnitInstance } from '@entities';
 import { getBoardCoordinates, getBoardSpace } from '@queries';
 import { createUnitInstance } from '@transforms';
-import { hasEngagedUnits } from './hasEngagedUnits';
-import { hasSingleUnit } from './hasSingleUnit';
-import { isSameUnitInstance } from './unitEquivalence';
+import { isSameUnitInstance } from '@validation/unitEquivalence';
+import { hasEngagedUnits, hasSingleUnit } from '@validation/unitPresence';
 
 export function eachUnitPresentOnce(
   whiteArmy: Set<UnitCount>,
