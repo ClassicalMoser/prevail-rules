@@ -147,17 +147,14 @@ export function exploreMoves<TBoard extends Board>(
         let canEnd = false;
 
         if (isDiagonalFacing(currentFacing)) {
-          const diagonalCheck = checkDiagonalMove(
+          canContinue = checkDiagonalMove(
             unit,
             gameState,
             currentCoordinate,
             nextCoordinate,
             currentFacing,
-            config.getSpaceInDirection,
-            config.canEndAt,
           );
-          canContinue = diagonalCheck.canContinue;
-          canEnd = diagonalCheck.canEnd;
+          canEnd = config.canEndAt(unit, board, nextCoordinate) && canContinue;
         } else {
           canContinue = canMoveThrough(unit, nextCoordinate, gameState);
           canEnd = config.canEndAt(unit, board, nextCoordinate);

@@ -47,5 +47,6 @@ export function createEmptyGameState(options?: {
       },
     },
     routedUnits: new Set(),
+    lostCommanders: new Set(),
   };
 }

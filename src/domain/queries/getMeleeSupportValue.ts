@@ -1,5 +1,5 @@
 import type { Board, UnitWithPlacement } from '@entities';
-import { hasEngagedUnits } from '@validation';
+import { enemyBlocksDiagonal, hasEngagedUnits } from '@validation';
 import {
   getAdjacentSpaces,
   getBoardSpace,
@@ -22,7 +22,10 @@ export function getMeleeSupportValue(
     (space) => !spacesBehind.has(space),
   );
 
-  // Collect unengaged friendly units - check engagement first to avoid unnecessary unit lookups
+  // Collect unengaged friendly units;
+  // - check engagement first to avoid unnecessary unit lookups
+  // - filter out spaces behind the primary unit
+  // - filter out units diagonally blocked by enemy units
   const potentialSupportUnits: UnitWithPlacement<Board>[] = [];
   for (const space of adjacentSpacesNotBehind) {
     const boardSpace = getBoardSpace(board, space);
@@ -32,9 +35,12 @@ export function getMeleeSupportValue(
     }
     // Otherwise, get the friendly unit at the space
     const unit = getPlayerUnitWithPosition(board, space, playerSide);
-    // If the unit is found, add it to the potential support units
     if (unit !== undefined) {
-      potentialSupportUnits.push(unit);
+      // If the unit is found, make sure it is not diagonally blocked by enemy units
+      if (!enemyBlocksDiagonal(playerSide, board, unitCoordinate, space)) {
+        // If it is not blocked, add it to the possible support units.
+        potentialSupportUnits.push(unit);
+      }
     }
   }
 

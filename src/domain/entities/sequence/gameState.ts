@@ -26,6 +26,8 @@ export interface GameState<TBoard extends Board> {
   cardState: CardState;
   /** The units that have been routed during the game. */
   routedUnits: Set<UnitInstance>;
+  /** The commanders that have been lost during the game. */
+  lostCommanders: Set<PlayerSide>;
 }
 
 const _gameStateSchemaObject = z.object({
@@ -41,6 +43,8 @@ const _gameStateSchemaObject = z.object({
   cardState: cardStateSchema,
   /** The units that have been routed during the game. */
   routedUnits: z.set(unitInstanceSchema),
+  /** The commanders that have been lost during the game. */
+  lostCommanders: z.set(playerSideSchema),
 });
 
 type GameStateSchemaType = z.infer<typeof _gameStateSchemaObject>;

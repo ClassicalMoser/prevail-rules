@@ -1,7 +1,5 @@
 import type { GameState, StandardBoard } from '@entities';
-import { getForwardSpace } from '@queries/boardSpace';
 import { createEmptyGameState, createTestUnit } from '@testing';
-import { canMoveInto } from '@validation';
 import { describe, expect, it } from 'vitest';
 import { checkDiagonalMove } from './checkDiagonalMove';
 
@@ -18,8 +16,6 @@ describe('checkDiagonalMove', () => {
           'E-5',
           'D-5',
           'north', // Not diagonal
-          getForwardSpace,
-          canMoveInto,
         );
       }).toThrow(new Error('Facing must be diagonal'));
     });
@@ -33,13 +29,10 @@ describe('checkDiagonalMove', () => {
         'E-5',
         'D-6', // northEast diagonal
         'northEast',
-        getForwardSpace,
-        canMoveInto,
       );
 
-      // Should be able to continue and end
-      expect(result.canContinue).toBe(true);
-      expect(result.canEnd).toBe(true);
+      // Should be able to continue through
+      expect(result).toBe(true);
     });
 
     it('should block diagonal move when both orthogonal pass-through spaces are blocked', () => {
@@ -64,18 +57,15 @@ describe('checkDiagonalMove', () => {
         'E-5',
         'D-6', // northEast diagonal
         'northEast',
-        getForwardSpace,
-        canMoveInto,
       );
 
       // Cannot make diagonal move (cannot pass through either orthogonal space)
-      expect(result.canContinue).toBe(false);
-      expect(result.canEnd).toBe(false);
+      expect(result).toBe(false);
     });
 
     it('should allow diagonal move when one orthogonal pass-through space is clear', () => {
       const gameStateWithPartialBlock = createEmptyGameState();
-      // Block one orthogonal space (D-5) with enemy but leave E-4 clear
+      // Block one orthogonal space (D-5) with enemy but leave E-6 clear
       gameStateWithPartialBlock.boardState.board['D-5'].unitPresence = {
         presenceType: 'single',
         unit: createTestUnit('white', { flexibility: 1 }),
@@ -86,18 +76,15 @@ describe('checkDiagonalMove', () => {
         unit,
         gameStateWithPartialBlock,
         'E-5',
-        'D-4', // northEast diagonal
+        'D-6', // northEast diagonal
         'northEast',
-        getForwardSpace,
-        canMoveInto,
       );
 
-      // Should be able to make diagonal move (can pass through E-4)
-      expect(result.canContinue).toBe(true);
-      expect(result.canEnd).toBe(true);
+      // Should be able to make diagonal move (can pass through E-6)
+      expect(result).toBe(true);
     });
 
-    it('should handle diagonal move when target space cannot be moved through but can be ended at', () => {
+    it('should block diagonal move when target space cannot be moved through', () => {
       const gameStateWithEnemy = createEmptyGameState();
       // Place enemy at target (D-4)
       gameStateWithEnemy.boardState.board['D-4'].unitPresence = {
@@ -112,13 +99,10 @@ describe('checkDiagonalMove', () => {
         'E-5',
         'D-4', // northEast diagonal
         'northEast',
-        getForwardSpace,
-        (u, b, coord) => canMoveInto(u, b, coord), // Can engage enemy
       );
 
-      // Can end at enemy space (engage) but cannot continue through
-      expect(result.canContinue).toBe(false);
-      expect(result.canEnd).toBe(true);
+      // Cannot continue through enemy space
+      expect(result).toBe(false);
     });
   });
 
@@ -128,14 +112,11 @@ describe('checkDiagonalMove', () => {
         unit,
         gameState,
         'E-5',
-        'D-6', // northWest diagonal
+        'D-4', // northWest diagonal
         'northWest',
-        getForwardSpace,
-        canMoveInto,
       );
 
-      expect(result.canContinue).toBe(true);
-      expect(result.canEnd).toBe(true);
+      expect(result).toBe(true);
     });
 
     it('should work for southEast diagonal', () => {
@@ -143,14 +124,11 @@ describe('checkDiagonalMove', () => {
         unit,
         gameState,
         'E-5',
-        'F-4', // southEast diagonal
+        'F-6', // southEast diagonal
         'southEast',
-        getForwardSpace,
-        canMoveInto,
       );
 
-      expect(result.canContinue).toBe(true);
-      expect(result.canEnd).toBe(true);
+      expect(result).toBe(true);
     });
 
     it('should work for southWest diagonal', () => {
@@ -158,14 +136,11 @@ describe('checkDiagonalMove', () => {
         unit,
         gameState,
         'E-5',
-        'F-6', // southWest diagonal
+        'F-4', // southWest diagonal
         'southWest',
-        getForwardSpace,
-        canMoveInto,
       );
 
-      expect(result.canContinue).toBe(true);
-      expect(result.canEnd).toBe(true);
+      expect(result).toBe(true);
     });
   });
 });

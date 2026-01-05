@@ -23,6 +23,8 @@ export interface MoveUnitEvent {
   from: UnitPlacement<Board>;
   /** The space the unit is moving to. */
   to: UnitPlacement<Board>;
+  /** Whether to move the commander with the unit. */
+  moveCommander: boolean;
 }
 
 const _moveUnitEventSchemaObject = z.object({
@@ -38,6 +40,8 @@ const _moveUnitEventSchemaObject = z.object({
   from: unitPlacementSchema,
   /** The space the unit is moving to. */
   to: unitPlacementSchema,
+  /** Whether to move the commander with the unit. */
+  moveCommander: z.boolean(),
 });
 
 type MoveUnitEventSchemaType = z.infer<typeof _moveUnitEventSchemaObject>;
