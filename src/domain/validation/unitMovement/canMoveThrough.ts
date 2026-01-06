@@ -1,10 +1,5 @@
-import type {
-  Board,
-  BoardCoordinate,
-  GameState,
-  UnitInstance,
-} from '@entities';
-import { areSameSide, getBoardSpace, getCurrentUnitStat } from '@queries';
+import type { Board, BoardCoordinate, GameState, PlayerSide } from '@entities';
+import { getBoardSpace, getCurrentUnitStat } from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
 import { hasEngagedUnits, hasNoUnit } from '@validation/unitPresence';
 
@@ -12,24 +7,20 @@ import { hasEngagedUnits, hasNoUnit } from '@validation/unitPresence';
  * Determines whether a unit can move through (pass over) a specific coordinate.
  * Requires combined flexibility >= MIN_FLEXIBILITY_THRESHOLD for friendly units.
  *
- * @param unit - The unit attempting to move through
+ * @param unitSide - The side of the unit attempting to move through
+ * @param currentUnitFlexibility - The flexibility of the unit attempting to move through
  * @param coordinate - The coordinate to check
  * @param gameState - The current game state
  * @returns True if the unit can pass through this coordinate, false otherwise
  */
 export function canMoveThrough<TBoard extends Board>(
-  unit: UnitInstance,
+  unitSide: PlayerSide,
+  currentUnitFlexibility: number,
   coordinate: BoardCoordinate<TBoard>,
   gameState: GameState<TBoard>,
 ): boolean {
   // Get the board state
   const board = gameState.boardState;
-  // Get the current flexibility of the unit
-  const currentUnitFlexibility = getCurrentUnitStat(
-    unit,
-    'flexibility',
-    gameState,
-  );
   try {
     // Find the board space at the given coordinate.
     const space = getBoardSpace(board, coordinate);
@@ -48,11 +39,12 @@ export function canMoveThrough<TBoard extends Board>(
     // If the space has a single unit, further checks are needed.
     else {
       // Player cannot move through an unfriendly unit.
-      if (!areSameSide(spaceUnitPresence.unit, unit)) {
+      if (spaceUnitPresence.unit.playerSide !== unitSide) {
         return false;
       }
       // A player can only move through their own unit if the combined
-      // flexibility value of the two units totals 4 or more.
+      // flexibility value of the two units equals or exceeds
+      // the legal threshold.
       const currentSpaceUnitFlexibility = getCurrentUnitStat(
         spaceUnitPresence.unit,
         'flexibility',

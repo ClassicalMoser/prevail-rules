@@ -1,3 +1,4 @@
+export * from './bootstrapGameState';
 export * from './createBoard';
 export * from './createEmptyGameState';
 export * from './getUnitByStatValue';

@@ -1,11 +1,5 @@
-import type {
-  Board,
-  BoardCoordinate,
-  UnitFacing,
-  UnitInstance,
-} from '@entities';
+import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
 import {
-  areSameSide,
   getBackSpaces,
   getBoardSpace,
   getFlankingSpaces,
@@ -18,30 +12,30 @@ import { hasSingleUnit } from '@validation/unitPresence';
 /**
  * Incremental function to check whether engagement is legal from an adjacent space.
  *
- * @param unit - The unit attempting to engage
+ * @param unitSide - The side of the unit attempting to engage
  * @param board - The board object
  * @param destinationCoordinate - The coordinate to check if we can engage an enemy at
- * @param adjacentFacing - The facing at the time of this check
  * @param adjacentCoordinate - The coordinate at the time of this check (where we're moving from)
- * @param remainingFlexibility - The remaining flexibility at the time of this check
  * @param moveStartCoordinate - The coordinate at the beginning of the move
+ * @param currentFacing - The facing of the unit at the time of this check
+ * @param remainingFlexibility - The remaining flexibility at the time of this check
  * @returns True if we can engage an enemy at the given coordinate with the given facing, false otherwise
  */
 export function canEngageEnemy<TBoard extends Board>(
-  unit: UnitInstance,
+  unitSide: PlayerSide,
   board: TBoard,
   destinationCoordinate: BoardCoordinate<TBoard>,
-  adjacentFacing: UnitFacing,
   adjacentCoordinate: BoardCoordinate<TBoard>,
-  remainingFlexibility: number,
   moveStartCoordinate: BoardCoordinate<TBoard>,
+  currentFacing: UnitFacing,
+  remainingFlexibility: number,
 ): boolean {
   try {
     // Check if the destination has an enemy unit
     const destinationSpace = getBoardSpace(board, destinationCoordinate);
     if (
       !hasSingleUnit(destinationSpace.unitPresence) ||
-      areSameSide(destinationSpace.unitPresence.unit, unit)
+      destinationSpace.unitPresence.unit.playerSide === unitSide
     ) {
       // Destination space is not a single enemy unit
       // so we can't engage an enemy here
@@ -96,7 +90,7 @@ export function canEngageEnemy<TBoard extends Board>(
     if (enemyFrontSpaces.has(adjacentCoordinate)) {
       const requiredFacing = getOppositeFacing(enemyFacing);
       // If we're already facing the required direction, we can engage the enemy.
-      if (adjacentFacing === requiredFacing) {
+      if (currentFacing === requiredFacing) {
         return true;
       }
       // If we're coming from an angle and need to rotate, we need at least 1 flexibility

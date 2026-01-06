@@ -1,5 +1,14 @@
-import type { Card, StandardBoardCoordinate, UnitFacing } from '@entities';
+import type {
+  Card,
+  StandardBoard,
+  StandardBoardCoordinate,
+  UnitFacing,
+  UnitInstance,
+  UnitWithPlacement,
+} from '@entities';
 import { commandCards } from '@sampleValues';
+import { createUnitInstance } from '@transforms';
+import { getUnitByStatValue } from './getUnitByStatValue';
 
 /**
  * Checks if a coordinate (and optionally facing) is present in a set of legal moves.
@@ -83,4 +92,48 @@ export function getCardsByCount(count: number = 1): Card[] {
     );
   }
   return commandCards.slice(0, count);
+}
+
+/**
+ * Creates a UnitWithPlacement for testing with sensible defaults.
+ * This is a convenience helper for tests that need a unit at a specific position.
+ *
+ * @param options - Configuration for the unit and placement
+ * @param options.coordinate - The coordinate where the unit is placed (defaults to 'E-5')
+ * @param options.facing - The facing of the unit (defaults to 'north')
+ * @param options.playerSide - Which player the unit belongs to (defaults to 'black')
+ * @param options.unitType - Specific unit type to use (if not provided, uses flexibility 1)
+ * @param options.flexibility - Flexibility stat value (used if unitType not provided, defaults to 1)
+ * @param options.instanceNumber - Unit instance number (defaults to 1)
+ * @returns A UnitWithPlacement object ready for use in tests
+ */
+export function createUnitWithPlacement(options?: {
+  coordinate?: StandardBoardCoordinate;
+  facing?: UnitFacing;
+  playerSide?: 'black' | 'white';
+  unitType?: import('@entities').UnitType;
+  flexibility?: number;
+  instanceNumber?: number;
+}): UnitWithPlacement<StandardBoard> {
+  const coordinate = options?.coordinate ?? 'E-5';
+  const facing = options?.facing ?? 'north';
+  const playerSide = options?.playerSide ?? 'black';
+  const instanceNumber = options?.instanceNumber ?? 1;
+
+  let unit: UnitInstance;
+  if (options?.unitType) {
+    unit = createUnitInstance(playerSide, options.unitType, instanceNumber);
+  } else {
+    const flexibility = options?.flexibility ?? 1;
+    const unitType = getUnitByStatValue('flexibility', flexibility);
+    unit = createUnitInstance(playerSide, unitType, instanceNumber);
+  }
+
+  return {
+    unit,
+    placement: {
+      coordinate,
+      facing,
+    },
+  };
 }

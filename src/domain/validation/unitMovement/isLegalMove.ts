@@ -1,4 +1,4 @@
-import type { Board, GameState } from '@entities';
+import type { Board, GameState, UnitWithPlacement } from '@entities';
 import type { MoveUnitEvent } from '@events';
 import { getLegalUnitMoves } from '@queries';
 
@@ -16,7 +16,11 @@ export function isLegalMove<TBoard extends Board>(
   // Get the move unit event
   const { unit, from, to } = moveUnitEvent;
   try {
-    const legalMoves = getLegalUnitMoves(unit, gameState, from);
+    const unitWithPlacement: UnitWithPlacement<TBoard> = {
+      unit,
+      placement: from,
+    };
+    const legalMoves = getLegalUnitMoves(unitWithPlacement, gameState);
     // Set.has() uses reference equality, so we need to check by value
     return Array.from(legalMoves).some(
       (move) => move.coordinate === to.coordinate && move.facing === to.facing,
