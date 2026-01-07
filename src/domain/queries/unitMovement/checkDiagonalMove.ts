@@ -56,6 +56,8 @@ export function checkDiagonalMove<TBoard extends Board>(
     canMoveThrough(unitSide, currentUnitFlexibility, space, gameState),
   );
 
+  console.error(validPassThroughSpaces);
+
   // We can make a diagonal move if we can pass through any of the adjacent orthogonal spaces
   const canMakeDiagonalMove = validPassThroughSpaces.length > 0;
 

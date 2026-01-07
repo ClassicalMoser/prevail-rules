@@ -13,9 +13,6 @@ const defenseStatNames = ['reverse', 'retreat', 'rout'] as const;
  * @returns True if the stat is a defense stat, false otherwise
  */
 export function isDefenseStat(stat: UnitStatName): boolean {
-  try {
-    return (defenseStatNames as readonly string[]).includes(stat);
-  } catch {
-    return false;
-  }
+  // No try-catch needed; error impractical to induce
+  return (defenseStatNames as readonly string[]).includes(stat);
 }

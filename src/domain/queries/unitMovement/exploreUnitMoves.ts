@@ -7,7 +7,12 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import { unitFacings } from '@entities';
-import { getForwardSpace, getRearwardSpace } from '@queries/boardSpace';
+import {
+  getForwardSpace,
+  getRearwardSpace,
+  getSpacesBehind,
+} from '@queries/boardSpace';
+import { getAdjacentFacings } from '@queries/facings';
 import { getCurrentUnitStat } from '@queries/getCurrentUnitStat';
 import { canMoveInto, canMoveThrough, isDiagonalFacing } from '@validation';
 import { checkDiagonalMove } from './checkDiagonalMove';
@@ -43,7 +48,11 @@ export function exploreUnitMoves<TBoard extends Board>(
 
   // Get the unit and original placement
   const { placement: initialPlacement, unit } = unitWithPlacement;
+  const initialCoordinate = initialPlacement.coordinate;
+  const initialFacing = initialPlacement.facing;
   const unitSide = unit.playerSide;
+
+  // Get the current unit flexibility and speed
   const currentUnitFlexibility = getCurrentUnitStat(
     unit,
     'flexibility',
@@ -55,47 +64,44 @@ export function exploreUnitMoves<TBoard extends Board>(
   const getSpaceInDirection =
     direction === 'advance' ? getForwardSpace : getRearwardSpace;
 
+  // Cache valid retreat spaces
+  const validRetreatSpaces = getSpacesBehind(
+    board,
+    initialCoordinate,
+    initialFacing,
+  );
+
+  // Helper for checking if a space is a valid retreat space
+  function isValidRetreatSpace(coordinate: BoardCoordinate<TBoard>): boolean {
+    return validRetreatSpaces.has(coordinate);
+  }
+
   // Track visited states to avoid revisiting
   const visitedStates = new Set<string>();
   const getStateKey = (
     coordinate: BoardCoordinate<TBoard>,
-    previousCoordinate: BoardCoordinate<TBoard> | undefined,
     facing: UnitFacing,
     remainingSpeed: number,
     remainingFlexibility: number,
   ): string => {
-    if (previousCoordinate === undefined) {
-      return `${coordinate}|undefined|${facing}|${remainingSpeed}|${remainingFlexibility}`;
-    }
-    return `${coordinate}|${previousCoordinate}|${facing}|${remainingSpeed}|${remainingFlexibility}`;
+    return `${coordinate}|${facing}|${remainingSpeed}|${remainingFlexibility}`;
   };
 
   // Collect all explored moves
   const results = new Set<MoveResult<TBoard>>();
 
-  // Original position is valid for advancing, but not for retreating.
-  if (direction === 'advance') {
-    results.add({
-      placement: initialPlacement,
-      flexibilityUsed: 0,
-      speedUsed: 0,
-    });
-  }
-
   // Recursive function to explore moves
   const explore = (
     currentPlacement: UnitPlacement<TBoard>,
-    previousPlacement: UnitPlacement<TBoard> | undefined,
     remainingSpeed: number,
     remainingFlexibility: number,
+    isTruePosition: boolean,
   ): void => {
     const { coordinate: currentCoordinate, facing: currentFacing } =
       currentPlacement;
-    const previousCoordinate = previousPlacement?.coordinate ?? undefined;
 
     const stateKey = getStateKey(
       currentCoordinate,
-      previousCoordinate,
       currentFacing,
       remainingSpeed,
       remainingFlexibility,
@@ -105,6 +111,66 @@ export function exploreUnitMoves<TBoard extends Board>(
       return;
     }
     visitedStates.add(stateKey);
+
+    // Specific rules for our initial position.
+    // We can only turn in place if we have flexibility remaining.
+    // If we are advancing, we can turn to any facing.
+    // If we are retreating, we can only turn to adjacent facings.
+    // This block is only for initial position.
+    // Other rotations are handled after move
+    // to prevent repeated rotation in one space.
+    if (isTruePosition) {
+      // If advancing, add the initial position to the results.
+      if (direction === 'advance') {
+        results.add({
+          placement: currentPlacement,
+          flexibilityUsed: 0,
+          speedUsed: 0,
+        });
+        // Original position is not valid for retreating.
+      }
+      // Sometimes we can turn in the initial position.
+      if (remainingFlexibility > 0) {
+        let newFacings = new Set<UnitFacing>();
+        if (direction === 'retreat') {
+          // For a retreat, in our initial position,
+          // we can only turn to adjacent facings.
+          newFacings = getAdjacentFacings(initialFacing);
+        } else if (direction === 'advance') {
+          // For an advance, we can turn to any facing.
+          newFacings = new Set(unitFacings);
+        }
+        // Do not turn to the same facing.
+        newFacings.delete(initialFacing);
+        // Explore each new facing.
+        for (const newFacing of newFacings) {
+          const newPlacement: UnitPlacement<TBoard> = {
+            coordinate: currentCoordinate,
+            facing: newFacing,
+          };
+          // Add the new move result to the results set.
+          const newMoveResult: MoveResult<TBoard> = {
+            placement: newPlacement,
+            // -1 because we're using 1 flexibility to turn.
+            flexibilityUsed:
+              currentUnitFlexibility - (remainingFlexibility - 1),
+            speedUsed: currentUnitSpeed - remainingSpeed,
+          };
+          if (direction === 'advance') {
+            // Advances can end in the initial position.
+            results.add(newMoveResult);
+          }
+          // Retreats cannot end in the initial position.
+          // Regardless, the initial position will always continue exploring.
+          explore(
+            { coordinate: currentCoordinate, facing: newFacing },
+            remainingSpeed,
+            remainingFlexibility - 1,
+            false,
+          );
+        }
+      }
+    }
 
     // Try moving in direction if we have speed remaining
     if (remainingSpeed > 0) {
@@ -141,16 +207,22 @@ export function exploreUnitMoves<TBoard extends Board>(
         }
 
         // 2. Check if we can move into the space.
-        const isLegalEnd = canMoveInto(
+        let isLegalEnd = canMoveInto(
           unitSide,
           board,
           nextCoordinate,
           currentCoordinate,
-          currentCoordinate,
+          initialCoordinate,
           currentFacing,
           remainingFlexibility,
           direction,
         );
+
+        if (direction === 'retreat') {
+          if (!isValidRetreatSpace(nextCoordinate)) {
+            isLegalEnd = false;
+          }
+        }
 
         // If we can move into the space, we add it to the results.
         if (isLegalEnd) {
@@ -160,55 +232,89 @@ export function exploreUnitMoves<TBoard extends Board>(
           };
           const newMoveResult: MoveResult<TBoard> = {
             placement: newPlacement,
-            flexibilityUsed: remainingFlexibility,
-            speedUsed: remainingSpeed,
+            flexibilityUsed: currentUnitFlexibility - remainingFlexibility,
+            // -1 because we're using 1 speed to move.
+            speedUsed: currentUnitSpeed - (remainingSpeed - 1),
           };
           results.add(newMoveResult);
         }
 
         // 3. Check if we can move through the space.
-        let shouldContinueExploring = false;
-        shouldContinueExploring = canMoveThrough(
+        let shouldContinueExploring = canMoveThrough(
           unitSide,
           currentUnitFlexibility,
           nextCoordinate,
           gameState,
         );
 
+        if (direction === 'retreat') {
+          // Retreats can only move through spaces behind the starting position.
+          if (!isValidRetreatSpace(nextCoordinate)) {
+            shouldContinueExploring = false;
+          }
+        }
+
         // If we can move through, we should keep exploring.
         if (shouldContinueExploring) {
           explore(
             { coordinate: nextCoordinate, facing: currentFacing },
-            currentPlacement,
             remainingSpeed - 1,
             remainingFlexibility,
+            false,
           );
-        }
-      }
-    }
-
-    // Try changing facing if we have flexibility remaining
-    if (remainingFlexibility > 0) {
-      for (const newFacing of unitFacings) {
-        if (newFacing !== currentFacing) {
-          explore(
-            { coordinate: currentCoordinate, facing: newFacing },
-            currentPlacement,
-            remainingSpeed,
-            remainingFlexibility - 1,
-          );
+          // Also try changing facing after moving.
+          if (remainingFlexibility > 0) {
+            // Explore each new facing.
+            for (const newFacing of unitFacings) {
+              // Do not turn to the same facing.
+              if (newFacing !== currentFacing) {
+                const canMoveIntoNewFacing = canMoveInto(
+                  unitSide,
+                  board,
+                  nextCoordinate,
+                  currentCoordinate,
+                  initialCoordinate,
+                  newFacing,
+                  remainingFlexibility,
+                  direction,
+                );
+                if (canMoveIntoNewFacing) {
+                  const newPlacement: UnitPlacement<TBoard> = {
+                    coordinate: nextCoordinate,
+                    facing: newFacing,
+                  };
+                  const newMoveResult: MoveResult<TBoard> = {
+                    placement: newPlacement,
+                    // -1 because we're using 1 flexibility to turn.
+                    flexibilityUsed:
+                      currentUnitFlexibility - (remainingFlexibility - 1),
+                    speedUsed: currentUnitSpeed - (remainingSpeed - 1),
+                  };
+                  if (direction === 'retreat') {
+                    if (isValidRetreatSpace(nextCoordinate)) {
+                      results.add(newMoveResult);
+                    }
+                  } else {
+                    results.add(newMoveResult);
+                  }
+                }
+                // Explore the new space with the new facings.
+                explore(
+                  { coordinate: nextCoordinate, facing: newFacing },
+                  remainingSpeed - 1,
+                  remainingFlexibility - 1,
+                  false,
+                );
+              }
+            }
+          }
         }
       }
     }
   };
 
   // Start exploring from the starting position
-  explore(
-    initialPlacement,
-    undefined,
-    currentUnitSpeed,
-    currentUnitFlexibility,
-  );
+  explore(initialPlacement, currentUnitSpeed, currentUnitFlexibility, true);
 
   // Get the set of final legal positions
   return results;

@@ -69,4 +69,21 @@ export const tempUnits: UnitType[] = [
     limit: 2,
     routPenalty: 2,
   },
+  {
+    id: '5',
+    name: 'Balloons',
+    traits: ['mounted', 'formation'],
+    stats: {
+      attack: 0,
+      range: 0,
+      speed: 0,
+      flexibility: 0,
+      reverse: 0,
+      retreat: 0,
+      rout: 0,
+    },
+    cost: 0,
+    limit: 2,
+    routPenalty: 0,
+  },
 ];

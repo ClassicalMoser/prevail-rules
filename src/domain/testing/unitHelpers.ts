@@ -4,6 +4,7 @@ import type {
   UnitStatName,
   UnitType,
 } from '@entities';
+import { tempUnits } from '@sampleValues';
 import { createUnitInstance } from '@transforms';
 import { getUnitByStatValue } from './getUnitByStatValue';
 
@@ -51,20 +52,42 @@ export function createTestUnit(
     return createUnitInstance(playerSide, options.unitType, instanceNumber);
   }
 
+  // Collect all specified stats
+  const specifiedStats: Array<{ stat: UnitStatName; value: number }> = [];
   if (options?.flexibility !== undefined) {
-    const unitType = getUnitByStatValue('flexibility', options.flexibility);
-    if (!unitType) {
-      throw new Error(
-        `No unit found with flexibility value ${options.flexibility}.`,
-      );
-    }
-    return createUnitInstance(playerSide, unitType, instanceNumber);
+    specifiedStats.push({ stat: 'flexibility', value: options.flexibility });
+  }
+  if (options?.attack !== undefined) {
+    specifiedStats.push({ stat: 'attack', value: options.attack });
+  }
+  if (options?.speed !== undefined) {
+    specifiedStats.push({ stat: 'speed', value: options.speed });
+  }
+  if (options?.range !== undefined) {
+    specifiedStats.push({ stat: 'range', value: options.range });
+  }
+  if (options?.reverse !== undefined) {
+    specifiedStats.push({ stat: 'reverse', value: options.reverse });
+  }
+  if (options?.retreat !== undefined) {
+    specifiedStats.push({ stat: 'retreat', value: options.retreat });
+  }
+  if (options?.rout !== undefined) {
+    specifiedStats.push({ stat: 'rout', value: options.rout });
   }
 
-  if (options?.attack !== undefined) {
-    const unitType = getUnitByStatValue('attack', options.attack);
+  // Find a unit matching all specified stats
+  if (specifiedStats.length > 0) {
+    const unitType = tempUnits.find((unit) =>
+      specifiedStats.every(({ stat, value }) => unit.stats[stat] === value),
+    );
     if (!unitType) {
-      throw new Error(`No unit found with attack value ${options.attack}.`);
+      const statDescriptions = specifiedStats
+        .map(({ stat, value }) => `${stat}=${value}`)
+        .join(', ');
+      throw new Error(
+        `No unit found matching all specified stats: ${statDescriptions}.`,
+      );
     }
     return createUnitInstance(playerSide, unitType, instanceNumber);
   }
