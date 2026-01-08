@@ -512,6 +512,34 @@ describe('exploreUnitMoves', () => {
       expect(hasTurnRightThenMove).toBe(true);
       expect(hasTurnLeftThenMove).toBe(true);
     });
+    it('should not turn in the initial position if no flexibility', () => {
+      const gameState = createGameState([
+        { coord: 'E-5', player: 'black', facing: 'north', flexibility: 0 },
+      ]);
+      const unit = getPlayerUnitWithPosition(
+        gameState.boardState,
+        'E-5',
+        'black',
+      );
+      if (!unit) {
+        throw new Error('Unit not found');
+      }
+      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const hasRightTurnAndMove = exploreResultHasMatch(moves, {
+        coordinate: 'F-4',
+        facing: 'northEast',
+        flexibilityUsed: 1,
+        speedUsed: 1,
+      });
+      const hasLeftTurnAndMove = exploreResultHasMatch(moves, {
+        coordinate: 'F-6',
+        facing: 'northWest',
+        flexibilityUsed: 1,
+        speedUsed: 1,
+      });
+      expect(hasRightTurnAndMove).toBe(false);
+      expect(hasLeftTurnAndMove).toBe(false);
+    });
   });
   describe('obstacle handling', () => {
     it('should not move straight through an enemy unit', () => {
@@ -629,6 +657,63 @@ describe('exploreUnitMoves', () => {
         facing: 'south',
       });
       expect(hasMoveThroughEnemyLine).toBe(false);
+    });
+    it('cannot retreat into an enemy unit', () => {
+      const gameState = createGameState([
+        { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
+        { coord: 'F-5', player: 'white', facing: 'south', speed: 2 },
+      ]);
+      const unit = getPlayerUnitWithPosition(
+        gameState.boardState,
+        'E-5',
+        'black',
+      );
+      if (!unit) {
+        throw new Error('Unit not found');
+      }
+      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const hasMoveIntoEnemyUnit = exploreResultHasMatch(moves, {
+        coordinate: 'F-5',
+      });
+      expect(hasMoveIntoEnemyUnit).toBe(false);
+    });
+  });
+  describe('edge cases', () => {
+    it('should throw an error if the direction is invalid', () => {
+      const gameState = createGameState([
+        { coord: 'E-5', player: 'black', facing: 'north' },
+      ]);
+      const unit = getPlayerUnitWithPosition(
+        gameState.boardState,
+        'E-5',
+        'black',
+      );
+      if (!unit) {
+        throw new Error('Unit not found');
+      }
+      // Bad type assertion to trigger the error
+      const direction = 'invalid' as 'advance' | 'retreat';
+      expect(() => exploreUnitMoves(gameState, unit, direction)).toThrow(
+        'Invalid direction',
+      );
+    });
+    it('should not explore off the map or throw for the edge', () => {
+      const gameState = createGameState([
+        { coord: 'A-5', player: 'black', facing: 'north', speed: 2 },
+      ]);
+      const unit = getPlayerUnitWithPosition(
+        gameState.boardState,
+        'A-5',
+        'black',
+      );
+      if (!unit) {
+        throw new Error('Unit not found');
+      }
+      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const undefinedResults = Array.from(moves).filter(
+        (m) => m.placement.coordinate === undefined,
+      );
+      expect(undefinedResults.length).toBe(0);
     });
   });
 });

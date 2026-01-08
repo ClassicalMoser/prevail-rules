@@ -139,6 +139,8 @@ export function exploreUnitMoves<TBoard extends Board>(
         } else if (direction === 'advance') {
           // For an advance, we can turn to any facing.
           newFacings = new Set(unitFacings);
+        } else {
+          throw new Error('Invalid direction');
         }
         // Do not turn to the same facing.
         newFacings.delete(initialFacing);
@@ -290,13 +292,9 @@ export function exploreUnitMoves<TBoard extends Board>(
                       currentUnitFlexibility - (remainingFlexibility - 1),
                     speedUsed: currentUnitSpeed - (remainingSpeed - 1),
                   };
-                  if (direction === 'retreat') {
-                    if (isValidRetreatSpace(nextCoordinate)) {
-                      results.add(newMoveResult);
-                    }
-                  } else {
-                    results.add(newMoveResult);
-                  }
+                  // Doesn't need to check if it's a valid retreat space
+                  // because we already checked it when exploring the move.
+                  results.add(newMoveResult);
                 }
                 // Explore the new space with the new facings.
                 explore(

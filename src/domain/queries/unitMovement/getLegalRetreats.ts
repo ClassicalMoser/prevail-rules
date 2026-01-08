@@ -87,7 +87,7 @@ export function getLegalRetreats<TBoard extends Board>(
     }
     if (isPrimary) {
       foundMatchFacing = boardSpace.unitPresence.primaryFacing;
-    } else if (isSecondary) {
+    } else {
       foundMatchFacing = getOppositeFacing(
         boardSpace.unitPresence.primaryFacing,
       );
