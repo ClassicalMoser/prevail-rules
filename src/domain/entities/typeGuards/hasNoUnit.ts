@@ -1,4 +1,4 @@
-import type { NoneUnitPresence, UnitPresence } from '@entities';
+import type { NoneUnitPresence, UnitPresence } from '@entities/unitPresence';
 
 /**
  * Type guard to check if a unit presence has no unit.

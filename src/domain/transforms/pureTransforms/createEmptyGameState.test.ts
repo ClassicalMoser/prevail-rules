@@ -47,6 +47,3 @@ describe('createEmptyGameState', () => {
     expect(_typeCheck).toBe(gameState);
   });
 });
-
-
-

@@ -1,4 +1,4 @@
-import type { EngagedUnitPresence, UnitPresence } from '@entities';
+import type { EngagedUnitPresence, UnitPresence } from '@entities/unitPresence';
 
 /**
  * Type guard to check if a unit presence has engaged units.

@@ -6,6 +6,7 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import type { MoveResult } from './exploreUnitMoves';
+import { areSameSide, hasNoUnit, hasSingleUnit } from '@entities';
 import {
   getBoardSpace,
   getFrontSpaces,
@@ -13,8 +14,7 @@ import {
 } from '@queries/boardSpace';
 import { getOppositeFacing } from '@queries/facings';
 import { getCurrentUnitStat } from '@queries/getCurrentUnitStat';
-import { areSameSide } from '@queries/unit';
-import { hasNoUnit, hasSingleUnit, isSameUnitInstance } from '@validation';
+import { isSameUnitInstance } from '@validation';
 import { exploreUnitMoves } from './exploreUnitMoves';
 
 /**
@@ -63,7 +63,7 @@ export function getLegalRetreats<TBoard extends Board>(
 
   let foundMatchFacing: UnitFacing | undefined;
   if (hasSingleUnit(boardSpace.unitPresence)) {
-    if (isSameUnitInstance(boardSpace.unitPresence.unit, unit)) {
+    if (isSameUnitInstance(boardSpace.unitPresence.unit, unit).result) {
       foundMatchFacing = boardSpace.unitPresence.facing;
     } else {
       throw new Error('Unit is not present at the starting position');
@@ -73,11 +73,11 @@ export function getLegalRetreats<TBoard extends Board>(
     const isPrimary = isSameUnitInstance(
       boardSpace.unitPresence.primaryUnit,
       unit,
-    );
+    ).result;
     const isSecondary = isSameUnitInstance(
       boardSpace.unitPresence.secondaryUnit,
       unit,
-    );
+    ).result;
     if (!isPrimary && !isSecondary) {
       throw new Error('Unit is not present at the starting position');
     }

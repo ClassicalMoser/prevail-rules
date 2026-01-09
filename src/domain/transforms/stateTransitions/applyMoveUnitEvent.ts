@@ -5,8 +5,8 @@
 
 import type { Board, GameState, UnitPlacement } from '@entities';
 import type { MoveUnitEvent } from '@events';
+import { hasNoUnit, hasSingleUnit } from '@entities';
 import { getBoardSpace } from '@queries';
-import { hasNoUnit, hasSingleUnit } from '@validation';
 
 /**
  * Updates a unit's position on the board.

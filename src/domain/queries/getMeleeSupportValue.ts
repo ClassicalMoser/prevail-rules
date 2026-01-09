@@ -1,5 +1,6 @@
 import type { Board, UnitWithPlacement } from '@entities';
-import { diagonalIsClear, hasEngagedUnits } from '@validation';
+import { hasEngagedUnits } from '@entities';
+import { diagonalIsClear } from '@validation';
 import {
   getAdjacentSpaces,
   getBoardSpace,

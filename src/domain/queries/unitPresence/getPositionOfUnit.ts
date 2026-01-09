@@ -1,7 +1,8 @@
 import type { Board, UnitInstance, UnitPlacement } from '@entities';
+import { hasNoUnit, hasSingleUnit } from '@entities';
 import { getBoardCoordinates, getBoardSpace } from '@queries/boardSpace';
 import { getOppositeFacing } from '@queries/facings';
-import { hasNoUnit, hasSingleUnit, isSameUnitInstance } from '@validation';
+import { isSameUnitInstance } from '@validation';
 
 /**
  * Finds the position of a unit on the board by searching all coordinates.
@@ -38,7 +39,7 @@ export function getPositionOfUnit<TBoard extends Board>(
 
     // Check single unit presence
     if (hasSingleUnit(unitPresence)) {
-      if (isSameUnitInstance(unitPresence.unit, unit)) {
+      if (isSameUnitInstance(unitPresence.unit, unit).result) {
         return {
           coordinate,
           facing: unitPresence.facing,
@@ -48,13 +49,13 @@ export function getPositionOfUnit<TBoard extends Board>(
     }
 
     // Check engaged units (primary or secondary)
-    if (isSameUnitInstance(unitPresence.primaryUnit, unit)) {
+    if (isSameUnitInstance(unitPresence.primaryUnit, unit).result) {
       return {
         coordinate,
         facing: unitPresence.primaryFacing,
       };
     }
-    if (isSameUnitInstance(unitPresence.secondaryUnit, unit)) {
+    if (isSameUnitInstance(unitPresence.secondaryUnit, unit).result) {
       return {
         coordinate,
         facing: getOppositeFacing(unitPresence.primaryFacing),

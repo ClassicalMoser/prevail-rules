@@ -1,10 +1,6 @@
 import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
+import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from '@entities';
 import { getBoardSpace } from '@queries';
-import {
-  hasEngagedUnits,
-  hasNoUnit,
-  hasSingleUnit,
-} from '@validation/unitPresence';
 import { canEngageEnemy } from './canEngageEnemy';
 
 /**

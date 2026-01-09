@@ -1,7 +1,6 @@
-import type { GameState, StandardBoard } from '@entities';
+import { getPlayerUnitWithPosition } from '@queries';
 import { describe, expect, it } from 'vitest';
 import { createBoard, createGameState } from './bootstrapGameState';
-import { getPlayerUnitWithPosition } from '@queries/unitPresence';
 
 describe('bootstrapGameState', () => {
   describe('createGameState', () => {
@@ -276,4 +275,3 @@ describe('bootstrapGameState', () => {
     });
   });
 });
-

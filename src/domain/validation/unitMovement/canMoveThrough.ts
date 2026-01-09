@@ -1,7 +1,7 @@
 import type { Board, BoardCoordinate, GameState, PlayerSide } from '@entities';
+import { hasEngagedUnits, hasNoUnit } from '@entities';
 import { getBoardSpace, getCurrentUnitStat } from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
-import { hasEngagedUnits, hasNoUnit } from '@validation/unitPresence';
 
 /**
  * Determines whether a unit can move through (pass over) a specific coordinate.

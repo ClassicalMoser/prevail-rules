@@ -84,6 +84,3 @@ describe('getCardsByCount', () => {
     expect(cards).toEqual([...commandCards]);
   });
 });
-
-
-

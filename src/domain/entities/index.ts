@@ -6,6 +6,7 @@ export * from './gameType';
 export * from './line';
 export * from './player';
 export * from './sequence';
+export * from './typeGuards';
 export * from './unit';
 export * from './unitLocation';
 export * from './unitPresence';

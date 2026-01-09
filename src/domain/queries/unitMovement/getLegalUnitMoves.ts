@@ -5,8 +5,9 @@ import type {
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
+import { hasSingleUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
-import { hasSingleUnit, isSameUnitInstance } from '@validation';
+import { isSameUnitInstance } from '@validation';
 import { exploreUnitMoves } from './exploreUnitMoves';
 
 /**
@@ -44,7 +45,10 @@ export function getLegalUnitMoves<TBoard extends Board>(
     throw new Error('No movable unit at starting position');
   }
   // Check if the reported unit is present at the starting position
-  const sameUnit = isSameUnitInstance(boardSpace.unitPresence.unit, unit);
+  const sameUnit = isSameUnitInstance(
+    boardSpace.unitPresence.unit,
+    unit,
+  ).result;
   if (!sameUnit) {
     throw new Error('Unit is not present at the starting position');
   }

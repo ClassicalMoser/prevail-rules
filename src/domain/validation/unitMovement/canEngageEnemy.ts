@@ -1,4 +1,5 @@
 import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
+import { hasSingleUnit } from '@entities';
 import {
   getBackSpaces,
   getBoardSpace,
@@ -7,7 +8,6 @@ import {
   getOppositeFacing,
   getSpacesBehind,
 } from '@queries';
-import { hasSingleUnit } from '@validation/unitPresence';
 
 /**
  * Incremental function to check whether engagement is legal from an adjacent space.

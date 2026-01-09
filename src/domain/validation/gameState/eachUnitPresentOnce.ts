@@ -1,8 +1,8 @@
 import type { Board, UnitCount, UnitInstance } from '@entities';
+import { hasEngagedUnits, hasSingleUnit } from '@entities';
 import { getBoardCoordinates, getBoardSpace } from '@queries';
 import { createUnitInstance } from '@transforms';
 import { isSameUnitInstance } from '@validation/unitEquivalence';
-import { hasEngagedUnits, hasSingleUnit } from '@validation/unitPresence';
 
 export function eachUnitPresentOnce(
   whiteArmy: Set<UnitCount>,
@@ -31,7 +31,7 @@ export function eachUnitPresentOnce(
     // Since Sets use referential equality, we need to find the matching unit first
     const removeExpectedUnit = (unit: UnitInstance): boolean => {
       for (const expected of expectedUnits) {
-        if (isSameUnitInstance(expected, unit)) {
+        if (isSameUnitInstance(expected, unit).result) {
           expectedUnits.delete(expected);
           return true;
         }
@@ -41,7 +41,7 @@ export function eachUnitPresentOnce(
 
     // Helper to check if unit was already seen
     const hasSeenUnit = (unit: UnitInstance): boolean => {
-      return seenInGame.some((seen) => isSameUnitInstance(seen, unit));
+      return seenInGame.some((seen) => isSameUnitInstance(seen, unit).result);
     };
 
     // Single pass through board: check duplicates and validate against expected

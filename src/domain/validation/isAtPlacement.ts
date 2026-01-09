@@ -1,5 +1,6 @@
 import type { Board, UnitWithPlacement, ValidationResult } from '@entities';
-import { areSameSide, getPlayerUnitWithPosition } from '@queries';
+import { getPlayerUnitWithPosition } from '@queries';
+import { isSameUnitInstance } from './unitEquivalence';
 
 /**
  * Determines whether a unit is at a specific placement on the board.
@@ -28,6 +29,7 @@ export function isAtPlacement<TBoard extends Board>(
     if (!friendlyUnitWithPlacement) {
       return {
         result: false,
+        errorReason: 'No friendly unit at coordinate',
       };
     }
 
@@ -38,20 +40,20 @@ export function isAtPlacement<TBoard extends Board>(
     ) {
       return {
         result: false,
+        errorReason: 'Declared facing does not match facing of unit present',
       };
     }
 
     // If the friendly unit is not the same as the unit on the board, the unit is not at the placement.
     // Compare by value since UnitInstance is identified by playerSide, unitType, and instanceNumber.
-    if (
-      !areSameSide(friendlyUnitWithPlacement.unit, unitWithPlacement.unit) ||
-      friendlyUnitWithPlacement.unit.unitType !==
-        unitWithPlacement.unit.unitType ||
-      friendlyUnitWithPlacement.unit.instanceNumber !==
-        unitWithPlacement.unit.instanceNumber
-    ) {
+    const { result: isSameUnit } = isSameUnitInstance(
+      friendlyUnitWithPlacement.unit,
+      unitWithPlacement.unit,
+    );
+    if (!isSameUnit) {
       return {
         result: false,
+        errorReason: 'Unit is not at the placement',
       };
     }
 

@@ -1,5 +1,4 @@
 import type { GameState, PlayerSide, StandardBoard } from '@entities';
-import { commandCards } from '@sampleValues';
 import { createEmptyStandardBoard } from './createEmptyBoard';
 
 /**
@@ -13,7 +12,6 @@ import { createEmptyStandardBoard } from './createEmptyBoard';
  *
  * @param options - Optional configuration
  * @param options.currentInitiative - Which player has initiative (defaults to 'black')
- * @param options.boardType - Type of board to create (defaults to 'standard')
  * @returns A clean game state ready for testing or game initialization
  */
 export function createEmptyGameState(options?: {
@@ -51,4 +49,3 @@ export function createEmptyGameState(options?: {
     lostCommanders: new Set(),
   };
 }
-

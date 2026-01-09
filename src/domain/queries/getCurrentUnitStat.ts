@@ -83,8 +83,8 @@ export function getCurrentUnitStat<TBoard extends Board>(
   const activeCommandModifiers = activeCard?.command.modifiers ?? [];
   // First check if the unit was commanded
   const commandedUnits = gameState.currentRoundState.commandedUnits;
-  const unitWasCommanded = Array.from(commandedUnits).some((commandedUnit) =>
-    isSameUnitInstance(commandedUnit, unit),
+  const unitWasCommanded = Array.from(commandedUnits).some(
+    (commandedUnit) => isSameUnitInstance(commandedUnit, unit).result,
   );
   // If the unit was commanded, check if there is a matching modifier
   if (unitWasCommanded) {
