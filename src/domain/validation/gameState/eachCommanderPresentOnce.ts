@@ -1,7 +1,9 @@
-import type { Board, GameState, PlayerSide } from '@entities';
+import type { Board, GameState, PlayerSide, ValidationResult } from '@entities';
 import { getBoardCoordinates, getBoardSpace } from '@queries';
 
-export function eachCommanderPresentOnce(gameState: GameState<Board>): boolean {
+export function eachCommanderPresentOnce(
+  gameState: GameState<Board>,
+): ValidationResult {
   try {
     // We expect one commander per player
     const expectedCommanders: Set<PlayerSide> = new Set(['black', 'white']);
@@ -18,11 +20,17 @@ export function eachCommanderPresentOnce(gameState: GameState<Board>): boolean {
       for (const commander of space.commanders) {
         // Duplicate Commander
         if (seenCommanders.has(commander)) {
-          return false;
+          return {
+            result: false,
+            errorReason: 'Duplicate commander on board',
+          };
         }
         // Unexpected Commander
         if (!expectedCommanders.has(commander)) {
-          return false;
+          return {
+            result: false,
+            errorReason: 'Unexpected commander on board',
+          };
         }
         // Add the commander to the seen commanders set
         seenCommanders.add(commander);
@@ -35,11 +43,17 @@ export function eachCommanderPresentOnce(gameState: GameState<Board>): boolean {
     for (const commander of gameState.lostCommanders) {
       // Duplicate Commander
       if (seenCommanders.has(commander)) {
-        return false;
+        return {
+          result: false,
+          errorReason: 'Duplicate commander in lostCommanders',
+        };
       }
       // Unexpected Commander
       if (!expectedCommanders.has(commander)) {
-        return false;
+        return {
+          result: false,
+          errorReason: 'Unexpected commander in lostCommanders',
+        };
       }
       // Add the commander to the seen commanders set
       seenCommanders.add(commander);
@@ -48,9 +62,20 @@ export function eachCommanderPresentOnce(gameState: GameState<Board>): boolean {
     }
 
     // If expectedCommanders is empty, all expected commanders were found
-    return expectedCommanders.size === 0;
-  } catch {
+    if (expectedCommanders.size !== 0) {
+      return {
+        result: false,
+        errorReason: 'One or more commanders missing from game state',
+      };
+    }
+    return {
+      result: true,
+    };
+  } catch (error) {
     // Any error means validation fails - return false
-    return false;
+    return {
+      result: false,
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }

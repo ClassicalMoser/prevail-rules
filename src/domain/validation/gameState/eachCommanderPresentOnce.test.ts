@@ -1,4 +1,4 @@
-import type { PlayerSide } from '@entities';
+import type { FailValidationResult, PlayerSide } from '@entities';
 import { createBoardWithCommander, createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { eachCommanderPresentOnce } from './eachCommanderPresentOnce';
@@ -10,18 +10,22 @@ describe('eachCommanderPresentOnce', () => {
       let board = createBoardWithCommander('black', 'E-5');
       board = createBoardWithCommander('white', 'E-6', board);
 
-      expect(
-        eachCommanderPresentOnce({ ...gameState, boardState: board }),
-      ).toBe(true);
+      const { result } = eachCommanderPresentOnce({
+        ...gameState,
+        boardState: board,
+      });
+      expect(result).toBe(true);
     });
 
     it('should return true when both commanders are in lostCommanders', () => {
       const gameState = createEmptyGameState();
       const lostCommanders = new Set<PlayerSide>(['black', 'white']);
 
-      expect(eachCommanderPresentOnce({ ...gameState, lostCommanders })).toBe(
-        true,
-      );
+      const { result } = eachCommanderPresentOnce({
+        ...gameState,
+        lostCommanders,
+      });
+      expect(result).toBe(true);
     });
 
     it('should return true when one commander is on board and one is lost', () => {
@@ -29,13 +33,12 @@ describe('eachCommanderPresentOnce', () => {
       const board = createBoardWithCommander('black', 'E-5');
       const lostCommanders = new Set<PlayerSide>(['white']);
 
-      expect(
-        eachCommanderPresentOnce({
-          ...gameState,
-          boardState: board,
-          lostCommanders,
-        }),
-      ).toBe(true);
+      const { result } = eachCommanderPresentOnce({
+        ...gameState,
+        boardState: board,
+        lostCommanders,
+      });
+      expect(result).toBe(true);
     });
 
     it('should return true when both commanders are on the same space', () => {
@@ -46,9 +49,11 @@ describe('eachCommanderPresentOnce', () => {
         commanders: new Set<PlayerSide>(['black', 'white']),
       };
 
-      expect(
-        eachCommanderPresentOnce({ ...gameState, boardState: board }),
-      ).toBe(true);
+      const { result } = eachCommanderPresentOnce({
+        ...gameState,
+        boardState: board,
+      });
+      expect(result).toBe(true);
     });
   });
 
@@ -60,9 +65,11 @@ describe('eachCommanderPresentOnce', () => {
         let board = createBoardWithCommander(commander, 'E-5');
         board = createBoardWithCommander(commander, 'E-6', board);
 
-        expect(
-          eachCommanderPresentOnce({ ...gameState, boardState: board }),
-        ).toBe(false);
+        const { result } = eachCommanderPresentOnce({
+          ...gameState,
+          boardState: board,
+        });
+        expect(result).toBe(false);
       },
     );
 
@@ -73,13 +80,12 @@ describe('eachCommanderPresentOnce', () => {
         const board = createBoardWithCommander(commander, 'E-5');
         const lostCommanders = new Set<PlayerSide>([commander]);
 
-        expect(
-          eachCommanderPresentOnce({
-            ...gameState,
-            boardState: board,
-            lostCommanders,
-          }),
-        ).toBe(false);
+        const { result } = eachCommanderPresentOnce({
+          ...gameState,
+          boardState: board,
+          lostCommanders,
+        });
+        expect(result).toBe(false);
       },
     );
   });
@@ -93,16 +99,19 @@ describe('eachCommanderPresentOnce', () => {
           missingCommander === 'black' ? 'white' : 'black';
         const board = createBoardWithCommander(presentCommander, 'E-5');
 
-        expect(
-          eachCommanderPresentOnce({ ...gameState, boardState: board }),
-        ).toBe(false);
+        const { result } = eachCommanderPresentOnce({
+          ...gameState,
+          boardState: board,
+        });
+        expect(result).toBe(false);
       },
     );
 
     it('should return false when both commanders are missing', () => {
       const gameState = createEmptyGameState();
 
-      expect(eachCommanderPresentOnce(gameState)).toBe(false);
+      const { result } = eachCommanderPresentOnce(gameState);
+      expect(result).toBe(false);
     });
   });
 
@@ -112,12 +121,12 @@ describe('eachCommanderPresentOnce', () => {
       const board = createEmptyGameState().boardState;
       delete (board.board as any)['E-5'];
 
-      const result = eachCommanderPresentOnce({
+      const validationResult = eachCommanderPresentOnce({
         ...gameState,
         boardState: board,
-      });
-
-      expect(typeof result).toBe('boolean');
+      }) as FailValidationResult;
+      expect(validationResult.result).toEqual(false);
+      expect(validationResult.errorReason.length).toBeGreaterThan(0);
     });
   });
 });

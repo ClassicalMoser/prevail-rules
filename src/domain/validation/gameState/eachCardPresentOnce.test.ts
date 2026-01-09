@@ -51,9 +51,12 @@ describe('eachCardPresentOnce', () => {
       const blackStartingHand = cardSet(0, 1);
       const whiteStartingHand = cardSet(0, 1);
       const cardState = createCardState([], []);
-      expect(
-        eachCardPresentOnce(blackStartingHand, whiteStartingHand, cardState),
-      ).toBe(true);
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        whiteStartingHand,
+        cardState,
+      );
+      expect(result).toBe(true);
     });
 
     it('should return true when all black cards are present once in hand', () => {
@@ -66,9 +69,12 @@ describe('eachCardPresentOnce', () => {
         commandCards[3],
       );
 
-      expect(
-        eachCardPresentOnce(blackStartingHand, whiteStartingHand, cardState),
-      ).toBe(true);
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        whiteStartingHand,
+        cardState,
+      );
+      expect(result).toBe(true);
     });
 
     it('should return true when all white cards are present once in hand', () => {
@@ -78,9 +84,12 @@ describe('eachCardPresentOnce', () => {
       const whiteStartingHand = cardSet(0, 1, 2);
       const cardState = createCardState([], [commandCards[2]]);
 
-      expect(
-        eachCardPresentOnce(blackStartingHand, whiteStartingHand, cardState),
-      ).toBe(true);
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        whiteStartingHand,
+        cardState,
+      );
+      expect(result).toBe(true);
     });
 
     it('should return true when both black and white cards are present once', () => {
@@ -89,9 +98,12 @@ describe('eachCardPresentOnce', () => {
       const whiteStartingHand = cardSet(0, 1, 3);
       const cardState = createCardState([commandCards[2]], [commandCards[3]]);
 
-      expect(
-        eachCardPresentOnce(blackStartingHand, whiteStartingHand, cardState),
-      ).toBe(true);
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        whiteStartingHand,
+        cardState,
+      );
+      expect(result).toBe(true);
     });
 
     it('should return true when cards are in different states', () => {
@@ -112,9 +124,12 @@ describe('eachCardPresentOnce', () => {
         [],
       );
 
-      expect(
-        eachCardPresentOnce(blackStartingHand, whiteStartingHand, cardState),
-      ).toBe(true);
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        whiteStartingHand,
+        cardState,
+      );
+      expect(result).toBe(true);
     });
 
     it('should return true when cards are in played, discarded, or burnt states', () => {
@@ -136,9 +151,12 @@ describe('eachCardPresentOnce', () => {
         [commandCards[3]],
       );
 
-      expect(
-        eachCardPresentOnce(blackStartingHand, whiteStartingHand, cardState),
-      ).toBe(true);
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        whiteStartingHand,
+        cardState,
+      );
+      expect(result).toBe(true);
     });
   });
 
@@ -147,9 +165,12 @@ describe('eachCardPresentOnce', () => {
       const blackStartingHand = cardSet(0);
       const cardState = createCardState([commandCards[0], commandCards[0]], []);
 
-      expect(eachCardPresentOnce(blackStartingHand, new Set(), cardState)).toBe(
-        false,
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        new Set(),
+        cardState,
       );
+      expect(result).toBe(false);
     });
 
     it('should return false when a card appears in multiple states', () => {
@@ -161,9 +182,12 @@ describe('eachCardPresentOnce', () => {
         commandCards[1],
       );
 
-      expect(eachCardPresentOnce(blackStartingHand, new Set(), cardState)).toBe(
-        false,
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        new Set(),
+        cardState,
       );
+      expect(result).toBe(false);
     });
 
     it('should return true when the same card appears in both players states', () => {
@@ -177,9 +201,12 @@ describe('eachCardPresentOnce', () => {
       const whiteStartingHand = cardSet(0, 1, 2);
       const cardState = createCardState([commandCards[2]], [commandCards[2]]);
 
-      expect(
-        eachCardPresentOnce(blackStartingHand, whiteStartingHand, cardState),
-      ).toBe(true);
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        whiteStartingHand,
+        cardState,
+      );
+      expect(result).toBe(true);
     });
   });
 
@@ -188,9 +215,12 @@ describe('eachCardPresentOnce', () => {
       const blackStartingHand = cardSet(0, 1);
       const cardState = createCardState([commandCards[0]], []);
 
-      expect(eachCardPresentOnce(blackStartingHand, new Set(), cardState)).toBe(
-        false,
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        new Set(),
+        cardState,
       );
+      expect(result).toBe(false);
     });
 
     it('should return false when black card is missing', () => {
@@ -198,9 +228,12 @@ describe('eachCardPresentOnce', () => {
       const whiteStartingHand = cardSet(1);
       const cardState = createCardState([], [commandCards[1]]);
 
-      expect(
-        eachCardPresentOnce(blackStartingHand, whiteStartingHand, cardState),
-      ).toBe(false);
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        whiteStartingHand,
+        cardState,
+      );
+      expect(result).toBe(false);
     });
 
     it('should return false when white card is missing', () => {
@@ -208,9 +241,12 @@ describe('eachCardPresentOnce', () => {
       const whiteStartingHand = cardSet(1);
       const cardState = createCardState([commandCards[0]], []);
 
-      expect(
-        eachCardPresentOnce(blackStartingHand, whiteStartingHand, cardState),
-      ).toBe(false);
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        whiteStartingHand,
+        cardState,
+      );
+      expect(result).toBe(false);
     });
   });
 
@@ -219,9 +255,12 @@ describe('eachCardPresentOnce', () => {
       const blackStartingHand = cardSet(0);
       const cardState = createCardState([commandCards[0], commandCards[1]], []);
 
-      expect(eachCardPresentOnce(blackStartingHand, new Set(), cardState)).toBe(
-        false,
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        new Set(),
+        cardState,
       );
+      expect(result).toBe(false);
     });
 
     it('should return false when awaitingPlay has unexpected card', () => {
@@ -233,9 +272,12 @@ describe('eachCardPresentOnce', () => {
         commandCards[2],
       );
 
-      expect(eachCardPresentOnce(blackStartingHand, new Set(), cardState)).toBe(
-        false,
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        new Set(),
+        cardState,
       );
+      expect(result).toBe(false);
     });
 
     it('should return false when inPlay has unexpected card', () => {
@@ -247,9 +289,12 @@ describe('eachCardPresentOnce', () => {
         commandCards[1],
       );
 
-      expect(eachCardPresentOnce(blackStartingHand, new Set(), cardState)).toBe(
-        false,
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        new Set(),
+        cardState,
       );
+      expect(result).toBe(false);
     });
 
     it('should return false when played array has unexpected card', () => {
@@ -262,9 +307,12 @@ describe('eachCardPresentOnce', () => {
         [commandCards[1]],
       );
 
-      expect(eachCardPresentOnce(blackStartingHand, new Set(), cardState)).toBe(
-        false,
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        new Set(),
+        cardState,
       );
+      expect(result).toBe(false);
     });
 
     it('should return false when discarded array has unexpected card', () => {
@@ -278,9 +326,12 @@ describe('eachCardPresentOnce', () => {
         [commandCards[1]],
       );
 
-      expect(eachCardPresentOnce(blackStartingHand, new Set(), cardState)).toBe(
-        false,
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        new Set(),
+        cardState,
       );
+      expect(result).toBe(false);
     });
 
     it('should return false when burnt array has unexpected card', () => {
@@ -295,9 +346,12 @@ describe('eachCardPresentOnce', () => {
         [commandCards[1]],
       );
 
-      expect(eachCardPresentOnce(blackStartingHand, new Set(), cardState)).toBe(
-        false,
+      const { result } = eachCardPresentOnce(
+        blackStartingHand,
+        new Set(),
+        cardState,
       );
+      expect(result).toBe(false);
     });
   });
 });

@@ -1,4 +1,9 @@
-import type { Board, UnitCount, UnitInstance } from '@entities';
+import type {
+  Board,
+  UnitCount,
+  UnitInstance,
+  ValidationResult,
+} from '@entities';
 import { hasEngagedUnits, hasSingleUnit } from '@entities';
 import { getBoardCoordinates, getBoardSpace } from '@queries';
 import { createUnitInstance } from '@transforms';
@@ -9,7 +14,7 @@ export function eachUnitPresentOnce(
   blackArmy: Set<UnitCount>,
   board: Board,
   routedUnits: Set<UnitInstance>,
-): boolean {
+): ValidationResult {
   try {
     // Build expected units set (we'll use isSameUnitInstance for equality checks)
     const expectedUnits = new Set<UnitInstance>();
@@ -29,19 +34,35 @@ export function eachUnitPresentOnce(
 
     // Helper to find and remove expected unit by value equality
     // Since Sets use referential equality, we need to find the matching unit first
-    const removeExpectedUnit = (unit: UnitInstance): boolean => {
+    const removeExpectedUnit = (unit: UnitInstance): ValidationResult => {
       for (const expected of expectedUnits) {
         if (isSameUnitInstance(expected, unit).result) {
           expectedUnits.delete(expected);
-          return true;
+          return {
+            result: true,
+          };
         }
       }
-      return false;
+      return {
+        result: false,
+        errorReason: 'Unexpected unit on board',
+      };
     };
 
     // Helper to check if unit was already seen
-    const hasSeenUnit = (unit: UnitInstance): boolean => {
-      return seenInGame.some((seen) => isSameUnitInstance(seen, unit).result);
+    const hasSeenUnit = (unit: UnitInstance): ValidationResult => {
+      const found = seenInGame.some(
+        (seen) => isSameUnitInstance(seen, unit).result,
+      );
+      if (!found) {
+        return {
+          result: false,
+          errorReason: 'Duplicate unit on board',
+        };
+      }
+      return {
+        result: true,
+      };
     };
 
     // Single pass through board: check duplicates and validate against expected
@@ -50,28 +71,40 @@ export function eachUnitPresentOnce(
       const space = getBoardSpace(board, coordinate);
       if (hasSingleUnit(space.unitPresence)) {
         const unit = space.unitPresence.unit;
-        if (hasSeenUnit(unit)) {
+        const hasSeenUnitResult = hasSeenUnit(unit);
+        if (hasSeenUnitResult.result) {
           // Unit is present more than once
-          return false;
+          return hasSeenUnitResult;
         }
-        if (!removeExpectedUnit(unit)) {
+        const removeExpectedUnitResult = removeExpectedUnit(unit);
+        if (!removeExpectedUnitResult.result) {
           // Unexpected unit on board
-          return false;
+          return removeExpectedUnitResult;
         }
         seenInGame.push(unit);
       } else if (hasEngagedUnits(space.unitPresence)) {
         const primaryUnit = space.unitPresence.primaryUnit;
         const secondaryUnit = space.unitPresence.secondaryUnit;
-        if (hasSeenUnit(primaryUnit) || hasSeenUnit(secondaryUnit)) {
+        const hasSeenPrimaryUnitResult = hasSeenUnit(primaryUnit);
+        if (!hasSeenPrimaryUnitResult.result) {
           // Unit is present more than once
-          return false;
+          return hasSeenPrimaryUnitResult;
         }
-        if (
-          !removeExpectedUnit(primaryUnit) ||
-          !removeExpectedUnit(secondaryUnit)
-        ) {
+        const hasSeenSecondaryUnitResult = hasSeenUnit(secondaryUnit);
+        if (!hasSeenSecondaryUnitResult.result) {
+          // Unit is present more than once
+          return hasSeenSecondaryUnitResult;
+        }
+        const removeExpectedPrimaryUnitResult = removeExpectedUnit(primaryUnit);
+        if (!removeExpectedPrimaryUnitResult.result) {
           // Unexpected unit on board
-          return false;
+          return removeExpectedPrimaryUnitResult;
+        }
+        const removeExpectedSecondaryUnitResult =
+          removeExpectedUnit(secondaryUnit);
+        if (!removeExpectedSecondaryUnitResult.result) {
+          // Unexpected unit on board
+          return removeExpectedSecondaryUnitResult;
         }
         seenInGame.push(primaryUnit);
         seenInGame.push(secondaryUnit);
@@ -80,17 +113,29 @@ export function eachUnitPresentOnce(
 
     // Check for routed units
     for (const unit of routedUnits) {
-      if (!removeExpectedUnit(unit)) {
+      const removeExpectedUnitResult = removeExpectedUnit(unit);
+      if (!removeExpectedUnitResult.result) {
         // Unexpected routed unit
-        return false;
+        return removeExpectedUnitResult;
       }
       seenInGame.push(unit);
     }
 
     // If expectedUnits is empty, all expected units were found and no routed units were unexpected
-    return expectedUnits.size === 0;
-  } catch {
+    if (expectedUnits.size !== 0) {
+      return {
+        result: false,
+        errorReason: 'One or more units missing from game state',
+      };
+    }
+    return {
+      result: true,
+    };
+  } catch (error) {
     // Any error means the game state is invalid
-    return false;
+    return {
+      result: false,
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }

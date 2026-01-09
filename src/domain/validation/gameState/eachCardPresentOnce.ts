@@ -1,16 +1,22 @@
-import type { Card, CardState, PlayerCardState } from '@entities';
+import type {
+  Card,
+  CardState,
+  FailValidationResult,
+  PlayerCardState,
+  ValidationResult,
+} from '@entities';
 
 export function eachCardPresentOnce(
   blackStartingHand: Set<Card>,
   whiteStartingHand: Set<Card>,
   cardState: CardState,
-): boolean {
+): ValidationResult {
   try {
     // Helper to validate a single player's card state against their starting hand
     const validatePlayerState = (
       startingHand: Set<Card>,
       playerState: PlayerCardState,
-    ): boolean => {
+    ): ValidationResult => {
       // Build expected cards set for this player (we'll use card ID for equality checks)
       const expectedCards = new Set<Card>();
       for (const card of startingHand) {
@@ -38,20 +44,30 @@ export function eachCardPresentOnce(
       };
 
       // Helper to process a single card
-      const processCard = (card: Card | null): boolean => {
+      const processCard = (card: Card | null): ValidationResult => {
         if (card === null) {
-          return true;
+          return {
+            result: true,
+          };
         }
         if (hasSeenCard(card)) {
           // Card is present more than once in this player's state
-          return false;
+          return {
+            result: false,
+            errorReason: 'Card is present more than once',
+          };
         }
         if (!removeExpectedCard(card)) {
           // Unexpected card in this player's state
-          return false;
+          return {
+            result: false,
+            errorReason: 'Unexpected card',
+          };
         }
         seenInPlayerState.push(card);
-        return true;
+        return {
+          result: true,
+        };
       };
 
       // Check all cards in arrays
@@ -63,22 +79,46 @@ export function eachCardPresentOnce(
       ];
       for (const cardArray of cardArrays) {
         for (const card of cardArray) {
-          if (!processCard(card)) {
-            return false;
+          const cardResult = processCard(card);
+          if (!cardResult.result) {
+            const validateError: FailValidationResult = {
+              result: false,
+              errorReason: cardResult.errorReason,
+            };
+            return validateError;
           }
         }
       }
 
       // Check single cards
-      if (!processCard(playerState.awaitingPlay)) {
-        return false;
+      const awaitingPlayResult = processCard(playerState.awaitingPlay);
+      if (!awaitingPlayResult.result) {
+        const validateError: FailValidationResult = {
+          result: false,
+          errorReason: awaitingPlayResult.errorReason,
+        };
+        return validateError;
       }
-      if (!processCard(playerState.inPlay)) {
-        return false;
+      const inPlayResult = processCard(playerState.inPlay);
+      if (!inPlayResult.result) {
+        const validateError: FailValidationResult = {
+          result: false,
+          errorReason: inPlayResult.errorReason,
+        };
+        return validateError;
       }
 
       // If expectedCards is empty, all expected cards for this player were found
-      return expectedCards.size === 0;
+      if (expectedCards.size !== 0) {
+        const validateError: FailValidationResult = {
+          result: false,
+          errorReason: 'Expected cards not found',
+        };
+        return validateError;
+      }
+      return {
+        result: true,
+      };
     };
 
     // Validate each player's state
@@ -86,13 +126,24 @@ export function eachCardPresentOnce(
       blackStartingHand,
       cardState.blackPlayer,
     );
+    if (!blackPlayerValid.result) {
+      return blackPlayerValid;
+    }
     const whitePlayerValid = validatePlayerState(
       whiteStartingHand,
       cardState.whitePlayer,
     );
-    return blackPlayerValid && whitePlayerValid;
+    if (!whitePlayerValid.result) {
+      return whitePlayerValid;
+    }
+    return {
+      result: true,
+    };
   } catch {
     // Any error means the game state is invalid
-    return false;
+    return {
+      result: false,
+      errorReason: 'Unknown error',
+    };
   }
 }
