@@ -10,6 +10,9 @@ import {
   isSameUnitInstance,
   matchesUnitRequirements,
 } from '@validation';
+import { getSpacesWithinDistance } from './boardSpace';
+import { getCommanderSpace } from './getCommanderSpace';
+import { getPositionOfUnit } from './unitPresence';
 
 /**
  * Gets the current stat value of a unit.
@@ -65,15 +68,54 @@ export function getCurrentUnitStat<TBoard extends Board>(
       statIsDefense,
     );
     // If there is a matching modifier, check if the unit satisfies the restrictions
-    // TO DO: Commander/Inspiration range restriction not yet implemented
     if (matchingModifier) {
-      const satisfiesRestrictions = matchesUnitRequirements(
+      let satisfiesAllRestrictions = true;
+      let satisfiesInspirationRangeRestriction = false;
+      let satisfiesUnitRestrictions = true;
+      const inspirationRange =
+        activeRoundEffect.restrictions.inspirationRangeRestriction;
+      if (inspirationRange) {
+        const unitPlacement = getPositionOfUnit(gameState.boardState, unit);
+        if (!unitPlacement) {
+          throw new Error('Unit not found on board');
+        }
+        const unitPosition = unitPlacement.coordinate;
+        const commanderSpace = getCommanderSpace(
+          unit.playerSide,
+          gameState.boardState,
+        );
+        // Don't throw if commander is not on board.
+        // It means the commander was defeated.
+
+        if (commanderSpace) {
+          // If the commander is on board, find all spaces within the range.
+          const spacesWithinDistance = getSpacesWithinDistance(
+            gameState.boardState,
+            commanderSpace,
+            inspirationRange,
+          );
+
+          // Check if the unit is within range.
+          satisfiesInspirationRangeRestriction =
+            spacesWithinDistance.has(unitPosition);
+        }
+        // If the range is specified, it must be satisfied.
+        satisfiesAllRestrictions = satisfiesInspirationRangeRestriction;
+      }
+
+      // Check if the unit satisfies the trait restrictions.
+      satisfiesUnitRestrictions = matchesUnitRequirements(
         unit.unitType,
         activeRoundEffect.restrictions.traitRestrictions,
         activeRoundEffect.restrictions.unitRestrictions,
-      );
+      ).result;
+
+      // Combine the existing restriction satisfaction with the new one.
+      satisfiesAllRestrictions =
+        satisfiesAllRestrictions && satisfiesUnitRestrictions;
+
       // If the unit satisfies the restrictions, add the modifier to the total
-      if (satisfiesRestrictions) {
+      if (satisfiesAllRestrictions) {
         totalModifier += matchingModifier.value;
       }
     }
@@ -86,6 +128,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
   const unitWasCommanded = Array.from(commandedUnits).some(
     (commandedUnit) => isSameUnitInstance(commandedUnit, unit).result,
   );
+
   // If the unit was commanded, check if there is a matching modifier
   if (unitWasCommanded) {
     const matchingModifier = findMatchingModifier(
