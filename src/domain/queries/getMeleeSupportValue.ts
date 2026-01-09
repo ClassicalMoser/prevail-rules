@@ -1,5 +1,5 @@
 import type { Board, UnitWithPlacement } from '@entities';
-import { enemyBlocksDiagonal, hasEngagedUnits } from '@validation';
+import { diagonalIsClear, hasEngagedUnits } from '@validation';
 import {
   getAdjacentSpaces,
   getBoardSpace,
@@ -37,7 +37,13 @@ export function getMeleeSupportValue(
     const unit = getPlayerUnitWithPosition(board, space, playerSide);
     if (unit !== undefined) {
       // If the unit is found, make sure it is not diagonally blocked by enemy units
-      if (!enemyBlocksDiagonal(playerSide, board, unitCoordinate, space)) {
+      const diagonalClear = diagonalIsClear(
+        playerSide,
+        board,
+        unitCoordinate,
+        space,
+      );
+      if (!diagonalClear.result) {
         // If it is not blocked, add it to the possible support units.
         potentialSupportUnits.push(unit);
       }

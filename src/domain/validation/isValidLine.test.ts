@@ -23,7 +23,8 @@ describe('isValidLine', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
       const line = Array.from(lines)[0]!;
 
-      expect(isValidLine(board, line)).toBe(true);
+      const { result } = isValidLine(board, line);
+      expect(result).toBe(true);
     });
 
     it('should return true for two units facing the same direction', () => {
@@ -42,7 +43,8 @@ describe('isValidLine', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
       const line = Array.from(lines)[0]!;
 
-      expect(isValidLine(board, line)).toBe(true);
+      const { result } = isValidLine(board, line);
+      expect(result).toBe(true);
     });
 
     it('should return true for two units facing opposite directions', () => {
@@ -61,7 +63,8 @@ describe('isValidLine', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
       const line = Array.from(lines)[0]!;
 
-      expect(isValidLine(board, line)).toBe(true);
+      const { result } = isValidLine(board, line);
+      expect(result).toBe(true);
     });
 
     it('should return true for a line with 8 units', () => {
@@ -87,7 +90,8 @@ describe('isValidLine', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
       const line = Array.from(lines)[0]!;
 
-      expect(isValidLine(board, line)).toBe(true);
+      const { result } = isValidLine(board, line);
+      expect(result).toBe(true);
     });
 
     it('should return true for a diagonal line (northEast facing)', () => {
@@ -107,7 +111,8 @@ describe('isValidLine', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
       const line = Array.from(lines)[0]!;
 
-      expect(isValidLine(board, line)).toBe(true);
+      const { result } = isValidLine(board, line);
+      expect(result).toBe(true);
     });
 
     it('should return true for a diagonal line with opposite facing (southWest)', () => {
@@ -128,14 +133,16 @@ describe('isValidLine', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
       const line = Array.from(lines)[0]!;
 
-      expect(isValidLine(board, line)).toBe(true);
+      const { result } = isValidLine(board, line);
+      expect(result).toBe(true);
     });
   });
 
   describe('invalid lines', () => {
     it('should return false for an empty line', () => {
       const invalidLine = { unitPlacements: [] };
-      expect(isValidLine(standardBoard, invalidLine)).toBe(false);
+      const { result } = isValidLine(standardBoard, invalidLine);
+      expect(result).toBe(false);
     });
 
     it('should return false for a line with more than MAX_LINE_LENGTH units', () => {
@@ -162,7 +169,8 @@ describe('isValidLine', () => {
           },
         })),
       };
-      expect(isValidLine(standardBoard, invalidLine)).toBe(false);
+      const { result } = isValidLine(standardBoard, invalidLine);
+      expect(result).toBe(false);
     });
 
     it('should return false for units on different sides', () => {
@@ -180,7 +188,8 @@ describe('isValidLine', () => {
           },
         ],
       };
-      expect(isValidLine(standardBoard, invalidLine)).toBe(false);
+      const { result } = isValidLine(standardBoard, invalidLine);
+      expect(result).toBe(false);
     });
 
     it('should return false for units with wrong facing (not same or opposite)', () => {
@@ -203,7 +212,8 @@ describe('isValidLine', () => {
           },
         ],
       };
-      expect(isValidLine(board, invalidLine)).toBe(false);
+      const { result } = isValidLine(board, invalidLine);
+      expect(result).toBe(false);
     });
 
     it('should return false for non-contiguous units (gap in line)', () => {
@@ -221,7 +231,8 @@ describe('isValidLine', () => {
           },
         ],
       };
-      expect(isValidLine(standardBoard, invalidLine)).toBe(false);
+      const { result } = isValidLine(standardBoard, invalidLine);
+      expect(result).toBe(false);
     });
 
     it('should return false for units not in flanking spaces', () => {
@@ -239,7 +250,8 @@ describe('isValidLine', () => {
           },
         ],
       };
-      expect(isValidLine(standardBoard, invalidLine)).toBe(false);
+      const { result } = isValidLine(standardBoard, invalidLine);
+      expect(result).toBe(false);
     });
 
     it('should return false for diagonal line with wrong direction', () => {
@@ -266,14 +278,16 @@ describe('isValidLine', () => {
           },
         ],
       };
-      expect(isValidLine(standardBoard, invalidLine)).toBe(false);
+      const { result } = isValidLine(standardBoard, invalidLine);
+      expect(result).toBe(false);
     });
   });
   describe('edge cases', () => {
     it('should return false instead of throwing for a bad input type', () => {
       const board = undefined as unknown as StandardBoard;
       const line = undefined as unknown as Line;
-      expect(isValidLine(board, line)).toBe(false);
+      const { result } = isValidLine(board, line);
+      expect(result).toBe(false);
     });
   });
 });

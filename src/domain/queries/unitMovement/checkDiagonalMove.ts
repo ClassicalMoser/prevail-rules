@@ -35,7 +35,8 @@ export function checkDiagonalMove<TBoard extends Board>(
   // Get the board state
   const board = gameState.boardState;
   // Check if the facing is diagonal
-  if (!isDiagonalFacing(currentFacing)) {
+  const { result: isDiagonalFacingResult } = isDiagonalFacing(currentFacing);
+  if (!isDiagonalFacingResult) {
     throw new Error('Facing must be diagonal');
   }
 

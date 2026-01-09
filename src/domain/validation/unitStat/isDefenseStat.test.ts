@@ -5,13 +5,21 @@ import { isDefenseStat } from './isDefenseStat';
 
 describe('isDefenseStat', () => {
   it('should return true for defense stats', () => {
-    expect(isDefenseStat('reverse')).toBe(true);
-    expect(isDefenseStat('retreat')).toBe(true);
-    expect(isDefenseStat('rout')).toBe(true);
+    const { result: reverseResult } = isDefenseStat('reverse');
+    expect(reverseResult).toBe(true);
+    const { result: retreatResult } = isDefenseStat('retreat');
+    expect(retreatResult).toBe(true);
+    const { result: routResult } = isDefenseStat('rout');
+    expect(routResult).toBe(true);
   });
   it('should return false for non-defense stats', () => {
-    expect(isDefenseStat('attack')).toBe(false);
-    expect(isDefenseStat('speed')).toBe(false);
-    expect(isDefenseStat('defense' as UnitStatName)).toBe(false);
+    const { result: attackResult } = isDefenseStat('attack');
+    expect(attackResult).toBe(false);
+    const { result: rangeResult } = isDefenseStat('range');
+    expect(rangeResult).toBe(false);
+    const { result: speedResult } = isDefenseStat('speed');
+    expect(speedResult).toBe(false);
+    const { result: defenseResult } = isDefenseStat('defense' as UnitStatName);
+    expect(defenseResult).toBe(false);
   });
 });

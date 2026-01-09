@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, Line } from '@entities';
+import type { Board, BoardCoordinate, Line, ValidationResult } from '@entities';
 import { areSameSide, getFlankingSpaces, getOppositeFacing } from '@queries';
 import { MAX_LINE_LENGTH } from '@ruleValues';
 
@@ -13,12 +13,12 @@ import { MAX_LINE_LENGTH } from '@ruleValues';
  *
  * @param board - The board state (needed to check adjacency)
  * @param line - The line to validate
- * @returns True if the line is valid, false otherwise
+ * @returns ValidationResult indicating if the line is valid
  */
 export function isValidLine<TBoard extends Board>(
   board: TBoard,
   line: Line,
-): boolean {
+): ValidationResult {
   try {
     const { unitPlacements } = line;
 
@@ -27,12 +27,17 @@ export function isValidLine<TBoard extends Board>(
       unitPlacements.length === 0 ||
       unitPlacements.length > MAX_LINE_LENGTH
     ) {
-      return false;
+      return {
+        result: false,
+        errorReason: 'Line length is invalid',
+      };
     }
 
     // If only one unit, it's valid (no further checks needed)
     if (unitPlacements.length === 1) {
-      return true;
+      return {
+        result: true,
+      };
     }
 
     const firstUnit = unitPlacements[0]!;
@@ -45,13 +50,19 @@ export function isValidLine<TBoard extends Board>(
 
       // Check same side
       if (!areSameSide(firstUnit.unit, unit.unit)) {
-        return false;
+        return {
+          result: false,
+          errorReason: 'Units are not on the same side',
+        };
       }
 
       // Check facing: must match first unit's facing or its opposite
       const unitFacing = unit.placement.facing;
       if (unitFacing !== firstFacing && unitFacing !== oppositeFacing) {
-        return false;
+        return {
+          result: false,
+          errorReason: 'Invalid facings present',
+        };
       }
     }
 
@@ -71,13 +82,21 @@ export function isValidLine<TBoard extends Board>(
         currentFacing,
       );
       if (!flankingSpaces.has(nextCoord)) {
-        return false;
+        return {
+          result: false,
+          errorReason: 'Units are not contiguous',
+        };
       }
     }
 
-    return true;
-  } catch {
+    return {
+      result: true,
+    };
+  } catch (error) {
     // Any error means the line is invalid
-    return false;
+    return {
+      result: false,
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }

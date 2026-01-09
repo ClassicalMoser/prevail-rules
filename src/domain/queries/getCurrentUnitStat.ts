@@ -26,7 +26,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
   // Get the base stat value
   const baseStat = unit.unitType.stats[stat];
   // Check if the stat is a defense stat
-  const statIsDefense = isDefenseStat(stat);
+  const statIsDefense = isDefenseStat(stat).result;
   // Get the side of the unit
   const unitSide = unit.playerSide;
   // Get the active card
@@ -54,7 +54,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
   // Step 1: Terrain (not yet implemented)
 
   // Step 2: Round effect
-  const activeRoundEffect = activeCard.roundEffect;
+  const activeRoundEffect = activeCard?.roundEffect;
   let totalModifier = 0;
 
   // First check if there is a matching modifier in the round effect
@@ -80,7 +80,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
   }
 
   // Step 3: Active command
-  const activeCommandModifiers = activeCard.command.modifiers;
+  const activeCommandModifiers = activeCard?.command.modifiers ?? [];
   // First check if the unit was commanded
   const commandedUnits = gameState.currentRoundState.commandedUnits;
   const unitWasCommanded = Array.from(commandedUnits).some((commandedUnit) =>

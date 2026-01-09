@@ -1,4 +1,4 @@
-import type { BoardSpace, PlayerSide } from '@entities';
+import type { BoardSpace, PlayerSide, ValidationResult } from '@entities';
 import { hasEngagedUnits } from './hasEngagedUnits';
 import { hasSingleUnit } from './hasSingleUnit';
 
@@ -11,24 +11,38 @@ import { hasSingleUnit } from './hasSingleUnit';
 export function hasEnemyUnit(
   playerSide: PlayerSide,
   space: BoardSpace,
-): boolean {
+): ValidationResult {
   try {
     // If the space has engaged units, there is an enemy unit.
     if (hasEngagedUnits(space.unitPresence)) {
-      return true;
+      return {
+        result: true,
+      };
     }
     // If the space has a single unit, check if it is an enemy unit.
     if (hasSingleUnit(space.unitPresence)) {
       // If the unit is on the wrong side, there is an enemy unit.
       const unitSide = space.unitPresence.unit.playerSide;
       const isEnemy = unitSide !== playerSide;
-      return isEnemy;
+      if (!isEnemy) {
+        return {
+          result: false,
+          errorReason: 'Unit is not an enemy',
+        };
+      }
+      return {
+        result: true,
+      };
     }
     // Otherwise, no unit - no enemy unit.
-    return false;
-  } catch {
-    // Validation functions never throw - return false on any error
-    // (e.g., malformed data, missing properties)
-    return false;
+    return {
+      result: false,
+      errorReason: 'No enemy unit found',
+    };
+  } catch (error) {
+    return {
+      result: false,
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }

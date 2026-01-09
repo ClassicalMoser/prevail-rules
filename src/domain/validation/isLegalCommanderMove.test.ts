@@ -16,7 +16,7 @@ describe('valid moves', () => {
       to: 'E-6', // Adjacent space
     };
 
-    const result = isLegalCommanderMove(moveCommanderEvent, board);
+    const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
     expect(result).toBe(true);
   });
@@ -31,7 +31,7 @@ describe('valid moves', () => {
       to: 'E-9', // Exactly 4 spaces away
     };
 
-    const result = isLegalCommanderMove(moveCommanderEvent, board);
+    const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
     expect(result).toBe(true);
   });
@@ -46,7 +46,7 @@ describe('valid moves', () => {
       to: 'F-5', // Adjacent space
     };
 
-    const result = isLegalCommanderMove(moveCommanderEvent, board);
+    const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
     expect(result).toBe(true);
   });
@@ -61,7 +61,7 @@ describe('valid moves', () => {
       to: 'D-4', // Diagonal, distance 1
     };
 
-    const result = isLegalCommanderMove(moveCommanderEvent, board);
+    const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
     expect(result).toBe(true);
   });
@@ -78,7 +78,7 @@ describe('invalid moves', () => {
       to: 'E-6',
     };
 
-    const result = isLegalCommanderMove(moveCommanderEvent, board);
+    const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
     expect(result).toBe(false);
   });
@@ -93,7 +93,7 @@ describe('invalid moves', () => {
       to: 'E-6',
     };
 
-    const result = isLegalCommanderMove(moveCommanderEvent, board);
+    const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
     expect(result).toBe(false);
   });
@@ -108,7 +108,7 @@ describe('invalid moves', () => {
       to: 'E-10', // 5 spaces away, beyond COMMANDER_MOVE_DISTANCE (4)
     };
 
-    const result = isLegalCommanderMove(moveCommanderEvent, board);
+    const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
     expect(result).toBe(false);
   });
@@ -123,7 +123,7 @@ describe('invalid moves', () => {
       to: 'E-5',
     };
 
-    const result = isLegalCommanderMove(moveCommanderEvent, board);
+    const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
     expect(result).toBe(false);
   });
@@ -138,7 +138,7 @@ describe('invalid moves', () => {
       to: 'Z-99' as StandardBoardCoordinate, // Invalid coordinate
     };
 
-    const result = isLegalCommanderMove(moveCommanderEvent, board);
+    const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
     expect(result).toBe(false);
   });

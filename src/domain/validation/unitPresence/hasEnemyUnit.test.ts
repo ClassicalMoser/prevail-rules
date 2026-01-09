@@ -15,8 +15,10 @@ describe('hasEnemyUnit', () => {
     it('should return false when there is no unit', () => {
       const board = createEmptyStandardBoard();
       const space: BoardSpace = board.board[coordinate];
-      expect(hasEnemyUnit('black', space)).toBe(false);
-      expect(hasEnemyUnit('white', space)).toBe(false);
+      const { result: blackResult } = hasEnemyUnit('black', space);
+      expect(blackResult).toBe(false);
+      const { result: whiteResult } = hasEnemyUnit('white', space);
+      expect(whiteResult).toBe(false);
     });
   });
 
@@ -24,19 +26,22 @@ describe('hasEnemyUnit', () => {
     it('should return false when there is a friendly unit', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
       const space: BoardSpace = board.board[coordinate];
-      expect(hasEnemyUnit('black', space)).toBe(false);
+      const { result } = hasEnemyUnit('black', space);
+      expect(result).toBe(false);
     });
 
     it('should return true when there is an enemy unit', () => {
       const board = createBoardWithSingleUnit(coordinate, 'white');
       const space: BoardSpace = board.board[coordinate];
-      expect(hasEnemyUnit('black', space)).toBe(true);
+      const { result } = hasEnemyUnit('black', space);
+      expect(result).toBe(true);
     });
 
     it('should return true for white player when there is a black enemy unit', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
       const space: BoardSpace = board.board[coordinate];
-      expect(hasEnemyUnit('white', space)).toBe(true);
+      const { result } = hasEnemyUnit('white', space);
+      expect(result).toBe(true);
     });
   });
 
@@ -52,8 +57,10 @@ describe('hasEnemyUnit', () => {
       const space: BoardSpace = board.board[coordinate];
 
       // Engaged units always contain an enemy for both sides
-      expect(hasEnemyUnit('black', space)).toBe(true);
-      expect(hasEnemyUnit('white', space)).toBe(true);
+      const { result: blackResult } = hasEnemyUnit('black', space);
+      expect(blackResult).toBe(true);
+      const { result: whiteResult } = hasEnemyUnit('white', space);
+      expect(whiteResult).toBe(true);
     });
   });
 
@@ -67,7 +74,8 @@ describe('hasEnemyUnit', () => {
         presenceType: 'invalid' as any,
       };
 
-      expect(hasEnemyUnit('black', space)).toBe(false);
+      const { result } = hasEnemyUnit('black', space);
+      expect(result).toBe(false);
     });
 
     it('should return false when unitPresence is missing required properties', () => {
@@ -79,7 +87,8 @@ describe('hasEnemyUnit', () => {
         // Missing 'unit' property - would cause error when accessing unit.playerSide
       };
 
-      expect(hasEnemyUnit('black', space)).toBe(false);
+      const { result } = hasEnemyUnit('black', space);
+      expect(result).toBe(false);
     });
   });
 });

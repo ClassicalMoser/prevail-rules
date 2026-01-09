@@ -41,7 +41,8 @@ export function getLinesFromUnit<TBoard extends Board>(
   unitTypes: UnitType[] = [],
 ): Set<Line> {
   // Validate that the unit is actually at the reported position
-  if (!isAtPlacement(board, unit)) {
+  const { result: isAtPlacementResult } = isAtPlacement(board, unit);
+  if (!isAtPlacementResult) {
     throw new Error('Unit is not at reported placement');
   }
 
@@ -82,13 +83,12 @@ export function getLinesFromUnit<TBoard extends Board>(
     }
 
     // Check requirements: must match traits/unitTypes if specified
-    if (
-      !matchesUnitRequirements(
-        playerUnit.unit.unitType,
-        traits,
-        unitTypes.map((unitType) => unitType.id),
-      )
-    ) {
+    const { result: matchesUnitRequirementsResult } = matchesUnitRequirements(
+      playerUnit.unit.unitType,
+      traits,
+      unitTypes.map((unitType) => unitType.id),
+    );
+    if (!matchesUnitRequirementsResult) {
       // Doesn't match requirements: stop expanding
       return undefined;
     }

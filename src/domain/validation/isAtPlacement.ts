@@ -1,4 +1,4 @@
-import type { Board, UnitWithPlacement } from '@entities';
+import type { Board, UnitWithPlacement, ValidationResult } from '@entities';
 import { areSameSide, getPlayerUnitWithPosition } from '@queries';
 
 /**
@@ -6,12 +6,12 @@ import { areSameSide, getPlayerUnitWithPosition } from '@queries';
  *
  * @param board - The board state
  * @param unitWithPlacement - The unit with its placement
- * @returns True if the unit is at the placement, false otherwise
+ * @returns ValidationResult indicating if the unit is at the placement
  */
 export function isAtPlacement<TBoard extends Board>(
   board: TBoard,
   unitWithPlacement: UnitWithPlacement<TBoard>,
-): boolean {
+): ValidationResult {
   try {
     // Get the declared coordinate of the unit on the board.
     const boardCoordinate = unitWithPlacement.placement.coordinate;
@@ -26,7 +26,9 @@ export function isAtPlacement<TBoard extends Board>(
 
     // If there's no friendly unit at the coordinate, the unit is not at the placement.
     if (!friendlyUnitWithPlacement) {
-      return false;
+      return {
+        result: false,
+      };
     }
 
     // If the friendly unit is not facing the same direction as the declared facing, the unit is not at the placement.
@@ -34,7 +36,9 @@ export function isAtPlacement<TBoard extends Board>(
       friendlyUnitWithPlacement.placement.facing !==
       unitWithPlacement.placement.facing
     ) {
-      return false;
+      return {
+        result: false,
+      };
     }
 
     // If the friendly unit is not the same as the unit on the board, the unit is not at the placement.
@@ -46,13 +50,20 @@ export function isAtPlacement<TBoard extends Board>(
       friendlyUnitWithPlacement.unit.instanceNumber !==
         unitWithPlacement.unit.instanceNumber
     ) {
-      return false;
+      return {
+        result: false,
+      };
     }
 
     // If all checks pass, the unit is at the placement.
-    return true;
-  } catch {
+    return {
+      result: true,
+    };
+  } catch (error) {
     // Any error means the unit is not at the placement.
-    return false;
+    return {
+      result: false,
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }

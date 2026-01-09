@@ -7,7 +7,11 @@ import type {
   UnitInstance,
   UnitType,
 } from '@entities';
-import { createEmptyStandardBoard, createUnitInstance } from '@transforms';
+import {
+  addUnitToBoard,
+  createEmptyStandardBoard,
+  createUnitInstance,
+} from '@transforms';
 import { createEmptyGameState } from './createEmptyGameState';
 import { getUnitByStatValue } from './getUnitByStatValue';
 
@@ -25,16 +29,9 @@ export function createBoardWithUnits(
     facing: UnitFacing;
   }>,
 ): StandardBoard {
-  const board = createEmptyStandardBoard();
+  let board = createEmptyStandardBoard();
   for (const { unit, coordinate, facing } of units) {
-    board.board[coordinate] = {
-      ...board.board[coordinate],
-      unitPresence: {
-        presenceType: 'single',
-        unit,
-        facing,
-      },
-    };
+    board = addUnitToBoard(board, { unit, placement: { coordinate, facing } });
   }
   return board;
 }

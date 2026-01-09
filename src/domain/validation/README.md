@@ -10,7 +10,7 @@ This directory contains validation functions that check whether game actions, st
 
 All validation functions in this directory follow this pattern:
 
-1. **Return Type**: Always return `boolean` (`true` or `false`)
+1. **Return Type**: Always return `ValidationResult` type.
 2. **Error Handling**: Wrap the entire function body in a try-catch that returns `false` on any error
 3. **Naming**: Use `is*`, `can*`, or `matches*` prefixes (e.g., `isAtPlacement`, `canMoveInto`, `matchesUnitRequirements`)
 

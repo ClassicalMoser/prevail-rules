@@ -14,12 +14,7 @@ import {
 import { getOppositeFacing } from '@queries/facings';
 import { getCurrentUnitStat } from '@queries/getCurrentUnitStat';
 import { areSameSide } from '@queries/unit';
-import {
-  hasEngagedUnits,
-  hasNoUnit,
-  hasSingleUnit,
-  isSameUnitInstance,
-} from '@validation';
+import { hasNoUnit, hasSingleUnit, isSameUnitInstance } from '@validation';
 import { exploreUnitMoves } from './exploreUnitMoves';
 
 /**
@@ -73,7 +68,8 @@ export function getLegalRetreats<TBoard extends Board>(
     } else {
       throw new Error('Unit is not present at the starting position');
     }
-  } else if (hasEngagedUnits(boardSpace.unitPresence)) {
+    // Type guarantee: has engaged units.
+  } else {
     const isPrimary = isSameUnitInstance(
       boardSpace.unitPresence.primaryUnit,
       unit,

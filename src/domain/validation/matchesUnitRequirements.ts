@@ -1,4 +1,4 @@
-import type { UnitType } from '@entities';
+import type { UnitType, ValidationResult } from '@entities';
 import type { Trait } from '@ruleValues';
 
 /**
@@ -19,20 +19,54 @@ export function matchesUnitRequirements(
   unitType: UnitType,
   traits: Trait[],
   unitTypeIds: string[],
-): boolean {
+): ValidationResult {
   if (!traits.length && !unitTypeIds.length) {
-    return true;
+    return {
+      result: true,
+    };
   }
   if (traits.length && !unitTypeIds.length) {
-    return traits.every((trait) => unitType.traits.includes(trait));
+    const hasAllTraits = traits.every((trait) =>
+      unitType.traits.includes(trait),
+    );
+    if (!hasAllTraits) {
+      return {
+        result: false,
+        errorReason: 'Unit type does not have all required traits',
+      };
+    }
+    return {
+      result: true,
+    };
   }
   if (!traits.length && unitTypeIds.length) {
     // Compare by id since UnitType is identified by its unique id field
-    return unitTypeIds.includes(unitType.id);
+    const isInUnitTypeIds = unitTypeIds.includes(unitType.id);
+    if (!isInUnitTypeIds) {
+      return {
+        result: false,
+        errorReason: 'Unit type is not in the specified types',
+      };
+    }
+    return {
+      result: true,
+    };
   }
-  return (
-    traits.every((trait) => unitType.traits.includes(trait)) &&
-    // Compare by id since UnitType is identified by its unique id field
-    unitTypeIds.includes(unitType.id)
-  );
+  const hasAllTraits = traits.every((trait) => unitType.traits.includes(trait));
+  if (!hasAllTraits) {
+    return {
+      result: false,
+      errorReason: 'Unit type does not have all required traits',
+    };
+  }
+  const isInUnitTypeIds = unitTypeIds.includes(unitType.id);
+  if (!isInUnitTypeIds) {
+    return {
+      result: false,
+      errorReason: 'Unit type is not in the specified types',
+    };
+  }
+  return {
+    result: true,
+  };
 }

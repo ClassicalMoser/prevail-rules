@@ -4,12 +4,15 @@ import { isDiagonalFacing } from './isDiagonalFacing';
 
 describe('isDiagonalFacing', () => {
   it('should return true for a diagonal facing', () => {
-    expect(isDiagonalFacing('northEast')).toBe(true);
+    const { result } = isDiagonalFacing('northEast');
+    expect(result).toBe(true);
   });
   it('should return false for an orthogonal facing', () => {
-    expect(isDiagonalFacing('north')).toBe(false);
+    const { result } = isDiagonalFacing('north');
+    expect(result).toBe(false);
   });
   it('should return false for an invalid facing', () => {
-    expect(isDiagonalFacing('invalid' as UnitFacing)).toBe(false);
+    const { result } = isDiagonalFacing('invalid' as UnitFacing);
+    expect(result).toBe(false);
   });
 });

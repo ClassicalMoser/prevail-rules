@@ -38,7 +38,10 @@ export function eachCardPresentOnce(
       };
 
       // Helper to process a single card
-      const processCard = (card: Card): boolean => {
+      const processCard = (card: Card | null): boolean => {
+        if (card === null) {
+          return true;
+        }
         if (hasSeenCard(card)) {
           // Card is present more than once in this player's state
           return false;

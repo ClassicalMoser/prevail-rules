@@ -1,4 +1,4 @@
-export * from './enemyBlocksDiagonal';
+export * from './diagonalIsClear';
 export * from './gameState';
 export * from './isAtPlacement';
 export * from './isDiagonalFacing';

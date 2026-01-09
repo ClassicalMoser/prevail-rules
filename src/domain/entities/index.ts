@@ -9,3 +9,4 @@ export * from './sequence';
 export * from './unit';
 export * from './unitLocation';
 export * from './unitPresence';
+export * from './validationResult';

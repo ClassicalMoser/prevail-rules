@@ -1,4 +1,4 @@
-import type { Card, CardState } from '@entities';
+import type { Card, CardState, ValidationResult } from '@entities';
 import type { ChooseCardEvent } from '@events';
 
 /**
@@ -11,16 +11,32 @@ import type { ChooseCardEvent } from '@events';
 export function isLegalCardChoice(
   cardState: CardState,
   chooseCardEvent: ChooseCardEvent,
-): boolean {
-  const { card } = chooseCardEvent;
-  let playerHand: Card[];
-  switch (chooseCardEvent.player) {
-    case 'black':
-      playerHand = cardState.blackPlayer.inHand;
-      break;
-    case 'white':
-      playerHand = cardState.whitePlayer.inHand;
-      break;
+): ValidationResult {
+  try {
+    const { card } = chooseCardEvent;
+    let playerHand: Card[];
+    switch (chooseCardEvent.player) {
+      case 'black':
+        playerHand = cardState.blackPlayer.inHand;
+        break;
+      case 'white':
+        playerHand = cardState.whitePlayer.inHand;
+        break;
+    }
+    const isInHand = playerHand.includes(card);
+    if (!isInHand) {
+      return {
+        result: false,
+        errorReason: 'Card is not in player hand',
+      };
+    }
+    return {
+      result: true,
+    };
+  } catch (error) {
+    return {
+      result: false,
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
-  return playerHand.includes(card);
 }

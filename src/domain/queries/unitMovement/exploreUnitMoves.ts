@@ -192,7 +192,9 @@ export function exploreUnitMoves<TBoard extends Board>(
         // — this means we continue exploring the move by calling explore again.
 
         // 1. Check if the facing is diagonal.
-        if (isDiagonalFacing(currentFacing)) {
+        const { result: isDiagonalFacingResult } =
+          isDiagonalFacing(currentFacing);
+        if (isDiagonalFacingResult) {
           // If the facing is diagonal, check if we can reach the target space.
           const canReachTarget = checkDiagonalMove(
             unitSide,

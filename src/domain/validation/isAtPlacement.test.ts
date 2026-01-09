@@ -57,7 +57,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(standardBoard, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(standardBoard, unitWithPlacement);
+      expect(result).toBe(false);
     });
   });
 
@@ -70,7 +71,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(standardBoard, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(standardBoard, unitWithPlacement);
+      expect(result).toBe(false);
     });
   });
 
@@ -86,7 +88,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(true);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(true);
     });
 
     it('should return false when facing does not match', () => {
@@ -100,7 +103,8 @@ describe('isAtPlacement', () => {
         'south',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return false when playerSide does not match', () => {
@@ -115,7 +119,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return false when unitType does not match', () => {
@@ -130,7 +135,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return false when instanceNumber does not match', () => {
@@ -149,7 +155,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return true when unit matches by value (different object reference)', () => {
@@ -165,7 +172,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(true);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(true);
     });
   });
 
@@ -182,7 +190,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
   });
 
@@ -202,7 +211,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(true);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(true);
     });
 
     it('should return false when primary unit facing does not match', () => {
@@ -220,7 +230,8 @@ describe('isAtPlacement', () => {
         'south',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return false when primary unit playerSide does not match', () => {
@@ -239,7 +250,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return false when primary unit unitType does not match', () => {
@@ -258,7 +270,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return false when primary unit instanceNumber does not match', () => {
@@ -281,7 +294,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
   });
 
@@ -302,7 +316,8 @@ describe('isAtPlacement', () => {
         'south', // opposite of "north"
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(true);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(true);
     });
 
     it('should return false when secondary unit facing does not match', () => {
@@ -321,7 +336,8 @@ describe('isAtPlacement', () => {
         'north',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return false when secondary unit playerSide does not match', () => {
@@ -340,7 +356,8 @@ describe('isAtPlacement', () => {
         'south',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return false when secondary unit unitType does not match', () => {
@@ -359,7 +376,8 @@ describe('isAtPlacement', () => {
         'south',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return false when secondary unit instanceNumber does not match', () => {
@@ -382,7 +400,8 @@ describe('isAtPlacement', () => {
         'south',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(false);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(false);
     });
 
     it('should return true when secondary unit matches by value with diagonal facing', () => {
@@ -401,7 +420,8 @@ describe('isAtPlacement', () => {
         'southWest',
       );
 
-      expect(isAtPlacement(board, unitWithPlacement)).toBe(true);
+      const { result } = isAtPlacement(board, unitWithPlacement);
+      expect(result).toBe(true);
     });
   });
 });

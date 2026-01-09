@@ -37,7 +37,7 @@ describe('isLegalCardChoice', () => {
         card: commandCards[0],
       };
 
-      const result = isLegalCardChoice(cardState, chooseCardEvent);
+      const { result } = isLegalCardChoice(cardState, chooseCardEvent);
 
       expect(result).toBe(true);
     });
@@ -51,7 +51,7 @@ describe('isLegalCardChoice', () => {
         card: commandCards[1],
       };
 
-      const result = isLegalCardChoice(cardState, chooseCardEvent);
+      const { result } = isLegalCardChoice(cardState, chooseCardEvent);
 
       expect(result).toBe(true);
     });
@@ -67,7 +67,7 @@ describe('isLegalCardChoice', () => {
         card: commandCards[1], // Card is in white player's hand, not black's
       };
 
-      const result = isLegalCardChoice(cardState, chooseCardEvent);
+      const { result } = isLegalCardChoice(cardState, chooseCardEvent);
 
       expect(result).toBe(false);
     });
@@ -81,7 +81,7 @@ describe('isLegalCardChoice', () => {
         card: commandCards[0], // Card is in black player's hand, not white's
       };
 
-      const result = isLegalCardChoice(cardState, chooseCardEvent);
+      const { result } = isLegalCardChoice(cardState, chooseCardEvent);
 
       expect(result).toBe(false);
     });
@@ -95,7 +95,7 @@ describe('isLegalCardChoice', () => {
         card: commandCards[2], // Card is not in either player's hand
       };
 
-      const result = isLegalCardChoice(cardState, chooseCardEvent);
+      const { result } = isLegalCardChoice(cardState, chooseCardEvent);
 
       expect(result).toBe(false);
     });

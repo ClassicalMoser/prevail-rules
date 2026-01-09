@@ -1,4 +1,9 @@
-import type { Board, BoardCoordinate, PlayerSide } from '@entities';
+import type {
+  Board,
+  BoardCoordinate,
+  PlayerSide,
+  ValidationResult,
+} from '@entities';
 import {
   getBoardSpace,
   getDiagonallyAdjacentSpaces,
@@ -6,12 +11,12 @@ import {
 } from '@queries';
 import { hasEnemyUnit } from './unitPresence';
 
-export function enemyBlocksDiagonal<TBoard extends Board>(
+export function diagonalIsClear<TBoard extends Board>(
   playerSide: PlayerSide,
   board: TBoard,
   originCoordinate: BoardCoordinate<TBoard>,
   targetCoordinate: BoardCoordinate<TBoard>,
-): boolean {
+): ValidationResult {
   try {
     // Check if the origin space is a diagonal space
     const originDiagonalSpaces = getDiagonallyAdjacentSpaces(
@@ -20,7 +25,10 @@ export function enemyBlocksDiagonal<TBoard extends Board>(
     );
     if (!originDiagonalSpaces.has(targetCoordinate)) {
       // Target space is not a diagonal space - check is irrelevant
-      return false;
+      return {
+        result: false,
+        errorReason: 'Target space is not a diagonal space',
+      };
     }
 
     // Find the shared orthogonal spaces between the origin and target spaces
@@ -43,25 +51,38 @@ export function enemyBlocksDiagonal<TBoard extends Board>(
     // Diagonally adjacent spaces share exactly 2 orthogonal spaces
     if (sharedOrthogonalSpaces.size !== 2) {
       // Spaces are not diagonally adjacent - check is irrelevant
-      return false;
+      return {
+        result: false,
+        errorReason: 'Spaces are not diagonally adjacent',
+      };
     }
 
     // Get the enemy spaces
-    const enemySpaces = Array.from(sharedOrthogonalSpaces).filter((space) =>
+    const enemySpaces = Array.from(sharedOrthogonalSpaces).filter((space) => {
       // Check if the space has an enemy unit
-      hasEnemyUnit(playerSide, getBoardSpace(board, space)),
-    );
+      const { result: hasEnemyUnitResult } = hasEnemyUnit(
+        playerSide,
+        getBoardSpace(board, space),
+      );
+      return hasEnemyUnitResult;
+    });
 
     // If there is more than one enemy space, the enemy blocks the diagonal
     if (enemySpaces.length > 1) {
       // Diagonal is blocked by enemy units
-      return true;
+      return {
+        result: false,
+        errorReason: 'Diagonal is blocked by enemy units',
+      };
     }
     // Diagonal is not blocked by enemy units
-    return false;
-  } catch {
-    // Validation functions never throw - return false on any error
-    // (e.g., malformed data, missing properties)
-    return false;
+    return {
+      result: true,
+    };
+  } catch (error) {
+    return {
+      result: false,
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }

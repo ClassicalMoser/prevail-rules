@@ -1,4 +1,4 @@
-import type { UnitStatName } from '@entities';
+import type { UnitStatName, ValidationResult } from '@entities';
 
 /**
  * The defense stat names (reverse, retreat, rout).
@@ -12,7 +12,15 @@ const defenseStatNames = ['reverse', 'retreat', 'rout'] as const;
  * @param stat - The stat name to check
  * @returns True if the stat is a defense stat, false otherwise
  */
-export function isDefenseStat(stat: UnitStatName): boolean {
-  // No try-catch needed; error impractical to induce
-  return (defenseStatNames as readonly string[]).includes(stat);
+export function isDefenseStat(stat: UnitStatName): ValidationResult {
+  const isDefense = (defenseStatNames as readonly string[]).includes(stat);
+  if (!isDefense) {
+    return {
+      result: false,
+      errorReason: 'Stat is not a defense stat',
+    };
+  }
+  return {
+    result: true,
+  };
 }

@@ -8,9 +8,9 @@ export interface PlayerCardState {
   /** The cards in the player's hand, eligible to be played. */
   inHand: Card[];
   /** The facedown card that the player is currently playing. */
-  awaitingPlay: Card;
+  awaitingPlay: Card | null;
   /** The faceup card that is in play.*/
-  inPlay: Card;
+  inPlay: Card | null;
   /** The cards that have been played and are not currently accessible to the player. */
   played: Card[];
   /** The cards that have been discarded and are not currently accessible to the player. */
@@ -23,9 +23,9 @@ const _playerCardStateSchemaObject = z.object({
   /** The cards in the player's hand, eligible to be played. */
   inHand: z.array(cardSchema),
   /** The facedown card that the player is currently playing. */
-  awaitingPlay: cardSchema,
+  awaitingPlay: cardSchema.nullable(),
   /** The faceup card that is in play.*/
-  inPlay: cardSchema,
+  inPlay: cardSchema.nullable(),
   /** The cards that have been played and are not currently accessible to the player. */
   played: z.array(cardSchema),
   /** The cards that have been discarded and are not currently accessible to the player. */

@@ -32,22 +32,23 @@ export function createEmptyGameState(options?: {
     cardState: {
       blackPlayer: {
         inHand: [],
-        awaitingPlay: commandCards[0],
-        inPlay: commandCards[1],
+        awaitingPlay: null,
+        inPlay: null,
         played: [],
         discarded: [],
         burnt: [],
       },
       whitePlayer: {
         inHand: [],
-        awaitingPlay: commandCards[0],
-        inPlay: commandCards[1],
+        awaitingPlay: null,
+        inPlay: null,
         played: [],
         discarded: [],
         burnt: [],
       },
     },
     routedUnits: new Set(),
+    lostCommanders: new Set(),
   };
 }
 
