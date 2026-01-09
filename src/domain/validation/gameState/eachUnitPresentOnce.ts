@@ -54,7 +54,7 @@ export function eachUnitPresentOnce(
       const found = seenInGame.some(
         (seen) => isSameUnitInstance(seen, unit).result,
       );
-      if (!found) {
+      if (found) {
         return {
           result: false,
           errorReason: 'Duplicate unit on board',
@@ -72,7 +72,7 @@ export function eachUnitPresentOnce(
       if (hasSingleUnit(space.unitPresence)) {
         const unit = space.unitPresence.unit;
         const hasSeenUnitResult = hasSeenUnit(unit);
-        if (hasSeenUnitResult.result) {
+        if (!hasSeenUnitResult.result) {
           // Unit is present more than once
           return hasSeenUnitResult;
         }
