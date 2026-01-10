@@ -39,7 +39,7 @@ describe('getMeleeSupportValue', () => {
       // E-4 should be in the "behind" set for E-5 facing north, so it should be filtered out
       const board = createBoardWithUnits([
         { unit: primaryUnit, coordinate: 'E-5', facing: 'north' },
-        { unit: supportUnit, coordinate: 'E-4', facing: 'south' },
+        { unit: supportUnit, coordinate: 'E-6', facing: 'north' },
       ]);
 
       const unitWithPlacement = getPlayerUnitWithPosition(
@@ -67,7 +67,7 @@ describe('getMeleeSupportValue', () => {
       // Enemy unit is adjacent (east of) primary unit
       const board = createBoardWithUnits([
         { unit: primaryUnit, coordinate: 'E-5', facing: 'north' },
-        { unit: enemyUnit, coordinate: 'F-5', facing: 'south' },
+        { unit: enemyUnit, coordinate: 'D-5', facing: 'south' },
       ]);
 
       const unitWithPlacement = getPlayerUnitWithPosition(
@@ -116,12 +116,10 @@ describe('getMeleeSupportValue', () => {
         attack: 3,
         instanceNumber: 2,
       });
-      // Support unit at F-6 facing northwest (toward primary unit at E-5)
-      // Front spaces for northwest facing include the space directly northwest
-      // E-5 is northwest of F-6, so if support unit faces northwest, E-5 should be in front spaces
+
       const board = createBoardWithUnits([
         { unit: primaryUnit, coordinate: 'E-5', facing: 'north' },
-        { unit: supportUnit, coordinate: 'F-6', facing: 'northWest' },
+        { unit: supportUnit, coordinate: 'D-6', facing: 'southWest' },
       ]);
 
       const unitWithPlacement = getPlayerUnitWithPosition(
@@ -131,9 +129,7 @@ describe('getMeleeSupportValue', () => {
       )!;
       const supportValue = getMeleeSupportValue(board, unitWithPlacement);
 
-      // Note: This test may need adjustment based on actual front space calculation
-      // If E-5 is not in front spaces of F-6 facing northwest, this will fail
-      expect(supportValue).toBeGreaterThanOrEqual(0);
+      expect(supportValue).toBe(2);
     });
   });
 
@@ -148,33 +144,6 @@ describe('getMeleeSupportValue', () => {
         instanceNumber: 2,
       });
       // Support unit at E-6 facing north (flanking primary unit at E-5)
-      const board = createBoardWithUnits([
-        { unit: primaryUnit, coordinate: 'E-5', facing: 'north' },
-        { unit: supportUnit, coordinate: 'E-6', facing: 'north' },
-      ]);
-
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      expect(supportValue).toBe(1);
-    });
-
-    it('should return 1 when support unit is orthogonally adjacent and flanking', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      // Support unit at E-6 facing north (flanking primary unit at E-5)
-      // Flanking spaces are orthogonal (left/right), so E-6 to the right of E-5
-      // when support unit faces north, its flanking spaces are east and west
       const board = createBoardWithUnits([
         { unit: primaryUnit, coordinate: 'E-5', facing: 'north' },
         { unit: supportUnit, coordinate: 'E-6', facing: 'north' },
@@ -205,19 +174,19 @@ describe('getMeleeSupportValue', () => {
         attack: 3,
         instanceNumber: 1,
       });
-      // Support unit is engaged with enemy unit at E-6
+      // Support unit is engaged with enemy unit at E-5
       const board = createBoardWithEngagedUnits(
-        supportUnit,
+        primaryUnit,
         enemyUnit,
-        'E-6',
+        'E-5',
         'west',
       );
-      // Add primary unit at E-5
-      board.board['E-5'] = {
-        ...board.board['E-5'],
+      // Add support unit at E-6
+      board.board['E-6'] = {
+        ...board.board['E-6'],
         unitPresence: {
           presenceType: 'single',
-          unit: primaryUnit,
+          unit: supportUnit,
           facing: 'north',
         },
       };
@@ -364,6 +333,7 @@ describe('getMeleeSupportValue', () => {
         attack: 3,
         instanceNumber: 2,
       });
+
       // Primary unit at A-1 (corner), support unit at A-2
       const board = createBoardWithUnits([
         { unit: primaryUnit, coordinate: 'A-1', facing: 'north' },
