@@ -28,9 +28,9 @@ export function applyAttackValue<TBoard extends Board>(
   const currentReverseValue = getCurrentUnitStat(unit, 'reverse', gameState);
 
   // Check if the unit is routed, retreated, or reversed
-  const unitRouted = currentRoutValue >= attackValue;
-  const unitRetreated = currentRetreatValue >= attackValue;
-  const unitReversed = currentReverseValue >= attackValue;
+  const unitRouted = attackValue >= currentRoutValue;
+  const unitRetreated = attackValue >= currentRetreatValue;
+  const unitReversed = attackValue >= currentReverseValue;
 
   // Return the result
   return {
