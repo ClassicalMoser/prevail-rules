@@ -1,9 +1,19 @@
-import type { Card, PlayerSide } from '@entities';
+import type { Card, PlayerSide, StatModifier } from '@entities';
 import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { COMMIT_TO_MELEE_CHOICE_TYPE } from './playerChoice';
+
+const meleeModifierTypes = ['attack', 'defense', 'flexibility'] as const;
+type MeleeModifier = (typeof meleeModifierTypes)[number];
+
+// Type-level guarantee that MeleeModifier extends StatModifier
+const _assertMeleeModifierExtendsStatModifier: [MeleeModifier] extends [
+  StatModifier,
+]
+  ? true
+  : never = true;
 
 /** An event to commit a card to a unit's melee. */
 export interface CommitToMeleeEvent {
@@ -16,15 +26,21 @@ export interface CommitToMeleeEvent {
   /** The card to commit from the player's hand. */
   committedCard: Card;
   /** The modifier types the card applies. */
-  modifierTypes: ('attack' | 'defense' | 'flexibility')[];
+  modifierTypes: MeleeModifier[];
 }
+
+const meleeModifierTypesEnum: z.ZodEnum<{
+  attack: 'attack';
+  defense: 'defense';
+  flexibility: 'flexibility';
+}> = z.enum(meleeModifierTypes);
 
 const _commitToMeleeEventSchemaObject = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(COMMIT_TO_MELEE_CHOICE_TYPE),
   player: playerSideSchema,
   committedCard: cardSchema,
-  modifierTypes: z.array(z.enum(['attack', 'defense', 'flexibility'])),
+  modifierTypes: z.array(meleeModifierTypesEnum),
 });
 
 type CommitToMeleeEventSchemaType = z.infer<

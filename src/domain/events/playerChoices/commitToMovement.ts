@@ -1,9 +1,19 @@
-import type { Card, PlayerSide } from '@entities';
+import type { Card, PlayerSide, StatModifier } from '@entities';
 import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { COMMIT_TO_MOVEMENT_CHOICE_TYPE } from './playerChoice';
+
+const movementModifierTypes = ['speed', 'flexibility'] as const;
+type MovementModifier = (typeof movementModifierTypes)[number];
+
+// Type-level guarantee that MovementModifier extends StatModifier
+const _assertMovementModifierExtendsStatModifier: [MovementModifier] extends [
+  StatModifier,
+]
+  ? true
+  : never = true;
 
 /** An event to commit a card to a unit's movement. */
 export interface CommitToMovementEvent {
@@ -16,10 +26,9 @@ export interface CommitToMovementEvent {
   /** The card to commit from the player's hand. */
   committedCard: Card;
   /** The modifier types the card applies. */
-  modifierTypes: ('speed' | 'flexibility')[];
+  modifierTypes: MovementModifier[];
 }
 
-const movementModifierTypes = ['speed', 'flexibility'] as const;
 const movementModifierTypesEnum: z.ZodEnum<{
   speed: 'speed';
   flexibility: 'flexibility';
