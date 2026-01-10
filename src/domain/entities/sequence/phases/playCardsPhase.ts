@@ -4,10 +4,10 @@ import { PLAY_CARDS_PHASE } from './phases';
 
 /** Iterable list of valid steps in the card phase. */
 export const playCardsPhaseSteps = [
-  'chooseCards',
-  'revealCards',
-  'assignInitiative',
-  'complete',
+  'chooseCards', // Needs two player choices: one for each player
+  'revealCards', // Needs one gameEffect: the reveal cards effect
+  'assignInitiative', // Needs one gameEffect: the assign initiative effect
+  'complete', // GameEffect, advances phase to move commanders phase
 ] as const;
 
 /** The type of a step in the card phase. */

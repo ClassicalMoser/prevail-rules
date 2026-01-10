@@ -6,11 +6,23 @@ import { ISSUE_COMMANDS_PHASE } from './phases';
 
 /** Iterable list of valid steps in the issue commands phase. */
 export const issueCommandsPhaseSteps = [
+  /** Complex step:Loop through remaining initiative player's commands
+   * and expect issue commands events
+   */
   'firstPlayerIssueCommands',
+  /** Complex step: Loop through remaining initiative player's issued commands and expect resolve commands events
+   * and expect resolve commands events (move or ranged attack)
+   */
   'firstPlayerResolveCommands',
+  /** Complex step: Loop through remaining non-initiative player's commands
+   * and expect issue commands events
+   */
   'secondPlayerIssueCommands',
+  /** Complex step: Loop through remaining non-initiative player's issued commands
+   * and expect resolve commands events (move or ranged attack)
+   */
   'secondPlayerResolveCommands',
-  'complete',
+  'complete', // GameEffect, advance phase to resolve melee phase
 ] as const;
 
 /** The step of the issue commands phase. */

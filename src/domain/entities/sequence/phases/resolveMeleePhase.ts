@@ -6,7 +6,12 @@ import { z } from 'zod';
 import { RESOLVE_MELEE_PHASE } from './phases';
 
 /** Iterable list of valid steps in the resolve melee phase. */
-export const resolveMeleePhaseSteps = ['resolveMelee', 'complete'] as const;
+export const resolveMeleePhaseSteps = [
+  /** Most complex step: Loop through remaining engagements and expect resolve melee events */
+  'resolveMelee',
+  /** Expect single gameEffect: advance to cleanup phase */
+  'complete',
+] as const;
 
 /** The step of the resolve melee phase. */
 export type ResolveMeleePhaseStep = (typeof resolveMeleePhaseSteps)[number];

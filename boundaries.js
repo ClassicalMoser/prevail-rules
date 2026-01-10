@@ -60,7 +60,7 @@ export const boundaries = [
     identifier: '@queries',
     dir: 'domain/queries',
     alias: '@queries',
-    allowImportsFrom: ['@entities', '@ruleValues', '@validation'],
+    allowImportsFrom: ['@entities', '@ruleValues', '@validation', '@events'],
     allowTypeImportsFrom: ['@utils'],
     // Mutual dependency layer with validation
     // Inwardly dependent on entities, events, and rule values

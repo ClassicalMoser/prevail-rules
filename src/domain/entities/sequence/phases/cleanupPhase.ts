@@ -4,11 +4,21 @@ import { CLEANUP_PHASE } from './phases';
 
 /** Iterable list of valid steps in the cleanup phase. */
 export const cleanupPhaseSteps = [
+  /** Expect single gameEffect: move played to played cards pile */
   'discardPlayedCards',
+  /** Expect single player choice: the initiative player's choose rally choice */
   'firstPlayerChooseRally',
+  /** Expect single gameEffect: the resolve rally effect */
   'firstPlayerResolveRally',
+  /** Expect series of gameEffects: resolve unit support */
+  'firstPlayerResolveUnitSupport',
+  /** Expect single player choice: the non-initiative player's choose rally choice */
   'secondPlayerChooseRally',
+  /** Expect single gameEffect: the resolve rally effect */
   'secondPlayerResolveRally',
+  /** Expect series of gameEffects: resolve unit support */
+  'secondPlayerResolveUnitSupport',
+  /** Expect single gameEffect: advance round and reset phase to play cards phase */
   'complete',
 ] as const;
 

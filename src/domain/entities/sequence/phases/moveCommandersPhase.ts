@@ -5,9 +5,9 @@ import { MOVE_COMMANDERS_PHASE } from './phases';
 
 /** Iterable list of valid steps in the move commanders phase. */
 export const moveCommandersPhaseSteps = [
-  'moveFirstCommander',
-  'moveSecondCommander',
-  'complete',
+  'moveFirstCommander', // Needs one player choice: the initiative player's move commander choice
+  'moveSecondCommander', // Needs one player choice: the non-initiative player's move commander choice
+  'complete', // GameEffect, advance phase to issue commands phase
 ] as const;
 
 /** The step of the move commanders phase. */
