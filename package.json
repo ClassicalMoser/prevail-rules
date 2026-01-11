@@ -2,6 +2,7 @@
   "name": "@classicalmoser/prevail-rules",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@9.7.0",
   "description": "Rules for the web-based board game Prevail: Ancient Battles",
   "author": "ClassicalMoser",
   "license": "ISC",

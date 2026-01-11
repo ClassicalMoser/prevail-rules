@@ -10,13 +10,13 @@ export const cleanupPhaseSteps = [
   'firstPlayerChooseRally',
   /** Expect single gameEffect: the resolve rally effect */
   'firstPlayerResolveRally',
-  /** Expect series of gameEffects: resolve unit support */
+  /** Expect series of gameEffects: resolve unit support and consequences */
   'firstPlayerResolveUnitSupport',
   /** Expect single player choice: the non-initiative player's choose rally choice */
   'secondPlayerChooseRally',
   /** Expect single gameEffect: the resolve rally effect */
   'secondPlayerResolveRally',
-  /** Expect series of gameEffects: resolve unit support */
+  /** Expect series of gameEffects: resolve unit support and consequences */
   'secondPlayerResolveUnitSupport',
   /** Expect single gameEffect: advance round and reset phase to play cards phase */
   'complete',
