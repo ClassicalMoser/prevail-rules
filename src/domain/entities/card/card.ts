@@ -25,7 +25,7 @@ export interface Card {
   /** The command to be used on the card. */
   command: Command;
   /** The round effect of the card, if any. */
-  roundEffect?: RoundEffect;
+  roundEffect: RoundEffect | undefined;
   /** The units this card preserves */
   unitPreservation: string[];
 }
@@ -46,7 +46,7 @@ const _cardSchemaObject = z.object({
   /** The command of the card. */
   command: commandSchema,
   /** The round effect of the card, if any. */
-  roundEffect: roundEffectSchema.optional(),
+  roundEffect: roundEffectSchema.or(z.undefined()),
   /** The units this card preserves */
   unitPreservation: z.array(z.uuid()),
 });

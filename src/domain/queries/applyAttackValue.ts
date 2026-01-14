@@ -1,14 +1,5 @@
-import type { Board, GameState, UnitInstance } from '@entities';
+import type { AttackResult, Board, GameState, UnitInstance } from '@entities';
 import { getCurrentUnitStat } from './getCurrentUnitStat';
-
-export interface AttackResult {
-  /** Whether the unit is routed. */
-  unitRouted: boolean;
-  /** Whether the unit is reversed. */
-  unitReversed: boolean;
-  /** Whether the unit is retreated. */
-  unitRetreated: boolean;
-}
 
 /**
  * Applies an attack value to a unit and returns the result.

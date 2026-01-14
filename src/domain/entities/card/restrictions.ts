@@ -8,7 +8,7 @@ import { z } from 'zod';
  */
 export interface Restrictions {
   /** The maximum range from the commander allowed for the command or round effect to be applied. */
-  inspirationRangeRestriction?: number;
+  inspirationRangeRestriction: number | undefined;
   /** The traits that must be present on the unit for the command or round effect to be applied. */
   traitRestrictions: Trait[];
   /** The unique identifiers of the unit types that can be included in the command or round effect. */
@@ -17,7 +17,7 @@ export interface Restrictions {
 
 const _restrictionsSchemaObject = z.object({
   /** The maximum range from the commander allowed for the command or round effect to be applied. */
-  inspirationRangeRestriction: z.int().min(0).max(10).optional(),
+  inspirationRangeRestriction: z.int().min(0).max(10).or(z.undefined()),
   /** The traits that must be present on the unit for the command or round effect to be applied. */
   traitRestrictions: z.array(traitSchema),
   /** The unique identifiers of the unit types that can be included in the command or round effect. */

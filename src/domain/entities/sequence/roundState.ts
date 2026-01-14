@@ -15,7 +15,7 @@ export interface RoundState {
   /** The phases that have been completed in the round. */
   completedPhases: Set<PhaseState>;
   /** The state of the current phase of the round. */
-  currentPhaseState?: PhaseState;
+  currentPhaseState: PhaseState | undefined;
   /** Units that have been commanded this round. */
   commandedUnits: Set<UnitInstance>;
 }
@@ -26,7 +26,7 @@ const _roundStateSchemaObject = z.object({
   /** The phases that have been completed in the round. */
   completedPhases: z.set(phaseStateSchema),
   /** The state of the current phase of the round. */
-  currentPhaseState: phaseStateSchema.optional(),
+  currentPhaseState: phaseStateSchema.or(z.undefined()),
   /** Units that have been commanded this round. */
   commandedUnits: z.set(unitInstanceSchema),
 });

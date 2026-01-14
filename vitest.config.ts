@@ -17,6 +17,8 @@ export default defineConfig({
       '@transforms': path.resolve(__dirname, './src/domain/transforms'),
       '@transforms/*': path.resolve(__dirname, './src/domain/transforms/*'),
       // Events
+      '@events': path.resolve(__dirname, './src/domain/events'),
+      '@events/*': path.resolve(__dirname, './src/domain/events/*'),
       '@commands': path.resolve(__dirname, './src/domain/events'),
       '@commands/*': path.resolve(__dirname, './src/domain/events/*'),
       // Contracts
