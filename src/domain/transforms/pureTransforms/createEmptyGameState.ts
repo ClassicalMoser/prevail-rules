@@ -45,6 +45,7 @@ export function createEmptyGameState(options?: {
         burnt: [],
       },
     },
+    reservedUnits: new Set(),
     routedUnits: new Set(),
     lostCommanders: new Set(),
   };

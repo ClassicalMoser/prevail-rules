@@ -1,11 +1,14 @@
 import type {
   Card,
+  Modifier,
+  Restrictions,
   StandardBoard,
   StandardBoardCoordinate,
   UnitFacing,
   UnitType,
   UnitWithPlacement,
 } from '@entities';
+import type { Trait } from '@ruleValues';
 import { commandCards } from '@sampleValues';
 import { createTestUnit } from './unitHelpers';
 
@@ -143,5 +146,109 @@ export function createUnitWithPlacement(options?: {
       coordinate: options?.coordinate ?? 'E-5',
       facing: options?.facing ?? 'north',
     },
+  };
+}
+
+/**
+ * Options for creating a test card.
+ */
+export interface CreateTestCardOptions {
+  /** Card ID (defaults to 'test-card') */
+  id?: string;
+  /** Card name (defaults to 'Test Card') */
+  name?: string;
+  /** Card version (defaults to '1.0.0') */
+  version?: string;
+  /** Card initiative (defaults to 1) */
+  initiative?: number;
+  /** Card-level modifiers (defaults to empty array) */
+  modifiers?: Modifier[];
+  /** Round effect modifiers */
+  roundEffectModifiers?: Modifier[];
+  /** Round effect restrictions */
+  roundEffectRestrictions?: {
+    inspirationRangeRestriction?: number;
+    traitRestrictions?: Trait[];
+    unitRestrictions?: string[];
+  };
+  /** Command modifiers */
+  commandModifiers?: Modifier[];
+  /** Command restrictions */
+  commandRestrictions?: {
+    inspirationRangeRestriction?: number;
+    traitRestrictions?: Trait[];
+    unitRestrictions?: string[];
+  };
+  /** Unit preservation list (defaults to empty array) */
+  unitPreservation?: string[];
+}
+
+/**
+ * Creates a test card with sensible defaults.
+ * This helper reduces repetition when creating cards in tests.
+ *
+ * @param options - Configuration for the card
+ * @returns A card ready for use in tests
+ *
+ * @example
+ * ```ts
+ * // Simple card with round effect modifier
+ * const card = createTestCard({
+ *   roundEffectModifiers: [{ type: 'attack', value: 2 }],
+ * });
+ *
+ * // Card with restrictions
+ * const card = createTestCard({
+ *   roundEffectModifiers: [{ type: 'attack', value: 1 }],
+ *   roundEffectRestrictions: { inspirationRangeRestriction: 1 },
+ * });
+ * ```
+ */
+export function createTestCard(options: CreateTestCardOptions = {}): Card {
+  const {
+    id = 'test-card',
+    name = 'Test Card',
+    version = '1.0.0',
+    initiative = 1,
+    modifiers = [],
+    roundEffectModifiers = [],
+    roundEffectRestrictions = {},
+    commandModifiers = [],
+    commandRestrictions = {},
+    unitPreservation = [],
+  } = options;
+
+  const createRestrictions = (
+    restrictions: CreateTestCardOptions['roundEffectRestrictions'],
+  ): Restrictions => ({
+    inspirationRangeRestriction: restrictions?.inspirationRangeRestriction,
+    traitRestrictions: restrictions?.traitRestrictions ?? [],
+    unitRestrictions: restrictions?.unitRestrictions ?? [],
+  });
+
+  return {
+    id,
+    name,
+    version,
+    initiative,
+    modifiers,
+    command: {
+      size: 'units',
+      type: 'movement',
+      number: 1,
+      restrictions: createRestrictions(commandRestrictions),
+      modifiers: commandModifiers,
+    },
+    roundEffect:
+      roundEffectModifiers.length > 0 ||
+      roundEffectRestrictions.inspirationRangeRestriction !== undefined ||
+      (roundEffectRestrictions.traitRestrictions?.length ?? 0) > 0 ||
+      (roundEffectRestrictions.unitRestrictions?.length ?? 0) > 0
+        ? {
+            restrictions: createRestrictions(roundEffectRestrictions),
+            modifiers: roundEffectModifiers,
+          }
+        : undefined,
+    unitPreservation,
   };
 }

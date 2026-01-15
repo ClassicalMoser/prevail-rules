@@ -1,8 +1,10 @@
 import type { EngagedUnitPresence } from '@entities/unitPresence';
 import type { AssertExact } from '@utils';
 
+import type { MeleeResolutionState } from '../substeps';
 import { engagedUnitPresenceSchema } from '@entities/unitPresence';
 import { z } from 'zod';
+import { meleeResolutionStateSchema } from '../substeps';
 import { RESOLVE_MELEE_PHASE } from './phases';
 
 /** Iterable list of valid steps in the resolve melee phase. */
@@ -36,6 +38,8 @@ export interface ResolveMeleePhaseState {
   phase: typeof RESOLVE_MELEE_PHASE;
   /** The step of the resolve melee phase. */
   step: ResolveMeleePhaseStep;
+  /** The state of the ongoing melee resolution. */
+  currentMeleeResolutionState: MeleeResolutionState | undefined;
   /** The remaining engagements that need to be resolved. */
   remainingEngagements: Set<EngagedUnitPresence>;
 }
@@ -45,6 +49,8 @@ const _resolveMeleePhaseStateSchemaObject = z.object({
   phase: z.literal(RESOLVE_MELEE_PHASE),
   /** The step of the resolve melee phase. */
   step: resolveMeleePhaseStepSchema,
+  /** The state of the ongoing melee resolution. */
+  currentMeleeResolutionState: meleeResolutionStateSchema.or(z.undefined()),
   /** The remaining engagements that need to be resolved. */
   remainingEngagements: z.set(engagedUnitPresenceSchema),
 });
@@ -62,5 +68,6 @@ const _assertExactResolveMeleePhaseState: AssertExact<
 export const resolveMeleePhaseStateSchema: z.ZodObject<{
   phase: z.ZodLiteral<'resolveMelee'>;
   step: z.ZodType<ResolveMeleePhaseStep>;
+  currentMeleeResolutionState: z.ZodType<MeleeResolutionState | undefined>;
   remainingEngagements: z.ZodSet<z.ZodType<EngagedUnitPresence>>;
 }> = _resolveMeleePhaseStateSchemaObject;

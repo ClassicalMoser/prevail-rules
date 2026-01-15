@@ -1,6 +1,8 @@
 import type { Command } from '@entities/card';
+import type { UnitInstance } from '@entities/unit';
 import type { AssertExact } from '@utils';
 import { commandSchema } from '@entities/card';
+import { unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
 import { ISSUE_COMMANDS_PHASE } from './phases';
 
@@ -22,6 +24,7 @@ export const issueCommandsPhaseSteps = [
    * and expect resolve commands events (move or ranged attack)
    */
   'secondPlayerResolveCommands',
+  /** Expect single gameEffect: advance phase to resolve melee phase */
   'complete', // GameEffect, advance phase to resolve melee phase
 ] as const;
 
@@ -50,8 +53,12 @@ export interface IssueCommandsPhaseState {
   step: IssueCommandsPhaseStep;
   /** The remaining commands for the first player. */
   remainingCommandsFirstPlayer: Set<Command>;
+  /** remainingUnitsFirstPlayer */
+  remainingUnitsFirstPlayer: Set<UnitInstance>;
   /** The remaining commands for the second player. */
   remainingCommandsSecondPlayer: Set<Command>;
+  /** remainingUnitsSecondPlayer */
+  remainingUnitsSecondPlayer: Set<UnitInstance>;
 }
 
 const _issueCommandsPhaseStateSchemaObject = z.object({
@@ -61,8 +68,12 @@ const _issueCommandsPhaseStateSchemaObject = z.object({
   step: issueCommandsPhaseStepSchema,
   /** The remaining commands for the first player. */
   remainingCommandsFirstPlayer: z.set(commandSchema),
+  /** remainingUnitsFirstPlayer */
+  remainingUnitsFirstPlayer: z.set(unitInstanceSchema),
   /** The remaining commands for the second player. */
   remainingCommandsSecondPlayer: z.set(commandSchema),
+  /** remainingUnitsSecondPlayer */
+  remainingUnitsSecondPlayer: z.set(unitInstanceSchema),
 });
 
 // Verify manual type matches schema inference
@@ -79,5 +90,7 @@ export const issueCommandsPhaseStateSchema: z.ZodObject<{
   phase: z.ZodLiteral<'issueCommands'>;
   step: z.ZodType<IssueCommandsPhaseStep>;
   remainingCommandsFirstPlayer: z.ZodSet<z.ZodType<Command>>;
+  remainingUnitsFirstPlayer: z.ZodSet<z.ZodType<UnitInstance>>;
   remainingCommandsSecondPlayer: z.ZodSet<z.ZodType<Command>>;
+  remainingUnitsSecondPlayer: z.ZodSet<z.ZodType<UnitInstance>>;
 }> = _issueCommandsPhaseStateSchemaObject;
