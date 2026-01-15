@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { MOVE_COMMANDER_CHOICE_TYPE } from './playerChoice';
 
 /** An event to move a commander from one space to another. */
-export interface MoveCommanderEvent {
+export interface MoveCommanderEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -14,9 +14,9 @@ export interface MoveCommanderEvent {
   /** The player who is moving the commander. */
   player: PlayerSide;
   /** The space the commander is currently in. */
-  from: BoardCoordinate<Board>;
+  from: BoardCoordinate<TBoard>;
   /** The space the commander is moving to. */
-  to: BoardCoordinate<Board>;
+  to: BoardCoordinate<TBoard>;
 }
 
 const _moveCommanderEventSchemaObject = z.object({
@@ -40,13 +40,13 @@ type MoveCommanderEventSchemaType = z.infer<
 export const moveCommanderEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof MOVE_COMMANDER_CHOICE_TYPE>;
-  player: typeof playerSideSchema;
-  from: typeof boardCoordinateSchema;
-  to: typeof boardCoordinateSchema;
+  player: z.ZodType<PlayerSide>;
+  from: z.ZodType<BoardCoordinate<Board>>;
+  to: z.ZodType<BoardCoordinate<Board>>;
 }> = _moveCommanderEventSchemaObject;
 
 // Verify manual type matches schema inference
 const _assertExactMoveCommanderEvent: AssertExact<
-  MoveCommanderEvent,
+  MoveCommanderEvent<Board>,
   MoveCommanderEventSchemaType
 > = true;

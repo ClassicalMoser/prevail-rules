@@ -6,16 +6,16 @@ import { playerCardStateSchema } from './playerCardState';
 /** The state of all cards in the game. */
 export interface CardState {
   /** The state of the cards for the black player. */
-  blackPlayer: PlayerCardState;
+  black: PlayerCardState;
   /** The state of the cards for the white player. */
-  whitePlayer: PlayerCardState;
+  white: PlayerCardState;
 }
 
 const _cardStateSchemaObject = z.object({
   /** The state of the cards for the black player. */
-  blackPlayer: playerCardStateSchema,
+  black: playerCardStateSchema,
   /** The state of the cards for the white player. */
-  whitePlayer: playerCardStateSchema,
+  white: playerCardStateSchema,
 });
 
 type CardStateSchemaType = z.infer<typeof _cardStateSchemaObject>;
