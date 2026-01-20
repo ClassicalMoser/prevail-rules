@@ -1,3 +1,9 @@
+export * from './completeCleanupPhase';
+export * from './completeIssueCommandsPhase';
+export * from './completeMoveCommandersPhase';
+export * from './completePlayCardsPhase';
+export * from './completeResolveMeleePhase';
+export * from './discardPlayedCards';
 export * from './gameEffect';
 export * from './resolveEngagement';
 export * from './resolveInitiative';
@@ -8,3 +14,4 @@ export * from './resolveRetreat';
 export * from './resolveReverse';
 export * from './resolveRout';
 export * from './resolveUnitsBroken';
+export * from './revealCards';

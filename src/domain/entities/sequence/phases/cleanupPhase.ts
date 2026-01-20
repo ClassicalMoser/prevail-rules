@@ -1,5 +1,8 @@
 import type { AssertExact } from '@utils';
+import type { RallyResolutionState } from '../substeps';
+
 import { z } from 'zod';
+import { rallyResolutionStateSchema } from '../substeps';
 import { CLEANUP_PHASE } from './phases';
 
 /** Iterable list of valid steps in the cleanup phase. */
@@ -8,16 +11,12 @@ export const cleanupPhaseSteps = [
   'discardPlayedCards',
   /** Expect single player choice: the initiative player's choose rally choice */
   'firstPlayerChooseRally',
-  /** Expect single gameEffect: the resolve rally effect */
+  /** Expect single gameEffect: the resolve rally effect (includes unit support) */
   'firstPlayerResolveRally',
-  /** Expect series of gameEffects: resolve unit support and consequences */
-  'firstPlayerResolveUnitSupport',
   /** Expect single player choice: the non-initiative player's choose rally choice */
   'secondPlayerChooseRally',
-  /** Expect single gameEffect: the resolve rally effect */
+  /** Expect single gameEffect: the resolve rally effect (includes unit support) */
   'secondPlayerResolveRally',
-  /** Expect series of gameEffects: resolve unit support and consequences */
-  'secondPlayerResolveUnitSupport',
   /** Expect single gameEffect: advance round and reset phase to play cards phase */
   'complete',
 ] as const;
@@ -43,6 +42,10 @@ export interface CleanupPhaseState {
   phase: typeof CLEANUP_PHASE;
   /** The step of the cleanup phase. */
   step: CleanupPhaseStep;
+  /** The state of the first player's rally resolution (unit support checks). */
+  firstPlayerRallyResolutionState: RallyResolutionState | undefined;
+  /** The state of the second player's rally resolution (unit support checks). */
+  secondPlayerRallyResolutionState: RallyResolutionState | undefined;
 }
 
 const _cleanupPhaseStateSchemaObject = z.object({
@@ -50,6 +53,10 @@ const _cleanupPhaseStateSchemaObject = z.object({
   phase: z.literal(CLEANUP_PHASE),
   /** The step of the cleanup phase. */
   step: cleanupPhaseStepSchema,
+  /** The state of the first player's rally resolution (unit support checks). */
+  firstPlayerRallyResolutionState: rallyResolutionStateSchema.or(z.undefined()),
+  /** The state of the second player's rally resolution (unit support checks). */
+  secondPlayerRallyResolutionState: rallyResolutionStateSchema.or(z.undefined()),
 });
 
 type CleanupPhaseStateSchemaType = z.infer<
@@ -65,4 +72,6 @@ const _assertExactCleanupPhaseState: AssertExact<
 export const cleanupPhaseStateSchema: z.ZodObject<{
   phase: z.ZodLiteral<'cleanup'>;
   step: z.ZodType<CleanupPhaseStep>;
+  firstPlayerRallyResolutionState: z.ZodType<RallyResolutionState | undefined>;
+  secondPlayerRallyResolutionState: z.ZodType<RallyResolutionState | undefined>;
 }> = _cleanupPhaseStateSchemaObject;

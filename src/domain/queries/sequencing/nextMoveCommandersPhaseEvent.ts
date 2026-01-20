@@ -6,7 +6,10 @@ import type {
 } from '@entities';
 import type { Event } from '@events';
 import type { z } from 'zod';
-import { eventSchema, moveCommanderEventSchema } from '@events';
+import {
+  completeMoveCommandersPhaseEventSchema,
+  moveCommanderEventSchema,
+} from '@events';
 
 export function getExpectedMoveCommandersPhaseEventSchema<TBoard extends Board>(
   gameState: GameState<TBoard> & {
@@ -31,9 +34,7 @@ export function getExpectedMoveCommandersPhaseEventSchema<TBoard extends Board>(
       // Second commander is the other player
       return moveCommanderEventSchema;
     case 'complete':
-      // TODO: Create a specific phase completion event schema
-      // For now, return the general event schema as a placeholder
-      return eventSchema;
+      return completeMoveCommandersPhaseEventSchema;
     default:
       throw new Error(
         `Invalid move commanders phase step: ${roundState.currentPhaseState.step}`,

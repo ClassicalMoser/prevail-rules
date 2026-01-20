@@ -3,6 +3,7 @@ import type { AssertExact } from '@utils';
 import { playerSideSchema, unitTypeSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
+import { RESOLVE_UNITS_BROKEN_EFFECT_TYPE } from './gameEffect';
 
 /** After a player performs a rally, they must check that their
  * hand still supports all unit types in their army. If any unit type
@@ -10,10 +11,12 @@ import { z } from 'zod';
  * of that unit type.
  */
 
-/** An eventto resolve units that are no longer supported. */
+/** An event to resolve units that are no longer supported. */
 export interface ResolveUnitsBrokenEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
+  /** The type of game effect. */
+  effectType: typeof RESOLVE_UNITS_BROKEN_EFFECT_TYPE;
   /** The player whose units are being checked. */
   player: PlayerSide;
   /** The unit types that are broken. */
@@ -23,6 +26,8 @@ export interface ResolveUnitsBrokenEvent {
 const _resolveUnitsBrokenEventSchemaObject = z.object({
   /** The type of the event. */
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  /** The type of game effect. */
+  effectType: z.literal(RESOLVE_UNITS_BROKEN_EFFECT_TYPE),
   /** The player whose units are being checked. */
   player: playerSideSchema,
   /** The unit types that are broken. */
@@ -41,6 +46,7 @@ const _assertExactResolveUnitsBrokenEvent: AssertExact<
 /** The schema for a resolve units broken event. */
 export const resolveUnitsBrokenEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_UNITS_BROKEN_EFFECT_TYPE>;
   player: typeof playerSideSchema;
   unitTypes: z.ZodArray<typeof unitTypeSchema>;
 }> = _resolveUnitsBrokenEventSchemaObject;

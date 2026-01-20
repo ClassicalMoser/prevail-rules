@@ -8,7 +8,7 @@ describe('isLegalCardChoice', () => {
   // Helper to create a card state with cards in hand
   function createCardState(blackHand: Card[], whiteHand: Card[]): CardState {
     return {
-      blackPlayer: {
+      black: {
         inHand: [...blackHand],
         awaitingPlay: commandCards[0],
         inPlay: commandCards[1],
@@ -16,7 +16,7 @@ describe('isLegalCardChoice', () => {
         discarded: [],
         burnt: [],
       },
-      whitePlayer: {
+      white: {
         inHand: [...whiteHand],
         awaitingPlay: commandCards[0],
         inPlay: commandCards[1],

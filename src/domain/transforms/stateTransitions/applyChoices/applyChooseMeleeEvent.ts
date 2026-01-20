@@ -8,6 +8,7 @@ import type { ChooseMeleeResolutionEvent } from '@events';
 import { hasEngagedUnits } from '@entities';
 import { getBoardSpace } from '@queries';
 
+/** Applies the choose melee resolution event to the game state. */
 export function applyChooseMeleeEvent<TBoard extends Board>(
   event: ChooseMeleeResolutionEvent<TBoard>,
   state: GameState<TBoard>,

@@ -16,6 +16,9 @@ export default defineConfig({
       // Transforms
       '@transforms': path.resolve(__dirname, './src/domain/transforms'),
       '@transforms/*': path.resolve(__dirname, './src/domain/transforms/*'),
+      // Procedures
+      '@procedures': path.resolve(__dirname, './src/domain/procedures'),
+      '@procedures/*': path.resolve(__dirname, './src/domain/procedures/*'),
       // Events
       '@events': path.resolve(__dirname, './src/domain/events'),
       '@events/*': path.resolve(__dirname, './src/domain/events/*'),

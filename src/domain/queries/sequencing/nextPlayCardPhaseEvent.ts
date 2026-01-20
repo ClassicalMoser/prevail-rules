@@ -6,10 +6,12 @@ import type {
 } from '@entities';
 import type { Event } from '@events';
 import type { z } from 'zod';
+
 import {
   chooseCardEventSchema,
-  eventSchema,
+  completePlayCardsPhaseEventSchema,
   resolveInitiativeEventSchema,
+  revealCardsEventSchema,
 } from '@events';
 
 export function getExpectedPlayCardsPhaseEventSchema<TBoard extends Board>(
@@ -29,15 +31,11 @@ export function getExpectedPlayCardsPhaseEventSchema<TBoard extends Board>(
     case 'chooseCards':
       return chooseCardEventSchema;
     case 'revealCards':
-      // TODO: Create a specific reveal cards event schema
-      // For now, return the general event schema as a placeholder
-      return eventSchema;
+      return revealCardsEventSchema;
     case 'assignInitiative':
       return resolveInitiativeEventSchema;
     case 'complete':
-      // TODO: Create a specific phase completion event schema
-      // For now, return the general event schema as a placeholder
-      return eventSchema;
+      return completePlayCardsPhaseEventSchema;
     default:
       throw new Error(
         `Invalid play cards phase step: ${roundState.currentPhaseState.step}`,

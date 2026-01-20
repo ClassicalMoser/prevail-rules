@@ -12,6 +12,8 @@
       "@queries/*": ["src/domain/queries/*"],
       "@transforms": ["src/domain/transforms/index"],
       "@transforms/*": ["src/domain/transforms/*"],
+      "@procedures": ["src/domain/procedures/index"],
+      "@procedures/*": ["src/domain/procedures/*"],
       "@events": ["src/domain/events/index"],
       "@events/*": ["src/domain/events/*"],
       "@contracts": ["./src/contracts/index"],

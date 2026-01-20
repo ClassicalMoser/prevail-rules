@@ -1,0 +1,37 @@
+import type { AssertExact } from '@utils';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
+import { z } from 'zod';
+import { REVEAL_CARDS_EFFECT_TYPE } from './gameEffect';
+
+/** Event to reveal cards that are awaiting play.
+ * Moves both players' awaitingPlay cards to inPlay simultaneously.
+ * This makes hidden information public.
+ */
+export interface RevealCardsEvent {
+  /** The type of the event. */
+  eventType: typeof GAME_EFFECT_EVENT_TYPE;
+  /** The type of game effect. */
+  effectType: typeof REVEAL_CARDS_EFFECT_TYPE;
+}
+
+const _revealCardsEventSchemaObject = z.object({
+  /** The type of the event. */
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  /** The type of game effect. */
+  effectType: z.literal(REVEAL_CARDS_EFFECT_TYPE),
+});
+
+type RevealCardsEventSchemaType = z.infer<
+  typeof _revealCardsEventSchemaObject
+>;
+
+const _assertExactRevealCardsEvent: AssertExact<
+  RevealCardsEvent,
+  RevealCardsEventSchemaType
+> = true;
+
+/** The schema for a reveal cards event. */
+export const revealCardsEventSchema: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof REVEAL_CARDS_EFFECT_TYPE>;
+}> = _revealCardsEventSchemaObject;
