@@ -58,24 +58,30 @@ export const gameEffects = [
   'revealCards',
 ] as const;
 
-export type GameEffectEvent<TBoard extends Board> =
-  | CompleteCleanupPhaseEvent<TBoard>
-  | CompleteIssueCommandsPhaseEvent<TBoard>
-  | CompleteMoveCommandersPhaseEvent<TBoard>
-  | CompletePlayCardsPhaseEvent<TBoard>
-  | CompleteResolveMeleePhaseEvent<TBoard>
-  | DiscardPlayedCardsEvent<TBoard>
-  | ResolveEngagementEvent<TBoard>
-  | ResolveInitiativeEvent<TBoard>
-  | ResolveMeleeEvent<TBoard>
-  | ResolveRallyEvent<TBoard>
-  | ResolveRangedAttackEvent<TBoard>
-  | ResolveRetreatEvent<TBoard>
-  | ResolveReverseEvent<TBoard>
-  | ResolveRoutEvent<TBoard>
-  | ResolveRoutDiscardEvent<TBoard>
-  | ResolveUnitsBrokenEvent<TBoard>
-  | RevealCardsEvent<TBoard>;
+/** Type for all valid game effect types. */
+export type GameEffectType = (typeof gameEffects)[number];
+
+export type GameEffectEvent<
+  TBoard extends Board,
+  _TGameEffectType extends GameEffectType,
+> =
+  | CompleteCleanupPhaseEvent<TBoard, 'completeCleanupPhase'>
+  | CompleteIssueCommandsPhaseEvent<TBoard, 'completeIssueCommandsPhase'>
+  | CompleteMoveCommandersPhaseEvent<TBoard, 'completeMoveCommandersPhase'>
+  | CompletePlayCardsPhaseEvent<TBoard, 'completePlayCardsPhase'>
+  | CompleteResolveMeleePhaseEvent<TBoard, 'completeResolveMeleePhase'>
+  | DiscardPlayedCardsEvent<TBoard, 'discardPlayedCards'>
+  | ResolveEngagementEvent<TBoard, 'resolveEngagement'>
+  | ResolveInitiativeEvent<TBoard, 'resolveInitiative'>
+  | ResolveMeleeEvent<TBoard, 'resolveMelee'>
+  | ResolveRallyEvent<TBoard, 'resolveRally'>
+  | ResolveRangedAttackEvent<TBoard, 'resolveRangedAttack'>
+  | ResolveRetreatEvent<TBoard, 'resolveRetreat'>
+  | ResolveReverseEvent<TBoard, 'resolveReverse'>
+  | ResolveRoutEvent<TBoard, 'resolveRout'>
+  | ResolveRoutDiscardEvent<TBoard, 'resolveRoutDiscard'>
+  | ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'>
+  | RevealCardsEvent<TBoard, 'revealCards'>;
 
 const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeCleanupPhaseEventSchema,
@@ -101,10 +107,11 @@ type GameEffectEventSchemaType = z.infer<typeof _gameEffectEventSchemaObject>;
 
 // Verify manual type matches schema inference
 const _assertExactGameEffect: AssertExact<
-  GameEffectEvent<Board>,
+  GameEffectEvent<Board, GameEffectType>,
   GameEffectEventSchemaType
 > = true;
 
 /** The schema for a game effect event. */
-export const gameEffectEventSchema: z.ZodType<GameEffectEvent<Board>> =
-  _gameEffectEventSchemaObject;
+export const gameEffectEventSchema: z.ZodType<
+  GameEffectEvent<Board, GameEffectType>
+> = _gameEffectEventSchemaObject;

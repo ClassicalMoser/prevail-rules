@@ -12,7 +12,10 @@ export const RESOLVE_INITIATIVE_EFFECT_TYPE = 'resolveInitiative' as const;
  * The player with the lower initiative value receives initiative.
  * In a tie, the player with initiative keeps it.
  */
-export interface ResolveInitiativeEvent<_TBoard extends Board> {
+export interface ResolveInitiativeEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'resolveInitiative' = 'resolveInitiative',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

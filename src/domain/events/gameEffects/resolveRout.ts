@@ -11,7 +11,10 @@ export const RESOLVE_ROUT_EFFECT_TYPE = 'resolveRout' as const;
  * A unit that is routed is permanently removed from the game.
  * The player must discard a number of cards equal to its rout penalty.
  */
-export interface ResolveRoutEvent<_TBoard extends Board> {
+export interface ResolveRoutEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'resolveRout' = 'resolveRout',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

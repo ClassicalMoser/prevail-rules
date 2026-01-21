@@ -8,7 +8,10 @@ import { z } from 'zod';
 export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits' as const;
 
 /** An event to setup multiple units on the board. */
-export interface SetupUnitsEvent<_TBoard extends Board> {
+export interface SetupUnitsEvent<
+  _TBoard extends Board,
+  _TChoiceType extends 'setupUnits' = 'setupUnits',
+> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

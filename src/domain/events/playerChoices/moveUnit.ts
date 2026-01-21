@@ -17,7 +17,10 @@ import { z } from 'zod';
 export const MOVE_UNIT_CHOICE_TYPE = 'moveUnit' as const;
 
 /** An event to move a unit from one space to another. */
-export interface MoveUnitEvent<TBoard extends Board> {
+export interface MoveUnitEvent<
+  TBoard extends Board,
+  _TChoiceType extends 'moveUnit' = 'moveUnit',
+> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

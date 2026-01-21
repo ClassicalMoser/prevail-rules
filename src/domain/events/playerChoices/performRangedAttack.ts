@@ -7,7 +7,10 @@ import { z } from 'zod';
 /** The type of the perform ranged attack event. */
 export const PERFORM_RANGED_ATTACK_CHOICE_TYPE = 'performRangedAttack' as const;
 
-export interface PerformRangedAttackEvent<_TBoard extends Board> {
+export interface PerformRangedAttackEvent<
+  _TBoard extends Board,
+  _TChoiceType extends 'performRangedAttack' = 'performRangedAttack',
+> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

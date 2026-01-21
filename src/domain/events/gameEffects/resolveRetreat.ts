@@ -13,7 +13,10 @@ export const RESOLVE_RETREAT_EFFECT_TYPE = 'resolveRetreat' as const;
  * If there are multiple legal retreats, the player must choose one.
  * If there is no legal retreat, the unit is routed.
  */
-export interface ResolveRetreatEvent<_TBoard extends Board> {
+export interface ResolveRetreatEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'resolveRetreat' = 'resolveRetreat',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

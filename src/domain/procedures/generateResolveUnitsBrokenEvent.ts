@@ -4,7 +4,11 @@ import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
 } from '@events';
-import { getPlayerUnitsOnBoard, getSupportedUnitTypes } from '@queries';
+import {
+  getOtherPlayer,
+  getPlayerUnitsOnBoard,
+  getSupportedUnitTypes,
+} from '@queries';
 
 /**
  * Generates a ResolveUnitsBrokenEvent for unit types that lost support after a rally.
@@ -12,13 +16,12 @@ import { getPlayerUnitsOnBoard, getSupportedUnitTypes } from '@queries';
  * Returns the unit TYPES that are no longer supported (all instances will be routed).
  *
  * @param state - The current game state
- * @param player - The player whose units to check
  * @returns A complete ResolveUnitsBrokenEvent with unit types that lost support
  *
  * @example
  * ```typescript
  * // After rally, cards returned to hand
- * const event = generateResolveUnitsBrokenEvent(state, 'white');
+ * const event = generateResolveUnitsBrokenEvent(state);
  *
  * // Event contains unit types that no longer have card support
  * // Handler will rout ALL instances of these types
@@ -27,8 +30,30 @@ import { getPlayerUnitsOnBoard, getSupportedUnitTypes } from '@queries';
  */
 export function generateResolveUnitsBrokenEvent<TBoard extends Board>(
   state: GameState<TBoard>,
-  player: PlayerSide,
-): ResolveUnitsBrokenEvent<TBoard> {
+): ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'> {
+  const phaseState = state.currentRoundState.currentPhaseState;
+
+  if (!phaseState) {
+    throw new Error('No current phase state found');
+  }
+
+  if (phaseState.phase !== 'cleanup') {
+    throw new Error('Current phase is not cleanup');
+  }
+
+  // Determine which player just rallied based on the step
+  const firstPlayer = state.currentInitiative;
+  let player: PlayerSide;
+
+  if (phaseState.step === 'firstPlayerResolveRally') {
+    player = firstPlayer;
+  } else if (phaseState.step === 'secondPlayerResolveRally') {
+    player = getOtherPlayer(firstPlayer);
+  } else {
+    throw new Error(
+      `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
+    );
+  }
   const supportedTypeIds = getSupportedUnitTypes(state, player);
   const unitsOnBoard = getPlayerUnitsOnBoard(state, player);
   const brokenTypes: UnitType[] = [];

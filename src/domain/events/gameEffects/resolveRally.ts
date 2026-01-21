@@ -13,7 +13,10 @@ export const RESOLVE_RALLY_EFFECT_TYPE = 'resolveRally' as const;
  */
 
 /** A command to resolve a rally. */
-export interface ResolveRallyEvent<_TBoard extends Board> {
+export interface ResolveRallyEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'resolveRally' = 'resolveRally',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

@@ -2,6 +2,8 @@
 
 This document tracks the implementation status of all four engines. Use this to track progress and identify what remains to be built.
 
+**📋 See [`ROUND_ANALYSIS.md`](./ROUND_ANALYSIS.md) for a phase-by-phase breakdown of what each engine needs to handle.**
+
 ## 1. Pure Transform Engine
 
 **Location:** `transforms/applyEvent.ts`

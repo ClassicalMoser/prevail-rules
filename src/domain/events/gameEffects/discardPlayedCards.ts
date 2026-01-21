@@ -11,7 +11,10 @@ export const DISCARD_PLAYED_CARDS_EFFECT_TYPE = 'discardPlayedCards' as const;
  * Moves both players' cards from inPlay to discard pile.
  * This is the first step of the cleanup phase.
  */
-export interface DiscardPlayedCardsEvent<_TBoard extends Board> {
+export interface DiscardPlayedCardsEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'discardPlayedCards' = 'discardPlayedCards',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

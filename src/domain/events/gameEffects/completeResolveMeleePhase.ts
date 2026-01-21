@@ -8,7 +8,11 @@ export const COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE =
   'completeResolveMeleePhase' as const;
 
 /** Event to complete the resolve melee phase and advance to cleanup phase. */
-export interface CompleteResolveMeleePhaseEvent<_TBoard extends Board> {
+export interface CompleteResolveMeleePhaseEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'completeResolveMeleePhase' =
+    'completeResolveMeleePhase',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

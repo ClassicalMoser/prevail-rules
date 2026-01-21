@@ -14,7 +14,10 @@ export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;
  * resolves each step first.
  */
 
-export interface ResolveMeleeEvent<_TBoard extends Board> {
+export interface ResolveMeleeEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'resolveMelee' = 'resolveMelee',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

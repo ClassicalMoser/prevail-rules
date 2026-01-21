@@ -11,7 +11,10 @@ export const CHOOSE_ROUT_DISCARD_CHOICE_TYPE = 'chooseRoutDiscard' as const;
  * An event to choose which cards to discard as a penalty for routed units.
  * The player must select a number of cards equal to the total rout penalty.
  */
-export interface ChooseRoutDiscardEvent<_TBoard extends Board> {
+export interface ChooseRoutDiscardEvent<
+  _TBoard extends Board,
+  _TChoiceType extends 'chooseRoutDiscard' = 'chooseRoutDiscard',
+> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

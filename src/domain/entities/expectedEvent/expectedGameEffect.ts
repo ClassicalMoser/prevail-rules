@@ -1,10 +1,8 @@
 import type { Board } from '@entities/board';
+import type { GameEffectType } from '@events';
 import type { AssertExact } from '@utils';
 import { gameEffects } from '@events';
 import { z } from 'zod';
-
-/** Type for all valid game effect types. */
-export type GameEffectType = (typeof gameEffects)[number];
 
 /**
  * Expected event is a game effect (deterministic action).

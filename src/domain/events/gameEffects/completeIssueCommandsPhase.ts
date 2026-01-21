@@ -8,7 +8,11 @@ export const COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE =
   'completeIssueCommandsPhase' as const;
 
 /** Event to complete the issue commands phase and advance to resolve melee phase. */
-export interface CompleteIssueCommandsPhaseEvent<_TBoard extends Board> {
+export interface CompleteIssueCommandsPhaseEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'completeIssueCommandsPhase' =
+    'completeIssueCommandsPhase',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

@@ -8,7 +8,10 @@ import { z } from 'zod';
 export const CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE =
   'chooseMeleeResolution' as const;
 
-export interface ChooseMeleeResolutionEvent<TBoard extends Board> {
+export interface ChooseMeleeResolutionEvent<
+  TBoard extends Board,
+  _TChoiceType extends 'chooseMeleeResolution' = 'chooseMeleeResolution',
+> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

@@ -3,7 +3,7 @@
  */
 
 import type { Board, GameState } from '@entities';
-import type { PlayerChoiceEvent } from '@events';
+import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
 import {
   applyChooseCardEvent,
   applyChooseMeleeEvent,
@@ -18,7 +18,7 @@ import {
  * Routes player choice events to their corresponding apply functions.
  */
 export function applyPlayerChoiceEvent<TBoard extends Board>(
-  event: PlayerChoiceEvent<TBoard>,
+  event: PlayerChoiceEvent<TBoard, PlayerChoiceType>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   switch (event.choiceType) {
@@ -48,7 +48,7 @@ export function applyPlayerChoiceEvent<TBoard extends Board>(
       // Exhaustiveness check for TypeScript
       const _exhaustive: never = event;
       throw new Error(
-        `Unknown player choice event type: ${(_exhaustive as PlayerChoiceEvent<TBoard>).choiceType}`,
+        `Unknown player choice event type: ${(_exhaustive as PlayerChoiceEvent<TBoard, PlayerChoiceType>).choiceType}`,
       );
     }
   }

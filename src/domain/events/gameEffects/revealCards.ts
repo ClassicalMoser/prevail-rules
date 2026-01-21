@@ -10,7 +10,10 @@ export const REVEAL_CARDS_EFFECT_TYPE = 'revealCards' as const;
  * Moves both players' awaitingPlay cards to inPlay simultaneously.
  * This makes hidden information public.
  */
-export interface RevealCardsEvent<_TBoard extends Board> {
+export interface RevealCardsEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'revealCards' = 'revealCards',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

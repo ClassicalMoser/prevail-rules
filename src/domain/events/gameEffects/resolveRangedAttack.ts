@@ -7,7 +7,10 @@ import { z } from 'zod';
 /** The type of the resolve ranged attack game effect. */
 export const RESOLVE_RANGED_ATTACK_EFFECT_TYPE = 'resolveRangedAttack' as const;
 
-export interface ResolveRangedAttackEvent<_TBoard extends Board> {
+export interface ResolveRangedAttackEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'resolveRangedAttack' = 'resolveRangedAttack',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

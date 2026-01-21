@@ -8,7 +8,10 @@ import { z } from 'zod';
 export const MOVE_COMMANDER_CHOICE_TYPE = 'moveCommander' as const;
 
 /** An event to move a commander from one space to another. */
-export interface MoveCommanderEvent<TBoard extends Board> {
+export interface MoveCommanderEvent<
+  TBoard extends Board,
+  _TChoiceType extends 'moveCommander' = 'moveCommander',
+> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

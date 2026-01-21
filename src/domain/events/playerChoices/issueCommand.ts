@@ -7,7 +7,10 @@ import { z } from 'zod';
 /** The type of the issue command event. */
 export const ISSUE_COMMAND_CHOICE_TYPE = 'issueCommand' as const;
 
-export interface IssueCommandEvent<_TBoard extends Board> {
+export interface IssueCommandEvent<
+  _TBoard extends Board,
+  _TChoiceType extends 'issueCommand' = 'issueCommand',
+> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

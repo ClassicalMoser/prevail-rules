@@ -3,7 +3,7 @@
  */
 
 import type { Board, GameState } from '@entities';
-import type { GameEffectEvent } from '@events';
+import type { GameEffectEvent, GameEffectType } from '@events';
 import {
   applyCompleteCleanupPhaseEvent,
   applyCompleteIssueCommandsPhaseEvent,
@@ -22,7 +22,7 @@ import {
  * Routes game effect events to their corresponding apply functions.
  */
 export function applyGameEffectEvent<TBoard extends Board>(
-  event: GameEffectEvent<TBoard>,
+  event: GameEffectEvent<TBoard, GameEffectType>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   switch (event.effectType) {
@@ -61,7 +61,7 @@ export function applyGameEffectEvent<TBoard extends Board>(
       // Exhaustiveness check for TypeScript
       const _exhaustive: never = event;
       throw new Error(
-        `Unknown game effect event type: ${(_exhaustive as GameEffectEvent<TBoard>).effectType}`,
+        `Unknown game effect event type: ${(_exhaustive as GameEffectEvent<TBoard, GameEffectType>).effectType}`,
       );
     }
   }

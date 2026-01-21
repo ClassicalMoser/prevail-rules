@@ -8,7 +8,11 @@ export const COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE =
   'completeMoveCommandersPhase' as const;
 
 /** Event to complete the move commanders phase and advance to issue commands phase. */
-export interface CompleteMoveCommandersPhaseEvent<_TBoard extends Board> {
+export interface CompleteMoveCommandersPhaseEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'completeMoveCommandersPhase' =
+    'completeMoveCommandersPhase',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

@@ -59,19 +59,22 @@ export const playerChoiceTypeSchema: z.ZodType<PlayerChoiceType> =
   _playerChoiceTypeSchemaObject;
 
 /** An event that represents a player choice. */
-export type PlayerChoiceEvent<TBoard extends Board> =
-  | ChooseCardEvent<TBoard>
-  | ChooseMeleeResolutionEvent<TBoard>
-  | ChooseRallyEvent<TBoard>
-  | ChooseRoutDiscardEvent<TBoard>
-  | CommitToMeleeEvent<TBoard>
-  | CommitToMovementEvent<TBoard>
-  | CommitToRangedAttackEvent<TBoard>
-  | IssueCommandEvent<TBoard>
-  | MoveCommanderEvent<TBoard>
-  | MoveUnitEvent<TBoard>
-  | PerformRangedAttackEvent<TBoard>
-  | SetupUnitsEvent<TBoard>;
+export type PlayerChoiceEvent<
+  TBoard extends Board,
+  _TPlayerChoiceType extends PlayerChoiceType,
+> =
+  | ChooseCardEvent<TBoard, 'chooseCard'>
+  | ChooseMeleeResolutionEvent<TBoard, 'chooseMeleeResolution'>
+  | ChooseRallyEvent<TBoard, 'chooseRally'>
+  | ChooseRoutDiscardEvent<TBoard, 'chooseRoutDiscard'>
+  | CommitToMeleeEvent<TBoard, 'commitToMelee'>
+  | CommitToMovementEvent<TBoard, 'commitToMovement'>
+  | CommitToRangedAttackEvent<TBoard, 'commitToRangedAttack'>
+  | IssueCommandEvent<TBoard, 'issueCommand'>
+  | MoveCommanderEvent<TBoard, 'moveCommander'>
+  | MoveUnitEvent<TBoard, 'moveUnit'>
+  | PerformRangedAttackEvent<TBoard, 'performRangedAttack'>
+  | SetupUnitsEvent<TBoard, 'setupUnits'>;
 
 const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
   chooseCardEventSchema,
@@ -93,11 +96,12 @@ type PlayerChoiceEventSchemaType = z.infer<
 >;
 
 /** The schema for a player choice event. */
-export const playerChoiceEventSchema: z.ZodType<PlayerChoiceEvent<Board>> =
-  _playerChoiceEventSchemaObject;
+export const playerChoiceEventSchema: z.ZodType<
+  PlayerChoiceEvent<Board, PlayerChoiceType>
+> = _playerChoiceEventSchemaObject;
 
 // Verify manual type matches schema inference
 const _assertExactPlayerChoiceEvent: AssertExact<
-  PlayerChoiceEvent<Board>,
+  PlayerChoiceEvent<Board, PlayerChoiceType>,
   PlayerChoiceEventSchemaType
 > = true;

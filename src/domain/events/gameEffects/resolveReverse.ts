@@ -11,7 +11,10 @@ export const RESOLVE_REVERSE_EFFECT_TYPE = 'resolveReverse' as const;
  * A unit that is reversed changes its facing to the opposite
  * of its current facing.
  */
-export interface ResolveReverseEvent<_TBoard extends Board> {
+export interface ResolveReverseEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'resolveReverse' = 'resolveReverse',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

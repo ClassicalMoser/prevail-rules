@@ -8,7 +8,10 @@ import { z } from 'zod';
 export const CHOOSE_CARD_CHOICE_TYPE = 'chooseCard' as const;
 
 /** An eventto choose a card from the player's hand. */
-export interface ChooseCardEvent<_TBoard extends Board> {
+export interface ChooseCardEvent<
+  _TBoard extends Board,
+  _TChoiceType extends 'chooseCard' = 'chooseCard',
+> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

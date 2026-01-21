@@ -17,7 +17,10 @@ export const RESOLVE_ENGAGEMENT_EFFECT_TYPE = 'resolveEngagement' as const;
  * Additionally, if the defending unit has a speed greater than that of the attacking unit,
  * the defending unit can retreat.
  */
-export interface ResolveEngagementEvent<_TBoard extends Board> {
+export interface ResolveEngagementEvent<
+  _TBoard extends Board,
+  _TEffectType extends 'resolveEngagement' = 'resolveEngagement',
+> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
