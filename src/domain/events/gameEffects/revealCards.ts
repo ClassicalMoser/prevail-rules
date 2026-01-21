@@ -2,7 +2,9 @@ import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { REVEAL_CARDS_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the reveal cards game effect. */
+export const REVEAL_CARDS_EFFECT_TYPE = 'revealCards' as const;
 
 /** Event to reveal cards that are awaiting play.
  * Moves both players' awaitingPlay cards to inPlay simultaneously.

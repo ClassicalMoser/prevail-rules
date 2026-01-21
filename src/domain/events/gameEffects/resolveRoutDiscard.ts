@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { RESOLVE_ROUT_DISCARD_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the resolve rout discard game effect. */
+export const RESOLVE_ROUT_DISCARD_EFFECT_TYPE = 'resolveRoutDiscard' as const;
 
 /**
  * An event to resolve discarding cards as a penalty for routed units.

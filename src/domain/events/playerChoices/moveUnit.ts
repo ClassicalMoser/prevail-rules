@@ -12,7 +12,9 @@ import {
 } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { MOVE_UNIT_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the move unit event. */
+export const MOVE_UNIT_CHOICE_TYPE = 'moveUnit' as const;
 
 /** An event to move a unit from one space to another. */
 export interface MoveUnitEvent<TBoard extends Board> {

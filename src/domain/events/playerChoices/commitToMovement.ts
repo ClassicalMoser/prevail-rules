@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { COMMIT_TO_MOVEMENT_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the commit to movement event. */
+export const COMMIT_TO_MOVEMENT_CHOICE_TYPE = 'commitToMovement' as const;
 
 const movementModifierTypes = ['speed', 'flexibility'] as const;
 type MovementModifier = (typeof movementModifierTypes)[number];

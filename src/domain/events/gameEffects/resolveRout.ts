@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { unitInstanceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { RESOLVE_ROUT_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the resolve rout game effect. */
+export const RESOLVE_ROUT_EFFECT_TYPE = 'resolveRout' as const;
 
 /** An event to resolve a rout.
  * A unit that is routed is permanently removed from the game.

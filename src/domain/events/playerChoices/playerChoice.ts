@@ -14,21 +14,48 @@ import type { PerformRangedAttackEvent } from './performRangedAttack';
 import type { SetupUnitsEvent } from './setupUnit';
 
 import { z } from 'zod';
-import { chooseCardEventSchema } from './chooseCard';
-import { chooseMeleeResolutionEventSchema } from './chooseMeleeResolution';
-import { chooseRallyEventSchema } from './chooseRally';
-import { chooseRoutDiscardEventSchema } from './chooseRoutDiscard';
-import { commitToMeleeEventSchema } from './commitToMelee';
-import { commitToMovementEventSchema } from './commitToMovement';
-import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
-import { issueCommandEventSchema } from './issueCommand';
-import { moveCommanderEventSchema } from './moveCommander';
-import { moveUnitEventSchema } from './moveUnit';
-import { performRangedAttackEventSchema } from './performRangedAttack';
-import { setupUnitsEventSchema } from './setupUnit';
+import { CHOOSE_CARD_CHOICE_TYPE, chooseCardEventSchema } from './chooseCard';
+import {
+  CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE,
+  chooseMeleeResolutionEventSchema,
+} from './chooseMeleeResolution';
+import {
+  CHOOSE_RALLY_CHOICE_TYPE,
+  chooseRallyEventSchema,
+} from './chooseRally';
+import {
+  CHOOSE_ROUT_DISCARD_CHOICE_TYPE,
+  chooseRoutDiscardEventSchema,
+} from './chooseRoutDiscard';
+import {
+  COMMIT_TO_MELEE_CHOICE_TYPE,
+  commitToMeleeEventSchema,
+} from './commitToMelee';
+import {
+  COMMIT_TO_MOVEMENT_CHOICE_TYPE,
+  commitToMovementEventSchema,
+} from './commitToMovement';
+import {
+  COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE,
+  commitToRangedAttackEventSchema,
+} from './commitToRangedAttack';
+import {
+  ISSUE_COMMAND_CHOICE_TYPE,
+  issueCommandEventSchema,
+} from './issueCommand';
+import {
+  MOVE_COMMANDER_CHOICE_TYPE,
+  moveCommanderEventSchema,
+} from './moveCommander';
+import { MOVE_UNIT_CHOICE_TYPE, moveUnitEventSchema } from './moveUnit';
+import {
+  PERFORM_RANGED_ATTACK_CHOICE_TYPE,
+  performRangedAttackEventSchema,
+} from './performRangedAttack';
+import { SETUP_UNITS_CHOICE_TYPE, setupUnitsEventSchema } from './setupUnit';
 
-/** Iterable list of valid player choices. */
-export const playerChoices = [
+/** Iterable list of valid player choices. Built from individual event constants. */
+export const playerChoices: readonly [
   'chooseCard',
   'chooseMeleeResolution',
   'chooseRally',
@@ -41,6 +68,19 @@ export const playerChoices = [
   'moveUnit',
   'performRangedAttack',
   'setupUnits',
+] = [
+  CHOOSE_CARD_CHOICE_TYPE,
+  CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE,
+  CHOOSE_RALLY_CHOICE_TYPE,
+  CHOOSE_ROUT_DISCARD_CHOICE_TYPE,
+  COMMIT_TO_MELEE_CHOICE_TYPE,
+  COMMIT_TO_MOVEMENT_CHOICE_TYPE,
+  COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE,
+  ISSUE_COMMAND_CHOICE_TYPE,
+  MOVE_COMMANDER_CHOICE_TYPE,
+  MOVE_UNIT_CHOICE_TYPE,
+  PERFORM_RANGED_ATTACK_CHOICE_TYPE,
+  SETUP_UNITS_CHOICE_TYPE,
 ] as const;
 
 export type PlayerChoiceType = (typeof playerChoices)[number];
@@ -58,30 +98,19 @@ const _assertExactPlayerChoiceType: AssertExact<
 export const playerChoiceTypeSchema: z.ZodType<PlayerChoiceType> =
   _playerChoiceTypeSchemaObject;
 
-/** The type of the choose card event. */
-export const CHOOSE_CARD_CHOICE_TYPE = 'chooseCard';
-/** The type of the choose melee resolution event. */
-export const CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE = 'chooseMeleeResolution';
-/** The type of the choose rally event. */
-export const CHOOSE_RALLY_CHOICE_TYPE = 'chooseRally';
-/** The type of the choose rout discard event. */
-export const CHOOSE_ROUT_DISCARD_CHOICE_TYPE = 'chooseRoutDiscard';
-/** The type of the commit to melee event. */
-export const COMMIT_TO_MELEE_CHOICE_TYPE = 'commitToMelee';
-/** The type of the commit to movement event. */
-export const COMMIT_TO_MOVEMENT_CHOICE_TYPE = 'commitToMovement';
-/** The type of the commit to ranged attack event. */
-export const COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE = 'commitToRangedAttack';
-/** The type of the issue command event. */
-export const ISSUE_COMMAND_CHOICE_TYPE = 'issueCommand';
-/** The type of the move commander event. */
-export const MOVE_COMMANDER_CHOICE_TYPE = 'moveCommander';
-/** The type of the move unit event. */
-export const MOVE_UNIT_CHOICE_TYPE = 'moveUnit';
-/** The type of the perform ranged attack event. */
-export const PERFORM_RANGED_ATTACK_CHOICE_TYPE = 'performRangedAttack';
-/** The type of the setup units event. */
-export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits';
+// Re-export constants for backwards compatibility
+export { CHOOSE_CARD_CHOICE_TYPE } from './chooseCard';
+export { CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE } from './chooseMeleeResolution';
+export { CHOOSE_RALLY_CHOICE_TYPE } from './chooseRally';
+export { CHOOSE_ROUT_DISCARD_CHOICE_TYPE } from './chooseRoutDiscard';
+export { COMMIT_TO_MELEE_CHOICE_TYPE } from './commitToMelee';
+export { COMMIT_TO_MOVEMENT_CHOICE_TYPE } from './commitToMovement';
+export { COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE } from './commitToRangedAttack';
+export { ISSUE_COMMAND_CHOICE_TYPE } from './issueCommand';
+export { MOVE_COMMANDER_CHOICE_TYPE } from './moveCommander';
+export { MOVE_UNIT_CHOICE_TYPE } from './moveUnit';
+export { PERFORM_RANGED_ATTACK_CHOICE_TYPE } from './performRangedAttack';
+export { SETUP_UNITS_CHOICE_TYPE } from './setupUnit';
 
 /** An event that represents a player choice. */
 export type PlayerChoiceEvent<TBoard extends Board> =

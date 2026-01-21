@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { RESOLVE_INITIATIVE_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the resolve initiative game effect. */
+export const RESOLVE_INITIATIVE_EFFECT_TYPE = 'resolveInitiative' as const;
 
 /** The event to resolve the initiative.
  * Which player has initiative for the round.

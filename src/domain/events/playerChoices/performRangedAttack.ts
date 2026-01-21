@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { playerSideSchema, unitWithPlacementSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { PERFORM_RANGED_ATTACK_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the perform ranged attack event. */
+export const PERFORM_RANGED_ATTACK_CHOICE_TYPE = 'performRangedAttack' as const;
 
 export interface PerformRangedAttackEvent<_TBoard extends Board> {
   /** The type of the event. */

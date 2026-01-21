@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { CHOOSE_CARD_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the choose card event. */
+export const CHOOSE_CARD_CHOICE_TYPE = 'chooseCard' as const;
 
 /** An eventto choose a card from the player's hand. */
 export interface ChooseCardEvent<_TBoard extends Board> {

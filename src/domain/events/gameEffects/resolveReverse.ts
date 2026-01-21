@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { unitWithPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { RESOLVE_REVERSE_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the resolve reverse game effect. */
+export const RESOLVE_REVERSE_EFFECT_TYPE = 'resolveReverse' as const;
 
 /** An event to resolve a reverse.
  * A unit that is reversed changes its facing to the opposite

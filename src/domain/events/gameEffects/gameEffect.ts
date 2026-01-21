@@ -19,26 +19,77 @@ import type { ResolveUnitsBrokenEvent } from './resolveUnitsBroken';
 import type { RevealCardsEvent } from './revealCards';
 
 import { z } from 'zod';
-import { completeCleanupPhaseEventSchema } from './completeCleanupPhase';
-import { completeIssueCommandsPhaseEventSchema } from './completeIssueCommandsPhase';
-import { completeMoveCommandersPhaseEventSchema } from './completeMoveCommandersPhase';
-import { completePlayCardsPhaseEventSchema } from './completePlayCardsPhase';
-import { completeResolveMeleePhaseEventSchema } from './completeResolveMeleePhase';
-import { discardPlayedCardsEventSchema } from './discardPlayedCards';
-import { resolveEngagementEventSchema } from './resolveEngagement';
-import { resolveInitiativeEventSchema } from './resolveInitiative';
-import { resolveMeleeEventSchema } from './resolveMelee';
-import { resolveRallyEventSchema } from './resolveRally';
-import { resolveRangedAttackEventSchema } from './resolveRangedAttack';
-import { resolveRetreatEventSchema } from './resolveRetreat';
-import { resolveReverseEventSchema } from './resolveReverse';
-import { resolveRoutEventSchema } from './resolveRout';
-import { resolveRoutDiscardEventSchema } from './resolveRoutDiscard';
-import { resolveUnitsBrokenEventSchema } from './resolveUnitsBroken';
-import { revealCardsEventSchema } from './revealCards';
+import {
+  COMPLETE_CLEANUP_PHASE_EFFECT_TYPE,
+  completeCleanupPhaseEventSchema,
+} from './completeCleanupPhase';
+import {
+  COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
+  completeIssueCommandsPhaseEventSchema,
+} from './completeIssueCommandsPhase';
+import {
+  COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
+  completeMoveCommandersPhaseEventSchema,
+} from './completeMoveCommandersPhase';
+import {
+  COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
+  completePlayCardsPhaseEventSchema,
+} from './completePlayCardsPhase';
+import {
+  COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE,
+  completeResolveMeleePhaseEventSchema,
+} from './completeResolveMeleePhase';
+import {
+  DISCARD_PLAYED_CARDS_EFFECT_TYPE,
+  discardPlayedCardsEventSchema,
+} from './discardPlayedCards';
+import {
+  RESOLVE_ENGAGEMENT_EFFECT_TYPE,
+  resolveEngagementEventSchema,
+} from './resolveEngagement';
+import {
+  RESOLVE_INITIATIVE_EFFECT_TYPE,
+  resolveInitiativeEventSchema,
+} from './resolveInitiative';
+import {
+  RESOLVE_MELEE_EFFECT_TYPE,
+  resolveMeleeEventSchema,
+} from './resolveMelee';
+import {
+  RESOLVE_RALLY_EFFECT_TYPE,
+  resolveRallyEventSchema,
+} from './resolveRally';
+import {
+  RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
+  resolveRangedAttackEventSchema,
+} from './resolveRangedAttack';
+import {
+  RESOLVE_RETREAT_EFFECT_TYPE,
+  resolveRetreatEventSchema,
+} from './resolveRetreat';
+import {
+  RESOLVE_REVERSE_EFFECT_TYPE,
+  resolveReverseEventSchema,
+} from './resolveReverse';
+import {
+  RESOLVE_ROUT_EFFECT_TYPE,
+  resolveRoutEventSchema,
+} from './resolveRout';
+import {
+  RESOLVE_ROUT_DISCARD_EFFECT_TYPE,
+  resolveRoutDiscardEventSchema,
+} from './resolveRoutDiscard';
+import {
+  RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
+  resolveUnitsBrokenEventSchema,
+} from './resolveUnitsBroken';
+import {
+  REVEAL_CARDS_EFFECT_TYPE,
+  revealCardsEventSchema,
+} from './revealCards';
 
-/** Iterable list of valid game effects. */
-export const gameEffects = [
+/** Iterable list of valid game effects. Built from individual event constants. */
+export const gameEffects: readonly [
   'completeCleanupPhase',
   'completeIssueCommandsPhase',
   'completeMoveCommandersPhase',
@@ -56,53 +107,44 @@ export const gameEffects = [
   'resolveRoutDiscard',
   'resolveUnitsBroken',
   'revealCards',
+] = [
+  COMPLETE_CLEANUP_PHASE_EFFECT_TYPE,
+  COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
+  COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
+  COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
+  COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE,
+  DISCARD_PLAYED_CARDS_EFFECT_TYPE,
+  RESOLVE_ENGAGEMENT_EFFECT_TYPE,
+  RESOLVE_INITIATIVE_EFFECT_TYPE,
+  RESOLVE_MELEE_EFFECT_TYPE,
+  RESOLVE_RALLY_EFFECT_TYPE,
+  RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
+  RESOLVE_RETREAT_EFFECT_TYPE,
+  RESOLVE_REVERSE_EFFECT_TYPE,
+  RESOLVE_ROUT_EFFECT_TYPE,
+  RESOLVE_ROUT_DISCARD_EFFECT_TYPE,
+  RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
+  REVEAL_CARDS_EFFECT_TYPE,
 ] as const;
 
-/** The type of the complete cleanup phase game effect. */
-export const COMPLETE_CLEANUP_PHASE_EFFECT_TYPE: 'completeCleanupPhase' =
-  gameEffects[0];
-/** The type of the complete issue commands phase game effect. */
-export const COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE: 'completeIssueCommandsPhase' =
-  gameEffects[1];
-/** The type of the complete move commanders phase game effect. */
-export const COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE: 'completeMoveCommandersPhase' =
-  gameEffects[2];
-/** The type of the complete play cards phase game effect. */
-export const COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE: 'completePlayCardsPhase' =
-  gameEffects[3];
-/** The type of the complete resolve melee phase game effect. */
-export const COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE: 'completeResolveMeleePhase' =
-  gameEffects[4];
-/** The type of the discard played cards game effect. */
-export const DISCARD_PLAYED_CARDS_EFFECT_TYPE: 'discardPlayedCards' =
-  gameEffects[5];
-/** The type of the resolve engagement game effect. */
-export const RESOLVE_ENGAGEMENT_EFFECT_TYPE: 'resolveEngagement' =
-  gameEffects[6];
-/** The type of the resolve initiative game effect. */
-export const RESOLVE_INITIATIVE_EFFECT_TYPE: 'resolveInitiative' =
-  gameEffects[7];
-/** The type of the resolve melee game effect. */
-export const RESOLVE_MELEE_EFFECT_TYPE: 'resolveMelee' = gameEffects[8];
-/** The type of the resolve rally game effect. */
-export const RESOLVE_RALLY_EFFECT_TYPE: 'resolveRally' = gameEffects[9];
-/** The type of the resolve ranged attack game effect. */
-export const RESOLVE_RANGED_ATTACK_EFFECT_TYPE: 'resolveRangedAttack' =
-  gameEffects[10];
-/** The type of the resolve retreat game effect. */
-export const RESOLVE_RETREAT_EFFECT_TYPE: 'resolveRetreat' = gameEffects[11];
-/** The type of the resolve reverse game effect. */
-export const RESOLVE_REVERSE_EFFECT_TYPE: 'resolveReverse' = gameEffects[12];
-/** The type of the resolve rout game effect. */
-export const RESOLVE_ROUT_EFFECT_TYPE: 'resolveRout' = gameEffects[13];
-/** The type of the resolve rout discard game effect. */
-export const RESOLVE_ROUT_DISCARD_EFFECT_TYPE: 'resolveRoutDiscard' =
-  gameEffects[14];
-/** The type of the resolve units broken game effect. */
-export const RESOLVE_UNITS_BROKEN_EFFECT_TYPE: 'resolveUnitsBroken' =
-  gameEffects[15];
-/** The type of the reveal cards game effect. */
-export const REVEAL_CARDS_EFFECT_TYPE: 'revealCards' = gameEffects[16];
+// Re-export constants for backwards compatibility
+export { COMPLETE_CLEANUP_PHASE_EFFECT_TYPE };
+export { COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE };
+export { COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE };
+export { COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE };
+export { COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE };
+export { DISCARD_PLAYED_CARDS_EFFECT_TYPE };
+export { RESOLVE_ENGAGEMENT_EFFECT_TYPE };
+export { RESOLVE_INITIATIVE_EFFECT_TYPE };
+export { RESOLVE_MELEE_EFFECT_TYPE };
+export { RESOLVE_RALLY_EFFECT_TYPE };
+export { RESOLVE_RANGED_ATTACK_EFFECT_TYPE };
+export { RESOLVE_RETREAT_EFFECT_TYPE };
+export { RESOLVE_REVERSE_EFFECT_TYPE };
+export { RESOLVE_ROUT_EFFECT_TYPE };
+export { RESOLVE_ROUT_DISCARD_EFFECT_TYPE };
+export { RESOLVE_UNITS_BROKEN_EFFECT_TYPE };
+export { REVEAL_CARDS_EFFECT_TYPE };
 
 export type GameEffectEvent<TBoard extends Board> =
   | CompleteCleanupPhaseEvent<TBoard>

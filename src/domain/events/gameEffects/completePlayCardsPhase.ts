@@ -2,7 +2,10 @@ import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the complete play cards phase game effect. */
+export const COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE =
+  'completePlayCardsPhase' as const;
 
 /** Event to complete the play cards phase and advance to move commanders phase. */
 export interface CompletePlayCardsPhaseEvent<_TBoard extends Board> {

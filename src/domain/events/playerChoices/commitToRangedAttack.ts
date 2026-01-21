@@ -3,7 +3,10 @@ import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the commit to ranged attack event. */
+export const COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE =
+  'commitToRangedAttack' as const;
 
 const rangedAttackModifierTypes = ['range', 'attack', 'flexibility'] as const;
 type RangedAttackModifier = (typeof rangedAttackModifierTypes)[number];

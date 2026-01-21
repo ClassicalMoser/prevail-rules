@@ -2,7 +2,9 @@ import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { DISCARD_PLAYED_CARDS_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the discard played cards game effect. */
+export const DISCARD_PLAYED_CARDS_EFFECT_TYPE = 'discardPlayedCards' as const;
 
 /**
  * Event to discard played cards.

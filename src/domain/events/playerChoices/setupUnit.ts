@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { playerSideSchema, unitWithPlacementSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { SETUP_UNITS_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the setup units event. */
+export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits' as const;
 
 /** An event to setup multiple units on the board. */
 export interface SetupUnitsEvent<_TBoard extends Board> {

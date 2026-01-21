@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { unitInstanceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { RESOLVE_RANGED_ATTACK_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the resolve ranged attack game effect. */
+export const RESOLVE_RANGED_ATTACK_EFFECT_TYPE = 'resolveRangedAttack' as const;
 
 export interface ResolveRangedAttackEvent<_TBoard extends Board> {
   /** The type of the event. */

@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { CHOOSE_RALLY_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the choose rally event. */
+export const CHOOSE_RALLY_CHOICE_TYPE = 'chooseRally' as const;
 
 /** An event to choose a rally from the player's hand. */
 export interface ChooseRallyEvent<_TBoard extends Board> {

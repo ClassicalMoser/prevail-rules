@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { RESOLVE_RALLY_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the resolve rally game effect. */
+export const RESOLVE_RALLY_EFFECT_TYPE = 'resolveRally' as const;
 
 /** To perform a rally, a player must burn a random card from their played commands.
  * Afterwards, they return all discarded and played cards to their hand.

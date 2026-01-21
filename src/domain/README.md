@@ -91,6 +91,11 @@ Pure functions that extract information from game state without modifying it. Th
 - **Phase Operations**: Round and phase queries
   - `getNextPhase()` - Get the next phase in the round sequence
 
+- **Expected Event** (`expectedEvent/`): Next event expected engine
+  - `getExpectedEvent()` - Determines expected source of next event (player/players/game)
+  - Returns `ExpectedEventInfo` indicating what action should happen next
+  - Routes to phase-specific expected event functions
+
 - **Facing Operations** (`facings/`): Direction calculations
   - `getOppositeFacing()` - Get opposite direction
   - `getLeftFacing()` / `getRightFacing()` - Get relative directions
@@ -131,22 +136,41 @@ State transition functions that apply events to game state. This is the "write" 
 
 **Components:**
 
-- **Rules Engine** (`engine.ts`): Main engine for executing events
-  - ⚠️ **Work In Progress** - The rules engine is currently a stub implementation
-  - **Planned behavior**: Player inputs events → game validates → either applies or rejects
-  - `RulesEngine.execute()` - Execute single event (validation → apply or reject)
-  - `RulesEngine.executeSequence()` - Execute multiple events in sequence
-  - Validates events before applying using domain validation functions
-  - Handles triggered events (e.g., engagement from movement)
-  - Returns results without side effects
+- **Pure Transform Engine** (`applyEvent.ts`): Main engine for applying events
+  - `applyEvent()` - Takes gamestate and event, returns new gamestate (immutable)
+  - Routes events to appropriate state transition functions
+  - Pure function with no side effects
+  - Enables deterministic replay of event streams
 
 - **State Transitions** (`stateTransitions/`): Individual event application functions
   - `applyMoveUnitEvent()` - Apply unit movement
+  - `applyChooseCardEvent()` - Apply card selection
   - (Additional transition functions for each event type)
 
-**Pattern:** Transforms are pure functions that take `(event, state)` and return `newState`. They never mutate input state. The rules engine validates player inputs and either applies the state transition or rejects with errors.
+**Pattern:** Transforms are pure functions that take `(event, state)` and return `newState`. They never mutate input state.
 
-#### 6. **Rule Values** (`ruleValues/`)
+**See [`ENGINES.md`](./ENGINES.md) for complete documentation of the four engines.**
+
+#### 6. **Procedures** (`procedures/`)
+
+Functions that take a gameState and return a gameEffect event. These are used by the game to generate deterministic game effects.
+
+**Components:**
+
+- **Procedure Registry** (`procedureRegistry.ts`): Registry of procedure functions
+  - Maps effect types to their generator functions
+  - `requiresProcedure()` - Helper to check if an effect type needs a procedure
+
+- **Procedure Functions**: Individual procedure generators
+  - `generateResolveRallyEvent()` - Generate rally resolution event
+  - `generateResolveUnitsBrokenEvent()` - Generate units broken resolution event
+  - (Additional procedures for other game effects)
+
+**Pattern:** Procedures are pure functions that generate game effect events based on game state. They may require external input (e.g., random seed) for deterministic results.
+
+**See [`ENGINES.md`](./ENGINES.md) for complete documentation of the four engines.**
+
+#### 7. **Rule Values** (`ruleValues/`)
 
 Game constants and configuration values.
 
@@ -154,14 +178,14 @@ Game constants and configuration values.
 - `gameTypes.ts` - Game type configurations
 - `ruleValues.ts` - General rule constants
 
-#### 7. **Sample Values** (`sampleValues/`)
+#### 8. **Sample Values** (`sampleValues/`)
 
 Placeholder data for development and testing until a permanent database is set up.
 
 - `tempUnits.ts` - Sample unit definitions
 - `tempCommandCards.ts` - Sample command cards
 
-#### 8. **Testing** (`testing/`)
+#### 9. **Testing** (`testing/`)
 
 Test helpers and utilities for writing domain tests.
 
@@ -170,7 +194,7 @@ Test helpers and utilities for writing domain tests.
 - `unitHelpers.ts` - Unit testing utilities
 - `testHelpers.ts` - General test utilities
 
-#### 9. **Utils** (`utils/`)
+#### 10. **Utils** (`utils/`)
 
 General utility functions used across the domain.
 

@@ -2,7 +2,10 @@ import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { COMPLETE_CLEANUP_PHASE_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the complete cleanup phase game effect. */
+export const COMPLETE_CLEANUP_PHASE_EFFECT_TYPE =
+  'completeCleanupPhase' as const;
 
 /** Event to complete the cleanup phase, advance round, and reset to play cards phase. */
 export interface CompleteCleanupPhaseEvent<_TBoard extends Board> {

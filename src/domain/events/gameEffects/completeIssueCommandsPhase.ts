@@ -2,7 +2,10 @@ import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the complete issue commands phase game effect. */
+export const COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE =
+  'completeIssueCommandsPhase' as const;
 
 /** Event to complete the issue commands phase and advance to resolve melee phase. */
 export interface CompleteIssueCommandsPhaseEvent<_TBoard extends Board> {

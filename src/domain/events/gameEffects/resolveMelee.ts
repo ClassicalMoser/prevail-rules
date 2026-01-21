@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { boardCoordinateSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { RESOLVE_MELEE_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the resolve melee game effect. */
+export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;
 
 /** The event for the game resolution of a melee.
  * After the engagement is chosen, supports are applied,

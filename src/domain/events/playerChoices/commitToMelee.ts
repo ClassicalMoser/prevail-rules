@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { COMMIT_TO_MELEE_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the commit to melee event. */
+export const COMMIT_TO_MELEE_CHOICE_TYPE = 'commitToMelee' as const;
 
 const meleeModifierTypes = ['attack', 'defense', 'flexibility'] as const;
 type MeleeModifier = (typeof meleeModifierTypes)[number];

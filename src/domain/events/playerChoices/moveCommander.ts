@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { boardCoordinateSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { MOVE_COMMANDER_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the move commander event. */
+export const MOVE_COMMANDER_CHOICE_TYPE = 'moveCommander' as const;
 
 /** An event to move a commander from one space to another. */
 export interface MoveCommanderEvent<TBoard extends Board> {

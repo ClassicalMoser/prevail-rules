@@ -3,7 +3,10 @@ import type { AssertExact } from '@utils';
 import { boardCoordinateSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the choose melee resolution event. */
+export const CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE =
+  'chooseMeleeResolution' as const;
 
 export interface ChooseMeleeResolutionEvent<TBoard extends Board> {
   /** The type of the event. */

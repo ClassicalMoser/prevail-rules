@@ -4,7 +4,9 @@ import type { AssertExact } from '@utils';
 import { unitWithPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { RESOLVE_RETREAT_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the resolve retreat game effect. */
+export const RESOLVE_RETREAT_EFFECT_TYPE = 'resolveRetreat' as const;
 
 /** An event to resolve a retreat.
  * A retreat is a unit's smallest legal backward movement.

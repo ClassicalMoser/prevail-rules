@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import { commandSchema, playerSideSchema, unitInstanceSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { ISSUE_COMMAND_CHOICE_TYPE } from './playerChoice';
+
+/** The type of the issue command event. */
+export const ISSUE_COMMAND_CHOICE_TYPE = 'issueCommand' as const;
 
 export interface IssueCommandEvent<_TBoard extends Board> {
   /** The type of the event. */

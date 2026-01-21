@@ -2,7 +2,10 @@ import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
-import { COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE } from './gameEffect';
+
+/** The type of the complete move commanders phase game effect. */
+export const COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE =
+  'completeMoveCommandersPhase' as const;
 
 /** Event to complete the move commanders phase and advance to issue commands phase. */
 export interface CompleteMoveCommandersPhaseEvent<_TBoard extends Board> {
