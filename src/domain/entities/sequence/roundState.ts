@@ -37,8 +37,11 @@ type RoundStateSchemaType = z.infer<typeof _roundStateSchemaObject>;
 /**
  * The schema for the state of a round.
  */
-export const roundStateSchema: z.ZodType<RoundState<Board>> = _roundStateSchemaObject;
+export const roundStateSchema: z.ZodType<RoundState<Board>> =
+  _roundStateSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactRoundState: AssertExact<RoundState<Board>, RoundStateSchemaType> =
-  true;
+const _assertExactRoundState: AssertExact<
+  RoundState<Board>,
+  RoundStateSchemaType
+> = true;

@@ -73,8 +73,11 @@ const _phaseStateSchemaObject = z.discriminatedUnion('phase', [
 
 type PhaseStateSchemaType = z.infer<typeof _phaseStateSchemaObject>;
 
-const _assertExactPhaseState: AssertExact<PhaseState<Board>, PhaseStateSchemaType> =
-  true;
+const _assertExactPhaseState: AssertExact<
+  PhaseState<Board>,
+  PhaseStateSchemaType
+> = true;
 
 /** The schema for the state of a phase of a round. */
-export const phaseStateSchema: z.ZodType<PhaseState<Board>> = _phaseStateSchemaObject;
+export const phaseStateSchema: z.ZodType<PhaseState<Board>> =
+  _phaseStateSchemaObject;

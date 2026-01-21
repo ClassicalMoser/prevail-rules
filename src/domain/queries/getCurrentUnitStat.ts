@@ -32,7 +32,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
   const statIsDefense = isDefenseStat(stat).result;
   // Get the side of the unit
   const unitSide = unit.playerSide;
-  
+
   // Get the active card
   const activeCard = gameState.cardState[unitSide].inPlay;
 

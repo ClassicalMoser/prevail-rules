@@ -1,4 +1,10 @@
-import type { Board, CardState, CleanupPhaseState, GameState, RallyResolutionState } from '@entities';
+import type {
+  Board,
+  CardState,
+  CleanupPhaseState,
+  GameState,
+  RallyResolutionState,
+} from '@entities';
 import type { ResolveRallyEvent } from '@events';
 import {
   burnCardFromPlayed,

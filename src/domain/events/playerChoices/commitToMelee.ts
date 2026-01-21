@@ -5,10 +5,8 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { COMMIT_TO_MELEE_CHOICE_TYPE } from './playerChoice';
 
-
 const meleeModifierTypes = ['attack', 'defense', 'flexibility'] as const;
 type MeleeModifier = (typeof meleeModifierTypes)[number];
-
 
 // Type-level guarantee that MeleeModifier extends StatModifier
 const _assertMeleeModifierExtendsStatModifier: [MeleeModifier] extends [

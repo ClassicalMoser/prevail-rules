@@ -38,8 +38,8 @@ const _assertExactChooseCardEvent: AssertExact<
 
 /** The schema for a choose card event. */
 export const chooseCardEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<"playerChoice">;
-  choiceType: z.ZodLiteral<"chooseCard">;
+  eventType: z.ZodLiteral<'playerChoice'>;
+  choiceType: z.ZodLiteral<'chooseCard'>;
   player: z.ZodType<PlayerSide>;
   card: z.ZodType<Card>;
 }> = _chooseCardEventSchemaObject;

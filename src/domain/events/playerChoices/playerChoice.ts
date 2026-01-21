@@ -1,4 +1,4 @@
-import type { Board} from '@entities';
+import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import type { ChooseCardEvent } from './chooseCard';
 import type { ChooseMeleeResolutionEvent } from './chooseMeleeResolution';
@@ -58,7 +58,6 @@ const _assertExactPlayerChoiceType: AssertExact<
 export const playerChoiceTypeSchema: z.ZodType<PlayerChoiceType> =
   _playerChoiceTypeSchemaObject;
 
-
 /** The type of the choose card event. */
 export const CHOOSE_CARD_CHOICE_TYPE = 'chooseCard';
 /** The type of the choose melee resolution event. */
@@ -83,7 +82,6 @@ export const MOVE_UNIT_CHOICE_TYPE = 'moveUnit';
 export const PERFORM_RANGED_ATTACK_CHOICE_TYPE = 'performRangedAttack';
 /** The type of the setup units event. */
 export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits';
-
 
 /** An event that represents a player choice. */
 export type PlayerChoiceEvent<TBoard extends Board> =

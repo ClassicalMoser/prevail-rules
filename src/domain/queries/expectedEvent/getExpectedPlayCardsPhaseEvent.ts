@@ -1,8 +1,4 @@
-import type {
-  Board,
-  ExpectedEventInfo,
-  GameState,
-} from '@entities';
+import type { Board, ExpectedEventInfo, GameState } from '@entities';
 
 /**
  * Gets information about the expected event for the PlayCards phase.
@@ -11,7 +7,7 @@ import type {
  * @returns Information about what event is expected
  */
 export function getExpectedPlayCardsPhaseEvent<TBoard extends Board>(
-  state: GameState<TBoard>
+  state: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
   const phaseState = state.currentRoundState.currentPhaseState;
   if (!phaseState) {

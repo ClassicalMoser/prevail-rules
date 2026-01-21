@@ -1,4 +1,4 @@
-import type { Board, UnitPresence  } from '@entities';
+import type { Board, UnitPresence } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitPresenceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';

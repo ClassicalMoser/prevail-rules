@@ -1,10 +1,4 @@
-import type {
-  Board,
-  ExpectedEventInfo,
-  GameState,
-  MoveCommandersPhaseState,
-  RoundState,
-} from '@entities';
+import type { Board, ExpectedEventInfo, GameState } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 
 /**
@@ -14,7 +8,7 @@ import { getOtherPlayer } from '@queries/getOtherPlayer';
  * @returns Information about what event is expected
  */
 export function getExpectedMoveCommandersPhaseEvent<TBoard extends Board>(
-  state: GameState<TBoard>
+  state: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
   const phaseState = state.currentRoundState.currentPhaseState;
 

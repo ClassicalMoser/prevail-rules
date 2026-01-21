@@ -11,7 +11,9 @@ import { expectedPlayerInputSchema } from './expectedPlayerInput';
  * Discriminated union of all expected event types.
  * Used by orchestrator to determine what action to take next.
  */
-export type ExpectedEventInfo<TBoard extends Board> = ExpectedPlayerInput<TBoard> | ExpectedGameEffect<TBoard>;
+export type ExpectedEventInfo<TBoard extends Board> =
+  | ExpectedPlayerInput<TBoard>
+  | ExpectedGameEffect<TBoard>;
 
 const _expectedEventInfoSchemaObject = z.discriminatedUnion('actionType', [
   expectedPlayerInputSchema,

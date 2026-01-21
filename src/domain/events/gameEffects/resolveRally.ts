@@ -1,4 +1,4 @@
-import type { Board, Card, PlayerSide  } from '@entities';
+import type { Board, Card, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';

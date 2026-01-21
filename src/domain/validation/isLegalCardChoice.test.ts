@@ -1,4 +1,4 @@
-import type { Card, CardState, StandardBoard  } from '@entities';
+import type { Card, CardState, StandardBoard } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import { commandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';

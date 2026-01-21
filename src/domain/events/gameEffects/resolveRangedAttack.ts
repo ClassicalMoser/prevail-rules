@@ -1,4 +1,4 @@
-import type { Board, UnitInstance  } from '@entities';
+import type { Board, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitInstanceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
