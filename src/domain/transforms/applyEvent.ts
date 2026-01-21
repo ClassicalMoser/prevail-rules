@@ -11,27 +11,9 @@
  */
 
 import type { Board, GameState } from '@entities';
-import type { Event, GameEffectEvent, PlayerChoiceEvent } from '@events';
-import {
-  applyChooseCardEvent,
-  applyChooseMeleeEvent,
-  applyChooseRallyEvent,
-  applyChooseRoutDiscardEvent,
-  applyCompleteCleanupPhaseEvent,
-  applyCompleteIssueCommandsPhaseEvent,
-  applyCompleteMoveCommandersPhaseEvent,
-  applyCompletePlayCardsPhaseEvent,
-  applyCompleteResolveMeleePhaseEvent,
-  applyDiscardPlayedCardsEvent,
-  applyMoveCommanderEvent,
-  applyMoveUnitEvent,
-  applyResolveInitiativeEvent,
-  applyResolveRallyEvent,
-  applyResolveRoutDiscardEvent,
-  applyResolveUnitsBrokenEvent,
-  applyRevealCardsEvent,
-  applySetupUnitsEvent,
-} from './stateTransitions';
+import type { Event } from '@events';
+import { applyGameEffectEvent } from './applyGameEffectEvent';
+import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
 /**
  * Applies an event to the game state, returning a new immutable game state.
@@ -64,94 +46,5 @@ export function applyEvent<TBoard extends Board>(
     throw new Error(
       `Unknown event type: ${(event as Event<TBoard>).eventType}`,
     );
-  }
-}
-
-/**
- * Routes player choice events to their corresponding apply functions.
- */
-function applyPlayerChoiceEvent<TBoard extends Board>(
-  event: PlayerChoiceEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
-  switch (event.choiceType) {
-    case 'chooseCard':
-      return applyChooseCardEvent(event, state);
-    case 'chooseMeleeResolution':
-      return applyChooseMeleeEvent(event, state);
-    case 'chooseRally':
-      return applyChooseRallyEvent(event, state);
-    case 'chooseRoutDiscard':
-      return applyChooseRoutDiscardEvent(event, state);
-    case 'moveCommander':
-      return applyMoveCommanderEvent(event, state);
-    case 'moveUnit':
-      return applyMoveUnitEvent(event, state);
-    case 'setupUnits':
-      return applySetupUnitsEvent(event, state);
-    case 'commitToMelee':
-    case 'commitToMovement':
-    case 'commitToRangedAttack':
-    case 'issueCommand':
-    case 'performRangedAttack':
-      throw new Error(
-        `Event type ${event.choiceType} is not yet implemented in the transform engine`,
-      );
-    default: {
-      // Exhaustiveness check for TypeScript
-      const _exhaustive: never = event;
-      throw new Error(
-        `Unknown player choice event type: ${(_exhaustive as PlayerChoiceEvent<TBoard>).choiceType}`,
-      );
-    }
-  }
-}
-
-/**
- * Routes game effect events to their corresponding apply functions.
- */
-function applyGameEffectEvent<TBoard extends Board>(
-  event: GameEffectEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
-  switch (event.effectType) {
-    case 'completeCleanupPhase':
-      return applyCompleteCleanupPhaseEvent(event, state);
-    case 'completeIssueCommandsPhase':
-      return applyCompleteIssueCommandsPhaseEvent(event, state);
-    case 'completeMoveCommandersPhase':
-      return applyCompleteMoveCommandersPhaseEvent(event, state);
-    case 'completePlayCardsPhase':
-      return applyCompletePlayCardsPhaseEvent(event, state);
-    case 'completeResolveMeleePhase':
-      return applyCompleteResolveMeleePhaseEvent(event, state);
-    case 'discardPlayedCards':
-      return applyDiscardPlayedCardsEvent(event, state);
-    case 'resolveInitiative':
-      return applyResolveInitiativeEvent(event, state);
-    case 'resolveRally':
-      return applyResolveRallyEvent(event, state);
-    case 'resolveRoutDiscard':
-      return applyResolveRoutDiscardEvent(event, state);
-    case 'resolveUnitsBroken':
-      return applyResolveUnitsBrokenEvent(event, state);
-    case 'revealCards':
-      return applyRevealCardsEvent(event, state);
-    case 'resolveEngagement':
-    case 'resolveMelee':
-    case 'resolveRangedAttack':
-    case 'resolveRetreat':
-    case 'resolveReverse':
-    case 'resolveRout':
-      throw new Error(
-        `Event type ${event.effectType} is not yet implemented in the transform engine`,
-      );
-    default: {
-      // Exhaustiveness check for TypeScript
-      const _exhaustive: never = event;
-      throw new Error(
-        `Unknown game effect event type: ${(_exhaustive as GameEffectEvent<TBoard>).effectType}`,
-      );
-    }
   }
 }
