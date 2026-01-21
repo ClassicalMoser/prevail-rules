@@ -1,7 +1,21 @@
 import type { Board, GameState } from '@entities';
 import type { GameEffectEvent, GameEffectType } from '@events';
+import { generateCompleteCleanupPhaseEvent } from './generateCompleteCleanupPhaseEvent';
+import { generateCompleteIssueCommandsPhaseEvent } from './generateCompleteIssueCommandsPhaseEvent';
+import { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMoveCommandersPhaseEvent';
+import { generateCompletePlayCardsPhaseEvent } from './generateCompletePlayCardsPhaseEvent';
+import { generateCompleteResolveMeleePhaseEvent } from './generateCompleteResolveMeleePhaseEvent';
+import { generateDiscardPlayedCardsEvent } from './generateDiscardPlayedCardsEvent';
+import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent';
 import { generateResolveRallyEvent } from './generateResolveRallyEvent';
 import { generateResolveUnitsBrokenEvent } from './generateResolveUnitsBrokenEvent';
+import { generateRevealCardsEvent } from './generateRevealCardsEvent';
+
+// Import the unfiltered union type for the implementation signature
+type GameEffectEventUnion<TBoard extends Board> = GameEffectEvent<
+  TBoard,
+  GameEffectType
+>;
 
 /**
  * Generates a game effect event using the appropriate procedure
@@ -26,27 +40,102 @@ import { generateResolveUnitsBrokenEvent } from './generateResolveUnitsBrokenEve
  * // event is ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'>
  * ```
  */
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'resolveRally',
+): GameEffectEvent<TBoard, 'resolveRally'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'resolveUnitsBroken',
+): GameEffectEvent<TBoard, 'resolveUnitsBroken'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'completeCleanupPhase',
+): GameEffectEvent<TBoard, 'completeCleanupPhase'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'completeIssueCommandsPhase',
+): GameEffectEvent<TBoard, 'completeIssueCommandsPhase'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'completeMoveCommandersPhase',
+): GameEffectEvent<TBoard, 'completeMoveCommandersPhase'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'completePlayCardsPhase',
+): GameEffectEvent<TBoard, 'completePlayCardsPhase'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'completeResolveMeleePhase',
+): GameEffectEvent<TBoard, 'completeResolveMeleePhase'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'discardPlayedCards',
+): GameEffectEvent<TBoard, 'discardPlayedCards'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'resolveInitiative',
+): GameEffectEvent<TBoard, 'resolveInitiative'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'revealCards',
+): GameEffectEvent<TBoard, 'revealCards'>;
 export function generateEventFromProcedure<
   TBoard extends Board,
   TGameEffectType extends GameEffectType,
 >(
   state: GameState<TBoard>,
   effectType: TGameEffectType,
-): GameEffectEvent<TBoard, TGameEffectType> {
+): GameEffectEventUnion<TBoard> {
   switch (effectType) {
     case 'resolveRally': {
-      return generateResolveRallyEvent(state);
+      return generateResolveRallyEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'resolveRally'
+      >;
     }
     case 'resolveUnitsBroken': {
-      return generateResolveUnitsBrokenEvent(state);
+      return generateResolveUnitsBrokenEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'resolveUnitsBroken'
+      >;
     }
     case 'completeCleanupPhase':
+      return generateCompleteCleanupPhaseEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'completeCleanupPhase'
+      >;
     case 'completeIssueCommandsPhase':
+      return generateCompleteIssueCommandsPhaseEvent(
+        state,
+      ) satisfies GameEffectEvent<TBoard, 'completeIssueCommandsPhase'>;
     case 'completeMoveCommandersPhase':
+      return generateCompleteMoveCommandersPhaseEvent(
+        state,
+      ) satisfies GameEffectEvent<TBoard, 'completeMoveCommandersPhase'>;
     case 'completePlayCardsPhase':
+      return generateCompletePlayCardsPhaseEvent(
+        state,
+      ) satisfies GameEffectEvent<TBoard, 'completePlayCardsPhase'>;
     case 'completeResolveMeleePhase':
+      return generateCompleteResolveMeleePhaseEvent(
+        state,
+      ) satisfies GameEffectEvent<TBoard, 'completeResolveMeleePhase'>;
     case 'discardPlayedCards':
+      return generateDiscardPlayedCardsEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'discardPlayedCards'
+      >;
     case 'resolveInitiative':
+      return generateResolveInitiativeEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'resolveInitiative'
+      >;
+    case 'revealCards':
+      return generateRevealCardsEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'revealCards'
+      >;
     case 'resolveEngagement':
     case 'resolveMelee':
     case 'resolveRangedAttack':
@@ -54,7 +143,6 @@ export function generateEventFromProcedure<
     case 'resolveReverse':
     case 'resolveRout':
     case 'resolveRoutDiscard':
-    case 'revealCards':
       throw new Error(`No procedure exists for effect type: ${effectType}`);
 
     default: {

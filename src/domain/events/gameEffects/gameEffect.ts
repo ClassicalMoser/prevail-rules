@@ -61,10 +61,11 @@ export const gameEffects = [
 /** Type for all valid game effect types. */
 export type GameEffectType = (typeof gameEffects)[number];
 
-export type GameEffectEvent<
-  TBoard extends Board,
-  _TGameEffectType extends GameEffectType,
-> =
+/**
+ * Base union of all game effect events (unfiltered).
+ * Used internally to create filtered types.
+ */
+type GameEffectEventUnion<TBoard extends Board> =
   | CompleteCleanupPhaseEvent<TBoard, 'completeCleanupPhase'>
   | CompleteIssueCommandsPhaseEvent<TBoard, 'completeIssueCommandsPhase'>
   | CompleteMoveCommandersPhaseEvent<TBoard, 'completeMoveCommandersPhase'>
@@ -82,6 +83,16 @@ export type GameEffectEvent<
   | ResolveRoutDiscardEvent<TBoard, 'resolveRoutDiscard'>
   | ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'>
   | RevealCardsEvent<TBoard, 'revealCards'>;
+
+/**
+ * Game effect event type filtered by effect type.
+ * Extracts only the event type that matches the specified effectType.
+ * This ensures type safety - GameEffectEvent<TBoard, 'resolveRally'> is ONLY ResolveRallyEvent.
+ */
+export type GameEffectEvent<
+  TBoard extends Board,
+  TGameEffectType extends GameEffectType,
+> = Extract<GameEffectEventUnion<TBoard>, { effectType: TGameEffectType }>;
 
 const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeCleanupPhaseEventSchema,

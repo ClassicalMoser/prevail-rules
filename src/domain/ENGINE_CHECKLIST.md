@@ -96,14 +96,22 @@ This document tracks the implementation status of all four engines. Use this to 
 
 **Status:** ✅ Registry structure complete, procedures in progress
 
-### Procedures Needed (to be determined)
+### Procedures Implemented
 
-Some game effects require procedures to generate them deterministically. The following are confirmed:
+Game effects that require procedures to generate them deterministically:
 
+- [x] `completeCleanupPhase` → `generateCompleteCleanupPhaseEvent`
+- [x] `completeIssueCommandsPhase` → `generateCompleteIssueCommandsPhaseEvent`
+- [x] `completeMoveCommandersPhase` → `generateCompleteMoveCommandersPhaseEvent`
+- [x] `completePlayCardsPhase` → `generateCompletePlayCardsPhaseEvent`
+- [x] `completeResolveMeleePhase` → `generateCompleteResolveMeleePhaseEvent`
+- [x] `discardPlayedCards` → `generateDiscardPlayedCardsEvent`
+- [x] `resolveInitiative` → `generateResolveInitiativeEvent`
 - [x] `resolveRally` → `generateResolveRallyEvent`
 - [x] `resolveUnitsBroken` → `generateResolveUnitsBrokenEvent`
+- [x] `revealCards` → `generateRevealCardsEvent`
 
-### Potential Procedures (need to determine which effects need procedures)
+### Procedures Still Needed
 
 - [ ] `resolveEngagement` → `generateResolveEngagementEvent` (if needed)
 - [ ] `resolveMelee` → `generateResolveMeleeEvent` (if needed)
@@ -111,10 +119,11 @@ Some game effects require procedures to generate them deterministically. The fol
 - [ ] `resolveRetreat` → `generateResolveRetreatEvent` (if needed)
 - [ ] `resolveReverse` → `generateResolveReverseEvent` (if needed)
 - [ ] `resolveRout` → `generateResolveRoutEvent` (if needed)
+- [ ] `resolveRoutDiscard` → `generateResolveRoutDiscardEvent` (if needed)
 
-**Note:** Not all game effects need procedures. Some are simple state transitions that can be created directly. Need to determine which effects require deterministic generation based on game state.
+**Note:** Not all game effects need procedures. Some are simple state transitions that can be created directly. Procedures are needed for effects that require deterministic generation based on game state (calculations, randomness, etc.).
 
-**Progress:** 2/2 confirmed (100% of known procedures), but more may be needed
+**Progress:** 10/17 identified (59%) - 10 implemented, 7 remaining to determine/implement
 
 ---
 
@@ -144,7 +153,7 @@ Some game effects require procedures to generate them deterministically. The fol
 | --------------------------------- | -------------- | ------------------------------------ |
 | **1. Pure Transform Engine**      | 🟡 In Progress | 18/30 events (60%)                   |
 | **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)                     |
-| **3. Procedure Library**          | 🟡 In Progress | 2/2 known (100%), more may be needed |
+| **3. Procedure Library**          | 🟡 In Progress | 10/17 identified (59%) |
 | **4. Next Event Expected Engine** | 🟡 In Progress | 3/5 phases (60%)                     |
 
 ## Priority Work Items

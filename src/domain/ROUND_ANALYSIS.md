@@ -34,7 +34,7 @@ A round consists of 5 phases in order:
 |--------|--------|-------|
 | **1. Transform** | ✅ Complete | `applyRevealCardsEvent` implemented |
 | **2. Validation** | ✅ Complete | Phase validation checks for `revealCards` |
-| **3. Procedure** | ❓ Unknown | Does `revealCards` need a procedure? (Likely not - simple state transition) |
+| **3. Procedure** | ✅ Complete | `generateRevealCardsEvent` ✅ |
 | **4. Next Event** | ✅ Complete | Returns `gameEffect` / `revealCards` |
 
 ### Step 3: `assignInitiative`
@@ -44,7 +44,7 @@ A round consists of 5 phases in order:
 |--------|--------|-------|
 | **1. Transform** | ✅ Complete | `applyResolveInitiativeEvent` implemented |
 | **2. Validation** | ✅ Complete | Phase validation checks for `resolveInitiative` |
-| **3. Procedure** | ❓ Unknown | Does `resolveInitiative` need a procedure? (Likely yes - calculates initiative) |
+| **3. Procedure** | ✅ Complete | `generateResolveInitiativeEvent` ✅ |
 | **4. Next Event** | ✅ Complete | Returns `gameEffect` / `resolveInitiative` |
 
 ### Step 4: `complete`
@@ -54,7 +54,7 @@ A round consists of 5 phases in order:
 |--------|--------|-------|
 | **1. Transform** | ✅ Complete | `applyCompletePlayCardsPhaseEvent` implemented |
 | **2. Validation** | ✅ Complete | Phase validation checks for `completePlayCardsPhase` |
-| **3. Procedure** | N/A | Simple phase transition, no procedure needed |
+| **3. Procedure** | ✅ Complete | `generateCompletePlayCardsPhaseEvent` ✅ |
 | **4. Next Event** | ✅ Complete | Returns `gameEffect` / `completePlayCardsPhase` |
 
 **Phase 1 Summary:** ✅ **Fully Complete** - All engines handle all steps
@@ -92,7 +92,7 @@ A round consists of 5 phases in order:
 |--------|--------|-------|
 | **1. Transform** | ✅ Complete | `applyCompleteMoveCommandersPhaseEvent` implemented |
 | **2. Validation** | ✅ Complete | Phase validation checks for `completeMoveCommandersPhase` |
-| **3. Procedure** | N/A | Simple phase transition, no procedure needed |
+| **3. Procedure** | ✅ Complete | `generateCompleteMoveCommandersPhaseEvent` ✅ |
 | **4. Next Event** | ✅ Complete | Returns `gameEffect` / `completeMoveCommandersPhase` |
 
 **Phase 2 Summary:** ✅ **Fully Complete** - All engines handle all steps
@@ -150,7 +150,7 @@ A round consists of 5 phases in order:
 |--------|--------|-------|
 | **1. Transform** | ✅ Complete | `applyCompleteIssueCommandsPhaseEvent` implemented |
 | **2. Validation** | ❌ **Missing** | Phase validation not implemented |
-| **3. Procedure** | N/A | Simple phase transition, no procedure needed |
+| **3. Procedure** | ✅ Complete | `generateCompleteIssueCommandsPhaseEvent` ✅ |
 | **4. Next Event** | ❌ **Missing** | `getExpectedIssueCommandsPhaseEvent` not implemented |
 
 **Phase 3 Summary:** ❌ **Critical Blocker** - Missing:
@@ -187,7 +187,7 @@ A round consists of 5 phases in order:
 |--------|--------|-------|
 | **1. Transform** | ✅ Complete | `applyCompleteResolveMeleePhaseEvent` implemented |
 | **2. Validation** | ❌ **Missing** | Phase validation not implemented |
-| **3. Procedure** | N/A | Simple phase transition, no procedure needed |
+| **3. Procedure** | ✅ Complete | `generateCompleteResolveMeleePhaseEvent` ✅ |
 | **4. Next Event** | ❌ **Missing** | `getExpectedResolveMeleePhaseEvent` not implemented |
 
 **Phase 4 Summary:** ❌ **Critical Blocker** - Missing:
@@ -210,7 +210,7 @@ A round consists of 5 phases in order:
 |--------|--------|-------|
 | **1. Transform** | ✅ Complete | `applyDiscardPlayedCardsEvent` implemented |
 | **2. Validation** | ✅ Complete | Phase validation checks for `discardPlayedCards` |
-| **3. Procedure** | N/A | Simple state transition, no procedure needed |
+| **3. Procedure** | ✅ Complete | `generateDiscardPlayedCardsEvent` ✅ |
 | **4. Next Event** | ✅ Complete | Returns `gameEffect` / `discardPlayedCards` |
 
 ### Step 2: `firstPlayerChooseRally`
@@ -264,7 +264,7 @@ A round consists of 5 phases in order:
 |--------|--------|-------|
 | **1. Transform** | ✅ Complete | `applyCompleteCleanupPhaseEvent` implemented |
 | **2. Validation** | ✅ Complete | Phase validation checks for `completeCleanupPhase` |
-| **3. Procedure** | N/A | Simple phase transition, no procedure needed |
+| **3. Procedure** | ✅ Complete | `generateCompleteCleanupPhaseEvent` ✅ |
 | **4. Next Event** | ✅ Complete | Returns `gameEffect` / `completeCleanupPhase` |
 
 **Phase 5 Summary:** ✅ **Fully Complete** - All engines handle all steps
