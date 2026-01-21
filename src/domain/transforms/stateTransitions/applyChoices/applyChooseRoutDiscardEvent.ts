@@ -12,7 +12,7 @@ import { getOtherPlayer } from '@queries';
  * @returns A new game state with the rout discard choice recorded
  */
 export function applyChooseRoutDiscardEvent<TBoard extends Board>(
-  event: ChooseRoutDiscardEvent,
+  event: ChooseRoutDiscardEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, cardIds } = event;

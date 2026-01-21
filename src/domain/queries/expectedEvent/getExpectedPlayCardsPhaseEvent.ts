@@ -2,8 +2,6 @@ import type {
   Board,
   ExpectedEventInfo,
   GameState,
-  PlayCardsPhaseState,
-  RoundState,
 } from '@entities';
 
 /**
@@ -13,11 +11,12 @@ import type {
  * @returns Information about what event is expected
  */
 export function getExpectedPlayCardsPhaseEvent<TBoard extends Board>(
-  state: GameState<TBoard> & {
-    currentRoundState: RoundState<TBoard> & { currentPhaseState: PlayCardsPhaseState };
-  },
-): ExpectedEventInfo {
+  state: GameState<TBoard>
+): ExpectedEventInfo<TBoard> {
   const phaseState = state.currentRoundState.currentPhaseState;
+  if (!phaseState) {
+    throw new Error('No current phase state found');
+  }
 
   switch (phaseState.step) {
     case 'chooseCards':

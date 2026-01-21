@@ -11,7 +11,7 @@ import type { ResolveInitiativeEvent } from '@events';
  * @returns A new game state with initiative assigned
  */
 export function applyResolveInitiativeEvent<TBoard extends Board>(
-  event: ResolveInitiativeEvent,
+  event: ResolveInitiativeEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;

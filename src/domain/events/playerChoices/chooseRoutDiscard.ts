@@ -28,7 +28,7 @@ const _chooseRoutDiscardEventSchemaObject = z.object({
   /** The player who is discarding cards. */
   player: playerSideSchema,
   /** The IDs of the cards being discarded (from hand). */
-  cardIds: z.array(z.uuid()),
+  cardIds: z.array(z.string()),
 });
 
 type ChooseRoutDiscardEventSchemaType = z.infer<

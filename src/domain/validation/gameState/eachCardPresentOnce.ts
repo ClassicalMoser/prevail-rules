@@ -124,14 +124,14 @@ export function eachCardPresentOnce(
     // Validate each player's state
     const blackPlayerValid = validatePlayerState(
       blackStartingHand,
-      cardState.blackPlayer,
+      cardState.black,
     );
     if (!blackPlayerValid.result) {
       return blackPlayerValid;
     }
     const whitePlayerValid = validatePlayerState(
       whiteStartingHand,
-      cardState.whitePlayer,
+      cardState.white,
     );
     if (!whitePlayerValid.result) {
       return whitePlayerValid;

@@ -11,7 +11,7 @@ import { MOVE_COMMANDERS_PHASE } from '@entities';
  * @returns A new game state with the phase advanced
  */
 export function applyCompletePlayCardsPhaseEvent<TBoard extends Board>(
-  event: CompletePlayCardsPhaseEvent,
+  event: CompletePlayCardsPhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;

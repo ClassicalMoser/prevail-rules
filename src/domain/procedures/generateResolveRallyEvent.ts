@@ -30,7 +30,7 @@ export function generateResolveRallyEvent<TBoard extends Board>(
   state: GameState<TBoard>,
   player: PlayerSide,
   randomSeed: number,
-): ResolveRallyEvent {
+): ResolveRallyEvent<TBoard> {
   const playedCards = state.cardState[player].played;
 
   if (playedCards.length === 0) {

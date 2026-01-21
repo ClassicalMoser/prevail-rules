@@ -21,7 +21,7 @@ import type { ChooseCardEvent } from '@events';
  * ```
  */
 export function isValidChooseCardEvent<TBoard extends Board>(
-  event: ChooseCardEvent,
+  event: ChooseCardEvent<TBoard>,
   state: GameState<TBoard>,
 ): ValidationResult {
   try {

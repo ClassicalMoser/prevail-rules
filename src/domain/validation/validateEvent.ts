@@ -101,7 +101,7 @@ export function validateEvent<TBoard extends Board>(
     default:
       return {
         result: false,
-        errorReason: `Invalid phase: ${currentPhase.phase}`,
+        errorReason: `Invalid phase: ${currentPhase}`,
       };
   }
 }

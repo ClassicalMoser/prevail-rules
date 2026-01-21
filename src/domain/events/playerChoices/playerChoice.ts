@@ -45,6 +45,19 @@ export const playerChoices = [
 
 export type PlayerChoiceType = (typeof playerChoices)[number];
 
+const _playerChoiceTypeSchemaObject = z.enum(playerChoices);
+
+type PlayerChoiceTypeSchemaType = z.infer<typeof _playerChoiceTypeSchemaObject>;
+
+const _assertExactPlayerChoiceType: AssertExact<
+  PlayerChoiceType,
+  PlayerChoiceTypeSchemaType
+> = true;
+
+/** The schema for a player choice type. */
+export const playerChoiceTypeSchema: z.ZodType<PlayerChoiceType> =
+  _playerChoiceTypeSchemaObject;
+
 
 /** The type of the choose card event. */
 export const CHOOSE_CARD_CHOICE_TYPE = 'chooseCard';
@@ -70,6 +83,7 @@ export const MOVE_UNIT_CHOICE_TYPE = 'moveUnit';
 export const PERFORM_RANGED_ATTACK_CHOICE_TYPE = 'performRangedAttack';
 /** The type of the setup units event. */
 export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits';
+
 
 /** An event that represents a player choice. */
 export type PlayerChoiceEvent<TBoard extends Board> =

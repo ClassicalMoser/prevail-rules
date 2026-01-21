@@ -28,5 +28,5 @@ const _assertExactExpectedEventInfo: AssertExact<
 > = true;
 
 /** The schema for expected event info. */
-export const expectedEventInfoSchema: z.ZodType<ExpectedEventInfo> =
+export const expectedEventInfoSchema: z.ZodType<ExpectedEventInfo<Board>> =
   _expectedEventInfoSchemaObject;

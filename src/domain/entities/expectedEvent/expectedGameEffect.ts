@@ -1,3 +1,4 @@
+import type { Board } from '@entities/board';
 import type { AssertExact } from '@utils';
 import { gameEffects } from '@events';
 import { z } from 'zod';
@@ -8,7 +9,7 @@ export type GameEffectType = (typeof gameEffects)[number];
 /**
  * Expected event is a game effect (deterministic action).
  */
-export interface ExpectedGameEffect {
+export interface ExpectedGameEffect<_TBoard extends Board> {
   /** Discriminator for the union. */
   actionType: 'gameEffect';
   /** The specific effect type expected (e.g., 'resolveRally', 'revealCards'). */
@@ -25,7 +26,7 @@ type ExpectedGameEffectSchemaType = z.infer<
 >;
 
 const _assertExactExpectedGameEffect: AssertExact<
-  ExpectedGameEffect,
+  ExpectedGameEffect<Board>,
   ExpectedGameEffectSchemaType
 > = true;
 

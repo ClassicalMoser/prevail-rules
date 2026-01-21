@@ -23,7 +23,7 @@ import {
  * @returns A new game state with units routed
  */
 export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
-  event: ResolveUnitsBrokenEvent,
+  event: ResolveUnitsBrokenEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, unitTypes } = event;

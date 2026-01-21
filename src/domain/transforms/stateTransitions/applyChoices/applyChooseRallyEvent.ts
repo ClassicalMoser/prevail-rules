@@ -12,7 +12,7 @@ import { getOtherPlayer } from '@queries';
  * @returns A new game state with the step advanced
  */
 export function applyChooseRallyEvent<TBoard extends Board>(
-  event: ChooseRallyEvent,
+  event: ChooseRallyEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, performRally } = event;
@@ -55,6 +55,7 @@ export function applyChooseRallyEvent<TBoard extends Board>(
           playerRallied: false,
           rallyResolved: false,
           unitsLostSupport: undefined,
+          routDiscardState: undefined,
         },
         // Resolution skipped, next player to choose rally
         step: 'secondPlayerChooseRally',
@@ -86,6 +87,7 @@ export function applyChooseRallyEvent<TBoard extends Board>(
           playerRallied: false,
           rallyResolved: false,
           unitsLostSupport: undefined,
+          routDiscardState: undefined,
         },
         // Resolution skipped, next player to choose rally
         step: 'complete',

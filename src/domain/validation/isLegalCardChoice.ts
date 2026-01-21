@@ -1,4 +1,4 @@
-import type { Card, CardState, ValidationResult } from '@entities';
+import type { Board, Card, CardState, ValidationResult } from '@entities';
 import type { ChooseCardEvent } from '@events';
 
 /**
@@ -8,19 +8,19 @@ import type { ChooseCardEvent } from '@events';
  * @param chooseCardEvent - The card choice event to validate
  * @returns True if the card is in the player's hand, false otherwise
  */
-export function isLegalCardChoice(
+export function isLegalCardChoice<TBoard extends Board>(
   cardState: CardState,
-  chooseCardEvent: ChooseCardEvent,
+  chooseCardEvent: ChooseCardEvent<TBoard>,
 ): ValidationResult {
   try {
     const { card } = chooseCardEvent;
     let playerHand: Card[];
     switch (chooseCardEvent.player) {
       case 'black':
-        playerHand = cardState.blackPlayer.inHand;
+        playerHand = cardState.black.inHand;
         break;
       case 'white':
-        playerHand = cardState.whitePlayer.inHand;
+        playerHand = cardState.white.inHand;
         break;
     }
     const isInHand = playerHand.includes(card);

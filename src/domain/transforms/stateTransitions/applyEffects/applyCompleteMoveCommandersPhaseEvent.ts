@@ -13,7 +13,7 @@ import { getOtherPlayer } from '@queries';
  * @returns A new game state with the phase advanced
  */
 export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
-  event: CompleteMoveCommandersPhaseEvent,
+  event: CompleteMoveCommandersPhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;

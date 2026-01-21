@@ -24,7 +24,7 @@ describe('eachCardPresentOnce', () => {
     whiteBurnt?: Card[],
   ): CardState {
     return {
-      blackPlayer: {
+      black: {
         inHand: [...blackHand],
         awaitingPlay: blackAwaitingPlay ?? commandCards[0],
         inPlay: blackInPlay ?? commandCards[1],
@@ -32,7 +32,7 @@ describe('eachCardPresentOnce', () => {
         discarded: blackDiscarded ?? [],
         burnt: blackBurnt ?? [],
       },
-      whitePlayer: {
+      white: {
         inHand: [...whiteHand],
         awaitingPlay: whiteAwaitingPlay ?? commandCards[0],
         inPlay: whiteInPlay ?? commandCards[1],

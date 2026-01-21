@@ -28,7 +28,7 @@ import { getPlayerUnitsOnBoard, getSupportedUnitTypes } from '@queries';
 export function generateResolveUnitsBrokenEvent<TBoard extends Board>(
   state: GameState<TBoard>,
   player: PlayerSide,
-): ResolveUnitsBrokenEvent {
+): ResolveUnitsBrokenEvent<TBoard> {
   const supportedTypeIds = getSupportedUnitTypes(state, player);
   const unitsOnBoard = getPlayerUnitsOnBoard(state, player);
   const brokenTypes: UnitType[] = [];

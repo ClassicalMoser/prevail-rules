@@ -32,8 +32,9 @@ export function getCurrentUnitStat<TBoard extends Board>(
   const statIsDefense = isDefenseStat(stat).result;
   // Get the side of the unit
   const unitSide = unit.playerSide;
+  
   // Get the active card
-  const activeCard = gameState.cardState[`${unitSide}Player`].inPlay;
+  const activeCard = gameState.cardState[unitSide].inPlay;
 
   // Three possible sources of modifiers:
   // 1. Terrain effects (not yet implemented)

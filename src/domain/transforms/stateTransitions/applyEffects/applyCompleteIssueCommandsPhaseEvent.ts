@@ -18,7 +18,7 @@ import { getBoardCoordinates, getBoardSpace } from '@queries';
  * @returns A new game state with the phase advanced
  */
 export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
-  event: CompleteIssueCommandsPhaseEvent,
+  event: CompleteIssueCommandsPhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;

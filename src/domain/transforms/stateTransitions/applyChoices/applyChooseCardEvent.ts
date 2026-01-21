@@ -12,7 +12,7 @@ import { getOtherPlayer } from '@queries';
  * @returns A new game state with the card chosen
  */
 export function applyChooseCardEvent<TBoard extends Board>(
-  event: ChooseCardEvent,
+  event: ChooseCardEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, card } = event;

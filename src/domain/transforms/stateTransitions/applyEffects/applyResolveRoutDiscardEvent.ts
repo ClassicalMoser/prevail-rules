@@ -13,7 +13,7 @@ import { discardCardsFromHand } from '@transforms/pureTransforms';
  * @returns A new game state with cards discarded
  */
 export function applyResolveRoutDiscardEvent<TBoard extends Board>(
-  event: ResolveRoutDiscardEvent,
+  event: ResolveRoutDiscardEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, cardIds } = event;

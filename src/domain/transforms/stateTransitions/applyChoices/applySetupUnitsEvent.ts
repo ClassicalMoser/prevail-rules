@@ -3,7 +3,7 @@ import type { SetupUnitsEvent } from '@events';
 import { addUnitToBoard } from '@transforms/pureTransforms';
 
 export function applySetupUnitsEvent<TBoard extends Board>(
-  event: SetupUnitsEvent,
+  event: SetupUnitsEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const unitPlacements = event.unitPlacements;

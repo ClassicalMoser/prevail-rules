@@ -11,7 +11,7 @@ import type { RevealCardsEvent } from '@events';
  * @returns A new game state with cards revealed
  */
 export function applyRevealCardsEvent<TBoard extends Board>(
-  event: RevealCardsEvent,
+  event: RevealCardsEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;

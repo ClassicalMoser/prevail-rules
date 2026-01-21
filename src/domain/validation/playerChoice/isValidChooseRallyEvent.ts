@@ -22,7 +22,7 @@ import { getOtherPlayer } from '@queries';
  * ```
  */
 export function isValidChooseRallyEvent<TBoard extends Board>(
-  event: ChooseRallyEvent,
+  event: ChooseRallyEvent<TBoard>,
   state: GameState<TBoard>,
 ): ValidationResult {
   try {

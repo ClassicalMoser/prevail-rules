@@ -1,4 +1,4 @@
-import type { Card, CardState } from '@entities';
+import type { Card, CardState, StandardBoard  } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import { commandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
@@ -30,7 +30,7 @@ describe('isLegalCardChoice', () => {
   describe('valid card choices', () => {
     it('should return true when black player chooses a card in their hand', () => {
       const cardState = createCardState([commandCards[0], commandCards[1]], []);
-      const chooseCardEvent: ChooseCardEvent = {
+      const chooseCardEvent: ChooseCardEvent<StandardBoard> = {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
@@ -44,7 +44,7 @@ describe('isLegalCardChoice', () => {
 
     it('should return true when white player chooses a card in their hand', () => {
       const cardState = createCardState([], [commandCards[0], commandCards[1]]);
-      const chooseCardEvent: ChooseCardEvent = {
+      const chooseCardEvent: ChooseCardEvent<StandardBoard> = {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'white',
@@ -60,7 +60,7 @@ describe('isLegalCardChoice', () => {
   describe('invalid card choices', () => {
     it('should return false when black player chooses a card not in their hand', () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
-      const chooseCardEvent: ChooseCardEvent = {
+      const chooseCardEvent: ChooseCardEvent<StandardBoard> = {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
@@ -74,7 +74,7 @@ describe('isLegalCardChoice', () => {
 
     it('should return false when white player chooses a card not in their hand', () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
-      const chooseCardEvent: ChooseCardEvent = {
+      const chooseCardEvent: ChooseCardEvent<StandardBoard> = {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'white',
@@ -88,7 +88,7 @@ describe('isLegalCardChoice', () => {
 
     it("should return false when player chooses a card that doesn't exist in any hand", () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
-      const chooseCardEvent: ChooseCardEvent = {
+      const chooseCardEvent: ChooseCardEvent<StandardBoard> = {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',

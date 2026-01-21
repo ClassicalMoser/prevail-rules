@@ -11,7 +11,7 @@ import { CLEANUP_PHASE } from '@entities';
  * @returns A new game state with the phase advanced
  */
 export function applyCompleteResolveMeleePhaseEvent<TBoard extends Board>(
-  event: CompleteResolveMeleePhaseEvent,
+  event: CompleteResolveMeleePhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;

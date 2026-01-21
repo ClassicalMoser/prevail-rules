@@ -14,16 +14,16 @@ import { getOtherPlayer } from '@queries/getOtherPlayer';
  * @returns Information about what event is expected
  */
 export function getExpectedMoveCommandersPhaseEvent<TBoard extends Board>(
-  state: GameState<TBoard> & {
-    currentRoundState: RoundState<TBoard> & {
-      currentPhaseState: MoveCommandersPhaseState;
-    };
-  },
-): ExpectedEventInfo {
+  state: GameState<TBoard>
+): ExpectedEventInfo<TBoard> {
   const phaseState = state.currentRoundState.currentPhaseState;
 
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
+
+  if (!phaseState) {
+    throw new Error('No current phase state found');
+  }
 
   switch (phaseState.step) {
     case 'moveFirstCommander':

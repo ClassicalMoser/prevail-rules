@@ -5,7 +5,7 @@ import { getExpectedPlayCardsPhaseEvent } from './getExpectedPlayCardsPhaseEvent
 
 export function getExpectedEvent<TBoard extends Board>(
   state: GameState<TBoard>,
-): ExpectedEventInfo {
+): ExpectedEventInfo<TBoard> {
   const roundState = state.currentRoundState;
   if (!roundState) {
     throw new Error('No round state found');

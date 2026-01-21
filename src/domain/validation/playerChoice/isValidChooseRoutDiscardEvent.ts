@@ -12,7 +12,7 @@ import { getOtherPlayer } from '@queries';
  * @returns Validation result
  */
 export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
-  event: ChooseRoutDiscardEvent,
+  event: ChooseRoutDiscardEvent<TBoard>,
   state: GameState<TBoard>,
 ): ValidationResult {
   const { player, cardIds } = event;

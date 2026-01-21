@@ -1,4 +1,4 @@
-import type { GameState, PlayerSide } from '@entities';
+import type { Board, GameState, PlayerSide } from '@entities';
 
 /**
  * Gets the set of unit type IDs that are currently supported by the player's cards in hand.
@@ -14,8 +14,8 @@ import type { GameState, PlayerSide } from '@entities';
  * // Returns Set(['unit-type-1', 'unit-type-2', ...])
  * ```
  */
-export function getSupportedUnitTypes(
-  state: GameState,
+export function getSupportedUnitTypes<TBoard extends Board>(
+  state: GameState<TBoard>,
   player: PlayerSide,
 ): Set<string> {
   const supportedTypes = new Set<string>();

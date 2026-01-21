@@ -1,4 +1,4 @@
-import type { Board, CleanupPhaseState, GameState } from '@entities';
+import type { Board, CardState, CleanupPhaseState, GameState, RallyResolutionState } from '@entities';
 import type { ResolveRallyEvent } from '@events';
 import {
   burnCardFromPlayed,
@@ -16,7 +16,7 @@ import {
  * @returns A new game state with rally resolved
  */
 export function applyResolveRallyEvent<TBoard extends Board>(
-  event: ResolveRallyEvent,
+  event: ResolveRallyEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, card } = event;
@@ -68,15 +68,16 @@ export function applyResolveRallyEvent<TBoard extends Board>(
   }
 
   // Compose pure transforms
-  let newCardState = state.cardState;
+  let newCardState: CardState = state.cardState;
   newCardState = burnCardFromPlayed(newCardState, player, card);
   newCardState = returnCardsToHand(newCardState, player);
 
   // Mark rally as resolved and initialize unit support checking
-  const updatedRallyResolutionState = {
+  const updatedRallyResolutionState: RallyResolutionState = {
     ...rallyResolutionState,
     rallyResolved: true,
-    unitsLostSupport: new Set(), // TODO: Calculate which units lost support
+    unitsLostSupport: new Set([]), // TODO: Calculate which units lost support
+    routDiscardState: undefined,
   };
 
   const newPhaseState: CleanupPhaseState =
