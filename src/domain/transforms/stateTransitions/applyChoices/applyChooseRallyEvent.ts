@@ -43,6 +43,7 @@ export function applyChooseRallyEvent<TBoard extends Board>(
           playerRallied: true,
           rallyResolved: false,
           unitsLostSupport: undefined,
+          routDiscardState: undefined,
         },
         // Ready to resolve rally
         step: 'firstPlayerResolveRally',
@@ -61,7 +62,9 @@ export function applyChooseRallyEvent<TBoard extends Board>(
     }
   } else if (currentPhaseState.step === 'secondPlayerChooseRally') {
     if (player !== secondPlayer) {
-      throw new Error(`Expected ${secondPlayer} (second player) to choose rally`);
+      throw new Error(
+        `Expected ${secondPlayer} (second player) to choose rally`,
+      );
     }
     // Create rally resolution state and advance
     if (performRally) {
@@ -71,6 +74,7 @@ export function applyChooseRallyEvent<TBoard extends Board>(
           playerRallied: true,
           rallyResolved: false,
           unitsLostSupport: undefined,
+          routDiscardState: undefined,
         },
         // Ready to resolve rally
         step: 'secondPlayerResolveRally',

@@ -13,5 +13,6 @@ export * from './resolveRangedAttack';
 export * from './resolveRetreat';
 export * from './resolveReverse';
 export * from './resolveRout';
+export * from './resolveRoutDiscard';
 export * from './resolveUnitsBroken';
 export * from './revealCards';

@@ -5,6 +5,7 @@ export * from './addUnitToRouted';
 export * from './burnCardFromPlayed';
 export * from './createEmptyBoard';
 export * from './createUnitInstance';
+export * from './discardCardsFromHand';
 export * from './moveCardToPlayed';
 export * from './removeCommanderFromBoard';
 export * from './removeUnitFromBoard';

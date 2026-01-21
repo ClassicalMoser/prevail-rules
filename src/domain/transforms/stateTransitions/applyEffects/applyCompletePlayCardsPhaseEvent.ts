@@ -15,19 +15,18 @@ export function applyCompletePlayCardsPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;
-  
+
   if (!currentPhaseState) {
     throw new Error('No current phase state found');
   }
-  
+
   if (currentPhaseState.phase !== 'playCards') {
     throw new Error('Current phase is not playCards');
   }
-  
+
   if (currentPhaseState.step !== 'complete') {
     throw new Error('Play cards phase is not on complete step');
   }
-
 
   // Add the completed phase to the set of completed phases
   const newCompletedPhases = new Set(state.currentRoundState.completedPhases);

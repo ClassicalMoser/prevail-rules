@@ -17,7 +17,7 @@ export interface GameState<TBoard extends Board> {
   /** The current round number of the game. */
   currentRoundNumber: number;
   /** The state of the current round of the game. */
-  currentRoundState: RoundState;
+  currentRoundState: RoundState<TBoard>;
   /** Which player currently has initiative. */
   currentInitiative: PlayerSide;
   /** The state of the board. */

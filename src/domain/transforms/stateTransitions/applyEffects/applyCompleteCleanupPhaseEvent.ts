@@ -15,15 +15,15 @@ export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;
-  
+
   if (!currentPhaseState) {
     throw new Error('No current phase state found');
   }
-  
+
   if (currentPhaseState.phase !== 'cleanup') {
     throw new Error('Current phase is not cleanup');
   }
-  
+
   if (currentPhaseState.step !== 'complete') {
     throw new Error('Cleanup phase is not on complete step');
   }

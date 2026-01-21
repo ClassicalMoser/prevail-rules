@@ -29,7 +29,7 @@ describe('getCurrentUnitStat', () => {
       gameState.boardState = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         id: '2',
         name: 'Command Card 2',
         initiative: 2,
@@ -50,7 +50,7 @@ describe('getCurrentUnitStat', () => {
       gameState.boardState = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 2 }],
       });
 
@@ -64,7 +64,7 @@ describe('getCurrentUnitStat', () => {
       gameState.boardState = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'speed', value: 1 }], // Different stat
       });
 
@@ -78,7 +78,7 @@ describe('getCurrentUnitStat', () => {
       gameState.boardState = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'defense', value: 1 }],
       });
 
@@ -99,7 +99,7 @@ describe('getCurrentUnitStat', () => {
         'E-6',
         gameState.boardState,
       );
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
         roundEffectRestrictions: { inspirationRangeRestriction: 1 },
       });
@@ -119,7 +119,7 @@ describe('getCurrentUnitStat', () => {
         'E-8',
         gameState.boardState,
       );
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
         roundEffectRestrictions: { inspirationRangeRestriction: 1 },
       });
@@ -134,7 +134,7 @@ describe('getCurrentUnitStat', () => {
       gameState.boardState = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
         roundEffectRestrictions: { inspirationRangeRestriction: 1 },
       });
@@ -151,7 +151,7 @@ describe('getCurrentUnitStat', () => {
       gameState.boardState = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
       });
 
@@ -165,7 +165,7 @@ describe('getCurrentUnitStat', () => {
       gameState.boardState = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
         roundEffectRestrictions: { unitRestrictions: ['different-unit-id'] },
       });
@@ -187,7 +187,7 @@ describe('getCurrentUnitStat', () => {
         'E-6',
         gameState.boardState,
       );
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
         roundEffectRestrictions: { inspirationRangeRestriction: 1 },
       });
@@ -207,7 +207,7 @@ describe('getCurrentUnitStat', () => {
         'E-8',
         gameState.boardState,
       );
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
         roundEffectRestrictions: { inspirationRangeRestriction: 1 },
       });
@@ -225,7 +225,7 @@ describe('getCurrentUnitStat', () => {
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
       gameState.currentRoundState.commandedUnits = new Set([unit]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         commandModifiers: [{ type: 'attack', value: 2 }],
       });
 
@@ -240,7 +240,7 @@ describe('getCurrentUnitStat', () => {
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
       gameState.currentRoundState.commandedUnits = new Set(); // Empty
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         commandModifiers: [{ type: 'attack', value: 2 }],
       });
 
@@ -255,7 +255,7 @@ describe('getCurrentUnitStat', () => {
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
       gameState.currentRoundState.commandedUnits = new Set([unit]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         commandModifiers: [{ type: 'speed', value: 1 }], // Different stat
       });
 
@@ -272,7 +272,7 @@ describe('getCurrentUnitStat', () => {
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
       gameState.currentRoundState.commandedUnits = new Set([unit]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         commandModifiers: [{ type: 'attack', value: 1 }],
         roundEffectModifiers: [{ type: 'attack', value: 2 }],
       });
@@ -287,7 +287,7 @@ describe('getCurrentUnitStat', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       // Unit not placed on board
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
         roundEffectRestrictions: { inspirationRangeRestriction: 1 },
       });
@@ -303,7 +303,7 @@ describe('getCurrentUnitStat', () => {
       gameState.boardState = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
-      gameState.cardState.blackPlayer.inPlay = createTestCard({
+      gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: -1 }],
       });
 

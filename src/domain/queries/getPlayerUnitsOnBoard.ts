@@ -26,7 +26,10 @@ export function getPlayerUnitsOnBoard<TBoard extends Board>(
     const unitPresence = space.unitPresence;
 
     // Check if this space has units for the player
-    if (unitPresence.presenceType === 'unit' && unitPresence.player === player) {
+    if (
+      unitPresence.presenceType === 'unit' &&
+      unitPresence.player === player
+    ) {
       units.add(unitPresence.unit);
     }
   }

@@ -13,14 +13,14 @@ describe('createEmptyGameState', () => {
     expect(gameState.currentRoundState.commandedUnits.size).toBe(0);
     expect(gameState.currentInitiative).toBe('black');
     expect(gameState.boardState.boardType).toBe('standard');
-    expect(gameState.cardState.blackPlayer.inHand).toEqual([]);
-    expect(gameState.cardState.blackPlayer.played).toEqual([]);
-    expect(gameState.cardState.blackPlayer.discarded).toEqual([]);
-    expect(gameState.cardState.blackPlayer.burnt).toEqual([]);
-    expect(gameState.cardState.whitePlayer.inHand).toEqual([]);
-    expect(gameState.cardState.whitePlayer.played).toEqual([]);
-    expect(gameState.cardState.whitePlayer.discarded).toEqual([]);
-    expect(gameState.cardState.whitePlayer.burnt).toEqual([]);
+    expect(gameState.cardState.black.inHand).toEqual([]);
+    expect(gameState.cardState.black.played).toEqual([]);
+    expect(gameState.cardState.black.discarded).toEqual([]);
+    expect(gameState.cardState.black.burnt).toEqual([]);
+    expect(gameState.cardState.white.inHand).toEqual([]);
+    expect(gameState.cardState.white.played).toEqual([]);
+    expect(gameState.cardState.white.discarded).toEqual([]);
+    expect(gameState.cardState.white.burnt).toEqual([]);
     expect(gameState.routedUnits.size).toBe(0);
   });
 
@@ -33,10 +33,10 @@ describe('createEmptyGameState', () => {
   it('should have awaitingPlay and inPlay cards set', () => {
     const gameState = createEmptyGameState();
 
-    expect(gameState.cardState.blackPlayer.awaitingPlay).toBeDefined();
-    expect(gameState.cardState.blackPlayer.inPlay).toBeDefined();
-    expect(gameState.cardState.whitePlayer.awaitingPlay).toBeDefined();
-    expect(gameState.cardState.whitePlayer.inPlay).toBeDefined();
+    expect(gameState.cardState.black.awaitingPlay).toBeDefined();
+    expect(gameState.cardState.black.inPlay).toBeDefined();
+    expect(gameState.cardState.white.awaitingPlay).toBeDefined();
+    expect(gameState.cardState.white.inPlay).toBeDefined();
   });
 
   it('should return a valid GameState type', () => {

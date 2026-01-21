@@ -1,3 +1,4 @@
+import type { Board } from '@entities';
 import type { PlayerSide, UnitType } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema, unitTypeSchema } from '@entities';
@@ -12,7 +13,7 @@ import { RESOLVE_UNITS_BROKEN_EFFECT_TYPE } from './gameEffect';
  */
 
 /** An event to resolve units that are no longer supported. */
-export interface ResolveUnitsBrokenEvent {
+export interface ResolveUnitsBrokenEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

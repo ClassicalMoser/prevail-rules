@@ -1,6 +1,9 @@
 import type { Board, CleanupPhaseState, GameState } from '@entities';
 import type { ResolveRallyEvent } from '@events';
-import { burnCardFromPlayed, returnCardsToHand } from '@transforms/pureTransforms';
+import {
+  burnCardFromPlayed,
+  returnCardsToHand,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveRallyEvent to the game state.
@@ -34,7 +37,9 @@ export function applyResolveRallyEvent<TBoard extends Board>(
 
   if (currentPhaseState.step === 'firstPlayerResolveRally') {
     if (player !== firstPlayer) {
-      throw new Error(`Expected ${firstPlayer} (first player) to resolve rally`);
+      throw new Error(
+        `Expected ${firstPlayer} (first player) to resolve rally`,
+      );
     }
     rallyResolutionState = currentPhaseState.firstPlayerRallyResolutionState;
     newStep = 'secondPlayerChooseRally';
@@ -74,7 +79,7 @@ export function applyResolveRallyEvent<TBoard extends Board>(
     unitsLostSupport: new Set(), // TODO: Calculate which units lost support
   };
 
-  const newPhaseState: CleanupPhaseState = 
+  const newPhaseState: CleanupPhaseState =
     currentPhaseState.step === 'firstPlayerResolveRally'
       ? {
           ...currentPhaseState,

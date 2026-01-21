@@ -1,4 +1,9 @@
-import type { Board, BoardCoordinate, GameState, MoveCommandersPhaseState } from '@entities';
+import type {
+  Board,
+  BoardCoordinate,
+  GameState,
+  MoveCommandersPhaseState,
+} from '@entities';
 import type { MoveCommanderEvent } from '@events';
 import {
   addCommanderToBoard,
@@ -31,7 +36,7 @@ export function applyMoveCommanderEvent<TBoard extends Board>(
   const side = event.player;
   const originalCoordinate: BoardCoordinate<TBoard> = event.from;
   const newCoordinate: BoardCoordinate<TBoard> = event.to;
-  
+
   const removedCommanderBoard = removeCommanderFromBoard<TBoard>(
     state.boardState,
     originalCoordinate,
@@ -50,7 +55,9 @@ export function applyMoveCommanderEvent<TBoard extends Board>(
   } else if (currentPhaseState.step === 'moveSecondCommander') {
     newStep = 'complete';
   } else {
-    throw new Error(`Invalid move commanders phase step: ${currentPhaseState.step}`);
+    throw new Error(
+      `Invalid move commanders phase step: ${currentPhaseState.step}`,
+    );
   }
 
   const newPhaseState: MoveCommandersPhaseState = {

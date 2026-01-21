@@ -1,3 +1,4 @@
+import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
@@ -7,7 +8,7 @@ import { REVEAL_CARDS_EFFECT_TYPE } from './gameEffect';
  * Moves both players' awaitingPlay cards to inPlay simultaneously.
  * This makes hidden information public.
  */
-export interface RevealCardsEvent {
+export interface RevealCardsEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -21,9 +22,7 @@ const _revealCardsEventSchemaObject = z.object({
   effectType: z.literal(REVEAL_CARDS_EFFECT_TYPE),
 });
 
-type RevealCardsEventSchemaType = z.infer<
-  typeof _revealCardsEventSchemaObject
->;
+type RevealCardsEventSchemaType = z.infer<typeof _revealCardsEventSchemaObject>;
 
 const _assertExactRevealCardsEvent: AssertExact<
   RevealCardsEvent,

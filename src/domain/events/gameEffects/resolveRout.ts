@@ -1,3 +1,4 @@
+import type { Board } from '@entities';
 import type { UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitInstanceSchema } from '@entities';
@@ -9,7 +10,7 @@ import { RESOLVE_ROUT_EFFECT_TYPE } from './gameEffect';
  * A unit that is routed is permanently removed from the game.
  * The player must discard a number of cards equal to its rout penalty.
  */
-export interface ResolveRoutEvent {
+export interface ResolveRoutEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

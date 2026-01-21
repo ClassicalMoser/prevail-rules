@@ -1,10 +1,11 @@
+import type { Board } from '@entities/board';
 import type { AssertExact } from '@utils';
 import type { CleanupPhaseState } from './cleanupPhase';
 import type { IssueCommandsPhaseState } from './issueCommandsPhase';
 import type { MoveCommandersPhaseState } from './moveCommandersPhase';
 import type { PlayCardsPhaseState } from './playCardsPhase';
-import type { ResolveMeleePhaseState } from './resolveMeleePhase';
 
+import type { ResolveMeleePhaseState } from './resolveMeleePhase';
 import { z } from 'zod';
 import { cleanupPhaseStateSchema } from './cleanupPhase';
 import { issueCommandsPhaseStateSchema } from './issueCommandsPhase';
@@ -55,11 +56,11 @@ export const phaseSchema: z.ZodType<Phase> = _phaseSchemaObject;
 const _assertExactPhase: AssertExact<Phase, PhaseSchemaType> = true;
 
 /** The state of a phase of a round. */
-export type PhaseState =
+export type PhaseState<TBoard extends Board> =
   | PlayCardsPhaseState
   | MoveCommandersPhaseState
   | IssueCommandsPhaseState
-  | ResolveMeleePhaseState
+  | ResolveMeleePhaseState<TBoard>
   | CleanupPhaseState;
 
 const _phaseStateSchemaObject = z.discriminatedUnion('phase', [
@@ -72,8 +73,8 @@ const _phaseStateSchemaObject = z.discriminatedUnion('phase', [
 
 type PhaseStateSchemaType = z.infer<typeof _phaseStateSchemaObject>;
 
-const _assertExactPhaseState: AssertExact<PhaseState, PhaseStateSchemaType> =
+const _assertExactPhaseState: AssertExact<PhaseState<Board>, PhaseStateSchemaType> =
   true;
 
 /** The schema for the state of a phase of a round. */
-export const phaseStateSchema: z.ZodType<PhaseState> = _phaseStateSchemaObject;
+export const phaseStateSchema: z.ZodType<PhaseState<Board>> = _phaseStateSchemaObject;

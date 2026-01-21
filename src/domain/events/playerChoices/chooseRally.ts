@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { CHOOSE_RALLY_CHOICE_TYPE } from './playerChoice';
 
 /** An event to choose a rally from the player's hand. */
-export interface ChooseRallyEvent {
+export interface ChooseRallyEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

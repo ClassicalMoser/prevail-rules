@@ -16,13 +16,13 @@ import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RALLY_EFFECT_TYPE } from '@events';
  * ```typescript
  * // Orchestrator generates random seed
  * const randomSeed = Math.floor(Math.random() * 1000000);
- * 
+ *
  * // Generate event deterministically
  * const event = generateResolveRallyEvent(state, 'white', randomSeed);
- * 
+ *
  * // Apply to engine
  * const newState = applyEvent(event, state);
- * 
+ *
  * // Event is now in the log with the random result baked in, making it replayable
  * ```
  */

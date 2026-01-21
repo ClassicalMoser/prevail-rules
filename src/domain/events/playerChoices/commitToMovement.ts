@@ -16,7 +16,7 @@ const _assertMovementModifierExtendsStatModifier: [MovementModifier] extends [
   : never = true;
 
 /** An event to commit a card to a unit's movement. */
-export interface CommitToMovementEvent {
+export interface CommitToMovementEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

@@ -56,7 +56,9 @@ const _cleanupPhaseStateSchemaObject = z.object({
   /** The state of the first player's rally resolution (unit support checks). */
   firstPlayerRallyResolutionState: rallyResolutionStateSchema.or(z.undefined()),
   /** The state of the second player's rally resolution (unit support checks). */
-  secondPlayerRallyResolutionState: rallyResolutionStateSchema.or(z.undefined()),
+  secondPlayerRallyResolutionState: rallyResolutionStateSchema.or(
+    z.undefined(),
+  ),
 });
 
 type CleanupPhaseStateSchemaType = z.infer<

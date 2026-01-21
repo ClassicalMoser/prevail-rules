@@ -6,4 +6,6 @@ export * from './applyCompleteResolveMeleePhaseEvent';
 export * from './applyDiscardPlayedCardsEvent';
 export * from './applyResolveInitiativeEvent';
 export * from './applyResolveRallyEvent';
+export * from './applyResolveRoutDiscardEvent';
+export * from './applyResolveUnitsBrokenEvent';
 export * from './applyRevealCardsEvent';

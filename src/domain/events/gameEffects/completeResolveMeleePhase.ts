@@ -1,10 +1,11 @@
+import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE } from './gameEffect';
 
 /** Event to complete the resolve melee phase and advance to cleanup phase. */
-export interface CompleteResolveMeleePhaseEvent {
+export interface CompleteResolveMeleePhaseEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

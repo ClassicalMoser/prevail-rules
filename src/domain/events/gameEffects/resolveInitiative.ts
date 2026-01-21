@@ -1,3 +1,4 @@
+import type { Board } from '@entities';
 import type { PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
@@ -10,7 +11,7 @@ import { RESOLVE_INITIATIVE_EFFECT_TYPE } from './gameEffect';
  * The player with the lower initiative value receives initiative.
  * In a tie, the player with initiative keeps it.
  */
-export interface ResolveInitiativeEvent {
+export interface ResolveInitiativeEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

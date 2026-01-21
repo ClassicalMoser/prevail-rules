@@ -16,7 +16,7 @@ const _assertRangedAttackModifierExtendsStatModifier: [
   : never = true;
 
 /** An event to commit a card to a ranged attack. */
-export interface CommitToRangedAttackEvent {
+export interface CommitToRangedAttackEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

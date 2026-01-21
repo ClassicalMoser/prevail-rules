@@ -17,15 +17,15 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;
-  
+
   if (!currentPhaseState) {
     throw new Error('No current phase state found');
   }
-  
+
   if (currentPhaseState.phase !== 'moveCommanders') {
     throw new Error('Current phase is not moveCommanders');
   }
-  
+
   if (currentPhaseState.step !== 'complete') {
     throw new Error('Move commanders phase is not on complete step');
   }

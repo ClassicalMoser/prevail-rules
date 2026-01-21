@@ -1,3 +1,4 @@
+import type { Board } from '@entities';
 import type { UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitInstanceSchema } from '@entities';
@@ -5,7 +6,7 @@ import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { RESOLVE_RANGED_ATTACK_EFFECT_TYPE } from './gameEffect';
 
-export interface ResolveRangedAttackEvent {
+export interface ResolveRangedAttackEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

@@ -1,6 +1,7 @@
 export * from './chooseCard';
 export * from './chooseMeleeResolution';
 export * from './chooseRally';
+export * from './chooseRoutDiscard';
 export * from './commitToMelee';
 export * from './commitToMovement';
 export * from './commitToRangedAttack';

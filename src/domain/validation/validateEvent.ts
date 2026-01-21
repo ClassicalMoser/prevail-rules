@@ -2,10 +2,8 @@ import type {
   Board,
   CleanupPhaseState,
   GameState,
-  IssueCommandsPhaseState,
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
-  ResolveMeleePhaseState,
   ValidationResult,
 } from '@entities';
 import type { Event } from '@events';
@@ -37,14 +35,14 @@ export function validateEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): ValidationResult {
   const roundState = state.currentRoundState;
-  
+
   if (!roundState) {
     return {
       result: false,
       errorReason: 'No round state found',
     };
   }
-  
+
   if (!roundState.currentPhaseState) {
     return {
       result: false,

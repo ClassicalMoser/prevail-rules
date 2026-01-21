@@ -15,15 +15,15 @@ export function applyCompleteResolveMeleePhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;
-  
+
   if (!currentPhaseState) {
     throw new Error('No current phase state found');
   }
-  
+
   if (currentPhaseState.phase !== 'resolveMelee') {
     throw new Error('Current phase is not resolveMelee');
   }
-  
+
   if (currentPhaseState.step !== 'resolveMelee') {
     throw new Error('Resolve melee phase is not on resolveMelee step');
   }

@@ -1,3 +1,4 @@
+import type { Board } from '@entities';
 import type { UnitPresence } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitPresenceSchema } from '@entities';
@@ -15,7 +16,7 @@ import { RESOLVE_ENGAGEMENT_EFFECT_TYPE } from './gameEffect';
  * Additionally, if the defending unit has a speed greater than that of the attacking unit,
  * the defending unit can retreat.
  */
-export interface ResolveEngagementEvent {
+export interface ResolveEngagementEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

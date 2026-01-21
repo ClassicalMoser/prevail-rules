@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate } from '@entities';
+import type { StandardBoard, StandardBoardCoordinate } from '@entities';
 import type { MoveCommanderEvent } from '@events';
 import { createBoardWithCommander } from '@testing';
 import { createEmptyStandardBoard } from '@transforms';
@@ -8,7 +8,7 @@ import { isLegalCommanderMove } from './isLegalCommanderMove';
 describe('valid moves', () => {
   it('should return true when commander moves within distance 1', () => {
     const board = createBoardWithCommander('black', 'E-5');
-    const moveCommanderEvent: MoveCommanderEvent = {
+    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -23,7 +23,7 @@ describe('valid moves', () => {
 
   it('should return true when commander moves within distance 4', () => {
     const board = createBoardWithCommander('black', 'E-5');
-    const moveCommanderEvent: MoveCommanderEvent = {
+    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -38,7 +38,7 @@ describe('valid moves', () => {
 
   it('should return true when white commander moves within distance', () => {
     const board = createBoardWithCommander('white', 'F-6');
-    const moveCommanderEvent: MoveCommanderEvent = {
+    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'white',
@@ -53,7 +53,7 @@ describe('valid moves', () => {
 
   it('should return true when commander moves diagonally within distance', () => {
     const board = createBoardWithCommander('black', 'E-5');
-    const moveCommanderEvent: MoveCommanderEvent = {
+    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -70,7 +70,7 @@ describe('valid moves', () => {
 describe('invalid moves', () => {
   it('should return false when commander is not at starting position', () => {
     const board = createEmptyStandardBoard(); // No commander on board
-    const moveCommanderEvent: MoveCommanderEvent = {
+    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -85,7 +85,7 @@ describe('invalid moves', () => {
 
   it("should return false when wrong player's commander is at starting position", () => {
     const board = createBoardWithCommander('white', 'E-5'); // White commander, not black
-    const moveCommanderEvent: MoveCommanderEvent = {
+    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -100,7 +100,7 @@ describe('invalid moves', () => {
 
   it('should return false when destination is beyond move distance', () => {
     const board = createBoardWithCommander('black', 'E-5');
-    const moveCommanderEvent: MoveCommanderEvent = {
+    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -115,7 +115,7 @@ describe('invalid moves', () => {
 
   it('should return false when starting coordinate is invalid', () => {
     const board = createEmptyStandardBoard();
-    const moveCommanderEvent: MoveCommanderEvent = {
+    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -130,7 +130,7 @@ describe('invalid moves', () => {
 
   it('should return false when destination coordinate is invalid', () => {
     const board = createBoardWithCommander('black', 'E-5');
-    const moveCommanderEvent: MoveCommanderEvent = {
+    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',

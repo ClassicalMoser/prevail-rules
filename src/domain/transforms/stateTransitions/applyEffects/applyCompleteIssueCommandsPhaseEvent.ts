@@ -1,4 +1,9 @@
-import type { Board, BoardCoordinate, GameState, ResolveMeleePhaseState  } from '@entities';
+import type {
+  Board,
+  BoardCoordinate,
+  GameState,
+  ResolveMeleePhaseState,
+} from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
 import { hasEngagedUnits, RESOLVE_MELEE_PHASE } from '@entities';
 import { getBoardCoordinates, getBoardSpace } from '@queries';
@@ -17,19 +22,18 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;
-  
+
   if (!currentPhaseState) {
     throw new Error('No current phase state found');
   }
-  
+
   if (currentPhaseState.phase !== 'issueCommands') {
     throw new Error('Current phase is not issueCommands');
   }
-  
+
   if (currentPhaseState.step !== 'complete') {
     throw new Error('Issue commands phase is not on complete step');
   }
-
 
   // Add the completed phase to the set of completed phases
   const newCompletedPhases = new Set(state.currentRoundState.completedPhases);
@@ -38,7 +42,7 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
   // Find all engagements on the board
   const engagements = new Set<BoardCoordinate<TBoard>>();
   const coordinates = getBoardCoordinates(state.boardState);
-  
+
   for (const coordinate of coordinates) {
     const space = getBoardSpace(state.boardState, coordinate);
     if (hasEngagedUnits(space.unitPresence)) {

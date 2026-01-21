@@ -1,3 +1,4 @@
+import type { Board } from '@entities';
 import type { Card, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
@@ -11,7 +12,7 @@ import { RESOLVE_RALLY_EFFECT_TYPE } from './gameEffect';
  */
 
 /** A command to resolve a rally. */
-export interface ResolveRallyEvent {
+export interface ResolveRallyEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

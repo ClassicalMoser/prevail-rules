@@ -29,7 +29,7 @@ export function createEmptyGameState(options?: {
     currentInitiative: options?.currentInitiative ?? 'black',
     boardState: createEmptyStandardBoard(),
     cardState: {
-      blackPlayer: {
+      black: {
         inHand: [],
         awaitingPlay: commandCards[0],
         inPlay: commandCards[1],
@@ -37,7 +37,7 @@ export function createEmptyGameState(options?: {
         discarded: [],
         burnt: [],
       },
-      whitePlayer: {
+      white: {
         inHand: [],
         awaitingPlay: commandCards[0],
         inPlay: commandCards[1],
