@@ -1,4 +1,4 @@
-import type { Card, PlayerSide, StatModifier } from '@entities';
+import type { Board, Card, PlayerSide, StatModifier } from '@entities';
 import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
@@ -16,7 +16,7 @@ const _assertMovementModifierExtendsStatModifier: [MovementModifier] extends [
   : never = true;
 
 /** An event to commit a card to a unit's movement. */
-export interface CommitToMovementEvent {
+export interface CommitToMovementEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -52,14 +52,14 @@ type CommitToMovementEventSchemaType = z.infer<
 >;
 
 const _assertExactCommitToMovementEvent: AssertExact<
-  CommitToMovementEvent,
+  CommitToMovementEvent<Board>,
   CommitToMovementEventSchemaType
 > = true;
 
 /** The schema for a commit to movement event. */
 export const commitToMovementEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
-  choiceType: z.ZodLiteral<typeof COMMIT_TO_MOVEMENT_CHOICE_TYPE>;
+  eventType: z.ZodLiteral<'playerChoice'>;
+  choiceType: z.ZodLiteral<'commitToMovement'>;
   player: typeof playerSideSchema;
   committedCard: typeof cardSchema;
   modifierTypes: z.ZodArray<typeof movementModifierTypesEnum>;

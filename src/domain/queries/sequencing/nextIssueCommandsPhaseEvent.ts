@@ -10,11 +10,11 @@ import { eventSchema, issueCommandEventSchema } from '@events';
 
 export function getExpectedIssueCommandsPhaseEventSchema<TBoard extends Board>(
   gameState: GameState<TBoard> & {
-    currentRoundState: RoundState & {
+    currentRoundState: RoundState<TBoard> & {
       currentPhaseState: IssueCommandsPhaseState;
     };
   },
-): z.ZodType<Event> {
+): z.ZodType<Event<TBoard>> {
   const roundState = gameState.currentRoundState;
   if (!roundState) {
     throw new Error('No round state found');

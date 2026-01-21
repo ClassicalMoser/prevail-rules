@@ -15,7 +15,7 @@ import { isValidChooseCardEvent } from '@validation/playerChoice';
  * @returns ValidationResult indicating if the event is valid
  */
 export function validatePlayCardsPhaseEvent<TBoard extends Board>(
-  event: Event,
+  event: Event<TBoard>,
   state: GameState<TBoard> & {
     currentRoundState: {
       currentPhaseState: PlayCardsPhaseState;

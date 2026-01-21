@@ -1,3 +1,4 @@
+import type { Board } from '@entities/board';
 import type { PlayerChoiceType } from '@events';
 import type { AssertExact } from '@utils';
 import { playerChoiceTypeSchema } from '@events';
@@ -26,7 +27,7 @@ export const playerSourceSchema: z.ZodType<PlayerSource> =
 /**
  * Expected event is player input (wait for user).
  */
-export interface ExpectedPlayerInput {
+export interface ExpectedPlayerInput<_TBoard extends Board> {
   /** Discriminator for the union. */
   actionType: 'playerChoice';
   /** Which player(s) can provide this input. */
@@ -46,7 +47,7 @@ type ExpectedPlayerInputSchemaType = z.infer<
 >;
 
 const _assertExactExpectedPlayerInput: AssertExact<
-  ExpectedPlayerInput,
+  ExpectedPlayerInput<Board>,
   ExpectedPlayerInputSchemaType
 > = true;
 

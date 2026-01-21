@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE } from './gameEffect';
 
 /** Event to complete the resolve melee phase and advance to cleanup phase. */
-export interface CompleteResolveMeleePhaseEvent {
+export interface CompleteResolveMeleePhaseEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -24,12 +24,12 @@ type CompleteResolveMeleePhaseEventSchemaType = z.infer<
 >;
 
 const _assertExactCompleteResolveMeleePhaseEvent: AssertExact<
-  CompleteResolveMeleePhaseEvent,
+  CompleteResolveMeleePhaseEvent<Board>,
   CompleteResolveMeleePhaseEventSchemaType
 > = true;
 
 /** The schema for a complete resolve melee phase event. */
 export const completeResolveMeleePhaseEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'completeResolveMeleePhase'>;
 }> = _completeResolveMeleePhaseEventSchemaObject;

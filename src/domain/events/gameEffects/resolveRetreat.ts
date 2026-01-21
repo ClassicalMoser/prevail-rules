@@ -11,7 +11,7 @@ import { RESOLVE_RETREAT_EFFECT_TYPE } from './gameEffect';
  * If there are multiple legal retreats, the player must choose one.
  * If there is no legal retreat, the unit is routed.
  */
-export interface ResolveRetreatEvent {
+export interface ResolveRetreatEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -41,14 +41,14 @@ type ResolveRetreatEventSchemaType = z.infer<
 >;
 
 const _assertExactResolveRetreatEvent: AssertExact<
-  ResolveRetreatEvent,
+  ResolveRetreatEvent<Board>,
   ResolveRetreatEventSchemaType
 > = true;
 
 /** The schema for a resolve retreat event. */
 export const resolveRetreatEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof RESOLVE_RETREAT_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'resolveRetreat'>;
   startingPosition: typeof unitWithPlacementSchema;
   endingPositionOptions: z.ZodSet<typeof unitWithPlacementSchema>;
   unitRouted: z.ZodBoolean;

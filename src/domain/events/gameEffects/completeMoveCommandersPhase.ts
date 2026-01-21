@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE } from './gameEffect';
 
 /** Event to complete the move commanders phase and advance to issue commands phase. */
-export interface CompleteMoveCommandersPhaseEvent {
+export interface CompleteMoveCommandersPhaseEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -24,12 +24,12 @@ type CompleteMoveCommandersPhaseEventSchemaType = z.infer<
 >;
 
 const _assertExactCompleteMoveCommandersPhaseEvent: AssertExact<
-  CompleteMoveCommandersPhaseEvent,
+  CompleteMoveCommandersPhaseEvent<Board>,
   CompleteMoveCommandersPhaseEventSchemaType
 > = true;
 
 /** The schema for a complete move commanders phase event. */
 export const completeMoveCommandersPhaseEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'completeMoveCommandersPhase'>;
 }> = _completeMoveCommandersPhaseEventSchemaObject;

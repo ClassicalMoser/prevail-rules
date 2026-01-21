@@ -18,7 +18,7 @@ import {
  * @returns ValidationResult indicating if the event is valid
  */
 export function validateCleanupPhaseEvent<TBoard extends Board>(
-  event: Event,
+  event: Event<TBoard>,
   state: GameState<TBoard> & {
     currentRoundState: {
       currentPhaseState: CleanupPhaseState;

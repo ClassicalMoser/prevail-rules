@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE } from './gameEffect';
 
 /** Event to complete the play cards phase and advance to move commanders phase. */
-export interface CompletePlayCardsPhaseEvent {
+export interface CompletePlayCardsPhaseEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -24,12 +24,12 @@ type CompletePlayCardsPhaseEventSchemaType = z.infer<
 >;
 
 const _assertExactCompletePlayCardsPhaseEvent: AssertExact<
-  CompletePlayCardsPhaseEvent,
+  CompletePlayCardsPhaseEvent<Board>,
   CompletePlayCardsPhaseEventSchemaType
 > = true;
 
 /** The schema for a complete play cards phase event. */
 export const completePlayCardsPhaseEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'completePlayCardsPhase'>;
 }> = _completePlayCardsPhaseEventSchemaObject;

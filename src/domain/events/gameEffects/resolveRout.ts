@@ -1,5 +1,4 @@
-import type { Board } from '@entities';
-import type { UnitInstance } from '@entities';
+import type { Board, UnitInstance  } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitInstanceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
@@ -10,7 +9,7 @@ import { RESOLVE_ROUT_EFFECT_TYPE } from './gameEffect';
  * A unit that is routed is permanently removed from the game.
  * The player must discard a number of cards equal to its rout penalty.
  */
-export interface ResolveRoutEvent {
+export interface ResolveRoutEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -35,14 +34,14 @@ const _resolveRoutEventSchemaObject = z.object({
 type ResolveRoutEventSchemaType = z.infer<typeof _resolveRoutEventSchemaObject>;
 
 const _assertExactResolveRoutEvent: AssertExact<
-  ResolveRoutEvent,
+  ResolveRoutEvent<Board>,
   ResolveRoutEventSchemaType
 > = true;
 
 /** The schema for a resolve rout event. */
 export const resolveRoutEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof RESOLVE_ROUT_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'resolveRout'>;
   unitInstance: typeof unitInstanceSchema;
   penalty: z.ZodNumber;
 }> = _resolveRoutEventSchemaObject;

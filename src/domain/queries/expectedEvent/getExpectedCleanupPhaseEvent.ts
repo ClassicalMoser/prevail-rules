@@ -15,7 +15,7 @@ import { getOtherPlayer } from '@queries/getOtherPlayer';
  */
 export function getExpectedCleanupPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard> & {
-    currentRoundState: RoundState & { currentPhaseState: CleanupPhaseState };
+    currentRoundState: RoundState<TBoard> & { currentPhaseState: CleanupPhaseState };
   },
 ): ExpectedEventInfo {
   const phaseState = state.currentRoundState.currentPhaseState;

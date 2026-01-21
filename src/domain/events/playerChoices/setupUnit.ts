@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { SETUP_UNITS_CHOICE_TYPE } from './playerChoice';
 
 /** An event to setup multiple units on the board. */
-export interface SetupUnitsEvent {
+export interface SetupUnitsEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -32,14 +32,14 @@ type SetupUnitsEventSchemaType = z.infer<typeof _setupUnitsEventSchemaObject>;
 
 // Verify manual type matches schema inference
 const _assertExactSetupUnitsEvent: AssertExact<
-  SetupUnitsEvent,
+  SetupUnitsEvent<Board>,
   SetupUnitsEventSchemaType
 > = true;
 
 /** The schema for a setup units event. */
 export const setupUnitsEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
-  choiceType: z.ZodLiteral<typeof SETUP_UNITS_CHOICE_TYPE>;
+  eventType: z.ZodLiteral<'playerChoice'>;
+  choiceType: z.ZodLiteral<'setupUnits'>;
   player: typeof playerSideSchema;
   unitPlacements: z.ZodSet<typeof unitWithPlacementSchema>;
 }> = _setupUnitsEventSchemaObject;

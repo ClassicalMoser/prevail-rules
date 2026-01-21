@@ -9,7 +9,7 @@ import { DISCARD_PLAYED_CARDS_EFFECT_TYPE } from './gameEffect';
  * Moves both players' cards from inPlay to discard pile.
  * This is the first step of the cleanup phase.
  */
-export interface DiscardPlayedCardsEvent {
+export interface DiscardPlayedCardsEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -28,12 +28,12 @@ type DiscardPlayedCardsEventSchemaType = z.infer<
 >;
 
 const _assertExactDiscardPlayedCardsEvent: AssertExact<
-  DiscardPlayedCardsEvent,
+  DiscardPlayedCardsEvent<Board>,
   DiscardPlayedCardsEventSchemaType
 > = true;
 
 /** The schema for a discard played cards event. */
 export const discardPlayedCardsEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof DISCARD_PLAYED_CARDS_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'discardPlayedCards'>;
 }> = _discardPlayedCardsEventSchemaObject;

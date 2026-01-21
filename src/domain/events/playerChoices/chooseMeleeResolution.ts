@@ -5,7 +5,7 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE } from './playerChoice';
 
-export interface ChooseMeleeResolutionEvent {
+export interface ChooseMeleeResolutionEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -38,8 +38,8 @@ const _assertExactChooseMeleeResolutionEvent: AssertExact<
 
 /** The schema for a choose melee resolution event. */
 export const chooseMeleeResolutionEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
-  choiceType: z.ZodLiteral<typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE>;
+  eventType: z.ZodLiteral<'playerChoice'>;
+  choiceType: z.ZodLiteral<'chooseMeleeResolution'>;
   player: typeof playerSideSchema;
   space: typeof boardCoordinateSchema;
 }> = _chooseMeleeResolutionEventSchemaObject;

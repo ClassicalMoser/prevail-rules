@@ -1,5 +1,4 @@
-import type { Board } from '@entities';
-import type { PlayerSide } from '@entities';
+import type { Board, PlayerSide  } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
@@ -10,7 +9,7 @@ import { RESOLVE_ROUT_DISCARD_EFFECT_TYPE } from './gameEffect';
  * An event to resolve discarding cards as a penalty for routed units.
  * The specified cards are moved from hand to the general discard pile.
  */
-export interface ResolveRoutDiscardEvent {
+export interface ResolveRoutDiscardEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -29,7 +28,7 @@ const _resolveRoutDiscardEventSchemaObject = z.object({
   /** The player whose cards are being discarded. */
   player: playerSideSchema,
   /** The IDs of the cards being discarded. */
-  cardIds: z.array(z.uuid()),
+  cardIds: z.array(z.string()),
 });
 
 type ResolveRoutDiscardEventSchemaType = z.infer<
@@ -37,10 +36,14 @@ type ResolveRoutDiscardEventSchemaType = z.infer<
 >;
 
 const _assertExactResolveRoutDiscardEvent: AssertExact<
-  ResolveRoutDiscardEvent,
+  ResolveRoutDiscardEvent<Board>,
   ResolveRoutDiscardEventSchemaType
 > = true;
 
 /** The schema for a resolve rout discard event. */
-export const resolveRoutDiscardEventSchema: z.ZodType<ResolveRoutDiscardEvent> =
-  _resolveRoutDiscardEventSchemaObject;
+export const resolveRoutDiscardEventSchema: z.ZodObject<{
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'resolveRoutDiscard'>;
+  player: typeof playerSideSchema;
+  cardIds: z.ZodArray<z.ZodString>;
+}> = _resolveRoutDiscardEventSchemaObject;

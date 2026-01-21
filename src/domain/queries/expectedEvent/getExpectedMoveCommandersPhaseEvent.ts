@@ -15,7 +15,7 @@ import { getOtherPlayer } from '@queries/getOtherPlayer';
  */
 export function getExpectedMoveCommandersPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard> & {
-    currentRoundState: RoundState & {
+    currentRoundState: RoundState<TBoard> & {
       currentPhaseState: MoveCommandersPhaseState;
     };
   },

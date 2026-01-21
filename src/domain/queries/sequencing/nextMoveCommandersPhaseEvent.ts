@@ -13,11 +13,11 @@ import {
 
 export function getExpectedMoveCommandersPhaseEventSchema<TBoard extends Board>(
   gameState: GameState<TBoard> & {
-    currentRoundState: RoundState & {
+    currentRoundState: RoundState<TBoard> & {
       currentPhaseState: MoveCommandersPhaseState;
     };
   },
-): z.ZodType<Event> {
+): z.ZodType<Event<TBoard>> {
   const roundState = gameState.currentRoundState;
   if (!roundState) {
     throw new Error('No round state found');
@@ -29,12 +29,12 @@ export function getExpectedMoveCommandersPhaseEventSchema<TBoard extends Board>(
   switch (moveCommandersPhaseState.step) {
     case 'moveFirstCommander':
       // First commander is the player with initiative
-      return moveCommanderEventSchema;
+      return moveCommanderEventSchema as z.ZodType<Event<TBoard>>;
     case 'moveSecondCommander':
       // Second commander is the other player
-      return moveCommanderEventSchema;
+      return moveCommanderEventSchema as z.ZodType<Event<TBoard>>;
     case 'complete':
-      return completeMoveCommandersPhaseEventSchema;
+      return completeMoveCommandersPhaseEventSchema as z.ZodType<Event<TBoard>>;
     default:
       throw new Error(
         `Invalid move commanders phase step: ${roundState.currentPhaseState.step}`,

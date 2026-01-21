@@ -10,16 +10,13 @@ import { getLegalUnitMoves } from '@queries';
  * @returns True if the move is legal, false otherwise
  */
 export function isLegalMove<TBoard extends Board>(
-  moveUnitEvent: MoveUnitEvent,
+  moveUnitEvent: MoveUnitEvent<TBoard>,
   gameState: GameState<TBoard>,
 ): boolean {
   // Get the move unit event
-  const { unit, from, to } = moveUnitEvent;
+  const { unit, to } = moveUnitEvent;
   try {
-    const unitWithPlacement: UnitWithPlacement<TBoard> = {
-      unit,
-      placement: from,
-    };
+    const unitWithPlacement: UnitWithPlacement<TBoard> = unit;
     const legalMoves = getLegalUnitMoves(unitWithPlacement, gameState);
     // Set.has() uses reference equality, so we need to check by value
     return Array.from(legalMoves).some(

@@ -1,5 +1,4 @@
-import type { Board } from '@entities';
-import type { UnitPresence } from '@entities';
+import type { Board, UnitPresence  } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitPresenceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
@@ -16,7 +15,7 @@ import { RESOLVE_ENGAGEMENT_EFFECT_TYPE } from './gameEffect';
  * Additionally, if the defending unit has a speed greater than that of the attacking unit,
  * the defending unit can retreat.
  */
-export interface ResolveEngagementEvent {
+export interface ResolveEngagementEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -47,14 +46,14 @@ type ResolveEngagementEventSchemaType = z.infer<
 >;
 
 const _assertExactResolveEngagementEvent: AssertExact<
-  ResolveEngagementEvent,
+  ResolveEngagementEvent<Board>,
   ResolveEngagementEventSchemaType
 > = true;
 
 /** The schema for a resolve engagement event. */
 export const resolveEngagementEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof RESOLVE_ENGAGEMENT_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'resolveEngagement'>;
   engagement: typeof unitPresenceSchema;
   defendingUnitRouted: z.ZodBoolean;
   defendingUnitCanRetreat: z.ZodBoolean;

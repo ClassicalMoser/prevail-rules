@@ -15,7 +15,7 @@ import { z } from 'zod';
 import { MOVE_UNIT_CHOICE_TYPE } from './playerChoice';
 
 /** An event to move a unit from one space to another. */
-export interface MoveUnitEvent {
+export interface MoveUnitEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -55,8 +55,8 @@ const _assertExactMoveUnitEvent: AssertExact<
 
 /** The schema for a move unit event. */
 export const moveUnitEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
-  choiceType: z.ZodLiteral<typeof MOVE_UNIT_CHOICE_TYPE>;
+  eventType: z.ZodLiteral<'playerChoice'>;
+  choiceType: z.ZodLiteral<'moveUnit'>;
   player: z.ZodType<PlayerSide>;
   unit: z.ZodType<UnitWithPlacement<Board>>;
   to: z.ZodType<UnitPlacement<Board>>;

@@ -14,7 +14,7 @@ import type {
  */
 export function getExpectedPlayCardsPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard> & {
-    currentRoundState: RoundState & { currentPhaseState: PlayCardsPhaseState };
+    currentRoundState: RoundState<TBoard> & { currentPhaseState: PlayCardsPhaseState };
   },
 ): ExpectedEventInfo {
   const phaseState = state.currentRoundState.currentPhaseState;

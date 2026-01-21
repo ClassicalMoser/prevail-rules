@@ -1,12 +1,11 @@
-import type { Board } from '@entities';
-import type { UnitInstance } from '@entities';
+import type { Board, UnitInstance  } from '@entities';
 import type { AssertExact } from '@utils';
 import { unitInstanceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { RESOLVE_RANGED_ATTACK_EFFECT_TYPE } from './gameEffect';
 
-export interface ResolveRangedAttackEvent {
+export interface ResolveRangedAttackEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -41,14 +40,14 @@ type ResolveRangedAttackEventSchemaType = z.infer<
 >;
 
 const _assertExactResolveRangedAttackEvent: AssertExact<
-  ResolveRangedAttackEvent,
+  ResolveRangedAttackEvent<Board>,
   ResolveRangedAttackEventSchemaType
 > = true;
 
 /** The schema for a resolve ranged attack event. */
 export const resolveRangedAttackEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'resolveRangedAttack'>;
   unitInstance: typeof unitInstanceSchema;
   routed: z.ZodBoolean;
   reversed: z.ZodBoolean;

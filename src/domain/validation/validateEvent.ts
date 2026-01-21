@@ -31,7 +31,7 @@ import {
  * ```
  */
 export function validateEvent<TBoard extends Board>(
-  event: Event,
+  event: Event<TBoard>,
   state: GameState<TBoard>,
 ): ValidationResult {
   const roundState = state.currentRoundState;

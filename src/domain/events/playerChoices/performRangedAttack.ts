@@ -5,7 +5,7 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { PERFORM_RANGED_ATTACK_CHOICE_TYPE } from './playerChoice';
 
-export interface PerformRangedAttackEvent {
+export interface PerformRangedAttackEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -40,14 +40,14 @@ type PerformRangedAttackEventSchemaType = z.infer<
 >;
 
 const _assertExactPerformRangedAttackEvent: AssertExact<
-  PerformRangedAttackEvent,
+  PerformRangedAttackEvent<Board>,
   PerformRangedAttackEventSchemaType
 > = true;
 
 /** The schema for a perform ranged attack event. */
 export const performRangedAttackEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
-  choiceType: z.ZodLiteral<typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE>;
+  eventType: z.ZodLiteral<'playerChoice'>;
+  choiceType: z.ZodLiteral<'performRangedAttack'>;
   player: typeof playerSideSchema;
   unit: typeof unitWithPlacementSchema;
   targetUnit: typeof unitWithPlacementSchema;

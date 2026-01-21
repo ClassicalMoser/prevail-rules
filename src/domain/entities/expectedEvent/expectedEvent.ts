@@ -1,7 +1,8 @@
+import type { Board } from '@entities/board';
 import type { AssertExact } from '@utils';
 import type { ExpectedGameEffect } from './expectedGameEffect';
-import type { ExpectedPlayerInput } from './expectedPlayerInput';
 
+import type { ExpectedPlayerInput } from './expectedPlayerInput';
 import { z } from 'zod';
 import { expectedGameEffectSchema } from './expectedGameEffect';
 import { expectedPlayerInputSchema } from './expectedPlayerInput';
@@ -10,7 +11,7 @@ import { expectedPlayerInputSchema } from './expectedPlayerInput';
  * Discriminated union of all expected event types.
  * Used by orchestrator to determine what action to take next.
  */
-export type ExpectedEventInfo = ExpectedPlayerInput | ExpectedGameEffect;
+export type ExpectedEventInfo<TBoard extends Board> = ExpectedPlayerInput<TBoard> | ExpectedGameEffect<TBoard>;
 
 const _expectedEventInfoSchemaObject = z.discriminatedUnion('actionType', [
   expectedPlayerInputSchema,
@@ -22,7 +23,7 @@ type ExpectedEventInfoSchemaType = z.infer<
 >;
 
 const _assertExactExpectedEventInfo: AssertExact<
-  ExpectedEventInfo,
+  ExpectedEventInfo<Board>,
   ExpectedEventInfoSchemaType
 > = true;
 

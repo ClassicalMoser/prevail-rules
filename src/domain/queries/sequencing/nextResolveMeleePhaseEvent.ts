@@ -10,11 +10,11 @@ import { chooseMeleeResolutionEventSchema, eventSchema } from '@events';
 
 export function getExpectedResolveMeleePhaseEventSchema<TBoard extends Board>(
   gameState: GameState<TBoard> & {
-    currentRoundState: RoundState & {
-      currentPhaseState: ResolveMeleePhaseState;
+    currentRoundState: RoundState<TBoard> & {
+      currentPhaseState: ResolveMeleePhaseState<TBoard>;
     };
   },
-): z.ZodType<Event> {
+): z.ZodType<Event<TBoard>> {
   const roundState = gameState.currentRoundState;
   if (!roundState) {
     throw new Error('No round state found');
@@ -26,11 +26,11 @@ export function getExpectedResolveMeleePhaseEventSchema<TBoard extends Board>(
   switch (resolveMeleePhaseState.step) {
     case 'resolveMelee':
       // Player chooses which melee to resolve
-      return chooseMeleeResolutionEventSchema;
+      return chooseMeleeResolutionEventSchema as z.ZodType<Event<TBoard>>;
     case 'complete':
       // TODO: Create a specific phase completion event schema
       // For now, return the general event schema as a placeholder
-      return eventSchema;
+      return eventSchema as z.ZodType<Event<TBoard>>;
     default:
       throw new Error(
         `Invalid resolve melee phase step: ${roundState.currentPhaseState.step}`,

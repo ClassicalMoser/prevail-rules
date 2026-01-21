@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { COMPLETE_CLEANUP_PHASE_EFFECT_TYPE } from './gameEffect';
 
 /** Event to complete the cleanup phase, advance round, and reset to play cards phase. */
-export interface CompleteCleanupPhaseEvent {
+export interface CompleteCleanupPhaseEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -30,6 +30,6 @@ const _assertExactCompleteCleanupPhaseEvent: AssertExact<
 
 /** The schema for a complete cleanup phase event. */
 export const completeCleanupPhaseEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof COMPLETE_CLEANUP_PHASE_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'completeCleanupPhase'>;
 }> = _completeCleanupPhaseEventSchemaObject;

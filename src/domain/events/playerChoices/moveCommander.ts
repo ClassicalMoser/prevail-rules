@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { MOVE_COMMANDER_CHOICE_TYPE } from './playerChoice';
 
 /** An event to move a commander from one space to another. */
-export interface MoveCommanderEvent {
+export interface MoveCommanderEvent<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -38,8 +38,8 @@ type MoveCommanderEventSchemaType = z.infer<
 
 /** The schema for a move commander event. */
 export const moveCommanderEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
-  choiceType: z.ZodLiteral<typeof MOVE_COMMANDER_CHOICE_TYPE>;
+  eventType: z.ZodLiteral<'playerChoice'>;
+  choiceType: z.ZodLiteral<'moveCommander'>;
   player: z.ZodType<PlayerSide>;
   from: z.ZodType<BoardCoordinate<Board>>;
   to: z.ZodType<BoardCoordinate<Board>>;

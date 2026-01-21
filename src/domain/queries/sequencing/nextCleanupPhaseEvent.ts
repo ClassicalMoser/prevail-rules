@@ -14,9 +14,11 @@ import {
 
 export function getExpectedCleanupPhaseEventSchema<TBoard extends Board>(
   gameState: GameState<TBoard> & {
-    currentRoundState: RoundState & { currentPhaseState: CleanupPhaseState };
+    currentRoundState: RoundState<TBoard> & {
+      currentPhaseState: CleanupPhaseState;
+    };
   },
-): z.ZodType<Event> {
+): z.ZodType<Event<TBoard>> {
   const roundState = gameState.currentRoundState;
   if (!roundState) {
     throw new Error('No round state found');

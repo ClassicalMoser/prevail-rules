@@ -12,7 +12,7 @@ import { moveCardToPlayed } from '@transforms/pureTransforms';
  * @returns A new game state with cards moved to played pile
  */
 export function applyDiscardPlayedCardsEvent<TBoard extends Board>(
-  event: DiscardPlayedCardsEvent,
+  event: DiscardPlayedCardsEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;

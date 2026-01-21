@@ -15,7 +15,7 @@ import { isValidMoveCommanderEvent } from '@validation/playerChoice';
  * @returns ValidationResult indicating if the event is valid
  */
 export function validateMoveCommandersPhaseEvent<TBoard extends Board>(
-  event: Event,
+  event: Event<TBoard>,
   state: GameState<TBoard> & {
     currentRoundState: {
       currentPhaseState: MoveCommandersPhaseState;

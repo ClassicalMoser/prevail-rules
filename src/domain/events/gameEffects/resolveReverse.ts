@@ -9,7 +9,7 @@ import { RESOLVE_REVERSE_EFFECT_TYPE } from './gameEffect';
  * A unit that is reversed changes its facing to the opposite
  * of its current facing.
  */
-export interface ResolveReverseEvent {
+export interface ResolveReverseEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -36,14 +36,14 @@ type ResolveReverseEventSchemaType = z.infer<
 >;
 
 const _assertExactResolveReverseEvent: AssertExact<
-  ResolveReverseEvent,
+  ResolveReverseEvent<Board>,
   ResolveReverseEventSchemaType
 > = true;
 
 /** The schema for a resolve reverse event. */
 export const resolveReverseEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof RESOLVE_REVERSE_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'resolveReverse'>;
   unitInstance: typeof unitWithPlacementSchema;
   newUnitPlacement: typeof unitWithPlacementSchema;
 }> = _resolveReverseEventSchemaObject;

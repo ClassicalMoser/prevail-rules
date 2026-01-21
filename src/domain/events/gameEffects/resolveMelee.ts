@@ -12,7 +12,7 @@ import { RESOLVE_MELEE_EFFECT_TYPE } from './gameEffect';
  * resolves each step first.
  */
 
-export interface ResolveMeleeEvent {
+export interface ResolveMeleeEvent<_TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -59,14 +59,14 @@ type ResolveMeleeEventSchemaType = z.infer<
 >;
 
 const _assertExactResolveMeleeEvent: AssertExact<
-  ResolveMeleeEvent,
+  ResolveMeleeEvent<Board>,
   ResolveMeleeEventSchemaType
 > = true;
 
 /** The schema for a resolve melee event. */
 export const resolveMeleeEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof RESOLVE_MELEE_EFFECT_TYPE>;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'resolveMelee'>;
   location: typeof boardCoordinateSchema;
   whiteUnitRouted: z.ZodBoolean;
   blackUnitRouted: z.ZodBoolean;

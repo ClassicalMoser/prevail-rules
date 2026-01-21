@@ -11,7 +11,7 @@ import { PLAY_CARDS_PHASE } from '@entities';
  * @returns A new game state with the round advanced
  */
 export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
-  event: CompleteCleanupPhaseEvent,
+  event: CompleteCleanupPhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = state.currentRoundState.currentPhaseState;

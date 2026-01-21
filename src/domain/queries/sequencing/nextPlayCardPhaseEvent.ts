@@ -16,9 +16,11 @@ import {
 
 export function getExpectedPlayCardsPhaseEventSchema<TBoard extends Board>(
   gameState: GameState<TBoard> & {
-    currentRoundState: RoundState & { currentPhaseState: PlayCardsPhaseState };
+    currentRoundState: RoundState<TBoard> & {
+      currentPhaseState: PlayCardsPhaseState;
+    };
   },
-): z.ZodType<Event> {
+): z.ZodType<Event<TBoard>> {
   const roundState = gameState.currentRoundState;
   if (!roundState) {
     throw new Error('No round state found');

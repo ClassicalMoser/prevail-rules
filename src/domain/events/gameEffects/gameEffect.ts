@@ -1,3 +1,4 @@
+import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import type { CompleteCleanupPhaseEvent } from './completeCleanupPhase';
 import type { CompleteIssueCommandsPhaseEvent } from './completeIssueCommandsPhase';
@@ -13,6 +14,7 @@ import type { ResolveRangedAttackEvent } from './resolveRangedAttack';
 import type { ResolveRetreatEvent } from './resolveRetreat';
 import type { ResolveReverseEvent } from './resolveReverse';
 import type { ResolveRoutEvent } from './resolveRout';
+import type { ResolveRoutDiscardEvent } from './resolveRoutDiscard';
 import type { ResolveUnitsBrokenEvent } from './resolveUnitsBroken';
 import type { RevealCardsEvent } from './revealCards';
 
@@ -31,6 +33,7 @@ import { resolveRangedAttackEventSchema } from './resolveRangedAttack';
 import { resolveRetreatEventSchema } from './resolveRetreat';
 import { resolveReverseEventSchema } from './resolveReverse';
 import { resolveRoutEventSchema } from './resolveRout';
+import { resolveRoutDiscardEventSchema } from './resolveRoutDiscard';
 import { resolveUnitsBrokenEventSchema } from './resolveUnitsBroken';
 import { revealCardsEventSchema } from './revealCards';
 
@@ -50,6 +53,7 @@ export const gameEffects = [
   'resolveRetreat',
   'resolveReverse',
   'resolveRout',
+  'resolveRoutDiscard',
   'resolveUnitsBroken',
   'revealCards',
 ] as const;
@@ -91,29 +95,33 @@ export const RESOLVE_RETREAT_EFFECT_TYPE: 'resolveRetreat' = gameEffects[11];
 export const RESOLVE_REVERSE_EFFECT_TYPE: 'resolveReverse' = gameEffects[12];
 /** The type of the resolve rout game effect. */
 export const RESOLVE_ROUT_EFFECT_TYPE: 'resolveRout' = gameEffects[13];
+/** The type of the resolve rout discard game effect. */
+export const RESOLVE_ROUT_DISCARD_EFFECT_TYPE: 'resolveRoutDiscard' =
+  gameEffects[14];
 /** The type of the resolve units broken game effect. */
 export const RESOLVE_UNITS_BROKEN_EFFECT_TYPE: 'resolveUnitsBroken' =
-  gameEffects[14];
+  gameEffects[15];
 /** The type of the reveal cards game effect. */
-export const REVEAL_CARDS_EFFECT_TYPE: 'revealCards' = gameEffects[15];
+export const REVEAL_CARDS_EFFECT_TYPE: 'revealCards' = gameEffects[16];
 
-export type GameEffectEvent =
-  | CompleteCleanupPhaseEvent
-  | CompleteIssueCommandsPhaseEvent
-  | CompleteMoveCommandersPhaseEvent
-  | CompletePlayCardsPhaseEvent
-  | CompleteResolveMeleePhaseEvent
-  | DiscardPlayedCardsEvent
-  | ResolveEngagementEvent
-  | ResolveInitiativeEvent
-  | ResolveMeleeEvent
-  | ResolveRallyEvent
-  | ResolveRangedAttackEvent
-  | ResolveRetreatEvent
-  | ResolveReverseEvent
-  | ResolveRoutEvent
-  | ResolveUnitsBrokenEvent
-  | RevealCardsEvent;
+export type GameEffectEvent<TBoard extends Board> =
+  | CompleteCleanupPhaseEvent<TBoard>
+  | CompleteIssueCommandsPhaseEvent<TBoard>
+  | CompleteMoveCommandersPhaseEvent<TBoard>
+  | CompletePlayCardsPhaseEvent<TBoard>
+  | CompleteResolveMeleePhaseEvent<TBoard>
+  | DiscardPlayedCardsEvent<TBoard>
+  | ResolveEngagementEvent<TBoard>
+  | ResolveInitiativeEvent<TBoard>
+  | ResolveMeleeEvent<TBoard>
+  | ResolveRallyEvent<TBoard>
+  | ResolveRangedAttackEvent<TBoard>
+  | ResolveRetreatEvent<TBoard>
+  | ResolveReverseEvent<TBoard>
+  | ResolveRoutEvent<TBoard>
+  | ResolveRoutDiscardEvent<TBoard>
+  | ResolveUnitsBrokenEvent<TBoard>
+  | RevealCardsEvent<TBoard>;
 
 const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeCleanupPhaseEventSchema,
@@ -130,17 +138,19 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   resolveRetreatEventSchema,
   resolveReverseEventSchema,
   resolveRoutEventSchema,
+  resolveRoutDiscardEventSchema,
   resolveUnitsBrokenEventSchema,
   revealCardsEventSchema,
 ]);
 
 type GameEffectEventSchemaType = z.infer<typeof _gameEffectEventSchemaObject>;
 
-const _assertExactGameEffectEvent: AssertExact<
-  GameEffectEvent,
+// Verify manual type matches schema inference
+const _assertExactGameEffect: AssertExact<
+  GameEffectEvent<Board>,
   GameEffectEventSchemaType
 > = true;
 
 /** The schema for a game effect event. */
-export const gameEffectEventSchema: z.ZodType<GameEffectEvent> =
+export const gameEffectEventSchema: z.ZodType<GameEffectEvent<Board>> =
   _gameEffectEventSchemaObject;

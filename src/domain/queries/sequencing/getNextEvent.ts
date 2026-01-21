@@ -23,7 +23,7 @@ import { getExpectedResolveMeleePhaseEventSchema } from './nextResolveMeleePhase
  */
 export function getExpectedEventSchema<TBoard extends Board>(
   gameState: GameState<TBoard>,
-): z.ZodType<Event> {
+): z.ZodType<Event<TBoard>> {
   const roundState = gameState.currentRoundState;
   if (!roundState) {
     throw new Error('No round state found');
@@ -35,7 +35,7 @@ export function getExpectedEventSchema<TBoard extends Board>(
     case 'playCards':
       return getExpectedPlayCardsPhaseEventSchema(
         gameState as GameState<TBoard> & {
-          currentRoundState: RoundState & {
+          currentRoundState: RoundState<TBoard> & {
             currentPhaseState: PlayCardsPhaseState;
           };
         },
@@ -43,7 +43,7 @@ export function getExpectedEventSchema<TBoard extends Board>(
     case 'moveCommanders':
       return getExpectedMoveCommandersPhaseEventSchema(
         gameState as GameState<TBoard> & {
-          currentRoundState: RoundState & {
+          currentRoundState: RoundState<TBoard> & {
             currentPhaseState: MoveCommandersPhaseState;
           };
         },
@@ -51,7 +51,7 @@ export function getExpectedEventSchema<TBoard extends Board>(
     case 'issueCommands':
       return getExpectedIssueCommandsPhaseEventSchema(
         gameState as GameState<TBoard> & {
-          currentRoundState: RoundState & {
+          currentRoundState: RoundState<TBoard> & {
             currentPhaseState: IssueCommandsPhaseState;
           };
         },
@@ -59,15 +59,15 @@ export function getExpectedEventSchema<TBoard extends Board>(
     case 'resolveMelee':
       return getExpectedResolveMeleePhaseEventSchema(
         gameState as GameState<TBoard> & {
-          currentRoundState: RoundState & {
-            currentPhaseState: ResolveMeleePhaseState;
+          currentRoundState: RoundState<TBoard> & {
+            currentPhaseState: ResolveMeleePhaseState<TBoard>;
           };
         },
       );
     case 'cleanup':
       return getExpectedCleanupPhaseEventSchema(
         gameState as GameState<TBoard> & {
-          currentRoundState: RoundState & {
+          currentRoundState: RoundState<TBoard> & {
             currentPhaseState: CleanupPhaseState;
           };
         },
