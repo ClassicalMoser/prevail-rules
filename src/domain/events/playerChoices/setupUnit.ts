@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { SETUP_UNITS_CHOICE_TYPE } from './playerChoice';
 
 /** An event to setup multiple units on the board. */
-export interface SetupUnitsEvent<TBoard extends Board> {
+export interface SetupUnitsEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

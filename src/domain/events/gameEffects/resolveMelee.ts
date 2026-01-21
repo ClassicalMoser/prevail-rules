@@ -12,7 +12,7 @@ import { RESOLVE_MELEE_EFFECT_TYPE } from './gameEffect';
  * resolves each step first.
  */
 
-export interface ResolveMeleeEvent<TBoard extends Board> {
+export interface ResolveMeleeEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

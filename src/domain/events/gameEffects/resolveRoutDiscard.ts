@@ -10,7 +10,7 @@ import { RESOLVE_ROUT_DISCARD_EFFECT_TYPE } from './gameEffect';
  * An event to resolve discarding cards as a penalty for routed units.
  * The specified cards are moved from hand to the general discard pile.
  */
-export interface ResolveRoutDiscardEvent<TBoard extends Board> {
+export interface ResolveRoutDiscardEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE } from './gameEffect';
 
 /** Event to complete the issue commands phase and advance to resolve melee phase. */
-export interface CompleteIssueCommandsPhaseEvent<TBoard extends Board> {
+export interface CompleteIssueCommandsPhaseEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

@@ -6,7 +6,7 @@ import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { RESOLVE_RANGED_ATTACK_EFFECT_TYPE } from './gameEffect';
 
-export interface ResolveRangedAttackEvent<TBoard extends Board> {
+export interface ResolveRangedAttackEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

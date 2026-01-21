@@ -11,7 +11,7 @@ import { RESOLVE_RETREAT_EFFECT_TYPE } from './gameEffect';
  * If there are multiple legal retreats, the player must choose one.
  * If there is no legal retreat, the unit is routed.
  */
-export interface ResolveRetreatEvent<TBoard extends Board> {
+export interface ResolveRetreatEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

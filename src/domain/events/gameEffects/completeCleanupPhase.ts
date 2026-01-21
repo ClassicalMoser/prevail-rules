@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { COMPLETE_CLEANUP_PHASE_EFFECT_TYPE } from './gameEffect';
 
 /** Event to complete the cleanup phase, advance round, and reset to play cards phase. */
-export interface CompleteCleanupPhaseEvent<TBoard extends Board> {
+export interface CompleteCleanupPhaseEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

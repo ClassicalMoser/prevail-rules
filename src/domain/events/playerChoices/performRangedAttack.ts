@@ -5,7 +5,7 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { PERFORM_RANGED_ATTACK_CHOICE_TYPE } from './playerChoice';
 
-export interface PerformRangedAttackEvent<TBoard extends Board> {
+export interface PerformRangedAttackEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

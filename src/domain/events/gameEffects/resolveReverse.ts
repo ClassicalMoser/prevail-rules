@@ -9,7 +9,7 @@ import { RESOLVE_REVERSE_EFFECT_TYPE } from './gameEffect';
  * A unit that is reversed changes its facing to the opposite
  * of its current facing.
  */
-export interface ResolveReverseEvent<TBoard extends Board> {
+export interface ResolveReverseEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

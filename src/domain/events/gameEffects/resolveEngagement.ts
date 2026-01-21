@@ -16,7 +16,7 @@ import { RESOLVE_ENGAGEMENT_EFFECT_TYPE } from './gameEffect';
  * Additionally, if the defending unit has a speed greater than that of the attacking unit,
  * the defending unit can retreat.
  */
-export interface ResolveEngagementEvent<TBoard extends Board> {
+export interface ResolveEngagementEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

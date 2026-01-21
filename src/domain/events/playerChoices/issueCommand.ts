@@ -5,7 +5,7 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 import { ISSUE_COMMAND_CHOICE_TYPE } from './playerChoice';
 
-export interface IssueCommandEvent<TBoard extends Board> {
+export interface IssueCommandEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

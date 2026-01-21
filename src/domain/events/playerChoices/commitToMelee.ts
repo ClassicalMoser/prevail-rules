@@ -16,7 +16,7 @@ const _assertMeleeModifierExtendsStatModifier: [MeleeModifier] extends [
   : never = true;
 
 /** An event to commit a card to a unit's melee. */
-export interface CommitToMeleeEvent<TBoard extends Board> {
+export interface CommitToMeleeEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

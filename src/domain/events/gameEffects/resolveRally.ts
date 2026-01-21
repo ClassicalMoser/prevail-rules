@@ -12,7 +12,7 @@ import { RESOLVE_RALLY_EFFECT_TYPE } from './gameEffect';
  */
 
 /** A command to resolve a rally. */
-export interface ResolveRallyEvent<TBoard extends Board> {
+export interface ResolveRallyEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

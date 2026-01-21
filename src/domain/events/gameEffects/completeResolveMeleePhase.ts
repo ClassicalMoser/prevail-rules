@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE } from './gameEffect';
 
 /** Event to complete the resolve melee phase and advance to cleanup phase. */
-export interface CompleteResolveMeleePhaseEvent<TBoard extends Board> {
+export interface CompleteResolveMeleePhaseEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

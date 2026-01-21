@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { CHOOSE_CARD_CHOICE_TYPE } from './playerChoice';
 
 /** An eventto choose a card from the player's hand. */
-export interface ChooseCardEvent<TBoard extends Board> {
+export interface ChooseCardEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof CHOOSE_CARD_CHOICE_TYPE;

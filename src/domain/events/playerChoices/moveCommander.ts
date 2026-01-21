@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { MOVE_COMMANDER_CHOICE_TYPE } from './playerChoice';
 
 /** An event to move a commander from one space to another. */
-export interface MoveCommanderEvent<TBoard extends Board> {
+export interface MoveCommanderEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */

@@ -13,7 +13,7 @@ import { RESOLVE_UNITS_BROKEN_EFFECT_TYPE } from './gameEffect';
  */
 
 /** An event to resolve units that are no longer supported. */
-export interface ResolveUnitsBrokenEvent<TBoard extends Board> {
+export interface ResolveUnitsBrokenEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */

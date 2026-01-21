@@ -8,7 +8,7 @@ import { REVEAL_CARDS_EFFECT_TYPE } from './gameEffect';
  * Moves both players' awaitingPlay cards to inPlay simultaneously.
  * This makes hidden information public.
  */
-export interface RevealCardsEvent<TBoard extends Board> {
+export interface RevealCardsEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
