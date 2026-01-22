@@ -1,9 +1,11 @@
+export { applyAttackValue } from './applyAttackValue';
 export * from './boardSpace';
 export * from './calculateInitiative';
 export * from './engagement';
 export * from './facings';
 export * from './getCurrentUnitStat';
 export * from './getLine';
+export { getMeleeSupportValue } from './getMeleeSupportValue';
 export * from './getNextPhase';
 export * from './getOtherPlayer';
 export * from './getPlayerUnitsOnBoard';

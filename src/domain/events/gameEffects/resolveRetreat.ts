@@ -11,12 +11,13 @@ export const RESOLVE_RETREAT_EFFECT_TYPE = 'resolveRetreat' as const;
 /** An event to resolve a retreat.
  * A retreat is a unit's smallest legal backward movement.
  *
- * This event is only generated when:
- * - There are legal retreat options (if none, a RoutState is created instead)
- * - The final position has been determined (either by player choice if multiple options,
- *   or automatically if only one option)
+ * This event is the **convergence event** that completes the retreat by actually
+ * moving the unit on the board. It is generated after:
+ * - The final position has been determined (either by player choice via `chooseRetreatOption`
+ *   if multiple options exist, or automatically set when state is created if only one option)
  *
- * The unit will move from startingPosition to finalPosition.
+ * The unit will move from startingPosition to finalPosition on the board.
+ * This event completes the retreat substep.
  */
 export interface ResolveRetreatEvent<
   _TBoard extends Board,

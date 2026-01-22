@@ -1,9 +1,8 @@
-import type { Board } from '@entities/board';
-import type { UnitInstance } from '@entities/unit';
+import type { Board, BoardCoordinate } from '@entities/board';
 import type { AssertExact } from '@utils';
 import type { Commitment } from '../commitment';
 import type { AttackApplyState } from './attackApplySubstep';
-import { unitInstanceSchema } from '@entities/unit';
+import { boardCoordinateSchema } from '@entities/board';
 import { z } from 'zod';
 import { commitmentSchema } from '../commitment';
 import { attackApplyStateSchema } from './attackApplySubstep';
@@ -21,10 +20,8 @@ import { attackApplyStateSchema } from './attackApplySubstep';
 export interface MeleeResolutionState<TBoard extends Board> {
   /** The type of the substep. */
   substepType: 'meleeResolution';
-  /** The white player's unit that is resolving the melee. */
-  whiteUnit: UnitInstance;
-  /** The black player's unit that is resolving the melee. */
-  blackUnit: UnitInstance;
+  /** The coordinate of the melee. */
+  location: BoardCoordinate<TBoard>;
   /** The white player's commitment.
    */
   whiteCommitment: Commitment;
@@ -43,10 +40,8 @@ export interface MeleeResolutionState<TBoard extends Board> {
 const _meleeResolutionStateSchemaObject = z.object({
   /** The type of the substep. */
   substepType: z.literal('meleeResolution'),
-  /** The white player's unit that is resolving the melee. */
-  whiteUnit: unitInstanceSchema,
-  /** The black player's unit that is resolving the melee. */
-  blackUnit: unitInstanceSchema,
+  /** The coordinate of the melee. */
+  location: boardCoordinateSchema,
   /** The white player's commitment. */
   whiteCommitment: commitmentSchema,
   /** The black player's commitment. */

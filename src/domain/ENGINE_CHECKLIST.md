@@ -123,24 +123,25 @@ Game effects that have procedures to generate them:
 - [x] `discardPlayedCards` → `generateDiscardPlayedCardsEvent`
 - [x] `resolveEngageRetreatOption` → `generateResolveEngageRetreatOptionEvent`
 - [x] `resolveEngagementType` → `generateResolveEngagementTypeEvent`
+- [x] `resolveFlankEngagement` → `generateResolveFlankEngagementEvent`
 - [x] `resolveInitiative` → `generateResolveInitiativeEvent`
 - [x] `resolveRally` → `generateResolveRallyEvent`
+- [x] `resolveMelee` → `generateResolveMeleeEvent`
+- [x] `resolveRangedAttack` → `generateResolveRangedAttackEvent`
+- [x] `resolveRetreat` → `generateResolveRetreatEvent`
 - [x] `resolveReverse` → `generateResolveReverseEvent`
+- [x] `resolveRout` → `generateResolveRoutEvent`
 - [x] `resolveUnitsBroken` → `generateResolveUnitsBrokenEvent`
 - [x] `revealCards` → `generateRevealCardsEvent`
+- [x] `startEngagement` → `generateStartEngagementEvent`
 
 ### Procedures Still Needed
 
-- [ ] `resolveFlankEngagement` → `generateResolveFlankEngagementEvent`
-- [ ] `resolveMelee` → `generateResolveMeleeEvent`
-- [ ] `resolveRangedAttack` → `generateResolveRangedAttackEvent`
-- [ ] `resolveRetreat` → `generateResolveRetreatEvent`
-- [ ] `resolveRout` → `generateResolveRoutEvent`
-- [ ] `startEngagement` → `generateStartEngagementEvent`
+**All procedures are now implemented (23/23).**
 
 **Note:** All game effects require procedures. When the Next Event Expected Engine returns a game effect, a procedure must generate that event from the current game state.
 
-**Progress:** 17/23 (74%) - 17 implemented, 6 remaining
+**Progress:** 23/23 (100%) - All procedures implemented
 
 ---
 
@@ -166,12 +167,12 @@ Game effects that have procedures to generate them:
 
 ## Summary
 
-| Engine                            | Status         | Progress               |
-| --------------------------------- | -------------- | ---------------------- |
-| **1. Pure Transform Engine**      | 🟡 In Progress | 18/38 events (47%)     |
-| **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)       |
-| **3. Procedure Library**          | 🟡 In Progress | 17/23 identified (74%) |
-| **4. Next Event Expected Engine** | ✅ Complete    | 5/5 phases (100%)      |
+| Engine                            | Status         | Progress                 |
+| --------------------------------- | -------------- | ------------------------ |
+| **1. Pure Transform Engine**      | 🟡 In Progress | 18/38 events (47%)       |
+| **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)         |
+| **3. Procedure Library**          | ✅ Complete    | 23/23 implemented (100%) |
+| **4. Next Event Expected Engine** | ✅ Complete    | 5/5 phases (100%)        |
 
 ## Priority Work Items
 
@@ -215,9 +216,10 @@ Game effects that have procedures to generate them:
    - [x] Implement procedures for simple completion events ✅ (completeAttackApply, completeMeleeResolution, completeRangedAttackCommand, completeUnitMovement)
    - [x] Implement procedures for engagement type resolution ✅ (resolveEngagementType, resolveEngageRetreatOption)
    - [x] Implement procedure for reverse resolution ✅ (resolveReverse)
-   - [ ] Implement procedures for combat resolution effects (resolveMelee, resolveRangedAttack)
-   - [ ] Implement procedures for movement/positioning effects (resolveFlankEngagement, resolveRetreat, startEngagement)
-   - [ ] Implement procedure for rout penalty (resolveRout)
+
+- [x] Implement procedures for combat resolution effects (resolveMelee, resolveRangedAttack) ✅
+- [x] Implement procedures for movement/positioning effects (resolveRetreat) ✅
+- [x] Implement procedure for flank engagement (resolveFlankEngagement) ✅
 
 ### Low Priority (Polish & Edge Cases)
 
