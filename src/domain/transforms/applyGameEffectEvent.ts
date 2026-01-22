@@ -58,6 +58,8 @@ export function applyGameEffectEvent<TBoard extends Board>(
     case 'resolveRetreat':
     case 'resolveReverse':
     case 'resolveRout':
+    case 'completeRangedAttackCommand':
+    case 'completeAttackApply':
       throw new Error(
         `Event type ${event.effectType} is not yet implemented in the transform engine`,
       );

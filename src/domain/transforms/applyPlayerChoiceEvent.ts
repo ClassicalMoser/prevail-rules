@@ -11,6 +11,7 @@ import {
   applyChooseRoutDiscardEvent,
   applyMoveCommanderEvent,
   applyMoveUnitEvent,
+  applyPerformRangedAttackEvent,
   applySetupUnitsEvent,
 } from './stateTransitions';
 
@@ -42,10 +43,11 @@ export function applyPlayerChoiceEvent<TBoard extends Board>(
     case 'commitToMovement':
     case 'commitToRangedAttack':
     case 'issueCommand':
-    case 'performRangedAttack':
       throw new Error(
         `Event type ${event.choiceType} is not yet implemented in the transform engine`,
       );
+    case 'performRangedAttack':
+      return applyPerformRangedAttackEvent(event, state);
     default: {
       // Exhaustiveness check for TypeScript
       const _exhaustive: never = event;

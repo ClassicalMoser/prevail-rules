@@ -25,6 +25,8 @@ export interface AttackApplyState<TBoard extends Board> {
   retreatState: RetreatState<TBoard> | undefined;
   /** The state of the reverse. */
   reverseState: ReverseState<TBoard> | undefined;
+  /** Whether the attack apply substep is complete. */
+  completed: boolean;
 }
 
 /** The schema for the state of the attack apply substep. */
@@ -41,6 +43,8 @@ const _attackApplyStateSchemaObject = z.object({
   retreatState: retreatStateSchema.or(z.undefined()),
   /** The state of the reverse. */
   reverseState: reverseStateSchema.or(z.undefined()),
+  /** Whether the attack apply substep is complete. */
+  completed: z.boolean(),
 });
 
 type AttackApplyStateSchemaType = z.infer<typeof _attackApplyStateSchemaObject>;
@@ -59,4 +63,5 @@ export const attackApplyStateSchema: z.ZodObject<{
   routState: z.ZodType<RoutState | undefined>;
   retreatState: z.ZodType<RetreatState<any> | undefined>;
   reverseState: z.ZodType<ReverseState<any> | undefined>;
+  completed: z.ZodType<boolean>;
 }> = _attackApplyStateSchemaObject;

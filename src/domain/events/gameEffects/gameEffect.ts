@@ -1,9 +1,11 @@
 import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
+import type { CompleteAttackApplyEvent } from './completeAttackApply';
 import type { CompleteCleanupPhaseEvent } from './completeCleanupPhase';
 import type { CompleteIssueCommandsPhaseEvent } from './completeIssueCommandsPhase';
 import type { CompleteMoveCommandersPhaseEvent } from './completeMoveCommandersPhase';
 import type { CompletePlayCardsPhaseEvent } from './completePlayCardsPhase';
+import type { CompleteRangedAttackCommandEvent } from './completeRangedAttackCommand';
 import type { CompleteResolveMeleePhaseEvent } from './completeResolveMeleePhase';
 import type { CompleteUnitMovementEvent } from './completeUnitMovement';
 import type { DiscardPlayedCardsEvent } from './discardPlayedCards';
@@ -23,10 +25,12 @@ import type { RevealCardsEvent } from './revealCards';
 import type { StartEngagementEvent } from './startEngagement';
 
 import { z } from 'zod';
+import { completeAttackApplyEventSchema } from './completeAttackApply';
 import { completeCleanupPhaseEventSchema } from './completeCleanupPhase';
 import { completeIssueCommandsPhaseEventSchema } from './completeIssueCommandsPhase';
 import { completeMoveCommandersPhaseEventSchema } from './completeMoveCommandersPhase';
 import { completePlayCardsPhaseEventSchema } from './completePlayCardsPhase';
+import { completeRangedAttackCommandEventSchema } from './completeRangedAttackCommand';
 import { completeResolveMeleePhaseEventSchema } from './completeResolveMeleePhase';
 import { completeUnitMovementEventSchema } from './completeUnitMovement';
 import { discardPlayedCardsEventSchema } from './discardPlayedCards';
@@ -47,10 +51,12 @@ import { startEngagementEventSchema } from './startEngagement';
 
 /** Iterable list of valid game effects. Built from individual event constants. */
 export const gameEffects = [
+  'completeAttackApply',
   'completeCleanupPhase',
   'completeIssueCommandsPhase',
   'completeMoveCommandersPhase',
   'completePlayCardsPhase',
+  'completeRangedAttackCommand',
   'completeResolveMeleePhase',
   'discardPlayedCards',
   'resolveEngagementType',
@@ -82,10 +88,12 @@ export const gameEffectTypeSchema: z.ZodType<GameEffectType> =
  * Used internally to create filtered types.
  */
 type GameEffectEventUnion<TBoard extends Board> =
+  | CompleteAttackApplyEvent<TBoard, 'completeAttackApply'>
   | CompleteCleanupPhaseEvent<TBoard, 'completeCleanupPhase'>
   | CompleteIssueCommandsPhaseEvent<TBoard, 'completeIssueCommandsPhase'>
   | CompleteMoveCommandersPhaseEvent<TBoard, 'completeMoveCommandersPhase'>
   | CompletePlayCardsPhaseEvent<TBoard, 'completePlayCardsPhase'>
+  | CompleteRangedAttackCommandEvent<TBoard, 'completeRangedAttackCommand'>
   | CompleteResolveMeleePhaseEvent<TBoard, 'completeResolveMeleePhase'>
   | DiscardPlayedCardsEvent<TBoard, 'discardPlayedCards'>
   | ResolveEngagementTypeEvent<TBoard, 'resolveEngagementType'>
@@ -115,10 +123,12 @@ export type GameEffectEvent<
 > = Extract<GameEffectEventUnion<TBoard>, { effectType: TGameEffectType }>;
 
 const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
+  completeAttackApplyEventSchema,
   completeCleanupPhaseEventSchema,
   completeIssueCommandsPhaseEventSchema,
   completeMoveCommandersPhaseEventSchema,
   completePlayCardsPhaseEventSchema,
+  completeRangedAttackCommandEventSchema,
   completeResolveMeleePhaseEventSchema,
   discardPlayedCardsEventSchema,
   resolveEngageRetreatOptionEventSchema,

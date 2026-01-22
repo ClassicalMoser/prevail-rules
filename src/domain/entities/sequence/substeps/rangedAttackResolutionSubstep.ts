@@ -23,8 +23,8 @@ export interface RangedAttackResolutionState<TBoard extends Board> {
   attackingCommitment: Commitment;
   /** The commitment of the defending player. */
   defendingCommitment: Commitment;
-  /** The state of the attack apply substep. */
-  attackApplyState: AttackApplyState<TBoard>;
+  /** The state of the attack apply substep. Only exists after resolveRangedAttack is applied. */
+  attackApplyState: AttackApplyState<TBoard> | undefined;
 }
 
 /** The schema for the state of the ranged attack resolution substep. */
@@ -43,8 +43,8 @@ const _rangedAttackResolutionStateSchemaObject = z.object({
   attackingCommitment: commitmentSchema,
   /** The commitment of the defending player. */
   defendingCommitment: commitmentSchema,
-  /** The state of the attack apply substep. */
-  attackApplyState: attackApplyStateSchema,
+  /** The state of the attack apply substep. Only exists after resolveRangedAttack is applied. */
+  attackApplyState: attackApplyStateSchema.or(z.undefined()),
 });
 
 type RangedAttackResolutionStateSchemaType = z.infer<
@@ -65,5 +65,5 @@ export const rangedAttackResolutionStateSchema: z.ZodObject<{
   supportingUnits: z.ZodType<Set<UnitInstance>>;
   attackingCommitment: z.ZodType<Commitment>;
   defendingCommitment: z.ZodType<Commitment>;
-  attackApplyState: z.ZodType<AttackApplyState<Board>>;
+  attackApplyState: z.ZodType<AttackApplyState<Board> | undefined>;
 }> = _rangedAttackResolutionStateSchemaObject;

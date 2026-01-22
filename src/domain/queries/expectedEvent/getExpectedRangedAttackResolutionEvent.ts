@@ -5,9 +5,7 @@ import type {
   RangedAttackResolutionState,
 } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
-import { getExpectedReverseEvent } from './getExpectedReverseEvent';
-import { getExpectedRoutEvent } from './getExpectedRoutEvent';
+import { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
 
 /**
  * Gets the expected event for ranged attack resolution substeps.
@@ -41,54 +39,26 @@ export function getExpectedRangedAttackResolutionEvent<TBoard extends Board>(
   }
 
   // Both commitments resolved, check if resolveRangedAttack has been applied
-  // resolveRangedAttack calculates the attack and sets attackResult
-  const applyState = resolutionState.attackApplyState;
-  const attackResult = applyState.attackResult;
-
-  // Check if resolveRangedAttack has been applied
-  // If attackResult is all false and no states exist, resolveRangedAttack hasn't been applied yet
-  // If attackResult has results OR states exist, resolveRangedAttack has been applied
-  const hasResults =
-    attackResult.unitRouted ||
-    attackResult.unitRetreated ||
-    attackResult.unitReversed;
-  const hasStates =
-    applyState.routState !== undefined ||
-    applyState.retreatState !== undefined ||
-    applyState.reverseState !== undefined;
-
-  // If no results and no states, resolveRangedAttack hasn't been applied yet
-  if (!hasResults && !hasStates) {
+  // resolveRangedAttack calculates the attack and creates attackApplyState
+  if (!resolutionState.attackApplyState) {
     return {
       actionType: 'gameEffect',
       effectType: 'resolveRangedAttack',
     };
   }
 
-  // resolveRangedAttack has been applied
-  // If no results occurred, attack had no effect - command resolution complete
-  if (!hasResults) {
-    throw new Error(
-      'Ranged attack resolution complete but unit not removed from remainingUnits',
-    );
+  if (!resolutionState.attackApplyState.completed) {
+    // resolveRangedAttack has been applied (attackApplyState exists)
+    // Use composable function to determine next expected event
+    return getExpectedAttackApplyEvent(resolutionState.attackApplyState);
   }
 
-  // Results occurred, check which need resolution
-  // Priority: rout > retreat > reverse (rout is most severe)
-  if (attackResult.unitRouted && applyState.routState) {
-    return getExpectedRoutEvent(applyState.routState);
+  if (resolutionState.attackApplyState.completed) {
+    return {
+      actionType: 'gameEffect',
+      effectType: 'completeRangedAttackCommand',
+    };
   }
 
-  if (attackResult.unitRetreated && applyState.retreatState) {
-    return getExpectedRetreatEvent(applyState.retreatState);
-  }
-
-  if (attackResult.unitReversed && applyState.reverseState) {
-    return getExpectedReverseEvent(applyState.reverseState);
-  }
-
-  // All attack results resolved, command resolution should be complete
-  throw new Error(
-    'Ranged attack resolution complete but unit not removed from remainingUnits',
-  );
+  throw new Error('Ranged attack resolution is in an invalid state');
 }
