@@ -44,8 +44,6 @@ export function applyChooseMeleeEvent<TBoard extends Board>(
     blackUnit: spaceState.unitPresence.secondaryUnit,
     whiteCommitment: { commitmentType: 'pending' },
     blackCommitment: { commitmentType: 'pending' },
-    whiteResultResolved: false,
-    blackResultResolved: false,
     whiteAttackApplyState: undefined,
     blackAttackApplyState: undefined,
   };

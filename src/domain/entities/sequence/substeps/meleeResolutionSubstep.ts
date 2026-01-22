@@ -24,10 +24,6 @@ export interface MeleeResolutionState<TBoard extends Board> {
   /** The black player's commitment.
    */
   blackCommitment: Commitment;
-  /** Whether the white player's result has been resolved. */
-  whiteResultResolved: boolean;
-  /** Whether the black player's result has been resolved. */
-  blackResultResolved: boolean;
   /** The state of the attack apply substep for the white player's unit. */
   whiteAttackApplyState: AttackApplyState<TBoard> | undefined;
   /** The state of the attack apply substep for the black player's unit. */
@@ -46,10 +42,6 @@ const _meleeResolutionStateSchemaObject = z.object({
   whiteCommitment: commitmentSchema,
   /** The black player's commitment. */
   blackCommitment: commitmentSchema,
-  /** Whether the white player's result has been resolved. */
-  whiteResultResolved: z.boolean(),
-  /** Whether the black player's result has been resolved. */
-  blackResultResolved: z.boolean(),
   /** The state of the attack apply substep for the white player's unit. */
   whiteAttackApplyState: attackApplyStateSchema.or(z.undefined()),
   /** The state of the attack apply substep for the black player's unit. */

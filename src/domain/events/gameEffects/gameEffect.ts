@@ -3,6 +3,7 @@ import type { AssertExact } from '@utils';
 import type { CompleteAttackApplyEvent } from './completeAttackApply';
 import type { CompleteCleanupPhaseEvent } from './completeCleanupPhase';
 import type { CompleteIssueCommandsPhaseEvent } from './completeIssueCommandsPhase';
+import type { CompleteMeleeResolutionEvent } from './completeMeleeResolution';
 import type { CompleteMoveCommandersPhaseEvent } from './completeMoveCommandersPhase';
 import type { CompletePlayCardsPhaseEvent } from './completePlayCardsPhase';
 import type { CompleteRangedAttackCommandEvent } from './completeRangedAttackCommand';
@@ -28,6 +29,7 @@ import { z } from 'zod';
 import { completeAttackApplyEventSchema } from './completeAttackApply';
 import { completeCleanupPhaseEventSchema } from './completeCleanupPhase';
 import { completeIssueCommandsPhaseEventSchema } from './completeIssueCommandsPhase';
+import { completeMeleeResolutionEventSchema } from './completeMeleeResolution';
 import { completeMoveCommandersPhaseEventSchema } from './completeMoveCommandersPhase';
 import { completePlayCardsPhaseEventSchema } from './completePlayCardsPhase';
 import { completeRangedAttackCommandEventSchema } from './completeRangedAttackCommand';
@@ -56,6 +58,7 @@ export const gameEffects = [
   'completeIssueCommandsPhase',
   'completeMoveCommandersPhase',
   'completePlayCardsPhase',
+  'completeMeleeResolution',
   'completeRangedAttackCommand',
   'completeResolveMeleePhase',
   'discardPlayedCards',
@@ -93,6 +96,7 @@ type GameEffectEventUnion<TBoard extends Board> =
   | CompleteIssueCommandsPhaseEvent<TBoard, 'completeIssueCommandsPhase'>
   | CompleteMoveCommandersPhaseEvent<TBoard, 'completeMoveCommandersPhase'>
   | CompletePlayCardsPhaseEvent<TBoard, 'completePlayCardsPhase'>
+  | CompleteMeleeResolutionEvent<TBoard, 'completeMeleeResolution'>
   | CompleteRangedAttackCommandEvent<TBoard, 'completeRangedAttackCommand'>
   | CompleteResolveMeleePhaseEvent<TBoard, 'completeResolveMeleePhase'>
   | DiscardPlayedCardsEvent<TBoard, 'discardPlayedCards'>
@@ -128,6 +132,7 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeIssueCommandsPhaseEventSchema,
   completeMoveCommandersPhaseEventSchema,
   completePlayCardsPhaseEventSchema,
+  completeMeleeResolutionEventSchema,
   completeRangedAttackCommandEventSchema,
   completeResolveMeleePhaseEventSchema,
   discardPlayedCardsEventSchema,

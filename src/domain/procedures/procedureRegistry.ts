@@ -149,6 +149,7 @@ export function generateEventFromProcedure<
     case 'resolveRoutDiscard':
     case 'completeAttackApply':
     case 'completeRangedAttackCommand':
+    case 'completeMeleeResolution':
       throw new Error(`No procedure exists for effect type: ${effectType}`);
 
     default: {

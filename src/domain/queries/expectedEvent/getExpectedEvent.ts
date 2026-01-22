@@ -3,6 +3,7 @@ import { getExpectedCleanupPhaseEvent } from './getExpectedCleanupPhaseEvent';
 import { getExpectedIssueCommandsPhaseEvent } from './getExpectedIssueCommandsPhaseEvent';
 import { getExpectedMoveCommandersPhaseEvent } from './getExpectedMoveCommandersPhaseEvent';
 import { getExpectedPlayCardsPhaseEvent } from './getExpectedPlayCardsPhaseEvent';
+import { getExpectedResolveMeleePhaseEvent } from './getExpectedResolveMeleePhaseEvent';
 
 export function getExpectedEvent<TBoard extends Board>(
   state: GameState<TBoard>,
@@ -22,7 +23,7 @@ export function getExpectedEvent<TBoard extends Board>(
     case 'issueCommands':
       return getExpectedIssueCommandsPhaseEvent(state);
     case 'resolveMelee':
-      throw new Error('ResolveMelee phase not implemented');
+      return getExpectedResolveMeleePhaseEvent(state);
     case 'cleanup':
       return getExpectedCleanupPhaseEvent(state);
     default:
