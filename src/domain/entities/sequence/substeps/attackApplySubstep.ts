@@ -1,87 +1,62 @@
+import type { Board } from '@entities/board';
+import type { RoutState } from '@entities/sequence';
 import type { UnitInstance } from '@entities/unit';
 import type { AssertExact } from '@utils';
 import type { AttackResult } from '../attackResult';
+import type { RetreatState } from './retreatSubstep';
+import type { ReverseState } from './reverseSubstep';
 import { unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
 import { attackResultSchema } from '../attackResult';
+import { retreatStateSchema } from './retreatSubstep';
+import { reverseStateSchema } from './reverseSubstep';
+import { routStateSchema } from './routSubstep';
 
-/** The type for an attack result that has not yet been applied. */
-export interface AttackApplyPending {
+export interface AttackApplyState<TBoard extends Board> {
   /** The type of the substep. */
-  substepType: 'attackApplyPending';
-  /** The unit being attacked. */
-  unit: UnitInstance;
-  /** The total attack value. */
-  totalAttackValue: number;
-}
-
-/** The schema for the state of the attack apply pending substep. */
-const _attackApplyPendingStateSchemaObject = z.object({
-  /** The type of the substep. */
-  substepType: z.literal('attackApplyPending'),
-  /** The unit being attacked. */
-  unit: unitInstanceSchema,
-  /** The total attack value. */
-  totalAttackValue: z.number(),
-});
-
-type AttackApplyPendingStateSchemaType = z.infer<
-  typeof _attackApplyPendingStateSchemaObject
->;
-
-const _assertExactAttackApplyPending: AssertExact<
-  AttackApplyPending,
-  AttackApplyPendingStateSchemaType
-> = true;
-
-/** The type for an attack result that is being applied. */
-export interface AttackApplyInProgress {
-  /** The type of the substep. */
-  substepType: 'attackApplyInProgress';
-  /** The unit being attacked. */
-  unit: UnitInstance;
+  substepType: 'attackApply';
+  /** The unit that is being attacked. */
+  defendingUnit: UnitInstance;
   /** The result of the attack. */
   attackResult: AttackResult;
-  /** Whether the rout has been resolved. */
-  routResolved: boolean;
-  /** Whether the retreat has been resolved. */
-  retreatResolved: boolean;
-  /** Whether the reverse has been resolved. */
-  reverseResolved: boolean;
+  /** The state of the rout. */
+  routState: RoutState | undefined;
+  /** The state of the retreat. */
+  retreatState: RetreatState<TBoard> | undefined;
+  /** The state of the reverse. */
+  reverseState: ReverseState<TBoard> | undefined;
 }
 
-/** The schema for the state of the attack apply in progress substep. */
-const _attackApplyInProgressStateSchemaObject = z.object({
+/** The schema for the state of the attack apply substep. */
+const _attackApplyStateSchemaObject = z.object({
   /** The type of the substep. */
-  substepType: z.literal('attackApplyInProgress'),
-  /** The unit being attacked. */
-  unit: unitInstanceSchema,
+  substepType: z.literal('attackApply'),
+  /** The unit that is being attacked. */
+  defendingUnit: unitInstanceSchema,
   /** The result of the attack. */
   attackResult: attackResultSchema,
-  /** Whether the rout has been resolved. */
-  routResolved: z.boolean(),
-  /** Whether the retreat has been resolved. */
-  retreatResolved: z.boolean(),
-  /** Whether the reverse has been resolved. */
-  reverseResolved: z.boolean(),
+  /** The state of the rout. */
+  routState: routStateSchema.or(z.undefined()),
+  /** The state of the retreat. */
+  retreatState: retreatStateSchema.or(z.undefined()),
+  /** The state of the reverse. */
+  reverseState: reverseStateSchema.or(z.undefined()),
 });
 
-type AttackApplyInProgressStateSchemaType = z.infer<
-  typeof _attackApplyInProgressStateSchemaObject
->;
+type AttackApplyStateSchemaType = z.infer<typeof _attackApplyStateSchemaObject>;
 
-const _assertExactAttackApplyInProgress: AssertExact<
-  AttackApplyInProgress,
-  AttackApplyInProgressStateSchemaType
+// Assert that the attack apply state is exact.
+const _assertExactAttackApplyState: AssertExact<
+  AttackApplyState<any>,
+  AttackApplyStateSchemaType
 > = true;
 
-export const attackApplyInProgressStateSchema: z.ZodType<AttackApplyInProgress> =
-  _attackApplyInProgressStateSchemaObject;
-
-export type AttackApplyState = AttackApplyPending | AttackApplyInProgress;
-
-export const attackApplyStateSchema: z.ZodType<AttackApplyState> =
-  z.discriminatedUnion('substepType', [
-    _attackApplyPendingStateSchemaObject,
-    _attackApplyInProgressStateSchemaObject,
-  ]);
+/** The schema for the state of the attack apply substep. */
+export const attackApplyStateSchema: z.ZodObject<{
+  substepType: z.ZodLiteral<'attackApply'>;
+  defendingUnit: z.ZodType<UnitInstance>;
+  attackResult: z.ZodType<AttackResult>;
+  routState: z.ZodType<RoutState | undefined>;
+  retreatState: z.ZodType<RetreatState<any> | undefined>;
+  reverseState: z.ZodType<ReverseState<any> | undefined>;
+}> = _attackApplyStateSchemaObject;

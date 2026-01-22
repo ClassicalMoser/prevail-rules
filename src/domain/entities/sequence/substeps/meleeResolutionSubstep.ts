@@ -1,3 +1,4 @@
+import type { Board } from '@entities/board';
 import type { UnitInstance } from '@entities/unit';
 import type { AssertExact } from '@utils';
 import type { Commitment } from '../commitment';
@@ -10,7 +11,7 @@ import { attackApplyStateSchema } from './attackApplySubstep';
 /** The state of a particular melee as it is being resolved.
  * Repeated for each melee that needs to be resolved in a round.
  */
-export interface MeleeResolutionState {
+export interface MeleeResolutionState<TBoard extends Board> {
   /** The type of the substep. */
   substepType: 'meleeResolution';
   /** The white player's unit that is resolving the melee. */
@@ -28,9 +29,9 @@ export interface MeleeResolutionState {
   /** Whether the black player's result has been resolved. */
   blackResultResolved: boolean;
   /** The state of the attack apply substep for the white player's unit. */
-  whiteAttackApplyState: AttackApplyState | undefined;
+  whiteAttackApplyState: AttackApplyState<TBoard> | undefined;
   /** The state of the attack apply substep for the black player's unit. */
-  blackAttackApplyState: AttackApplyState | undefined;
+  blackAttackApplyState: AttackApplyState<TBoard> | undefined;
 }
 
 /** The schema for the state of the melee resolution substep. */
@@ -60,10 +61,11 @@ type MeleeResolutionStateSchemaType = z.infer<
 >;
 
 const _assertExactMeleeResolutionState: AssertExact<
-  MeleeResolutionState,
+  MeleeResolutionState<Board>,
   MeleeResolutionStateSchemaType
 > = true;
 
 /** The schema for the state of the melee resolution substep. */
-export const meleeResolutionStateSchema: z.ZodType<MeleeResolutionState> =
-  _meleeResolutionStateSchemaObject;
+export const meleeResolutionStateSchema: z.ZodType<
+  MeleeResolutionState<Board>
+> = _meleeResolutionStateSchemaObject;

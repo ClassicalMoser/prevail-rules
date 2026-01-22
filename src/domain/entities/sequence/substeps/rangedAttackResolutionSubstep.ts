@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { commitmentSchema } from '../commitment';
 import { attackApplyStateSchema } from './attackApplySubstep';
 
-export interface RangedAttackResolutionState<_TBoard extends Board> {
+export interface RangedAttackResolutionState<TBoard extends Board> {
   /** The type of the substep. */
   substepType: 'commandResolution';
   /** The type of command resolution. */
@@ -24,7 +24,7 @@ export interface RangedAttackResolutionState<_TBoard extends Board> {
   /** The commitment of the defending player. */
   defendingCommitment: Commitment;
   /** The state of the attack apply substep. */
-  attackApplyState: AttackApplyState;
+  attackApplyState: AttackApplyState<TBoard>;
 }
 
 /** The schema for the state of the ranged attack resolution substep. */
@@ -65,5 +65,5 @@ export const rangedAttackResolutionStateSchema: z.ZodObject<{
   supportingUnits: z.ZodType<Set<UnitInstance>>;
   attackingCommitment: z.ZodType<Commitment>;
   defendingCommitment: z.ZodType<Commitment>;
-  attackApplyState: z.ZodType<AttackApplyState>;
+  attackApplyState: z.ZodType<AttackApplyState<Board>>;
 }> = _rangedAttackResolutionStateSchemaObject;

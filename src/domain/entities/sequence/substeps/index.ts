@@ -5,4 +5,6 @@ export * from './meleeResolutionSubstep';
 export * from './movementResolutionSubstep';
 export * from './rallyResolutionSubstep';
 export * from './rangedAttackResolutionSubstep';
+export * from './retreatSubstep';
+export * from './reverseSubstep';
 export * from './routSubstep';

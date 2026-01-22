@@ -39,7 +39,7 @@ export interface ResolveMeleePhaseState<TBoard extends Board> {
   /** The step of the resolve melee phase. */
   step: ResolveMeleePhaseStep;
   /** The state of the ongoing melee resolution. */
-  currentMeleeResolutionState: MeleeResolutionState | undefined;
+  currentMeleeResolutionState: MeleeResolutionState<TBoard> | undefined;
   /** The remaining engagements that need to be resolved. */
   remainingEngagements: Set<BoardCoordinate<TBoard>>;
 }
@@ -68,6 +68,8 @@ const _assertExactResolveMeleePhaseState: AssertExact<
 export const resolveMeleePhaseStateSchema: z.ZodObject<{
   phase: z.ZodLiteral<'resolveMelee'>;
   step: z.ZodType<ResolveMeleePhaseStep>;
-  currentMeleeResolutionState: z.ZodType<MeleeResolutionState | undefined>;
+  currentMeleeResolutionState: z.ZodType<
+    MeleeResolutionState<Board> | undefined
+  >;
   remainingEngagements: z.ZodSet<z.ZodType<BoardCoordinate<Board>>>;
 }> = _resolveMeleePhaseStateSchemaObject;
