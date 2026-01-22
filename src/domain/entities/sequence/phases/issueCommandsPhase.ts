@@ -1,9 +1,12 @@
+import type { Board } from '@entities/board';
 import type { Command } from '@entities/card';
 import type { UnitInstance } from '@entities/unit';
 import type { AssertExact } from '@utils';
+import type { CommandResolutionState } from '../substeps';
 import { commandSchema } from '@entities/card';
 import { unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
+import { commandResolutionStateSchema } from '../substeps';
 import { ISSUE_COMMANDS_PHASE } from './phases';
 
 /** Iterable list of valid steps in the issue commands phase. */
@@ -46,7 +49,7 @@ export const issueCommandsPhaseStepSchema: z.ZodType<IssueCommandsPhaseStep> =
   _issueCommandsPhaseStepSchemaObject;
 
 /** The state of the issue commands phase. */
-export interface IssueCommandsPhaseState {
+export interface IssueCommandsPhaseState<TBoard extends Board> {
   /** The current phase of the round. */
   phase: typeof ISSUE_COMMANDS_PHASE;
   /** The step of the issue commands phase. */
@@ -59,6 +62,8 @@ export interface IssueCommandsPhaseState {
   remainingCommandsSecondPlayer: Set<Command>;
   /** remainingUnitsSecondPlayer */
   remainingUnitsSecondPlayer: Set<UnitInstance>;
+  /** The state of the ongoing command resolution (movement or ranged attack). */
+  currentCommandResolutionState: CommandResolutionState<TBoard> | undefined;
 }
 
 const _issueCommandsPhaseStateSchemaObject = z.object({
@@ -74,6 +79,8 @@ const _issueCommandsPhaseStateSchemaObject = z.object({
   remainingCommandsSecondPlayer: z.set(commandSchema),
   /** remainingUnitsSecondPlayer */
   remainingUnitsSecondPlayer: z.set(unitInstanceSchema),
+  /** The state of the ongoing command resolution (movement or ranged attack). */
+  currentCommandResolutionState: commandResolutionStateSchema.or(z.undefined()),
 });
 
 // Verify manual type matches schema inference
@@ -81,7 +88,7 @@ type IssueCommandsPhaseStateSchemaType = z.infer<
   typeof _issueCommandsPhaseStateSchemaObject
 >;
 const _assertExactIssueCommandsPhaseState: AssertExact<
-  IssueCommandsPhaseState,
+  IssueCommandsPhaseState<Board>,
   IssueCommandsPhaseStateSchemaType
 > = true;
 
@@ -93,4 +100,7 @@ export const issueCommandsPhaseStateSchema: z.ZodObject<{
   remainingUnitsFirstPlayer: z.ZodSet<z.ZodType<UnitInstance>>;
   remainingCommandsSecondPlayer: z.ZodSet<z.ZodType<Command>>;
   remainingUnitsSecondPlayer: z.ZodSet<z.ZodType<UnitInstance>>;
+  currentCommandResolutionState: z.ZodType<
+    CommandResolutionState<Board> | undefined
+  >;
 }> = _issueCommandsPhaseStateSchemaObject;

@@ -59,7 +59,7 @@ const _assertExactPhase: AssertExact<Phase, PhaseSchemaType> = true;
 export type PhaseState<TBoard extends Board> =
   | PlayCardsPhaseState
   | MoveCommandersPhaseState
-  | IssueCommandsPhaseState
+  | IssueCommandsPhaseState<TBoard>
   | ResolveMeleePhaseState<TBoard>
   | CleanupPhaseState;
 

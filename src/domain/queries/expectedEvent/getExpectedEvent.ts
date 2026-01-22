@@ -1,5 +1,6 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
 import { getExpectedCleanupPhaseEvent } from './getExpectedCleanupPhaseEvent';
+import { getExpectedIssueCommandsPhaseEvent } from './getExpectedIssueCommandsPhaseEvent';
 import { getExpectedMoveCommandersPhaseEvent } from './getExpectedMoveCommandersPhaseEvent';
 import { getExpectedPlayCardsPhaseEvent } from './getExpectedPlayCardsPhaseEvent';
 
@@ -19,7 +20,7 @@ export function getExpectedEvent<TBoard extends Board>(
     case 'moveCommanders':
       return getExpectedMoveCommandersPhaseEvent(state);
     case 'issueCommands':
-      throw new Error('IssueCommands phase not implemented');
+      return getExpectedIssueCommandsPhaseEvent(state);
     case 'resolveMelee':
       throw new Error('ResolveMelee phase not implemented');
     case 'cleanup':

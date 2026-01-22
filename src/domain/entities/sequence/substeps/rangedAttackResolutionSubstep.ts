@@ -1,3 +1,4 @@
+import type { Board } from '@entities/board';
 import type { UnitInstance } from '@entities/unit';
 import type { AssertExact } from '@utils';
 import type { Commitment } from '../commitment';
@@ -7,9 +8,11 @@ import { z } from 'zod';
 import { commitmentSchema } from '../commitment';
 import { attackApplyStateSchema } from './attackApplySubstep';
 
-export interface RangedAttackResolutionState {
+export interface RangedAttackResolutionState<_TBoard extends Board> {
   /** The type of the substep. */
-  substepType: 'rangedAttackResolution';
+  substepType: 'commandResolution';
+  /** The type of command resolution. */
+  commandResolutionType: 'rangedAttack';
   /** The unit that is attacking. */
   attackingUnit: UnitInstance;
   /** The unit that is being attacked. */
@@ -27,7 +30,9 @@ export interface RangedAttackResolutionState {
 /** The schema for the state of the ranged attack resolution substep. */
 const _rangedAttackResolutionStateSchemaObject = z.object({
   /** The type of the substep. */
-  substepType: z.literal('rangedAttackResolution'),
+  substepType: z.literal('commandResolution'),
+  /** The type of command resolution. */
+  commandResolutionType: z.literal('rangedAttack'),
   /** The unit that is attacking. */
   attackingUnit: unitInstanceSchema,
   /** The unit that is being attacked. */
@@ -47,10 +52,18 @@ type RangedAttackResolutionStateSchemaType = z.infer<
 >;
 
 const _assertExactRangedAttackResolutionState: AssertExact<
-  RangedAttackResolutionState,
+  RangedAttackResolutionState<Board>,
   RangedAttackResolutionStateSchemaType
 > = true;
 
 /** The schema for the state of the ranged attack resolution substep. */
-export const rangedAttackResolutionStateSchema: z.ZodType<RangedAttackResolutionState> =
-  _rangedAttackResolutionStateSchemaObject;
+export const rangedAttackResolutionStateSchema: z.ZodObject<{
+  substepType: z.ZodLiteral<'commandResolution'>;
+  commandResolutionType: z.ZodLiteral<'rangedAttack'>;
+  attackingUnit: z.ZodType<UnitInstance>;
+  defendingUnit: z.ZodType<UnitInstance>;
+  supportingUnits: z.ZodType<Set<UnitInstance>>;
+  attackingCommitment: z.ZodType<Commitment>;
+  defendingCommitment: z.ZodType<Commitment>;
+  attackApplyState: z.ZodType<AttackApplyState>;
+}> = _rangedAttackResolutionStateSchemaObject;

@@ -50,13 +50,14 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
   const secondPlayerCommands = new Set([secondPlayerCard.command]);
 
   // Create the new issue commands phase state
-  const newPhaseState: IssueCommandsPhaseState = {
+  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
     phase: ISSUE_COMMANDS_PHASE,
     step: 'firstPlayerIssueCommands',
     remainingCommandsFirstPlayer: firstPlayerCommands,
     remainingUnitsFirstPlayer: new Set(), // Will be populated as commands are issued
     remainingCommandsSecondPlayer: secondPlayerCommands,
     remainingUnitsSecondPlayer: new Set(), // Will be populated as commands are issued
+    currentCommandResolutionState: undefined,
   };
 
   return {
