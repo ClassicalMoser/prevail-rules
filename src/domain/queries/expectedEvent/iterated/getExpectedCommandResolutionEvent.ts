@@ -16,7 +16,7 @@ import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttac
  * @param resolvingPlayer - The player currently resolving commands
  * @returns Information about what event is expected
  */
-export function getExpectedCommandResolutionSubstepEvent<TBoard extends Board>(
+export function getExpectedCommandResolutionEvent<TBoard extends Board>(
   gameState: GameState<TBoard>,
   resolutionState: IssueCommandsPhaseState<TBoard>['currentCommandResolutionState'],
   resolvingPlayer: PlayerSide,

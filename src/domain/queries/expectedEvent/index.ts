@@ -1,7 +1,2 @@
-export * from './getExpectedCleanupPhaseEvent';
-export * from './getExpectedEngagementEvent';
-export * from './getExpectedEvent';
-export * from './getExpectedIssueCommandsPhaseEvent';
-export * from './getExpectedMoveCommandersPhaseEvent';
-export * from './getExpectedPlayCardsPhaseEvent';
-export * from './getExpectedRoutEvent';
+// Only one export needed from this directory
+export { getExpectedEvent } from './getExpectedEvent';

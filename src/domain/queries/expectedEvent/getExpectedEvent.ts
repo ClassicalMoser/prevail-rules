@@ -1,9 +1,11 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
-import { getExpectedCleanupPhaseEvent } from './getExpectedCleanupPhaseEvent';
-import { getExpectedIssueCommandsPhaseEvent } from './getExpectedIssueCommandsPhaseEvent';
-import { getExpectedMoveCommandersPhaseEvent } from './getExpectedMoveCommandersPhaseEvent';
-import { getExpectedPlayCardsPhaseEvent } from './getExpectedPlayCardsPhaseEvent';
-import { getExpectedResolveMeleePhaseEvent } from './getExpectedResolveMeleePhaseEvent';
+import {
+  getExpectedCleanupPhaseEvent,
+  getExpectedIssueCommandsPhaseEvent,
+  getExpectedMoveCommandersPhaseEvent,
+  getExpectedPlayCardsPhaseEvent,
+  getExpectedResolveMeleePhaseEvent,
+} from './byPhase';
 
 export function getExpectedEvent<TBoard extends Board>(
   state: GameState<TBoard>,

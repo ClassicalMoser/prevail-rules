@@ -8,7 +8,19 @@ import { unitPlacementSchema } from '@entities/unitLocation';
 import { z } from 'zod';
 import { engagementResolutionStateSchema } from './engagementResolutionState';
 
-/** The state of an engagement resolution substep. */
+/**
+ * Composable substep that handles engagement resolution (flank, front, rear).
+ *
+ * This is a **composable substep** - it can be reused in multiple contexts:
+ * - Used in `MovementResolutionState` (when movement results in engagement)
+ *
+ * It contains nested resolution logic that can trigger:
+ * - `RoutState` (for rear engagements)
+ * - Retreat logic (for front engagements)
+ *
+ * The expected event query `getExpectedEngagementEvent()` is composable and
+ * can be called from any parent context that contains this state.
+ */
 export interface EngagementState<TBoard extends Board> {
   /** The type of the substep. */
   substepType: 'engagementResolution';

@@ -9,6 +9,8 @@ export interface RearEngagementResolutionState {
   engagementType: 'rear';
   /** The state of the rout. */
   routState: RoutState;
+  /** Whether the rear engagement resolution substep is complete. */
+  completed: boolean;
 }
 
 const _rearEngagementResolutionStateSchemaObject = z.object({
@@ -16,6 +18,8 @@ const _rearEngagementResolutionStateSchemaObject = z.object({
   engagementType: z.literal('rear'),
   /** The state of the rout. */
   routState: routStateSchema,
+  /** Whether the rear engagement resolution substep is complete. */
+  completed: z.boolean(),
 });
 
 type RearEngagementResolutionStateSchemaType = z.infer<
@@ -31,4 +35,5 @@ const _assertExactRearEngagementResolutionState: AssertExact<
 export const rearEngagementResolutionStateSchema: z.ZodObject<{
   engagementType: z.ZodLiteral<'rear'>;
   routState: z.ZodType<RoutState>;
+  completed: z.ZodType<boolean>;
 }> = _rearEngagementResolutionStateSchemaObject;

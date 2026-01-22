@@ -66,6 +66,7 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
       commitmentType: 'pending',
     },
     attackApplyState: undefined,
+    completed: false,
   };
 
   // Get the remaining units set

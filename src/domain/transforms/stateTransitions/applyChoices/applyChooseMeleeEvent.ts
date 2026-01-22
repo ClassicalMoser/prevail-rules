@@ -46,6 +46,7 @@ export function applyChooseMeleeEvent<TBoard extends Board>(
     blackCommitment: { commitmentType: 'pending' },
     whiteAttackApplyState: undefined,
     blackAttackApplyState: undefined,
+    completed: false,
   };
   // Update the phase state with the two new values
   const newPhaseState: ResolveMeleePhaseState<TBoard> = {

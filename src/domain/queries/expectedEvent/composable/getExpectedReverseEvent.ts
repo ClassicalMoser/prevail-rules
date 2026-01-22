@@ -11,6 +11,11 @@ import type { Board, ExpectedEventInfo, ReverseState } from '@entities';
 export function getExpectedReverseEvent<TBoard extends Board>(
   reverseState: ReverseState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
+  // Check if reverse is completed (all work done, ready for parent to handle)
+  if (reverseState.completed) {
+    throw new Error('Reverse state is already complete');
+  }
+
   // Check if the final position has been determined
   if (reverseState.finalPosition === undefined) {
     // Reverse is deterministic - expect resolve reverse effect
@@ -19,6 +24,9 @@ export function getExpectedReverseEvent<TBoard extends Board>(
       effectType: 'resolveReverse',
     };
   }
-  // Reverse complete
-  throw new Error('Reverse state is complete');
+  // Final position determined but not completed - this shouldn't happen if completed is set correctly
+  // But we'll throw an error to be safe
+  throw new Error(
+    'Reverse state has final position but not marked as completed',
+  );
 }

@@ -11,6 +11,15 @@ import { z } from 'zod';
 import { commitmentSchema } from '../commitment';
 import { engagementStateSchema } from './engagement';
 
+/**
+ * Context-specific substep that resolves movement commands.
+ *
+ * This is a **context-specific substep** - it's tied to the `IssueCommandsPhase`.
+ * It contains a composable substep:
+ * - `EngagementState` (if movement results in engagement)
+ *
+ * Unlike composable substeps, this state is only used in one specific context.
+ */
 export interface MovementResolutionState<TBoard extends Board> {
   /** The type of the substep. */
   substepType: 'commandResolution';
@@ -26,6 +35,8 @@ export interface MovementResolutionState<TBoard extends Board> {
   commitment: Commitment;
   /** The engagement state. */
   engagementState: EngagementState<TBoard> | undefined;
+  /** Whether the movement resolution substep is complete. */
+  completed: boolean;
 }
 
 /** The schema for the state of the movement resolution substep. */
@@ -44,6 +55,8 @@ const _movementResolutionStateSchemaObject = z.object({
   commitment: commitmentSchema,
   /** The engagement state. */
   engagementState: engagementStateSchema.or(z.undefined()),
+  /** Whether the movement resolution substep is complete. */
+  completed: z.boolean(),
 });
 
 type MovementResolutionStateSchemaType = z.infer<
@@ -64,4 +77,5 @@ export const movementResolutionStateSchema: z.ZodObject<{
   moveCommander: z.ZodType<boolean>;
   commitment: z.ZodType<Commitment>;
   engagementState: z.ZodType<EngagementState<Board> | undefined>;
+  completed: z.ZodType<boolean>;
 }> = _movementResolutionStateSchemaObject;

@@ -131,7 +131,7 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
           unitsToRout: new Set(unitsToRout.map((u) => u.unit)),
           numberToDiscard: totalPenalty,
           cardsChosen: false,
-          cardsDiscarded: false,
+          completed: false,
         } satisfies RoutState)
       : undefined;
 

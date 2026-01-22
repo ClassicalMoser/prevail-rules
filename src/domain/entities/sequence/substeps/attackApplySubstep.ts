@@ -12,6 +12,21 @@ import { retreatStateSchema } from './retreatSubstep';
 import { reverseStateSchema } from './reverseSubstep';
 import { routStateSchema } from './routSubstep';
 
+/**
+ * Composable substep that applies the result of an attack.
+ *
+ * This is a **composable substep** - it can be reused in multiple contexts:
+ * - Used in `RangedAttackResolutionState` (for ranged attacks)
+ * - Used in `MeleeResolutionState` (for melee combat, one per player)
+ *
+ * It contains nested composable substeps:
+ * - `RoutState` (if unit routed)
+ * - `RetreatState` (if unit retreated)
+ * - `ReverseState` (if unit reversed)
+ *
+ * The expected event query `getExpectedAttackApplyEvent()` is composable and
+ * can be called from any parent context that contains this state.
+ */
 export interface AttackApplyState<TBoard extends Board> {
   /** The type of the substep. */
   substepType: 'attackApply';
@@ -51,7 +66,7 @@ type AttackApplyStateSchemaType = z.infer<typeof _attackApplyStateSchemaObject>;
 
 // Assert that the attack apply state is exact.
 const _assertExactAttackApplyState: AssertExact<
-  AttackApplyState<any>,
+  AttackApplyState<Board>,
   AttackApplyStateSchemaType
 > = true;
 
@@ -61,7 +76,7 @@ export const attackApplyStateSchema: z.ZodObject<{
   defendingUnit: z.ZodType<UnitInstance>;
   attackResult: z.ZodType<AttackResult>;
   routState: z.ZodType<RoutState | undefined>;
-  retreatState: z.ZodType<RetreatState<any> | undefined>;
-  reverseState: z.ZodType<ReverseState<any> | undefined>;
+  retreatState: z.ZodType<RetreatState<Board> | undefined>;
+  reverseState: z.ZodType<ReverseState<Board> | undefined>;
   completed: z.ZodType<boolean>;
 }> = _attackApplyStateSchemaObject;

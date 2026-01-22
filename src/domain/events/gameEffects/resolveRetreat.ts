@@ -10,8 +10,13 @@ export const RESOLVE_RETREAT_EFFECT_TYPE = 'resolveRetreat' as const;
 
 /** An event to resolve a retreat.
  * A retreat is a unit's smallest legal backward movement.
- * If there are multiple legal retreats, the player must choose one.
- * If there is no legal retreat, the unit is routed.
+ *
+ * This event is only generated when:
+ * - There are legal retreat options (if none, a RoutState is created instead)
+ * - The final position has been determined (either by player choice if multiple options,
+ *   or automatically if only one option)
+ *
+ * The unit will move from startingPosition to finalPosition.
  */
 export interface ResolveRetreatEvent<
   _TBoard extends Board,
@@ -23,10 +28,8 @@ export interface ResolveRetreatEvent<
   effectType: typeof RESOLVE_RETREAT_EFFECT_TYPE;
   /** The starting position of the unit. */
   startingPosition: UnitWithPlacement<Board>;
-  /** The ending position options for the unit. */
-  endingPositionOptions: Set<UnitWithPlacement<Board>>;
-  /** Whether the unit is routed. */
-  unitRouted: boolean;
+  /** The final position the unit is retreating to (determined by player choice or auto-selected). */
+  finalPosition: UnitWithPlacement<Board>;
 }
 
 const _resolveRetreatEventSchemaObject = z.object({
@@ -35,10 +38,8 @@ const _resolveRetreatEventSchemaObject = z.object({
   effectType: z.literal(RESOLVE_RETREAT_EFFECT_TYPE),
   /** The starting position of the unit. */
   startingPosition: unitWithPlacementSchema,
-  /** The ending position options for the unit. */
-  endingPositionOptions: z.set(unitWithPlacementSchema),
-  /** Whether the unit is routed. */
-  unitRouted: z.boolean(),
+  /** The final position the unit is retreating to (determined by player choice or auto-selected). */
+  finalPosition: unitWithPlacementSchema,
 });
 
 type ResolveRetreatEventSchemaType = z.infer<
@@ -55,6 +56,5 @@ export const resolveRetreatEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveRetreat'>;
   startingPosition: typeof unitWithPlacementSchema;
-  endingPositionOptions: z.ZodSet<typeof unitWithPlacementSchema>;
-  unitRouted: z.ZodBoolean;
+  finalPosition: typeof unitWithPlacementSchema;
 }> = _resolveRetreatEventSchemaObject;

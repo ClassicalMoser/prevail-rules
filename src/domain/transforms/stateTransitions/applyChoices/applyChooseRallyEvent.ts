@@ -44,6 +44,7 @@ export function applyChooseRallyEvent<TBoard extends Board>(
           rallyResolved: false,
           unitsLostSupport: undefined,
           routState: undefined,
+          completed: false,
         },
         // Ready to resolve rally
         step: 'firstPlayerResolveRally',
@@ -56,6 +57,7 @@ export function applyChooseRallyEvent<TBoard extends Board>(
           rallyResolved: false,
           unitsLostSupport: undefined,
           routState: undefined,
+          completed: false,
         },
         // Resolution skipped, next player to choose rally
         step: 'secondPlayerChooseRally',
@@ -76,6 +78,7 @@ export function applyChooseRallyEvent<TBoard extends Board>(
           rallyResolved: false,
           unitsLostSupport: undefined,
           routState: undefined,
+          completed: false,
         },
         // Ready to resolve rally
         step: 'secondPlayerResolveRally',
@@ -88,6 +91,7 @@ export function applyChooseRallyEvent<TBoard extends Board>(
           rallyResolved: false,
           unitsLostSupport: undefined,
           routState: undefined,
+          completed: false,
         },
         // Resolution skipped, next player to choose rally
         step: 'complete',

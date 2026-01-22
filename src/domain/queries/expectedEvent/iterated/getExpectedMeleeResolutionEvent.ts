@@ -5,7 +5,7 @@ import type {
   MeleeResolutionState,
 } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
+import { getExpectedAttackApplyEvent } from '../composable';
 
 /**
  * Gets the expected event for melee resolution substeps.
@@ -20,6 +20,11 @@ export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
   gameState: GameState<TBoard>,
   meleeState: MeleeResolutionState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
+  // Fast rejection: if already completed, this is an invalid state
+  if (meleeState.completed) {
+    throw new Error('Melee resolution state is already complete');
+  }
+
   const firstPlayer = gameState.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 
@@ -69,7 +74,7 @@ export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
     return getExpectedAttackApplyEvent(secondPlayerAttackApplyState);
   }
 
-  // Both results resolved, melee resolution should be complete
+  // Both attack apply states are complete, melee resolution should be complete
   return {
     actionType: 'gameEffect',
     effectType: 'completeMeleeResolution',

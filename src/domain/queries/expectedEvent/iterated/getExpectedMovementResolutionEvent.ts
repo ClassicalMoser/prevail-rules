@@ -7,7 +7,7 @@ import type {
 } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
 import { hasEnemyUnit } from '@validation';
-import { getExpectedEngagementEvent } from './getExpectedEngagementEvent';
+import { getExpectedEngagementEvent } from '../composable';
 
 /**
  * Gets the expected event for movement resolution substeps.
@@ -22,6 +22,11 @@ export function getExpectedMovementResolutionEvent<TBoard extends Board>(
   resolutionState: MovementResolutionState<TBoard>,
   player: PlayerSide,
 ): ExpectedEventInfo<TBoard> {
+  // Fast rejection: if already completed, this is an invalid state
+  if (resolutionState.completed) {
+    throw new Error('Movement resolution state is already complete');
+  }
+
   // Check commitment state
   if (resolutionState.commitment.commitmentType === 'pending') {
     // If the commitment has not been completed, that is what we expect next

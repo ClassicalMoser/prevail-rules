@@ -7,7 +7,13 @@ import { z } from 'zod';
 import { routStateSchema } from './routSubstep';
 
 /**
- * Tracks the state of resolving unit support consequences after a rally.
+ * Context-specific substep that resolves unit support consequences after a rally.
+ *
+ * This is a **context-specific substep** - it's tied to the `CleanupPhase`.
+ * It contains a composable substep:
+ * - `RoutState` (if units lost support and were routed)
+ *
+ * Unlike composable substeps, this state is only used in one specific context.
  * After cards return to hand, we need to check if any units lost support.
  * If units were routed, the player must pay a discard penalty.
  */
@@ -20,6 +26,8 @@ export interface RallyResolutionState {
   unitsLostSupport: Set<UnitInstance> | undefined;
   /** The rout discard penalty state (if units were routed). */
   routState: RoutState | undefined;
+  /** Whether the rally resolution substep is complete. */
+  completed: boolean;
 }
 
 const _rallyResolutionStateSchemaObject = z.object({
@@ -31,6 +39,8 @@ const _rallyResolutionStateSchemaObject = z.object({
   unitsLostSupport: z.set(unitInstanceSchema).or(z.undefined()),
   /** The rout discard penalty state (if units were routed). */
   routState: routStateSchema.or(z.undefined()),
+  /** Whether the rally resolution substep is complete. */
+  completed: z.boolean(),
 });
 
 type RallyResolutionStateSchemaType = z.infer<
@@ -48,4 +58,5 @@ export const rallyResolutionStateSchema: z.ZodObject<{
   rallyResolved: z.ZodBoolean;
   unitsLostSupport: z.ZodType<Set<UnitInstance> | undefined>;
   routState: z.ZodType<RoutState | undefined>;
+  completed: z.ZodType<boolean>;
 }> = _rallyResolutionStateSchemaObject;

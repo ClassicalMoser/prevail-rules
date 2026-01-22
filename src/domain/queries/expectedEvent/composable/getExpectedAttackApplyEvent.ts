@@ -1,7 +1,9 @@
 import type { AttackApplyState, Board, ExpectedEventInfo } from '@entities';
-import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
-import { getExpectedReverseEvent } from './getExpectedReverseEvent';
-import { getExpectedRoutEvent } from './getExpectedRoutEvent';
+import {
+  getExpectedRetreatEvent,
+  getExpectedReverseEvent,
+  getExpectedRoutEvent,
+} from '.';
 
 /**
  * Gets the expected event for attack apply substeps.
@@ -22,23 +24,43 @@ export function getExpectedAttackApplyEvent<TBoard extends Board>(
     attackResult.unitRetreated ||
     attackResult.unitReversed;
 
-  // If no results occurred, attack had no effect - command resolution complete
-  if (!hasResults) {
-    throw new Error('Attack apply state not initialized');
+  // If no results reported, state was not initialized correctly
+  if (
+    !hasResults ||
+    (attackApplyState.retreatState === undefined &&
+      attackApplyState.reverseState === undefined &&
+      attackApplyState.routState === undefined)
+  ) {
+    throw new Error('Attack apply state not initialized correctly');
   }
 
-  // Results occurred, check which need resolution
+  // Results reported, check which need resolution
   // Priority: rout > retreat > reverse (rout is most severe)
   if (attackResult.unitRouted && attackApplyState.routState) {
-    return getExpectedRoutEvent(attackApplyState.routState);
+    if (!attackApplyState.routState.completed) {
+      return getExpectedRoutEvent(attackApplyState.routState);
+    }
+    // If unit was routed, no further resolution is needed
+    if (!attackApplyState.completed) {
+      return {
+        actionType: 'gameEffect',
+        effectType: 'completeAttackApply',
+      };
+    }
+    throw new Error('Attack apply state is already complete');
   }
 
   if (attackResult.unitRetreated && attackApplyState.retreatState) {
-    return getExpectedRetreatEvent(attackApplyState.retreatState);
+    if (!attackApplyState.retreatState.completed) {
+      return getExpectedRetreatEvent(attackApplyState.retreatState);
+    }
   }
 
   if (attackResult.unitReversed && attackApplyState.reverseState) {
-    return getExpectedReverseEvent(attackApplyState.reverseState);
+    if (!attackApplyState.reverseState.completed) {
+      return getExpectedReverseEvent(attackApplyState.reverseState);
+    }
+    // Reverse is complete, continue to check if attack apply is complete
   }
 
   if (!attackApplyState.completed) {

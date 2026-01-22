@@ -5,6 +5,21 @@ import { playerSideSchema } from '@entities/player';
 import { unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
 
+/**
+ * Composable substep that handles card discarding when units rout.
+ *
+ * This is a **composable substep** - it can be reused in multiple contexts:
+ * - Used in `RetreatState` (when no legal retreat options exist)
+ * - Used in `EngagementState` (for rear engagements)
+ * - Used in `RallyResolutionState` (when units lose support)
+ *
+ * It demonstrates a **nearly recursive pattern**:
+ * - Can be nested within `RetreatState`
+ * - This creates a pattern where routing can occur during retreat
+ *
+ * The expected event query `getExpectedRoutEvent()` is composable and
+ * can be called from any parent context that contains this state.
+ */
 export interface RoutState {
   /** The type of the substep. */
   substepType: 'rout';
@@ -16,8 +31,8 @@ export interface RoutState {
   numberToDiscard: number | undefined;
   /** Whether the cards have been chosen. */
   cardsChosen: boolean;
-  /** Whether the cards have been discarded. */
-  cardsDiscarded: boolean;
+  /** Whether the rout has been completed. */
+  completed: boolean;
 }
 
 /** The schema for the state of the rout discard substep. */
@@ -32,8 +47,8 @@ const _routStateSchemaObject = z.object({
   numberToDiscard: z.number().or(z.undefined()),
   /** Whether the cards have been chosen. */
   cardsChosen: z.boolean(),
-  /** Whether the cards have been discarded. */
-  cardsDiscarded: z.boolean(),
+  /** Whether the rout has been completed. */
+  completed: z.boolean(),
 });
 
 type RoutStateSchemaType = z.infer<typeof _routStateSchemaObject>;

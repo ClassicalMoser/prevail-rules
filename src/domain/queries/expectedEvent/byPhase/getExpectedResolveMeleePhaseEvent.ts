@@ -1,5 +1,5 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
-import { getExpectedMeleeResolutionEvent } from './getExpectedMeleeResolutionEvent';
+import { getExpectedMeleeResolutionEvent } from '../iterated';
 
 /**
  * Gets information about the expected event for the Resolve Melee phase.

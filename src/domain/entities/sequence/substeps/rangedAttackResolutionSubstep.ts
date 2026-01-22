@@ -8,6 +8,15 @@ import { z } from 'zod';
 import { commitmentSchema } from '../commitment';
 import { attackApplyStateSchema } from './attackApplySubstep';
 
+/**
+ * Context-specific substep that resolves ranged attack commands.
+ *
+ * This is a **context-specific substep** - it's tied to the `IssueCommandsPhase`.
+ * It contains a composable substep:
+ * - `AttackApplyState` (applies the result of the ranged attack)
+ *
+ * Unlike composable substeps, this state is only used in one specific context.
+ */
 export interface RangedAttackResolutionState<TBoard extends Board> {
   /** The type of the substep. */
   substepType: 'commandResolution';
@@ -25,6 +34,8 @@ export interface RangedAttackResolutionState<TBoard extends Board> {
   defendingCommitment: Commitment;
   /** The state of the attack apply substep. Only exists after resolveRangedAttack is applied. */
   attackApplyState: AttackApplyState<TBoard> | undefined;
+  /** Whether the ranged attack resolution substep is complete. */
+  completed: boolean;
 }
 
 /** The schema for the state of the ranged attack resolution substep. */
@@ -45,6 +56,8 @@ const _rangedAttackResolutionStateSchemaObject = z.object({
   defendingCommitment: commitmentSchema,
   /** The state of the attack apply substep. Only exists after resolveRangedAttack is applied. */
   attackApplyState: attackApplyStateSchema.or(z.undefined()),
+  /** Whether the ranged attack resolution substep is complete. */
+  completed: z.boolean(),
 });
 
 type RangedAttackResolutionStateSchemaType = z.infer<
@@ -66,4 +79,5 @@ export const rangedAttackResolutionStateSchema: z.ZodObject<{
   attackingCommitment: z.ZodType<Commitment>;
   defendingCommitment: z.ZodType<Commitment>;
   attackApplyState: z.ZodType<AttackApplyState<Board> | undefined>;
+  completed: z.ZodType<boolean>;
 }> = _rangedAttackResolutionStateSchemaObject;

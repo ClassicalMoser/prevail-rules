@@ -1,7 +1,7 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getExpectedCommandResolutionSubstepEvent } from './getExpectedCommandResolutionEvent';
-import { getExpectedStartCommandResolutionEvent } from './getExpectedNextUnitResolutionEvent';
+import { getExpectedStartCommandResolutionEvent } from '../composable';
+import { getExpectedCommandResolutionEvent } from '../iterated';
 
 /**
  * Gets information about the expected event for the Issue Commands phase.
@@ -43,7 +43,7 @@ export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
     case 'firstPlayerResolveCommands': {
       // Check if there's an ongoing command resolution
       if (phaseState.currentCommandResolutionState) {
-        return getExpectedCommandResolutionSubstepEvent(
+        return getExpectedCommandResolutionEvent(
           state,
           phaseState.currentCommandResolutionState,
           firstPlayer,
@@ -77,7 +77,7 @@ export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
     case 'secondPlayerResolveCommands': {
       // Check if there's an ongoing command resolution
       if (phaseState.currentCommandResolutionState) {
-        return getExpectedCommandResolutionSubstepEvent(
+        return getExpectedCommandResolutionEvent(
           state,
           phaseState.currentCommandResolutionState,
           secondPlayer,

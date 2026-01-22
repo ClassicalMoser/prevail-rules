@@ -10,7 +10,6 @@ import type { CompleteRangedAttackCommandEvent } from './completeRangedAttackCom
 import type { CompleteResolveMeleePhaseEvent } from './completeResolveMeleePhase';
 import type { CompleteUnitMovementEvent } from './completeUnitMovement';
 import type { DiscardPlayedCardsEvent } from './discardPlayedCards';
-import type { ResolveEngagementTypeEvent } from './resolveEngagementType';
 import type { ResolveEngageRetreatOptionEvent } from './resolveEngageRetreatOption';
 import type { ResolveFlankEngagementEvent } from './resolveFlankEngagement';
 import type { ResolveInitiativeEvent } from './resolveInitiative';
@@ -23,6 +22,7 @@ import type { ResolveRoutEvent } from './resolveRout';
 import type { ResolveUnitsBrokenEvent } from './resolveUnitsBroken';
 import type { RevealCardsEvent } from './revealCards';
 import type { StartEngagementEvent } from './startEngagement';
+import type { TriggerRoutFromRetreatEvent } from './triggerRoutFromRetreat';
 
 import { z } from 'zod';
 import { completeAttackApplyEventSchema } from './completeAttackApply';
@@ -35,7 +35,6 @@ import { completeRangedAttackCommandEventSchema } from './completeRangedAttackCo
 import { completeResolveMeleePhaseEventSchema } from './completeResolveMeleePhase';
 import { completeUnitMovementEventSchema } from './completeUnitMovement';
 import { discardPlayedCardsEventSchema } from './discardPlayedCards';
-import { resolveEngagementTypeEventSchema } from './resolveEngagementType';
 import { resolveEngageRetreatOptionEventSchema } from './resolveEngageRetreatOption';
 import { resolveFlankEngagementEventSchema } from './resolveFlankEngagement';
 import { resolveInitiativeEventSchema } from './resolveInitiative';
@@ -48,6 +47,7 @@ import { resolveRoutEventSchema } from './resolveRout';
 import { resolveUnitsBrokenEventSchema } from './resolveUnitsBroken';
 import { revealCardsEventSchema } from './revealCards';
 import { startEngagementEventSchema } from './startEngagement';
+import { triggerRoutFromRetreatEventSchema } from './triggerRoutFromRetreat';
 
 /** Iterable list of valid game effects. Built from individual event constants. */
 export const gameEffects = [
@@ -60,7 +60,6 @@ export const gameEffects = [
   'completeRangedAttackCommand',
   'completeResolveMeleePhase',
   'discardPlayedCards',
-  'resolveEngagementType',
   'resolveEngageRetreatOption',
   'resolveFlankEngagement',
   'resolveInitiative',
@@ -74,6 +73,7 @@ export const gameEffects = [
   'revealCards',
   'completeUnitMovement',
   'startEngagement',
+  'triggerRoutFromRetreat',
 ] as const;
 
 /** Type for all valid game effect types. */
@@ -97,7 +97,6 @@ type GameEffectEventUnion<TBoard extends Board> =
   | CompleteRangedAttackCommandEvent<TBoard, 'completeRangedAttackCommand'>
   | CompleteResolveMeleePhaseEvent<TBoard, 'completeResolveMeleePhase'>
   | DiscardPlayedCardsEvent<TBoard, 'discardPlayedCards'>
-  | ResolveEngagementTypeEvent<TBoard, 'resolveEngagementType'>
   | ResolveEngageRetreatOptionEvent<TBoard, 'resolveEngageRetreatOption'>
   | ResolveFlankEngagementEvent<TBoard, 'resolveFlankEngagement'>
   | ResolveInitiativeEvent<TBoard, 'resolveInitiative'>
@@ -110,7 +109,8 @@ type GameEffectEventUnion<TBoard extends Board> =
   | ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'>
   | RevealCardsEvent<TBoard, 'revealCards'>
   | CompleteUnitMovementEvent<TBoard, 'completeUnitMovement'>
-  | StartEngagementEvent<TBoard, 'startEngagement'>;
+  | StartEngagementEvent<TBoard, 'startEngagement'>
+  | TriggerRoutFromRetreatEvent<TBoard, 'triggerRoutFromRetreat'>;
 
 /**
  * Game effect event type filtered by effect type.
@@ -141,11 +141,11 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   resolveRetreatEventSchema,
   resolveReverseEventSchema,
   resolveRoutEventSchema,
-  resolveEngagementTypeEventSchema,
   resolveUnitsBrokenEventSchema,
   revealCardsEventSchema,
   completeUnitMovementEventSchema,
   startEngagementEventSchema,
+  triggerRoutFromRetreatEventSchema,
 ]);
 
 type GameEffectEventSchemaType = z.infer<typeof _gameEffectEventSchemaObject>;

@@ -2,7 +2,7 @@
 
 This document tracks the implementation status of all four engines. Use this to track progress and identify what remains to be built.
 
-**📋 See [`ROUND_ANALYSIS.md`](./ROUND_ANALYSIS.md) for a phase-by-phase breakdown of what each engine needs to handle.**
+**📋 See [`IMPLEMENTATION_STATUS.md`](./IMPLEMENTATION_STATUS.md) for a comprehensive view combining flow analysis, round analysis, and implementation status.**
 
 ## 1. Pure Transform Engine
 
@@ -111,36 +111,36 @@ This document tracks the implementation status of all four engines. Use this to 
 
 Game effects that have procedures to generate them:
 
+- [x] `completeAttackApply` → `generateCompleteAttackApplyEvent`
 - [x] `completeCleanupPhase` → `generateCompleteCleanupPhaseEvent`
 - [x] `completeIssueCommandsPhase` → `generateCompleteIssueCommandsPhaseEvent`
+- [x] `completeMeleeResolution` → `generateCompleteMeleeResolutionEvent`
 - [x] `completeMoveCommandersPhase` → `generateCompleteMoveCommandersPhaseEvent`
 - [x] `completePlayCardsPhase` → `generateCompletePlayCardsPhaseEvent`
+- [x] `completeRangedAttackCommand` → `generateCompleteRangedAttackCommandEvent`
 - [x] `completeResolveMeleePhase` → `generateCompleteResolveMeleePhaseEvent`
+- [x] `completeUnitMovement` → `generateCompleteUnitMovementEvent`
 - [x] `discardPlayedCards` → `generateDiscardPlayedCardsEvent`
+- [x] `resolveEngageRetreatOption` → `generateResolveEngageRetreatOptionEvent`
+- [x] `resolveEngagementType` → `generateResolveEngagementTypeEvent`
 - [x] `resolveInitiative` → `generateResolveInitiativeEvent`
 - [x] `resolveRally` → `generateResolveRallyEvent`
+- [x] `resolveReverse` → `generateResolveReverseEvent`
 - [x] `resolveUnitsBroken` → `generateResolveUnitsBrokenEvent`
 - [x] `revealCards` → `generateRevealCardsEvent`
 
 ### Procedures Still Needed
 
-- [ ] `completeUnitMovement` → `generateCompleteUnitMovementEvent`
-- [ ] `completeAttackApply` → `generateCompleteAttackApplyEvent`
-- [ ] `completeMeleeResolution` → `generateCompleteMeleeResolutionEvent`
-- [ ] `completeRangedAttackCommand` → `generateCompleteRangedAttackCommandEvent`
-- [ ] `resolveEngageRetreatOption` → `generateResolveEngageRetreatOptionEvent`
-- [ ] `resolveEngagementType` → `generateResolveEngagementTypeEvent`
 - [ ] `resolveFlankEngagement` → `generateResolveFlankEngagementEvent`
 - [ ] `resolveMelee` → `generateResolveMeleeEvent`
 - [ ] `resolveRangedAttack` → `generateResolveRangedAttackEvent`
 - [ ] `resolveRetreat` → `generateResolveRetreatEvent`
-- [ ] `resolveReverse` → `generateResolveReverseEvent`
 - [ ] `resolveRout` → `generateResolveRoutEvent`
 - [ ] `startEngagement` → `generateStartEngagementEvent`
 
 **Note:** All game effects require procedures. When the Next Event Expected Engine returns a game effect, a procedure must generate that event from the current game state.
 
-**Progress:** 10/23 (43%) - 10 implemented, 13 remaining
+**Progress:** 17/23 (74%) - 17 implemented, 6 remaining
 
 ---
 
@@ -170,7 +170,7 @@ Game effects that have procedures to generate them:
 | --------------------------------- | -------------- | ---------------------- |
 | **1. Pure Transform Engine**      | 🟡 In Progress | 18/38 events (47%)     |
 | **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)       |
-| **3. Procedure Library**          | 🟡 In Progress | 10/23 identified (43%) |
+| **3. Procedure Library**          | 🟡 In Progress | 17/23 identified (74%) |
 | **4. Next Event Expected Engine** | ✅ Complete    | 5/5 phases (100%)      |
 
 ## Priority Work Items
@@ -212,8 +212,12 @@ Game effects that have procedures to generate them:
    - [ ] `resolveRout` event application
 
 5. **Procedure Library:**
-   - [ ] Implement procedures for engagement and movement effects
-   - [ ] Implement procedures for combat resolution effects
+   - [x] Implement procedures for simple completion events ✅ (completeAttackApply, completeMeleeResolution, completeRangedAttackCommand, completeUnitMovement)
+   - [x] Implement procedures for engagement type resolution ✅ (resolveEngagementType, resolveEngageRetreatOption)
+   - [x] Implement procedure for reverse resolution ✅ (resolveReverse)
+   - [ ] Implement procedures for combat resolution effects (resolveMelee, resolveRangedAttack)
+   - [ ] Implement procedures for movement/positioning effects (resolveFlankEngagement, resolveRetreat, startEngagement)
+   - [ ] Implement procedure for rout penalty (resolveRout)
 
 ### Low Priority (Polish & Edge Cases)
 

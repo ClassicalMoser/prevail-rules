@@ -8,7 +8,14 @@ import { z } from 'zod';
 import { commitmentSchema } from '../commitment';
 import { attackApplyStateSchema } from './attackApplySubstep';
 
-/** The state of a particular melee as it is being resolved.
+/**
+ * Context-specific substep that resolves melee combat.
+ *
+ * This is a **context-specific substep** - it's tied to the `ResolveMeleePhase`.
+ * It contains composable substeps:
+ * - `AttackApplyState` (one for each player - white and black)
+ *
+ * Unlike composable substeps, this state is only used in one specific context.
  * Repeated for each melee that needs to be resolved in a round.
  */
 export interface MeleeResolutionState<TBoard extends Board> {
@@ -28,6 +35,8 @@ export interface MeleeResolutionState<TBoard extends Board> {
   whiteAttackApplyState: AttackApplyState<TBoard> | undefined;
   /** The state of the attack apply substep for the black player's unit. */
   blackAttackApplyState: AttackApplyState<TBoard> | undefined;
+  /** Whether the melee resolution substep is complete. */
+  completed: boolean;
 }
 
 /** The schema for the state of the melee resolution substep. */
@@ -46,6 +55,8 @@ const _meleeResolutionStateSchemaObject = z.object({
   whiteAttackApplyState: attackApplyStateSchema.or(z.undefined()),
   /** The state of the attack apply substep for the black player's unit. */
   blackAttackApplyState: attackApplyStateSchema.or(z.undefined()),
+  /** Whether the melee resolution substep is complete. */
+  completed: z.boolean(),
 });
 
 type MeleeResolutionStateSchemaType = z.infer<

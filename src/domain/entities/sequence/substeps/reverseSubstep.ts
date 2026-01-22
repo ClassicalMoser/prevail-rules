@@ -7,7 +7,15 @@ import {
 } from '@entities/unitLocation';
 import { z } from 'zod';
 
-/** The state of a reverse substep. */
+/**
+ * Composable substep that handles unit reversal after an attack.
+ *
+ * This is a **composable substep** - it can be reused in multiple contexts:
+ * - Used in `AttackApplyState` (when unit reverses after an attack)
+ *
+ * The expected event query `getExpectedReverseEvent()` is composable and
+ * can be called from any parent context that contains this state.
+ */
 export interface ReverseState<TBoard extends Board> {
   /** The type of the substep. */
   substepType: 'reverse';
@@ -15,6 +23,8 @@ export interface ReverseState<TBoard extends Board> {
   reversingUnit: UnitWithPlacement<TBoard>;
   /** The result of the reverse. */
   finalPosition: UnitPlacement<TBoard> | undefined;
+  /** Whether the reverse has been completed. */
+  completed: boolean;
 }
 
 /** The schema for the state of a reverse substep. */
@@ -25,6 +35,8 @@ const _reverseStateSchemaObject = z.object({
   reversingUnit: unitWithPlacementSchema,
   /** The result of the reverse. */
   finalPosition: unitPlacementSchema.or(z.undefined()),
+  /** Whether the reverse has been completed. */
+  completed: z.boolean(),
 });
 
 type ReverseStateSchemaType = z.infer<typeof _reverseStateSchemaObject>;
@@ -40,4 +52,5 @@ export const reverseStateSchema: z.ZodObject<{
   substepType: z.ZodLiteral<'reverse'>;
   reversingUnit: z.ZodType<UnitWithPlacement<Board>>;
   finalPosition: z.ZodType<UnitPlacement<Board> | undefined>;
+  completed: z.ZodType<boolean>;
 }> = _reverseStateSchemaObject;

@@ -5,7 +5,7 @@ import type {
   RangedAttackResolutionState,
 } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
+import { getExpectedAttackApplyEvent } from '../composable';
 
 /**
  * Gets the expected event for ranged attack resolution substeps.
@@ -18,6 +18,11 @@ export function getExpectedRangedAttackResolutionEvent<TBoard extends Board>(
   resolutionState: RangedAttackResolutionState<TBoard>,
   attackingPlayer: PlayerSide,
 ): ExpectedEventInfo<TBoard> {
+  // Fast rejection: if already completed, this is an invalid state
+  if (resolutionState.completed) {
+    throw new Error('Ranged attack resolution state is already complete');
+  }
+
   const defendingPlayer = getOtherPlayer(attackingPlayer);
 
   // Check attacking player's commitment
@@ -53,12 +58,9 @@ export function getExpectedRangedAttackResolutionEvent<TBoard extends Board>(
     return getExpectedAttackApplyEvent(resolutionState.attackApplyState);
   }
 
-  if (resolutionState.attackApplyState.completed) {
-    return {
-      actionType: 'gameEffect',
-      effectType: 'completeRangedAttackCommand',
-    };
-  }
-
-  throw new Error('Ranged attack resolution is in an invalid state');
+  // Attack apply state is complete, ranged attack resolution should be complete
+  return {
+    actionType: 'gameEffect',
+    effectType: 'completeRangedAttackCommand',
+  };
 }

@@ -1,5 +1,5 @@
 import type { Board, ExpectedEventInfo, RallyResolutionState } from '@entities';
-import { getExpectedRoutEvent } from './getExpectedRoutEvent';
+import { getExpectedRoutEvent } from '.';
 
 /**
  * Gets the expected event for rally resolution substeps.
@@ -12,6 +12,11 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 export function getExpectedRallyResolutionEvent<TBoard extends Board>(
   rallyState: RallyResolutionState,
 ): ExpectedEventInfo<TBoard> {
+  // Fast rejection: if already completed, this is an invalid state
+  if (rallyState.completed) {
+    throw new Error('Rally resolution state is already complete');
+  }
+
   // Check substep progression
   if (!rallyState.rallyResolved) {
     return {
@@ -31,9 +36,14 @@ export function getExpectedRallyResolutionEvent<TBoard extends Board>(
     if (rallyState.routState === undefined) {
       throw new Error('Rout state is required when units lost support');
     }
-    return getExpectedRoutEvent(rallyState.routState);
+    // Check if rout is completed
+    if (!rallyState.routState.completed) {
+      return getExpectedRoutEvent(rallyState.routState);
+    }
+    // Rout is complete, rally resolution should be complete (all nested work done)
+    throw new Error('Rally resolution complete but step not advanced');
   }
 
-  // Rally fully resolved, should have advanced to next step
+  // No units lost support, rally fully resolved, should have advanced to next step
   throw new Error('Rally resolution complete but step not advanced');
 }

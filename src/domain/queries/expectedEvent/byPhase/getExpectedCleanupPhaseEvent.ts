@@ -1,6 +1,6 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getExpectedRallyResolutionEvent } from './getExpectedRallyResolutionEvent';
+import { getExpectedRallyResolutionEvent } from '../composable';
 
 /**
  * Gets information about the expected event for the Cleanup phase.

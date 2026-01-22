@@ -8,7 +8,7 @@ import { hasEngagedUnits, hasNoUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { isFriendlyUnit } from '@queries/unit';
-import { getExpectedRoutEvent } from './getExpectedRoutEvent';
+import { getExpectedRoutEvent } from '.';
 
 /**
  * Gets the expected event for engagement resolution substeps.
@@ -44,17 +44,13 @@ export function getExpectedEngagementEvent<TBoard extends Board>(
     throw new Error('defending unit is friendly');
   }
 
-  // First we check if the engagement type has been determined yet
-  if (engagementState.engagementResolutionState === undefined) {
-    // If not, that is what we expect next
-    return {
-      actionType: 'gameEffect',
-      effectType: 'resolveEngagementType',
-    };
-  }
-  // If it is, it determines what the next event should be
   const resolutionState = engagementState.engagementResolutionState;
   const engagementType = resolutionState.engagementType;
+  // Check if engagement is completed (all work done, ready for parent to handle)
+  if (engagementState.completed) {
+    throw new Error('Engagement state is already complete');
+  }
+
   if (engagementType === 'flank') {
     // If the engagement is from the flank, we need to rotate the defending unit
     if (!resolutionState.defenderRotated) {
@@ -64,11 +60,24 @@ export function getExpectedEngagementEvent<TBoard extends Board>(
         effectType: 'resolveFlankEngagement',
       };
     }
-    throw new Error('Engagement resolution is complete');
+    // Defender rotated, flank engagement resolution should be complete
+    // (but engagementState.completed should be set by the transform)
+    throw new Error(
+      'Flank engagement resolution complete but not marked as completed',
+    );
   }
   if (engagementType === 'rear') {
     // If the engagement is from the rear, we need to rout the defending unit
-    return getExpectedRoutEvent(resolutionState.routState);
+    // Check if rout is completed
+    if (!resolutionState.routState.completed) {
+      return getExpectedRoutEvent(resolutionState.routState);
+    }
+    // Rout is complete, check if rear engagement resolution is complete
+    if (resolutionState.completed) {
+      throw new Error('Rear engagement resolution state is already complete');
+    }
+    // Rear engagement resolution should be complete
+    throw new Error('Rear engagement resolution complete but not advanced');
   }
   if (engagementType === 'front') {
     // If the engagement is from the front,
@@ -100,7 +109,11 @@ export function getExpectedEngagementEvent<TBoard extends Board>(
       };
     }
     if (resolutionState.defendingUnitRetreats === false) {
-      throw new Error('Front engagement resolution is complete');
+      // Defending unit chose not to retreat, front engagement resolution should be complete
+      // (but engagementState.completed should be set by the transform)
+      throw new Error(
+        'Front engagement resolution complete but not marked as completed',
+      );
     }
     if (resolutionState.defendingUnitRetreated === undefined) {
       return {
@@ -109,7 +122,11 @@ export function getExpectedEngagementEvent<TBoard extends Board>(
         choiceType: 'chooseRetreatOption',
       };
     }
-    throw new Error('Front engagement resolution is complete');
+    // Defending unit retreated, front engagement resolution should be complete
+    // (but engagementState.completed should be set by the transform)
+    throw new Error(
+      'Front engagement resolution complete but not marked as completed',
+    );
   }
   throw new Error('Invalid engagement type');
 }

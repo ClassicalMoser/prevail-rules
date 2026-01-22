@@ -11,6 +11,11 @@ import type { Board, ExpectedEventInfo, RoutState } from '@entities';
 export function getExpectedRoutEvent<TBoard extends Board>(
   routState: RoutState,
 ): ExpectedEventInfo<TBoard> {
+  // Check if rout is completed (all work done, ready for parent to handle)
+  if (routState.completed) {
+    throw new Error('Rout state is already complete');
+  }
+
   // Check if the unit has been routed yet
   if (routState.numberToDiscard === undefined) {
     return {
@@ -26,5 +31,7 @@ export function getExpectedRoutEvent<TBoard extends Board>(
       choiceType: 'chooseRoutDiscard',
     };
   }
-  throw new Error('Rout state is complete');
+  // Cards chosen but not completed - this shouldn't happen if completed is set correctly
+  // But we'll throw an error to be safe
+  throw new Error('Rout state has cards chosen but not marked as completed');
 }

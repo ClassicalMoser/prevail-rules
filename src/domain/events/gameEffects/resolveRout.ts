@@ -8,8 +8,8 @@ import { z } from 'zod';
 export const RESOLVE_ROUT_EFFECT_TYPE = 'resolveRout' as const;
 
 /** An event to resolve a rout.
- * A unit that is routed is permanently removed from the game.
- * The player must discard a number of cards equal to its rout penalty.
+ * Units that are routed are permanently removed from the game.
+ * The player must discard a number of cards equal to the sum of all routed units' rout penalties.
  */
 export interface ResolveRoutEvent<
   _TBoard extends Board,
@@ -19,9 +19,9 @@ export interface ResolveRoutEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_ROUT_EFFECT_TYPE;
-  /** The unit instance that is being routed. */
-  unitInstance: UnitInstance;
-  /** The penalty for routing the unit. */
+  /** The unit instances that are being routed. */
+  unitInstances: Set<UnitInstance>;
+  /** The penalty for routing the units (sum of all units' rout penalties). */
   penalty: number;
 }
 
@@ -30,9 +30,9 @@ const _resolveRoutEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(RESOLVE_ROUT_EFFECT_TYPE),
-  /** The unit instance that is being routed. */
-  unitInstance: unitInstanceSchema,
-  /** The penalty for routing the unit. */
+  /** The unit instances that are being routed. */
+  unitInstances: z.set(unitInstanceSchema),
+  /** The penalty for routing the units (sum of all units' rout penalties). */
   penalty: z.number(),
 });
 
@@ -47,6 +47,6 @@ const _assertExactResolveRoutEvent: AssertExact<
 export const resolveRoutEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveRout'>;
-  unitInstance: typeof unitInstanceSchema;
+  unitInstances: z.ZodSet<typeof unitInstanceSchema>;
   penalty: z.ZodNumber;
 }> = _resolveRoutEventSchemaObject;

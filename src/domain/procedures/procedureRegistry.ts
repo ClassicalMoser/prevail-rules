@@ -10,13 +10,16 @@ import { generateCompleteRangedAttackCommandEvent } from './generateCompleteRang
 import { generateCompleteResolveMeleePhaseEvent } from './generateCompleteResolveMeleePhaseEvent';
 import { generateCompleteUnitMovementEvent } from './generateCompleteUnitMovementEvent';
 import { generateDiscardPlayedCardsEvent } from './generateDiscardPlayedCardsEvent';
-import { generateResolveEngagementTypeEvent } from './generateResolveEngagementTypeEvent';
 import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
+import { generateResolveFlankEngagementEvent } from './generateResolveFlankEngagementEvent';
 import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent';
 import { generateResolveRallyEvent } from './generateResolveRallyEvent';
 import { generateResolveReverseEvent } from './generateResolveReverseEvent';
+import { generateResolveRoutEvent } from './generateResolveRoutEvent';
 import { generateResolveUnitsBrokenEvent } from './generateResolveUnitsBrokenEvent';
 import { generateRevealCardsEvent } from './generateRevealCardsEvent';
+import { generateStartEngagementEvent } from './generateStartEngagementEvent';
+import { generateTriggerRoutFromRetreatEvent } from './generateTriggerRoutFromRetreatEvent';
 
 // Import the unfiltered union type for the implementation signature
 type GameEffectEventUnion<TBoard extends Board> = GameEffectEvent<
@@ -27,7 +30,7 @@ type GameEffectEventUnion<TBoard extends Board> = GameEffectEvent<
 /**
  * Generates a game effect event using the appropriate procedure
  * based on the effect type.
- * Procedures are non-deterministic (they generate randomness);
+ * Procedures are non-deterministic (some generate randomness);
  * the event (with results) is what makes it replayable.
  * TypeScript will enforce the correct return types based on the effect type.
  *
@@ -111,6 +114,14 @@ export function generateEventFromProcedure<TBoard extends Board>(
   state: GameState<TBoard>,
   effectType: 'resolveReverse',
 ): GameEffectEvent<TBoard, 'resolveReverse'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'startEngagement',
+): GameEffectEvent<TBoard, 'startEngagement'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'resolveFlankEngagement',
+): GameEffectEvent<TBoard, 'resolveFlankEngagement'>;
 export function generateEventFromProcedure<
   TBoard extends Board,
   TGameEffectType extends GameEffectType,
@@ -185,10 +196,6 @@ export function generateEventFromProcedure<
         TBoard,
         'completeUnitMovement'
       >;
-    case 'resolveEngagementType':
-      return generateResolveEngagementTypeEvent(
-        state,
-      ) satisfies GameEffectEvent<TBoard, 'resolveEngagementType'>;
     case 'resolveEngageRetreatOption':
       return generateResolveEngageRetreatOptionEvent(
         state,
@@ -198,12 +205,27 @@ export function generateEventFromProcedure<
         TBoard,
         'resolveReverse'
       >;
-    case 'resolveFlankEngagement':
     case 'startEngagement':
+      return generateStartEngagementEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'startEngagement'
+      >;
+    case 'resolveFlankEngagement':
+      return generateResolveFlankEngagementEvent(
+        state,
+      ) satisfies GameEffectEvent<TBoard, 'resolveFlankEngagement'>;
+    case 'resolveRout':
+      return generateResolveRoutEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'resolveRout'
+      >;
+    case 'triggerRoutFromRetreat':
+      return generateTriggerRoutFromRetreatEvent(
+        state,
+      ) satisfies GameEffectEvent<TBoard, 'triggerRoutFromRetreat'>;
     case 'resolveMelee':
     case 'resolveRangedAttack':
     case 'resolveRetreat':
-    case 'resolveRout':
       throw new Error(`No procedure exists for effect type: ${effectType}`);
 
     default: {

@@ -45,11 +45,11 @@ export function applyGameEffectEvent<TBoard extends Board>(
       return applyResolveUnitsBrokenEvent(event, state);
     case 'revealCards':
       return applyRevealCardsEvent(event, state);
-    case 'resolveEngagementType':
     case 'resolveEngageRetreatOption':
     case 'resolveFlankEngagement':
     case 'completeUnitMovement':
     case 'startEngagement':
+    case 'triggerRoutFromRetreat':
     case 'resolveMelee':
     case 'resolveRangedAttack':
     case 'resolveRetreat':
