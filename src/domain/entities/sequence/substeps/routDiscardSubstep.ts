@@ -12,6 +12,8 @@ export interface RoutDiscardState {
   numberToDiscard: number;
   /** Whether the cards have been chosen. */
   cardsChosen: boolean;
+  /** Whether the cards have been discarded. */
+  cardsDiscarded: boolean;
 }
 
 /** The schema for the state of the rout discard substep. */
@@ -24,6 +26,8 @@ const _routDiscardStateSchemaObject = z.object({
   numberToDiscard: z.number(),
   /** Whether the cards have been chosen. */
   cardsChosen: z.boolean(),
+  /** Whether the cards have been discarded. */
+  cardsDiscarded: z.boolean(),
 });
 
 type RoutDiscardStateSchemaType = z.infer<typeof _routDiscardStateSchemaObject>;

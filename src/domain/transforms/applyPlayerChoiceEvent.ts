@@ -37,6 +37,8 @@ export function applyPlayerChoiceEvent<TBoard extends Board>(
     case 'setupUnits':
       return applySetupUnitsEvent(event, state);
     case 'commitToMelee':
+    case 'chooseRetreatOption':
+    case 'chooseWhetherToRetreat':
     case 'commitToMovement':
     case 'commitToRangedAttack':
     case 'issueCommand':

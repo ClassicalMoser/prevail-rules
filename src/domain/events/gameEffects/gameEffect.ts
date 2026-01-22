@@ -5,8 +5,11 @@ import type { CompleteIssueCommandsPhaseEvent } from './completeIssueCommandsPha
 import type { CompleteMoveCommandersPhaseEvent } from './completeMoveCommandersPhase';
 import type { CompletePlayCardsPhaseEvent } from './completePlayCardsPhase';
 import type { CompleteResolveMeleePhaseEvent } from './completeResolveMeleePhase';
+import type { CompleteUnitMovementEvent } from './completeUnitMovement';
 import type { DiscardPlayedCardsEvent } from './discardPlayedCards';
-import type { ResolveEngagementEvent } from './resolveEngagement';
+import type { ResolveEngagementTypeEvent } from './resolveEngagementType';
+import type { ResolveEngageRetreatOptionEvent } from './resolveEngageRetreatOption';
+import type { ResolveFlankEngagementEvent } from './resolveFlankEngagement';
 import type { ResolveInitiativeEvent } from './resolveInitiative';
 import type { ResolveMeleeEvent } from './resolveMelee';
 import type { ResolveRallyEvent } from './resolveRally';
@@ -17,6 +20,7 @@ import type { ResolveRoutEvent } from './resolveRout';
 import type { ResolveRoutDiscardEvent } from './resolveRoutDiscard';
 import type { ResolveUnitsBrokenEvent } from './resolveUnitsBroken';
 import type { RevealCardsEvent } from './revealCards';
+import type { StartEngagementEvent } from './startEngagement';
 
 import { z } from 'zod';
 import { completeCleanupPhaseEventSchema } from './completeCleanupPhase';
@@ -24,8 +28,11 @@ import { completeIssueCommandsPhaseEventSchema } from './completeIssueCommandsPh
 import { completeMoveCommandersPhaseEventSchema } from './completeMoveCommandersPhase';
 import { completePlayCardsPhaseEventSchema } from './completePlayCardsPhase';
 import { completeResolveMeleePhaseEventSchema } from './completeResolveMeleePhase';
+import { completeUnitMovementEventSchema } from './completeUnitMovement';
 import { discardPlayedCardsEventSchema } from './discardPlayedCards';
-import { resolveEngagementEventSchema } from './resolveEngagement';
+import { resolveEngagementTypeEventSchema } from './resolveEngagementType';
+import { resolveEngageRetreatOptionEventSchema } from './resolveEngageRetreatOption';
+import { resolveFlankEngagementEventSchema } from './resolveFlankEngagement';
 import { resolveInitiativeEventSchema } from './resolveInitiative';
 import { resolveMeleeEventSchema } from './resolveMelee';
 import { resolveRallyEventSchema } from './resolveRally';
@@ -36,6 +43,7 @@ import { resolveRoutEventSchema } from './resolveRout';
 import { resolveRoutDiscardEventSchema } from './resolveRoutDiscard';
 import { resolveUnitsBrokenEventSchema } from './resolveUnitsBroken';
 import { revealCardsEventSchema } from './revealCards';
+import { startEngagementEventSchema } from './startEngagement';
 
 /** Iterable list of valid game effects. Built from individual event constants. */
 export const gameEffects = [
@@ -45,7 +53,9 @@ export const gameEffects = [
   'completePlayCardsPhase',
   'completeResolveMeleePhase',
   'discardPlayedCards',
-  'resolveEngagement',
+  'resolveEngagementType',
+  'resolveEngageRetreatOption',
+  'resolveFlankEngagement',
   'resolveInitiative',
   'resolveMelee',
   'resolveRally',
@@ -56,10 +66,16 @@ export const gameEffects = [
   'resolveRoutDiscard',
   'resolveUnitsBroken',
   'revealCards',
+  'completeUnitMovement',
+  'startEngagement',
 ] as const;
 
 /** Type for all valid game effect types. */
 export type GameEffectType = (typeof gameEffects)[number];
+
+/** The schema for a game effect type. */
+export const gameEffectTypeSchema: z.ZodType<GameEffectType> =
+  z.enum(gameEffects);
 
 /**
  * Base union of all game effect events (unfiltered).
@@ -72,7 +88,9 @@ type GameEffectEventUnion<TBoard extends Board> =
   | CompletePlayCardsPhaseEvent<TBoard, 'completePlayCardsPhase'>
   | CompleteResolveMeleePhaseEvent<TBoard, 'completeResolveMeleePhase'>
   | DiscardPlayedCardsEvent<TBoard, 'discardPlayedCards'>
-  | ResolveEngagementEvent<TBoard, 'resolveEngagement'>
+  | ResolveEngagementTypeEvent<TBoard, 'resolveEngagementType'>
+  | ResolveEngageRetreatOptionEvent<TBoard, 'resolveEngageRetreatOption'>
+  | ResolveFlankEngagementEvent<TBoard, 'resolveFlankEngagement'>
   | ResolveInitiativeEvent<TBoard, 'resolveInitiative'>
   | ResolveMeleeEvent<TBoard, 'resolveMelee'>
   | ResolveRallyEvent<TBoard, 'resolveRally'>
@@ -82,7 +100,9 @@ type GameEffectEventUnion<TBoard extends Board> =
   | ResolveRoutEvent<TBoard, 'resolveRout'>
   | ResolveRoutDiscardEvent<TBoard, 'resolveRoutDiscard'>
   | ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'>
-  | RevealCardsEvent<TBoard, 'revealCards'>;
+  | RevealCardsEvent<TBoard, 'revealCards'>
+  | CompleteUnitMovementEvent<TBoard, 'completeUnitMovement'>
+  | StartEngagementEvent<TBoard, 'startEngagement'>;
 
 /**
  * Game effect event type filtered by effect type.
@@ -101,7 +121,8 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completePlayCardsPhaseEventSchema,
   completeResolveMeleePhaseEventSchema,
   discardPlayedCardsEventSchema,
-  resolveEngagementEventSchema,
+  resolveEngageRetreatOptionEventSchema,
+  resolveFlankEngagementEventSchema,
   resolveInitiativeEventSchema,
   resolveMeleeEventSchema,
   resolveRallyEventSchema,
@@ -110,8 +131,11 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   resolveReverseEventSchema,
   resolveRoutEventSchema,
   resolveRoutDiscardEventSchema,
+  resolveEngagementTypeEventSchema,
   resolveUnitsBrokenEventSchema,
   revealCardsEventSchema,
+  completeUnitMovementEventSchema,
+  startEngagementEventSchema,
 ]);
 
 type GameEffectEventSchemaType = z.infer<typeof _gameEffectEventSchemaObject>;

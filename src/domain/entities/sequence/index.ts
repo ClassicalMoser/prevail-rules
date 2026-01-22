@@ -1,4 +1,5 @@
 export * from './attackResult';
+export * from './commitment';
 export * from './gameState';
 export * from './phases';
 export * from './roundState';

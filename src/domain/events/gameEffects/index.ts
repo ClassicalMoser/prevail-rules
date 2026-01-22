@@ -5,7 +5,7 @@ export * from './completePlayCardsPhase';
 export * from './completeResolveMeleePhase';
 export * from './discardPlayedCards';
 export * from './gameEffect';
-export * from './resolveEngagement';
+export * from './resolveEngagementType';
 export * from './resolveInitiative';
 export * from './resolveMelee';
 export * from './resolveRally';

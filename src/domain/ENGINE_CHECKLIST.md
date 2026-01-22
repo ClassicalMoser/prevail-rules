@@ -149,12 +149,12 @@ Game effects that require procedures to generate them deterministically:
 
 ## Summary
 
-| Engine                            | Status         | Progress                             |
-| --------------------------------- | -------------- | ------------------------------------ |
-| **1. Pure Transform Engine**      | 🟡 In Progress | 18/30 events (60%)                   |
-| **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)                     |
+| Engine                            | Status         | Progress               |
+| --------------------------------- | -------------- | ---------------------- |
+| **1. Pure Transform Engine**      | 🟡 In Progress | 18/30 events (60%)     |
+| **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)       |
 | **3. Procedure Library**          | 🟡 In Progress | 10/17 identified (59%) |
-| **4. Next Event Expected Engine** | 🟡 In Progress | 3/5 phases (60%)                     |
+| **4. Next Event Expected Engine** | 🟡 In Progress | 3/5 phases (60%)       |
 
 ## Priority Work Items
 

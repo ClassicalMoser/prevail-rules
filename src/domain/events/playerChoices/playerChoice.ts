@@ -3,7 +3,9 @@ import type { AssertExact } from '@utils';
 import type { ChooseCardEvent } from './chooseCard';
 import type { ChooseMeleeResolutionEvent } from './chooseMeleeResolution';
 import type { ChooseRallyEvent } from './chooseRally';
+import type { ChooseRetreatOptionEvent } from './chooseRetreatOption';
 import type { ChooseRoutDiscardEvent } from './chooseRoutDiscard';
+import type { ChooseWhetherToRetreatEvent } from './chooseWhetherToRetreat';
 import type { CommitToMeleeEvent } from './commitToMelee';
 import type { CommitToMovementEvent } from './commitToMovement';
 import type { CommitToRangedAttackEvent } from './commitToRangedAttack';
@@ -17,7 +19,9 @@ import { z } from 'zod';
 import { chooseCardEventSchema } from './chooseCard';
 import { chooseMeleeResolutionEventSchema } from './chooseMeleeResolution';
 import { chooseRallyEventSchema } from './chooseRally';
+import { chooseRetreatOptionEventSchema } from './chooseRetreatOption';
 import { chooseRoutDiscardEventSchema } from './chooseRoutDiscard';
+import { chooseWhetherToRetreatEventSchema } from './chooseWhetherToRetreat';
 import { commitToMeleeEventSchema } from './commitToMelee';
 import { commitToMovementEventSchema } from './commitToMovement';
 import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
@@ -33,8 +37,10 @@ export const playerChoices = [
   'chooseMeleeResolution',
   'chooseRally',
   'chooseRoutDiscard',
+  'chooseRetreatOption',
   'commitToMelee',
   'commitToMovement',
+  'chooseWhetherToRetreat',
   'commitToRangedAttack',
   'issueCommand',
   'moveCommander',
@@ -67,6 +73,8 @@ export type PlayerChoiceEvent<
   | ChooseMeleeResolutionEvent<TBoard, 'chooseMeleeResolution'>
   | ChooseRallyEvent<TBoard, 'chooseRally'>
   | ChooseRoutDiscardEvent<TBoard, 'chooseRoutDiscard'>
+  | ChooseRetreatOptionEvent<TBoard, 'chooseRetreatOption'>
+  | ChooseWhetherToRetreatEvent<TBoard, 'chooseWhetherToRetreat'>
   | CommitToMeleeEvent<TBoard, 'commitToMelee'>
   | CommitToMovementEvent<TBoard, 'commitToMovement'>
   | CommitToRangedAttackEvent<TBoard, 'commitToRangedAttack'>
@@ -81,6 +89,8 @@ const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
   chooseMeleeResolutionEventSchema,
   chooseRallyEventSchema,
   chooseRoutDiscardEventSchema,
+  chooseRetreatOptionEventSchema,
+  chooseWhetherToRetreatEventSchema,
   commitToMeleeEventSchema,
   commitToMovementEventSchema,
   commitToRangedAttackEventSchema,

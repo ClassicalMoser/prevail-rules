@@ -1,6 +1,7 @@
 export * from './army';
 export * from './board';
 export * from './card';
+export * from './engagementType';
 export * from './expectedEvent';
 export * from './game';
 export * from './gameType';

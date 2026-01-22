@@ -1,5 +1,6 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
+import { getExpectedRoutDiscardEvent } from './getExpectedRoutDiscardEvent';
 
 /**
  * Gets information about the expected event for the Cleanup phase.
@@ -61,20 +62,13 @@ export function getExpectedCleanupPhaseEvent<TBoard extends Board>(
         };
       }
 
-      // Check for rout discard penalty
-      if (rallyState.routDiscardState) {
-        if (!rallyState.routDiscardState.cardsChosen) {
-          return {
-            actionType: 'playerChoice',
-            playerSource: firstPlayer,
-            choiceType: 'chooseRoutDiscard',
-          };
-        } else {
-          return {
-            actionType: 'gameEffect',
-            effectType: 'resolveRoutDiscard',
-          };
+      if (rallyState.unitsLostSupport.size > 0) {
+        if (rallyState.routDiscardState === undefined) {
+          throw new Error(
+            'Rout discard state is required when units lost support',
+          );
         }
+        return getExpectedRoutDiscardEvent(rallyState.routDiscardState);
       }
 
       // Rally fully resolved, should have advanced to next step
@@ -103,20 +97,13 @@ export function getExpectedCleanupPhaseEvent<TBoard extends Board>(
         };
       }
 
-      // Check for rout discard penalty
-      if (rallyState.routDiscardState) {
-        if (!rallyState.routDiscardState.cardsChosen) {
-          return {
-            actionType: 'playerChoice',
-            playerSource: secondPlayer,
-            choiceType: 'chooseRoutDiscard',
-          };
-        } else {
-          return {
-            actionType: 'gameEffect',
-            effectType: 'resolveRoutDiscard',
-          };
+      if (rallyState.unitsLostSupport.size > 0) {
+        if (rallyState.routDiscardState === undefined) {
+          throw new Error(
+            'Rout discard state is required when units lost support',
+          );
         }
+        return getExpectedRoutDiscardEvent(rallyState.routDiscardState);
       }
 
       // Rally fully resolved, should have advanced to next step

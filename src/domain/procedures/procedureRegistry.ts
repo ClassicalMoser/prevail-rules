@@ -136,7 +136,11 @@ export function generateEventFromProcedure<
         TBoard,
         'revealCards'
       >;
-    case 'resolveEngagement':
+    case 'resolveEngagementType':
+    case 'resolveEngageRetreatOption':
+    case 'resolveFlankEngagement':
+    case 'completeUnitMovement':
+    case 'startEngagement':
     case 'resolveMelee':
     case 'resolveRangedAttack':
     case 'resolveRetreat':

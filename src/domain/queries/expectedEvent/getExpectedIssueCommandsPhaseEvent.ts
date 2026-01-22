@@ -1,5 +1,7 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
+import { getExpectedCommandResolutionSubstepEvent } from './getExpectedCommandResolutionEvent';
+import { getExpectedStartCommandResolutionEvent } from './getExpectedNextUnitResolutionEvent';
 
 /**
  * Gets information about the expected event for the Issue Commands phase.
@@ -41,104 +43,16 @@ export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
     case 'firstPlayerResolveCommands': {
       // Check if there's an ongoing command resolution
       if (phaseState.currentCommandResolutionState) {
-        const resolutionState = phaseState.currentCommandResolutionState;
-
-        // Handle movement resolution substeps
-        if (resolutionState.commandResolutionType === 'movement') {
-          // Check commitment state
-          if (resolutionState.commitment.commitmentType === 'pending') {
-            return {
-              actionType: 'playerChoice',
-              playerSource: firstPlayer,
-              choiceType: 'commitToMovement',
-            };
-          }
-          // Commitment resolved (declined or completed), expect moveUnit
-          return {
-            actionType: 'playerChoice',
-            playerSource: firstPlayer,
-            choiceType: 'moveUnit',
-          };
-        }
-
-        // Handle ranged attack resolution substeps
-        if (resolutionState.commandResolutionType === 'rangedAttack') {
-          // Check attacking player's commitment
-          if (resolutionState.attackingCommitment.commitmentType === 'pending') {
-            return {
-              actionType: 'playerChoice',
-              playerSource: firstPlayer,
-              choiceType: 'commitToRangedAttack',
-            };
-          }
-          // Check defending player's commitment
-          if (resolutionState.defendingCommitment.commitmentType === 'pending') {
-            return {
-              actionType: 'playerChoice',
-              playerSource: secondPlayer,
-              choiceType: 'commitToRangedAttack',
-            };
-          }
-          // Both commitments resolved, check if performRangedAttack has been done
-          // If attackApplyState exists, we're in the apply phase
-          if (resolutionState.attackApplyState.substepType === 'attackApplyPending') {
-            return {
-              actionType: 'gameEffect',
-              effectType: 'resolveRangedAttack',
-            };
-          }
-          // Attack apply in progress - check what needs to be resolved
-          if (resolutionState.attackApplyState.substepType === 'attackApplyInProgress') {
-            const applyState = resolutionState.attackApplyState;
-            // TODO: Check which attack results need to be resolved (rout, retreat, reverse)
-            // For now, if all are resolved, the command resolution should be complete
-            if (
-              applyState.routResolved &&
-              applyState.retreatResolved &&
-              applyState.reverseResolved
-            ) {
-              // Command resolution complete, should have been removed from remainingUnits
-              throw new Error(
-                'Ranged attack resolution complete but unit not removed from remainingUnits',
-              );
-            }
-            // Some attack results still need resolution
-            // TODO: Return appropriate resolve events (resolveRout, resolveRetreat, resolveReverse)
-            throw new Error('Attack apply in progress - resolve events not yet implemented');
-          }
-          // Commitments resolved but performRangedAttack not yet done
-          return {
-            actionType: 'playerChoice',
-            playerSource: firstPlayer,
-            choiceType: 'performRangedAttack',
-          };
-        }
+        return getExpectedCommandResolutionSubstepEvent(
+          state,
+          phaseState.currentCommandResolutionState,
+          firstPlayer,
+        );
       }
 
       // No ongoing resolution - check if there are remaining units to resolve
       if (phaseState.remainingUnitsFirstPlayer.size > 0) {
-        const activeCard = state.cardState[firstPlayer].inPlay;
-        if (!activeCard) {
-          throw new Error('First player has no active card');
-        }
-        // Command type determines what action is expected to start resolution
-        if (activeCard.command.type === 'movement') {
-          return {
-            actionType: 'playerChoice',
-            playerSource: firstPlayer,
-            choiceType: 'moveUnit',
-          };
-        } else if (activeCard.command.type === 'rangedAttack') {
-          return {
-            actionType: 'playerChoice',
-            playerSource: firstPlayer,
-            choiceType: 'performRangedAttack',
-          };
-        } else {
-          throw new Error(
-            `Invalid command type: ${activeCard.command.type as string}`,
-          );
-        }
+        return getExpectedStartCommandResolutionEvent(state, firstPlayer);
       }
       // All units resolved - should have advanced to secondPlayerIssueCommands
       throw new Error(
@@ -163,104 +77,16 @@ export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
     case 'secondPlayerResolveCommands': {
       // Check if there's an ongoing command resolution
       if (phaseState.currentCommandResolutionState) {
-        const resolutionState = phaseState.currentCommandResolutionState;
-
-        // Handle movement resolution substeps
-        if (resolutionState.commandResolutionType === 'movement') {
-          // Check commitment state
-          if (resolutionState.commitment.commitmentType === 'pending') {
-            return {
-              actionType: 'playerChoice',
-              playerSource: secondPlayer,
-              choiceType: 'commitToMovement',
-            };
-          }
-          // Commitment resolved (declined or completed), expect moveUnit
-          return {
-            actionType: 'playerChoice',
-            playerSource: secondPlayer,
-            choiceType: 'moveUnit',
-          };
-        }
-
-        // Handle ranged attack resolution substeps
-        if (resolutionState.commandResolutionType === 'rangedAttack') {
-          // Check attacking player's commitment
-          if (resolutionState.attackingCommitment.commitmentType === 'pending') {
-            return {
-              actionType: 'playerChoice',
-              playerSource: secondPlayer,
-              choiceType: 'commitToRangedAttack',
-            };
-          }
-          // Check defending player's commitment
-          if (resolutionState.defendingCommitment.commitmentType === 'pending') {
-            return {
-              actionType: 'playerChoice',
-              playerSource: firstPlayer,
-              choiceType: 'commitToRangedAttack',
-            };
-          }
-          // Both commitments resolved, check if performRangedAttack has been done
-          // If attackApplyState exists, we're in the apply phase
-          if (resolutionState.attackApplyState.substepType === 'attackApplyPending') {
-            return {
-              actionType: 'gameEffect',
-              effectType: 'resolveRangedAttack',
-            };
-          }
-          // Attack apply in progress - check what needs to be resolved
-          if (resolutionState.attackApplyState.substepType === 'attackApplyInProgress') {
-            const applyState = resolutionState.attackApplyState;
-            // TODO: Check which attack results need to be resolved (rout, retreat, reverse)
-            // For now, if all are resolved, the command resolution should be complete
-            if (
-              applyState.routResolved &&
-              applyState.retreatResolved &&
-              applyState.reverseResolved
-            ) {
-              // Command resolution complete, should have been removed from remainingUnits
-              throw new Error(
-                'Ranged attack resolution complete but unit not removed from remainingUnits',
-              );
-            }
-            // Some attack results still need resolution
-            // TODO: Return appropriate resolve events (resolveRout, resolveRetreat, resolveReverse)
-            throw new Error('Attack apply in progress - resolve events not yet implemented');
-          }
-          // Commitments resolved but performRangedAttack not yet done
-          return {
-            actionType: 'playerChoice',
-            playerSource: secondPlayer,
-            choiceType: 'performRangedAttack',
-          };
-        }
+        return getExpectedCommandResolutionSubstepEvent(
+          state,
+          phaseState.currentCommandResolutionState,
+          secondPlayer,
+        );
       }
 
       // No ongoing resolution - check if there are remaining units to resolve
       if (phaseState.remainingUnitsSecondPlayer.size > 0) {
-        const activeCard = state.cardState[secondPlayer].inPlay;
-        if (!activeCard) {
-          throw new Error('Second player has no active card');
-        }
-        // Command type determines what action is expected to start resolution
-        if (activeCard.command.type === 'movement') {
-          return {
-            actionType: 'playerChoice',
-            playerSource: secondPlayer,
-            choiceType: 'moveUnit',
-          };
-        } else if (activeCard.command.type === 'rangedAttack') {
-          return {
-            actionType: 'playerChoice',
-            playerSource: secondPlayer,
-            choiceType: 'performRangedAttack',
-          };
-        } else {
-          throw new Error(
-            `Invalid command type: ${activeCard.command.type as string}`,
-          );
-        }
+        return getExpectedStartCommandResolutionEvent(state, secondPlayer);
       }
       // All units resolved - should have advanced to complete
       throw new Error(

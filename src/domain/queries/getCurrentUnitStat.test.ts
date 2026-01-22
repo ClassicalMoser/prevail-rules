@@ -1,4 +1,4 @@
-// TO DO: Generated test suite: still needs manual review.
+// TODO: Generated test suite: still needs manual review.
 
 import {
   createBoardWithCommander,

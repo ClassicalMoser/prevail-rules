@@ -2,12 +2,14 @@ import type { Board } from '@entities/board';
 import type { UnitPlacement, UnitWithPlacement } from '@entities/unitLocation';
 import type { AssertExact } from '@utils';
 import type { Commitment } from '../commitment';
+import type { EngagementState } from './engagement';
 import {
   unitPlacementSchema,
   unitWithPlacementSchema,
 } from '@entities/unitLocation';
 import { z } from 'zod';
 import { commitmentSchema } from '../commitment';
+import { engagementStateSchema } from './engagement';
 
 export interface MovementResolutionState<TBoard extends Board> {
   /** The type of the substep. */
@@ -22,6 +24,8 @@ export interface MovementResolutionState<TBoard extends Board> {
   moveCommander: boolean;
   /** The commitment of the moving player. */
   commitment: Commitment;
+  /** The engagement state. */
+  engagementState: EngagementState<TBoard> | undefined;
 }
 
 /** The schema for the state of the movement resolution substep. */
@@ -38,6 +42,8 @@ const _movementResolutionStateSchemaObject = z.object({
   moveCommander: z.boolean(),
   /** The commitment of the moving player. */
   commitment: commitmentSchema,
+  /** The engagement state. */
+  engagementState: engagementStateSchema.or(z.undefined()),
 });
 
 type MovementResolutionStateSchemaType = z.infer<
@@ -57,4 +63,5 @@ export const movementResolutionStateSchema: z.ZodObject<{
   targetPlacement: z.ZodType<UnitPlacement<Board>>;
   moveCommander: z.ZodType<boolean>;
   commitment: z.ZodType<Commitment>;
+  engagementState: z.ZodType<EngagementState<Board> | undefined>;
 }> = _movementResolutionStateSchemaObject;
