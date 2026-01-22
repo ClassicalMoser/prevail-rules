@@ -10,12 +10,14 @@ This document tracks the implementation status of all four engines. Use this to 
 
 **Status:** ✅ Core engine complete, routing implemented
 
-### Player Choice Events (12 total)
+### Player Choice Events (14 total)
 
 - [x] `chooseCard` → `applyChooseCardEvent`
 - [x] `chooseMeleeResolution` → `applyChooseMeleeEvent`
 - [x] `chooseRally` → `applyChooseRallyEvent`
 - [x] `chooseRoutDiscard` → `applyChooseRoutDiscardEvent`
+- [ ] `chooseRetreatOption` → `applyChooseRetreatOptionEvent` (not implemented)
+- [ ] `chooseWhetherToRetreat` → `applyChooseWhetherToRetreatEvent` (not implemented)
 - [ ] `commitToMelee` → `applyCommitToMeleeEvent` (not implemented)
 - [ ] `commitToMovement` → `applyCommitToMovementEvent` (not implemented)
 - [ ] `commitToRangedAttack` → `applyCommitToRangedAttackEvent` (not implemented)
@@ -25,17 +27,20 @@ This document tracks the implementation status of all four engines. Use this to 
 - [ ] `performRangedAttack` → `applyPerformRangedAttackEvent` (not implemented)
 - [x] `setupUnits` → `applySetupUnitsEvent`
 
-**Progress:** 7/12 (58%)
+**Progress:** 7/14 (50%)
 
-### Game Effect Events (18 total)
+### Game Effect Events (23 total)
 
 - [x] `completeCleanupPhase` → `applyCompleteCleanupPhaseEvent`
 - [x] `completeIssueCommandsPhase` → `applyCompleteIssueCommandsPhaseEvent`
 - [x] `completeMoveCommandersPhase` → `applyCompleteMoveCommandersPhaseEvent`
 - [x] `completePlayCardsPhase` → `applyCompletePlayCardsPhaseEvent`
 - [x] `completeResolveMeleePhase` → `applyCompleteResolveMeleePhaseEvent`
+- [ ] `completeUnitMovement` → `applyCompleteUnitMovementEvent` (not implemented)
 - [x] `discardPlayedCards` → `applyDiscardPlayedCardsEvent`
-- [ ] `resolveEngagement` → `applyResolveEngagementEvent` (not implemented)
+- [ ] `resolveEngageRetreatOption` → `applyResolveEngageRetreatOptionEvent` (not implemented)
+- [ ] `resolveEngagementType` → `applyResolveEngagementTypeEvent` (not implemented)
+- [ ] `resolveFlankEngagement` → `applyResolveFlankEngagementEvent` (not implemented)
 - [x] `resolveInitiative` → `applyResolveInitiativeEvent`
 - [ ] `resolveMelee` → `applyResolveMeleeEvent` (not implemented)
 - [x] `resolveRally` → `applyResolveRallyEvent`
@@ -46,10 +51,11 @@ This document tracks the implementation status of all four engines. Use this to 
 - [x] `resolveRoutDiscard` → `applyResolveRoutDiscardEvent`
 - [x] `resolveUnitsBroken` → `applyResolveUnitsBrokenEvent`
 - [x] `revealCards` → `applyRevealCardsEvent`
+- [ ] `startEngagement` → `applyStartEngagementEvent` (not implemented)
 
-**Progress:** 11/18 (61%)
+**Progress:** 10/23 (43%)
 
-**Overall Transform Engine Progress:** 18/30 (60%)
+**Overall Transform Engine Progress:** 17/37 (46%)
 
 ---
 
@@ -75,6 +81,8 @@ This document tracks the implementation status of all four engines. Use this to 
 - [ ] `isValidChooseMeleeResolutionEvent` (may be handled by phase validation)
 - [x] `isValidChooseRallyEvent`
 - [x] `isValidChooseRoutDiscardEvent`
+- [ ] `isValidChooseRetreatOptionEvent` (not implemented)
+- [ ] `isValidChooseWhetherToRetreatEvent` (not implemented)
 - [ ] `isValidCommitToMeleeEvent` (not implemented)
 - [ ] `isValidCommitToMovementEvent` (not implemented)
 - [ ] `isValidCommitToRangedAttackEvent` (not implemented)
@@ -84,7 +92,7 @@ This document tracks the implementation status of all four engines. Use this to 
 - [ ] `isValidPerformRangedAttackEvent` (not implemented)
 - [ ] `isValidSetupUnitsEvent` (may be handled by phase validation)
 
-**Progress:** 4/12 (33%)
+**Progress:** 4/14 (29%)
 
 **Overall Validation Engine Progress:** Needs assessment - some validation may be handled at phase level
 
@@ -113,17 +121,20 @@ Game effects that require procedures to generate them deterministically:
 
 ### Procedures Still Needed
 
-- [ ] `resolveEngagement` → `generateResolveEngagementEvent` (if needed)
+- [ ] `completeUnitMovement` → `generateCompleteUnitMovementEvent` (if needed)
+- [ ] `resolveEngageRetreatOption` → `generateResolveEngageRetreatOptionEvent` (if needed)
+- [ ] `resolveEngagementType` → `generateResolveEngagementTypeEvent` (if needed)
+- [ ] `resolveFlankEngagement` → `generateResolveFlankEngagementEvent` (if needed)
 - [ ] `resolveMelee` → `generateResolveMeleeEvent` (if needed)
 - [ ] `resolveRangedAttack` → `generateResolveRangedAttackEvent` (if needed)
 - [ ] `resolveRetreat` → `generateResolveRetreatEvent` (if needed)
 - [ ] `resolveReverse` → `generateResolveReverseEvent` (if needed)
 - [ ] `resolveRout` → `generateResolveRoutEvent` (if needed)
-- [ ] `resolveRoutDiscard` → `generateResolveRoutDiscardEvent` (if needed)
+- [ ] `startEngagement` → `generateStartEngagementEvent` (if needed)
 
 **Note:** Not all game effects need procedures. Some are simple state transitions that can be created directly. Procedures are needed for effects that require deterministic generation based on game state (calculations, randomness, etc.).
 
-**Progress:** 10/17 identified (59%) - 10 implemented, 7 remaining to determine/implement
+**Progress:** 10/20 identified (50%) - 10 implemented, 10 remaining to determine/implement
 
 ---
 
@@ -137,13 +148,13 @@ Game effects that require procedures to generate them deterministically:
 
 - [x] `playCards` → `getExpectedPlayCardsPhaseEvent`
 - [x] `moveCommanders` → `getExpectedMoveCommandersPhaseEvent`
-- [ ] `issueCommands` → `getExpectedIssueCommandsPhaseEvent` (not implemented)
+- [x] `issueCommands` → `getExpectedIssueCommandsPhaseEvent`
 - [ ] `resolveMelee` → `getExpectedResolveMeleePhaseEvent` (not implemented)
 - [x] `cleanup` → `getExpectedCleanupPhaseEvent`
 
-**Progress:** 3/5 (60%)
+**Progress:** 4/5 (80%)
 
-**Overall Next Event Expected Engine Progress:** 3/5 (60%)
+**Overall Next Event Expected Engine Progress:** 4/5 (80%)
 
 ---
 
@@ -151,10 +162,10 @@ Game effects that require procedures to generate them deterministically:
 
 | Engine                            | Status         | Progress               |
 | --------------------------------- | -------------- | ---------------------- |
-| **1. Pure Transform Engine**      | 🟡 In Progress | 18/30 events (60%)     |
+| **1. Pure Transform Engine**      | 🟡 In Progress | 18/37 events (49%)     |
 | **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)       |
-| **3. Procedure Library**          | 🟡 In Progress | 10/17 identified (59%) |
-| **4. Next Event Expected Engine** | 🟡 In Progress | 3/5 phases (60%)       |
+| **3. Procedure Library**          | 🟡 In Progress | 10/20 identified (50%) |
+| **4. Next Event Expected Engine** | 🟡 In Progress | 4/5 phases (80%)       |
 
 ## Priority Work Items
 
@@ -172,13 +183,18 @@ Game effects that require procedures to generate them deterministically:
    - [ ] `resolveMelee` phase validation
 
 3. **Next Event Expected Engine:**
-   - [ ] `issueCommands` phase expected event
    - [ ] `resolveMelee` phase expected event
 
 ### Medium Priority (Combat Resolution)
 
 4. **Transform Engine:**
-   - [ ] `resolveEngagement` event application
+   - [ ] `chooseRetreatOption` event application
+   - [ ] `chooseWhetherToRetreat` event application
+   - [ ] `completeUnitMovement` event application
+   - [ ] `resolveEngageRetreatOption` event application
+   - [ ] `resolveEngagementType` event application
+   - [ ] `resolveFlankEngagement` event application
+   - [ ] `startEngagement` event application
    - [ ] `resolveMelee` event application
    - [ ] `resolveRangedAttack` event application
    - [ ] `resolveRetreat` event application
@@ -186,13 +202,14 @@ Game effects that require procedures to generate them deterministically:
    - [ ] `resolveRout` event application
 
 5. **Procedure Library:**
+   - [ ] Determine which engagement and movement effects need procedures
    - [ ] Determine which combat resolution effects need procedures
    - [ ] Implement required procedures
 
 ### Low Priority (Polish & Edge Cases)
 
 6. **Validation Engine:**
-   - [ ] Individual validators for remaining player choices
+   - [ ] Individual validators for remaining player choices (chooseRetreatOption, chooseWhetherToRetreat, etc.)
    - [ ] Comprehensive validation coverage
 
 ## Notes
@@ -200,4 +217,7 @@ Game effects that require procedures to generate them deterministically:
 - Some validation may be handled at the phase level rather than requiring individual event validators
 - Not all game effects require procedures - only those that need deterministic generation based on game state
 - The `resolveMelee` and `issueCommands` phases are critical blockers for full game flow
+- Engagement system has been refactored: `resolveEngagement` replaced with `resolveEngagementType`, `resolveEngageRetreatOption`, `resolveFlankEngagement`, and `startEngagement`
+- Unit movement system now includes `completeUnitMovement` event
+- Retreat system includes `chooseRetreatOption` and `chooseWhetherToRetreat` player choices
 - Consider creating a unified test suite that exercises all four engines together

@@ -60,22 +60,22 @@ export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
     };
   }
 
-  if (!rallyState.routDiscardState) {
+  if (!rallyState.routState) {
     return {
       result: false,
-      errorReason: 'No rout discard penalty state found',
+      errorReason: 'No rout state found',
     };
   }
 
-  if (rallyState.routDiscardState.cardsChosen) {
+  if (rallyState.routState.cardsChosen) {
     return {
       result: false,
-      errorReason: 'Rout discard cards already chosen',
+      errorReason: 'Rout discards already chosen',
     };
   }
 
   // Validate number of cards
-  const expectedCount = rallyState.routDiscardState.numberToDiscard;
+  const expectedCount = rallyState.routState.numberToDiscard;
   if (cardIds.length !== expectedCount) {
     return {
       result: false,

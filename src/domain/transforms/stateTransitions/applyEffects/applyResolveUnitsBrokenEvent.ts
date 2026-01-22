@@ -2,7 +2,7 @@ import type {
   Board,
   CleanupPhaseState,
   GameState,
-  RoutDiscardState,
+  RoutState,
   UnitWithPlacement,
 } from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
@@ -123,22 +123,23 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
   );
 
   // Initialize rout discard state if penalty exists
-  const routDiscardState: RoutDiscardState | undefined =
+  const routState: RoutState | undefined =
     totalPenalty > 0
       ? ({
-          substepType: 'routDiscard' as const,
+          substepType: 'rout' as const,
           player,
+          unitsToRout: new Set(unitsToRout.map((u) => u.unit)),
           numberToDiscard: totalPenalty,
           cardsChosen: false,
           cardsDiscarded: false,
-        } satisfies RoutDiscardState)
+        } satisfies RoutState)
       : undefined;
 
   // Update rally resolution state with the instances that were routed
   const updatedRallyState = {
     ...rallyState,
     unitsLostSupport: new Set(unitsToRout.map((u) => u.unit)),
-    routDiscardState,
+    routState,
   };
 
   // Next step: stay on same step if penalty, otherwise advance

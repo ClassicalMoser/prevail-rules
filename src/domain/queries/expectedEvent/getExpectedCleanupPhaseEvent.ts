@@ -1,6 +1,6 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getExpectedRoutDiscardEvent } from './getExpectedRoutDiscardEvent';
+import { getExpectedRallyResolutionEvent } from './getExpectedRallyResolutionEvent';
 
 /**
  * Gets information about the expected event for the Cleanup phase.
@@ -47,32 +47,7 @@ export function getExpectedCleanupPhaseEvent<TBoard extends Board>(
         throw new Error('First player rally resolution state not found');
       }
 
-      // Check substep progression
-      if (!rallyState.rallyResolved) {
-        return {
-          actionType: 'gameEffect',
-          effectType: 'resolveRally',
-        };
-      }
-
-      if (rallyState.unitsLostSupport === undefined) {
-        return {
-          actionType: 'gameEffect',
-          effectType: 'resolveUnitsBroken',
-        };
-      }
-
-      if (rallyState.unitsLostSupport.size > 0) {
-        if (rallyState.routDiscardState === undefined) {
-          throw new Error(
-            'Rout discard state is required when units lost support',
-          );
-        }
-        return getExpectedRoutDiscardEvent(rallyState.routDiscardState);
-      }
-
-      // Rally fully resolved, should have advanced to next step
-      throw new Error('Rally resolution complete but step not advanced');
+      return getExpectedRallyResolutionEvent(rallyState);
     }
 
     case 'secondPlayerResolveRally': {
@@ -82,32 +57,7 @@ export function getExpectedCleanupPhaseEvent<TBoard extends Board>(
         throw new Error('Second player rally resolution state not found');
       }
 
-      // Check substep progression
-      if (!rallyState.rallyResolved) {
-        return {
-          actionType: 'gameEffect',
-          effectType: 'resolveRally',
-        };
-      }
-
-      if (rallyState.unitsLostSupport === undefined) {
-        return {
-          actionType: 'gameEffect',
-          effectType: 'resolveUnitsBroken',
-        };
-      }
-
-      if (rallyState.unitsLostSupport.size > 0) {
-        if (rallyState.routDiscardState === undefined) {
-          throw new Error(
-            'Rout discard state is required when units lost support',
-          );
-        }
-        return getExpectedRoutDiscardEvent(rallyState.routDiscardState);
-      }
-
-      // Rally fully resolved, should have advanced to next step
-      throw new Error('Rally resolution complete but step not advanced');
+      return getExpectedRallyResolutionEvent(rallyState);
     }
 
     case 'complete':

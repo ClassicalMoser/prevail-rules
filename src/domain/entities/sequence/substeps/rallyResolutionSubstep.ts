@@ -1,10 +1,10 @@
 import type { UnitInstance } from '@entities/unit';
 import type { AssertExact } from '@utils';
-import type { RoutDiscardState } from './routDiscardSubstep';
+import type { RoutState } from './routSubstep';
 
 import { unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
-import { routDiscardStateSchema } from './routDiscardSubstep';
+import { routStateSchema } from './routSubstep';
 
 /**
  * Tracks the state of resolving unit support consequences after a rally.
@@ -19,7 +19,7 @@ export interface RallyResolutionState {
   /** Units that lost support after the rally. */
   unitsLostSupport: Set<UnitInstance> | undefined;
   /** The rout discard penalty state (if units were routed). */
-  routDiscardState: RoutDiscardState | undefined;
+  routState: RoutState | undefined;
 }
 
 const _rallyResolutionStateSchemaObject = z.object({
@@ -30,7 +30,7 @@ const _rallyResolutionStateSchemaObject = z.object({
   /** Units that lost support after the rally. */
   unitsLostSupport: z.set(unitInstanceSchema).or(z.undefined()),
   /** The rout discard penalty state (if units were routed). */
-  routDiscardState: routDiscardStateSchema.or(z.undefined()),
+  routState: routStateSchema.or(z.undefined()),
 });
 
 type RallyResolutionStateSchemaType = z.infer<
@@ -47,5 +47,5 @@ export const rallyResolutionStateSchema: z.ZodObject<{
   playerRallied: z.ZodBoolean;
   rallyResolved: z.ZodBoolean;
   unitsLostSupport: z.ZodType<Set<UnitInstance> | undefined>;
-  routDiscardState: z.ZodType<RoutDiscardState | undefined>;
+  routState: z.ZodType<RoutState | undefined>;
 }> = _rallyResolutionStateSchemaObject;

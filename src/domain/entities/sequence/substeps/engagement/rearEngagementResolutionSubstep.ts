@@ -1,25 +1,21 @@
 import type { AssertExact } from '@utils';
-import type { RoutDiscardState } from '../routDiscardSubstep';
+import type { RoutState } from '../routSubstep';
 import { z } from 'zod';
-import { routDiscardStateSchema } from '../routDiscardSubstep';
+import { routStateSchema } from '../routSubstep';
 
 /** The resolution state of an engagement from the rear. */
 export interface RearEngagementResolutionState {
   /** The type of engagement. */
   engagementType: 'rear';
-  /** Whether the defending unit is routed by rear engagement. */
-  defenderRouted: boolean;
-  /** The state of the rout discard. */
-  routDiscardState: RoutDiscardState | undefined;
+  /** The state of the rout. */
+  routState: RoutState;
 }
 
 const _rearEngagementResolutionStateSchemaObject = z.object({
   /** The type of engagement. */
   engagementType: z.literal('rear'),
-  /** Whether the defending unit is routed. */
-  defenderRouted: z.boolean(),
-  /** The state of the rout discard. */
-  routDiscardState: routDiscardStateSchema.or(z.undefined()),
+  /** The state of the rout. */
+  routState: routStateSchema,
 });
 
 type RearEngagementResolutionStateSchemaType = z.infer<
@@ -34,6 +30,5 @@ const _assertExactRearEngagementResolutionState: AssertExact<
 /** The schema for the rear engagement resolution state. */
 export const rearEngagementResolutionStateSchema: z.ZodObject<{
   engagementType: z.ZodLiteral<'rear'>;
-  defenderRouted: z.ZodType<boolean>;
-  routDiscardState: z.ZodType<RoutDiscardState | undefined>;
+  routState: z.ZodType<RoutState>;
 }> = _rearEngagementResolutionStateSchemaObject;

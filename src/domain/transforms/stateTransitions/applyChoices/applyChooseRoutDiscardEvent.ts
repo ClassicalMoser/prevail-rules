@@ -54,24 +54,24 @@ export function applyChooseRoutDiscardEvent<TBoard extends Board>(
     throw new Error('Rally resolution state not found');
   }
 
-  if (!rallyState.routDiscardState) {
+  if (!rallyState.routState) {
     throw new Error('No rout discard penalty state found');
   }
 
-  if (rallyState.routDiscardState.cardsChosen) {
+  if (rallyState.routState.cardsChosen) {
     throw new Error('Rout discard cards already chosen');
   }
 
   // Validate that correct number of cards were chosen
-  if (cardIds.length !== rallyState.routDiscardState.numberToDiscard) {
+  if (cardIds.length !== rallyState.routState.numberToDiscard) {
     throw new Error(
-      `Expected ${rallyState.routDiscardState.numberToDiscard} cards, got ${cardIds.length}`,
+      `Expected ${rallyState.routState.numberToDiscard} cards, got ${cardIds.length}`,
     );
   }
 
   // Update the rout discard state
   const updatedRoutDiscardState = {
-    ...rallyState.routDiscardState,
+    ...rallyState.routState,
     cardsChosen: true,
   };
 

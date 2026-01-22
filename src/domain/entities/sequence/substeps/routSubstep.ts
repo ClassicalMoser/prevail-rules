@@ -1,15 +1,19 @@
 import type { PlayerSide } from '@entities/player';
+import type { UnitInstance } from '@entities/unit';
 import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities/player';
+import { unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
 
-export interface RoutDiscardState {
+export interface RoutState {
   /** The type of the substep. */
-  substepType: 'routDiscard';
+  substepType: 'rout';
   /** The player that is discarding cards. */
   player: PlayerSide;
+  /** The units that are being routed. */
+  unitsToRout: Set<UnitInstance>;
   /** The number of cards to discard. */
-  numberToDiscard: number;
+  numberToDiscard: number | undefined;
   /** Whether the cards have been chosen. */
   cardsChosen: boolean;
   /** Whether the cards have been discarded. */
@@ -17,26 +21,24 @@ export interface RoutDiscardState {
 }
 
 /** The schema for the state of the rout discard substep. */
-const _routDiscardStateSchemaObject = z.object({
+const _routStateSchemaObject = z.object({
   /** The type of the substep. */
-  substepType: z.literal('routDiscard'),
+  substepType: z.literal('rout'),
   /** The player that is discarding cards. */
   player: playerSideSchema,
+  /** The units that are being routed. */
+  unitsToRout: z.set(unitInstanceSchema),
   /** The number of cards to discard. */
-  numberToDiscard: z.number(),
+  numberToDiscard: z.number().or(z.undefined()),
   /** Whether the cards have been chosen. */
   cardsChosen: z.boolean(),
   /** Whether the cards have been discarded. */
   cardsDiscarded: z.boolean(),
 });
 
-type RoutDiscardStateSchemaType = z.infer<typeof _routDiscardStateSchemaObject>;
+type RoutStateSchemaType = z.infer<typeof _routStateSchemaObject>;
 
-const _assertExactRoutDiscardState: AssertExact<
-  RoutDiscardState,
-  RoutDiscardStateSchemaType
-> = true;
+const _assertExactRoutState: AssertExact<RoutState, RoutStateSchemaType> = true;
 
 /** The schema for the state of the rout discard substep. */
-export const routDiscardStateSchema: z.ZodType<RoutDiscardState> =
-  _routDiscardStateSchemaObject;
+export const routStateSchema: z.ZodType<RoutState> = _routStateSchemaObject;

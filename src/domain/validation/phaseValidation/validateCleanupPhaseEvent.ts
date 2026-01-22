@@ -97,9 +97,9 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
         };
       }
 
-      // Check for rout discard penalty
-      if (rallyState.routDiscardState) {
-        if (!rallyState.routDiscardState.cardsChosen) {
+      // Check for rout state
+      if (rallyState.routState) {
+        if (!rallyState.routState.cardsChosen) {
           // Expect chooseRoutDiscard
           if (
             event.eventType === 'playerChoice' &&

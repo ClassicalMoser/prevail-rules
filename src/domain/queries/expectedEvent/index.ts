@@ -4,4 +4,4 @@ export * from './getExpectedEvent';
 export * from './getExpectedIssueCommandsPhaseEvent';
 export * from './getExpectedMoveCommandersPhaseEvent';
 export * from './getExpectedPlayCardsPhaseEvent';
-export * from './getExpectedRoutDiscardEvent';
+export * from './getExpectedRoutEvent';

@@ -83,7 +83,7 @@ export function applyResolveRallyEvent<TBoard extends Board>(
     ...rallyResolutionState,
     rallyResolved: true,
     unitsLostSupport: new Set([]), // TODO: Calculate which units lost support
-    routDiscardState: undefined,
+    routState: undefined,
   };
 
   const newPhaseState: CleanupPhaseState =

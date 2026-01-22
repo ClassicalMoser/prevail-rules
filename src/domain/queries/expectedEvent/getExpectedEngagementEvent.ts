@@ -8,7 +8,7 @@ import { hasEngagedUnits, hasNoUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { isFriendlyUnit } from '@queries/unit';
-import { getExpectedRoutDiscardEvent } from './getExpectedRoutDiscardEvent';
+import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 
 /**
  * Gets the expected event for engagement resolution substeps.
@@ -68,19 +68,7 @@ export function getExpectedEngagementEvent<TBoard extends Board>(
   }
   if (engagementType === 'rear') {
     // If the engagement is from the rear, we need to rout the defending unit
-    if (!resolutionState.defenderRouted) {
-      // If the defending unit has not been routed yet, we need to route it
-      return {
-        actionType: 'gameEffect',
-        effectType: 'resolveRout',
-      };
-    }
-    // If the defending unit has been routed, we need to check if rout discard is complete
-    if (resolutionState.routDiscardState === undefined) {
-      throw new Error('Rout discard state was expected but not found');
-    }
-    // If the rout discard state is not complete, we need to choose the cards to discard
-    return getExpectedRoutDiscardEvent(resolutionState.routDiscardState);
+    return getExpectedRoutEvent(resolutionState.routState);
   }
   if (engagementType === 'front') {
     // If the engagement is from the front,
