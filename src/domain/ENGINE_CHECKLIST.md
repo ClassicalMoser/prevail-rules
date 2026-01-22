@@ -29,7 +29,7 @@ This document tracks the implementation status of all four engines. Use this to 
 
 **Progress:** 8/14 (57%)
 
-### Game Effect Events (23 total)
+### Game Effect Events (24 total)
 
 - [x] `completeCleanupPhase` → `applyCompleteCleanupPhaseEvent`
 - [x] `completeIssueCommandsPhase` → `applyCompleteIssueCommandsPhaseEvent`
@@ -38,6 +38,7 @@ This document tracks the implementation status of all four engines. Use this to 
 - [x] `completeResolveMeleePhase` → `applyCompleteResolveMeleePhaseEvent`
 - [ ] `completeUnitMovement` → `applyCompleteUnitMovementEvent` (not implemented)
 - [ ] `completeAttackApply` → `applyCompleteAttackApplyEvent` (not implemented)
+- [ ] `completeMeleeResolution` → `applyCompleteMeleeResolutionEvent` (not implemented)
 - [ ] `completeRangedAttackCommand` → `applyCompleteRangedAttackCommandEvent` (not implemented)
 - [x] `discardPlayedCards` → `applyDiscardPlayedCardsEvent`
 - [ ] `resolveEngageRetreatOption` → `applyResolveEngageRetreatOptionEvent` (not implemented)
@@ -55,9 +56,9 @@ This document tracks the implementation status of all four engines. Use this to 
 - [x] `revealCards` → `applyRevealCardsEvent`
 - [ ] `startEngagement` → `applyStartEngagementEvent` (not implemented)
 
-**Progress:** 10/25 (40%)
+**Progress:** 10/24 (42%)
 
-**Overall Transform Engine Progress:** 18/39 (46%)
+**Overall Transform Engine Progress:** 18/38 (47%)
 
 ---
 
@@ -125,6 +126,7 @@ Game effects that have procedures to generate them:
 
 - [ ] `completeUnitMovement` → `generateCompleteUnitMovementEvent`
 - [ ] `completeAttackApply` → `generateCompleteAttackApplyEvent`
+- [ ] `completeMeleeResolution` → `generateCompleteMeleeResolutionEvent`
 - [ ] `completeRangedAttackCommand` → `generateCompleteRangedAttackCommandEvent`
 - [ ] `resolveEngageRetreatOption` → `generateResolveEngageRetreatOptionEvent`
 - [ ] `resolveEngagementType` → `generateResolveEngagementTypeEvent`
@@ -138,7 +140,7 @@ Game effects that have procedures to generate them:
 
 **Note:** All game effects require procedures. When the Next Event Expected Engine returns a game effect, a procedure must generate that event from the current game state.
 
-**Progress:** 10/22 (45%) - 10 implemented, 12 remaining
+**Progress:** 10/23 (43%) - 10 implemented, 13 remaining
 
 ---
 
@@ -166,9 +168,9 @@ Game effects that have procedures to generate them:
 
 | Engine                            | Status         | Progress               |
 | --------------------------------- | -------------- | ---------------------- |
-| **1. Pure Transform Engine**      | 🟡 In Progress | 18/39 events (46%)     |
+| **1. Pure Transform Engine**      | 🟡 In Progress | 18/38 events (47%)     |
 | **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)       |
-| **3. Procedure Library**          | 🟡 In Progress | 10/22 identified (45%) |
+| **3. Procedure Library**          | 🟡 In Progress | 10/23 identified (43%) |
 | **4. Next Event Expected Engine** | ✅ Complete    | 5/5 phases (100%)      |
 
 ## Priority Work Items
@@ -182,6 +184,7 @@ Game effects that have procedures to generate them:
    - [ ] `commitToRangedAttack` event application
    - [x] `performRangedAttack` event application ✅
    - [ ] `completeAttackApply` event application
+   - [ ] `completeMeleeResolution` event application
    - [ ] `completeRangedAttackCommand` event application
 
 2. **Validation Engine:**
@@ -220,6 +223,8 @@ Game effects that have procedures to generate them:
 
 ## Notes
 
+- **🎯 MILESTONE: Event Model Complete** - All required events for a full game stream have been identified and defined. From this point forward, work will focus on implementation (reducing checklist items) rather than discovery (adding new events).
+
 - Some validation may be handled at the phase level rather than requiring individual event validators
 - All game effects require procedures to generate them from game state
 - The `resolveMelee` and `issueCommands` phases are critical blockers for full game flow
@@ -232,4 +237,9 @@ Game effects that have procedures to generate them:
   - ✅ Composable `getExpectedAttackApplyEvent` handles rout/retreat/reverse priority
   - ✅ `completeRangedAttackCommand` event created to advance to next command
   - ⏳ Still need: `commitToRangedAttack`, `resolveRangedAttack`, `completeAttackApply`, `completeRangedAttackCommand` transforms
+- Melee resolution flow implemented:
+  - ✅ Expected event logic handles commitment flow (by initiative order) → `resolveMelee` → attack results (by initiative order)
+  - ✅ Composable `getExpectedAttackApplyEvent` reused for both players' results
+  - ✅ `completeMeleeResolution` event created to clear melee resolution state and continue phase
+  - ⏳ Still need: `commitToMelee`, `resolveMelee`, `completeAttackApply`, `completeMeleeResolution` transforms
 - Consider creating a unified test suite that exercises all four engines together

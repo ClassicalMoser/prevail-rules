@@ -111,18 +111,6 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
             result: false,
             errorReason: 'Expected chooseRoutDiscard player choice',
           };
-        } else {
-          // Expect resolveRoutDiscard
-          if (
-            event.eventType === 'gameEffect' &&
-            event.effectType === 'resolveRoutDiscard'
-          ) {
-            return { result: true };
-          }
-          return {
-            result: false,
-            errorReason: 'Expected resolveRoutDiscard game effect',
-          };
         }
       }
 

@@ -20,7 +20,6 @@ import type { ResolveRangedAttackEvent } from './resolveRangedAttack';
 import type { ResolveRetreatEvent } from './resolveRetreat';
 import type { ResolveReverseEvent } from './resolveReverse';
 import type { ResolveRoutEvent } from './resolveRout';
-import type { ResolveRoutDiscardEvent } from './resolveRoutDiscard';
 import type { ResolveUnitsBrokenEvent } from './resolveUnitsBroken';
 import type { RevealCardsEvent } from './revealCards';
 import type { StartEngagementEvent } from './startEngagement';
@@ -46,7 +45,6 @@ import { resolveRangedAttackEventSchema } from './resolveRangedAttack';
 import { resolveRetreatEventSchema } from './resolveRetreat';
 import { resolveReverseEventSchema } from './resolveReverse';
 import { resolveRoutEventSchema } from './resolveRout';
-import { resolveRoutDiscardEventSchema } from './resolveRoutDiscard';
 import { resolveUnitsBrokenEventSchema } from './resolveUnitsBroken';
 import { revealCardsEventSchema } from './revealCards';
 import { startEngagementEventSchema } from './startEngagement';
@@ -72,7 +70,6 @@ export const gameEffects = [
   'resolveRetreat',
   'resolveReverse',
   'resolveRout',
-  'resolveRoutDiscard',
   'resolveUnitsBroken',
   'revealCards',
   'completeUnitMovement',
@@ -110,7 +107,6 @@ type GameEffectEventUnion<TBoard extends Board> =
   | ResolveRetreatEvent<TBoard, 'resolveRetreat'>
   | ResolveReverseEvent<TBoard, 'resolveReverse'>
   | ResolveRoutEvent<TBoard, 'resolveRout'>
-  | ResolveRoutDiscardEvent<TBoard, 'resolveRoutDiscard'>
   | ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'>
   | RevealCardsEvent<TBoard, 'revealCards'>
   | CompleteUnitMovementEvent<TBoard, 'completeUnitMovement'>
@@ -145,7 +141,6 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   resolveRetreatEventSchema,
   resolveReverseEventSchema,
   resolveRoutEventSchema,
-  resolveRoutDiscardEventSchema,
   resolveEngagementTypeEventSchema,
   resolveUnitsBrokenEventSchema,
   revealCardsEventSchema,

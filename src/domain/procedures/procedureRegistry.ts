@@ -1,13 +1,20 @@
 import type { Board, GameState } from '@entities';
 import type { GameEffectEvent, GameEffectType } from '@events';
+import { generateCompleteAttackApplyEvent } from './generateCompleteAttackApplyEvent';
 import { generateCompleteCleanupPhaseEvent } from './generateCompleteCleanupPhaseEvent';
 import { generateCompleteIssueCommandsPhaseEvent } from './generateCompleteIssueCommandsPhaseEvent';
+import { generateCompleteMeleeResolutionEvent } from './generateCompleteMeleeResolutionEvent';
 import { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMoveCommandersPhaseEvent';
 import { generateCompletePlayCardsPhaseEvent } from './generateCompletePlayCardsPhaseEvent';
+import { generateCompleteRangedAttackCommandEvent } from './generateCompleteRangedAttackCommandEvent';
 import { generateCompleteResolveMeleePhaseEvent } from './generateCompleteResolveMeleePhaseEvent';
+import { generateCompleteUnitMovementEvent } from './generateCompleteUnitMovementEvent';
 import { generateDiscardPlayedCardsEvent } from './generateDiscardPlayedCardsEvent';
+import { generateResolveEngagementTypeEvent } from './generateResolveEngagementTypeEvent';
+import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
 import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent';
 import { generateResolveRallyEvent } from './generateResolveRallyEvent';
+import { generateResolveReverseEvent } from './generateResolveReverseEvent';
 import { generateResolveUnitsBrokenEvent } from './generateResolveUnitsBrokenEvent';
 import { generateRevealCardsEvent } from './generateRevealCardsEvent';
 
@@ -80,6 +87,30 @@ export function generateEventFromProcedure<TBoard extends Board>(
   state: GameState<TBoard>,
   effectType: 'revealCards',
 ): GameEffectEvent<TBoard, 'revealCards'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'completeAttackApply',
+): GameEffectEvent<TBoard, 'completeAttackApply'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'completeMeleeResolution',
+): GameEffectEvent<TBoard, 'completeMeleeResolution'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'completeRangedAttackCommand',
+): GameEffectEvent<TBoard, 'completeRangedAttackCommand'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'completeUnitMovement',
+): GameEffectEvent<TBoard, 'completeUnitMovement'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'resolveEngageRetreatOption',
+): GameEffectEvent<TBoard, 'resolveEngageRetreatOption'>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  effectType: 'resolveReverse',
+): GameEffectEvent<TBoard, 'resolveReverse'>;
 export function generateEventFromProcedure<
   TBoard extends Board,
   TGameEffectType extends GameEffectType,
@@ -136,20 +167,43 @@ export function generateEventFromProcedure<
         TBoard,
         'revealCards'
       >;
-    case 'resolveEngagementType':
-    case 'resolveEngageRetreatOption':
-    case 'resolveFlankEngagement':
+    case 'completeAttackApply':
+      return generateCompleteAttackApplyEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'completeAttackApply'
+      >;
+    case 'completeMeleeResolution':
+      return generateCompleteMeleeResolutionEvent(
+        state,
+      ) satisfies GameEffectEvent<TBoard, 'completeMeleeResolution'>;
+    case 'completeRangedAttackCommand':
+      return generateCompleteRangedAttackCommandEvent(
+        state,
+      ) satisfies GameEffectEvent<TBoard, 'completeRangedAttackCommand'>;
     case 'completeUnitMovement':
+      return generateCompleteUnitMovementEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'completeUnitMovement'
+      >;
+    case 'resolveEngagementType':
+      return generateResolveEngagementTypeEvent(
+        state,
+      ) satisfies GameEffectEvent<TBoard, 'resolveEngagementType'>;
+    case 'resolveEngageRetreatOption':
+      return generateResolveEngageRetreatOptionEvent(
+        state,
+      ) satisfies GameEffectEvent<TBoard, 'resolveEngageRetreatOption'>;
+    case 'resolveReverse':
+      return generateResolveReverseEvent(state) satisfies GameEffectEvent<
+        TBoard,
+        'resolveReverse'
+      >;
+    case 'resolveFlankEngagement':
     case 'startEngagement':
     case 'resolveMelee':
     case 'resolveRangedAttack':
     case 'resolveRetreat':
-    case 'resolveReverse':
     case 'resolveRout':
-    case 'resolveRoutDiscard':
-    case 'completeAttackApply':
-    case 'completeRangedAttackCommand':
-    case 'completeMeleeResolution':
       throw new Error(`No procedure exists for effect type: ${effectType}`);
 
     default: {

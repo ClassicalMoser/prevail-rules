@@ -26,12 +26,5 @@ export function getExpectedRoutEvent<TBoard extends Board>(
       choiceType: 'chooseRoutDiscard',
     };
   }
-  // If cards have been chosen, expect resolve rout effect
-  if (!routState.cardsDiscarded) {
-    return {
-      actionType: 'gameEffect',
-      effectType: 'resolveRoutDiscard',
-    };
-  }
   throw new Error('Rout state is complete');
 }

@@ -19,12 +19,15 @@ import { getPositionOfUnit } from './unitPresence';
  * @param unit - The unit to get the stat value of.
  * @param stat - The stat to get the value of.
  * @param gameState - The current game state.
+ * @param modifiers - Additional modifiers to apply to the stat.
+ * Usually used for commitment modifiers.
  * @returns The current stat value of the unit.
  */
 export function getCurrentUnitStat<TBoard extends Board>(
   unit: UnitInstance,
   stat: UnitStatName,
   gameState: GameState<TBoard>,
+  modifiers?: Modifier[],
 ): number {
   // Get the base stat value
   const baseStat = unit.unitType.stats[stat];
@@ -40,6 +43,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
   // 1. Terrain effects (not yet implemented)
   // 2. Round effect
   // 3. Active command effects
+  // 4. Additional modifiers, such as commitment modifiers.
 
   /**
    * Helper function to find a matching modifier in an array of modifiers.
@@ -138,6 +142,18 @@ export function getCurrentUnitStat<TBoard extends Board>(
       statIsDefense,
     );
     // If there is, add the modifier to the total
+    if (matchingModifier) {
+      totalModifier += matchingModifier.value;
+    }
+  }
+
+  // Step 4: Additional modifiers
+  if (modifiers) {
+    const matchingModifier = findMatchingModifier(
+      modifiers,
+      stat,
+      statIsDefense,
+    );
     if (matchingModifier) {
       totalModifier += matchingModifier.value;
     }

@@ -13,7 +13,6 @@ import {
   applyDiscardPlayedCardsEvent,
   applyResolveInitiativeEvent,
   applyResolveRallyEvent,
-  applyResolveRoutDiscardEvent,
   applyResolveUnitsBrokenEvent,
   applyRevealCardsEvent,
 } from './stateTransitions';
@@ -42,8 +41,6 @@ export function applyGameEffectEvent<TBoard extends Board>(
       return applyResolveInitiativeEvent(event, state);
     case 'resolveRally':
       return applyResolveRallyEvent(event, state);
-    case 'resolveRoutDiscard':
-      return applyResolveRoutDiscardEvent(event, state);
     case 'resolveUnitsBroken':
       return applyResolveUnitsBrokenEvent(event, state);
     case 'revealCards':

@@ -1,5 +1,6 @@
 export * from './boardSpace';
 export * from './calculateInitiative';
+export * from './engagement';
 export * from './facings';
 export * from './getCurrentUnitStat';
 export * from './getLine';
