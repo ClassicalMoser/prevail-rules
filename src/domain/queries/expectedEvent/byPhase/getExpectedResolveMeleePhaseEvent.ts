@@ -1,4 +1,5 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
+import { getResolveMeleePhaseState } from '@queries/sequencing';
 import { getExpectedMeleeResolutionEvent } from '../iterated';
 
 /**
@@ -10,16 +11,8 @@ import { getExpectedMeleeResolutionEvent } from '../iterated';
 export function getExpectedResolveMeleePhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
-  const phaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getResolveMeleePhaseState(state);
   const firstPlayer = state.currentInitiative;
-
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (phaseState.phase !== 'resolveMelee') {
-    throw new Error('Current phase is not resolveMelee');
-  }
 
   switch (phaseState.step) {
     case 'resolveMelee': {
@@ -54,7 +47,7 @@ export function getExpectedResolveMeleePhaseEvent<TBoard extends Board>(
       };
 
     default: {
-      const _exhaustive: never = phaseState;
+      const _exhaustive: never = phaseState.step;
       throw new Error(`Invalid resolveMelee phase step: ${_exhaustive}`);
     }
   }

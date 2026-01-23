@@ -84,7 +84,7 @@ export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
   }
 
   // Validate all cards exist in player's hand
-  const playerCardState = state.cardState[player];
+  const playerCardState = state.cardState[event.player];
   const cardsInHand = playerCardState.inHand;
   const handCardIds = new Set(cardsInHand.map((card) => card.id));
 

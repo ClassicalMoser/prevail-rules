@@ -1,5 +1,6 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
+import { getMoveCommandersPhaseState } from '@queries/sequencing';
 
 /**
  * Gets information about the expected event for the MoveCommanders phase.
@@ -10,14 +11,9 @@ import { getOtherPlayer } from '@queries/getOtherPlayer';
 export function getExpectedMoveCommandersPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
-  const phaseState = state.currentRoundState.currentPhaseState;
-
+  const phaseState = getMoveCommandersPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
-
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
 
   switch (phaseState.step) {
     case 'moveFirstCommander':

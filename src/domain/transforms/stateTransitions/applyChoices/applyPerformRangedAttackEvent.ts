@@ -1,8 +1,3 @@
-/**
- * State transition for PerformRangedAttackEvent.
- * This creates the initial ranged attack resolution state.
- */
-
 import type {
   Board,
   GameState,
@@ -10,6 +5,7 @@ import type {
   RangedAttackResolutionState,
 } from '@entities';
 import type { PerformRangedAttackEvent } from '@events';
+import { getIssueCommandsPhaseState } from '@queries';
 import { isSameUnitInstance } from '@validation';
 
 /**
@@ -24,15 +20,7 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
   event: PerformRangedAttackEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
-
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'issueCommands') {
-    throw new Error('Current phase is not issueCommands');
-  }
+  const currentPhaseState = getIssueCommandsPhaseState(state);
 
   const attackingPlayer = event.player;
   const attackingUnit = event.unit.unit;

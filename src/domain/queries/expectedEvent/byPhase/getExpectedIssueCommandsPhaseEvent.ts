@@ -1,5 +1,6 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
+import { getIssueCommandsPhaseState } from '@queries/sequencing';
 import { getExpectedStartCommandResolutionEvent } from '../composable';
 import { getExpectedCommandResolutionEvent } from '../iterated';
 
@@ -12,17 +13,9 @@ import { getExpectedCommandResolutionEvent } from '../iterated';
 export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
-  const phaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getIssueCommandsPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
-
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (phaseState.phase !== 'issueCommands') {
-    throw new Error('Current phase is not issueCommands');
-  }
 
   switch (phaseState.step) {
     case 'firstPlayerIssueCommands':
@@ -101,7 +94,7 @@ export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
       };
 
     default: {
-      const _exhaustive: never = phaseState;
+      const _exhaustive: never = phaseState.step;
       throw new Error(`Invalid issueCommands phase state: ${_exhaustive}`);
     }
   }

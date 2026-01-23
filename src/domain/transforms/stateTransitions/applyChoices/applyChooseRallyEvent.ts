@@ -1,6 +1,6 @@
 import type { Board, CleanupPhaseState, GameState } from '@entities';
 import type { ChooseRallyEvent } from '@events';
-import { getOtherPlayer } from '@queries';
+import { getCleanupPhaseState, getOtherPlayer } from '@queries';
 
 /**
  * Applies a ChooseRallyEvent to the game state.
@@ -16,15 +16,7 @@ export function applyChooseRallyEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, performRally } = event;
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
-
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'cleanup') {
-    throw new Error('Current phase is not cleanup');
-  }
+  const currentPhaseState = getCleanupPhaseState(state);
 
   // Determine which step we're on and validate player
   const firstPlayer = state.currentInitiative;

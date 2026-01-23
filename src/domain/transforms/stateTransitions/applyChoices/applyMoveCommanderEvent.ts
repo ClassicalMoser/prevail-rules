@@ -5,6 +5,7 @@ import type {
   MoveCommandersPhaseState,
 } from '@entities';
 import type { MoveCommanderEvent } from '@events';
+import { getMoveCommandersPhaseState } from '@queries';
 import {
   addCommanderToBoard,
   removeCommanderFromBoard,
@@ -23,15 +24,7 @@ export function applyMoveCommanderEvent<TBoard extends Board>(
   event: MoveCommanderEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
-
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'moveCommanders') {
-    throw new Error('Current phase is not moveCommanders');
-  }
+  const currentPhaseState = getMoveCommandersPhaseState(state);
 
   const side = event.player;
   const originalCoordinate: BoardCoordinate<TBoard> = event.from;

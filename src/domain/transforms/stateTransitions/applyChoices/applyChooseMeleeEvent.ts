@@ -6,7 +6,7 @@ import type {
 } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
 import { hasEngagedUnits } from '@entities';
-import { getBoardSpace } from '@queries';
+import { getBoardSpace, getResolveMeleePhaseState } from '@queries';
 
 /** Applies the choose melee resolution event to the game state. */
 export function applyChooseMeleeEvent<TBoard extends Board>(
@@ -14,13 +14,7 @@ export function applyChooseMeleeEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { space } = event;
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-  if (currentPhaseState.phase !== 'resolveMelee') {
-    throw new Error('Not in resolve melee phase');
-  }
+  const currentPhaseState = getResolveMeleePhaseState(state);
   const remainingEngagements = currentPhaseState.remainingEngagements;
   if (!remainingEngagements.has(space)) {
     throw new Error('Space is not a remaining engagement');

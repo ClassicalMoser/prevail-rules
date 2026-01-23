@@ -1,6 +1,6 @@
 import type { Board, GameState, PlayCardsPhaseState } from '@entities';
 import type { ChooseCardEvent } from '@events';
-import { getOtherPlayer } from '@queries';
+import { getOtherPlayer, getPlayCardsPhaseState } from '@queries';
 
 /**
  * Applies a ChooseCardEvent to the game state.
@@ -16,23 +16,10 @@ export function applyChooseCardEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, card } = event;
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
-
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'playCards') {
-    throw new Error('Current phase is not playCards');
-  }
+  const currentPhaseState = getPlayCardsPhaseState(state);
 
   if (currentPhaseState.step !== 'chooseCards') {
     throw new Error('Play cards phase is not on chooseCards step');
-  }
-
-  // Validate player hasn't already chosen
-  if (state.cardState[player].awaitingPlay !== null) {
-    throw new Error(`Player ${player} has already chosen a card`);
   }
 
   const oldHand = state.cardState[player].inHand;

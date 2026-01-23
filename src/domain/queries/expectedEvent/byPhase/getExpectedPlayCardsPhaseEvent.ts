@@ -1,4 +1,5 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
+import { getPlayCardsPhaseState } from '@queries/sequencing';
 
 /**
  * Gets information about the expected event for the PlayCards phase.
@@ -9,10 +10,7 @@ import type { Board, ExpectedEventInfo, GameState } from '@entities';
 export function getExpectedPlayCardsPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
-  const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
+  const phaseState = getPlayCardsPhaseState(state);
 
   switch (phaseState.step) {
     case 'chooseCards':

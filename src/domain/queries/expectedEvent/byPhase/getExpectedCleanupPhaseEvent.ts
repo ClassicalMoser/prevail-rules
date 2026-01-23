@@ -1,5 +1,6 @@
 import type { Board, ExpectedEventInfo, GameState } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
+import { getCleanupPhaseState } from '@queries/sequencing';
 import { getExpectedRallyResolutionEvent } from '../composable';
 
 /**
@@ -11,13 +12,9 @@ import { getExpectedRallyResolutionEvent } from '../composable';
 export function getExpectedCleanupPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
-  const phaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getCleanupPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
-
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
 
   switch (phaseState.step) {
     case 'discardPlayedCards':
