@@ -5,16 +5,29 @@
 import type { Board, GameState } from '@entities';
 import type { GameEffectEvent, GameEffectType } from '@events';
 import {
+  applyCompleteAttackApplyEvent,
   applyCompleteCleanupPhaseEvent,
   applyCompleteIssueCommandsPhaseEvent,
+  applyCompleteMeleeResolutionEvent,
   applyCompleteMoveCommandersPhaseEvent,
   applyCompletePlayCardsPhaseEvent,
+  applyCompleteRangedAttackCommandEvent,
   applyCompleteResolveMeleePhaseEvent,
+  applyCompleteUnitMovementEvent,
   applyDiscardPlayedCardsEvent,
+  applyResolveEngageRetreatOptionEvent,
+  applyResolveFlankEngagementEvent,
   applyResolveInitiativeEvent,
+  applyResolveMeleeEvent,
   applyResolveRallyEvent,
+  applyResolveRangedAttackEvent,
+  applyResolveRetreatEvent,
+  applyResolveReverseEvent,
+  applyResolveRoutEvent,
   applyResolveUnitsBrokenEvent,
   applyRevealCardsEvent,
+  applyStartEngagementEvent,
+  applyTriggerRoutFromRetreatEvent,
 } from './stateTransitions';
 
 /**
@@ -25,16 +38,24 @@ export function applyGameEffectEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   switch (event.effectType) {
+    case 'completeAttackApply':
+      return applyCompleteAttackApplyEvent(event, state);
     case 'completeCleanupPhase':
       return applyCompleteCleanupPhaseEvent(event, state);
     case 'completeIssueCommandsPhase':
       return applyCompleteIssueCommandsPhaseEvent(event, state);
+    case 'completeMeleeResolution':
+      return applyCompleteMeleeResolutionEvent(event, state);
     case 'completeMoveCommandersPhase':
       return applyCompleteMoveCommandersPhaseEvent(event, state);
     case 'completePlayCardsPhase':
       return applyCompletePlayCardsPhaseEvent(event, state);
+    case 'completeRangedAttackCommand':
+      return applyCompleteRangedAttackCommandEvent(event, state);
     case 'completeResolveMeleePhase':
       return applyCompleteResolveMeleePhaseEvent(event, state);
+    case 'completeUnitMovement':
+      return applyCompleteUnitMovementEvent(event, state);
     case 'discardPlayedCards':
       return applyDiscardPlayedCardsEvent(event, state);
     case 'resolveInitiative':
@@ -45,22 +66,24 @@ export function applyGameEffectEvent<TBoard extends Board>(
       return applyResolveUnitsBrokenEvent(event, state);
     case 'revealCards':
       return applyRevealCardsEvent(event, state);
-    case 'resolveEngageRetreatOption':
-    case 'resolveFlankEngagement':
-    case 'completeUnitMovement':
-    case 'startEngagement':
-    case 'triggerRoutFromRetreat':
     case 'resolveMelee':
+      return applyResolveMeleeEvent(event, state);
     case 'resolveRangedAttack':
+      return applyResolveRangedAttackEvent(event, state);
     case 'resolveRetreat':
+      return applyResolveRetreatEvent(event, state);
     case 'resolveReverse':
+      return applyResolveReverseEvent(event, state);
     case 'resolveRout':
-    case 'completeRangedAttackCommand':
-    case 'completeAttackApply':
-    case 'completeMeleeResolution':
-      throw new Error(
-        `Event type ${event.effectType} is not yet implemented in the transform engine`,
-      );
+      return applyResolveRoutEvent(event, state);
+    case 'resolveEngageRetreatOption':
+      return applyResolveEngageRetreatOptionEvent(event, state);
+    case 'resolveFlankEngagement':
+      return applyResolveFlankEngagementEvent(event, state);
+    case 'startEngagement':
+      return applyStartEngagementEvent(event, state);
+    case 'triggerRoutFromRetreat':
+      return applyTriggerRoutFromRetreatEvent(event, state);
     default: {
       // Exhaustiveness check for TypeScript
       const _exhaustive: never = event;

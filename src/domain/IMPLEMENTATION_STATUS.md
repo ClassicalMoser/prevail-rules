@@ -15,7 +15,7 @@ This document combines flow analysis, round analysis, and implementation checkli
 
 | Engine                            | Status         | Progress                 |
 | --------------------------------- | -------------- | ------------------------ |
-| **1. Pure Transform Engine**      | 🟡 In Progress | 24/38 events (63%)       |
+| **1. Pure Transform Engine**      | ✅ Complete    | 38/38 events (100%)      |
 | **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)         |
 | **3. Procedure Library**          | ✅ Complete    | 23/23 implemented (100%) |
 | **4. Next Event Expected Engine** | ✅ Complete    | 5/5 phases (100%)        |
@@ -53,7 +53,7 @@ This document combines flow analysis, round analysis, and implementation checkli
 
 ---
 
-## Phase 3: Issue Commands ❌ **INCOMPLETE**
+## Phase 3: Issue Commands ✅ **COMPLETE**
 
 **Flow:** `firstPlayerIssueCommands` → `firstPlayerResolveCommands` → `secondPlayerIssueCommands` → `secondPlayerResolveCommands` → `complete`
 
@@ -69,21 +69,21 @@ This document combines flow analysis, round analysis, and implementation checkli
 
 #### Movement Resolution Flow
 
-| Expected Event                                  | Transform                           | Procedure                              | Status         |
-| ----------------------------------------------- | ----------------------------------- | -------------------------------------- | -------------- |
-| `playerChoice: commitToMovement`                | ❌ `applyCommitToMovementEvent`     | N/A                                    | ❌ **BLOCKER** |
-| `gameEffect: startEngagement` (if engaging)     | ❌ `applyStartEngagementEvent`      | ✅ `generateStartEngagementEvent`      | ⚠️ **Partial** |
-| Engagement resolution (see composable substeps) | See below                           | See below                              | See below      |
-| `gameEffect: completeUnitMovement`              | ❌ `applyCompleteUnitMovementEvent` | ✅ `generateCompleteUnitMovementEvent` | ⚠️ **Partial** |
+| Expected Event                                  | Transform                           | Procedure                              | Status    |
+| ----------------------------------------------- | ----------------------------------- | -------------------------------------- | --------- |
+| `playerChoice: commitToMovement`                | ✅ `applyCommitToMovementEvent`     | N/A                                    | ✅        |
+| `gameEffect: startEngagement` (if engaging)     | ✅ `applyStartEngagementEvent`      | ✅ `generateStartEngagementEvent`      | ✅        |
+| Engagement resolution (see composable substeps) | See below                           | See below                              | See below |
+| `gameEffect: completeUnitMovement`              | ✅ `applyCompleteUnitMovementEvent` | ✅ `generateCompleteUnitMovementEvent` | ✅        |
 
 #### Ranged Attack Resolution Flow
 
-| Expected Event                                  | Transform                                  | Procedure                                     | Status |
-| ----------------------------------------------- | ------------------------------------------ | --------------------------------------------- | ------ |
-| `playerChoice: commitToRangedAttack`            | ✅ `applyCommitToRangedAttackEvent`        | N/A                                           | ✅     |
-| `gameEffect: resolveRangedAttack`               | ❌ `applyResolveRangedAttackEvent`         | ✅ `generateResolveRangedAttackEvent`         | ⚠️ **Partial** |
-| Attack apply substeps (see composable substeps) | See below                                  | See below                                     | See below      |
-| `gameEffect: completeRangedAttackCommand`       | ❌ `applyCompleteRangedAttackCommandEvent` | ✅ `generateCompleteRangedAttackCommandEvent` | ⚠️ **Partial** |
+| Expected Event                                  | Transform                                  | Procedure                                     | Status    |
+| ----------------------------------------------- | ------------------------------------------ | --------------------------------------------- | --------- |
+| `playerChoice: commitToRangedAttack`            | ✅ `applyCommitToRangedAttackEvent`        | N/A                                           | ✅        |
+| `gameEffect: resolveRangedAttack`               | ✅ `applyResolveRangedAttackEvent`         | ✅ `generateResolveRangedAttackEvent`         | ✅        |
+| Attack apply substeps (see composable substeps) | See below                                  | See below                                     | See below |
+| `gameEffect: completeRangedAttackCommand`       | ✅ `applyCompleteRangedAttackCommandEvent` | ✅ `generateCompleteRangedAttackCommandEvent` | ✅        |
 
 ### Step 5: Complete
 
@@ -91,25 +91,25 @@ This document combines flow analysis, round analysis, and implementation checkli
 | ---------------------------------------- | ----------------------------------------- | -------------------------------------------- | ------ |
 | `gameEffect: completeIssueCommandsPhase` | ✅ `applyCompleteIssueCommandsPhaseEvent` | ✅ `generateCompleteIssueCommandsPhaseEvent` | ✅     |
 
-**Missing:** 4 transforms
+**All engines complete for this phase.**
 
 ---
 
-## Phase 4: Resolve Melee ❌ **INCOMPLETE**
+## Phase 4: Resolve Melee ✅ **COMPLETE**
 
 **Flow:** `resolveMelee` (loop: choose engagement → commitments → resolve → attack apply) → `complete`
 
-| Expected Event                                  | Transform                                | Procedure                                   | Status         |
-| ----------------------------------------------- | ---------------------------------------- | ------------------------------------------- | -------------- |
-| `playerChoice: chooseMeleeResolution`           | ✅ `applyChooseMeleeEvent`               | N/A                                         | ✅             |
-| `playerChoice: commitToMelee` (first player)    | ❌ `applyCommitToMeleeEvent`             | N/A                                         | ❌ **BLOCKER** |
-| `playerChoice: commitToMelee` (second player)   | ❌ `applyCommitToMeleeEvent`             | N/A                                         | ❌ **BLOCKER** |
-| `gameEffect: resolveMelee`                      | ❌ `applyResolveMeleeEvent`              | ✅ `generateResolveMeleeEvent`              | ⚠️ **Partial** |
-| Attack apply substeps (see composable substeps) | See below                                | See below                                   | See below      |
-| `gameEffect: completeMeleeResolution`           | ❌ `applyCompleteMeleeResolutionEvent`   | ✅ `generateCompleteMeleeResolutionEvent`   | ⚠️ **Partial** |
-| `gameEffect: completeResolveMeleePhase`         | ✅ `applyCompleteResolveMeleePhaseEvent` | ✅ `generateCompleteResolveMeleePhaseEvent` | ✅             |
+| Expected Event                                  | Transform                                | Procedure                                   | Status    |
+| ----------------------------------------------- | ---------------------------------------- | ------------------------------------------- | --------- |
+| `playerChoice: chooseMeleeResolution`           | ✅ `applyChooseMeleeEvent`               | N/A                                         | ✅        |
+| `playerChoice: commitToMelee` (first player)    | ✅ `applyCommitToMeleeEvent`             | N/A                                         | ✅        |
+| `playerChoice: commitToMelee` (second player)   | ✅ `applyCommitToMeleeEvent`             | N/A                                         | ✅        |
+| `gameEffect: resolveMelee`                      | ✅ `applyResolveMeleeEvent`              | ✅ `generateResolveMeleeEvent`              | ✅        |
+| Attack apply substeps (see composable substeps) | See below                                | See below                                   | See below |
+| `gameEffect: completeMeleeResolution`           | ✅ `applyCompleteMeleeResolutionEvent`   | ✅ `generateCompleteMeleeResolutionEvent`   | ✅        |
+| `gameEffect: completeResolveMeleePhase`         | ✅ `applyCompleteResolveMeleePhaseEvent` | ✅ `generateCompleteResolveMeleePhaseEvent` | ✅        |
 
-**Missing:** 1 transform
+**All engines complete for this phase.**
 
 ---
 
@@ -140,14 +140,14 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 
 **Flow:** `resolveRout`/`resolveRetreat`/`resolveReverse` → (nested substeps) → `completeAttackApply`
 
-| Expected Event                              | Transform                          | Procedure                             | Status         |
-| ------------------------------------------- | ---------------------------------- | ------------------------------------- | -------------- |
-| `gameEffect: resolveRout` (if routed)       | ❌ `applyResolveRoutEvent`         | ✅ `generateResolveRoutEvent`         | ⚠️ **Partial** |
-| `gameEffect: resolveRetreat` (if retreated) | ❌ `applyResolveRetreatEvent`      | ❌ `generateResolveRetreatEvent`      | ❌ **BLOCKER** |
-| `gameEffect: resolveReverse` (if reversed)  | ❌ `applyResolveReverseEvent`      | ✅ `generateResolveReverseEvent`      | ⚠️ **Partial** |
-| `gameEffect: completeAttackApply`           | ❌ `applyCompleteAttackApplyEvent` | ✅ `generateCompleteAttackApplyEvent` | ⚠️ **Partial** |
+| Expected Event                              | Transform                          | Procedure                             | Status |
+| ------------------------------------------- | ---------------------------------- | ------------------------------------- | ------ |
+| `gameEffect: resolveRout` (if routed)       | ✅ `applyResolveRoutEvent`         | ✅ `generateResolveRoutEvent`         | ✅     |
+| `gameEffect: resolveRetreat` (if retreated) | ✅ `applyResolveRetreatEvent`      | ✅ `generateResolveRetreatEvent`      | ✅     |
+| `gameEffect: resolveReverse` (if reversed)  | ✅ `applyResolveReverseEvent`      | ✅ `generateResolveReverseEvent`      | ✅     |
+| `gameEffect: completeAttackApply`           | ✅ `applyCompleteAttackApplyEvent` | ✅ `generateCompleteAttackApplyEvent` | ✅     |
 
-**Missing:** 4 transforms
+**All engines complete for this substep.**
 
 ### Retreat Substeps
 
@@ -157,11 +157,11 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 
 | Expected Event                                              | Transform                             | Procedure                                | Status |
 | ----------------------------------------------------------- | ------------------------------------- | ---------------------------------------- | ------ |
-| `gameEffect: triggerRoutFromRetreat` (if no legal retreats) | ❌ `applyTriggerRoutFromRetreatEvent` | ✅ `generateTriggerRoutFromRetreatEvent` | ⚠️ **Partial** |
+| `gameEffect: triggerRoutFromRetreat` (if no legal retreats) | ✅ `applyTriggerRoutFromRetreatEvent` | ✅ `generateTriggerRoutFromRetreatEvent` | ✅     |
 | `playerChoice: chooseRetreatOption` (if multiple options)   | ✅ `applyChooseRetreatOptionEvent`    | N/A                                      | ✅     |
-| `gameEffect: resolveRetreat` (convergence - moves unit)     | ❌ `applyResolveRetreatEvent`         | ✅ `generateResolveRetreatEvent`         | ⚠️ **Partial** |
+| `gameEffect: resolveRetreat` (convergence - moves unit)     | ✅ `applyResolveRetreatEvent`         | ✅ `generateResolveRetreatEvent`         | ✅     |
 
-**Missing:** 3 transforms
+**All engines complete for this substep.**
 
 ### Rout Substeps
 
@@ -169,12 +169,12 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 
 **Flow:** `resolveRout` → `chooseRoutDiscard` → (rout complete)
 
-| Expected Event                    | Transform                        | Procedure                     | Status         |
-| --------------------------------- | -------------------------------- | ----------------------------- | -------------- |
-| `gameEffect: resolveRout`         | ❌ `applyResolveRoutEvent`       | ✅ `generateResolveRoutEvent` | ⚠️ **Partial** |
-| `playerChoice: chooseRoutDiscard` | ✅ `applyChooseRoutDiscardEvent` | N/A                           | ✅             |
+| Expected Event                    | Transform                        | Procedure                     | Status |
+| --------------------------------- | -------------------------------- | ----------------------------- | ------ |
+| `gameEffect: resolveRout`         | ✅ `applyResolveRoutEvent`       | ✅ `generateResolveRoutEvent` | ✅     |
+| `playerChoice: chooseRoutDiscard` | ✅ `applyChooseRoutDiscardEvent` | N/A                           | ✅     |
 
-**Missing:** 1 transform
+**All engines complete for this substep.**
 
 ### Engagement Substeps
 
@@ -184,15 +184,15 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 
 | Expected Event                                      | Transform                                 | Procedure                                    | Status |
 | --------------------------------------------------- | ----------------------------------------- | -------------------------------------------- | ------ |
-| `gameEffect: startEngagement`                       | ❌ `applyStartEngagementEvent`            | ✅ `generateStartEngagementEvent`            | ⚠️ **Partial** |
-| `gameEffect: resolveFlankEngagement` (if flank)     | ❌ `applyResolveFlankEngagementEvent`     | ✅ `generateResolveFlankEngagementEvent`     | ⚠️ **Partial** |
-| `gameEffect: resolveRout` (if rear)                 | ❌ `applyResolveRoutEvent`                | ✅ `generateResolveRoutEvent`                | ⚠️ **Partial** |
+| `gameEffect: startEngagement`                       | ✅ `applyStartEngagementEvent`            | ✅ `generateStartEngagementEvent`            | ✅     |
+| `gameEffect: resolveFlankEngagement` (if flank)     | ✅ `applyResolveFlankEngagementEvent`     | ✅ `generateResolveFlankEngagementEvent`     | ✅     |
+| `gameEffect: resolveRout` (if rear)                 | ✅ `applyResolveRoutEvent`                | ✅ `generateResolveRoutEvent`                | ✅     |
 | `playerChoice: commitToMovement` (if front)         | ✅ `applyCommitToMovementEvent`           | N/A                                          | ✅     |
-| `gameEffect: resolveEngageRetreatOption` (if front) | ❌ `applyResolveEngageRetreatOptionEvent` | ✅ `generateResolveEngageRetreatOptionEvent` | ⚠️ **Partial** |
+| `gameEffect: resolveEngageRetreatOption` (if front) | ✅ `applyResolveEngageRetreatOptionEvent` | ✅ `generateResolveEngageRetreatOptionEvent` | ✅     |
 | `playerChoice: chooseWhetherToRetreat` (if front)   | ✅ `applyChooseWhetherToRetreatEvent`     | N/A                                          | ✅     |
 | `playerChoice: chooseRetreatOption` (if retreating) | ✅ `applyChooseRetreatOptionEvent`        | N/A                                          | ✅     |
 
-**Missing:** 4 transforms
+**All engines complete for this substep.**
 
 ---
 
@@ -256,31 +256,33 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 
 ### Priority 1: Phase 3 Blockers (Enable Issue Commands)
 
-1. `applyIssueCommandEvent` - Core command issuance
-2. `applyCommitToMovementEvent` - Movement commitment
-3. `applyCommitToRangedAttackEvent` - Ranged attack commitment
-4. `applyResolveRangedAttackEvent` - Ranged attack resolution (procedure ✅ complete)
-5. `applyStartEngagementEvent` - Engagement from movement
-6. `applyCompleteUnitMovementEvent` - Complete movement
-7. `applyCompleteRangedAttackCommandEvent` - Complete ranged attack
+1. ✅ `applyIssueCommandEvent` - Core command issuance
+2. ✅ `applyCommitToMovementEvent` - Movement commitment
+3. ✅ `applyCommitToRangedAttackEvent` - Ranged attack commitment
+4. ✅ `applyResolveRangedAttackEvent` - Ranged attack resolution (procedure ✅ complete)
+5. ✅ `applyStartEngagementEvent` - Engagement from movement
+6. ✅ `applyCompleteUnitMovementEvent` - Complete movement
+7. ✅ `applyCompleteRangedAttackCommandEvent` - Complete ranged attack
 
 ### Priority 2: Phase 4 Blockers (Enable Resolve Melee)
 
-1. `applyCommitToMeleeEvent` - Melee commitment
-2. `applyResolveMeleeEvent` - Melee resolution (procedure ✅ complete)
-3. `applyCompleteMeleeResolutionEvent` - Complete melee
+1. ✅ `applyCommitToMeleeEvent` - Melee commitment
+2. ✅ `applyResolveMeleeEvent` - Melee resolution (procedure ✅ complete)
+3. ✅ `applyCompleteMeleeResolutionEvent` - Complete melee
 
 ### Priority 3: Composable Substeps (Complete Combat Flow)
 
-1. `applyResolveRoutEvent` - Rout penalty
-2. `applyResolveRetreatEvent` - Retreat movement (procedure ✅ complete)
-3. `applyResolveReverseEvent` - Reverse movement
-4. `applyCompleteAttackApplyEvent` - Complete attack apply
-5. `applyTriggerRoutFromRetreatEvent` - Rout from retreat
-6. `applyChooseRetreatOptionEvent` - Retreat choice
-7. `applyResolveFlankEngagementEvent` - Flank engagement
-8. `applyResolveEngageRetreatOptionEvent` - Retreat option check
-9. `applyChooseWhetherToRetreatEvent` - Retreat decision
+1. ✅ `applyResolveRoutEvent` - Rout penalty
+2. ✅ `applyResolveRetreatEvent` - Retreat movement (procedure ✅ complete)
+3. ✅ `applyResolveReverseEvent` - Reverse movement
+4. ✅ `applyCompleteAttackApplyEvent` - Complete attack apply
+5. ✅ `applyTriggerRoutFromRetreatEvent` - Rout from retreat
+6. ✅ `applyChooseRetreatOptionEvent` - Retreat choice
+7. ✅ `applyResolveFlankEngagementEvent` - Flank engagement
+8. ✅ `applyResolveEngageRetreatOptionEvent` - Retreat option check
+9. ✅ `applyChooseWhetherToRetreatEvent` - Retreat decision
+
+**All transforms complete!**
 
 ---
 

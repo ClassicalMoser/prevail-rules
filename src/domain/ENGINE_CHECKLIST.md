@@ -36,29 +36,29 @@ This document tracks the implementation status of all four engines. Use this to 
 - [x] `completeMoveCommandersPhase` → `applyCompleteMoveCommandersPhaseEvent`
 - [x] `completePlayCardsPhase` → `applyCompletePlayCardsPhaseEvent`
 - [x] `completeResolveMeleePhase` → `applyCompleteResolveMeleePhaseEvent`
-- [ ] `completeUnitMovement` → `applyCompleteUnitMovementEvent` (not implemented)
-- [ ] `completeAttackApply` → `applyCompleteAttackApplyEvent` (not implemented)
-- [ ] `completeMeleeResolution` → `applyCompleteMeleeResolutionEvent` (not implemented)
-- [ ] `completeRangedAttackCommand` → `applyCompleteRangedAttackCommandEvent` (not implemented)
+- [x] `completeUnitMovement` → `applyCompleteUnitMovementEvent`
+- [x] `completeAttackApply` → `applyCompleteAttackApplyEvent`
+- [x] `completeMeleeResolution` → `applyCompleteMeleeResolutionEvent`
+- [x] `completeRangedAttackCommand` → `applyCompleteRangedAttackCommandEvent`
 - [x] `discardPlayedCards` → `applyDiscardPlayedCardsEvent`
-- [ ] `resolveEngageRetreatOption` → `applyResolveEngageRetreatOptionEvent` (not implemented)
-- [ ] `resolveEngagementType` → `applyResolveEngagementTypeEvent` (not implemented)
-- [ ] `resolveFlankEngagement` → `applyResolveFlankEngagementEvent` (not implemented)
+- [x] `resolveEngageRetreatOption` → `applyResolveEngageRetreatOptionEvent`
+- [x] `resolveFlankEngagement` → `applyResolveFlankEngagementEvent`
 - [x] `resolveInitiative` → `applyResolveInitiativeEvent`
-- [ ] `resolveMelee` → `applyResolveMeleeEvent` (not implemented)
+- [x] `resolveMelee` → `applyResolveMeleeEvent`
 - [x] `resolveRally` → `applyResolveRallyEvent`
-- [ ] `resolveRangedAttack` → `applyResolveRangedAttackEvent` (not implemented)
-- [ ] `resolveRetreat` → `applyResolveRetreatEvent` (not implemented)
-- [ ] `resolveReverse` → `applyResolveReverseEvent` (not implemented)
-- [ ] `resolveRout` → `applyResolveRoutEvent` (not implemented)
+- [x] `resolveRangedAttack` → `applyResolveRangedAttackEvent`
+- [x] `resolveRetreat` → `applyResolveRetreatEvent`
+- [x] `resolveReverse` → `applyResolveReverseEvent`
+- [x] `resolveRout` → `applyResolveRoutEvent`
 - [x] `resolveRoutDiscard` → `applyResolveRoutDiscardEvent`
 - [x] `resolveUnitsBroken` → `applyResolveUnitsBrokenEvent`
 - [x] `revealCards` → `applyRevealCardsEvent`
-- [ ] `startEngagement` → `applyStartEngagementEvent` (not implemented)
+- [x] `startEngagement` → `applyStartEngagementEvent`
+- [x] `triggerRoutFromRetreat` → `applyTriggerRoutFromRetreatEvent`
 
-**Progress:** 10/24 (42%)
+**Progress:** 24/24 (100%)
 
-**Overall Transform Engine Progress:** 24/38 (63%)
+**Overall Transform Engine Progress:** 38/38 (100%)
 
 ---
 
@@ -169,7 +169,7 @@ Game effects that have procedures to generate them:
 
 | Engine                            | Status         | Progress                 |
 | --------------------------------- | -------------- | ------------------------ |
-| **1. Pure Transform Engine**      | 🟡 In Progress | 24/38 events (63%)       |
+| **1. Pure Transform Engine**      | ✅ Complete    | 38/38 events (100%)      |
 | **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)         |
 | **3. Procedure Library**          | ✅ Complete    | 23/23 implemented (100%) |
 | **4. Next Event Expected Engine** | ✅ Complete    | 5/5 phases (100%)        |
@@ -179,14 +179,14 @@ Game effects that have procedures to generate them:
 ### High Priority (Blocking Core Gameplay)
 
 1. **Transform Engine:**
-   - [ ] `issueCommand` event application
-   - [ ] `commitToMelee` event application
-   - [ ] `commitToMovement` event application
-   - [ ] `commitToRangedAttack` event application
+   - [x] `issueCommand` event application ✅
+   - [x] `commitToMelee` event application ✅
+   - [x] `commitToMovement` event application ✅
+   - [x] `commitToRangedAttack` event application ✅
    - [x] `performRangedAttack` event application ✅
-   - [ ] `completeAttackApply` event application
-   - [ ] `completeMeleeResolution` event application
-   - [ ] `completeRangedAttackCommand` event application
+   - [x] `completeAttackApply` event application ✅
+   - [x] `completeMeleeResolution` event application ✅
+   - [x] `completeRangedAttackCommand` event application ✅
 
 2. **Validation Engine:**
    - [ ] `issueCommands` phase validation
@@ -200,17 +200,18 @@ Game effects that have procedures to generate them:
 4. **Transform Engine:**
    - [x] `chooseRetreatOption` event application ✅
    - [x] `chooseWhetherToRetreat` event application ✅
-   - [ ] `completeUnitMovement` event application
-   - [ ] `resolveEngageRetreatOption` event application
-   - [ ] `resolveEngagementType` event application
-   - [ ] `resolveFlankEngagement` event application
-   - [ ] `startEngagement` event application
-   - [ ] `resolveMelee` event application
-   - [ ] `resolveRangedAttack` event application
+   - [x] `completeUnitMovement` event application ✅
+   - [x] `resolveEngageRetreatOption` event application ✅
+   - [x] `resolveEngagementType` event application ✅
+   - [x] `resolveFlankEngagement` event application ✅
+   - [x] `startEngagement` event application ✅
+   - [x] `resolveMelee` event application ✅
+   - [x] `resolveRangedAttack` event application ✅
    - [x] Ranged attack expected event logic ✅ (with composable `getExpectedAttackApplyEvent`)
-   - [ ] `resolveRetreat` event application
-   - [ ] `resolveReverse` event application
-   - [ ] `resolveRout` event application
+   - [x] `resolveRetreat` event application ✅
+   - [x] `resolveReverse` event application ✅
+   - [x] `resolveRout` event application ✅
+   - [x] `triggerRoutFromRetreat` event application ✅
 
 5. **Procedure Library:**
    - [x] Implement procedures for simple completion events ✅ (completeAttackApply, completeMeleeResolution, completeRangedAttackCommand, completeUnitMovement)
