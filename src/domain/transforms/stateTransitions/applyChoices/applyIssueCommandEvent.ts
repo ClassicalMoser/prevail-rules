@@ -1,4 +1,9 @@
-import type { Board, Command, GameState, IssueCommandsPhaseState } from '@entities';
+import type {
+  Board,
+  Command,
+  GameState,
+  IssueCommandsPhaseState,
+} from '@entities';
 import type { IssueCommandEvent } from '@events';
 import { findMatchingCommand, getIssueCommandsPhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
