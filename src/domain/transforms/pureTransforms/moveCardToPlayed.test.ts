@@ -35,7 +35,10 @@ describe('moveCardToPlayed', () => {
 
     const newCardState = moveCardToPlayed(cardState, 'black');
 
-    expect(newCardState.black.played).toEqual([commandCards[0], commandCards[1]]);
+    expect(newCardState.black.played).toEqual([
+      commandCards[0],
+      commandCards[1],
+    ]);
   });
 
   it('should return unchanged state if no card in play', () => {

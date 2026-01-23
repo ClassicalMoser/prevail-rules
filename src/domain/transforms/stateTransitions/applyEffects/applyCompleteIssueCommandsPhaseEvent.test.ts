@@ -1,4 +1,8 @@
-import type { GameState, IssueCommandsPhaseState, StandardBoard } from '@entities';
+import type {
+  GameState,
+  IssueCommandsPhaseState,
+  StandardBoard,
+} from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
 import { ISSUE_COMMANDS_PHASE } from '@entities';
 import {
@@ -91,10 +95,20 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
     it('should find multiple engagements on board', () => {
       const blackUnit1 = createTestUnit('black', { attack: 3 });
       const whiteUnit1 = createTestUnit('white', { attack: 3 });
-      const state = createGameStateWithEngagedUnits(blackUnit1, whiteUnit1, 'E-5');
+      const state = createGameStateWithEngagedUnits(
+        blackUnit1,
+        whiteUnit1,
+        'E-5',
+      );
 
-      const blackUnit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
-      const whiteUnit2 = createTestUnit('white', { attack: 3, instanceNumber: 2 });
+      const blackUnit2 = createTestUnit('black', {
+        attack: 3,
+        instanceNumber: 2,
+      });
+      const whiteUnit2 = createTestUnit('white', {
+        attack: 3,
+        instanceNumber: 2,
+      });
       state.boardState.board['E-6'] = {
         ...state.boardState.board['E-6']!,
         unitPresence: {
@@ -120,7 +134,10 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
         effectType: 'completeIssueCommandsPhase',
       };
 
-      const newState = applyCompleteIssueCommandsPhaseEvent(event, stateWithPhase);
+      const newState = applyCompleteIssueCommandsPhaseEvent(
+        event,
+        stateWithPhase,
+      );
 
       const phaseState = newState.currentRoundState.currentPhaseState;
       if (!phaseState || phaseState.phase !== 'resolveMelee') {
@@ -182,9 +199,9 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
         effectType: 'completeIssueCommandsPhase',
       };
 
-      expect(() =>
-        applyCompleteIssueCommandsPhaseEvent(event, state),
-      ).toThrow('No current phase state found');
+      expect(() => applyCompleteIssueCommandsPhaseEvent(event, state)).toThrow(
+        'No current phase state found',
+      );
     });
 
     it('should throw if not in issueCommands phase', () => {

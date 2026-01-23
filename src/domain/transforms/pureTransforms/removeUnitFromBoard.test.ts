@@ -395,7 +395,11 @@ describe('removeUnitFromBoard', () => {
       (board.board[coordinate]!.unitPresence as any).presenceType = 'invalid';
 
       const unit = createTestUnit('black', { attack: 3 });
-      const unitWithPlacement = createUnitWithPlacement(unit, coordinate, 'north');
+      const unitWithPlacement = createUnitWithPlacement(
+        unit,
+        coordinate,
+        'north',
+      );
 
       expect(() => removeUnitFromBoard(board, unitWithPlacement)).toThrow(
         'Invalid unit presence',

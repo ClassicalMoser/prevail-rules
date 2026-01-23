@@ -1,6 +1,6 @@
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@entities';
 import { createEmptyGameState } from '@testing';
-import { updateCompletedPhase, updatePhaseState } from '@transforms/pureTransforms';
+import { updateCompletedPhase } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 
 describe('updateCompletedPhase', () => {
@@ -29,7 +29,9 @@ describe('updateCompletedPhase', () => {
 
     updateCompletedPhase(state, phaseState);
 
-    expect(state.currentRoundState.completedPhases).toBe(originalCompletedPhases);
+    expect(state.currentRoundState.completedPhases).toBe(
+      originalCompletedPhases,
+    );
   });
 
   it('should preserve existing completed phases', () => {
@@ -46,11 +48,11 @@ describe('updateCompletedPhase', () => {
     } as const;
     const stateWithBoth = updateCompletedPhase(stateWithFirst, secondPhase);
 
-    expect(stateWithBoth.currentRoundState.completedPhases.has(firstPhase)).toBe(
-      true,
-    );
-    expect(stateWithBoth.currentRoundState.completedPhases.has(secondPhase)).toBe(
-      true,
-    );
+    expect(
+      stateWithBoth.currentRoundState.completedPhases.has(firstPhase),
+    ).toBe(true);
+    expect(
+      stateWithBoth.currentRoundState.completedPhases.has(secondPhase),
+    ).toBe(true);
   });
 });

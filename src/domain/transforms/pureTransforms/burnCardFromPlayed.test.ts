@@ -15,7 +15,11 @@ describe('burnCardFromPlayed', () => {
       },
     };
 
-    const newCardState = burnCardFromPlayed(cardState, 'black', commandCards[0]);
+    const newCardState = burnCardFromPlayed(
+      cardState,
+      'black',
+      commandCards[0],
+    );
 
     expect(newCardState.black.played).toEqual([commandCards[1]]);
     expect(newCardState.black.burnt).toEqual([commandCards[0]]);
@@ -68,8 +72,15 @@ describe('burnCardFromPlayed', () => {
       },
     };
 
-    const newCardState = burnCardFromPlayed(cardState, 'black', commandCards[0]);
+    const newCardState = burnCardFromPlayed(
+      cardState,
+      'black',
+      commandCards[0],
+    );
 
-    expect(newCardState.black.burnt).toEqual([commandCards[2], commandCards[0]]);
+    expect(newCardState.black.burnt).toEqual([
+      commandCards[2],
+      commandCards[0],
+    ]);
   });
 });

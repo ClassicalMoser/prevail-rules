@@ -16,7 +16,8 @@ export function findMatchingCommand(
       c.type === targetCommand.type &&
       c.size === targetCommand.size &&
       c.number === targetCommand.number &&
-      JSON.stringify(c.restrictions) === JSON.stringify(targetCommand.restrictions) &&
+      JSON.stringify(c.restrictions) ===
+        JSON.stringify(targetCommand.restrictions) &&
       JSON.stringify(c.modifiers) === JSON.stringify(targetCommand.modifiers),
   );
 }

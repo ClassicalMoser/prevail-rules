@@ -1,5 +1,5 @@
 import type { GameState, StandardBoard } from '@entities';
-import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@entities';
+import { MOVE_COMMANDERS_PHASE } from '@entities';
 import { createEmptyGameState } from '@testing';
 import { updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
@@ -25,7 +25,10 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
 
   describe('expected events by step', () => {
     it('should return firstPlayer moveCommander when step is moveFirstCommander', () => {
-      const state = createGameStateInMoveCommandersStep('moveFirstCommander', 'black');
+      const state = createGameStateInMoveCommandersStep(
+        'moveFirstCommander',
+        'black',
+      );
 
       const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
 
@@ -37,7 +40,10 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
     });
 
     it('should return secondPlayer moveCommander when step is moveSecondCommander', () => {
-      const state = createGameStateInMoveCommandersStep('moveSecondCommander', 'black');
+      const state = createGameStateInMoveCommandersStep(
+        'moveSecondCommander',
+        'black',
+      );
 
       const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
 
