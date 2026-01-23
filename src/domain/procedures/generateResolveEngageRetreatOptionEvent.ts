@@ -10,7 +10,12 @@ import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
 } from '@events';
-import { getBoardSpace, getCurrentUnitStat } from '@queries';
+import {
+  getBoardSpace,
+  getCurrentUnitStat,
+  getFrontEngagementStateFromMovement,
+  getMovementResolutionState,
+} from '@queries';
 
 /**
  * Generates a ResolveEngageRetreatOptionEvent by determining if the defending unit
@@ -24,41 +29,8 @@ import { getBoardSpace, getCurrentUnitStat } from '@queries';
 export function generateResolveEngageRetreatOptionEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): ResolveEngageRetreatOptionEvent<TBoard, 'resolveEngageRetreatOption'> {
-  const phaseState = state.currentRoundState.currentPhaseState;
-
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (phaseState.phase !== 'issueCommands') {
-    throw new Error('Current phase is not issueCommands');
-  }
-
-  if (!phaseState.currentCommandResolutionState) {
-    throw new Error('No current command resolution state');
-  }
-
-  if (
-    phaseState.currentCommandResolutionState.commandResolutionType !==
-    'movement'
-  ) {
-    throw new Error('Current command resolution is not a movement');
-  }
-
-  const movementResolutionState = phaseState.currentCommandResolutionState;
-  const engagementState = movementResolutionState.engagementState;
-
-  if (!engagementState) {
-    throw new Error('No engagement state found');
-  }
-
-  if (!engagementState.engagementResolutionState) {
-    throw new Error('No engagement resolution state found');
-  }
-
-  if (engagementState.engagementResolutionState.engagementType !== 'front') {
-    throw new Error('Engagement type is not front');
-  }
+  const movementResolutionState = getMovementResolutionState(state);
+  const engagementState = getFrontEngagementStateFromMovement(state);
 
   // Get the defending unit from the board
   const board = state.boardState;

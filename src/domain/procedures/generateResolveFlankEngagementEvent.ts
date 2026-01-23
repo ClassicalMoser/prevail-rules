@@ -5,7 +5,11 @@ import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
 } from '@events';
-import { getBoardSpace, getOppositeFacing } from '@queries';
+import {
+  getBoardSpace,
+  getFlankEngagementStateFromMovement,
+  getOppositeFacing,
+} from '@queries';
 
 /**
  * Generates a ResolveFlankEngagementEvent by calculating the new facing
@@ -20,41 +24,7 @@ import { getBoardSpace, getOppositeFacing } from '@queries';
 export function generateResolveFlankEngagementEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): ResolveFlankEngagementEvent<TBoard, 'resolveFlankEngagement'> {
-  const phaseState = state.currentRoundState.currentPhaseState;
-
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (phaseState.phase !== 'issueCommands') {
-    throw new Error('Current phase is not issueCommands');
-  }
-
-  if (!phaseState.currentCommandResolutionState) {
-    throw new Error('No current command resolution state');
-  }
-
-  if (
-    phaseState.currentCommandResolutionState.commandResolutionType !==
-    'movement'
-  ) {
-    throw new Error('Current command resolution is not a movement');
-  }
-
-  const movementResolutionState = phaseState.currentCommandResolutionState;
-  const engagementState = movementResolutionState.engagementState;
-
-  if (!engagementState) {
-    throw new Error('No engagement state found');
-  }
-
-  if (!engagementState.engagementResolutionState) {
-    throw new Error('No engagement resolution state found');
-  }
-
-  if (engagementState.engagementResolutionState.engagementType !== 'flank') {
-    throw new Error('Engagement type is not flank');
-  }
+  const engagementState = getFlankEngagementStateFromMovement(state);
 
   // Get the defending unit from the board
   const board = state.boardState;

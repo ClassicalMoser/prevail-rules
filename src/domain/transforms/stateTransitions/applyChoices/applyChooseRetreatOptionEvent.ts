@@ -8,12 +8,14 @@ import type {
 } from '@entities';
 import type { ChooseRetreatOptionEvent } from '@events';
 import {
+  getCurrentPhaseState,
   getIssueCommandsPhaseState,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
   getRetreatStateFromRangedAttack,
 } from '@queries';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseRetreatOptionEvent to the game state.
@@ -31,16 +33,13 @@ export function applyChooseRetreatOptionEvent<TBoard extends Board>(
   event: ChooseRetreatOptionEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
-
   const player = event.player;
   const chosenRetreatOption = event.retreatOption;
+  const currentPhase = getCurrentPhaseState(state);
 
   // Handle ranged attack resolution (in issueCommands phase)
-  if (phaseState.phase === 'issueCommands') {
+  if (currentPhase.phase === 'issueCommands') {
+    const phaseState = getIssueCommandsPhaseState(state);
     const rangedAttackState = getRangedAttackResolutionState(state);
     const retreatState = getRetreatStateFromRangedAttack(state);
 
@@ -63,23 +62,17 @@ export function applyChooseRetreatOptionEvent<TBoard extends Board>(
     };
 
     // Update phase state
-    const phaseState = getIssueCommandsPhaseState(state);
     const newPhaseState: IssueCommandsPhaseState<TBoard> = {
       ...phaseState,
       currentCommandResolutionState: newRangedAttackState,
     };
 
-    return {
-      ...state,
-      currentRoundState: {
-        ...state.currentRoundState,
-        currentPhaseState: newPhaseState,
-      },
-    };
+    return updatePhaseState(state, newPhaseState);
   }
 
   // Handle melee resolution (in resolveMelee phase)
-  if (phaseState.phase === 'resolveMelee') {
+  if (currentPhase.phase === 'resolveMelee') {
+    const phaseState = getResolveMeleePhaseState(state);
     const meleeState = getMeleeResolutionState(state);
     const firstPlayer = state.currentInitiative;
 
@@ -122,19 +115,12 @@ export function applyChooseRetreatOptionEvent<TBoard extends Board>(
       };
 
       // Update phase state
-      const phaseState = getResolveMeleePhaseState(state);
       const newPhaseState: ResolveMeleePhaseState<TBoard> = {
         ...phaseState,
         currentMeleeResolutionState: newMeleeState,
       };
 
-      return {
-        ...state,
-        currentRoundState: {
-          ...state.currentRoundState,
-          currentPhaseState: newPhaseState,
-        },
-      };
+      return updatePhaseState(state, newPhaseState);
     }
 
     // Check second player's attack apply state
@@ -166,25 +152,18 @@ export function applyChooseRetreatOptionEvent<TBoard extends Board>(
       };
 
       // Update phase state
-      const phaseState = getResolveMeleePhaseState(state);
       const newPhaseState: ResolveMeleePhaseState<TBoard> = {
         ...phaseState,
         currentMeleeResolutionState: newMeleeState,
       };
 
-      return {
-        ...state,
-        currentRoundState: {
-          ...state.currentRoundState,
-          currentPhaseState: newPhaseState,
-        },
-      };
+      return updatePhaseState(state, newPhaseState);
     }
 
     throw new Error('No retreat state found for player in melee resolution');
   }
 
   throw new Error(
-    `Retreat option choice not expected in phase: ${phaseState.phase}`,
+    `Retreat option choice not expected in phase: ${currentPhase.phase}`,
   );
 }

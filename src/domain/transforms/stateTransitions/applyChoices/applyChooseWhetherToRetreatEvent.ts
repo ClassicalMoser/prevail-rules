@@ -5,6 +5,7 @@ import {
   getIssueCommandsPhaseState,
   getMovementResolutionState,
 } from '@queries';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseWhetherToRetreatEvent to the game state.
@@ -52,11 +53,5 @@ export function applyChooseWhetherToRetreatEvent<TBoard extends Board>(
     currentCommandResolutionState: newMovementState,
   };
 
-  return {
-    ...state,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  return updatePhaseState(state, newPhaseState);
 }

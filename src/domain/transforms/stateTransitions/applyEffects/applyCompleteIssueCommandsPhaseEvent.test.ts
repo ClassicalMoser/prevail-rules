@@ -5,11 +5,7 @@ import type {
 } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
 import { ISSUE_COMMANDS_PHASE } from '@entities';
-import {
-  createEmptyGameState,
-  createGameStateWithEngagedUnits,
-  createTestUnit,
-} from '@testing';
+import { createGameStateWithEngagedUnits, createTestUnit } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyCompleteIssueCommandsPhaseEvent } from './applyCompleteIssueCommandsPhaseEvent';
@@ -192,35 +188,6 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
   });
 
   describe('error cases', () => {
-    it('should throw if no current phase state', () => {
-      const state = createEmptyGameState();
-      const event: CompleteIssueCommandsPhaseEvent<StandardBoard> = {
-        eventType: 'gameEffect',
-        effectType: 'completeIssueCommandsPhase',
-      };
-
-      expect(() => applyCompleteIssueCommandsPhaseEvent(event, state)).toThrow(
-        'No current phase state found',
-      );
-    });
-
-    it('should throw if not in issueCommands phase', () => {
-      const state = createGameStateInCompleteStep();
-      const stateWithWrongPhase = updatePhaseState(state, {
-        phase: 'moveCommanders',
-        step: 'complete',
-      });
-
-      const event: CompleteIssueCommandsPhaseEvent<StandardBoard> = {
-        eventType: 'gameEffect',
-        effectType: 'completeIssueCommandsPhase',
-      };
-
-      expect(() =>
-        applyCompleteIssueCommandsPhaseEvent(event, stateWithWrongPhase),
-      ).toThrow('Current phase is not issueCommands');
-    });
-
     it('should throw if not on complete step', () => {
       const state = createGameStateInCompleteStep();
       const initialPhaseState: IssueCommandsPhaseState<StandardBoard> = {

@@ -4,6 +4,7 @@ import { hasSingleUnit } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from '@events';
 import {
   getBoardSpace,
+  getMovementResolutionState,
   isEngagementFromFlank,
   isEngagementFromFront,
   isEngagementFromRear,
@@ -22,28 +23,7 @@ import {
 export function generateStartEngagementEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): StartEngagementEvent<TBoard, 'startEngagement'> {
-  const phaseState = state.currentRoundState.currentPhaseState;
-
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (phaseState.phase !== 'issueCommands') {
-    throw new Error('Current phase is not issueCommands');
-  }
-
-  if (!phaseState.currentCommandResolutionState) {
-    throw new Error('No current command resolution state');
-  }
-
-  if (
-    phaseState.currentCommandResolutionState.commandResolutionType !==
-    'movement'
-  ) {
-    throw new Error('Current command resolution is not a movement');
-  }
-
-  const movementResolutionState = phaseState.currentCommandResolutionState;
+  const movementResolutionState = getMovementResolutionState(state);
 
   // Get the engaging unit's facing from its target placement
   const engagingFacing = movementResolutionState.targetPlacement.facing;

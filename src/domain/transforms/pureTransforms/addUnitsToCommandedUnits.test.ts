@@ -26,9 +26,9 @@ describe('addUnitsToCommandedUnits', () => {
 
   it('should add to existing commandedUnits', () => {
     const state = createEmptyGameState();
-    const unit1 = createTestUnit('black', { attack: 3 });
-    const unit2 = createTestUnit('white', { attack: 4 });
-    const unit3 = createTestUnit('black', { attack: 5 });
+    const unit1 = createTestUnit('black', { attack: 2 });
+    const unit2 = createTestUnit('white', { attack: 3 });
+    const unit3 = createTestUnit('black', { attack: 4 });
 
     const stateWithUnit1 = addUnitsToCommandedUnits(state, new Set([unit1]));
     const newState = addUnitsToCommandedUnits(

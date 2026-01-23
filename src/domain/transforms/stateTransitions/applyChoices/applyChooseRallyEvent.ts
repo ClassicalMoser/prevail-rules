@@ -1,6 +1,7 @@
 import type { Board, CleanupPhaseState, GameState } from '@entities';
 import type { ChooseRallyEvent } from '@events';
 import { getCleanupPhaseState, getOtherPlayer } from '@queries';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseRallyEvent to the game state.
@@ -95,11 +96,5 @@ export function applyChooseRallyEvent<TBoard extends Board>(
     );
   }
 
-  return {
-    ...state,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  return updatePhaseState(state, newPhaseState);
 }

@@ -9,7 +9,11 @@ import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
 } from '@events';
-import { applyAttackValue, getCurrentUnitStat } from '@queries';
+import {
+  applyAttackValue,
+  getCurrentUnitStat,
+  getRangedAttackResolutionState,
+} from '@queries';
 
 /**
  * Generates a ResolveRangedAttackEvent by calculating the attack value
@@ -28,28 +32,7 @@ import { applyAttackValue, getCurrentUnitStat } from '@queries';
 export function generateResolveRangedAttackEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): ResolveRangedAttackEvent<TBoard, 'resolveRangedAttack'> {
-  const phaseState = state.currentRoundState.currentPhaseState;
-
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (phaseState.phase !== 'issueCommands') {
-    throw new Error('Current phase is not issueCommands');
-  }
-
-  if (!phaseState.currentCommandResolutionState) {
-    throw new Error('No current command resolution state');
-  }
-
-  if (
-    phaseState.currentCommandResolutionState.commandResolutionType !==
-    'rangedAttack'
-  ) {
-    throw new Error('Current command resolution is not a ranged attack');
-  }
-
-  const rangedAttackState = phaseState.currentCommandResolutionState;
+  const rangedAttackState = getRangedAttackResolutionState(state);
 
   // Both commitments must be resolved before calculating attack
   if (rangedAttackState.attackingCommitment.commitmentType === 'pending') {
