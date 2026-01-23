@@ -16,18 +16,18 @@ This document tracks the implementation status of all four engines. Use this to 
 - [x] `chooseMeleeResolution` → `applyChooseMeleeEvent`
 - [x] `chooseRally` → `applyChooseRallyEvent`
 - [x] `chooseRoutDiscard` → `applyChooseRoutDiscardEvent`
-- [ ] `chooseRetreatOption` → `applyChooseRetreatOptionEvent` (not implemented)
-- [ ] `chooseWhetherToRetreat` → `applyChooseWhetherToRetreatEvent` (not implemented)
-- [ ] `commitToMelee` → `applyCommitToMeleeEvent` (not implemented)
-- [ ] `commitToMovement` → `applyCommitToMovementEvent` (not implemented)
-- [ ] `commitToRangedAttack` → `applyCommitToRangedAttackEvent` (not implemented)
-- [ ] `issueCommand` → `applyIssueCommandEvent` (not implemented)
+- [x] `chooseRetreatOption` → `applyChooseRetreatOptionEvent`
+- [x] `chooseWhetherToRetreat` → `applyChooseWhetherToRetreatEvent`
+- [x] `commitToMelee` → `applyCommitToMeleeEvent`
+- [x] `commitToMovement` → `applyCommitToMovementEvent`
+- [x] `commitToRangedAttack` → `applyCommitToRangedAttackEvent`
+- [x] `issueCommand` → `applyIssueCommandEvent`
 - [x] `moveCommander` → `applyMoveCommanderEvent`
 - [x] `moveUnit` → `applyMoveUnitEvent`
 - [x] `performRangedAttack` → `applyPerformRangedAttackEvent`
 - [x] `setupUnits` → `applySetupUnitsEvent`
 
-**Progress:** 8/14 (57%)
+**Progress:** 14/14 (100%)
 
 ### Game Effect Events (24 total)
 
@@ -58,7 +58,7 @@ This document tracks the implementation status of all four engines. Use this to 
 
 **Progress:** 10/24 (42%)
 
-**Overall Transform Engine Progress:** 18/38 (47%)
+**Overall Transform Engine Progress:** 24/38 (63%)
 
 ---
 
@@ -169,7 +169,7 @@ Game effects that have procedures to generate them:
 
 | Engine                            | Status         | Progress                 |
 | --------------------------------- | -------------- | ------------------------ |
-| **1. Pure Transform Engine**      | 🟡 In Progress | 18/38 events (47%)       |
+| **1. Pure Transform Engine**      | 🟡 In Progress | 24/38 events (63%)       |
 | **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)         |
 | **3. Procedure Library**          | ✅ Complete    | 23/23 implemented (100%) |
 | **4. Next Event Expected Engine** | ✅ Complete    | 5/5 phases (100%)        |
@@ -198,8 +198,8 @@ Game effects that have procedures to generate them:
 ### Medium Priority (Combat Resolution)
 
 4. **Transform Engine:**
-   - [ ] `chooseRetreatOption` event application
-   - [ ] `chooseWhetherToRetreat` event application
+   - [x] `chooseRetreatOption` event application ✅
+   - [x] `chooseWhetherToRetreat` event application ✅
    - [ ] `completeUnitMovement` event application
    - [ ] `resolveEngageRetreatOption` event application
    - [ ] `resolveEngagementType` event application

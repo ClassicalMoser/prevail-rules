@@ -15,7 +15,7 @@ This document combines flow analysis, round analysis, and implementation checkli
 
 | Engine                            | Status         | Progress                 |
 | --------------------------------- | -------------- | ------------------------ |
-| **1. Pure Transform Engine**      | 🟡 In Progress | 18/38 events (47%)       |
+| **1. Pure Transform Engine**      | 🟡 In Progress | 24/38 events (63%)       |
 | **2. Validation Engine**          | 🟡 In Progress | 3/5 phases (60%)         |
 | **3. Procedure Library**          | ✅ Complete    | 23/23 implemented (100%) |
 | **4. Next Event Expected Engine** | ✅ Complete    | 5/5 phases (100%)        |
@@ -59,9 +59,9 @@ This document combines flow analysis, round analysis, and implementation checkli
 
 ### Step 1 & 3: Issue Commands
 
-| Expected Event               | Transform                   | Procedure | Status         |
-| ---------------------------- | --------------------------- | --------- | -------------- |
-| `playerChoice: issueCommand` | ❌ `applyIssueCommandEvent` | N/A       | ❌ **BLOCKER** |
+| Expected Event               | Transform                   | Procedure | Status |
+| ---------------------------- | --------------------------- | --------- | ------ |
+| `playerChoice: issueCommand` | ✅ `applyIssueCommandEvent` | N/A       | ✅     |
 
 ### Step 2 & 4: Resolve Commands
 
@@ -78,9 +78,9 @@ This document combines flow analysis, round analysis, and implementation checkli
 
 #### Ranged Attack Resolution Flow
 
-| Expected Event                                  | Transform                                  | Procedure                                     | Status         |
-| ----------------------------------------------- | ------------------------------------------ | --------------------------------------------- | -------------- |
-| `playerChoice: commitToRangedAttack`            | ❌ `applyCommitToRangedAttackEvent`        | N/A                                           | ❌ **BLOCKER** |
+| Expected Event                                  | Transform                                  | Procedure                                     | Status |
+| ----------------------------------------------- | ------------------------------------------ | --------------------------------------------- | ------ |
+| `playerChoice: commitToRangedAttack`            | ✅ `applyCommitToRangedAttackEvent`        | N/A                                           | ✅     |
 | `gameEffect: resolveRangedAttack`               | ❌ `applyResolveRangedAttackEvent`         | ✅ `generateResolveRangedAttackEvent`         | ⚠️ **Partial** |
 | Attack apply substeps (see composable substeps) | See below                                  | See below                                     | See below      |
 | `gameEffect: completeRangedAttackCommand`       | ❌ `applyCompleteRangedAttackCommandEvent` | ✅ `generateCompleteRangedAttackCommandEvent` | ⚠️ **Partial** |
@@ -91,7 +91,7 @@ This document combines flow analysis, round analysis, and implementation checkli
 | ---------------------------------------- | ----------------------------------------- | -------------------------------------------- | ------ |
 | `gameEffect: completeIssueCommandsPhase` | ✅ `applyCompleteIssueCommandsPhaseEvent` | ✅ `generateCompleteIssueCommandsPhaseEvent` | ✅     |
 
-**Missing:** 7 transforms (3 critical blockers)
+**Missing:** 4 transforms
 
 ---
 
@@ -109,7 +109,7 @@ This document combines flow analysis, round analysis, and implementation checkli
 | `gameEffect: completeMeleeResolution`           | ❌ `applyCompleteMeleeResolutionEvent`   | ✅ `generateCompleteMeleeResolutionEvent`   | ⚠️ **Partial** |
 | `gameEffect: completeResolveMeleePhase`         | ✅ `applyCompleteResolveMeleePhaseEvent` | ✅ `generateCompleteResolveMeleePhaseEvent` | ✅             |
 
-**Missing:** 3 transforms (2 critical blockers)
+**Missing:** 1 transform
 
 ---
 
@@ -155,10 +155,10 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 
 **Flow:** `triggerRoutFromRetreat` OR `chooseRetreatOption` → `resolveRetreat` (moves unit) → (retreat complete)
 
-| Expected Event                                              | Transform                             | Procedure                                | Status         |
-| ----------------------------------------------------------- | ------------------------------------- | ---------------------------------------- | -------------- |
+| Expected Event                                              | Transform                             | Procedure                                | Status |
+| ----------------------------------------------------------- | ------------------------------------- | ---------------------------------------- | ------ |
 | `gameEffect: triggerRoutFromRetreat` (if no legal retreats) | ❌ `applyTriggerRoutFromRetreatEvent` | ✅ `generateTriggerRoutFromRetreatEvent` | ⚠️ **Partial** |
-| `playerChoice: chooseRetreatOption` (if multiple options)   | ❌ `applyChooseRetreatOptionEvent`    | N/A                                      | ❌ **BLOCKER** |
+| `playerChoice: chooseRetreatOption` (if multiple options)   | ✅ `applyChooseRetreatOptionEvent`    | N/A                                      | ✅     |
 | `gameEffect: resolveRetreat` (convergence - moves unit)     | ❌ `applyResolveRetreatEvent`         | ✅ `generateResolveRetreatEvent`         | ⚠️ **Partial** |
 
 **Missing:** 3 transforms
@@ -182,17 +182,17 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 
 **Flow:** `startEngagement` → (flank/front/rear resolution) → (engagement complete)
 
-| Expected Event                                      | Transform                                 | Procedure                                    | Status         |
-| --------------------------------------------------- | ----------------------------------------- | -------------------------------------------- | -------------- |
+| Expected Event                                      | Transform                                 | Procedure                                    | Status |
+| --------------------------------------------------- | ----------------------------------------- | -------------------------------------------- | ------ |
 | `gameEffect: startEngagement`                       | ❌ `applyStartEngagementEvent`            | ✅ `generateStartEngagementEvent`            | ⚠️ **Partial** |
 | `gameEffect: resolveFlankEngagement` (if flank)     | ❌ `applyResolveFlankEngagementEvent`     | ✅ `generateResolveFlankEngagementEvent`     | ⚠️ **Partial** |
 | `gameEffect: resolveRout` (if rear)                 | ❌ `applyResolveRoutEvent`                | ✅ `generateResolveRoutEvent`                | ⚠️ **Partial** |
-| `playerChoice: commitToMovement` (if front)         | ❌ `applyCommitToMovementEvent`           | N/A                                          | ❌ **BLOCKER** |
+| `playerChoice: commitToMovement` (if front)         | ✅ `applyCommitToMovementEvent`           | N/A                                          | ✅     |
 | `gameEffect: resolveEngageRetreatOption` (if front) | ❌ `applyResolveEngageRetreatOptionEvent` | ✅ `generateResolveEngageRetreatOptionEvent` | ⚠️ **Partial** |
-| `playerChoice: chooseWhetherToRetreat` (if front)   | ❌ `applyChooseWhetherToRetreatEvent`     | N/A                                          | ❌ **BLOCKER** |
-| `playerChoice: chooseRetreatOption` (if retreating) | ❌ `applyChooseRetreatOptionEvent`        | N/A                                          | ❌ **BLOCKER** |
+| `playerChoice: chooseWhetherToRetreat` (if front)   | ✅ `applyChooseWhetherToRetreatEvent`     | N/A                                          | ✅     |
+| `playerChoice: chooseRetreatOption` (if retreating) | ✅ `applyChooseRetreatOptionEvent`        | N/A                                          | ✅     |
 
-**Missing:** 7 transforms (3 critical blockers)
+**Missing:** 4 transforms
 
 ---
 
@@ -228,15 +228,15 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 **Retreat**
 
 - ❌ `applyTriggerRoutFromRetreatEvent` - Trigger rout when no legal retreats
-- ❌ `applyChooseRetreatOptionEvent` - Choose retreat destination
+- ✅ `applyChooseRetreatOptionEvent` - Choose retreat destination
 
 **Engagement**
 
 - ❌ `applyResolveFlankEngagementEvent` - Rotate defender for flank
 - ❌ `applyResolveEngageRetreatOptionEvent` - Determine if retreat possible
-- ❌ `applyChooseWhetherToRetreatEvent` - Choose to retreat or not
+- ✅ `applyChooseWhetherToRetreatEvent` - Choose to retreat or not
 
-**Total Missing Transforms:** 20
+**Total Missing Transforms:** 14
 
 ### Procedure Library - Missing Procedures
 
