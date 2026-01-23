@@ -5,6 +5,7 @@ import { getIssueCommandsPhaseState } from '@queries';
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState, createTestUnit } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { isSameUnitInstance } from '@validation';
 import { describe, expect, it } from 'vitest';
 import { applyIssueCommandEvent } from './applyIssueCommandEvent';
 
@@ -66,7 +67,11 @@ describe('applyIssueCommandEvent', () => {
       }
 
       expect(phaseState.remainingCommandsFirstPlayer.has(command)).toBe(false);
-      expect(newState.currentRoundState.commandedUnits.has(unit)).toBe(true);
+      // Check unit presence using value equality, not reference equality
+      const unitInCommandedUnits = Array.from(
+        newState.currentRoundState.commandedUnits,
+      ).some((u) => isSameUnitInstance(u, unit).result);
+      expect(unitInCommandedUnits).toBe(true);
     });
 
     it('should work for second player', () => {
@@ -90,7 +95,11 @@ describe('applyIssueCommandEvent', () => {
       }
 
       expect(phaseState.remainingCommandsSecondPlayer.has(command)).toBe(false);
-      expect(newState.currentRoundState.commandedUnits.has(unit)).toBe(true);
+      // Check unit presence using value equality, not reference equality
+      const unitInCommandedUnits = Array.from(
+        newState.currentRoundState.commandedUnits,
+      ).some((u) => isSameUnitInstance(u, unit).result);
+      expect(unitInCommandedUnits).toBe(true);
     });
 
     it('should add multiple units to commandedUnits', () => {
@@ -109,8 +118,15 @@ describe('applyIssueCommandEvent', () => {
 
       const newState = applyIssueCommandEvent(event, state);
 
-      expect(newState.currentRoundState.commandedUnits.has(unit1)).toBe(true);
-      expect(newState.currentRoundState.commandedUnits.has(unit2)).toBe(true);
+      // Check unit presence using value equality, not reference equality
+      const unit1InCommandedUnits = Array.from(
+        newState.currentRoundState.commandedUnits,
+      ).some((u) => isSameUnitInstance(u, unit1).result);
+      const unit2InCommandedUnits = Array.from(
+        newState.currentRoundState.commandedUnits,
+      ).some((u) => isSameUnitInstance(u, unit2).result);
+      expect(unit1InCommandedUnits).toBe(true);
+      expect(unit2InCommandedUnits).toBe(true);
       expect(newState.currentRoundState.commandedUnits.size).toBe(2);
     });
   });

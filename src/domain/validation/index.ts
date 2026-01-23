@@ -1,3 +1,4 @@
+export * from './commandEquivalence';
 export * from './diagonalIsClear';
 export * from './gameState';
 export * from './isAtPlacement';
