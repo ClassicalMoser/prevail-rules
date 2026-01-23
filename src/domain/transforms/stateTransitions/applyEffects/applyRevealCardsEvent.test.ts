@@ -3,7 +3,7 @@ import type { RevealCardsEvent } from '@events';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@entities';
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
-import { withCardState, withPhaseState } from '@transforms/pureTransforms';
+import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyRevealCardsEvent } from './applyRevealCardsEvent';
 
@@ -15,7 +15,7 @@ describe('applyRevealCardsEvent', () => {
   function createGameStateInRevealCardsStep(): GameState<StandardBoard> {
     const state = createEmptyGameState();
 
-    const stateWithCards = withCardState(state, (current) => ({
+    const stateWithCards = updateCardState(state, (current) => ({
       ...current,
       black: {
         ...current.black,
@@ -29,7 +29,7 @@ describe('applyRevealCardsEvent', () => {
       },
     }));
 
-    const stateWithPhase = withPhaseState(stateWithCards, {
+    const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
     });
@@ -91,7 +91,7 @@ describe('applyRevealCardsEvent', () => {
 
     it('should throw if not in playCards phase', () => {
       const state = createEmptyGameState();
-      const stateWithWrongPhase = withPhaseState(state, {
+      const stateWithWrongPhase = updatePhaseState(state, {
         phase: MOVE_COMMANDERS_PHASE,
         step: 'moveFirstCommander',
       });
@@ -108,7 +108,7 @@ describe('applyRevealCardsEvent', () => {
 
     it('should throw if not on revealCards step', () => {
       const state = createEmptyGameState();
-      const stateWithWrongStep = withPhaseState(state, {
+      const stateWithWrongStep = updatePhaseState(state, {
         phase: PLAY_CARDS_PHASE,
         step: 'chooseCards', // Wrong step
       });
@@ -125,7 +125,7 @@ describe('applyRevealCardsEvent', () => {
 
     it('should throw if white player has no awaiting card', () => {
       const state = createEmptyGameState();
-      const stateWithCards = withCardState(state, (current) => ({
+      const stateWithCards = updateCardState(state, (current) => ({
         ...current,
         black: {
           ...current.black,
@@ -136,7 +136,7 @@ describe('applyRevealCardsEvent', () => {
           awaitingPlay: null, // No awaiting card
         },
       }));
-      const stateWithPhase = withPhaseState(stateWithCards, {
+      const stateWithPhase = updatePhaseState(stateWithCards, {
         phase: PLAY_CARDS_PHASE,
         step: 'revealCards',
       });
@@ -153,7 +153,7 @@ describe('applyRevealCardsEvent', () => {
 
     it('should throw if black player has no awaiting card', () => {
       const state = createEmptyGameState();
-      const stateWithCards = withCardState(state, (current) => ({
+      const stateWithCards = updateCardState(state, (current) => ({
         ...current,
         black: {
           ...current.black,
@@ -164,7 +164,7 @@ describe('applyRevealCardsEvent', () => {
           awaitingPlay: commandCards[0],
         },
       }));
-      const stateWithPhase = withPhaseState(stateWithCards, {
+      const stateWithPhase = updatePhaseState(stateWithCards, {
         phase: PLAY_CARDS_PHASE,
         step: 'revealCards',
       });

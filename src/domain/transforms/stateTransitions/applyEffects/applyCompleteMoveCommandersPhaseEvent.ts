@@ -1,7 +1,8 @@
 import type { Board, GameState, IssueCommandsPhaseState } from '@entities';
 import type { CompleteMoveCommandersPhaseEvent } from '@events';
 import { ISSUE_COMMANDS_PHASE } from '@entities';
-import { getOtherPlayer } from '@queries';
+import { getMoveCommandersPhaseState, getOtherPlayer } from '@queries';
+import { updateCompletedPhase, updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteMoveCommandersPhaseEvent to the game state.
@@ -16,23 +17,14 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
   event: CompleteMoveCommandersPhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
-
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'moveCommanders') {
-    throw new Error('Current phase is not moveCommanders');
-  }
+  const currentPhaseState = getMoveCommandersPhaseState(state);
 
   if (currentPhaseState.step !== 'complete') {
     throw new Error('Move commanders phase is not on complete step');
   }
 
   // Add the completed phase to the set of completed phases
-  const newCompletedPhases = new Set(state.currentRoundState.completedPhases);
-  newCompletedPhases.add(currentPhaseState);
+  const stateWithCompletedPhase = updateCompletedPhase(state, currentPhaseState);
 
   // Determine first and second player based on initiative
   const firstPlayer = state.currentInitiative;
@@ -60,12 +52,7 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
     currentCommandResolutionState: undefined,
   };
 
-  return {
-    ...state,
-    currentRoundState: {
-      ...state.currentRoundState,
-      completedPhases: newCompletedPhases,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  const stateWithPhase = updatePhaseState(stateWithCompletedPhase, newPhaseState);
+
+  return stateWithPhase;
 }

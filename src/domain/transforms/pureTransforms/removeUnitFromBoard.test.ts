@@ -378,5 +378,28 @@ describe('removeUnitFromBoard', () => {
         'Unit mismatch',
       );
     });
+
+    it('should throw error for invalid unit presence type', () => {
+      const board = createEmptyStandardBoard();
+      // Create an invalid unit presence that passes the 'none' and 'single' checks
+      // but fails the 'engaged' check - this is a TypeScript exhaustiveness guard
+      board.board[coordinate] = {
+        ...board.board[coordinate]!,
+        unitPresence: {
+          presenceType: 'single',
+          unit: createTestUnit('black', { attack: 3 }),
+          facing: 'north',
+        } as any,
+      };
+      // Override to invalid type after creation
+      (board.board[coordinate]!.unitPresence as any).presenceType = 'invalid';
+
+      const unit = createTestUnit('black', { attack: 3 });
+      const unitWithPlacement = createUnitWithPlacement(unit, coordinate, 'north');
+
+      expect(() => removeUnitFromBoard(board, unitWithPlacement)).toThrow(
+        'Invalid unit presence',
+      );
+    });
   });
 });

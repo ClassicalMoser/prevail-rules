@@ -3,7 +3,7 @@ import type { ResolveInitiativeEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@entities';
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
-import { withCardState, withPhaseState } from '@transforms/pureTransforms';
+import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyResolveInitiativeEvent } from './applyResolveInitiativeEvent';
 
@@ -15,7 +15,7 @@ describe('applyResolveInitiativeEvent', () => {
   function createGameStateInAssignInitiativeStep(): GameState<StandardBoard> {
     const state = createEmptyGameState();
 
-    const stateWithCards = withCardState(state, (current) => ({
+    const stateWithCards = updateCardState(state, (current) => ({
       ...current,
       black: {
         ...current.black,
@@ -29,7 +29,7 @@ describe('applyResolveInitiativeEvent', () => {
       },
     }));
 
-    const stateWithPhase = withPhaseState(stateWithCards, {
+    const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
       step: 'assignInitiative',
     });
@@ -109,6 +109,26 @@ describe('applyResolveInitiativeEvent', () => {
       expect(state.currentRoundState.currentPhaseState?.step).toBe(
         originalStep,
       );
+    });
+  });
+
+  describe('error cases', () => {
+    it('should throw if not on assignInitiative step', () => {
+      const state = createGameStateInAssignInitiativeStep();
+      const stateWithWrongStep = updatePhaseState(state, {
+        phase: PLAY_CARDS_PHASE,
+        step: 'chooseCards',
+      });
+
+      const event: ResolveInitiativeEvent<StandardBoard> = {
+        eventType: 'gameEffect',
+        effectType: 'resolveInitiative',
+        player: 'black',
+      };
+
+      expect(() =>
+        applyResolveInitiativeEvent(event, stateWithWrongStep),
+      ).toThrow('Play cards phase is not on assignInitiative step');
     });
   });
 });

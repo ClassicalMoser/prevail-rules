@@ -2,7 +2,7 @@ import type { GameState, StandardBoard } from '@entities';
 import { PLAY_CARDS_PHASE } from '@entities';
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
-import { withCardState, withPhaseState } from '@transforms';
+import { updateCardState, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent';
 
@@ -18,7 +18,7 @@ describe('generateResolveInitiativeEvent', () => {
   ): GameState<StandardBoard> {
     const state = createEmptyGameState();
 
-    const stateWithCards = withCardState(state, (current) => ({
+    const stateWithCards = updateCardState(state, (current) => ({
       ...current,
       black: {
         ...current.black,
@@ -32,7 +32,7 @@ describe('generateResolveInitiativeEvent', () => {
       },
     }));
 
-    const stateWithPhase = withPhaseState(stateWithCards, {
+    const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
       step: 'assignInitiative',
     });
@@ -120,7 +120,7 @@ describe('generateResolveInitiativeEvent', () => {
   describe('error cases', () => {
     it('should throw if not on assignInitiative step', () => {
       const state = createEmptyGameState();
-      const stateWithWrongStep = withPhaseState(state, {
+      const stateWithWrongStep = updatePhaseState(state, {
         phase: PLAY_CARDS_PHASE,
         step: 'chooseCards',
       });
@@ -134,7 +134,7 @@ describe('generateResolveInitiativeEvent', () => {
       const blackCard = commandCards[0];
       const state = createEmptyGameState();
 
-      const stateWithCards = withCardState(state, (current) => ({
+      const stateWithCards = updateCardState(state, (current) => ({
         ...current,
         black: {
           ...current.black,
@@ -148,7 +148,7 @@ describe('generateResolveInitiativeEvent', () => {
         },
       }));
 
-      const stateWithPhase = withPhaseState(stateWithCards, {
+      const stateWithPhase = updatePhaseState(stateWithCards, {
         phase: PLAY_CARDS_PHASE,
         step: 'assignInitiative',
       });
@@ -162,7 +162,7 @@ describe('generateResolveInitiativeEvent', () => {
       const whiteCard = commandCards[0];
       const state = createEmptyGameState();
 
-      const stateWithCards = withCardState(state, (current) => ({
+      const stateWithCards = updateCardState(state, (current) => ({
         ...current,
         black: {
           ...current.black,
@@ -176,7 +176,7 @@ describe('generateResolveInitiativeEvent', () => {
         },
       }));
 
-      const stateWithPhase = withPhaseState(stateWithCards, {
+      const stateWithPhase = updatePhaseState(stateWithCards, {
         phase: PLAY_CARDS_PHASE,
         step: 'assignInitiative',
       });

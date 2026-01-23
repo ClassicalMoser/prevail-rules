@@ -1,7 +1,7 @@
 import type { Board, GameState, PlayCardsPhaseState } from '@entities';
 import type { ResolveInitiativeEvent } from '@events';
 import { getPlayCardsPhaseState } from '@queries';
-import { withPhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveInitiativeEvent to the game state.
@@ -34,7 +34,7 @@ export function applyResolveInitiativeEvent<TBoard extends Board>(
     currentInitiative: event.player,
   };
 
-  const stateWithPhase = withPhaseState(stateWithInitiative, newPhaseState);
+  const stateWithPhase = updatePhaseState(stateWithInitiative, newPhaseState);
 
   return stateWithPhase;
 }

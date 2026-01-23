@@ -3,7 +3,7 @@ import type { ChooseCardEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@entities';
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
-import { withCardState, withPhaseState } from '@transforms/pureTransforms';
+import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyChooseCardEvent } from './applyChooseCardEvent';
 
@@ -18,14 +18,14 @@ describe('applyChooseCardEvent', () => {
     const state = createEmptyGameState();
 
     // Set up card state with hands and no awaiting cards
-    const stateWithCards = withCardState(state, (current) => ({
+    const stateWithCards = updateCardState(state, (current) => ({
       ...current,
       black: { ...current.black, inHand: [...blackHand], awaitingPlay: null },
       white: { ...current.white, inHand: [...whiteHand], awaitingPlay: null },
     }));
 
     // Set up phase state
-    const stateWithPhase = withPhaseState(stateWithCards, {
+    const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
@@ -161,6 +161,30 @@ describe('applyChooseCardEvent', () => {
       // Original state should be unchanged
       expect(state.cardState.black.inHand).toEqual(originalHand);
       expect(state.cardState.black.awaitingPlay).toBeNull();
+    });
+  });
+
+  describe('error cases', () => {
+    it('should throw if not on chooseCards step', () => {
+      const state = createGameStateInChooseCardsStep(
+        [commandCards[0]],
+        [commandCards[1]],
+      );
+      const stateWithWrongStep = updatePhaseState(state, {
+        phase: PLAY_CARDS_PHASE,
+        step: 'revealCards',
+      });
+
+      const event: ChooseCardEvent<StandardBoard> = {
+        eventType: 'playerChoice',
+        choiceType: 'chooseCard',
+        player: 'black',
+        card: commandCards[0],
+      };
+
+      expect(() => applyChooseCardEvent(event, stateWithWrongStep)).toThrow(
+        'Play cards phase is not on chooseCards step',
+      );
     });
   });
 });

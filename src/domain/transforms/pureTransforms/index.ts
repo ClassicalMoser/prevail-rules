@@ -13,4 +13,7 @@ export * from './removeUnitFromBoard';
 export * from './removeUnitFromReserve';
 export * from './returnCardsToHand';
 export * from './revealCard';
-export * from './updateGameState';
+export * from './updateCardState';
+export * from './updateCompletedPhase';
+export * from './updatePhaseState';
+export * from './updatePlayerCardState';
