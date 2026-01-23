@@ -1,17 +1,18 @@
-import type {
-  Board,
-  CleanupPhaseState,
-  GameState,
-  RoutState,
-  UnitWithPlacement,
-} from '@entities';
+import type { Board, CleanupPhaseState, GameState, RoutState } from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
 
-import { hasSingleUnit } from '@entities';
-import { getBoardCoordinates, getBoardSpace, getOtherPlayer } from '@queries';
+import {
+  getCleanupPhaseState,
+  getNextStepForResolveRally,
+  getPlayerUnitsWithPlacementOnBoard,
+  getRallyResolutionStateForCurrentStep,
+  updateRallyResolutionStateForCurrentStep,
+} from '@queries';
 import {
   addUnitToRouted,
   removeUnitFromBoard,
+  updateBoardState,
+  updatePhaseState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -28,48 +29,13 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, unitTypes } = event;
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getCleanupPhaseState(state);
 
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
+  // Get rally resolution state for current step, validating player matches
+  const rallyState = getRallyResolutionStateForCurrentStep(state, player);
+  const defaultNextStep = getNextStepForResolveRally(state);
 
-  if (currentPhaseState.phase !== 'cleanup') {
-    throw new Error('Current phase is not cleanup');
-  }
-
-  // Determine which rally resolution we're in
-  const firstPlayer = state.currentInitiative;
-  const secondPlayer = getOtherPlayer(firstPlayer);
-  let rallyState;
-  let isFirstPlayer: boolean;
-
-  if (currentPhaseState.step === 'firstPlayerResolveRally') {
-    if (player !== firstPlayer) {
-      throw new Error(
-        `Expected ${firstPlayer} (first player) for unit support`,
-      );
-    }
-    rallyState = currentPhaseState.firstPlayerRallyResolutionState;
-    isFirstPlayer = true;
-  } else if (currentPhaseState.step === 'secondPlayerResolveRally') {
-    if (player !== secondPlayer) {
-      throw new Error(
-        `Expected ${secondPlayer} (second player) for unit support`,
-      );
-    }
-    rallyState = currentPhaseState.secondPlayerRallyResolutionState;
-    isFirstPlayer = false;
-  } else {
-    throw new Error(
-      `Cleanup phase is not on a resolveRally step: ${currentPhaseState.step}`,
-    );
-  }
-
-  if (!rallyState) {
-    throw new Error('Rally resolution state not found');
-  }
-
+  // Validate rally state preconditions
   if (!rallyState.rallyResolved) {
     throw new Error('Rally has not been resolved yet');
   }
@@ -80,38 +46,19 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
 
   // Find all unit instances of the broken types on the board
   const brokenTypeIds = new Set(unitTypes.map((type) => type.id));
-  const coordinates = getBoardCoordinates(state.boardState);
-  const unitsToRout: UnitWithPlacement<TBoard>[] = [];
+  const playerUnits = getPlayerUnitsWithPlacementOnBoard(state, player);
+  const unitsToRout = Array.from(playerUnits).filter((unitWithPlacement) =>
+    brokenTypeIds.has(unitWithPlacement.unit.unitType.id),
+  );
 
-  for (const coordinate of coordinates) {
-    const space = getBoardSpace(state.boardState, coordinate);
-
-    if (hasSingleUnit(space.unitPresence)) {
-      const unit = space.unitPresence.unit;
-      if (unit.playerSide === player && brokenTypeIds.has(unit.unitType.id)) {
-        unitsToRout.push({
-          unit,
-          placement: {
-            coordinate,
-            facing: space.unitPresence.facing,
-          },
-        });
-      }
-    }
-    // TODO: Handle engaged units if needed
-  }
-
-  // Route all broken unit instances
+  // Rout all broken unit instances
   let newState = state;
   for (const unitWithPlacement of unitsToRout) {
     const newBoardState = removeUnitFromBoard(
       newState.boardState,
       unitWithPlacement,
     );
-    newState = {
-      ...newState,
-      boardState: newBoardState,
-    };
+    newState = updateBoardState(newState, newBoardState);
     newState = addUnitToRouted(newState, unitWithPlacement.unit);
   }
 
@@ -144,30 +91,17 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
 
   // Next step: stay on same step if penalty, otherwise advance
   // The orchestrator will check routDiscardState to determine next action
-  const nextStep: CleanupPhaseState['step'] =
+  const finalNextStep: CleanupPhaseState['step'] =
     totalPenalty > 0
-      ? currentPhaseState.step // Stay on resolveRally step for discard penalty
-      : isFirstPlayer
-        ? 'secondPlayerChooseRally'
-        : 'complete';
+      ? phaseState.step // Stay on resolveRally step for discard penalty
+      : defaultNextStep;
 
-  const newPhaseState: CleanupPhaseState = isFirstPlayer
-    ? {
-        ...currentPhaseState,
-        firstPlayerRallyResolutionState: updatedRallyState,
-        step: nextStep,
-      }
-    : {
-        ...currentPhaseState,
-        secondPlayerRallyResolutionState: updatedRallyState,
-        step: nextStep,
-      };
+  // Update phase state with new rally resolution state
+  const newPhaseState = updateRallyResolutionStateForCurrentStep(
+    phaseState,
+    updatedRallyState,
+    finalNextStep,
+  );
 
-  return {
-    ...newState,
-    currentRoundState: {
-      ...newState.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  return updatePhaseState(newState, newPhaseState);
 }

@@ -6,7 +6,11 @@ import type {
 } from '@entities';
 import type { IssueCommandEvent } from '@events';
 import { findMatchingCommand, getIssueCommandsPhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  addUnitsToCommandedUnits,
+  updatePhaseState,
+  updateRemainingCommandsForPlayer,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies an IssueCommandEvent to the game state.
@@ -44,30 +48,21 @@ export function applyIssueCommandEvent<TBoard extends Board>(
   );
 
   // Update phase state with new remaining commands
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
-    ...phaseState,
-    ...(isFirstPlayer
-      ? {
-          remainingCommandsFirstPlayer: newRemainingCommands,
-        }
-      : {
-          remainingCommandsSecondPlayer: newRemainingCommands,
-        }),
-  };
-
-  // Add units to commandedUnits
-  const newCommandedUnits = new Set([
-    ...Array.from(state.currentRoundState.commandedUnits),
-    ...Array.from(units),
-  ]);
+  const newPhaseState: IssueCommandsPhaseState<TBoard> =
+    updateRemainingCommandsForPlayer(
+      phaseState,
+      player,
+      state.currentInitiative,
+      newRemainingCommands,
+    );
 
   const stateWithPhase = updatePhaseState(state, newPhaseState);
 
-  return {
-    ...stateWithPhase,
-    currentRoundState: {
-      ...stateWithPhase.currentRoundState,
-      commandedUnits: newCommandedUnits,
-    },
-  };
+  // Add units to commandedUnits
+  const stateWithCommandedUnits = addUnitsToCommandedUnits(
+    stateWithPhase,
+    units,
+  );
+
+  return stateWithCommandedUnits;
 }

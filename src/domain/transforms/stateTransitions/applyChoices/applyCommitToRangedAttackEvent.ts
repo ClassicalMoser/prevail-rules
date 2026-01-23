@@ -10,7 +10,11 @@ import {
   getOtherPlayer,
   getRangedAttackResolutionState,
 } from '@queries';
-import { discardCardsFromHand } from '@transforms/pureTransforms';
+import {
+  discardCardsFromHand,
+  updateCardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CommitToRangedAttackEvent to the game state.
@@ -66,12 +70,6 @@ export function applyCommitToRangedAttackEvent<TBoard extends Board>(
     currentCommandResolutionState: newRangedAttackState,
   };
 
-  return {
-    ...state,
-    cardState: newCardState,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  const stateWithCards = updateCardState(state, newCardState);
+  return updatePhaseState(stateWithCards, newPhaseState);
 }

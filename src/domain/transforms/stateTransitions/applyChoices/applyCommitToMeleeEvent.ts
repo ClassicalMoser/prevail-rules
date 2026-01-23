@@ -1,7 +1,11 @@
 import type { Board, GameState, ResolveMeleePhaseState } from '@entities';
 import type { CommitToMeleeEvent } from '@events';
 import { getMeleeResolutionState, getResolveMeleePhaseState } from '@queries';
-import { discardCardsFromHand } from '@transforms/pureTransforms';
+import {
+  discardCardsFromHand,
+  updateCardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CommitToMeleeEvent to the game state.
@@ -54,12 +58,6 @@ export function applyCommitToMeleeEvent<TBoard extends Board>(
     currentMeleeResolutionState: newMeleeState,
   };
 
-  return {
-    ...state,
-    cardState: newCardState,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  const stateWithCards = updateCardState(state, newCardState);
+  return updatePhaseState(stateWithCards, newPhaseState);
 }

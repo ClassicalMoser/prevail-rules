@@ -6,7 +6,15 @@ import type {
 } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
 import { hasEngagedUnits, RESOLVE_MELEE_PHASE } from '@entities';
-import { getBoardCoordinates, getBoardSpace } from '@queries';
+import {
+  getBoardCoordinates,
+  getBoardSpace,
+  getIssueCommandsPhaseState,
+} from '@queries';
+import {
+  updateCompletedPhase,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteIssueCommandsPhaseEvent to the game state.
@@ -21,23 +29,14 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
   event: CompleteIssueCommandsPhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getIssueCommandsPhaseState(state);
 
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'issueCommands') {
-    throw new Error('Current phase is not issueCommands');
-  }
-
-  if (currentPhaseState.step !== 'complete') {
+  if (phaseState.step !== 'complete') {
     throw new Error('Issue commands phase is not on complete step');
   }
 
   // Add the completed phase to the set of completed phases
-  const newCompletedPhases = new Set(state.currentRoundState.completedPhases);
-  newCompletedPhases.add(currentPhaseState);
+  const stateWithCompletedPhase = updateCompletedPhase(state, phaseState);
 
   // Find all engagements on the board
   const engagements = new Set<BoardCoordinate<TBoard>>();
@@ -58,12 +57,5 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
     remainingEngagements: engagements,
   };
 
-  return {
-    ...state,
-    currentRoundState: {
-      ...state.currentRoundState,
-      completedPhases: newCompletedPhases,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  return updatePhaseState(stateWithCompletedPhase, newPhaseState);
 }

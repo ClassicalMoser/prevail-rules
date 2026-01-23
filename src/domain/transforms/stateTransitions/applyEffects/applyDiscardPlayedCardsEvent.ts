@@ -1,6 +1,11 @@
 import type { Board, CleanupPhaseState, GameState } from '@entities';
 import type { DiscardPlayedCardsEvent } from '@events';
-import { moveCardToPlayed } from '@transforms/pureTransforms';
+import { getCleanupPhaseState } from '@queries';
+import {
+  moveCardToPlayed,
+  updateCardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a DiscardPlayedCardsEvent to the game state.
@@ -15,17 +20,9 @@ export function applyDiscardPlayedCardsEvent<TBoard extends Board>(
   event: DiscardPlayedCardsEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getCleanupPhaseState(state);
 
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'cleanup') {
-    throw new Error('Current phase is not cleanup');
-  }
-
-  if (currentPhaseState.step !== 'discardPlayedCards') {
+  if (phaseState.step !== 'discardPlayedCards') {
     throw new Error('Cleanup phase is not on discardPlayedCards step');
   }
 
@@ -36,16 +33,10 @@ export function applyDiscardPlayedCardsEvent<TBoard extends Board>(
 
   // Advance to firstPlayerChooseRally step
   const newPhaseState: CleanupPhaseState = {
-    ...currentPhaseState,
+    ...phaseState,
     step: 'firstPlayerChooseRally',
   };
 
-  return {
-    ...state,
-    cardState: newCardState,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  const stateWithCards = updateCardState(state, newCardState);
+  return updatePhaseState(stateWithCards, newPhaseState);
 }

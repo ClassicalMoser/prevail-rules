@@ -9,7 +9,11 @@ import {
   getIssueCommandsPhaseState,
   getMovementResolutionState,
 } from '@queries';
-import { discardCardsFromHand } from '@transforms/pureTransforms';
+import {
+  discardCardsFromHand,
+  updateCardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CommitToMovementEvent to the game state.
@@ -50,12 +54,6 @@ export function applyCommitToMovementEvent<TBoard extends Board>(
     currentCommandResolutionState: newMovementState,
   };
 
-  return {
-    ...state,
-    cardState: newCardState,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  const stateWithCards = updateCardState(state, newCardState);
+  return updatePhaseState(stateWithCards, newPhaseState);
 }

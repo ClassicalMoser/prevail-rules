@@ -1,6 +1,10 @@
 import type { Board, GameState, PlayCardsPhaseState } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import { getOtherPlayer, getPlayCardsPhaseState } from '@queries';
+import {
+  updatePhaseState,
+  updatePlayerCardState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseCardEvent to the game state.
@@ -24,20 +28,18 @@ export function applyChooseCardEvent<TBoard extends Board>(
 
   const oldHand = state.cardState[player].inHand;
   const newHand = oldHand.filter((c) => c.id !== card.id);
-  const newPlayerCardState = {
+
+  // Update player's card state
+  const stateWithUpdatedPlayer = updatePlayerCardState(state, player, {
     ...state.cardState[player],
     inHand: newHand,
     awaitingPlay: card,
-  };
-
-  const newCardState = {
-    ...state.cardState,
-    [player]: newPlayerCardState,
-  };
+  });
 
   // Check if both players have now chosen cards
   const otherPlayer = getOtherPlayer(player);
-  const otherPlayerAwaitingCard = newCardState[otherPlayer].awaitingPlay;
+  const otherPlayerAwaitingCard =
+    stateWithUpdatedPlayer.cardState[otherPlayer].awaitingPlay;
   const bothPlayersChosen = otherPlayerAwaitingCard !== null;
 
   // If both players have chosen, advance step to revealCards
@@ -48,12 +50,5 @@ export function applyChooseCardEvent<TBoard extends Board>(
       }
     : currentPhaseState;
 
-  return {
-    ...state,
-    cardState: newCardState,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  return updatePhaseState(stateWithUpdatedPlayer, newPhaseState);
 }

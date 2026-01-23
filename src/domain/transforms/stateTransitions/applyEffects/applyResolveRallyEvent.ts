@@ -1,14 +1,21 @@
 import type {
   Board,
   CardState,
-  CleanupPhaseState,
   GameState,
   RallyResolutionState,
 } from '@entities';
 import type { ResolveRallyEvent } from '@events';
 import {
+  getCleanupPhaseState,
+  getNextStepForResolveRally,
+  getRallyResolutionStateForCurrentStep,
+  updateRallyResolutionStateForCurrentStep,
+} from '@queries';
+import {
   burnCardFromPlayed,
   returnCardsToHand,
+  updateCardState,
+  updatePhaseState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -26,50 +33,18 @@ export function applyResolveRallyEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, card } = event;
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getCleanupPhaseState(state);
 
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
+  // Get rally resolution state for current step, validating player matches
+  const rallyState = getRallyResolutionStateForCurrentStep(state, player);
+  const nextStep = getNextStepForResolveRally(state);
 
-  if (currentPhaseState.phase !== 'cleanup') {
-    throw new Error('Current phase is not cleanup');
-  }
-
-  // Determine which step we're on and validate
-  const firstPlayer = state.currentInitiative;
-  let newStep: CleanupPhaseState['step'];
-  let rallyResolutionState;
-
-  if (currentPhaseState.step === 'firstPlayerResolveRally') {
-    if (player !== firstPlayer) {
-      throw new Error(
-        `Expected ${firstPlayer} (first player) to resolve rally`,
-      );
-    }
-    rallyResolutionState = currentPhaseState.firstPlayerRallyResolutionState;
-    newStep = 'secondPlayerChooseRally';
-  } else if (currentPhaseState.step === 'secondPlayerResolveRally') {
-    if (player === firstPlayer) {
-      throw new Error(`Expected non-first player to resolve rally`);
-    }
-    rallyResolutionState = currentPhaseState.secondPlayerRallyResolutionState;
-    newStep = 'complete';
-  } else {
-    throw new Error(
-      `Cleanup phase is not on a resolveRally step: ${currentPhaseState.step}`,
-    );
-  }
-
-  if (!rallyResolutionState) {
-    throw new Error('Rally resolution state not found');
-  }
-
-  if (!rallyResolutionState.playerRallied) {
+  // Validate rally state preconditions
+  if (!rallyState.playerRallied) {
     throw new Error('Player did not choose to rally');
   }
 
-  if (rallyResolutionState.rallyResolved) {
+  if (rallyState.rallyResolved) {
     throw new Error('Rally has already been resolved');
   }
 
@@ -80,31 +55,19 @@ export function applyResolveRallyEvent<TBoard extends Board>(
 
   // Mark rally as resolved and initialize unit support checking
   const updatedRallyResolutionState: RallyResolutionState = {
-    ...rallyResolutionState,
+    ...rallyState,
     rallyResolved: true,
     unitsLostSupport: new Set([]), // TODO: Calculate which units lost support
     routState: undefined,
   };
 
-  const newPhaseState: CleanupPhaseState =
-    currentPhaseState.step === 'firstPlayerResolveRally'
-      ? {
-          ...currentPhaseState,
-          firstPlayerRallyResolutionState: updatedRallyResolutionState,
-          step: newStep,
-        }
-      : {
-          ...currentPhaseState,
-          secondPlayerRallyResolutionState: updatedRallyResolutionState,
-          step: newStep,
-        };
+  // Update phase state with new rally resolution state
+  const newPhaseState = updateRallyResolutionStateForCurrentStep(
+    phaseState,
+    updatedRallyResolutionState,
+    nextStep,
+  );
 
-  return {
-    ...state,
-    cardState: newCardState,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  const stateWithCards = updateCardState(state, newCardState);
+  return updatePhaseState(stateWithCards, newPhaseState);
 }

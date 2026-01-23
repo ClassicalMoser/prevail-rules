@@ -1,7 +1,10 @@
-import type { Board, GameState, PlayCardsPhaseState } from '@entities';
+import type { Board, GameState } from '@entities';
 import type { ResolveInitiativeEvent } from '@events';
 import { getPlayCardsPhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  markPhaseAsComplete,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveInitiativeEvent to the game state.
@@ -23,10 +26,7 @@ export function applyResolveInitiativeEvent<TBoard extends Board>(
   }
 
   // Advance to complete step
-  const newPhaseState: PlayCardsPhaseState = {
-    ...phaseState,
-    step: 'complete',
-  };
+  const newPhaseState = markPhaseAsComplete(phaseState);
 
   // Set the initiative player
   const stateWithInitiative = {

@@ -9,6 +9,7 @@ export * from './getLine';
 export { getMeleeSupportValue } from './getMeleeSupportValue';
 export * from './getOtherPlayer';
 export * from './getPlayerUnitsOnBoard';
+export * from './getPlayerUnitsWithPlacementOnBoard';
 export * from './getSupportedUnitTypes';
 export * from './sequencing';
 export * from './unit';

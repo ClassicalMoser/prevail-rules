@@ -1,6 +1,12 @@
 import type { Board, CleanupPhaseState, GameState } from '@entities';
 import type { CompleteResolveMeleePhaseEvent } from '@events';
 import { CLEANUP_PHASE } from '@entities';
+import { getResolveMeleePhaseState } from '@queries';
+import {
+  markPhaseAsComplete,
+  updateCompletedPhase,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteResolveMeleePhaseEvent to the game state.
@@ -14,29 +20,17 @@ export function applyCompleteResolveMeleePhaseEvent<TBoard extends Board>(
   event: CompleteResolveMeleePhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getResolveMeleePhaseState(state);
 
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'resolveMelee') {
-    throw new Error('Current phase is not resolveMelee');
-  }
-
-  if (currentPhaseState.step !== 'resolveMelee') {
+  if (phaseState.step !== 'resolveMelee') {
     throw new Error('Resolve melee phase is not on resolveMelee step');
   }
 
   // Mark the current phase as complete
-  const completedPhase = {
-    ...currentPhaseState,
-    step: 'complete' as const,
-  };
+  const completedPhase = markPhaseAsComplete(phaseState);
 
   // Add the completed phase to the set of completed phases
-  const newCompletedPhases = new Set(state.currentRoundState.completedPhases);
-  newCompletedPhases.add(completedPhase);
+  const stateWithCompletedPhase = updateCompletedPhase(state, completedPhase);
 
   // Create the new cleanup phase state
   const newPhaseState: CleanupPhaseState = {
@@ -46,12 +40,5 @@ export function applyCompleteResolveMeleePhaseEvent<TBoard extends Board>(
     secondPlayerRallyResolutionState: undefined,
   };
 
-  return {
-    ...state,
-    currentRoundState: {
-      ...state.currentRoundState,
-      completedPhases: newCompletedPhases,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  return updatePhaseState(stateWithCompletedPhase, newPhaseState);
 }

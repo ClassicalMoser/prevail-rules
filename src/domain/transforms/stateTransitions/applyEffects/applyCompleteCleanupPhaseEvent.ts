@@ -1,6 +1,11 @@
 import type { Board, GameState, PlayCardsPhaseState } from '@entities';
 import type { CompleteCleanupPhaseEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@entities';
+import { getCleanupPhaseState } from '@queries';
+import {
+  updateCurrentRoundNumber,
+  updateRoundState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteCleanupPhaseEvent to the game state.
@@ -14,17 +19,9 @@ export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
   event: CompleteCleanupPhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getCleanupPhaseState(state);
 
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'cleanup') {
-    throw new Error('Current phase is not cleanup');
-  }
-
-  if (currentPhaseState.step !== 'complete') {
+  if (phaseState.step !== 'complete') {
     throw new Error('Cleanup phase is not on complete step');
   }
 
@@ -37,14 +34,14 @@ export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
     step: 'chooseCards',
   };
 
-  return {
-    ...state,
-    currentRoundNumber: newRoundNumber,
-    currentRoundState: {
-      roundNumber: newRoundNumber,
-      completedPhases: new Set(), // Reset completed phases for new round
-      currentPhaseState: newPhaseState,
-      commandedUnits: new Set(), // Reset commanded units for new round
-    },
-  };
+  const stateWithRound = updateRoundState(state, {
+    roundNumber: newRoundNumber,
+    completedPhases: new Set(), // Reset completed phases for new round
+    currentPhaseState: newPhaseState,
+    commandedUnits: new Set(), // Reset commanded units for new round
+  });
+
+  const finalState = updateCurrentRoundNumber(stateWithRound, newRoundNumber);
+
+  return finalState;
 }
