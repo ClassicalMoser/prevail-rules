@@ -13,13 +13,23 @@ export function getExpectedPlayCardsPhaseEvent<TBoard extends Board>(
   const phaseState = getPlayCardsPhaseState(state);
 
   switch (phaseState.step) {
-    case 'chooseCards':
+    case 'chooseCards': {
+      const blackCardChosen = state.cardState.black.awaitingPlay !== null;
+      const whiteCardChosen = state.cardState.white.awaitingPlay !== null;
+      const oneCardChosen = blackCardChosen || whiteCardChosen;
+      if (oneCardChosen) {
+        return {
+          actionType: 'playerChoice',
+          playerSource: blackCardChosen ? 'white' : 'black',
+          choiceType: 'chooseCard',
+        };
+      }
       return {
         actionType: 'playerChoice',
         playerSource: 'bothPlayers',
         choiceType: 'chooseCard',
       };
-
+    }
     case 'revealCards':
       return {
         actionType: 'gameEffect',

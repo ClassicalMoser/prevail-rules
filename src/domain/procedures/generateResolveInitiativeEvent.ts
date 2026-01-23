@@ -4,7 +4,7 @@ import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_INITIATIVE_EFFECT_TYPE,
 } from '@events';
-import { calculateInitiative } from '@queries';
+import { calculateInitiative, getPlayCardsPhaseState } from '@queries';
 
 /**
  * Generates a ResolveInitiativeEvent by calculating which player receives initiative
@@ -30,15 +30,7 @@ import { calculateInitiative } from '@queries';
 export function generateResolveInitiativeEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): ResolveInitiativeEvent<TBoard, 'resolveInitiative'> {
-  const phaseState = state.currentRoundState.currentPhaseState;
-
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (phaseState.phase !== 'playCards') {
-    throw new Error('Current phase is not playCards');
-  }
+  const phaseState = getPlayCardsPhaseState(state);
 
   if (phaseState.step !== 'assignInitiative') {
     throw new Error('Play cards phase is not on assignInitiative step');

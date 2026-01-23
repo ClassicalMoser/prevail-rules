@@ -1,5 +1,7 @@
 import type { Board, GameState, PlayCardsPhaseState } from '@entities';
 import type { ResolveInitiativeEvent } from '@events';
+import { getPlayCardsPhaseState } from '@queries';
+import { withPhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveInitiativeEvent to the game state.
@@ -14,32 +16,25 @@ export function applyResolveInitiativeEvent<TBoard extends Board>(
   event: ResolveInitiativeEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getPlayCardsPhaseState(state);
 
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'playCards') {
-    throw new Error('Current phase is not playCards');
-  }
-
-  if (currentPhaseState.step !== 'assignInitiative') {
+  if (phaseState.step !== 'assignInitiative') {
     throw new Error('Play cards phase is not on assignInitiative step');
   }
 
   // Advance to complete step
   const newPhaseState: PlayCardsPhaseState = {
-    ...currentPhaseState,
+    ...phaseState,
     step: 'complete',
   };
 
-  return {
+  // Set the initiative player
+  const stateWithInitiative = {
     ...state,
     currentInitiative: event.player,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
   };
+
+  const stateWithPhase = withPhaseState(stateWithInitiative, newPhaseState);
+
+  return stateWithPhase;
 }

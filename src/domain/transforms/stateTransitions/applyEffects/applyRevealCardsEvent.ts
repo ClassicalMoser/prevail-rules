@@ -1,5 +1,7 @@
 import type { Board, GameState, PlayCardsPhaseState } from '@entities';
 import type { RevealCardsEvent } from '@events';
+import { getPlayCardsPhaseState } from '@queries';
+import { revealCard, withPhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a RevealCardsEvent to the game state.
@@ -14,60 +16,28 @@ export function applyRevealCardsEvent<TBoard extends Board>(
   event: RevealCardsEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const currentPhaseState = state.currentRoundState.currentPhaseState;
+  const phaseState = getPlayCardsPhaseState(state);
 
-  if (!currentPhaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  if (currentPhaseState.phase !== 'playCards') {
-    throw new Error('Current phase is not playCards');
-  }
-
-  if (currentPhaseState.step !== 'revealCards') {
+  if (phaseState.step !== 'revealCards') {
     throw new Error('Play cards phase is not on revealCards step');
   }
 
-  // Get both players' awaiting cards
-  const whiteAwaitingCard = state.cardState.white.awaitingPlay;
-  const blackAwaitingCard = state.cardState.black.awaitingPlay;
-
-  if (!whiteAwaitingCard) {
-    throw new Error('White player has no card awaiting play');
-  }
-
-  if (!blackAwaitingCard) {
-    throw new Error('Black player has no card awaiting play');
-  }
-
-  // Move awaiting cards to in play
-  const newWhiteCardState = {
-    ...state.cardState.white,
-    awaitingPlay: null,
-    inPlay: whiteAwaitingCard,
-  };
-
-  const newBlackCardState = {
-    ...state.cardState.black,
-    awaitingPlay: null,
-    inPlay: blackAwaitingCard,
-  };
+  // Move both players' cards from awaitingPlay to inPlay
+  let newCardState = revealCard(state.cardState, 'black');
+  newCardState = revealCard(newCardState, 'white');
 
   // Advance to assignInitiative step
   const newPhaseState: PlayCardsPhaseState = {
-    ...currentPhaseState,
+    ...phaseState,
     step: 'assignInitiative',
   };
 
-  return {
+  const stateWithCards = {
     ...state,
-    cardState: {
-      white: newWhiteCardState,
-      black: newBlackCardState,
-    },
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
+    cardState: newCardState,
   };
+
+  const stateWithPhase = withPhaseState(stateWithCards, newPhaseState);
+
+  return stateWithPhase;
 }
