@@ -3,6 +3,7 @@ export * from './boardSpace';
 export * from './calculateInitiative';
 export * from './engagement';
 export * from './facings';
+export { findMatchingCommand } from './findMatchingCommand';
 export * from './getCurrentUnitStat';
 export * from './getLine';
 export { getMeleeSupportValue } from './getMeleeSupportValue';

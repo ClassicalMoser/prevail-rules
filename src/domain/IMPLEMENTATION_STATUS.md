@@ -202,13 +202,14 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 
 **Phase 3: Issue Commands**
 
-- ❌ `applyIssueCommandEvent` - Apply command to units
-- ❌ `applyCommitToMovementEvent` - Commit card to movement
-- ❌ `applyCommitToRangedAttackEvent` - Commit card to ranged attack
-- ❌ `applyResolveRangedAttackEvent` - Calculate ranged attack results
-- ❌ `applyStartEngagementEvent` - Start engagement from movement
-- ❌ `applyCompleteUnitMovementEvent` - Complete movement resolution
-- ❌ `applyCompleteRangedAttackCommandEvent` - Complete ranged attack resolution
+- ✅ `applyIssueCommandEvent` - Apply command to units (implemented + tested)
+- ✅ `applyCompleteIssueCommandsPhaseEvent` - Complete phase (implemented + tested)
+- ✅ `applyCommitToMovementEvent` - Commit card to movement
+- ✅ `applyCommitToRangedAttackEvent` - Commit card to ranged attack
+- ✅ `applyResolveRangedAttackEvent` - Calculate ranged attack results
+- ✅ `applyStartEngagementEvent` - Start engagement from movement
+- ✅ `applyCompleteUnitMovementEvent` - Complete movement resolution
+- ✅ `applyCompleteRangedAttackCommandEvent` - Complete ranged attack resolution
 
 **Phase 4: Resolve Melee**
 

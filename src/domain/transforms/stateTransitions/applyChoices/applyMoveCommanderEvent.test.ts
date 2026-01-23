@@ -181,9 +181,9 @@ describe('applyMoveCommanderEvent', () => {
         to: 'E-7',
       };
 
-      expect(() => applyMoveCommanderEvent(event, stateWithCompleteStep)).toThrow(
-        'Invalid move commanders phase step: complete',
-      );
+      expect(() =>
+        applyMoveCommanderEvent(event, stateWithCompleteStep),
+      ).toThrow('Invalid move commanders phase step: complete');
     });
   });
 });

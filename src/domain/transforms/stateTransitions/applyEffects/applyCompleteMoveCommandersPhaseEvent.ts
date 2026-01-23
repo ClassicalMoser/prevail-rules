@@ -2,7 +2,10 @@ import type { Board, GameState, IssueCommandsPhaseState } from '@entities';
 import type { CompleteMoveCommandersPhaseEvent } from '@events';
 import { ISSUE_COMMANDS_PHASE } from '@entities';
 import { getMoveCommandersPhaseState, getOtherPlayer } from '@queries';
-import { updateCompletedPhase, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  updateCompletedPhase,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteMoveCommandersPhaseEvent to the game state.
@@ -24,7 +27,10 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
   }
 
   // Add the completed phase to the set of completed phases
-  const stateWithCompletedPhase = updateCompletedPhase(state, currentPhaseState);
+  const stateWithCompletedPhase = updateCompletedPhase(
+    state,
+    currentPhaseState,
+  );
 
   // Determine first and second player based on initiative
   const firstPlayer = state.currentInitiative;
@@ -52,7 +58,10 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
     currentCommandResolutionState: undefined,
   };
 
-  const stateWithPhase = updatePhaseState(stateWithCompletedPhase, newPhaseState);
+  const stateWithPhase = updatePhaseState(
+    stateWithCompletedPhase,
+    newPhaseState,
+  );
 
   return stateWithPhase;
 }

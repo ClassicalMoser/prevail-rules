@@ -115,12 +115,12 @@ A round consists of 5 phases in order:
 
 **Expected:** `playerChoice` from `firstPlayer` - `issueCommand` (loop until all commands issued)
 
-| Engine            | Status         | Notes                                                |
-| ----------------- | -------------- | ---------------------------------------------------- |
-| **1. Transform**  | ❌ **Missing** | `applyIssueCommandEvent` not implemented             |
+| Engine            | Status      | Notes                                                |
+| ----------------- | ----------- | ---------------------------------------------------- |
+| **1. Transform**  | ✅ Complete | `applyIssueCommandEvent` implemented + tested        |
 | **2. Validation** | ❌ **Missing** | `validateIssueCommandsPhaseEvent` not implemented    |
 | **3. Procedure**  | N/A            | Player choice, no procedure needed                   |
-| **4. Next Event** | ❌ **Missing** | `getExpectedIssueCommandsPhaseEvent` not implemented |
+| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests |
 
 ### Step 2: `firstPlayerResolveCommands`
 
@@ -131,18 +131,18 @@ A round consists of 5 phases in order:
 | **1. Transform**  | ⚠️ Partial     | `applyMoveUnitEvent` ✅, `applyPerformRangedAttackEvent` ❌ |
 | **2. Validation** | ❌ **Missing** | Phase validation not implemented                            |
 | **3. Procedure**  | N/A            | Player choices, no procedures needed                        |
-| **4. Next Event** | ❌ **Missing** | `getExpectedIssueCommandsPhaseEvent` not implemented        |
+| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests |
 
 ### Step 3: `secondPlayerIssueCommands`
 
 **Expected:** `playerChoice` from `secondPlayer` - `issueCommand` (loop until all commands issued)
 
-| Engine            | Status         | Notes                                                |
-| ----------------- | -------------- | ---------------------------------------------------- |
-| **1. Transform**  | ❌ **Missing** | `applyIssueCommandEvent` not implemented             |
+| Engine            | Status      | Notes                                                |
+| ----------------- | ----------- | ---------------------------------------------------- |
+| **1. Transform**  | ✅ Complete | `applyIssueCommandEvent` implemented + tested        |
 | **2. Validation** | ❌ **Missing** | Phase validation not implemented                     |
 | **3. Procedure**  | N/A            | Player choice, no procedure needed                   |
-| **4. Next Event** | ❌ **Missing** | `getExpectedIssueCommandsPhaseEvent` not implemented |
+| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests |
 
 ### Step 4: `secondPlayerResolveCommands`
 
@@ -153,25 +153,24 @@ A round consists of 5 phases in order:
 | **1. Transform**  | ⚠️ Partial     | `applyMoveUnitEvent` ✅, `applyPerformRangedAttackEvent` ❌ |
 | **2. Validation** | ❌ **Missing** | Phase validation not implemented                            |
 | **3. Procedure**  | N/A            | Player choices, no procedures needed                        |
-| **4. Next Event** | ❌ **Missing** | `getExpectedIssueCommandsPhaseEvent` not implemented        |
+| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests |
 
 ### Step 5: `complete`
 
 **Expected:** `gameEffect` - `completeIssueCommandsPhase`
 
-| Engine            | Status         | Notes                                                |
-| ----------------- | -------------- | ---------------------------------------------------- |
-| **1. Transform**  | ✅ Complete    | `applyCompleteIssueCommandsPhaseEvent` implemented   |
+| Engine            | Status      | Notes                                                |
+| ----------------- | ----------- | ---------------------------------------------------- |
+| **1. Transform**  | ✅ Complete | `applyCompleteIssueCommandsPhaseEvent` implemented + tested |
 | **2. Validation** | ❌ **Missing** | Phase validation not implemented                     |
-| **3. Procedure**  | ✅ Complete    | `generateCompleteIssueCommandsPhaseEvent` ✅         |
-| **4. Next Event** | ❌ **Missing** | `getExpectedIssueCommandsPhaseEvent` not implemented |
+| **3. Procedure**  | ✅ Complete | `generateCompleteIssueCommandsPhaseEvent` ✅ + tested |
+| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests |
 
-**Phase 3 Summary:** ❌ **Critical Blocker** - Missing:
+**Phase 3 Summary:** 🟡 **In Progress** - Remaining:
 
-- `applyIssueCommandEvent` (transform)
 - `applyPerformRangedAttackEvent` (transform)
 - `validateIssueCommandsPhaseEvent` (validation)
-- `getExpectedIssueCommandsPhaseEvent` (next event)
+- Tests for `getExpectedIssueCommandsPhaseEvent` (next event)
 
 ---
 
@@ -302,7 +301,7 @@ A round consists of 5 phases in order:
 | ---------------------- | --------- | ---------- | --------- | ---------- | --------------- |
 | **1. Play Cards**      | ✅        | ✅         | ✅        | ✅         | ✅ **Complete** |
 | **2. Move Commanders** | ✅        | ✅         | ✅        | ✅         | ✅ **Complete** |
-| **3. Issue Commands**  | ❌        | ❌         | ✅        | ❌         | ❌ **Blocked**  |
+| **3. Issue Commands**  | 🟡        | ❌         | ✅        | 🟡         | 🟡 **In Progress** |
 | **4. Resolve Melee**   | ❌        | ❌         | ❓        | ❌         | ❌ **Blocked**  |
 | **5. Cleanup**         | ✅        | ✅         | ✅        | ✅         | ✅ **Complete** |
 
@@ -311,7 +310,8 @@ A round consists of 5 phases in order:
 ### Phase 3: Issue Commands
 
 1. **Transform Engine:**
-   - [ ] `applyIssueCommandEvent` - Apply command to units
+   - [x] `applyIssueCommandEvent` - Apply command to units ✅ (implemented + tested)
+   - [x] `applyCompleteIssueCommandsPhaseEvent` - Complete phase ✅ (implemented + tested)
    - [ ] `applyPerformRangedAttackEvent` - Apply ranged attack execution
 
 2. **Validation Engine:**
@@ -320,7 +320,7 @@ A round consists of 5 phases in order:
    - [ ] `isValidPerformRangedAttackEvent` - Validate ranged attack events
 
 3. **Next Event Expected Engine:**
-   - [ ] `getExpectedIssueCommandsPhaseEvent` - Determine expected event for each step
+   - [x] `getExpectedIssueCommandsPhaseEvent` - Implemented ✅ (needs tests)
    - Must handle loops: `remainingCommands` and `remainingUnits` tracking
 
 ### Phase 4: Resolve Melee

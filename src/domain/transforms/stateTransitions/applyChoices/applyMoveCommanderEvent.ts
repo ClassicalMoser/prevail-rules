@@ -9,6 +9,7 @@ import { getMoveCommandersPhaseState } from '@queries';
 import {
   addCommanderToBoard,
   removeCommanderFromBoard,
+  updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
@@ -59,10 +60,7 @@ export function applyMoveCommanderEvent<TBoard extends Board>(
     step: newStep,
   };
 
-  const stateWithBoard = {
-    ...state,
-    boardState: addedCommanderBoard,
-  };
+  const stateWithBoard = updateBoardState(state, addedCommanderBoard);
 
   const stateWithPhase = updatePhaseState(stateWithBoard, newPhaseState);
 
