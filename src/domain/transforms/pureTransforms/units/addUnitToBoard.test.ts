@@ -8,7 +8,7 @@ import type {
 import { createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { addUnitToBoard } from './addUnitToBoard';
-import { createEmptyStandardBoard } from './createEmptyBoard';
+import { createEmptyStandardBoard } from '../board/createEmptyBoard';
 
 describe('addUnitToBoard', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';

@@ -1,2 +1,1 @@
-export * from './applyChoices';
-export * from './applyEffects';
+export { applyEvent } from './applyEvent';

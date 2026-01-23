@@ -19,7 +19,7 @@ import {
   applyMoveUnitEvent,
   applyPerformRangedAttackEvent,
   applySetupUnitsEvent,
-} from './stateTransitions';
+} from './applyChoices';
 
 /**
  * Routes player choice events to their corresponding apply functions.

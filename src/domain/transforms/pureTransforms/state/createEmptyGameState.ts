@@ -1,5 +1,5 @@
 import type { GameState, PlayerSide, StandardBoard } from '@entities';
-import { createEmptyStandardBoard } from './createEmptyBoard';
+import { createEmptyStandardBoard } from '../board';
 
 /**
  * Creates an empty game state with default values.

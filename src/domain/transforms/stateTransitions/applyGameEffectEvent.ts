@@ -28,7 +28,7 @@ import {
   applyRevealCardsEvent,
   applyStartEngagementEvent,
   applyTriggerRoutFromRetreatEvent,
-} from './stateTransitions';
+} from './applyEffects';
 
 /**
  * Routes game effect events to their corresponding apply functions.

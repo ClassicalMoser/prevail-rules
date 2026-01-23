@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { addCommanderToBoard } from './addCommanderToBoard';
-import { createEmptyStandardBoard } from './createEmptyBoard';
+import { createEmptyStandardBoard } from '../board/createEmptyBoard';
 
 describe('addCommanderToBoard', () => {
   it('should add a commander to an empty space', () => {

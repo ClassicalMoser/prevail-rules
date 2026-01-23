@@ -7,7 +7,7 @@ import type {
 } from '@entities';
 import { createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
-import { createEmptyStandardBoard } from './createEmptyBoard';
+import { createEmptyStandardBoard } from '../board/createEmptyBoard';
 import { removeUnitFromBoard } from './removeUnitFromBoard';
 
 describe('removeUnitFromBoard', () => {
