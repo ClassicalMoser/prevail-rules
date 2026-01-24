@@ -1,5 +1,5 @@
 import type { Board, GameState, UnitInstance } from '@entities';
-import { updateRoundState } from './updateRoundState';
+import { updateRoundState } from '../state';
 
 /**
  * Adds units to the commandedUnits set in the current round state.
@@ -18,8 +18,10 @@ export function addUnitsToCommandedUnits<TBoard extends Board>(
   state: GameState<TBoard>,
   units: Set<UnitInstance>,
 ): GameState<TBoard> {
-  return updateRoundState(state, (current) => ({
-    ...current,
-    commandedUnits: new Set([...current.commandedUnits, ...units]),
-  }));
+  const previousCommandedUnits = state.currentRoundState.commandedUnits;
+  const newCommandedUnits = new Set([...previousCommandedUnits, ...units]);
+  return updateRoundState(state, {
+    ...state.currentRoundState,
+    commandedUnits: newCommandedUnits,
+  });
 }

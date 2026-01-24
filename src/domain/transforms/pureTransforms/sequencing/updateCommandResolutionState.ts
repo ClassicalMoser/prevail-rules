@@ -5,7 +5,7 @@ import type {
   IssueCommandsPhaseState,
 } from '@entities';
 import { getIssueCommandsPhaseState } from '@queries';
-import { updatePhaseState } from '../state/updatePhaseState';
+import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the command resolution state updated in the issue commands phase.

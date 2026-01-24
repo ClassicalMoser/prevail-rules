@@ -5,7 +5,7 @@ import type {
   ResolveMeleePhaseState,
 } from '@entities';
 import { getResolveMeleePhaseState } from '@queries';
-import { updatePhaseState } from '../state/updatePhaseState';
+import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the melee resolution state updated in the resolve melee phase.

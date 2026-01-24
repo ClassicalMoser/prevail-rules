@@ -1,4 +1,5 @@
 import type {
+  Board,
   BoardConfig,
   BoardSpace,
   LargeBoard,
@@ -45,10 +46,13 @@ function createEmptyBoardSpace(): BoardSpace {
  * Creates an empty board using the board config pattern.
  * Generates all coordinates and initializes them with empty spaces.
  */
-function createEmptyBoardWithConfig<TCoordinate extends string>(
+function createEmptyBoardWithConfig<
+  TBoard extends Board,
+  TCoordinate extends string,
+>(
   boardType: 'standard' | 'small' | 'large',
   config: BoardConfig<TCoordinate>,
-): StandardBoard | SmallBoard | LargeBoard {
+): TBoard {
   const board: Record<string, BoardSpace> = {};
 
   // Generate all coordinates by combining row letters and column numbers
@@ -62,17 +66,14 @@ function createEmptyBoardWithConfig<TCoordinate extends string>(
   return {
     boardType,
     board: board as Record<TCoordinate, BoardSpace>,
-  } as StandardBoard | SmallBoard | LargeBoard;
+  } as TBoard;
 }
 
 /**
  * Creates an empty standard board with all coordinates initialized to default spaces.
  */
 export function createEmptyStandardBoard(): StandardBoard {
-  return createEmptyBoardWithConfig(
-    'standard',
-    standardBoardConfig,
-  ) as StandardBoard;
+  return createEmptyBoardWithConfig('standard', standardBoardConfig);
 }
 
 /**

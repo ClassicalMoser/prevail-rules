@@ -15,7 +15,7 @@ import {
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
 } from '@queries';
-import { updatePhaseState } from '../state/updatePhaseState';
+import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the rout state updated in an attack apply state.

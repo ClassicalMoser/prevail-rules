@@ -16,13 +16,6 @@ export function discardCardsFromHand(
   const playerCardState = cardState[player];
   const cardsInHand = playerCardState.inHand;
 
-  // Validate all cards exist in hand
-  for (const cardId of cardIds) {
-    if (!cardsInHand.some((card) => card.id === cardId)) {
-      throw new Error(`Card ${cardId} not found in ${player}'s hand`);
-    }
-  }
-
   // Create set for O(1) lookup
   const cardIdSet = new Set(cardIds);
 

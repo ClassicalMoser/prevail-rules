@@ -7,15 +7,13 @@ import type {
   ResolveMeleePhaseState,
 } from '@entities';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
   getCurrentPhaseState,
   getIssueCommandsPhaseState,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
 } from '@queries';
-import { updatePhaseState } from '../state/updatePhaseState';
+import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the attack apply state updated.
@@ -72,12 +70,6 @@ export function updateAttackApplyState<TBoard extends Board>(
     // Determine which player's attack apply state this is
     const defendingPlayer = attackApplyState.defendingUnit.playerSide;
     const isWhite = defendingPlayer === 'white';
-
-    // Validate that the player's attack apply state exists
-    const currentAttackApplyState = getAttackApplyStateFromMelee(
-      state,
-      defendingPlayer,
-    );
 
     const newMeleeState: MeleeResolutionState<TBoard> = {
       ...meleeState,

@@ -16,7 +16,7 @@ import {
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
 } from '@queries';
-import { updatePhaseState } from '../state/updatePhaseState';
+import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the rout state updated within a retreat state.
@@ -115,10 +115,7 @@ export function updateRetreatRoutState<TBoard extends Board>(
         state,
         secondPlayer,
       );
-      const secondPlayerRetreat = getRetreatStateFromMelee(
-        state,
-        secondPlayer,
-      );
+      const secondPlayerRetreat = getRetreatStateFromMelee(state, secondPlayer);
       const newRetreatState = {
         ...secondPlayerRetreat,
         routState,

@@ -1,9 +1,4 @@
-export {
-  createEmptyLargeBoard,
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-  updateBoardState,
-} from './board';
+export { updateBoardState } from './board';
 export {
   burnCardFromPlayed,
   discardCardsFromHand,
@@ -29,7 +24,6 @@ export {
   updateRoutState,
 } from './sequencing';
 export {
-  createEmptyGameState,
   markPhaseAsComplete,
   updateCompletedPhase,
   updateCurrentRoundNumber,
@@ -41,7 +35,6 @@ export {
   addUnitsToCommandedUnits,
   addUnitToBoard,
   addUnitToRouted,
-  createUnitInstance,
   removeUnitFromBoard,
   removeUnitFromReserve,
 } from './units';

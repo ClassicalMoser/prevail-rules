@@ -10,7 +10,7 @@ import {
   getMeleeResolutionState,
   getResolveMeleePhaseState,
 } from '@queries';
-import { updatePhaseState } from '../state/updatePhaseState';
+import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the attack apply state updated for a specific player in melee resolution.
@@ -36,9 +36,6 @@ export function updateMeleeAttackApplyState<TBoard extends Board>(
 ): GameState<TBoard> {
   const resolveMeleePhaseState = getResolveMeleePhaseState(state);
   const meleeState = getMeleeResolutionState(state);
-
-  // Validate that the player's attack apply state exists
-  const currentAttackApplyState = getAttackApplyStateFromMelee(state, player);
 
   const newMeleeState = {
     ...meleeState,

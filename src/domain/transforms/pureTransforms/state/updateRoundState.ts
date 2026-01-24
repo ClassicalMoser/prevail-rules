@@ -25,17 +25,10 @@ import type { Board, GameState, RoundState } from '@entities';
  */
 export function updateRoundState<TBoard extends Board>(
   state: GameState<TBoard>,
-  roundState:
-    | RoundState<TBoard>
-    | ((current: RoundState<TBoard>) => RoundState<TBoard>),
+  roundState: RoundState<TBoard>,
 ): GameState<TBoard> {
-  const newRoundState =
-    typeof roundState === 'function'
-      ? roundState(state.currentRoundState)
-      : roundState;
-
   return {
     ...state,
-    currentRoundState: newRoundState,
+    currentRoundState: roundState,
   };
 }

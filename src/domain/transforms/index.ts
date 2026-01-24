@@ -1,15 +1,17 @@
 export {
+  createEmptyGameState,
+  createEmptyLargeBoard,
+  createEmptySmallBoard,
+  createEmptyStandardBoard,
+  createUnitInstance,
+} from './initializations';
+export {
   addCommanderToBoard,
   addCommanderToLostCommanders,
   addUnitsToCommandedUnits,
   addUnitToBoard,
   addUnitToRouted,
   burnCardFromPlayed,
-  createEmptyGameState,
-  createEmptyLargeBoard,
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-  createUnitInstance,
   discardCardsFromHand,
   markPhaseAsComplete,
   moveCardToPlayed,
