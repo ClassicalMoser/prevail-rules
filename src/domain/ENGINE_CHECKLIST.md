@@ -232,6 +232,15 @@ Game effects that have procedures to generate them:
 
 - **🎯 MILESTONE: Event Model Complete** - All required events for a full game stream have been identified and defined. From this point forward, work will focus on implementation (reducing checklist items) rather than discovery (adding new events).
 
+- **🏗️ MILESTONE: Transform Architecture Refactored** - Pure transforms have been massively cleaned up:
+  - ✅ All sequencing pure transforms refactored to follow `GameState`-in, `GameState`-out pattern
+  - ✅ Pure transforms now use queries internally instead of requiring callers to extract nested state
+  - ✅ Pure transforms directory reorganized into logical subdirectories: `board/`, `cards/`, `commanders/`, `units/`, `state/`, `sequencing/`
+  - ✅ All index.ts files updated to use explicit exports (no `export *`)
+  - ✅ 8 sequencing transforms refactored: `updateRetreatState`, `updateRoutState`, `updateReverseState`, `updateAttackApplyState`, `updateCommandResolutionState`, `updateMeleeResolutionState`, `updateMeleeAttackApplyState`, `updateRetreatRoutState`
+  - ✅ All transforms now use `updatePhaseState` for consistent phase state updates
+  - ✅ Better alignment with CQRS principles: transforms can call queries, queries cannot call transforms
+
 - Some validation may be handled at the phase level rather than requiring individual event validators
 - All game effects require procedures to generate them from game state
 - The `resolveMelee` and `issueCommands` phases are critical blockers for full game flow
@@ -243,10 +252,11 @@ Game effects that have procedures to generate them:
   - ✅ Expected event logic handles commitment flow → `resolveRangedAttack` → attack results
   - ✅ Composable `getExpectedAttackApplyEvent` handles rout/retreat/reverse priority
   - ✅ `completeRangedAttackCommand` event created to advance to next command
-  - ⏳ Still need: `commitToRangedAttack`, `resolveRangedAttack`, `completeAttackApply`, `completeRangedAttackCommand` transforms
+  - ✅ All transforms implemented: `commitToRangedAttack`, `resolveRangedAttack`, `completeAttackApply`, `completeRangedAttackCommand`
 - Melee resolution flow implemented:
   - ✅ Expected event logic handles commitment flow (by initiative order) → `resolveMelee` → attack results (by initiative order)
   - ✅ Composable `getExpectedAttackApplyEvent` reused for both players' results
   - ✅ `completeMeleeResolution` event created to clear melee resolution state and continue phase
-  - ⏳ Still need: `commitToMelee`, `resolveMelee`, `completeAttackApply`, `completeMeleeResolution` transforms
+  - ✅ All transforms implemented: `commitToMelee`, `resolveMelee`, `completeAttackApply`, `completeMeleeResolution`
 - Consider creating a unified test suite that exercises all four engines together
+- **Next opportunity:** Refactor remaining event apply transforms to use the new pure transforms (e.g., `applyResolveRetreatEvent`, `applyTriggerRoutFromRetreatEvent`, `applyResolveRoutEvent`, `applyCompleteAttackApplyEvent`)

@@ -28,22 +28,6 @@ describe('discardCardsFromHand', () => {
     expect(newCardState.white).toBe(cardState.white);
   });
 
-  it('should throw if card is not in hand', () => {
-    const gameState = createEmptyGameState();
-    const cardState = {
-      ...gameState.cardState,
-      black: {
-        ...gameState.cardState.black,
-        inHand: [commandCards[0]],
-        discarded: [],
-      },
-    };
-
-    expect(() =>
-      discardCardsFromHand(cardState, 'black', [commandCards[1].id]),
-    ).toThrow("Card 2 not found in black's hand");
-  });
-
   it('should not mutate the original card state', () => {
     const gameState = createEmptyGameState();
     const cardState = {

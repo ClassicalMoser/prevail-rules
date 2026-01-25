@@ -1,4 +1,9 @@
-import type { Board, ExpectedEventInfo, ReverseState } from '@entities';
+import type {
+  Board,
+  ExpectedEventInfo,
+  GameState,
+  ReverseState,
+} from '@entities';
 
 /**
  * Gets the expected event for reverse substeps.
@@ -6,10 +11,12 @@ import type { Board, ExpectedEventInfo, ReverseState } from '@entities';
  * reverse state appears (ranged attack resolution, etc.).
  *
  * @param reverseState - The reverse state
+ * @param _gameState - The game state (required for consistency, engagement check handled by caller)
  * @returns Information about what event is expected
  */
 export function getExpectedReverseEvent<TBoard extends Board>(
   reverseState: ReverseState<TBoard>,
+  _gameState: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
   // Check if reverse is completed (all work done, ready for parent to handle)
   if (reverseState.completed) {

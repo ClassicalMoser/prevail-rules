@@ -1,6 +1,7 @@
 import type {
   Board,
   ExpectedEventInfo,
+  GameState,
   PlayerSide,
   RangedAttackResolutionState,
 } from '@entities';
@@ -10,11 +11,13 @@ import { getExpectedAttackApplyEvent } from '../composable';
 /**
  * Gets the expected event for ranged attack resolution substeps.
  *
+ * @param gameState - The game state
  * @param resolutionState - The ranged attack resolution state
  * @param attackingPlayer - The player performing the attack
  * @returns Information about what event is expected
  */
 export function getExpectedRangedAttackResolutionEvent<TBoard extends Board>(
+  gameState: GameState<TBoard>,
   resolutionState: RangedAttackResolutionState<TBoard>,
   attackingPlayer: PlayerSide,
 ): ExpectedEventInfo<TBoard> {
@@ -55,7 +58,10 @@ export function getExpectedRangedAttackResolutionEvent<TBoard extends Board>(
   if (!resolutionState.attackApplyState.completed) {
     // resolveRangedAttack has been applied (attackApplyState exists)
     // Use composable function to determine next expected event
-    return getExpectedAttackApplyEvent(resolutionState.attackApplyState);
+    return getExpectedAttackApplyEvent(
+      resolutionState.attackApplyState,
+      gameState,
+    );
   }
 
   // Attack apply state is complete, ranged attack resolution should be complete

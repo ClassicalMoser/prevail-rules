@@ -1,4 +1,10 @@
-import type { AttackApplyState, Board, ExpectedEventInfo } from '@entities';
+import type {
+  AttackApplyState,
+  Board,
+  ExpectedEventInfo,
+  GameState,
+} from '@entities';
+import { canReverseUnit } from '@queries/sequencing';
 import {
   getExpectedRetreatEvent,
   getExpectedReverseEvent,
@@ -11,10 +17,12 @@ import {
  * attack apply state appears (ranged attack resolution, melee resolution, etc.).
  *
  * @param attackApplyState - The attack apply state
+ * @param gameState - The game state, needed for melee reverse engagement checks
  * @returns Information about what event is expected
  */
 export function getExpectedAttackApplyEvent<TBoard extends Board>(
   attackApplyState: AttackApplyState<TBoard>,
+  gameState: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
   const attackResult = attackApplyState.attackResult;
 
@@ -58,7 +66,17 @@ export function getExpectedAttackApplyEvent<TBoard extends Board>(
 
   if (attackResult.unitReversed && attackApplyState.reverseState) {
     if (!attackApplyState.reverseState.completed) {
-      return getExpectedReverseEvent(attackApplyState.reverseState);
+      // In melee, if units are still engaged, reverse cannot happen
+      if (!canReverseUnit(attackApplyState.reverseState, gameState)) {
+        // Units are still engaged - reverse cannot happen, skip to completeAttackApply
+        if (!attackApplyState.completed) {
+          return {
+            actionType: 'gameEffect',
+            effectType: 'completeAttackApply',
+          };
+        }
+      }
+      return getExpectedReverseEvent(attackApplyState.reverseState, gameState);
     }
     // Reverse is complete, continue to check if attack apply is complete
   }

@@ -1,7 +1,7 @@
 import type { StandardBoardCoordinate } from '@entities';
+import { createEmptyStandardBoard } from '@transforms/initializations';
 import { describe, expect, it } from 'vitest';
 import { addCommanderToBoard } from './addCommanderToBoard';
-import { createEmptyStandardBoard } from '../../initializations/createEmptyBoard';
 import { removeCommanderFromBoard } from './removeCommanderFromBoard';
 
 describe('removeCommanderFromBoard', () => {

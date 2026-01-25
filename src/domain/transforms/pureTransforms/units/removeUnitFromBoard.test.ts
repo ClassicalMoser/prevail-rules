@@ -6,8 +6,8 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import { createTestUnit } from '@testing';
+import { createEmptyStandardBoard } from '@transforms/initializations';
 import { describe, expect, it } from 'vitest';
-import { createEmptyStandardBoard } from '../../initializations/createEmptyBoard';
 import { removeUnitFromBoard } from './removeUnitFromBoard';
 
 describe('removeUnitFromBoard', () => {

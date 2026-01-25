@@ -1,5 +1,9 @@
 import type { GameState, StandardBoard } from '@entities';
-import { MOVE_COMMANDERS_PHASE } from '@entities';
+import {
+  expectedGameEffectSchema,
+  expectedPlayerInputSchema,
+  MOVE_COMMANDERS_PHASE,
+} from '@entities';
 import { createEmptyGameState } from '@testing';
 import { updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
@@ -32,11 +36,14 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
 
       const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
 
-      expect(expectedEvent).toEqual({
-        actionType: 'playerChoice',
-        playerSource: 'black',
-        choiceType: 'moveCommander',
-      });
+      expect(expectedEvent.actionType).toBe('playerChoice');
+      const resultIsExpectedPlayerInput =
+        expectedPlayerInputSchema.safeParse(expectedEvent);
+      expect(resultIsExpectedPlayerInput.success).toBe(true);
+      expect(resultIsExpectedPlayerInput.data?.playerSource).toBe('black');
+      expect(resultIsExpectedPlayerInput.data?.choiceType).toBe(
+        'moveCommander',
+      );
     });
 
     it('should return secondPlayer moveCommander when step is moveSecondCommander', () => {
@@ -47,11 +54,14 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
 
       const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
 
-      expect(expectedEvent).toEqual({
-        actionType: 'playerChoice',
-        playerSource: 'white',
-        choiceType: 'moveCommander',
-      });
+      expect(expectedEvent.actionType).toBe('playerChoice');
+      const resultIsExpectedPlayerInput =
+        expectedPlayerInputSchema.safeParse(expectedEvent);
+      expect(resultIsExpectedPlayerInput.success).toBe(true);
+      expect(resultIsExpectedPlayerInput.data?.playerSource).toBe('white');
+      expect(resultIsExpectedPlayerInput.data?.choiceType).toBe(
+        'moveCommander',
+      );
     });
 
     it('should return completeMoveCommandersPhase gameEffect when step is complete', () => {
@@ -59,10 +69,13 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
 
       const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
 
-      expect(expectedEvent).toEqual({
-        actionType: 'gameEffect',
-        effectType: 'completeMoveCommandersPhase',
-      });
+      expect(expectedEvent.actionType).toBe('gameEffect');
+      const resultIsExpectedGameEffect =
+        expectedGameEffectSchema.safeParse(expectedEvent);
+      expect(resultIsExpectedGameEffect.success).toBe(true);
+      expect(resultIsExpectedGameEffect.data?.effectType).toBe(
+        'completeMoveCommandersPhase',
+      );
     });
 
     it('should correctly identify first and second player based on initiative', () => {
@@ -76,11 +89,14 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
         stateWithWhiteInitiative,
       );
 
-      expect(expectedEventWhite).toEqual({
-        actionType: 'playerChoice',
-        playerSource: 'white',
-        choiceType: 'moveCommander',
-      });
+      expect(expectedEventWhite.actionType).toBe('playerChoice');
+      const resultIsExpectedPlayerInputWhite =
+        expectedPlayerInputSchema.safeParse(expectedEventWhite);
+      expect(resultIsExpectedPlayerInputWhite.success).toBe(true);
+      expect(resultIsExpectedPlayerInputWhite.data?.playerSource).toBe('white');
+      expect(resultIsExpectedPlayerInputWhite.data?.choiceType).toBe(
+        'moveCommander',
+      );
 
       // Test with black as initiative
       const stateWithBlackInitiative = createGameStateInMoveCommandersStep(
@@ -92,11 +108,14 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
         stateWithBlackInitiative,
       );
 
-      expect(expectedEventBlack).toEqual({
-        actionType: 'playerChoice',
-        playerSource: 'black',
-        choiceType: 'moveCommander',
-      });
+      expect(expectedEventBlack.actionType).toBe('playerChoice');
+      const resultIsExpectedPlayerInputBlack =
+        expectedPlayerInputSchema.safeParse(expectedEventBlack);
+      expect(resultIsExpectedPlayerInputBlack.success).toBe(true);
+      expect(resultIsExpectedPlayerInputBlack.data?.playerSource).toBe('black');
+      expect(resultIsExpectedPlayerInputBlack.data?.choiceType).toBe(
+        'moveCommander',
+      );
     });
   });
 

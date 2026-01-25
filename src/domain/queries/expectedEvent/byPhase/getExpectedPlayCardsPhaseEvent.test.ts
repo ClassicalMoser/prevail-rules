@@ -1,5 +1,10 @@
 import type { GameState, StandardBoard } from '@entities';
-import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@entities';
+import {
+  expectedGameEffectSchema,
+  expectedPlayerInputSchema,
+  MOVE_COMMANDERS_PHASE,
+  PLAY_CARDS_PHASE,
+} from '@entities';
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms';
@@ -38,11 +43,14 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
           stateWithNoAwaitingCards,
         );
 
-        expect(expectedEvent).toEqual({
-          actionType: 'playerChoice',
-          playerSource: 'bothPlayers',
-          choiceType: 'chooseCard',
-        });
+        expect(expectedEvent.actionType).toBe('playerChoice');
+        const resultIsExpectedPlayerInput =
+          expectedPlayerInputSchema.safeParse(expectedEvent);
+        expect(resultIsExpectedPlayerInput.success).toBe(true);
+        expect(resultIsExpectedPlayerInput.data?.playerSource).toBe(
+          'bothPlayers',
+        );
+        expect(resultIsExpectedPlayerInput.data?.choiceType).toBe('chooseCard');
       });
 
       it('should return white player when black has already chosen', () => {
@@ -55,11 +63,12 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
         const expectedEvent =
           getExpectedPlayCardsPhaseEvent(stateWithBlackCard);
 
-        expect(expectedEvent).toEqual({
-          actionType: 'playerChoice',
-          playerSource: 'white',
-          choiceType: 'chooseCard',
-        });
+        expect(expectedEvent.actionType).toBe('playerChoice');
+        const resultIsExpectedPlayerInput =
+          expectedPlayerInputSchema.safeParse(expectedEvent);
+        expect(resultIsExpectedPlayerInput.success).toBe(true);
+        expect(resultIsExpectedPlayerInput.data?.playerSource).toBe('white');
+        expect(resultIsExpectedPlayerInput.data?.choiceType).toBe('chooseCard');
       });
 
       it('should return black player when white has already chosen', () => {
@@ -74,11 +83,12 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
         const expectedEvent =
           getExpectedPlayCardsPhaseEvent(stateWithWhiteCard);
 
-        expect(expectedEvent).toEqual({
-          actionType: 'playerChoice',
-          playerSource: 'black',
-          choiceType: 'chooseCard',
-        });
+        expect(expectedEvent.actionType).toBe('playerChoice');
+        const resultIsExpectedPlayerInput =
+          expectedPlayerInputSchema.safeParse(expectedEvent);
+        expect(resultIsExpectedPlayerInput.success).toBe(true);
+        expect(resultIsExpectedPlayerInput.data?.playerSource).toBe('black');
+        expect(resultIsExpectedPlayerInput.data?.choiceType).toBe('chooseCard');
       });
     });
 
@@ -87,10 +97,11 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
 
       const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
 
-      expect(expectedEvent).toEqual({
-        actionType: 'gameEffect',
-        effectType: 'revealCards',
-      });
+      expect(expectedEvent.actionType).toBe('gameEffect');
+      const resultIsExpectedGameEffect =
+        expectedGameEffectSchema.safeParse(expectedEvent);
+      expect(resultIsExpectedGameEffect.success).toBe(true);
+      expect(resultIsExpectedGameEffect.data?.effectType).toBe('revealCards');
     });
 
     it('should return resolveInitiative gameEffect when step is assignInitiative', () => {
@@ -98,10 +109,13 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
 
       const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
 
-      expect(expectedEvent).toEqual({
-        actionType: 'gameEffect',
-        effectType: 'resolveInitiative',
-      });
+      expect(expectedEvent.actionType).toBe('gameEffect');
+      const resultIsExpectedGameEffect =
+        expectedGameEffectSchema.safeParse(expectedEvent);
+      expect(resultIsExpectedGameEffect.success).toBe(true);
+      expect(resultIsExpectedGameEffect.data?.effectType).toBe(
+        'resolveInitiative',
+      );
     });
 
     it('should return completePlayCardsPhase gameEffect when step is complete', () => {
@@ -109,10 +123,13 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
 
       const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
 
-      expect(expectedEvent).toEqual({
-        actionType: 'gameEffect',
-        effectType: 'completePlayCardsPhase',
-      });
+      expect(expectedEvent.actionType).toBe('gameEffect');
+      const resultIsExpectedGameEffect =
+        expectedGameEffectSchema.safeParse(expectedEvent);
+      expect(resultIsExpectedGameEffect.success).toBe(true);
+      expect(resultIsExpectedGameEffect.data?.effectType).toBe(
+        'completePlayCardsPhase',
+      );
     });
   });
 

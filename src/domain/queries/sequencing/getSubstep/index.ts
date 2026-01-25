@@ -2,6 +2,7 @@ export {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
 } from './attackApply';
+export { canReverseUnit } from './canReverseUnit';
 export {
   getEngagementStateFromMovement,
   getFlankEngagementStateFromMovement,

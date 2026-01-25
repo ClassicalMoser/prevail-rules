@@ -6,9 +6,9 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import { createTestUnit } from '@testing';
+import { createEmptyStandardBoard } from '@transforms/initializations';
 import { describe, expect, it } from 'vitest';
 import { addUnitToBoard } from './addUnitToBoard';
-import { createEmptyStandardBoard } from '../../initializations/createEmptyBoard';
 
 describe('addUnitToBoard', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';

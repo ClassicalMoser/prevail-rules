@@ -37,6 +37,7 @@ export function getExpectedCommandResolutionEvent<TBoard extends Board>(
   // Handle ranged attack resolution substeps
   if (resolutionState.commandResolutionType === 'rangedAttack') {
     return getExpectedRangedAttackResolutionEvent(
+      gameState,
       resolutionState,
       resolvingPlayer,
     );

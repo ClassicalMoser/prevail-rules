@@ -1,18 +1,13 @@
-import type {
-  Board,
-  GameState,
-  IssueCommandsPhaseState,
-  MeleeResolutionState,
-  RangedAttackResolutionState,
-  ResolveMeleePhaseState,
-} from '@entities';
+import type { AttackApplyState, Board, GameState } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
 import {
-  getIssueCommandsPhaseState,
+  getAttackApplyStateFromRangedAttack,
   getMeleeResolutionState,
-  getRangedAttackResolutionState,
-  getResolveMeleePhaseState,
 } from '@queries';
+import {
+  updateAttackApplyState,
+  updateMeleeAttackApplyState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteAttackApplyEvent to the game state.
@@ -34,47 +29,21 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
 
   // Handle ranged attack resolution (in issueCommands phase)
   if (phaseState.phase === 'issueCommands') {
-    const issueCommandsPhaseState = getIssueCommandsPhaseState(state);
-    const rangedAttackState = getRangedAttackResolutionState(state);
+    const currentAttackApplyState = getAttackApplyStateFromRangedAttack(state);
 
-    if (!rangedAttackState.attackApplyState) {
-      throw new Error(
-        'No attack apply state found in ranged attack resolution',
-      );
-    }
-
-    const newAttackApplyState = {
-      ...rangedAttackState.attackApplyState,
+    const newAttackApplyState: AttackApplyState<TBoard> = {
+      ...currentAttackApplyState,
       completed: true,
     };
 
-    const newRangedAttackState: RangedAttackResolutionState<TBoard> = {
-      ...rangedAttackState,
-      attackApplyState: newAttackApplyState,
-    };
-
-    const newPhaseState: IssueCommandsPhaseState<TBoard> = {
-      ...issueCommandsPhaseState,
-      currentCommandResolutionState: newRangedAttackState,
-    };
-
-    return {
-      ...state,
-      currentRoundState: {
-        ...state.currentRoundState,
-        currentPhaseState: newPhaseState,
-      },
-    };
+    return updateAttackApplyState(state, newAttackApplyState);
   }
 
   // Handle melee resolution (in resolveMelee phase)
   if (phaseState.phase === 'resolveMelee') {
-    const resolveMeleePhaseState = getResolveMeleePhaseState(state);
     const meleeState = getMeleeResolutionState(state);
     const firstPlayer = state.currentInitiative;
 
-    // Find which player's attack apply state needs to be completed
-    // The expected event query determines which one is active
     const firstPlayerAttackApply =
       firstPlayer === 'white'
         ? meleeState.whiteAttackApplyState
@@ -86,58 +55,31 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
 
     // Check first player's attack apply state
     if (firstPlayerAttackApply && !firstPlayerAttackApply.completed) {
-      const newAttackApplyState = {
+      const newAttackApplyState: AttackApplyState<TBoard> = {
         ...firstPlayerAttackApply,
         completed: true,
       };
 
-      const newMeleeState: MeleeResolutionState<TBoard> = {
-        ...meleeState,
-        ...(firstPlayer === 'white'
-          ? { whiteAttackApplyState: newAttackApplyState }
-          : { blackAttackApplyState: newAttackApplyState }),
-      };
-
-      const newPhaseState: ResolveMeleePhaseState<TBoard> = {
-        ...resolveMeleePhaseState,
-        currentMeleeResolutionState: newMeleeState,
-      };
-
-      return {
-        ...state,
-        currentRoundState: {
-          ...state.currentRoundState,
-          currentPhaseState: newPhaseState,
-        },
-      };
+      return updateMeleeAttackApplyState(
+        state,
+        firstPlayer,
+        newAttackApplyState,
+      );
     }
 
     // Check second player's attack apply state
     if (secondPlayerAttackApply && !secondPlayerAttackApply.completed) {
-      const newAttackApplyState = {
+      const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
+      const newAttackApplyState: AttackApplyState<TBoard> = {
         ...secondPlayerAttackApply,
         completed: true,
       };
 
-      const newMeleeState: MeleeResolutionState<TBoard> = {
-        ...meleeState,
-        ...(firstPlayer === 'white'
-          ? { blackAttackApplyState: newAttackApplyState }
-          : { whiteAttackApplyState: newAttackApplyState }),
-      };
-
-      const newPhaseState: ResolveMeleePhaseState<TBoard> = {
-        ...resolveMeleePhaseState,
-        currentMeleeResolutionState: newMeleeState,
-      };
-
-      return {
-        ...state,
-        currentRoundState: {
-          ...state.currentRoundState,
-          currentPhaseState: newPhaseState,
-        },
-      };
+      return updateMeleeAttackApplyState(
+        state,
+        secondPlayer,
+        newAttackApplyState,
+      );
     }
 
     throw new Error(

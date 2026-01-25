@@ -2,11 +2,8 @@ import type {
   Board,
   CleanupPhaseState,
   GameState,
-  IssueCommandsPhaseState,
-  MeleeResolutionState,
   RallyResolutionState,
-  RangedAttackResolutionState,
-  ResolveMeleePhaseState,
+  RoutState,
 } from '@entities';
 import type { ResolveRoutEvent } from '@events';
 import {
@@ -14,11 +11,9 @@ import {
   getAttackApplyStateFromRangedAttack,
   getCleanupPhaseState,
   getCurrentRallyResolutionState,
-  getIssueCommandsPhaseState,
-  getMeleeResolutionState,
-  getResolveMeleePhaseState,
   getRoutStateFromRally,
 } from '@queries';
+import { updatePhaseState, updateRoutState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveRoutEvent to the game state.
@@ -38,144 +33,37 @@ export function applyResolveRoutEvent<TBoard extends Board>(
     throw new Error('No current phase state found');
   }
 
-  // Rout can occur in multiple contexts: engagement, attack apply, or rally resolution
-  // Handle ranged attack resolution (in issueCommands phase)
-  if (phaseState.phase === 'issueCommands') {
-    const issueCommandsPhaseState = getIssueCommandsPhaseState(state);
-    const commandResolutionState =
-      issueCommandsPhaseState.currentCommandResolutionState;
-
-    if (!commandResolutionState) {
-      throw new Error('No current command resolution state');
-    }
-
-    // Check if it's a ranged attack with rout state
-    if (commandResolutionState.commandResolutionType === 'rangedAttack') {
-      const rangedAttackState = commandResolutionState;
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-
-      if (!attackApplyState.routState) {
-        throw new Error('No rout state found in ranged attack');
-      }
-
-      // Set the number to discard
-      const newRoutState = {
-        ...attackApplyState.routState,
-        numberToDiscard: event.penalty,
-      };
-
-      // Update attack apply state
-      const newAttackApplyState = {
-        ...attackApplyState,
-        routState: newRoutState,
-      };
-
-      // Update ranged attack resolution state
-      const newRangedAttackState: RangedAttackResolutionState<TBoard> = {
-        ...rangedAttackState,
-        attackApplyState: newAttackApplyState,
-      };
-
-      // Update phase state
-      const newPhaseState: IssueCommandsPhaseState<TBoard> = {
-        ...issueCommandsPhaseState,
-        currentCommandResolutionState: newRangedAttackState,
-      };
-
-      return {
-        ...state,
-        currentRoundState: {
-          ...state.currentRoundState,
-          currentPhaseState: newPhaseState,
-        },
-      };
-    }
-
-    // Check if it's a movement with engagement rout state
-    if (commandResolutionState.commandResolutionType === 'movement') {
-      // TODO: Handle engagement rout state
-      throw new Error('Engagement rout state handling not yet implemented');
-    }
-  }
-
-  // Handle melee resolution (in resolveMelee phase)
-  if (phaseState.phase === 'resolveMelee') {
-    const resolveMeleePhaseState = getResolveMeleePhaseState(state);
-    const meleeState = getMeleeResolutionState(state);
-    const firstPlayer = state.currentInitiative;
-
-    // Determine which player's rout state this is
+  // Rout can occur in multiple contexts: attack apply (ranged/melee) or rally resolution
+  // Handle attack apply contexts (ranged attack or melee resolution)
+  if (
+    phaseState.phase === 'issueCommands' ||
+    phaseState.phase === 'resolveMelee'
+  ) {
+    // Get the current rout state from attack apply
     const routedUnits = Array.from(event.unitInstances);
     if (routedUnits.length === 0) {
       throw new Error('No units to rout');
     }
     const routedPlayer = routedUnits[0].playerSide;
-    const isFirstPlayerRout = routedPlayer === firstPlayer;
 
-    let newMeleeState: MeleeResolutionState<TBoard>;
-    if (isFirstPlayerRout) {
-      const attackApplyState = getAttackApplyStateFromMelee(state, firstPlayer);
-      if (!attackApplyState.routState) {
-        throw new Error('No rout state found for first player');
-      }
+    // Get the attack apply state to find the rout state
+    const attackApplyState =
+      phaseState.phase === 'issueCommands'
+        ? getAttackApplyStateFromRangedAttack(state)
+        : getAttackApplyStateFromMelee(state, routedPlayer);
 
-      const newRoutState = {
-        ...attackApplyState.routState,
-        numberToDiscard: event.penalty,
-      };
-
-      const newAttackApplyState = {
-        ...attackApplyState,
-        routState: newRoutState,
-      };
-
-      newMeleeState = {
-        ...meleeState,
-        ...(firstPlayer === 'white'
-          ? { whiteAttackApplyState: newAttackApplyState }
-          : { blackAttackApplyState: newAttackApplyState }),
-      };
-    } else {
-      const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
-      const attackApplyState = getAttackApplyStateFromMelee(
-        state,
-        secondPlayer,
-      );
-      if (!attackApplyState.routState) {
-        throw new Error('No rout state found for second player');
-      }
-
-      const newRoutState = {
-        ...attackApplyState.routState,
-        numberToDiscard: event.penalty,
-      };
-
-      const newAttackApplyState = {
-        ...attackApplyState,
-        routState: newRoutState,
-      };
-
-      newMeleeState = {
-        ...meleeState,
-        ...(firstPlayer === 'white'
-          ? { blackAttackApplyState: newAttackApplyState }
-          : { whiteAttackApplyState: newAttackApplyState }),
-      };
+    if (!attackApplyState.routState) {
+      throw new Error('No rout state found in attack apply state');
     }
 
-    // Update phase state
-    const newPhaseState: ResolveMeleePhaseState<TBoard> = {
-      ...resolveMeleePhaseState,
-      currentMeleeResolutionState: newMeleeState,
+    // Update rout state with penalty
+    const newRoutState: RoutState = {
+      ...attackApplyState.routState,
+      numberToDiscard: event.penalty,
     };
 
-    return {
-      ...state,
-      currentRoundState: {
-        ...state.currentRoundState,
-        currentPhaseState: newPhaseState,
-      },
-    };
+    // Use updateRoutState for attack apply contexts
+    return updateRoutState(state, newRoutState);
   }
 
   // Handle rally resolution (in cleanup phase)
@@ -185,7 +73,7 @@ export function applyResolveRoutEvent<TBoard extends Board>(
     const routState = getRoutStateFromRally(rallyState);
 
     // Set the number to discard
-    const newRoutState = {
+    const newRoutState: RoutState = {
       ...routState,
       numberToDiscard: event.penalty,
     };
@@ -209,13 +97,7 @@ export function applyResolveRoutEvent<TBoard extends Board>(
           secondPlayerRallyResolutionState: newRallyState,
         };
 
-    return {
-      ...state,
-      currentRoundState: {
-        ...state.currentRoundState,
-        currentPhaseState: newPhaseState,
-      },
-    };
+    return updatePhaseState(state, newPhaseState);
   }
 
   throw new Error(`Rout resolution not expected in phase: ${phaseState.phase}`);

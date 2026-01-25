@@ -196,6 +196,40 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 
 ---
 
+## Transform Architecture Improvements ✅
+
+### Pure Transforms Refactoring (Complete)
+
+**Architectural Alignment:**
+
+- ✅ All sequencing pure transforms now follow `GameState`-in, `GameState`-out pattern
+- ✅ Pure transforms use queries internally to navigate nested state (no manual extraction required)
+- ✅ Better CQRS alignment: transforms can call queries, queries cannot call transforms
+- ✅ Consistent use of `updatePhaseState` for phase state updates
+
+**Refactored Transforms (8 total):**
+
+- ✅ `updateRetreatState` - Handles both ranged attack (issueCommands) and melee (resolveMelee) contexts
+- ✅ `updateRoutState` - Handles both contexts, determines player from `routState.player`
+- ✅ `updateReverseState` - Handles both contexts, determines player from `reverseState.reversingUnit.unit.playerSide`
+- ✅ `updateAttackApplyState` - Handles both ranged attack and melee resolution
+- ✅ `updateCommandResolutionState` - Handles issueCommands phase
+- ✅ `updateMeleeResolutionState` - Handles resolveMelee phase
+- ✅ `updateMeleeAttackApplyState` - Handles melee resolution with explicit player parameter
+- ✅ `updateRetreatRoutState` - Handles both contexts, updates rout within retreat state
+
+**Directory Organization:**
+
+- ✅ Pure transforms organized into logical subdirectories: `board/`, `cards/`, `commanders/`, `units/`, `state/`, `sequencing/`
+- ✅ All index.ts files use explicit exports (no `export *`)
+- ✅ Clear separation of concerns by entity type and operation type
+
+**Next Opportunity:**
+
+- Refactor remaining event apply transforms to use the new pure transforms (e.g., `applyResolveRetreatEvent`, `applyTriggerRoutFromRetreatEvent`, `applyResolveRoutEvent`, `applyCompleteAttackApplyEvent`)
+
+---
+
 ## Complete Missing Items List
 
 ### Transform Engine - Critical Blockers (Phase 3 & 4)
@@ -213,31 +247,31 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 
 **Phase 4: Resolve Melee**
 
-- ❌ `applyCommitToMeleeEvent` - Commit card to melee
-- ❌ `applyResolveMeleeEvent` - Calculate melee combat results
-- ❌ `applyCompleteMeleeResolutionEvent` - Complete melee resolution
+- ✅ `applyCommitToMeleeEvent` - Commit card to melee
+- ✅ `applyResolveMeleeEvent` - Calculate melee combat results
+- ✅ `applyCompleteMeleeResolutionEvent` - Complete melee resolution
 
 ### Transform Engine - Composable Substeps
 
 **Attack Apply**
 
-- ❌ `applyResolveRoutEvent` - Apply rout penalty
-- ❌ `applyResolveRetreatEvent` - Apply retreat movement
-- ❌ `applyResolveReverseEvent` - Apply reverse movement
-- ❌ `applyCompleteAttackApplyEvent` - Complete attack apply substep
+- ✅ `applyResolveRoutEvent` - Apply rout penalty
+- ✅ `applyResolveRetreatEvent` - Apply retreat movement
+- ✅ `applyResolveReverseEvent` - Apply reverse movement
+- ✅ `applyCompleteAttackApplyEvent` - Complete attack apply substep
 
 **Retreat**
 
-- ❌ `applyTriggerRoutFromRetreatEvent` - Trigger rout when no legal retreats
+- ✅ `applyTriggerRoutFromRetreatEvent` - Trigger rout when no legal retreats
 - ✅ `applyChooseRetreatOptionEvent` - Choose retreat destination
 
 **Engagement**
 
-- ❌ `applyResolveFlankEngagementEvent` - Rotate defender for flank
-- ❌ `applyResolveEngageRetreatOptionEvent` - Determine if retreat possible
+- ✅ `applyResolveFlankEngagementEvent` - Rotate defender for flank
+- ✅ `applyResolveEngageRetreatOptionEvent` - Determine if retreat possible
 - ✅ `applyChooseWhetherToRetreatEvent` - Choose to retreat or not
 
-**Total Missing Transforms:** 14
+**Total Missing Transforms:** 0 ✅
 
 ### Procedure Library - Missing Procedures
 
@@ -284,6 +318,14 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 9. ✅ `applyChooseWhetherToRetreatEvent` - Retreat decision
 
 **All transforms complete!**
+
+### Priority 4: Transform Architecture Refactoring (Complete)
+
+1. ✅ Refactored all sequencing pure transforms to `GameState`-in, `GameState`-out pattern
+2. ✅ Pure transforms now use queries internally for state navigation
+3. ✅ Organized pure transforms directory into logical subdirectories
+4. ✅ Updated all index.ts files to use explicit exports
+5. ✅ Improved CQRS alignment and code maintainability
 
 ---
 

@@ -13,6 +13,7 @@ export { getPlayCardsPhaseState } from './getPhaseState';
 export { getResolveMeleePhaseState } from './getPhaseState';
 export { getAttackApplyStateFromMelee } from './getSubstep';
 export { getAttackApplyStateFromRangedAttack } from './getSubstep';
+export { canReverseUnit } from './getSubstep';
 export { getEngagementStateFromMovement } from './getSubstep';
 export { getFlankEngagementStateFromMovement } from './getSubstep';
 export { getFrontEngagementStateFromMovement } from './getSubstep';

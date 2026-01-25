@@ -66,12 +66,12 @@ export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
   // resolveMelee has been applied (both attackApplyStates exist)
   // Initiative player resolves their result first
   if (!firstPlayerAttackApplyState.completed) {
-    return getExpectedAttackApplyEvent(firstPlayerAttackApplyState);
+    return getExpectedAttackApplyEvent(firstPlayerAttackApplyState, gameState);
   }
 
   // First player's result resolved, check if second player's result needs resolution
   if (!secondPlayerAttackApplyState.completed) {
-    return getExpectedAttackApplyEvent(secondPlayerAttackApplyState);
+    return getExpectedAttackApplyEvent(secondPlayerAttackApplyState, gameState);
   }
 
   // Both attack apply states are complete, melee resolution should be complete
