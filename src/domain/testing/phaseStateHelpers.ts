@@ -8,8 +8,12 @@ import type {
   MeleeResolutionState,
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
+  PlayerSide,
+  RallyResolutionState,
   ResolveMeleePhaseState,
   RetreatState,
+  ReverseState,
+  RoutState,
   StandardBoard,
   UnitInstance,
   UnitPlacement,
@@ -254,4 +258,55 @@ export function createAttackApplyStateWithRetreat(
     retreatState: createRetreatState(retreatingUnit),
     ...overrides,
   });
+}
+
+/**
+ * Creates a RoutState with sensible defaults.
+ */
+export function createRoutState(
+  player: PlayerSide,
+  unit: UnitInstance,
+  overrides?: Partial<RoutState>,
+): RoutState {
+  return {
+    substepType: 'rout',
+    player,
+    unitsToRout: new Set([unit]),
+    numberToDiscard: undefined,
+    cardsChosen: false,
+    completed: false,
+    ...overrides,
+  };
+}
+
+/**
+ * Creates a ReverseState with sensible defaults.
+ */
+export function createReverseState<TBoard extends Board>(
+  unit: UnitWithPlacement<TBoard>,
+  overrides?: Partial<ReverseState<TBoard>>,
+): ReverseState<TBoard> {
+  return {
+    substepType: 'reverse',
+    reversingUnit: unit,
+    finalPosition: undefined,
+    completed: false,
+    ...overrides,
+  };
+}
+
+/**
+ * Creates a RallyResolutionState with sensible defaults.
+ */
+export function createRallyResolutionState(
+  overrides?: Partial<RallyResolutionState>,
+): RallyResolutionState {
+  return {
+    playerRallied: false,
+    rallyResolved: false,
+    unitsLostSupport: undefined,
+    routState: undefined,
+    completed: false,
+    ...overrides,
+  };
 }

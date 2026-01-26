@@ -21,9 +21,12 @@ export {
   createMoveCommandersPhaseState,
   createMovementResolutionState,
   createPlayCardsPhaseState,
+  createRallyResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createRetreatState,
+  createReverseState,
+  createRoutState,
 } from './phaseStateHelpers';
 export type { CreateTestCardOptions } from './testHelpers';
 export {

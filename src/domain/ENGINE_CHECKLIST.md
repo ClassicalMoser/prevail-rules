@@ -153,15 +153,17 @@ Game effects that have procedures to generate them:
 
 ### Phase-Specific Expected Event Functions (5 phases)
 
-- [x] `playCards` → `getExpectedPlayCardsPhaseEvent`
-- [x] `moveCommanders` → `getExpectedMoveCommandersPhaseEvent`
-- [x] `issueCommands` → `getExpectedIssueCommandsPhaseEvent`
+- [x] `playCards` → `getExpectedPlayCardsPhaseEvent` ✅ (tests improved with schema validation)
+- [x] `moveCommanders` → `getExpectedMoveCommandersPhaseEvent` ✅ (tests improved with schema validation)
+- [x] `issueCommands` → `getExpectedIssueCommandsPhaseEvent` ⚠️ (implementation complete, tests pending)
 - [x] `resolveMelee` → `getExpectedResolveMeleePhaseEvent`
 - [x] `cleanup` → `getExpectedCleanupPhaseEvent`
 
-**Progress:** 5/5 (100%)
+**Progress:** 5/5 (100% implementation), 3/5 (60% tested)
 
 **Overall Next Event Expected Engine Progress:** 5/5 (100%)
+
+**Test Quality:** ✅ Schema validation pattern applied to existing tests for improved type safety
 
 ---
 
@@ -260,3 +262,4 @@ Game effects that have procedures to generate them:
   - ✅ All transforms implemented: `commitToMelee`, `resolveMelee`, `completeAttackApply`, `completeMeleeResolution`
 - Consider creating a unified test suite that exercises all four engines together
 - **Next opportunity:** Refactor remaining event apply transforms to use the new pure transforms (e.g., `applyResolveRetreatEvent`, `applyTriggerRoutFromRetreatEvent`, `applyResolveRoutEvent`, `applyCompleteAttackApplyEvent`)
+- **Test Quality:** ✅ Applied schema validation pattern to expected event tests (`getExpectedPlayCardsPhaseEvent`, `getExpectedMoveCommandersPhaseEvent`, `getExpectedAttackApplyEvent`) for improved type safety and explicit validation

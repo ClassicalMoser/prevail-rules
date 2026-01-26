@@ -1,6 +1,5 @@
 import type {
   GameState,
-  ReverseState,
   StandardBoard,
   UnitWithPlacement,
 } from '@entities';
@@ -18,6 +17,7 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createRetreatState,
+  createReverseState,
   createTestUnit,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
@@ -25,22 +25,6 @@ import { describe, expect, it } from 'vitest';
 import { applyResolveReverseEvent } from './applyResolveReverseEvent';
 
 describe('applyResolveReverseEvent', () => {
-  /**
-   * Helper to create a ReverseState
-   */
-  function createReverseState(
-    unit: UnitWithPlacement<StandardBoard>,
-    overrides?: Partial<ReverseState<StandardBoard>>,
-  ): ReverseState<StandardBoard> {
-    return {
-      substepType: 'reverse',
-      reversingUnit: unit,
-      finalPosition: undefined,
-      completed: false,
-      ...overrides,
-    };
-  }
-
   /**
    * Helper to create a game state with a reverse state in ranged attack resolution
    */

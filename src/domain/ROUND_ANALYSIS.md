@@ -120,7 +120,7 @@ A round consists of 5 phases in order:
 | **1. Transform**  | ✅ Complete    | `applyIssueCommandEvent` implemented + tested                 |
 | **2. Validation** | ❌ **Missing** | `validateIssueCommandsPhaseEvent` not implemented             |
 | **3. Procedure**  | N/A            | Player choice, no procedure needed                            |
-| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests |
+| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests. Test quality improved for other expected event functions with schema validation pattern. |
 
 ### Step 2: `firstPlayerResolveCommands`
 
@@ -131,7 +131,7 @@ A round consists of 5 phases in order:
 | **1. Transform**  | ⚠️ Partial     | `applyMoveUnitEvent` ✅, `applyPerformRangedAttackEvent` ❌   |
 | **2. Validation** | ❌ **Missing** | Phase validation not implemented                              |
 | **3. Procedure**  | N/A            | Player choices, no procedures needed                          |
-| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests |
+| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests. Test quality improved for other expected event functions with schema validation pattern. |
 
 ### Step 3: `secondPlayerIssueCommands`
 
@@ -142,7 +142,7 @@ A round consists of 5 phases in order:
 | **1. Transform**  | ✅ Complete    | `applyIssueCommandEvent` implemented + tested                 |
 | **2. Validation** | ❌ **Missing** | Phase validation not implemented                              |
 | **3. Procedure**  | N/A            | Player choice, no procedure needed                            |
-| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests |
+| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests. Test quality improved for other expected event functions with schema validation pattern. |
 
 ### Step 4: `secondPlayerResolveCommands`
 
@@ -153,7 +153,7 @@ A round consists of 5 phases in order:
 | **1. Transform**  | ⚠️ Partial     | `applyMoveUnitEvent` ✅, `applyPerformRangedAttackEvent` ❌   |
 | **2. Validation** | ❌ **Missing** | Phase validation not implemented                              |
 | **3. Procedure**  | N/A            | Player choices, no procedures needed                          |
-| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests |
+| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests. Test quality improved for other expected event functions with schema validation pattern. |
 
 ### Step 5: `complete`
 
@@ -164,13 +164,16 @@ A round consists of 5 phases in order:
 | **1. Transform**  | ✅ Complete    | `applyCompleteIssueCommandsPhaseEvent` implemented + tested   |
 | **2. Validation** | ❌ **Missing** | Phase validation not implemented                              |
 | **3. Procedure**  | ✅ Complete    | `generateCompleteIssueCommandsPhaseEvent` ✅ + tested         |
-| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests |
+| **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests. Test quality improved for other expected event functions with schema validation pattern. |
 
 **Phase 3 Summary:** 🟡 **In Progress** - Remaining:
 
 - `applyPerformRangedAttackEvent` (transform)
 - `validateIssueCommandsPhaseEvent` (validation)
 - Tests for `getExpectedIssueCommandsPhaseEvent` (next event)
+
+**Recent Improvements:**
+- ✅ Applied schema validation pattern to expected event tests for improved type safety (`getExpectedPlayCardsPhaseEvent`, `getExpectedMoveCommandersPhaseEvent`, `getExpectedAttackApplyEvent`)
 
 ---
 

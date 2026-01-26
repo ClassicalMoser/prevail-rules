@@ -1,9 +1,6 @@
 import type {
   GameState,
-  RallyResolutionState,
-  RoutState,
   StandardBoard,
-  UnitInstance,
   UnitWithPlacement,
 } from '@entities';
 import type { ResolveRoutEvent } from '@events';
@@ -18,8 +15,10 @@ import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
+  createRallyResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
+  createRoutState,
   createTestUnit,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
@@ -27,25 +26,6 @@ import { describe, expect, it } from 'vitest';
 import { applyResolveRoutEvent } from './applyResolveRoutEvent';
 
 describe('applyResolveRoutEvent', () => {
-  /**
-   * Helper to create a RoutState
-   */
-  function createRoutState(
-    player: 'white' | 'black',
-    unit: UnitInstance,
-    overrides?: Partial<RoutState>,
-  ): RoutState {
-    return {
-      substepType: 'rout',
-      player,
-      unitsToRout: new Set([unit]),
-      numberToDiscard: undefined,
-      cardsChosen: false,
-      completed: false,
-      ...overrides,
-    };
-  }
-
   /**
    * Helper to create a game state with a rout state in ranged attack resolution
    */
@@ -232,13 +212,12 @@ describe('applyResolveRoutEvent', () => {
       const routedUnit = createTestUnit('white', { attack: 2 });
       const routState = createRoutState('white', routedUnit);
 
-      const rallyState: RallyResolutionState = {
+      const rallyState = createRallyResolutionState({
         playerRallied: true,
         rallyResolved: false,
         unitsLostSupport: new Set(),
         routState,
-        completed: false,
-      };
+      });
 
       const phaseState = createCleanupPhaseState({
         step: 'firstPlayerResolveRally',

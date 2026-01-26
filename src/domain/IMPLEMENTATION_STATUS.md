@@ -341,3 +341,41 @@ These substeps can appear in multiple contexts (ranged attack, melee, engagement
 - ✅ Correct `completed` flag usage throughout
 
 The flow logic is sound - all that remains is implementing the transforms and procedures.
+
+---
+
+## Test Quality Improvements ✅
+
+### Schema Validation Pattern (Complete)
+
+**Type Safety Enhancement:**
+
+- ✅ Applied schema validation pattern to all expected event tests
+- ✅ Tests now use `expectedGameEffectSchema` and `expectedPlayerInputSchema` for type narrowing
+- ✅ Improved type safety and explicit validation of `ExpectedEventInfo` structure
+
+**Updated Test Files:**
+
+- ✅ `getExpectedPlayCardsPhaseEvent.test.ts` - All 7 test cases updated
+- ✅ `getExpectedMoveCommandersPhaseEvent.test.ts` - All 5 test cases updated
+- ✅ `getExpectedAttackApplyEvent.test.ts` - All test cases updated
+
+**Pattern Applied:**
+
+```typescript
+// For gameEffect types:
+expect(result.actionType).toBe('gameEffect');
+const resultIsExpectedGameEffect = expectedGameEffectSchema.safeParse(result);
+expect(resultIsExpectedGameEffect.success).toBe(true);
+expect(resultIsExpectedGameEffect.data?.effectType).toBe('...');
+
+// For playerChoice types:
+expect(result.actionType).toBe('playerChoice');
+const resultIsExpectedPlayerInput = expectedPlayerInputSchema.safeParse(result);
+expect(resultIsExpectedPlayerInput.success).toBe(true);
+expect(resultIsExpectedPlayerInput.data?.choiceType).toBe('...');
+```
+
+**Remaining Work:**
+
+- Tests still needed for `getExpectedIssueCommandsPhaseEvent` (implementation complete, tests pending)
