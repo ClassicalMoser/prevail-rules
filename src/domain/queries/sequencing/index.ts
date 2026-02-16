@@ -1,6 +1,10 @@
 export { getNextStepForResolveRally } from './cleanupPhase';
 export { getRallyResolutionStateForCurrentStep } from './cleanupPhase';
 export { updateRallyResolutionStateForCurrentStep } from './cleanupPhase';
+export { getActivePlayerForCleanupStep } from './getActivePlayer';
+export { getActivePlayerForIssueCommandsStep } from './getActivePlayer';
+export { getActivePlayerForMoveCommandersStep } from './getActivePlayer';
+export { getPlayersAwaitingCardChoice } from './getPlayersAwaitingCardChoice';
 export { getCurrentCommandResolutionState } from './getCommandResolutionState';
 export { getMeleeResolutionState } from './getCommandResolutionState';
 export { getMovementResolutionState } from './getCommandResolutionState';
