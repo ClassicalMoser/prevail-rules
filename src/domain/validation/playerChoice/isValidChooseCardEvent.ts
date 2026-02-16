@@ -1,5 +1,6 @@
 import type { Board, GameState, ValidationResult } from '@entities';
 import type { ChooseCardEvent } from '@events';
+import { getPlayCardsPhaseState } from '@queries/sequencing';
 
 /**
  * Validates whether a ChooseCardEvent can be applied to the current game state.
@@ -26,29 +27,15 @@ export function isValidChooseCardEvent<TBoard extends Board>(
 ): ValidationResult {
   try {
     const { player, card } = event;
-    const currentPhaseState = state.currentRoundState.currentPhaseState;
 
-    // Check phase state exists
-    if (!currentPhaseState) {
-      return {
-        result: false,
-        errorReason: 'No current phase state found',
-      };
-    }
-
-    // Check correct phase
-    if (currentPhaseState.phase !== 'playCards') {
-      return {
-        result: false,
-        errorReason: `Current phase is ${currentPhaseState.phase}, not playCards`,
-      };
-    }
+    // getPlayCardsPhaseState throws if not in playCards phase
+    const phaseState = getPlayCardsPhaseState(state);
 
     // Check correct step
-    if (currentPhaseState.step !== 'chooseCards') {
+    if (phaseState.step !== 'chooseCards') {
       return {
         result: false,
-        errorReason: `Play cards phase is on ${currentPhaseState.step} step, not chooseCards`,
+        errorReason: `Play cards phase is on ${phaseState.step} step, not chooseCards`,
       };
     }
 
@@ -70,10 +57,7 @@ export function isValidChooseCardEvent<TBoard extends Board>(
       };
     }
 
-    // Valid
-    return {
-      result: true,
-    };
+    return { result: true };
   } catch (error) {
     return {
       result: false,

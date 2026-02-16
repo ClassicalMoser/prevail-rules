@@ -5,6 +5,7 @@ import type {
   ValidationResult,
 } from '@entities';
 import type { Event } from '@events';
+import { getCurrentRallyResolutionState } from '@queries/sequencing';
 import {
   isValidChooseRallyEvent,
   isValidChooseRoutDiscardEvent,
@@ -55,13 +56,11 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
 
     case 'firstPlayerResolveRally':
     case 'secondPlayerResolveRally': {
-      // Complex substep - check rally resolution state to determine expected event
-      const isFirstPlayer = phaseState.step === 'firstPlayerResolveRally';
-      const rallyState = isFirstPlayer
-        ? phaseState.firstPlayerRallyResolutionState
-        : phaseState.secondPlayerRallyResolutionState;
-
-      if (!rallyState) {
+      // Use shared sequencing query instead of inline state navigation
+      let rallyState;
+      try {
+        rallyState = getCurrentRallyResolutionState(state);
+      } catch {
         return {
           result: false,
           errorReason: 'Rally resolution state not found',
@@ -70,7 +69,6 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
 
       // Check substep progression
       if (!rallyState.rallyResolved) {
-        // Expect resolveRally
         if (
           event.eventType === 'gameEffect' &&
           event.effectType === 'resolveRally'
@@ -84,7 +82,6 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
       }
 
       if (rallyState.unitsLostSupport === undefined) {
-        // Expect resolveUnitsBroken
         if (
           event.eventType === 'gameEffect' &&
           event.effectType === 'resolveUnitsBroken'
@@ -100,7 +97,6 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
       // Check for rout state
       if (rallyState.routState) {
         if (!rallyState.routState.cardsChosen) {
-          // Expect chooseRoutDiscard
           if (
             event.eventType === 'playerChoice' &&
             event.choiceType === 'chooseRoutDiscard'

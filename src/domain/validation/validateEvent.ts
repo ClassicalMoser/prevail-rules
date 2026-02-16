@@ -7,6 +7,7 @@ import type {
   ValidationResult,
 } from '@entities';
 import type { Event } from '@events';
+import { getCurrentPhaseState } from '@queries/sequencing';
 import {
   validateCleanupPhaseEvent,
   validateMoveCommandersPhaseEvent,
@@ -34,74 +35,66 @@ export function validateEvent<TBoard extends Board>(
   event: Event<TBoard>,
   state: GameState<TBoard>,
 ): ValidationResult {
-  const roundState = state.currentRoundState;
+  try {
+    // Use shared sequencing query for phase state access
+    const currentPhase = getCurrentPhaseState(state);
 
-  if (!roundState) {
+    // Route to phase-specific validation
+    switch (currentPhase.phase) {
+      case 'playCards':
+        return validatePlayCardsPhaseEvent(
+          event,
+          state as GameState<TBoard> & {
+            currentRoundState: {
+              currentPhaseState: PlayCardsPhaseState;
+            };
+          },
+        );
+
+      case 'moveCommanders':
+        return validateMoveCommandersPhaseEvent(
+          event,
+          state as GameState<TBoard> & {
+            currentRoundState: {
+              currentPhaseState: MoveCommandersPhaseState;
+            };
+          },
+        );
+
+      case 'issueCommands':
+        // TODO: Implement validateIssueCommandsPhaseEvent
+        return {
+          result: false,
+          errorReason: 'IssueCommands phase validation not yet implemented',
+        };
+
+      case 'resolveMelee':
+        // TODO: Implement validateResolveMeleePhaseEvent
+        return {
+          result: false,
+          errorReason: 'ResolveMelee phase validation not yet implemented',
+        };
+
+      case 'cleanup':
+        return validateCleanupPhaseEvent(
+          event,
+          state as GameState<TBoard> & {
+            currentRoundState: {
+              currentPhaseState: CleanupPhaseState;
+            };
+          },
+        );
+
+      default:
+        return {
+          result: false,
+          errorReason: `Invalid phase: ${currentPhase}`,
+        };
+    }
+  } catch (error) {
     return {
       result: false,
-      errorReason: 'No round state found',
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
     };
-  }
-
-  if (!roundState.currentPhaseState) {
-    return {
-      result: false,
-      errorReason: 'No current phase state found',
-    };
-  }
-
-  const currentPhase = roundState.currentPhaseState;
-
-  // Route to phase-specific validation
-  switch (currentPhase.phase) {
-    case 'playCards':
-      return validatePlayCardsPhaseEvent(
-        event,
-        state as GameState<TBoard> & {
-          currentRoundState: {
-            currentPhaseState: PlayCardsPhaseState;
-          };
-        },
-      );
-
-    case 'moveCommanders':
-      return validateMoveCommandersPhaseEvent(
-        event,
-        state as GameState<TBoard> & {
-          currentRoundState: {
-            currentPhaseState: MoveCommandersPhaseState;
-          };
-        },
-      );
-
-    case 'issueCommands':
-      // TODO: Implement validateIssueCommandsPhaseEvent
-      return {
-        result: false,
-        errorReason: 'IssueCommands phase validation not yet implemented',
-      };
-
-    case 'resolveMelee':
-      // TODO: Implement validateResolveMeleePhaseEvent
-      return {
-        result: false,
-        errorReason: 'ResolveMelee phase validation not yet implemented',
-      };
-
-    case 'cleanup':
-      return validateCleanupPhaseEvent(
-        event,
-        state as GameState<TBoard> & {
-          currentRoundState: {
-            currentPhaseState: CleanupPhaseState;
-          };
-        },
-      );
-
-    default:
-      return {
-        result: false,
-        errorReason: `Invalid phase: ${currentPhase}`,
-      };
   }
 }
