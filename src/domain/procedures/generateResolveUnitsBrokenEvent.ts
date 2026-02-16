@@ -7,26 +7,18 @@ import {
 import {
   getOtherPlayer,
   getPlayerUnitsOnBoard,
+  getPlayerUnitsWithPlacementOnBoard,
   getSupportedUnitTypes,
 } from '@queries';
 
 /**
  * Generates a ResolveUnitsBrokenEvent for unit types that lost support after a rally.
  * Compares units on board against supported unit types from cards in hand.
- * Returns the unit TYPES that are no longer supported (all instances will be routed).
+ * Returns the unit TYPES that are no longer supported, along with the specific
+ * unit instances with their placements and the total rout penalty.
  *
  * @param state - The current game state
- * @returns A complete ResolveUnitsBrokenEvent with unit types that lost support
- *
- * @example
- * ```typescript
- * // After rally, cards returned to hand
- * const event = generateResolveUnitsBrokenEvent(state);
- *
- * // Event contains unit types that no longer have card support
- * // Handler will rout ALL instances of these types
- * const newState = applyEvent(event, state);
- * ```
+ * @returns A complete ResolveUnitsBrokenEvent with broken types, instances, and penalty
  */
 export function generateResolveUnitsBrokenEvent<TBoard extends Board>(
   state: GameState<TBoard>,
@@ -68,10 +60,30 @@ export function generateResolveUnitsBrokenEvent<TBoard extends Board>(
     }
   }
 
+  // Find all unit instances with placements that need to be routed
+  const brokenTypeIds = new Set(brokenTypes.map((type) => type.id));
+  const playerUnitsWithPlacements = getPlayerUnitsWithPlacementOnBoard(
+    state,
+    player,
+  );
+  const unitsToRout = Array.from(playerUnitsWithPlacements).filter(
+    (unitWithPlacement) =>
+      brokenTypeIds.has(unitWithPlacement.unit.unitType.id),
+  );
+
+  // Calculate total rout penalty
+  const totalRoutPenalty = unitsToRout.reduce(
+    (sum, unitWithPlacement) =>
+      sum + unitWithPlacement.unit.unitType.routPenalty,
+    0,
+  );
+
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
     player,
     unitTypes: brokenTypes,
+    unitsToRout,
+    totalRoutPenalty,
   };
 }

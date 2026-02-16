@@ -1,5 +1,6 @@
-import type { Board } from '@entities';
+import type { Board, BoardCoordinate } from '@entities';
 import type { AssertExact } from '@utils';
+import { boardCoordinateSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 
@@ -17,6 +18,8 @@ export interface CompleteIssueCommandsPhaseEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE;
+  /** The board coordinates where engagements exist. */
+  engagements: Set<BoardCoordinate<Board>>;
 }
 
 const _completeIssueCommandsPhaseEventSchemaObject = z.object({
@@ -24,6 +27,8 @@ const _completeIssueCommandsPhaseEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
+  /** The board coordinates where engagements exist. */
+  engagements: z.set(boardCoordinateSchema),
 });
 
 type CompleteIssueCommandsPhaseEventSchemaType = z.infer<
@@ -39,4 +44,5 @@ const _assertExactCompleteIssueCommandsPhaseEvent: AssertExact<
 export const completeIssueCommandsPhaseEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'completeIssueCommandsPhase'>;
+  engagements: z.ZodSet<typeof boardCoordinateSchema>;
 }> = _completeIssueCommandsPhaseEventSchemaObject;

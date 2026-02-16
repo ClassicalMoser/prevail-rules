@@ -5,12 +5,8 @@ import type {
   ResolveMeleePhaseState,
 } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import { hasEngagedUnits, RESOLVE_MELEE_PHASE } from '@entities';
-import {
-  getBoardCoordinates,
-  getBoardSpace,
-  getIssueCommandsPhaseState,
-} from '@queries';
+import { RESOLVE_MELEE_PHASE } from '@entities';
+import { getIssueCommandsPhaseState } from '@queries';
 import {
   updateCompletedPhase,
   updatePhaseState,
@@ -19,7 +15,7 @@ import {
 /**
  * Applies a CompleteIssueCommandsPhaseEvent to the game state.
  * Marks issueCommands phase as complete and advances to resolveMelee phase.
- * Sets the remaining engagements to all engaged units on the board.
+ * Uses the engagements from the event to populate remaining engagements.
  *
  * @param event - The complete issue commands phase event to apply
  * @param state - The current game state
@@ -38,23 +34,12 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
   // Add the completed phase to the set of completed phases
   const stateWithCompletedPhase = updateCompletedPhase(state, phaseState);
 
-  // Find all engagements on the board
-  const engagements = new Set<BoardCoordinate<TBoard>>();
-  const coordinates = getBoardCoordinates(state.boardState);
-
-  for (const coordinate of coordinates) {
-    const space = getBoardSpace(state.boardState, coordinate);
-    if (hasEngagedUnits(space.unitPresence)) {
-      engagements.add(coordinate);
-    }
-  }
-
-  // Create the new resolve melee phase state
+  // Create the new resolve melee phase state using engagements from the event
   const newPhaseState: ResolveMeleePhaseState<TBoard> = {
     phase: RESOLVE_MELEE_PHASE,
     step: 'resolveMelee',
     currentMeleeResolutionState: undefined,
-    remainingEngagements: engagements,
+    remainingEngagements: event.engagements as Set<BoardCoordinate<TBoard>>,
   };
 
   return updatePhaseState(stateWithCompletedPhase, newPhaseState);

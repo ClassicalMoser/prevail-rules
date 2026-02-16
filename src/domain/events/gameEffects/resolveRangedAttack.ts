@@ -1,6 +1,6 @@
-import type { Board, UnitInstance } from '@entities';
+import type { Board, UnitInstance, UnitPlacement } from '@entities';
 import type { AssertExact } from '@utils';
-import { unitInstanceSchema } from '@entities';
+import { unitInstanceSchema, unitPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 
@@ -17,12 +17,16 @@ export interface ResolveRangedAttackEvent<
   effectType: typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE;
   /** The unit that is being attacked */
   unitInstance: UnitInstance;
+  /** The current placement of the defending unit on the board. */
+  unitPlacement: UnitPlacement<Board>;
   /** Whether the unit is routed. */
   routed: boolean;
   /** Whether the unit is reversed. */
   reversed: boolean;
   /** Whether the unit is retreated. */
   retreated: boolean;
+  /** Legal retreat options for the defending unit (empty if not retreating). */
+  legalRetreats: Set<UnitPlacement<Board>>;
 }
 
 const _resolveRangedAttackEventSchemaObject = z.object({
@@ -32,12 +36,16 @@ const _resolveRangedAttackEventSchemaObject = z.object({
   effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
   /** The unit that is being attacked */
   unitInstance: unitInstanceSchema,
+  /** The current placement of the defending unit on the board. */
+  unitPlacement: unitPlacementSchema,
   /** Whether the unit is routed. */
   routed: z.boolean(),
   /** Whether the unit is reversed. */
   reversed: z.boolean(),
   /** Whether the unit is retreated. */
   retreated: z.boolean(),
+  /** Legal retreat options for the defending unit (empty if not retreating). */
+  legalRetreats: z.set(unitPlacementSchema),
 });
 
 type ResolveRangedAttackEventSchemaType = z.infer<
@@ -54,7 +62,9 @@ export const resolveRangedAttackEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveRangedAttack'>;
   unitInstance: typeof unitInstanceSchema;
+  unitPlacement: typeof unitPlacementSchema;
   routed: z.ZodBoolean;
   reversed: z.ZodBoolean;
   retreated: z.ZodBoolean;
+  legalRetreats: z.ZodSet<typeof unitPlacementSchema>;
 }> = _resolveRangedAttackEventSchemaObject;

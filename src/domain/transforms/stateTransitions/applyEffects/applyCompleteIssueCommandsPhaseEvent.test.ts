@@ -41,6 +41,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       const event: CompleteIssueCommandsPhaseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'completeIssueCommandsPhase',
+        engagements: new Set(['E-5']),
       };
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
@@ -59,6 +60,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       const event: CompleteIssueCommandsPhaseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'completeIssueCommandsPhase',
+        engagements: new Set(['E-5']),
       };
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
@@ -70,12 +72,13 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       expect(completedPhases[0]?.phase).toBe('issueCommands');
     });
 
-    it('should set remaining engagements from board', () => {
+    it('should set remaining engagements from event', () => {
       const state = createGameStateInCompleteStep();
 
       const event: CompleteIssueCommandsPhaseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'completeIssueCommandsPhase',
+        engagements: new Set(['E-5']),
       };
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
@@ -88,52 +91,16 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       expect(phaseState.remainingEngagements.has('E-5')).toBe(true);
     });
 
-    it('should find multiple engagements on board', () => {
-      const blackUnit1 = createTestUnit('black', { attack: 3 });
-      const whiteUnit1 = createTestUnit('white', { attack: 3 });
-      const state = createGameStateWithEngagedUnits(
-        blackUnit1,
-        whiteUnit1,
-        'E-5',
-      );
-
-      const blackUnit2 = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      const whiteUnit2 = createTestUnit('white', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      state.boardState.board['E-6'] = {
-        ...state.boardState.board['E-6']!,
-        unitPresence: {
-          presenceType: 'engaged',
-          primaryUnit: blackUnit2,
-          primaryFacing: 'north',
-          secondaryUnit: whiteUnit2,
-        },
-      };
-
-      const stateWithPhase = updatePhaseState(state, {
-        phase: ISSUE_COMMANDS_PHASE,
-        step: 'complete',
-        remainingCommandsFirstPlayer: new Set(),
-        remainingUnitsFirstPlayer: new Set(),
-        remainingCommandsSecondPlayer: new Set(),
-        remainingUnitsSecondPlayer: new Set(),
-        currentCommandResolutionState: undefined,
-      });
+    it('should pass through multiple engagements from event', () => {
+      const state = createGameStateInCompleteStep();
 
       const event: CompleteIssueCommandsPhaseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'completeIssueCommandsPhase',
+        engagements: new Set(['E-5', 'E-6']),
       };
 
-      const newState = applyCompleteIssueCommandsPhaseEvent(
-        event,
-        stateWithPhase,
-      );
+      const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
 
       const phaseState = newState.currentRoundState.currentPhaseState;
       if (!phaseState || phaseState.phase !== 'resolveMelee') {
@@ -151,6 +118,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       const event: CompleteIssueCommandsPhaseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'completeIssueCommandsPhase',
+        engagements: new Set(['E-5']),
       };
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
@@ -174,6 +142,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       const event: CompleteIssueCommandsPhaseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'completeIssueCommandsPhase',
+        engagements: new Set(['E-5']),
       };
 
       applyCompleteIssueCommandsPhaseEvent(event, state);
@@ -204,6 +173,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       const event: CompleteIssueCommandsPhaseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'completeIssueCommandsPhase',
+        engagements: new Set(['E-5']),
       };
 
       expect(() =>

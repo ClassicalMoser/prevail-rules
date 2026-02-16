@@ -1,6 +1,15 @@
-import type { Board, BoardCoordinate } from '@entities';
+import type {
+  Board,
+  BoardCoordinate,
+  UnitPlacement,
+  UnitWithPlacement,
+} from '@entities';
 import type { AssertExact } from '@utils';
-import { boardCoordinateSchema } from '@entities';
+import {
+  boardCoordinateSchema,
+  unitPlacementSchema,
+  unitWithPlacementSchema,
+} from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 
@@ -24,6 +33,10 @@ export interface ResolveMeleeEvent<
   effectType: typeof RESOLVE_MELEE_EFFECT_TYPE;
   /** The location of the melee. */
   location: BoardCoordinate<Board>;
+  /** The white unit with its placement. */
+  whiteUnit: UnitWithPlacement<Board>;
+  /** The black unit with its placement. */
+  blackUnit: UnitWithPlacement<Board>;
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: boolean;
   /** Whether the black player's unit is routed. */
@@ -36,6 +49,10 @@ export interface ResolveMeleeEvent<
   whiteUnitReversed: boolean;
   /** Whether the black player's unit is reversed. */
   blackUnitReversed: boolean;
+  /** Legal retreat options for the white unit (empty if not retreating). */
+  whiteLegalRetreats: Set<UnitPlacement<Board>>;
+  /** Legal retreat options for the black unit (empty if not retreating). */
+  blackLegalRetreats: Set<UnitPlacement<Board>>;
 }
 
 const _resolveMeleeEventSchemaObject = z.object({
@@ -45,6 +62,10 @@ const _resolveMeleeEventSchemaObject = z.object({
   effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
   /** The location of the melee. */
   location: boardCoordinateSchema,
+  /** The white unit with its placement. */
+  whiteUnit: unitWithPlacementSchema,
+  /** The black unit with its placement. */
+  blackUnit: unitWithPlacementSchema,
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: z.boolean(),
   /** Whether the black player's unit is routed. */
@@ -57,6 +78,10 @@ const _resolveMeleeEventSchemaObject = z.object({
   whiteUnitReversed: z.boolean(),
   /** Whether the black player's unit is reversed. */
   blackUnitReversed: z.boolean(),
+  /** Legal retreat options for the white unit (empty if not retreating). */
+  whiteLegalRetreats: z.set(unitPlacementSchema),
+  /** Legal retreat options for the black unit (empty if not retreating). */
+  blackLegalRetreats: z.set(unitPlacementSchema),
 });
 
 type ResolveMeleeEventSchemaType = z.infer<
@@ -73,10 +98,14 @@ export const resolveMeleeEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveMelee'>;
   location: typeof boardCoordinateSchema;
+  whiteUnit: typeof unitWithPlacementSchema;
+  blackUnit: typeof unitWithPlacementSchema;
   whiteUnitRouted: z.ZodBoolean;
   blackUnitRouted: z.ZodBoolean;
   whiteUnitRetreated: z.ZodBoolean;
   blackUnitRetreated: z.ZodBoolean;
   whiteUnitReversed: z.ZodBoolean;
   blackUnitReversed: z.ZodBoolean;
+  whiteLegalRetreats: z.ZodSet<typeof unitPlacementSchema>;
+  blackLegalRetreats: z.ZodSet<typeof unitPlacementSchema>;
 }> = _resolveMeleeEventSchemaObject;

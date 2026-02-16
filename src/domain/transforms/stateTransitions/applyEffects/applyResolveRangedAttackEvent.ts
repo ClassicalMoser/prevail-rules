@@ -8,18 +8,18 @@ import type {
   RetreatState,
   ReverseState,
   RoutState,
+  UnitPlacement,
 } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
 import {
   getIssueCommandsPhaseState,
-  getLegalRetreats,
-  getPositionOfUnit,
   getRangedAttackResolutionState,
 } from '@queries';
 
 /**
  * Applies a ResolveRangedAttackEvent to the game state.
  * Creates the AttackApplyState with nested substeps (rout/retreat/reverse) based on the attack results.
+ * Uses unit placement and legal retreat options from the event rather than querying the board.
  *
  * @param event - The resolve ranged attack event to apply
  * @param state - The current game state
@@ -43,11 +43,10 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
     unitReversed: event.reversed,
   };
 
-  // Get the unit's current position from the board
-  const unitPlacement = getPositionOfUnit(state.boardState, defendingUnit);
+  // Use placement data from the event
   const unitWithPlacement = {
     unit: defendingUnit,
-    placement: unitPlacement,
+    placement: event.unitPlacement as UnitPlacement<TBoard>,
   };
 
   // Create nested substeps based on attack results
@@ -67,8 +66,8 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
       completed: false,
     };
   } else if (attackResult.unitRetreated) {
-    // Calculate legal retreat options
-    const legalRetreatOptions = getLegalRetreats(unitWithPlacement, state);
+    // Use legal retreat options from the event
+    const legalRetreatOptions = event.legalRetreats as Set<UnitPlacement<TBoard>>;
 
     // Auto-select if only one option, otherwise leave undefined for player choice
     const finalPosition =

@@ -3,6 +3,7 @@ import type {
   CompletedCommitment,
   GameState,
   Modifier,
+  UnitPlacement,
 } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
 import {
@@ -12,12 +13,15 @@ import {
 import {
   applyAttackValue,
   getCurrentUnitStat,
+  getLegalRetreats,
+  getPositionOfUnit,
   getRangedAttackResolutionState,
 } from '@queries';
 
 /**
  * Generates a ResolveRangedAttackEvent by calculating the attack value
  * and determining the results (routed, reversed, retreated).
+ * Also includes unit placement and legal retreat options in the event.
  *
  * Attack value calculation:
  * - Base attack stat
@@ -26,7 +30,7 @@ import {
  * - + Active card modifiers (if unit was commanded)
  *
  * @param state - The current game state
- * @returns A complete ResolveRangedAttackEvent with the defending unit and results
+ * @returns A complete ResolveRangedAttackEvent with the defending unit, position, results, and retreat options
  * @throws Error if not in a valid state for ranged attack resolution
  */
 export function generateResolveRangedAttackEvent<TBoard extends Board>(
@@ -89,12 +93,23 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
     defendingCommitmentModifiers,
   );
 
+  // Get the unit's current position from the board
+  const placement = getPositionOfUnit(state.boardState, defendingUnit);
+  const unitWithPlacement = { unit: defendingUnit, placement };
+
+  // Compute legal retreats if retreating
+  const legalRetreats: Set<UnitPlacement<Board>> = attackResult.unitRetreated
+    ? (getLegalRetreats(unitWithPlacement, state) as Set<UnitPlacement<Board>>)
+    : new Set();
+
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
     unitInstance: defendingUnit,
+    unitPlacement: placement,
     routed: attackResult.unitRouted,
     reversed: attackResult.unitReversed,
     retreated: attackResult.unitRetreated,
+    legalRetreats,
   };
 }

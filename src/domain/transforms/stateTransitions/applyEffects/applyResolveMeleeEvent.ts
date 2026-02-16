@@ -8,18 +8,19 @@ import type {
   RetreatState,
   ReverseState,
   RoutState,
+  UnitPlacement,
+  UnitWithPlacement,
 } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
 import {
-  getLegalRetreats,
   getMeleeResolutionState,
-  getPlayerUnitWithPosition,
   getResolveMeleePhaseState,
 } from '@queries';
 
 /**
  * Applies a ResolveMeleeEvent to the game state.
  * Creates AttackApplyStates for both players with nested substeps (rout/retreat/reverse) based on the attack results.
+ * Uses unit data and legal retreat options from the event rather than querying the board.
  *
  * @param event - The resolve melee event to apply
  * @param state - The current game state
@@ -36,23 +37,9 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
     throw new Error('Attack apply states already exist');
   }
 
-  const meleeCoordinate = event.location;
-
-  // Get both units from the board
-  const whiteUnit = getPlayerUnitWithPosition(
-    state.boardState,
-    meleeCoordinate,
-    'white',
-  );
-  const blackUnit = getPlayerUnitWithPosition(
-    state.boardState,
-    meleeCoordinate,
-    'black',
-  );
-
-  if (!whiteUnit || !blackUnit) {
-    throw new Error('Units not found on board');
-  }
+  // Use unit data from the event
+  const whiteUnit = event.whiteUnit as UnitWithPlacement<TBoard>;
+  const blackUnit = event.blackUnit as UnitWithPlacement<TBoard>;
 
   // Create attack results for both units
   const whiteAttackResult: AttackResult = {
@@ -69,8 +56,9 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
 
   // Helper function to create attack apply state for a unit
   const createAttackApplyState = (
-    unit: typeof whiteUnit,
+    unit: UnitWithPlacement<TBoard>,
     attackResult: AttackResult,
+    legalRetreats: Set<UnitPlacement<TBoard>>,
   ): AttackApplyState<TBoard> | undefined => {
     if (
       !attackResult.unitRouted &&
@@ -96,19 +84,16 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
         completed: false,
       };
     } else if (attackResult.unitRetreated) {
-      // Calculate legal retreat options
-      const legalRetreatOptions = getLegalRetreats(unit, state);
-
-      // Auto-select if only one option, otherwise leave undefined for player choice
+      // Use legal retreat options from the event
       const finalPosition =
-        legalRetreatOptions.size === 1
-          ? Array.from(legalRetreatOptions)[0]
+        legalRetreats.size === 1
+          ? Array.from(legalRetreats)[0]
           : undefined;
 
       retreatState = {
         substepType: 'retreat',
         retreatingUnit: unit,
-        legalRetreatOptions,
+        legalRetreatOptions: legalRetreats,
         finalPosition,
         routState: undefined, // Will be created later if no legal retreats
         completed: false,
@@ -137,10 +122,12 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
   const whiteAttackApplyState = createAttackApplyState(
     whiteUnit,
     whiteAttackResult,
+    event.whiteLegalRetreats as Set<UnitPlacement<TBoard>>,
   );
   const blackAttackApplyState = createAttackApplyState(
     blackUnit,
     blackAttackResult,
+    event.blackLegalRetreats as Set<UnitPlacement<TBoard>>,
   );
 
   // Update melee resolution state

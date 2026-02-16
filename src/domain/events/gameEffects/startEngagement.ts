@@ -1,6 +1,6 @@
-import type { Board, EngagementType } from '@entities';
+import type { Board, EngagementType, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
-import { engagementTypeSchema } from '@entities';
+import { engagementTypeSchema, unitInstanceSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 
@@ -18,6 +18,8 @@ export interface StartEngagementEvent<
   effectType: typeof START_ENGAGEMENT_EFFECT_TYPE;
   /** The type of engagement. */
   engagementType: EngagementType;
+  /** The defending unit at the target space. */
+  defendingUnit: UnitInstance;
 }
 
 const _startEngagementEventSchemaObject = z.object({
@@ -27,6 +29,8 @@ const _startEngagementEventSchemaObject = z.object({
   effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
   /** The type of engagement. */
   engagementType: engagementTypeSchema,
+  /** The defending unit at the target space. */
+  defendingUnit: unitInstanceSchema,
 });
 
 type StartEngagementEventSchemaType = z.infer<
@@ -43,4 +47,5 @@ export const startEngagementEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'startEngagement'>;
   engagementType: typeof engagementTypeSchema;
+  defendingUnit: typeof unitInstanceSchema;
 }> = _startEngagementEventSchemaObject;

@@ -1,10 +1,15 @@
-import type { Board, CleanupPhaseState, GameState, RoutState } from '@entities';
+import type {
+  Board,
+  CleanupPhaseState,
+  GameState,
+  RoutState,
+  UnitWithPlacement,
+} from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
 
 import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
-  getPlayerUnitsWithPlacementOnBoard,
   getRallyResolutionStateForCurrentStep,
   updateRallyResolutionStateForCurrentStep,
 } from '@queries';
@@ -17,8 +22,8 @@ import {
 
 /**
  * Applies a ResolveUnitsBrokenEvent to the game state.
- * Routes all unit instances of the broken types (removes from board, adds to routed).
- * Updates the rally resolution state and advances to next step.
+ * Routes all unit instances from the event (removes from board, adds to routed).
+ * Uses units and penalty from the event rather than querying the board.
  *
  * @param event - The resolve units broken event to apply
  * @param state - The current game state
@@ -28,7 +33,7 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
   event: ResolveUnitsBrokenEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const { player, unitTypes } = event;
+  const { player, totalRoutPenalty } = event;
   const phaseState = getCleanupPhaseState(state);
 
   // Get rally resolution state for current step, validating player matches
@@ -44,12 +49,8 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
     throw new Error('Units lost support already resolved');
   }
 
-  // Find all unit instances of the broken types on the board
-  const brokenTypeIds = new Set(unitTypes.map((type) => type.id));
-  const playerUnits = getPlayerUnitsWithPlacementOnBoard(state, player);
-  const unitsToRout = Array.from(playerUnits).filter((unitWithPlacement) =>
-    brokenTypeIds.has(unitWithPlacement.unit.unitType.id),
-  );
+  // Use units from the event
+  const unitsToRout = event.unitsToRout as UnitWithPlacement<TBoard>[];
 
   // Rout all broken unit instances
   let newState = state;
@@ -62,21 +63,14 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
     newState = addUnitToRouted(newState, unitWithPlacement.unit);
   }
 
-  // Calculate total rout penalty
-  const totalPenalty = unitsToRout.reduce(
-    (sum, unitWithPlacement) =>
-      sum + unitWithPlacement.unit.unitType.routPenalty,
-    0,
-  );
-
   // Initialize rout discard state if penalty exists
   const routState: RoutState | undefined =
-    totalPenalty > 0
+    totalRoutPenalty > 0
       ? ({
           substepType: 'rout' as const,
           player,
           unitsToRout: new Set(unitsToRout.map((u) => u.unit)),
-          numberToDiscard: totalPenalty,
+          numberToDiscard: totalRoutPenalty,
           cardsChosen: false,
           completed: false,
         } satisfies RoutState)
@@ -92,7 +86,7 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
   // Next step: stay on same step if penalty, otherwise advance
   // The orchestrator will check routDiscardState to determine next action
   const finalNextStep: CleanupPhaseState['step'] =
-    totalPenalty > 0
+    totalRoutPenalty > 0
       ? phaseState.step // Stay on resolveRally step for discard penalty
       : defaultNextStep;
 

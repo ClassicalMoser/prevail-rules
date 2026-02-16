@@ -1,6 +1,10 @@
-import type { Board, PlayerSide, UnitType } from '@entities';
+import type { Board, PlayerSide, UnitType, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
-import { playerSideSchema, unitTypeSchema } from '@entities';
+import {
+  playerSideSchema,
+  unitTypeSchema,
+  unitWithPlacementSchema,
+} from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 
@@ -26,6 +30,10 @@ export interface ResolveUnitsBrokenEvent<
   player: PlayerSide;
   /** The unit types that are broken. */
   unitTypes: UnitType[];
+  /** The unit instances with placements to rout (all instances of broken types). */
+  unitsToRout: UnitWithPlacement<Board>[];
+  /** Total rout penalty from all broken units. */
+  totalRoutPenalty: number;
 }
 
 const _resolveUnitsBrokenEventSchemaObject = z.object({
@@ -37,6 +45,10 @@ const _resolveUnitsBrokenEventSchemaObject = z.object({
   player: playerSideSchema,
   /** The unit types that are broken. */
   unitTypes: z.array(unitTypeSchema),
+  /** The unit instances with placements to rout (all instances of broken types). */
+  unitsToRout: z.array(unitWithPlacementSchema),
+  /** Total rout penalty from all broken units. */
+  totalRoutPenalty: z.number(),
 });
 
 type ResolveUnitsBrokenEventSchemaType = z.infer<
@@ -54,4 +66,6 @@ export const resolveUnitsBrokenEventSchema: z.ZodObject<{
   effectType: z.ZodLiteral<'resolveUnitsBroken'>;
   player: typeof playerSideSchema;
   unitTypes: z.ZodArray<typeof unitTypeSchema>;
+  unitsToRout: z.ZodArray<typeof unitWithPlacementSchema>;
+  totalRoutPenalty: z.ZodNumber;
 }> = _resolveUnitsBrokenEventSchemaObject;

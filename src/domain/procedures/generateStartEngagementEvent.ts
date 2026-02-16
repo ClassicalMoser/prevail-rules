@@ -14,10 +14,10 @@ import {
  * Generates a StartEngagementEvent by determining the engagement type
  * based on the relative facing of the engaging unit and defending unit.
  * Checks in priority order: rear, flank, front.
- * This is called when a unit first moves into an enemy space.
+ * Also includes the defending unit from the board in the event.
  *
  * @param state - The current game state
- * @returns A complete StartEngagementEvent with the determined engagement type
+ * @returns A complete StartEngagementEvent with the determined engagement type and defending unit
  * @throws Error if not in issueCommands phase, no movement resolution, or no enemy unit at target
  */
 export function generateStartEngagementEvent<TBoard extends Board>(
@@ -28,7 +28,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
   // Get the engaging unit's facing from its target placement
   const engagingFacing = movementResolutionState.targetPlacement.facing;
 
-  // Get the defending unit's facing from the board
+  // Get the defending unit from the board
   const board = state.boardState;
   const targetSpace = getBoardSpace(
     board,
@@ -39,6 +39,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
     throw new Error('Target space does not have a single unit');
   }
 
+  const defendingUnit = targetSpace.unitPresence.unit;
   const defendingFacing = targetSpace.unitPresence.facing;
 
   // Check engagement type in priority order: rear, flank, front
@@ -49,6 +50,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'rear',
+      defendingUnit,
     };
   }
 
@@ -58,6 +60,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'flank',
+      defendingUnit,
     };
   }
 
@@ -67,6 +70,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'front',
+      defendingUnit,
     };
   }
 

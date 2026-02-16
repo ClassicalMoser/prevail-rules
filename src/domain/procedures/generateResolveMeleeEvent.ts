@@ -3,12 +3,14 @@ import type {
   CompletedCommitment,
   GameState,
   Modifier,
+  UnitPlacement,
 } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
 import {
   applyAttackValue,
   getCurrentUnitStat,
+  getLegalRetreats,
   getMeleeSupportValue,
   getPlayerUnitWithPosition,
 } from '@queries';
@@ -16,6 +18,7 @@ import {
 /**
  * Generates a ResolveMeleeEvent by calculating attack values for both units
  * and determining the results (routed, reversed, retreated for each).
+ * Also includes unit positions and legal retreat options in the event.
  *
  * Melee is bidirectional - both units attack each other simultaneously.
  *
@@ -27,7 +30,7 @@ import {
  * - + Round effect modifiers (if applicable)
  *
  * @param state - The current game state
- * @returns A complete ResolveMeleeEvent with location and results for both units
+ * @returns A complete ResolveMeleeEvent with location, units, results, and retreat options
  * @throws Error if not in a valid state for melee resolution
  */
 export function generateResolveMeleeEvent<TBoard extends Board>(
@@ -133,15 +136,29 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
     whiteUnit.unit,
   );
 
+  // Compute legal retreats for units that are retreating
+  const whiteLegalRetreats: Set<UnitPlacement<Board>> =
+    whiteUnitResult.unitRetreated
+      ? (getLegalRetreats(whiteUnit, state) as Set<UnitPlacement<Board>>)
+      : new Set();
+  const blackLegalRetreats: Set<UnitPlacement<Board>> =
+    blackUnitResult.unitRetreated
+      ? (getLegalRetreats(blackUnit, state) as Set<UnitPlacement<Board>>)
+      : new Set();
+
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_MELEE_EFFECT_TYPE,
     location: meleeCoordinate,
+    whiteUnit,
+    blackUnit,
     whiteUnitRouted: whiteUnitResult.unitRouted,
     blackUnitRouted: blackUnitResult.unitRouted,
     whiteUnitRetreated: whiteUnitResult.unitRetreated,
     blackUnitRetreated: blackUnitResult.unitRetreated,
     whiteUnitReversed: whiteUnitResult.unitReversed,
     blackUnitReversed: blackUnitResult.unitReversed,
+    whiteLegalRetreats,
+    blackLegalRetreats,
   };
 }
