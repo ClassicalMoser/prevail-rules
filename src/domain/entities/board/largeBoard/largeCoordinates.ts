@@ -1,6 +1,8 @@
+import type { AssertExact } from '@utils';
 import type { LargeBoardColumnNumber } from './largeColumnNumbers';
-import type { LargeBoardRowLetter } from './largeRowLetters';
 
+import type { LargeBoardRowLetter } from './largeRowLetters';
+import { z } from 'zod';
 import { largeBoardColumnNumbers } from './largeColumnNumbers';
 import { largeBoardRowLetters } from './largeRowLetters';
 
@@ -20,4 +22,20 @@ const computedCoordinates = largeBoardRowLetters.flatMap((row) =>
 );
 
 export const largeBoardCoordinates =
-  computedCoordinates as readonly LargeBoardCoordinate[];
+  computedCoordinates as readonly LargeBoardCoordinate[]; // This cast is safe.
+
+const _largeBoardCoordinatesSchema = z.enum(largeBoardCoordinates);
+type LargeBoardCoordinatesSchemaType = z.infer<
+  typeof _largeBoardCoordinatesSchema
+>;
+
+const _assertExactLargeBoardCoordinates: AssertExact<
+  LargeBoardCoordinate,
+  LargeBoardCoordinatesSchemaType
+> = true;
+
+/**
+ * The schema for a large board coordinate.
+ */
+export const largeBoardCoordinateSchema: z.ZodType<LargeBoardCoordinate> =
+  _largeBoardCoordinatesSchema;

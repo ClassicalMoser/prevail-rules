@@ -1,14 +1,17 @@
-export * from './largeBoard';
-export type * from './largeBoard';
+export { largeBoardSchema } from './largeBoard';
+export type { LargeBoard } from './largeBoard';
 
-export * from './largeBoardMap';
-export type * from './largeBoardMap';
+export { largeBoardCoordinateMapSchema } from './largeBoardMap';
+export type { LargeBoardCoordinateMap } from './largeBoardMap';
 
-export * from './largeColumnNumbers';
-export type * from './largeColumnNumbers';
+export { largeBoardColumnNumbers } from './largeColumnNumbers';
+export type { LargeBoardColumnNumber } from './largeColumnNumbers';
 
-export * from './largeCoordinates';
-export type * from './largeCoordinates';
+export {
+  largeBoardCoordinates,
+  largeBoardCoordinateSchema,
+} from './largeCoordinates';
+export type { LargeBoardCoordinate } from './largeCoordinates';
 
-export * from './largeRowLetters';
-export type * from './largeRowLetters';
+export { largeBoardRowLetters } from './largeRowLetters';
+export type { LargeBoardRowLetter } from './largeRowLetters';

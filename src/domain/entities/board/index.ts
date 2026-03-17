@@ -1,32 +1,26 @@
-export * from './board';
-export type * from './board';
+export { boardSchema, boardSizeEnum } from './board';
+export type { Board, BoardSize, BoardType } from './board';
 
-export * from './boardConfig';
-export type * from './boardConfig';
+export { boardCoordinateSchema } from './boardCoordinates';
+export type { BoardCoordinate } from './boardCoordinates';
 
-export * from './boardCoordinates';
-export type * from './boardCoordinates';
+export { boardSpaceSchema } from './boardSpace';
+export type { BoardSpace } from './boardSpace';
 
-export * from './boardMap';
-export type * from './boardMap';
+export {
+  coordinateLayoutMap,
+  getCoordinateLayout,
+  largeCoordinateLayout,
+  smallCoordinateLayout,
+  standardCoordinateLayout,
+} from './coordinateLayout';
+export type { CoordinateLayout, CoordinateLayoutMap } from './coordinateLayout';
 
-export * from './boardSpace';
-export type * from './boardSpace';
+export { largeBoardSchema } from './largeBoard';
+export type { LargeBoard, LargeBoardCoordinate } from './largeBoard';
 
-export * from './elevation';
-export type * from './elevation';
+export { smallBoardSchema } from './smallBoard';
+export type { SmallBoard, SmallBoardCoordinate } from './smallBoard';
 
-export * from './largeBoard';
-export type * from './largeBoard';
-
-export * from './smallBoard';
-export type * from './smallBoard';
-
-export * from './standardBoard';
-export type * from './standardBoard';
-
-export * from './terrainTypes';
-export type * from './terrainTypes';
-
-export * from './waterCover';
-export type * from './waterCover';
+export { standardBoardSchema } from './standardBoard';
+export type { StandardBoard, StandardBoardCoordinate } from './standardBoard';

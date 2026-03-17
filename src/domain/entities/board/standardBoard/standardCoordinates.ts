@@ -20,7 +20,7 @@ export type StandardBoardCoordinate =
 export const standardBoardCoordinates: readonly StandardBoardCoordinate[] =
   standardBoardRowLetters.flatMap((row) =>
     standardBoardColumnNumbers.map((column) => `${row}-${column}`),
-  ) as readonly StandardBoardCoordinate[];
+  ) as readonly StandardBoardCoordinate[]; // This cast is safe.
 
 const _standardBoardCoordinatesSchema = z.enum(standardBoardCoordinates);
 type StandardBoardCoordinatesSchemaType = z.infer<

@@ -1,14 +1,17 @@
-export * from './standardBoard';
-export type * from './standardBoard';
+export { standardBoardSchema } from './standardBoard';
+export type { StandardBoard } from './standardBoard';
 
-export * from './standardBoardMap';
-export type * from './standardBoardMap';
+export { standardBoardCoordinateMapSchema } from './standardBoardMap';
+export type { StandardBoardCoordinateMap } from './standardBoardMap';
 
-export * from './standardColumnNumbers';
-export type * from './standardColumnNumbers';
+export { standardBoardColumnNumbers } from './standardColumnNumbers';
+export type { StandardBoardColumnNumber } from './standardColumnNumbers';
 
-export * from './standardCoordinates';
-export type * from './standardCoordinates';
+export {
+  standardBoardCoordinates,
+  standardBoardCoordinateSchema,
+} from './standardCoordinates';
+export type { StandardBoardCoordinate } from './standardCoordinates';
 
-export * from './standardRowLetters';
-export type * from './standardRowLetters';
+export { standardBoardRowLetters } from './standardRowLetters';
+export type { StandardBoardRowLetter } from './standardRowLetters';

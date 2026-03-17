@@ -1,15 +1,15 @@
 import type {
   Board,
-  BoardConfig,
   BoardSpace,
+  CoordinateLayout,
   LargeBoard,
   SmallBoard,
   StandardBoard,
 } from '@entities';
 import {
-  largeBoardConfig,
-  smallBoardConfig,
-  standardBoardConfig,
+  largeCoordinateLayout,
+  smallCoordinateLayout,
+  standardCoordinateLayout,
 } from '@entities';
 
 /**
@@ -43,22 +43,22 @@ function createEmptyBoardSpace(): BoardSpace {
 }
 
 /**
- * Creates an empty board using the board config pattern.
+ * Creates an empty board using the coordinate layout.
  * Generates all coordinates and initializes them with empty spaces.
  */
-function createEmptyBoardWithConfig<
+function createEmptyBoardWithLayout<
   TBoard extends Board,
   TCoordinate extends string,
 >(
   boardType: 'standard' | 'small' | 'large',
-  config: BoardConfig<TCoordinate>,
+  layout: CoordinateLayout<TCoordinate>,
 ): TBoard {
   const board: Record<string, BoardSpace> = {};
 
   // Generate all coordinates by combining row letters and column numbers
-  for (const row of config.rowLetters) {
-    for (const column of config.columnNumbers) {
-      const coordinate = config.createCoordinate(row, column);
+  for (const row of layout.rowLetters) {
+    for (const column of layout.columnNumbers) {
+      const coordinate = layout.createCoordinate(row, column);
       board[coordinate] = createEmptyBoardSpace();
     }
   }
@@ -73,19 +73,25 @@ function createEmptyBoardWithConfig<
  * Creates an empty standard board with all coordinates initialized to default spaces.
  */
 export function createEmptyStandardBoard(): StandardBoard {
-  return createEmptyBoardWithConfig('standard', standardBoardConfig);
+  return createEmptyBoardWithLayout('standard', standardCoordinateLayout);
 }
 
 /**
  * Creates an empty small board with all coordinates initialized to default spaces.
  */
 export function createEmptySmallBoard(): SmallBoard {
-  return createEmptyBoardWithConfig('small', smallBoardConfig) as SmallBoard;
+  return createEmptyBoardWithLayout(
+    'small',
+    smallCoordinateLayout,
+  ) as SmallBoard;
 }
 
 /**
  * Creates an empty large board with all coordinates initialized to default spaces.
  */
 export function createEmptyLargeBoard(): LargeBoard {
-  return createEmptyBoardWithConfig('large', largeBoardConfig) as LargeBoard;
+  return createEmptyBoardWithLayout(
+    'large',
+    largeCoordinateLayout,
+  ) as LargeBoard;
 }

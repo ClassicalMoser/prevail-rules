@@ -1,21 +1,21 @@
 import type {
   Board,
-  BoardConfig,
   BoardCoordinate,
+  CoordinateLayout,
   UnitFacing,
 } from '@entities';
-import { getBoardConfig, unitFacingSchema } from '@entities';
+import { getCoordinateLayout, unitFacingSchema } from '@entities';
 import { getColumnDelta, getRowDelta } from './deltas';
 
 /**
  * Internal helper that performs the coordinate calculation.
- * Can be called directly with config for efficiency when called multiple times.
+ * Can be called directly with layout for efficiency when called multiple times.
  * Trusts the types - validation happens at boundaries, not here.
  */
-export function getForwardSpaceWithConfig<TCoordinate extends string>(
+export function getForwardSpaceWithLayout<TCoordinate extends string>(
   coordinate: TCoordinate,
   facing: UnitFacing,
-  config: BoardConfig<TCoordinate>,
+  layout: CoordinateLayout<TCoordinate>,
 ): TCoordinate | undefined {
   if (!coordinate.includes('-')) {
     throw new Error(`Invalid coordinate: ${coordinate}`);
@@ -25,9 +25,9 @@ export function getForwardSpaceWithConfig<TCoordinate extends string>(
   const inputRow = coordinate.split('-')[0];
   const inputColumn = coordinate.split('-')[1];
 
-  // Convert string coordinates to array indices for mathematical operations
-  const currentRowIndex = config.rowLetters.indexOf(inputRow);
-  const currentColumnIndex = config.columnNumbers.indexOf(inputColumn);
+  // Convert string coordinates to array indices (O(1) via prebuilt maps)
+  const currentRowIndex = layout.getRowIndex(inputRow);
+  const currentColumnIndex = layout.getColumnIndex(inputColumn);
 
   // Validate row and column (defensive check for invalid coordinates that bypass TypeScript)
   if (currentRowIndex === -1) {
@@ -50,19 +50,19 @@ export function getForwardSpaceWithConfig<TCoordinate extends string>(
   // Boundary check
   if (
     newRowIndex < 0 ||
-    newRowIndex >= config.rowLetters.length ||
+    newRowIndex >= layout.rowLetters.length ||
     newColumnIndex < 0 ||
-    newColumnIndex >= config.columnNumbers.length
+    newColumnIndex >= layout.columnNumbers.length
   ) {
     return undefined;
   }
 
   // Convert the calculated indices back to string coordinates
-  const newRow = config.rowLetters[newRowIndex]!;
-  const newColumn = config.columnNumbers[newColumnIndex]!;
+  const newRow = layout.rowLetters[newRowIndex]!;
+  const newColumn = layout.columnNumbers[newColumnIndex]!;
 
   // Reconstruct the coordinate string
-  return config.createCoordinate(newRow, newColumn);
+  return layout.createCoordinate(newRow, newColumn);
 }
 
 /**
@@ -78,7 +78,7 @@ export function getForwardSpaceWithConfig<TCoordinate extends string>(
  * Note: Validation happens at boundaries (when boards/coordinates are created).
  * This function trusts the types and performs no runtime validation.
  *
- * @param board - The board object (used to get config)
+ * @param board - The board object (used to get coordinate layout)
  * @param coordinate - The starting coordinate (e.g., "E-5")
  * @param facing - The direction the unit is facing (e.g., "north", "southEast")
  * @returns The forward space coordinate, or undefined if the space is out of bounds
@@ -93,10 +93,10 @@ export function getForwardSpace<TBoard extends Board>(
   coordinate: BoardCoordinate<TBoard>,
   facing: UnitFacing,
 ): BoardCoordinate<TBoard> | undefined {
-  const config = getBoardConfig(board);
-  return getForwardSpaceWithConfig<BoardCoordinate<TBoard>>(
+  const layout = getCoordinateLayout(board);
+  return getForwardSpaceWithLayout<BoardCoordinate<TBoard>>(
     coordinate,
     facing,
-    config,
+    layout,
   );
 }
