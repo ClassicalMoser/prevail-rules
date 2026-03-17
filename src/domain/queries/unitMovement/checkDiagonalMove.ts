@@ -46,11 +46,9 @@ export function checkDiagonalMove<TBoard extends Board>(
   // Get the orthogonal pass-through spaces for each adjacent facing
   const orthogonalPassThroughSpaces: BoardCoordinate<TBoard>[] = Array.from(
     adjacentFacings,
-  )
-    .map((adjacentFacing) =>
+    (adjacentFacing) =>
       getForwardSpace(board, currentCoordinate, adjacentFacing),
-    )
-    .filter((space) => space !== undefined);
+  ).filter((space) => space !== undefined);
 
   // Filter out spaces that we can't move through
   const validPassThroughSpaces = orthogonalPassThroughSpaces.filter((space) =>

@@ -12,7 +12,7 @@ describe('addUnitToRouted', () => {
 
       expect(newGameState).not.toBe(gameState);
       expect(newGameState.routedUnits.size).toBe(1);
-      expect(Array.from(newGameState.routedUnits)).toContain(unit);
+      expect([...newGameState.routedUnits]).toContain(unit);
     });
 
     it('should not mutate the original game state', () => {
@@ -35,8 +35,8 @@ describe('addUnitToRouted', () => {
       const newGameState = addUnitToRouted(gameStateWithUnit1, unit2);
 
       expect(newGameState.routedUnits.size).toBe(2);
-      expect(Array.from(newGameState.routedUnits)).toContain(unit1);
-      expect(Array.from(newGameState.routedUnits)).toContain(unit2);
+      expect([...newGameState.routedUnits]).toContain(unit1);
+      expect([...newGameState.routedUnits]).toContain(unit2);
     });
 
     it('should not mutate the original game state when adding second unit', () => {
@@ -48,7 +48,7 @@ describe('addUnitToRouted', () => {
       addUnitToRouted(gameStateWithUnit1, unit2);
 
       expect(gameStateWithUnit1.routedUnits.size).toBe(1);
-      expect(Array.from(gameStateWithUnit1.routedUnits)).toContain(unit1);
+      expect([...gameStateWithUnit1.routedUnits]).toContain(unit1);
     });
   });
 

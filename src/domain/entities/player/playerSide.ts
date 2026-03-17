@@ -1,12 +1,13 @@
 import type { AssertExact } from '@utils';
 import { z } from 'zod';
 
-export const playerSide = ['black', 'white'] as const;
+/** Iterable list of valid player sides. */
+export const playerSides = ['black', 'white'] as const;
 
 /** The side of a player. */
-export type PlayerSide = (typeof playerSide)[number];
+export type PlayerSide = (typeof playerSides)[number];
 
-const _playerSideSchemaObject = z.enum(playerSide);
+const _playerSideSchemaObject = z.enum(playerSides);
 
 type PlayerSideSchemaType = z.infer<typeof _playerSideSchemaObject>;
 

@@ -38,18 +38,19 @@ const _assertExact: AssertExact<Entity, EntitySchemaType> = true;
 
 **Declaration Ordering Convention:**
 
-1. **Exported interface/type** - Public API, what consumers see
-2. **Unexported schema object** - Implementation detail for type inference
-3. **Inferred type** - Implementation detail for AssertExact
-4. **Exported schema with JSDoc** - Public API with documentation
-5. **AssertExact check** - Internal verification (never exported)
+1. **Exported literal constants / tuples (if any)** - Public API values used as type sources
+2. **Exported interface/type** - Public API, what consumers see
+3. **Unexported schema object** - Implementation detail for type inference
+4. **Inferred type** - Internal implementation detail for `AssertExact`
+5. **Exported schema with JSDoc** - Public API with documentation
+6. **AssertExact check** - Internal verification (never exported)
 
 **Key Requirements:**
 
 - Use `z.ZodType<T>` constraint on **exported** schemas for `isolatedDeclarations` compatibility
 - Define interface before schema to avoid circular references
-- Infer type from **unconstrained** schema object to ensure type drift detection works
-- **Never export** `AssertExact` assertions or inferred `SchemaType` types (causes `isolatedDeclarations` errors)
+- Infer the schema type with `z.infer<typeof _schemaObject>` and compare it to the manual type with `AssertExact`
+- **Never export** `AssertExact` assertions or inferred `SchemaType` aliases (causes `isolatedDeclarations` errors)
 - Place JSDoc comments on the **exported** schema, not the unexported schema object
 
 ### Why This Pattern?
@@ -253,5 +254,8 @@ const space = getBoardSpace(standardBoard, smallCoord); // Error!
 - ✅ Use `z.ZodType<T>` for schema constraints
 - ✅ Use `z.ZodObject<...>` for explicit object schema types
 - ✅ Use explicit array types: `readonly Type[]` instead of inferred types
-- ❌ Never use `typeof` in type annotations (extract values separately if needed)
+- ✅ Use `typeof SOME_CONST` for exported literal constants when the type must stay coupled to the value
+- ✅ Use `(typeof SOME_CONST)[number]` for unions derived from `as const` tuples
+- ✅ Use `z.infer<typeof _schemaObject>` for schema drift checks
+- ❌ Never use `typeof` as a shortcut for a domain shape when a manual type should own the contract
 - ❌ Never use `any` type assertions

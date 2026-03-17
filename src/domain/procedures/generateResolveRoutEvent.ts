@@ -129,7 +129,7 @@ export function generateResolveRoutEvent<TBoard extends Board>(
   }
 
   // Calculate total penalty from all units
-  const totalPenalty = Array.from(routState.unitsToRout).reduce(
+  const totalPenalty = [...routState.unitsToRout].reduce(
     (sum, unit) => sum + unit.unitType.routPenalty,
     0,
   );

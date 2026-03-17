@@ -23,13 +23,13 @@ type ExpectedGameEffectSchemaType = z.infer<
   typeof _expectedGameEffectSchemaObject
 >;
 
-const _assertExactExpectedGameEffect: AssertExact<
-  ExpectedGameEffect<Board>,
-  ExpectedGameEffectSchemaType
-> = true;
-
 /** The schema for expected game effect. */
 export const expectedGameEffectSchema: z.ZodObject<{
   actionType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodType<GameEffectType>;
 }> = _expectedGameEffectSchemaObject;
+
+const _assertExactExpectedGameEffect: AssertExact<
+  ExpectedGameEffect<Board>,
+  ExpectedGameEffectSchemaType
+> = true;

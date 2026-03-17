@@ -25,9 +25,9 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
   const attackingPlayer = event.player;
   const attackingUnit = event.unit.unit;
   const defendingUnit = event.targetUnit.unit;
-  const supportingUnits = new Set(
-    Array.from(event.supportingUnits).map((uwp) => uwp.unit),
-  );
+  // Convert the supporting units to an array for iteration
+  const supportingUnitsArray = [...event.supportingUnits];
+  const supportingUnits = new Set(supportingUnitsArray.map((uwp) => uwp.unit));
 
   // Determine which step we're in and which remaining units set to use
   const isFirstPlayer = attackingPlayer === state.currentInitiative;
@@ -65,7 +65,7 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
   // Remove the participating units from remaining units
   // Use isSameUnitInstance for value equality, not reference equality
   const newRemainingUnits = new Set(
-    Array.from(remainingUnits).filter((unit) => {
+    [...remainingUnits].filter((unit) => {
       // Keep units that are not the attacking unit
       if (isSameUnitInstance(unit, attackingUnit).result) {
         return false;

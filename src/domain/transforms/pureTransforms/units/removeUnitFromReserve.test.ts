@@ -23,7 +23,7 @@ describe('removeUnitFromReserve', () => {
       removeUnitFromReserve(gameState, unit);
 
       expect(gameState.reservedUnits.size).toBe(1);
-      expect(Array.from(gameState.reservedUnits)).toContain(unit);
+      expect([...gameState.reservedUnits]).toContain(unit);
     });
   });
 
@@ -37,8 +37,8 @@ describe('removeUnitFromReserve', () => {
       const newGameState = removeUnitFromReserve(gameState, unit1);
 
       expect(newGameState.reservedUnits.size).toBe(1);
-      expect(Array.from(newGameState.reservedUnits)).toContain(unit2);
-      expect(Array.from(newGameState.reservedUnits)).not.toContain(unit1);
+      expect([...newGameState.reservedUnits]).toContain(unit2);
+      expect([...newGameState.reservedUnits]).not.toContain(unit1);
     });
 
     it('should remove unit using value equality for filtering', () => {
@@ -52,7 +52,7 @@ describe('removeUnitFromReserve', () => {
       const newGameState = removeUnitFromReserve(gameState, unit1);
 
       expect(newGameState.reservedUnits.size).toBe(1);
-      expect(Array.from(newGameState.reservedUnits)).toContain(unit2);
+      expect([...newGameState.reservedUnits]).toContain(unit2);
     });
 
     it('should not mutate the original game state when removing from multiple units', () => {
@@ -64,8 +64,8 @@ describe('removeUnitFromReserve', () => {
       removeUnitFromReserve(gameState, unit1);
 
       expect(gameState.reservedUnits.size).toBe(2);
-      expect(Array.from(gameState.reservedUnits)).toContain(unit1);
-      expect(Array.from(gameState.reservedUnits)).toContain(unit2);
+      expect([...gameState.reservedUnits]).toContain(unit1);
+      expect([...gameState.reservedUnits]).toContain(unit2);
     });
   });
 

@@ -23,7 +23,7 @@ describe('getLegalRetreats', () => {
     },
   ): boolean {
     const { coordinate, facing } = match;
-    const result = Array.from(placements).find((p) => {
+    const result = [...placements].find((p) => {
       if (coordinate !== undefined && p.coordinate !== coordinate) {
         return false;
       }

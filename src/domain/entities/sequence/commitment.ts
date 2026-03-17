@@ -14,17 +14,18 @@ const _pendingCommitmentSchemaObject = z.object({
   commitmentType: z.literal('pending'),
 });
 
-const _assertExactPendingCommitment: AssertExact<
-  PendingCommitment,
-  PendingCommitmentSchemaType
-> = true;
+type PendingCommitmentSchemaType = z.infer<
+  typeof _pendingCommitmentSchemaObject
+>;
 
 /** The schema for a pending commitment. */
 export const pendingCommitmentSchema: z.ZodType<PendingCommitment> =
   _pendingCommitmentSchemaObject;
-type PendingCommitmentSchemaType = z.infer<
-  typeof _pendingCommitmentSchemaObject
->;
+
+const _assertExactPendingCommitment: AssertExact<
+  PendingCommitment,
+  PendingCommitmentSchemaType
+> = true;
 
 /** A commitment that has been declined. */
 export interface DeclinedCommitment {
@@ -37,17 +38,18 @@ const _declinedCommitmentSchemaObject = z.object({
   commitmentType: z.literal('declined'),
 });
 
-const _assertExactDeclinedCommitment: AssertExact<
-  DeclinedCommitment,
-  DeclinedCommitmentSchemaType
-> = true;
+type DeclinedCommitmentSchemaType = z.infer<
+  typeof _declinedCommitmentSchemaObject
+>;
 
 /** The schema for a declined commitment. */
 export const declinedCommitmentSchema: z.ZodType<DeclinedCommitment> =
   _declinedCommitmentSchemaObject;
-type DeclinedCommitmentSchemaType = z.infer<
-  typeof _declinedCommitmentSchemaObject
->;
+
+const _assertExactDeclinedCommitment: AssertExact<
+  DeclinedCommitment,
+  DeclinedCommitmentSchemaType
+> = true;
 
 /** A commitment that has been completed. */
 export interface CompletedCommitment {
@@ -68,14 +70,14 @@ type CompletedCommitmentSchemaType = z.infer<
   typeof _completedCommitmentSchemaObject
 >;
 
+/** The schema for a completed commitment. */
+export const completedCommitmentSchema: z.ZodType<CompletedCommitment> =
+  _completedCommitmentSchemaObject;
+
 const _assertExactCompletedCommitment: AssertExact<
   CompletedCommitment,
   CompletedCommitmentSchemaType
 > = true;
-
-/** The schema for a completed commitment. */
-export const completedCommitmentSchema: z.ZodType<CompletedCommitment> =
-  _completedCommitmentSchemaObject;
 
 /** A player's commitment of a card. */
 export type Commitment =
@@ -91,8 +93,8 @@ const _commitmentSchemaObject = z.discriminatedUnion('commitmentType', [
 
 type CommitmentSchemaType = z.infer<typeof _commitmentSchemaObject>;
 
-const _assertExactCommitment: AssertExact<Commitment, CommitmentSchemaType> =
-  true;
-
 /** The schema for a commitment. */
 export const commitmentSchema: z.ZodType<Commitment> = _commitmentSchemaObject;
+
+const _assertExactCommitment: AssertExact<Commitment, CommitmentSchemaType> =
+  true;

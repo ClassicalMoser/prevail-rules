@@ -7,7 +7,7 @@ export function addUnitToRouted<TBoard extends Board>(
   unit: UnitInstance,
 ): GameState<TBoard> {
   // Check for unit existence using value equality, not reference equality
-  const unitAlreadyRouted = Array.from(gameState.routedUnits).some(
+  const unitAlreadyRouted = [...gameState.routedUnits].some(
     (u) => isSameUnitInstance(u, unit).result,
   );
   if (unitAlreadyRouted) {

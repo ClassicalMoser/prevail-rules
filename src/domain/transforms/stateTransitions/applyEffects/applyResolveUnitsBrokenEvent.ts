@@ -47,7 +47,7 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
   // Find all unit instances of the broken types on the board
   const brokenTypeIds = new Set(unitTypes.map((type) => type.id));
   const playerUnits = getPlayerUnitsWithPlacementOnBoard(state, player);
-  const unitsToRout = Array.from(playerUnits).filter((unitWithPlacement) =>
+  const unitsToRout = [...playerUnits].filter((unitWithPlacement) =>
     brokenTypeIds.has(unitWithPlacement.unit.unitType.id),
   );
 

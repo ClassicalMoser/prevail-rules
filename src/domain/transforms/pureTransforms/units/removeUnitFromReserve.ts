@@ -6,7 +6,7 @@ export function removeUnitFromReserve<TBoard extends Board>(
   unit: UnitInstance,
 ): GameState<TBoard> {
   // Check for unit existence using value equality, not reference equality
-  const unitExists = Array.from(gameState.reservedUnits).some(
+  const unitExists = [...gameState.reservedUnits].some(
     (u) => isSameUnitInstance(u, unit).result,
   );
   if (!unitExists) {

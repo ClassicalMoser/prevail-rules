@@ -33,12 +33,6 @@ type EngagedUnitPresenceSchemaType = z.infer<
   typeof _engagedUnitPresenceSchemaObject
 >;
 
-// Verify manual type matches schema inference
-const _assertExactEngagedUnitPresence: AssertExact<
-  EngagedUnitPresence,
-  EngagedUnitPresenceSchemaType
-> = true;
-
 /**
  * The schema for two units engaged in combat in a space.
  */
@@ -48,3 +42,9 @@ export const engagedUnitPresenceSchema: z.ZodObject<{
   primaryFacing: typeof unitFacingSchema;
   secondaryUnit: typeof unitInstanceSchema;
 }> = _engagedUnitPresenceSchemaObject;
+
+// Verify manual type matches schema inference
+const _assertExactEngagedUnitPresence: AssertExact<
+  EngagedUnitPresence,
+  EngagedUnitPresenceSchemaType
+> = true;

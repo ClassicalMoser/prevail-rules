@@ -47,14 +47,14 @@ type PlayCardsPhaseStateSchemaType = z.infer<
   typeof _playCardsPhaseStateSchemaObject
 >;
 
-// Verify manual type matches schema inference
-const _assertExactPlayCardsPhaseState: AssertExact<
-  PlayCardsPhaseState,
-  PlayCardsPhaseStateSchemaType
-> = true;
-
 /** The schema for the state of the card phase. */
 export const playCardsPhaseStateSchema: z.ZodObject<{
   phase: z.ZodLiteral<'playCards'>;
   step: z.ZodType<PlayCardsPhaseStep>;
 }> = _playCardsPhaseStateSchemaObject;
+
+// Verify manual type matches schema inference
+const _assertExactPlayCardsPhaseState: AssertExact<
+  PlayCardsPhaseState,
+  PlayCardsPhaseStateSchemaType
+> = true;

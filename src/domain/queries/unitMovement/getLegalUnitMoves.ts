@@ -60,9 +60,12 @@ export function getLegalUnitMoves<TBoard extends Board>(
   // Get the legal moves by exploring all combinations of speed and flexibility
   const legalMoves = exploreUnitMoves(gameState, unitWithPlacement, 'advance');
 
+  // Convert the legal moves to an array for iteration
+  const legalMovesArray = [...legalMoves];
+
   // Convert the move results to final placements
   const legalPlacements = new Set<UnitPlacement<TBoard>>(
-    Array.from(legalMoves).map((result) => result.placement),
+    legalMovesArray.map((result) => result.placement),
   );
 
   return legalPlacements;

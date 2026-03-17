@@ -102,7 +102,7 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
       // Auto-select if only one option, otherwise leave undefined for player choice
       const finalPosition =
         legalRetreatOptions.size === 1
-          ? Array.from(legalRetreatOptions)[0]
+          ? [...legalRetreatOptions][0]
           : undefined;
 
       retreatState = {

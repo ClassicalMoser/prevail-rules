@@ -40,7 +40,7 @@ export function applyResolveRoutEvent<TBoard extends Board>(
     phaseState.phase === 'resolveMelee'
   ) {
     // Get the current rout state from attack apply
-    const routedUnits = Array.from(event.unitInstances);
+    const routedUnits = [...event.unitInstances];
     if (routedUnits.length === 0) {
       throw new Error('No units to rout');
     }

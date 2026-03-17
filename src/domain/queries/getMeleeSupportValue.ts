@@ -23,7 +23,7 @@ export function getMeleeSupportValue(
   // Get the spaces behind the primary unit
   const spacesBehind = getSpacesBehind(board, unitCoordinate, unitFacing);
   // Filter out the spaces behind the primary unit
-  const adjacentSpacesNotBehind = Array.from(adjacentSpaces).filter(
+  const adjacentSpacesNotBehind = [...adjacentSpaces].filter(
     (space) => !spacesBehind.has(space),
   );
 

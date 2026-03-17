@@ -1,8 +1,4 @@
-import type {
-  GameState,
-  StandardBoard,
-  UnitWithPlacement,
-} from '@entities';
+import type { GameState, StandardBoard, UnitWithPlacement } from '@entities';
 import type { ResolveRoutEvent } from '@events';
 import {
   getAttackApplyStateFromMelee,

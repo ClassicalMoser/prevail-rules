@@ -1,4 +1,7 @@
-export { getAttackApplyStateFromContext, updateAttackApplySubstep } from './attackApplyContext';
+export {
+  getAttackApplyStateFromContext,
+  updateAttackApplySubstep,
+} from './attackApplyContext';
 export { updateAttackApplyState } from './updateAttackApplyState';
 export { updateCommandResolutionState } from './updateCommandResolutionState';
 export { updateMeleeAttackApplyState } from './updateMeleeAttackApplyState';

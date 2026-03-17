@@ -25,11 +25,11 @@ const _attackResultSchemaObject = z.object({
 type AttackResultSchemaType = z.infer<typeof _attackResultSchemaObject>;
 
 /** Assert that the attack result is exact. */
+/** The schema for an attack result. */
+export const attackResultSchema: z.ZodType<AttackResult> =
+  _attackResultSchemaObject;
+
 const _assertExactAttackResult: AssertExact<
   AttackResult,
   AttackResultSchemaType
 > = true;
-
-/** The schema for an attack result. */
-export const attackResultSchema: z.ZodType<AttackResult> =
-  _attackResultSchemaObject;

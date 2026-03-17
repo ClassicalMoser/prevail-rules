@@ -3,6 +3,9 @@ import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getBoardCoordinates } from './getBoardCoordinates';
 
+const standardBoardCoordinateRegex = /^[A-L]-\d+$/;
+const smallBoardCoordinateRegex = /^[A-H]-\d+$/;
+
 describe('getBoardCoordinates', () => {
   describe('standard board', () => {
     it('should return all coordinates for a standard board', () => {
@@ -72,7 +75,7 @@ describe('getBoardCoordinates', () => {
       // All coordinates should be valid standard board coordinates
       coordinates.forEach((coord) => {
         expect(typeof coord).toBe('string');
-        expect(coord).toMatch(/^[A-L]-\d+$/);
+        expect(coord).toMatch(standardBoardCoordinateRegex);
       });
     });
 
@@ -83,7 +86,7 @@ describe('getBoardCoordinates', () => {
       // All coordinates should be valid small board coordinates
       coordinates.forEach((coord) => {
         expect(typeof coord).toBe('string');
-        expect(coord).toMatch(/^[A-H]-\d+$/);
+        expect(coord).toMatch(smallBoardCoordinateRegex);
       });
     });
   });

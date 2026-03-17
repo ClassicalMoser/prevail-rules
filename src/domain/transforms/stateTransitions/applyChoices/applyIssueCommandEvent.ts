@@ -44,7 +44,7 @@ export function applyIssueCommandEvent<TBoard extends Board>(
 
   // Remove the matching command from remaining commands
   const newRemainingCommands: Set<Command> = new Set(
-    Array.from(remainingCommands).filter((c) => c !== matchingCommand),
+    [...remainingCommands].filter((c) => c !== matchingCommand),
   );
 
   // Update phase state with new remaining commands

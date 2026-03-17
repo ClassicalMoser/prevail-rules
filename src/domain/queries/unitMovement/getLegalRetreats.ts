@@ -133,7 +133,7 @@ export function getLegalRetreats<TBoard extends Board>(
   );
 
   // Convert the explored moves to an array for iteration.
-  const legalRetreatsArray = Array.from(exploredMoves);
+  const legalRetreatsArray = [...exploredMoves];
 
   // Find the moves with the lowest speed, then lowest flexibility.
   const minimumRetreats = new Set<MoveResult<TBoard>>();
@@ -175,9 +175,12 @@ export function getLegalRetreats<TBoard extends Board>(
     }
   }
 
+  // Convert the minimum retreats to an array for iteration
+  const minimumRetreatsArray = [...minimumRetreats];
+
   // Get the positions of the minimum retreats
   const minimumRetreatPositions = new Set<UnitPlacement<TBoard>>(
-    Array.from(minimumRetreats).map((r) => r.placement),
+    minimumRetreatsArray.map((r) => r.placement),
   );
 
   // Return the minimum retreats

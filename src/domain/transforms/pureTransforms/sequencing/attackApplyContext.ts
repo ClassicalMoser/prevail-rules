@@ -1,9 +1,4 @@
-import type {
-  AttackApplyState,
-  Board,
-  GameState,
-  PlayerSide,
-} from '@entities';
+import type { AttackApplyState, Board, GameState, PlayerSide } from '@entities';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -64,7 +59,9 @@ export function getAttackApplyStateFromContext<TBoard extends Board>(
  */
 export function updateAttackApplySubstep<TBoard extends Board, TSubstep>(
   state: GameState<TBoard>,
-  updateFn: (attackApplyState: AttackApplyState<TBoard>) => AttackApplyState<TBoard>,
+  updateFn: (
+    attackApplyState: AttackApplyState<TBoard>,
+  ) => AttackApplyState<TBoard>,
   getPlayer: (substep: TSubstep) => PlayerSide,
   substepState: TSubstep,
 ): GameState<TBoard> {

@@ -37,14 +37,14 @@ describe('addUnitsToCommandedUnits', () => {
     );
 
     expect(newState.currentRoundState.commandedUnits.size).toBe(3);
-    expect(
-      Array.from(newState.currentRoundState.commandedUnits).includes(unit1),
-    ).toBe(true);
-    expect(
-      Array.from(newState.currentRoundState.commandedUnits).includes(unit2),
-    ).toBe(true);
-    expect(
-      Array.from(newState.currentRoundState.commandedUnits).includes(unit3),
-    ).toBe(true);
+    expect([...newState.currentRoundState.commandedUnits].includes(unit1)).toBe(
+      true,
+    );
+    expect([...newState.currentRoundState.commandedUnits].includes(unit2)).toBe(
+      true,
+    );
+    expect([...newState.currentRoundState.commandedUnits].includes(unit3)).toBe(
+      true,
+    );
   });
 });

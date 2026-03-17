@@ -26,7 +26,7 @@ export function applyChooseMeleeEvent<TBoard extends Board>(
   }
 
   // Update the remaining engagements with the space removed
-  const newRemainingEngagementsArray = Array.from(remainingEngagements);
+  const newRemainingEngagementsArray = [...remainingEngagements];
   const newRemainingEngagements = new Set(
     newRemainingEngagementsArray.filter((s) => s !== space),
   );

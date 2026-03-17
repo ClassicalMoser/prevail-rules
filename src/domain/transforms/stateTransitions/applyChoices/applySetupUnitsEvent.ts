@@ -8,7 +8,7 @@ export function applySetupUnitsEvent<TBoard extends Board>(
 ): GameState<TBoard> {
   const unitPlacements = event.unitPlacements;
   const startingBoard = state.boardState;
-  const newBoard = Array.from(unitPlacements).reduce(
+  const newBoard = [...unitPlacements].reduce(
     (board: TBoard, unitPlacement: UnitWithPlacement<TBoard>) => {
       return addUnitToBoard(board, unitPlacement);
     },

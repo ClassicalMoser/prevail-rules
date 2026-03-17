@@ -23,14 +23,14 @@ type ResolveMeleePhaseStepSchemaType = z.infer<
   typeof _resolveMeleePhaseStepSchemaObject
 >;
 
+/** The schema for the step of the resolve melee phase. */
+export const resolveMeleePhaseStepSchema: z.ZodType<ResolveMeleePhaseStep> =
+  _resolveMeleePhaseStepSchemaObject;
+
 const _assertExactResolveMeleePhaseStep: AssertExact<
   ResolveMeleePhaseStep,
   ResolveMeleePhaseStepSchemaType
 > = true;
-
-/** The schema for the step of the resolve melee phase. */
-export const resolveMeleePhaseStepSchema: z.ZodType<ResolveMeleePhaseStep> =
-  _resolveMeleePhaseStepSchemaObject;
 
 /** The state of the resolve melee phase. */
 export interface ResolveMeleePhaseState<TBoard extends Board> {
@@ -59,11 +59,6 @@ type ResolveMeleePhaseStateSchemaType = z.infer<
   typeof _resolveMeleePhaseStateSchemaObject
 >;
 
-const _assertExactResolveMeleePhaseState: AssertExact<
-  ResolveMeleePhaseState<Board>,
-  ResolveMeleePhaseStateSchemaType
-> = true;
-
 /** The schema for the state of the resolve melee phase. */
 export const resolveMeleePhaseStateSchema: z.ZodObject<{
   phase: z.ZodLiteral<'resolveMelee'>;
@@ -73,3 +68,8 @@ export const resolveMeleePhaseStateSchema: z.ZodObject<{
   >;
   remainingEngagements: z.ZodSet<z.ZodType<BoardCoordinate<Board>>>;
 }> = _resolveMeleePhaseStateSchemaObject;
+
+const _assertExactResolveMeleePhaseState: AssertExact<
+  ResolveMeleePhaseState<Board>,
+  ResolveMeleePhaseStateSchemaType
+> = true;

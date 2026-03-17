@@ -1,8 +1,4 @@
-import type {
-  Board,
-  GameState,
-  RoutState,
-} from '@entities';
+import type { Board, GameState, RoutState } from '@entities';
 import { updateAttackApplySubstep } from './attackApplyContext';
 
 /**

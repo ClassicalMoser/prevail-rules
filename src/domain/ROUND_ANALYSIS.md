@@ -115,55 +115,55 @@ A round consists of 5 phases in order:
 
 **Expected:** `playerChoice` from `firstPlayer` - `issueCommand` (loop until all commands issued)
 
-| Engine            | Status         | Notes                                                         |
-| ----------------- | -------------- | ------------------------------------------------------------- |
-| **1. Transform**  | ✅ Complete    | `applyIssueCommandEvent` implemented + tested                 |
-| **2. Validation** | ❌ **Missing** | `validateIssueCommandsPhaseEvent` not implemented             |
-| **3. Procedure**  | N/A            | Player choice, no procedure needed                            |
+| Engine            | Status         | Notes                                                                                                                                                   |
+| ----------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Transform**  | ✅ Complete    | `applyIssueCommandEvent` implemented + tested                                                                                                           |
+| **2. Validation** | ❌ **Missing** | `validateIssueCommandsPhaseEvent` not implemented                                                                                                       |
+| **3. Procedure**  | N/A            | Player choice, no procedure needed                                                                                                                      |
 | **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests. Test quality improved for other expected event functions with schema validation pattern. |
 
 ### Step 2: `firstPlayerResolveCommands`
 
 **Expected:** `playerChoice` from `firstPlayer` - `moveUnit` or `performRangedAttack` (loop through issued commands)
 
-| Engine            | Status         | Notes                                                         |
-| ----------------- | -------------- | ------------------------------------------------------------- |
-| **1. Transform**  | ⚠️ Partial     | `applyMoveUnitEvent` ✅, `applyPerformRangedAttackEvent` ❌   |
-| **2. Validation** | ❌ **Missing** | Phase validation not implemented                              |
-| **3. Procedure**  | N/A            | Player choices, no procedures needed                          |
+| Engine            | Status         | Notes                                                                                                                                                   |
+| ----------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Transform**  | ⚠️ Partial     | `applyMoveUnitEvent` ✅, `applyPerformRangedAttackEvent` ❌                                                                                             |
+| **2. Validation** | ❌ **Missing** | Phase validation not implemented                                                                                                                        |
+| **3. Procedure**  | N/A            | Player choices, no procedures needed                                                                                                                    |
 | **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests. Test quality improved for other expected event functions with schema validation pattern. |
 
 ### Step 3: `secondPlayerIssueCommands`
 
 **Expected:** `playerChoice` from `secondPlayer` - `issueCommand` (loop until all commands issued)
 
-| Engine            | Status         | Notes                                                         |
-| ----------------- | -------------- | ------------------------------------------------------------- |
-| **1. Transform**  | ✅ Complete    | `applyIssueCommandEvent` implemented + tested                 |
-| **2. Validation** | ❌ **Missing** | Phase validation not implemented                              |
-| **3. Procedure**  | N/A            | Player choice, no procedure needed                            |
+| Engine            | Status         | Notes                                                                                                                                                   |
+| ----------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Transform**  | ✅ Complete    | `applyIssueCommandEvent` implemented + tested                                                                                                           |
+| **2. Validation** | ❌ **Missing** | Phase validation not implemented                                                                                                                        |
+| **3. Procedure**  | N/A            | Player choice, no procedure needed                                                                                                                      |
 | **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests. Test quality improved for other expected event functions with schema validation pattern. |
 
 ### Step 4: `secondPlayerResolveCommands`
 
 **Expected:** `playerChoice` from `secondPlayer` - `moveUnit` or `performRangedAttack` (loop through issued commands)
 
-| Engine            | Status         | Notes                                                         |
-| ----------------- | -------------- | ------------------------------------------------------------- |
-| **1. Transform**  | ⚠️ Partial     | `applyMoveUnitEvent` ✅, `applyPerformRangedAttackEvent` ❌   |
-| **2. Validation** | ❌ **Missing** | Phase validation not implemented                              |
-| **3. Procedure**  | N/A            | Player choices, no procedures needed                          |
+| Engine            | Status         | Notes                                                                                                                                                   |
+| ----------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Transform**  | ⚠️ Partial     | `applyMoveUnitEvent` ✅, `applyPerformRangedAttackEvent` ❌                                                                                             |
+| **2. Validation** | ❌ **Missing** | Phase validation not implemented                                                                                                                        |
+| **3. Procedure**  | N/A            | Player choices, no procedures needed                                                                                                                    |
 | **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests. Test quality improved for other expected event functions with schema validation pattern. |
 
 ### Step 5: `complete`
 
 **Expected:** `gameEffect` - `completeIssueCommandsPhase`
 
-| Engine            | Status         | Notes                                                         |
-| ----------------- | -------------- | ------------------------------------------------------------- |
-| **1. Transform**  | ✅ Complete    | `applyCompleteIssueCommandsPhaseEvent` implemented + tested   |
-| **2. Validation** | ❌ **Missing** | Phase validation not implemented                              |
-| **3. Procedure**  | ✅ Complete    | `generateCompleteIssueCommandsPhaseEvent` ✅ + tested         |
+| Engine            | Status         | Notes                                                                                                                                                   |
+| ----------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Transform**  | ✅ Complete    | `applyCompleteIssueCommandsPhaseEvent` implemented + tested                                                                                             |
+| **2. Validation** | ❌ **Missing** | Phase validation not implemented                                                                                                                        |
+| **3. Procedure**  | ✅ Complete    | `generateCompleteIssueCommandsPhaseEvent` ✅ + tested                                                                                                   |
 | **4. Next Event** | ⚠️ **Partial** | `getExpectedIssueCommandsPhaseEvent` implemented, needs tests. Test quality improved for other expected event functions with schema validation pattern. |
 
 **Phase 3 Summary:** 🟡 **In Progress** - Remaining:
@@ -173,6 +173,7 @@ A round consists of 5 phases in order:
 - Tests for `getExpectedIssueCommandsPhaseEvent` (next event)
 
 **Recent Improvements:**
+
 - ✅ Applied schema validation pattern to expected event tests for improved type safety (`getExpectedPlayCardsPhaseEvent`, `getExpectedMoveCommandersPhaseEvent`, `getExpectedAttackApplyEvent`)
 
 ---

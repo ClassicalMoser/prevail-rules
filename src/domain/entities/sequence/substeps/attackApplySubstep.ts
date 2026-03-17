@@ -64,12 +64,6 @@ const _attackApplyStateSchemaObject = z.object({
 
 type AttackApplyStateSchemaType = z.infer<typeof _attackApplyStateSchemaObject>;
 
-// Assert that the attack apply state is exact.
-const _assertExactAttackApplyState: AssertExact<
-  AttackApplyState<Board>,
-  AttackApplyStateSchemaType
-> = true;
-
 /** The schema for the state of the attack apply substep. */
 export const attackApplyStateSchema: z.ZodObject<{
   substepType: z.ZodLiteral<'attackApply'>;
@@ -80,3 +74,9 @@ export const attackApplyStateSchema: z.ZodObject<{
   reverseState: z.ZodType<ReverseState<Board> | undefined>;
   completed: z.ZodType<boolean>;
 }> = _attackApplyStateSchemaObject;
+
+// Assert that the attack apply state is exact.
+const _assertExactAttackApplyState: AssertExact<
+  AttackApplyState<Board>,
+  AttackApplyStateSchemaType
+> = true;

@@ -18,7 +18,7 @@ describe('exploreUnitMoves', () => {
     },
   ): boolean {
     const { coordinate, facing, flexibilityUsed, speedUsed } = match;
-    const result = Array.from(moves).find((m) => {
+    const result = [...moves].find((m) => {
       if (coordinate !== undefined && m.placement.coordinate !== coordinate) {
         return false;
       }
@@ -710,7 +710,7 @@ describe('exploreUnitMoves', () => {
         throw new Error('Unit not found');
       }
       const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const undefinedResults = Array.from(moves).filter(
+      const undefinedResults = [...moves].filter(
         (m) => m.placement.coordinate === undefined,
       );
       expect(undefinedResults.length).toBe(0);

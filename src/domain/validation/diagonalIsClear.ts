@@ -42,7 +42,7 @@ export function diagonalIsClear<TBoard extends Board>(
     );
     // Find intersection: spaces that are in both sets
     const sharedOrthogonalSpaces = new Set(
-      Array.from(originOrthogonalSpaces).filter((space) =>
+      [...originOrthogonalSpaces].filter((space) =>
         targetOrthogonalSpaces.has(space),
       ),
     );
@@ -58,7 +58,7 @@ export function diagonalIsClear<TBoard extends Board>(
     }
 
     // Get the enemy spaces
-    const enemySpaces = Array.from(sharedOrthogonalSpaces).filter((space) => {
+    const enemySpaces = [...sharedOrthogonalSpaces].filter((space) => {
       // Check if the space has an enemy unit
       const { result: hasEnemyUnitResult } = hasEnemyUnit(
         playerSide,

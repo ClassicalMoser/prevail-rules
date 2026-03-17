@@ -63,9 +63,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
 
-      const completedPhases = Array.from(
-        newState.currentRoundState.completedPhases,
-      );
+      const completedPhases = [...newState.currentRoundState.completedPhases];
       expect(completedPhases).toHaveLength(1);
       expect(completedPhases[0]?.phase).toBe('issueCommands');
     });

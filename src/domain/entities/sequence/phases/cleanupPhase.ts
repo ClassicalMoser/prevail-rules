@@ -27,14 +27,14 @@ export type CleanupPhaseStep = (typeof cleanupPhaseSteps)[number];
 const _cleanupPhaseStepSchemaObject = z.enum(cleanupPhaseSteps);
 type CleanupPhaseStepSchemaType = z.infer<typeof _cleanupPhaseStepSchemaObject>;
 
+/** The schema for the step of the cleanup phase. */
+export const cleanupPhaseStepSchema: z.ZodType<CleanupPhaseStep> =
+  _cleanupPhaseStepSchemaObject;
+
 const _assertExactCleanupPhaseStep: AssertExact<
   CleanupPhaseStep,
   CleanupPhaseStepSchemaType
 > = true;
-
-/** The schema for the step of the cleanup phase. */
-export const cleanupPhaseStepSchema: z.ZodType<CleanupPhaseStep> =
-  _cleanupPhaseStepSchemaObject;
 
 /** The state of the cleanup phase. */
 export interface CleanupPhaseState {
@@ -65,11 +65,6 @@ type CleanupPhaseStateSchemaType = z.infer<
   typeof _cleanupPhaseStateSchemaObject
 >;
 
-const _assertExactCleanupPhaseState: AssertExact<
-  CleanupPhaseState,
-  CleanupPhaseStateSchemaType
-> = true;
-
 /** The schema for the state of the cleanup phase. */
 export const cleanupPhaseStateSchema: z.ZodObject<{
   phase: z.ZodLiteral<'cleanup'>;
@@ -77,3 +72,8 @@ export const cleanupPhaseStateSchema: z.ZodObject<{
   firstPlayerRallyResolutionState: z.ZodType<RallyResolutionState | undefined>;
   secondPlayerRallyResolutionState: z.ZodType<RallyResolutionState | undefined>;
 }> = _cleanupPhaseStateSchemaObject;
+
+const _assertExactCleanupPhaseState: AssertExact<
+  CleanupPhaseState,
+  CleanupPhaseStateSchemaType
+> = true;

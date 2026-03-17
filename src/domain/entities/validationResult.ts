@@ -13,13 +13,13 @@ type PassValidationResultSchemaType = z.infer<
   typeof passValidationResultSchemaObject
 >;
 
+export const passValidationResultSchema: z.ZodType<PassValidationResult> =
+  passValidationResultSchemaObject;
+
 const _assertExactPassValidationResult: AssertExact<
   PassValidationResult,
   PassValidationResultSchemaType
 > = true;
-
-export const passValidationResultSchema: z.ZodType<PassValidationResult> =
-  passValidationResultSchemaObject;
 
 export interface FailValidationResult {
   result: false;
@@ -35,13 +35,13 @@ type FailValidationResultSchemaType = z.infer<
   typeof failValidationResultSchemaObject
 >;
 
+export const failValidationResultSchema: z.ZodType<FailValidationResult> =
+  failValidationResultSchemaObject;
+
 const _assertExactFailValidationResult: AssertExact<
   FailValidationResult,
   FailValidationResultSchemaType
 > = true;
-
-export const failValidationResultSchema: z.ZodType<FailValidationResult> =
-  failValidationResultSchemaObject;
 
 export type ValidationResult = PassValidationResult | FailValidationResult;
 
@@ -52,10 +52,10 @@ const validationResultSchemaObject = z.discriminatedUnion('result', [
 
 type ValidationResultSchemaType = z.infer<typeof validationResultSchemaObject>;
 
+export const validationResultSchema: z.ZodType<ValidationResult> =
+  validationResultSchemaObject;
+
 const _assertExactValidationResult: AssertExact<
   ValidationResult,
   ValidationResultSchemaType
 > = true;
-
-export const validationResultSchema: z.ZodType<ValidationResult> =
-  validationResultSchemaObject;

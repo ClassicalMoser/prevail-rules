@@ -19,7 +19,7 @@ export function isLegalMove<TBoard extends Board>(
     const unitWithPlacement: UnitWithPlacement<TBoard> = unit;
     const legalMoves = getLegalUnitMoves(unitWithPlacement, gameState);
     // Set.has() uses reference equality, so we need to check by value
-    return Array.from(legalMoves).some(
+    return [...legalMoves].some(
       (move) => move.coordinate === to.coordinate && move.facing === to.facing,
     );
   } catch {

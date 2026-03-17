@@ -18,13 +18,13 @@ type MoveCommandersPhaseStepSchemaType = z.infer<
   typeof _moveCommandersPhaseStepSchemaObject
 >;
 
+export const moveCommandersPhaseStepSchema: z.ZodType<MoveCommandersPhaseStep> =
+  _moveCommandersPhaseStepSchemaObject;
+
 const _assertExactMoveCommandersPhaseStep: AssertExact<
   MoveCommandersPhaseStep,
   MoveCommandersPhaseStepSchemaType
 > = true;
-
-export const moveCommandersPhaseStepSchema: z.ZodType<MoveCommandersPhaseStep> =
-  _moveCommandersPhaseStepSchemaObject;
 
 /** The state of the move commanders phase. */
 export interface MoveCommandersPhaseState {
@@ -45,13 +45,13 @@ type MoveCommandersPhaseStateSchemaType = z.infer<
   typeof _moveCommandersPhaseStateSchemaObject
 >;
 
-const _assertExactMoveCommandersPhaseState: AssertExact<
-  MoveCommandersPhaseState,
-  MoveCommandersPhaseStateSchemaType
-> = true;
-
 /** The schema for the state of the move commanders phase. */
 export const moveCommandersPhaseStateSchema: z.ZodObject<{
   phase: z.ZodLiteral<'moveCommanders'>;
   step: z.ZodType<MoveCommandersPhaseStep>;
 }> = _moveCommandersPhaseStateSchemaObject;
+
+const _assertExactMoveCommandersPhaseState: AssertExact<
+  MoveCommandersPhaseState,
+  MoveCommandersPhaseStateSchemaType
+> = true;

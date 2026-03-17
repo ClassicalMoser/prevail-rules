@@ -22,7 +22,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(1);
       expect(line.unitPlacements[0]?.unit).toBe(unit);
       expect(line.unitPlacements[0]?.placement.coordinate).toBe(coordinate);
@@ -48,7 +48,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(2);
       expect(line.unitPlacements[0]?.unit).toBe(unit1);
       expect(line.unitPlacements[1]?.unit).toBe(unit2);
@@ -71,7 +71,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(2);
     });
   });
@@ -98,7 +98,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(5);
     });
 
@@ -125,7 +125,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(8);
     });
   });
@@ -194,7 +194,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(2);
       expect(line.unitPlacements[0]?.unit).toBe(unit1);
       expect(line.unitPlacements[1]?.unit).toBe(unit2);
@@ -234,7 +234,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(2);
       expect(line.unitPlacements[0]?.unit).toBe(friendlyUnit1);
       expect(line.unitPlacements[1]?.unit).toBe(friendlyUnit2);
@@ -260,7 +260,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(2);
     });
   });
@@ -292,7 +292,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement, ['mounted']);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(1); // Only unit1, unit2 breaks the line
       expect(line.unitPlacements[0]?.unit).toBe(unit1);
     });
@@ -329,7 +329,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement, [], [unitType1]);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(1); // Only unit1, unit2 breaks the line
       expect(line.unitPlacements[0]?.unit).toBe(unit1);
     });
@@ -396,7 +396,7 @@ describe('getLinesFromUnit', () => {
       const lines = getLinesFromUnit(board, unitWithPlacement);
 
       expect(lines.size).toBe(1);
-      const line = Array.from(lines)[0];
+      const line = [...lines][0];
       expect(line.unitPlacements).toHaveLength(2);
     });
   });

@@ -30,7 +30,7 @@ function getSpacesInDirection<TBoard extends Board>(
 
   // Add all spaces extending to the edge
   // Convert to array to avoid iterating over a set while modifying it
-  const spacesArray = Array.from(spaces);
+  const spacesArray = [...spaces];
   for (const space of spacesArray) {
     const spacesToEdge = getForwardSpacesToEdge(board, space, extensionFacing);
     for (const spaceToEdge of spacesToEdge) spaces.add(spaceToEdge);

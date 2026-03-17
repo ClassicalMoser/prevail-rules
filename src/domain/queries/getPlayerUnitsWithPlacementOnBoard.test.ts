@@ -22,7 +22,7 @@ describe('getPlayerUnitsWithPlacementOnBoard', () => {
     const whiteUnits = getPlayerUnitsWithPlacementOnBoard(state, 'white');
 
     expect(whiteUnits.size).toBe(2);
-    const whiteUnitsArray = Array.from(whiteUnits);
+    const whiteUnitsArray = [...whiteUnits];
     expect(
       whiteUnitsArray.some(
         (u) => u.unit === unit1 && u.placement.coordinate === 'E-5',
@@ -59,7 +59,7 @@ describe('getPlayerUnitsWithPlacementOnBoard', () => {
     const whiteUnits = getPlayerUnitsWithPlacementOnBoard(state, 'white');
 
     expect(whiteUnits.size).toBe(1);
-    const unitWithPlacement = Array.from(whiteUnits)[0];
+    const unitWithPlacement = [...whiteUnits][0];
     expect(unitWithPlacement?.unit).toBe(unit);
     expect(unitWithPlacement?.placement.coordinate).toBe('E-5');
     expect(unitWithPlacement?.placement.facing).toBe('north');

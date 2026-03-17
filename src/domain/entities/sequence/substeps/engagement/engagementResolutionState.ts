@@ -27,11 +27,11 @@ type EngagementResolutionStateSchemaType = z.infer<
   typeof _engagementResolutionStateSchemaObject
 >;
 
+/** The schema for the engagement resolution state. */
+export const engagementResolutionStateSchema: z.ZodType<EngagementResolutionState> =
+  _engagementResolutionStateSchemaObject;
+
 const _assertExactEngagementResolutionState: AssertExact<
   EngagementResolutionState,
   EngagementResolutionStateSchemaType
 > = true;
-
-/** The schema for the engagement resolution state. */
-export const engagementResolutionStateSchema: z.ZodType<EngagementResolutionState> =
-  _engagementResolutionStateSchemaObject;

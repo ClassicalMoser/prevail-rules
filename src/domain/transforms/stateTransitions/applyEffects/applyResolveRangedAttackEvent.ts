@@ -72,9 +72,7 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
 
     // Auto-select if only one option, otherwise leave undefined for player choice
     const finalPosition =
-      legalRetreatOptions.size === 1
-        ? Array.from(legalRetreatOptions)[0]
-        : undefined;
+      legalRetreatOptions.size === 1 ? [...legalRetreatOptions][0] : undefined;
 
     // Create retreat state
     retreatState = {

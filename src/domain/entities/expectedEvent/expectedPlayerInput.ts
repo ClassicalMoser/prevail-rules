@@ -15,14 +15,14 @@ const _playerSourceSchemaObject = z.enum(playerSources);
 
 type PlayerSourceSchemaType = z.infer<typeof _playerSourceSchemaObject>;
 
+/** The schema for a player source. */
+export const playerSourceSchema: z.ZodType<PlayerSource> =
+  _playerSourceSchemaObject;
+
 const _assertExactPlayerSource: AssertExact<
   PlayerSource,
   PlayerSourceSchemaType
 > = true;
-
-/** The schema for a player source. */
-export const playerSourceSchema: z.ZodType<PlayerSource> =
-  _playerSourceSchemaObject;
 
 /**
  * Expected event is player input (wait for user).
@@ -46,14 +46,14 @@ type ExpectedPlayerInputSchemaType = z.infer<
   typeof _expectedPlayerInputSchemaObject
 >;
 
-const _assertExactExpectedPlayerInput: AssertExact<
-  ExpectedPlayerInput<Board>,
-  ExpectedPlayerInputSchemaType
-> = true;
-
 /** The schema for expected player input. */
 export const expectedPlayerInputSchema: z.ZodObject<{
   actionType: z.ZodLiteral<'playerChoice'>;
   playerSource: typeof playerSourceSchema;
   choiceType: typeof playerChoiceTypeSchema;
 }> = _expectedPlayerInputSchemaObject;
+
+const _assertExactExpectedPlayerInput: AssertExact<
+  ExpectedPlayerInput<Board>,
+  ExpectedPlayerInputSchemaType
+> = true;

@@ -68,9 +68,9 @@ describe('applyIssueCommandEvent', () => {
 
       expect(phaseState.remainingCommandsFirstPlayer.has(command)).toBe(false);
       // Check unit presence using value equality, not reference equality
-      const unitInCommandedUnits = Array.from(
-        newState.currentRoundState.commandedUnits,
-      ).some((u) => isSameUnitInstance(u, unit).result);
+      const unitInCommandedUnits = [
+        ...newState.currentRoundState.commandedUnits,
+      ].some((u) => isSameUnitInstance(u, unit).result);
       expect(unitInCommandedUnits).toBe(true);
     });
 
@@ -96,9 +96,9 @@ describe('applyIssueCommandEvent', () => {
 
       expect(phaseState.remainingCommandsSecondPlayer.has(command)).toBe(false);
       // Check unit presence using value equality, not reference equality
-      const unitInCommandedUnits = Array.from(
-        newState.currentRoundState.commandedUnits,
-      ).some((u) => isSameUnitInstance(u, unit).result);
+      const unitInCommandedUnits = [
+        ...newState.currentRoundState.commandedUnits,
+      ].some((u) => isSameUnitInstance(u, unit).result);
       expect(unitInCommandedUnits).toBe(true);
     });
 
@@ -119,12 +119,12 @@ describe('applyIssueCommandEvent', () => {
       const newState = applyIssueCommandEvent(event, state);
 
       // Check unit presence using value equality, not reference equality
-      const unit1InCommandedUnits = Array.from(
-        newState.currentRoundState.commandedUnits,
-      ).some((u) => isSameUnitInstance(u, unit1).result);
-      const unit2InCommandedUnits = Array.from(
-        newState.currentRoundState.commandedUnits,
-      ).some((u) => isSameUnitInstance(u, unit2).result);
+      const unit1InCommandedUnits = [
+        ...newState.currentRoundState.commandedUnits,
+      ].some((u) => isSameUnitInstance(u, unit1).result);
+      const unit2InCommandedUnits = [
+        ...newState.currentRoundState.commandedUnits,
+      ].some((u) => isSameUnitInstance(u, unit2).result);
       expect(unit1InCommandedUnits).toBe(true);
       expect(unit2InCommandedUnits).toBe(true);
       expect(newState.currentRoundState.commandedUnits.size).toBe(2);

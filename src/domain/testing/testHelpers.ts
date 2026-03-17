@@ -26,7 +26,7 @@ export function hasMove(
   coordinate: StandardBoardCoordinate,
   facing?: UnitFacing,
 ): boolean {
-  return Array.from(legalMoves).some(
+  return [...legalMoves].some(
     (move) =>
       move.coordinate === coordinate &&
       (facing === undefined || move.facing === facing),

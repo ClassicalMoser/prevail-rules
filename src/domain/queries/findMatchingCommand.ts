@@ -12,7 +12,7 @@ export function findMatchingCommand(
   commands: Set<Command>,
   targetCommand: Command,
 ): Command | undefined {
-  return Array.from(commands).find((c) => {
+  return [...commands].find((c) => {
     // Compare primitive properties
     if (c.type !== targetCommand.type) {
       return false;

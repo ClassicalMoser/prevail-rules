@@ -32,6 +32,7 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 ## Phase 0: Foundation (Quick Wins)
 
 ### Test Helpers to Extract
+
 - [x] Extract `createRoutState()` helper from `applyResolveRoutEvent.test.ts` → `phaseStateHelpers.ts` ✅
 - [x] Extract `createReverseState()` helper → `phaseStateHelpers.ts` ✅
 - [x] Extract `createRallyResolutionState()` helper → `phaseStateHelpers.ts` ✅
@@ -40,6 +41,7 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 **Note:** These are test helpers (convenience wrappers), NOT initializers (production code).
 
 ### Complete Partial Coverage
+
 - [ ] `getExpectedRetreatEvent` - Complete from 40% → 100%
 - [ ] `getExpectedReverseEvent` - Complete from 60% → 100%
 - [ ] `getExpectedRoutEvent` - Complete from 42.85% → 100%
@@ -49,11 +51,13 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 ## Phase 1: Play Cards
 
 ### Procedures
+
 - [x] `generateCompletePlayCardsPhaseEvent` ✅
 - [x] `generateResolveInitiativeEvent` ✅
 - [ ] `generateRevealCardsEvent` - 0% coverage
 
 ### Expected Events
+
 - [x] `getExpectedPlayCardsPhaseEvent` ✅
 - [ ] `getExpectedEvent` router - 0% coverage (test main entry point)
 
@@ -64,9 +68,11 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 ## Phase 2: Move Commanders
 
 ### Procedures
+
 - [x] `generateCompleteMoveCommandersPhaseEvent` ✅
 
 ### Expected Events
+
 - [x] `getExpectedMoveCommandersPhaseEvent` ✅
 
 **Status:** Complete ✅
@@ -76,12 +82,14 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 ## Phase 3: Issue Commands
 
 ### Procedures
+
 - [x] `generateCompleteIssueCommandsPhaseEvent` ✅
 - [ ] `generateCompleteUnitMovementEvent` - 0% coverage
 - [ ] `generateCompleteRangedAttackCommandEvent` - 0% coverage
 - [ ] `generateStartEngagementEvent` - 0% coverage
 
 ### Expected Events
+
 - [ ] `getExpectedIssueCommandsPhaseEvent` - 0% coverage
 - [ ] `getExpectedStartCommandResolutionEvent` - 0% coverage
 
@@ -92,6 +100,7 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 ## Phase 4: Resolve Melee
 
 ### Procedures
+
 - [ ] `generateResolveMeleeEvent` - 0% coverage
 - [ ] `generateResolveFlankEngagementEvent` - 0% coverage
 - [ ] `generateResolveEngageRetreatOptionEvent` - 0% coverage
@@ -99,6 +108,7 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 - [ ] `generateCompleteResolveMeleePhaseEvent` - 0% coverage
 
 ### Expected Events
+
 - [ ] `getExpectedResolveMeleePhaseEvent` - 0% coverage
 - [ ] `getExpectedEngagementEvent` - 0% coverage
 - [x] `getExpectedAttackApplyEvent` ✅ (100% coverage)
@@ -113,12 +123,14 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 ## Phase 5: Cleanup
 
 ### Procedures
+
 - [ ] `generateDiscardPlayedCardsEvent` - 0% coverage
 - [ ] `generateResolveRallyEvent` - 0% coverage
 - [ ] `generateResolveUnitsBrokenEvent` - 0% coverage
 - [ ] `generateCompleteCleanupPhaseEvent` - 0% coverage
 
 ### Expected Events
+
 - [ ] `getExpectedCleanupPhaseEvent` - 0% coverage
 - [ ] `getExpectedRallyResolutionEvent` - 0% coverage
 
@@ -129,6 +141,7 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 ## Cross-Phase: Attack Resolution
 
 ### Procedures
+
 - [ ] `generateResolveRangedAttackEvent` - 0% coverage
 - [ ] `generateResolveRetreatEvent` - 0% coverage
 - [ ] `generateResolveReverseEvent` - 0% coverage
@@ -143,6 +156,7 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 ## Critical Integration Points
 
 ### Routers (High Priority)
+
 - [ ] `procedureRegistry.ts` - 0% coverage (test registry routing)
 - [ ] `getExpectedEvent.ts` - 0% coverage (test main router)
 - [ ] `validateEvent.ts` - 0% coverage (test validation router)
@@ -154,6 +168,7 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 ## Testing Patterns
 
 ### For Procedures
+
 ```typescript
 describe('generateXEvent', () => {
   // ✅ GOOD: Use existing helpers from @testing
@@ -188,6 +203,7 @@ describe('generateXEvent', () => {
 ```
 
 ### For Expected Events
+
 ```typescript
 describe('getExpectedXEvent', () => {
   // ✅ GOOD: Use existing helpers + pure transforms
@@ -223,6 +239,7 @@ describe('getExpectedXEvent', () => {
 **Target Coverage:** 80%+ statements, 70%+ branches
 
 **Focus Areas:**
+
 1. ✅ Phase 0: Foundation helpers
 2. ⏳ Phase 3: Issue Commands (next priority)
 3. ⏳ Phase 4: Resolve Melee (largest gap)

@@ -21,7 +21,7 @@ describe('isValidLine', () => {
         'black',
       )!;
       const lines = getLinesFromUnit(board, unitWithPlacement);
-      const line = Array.from(lines)[0]!;
+      const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
       expect(result).toBe(true);
@@ -41,7 +41,7 @@ describe('isValidLine', () => {
         'black',
       )!;
       const lines = getLinesFromUnit(board, unitWithPlacement);
-      const line = Array.from(lines)[0]!;
+      const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
       expect(result).toBe(true);
@@ -61,7 +61,7 @@ describe('isValidLine', () => {
         'black',
       )!;
       const lines = getLinesFromUnit(board, unitWithPlacement);
-      const line = Array.from(lines)[0]!;
+      const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
       expect(result).toBe(true);
@@ -88,7 +88,7 @@ describe('isValidLine', () => {
         'black',
       )!;
       const lines = getLinesFromUnit(board, unitWithPlacement);
-      const line = Array.from(lines)[0]!;
+      const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
       expect(result).toBe(true);
@@ -109,7 +109,7 @@ describe('isValidLine', () => {
         'black',
       )!;
       const lines = getLinesFromUnit(board, unitWithPlacement);
-      const line = Array.from(lines)[0]!;
+      const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
       expect(result).toBe(true);
@@ -131,7 +131,7 @@ describe('isValidLine', () => {
         'black',
       )!;
       const lines = getLinesFromUnit(board, unitWithPlacement);
-      const line = Array.from(lines)[0]!;
+      const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
       expect(result).toBe(true);
