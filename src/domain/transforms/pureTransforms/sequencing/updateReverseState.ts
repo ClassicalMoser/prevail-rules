@@ -1,14 +1,5 @@
-import type {
-  Board,
-  GameState,
-  IssueCommandsPhaseState,
-  MeleeResolutionState,
-  ResolveMeleePhaseState,
-  ReverseState,
-} from '@entities';
+import type { Board, GameState, ReverseState } from '@entities';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
   getCurrentPhaseState,
   getIssueCommandsPhaseState,
   getMeleeResolutionState,
@@ -19,20 +10,11 @@ import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the reverse state updated in an attack apply state.
- * Handles both ranged attack resolution (issueCommands phase) and melee resolution (resolveMelee phase).
- * Uses queries internally to navigate to the reverse state.
+ * Reverse only occurs in attack-apply context (ranged attack or melee resolution).
  *
  * @param state - The current game state
  * @param reverseState - The new reverse state to set
  * @returns A new game state with the updated reverse state
- *
- * @example
- * ```ts
- * const newState = updateReverseState(state, {
- *   ...getReverseStateFromAttackApply(getAttackApplyStateFromRangedAttack(state)),
- *   completed: true,
- * });
- * ```
  */
 export function updateReverseState<TBoard extends Board>(
   state: GameState<TBoard>,
@@ -40,90 +22,60 @@ export function updateReverseState<TBoard extends Board>(
 ): GameState<TBoard> {
   const phaseState = getCurrentPhaseState<TBoard>(state);
 
-  // Handle ranged attack resolution (in issueCommands phase)
   if (phaseState.phase === 'issueCommands') {
-    const issueCommandsPhaseState = getIssueCommandsPhaseState(state);
-    const rangedAttackState = getRangedAttackResolutionState(state);
-    const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+    const issueState = getIssueCommandsPhaseState(state);
+    const commandState = issueState.currentCommandResolutionState;
 
-    if (!attackApplyState.reverseState) {
-      throw new Error('No reverse state found in attack apply state');
+    if (commandState?.commandResolutionType === 'rangedAttack') {
+      const ranged = getRangedAttackResolutionState(state);
+      const attackApply = ranged.attackApplyState;
+      if (!attackApply?.reverseState) {
+        throw new Error('No reverse state found in attack apply state');
+      }
+      return updatePhaseState(state, {
+        ...issueState,
+        currentCommandResolutionState: {
+          ...ranged,
+          attackApplyState: { ...attackApply, reverseState },
+        },
+      });
     }
 
-    const newAttackApplyState = {
-      ...attackApplyState,
-      reverseState,
-    };
-
-    const newRangedAttackState = {
-      ...rangedAttackState,
-      attackApplyState: newAttackApplyState,
-    };
-
-    const newPhaseState: IssueCommandsPhaseState<TBoard> = {
-      ...issueCommandsPhaseState,
-      currentCommandResolutionState: newRangedAttackState,
-    };
-
-    return updatePhaseState(state, newPhaseState);
+    throw new Error(
+      `Reverse state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? 'none'})`,
+    );
   }
 
-  // Handle melee resolution (in resolveMelee phase)
   if (phaseState.phase === 'resolveMelee') {
-    const resolveMeleePhaseState = getResolveMeleePhaseState(state);
-    const meleeState = getMeleeResolutionState(state);
-    const firstPlayer = state.currentInitiative;
+    const resolveMelee = getResolveMeleePhaseState(state);
+    const melee = getMeleeResolutionState(state);
+    const player = reverseState.reversingUnit.unit.playerSide;
 
-    // Determine which player's reverse state this is
-    const reversingPlayer = reverseState.reversingUnit.unit.playerSide;
-    const isFirstPlayerReverse = reversingPlayer === firstPlayer;
-
-    let newMeleeState: MeleeResolutionState<TBoard>;
-    if (isFirstPlayerReverse) {
-      const firstPlayerAttackApply = getAttackApplyStateFromMelee(
-        state,
-        firstPlayer,
-      );
-      if (!firstPlayerAttackApply.reverseState) {
-        throw new Error('No reverse state found for first player');
+    if (player === 'white') {
+      const whiteApply = melee.whiteAttackApplyState;
+      if (!whiteApply?.reverseState) {
+        throw new Error('No reverse state found in attack apply state');
       }
-      const newAttackApplyState = {
-        ...firstPlayerAttackApply,
-        reverseState,
-      };
-      newMeleeState = {
-        ...meleeState,
-        ...(firstPlayer === 'white'
-          ? { whiteAttackApplyState: newAttackApplyState }
-          : { blackAttackApplyState: newAttackApplyState }),
-      };
-    } else {
-      const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
-      const secondPlayerAttackApply = getAttackApplyStateFromMelee(
-        state,
-        secondPlayer,
-      );
-      if (!secondPlayerAttackApply.reverseState) {
-        throw new Error('No reverse state found for second player');
-      }
-      const newAttackApplyState = {
-        ...secondPlayerAttackApply,
-        reverseState,
-      };
-      newMeleeState = {
-        ...meleeState,
-        ...(firstPlayer === 'white'
-          ? { blackAttackApplyState: newAttackApplyState }
-          : { whiteAttackApplyState: newAttackApplyState }),
-      };
+      return updatePhaseState(state, {
+        ...resolveMelee,
+        currentMeleeResolutionState: {
+          ...melee,
+          whiteAttackApplyState: { ...whiteApply, reverseState },
+        },
+      });
     }
 
-    const newPhaseState: ResolveMeleePhaseState<TBoard> = {
-      ...resolveMeleePhaseState,
-      currentMeleeResolutionState: newMeleeState,
-    };
-
-    return updatePhaseState(state, newPhaseState);
+    const blackApply = melee.blackAttackApplyState;
+    if (!blackApply?.reverseState) {
+      throw new Error('No reverse state found in attack apply state');
+    }
+    return updatePhaseState(state, {
+      ...resolveMelee,
+      currentMeleeResolutionState: {
+        ...melee,
+        blackAttackApplyState: { ...blackApply, reverseState },
+      },
+    });
   }
 
   throw new Error(

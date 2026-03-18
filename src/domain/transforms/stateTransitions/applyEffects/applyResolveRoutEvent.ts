@@ -1,19 +1,12 @@
-import type {
-  Board,
-  CleanupPhaseState,
-  GameState,
-  RallyResolutionState,
-  RoutState,
-} from '@entities';
+import type { Board, GameState, RoutState } from '@entities';
 import type { ResolveRoutEvent } from '@events';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
-  getCleanupPhaseState,
   getCurrentRallyResolutionState,
   getRoutStateFromRally,
 } from '@queries';
-import { updatePhaseState, updateRoutState } from '@transforms/pureTransforms';
+import { updateRoutState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveRoutEvent to the game state.
@@ -66,38 +59,15 @@ export function applyResolveRoutEvent<TBoard extends Board>(
     return updateRoutState(state, newRoutState);
   }
 
-  // Handle rally resolution (in cleanup phase)
+  // Handle rally resolution (cleanup phase: routs from lost support)
   if (phaseState.phase === 'cleanup') {
-    const cleanupPhaseState = getCleanupPhaseState(state);
     const rallyState = getCurrentRallyResolutionState(state);
-    const routState = getRoutStateFromRally(rallyState);
-
-    // Set the number to discard
+    const currentRoutState = getRoutStateFromRally(rallyState);
     const newRoutState: RoutState = {
-      ...routState,
+      ...currentRoutState,
       numberToDiscard: event.penalty,
     };
-
-    // Update rally state
-    const newRallyState: RallyResolutionState = {
-      ...rallyState,
-      routState: newRoutState,
-    };
-
-    // Update phase state
-    const isFirstPlayerStep =
-      cleanupPhaseState.step === 'firstPlayerResolveRally';
-    const newPhaseState: CleanupPhaseState = isFirstPlayerStep
-      ? {
-          ...cleanupPhaseState,
-          firstPlayerRallyResolutionState: newRallyState,
-        }
-      : {
-          ...cleanupPhaseState,
-          secondPlayerRallyResolutionState: newRallyState,
-        };
-
-    return updatePhaseState(state, newPhaseState);
+    return updateRoutState(state, newRoutState);
   }
 
   throw new Error(`Rout resolution not expected in phase: ${phaseState.phase}`);

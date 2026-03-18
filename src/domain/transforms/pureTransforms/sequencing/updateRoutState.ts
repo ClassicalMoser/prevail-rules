@@ -1,43 +1,108 @@
 import type { Board, GameState, RoutState } from '@entities';
-import { updateAttackApplySubstep } from './attackApplyContext';
+import {
+  getCleanupPhaseState,
+  getCurrentPhaseState,
+  getCurrentRallyResolutionState,
+  getIssueCommandsPhaseState,
+  getMeleeResolutionState,
+  getRangedAttackResolutionState,
+  getResolveMeleePhaseState,
+  updateRallyResolutionStateForCurrentStep,
+} from '@queries';
+import { updatePhaseState } from '../state';
 
 /**
- * Creates a new game state with the rout state updated in an attack apply state.
- * Handles both ranged attack resolution (issueCommands phase) and melee resolution (resolveMelee phase).
- * Uses queries internally to navigate to the rout state.
+ * Creates a new game state with the rout state updated.
+ * Rout can occur in:
+ * - Ranged attack resolution (issueCommands phase)
+ * - Melee resolution (resolveMelee phase)
+ * - Rally resolution / lost support (cleanup phase)
  *
  * @param state - The current game state
  * @param routState - The new rout state to set
  * @returns A new game state with the updated rout state
- *
- * @example
- * ```ts
- * const newState = updateRoutState(state, {
- *   substepType: 'rout',
- *   player: 'white',
- *   unitsToRout: new Set([unit]),
- *   numberToDiscard: 2,
- *   cardsChosen: false,
- *   completed: false,
- * });
- * ```
  */
 export function updateRoutState<TBoard extends Board>(
   state: GameState<TBoard>,
   routState: RoutState,
 ): GameState<TBoard> {
-  return updateAttackApplySubstep(
-    state,
-    (attackApplyState) => {
-      if (!attackApplyState.routState) {
+  const phaseState = getCurrentPhaseState<TBoard>(state);
+
+  if (phaseState.phase === 'issueCommands') {
+    const issueState = getIssueCommandsPhaseState(state);
+    const commandState = issueState.currentCommandResolutionState;
+
+    if (commandState?.commandResolutionType === 'rangedAttack') {
+      const ranged = getRangedAttackResolutionState(state);
+      const attackApply = ranged.attackApplyState;
+      if (!attackApply?.routState) {
         throw new Error('No rout state found in attack apply state');
       }
-      return {
-        ...attackApplyState,
-        routState,
-      };
-    },
-    (rout) => rout.player,
-    routState,
+      return updatePhaseState(state, {
+        ...issueState,
+        currentCommandResolutionState: {
+          ...ranged,
+          attackApplyState: { ...attackApply, routState },
+        },
+      });
+    }
+
+    throw new Error(
+      `Rout state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? 'none'})`,
+    );
+  }
+
+  if (phaseState.phase === 'resolveMelee') {
+    const resolveMelee = getResolveMeleePhaseState(state);
+    const melee = getMeleeResolutionState(state);
+    const player = routState.player;
+
+    if (player === 'white') {
+      const whiteApply = melee.whiteAttackApplyState;
+      if (!whiteApply?.routState) {
+        throw new Error('No rout state found in attack apply state');
+      }
+      return updatePhaseState(state, {
+        ...resolveMelee,
+        currentMeleeResolutionState: {
+          ...melee,
+          whiteAttackApplyState: { ...whiteApply, routState },
+        },
+      });
+    }
+
+    const blackApply = melee.blackAttackApplyState;
+    if (!blackApply?.routState) {
+      throw new Error('No rout state found in attack apply state');
+    }
+    return updatePhaseState(state, {
+      ...resolveMelee,
+      currentMeleeResolutionState: {
+        ...melee,
+        blackAttackApplyState: { ...blackApply, routState },
+      },
+    });
+  }
+
+  if (phaseState.phase === 'cleanup') {
+    const cleanupPhaseState = getCleanupPhaseState(state);
+    const rallyState = getCurrentRallyResolutionState(state);
+    if (!rallyState.routState) {
+      throw new Error('No rout state found in rally resolution state');
+    }
+    const newRallyState = {
+      ...rallyState,
+      routState,
+    };
+    const newPhaseState = updateRallyResolutionStateForCurrentStep(
+      cleanupPhaseState,
+      newRallyState,
+      cleanupPhaseState.step,
+    );
+    return updatePhaseState(state, newPhaseState);
+  }
+
+  throw new Error(
+    `Rout state update not expected in phase: ${phaseState.phase}`,
   );
 }

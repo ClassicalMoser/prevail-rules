@@ -1,11 +1,4 @@
-import type {
-  AttackApplyState,
-  Board,
-  GameState,
-  IssueCommandsPhaseState,
-  MeleeResolutionState,
-  ResolveMeleePhaseState,
-} from '@entities';
+import type { AttackApplyState, Board, GameState } from '@entities';
 import {
   getCurrentPhaseState,
   getIssueCommandsPhaseState,
@@ -17,20 +10,11 @@ import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the attack apply state updated.
- * Handles both ranged attack resolution (issueCommands phase) and melee resolution (resolveMelee phase).
- * Uses queries internally to navigate to the attack apply state.
+ * Attack apply only occurs in ranged attack resolution (issueCommands) or melee resolution (resolveMelee).
  *
  * @param state - The current game state
  * @param attackApplyState - The new attack apply state to set
  * @returns A new game state with the updated attack apply state
- *
- * @example
- * ```ts
- * const newState = updateAttackApplyState(state, {
- *   ...getAttackApplyStateFromRangedAttack(state),
- *   completed: true,
- * });
- * ```
  */
 export function updateAttackApplyState<TBoard extends Board>(
   state: GameState<TBoard>,
@@ -38,52 +22,42 @@ export function updateAttackApplyState<TBoard extends Board>(
 ): GameState<TBoard> {
   const phaseState = getCurrentPhaseState<TBoard>(state);
 
-  // Handle ranged attack resolution (in issueCommands phase)
   if (phaseState.phase === 'issueCommands') {
-    const issueCommandsPhaseState = getIssueCommandsPhaseState(state);
-    const rangedAttackState = getRangedAttackResolutionState(state);
-
-    if (!rangedAttackState.attackApplyState) {
+    const issueState = getIssueCommandsPhaseState(state);
+    const ranged = getRangedAttackResolutionState(state);
+    if (!ranged.attackApplyState) {
       throw new Error(
         'No attack apply state found in ranged attack resolution state',
       );
     }
-
-    const newRangedAttackState = {
-      ...rangedAttackState,
-      attackApplyState,
-    };
-
-    const newPhaseState: IssueCommandsPhaseState<TBoard> = {
-      ...issueCommandsPhaseState,
-      currentCommandResolutionState: newRangedAttackState,
-    };
-
-    return updatePhaseState(state, newPhaseState);
+    return updatePhaseState(state, {
+      ...issueState,
+      currentCommandResolutionState: { ...ranged, attackApplyState },
+    });
   }
 
-  // Handle melee resolution (in resolveMelee phase)
   if (phaseState.phase === 'resolveMelee') {
-    const resolveMeleePhaseState = getResolveMeleePhaseState(state);
-    const meleeState = getMeleeResolutionState(state);
+    const resolveMelee = getResolveMeleePhaseState(state);
+    const melee = getMeleeResolutionState(state);
+    const player = attackApplyState.defendingUnit.playerSide;
 
-    // Determine which player's attack apply state this is
-    const defendingPlayer = attackApplyState.defendingUnit.playerSide;
-    const isWhite = defendingPlayer === 'white';
+    if (player === 'white') {
+      return updatePhaseState(state, {
+        ...resolveMelee,
+        currentMeleeResolutionState: {
+          ...melee,
+          whiteAttackApplyState: attackApplyState,
+        },
+      });
+    }
 
-    const newMeleeState: MeleeResolutionState<TBoard> = {
-      ...meleeState,
-      ...(isWhite
-        ? { whiteAttackApplyState: attackApplyState }
-        : { blackAttackApplyState: attackApplyState }),
-    };
-
-    const newPhaseState: ResolveMeleePhaseState<TBoard> = {
-      ...resolveMeleePhaseState,
-      currentMeleeResolutionState: newMeleeState,
-    };
-
-    return updatePhaseState(state, newPhaseState);
+    return updatePhaseState(state, {
+      ...resolveMelee,
+      currentMeleeResolutionState: {
+        ...melee,
+        blackAttackApplyState: attackApplyState,
+      },
+    });
   }
 
   throw new Error(

@@ -46,4 +46,19 @@ describe('createEmptyGameState', () => {
     const _typeCheck: GameState<StandardBoard> = gameState;
     expect(_typeCheck).toBe(gameState);
   });
+
+  it('should create a game state with a large board size', () => {
+    const gameState = createEmptyGameState({ boardSize: 'large' });
+    expect(gameState.boardState.boardType).toBe('large');
+  });
+
+  it('should create a game state with a standard board size', () => {
+    const gameState = createEmptyGameState({ boardSize: 'standard' });
+    expect(gameState.boardState.boardType).toBe('standard');
+  });
+
+  it('should create a game state with a small board size', () => {
+    const gameState = createEmptyGameState({ boardSize: 'small' });
+    expect(gameState.boardState.boardType).toBe('small');
+  });
 });

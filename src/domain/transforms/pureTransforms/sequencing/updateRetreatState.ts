@@ -1,14 +1,5 @@
-import type {
-  Board,
-  GameState,
-  IssueCommandsPhaseState,
-  MeleeResolutionState,
-  ResolveMeleePhaseState,
-  RetreatState,
-} from '@entities';
+import type { Board, GameState, RetreatState } from '@entities';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
   getCurrentPhaseState,
   getIssueCommandsPhaseState,
   getMeleeResolutionState,
@@ -19,20 +10,14 @@ import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the retreat state updated.
- * Handles both ranged attack resolution (issueCommands phase) and melee resolution (resolveMelee phase).
- * Uses queries internally to navigate to the retreat state.
+ * Retreat can occur in:
+ * - Ranged attack resolution (issueCommands phase)
+ * - Melee resolution (resolveMelee phase)
+ * - Engagement during movement (issueCommands phase; not yet implemented)
  *
  * @param state - The current game state
  * @param retreatState - The new retreat state to set
  * @returns A new game state with the updated retreat state
- *
- * @example
- * ```ts
- * const newState = updateRetreatState(state, {
- *   ...getRetreatStateFromRangedAttack(state),
- *   completed: true,
- * });
- * ```
  */
 export function updateRetreatState<TBoard extends Board>(
   state: GameState<TBoard>,
@@ -40,90 +25,61 @@ export function updateRetreatState<TBoard extends Board>(
 ): GameState<TBoard> {
   const phaseState = getCurrentPhaseState<TBoard>(state);
 
-  // Handle ranged attack resolution (in issueCommands phase)
   if (phaseState.phase === 'issueCommands') {
-    const issueCommandsPhaseState = getIssueCommandsPhaseState(state);
-    const rangedAttackState = getRangedAttackResolutionState(state);
-    const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+    const issueState = getIssueCommandsPhaseState(state);
+    const commandState = issueState.currentCommandResolutionState;
 
-    if (!attackApplyState.retreatState) {
-      throw new Error('No retreat state found in attack apply state');
+    if (commandState?.commandResolutionType === 'rangedAttack') {
+      const ranged = getRangedAttackResolutionState(state);
+      const attackApply = ranged.attackApplyState;
+      if (!attackApply?.retreatState) {
+        throw new Error('No retreat state found in attack apply state');
+      }
+      return updatePhaseState(state, {
+        ...issueState,
+        currentCommandResolutionState: {
+          ...ranged,
+          attackApplyState: { ...attackApply, retreatState },
+        },
+      });
     }
 
-    const newAttackApplyState = {
-      ...attackApplyState,
-      retreatState,
-    };
-
-    const newRangedAttackState = {
-      ...rangedAttackState,
-      attackApplyState: newAttackApplyState,
-    };
-
-    const newPhaseState: IssueCommandsPhaseState<TBoard> = {
-      ...issueCommandsPhaseState,
-      currentCommandResolutionState: newRangedAttackState,
-    };
-
-    return updatePhaseState(state, newPhaseState);
+    // TODO: commandResolutionType === 'movement' with engagement retreat
+    throw new Error(
+      `Retreat state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? 'none'})`,
+    );
   }
 
-  // Handle melee resolution (in resolveMelee phase)
   if (phaseState.phase === 'resolveMelee') {
-    const resolveMeleePhaseState = getResolveMeleePhaseState(state);
-    const meleeState = getMeleeResolutionState(state);
-    const firstPlayer = state.currentInitiative;
+    const resolveMelee = getResolveMeleePhaseState(state);
+    const melee = getMeleeResolutionState(state);
+    const player = retreatState.retreatingUnit.unit.playerSide;
 
-    // Determine which player's retreat state this is
-    const retreatingPlayer = retreatState.retreatingUnit.unit.playerSide;
-    const isFirstPlayerRetreat = retreatingPlayer === firstPlayer;
-
-    let newMeleeState: MeleeResolutionState<TBoard>;
-    if (isFirstPlayerRetreat) {
-      const firstPlayerAttackApply = getAttackApplyStateFromMelee(
-        state,
-        firstPlayer,
-      );
-      if (!firstPlayerAttackApply.retreatState) {
-        throw new Error('No retreat state found for first player');
+    if (player === 'white') {
+      const whiteApply = melee.whiteAttackApplyState;
+      if (!whiteApply?.retreatState) {
+        throw new Error('No retreat state found in attack apply state');
       }
-      const newAttackApplyState = {
-        ...firstPlayerAttackApply,
-        retreatState,
-      };
-      newMeleeState = {
-        ...meleeState,
-        ...(firstPlayer === 'white'
-          ? { whiteAttackApplyState: newAttackApplyState }
-          : { blackAttackApplyState: newAttackApplyState }),
-      };
-    } else {
-      const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
-      const secondPlayerAttackApply = getAttackApplyStateFromMelee(
-        state,
-        secondPlayer,
-      );
-      if (!secondPlayerAttackApply.retreatState) {
-        throw new Error('No retreat state found for second player');
-      }
-      const newAttackApplyState = {
-        ...secondPlayerAttackApply,
-        retreatState,
-      };
-      newMeleeState = {
-        ...meleeState,
-        ...(firstPlayer === 'white'
-          ? { blackAttackApplyState: newAttackApplyState }
-          : { whiteAttackApplyState: newAttackApplyState }),
-      };
+      return updatePhaseState(state, {
+        ...resolveMelee,
+        currentMeleeResolutionState: {
+          ...melee,
+          whiteAttackApplyState: { ...whiteApply, retreatState },
+        },
+      });
     }
 
-    const newPhaseState: ResolveMeleePhaseState<TBoard> = {
-      ...resolveMeleePhaseState,
-      currentMeleeResolutionState: newMeleeState,
-    };
-
-    return updatePhaseState(state, newPhaseState);
+    const blackApply = melee.blackAttackApplyState;
+    if (!blackApply?.retreatState) {
+      throw new Error('No retreat state found in attack apply state');
+    }
+    return updatePhaseState(state, {
+      ...resolveMelee,
+      currentMeleeResolutionState: {
+        ...melee,
+        blackAttackApplyState: { ...blackApply, retreatState },
+      },
+    });
   }
 
   throw new Error(
