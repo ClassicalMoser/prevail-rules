@@ -94,9 +94,6 @@ export function createTestUnit(
 
   // Default: use attack value 3 (common in tests)
   const unitType = getUnitByStatValue('attack', 3);
-  if (!unitType) {
-    throw new Error('No unit found with attack value 3.');
-  }
   return createUnitInstance(playerSide, unitType, instanceNumber);
 }
 
@@ -117,9 +114,6 @@ export function createUnitByStat(
   instanceNumber: number = 1,
 ): UnitInstance {
   const unitType = getUnitByStatValue(stat, value);
-  if (!unitType) {
-    throw new Error(`No unit found with ${stat} value ${value}.`);
-  }
   return createUnitInstance(playerSide, unitType, instanceNumber);
 }
 

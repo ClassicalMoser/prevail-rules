@@ -1,6 +1,6 @@
 import { commandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
-import { getCards, getCardsByCount } from './testHelpers';
+import { createTestCard, getCards, getCardsByCount } from './cardHelpers';
 
 describe('getCards', () => {
   it('should return cards at specified indices', () => {
@@ -82,5 +82,32 @@ describe('getCardsByCount', () => {
 
     expect(cards).toHaveLength(commandCards.length);
     expect(cards).toEqual([...commandCards]);
+  });
+});
+
+describe('createTestCard', () => {
+  it('should return card with defaults when no options', () => {
+    const card = createTestCard();
+    expect(card.id).toBe('test-card');
+    expect(card.name).toBe('Test Card');
+    expect(card.initiative).toBe(1);
+    expect(card.command.type).toBe('movement');
+  });
+
+  it('should apply round effect modifiers and restrictions', () => {
+    const card = createTestCard({
+      roundEffectModifiers: [{ type: 'attack', value: 2 }],
+      roundEffectRestrictions: { inspirationRangeRestriction: 1 },
+    });
+    expect(card.roundEffect).toBeDefined();
+    expect(card.roundEffect?.modifiers).toHaveLength(1);
+    expect(card.roundEffect?.restrictions.inspirationRangeRestriction).toBe(1);
+  });
+
+  it('should apply command modifiers', () => {
+    const card = createTestCard({
+      commandModifiers: [{ type: 'speed', value: 1 }],
+    });
+    expect(card.command.modifiers).toHaveLength(1);
   });
 });

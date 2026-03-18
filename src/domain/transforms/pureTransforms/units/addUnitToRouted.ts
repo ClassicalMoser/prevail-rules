@@ -1,16 +1,12 @@
 import type { Board, GameState, UnitInstance } from '@entities';
-import { isSameUnitInstance } from '@validation';
+import { hasUnitInSet } from '@queries';
 
 /* Pure transform to add a unit to the routed units set immutably with no side effects. */
 export function addUnitToRouted<TBoard extends Board>(
   gameState: GameState<TBoard>,
   unit: UnitInstance,
 ): GameState<TBoard> {
-  // Check for unit existence using value equality, not reference equality
-  const unitAlreadyRouted = [...gameState.routedUnits].some(
-    (u) => isSameUnitInstance(u, unit).result,
-  );
-  if (unitAlreadyRouted) {
+  if (hasUnitInSet(gameState.routedUnits, unit)) {
     throw new Error('Unit already routed');
   }
   const newRoutedUnits = new Set([...gameState.routedUnits, unit]);

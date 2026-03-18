@@ -63,18 +63,18 @@ describe('addUnitToRouted', () => {
       );
     });
 
-    it('should throw error when trying to add same unit instance again', () => {
+    it('should throw when adding different reference with same value (value equality)', () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', {
+      const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
+      const gameStateWithUnit = addUnitToRouted(gameState, unit);
+      const sameValueDifferentRef = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
       });
-      const gameStateWithUnit = addUnitToRouted(gameState, unit);
 
-      // Even if we create a "new" unit with same properties, Set uses reference equality
-      expect(() => addUnitToRouted(gameStateWithUnit, unit)).toThrow(
-        'Unit already routed',
-      );
+      expect(() =>
+        addUnitToRouted(gameStateWithUnit, sameValueDifferentRef),
+      ).toThrow('Unit already routed');
     });
   });
 

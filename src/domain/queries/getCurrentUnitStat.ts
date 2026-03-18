@@ -5,13 +5,10 @@ import type {
   UnitInstance,
   UnitStatName,
 } from '@entities';
-import {
-  isDefenseStat,
-  isSameUnitInstance,
-  matchesUnitRequirements,
-} from '@validation';
+import { isDefenseStat, matchesUnitRequirements } from '@validation';
 import { getSpacesWithinDistance } from './boardSpace';
 import { getCommanderSpace } from './getCommanderSpace';
+import { hasUnitInSet } from './unit';
 import { getPositionOfUnit } from './unitPresence';
 
 /**
@@ -127,9 +124,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
   const activeCommandModifiers = activeCard?.command.modifiers ?? [];
   // First check if the unit was commanded
   const commandedUnits = gameState.currentRoundState.commandedUnits;
-  const unitWasCommanded = [...commandedUnits].some(
-    (commandedUnit) => isSameUnitInstance(commandedUnit, unit).result,
-  );
+  const unitWasCommanded = hasUnitInSet(commandedUnits, unit);
 
   // If the unit was commanded, check if there is a matching modifier
   if (unitWasCommanded) {

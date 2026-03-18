@@ -41,15 +41,23 @@ describe('removeUnitFromReserve', () => {
       expect([...newGameState.reservedUnits]).not.toContain(unit1);
     });
 
-    it('should remove unit using value equality for filtering', () => {
+    it('should remove by value equality when passing different reference', () => {
       const gameState = createEmptyGameState();
-      const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
+      const unitInReserve = createTestUnit('black', {
+        attack: 3,
+        instanceNumber: 1,
+      });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-      gameState.reservedUnits = new Set([unit1, unit2]);
+      gameState.reservedUnits = new Set([unitInReserve, unit2]);
+      const sameValueDifferentRef = createTestUnit('black', {
+        attack: 3,
+        instanceNumber: 1,
+      });
 
-      // The function uses Set.has() for initial check (reference equality)
-      // but filters using isSameUnitInstance (value equality)
-      const newGameState = removeUnitFromReserve(gameState, unit1);
+      const newGameState = removeUnitFromReserve(
+        gameState,
+        sameValueDifferentRef,
+      );
 
       expect(newGameState.reservedUnits.size).toBe(1);
       expect([...newGameState.reservedUnits]).toContain(unit2);

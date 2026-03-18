@@ -61,8 +61,6 @@ export default defineConfig({
         'src/domain/entities/**/*.{js,ts}',
         // Exclude declaration-only events
         'src/domain/events/**/*.{js,ts}',
-        // Exclude test helper files
-        'src/domain/testing/**/*.{js,ts}',
         // Exclude sample value files
         'src/domain/sampleValues/**/*.{js,ts}',
         // Exclude barrel files
