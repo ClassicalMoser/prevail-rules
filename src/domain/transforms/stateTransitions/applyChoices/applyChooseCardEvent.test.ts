@@ -163,28 +163,4 @@ describe('applyChooseCardEvent', () => {
       expect(state.cardState.black.awaitingPlay).toBeNull();
     });
   });
-
-  describe('error cases', () => {
-    it('should throw if not on chooseCards step', () => {
-      const state = createGameStateInChooseCardsStep(
-        [commandCards[0]],
-        [commandCards[1]],
-      );
-      const stateWithWrongStep = updatePhaseState(state, {
-        phase: PLAY_CARDS_PHASE,
-        step: 'revealCards',
-      });
-
-      const event: ChooseCardEvent<StandardBoard> = {
-        eventType: 'playerChoice',
-        choiceType: 'chooseCard',
-        player: 'black',
-        card: commandCards[0],
-      };
-
-      expect(() => applyChooseCardEvent(event, stateWithWrongStep)).toThrow(
-        'Play cards phase is not on chooseCards step',
-      );
-    });
-  });
 });

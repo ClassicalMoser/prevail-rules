@@ -1,6 +1,7 @@
 export { updateBoardState } from './board';
 export {
   burnCardFromPlayed,
+  chooseCard,
   discardCardsFromHand,
   moveCardToPlayed,
   returnCardsToHand,

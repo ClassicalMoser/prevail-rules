@@ -1,4 +1,5 @@
 export { burnCardFromPlayed } from './burnCardFromPlayed';
+export { chooseCard } from './chooseCard';
 export { discardCardsFromHand } from './discardCardsFromHand';
 export { moveCardToPlayed } from './moveCardToPlayed';
 export { returnCardsToHand } from './returnCardsToHand';

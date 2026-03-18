@@ -1,9 +1,10 @@
 import type { Board, GameState, PlayCardsPhaseState } from '@entities';
 import type { ChooseCardEvent } from '@events';
-import { getOtherPlayer, getPlayCardsPhaseState } from '@queries';
+import { getPlayCardsPhaseState } from '@queries';
 import {
+  chooseCard,
+  updateCardState,
   updatePhaseState,
-  updatePlayerCardState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -20,27 +21,17 @@ export function applyChooseCardEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const { player, card } = event;
-  const currentPhaseState = getPlayCardsPhaseState(state);
+  const currentPhaseState: PlayCardsPhaseState = getPlayCardsPhaseState(state);
 
-  if (currentPhaseState.step !== 'chooseCards') {
-    throw new Error('Play cards phase is not on chooseCards step');
-  }
-
-  const oldHand = state.cardState[player].inHand;
-  const newHand = oldHand.filter((c) => c.id !== card.id);
-
-  // Update player's card state
-  const stateWithUpdatedPlayer = updatePlayerCardState(state, player, {
-    ...state.cardState[player],
-    inHand: newHand,
-    awaitingPlay: card,
-  });
+  // Choose the card
+  const newCardState = chooseCard(state.cardState, player, card);
+  // Update the card state
+  const stateWithUpdatedPlayer = updateCardState(state, newCardState);
 
   // Check if both players have now chosen cards
-  const otherPlayer = getOtherPlayer(player);
-  const otherPlayerAwaitingCard =
-    stateWithUpdatedPlayer.cardState[otherPlayer].awaitingPlay;
-  const bothPlayersChosen = otherPlayerAwaitingCard !== null;
+  const bothPlayersChosen =
+    newCardState.black.awaitingPlay !== null &&
+    newCardState.white.awaitingPlay !== null;
 
   // If both players have chosen, advance step to revealCards
   const newPhaseState: PlayCardsPhaseState = bothPlayersChosen
