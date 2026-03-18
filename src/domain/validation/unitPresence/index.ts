@@ -1,1 +1,1 @@
-export * from './hasEnemyUnit';
+export { hasEnemyUnit } from './hasEnemyUnit';

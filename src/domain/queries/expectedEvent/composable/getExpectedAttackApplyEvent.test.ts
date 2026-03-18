@@ -6,8 +6,9 @@ import {
   createGameStateWithEngagedUnits,
   createTestUnit,
 } from '@testing';
+import * as sequencing from '@queries/sequencing';
 import { addUnitToBoard } from '@transforms';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
 
 describe('getExpectedAttackApplyEvent', () => {
@@ -261,6 +262,9 @@ describe('getExpectedAttackApplyEvent', () => {
         'E-5',
         'north',
       );
+      const canReverseUnitSpy = vi
+        .spyOn(sequencing, 'canReverseUnit')
+        .mockReturnValue(false);
 
       const attackApplyState = createAttackApplyState(primaryUnit, {
         attackResult: {
@@ -288,6 +292,44 @@ describe('getExpectedAttackApplyEvent', () => {
       expect(resultIsExpectedGameEffect.data?.effectType).toBe(
         'completeAttackApply',
       );
+      canReverseUnitSpy.mockRestore();
+    });
+
+    it('should throw when reverse cannot happen and attack apply is already complete', () => {
+      const primaryUnit = createTestUnit('white', { attack: 2 });
+      const secondaryUnit = createTestUnit('black', { attack: 2 });
+      const gameState = createGameStateWithEngagedUnits(
+        primaryUnit,
+        secondaryUnit,
+        'E-5',
+        'north',
+      );
+      const canReverseUnitSpy = vi
+        .spyOn(sequencing, 'canReverseUnit')
+        .mockReturnValue(false);
+
+      const attackApplyState = createAttackApplyState(primaryUnit, {
+        attackResult: {
+          unitRouted: false,
+          unitRetreated: false,
+          unitReversed: true,
+        },
+        reverseState: {
+          substepType: 'reverse',
+          reversingUnit: {
+            unit: primaryUnit,
+            placement: { coordinate: 'E-5', facing: 'north' },
+          },
+          finalPosition: undefined,
+          completed: false,
+        },
+        completed: true,
+      });
+
+      expect(() =>
+        getExpectedAttackApplyEvent(attackApplyState, gameState),
+      ).toThrow('Attack apply state is already complete');
+      canReverseUnitSpy.mockRestore();
     });
 
     it('should continue to completeAttackApply when reverse is completed', () => {

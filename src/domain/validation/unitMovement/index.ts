@@ -1,4 +1,4 @@
-export * from './canEngageEnemy';
-export * from './canMoveInto';
-export * from './canMoveThrough';
-export * from './isLegalMove';
+export { canEngageEnemy } from './canEngageEnemy';
+export { canMoveInto } from './canMoveInto';
+export { canMoveThrough } from './canMoveThrough';
+export { isLegalMove } from './isLegalMove';

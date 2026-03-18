@@ -47,7 +47,7 @@ export function getExpectedMovementResolutionEvent<TBoard extends Board>(
     resolutionState.targetPlacement.coordinate,
   );
 
-  if (hasEnemyUnit(player, targetSpace)) {
+  if (hasEnemyUnit(player, targetSpace).result) {
     // If we are, we need to see if we've alredy started an engagement
     const engagementState = resolutionState.engagementState;
     if (!engagementState) {

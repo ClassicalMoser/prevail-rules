@@ -1,3 +1,3 @@
-export * from './isSameInstanceNumber';
-export * from './isSameUnitInstance';
-export * from './isSameUnitType';
+export { isSameInstanceNumber } from './isSameInstanceNumber';
+export { isSameUnitInstance } from './isSameUnitInstance';
+export { isSameUnitType } from './isSameUnitType';

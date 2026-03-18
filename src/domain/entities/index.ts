@@ -49,6 +49,7 @@ export type {
   Card,
   CardState,
   Command,
+  CommandType,
   Modifier,
   PlayerCardState,
   Restrictions,

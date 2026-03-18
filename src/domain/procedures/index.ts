@@ -1,3 +1,3 @@
-export * from './generateResolveRallyEvent';
-export * from './generateResolveUnitsBrokenEvent';
+export { generateResolveRallyEvent } from './generateResolveRallyEvent';
+export { generateResolveUnitsBrokenEvent } from './generateResolveUnitsBrokenEvent';
 export * from './procedureRegistry';

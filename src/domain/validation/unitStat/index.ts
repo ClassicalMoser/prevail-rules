@@ -1,1 +1,1 @@
-export * from './isDefenseStat';
+export { isDefenseStat } from './isDefenseStat';

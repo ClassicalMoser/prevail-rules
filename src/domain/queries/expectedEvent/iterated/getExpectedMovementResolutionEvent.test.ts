@@ -1,0 +1,158 @@
+import type { EngagementState, GameState, StandardBoard } from '@entities';
+import {
+  createEmptyGameState,
+  createGameStateWithUnits,
+  createMovementResolutionState,
+  createTestCard,
+  createTestUnit,
+  createUnitWithPlacement,
+} from '@testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { getExpectedMovementResolutionEvent } from './getExpectedMovementResolutionEvent';
+
+const { getExpectedEngagementEventMock } = vi.hoisted(() => ({
+  getExpectedEngagementEventMock: vi.fn(),
+}));
+
+vi.mock('../composable', () => ({
+  getExpectedEngagementEvent: getExpectedEngagementEventMock,
+}));
+
+describe('getExpectedMovementResolutionEvent', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  function createGameStateWithTargetEnemy(): GameState<StandardBoard> {
+    const state = createGameStateWithUnits([
+      {
+        unit: createTestUnit('white'),
+        coordinate: 'E-6',
+        facing: 'north',
+      },
+    ]);
+    state.cardState.black.inPlay = createTestCard();
+    return state;
+  }
+
+  it('should ask the player to commit to movement when commitment is pending', () => {
+    const gameState = createGameStateWithUnits([]);
+    gameState.cardState.black.inPlay = createTestCard();
+    const resolutionState = createMovementResolutionState(gameState, {
+      commitment: {
+        commitmentType: 'pending',
+      },
+    });
+
+    expect(
+      getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
+    ).toEqual({
+      actionType: 'playerChoice',
+      playerSource: 'black',
+      choiceType: 'commitToMovement',
+    });
+  });
+
+  it('should start an engagement when the target space contains an enemy unit', () => {
+    const gameState = createGameStateWithTargetEnemy();
+    const resolutionState = createMovementResolutionState(gameState);
+
+    expect(
+      getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
+    ).toEqual({
+      actionType: 'gameEffect',
+      effectType: 'startEngagement',
+    });
+  });
+
+  it('should complete unit movement when the target space has no enemy unit', () => {
+    const gameState = createEmptyGameState();
+    gameState.cardState.black.inPlay = createTestCard();
+    const resolutionState = createMovementResolutionState(gameState);
+
+    expect(
+      getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
+    ).toEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeUnitMovement',
+    });
+  });
+
+  it('should complete unit movement when engagement is already complete', () => {
+    const gameState = createGameStateWithTargetEnemy();
+    const resolutionState = createMovementResolutionState(gameState, {
+      engagementState: {
+        substepType: 'engagementResolution',
+        engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
+        targetPlacement: { coordinate: 'E-6', facing: 'north' },
+        engagementResolutionState: {
+          engagementType: 'front',
+          defensiveCommitment: {
+            commitmentType: 'completed',
+            card: createTestCard(),
+          },
+          defendingUnitCanRetreat: true,
+          defendingUnitRetreats: false,
+          defendingUnitRetreated: undefined,
+        },
+      } as EngagementState<StandardBoard>,
+    });
+    resolutionState.engagementState = {
+      ...resolutionState.engagementState,
+      completed: true,
+    } as EngagementState<StandardBoard>;
+
+    expect(
+      getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
+    ).toEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeUnitMovement',
+    });
+  });
+
+  it('should delegate to engagement resolution when engagement is in progress', () => {
+    const gameState = createGameStateWithTargetEnemy();
+    const resolutionState = createMovementResolutionState(gameState, {
+      engagementState: {
+        substepType: 'engagementResolution',
+        engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
+        targetPlacement: { coordinate: 'E-6', facing: 'north' },
+        engagementResolutionState: {
+          engagementType: 'front',
+          defensiveCommitment: {
+            commitmentType: 'completed',
+            card: createTestCard(),
+          },
+          defendingUnitCanRetreat: undefined,
+          defendingUnitRetreats: undefined,
+          defendingUnitRetreated: undefined,
+        },
+      } as EngagementState<StandardBoard>,
+    });
+    const expectedEvent = {
+      actionType: 'gameEffect',
+      effectType: 'engagement',
+    } as const;
+    getExpectedEngagementEventMock.mockReturnValue(expectedEvent);
+
+    expect(
+      getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
+    ).toBe(expectedEvent);
+    expect(getExpectedEngagementEventMock).toHaveBeenCalledWith(
+      gameState,
+      resolutionState.engagementState,
+    );
+  });
+
+  it('should throw when the movement resolution is already complete', () => {
+    const gameState = createGameStateWithTargetEnemy();
+    const resolutionState = createMovementResolutionState(gameState, {
+      completed: true,
+    });
+
+    expect(() =>
+      getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
+    ).toThrow('Movement resolution state is already complete');
+  });
+});

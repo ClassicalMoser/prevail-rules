@@ -48,7 +48,9 @@ export function getExpectedPlayCardsPhaseEvent<TBoard extends Board>(
         effectType: 'completePlayCardsPhase',
       };
 
-    default:
-      throw new Error(`Invalid playCards phase step: ${phaseState.step}`);
+    default: {
+      const _exhaustive: never = phaseState.step;
+      throw new Error(`Invalid playCards phase step: ${_exhaustive}`);
+    }
   }
 }

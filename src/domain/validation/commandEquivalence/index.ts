@@ -1,3 +1,3 @@
-export * from './areModifiersArraysEqual';
-export * from './areModifiersEqual';
-export * from './areRestrictionsEqual';
+export { areModifiersArraysEqual } from './areModifiersArraysEqual';
+export { areModifiersEqual } from './areModifiersEqual';
+export { areRestrictionsEqual } from './areRestrictionsEqual';

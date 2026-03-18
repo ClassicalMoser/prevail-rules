@@ -16,12 +16,12 @@ export type {
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
 } from './engagement';
-export * from './meleeResolutionSubstep';
 export { meleeResolutionStateSchema } from './meleeResolutionSubstep';
 export type { MeleeResolutionState } from './meleeResolutionSubstep';
 export { movementResolutionStateSchema } from './movementResolutionSubstep';
 export type { MovementResolutionState } from './movementResolutionSubstep';
-export * from './rallyResolutionSubstep';
+export { rallyResolutionStateSchema } from './rallyResolutionSubstep';
+export type { RallyResolutionState } from './rallyResolutionSubstep';
 export { rangedAttackResolutionStateSchema } from './rangedAttackResolutionSubstep';
 export type { RangedAttackResolutionState } from './rangedAttackResolutionSubstep';
 export { retreatStateSchema } from './retreatSubstep';

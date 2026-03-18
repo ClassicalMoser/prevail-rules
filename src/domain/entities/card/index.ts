@@ -3,7 +3,7 @@ export type { Card } from './card';
 export { cardStateSchema } from './cardState';
 export type { CardState } from './cardState';
 export { commandSchema } from './command';
-export type { Command } from './command';
+export type { Command, CommandType } from './command';
 export { modifierSchema, statModifiers, statModifierSchema } from './modifiers';
 export type { Modifier, StatModifier } from './modifiers';
 export { playerCardStateSchema } from './playerCardState';

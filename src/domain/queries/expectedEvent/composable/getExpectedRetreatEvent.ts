@@ -40,11 +40,6 @@ export function getExpectedRetreatEvent<TBoard extends Board>(
   if (retreatState.finalPosition === undefined) {
     // Multiple retreat options exist - player must choose
     // If only one option exists, it should be auto-selected (finalPosition set) when state is created
-    if (retreatState.legalRetreatOptions.size === 0) {
-      throw new Error(
-        'RetreatState with no legal retreat options should have routState populated',
-      );
-    }
     if (retreatState.legalRetreatOptions.size === 1) {
       throw new Error(
         'RetreatState with single option should have finalPosition set immediately',

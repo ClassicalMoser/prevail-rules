@@ -69,12 +69,13 @@ export function getExpectedAttackApplyEvent<TBoard extends Board>(
       // In melee, if units are still engaged, reverse cannot happen
       if (!canReverseUnit(attackApplyState.reverseState, gameState)) {
         // Units are still engaged - reverse cannot happen, skip to completeAttackApply
-        if (!attackApplyState.completed) {
-          return {
-            actionType: 'gameEffect',
-            effectType: 'completeAttackApply',
-          };
+        if (attackApplyState.completed) {
+          throw new Error('Attack apply state is already complete');
         }
+        return {
+          actionType: 'gameEffect',
+          effectType: 'completeAttackApply',
+        };
       }
       return getExpectedReverseEvent(attackApplyState.reverseState, gameState);
     }

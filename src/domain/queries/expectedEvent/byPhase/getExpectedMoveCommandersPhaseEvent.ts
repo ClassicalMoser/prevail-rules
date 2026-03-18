@@ -36,7 +36,9 @@ export function getExpectedMoveCommandersPhaseEvent<TBoard extends Board>(
         effectType: 'completeMoveCommandersPhase',
       };
 
-    default:
-      throw new Error(`Invalid moveCommanders phase step: ${phaseState.step}`);
+    default: {
+      const _exhaustive: never = phaseState.step;
+      throw new Error(`Invalid moveCommanders phase step: ${_exhaustive}`);
+    }
   }
 }

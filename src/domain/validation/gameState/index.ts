@@ -1,2 +1,2 @@
-export * from './eachCardPresentOnce';
-export * from './eachUnitPresentOnce';
+export { eachCardPresentOnce } from './eachCardPresentOnce';
+export { eachUnitPresentOnce } from './eachUnitPresentOnce';
