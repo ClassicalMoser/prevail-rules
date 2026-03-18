@@ -1,137 +1,101 @@
-import type { AttackApplyState, RoutState, StandardBoard } from '@entities';
+import type { StandardBoard, UnitWithPlacement } from '@entities';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@entities';
 import {
   createAttackApplyState,
+  createAttackApplyStateWithRetreat,
+  createAttackApplyStateWithReverse,
+  createAttackApplyStateWithRout,
   createEmptyGameState,
   createGameStateWithEngagedUnits,
+  createRetreatState,
+  createReverseState,
+  createRoutState,
   createTestUnit,
 } from '@testing';
-import * as sequencing from '@queries/sequencing';
-import { addUnitToBoard } from '@transforms';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
 
+const { canReverseUnitMock } = vi.hoisted(() => ({
+  canReverseUnitMock: vi.fn(),
+}));
+
+vi.mock('@queries/sequencing', () => ({
+  canReverseUnit: canReverseUnitMock,
+}));
+
 describe('getExpectedAttackApplyEvent', () => {
+  beforeEach(() => {
+    canReverseUnitMock.mockReset();
+  });
+
+  function expectGameEffect(result: unknown, effectType: string) {
+    const parsed = expectedGameEffectSchema.safeParse(result);
+    expect(parsed.success).toBe(true);
+    expect(parsed.data?.effectType).toBe(effectType);
+  }
+
+  function expectPlayerChoice(
+    result: unknown,
+    playerSource: 'black' | 'white' | 'bothPlayers',
+    choiceType: 'chooseRetreatOption' | 'chooseRoutDiscard',
+  ) {
+    const parsed = expectedPlayerInputSchema.safeParse(result);
+    expect(parsed.success).toBe(true);
+    expect(parsed.data?.playerSource).toBe(playerSource);
+    expect(parsed.data?.choiceType).toBe(choiceType);
+  }
+
   describe('rout priority', () => {
     it('should prioritize rout over retreat and reverse', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
-
-      const routState: RoutState = {
-        substepType: 'rout',
-        player: 'white',
-        unitsToRout: new Set([unit]),
-        numberToDiscard: undefined,
-        cardsChosen: false,
-        completed: false,
+      const unitPlacement: UnitWithPlacement<StandardBoard> = {
+        unit,
+        placement: { coordinate: 'E-5', facing: 'north' },
       };
-
-      const attackApplyState: AttackApplyState<StandardBoard> = {
-        substepType: 'attackApply',
-        defendingUnit: unit,
+      const attackApplyState = createAttackApplyState(unit, {
         attackResult: {
           unitRouted: true,
           unitRetreated: true,
           unitReversed: true,
         },
-        routState,
-        retreatState: {
-          substepType: 'retreat',
-          retreatingUnit: {
-            unit,
-            placement: { coordinate: 'E-5', facing: 'north' },
-          },
-          legalRetreatOptions: new Set(),
-          finalPosition: undefined,
-          routState: undefined,
-          completed: false,
-        },
-        reverseState: {
-          substepType: 'reverse',
-          reversingUnit: {
-            unit,
-            placement: { coordinate: 'E-5', facing: 'north' },
-          },
-          finalPosition: undefined,
-          completed: false,
-        },
-        completed: false,
-      };
+        routState: createRoutState('white', unit),
+        retreatState: createRetreatState(unitPlacement),
+        reverseState: createReverseState(unitPlacement),
+      });
 
-      const result = getExpectedAttackApplyEvent(attackApplyState, gameState);
-      expect(result.actionType).toBe('gameEffect');
-      const resultIsExpectedGameEffect =
-        expectedGameEffectSchema.safeParse(result);
-      expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe('resolveRout');
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        'resolveRout',
+      );
     });
 
     it('should return completeAttackApply when rout is completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
+      const attackApplyState = createAttackApplyStateWithRout(unit, {
+        routState: createRoutState('white', unit, {
+          cardsChosen: true,
+          completed: true,
+        }),
+      });
 
-      const routState: RoutState = {
-        substepType: 'rout',
-        player: 'white',
-        unitsToRout: new Set([unit]),
-        numberToDiscard: 1,
-        cardsChosen: true,
-        completed: true,
-      };
-
-      const attackApplyState: AttackApplyState<StandardBoard> = {
-        substepType: 'attackApply',
-        defendingUnit: unit,
-        attackResult: {
-          unitRouted: true,
-          unitRetreated: false,
-          unitReversed: false,
-        },
-        routState,
-        retreatState: undefined,
-        reverseState: undefined,
-        completed: false,
-      };
-
-      const result = getExpectedAttackApplyEvent(attackApplyState, gameState);
-      expect(result.actionType).toBe('gameEffect');
-      const resultIsExpectedGameEffect =
-        expectedGameEffectSchema.safeParse(result);
-      expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe(
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
         'completeAttackApply',
       );
     });
 
-    it('should throw error when rout is completed and attack apply is also completed', () => {
+    it('should throw when rout is completed and attack apply is also completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
-
-      const routState: RoutState = {
-        substepType: 'rout',
-        player: 'white',
-        unitsToRout: new Set([unit]),
-        numberToDiscard: 1,
-        cardsChosen: true,
+      const attackApplyState = createAttackApplyStateWithRout(unit, {
+        routState: createRoutState('white', unit, {
+          cardsChosen: true,
+          completed: true,
+        }),
         completed: true,
-      };
-
-      const attackApplyState: AttackApplyState<StandardBoard> = {
-        substepType: 'attackApply',
-        defendingUnit: unit,
-        attackResult: {
-          unitRouted: true,
-          unitRetreated: false,
-          unitReversed: false,
-        },
-        routState,
-        retreatState: undefined,
-        reverseState: undefined,
-        completed: true,
-      };
+      });
 
       expect(() =>
-        getExpectedAttackApplyEvent(attackApplyState, gameState),
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
       ).toThrow('Attack apply state is already complete');
     });
   });
@@ -139,72 +103,33 @@ describe('getExpectedAttackApplyEvent', () => {
   describe('retreat', () => {
     it('should return expected retreat event when retreat is not completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
-
-      const attackApplyState = createAttackApplyState(unit, {
-        attackResult: {
-          unitRouted: false,
-          unitRetreated: true,
-          unitReversed: false,
-        },
-        retreatState: {
-          substepType: 'retreat',
-          retreatingUnit: {
-            unit,
-            placement: { coordinate: 'E-5', facing: 'north' },
-          },
-          legalRetreatOptions: new Set([
-            { coordinate: 'E-4', facing: 'north' },
-            { coordinate: 'E-6', facing: 'north' },
-          ]),
-          finalPosition: undefined,
-          routState: undefined,
-          completed: false,
-        },
-        completed: false,
+      const attackApplyState = createAttackApplyStateWithRetreat({
+        unit,
+        placement: { coordinate: 'E-5', facing: 'north' },
       });
 
-      const result = getExpectedAttackApplyEvent(attackApplyState, gameState);
-      expect(result.actionType).toBe('playerChoice');
-      const resultIsExpectedPlayerInput =
-        expectedPlayerInputSchema.safeParse(result);
-      expect(resultIsExpectedPlayerInput.success).toBe(true);
-      expect(resultIsExpectedPlayerInput.data?.choiceType).toBe(
+      expectPlayerChoice(
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        'white',
         'chooseRetreatOption',
       );
-      expect(resultIsExpectedPlayerInput.data?.playerSource).toBe('white');
     });
 
     it('should continue to completeAttackApply when retreat is completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
-
-      const attackApplyState = createAttackApplyState(unit, {
-        attackResult: {
-          unitRouted: false,
-          unitRetreated: true,
-          unitReversed: false,
+      const unitPlacement: UnitWithPlacement<StandardBoard> = {
+        unit,
+        placement: { coordinate: 'E-5', facing: 'north' },
+      };
+      const attackApplyState = createAttackApplyStateWithRetreat(
+        unitPlacement,
+        {
+          retreatState: createRetreatState(unitPlacement, { completed: true }),
         },
-        retreatState: {
-          substepType: 'retreat',
-          retreatingUnit: {
-            unit,
-            placement: { coordinate: 'E-5', facing: 'north' },
-          },
-          legalRetreatOptions: new Set([]),
-          finalPosition: undefined,
-          routState: undefined,
-          completed: true,
-        },
-        completed: false,
-      });
+      );
 
-      const result = getExpectedAttackApplyEvent(attackApplyState, gameState);
-      expect(result.actionType).toBe('gameEffect');
-      const resultIsExpectedGameEffect =
-        expectedGameEffectSchema.safeParse(result);
-      expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe(
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
         'completeAttackApply',
       );
     });
@@ -213,163 +138,77 @@ describe('getExpectedAttackApplyEvent', () => {
   describe('reverse', () => {
     it('should return expected reverse event when reverse is not completed and unit can reverse', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
-      const stateWithUnit = {
-        ...gameState,
-        boardState: addUnitToBoard(gameState.boardState, {
-          unit,
-          placement: { coordinate: 'E-5', facing: 'north' },
-        }),
+      canReverseUnitMock.mockReturnValue(true);
+      const unitPlacement: UnitWithPlacement<StandardBoard> = {
+        unit,
+        placement: { coordinate: 'E-5', facing: 'north' },
       };
+      const attackApplyState = createAttackApplyStateWithReverse(unitPlacement);
 
-      const attackApplyState = createAttackApplyState(unit, {
-        attackResult: {
-          unitRouted: false,
-          unitRetreated: false,
-          unitReversed: true,
-        },
-        reverseState: {
-          substepType: 'reverse',
-          reversingUnit: {
-            unit,
-            placement: { coordinate: 'E-5', facing: 'north' },
-          },
-          finalPosition: undefined,
-          completed: false,
-        },
-        completed: false,
-      });
-
-      const result = getExpectedAttackApplyEvent(
-        attackApplyState,
-        stateWithUnit,
-      );
-      expect(result.actionType).toBe('gameEffect');
-      const resultIsExpectedGameEffect =
-        expectedGameEffectSchema.safeParse(result);
-      expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe(
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
         'resolveReverse',
       );
     });
 
     it('should return completeAttackApply when reverse cannot happen due to engagement', () => {
-      const primaryUnit = createTestUnit('white', { attack: 2 });
-      const secondaryUnit = createTestUnit('black', { attack: 2 });
+      const unit = createTestUnit('white', { attack: 2 });
+      canReverseUnitMock.mockReturnValue(false);
+      const unitPlacement: UnitWithPlacement<StandardBoard> = {
+        unit,
+        placement: { coordinate: 'E-5', facing: 'north' },
+      };
+      const attackApplyState = createAttackApplyStateWithReverse(unitPlacement);
       const gameState = createGameStateWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
+        unit,
+        createTestUnit('black', { attack: 2 }),
         'E-5',
         'north',
       );
-      const canReverseUnitSpy = vi
-        .spyOn(sequencing, 'canReverseUnit')
-        .mockReturnValue(false);
 
-      const attackApplyState = createAttackApplyState(primaryUnit, {
-        attackResult: {
-          unitRouted: false,
-          unitRetreated: false,
-          unitReversed: true,
-        },
-        reverseState: {
-          substepType: 'reverse',
-          reversingUnit: {
-            unit: primaryUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
-          },
-          finalPosition: undefined,
-          completed: false,
-        },
-        completed: false,
-      });
-
-      const result = getExpectedAttackApplyEvent(attackApplyState, gameState);
-      expect(result.actionType).toBe('gameEffect');
-      const resultIsExpectedGameEffect =
-        expectedGameEffectSchema.safeParse(result);
-      expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe(
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState, gameState),
         'completeAttackApply',
       );
-      canReverseUnitSpy.mockRestore();
     });
 
     it('should throw when reverse cannot happen and attack apply is already complete', () => {
-      const primaryUnit = createTestUnit('white', { attack: 2 });
-      const secondaryUnit = createTestUnit('black', { attack: 2 });
-      const gameState = createGameStateWithEngagedUnits(
-        primaryUnit,
-        secondaryUnit,
-        'E-5',
-        'north',
+      const unit = createTestUnit('white', { attack: 2 });
+      canReverseUnitMock.mockReturnValue(false);
+      const unitPlacement: UnitWithPlacement<StandardBoard> = {
+        unit,
+        placement: { coordinate: 'E-5', facing: 'north' },
+      };
+      const attackApplyState = createAttackApplyStateWithReverse(
+        unitPlacement,
+        {
+          completed: true,
+        },
       );
-      const canReverseUnitSpy = vi
-        .spyOn(sequencing, 'canReverseUnit')
-        .mockReturnValue(false);
-
-      const attackApplyState = createAttackApplyState(primaryUnit, {
-        attackResult: {
-          unitRouted: false,
-          unitRetreated: false,
-          unitReversed: true,
-        },
-        reverseState: {
-          substepType: 'reverse',
-          reversingUnit: {
-            unit: primaryUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
-          },
-          finalPosition: undefined,
-          completed: false,
-        },
-        completed: true,
-      });
 
       expect(() =>
-        getExpectedAttackApplyEvent(attackApplyState, gameState),
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
       ).toThrow('Attack apply state is already complete');
-      canReverseUnitSpy.mockRestore();
     });
 
     it('should continue to completeAttackApply when reverse is completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
-      const stateWithUnit = {
-        ...gameState,
-        boardState: addUnitToBoard(gameState.boardState, {
-          unit,
-          placement: { coordinate: 'E-5', facing: 'north' },
-        }),
+      const unitPlacement: UnitWithPlacement<StandardBoard> = {
+        unit,
+        placement: { coordinate: 'E-5', facing: 'north' },
       };
-
-      const attackApplyState = createAttackApplyState(unit, {
-        attackResult: {
-          unitRouted: false,
-          unitRetreated: false,
-          unitReversed: true,
+      const attackApplyState = createAttackApplyStateWithReverse(
+        unitPlacement,
+        {
+          reverseState: createReverseState(unitPlacement, {
+            finalPosition: { coordinate: 'E-5', facing: 'south' },
+            completed: true,
+          }),
         },
-        reverseState: {
-          substepType: 'reverse',
-          reversingUnit: {
-            unit,
-            placement: { coordinate: 'E-5', facing: 'north' },
-          },
-          finalPosition: { coordinate: 'E-5', facing: 'south' },
-          completed: true,
-        },
-        completed: false,
-      });
-
-      const result = getExpectedAttackApplyEvent(
-        attackApplyState,
-        stateWithUnit,
       );
-      expect(result.actionType).toBe('gameEffect');
-      const resultIsExpectedGameEffect =
-        expectedGameEffectSchema.safeParse(result);
-      expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe(
+
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
         'completeAttackApply',
       );
     });
@@ -378,91 +217,61 @@ describe('getExpectedAttackApplyEvent', () => {
   describe('completion', () => {
     it('should return completeAttackApply when all substeps are completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
-
-      const attackApplyState = createAttackApplyState(unit, {
-        attackResult: {
-          unitRouted: false,
-          unitRetreated: true,
-          unitReversed: false,
+      const unitPlacement: UnitWithPlacement<StandardBoard> = {
+        unit,
+        placement: { coordinate: 'E-5', facing: 'north' },
+      };
+      const attackApplyState = createAttackApplyStateWithRetreat(
+        unitPlacement,
+        {
+          retreatState: createRetreatState(unitPlacement, {
+            finalPosition: { coordinate: 'E-4', facing: 'north' },
+            completed: true,
+          }),
         },
-        retreatState: {
-          substepType: 'retreat',
-          retreatingUnit: {
-            unit,
-            placement: { coordinate: 'E-5', facing: 'north' },
-          },
-          legalRetreatOptions: new Set([]),
-          finalPosition: { coordinate: 'E-4', facing: 'north' },
-          routState: undefined,
-          completed: true,
-        },
-        completed: false,
-      });
+      );
 
-      const result = getExpectedAttackApplyEvent(attackApplyState, gameState);
-      expect(result.actionType).toBe('gameEffect');
-      const resultIsExpectedGameEffect =
-        expectedGameEffectSchema.safeParse(result);
-      expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe(
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
         'completeAttackApply',
       );
     });
 
-    it('should throw error when attack apply is already completed', () => {
+    it('should throw when attack apply is already completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
-
-      const attackApplyState = createAttackApplyState(unit, {
-        attackResult: {
-          unitRouted: false,
-          unitRetreated: true,
-          unitReversed: false,
-        },
-        retreatState: {
-          substepType: 'retreat',
-          retreatingUnit: {
-            unit,
-            placement: { coordinate: 'E-5', facing: 'north' },
-          },
-          legalRetreatOptions: new Set([]),
-          finalPosition: { coordinate: 'E-4', facing: 'north' },
-          routState: undefined,
+      const unitPlacement: UnitWithPlacement<StandardBoard> = {
+        unit,
+        placement: { coordinate: 'E-5', facing: 'north' },
+      };
+      const attackApplyState = createAttackApplyStateWithRetreat(
+        unitPlacement,
+        {
+          retreatState: createRetreatState(unitPlacement, {
+            finalPosition: { coordinate: 'E-4', facing: 'north' },
+            completed: true,
+          }),
           completed: true,
         },
-        completed: true,
-      });
+      );
 
       expect(() =>
-        getExpectedAttackApplyEvent(attackApplyState, gameState),
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
       ).toThrow('Attack apply state is already complete');
     });
   });
 
   describe('error cases', () => {
-    it('should throw error when no results are reported', () => {
+    it('should throw when no results are reported', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
-
-      const attackApplyState = createAttackApplyState(unit, {
-        attackResult: {
-          unitRouted: false,
-          unitRetreated: false,
-          unitReversed: false,
-        },
-        completed: false,
-      });
+      const attackApplyState = createAttackApplyState(unit);
 
       expect(() =>
-        getExpectedAttackApplyEvent(attackApplyState, gameState),
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
       ).toThrow('Attack apply state not initialized correctly');
     });
 
-    it('should throw error when results are reported but no substates are defined', () => {
+    it('should throw when results are reported but no substates are defined', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
-
       const attackApplyState = createAttackApplyState(unit, {
         attackResult: {
           unitRouted: true,
@@ -470,13 +279,10 @@ describe('getExpectedAttackApplyEvent', () => {
           unitReversed: false,
         },
         routState: undefined,
-        retreatState: undefined,
-        reverseState: undefined,
-        completed: false,
       });
 
       expect(() =>
-        getExpectedAttackApplyEvent(attackApplyState, gameState),
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
       ).toThrow('Attack apply state not initialized correctly');
     });
   });

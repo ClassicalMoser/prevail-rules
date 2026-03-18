@@ -3,6 +3,9 @@ import type {
   Board,
   CleanupPhaseState,
   CommandResolutionState,
+  EngagementState,
+  FlankEngagementResolutionState,
+  FrontEngagementResolutionState,
   GameState,
   IssueCommandsPhaseState,
   MeleeResolutionState,
@@ -10,6 +13,7 @@ import type {
   PlayCardsPhaseState,
   PlayerSide,
   RallyResolutionState,
+  RearEngagementResolutionState,
   ResolveMeleePhaseState,
   RetreatState,
   ReverseState,
@@ -25,6 +29,7 @@ import {
   PLAY_CARDS_PHASE,
   RESOLVE_MELEE_PHASE,
 } from '@entities';
+import { createUnitWithPlacement } from './testHelpers';
 import { createTestUnit } from './unitHelpers';
 
 /**
@@ -206,6 +211,7 @@ export function createRetreatState(
 ): RetreatState<StandardBoard> {
   const legalRetreatOptions = new Set<UnitPlacement<StandardBoard>>([
     { coordinate: 'E-4' as const, facing: 'north' },
+    { coordinate: 'E-6' as const, facing: 'north' },
   ]);
   const retreatState: RetreatState<StandardBoard> = {
     substepType: 'retreat' as const,
@@ -261,6 +267,42 @@ export function createAttackApplyStateWithRetreat(
 }
 
 /**
+ * Creates an AttackApplyState with a rout state.
+ */
+export function createAttackApplyStateWithRout<TBoard extends Board>(
+  defendingUnit: UnitInstance,
+  overrides?: Partial<AttackApplyState<TBoard>>,
+): AttackApplyState<TBoard> {
+  return createAttackApplyState(defendingUnit, {
+    attackResult: {
+      unitRouted: true,
+      unitRetreated: false,
+      unitReversed: false,
+    },
+    routState: createRoutState(defendingUnit.playerSide, defendingUnit),
+    ...overrides,
+  });
+}
+
+/**
+ * Creates an AttackApplyState with a reverse state.
+ */
+export function createAttackApplyStateWithReverse<TBoard extends Board>(
+  reversingUnit: UnitWithPlacement<TBoard>,
+  overrides?: Partial<AttackApplyState<TBoard>>,
+): AttackApplyState<TBoard> {
+  return createAttackApplyState(reversingUnit.unit, {
+    attackResult: {
+      unitRouted: false,
+      unitRetreated: false,
+      unitReversed: true,
+    },
+    reverseState: createReverseState(reversingUnit),
+    ...overrides,
+  });
+}
+
+/**
  * Creates a RoutState with sensible defaults.
  */
 export function createRoutState(
@@ -308,5 +350,79 @@ export function createRallyResolutionState(
     routState: undefined,
     completed: false,
     ...overrides,
+  };
+}
+
+const defaultEngagingUnit = (): UnitInstance =>
+  createUnitWithPlacement({ playerSide: 'black' }).unit;
+const defaultTargetPlacement: UnitPlacement<StandardBoard> = {
+  coordinate: 'E-5',
+  facing: 'north',
+};
+
+/**
+ * Creates a front EngagementState with sensible defaults.
+ */
+export function createFrontEngagementState(
+  overrides?: Partial<FrontEngagementResolutionState>,
+): EngagementState<StandardBoard> & {
+  engagementResolutionState: FrontEngagementResolutionState;
+} {
+  return {
+    substepType: 'engagementResolution',
+    engagingUnit: defaultEngagingUnit(),
+    targetPlacement: defaultTargetPlacement,
+    engagementResolutionState: {
+      engagementType: 'front',
+      defensiveCommitment: { commitmentType: 'pending' },
+      defendingUnitCanRetreat: undefined,
+      defendingUnitRetreats: undefined,
+      defendingUnitRetreated: undefined,
+      ...overrides,
+    },
+    completed: false,
+  };
+}
+
+/**
+ * Creates a flank EngagementState with sensible defaults.
+ */
+export function createFlankEngagementState(
+  overrides?: Partial<FlankEngagementResolutionState>,
+): EngagementState<StandardBoard> & {
+  engagementResolutionState: FlankEngagementResolutionState;
+} {
+  return {
+    substepType: 'engagementResolution',
+    engagingUnit: defaultEngagingUnit(),
+    targetPlacement: defaultTargetPlacement,
+    engagementResolutionState: {
+      engagementType: 'flank',
+      defenderRotated: false,
+      ...overrides,
+    },
+    completed: false,
+  };
+}
+
+/**
+ * Creates a rear EngagementState with sensible defaults.
+ */
+export function createRearEngagementState(
+  overrides?: Partial<RearEngagementResolutionState>,
+): EngagementState<StandardBoard> & {
+  engagementResolutionState: RearEngagementResolutionState;
+} {
+  return {
+    substepType: 'engagementResolution',
+    engagingUnit: defaultEngagingUnit(),
+    targetPlacement: defaultTargetPlacement,
+    engagementResolutionState: {
+      engagementType: 'rear',
+      routState: createRoutState('white', createTestUnit('white')),
+      completed: false,
+      ...overrides,
+    },
+    completed: false,
   };
 }

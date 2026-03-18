@@ -7,8 +7,10 @@ import { describe, expect, it } from 'vitest';
 import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
 
 describe('getExpectedRetreatEvent', () => {
+  const unitPlacement = createUnitWithPlacement();
+
   it('should trigger rout when there are no legal retreat options and no rout state', () => {
-    const retreatState = createRetreatState(createUnitWithPlacement(), {
+    const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set(),
       finalPosition: undefined,
       routState: undefined,
@@ -21,10 +23,10 @@ describe('getExpectedRetreatEvent', () => {
   });
 
   it('should delegate to rout when retreat has no options and rout is not complete', () => {
-    const retreatState = createRetreatState(createUnitWithPlacement(), {
+    const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set(),
       finalPosition: undefined,
-      routState: createRoutState('black', createUnitWithPlacement().unit, {
+      routState: createRoutState('black', unitPlacement.unit, {
         cardsChosen: false,
       }),
     });
@@ -36,7 +38,7 @@ describe('getExpectedRetreatEvent', () => {
   });
 
   it('should ask the player to choose a retreat option when multiple options exist', () => {
-    const retreatState = createRetreatState(createUnitWithPlacement(), {
+    const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set([
         { coordinate: 'E-4', facing: 'north' },
         { coordinate: 'E-6', facing: 'north' },
@@ -52,7 +54,7 @@ describe('getExpectedRetreatEvent', () => {
   });
 
   it('should return resolveRetreat when the final position is already chosen', () => {
-    const retreatState = createRetreatState(createUnitWithPlacement(), {
+    const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set([{ coordinate: 'E-4', facing: 'north' }]),
       finalPosition: { coordinate: 'E-4', facing: 'north' },
     });
@@ -64,7 +66,7 @@ describe('getExpectedRetreatEvent', () => {
   });
 
   it('should throw when the retreat is already complete', () => {
-    const retreatState = createRetreatState(createUnitWithPlacement(), {
+    const retreatState = createRetreatState(unitPlacement, {
       completed: true,
       legalRetreatOptions: new Set([{ coordinate: 'E-4', facing: 'north' }]),
       finalPosition: { coordinate: 'E-4', facing: 'north' },
@@ -76,9 +78,9 @@ describe('getExpectedRetreatEvent', () => {
   });
 
   it('should throw when rout is complete but retreat is not marked complete', () => {
-    const retreatState = createRetreatState(createUnitWithPlacement(), {
+    const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set(),
-      routState: createRoutState('black', createUnitWithPlacement().unit, {
+      routState: createRoutState('black', unitPlacement.unit, {
         completed: true,
         numberToDiscard: 1,
         cardsChosen: true,
@@ -91,7 +93,7 @@ describe('getExpectedRetreatEvent', () => {
   });
 
   it('should throw when a single retreat option was not preselected', () => {
-    const retreatState = createRetreatState(createUnitWithPlacement(), {
+    const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set([{ coordinate: 'E-4', facing: 'north' }]),
       finalPosition: undefined,
     });

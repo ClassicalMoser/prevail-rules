@@ -7,6 +7,7 @@ import {
 } from '@queries';
 import {
   createAttackApplyState,
+  createAttackApplyStateWithRout,
   createCleanupPhaseState,
   createEmptyGameState,
   createIssueCommandsPhaseState,
@@ -38,15 +39,7 @@ describe('applyResolveRoutEvent', () => {
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
 
-    const routState = createRoutState('white', routedUnit);
-    const attackApplyState = createAttackApplyState(routedUnit, {
-      attackResult: {
-        unitRouted: true,
-        unitRetreated: false,
-        unitReversed: false,
-      },
-      routState,
-    });
+    const attackApplyState = createAttackApplyStateWithRout(routedUnit);
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
       attackApplyState,
     });
@@ -91,15 +84,7 @@ describe('applyResolveRoutEvent', () => {
       ),
     };
 
-    const routState = createRoutState(routingPlayer, routedUnit);
-    const attackApplyState = createAttackApplyState(routedUnit, {
-      attackResult: {
-        unitRouted: true,
-        unitRetreated: false,
-        unitReversed: false,
-      },
-      routState,
-    });
+    const attackApplyState = createAttackApplyStateWithRout(routedUnit);
     const meleeState = createMeleeResolutionState(stateWithUnits, {
       ...(routingPlayer === 'white'
         ? { whiteAttackApplyState: attackApplyState }

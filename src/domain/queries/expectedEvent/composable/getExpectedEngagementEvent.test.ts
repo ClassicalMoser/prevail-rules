@@ -1,41 +1,18 @@
-import type {
-  EngagementState,
-  FrontEngagementResolutionState,
-  StandardBoard,
-} from '@entities';
+import type { EngagementState, StandardBoard } from '@entities';
 import {
+  createFlankEngagementState,
+  createFrontEngagementState,
   createGameStateWithEngagedUnits,
   createGameStateWithUnits,
+  createRearEngagementState,
   createRoutState,
   createTestCard,
-  createTestUnit,
   createUnitWithPlacement,
 } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { getExpectedEngagementEvent } from './getExpectedEngagementEvent';
 
 describe('getExpectedEngagementEvent', () => {
-  function createFrontEngagementState(
-    overrides?: Partial<FrontEngagementResolutionState>,
-  ): EngagementState<StandardBoard> & {
-    engagementResolutionState: FrontEngagementResolutionState;
-  } {
-    return {
-      substepType: 'engagementResolution',
-      engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
-      targetPlacement: { coordinate: 'E-5', facing: 'north' },
-      engagementResolutionState: {
-        engagementType: 'front',
-        defensiveCommitment: { commitmentType: 'pending' },
-        defendingUnitCanRetreat: undefined,
-        defendingUnitRetreats: undefined,
-        defendingUnitRetreated: undefined,
-        ...overrides,
-      },
-      completed: false,
-    };
-  }
-
   function createGameStateWithTargetUnit(playerSide: 'black' | 'white') {
     return createGameStateWithUnits([
       {
@@ -78,16 +55,9 @@ describe('getExpectedEngagementEvent', () => {
 
   it('should resolve flank engagement when the defender has not rotated yet', () => {
     const gameState = createGameStateWithTargetUnit('black');
-    const engagementState: EngagementState<StandardBoard> = {
-      substepType: 'engagementResolution',
-      engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
-      targetPlacement: { coordinate: 'E-5', facing: 'north' },
-      engagementResolutionState: {
-        engagementType: 'flank',
-        defenderRotated: false,
-      },
-      completed: false,
-    };
+    const engagementState = createFlankEngagementState({
+      defenderRotated: false,
+    });
 
     expect(getExpectedEngagementEvent(gameState, engagementState)).toEqual({
       actionType: 'gameEffect',
@@ -109,16 +79,9 @@ describe('getExpectedEngagementEvent', () => {
 
   it('should throw when flank engagement is resolved but not marked complete', () => {
     const gameState = createGameStateWithTargetUnit('black');
-    const engagementState: EngagementState<StandardBoard> = {
-      substepType: 'engagementResolution',
-      engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
-      targetPlacement: { coordinate: 'E-5', facing: 'north' },
-      engagementResolutionState: {
-        engagementType: 'flank',
-        defenderRotated: true,
-      },
-      completed: false,
-    };
+    const engagementState = createFlankEngagementState({
+      defenderRotated: true,
+    });
 
     expect(() =>
       getExpectedEngagementEvent(gameState, engagementState),
@@ -129,17 +92,7 @@ describe('getExpectedEngagementEvent', () => {
 
   it('should resolve rout for rear engagement when rout is not complete', () => {
     const gameState = createGameStateWithTargetUnit('black');
-    const engagementState: EngagementState<StandardBoard> = {
-      substepType: 'engagementResolution',
-      engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
-      targetPlacement: { coordinate: 'E-5', facing: 'north' },
-      engagementResolutionState: {
-        engagementType: 'rear',
-        routState: createRoutState('black', createTestUnit('white')),
-        completed: false,
-      },
-      completed: false,
-    };
+    const engagementState = createRearEngagementState();
 
     expect(getExpectedEngagementEvent(gameState, engagementState)).toEqual({
       actionType: 'gameEffect',
@@ -149,21 +102,14 @@ describe('getExpectedEngagementEvent', () => {
 
   it('should throw when rear engagement is already complete', () => {
     const gameState = createGameStateWithTargetUnit('black');
-    const engagementState: EngagementState<StandardBoard> = {
-      substepType: 'engagementResolution',
-      engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
-      targetPlacement: { coordinate: 'E-5', facing: 'north' },
-      engagementResolutionState: {
-        engagementType: 'rear',
-        routState: createRoutState('black', createTestUnit('white'), {
-          completed: true,
-          numberToDiscard: 1,
-          cardsChosen: true,
-        }),
+    const engagementState = createRearEngagementState({
+      routState: createRoutState('black', createUnitWithPlacement().unit, {
         completed: true,
-      },
-      completed: false,
-    };
+        numberToDiscard: 1,
+        cardsChosen: true,
+      }),
+      completed: true,
+    });
 
     expect(() =>
       getExpectedEngagementEvent(gameState, engagementState),
@@ -172,21 +118,13 @@ describe('getExpectedEngagementEvent', () => {
 
   it('should throw when rear rout is complete but the engagement is not', () => {
     const gameState = createGameStateWithTargetUnit('black');
-    const engagementState: EngagementState<StandardBoard> = {
-      substepType: 'engagementResolution',
-      engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
-      targetPlacement: { coordinate: 'E-5', facing: 'north' },
-      engagementResolutionState: {
-        engagementType: 'rear',
-        routState: createRoutState('black', createTestUnit('white'), {
-          completed: true,
-          numberToDiscard: 1,
-          cardsChosen: true,
-        }),
-        completed: false,
-      },
-      completed: false,
-    };
+    const engagementState = createRearEngagementState({
+      routState: createRoutState('black', createUnitWithPlacement().unit, {
+        completed: true,
+        numberToDiscard: 1,
+        cardsChosen: true,
+      }),
+    });
 
     expect(() =>
       getExpectedEngagementEvent(gameState, engagementState),
@@ -323,7 +261,7 @@ describe('getExpectedEngagementEvent', () => {
         ...createFrontEngagementState().engagementResolutionState,
         engagementType: 'invalid',
       } as never,
-    } as EngagementState<StandardBoard>; // Bad typecasts to trigger error
+    } as EngagementState<StandardBoard>;
 
     expect(() =>
       getExpectedEngagementEvent(gameState, engagementState),

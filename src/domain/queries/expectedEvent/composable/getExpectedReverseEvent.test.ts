@@ -7,10 +7,10 @@ import { describe, expect, it } from 'vitest';
 import { getExpectedReverseEvent } from './getExpectedReverseEvent';
 
 describe('getExpectedReverseEvent', () => {
+  const unitPlacement = createUnitWithPlacement();
+
   it('should resolve reverse when the final position has not been determined yet', () => {
-    const reverseState = createReverseState(createUnitWithPlacement(), {
-      finalPosition: undefined,
-    });
+    const reverseState = createReverseState(unitPlacement);
     const gameState = createEmptyGameState();
 
     expect(getExpectedReverseEvent(reverseState, gameState)).toEqual({
@@ -20,7 +20,7 @@ describe('getExpectedReverseEvent', () => {
   });
 
   it('should throw when the reverse is already complete', () => {
-    const reverseState = createReverseState(createUnitWithPlacement(), {
+    const reverseState = createReverseState(unitPlacement, {
       completed: true,
       finalPosition: { coordinate: 'E-4', facing: 'south' },
     });
@@ -32,7 +32,7 @@ describe('getExpectedReverseEvent', () => {
   });
 
   it('should throw when the final position is already set but the state is incomplete', () => {
-    const reverseState = createReverseState(createUnitWithPlacement(), {
+    const reverseState = createReverseState(unitPlacement, {
       finalPosition: { coordinate: 'E-4', facing: 'south' },
     });
     const gameState = createEmptyGameState();

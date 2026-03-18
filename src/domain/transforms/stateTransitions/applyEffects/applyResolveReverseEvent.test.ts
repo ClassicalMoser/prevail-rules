@@ -6,14 +6,13 @@ import {
   getReverseStateFromAttackApply,
 } from '@queries';
 import {
-  createAttackApplyState,
+  createAttackApplyStateWithRetreat,
+  createAttackApplyStateWithReverse,
   createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
-  createRetreatState,
-  createReverseState,
   createTestUnit,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
@@ -37,15 +36,8 @@ describe('applyResolveReverseEvent', () => {
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
 
-    const reverseState = createReverseState(unitWithPlacement);
-    const attackApplyState = createAttackApplyState(reversingUnit, {
-      attackResult: {
-        unitRouted: false,
-        unitRetreated: false,
-        unitReversed: true,
-      },
-      reverseState,
-    });
+    const attackApplyState =
+      createAttackApplyStateWithReverse(unitWithPlacement);
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
       attackApplyState,
     });
@@ -86,27 +78,12 @@ describe('applyResolveReverseEvent', () => {
       boardState: addUnitToBoard(state.boardState, reversingUnitWithPlacement),
     };
 
-    // Opponent must have retreated or routed first for reverse to be possible
-    const opponentRetreatState = createRetreatState(opponentUnitWithPlacement);
-    const opponentAttackApplyState = createAttackApplyState(opponentUnit, {
-      attackResult: {
-        unitRouted: false,
-        unitRetreated: true, // Opponent retreated
-        unitReversed: false,
-      },
-      retreatState: opponentRetreatState,
-    });
-
-    // Reversing unit gets reversed
-    const reverseState = createReverseState(reversingUnitWithPlacement);
-    const reversingAttackApplyState = createAttackApplyState(reversingUnit, {
-      attackResult: {
-        unitRouted: false,
-        unitRetreated: false,
-        unitReversed: true,
-      },
-      reverseState,
-    });
+    const opponentAttackApplyState = createAttackApplyStateWithRetreat(
+      opponentUnitWithPlacement,
+    );
+    const reversingAttackApplyState = createAttackApplyStateWithReverse(
+      reversingUnitWithPlacement,
+    );
 
     const meleeState = createMeleeResolutionState(stateWithUnit, {
       ...(reversingPlayer === 'white'

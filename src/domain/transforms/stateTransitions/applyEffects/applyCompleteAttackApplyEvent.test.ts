@@ -34,9 +34,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
 
-    const attackApplyState = createAttackApplyState(defendingUnit, {
-      completed: false,
-    });
+    const attackApplyState = createAttackApplyState(defendingUnit);
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
       attackApplyState,
     });
