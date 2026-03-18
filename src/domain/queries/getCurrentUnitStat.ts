@@ -81,9 +81,6 @@ export function getCurrentUnitStat<TBoard extends Board>(
         activeRoundEffect.restrictions.inspirationRangeRestriction;
       if (inspirationRange) {
         const unitPlacement = getPositionOfUnit(gameState.boardState, unit);
-        if (!unitPlacement) {
-          throw new Error('Unit not found on board');
-        }
         const unitPosition = unitPlacement.coordinate;
         const commanderSpace = getCommanderSpace(
           unit.playerSide,

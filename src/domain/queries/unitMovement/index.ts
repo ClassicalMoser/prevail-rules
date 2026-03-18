@@ -1,4 +1,3 @@
-export * from './checkDiagonalMove';
-export * from './exploreUnitMoves';
-export * from './getLegalRetreats';
-export * from './getLegalUnitMoves';
+export { checkDiagonalMove } from './checkDiagonalMove';
+export { getLegalRetreats } from './getLegalRetreats';
+export { getLegalUnitMoves } from './getLegalUnitMoves';

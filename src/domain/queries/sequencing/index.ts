@@ -1,29 +1,37 @@
-export { getNextStepForResolveRally } from './cleanupPhase';
-export { getRallyResolutionStateForCurrentStep } from './cleanupPhase';
-export { updateRallyResolutionStateForCurrentStep } from './cleanupPhase';
-export { getCurrentCommandResolutionState } from './getCommandResolutionState';
-export { getMeleeResolutionState } from './getCommandResolutionState';
-export { getMovementResolutionState } from './getCommandResolutionState';
-export { getRangedAttackResolutionState } from './getCommandResolutionState';
-export { getCleanupPhaseState } from './getPhaseState';
-export { getCurrentPhaseState } from './getPhaseState';
-export { getIssueCommandsPhaseState } from './getPhaseState';
-export { getMoveCommandersPhaseState } from './getPhaseState';
-export { getPlayCardsPhaseState } from './getPhaseState';
-export { getResolveMeleePhaseState } from './getPhaseState';
-export { getAttackApplyStateFromMelee } from './getSubstep';
-export { getAttackApplyStateFromRangedAttack } from './getSubstep';
-export { canReverseUnit } from './getSubstep';
-export { getEngagementStateFromMovement } from './getSubstep';
-export { getFlankEngagementStateFromMovement } from './getSubstep';
-export { getFrontEngagementStateFromMovement } from './getSubstep';
-export { getRearEngagementStateFromMovement } from './getSubstep';
-export { getCurrentRallyResolutionState } from './getSubstep';
-export { getRallyResolutionState } from './getSubstep';
-export { getRoutStateFromRally } from './getSubstep';
-export { findRetreatState } from './getSubstep';
-export { getRetreatStateFromAttackApply } from './getSubstep';
-export { getRetreatStateFromMelee } from './getSubstep';
-export { getRetreatStateFromRangedAttack } from './getSubstep';
-export { getReverseStateFromAttackApply } from './getSubstep';
-export { getRoutStateFromAttackApply } from './getSubstep';
+export {
+  getNextStepForResolveRally,
+  getRallyResolutionStateForCurrentStep,
+  updateRallyResolutionStateForCurrentStep,
+} from './cleanupPhase';
+export {
+  getCurrentCommandResolutionState,
+  getMeleeResolutionState,
+  getMovementResolutionState,
+  getRangedAttackResolutionState,
+} from './getCommandResolutionState';
+export {
+  getCleanupPhaseState,
+  getCurrentPhaseState,
+  getIssueCommandsPhaseState,
+  getMoveCommandersPhaseState,
+  getPlayCardsPhaseState,
+  getResolveMeleePhaseState,
+} from './getPhaseState';
+export {
+  canReverseUnit,
+  findRetreatState,
+  getAttackApplyStateFromMelee,
+  getAttackApplyStateFromRangedAttack,
+  getCurrentRallyResolutionState,
+  getEngagementStateFromMovement,
+  getFlankEngagementStateFromMovement,
+  getFrontEngagementStateFromMovement,
+  getRallyResolutionState,
+  getRearEngagementStateFromMovement,
+  getRetreatStateFromAttackApply,
+  getRetreatStateFromMelee,
+  getRetreatStateFromRangedAttack,
+  getReverseStateFromAttackApply,
+  getRoutStateFromAttackApply,
+  getRoutStateFromRally,
+} from './getSubstep';

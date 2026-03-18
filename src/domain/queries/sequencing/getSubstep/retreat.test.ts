@@ -214,6 +214,14 @@ describe('getRetreatStateFromMelee', () => {
 });
 
 describe('findRetreatState', () => {
+  it('should throw error when current phase state is missing', () => {
+    const state = createEmptyGameState();
+
+    expect(() => findRetreatState(state, 'white')).toThrow(
+      'No current phase state found',
+    );
+  });
+
   it('should find retreat state from ranged attack resolution', () => {
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState();

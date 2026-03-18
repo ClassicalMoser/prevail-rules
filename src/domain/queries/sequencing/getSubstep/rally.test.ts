@@ -81,6 +81,19 @@ describe('getCurrentRallyResolutionState', () => {
     expect(result.playerRallied).toBe(true);
   });
 
+  it('should throw error when first player rally state is missing', () => {
+    const state = createEmptyGameState();
+    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
+      step: 'firstPlayerResolveRally',
+      firstPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: undefined,
+    });
+
+    expect(() => getCurrentRallyResolutionState(state)).toThrow(
+      'No first player rally resolution state found',
+    );
+  });
+
   it('should return second player rally state when step is secondPlayerResolveRally', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
@@ -97,6 +110,19 @@ describe('getCurrentRallyResolutionState', () => {
 
     const result = getCurrentRallyResolutionState(state);
     expect(result.playerRallied).toBe(true);
+  });
+
+  it('should throw error when second player rally state is missing', () => {
+    const state = createEmptyGameState();
+    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
+      step: 'secondPlayerResolveRally',
+      firstPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: undefined,
+    });
+
+    expect(() => getCurrentRallyResolutionState(state)).toThrow(
+      'No second player rally resolution state found',
+    );
   });
 
   it('should throw error when not in resolveRally step', () => {

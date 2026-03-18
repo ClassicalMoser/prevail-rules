@@ -11,22 +11,15 @@ export function isEngagementFromRear(
   attackerFacing: UnitFacing,
   defenderFacing: UnitFacing,
 ): ValidationResult {
-  try {
-    const adjacentFacings = getAdjacentFacings(defenderFacing);
-    const requiredFacings = new Set([...adjacentFacings, defenderFacing]);
-    if (requiredFacings.has(attackerFacing)) {
-      return {
-        result: true,
-      };
-    }
+  const adjacentFacings = getAdjacentFacings(defenderFacing);
+  const requiredFacings = new Set([...adjacentFacings, defenderFacing]);
+  if (requiredFacings.has(attackerFacing)) {
     return {
-      result: false,
-      errorReason: 'Attacker is not facing a similar direction to the defender',
-    };
-  } catch {
-    return {
-      result: false,
-      errorReason: 'Unknown error determining if engagement is from rear',
+      result: true,
     };
   }
+  return {
+    result: false,
+    errorReason: 'Attacker is not facing a similar direction to the defender',
+  };
 }

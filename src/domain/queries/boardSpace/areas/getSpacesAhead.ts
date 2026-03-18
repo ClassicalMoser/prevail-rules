@@ -20,5 +20,5 @@ export function getSpacesAhead<TBoard extends Board>(
   const frontSpaces = getFrontSpaces(board, coordinate, facing);
 
   // Extend spaces in the forward direction
-  return getSpacesInDirection(board, frontSpaces, facing, facing);
+  return getSpacesInDirection(board, frontSpaces, facing);
 }

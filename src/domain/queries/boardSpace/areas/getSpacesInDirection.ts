@@ -10,21 +10,19 @@ import { getInlineSpaces } from './getInlineSpaces';
  *
  * @param board - The board object
  * @param initialSpaces - The initial set of spaces to extend from
- * @param facing - The facing direction (used for inline spaces)
  * @param extensionFacing - The facing direction to extend spaces to the edge
  * @returns A set of all spaces in the direction
  */
 function getSpacesInDirection<TBoard extends Board>(
   board: TBoard,
   initialSpaces: Set<BoardCoordinate<TBoard>>,
-  facing: UnitFacing,
   extensionFacing: UnitFacing,
 ): Set<BoardCoordinate<TBoard>> {
   const spaces = new Set(initialSpaces);
 
   // Add the inline spaces for all initial spaces (prevents checkerboard for diagonal facings)
   for (const space of initialSpaces) {
-    const inlineSpaces = getInlineSpaces(board, space, facing);
+    const inlineSpaces = getInlineSpaces(board, space, extensionFacing);
     for (const inlineSpace of inlineSpaces) spaces.add(inlineSpace);
   }
 

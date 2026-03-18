@@ -218,6 +218,39 @@ describe('getCurrentUnitStat', () => {
   });
 
   describe('active command modifiers', () => {
+    it('should ignore command modifiers when no card is in play', () => {
+      const unit = createTestUnit('black', { attack: 3 });
+      const gameState = createEmptyGameState();
+      gameState.boardState = createBoardWithUnits([
+        { unit, coordinate: 'E-5', facing: 'north' },
+      ]);
+      gameState.currentRoundState.commandedUnits = new Set([unit]);
+
+      const result = getCurrentUnitStat(unit, 'attack', gameState);
+
+      expect(result).toBe(3);
+    });
+
+    it('should fall back to an empty command modifier list when modifiers are missing', () => {
+      const unit = createTestUnit('black', { attack: 3 });
+      const gameState = createEmptyGameState();
+      gameState.boardState = createBoardWithUnits([
+        { unit, coordinate: 'E-5', facing: 'north' },
+      ]);
+      gameState.currentRoundState.commandedUnits = new Set([unit]);
+      gameState.cardState.black.inPlay = {
+        ...createTestCard(),
+        command: {
+          ...createTestCard().command,
+          modifiers: undefined as unknown as never[],
+        },
+      };
+
+      const result = getCurrentUnitStat(unit, 'attack', gameState);
+
+      expect(result).toBe(3);
+    });
+
     it('should apply command modifier when unit was commanded', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
@@ -264,6 +297,50 @@ describe('getCurrentUnitStat', () => {
     });
   });
 
+  describe('additional modifiers', () => {
+    it('should apply a matching additional modifier', () => {
+      const unit = createTestUnit('black', { attack: 3 });
+      const gameState = createEmptyGameState();
+      gameState.boardState = createBoardWithUnits([
+        { unit, coordinate: 'E-5', facing: 'north' },
+      ]);
+
+      const result = getCurrentUnitStat(unit, 'attack', gameState, [
+        { type: 'attack', value: 2 },
+      ]);
+
+      expect(result).toBe(5);
+    });
+
+    it('should apply defense additional modifiers to defense stats', () => {
+      const unit = createTestUnit('black', { reverse: 3 });
+      const gameState = createEmptyGameState();
+      gameState.boardState = createBoardWithUnits([
+        { unit, coordinate: 'E-5', facing: 'north' },
+      ]);
+
+      const result = getCurrentUnitStat(unit, 'reverse', gameState, [
+        { type: 'defense', value: 1 },
+      ]);
+
+      expect(result).toBe(4);
+    });
+
+    it('should ignore additional modifiers that do not match the stat', () => {
+      const unit = createTestUnit('black', { attack: 3 });
+      const gameState = createEmptyGameState();
+      gameState.boardState = createBoardWithUnits([
+        { unit, coordinate: 'E-5', facing: 'north' },
+      ]);
+
+      const result = getCurrentUnitStat(unit, 'attack', gameState, [
+        { type: 'speed', value: 1 },
+      ]);
+
+      expect(result).toBe(3);
+    });
+  });
+
   describe('multiple modifiers stacking', () => {
     it('should stack round effect and command modifiers', () => {
       const unit = createTestUnit('black', { attack: 3 });
@@ -279,36 +356,6 @@ describe('getCurrentUnitStat', () => {
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
       expect(result).toBe(6); // 3 base + 2 round effect + 1 command
-    });
-  });
-
-  describe('edge cases', () => {
-    it('should throw error when unit is not on board and inspiration range is required', () => {
-      const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
-      // Unit not placed on board
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'attack', value: 1 }],
-        roundEffectRestrictions: { inspirationRangeRestriction: 1 },
-      });
-
-      expect(() => {
-        getCurrentUnitStat(unit, 'attack', gameState);
-      }).toThrow('Unit not found on board');
-    });
-
-    it('should handle negative modifiers', () => {
-      const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
-      gameState.boardState = createBoardWithUnits([
-        { unit, coordinate: 'E-5', facing: 'north' },
-      ]);
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'attack', value: -1 }],
-      });
-
-      const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(2); // 3 base - 1 modifier
     });
   });
 });

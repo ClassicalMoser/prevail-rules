@@ -11,21 +11,14 @@ export function isEngagementFromFront(
   attackerFacing: UnitFacing,
   defenderFacing: UnitFacing,
 ): ValidationResult {
-  try {
-    const requiredFacing = getOppositeFacing(defenderFacing);
-    if (attackerFacing === requiredFacing) {
-      return {
-        result: true,
-      };
-    }
+  const requiredFacing = getOppositeFacing(defenderFacing);
+  if (attackerFacing === requiredFacing) {
     return {
-      result: false,
-      errorReason: 'Attacker is not facing opposite the defender',
-    };
-  } catch {
-    return {
-      result: false,
-      errorReason: 'Unknown error determining if engagement is from front',
+      result: true,
     };
   }
+  return {
+    result: false,
+    errorReason: 'Attacker is not facing opposite the defender',
+  };
 }

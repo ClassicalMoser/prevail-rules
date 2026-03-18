@@ -158,6 +158,64 @@ describe('getMeleeSupportValue', () => {
 
       expect(supportValue).toBe(1);
     });
+
+    it('should return 0 when a friendly adjacent unit is facing away', () => {
+      const primaryUnit = createTestUnit('black', {
+        attack: 3,
+        instanceNumber: 1,
+      });
+      const supportUnit = createTestUnit('black', {
+        attack: 3,
+        instanceNumber: 2,
+      });
+      const board = createBoardWithUnits([
+        { unit: primaryUnit, coordinate: 'E-5', facing: 'north' },
+        { unit: supportUnit, coordinate: 'E-6', facing: 'east' },
+      ]);
+
+      const unitWithPlacement = getPlayerUnitWithPosition(
+        board,
+        'E-5',
+        'black',
+      )!;
+      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
+
+      expect(supportValue).toBe(0);
+    });
+
+    it('should return 0 when a diagonal support unit is blocked by enemy units', () => {
+      const primaryUnit = createTestUnit('black', {
+        attack: 3,
+        instanceNumber: 1,
+      });
+      const supportUnit = createTestUnit('black', {
+        attack: 3,
+        instanceNumber: 2,
+      });
+      const blockingEnemy1 = createTestUnit('white', {
+        attack: 3,
+        instanceNumber: 1,
+      });
+      const blockingEnemy2 = createTestUnit('white', {
+        attack: 3,
+        instanceNumber: 2,
+      });
+      const board = createBoardWithUnits([
+        { unit: primaryUnit, coordinate: 'E-5', facing: 'north' },
+        { unit: supportUnit, coordinate: 'D-6', facing: 'southWest' },
+        { unit: blockingEnemy1, coordinate: 'D-5', facing: 'south' },
+        { unit: blockingEnemy2, coordinate: 'E-6', facing: 'south' },
+      ]);
+
+      const unitWithPlacement = getPlayerUnitWithPosition(
+        board,
+        'E-5',
+        'black',
+      )!;
+      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
+
+      expect(supportValue).toBe(0);
+    });
   });
 
   describe('engaged units', () => {

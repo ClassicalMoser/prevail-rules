@@ -22,7 +22,7 @@ export function getMeleeSupportValue(
   const adjacentSpaces = getAdjacentSpaces(board, unitCoordinate);
   // Get the spaces behind the primary unit
   const spacesBehind = getSpacesBehind(board, unitCoordinate, unitFacing);
-  // Filter out the spaces behind the primary unit
+  // Filter out the spaces behind the primary unit since they cannot provide support
   const adjacentSpacesNotBehind = [...adjacentSpaces].filter(
     (space) => !spacesBehind.has(space),
   );
@@ -62,6 +62,9 @@ export function getMeleeSupportValue(
       if (diagonalClear.result) {
         // Diagonal is clear, add the unit to the possible support units
         potentialSupportUnits.push(unit);
+      } else {
+        // Diagonal is blocked, skip
+        continue;
       }
     } else {
       // Unit is orthogonally adjacent to the primary unit

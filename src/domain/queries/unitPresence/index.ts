@@ -1,2 +1,2 @@
-export * from './getPlayerUnitWithPosition';
-export * from './getPositionOfUnit';
+export { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
+export { getPositionOfUnit } from './getPositionOfUnit';

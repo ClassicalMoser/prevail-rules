@@ -48,7 +48,7 @@ describe('getRallyResolutionStateForCurrentStep', () => {
     expect(result).toEqual(rallyState);
   });
 
-  it('should throw when player does not match step', () => {
+  it('should throw when second player attempts to rally out of order', () => {
     const state = createEmptyGameState();
     state.currentInitiative = 'white';
     state.currentRoundState.currentPhaseState = {
@@ -66,6 +66,41 @@ describe('getRallyResolutionStateForCurrentStep', () => {
 
     expect(() => getRallyResolutionStateForCurrentStep(state, 'black')).toThrow(
       'Expected white (first player) to resolve rally, got black',
+    );
+  });
+
+  it('should throw when first player attempts to rally out of order', () => {
+    const state = createEmptyGameState();
+    state.currentInitiative = 'white';
+    state.currentRoundState.currentPhaseState = {
+      phase: CLEANUP_PHASE,
+      step: 'secondPlayerResolveRally',
+      firstPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: undefined,
+    };
+
+    expect(() => getRallyResolutionStateForCurrentStep(state, 'white')).toThrow(
+      'Expected black (second player) to resolve rally, got white',
+    );
+  });
+
+  it('should throw when not in a resolveRally step', () => {
+    const state = createEmptyGameState();
+    state.currentInitiative = 'white';
+    state.currentRoundState = {
+      roundNumber: 1,
+      completedPhases: new Set(),
+      currentPhaseState: {
+        phase: CLEANUP_PHASE,
+        step: 'discardPlayedCards',
+        firstPlayerRallyResolutionState: undefined,
+        secondPlayerRallyResolutionState: undefined,
+      },
+      commandedUnits: new Set(),
+    };
+
+    expect(() => getRallyResolutionStateForCurrentStep(state, 'white')).toThrow(
+      'Cleanup phase is not on a resolveRally step: discardPlayedCards',
     );
   });
 });

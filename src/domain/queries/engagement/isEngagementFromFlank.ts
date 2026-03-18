@@ -11,21 +11,14 @@ export function isEngagementFromFlank(
   attackerFacing: UnitFacing,
   defenderFacing: UnitFacing,
 ): ValidationResult {
-  try {
-    const requiredFacings = getOrthogonalFacings(defenderFacing);
-    if (requiredFacings.has(attackerFacing)) {
-      return {
-        result: true,
-      };
-    }
+  const requiredFacings = getOrthogonalFacings(defenderFacing);
+  if (requiredFacings.has(attackerFacing)) {
     return {
-      result: false,
-      errorReason: 'Attacker is not facing orthogonal to the defender',
-    };
-  } catch {
-    return {
-      result: false,
-      errorReason: 'Unknown error determining if engagement is from flank',
+      result: true,
     };
   }
+  return {
+    result: false,
+    errorReason: 'Attacker is not facing orthogonal to the defender',
+  };
 }

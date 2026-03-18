@@ -24,5 +24,5 @@ export function getSpacesBehind<TBoard extends Board>(
   const backwardFacing = getOppositeFacing(facing);
 
   // Extend spaces in the backward direction
-  return getSpacesInDirection(board, backSpaces, facing, backwardFacing);
+  return getSpacesInDirection(board, backSpaces, backwardFacing);
 }
