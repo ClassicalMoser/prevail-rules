@@ -162,35 +162,4 @@ describe('applyIssueCommandEvent', () => {
       );
     });
   });
-
-  describe('error cases', () => {
-    it('should throw if command not found in remaining commands', () => {
-      const state = createGameStateWithCommands();
-      const unit = createTestUnit('black', { attack: 3 });
-      // Create a command that's different from the one in remaining commands
-      const wrongCommand = {
-        size: 'units' as const,
-        type: 'rangedAttack' as const, // Different type
-        number: 1,
-        restrictions: {
-          inspirationRangeRestriction: 1,
-          traitRestrictions: [],
-          unitRestrictions: [],
-        },
-        modifiers: [],
-      };
-
-      const event: IssueCommandEvent<StandardBoard> = {
-        eventType: 'playerChoice',
-        choiceType: 'issueCommand',
-        player: 'black',
-        command: wrongCommand,
-        units: new Set([unit]),
-      };
-
-      expect(() => applyIssueCommandEvent(event, state)).toThrow(
-        'Command not found in remaining commands',
-      );
-    });
-  });
 });

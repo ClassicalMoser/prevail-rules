@@ -1,14 +1,15 @@
-import type { Board, CleanupPhaseState, GameState } from '@entities';
+import type { Board, GameState } from '@entities';
 import type { ChooseRoutDiscardEvent } from '@events';
 import {
-  getCleanupPhaseState,
   getCurrentRallyResolutionState,
   getRoutStateFromRally,
 } from '@queries';
+import { updateRoutState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseRoutDiscardEvent to the game state.
  * Marks that the player has chosen which cards to discard for rout penalty.
+ * Event is assumed pre-validated (cleanup phase, resolveRally step, player has rout state).
  *
  * @param event - The choose rout discard event to apply
  * @param state - The current game state
@@ -18,42 +19,18 @@ export function applyChooseRoutDiscardEvent<TBoard extends Board>(
   event: ChooseRoutDiscardEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const { player } = event;
-  const currentPhaseState = getCleanupPhaseState(state);
+  // Find the relevant game states for this event
   const rallyState = getCurrentRallyResolutionState(state);
   const routState = getRoutStateFromRally(rallyState);
 
-  // Determine which rally resolution we're in
-  const firstPlayer = state.currentInitiative;
-  const isFirstPlayer = player === firstPlayer;
-
-  // Update the rout state with cardsChosen set to true
+  // Update the rout state with cardsChosen set to true (step unchanged; awaiting ResolveRoutDiscardEvent)
   const updatedRoutState = {
     ...routState,
     cardsChosen: true,
   };
 
-  const updatedRallyState = {
-    ...rallyState,
-    routState: updatedRoutState,
-  };
-
-  // Keep the same step - awaiting ResolveRoutDiscardEvent
-  const newPhaseState: CleanupPhaseState = isFirstPlayer
-    ? {
-        ...currentPhaseState,
-        firstPlayerRallyResolutionState: updatedRallyState,
-      }
-    : {
-        ...currentPhaseState,
-        secondPlayerRallyResolutionState: updatedRallyState,
-      };
-
-  return {
-    ...state,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  // Update the rout state with the new cards chosen
+  const newGameState = updateRoutState(state, updatedRoutState);
+  // Return the new game state with the updated rout state
+  return newGameState;
 }

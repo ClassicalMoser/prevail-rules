@@ -41,5 +41,6 @@ export function applyChooseCardEvent<TBoard extends Board>(
       }
     : currentPhaseState;
 
-  return updatePhaseState(stateWithUpdatedPlayer, newPhaseState);
+  const newGameState = updatePhaseState(stateWithUpdatedPlayer, newPhaseState);
+  return newGameState;
 }

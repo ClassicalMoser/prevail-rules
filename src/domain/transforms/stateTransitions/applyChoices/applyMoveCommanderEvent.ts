@@ -15,8 +15,8 @@ import {
 
 /**
  * Applies a MoveCommanderEvent to the game state.
- * Moves a commander from one board position to another.
- * Advances the phase step based on which commander was moved.
+ * Moves a commander from one board position to another and advances the phase step.
+ * Event is assumed pre-validated (moveCommanders phase, step is moveFirstCommander or moveSecondCommander).
  *
  * @param event - The move commander event to apply
  * @param state - The current game state
@@ -27,11 +27,11 @@ export function applyMoveCommanderEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = getMoveCommandersPhaseState(state);
-
   const side = event.player;
   const originalCoordinate: BoardCoordinate<TBoard> = event.from;
   const newCoordinate: BoardCoordinate<TBoard> = event.to;
 
+  // Remove commander from source space, then add at destination
   const removedCommanderBoard = removeCommanderFromBoard<TBoard>(
     state.boardState,
     originalCoordinate,
@@ -43,26 +43,17 @@ export function applyMoveCommanderEvent<TBoard extends Board>(
     newCoordinate,
   );
 
-  // Determine new step based on current step
-  let newStep: MoveCommandersPhaseState['step'];
-  if (currentPhaseState.step === 'moveFirstCommander') {
-    newStep = 'moveSecondCommander';
-  } else if (currentPhaseState.step === 'moveSecondCommander') {
-    newStep = 'complete';
-  } else {
-    throw new Error(
-      `Invalid move commanders phase step: ${currentPhaseState.step}`,
-    );
-  }
-
+  // Advance step: first commander -> second, second -> complete
+  const newStep: MoveCommandersPhaseState['step'] =
+    currentPhaseState.step === 'moveFirstCommander'
+      ? 'moveSecondCommander'
+      : 'complete';
   const newPhaseState: MoveCommandersPhaseState = {
     ...currentPhaseState,
     step: newStep,
   };
 
   const stateWithBoard = updateBoardState(state, addedCommanderBoard);
-
-  const stateWithPhase = updatePhaseState(stateWithBoard, newPhaseState);
-
-  return stateWithPhase;
+  const newGameState = updatePhaseState(stateWithBoard, newPhaseState);
+  return newGameState;
 }

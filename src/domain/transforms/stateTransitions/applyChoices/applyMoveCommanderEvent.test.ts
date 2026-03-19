@@ -164,26 +164,4 @@ describe('applyMoveCommanderEvent', () => {
       );
     });
   });
-
-  describe('error cases', () => {
-    it('should throw if step is not moveFirstCommander or moveSecondCommander', () => {
-      const state = createGameStateInMoveCommandersStep('moveFirstCommander');
-      const stateWithCompleteStep = updatePhaseState(state, {
-        phase: MOVE_COMMANDERS_PHASE,
-        step: 'complete',
-      });
-
-      const event: MoveCommanderEvent<StandardBoard> = {
-        eventType: 'playerChoice',
-        choiceType: 'moveCommander',
-        player: 'black',
-        from: 'E-5',
-        to: 'E-7',
-      };
-
-      expect(() =>
-        applyMoveCommanderEvent(event, stateWithCompleteStep),
-      ).toThrow('Invalid move commanders phase step: complete');
-    });
-  });
 });

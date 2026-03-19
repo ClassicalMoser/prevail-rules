@@ -1,23 +1,16 @@
-import type {
-  Board,
-  GameState,
-  IssueCommandsPhaseState,
-  MovementResolutionState,
-} from '@entities';
+import type { Board, GameState, MovementResolutionState } from '@entities';
 import type { CommitToMovementEvent } from '@events';
-import {
-  getIssueCommandsPhaseState,
-  getMovementResolutionState,
-} from '@queries';
+import { getMovementResolutionState } from '@queries';
 import {
   discardCardsFromHand,
   updateCardState,
-  updatePhaseState,
+  updateCommandResolutionState,
 } from '@transforms/pureTransforms';
 
 /**
  * Applies a CommitToMovementEvent to the game state.
  * Updates the commitment in the movement resolution state and discards the card.
+ * Event is assumed pre-validated (issueCommands phase, movement resolution).
  *
  * @param event - The commit to movement event to apply
  * @param state - The current game state
@@ -27,33 +20,28 @@ export function applyCommitToMovementEvent<TBoard extends Board>(
   event: CommitToMovementEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
   const player = event.player;
 
-  // Discard the card from hand
+  // Discard committed card from player's hand
   const newCardState = discardCardsFromHand(state.cardState, player, [
     event.committedCard.id,
   ]);
 
-  // Create completed commitment
+  // Mark movement commitment as completed with the chosen card
   const newCommitment = {
     commitmentType: 'completed' as const,
     card: event.committedCard,
   };
-
-  // Update movement resolution state with the new commitment
   const newMovementState: MovementResolutionState<TBoard> = {
     ...movementState,
     commitment: newCommitment,
   };
 
-  // Update phase state
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
-    ...phaseState,
-    currentCommandResolutionState: newMovementState,
-  };
-
   const stateWithCards = updateCardState(state, newCardState);
-  return updatePhaseState(stateWithCards, newPhaseState);
+  const newGameState = updateCommandResolutionState(
+    stateWithCards,
+    newMovementState,
+  );
+  return newGameState;
 }

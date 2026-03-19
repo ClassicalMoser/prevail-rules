@@ -15,6 +15,7 @@ import {
 /**
  * Applies an IssueCommandEvent to the game state.
  * Removes the command from remaining commands and adds the units to commandedUnits.
+ * Event is assumed pre-validated (issueCommands phase, command in that player's remaining commands).
  *
  * @param event - The issue command event to apply
  * @param state - The current game state
@@ -35,12 +36,8 @@ export function applyIssueCommandEvent<TBoard extends Board>(
     ? phaseState.remainingCommandsFirstPlayer
     : phaseState.remainingCommandsSecondPlayer;
 
-  // Find matching command
-  const matchingCommand = findMatchingCommand(remainingCommands, command);
-
-  if (!matchingCommand) {
-    throw new Error('Command not found in remaining commands');
-  }
+  // Resolve set member to remove (pre-validated: command is in remaining commands)
+  const matchingCommand = findMatchingCommand(remainingCommands, command)!;
 
   // Remove the matching command from remaining commands
   const newRemainingCommands: Set<Command> = new Set(
@@ -59,10 +56,6 @@ export function applyIssueCommandEvent<TBoard extends Board>(
   const stateWithPhase = updatePhaseState(state, newPhaseState);
 
   // Add units to commandedUnits
-  const stateWithCommandedUnits = addUnitsToCommandedUnits(
-    stateWithPhase,
-    units,
-  );
-
-  return stateWithCommandedUnits;
+  const newGameState = addUnitsToCommandedUnits(stateWithPhase, units);
+  return newGameState;
 }

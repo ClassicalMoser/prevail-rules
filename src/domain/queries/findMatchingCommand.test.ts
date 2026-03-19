@@ -25,6 +25,17 @@ describe('findMatchingCommand', () => {
     expect(findMatchingCommand(commands, targetCommand)).toBe(matchingCommand);
   });
 
+  it('should return undefined when the command type does not match', () => {
+    const command = createTestCard().command;
+    const commands = new Set([command]);
+    const targetCommand = {
+      ...command,
+      type: 'rangedAttack' as const,
+    };
+
+    expect(findMatchingCommand(commands, targetCommand)).toBeUndefined();
+  });
+
   it('should return undefined when the primitive fields do not match', () => {
     const command = createTestCard().command;
     const commands = new Set([command]);

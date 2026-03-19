@@ -17,6 +17,7 @@ export {
 export {
   updateAttackApplyState,
   updateCommandResolutionState,
+  updateEngagementStateInMovement,
   updateMeleeAttackApplyState,
   updateMeleeResolutionState,
   updateRetreatRoutState,

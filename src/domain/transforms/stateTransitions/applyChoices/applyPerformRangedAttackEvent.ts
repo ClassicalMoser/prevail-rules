@@ -6,11 +6,15 @@ import type {
 } from '@entities';
 import type { PerformRangedAttackEvent } from '@events';
 import { getIssueCommandsPhaseState } from '@queries';
+import { updatePhaseState } from '@transforms/pureTransforms';
 import { isSameUnitInstance } from '@validation';
 
 /**
  * Applies a PerformRangedAttackEvent to the game state.
- * Creates the initial ranged attack resolution state with pending commitments.
+ * Creates the ranged attack resolution state with pending commitments. Removes
+ * attacking/supporting units from the attacker's remaining units and the defending
+ * unit from the defender's remaining units.
+ * Event is assumed pre-validated (issueCommands phase, resolve step, attacker matches step).
  *
  * @param event - The perform ranged attack event to apply
  * @param state - The current game state
@@ -21,7 +25,6 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const currentPhaseState = getIssueCommandsPhaseState(state);
-
   const attackingPlayer = event.player;
   const attackingUnit = event.unit.unit;
   const defendingUnit = event.targetUnit.unit;
@@ -29,71 +32,55 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
   const supportingUnitsArray = [...event.supportingUnits];
   const supportingUnits = new Set(supportingUnitsArray.map((uwp) => uwp.unit));
 
-  // Determine which step we're in and which remaining units set to use
   const isFirstPlayer = attackingPlayer === state.currentInitiative;
-  const isResolveStep =
-    currentPhaseState.step === 'firstPlayerResolveCommands' ||
-    currentPhaseState.step === 'secondPlayerResolveCommands';
+  const remainingAttacker = isFirstPlayer
+    ? currentPhaseState.remainingUnitsFirstPlayer
+    : currentPhaseState.remainingUnitsSecondPlayer;
+  const remainingDefender = isFirstPlayer
+    ? currentPhaseState.remainingUnitsSecondPlayer
+    : currentPhaseState.remainingUnitsFirstPlayer;
 
-  if (!isResolveStep) {
-    throw new Error(`Wrong player for step ${currentPhaseState.step}`);
-  }
+  // Remove attacking and supporting units from attacker's remaining (value equality via isSameUnitInstance)
+  const newRemainingAttacker = new Set(
+    [...remainingAttacker].filter((unit) => {
+      if (isSameUnitInstance(unit, attackingUnit).result) return false;
+      for (const supportingUnit of supportingUnits) {
+        if (isSameUnitInstance(unit, supportingUnit).result) return false;
+      }
+      return true;
+    }),
+  );
 
-  // Create the ranged attack resolution state
-  // attackApplyState will be created by resolveRangedAttack after commitments are resolved
+  // Remove defending unit from defender's remaining
+  const newRemainingDefender = new Set(
+    [...remainingDefender].filter(
+      (unit) => !isSameUnitInstance(unit, defendingUnit).result,
+    ),
+  );
+
   const rangedAttackResolutionState: RangedAttackResolutionState<TBoard> = {
     substepType: 'commandResolution',
     commandResolutionType: 'rangedAttack',
     attackingUnit,
     defendingUnit,
     supportingUnits,
-    attackingCommitment: {
-      commitmentType: 'pending',
-    },
-    defendingCommitment: {
-      commitmentType: 'pending',
-    },
+    attackingCommitment: { commitmentType: 'pending' },
+    defendingCommitment: { commitmentType: 'pending' },
     attackApplyState: undefined,
     completed: false,
   };
 
-  // Get the remaining units set
-  const remainingUnits = isFirstPlayer
-    ? currentPhaseState.remainingUnitsFirstPlayer
-    : currentPhaseState.remainingUnitsSecondPlayer;
-
-  // Remove the participating units from remaining units
-  // Use isSameUnitInstance for value equality, not reference equality
-  const newRemainingUnits = new Set(
-    [...remainingUnits].filter((unit) => {
-      // Keep units that are not the attacking unit
-      if (isSameUnitInstance(unit, attackingUnit).result) {
-        return false;
-      }
-      // Keep units that are not supporting units
-      for (const supportingUnit of supportingUnits) {
-        if (isSameUnitInstance(unit, supportingUnit).result) {
-          return false;
-        }
-      }
-      return true;
-    }),
-  );
-
-  // Update the phase state
   const newPhaseState: IssueCommandsPhaseState<TBoard> = {
     ...currentPhaseState,
     currentCommandResolutionState: rangedAttackResolutionState,
-    ...(isFirstPlayer
-      ? { remainingUnitsFirstPlayer: newRemainingUnits }
-      : { remainingUnitsSecondPlayer: newRemainingUnits }),
+    remainingUnitsFirstPlayer: isFirstPlayer
+      ? newRemainingAttacker
+      : newRemainingDefender,
+    remainingUnitsSecondPlayer: isFirstPlayer
+      ? newRemainingDefender
+      : newRemainingAttacker,
   };
 
-  return {
-    ...state,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  const newGameState = updatePhaseState(state, newPhaseState);
+  return newGameState;
 }

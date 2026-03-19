@@ -1,19 +1,15 @@
-/**
- * State transition for MoveUnitEvent.
- * This is a pure function that applies a unit move event to game state.
- */
-
 import type { Board, GameState } from '@entities';
 import type { MoveUnitEvent } from '@events';
 import {
   addUnitToBoard,
   removeUnitFromBoard,
+  updateBoardState,
 } from '@transforms/pureTransforms';
 
 /**
  * Applies a MoveUnitEvent to the game state.
- * This is a pure function that returns a new game state without mutating the input.
- * Preserves the board type through the transition.
+ * Removes the unit from its current space and adds it at the destination.
+ * Event is assumed pre-validated (legal move, unit at event.unit.placement).
  *
  * @param event - The move unit event to apply
  * @param state - The current game state
@@ -23,24 +19,22 @@ export function applyMoveUnitEvent<TBoard extends Board>(
   event: MoveUnitEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  // Get the original unit with placement and the new unit with placement
   const originalUnitWithPlacement = event.unit;
   const newUnitWithPlacement = {
     ...originalUnitWithPlacement,
     placement: event.to,
   };
-  // Update the board state;
+
+  // Remove unit from source space, then add at destination
   const removedUnitBoard = removeUnitFromBoard<TBoard>(
     state.boardState,
     originalUnitWithPlacement,
   );
-  const replacedUnitBoard = addUnitToBoard<TBoard>(
+  const newBoard = addUnitToBoard<TBoard>(
     removedUnitBoard,
     newUnitWithPlacement,
   );
 
-  return {
-    ...state,
-    boardState: replacedUnitBoard,
-  };
+  const newGameState = updateBoardState(state, newBoard);
+  return newGameState;
 }

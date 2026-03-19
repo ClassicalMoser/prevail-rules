@@ -1,15 +1,16 @@
-import type { Board, GameState, ResolveMeleePhaseState } from '@entities';
+import type { Board, GameState } from '@entities';
 import type { CommitToMeleeEvent } from '@events';
-import { getMeleeResolutionState, getResolveMeleePhaseState } from '@queries';
+import { getMeleeResolutionState } from '@queries';
 import {
   discardCardsFromHand,
   updateCardState,
-  updatePhaseState,
+  updateMeleeResolutionState,
 } from '@transforms/pureTransforms';
 
 /**
  * Applies a CommitToMeleeEvent to the game state.
  * Updates the player's commitment in the melee resolution state and discards the card.
+ * Event is assumed pre-validated (resolveMelee phase, player's commitment pending).
  *
  * @param event - The commit to melee event to apply
  * @param state - The current game state
@@ -19,32 +20,19 @@ export function applyCommitToMeleeEvent<TBoard extends Board>(
   event: CommitToMeleeEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const phaseState = getResolveMeleePhaseState(state);
   const meleeState = getMeleeResolutionState(state);
   const player = event.player;
 
-  // Get the player's commitment
-  const playerCommitment =
-    player === 'white'
-      ? meleeState.whiteCommitment
-      : meleeState.blackCommitment;
-
-  if (playerCommitment.commitmentType !== 'pending') {
-    throw new Error(`Player ${player} commitment is not pending`);
-  }
-
-  // Discard the card from hand
+  // Discard committed card from player's hand
   const newCardState = discardCardsFromHand(state.cardState, player, [
     event.committedCard.id,
   ]);
 
-  // Create completed commitment
+  // Mark this player's commitment as completed with the chosen card
   const newCommitment = {
     commitmentType: 'completed' as const,
     card: event.committedCard,
   };
-
-  // Update melee resolution state with the new commitment
   const newMeleeState = {
     ...meleeState,
     ...(player === 'white'
@@ -52,12 +40,10 @@ export function applyCommitToMeleeEvent<TBoard extends Board>(
       : { blackCommitment: newCommitment }),
   };
 
-  // Update phase state
-  const newPhaseState: ResolveMeleePhaseState<TBoard> = {
-    ...phaseState,
-    currentMeleeResolutionState: newMeleeState,
-  };
-
   const stateWithCards = updateCardState(state, newCardState);
-  return updatePhaseState(stateWithCards, newPhaseState);
+  const newGameState = updateMeleeResolutionState(
+    stateWithCards,
+    newMeleeState,
+  );
+  return newGameState;
 }
