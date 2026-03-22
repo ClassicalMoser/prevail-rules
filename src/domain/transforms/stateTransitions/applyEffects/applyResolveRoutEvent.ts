@@ -5,8 +5,8 @@ import {
   getAttackApplyStateFromRangedAttack,
   getCurrentRallyResolutionState,
   getRoutStateFromAttackApply,
-  getRoutStateFromRearEngagement,
   getRoutStateFromRally,
+  getRoutStateFromRearEngagement,
 } from '@queries';
 import { updateRoutState } from '@transforms/pureTransforms';
 

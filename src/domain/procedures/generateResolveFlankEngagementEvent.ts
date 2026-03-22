@@ -18,7 +18,7 @@ import {
  * (opposite of the engaging unit's facing).
  *
  * @param state - The current game state
- * @returns A complete ResolveFlankEngagementEvent with the rotated defending unit
+ * @returns Event with `defenderWithPlacement` snapshot and computed `newFacing`
  * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
  */
 export function generateResolveFlankEngagementEvent<TBoard extends Board>(
@@ -37,7 +37,13 @@ export function generateResolveFlankEngagementEvent<TBoard extends Board>(
     throw new Error('Defending space does not have a single unit');
   }
 
-  const defendingUnit = targetSpace.unitPresence.unit;
+  const defenderWithPlacement = {
+    unit: targetSpace.unitPresence.unit,
+    placement: {
+      coordinate: engagementState.targetPlacement.coordinate,
+      facing: targetSpace.unitPresence.facing,
+    },
+  };
 
   // Get the engaging unit's facing
   const engagingFacing = engagementState.targetPlacement.facing;
@@ -48,7 +54,7 @@ export function generateResolveFlankEngagementEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
-    defendingUnit,
+    defenderWithPlacement,
     newFacing,
   };
 }

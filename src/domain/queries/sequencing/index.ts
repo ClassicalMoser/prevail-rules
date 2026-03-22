@@ -34,6 +34,6 @@ export {
   getRetreatStateFromRangedAttack,
   getReverseStateFromAttackApply,
   getRoutStateFromAttackApply,
-  getRoutStateFromRearEngagement,
   getRoutStateFromRally,
+  getRoutStateFromRearEngagement,
 } from './getSubstep';

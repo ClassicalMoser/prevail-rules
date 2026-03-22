@@ -26,7 +26,7 @@ Handlers under `src/domain/transforms/stateTransitions/applyEffects/` apply **ga
 ## Events
 
 - Non-trivial derivation (board scans, phase switches to pick subtrees) belongs in **`generate*`** and on the **event** (Zod + `AssertExact` next to the manual type), so apply stays mechanical and replay stays cheap.
-- Examples: `StartEngagementEvent.defenderWithPlacement`, legal-retreat `Set`s on resolve melee/ranged, `attackResolutionContext` on resolve reverse.
+- Examples: `StartEngagementEvent` / `ResolveFlankEngagementEvent.defenderWithPlacement`, legal-retreat `Set`s on resolve melee/ranged, `attackResolutionContext` on resolve reverse.
 
 ## Tests
 
