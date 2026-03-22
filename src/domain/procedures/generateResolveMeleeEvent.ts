@@ -3,12 +3,14 @@ import type {
   CompletedCommitment,
   GameState,
   Modifier,
+  UnitPlacement,
 } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
 import {
   applyAttackValue,
   getCurrentUnitStat,
+  getLegalRetreats,
   getMeleeSupportValue,
   getPlayerUnitWithPosition,
 } from '@queries';
@@ -133,10 +135,23 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
     whiteUnit.unit,
   );
 
+  const whiteLegalRetreatOptions: Set<UnitPlacement<TBoard>> =
+    whiteUnitResult.unitRetreated
+      ? getLegalRetreats(whiteUnit, state)
+      : new Set();
+  const blackLegalRetreatOptions: Set<UnitPlacement<TBoard>> =
+    blackUnitResult.unitRetreated
+      ? getLegalRetreats(blackUnit, state)
+      : new Set();
+
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_MELEE_EFFECT_TYPE,
     location: meleeCoordinate,
+    whiteUnitWithPlacement: whiteUnit,
+    blackUnitWithPlacement: blackUnit,
+    whiteLegalRetreatOptions,
+    blackLegalRetreatOptions,
     whiteUnitRouted: whiteUnitResult.unitRouted,
     blackUnitRouted: blackUnitResult.unitRouted,
     whiteUnitRetreated: whiteUnitResult.unitRetreated,

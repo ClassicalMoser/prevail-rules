@@ -1,5 +1,5 @@
+export { addCompletedPhase } from './addCompletedPhase';
 export { markPhaseAsComplete } from './markPhaseAsComplete';
-export { updateCompletedPhase } from './updateCompletedPhase';
 export { updateCurrentRoundNumber } from './updateCurrentRoundNumber';
 export { updatePhaseState } from './updatePhaseState';
 export { updateRemainingCommandsForPlayer } from './updateRemainingCommandsForPlayer';

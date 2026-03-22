@@ -23,7 +23,6 @@ export function applyResolveReverseEvent<TBoard extends Board>(
   event: ResolveReverseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  // Update the unit's facing on the board
   const removedUnitBoard = removeUnitFromBoard<TBoard>(
     state.boardState,
     event.unitInstance,
@@ -33,40 +32,21 @@ export function applyResolveReverseEvent<TBoard extends Board>(
     event.newUnitPlacement,
   );
 
-  // Get the current reverse state to update
-  const reversingPlayer = event.unitInstance.unit.playerSide;
-  const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  // Get the attack apply state and reverse state based on the current phase
-  let attackApplyState;
-  if (phaseState.phase === 'issueCommands') {
-    // Ranged attack resolution - only one attack apply state possible
-    attackApplyState = getAttackApplyStateFromRangedAttack(state);
-  } else if (phaseState.phase === 'resolveMelee') {
-    // Melee resolution - get attack apply state for the reversing player
-    attackApplyState = getAttackApplyStateFromMelee(state, reversingPlayer);
-  } else {
-    throw new Error(
-      `Reverse resolution not expected in phase: ${phaseState.phase}`,
-    );
-  }
+  const attackApplyState =
+    event.attackResolutionContext === 'rangedAttack'
+      ? getAttackApplyStateFromRangedAttack(state)
+      : getAttackApplyStateFromMelee(state, event.unitInstance.unit.playerSide);
 
   const currentReverseState = getReverseStateFromAttackApply(attackApplyState);
 
-  // Mark reverse as completed and set final position
   const newReverseState: ReverseState<TBoard> = {
     ...currentReverseState,
     finalPosition: event.newUnitPlacement.placement,
     completed: true,
   };
 
-  // Update the reverse state using the pure transform
   const stateWithUpdatedReverse = updateReverseState(state, newReverseState);
 
-  // Return with board updated
   return {
     ...stateWithUpdatedReverse,
     boardState: addedUnitBoard,

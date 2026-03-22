@@ -3,6 +3,7 @@ import type {
   CompletedCommitment,
   GameState,
   Modifier,
+  UnitPlacement,
 } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
 import {
@@ -12,6 +13,8 @@ import {
 import {
   applyAttackValue,
   getCurrentUnitStat,
+  getLegalRetreats,
+  getPositionOfUnit,
   getRangedAttackResolutionState,
 } from '@queries';
 
@@ -89,10 +92,21 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
     defendingCommitmentModifiers,
   );
 
+  const defenderWithPlacement = {
+    unit: defendingUnit,
+    placement: getPositionOfUnit(state.boardState, defendingUnit),
+  };
+
+  const legalRetreatOptions: Set<UnitPlacement<TBoard>> =
+    attackResult.unitRetreated
+      ? getLegalRetreats(defenderWithPlacement, state)
+      : new Set();
+
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
-    unitInstance: defendingUnit,
+    defenderWithPlacement,
+    legalRetreatOptions,
     routed: attackResult.unitRouted,
     reversed: attackResult.unitReversed,
     retreated: attackResult.unitRetreated,

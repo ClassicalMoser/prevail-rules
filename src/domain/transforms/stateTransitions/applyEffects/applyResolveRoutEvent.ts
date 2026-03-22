@@ -4,6 +4,8 @@ import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
   getCurrentRallyResolutionState,
+  getRoutStateFromAttackApply,
+  getRoutStateFromRearEngagement,
   getRoutStateFromRally,
 } from '@queries';
 import { updateRoutState } from '@transforms/pureTransforms';
@@ -21,54 +23,41 @@ export function applyResolveRoutEvent<TBoard extends Board>(
   event: ResolveRoutEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
+  let currentRoutState: RoutState;
 
-  // Rout can occur in multiple contexts: attack apply (ranged/melee) or rally resolution
-  // Handle attack apply contexts (ranged attack or melee resolution)
-  if (
-    phaseState.phase === 'issueCommands' ||
-    phaseState.phase === 'resolveMelee'
-  ) {
-    // Get the current rout state from attack apply
-    const routedUnits = [...event.unitInstances];
-    if (routedUnits.length === 0) {
-      throw new Error('No units to rout');
+  switch (event.routResolutionSource) {
+    case 'rangedAttack': {
+      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      currentRoutState = getRoutStateFromAttackApply(attackApplyState);
+      break;
     }
-    const routedPlayer = routedUnits[0].playerSide;
-
-    // Get the attack apply state to find the rout state
-    const attackApplyState =
-      phaseState.phase === 'issueCommands'
-        ? getAttackApplyStateFromRangedAttack(state)
-        : getAttackApplyStateFromMelee(state, routedPlayer);
-
-    if (!attackApplyState.routState) {
-      throw new Error('No rout state found in attack apply state');
+    case 'melee': {
+      const routedUnit = event.unitInstances.values().next().value;
+      const meleePlayer = routedUnit?.playerSide;
+      if (meleePlayer === undefined) {
+        throw new Error(
+          'Melee rout resolution requires at least one unit instance',
+        );
+      }
+      const attackApplyState = getAttackApplyStateFromMelee(state, meleePlayer);
+      currentRoutState = getRoutStateFromAttackApply(attackApplyState);
+      break;
     }
-
-    // Update rout state with penalty
-    const newRoutState: RoutState = {
-      ...attackApplyState.routState,
-      numberToDiscard: event.penalty,
-    };
-
-    // Use updateRoutState for attack apply contexts
-    return updateRoutState(state, newRoutState);
+    case 'rally': {
+      const rallyState = getCurrentRallyResolutionState(state);
+      currentRoutState = getRoutStateFromRally(rallyState);
+      break;
+    }
+    case 'rearEngagementMovement': {
+      currentRoutState = getRoutStateFromRearEngagement(state);
+      break;
+    }
   }
 
-  // Handle rally resolution (cleanup phase: routs from lost support)
-  if (phaseState.phase === 'cleanup') {
-    const rallyState = getCurrentRallyResolutionState(state);
-    const currentRoutState = getRoutStateFromRally(rallyState);
-    const newRoutState: RoutState = {
-      ...currentRoutState,
-      numberToDiscard: event.penalty,
-    };
-    return updateRoutState(state, newRoutState);
-  }
+  const newRoutState: RoutState = {
+    ...currentRoutState,
+    numberToDiscard: event.penalty,
+  };
 
-  throw new Error(`Rout resolution not expected in phase: ${phaseState.phase}`);
+  return updateRoutState(state, newRoutState);
 }

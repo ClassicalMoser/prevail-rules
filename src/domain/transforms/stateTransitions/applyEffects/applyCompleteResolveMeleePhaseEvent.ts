@@ -3,34 +3,34 @@ import type { CompleteResolveMeleePhaseEvent } from '@events';
 import { CLEANUP_PHASE } from '@entities';
 import { getResolveMeleePhaseState } from '@queries';
 import {
+  addCompletedPhase,
   markPhaseAsComplete,
-  updateCompletedPhase,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteResolveMeleePhaseEvent to the game state.
- * Marks resolveMelee phase as complete and advances to cleanup phase.
+ * Marks the current phase state's step as `complete`, records it in `completedPhases`,
+ * and advances to cleanup phase.
  *
- * @param event - The complete resolve melee phase event to apply
+ * Step is not re-validated; the event is trusted from the procedure / machine-generated
+ * log. Phase is narrowed via `getResolveMeleePhaseState` (throws if not `resolveMelee`).
+ *
+ * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields.
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
 export function applyCompleteResolveMeleePhaseEvent<TBoard extends Board>(
-  event: CompleteResolveMeleePhaseEvent<TBoard>,
+  _event: CompleteResolveMeleePhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const phaseState = getResolveMeleePhaseState(state);
-
-  if (phaseState.step !== 'resolveMelee') {
-    throw new Error('Resolve melee phase is not on resolveMelee step');
-  }
 
   // Mark the current phase as complete
   const completedPhase = markPhaseAsComplete(phaseState);
 
   // Add the completed phase to the set of completed phases
-  const stateWithCompletedPhase = updateCompletedPhase(state, completedPhase);
+  const stateWithCompletedPhase = addCompletedPhase(state, completedPhase);
 
   // Create the new cleanup phase state
   const newPhaseState: CleanupPhaseState = {

@@ -1,3 +1,16 @@
+/**
+ * All **game effect** payloads (`eventType: 'gameEffect'`), discriminated by `effectType`.
+ *
+ * ## Trust model (with apply handlers)
+ * See `docs/apply-effects-conventions.md` in this repo:
+ * procedures build events from full state; **apply** trusts the log and maps payload + state to
+ * the next state. Extra fields here usually mean “don’t re-scan the board / don’t guess which
+ * subtree” when applying.
+ *
+ * ## Typing
+ * Per-effect modules define a manual interface, a private Zod object, `AssertExact` tying
+ * `z.infer` to that interface, and an exported schema typed for `isolatedDeclarations`.
+ */
 import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import type { CompleteAttackApplyEvent } from './completeAttackApply';

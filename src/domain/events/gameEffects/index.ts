@@ -1,3 +1,16 @@
+/**
+ * Re-exports every game-effect module for `@events` consumers.
+ *
+ * **Design notes** (trust model, procedure-filled fields, `AssertExact` + Zod): see
+ * `docs/apply-effects-conventions.md` and the file-level comment on `gameEffect.ts`.
+ */
+export {
+  ATTACK_RESOLUTION_CONTEXT_VALUES,
+  attackResolutionContextSchema,
+  MELEE_ATTACK_RESOLUTION_CONTEXT,
+  RANGED_ATTACK_RESOLUTION_CONTEXT,
+} from './attackResolutionContext';
+export type { AttackResolutionContext } from './attackResolutionContext';
 export {
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
   completeAttackApplyEventSchema,
@@ -93,8 +106,15 @@ export type { ResolveReverseEvent } from './resolveReverse';
 export {
   RESOLVE_ROUT_EFFECT_TYPE,
   resolveRoutEventSchema,
+  ROUT_RESOLUTION_SOURCE_NON_ATTACK_VALUES,
+  ROUT_RESOLUTION_SOURCE_VALUES,
+  routResolutionSourceSchema,
 } from './resolveRout';
-export type { ResolveRoutEvent } from './resolveRout';
+export type {
+  ResolveRoutEvent,
+  RoutResolutionSource,
+  RoutResolutionSourceNonAttack,
+} from './resolveRout';
 export {
   RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
   resolveUnitsBrokenEventSchema,
@@ -113,5 +133,8 @@ export type { StartEngagementEvent } from './startEngagement';
 export {
   TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE,
   triggerRoutFromRetreatEventSchema,
+  triggerRoutFromRetreatMeleeSchema,
+  triggerRoutFromRetreatRangedAttackSchema,
+  triggerRoutFromRetreatSharedFieldsSchema,
 } from './triggerRoutFromRetreat';
 export type { TriggerRoutFromRetreatEvent } from './triggerRoutFromRetreat';

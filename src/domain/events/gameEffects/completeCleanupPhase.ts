@@ -3,7 +3,11 @@ import type { AssertExact } from '@utils';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 
-/** The type of the complete cleanup phase game effect. */
+/**
+ * Literal for {@link CompleteCleanupPhaseEvent.effectType}. Round boundary: cleanup phase
+ * completes, round advances, play-cards phase begins. Payload is only discriminators—transition
+ * details come from pure transforms + current state.
+ */
 export const COMPLETE_CLEANUP_PHASE_EFFECT_TYPE =
   'completeCleanupPhase' as const;
 

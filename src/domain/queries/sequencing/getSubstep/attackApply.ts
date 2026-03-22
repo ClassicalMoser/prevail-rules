@@ -1,4 +1,11 @@
-import type { AttackApplyState, Board, GameState } from '@entities';
+import type {
+  AttackApplyState,
+  Board,
+  GameState,
+  MeleeResolutionState,
+  PlayerSide,
+} from '@entities';
+import { getOtherPlayer } from '@queries/getOtherPlayer';
 import {
   getMeleeResolutionState,
   getRangedAttackResolutionState,
@@ -48,4 +55,39 @@ export function getAttackApplyStateFromMelee<TBoard extends Board>(
     );
   }
   return attackApplyState;
+}
+
+/**
+ * The defending player side for the next incomplete melee attack-apply substep,
+ * in initiative order (matches `getExpectedMeleeResolutionEvent` when both apply states exist).
+ *
+ * @returns `null` if either attack-apply state is missing, or both are already complete
+ */
+export function getDefendingPlayerForNextIncompleteMeleeAttackApply<
+  TBoard extends Board,
+>(
+  gameState: GameState<TBoard>,
+  meleeState: MeleeResolutionState<TBoard>,
+): PlayerSide | null {
+  const firstPlayer = gameState.currentInitiative;
+  const secondPlayer = getOtherPlayer(firstPlayer);
+
+  const firstPlayerAttackApplyState =
+    meleeState[`${firstPlayer}AttackApplyState`];
+  const secondPlayerAttackApplyState =
+    meleeState[`${secondPlayer}AttackApplyState`];
+
+  if (!firstPlayerAttackApplyState || !secondPlayerAttackApplyState) {
+    return null;
+  }
+
+  if (!firstPlayerAttackApplyState.completed) {
+    return firstPlayer;
+  }
+
+  if (!secondPlayerAttackApplyState.completed) {
+    return secondPlayer;
+  }
+
+  return null;
 }

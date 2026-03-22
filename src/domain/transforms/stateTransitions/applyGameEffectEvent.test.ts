@@ -118,7 +118,7 @@ describe('applyGameEffectEvent', () => {
     } as unknown as GameEffectEvent<StandardBoard, GameEffectType>;
 
     expect(() => applyGameEffectEvent(event, state)).toThrow(
-      'Unknown game effect event type: unknown',
+      'Unreachable: unhandled game effect event (effectType not in switch)',
     );
   });
 });

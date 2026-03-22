@@ -85,10 +85,9 @@ export function applyGameEffectEvent<TBoard extends Board>(
     case 'triggerRoutFromRetreat':
       return applyTriggerRoutFromRetreatEvent(event, state);
     default: {
-      // Exhaustiveness check for TypeScript
       const _exhaustive: never = event;
       throw new Error(
-        `Unknown game effect event type: ${(_exhaustive as GameEffectEvent<TBoard, GameEffectType>).effectType}`,
+        'Unreachable: unhandled game effect event (effectType not in switch)',
       );
     }
   }

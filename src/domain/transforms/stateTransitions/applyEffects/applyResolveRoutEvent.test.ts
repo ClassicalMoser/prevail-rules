@@ -1,8 +1,14 @@
-import type { GameState, StandardBoard, UnitWithPlacement } from '@entities';
+import type {
+  GameState,
+  MovementResolutionState,
+  StandardBoard,
+  UnitWithPlacement,
+} from '@entities';
 import type { ResolveRoutEvent } from '@events';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
+  getIssueCommandsPhaseState,
   getRoutStateFromRally,
 } from '@queries';
 import {
@@ -12,6 +18,7 @@ import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
+  createMovementResolutionState,
   createRallyResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
@@ -97,6 +104,41 @@ describe('applyResolveRoutEvent', () => {
     return updatePhaseState(stateWithUnits, phaseState);
   }
 
+  function createStateWithRearEngagementRoutAwaitingPenalty(): GameState<StandardBoard> {
+    const state = createEmptyGameState();
+    const defender = createTestUnit('white', { attack: 2 });
+    const attacker = createTestUnit('black', { attack: 2 });
+    const movement = createMovementResolutionState(state, {
+      movingUnit: {
+        unit: attacker,
+        placement: { coordinate: 'E-4', facing: 'south' },
+      },
+      targetPlacement: { coordinate: 'E-5', facing: 'south' },
+      engagementState: {
+        substepType: 'engagementResolution',
+        engagingUnit: attacker,
+        targetPlacement: { coordinate: 'E-5', facing: 'south' },
+        engagementResolutionState: {
+          engagementType: 'rear',
+          routState: {
+            substepType: 'rout',
+            player: 'white',
+            unitsToRout: new Set([defender]),
+            numberToDiscard: undefined,
+            cardsChosen: false,
+            completed: false,
+          },
+          completed: false,
+        },
+        completed: false,
+      },
+    });
+    const phaseState = createIssueCommandsPhaseState(state, {
+      currentCommandResolutionState: movement,
+    });
+    return updatePhaseState(state, phaseState);
+  }
+
   describe('ranged attack resolution context', () => {
     it('should set numberToDiscard on rout state', () => {
       const state = createStateWithRangedAttackRout();
@@ -106,6 +148,7 @@ describe('applyResolveRoutEvent', () => {
       const event: ResolveRoutEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveRout',
+        routResolutionSource: 'rangedAttack',
         unitInstances: new Set([routState.unitsToRout.values().next().value!]),
         penalty: 2,
       };
@@ -125,6 +168,7 @@ describe('applyResolveRoutEvent', () => {
       const event: ResolveRoutEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveRout',
+        routResolutionSource: 'rangedAttack',
         unitInstances: new Set([routState.unitsToRout.values().next().value!]),
         penalty: 3,
       };
@@ -150,6 +194,7 @@ describe('applyResolveRoutEvent', () => {
       const event: ResolveRoutEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveRout',
+        routResolutionSource: 'melee',
         unitInstances: new Set([routState.unitsToRout.values().next().value!]),
         penalty: 2,
       };
@@ -172,6 +217,7 @@ describe('applyResolveRoutEvent', () => {
       const event: ResolveRoutEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveRout',
+        routResolutionSource: 'melee',
         unitInstances: new Set([routState.unitsToRout.values().next().value!]),
         penalty: 1,
       };
@@ -210,6 +256,7 @@ describe('applyResolveRoutEvent', () => {
       const event: ResolveRoutEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveRout',
+        routResolutionSource: 'rally',
         unitInstances: new Set([routedUnit]),
         penalty: 2,
       };
@@ -226,6 +273,40 @@ describe('applyResolveRoutEvent', () => {
     });
   });
 
+  describe('rear engagement movement context', () => {
+    it('should set numberToDiscard on rout state nested in movement engagement', () => {
+      const state = createStateWithRearEngagementRoutAwaitingPenalty();
+      const movement = getIssueCommandsPhaseState(state)
+        .currentCommandResolutionState as MovementResolutionState<StandardBoard>;
+      const resolution = movement.engagementState!.engagementResolutionState;
+      if (resolution.engagementType !== 'rear') {
+        throw new Error('expected rear');
+      }
+      const rout = resolution.routState!;
+
+      const event: ResolveRoutEvent<StandardBoard> = {
+        eventType: 'gameEffect',
+        effectType: 'resolveRout',
+        routResolutionSource: 'rearEngagementMovement',
+        unitInstances: rout.unitsToRout,
+        penalty: [...rout.unitsToRout].reduce(
+          (sum, u) => sum + u.unitType.routPenalty,
+          0,
+        ),
+      };
+
+      const newState = applyResolveRoutEvent(event, state);
+      const newMovement = getIssueCommandsPhaseState(newState)
+        .currentCommandResolutionState as MovementResolutionState<StandardBoard>;
+      const newResolution =
+        newMovement.engagementState!.engagementResolutionState;
+      if (newResolution.engagementType !== 'rear') {
+        throw new Error('expected rear');
+      }
+      expect(newResolution.routState?.numberToDiscard).toBe(event.penalty);
+    });
+  });
+
   describe('immutability', () => {
     it('should not mutate the original state', () => {
       const state = createStateWithRangedAttackRout();
@@ -236,6 +317,7 @@ describe('applyResolveRoutEvent', () => {
       const event: ResolveRoutEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveRout',
+        routResolutionSource: 'rangedAttack',
         unitInstances: new Set([routState.unitsToRout.values().next().value!]),
         penalty: 2,
       };
@@ -248,17 +330,18 @@ describe('applyResolveRoutEvent', () => {
 
   describe('error cases', () => {
     it('should throw if no units to rout', () => {
-      const state = createStateWithRangedAttackRout();
+      const state = createStateWithMeleeRout('black');
 
       const event: ResolveRoutEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveRout',
+        routResolutionSource: 'melee',
         unitInstances: new Set(),
         penalty: 2,
       };
 
       expect(() => applyResolveRoutEvent(event, state)).toThrow(
-        'No units to rout',
+        'Melee rout resolution requires at least one unit instance',
       );
     });
 
@@ -279,6 +362,7 @@ describe('applyResolveRoutEvent', () => {
       const event: ResolveRoutEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveRout',
+        routResolutionSource: 'rangedAttack',
         unitInstances: new Set([unit]),
         penalty: 2,
       };

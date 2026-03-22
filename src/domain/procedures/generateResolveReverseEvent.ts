@@ -1,6 +1,11 @@
 import type { Board, GameState, ReverseState } from '@entities';
 import type { ResolveReverseEvent } from '@events';
-import { GAME_EFFECT_EVENT_TYPE, RESOLVE_REVERSE_EFFECT_TYPE } from '@events';
+import {
+  GAME_EFFECT_EVENT_TYPE,
+  MELEE_ATTACK_RESOLUTION_CONTEXT,
+  RANGED_ATTACK_RESOLUTION_CONTEXT,
+  RESOLVE_REVERSE_EFFECT_TYPE,
+} from '@events';
 import { getOppositeFacing } from '@queries';
 
 /**
@@ -93,9 +98,15 @@ export function generateResolveReverseEvent<TBoard extends Board>(
   const currentFacing = reverseState.reversingUnit.placement.facing;
   const newFacing = getOppositeFacing(currentFacing);
 
+  const attackResolutionContext =
+    phaseState.phase === 'issueCommands'
+      ? RANGED_ATTACK_RESOLUTION_CONTEXT
+      : MELEE_ATTACK_RESOLUTION_CONTEXT;
+
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_REVERSE_EFFECT_TYPE,
+    attackResolutionContext,
     unitInstance: reverseState.reversingUnit,
     newUnitPlacement: {
       unit: reverseState.reversingUnit.unit,

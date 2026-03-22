@@ -17,7 +17,7 @@ import {
  * This is called when a unit first moves into an enemy space.
  *
  * @param state - The current game state
- * @returns A complete StartEngagementEvent with the determined engagement type
+ * @returns A complete StartEngagementEvent with engagement type and `defenderWithPlacement`
  * @throws Error if not in issueCommands phase, no movement resolution, or no enemy unit at target
  */
 export function generateStartEngagementEvent<TBoard extends Board>(
@@ -40,6 +40,13 @@ export function generateStartEngagementEvent<TBoard extends Board>(
   }
 
   const defendingFacing = targetSpace.unitPresence.facing;
+  const defenderWithPlacement = {
+    unit: targetSpace.unitPresence.unit,
+    placement: {
+      coordinate: movementResolutionState.targetPlacement.coordinate,
+      facing: defendingFacing,
+    },
+  };
 
   // Check engagement type in priority order: rear, flank, front
   // Rear is most severe, so check it first
@@ -49,6 +56,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'rear',
+      defenderWithPlacement,
     };
   }
 
@@ -58,6 +66,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'flank',
+      defenderWithPlacement,
     };
   }
 
@@ -67,6 +76,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'front',
+      defenderWithPlacement,
     };
   }
 

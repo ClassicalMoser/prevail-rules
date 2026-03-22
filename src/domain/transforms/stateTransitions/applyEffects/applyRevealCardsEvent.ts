@@ -6,21 +6,20 @@ import { revealCard, updatePhaseState } from '@transforms/pureTransforms';
 /**
  * Applies a RevealCardsEvent to the game state.
  * Moves both players' awaitingPlay cards to inPlay, making them public.
- * Advances the play cards phase step from 'revealCards' to 'assignInitiative'.
+ * Advances the play cards phase step to `assignInitiative`.
  *
- * @param event - The reveal cards event to apply
+ * Step is not re-validated; the event is trusted from the procedure / machine-generated
+ * log. Phase is narrowed via `getPlayCardsPhaseState` (throws if not `playCards`).
+ *
+ * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields.
  * @param state - The current game state
  * @returns A new game state with cards revealed
  */
 export function applyRevealCardsEvent<TBoard extends Board>(
-  event: RevealCardsEvent<TBoard>,
+  _event: RevealCardsEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const phaseState = getPlayCardsPhaseState(state);
-
-  if (phaseState.step !== 'revealCards') {
-    throw new Error('Play cards phase is not on revealCards step');
-  }
 
   // Move both players' cards from awaitingPlay to inPlay
   let newCardState = revealCard(state.cardState, 'black');

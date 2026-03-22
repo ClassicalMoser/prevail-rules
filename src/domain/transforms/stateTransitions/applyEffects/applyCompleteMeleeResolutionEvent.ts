@@ -1,18 +1,19 @@
 import type { Board, GameState, ResolveMeleePhaseState } from '@entities';
 import type { CompleteMeleeResolutionEvent } from '@events';
 import { getResolveMeleePhaseState } from '@queries';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteMeleeResolutionEvent to the game state.
  * Clears the currentMeleeResolutionState and allows the phase to continue
  * to the next engagement or complete.
  *
- * @param event - The complete melee resolution event to apply
+ * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields.
  * @param state - The current game state
  * @returns A new game state with the melee resolution state cleared
  */
 export function applyCompleteMeleeResolutionEvent<TBoard extends Board>(
-  event: CompleteMeleeResolutionEvent<TBoard>,
+  _event: CompleteMeleeResolutionEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const phaseState = getResolveMeleePhaseState(state);
@@ -23,11 +24,5 @@ export function applyCompleteMeleeResolutionEvent<TBoard extends Board>(
     currentMeleeResolutionState: undefined,
   };
 
-  return {
-    ...state,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  return updatePhaseState(state, newPhaseState);
 }

@@ -1,7 +1,8 @@
 import type { Board, GameState, PhaseState } from '@entities';
+import { updateRoundState } from '@transforms/pureTransforms';
 
 /**
- * Creates a new game state with a completed phase added to the completed phases set.
+ * Adds a completed phase to the completed phases set.
  * Handles the immutable update of the completedPhases set.
  *
  * @param state - The current game state
@@ -10,21 +11,21 @@ import type { Board, GameState, PhaseState } from '@entities';
  *
  * @example
  * ```ts
- * const newState = updateCompletedPhase(state, currentPhaseState);
+ * const newState = addCompletedPhase(state, currentPhaseState);
  * ```
  */
-export function updateCompletedPhase<TBoard extends Board>(
+export function addCompletedPhase<TBoard extends Board>(
   state: GameState<TBoard>,
   completedPhase: PhaseState<TBoard>,
 ): GameState<TBoard> {
   const newCompletedPhases = new Set(state.currentRoundState.completedPhases);
   newCompletedPhases.add(completedPhase);
 
-  return {
-    ...state,
-    currentRoundState: {
-      ...state.currentRoundState,
-      completedPhases: newCompletedPhases,
-    },
-  };
+  // Update the round state with the new completed phases
+  const newState = updateRoundState(state, {
+    ...state.currentRoundState,
+    completedPhases: newCompletedPhases,
+  });
+
+  return newState;
 }

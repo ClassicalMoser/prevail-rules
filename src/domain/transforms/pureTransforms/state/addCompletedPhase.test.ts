@@ -1,9 +1,9 @@
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@entities';
 import { createEmptyGameState } from '@testing';
-import { updateCompletedPhase } from '@transforms/pureTransforms';
+import { addCompletedPhase } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 
-describe('updateCompletedPhase', () => {
+describe('addCompletedPhase', () => {
   it('should add phase to completed phases set', () => {
     const state = createEmptyGameState();
     const phaseState = {
@@ -11,7 +11,7 @@ describe('updateCompletedPhase', () => {
       step: 'complete',
     } as const;
 
-    const newState = updateCompletedPhase(state, phaseState);
+    const newState = addCompletedPhase(state, phaseState);
 
     expect(newState.currentRoundState.completedPhases.has(phaseState)).toBe(
       true,
@@ -27,7 +27,7 @@ describe('updateCompletedPhase', () => {
       step: 'complete',
     } as const;
 
-    updateCompletedPhase(state, phaseState);
+    addCompletedPhase(state, phaseState);
 
     expect(state.currentRoundState.completedPhases).toBe(
       originalCompletedPhases,
@@ -40,13 +40,13 @@ describe('updateCompletedPhase', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     } as const;
-    const stateWithFirst = updateCompletedPhase(state, firstPhase);
+    const stateWithFirst = addCompletedPhase(state, firstPhase);
 
     const secondPhase = {
       phase: MOVE_COMMANDERS_PHASE,
       step: 'complete',
     } as const;
-    const stateWithBoth = updateCompletedPhase(stateWithFirst, secondPhase);
+    const stateWithBoth = addCompletedPhase(stateWithFirst, secondPhase);
 
     expect(
       stateWithBoth.currentRoundState.completedPhases.has(firstPhase),

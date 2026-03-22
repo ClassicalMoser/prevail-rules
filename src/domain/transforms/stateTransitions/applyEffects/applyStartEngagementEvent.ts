@@ -1,8 +1,6 @@
 import type { Board, GameState, IssueCommandsPhaseState } from '@entities';
 import type { StartEngagementEvent } from '@events';
-import { hasSingleUnit } from '@entities';
 import {
-  getBoardSpace,
   getIssueCommandsPhaseState,
   getMovementResolutionState,
 } from '@queries';
@@ -11,6 +9,8 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 /**
  * Applies a StartEngagementEvent to the game state.
  * Creates an engagement state in the movement resolution state with the appropriate resolution state.
+ * Uses `event.defenderWithPlacement` from the procedure; does not scan the target space or
+ * resolve placement via `getPositionOfUnit`.
  *
  * @param event - The start engagement event to apply
  * @param state - The current game state
@@ -23,18 +23,7 @@ export function applyStartEngagementEvent<TBoard extends Board>(
   const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
 
-  // Get the defending unit from the board
-  const board = state.boardState;
-  const targetSpace = getBoardSpace(
-    board,
-    movementState.targetPlacement.coordinate,
-  );
-
-  if (!hasSingleUnit(targetSpace.unitPresence)) {
-    throw new Error('Target space does not have a single unit');
-  }
-
-  const defendingUnit = targetSpace.unitPresence.unit;
+  const defendingUnit = event.defenderWithPlacement.unit;
   const engagingUnit = movementState.movingUnit.unit;
   const defendingPlayer = defendingUnit.playerSide;
 

@@ -3,30 +3,30 @@ import type { CompletePlayCardsPhaseEvent } from '@events';
 import { MOVE_COMMANDERS_PHASE } from '@entities';
 import { getPlayCardsPhaseState } from '@queries';
 import {
-  updateCompletedPhase,
+  addCompletedPhase,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
 /**
  * Applies a CompletePlayCardsPhaseEvent to the game state.
- * Marks playCards phase as complete and advances to moveCommanders phase.
+ * Records the current phase state as completed and advances to moveCommanders phase.
  *
- * @param event - The complete play cards phase event to apply
+ * Step is not re-validated; the event is trusted from the procedure / machine-generated
+ * log. Phase is narrowed via `getPlayCardsPhaseState` (throws if not `playCards`). The
+ * current phase state is read only to snapshot it into `completedPhases`.
+ *
+ * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields.
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
 export function applyCompletePlayCardsPhaseEvent<TBoard extends Board>(
-  event: CompletePlayCardsPhaseEvent<TBoard>,
+  _event: CompletePlayCardsPhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const phaseState = getPlayCardsPhaseState(state);
 
-  if (phaseState.step !== 'complete') {
-    throw new Error('Play cards phase is not on complete step');
-  }
-
   // Add the completed phase to the set of completed phases
-  const stateWithCompletedPhase = updateCompletedPhase(state, phaseState);
+  const stateWithCompletedPhase = addCompletedPhase(state, phaseState);
 
   // Create the new move commanders phase state
   const newPhaseState: MoveCommandersPhaseState = {

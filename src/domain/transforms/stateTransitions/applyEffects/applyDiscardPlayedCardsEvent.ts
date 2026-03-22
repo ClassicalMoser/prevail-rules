@@ -10,21 +10,21 @@ import {
 /**
  * Applies a DiscardPlayedCardsEvent to the game state.
  * Moves both players' cards from inPlay to played pile.
- * Advances the cleanup phase step from 'discardPlayedCards' to 'firstPlayerChooseRally'.
+ * Advances the cleanup phase step to `firstPlayerChooseRally`, preserving other cleanup
+ * fields from the current phase state when present.
  *
- * @param event - The discard played cards event to apply
+ * Step is not re-validated; the event is trusted from the procedure / machine-generated
+ * log. Phase is narrowed via `getCleanupPhaseState` (throws if not `cleanup`).
+ *
+ * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields.
  * @param state - The current game state
  * @returns A new game state with cards moved to played pile
  */
 export function applyDiscardPlayedCardsEvent<TBoard extends Board>(
-  event: DiscardPlayedCardsEvent<TBoard>,
+  _event: DiscardPlayedCardsEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const phaseState = getCleanupPhaseState(state);
-
-  if (phaseState.step !== 'discardPlayedCards') {
-    throw new Error('Cleanup phase is not on discardPlayedCards step');
-  }
 
   // Move both players' cards from inPlay to played pile
   let newCardState = state.cardState;

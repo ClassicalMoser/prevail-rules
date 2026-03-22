@@ -15,6 +15,7 @@ export {
   getSpacesWithinDistance,
 } from './areas';
 export { getBoardCoordinates } from './getBoardCoordinates';
+export { getBoardCoordinatesWithEngagedUnits } from './getBoardCoordinatesWithEngagedUnits';
 export { getBoardSpace } from './getBoardSpace';
 export { getForwardSpace } from './getForwardSpace';
 export { getForwardSpacesToEdge } from './getForwardSpacesToEdge';

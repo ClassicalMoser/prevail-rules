@@ -8,8 +8,11 @@ import {
 
 /**
  * Applies a ResolveInitiativeEvent to the game state.
- * Sets the player who has initiative for this round and advances
- * the play cards phase step from 'assignInitiative' to 'complete'.
+ * Sets the player who has initiative for this round and advances the play cards phase
+ * step to `complete`.
+ *
+ * Step is not re-validated; the event is trusted from the procedure / machine-generated
+ * log. Phase is narrowed via `getPlayCardsPhaseState` (throws if not `playCards`).
  *
  * @param event - The resolve initiative event to apply
  * @param state - The current game state
@@ -20,10 +23,6 @@ export function applyResolveInitiativeEvent<TBoard extends Board>(
   state: GameState<TBoard>,
 ): GameState<TBoard> {
   const phaseState = getPlayCardsPhaseState(state);
-
-  if (phaseState.step !== 'assignInitiative') {
-    throw new Error('Play cards phase is not on assignInitiative step');
-  }
 
   // Advance to complete step
   const newPhaseState = markPhaseAsComplete(phaseState);

@@ -1,5 +1,5 @@
-import type { Board, GameState } from '@entities';
-import type { ResolveRoutEvent } from '@events';
+import type { Board, GameState, RoutState } from '@entities';
+import type { ResolveRoutEvent, RoutResolutionSource } from '@events';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ROUT_EFFECT_TYPE } from '@events';
 
 /**
@@ -20,11 +20,10 @@ export function generateResolveRoutEvent<TBoard extends Board>(
     throw new Error('No current phase state found');
   }
 
-  // Rout can occur during engagement resolution, attack apply, or rally resolution
-  let routState;
+  let routState: RoutState;
+  let routResolutionSource: RoutResolutionSource;
 
   if (phaseState.phase === 'issueCommands') {
-    // Check if we're in an engagement resolution or attack apply
     if (!phaseState.currentCommandResolutionState) {
       throw new Error('No current command resolution state');
     }
@@ -33,7 +32,6 @@ export function generateResolveRoutEvent<TBoard extends Board>(
       phaseState.currentCommandResolutionState.commandResolutionType ===
       'movement'
     ) {
-      // Check engagement resolution state
       const movementResolutionState = phaseState.currentCommandResolutionState;
       const engagementState = movementResolutionState.engagementState;
 
@@ -51,11 +49,11 @@ export function generateResolveRoutEvent<TBoard extends Board>(
       }
 
       routState = resolutionState.routState;
+      routResolutionSource = 'rearEngagementMovement';
     } else if (
       phaseState.currentCommandResolutionState.commandResolutionType ===
       'rangedAttack'
     ) {
-      // Check attack apply state
       const rangedAttackState = phaseState.currentCommandResolutionState;
       if (!rangedAttackState.attackApplyState) {
         throw new Error('No attack apply state found');
@@ -66,13 +64,13 @@ export function generateResolveRoutEvent<TBoard extends Board>(
       }
 
       routState = rangedAttackState.attackApplyState.routState;
+      routResolutionSource = 'rangedAttack';
     } else {
       throw new Error(
         'Current command resolution is not movement or ranged attack',
       );
     }
   } else if (phaseState.phase === 'resolveMelee') {
-    // Check if we're in a melee resolution
     if (!phaseState.currentMeleeResolutionState) {
       throw new Error('No current melee resolution state');
     }
@@ -80,7 +78,6 @@ export function generateResolveRoutEvent<TBoard extends Board>(
     const meleeState = phaseState.currentMeleeResolutionState;
     const firstPlayer = state.currentInitiative;
 
-    // Get both players' attack apply states
     const firstPlayerAttackApply =
       firstPlayer === 'white'
         ? meleeState.whiteAttackApplyState
@@ -90,7 +87,6 @@ export function generateResolveRoutEvent<TBoard extends Board>(
         ? meleeState.blackAttackApplyState
         : meleeState.whiteAttackApplyState;
 
-    // Priority: first player (initiative) resolves first
     if (firstPlayerAttackApply?.routState) {
       routState = firstPlayerAttackApply.routState;
     } else if (secondPlayerAttackApply?.routState) {
@@ -98,8 +94,8 @@ export function generateResolveRoutEvent<TBoard extends Board>(
     } else {
       throw new Error('No rout state found in melee resolution');
     }
+    routResolutionSource = 'melee';
   } else if (phaseState.phase === 'cleanup') {
-    // Check rally resolution state
     const isFirstPlayerStep =
       phaseState.step === 'firstPlayerResolveRally' ||
       phaseState.step === 'firstPlayerChooseRally';
@@ -113,6 +109,7 @@ export function generateResolveRoutEvent<TBoard extends Board>(
     }
 
     routState = rallyState.routState;
+    routResolutionSource = 'rally';
   } else {
     throw new Error(
       `Rout resolution not expected in phase: ${phaseState.phase}`,
@@ -123,12 +120,10 @@ export function generateResolveRoutEvent<TBoard extends Board>(
     throw new Error('Rout state already has numberToDiscard');
   }
 
-  // Get all units from the set
   if (routState.unitsToRout.size === 0) {
     throw new Error('No units to rout');
   }
 
-  // Calculate total penalty from all units
   const totalPenalty = [...routState.unitsToRout].reduce(
     (sum, unit) => sum + unit.unitType.routPenalty,
     0,
@@ -137,6 +132,7 @@ export function generateResolveRoutEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_ROUT_EFFECT_TYPE,
+    routResolutionSource,
     unitInstances: routState.unitsToRout,
     penalty: totalPenalty,
   };

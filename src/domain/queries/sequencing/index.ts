@@ -23,6 +23,7 @@ export {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
   getCurrentRallyResolutionState,
+  getDefendingPlayerForNextIncompleteMeleeAttackApply,
   getEngagementStateFromMovement,
   getFlankEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
@@ -33,5 +34,6 @@ export {
   getRetreatStateFromRangedAttack,
   getReverseStateFromAttackApply,
   getRoutStateFromAttackApply,
+  getRoutStateFromRearEngagement,
   getRoutStateFromRally,
 } from './getSubstep';

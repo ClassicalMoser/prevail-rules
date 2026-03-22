@@ -8,6 +8,7 @@ export {
 export {
   addCommanderToBoard,
   addCommanderToLostCommanders,
+  addCompletedPhase,
   addUnitsToCommandedUnits,
   addUnitToBoard,
   addUnitToRouted,
@@ -24,7 +25,6 @@ export {
   updateBoardState,
   updateCardState,
   updateCommandResolutionState,
-  updateCompletedPhase,
   updateCurrentRoundNumber,
   updateMeleeAttackApplyState,
   updateMeleeResolutionState,

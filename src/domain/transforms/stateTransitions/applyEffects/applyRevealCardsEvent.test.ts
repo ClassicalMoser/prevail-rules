@@ -89,7 +89,7 @@ describe('applyRevealCardsEvent', () => {
       );
     });
 
-    it('should throw if not in playCards phase', () => {
+    it('should throw if not in playCards phase (phase type guard)', () => {
       const state = createEmptyGameState();
       const stateWithWrongPhase = updatePhaseState(state, {
         phase: MOVE_COMMANDERS_PHASE,
@@ -102,15 +102,15 @@ describe('applyRevealCardsEvent', () => {
       };
 
       expect(() => applyRevealCardsEvent(event, stateWithWrongPhase)).toThrow(
-        'Expected playCards phase',
+        'Expected playCards phase, got moveCommanders',
       );
     });
 
-    it('should throw if not on revealCards step', () => {
+    it('should mechanically reveal when playCards step is not revealCards', () => {
       const state = createEmptyGameState();
       const stateWithWrongStep = updatePhaseState(state, {
         phase: PLAY_CARDS_PHASE,
-        step: 'chooseCards', // Wrong step
+        step: 'chooseCards',
       });
 
       const event: RevealCardsEvent<StandardBoard> = {
@@ -118,8 +118,10 @@ describe('applyRevealCardsEvent', () => {
         effectType: 'revealCards',
       };
 
-      expect(() => applyRevealCardsEvent(event, stateWithWrongStep)).toThrow(
-        'Play cards phase is not on revealCards step',
+      const newState = applyRevealCardsEvent(event, stateWithWrongStep);
+
+      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
+        'assignInitiative',
       );
     });
 

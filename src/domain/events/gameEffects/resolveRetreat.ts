@@ -18,6 +18,9 @@ export const RESOLVE_RETREAT_EFFECT_TYPE = 'resolveRetreat' as const;
  *
  * The unit will move from startingPosition to finalPosition on the board.
  * This event completes the retreat substep.
+ *
+ * **No phase / subtree tag**: Which retreat substep is active is already fixed by round
+ * sequencing and prior choices; apply uses narrowing helpers from current state.
  */
 export interface ResolveRetreatEvent<
   _TBoard extends Board,

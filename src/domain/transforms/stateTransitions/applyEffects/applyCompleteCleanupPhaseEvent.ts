@@ -1,7 +1,6 @@
 import type { Board, GameState, PlayCardsPhaseState } from '@entities';
 import type { CompleteCleanupPhaseEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@entities';
-import { getCleanupPhaseState } from '@queries';
 import {
   updateCurrentRoundNumber,
   updateRoundState,
@@ -9,22 +8,19 @@ import {
 
 /**
  * Applies a CompleteCleanupPhaseEvent to the game state.
- * Marks cleanup phase as complete, increments round number, and resets to playCards phase.
+ * Increments round number and resets to playCards phase (new round).
  *
- * @param event - The complete cleanup phase event to apply
+ * Cleanup phase step is not re-validated here; the event is trusted from the procedure /
+ * machine-generated log.
+ *
+ * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields.
  * @param state - The current game state
  * @returns A new game state with the round advanced
  */
 export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
-  event: CompleteCleanupPhaseEvent<TBoard>,
+  _event: CompleteCleanupPhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const phaseState = getCleanupPhaseState(state);
-
-  if (phaseState.step !== 'complete') {
-    throw new Error('Cleanup phase is not on complete step');
-  }
-
   // Increment round number
   const newRoundNumber = state.currentRoundState.roundNumber + 1;
 
@@ -34,6 +30,7 @@ export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
     step: 'chooseCards',
   };
 
+  // Update the round state
   const stateWithRound = updateRoundState(state, {
     roundNumber: newRoundNumber,
     completedPhases: new Set(), // Reset completed phases for new round
@@ -41,7 +38,9 @@ export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
     commandedUnits: new Set(), // Reset commanded units for new round
   });
 
+  // Update the game state with the new round number
   const finalState = updateCurrentRoundNumber(stateWithRound, newRoundNumber);
 
+  // Return the final state
   return finalState;
 }

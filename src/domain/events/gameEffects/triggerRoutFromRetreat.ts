@@ -1,40 +1,123 @@
-import type { Board } from '@entities';
+import type { Board, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
+import { playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
+
+import {
+  MELEE_ATTACK_RESOLUTION_CONTEXT,
+  RANGED_ATTACK_RESOLUTION_CONTEXT,
+} from './attackResolutionContext';
 
 /** The type of the trigger rout from retreat game effect. */
 export const TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE =
   'triggerRoutFromRetreat' as const;
 
-/** An event to trigger a rout from a retreat. */
-export interface TriggerRoutFromRetreatEvent<
+/**
+ * When a retreat has **no** legal positions, the rules replace retreat with rout. This effect
+ * seeds `routState` on the retreat substep that is already open.
+ *
+ * **Discriminator `retreatResolutionContext`**: Same two literals as
+ * `AttackResolutionContext` (`attackResolutionContext.ts`), but named for semantics—*where the
+ * retreat substep lives*—not “attack” in general. Ranged branch has no extra fields (single
+ * defender path). Melee branch requires `retreatingPlayer` because two attack-apply sides exist.
+ *
+ * Procedure `generateTriggerRoutFromRetreatEvent` sets the branch; apply trusts it.
+ */
+export type TriggerRoutFromRetreatEvent<
   _TBoard extends Board,
   _TEffectType extends 'triggerRoutFromRetreat' = 'triggerRoutFromRetreat',
-> {
-  /** The type of the event. */
-  eventType: typeof GAME_EFFECT_EVENT_TYPE;
-  /** The type of game effect. */
-  effectType: typeof TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE;
-}
+> =
+  | {
+      /** The type of the event. */
+      eventType: typeof GAME_EFFECT_EVENT_TYPE;
+      /** The type of game effect. */
+      effectType: _TEffectType;
+      /** Retreat substep lives under ranged attack resolution. */
+      retreatResolutionContext: typeof RANGED_ATTACK_RESOLUTION_CONTEXT;
+    }
+  | {
+      /** The type of the event. */
+      eventType: typeof GAME_EFFECT_EVENT_TYPE;
+      /** The type of game effect. */
+      effectType: _TEffectType;
+      /** Retreat substep lives under this player's melee attack-apply. */
+      retreatResolutionContext: typeof MELEE_ATTACK_RESOLUTION_CONTEXT;
+      /** The player whose retreat has no legal options. */
+      retreatingPlayer: PlayerSide;
+    };
 
-const _triggerRoutFromRetreatEventSchemaObject = z.object({
+const _triggerRoutFromRetreatSharedFieldsSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE>;
+}> = z.object({
+  /** The type of the event. */
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE),
 });
 
+const _triggerRoutFromRetreatRangedAttackSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE>;
+  retreatResolutionContext: z.ZodLiteral<
+    typeof RANGED_ATTACK_RESOLUTION_CONTEXT
+  >;
+}> = _triggerRoutFromRetreatSharedFieldsSchemaObject.merge(
+  z.object({
+    /** Ranged attack resolution path. */
+    retreatResolutionContext: z.literal(RANGED_ATTACK_RESOLUTION_CONTEXT),
+  }),
+);
+
+const _triggerRoutFromRetreatMeleeSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE>;
+  retreatResolutionContext: z.ZodLiteral<
+    typeof MELEE_ATTACK_RESOLUTION_CONTEXT
+  >;
+  retreatingPlayer: typeof playerSideSchema;
+}> = _triggerRoutFromRetreatSharedFieldsSchemaObject.merge(
+  z.object({
+    /** Melee resolution path. */
+    retreatResolutionContext: z.literal(MELEE_ATTACK_RESOLUTION_CONTEXT),
+    /** The player whose retreat has no legal options. */
+    retreatingPlayer: playerSideSchema,
+  }),
+);
+
+const _triggerRoutFromRetreatEventSchemaObject: z.ZodDiscriminatedUnion<
+  [
+    typeof _triggerRoutFromRetreatRangedAttackSchemaObject,
+    typeof _triggerRoutFromRetreatMeleeSchemaObject,
+  ],
+  'retreatResolutionContext'
+> = z.discriminatedUnion('retreatResolutionContext', [
+  _triggerRoutFromRetreatRangedAttackSchemaObject,
+  _triggerRoutFromRetreatMeleeSchemaObject,
+]);
+
 type TriggerRoutFromRetreatEventSchemaType = z.infer<
   typeof _triggerRoutFromRetreatEventSchemaObject
 >;
+
+/** Shared `eventType` / `effectType` for both branches. */
+export const triggerRoutFromRetreatSharedFieldsSchema: typeof _triggerRoutFromRetreatSharedFieldsSchemaObject =
+  _triggerRoutFromRetreatSharedFieldsSchemaObject;
+
+/** Branch schema: ranged attack resolution. */
+export const triggerRoutFromRetreatRangedAttackSchema: typeof _triggerRoutFromRetreatRangedAttackSchemaObject =
+  _triggerRoutFromRetreatRangedAttackSchemaObject;
+
+/** Branch schema: melee resolution. */
+export const triggerRoutFromRetreatMeleeSchema: typeof _triggerRoutFromRetreatMeleeSchemaObject =
+  _triggerRoutFromRetreatMeleeSchemaObject;
+
+/** The schema for a trigger rout from retreat event. */
+export const triggerRoutFromRetreatEventSchema: typeof _triggerRoutFromRetreatEventSchemaObject =
+  _triggerRoutFromRetreatEventSchemaObject;
 
 const _assertExactTriggerRoutFromRetreatEvent: AssertExact<
   TriggerRoutFromRetreatEvent<Board>,
   TriggerRoutFromRetreatEventSchemaType
 > = true;
-
-/** The schema for a trigger rout from retreat event. */
-export const triggerRoutFromRetreatEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'gameEffect'>;
-  effectType: z.ZodLiteral<'triggerRoutFromRetreat'>;
-}> = _triggerRoutFromRetreatEventSchemaObject;

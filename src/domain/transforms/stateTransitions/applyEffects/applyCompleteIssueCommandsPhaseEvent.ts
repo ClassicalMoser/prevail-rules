@@ -1,25 +1,19 @@
-import type {
-  Board,
-  BoardCoordinate,
-  GameState,
-  ResolveMeleePhaseState,
-} from '@entities';
+import type { Board, GameState, ResolveMeleePhaseState } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import { hasEngagedUnits, RESOLVE_MELEE_PHASE } from '@entities';
+import { RESOLVE_MELEE_PHASE } from '@entities';
+import { getCurrentPhaseState } from '@queries';
 import {
-  getBoardCoordinates,
-  getBoardSpace,
-  getIssueCommandsPhaseState,
-} from '@queries';
-import {
-  updateCompletedPhase,
+  addCompletedPhase,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteIssueCommandsPhaseEvent to the game state.
- * Marks issueCommands phase as complete and advances to resolveMelee phase.
- * Sets the remaining engagements to all engaged units on the board.
+ * Records the current phase state as completed and advances to resolveMelee phase.
+ * Uses `remainingEngagements` from the event (procedure / machine-generated log).
+ *
+ * Phase and step are not re-validated here; the event is trusted from the procedure /
+ * machine-generated log.
  *
  * @param event - The complete issue commands phase event to apply
  * @param state - The current game state
@@ -29,33 +23,20 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
   event: CompleteIssueCommandsPhaseEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const phaseState = getIssueCommandsPhaseState(state);
+  const phaseState = getCurrentPhaseState(state);
 
-  if (phaseState.step !== 'complete') {
-    throw new Error('Issue commands phase is not on complete step');
-  }
+  const stateWithCompletedPhase = addCompletedPhase(state, phaseState);
 
-  // Add the completed phase to the set of completed phases
-  const stateWithCompletedPhase = updateCompletedPhase(state, phaseState);
-
-  // Find all engagements on the board
-  const engagements = new Set<BoardCoordinate<TBoard>>();
-  const coordinates = getBoardCoordinates(state.boardState);
-
-  for (const coordinate of coordinates) {
-    const space = getBoardSpace(state.boardState, coordinate);
-    if (hasEngagedUnits(space.unitPresence)) {
-      engagements.add(coordinate);
-    }
-  }
-
-  // Create the new resolve melee phase state
   const newPhaseState: ResolveMeleePhaseState<TBoard> = {
     phase: RESOLVE_MELEE_PHASE,
     step: 'resolveMelee',
+    // Initialize with undefined, resolution order is up to the player
     currentMeleeResolutionState: undefined,
-    remainingEngagements: engagements,
+    // Initialize with all engaged units on the board,
+    // set in the event (procedure / machine-generated log)
+    remainingEngagements: event.remainingEngagements,
   };
 
-  return updatePhaseState(stateWithCompletedPhase, newPhaseState);
+  const newState = updatePhaseState(stateWithCompletedPhase, newPhaseState);
+  return newState;
 }

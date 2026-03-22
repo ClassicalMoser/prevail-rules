@@ -55,8 +55,10 @@ describe('applySetupUnitsEvent', () => {
     const atE6 = newState.boardState.board['E-6']?.unitPresence;
     expect(atE5?.presenceType).toBe('single');
     expect(atE6?.presenceType).toBe('single');
-    if (atE5?.presenceType === 'single') expect(atE5.unit.playerSide).toBe('black');
-    if (atE6?.presenceType === 'single') expect(atE6.unit.playerSide).toBe('white');
+    if (atE5?.presenceType === 'single')
+      expect(atE5.unit.playerSide).toBe('black');
+    if (atE6?.presenceType === 'single')
+      expect(atE6.unit.playerSide).toBe('white');
   });
 
   it('does not mutate the original state', () => {
@@ -78,7 +80,9 @@ describe('applySetupUnitsEvent', () => {
     applySetupUnitsEvent(event, state);
 
     expect(state.boardState).toBe(originalBoardRef);
-    expect(state.boardState.board['E-5']?.unitPresence.presenceType).toBe('none');
+    expect(state.boardState.board['E-5']?.unitPresence.presenceType).toBe(
+      'none',
+    );
   });
 
   it('leaves board unchanged when unitPlacements is empty', () => {

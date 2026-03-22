@@ -10,8 +10,10 @@ import {
   createPlayCardsPhaseState,
   createRallyResolutionState,
   createRangedAttackResolutionState,
+  createRearEngagementState,
   createResolveMeleePhaseState,
   createRoutState,
+  createTestCard,
   createTestUnit,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
@@ -78,6 +80,38 @@ describe('updateRoutState', () => {
       }),
     );
   }
+
+  it('should update rout state in rear engagement during movement resolution', () => {
+    const state = createEmptyGameState();
+    state.cardState.black.inPlay = createTestCard();
+    const whiteUnit = createTestUnit('white', { attack: 2 });
+    const movement = createMovementResolutionState(state, {
+      engagementState: createRearEngagementState({
+        routState: createRoutState('white', whiteUnit),
+      }),
+    });
+    const stateInPhase = updatePhaseState(
+      state,
+      createIssueCommandsPhaseState(state, {
+        currentCommandResolutionState: movement,
+      }),
+    );
+    const newRout = createRoutState('white', whiteUnit, {
+      numberToDiscard: 3,
+    });
+
+    const newState = updateRoutState(stateInPhase, newRout);
+
+    const phase = newState.currentRoundState.currentPhaseState;
+    expect(phase?.phase).toBe('issueCommands');
+    if (phase?.phase !== 'issueCommands') throw new Error('phase');
+    const cmd = phase.currentCommandResolutionState;
+    if (cmd?.commandResolutionType !== 'movement') throw new Error('movement');
+    const res = cmd.engagementState?.engagementResolutionState;
+    expect(res?.engagementType).toBe('rear');
+    if (res?.engagementType !== 'rear') throw new Error('rear');
+    expect(res.routState?.numberToDiscard).toBe(3);
+  });
 
   it('should update rout state in ranged attack resolution', () => {
     const state = createStateWithRangedAttackRout();

@@ -2,6 +2,10 @@
 export { armySchema } from './army';
 export type { Army, UnitCount } from './army';
 
+// Attack types.
+export { attackTypes, attackTypeSchema } from './attackType';
+export type { AttackType } from './attackType';
+
 // Board models.
 export {
   boardCoordinateSchema,

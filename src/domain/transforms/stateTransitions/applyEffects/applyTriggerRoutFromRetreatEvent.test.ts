@@ -104,6 +104,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
       const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
+        retreatResolutionContext: 'rangedAttack',
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
@@ -128,6 +129,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
       const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
+        retreatResolutionContext: 'rangedAttack',
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
@@ -147,6 +149,8 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
       const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
+        retreatResolutionContext: 'melee',
+        retreatingPlayer: 'black',
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
@@ -163,6 +167,8 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
       const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
+        retreatResolutionContext: 'melee',
+        retreatingPlayer: 'white',
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
@@ -183,6 +189,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
       const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
+        retreatResolutionContext: 'rangedAttack',
       };
 
       applyTriggerRoutFromRetreatEvent(event, state);

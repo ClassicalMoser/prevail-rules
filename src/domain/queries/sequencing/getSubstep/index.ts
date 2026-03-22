@@ -1,6 +1,7 @@
 export {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
+  getDefendingPlayerForNextIncompleteMeleeAttackApply,
 } from './attackApply';
 export { canReverseUnit } from './canReverseUnit';
 export {
@@ -9,6 +10,7 @@ export {
   getFrontEngagementStateFromMovement,
   getRearEngagementStateFromMovement,
 } from './engagement';
+export { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement';
 export {
   getCurrentRallyResolutionState,
   getRallyResolutionState,

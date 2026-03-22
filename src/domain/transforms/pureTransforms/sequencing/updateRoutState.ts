@@ -15,6 +15,7 @@ import { updatePhaseState } from '../state';
  * Creates a new game state with the rout state updated.
  * Rout can occur in:
  * - Ranged attack resolution (issueCommands phase)
+ * - Rear engagement rout during movement (issueCommands phase)
  * - Melee resolution (resolveMelee phase)
  * - Rally resolution / lost support (cleanup phase)
  *
@@ -45,6 +46,33 @@ export function updateRoutState<TBoard extends Board>(
           attackApplyState: { ...attackApply, routState },
         },
       });
+    }
+
+    if (commandState?.commandResolutionType === 'movement') {
+      const movement = commandState;
+      const engagement = movement.engagementState;
+      const resolution = engagement?.engagementResolutionState;
+      // Rear rout lives under `engagementResolutionState`; `engagement` must exist for
+      // `resolution` to be the rear branch (no `engagement === undefined` merge path).
+      if (
+        engagement !== undefined &&
+        resolution?.engagementType === 'rear' &&
+        resolution.routState !== undefined
+      ) {
+        return updatePhaseState(state, {
+          ...issueState,
+          currentCommandResolutionState: {
+            ...movement,
+            engagementState: {
+              ...engagement,
+              engagementResolutionState: {
+                ...resolution,
+                routState,
+              },
+            },
+          },
+        });
+      }
     }
 
     throw new Error(

@@ -26,8 +26,8 @@ export {
   updateRoutState,
 } from './sequencing';
 export {
+  addCompletedPhase,
   markPhaseAsComplete,
-  updateCompletedPhase,
   updateCurrentRoundNumber,
   updatePhaseState,
   updateRemainingCommandsForPlayer,

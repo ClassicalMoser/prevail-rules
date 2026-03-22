@@ -1,19 +1,32 @@
-import type { Board, BoardCoordinate } from '@entities';
+import type {
+  Board,
+  BoardCoordinate,
+  UnitPlacement,
+  UnitWithPlacement,
+} from '@entities';
 import type { AssertExact } from '@utils';
-import { boardCoordinateSchema } from '@entities';
+import {
+  boardCoordinateSchema,
+  unitPlacementSchema,
+  unitWithPlacementSchema,
+} from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 
 /** The type of the resolve melee game effect. */
 export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;
 
-/** The event for the game resolution of a melee.
- * After the engagement is chosen, supports are applied,
- * and cards are committed, the resolution follows deterministically.
- * The steps are resolved in order, and the player with initiative
- * resolves each step first.
+/**
+ * Deterministic melee resolution after engagement, supports, and committed cards.
+ * Initiative orders substeps; the procedure computes attack outcomes and snapshots anything
+ * apply would otherwise have to re-query from the board.
+ *
+ * **Payload notes**
+ * - `whiteUnitWithPlacement` / `blackUnitWithPlacement`: engaged units at `location` (not
+ *   “defender” wording—melee is mutual).
+ * - `*LegalRetreatOptions`: precomputed by the procedure when that side retreats; empty `Set`
+ *   otherwise so apply never calls `getLegalRetreats`.
  */
-
 export interface ResolveMeleeEvent<
   _TBoard extends Board,
   _TEffectType extends 'resolveMelee' = 'resolveMelee',
@@ -24,6 +37,19 @@ export interface ResolveMeleeEvent<
   effectType: typeof RESOLVE_MELEE_EFFECT_TYPE;
   /** The location of the melee. */
   location: BoardCoordinate<Board>;
+  /** White side’s engaged unit at `location` (procedure snapshot for apply). */
+  whiteUnitWithPlacement: UnitWithPlacement<Board>;
+  /** Black side’s engaged unit at `location` (procedure snapshot for apply). */
+  blackUnitWithPlacement: UnitWithPlacement<Board>;
+  /**
+   * Legal retreats for the white unit when `whiteUnitRetreated`; otherwise empty.
+   * Filled by the procedure; apply does not call `getLegalRetreats`.
+   */
+  whiteLegalRetreatOptions: Set<UnitPlacement<Board>>;
+  /**
+   * Legal retreats for the black unit when `blackUnitRetreated`; otherwise empty.
+   */
+  blackLegalRetreatOptions: Set<UnitPlacement<Board>>;
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: boolean;
   /** Whether the black player's unit is routed. */
@@ -45,6 +71,19 @@ const _resolveMeleeEventSchemaObject = z.object({
   effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
   /** The location of the melee. */
   location: boardCoordinateSchema,
+  /** White side’s engaged unit at `location` (procedure snapshot for apply). */
+  whiteUnitWithPlacement: unitWithPlacementSchema,
+  /** Black side’s engaged unit at `location` (procedure snapshot for apply). */
+  blackUnitWithPlacement: unitWithPlacementSchema,
+  /**
+   * Legal retreats for the white unit when `whiteUnitRetreated`; otherwise empty.
+   * Filled by the procedure; apply does not call `getLegalRetreats`.
+   */
+  whiteLegalRetreatOptions: z.set(unitPlacementSchema),
+  /**
+   * Legal retreats for the black unit when `blackUnitRetreated`; otherwise empty.
+   */
+  blackLegalRetreatOptions: z.set(unitPlacementSchema),
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: z.boolean(),
   /** Whether the black player's unit is routed. */
@@ -73,6 +112,10 @@ export const resolveMeleeEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveMelee'>;
   location: typeof boardCoordinateSchema;
+  whiteUnitWithPlacement: typeof unitWithPlacementSchema;
+  blackUnitWithPlacement: typeof unitWithPlacementSchema;
+  whiteLegalRetreatOptions: z.ZodSet<typeof unitPlacementSchema>;
+  blackLegalRetreatOptions: z.ZodSet<typeof unitPlacementSchema>;
   whiteUnitRouted: z.ZodBoolean;
   blackUnitRouted: z.ZodBoolean;
   whiteUnitRetreated: z.ZodBoolean;

@@ -112,8 +112,8 @@ describe('applyResolveInitiativeEvent', () => {
     });
   });
 
-  describe('error cases', () => {
-    it('should throw if not on assignInitiative step', () => {
+  describe('trusted event (mechanical apply)', () => {
+    it('should set initiative and advance to complete when step is not assignInitiative', () => {
       const state = createGameStateInAssignInitiativeStep();
       const stateWithWrongStep = updatePhaseState(state, {
         phase: PLAY_CARDS_PHASE,
@@ -126,9 +126,12 @@ describe('applyResolveInitiativeEvent', () => {
         player: 'black',
       };
 
-      expect(() =>
-        applyResolveInitiativeEvent(event, stateWithWrongStep),
-      ).toThrow('Play cards phase is not on assignInitiative step');
+      const newState = applyResolveInitiativeEvent(event, stateWithWrongStep);
+
+      expect(newState.currentInitiative).toBe('black');
+      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
+        'complete',
+      );
     });
   });
 });

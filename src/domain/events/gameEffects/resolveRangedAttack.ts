@@ -1,12 +1,20 @@
-import type { Board, UnitInstance } from '@entities';
+import type { Board, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
-import { unitInstanceSchema } from '@entities';
+import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventType';
 import { z } from 'zod';
 
 /** The type of the resolve ranged attack game effect. */
 export const RESOLVE_RANGED_ATTACK_EFFECT_TYPE = 'resolveRangedAttack' as const;
 
+/**
+ * Ranged attack resolution: attack value applied, then routed / reversed / retreated flags drive
+ * substeps.
+ *
+ * **Payload notes**: `defenderWithPlacement` is the target unit snapshot; `legalRetreatOptions`
+ * is filled by the procedure when `retreated` (else empty) so apply does not call
+ * `getLegalRetreats` or hunt the defender on the board.
+ */
 export interface ResolveRangedAttackEvent<
   _TBoard extends Board,
   _TEffectType extends 'resolveRangedAttack' = 'resolveRangedAttack',
@@ -15,8 +23,13 @@ export interface ResolveRangedAttackEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE;
-  /** The unit that is being attacked */
-  unitInstance: UnitInstance;
+  /** Defending unit and board position (procedure snapshot for apply). */
+  defenderWithPlacement: UnitWithPlacement<Board>;
+  /**
+   * Legal retreats when `retreated`; otherwise empty.
+   * Filled by the procedure; apply does not call `getLegalRetreats`.
+   */
+  legalRetreatOptions: Set<UnitPlacement<Board>>;
   /** Whether the unit is routed. */
   routed: boolean;
   /** Whether the unit is reversed. */
@@ -30,8 +43,13 @@ const _resolveRangedAttackEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
-  /** The unit that is being attacked */
-  unitInstance: unitInstanceSchema,
+  /** Defending unit and board position (procedure snapshot for apply). */
+  defenderWithPlacement: unitWithPlacementSchema,
+  /**
+   * Legal retreats when `retreated`; otherwise empty.
+   * Filled by the procedure; apply does not call `getLegalRetreats`.
+   */
+  legalRetreatOptions: z.set(unitPlacementSchema),
   /** Whether the unit is routed. */
   routed: z.boolean(),
   /** Whether the unit is reversed. */
@@ -53,7 +71,8 @@ const _assertExactResolveRangedAttackEvent: AssertExact<
 export const resolveRangedAttackEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveRangedAttack'>;
-  unitInstance: typeof unitInstanceSchema;
+  defenderWithPlacement: typeof unitWithPlacementSchema;
+  legalRetreatOptions: z.ZodSet<typeof unitPlacementSchema>;
   routed: z.ZodBoolean;
   reversed: z.ZodBoolean;
   retreated: z.ZodBoolean;

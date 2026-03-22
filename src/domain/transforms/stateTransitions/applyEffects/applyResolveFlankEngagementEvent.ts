@@ -9,6 +9,7 @@ import {
 import {
   addUnitToBoard,
   removeUnitFromBoard,
+  updatePhaseState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -80,12 +81,8 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
     currentCommandResolutionState: newMovementState,
   };
 
-  return {
-    ...state,
-    boardState: updatedBoard,
-    currentRoundState: {
-      ...state.currentRoundState,
-      currentPhaseState: newPhaseState,
-    },
-  };
+  return updatePhaseState(
+    { ...state, boardState: updatedBoard },
+    newPhaseState,
+  );
 }

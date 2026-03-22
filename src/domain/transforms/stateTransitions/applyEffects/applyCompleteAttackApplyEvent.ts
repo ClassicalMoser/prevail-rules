@@ -14,6 +14,9 @@ import {
  * Marks the attack apply state as completed.
  * Can be in ranged attack resolution (issueCommands phase) or melee resolution (resolveMelee phase).
  *
+ * The `defendingPlayer` and phase placement are trusted (procedure / machine-generated
+ * events); not re-validated here beyond what nested state readers require.
+ *
  * @param event - The complete attack apply event to apply
  * @param state - The current game state
  * @returns A new game state with the attack apply state marked as completed
@@ -22,13 +25,7 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
   event: CompleteAttackApplyEvent<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState) {
-    throw new Error('No current phase state found');
-  }
-
-  // Handle ranged attack resolution (in issueCommands phase)
-  if (phaseState.phase === 'issueCommands') {
+  if (event.attackType === 'ranged') {
     const currentAttackApplyState = getAttackApplyStateFromRangedAttack(state);
 
     const newAttackApplyState: AttackApplyState<TBoard> = {
@@ -39,55 +36,37 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
     return updateAttackApplyState(state, newAttackApplyState);
   }
 
-  // Handle melee resolution (in resolveMelee phase)
-  if (phaseState.phase === 'resolveMelee') {
+  if (event.attackType === 'melee') {
     const meleeState = getMeleeResolutionState(state);
-    const firstPlayer = state.currentInitiative;
-
-    const firstPlayerAttackApply =
-      firstPlayer === 'white'
+    const current =
+      event.defendingPlayer === 'white'
         ? meleeState.whiteAttackApplyState
         : meleeState.blackAttackApplyState;
-    const secondPlayerAttackApply =
-      firstPlayer === 'white'
-        ? meleeState.blackAttackApplyState
-        : meleeState.whiteAttackApplyState;
 
-    // Check first player's attack apply state
-    if (firstPlayerAttackApply && !firstPlayerAttackApply.completed) {
-      const newAttackApplyState: AttackApplyState<TBoard> = {
-        ...firstPlayerAttackApply,
-        completed: true,
-      };
-
-      return updateMeleeAttackApplyState(
-        state,
-        firstPlayer,
-        newAttackApplyState,
+    // Should not occur, but convenient and inexpensive to check for type safety anyway.
+    if (!current) {
+      throw new Error(
+        `No attack apply state for defending player ${event.defendingPlayer}`,
       );
     }
 
-    // Check second player's attack apply state
-    if (secondPlayerAttackApply && !secondPlayerAttackApply.completed) {
-      const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
-      const newAttackApplyState: AttackApplyState<TBoard> = {
-        ...secondPlayerAttackApply,
-        completed: true,
-      };
+    // Mark the attack apply state as completed
+    const newAttackApplyState: AttackApplyState<TBoard> = {
+      ...current,
+      completed: true,
+    };
 
-      return updateMeleeAttackApplyState(
-        state,
-        secondPlayer,
-        newAttackApplyState,
-      );
-    }
-
-    throw new Error(
-      'No incomplete attack apply state found in melee resolution',
+    // Update the melee attack apply state
+    return updateMeleeAttackApplyState(
+      state,
+      event.defendingPlayer,
+      newAttackApplyState,
     );
   }
 
+  // Should not occur, but convenient and inexpensive to check for type safety anyway.
+  const _exhaustive: never = event.attackType;
   throw new Error(
-    `Complete attack apply not expected in phase: ${phaseState.phase}`,
+    `Unknown attack type for completeAttackApply: ${_exhaustive}`,
   );
 }

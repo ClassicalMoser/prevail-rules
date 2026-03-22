@@ -5,6 +5,7 @@ import type {
   MeleeResolutionState,
 } from '@entities';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
+import { getDefendingPlayerForNextIncompleteMeleeAttackApply } from '@queries/sequencing';
 import { getExpectedAttackApplyEvent } from '../composable';
 
 /**
@@ -64,14 +65,13 @@ export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
   }
 
   // resolveMelee has been applied (both attackApplyStates exist)
-  // Initiative player resolves their result first
-  if (!firstPlayerAttackApplyState.completed) {
-    return getExpectedAttackApplyEvent(firstPlayerAttackApplyState, gameState);
-  }
-
-  // First player's result resolved, check if second player's result needs resolution
-  if (!secondPlayerAttackApplyState.completed) {
-    return getExpectedAttackApplyEvent(secondPlayerAttackApplyState, gameState);
+  const nextDefendingPlayer =
+    getDefendingPlayerForNextIncompleteMeleeAttackApply(gameState, meleeState);
+  if (nextDefendingPlayer !== null) {
+    return getExpectedAttackApplyEvent(
+      meleeState[`${nextDefendingPlayer}AttackApplyState`]!,
+      gameState,
+    );
   }
 
   // Both attack apply states are complete, melee resolution should be complete

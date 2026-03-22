@@ -117,6 +117,7 @@ describe('applyResolveReverseEvent', () => {
       const event: ResolveReverseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        attackResolutionContext: 'rangedAttack',
         unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
@@ -146,6 +147,7 @@ describe('applyResolveReverseEvent', () => {
       const event: ResolveReverseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        attackResolutionContext: 'rangedAttack',
         unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
@@ -182,6 +184,7 @@ describe('applyResolveReverseEvent', () => {
       const event: ResolveReverseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        attackResolutionContext: 'rangedAttack',
         unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
@@ -211,6 +214,7 @@ describe('applyResolveReverseEvent', () => {
       const event: ResolveReverseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        attackResolutionContext: 'melee',
         unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
@@ -243,6 +247,7 @@ describe('applyResolveReverseEvent', () => {
       const event: ResolveReverseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        attackResolutionContext: 'melee',
         unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
@@ -276,6 +281,7 @@ describe('applyResolveReverseEvent', () => {
       const event: ResolveReverseEvent<StandardBoard> = {
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        attackResolutionContext: 'rangedAttack',
         unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
