@@ -1,0 +1,155 @@
+import type { Command, GameState, StandardBoard } from '@entities';
+import { PLAY_CARDS_PHASE } from '@entities';
+import type {
+  ChooseCardEvent,
+  IssueCommandEvent,
+  PlayerChoiceEvent,
+} from '@events';
+import * as expectedEventQueries from '@queries/expectedEvent';
+import { commandCards } from '@sampleValues';
+import { createEmptyGameState } from '@testing';
+import { updateCardState, updatePhaseState } from '@transforms';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { validatePlayerChoice } from './validatePlayerChoice';
+
+describe('validatePlayerChoice', () => {
+  function stateInPlayCardsChooseCards(): GameState<StandardBoard> {
+    const base = createEmptyGameState();
+    const withPhase = updatePhaseState(base, {
+      phase: PLAY_CARDS_PHASE,
+      step: 'chooseCards',
+    });
+    return updateCardState(withPhase, (current) => ({
+      ...current,
+      black: {
+        ...current.black,
+        awaitingPlay: null,
+        inHand: [commandCards[2]],
+      },
+      white: {
+        ...current.white,
+        awaitingPlay: null,
+        inHand: [commandCards[3]],
+      },
+    }));
+  }
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('passes when the expected choice matches and is legal', () => {
+    const state = stateInPlayCardsChooseCards();
+    const event: ChooseCardEvent<StandardBoard> = {
+      eventType: 'playerChoice',
+      choiceType: 'chooseCard',
+      player: 'black',
+      card: commandCards[2],
+    };
+
+    const { result } = validatePlayerChoice(event, state);
+
+    expect(result).toBe(true);
+  });
+
+  it('fails when a game effect is expected instead of player input', () => {
+    const state = updatePhaseState(createEmptyGameState(), {
+      phase: PLAY_CARDS_PHASE,
+      step: 'revealCards',
+    });
+    const event: ChooseCardEvent<StandardBoard> = {
+      eventType: 'playerChoice',
+      choiceType: 'chooseCard',
+      player: 'black',
+      card: commandCards[0],
+    };
+
+    const validation = validatePlayerChoice(event, state);
+
+    expect(validation.result).toBe(false);
+    if (validation.result !== false) throw new Error('expected fail');
+    expect(validation.errorReason).toContain('revealCards');
+    expect(validation.errorReason).toContain('not a player choice');
+  });
+
+  it('fails when the wrong player acts for the expected source', () => {
+    const state = updateCardState(
+      updatePhaseState(createEmptyGameState(), {
+        phase: PLAY_CARDS_PHASE,
+        step: 'chooseCards',
+      }),
+      (current) => ({
+        ...current,
+        black: {
+          ...current.black,
+          awaitingPlay: commandCards[0],
+          inHand: [],
+        },
+        white: {
+          ...current.white,
+          awaitingPlay: null,
+          inHand: [commandCards[2]],
+        },
+      }),
+    );
+
+    const event: ChooseCardEvent<StandardBoard> = {
+      eventType: 'playerChoice',
+      choiceType: 'chooseCard',
+      player: 'black',
+      card: commandCards[0],
+    };
+
+    const validation = validatePlayerChoice(event, state);
+
+    expect(validation.result).toBe(false);
+    if (validation.result !== false) throw new Error('expected fail');
+    expect(validation.errorReason).toMatch(/Expected input from white/);
+  });
+
+  it('fails when choice type does not match the expected choice', () => {
+    const state = stateInPlayCardsChooseCards();
+    const event = {
+      eventType: 'playerChoice' as const,
+      choiceType: 'moveCommander' as const,
+      player: 'black' as const,
+      from: 'E-5' as const,
+      to: 'E-6' as const,
+    } satisfies PlayerChoiceEvent<StandardBoard, 'moveCommander'>;
+
+    const validation = validatePlayerChoice(event, state);
+
+    expect(validation.result).toBe(false);
+    if (validation.result !== false) throw new Error('expected fail');
+    expect(validation.errorReason).toContain('chooseCard');
+    expect(validation.errorReason).toContain('moveCommander');
+  });
+
+  describe('when legal validation is not implemented for the choice type', () => {
+    beforeEach(() => {
+      vi.spyOn(expectedEventQueries, 'getExpectedEvent').mockReturnValue({
+        actionType: 'playerChoice',
+        playerSource: 'black',
+        choiceType: 'issueCommand',
+      });
+    });
+
+    it('returns a not-implemented error', () => {
+      const state = stateInPlayCardsChooseCards();
+      const event = {
+        eventType: 'playerChoice',
+        choiceType: 'issueCommand',
+        player: 'black',
+        command: {} as unknown as Command,
+        units: new Set(),
+      } as IssueCommandEvent<StandardBoard>;
+
+      const validation = validatePlayerChoice(event, state);
+
+      expect(validation.result).toBe(false);
+      if (validation.result !== false) throw new Error('expected fail');
+      expect(validation.errorReason).toContain('not implemented');
+      expect(validation.errorReason).toContain('issueCommand');
+    });
+  });
+});

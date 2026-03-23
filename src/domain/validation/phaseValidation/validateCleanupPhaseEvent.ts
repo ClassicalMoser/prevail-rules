@@ -5,10 +5,7 @@ import type {
   ValidationResult,
 } from '@entities';
 import type { Event } from '@events';
-import {
-  isValidChooseRallyEvent,
-  isValidChooseRoutDiscardEvent,
-} from '@validation/playerChoice';
+import { validatePlayerChoice } from '@validation/playerChoice';
 
 /**
  * Validates an event for the Cleanup phase.
@@ -42,11 +39,8 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
 
     case 'firstPlayerChooseRally':
     case 'secondPlayerChooseRally':
-      if (
-        event.eventType === 'playerChoice' &&
-        event.choiceType === 'chooseRally'
-      ) {
-        return isValidChooseRallyEvent(event, state);
+      if (event.eventType === 'playerChoice') {
+        return validatePlayerChoice(event, state);
       }
       return {
         result: false,
@@ -101,11 +95,8 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
       if (rallyState.routState) {
         if (!rallyState.routState.cardsChosen) {
           // Expect chooseRoutDiscard
-          if (
-            event.eventType === 'playerChoice' &&
-            event.choiceType === 'chooseRoutDiscard'
-          ) {
-            return isValidChooseRoutDiscardEvent(event, state);
+          if (event.eventType === 'playerChoice') {
+            return validatePlayerChoice(event, state);
           }
           return {
             result: false,

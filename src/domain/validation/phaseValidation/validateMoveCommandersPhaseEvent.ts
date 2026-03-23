@@ -5,7 +5,7 @@ import type {
   ValidationResult,
 } from '@entities';
 import type { Event } from '@events';
-import { isValidMoveCommanderEvent } from '@validation/playerChoice';
+import { validatePlayerChoice } from '@validation/playerChoice';
 
 /**
  * Validates an event for the MoveCommanders phase.
@@ -27,11 +27,8 @@ export function validateMoveCommandersPhaseEvent<TBoard extends Board>(
   switch (phaseState.step) {
     case 'moveFirstCommander':
     case 'moveSecondCommander':
-      if (
-        event.eventType === 'playerChoice' &&
-        event.choiceType === 'moveCommander'
-      ) {
-        return isValidMoveCommanderEvent(event, state);
+      if (event.eventType === 'playerChoice') {
+        return validatePlayerChoice(event, state);
       }
       return {
         result: false,

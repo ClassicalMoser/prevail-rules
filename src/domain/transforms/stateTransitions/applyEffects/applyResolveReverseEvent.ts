@@ -8,6 +8,7 @@ import {
 import {
   addUnitToBoard,
   removeUnitFromBoard,
+  updateBoardState,
   updateReverseState,
 } from '@transforms/pureTransforms';
 
@@ -46,9 +47,5 @@ export function applyResolveReverseEvent<TBoard extends Board>(
   };
 
   const stateWithUpdatedReverse = updateReverseState(state, newReverseState);
-
-  return {
-    ...stateWithUpdatedReverse,
-    boardState: addedUnitBoard,
-  };
+  return updateBoardState(stateWithUpdatedReverse, addedUnitBoard);
 }

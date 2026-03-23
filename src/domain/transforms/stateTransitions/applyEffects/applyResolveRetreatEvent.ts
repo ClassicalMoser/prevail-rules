@@ -4,6 +4,7 @@ import { findRetreatState } from '@queries';
 import {
   addUnitToBoard,
   removeUnitFromBoard,
+  updateBoardState,
   updateRetreatState,
 } from '@transforms/pureTransforms';
 
@@ -40,12 +41,6 @@ export function applyResolveRetreatEvent<TBoard extends Board>(
     completed: true,
   };
 
-  // Update the retreat state using the pure transform
   const stateWithUpdatedRetreat = updateRetreatState(state, newRetreatState);
-
-  // Return with board updated
-  return {
-    ...stateWithUpdatedRetreat,
-    boardState: addedUnitBoard,
-  };
+  return updateBoardState(stateWithUpdatedRetreat, addedUnitBoard);
 }

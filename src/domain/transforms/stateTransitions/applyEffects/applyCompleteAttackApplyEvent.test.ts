@@ -251,7 +251,7 @@ describe('applyCompleteAttackApplyEvent', () => {
 
       expect(() =>
         applyCompleteAttackApplyEvent(event, stateMissingWhiteApply),
-      ).toThrow('No attack apply state for defending player white');
+      ).toThrow('No white attack apply state found in melee resolution');
     });
 
     it('should throw for unknown attackType (exhaustiveness guard)', () => {

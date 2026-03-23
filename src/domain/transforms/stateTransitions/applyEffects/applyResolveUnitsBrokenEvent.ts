@@ -5,7 +5,7 @@ import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
   getPlayerUnitsWithPlacementOnBoard,
-  getRallyResolutionStateForCurrentStep,
+  getRallyResolutionStateAwaitingUnitsBroken,
   updateRallyResolutionStateForCurrentStep,
 } from '@queries';
 import {
@@ -19,6 +19,7 @@ import {
  * Applies a ResolveUnitsBrokenEvent to the game state.
  * Routes all unit instances of the broken types (removes from board, adds to routed).
  * Updates the rally resolution state and advances to next step.
+ * Uses {@link getRallyResolutionStateAwaitingUnitsBroken} for sequencing invariants.
  *
  * @param event - The resolve units broken event to apply
  * @param state - The current game state
@@ -31,18 +32,8 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
   const { player, unitTypes } = event;
   const phaseState = getCleanupPhaseState(state);
 
-  // Get rally resolution state for current step, validating player matches
-  const rallyState = getRallyResolutionStateForCurrentStep(state, player);
+  const rallyState = getRallyResolutionStateAwaitingUnitsBroken(state, player);
   const defaultNextStep = getNextStepForResolveRally(state);
-
-  // Validate rally state preconditions
-  if (!rallyState.rallyResolved) {
-    throw new Error('Rally has not been resolved yet');
-  }
-
-  if (rallyState.unitsLostSupport !== undefined) {
-    throw new Error('Units lost support already resolved');
-  }
 
   // Find all unit instances of the broken types on the board
   const brokenTypeIds = new Set(unitTypes.map((type) => type.id));

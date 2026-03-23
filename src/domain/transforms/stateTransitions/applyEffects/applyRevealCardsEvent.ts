@@ -1,7 +1,11 @@
 import type { Board, GameState, PlayCardsPhaseState } from '@entities';
 import type { RevealCardsEvent } from '@events';
 import { getPlayCardsPhaseState } from '@queries';
-import { revealCard, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  revealCard,
+  updateCardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a RevealCardsEvent to the game state.
@@ -31,11 +35,7 @@ export function applyRevealCardsEvent<TBoard extends Board>(
     step: 'assignInitiative',
   };
 
-  const stateWithCards = {
-    ...state,
-    cardState: newCardState,
-  };
-
+  const stateWithCards = updateCardState(state, newCardState);
   const stateWithPhase = updatePhaseState(stateWithCards, newPhaseState);
 
   return stateWithPhase;

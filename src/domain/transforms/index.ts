@@ -25,6 +25,7 @@ export {
   updateBoardState,
   updateCardState,
   updateCommandResolutionState,
+  updateCurrentInitiative,
   updateCurrentRoundNumber,
   updateMeleeAttackApplyState,
   updateMeleeResolutionState,

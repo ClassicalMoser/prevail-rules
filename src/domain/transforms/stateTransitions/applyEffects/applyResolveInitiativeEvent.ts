@@ -3,6 +3,7 @@ import type { ResolveInitiativeEvent } from '@events';
 import { getPlayCardsPhaseState } from '@queries';
 import {
   markPhaseAsComplete,
+  updateCurrentInitiative,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
@@ -27,12 +28,7 @@ export function applyResolveInitiativeEvent<TBoard extends Board>(
   // Advance to complete step
   const newPhaseState = markPhaseAsComplete(phaseState);
 
-  // Set the initiative player
-  const stateWithInitiative = {
-    ...state,
-    currentInitiative: event.player,
-  };
-
+  const stateWithInitiative = updateCurrentInitiative(state, event.player);
   const stateWithPhase = updatePhaseState(stateWithInitiative, newPhaseState);
 
   return stateWithPhase;

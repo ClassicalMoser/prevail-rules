@@ -1,8 +1,8 @@
 import type { AttackApplyState, Board, GameState } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
 import {
+  getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
-  getMeleeResolutionState,
 } from '@queries';
 import {
   updateAttackApplyState,
@@ -14,8 +14,9 @@ import {
  * Marks the attack apply state as completed.
  * Can be in ranged attack resolution (issueCommands phase) or melee resolution (resolveMelee phase).
  *
- * The `defendingPlayer` and phase placement are trusted (procedure / machine-generated
- * events); not re-validated here beyond what nested state readers require.
+ * Melee uses {@link getAttackApplyStateFromMelee}; ranged uses
+ * {@link getAttackApplyStateFromRangedAttack}. Remaining `attackType` exhaustiveness is a
+ * schema / replay guard only.
  *
  * @param event - The complete attack apply event to apply
  * @param state - The current game state
@@ -37,20 +38,8 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
   }
 
   if (event.attackType === 'melee') {
-    const meleeState = getMeleeResolutionState(state);
-    const current =
-      event.defendingPlayer === 'white'
-        ? meleeState.whiteAttackApplyState
-        : meleeState.blackAttackApplyState;
+    const current = getAttackApplyStateFromMelee(state, event.defendingPlayer);
 
-    // Should not occur, but convenient and inexpensive to check for type safety anyway.
-    if (!current) {
-      throw new Error(
-        `No attack apply state for defending player ${event.defendingPlayer}`,
-      );
-    }
-
-    // Mark the attack apply state as completed
     const newAttackApplyState: AttackApplyState<TBoard> = {
       ...current,
       completed: true,

@@ -28,6 +28,7 @@ export {
 export {
   addCompletedPhase,
   markPhaseAsComplete,
+  updateCurrentInitiative,
   updateCurrentRoundNumber,
   updatePhaseState,
   updateRemainingCommandsForPlayer,

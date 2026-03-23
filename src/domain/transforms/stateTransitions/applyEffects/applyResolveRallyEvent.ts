@@ -8,7 +8,7 @@ import type { ResolveRallyEvent } from '@events';
 import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
-  getRallyResolutionStateForCurrentStep,
+  getRallyResolutionStateAwaitingBurn,
   updateRallyResolutionStateForCurrentStep,
 } from '@queries';
 import {
@@ -23,6 +23,7 @@ import {
  * Burns the specified card from played pile, then returns all remaining played
  * and discarded cards to the player's hand.
  * Advances to the appropriate resolveUnitSupport step.
+ * Uses {@link getRallyResolutionStateAwaitingBurn} for sequencing invariants.
  *
  * @param event - The resolve rally event to apply
  * @param state - The current game state
@@ -35,18 +36,8 @@ export function applyResolveRallyEvent<TBoard extends Board>(
   const { player, card } = event;
   const phaseState = getCleanupPhaseState(state);
 
-  // Get rally resolution state for current step, validating player matches
-  const rallyState = getRallyResolutionStateForCurrentStep(state, player);
+  const rallyState = getRallyResolutionStateAwaitingBurn(state, player);
   const nextStep = getNextStepForResolveRally(state);
-
-  // Validate rally state preconditions
-  if (!rallyState.playerRallied) {
-    throw new Error('Player did not choose to rally');
-  }
-
-  if (rallyState.rallyResolved) {
-    throw new Error('Rally has already been resolved');
-  }
 
   // Compose pure transforms
   let newCardState: CardState = state.cardState;

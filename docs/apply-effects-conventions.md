@@ -11,7 +11,7 @@ Handlers under `src/domain/transforms/stateTransitions/applyEffects/` apply **ga
 
 ## Throws
 
-- **Allowed**: Throws from **narrowing helpers** (`getPlayCardsPhaseState`, `getIssueCommandsPhaseState`, `getCurrentPhaseState`, `getAttackApplyStateFromRangedAttack`, etc.). These are type guards, not business validation.
+- **Allowed**: Throws from **narrowing helpers** (`getPlayCardsPhaseState`, `getIssueCommandsPhaseState`, `getCurrentPhaseState`, `getAttackApplyStateFromRangedAttack`, `getAttackApplyStateFromMelee`, `getFrontEngagementStateFromMovement`, `getFlankEngagementStateFromMovement`, `getRallyResolutionStateAwaitingBurn`, `getRallyResolutionStateAwaitingUnitsBroken`, etc.). These are type guards, not business validation.
 - **Avoid**: Defensive throws that only restate rules (“wrong engagement type”, “already resolved”, “wrong phase”) unless they remain as narrowing until payloads replace phase branching.
 
 ## TypeScript
@@ -20,7 +20,7 @@ Handlers under `src/domain/transforms/stateTransitions/applyEffects/` apply **ga
 
 ## Structure
 
-- Prefer **`updatePhaseState`**, **`updateRoundState`**, and other **pure transforms** over hand-rolled `currentRoundState` spreads.
+- Prefer **`updatePhaseState`**, **`updateRoundState`**, **`updateBoardState`**, **`updateCardState`**, **`updateCurrentInitiative`**, **`updateCurrentRoundNumber`**, and other **pure transforms** over hand-rolled top-level or nested spreads.
 - Prefer **`@queries`** shared with procedures over re-implementing lookups in apply.
 
 ## Events

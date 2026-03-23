@@ -5,7 +5,7 @@ import type {
   ValidationResult,
 } from '@entities';
 import type { Event } from '@events';
-import { isValidChooseCardEvent } from '@validation/playerChoice';
+import { validatePlayerChoice } from '@validation/playerChoice';
 
 /**
  * Validates an event for the PlayCards phase.
@@ -26,11 +26,8 @@ export function validatePlayCardsPhaseEvent<TBoard extends Board>(
 
   switch (phaseState.step) {
     case 'chooseCards':
-      if (
-        event.eventType === 'playerChoice' &&
-        event.choiceType === 'chooseCard'
-      ) {
-        return isValidChooseCardEvent(event, state);
+      if (event.eventType === 'playerChoice') {
+        return validatePlayerChoice(event, state);
       }
       return {
         result: false,
