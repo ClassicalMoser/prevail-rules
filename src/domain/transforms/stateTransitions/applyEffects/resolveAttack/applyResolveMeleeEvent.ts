@@ -83,7 +83,9 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
         routState: undefined,
         completed: false,
       };
-    } else if (attackResult.unitReversed) {
+    } else {
+      // Invariant: at least one of rout/retreat/reverse is true (see guard above), and
+      // we are not in rout or retreat, so this must be reverse.
       reverseState = {
         substepType: 'reverse',
         reversingUnit: unitWithPlacement,

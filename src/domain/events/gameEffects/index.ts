@@ -2,7 +2,7 @@
  * Re-exports every game-effect module for `@events` consumers.
  *
  * **Design notes** (trust model, procedure-filled fields, `AssertExact` + Zod): see
- * `docs/apply-effects-conventions.md` and the file-level comment on `gameEffect.ts`.
+ * `src/domain/transforms/stateTransitions/applyEffects/README.md` and the file-level comment on `gameEffect.ts`.
  */
 export {
   ATTACK_RESOLUTION_CONTEXT_VALUES,

@@ -26,17 +26,14 @@ export function applyDiscardPlayedCardsEvent<TBoard extends Board>(
 ): GameState<TBoard> {
   const phaseState = getCleanupPhaseState(state);
 
-  // Move both players' cards from inPlay to played pile
-  let newCardState = state.cardState;
-  newCardState = moveCardToPlayed(newCardState, 'white');
-  newCardState = moveCardToPlayed(newCardState, 'black');
+  const stateWithCards = updateCardState(state, (current) =>
+    moveCardToPlayed(moveCardToPlayed(current, 'white'), 'black'),
+  );
 
-  // Advance to firstPlayerChooseRally step
   const newPhaseState: CleanupPhaseState = {
     ...phaseState,
     step: 'firstPlayerChooseRally',
   };
 
-  const stateWithCards = updateCardState(state, newCardState);
   return updatePhaseState(stateWithCards, newPhaseState);
 }

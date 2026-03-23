@@ -2,6 +2,7 @@ export { applyAttackValue } from './applyAttackValue';
 export * from './boardSpace';
 export { calculateInitiative } from './calculateInitiative';
 export * from './engagement';
+export * from './expectedEvent';
 export * from './facings';
 export { findMatchingCommand } from './findMatchingCommand';
 export { getCurrentUnitStat } from './getCurrentUnitStat';

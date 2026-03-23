@@ -1,11 +1,11 @@
 import type { Command, GameState, StandardBoard } from '@entities';
-import { PLAY_CARDS_PHASE } from '@entities';
 import type {
   ChooseCardEvent,
   IssueCommandEvent,
   PlayerChoiceEvent,
 } from '@events';
-import * as expectedEventQueries from '@queries/expectedEvent';
+import { PLAY_CARDS_PHASE } from '@entities';
+import * as expectedEventQueries from '@queries';
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms';
@@ -102,9 +102,11 @@ describe('validatePlayerChoice', () => {
 
     const validation = validatePlayerChoice(event, state);
 
+    const expectedErrorMessage = 'Expected input from white, not black';
+
     expect(validation.result).toBe(false);
     if (validation.result !== false) throw new Error('expected fail');
-    expect(validation.errorReason).toMatch(/Expected input from white/);
+    expect(validation.errorReason).toMatch(expectedErrorMessage);
   });
 
   it('fails when choice type does not match the expected choice', () => {

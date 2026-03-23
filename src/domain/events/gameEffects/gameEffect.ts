@@ -2,7 +2,7 @@
  * All **game effect** payloads (`eventType: 'gameEffect'`), discriminated by `effectType`.
  *
  * ## Trust model (with apply handlers)
- * See `docs/apply-effects-conventions.md` in this repo:
+ * See `src/domain/transforms/stateTransitions/applyEffects/README.md`:
  * procedures build events from full state; **apply** trusts the log and maps payload + state to
  * the next state. Extra fields here usually mean “don’t re-scan the board / don’t guess which
  * subtree” when applying.

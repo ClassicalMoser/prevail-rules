@@ -89,4 +89,40 @@ describe('applyStartEngagementEvent', () => {
     if (res?.engagementType !== 'rear') throw new Error('rear');
     expect(res.routState?.player).toBe(defenderWithPlacement.unit.playerSide);
   });
+
+  it('creates flank engagement resolution state', () => {
+    const { state, defenderWithPlacement } = stateWithMovementToEnemy();
+    const event = {
+      eventType: 'gameEffect' as const,
+      effectType: 'startEngagement' as const,
+      engagementType: 'flank' as const,
+      defenderWithPlacement,
+    } satisfies StartEngagementEvent<StandardBoard>;
+
+    const next = applyStartEngagementEvent(event, state);
+    const phase = next.currentRoundState.currentPhaseState;
+    if (!phase || phase.phase !== 'issueCommands') {
+      throw new Error('Expected issueCommands phase');
+    }
+    const cmd = phase.currentCommandResolutionState;
+    if (cmd?.commandResolutionType !== 'movement') throw new Error('movement');
+    const res = cmd.engagementState?.engagementResolutionState;
+    expect(res?.engagementType).toBe('flank');
+    if (res?.engagementType !== 'flank') throw new Error('flank');
+    expect(res.defenderRotated).toBe(false);
+  });
+
+  it('throws for an unknown engagement type at runtime', () => {
+    const { state, defenderWithPlacement } = stateWithMovementToEnemy();
+    const event = {
+      eventType: 'gameEffect' as const,
+      effectType: 'startEngagement' as const,
+      engagementType: 'siege' as const,
+      defenderWithPlacement,
+    } as unknown as StartEngagementEvent<StandardBoard>;
+
+    expect(() => applyStartEngagementEvent(event, state)).toThrow(
+      'Unknown engagement type: siege',
+    );
+  });
 });

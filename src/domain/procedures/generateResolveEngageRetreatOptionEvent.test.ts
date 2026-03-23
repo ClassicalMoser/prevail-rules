@@ -7,7 +7,7 @@ import {
   createTestCard,
   createUnitByStat,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 
 import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
