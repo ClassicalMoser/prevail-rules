@@ -7,10 +7,10 @@ describe('getOtherPlayer', () => {
     expect(getOtherPlayer('black')).toBe('white');
     expect(getOtherPlayer('white')).toBe('black');
   });
-});
 
-it('should throw an error when an invalid player side is provided', () => {
-  expect(() => getOtherPlayer('invalid' as PlayerSide)).toThrow(
-    'Invalid player side: invalid',
-  );
+  it('should throw an error when an invalid player side is provided', () => {
+    expect(() => getOtherPlayer('invalid' as PlayerSide)).toThrow(
+      'Invalid player side: invalid',
+    );
+  });
 });

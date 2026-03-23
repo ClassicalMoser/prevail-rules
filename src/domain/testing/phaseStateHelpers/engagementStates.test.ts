@@ -30,7 +30,13 @@ describe('createRearEngagementState', () => {
   it('should return engagement state with rear resolution and rout state', () => {
     const state = createRearEngagementState();
     expect(state.engagementResolutionState.engagementType).toBe('rear');
-    expect(state.engagementResolutionState.routState).toBeDefined();
+    expect(state.engagementResolutionState.routState).toEqual(
+      expect.objectContaining({
+        substepType: 'rout',
+        player: 'white',
+        completed: false,
+      }),
+    );
     expect(state.engagementResolutionState.completed).toBe(false);
     expect(state.completed).toBe(false);
   });

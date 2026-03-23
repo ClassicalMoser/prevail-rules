@@ -16,8 +16,6 @@
       "@procedures/*": ["src/domain/procedures/*"],
       "@events": ["src/domain/events/index"],
       "@events/*": ["src/domain/events/*"],
-      "@contracts": ["./src/contracts/index"],
-      "@contracts/*": ["./src/contracts/*"],
       "@testing": ["./src/domain/testing/index"],
       "@testing/*": ["./src/domain/testing/*"],
       "@utils": ["./src/domain/utils/index"],

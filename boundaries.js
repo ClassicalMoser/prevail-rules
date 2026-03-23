@@ -125,10 +125,4 @@ export const boundaries = [
     // May depend on all layers, no restrictions.
     // May only be used in tests.
   },
-  {
-    identifier: '@contracts',
-    dir: 'contracts',
-    alias: '@contracts',
-    // Placeholder for future DTOs, currently empty.
-  },
 ];

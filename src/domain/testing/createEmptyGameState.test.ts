@@ -1,4 +1,5 @@
-import type { GameState, StandardBoard } from '@entities';
+/** Tests `testing/createEmptyGameState` (sample cards in awaitingPlay/inPlay). For null placeholders see `transforms/initializations/createEmptyGameState.test.ts`. */
+import { commandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
 import { createEmptyGameState } from './createEmptyGameState';
 
@@ -30,20 +31,12 @@ describe('createEmptyGameState', () => {
     expect(gameState.currentInitiative).toBe('white');
   });
 
-  it('should have awaitingPlay and inPlay cards set', () => {
+  it('uses fixed sample cards for awaitingPlay and inPlay on both sides', () => {
     const gameState = createEmptyGameState();
 
-    expect(gameState.cardState.black.awaitingPlay).toBeDefined();
-    expect(gameState.cardState.black.inPlay).toBeDefined();
-    expect(gameState.cardState.white.awaitingPlay).toBeDefined();
-    expect(gameState.cardState.white.inPlay).toBeDefined();
-  });
-
-  it('should return a valid GameState type', () => {
-    const gameState = createEmptyGameState();
-
-    // Type check: should be assignable to GameState<StandardBoard>
-    const _typeCheck: GameState<StandardBoard> = gameState;
-    expect(_typeCheck).toBe(gameState);
+    expect(gameState.cardState.black.awaitingPlay).toEqual(commandCards[0]);
+    expect(gameState.cardState.black.inPlay).toEqual(commandCards[1]);
+    expect(gameState.cardState.white.awaitingPlay).toEqual(commandCards[0]);
+    expect(gameState.cardState.white.inPlay).toEqual(commandCards[1]);
   });
 });

@@ -58,6 +58,49 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     ).toBe(false);
   });
 
+  it('records retreat choice for black the same as for white', () => {
+    const state = createStateWithFrontEngagement();
+    const retreatEvent: ChooseWhetherToRetreatEvent<StandardBoard> = {
+      eventType: 'playerChoice',
+      choiceType: 'chooseWhetherToRetreat',
+      player: 'black',
+      choosesToRetreat: true,
+    };
+    const stayEvent: ChooseWhetherToRetreatEvent<StandardBoard> = {
+      ...retreatEvent,
+      choosesToRetreat: false,
+    };
+
+    expect(
+      getFrontEngagementStateFromMovement(
+        applyChooseWhetherToRetreatEvent(retreatEvent, state),
+      ).engagementResolutionState.defendingUnitRetreats,
+    ).toBe(true);
+    expect(
+      getFrontEngagementStateFromMovement(
+        applyChooseWhetherToRetreatEvent(stayEvent, state),
+      ).engagementResolutionState.defendingUnitRetreats,
+    ).toBe(false);
+  });
+
+  it('does not mutate the input state', () => {
+    const state = createStateWithFrontEngagement();
+    const engagementBefore =
+      getFrontEngagementStateFromMovement(state).engagementResolutionState;
+    const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
+      eventType: 'playerChoice',
+      choiceType: 'chooseWhetherToRetreat',
+      player: 'white',
+      choosesToRetreat: true,
+    };
+
+    applyChooseWhetherToRetreatEvent(event, state);
+
+    expect(
+      getFrontEngagementStateFromMovement(state).engagementResolutionState,
+    ).toEqual(engagementBefore);
+  });
+
   it('throws when not in issueCommands phase', () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(

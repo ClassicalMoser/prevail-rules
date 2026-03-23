@@ -1,4 +1,4 @@
-import type { GameState, StandardBoard } from '@entities';
+/** Tests production `createEmptyGameState` (null awaitingPlay/inPlay). */
 import { describe, expect, it } from 'vitest';
 import { createEmptyGameState } from './createEmptyGameState';
 
@@ -30,21 +30,13 @@ describe('createEmptyGameState', () => {
     expect(gameState.currentInitiative).toBe('white');
   });
 
-  it('should have awaitingPlay and inPlay cards set', () => {
+  it('initializes awaitingPlay and inPlay to null for both players', () => {
     const gameState = createEmptyGameState();
 
-    expect(gameState.cardState.black.awaitingPlay).toBeDefined();
-    expect(gameState.cardState.black.inPlay).toBeDefined();
-    expect(gameState.cardState.white.awaitingPlay).toBeDefined();
-    expect(gameState.cardState.white.inPlay).toBeDefined();
-  });
-
-  it('should return a valid GameState type', () => {
-    const gameState = createEmptyGameState();
-
-    // Type check: should be assignable to GameState<StandardBoard>
-    const _typeCheck: GameState<StandardBoard> = gameState;
-    expect(_typeCheck).toBe(gameState);
+    expect(gameState.cardState.black.awaitingPlay).toBeNull();
+    expect(gameState.cardState.black.inPlay).toBeNull();
+    expect(gameState.cardState.white.awaitingPlay).toBeNull();
+    expect(gameState.cardState.white.inPlay).toBeNull();
   });
 
   it('should create a game state with a large board size', () => {

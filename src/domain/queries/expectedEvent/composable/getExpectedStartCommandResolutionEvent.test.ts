@@ -5,6 +5,7 @@ import { getExpectedStartCommandResolutionEvent } from './getExpectedStartComman
 describe('getExpectedStartCommandResolutionEvent', () => {
   it('should ask the player to move a unit for a movement card', () => {
     const state = createEmptyGameState();
+    // createTestCard() defaults command.type to 'movement'
     state.cardState.black.inPlay = createTestCard();
 
     expect(getExpectedStartCommandResolutionEvent(state, 'black')).toEqual({

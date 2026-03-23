@@ -7,6 +7,12 @@ import { describe, expect, it } from 'vitest';
 import { getMeleeSupportValue } from './getMeleeSupportValue';
 import { getPlayerUnitWithPosition } from './unitPresence';
 
+/**
+ * Board coordinates: `Letter-Number` = row-column (e.g. E-5 = row E, column 5).
+ * North moves toward lower row letters (toward A); south toward higher letters.
+ * East increases column number; west decreases it.
+ * A unit “behind” another is in the rear arc: opposite its facing (e.g. south of a unit facing north).
+ */
 describe('getMeleeSupportValue', () => {
   describe('no support', () => {
     it('should return 0 when there are no adjacent friendly units', () => {
@@ -25,7 +31,7 @@ describe('getMeleeSupportValue', () => {
       expect(supportValue).toBe(0);
     });
 
-    it('should filter out units that are behind the primary unit', () => {
+    it('should return 0 when the only adjacent friendly is in a space behind the primary', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -34,12 +40,11 @@ describe('getMeleeSupportValue', () => {
         attack: 3,
         instanceNumber: 2,
       });
-      // Support unit is behind (south of) primary unit facing north
-      // Support unit faces south (away from primary unit)
-      // E-4 should be in the "behind" set for E-5 facing north, so it should be filtered out
+      // Primary at E-5 facing north: south is row F. F-5 is orthogonally adjacent and in the rear arc,
+      // so it is excluded before support is evaluated (even though facing north from F-5 would “see” E-5).
       const board = createBoardWithUnits([
         { unit: primaryUnit, coordinate: 'E-5', facing: 'north' },
-        { unit: supportUnit, coordinate: 'E-6', facing: 'north' },
+        { unit: supportUnit, coordinate: 'F-5', facing: 'north' },
       ]);
 
       const unitWithPlacement = getPlayerUnitWithPosition(
@@ -49,10 +54,7 @@ describe('getMeleeSupportValue', () => {
       )!;
       const supportValue = getMeleeSupportValue(board, unitWithPlacement);
 
-      // Note: If E-4 is correctly filtered as "behind", support should be 0
-      // If the support unit can still provide support from behind (which shouldn't happen),
-      // this test documents the current behavior
-      expect(supportValue).toBeLessThanOrEqual(1); // Should be 0, but allowing 1 if there's a positioning quirk
+      expect(supportValue).toBe(0);
     });
 
     it('should return 0 when adjacent units are enemy units', () => {
@@ -375,9 +377,8 @@ describe('getMeleeSupportValue', () => {
       )!;
       const supportValue = getMeleeSupportValue(board, unitWithPlacement);
 
-      // Should sum weak support: 1 + 1 = 2
-      // Note: This depends on both units actually providing flanking support
-      expect(supportValue).toBeGreaterThanOrEqual(1);
+      // E-6 facing north flanks E-5 (weak 1); D-5 facing east has flanking spaces north/south including E-5 (weak 1)
+      expect(supportValue).toBe(2);
     });
   });
 

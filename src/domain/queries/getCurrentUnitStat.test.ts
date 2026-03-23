@@ -1,5 +1,3 @@
-// TODO: Generated test suite: still needs manual review.
-
 import {
   createBoardWithCommander,
   createBoardWithUnits,
@@ -23,12 +21,13 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(3);
     });
 
-    it('should return base stat when card has no round effect', () => {
+    it('should return base attack when in-play round effect has no modifier for that stat', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
       ]);
+      // roundEffect exists (inspiration restriction present) but modifiers omit attack — only command modifiers apply when commanded
       gameState.cardState.black.inPlay = createTestCard({
         id: '2',
         name: 'Command Card 2',
@@ -40,6 +39,19 @@ describe('getCurrentUnitStat', () => {
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
       expect(result).toBe(3);
+    });
+
+    it('should return base stat for white inPlay when no modifiers apply', () => {
+      const unit = createTestUnit('white', { attack: 2 });
+      const gameState = createEmptyGameState();
+      gameState.boardState = createBoardWithUnits([
+        { unit, coordinate: 'E-5', facing: 'north' },
+      ]);
+      gameState.cardState.white.inPlay = createTestCard({
+        roundEffectModifiers: [{ type: 'speed', value: 1 }],
+      });
+
+      expect(getCurrentUnitStat(unit, 'attack', gameState)).toBe(2);
     });
   });
 
@@ -145,7 +157,7 @@ describe('getCurrentUnitStat', () => {
   });
 
   describe('round effect with unit restrictions', () => {
-    it('should apply modifier when unit matches trait restrictions', () => {
+    it('should apply round effect modifier when trait and unit restriction lists are empty', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -168,48 +180,6 @@ describe('getCurrentUnitStat', () => {
       gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
         roundEffectRestrictions: { unitRestrictions: ['different-unit-id'] },
-      });
-
-      const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(3); // No modifier applied
-    });
-  });
-
-  describe('round effect with combined restrictions', () => {
-    it('should apply modifier when all restrictions are satisfied', () => {
-      const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
-      gameState.boardState = createBoardWithUnits([
-        { unit, coordinate: 'E-5', facing: 'north' },
-      ]);
-      gameState.boardState = createBoardWithCommander(
-        'black',
-        'E-6',
-        gameState.boardState,
-      );
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'attack', value: 1 }],
-        roundEffectRestrictions: { inspirationRangeRestriction: 1 },
-      });
-
-      const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(4); // 3 base + 1 modifier
-    });
-
-    it('should not apply modifier when inspiration range restriction is not satisfied', () => {
-      const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
-      gameState.boardState = createBoardWithUnits([
-        { unit, coordinate: 'E-5', facing: 'north' },
-      ]);
-      gameState.boardState = createBoardWithCommander(
-        'black',
-        'E-8',
-        gameState.boardState,
-      );
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'attack', value: 1 }],
-        roundEffectRestrictions: { inspirationRangeRestriction: 1 },
       });
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);

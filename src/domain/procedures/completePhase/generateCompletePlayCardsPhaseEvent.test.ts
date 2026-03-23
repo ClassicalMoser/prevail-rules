@@ -1,5 +1,9 @@
 import type { GameState, StandardBoard } from '@entities';
 import { PLAY_CARDS_PHASE } from '@entities';
+import {
+  COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
+  GAME_EFFECT_EVENT_TYPE,
+} from '@events';
 import { createEmptyGameState } from '@testing';
 import { updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
@@ -21,23 +25,45 @@ describe('generateCompletePlayCardsPhaseEvent', () => {
   }
 
   describe('basic functionality', () => {
-    it('should return a completePlayCardsPhase event', () => {
+    const expectedEvent = {
+      eventType: GAME_EFFECT_EVENT_TYPE,
+      effectType: COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
+    };
+
+    it('returns a fixed completePlayCardsPhase game effect', () => {
       const state = createGameStateInCompleteStep();
 
-      const event = generateCompletePlayCardsPhaseEvent(state);
-
-      expect(event.eventType).toBe('gameEffect');
-      expect(event.effectType).toBe('completePlayCardsPhase');
+      expect(generateCompletePlayCardsPhaseEvent(state)).toEqual(expectedEvent);
     });
 
-    it('should return the same event regardless of state', () => {
-      const state1 = createGameStateInCompleteStep();
-      const state2 = createGameStateInCompleteStep();
+    it('returns the same event for meaningfully different game states', () => {
+      const base = createEmptyGameState();
+      const stateBlackInit = createGameStateInCompleteStep();
+      const stateWhiteInit = updatePhaseState(
+        createEmptyGameState({ currentInitiative: 'white' }),
+        {
+          phase: PLAY_CARDS_PHASE,
+          step: 'complete',
+        },
+      );
+      const stateDifferentRound = {
+        ...createGameStateInCompleteStep(),
+        currentRoundNumber: 99,
+        currentRoundState: {
+          ...base.currentRoundState,
+          roundNumber: 100,
+        },
+      } satisfies GameState<StandardBoard>;
 
-      const event1 = generateCompletePlayCardsPhaseEvent(state1);
-      const event2 = generateCompletePlayCardsPhaseEvent(state2);
-
-      expect(event1).toEqual(event2);
+      expect(generateCompletePlayCardsPhaseEvent(stateBlackInit)).toEqual(
+        expectedEvent,
+      );
+      expect(generateCompletePlayCardsPhaseEvent(stateWhiteInit)).toEqual(
+        expectedEvent,
+      );
+      expect(generateCompletePlayCardsPhaseEvent(stateDifferentRound)).toEqual(
+        expectedEvent,
+      );
     });
   });
 });

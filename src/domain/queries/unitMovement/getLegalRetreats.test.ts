@@ -346,7 +346,7 @@ describe('getLegalRetreats', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle secondary unit in engagement', () => {
+    it('returns the legal retreat set for the secondary unit in an engagement', () => {
       const primaryUnit = createTestUnit('black');
       const secondaryUnit = createTestUnit('white', { speed: 2 });
       const gameState = createGameStateWithEngagedUnits(
@@ -366,7 +366,14 @@ describe('getLegalRetreats', () => {
       };
 
       const retreats = getLegalRetreats(unitWithPlacement, gameState);
-      expect(retreats.size).toBeGreaterThanOrEqual(0);
+      // Secondary (white) faces east; backward is west — one minimal legal retreat from engaged G-8
+      expect(retreats.size).toBe(1);
+      expect([...retreats]).toEqual([
+        expect.objectContaining({
+          coordinate: 'G-7',
+          facing: 'east',
+        }),
+      ]);
     });
   });
 });
