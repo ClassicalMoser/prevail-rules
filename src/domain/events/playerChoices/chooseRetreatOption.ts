@@ -1,7 +1,7 @@
 import type { Board, PlayerSide, UnitPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema, unitPlacementSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
 export const CHOOSE_RETREAT_OPTION_CHOICE_TYPE = 'chooseRetreatOption' as const;

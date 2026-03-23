@@ -56,7 +56,7 @@ Immutable event objects representing all possible game actions. Events are the *
   - `ChooseRallyEvent` - Choose whether to perform a rally
   - `SetupUnitsEvent` - Place units on the board
 
-- **Game Effect Events** (`gameEffects/`): Deterministic game state changes
+- **Game Effect Events** (`gameEffects/`): Deterministic game state changes (topic subfolders align with `applyEffects/` and `procedures/`)
   - `ResolveEngagementEvent` - Resolve unit engagement
   - `ResolveMeleeEvent` - Resolve melee combat
   - `ResolveRangedAttackEvent` - Resolve ranged attack

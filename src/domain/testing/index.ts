@@ -33,6 +33,7 @@ export {
   createReverseState,
   createRoutState,
 } from './phaseStateHelpers';
+export { procedureRegistryStateFactories } from './procedureRegistryStateFactories';
 export type { CreateTestCardOptions } from './testHelpers';
 export {
   createTestCard,

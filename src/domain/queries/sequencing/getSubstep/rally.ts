@@ -80,3 +80,26 @@ export function getRoutStateFromRally(
   }
   return rallyState.routState;
 }
+
+/**
+ * Rout state during cleanup when resolving rally (includes chooseRally steps).
+ * Matches which rally resolution bucket is active for the current cleanup step.
+ */
+export function getRoutStateFromCleanupPhaseForResolveRout<
+  TBoard extends Board,
+>(state: GameState<TBoard>): RoutState {
+  const phaseState = getCleanupPhaseState(state);
+  const isFirstPlayerStep =
+    phaseState.step === 'firstPlayerResolveRally' ||
+    phaseState.step === 'firstPlayerChooseRally';
+
+  const rallyState = isFirstPlayerStep
+    ? phaseState.firstPlayerRallyResolutionState
+    : phaseState.secondPlayerRallyResolutionState;
+
+  if (!rallyState?.routState) {
+    throw new Error('No rout state found in rally resolution');
+  }
+
+  return rallyState.routState;
+}

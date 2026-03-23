@@ -1,19 +1,24 @@
+import type { StandardBoard, UnitWithPlacement } from '@entities';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
   createEmptyGameState,
   createIssueCommandsPhaseState,
+  createMeleeResolutionState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
+  createRetreatState,
   createTestUnit,
 } from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import {
   findRetreatState,
   getRetreatStateFromAttackApply,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
+  getRetreatStateReadyForResolveFromMelee,
 } from './retreat';
 
 describe('getRetreatStateFromAttackApply', () => {
@@ -316,5 +321,150 @@ describe('findRetreatState', () => {
     expect(() => findRetreatState(state, 'black')).toThrow(
       'No retreat state found for player black',
     );
+  });
+});
+
+describe('getRetreatStateReadyForResolveFromMelee', () => {
+  const finalPos = { coordinate: 'E-6' as const, facing: 'south' as const };
+
+  it('returns initiative player retreat when finalPosition set and not completed', () => {
+    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackUnit = createTestUnit('black', { attack: 2 });
+    const whiteWp: UnitWithPlacement<StandardBoard> = {
+      unit: whiteUnit,
+      placement: { coordinate: 'E-5', facing: 'north' },
+    };
+    const blackWp: UnitWithPlacement<StandardBoard> = {
+      unit: blackUnit,
+      placement: { coordinate: 'E-5', facing: 'south' },
+    };
+    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
+    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
+
+    const whiteRetreat = createRetreatState(whiteWp, {
+      finalPosition: finalPos,
+      completed: false,
+    });
+    const whiteApply = createAttackApplyStateWithRetreat(whiteWp, {
+      retreatState: whiteRetreat,
+    });
+    const blackApply = createAttackApplyState(blackUnit);
+
+    const melee = createMeleeResolutionState(s, {
+      whiteAttackApplyState: whiteApply,
+      blackAttackApplyState: blackApply,
+    });
+    const phase = createResolveMeleePhaseState(s, {
+      currentMeleeResolutionState: melee,
+    });
+    const full = updatePhaseState(s, phase);
+
+    const r = getRetreatStateReadyForResolveFromMelee(full);
+    expect(r.retreatingUnit.unit).toBe(whiteUnit);
+    expect(r.finalPosition).toEqual(finalPos);
+  });
+
+  it('returns second player when first retreat has no finalPosition', () => {
+    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackUnit = createTestUnit('black', { attack: 2 });
+    const whiteWp: UnitWithPlacement<StandardBoard> = {
+      unit: whiteUnit,
+      placement: { coordinate: 'E-5', facing: 'north' },
+    };
+    const blackWp: UnitWithPlacement<StandardBoard> = {
+      unit: blackUnit,
+      placement: { coordinate: 'E-5', facing: 'south' },
+    };
+    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
+    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
+
+    const whiteApply = createAttackApplyStateWithRetreat(whiteWp);
+    const blackRetreat = createRetreatState(blackWp, {
+      finalPosition: finalPos,
+      completed: false,
+    });
+    const blackApply = createAttackApplyStateWithRetreat(blackWp, {
+      retreatState: blackRetreat,
+    });
+
+    const melee = createMeleeResolutionState(s, {
+      whiteAttackApplyState: whiteApply,
+      blackAttackApplyState: blackApply,
+    });
+    const phase = createResolveMeleePhaseState(s, {
+      currentMeleeResolutionState: melee,
+    });
+    const full = updatePhaseState(s, phase);
+
+    const r = getRetreatStateReadyForResolveFromMelee(full);
+    expect(r.retreatingUnit.unit).toBe(blackUnit);
+  });
+
+  it('throws when no retreat is ready to resolve', () => {
+    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackUnit = createTestUnit('black', { attack: 2 });
+    const whiteWp: UnitWithPlacement<StandardBoard> = {
+      unit: whiteUnit,
+      placement: { coordinate: 'E-5', facing: 'north' },
+    };
+    const blackWp: UnitWithPlacement<StandardBoard> = {
+      unit: blackUnit,
+      placement: { coordinate: 'E-5', facing: 'south' },
+    };
+    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
+    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
+
+    const melee = createMeleeResolutionState(s, {
+      whiteAttackApplyState: createAttackApplyStateWithRetreat(whiteWp),
+      blackAttackApplyState: createAttackApplyStateWithRetreat(blackWp),
+    });
+    const phase = createResolveMeleePhaseState(s, {
+      currentMeleeResolutionState: melee,
+    });
+    const full = updatePhaseState(s, phase);
+
+    expect(() => getRetreatStateReadyForResolveFromMelee(full)).toThrow(
+      'No retreat state with finalPosition found in melee resolution',
+    );
+  });
+
+  it('when initiative is black, reads black attack-apply retreat before white', () => {
+    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackUnit = createTestUnit('black', { attack: 2 });
+    const whiteWp: UnitWithPlacement<StandardBoard> = {
+      unit: whiteUnit,
+      placement: { coordinate: 'E-5', facing: 'north' },
+    };
+    const blackWp: UnitWithPlacement<StandardBoard> = {
+      unit: blackUnit,
+      placement: { coordinate: 'E-5', facing: 'south' },
+    };
+    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
+    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
+
+    const blackRetreat = createRetreatState(blackWp, {
+      finalPosition: finalPos,
+      completed: false,
+    });
+    const blackApply = createAttackApplyStateWithRetreat(blackWp, {
+      retreatState: blackRetreat,
+    });
+    const whiteApply = createAttackApplyState(whiteUnit);
+
+    const melee = createMeleeResolutionState(s, {
+      whiteAttackApplyState: whiteApply,
+      blackAttackApplyState: blackApply,
+    });
+    const phase = createResolveMeleePhaseState(s, {
+      currentMeleeResolutionState: melee,
+    });
+    const full = updatePhaseState(s, phase);
+
+    const r = getRetreatStateReadyForResolveFromMelee(full);
+    expect(r.retreatingUnit.unit).toBe(blackUnit);
   });
 });

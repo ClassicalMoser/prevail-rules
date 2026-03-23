@@ -1,7 +1,7 @@
 import type { Board, Card, PlayerSide, StatModifier } from '@entities';
 import type { AssertExact } from '@utils';
 import { cardSchema, playerSideSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
 /** The type of the commit to ranged attack event. */

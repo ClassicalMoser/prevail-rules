@@ -14,6 +14,7 @@ export { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement
 export {
   getCurrentRallyResolutionState,
   getRallyResolutionState,
+  getRoutStateFromCleanupPhaseForResolveRout,
   getRoutStateFromRally,
 } from './rally';
 export {
@@ -21,6 +22,13 @@ export {
   getRetreatStateFromAttackApply,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
+  getRetreatStateReadyForResolveFromMelee,
 } from './retreat';
-export { getReverseStateFromAttackApply } from './reverse';
-export { getRoutStateFromAttackApply } from './rout';
+export {
+  getReverseStateFromAttackApply,
+  getReverseStateFromMeleeResolutionByInitiative,
+} from './reverse';
+export {
+  getRoutStateFromAttackApply,
+  getRoutStateFromMeleeResolutionByInitiative,
+} from './rout';

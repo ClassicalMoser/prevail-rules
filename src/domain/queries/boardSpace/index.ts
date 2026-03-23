@@ -20,3 +20,4 @@ export { getBoardSpace } from './getBoardSpace';
 export { getForwardSpace } from './getForwardSpace';
 export { getForwardSpacesToEdge } from './getForwardSpacesToEdge';
 export { getRearwardSpace } from './getRearwardSpace';
+export { getSingleUnitWithPlacementAtCoordinate } from './getSingleUnitWithPlacementAtCoordinate';

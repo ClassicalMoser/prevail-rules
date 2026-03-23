@@ -1,3 +1,4 @@
+export { gameEffects, type GameEffectType } from './gameEffectTypes';
 export { gameTypes } from './gameTypes';
 export {
   COMMANDER_MOVE_DISTANCE,

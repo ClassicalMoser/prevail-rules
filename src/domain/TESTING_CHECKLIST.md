@@ -1,8 +1,17 @@
 # Testing Checklist
 
+**Refactor order (before chasing coverage % on procedures):** see [`.cursor/rules/domain-refactor-order.mdc`](../../.cursor/rules/domain-refactor-order.mdc) — dedupe → trust-first → delegate to `@queries` → then deepen coverage.
+
 Systematic unit test coverage following round order. Focus on procedures and expected events.
 
-**Coverage Target:** Increase from 58% to 80%+ statement coverage
+**Coverage targets (suite):** **80%+** statements, **70%+** branches — met on recent full runs; remaining work is **depth** on thin modules (see [Remaining coverage depth](#remaining-coverage-depth)).
+
+**How we track (this doc):**
+
+- **[x]** = colocated `*.test.ts` exists for that module (deliverable done).
+- **Coverage %** = run **`npm run test:coverage`** and use the report for **what to deepen next**; percentages in this file are not auto-synced.
+
+**Last reconciled:** 2026-03-17 — checkboxes matched to `src/domain` test files.
 
 **Strategy:** Unit tests > Integration tests. Use test helpers + pure transforms. Follow round order.
 
@@ -42,9 +51,9 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 
 ### Complete Partial Coverage
 
-- [ ] `getExpectedRetreatEvent` - Complete from 40% → 100%
-- [ ] `getExpectedReverseEvent` - Complete from 60% → 100%
-- [ ] `getExpectedRoutEvent` - Complete from 42.85% → 100%
+- [x] `getExpectedRetreatEvent` ✅ (`composable/getExpectedRetreatEvent.test.ts`) — deepen branches if coverage regresses
+- [x] `getExpectedReverseEvent` ✅ (`composable/getExpectedReverseEvent.test.ts`)
+- [x] `getExpectedRoutEvent` ✅ (`composable/getExpectedRoutEvent.test.ts`)
 
 ---
 
@@ -54,14 +63,14 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 
 - [x] `generateCompletePlayCardsPhaseEvent` ✅
 - [x] `generateResolveInitiativeEvent` ✅
-- [ ] `generateRevealCardsEvent` - 0% coverage
+- [x] `generateRevealCardsEvent` ✅ (`cards/generateRevealCardsEvent.test.ts`)
 
 ### Expected Events
 
 - [x] `getExpectedPlayCardsPhaseEvent` ✅
-- [ ] `getExpectedEvent` router - 0% coverage (test main entry point)
+- [x] `getExpectedEvent` router ✅ (`expectedEvent/getExpectedEvent.test.ts`)
 
-**Status:** Mostly complete, add router test
+**Status:** Complete ✅
 
 ---
 
@@ -84,16 +93,16 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 ### Procedures
 
 - [x] `generateCompleteIssueCommandsPhaseEvent` ✅
-- [ ] `generateCompleteUnitMovementEvent` - 0% coverage
-- [ ] `generateCompleteRangedAttackCommandEvent` - 0% coverage
-- [ ] `generateStartEngagementEvent` - 0% coverage
+- [x] `generateCompleteUnitMovementEvent` ✅ (`movement/generateCompleteUnitMovementEvent.test.ts`)
+- [x] `generateCompleteRangedAttackCommandEvent` ✅ (`resolveAttack/generateCompleteRangedAttackCommandEvent.test.ts`)
+- [x] `generateStartEngagementEvent` ✅ (`movement/generateStartEngagementEvent.test.ts`)
 
 ### Expected Events
 
-- [ ] `getExpectedIssueCommandsPhaseEvent` - 0% coverage
-- [ ] `getExpectedStartCommandResolutionEvent` - 0% coverage
+- [x] `getExpectedIssueCommandsPhaseEvent` ✅ (`byPhase/getExpectedIssueCommandsPhaseEvent.test.ts`)
+- [x] `getExpectedStartCommandResolutionEvent` ✅ (`composable/getExpectedStartCommandResolutionEvent.test.ts`)
 
-**Status:** Needs work - focus here next
+**Status:** Complete ✅ (still room for branch coverage on engagement-related generators — see [Remaining coverage depth](#remaining-coverage-depth))
 
 ---
 
@@ -101,22 +110,22 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 
 ### Procedures
 
-- [ ] `generateResolveMeleeEvent` - 0% coverage
-- [ ] `generateResolveFlankEngagementEvent` - 0% coverage
-- [ ] `generateResolveEngageRetreatOptionEvent` - 0% coverage
-- [ ] `generateCompleteMeleeResolutionEvent` - 0% coverage
-- [ ] `generateCompleteResolveMeleePhaseEvent` - 0% coverage
+- [x] `generateResolveMeleeEvent` ✅ (`resolveAttack/generateResolveMeleeEvent.test.ts`)
+- [x] `generateResolveFlankEngagementEvent` ✅ (`movement/generateResolveFlankEngagementEvent.test.ts`)
+- [x] `generateResolveEngageRetreatOptionEvent` ✅ (`movement/generateResolveEngageRetreatOptionEvent.test.ts`)
+- [x] `generateCompleteMeleeResolutionEvent` ✅ (`resolveAttack/generateCompleteMeleeResolutionEvent.test.ts`)
+- [x] `generateCompleteResolveMeleePhaseEvent` ✅ (`completePhase/generateCompleteResolveMeleePhaseEvent.test.ts`)
 
 ### Expected Events
 
-- [ ] `getExpectedResolveMeleePhaseEvent` - 0% coverage
-- [ ] `getExpectedEngagementEvent` - 0% coverage
-- [x] `getExpectedAttackApplyEvent` ✅ (100% coverage)
-- [ ] `getExpectedRetreatEvent` - 40% coverage (complete in Phase 0)
-- [ ] `getExpectedReverseEvent` - 60% coverage (complete in Phase 0)
-- [ ] `getExpectedRoutEvent` - 42.85% coverage (complete in Phase 0)
+- [x] `getExpectedResolveMeleePhaseEvent` ✅ (`byPhase/getExpectedResolveMeleePhaseEvent.test.ts`)
+- [x] `getExpectedEngagementEvent` ✅ (`composable/getExpectedEngagementEvent.test.ts`)
+- [x] `getExpectedAttackApplyEvent` ✅ (`composable/getExpectedAttackApplyEvent.test.ts`)
+- [x] `getExpectedRetreatEvent` ✅ (see Phase 0)
+- [x] `getExpectedReverseEvent` ✅ (see Phase 0)
+- [x] `getExpectedRoutEvent` ✅ (see Phase 0)
 
-**Status:** Major gaps - largest testing opportunity
+**Status:** Colocated tests complete ✅ — prioritize branch/edge coverage where coverage report is thin (melee/ranged resolve, engagements)
 
 ---
 
@@ -124,17 +133,17 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 
 ### Procedures
 
-- [ ] `generateDiscardPlayedCardsEvent` - 0% coverage
-- [ ] `generateResolveRallyEvent` - 0% coverage
-- [ ] `generateResolveUnitsBrokenEvent` - 0% coverage
-- [ ] `generateCompleteCleanupPhaseEvent` - 0% coverage
+- [x] `generateDiscardPlayedCardsEvent` ✅ (`cards/generateDiscardPlayedCardsEvent.test.ts`)
+- [x] `generateResolveRallyEvent` ✅ (`cards/generateResolveRallyEvent.test.ts`)
+- [x] `generateResolveUnitsBrokenEvent` ✅ (`cards/generateResolveUnitsBrokenEvent.test.ts`)
+- [x] `generateCompleteCleanupPhaseEvent` ✅ (`completePhase/generateCompleteCleanupPhaseEvent.test.ts`)
 
 ### Expected Events
 
-- [ ] `getExpectedCleanupPhaseEvent` - 0% coverage
-- [ ] `getExpectedRallyResolutionEvent` - 0% coverage
+- [x] `getExpectedCleanupPhaseEvent` ✅ (`byPhase/getExpectedCleanupPhaseEvent.test.ts`)
+- [x] `getExpectedRallyResolutionEvent` ✅ (`composable/getExpectedRallyResolutionEvent.test.ts`)
 
-**Status:** Needs work
+**Status:** Colocated tests complete ✅ — `generateResolveUnitsBrokenEvent` / rally still have room for branch coverage
 
 ---
 
@@ -142,14 +151,14 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 
 ### Procedures
 
-- [ ] `generateResolveRangedAttackEvent` - 0% coverage
-- [ ] `generateResolveRetreatEvent` - 0% coverage
-- [ ] `generateResolveReverseEvent` - 0% coverage
-- [ ] `generateResolveRoutEvent` - 0% coverage
-- [ ] `generateCompleteAttackApplyEvent` - 0% coverage
-- [ ] `generateTriggerRoutFromRetreatEvent` - 0% coverage
+- [x] `generateResolveRangedAttackEvent` ✅ (`resolveAttack/generateResolveRangedAttackEvent.test.ts`)
+- [x] `generateResolveRetreatEvent` ✅ (`defenseResult/generateResolveRetreatEvent.test.ts`)
+- [x] `generateResolveReverseEvent` ✅ (`defenseResult/generateResolveReverseEvent.test.ts`)
+- [x] `generateResolveRoutEvent` ✅ (`defenseResult/generateResolveRoutEvent.test.ts`)
+- [x] `generateCompleteAttackApplyEvent` ✅ (`resolveAttack/generateCompleteAttackApplyEvent.test.ts`)
+- [x] `generateTriggerRoutFromRetreatEvent` ✅ (`defenseResult/generateTriggerRoutFromRetreatEvent.test.ts`)
 
-**Status:** Used across multiple phases - test when relevant
+**Status:** Colocated tests complete ✅ — **defense result** procedures (especially rout) still need scenario coverage for high statement/branch %
 
 ---
 
@@ -157,9 +166,9 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 
 ### Routers (High Priority)
 
-- [ ] `procedureRegistry.ts` - 0% coverage (test registry routing)
-- [ ] `getExpectedEvent.ts` - 0% coverage (test main router)
-- [ ] `validateEvent.ts` - 0% coverage (test validation router)
+- [x] `procedureRegistry.ts` — `procedureRegistry.test.ts` exercises **every `gameEffects` entry** with a valid state plus the `default` throw path — **still deepen** if new effect types are added (factory map is `satisfies Record<GameEffectType, …>` so TS enforces updates)
+- [x] `getExpectedEvent.ts` — `expectedEvent/getExpectedEvent.test.ts`
+- [ ] `validateEvent.ts` — **no colocated test** yet (`validation/validateEvent.ts`)
 
 **Note:** These are integration points but can be unit tested with mocks/stubs.
 
@@ -234,17 +243,35 @@ describe('getExpectedXEvent', () => {
 
 ## Progress Tracking
 
-**Current Coverage:** 58.15% statements, 48.67% branches
+**Historical baseline (when this doc was written):** ~58% statements, ~49% branches.
 
-**Target Coverage:** 80%+ statements, 70%+ branches
+**Targets:** 80%+ statements, 70%+ branches — **met** on recent full-domain runs; use coverage HTML/lcov for file-level gaps.
 
-**Focus Areas:**
+**Phases (checkboxes):** Phases 0–5 + cross-phase procedure list are **complete** for “has colocated unit tests.”
 
-1. ✅ Phase 0: Foundation helpers
-2. ⏳ Phase 3: Issue Commands (next priority)
-3. ⏳ Phase 4: Resolve Melee (largest gap)
-4. ⏳ Phase 5: Cleanup
-5. ⏳ Routers: Critical integration points
+**Next focus (by impact):**
+
+1. **`validation/validateEvent.ts`** — add router / representative validation tests.
+2. **`defenseResult/generateResolveRoutEvent.ts`** (and siblings) — more scenarios for branches.
+3. **Sequencing queries** — e.g. `getCommandResolutionState.ts` uncovered lines/branches.
+4. **Engagement / units-broken / rally** generators — raise branch % where report shows 50%.
+5. **`procedureRegistry.ts`** — when adding a `gameEffects` entry, add a factory in `testing/procedureRegistryStateFactories.ts` (exported from `@testing`).
+
+---
+
+## Remaining coverage depth
+
+_Use the latest **`npm run test:coverage`** report as source of truth for numbers; the table below is guidance from a recent run and will drift._
+
+| Module                                                                                       | Notes                                                                 |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `procedures/procedureRegistry.ts`                                                            | Switch + `default` covered; add a factory when new effect types ship. |
+| `validation/validateEvent.ts`                                                                | No dedicated test file yet.                                           |
+| `procedures/defenseResult/generateResolveRoutEvent.ts`                                       | Low statement %; many branches.                                       |
+| `procedures/defenseResult/generateResolveRetreatEvent.ts` / `generateResolveReverseEvent.ts` | Mid statement %; extend throw/edge paths.                             |
+| `procedures/movement/generateStartEngagementEvent.ts`                                        | Several uncovered lines; branch % often ~50%.                         |
+| `procedures/cards/generateResolveUnitsBrokenEvent.ts`                                        | Statements/branches below neighbors.                                  |
+| `queries/sequencing/getCommandResolutionState.ts`                                            | e.g. line ~103 uncovered in one report.                               |
 
 ---
 

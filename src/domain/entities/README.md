@@ -2,6 +2,12 @@
 
 This directory contains the domain models (entities) for the Prevail game rules engine.
 
+## Layout conventions
+
+- **Declarations first**: schemas, interfaces, and types—no business logic in entity modules.
+- **Type guards only**: the only functions here live under `typeGuards/` (narrowing entity shapes).
+- **No colocated tests**: specs for `typeGuards` live in [`../testing/entityTypeGuards/`](../testing/entityTypeGuards/).
+
 ## Schema-First Type Safety Pattern
 
 All entities in this directory follow a **schema-first approach** that ensures both runtime validation and compile-time type safety.
@@ -162,7 +168,7 @@ export type UnitPresence =
 
 Each variant has a `presenceType` field that acts as the discriminator.
 
-**Type guards** are available in `@validation`:
+**Type guards** are available in `@entities` (`typeGuards/`):
 
 - `hasNoUnit(unitPresence)` - checks for none
 - `hasSingleUnit(unitPresence)` - checks for single

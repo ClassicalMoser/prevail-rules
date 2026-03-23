@@ -2,7 +2,7 @@
 
 Handlers in this folder apply **game effect events** to `GameState`. They are routed by [`applyGameEffectEvent`](../applyGameEffectEvent.ts).
 
-**Event shapes** live under [`events/gameEffects/`](../../../events/gameEffects/): each file documents _why_ fields exist (procedure-derived snapshots, subtree tags, etc.). Start from [`gameEffect.ts`](../../../events/gameEffects/gameEffect.ts) for the full discriminated union.
+**Event shapes** live under [`events/gameEffects/`](../../../events/gameEffects/) with the **same subfolder names** as this package (`cards/`, `completePhase/`, `defenseResult/`, `movement/`, `resolveAttack/`). Each per-effect module documents _why_ fields exist (procedure-derived snapshots, subtree tags, etc.). Start from [`gameEffect.ts`](../../../events/gameEffects/gameEffect.ts) for the full discriminated union.
 
 ## Folder layout
 
@@ -15,6 +15,8 @@ Each subfolder has a small `index.ts` barrel; the **only** supported entry for t
 | [`defenseResult/`](./defenseResult/) | Retreat, reverse, rout, trigger rout from retreat                                                    |
 | [`movement/`](./movement/)           | Complete unit movement, start engagement, flank engagement, engage-retreat option                    |
 | [`resolveAttack/`](./resolveAttack/) | Resolve melee / ranged attack, complete attack-apply and related command-resolution completes        |
+
+**Procedures** use the same subfolder names under [`procedures/`](../../../procedures/README.md) (`generate*` ↔ `apply*`). **Event types** use the same names under [`events/gameEffects/`](../../../events/gameEffects/).
 
 Co-locate each handler with its `*.test.ts` in the same folder.
 

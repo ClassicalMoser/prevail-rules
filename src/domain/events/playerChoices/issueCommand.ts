@@ -1,7 +1,7 @@
 import type { Board, Command, PlayerSide, UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import { commandSchema, playerSideSchema, unitInstanceSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
 /** The type of the issue command event. */

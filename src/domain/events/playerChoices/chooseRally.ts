@@ -1,7 +1,7 @@
 import type { Board, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
 import { playerSideSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventType';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
 /** The type of the choose rally event. */

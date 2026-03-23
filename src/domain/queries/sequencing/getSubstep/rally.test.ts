@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import {
   getCurrentRallyResolutionState,
   getRallyResolutionState,
+  getRoutStateFromCleanupPhaseForResolveRout,
   getRoutStateFromRally,
 } from './rally';
 
@@ -173,6 +174,79 @@ describe('getRoutStateFromRally', () => {
 
     expect(() => getRoutStateFromRally(rallyState)).toThrow(
       'No rout state found in rally resolution state',
+    );
+  });
+});
+
+describe('getRoutStateFromCleanupPhaseForResolveRout', () => {
+  it('returns rout from first player rally on firstPlayerResolveRally', () => {
+    const unit = createTestUnit('white', { attack: 2 });
+    const state = createEmptyGameState();
+    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
+      step: 'firstPlayerResolveRally',
+      firstPlayerRallyResolutionState: {
+        playerRallied: true,
+        rallyResolved: true,
+        unitsLostSupport: new Set(),
+        routState: {
+          substepType: 'rout',
+          player: 'white',
+          unitsToRout: new Set([unit]),
+          numberToDiscard: undefined,
+          cardsChosen: false,
+          completed: false,
+        },
+        completed: false,
+      },
+      secondPlayerRallyResolutionState: undefined,
+    });
+
+    const rout = getRoutStateFromCleanupPhaseForResolveRout(state);
+    expect(rout.unitsToRout.has(unit)).toBe(true);
+  });
+
+  it('returns rout from second player rally on secondPlayerResolveRally', () => {
+    const unit = createTestUnit('black', { attack: 2 });
+    const state = createEmptyGameState();
+    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
+      step: 'secondPlayerResolveRally',
+      firstPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: {
+        playerRallied: true,
+        rallyResolved: true,
+        unitsLostSupport: new Set(),
+        routState: {
+          substepType: 'rout',
+          player: 'black',
+          unitsToRout: new Set([unit]),
+          numberToDiscard: undefined,
+          cardsChosen: false,
+          completed: false,
+        },
+        completed: false,
+      },
+    });
+
+    const rout = getRoutStateFromCleanupPhaseForResolveRout(state);
+    expect(rout.unitsToRout.has(unit)).toBe(true);
+  });
+
+  it('throws when rally bucket has no rout state', () => {
+    const state = createEmptyGameState();
+    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
+      step: 'firstPlayerResolveRally',
+      firstPlayerRallyResolutionState: {
+        playerRallied: true,
+        rallyResolved: true,
+        unitsLostSupport: new Set(),
+        routState: undefined,
+        completed: false,
+      },
+      secondPlayerRallyResolutionState: undefined,
+    });
+
+    expect(() => getRoutStateFromCleanupPhaseForResolveRout(state)).toThrow(
+      'No rout state found in rally resolution',
     );
   });
 });

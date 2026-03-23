@@ -7,6 +7,7 @@ export {
 } from './cleanupPhase';
 export {
   getCurrentCommandResolutionState,
+  getMeleeResolutionReadyForAttackCalculation,
   getMeleeResolutionState,
   getMovementResolutionState,
   getRangedAttackResolutionState,
@@ -34,8 +35,12 @@ export {
   getRetreatStateFromAttackApply,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
+  getRetreatStateReadyForResolveFromMelee,
   getReverseStateFromAttackApply,
+  getReverseStateFromMeleeResolutionByInitiative,
   getRoutStateFromAttackApply,
+  getRoutStateFromCleanupPhaseForResolveRout,
+  getRoutStateFromMeleeResolutionByInitiative,
   getRoutStateFromRally,
   getRoutStateFromRearEngagement,
 } from './getSubstep';

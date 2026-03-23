@@ -4,6 +4,7 @@ import type {
   GameState,
   RetreatState,
 } from '@entities';
+import { getMeleeResolutionState } from '../getCommandResolutionState';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -56,6 +57,43 @@ export function getRetreatStateFromMelee<TBoard extends Board>(
 ): RetreatState<TBoard> {
   const attackApplyState = getAttackApplyStateFromMelee(state, player);
   return getRetreatStateFromAttackApply(attackApplyState);
+}
+
+/**
+ * Retreat substep ready for resolveRetreat in melee: finalPosition set, not yet completed.
+ * Initiative order matches attack-apply sequencing.
+ */
+export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
+  state: GameState<TBoard>,
+): RetreatState<TBoard> {
+  const meleeState = getMeleeResolutionState(state);
+  const firstPlayer = state.currentInitiative;
+  const firstPlayerAttackApply =
+    firstPlayer === 'white'
+      ? meleeState.whiteAttackApplyState
+      : meleeState.blackAttackApplyState;
+  const secondPlayerAttackApply =
+    firstPlayer === 'white'
+      ? meleeState.blackAttackApplyState
+      : meleeState.whiteAttackApplyState;
+
+  if (
+    firstPlayerAttackApply?.retreatState &&
+    firstPlayerAttackApply.retreatState.finalPosition !== undefined &&
+    !firstPlayerAttackApply.retreatState.completed
+  ) {
+    return firstPlayerAttackApply.retreatState;
+  }
+  if (
+    secondPlayerAttackApply?.retreatState &&
+    secondPlayerAttackApply.retreatState.finalPosition !== undefined &&
+    !secondPlayerAttackApply.retreatState.completed
+  ) {
+    return secondPlayerAttackApply.retreatState;
+  }
+  throw new Error(
+    'No retreat state with finalPosition found in melee resolution',
+  );
 }
 
 /**

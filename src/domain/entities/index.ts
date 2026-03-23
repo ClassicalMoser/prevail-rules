@@ -73,6 +73,7 @@ export {
   playerSources,
   playerSourceSchema,
 } from './expectedEvent';
+
 export type {
   ExpectedEventInfo,
   ExpectedGameEffect,
@@ -82,41 +83,43 @@ export type {
 
 // Game models.
 export { gameSchema } from './game';
+
 export type { Game } from './game';
 
 // Game types.
 export { gameType, gameTypeEnum, gameTypeStructureSchema } from './gameType';
+
 export type { GameType, GameTypeStructure } from './gameType';
 
 // Line models.
 export { lineSchema } from './line';
-export type { Line } from './line';
 
+export type { Line } from './line';
 // Player models.
 export { playerSchema, playerSides, playerSideSchema } from './player';
-export type { Player, PlayerSide } from './player';
 
+export type { Player, PlayerSide } from './player';
 // Sequence models.
 export { attackResultSchema } from './sequence';
-export type { AttackResult } from './sequence';
 
+export type { AttackResult } from './sequence';
 export {
   commitmentSchema,
   completedCommitmentSchema,
   declinedCommitmentSchema,
   pendingCommitmentSchema,
 } from './sequence';
+
 export type {
   Commitment,
   CompletedCommitment,
   DeclinedCommitment,
   PendingCommitment,
 } from './sequence';
-
 // Game state models.
 export { gameStateSchema } from './sequence';
-export type { GameState } from './sequence';
 
+export type { GameState } from './sequence';
 // Phases models.
 export {
   CLEANUP_PHASE,
@@ -137,6 +140,7 @@ export {
   resolveMeleePhaseStateSchema,
   resolveMeleePhaseSteps,
 } from './sequence';
+
 export type {
   CleanupPhaseState,
   CleanupPhaseStep,
@@ -151,11 +155,10 @@ export type {
   ResolveMeleePhaseState,
   ResolveMeleePhaseStep,
 } from './sequence';
-
 // Round state models.
 export { roundStateSchema } from './sequence';
-export type { RoundState } from './sequence';
 
+export type { RoundState } from './sequence';
 // Substeps models.
 export {
   attackApplyStateSchema,
@@ -173,6 +176,7 @@ export {
   reverseStateSchema,
   routStateSchema,
 } from './sequence';
+
 export type {
   AttackApplyState,
   CommandResolutionState,
@@ -189,7 +193,6 @@ export type {
   ReverseState,
   RoutState,
 } from './sequence';
-
 // Type guards.
 export {
   areSameSide,
@@ -218,8 +221,8 @@ export type {
 
 // Unit locations.
 export { unitPlacementSchema, unitWithPlacementSchema } from './unitLocation';
-export type { UnitPlacement, UnitWithPlacement } from './unitLocation';
 
+export type { UnitPlacement, UnitWithPlacement } from './unitLocation';
 // Unit presence models.
 export {
   engagedUnitPresenceSchema,
@@ -228,6 +231,7 @@ export {
   unitPresenceSchema,
   unitPresenceType,
 } from './unitPresence';
+
 export type {
   EngagedUnitPresence,
   NoneUnitPresence,
@@ -235,15 +239,17 @@ export type {
   UnitPresence,
   UnitPresenceType,
 } from './unitPresence';
-
 // Validation results.
 export {
   failValidationResultSchema,
   passValidationResultSchema,
   validationResultSchema,
 } from './validationResult';
+
 export type {
   FailValidationResult,
   PassValidationResult,
   ValidationResult,
 } from './validationResult';
+// Game effect literals (re-export; source is `gameEffectTypes` in @ruleValues — leaf, no cycle).
+export { gameEffects, type GameEffectType } from '@ruleValues';

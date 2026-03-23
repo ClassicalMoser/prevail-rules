@@ -1,28 +1,38 @@
 import type { Board, GameState } from '@entities';
 import type { GameEffectEvent, GameEffectType } from '@events';
-import { generateCompleteAttackApplyEvent } from './generateCompleteAttackApplyEvent';
-import { generateCompleteCleanupPhaseEvent } from './generateCompleteCleanupPhaseEvent';
-import { generateCompleteIssueCommandsPhaseEvent } from './generateCompleteIssueCommandsPhaseEvent';
-import { generateCompleteMeleeResolutionEvent } from './generateCompleteMeleeResolutionEvent';
-import { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMoveCommandersPhaseEvent';
-import { generateCompletePlayCardsPhaseEvent } from './generateCompletePlayCardsPhaseEvent';
-import { generateCompleteRangedAttackCommandEvent } from './generateCompleteRangedAttackCommandEvent';
-import { generateCompleteResolveMeleePhaseEvent } from './generateCompleteResolveMeleePhaseEvent';
-import { generateCompleteUnitMovementEvent } from './generateCompleteUnitMovementEvent';
-import { generateDiscardPlayedCardsEvent } from './generateDiscardPlayedCardsEvent';
-import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
-import { generateResolveFlankEngagementEvent } from './generateResolveFlankEngagementEvent';
-import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent';
-import { generateResolveMeleeEvent } from './generateResolveMeleeEvent';
-import { generateResolveRallyEvent } from './generateResolveRallyEvent';
-import { generateResolveRangedAttackEvent } from './generateResolveRangedAttackEvent';
-import { generateResolveRetreatEvent } from './generateResolveRetreatEvent';
-import { generateResolveReverseEvent } from './generateResolveReverseEvent';
-import { generateResolveRoutEvent } from './generateResolveRoutEvent';
-import { generateResolveUnitsBrokenEvent } from './generateResolveUnitsBrokenEvent';
-import { generateRevealCardsEvent } from './generateRevealCardsEvent';
-import { generateStartEngagementEvent } from './generateStartEngagementEvent';
-import { generateTriggerRoutFromRetreatEvent } from './generateTriggerRoutFromRetreatEvent';
+import {
+  generateDiscardPlayedCardsEvent,
+  generateResolveInitiativeEvent,
+  generateResolveRallyEvent,
+  generateResolveUnitsBrokenEvent,
+  generateRevealCardsEvent,
+} from './cards';
+import {
+  generateCompleteCleanupPhaseEvent,
+  generateCompleteIssueCommandsPhaseEvent,
+  generateCompleteMoveCommandersPhaseEvent,
+  generateCompletePlayCardsPhaseEvent,
+  generateCompleteResolveMeleePhaseEvent,
+} from './completePhase';
+import {
+  generateResolveRetreatEvent,
+  generateResolveReverseEvent,
+  generateResolveRoutEvent,
+  generateTriggerRoutFromRetreatEvent,
+} from './defenseResult';
+import {
+  generateCompleteUnitMovementEvent,
+  generateResolveEngageRetreatOptionEvent,
+  generateResolveFlankEngagementEvent,
+  generateStartEngagementEvent,
+} from './movement';
+import {
+  generateCompleteAttackApplyEvent,
+  generateCompleteMeleeResolutionEvent,
+  generateCompleteRangedAttackCommandEvent,
+  generateResolveMeleeEvent,
+  generateResolveRangedAttackEvent,
+} from './resolveAttack';
 
 // Import the unfiltered union type for the implementation signature
 type GameEffectEventUnion<TBoard extends Board> = GameEffectEvent<

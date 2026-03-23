@@ -1,4 +1,6 @@
-import type { AttackApplyState, Board, RoutState } from '@entities';
+import type { AttackApplyState, Board, GameState, RoutState } from '@entities';
+import { getOtherPlayer } from '@queries/getOtherPlayer';
+import { getMeleeResolutionState } from '../getCommandResolutionState';
 
 /**
  * Gets the rout state from an attack apply state.
@@ -15,4 +17,27 @@ export function getRoutStateFromAttackApply<TBoard extends Board>(
     throw new Error('No rout state found in attack apply state');
   }
   return attackApplyState.routState;
+}
+
+/**
+ * Rout state from melee resolution, in initiative order (first player's apply first).
+ * Assumes resolveMelee phase and that one attack-apply carries an active rout.
+ */
+export function getRoutStateFromMeleeResolutionByInitiative<
+  TBoard extends Board,
+>(state: GameState<TBoard>): RoutState {
+  const meleeState = getMeleeResolutionState(state);
+  const firstPlayer = state.currentInitiative;
+  const secondPlayer = getOtherPlayer(firstPlayer);
+
+  const firstApply = meleeState[`${firstPlayer}AttackApplyState`];
+  const secondApply = meleeState[`${secondPlayer}AttackApplyState`];
+
+  if (firstApply?.routState) {
+    return firstApply.routState;
+  }
+  if (secondApply?.routState) {
+    return secondApply.routState;
+  }
+  throw new Error('No rout state found in melee resolution');
 }

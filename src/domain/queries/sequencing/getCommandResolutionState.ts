@@ -85,3 +85,25 @@ export function getMeleeResolutionState<TBoard extends Board>(
   }
   return phaseState.currentMeleeResolutionState;
 }
+
+/**
+ * Narrowing helper for melee attack-value generation: in resolve melee phase,
+ * both commitments are resolved and attack-apply substeps have not been created yet.
+ *
+ * @throws Error if commitments are pending or attack apply already exists
+ */
+export function getMeleeResolutionReadyForAttackCalculation<
+  TBoard extends Board,
+>(state: GameState<TBoard>): MeleeResolutionState<TBoard> {
+  const meleeState = getMeleeResolutionState(state);
+  if (meleeState.whiteCommitment.commitmentType === 'pending') {
+    throw new Error('White commitment is still pending');
+  }
+  if (meleeState.blackCommitment.commitmentType === 'pending') {
+    throw new Error('Black commitment is still pending');
+  }
+  if (meleeState.whiteAttackApplyState || meleeState.blackAttackApplyState) {
+    throw new Error('Attack apply states already exist');
+  }
+  return meleeState;
+}

@@ -1,6 +1,8 @@
 import {
+  createAttackApplyState,
   createEmptyGameState,
   createIssueCommandsPhaseState,
+  createMeleeResolutionState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
@@ -9,6 +11,7 @@ import {
 import { describe, expect, it } from 'vitest';
 import {
   getCurrentCommandResolutionState,
+  getMeleeResolutionReadyForAttackCalculation,
   getMeleeResolutionState,
   getMovementResolutionState,
   getRangedAttackResolutionState,
@@ -178,6 +181,79 @@ describe('getMeleeResolutionState', () => {
 
     expect(() => getMeleeResolutionState(state)).toThrow(
       'No current melee resolution state',
+    );
+  });
+});
+
+describe('getMeleeResolutionReadyForAttackCalculation', () => {
+  it('returns melee state when ready for attack calculation', () => {
+    const state = createEmptyGameState();
+    state.currentRoundState.currentPhaseState =
+      createResolveMeleePhaseState(state);
+
+    const result = getMeleeResolutionReadyForAttackCalculation(state);
+    expect(result.location).toBe('E-5');
+  });
+
+  it('throws when white commitment is pending', () => {
+    const state = createEmptyGameState();
+    const melee = createMeleeResolutionState(state, {
+      whiteCommitment: { commitmentType: 'pending' },
+    });
+    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
+      state,
+      { currentMeleeResolutionState: melee },
+    );
+
+    expect(() => getMeleeResolutionReadyForAttackCalculation(state)).toThrow(
+      'White commitment is still pending',
+    );
+  });
+
+  it('throws when black commitment is pending', () => {
+    const state = createEmptyGameState();
+    const melee = createMeleeResolutionState(state, {
+      blackCommitment: { commitmentType: 'pending' },
+    });
+    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
+      state,
+      { currentMeleeResolutionState: melee },
+    );
+
+    expect(() => getMeleeResolutionReadyForAttackCalculation(state)).toThrow(
+      'Black commitment is still pending',
+    );
+  });
+
+  it('throws when attack apply state already exists (white only)', () => {
+    const state = createEmptyGameState();
+    const unit = createTestUnit('white', { attack: 2 });
+    const melee = createMeleeResolutionState(state, {
+      whiteAttackApplyState: createAttackApplyState(unit),
+    });
+    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
+      state,
+      { currentMeleeResolutionState: melee },
+    );
+
+    expect(() => getMeleeResolutionReadyForAttackCalculation(state)).toThrow(
+      'Attack apply states already exist',
+    );
+  });
+
+  it('throws when attack apply state already exists (black only)', () => {
+    const state = createEmptyGameState();
+    const unit = createTestUnit('black', { attack: 2 });
+    const melee = createMeleeResolutionState(state, {
+      blackAttackApplyState: createAttackApplyState(unit),
+    });
+    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
+      state,
+      { currentMeleeResolutionState: melee },
+    );
+
+    expect(() => getMeleeResolutionReadyForAttackCalculation(state)).toThrow(
+      'Attack apply states already exist',
     );
   });
 });

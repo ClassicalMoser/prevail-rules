@@ -1,7 +1,10 @@
 import type { Board } from '@entities/board';
-import type { GameEffectType } from '@events';
+import type { GameEffectType } from '@ruleValues';
 import type { AssertExact } from '@utils';
-import { gameEffects } from '@events';
+/**
+ * **Do not import `@events` here** (main barrel). Use `@ruleValues/gameEffectTypes` (zero imports).
+ */
+import { gameEffects } from '@ruleValues';
 import { z } from 'zod';
 
 /**
