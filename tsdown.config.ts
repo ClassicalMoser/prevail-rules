@@ -3,9 +3,6 @@ import { defineConfig } from 'tsdown';
 export default defineConfig({
   entry: ['src/**/*.ts'],
   format: ['esm'],
-  dts: {
-    resolve: true,
-  },
   bundle: true,
   sourcemap: false,
   clean: true,
@@ -18,7 +15,6 @@ export default defineConfig({
     '@entities': './src/entities',
     '@queries': './src/functions',
     '@commands': './src/commands',
-    '@contracts': './src/contracts',
     '@testing': './src/testing',
     '@utils': './src/utils',
     '@validation': './src/validation',

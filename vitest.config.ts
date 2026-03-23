@@ -24,9 +24,6 @@ export default defineConfig({
       '@events/*': path.resolve(__dirname, './src/domain/events/*'),
       '@commands': path.resolve(__dirname, './src/domain/events'),
       '@commands/*': path.resolve(__dirname, './src/domain/events/*'),
-      // Contracts
-      '@contracts': path.resolve(__dirname, './src/contracts'),
-      '@contracts/*': path.resolve(__dirname, './src/contracts/*'),
       // Testing
       '@testing': path.resolve(__dirname, './src/domain/testing'),
       '@testing/*': path.resolve(__dirname, './src/domain/testing/*'),
