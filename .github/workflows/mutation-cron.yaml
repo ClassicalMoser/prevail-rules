@@ -8,7 +8,20 @@ on:
 
 jobs:
   mutation:
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+          - name: procedures
+            mutate: 'src/domain/procedures/**/*.{ts,js}'
+          - name: transforms
+            mutate: 'src/domain/transforms/**/*.{ts,js}'
+          - name: queries
+            mutate: 'src/domain/queries/**/*.{ts,js}'
+          - name: entities-validation
+            mutate: 'src/domain/entities/**/*.{ts,js},src/domain/validation/**/*.{ts,js},src/domain/events/**/*.{ts,js},src/domain/ruleValues/**/*.{ts,js}'
     runs-on: ubuntu-latest
+    timeout-minutes: 330
     steps:
       - uses: actions/checkout@v4
 
@@ -22,13 +35,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Mutation tests
-        run: pnpm test:mutation
+      - name: Mutation tests (${{ matrix.shard.name }})
+        run: pnpm exec stryker run --mutate "${{ matrix.shard.mutate }},!src/domain/**/*.test.{ts,js},!src/domain/testing/**/*.{ts,js},!src/domain/sampleValues/**/*.{ts,js},!dist/**/*.{ts,js},!**/index.{ts,js}"
 
       - name: Upload mutation report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: stryker-mutation-report
+          name: stryker-mutation-report-${{ matrix.shard.name }}
           path: reports/
           if-no-files-found: warn
