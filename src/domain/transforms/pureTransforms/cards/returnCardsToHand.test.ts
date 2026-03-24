@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { returnCardsToHand } from './returnCardsToHand';
 
 /**
- * returnCardsToHand: pure transform; implementation in returnCardsToHand.ts.
+ * returnCardsToHand: Returns all played and discarded cards to the player's hand.
  */
 describe('returnCardsToHand', () => {
-  it('should return all played and discarded cards to hand', () => {
+  it('given context, returns all played and discarded cards to hand', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -31,7 +31,7 @@ describe('returnCardsToHand', () => {
     expect(newCardState.white).toBe(cardState.white);
   });
 
-  it('should handle empty played and discarded', () => {
+  it('given handle empty played and discarded', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -50,7 +50,7 @@ describe('returnCardsToHand', () => {
     expect(newCardState.black.discarded).toEqual([]);
   });
 
-  it('should preserve order: hand, then played, then discarded', () => {
+  it('given preserve order: hand, then played, then discarded', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -69,7 +69,7 @@ describe('returnCardsToHand', () => {
     expect(newCardState.black.inHand[2]).toBe(commandCards[2]);
   });
 
-  it('should not mutate the original card state', () => {
+  it('given not mutate the original card state', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,

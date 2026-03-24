@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { isDefenseStat } from './isDefenseStat';
 
 /**
- * isDefenseStat: validation rule; implementation in isDefenseStat.ts.
+ * isDefenseStat: The defense stat names (reverse, retreat, rout).
  */
 describe('isDefenseStat', () => {
-  it('should return true for defense stats', () => {
+  it('given defense stats, returns true', () => {
     const { result: reverseResult } = isDefenseStat('reverse');
     expect(reverseResult).toBe(true);
     const { result: retreatResult } = isDefenseStat('retreat');
@@ -15,7 +15,7 @@ describe('isDefenseStat', () => {
     const { result: routResult } = isDefenseStat('rout');
     expect(routResult).toBe(true);
   });
-  it('should return false for non-defense stats', () => {
+  it('given non-defense stats, returns false', () => {
     const { result: attackResult } = isDefenseStat('attack');
     expect(attackResult).toBe(false);
     const { result: rangeResult } = isDefenseStat('range');

@@ -4,11 +4,11 @@ import { describe, expect, it } from 'vitest';
 import { canEngageEnemy } from './canEngageEnemy';
 
 /**
- * canEngageEnemy: validation rule; implementation in canEngageEnemy.ts.
+ * canEngageEnemy: Incremental function to check whether engagement is legal from an adjacent space.
  */
 describe('canEngageEnemy', () => {
   describe('invalid destination', () => {
-    it('should return false when destination has no unit', () => {
+    it('given destination has no unit, returns false', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -18,7 +18,7 @@ describe('canEngageEnemy', () => {
       ).toBe(false);
     });
 
-    it('should return false when destination has friendly unit', () => {
+    it('given destination has friendly unit, returns false', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
         { coord: 'D-5', player: 'black', facing: 'north', speed: 2 },
@@ -31,7 +31,7 @@ describe('canEngageEnemy', () => {
   });
 
   describe('front engagement', () => {
-    it('should return true when unit is already facing opposite to enemy', () => {
+    it('given unit is already facing opposite to enemy, returns true', () => {
       // Enemy at D-5 facing north, unit at E-5 facing south (opposite)
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'south', speed: 2 },
@@ -43,7 +43,7 @@ describe('canEngageEnemy', () => {
       ).toBe(true);
     });
 
-    it('should return true when unit has flexibility to rotate to face opposite', () => {
+    it('given unit has flexibility to rotate to face opposite, returns true', () => {
       // Enemy at D-4 facing south, unit at E-5 facing northWest (needs to rotate to south)
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'northWest' },
@@ -55,7 +55,7 @@ describe('canEngageEnemy', () => {
       ).toBe(true);
     });
 
-    it('should return false when unit cannot rotate to face opposite', () => {
+    it('given unit cannot rotate to face opposite, returns false', () => {
       // Enemy at D-4 facing south, unit at E-5 facing northWest (needs to rotate to south)
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'northWest' },
@@ -69,7 +69,7 @@ describe('canEngageEnemy', () => {
   });
 
   describe('flank engagement', () => {
-    it('should return true when approaching from flank', () => {
+    it('given approaching from flank, returns true', () => {
       // Enemy at D-5 facing west, unit at E-5 facing north (flank - south side)
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
@@ -83,7 +83,7 @@ describe('canEngageEnemy', () => {
   });
 
   describe('rear engagement', () => {
-    it('should return true when approaching from rear and move started behind enemy', () => {
+    it('given approaching from rear and move started behind enemy, returns true', () => {
       // Enemy at D-5 facing north, unit starts at F-5 (behind), moves to E-5, then to D-5
       // E-5 is a rear space (back space) relative to D-5 facing north
       const gameState = createGameState([
@@ -97,7 +97,7 @@ describe('canEngageEnemy', () => {
       ).toBe(true);
     });
 
-    it('should return false when approaching from rear but move started in front of enemy', () => {
+    it('given approaching from rear but move started in front of enemy, returns false', () => {
       // Enemy at D-5 facing north, unit starts at C-5 (in front), moves around to E-5, then to D-5
       // Even though E-5 is a rear space, the move didn't start behind the enemy
       const gameState = createGameState([
@@ -111,7 +111,7 @@ describe('canEngageEnemy', () => {
       ).toBe(false);
     });
 
-    it('should return false when approaching from rear but move started at flank', () => {
+    it('given approaching from rear but move started at flank, returns false', () => {
       // Enemy at D-5 facing north, unit starts at D-4 (flank), moves to E-5, then to D-5
       // Even though E-5 is a rear space, the move didn't start behind the enemy
       const gameState = createGameState([
@@ -127,7 +127,7 @@ describe('canEngageEnemy', () => {
   });
 
   describe('error handling', () => {
-    it('should return false for a non-existent coordinate', () => {
+    it('given a non-existent coordinate, returns false', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -145,7 +145,7 @@ describe('canEngageEnemy', () => {
         ),
       ).toBe(false);
     });
-    it('should return false for a non-adjacent coordinate', () => {
+    it('given a non-adjacent coordinate, returns false', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
         { coord: 'A-1', player: 'white', facing: 'north', speed: 2 },

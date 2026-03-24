@@ -13,7 +13,7 @@ import { describe, expect, it } from 'vitest';
 import { updateRetreatRoutState } from './updateRetreatRoutState';
 
 /**
- * updateRetreatRoutState: pure transform; implementation in updateRetreatRoutState.ts.
+ * updateRetreatRoutState: Creates a new game state with the rout state updated within a retreat state.
  */
 describe('updateRetreatRoutState', () => {
   function createStateWithRangedAttackRetreat() {
@@ -45,7 +45,7 @@ describe('updateRetreatRoutState', () => {
     return updatePhaseState(stateWithUnit, phaseState);
   }
 
-  it('should update rout state within retreat in ranged attack resolution', () => {
+  it('given update rout state within retreat in ranged attack resolution', () => {
     const state = createStateWithRangedAttackRetreat();
     const unit = createTestUnit('white', { attack: 2 });
     const newRout = createRoutState('white', unit, { numberToDiscard: 2 });

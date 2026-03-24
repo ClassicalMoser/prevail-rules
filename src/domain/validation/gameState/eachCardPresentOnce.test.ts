@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { eachCardPresentOnce } from './eachCardPresentOnce';
 
 /**
- * eachCardPresentOnce: validation rule; implementation in eachCardPresentOnce.ts.
+ * eachCardPresentOnce: eachCardPresentOnce.
  */
 describe('eachCardPresentOnce', () => {
   // Helper to create a card set from indices
@@ -47,7 +47,7 @@ describe('eachCardPresentOnce', () => {
   }
 
   describe('valid cases', () => {
-    it('should return true when all cards are present once with empty starting hands', () => {
+    it('given all cards are present once with empty starting hands, returns true', () => {
       // Note: createCardState defaults awaitingPlay and inPlay to commandCards[0] and commandCards[1]
       // So we need to include those in starting hands
       // Cards can be duplicated between players
@@ -62,7 +62,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when all black cards are present once in hand', () => {
+    it('given all black cards are present once in hand, returns true', () => {
       const blackStartingHand = cardSet(0, 1, 2, 3);
       const whiteStartingHand = cardSet(0, 1);
       const cardState = createCardState(
@@ -80,7 +80,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when all white cards are present once in hand', () => {
+    it('given all white cards are present once in hand, returns true', () => {
       // Default cards: black has commandCards[0] awaitingPlay, commandCards[1] inPlay
       // white has commandCards[0] awaitingPlay, commandCards[1] inPlay
       const blackStartingHand = cardSet(0, 1);
@@ -95,7 +95,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when both black and white cards are present once', () => {
+    it('given both black and white cards are present once, returns true', () => {
       // Default cards: both players have commandCards[0] awaitingPlay, commandCards[1] inPlay
       const blackStartingHand = cardSet(0, 1, 2);
       const whiteStartingHand = cardSet(0, 1, 3);
@@ -109,7 +109,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when cards are in different states', () => {
+    it('given cards are in different states, returns true', () => {
       const blackStartingHand = cardSet(0, 1);
       const whiteStartingHand = cardSet(2, 3);
       const cardState = createCardState(
@@ -135,7 +135,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when cards are in played, discarded, or burnt states', () => {
+    it('given cards are in played, discarded, or burnt states, returns true', () => {
       // Cards in different states: awaitingPlay, inPlay, played, discarded, burnt
       const blackStartingHand = cardSet(0, 1, 2);
       const whiteStartingHand = cardSet(0, 1, 2, 3);
@@ -164,7 +164,7 @@ describe('eachCardPresentOnce', () => {
   });
 
   describe('duplicate cards', () => {
-    it('should return false when a card appears twice in the same hand', () => {
+    it('given a card appears twice in the same hand, returns false', () => {
       const blackStartingHand = cardSet(0);
       const cardState = createCardState([commandCards[0], commandCards[0]], []);
 
@@ -176,7 +176,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when a card appears in multiple states', () => {
+    it('given a card appears in multiple states, returns false', () => {
       const blackStartingHand = cardSet(0, 1);
       const cardState = createCardState(
         [commandCards[0]],
@@ -193,7 +193,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(false);
     });
 
-    it('should return true when the same card appears in both players states', () => {
+    it('given the same card appears in both players states, returns true', () => {
       // Cards can be duplicated between players
       // Default cards: both players have commandCards[0] awaitingPlay, commandCards[1] inPlay
       const blackStartingHand = new Set([
@@ -214,7 +214,7 @@ describe('eachCardPresentOnce', () => {
   });
 
   describe('missing cards', () => {
-    it('should return false when a card from starting hand is missing', () => {
+    it('given a card from starting hand is missing, returns false', () => {
       const blackStartingHand = cardSet(0, 1);
       const cardState = createCardState([commandCards[0]], []);
 
@@ -226,7 +226,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when black card is missing', () => {
+    it('given black card is missing, returns false', () => {
       const blackStartingHand = cardSet(0);
       const whiteStartingHand = cardSet(1);
       const cardState = createCardState([], [commandCards[1]]);
@@ -239,7 +239,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when white card is missing', () => {
+    it('given white card is missing, returns false', () => {
       const blackStartingHand = cardSet(0);
       const whiteStartingHand = cardSet(1);
       const cardState = createCardState([commandCards[0]], []);
@@ -254,7 +254,7 @@ describe('eachCardPresentOnce', () => {
   });
 
   describe('unexpected cards', () => {
-    it('should return false when cardState has card not in starting hands', () => {
+    it('given cardState has card not in starting hands, returns false', () => {
       const blackStartingHand = cardSet(0);
       const cardState = createCardState([commandCards[0], commandCards[1]], []);
 
@@ -266,7 +266,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when awaitingPlay has unexpected card', () => {
+    it('given awaitingPlay has unexpected card, returns false', () => {
       const blackStartingHand = cardSet(0, 2);
       const cardState = createCardState(
         [commandCards[0]],
@@ -283,7 +283,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when inPlay has unexpected card', () => {
+    it('given inPlay has unexpected card, returns false', () => {
       const blackStartingHand = cardSet(0, 2);
       const cardState = createCardState(
         [commandCards[0]],
@@ -300,7 +300,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when played array has unexpected card', () => {
+    it('given played array has unexpected card, returns false', () => {
       const blackStartingHand = cardSet(0, 2);
       const cardState = createCardState(
         [commandCards[0]],
@@ -318,7 +318,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when discarded array has unexpected card', () => {
+    it('given discarded array has unexpected card, returns false', () => {
       const blackStartingHand = cardSet(0, 2);
       const cardState = createCardState(
         [commandCards[0]],
@@ -337,7 +337,7 @@ describe('eachCardPresentOnce', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when burnt array has unexpected card', () => {
+    it('given burnt array has unexpected card, returns false', () => {
       const blackStartingHand = cardSet(0, 2);
       const cardState = createCardState(
         [commandCards[0]],

@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { createBoardWithEngagedUnits } from './boardWithEngagedUnits';
 
 /**
- * createBoardWithEngagedUnits: test helper; implementation in boardWithEngagedUnits.ts.
+ * createBoardWithEngagedUnits: Creates a board with engaged units at a coordinate.
  */
 describe('createBoardWithEngagedUnits', () => {
-  it('should create board with engaged presence at default coord', () => {
+  it('given defaults, creates board with engaged presence at default coord', () => {
     const primary = createTestUnit('black');
     const secondary = createTestUnit('white');
     const board = createBoardWithEngagedUnits(primary, secondary);

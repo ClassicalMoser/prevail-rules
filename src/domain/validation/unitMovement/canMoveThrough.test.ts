@@ -6,11 +6,11 @@ import { describe, expect, it } from 'vitest';
 import { canMoveThrough } from './canMoveThrough';
 
 /**
- * canMoveThrough: validation rule; implementation in canMoveThrough.ts.
+ * canMoveThrough: Determines whether a unit can move through (pass over) a specific coordinate.
  */
 describe('canMoveThrough', () => {
   describe('empty space', () => {
-    it('should return true when the space has no unit', () => {
+    it('given the space has no unit, returns true', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -19,7 +19,7 @@ describe('canMoveThrough', () => {
   });
 
   describe('engaged units', () => {
-    it('should return false when the space has engaged units', () => {
+    it('given the space has engaged units, returns false', () => {
       let board = createEmptyStandardBoard();
       // Add engaged units at D-5
       board = addUnitToBoard(board, {
@@ -44,7 +44,7 @@ describe('canMoveThrough', () => {
   });
 
   describe('enemy units', () => {
-    it('should return false when the space has an enemy unit', () => {
+    it('given the space has an enemy unit, returns false', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
         { coord: 'D-5', player: 'white', facing: 'north', speed: 2 },
@@ -54,7 +54,7 @@ describe('canMoveThrough', () => {
   });
 
   describe('friendly units', () => {
-    it('should return true when combined flexibility meets threshold', () => {
+    it('given combined flexibility meets threshold, returns true', () => {
       const halfFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2);
       const gameState = createGameState([
         {
@@ -73,7 +73,7 @@ describe('canMoveThrough', () => {
       expect(canMoveThrough('black', 2, 'D-5', gameState)).toBe(true);
     });
 
-    it('should return true when combined flexibility exceeds threshold', () => {
+    it('given combined flexibility exceeds threshold, returns true', () => {
       const overHalfFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2) + 1;
       const gameState = createGameState([
         {
@@ -92,7 +92,7 @@ describe('canMoveThrough', () => {
       expect(canMoveThrough('black', 3, 'D-5', gameState)).toBe(true);
     });
 
-    it('should return false when combined flexibility is below threshold', () => {
+    it('given combined flexibility is below threshold, returns false', () => {
       const underHalfFlexibility =
         Math.floor(MIN_FLEXIBILITY_THRESHOLD / 2) - 1;
       const gameState = createGameState([
@@ -114,7 +114,7 @@ describe('canMoveThrough', () => {
   });
 
   describe('error handling', () => {
-    it('should return false for a non-existent coordinate', () => {
+    it('given a non-existent coordinate, returns false', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);

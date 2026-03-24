@@ -8,21 +8,21 @@ import {
 import { describe, expect, it } from 'vitest';
 
 /**
- * hasNoUnit: test helper; implementation in hasNoUnit.ts.
+ * hasNoUnit: type guard — unit presence is empty (none).
  */
 describe('hasNoUnit', () => {
-  it('should return true for none unit presence', () => {
+  it('given none unit presence, returns true', () => {
     const unitPresence = createNoneUnitPresence();
     expect(hasNoUnit(unitPresence)).toBe(true);
   });
 
-  it('should return false for single unit presence', () => {
+  it('given single unit presence, returns false', () => {
     const unit = createTestUnit('black', { attack: 3 });
     const unitPresence = createSingleUnitPresence(unit, 'north');
     expect(hasNoUnit(unitPresence)).toBe(false);
   });
 
-  it('should return false for engaged unit presence', () => {
+  it('given engaged unit presence, returns false', () => {
     const unit1 = createTestUnit('black', { attack: 3 });
     const unit2 = createTestUnit('white', { attack: 3 });
     const unitPresence = createEngagedUnitPresence(unit1, 'north', unit2);

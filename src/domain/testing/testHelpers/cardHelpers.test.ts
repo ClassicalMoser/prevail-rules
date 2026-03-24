@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { createTestCard, getCards, getCardsByCount } from './cardHelpers';
 
 /**
- * getCards: test helper; implementation in cardHelpers.ts.
+ * getCards: Gets cards from the commandCards array by their indices.
  */
 describe('getCards', () => {
-  it('should return cards at specified indices', () => {
+  it('given context, returns cards at specified indices', () => {
     const cards = getCards(0, 1, 2);
 
     expect(cards).toHaveLength(3);
@@ -15,30 +15,30 @@ describe('getCards', () => {
     expect(cards[2]).toBe(commandCards[2]);
   });
 
-  it('should return empty array when no indices provided', () => {
+  it('given no indices provided, returns empty array', () => {
     const cards = getCards();
 
     expect(cards).toEqual([]);
   });
 
-  it('should return single card when one index provided', () => {
+  it('given one index provided, returns single card', () => {
     const cards = getCards(0);
 
     expect(cards).toHaveLength(1);
     expect(cards[0]).toBe(commandCards[0]);
   });
 
-  it('should throw error when index is out of bounds (negative)', () => {
+  it('given error when index is out of bounds (negative), throws', () => {
     expect(() => getCards(-1)).toThrow('Card index -1 is out of bounds');
   });
 
-  it('should throw error when index is out of bounds (too large)', () => {
+  it('given error when index is out of bounds (too large), throws', () => {
     expect(() => getCards(commandCards.length)).toThrow(
       `Card index ${commandCards.length} is out of bounds`,
     );
   });
 
-  it('should throw error when any index is out of bounds', () => {
+  it('given error when any index is out of bounds, throws', () => {
     expect(() => getCards(0, 1, commandCards.length)).toThrow(
       `Card index ${commandCards.length} is out of bounds`,
     );
@@ -46,7 +46,7 @@ describe('getCards', () => {
 });
 
 describe('getCardsByCount', () => {
-  it('should return specified number of cards', () => {
+  it('given context, returns specified number of cards', () => {
     const cards = getCardsByCount(3);
 
     expect(cards).toHaveLength(3);
@@ -55,32 +55,32 @@ describe('getCardsByCount', () => {
     expect(cards[2]).toBe(commandCards[2]);
   });
 
-  it('should return single card by default', () => {
+  it('given context, returns single card by default', () => {
     const cards = getCardsByCount();
 
     expect(cards).toHaveLength(1);
     expect(cards[0]).toBe(commandCards[0]);
   });
 
-  it('should return empty array when count is 0', () => {
+  it('given count is 0, returns empty array', () => {
     const cards = getCardsByCount(0);
 
     expect(cards).toEqual([]);
   });
 
-  it('should throw error when count is negative', () => {
+  it('given error when count is negative, throws', () => {
     expect(() => getCardsByCount(-1)).toThrow(
       'Count must be non-negative, got -1',
     );
   });
 
-  it('should throw error when count exceeds available cards', () => {
+  it('given error when count exceeds available cards, throws', () => {
     expect(() => getCardsByCount(commandCards.length + 1)).toThrow(
       `Requested ${commandCards.length + 1} cards but only ${commandCards.length} are available`,
     );
   });
 
-  it('should return all available cards when count equals available cards', () => {
+  it('given count equals available cards, returns all available cards', () => {
     const cards = getCardsByCount(commandCards.length);
 
     expect(cards).toHaveLength(commandCards.length);
@@ -89,7 +89,7 @@ describe('getCardsByCount', () => {
 });
 
 describe('createTestCard', () => {
-  it('should return card with defaults when no options', () => {
+  it('given no options, returns card with defaults', () => {
     const card = createTestCard();
     expect(card.id).toBe('test-card');
     expect(card.name).toBe('Test Card');
@@ -97,7 +97,7 @@ describe('createTestCard', () => {
     expect(card.command.type).toBe('movement');
   });
 
-  it('should apply round effect modifiers and restrictions', () => {
+  it('given apply round effect modifiers and restrictions', () => {
     const card = createTestCard({
       roundEffectModifiers: [{ type: 'attack', value: 2 }],
       roundEffectRestrictions: { inspirationRangeRestriction: 1 },
@@ -107,7 +107,7 @@ describe('createTestCard', () => {
     expect(card.roundEffect?.restrictions.inspirationRangeRestriction).toBe(1);
   });
 
-  it('should apply command modifiers', () => {
+  it('given apply command modifiers', () => {
     const card = createTestCard({
       commandModifiers: [{ type: 'speed', value: 1 }],
     });

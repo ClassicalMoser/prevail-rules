@@ -17,7 +17,7 @@ import {
 } from './attackApplyContext';
 
 /**
- * getAttackApplyStateFromContext: pure transform; implementation in attackApplyContext.ts.
+ * getAttackApplyStateFromContext: Gets the attack apply state from the current game state context.
  */
 describe('getAttackApplyStateFromContext', () => {
   function createStateWithRangedAttack() {
@@ -59,33 +59,33 @@ describe('getAttackApplyStateFromContext', () => {
     );
   }
 
-  it('should return attack apply state in issueCommands with ranged attack', () => {
+  it('given context, returns attack apply state in issueCommands with ranged attack', () => {
     const state = createStateWithRangedAttack();
     const result = getAttackApplyStateFromContext(state);
     expect(result.defendingUnit.playerSide).toBe('white');
     expect(result.substepType).toBe('attackApply');
   });
 
-  it('should return white attack apply state in resolveMelee when player is white', () => {
+  it('given player is white, returns white attack apply state in resolveMelee', () => {
     const state = createStateWithMelee();
     const result = getAttackApplyStateFromContext(state, 'white');
     expect(result.defendingUnit.playerSide).toBe('white');
   });
 
-  it('should return black attack apply state in resolveMelee when player is black', () => {
+  it('given player is black, returns black attack apply state in resolveMelee', () => {
     const state = createStateWithMelee();
     const result = getAttackApplyStateFromContext(state, 'black');
     expect(result.defendingUnit.playerSide).toBe('black');
   });
 
-  it('should throw in resolveMelee when player is not provided', () => {
+  it('given in resolveMelee when player is not provided, throws', () => {
     const state = createStateWithMelee();
     expect(() => getAttackApplyStateFromContext(state)).toThrow(
       'Player parameter required for melee attack apply state context',
     );
   });
 
-  it('should throw when not in issueCommands or resolveMelee phase', () => {
+  it('given when not in issueCommands or resolveMelee phase, throws', () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(
       state,
@@ -137,7 +137,7 @@ describe('updateAttackApplySubstep', () => {
     );
   }
 
-  it('should update attack apply state in ranged attack context', () => {
+  it('given update attack apply state in ranged attack context', () => {
     const state = createStateWithRangedAttack();
     const newState = updateAttackApplySubstep(
       state,
@@ -162,7 +162,7 @@ describe('updateAttackApplySubstep', () => {
     ).toBe(true);
   });
 
-  it('should update correct player attack apply state in melee context', () => {
+  it('given update correct player attack apply state in melee context', () => {
     const state = createStateWithMelee();
     const newState = updateAttackApplySubstep(
       state,
@@ -181,7 +181,7 @@ describe('updateAttackApplySubstep', () => {
     ).toBe(false);
   });
 
-  it('should throw when not in issueCommands or resolveMelee phase', () => {
+  it('given when not in issueCommands or resolveMelee phase, throws', () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(
       state,

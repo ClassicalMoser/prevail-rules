@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { areRestrictionsEqual } from './areRestrictionsEqual';
 
 /**
- * areRestrictionsEqual: validation rule; implementation in areRestrictionsEqual.ts.
+ * areRestrictionsEqual: Compares two Restrictions objects for equality by comparing all properties.
  */
 describe('areRestrictionsEqual', () => {
-  it('should return true when both restrictions have identical properties', () => {
+  it('given both restrictions have identical properties, returns true', () => {
     const restrictions1: Restrictions = {
       inspirationRangeRestriction: 1,
       traitRestrictions: [],
@@ -21,7 +21,7 @@ describe('areRestrictionsEqual', () => {
     expect(result).toBe(true);
   });
 
-  it('should return true when comparing restrictions to itself', () => {
+  it('given comparing restrictions to itself, returns true', () => {
     const restrictions: Restrictions = {
       inspirationRangeRestriction: 2,
       traitRestrictions: ['sword'],
@@ -31,7 +31,7 @@ describe('areRestrictionsEqual', () => {
     expect(result).toBe(true);
   });
 
-  it('should return true for different object references with same values', () => {
+  it('given different object references with same values, returns true', () => {
     const restrictions1: Restrictions = {
       inspirationRangeRestriction: 3,
       traitRestrictions: ['skirmish'],
@@ -47,7 +47,7 @@ describe('areRestrictionsEqual', () => {
   });
 
   describe('inspirationRangeRestriction differences', () => {
-    it('should return false when inspirationRangeRestriction differs', () => {
+    it('given inspirationRangeRestriction differs, returns false', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
@@ -70,7 +70,7 @@ describe('areRestrictionsEqual', () => {
       }
     });
 
-    it('should return false when one is undefined and the other is not', () => {
+    it('given one is undefined and the other is not, returns false', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: undefined,
         traitRestrictions: [],
@@ -85,7 +85,7 @@ describe('areRestrictionsEqual', () => {
       expect(result).toBe(false);
     });
 
-    it('should return true when both are undefined', () => {
+    it('given both are undefined, returns true', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: undefined,
         traitRestrictions: [],
@@ -102,7 +102,7 @@ describe('areRestrictionsEqual', () => {
   });
 
   describe('traitRestrictions differences', () => {
-    it('should return false when traitRestrictions arrays have different lengths', () => {
+    it('given traitRestrictions arrays have different lengths, returns false', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: ['sword'],
@@ -125,7 +125,7 @@ describe('areRestrictionsEqual', () => {
       }
     });
 
-    it('should return false when traitRestrictions differ at an index', () => {
+    it('given traitRestrictions differ at an index, returns false', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: ['sword'],
@@ -148,7 +148,7 @@ describe('areRestrictionsEqual', () => {
       }
     });
 
-    it('should return true when traitRestrictions arrays match', () => {
+    it('given traitRestrictions arrays match, returns true', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: ['sword', 'skirmish'],
@@ -163,7 +163,7 @@ describe('areRestrictionsEqual', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when traitRestrictions have same elements but different order', () => {
+    it('given traitRestrictions have same elements but different order, returns false', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: ['sword', 'skirmish'],
@@ -180,7 +180,7 @@ describe('areRestrictionsEqual', () => {
   });
 
   describe('unitRestrictions differences', () => {
-    it('should return false when unitRestrictions arrays have different lengths', () => {
+    it('given unitRestrictions arrays have different lengths, returns false', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
@@ -203,7 +203,7 @@ describe('areRestrictionsEqual', () => {
       }
     });
 
-    it('should return false when unitRestrictions differ at an index', () => {
+    it('given unitRestrictions differ at an index, returns false', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
@@ -226,7 +226,7 @@ describe('areRestrictionsEqual', () => {
       }
     });
 
-    it('should return true when unitRestrictions arrays match', () => {
+    it('given unitRestrictions arrays match, returns true', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
@@ -241,7 +241,7 @@ describe('areRestrictionsEqual', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when unitRestrictions have same elements but different order', () => {
+    it('given unitRestrictions have same elements but different order, returns false', () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
@@ -257,7 +257,7 @@ describe('areRestrictionsEqual', () => {
     });
   });
 
-  it('should return false when comparing restrictions to undefined', () => {
+  it('given comparing restrictions to undefined, returns false', () => {
     const restrictions: Restrictions = {
       inspirationRangeRestriction: 1,
       traitRestrictions: [],

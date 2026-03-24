@@ -6,13 +6,13 @@ import { describe, expect, it } from 'vitest';
 import { isValidLine } from './isValidLine';
 
 /**
- * isValidLine: validation rule; implementation in isValidLine.ts.
+ * isValidLine: Determines whether a line is valid according to game rules.
  */
 describe('isValidLine', () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();
 
   describe('valid lines', () => {
-    it('should return true for a single unit', () => {
+    it('given a single unit, returns true', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
@@ -30,7 +30,7 @@ describe('isValidLine', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true for two units facing the same direction', () => {
+    it('given two units facing the same direction, returns true', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       const board = createBoardWithUnits([
@@ -50,7 +50,7 @@ describe('isValidLine', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true for two units facing opposite directions', () => {
+    it('given two units facing opposite directions, returns true', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       const board = createBoardWithUnits([
@@ -70,7 +70,7 @@ describe('isValidLine', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true for a line with 8 units', () => {
+    it('given a line with 8 units, returns true', () => {
       const units = Array.from({ length: 8 }, (_, i) =>
         createTestUnit('black', { attack: 3, instanceNumber: i + 1 }),
       );
@@ -97,7 +97,7 @@ describe('isValidLine', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true for a diagonal line (northEast facing)', () => {
+    it('given a diagonal line (northEast facing), returns true', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       // Unit facing northEast forms line going northWest-southEast (perpendicular)
@@ -118,7 +118,7 @@ describe('isValidLine', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true for a diagonal line with opposite facing (southWest)', () => {
+    it('given a diagonal line with opposite facing (southWest), returns true', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       // Unit facing northEast forms line going northWest-southEast (perpendicular)
@@ -142,13 +142,13 @@ describe('isValidLine', () => {
   });
 
   describe('invalid lines', () => {
-    it('should return false for an empty line', () => {
+    it('given an empty line, returns false', () => {
       const invalidLine = { unitPlacements: [] };
       const { result } = isValidLine(standardBoard, invalidLine);
       expect(result).toBe(false);
     });
 
-    it('should return false for a line with more than MAX_LINE_LENGTH units', () => {
+    it('given a line with more than MAX_LINE_LENGTH units, returns false', () => {
       const units = Array.from({ length: 9 }, (_, i) =>
         createTestUnit('black', { attack: 3, instanceNumber: i + 1 }),
       );
@@ -176,7 +176,7 @@ describe('isValidLine', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false for units on different sides', () => {
+    it('given units on different sides, returns false', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
       const invalidLine = {
@@ -195,7 +195,7 @@ describe('isValidLine', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false for units with wrong facing (not same or opposite)', () => {
+    it('given units with wrong facing (not same or opposite), returns false', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       const board = createBoardWithUnits([
@@ -219,7 +219,7 @@ describe('isValidLine', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false for non-contiguous units (gap in line)', () => {
+    it('given non-contiguous units (gap in line), returns false', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       const invalidLine = {
@@ -238,7 +238,7 @@ describe('isValidLine', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false for units not in flanking spaces', () => {
+    it('given units not in flanking spaces, returns false', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       const invalidLine = {
@@ -257,7 +257,7 @@ describe('isValidLine', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false for diagonal line with wrong direction', () => {
+    it('given diagonal line with wrong direction, returns false', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       // Unit facing northEast forms line going northWest-southEast (perpendicular)
@@ -286,7 +286,7 @@ describe('isValidLine', () => {
     });
   });
   describe('edge cases', () => {
-    it('should return false instead of throwing for a bad input type', () => {
+    it('given a bad input type, returns false instead of throwing', () => {
       const board = undefined as unknown as StandardBoard;
       const line = undefined as unknown as Line;
       const { result } = isValidLine(board, line);

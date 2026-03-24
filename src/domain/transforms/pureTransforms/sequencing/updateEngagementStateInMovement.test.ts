@@ -12,7 +12,7 @@ import { describe, expect, it } from 'vitest';
 import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
 
 /**
- * updateEngagementStateInMovement: pure transform; implementation in updateEngagementStateInMovement.ts.
+ * updateEngagementStateInMovement: Updates the engagement state within the current movement resolution (issue commands phase).
  */
 describe('updateEngagementStateInMovement', () => {
   it('updates engagement state in movement resolution', () => {

@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { createBoard, createGameState } from './createGameStateFromSpec';
 
 /**
- * createGameState: test helper; implementation in createGameStateFromSpec.ts.
+ * createGameState: Creates a game state with units placed according to the provided specifications.
  */
 describe('createGameState', () => {
-  it('should create a game state with units using tuple syntax', () => {
+  it('given defaults, creates a game state with units using tuple syntax', () => {
     const gameState = createGameState([
       ['E-5', 'black'],
       ['E-6', 'white'],
@@ -28,7 +28,7 @@ describe('createGameState', () => {
     expect(whiteUnit?.unit.playerSide).toBe('white');
   });
 
-  it('should create a game state with units using tuple syntax with facing', () => {
+  it('given defaults, creates a game state with units using tuple syntax with facing', () => {
     const gameState = createGameState([
       ['E-5', 'black', 'north'],
       ['E-6', 'white', 'south'],
@@ -47,7 +47,7 @@ describe('createGameState', () => {
     expect(whiteUnit?.placement.facing).toBe('south');
   });
 
-  it('should create a game state with units using object syntax', () => {
+  it('given defaults, creates a game state with units using object syntax', () => {
     const gameState = createGameState([
       { coord: 'E-5', player: 'black' },
       { coord: 'E-6', player: 'white', facing: 'east' },
@@ -66,7 +66,7 @@ describe('createGameState', () => {
     expect(whiteUnit?.placement.facing).toBe('east');
   });
 
-  it('should create a game state with full control syntax', () => {
+  it('given defaults, creates a game state with full control syntax', () => {
     const gameState = createGameState([
       { coord: 'E-5', player: 'black', attack: 3, flexibility: 2 },
       { coord: 'E-6', player: 'white', attack: 4 },
@@ -85,7 +85,7 @@ describe('createGameState', () => {
     expect(whiteUnit).toBeDefined();
   });
 
-  it('should assign sequential instance numbers automatically', () => {
+  it('given assign sequential instance numbers automatically', () => {
     const gameState = createGameState([
       ['E-5', 'black'],
       ['E-6', 'black'],
@@ -111,7 +111,7 @@ describe('createGameState', () => {
     expect(unit3?.unit.instanceNumber).toBe(3);
   });
 
-  it('should respect custom instance numbers when provided', () => {
+  it('given respect custom instance numbers when provided', () => {
     const gameState = createGameState([
       { coord: 'E-5', player: 'black', instanceNumber: 5 },
       { coord: 'E-6', player: 'black', instanceNumber: 10 },
@@ -130,7 +130,7 @@ describe('createGameState', () => {
     expect(unit2?.unit.instanceNumber).toBe(10);
   });
 
-  it('should allow explicit instance numbers to repeat', () => {
+  it('given allow explicit instance numbers to repeat', () => {
     const gameState = createGameState([
       { coord: 'E-5', player: 'black', instanceNumber: 1 },
       { coord: 'E-6', player: 'white', instanceNumber: 1 },
@@ -149,7 +149,7 @@ describe('createGameState', () => {
     expect(unit2?.unit.instanceNumber).toBe(1);
   });
 
-  it('should continue auto-assigning after explicit numbers', () => {
+  it('given continue auto-assigning after explicit numbers', () => {
     const gameState = createGameState([
       ['E-5', 'black'],
       { coord: 'E-6', player: 'white', instanceNumber: 99 },
@@ -182,18 +182,18 @@ describe('createGameState', () => {
     expect(unit4?.unit.instanceNumber).toBe(3);
   });
 
-  it('should accept custom initiative', () => {
+  it('given accept custom initiative', () => {
     const gameState = createGameState([], { currentInitiative: 'white' });
     expect(gameState.currentInitiative).toBe('white');
   });
 
-  it('should create an empty game state when no units provided', () => {
+  it('given no units provided, creates an empty game state', () => {
     const gameState = createGameState([]);
     expect(gameState.boardState.boardType).toBe('standard');
     expect(gameState.currentInitiative).toBe('black');
   });
 
-  it('should support mixing tuple and object syntax', () => {
+  it('given support mixing tuple and object syntax', () => {
     const gameState = createGameState([
       ['E-5', 'black'],
       { coord: 'E-6', player: 'white', facing: 'east' },
@@ -221,7 +221,7 @@ describe('createGameState', () => {
 });
 
 describe('createBoard', () => {
-  it('should create a board with units using tuple syntax', () => {
+  it('given defaults, creates a board with units using tuple syntax', () => {
     const board = createBoard([
       ['E-5', 'black'],
       ['E-6', 'white'],
@@ -233,7 +233,7 @@ describe('createBoard', () => {
     expect(whiteUnit).toBeDefined();
   });
 
-  it('should create a board with units using object syntax', () => {
+  it('given defaults, creates a board with units using object syntax', () => {
     const board = createBoard([
       { coord: 'E-5', player: 'black', attack: 3 },
       { coord: 'E-6', player: 'white', flexibility: 2 },
@@ -244,7 +244,7 @@ describe('createBoard', () => {
     expect(whiteUnit).toBeDefined();
   });
 
-  it('should create an empty board when no units provided', () => {
+  it('given no units provided, creates an empty board', () => {
     const board = createBoard([]);
     expect(board.boardType).toBe('standard');
   });

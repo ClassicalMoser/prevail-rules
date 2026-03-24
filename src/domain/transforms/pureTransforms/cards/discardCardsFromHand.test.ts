@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { discardCardsFromHand } from './discardCardsFromHand';
 
 /**
- * discardCardsFromHand: pure transform; implementation in discardCardsFromHand.ts.
+ * discardCardsFromHand: Pure transform to move specified cards from hand to discarded pile.
  */
 describe('discardCardsFromHand', () => {
-  it('should move cards from hand to discarded', () => {
+  it('given move cards from hand to discarded', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -31,7 +31,7 @@ describe('discardCardsFromHand', () => {
     expect(newCardState.white).toBe(cardState.white);
   });
 
-  it('should not mutate the original card state', () => {
+  it('given not mutate the original card state', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -50,7 +50,7 @@ describe('discardCardsFromHand', () => {
     expect(cardState.black.discarded).toBe(originalDiscarded);
   });
 
-  it('should append to existing discarded cards', () => {
+  it('given append to existing discarded cards', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -71,7 +71,7 @@ describe('discardCardsFromHand', () => {
     ]);
   });
 
-  it('should handle multiple cards', () => {
+  it('given handle multiple cards', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,

@@ -9,10 +9,10 @@ import {
 } from './substepStates';
 
 /**
- * createRetreatState: test helper; implementation in substepStates.ts.
+ * createRetreatState: Creates a RetreatState with sensible defaults.
  */
 describe('createRetreatState', () => {
-  it('should return retreat substep with unit and legal options', () => {
+  it('given context, returns retreat substep with unit and legal options', () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
     const state = createRetreatState(unit);
     expect(state.substepType).toBe('retreat');
@@ -23,7 +23,7 @@ describe('createRetreatState', () => {
 });
 
 describe('createRoutState', () => {
-  it('should return rout substep with player and unit', () => {
+  it('given context, returns rout substep with player and unit', () => {
     const unit = createTestUnit('white');
     const state = createRoutState('white', unit);
     expect(state.substepType).toBe('rout');
@@ -34,7 +34,7 @@ describe('createRoutState', () => {
 });
 
 describe('createReverseState', () => {
-  it('should return reverse substep with unit', () => {
+  it('given context, returns reverse substep with unit', () => {
     const unit = createUnitWithPlacement();
     const state = createReverseState(unit);
     expect(state.substepType).toBe('reverse');
@@ -44,14 +44,14 @@ describe('createReverseState', () => {
 });
 
 describe('createRallyResolutionState', () => {
-  it('should return rally resolution with defaults', () => {
+  it('given context, returns rally resolution with defaults', () => {
     const state = createRallyResolutionState();
     expect(state.playerRallied).toBe(false);
     expect(state.rallyResolved).toBe(false);
     expect(state.completed).toBe(false);
   });
 
-  it('should accept overrides', () => {
+  it('given accept overrides', () => {
     const state = createRallyResolutionState({ playerRallied: true });
     expect(state.playerRallied).toBe(true);
   });

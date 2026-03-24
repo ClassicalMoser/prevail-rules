@@ -6,10 +6,10 @@ import { describe, expect, it } from 'vitest';
 import { isLegalCommanderMove } from './isLegalCommanderMove';
 
 /**
- * valid moves: validation rule; implementation in isLegalCommanderMove.ts.
+ * valid moves: Validates whether a commander move event is legal.
  */
 describe('valid moves', () => {
-  it('should return true when commander moves within distance 1', () => {
+  it('given commander moves within distance 1, returns true', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -24,7 +24,7 @@ describe('valid moves', () => {
     expect(result).toBe(true);
   });
 
-  it('should return true when commander moves within distance 4', () => {
+  it('given commander moves within distance 4, returns true', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -39,7 +39,7 @@ describe('valid moves', () => {
     expect(result).toBe(true);
   });
 
-  it('should return true when white commander moves within distance', () => {
+  it('given white commander moves within distance, returns true', () => {
     const board = createBoardWithCommander('white', 'F-6');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -54,7 +54,7 @@ describe('valid moves', () => {
     expect(result).toBe(true);
   });
 
-  it('should return true when commander moves diagonally within distance', () => {
+  it('given commander moves diagonally within distance, returns true', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -71,7 +71,7 @@ describe('valid moves', () => {
 });
 
 describe('invalid moves', () => {
-  it('should return false when commander is not at starting position', () => {
+  it('given commander is not at starting position, returns false', () => {
     const board = createEmptyStandardBoard(); // No commander on board
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -86,7 +86,7 @@ describe('invalid moves', () => {
     expect(result).toBe(false);
   });
 
-  it("should return false when wrong player's commander is at starting position", () => {
+  it("given wrong player's commander is at starting position, returns false", () => {
     const board = createBoardWithCommander('white', 'E-5'); // White commander, not black
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -101,7 +101,7 @@ describe('invalid moves', () => {
     expect(result).toBe(false);
   });
 
-  it('should return false when destination is beyond move distance', () => {
+  it('given destination is beyond move distance, returns false', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -116,7 +116,7 @@ describe('invalid moves', () => {
     expect(result).toBe(false);
   });
 
-  it('should return false when starting coordinate is invalid', () => {
+  it('given starting coordinate is invalid, returns false', () => {
     const board = createEmptyStandardBoard();
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -131,7 +131,7 @@ describe('invalid moves', () => {
     expect(result).toBe(false);
   });
 
-  it('should return false when destination coordinate is invalid', () => {
+  it('given destination coordinate is invalid, returns false', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
       eventType: 'playerChoice',

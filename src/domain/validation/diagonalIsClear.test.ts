@@ -9,28 +9,28 @@ import { describe, expect, it } from 'vitest';
 import { diagonalIsClear } from './diagonalIsClear';
 
 /**
- * diagonalIsClear: validation rule; implementation in diagonalIsClear.ts.
+ * diagonalIsClear: diagonalIsClear.
  */
 describe('diagonalIsClear', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';
   const board = createEmptyStandardBoard();
 
   describe('non-diagonal facings', () => {
-    it('should return false for orthogonal facing', () => {
+    it('given orthogonal facing, returns false', () => {
       const { result } = diagonalIsClear('black', board, coordinate, 'E-6');
       expect(result).toBe(false);
     });
   });
 
   describe('diagonal facings with no enemy units', () => {
-    it('should return true for diagonal facing with no adjacent enemies', () => {
+    it('given diagonal facing with no adjacent enemies, returns true', () => {
       const { result } = diagonalIsClear('black', board, coordinate, 'D-4');
       expect(result).toBe(true);
     });
   });
 
   describe('diagonal facings with one enemy unit', () => {
-    it('should return true when only one adjacent space has an enemy', () => {
+    it('given only one adjacent space has an enemy, returns true', () => {
       // northEast at E-5 has adjacent orthogonal spaces: D-5 (north) and E-6 (east)
       // Place enemy at D-5 only - need more than one enemy to block
       const boardWithEnemy = createBoardWithSingleUnit('D-5', 'white');
@@ -45,7 +45,7 @@ describe('diagonalIsClear', () => {
   });
 
   describe('diagonal facings with two enemy units', () => {
-    it('should return false when both adjacent orthogonal spaces have enemy units', () => {
+    it('given both adjacent orthogonal spaces have enemy units, returns false', () => {
       // northEast at E-5 has adjacent orthogonal spaces: D-5 (north) and E-6 (east)
       const boardWithEnemies = createBoardWithUnits([
         {
@@ -68,7 +68,7 @@ describe('diagonalIsClear', () => {
       expect(result).toBe(false);
     });
 
-    it('should return true for different diagonal directions', () => {
+    it('given different diagonal directions, returns true', () => {
       // southWest at E-5 has adjacent orthogonal spaces: F-5 (south) and E-4 (west)
       const boardWithEnemies = createBoardWithUnits([
         {
@@ -88,7 +88,7 @@ describe('diagonalIsClear', () => {
   });
 
   describe('diagonal facings with friendly units', () => {
-    it('should return true for northEast facing with friendly units at adjacent spaces', () => {
+    it('given northEast facing with friendly units at adjacent spaces, returns true', () => {
       const boardWithFriendlies = createBoardWithUnits([
         {
           unit: createTestUnit('black', { attack: 3 }),
@@ -112,7 +112,7 @@ describe('diagonalIsClear', () => {
   });
 
   describe('diagonal facings with mixed friendly and enemy units', () => {
-    it('should return false for northEast facing with one friendly and one enemy', () => {
+    it('given northEast facing with one friendly and one enemy, returns false', () => {
       const boardWithMixed = createBoardWithUnits([
         {
           unit: createTestUnit('black', { attack: 3 }),
@@ -136,7 +136,7 @@ describe('diagonalIsClear', () => {
   });
 
   describe('edge cases and error handling', () => {
-    it('should return false when coordinate is invalid', () => {
+    it('given coordinate is invalid, returns false', () => {
       const invalidCoordinate = 'Z-99' as StandardBoardCoordinate;
       const { result } = diagonalIsClear(
         'black',
@@ -147,7 +147,7 @@ describe('diagonalIsClear', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when adjacent coordinate is out of bounds', () => {
+    it('given adjacent coordinate is out of bounds, returns false', () => {
       // Test at edge of board where one adjacent space might be undefined
       const edgeCoordinate: StandardBoardCoordinate = 'A-1';
       const { result } = diagonalIsClear(
@@ -159,7 +159,7 @@ describe('diagonalIsClear', () => {
       expect(result).toBe(false);
     });
 
-    it('should work correctly for both player sides', () => {
+    it('given work correctly for both player sides', () => {
       const boardWithEnemies = createBoardWithUnits([
         {
           unit: createTestUnit('black', { attack: 3 }),

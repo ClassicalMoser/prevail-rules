@@ -1,9 +1,11 @@
-/** Tests production `createEmptyGameState` (null awaitingPlay/inPlay). */
+/**
+ * createEmptyGameState (production initializer): full default game state; awaitingPlay/inPlay are null (unlike testing helper).
+ */
 import { describe, expect, it } from 'vitest';
 import { createEmptyGameState } from './createEmptyGameState';
 
 describe('createEmptyGameState', () => {
-  it('should create an empty game state with default values', () => {
+  it('given defaults, produces empty board and card piles with round scaffolding', () => {
     const gameState = createEmptyGameState();
 
     expect(gameState.currentRoundNumber).toBe(0);
@@ -24,7 +26,7 @@ describe('createEmptyGameState', () => {
     expect(gameState.routedUnits.size).toBe(0);
   });
 
-  it('should create a game state with custom initiative', () => {
+  it('given defaults, creates a game state with custom initiative', () => {
     const gameState = createEmptyGameState({ currentInitiative: 'white' });
 
     expect(gameState.currentInitiative).toBe('white');
@@ -39,17 +41,17 @@ describe('createEmptyGameState', () => {
     expect(gameState.cardState.white.inPlay).toBeNull();
   });
 
-  it('should create a game state with a large board size', () => {
+  it('given defaults, creates a game state with a large board size', () => {
     const gameState = createEmptyGameState({ boardSize: 'large' });
     expect(gameState.boardState.boardType).toBe('large');
   });
 
-  it('should create a game state with a standard board size', () => {
+  it('given defaults, creates a game state with a standard board size', () => {
     const gameState = createEmptyGameState({ boardSize: 'standard' });
     expect(gameState.boardState.boardType).toBe('standard');
   });
 
-  it('should create a game state with a small board size', () => {
+  it('given defaults, creates a game state with a small board size', () => {
     const gameState = createEmptyGameState({ boardSize: 'small' });
     expect(gameState.boardState.boardType).toBe('small');
   });

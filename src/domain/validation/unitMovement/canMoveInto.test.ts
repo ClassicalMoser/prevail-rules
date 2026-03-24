@@ -5,11 +5,11 @@ import { describe, expect, it } from 'vitest';
 import { canMoveInto } from './canMoveInto';
 
 /**
- * canMoveInto: validation rule; implementation in canMoveInto.ts.
+ * canMoveInto: Determines whether a unit can move into (end its movement at) a specific coordinate.
  */
 describe('canMoveInto', () => {
   describe('empty space', () => {
-    it('should return true when the space has no unit', () => {
+    it('given the space has no unit, returns true', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -21,7 +21,7 @@ describe('canMoveInto', () => {
   });
 
   describe('engaged units', () => {
-    it('should return false when the space has engaged units', () => {
+    it('given the space has engaged units, returns false', () => {
       let board = createEmptyStandardBoard();
       // Add engaged units at D-5
       board = addUnitToBoard(board, {
@@ -44,7 +44,7 @@ describe('canMoveInto', () => {
   });
 
   describe('friendly units', () => {
-    it('should return false when the space has a single friendly unit', () => {
+    it('given the space has a single friendly unit, returns false', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
         { coord: 'D-5', player: 'black', facing: 'north', speed: 2 },
@@ -58,7 +58,7 @@ describe('canMoveInto', () => {
 
   describe('enemy units', () => {
     describe('advance direction', () => {
-      it('should return true when enemy can be engaged', () => {
+      it('given enemy can be engaged, returns true', () => {
         // canMoveInto delegates to canEngageEnemy for advance direction
         // Detailed engagement tests are in canEngageEnemy.test.ts
         const gameState = createGameState([
@@ -80,7 +80,7 @@ describe('canMoveInto', () => {
         ).toBe(true);
       });
 
-      it('should return false when enemy cannot be engaged', () => {
+      it('given enemy cannot be engaged, returns false', () => {
         const gameState = createGameState([
           { coord: 'E-5', player: 'black', facing: 'north' },
           { coord: 'D-5', player: 'white', facing: 'north' },
@@ -102,7 +102,7 @@ describe('canMoveInto', () => {
     });
 
     describe('retreat direction', () => {
-      it('should return false when attempting to retreat into enemy unit', () => {
+      it('given attempting to retreat into enemy unit, returns false', () => {
         const gameState = createGameState([
           { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
           { coord: 'D-5', player: 'white', facing: 'south', speed: 2 },
@@ -125,7 +125,7 @@ describe('canMoveInto', () => {
   });
 
   describe('error handling', () => {
-    it('should return false for a non-existent coordinate', () => {
+    it('given a non-existent coordinate, returns false', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -144,7 +144,7 @@ describe('canMoveInto', () => {
         ),
       ).toBe(false);
     });
-    it('should return false for an invalid unitPresence', () => {
+    it('given an invalid unitPresence, returns false', () => {
       let board = createEmptyStandardBoard();
       board = addUnitToBoard(board, {
         unit: createTestUnit('black'),

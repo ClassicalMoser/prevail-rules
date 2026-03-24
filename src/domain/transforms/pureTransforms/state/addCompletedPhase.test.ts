@@ -4,10 +4,10 @@ import { addCompletedPhase } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 
 /**
- * addCompletedPhase: pure transform; implementation in addCompletedPhase.ts.
+ * addCompletedPhase: Adds a completed phase to the completed phases set.
  */
 describe('addCompletedPhase', () => {
-  it('should add phase to completed phases set', () => {
+  it('given add phase to completed phases set', () => {
     const state = createEmptyGameState();
     const phaseState = {
       phase: PLAY_CARDS_PHASE,
@@ -22,7 +22,7 @@ describe('addCompletedPhase', () => {
     expect(state.currentRoundState.completedPhases.has(phaseState)).toBe(false);
   });
 
-  it('should not mutate the original state', () => {
+  it('given not mutate the original state', () => {
     const state = createEmptyGameState();
     const originalCompletedPhases = state.currentRoundState.completedPhases;
     const phaseState = {
@@ -37,7 +37,7 @@ describe('addCompletedPhase', () => {
     );
   });
 
-  it('should preserve existing completed phases', () => {
+  it('given preserve existing completed phases', () => {
     const state = createEmptyGameState();
     const firstPhase = {
       phase: PLAY_CARDS_PHASE,

@@ -10,7 +10,7 @@ import { describe, expect, it } from 'vitest';
 import { updateMeleeAttackApplyState } from './updateMeleeAttackApplyState';
 
 /**
- * updateMeleeAttackApplyState: pure transform; implementation in updateMeleeAttackApplyState.ts.
+ * updateMeleeAttackApplyState: Creates a new game state with the attack apply state updated for a specific player in melee resolution.
  */
 describe('updateMeleeAttackApplyState', () => {
   function createStateInResolveMelee() {
@@ -27,7 +27,7 @@ describe('updateMeleeAttackApplyState', () => {
     return updatePhaseState(state, phaseState);
   }
 
-  it('should update white attack apply state', () => {
+  it('given update white attack apply state', () => {
     const state = createStateInResolveMelee();
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const updated = createAttackApplyState(whiteUnit, { completed: true });
@@ -45,7 +45,7 @@ describe('updateMeleeAttackApplyState', () => {
     ).toBe(false);
   });
 
-  it('should update black attack apply state', () => {
+  it('given update black attack apply state', () => {
     const state = createStateInResolveMelee();
     const blackUnit = createTestUnit('black', { attack: 2 });
     const updated = createAttackApplyState(blackUnit, { completed: true });
@@ -63,7 +63,7 @@ describe('updateMeleeAttackApplyState', () => {
     ).toBe(false);
   });
 
-  it('should not mutate the original state', () => {
+  it('given not mutate the original state', () => {
     const state = createStateInResolveMelee();
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const originalCompleted =

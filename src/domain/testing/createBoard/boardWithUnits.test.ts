@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { createBoardWithUnits } from './boardWithUnits';
 
 /**
- * createBoardWithUnits: test helper; implementation in boardWithUnits.ts.
+ * createBoardWithUnits: Creates a board with units at specified positions.
  */
 describe('createBoardWithUnits', () => {
-  it('should place multiple units on board', () => {
+  it('given place multiple units on board', () => {
     const unit1 = createTestUnit('black');
     const unit2 = createTestUnit('white');
     const board = createBoardWithUnits([
@@ -21,7 +21,7 @@ describe('createBoardWithUnits', () => {
     expect(atE6?.unit).toBe(unit2);
   });
 
-  it('should return empty board when no units', () => {
+  it('given no units, returns empty board', () => {
     const board = createBoardWithUnits([]);
     expect(board.boardType).toBe('standard');
   });

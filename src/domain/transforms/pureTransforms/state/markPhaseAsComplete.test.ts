@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { markPhaseAsComplete } from './markPhaseAsComplete';
 
 /**
- * markPhaseAsComplete: pure transform; implementation in markPhaseAsComplete.ts.
+ * markPhaseAsComplete: Creates a new phase state with the step set to 'complete'.
  */
 describe('markPhaseAsComplete', () => {
-  it('should mark play cards phase as complete', () => {
+  it('given mark play cards phase as complete', () => {
     const phaseState = {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards' as const,
@@ -19,7 +19,7 @@ describe('markPhaseAsComplete', () => {
     expect(completedPhase).not.toBe(phaseState);
   });
 
-  it('should mark cleanup phase as complete', () => {
+  it('given mark cleanup phase as complete', () => {
     const phaseState = {
       phase: CLEANUP_PHASE,
       step: 'discardPlayedCards' as const,
@@ -37,7 +37,7 @@ describe('markPhaseAsComplete', () => {
     expect(completedPhase).not.toBe(phaseState);
   });
 
-  it('should preserve all other phase state properties', () => {
+  it('given preserve all other phase state properties', () => {
     const phaseState = {
       phase: CLEANUP_PHASE,
       step: 'firstPlayerResolveRally' as const,

@@ -2,17 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { createUnitWithPlacement } from './unitWithPlacement';
 
 /**
- * createUnitWithPlacement: test helper; implementation in unitWithPlacement.ts.
+ * createUnitWithPlacement: Creates a UnitWithPlacement for testing with sensible defaults.
  */
 describe('createUnitWithPlacement', () => {
-  it('should return unit with default placement when no options', () => {
+  it('given no options, returns unit with default placement', () => {
     const result = createUnitWithPlacement();
     expect(result.placement.coordinate).toBe('E-5');
     expect(result.placement.facing).toBe('north');
     expect(result.unit.playerSide).toBe('black');
   });
 
-  it('should use provided coordinate, facing, and playerSide', () => {
+  it('given use provided coordinate, facing, and playerSide', () => {
     const result = createUnitWithPlacement({
       coordinate: 'D-4',
       facing: 'south',
@@ -23,7 +23,7 @@ describe('createUnitWithPlacement', () => {
     expect(result.unit.playerSide).toBe('white');
   });
 
-  it('should pass unitOptions to createTestUnit', () => {
+  it('given pass unitOptions to createTestUnit', () => {
     const result = createUnitWithPlacement({
       playerSide: 'black',
       unitOptions: { attack: 2, instanceNumber: 2 },

@@ -9,10 +9,10 @@ import {
 } from './attackApplyStates';
 
 /**
- * createAttackApplyState: test helper; implementation in attackApplyStates.ts.
+ * createAttackApplyState: Creates an AttackApplyState with sensible defaults.
  */
 describe('createAttackApplyState', () => {
-  it('should return attackApply substep with defending unit and default result', () => {
+  it('given context, returns attackApply substep with defending unit and default result', () => {
     const unit = createTestUnit('black');
     const state = createAttackApplyState(unit);
     expect(state.substepType).toBe('attackApply');
@@ -23,7 +23,7 @@ describe('createAttackApplyState', () => {
     expect(state.completed).toBe(false);
   });
 
-  it('should accept overrides', () => {
+  it('given accept overrides', () => {
     const unit = createTestUnit('white');
     const state = createAttackApplyState(unit, { completed: true });
     expect(state.completed).toBe(true);
@@ -31,7 +31,7 @@ describe('createAttackApplyState', () => {
 });
 
 describe('createAttackApplyStateWithRetreat', () => {
-  it('should return state with retreat result and retreatState', () => {
+  it('given context, returns state with retreat result and retreatState', () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
     const state = createAttackApplyStateWithRetreat(unit);
     expect(state.attackResult.unitRetreated).toBe(true);
@@ -40,7 +40,7 @@ describe('createAttackApplyStateWithRetreat', () => {
 });
 
 describe('createAttackApplyStateWithRout', () => {
-  it('should return state with rout result and routState', () => {
+  it('given context, returns state with rout result and routState', () => {
     const unit = createTestUnit('white');
     const state = createAttackApplyStateWithRout(unit);
     expect(state.attackResult.unitRouted).toBe(true);
@@ -49,7 +49,7 @@ describe('createAttackApplyStateWithRout', () => {
 });
 
 describe('createAttackApplyStateWithReverse', () => {
-  it('should return state with reverse result and reverseState', () => {
+  it('given context, returns state with reverse result and reverseState', () => {
     const unit = createUnitWithPlacement();
     const state = createAttackApplyStateWithReverse(unit);
     expect(state.attackResult.unitReversed).toBe(true);

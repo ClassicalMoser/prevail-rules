@@ -8,10 +8,10 @@ import { describe, expect, it } from 'vitest';
 import { updateMeleeResolutionState } from './updateMeleeResolutionState';
 
 /**
- * updateMeleeResolutionState: pure transform; implementation in updateMeleeResolutionState.ts.
+ * updateMeleeResolutionState: Creates a new game state with the melee resolution state updated in the resolve melee phase.
  */
 describe('updateMeleeResolutionState', () => {
-  it('should update the melee resolution state in resolve melee phase', () => {
+  it('given update the melee resolution state in resolve melee phase', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const meleeState = createMeleeResolutionState(state);
     const phaseState = createResolveMeleePhaseState(state, {
@@ -30,7 +30,7 @@ describe('updateMeleeResolutionState', () => {
     expect(newPhaseState.currentMeleeResolutionState?.completed).toBe(true);
   });
 
-  it('should not mutate the original state', () => {
+  it('given not mutate the original state', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const meleeState = createMeleeResolutionState(state);
     const phaseState = createResolveMeleePhaseState(state, {
@@ -56,7 +56,7 @@ describe('updateMeleeResolutionState', () => {
     ).toBe(originalMelee);
   });
 
-  it('should throw when no current melee resolution state is set', () => {
+  it('given when no current melee resolution state is set, throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const phaseState = createResolveMeleePhaseState(state, {
       currentMeleeResolutionState: undefined,

@@ -7,40 +7,40 @@ import {
 } from './unitHelpers';
 
 /**
- * createTestUnit: test helper; implementation in unitHelpers.ts.
+ * createTestUnit: Creates a unit instance for testing with sensible defaults.
  */
 describe('createTestUnit', () => {
-  it('should create unit with default attack 3 when no options', () => {
+  it('given no options, creates unit with default attack 3', () => {
     const unit = createTestUnit('black');
     expect(unit.playerSide).toBe('black');
     expect(unit.instanceNumber).toBe(1);
     expect(unit.unitType.stats.attack).toBe(3);
   });
 
-  it('should use custom instance number', () => {
+  it('given use custom instance number', () => {
     const unit = createTestUnit('white', { instanceNumber: 5 });
     expect(unit.instanceNumber).toBe(5);
   });
 
-  it('should create unit from unitType when provided', () => {
+  it('given provided, creates unit from unitType', () => {
     const unitType = tempUnits[0];
     const unit = createTestUnit('black', { unitType });
     expect(unit.unitType).toBe(unitType);
     expect(unit.playerSide).toBe('black');
   });
 
-  it('should create unit by stat value', () => {
+  it('given defaults, creates unit by stat value', () => {
     const unit = createTestUnit('white', { attack: 2 });
     expect(unit.unitType.stats.attack).toBe(2);
   });
 
-  it('should throw when no unit matches specified stats', () => {
+  it('given when no unit matches specified stats, throws', () => {
     expect(() => createTestUnit('black', { attack: 999 })).toThrow(
       'No unit found matching all specified stats: attack=999.',
     );
   });
 
-  it('should create unit by multiple stat values including range', () => {
+  it('given defaults, creates unit by multiple stat values including range', () => {
     const unit = createTestUnit('black', { attack: 2, range: 1 });
     expect(unit.unitType.stats.attack).toBe(2);
     expect(unit.unitType.stats.range).toBe(1);
@@ -48,19 +48,19 @@ describe('createTestUnit', () => {
 });
 
 describe('createUnitByStat', () => {
-  it('should create unit by stat and value', () => {
+  it('given defaults, creates unit by stat and value', () => {
     const unit = createUnitByStat('black', 'attack', 3);
     expect(unit.playerSide).toBe('black');
     expect(unit.unitType.stats.attack).toBe(3);
     expect(unit.instanceNumber).toBe(1);
   });
 
-  it('should use custom instance number', () => {
+  it('given use custom instance number', () => {
     const unit = createUnitByStat('white', 'flexibility', 1, 2);
     expect(unit.instanceNumber).toBe(2);
   });
 
-  it('should throw when no unit has stat value', () => {
+  it('given when no unit has stat value, throws', () => {
     expect(() => createUnitByStat('black', 'attack', 999)).toThrow(
       'No unit found with attack value 999.',
     );
@@ -68,7 +68,7 @@ describe('createUnitByStat', () => {
 });
 
 describe('createTestUnits', () => {
-  it('should create multiple units with sequential instance numbers', () => {
+  it('given defaults, creates multiple units with sequential instance numbers', () => {
     const units = createTestUnits('black', 3);
     expect(units).toHaveLength(3);
     expect(units[0].instanceNumber).toBe(1);
@@ -76,7 +76,7 @@ describe('createTestUnits', () => {
     expect(units[2].instanceNumber).toBe(3);
   });
 
-  it('should pass options to each unit', () => {
+  it('given pass options to each unit', () => {
     const units = createTestUnits('white', 2, { attack: 3 });
     expect(units[0].unitType.stats.attack).toBe(3);
     expect(units[1].unitType.stats.attack).toBe(3);

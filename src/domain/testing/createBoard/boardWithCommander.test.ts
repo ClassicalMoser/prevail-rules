@@ -4,15 +4,15 @@ import { createBoardWithCommander } from './boardWithCommander';
 import { createBoardWithSingleUnit } from './boardWithSingleUnit';
 
 /**
- * createBoardWithCommander: test helper; implementation in boardWithCommander.ts.
+ * createBoardWithCommander: Creates a board with a commander at a coordinate.
  */
 describe('createBoardWithCommander', () => {
-  it('should add commander to empty board', () => {
+  it('given add commander to empty board', () => {
     const board = createBoardWithCommander('white', 'E-5');
     expect(board.board['E-5']?.commanders).toEqual(new Set(['white']));
   });
 
-  it('should add commander to existing board when provided', () => {
+  it('given add commander to existing board when provided', () => {
     const base = createBoardWithSingleUnit('E-6', 'black');
     const board = createBoardWithCommander('white', 'E-5', base);
     expect(board.board['E-5']?.commanders).toEqual(new Set(['white']));

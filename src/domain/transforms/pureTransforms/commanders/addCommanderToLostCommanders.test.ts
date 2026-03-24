@@ -3,11 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { addCommanderToLostCommanders } from './addCommanderToLostCommanders';
 
 /**
- * addCommanderToLostCommanders: pure transform; implementation in addCommanderToLostCommanders.ts.
+ * addCommanderToLostCommanders: addCommanderToLostCommanders.
  */
 describe('addCommanderToLostCommanders', () => {
   describe('adding commander to empty set', () => {
-    it('should add commander to lost commanders set', () => {
+    it('given add commander to lost commanders set', () => {
       const gameState = createEmptyGameState();
 
       const newGameState = addCommanderToLostCommanders(gameState, 'black');
@@ -16,7 +16,7 @@ describe('addCommanderToLostCommanders', () => {
       expect(newGameState.lostCommanders).toEqual(new Set(['black']));
     });
 
-    it('should not mutate the original game state', () => {
+    it('given not mutate the original game state', () => {
       const gameState = createEmptyGameState();
 
       addCommanderToLostCommanders(gameState, 'white');
@@ -26,7 +26,7 @@ describe('addCommanderToLostCommanders', () => {
   });
 
   describe('adding multiple commanders', () => {
-    it('should add second commander while preserving first', () => {
+    it('given add second commander while preserving first', () => {
       const gameState = createEmptyGameState();
       const gameStateWithBlack = addCommanderToLostCommanders(
         gameState,
@@ -41,7 +41,7 @@ describe('addCommanderToLostCommanders', () => {
       expect(newGameState.lostCommanders).toEqual(new Set(['black', 'white']));
     });
 
-    it('should not mutate the original game state when adding second commander', () => {
+    it('given adding second commander, does not mutate the original game state', () => {
       const gameState = createEmptyGameState();
       const gameStateWithBlack = addCommanderToLostCommanders(
         gameState,
@@ -55,7 +55,7 @@ describe('addCommanderToLostCommanders', () => {
   });
 
   describe('error cases', () => {
-    it('should throw error when commander already lost', () => {
+    it('given error when commander already lost, throws', () => {
       const gameState = createEmptyGameState();
       const gameStateWithBlack = addCommanderToLostCommanders(
         gameState,
@@ -67,7 +67,7 @@ describe('addCommanderToLostCommanders', () => {
       ).toThrow('Commander already lost');
     });
 
-    it('should throw error when trying to add already lost white commander', () => {
+    it('given error when trying to add already lost white commander, throws', () => {
       const gameState = createEmptyGameState();
       const gameStateWithWhite = addCommanderToLostCommanders(
         gameState,
@@ -81,14 +81,14 @@ describe('addCommanderToLostCommanders', () => {
   });
 
   describe('preserving other game state', () => {
-    it('should preserve routed units', () => {
+    it('given preserve routed units', () => {
       const gameState = createEmptyGameState();
       const newGameState = addCommanderToLostCommanders(gameState, 'black');
 
       expect(newGameState.routedUnits).toBe(gameState.routedUnits);
     });
 
-    it('should preserve reserved units', () => {
+    it('given preserve reserved units', () => {
       const gameState = createEmptyGameState();
 
       const newGameState = addCommanderToLostCommanders(gameState, 'black');
@@ -96,7 +96,7 @@ describe('addCommanderToLostCommanders', () => {
       expect(newGameState.reservedUnits).toBe(gameState.reservedUnits);
     });
 
-    it('should preserve board state', () => {
+    it('given preserve board state', () => {
       const gameState = createEmptyGameState();
 
       const newGameState = addCommanderToLostCommanders(gameState, 'black');
@@ -104,7 +104,7 @@ describe('addCommanderToLostCommanders', () => {
       expect(newGameState.boardState).toBe(gameState.boardState);
     });
 
-    it('should preserve card state', () => {
+    it('given preserve card state', () => {
       const gameState = createEmptyGameState();
 
       const newGameState = addCommanderToLostCommanders(gameState, 'black');

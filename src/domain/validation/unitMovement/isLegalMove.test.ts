@@ -6,11 +6,11 @@ import { describe, expect, it } from 'vitest';
 import { isLegalMove } from './isLegalMove';
 
 /**
- * isLegalMove: validation rule; implementation in isLegalMove.ts.
+ * isLegalMove: Validates whether a unit move event is legal according to game rules.
  */
 describe('isLegalMove', () => {
   describe('core functionality', () => {
-    it('should return true for a legal move', () => {
+    it('given a legal move, returns true', () => {
       const unitInstance = createTestUnit('black', { speed: 2 });
       const gameState = createEmptyGameState();
       let board = gameState.boardState;
@@ -35,7 +35,7 @@ describe('isLegalMove', () => {
     });
   });
   describe('bad inputs', () => {
-    it('should return false for a move that is not legal', () => {
+    it('given a move that is not legal, returns false', () => {
       const unitInstance = createTestUnit('black', { speed: 2 });
       const gameState = createEmptyGameState();
       const moveUnitEvent: MoveUnitEvent<Board> = {

@@ -7,10 +7,10 @@ import {
 } from './commandResolutionStates';
 
 /**
- * createMovementResolutionState: test helper; implementation in commandResolutionStates.ts.
+ * createMovementResolutionState: Creates a MovementResolutionState with sensible defaults.
  */
 describe('createMovementResolutionState', () => {
-  it('should return movement command resolution with unit and commitment', () => {
+  it('given context, returns movement command resolution with unit and commitment', () => {
     const state = createEmptyGameState();
     const resolution = createMovementResolutionState(state);
     expect(resolution.commandResolutionType).toBe('movement');
@@ -22,7 +22,7 @@ describe('createMovementResolutionState', () => {
 });
 
 describe('createRangedAttackResolutionState', () => {
-  it('should return rangedAttack command resolution with commitments', () => {
+  it('given context, returns rangedAttack command resolution with commitments', () => {
     const state = createEmptyGameState();
     const resolution = createRangedAttackResolutionState(state);
     expect(resolution.commandResolutionType).toBe('rangedAttack');
@@ -34,7 +34,7 @@ describe('createRangedAttackResolutionState', () => {
 });
 
 describe('createMeleeResolutionState', () => {
-  it('should return melee resolution with location and commitments', () => {
+  it('given context, returns melee resolution with location and commitments', () => {
     const state = createEmptyGameState();
     const resolution = createMeleeResolutionState(state);
     expect(resolution.substepType).toBe('meleeResolution');

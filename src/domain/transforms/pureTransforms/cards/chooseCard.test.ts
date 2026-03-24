@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { chooseCard } from './chooseCard';
 
 /**
- * chooseCard: pure transform; implementation in chooseCard.ts.
+ * chooseCard: Moves a card from a player's hand to awaitingPlay (choosing a card for play).
  */
 describe('chooseCard', () => {
   function cardStateWithHands(

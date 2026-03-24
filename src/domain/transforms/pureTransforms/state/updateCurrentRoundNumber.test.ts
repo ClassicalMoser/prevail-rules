@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { updateCurrentRoundNumber } from './updateCurrentRoundNumber';
 
 /**
- * updateCurrentRoundNumber: pure transform; implementation in updateCurrentRoundNumber.ts.
+ * updateCurrentRoundNumber: Creates a new game state with the current round number updated.
  */
 describe('updateCurrentRoundNumber', () => {
-  it('should update the current round number', () => {
+  it('given update the current round number', () => {
     const state = createEmptyGameState();
     const newRoundNumber = 5;
 
@@ -16,7 +16,7 @@ describe('updateCurrentRoundNumber', () => {
     expect(newState).not.toBe(state);
   });
 
-  it('should preserve all other state properties', () => {
+  it('given preserve all other state properties', () => {
     const state = createEmptyGameState();
     const newRoundNumber = 3;
 

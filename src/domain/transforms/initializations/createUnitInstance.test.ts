@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { createUnitInstance } from './createUnitInstance';
 
 /**
- * createUnitInstance: state / domain transition under test; implementation in createUnitInstance.ts.
+ * createUnitInstance: Creates a unit instance with the specified properties.
  */
 describe('createUnitInstance', () => {
-  it('should create a unit instance with the specified properties', () => {
+  it('given defaults, creates a unit instance with the specified properties', () => {
     const unitType = getUnitByStatValue('attack', 3);
     if (!unitType) {
       throw new Error('No unit found with attack value 3');

@@ -4,11 +4,11 @@ import { describe, expect, it } from 'vitest';
 import { eachCommanderPresentOnce } from './eachCommanderPresentOnce';
 
 /**
- * eachCommanderPresentOnce: validation rule; implementation in eachCommanderPresentOnce.ts.
+ * eachCommanderPresentOnce: eachCommanderPresentOnce.
  */
 describe('eachCommanderPresentOnce', () => {
   describe('valid cases', () => {
-    it('should return true when both commanders are present on the board', () => {
+    it('given both commanders are present on the board, returns true', () => {
       const gameState = createEmptyGameState();
       let board = createBoardWithCommander('black', 'E-5');
       board = createBoardWithCommander('white', 'E-6', board);
@@ -20,7 +20,7 @@ describe('eachCommanderPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when both commanders are in lostCommanders', () => {
+    it('given both commanders are in lostCommanders, returns true', () => {
       const gameState = createEmptyGameState();
       const lostCommanders = new Set<PlayerSide>(['black', 'white']);
 
@@ -31,7 +31,7 @@ describe('eachCommanderPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when one commander is on board and one is lost', () => {
+    it('given one commander is on board and one is lost, returns true', () => {
       const gameState = createEmptyGameState();
       const board = createBoardWithCommander('black', 'E-5');
       const lostCommanders = new Set<PlayerSide>(['white']);
@@ -44,7 +44,7 @@ describe('eachCommanderPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when both commanders are on the same space', () => {
+    it('given both commanders are on the same space, returns true', () => {
       const gameState = createEmptyGameState();
       const board = createEmptyGameState().boardState;
       board.board['E-5'] = {
@@ -110,7 +110,7 @@ describe('eachCommanderPresentOnce', () => {
       },
     );
 
-    it('should return false when both commanders are missing', () => {
+    it('given both commanders are missing, returns false', () => {
       const gameState = createEmptyGameState();
 
       const { result } = eachCommanderPresentOnce(gameState);
@@ -119,7 +119,7 @@ describe('eachCommanderPresentOnce', () => {
   });
 
   describe('error handling', () => {
-    it('should return false when an error occurs during validation', () => {
+    it('given an error occurs during validation, returns false', () => {
       const gameState = createEmptyGameState();
       const board = createEmptyGameState().boardState;
       delete (board.board as any)['E-5'];

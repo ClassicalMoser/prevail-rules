@@ -8,10 +8,10 @@ import {
 } from './gameStateWithBoard';
 
 /**
- * createGameStateWithSingleUnit: test helper; implementation in gameStateWithBoard.ts.
+ * createGameStateWithSingleUnit: Creates a game state with a single unit at a coordinate.
  */
 describe('createGameStateWithSingleUnit', () => {
-  it('should return game state with single unit on board', () => {
+  it('given context, returns game state with single unit on board', () => {
     const state = createGameStateWithSingleUnit('E-5', 'black');
     expect(state.boardState.boardType).toBe('standard');
     expect(
@@ -21,7 +21,7 @@ describe('createGameStateWithSingleUnit', () => {
 });
 
 describe('createGameStateWithEngagedUnits', () => {
-  it('should return game state with engaged units', () => {
+  it('given context, returns game state with engaged units', () => {
     const primary = createTestUnit('black');
     const secondary = createTestUnit('white');
     const state = createGameStateWithEngagedUnits(primary, secondary);
@@ -32,7 +32,7 @@ describe('createGameStateWithEngagedUnits', () => {
 });
 
 describe('createGameStateWithUnits', () => {
-  it('should return game state with multiple units', () => {
+  it('given context, returns game state with multiple units', () => {
     const unit1 = createTestUnit('black');
     const unit2 = createTestUnit('white');
     const state = createGameStateWithUnits([

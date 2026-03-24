@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { updateCardState } from './updateCardState';
 
 /**
- * updateCardState: pure transform; implementation in updateCardState.ts.
+ * updateCardState: Creates a new game state with the card state updated.
  */
 describe('updateCardState', () => {
-  it('should update card state with object', () => {
+  it('given update card state with object', () => {
     const state = createEmptyGameState();
     const newCardState = {
       ...state.cardState,
@@ -23,7 +23,7 @@ describe('updateCardState', () => {
     expect(newState.cardState.white).toBe(state.cardState.white);
   });
 
-  it('should update card state with function', () => {
+  it('given update card state with function', () => {
     const state = createEmptyGameState();
 
     const newState = updateCardState(state, (current) => ({
@@ -37,7 +37,7 @@ describe('updateCardState', () => {
     expect(newState.cardState.black.inHand).toEqual([commandCards[0]]);
   });
 
-  it('should not mutate the original state', () => {
+  it('given not mutate the original state', () => {
     const state = createEmptyGameState();
     const originalCardState = state.cardState;
 

@@ -1,10 +1,13 @@
-/** Tests `testing/createEmptyGameState` (sample cards in awaitingPlay/inPlay). For null placeholders see `transforms/initializations/createEmptyGameState.test.ts`. */
+/**
+ * createEmptyGameState (testing helper): minimal game state for tests; seeds sample cards in awaitingPlay/inPlay.
+ * For full initializer behavior see `transforms/initializations/createEmptyGameState.test.ts`.
+ */
 import { commandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
 import { createEmptyGameState } from './createEmptyGameState';
 
 describe('createEmptyGameState', () => {
-  it('should create an empty game state with default values', () => {
+  it('given defaults, returns empty round/board/cards shell', () => {
     const gameState = createEmptyGameState();
 
     expect(gameState.currentRoundNumber).toBe(0);
@@ -25,7 +28,7 @@ describe('createEmptyGameState', () => {
     expect(gameState.routedUnits.size).toBe(0);
   });
 
-  it('should create a game state with custom initiative', () => {
+  it('given custom initiative option, sets currentInitiative', () => {
     const gameState = createEmptyGameState({ currentInitiative: 'white' });
 
     expect(gameState.currentInitiative).toBe('white');

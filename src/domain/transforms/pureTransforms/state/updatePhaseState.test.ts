@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { updatePhaseState } from './updatePhaseState';
 
 /**
- * updatePhaseState: pure transform; implementation in updatePhaseState.ts.
+ * updatePhaseState: Creates a new game state with the phase state updated.
  */
 describe('updatePhaseState', () => {
-  it('should update the phase state', () => {
+  it('given update the phase state', () => {
     const state = createEmptyGameState();
     const newPhaseState = {
       phase: PLAY_CARDS_PHASE,
@@ -19,7 +19,7 @@ describe('updatePhaseState', () => {
     expect(newState.currentRoundState.currentPhaseState).toEqual(newPhaseState);
   });
 
-  it('should not mutate the original state', () => {
+  it('given not mutate the original state', () => {
     const state = createEmptyGameState();
     const originalPhaseState = state.currentRoundState.currentPhaseState;
     const newPhaseState = {
@@ -32,7 +32,7 @@ describe('updatePhaseState', () => {
     expect(state.currentRoundState.currentPhaseState).toBe(originalPhaseState);
   });
 
-  it('should update to different phase and step', () => {
+  it('given update to different phase and step', () => {
     const state = createEmptyGameState();
     const newPhaseState = {
       phase: MOVE_COMMANDERS_PHASE,

@@ -5,10 +5,10 @@ import { describe, expect, it } from 'vitest';
 import { updateRemainingCommandsForPlayer } from './updateRemainingCommandsForPlayer';
 
 /**
- * updateRemainingCommandsForPlayer: pure transform; implementation in updateRemainingCommandsForPlayer.ts.
+ * updateRemainingCommandsForPlayer: Updates the remaining commands for a specific player in the issue commands phase state.
  */
 describe('updateRemainingCommandsForPlayer', () => {
-  it('should update remainingCommandsFirstPlayer when player is initiative player', () => {
+  it('given update remainingCommandsFirstPlayer when player is initiative player', () => {
     const phaseState: IssueCommandsPhaseState<StandardBoard> = {
       phase: ISSUE_COMMANDS_PHASE,
       step: 'firstPlayerIssueCommands' as const,
@@ -35,7 +35,7 @@ describe('updateRemainingCommandsForPlayer', () => {
     );
   });
 
-  it('should update remainingCommandsSecondPlayer when player is not initiative player', () => {
+  it('given update remainingCommandsSecondPlayer when player is not initiative player', () => {
     const phaseState: IssueCommandsPhaseState<StandardBoard> = {
       phase: ISSUE_COMMANDS_PHASE,
       step: 'firstPlayerIssueCommands' as const,
@@ -60,7 +60,7 @@ describe('updateRemainingCommandsForPlayer', () => {
     expect(newPhaseState.remainingCommandsFirstPlayer).not.toEqual(newCommands);
   });
 
-  it('should not mutate the original phase state', () => {
+  it('given not mutate the original phase state', () => {
     const phaseState: IssueCommandsPhaseState<StandardBoard> = {
       phase: ISSUE_COMMANDS_PHASE,
       step: 'firstPlayerIssueCommands' as const,

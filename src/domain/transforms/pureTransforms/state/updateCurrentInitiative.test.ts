@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { updateCurrentInitiative } from './updateCurrentInitiative';
 
 /**
- * updateCurrentInitiative: pure transform; implementation in updateCurrentInitiative.ts.
+ * updateCurrentInitiative: Creates a new game state with the current initiative player updated.
  */
 describe('updateCurrentInitiative', () => {
   it('updates the initiative player', () => {

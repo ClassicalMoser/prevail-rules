@@ -16,7 +16,7 @@ import { describe, expect, it } from 'vitest';
 import { isAtPlacement } from './isAtPlacement';
 
 /**
- * isAtPlacement: validation rule; implementation in isAtPlacement.ts.
+ * isAtPlacement: Determines whether a unit is at a specific placement on the board.
  */
 describe('isAtPlacement', () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();
@@ -51,7 +51,7 @@ describe('isAtPlacement', () => {
   };
 
   describe('invalid inputs', () => {
-    it('should return false for a non-existent coordinate', () => {
+    it('given a non-existent coordinate, returns false', () => {
       const unit = createUnit('black');
       const invalidCoordinate = 'Z-99' as StandardBoardCoordinate;
       const unitWithPlacement = createUnitWithPlacement(
@@ -66,7 +66,7 @@ describe('isAtPlacement', () => {
   });
 
   describe('empty space', () => {
-    it('should return false for an empty space with no unit presence', () => {
+    it('given an empty space with no unit presence, returns false', () => {
       const unit = createUnit('black');
       const unitWithPlacement = createUnitWithPlacement(
         unit,
@@ -80,7 +80,7 @@ describe('isAtPlacement', () => {
   });
 
   describe('single friendly unit', () => {
-    it('should return true when unit matches exactly', () => {
+    it('given unit matches exactly, returns true', () => {
       const unit = createUnit('black');
       const board = createBoardWithUnits([
         { unit, coordinate, facing: 'north' },
@@ -95,7 +95,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when facing does not match', () => {
+    it('given facing does not match, returns false', () => {
       const unit = createUnit('black');
       const board = createBoardWithUnits([
         { unit, coordinate, facing: 'north' },
@@ -110,7 +110,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when playerSide does not match', () => {
+    it('given playerSide does not match, returns false', () => {
       const unit = createUnit('black');
       const differentPlayerUnit = createUnit('white');
       const board = createBoardWithUnits([
@@ -126,7 +126,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when unitType does not match', () => {
+    it('given unitType does not match, returns false', () => {
       const unit = createUnit('black', flexibility1UnitType);
       const differentTypeUnit = createUnit('black', flexibility2UnitType);
       const board = createBoardWithUnits([
@@ -142,7 +142,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when instanceNumber does not match', () => {
+    it('given instanceNumber does not match, returns false', () => {
       const unit = createUnit('black', flexibility1UnitType, 1);
       const differentInstanceUnit = createUnit(
         'black',
@@ -162,7 +162,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return true when unit matches by value (different object reference)', () => {
+    it('given unit matches by value (different object reference), returns true', () => {
       const unit = createUnit('black', flexibility1UnitType, 1);
       const board = createBoardWithUnits([
         { unit, coordinate, facing: 'north' },
@@ -181,7 +181,7 @@ describe('isAtPlacement', () => {
   });
 
   describe('single enemy unit', () => {
-    it('should return false when unit at coordinate is an enemy', () => {
+    it('given unit at coordinate is an enemy, returns false', () => {
       const enemyUnit = createUnit('white');
       const friendlyUnit = createUnit('black');
       const board = createBoardWithUnits([
@@ -199,7 +199,7 @@ describe('isAtPlacement', () => {
   });
 
   describe('engaged units - primary unit is friendly', () => {
-    it('should return true when primary unit matches exactly', () => {
+    it('given primary unit matches exactly, returns true', () => {
       const primaryUnit = createUnit('black');
       const secondaryUnit = createUnit('white');
       const board = createBoardWithEngagedUnits(
@@ -218,7 +218,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when primary unit facing does not match', () => {
+    it('given primary unit facing does not match, returns false', () => {
       const primaryUnit = createUnit('black');
       const secondaryUnit = createUnit('white');
       const board = createBoardWithEngagedUnits(
@@ -237,7 +237,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when primary unit playerSide does not match', () => {
+    it('given primary unit playerSide does not match, returns false', () => {
       const primaryUnit = createUnit('black');
       const secondaryUnit = createUnit('white');
       const differentPlayerUnit = createUnit('white');
@@ -257,7 +257,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when primary unit unitType does not match', () => {
+    it('given primary unit unitType does not match, returns false', () => {
       const primaryUnit = createUnit('black', flexibility1UnitType);
       const secondaryUnit = createUnit('white');
       const differentTypeUnit = createUnit('black', flexibility2UnitType);
@@ -277,7 +277,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when primary unit instanceNumber does not match', () => {
+    it('given primary unit instanceNumber does not match, returns false', () => {
       const primaryUnit = createUnit('black', flexibility1UnitType, 1);
       const secondaryUnit = createUnit('white');
       const differentInstanceUnit = createUnit(
@@ -303,7 +303,7 @@ describe('isAtPlacement', () => {
   });
 
   describe('engaged units - secondary unit is friendly', () => {
-    it('should return true when secondary unit matches exactly', () => {
+    it('given secondary unit matches exactly, returns true', () => {
       const primaryUnit = createUnit('white');
       const secondaryUnit = createUnit('black');
       const board = createBoardWithEngagedUnits(
@@ -323,7 +323,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when secondary unit facing does not match', () => {
+    it('given secondary unit facing does not match, returns false', () => {
       const primaryUnit = createUnit('white');
       const secondaryUnit = createUnit('black');
       const board = createBoardWithEngagedUnits(
@@ -343,7 +343,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when secondary unit playerSide does not match', () => {
+    it('given secondary unit playerSide does not match, returns false', () => {
       const primaryUnit = createUnit('white');
       const secondaryUnit = createUnit('black');
       const differentPlayerUnit = createUnit('white');
@@ -363,7 +363,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when secondary unit unitType does not match', () => {
+    it('given secondary unit unitType does not match, returns false', () => {
       const primaryUnit = createUnit('white');
       const secondaryUnit = createUnit('black', flexibility1UnitType);
       const differentTypeUnit = createUnit('black', flexibility2UnitType);
@@ -383,7 +383,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when secondary unit instanceNumber does not match', () => {
+    it('given secondary unit instanceNumber does not match, returns false', () => {
       const primaryUnit = createUnit('white');
       const secondaryUnit = createUnit('black', flexibility1UnitType, 1);
       const differentInstanceUnit = createUnit(
@@ -407,7 +407,7 @@ describe('isAtPlacement', () => {
       expect(result).toBe(false);
     });
 
-    it('should return true when secondary unit matches by value with diagonal facing', () => {
+    it('given secondary unit matches by value with diagonal facing, returns true', () => {
       const primaryUnit = createUnit('white');
       const secondaryUnit = createUnit('black');
       const board = createBoardWithEngagedUnits(

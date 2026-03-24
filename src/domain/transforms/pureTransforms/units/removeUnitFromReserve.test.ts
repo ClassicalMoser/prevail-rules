@@ -3,11 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { removeUnitFromReserve } from './removeUnitFromReserve';
 
 /**
- * removeUnitFromReserve: pure transform; implementation in removeUnitFromReserve.ts.
+ * removeUnitFromReserve: removeUnitFromReserve.
  */
 describe('removeUnitFromReserve', () => {
   describe('removing unit from reserve with one unit', () => {
-    it('should remove unit and leave empty set', () => {
+    it('given remove unit and leave empty set', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { attack: 3 });
       gameState.reservedUnits = new Set([unit]);
@@ -18,7 +18,7 @@ describe('removeUnitFromReserve', () => {
       expect(newGameState.reservedUnits.size).toBe(0);
     });
 
-    it('should not mutate the original game state', () => {
+    it('given not mutate the original game state', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { attack: 3 });
       gameState.reservedUnits = new Set([unit]);
@@ -31,7 +31,7 @@ describe('removeUnitFromReserve', () => {
   });
 
   describe('removing unit from reserve with multiple units', () => {
-    it('should remove one unit and preserve others', () => {
+    it('given remove one unit and preserve others', () => {
       const gameState = createEmptyGameState();
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
@@ -44,7 +44,7 @@ describe('removeUnitFromReserve', () => {
       expect([...newGameState.reservedUnits]).not.toContain(unit1);
     });
 
-    it('should remove by value equality when passing different reference', () => {
+    it('given remove by value equality when passing different reference', () => {
       const gameState = createEmptyGameState();
       const unitInReserve = createTestUnit('black', {
         attack: 3,
@@ -66,7 +66,7 @@ describe('removeUnitFromReserve', () => {
       expect([...newGameState.reservedUnits]).toContain(unit2);
     });
 
-    it('should not mutate the original game state when removing from multiple units', () => {
+    it('given removing from multiple units, does not mutate the original game state', () => {
       const gameState = createEmptyGameState();
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
@@ -81,7 +81,7 @@ describe('removeUnitFromReserve', () => {
   });
 
   describe('error cases', () => {
-    it('should throw error when unit not present in reserve', () => {
+    it('given error when unit not present in reserve, throws', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { attack: 3 });
 
@@ -90,7 +90,7 @@ describe('removeUnitFromReserve', () => {
       );
     });
 
-    it('should throw error when trying to remove unit with different instance number', () => {
+    it('given error when trying to remove unit with different instance number, throws', () => {
       const gameState = createEmptyGameState();
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
@@ -101,7 +101,7 @@ describe('removeUnitFromReserve', () => {
       );
     });
 
-    it('should throw error when trying to remove already removed unit', () => {
+    it('given error when trying to remove already removed unit, throws', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { attack: 3 });
       gameState.reservedUnits = new Set([unit]);
@@ -114,7 +114,7 @@ describe('removeUnitFromReserve', () => {
   });
 
   describe('preserving other game state', () => {
-    it('should preserve routed units', () => {
+    it('given preserve routed units', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { attack: 3 });
       gameState.reservedUnits = new Set([unit]);

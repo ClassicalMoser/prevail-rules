@@ -9,13 +9,13 @@ import { describe, expect, it } from 'vitest';
 import { hasEnemyUnit } from './hasEnemyUnit';
 
 /**
- * hasEnemyUnit: validation rule; implementation in hasEnemyUnit.ts.
+ * hasEnemyUnit: Checks if an enemy unit is found in the space.
  */
 describe('hasEnemyUnit', () => {
   const coordinate = 'E-5';
 
   describe('none unit presence', () => {
-    it('should return false when there is no unit', () => {
+    it('given there is no unit, returns false', () => {
       const board = createEmptyStandardBoard();
       const space: BoardSpace = board.board[coordinate];
       const { result: blackResult } = hasEnemyUnit('black', space);
@@ -26,21 +26,21 @@ describe('hasEnemyUnit', () => {
   });
 
   describe('single unit presence', () => {
-    it('should return false when there is a friendly unit', () => {
+    it('given there is a friendly unit, returns false', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
       const space: BoardSpace = board.board[coordinate];
       const { result } = hasEnemyUnit('black', space);
       expect(result).toBe(false);
     });
 
-    it('should return true when there is an enemy unit', () => {
+    it('given there is an enemy unit, returns true', () => {
       const board = createBoardWithSingleUnit(coordinate, 'white');
       const space: BoardSpace = board.board[coordinate];
       const { result } = hasEnemyUnit('black', space);
       expect(result).toBe(true);
     });
 
-    it('should return true for white player when there is a black enemy unit', () => {
+    it('given there is a black enemy unit, returns true for white player', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
       const space: BoardSpace = board.board[coordinate];
       const { result } = hasEnemyUnit('white', space);
@@ -49,7 +49,7 @@ describe('hasEnemyUnit', () => {
   });
 
   describe('engaged unit presence', () => {
-    it('should return true when units are engaged (always contains an enemy)', () => {
+    it('given units are engaged (always contains an enemy), returns true', () => {
       const blackUnit = createTestUnit('black', { attack: 3 });
       const whiteUnit = createTestUnit('white', { attack: 3 });
       const board = createBoardWithEngagedUnits(
@@ -68,7 +68,7 @@ describe('hasEnemyUnit', () => {
   });
 
   describe('error handling', () => {
-    it('should return false when unitPresence has invalid type', () => {
+    it('given unitPresence has invalid type, returns false', () => {
       const board = createEmptyStandardBoard();
       const space: BoardSpace = board.board[coordinate];
       // Use type assertion to bypass TypeScript's type checking and set unitPresence to an invalid value
@@ -81,7 +81,7 @@ describe('hasEnemyUnit', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when unitPresence is missing required properties', () => {
+    it('given unitPresence is missing required properties, returns false', () => {
       const board = createEmptyStandardBoard();
       const space: BoardSpace = board.board[coordinate];
       // Create a malformed unitPresence that might cause errors when accessing properties

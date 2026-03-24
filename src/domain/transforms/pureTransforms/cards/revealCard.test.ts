@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { revealCard } from './revealCard';
 
 /**
- * revealCard: pure transform; implementation in revealCard.ts.
+ * revealCard: Moves a player's card from awaitingPlay to inPlay.
  */
 describe('revealCard', () => {
-  it('should move card from awaitingPlay to inPlay', () => {
+  it('given move card from awaitingPlay to inPlay', () => {
     const gameState = createEmptyGameState();
     const cardState = gameState.cardState;
     const blackCard = cardState.black.awaitingPlay;
@@ -22,7 +22,7 @@ describe('revealCard', () => {
     expect(newCardState.white).toBe(cardState.white);
   });
 
-  it('should throw if player has no card awaiting play', () => {
+  it('given if player has no card awaiting play, throws', () => {
     const gameState = createEmptyGameState();
     const cardState = gameState.cardState;
     const cardStateWithoutAwaiting = {
@@ -38,7 +38,7 @@ describe('revealCard', () => {
     );
   });
 
-  it('should not mutate the original card state', () => {
+  it('given not mutate the original card state', () => {
     const gameState = createEmptyGameState();
     const cardState = gameState.cardState;
     const originalBlackAwaiting = cardState.black.awaitingPlay;

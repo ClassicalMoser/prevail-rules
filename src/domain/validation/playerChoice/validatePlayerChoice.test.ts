@@ -13,7 +13,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { validatePlayerChoice } from './validatePlayerChoice';
 
 /**
- * validatePlayerChoice: validation rule; implementation in validatePlayerChoice.ts.
+ * validatePlayerChoice: Validates a player choice against the current game state.
  */
 describe('validatePlayerChoice', () => {
   function stateInPlayCardsChooseCards(): GameState<StandardBoard> {

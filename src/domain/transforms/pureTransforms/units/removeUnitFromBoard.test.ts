@@ -11,7 +11,7 @@ import { describe, expect, it } from 'vitest';
 import { removeUnitFromBoard } from './removeUnitFromBoard';
 
 /**
- * removeUnitFromBoard: pure transform; implementation in removeUnitFromBoard.ts.
+ * removeUnitFromBoard: removeUnitFromBoard.
  */
 describe('removeUnitFromBoard', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';
@@ -32,7 +32,7 @@ describe('removeUnitFromBoard', () => {
   };
 
   describe('empty space', () => {
-    it('should throw error when trying to remove unit from empty space', () => {
+    it('given error when trying to remove unit from empty space, throws', () => {
       const board = createEmptyStandardBoard();
       const unit = createTestUnit('black', { attack: 3 });
       const unitWithPlacement = createUnitWithPlacement(
@@ -48,7 +48,7 @@ describe('removeUnitFromBoard', () => {
   });
 
   describe('single unit', () => {
-    it('should remove a single unit and leave empty space', () => {
+    it('given remove a single unit and leave empty space', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
@@ -73,7 +73,7 @@ describe('removeUnitFromBoard', () => {
       });
     });
 
-    it('should throw error when unit does not match', () => {
+    it('given error when unit does not match, throws', () => {
       const existingUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -103,7 +103,7 @@ describe('removeUnitFromBoard', () => {
       );
     });
 
-    it('should not mutate the original board', () => {
+    it('given not mutate the original board', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
@@ -129,7 +129,7 @@ describe('removeUnitFromBoard', () => {
       });
     });
 
-    it('should preserve other board spaces', () => {
+    it('given preserve other board spaces', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
@@ -169,7 +169,7 @@ describe('removeUnitFromBoard', () => {
   });
 
   describe('engaged units - removing primary unit', () => {
-    it('should remove primary unit and leave secondary unit with opposite facing', () => {
+    it('given remove primary unit and leave secondary unit with opposite facing', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -204,7 +204,7 @@ describe('removeUnitFromBoard', () => {
       });
     });
 
-    it('should handle different primary facings correctly', () => {
+    it('given handle different primary facings correctly', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -238,7 +238,7 @@ describe('removeUnitFromBoard', () => {
       });
     });
 
-    it('should not mutate the original board when removing primary unit', () => {
+    it('given removing primary unit, does not mutate the original board', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -275,7 +275,7 @@ describe('removeUnitFromBoard', () => {
   });
 
   describe('engaged units - removing secondary unit', () => {
-    it('should remove secondary unit and leave primary unit with original facing', () => {
+    it('given remove secondary unit and leave primary unit with original facing', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -310,7 +310,7 @@ describe('removeUnitFromBoard', () => {
       });
     });
 
-    it('should not mutate the original board when removing secondary unit', () => {
+    it('given removing secondary unit, does not mutate the original board', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -347,7 +347,7 @@ describe('removeUnitFromBoard', () => {
   });
 
   describe('engaged units - error cases', () => {
-    it('should throw error when unit does not match either engaged unit', () => {
+    it('given error when unit does not match either engaged unit, throws', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -382,7 +382,7 @@ describe('removeUnitFromBoard', () => {
       );
     });
 
-    it('should throw error for invalid unit presence type', () => {
+    it('given error for invalid unit presence type, throws', () => {
       const board = createEmptyStandardBoard();
       // Create an invalid unit presence that passes the 'none' and 'single' checks
       // but fails the 'engaged' check - this is a TypeScript exhaustiveness guard

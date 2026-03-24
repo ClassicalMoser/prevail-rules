@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { addUnitsToCommandedUnits } from './addUnitsToCommandedUnits';
 
 /**
- * addUnitsToCommandedUnits: pure transform; implementation in addUnitsToCommandedUnits.ts.
+ * addUnitsToCommandedUnits: Adds units to the commandedUnits set in the current round state.
  */
 describe('addUnitsToCommandedUnits', () => {
-  it('should add units to commandedUnits set', () => {
+  it('given add units to commandedUnits set', () => {
     const state = createEmptyGameState();
     const unit1 = createTestUnit('black', { attack: 3 });
     const unit2 = createTestUnit('white', { attack: 4 });
@@ -17,7 +17,7 @@ describe('addUnitsToCommandedUnits', () => {
     expect(newState.currentRoundState.commandedUnits).toEqual(units);
   });
 
-  it('should not mutate the original state', () => {
+  it('given not mutate the original state', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('black', { attack: 3 });
     const units = new Set([unit]);
@@ -27,7 +27,7 @@ describe('addUnitsToCommandedUnits', () => {
     expect(state.currentRoundState.commandedUnits.size).toBe(0);
   });
 
-  it('should add to existing commandedUnits', () => {
+  it('given add to existing commandedUnits', () => {
     const state = createEmptyGameState();
     const unit1 = createTestUnit('black', { attack: 2 });
     const unit2 = createTestUnit('white', { attack: 3 });

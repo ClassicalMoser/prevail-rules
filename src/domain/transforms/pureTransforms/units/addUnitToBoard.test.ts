@@ -11,7 +11,7 @@ import { describe, expect, it } from 'vitest';
 import { addUnitToBoard } from './addUnitToBoard';
 
 /**
- * addUnitToBoard: pure transform; implementation in addUnitToBoard.ts.
+ * addUnitToBoard: Adds a unit to a board (pure function, returns new board).
  */
 describe('addUnitToBoard', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';
@@ -32,7 +32,7 @@ describe('addUnitToBoard', () => {
   };
 
   describe('empty space', () => {
-    it('should add a single unit to an empty space', () => {
+    it('given add a single unit to an empty space', () => {
       const board = createEmptyStandardBoard();
       const unit = createTestUnit('black', { attack: 3 });
       const unitWithPlacement = createUnitWithPlacement(
@@ -51,7 +51,7 @@ describe('addUnitToBoard', () => {
       });
     });
 
-    it('should not mutate the original board', () => {
+    it('given not mutate the original board', () => {
       const board = createEmptyStandardBoard();
       const unit = createTestUnit('black', { attack: 3 });
       const unitWithPlacement = createUnitWithPlacement(
@@ -67,7 +67,7 @@ describe('addUnitToBoard', () => {
       });
     });
 
-    it('should preserve other board spaces', () => {
+    it('given preserve other board spaces', () => {
       const board = createEmptyStandardBoard();
       const otherCoord: StandardBoardCoordinate = 'D-4';
       const otherUnit = createTestUnit('white', { attack: 3 });
@@ -98,7 +98,7 @@ describe('addUnitToBoard', () => {
   });
 
   describe('space with engaged units', () => {
-    it('should throw error when trying to add unit to space with engaged units', () => {
+    it('given error when trying to add unit to space with engaged units, throws', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -132,7 +132,7 @@ describe('addUnitToBoard', () => {
   });
 
   describe('space with friendly single unit', () => {
-    it('should throw error when trying to add friendly unit to space with friendly unit', () => {
+    it('given error when trying to add friendly unit to space with friendly unit, throws', () => {
       const existingUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -161,7 +161,7 @@ describe('addUnitToBoard', () => {
   });
 
   describe('space with enemy single unit', () => {
-    it('should create engaged unit presence when adding enemy unit with opposite facing', () => {
+    it('given adding enemy unit with opposite facing, creates engaged unit presence', () => {
       const existingUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -193,7 +193,7 @@ describe('addUnitToBoard', () => {
       });
     });
 
-    it('should throw error when adding enemy unit without opposite facing', () => {
+    it('given error when adding enemy unit without opposite facing, throws', () => {
       const existingUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -220,7 +220,7 @@ describe('addUnitToBoard', () => {
       );
     });
 
-    it('should not mutate the original board when creating engagement', () => {
+    it('given creating engagement, does not mutate the original board', () => {
       const existingUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,

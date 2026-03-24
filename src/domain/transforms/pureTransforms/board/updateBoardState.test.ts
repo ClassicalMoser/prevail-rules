@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { updateBoardState } from './updateBoardState';
 
 /**
- * updateBoardState: pure transform; implementation in updateBoardState.ts.
+ * updateBoardState: Creates a new game state with the board state updated.
  */
 describe('updateBoardState', () => {
-  it('should update the board state', () => {
+  it('given update the board state', () => {
     const state = createEmptyGameState();
     const newBoard = state.boardState; // Same board for simplicity
 
@@ -15,7 +15,7 @@ describe('updateBoardState', () => {
     expect(newState.boardState).toBe(newBoard);
   });
 
-  it('should not mutate the original state', () => {
+  it('given not mutate the original state', () => {
     const state = createEmptyGameState();
     const originalBoardState = state.boardState;
     const newBoard = state.boardState;

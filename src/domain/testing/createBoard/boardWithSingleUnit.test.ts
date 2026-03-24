@@ -4,17 +4,17 @@ import { describe, expect, it } from 'vitest';
 import { createBoardWithSingleUnit } from './boardWithSingleUnit';
 
 /**
- * createBoardWithSingleUnit: test helper; implementation in boardWithSingleUnit.ts.
+ * createBoardWithSingleUnit: Creates a board with a single unit at a coordinate.
  */
 describe('createBoardWithSingleUnit', () => {
-  it('should place single unit at coordinate with defaults', () => {
+  it('given place single unit at coordinate with defaults', () => {
     const board = createBoardWithSingleUnit('E-5', 'black');
     const atE5 = getPlayerUnitWithPosition(board, 'E-5', 'black');
     expect(atE5).toBeDefined();
     expect(atE5?.placement.facing).toBe('north');
   });
 
-  it('should accept facing and attack options', () => {
+  it('given accept facing and attack options', () => {
     const board = createBoardWithSingleUnit('E-5', 'white', {
       facing: 'south',
       attack: 2,
@@ -24,7 +24,7 @@ describe('createBoardWithSingleUnit', () => {
     expect(atE5?.unit.unitType.stats.attack).toBe(2);
   });
 
-  it('should accept flexibility option', () => {
+  it('given accept flexibility option', () => {
     const board = createBoardWithSingleUnit('E-5', 'black', {
       flexibility: 1,
     });
@@ -32,7 +32,7 @@ describe('createBoardWithSingleUnit', () => {
     expect(atE5?.unit.unitType.stats.flexibility).toBe(1);
   });
 
-  it('should accept unitType option', () => {
+  it('given accept unitType option', () => {
     const unitType = tempUnits[0];
     const board = createBoardWithSingleUnit('E-5', 'white', {
       unitType,

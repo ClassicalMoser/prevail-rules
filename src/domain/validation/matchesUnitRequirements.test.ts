@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { matchesUnitRequirements } from './matchesUnitRequirements';
 
 /**
- * matchesUnitRequirements: validation rule; implementation in matchesUnitRequirements.ts.
+ * matchesUnitRequirements: Determines whether a unit type matches the specified requirements.
  */
 describe('matchesUnitRequirements', () => {
   // Find units by their unique traits rather than by name
@@ -17,14 +17,14 @@ describe('matchesUnitRequirements', () => {
   const firstUnit = getUnitByStatValue('attack', 3);
 
   describe('no requirements', () => {
-    it('should return true when both traits and unitTypes are empty', () => {
+    it('given both traits and unitTypes are empty, returns true', () => {
       const { result } = matchesUnitRequirements(firstUnit, [], []);
       expect(result).toBe(true);
     });
   });
 
   describe('traits only', () => {
-    it('should return true when unit has all required traits', () => {
+    it('given unit has all required traits, returns true', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         ['formation'],
@@ -33,7 +33,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when unit has all multiple required traits', () => {
+    it('given unit has all multiple required traits, returns true', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormationAndSwordTraits,
         ['formation', 'sword'],
@@ -42,7 +42,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when unit has all traits in different order', () => {
+    it('given unit has all traits in different order, returns true', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormationAndSwordTraits,
         ['sword', 'formation'],
@@ -51,7 +51,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when unit is missing one trait', () => {
+    it('given unit is missing one trait, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         ['formation', 'spear'],
@@ -60,7 +60,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when unit has none of the required traits', () => {
+    it('given unit has none of the required traits, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         ['skirmish'],
@@ -69,7 +69,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when unit has some but not all required traits', () => {
+    it('given unit has some but not all required traits, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithPhalanxTrait,
         ['formation', 'sword'],
@@ -80,7 +80,7 @@ describe('matchesUnitRequirements', () => {
   });
 
   describe('unitTypes only', () => {
-    it('should return true when unit is in the unitTypes array', () => {
+    it('given unit is in the unitTypes array, returns true', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         [],
@@ -89,7 +89,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when unit is in a larger unitTypes array', () => {
+    it('given unit is in a larger unitTypes array, returns true', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         [],
@@ -98,7 +98,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when unit is not in the unitTypes array', () => {
+    it('given unit is not in the unitTypes array, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         [],
@@ -107,7 +107,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(false);
     });
 
-    it('should return true when unit matches by id (different object reference)', () => {
+    it('given unit matches by id (different object reference), returns true', () => {
       // Create a new UnitType object with the same id but different reference
       const sameUnitTypeDifferentRef: UnitType = {
         ...unitWithSwordTrait,
@@ -120,7 +120,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when unitTypes array is empty but unit is not specified', () => {
+    it('given unitTypes array is empty but unit is not specified, returns false', () => {
       // This case is handled by the "no requirements" case, but testing edge case
       const { result } = matchesUnitRequirements(unitWithSwordTrait, [], []);
       expect(result).toBe(true);
@@ -128,7 +128,7 @@ describe('matchesUnitRequirements', () => {
   });
 
   describe('both traits and unitTypes', () => {
-    it('should return true when unit matches both traits and unitTypes', () => {
+    it('given unit matches both traits and unitTypes, returns true', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         ['formation'],
@@ -137,7 +137,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when unit matches all multiple traits and unitTypes', () => {
+    it('given unit matches all multiple traits and unitTypes, returns true', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         ['formation', 'sword'],
@@ -146,7 +146,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when unit matches traits but not unitTypes', () => {
+    it('given unit matches traits but not unitTypes, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         ['formation'],
@@ -155,7 +155,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when unit matches unitTypes but not traits', () => {
+    it('given unit matches unitTypes but not traits, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         ['spear'],
@@ -164,7 +164,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when unit matches neither traits nor unitTypes', () => {
+    it('given unit matches neither traits nor unitTypes, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         ['spear'],
@@ -173,7 +173,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when unit has some but not all required traits', () => {
+    it('given unit has some but not all required traits, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithPhalanxTrait,
         ['formation', 'sword'],
@@ -182,7 +182,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(false);
     });
 
-    it('should return true when unit matches both by id (different object reference)', () => {
+    it('given unit matches both by id (different object reference), returns true', () => {
       // Create a new UnitType object with the same id but different reference
       const sameUnitTypeDifferentRef: UnitType = {
         ...unitWithSwordTrait,
@@ -197,7 +197,7 @@ describe('matchesUnitRequirements', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle units with many traits', () => {
+    it('given handle units with many traits', () => {
       const { result } = matchesUnitRequirements(
         unitWithPhalanxTrait,
         ['formation', 'spear', 'phalanx'],
@@ -206,7 +206,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle units with no traits', () => {
+    it('given handle units with no traits', () => {
       // Create a unit type with no traits for testing
       const unitWithNoTraits: UnitType = {
         ...unitWithSwordTrait,
@@ -220,7 +220,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(false);
     });
 
-    it('should handle empty traits array with unitTypes', () => {
+    it('given handle empty traits array with unitTypes', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         [],
@@ -229,7 +229,7 @@ describe('matchesUnitRequirements', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle empty unitTypes array with traits', () => {
+    it('given handle empty unitTypes array with traits', () => {
       const { result } = matchesUnitRequirements(
         unitWithSwordTrait,
         ['formation'],

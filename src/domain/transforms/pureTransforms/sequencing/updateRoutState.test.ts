@@ -21,7 +21,7 @@ import { describe, expect, it } from 'vitest';
 import { updateRoutState } from './updateRoutState';
 
 /**
- * updateRoutState: pure transform; implementation in updateRoutState.ts.
+ * updateRoutState: Creates a new game state with the rout state updated.
  */
 describe('updateRoutState', () => {
   function createStateWithRangedAttackRout() {
@@ -84,7 +84,7 @@ describe('updateRoutState', () => {
     );
   }
 
-  it('should update rout state in rear engagement during movement resolution', () => {
+  it('given update rout state in rear engagement during movement resolution', () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const whiteUnit = createTestUnit('white', { attack: 2 });
@@ -116,7 +116,7 @@ describe('updateRoutState', () => {
     expect(res.routState?.numberToDiscard).toBe(3);
   });
 
-  it('should update rout state in ranged attack resolution', () => {
+  it('given update rout state in ranged attack resolution', () => {
     const state = createStateWithRangedAttackRout();
     const unit = createTestUnit('white', { attack: 2 });
     const newRout = createRoutState('white', unit, { numberToDiscard: 2 });
@@ -141,7 +141,7 @@ describe('updateRoutState', () => {
     ).toBe(2);
   });
 
-  it('should update rout state in melee resolution for white', () => {
+  it('given update rout state in melee resolution for white', () => {
     const state = createStateWithMeleeRout('white');
     const unit = createTestUnit('white', { attack: 2 });
     const newRout = createRoutState('white', unit, { numberToDiscard: 1 });
@@ -157,7 +157,7 @@ describe('updateRoutState', () => {
     ).toBe(1);
   });
 
-  it('should update rout state in melee resolution for black', () => {
+  it('given update rout state in melee resolution for black', () => {
     const state = createStateWithMeleeRout('black');
     const unit = createTestUnit('black', { attack: 2 });
     const newRout = createRoutState('black', unit, { numberToDiscard: 2 });
@@ -173,7 +173,7 @@ describe('updateRoutState', () => {
     ).toBe(2);
   });
 
-  it('should update rout state in cleanup phase (routs from lost support)', () => {
+  it('given update rout state in cleanup phase (routs from lost support)', () => {
     const state = createEmptyGameState({ currentInitiative: 'white' });
     const unit = createTestUnit('white', { attack: 2 });
     const rallyState = createRallyResolutionState({
@@ -198,7 +198,7 @@ describe('updateRoutState', () => {
     ).toBe(2);
   });
 
-  it('should throw when no rout state in attack apply', () => {
+  it('given when no rout state in attack apply, throws', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
     const attackApply = createAttackApplyState(unit);
@@ -214,7 +214,7 @@ describe('updateRoutState', () => {
     ).toThrow('No rout state found in attack apply state');
   });
 
-  it('should throw when in issueCommands but command type is not rangedAttack (movement)', () => {
+  it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createMovementResolutionState(state),
@@ -229,7 +229,7 @@ describe('updateRoutState', () => {
     );
   });
 
-  it('should throw when in issueCommands with no command resolution state', () => {
+  it('given when in issueCommands with no command resolution state, throws', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state);
     const stateInPhase = updatePhaseState(state, phaseState);
@@ -242,7 +242,7 @@ describe('updateRoutState', () => {
     );
   });
 
-  it('should throw when melee white attack apply has no rout state', () => {
+  it('given when melee white attack apply has no rout state, throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -262,7 +262,7 @@ describe('updateRoutState', () => {
     ).toThrow('No rout state found in attack apply state');
   });
 
-  it('should throw when melee black attack apply has no rout state', () => {
+  it('given when melee black attack apply has no rout state, throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -282,7 +282,7 @@ describe('updateRoutState', () => {
     ).toThrow('No rout state found in attack apply state');
   });
 
-  it('should throw when cleanup rally resolution has no rout state', () => {
+  it('given when cleanup rally resolution has no rout state, throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'white' });
     const rallyState = createRallyResolutionState({
       playerRallied: true,
@@ -301,7 +301,7 @@ describe('updateRoutState', () => {
     ).toThrow('No rout state found in rally resolution state');
   });
 
-  it('should throw when not in issueCommands, resolveMelee, or cleanup phase', () => {
+  it('given when not in issueCommands, resolveMelee, or cleanup phase, throws', () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(
       state,

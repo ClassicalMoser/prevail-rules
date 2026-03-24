@@ -5,47 +5,47 @@ import { describe, expect, it } from 'vitest';
 import { isSameUnitInstance } from './isSameUnitInstance';
 
 /**
- * isSameUnitInstance: validation rule; implementation in isSameUnitInstance.ts.
+ * isSameUnitInstance: Determines whether two unit instances are the same unit.
  */
 describe('isSameUnitInstance', () => {
   const flexibility1UnitType = getUnitByStatValue('flexibility', 1);
   const flexibility2UnitType = getUnitByStatValue('flexibility', 2);
 
-  it('should return true when both units are the same instance (all properties match)', () => {
+  it('given both units are the same instance (all properties match), returns true', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility1UnitType, 1);
     const { result } = isSameUnitInstance(unit1, unit2);
     expect(result).toBe(true);
   });
 
-  it('should return true when comparing a unit to itself', () => {
+  it('given comparing a unit to itself, returns true', () => {
     const unit = createUnitInstance('black', flexibility1UnitType, 1);
     const { result } = isSameUnitInstance(unit, unit);
     expect(result).toBe(true);
   });
 
-  it('should return false when units have different player sides', () => {
+  it('given units have different player sides, returns false', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('white', flexibility1UnitType, 1);
     const { result } = isSameUnitInstance(unit1, unit2);
     expect(result).toBe(false);
   });
 
-  it('should return false when units have different unit types', () => {
+  it('given units have different unit types, returns false', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility2UnitType, 1);
     const { result } = isSameUnitInstance(unit1, unit2);
     expect(result).toBe(false);
   });
 
-  it('should return false when units have different instance numbers', () => {
+  it('given units have different instance numbers, returns false', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility1UnitType, 2);
     const { result } = isSameUnitInstance(unit1, unit2);
     expect(result).toBe(false);
   });
 
-  it('should return true for units with same properties but different object references', () => {
+  it('given units with same properties but different object references, returns true', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     // Create a new unit with same properties (different reference)
     const unit2 = createUnitInstance('black', flexibility1UnitType, 1);
@@ -54,14 +54,14 @@ describe('isSameUnitInstance', () => {
     expect(result).toBe(true); // But same by value
   });
 
-  it('should return false when only one property differs', () => {
+  it('given only one property differs, returns false', () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     const unit2 = createUnitInstance('black', flexibility1UnitType, 2);
     const { result } = isSameUnitInstance(unit1, unit2);
     expect(result).toBe(false);
   });
 
-  it('should return false when comparing a unit to undefined', () => {
+  it('given comparing a unit to undefined, returns false', () => {
     const unit = createUnitInstance('black', flexibility1UnitType, 1);
     // Intentional type error to test the function
     const { result } = isSameUnitInstance(

@@ -6,10 +6,10 @@ import {
 } from './engagementStates';
 
 /**
- * createFrontEngagementState: test helper; implementation in engagementStates.ts.
+ * createFrontEngagementState: Creates a front EngagementState with sensible defaults.
  */
 describe('createFrontEngagementState', () => {
-  it('should return engagement state with front resolution', () => {
+  it('given context, returns engagement state with front resolution', () => {
     const state = createFrontEngagementState();
     expect(state.substepType).toBe('engagementResolution');
     expect(state.engagementResolutionState.engagementType).toBe('front');
@@ -21,7 +21,7 @@ describe('createFrontEngagementState', () => {
 });
 
 describe('createFlankEngagementState', () => {
-  it('should return engagement state with flank resolution', () => {
+  it('given context, returns engagement state with flank resolution', () => {
     const state = createFlankEngagementState();
     expect(state.engagementResolutionState.engagementType).toBe('flank');
     expect(state.engagementResolutionState.defenderRotated).toBe(false);
@@ -30,7 +30,7 @@ describe('createFlankEngagementState', () => {
 });
 
 describe('createRearEngagementState', () => {
-  it('should return engagement state with rear resolution and rout state', () => {
+  it('given context, returns engagement state with rear resolution and rout state', () => {
     const state = createRearEngagementState();
     expect(state.engagementResolutionState.engagementType).toBe('rear');
     expect(state.engagementResolutionState.routState).toEqual(

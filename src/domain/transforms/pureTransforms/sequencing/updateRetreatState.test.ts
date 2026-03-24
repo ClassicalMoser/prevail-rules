@@ -17,7 +17,7 @@ import { describe, expect, it } from 'vitest';
 import { updateRetreatState } from './updateRetreatState';
 
 /**
- * updateRetreatState: pure transform; implementation in updateRetreatState.ts.
+ * updateRetreatState: Creates a new game state with the retreat state updated.
  */
 describe('updateRetreatState', () => {
   function createStateWithRangedAttackRetreat() {
@@ -80,7 +80,7 @@ describe('updateRetreatState', () => {
     );
   }
 
-  it('should update retreat state in ranged attack resolution', () => {
+  it('given update retreat state in ranged attack resolution', () => {
     const state = createStateWithRangedAttackRetreat();
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
@@ -109,7 +109,7 @@ describe('updateRetreatState', () => {
     ).toBe(true);
   });
 
-  it('should update retreat state in melee resolution for white', () => {
+  it('given update retreat state in melee resolution for white', () => {
     const state = createStateWithMeleeRetreat('white');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
@@ -129,7 +129,7 @@ describe('updateRetreatState', () => {
     ).toBe(true);
   });
 
-  it('should update retreat state in melee resolution for black', () => {
+  it('given update retreat state in melee resolution for black', () => {
     const state = createStateWithMeleeRetreat('black');
     const unit = createTestUnit('black', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
@@ -149,7 +149,7 @@ describe('updateRetreatState', () => {
     ).toBe(true);
   });
 
-  it('should throw when ranged attack apply has no retreat state', () => {
+  it('given when ranged attack apply has no retreat state, throws', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
@@ -169,7 +169,7 @@ describe('updateRetreatState', () => {
     ).toThrow('No retreat state found in attack apply state');
   });
 
-  it('should throw when in issueCommands but command type is not rangedAttack (movement)', () => {
+  it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createMovementResolutionState(state),
@@ -188,7 +188,7 @@ describe('updateRetreatState', () => {
     );
   });
 
-  it('should throw when in issueCommands with no command resolution state', () => {
+  it('given when in issueCommands with no command resolution state, throws', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state);
     const stateInPhase = updatePhaseState(state, phaseState);
@@ -205,7 +205,7 @@ describe('updateRetreatState', () => {
     );
   });
 
-  it('should throw when melee white attack apply has no retreat state', () => {
+  it('given when melee white attack apply has no retreat state, throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -232,7 +232,7 @@ describe('updateRetreatState', () => {
     ).toThrow('No retreat state found in attack apply state');
   });
 
-  it('should throw when melee black attack apply has no retreat state', () => {
+  it('given when melee black attack apply has no retreat state, throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -259,7 +259,7 @@ describe('updateRetreatState', () => {
     ).toThrow('No retreat state found in attack apply state');
   });
 
-  it('should throw when not in issueCommands or resolveMelee phase', () => {
+  it('given when not in issueCommands or resolveMelee phase, throws', () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(
       state,

@@ -17,7 +17,7 @@ import { describe, expect, it } from 'vitest';
 import { updateReverseState } from './updateReverseState';
 
 /**
- * updateReverseState: pure transform; implementation in updateReverseState.ts.
+ * updateReverseState: Creates a new game state with the reverse state updated in an attack apply state.
  */
 describe('updateReverseState', () => {
   function createStateWithRangedAttackReverse() {
@@ -80,7 +80,7 @@ describe('updateReverseState', () => {
     );
   }
 
-  it('should update reverse state in ranged attack resolution', () => {
+  it('given update reverse state in ranged attack resolution', () => {
     const state = createStateWithRangedAttackReverse();
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
@@ -112,7 +112,7 @@ describe('updateReverseState', () => {
     ).toBe(true);
   });
 
-  it('should update reverse state in melee resolution for white', () => {
+  it('given update reverse state in melee resolution for white', () => {
     const state = createStateWithMeleeReverse('white');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
@@ -132,7 +132,7 @@ describe('updateReverseState', () => {
     ).toBe(true);
   });
 
-  it('should update reverse state in melee resolution for black', () => {
+  it('given update reverse state in melee resolution for black', () => {
     const state = createStateWithMeleeReverse('black');
     const unit = createTestUnit('black', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
@@ -152,7 +152,7 @@ describe('updateReverseState', () => {
     ).toBe(true);
   });
 
-  it('should throw when ranged attack apply has no reverse state', () => {
+  it('given when ranged attack apply has no reverse state, throws', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
@@ -172,7 +172,7 @@ describe('updateReverseState', () => {
     ).toThrow('No reverse state found in attack apply state');
   });
 
-  it('should throw when in issueCommands but command type is not rangedAttack (movement)', () => {
+  it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createMovementResolutionState(state),
@@ -191,7 +191,7 @@ describe('updateReverseState', () => {
     );
   });
 
-  it('should throw when in issueCommands with no command resolution state', () => {
+  it('given when in issueCommands with no command resolution state, throws', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state);
     const stateInPhase = updatePhaseState(state, phaseState);
@@ -208,7 +208,7 @@ describe('updateReverseState', () => {
     );
   });
 
-  it('should throw when melee white attack apply has no reverse state', () => {
+  it('given when melee white attack apply has no reverse state, throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -236,7 +236,7 @@ describe('updateReverseState', () => {
     ).toThrow('No reverse state found in attack apply state');
   });
 
-  it('should throw when melee black attack apply has no reverse state', () => {
+  it('given when melee black attack apply has no reverse state, throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -264,7 +264,7 @@ describe('updateReverseState', () => {
     ).toThrow('No reverse state found in attack apply state');
   });
 
-  it('should throw when not in issueCommands or resolveMelee phase', () => {
+  it('given when not in issueCommands or resolveMelee phase, throws', () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(
       state,

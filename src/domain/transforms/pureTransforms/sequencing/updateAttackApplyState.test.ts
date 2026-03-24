@@ -14,7 +14,7 @@ import { describe, expect, it } from 'vitest';
 import { updateAttackApplyState } from './updateAttackApplyState';
 
 /**
- * updateAttackApplyState: pure transform; implementation in updateAttackApplyState.ts.
+ * updateAttackApplyState: Creates a new game state with the attack apply state updated.
  */
 describe('updateAttackApplyState', () => {
   function createStateWithRangedAttackApply() {
@@ -54,7 +54,7 @@ describe('updateAttackApplyState', () => {
     );
   }
 
-  it('should update attack apply state in ranged attack resolution', () => {
+  it('given update attack apply state in ranged attack resolution', () => {
     const state = createStateWithRangedAttackApply();
     const unit = createTestUnit('white', { attack: 2 });
     const updated = createAttackApplyState(unit, { completed: true });
@@ -81,7 +81,7 @@ describe('updateAttackApplyState', () => {
     ).toBe(true);
   });
 
-  it('should update white attack apply state in melee resolution', () => {
+  it('given update white attack apply state in melee resolution', () => {
     const state = createStateWithMeleeApply();
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const updated = createAttackApplyState(whiteUnit, { completed: true });
@@ -96,7 +96,7 @@ describe('updateAttackApplyState', () => {
     ).toBe(true);
   });
 
-  it('should update black attack apply state in melee resolution', () => {
+  it('given update black attack apply state in melee resolution', () => {
     const state = createStateWithMeleeApply();
     const blackUnit = createTestUnit('black', { attack: 2 });
     const updated = createAttackApplyState(blackUnit, { completed: true });
@@ -111,7 +111,7 @@ describe('updateAttackApplyState', () => {
     ).toBe(true);
   });
 
-  it('should throw when ranged attack resolution has no attack apply state', () => {
+  it('given when ranged attack resolution has no attack apply state, throws', () => {
     const state = createEmptyGameState();
     const ranged = createRangedAttackResolutionState(state, {
       attackApplyState: undefined,
@@ -127,7 +127,7 @@ describe('updateAttackApplyState', () => {
     ).toThrow('No attack apply state found in ranged attack resolution state');
   });
 
-  it('should throw when not in issueCommands or resolveMelee phase', () => {
+  it('given when not in issueCommands or resolveMelee phase, throws', () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(
       state,

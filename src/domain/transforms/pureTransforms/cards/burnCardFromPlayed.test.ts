@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { burnCardFromPlayed } from './burnCardFromPlayed';
 
 /**
- * burnCardFromPlayed: pure transform; implementation in burnCardFromPlayed.ts.
+ * burnCardFromPlayed: Burns a specific card from the player's played pile.
  */
 describe('burnCardFromPlayed', () => {
-  it('should move card from played to burnt', () => {
+  it('given move card from played to burnt', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -29,7 +29,7 @@ describe('burnCardFromPlayed', () => {
     expect(newCardState.white).toBe(cardState.white);
   });
 
-  it('should throw if card is not in played pile', () => {
+  it('given if card is not in played pile, throws', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -45,7 +45,7 @@ describe('burnCardFromPlayed', () => {
     ).toThrow("Card 2 not found in black player's played cards");
   });
 
-  it('should not mutate the original card state', () => {
+  it('given not mutate the original card state', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -64,7 +64,7 @@ describe('burnCardFromPlayed', () => {
     expect(cardState.black.burnt).toBe(originalBurnt);
   });
 
-  it('should append to existing burnt cards', () => {
+  it('given append to existing burnt cards', () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,

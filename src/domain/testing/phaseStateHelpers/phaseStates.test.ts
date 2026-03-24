@@ -15,10 +15,10 @@ import {
 } from './phaseStates';
 
 /**
- * createPlayCardsPhaseState: test helper; implementation in phaseStates.ts.
+ * createPlayCardsPhaseState: Creates a PlayCardsPhaseState with sensible defaults.
  */
 describe('createPlayCardsPhaseState', () => {
-  it('should return play cards phase with default step', () => {
+  it('given context, returns play cards phase with default step', () => {
     const state = createPlayCardsPhaseState();
     expect(state.phase).toBe(PLAY_CARDS_PHASE);
     expect(state.step).toBe('chooseCards');
@@ -26,7 +26,7 @@ describe('createPlayCardsPhaseState', () => {
 });
 
 describe('createMoveCommandersPhaseState', () => {
-  it('should return move commanders phase with default step', () => {
+  it('given context, returns move commanders phase with default step', () => {
     const state = createMoveCommandersPhaseState();
     expect(state.phase).toBe(MOVE_COMMANDERS_PHASE);
     expect(state.step).toBe('moveFirstCommander');
@@ -34,7 +34,7 @@ describe('createMoveCommandersPhaseState', () => {
 });
 
 describe('createIssueCommandsPhaseState', () => {
-  it('should return issue commands phase with empty remaining sets', () => {
+  it('given context, returns issue commands phase with empty remaining sets', () => {
     const gameState = createEmptyGameState();
     const state = createIssueCommandsPhaseState(gameState);
     expect(state.phase).toBe(ISSUE_COMMANDS_PHASE);
@@ -45,7 +45,7 @@ describe('createIssueCommandsPhaseState', () => {
 });
 
 describe('createResolveMeleePhaseState', () => {
-  it('should return resolve melee phase with melee resolution state', () => {
+  it('given context, returns resolve melee phase with melee resolution state', () => {
     const gameState = createEmptyGameState();
     const state = createResolveMeleePhaseState(gameState);
     expect(state.phase).toBe(RESOLVE_MELEE_PHASE);
@@ -56,7 +56,7 @@ describe('createResolveMeleePhaseState', () => {
 });
 
 describe('createCleanupPhaseState', () => {
-  it('should return cleanup phase with default step', () => {
+  it('given context, returns cleanup phase with default step', () => {
     const state = createCleanupPhaseState();
     expect(state.phase).toBe('cleanup');
     expect(state.step).toBe('discardPlayedCards');

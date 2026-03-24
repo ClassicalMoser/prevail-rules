@@ -8,10 +8,10 @@ import { describe, expect, it } from 'vitest';
 import { updateCommandResolutionState } from './updateCommandResolutionState';
 
 /**
- * updateCommandResolutionState: pure transform; implementation in updateCommandResolutionState.ts.
+ * updateCommandResolutionState: Creates a new game state with the command resolution state updated in the issue commands phase.
  */
 describe('updateCommandResolutionState', () => {
-  it('should update the command resolution state in issue commands phase', () => {
+  it('given update the command resolution state in issue commands phase', () => {
     const state = createEmptyGameState();
     const commandResolution = createMovementResolutionState(state);
     const phaseState = createIssueCommandsPhaseState(state, {
@@ -35,7 +35,7 @@ describe('updateCommandResolutionState', () => {
     expect(newPhaseState.currentCommandResolutionState?.completed).toBe(true);
   });
 
-  it('should not mutate the original state', () => {
+  it('given not mutate the original state', () => {
     const state = createEmptyGameState();
     const commandResolution = createMovementResolutionState(state);
     const phaseState = createIssueCommandsPhaseState(state, {
@@ -61,7 +61,7 @@ describe('updateCommandResolutionState', () => {
     ).toBe(originalResolution);
   });
 
-  it('should throw when no current command resolution state is set', () => {
+  it('given when no current command resolution state is set, throws', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: undefined,

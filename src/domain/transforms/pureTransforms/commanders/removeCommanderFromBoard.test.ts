@@ -5,13 +5,13 @@ import { addCommanderToBoard } from './addCommanderToBoard';
 import { removeCommanderFromBoard } from './removeCommanderFromBoard';
 
 /**
- * removeCommanderFromBoard: pure transform; implementation in removeCommanderFromBoard.ts.
+ * removeCommanderFromBoard: removeCommanderFromBoard.
  */
 describe('removeCommanderFromBoard', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';
 
   describe('removing commander from space with one commander', () => {
-    it('should remove commander and leave empty set', () => {
+    it('given remove commander and leave empty set', () => {
       const board = createEmptyStandardBoard();
       const boardWithCommander = addCommanderToBoard(
         board,
@@ -29,7 +29,7 @@ describe('removeCommanderFromBoard', () => {
       expect(newBoard.board[coordinate]?.commanders).toEqual(new Set());
     });
 
-    it('should not mutate the original board', () => {
+    it('given not mutate the original board', () => {
       const board = createEmptyStandardBoard();
       const boardWithCommander = addCommanderToBoard(
         board,
@@ -46,7 +46,7 @@ describe('removeCommanderFromBoard', () => {
   });
 
   describe('removing commander from space with multiple commanders', () => {
-    it('should remove one commander and leave the other', () => {
+    it('given remove one commander and leave the other', () => {
       const board = createEmptyStandardBoard();
       const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
       const boardWithBoth = addCommanderToBoard(
@@ -67,7 +67,7 @@ describe('removeCommanderFromBoard', () => {
       );
     });
 
-    it('should remove black commander and leave white', () => {
+    it('given remove black commander and leave white', () => {
       const board = createEmptyStandardBoard();
       const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
       const boardWithBoth = addCommanderToBoard(
@@ -87,7 +87,7 @@ describe('removeCommanderFromBoard', () => {
       );
     });
 
-    it('should not mutate the original board when removing from multiple commanders', () => {
+    it('given removing from multiple commanders, does not mutate the original board', () => {
       const board = createEmptyStandardBoard();
       const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
       const boardWithBoth = addCommanderToBoard(
@@ -105,7 +105,7 @@ describe('removeCommanderFromBoard', () => {
   });
 
   describe('error cases', () => {
-    it('should throw error when commander is not present', () => {
+    it('given error when commander is not present, throws', () => {
       const board = createEmptyStandardBoard();
 
       expect(() =>
@@ -113,7 +113,7 @@ describe('removeCommanderFromBoard', () => {
       ).toThrow('Commander not present to remove');
     });
 
-    it('should throw error when trying to remove wrong commander', () => {
+    it('given error when trying to remove wrong commander, throws', () => {
       const board = createEmptyStandardBoard();
       const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
 
@@ -122,7 +122,7 @@ describe('removeCommanderFromBoard', () => {
       ).toThrow('Commander not present to remove');
     });
 
-    it('should throw error when trying to remove already removed commander', () => {
+    it('given error when trying to remove already removed commander, throws', () => {
       const board = createEmptyStandardBoard();
       const boardWithCommander = addCommanderToBoard(
         board,
@@ -142,7 +142,7 @@ describe('removeCommanderFromBoard', () => {
   });
 
   describe('preserving other board spaces', () => {
-    it('should preserve commanders on other spaces', () => {
+    it('given preserve commanders on other spaces', () => {
       const board = createEmptyStandardBoard();
       const otherCoord: StandardBoardCoordinate = 'D-4';
       const boardWithCommander1 = addCommanderToBoard(
@@ -168,7 +168,7 @@ describe('removeCommanderFromBoard', () => {
       );
     });
 
-    it('should preserve units on other spaces', () => {
+    it('given preserve units on other spaces', () => {
       const board = createEmptyStandardBoard();
       const otherCoord: StandardBoardCoordinate = 'D-4';
       const boardWithCommander = addCommanderToBoard(
