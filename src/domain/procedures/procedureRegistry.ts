@@ -43,8 +43,8 @@ type GameEffectEventUnion<TBoard extends Board> = GameEffectEvent<
 /**
  * Generates a game effect event using the appropriate procedure
  * based on the effect type.
- * Procedures are non-deterministic (some generate randomness);
- * the event (with results) is what makes it replayable.
+ * Procedures are not strictly deterministic (some generate randomness);
+ * the event (with results) is what makes it deterministically replayable.
  * TypeScript will enforce the correct return types based on the effect type.
  *
  * @param state - The current game state

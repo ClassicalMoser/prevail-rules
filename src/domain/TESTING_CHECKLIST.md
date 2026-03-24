@@ -34,7 +34,28 @@ Systematic unit test coverage following round order. Focus on procedures and exp
    - **Test helpers** (`@testing`): Convenience wrappers using `@sampleValues`, sensible defaults, test-specific shortcuts
    - **Initializers** (`@transforms/initializations`): Production domain functions, no test dependencies, explicit parameters
 
+5. **Readable tests (commentary):**
+   - Restate the **domain contract** the file proves (what is invariant vs what varies across cases).
+   - For spatial or facing logic, add a **minimal geometry or state legend** when coordinates or defaults matter; tie expected values to named defaults when factories hide them.
+   - Prefer **precise `it` descriptions** (starting state → action → outcome) over vague names; use short comments where the code alone does not carry the “why.”
+
+   Reference example: [`src/domain/procedures/movement/generateResolveFlankEngagementEvent.test.ts`](procedures/movement/generateResolveFlankEngagementEvent.test.ts).
+
 **Remember:** If you're copying code between tests or writing a helper function inside a test file, that's a signal to extract it to `@testing`.
+
+### Commentary rollout (all tests)
+
+Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary and setup notes across colocated `*.test.ts`. Check when every file in the folder has been audited.
+
+- [ ] `src/domain/procedures/`
+- [ ] `src/domain/transforms/stateTransitions/`
+- [ ] `src/domain/queries/expectedEvent/`
+- [ ] `src/domain/queries/` (excluding `expectedEvent/`, covered above)
+- [ ] `src/domain/transforms/pureTransforms/`
+- [ ] `src/domain/validation/`
+- [ ] `src/domain/testing/`
+
+**Last batch completed:** (update when merging rollout PRs)
 
 ---
 
