@@ -2,6 +2,9 @@ import { commandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
 import { createTestCard, getCards, getCardsByCount } from './cardHelpers';
 
+/**
+ * getCards: test helper; implementation in cardHelpers.ts.
+ */
 describe('getCards', () => {
   it('should return cards at specified indices', () => {
     const cards = getCards(0, 1, 2);

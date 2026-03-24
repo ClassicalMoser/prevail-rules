@@ -7,8 +7,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyCompletePlayCardsPhaseEvent } from './applyCompletePlayCardsPhaseEvent';
 
+/**
+ * End of simultaneous card play: `playCards` is recorded in `completedPhases` and the round
+ * advances to `moveCommanders.moveFirstCommander`.
+ */
 describe('applyCompletePlayCardsPhaseEvent', () => {
-  it('records completed playCards phase and advances to move commanders', () => {
+  it('given playCards complete step, next phase moveCommanders and completedPhases lists playCards', () => {
     const state = createEmptyGameState();
     const full: GameState<StandardBoard> = updatePhaseState(
       state,

@@ -15,6 +15,9 @@ import { updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getExpectedIssueCommandsPhaseEvent } from './getExpectedIssueCommandsPhaseEvent';
 
+/**
+ * getExpectedIssueCommandsPhaseEvent: next event during the issue-commands phase from phase state.
+ */
 describe('getExpectedIssueCommandsPhaseEvent', () => {
   function createGameStateInIssueCommandsStep(
     step: IssueCommandsPhaseStep,
@@ -42,7 +45,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     );
   }
 
-  it('should return issueCommand for the first player when they have remaining commands', () => {
+  it('given they have remaining commands, returns issueCommand for the first player', () => {
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerIssueCommands',
       'black',
@@ -60,7 +63,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     expect(parsed.data?.choiceType).toBe('issueCommand');
   });
 
-  it('should throw when first player commands are exhausted but step did not advance', () => {
+  it('given when first player commands are exhausted but step did not advance, throws', () => {
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerIssueCommands',
     );
@@ -70,7 +73,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     );
   });
 
-  it('should return the current command resolution event for the first player', () => {
+  it('given the first player, returns the current command resolution event', () => {
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerResolveCommands',
       'black',
@@ -92,7 +95,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     expect(parsed.data?.choiceType).toBe('commitToMovement');
   });
 
-  it('should start command resolution for the first player when units remain', () => {
+  it('given start command resolution for the first player when units remain', () => {
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerResolveCommands',
       'black',
@@ -112,7 +115,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     expect(parsed.data?.choiceType).toBe('moveUnit');
   });
 
-  it('should throw when first player units are exhausted but step did not advance', () => {
+  it('given when first player units are exhausted but step did not advance, throws', () => {
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerResolveCommands',
     );
@@ -122,7 +125,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     );
   });
 
-  it('should return issueCommand for the second player when they have remaining commands', () => {
+  it('given they have remaining commands, returns issueCommand for the second player', () => {
     const state = createGameStateInIssueCommandsStep(
       'secondPlayerIssueCommands',
       'black',
@@ -140,7 +143,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     expect(parsed.data?.choiceType).toBe('issueCommand');
   });
 
-  it('should throw when second player commands are exhausted but step did not advance', () => {
+  it('given when second player commands are exhausted but step did not advance, throws', () => {
     const state = createGameStateInIssueCommandsStep(
       'secondPlayerIssueCommands',
     );
@@ -150,7 +153,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     );
   });
 
-  it('should return the current command resolution event for the second player', () => {
+  it('given the second player, returns the current command resolution event', () => {
     const state = createGameStateInIssueCommandsStep(
       'secondPlayerResolveCommands',
       'black',
@@ -172,7 +175,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     expect(parsed.data?.choiceType).toBe('commitToMovement');
   });
 
-  it('should start command resolution for the second player when units remain', () => {
+  it('given start command resolution for the second player when units remain', () => {
     const state = createGameStateInIssueCommandsStep(
       'secondPlayerResolveCommands',
       'black',
@@ -192,7 +195,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     expect(parsed.data?.choiceType).toBe('moveUnit');
   });
 
-  it('should throw when second player units are exhausted but step did not advance', () => {
+  it('given when second player units are exhausted but step did not advance, throws', () => {
     const state = createGameStateInIssueCommandsStep(
       'secondPlayerResolveCommands',
     );
@@ -202,7 +205,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     );
   });
 
-  it('should return completeIssueCommandsPhase game effect', () => {
+  it('given context, returns completeIssueCommandsPhase game effect', () => {
     const state = createGameStateInIssueCommandsStep('complete');
 
     const expectedEvent = getExpectedIssueCommandsPhaseEvent(state);
@@ -213,7 +216,7 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     expect(parsed.data?.effectType).toBe('completeIssueCommandsPhase');
   });
 
-  it('should throw for invalid step', () => {
+  it('given for invalid step, throws', () => {
     const state = createGameStateInIssueCommandsStep('complete');
     // Force an invalid issue commands step to hit the default branch.
     state.currentRoundState.currentPhaseState = {

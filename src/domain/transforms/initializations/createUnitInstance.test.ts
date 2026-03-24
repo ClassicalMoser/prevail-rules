@@ -2,6 +2,9 @@ import { getUnitByStatValue } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { createUnitInstance } from './createUnitInstance';
 
+/**
+ * createUnitInstance: state / domain transition under test; implementation in createUnitInstance.ts.
+ */
 describe('createUnitInstance', () => {
   it('should create a unit instance with the specified properties', () => {
     const unitType = getUnitByStatValue('attack', 3);

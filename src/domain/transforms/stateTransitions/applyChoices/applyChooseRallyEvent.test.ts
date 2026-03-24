@@ -7,8 +7,12 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyChooseRallyEvent } from './applyChooseRallyEvent';
 
+/**
+ * Cleanup rally prompts: `performRally` seeds the per-player rally resolution slice and moves
+ * the cleanup step forward (resolve rally vs skip to next chooser or complete).
+ */
 describe('applyChooseRallyEvent', () => {
-  it('from firstPlayerChooseRally with performRally true advances to firstPlayerResolveRally', () => {
+  it('given firstPlayerChooseRally and performRally true, step firstPlayerResolveRally and playerRallied true', () => {
     const state = createEmptyGameState();
     const phaseState = createCleanupPhaseState({
       step: 'firstPlayerChooseRally',
@@ -30,7 +34,7 @@ describe('applyChooseRallyEvent', () => {
     );
   });
 
-  it('from firstPlayerChooseRally with performRally false advances to secondPlayerChooseRally', () => {
+  it('given firstPlayerChooseRally and performRally false, step secondPlayerChooseRally and playerRallied false', () => {
     const state = createEmptyGameState();
     const phaseState = createCleanupPhaseState({
       step: 'firstPlayerChooseRally',
@@ -52,7 +56,7 @@ describe('applyChooseRallyEvent', () => {
     );
   });
 
-  it('from secondPlayerChooseRally with performRally true advances to secondPlayerResolveRally', () => {
+  it('given secondPlayerChooseRally and performRally true, step secondPlayerResolveRally and playerRallied true', () => {
     const state = createEmptyGameState();
     const phaseState = createCleanupPhaseState({
       step: 'secondPlayerChooseRally',
@@ -74,7 +78,7 @@ describe('applyChooseRallyEvent', () => {
     );
   });
 
-  it('from secondPlayerChooseRally with performRally false advances to complete', () => {
+  it('given secondPlayerChooseRally and performRally false, step complete and second playerRallied false', () => {
     const state = createEmptyGameState();
     const phaseState = createCleanupPhaseState({
       step: 'secondPlayerChooseRally',
@@ -96,7 +100,7 @@ describe('applyChooseRallyEvent', () => {
     );
   });
 
-  it('throws when cleanup phase is not on a chooseRally step', () => {
+  it('given cleanup on discardPlayedCards, throws chooseRally step guard', () => {
     const state = createEmptyGameState();
     const phaseState = createCleanupPhaseState({
       phase: CLEANUP_PHASE,

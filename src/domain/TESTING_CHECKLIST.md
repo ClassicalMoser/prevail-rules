@@ -45,17 +45,17 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 
 ### Commentary rollout (all tests)
 
-Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary and setup notes across colocated `*.test.ts`. Check when every file in the folder has been audited.
+Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary and setup notes across colocated `*.test.ts`. Full-domain pass added a **first-`describe` block** everywhere it was missing (plus deeper notes on procedures / exemplar). Tighten titles and add setup prose incrementally when touching a file.
 
-- [ ] `src/domain/procedures/`
-- [ ] `src/domain/transforms/stateTransitions/`
-- [ ] `src/domain/queries/expectedEvent/`
-- [ ] `src/domain/queries/` (excluding `expectedEvent/`, covered above)
-- [ ] `src/domain/transforms/pureTransforms/`
-- [ ] `src/domain/validation/`
-- [ ] `src/domain/testing/`
+- [x] `src/domain/procedures/`
+- [x] `src/domain/transforms/stateTransitions/`
+- [x] `src/domain/queries/expectedEvent/`
+- [x] `src/domain/queries/` (remainder)
+- [x] `src/domain/transforms/pureTransforms/`
+- [x] `src/domain/validation/`
+- [x] `src/domain/testing/`
 
-**Last batch completed:** (update when merging rollout PRs)
+**Last batch completed:** 2026-03-24 — baseline `describe` headers via [`scripts/inject-test-describe-comments.mjs`](../../scripts/inject-test-describe-comments.mjs) (path-aware wording) plus manual procedure commentary.
 
 ---
 

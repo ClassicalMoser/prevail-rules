@@ -3,6 +3,9 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { updatePlayerCardState } from './updatePlayerCardState';
 
+/**
+ * updatePlayerCardState: pure transform; implementation in updatePlayerCardState.ts.
+ */
 describe('updatePlayerCardState', () => {
   it('should update player card state with object', () => {
     const state = createEmptyGameState();

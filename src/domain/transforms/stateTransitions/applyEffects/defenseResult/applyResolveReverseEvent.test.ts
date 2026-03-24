@@ -19,10 +19,12 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyResolveReverseEvent } from './applyResolveReverseEvent';
 
+/**
+ * Defender’s counterattack facing: updates board placement to `newUnitPlacement` and closes the
+ * reverse substep (`completed`, `finalPosition`) for ranged or the correct melee apply side.
+ */
 describe('applyResolveReverseEvent', () => {
-  /**
-   * Helper to create a game state with a reverse state in ranged attack resolution
-   */
+  /** issueCommands + ranged apply in reverse substep for white on E-5. */
   function createStateWithRangedAttackReverse(): GameState<StandardBoard> {
     const state = createEmptyGameState();
     const reversingUnit = createTestUnit('white', { attack: 2 });
@@ -49,10 +51,8 @@ describe('applyResolveReverseEvent', () => {
   }
 
   /**
-   * Helper to create a game state with a reverse state in melee resolution.
-   * In melee, a unit can only be reversed if their opponent was first retreated or routed.
-   * When reversing, the opponent has already retreated/routed and moved away,
-   * so the reversing unit is alone at the coordinate.
+   * Melee reverse: reversing side on E-5 alone; opponent already “gone” with retreat apply at E-4
+   * so engagement geometry matches post-retreat resolution.
    */
   function createStateWithMeleeReverse(
     reversingPlayer: 'white' | 'black',
@@ -103,8 +103,8 @@ describe('applyResolveReverseEvent', () => {
     return updatePhaseState(stateWithUnit, phaseState);
   }
 
-  describe('ranged attack resolution context', () => {
-    it('should update unit facing on board', () => {
+  describe('ranged reverse substep', () => {
+    it('given event south facing on E-5, board single presence faces south for reversing unit', () => {
       const state = createStateWithRangedAttackReverse();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
@@ -134,7 +134,7 @@ describe('applyResolveReverseEvent', () => {
       }
     });
 
-    it('should mark reverse state as completed', () => {
+    it('given same event, reverse substep completed and finalPosition matches placement', () => {
       const state = createStateWithRangedAttackReverse();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
@@ -161,7 +161,7 @@ describe('applyResolveReverseEvent', () => {
       expect(newReverseState.finalPosition).toEqual(newPlacement.placement);
     });
 
-    it('should preserve other board spaces', () => {
+    it('given black observer on D-5, reverse apply leaves D-5 untouched', () => {
       const state = createStateWithRangedAttackReverse();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
@@ -200,8 +200,8 @@ describe('applyResolveReverseEvent', () => {
     });
   });
 
-  describe('melee resolution context', () => {
-    it('should update unit facing and mark reverse as completed for first player', () => {
+  describe('melee reverse substep', () => {
+    it('given black reverses south on E-5, black apply reverse completed and board updated', () => {
       const state = createStateWithMeleeReverse('black');
       const attackApplyState = getAttackApplyStateFromMelee(state, 'black');
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
@@ -234,7 +234,7 @@ describe('applyResolveReverseEvent', () => {
       expect(boardSpace?.unitPresence.presenceType).toBe('single');
     });
 
-    it('should update unit facing and mark reverse as completed for second player', () => {
+    it('given white reverses east on E-5, white reverse completed and finalPosition east', () => {
       const state = createStateWithMeleeReverse('white');
       const attackApplyState = getAttackApplyStateFromMelee(state, 'white');
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
@@ -265,8 +265,8 @@ describe('applyResolveReverseEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given reverse completed and board ref before apply, input slice unchanged after apply', () => {
       const state = createStateWithRangedAttackReverse();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const reverseState = getReverseStateFromAttackApply(attackApplyState);

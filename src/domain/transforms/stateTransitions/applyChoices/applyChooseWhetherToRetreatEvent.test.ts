@@ -13,7 +13,12 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyChooseWhetherToRetreatEvent } from './applyChooseWhetherToRetreatEvent';
 
+/**
+ * Front engagement during movement: defender commits whether to attempt retreat before the
+ * engine resolves strike; stored on `engagementResolutionState.defendingUnitRetreats`.
+ */
 describe('applyChooseWhetherToRetreatEvent', () => {
+  /** issueCommands with movement CRS and default front engagement factory state. */
   function createStateWithFrontEngagement() {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
@@ -24,7 +29,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     return updatePhaseState(state, phaseState);
   }
 
-  it('sets defendingUnitRetreats true when player chooses to retreat', () => {
+  it('given front engagement and white choosesToRetreat true, defendingUnitRetreats is true', () => {
     const state = createStateWithFrontEngagement();
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -41,7 +46,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     ).toBe(true);
   });
 
-  it('sets defendingUnitRetreats false when player chooses not to retreat', () => {
+  it('given same stack and white choosesToRetreat false, defendingUnitRetreats is false', () => {
     const state = createStateWithFrontEngagement();
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -58,7 +63,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     ).toBe(false);
   });
 
-  it('records retreat choice for black the same as for white', () => {
+  it('given black defender events, true vs false flip defendingUnitRetreats the same as white', () => {
     const state = createStateWithFrontEngagement();
     const retreatEvent: ChooseWhetherToRetreatEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -83,7 +88,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     ).toBe(false);
   });
 
-  it('does not mutate the input state', () => {
+  it('given engagement snapshot before apply, input movement engagement slice unchanged after apply', () => {
     const state = createStateWithFrontEngagement();
     const engagementBefore =
       getFrontEngagementStateFromMovement(state).engagementResolutionState;
@@ -101,7 +106,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     ).toEqual(engagementBefore);
   });
 
-  it('throws when not in issueCommands phase', () => {
+  it('given playCards phase, throws not in issueCommands', () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(
       state,
@@ -119,7 +124,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     ).toThrow('Not in issueCommands phase');
   });
 
-  it('throws when command resolution is not movement (no front engagement)', () => {
+  it('given issueCommands ranged CRS, throws current command resolution is not movement', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createRangedAttackResolutionState(state),

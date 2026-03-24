@@ -10,6 +10,9 @@ import { createEmptyStandardBoard } from '@transforms/initializations';
 import { describe, expect, it } from 'vitest';
 import { addUnitToBoard } from './addUnitToBoard';
 
+/**
+ * addUnitToBoard: pure transform; implementation in addUnitToBoard.ts.
+ */
 describe('addUnitToBoard', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';
 

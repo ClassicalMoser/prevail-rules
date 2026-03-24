@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import { getRallyResolutionStateAwaitingUnitsBroken } from './getRallyResolutionStateAwaitingUnitsBroken';
 
+/** After card burn: rallyResolved true but unitsLostSupport not computed yet. */
 const afterBurnBeforeUnitsBroken = {
   playerRallied: true,
   rallyResolved: true,
@@ -12,6 +13,7 @@ const afterBurnBeforeUnitsBroken = {
   completed: false,
 };
 
+/** firstPlayerResolveRally with post-burn rally slice. */
 function stateFirstPlayerResolveRally() {
   const state = createEmptyGameState();
   state.currentInitiative = 'white';
@@ -24,15 +26,19 @@ function stateFirstPlayerResolveRally() {
   return state;
 }
 
+/**
+ * Procedure guard before `resolveUnitsBroken`: rally must be resolved and `unitsLostSupport`
+ * must still be unset.
+ */
 describe('getRallyResolutionStateAwaitingUnitsBroken', () => {
-  it('returns rally state when burn applied and units broken not yet computed', () => {
+  it('given rallyResolved true and unitsLostSupport undefined, returns slice', () => {
     const state = stateFirstPlayerResolveRally();
     const result = getRallyResolutionStateAwaitingUnitsBroken(state, 'white');
     expect(result.rallyResolved).toBe(true);
     expect(result.unitsLostSupport).toBeUndefined();
   });
 
-  it('throws when rally not resolved yet', () => {
+  it('given rallyResolved false, throws rally not resolved yet', () => {
     const state = stateFirstPlayerResolveRally();
     const ps = state.currentRoundState.currentPhaseState;
     if (!ps || ps.phase !== CLEANUP_PHASE) throw new Error('expected cleanup');
@@ -46,7 +52,7 @@ describe('getRallyResolutionStateAwaitingUnitsBroken', () => {
     ).toThrow('Rally has not been resolved yet');
   });
 
-  it('throws when units lost support already resolved', () => {
+  it('given unitsLostSupport already a Set, throws units lost support already resolved', () => {
     const state = stateFirstPlayerResolveRally();
     const ps = state.currentRoundState.currentPhaseState;
     if (!ps || ps.phase !== CLEANUP_PHASE) throw new Error('expected cleanup');

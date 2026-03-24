@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { hasMove } from './hasMove';
 
+/**
+ * hasMove: test helper; implementation in hasMove.ts.
+ */
 describe('hasMove', () => {
   it('should return true when coordinate and facing match', () => {
     const legalMoves = new Set([

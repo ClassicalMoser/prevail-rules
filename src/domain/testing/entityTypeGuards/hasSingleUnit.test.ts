@@ -3,6 +3,9 @@ import { createTestUnit } from '@testing/unitHelpers';
 import { createEngagedUnitPresence } from '@testing/unitPresenceHelpers';
 import { describe, expect, it } from 'vitest';
 
+/**
+ * hasSingleUnit: test helper; implementation in hasSingleUnit.ts.
+ */
 describe('hasSingleUnit', () => {
   it('should return false for engaged unit presence', () => {
     const unit1 = createTestUnit('black', { attack: 3 });

@@ -12,8 +12,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyResolveUnitsBrokenEvent } from './applyResolveUnitsBrokenEvent';
 
+/**
+ * After listing unsupported types, this effect removes those units from the board, may seed a
+ * rout substep when `routPenalty` is positive, and either advances cleanup or stays resolving.
+ */
 describe('applyResolveUnitsBrokenEvent', () => {
-  it('records empty broken set and advances when no rout penalty', () => {
+  it('given empty unitTypes list, unitsLostSupport empty set and step advances to second choose rally', () => {
     const state = createEmptyGameState();
     state.currentInitiative = 'white';
 
@@ -47,7 +51,7 @@ describe('applyResolveUnitsBrokenEvent', () => {
     expect(rs?.routState).toBeUndefined();
   });
 
-  it('removes matching units from the board, adds rout state when penalty > 0, and stays on resolveRally step', () => {
+  it('given white unit on E-5 with positive routPenalty type, unit removed routedUnits set routState seeded same step', () => {
     const base = createEmptyGameState();
     base.currentInitiative = 'white';
     const unit = createTestUnit('white', { attack: 3 });

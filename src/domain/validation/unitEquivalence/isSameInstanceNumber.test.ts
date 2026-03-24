@@ -3,6 +3,9 @@ import { createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { isSameInstanceNumber } from './isSameInstanceNumber';
 
+/**
+ * isSameInstanceNumber: validation rule; implementation in isSameInstanceNumber.ts.
+ */
 describe('isSameInstanceNumber', () => {
   it('should return true when both units have the same instance number', () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });

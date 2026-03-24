@@ -10,8 +10,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyDiscardPlayedCardsEvent } from './applyDiscardPlayedCardsEvent';
 
+/**
+ * Cleanup opener: both `inPlay` command cards append to `played` piles, slots clear, and the
+ * cleanup step advances to the first rally choice.
+ */
 describe('applyDiscardPlayedCardsEvent', () => {
-  it('moves inPlay cards to played and advances to firstPlayerChooseRally', () => {
+  it('given discardPlayedCards with both inPlay set, played lengths grow and step firstPlayerChooseRally', () => {
     const base = createEmptyGameState();
     const withCards = updateCardState(base, (c) => ({
       ...c,

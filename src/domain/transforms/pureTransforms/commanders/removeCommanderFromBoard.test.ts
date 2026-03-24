@@ -4,6 +4,9 @@ import { describe, expect, it } from 'vitest';
 import { addCommanderToBoard } from './addCommanderToBoard';
 import { removeCommanderFromBoard } from './removeCommanderFromBoard';
 
+/**
+ * removeCommanderFromBoard: pure transform; implementation in removeCommanderFromBoard.ts.
+ */
 describe('removeCommanderFromBoard', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';
 

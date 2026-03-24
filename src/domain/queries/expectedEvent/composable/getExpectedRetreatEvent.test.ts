@@ -6,10 +6,13 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
 
+/**
+ * getExpectedRetreatEvent: next retreat-resolution event from retreat substate.
+ */
 describe('getExpectedRetreatEvent', () => {
   const unitPlacement = createUnitWithPlacement();
 
-  it('should trigger rout when there are no legal retreat options and no rout state', () => {
+  it('given trigger rout when there are no legal retreat options and no rout state', () => {
     const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set(),
       finalPosition: undefined,
@@ -22,7 +25,7 @@ describe('getExpectedRetreatEvent', () => {
     });
   });
 
-  it('should delegate to rout when retreat has no options and rout is not complete', () => {
+  it('given delegate to rout when retreat has no options and rout is not complete', () => {
     const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set(),
       finalPosition: undefined,
@@ -37,7 +40,7 @@ describe('getExpectedRetreatEvent', () => {
     });
   });
 
-  it('should ask the player to choose a retreat option when multiple options exist', () => {
+  it('given multiple options exist, asks the player to choose a retreat option', () => {
     const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set([
         { coordinate: 'E-4', facing: 'north' },
@@ -53,7 +56,7 @@ describe('getExpectedRetreatEvent', () => {
     });
   });
 
-  it('should return resolveRetreat when the final position is already chosen', () => {
+  it('given the final position is already chosen, returns resolveRetreat', () => {
     const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set([{ coordinate: 'E-4', facing: 'north' }]),
       finalPosition: { coordinate: 'E-4', facing: 'north' },
@@ -65,7 +68,7 @@ describe('getExpectedRetreatEvent', () => {
     });
   });
 
-  it('should throw when the retreat is already complete', () => {
+  it('given when the retreat is already complete, throws', () => {
     const retreatState = createRetreatState(unitPlacement, {
       completed: true,
       legalRetreatOptions: new Set([{ coordinate: 'E-4', facing: 'north' }]),
@@ -77,7 +80,7 @@ describe('getExpectedRetreatEvent', () => {
     );
   });
 
-  it('should throw when rout is complete but retreat is not marked complete', () => {
+  it('given when rout is complete but retreat is not marked complete, throws', () => {
     const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set(),
       routState: createRoutState('black', unitPlacement.unit, {
@@ -92,7 +95,7 @@ describe('getExpectedRetreatEvent', () => {
     );
   });
 
-  it('should throw when a single retreat option was not preselected', () => {
+  it('given when a single retreat option was not preselected, throws', () => {
     const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set([{ coordinate: 'E-4', facing: 'north' }]),
       finalPosition: undefined,

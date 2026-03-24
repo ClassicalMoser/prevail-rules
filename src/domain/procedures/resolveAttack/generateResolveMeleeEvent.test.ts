@@ -15,7 +15,13 @@ import { generateResolveMeleeEvent } from './generateResolveMeleeEvent';
 /** Spearmen (retreat 5): with default test `inPlay` command card (+1 attack), total strike stays below retreat. */
 const spearmenType = tempUnits[1]!;
 
+/**
+ * `resolveMelee` compares strike vs retreat at a shared cell, sets rout/retreat booleans, and
+ * precomputes legal retreat hex sets when retreat is allowed. Commitments must be resolved
+ * first; the board must hold both combatants at the melee coordinate.
+ */
 describe('generateResolveMeleeEvent', () => {
+  /** Default spearmen mirror match on E-5 with empty resolve-melee phase (no pending commitments). */
   function meleeResolutionGameState(): GameState<StandardBoard> {
     const state = createEmptyGameState();
     const whiteUnit = createTestUnit('white', { unitType: spearmenType });
@@ -34,7 +40,7 @@ describe('generateResolveMeleeEvent', () => {
     return updatePhaseState(s, phase);
   }
 
-  it('computes legal retreat options when both units are eligible to retreat', () => {
+  it('given cavalry vs cavalry on E-5, both retreated true and each gets a non-empty legal set', () => {
     const state = createEmptyGameState();
     const whiteUnit = createTestUnit('white', { unitType: tempUnits[3] }); // Cavalry: attack 4, retreat 4
     const blackUnit = createTestUnit('black', { unitType: tempUnits[3] });
@@ -57,7 +63,7 @@ describe('generateResolveMeleeEvent', () => {
     expect(event.blackLegalRetreatOptions).toBeInstanceOf(Set);
   });
 
-  it('returns resolveMelee with both units, boolean flags, and empty retreat sets when strike is below retreat', () => {
+  it('given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat and empty sets', () => {
     const full = meleeResolutionGameState();
     const event = generateResolveMeleeEvent(full);
     expect(event.effectType).toBe('resolveMelee');
@@ -74,7 +80,7 @@ describe('generateResolveMeleeEvent', () => {
     expect(event.blackLegalRetreatOptions.size).toBe(0);
   });
 
-  it('throws when white commitment is still pending', () => {
+  it('given melee CRS with white commitment pending, throws white commitment guard', () => {
     const state = createEmptyGameState();
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -100,7 +106,7 @@ describe('generateResolveMeleeEvent', () => {
     );
   });
 
-  it('throws when current phase is not resolveMelee', () => {
+  it('given playCards phase, throws not in resolveMelee', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
@@ -111,7 +117,7 @@ describe('generateResolveMeleeEvent', () => {
     );
   });
 
-  it('throws when melee coordinate is missing an opposing unit', () => {
+  it('given only white on E-5 in resolveMelee phase, throws units not found on board', () => {
     const state = createEmptyGameState();
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {

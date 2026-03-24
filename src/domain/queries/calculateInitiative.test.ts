@@ -2,22 +2,26 @@ import { createTestCard } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { calculateInitiative } from './calculateInitiative';
 
+/**
+ * calculateInitiative: compares played cards' initiative values; lower wins; on a tie, initiative stays with
+ * the current holder.
+ */
 describe('calculateInitiative', () => {
-  it('should give initiative to the lower card initiative value', () => {
+  it('given white card lower initiative, white takes initiative', () => {
     const whiteCard = createTestCard({ initiative: 2 });
     const blackCard = createTestCard({ initiative: 3 });
 
     expect(calculateInitiative(whiteCard, blackCard, 'black')).toBe('white');
   });
 
-  it('should give initiative to black when black card has the lower value', () => {
+  it('given black card lower initiative, black takes initiative', () => {
     const whiteCard = createTestCard({ initiative: 4 });
     const blackCard = createTestCard({ initiative: 1 });
 
     expect(calculateInitiative(whiteCard, blackCard, 'white')).toBe('black');
   });
 
-  it('should keep current initiative on a tie', () => {
+  it('given tied initiative, keeps current initiative', () => {
     const whiteCard = createTestCard({ initiative: 2 });
     const blackCard = createTestCard({ initiative: 2 });
 

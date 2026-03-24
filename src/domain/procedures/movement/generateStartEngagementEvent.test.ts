@@ -11,7 +11,13 @@ import { describe, expect, it } from 'vitest';
 
 import { generateStartEngagementEvent } from './generateStartEngagementEvent';
 
+/**
+ * Start of engagement: from movement resolution, classify rear vs flank vs front from
+ * defender facing on the board vs engaging facing on targetPlacement.
+ * Geometry here: engager at E-5 facing east, defender at E-6 (adjacent east); facings vary per case.
+ */
 describe('generateStartEngagementEvent', () => {
+  /** issueCommands + movement targeting E-6; black.inPlay satisfies movement factory commitment.card. */
   function stateEnteringDefenderAt(options: {
     defenderFacing: UnitFacing;
     engagingFacing: UnitFacing;
@@ -46,7 +52,7 @@ describe('generateStartEngagementEvent', () => {
     return { full, defender };
   }
 
-  it('includes defenderWithPlacement (unit + coordinate + facing) at the movement target', () => {
+  it('given movement into E-6, event copies defender unit and board facing at target coordinate', () => {
     const { full, defender } = stateEnteringDefenderAt({
       defenderFacing: 'south',
       engagingFacing: 'north',
@@ -59,7 +65,7 @@ describe('generateStartEngagementEvent', () => {
     expect(['rear', 'flank', 'front']).toContain(event.engagementType);
   });
 
-  it('classifies rear engagement when engaging facing matches defender rear arc', () => {
+  it('given defender north and engaging north into rear arc, engagementType is rear', () => {
     const { full } = stateEnteringDefenderAt({
       defenderFacing: 'north',
       engagingFacing: 'north',
@@ -67,7 +73,7 @@ describe('generateStartEngagementEvent', () => {
     expect(generateStartEngagementEvent(full).engagementType).toBe('rear');
   });
 
-  it('classifies flank engagement when engaging facing is orthogonal to defender', () => {
+  it('given defender south and engaging east (orthogonal), engagementType is flank', () => {
     const { full } = stateEnteringDefenderAt({
       defenderFacing: 'south',
       engagingFacing: 'east',
@@ -75,7 +81,7 @@ describe('generateStartEngagementEvent', () => {
     expect(generateStartEngagementEvent(full).engagementType).toBe('flank');
   });
 
-  it('classifies front engagement when engaging facing opposes defender', () => {
+  it('given defender south and engaging north (head-on), engagementType is front', () => {
     const { full } = stateEnteringDefenderAt({
       defenderFacing: 'south',
       engagingFacing: 'north',
@@ -83,7 +89,7 @@ describe('generateStartEngagementEvent', () => {
     expect(generateStartEngagementEvent(full).engagementType).toBe('front');
   });
 
-  it('throws when facings do not map to rear, flank, or front', () => {
+  it('given diagonal defender facing with engaging south, throws classification error', () => {
     const { full } = stateEnteringDefenderAt({
       defenderFacing: 'northEast',
       engagingFacing: 'south',

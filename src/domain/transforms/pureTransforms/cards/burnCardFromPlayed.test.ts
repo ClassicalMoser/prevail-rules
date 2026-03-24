@@ -3,6 +3,9 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { burnCardFromPlayed } from './burnCardFromPlayed';
 
+/**
+ * burnCardFromPlayed: pure transform; implementation in burnCardFromPlayed.ts.
+ */
 describe('burnCardFromPlayed', () => {
   it('should move card from played to burnt', () => {
     const gameState = createEmptyGameState();

@@ -3,8 +3,11 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { getIsFirstPlayerForResolveRallyStep } from './getIsFirstPlayerForResolveRallyStep';
 
+/**
+ * Cleanup resolve-rally steps alternate first vs second player; this boolean matches the step name.
+ */
 describe('getIsFirstPlayerForResolveRallyStep', () => {
-  it('should return true for the first player resolve rally step', () => {
+  it('given firstPlayerResolveRally, returns true', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
       phase: CLEANUP_PHASE,
@@ -16,7 +19,7 @@ describe('getIsFirstPlayerForResolveRallyStep', () => {
     expect(getIsFirstPlayerForResolveRallyStep(state)).toBe(true);
   });
 
-  it('should return false for the second player resolve rally step', () => {
+  it('given the second player resolve rally step, returns false', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
       phase: CLEANUP_PHASE,
@@ -28,7 +31,7 @@ describe('getIsFirstPlayerForResolveRallyStep', () => {
     expect(getIsFirstPlayerForResolveRallyStep(state)).toBe(false);
   });
 
-  it('should throw when cleanup is not on a resolve rally step', () => {
+  it('given discardPlayedCards, throws not on resolveRally with step name', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
       phase: CLEANUP_PHASE,

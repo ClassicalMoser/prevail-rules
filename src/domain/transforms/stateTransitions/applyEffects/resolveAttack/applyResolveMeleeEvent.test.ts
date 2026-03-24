@@ -13,7 +13,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyResolveMeleeEvent } from './applyResolveMeleeEvent';
 
+/**
+ * Materializes procedure `resolveMelee` into per-side `attackApplyState` substeps (rout,
+ * retreat with optional auto final hex, reverse) or clears applies when nothing branches.
+ */
 describe('applyResolveMeleeEvent', () => {
+  /** resolveMelee phase with default melee CRS and both inPlay command cards set. */
   function baseMeleeGameState(): GameState<StandardBoard> {
     const base = createEmptyGameState();
     const withCards = updateCardState(base, (c) => ({
@@ -30,6 +35,7 @@ describe('applyResolveMeleeEvent', () => {
     );
   }
 
+  /** Mirror engaged pair on E-5 for event payloads. */
   function unitPlacements(): {
     whiteUnitWithPlacement: UnitWithPlacement<StandardBoard>;
     blackUnitWithPlacement: UnitWithPlacement<StandardBoard>;
@@ -48,6 +54,7 @@ describe('applyResolveMeleeEvent', () => {
     };
   }
 
+  /** Neutral resolveMelee event: no rout/retreat/reverse, empty legal retreat sets. */
   function baseMeleeEvent(
     placements: ReturnType<typeof unitPlacements>,
   ): ResolveMeleeEvent<StandardBoard> {
@@ -68,7 +75,7 @@ describe('applyResolveMeleeEvent', () => {
     };
   }
 
-  it('sets both attack-apply states undefined when no rout/retreat/reverse', () => {
+  it('given flat melee outcome flags, neither side gets an attackApplyState', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const event = baseMeleeEvent(placements);
@@ -79,7 +86,7 @@ describe('applyResolveMeleeEvent', () => {
     expect(melee.blackAttackApplyState).toBeUndefined();
   });
 
-  it('creates reverse substep when whiteUnitReversed is true', () => {
+  it('given whiteUnitReversed true, white apply gains reverse substep and black stays undefined', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const event: ResolveMeleeEvent<StandardBoard> = {
@@ -95,7 +102,7 @@ describe('applyResolveMeleeEvent', () => {
     expect(melee.blackAttackApplyState).toBeUndefined();
   });
 
-  it('creates rout substep when a unit is routed', () => {
+  it('given whiteUnitRouted true, white apply gains rout substep', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const event: ResolveMeleeEvent<StandardBoard> = {
@@ -109,7 +116,7 @@ describe('applyResolveMeleeEvent', () => {
     expect(melee.blackAttackApplyState).toBeUndefined();
   });
 
-  it('creates retreat substep with finalPosition when exactly one legal retreat', () => {
+  it('given white retreated with one legal hex E-6 south, retreat finalPosition auto-fills', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const only = {
@@ -129,7 +136,7 @@ describe('applyResolveMeleeEvent', () => {
     );
   });
 
-  it('creates retreat substep with undefined finalPosition when multiple legal retreats', () => {
+  it('given white retreated with two legal hexes, retreat finalPosition stays undefined', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const event: ResolveMeleeEvent<StandardBoard> = {

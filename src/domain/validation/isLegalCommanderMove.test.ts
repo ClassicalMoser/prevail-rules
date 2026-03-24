@@ -5,6 +5,9 @@ import { createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { isLegalCommanderMove } from './isLegalCommanderMove';
 
+/**
+ * valid moves: validation rule; implementation in isLegalCommanderMove.ts.
+ */
 describe('valid moves', () => {
   it('should return true when commander moves within distance 1', () => {
     const board = createBoardWithCommander('black', 'E-5');

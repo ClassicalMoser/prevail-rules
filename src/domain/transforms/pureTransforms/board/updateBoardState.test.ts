@@ -2,6 +2,9 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { updateBoardState } from './updateBoardState';
 
+/**
+ * updateBoardState: pure transform; implementation in updateBoardState.ts.
+ */
 describe('updateBoardState', () => {
   it('should update the board state', () => {
     const state = createEmptyGameState();

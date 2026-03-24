@@ -6,8 +6,11 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getPlayerUnitsWithPlacementOnBoard } from './getPlayerUnitsWithPlacementOnBoard';
 
+/**
+ * getPlayerUnitsWithPlacementOnBoard: all of a player's units on the board with coordinates and facings.
+ */
 describe('getPlayerUnitsWithPlacementOnBoard', () => {
-  it('should return all units with placement for a player', () => {
+  it('given a player, returns all units with placement', () => {
     const unit1 = createTestUnit('white', { attack: 3 });
     const unit2 = createTestUnit('white', { attack: 3 });
     const unit3 = createTestUnit('black', { attack: 3 });
@@ -35,7 +38,7 @@ describe('getPlayerUnitsWithPlacementOnBoard', () => {
     ).toBe(true);
   });
 
-  it('should return empty set when player has no units on board', () => {
+  it('given player has no units on board, returns empty set', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
     const state = createEmptyGameState();
@@ -48,7 +51,7 @@ describe('getPlayerUnitsWithPlacementOnBoard', () => {
     expect(blackUnits.size).toBe(0);
   });
 
-  it('should include placement information', () => {
+  it('given include placement information', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
     const state = createEmptyGameState();

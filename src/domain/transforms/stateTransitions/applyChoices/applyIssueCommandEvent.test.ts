@@ -9,10 +9,12 @@ import { isSameUnitInstance } from '@validation';
 import { describe, expect, it } from 'vitest';
 import { applyIssueCommandEvent } from './applyIssueCommandEvent';
 
+/**
+ * Issue-commands: spending a command type removes it from the side’s remaining set and adds
+ * the chosen unit instances to the round’s `commandedUnits` (for later resolution ordering).
+ */
 describe('applyIssueCommandEvent', () => {
-  /**
-   * Helper to create a game state in the issueCommands phase with commands available
-   */
+  /** firstPlayerIssueCommands with one command left per side from two inPlay cards. */
   function createGameStateWithCommands(
     currentInitiative: 'black' | 'white' = 'black',
   ): GameState<StandardBoard> {
@@ -45,8 +47,8 @@ describe('applyIssueCommandEvent', () => {
     return stateWithPhase;
   }
 
-  describe('basic functionality', () => {
-    it('should remove command from remaining commands and add units to commandedUnits', () => {
+  describe('command spend and commandedUnits', () => {
+    it('given black issues their remaining command with one unit, command drops from first-player set and unit commanded', () => {
       const state = createGameStateWithCommands();
       const unit = createTestUnit('black', { attack: 3 });
       const command = commandCards[0].command;
@@ -74,7 +76,7 @@ describe('applyIssueCommandEvent', () => {
       expect(unitInCommandedUnits).toBe(true);
     });
 
-    it('should work for second player', () => {
+    it('given white issues second-player command, remainingCommandsSecondPlayer loses that command', () => {
       const state = createGameStateWithCommands();
       const unit = createTestUnit('white', { attack: 3 });
       const command = commandCards[1].command;
@@ -102,7 +104,7 @@ describe('applyIssueCommandEvent', () => {
       expect(unitInCommandedUnits).toBe(true);
     });
 
-    it('should add multiple units to commandedUnits', () => {
+    it('given black issues one command for two units, both appear in commandedUnits size 2', () => {
       const state = createGameStateWithCommands();
       const unit1 = createTestUnit('black', { attack: 3 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
@@ -131,8 +133,8 @@ describe('applyIssueCommandEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given phase commandedUnits and remaining set sizes before apply, input state unchanged after apply', () => {
       const state = createGameStateWithCommands();
       const unit = createTestUnit('black', { attack: 3 });
       const command = commandCards[0].command;

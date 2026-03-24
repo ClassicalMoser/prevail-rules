@@ -5,6 +5,9 @@ import { addUnitToBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { isLegalMove } from './isLegalMove';
 
+/**
+ * isLegalMove: validation rule; implementation in isLegalMove.ts.
+ */
 describe('isLegalMove', () => {
   describe('core functionality', () => {
     it('should return true for a legal move', () => {

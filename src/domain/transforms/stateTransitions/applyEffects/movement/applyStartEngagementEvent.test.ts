@@ -12,7 +12,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyStartEngagementEvent } from './applyStartEngagementEvent';
 
+/**
+ * When a move enters an enemy hex, this seeds `engagementState` on the movement CRS from the
+ * procedure’s `engagementType` (front vs rear rout vs flank rotation pipeline).
+ */
 describe('applyStartEngagementEvent', () => {
+  /** Black E-5 moving into white on E-6 with north-facing target placement. */
   function stateWithMovementToEnemy(): {
     state: GameState<StandardBoard>;
     defenderWithPlacement: UnitWithPlacement<StandardBoard>;
@@ -45,7 +50,7 @@ describe('applyStartEngagementEvent', () => {
     };
   }
 
-  it('creates front engagement using defenderWithPlacement from the event payload', () => {
+  it('given event engagementType front, movement engagement is front and engager is movingUnit', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event = {
       eventType: 'gameEffect' as const,
@@ -68,7 +73,7 @@ describe('applyStartEngagementEvent', () => {
     expect(cmd.engagementState?.engagingUnit).toBe(cmd.movingUnit.unit);
   });
 
-  it('creates rear engagement rout for defending player from event.defenderWithPlacement', () => {
+  it('given event engagementType rear, rear routState player matches defender side', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event = {
       eventType: 'gameEffect' as const,
@@ -90,7 +95,7 @@ describe('applyStartEngagementEvent', () => {
     expect(res.routState?.player).toBe(defenderWithPlacement.unit.playerSide);
   });
 
-  it('creates flank engagement resolution state', () => {
+  it('given event engagementType flank, flank substep present and defenderRotated false', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event = {
       eventType: 'gameEffect' as const,
@@ -112,7 +117,7 @@ describe('applyStartEngagementEvent', () => {
     expect(res.defenderRotated).toBe(false);
   });
 
-  it('throws for an unknown engagement type at runtime', () => {
+  it('given bogus engagementType siege cast, throws unknown engagement type', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event = {
       eventType: 'gameEffect' as const,

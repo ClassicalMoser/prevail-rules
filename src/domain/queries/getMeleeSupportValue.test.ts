@@ -8,6 +8,9 @@ import { getMeleeSupportValue } from './getMeleeSupportValue';
 import { getPlayerUnitWithPosition } from './unitPresence';
 
 /**
+ * getMeleeSupportValue: melee support total from eligible adjacent unengaged friendlies (strong vs weak facing,
+ * diagonal line-of-sight blockers, engaged units excluded).
+ *
  * Board coordinates: `Letter-Number` = row-column (e.g. E-5 = row E, column 5).
  * North moves toward lower row letters (toward A); south toward higher letters.
  * East increases column number; west decreases it.
@@ -15,7 +18,7 @@ import { getPlayerUnitWithPosition } from './unitPresence';
  */
 describe('getMeleeSupportValue', () => {
   describe('no support', () => {
-    it('should return 0 when there are no adjacent friendly units', () => {
+    it('given no adjacent friendlies, returns 0', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
@@ -31,7 +34,7 @@ describe('getMeleeSupportValue', () => {
       expect(supportValue).toBe(0);
     });
 
-    it('should return 0 when the only adjacent friendly is in a space behind the primary', () => {
+    it('given only adjacent friendly is in rear arc, returns 0', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -57,7 +60,7 @@ describe('getMeleeSupportValue', () => {
       expect(supportValue).toBe(0);
     });
 
-    it('should return 0 when adjacent units are enemy units', () => {
+    it('given adjacent units are enemies, returns 0', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -84,7 +87,7 @@ describe('getMeleeSupportValue', () => {
   });
 
   describe('strong support', () => {
-    it('should return 2 when a friendly unit is facing the primary unit', () => {
+    it('given friendly faces toward primary, returns 2', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -109,7 +112,7 @@ describe('getMeleeSupportValue', () => {
       expect(supportValue).toBe(2);
     });
 
-    it('should return 2 when support unit is diagonally adjacent and facing primary unit', () => {
+    it('given diagonal adjacent friendly faces toward primary, returns 2', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -136,7 +139,7 @@ describe('getMeleeSupportValue', () => {
   });
 
   describe('weak support', () => {
-    it('should return 1 when a friendly unit is flanking the primary unit', () => {
+    it('given friendly flanks primary, returns 1', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -161,7 +164,7 @@ describe('getMeleeSupportValue', () => {
       expect(supportValue).toBe(1);
     });
 
-    it('should return 0 when a friendly adjacent unit is facing away', () => {
+    it('given friendly adjacent but facing away, returns 0', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -185,7 +188,7 @@ describe('getMeleeSupportValue', () => {
       expect(supportValue).toBe(0);
     });
 
-    it('should return 0 when a diagonal support unit is blocked by enemy units', () => {
+    it('given diagonal support blocked by enemies on intervening orthogonals, returns 0', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -221,7 +224,7 @@ describe('getMeleeSupportValue', () => {
   });
 
   describe('engaged units', () => {
-    it('should not count engaged units for support', () => {
+    it('given support candidate is engaged, does not count', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -261,7 +264,7 @@ describe('getMeleeSupportValue', () => {
       expect(supportValue).toBe(0);
     });
 
-    it('should count unengaged units even when other adjacent units are engaged', () => {
+    it('given other adjacent friendlies engaged, still counts unengaged strong support', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -316,7 +319,7 @@ describe('getMeleeSupportValue', () => {
   });
 
   describe('multiple support units', () => {
-    it('should return 2 when multiple units provide support but only strong support counts', () => {
+    it('given strong and weak support, returns strong value only', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -347,7 +350,7 @@ describe('getMeleeSupportValue', () => {
       expect(supportValue).toBe(2);
     });
 
-    it('should sum multiple weak support units when no strong support exists', () => {
+    it('given only weak supports, sums weak values', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -383,7 +386,7 @@ describe('getMeleeSupportValue', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle units at board edges correctly', () => {
+    it('given corner board position, strong support still applies', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -409,7 +412,7 @@ describe('getMeleeSupportValue', () => {
       expect(supportValue).toBe(2);
     });
 
-    it('should handle different facing directions correctly', () => {
+    it('given primary facing east, support facing west toward primary, returns 2', () => {
       const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,

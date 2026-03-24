@@ -4,6 +4,9 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { chooseCard } from './chooseCard';
 
+/**
+ * chooseCard: pure transform; implementation in chooseCard.ts.
+ */
 describe('chooseCard', () => {
   function cardStateWithHands(
     blackHand: typeof commandCards,

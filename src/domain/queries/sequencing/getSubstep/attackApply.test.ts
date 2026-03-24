@@ -16,8 +16,12 @@ import {
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
 } from './attackApply';
 
+/**
+ * Attack-apply getters: ranged CRS slice, per-player melee apply, and which defender still owes
+ * an incomplete melee apply given initiative order.
+ */
 describe('getAttackApplyStateFromRangedAttack', () => {
-  it('should return attack apply state from ranged attack resolution', () => {
+  it('given ranged CRS with nested apply, returns that attackApplyState', () => {
     const attackingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState();
@@ -39,7 +43,7 @@ describe('getAttackApplyStateFromRangedAttack', () => {
     expect(result.completed).toBe(false);
   });
 
-  it('should throw error when attack apply state is missing', () => {
+  it('given ranged CRS without apply, throws no attack apply in ranged', () => {
     const attackingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState();
@@ -62,7 +66,7 @@ describe('getAttackApplyStateFromRangedAttack', () => {
     );
   });
 
-  it('should throw error when not in ranged attack resolution', () => {
+  it('given movement CRS, throws current command resolution is not ranged attack', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
@@ -78,7 +82,7 @@ describe('getAttackApplyStateFromRangedAttack', () => {
 });
 
 describe('getAttackApplyStateFromMelee', () => {
-  it('should return white attack apply state when player is white', () => {
+  it('given melee with white apply, getAttackApplyFromMelee(white) returns white slice', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
@@ -108,7 +112,7 @@ describe('getAttackApplyStateFromMelee', () => {
     expect(result.completed).toBe(false);
   });
 
-  it('should return black attack apply state when player is black', () => {
+  it('given melee with black apply showing rout result, black getter returns that apply', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
@@ -146,7 +150,7 @@ describe('getAttackApplyStateFromMelee', () => {
     expect(result.attackResult.unitRouted).toBe(true);
   });
 
-  it('should throw error when attack apply state is missing', () => {
+  it('given melee missing white apply, getAttackApplyFromMelee(white) throws', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
@@ -178,7 +182,7 @@ describe('getAttackApplyStateFromMelee', () => {
 });
 
 describe('getDefendingPlayerForNextIncompleteMeleeAttackApply', () => {
-  it('returns initiative player when their attack apply is still incomplete', () => {
+  it('given black initiative and black apply incomplete, next defender is black', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -203,7 +207,7 @@ describe('getDefendingPlayerForNextIncompleteMeleeAttackApply', () => {
     ).toBe('black');
   });
 
-  it('returns second player when initiative player apply is already complete', () => {
+  it('given black initiative with black complete and white incomplete, next defender is white', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -228,7 +232,7 @@ describe('getDefendingPlayerForNextIncompleteMeleeAttackApply', () => {
     ).toBe('white');
   });
 
-  it('returns null when both attack apply states are complete', () => {
+  it('given both applies completed, returns null', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -246,7 +250,7 @@ describe('getDefendingPlayerForNextIncompleteMeleeAttackApply', () => {
     ).toBeNull();
   });
 
-  it('returns null when either attack apply state is missing', () => {
+  it('given missing white apply, returns null', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const meleeState = createMeleeResolutionState(state, {

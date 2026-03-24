@@ -4,8 +4,11 @@ import { getInlineSpaces } from './getInlineSpaces';
 
 const standardBoard = createEmptyStandardBoard();
 
+/**
+ * getInlineSpaces: full line through the coordinate along the facing axis (both directions), clipped to board.
+ */
 describe('getInlineSpaces', () => {
-  it('should return the inline spaces when facing south from A1', () => {
+  it('given facing south from A-1, returns column A', () => {
     expect(getInlineSpaces(standardBoard, 'A-1', 'south')).toEqual(
       new Set([
         'A-1',
@@ -29,7 +32,7 @@ describe('getInlineSpaces', () => {
       ]),
     );
   });
-  it('should return the inline spaces when facing east from E5', () => {
+  it('given facing east from E-5, returns row 5', () => {
     expect(getInlineSpaces(standardBoard, 'E-5', 'east')).toEqual(
       new Set([
         'A-5',
@@ -47,7 +50,7 @@ describe('getInlineSpaces', () => {
       ]),
     );
   });
-  it('should return the inline spaces when facing northEast from E5', () => {
+  it('given facing northEast from E-5, returns main diagonal through E-5', () => {
     expect(getInlineSpaces(standardBoard, 'E-5', 'northEast')).toEqual(
       new Set([
         'A-1',
@@ -65,7 +68,7 @@ describe('getInlineSpaces', () => {
       ]),
     );
   });
-  it('should return the inline spaces when facing southEast from E5', () => {
+  it('given facing southEast from E-5, returns anti-diagonal through E-5', () => {
     expect(getInlineSpaces(standardBoard, 'E-5', 'southEast')).toEqual(
       new Set(['A-9', 'B-8', 'C-7', 'D-6', 'E-5', 'F-4', 'G-3', 'H-2', 'I-1']),
     );

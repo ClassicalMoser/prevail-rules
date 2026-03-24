@@ -3,6 +3,9 @@ import type { UnitStatName } from '@entities';
 import { describe, expect, it } from 'vitest';
 import { isDefenseStat } from './isDefenseStat';
 
+/**
+ * isDefenseStat: validation rule; implementation in isDefenseStat.ts.
+ */
 describe('isDefenseStat', () => {
   it('should return true for defense stats', () => {
     const { result: reverseResult } = isDefenseStat('reverse');

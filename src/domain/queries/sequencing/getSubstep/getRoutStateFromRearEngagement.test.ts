@@ -14,8 +14,12 @@ import { describe, expect, it } from 'vitest';
 
 import { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement';
 
+/**
+ * Rear-contact movement: the nested rear engagement must carry a rout substep; this unwraps it
+ * from issueCommands + movement CRS with validation.
+ */
 describe('getRoutStateFromRearEngagement', () => {
-  it('returns rout state from rear engagement on movement resolution', () => {
+  it('given rear engagement movement with routState, returns same rout object', () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const whiteUnit = createTestUnit('white');
@@ -35,7 +39,7 @@ describe('getRoutStateFromRearEngagement', () => {
     expect(getRoutStateFromRearEngagement(full)).toBe(routState);
   });
 
-  it('throws when movement has no engagement state', () => {
+  it('given movement without engagementState, throws movement has no engagement', () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const movement = createMovementResolutionState(state, {
@@ -71,7 +75,7 @@ describe('getRoutStateFromRearEngagement', () => {
     );
   });
 
-  it('throws when rear engagement omits rout state (malformed replay)', () => {
+  it('given rear engagement shape without routState, throws rear has no rout', () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const rearBroken = {

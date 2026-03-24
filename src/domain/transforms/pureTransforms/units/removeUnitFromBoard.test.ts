@@ -10,6 +10,9 @@ import { createEmptyStandardBoard } from '@transforms/initializations';
 import { describe, expect, it } from 'vitest';
 import { removeUnitFromBoard } from './removeUnitFromBoard';
 
+/**
+ * removeUnitFromBoard: pure transform; implementation in removeUnitFromBoard.ts.
+ */
 describe('removeUnitFromBoard', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';
 

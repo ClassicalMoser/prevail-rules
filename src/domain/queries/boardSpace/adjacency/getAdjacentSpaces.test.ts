@@ -4,8 +4,11 @@ import { getAdjacentSpaces } from './getAdjacentSpaces';
 
 const standardBoard = createEmptyStandardBoard();
 
+/**
+ * getAdjacentSpaces: all eight neighbors (orthogonal + diagonal) that exist on the board from a coordinate.
+ */
 describe('getAdjacentSpaces', () => {
-  it('should return the adjacent spaces for a given coordinate', () => {
+  it('given corner, interior, and opposite corner samples, returns expected neighbor sets', () => {
     expect(getAdjacentSpaces(standardBoard, 'A-1')).toEqual(
       new Set(['B-1', 'B-2', 'A-2']),
     );

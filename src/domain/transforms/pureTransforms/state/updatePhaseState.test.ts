@@ -3,6 +3,9 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { updatePhaseState } from './updatePhaseState';
 
+/**
+ * updatePhaseState: pure transform; implementation in updatePhaseState.ts.
+ */
 describe('updatePhaseState', () => {
   it('should update the phase state', () => {
     const state = createEmptyGameState();

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { createUnitWithPlacement } from './unitWithPlacement';
 
+/**
+ * createUnitWithPlacement: test helper; implementation in unitWithPlacement.ts.
+ */
 describe('createUnitWithPlacement', () => {
   it('should return unit with default placement when no options', () => {
     const result = createUnitWithPlacement();

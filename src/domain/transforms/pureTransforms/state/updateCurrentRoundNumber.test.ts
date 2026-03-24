@@ -2,6 +2,9 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { updateCurrentRoundNumber } from './updateCurrentRoundNumber';
 
+/**
+ * updateCurrentRoundNumber: pure transform; implementation in updateCurrentRoundNumber.ts.
+ */
 describe('updateCurrentRoundNumber', () => {
   it('should update the current round number', () => {
     const state = createEmptyGameState();

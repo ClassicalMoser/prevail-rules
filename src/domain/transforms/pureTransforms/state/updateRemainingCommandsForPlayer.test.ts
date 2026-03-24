@@ -4,6 +4,9 @@ import { createTestCard } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { updateRemainingCommandsForPlayer } from './updateRemainingCommandsForPlayer';
 
+/**
+ * updateRemainingCommandsForPlayer: pure transform; implementation in updateRemainingCommandsForPlayer.ts.
+ */
 describe('updateRemainingCommandsForPlayer', () => {
   it('should update remainingCommandsFirstPlayer when player is initiative player', () => {
     const phaseState: IssueCommandsPhaseState<StandardBoard> = {

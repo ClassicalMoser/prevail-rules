@@ -19,8 +19,12 @@ import {
   getRoutStateFromMeleeResolutionByInitiative,
 } from './rout';
 
+/**
+ * Rout substep accessors: read rout from a single apply, or pick melee side by initiative when
+ * both players might have rout substeps.
+ */
 describe('getRoutStateFromAttackApply', () => {
-  it('should return rout state from attack apply state', () => {
+  it('given apply with rout nested, returns that rout substep', () => {
     const unit = createTestUnit('black', { attack: 2 });
     const attackApplyState: AttackApplyState<any> = {
       substepType: 'attackApply' as const,
@@ -49,7 +53,7 @@ describe('getRoutStateFromAttackApply', () => {
     expect(result.unitsToRout.has(unit)).toBe(true);
   });
 
-  it('should throw error when rout state is missing', () => {
+  it('given apply without routState, throws no rout in attack apply', () => {
     const unit = createTestUnit('black', { attack: 2 });
     const attackApplyState: AttackApplyState<any> = {
       substepType: 'attackApply' as const,
@@ -72,6 +76,7 @@ describe('getRoutStateFromAttackApply', () => {
 });
 
 describe('getRoutStateFromMeleeResolutionByInitiative', () => {
+  /** Engaged E-5 pair; toggle which side’s apply uses createAttackApplyStateWithRout. */
   function meleeStateWithRouts(
     initiative: 'white' | 'black',
     opts: { whiteHasRout?: boolean; blackHasRout?: boolean },
@@ -107,7 +112,7 @@ describe('getRoutStateFromMeleeResolutionByInitiative', () => {
     return updatePhaseState(s, phase);
   }
 
-  it('returns first initiative players rout when present', () => {
+  it('given black initiative and only black rout, returns black rout', () => {
     const state = meleeStateWithRouts('black', {
       whiteHasRout: false,
       blackHasRout: true,
@@ -117,7 +122,7 @@ describe('getRoutStateFromMeleeResolutionByInitiative', () => {
     expect(rout.unitsToRout.size).toBeGreaterThan(0);
   });
 
-  it('falls back to second player when first has no rout', () => {
+  it('given black initiative but black has no rout, falls back to white rout', () => {
     const state = meleeStateWithRouts('black', {
       whiteHasRout: true,
       blackHasRout: false,
@@ -127,7 +132,7 @@ describe('getRoutStateFromMeleeResolutionByInitiative', () => {
     expect(rout.unitsToRout.size).toBeGreaterThan(0);
   });
 
-  it('throws when no rout on either apply', () => {
+  it('given neither apply has rout, throws no rout in melee resolution', () => {
     const state = meleeStateWithRouts('white', {
       whiteHasRout: false,
       blackHasRout: false,

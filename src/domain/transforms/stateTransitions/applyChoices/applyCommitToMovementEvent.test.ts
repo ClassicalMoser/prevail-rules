@@ -11,8 +11,12 @@ import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyCommitToMovementEvent } from './applyCommitToMovementEvent';
 
+/**
+ * Movement command commitment: pending `commitment` on the movement CRS becomes completed with
+ * the played card, and that card is removed from the moving player’s hand.
+ */
 describe('applyCommitToMovementEvent', () => {
-  it('completes black commitment and discards card from hand', () => {
+  it('given black pending movement and one card in hand, commitment completed and hand empty', () => {
     const state = createEmptyGameState();
     const stateWithBlackCardInHand = updateCardState(state, (c) => ({
       ...c,
@@ -48,7 +52,7 @@ describe('applyCommitToMovementEvent', () => {
     expect(newState.cardState.black.inHand).toHaveLength(0);
   });
 
-  it('completes white commitment and discards card from hand', () => {
+  it('given white pending movement and one card in hand, same shape for white side', () => {
     const state = createEmptyGameState();
     const stateWithWhiteCardInHand = updateCardState(state, (c) => ({
       ...c,
@@ -84,7 +88,7 @@ describe('applyCommitToMovementEvent', () => {
     expect(newState.cardState.white.inHand).toHaveLength(0);
   });
 
-  it('does not mutate the input state', () => {
+  it('given hand and commitment snapshot before apply, input state hand and movement slice unchanged', () => {
     const state = createEmptyGameState();
     const stateWithBlackCardInHand = updateCardState(state, (c) => ({
       ...c,

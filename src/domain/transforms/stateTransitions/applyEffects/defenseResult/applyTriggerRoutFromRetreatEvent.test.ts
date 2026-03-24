@@ -17,10 +17,12 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyTriggerRoutFromRetreatEvent } from './applyTriggerRoutFromRetreatEvent';
 
+/**
+ * Illegal retreat: nests a fresh `rout` substep under the existing retreat apply (ranged) or
+ * the indicated melee side, preserving retreat metadata until rout resolution runs.
+ */
 describe('applyTriggerRoutFromRetreatEvent', () => {
-  /**
-   * Helper to create a game state with a retreat state in ranged attack resolution
-   */
+  /** issueCommands + ranged retreat substep only (no rout yet). */
   function createStateWithRangedAttackRetreat(): GameState<StandardBoard> {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
@@ -46,9 +48,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
     return updatePhaseState(stateWithUnit, phaseState);
   }
 
-  /**
-   * Helper to create a game state with a retreat state in melee resolution
-   */
+  /** resolveMelee + one-sided retreat apply for the named player. */
   function createStateWithMeleeRetreat(
     retreatingPlayer: 'white' | 'black',
   ): GameState<StandardBoard> {
@@ -95,8 +95,8 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
     return updatePhaseState(stateWithUnits, phaseState);
   }
 
-  describe('ranged attack resolution context', () => {
-    it('should create rout state in retreat state', () => {
+  describe('ranged retreat context', () => {
+    it('given ranged retreat flow, trigger adds rout substep targeting retreating player unit', () => {
       const state = createStateWithRangedAttackRetreat();
       const retreatState = getRetreatStateFromRangedAttack(state);
 
@@ -122,7 +122,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
       ).toBe(true);
     });
 
-    it('should set rout state properties correctly', () => {
+    it('given same trigger, new rout has undefined discard count and not completed', () => {
       const state = createStateWithRangedAttackRetreat();
 
       // Event does not specify player - function determines it from state
@@ -141,8 +141,8 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
     });
   });
 
-  describe('melee resolution context', () => {
-    it('should create rout state in retreat state for first player', () => {
+  describe('melee retreat context', () => {
+    it('given black melee retreat, melee trigger with retreatingPlayer black seeds rout', () => {
       const state = createStateWithMeleeRetreat('black');
 
       // Event does not specify player - function determines it from state
@@ -160,7 +160,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
       expect(newRetreatState.routState?.player).toBe('black');
     });
 
-    it('should create rout state in retreat state for second player', () => {
+    it('given white melee retreat, melee trigger with retreatingPlayer white seeds rout', () => {
       const state = createStateWithMeleeRetreat('white');
 
       // Event does not specify player - function determines it from state
@@ -179,8 +179,8 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given retreat routState ref before ranged trigger, input retreat unchanged after apply', () => {
       const state = createStateWithRangedAttackRetreat();
       const retreatState = getRetreatStateFromRangedAttack(state);
       const originalRoutState = retreatState.routState;

@@ -12,6 +12,10 @@ import { describe, expect, it } from 'vitest';
 
 import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
 
+/**
+ * Minimal front-engagement stack: defender on `createFrontEngagementState` default cell (E-5),
+ * engager speeds swapped via createUnitByStat; black.inPlay only feeds movement commitment factory.
+ */
 function buildStateWithFrontEngagement(options: {
   defendingSpeed: number;
   engagingSpeed: number;
@@ -47,8 +51,12 @@ function buildStateWithFrontEngagement(options: {
   );
 }
 
+/**
+ * Front engagement: defendingUnitCanRetreat is true iff defender’s current speed exceeds
+ * engager’s (see procedure). black.inPlay only satisfies movement factory commitment.
+ */
 describe('generateResolveEngageRetreatOptionEvent', () => {
-  it('is true when defender current speed exceeds engager speed', () => {
+  it('given defender speed 4 and engager speed 2, defendingUnitCanRetreat is true', () => {
     const full = buildStateWithFrontEngagement({
       defendingSpeed: 4,
       engagingSpeed: 2,
@@ -57,7 +65,7 @@ describe('generateResolveEngageRetreatOptionEvent', () => {
     expect(event.defendingUnitCanRetreat).toBe(true);
   });
 
-  it('is false when defender current speed does not exceed engager speed', () => {
+  it('given defender speed 2 and engager speed 4, defendingUnitCanRetreat is false', () => {
     const full = buildStateWithFrontEngagement({
       defendingSpeed: 2,
       engagingSpeed: 4,

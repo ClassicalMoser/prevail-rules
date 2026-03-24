@@ -2,6 +2,9 @@ import { createEmptyStandardBoard } from '@transforms/initializations';
 import { describe, expect, it } from 'vitest';
 import { addCommanderToBoard } from './addCommanderToBoard';
 
+/**
+ * addCommanderToBoard: pure transform; implementation in addCommanderToBoard.ts.
+ */
 describe('addCommanderToBoard', () => {
   it('should add a commander to an empty space', () => {
     const board = createEmptyStandardBoard();

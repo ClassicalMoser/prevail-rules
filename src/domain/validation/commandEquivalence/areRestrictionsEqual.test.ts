@@ -2,6 +2,9 @@ import type { Restrictions } from '@entities';
 import { describe, expect, it } from 'vitest';
 import { areRestrictionsEqual } from './areRestrictionsEqual';
 
+/**
+ * areRestrictionsEqual: validation rule; implementation in areRestrictionsEqual.ts.
+ */
 describe('areRestrictionsEqual', () => {
   it('should return true when both restrictions have identical properties', () => {
     const restrictions1: Restrictions = {

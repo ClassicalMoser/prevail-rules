@@ -3,8 +3,11 @@ import { createBoardWithCommander, createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { getLegalCommanderMoves } from './getLegalCommanderMoves';
 
+/**
+ * getLegalCommanderMoves: legal commander destination coordinates within the move square.
+ */
 describe('getLegalCommanderMoves', () => {
-  it('should return all moves on an empty board', () => {
+  it('given context, returns all moves on an empty board', () => {
     const playerSide = 'white';
     const startingCoordinate = 'E-5';
     const gameState = createEmptyGameState();
@@ -20,7 +23,7 @@ describe('getLegalCommanderMoves', () => {
     const squareLength = COMMANDER_MOVE_DISTANCE * 2 + 1;
     expect(legalMoves.size).toEqual(squareLength * squareLength);
   });
-  it('should throw if no commander is at the starting position', () => {
+  it('given if no commander is at the starting position, throws', () => {
     const playerSide = 'white';
     const startingCoordinate = 'E-5';
     const gameState = createEmptyGameState();
@@ -28,7 +31,7 @@ describe('getLegalCommanderMoves', () => {
       getLegalCommanderMoves(playerSide, gameState, startingCoordinate),
     ).toThrow('Starting position does not contain specified commander');
   });
-  it('should throw if the wrong commander is at the starting position', () => {
+  it('given if the wrong commander is at the starting position, throws', () => {
     const playerSide = 'white';
     const startingCoordinate = 'E-5';
     const gameState = createEmptyGameState();

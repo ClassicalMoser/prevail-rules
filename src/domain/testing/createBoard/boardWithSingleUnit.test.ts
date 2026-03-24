@@ -3,6 +3,9 @@ import { tempUnits } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
 import { createBoardWithSingleUnit } from './boardWithSingleUnit';
 
+/**
+ * createBoardWithSingleUnit: test helper; implementation in boardWithSingleUnit.ts.
+ */
 describe('createBoardWithSingleUnit', () => {
   it('should place single unit at coordinate with defaults', () => {
     const board = createBoardWithSingleUnit('E-5', 'black');

@@ -5,6 +5,9 @@ import { createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { isValidLine } from './isValidLine';
 
+/**
+ * isValidLine: validation rule; implementation in isValidLine.ts.
+ */
 describe('isValidLine', () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();
 

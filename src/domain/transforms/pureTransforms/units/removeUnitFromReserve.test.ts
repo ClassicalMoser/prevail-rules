@@ -2,6 +2,9 @@ import { createEmptyGameState, createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { removeUnitFromReserve } from './removeUnitFromReserve';
 
+/**
+ * removeUnitFromReserve: pure transform; implementation in removeUnitFromReserve.ts.
+ */
 describe('removeUnitFromReserve', () => {
   describe('removing unit from reserve with one unit', () => {
     it('should remove unit and leave empty set', () => {

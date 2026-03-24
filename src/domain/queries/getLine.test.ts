@@ -5,9 +5,12 @@ import { describe, expect, it } from 'vitest';
 import { getLinesFromUnit } from './getLine';
 import { getPlayerUnitWithPosition } from './unitPresence';
 
+/**
+ * getLinesFromUnit: line segments (max length) along the perpendicular axis for formation / command rules.
+ */
 describe('getLinesFromUnit', () => {
   describe('single unit', () => {
-    it('should return a single line with just the unit', () => {
+    it('given context, returns a single line with just the unit', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: StandardBoardCoordinate = 'E-5';
       const board = createBoardWithUnits([
@@ -30,7 +33,7 @@ describe('getLinesFromUnit', () => {
   });
 
   describe('two units forming a line', () => {
-    it('should return a line with both units when they face the same direction', () => {
+    it('given they face the same direction, returns a line with both units', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       // Unit facing north forms line going east-west (perpendicular)
@@ -54,7 +57,7 @@ describe('getLinesFromUnit', () => {
       expect(line.unitPlacements[1]?.unit).toBe(unit2);
     });
 
-    it('should return a line with both units when they face opposite directions', () => {
+    it('given they face opposite directions, returns a line with both units', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       // Unit facing north forms line going east-west (perpendicular)
@@ -77,7 +80,7 @@ describe('getLinesFromUnit', () => {
   });
 
   describe('multiple units forming a line', () => {
-    it('should return a line with all contiguous units (up to 8)', () => {
+    it('given context, returns a line with all contiguous units (up to 8)', () => {
       const units = Array.from({ length: 5 }, (_, i) =>
         createTestUnit('black', { attack: 3, instanceNumber: i + 1 }),
       );
@@ -102,7 +105,7 @@ describe('getLinesFromUnit', () => {
       expect(line.unitPlacements).toHaveLength(5);
     });
 
-    it('should return a line with exactly 8 units', () => {
+    it('given context, returns a line with exactly 8 units', () => {
       const units = Array.from({ length: 8 }, (_, i) =>
         createTestUnit('black', { attack: 3, instanceNumber: i + 1 }),
       );
@@ -131,7 +134,7 @@ describe('getLinesFromUnit', () => {
   });
 
   describe('more than 8 units', () => {
-    it('should return multiple lines when segment has more than 8 units', () => {
+    it('given segment has more than 8 units, returns multiple lines', () => {
       const units = Array.from({ length: 10 }, (_, i) =>
         createTestUnit('black', { attack: 3, instanceNumber: i + 1 }),
       );
@@ -174,7 +177,7 @@ describe('getLinesFromUnit', () => {
   });
 
   describe('gaps in line', () => {
-    it('should stop at empty space and not include units beyond gap', () => {
+    it('given stop at empty space and not include units beyond gap', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       const unit3 = createTestUnit('black', { attack: 3, instanceNumber: 3 });
@@ -202,7 +205,7 @@ describe('getLinesFromUnit', () => {
   });
 
   describe('enemy units', () => {
-    it('should stop at enemy unit and not include units beyond it', () => {
+    it('given stop at enemy unit and not include units beyond it', () => {
       const friendlyUnit1 = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -242,7 +245,7 @@ describe('getLinesFromUnit', () => {
   });
 
   describe('wrong facing', () => {
-    it('should stop at unit with wrong facing (not same or opposite)', () => {
+    it('given stop at unit with wrong facing (not same or opposite)', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       const unit3 = createTestUnit('black', { attack: 3, instanceNumber: 3 });
@@ -266,7 +269,7 @@ describe('getLinesFromUnit', () => {
   });
 
   describe('trait filtering', () => {
-    it('should only include units with required traits', () => {
+    it('given only include units with required traits', () => {
       const unitTypeWithTrait = getUnitByTrait('mounted');
       const unit1 = createTestUnit('black', {
         unitType: unitTypeWithTrait,
@@ -299,7 +302,7 @@ describe('getLinesFromUnit', () => {
   });
 
   describe('unitType filtering', () => {
-    it('should only include units of specified types', () => {
+    it('given only include units of specified types', () => {
       const unitType1 = getUnitByTrait('mounted');
       const unitType2 = getUnitByTrait('spear');
       const unit1 = createTestUnit('black', {
@@ -336,7 +339,7 @@ describe('getLinesFromUnit', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle unit at board edge', () => {
+    it('given handle unit at board edge', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([
         { unit, coordinate: 'A-5', facing: 'north' },
@@ -353,7 +356,7 @@ describe('getLinesFromUnit', () => {
       expect(lines).toBeDefined();
     });
 
-    it('should throw error if unit is not at reported placement', () => {
+    it('given error if unit is not at reported placement, throws', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([
         { unit, coordinate: 'E-5', facing: 'north' },
@@ -378,7 +381,7 @@ describe('getLinesFromUnit', () => {
       );
     });
 
-    it('should handle different facings correctly', () => {
+    it('given handle different facings correctly', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       // Unit facing east forms line going north-south (perpendicular)

@@ -3,8 +3,12 @@ import { CLEANUP_PHASE } from '@entities';
 import { describe, expect, it } from 'vitest';
 import { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
 
+/**
+ * Immutable cleanup phase update: writes the new rally slice for the active resolve-rally step
+ * and advances `step` in the same object shape.
+ */
 describe('updateRallyResolutionStateForCurrentStep', () => {
-  it('should update first player rally state when step is firstPlayerResolveRally', () => {
+  it('given firstPlayerResolveRally, replaces first bucket and sets next step secondPlayerChooseRally', () => {
     const phaseState = {
       phase: CLEANUP_PHASE,
       step: 'firstPlayerResolveRally' as const,
@@ -38,7 +42,7 @@ describe('updateRallyResolutionStateForCurrentStep', () => {
     expect(newPhaseState.step).toBe('secondPlayerChooseRally');
   });
 
-  it('should update second player rally state when step is secondPlayerResolveRally', () => {
+  it('given secondPlayerResolveRally, replaces second bucket and step complete', () => {
     const phaseState = {
       phase: CLEANUP_PHASE,
       step: 'secondPlayerResolveRally' as const,
@@ -72,7 +76,7 @@ describe('updateRallyResolutionStateForCurrentStep', () => {
     expect(newPhaseState.step).toBe('complete');
   });
 
-  it('should throw error when not in resolveRally step', () => {
+  it('given discardPlayedCards step, throws not on resolveRally step', () => {
     const phaseState = {
       phase: CLEANUP_PHASE,
       step: 'discardPlayedCards' as const,

@@ -8,6 +8,9 @@ import { createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { diagonalIsClear } from './diagonalIsClear';
 
+/**
+ * diagonalIsClear: validation rule; implementation in diagonalIsClear.ts.
+ */
 describe('diagonalIsClear', () => {
   const coordinate: StandardBoardCoordinate = 'E-5';
   const board = createEmptyStandardBoard();

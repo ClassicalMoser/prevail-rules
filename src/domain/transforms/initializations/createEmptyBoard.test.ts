@@ -5,6 +5,9 @@ import {
   createEmptyStandardBoard,
 } from './createEmptyBoard';
 
+/**
+ * createEmptyStandardBoard: state / domain transition under test; implementation in createEmptyBoard.ts.
+ */
 describe('createEmptyStandardBoard', () => {
   it('should create an empty standard board', () => {
     const board = createEmptyStandardBoard();

@@ -7,6 +7,9 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { updateCommandResolutionState } from './updateCommandResolutionState';
 
+/**
+ * updateCommandResolutionState: pure transform; implementation in updateCommandResolutionState.ts.
+ */
 describe('updateCommandResolutionState', () => {
   it('should update the command resolution state in issue commands phase', () => {
     const state = createEmptyGameState();

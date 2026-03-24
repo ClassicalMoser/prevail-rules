@@ -2,8 +2,11 @@ import { createRoutState, createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 
+/**
+ * getExpectedRoutEvent: next rout sub-step as a game effect or player choice from rout-resolution state.
+ */
 describe('getExpectedRoutEvent', () => {
-  it('should request rout resolution when the rout has not been resolved yet', () => {
+  it('given the rout has not been resolved yet, requests rout resolution', () => {
     const routState = createRoutState('black', createTestUnit('white'));
 
     expect(getExpectedRoutEvent(routState)).toEqual({
@@ -12,7 +15,7 @@ describe('getExpectedRoutEvent', () => {
     });
   });
 
-  it('should ask the routed player to choose discard when cards have not been chosen', () => {
+  it('given cards have not been chosen, asks the routed player to choose discard', () => {
     const routState = createRoutState('white', createTestUnit('black'), {
       numberToDiscard: 2,
       cardsChosen: false,
@@ -25,7 +28,7 @@ describe('getExpectedRoutEvent', () => {
     });
   });
 
-  it('should throw when the rout is already complete', () => {
+  it('given when the rout is already complete, throws', () => {
     const routState = createRoutState('black', createTestUnit('white'), {
       completed: true,
       numberToDiscard: 1,
@@ -37,7 +40,7 @@ describe('getExpectedRoutEvent', () => {
     );
   });
 
-  it('should throw when cards are chosen but the rout is not marked complete', () => {
+  it('given when cards are chosen but the rout is not marked complete, throws', () => {
     const routState = createRoutState('black', createTestUnit('white'), {
       numberToDiscard: 1,
       cardsChosen: true,

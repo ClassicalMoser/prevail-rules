@@ -17,8 +17,12 @@ import {
   getRangedAttackResolutionState,
 } from './getCommandResolutionState';
 
+/**
+ * Command-resolution accessors under issueCommands or resolveMelee: narrow CRS type, validate
+ * pending commitments before strike calculation, and surface typed movement/ranged/melee slices.
+ */
 describe('getCurrentCommandResolutionState', () => {
-  it('should return command resolution state from issue commands phase', () => {
+  it('given issueCommands with movement CRS, returns movement commandResolutionType', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
@@ -31,7 +35,7 @@ describe('getCurrentCommandResolutionState', () => {
     expect(result.commandResolutionType).toBe('movement');
   });
 
-  it('should throw error when not in issueCommands phase', () => {
+  it('given resolveMelee phase, throws not in issueCommands phase', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState =
       createResolveMeleePhaseState(state);
@@ -41,7 +45,7 @@ describe('getCurrentCommandResolutionState', () => {
     );
   });
 
-  it('should throw error when phase state is missing', () => {
+  it('given missing phase slice, throws not in issueCommands phase', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = undefined;
 
@@ -50,7 +54,7 @@ describe('getCurrentCommandResolutionState', () => {
     );
   });
 
-  it('should throw error when command resolution state is missing', () => {
+  it('given issueCommands with undefined CRS, throws no current command resolution state', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState =
       createIssueCommandsPhaseState(state);
@@ -62,7 +66,7 @@ describe('getCurrentCommandResolutionState', () => {
 });
 
 describe('getRangedAttackResolutionState', () => {
-  it('should return ranged attack resolution state', () => {
+  it('given issueCommands with ranged CRS, returns attacker defender and ranged type', () => {
     const attackingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState();
@@ -85,7 +89,7 @@ describe('getRangedAttackResolutionState', () => {
     expect(result.defendingUnit).toEqual(defendingUnit);
   });
 
-  it('should throw error when command resolution is not ranged attack', () => {
+  it('given movement CRS instead of ranged, throws current command resolution is not ranged attack', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
@@ -101,7 +105,7 @@ describe('getRangedAttackResolutionState', () => {
 });
 
 describe('getMovementResolutionState', () => {
-  it('should return movement resolution state', () => {
+  it('given movement CRS with black mover on E-5 north, returns movement and that unit', () => {
     const movingUnit = createTestUnit('black', { attack: 2 });
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
@@ -121,7 +125,7 @@ describe('getMovementResolutionState', () => {
     expect(result.movingUnit.unit).toEqual(movingUnit);
   });
 
-  it('should throw error when command resolution is not movement', () => {
+  it('given ranged CRS, throws current command resolution is not movement', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
@@ -137,7 +141,7 @@ describe('getMovementResolutionState', () => {
 });
 
 describe('getMeleeResolutionState', () => {
-  it('should return melee resolution state', () => {
+  it('given default resolveMelee factory, returns melee slice with both commitments completed', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState =
       createResolveMeleePhaseState(state);
@@ -147,7 +151,7 @@ describe('getMeleeResolutionState', () => {
     expect(result.blackCommitment.commitmentType).toBe('completed');
   });
 
-  it('should throw error when not in resolveMelee phase', () => {
+  it('given issueCommands phase, throws not in resolveMelee phase', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
@@ -161,7 +165,7 @@ describe('getMeleeResolutionState', () => {
     );
   });
 
-  it('should throw error when phase state is missing', () => {
+  it('given missing phase slice, throws not in resolveMelee phase', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = undefined;
 
@@ -170,7 +174,7 @@ describe('getMeleeResolutionState', () => {
     );
   });
 
-  it('should throw error when melee resolution state is missing', () => {
+  it('given resolveMelee with undefined currentMeleeResolutionState, throws no current melee resolution', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
@@ -186,7 +190,7 @@ describe('getMeleeResolutionState', () => {
 });
 
 describe('getMeleeResolutionReadyForAttackCalculation', () => {
-  it('returns melee state when ready for attack calculation', () => {
+  it('given default resolveMelee with completed commitments and no apply, returns melee at E-5', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState =
       createResolveMeleePhaseState(state);
@@ -195,7 +199,7 @@ describe('getMeleeResolutionReadyForAttackCalculation', () => {
     expect(result.location).toBe('E-5');
   });
 
-  it('throws when white commitment is pending', () => {
+  it('given white commitment pending, throws white commitment is still pending', () => {
     const state = createEmptyGameState();
     const melee = createMeleeResolutionState(state, {
       whiteCommitment: { commitmentType: 'pending' },
@@ -210,7 +214,7 @@ describe('getMeleeResolutionReadyForAttackCalculation', () => {
     );
   });
 
-  it('throws when black commitment is pending', () => {
+  it('given black commitment pending, throws black commitment is still pending', () => {
     const state = createEmptyGameState();
     const melee = createMeleeResolutionState(state, {
       blackCommitment: { commitmentType: 'pending' },
@@ -225,7 +229,7 @@ describe('getMeleeResolutionReadyForAttackCalculation', () => {
     );
   });
 
-  it('throws when attack apply state already exists (white only)', () => {
+  it('given white attackApplyState already set, throws attack apply states already exist', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
@@ -241,7 +245,7 @@ describe('getMeleeResolutionReadyForAttackCalculation', () => {
     );
   });
 
-  it('throws when attack apply state already exists (black only)', () => {
+  it('given black attackApplyState already set, throws attack apply states already exist', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {

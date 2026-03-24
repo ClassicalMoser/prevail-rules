@@ -6,8 +6,11 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getExpectedRallyResolutionEvent } from './getExpectedRallyResolutionEvent';
 
+/**
+ * getExpectedRallyResolutionEvent: next rally-resolution step as choice or effect from rally state.
+ */
 describe('getExpectedRallyResolutionEvent', () => {
-  it('should resolve rally when the rally has not yet been resolved', () => {
+  it('given resolve rally when the rally has not yet been resolved', () => {
     const rallyState = createRallyResolutionState();
 
     expect(getExpectedRallyResolutionEvent(rallyState)).toEqual({
@@ -16,7 +19,7 @@ describe('getExpectedRallyResolutionEvent', () => {
     });
   });
 
-  it('should resolve routs when the rally is resolved and support was lost', () => {
+  it('given resolve routs when the rally is resolved and support was lost', () => {
     const unit = createTestUnit('black');
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
@@ -30,7 +33,7 @@ describe('getExpectedRallyResolutionEvent', () => {
     });
   });
 
-  it('should resolve broken units when the rally is resolved and no support was lost yet', () => {
+  it('given resolve broken units when the rally is resolved and no support was lost yet', () => {
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
       unitsLostSupport: undefined,
@@ -42,7 +45,7 @@ describe('getExpectedRallyResolutionEvent', () => {
     });
   });
 
-  it('should throw when support was lost but no rout state exists', () => {
+  it('given when support was lost but no rout state exists, throws', () => {
     const unit = createTestUnit('black');
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
@@ -55,7 +58,7 @@ describe('getExpectedRallyResolutionEvent', () => {
     );
   });
 
-  it('should throw when the rally is resolved but no units lost support and the state is incomplete', () => {
+  it('given when the rally is resolved but no units lost support and the state is incomplete, throws', () => {
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
       unitsLostSupport: new Set(),
@@ -67,7 +70,7 @@ describe('getExpectedRallyResolutionEvent', () => {
     );
   });
 
-  it('should throw when the rally is already complete', () => {
+  it('given when the rally is already complete, throws', () => {
     const rallyState = createRallyResolutionState({
       completed: true,
     });
@@ -77,7 +80,7 @@ describe('getExpectedRallyResolutionEvent', () => {
     );
   });
 
-  it('should throw when support was lost and rout is complete but rally is still incomplete', () => {
+  it('given when support was lost and rout is complete but rally is still incomplete, throws', () => {
     const unit = createTestUnit('black');
     const rallyState = createRallyResolutionState({
       rallyResolved: true,

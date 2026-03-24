@@ -4,20 +4,24 @@ import { describe, expect, it } from 'vitest';
 
 import { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
 
+/**
+ * modifiersFromCompletedCommitment: only a completed commitment yields the committed card's modifiers;
+ * pending or declined yield nothing.
+ */
 describe('modifiersFromCompletedCommitment', () => {
-  it('returns undefined when commitment is pending', () => {
+  it('given pending commitment, returns undefined', () => {
     expect(
       modifiersFromCompletedCommitment({ commitmentType: 'pending' }),
     ).toBeUndefined();
   });
 
-  it('returns undefined when commitment is declined', () => {
+  it('given declined commitment, returns undefined', () => {
     expect(
       modifiersFromCompletedCommitment({ commitmentType: 'declined' }),
     ).toBeUndefined();
   });
 
-  it('returns card modifiers when commitment is completed', () => {
+  it('given completed commitment with card, returns that card modifiers', () => {
     const card = commandCards[0];
     const expected: Modifier[] = card.modifiers;
     expect(

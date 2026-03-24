@@ -17,10 +17,12 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyResolveRetreatEvent } from './applyResolveRetreatEvent';
 
+/**
+ * Applies a committed retreat: removes the unit from `startingPosition`, places it at
+ * `finalPosition`, and marks the nested retreat substep completed (ranged or melee side).
+ */
 describe('applyResolveRetreatEvent', () => {
-  /**
-   * Helper to create a game state with a retreat state in ranged attack resolution
-   */
+  /** issueCommands + ranged CRS + retreat substep for white on E-5. */
   function createStateWithRangedAttackRetreat(): GameState<StandardBoard> {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
@@ -48,9 +50,7 @@ describe('applyResolveRetreatEvent', () => {
     return updatePhaseState(stateWithUnit, phaseState);
   }
 
-  /**
-   * Helper to create a game state with a retreat state in melee resolution
-   */
+  /** resolveMelee + one-sided retreat apply for the named player on engaged E-5. */
   function createStateWithMeleeRetreat(
     retreatingPlayer: 'white' | 'black',
   ): GameState<StandardBoard> {
@@ -99,8 +99,8 @@ describe('applyResolveRetreatEvent', () => {
     return updatePhaseState(stateWithUnits, phaseState);
   }
 
-  describe('ranged attack resolution context', () => {
-    it('should move unit from starting position to final position', () => {
+  describe('ranged retreat apply', () => {
+    it('given ranged retreat and event E-4 north, E-5 clears and E-4 holds retreating unit', () => {
       const state = createStateWithRangedAttackRetreat();
       const retreatState = getRetreatStateFromRangedAttack(state);
 
@@ -131,7 +131,7 @@ describe('applyResolveRetreatEvent', () => {
       }
     });
 
-    it('should mark retreat state as completed', () => {
+    it('given same flow, ranged retreat substep completed becomes true', () => {
       const state = createStateWithRangedAttackRetreat();
       const retreatState = getRetreatStateFromRangedAttack(state);
 
@@ -151,7 +151,7 @@ describe('applyResolveRetreatEvent', () => {
       expect(newRetreatState.completed).toBe(true);
     });
 
-    it('should preserve other board spaces', () => {
+    it('given extra black unit on D-5, after retreat D-5 single presence unchanged', () => {
       const state = createStateWithRangedAttackRetreat();
       const retreatState = getRetreatStateFromRangedAttack(state);
 
@@ -186,8 +186,8 @@ describe('applyResolveRetreatEvent', () => {
     });
   });
 
-  describe('melee resolution context', () => {
-    it('should move unit and mark retreat as completed for first player', () => {
+  describe('melee retreat apply', () => {
+    it('given black retreats off E-5 to E-4, retreat completed and both hexes single occupancy', () => {
       const state = createStateWithMeleeRetreat('black');
       const retreatState = getRetreatStateFromMelee(state, 'black');
 
@@ -213,7 +213,7 @@ describe('applyResolveRetreatEvent', () => {
       );
     });
 
-    it('should move unit and mark retreat as completed for second player', () => {
+    it('given white retreats to E-6 south, retreat completed and white on E-6', () => {
       const state = createStateWithMeleeRetreat('white');
       const retreatState = getRetreatStateFromMelee(state, 'white');
 
@@ -240,8 +240,8 @@ describe('applyResolveRetreatEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given retreat completed flag and board ref before apply, input unchanged after apply', () => {
       const state = createStateWithRangedAttackRetreat();
       const retreatState = getRetreatStateFromRangedAttack(state);
       const originalCompleted = retreatState.completed;

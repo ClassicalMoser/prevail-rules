@@ -14,6 +14,11 @@ import { describe, expect, it } from 'vitest';
 
 import { generateTriggerRoutFromRetreatEvent } from './generateTriggerRoutFromRetreatEvent';
 
+/**
+ * When the defender cannot retreat legally, the engine emits `triggerRoutFromRetreat` so the
+ * rout flow can start instead. Context is ranged vs melee; in melee the retreating player is
+ * explicit when both sides could theoretically be in retreat substeps.
+ */
 describe('generateTriggerRoutFromRetreatEvent', () => {
   function stateWithRangedRetreat(): GameState<StandardBoard> {
     const state = createEmptyGameState();
@@ -71,7 +76,7 @@ describe('generateTriggerRoutFromRetreatEvent', () => {
     return updatePhaseState(s, phase);
   }
 
-  it('returns rangedAttack context when in ranged retreat', () => {
+  it('given ranged resolution with retreat substep, retreatResolutionContext is rangedAttack', () => {
     const full = stateWithRangedRetreat();
     const event = generateTriggerRoutFromRetreatEvent(full);
     expect(event.effectType).toBe('triggerRoutFromRetreat');
@@ -79,7 +84,7 @@ describe('generateTriggerRoutFromRetreatEvent', () => {
     expect(event).not.toHaveProperty('retreatingPlayer');
   });
 
-  it('returns melee context and retreatingPlayer', () => {
+  it('given melee with only white in retreat apply, context melee and retreatingPlayer white', () => {
     const full = stateWithMeleeRetreat('white');
     const event = generateTriggerRoutFromRetreatEvent(full);
     expect(event.effectType).toBe('triggerRoutFromRetreat');
@@ -89,7 +94,7 @@ describe('generateTriggerRoutFromRetreatEvent', () => {
     }
   });
 
-  it('uses initiative player first when their melee retreat exists (white initiative)', () => {
+  it('given white initiative and both could retreat, picks white retreat path for melee context', () => {
     const state = createEmptyGameState({ currentInitiative: 'white' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -119,7 +124,7 @@ describe('generateTriggerRoutFromRetreatEvent', () => {
     }
   });
 
-  it('throws when phase is not issueCommands or resolveMelee', () => {
+  it('given playCards phase, throws retreat rout phase guard', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,

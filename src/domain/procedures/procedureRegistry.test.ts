@@ -9,9 +9,15 @@ import { describe, expect, it } from 'vitest';
 
 import { generateEventFromProcedure } from './procedureRegistry';
 
+/**
+ * Central dispatch: `generateEventFromProcedure` is overloaded per `effectType` literal.
+ * Each row builds minimal valid state from `procedureRegistryStateFactories` and checks the
+ * emitted `gameEffect` matches that key. `effectType as never` satisfies overload resolution
+ * when the argument is a dynamic union element.
+ */
 describe('generateEventFromProcedure', () => {
   it.each([...gameEffects])(
-    'dispatches %s with a valid procedure state',
+    'given factory state for %s, returns gameEffect with matching effectType',
     (effectType) => {
       const state = procedureRegistryStateFactories[effectType]();
       const event = generateEventFromProcedure(
@@ -23,7 +29,7 @@ describe('generateEventFromProcedure', () => {
     },
   );
 
-  it('throws when effect type is not registered', () => {
+  it('given effectType not in registry, throws naming the bogus key', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
     expect(() =>
       generateEventFromProcedure(state, 'notARealEffect' as never),

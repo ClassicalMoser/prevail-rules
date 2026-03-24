@@ -9,64 +9,68 @@ import { getRearwardSpace } from './getRearwardSpace';
 
 const standardBoard: StandardBoard = createEmptyStandardBoard();
 
+/**
+ * getRearwardSpace: one step backward from a coordinate along the facing (opposite forward); undefined off board;
+ * throws on invalid coordinate or facing.
+ */
 describe('getRearwardSpace', () => {
-  it('should return the rearward space when facing north from E5', () => {
+  it('given facing north at E-5, returns F-5', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'north')).toBe('F-5');
   });
-  it('should return the rearward space when facing east from E5', () => {
+  it('given facing east at E-5, returns E-4', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'east')).toBe('E-4');
   });
-  it('should return the rearward space when facing south from E5', () => {
+  it('given facing south at E-5, returns D-5', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'south')).toBe('D-5');
   });
-  it('should return the rearward space when facing west from E5', () => {
+  it('given facing west at E-5, returns E-6', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'west')).toBe('E-6');
   });
 
-  it('should return the rearward space when facing northEast from E5', () => {
+  it('given facing northEast at E-5, returns F-4', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'northEast')).toBe('F-4');
   });
-  it('should return the rearward space when facing southEast from E5', () => {
+  it('given facing southEast at E-5, returns D-4', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'southEast')).toBe('D-4');
   });
-  it('should return the rearward space when facing southWest from E5', () => {
+  it('given facing southWest at E-5, returns D-6', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'southWest')).toBe('D-6');
   });
-  it('should return the rearward space when facing northWest from E5', () => {
+  it('given facing northWest at E-5, returns F-6', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'northWest')).toBe('F-6');
   });
 
-  it('should return undefined when facing south from A1 (out of bounds)', () => {
+  it('given facing south at A-1, returns undefined', () => {
     expect(getRearwardSpace(standardBoard, 'A-1', 'south')).toBeUndefined();
   });
-  it('should return undefined when facing east from F1 (out of bounds)', () => {
+  it('given facing east at F-1, returns undefined', () => {
     expect(getRearwardSpace(standardBoard, 'F-1', 'east')).toBeUndefined();
   });
-  it('should return undefined when facing north from L5 (out of bounds)', () => {
+  it('given facing north at L-5, returns undefined', () => {
     expect(getRearwardSpace(standardBoard, 'L-5', 'north')).toBeUndefined();
   });
-  it('should return undefined when facing west from E18 (out of bounds)', () => {
+  it('given facing west at E-18, returns undefined', () => {
     expect(getRearwardSpace(standardBoard, 'E-18', 'west')).toBeUndefined();
   });
 
-  it('should return undefined when facing southWest from A1 (out of bounds)', () => {
+  it('given facing southWest at A-1, returns undefined', () => {
     expect(getRearwardSpace(standardBoard, 'A-1', 'southWest')).toBeUndefined();
   });
-  it('should return undefined when facing southEast from A18 (out of bounds)', () => {
+  it('given facing southEast at A-18, returns undefined', () => {
     expect(
       getRearwardSpace(standardBoard, 'A-18', 'southEast'),
     ).toBeUndefined();
   });
-  it('should return undefined when facing northWest from L1 (out of bounds)', () => {
+  it('given facing northWest at L-1, returns undefined', () => {
     expect(getRearwardSpace(standardBoard, 'L-1', 'northWest')).toBeUndefined();
   });
-  it('should return undefined when facing northEast from L18 (out of bounds)', () => {
+  it('given facing northEast at L-18, returns undefined', () => {
     expect(
       getRearwardSpace(standardBoard, 'L-18', 'northEast'),
     ).toBeUndefined();
   });
 
-  it('should throw an error if the row is invalid', () => {
+  it('given invalid row letter, throws', () => {
     expect(() =>
       getRearwardSpace(
         standardBoard,
@@ -76,7 +80,7 @@ describe('getRearwardSpace', () => {
     ).toThrow(new Error('Invalid row: R'));
   });
 
-  it('should throw an error if the column is invalid', () => {
+  it('given invalid column, throws', () => {
     expect(() =>
       getRearwardSpace(
         standardBoard,
@@ -86,7 +90,7 @@ describe('getRearwardSpace', () => {
     ).toThrow(new Error('Invalid column: 19'));
   });
 
-  it('should throw an error if the facing is invalid', () => {
+  it('given invalid facing, throws', () => {
     expect(() =>
       getRearwardSpace(standardBoard, 'E-9', 'random' as UnitFacing),
     ).toThrow(new Error('Invalid facing: random'));

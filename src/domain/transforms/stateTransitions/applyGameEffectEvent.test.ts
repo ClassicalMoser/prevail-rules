@@ -88,13 +88,17 @@ const gameEffectCases: ReadonlyArray<[GameEffectType, ApplyGameEffectHandler]> =
     ['triggerRoutFromRetreat', applyTriggerRoutFromRetreatEvent],
   ] as ReadonlyArray<[GameEffectType, ApplyGameEffectHandler]>;
 
+/**
+ * `applyGameEffectEvent` is a typed switch: every `GameEffectType` routes to exactly one
+ * `applyEffects/*` handler, all invoked as `(event, state) => nextState`.
+ */
 describe('applyGameEffectEvent', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it.each(gameEffectCases)(
-    'should route %s to corresponding handler and return its result',
+    'given gameEffect with effectType %s, delegates to matching handler and returns its state',
     (effectType, handler) => {
       const state = createEmptyGameState();
       const event = {
@@ -110,7 +114,7 @@ describe('applyGameEffectEvent', () => {
     },
   );
 
-  it('should throw for unknown effect type', () => {
+  it('given gameEffect with bogus effectType cast, throws unhandled game effect', () => {
     const state = createEmptyGameState();
     const event = {
       eventType: 'gameEffect',

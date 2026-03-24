@@ -2,6 +2,9 @@ import { createEmptyGameState, createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { addUnitsToCommandedUnits } from './addUnitsToCommandedUnits';
 
+/**
+ * addUnitsToCommandedUnits: pure transform; implementation in addUnitsToCommandedUnits.ts.
+ */
 describe('addUnitsToCommandedUnits', () => {
   it('should add units to commandedUnits set', () => {
     const state = createEmptyGameState();

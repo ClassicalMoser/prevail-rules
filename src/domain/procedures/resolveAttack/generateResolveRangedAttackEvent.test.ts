@@ -15,7 +15,13 @@ import { generateResolveRangedAttackEvent } from './generateResolveRangedAttackE
 /** Spearmen (retreat 5): default test `inPlay` card (+1 attack) keeps total strike below retreat. */
 const spearmenType = tempUnits[1]!;
 
+/**
+ * `resolveRangedAttack` is the first ranged strike roll: attacker/defender commitments must be
+ * settled, and there must be no attack-apply substep yet. Outcome exposes rout/retreat/reverse
+ * flags and optional legal retreat cells when retreat applies.
+ */
 describe('generateResolveRangedAttackEvent', () => {
+  /** Spearmen duel on E-5 under issueCommands ranged CRS; default commitments resolved. */
   function rangedResolutionGameState(): GameState<StandardBoard> {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { unitType: spearmenType });
@@ -37,7 +43,7 @@ describe('generateResolveRangedAttackEvent', () => {
     return updatePhaseState(withBoard, phase);
   }
 
-  it('computes legal retreat options when defender is eligible to retreat', () => {
+  it('given balloons defender (retreat 0) vs cavalry attacker, retreated true with legal set', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { unitType: tempUnits[4] }); // Balloons: retreat 0
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -61,7 +67,7 @@ describe('generateResolveRangedAttackEvent', () => {
     expect(event.legalRetreatOptions).toBeInstanceOf(Set);
   });
 
-  it('returns resolveRangedAttack with defender placement, flags, and empty retreat set when strike is below retreat', () => {
+  it('given spearmen mirror below retreat threshold, routed/retreated/reversed booleans and empty set', () => {
     const full = rangedResolutionGameState();
     const event = generateResolveRangedAttackEvent(full);
     expect(event.effectType).toBe('resolveRangedAttack');
@@ -75,7 +81,7 @@ describe('generateResolveRangedAttackEvent', () => {
     expect(event.legalRetreatOptions.size).toBe(0);
   });
 
-  it('throws when defending commitment is still pending', () => {
+  it('given defending commitment pending on ranged CRS, throws defending commitment guard', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -99,7 +105,7 @@ describe('generateResolveRangedAttackEvent', () => {
     );
   });
 
-  it('throws when attacking commitment is still pending', () => {
+  it('given attacking commitment pending on ranged CRS, throws attacking commitment guard', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -123,7 +129,7 @@ describe('generateResolveRangedAttackEvent', () => {
     );
   });
 
-  it('throws when attack apply state already exists', () => {
+  it('given ranged CRS already holding attackApplyState, throws attack apply already exists', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {

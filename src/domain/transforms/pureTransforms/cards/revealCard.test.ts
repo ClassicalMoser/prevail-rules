@@ -2,6 +2,9 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { revealCard } from './revealCard';
 
+/**
+ * revealCard: pure transform; implementation in revealCard.ts.
+ */
 describe('revealCard', () => {
   it('should move card from awaitingPlay to inPlay', () => {
     const gameState = createEmptyGameState();

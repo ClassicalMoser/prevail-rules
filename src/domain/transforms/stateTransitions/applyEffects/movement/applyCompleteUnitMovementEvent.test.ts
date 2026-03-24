@@ -12,8 +12,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyCompleteUnitMovementEvent } from './applyCompleteUnitMovementEvent';
 
+/**
+ * After the moving unit’s path and any engagement substeps finish, this flips the movement
+ * command resolution slice to `completed` so issue-commands can advance.
+ */
 describe('applyCompleteUnitMovementEvent', () => {
-  it('marks movement resolution completed', () => {
+  it('given issueCommands with active movement CRS, movement.completed becomes true', () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const movement = createMovementResolutionState(state);

@@ -6,6 +6,9 @@ import { createGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { exploreUnitMoves } from './exploreUnitMoves';
 
+/**
+ * exploreUnitMoves: full move search with flexibility and speed usage per placement.
+ */
 describe('exploreUnitMoves', () => {
   // Test helper to reduce repetition.
   function exploreResultHasMatch<TBoard extends Board>(
@@ -40,7 +43,7 @@ describe('exploreUnitMoves', () => {
   }
 
   describe('initial position', () => {
-    it('should include starting position for advance', () => {
+    it('given include starting position for advance', () => {
       const gameState = createGameState([['E-5', 'black', 'north']]);
       const unit = getPlayerUnitWithPosition(
         gameState.boardState,
@@ -61,7 +64,7 @@ describe('exploreUnitMoves', () => {
       expect(hasStartingPosition).toBe(true);
     });
 
-    it('should not include starting position for retreat', () => {
+    it('given not include starting position for retreat', () => {
       const gameState = createGameState([['E-5', 'black', 'north']]);
       const unit = getPlayerUnitWithPosition(
         gameState.boardState,
@@ -79,7 +82,7 @@ describe('exploreUnitMoves', () => {
       expect(hasStartingPosition).toBe(false);
     });
 
-    it('should allow all turns in place for advance', () => {
+    it('given allow all turns in place for advance', () => {
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -111,7 +114,7 @@ describe('exploreUnitMoves', () => {
       expect(allFacingsResults.every((result) => result)).toBe(true);
     });
 
-    it('should not include starting position with different speed', () => {
+    it('given not include starting position with different speed', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -139,7 +142,7 @@ describe('exploreUnitMoves', () => {
     });
   });
   describe('advance direction', () => {
-    it('should include a forward move when the unit has speed', () => {
+    it('given the unit has speed, includes a forward move', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -159,7 +162,7 @@ describe('exploreUnitMoves', () => {
       expect(hasForwardMove).toBe(true);
     });
 
-    it('should include multiple forward moves when speed > 1', () => {
+    it('given speed > 1, includes multiple forward moves', () => {
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -200,7 +203,7 @@ describe('exploreUnitMoves', () => {
       expect(hasThreeMoves).toBe(true);
     });
 
-    it('should include turning moves when the unit has speed and flexibility', () => {
+    it('given the unit has speed and flexibility, includes turning moves', () => {
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -235,7 +238,7 @@ describe('exploreUnitMoves', () => {
       expect(hasForwardRightMove).toBe(true);
     });
 
-    it('should include turn then move sequences in advance', () => {
+    it('given include turn then move sequences in advance', () => {
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -273,7 +276,7 @@ describe('exploreUnitMoves', () => {
       expect(hasNorthEastMove).toBe(true);
     });
 
-    it('should not include moves that exceed speed', () => {
+    it('given not include moves that exceed speed', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -292,7 +295,7 @@ describe('exploreUnitMoves', () => {
       expect(hasExcessiveMove).toBe(false);
     });
 
-    it('should not include moves that exceed flexibility', () => {
+    it('given not include moves that exceed flexibility', () => {
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -322,7 +325,7 @@ describe('exploreUnitMoves', () => {
   });
 
   describe('retreat direction', () => {
-    it('should include a rearward move when the unit has speed', () => {
+    it('given the unit has speed, includes a rearward move', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -345,7 +348,7 @@ describe('exploreUnitMoves', () => {
       expect(hasRearwardMove).toBe(true);
     });
 
-    it('should include multiple rearward moves when speed > 1', () => {
+    it('given speed > 1, includes multiple rearward moves', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -374,7 +377,7 @@ describe('exploreUnitMoves', () => {
       expect(hasTwoMoves).toBe(true);
     });
 
-    it('should include turning moves when the unit has speed and flexibility', () => {
+    it('given the unit has speed and flexibility, includes turning moves', () => {
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -412,7 +415,7 @@ describe('exploreUnitMoves', () => {
       expect(hasTurnRightThenMove).toBe(true);
     });
 
-    it('should only allow moves to spaces behind starting position', () => {
+    it('given only allow moves to spaces behind starting position', () => {
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -450,7 +453,7 @@ describe('exploreUnitMoves', () => {
       expect(hasLeftMove).toBe(false);
     });
 
-    it('should include move then turn sequences for retreat', () => {
+    it('given include move then turn sequences for retreat', () => {
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -478,7 +481,7 @@ describe('exploreUnitMoves', () => {
       });
       expect(hasMoveThenTurn).toBe(true);
     });
-    it('should include turn then move sequences for retreat', () => {
+    it('given include turn then move sequences for retreat', () => {
       const gameState = createGameState([
         {
           coord: 'E-5',
@@ -512,7 +515,7 @@ describe('exploreUnitMoves', () => {
       expect(hasTurnRightThenMove).toBe(true);
       expect(hasTurnLeftThenMove).toBe(true);
     });
-    it('should not turn in the initial position if no flexibility', () => {
+    it('given not turn in the initial position if no flexibility', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', flexibility: 0 },
       ]);
@@ -542,7 +545,7 @@ describe('exploreUnitMoves', () => {
     });
   });
   describe('obstacle handling', () => {
-    it('should not move straight through an enemy unit', () => {
+    it('given not move straight through an enemy unit', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
         { coord: 'D-5', player: 'white', facing: 'north', speed: 2 },
@@ -615,7 +618,7 @@ describe('exploreUnitMoves', () => {
       });
       expect(hasMove).toBe(true);
     });
-    it('should not pass through diagonal enemy line', () => {
+    it('given not pass through diagonal enemy line', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'northEast', speed: 2 },
         { coord: 'B-3', player: 'white', facing: 'southWest', speed: 2 },
@@ -679,7 +682,7 @@ describe('exploreUnitMoves', () => {
     });
   });
   describe('edge cases', () => {
-    it('should throw an error if the direction is invalid', () => {
+    it('given the direction is invalid, throws', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north' },
       ]);
@@ -697,7 +700,7 @@ describe('exploreUnitMoves', () => {
         'Invalid direction',
       );
     });
-    it('should not explore off the map or throw for the edge', () => {
+    it('given not explore off the map or throw for the edge', () => {
       const gameState = createGameState([
         { coord: 'A-5', player: 'black', facing: 'north', speed: 2 },
       ]);

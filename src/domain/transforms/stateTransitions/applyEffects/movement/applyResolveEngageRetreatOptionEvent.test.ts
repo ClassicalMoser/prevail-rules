@@ -13,7 +13,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyResolveEngageRetreatOptionEvent } from './applyResolveEngageRetreatOptionEvent';
 
+/**
+ * Procedure output for front engagement: copies `defendingUnitCanRetreat` onto the nested
+ * front engagement resolution state under the movement CRS.
+ */
 describe('applyResolveEngageRetreatOptionEvent', () => {
+  /** Default front engagement factory with black engager speed 2 for retreat eligibility math. */
   function baseFrontEngagementState() {
     const front = createFrontEngagementState();
     return {
@@ -22,7 +27,7 @@ describe('applyResolveEngageRetreatOptionEvent', () => {
     };
   }
 
-  it('sets defendingUnitCanRetreat from the event on front engagement resolution', () => {
+  it('given front engagement and event defendingUnitCanRetreat true, movement slice stores true', () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat('white', 'speed', 3);

@@ -12,8 +12,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyCompleteResolveMeleePhaseEvent } from './applyCompleteResolveMeleePhaseEvent';
 
+/**
+ * After all melee hexes resolve, this closes `resolveMelee`, logs it completed, and opens
+ * cleanup at `discardPlayedCards` (inPlay cards still present for that step).
+ */
 describe('applyCompleteResolveMeleePhaseEvent', () => {
-  it('marks resolveMelee phase complete and advances to cleanup discardPlayedCards', () => {
+  it('given resolveMelee phase with default melee slice, next phase cleanup.discardPlayedCards and melee in completed', () => {
     const base = createEmptyGameState();
     const withCards = updateCardState(base, (c) => ({
       ...c,

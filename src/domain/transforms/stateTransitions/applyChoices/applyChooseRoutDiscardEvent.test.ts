@@ -13,7 +13,12 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyChooseRoutDiscardEvent } from './applyChooseRoutDiscardEvent';
 
+/**
+ * During cleanup `resolveRally`, a rout substep may require the player to commit which cards
+ * to discard; this marks `routState.cardsChosen` without leaving the resolve-rally step.
+ */
 describe('applyChooseRoutDiscardEvent', () => {
+  /** Cleanup on first or second resolveRally with embedded routState for the acting player. */
   function createStateInResolveRallyWithRout(
     step: 'firstPlayerResolveRally' | 'secondPlayerResolveRally',
     player: 'white' | 'black',
@@ -35,7 +40,7 @@ describe('applyChooseRoutDiscardEvent', () => {
     return updatePhaseState(state, phaseState);
   }
 
-  it('sets cardsChosen true and keeps step when first player chooses rout discard', () => {
+  it('given firstPlayerResolveRally rout for white, empty cardIds sets cardsChosen and same step', () => {
     const state = createStateInResolveRallyWithRout(
       'firstPlayerResolveRally',
       'white',
@@ -56,7 +61,7 @@ describe('applyChooseRoutDiscardEvent', () => {
     expect(rallyState.routState?.cardsChosen).toBe(true);
   });
 
-  it('sets cardsChosen true and keeps step when second player chooses rout discard', () => {
+  it('given secondPlayerResolveRally rout for black, empty cardIds sets cardsChosen and same step', () => {
     const state = createStateInResolveRallyWithRout(
       'secondPlayerResolveRally',
       'black',
@@ -77,7 +82,7 @@ describe('applyChooseRoutDiscardEvent', () => {
     expect(rallyState.routState?.cardsChosen).toBe(true);
   });
 
-  it('throws when not in cleanup phase', () => {
+  it('given playCards phase, throws expected cleanup phase', () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(
       state,
@@ -95,7 +100,7 @@ describe('applyChooseRoutDiscardEvent', () => {
     );
   });
 
-  it('throws when not on a resolveRally step', () => {
+  it('given cleanup discardPlayedCards, throws not in resolveRally step', () => {
     const state = createEmptyGameState();
     const phaseState = createCleanupPhaseState({
       step: 'discardPlayedCards',

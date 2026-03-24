@@ -6,7 +6,12 @@ import { updateCardState, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMoveCommandersPhaseEvent';
 
+/**
+ * Move-commanders phase complete: each player’s `inPlay` command (if any) becomes a “remaining”
+ * command for the next issue-commands round. First vs second player sets follow `currentInitiative`.
+ */
 describe('generateCompleteMoveCommandersPhaseEvent', () => {
+  /** Black initiative, both inPlay set, MOVE_COMMANDERS_PHASE step `complete`. */
   function createGameStateInCompleteStep(): GameState<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const stateWithCards = updateCardState(state, (current) => ({
@@ -20,7 +25,7 @@ describe('generateCompleteMoveCommandersPhaseEvent', () => {
     });
   }
 
-  it('should return a completeMoveCommandersPhase event with command sets', () => {
+  it('given both inPlay populated, maps each side command into remainingCommands sets', () => {
     const state = createGameStateInCompleteStep();
 
     const event = generateCompleteMoveCommandersPhaseEvent(state);
@@ -35,7 +40,7 @@ describe('generateCompleteMoveCommandersPhaseEvent', () => {
     );
   });
 
-  it('should return empty command sets when inPlay is null', () => {
+  it('given both inPlay null at phase complete, remaining command sets are empty', () => {
     const state = createEmptyGameState();
     const withoutInPlay = updateCardState(state, (current) => ({
       ...current,
@@ -53,7 +58,7 @@ describe('generateCompleteMoveCommandersPhaseEvent', () => {
     expect(event.remainingCommandsSecondPlayer.size).toBe(0);
   });
 
-  it('should reflect initiative when building first vs second command sets', () => {
+  it('given white initiative, white command is first-player set and black is second', () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const withCards = updateCardState(base, (current) => ({
       ...current,

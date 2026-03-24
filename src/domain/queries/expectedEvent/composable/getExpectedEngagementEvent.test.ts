@@ -12,6 +12,9 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getExpectedEngagementEvent } from './getExpectedEngagementEvent';
 
+/**
+ * getExpectedEngagementEvent: expected player-choice or effect event for the current engagement sub-step.
+ */
 describe('getExpectedEngagementEvent', () => {
   function createGameStateWithTargetUnit(playerSide: 'black' | 'white') {
     return createGameStateWithUnits([
@@ -23,7 +26,7 @@ describe('getExpectedEngagementEvent', () => {
     ]);
   }
 
-  it('should throw when there is nothing to engage', () => {
+  it('given when there is nothing to engage, throws', () => {
     const gameState = createGameStateWithUnits([]);
     const engagementState = createFrontEngagementState();
 
@@ -32,7 +35,7 @@ describe('getExpectedEngagementEvent', () => {
     ).toThrow('nothing to engage');
   });
 
-  it('should throw when the defending unit is already engaged', () => {
+  it('given when the defending unit is already engaged, throws', () => {
     const gameState = createGameStateWithEngagedUnits(
       createUnitWithPlacement({ playerSide: 'black' }).unit,
       createUnitWithPlacement({ playerSide: 'white' }).unit,
@@ -44,7 +47,7 @@ describe('getExpectedEngagementEvent', () => {
     ).toThrow('defending unit is already engaged');
   });
 
-  it('should throw when the defending unit is friendly', () => {
+  it('given when the defending unit is friendly, throws', () => {
     const gameState = createGameStateWithTargetUnit('white');
     const engagementState = createFrontEngagementState();
 
@@ -53,7 +56,7 @@ describe('getExpectedEngagementEvent', () => {
     ).toThrow('defending unit is friendly');
   });
 
-  it('should resolve flank engagement when the defender has not rotated yet', () => {
+  it('given resolve flank engagement when the defender has not rotated yet', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createFlankEngagementState({
       defenderRotated: false,
@@ -65,7 +68,7 @@ describe('getExpectedEngagementEvent', () => {
     });
   });
 
-  it('should throw when the engagement is already complete', () => {
+  it('given when the engagement is already complete, throws', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = {
       ...createFrontEngagementState(),
@@ -77,7 +80,7 @@ describe('getExpectedEngagementEvent', () => {
     ).toThrow('Engagement state is already complete');
   });
 
-  it('should throw when flank engagement is resolved but not marked complete', () => {
+  it('given when flank engagement is resolved but not marked complete, throws', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createFlankEngagementState({
       defenderRotated: true,
@@ -90,7 +93,7 @@ describe('getExpectedEngagementEvent', () => {
     );
   });
 
-  it('should resolve rout for rear engagement when rout is not complete', () => {
+  it('given resolve rout for rear engagement when rout is not complete', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createRearEngagementState();
 
@@ -100,7 +103,7 @@ describe('getExpectedEngagementEvent', () => {
     });
   });
 
-  it('should throw when rear engagement is already complete', () => {
+  it('given when rear engagement is already complete, throws', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createRearEngagementState({
       routState: createRoutState('black', createUnitWithPlacement().unit, {
@@ -116,7 +119,7 @@ describe('getExpectedEngagementEvent', () => {
     ).toThrow('Rear engagement resolution state is already complete');
   });
 
-  it('should throw when rear rout is complete but the engagement is not', () => {
+  it('given when rear rout is complete but the engagement is not, throws', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createRearEngagementState({
       routState: createRoutState('black', createUnitWithPlacement().unit, {
@@ -131,7 +134,7 @@ describe('getExpectedEngagementEvent', () => {
     ).toThrow('Rear engagement resolution complete but not advanced');
   });
 
-  it('should ask the defender to commit to movement when a front engagement is pending', () => {
+  it('given a front engagement is pending, asks the defender to commit to movement', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createFrontEngagementState();
 
@@ -142,7 +145,7 @@ describe('getExpectedEngagementEvent', () => {
     });
   });
 
-  it('should resolve the retreat option when the defender can retreat but has not chosen yet', () => {
+  it('given resolve the retreat option when the defender can retreat but has not chosen yet', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createFrontEngagementState({
       defensiveCommitment: {
@@ -160,7 +163,7 @@ describe('getExpectedEngagementEvent', () => {
     });
   });
 
-  it('should ask the defender whether to retreat when retreat is still undecided', () => {
+  it('given retreat is still undecided, asks the defender whether to retreat', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createFrontEngagementState({
       defensiveCommitment: {
@@ -179,7 +182,7 @@ describe('getExpectedEngagementEvent', () => {
     });
   });
 
-  it('should ask the defender to choose a retreat option after choosing to retreat', () => {
+  it('given ask the defender to choose a retreat option after choosing to retreat', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createFrontEngagementState({
       defensiveCommitment: {
@@ -198,7 +201,7 @@ describe('getExpectedEngagementEvent', () => {
     });
   });
 
-  it('should throw when the defender cannot retreat', () => {
+  it('given when the defender cannot retreat, throws', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createFrontEngagementState({
       defensiveCommitment: {
@@ -215,7 +218,7 @@ describe('getExpectedEngagementEvent', () => {
     ).toThrow('Defending unit cannot retreat');
   });
 
-  it('should throw when retreat is denied but the state is not marked complete', () => {
+  it('given when retreat is denied but the state is not marked complete, throws', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createFrontEngagementState({
       defensiveCommitment: {
@@ -234,7 +237,7 @@ describe('getExpectedEngagementEvent', () => {
     );
   });
 
-  it('should throw when retreat is chosen but the state is not marked complete', () => {
+  it('given when retreat is chosen but the state is not marked complete, throws', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = createFrontEngagementState({
       defensiveCommitment: {
@@ -253,7 +256,7 @@ describe('getExpectedEngagementEvent', () => {
     );
   });
 
-  it('should throw for an invalid engagement type', () => {
+  it('given for an invalid engagement type, throws', () => {
     const gameState = createGameStateWithTargetUnit('black');
     const engagementState = {
       ...createFrontEngagementState(),

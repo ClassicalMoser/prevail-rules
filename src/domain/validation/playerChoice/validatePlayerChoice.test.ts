@@ -12,6 +12,9 @@ import { updateCardState, updatePhaseState } from '@transforms';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { validatePlayerChoice } from './validatePlayerChoice';
 
+/**
+ * validatePlayerChoice: validation rule; implementation in validatePlayerChoice.ts.
+ */
 describe('validatePlayerChoice', () => {
   function stateInPlayCardsChooseCards(): GameState<StandardBoard> {
     const base = createEmptyGameState();

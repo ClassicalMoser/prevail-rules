@@ -3,6 +3,9 @@ import { createTestUnit } from '@testing/unitHelpers';
 import { describe, expect, it } from 'vitest';
 import { createBoardWithUnits } from './boardWithUnits';
 
+/**
+ * createBoardWithUnits: test helper; implementation in boardWithUnits.ts.
+ */
 describe('createBoardWithUnits', () => {
   it('should place multiple units on board', () => {
     const unit1 = createTestUnit('black');

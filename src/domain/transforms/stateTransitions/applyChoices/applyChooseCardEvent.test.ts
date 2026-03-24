@@ -7,10 +7,12 @@ import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyChooseCardEvent } from './applyChooseCardEvent';
 
+/**
+ * Play-cards `chooseCards`: the chosen command card leaves `inHand` and sits in `awaitingPlay`
+ * until both sides pick; then the round step advances to `revealCards`.
+ */
 describe('applyChooseCardEvent', () => {
-  /**
-   * Helper to create a game state in the playCards phase, chooseCards step
-   */
+  /** playCards.chooseCards with the supplied hands and no card awaiting play yet. */
   function createGameStateInChooseCardsStep(
     blackHand: typeof commandCards,
     whiteHand: typeof commandCards,
@@ -33,8 +35,8 @@ describe('applyChooseCardEvent', () => {
     return stateWithPhase;
   }
 
-  describe('basic functionality', () => {
-    it('should move card from hand to awaitingPlay for black player', () => {
+  describe('hand and awaitingPlay', () => {
+    it('given black picks first card from two in hand, that card is awaitingPlay and hand shrinks', () => {
       const state = createGameStateInChooseCardsStep(
         [commandCards[0], commandCards[1]],
         [commandCards[2]],
@@ -58,7 +60,7 @@ describe('applyChooseCardEvent', () => {
       expect(newState.cardState.white.awaitingPlay).toBeNull();
     });
 
-    it('should move card from hand to awaitingPlay for white player', () => {
+    it('given white picks middle card, white hand and awaitingPlay update and black unchanged', () => {
       const state = createGameStateInChooseCardsStep(
         [commandCards[0]],
         [commandCards[1], commandCards[2]],
@@ -83,8 +85,8 @@ describe('applyChooseCardEvent', () => {
     });
   });
 
-  describe('step advancement', () => {
-    it('should advance to revealCards step if both players have chosen cards', () => {
+  describe('when both sides have chosen', () => {
+    it('given black then white each choose their only card, step becomes revealCards', () => {
       const state = createGameStateInChooseCardsStep(
         [commandCards[0]],
         [commandCards[1]],
@@ -119,7 +121,7 @@ describe('applyChooseCardEvent', () => {
       );
     });
 
-    it('should not advance step if only one player has chosen', () => {
+    it('given only black chooses while white still has a card, step stays chooseCards', () => {
       const state = createGameStateInChooseCardsStep(
         [commandCards[0], commandCards[1]],
         [commandCards[2]],
@@ -141,8 +143,8 @@ describe('applyChooseCardEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given prior black hand snapshot, apply leaves input state object unchanged', () => {
       const state = createGameStateInChooseCardsStep(
         [commandCards[0], commandCards[1]],
         [commandCards[2]],

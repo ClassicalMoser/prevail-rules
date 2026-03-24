@@ -6,8 +6,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyResolveRallyEvent } from './applyResolveRallyEvent';
 
+/**
+ * Resolving a rally: the chosen card leaves `played`, the engine marks the per-player rally
+ * slice `rallyResolved`, and cleanup advances past that resolve step.
+ */
 describe('applyResolveRallyEvent', () => {
-  it('burns the event card, returns played to hand, and marks rally resolved', () => {
+  it('given firstPlayerResolveRally with white played card, card consumed played empty and rallyResolved', () => {
     const state = createEmptyGameState();
     state.currentInitiative = 'white';
     const card = createTestCard();

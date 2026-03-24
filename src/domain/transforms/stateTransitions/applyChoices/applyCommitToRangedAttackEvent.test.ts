@@ -11,8 +11,12 @@ import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent';
 
+/**
+ * Ranged strike commitments: attacker or defender locks in their reaction card; the matching
+ * `attackingCommitment` / `defendingCommitment` flips to completed and the card leaves hand.
+ */
 describe('applyCommitToRangedAttackEvent', () => {
-  it('completes attacking commitment and discards card from attacker hand', () => {
+  it('given pending attackingCommitment and black holds the card, attacking completed and black hand empty', () => {
     const state = createEmptyGameState();
     const stateWithBlackCardInHand = updateCardState(state, (c) => ({
       ...c,
@@ -48,7 +52,7 @@ describe('applyCommitToRangedAttackEvent', () => {
     expect(newState.cardState.black.inHand).toHaveLength(0);
   });
 
-  it('completes defending commitment and discards card from defender hand', () => {
+  it('given pending defendingCommitment and white holds the card, defending completed and white hand empty', () => {
     const state = createEmptyGameState();
     const stateWithWhiteCardInHand = updateCardState(state, (c) => ({
       ...c,

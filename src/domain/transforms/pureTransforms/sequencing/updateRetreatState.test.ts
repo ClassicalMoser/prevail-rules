@@ -16,6 +16,9 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { updateRetreatState } from './updateRetreatState';
 
+/**
+ * updateRetreatState: pure transform; implementation in updateRetreatState.ts.
+ */
 describe('updateRetreatState', () => {
   function createStateWithRangedAttackRetreat() {
     const state = createEmptyGameState();

@@ -19,8 +19,13 @@ import { describe, expect, it } from 'vitest';
 
 import { generateResolveRoutEvent } from './generateResolveRoutEvent';
 
+/**
+ * `resolveRout` materializes rout discards: penalty and affected units come from whichever
+ * rout substep is active—ranged attack-apply, melee (initiative player’s apply first),
+ * rear engagement during movement, or cleanup rally after failed support.
+ */
 describe('generateResolveRoutEvent', () => {
-  it('sums rout penalty from ranged attack apply rout state', () => {
+  it('given ranged resolution with rout substep on white defender, source rangedAttack and that unit', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -48,7 +53,7 @@ describe('generateResolveRoutEvent', () => {
     expect(event.unitInstances.has(defendingUnit)).toBe(true);
   });
 
-  it('reads rout from first initiative attack apply in melee', () => {
+  it('given black initiative and rout on both melee applies, uses black unit and melee source', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -81,7 +86,7 @@ describe('generateResolveRoutEvent', () => {
     expect(event.penalty).toBe(blackUnit.unitType.routPenalty);
   });
 
-  it('throws when phase does not support rout', () => {
+  it('given playCards phase, throws rout resolution phase guard', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
@@ -92,7 +97,7 @@ describe('generateResolveRoutEvent', () => {
     );
   });
 
-  it('uses rear engagement rout during movement command resolution', () => {
+  it('given issueCommands movement with rear engagement routState, source rearEngagementMovement', () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const whiteUnit = createTestUnit('white');
@@ -114,7 +119,7 @@ describe('generateResolveRoutEvent', () => {
     expect(event.unitInstances.has(whiteUnit)).toBe(true);
   });
 
-  it('uses cleanup rally rout state when in cleanup resolveRally step', () => {
+  it('given cleanup firstPlayerResolveRally with nested routState, source rally and listed unit', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const base = createEmptyGameState();
     const full = updatePhaseState(
@@ -143,7 +148,7 @@ describe('generateResolveRoutEvent', () => {
     expect(event.unitInstances.has(unit)).toBe(true);
   });
 
-  it('throws when issueCommands resolution is neither movement nor ranged attack', () => {
+  it('given issueCommands with invalid melee-shaped CRS, throws movement/ranged expectation', () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const full = updatePhaseState(

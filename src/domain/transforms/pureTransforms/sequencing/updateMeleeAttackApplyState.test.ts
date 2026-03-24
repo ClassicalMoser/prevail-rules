@@ -9,6 +9,9 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { updateMeleeAttackApplyState } from './updateMeleeAttackApplyState';
 
+/**
+ * updateMeleeAttackApplyState: pure transform; implementation in updateMeleeAttackApplyState.ts.
+ */
 describe('updateMeleeAttackApplyState', () => {
   function createStateInResolveMelee() {
     const state = createEmptyGameState({ currentInitiative: 'black' });

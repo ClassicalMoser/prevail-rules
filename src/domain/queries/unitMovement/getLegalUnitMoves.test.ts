@@ -9,6 +9,9 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getLegalUnitMoves } from './getLegalUnitMoves';
 
+/**
+ * getLegalUnitMoves: legal placements (coordinate + facing) for a unit under movement rules.
+ */
 describe('getLegalUnitMoves', () => {
   // Test helper to check if a placement exists in the set
   function placementHasMatch<TBoard extends Board>(
@@ -32,7 +35,7 @@ describe('getLegalUnitMoves', () => {
   }
 
   describe('basic functionality', () => {
-    it('should return legal moves including starting position', () => {
+    it('given context, returns legal moves including starting position', () => {
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
       const unit = getPlayerUnitWithPosition(
         gameState.boardState,
@@ -53,7 +56,7 @@ describe('getLegalUnitMoves', () => {
   });
 
   describe('error cases', () => {
-    it('should throw an error when unit is not present at starting position', () => {
+    it('given an error when unit is not present at starting position, throws', () => {
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
       const unit = getPlayerUnitWithPosition(
         gameState.boardState,
@@ -75,7 +78,7 @@ describe('getLegalUnitMoves', () => {
         'Unit is not present at the starting position',
       );
     });
-    it('should throw an error when no unit is specified at the coordinate', () => {
+    it('given an error when no unit is specified at the coordinate, throws', () => {
       const gameState = createGameState([]);
       const unitWithPlacement = createUnitWithPlacement({
         playerSide: 'black',
@@ -88,7 +91,7 @@ describe('getLegalUnitMoves', () => {
       );
     });
 
-    it('should throw an error when unit is not at the specified placement coordinate', () => {
+    it('given an error when unit is not at the specified placement coordinate, throws', () => {
       const gameState = createGameState([['E-7', 'black', 'southEast']]);
       const unit = getPlayerUnitWithPosition(
         gameState.boardState,
@@ -113,7 +116,7 @@ describe('getLegalUnitMoves', () => {
       ).toThrow('No movable unit at starting position');
     });
 
-    it('should throw an error when unit facing is different from specified facing', () => {
+    it('given an error when unit facing is different from specified facing, throws', () => {
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
       const unit = getPlayerUnitWithPosition(
         gameState.boardState,
@@ -138,7 +141,7 @@ describe('getLegalUnitMoves', () => {
       );
     });
 
-    it('should throw an error when unit is engaged', () => {
+    it('given an error when unit is engaged, throws', () => {
       const primaryUnit = createTestUnit('black');
       const secondaryUnit = createTestUnit('white');
       const gameState = createGameStateWithEngagedUnits(

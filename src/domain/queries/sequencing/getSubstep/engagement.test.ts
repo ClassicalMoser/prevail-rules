@@ -18,8 +18,12 @@ import {
   getRearEngagementStateFromMovement,
 } from './engagement';
 
+/**
+ * Movement engagement slice: raw `engagementState` plus typed narrowers for flank / front / rear
+ * resolution substates on the movement CRS.
+ */
 describe('getEngagementStateFromMovement', () => {
-  it('should return engagement state from movement resolution', () => {
+  it('given movement with front engagement seeded, returns engagementResolution wrapper and engager', () => {
     const engagingUnit = createTestUnit('black', { attack: 2 });
     const state = createEmptyGameState();
     const stateInPhase = updatePhaseState(
@@ -44,7 +48,7 @@ describe('getEngagementStateFromMovement', () => {
     expect(result.engagingUnit).toEqual(engagingUnit);
   });
 
-  it('should throw error when engagement state is missing', () => {
+  it('given movement without engagementState, throws no engagement in movement', () => {
     const state = createEmptyGameState();
     const stateInPhase = updatePhaseState(
       state,
@@ -60,7 +64,7 @@ describe('getEngagementStateFromMovement', () => {
     );
   });
 
-  it('should throw error when not in movement resolution', () => {
+  it('given ranged CRS, throws current command resolution is not movement', () => {
     const state = createEmptyGameState();
     const stateInPhase = updatePhaseState(
       state,
@@ -76,7 +80,7 @@ describe('getEngagementStateFromMovement', () => {
 });
 
 describe('getFlankEngagementStateFromMovement', () => {
-  it('should return flank engagement state', () => {
+  it('given movement with flank engagement, engagementType flank and defender not rotated', () => {
     const engagingUnit = createTestUnit('black', { attack: 2 });
     const state = createEmptyGameState();
     const stateInPhase = updatePhaseState(
@@ -101,7 +105,7 @@ describe('getFlankEngagementStateFromMovement', () => {
     expect(result.engagementResolutionState.defenderRotated).toBe(false);
   });
 
-  it('should throw error when engagement type is not flank', () => {
+  it('given front engagement instead of flank, throws engagement type is not flank', () => {
     const engagingUnit = createTestUnit('black', { attack: 2 });
     const state = createEmptyGameState();
     const stateInPhase = updatePhaseState(
@@ -128,7 +132,7 @@ describe('getFlankEngagementStateFromMovement', () => {
 });
 
 describe('getFrontEngagementStateFromMovement', () => {
-  it('should return front engagement state', () => {
+  it('given movement with front engagement, defensive commitment pending', () => {
     const engagingUnit = createTestUnit('black', { attack: 2 });
     const state = createEmptyGameState();
     const stateInPhase = updatePhaseState(
@@ -155,7 +159,7 @@ describe('getFrontEngagementStateFromMovement', () => {
     ).toBe('pending');
   });
 
-  it('should throw error when engagement type is not front', () => {
+  it('given error when engagement type is not front, throws', () => {
     const engagingUnit = createTestUnit('black', { attack: 2 });
     const state = createEmptyGameState();
     const stateInPhase = updatePhaseState(
@@ -182,7 +186,7 @@ describe('getFrontEngagementStateFromMovement', () => {
 });
 
 describe('getRearEngagementStateFromMovement', () => {
-  it('should return rear engagement state', () => {
+  it('given rear engagement with routState, returns rear slice containing rout', () => {
     const engagingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState();
@@ -217,7 +221,7 @@ describe('getRearEngagementStateFromMovement', () => {
     );
   });
 
-  it('should throw error when engagement type is not rear', () => {
+  it('given front engagement instead of rear, throws engagement type is not rear', () => {
     const engagingUnit = createTestUnit('black', { attack: 2 });
     const state = createEmptyGameState();
     const stateInPhase = updatePhaseState(

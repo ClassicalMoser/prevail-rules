@@ -10,12 +10,17 @@ import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 vi.mock('./applyPlayerChoiceEvent');
 vi.mock('./applyGameEffectEvent');
 
+/**
+ * `applyEvent` is the single entry for applying any `Event` to game state: it narrows on
+ * `eventType` and delegates to `applyPlayerChoiceEvent` or `applyGameEffectEvent`. Anything
+ * else should fail fast (exhaustiveness / unknown tag).
+ */
 describe('applyEvent', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should route playerChoice events to applyPlayerChoiceEvent and return its result', () => {
+  it('given playerChoice chooseCard event, calls applyPlayerChoiceEvent only and returns its state', () => {
     const state = createEmptyGameState();
     const event: Event<StandardBoard> = {
       eventType: 'playerChoice',
@@ -36,7 +41,7 @@ describe('applyEvent', () => {
     expect(result).toBe(mockReturnState);
   });
 
-  it('should route gameEffect events to applyGameEffectEvent and return its result', () => {
+  it('given gameEffect revealCards event, calls applyGameEffectEvent only and returns its state', () => {
     const state = createEmptyGameState();
     const event: Event<StandardBoard> = {
       eventType: 'gameEffect',
@@ -55,7 +60,7 @@ describe('applyEvent', () => {
     expect(result).toBe(mockReturnState);
   });
 
-  it('should throw for unknown event type', () => {
+  it('given event with unknown eventType cast, throws and does not call choice or effect applier', () => {
     const state = createEmptyGameState();
     // Use bad cast to trigger type error
     const event = { eventType: 'unknown' } as unknown as Event<StandardBoard>;

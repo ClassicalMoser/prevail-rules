@@ -5,6 +5,9 @@ import {
   normalizeUnitPlacement,
 } from './unitPlacementSpec';
 
+/**
+ * getExplicitInstanceNumber: test helper; implementation in unitPlacementSpec.ts.
+ */
 describe('getExplicitInstanceNumber', () => {
   it('should return undefined for tuple spec', () => {
     expect(getExplicitInstanceNumber(['E-5', 'black'])).toBeUndefined();

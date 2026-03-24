@@ -8,6 +8,9 @@ import { createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { hasEnemyUnit } from './hasEnemyUnit';
 
+/**
+ * hasEnemyUnit: validation rule; implementation in hasEnemyUnit.ts.
+ */
 describe('hasEnemyUnit', () => {
   const coordinate = 'E-5';
 

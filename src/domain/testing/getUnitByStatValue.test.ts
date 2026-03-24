@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { getUnitByStatValue } from './getUnitByStatValue';
 
+/**
+ * getUnitByStatValue: test helper; implementation in getUnitByStatValue.ts.
+ */
 describe('getUnitByStatValue', () => {
   it('should return unit type matching attack value', () => {
     const unitType = getUnitByStatValue('attack', 3);

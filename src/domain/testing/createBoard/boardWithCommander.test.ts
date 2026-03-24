@@ -3,6 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { createBoardWithCommander } from './boardWithCommander';
 import { createBoardWithSingleUnit } from './boardWithSingleUnit';
 
+/**
+ * createBoardWithCommander: test helper; implementation in boardWithCommander.ts.
+ */
 describe('createBoardWithCommander', () => {
   it('should add commander to empty board', () => {
     const board = createBoardWithCommander('white', 'E-5');

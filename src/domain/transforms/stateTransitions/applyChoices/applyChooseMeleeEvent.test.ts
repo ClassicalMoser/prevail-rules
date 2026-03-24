@@ -11,7 +11,12 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyChooseMeleeEvent } from './applyChooseMeleeEvent';
 
+/**
+ * Resolve-melee phase: player picks which contested hex to resolve next. That coordinate is
+ * removed from `remainingEngagements` and becomes `currentMeleeResolutionState.location`.
+ */
 describe('applyChooseMeleeEvent', () => {
+  /** resolveMelee step with the given engagement queue and no current resolution yet. */
   function createStateInResolveMeleeStep(
     remainingSpaces: StandardBoardCoordinate[],
   ): GameState<StandardBoard> {
@@ -24,7 +29,7 @@ describe('applyChooseMeleeEvent', () => {
     });
   }
 
-  it('should remove chosen space from remainingEngagements and set currentMeleeResolutionState to chosen location', () => {
+  it('given E-5 and E-6 pending and black chooses E-5, set shrinks to E-6 and current location E-5', () => {
     const state = createStateInResolveMeleeStep(['E-5', 'E-6']);
     const event: ChooseMeleeResolutionEvent<StandardBoard> = {
       eventType: 'playerChoice',
@@ -40,7 +45,7 @@ describe('applyChooseMeleeEvent', () => {
     expect(phaseState.currentMeleeResolutionState?.location).toBe('E-5');
   });
 
-  it('should not mutate the original state', () => {
+  it('given white chooses E-6, input phase state remainingEngagements reference is untouched', () => {
     const state = createStateInResolveMeleeStep(['E-5', 'E-6']);
     const originalPhaseState = getResolveMeleePhaseState(state);
     const originalRemaining = originalPhaseState.remainingEngagements;

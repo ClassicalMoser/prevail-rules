@@ -8,6 +8,9 @@ import { createUnitInstance } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { eachUnitPresentOnce } from './eachUnitPresentOnce';
 
+/**
+ * eachUnitPresentOnce: validation rule; implementation in eachUnitPresentOnce.ts.
+ */
 describe('eachUnitPresentOnce', () => {
   const attack2UnitType = getUnitByStatValue('attack', 2);
   const attack3UnitType = getUnitByStatValue('attack', 3);

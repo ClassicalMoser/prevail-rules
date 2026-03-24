@@ -6,6 +6,9 @@ import {
   createRangedAttackResolutionState,
 } from './commandResolutionStates';
 
+/**
+ * createMovementResolutionState: test helper; implementation in commandResolutionStates.ts.
+ */
 describe('createMovementResolutionState', () => {
   it('should return movement command resolution with unit and commitment', () => {
     const state = createEmptyGameState();

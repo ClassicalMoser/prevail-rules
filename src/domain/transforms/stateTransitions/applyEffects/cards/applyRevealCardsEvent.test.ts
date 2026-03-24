@@ -7,11 +7,13 @@ import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyRevealCardsEvent } from './applyRevealCardsEvent';
 
+/**
+ * After simultaneous picks, `revealCards` promotes both `awaitingPlay` slots to `inPlay` and
+ * advances playCards to `assignInitiative`. Guards ensure both sides had a pending card when
+ * the step really is revealCards.
+ */
 describe('applyRevealCardsEvent', () => {
-  /**
-   * Helper to create a game state in the playCards phase, revealCards step
-   * with both players having cards awaiting play
-   */
+  /** playCards.revealCards with black/white awaitingPlay set and inPlay empty. */
   function createGameStateInRevealCardsStep(): GameState<StandardBoard> {
     const state = createEmptyGameState();
 
@@ -37,8 +39,8 @@ describe('applyRevealCardsEvent', () => {
     return stateWithPhase;
   }
 
-  describe('basic functionality', () => {
-    it('should move both players cards from awaitingPlay to inPlay', () => {
+  describe('reveal and step', () => {
+    it('given both awaitingPlay set, inPlay receives those cards and awaitingPlay clears', () => {
       const state = createGameStateInRevealCardsStep();
       const blackCard = state.cardState.black.awaitingPlay;
       const whiteCard = state.cardState.white.awaitingPlay;
@@ -59,7 +61,7 @@ describe('applyRevealCardsEvent', () => {
       expect(newState.cardState.white.awaitingPlay).toBeNull();
     });
 
-    it('should advance step to assignInitiative', () => {
+    it('given revealCards step, next playCards step is assignInitiative', () => {
       const state = createGameStateInRevealCardsStep();
 
       const event: RevealCardsEvent<StandardBoard> = {
@@ -75,8 +77,8 @@ describe('applyRevealCardsEvent', () => {
     });
   });
 
-  describe('error cases', () => {
-    it('should throw if no phase state exists', () => {
+  describe('guards and mechanical reveal', () => {
+    it('given no current phase slice, throws no current phase state', () => {
       const state = createEmptyGameState();
 
       const event: RevealCardsEvent<StandardBoard> = {
@@ -89,7 +91,7 @@ describe('applyRevealCardsEvent', () => {
       );
     });
 
-    it('should throw if not in playCards phase (phase type guard)', () => {
+    it('given moveCommanders phase, throws expected playCards phase', () => {
       const state = createEmptyGameState();
       const stateWithWrongPhase = updatePhaseState(state, {
         phase: MOVE_COMMANDERS_PHASE,
@@ -106,7 +108,7 @@ describe('applyRevealCardsEvent', () => {
       );
     });
 
-    it('should mechanically reveal when playCards step is not revealCards', () => {
+    it('given playCards chooseCards step, still flips cards and jumps to assignInitiative', () => {
       const state = createEmptyGameState();
       const stateWithWrongStep = updatePhaseState(state, {
         phase: PLAY_CARDS_PHASE,
@@ -125,7 +127,7 @@ describe('applyRevealCardsEvent', () => {
       );
     });
 
-    it('should throw if white player has no awaiting card', () => {
+    it('given revealCards step but white awaitingPlay null, throws white awaiting guard', () => {
       const state = createEmptyGameState();
       const stateWithCards = updateCardState(state, (current) => ({
         ...current,
@@ -153,7 +155,7 @@ describe('applyRevealCardsEvent', () => {
       );
     });
 
-    it('should throw if black player has no awaiting card', () => {
+    it('given revealCards step but black awaitingPlay null, throws black awaiting guard', () => {
       const state = createEmptyGameState();
       const stateWithCards = updateCardState(state, (current) => ({
         ...current,
@@ -182,8 +184,8 @@ describe('applyRevealCardsEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given awaitingPlay refs before apply, input card slots unchanged after apply', () => {
       const state = createGameStateInRevealCardsStep();
       const originalBlackAwaiting = state.cardState.black.awaitingPlay;
       const originalWhiteAwaiting = state.cardState.white.awaitingPlay;

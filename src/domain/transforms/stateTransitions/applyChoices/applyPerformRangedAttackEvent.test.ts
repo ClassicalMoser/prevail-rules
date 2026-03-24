@@ -14,7 +14,13 @@ import { isSameUnitInstance } from '@validation';
 import { describe, expect, it } from 'vitest';
 import { applyPerformRangedAttackEvent } from './applyPerformRangedAttackEvent';
 
+/**
+ * Starting a ranged resolution: CRS becomes rangedAttack with attacker/defender units, both
+ * commitments pending, supporting units recorded, and every participating unit stripped from
+ * the active player’s `remainingUnits*` (and defender from the opponent’s set when listed).
+ */
 describe('applyPerformRangedAttackEvent', () => {
+  /** issueCommands at first or second resolve step with the given remaining unit sets. */
   function createStateInResolveStep(
     step: 'firstPlayerResolveCommands' | 'secondPlayerResolveCommands',
     remainingUnitsFirstPlayer: Set<UnitInstance>,
@@ -32,7 +38,7 @@ describe('applyPerformRangedAttackEvent', () => {
     );
   }
 
-  it('creates ranged attack resolution state with pending commitments and removes attacker from remaining units', () => {
+  it('given sole black attacker vs white defender, ranged CRS pending both sides and first-player remaining empty', () => {
     const attacker = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -82,7 +88,7 @@ describe('applyPerformRangedAttackEvent', () => {
     ).toBe(false);
   });
 
-  it('keeps other attacker-side units in remaining when they are not attacking or supporting', () => {
+  it('given two black units in remaining but only one attacks, other black stays in remaining', () => {
     const attacker = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -131,7 +137,7 @@ describe('applyPerformRangedAttackEvent', () => {
     ).toBe(false);
   });
 
-  it('removes defending unit from other player remaining units', () => {
+  it('given defender listed in second-player remaining, after attack second-player remaining loses defender', () => {
     const attacker = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -168,7 +174,7 @@ describe('applyPerformRangedAttackEvent', () => {
     ).toBe(false);
   });
 
-  it('removes supporting units from remaining units when present', () => {
+  it('given attacker plus one supporter in remaining, both cleared and supporter in ranged.supportingUnits', () => {
     const attacker = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -213,7 +219,7 @@ describe('applyPerformRangedAttackEvent', () => {
     expect(phaseState.remainingUnitsFirstPlayer.size).toBe(0);
   });
 
-  it('removes each supporting unit when multiple supporters', () => {
+  it('given two supporters in remaining, ranged holds both and first-player remaining ends empty', () => {
     const attacker = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -269,7 +275,7 @@ describe('applyPerformRangedAttackEvent', () => {
     ).toBe(false);
   });
 
-  it('updates second player remaining units when attacker is second player', () => {
+  it('given secondPlayerResolveCommands with white attacker, second-player remaining cleared and ranged set', () => {
     const attacker = createUnitWithPlacement({
       coordinate: 'E-6',
       facing: 'south',

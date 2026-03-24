@@ -2,8 +2,11 @@ import { createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { hasUnitInSet, setWithoutUnit } from './unitSet';
 
+/**
+ * hasUnitInSet: membership test for UnitInstance in a Set using value equality (not reference identity).
+ */
 describe('hasUnitInSet', () => {
-  it('should return true when set contains same unit by value', () => {
+  it('given set contains same instance, returns true', () => {
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const set = new Set([
       createTestUnit('white'),
@@ -13,26 +16,29 @@ describe('hasUnitInSet', () => {
     expect(hasUnitInSet(set, unit)).toBe(true);
   });
 
-  it('should return true when set contains equal unit (different reference)', () => {
+  it('given set member equals argument by value, returns true', () => {
     const set = new Set([createTestUnit('black', { instanceNumber: 1 })]);
     const sameValue = createTestUnit('black', { instanceNumber: 1 });
     expect(hasUnitInSet(set, sameValue)).toBe(true);
   });
 
-  it('should return false when set does not contain unit', () => {
+  it('given no matching unit, returns false', () => {
     const set = new Set([createTestUnit('black', { instanceNumber: 1 })]);
     expect(
       hasUnitInSet(set, createTestUnit('black', { instanceNumber: 2 })),
     ).toBe(false);
   });
 
-  it('should return false for empty set', () => {
+  it('given empty set, returns false', () => {
     expect(hasUnitInSet(new Set(), createTestUnit('black'))).toBe(false);
   });
 });
 
+/**
+ * setWithoutUnit: copy of the set without one unit (matched by value).
+ */
 describe('setWithoutUnit', () => {
-  it('should return new set without matching unit', () => {
+  it('given unit present, returns new set without it', () => {
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const other = createTestUnit('white');
     const set = new Set([unit, other]);
@@ -42,7 +48,7 @@ describe('setWithoutUnit', () => {
     expect(hasUnitInSet(result, unit)).toBe(false);
   });
 
-  it('should match by value when removing', () => {
+  it('given equal value different reference, removes matching unit', () => {
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const set = new Set([unit]);
     const sameValue = createTestUnit('black', { instanceNumber: 1 });
@@ -50,7 +56,7 @@ describe('setWithoutUnit', () => {
     expect(result.size).toBe(0);
   });
 
-  it('should leave set unchanged when unit not in set', () => {
+  it('given unit not in set, leaves size unchanged', () => {
     const set = new Set([createTestUnit('black')]);
     const result = setWithoutUnit(set, createTestUnit('white'));
     expect(result.size).toBe(1);

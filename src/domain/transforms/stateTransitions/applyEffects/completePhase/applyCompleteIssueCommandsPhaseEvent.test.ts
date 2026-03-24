@@ -25,11 +25,12 @@ function issueCommandsCompleteEvent(
   };
 }
 
+/**
+ * End of issuing: transitions to `resolveMelee` with `remainingEngagements` taken from the
+ * event (trusted list—empty set means no melees queued even if board still shows engagement).
+ */
 describe('applyCompleteIssueCommandsPhaseEvent', () => {
-  /**
-   * Helper to create a game state in the issueCommands phase, complete step
-   * with engaged units on the board
-   */
+  /** issueCommands.complete with E-5 engaged pair from factory and empty command queues. */
   function createGameStateInCompleteStep(): GameState<StandardBoard> {
     const blackUnit = createTestUnit('black', { attack: 3 });
     const whiteUnit = createTestUnit('white', { attack: 3 });
@@ -49,8 +50,8 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
     return stateWithPhase;
   }
 
-  describe('basic functionality', () => {
-    it('should advance to resolveMelee phase with resolveMelee step', () => {
+  describe('phase handoff', () => {
+    it('given event remaining E-5, next phase resolveMelee and step resolveMelee', () => {
       const state = createGameStateInCompleteStep();
 
       const event = issueCommandsCompleteEvent(new Set(['E-5']));
@@ -65,7 +66,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       );
     });
 
-    it('should add issueCommands phase to completed phases', () => {
+    it('given same transition, completedPhases gains one issueCommands entry', () => {
       const state = createGameStateInCompleteStep();
 
       const event = issueCommandsCompleteEvent(new Set(['E-5']));
@@ -77,7 +78,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       expect(completedPhases[0]?.phase).toBe('issueCommands');
     });
 
-    it('should set remaining engagements from the event payload', () => {
+    it('given event Set with E-5, resolveMelee.remainingEngagements contains E-5', () => {
       const state = createGameStateInCompleteStep();
 
       const event = issueCommandsCompleteEvent(new Set(['E-5']));
@@ -92,7 +93,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       expect(phaseState.remainingEngagements.has('E-5')).toBe(true);
     });
 
-    it('should find multiple engagements on board', () => {
+    it('given event lists E-5 and E-6 after second engagement hacked onto board, set has both', () => {
       const blackUnit1 = createTestUnit('black', { attack: 3 });
       const whiteUnit1 = createTestUnit('white', { attack: 3 });
       const state = createGameStateWithEngagedUnits(
@@ -146,7 +147,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       expect(phaseState.remainingEngagements.size).toBe(2);
     });
 
-    it('should set currentMeleeResolutionState to undefined', () => {
+    it('given standard handoff, new resolveMelee slice has no currentMeleeResolutionState', () => {
       const state = createGameStateInCompleteStep();
 
       const event = issueCommandsCompleteEvent(new Set(['E-5']));
@@ -162,8 +163,8 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given phase and completedPhases size before apply, input issueCommands slice unchanged', () => {
       const state = createGameStateInCompleteStep();
       const originalPhase = state.currentRoundState.currentPhaseState?.phase;
       const originalCompletedPhasesSize =
@@ -182,8 +183,8 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
     });
   });
 
-  describe('trusted event (mechanical apply)', () => {
-    it('should not re-scan the board for engagements (empty payload vs board)', () => {
+  describe('trusted mechanical apply', () => {
+    it('given empty remainingEngagements event despite board engagement, queue stays empty', () => {
       const state = createGameStateInCompleteStep();
       const event = issueCommandsCompleteEvent(new Set());
 
@@ -196,7 +197,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
       expect(phaseState.remainingEngagements.size).toBe(0);
     });
 
-    it('should advance to resolveMelee when issueCommands step is not complete', () => {
+    it('given issueCommands firstPlayerIssueCommands step, still advances to resolveMelee phase', () => {
       const state = createGameStateInCompleteStep();
       const stateWithWrongStep = updatePhaseState(
         state,

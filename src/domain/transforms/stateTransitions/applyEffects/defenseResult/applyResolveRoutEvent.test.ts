@@ -29,10 +29,12 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyResolveRoutEvent } from './applyResolveRoutEvent';
 
+/**
+ * Writes `numberToDiscard` (and related rout bookkeeping) onto the active rout substep for
+ * the matching source: ranged/melee apply, cleanup rally, or rear engagement under movement.
+ */
 describe('applyResolveRoutEvent', () => {
-  /**
-   * Helper to create a game state with a rout state in ranged attack resolution
-   */
+  /** issueCommands + ranged apply with rout substep on white at E-5. */
   function createStateWithRangedAttackRout(): GameState<StandardBoard> {
     const state = createEmptyGameState();
     const routedUnit = createTestUnit('white', { attack: 2 });
@@ -57,9 +59,7 @@ describe('applyResolveRoutEvent', () => {
     return updatePhaseState(stateWithUnit, phaseState);
   }
 
-  /**
-   * Helper to create a game state with a rout state in melee resolution
-   */
+  /** resolveMelee + rout substep on the named player’s attack apply. */
   function createStateWithMeleeRout(
     routingPlayer: 'white' | 'black',
   ): GameState<StandardBoard> {
@@ -139,8 +139,8 @@ describe('applyResolveRoutEvent', () => {
     return updatePhaseState(state, phaseState);
   }
 
-  describe('ranged attack resolution context', () => {
-    it('should set numberToDiscard on rout state', () => {
+  describe('ranged rout substep', () => {
+    it('given ranged rout and event penalty 2, nested routState.numberToDiscard is 2', () => {
       const state = createStateWithRangedAttackRout();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const routState = attackApplyState.routState!;
@@ -160,7 +160,7 @@ describe('applyResolveRoutEvent', () => {
       expect(newRoutState.numberToDiscard).toBe(2);
     });
 
-    it('should preserve other rout state properties', () => {
+    it('given penalty 3, player unitsToRout and cardsChosen unchanged besides numberToDiscard', () => {
       const state = createStateWithRangedAttackRout();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const routState = attackApplyState.routState!;
@@ -185,8 +185,8 @@ describe('applyResolveRoutEvent', () => {
     });
   });
 
-  describe('melee resolution context', () => {
-    it('should set numberToDiscard for first player', () => {
+  describe('melee rout substep', () => {
+    it('given black melee rout, event penalty 2 updates black apply rout numberToDiscard', () => {
       const state = createStateWithMeleeRout('black');
       const attackApplyState = getAttackApplyStateFromMelee(state, 'black');
       const routState = attackApplyState.routState!;
@@ -209,7 +209,7 @@ describe('applyResolveRoutEvent', () => {
       expect(newRoutState.numberToDiscard).toBe(2);
     });
 
-    it('should set numberToDiscard for second player', () => {
+    it('given white melee rout, event penalty 1 updates white apply rout numberToDiscard', () => {
       const state = createStateWithMeleeRout('white');
       const attackApplyState = getAttackApplyStateFromMelee(state, 'white');
       const routState = attackApplyState.routState!;
@@ -233,8 +233,8 @@ describe('applyResolveRoutEvent', () => {
     });
   });
 
-  describe('rally resolution context', () => {
-    it('should set numberToDiscard on rout state in rally', () => {
+  describe('cleanup rally rout', () => {
+    it('given firstPlayerResolveRally with routState, event penalty 2 lands on rally rout', () => {
       const state = createEmptyGameState();
       const routedUnit = createTestUnit('white', { attack: 2 });
       const routState = createRoutState('white', routedUnit);
@@ -273,8 +273,8 @@ describe('applyResolveRoutEvent', () => {
     });
   });
 
-  describe('rear engagement movement context', () => {
-    it('should set numberToDiscard on rout state nested in movement engagement', () => {
+  describe('rear engagement movement', () => {
+    it('given rear engagement rout under movement CRS, event penalty matches summed unit penalties', () => {
       const state = createStateWithRearEngagementRoutAwaitingPenalty();
       const movement = getIssueCommandsPhaseState(state)
         .currentCommandResolutionState as MovementResolutionState<StandardBoard>;
@@ -307,8 +307,8 @@ describe('applyResolveRoutEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given original rout numberToDiscard undefined, input rout object unchanged after apply', () => {
       const state = createStateWithRangedAttackRout();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const routState = attackApplyState.routState!;
@@ -328,8 +328,8 @@ describe('applyResolveRoutEvent', () => {
     });
   });
 
-  describe('error cases', () => {
-    it('should throw if no units to rout', () => {
+  describe('errors', () => {
+    it('given melee rout event with empty unitInstances, throws melee rout requires unit', () => {
       const state = createStateWithMeleeRout('black');
 
       const event: ResolveRoutEvent<StandardBoard> = {
@@ -345,7 +345,7 @@ describe('applyResolveRoutEvent', () => {
       );
     });
 
-    it('should throw if no rout state found', () => {
+    it('given ranged apply without rout substep, throws no rout state in attack apply', () => {
       const state = createEmptyGameState();
       const unit = createTestUnit('white', { attack: 2 });
       const attackApplyState = createAttackApplyState(unit, {

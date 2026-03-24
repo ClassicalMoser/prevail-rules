@@ -6,8 +6,11 @@ import { getSpacesBehind } from './getSpacesBehind';
 const standardBoard = createEmptyStandardBoard();
 const smallBoard = createEmptySmallBoard();
 
+/**
+ * getSpacesBehind: all board spaces strictly forward of the rear arc (same as “ahead” for the opposite facing).
+ */
 describe('getSpacesBehind', () => {
-  it('should return the spaces behind when facing east from F2', () => {
+  it('given facing east from F-2, returns wedge behind unit (west of rear arc)', () => {
     expect(getSpacesBehind(standardBoard, 'F-2', 'east')).toEqual(
       new Set([
         'A-1',
@@ -25,7 +28,7 @@ describe('getSpacesBehind', () => {
       ]),
     );
   });
-  it('should return the spaces behind when facing south from B7', () => {
+  it('given facing south from B-7, returns wedge behind unit', () => {
     expect(getSpacesBehind(standardBoard, 'B-7', 'south')).toEqual(
       new Set([
         'A-1',
@@ -49,7 +52,7 @@ describe('getSpacesBehind', () => {
       ]),
     );
   });
-  it('should return the spaces behind when facing west from F16', () => {
+  it('given facing west from F-16, returns wedge behind unit', () => {
     expect(getSpacesBehind(standardBoard, 'F-16', 'west')).toEqual(
       new Set([
         'A-17',
@@ -79,12 +82,12 @@ describe('getSpacesBehind', () => {
       ]),
     );
   });
-  it('should return the spaces behind when facing southEast from B2', () => {
+  it('given facing southEast from B-2, returns small rear wedge', () => {
     expect(getSpacesBehind(standardBoard, 'B-2', 'southEast')).toEqual(
       new Set(['A-1', 'B-1', 'A-2']),
     );
   });
-  it('should return the spaces behind when facing northEast from J3', () => {
+  it('given facing northEast from J-3, returns rear wedge toward northeast', () => {
     expect(getSpacesBehind(standardBoard, 'J-3', 'northEast')).toEqual(
       new Set([
         'I-1',
@@ -102,33 +105,22 @@ describe('getSpacesBehind', () => {
   });
 
   describe('small board', () => {
-    it('should return empty set when facing northWest from H-12 (southeast corner - no back spaces)', () => {
-      // From H-12 (southeast corner) facing northWest
-      // Back spaces are the front spaces when facing southEast
-      // But H-12 is the corner, so facing southEast has no valid front spaces (all out of bounds)
+    it('given corner H-12 facing northWest, rear wedge may be empty', () => {
       expect(getSpacesBehind(smallBoard, 'H-12', 'northWest')).toEqual(
         new Set([]),
       );
     });
 
-    it('should return the spaces behind when facing northWest from E-6 (center position)', () => {
-      // From E-6 (center-ish) facing northWest
-      // Back spaces are the front spaces when facing southEast
-      // This should include spaces in the southEast direction and all spaces behind them
+    it('given E-6 facing northWest, rear wedge includes southEast quadrant', () => {
       const result = getSpacesBehind(smallBoard, 'E-6', 'northWest');
-      // Should include the back spaces (F-7, F-6, F-5) and all spaces behind them
       expect(result.size).toBeGreaterThan(0);
-      // Should include the immediate back spaces
       expect(result.has('F-7')).toBe(true);
       expect(result.has('F-6')).toBe(true);
       expect(result.has('F-8')).toBe(true);
-      // Should include spaces behind those (southEast direction)
       expect(result.has('G-8')).toBe(true);
       expect(result.has('H-9')).toBe(true);
-      // Should not include spaces that are ahead (northWest direction)
       expect(result.has('D-5')).toBe(false);
       expect(result.has('C-4')).toBe(false);
-      // Should not include spaces that only the standard board has
       expect(result.has('A-18' as BoardCoordinate<SmallBoard>)).toBe(false);
       expect(result.has('L-18' as BoardCoordinate<SmallBoard>)).toBe(false);
       expect(result.has('L-1' as BoardCoordinate<SmallBoard>)).toBe(false);

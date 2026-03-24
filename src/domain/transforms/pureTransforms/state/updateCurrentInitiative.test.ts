@@ -3,6 +3,9 @@ import { describe, expect, it } from 'vitest';
 
 import { updateCurrentInitiative } from './updateCurrentInitiative';
 
+/**
+ * updateCurrentInitiative: pure transform; implementation in updateCurrentInitiative.ts.
+ */
 describe('updateCurrentInitiative', () => {
   it('updates the initiative player', () => {
     const state = createEmptyGameState({ currentInitiative: 'white' });

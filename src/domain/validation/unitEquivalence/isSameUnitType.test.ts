@@ -4,6 +4,9 @@ import { createUnitInstance } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { isSameUnitType } from './isSameUnitType';
 
+/**
+ * isSameUnitType: validation rule; implementation in isSameUnitType.ts.
+ */
 describe('isSameUnitType', () => {
   const flexibility1UnitType = getUnitByStatValue('flexibility', 1);
   const flexibility2UnitType = getUnitByStatValue('flexibility', 2);

@@ -2,6 +2,9 @@ import type { Modifier } from '@entities';
 import { describe, expect, it } from 'vitest';
 import { areModifiersEqual } from './areModifiersEqual';
 
+/**
+ * areModifiersEqual: validation rule; implementation in areModifiersEqual.ts.
+ */
 describe('areModifiersEqual', () => {
   it('should return true when both modifiers have the same type and value', () => {
     const modifier1: Modifier = { type: 'attack', value: 1 };

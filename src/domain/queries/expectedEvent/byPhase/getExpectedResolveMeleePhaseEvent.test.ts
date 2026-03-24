@@ -13,6 +13,9 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getExpectedResolveMeleePhaseEvent } from './getExpectedResolveMeleePhaseEvent';
 
+/**
+ * getExpectedResolveMeleePhaseEvent: next event during resolve-melee phase.
+ */
 describe('getExpectedResolveMeleePhaseEvent', () => {
   function createGameStateInResolveMeleeStep(
     step: ResolveMeleePhaseStep,
@@ -34,7 +37,7 @@ describe('getExpectedResolveMeleePhaseEvent', () => {
     return state;
   }
 
-  it('should delegate to melee resolution when a melee is in progress', () => {
+  it('given delegate to melee resolution when a melee is in progress', () => {
     const state = createGameStateInResolveMeleeStep(
       'resolveMelee',
       (state) => ({
@@ -55,7 +58,7 @@ describe('getExpectedResolveMeleePhaseEvent', () => {
     expect(parsed.data?.choiceType).toBe('commitToMelee');
   });
 
-  it('should ask the initiative player to choose a melee resolution when engagements remain', () => {
+  it('given engagements remain, asks the initiative player to choose a melee resolution', () => {
     const state = createGameStateInResolveMeleeStep('resolveMelee', () => ({
       currentMeleeResolutionState: undefined,
       remainingEngagements: new Set(['E-5']),
@@ -70,7 +73,7 @@ describe('getExpectedResolveMeleePhaseEvent', () => {
     expect(parsed.data?.choiceType).toBe('chooseMeleeResolution');
   });
 
-  it('should throw when no engagements remain but the step did not advance', () => {
+  it('given when no engagements remain but the step did not advance, throws', () => {
     const state = createGameStateInResolveMeleeStep('resolveMelee', () => ({
       currentMeleeResolutionState: undefined,
       remainingEngagements: new Set(),
@@ -81,7 +84,7 @@ describe('getExpectedResolveMeleePhaseEvent', () => {
     );
   });
 
-  it('should return completeResolveMeleePhase game effect', () => {
+  it('given context, returns completeResolveMeleePhase game effect', () => {
     const state = createGameStateInResolveMeleeStep('complete');
 
     const expectedEvent = getExpectedResolveMeleePhaseEvent(state);
@@ -92,7 +95,7 @@ describe('getExpectedResolveMeleePhaseEvent', () => {
     expect(parsed.data?.effectType).toBe('completeResolveMeleePhase');
   });
 
-  it('should throw for invalid step', () => {
+  it('given for invalid step, throws', () => {
     const state = createGameStateInResolveMeleeStep('complete');
     // Force an invalid resolve melee step to hit the default branch.
     state.currentRoundState.currentPhaseState = {

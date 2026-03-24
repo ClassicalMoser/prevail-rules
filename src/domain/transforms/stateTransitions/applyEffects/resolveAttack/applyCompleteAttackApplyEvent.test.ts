@@ -17,10 +17,12 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyCompleteAttackApplyEvent } from './applyCompleteAttackApplyEvent';
 
+/**
+ * Marks the active attack-apply substep finished for the defending player named in the event
+ * (ranged single apply vs melee side chosen by initiative order).
+ */
 describe('applyCompleteAttackApplyEvent', () => {
-  /**
-   * Helper to create a game state with an incomplete attack apply state in ranged attack resolution
-   */
+  /** issueCommands + ranged CRS + incomplete apply for white defender on E-5. */
   function createStateWithRangedAttackApply(): GameState<StandardBoard> {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
@@ -45,9 +47,7 @@ describe('applyCompleteAttackApplyEvent', () => {
     return updatePhaseState(stateWithUnit, phaseState);
   }
 
-  /**
-   * Helper to create a game state with incomplete attack apply states in melee resolution
-   */
+  /** resolveMelee + two applies; pass side still incomplete or omit for both complete. */
   function createStateWithMeleeApply(
     incompletePlayer?: 'white' | 'black',
   ): GameState<StandardBoard> {
@@ -94,8 +94,8 @@ describe('applyCompleteAttackApplyEvent', () => {
     return updatePhaseState(stateWithUnits, phaseState);
   }
 
-  describe('ranged attack resolution context', () => {
-    it('should mark attack apply state as completed', () => {
+  describe('ranged apply', () => {
+    it('given incomplete ranged apply, event defending white sets completed true', () => {
       const state = createStateWithRangedAttackApply();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       expect(attackApplyState.completed).toBe(false);
@@ -113,7 +113,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       expect(newAttackApplyState.completed).toBe(true);
     });
 
-    it('should preserve other attack apply state properties', () => {
+    it('given same completion, substepType defendingUnit and attackResult unchanged besides completed', () => {
       const state = createStateWithRangedAttackApply();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
 
@@ -137,8 +137,8 @@ describe('applyCompleteAttackApplyEvent', () => {
     });
   });
 
-  describe('melee resolution context', () => {
-    it('should mark first player attack apply state as completed', () => {
+  describe('melee apply', () => {
+    it('given black initiative and black apply incomplete, completeAttackApply for black marks that side', () => {
       const state = createStateWithMeleeApply('black');
       const meleeState = getMeleeResolutionState(state);
       const firstPlayer = state.currentInitiative;
@@ -166,7 +166,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       expect(newFirstPlayerAttackApply?.completed).toBe(true);
     });
 
-    it('should mark second player attack apply state as completed when first is already complete', () => {
+    it('given white apply still incomplete after black done, event for white completes white apply', () => {
       const state = createStateWithMeleeApply('white');
       const meleeState = getMeleeResolutionState(state);
       const firstPlayer = state.currentInitiative;
@@ -196,8 +196,8 @@ describe('applyCompleteAttackApplyEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given ranged apply completed false before apply, input apply object unchanged after apply', () => {
       const state = createStateWithRangedAttackApply();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const originalCompleted = attackApplyState.completed;
@@ -215,8 +215,8 @@ describe('applyCompleteAttackApplyEvent', () => {
     });
   });
 
-  describe('error cases', () => {
-    it('should throw when ranged resolution state cannot be read from state', () => {
+  describe('errors', () => {
+    it('given empty state without issueCommands ranged CRS, throws not in issueCommands phase', () => {
       const state = createEmptyGameState();
 
       const event: CompleteAttackApplyEvent<StandardBoard> = {
@@ -231,7 +231,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       );
     });
 
-    it('should throw when melee has no attack apply state for the defending player', () => {
+    it('given melee missing whiteAttackApplyState, complete for white throws no white apply', () => {
       const state = createStateWithMeleeApply('black');
       const meleeState = getMeleeResolutionState(state);
       const phaseState = createResolveMeleePhaseState(state, {
@@ -254,7 +254,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       ).toThrow('No white attack apply state found in melee resolution');
     });
 
-    it('should throw for unknown attackType (exhaustiveness guard)', () => {
+    it('given attackType siege cast, throws unknown attack type for completeAttackApply', () => {
       const state = createEmptyGameState();
       const event = {
         eventType: 'gameEffect' as const,

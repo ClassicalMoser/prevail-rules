@@ -15,6 +15,9 @@ import { createEmptyStandardBoard, createUnitInstance } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { isAtPlacement } from './isAtPlacement';
 
+/**
+ * isAtPlacement: validation rule; implementation in isAtPlacement.ts.
+ */
 describe('isAtPlacement', () => {
   const standardBoard: StandardBoard = createEmptyStandardBoard();
   const coordinate: StandardBoardCoordinate = 'E-5';

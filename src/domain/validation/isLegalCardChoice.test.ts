@@ -4,6 +4,9 @@ import { commandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
 import { isLegalCardChoice } from './isLegalCardChoice';
 
+/**
+ * isLegalCardChoice: validation rule; implementation in isLegalCardChoice.ts.
+ */
 describe('isLegalCardChoice', () => {
   // Helper to create a card state with cards in hand
   function createCardState(blackHand: Card[], whiteHand: Card[]): CardState {

@@ -6,6 +6,9 @@ import {
   createSingleUnitPresence,
 } from './unitPresenceHelpers';
 
+/**
+ * createNoneUnitPresence: test helper; implementation in unitPresenceHelpers.ts.
+ */
 describe('createNoneUnitPresence', () => {
   it('should return none presence', () => {
     const presence = createNoneUnitPresence();

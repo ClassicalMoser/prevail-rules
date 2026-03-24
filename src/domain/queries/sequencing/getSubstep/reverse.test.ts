@@ -19,8 +19,12 @@ import {
   getReverseStateFromMeleeResolutionByInitiative,
 } from './reverse';
 
+/**
+ * Reverse substep accessors: unwrap reverse from one apply, or choose melee side by initiative
+ * and whether the first player’s reverse already has a final facing committed.
+ */
 describe('getReverseStateFromAttackApply', () => {
-  it('should return reverse state from attack apply state', () => {
+  it('given apply with reverse substep, returns reverseState', () => {
     const unit = createTestUnit('black', { attack: 2 });
     const attackApplyState: AttackApplyState<any> = {
       substepType: 'attackApply' as const,
@@ -49,7 +53,7 @@ describe('getReverseStateFromAttackApply', () => {
     expect(result.reversingUnit.unit).toEqual(unit);
   });
 
-  it('should throw error when reverse state is missing', () => {
+  it('given error when reverse state is missing, throws', () => {
     const unit = createTestUnit('black', { attack: 2 });
     const attackApplyState: AttackApplyState<any> = {
       substepType: 'attackApply' as const,
@@ -72,6 +76,7 @@ describe('getReverseStateFromAttackApply', () => {
 });
 
 describe('getReverseStateFromMeleeResolutionByInitiative', () => {
+  /** Both sides in reverse substeps; optional finalPosition on initiative side to simulate done. */
   function stateWithReverse(
     initiative: 'white' | 'black',
     firstFinal?: 'set',
@@ -117,31 +122,31 @@ describe('getReverseStateFromMeleeResolutionByInitiative', () => {
     return updatePhaseState(s, phase);
   }
 
-  it('prefers initiative player when reverse awaits resolution', () => {
+  it('given white initiative and both reverses pending, picks white', () => {
     const state = stateWithReverse('white');
     const rev = getReverseStateFromMeleeResolutionByInitiative(state);
     expect(rev.reversingUnit.unit.playerSide).toBe('white');
   });
 
-  it('prefers black when initiative is black and reverse awaits resolution', () => {
+  it('given black initiative and both reverses pending, picks black', () => {
     const state = stateWithReverse('black');
     const rev = getReverseStateFromMeleeResolutionByInitiative(state);
     expect(rev.reversingUnit.unit.playerSide).toBe('black');
   });
 
-  it('uses second player when first reverse already has finalPosition', () => {
+  it('given white initiative but white reverse already has finalPosition, picks black', () => {
     const state = stateWithReverse('white', 'set');
     const rev = getReverseStateFromMeleeResolutionByInitiative(state);
     expect(rev.reversingUnit.unit.playerSide).toBe('black');
   });
 
-  it('uses white when initiative is black but black reverse already has finalPosition', () => {
+  it('given black initiative but black reverse already has finalPosition, picks white', () => {
     const state = stateWithReverse('black', 'set');
     const rev = getReverseStateFromMeleeResolutionByInitiative(state);
     expect(rev.reversingUnit.unit.playerSide).toBe('white');
   });
 
-  it('throws when no pending reverse', () => {
+  it('given both reverses already have finalPosition, throws no reverse in melee', () => {
     const state = createEmptyGameState({ currentInitiative: 'white' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });

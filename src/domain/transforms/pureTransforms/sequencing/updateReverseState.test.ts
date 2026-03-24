@@ -16,6 +16,9 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { updateReverseState } from './updateReverseState';
 
+/**
+ * updateReverseState: pure transform; implementation in updateReverseState.ts.
+ */
 describe('updateReverseState', () => {
   function createStateWithRangedAttackReverse() {
     const state = createEmptyGameState();

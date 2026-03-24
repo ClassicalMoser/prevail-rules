@@ -4,15 +4,20 @@ import { describe, expect, it } from 'vitest';
 
 import { generateRevealCardsEvent } from './generateRevealCardsEvent';
 
+/**
+ * Reveal cards step: both players’ awaitingPlay cards become public knowledge.
+ * The procedure only emits the effect tag — apply layer performs the reveal. Return value
+ * is intentionally independent of `state` (see implementation); tests still pass any GameState.
+ */
 describe('generateRevealCardsEvent', () => {
-  it('returns a revealCards game effect event', () => {
+  it('given any game state, emits gameEffect with effectType revealCards', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
     const event = generateRevealCardsEvent(state);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('revealCards');
   });
 
-  it('returns the same payload regardless of state', () => {
+  it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
     const a = generateRevealCardsEvent(createEmptyGameState());
     const b = generateRevealCardsEvent(createEmptyGameState());
     expect(a).toEqual(b);

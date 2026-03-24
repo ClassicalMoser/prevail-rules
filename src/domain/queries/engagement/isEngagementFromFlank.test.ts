@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { isEngagementFromFlank } from './isEngagementFromFlank';
 
+/**
+ * isEngagementFromFlank: true when the attacker's facing is orthogonal to the defender's (flank engagement).
+ */
 describe('isEngagementFromFlank', () => {
-  it('should return success when the attacker faces orthogonal to the defender', () => {
+  it('given attacker orthogonal to defender, returns success', () => {
     expect(isEngagementFromFlank('east', 'north')).toEqual({ result: true });
   });
 
-  it('should return a helpful error when the attacker is not orthogonal to the defender', () => {
+  it('given attacker not orthogonal to defender, returns false with reason', () => {
     expect(isEngagementFromFlank('south', 'north')).toEqual({
       result: false,
       errorReason: 'Attacker is not facing orthogonal to the defender',

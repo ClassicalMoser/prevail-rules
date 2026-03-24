@@ -11,8 +11,13 @@ import { describe, expect, it } from 'vitest';
 
 import { generateResolveUnitsBrokenEvent } from './generateResolveUnitsBrokenEvent';
 
+/**
+ * After rally, hands change which unit types are “supported” by remaining cards. This procedure
+ * emits `resolveUnitsBroken` listing unit types the acting player still has on board but no longer
+ * supports (deduped per type). Step must be first/secondPlayerResolveRally inside cleanup.
+ */
 describe('generateResolveUnitsBrokenEvent', () => {
-  it('returns empty unitTypes when player has no units on board', () => {
+  it('given white initiative and empty board at firstPlayerResolveRally, player white and no types', () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const full = updatePhaseState(
       base,
@@ -24,7 +29,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
     expect(event.unitTypes).toEqual([]);
   });
 
-  it('uses second player on secondPlayerResolveRally step', () => {
+  it('given same initiative, secondPlayerResolveRally targets the non-initiative player (black)', () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const full = updatePhaseState(
       base,
@@ -34,7 +39,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
     expect(event.player).toBe('black');
   });
 
-  it('throws when cleanup step is not a resolveRally step', () => {
+  it('given cleanup discardPlayedCards step, throws resolveRally step guard', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(
       base,
@@ -45,7 +50,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
     );
   });
 
-  it('throws when not in cleanup phase', () => {
+  it('given playCards phase, throws cleanup phase guard', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
@@ -56,7 +61,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
     );
   });
 
-  it('lists an unsupported unit type once when multiple units share that type', () => {
+  it('given two white units same unsupported type on E-5 and E-6, lists that type once', () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const unitType = tempUnits[0];
     const u1 = createTestUnit('white', { unitType, instanceNumber: 1 });
@@ -81,7 +86,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
     expect(event.unitTypes[0]!.id).toBe(unitType.id);
   });
 
-  it('lists each unsupported unit type once when several types are on board', () => {
+  it('given two different unsupported white types on board, lists both type ids', () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const u1 = createTestUnit('white', { unitType: tempUnits[0] });
     const u2 = createTestUnit('white', { unitType: tempUnits[1] });

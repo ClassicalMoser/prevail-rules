@@ -10,9 +10,13 @@ import { getBoardSpace } from './getBoardSpace';
 const standardBoard: StandardBoard = createEmptyStandardBoard();
 const smallBoard: SmallBoard = createEmptySmallBoard();
 
+/**
+ * getBoardSpace: looks up the tile record at a coordinate; throws if the coordinate is missing from the board
+ * map or not a valid coordinate for that board shape.
+ */
 describe('getBoardSpace', () => {
   describe('standard board', () => {
-    it('should return the board space for a valid coordinate', () => {
+    it('given E-5, returns space with terrain, elevation, unitPresence', () => {
       const space = getBoardSpace(standardBoard, 'E-5');
       expect(space).toBeDefined();
       expect(space.terrainType).toBeDefined();
@@ -20,25 +24,23 @@ describe('getBoardSpace', () => {
       expect(space.unitPresence).toBeDefined();
     });
 
-    it('should return the board space for A-1', () => {
+    it('given A-1, returns defined space', () => {
       const space = getBoardSpace(standardBoard, 'A-1');
       expect(space).toBeDefined();
     });
 
-    it('should return the board space for L-18', () => {
+    it('given L-18, returns defined space', () => {
       const space = getBoardSpace(standardBoard, 'L-18');
       expect(space).toBeDefined();
     });
 
-    it('should throw an error if the coordinate does not exist on the board', () => {
-      // Create a board with a missing coordinate by manipulating the board object
+    it('given coordinate deleted from board map, throws', () => {
       const boardWithMissingSpace: StandardBoard = {
         ...standardBoard,
         board: {
           ...standardBoard.board,
         },
       };
-      // Remove a coordinate to simulate it not existing
       delete boardWithMissingSpace.board['E-5' as StandardBoardCoordinate];
 
       expect(() => {
@@ -46,7 +48,7 @@ describe('getBoardSpace', () => {
       }).toThrow(new Error('Coordinate E-5 does not exist on standard board.'));
     });
 
-    it('should throw an error if the coordinate is not a valid standard board coordinate', () => {
+    it('given invalid coordinate string for standard board, throws', () => {
       expect(() => {
         getBoardSpace(standardBoard, 'Y-55' as StandardBoardCoordinate);
       }).toThrow(
@@ -56,7 +58,7 @@ describe('getBoardSpace', () => {
   });
 
   describe('small board', () => {
-    it('should return the board space for a valid coordinate', () => {
+    it('given E-5, returns space with terrain, elevation, unitPresence', () => {
       const space = getBoardSpace(smallBoard, 'E-5');
       expect(space).toBeDefined();
       expect(space.terrainType).toBeDefined();
@@ -64,12 +66,12 @@ describe('getBoardSpace', () => {
       expect(space.unitPresence).toBeDefined();
     });
 
-    it('should return the board space for A-1', () => {
+    it('given A-1, returns defined space', () => {
       const space = getBoardSpace(smallBoard, 'A-1');
       expect(space).toBeDefined();
     });
 
-    it('should return the board space for H-12', () => {
+    it('given H-12, returns defined space', () => {
       const space = getBoardSpace(smallBoard, 'H-12');
       expect(space).toBeDefined();
     });

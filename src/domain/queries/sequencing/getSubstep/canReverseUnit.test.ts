@@ -8,8 +8,12 @@ import { addUnitToBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { canReverseUnit } from './canReverseUnit';
 
+/**
+ * Reverse is only legal when the reversing unit is alone on its hex (opponent already left
+ * after retreat/rout); engaged pairs cannot reverse.
+ */
 describe('canReverseUnit', () => {
-  it('should return true when unit is not engaged (single unit)', () => {
+  it('given single white on E-5 north in reverseState, returns true', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState();
     const stateWithUnit = {
@@ -33,7 +37,7 @@ describe('canReverseUnit', () => {
     expect(canReverseUnit(reverseState, stateWithUnit)).toBe(true);
   });
 
-  it('should return false when unit is engaged', () => {
+  it('given primary white engaged on E-5, primary reverse attempt returns false', () => {
     const primaryUnit = createTestUnit('white', { attack: 2 });
     const secondaryUnit = createTestUnit('black', { attack: 2 });
     const state = createGameStateWithEngagedUnits(
@@ -56,7 +60,7 @@ describe('canReverseUnit', () => {
     expect(canReverseUnit(reverseState, state)).toBe(false);
   });
 
-  it('should return false when secondary unit in engagement tries to reverse', () => {
+  it('given same engagement, secondary black reverse attempt also false', () => {
     const primaryUnit = createTestUnit('white', { attack: 2 });
     const secondaryUnit = createTestUnit('black', { attack: 2 });
     const state = createGameStateWithEngagedUnits(
@@ -79,7 +83,7 @@ describe('canReverseUnit', () => {
     expect(canReverseUnit(reverseState, state)).toBe(false);
   });
 
-  it('should throw error when coordinate has no unit', () => {
+  it('given empty board but reverseState cites E-5, throws unit not present at coordinate', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState();
 

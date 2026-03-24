@@ -3,6 +3,9 @@ import { getUnitByStatValue, getUnitByTrait } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { matchesUnitRequirements } from './matchesUnitRequirements';
 
+/**
+ * matchesUnitRequirements: validation rule; implementation in matchesUnitRequirements.ts.
+ */
 describe('matchesUnitRequirements', () => {
   // Find units by their unique traits rather than by name
   // This makes tests more resilient to changes in sample data

@@ -11,8 +11,12 @@ import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyCommitToMeleeEvent } from './applyCommitToMeleeEvent';
 
+/**
+ * Melee commitment: pending side locks in their played command card (and empty modifiers here),
+ * moves the card out of hand, and marks `whiteCommitment` / `blackCommitment` completed.
+ */
 describe('applyCommitToMeleeEvent', () => {
-  it('completes white commitment and discards card from hand', () => {
+  it('given white pending and one card in hand, commit completes white and empties white hand', () => {
     const state = createEmptyGameState();
     const stateWithWhiteCardInHand = updateCardState(state, (c) => ({
       ...c,
@@ -48,7 +52,7 @@ describe('applyCommitToMeleeEvent', () => {
     expect(newState.cardState.white.inHand).toHaveLength(0);
   });
 
-  it('completes black commitment and discards card from hand', () => {
+  it('given black pending and one card in hand, commit completes black and empties black hand', () => {
     const state = createEmptyGameState();
     const stateWithBlackCardInHand = updateCardState(state, (c) => ({
       ...c,

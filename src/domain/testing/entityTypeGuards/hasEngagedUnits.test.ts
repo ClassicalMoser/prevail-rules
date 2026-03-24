@@ -7,6 +7,9 @@ import {
 } from '@testing/unitPresenceHelpers';
 import { describe, expect, it } from 'vitest';
 
+/**
+ * hasEngagedUnits: test helper; implementation in hasEngagedUnits.ts.
+ */
 describe('hasEngagedUnits', () => {
   it('should return false for none unit presence', () => {
     const unitPresence = createNoneUnitPresence();

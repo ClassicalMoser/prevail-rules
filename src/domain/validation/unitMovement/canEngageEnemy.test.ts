@@ -3,6 +3,9 @@ import { createGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { canEngageEnemy } from './canEngageEnemy';
 
+/**
+ * canEngageEnemy: validation rule; implementation in canEngageEnemy.ts.
+ */
 describe('canEngageEnemy', () => {
   describe('invalid destination', () => {
     it('should return false when destination has no unit', () => {

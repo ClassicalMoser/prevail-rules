@@ -8,6 +8,9 @@ import {
   createAttackApplyStateWithRout,
 } from './attackApplyStates';
 
+/**
+ * createAttackApplyState: test helper; implementation in attackApplyStates.ts.
+ */
 describe('createAttackApplyState', () => {
   it('should return attackApply substep with defending unit and default result', () => {
     const unit = createTestUnit('black');

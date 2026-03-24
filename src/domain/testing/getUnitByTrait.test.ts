@@ -2,6 +2,9 @@ import type { Trait } from '@ruleValues';
 import { describe, expect, it } from 'vitest';
 import { getUnitByTrait } from './getUnitByTrait';
 
+/**
+ * getUnitByTrait: test helper; implementation in getUnitByTrait.ts.
+ */
 describe('getUnitByTrait', () => {
   it('should return unit type with single trait', () => {
     const unitType = getUnitByTrait('formation');

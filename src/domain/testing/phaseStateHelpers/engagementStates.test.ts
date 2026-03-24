@@ -5,6 +5,9 @@ import {
   createRearEngagementState,
 } from './engagementStates';
 
+/**
+ * createFrontEngagementState: test helper; implementation in engagementStates.ts.
+ */
 describe('createFrontEngagementState', () => {
   it('should return engagement state with front resolution', () => {
     const state = createFrontEngagementState();

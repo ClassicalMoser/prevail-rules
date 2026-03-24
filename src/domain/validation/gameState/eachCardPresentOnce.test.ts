@@ -3,6 +3,9 @@ import { commandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
 import { eachCardPresentOnce } from './eachCardPresentOnce';
 
+/**
+ * eachCardPresentOnce: validation rule; implementation in eachCardPresentOnce.ts.
+ */
 describe('eachCardPresentOnce', () => {
   // Helper to create a card set from indices
   const cardSet = (...indices: number[]): Set<Card> =>

@@ -23,12 +23,15 @@ vi.mock('./getExpectedRangedAttackResolutionEvent', () => ({
     getExpectedRangedAttackResolutionEventMock,
 }));
 
+/**
+ * getExpectedCommandResolutionEvent: next event while resolving the active command (nested by sub-step).
+ */
 describe('getExpectedCommandResolutionEvent', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should delegate movement command resolution to the movement resolver', () => {
+  it('given delegate movement command resolution to the movement resolver', () => {
     const gameState = createEmptyGameState();
     const resolutionState = createMovementResolutionState(gameState);
     const expectedEvent = {
@@ -47,7 +50,7 @@ describe('getExpectedCommandResolutionEvent', () => {
     );
   });
 
-  it('should delegate ranged attack command resolution to the ranged attack resolver', () => {
+  it('given delegate ranged attack command resolution to the ranged attack resolver', () => {
     const gameState = createEmptyGameState();
     const resolutionState = createRangedAttackResolutionState(gameState);
     const expectedEvent = {
@@ -66,7 +69,7 @@ describe('getExpectedCommandResolutionEvent', () => {
     );
   });
 
-  it('should throw when no command resolution state exists', () => {
+  it('given when no command resolution state exists, throws', () => {
     const gameState = createEmptyGameState();
 
     expect(() =>
@@ -74,7 +77,7 @@ describe('getExpectedCommandResolutionEvent', () => {
     ).toThrow('No command resolution state found');
   });
 
-  it('should throw for an invalid command resolution type', () => {
+  it('given for an invalid command resolution type, throws', () => {
     const gameState = createEmptyGameState();
     const resolutionState = {
       ...createMovementResolutionState(gameState),

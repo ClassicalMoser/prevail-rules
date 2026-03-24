@@ -11,8 +11,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyCompleteMeleeResolutionEvent } from './applyCompleteMeleeResolutionEvent';
 
+/**
+ * One melee hex is fully resolved: drop `currentMeleeResolutionState` so the phase can pick
+ * the next engagement or eventually complete the resolve-melee phase.
+ */
 describe('applyCompleteMeleeResolutionEvent', () => {
-  it('clears currentMeleeResolutionState', () => {
+  it('given resolveMelee with an active melee slice, after effect currentMeleeResolutionState is undefined', () => {
     const base = createEmptyGameState();
     const withCards = updateCardState(base, (c) => ({
       ...c,

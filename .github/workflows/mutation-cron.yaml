@@ -1,0 +1,36 @@
+name: Mutation tests
+
+on:
+  schedule:
+    # UTC-only cron: 06:00 UTC = midnight Chicago in CST; 01:00 Chicago in CDT (no single UTC time matches both).
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  mutation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Mutation tests
+        run: pnpm test:mutation
+
+      - name: Upload mutation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stryker-mutation-report
+          path: reports/
+          if-no-files-found: warn

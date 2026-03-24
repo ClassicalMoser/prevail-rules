@@ -6,18 +6,20 @@ import { getBoardCoordinates } from './getBoardCoordinates';
 const standardBoardCoordinateRegex = /^[A-L]-\d+$/;
 const smallBoardCoordinateRegex = /^[A-H]-\d+$/;
 
+/**
+ * getBoardCoordinates: flat list of every coordinate key on the board (standard 12×18; small 8×12).
+ */
 describe('getBoardCoordinates', () => {
   describe('standard board', () => {
-    it('should return all coordinates for a standard board', () => {
+    it('given standard board, returns 216 coordinates', () => {
       const board: StandardBoard = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
       expect(coordinates.length).toBeGreaterThan(0);
-      // Standard board has 12 rows (A-L) × 18 columns (1-18) = 216 coordinates
       expect(coordinates.length).toBe(216);
     });
 
-    it('should include corner coordinates', () => {
+    it('given standard board, includes corners A-1, A-18, L-1, L-18', () => {
       const board: StandardBoard = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
@@ -27,7 +29,7 @@ describe('getBoardCoordinates', () => {
       expect(coordinates).toContain('L-18');
     });
 
-    it('should include center coordinates', () => {
+    it('given standard board, includes interior samples', () => {
       const board: StandardBoard = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
@@ -35,28 +37,26 @@ describe('getBoardCoordinates', () => {
       expect(coordinates).toContain('F-9');
     });
 
-    it('should return readonly array', () => {
+    it('given readonly tuple, runtime allows push (TS readonly only)', () => {
       const board: StandardBoard = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
-      // TypeScript should prevent mutation, but we can test at runtime
       expect(() => {
         (coordinates as string[]).push('invalid');
-      }).not.toThrow(); // Runtime doesn't enforce readonly, but TypeScript does
+      }).not.toThrow();
     });
   });
 
   describe('small board', () => {
-    it('should return all coordinates for a small board', () => {
+    it('given small board, returns 96 coordinates', () => {
       const board: SmallBoard = createEmptySmallBoard();
       const coordinates = getBoardCoordinates(board);
 
       expect(coordinates.length).toBeGreaterThan(0);
-      // Small board has 8 rows (A-H) × 12 columns (1-12) = 96 coordinates
       expect(coordinates.length).toBe(96);
     });
 
-    it('should include corner coordinates', () => {
+    it('given small board, includes corners A-1, A-12, H-1, H-12', () => {
       const board: SmallBoard = createEmptySmallBoard();
       const coordinates = getBoardCoordinates(board);
 
@@ -68,22 +68,20 @@ describe('getBoardCoordinates', () => {
   });
 
   describe('type safety', () => {
-    it('should return StandardBoardCoordinate[] for standard board', () => {
+    it('given standard board, every entry matches standard coordinate pattern', () => {
       const board: StandardBoard = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
-      // All coordinates should be valid standard board coordinates
       coordinates.forEach((coord) => {
         expect(typeof coord).toBe('string');
         expect(coord).toMatch(standardBoardCoordinateRegex);
       });
     });
 
-    it('should return SmallBoardCoordinate[] for small board', () => {
+    it('given small board, every entry matches small coordinate pattern', () => {
       const board: SmallBoard = createEmptySmallBoard();
       const coordinates = getBoardCoordinates(board);
 
-      // All coordinates should be valid small board coordinates
       coordinates.forEach((coord) => {
         expect(typeof coord).toBe('string');
         expect(coord).toMatch(smallBoardCoordinateRegex);

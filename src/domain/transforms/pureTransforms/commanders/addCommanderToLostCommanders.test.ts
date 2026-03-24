@@ -2,6 +2,9 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { addCommanderToLostCommanders } from './addCommanderToLostCommanders';
 
+/**
+ * addCommanderToLostCommanders: pure transform; implementation in addCommanderToLostCommanders.ts.
+ */
 describe('addCommanderToLostCommanders', () => {
   describe('adding commander to empty set', () => {
     it('should add commander to lost commanders set', () => {

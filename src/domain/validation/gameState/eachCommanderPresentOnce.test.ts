@@ -3,6 +3,9 @@ import { createBoardWithCommander, createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { eachCommanderPresentOnce } from './eachCommanderPresentOnce';
 
+/**
+ * eachCommanderPresentOnce: validation rule; implementation in eachCommanderPresentOnce.ts.
+ */
 describe('eachCommanderPresentOnce', () => {
   describe('valid cases', () => {
     it('should return true when both commanders are present on the board', () => {

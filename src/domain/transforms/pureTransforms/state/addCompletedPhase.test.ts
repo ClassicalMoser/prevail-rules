@@ -3,6 +3,9 @@ import { createEmptyGameState } from '@testing';
 import { addCompletedPhase } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 
+/**
+ * addCompletedPhase: pure transform; implementation in addCompletedPhase.ts.
+ */
 describe('addCompletedPhase', () => {
   it('should add phase to completed phases set', () => {
     const state = createEmptyGameState();

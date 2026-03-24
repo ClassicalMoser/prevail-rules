@@ -9,6 +9,9 @@ import { updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getExpectedMoveCommandersPhaseEvent } from './getExpectedMoveCommandersPhaseEvent';
 
+/**
+ * getExpectedMoveCommandersPhaseEvent: next event during move-commanders phase.
+ */
 describe('getExpectedMoveCommandersPhaseEvent', () => {
   /**
    * Helper to create a game state in the moveCommanders phase with a specific step
@@ -28,7 +31,7 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
   }
 
   describe('expected events by step', () => {
-    it('should return firstPlayer moveCommander when step is moveFirstCommander', () => {
+    it('given step is moveFirstCommander, returns firstPlayer moveCommander', () => {
       const state = createGameStateInMoveCommandersStep(
         'moveFirstCommander',
         'black',
@@ -46,7 +49,7 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
       );
     });
 
-    it('should return secondPlayer moveCommander when step is moveSecondCommander', () => {
+    it('given step is moveSecondCommander, returns secondPlayer moveCommander', () => {
       const state = createGameStateInMoveCommandersStep(
         'moveSecondCommander',
         'black',
@@ -64,7 +67,7 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
       );
     });
 
-    it('should return completeMoveCommandersPhase gameEffect when step is complete', () => {
+    it('given step is complete, returns completeMoveCommandersPhase gameEffect', () => {
       const state = createGameStateInMoveCommandersStep('complete');
 
       const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
@@ -78,7 +81,7 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
       );
     });
 
-    it('should correctly identify first and second player based on initiative', () => {
+    it('given correctly identify first and second player based on initiative', () => {
       // Test with white as initiative
       const stateWithWhiteInitiative = createGameStateInMoveCommandersStep(
         'moveFirstCommander',
@@ -120,7 +123,7 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
   });
 
   describe('error cases', () => {
-    it('should throw for invalid step', () => {
+    it('given for invalid step, throws', () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
       // Bad type cast to test default case
       const stateWithInvalidStep = {

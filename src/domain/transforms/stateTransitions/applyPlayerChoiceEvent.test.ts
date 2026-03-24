@@ -62,13 +62,17 @@ const playerChoiceCases: ReadonlyArray<
   ['setupUnits', applySetupUnitsEvent],
 ] as ReadonlyArray<[PlayerChoiceType, ApplyPlayerChoiceHandler]>;
 
+/**
+ * `applyPlayerChoiceEvent` mirrors the game-effect router: each `PlayerChoiceType` maps to one
+ * `applyChoices/*` function with the same `(event, state)` shape.
+ */
 describe('applyPlayerChoiceEvent', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it.each(playerChoiceCases)(
-    'should route %s to corresponding handler and return its result',
+    'given playerChoice with choiceType %s, delegates to matching handler and returns its state',
     (choiceType, handler) => {
       const state = createEmptyGameState();
       const event = {
@@ -85,7 +89,7 @@ describe('applyPlayerChoiceEvent', () => {
     },
   );
 
-  it('should throw for unknown choice type', () => {
+  it('given playerChoice with bogus choiceType cast, throws unknown player choice type', () => {
     const state = createEmptyGameState();
     const event = {
       eventType: 'playerChoice',

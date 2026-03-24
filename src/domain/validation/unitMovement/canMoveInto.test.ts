@@ -4,6 +4,9 @@ import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { canMoveInto } from './canMoveInto';
 
+/**
+ * canMoveInto: validation rule; implementation in canMoveInto.ts.
+ */
 describe('canMoveInto', () => {
   describe('empty space', () => {
     it('should return true when the space has no unit', () => {

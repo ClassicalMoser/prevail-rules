@@ -9,7 +9,12 @@ import { updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { generateCompleteIssueCommandsPhaseEvent } from './generateCompleteIssueCommandsPhaseEvent';
 
+/**
+ * Issue-commands phase is done: emit `completeIssueCommandsPhase` with `remainingEngagements`
+ * — a set of board coordinates that still hold engaged units (from live board scan).
+ */
 describe('generateCompleteIssueCommandsPhaseEvent', () => {
+  /** Puts `state` in ISSUE_COMMANDS_PHASE step `complete` with empty command queues. */
   function stateInIssueCommandsComplete(
     state = createEmptyGameState(),
   ): typeof state {
@@ -25,7 +30,7 @@ describe('generateCompleteIssueCommandsPhaseEvent', () => {
     return updatePhaseState(state, initialPhaseState);
   }
 
-  it('should return a completeIssueCommandsPhase event with remainingEngagements', () => {
+  it('given engaged pair at E-5 and phase complete, remainingEngagements contains E-5', () => {
     const black = createTestUnit('black', { attack: 3 });
     const white = createTestUnit('white', { attack: 3 });
     const base = createGameStateWithEngagedUnits(black, white, 'E-5');
@@ -38,7 +43,7 @@ describe('generateCompleteIssueCommandsPhaseEvent', () => {
     expect(event.remainingEngagements.has('E-5')).toBe(true);
   });
 
-  it('should return empty remainingEngagements when the board has no engagements', () => {
+  it('given empty board and phase complete, remainingEngagements is empty', () => {
     const stateWithPhase = stateInIssueCommandsComplete();
 
     const event = generateCompleteIssueCommandsPhaseEvent(stateWithPhase);
@@ -46,7 +51,7 @@ describe('generateCompleteIssueCommandsPhaseEvent', () => {
     expect(event.remainingEngagements.size).toBe(0);
   });
 
-  it('should reflect board differences in remainingEngagements', () => {
+  it('given same phase shell, engaged vs empty board yields different remainingEngagements', () => {
     const empty = stateInIssueCommandsComplete();
     const black = createTestUnit('black', { attack: 3 });
     const white = createTestUnit('white', { attack: 3 });

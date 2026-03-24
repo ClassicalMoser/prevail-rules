@@ -2,6 +2,9 @@ import { CLEANUP_PHASE, PLAY_CARDS_PHASE } from '@entities';
 import { describe, expect, it } from 'vitest';
 import { markPhaseAsComplete } from './markPhaseAsComplete';
 
+/**
+ * markPhaseAsComplete: pure transform; implementation in markPhaseAsComplete.ts.
+ */
 describe('markPhaseAsComplete', () => {
   it('should mark play cards phase as complete', () => {
     const phaseState = {

@@ -5,6 +5,9 @@ import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { canMoveThrough } from './canMoveThrough';
 
+/**
+ * canMoveThrough: validation rule; implementation in canMoveThrough.ts.
+ */
 describe('canMoveThrough', () => {
   describe('empty space', () => {
     it('should return true when the space has no unit', () => {

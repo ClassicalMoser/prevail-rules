@@ -3,8 +3,12 @@ import { createTestCard } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { findMatchingCommand } from './findMatchingCommand';
 
+/**
+ * findMatchingCommand: finds a command in a Set that is deeply equal to a target command (type, number, size,
+ * restrictions, modifiers); returns the set member reference when found.
+ */
 describe('findMatchingCommand', () => {
-  it('should return the matching command from the set', () => {
+  it('given target matches a set member, returns that member reference', () => {
     const matchingCommand = createTestCard({
       commandModifiers: [{ type: 'attack', value: 1 }],
       commandRestrictions: {
@@ -25,7 +29,7 @@ describe('findMatchingCommand', () => {
     expect(findMatchingCommand(commands, targetCommand)).toBe(matchingCommand);
   });
 
-  it('should return undefined when the command type does not match', () => {
+  it('given command type differs, returns undefined', () => {
     const command = createTestCard().command;
     const commands = new Set([command]);
     const targetCommand = {
@@ -36,7 +40,7 @@ describe('findMatchingCommand', () => {
     expect(findMatchingCommand(commands, targetCommand)).toBeUndefined();
   });
 
-  it('should return undefined when the primitive fields do not match', () => {
+  it('given primitive field differs, returns undefined', () => {
     const command = createTestCard().command;
     const commands = new Set([command]);
     const targetCommand = {
@@ -47,7 +51,7 @@ describe('findMatchingCommand', () => {
     expect(findMatchingCommand(commands, targetCommand)).toBeUndefined();
   });
 
-  it('should return undefined when the command size does not match', () => {
+  it('given command size differs, returns undefined', () => {
     const command = createTestCard().command;
     const commands = new Set([command]);
     const targetCommand = {
@@ -58,7 +62,7 @@ describe('findMatchingCommand', () => {
     expect(findMatchingCommand(commands, targetCommand)).toBeUndefined();
   });
 
-  it('should return undefined when the restrictions differ', () => {
+  it('given restrictions differ, returns undefined', () => {
     const command = createTestCard({
       commandRestrictions: {
         inspirationRangeRestriction: 1,
@@ -78,12 +82,11 @@ describe('findMatchingCommand', () => {
     expect(findMatchingCommand(commands, targetCommand)).toBeUndefined();
   });
 
-  it('should return undefined when the modifiers differ', () => {
+  it('given modifiers differ, returns undefined', () => {
     const command: Command = createTestCard({
       commandModifiers: [{ type: 'attack', value: 1 }],
     }).command;
     const commands = new Set([command]);
-    // Create a target command with different modifiers
     const targetCommand: Command = {
       ...command,
       modifiers: [{ type: 'speed', value: 1 }],

@@ -9,10 +9,13 @@ import { addCommanderToBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { exploreCommanderMoves } from './exploreCommanderMoves';
 
+/**
+ * exploreCommanderMoves: BFS reachable commander coordinates within move distance with blocking rules.
+ */
 describe('exploreCommanderMoves', () => {
   const maxDistance = COMMANDER_MOVE_DISTANCE;
   describe('core functionality', () => {
-    it('should return all moves on an empty board', () => {
+    it('given context, returns all moves on an empty board', () => {
       const playerSide = 'white';
       const startingCoordinate = 'E-5';
       const gameState = createEmptyGameState();
@@ -25,7 +28,7 @@ describe('exploreCommanderMoves', () => {
       const squareLength = COMMANDER_MOVE_DISTANCE * 2 + 1;
       expect(legalMoves.size).toEqual(squareLength * squareLength);
     });
-    it('should work correctly near the board edge', () => {
+    it('given work correctly near the board edge', () => {
       const playerSide = 'white';
       const startingCoordinate = 'E-2';
       const gameState = createEmptyGameState();
@@ -41,7 +44,7 @@ describe('exploreCommanderMoves', () => {
       );
       expect(legalMoves.size).toEqual(54);
     });
-    it('should work correctly in the corner of the board', () => {
+    it('given work correctly in the corner of the board', () => {
       const playerSide = 'white';
       const startingCoordinate = 'A-1';
       const gameState = createEmptyGameState();
@@ -59,7 +62,7 @@ describe('exploreCommanderMoves', () => {
     });
   });
   describe('obstacle handling', () => {
-    it('should not move into enemy spaces', () => {
+    it('given not move into enemy spaces', () => {
       const enemyUnit1 = createTestUnit('black');
       const enemyUnit2 = createTestUnit('black');
       const enemyUnit3 = createTestUnit('black');
@@ -83,7 +86,7 @@ describe('exploreCommanderMoves', () => {
       expect(legalMoves.has('E-6')).toBe(false);
       expect(legalMoves.has('J-8')).toBe(false);
     });
-    it('should not move into engaged spaces', () => {
+    it('given not move into engaged spaces', () => {
       const friendlyUnit1 = createTestUnit('white');
       const enemyUnit1 = createTestUnit('black');
       const friendlyUnit2 = createTestUnit('white');
@@ -113,7 +116,7 @@ describe('exploreCommanderMoves', () => {
       expect(legalMoves.has('E-6')).toBe(false);
       expect(legalMoves.has('J-8')).toBe(false);
     });
-    it('should not move through a line of enemy units', () => {
+    it('given not move through a line of enemy units', () => {
       const enemyUnit1 = createTestUnit('black');
       const enemyUnit2 = createTestUnit('black');
       const enemyUnit3 = createTestUnit('black');
@@ -148,7 +151,7 @@ describe('exploreCommanderMoves', () => {
       expect(legalMoves.has('F-7')).toBe(false);
       expect(legalMoves.has('G-7')).toBe(false);
     });
-    it('should not move through a diagonal line of friendly units', () => {
+    it('given not move through a diagonal line of friendly units', () => {
       const friendlyUnit1 = createTestUnit('white');
       const friendlyUnit2 = createTestUnit('white');
       const friendlyUnit3 = createTestUnit('white');

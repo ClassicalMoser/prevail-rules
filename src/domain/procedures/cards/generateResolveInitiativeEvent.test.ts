@@ -6,10 +6,14 @@ import { updateCardState, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent';
 
+/**
+ * Play cards, assignInitiative: compare each side’s revealed in-play card `initiative` number.
+ * Lower wins the round’s tempo; equal numbers leave `currentInitiative` unchanged.
+ */
 describe('generateResolveInitiativeEvent', () => {
   /**
-   * Helper to create a game state in the playCards phase, assignInitiative step
-   * with both players having cards in play
+   * Both `inPlay` set to the given cards, awaitingPlay cleared, phase step assignInitiative,
+   * then `currentInitiative` stamped (defaults black).
    */
   function createGameStateInAssignInitiativeStep(
     whiteCard: (typeof commandCards)[number],
@@ -45,9 +49,9 @@ describe('generateResolveInitiativeEvent', () => {
     return stateWithInitiative;
   }
 
-  describe('basic functionality', () => {
-    it('should return white player when white has lower initiative', () => {
-      // Find cards with different initiative values
+  describe('winner selection', () => {
+    it('given white inPlay lower initiative than black, resolveInitiative.player is white', () => {
+      // Sample deck must contain distinct initiative values (1 vs 2).
       const whiteCard = commandCards.find((c) => c.initiative === 1);
       const blackCard = commandCards.find((c) => c.initiative === 2);
 
@@ -70,7 +74,7 @@ describe('generateResolveInitiativeEvent', () => {
       expect(event.effectType).toBe('resolveInitiative');
     });
 
-    it('should return black player when black has lower initiative', () => {
+    it('given black inPlay lower initiative than white, resolveInitiative.player is black', () => {
       const whiteCard = commandCards.find((c) => c.initiative === 2);
       const blackCard = commandCards.find((c) => c.initiative === 1);
 
@@ -93,11 +97,10 @@ describe('generateResolveInitiativeEvent', () => {
       expect(event.effectType).toBe('resolveInitiative');
     });
 
-    it('should return current initiative holder on tie', () => {
-      // Use the same card for both players to create a tie
+    it('given identical initiative on both inPlay cards, keeps currentInitiative player', () => {
       const card = commandCards[0];
 
-      // Test with black as current holder
+      // Tie break: still black when currentInitiative is black
       const stateWithBlack = createGameStateInAssignInitiativeStep(
         card,
         card,
@@ -106,7 +109,7 @@ describe('generateResolveInitiativeEvent', () => {
       const eventWithBlack = generateResolveInitiativeEvent(stateWithBlack);
       expect(eventWithBlack.player).toBe('black');
 
-      // Test with white as current holder
+      // Tie break: white when currentInitiative is white
       const stateWithWhite = createGameStateInAssignInitiativeStep(
         card,
         card,
@@ -117,8 +120,8 @@ describe('generateResolveInitiativeEvent', () => {
     });
   });
 
-  describe('error cases', () => {
-    it('should throw if not on assignInitiative step', () => {
+  describe('preconditions', () => {
+    it('given playCards but wrong step, throws assignInitiative guard', () => {
       const state = createEmptyGameState();
       const stateWithWrongStep = updatePhaseState(state, {
         phase: PLAY_CARDS_PHASE,
@@ -130,7 +133,7 @@ describe('generateResolveInitiativeEvent', () => {
       );
     });
 
-    it('should throw if white player has no card in play', () => {
+    it('given white inPlay null at assignInitiative, throws', () => {
       const blackCard = commandCards[0];
       const state = createEmptyGameState();
 
@@ -158,7 +161,7 @@ describe('generateResolveInitiativeEvent', () => {
       );
     });
 
-    it('should throw if black player has no card in play', () => {
+    it('given black inPlay null at assignInitiative, throws', () => {
       const whiteCard = commandCards[0];
       const state = createEmptyGameState();
 

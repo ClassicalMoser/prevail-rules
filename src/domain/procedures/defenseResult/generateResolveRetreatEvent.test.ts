@@ -15,10 +15,16 @@ import { describe, expect, it } from 'vitest';
 
 import { generateResolveRetreatEvent } from './generateResolveRetreatEvent';
 
+/**
+ * `resolveRetreat` closes a legal retreat: starting placement is the defender on the board,
+ * final placement is whatever the retreat substep recorded. Ranged stacks nest retreat under
+ * one defender’s attack-apply; melee can hold two retreats and the procedure picks the
+ * initiative player’s path first.
+ */
 describe('generateResolveRetreatEvent', () => {
   const finalPos = { coordinate: 'E-6' as const, facing: 'south' as const };
 
-  it('reads finalPosition from ranged attack retreat state', () => {
+  it('given ranged attack-apply with retreat substep and E-6 south final, event carries that placement', () => {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -50,7 +56,7 @@ describe('generateResolveRetreatEvent', () => {
     expect(event.finalPosition.unit).toBe(retreatingUnit);
   });
 
-  it('prefers initiative player retreat in melee when both could exist', () => {
+  it('given white initiative and both sides in retreat substep, uses white final E-6 not black E-4', () => {
     const state = createEmptyGameState({ currentInitiative: 'white' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -93,7 +99,7 @@ describe('generateResolveRetreatEvent', () => {
     expect(event.finalPosition.placement).toEqual(finalPos);
   });
 
-  it('throws when not in issueCommands or resolveMelee', () => {
+  it('given playCards phase, throws retreat resolution phase guard', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
@@ -104,7 +110,7 @@ describe('generateResolveRetreatEvent', () => {
     );
   });
 
-  it('trust-first: emits event even when ranged retreat finalPosition is unset (upstream should prevent)', () => {
+  it('given ranged apply with retreat substep but no finalPosition yet, still emits with undefined placement', () => {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {

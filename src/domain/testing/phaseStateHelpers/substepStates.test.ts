@@ -8,6 +8,9 @@ import {
   createRoutState,
 } from './substepStates';
 
+/**
+ * createRetreatState: test helper; implementation in substepStates.ts.
+ */
 describe('createRetreatState', () => {
   it('should return retreat substep with unit and legal options', () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });

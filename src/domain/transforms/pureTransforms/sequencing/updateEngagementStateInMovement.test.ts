@@ -11,6 +11,9 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
 
+/**
+ * updateEngagementStateInMovement: pure transform; implementation in updateEngagementStateInMovement.ts.
+ */
 describe('updateEngagementStateInMovement', () => {
   it('updates engagement state in movement resolution', () => {
     const state = createEmptyGameState();

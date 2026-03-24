@@ -5,8 +5,12 @@ import { addUnitToBoard, updateBoardState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyMoveUnitEvent } from './applyMoveUnitEvent';
 
+/**
+ * During command resolution, a commanded unit’s `moveUnit` choice rewrites board presence:
+ * source hex clears to none, destination gets the same unit instance with new facing.
+ */
 describe('applyMoveUnitEvent', () => {
-  it('moves unit from source space to destination and updates board', () => {
+  it('given black unit E-5 north and event to E-7 north, E-5 empty and E-7 holds that unit north', () => {
     const unitWithPlacement = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',

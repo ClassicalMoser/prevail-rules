@@ -4,8 +4,12 @@ import { createEmptyGameState, createUnitWithPlacement } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { applySetupUnitsEvent } from './applySetupUnitsEvent';
 
+/**
+ * Pre-game setup: each `setupUnits` choice merges the submitted placements into `boardState`
+ * without disturbing unrelated cells; empty placement sets are a no-op new state.
+ */
 describe('applySetupUnitsEvent', () => {
-  it('places a single unit on the board', () => {
+  it('given one black unit E-5 north, board shows single presence with that facing', () => {
     const state = createEmptyGameState();
     const unitWithPlacement = createUnitWithPlacement({
       coordinate: 'E-5',
@@ -29,7 +33,7 @@ describe('applySetupUnitsEvent', () => {
     expect(presence.facing).toBe('north');
   });
 
-  it('places multiple units on the board', () => {
+  it('given black E-5 and white E-6 in one event, both cells get single presences', () => {
     const state = createEmptyGameState();
     const blackUnit = createUnitWithPlacement({
       coordinate: 'E-5',
@@ -61,7 +65,7 @@ describe('applySetupUnitsEvent', () => {
       expect(atE6.unit.playerSide).toBe('white');
   });
 
-  it('does not mutate the original state', () => {
+  it('given empty board ref before apply, input boardState identity and E-5 still none after apply', () => {
     const state = createEmptyGameState();
     const unitWithPlacement = createUnitWithPlacement({
       coordinate: 'E-5',
@@ -85,7 +89,7 @@ describe('applySetupUnitsEvent', () => {
     );
   });
 
-  it('leaves board unchanged when unitPlacements is empty', () => {
+  it('given empty unitPlacements set, returned boardState is same reference as input', () => {
     const state = createEmptyGameState();
 
     const event: SetupUnitsEvent<StandardBoard> = {

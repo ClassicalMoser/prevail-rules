@@ -2,6 +2,9 @@ import { areSameSide } from '@entities';
 import { createTestUnit } from '@testing/unitHelpers';
 import { describe, expect, it } from 'vitest';
 
+/**
+ * areSameSide: test helper; implementation in areSameSide.ts.
+ */
 describe('areSameSide', () => {
   it('should return true when both units belong to the same side', () => {
     const unit1 = createTestUnit('black', { attack: 3 });

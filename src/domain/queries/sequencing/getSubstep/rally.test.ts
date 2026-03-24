@@ -12,8 +12,12 @@ import {
   getRoutStateFromRally,
 } from './rally';
 
+/**
+ * Cleanup rally helpers: map player or current resolve-rally step to the right rally slice,
+ * and unwrap nested rout state for rally-driven rout effects.
+ */
 describe('getRallyResolutionState', () => {
-  it('should return first player rally state when player is first player', () => {
+  it('given black is first player at chooseRally, getRallyState(black) returns first bucket', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step: 'firstPlayerChooseRally',
@@ -31,7 +35,7 @@ describe('getRallyResolutionState', () => {
     expect(result.playerRallied).toBe(true);
   });
 
-  it('should return second player rally state when player is second player', () => {
+  it('given white is second player with second bucket set, getRallyState(white) returns it', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step: 'firstPlayerChooseRally',
@@ -49,7 +53,7 @@ describe('getRallyResolutionState', () => {
     expect(result.playerRallied).toBe(false);
   });
 
-  it('should throw error when rally state is missing', () => {
+  it('given both rally buckets undefined at chooseRally, getRallyState(black) throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step: 'firstPlayerChooseRally',
@@ -64,7 +68,7 @@ describe('getRallyResolutionState', () => {
 });
 
 describe('getCurrentRallyResolutionState', () => {
-  it('should return first player rally state when step is firstPlayerResolveRally', () => {
+  it('given step firstPlayerResolveRally with first bucket, returns that rally slice', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step: 'firstPlayerResolveRally',
@@ -82,7 +86,7 @@ describe('getCurrentRallyResolutionState', () => {
     expect(result.playerRallied).toBe(true);
   });
 
-  it('should throw error when first player rally state is missing', () => {
+  it('given firstPlayerResolveRally but first bucket missing, throws', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step: 'firstPlayerResolveRally',
@@ -95,7 +99,7 @@ describe('getCurrentRallyResolutionState', () => {
     );
   });
 
-  it('should return second player rally state when step is secondPlayerResolveRally', () => {
+  it('given secondPlayerResolveRally with second bucket, returns that slice', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step: 'secondPlayerResolveRally',
@@ -113,7 +117,7 @@ describe('getCurrentRallyResolutionState', () => {
     expect(result.playerRallied).toBe(true);
   });
 
-  it('should throw error when second player rally state is missing', () => {
+  it('given secondPlayerResolveRally but second bucket missing, throws', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step: 'secondPlayerResolveRally',
@@ -126,7 +130,7 @@ describe('getCurrentRallyResolutionState', () => {
     );
   });
 
-  it('should throw error when not in resolveRally step', () => {
+  it('given cleanup discardPlayedCards step, getCurrentRally throws not resolveRally step', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step: 'discardPlayedCards',
@@ -141,7 +145,7 @@ describe('getCurrentRallyResolutionState', () => {
 });
 
 describe('getRoutStateFromRally', () => {
-  it('should return rout state from rally resolution state', () => {
+  it('given rally slice with rout nested, returns that rout object', () => {
     const unit = createTestUnit('black', { attack: 2 });
     const rallyState: RallyResolutionState = {
       playerRallied: true,
@@ -163,7 +167,7 @@ describe('getRoutStateFromRally', () => {
     expect(result.player).toBe('black');
   });
 
-  it('should throw error when rout state is missing', () => {
+  it('given rally slice without routState, throws no rout in rally resolution', () => {
     const rallyState: RallyResolutionState = {
       playerRallied: true,
       rallyResolved: true,

@@ -6,10 +6,13 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getExpectedReverseEvent } from './getExpectedReverseEvent';
 
+/**
+ * getExpectedReverseEvent: next reverse-resolution event from reverse substate.
+ */
 describe('getExpectedReverseEvent', () => {
   const unitPlacement = createUnitWithPlacement();
 
-  it('should resolve reverse when the final position has not been determined yet', () => {
+  it('given resolve reverse when the final position has not been determined yet', () => {
     const reverseState = createReverseState(unitPlacement);
     const gameState = createEmptyGameState();
 
@@ -19,7 +22,7 @@ describe('getExpectedReverseEvent', () => {
     });
   });
 
-  it('should throw when the reverse is already complete', () => {
+  it('given when the reverse is already complete, throws', () => {
     const reverseState = createReverseState(unitPlacement, {
       completed: true,
       finalPosition: { coordinate: 'E-4', facing: 'south' },
@@ -31,7 +34,7 @@ describe('getExpectedReverseEvent', () => {
     );
   });
 
-  it('should throw when the final position is already set but the state is incomplete', () => {
+  it('given when the final position is already set but the state is incomplete, throws', () => {
     const reverseState = createReverseState(unitPlacement, {
       finalPosition: { coordinate: 'E-4', facing: 'south' },
     });

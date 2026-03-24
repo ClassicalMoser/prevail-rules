@@ -8,9 +8,12 @@ import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { checkDiagonalMove } from './checkDiagonalMove';
 
+/**
+ * checkDiagonalMove: whether a diagonal step is legal given the two bracketing orthogonals and occupancy.
+ */
 describe('checkDiagonalMove', () => {
   describe('non-diagonal facings', () => {
-    it('should throw an error if the facing is not diagonal', () => {
+    it('given the facing is not diagonal, throws', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
       ]);
@@ -20,7 +23,7 @@ describe('checkDiagonalMove', () => {
     });
   });
   describe('diagonal facings with no enemy units', () => {
-    it('should return true when both adjacent spaces are empty', () => {
+    it('given both adjacent spaces are empty, returns true', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'northEast', speed: 2 },
       ]);
@@ -30,7 +33,7 @@ describe('checkDiagonalMove', () => {
     });
   });
   describe('diagonal facings with enemy units', () => {
-    it('should return true when only one adjacent space is occupied by an enemy', () => {
+    it('given only one adjacent space is occupied by an enemy, returns true', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'northEast', speed: 2 },
         { coord: 'D-5', player: 'white', facing: 'north', speed: 2 },
@@ -39,7 +42,7 @@ describe('checkDiagonalMove', () => {
         checkDiagonalMove('black', 0, gameState, 'E-5', 'E-6', 'northEast'),
       ).toBe(true);
     });
-    it('should return false when both adjacent spaces are occupied by enemy units', () => {
+    it('given both adjacent spaces are occupied by enemy units, returns false', () => {
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'northEast', speed: 2 },
         { coord: 'D-5', player: 'white', facing: 'north', speed: 2 },
@@ -51,7 +54,7 @@ describe('checkDiagonalMove', () => {
     });
   });
   describe('diagonal facings with engaged units', () => {
-    it('should return true when only one adjacent space is occupied by engaged units', () => {
+    it('given only one adjacent space is occupied by engaged units, returns true', () => {
       // Create game state with engaged units at D-5, and unit under test at E-5
       let board = createEmptyStandardBoard();
 
@@ -77,7 +80,7 @@ describe('checkDiagonalMove', () => {
         checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6', 'northEast'),
       ).toBe(true);
     });
-    it('should return false when both adjacent spaces are occupied by engaged units', () => {
+    it('given both adjacent spaces are occupied by engaged units, returns false', () => {
       // Create game state with engaged units at D-5 and E-6, and unit under test at E-5
       let board = createEmptyStandardBoard();
 
@@ -115,7 +118,7 @@ describe('checkDiagonalMove', () => {
     });
   });
   describe('diagonal facings with friendly units', () => {
-    it('should return true when one adjacent space has low flexibility friendly unit', () => {
+    it('given one adjacent space has low flexibility friendly unit, returns true', () => {
       const lowFlexibility = Math.floor(MIN_FLEXIBILITY_THRESHOLD / 2) - 1;
       const gameState = createGameState([
         {
@@ -142,7 +145,7 @@ describe('checkDiagonalMove', () => {
         ),
       ).toBe(true);
     });
-    it('should return false when both adjacent spaces have low flexibility friendly units', () => {
+    it('given both adjacent spaces have low flexibility friendly units, returns false', () => {
       const lowFlexibility = Math.floor(MIN_FLEXIBILITY_THRESHOLD / 2) - 1;
       const gameState = createGameState([
         {
@@ -175,7 +178,7 @@ describe('checkDiagonalMove', () => {
         ),
       ).toBe(false);
     });
-    it('should return true when both adjacent spaces have high flexibility friendly units', () => {
+    it('given both adjacent spaces have high flexibility friendly units, returns true', () => {
       const highFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2) + 1;
       const gameState = createGameState([
         {
@@ -208,7 +211,7 @@ describe('checkDiagonalMove', () => {
         ),
       ).toBe(true);
     });
-    it('should return true when one adjacent space has low flexibility friendly unit and the other has high flexibility friendly unit', () => {
+    it('given one adjacent space has low flexibility friendly unit and the other has high flexibility friendly unit, returns true', () => {
       const lowFlexibility = Math.floor(MIN_FLEXIBILITY_THRESHOLD / 2) - 1;
       const highFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2) + 1;
       const middleFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2);

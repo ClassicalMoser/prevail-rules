@@ -2,6 +2,9 @@ import { getPlayerUnitWithPosition } from '@queries';
 import { describe, expect, it } from 'vitest';
 import { createBoard, createGameState } from './createGameStateFromSpec';
 
+/**
+ * createGameState: test helper; implementation in createGameStateFromSpec.ts.
+ */
 describe('createGameState', () => {
   it('should create a game state with units using tuple syntax', () => {
     const gameState = createGameState([

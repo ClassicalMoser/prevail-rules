@@ -14,6 +14,9 @@ import {
   createResolveMeleePhaseState,
 } from './phaseStates';
 
+/**
+ * createPlayCardsPhaseState: test helper; implementation in phaseStates.ts.
+ */
 describe('createPlayCardsPhaseState', () => {
   it('should return play cards phase with default step', () => {
     const state = createPlayCardsPhaseState();

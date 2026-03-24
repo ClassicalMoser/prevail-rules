@@ -8,8 +8,12 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getCurrentStep } from './getCurrentStep';
 
+/**
+ * Reads the active round step string from whatever phase object is current (playCards,
+ * issueCommands, resolveMelee, cleanup, etc.).
+ */
 describe('getCurrentStep', () => {
-  it('should return step from play cards phase', () => {
+  it('given playCards chooseCards factory, step is chooseCards', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createPlayCardsPhaseState();
 
@@ -17,7 +21,7 @@ describe('getCurrentStep', () => {
     expect(result).toBe('chooseCards');
   });
 
-  it('should return step from issue commands phase', () => {
+  it('given default issueCommands factory, step is firstPlayerResolveCommands', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState =
       createIssueCommandsPhaseState(state);
@@ -26,7 +30,7 @@ describe('getCurrentStep', () => {
     expect(result).toBe('firstPlayerResolveCommands');
   });
 
-  it('should return step from resolve melee phase', () => {
+  it('given default resolveMelee phase, step is resolveMelee', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState =
       createResolveMeleePhaseState(state);
@@ -35,7 +39,7 @@ describe('getCurrentStep', () => {
     expect(result).toBe('resolveMelee');
   });
 
-  it('should return step from cleanup phase', () => {
+  it('given cleanup firstPlayerChooseRally, step matches that step', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step: 'firstPlayerChooseRally',
@@ -45,7 +49,7 @@ describe('getCurrentStep', () => {
     expect(result).toBe('firstPlayerChooseRally');
   });
 
-  it('should throw error when phase state is missing', () => {
+  it('given undefined currentPhaseState, throws no current phase state', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = undefined;
 

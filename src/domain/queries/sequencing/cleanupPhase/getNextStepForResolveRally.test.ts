@@ -3,8 +3,12 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { getNextStepForResolveRally } from './getNextStepForResolveRally';
 
+/**
+ * After finishing one side’s resolve-rally work, which cleanup step comes next (second chooser
+ * vs phase complete).
+ */
 describe('getNextStepForResolveRally', () => {
-  it('should return secondPlayerChooseRally when step is firstPlayerResolveRally', () => {
+  it('given firstPlayerResolveRally, next step is secondPlayerChooseRally', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
       phase: CLEANUP_PHASE,
@@ -23,7 +27,7 @@ describe('getNextStepForResolveRally', () => {
     expect(result).toBe('secondPlayerChooseRally');
   });
 
-  it('should return complete when step is secondPlayerResolveRally', () => {
+  it('given step is secondPlayerResolveRally, returns complete', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
       phase: CLEANUP_PHASE,
@@ -42,7 +46,7 @@ describe('getNextStepForResolveRally', () => {
     expect(result).toBe('complete');
   });
 
-  it('should throw error when not in resolveRally step', () => {
+  it('given discardPlayedCards, throws not on resolveRally step', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
       phase: CLEANUP_PHASE,

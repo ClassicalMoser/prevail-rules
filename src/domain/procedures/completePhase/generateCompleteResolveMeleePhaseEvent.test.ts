@@ -4,15 +4,19 @@ import { describe, expect, it } from 'vitest';
 
 import { generateCompleteResolveMeleePhaseEvent } from './generateCompleteResolveMeleePhaseEvent';
 
+/**
+ * Closes the resolve-melee phase after all engagements are processed. Generator returns
+ * only the `completeResolveMeleePhase` effect marker; no per-state branching in procedure.
+ */
 describe('generateCompleteResolveMeleePhaseEvent', () => {
-  it('returns a completeResolveMeleePhase game effect event', () => {
+  it('given any game state, emits gameEffect with effectType completeResolveMeleePhase', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
     const event = generateCompleteResolveMeleePhaseEvent(state);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeResolveMeleePhase');
   });
 
-  it('returns the same payload regardless of state', () => {
+  it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
     const a = generateCompleteResolveMeleePhaseEvent(createEmptyGameState());
     const b = generateCompleteResolveMeleePhaseEvent(createEmptyGameState());
     expect(a).toEqual(b);

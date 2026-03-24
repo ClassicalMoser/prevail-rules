@@ -8,9 +8,12 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getCurrentUnitStat } from './getCurrentUnitStat';
 
+/**
+ * getCurrentUnitStat: effective stat with base unit type, round effects, command modifiers, and extra modifiers.
+ */
 describe('getCurrentUnitStat', () => {
   describe('base stat without modifiers', () => {
-    it('should return base stat when no card is in play', () => {
+    it('given no card is in play, returns base stat', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -21,7 +24,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(3);
     });
 
-    it('should return base attack when in-play round effect has no modifier for that stat', () => {
+    it('given in-play round effect has no modifier for that stat, returns base attack', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -41,7 +44,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(3);
     });
 
-    it('should return base stat for white inPlay when no modifiers apply', () => {
+    it('given no modifiers apply, returns base stat for white inPlay', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -56,7 +59,7 @@ describe('getCurrentUnitStat', () => {
   });
 
   describe('round effect modifiers', () => {
-    it('should apply round effect modifier without restrictions', () => {
+    it('given unrestricted round effect modifier, applies to stat', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -70,7 +73,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(5); // 3 base + 2 modifier
     });
 
-    it('should not apply round effect modifier when unit does not match stat', () => {
+    it('given unit does not match stat, does not apply round effect modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -84,7 +87,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(3); // No modifier applied
     });
 
-    it('should apply defense modifier to any defense stat', () => {
+    it('given defense-type round modifier, applies to reverse/rout/retreat', () => {
       const unit = createTestUnit('black', { reverse: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -100,7 +103,7 @@ describe('getCurrentUnitStat', () => {
   });
 
   describe('round effect with inspiration range restriction', () => {
-    it('should apply modifier when unit is within inspiration range', () => {
+    it('given unit is within inspiration range, applies modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -120,7 +123,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(4); // 3 base + 1 modifier
     });
 
-    it('should not apply modifier when unit is outside inspiration range', () => {
+    it('given unit is outside inspiration range, does not apply modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -140,7 +143,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(3); // No modifier applied
     });
 
-    it('should not apply modifier when commander is not on board', () => {
+    it('given commander is not on board, does not apply modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -157,7 +160,7 @@ describe('getCurrentUnitStat', () => {
   });
 
   describe('round effect with unit restrictions', () => {
-    it('should apply round effect modifier when trait and unit restriction lists are empty', () => {
+    it('given trait and unit restriction lists are empty, applies round effect modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -171,7 +174,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(4); // 3 base + 1 modifier
     });
 
-    it('should not apply modifier when unit does not match unit restrictions', () => {
+    it('given unit does not match unit restrictions, does not apply modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -188,7 +191,7 @@ describe('getCurrentUnitStat', () => {
   });
 
   describe('active command modifiers', () => {
-    it('should ignore command modifiers when no card is in play', () => {
+    it('given no card is in play, ignores command modifiers', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -201,7 +204,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(3);
     });
 
-    it('should fall back to an empty command modifier list when modifiers are missing', () => {
+    it('given missing command.modifiers on in-play card, treats as empty list', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -221,7 +224,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(3);
     });
 
-    it('should apply command modifier when unit was commanded', () => {
+    it('given unit was commanded, applies command modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -236,7 +239,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(5); // 3 base + 2 modifier
     });
 
-    it('should not apply command modifier when unit was not commanded', () => {
+    it('given unit was not commanded, does not apply command modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -251,7 +254,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(3); // No modifier applied
     });
 
-    it('should not apply command modifier when stat does not match', () => {
+    it('given stat does not match, does not apply command modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -268,7 +271,7 @@ describe('getCurrentUnitStat', () => {
   });
 
   describe('additional modifiers', () => {
-    it('should apply a matching additional modifier', () => {
+    it('given extra modifier list with matching stat, stacks on base', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -282,7 +285,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(5);
     });
 
-    it('should apply defense additional modifiers to defense stats', () => {
+    it('given defense extra modifier, applies to defense stat', () => {
       const unit = createTestUnit('black', { reverse: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -296,7 +299,7 @@ describe('getCurrentUnitStat', () => {
       expect(result).toBe(4);
     });
 
-    it('should ignore additional modifiers that do not match the stat', () => {
+    it('given non-matching extra modifiers, ignores them', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([
@@ -312,7 +315,7 @@ describe('getCurrentUnitStat', () => {
   });
 
   describe('multiple modifiers stacking', () => {
-    it('should stack round effect and command modifiers', () => {
+    it('given round effect and command modifiers, stacks both', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState();
       gameState.boardState = createBoardWithUnits([

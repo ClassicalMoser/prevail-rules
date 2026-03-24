@@ -2,6 +2,9 @@ import { createTestUnit } from '@testing/unitHelpers';
 import { describe, expect, it } from 'vitest';
 import { createBoardWithEngagedUnits } from './boardWithEngagedUnits';
 
+/**
+ * createBoardWithEngagedUnits: test helper; implementation in boardWithEngagedUnits.ts.
+ */
 describe('createBoardWithEngagedUnits', () => {
   it('should create board with engaged presence at default coord', () => {
     const primary = createTestUnit('black');

@@ -11,8 +11,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyCompleteRangedAttackCommandEvent } from './applyCompleteRangedAttackCommandEvent';
 
+/**
+ * Ranged command fully finished (including apply substeps): clears `currentCommandResolutionState`
+ * so the issuing player can continue down their remaining-units queue.
+ */
 describe('applyCompleteRangedAttackCommandEvent', () => {
-  it('clears currentCommandResolutionState after ranged attack', () => {
+  it('given issueCommands holding ranged CRS, after effect currentCommandResolutionState is undefined', () => {
     const base = createEmptyGameState();
     const withCards = updateCardState(base, (c) => ({
       ...c,

@@ -12,7 +12,13 @@ import { updatePhaseState, updateRoundState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyCompleteCleanupPhaseEvent } from './applyCompleteCleanupPhaseEvent';
 
+/**
+ * Round rollover: finishing cleanup bumps `roundNumber`, resets per-round bookkeeping
+ * (`completedPhases`, `commandedUnits`), and starts the next round in `playCards.chooseCards`.
+ * Trusted path can fire without a cleanup phase slice (mechanical advance).
+ */
 describe('applyCompleteCleanupPhaseEvent', () => {
+  /** cleanup.complete with default empty game and black initiative. */
   function createGameStateInCleanupCompleteStep(): GameState<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     return updatePhaseState(
@@ -26,8 +32,8 @@ describe('applyCompleteCleanupPhaseEvent', () => {
     effectType: 'completeCleanupPhase',
   };
 
-  describe('basic functionality', () => {
-    it('should advance to playCards phase with chooseCards step', () => {
+  describe('normal cleanup complete', () => {
+    it('given cleanup.complete, next phase playCards and step chooseCards', () => {
       const state = createGameStateInCleanupCompleteStep();
 
       const newState = applyCompleteCleanupPhaseEvent(event, state);
@@ -40,7 +46,7 @@ describe('applyCompleteCleanupPhaseEvent', () => {
       );
     });
 
-    it('should increment round number on round state and top-level currentRoundNumber', () => {
+    it('given cleanup.complete, currentRoundState.roundNumber and currentRoundNumber both increment', () => {
       const state = createGameStateInCleanupCompleteStep();
       const priorRound = state.currentRoundState.roundNumber;
       const priorCurrent = state.currentRoundNumber;
@@ -52,7 +58,7 @@ describe('applyCompleteCleanupPhaseEvent', () => {
       expect(newState.currentRoundNumber).not.toBe(priorCurrent);
     });
 
-    it('should reset completed phases and commanded units for the new round', () => {
+    it('given seeded completedPhases and commandedUnits, next state clears both sets', () => {
       const base = createGameStateInCleanupCompleteStep();
       const unit = createTestUnit('black');
       const completedEntry = createPlayCardsPhaseState({ step: 'complete' });
@@ -69,8 +75,8 @@ describe('applyCompleteCleanupPhaseEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given phase and round before apply, input cleanup phase and round unchanged after apply', () => {
       const state = createGameStateInCleanupCompleteStep();
       const originalPhase = state.currentRoundState.currentPhaseState?.phase;
       const originalRound = state.currentRoundState.roundNumber;
@@ -84,8 +90,8 @@ describe('applyCompleteCleanupPhaseEvent', () => {
     });
   });
 
-  describe('trusted event (mechanical apply)', () => {
-    it('should advance round from a non-cleanup phase without validating phase', () => {
+  describe('trusted mechanical apply', () => {
+    it('given issueCommands first step, still increments round and lands on playCards.chooseCards', () => {
       const base = createEmptyGameState();
       const state = updatePhaseState(
         base,
@@ -103,7 +109,7 @@ describe('applyCompleteCleanupPhaseEvent', () => {
       );
     });
 
-    it('should apply when there is no current phase state', () => {
+    it('given bare empty state without phase, still increments round and sets playCards.chooseCards', () => {
       const state = createEmptyGameState();
       const priorRound = state.currentRoundState.roundNumber;
 

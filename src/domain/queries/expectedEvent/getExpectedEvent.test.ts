@@ -31,6 +31,9 @@ vi.mock('./byPhase', () => ({
   getExpectedResolveMeleePhaseEvent: getExpectedResolveMeleePhaseEventMock,
 }));
 
+/**
+ * getExpectedEvent: top-level router to the next expected event from full game state.
+ */
 describe('getExpectedEvent', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -52,14 +55,14 @@ describe('getExpectedEvent', () => {
     expect(delegatedMock).toHaveBeenCalledWith(state);
   }
 
-  it('should delegate playCards to the play cards phase handler', () => {
+  it('given delegate playCards to the play cards phase handler', () => {
     expectDelegation('playCards', getExpectedPlayCardsPhaseEventMock, {
       actionType: 'gameEffect',
       effectType: 'playCardsEvent',
     });
   });
 
-  it('should delegate moveCommanders to the move commanders phase handler', () => {
+  it('given delegate moveCommanders to the move commanders phase handler', () => {
     expectDelegation(
       'moveCommanders',
       getExpectedMoveCommandersPhaseEventMock,
@@ -70,28 +73,28 @@ describe('getExpectedEvent', () => {
     );
   });
 
-  it('should delegate issueCommands to the issue commands phase handler', () => {
+  it('given delegate issueCommands to the issue commands phase handler', () => {
     expectDelegation('issueCommands', getExpectedIssueCommandsPhaseEventMock, {
       actionType: 'gameEffect',
       effectType: 'issueCommandsEvent',
     });
   });
 
-  it('should delegate resolveMelee to the resolve melee phase handler', () => {
+  it('given delegate resolveMelee to the resolve melee phase handler', () => {
     expectDelegation('resolveMelee', getExpectedResolveMeleePhaseEventMock, {
       actionType: 'gameEffect',
       effectType: 'resolveMeleeEvent',
     });
   });
 
-  it('should delegate cleanup to the cleanup phase handler', () => {
+  it('given delegate cleanup to the cleanup phase handler', () => {
     expectDelegation('cleanup', getExpectedCleanupPhaseEventMock, {
       actionType: 'gameEffect',
       effectType: 'cleanupEvent',
     });
   });
 
-  it('should throw for an invalid phase', () => {
+  it('given for an invalid phase, throws', () => {
     const state = createEmptyGameState();
     getCurrentPhaseStateMock.mockReturnValue({ phase: 'invalidPhase' });
 

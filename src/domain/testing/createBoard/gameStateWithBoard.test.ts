@@ -7,6 +7,9 @@ import {
   createGameStateWithUnits,
 } from './gameStateWithBoard';
 
+/**
+ * createGameStateWithSingleUnit: test helper; implementation in gameStateWithBoard.ts.
+ */
 describe('createGameStateWithSingleUnit', () => {
   it('should return game state with single unit on board', () => {
     const state = createGameStateWithSingleUnit('E-5', 'black');

@@ -15,8 +15,12 @@ import { describe, expect, it } from 'vitest';
 
 import { applyResolveFlankEngagementEvent } from './applyResolveFlankEngagementEvent';
 
+/**
+ * Flank engagement resolution: rotates the defender on the board to `newFacing`, marks the
+ * flank substep complete with `defenderRotated`, and finishes the movement engagement slice.
+ */
 describe('applyResolveFlankEngagementEvent', () => {
-  it('updates board facing from the event and completes flank engagement resolution', () => {
+  it('given flank engagement and event newFacing south, board and engagement state reflect rotation and completion', () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');

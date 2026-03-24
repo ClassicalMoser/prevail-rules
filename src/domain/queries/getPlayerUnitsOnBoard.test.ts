@@ -7,8 +7,11 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
 
+/**
+ * getPlayerUnitsOnBoard: set of unit instances for a player present on the board (including engaged).
+ */
 describe('getPlayerUnitsOnBoard', () => {
-  it('should return all units for a player', () => {
+  it('given a player, returns all units', () => {
     const unit1 = createTestUnit('white', { attack: 3 });
     const unit2 = createTestUnit('white', { attack: 3 });
     const unit3 = createTestUnit('black', { attack: 3 });
@@ -29,7 +32,7 @@ describe('getPlayerUnitsOnBoard', () => {
     expect(whiteUnitsArray).not.toContain(unit3);
   });
 
-  it('should return empty set when player has no units on board', () => {
+  it('given player has no units on board, returns empty set', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
     const state = createEmptyGameState();
@@ -42,7 +45,7 @@ describe('getPlayerUnitsOnBoard', () => {
     expect(blackUnits.size).toBe(0);
   });
 
-  it('should include engaged units belonging to the player', () => {
+  it('given include engaged units belonging to the player', () => {
     const blackUnit = createTestUnit('black', { attack: 3 });
     const whiteUnit = createTestUnit('white', { attack: 3 });
     const supportUnit = createTestUnit('black', { attack: 3 });
@@ -70,7 +73,7 @@ describe('getPlayerUnitsOnBoard', () => {
     expect(blackUnits).not.toContain(whiteUnit);
   });
 
-  it('should include an engaged secondary unit belonging to the player', () => {
+  it('given include an engaged secondary unit belonging to the player', () => {
     const blackUnit = createTestUnit('black', { attack: 3 });
     const whiteUnit = createTestUnit('white', { attack: 3 });
     const state = createEmptyGameState();

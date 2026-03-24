@@ -2,6 +2,9 @@ import type { Modifier } from '@entities';
 import { describe, expect, it } from 'vitest';
 import { areModifiersArraysEqual } from './areModifiersArraysEqual';
 
+/**
+ * areModifiersArraysEqual: validation rule; implementation in areModifiersArraysEqual.ts.
+ */
 describe('areModifiersArraysEqual', () => {
   it('should return true when both arrays are empty', () => {
     const modifiers1: Modifier[] = [];

@@ -10,10 +10,12 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyMoveCommanderEvent } from './applyMoveCommanderEvent';
 
+/**
+ * Move-commanders phase: each side relocates their commander token on the board; after the
+ * second move the step becomes `complete`.
+ */
 describe('applyMoveCommanderEvent', () => {
-  /**
-   * Helper to create a game state in the moveCommanders phase with commanders on the board
-   */
+  /** moveCommanders phase at the given step with default black E-5 / white E-6 commanders. */
   function createGameStateInMoveCommandersStep(
     step: 'moveFirstCommander' | 'moveSecondCommander',
     blackCommanderCoord: StandardBoardCoordinate = 'E-5',
@@ -37,8 +39,8 @@ describe('applyMoveCommanderEvent', () => {
     return stateWithPhase;
   }
 
-  describe('basic functionality', () => {
-    it('should move black commander from one coordinate to another', () => {
+  describe('board placement', () => {
+    it('given moveFirstCommander and black E-5 to E-7, black leaves E-5 and white still on E-6', () => {
       const state = createGameStateInMoveCommandersStep(
         'moveFirstCommander',
         'E-5',
@@ -69,7 +71,7 @@ describe('applyMoveCommanderEvent', () => {
       );
     });
 
-    it('should move white commander from one coordinate to another', () => {
+    it('given moveSecondCommander and white E-6 to E-8, white leaves E-6 and black still on E-5', () => {
       const state = createGameStateInMoveCommandersStep(
         'moveSecondCommander',
         'E-5',
@@ -101,8 +103,8 @@ describe('applyMoveCommanderEvent', () => {
     });
   });
 
-  describe('step advancement', () => {
-    it('should advance from moveFirstCommander to moveSecondCommander', () => {
+  describe('step progression', () => {
+    it('given black completes first commander move, phase step is moveSecondCommander', () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
 
       const event: MoveCommanderEvent<StandardBoard> = {
@@ -120,7 +122,7 @@ describe('applyMoveCommanderEvent', () => {
       );
     });
 
-    it('should advance from moveSecondCommander to complete', () => {
+    it('given white completes second commander move, phase step is complete', () => {
       const state = createGameStateInMoveCommandersStep('moveSecondCommander');
 
       const event: MoveCommanderEvent<StandardBoard> = {
@@ -139,8 +141,8 @@ describe('applyMoveCommanderEvent', () => {
     });
   });
 
-  describe('immutability', () => {
-    it('should not mutate the original state', () => {
+  describe('structural update', () => {
+    it('given black commander and step before apply, input board and step unchanged after apply', () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
       const originalBlackCommanderPresent =
         state.boardState.board['E-5']?.commanders.has('black');

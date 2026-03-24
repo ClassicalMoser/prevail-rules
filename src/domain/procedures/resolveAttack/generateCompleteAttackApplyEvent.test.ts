@@ -13,7 +13,13 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { generateCompleteAttackApplyEvent } from './generateCompleteAttackApplyEvent';
 
+/**
+ * `completeAttackApply` is the bookkeeping tick after both sides have committed in ranged
+ * or after each melee defender finishes their apply substep. Payload names attack type and
+ * which player’s apply just completed (melee uses initiative order when both are pending).
+ */
 describe('generateCompleteAttackApplyEvent', () => {
+  /** issueCommands + ranged CRS + default incomplete attack apply for one white defender on E-5. */
   function createStateWithRangedAttackApply(): GameState<StandardBoard> {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
@@ -38,6 +44,7 @@ describe('generateCompleteAttackApplyEvent', () => {
     return updatePhaseState(stateWithUnit, phaseState);
   }
 
+  /** resolveMelee + two completed flags; omit arg for both complete, or pass side still incomplete. */
   function createStateWithMeleeApply(
     incompletePlayer?: 'white' | 'black',
   ): GameState<StandardBoard> {
@@ -84,7 +91,7 @@ describe('generateCompleteAttackApplyEvent', () => {
     return updatePhaseState(stateWithUnits, phaseState);
   }
 
-  it('should generate ranged completeAttackApply with defending player from state', () => {
+  it('given ranged stack with white defender apply, emits ranged completeAttackApply for white', () => {
     const state = createStateWithRangedAttackApply();
 
     expect(generateCompleteAttackApplyEvent(state)).toEqual({
@@ -95,7 +102,7 @@ describe('generateCompleteAttackApplyEvent', () => {
     });
   });
 
-  it('should generate melee completeAttackApply for initiative player when their apply is incomplete', () => {
+  it('given black initiative and only black apply incomplete, emits melee for defending black', () => {
     const state = createStateWithMeleeApply('black');
 
     expect(generateCompleteAttackApplyEvent(state)).toEqual({
@@ -106,7 +113,7 @@ describe('generateCompleteAttackApplyEvent', () => {
     });
   });
 
-  it('should generate melee completeAttackApply for second player when first is already complete', () => {
+  it('given same stack with white still incomplete after black done, emits melee for white', () => {
     const state = createStateWithMeleeApply('white');
 
     expect(generateCompleteAttackApplyEvent(state)).toEqual({
@@ -117,7 +124,7 @@ describe('generateCompleteAttackApplyEvent', () => {
     });
   });
 
-  it('should throw when no incomplete melee attack apply exists', () => {
+  it('given melee with both applies already complete, throws no incomplete apply', () => {
     const state = createStateWithMeleeApply();
 
     expect(() => generateCompleteAttackApplyEvent(state)).toThrow(
@@ -125,7 +132,7 @@ describe('generateCompleteAttackApplyEvent', () => {
     );
   });
 
-  it('should throw when there is no current phase state', () => {
+  it('given bare empty state without phase, throws no current phase state', () => {
     const state = createEmptyGameState();
 
     expect(() => generateCompleteAttackApplyEvent(state)).toThrow(
@@ -133,7 +140,7 @@ describe('generateCompleteAttackApplyEvent', () => {
     );
   });
 
-  it('should throw when phase is not issueCommands or resolveMelee', () => {
+  it('given cleanup phase, throws completeAttackApply phase guard', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(base, createCleanupPhaseState());
     expect(() => generateCompleteAttackApplyEvent(full)).toThrow(

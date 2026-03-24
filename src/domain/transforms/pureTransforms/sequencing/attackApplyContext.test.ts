@@ -16,6 +16,9 @@ import {
   updateAttackApplySubstep,
 } from './attackApplyContext';
 
+/**
+ * getAttackApplyStateFromContext: pure transform; implementation in attackApplyContext.ts.
+ */
 describe('getAttackApplyStateFromContext', () => {
   function createStateWithRangedAttack() {
     const state = createEmptyGameState();

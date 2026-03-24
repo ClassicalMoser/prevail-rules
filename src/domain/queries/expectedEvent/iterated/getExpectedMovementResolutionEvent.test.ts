@@ -19,6 +19,9 @@ vi.mock('../composable', () => ({
   getExpectedEngagementEvent: getExpectedEngagementEventMock,
 }));
 
+/**
+ * getExpectedMovementResolutionEvent: next event while resolving a movement command.
+ */
 describe('getExpectedMovementResolutionEvent', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -36,7 +39,7 @@ describe('getExpectedMovementResolutionEvent', () => {
     return state;
   }
 
-  it('should ask the player to commit to movement when commitment is pending', () => {
+  it('given commitment is pending, asks the player to commit to movement', () => {
     const gameState = createGameStateWithUnits([]);
     gameState.cardState.black.inPlay = createTestCard();
     const resolutionState = createMovementResolutionState(gameState, {
@@ -54,7 +57,7 @@ describe('getExpectedMovementResolutionEvent', () => {
     });
   });
 
-  it('should start an engagement when the target space contains an enemy unit', () => {
+  it('given start an engagement when the target space contains an enemy unit', () => {
     const gameState = createGameStateWithTargetEnemy();
     const resolutionState = createMovementResolutionState(gameState);
 
@@ -66,7 +69,7 @@ describe('getExpectedMovementResolutionEvent', () => {
     });
   });
 
-  it('should complete unit movement when the target space has no enemy unit', () => {
+  it('given complete unit movement when the target space has no enemy unit', () => {
     const gameState = createEmptyGameState();
     gameState.cardState.black.inPlay = createTestCard();
     const resolutionState = createMovementResolutionState(gameState);
@@ -79,7 +82,7 @@ describe('getExpectedMovementResolutionEvent', () => {
     });
   });
 
-  it('should complete unit movement when engagement is already complete', () => {
+  it('given complete unit movement when engagement is already complete', () => {
     const gameState = createGameStateWithTargetEnemy();
     const resolutionState = createMovementResolutionState(gameState, {
       engagementState: {
@@ -111,7 +114,7 @@ describe('getExpectedMovementResolutionEvent', () => {
     });
   });
 
-  it('should delegate to engagement resolution when engagement is in progress', () => {
+  it('given delegate to engagement resolution when engagement is in progress', () => {
     const gameState = createGameStateWithTargetEnemy();
     const resolutionState = createMovementResolutionState(gameState, {
       engagementState: {
@@ -145,7 +148,7 @@ describe('getExpectedMovementResolutionEvent', () => {
     );
   });
 
-  it('should throw when the movement resolution is already complete', () => {
+  it('given when the movement resolution is already complete, throws', () => {
     const gameState = createGameStateWithTargetEnemy();
     const resolutionState = createMovementResolutionState(gameState, {
       completed: true,

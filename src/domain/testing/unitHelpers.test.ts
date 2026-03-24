@@ -6,6 +6,9 @@ import {
   createUnitByStat,
 } from './unitHelpers';
 
+/**
+ * createTestUnit: test helper; implementation in unitHelpers.ts.
+ */
 describe('createTestUnit', () => {
   it('should create unit with default attack 3 when no options', () => {
     const unit = createTestUnit('black');

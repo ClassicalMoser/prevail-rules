@@ -7,6 +7,9 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { updateMeleeResolutionState } from './updateMeleeResolutionState';
 
+/**
+ * updateMeleeResolutionState: pure transform; implementation in updateMeleeResolutionState.ts.
+ */
 describe('updateMeleeResolutionState', () => {
   it('should update the melee resolution state in resolve melee phase', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });

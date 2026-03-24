@@ -23,6 +23,9 @@ vi.mock('@queries/sequencing', () => ({
   canReverseUnit: canReverseUnitMock,
 }));
 
+/**
+ * getExpectedAttackApplyEvent: next attack-apply step (melee/ranged) from attack-apply substate.
+ */
 describe('getExpectedAttackApplyEvent', () => {
   beforeEach(() => {
     canReverseUnitMock.mockReset();
@@ -46,7 +49,7 @@ describe('getExpectedAttackApplyEvent', () => {
   }
 
   describe('rout priority', () => {
-    it('should prioritize rout over retreat and reverse', () => {
+    it('given prioritize rout over retreat and reverse', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const unitPlacement: UnitWithPlacement<StandardBoard> = {
         unit,
@@ -69,7 +72,7 @@ describe('getExpectedAttackApplyEvent', () => {
       );
     });
 
-    it('should return completeAttackApply when rout is completed', () => {
+    it('given rout is completed, returns completeAttackApply', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const attackApplyState = createAttackApplyStateWithRout(unit, {
         routState: createRoutState('white', unit, {
@@ -84,7 +87,7 @@ describe('getExpectedAttackApplyEvent', () => {
       );
     });
 
-    it('should throw when rout is completed and attack apply is also completed', () => {
+    it('given when rout is completed and attack apply is also completed, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const attackApplyState = createAttackApplyStateWithRout(unit, {
         routState: createRoutState('white', unit, {
@@ -101,7 +104,7 @@ describe('getExpectedAttackApplyEvent', () => {
   });
 
   describe('retreat', () => {
-    it('should return expected retreat event when retreat is not completed', () => {
+    it('given retreat is not completed, returns expected retreat event', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const attackApplyState = createAttackApplyStateWithRetreat({
         unit,
@@ -115,7 +118,7 @@ describe('getExpectedAttackApplyEvent', () => {
       );
     });
 
-    it('should continue to completeAttackApply when retreat is completed', () => {
+    it('given continue to completeAttackApply when retreat is completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const unitPlacement: UnitWithPlacement<StandardBoard> = {
         unit,
@@ -136,7 +139,7 @@ describe('getExpectedAttackApplyEvent', () => {
   });
 
   describe('reverse', () => {
-    it('should return expected reverse event when reverse is not completed and unit can reverse', () => {
+    it('given reverse is not completed and unit can reverse, returns expected reverse event', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(true);
       const unitPlacement: UnitWithPlacement<StandardBoard> = {
@@ -151,7 +154,7 @@ describe('getExpectedAttackApplyEvent', () => {
       );
     });
 
-    it('should return completeAttackApply when reverse cannot happen due to engagement', () => {
+    it('given reverse cannot happen due to engagement, returns completeAttackApply', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(false);
       const unitPlacement: UnitWithPlacement<StandardBoard> = {
@@ -172,7 +175,7 @@ describe('getExpectedAttackApplyEvent', () => {
       );
     });
 
-    it('should throw when reverse cannot happen and attack apply is already complete', () => {
+    it('given when reverse cannot happen and attack apply is already complete, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(false);
       const unitPlacement: UnitWithPlacement<StandardBoard> = {
@@ -191,7 +194,7 @@ describe('getExpectedAttackApplyEvent', () => {
       ).toThrow('Attack apply state is already complete');
     });
 
-    it('should continue to completeAttackApply when reverse is completed', () => {
+    it('given continue to completeAttackApply when reverse is completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const unitPlacement: UnitWithPlacement<StandardBoard> = {
         unit,
@@ -215,7 +218,7 @@ describe('getExpectedAttackApplyEvent', () => {
   });
 
   describe('completion', () => {
-    it('should return completeAttackApply when all substeps are completed', () => {
+    it('given all substeps are completed, returns completeAttackApply', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const unitPlacement: UnitWithPlacement<StandardBoard> = {
         unit,
@@ -237,7 +240,7 @@ describe('getExpectedAttackApplyEvent', () => {
       );
     });
 
-    it('should throw when attack apply is already completed', () => {
+    it('given when attack apply is already completed, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const unitPlacement: UnitWithPlacement<StandardBoard> = {
         unit,
@@ -261,7 +264,7 @@ describe('getExpectedAttackApplyEvent', () => {
   });
 
   describe('error cases', () => {
-    it('should throw when no results are reported', () => {
+    it('given when no results are reported, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const attackApplyState = createAttackApplyState(unit);
 
@@ -270,7 +273,7 @@ describe('getExpectedAttackApplyEvent', () => {
       ).toThrow('Attack apply state not initialized correctly');
     });
 
-    it('should throw when results are reported but no substates are defined', () => {
+    it('given when results are reported but no substates are defined, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const attackApplyState = createAttackApplyState(unit, {
         attackResult: {

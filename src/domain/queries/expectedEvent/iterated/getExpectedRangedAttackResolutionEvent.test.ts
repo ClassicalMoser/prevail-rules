@@ -15,6 +15,9 @@ vi.mock('../composable', () => ({
   getExpectedAttackApplyEvent: getExpectedAttackApplyEventMock,
 }));
 
+/**
+ * getExpectedRangedAttackResolutionEvent: next event while resolving a ranged attack command.
+ */
 describe('getExpectedRangedAttackResolutionEvent', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -27,7 +30,7 @@ describe('getExpectedRangedAttackResolutionEvent', () => {
     return state;
   }
 
-  it('should ask the attacking player to commit when their commitment is pending', () => {
+  it('given their commitment is pending, asks the attacking player to commit', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackingCommitment: { commitmentType: 'pending' },
@@ -46,7 +49,7 @@ describe('getExpectedRangedAttackResolutionEvent', () => {
     });
   });
 
-  it('should ask the defending player to commit when their commitment is pending', () => {
+  it('given their commitment is pending, asks the defending player to commit', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       defendingCommitment: { commitmentType: 'pending' },
@@ -65,7 +68,7 @@ describe('getExpectedRangedAttackResolutionEvent', () => {
     });
   });
 
-  it('should resolve ranged attack when both commitments are complete and no attack apply state exists', () => {
+  it('given resolve ranged attack when both commitments are complete and no attack apply state exists', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackApplyState: undefined,
@@ -83,7 +86,7 @@ describe('getExpectedRangedAttackResolutionEvent', () => {
     });
   });
 
-  it('should delegate to attack apply when attack apply is in progress', () => {
+  it('given delegate to attack apply when attack apply is in progress', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackApplyState: {
@@ -119,7 +122,7 @@ describe('getExpectedRangedAttackResolutionEvent', () => {
     );
   });
 
-  it('should return completeRangedAttackCommand when attack apply is complete', () => {
+  it('given attack apply is complete, returns completeRangedAttackCommand', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackApplyState: {
@@ -149,7 +152,7 @@ describe('getExpectedRangedAttackResolutionEvent', () => {
     });
   });
 
-  it('should throw when the ranged attack resolution is already complete', () => {
+  it('given when the ranged attack resolution is already complete, throws', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       completed: true,

@@ -2,6 +2,9 @@ import { createEmptyGameState, createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { addUnitToRouted } from './addUnitToRouted';
 
+/**
+ * addUnitToRouted: pure transform; implementation in addUnitToRouted.ts.
+ */
 describe('addUnitToRouted', () => {
   describe('adding unit to empty set', () => {
     it('should add unit to routed units set', () => {

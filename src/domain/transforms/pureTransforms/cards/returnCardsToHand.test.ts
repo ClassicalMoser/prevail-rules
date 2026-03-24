@@ -3,6 +3,9 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { returnCardsToHand } from './returnCardsToHand';
 
+/**
+ * returnCardsToHand: pure transform; implementation in returnCardsToHand.ts.
+ */
 describe('returnCardsToHand', () => {
   it('should return all played and discarded cards to hand', () => {
     const gameState = createEmptyGameState();

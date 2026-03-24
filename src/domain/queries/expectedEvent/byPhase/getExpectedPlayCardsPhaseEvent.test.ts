@@ -11,6 +11,9 @@ import { updateCardState, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getExpectedPlayCardsPhaseEvent } from './getExpectedPlayCardsPhaseEvent';
 
+/**
+ * getExpectedPlayCardsPhaseEvent: next event during play-cards phase from phase state.
+ */
 describe('getExpectedPlayCardsPhaseEvent', () => {
   /**
    * Helper to create a game state in the playCards phase with a specific step
@@ -30,7 +33,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
 
   describe('expected events by step', () => {
     describe('chooseCards step', () => {
-      it('should return bothPlayers when no cards have been chosen', () => {
+      it('given no cards have been chosen, returns bothPlayers', () => {
         const state = createGameStateInPlayCardsStep('chooseCards');
         // Ensure no cards are awaiting play
         const stateWithNoAwaitingCards = updateCardState(state, (current) => ({
@@ -53,7 +56,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
         expect(resultIsExpectedPlayerInput.data?.choiceType).toBe('chooseCard');
       });
 
-      it('should return white player when black has already chosen', () => {
+      it('given black has already chosen, returns white player', () => {
         const state = createGameStateInPlayCardsStep('chooseCards');
         const stateWithBlackCard = updateCardState(state, (current) => ({
           ...current,
@@ -71,7 +74,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
         expect(resultIsExpectedPlayerInput.data?.choiceType).toBe('chooseCard');
       });
 
-      it('should return black player when white has already chosen', () => {
+      it('given white has already chosen, returns black player', () => {
         const state = createGameStateInPlayCardsStep('chooseCards');
         // Ensure black has no awaiting card
         const stateWithWhiteCard = updateCardState(state, (current) => ({
@@ -92,7 +95,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
       });
     });
 
-    it('should return revealCards gameEffect when step is revealCards', () => {
+    it('given step is revealCards, returns revealCards gameEffect', () => {
       const state = createGameStateInPlayCardsStep('revealCards');
 
       const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
@@ -104,7 +107,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
       expect(resultIsExpectedGameEffect.data?.effectType).toBe('revealCards');
     });
 
-    it('should return resolveInitiative gameEffect when step is assignInitiative', () => {
+    it('given step is assignInitiative, returns resolveInitiative gameEffect', () => {
       const state = createGameStateInPlayCardsStep('assignInitiative');
 
       const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
@@ -118,7 +121,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
       );
     });
 
-    it('should return completePlayCardsPhase gameEffect when step is complete', () => {
+    it('given step is complete, returns completePlayCardsPhase gameEffect', () => {
       const state = createGameStateInPlayCardsStep('complete');
 
       const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
@@ -134,7 +137,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
   });
 
   describe('error cases', () => {
-    it('should throw if not in playCards phase', () => {
+    it('given if not in playCards phase, throws', () => {
       const state = createEmptyGameState();
       // State has no phase state
 
@@ -143,7 +146,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
       );
     });
 
-    it('should throw if in wrong phase', () => {
+    it('given if in wrong phase, throws', () => {
       const state = createEmptyGameState();
       const stateWithWrongPhase = updatePhaseState(state, {
         phase: MOVE_COMMANDERS_PHASE,
@@ -155,7 +158,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
       );
     });
 
-    it('should throw for invalid step', () => {
+    it('given for invalid step, throws', () => {
       const state = createGameStateInPlayCardsStep('chooseCards');
       // Bad type cast to test default case
       const stateWithInvalidStep = {

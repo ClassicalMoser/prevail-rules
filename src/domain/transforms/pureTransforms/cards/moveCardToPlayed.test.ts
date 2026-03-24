@@ -3,6 +3,9 @@ import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { moveCardToPlayed } from './moveCardToPlayed';
 
+/**
+ * moveCardToPlayed: pure transform; implementation in moveCardToPlayed.ts.
+ */
 describe('moveCardToPlayed', () => {
   it('should move card from inPlay to played', () => {
     const gameState = createEmptyGameState();

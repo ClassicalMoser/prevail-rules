@@ -20,6 +20,9 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { updateRoutState } from './updateRoutState';
 
+/**
+ * updateRoutState: pure transform; implementation in updateRoutState.ts.
+ */
 describe('updateRoutState', () => {
   function createStateWithRangedAttackRout() {
     const state = createEmptyGameState();

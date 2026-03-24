@@ -13,6 +13,9 @@ import { addUnitToBoard } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import { getLegalRetreats } from './getLegalRetreats';
 
+/**
+ * getLegalRetreats: legal retreat placements for an engaged unit given speed, flexibility, and board occupancy.
+ */
 describe('getLegalRetreats', () => {
   // Test helper to check if a placement exists in the set
   function _placementHasMatch<TBoard extends Board>(
@@ -36,7 +39,7 @@ describe('getLegalRetreats', () => {
   }
 
   describe('basic functionality', () => {
-    it('should return minimum retreat moves for an engaged unit', () => {
+    it('given an engaged unit, returns minimum retreat moves', () => {
       const primaryUnit = createTestUnit('black', { speed: 2, flexibility: 2 });
       const secondaryUnit = createTestUnit('white', { speed: 2 });
       const gameState = createGameStateWithEngagedUnits(
@@ -59,7 +62,7 @@ describe('getLegalRetreats', () => {
       expect(retreats.size).toBe(1);
     });
 
-    it('should return minimum retreats prioritizing lowest flexibility then speed', () => {
+    it('given context, returns minimum retreats prioritizing lowest flexibility then speed', () => {
       const primaryUnit = createTestUnit('black', {
         speed: 2,
         flexibility: 2,
@@ -85,7 +88,7 @@ describe('getLegalRetreats', () => {
       // All returned retreats should have the same (minimum) flexibilityUsed and speedUsed
       expect(retreats.size).toBeGreaterThan(0);
     });
-    it('should not allow retreat when enemy is facing from directly behind', () => {
+    it('given enemy is facing from directly behind, does not allow retreat', () => {
       const primaryUnit = createTestUnit('black', { speed: 2 });
       const secondaryUnit = createTestUnit('white', { speed: 2 });
       const gameState = createGameStateWithEngagedUnits(
@@ -117,7 +120,7 @@ describe('getLegalRetreats', () => {
       const retreats = getLegalRetreats(unit, gameState);
       expect(retreats.size).toBe(0);
     });
-    it('should not allow retreat when enemy is facing from indirectly behind', () => {
+    it('given enemy is facing from indirectly behind, does not allow retreat', () => {
       const primaryUnit = createTestUnit('black', { speed: 2 });
       const secondaryUnit = createTestUnit('white', { speed: 2 });
       const gameState = createGameStateWithEngagedUnits(
@@ -149,7 +152,7 @@ describe('getLegalRetreats', () => {
       const retreats = getLegalRetreats(unit, gameState);
       expect(retreats.size).toBe(0);
     });
-    it('should allow retreat when enemy behind is not facing', () => {
+    it('given allow retreat when enemy behind is not facing', () => {
       const primaryUnit = createTestUnit('black', { speed: 2 });
       const secondaryUnit = createTestUnit('white', { speed: 2 });
       const gameState = createGameStateWithEngagedUnits(
@@ -181,7 +184,7 @@ describe('getLegalRetreats', () => {
       const retreats = getLegalRetreats(unit, gameState);
       expect(retreats.size).toBeGreaterThan(0);
     });
-    it('should allow retreat through friendly units', () => {
+    it('given allow retreat through friendly units', () => {
       const highFlexibility = Math.ceil(MIN_FLEXIBILITY_THRESHOLD / 2) + 1;
       const primaryUnit = createUnitWithPlacement({
         playerSide: 'black',
@@ -228,7 +231,7 @@ describe('getLegalRetreats', () => {
   });
 
   describe('error cases', () => {
-    it('should throw an error when no unit is present at starting position', () => {
+    it('given an error when no unit is present at starting position, throws', () => {
       const gameState = createGameState([]);
       const unit = createTestUnit('black');
       const unitWithPlacement = {
@@ -244,7 +247,7 @@ describe('getLegalRetreats', () => {
       );
     });
 
-    it('should throw an error when engaged unit is not present at starting position', () => {
+    it('given an error when engaged unit is not present at starting position, throws', () => {
       const primaryUnit = createTestUnit('black');
       const secondaryUnit = createTestUnit('white');
       const gameState = createGameStateWithEngagedUnits(
@@ -269,7 +272,7 @@ describe('getLegalRetreats', () => {
       );
     });
 
-    it('should throw an error when secondary unit is not present at starting position', () => {
+    it('given an error when secondary unit is not present at starting position, throws', () => {
       const primaryUnit = createTestUnit('black');
       const secondaryUnit = createTestUnit('white');
       const gameState = createGameStateWithEngagedUnits(
@@ -293,7 +296,7 @@ describe('getLegalRetreats', () => {
       );
     });
 
-    it('should throw an error when unengaged unit is not present at starting position', () => {
+    it('given an error when unengaged unit is not present at starting position, throws', () => {
       const gameState = createGameStateWithSingleUnit('G-8', 'black', {
         facing: 'west',
       });
@@ -321,7 +324,7 @@ describe('getLegalRetreats', () => {
       );
     });
 
-    it('should throw an error when unit facing is different from specified facing', () => {
+    it('given an error when unit facing is different from specified facing, throws', () => {
       const primaryUnit = createTestUnit('black');
       const secondaryUnit = createTestUnit('white');
       const gameState = createGameStateWithEngagedUnits(

@@ -8,6 +8,9 @@ import {
 import { describe, expect, it } from 'vitest';
 import { getExpectedCleanupPhaseEvent } from './getExpectedCleanupPhaseEvent';
 
+/**
+ * getExpectedCleanupPhaseEvent: next cleanup-phase event from cleanup step and rally state.
+ */
 describe('getExpectedCleanupPhaseEvent', () => {
   function createGameStateInCleanupStep(
     step: CleanupPhaseStep,
@@ -26,7 +29,7 @@ describe('getExpectedCleanupPhaseEvent', () => {
     return state;
   }
 
-  it('should return discardPlayedCards game effect', () => {
+  it('given context, returns discardPlayedCards game effect', () => {
     const state = createGameStateInCleanupStep('discardPlayedCards');
 
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
@@ -37,7 +40,7 @@ describe('getExpectedCleanupPhaseEvent', () => {
     expect(parsed.data?.effectType).toBe('discardPlayedCards');
   });
 
-  it('should return first player choose rally', () => {
+  it('given context, returns first player choose rally', () => {
     const state = createGameStateInCleanupStep(
       'firstPlayerChooseRally',
       'white',
@@ -52,7 +55,7 @@ describe('getExpectedCleanupPhaseEvent', () => {
     expect(parsed.data?.choiceType).toBe('chooseRally');
   });
 
-  it('should return second player choose rally', () => {
+  it('given context, returns second player choose rally', () => {
     const state = createGameStateInCleanupStep(
       'secondPlayerChooseRally',
       'white',
@@ -67,7 +70,7 @@ describe('getExpectedCleanupPhaseEvent', () => {
     expect(parsed.data?.choiceType).toBe('chooseRally');
   });
 
-  it('should return resolveRally game effect for first player rally resolution', () => {
+  it('given first player rally resolution, returns resolveRally game effect', () => {
     const state = createGameStateInCleanupStep('firstPlayerResolveRally');
 
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
@@ -78,7 +81,7 @@ describe('getExpectedCleanupPhaseEvent', () => {
     expect(parsed.data?.effectType).toBe('resolveRally');
   });
 
-  it('should throw when first player rally resolution state is missing', () => {
+  it('given when first player rally resolution state is missing, throws', () => {
     const state = createGameStateInCleanupStep('firstPlayerResolveRally');
     const phaseState = state.currentRoundState.currentPhaseState;
     if (phaseState?.phase === 'cleanup') {
@@ -90,7 +93,7 @@ describe('getExpectedCleanupPhaseEvent', () => {
     );
   });
 
-  it('should return resolveRally game effect for second player rally resolution', () => {
+  it('given second player rally resolution, returns resolveRally game effect', () => {
     const state = createGameStateInCleanupStep('secondPlayerResolveRally');
 
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
@@ -101,7 +104,7 @@ describe('getExpectedCleanupPhaseEvent', () => {
     expect(parsed.data?.effectType).toBe('resolveRally');
   });
 
-  it('should throw when second player rally resolution state is missing', () => {
+  it('given when second player rally resolution state is missing, throws', () => {
     const state = createGameStateInCleanupStep('secondPlayerResolveRally');
     const phaseState = state.currentRoundState.currentPhaseState;
     if (phaseState?.phase === 'cleanup') {
@@ -113,7 +116,7 @@ describe('getExpectedCleanupPhaseEvent', () => {
     );
   });
 
-  it('should return completeCleanupPhase game effect', () => {
+  it('given context, returns completeCleanupPhase game effect', () => {
     const state = createGameStateInCleanupStep('complete');
 
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
@@ -124,7 +127,7 @@ describe('getExpectedCleanupPhaseEvent', () => {
     expect(parsed.data?.effectType).toBe('completeCleanupPhase');
   });
 
-  it('should throw for invalid step', () => {
+  it('given for invalid step, throws', () => {
     const state = createGameStateInCleanupStep('discardPlayedCards');
     // Force an invalid cleanup step to hit the default branch.
     state.currentRoundState.currentPhaseState = {

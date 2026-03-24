@@ -4,15 +4,20 @@ import { describe, expect, it } from 'vitest';
 
 import { generateCompleteCleanupPhaseEvent } from './generateCompleteCleanupPhaseEvent';
 
+/**
+ * End of cleanup: advance round and return to play-cards phase. Emitted event is a fixed
+ * `completeCleanupPhase` tag only — round/phase mutation happens in apply. Deliberately
+ * does not branch on current `state` in the generator.
+ */
 describe('generateCompleteCleanupPhaseEvent', () => {
-  it('returns a completeCleanupPhase game effect event', () => {
+  it('given any game state, emits gameEffect with effectType completeCleanupPhase', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
     const event = generateCompleteCleanupPhaseEvent(state);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeCleanupPhase');
   });
 
-  it('returns the same payload regardless of state', () => {
+  it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
     const a = generateCompleteCleanupPhaseEvent(createEmptyGameState());
     const b = generateCompleteCleanupPhaseEvent(createEmptyGameState());
     expect(a).toEqual(b);

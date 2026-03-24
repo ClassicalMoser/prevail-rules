@@ -17,6 +17,9 @@ vi.mock('../composable', () => ({
   getExpectedAttackApplyEvent: getExpectedAttackApplyEventMock,
 }));
 
+/**
+ * getExpectedMeleeResolutionEvent: next event while resolving a melee attack.
+ */
 describe('getExpectedMeleeResolutionEvent', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -29,7 +32,7 @@ describe('getExpectedMeleeResolutionEvent', () => {
     return state;
   }
 
-  it('should ask the first player to commit when their commitment is pending', () => {
+  it('given their commitment is pending, asks the first player to commit', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       blackCommitment: { commitmentType: 'pending' },
@@ -42,7 +45,7 @@ describe('getExpectedMeleeResolutionEvent', () => {
     });
   });
 
-  it('should ask the second player to commit when their commitment is pending', () => {
+  it('given their commitment is pending, asks the second player to commit', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       whiteCommitment: { commitmentType: 'pending' },
@@ -55,7 +58,7 @@ describe('getExpectedMeleeResolutionEvent', () => {
     });
   });
 
-  it('should resolve melee when both commitments are complete and no attack apply state exists', () => {
+  it('given resolve melee when both commitments are complete and no attack apply state exists', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       blackAttackApplyState: undefined,
@@ -68,7 +71,7 @@ describe('getExpectedMeleeResolutionEvent', () => {
     });
   });
 
-  it('should delegate to the first player attack apply state when it is incomplete', () => {
+  it('given delegate to the first player attack apply state when it is incomplete', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       blackAttackApplyState: createAttackApplyState(createTestUnit('white')),
@@ -91,7 +94,7 @@ describe('getExpectedMeleeResolutionEvent', () => {
     );
   });
 
-  it('should delegate to the second player attack apply state when the first one is complete', () => {
+  it('given delegate to the second player attack apply state when the first one is complete', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       blackAttackApplyState: createAttackApplyState(createTestUnit('white'), {
@@ -114,7 +117,7 @@ describe('getExpectedMeleeResolutionEvent', () => {
     );
   });
 
-  it('should return completeMeleeResolution when both attack apply states are complete', () => {
+  it('given both attack apply states are complete, returns completeMeleeResolution', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       blackAttackApplyState: createAttackApplyState(createTestUnit('white'), {
@@ -131,7 +134,7 @@ describe('getExpectedMeleeResolutionEvent', () => {
     });
   });
 
-  it('should throw when the melee resolution is already complete', () => {
+  it('given when the melee resolution is already complete, throws', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
       completed: true,
