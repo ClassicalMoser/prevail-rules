@@ -9,7 +9,7 @@ import {
   createRoutState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
 import {
   getEngagementStateFromMovement,

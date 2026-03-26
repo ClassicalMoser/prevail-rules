@@ -16,9 +16,13 @@ export interface CompleteUnitMovementEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
 }
 
 const _completeUnitMovementEventSchemaObject = z.object({
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The type of the event. */
   eventType: z.literal('gameEffect'),
   /** The type of game effect. */
@@ -38,4 +42,5 @@ const _assertExactCompleteUnitMovementEvent: AssertExact<
 export const completeUnitMovementEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'completeUnitMovement'>;
+  eventNumber: z.ZodNumber;
 }> = _completeUnitMovementEventSchemaObject;

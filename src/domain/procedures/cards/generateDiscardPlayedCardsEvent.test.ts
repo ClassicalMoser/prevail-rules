@@ -12,14 +12,14 @@ import { generateDiscardPlayedCardsEvent } from './generateDiscardPlayedCardsEve
 describe('generateDiscardPlayedCardsEvent', () => {
   it('given any game state, emits gameEffect with effectType discardPlayedCards', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
-    const event = generateDiscardPlayedCardsEvent(state);
+    const event = generateDiscardPlayedCardsEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('discardPlayedCards');
   });
 
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateDiscardPlayedCardsEvent(createEmptyGameState());
-    const b = generateDiscardPlayedCardsEvent(createEmptyGameState());
+    const a = generateDiscardPlayedCardsEvent(createEmptyGameState(), 0);
+    const b = generateDiscardPlayedCardsEvent(createEmptyGameState(), 0);
     expect(a).toEqual(b);
   });
 });

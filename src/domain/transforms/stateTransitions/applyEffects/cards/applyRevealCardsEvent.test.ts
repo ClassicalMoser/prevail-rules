@@ -46,6 +46,7 @@ describe('applyRevealCardsEvent', () => {
       const whiteCard = state.cardState.white.awaitingPlay;
 
       const event: RevealCardsEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'revealCards',
       };
@@ -65,6 +66,7 @@ describe('applyRevealCardsEvent', () => {
       const state = createGameStateInRevealCardsStep();
 
       const event: RevealCardsEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'revealCards',
       };
@@ -82,6 +84,7 @@ describe('applyRevealCardsEvent', () => {
       const state = createEmptyGameState();
 
       const event: RevealCardsEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'revealCards',
       };
@@ -99,6 +102,7 @@ describe('applyRevealCardsEvent', () => {
       });
 
       const event: RevealCardsEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'revealCards',
       };
@@ -116,6 +120,7 @@ describe('applyRevealCardsEvent', () => {
       });
 
       const event: RevealCardsEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'revealCards',
       };
@@ -146,6 +151,7 @@ describe('applyRevealCardsEvent', () => {
       });
 
       const event: RevealCardsEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'revealCards',
       };
@@ -174,6 +180,7 @@ describe('applyRevealCardsEvent', () => {
       });
 
       const event: RevealCardsEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'revealCards',
       };
@@ -191,6 +198,7 @@ describe('applyRevealCardsEvent', () => {
       const originalWhiteAwaiting = state.cardState.white.awaitingPlay;
 
       const event: RevealCardsEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'revealCards',
       };

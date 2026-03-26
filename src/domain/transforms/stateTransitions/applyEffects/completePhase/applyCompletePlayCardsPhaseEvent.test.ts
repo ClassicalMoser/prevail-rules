@@ -20,6 +20,7 @@ describe('applyCompletePlayCardsPhaseEvent', () => {
     );
 
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'completePlayCardsPhase' as const,
     } satisfies CompletePlayCardsPhaseEvent<StandardBoard>;

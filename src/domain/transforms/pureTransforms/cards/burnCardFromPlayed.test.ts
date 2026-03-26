@@ -42,7 +42,9 @@ describe('burnCardFromPlayed', () => {
 
     expect(() =>
       burnCardFromPlayed(cardState, 'black', commandCards[1]),
-    ).toThrow("Card 2 not found in black player's played cards");
+    ).toThrow(
+      `Card ${commandCards[1].id} not found in black player's played cards`,
+    );
   });
 
   it('given not mutate the original card state', () => {

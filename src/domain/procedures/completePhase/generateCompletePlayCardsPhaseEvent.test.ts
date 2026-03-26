@@ -28,6 +28,7 @@ describe('generateCompletePlayCardsPhaseEvent', () => {
 
   describe('state-independent payload', () => {
     const expectedEvent = {
+      eventNumber: 0,
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
     };
@@ -35,7 +36,9 @@ describe('generateCompletePlayCardsPhaseEvent', () => {
     it('given playCards complete step, emits literal completePlayCardsPhase effect', () => {
       const state = createGameStateInCompleteStep();
 
-      expect(generateCompletePlayCardsPhaseEvent(state)).toEqual(expectedEvent);
+      expect(generateCompletePlayCardsPhaseEvent(state, 0)).toEqual(
+        expectedEvent,
+      );
     });
 
     it('given different initiative, round counters, or same phase shape, still emits identical effect', () => {
@@ -57,15 +60,15 @@ describe('generateCompletePlayCardsPhaseEvent', () => {
         },
       } satisfies GameState<StandardBoard>;
 
-      expect(generateCompletePlayCardsPhaseEvent(stateBlackInit)).toEqual(
+      expect(generateCompletePlayCardsPhaseEvent(stateBlackInit, 0)).toEqual(
         expectedEvent,
       );
-      expect(generateCompletePlayCardsPhaseEvent(stateWhiteInit)).toEqual(
+      expect(generateCompletePlayCardsPhaseEvent(stateWhiteInit, 0)).toEqual(
         expectedEvent,
       );
-      expect(generateCompletePlayCardsPhaseEvent(stateDifferentRound)).toEqual(
-        expectedEvent,
-      );
+      expect(
+        generateCompletePlayCardsPhaseEvent(stateDifferentRound, 0),
+      ).toEqual(expectedEvent);
     });
   });
 });

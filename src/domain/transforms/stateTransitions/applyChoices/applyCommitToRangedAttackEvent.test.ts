@@ -35,6 +35,7 @@ describe('applyCommitToRangedAttackEvent', () => {
       }),
     );
     const event: CommitToRangedAttackEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'commitToRangedAttack',
       player: 'black',
@@ -71,6 +72,7 @@ describe('applyCommitToRangedAttackEvent', () => {
       }),
     );
     const event: CommitToRangedAttackEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'commitToRangedAttack',
       player: 'white',

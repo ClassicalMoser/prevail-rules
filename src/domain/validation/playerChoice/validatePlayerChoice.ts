@@ -1,131 +1,56 @@
-import type {
-  Board,
-  ExpectedEventInfo,
-  GameState,
-  PlayerSide,
-  PlayerSource,
-  ValidationResult,
-} from '@entities';
+import type { Board, GameState, ValidationResult } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import { getExpectedEvent } from '@queries';
-import { isValidChooseCardEvent } from './isValidChooseCardEvent';
-import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
-import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
-import { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
-
-function formatExpectedEventLabel<TBoard extends Board>(
-  expected: ExpectedEventInfo<TBoard>,
-): string {
-  return expected.actionType === 'playerChoice'
-    ? `${expected.choiceType} player choice`
-    : `${expected.effectType} game effect`;
-}
-
-function formatPlayerSource(source: PlayerSource): string {
-  switch (source) {
-    case 'bothPlayers':
-      return 'either player (both may act)';
-    case 'black':
-      return 'black';
-    case 'white':
-      return 'white';
-  }
-}
-
-function playerMatchesExpectedSource(
-  player: PlayerSide,
-  source: PlayerSource,
-): boolean {
-  if (source === 'bothPlayers') {
-    return true;
-  }
-  return player === source;
-}
-
-function validateLegalPlayerChoice<TBoard extends Board>(
-  event: PlayerChoiceEvent<TBoard, PlayerChoiceType>,
-  state: GameState<TBoard>,
-): ValidationResult {
-  switch (event.choiceType) {
-    case 'chooseCard':
-      return isValidChooseCardEvent(event, state);
-    case 'moveCommander':
-      return isValidMoveCommanderEvent(event, state);
-    case 'chooseRally':
-      return isValidChooseRallyEvent(event, state);
-    case 'chooseRoutDiscard':
-      return isValidChooseRoutDiscardEvent(event, state);
-    default:
-      return {
-        result: false,
-        errorReason: `Legal validation not implemented for ${event.choiceType}`,
-      };
-  }
-}
+import { playerChoiceEventSchema } from '@events';
+import { validateExpectedChoice } from './validateExpectedChoice';
+import { validateLegalPlayerChoice } from './validateLegalPlayerChoice';
 
 /**
  * Validates a player choice against the current game state.
- *
+ * Two step process:
  * 1. Ensures the choice matches what the sequencing layer expects (choice type and player source).
  * 2. Ensures the choice is legal under the rules (phase/step-specific checks via isValid* helpers).
+ * @param event - The player choice event to validate
+ * @param state - The current game state
+ * @returns ValidationResult indicating if the player choice is both expected and legal
  */
 export function validatePlayerChoice<TBoard extends Board>(
   event: PlayerChoiceEvent<TBoard, PlayerChoiceType>,
   state: GameState<TBoard>,
 ): ValidationResult {
+  // Step 1: Validate that the player choice matches the expected event
   try {
-    if (!state.currentRoundState) {
+    // VERY IMPORTANT: Validate that the player choice event is a strictly valid PlayerChoiceEvent
+    // This will save all possible type headaches down the line
+    const safelyParsed = playerChoiceEventSchema.safeParse(event);
+    if (!safelyParsed.success) {
+      console.error(safelyParsed.error);
       return {
         result: false,
-        errorReason: 'No round state found',
-      };
-    }
-    if (!state.currentRoundState.currentPhaseState) {
-      return {
-        result: false,
-        errorReason: 'No current phase state found',
-      };
-    }
-
-    let expected: ExpectedEventInfo<TBoard>;
-    try {
-      expected = getExpectedEvent(state);
-    } catch (e) {
-      return {
-        result: false,
-        errorReason:
-          e instanceof Error
-            ? e.message
-            : 'Unknown error resolving expected event',
+        errorReason: `Invalid player choice event: ${safelyParsed.error.message}`,
       };
     }
 
-    if (expected.actionType !== 'playerChoice') {
-      return {
-        result: false,
-        errorReason: `Expected ${formatExpectedEventLabel(expected)}, not a player choice`,
-      };
+    // Step 1: Validate that the player choice is expected
+    const expectedValidation = validateExpectedChoice(event, state);
+    if (!expectedValidation.result) {
+      // If the player choice is not expected, return the error
+      return expectedValidation;
     }
+    // Otherwise, the player choice is expected, whether legal or not.
 
-    if (expected.choiceType !== event.choiceType) {
-      return {
-        result: false,
-        errorReason: `Expected ${expected.choiceType} player choice, got ${event.choiceType}`,
-      };
-    }
-
-    if (!playerMatchesExpectedSource(event.player, expected.playerSource)) {
-      return {
-        result: false,
-        errorReason: `Expected input from ${formatPlayerSource(expected.playerSource)}, not ${event.player}`,
-      };
-    }
-
-    return validateLegalPlayerChoice(event, state);
+    // Step 2: Validate that the player choice is legal under the rules
+    const legalValidation = validateLegalPlayerChoice(event, state);
+    // Whether it is legal or not, we return the validation result,
+    // since this is the last validation step.
+    return legalValidation;
   } catch (error) {
+    // Catch any errors that may occur since validations may never throw
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason:
+        error instanceof Error
+          ? `Error validating player choice: ${error.message}`
+          : 'Unknown error validating player choice',
     };
   }
 }

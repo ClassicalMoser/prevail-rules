@@ -32,7 +32,7 @@ describe('generateResolveRallyEvent', () => {
 
   it('given firstPlayerChooseRally with black played pile seeded, event player black and card from that pile', () => {
     const full = cleanupChooseRallyState('black');
-    const event = generateResolveRallyEvent(full);
+    const event = generateResolveRallyEvent(full, 0);
     expect(event.effectType).toBe('resolveRally');
     expect(event.player).toBe('black');
     expect(full.cardState.black.played).toContain(event.card);
@@ -52,7 +52,7 @@ describe('generateResolveRallyEvent', () => {
       withPlayed,
       createCleanupPhaseState({ step: 'secondPlayerChooseRally' }),
     );
-    const event = generateResolveRallyEvent(full);
+    const event = generateResolveRallyEvent(full, 0);
     expect(event.player).toBe('black');
     expect(full.cardState.black.played).toContain(event.card);
   });
@@ -63,7 +63,7 @@ describe('generateResolveRallyEvent', () => {
       base,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
     );
-    expect(() => generateResolveRallyEvent(full)).toThrow(
+    expect(() => generateResolveRallyEvent(full, 0)).toThrow(
       'Player black has no played cards to burn for rally',
     );
   });
@@ -74,7 +74,7 @@ describe('generateResolveRallyEvent', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveRallyEvent(full)).toThrow(
+    expect(() => generateResolveRallyEvent(full, 0)).toThrow(
       'Expected cleanup phase, got playCards',
     );
   });

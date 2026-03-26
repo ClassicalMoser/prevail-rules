@@ -32,6 +32,7 @@ describe('applyCommitToMeleeEvent', () => {
       }),
     );
     const event: CommitToMeleeEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'commitToMelee',
       player: 'white',
@@ -68,6 +69,7 @@ describe('applyCommitToMeleeEvent', () => {
       }),
     );
     const event: CommitToMeleeEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'commitToMelee',
       player: 'black',

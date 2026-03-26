@@ -101,6 +101,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       expect(attackApplyState.completed).toBe(false);
 
       const event: CompleteAttackApplyEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'completeAttackApply',
         attackType: 'ranged',
@@ -118,6 +119,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
 
       const event: CompleteAttackApplyEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'completeAttackApply',
         attackType: 'ranged',
@@ -150,6 +152,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       expect(firstPlayerAttackApply?.completed).toBe(false);
 
       const event: CompleteAttackApplyEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'completeAttackApply',
         attackType: 'melee',
@@ -179,6 +182,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       expect(secondPlayerAttackApply?.completed).toBe(false);
 
       const event: CompleteAttackApplyEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'completeAttackApply',
         attackType: 'melee',
@@ -203,6 +207,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       const originalCompleted = attackApplyState.completed;
 
       const event: CompleteAttackApplyEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'completeAttackApply',
         attackType: 'ranged',
@@ -220,6 +225,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       const state = createEmptyGameState();
 
       const event: CompleteAttackApplyEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'completeAttackApply',
         attackType: 'ranged',
@@ -243,6 +249,7 @@ describe('applyCompleteAttackApplyEvent', () => {
       const stateMissingWhiteApply = updatePhaseState(state, phaseState);
 
       const event: CompleteAttackApplyEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'completeAttackApply',
         attackType: 'melee',
@@ -257,6 +264,7 @@ describe('applyCompleteAttackApplyEvent', () => {
     it('given attackType siege cast, throws unknown attack type for completeAttackApply', () => {
       const state = createEmptyGameState();
       const event = {
+        eventNumber: 0,
         eventType: 'gameEffect' as const,
         effectType: 'completeAttackApply' as const,
         attackType: 'siege',

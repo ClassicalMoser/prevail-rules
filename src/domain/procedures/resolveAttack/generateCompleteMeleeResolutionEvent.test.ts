@@ -12,14 +12,14 @@ import { generateCompleteMeleeResolutionEvent } from './generateCompleteMeleeRes
 describe('generateCompleteMeleeResolutionEvent', () => {
   it('given any game state, emits gameEffect with effectType completeMeleeResolution', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
-    const event = generateCompleteMeleeResolutionEvent(state);
+    const event = generateCompleteMeleeResolutionEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeMeleeResolution');
   });
 
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateCompleteMeleeResolutionEvent(createEmptyGameState());
-    const b = generateCompleteMeleeResolutionEvent(createEmptyGameState());
+    const a = generateCompleteMeleeResolutionEvent(createEmptyGameState(), 0);
+    const b = generateCompleteMeleeResolutionEvent(createEmptyGameState(), 0);
     expect(a).toEqual(b);
   });
 });

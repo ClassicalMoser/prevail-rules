@@ -53,6 +53,7 @@ describe('applyStartEngagementEvent', () => {
   it('given event engagementType front, movement engagement is front and engager is movingUnit', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'startEngagement' as const,
       engagementType: 'front' as const,
@@ -76,6 +77,7 @@ describe('applyStartEngagementEvent', () => {
   it('given event engagementType rear, rear routState player matches defender side', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'startEngagement' as const,
       engagementType: 'rear' as const,
@@ -98,6 +100,7 @@ describe('applyStartEngagementEvent', () => {
   it('given event engagementType flank, flank substep present and defenderRotated false', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'startEngagement' as const,
       engagementType: 'flank' as const,
@@ -120,6 +123,7 @@ describe('applyStartEngagementEvent', () => {
   it('given bogus engagementType siege cast, throws unknown engagement type', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'startEngagement' as const,
       engagementType: 'siege' as const,

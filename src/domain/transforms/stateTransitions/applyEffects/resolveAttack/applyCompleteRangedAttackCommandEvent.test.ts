@@ -32,6 +32,7 @@ describe('applyCompleteRangedAttackCommandEvent', () => {
     );
 
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'completeRangedAttackCommand' as const,
     } satisfies CompleteRangedAttackCommandEvent<StandardBoard>;

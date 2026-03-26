@@ -16,6 +16,7 @@ import {
  */
 export function generateTriggerRoutFromRetreatEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): TriggerRoutFromRetreatEvent<TBoard, 'triggerRoutFromRetreat'> {
   const phaseState = getCurrentPhaseState(state);
 
@@ -25,6 +26,7 @@ export function generateTriggerRoutFromRetreatEvent<TBoard extends Board>(
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: 'triggerRoutFromRetreat',
       retreatResolutionContext: RANGED_ATTACK_RESOLUTION_CONTEXT,
+      eventNumber,
     };
   }
 
@@ -39,6 +41,7 @@ export function generateTriggerRoutFromRetreatEvent<TBoard extends Board>(
         effectType: 'triggerRoutFromRetreat',
         retreatResolutionContext: 'melee',
         retreatingPlayer: firstPlayer,
+        eventNumber,
       };
     } catch {
       getRetreatStateFromMelee(state, secondPlayer);
@@ -47,6 +50,7 @@ export function generateTriggerRoutFromRetreatEvent<TBoard extends Board>(
         effectType: 'triggerRoutFromRetreat',
         retreatResolutionContext: 'melee',
         retreatingPlayer: secondPlayer,
+        eventNumber,
       };
     }
   }

@@ -34,6 +34,7 @@ describe('isLegalCardChoice', () => {
     it('given black player chooses a card in their hand, returns true', () => {
       const cardState = createCardState([commandCards[0], commandCards[1]], []);
       const chooseCardEvent: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
@@ -48,6 +49,7 @@ describe('isLegalCardChoice', () => {
     it('given white player chooses a card in their hand, returns true', () => {
       const cardState = createCardState([], [commandCards[0], commandCards[1]]);
       const chooseCardEvent: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'white',
@@ -64,6 +66,7 @@ describe('isLegalCardChoice', () => {
     it('given black player chooses a card not in their hand, returns false', () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
       const chooseCardEvent: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
@@ -78,6 +81,7 @@ describe('isLegalCardChoice', () => {
     it('given white player chooses a card not in their hand, returns false', () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
       const chooseCardEvent: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'white',
@@ -92,6 +96,7 @@ describe('isLegalCardChoice', () => {
     it("given player chooses a card that doesn't exist in any hand, returns false", () => {
       const cardState = createCardState([commandCards[0]], [commandCards[1]]);
       const chooseCardEvent: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',

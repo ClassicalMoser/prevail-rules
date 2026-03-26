@@ -10,6 +10,7 @@ import { applyCompleteMoveCommandersPhaseEvent } from './applyCompleteMoveComman
 /** Matches procedure output for black initiative + commandCards[0]/[1] in play. */
 function moveCommandersCompleteEventFromDefaultCards(): CompleteMoveCommandersPhaseEvent<StandardBoard> {
   return {
+    eventNumber: 0,
     eventType: 'gameEffect',
     effectType: 'completeMoveCommandersPhase',
     remainingCommandsFirstPlayer: new Set([commandCards[0].command]),
@@ -22,6 +23,7 @@ function moveCommandersCompleteEvent(
   second: Set<Command>,
 ): CompleteMoveCommandersPhaseEvent<StandardBoard> {
   return {
+    eventNumber: 0,
     eventType: 'gameEffect',
     effectType: 'completeMoveCommandersPhase',
     remainingCommandsFirstPlayer: first,

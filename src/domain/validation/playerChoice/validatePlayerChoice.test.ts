@@ -1,4 +1,4 @@
-import type { Command, GameState, StandardBoard } from '@entities';
+import type { GameState, StandardBoard } from '@entities';
 import type {
   ChooseCardEvent,
   IssueCommandEvent,
@@ -46,6 +46,7 @@ describe('validatePlayerChoice', () => {
     const event: ChooseCardEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'chooseCard',
+      eventNumber: 0,
       player: 'black',
       card: commandCards[2],
     };
@@ -63,6 +64,7 @@ describe('validatePlayerChoice', () => {
     const event: ChooseCardEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'chooseCard',
+      eventNumber: 0,
       player: 'black',
       card: commandCards[0],
     };
@@ -71,7 +73,7 @@ describe('validatePlayerChoice', () => {
 
     expect(validation.result).toBe(false);
     if (validation.result !== false) throw new Error('expected fail');
-    expect(validation.errorReason).toContain('revealCards');
+    expect(validation.errorReason).toContain('gameEffect');
     expect(validation.errorReason).toContain('not a player choice');
   });
 
@@ -99,6 +101,7 @@ describe('validatePlayerChoice', () => {
     const event: ChooseCardEvent<StandardBoard> = {
       eventType: 'playerChoice',
       choiceType: 'chooseCard',
+      eventNumber: 0,
       player: 'black',
       card: commandCards[0],
     };
@@ -117,6 +120,7 @@ describe('validatePlayerChoice', () => {
     const event = {
       eventType: 'playerChoice' as const,
       choiceType: 'moveCommander' as const,
+      eventNumber: 0,
       player: 'black' as const,
       from: 'E-5' as const,
       to: 'E-6' as const,
@@ -141,13 +145,14 @@ describe('validatePlayerChoice', () => {
 
     it('returns a not-implemented error', () => {
       const state = stateInPlayCardsChooseCards();
-      const event = {
+      const event: IssueCommandEvent<StandardBoard> = {
         eventType: 'playerChoice',
         choiceType: 'issueCommand',
+        eventNumber: 0,
         player: 'black',
-        command: {} as unknown as Command,
+        command: commandCards[0].command,
         units: new Set(),
-      } as IssueCommandEvent<StandardBoard>;
+      };
 
       const validation = validatePlayerChoice(event, state);
 

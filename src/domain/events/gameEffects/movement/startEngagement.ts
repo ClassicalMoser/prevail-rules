@@ -23,6 +23,8 @@ export interface StartEngagementEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof START_ENGAGEMENT_EFFECT_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The type of engagement. */
   engagementType: EngagementType;
   /** Engaged enemy: instance and placement at the movement target (procedure snapshot). */
@@ -34,6 +36,8 @@ const _startEngagementEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The type of engagement. */
   engagementType: engagementTypeSchema,
   /** Engaged enemy: instance and placement at the movement target (procedure snapshot). */
@@ -53,6 +57,7 @@ const _assertExactStartEngagementEvent: AssertExact<
 export const startEngagementEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'startEngagement'>;
+  eventNumber: z.ZodNumber;
   engagementType: typeof engagementTypeSchema;
   defenderWithPlacement: typeof unitWithPlacementSchema;
 }> = _startEngagementEventSchemaObject;

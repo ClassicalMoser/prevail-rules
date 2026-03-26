@@ -35,6 +35,8 @@ export interface ResolveMeleeEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_MELEE_EFFECT_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The location of the melee. */
   location: BoardCoordinate<Board>;
   /** White side’s engaged unit at `location` (procedure snapshot for apply). */
@@ -69,6 +71,8 @@ const _resolveMeleeEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The location of the melee. */
   location: boardCoordinateSchema,
   /** White side’s engaged unit at `location` (procedure snapshot for apply). */
@@ -111,6 +115,7 @@ const _assertExactResolveMeleeEvent: AssertExact<
 export const resolveMeleeEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveMelee'>;
+  eventNumber: z.ZodNumber;
   location: typeof boardCoordinateSchema;
   whiteUnitWithPlacement: typeof unitWithPlacementSchema;
   blackUnitWithPlacement: typeof unitWithPlacementSchema;

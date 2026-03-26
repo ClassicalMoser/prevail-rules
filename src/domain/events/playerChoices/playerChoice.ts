@@ -13,6 +13,7 @@ import type { IssueCommandEvent } from './issueCommand';
 import type { MoveCommanderEvent } from './moveCommander';
 import type { MoveUnitEvent } from './moveUnit';
 import type { PerformRangedAttackEvent } from './performRangedAttack';
+import type { PlayerChoiceType } from './playerChoiceTypes';
 import type { SetupUnitsEvent } from './setupUnit';
 
 import { z } from 'zod';
@@ -31,38 +32,8 @@ import { moveUnitEventSchema } from './moveUnit';
 import { performRangedAttackEventSchema } from './performRangedAttack';
 import { setupUnitsEventSchema } from './setupUnit';
 
-/** Iterable list of valid player choices. Built from individual event constants. */
-export const playerChoices = [
-  'chooseCard',
-  'chooseMeleeResolution',
-  'chooseRally',
-  'chooseRoutDiscard',
-  'chooseRetreatOption',
-  'commitToMelee',
-  'commitToMovement',
-  'chooseWhetherToRetreat',
-  'commitToRangedAttack',
-  'issueCommand',
-  'moveCommander',
-  'moveUnit',
-  'performRangedAttack',
-  'setupUnits',
-] as const;
-
-export type PlayerChoiceType = (typeof playerChoices)[number];
-
-const _playerChoiceTypeSchemaObject = z.enum(playerChoices);
-
-type PlayerChoiceTypeSchemaType = z.infer<typeof _playerChoiceTypeSchemaObject>;
-
-const _assertExactPlayerChoiceType: AssertExact<
-  PlayerChoiceType,
-  PlayerChoiceTypeSchemaType
-> = true;
-
-/** The schema for a player choice type. */
-export const playerChoiceTypeSchema: z.ZodType<PlayerChoiceType> =
-  _playerChoiceTypeSchemaObject;
+export type { PlayerChoiceType } from './playerChoiceTypes';
+export { playerChoices, playerChoiceTypeSchema } from './playerChoiceTypes';
 
 /** An event that represents a player choice. */
 export type PlayerChoiceEvent<
@@ -84,6 +55,10 @@ export type PlayerChoiceEvent<
   | PerformRangedAttackEvent<TBoard, 'performRangedAttack'>
   | SetupUnitsEvent<TBoard, 'setupUnits'>;
 
+/**
+ * Discriminated by `choiceType`. Zod 4 resolves the branch via `input["choiceType"]`; object key
+ * order in each branch schema does not need to match declaration order.
+ */
 const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
   chooseCardEventSchema,
   chooseMeleeResolutionEventSchema,

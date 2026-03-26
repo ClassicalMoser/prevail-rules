@@ -29,6 +29,7 @@ import {
  */
 export function generateResolveRangedAttackEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): ResolveRangedAttackEvent<TBoard, 'resolveRangedAttack'> {
   const rangedAttackState = getRangedAttackResolutionState(state);
 
@@ -95,6 +96,7 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
+    eventNumber,
     defenderWithPlacement,
     legalRetreatOptions,
     routed: attackResult.unitRouted,

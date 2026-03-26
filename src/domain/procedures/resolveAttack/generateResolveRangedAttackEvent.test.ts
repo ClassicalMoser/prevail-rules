@@ -13,7 +13,7 @@ import { describe, expect, it } from 'vitest';
 import { generateResolveRangedAttackEvent } from './generateResolveRangedAttackEvent';
 
 /** Spearmen (retreat 5): default test `inPlay` card (+1 attack) keeps total strike below retreat. */
-const spearmenType = tempUnits[1]!;
+const spearmenType = tempUnits[1];
 
 /**
  * `resolveRangedAttack` is the first ranged strike roll: attacker/defender commitments must be
@@ -62,14 +62,14 @@ describe('generateResolveRangedAttackEvent', () => {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
-    const event = generateResolveRangedAttackEvent(full);
+    const event = generateResolveRangedAttackEvent(full, 0);
     expect(event.retreated).toBe(true);
     expect(event.legalRetreatOptions).toBeInstanceOf(Set);
   });
 
   it('given spearmen mirror below retreat threshold, routed/retreated/reversed booleans and empty set', () => {
     const full = rangedResolutionGameState();
-    const event = generateResolveRangedAttackEvent(full);
+    const event = generateResolveRangedAttackEvent(full, 0);
     expect(event.effectType).toBe('resolveRangedAttack');
     expect(event.defenderWithPlacement.unit.playerSide).toBe('white');
     expect(event.defenderWithPlacement.placement.coordinate).toBe('E-5');
@@ -100,7 +100,7 @@ describe('generateResolveRangedAttackEvent', () => {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
-    expect(() => generateResolveRangedAttackEvent(full)).toThrow(
+    expect(() => generateResolveRangedAttackEvent(full, 0)).toThrow(
       'Defending commitment is still pending',
     );
   });
@@ -124,7 +124,7 @@ describe('generateResolveRangedAttackEvent', () => {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
-    expect(() => generateResolveRangedAttackEvent(full)).toThrow(
+    expect(() => generateResolveRangedAttackEvent(full, 0)).toThrow(
       'Attacking commitment is still pending',
     );
   });
@@ -148,7 +148,7 @@ describe('generateResolveRangedAttackEvent', () => {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
-    expect(() => generateResolveRangedAttackEvent(full)).toThrow(
+    expect(() => generateResolveRangedAttackEvent(full, 0)).toThrow(
       'Attack apply state already exists',
     );
   });

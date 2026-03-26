@@ -58,7 +58,7 @@ describe('generateStartEngagementEvent', () => {
       engagingFacing: 'north',
     });
 
-    const event = generateStartEngagementEvent(full);
+    const event = generateStartEngagementEvent(full, 0);
     expect(event.defenderWithPlacement.unit).toBe(defender);
     expect(event.defenderWithPlacement.placement.coordinate).toBe('E-6');
     expect(event.defenderWithPlacement.placement.facing).toBe('south');
@@ -70,7 +70,7 @@ describe('generateStartEngagementEvent', () => {
       defenderFacing: 'north',
       engagingFacing: 'north',
     });
-    expect(generateStartEngagementEvent(full).engagementType).toBe('rear');
+    expect(generateStartEngagementEvent(full, 0).engagementType).toBe('rear');
   });
 
   it('given defender south and engaging east (orthogonal), engagementType is flank', () => {
@@ -78,7 +78,7 @@ describe('generateStartEngagementEvent', () => {
       defenderFacing: 'south',
       engagingFacing: 'east',
     });
-    expect(generateStartEngagementEvent(full).engagementType).toBe('flank');
+    expect(generateStartEngagementEvent(full, 0).engagementType).toBe('flank');
   });
 
   it('given defender south and engaging north (head-on), engagementType is front', () => {
@@ -86,7 +86,7 @@ describe('generateStartEngagementEvent', () => {
       defenderFacing: 'south',
       engagingFacing: 'north',
     });
-    expect(generateStartEngagementEvent(full).engagementType).toBe('front');
+    expect(generateStartEngagementEvent(full, 0).engagementType).toBe('front');
   });
 
   it('given diagonal defender facing with engaging south, throws classification error', () => {
@@ -94,7 +94,7 @@ describe('generateStartEngagementEvent', () => {
       defenderFacing: 'northEast',
       engagingFacing: 'south',
     });
-    expect(() => generateStartEngagementEvent(full)).toThrow(
+    expect(() => generateStartEngagementEvent(full, 0)).toThrow(
       'Unable to determine engagement type. Engaging facing: south, Defending facing: northEast',
     );
   });

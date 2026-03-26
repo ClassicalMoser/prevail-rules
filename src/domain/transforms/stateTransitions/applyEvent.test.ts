@@ -23,6 +23,7 @@ describe('applyEvent', () => {
   it('given playerChoice chooseCard event, calls applyPlayerChoiceEvent only and returns its state', () => {
     const state = createEmptyGameState();
     const event: Event<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseCard',
       player: 'black',
@@ -44,6 +45,7 @@ describe('applyEvent', () => {
   it('given gameEffect revealCards event, calls applyGameEffectEvent only and returns its state', () => {
     const state = createEmptyGameState();
     const event: Event<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'gameEffect',
       effectType: 'revealCards' as const,
     };

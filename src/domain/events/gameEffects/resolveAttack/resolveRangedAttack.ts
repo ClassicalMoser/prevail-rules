@@ -23,6 +23,8 @@ export interface ResolveRangedAttackEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** Defending unit and board position (procedure snapshot for apply). */
   defenderWithPlacement: UnitWithPlacement<Board>;
   /**
@@ -43,6 +45,8 @@ const _resolveRangedAttackEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** Defending unit and board position (procedure snapshot for apply). */
   defenderWithPlacement: unitWithPlacementSchema,
   /**
@@ -71,6 +75,7 @@ const _assertExactResolveRangedAttackEvent: AssertExact<
 export const resolveRangedAttackEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveRangedAttack'>;
+  eventNumber: z.ZodNumber;
   defenderWithPlacement: typeof unitWithPlacementSchema;
   legalRetreatOptions: z.ZodSet<typeof unitPlacementSchema>;
   routed: z.ZodBoolean;

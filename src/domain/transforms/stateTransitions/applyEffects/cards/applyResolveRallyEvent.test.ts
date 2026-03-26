@@ -32,6 +32,7 @@ describe('applyResolveRallyEvent', () => {
 
     const full = state as GameState<StandardBoard>;
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'resolveRally' as const,
       player: 'white' as const,

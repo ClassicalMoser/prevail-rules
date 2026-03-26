@@ -26,6 +26,8 @@ export interface CommitToMovementEvent<
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof COMMIT_TO_MOVEMENT_CHOICE_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The player who is committing the card. */
   player: PlayerSide;
   /** The card to commit from the player's hand. */
@@ -44,6 +46,8 @@ const _commitToMovementEventSchemaObject = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   /** The type of player choice. */
   choiceType: z.literal(COMMIT_TO_MOVEMENT_CHOICE_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The player who is committing the card. */
   player: playerSideSchema,
   /** The card to commit from the player's hand. */
@@ -65,6 +69,7 @@ const _assertExactCommitToMovementEvent: AssertExact<
 export const commitToMovementEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'commitToMovement'>;
+  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   committedCard: typeof cardSchema;
   modifierTypes: z.ZodArray<typeof movementModifierTypesEnum>;

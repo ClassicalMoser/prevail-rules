@@ -56,6 +56,7 @@ describe('applyPerformRangedAttackEvent', () => {
     );
 
     const event: PerformRangedAttackEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'performRangedAttack',
       player: 'black',
@@ -112,6 +113,7 @@ describe('applyPerformRangedAttackEvent', () => {
     );
 
     const event: PerformRangedAttackEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'performRangedAttack',
       player: 'black',
@@ -155,6 +157,7 @@ describe('applyPerformRangedAttackEvent', () => {
     );
 
     const event: PerformRangedAttackEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'performRangedAttack',
       player: 'black',
@@ -198,6 +201,7 @@ describe('applyPerformRangedAttackEvent', () => {
     );
 
     const event: PerformRangedAttackEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'performRangedAttack',
       player: 'black',
@@ -249,6 +253,7 @@ describe('applyPerformRangedAttackEvent', () => {
     );
 
     const event: PerformRangedAttackEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'performRangedAttack',
       player: 'black',
@@ -294,6 +299,7 @@ describe('applyPerformRangedAttackEvent', () => {
     );
 
     const event: PerformRangedAttackEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'performRangedAttack',
       player: 'white',

@@ -46,7 +46,7 @@ describe('generateResolveRoutEvent', () => {
     });
     const full = updatePhaseState(withBoard, phase);
 
-    const event = generateResolveRoutEvent(full);
+    const event = generateResolveRoutEvent(full, 0);
     expect(event.effectType).toBe('resolveRout');
     expect(event.routResolutionSource).toBe('rangedAttack');
     expect(event.penalty).toBe(defendingUnit.unitType.routPenalty);
@@ -80,7 +80,7 @@ describe('generateResolveRoutEvent', () => {
     });
     const full = updatePhaseState(s, phase);
 
-    const event = generateResolveRoutEvent(full);
+    const event = generateResolveRoutEvent(full, 0);
     expect(event.routResolutionSource).toBe('melee');
     expect(event.unitInstances.has(blackUnit)).toBe(true);
     expect(event.penalty).toBe(blackUnit.unitType.routPenalty);
@@ -92,7 +92,7 @@ describe('generateResolveRoutEvent', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveRoutEvent(full)).toThrow(
+    expect(() => generateResolveRoutEvent(full, 0)).toThrow(
       'Rout resolution not expected in phase: playCards',
     );
   });
@@ -114,7 +114,7 @@ describe('generateResolveRoutEvent', () => {
       }),
     );
 
-    const event = generateResolveRoutEvent(full);
+    const event = generateResolveRoutEvent(full, 0);
     expect(event.routResolutionSource).toBe('rearEngagementMovement');
     expect(event.unitInstances.has(whiteUnit)).toBe(true);
   });
@@ -143,7 +143,7 @@ describe('generateResolveRoutEvent', () => {
       }),
     );
 
-    const event = generateResolveRoutEvent(full);
+    const event = generateResolveRoutEvent(full, 0);
     expect(event.routResolutionSource).toBe('rally');
     expect(event.unitInstances.has(unit)).toBe(true);
   });
@@ -161,7 +161,7 @@ describe('generateResolveRoutEvent', () => {
       }),
     );
 
-    expect(() => generateResolveRoutEvent(full)).toThrow(
+    expect(() => generateResolveRoutEvent(full, 0)).toThrow(
       'Current command resolution is not movement or ranged attack',
     );
   });

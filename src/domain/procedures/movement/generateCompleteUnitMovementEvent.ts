@@ -14,11 +14,13 @@ import {
  */
 export function generateCompleteUnitMovementEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): CompleteUnitMovementEvent<TBoard, 'completeUnitMovement'> {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE,
+    eventNumber,
   };
 }

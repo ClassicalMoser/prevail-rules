@@ -12,6 +12,7 @@ describe('valid moves', () => {
   it('given commander moves within distance 1, returns true', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -27,6 +28,7 @@ describe('valid moves', () => {
   it('given commander moves within distance 4, returns true', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -42,6 +44,7 @@ describe('valid moves', () => {
   it('given white commander moves within distance, returns true', () => {
     const board = createBoardWithCommander('white', 'F-6');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'white',
@@ -57,6 +60,7 @@ describe('valid moves', () => {
   it('given commander moves diagonally within distance, returns true', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -74,6 +78,7 @@ describe('invalid moves', () => {
   it('given commander is not at starting position, returns false', () => {
     const board = createEmptyStandardBoard(); // No commander on board
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -89,6 +94,7 @@ describe('invalid moves', () => {
   it("given wrong player's commander is at starting position, returns false", () => {
     const board = createBoardWithCommander('white', 'E-5'); // White commander, not black
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -104,6 +110,7 @@ describe('invalid moves', () => {
   it('given destination is beyond move distance, returns false', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -119,6 +126,7 @@ describe('invalid moves', () => {
   it('given starting coordinate is invalid, returns false', () => {
     const board = createEmptyStandardBoard();
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
@@ -134,6 +142,7 @@ describe('invalid moves', () => {
   it('given destination coordinate is invalid, returns false', () => {
     const board = createBoardWithCommander('black', 'E-5');
     const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',

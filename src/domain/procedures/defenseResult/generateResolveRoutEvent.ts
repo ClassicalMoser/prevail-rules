@@ -22,6 +22,7 @@ import {
  */
 export function generateResolveRoutEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): ResolveRoutEvent<TBoard, 'resolveRout'> {
   const phaseState = getCurrentPhaseState(state);
 
@@ -64,6 +65,7 @@ export function generateResolveRoutEvent<TBoard extends Board>(
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_ROUT_EFFECT_TYPE,
     routResolutionSource,
+    eventNumber,
     unitInstances: routState.unitsToRout,
     penalty: totalPenalty,
   };

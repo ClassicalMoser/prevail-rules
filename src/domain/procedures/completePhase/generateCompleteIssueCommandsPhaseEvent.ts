@@ -18,6 +18,7 @@ import { getBoardCoordinatesWithEngagedUnits } from '@queries';
  */
 export function generateCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): CompleteIssueCommandsPhaseEvent<TBoard, 'completeIssueCommandsPhase'> {
   const remainingEngagements = getBoardCoordinatesWithEngagedUnits(
     state.boardState,
@@ -26,6 +27,7 @@ export function generateCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
+    eventNumber,
     remainingEngagements,
   };
 }

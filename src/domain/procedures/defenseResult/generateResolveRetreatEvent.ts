@@ -19,6 +19,7 @@ import {
  */
 export function generateResolveRetreatEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): ResolveRetreatEvent<TBoard, 'resolveRetreat'> {
   const phaseState = getCurrentPhaseState(state);
 
@@ -38,6 +39,7 @@ export function generateResolveRetreatEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_RETREAT_EFFECT_TYPE,
+    eventNumber,
     startingPosition: retreatState.retreatingUnit,
     finalPosition: {
       unit: retreatState.retreatingUnit.unit,

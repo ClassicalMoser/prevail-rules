@@ -24,6 +24,7 @@ import { getCleanupPhaseState, getOtherPlayer } from '@queries';
  */
 export function generateResolveRallyEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): ResolveRallyEvent<TBoard, 'resolveRally'> {
   const phaseState = getCleanupPhaseState(state);
 
@@ -47,6 +48,7 @@ export function generateResolveRallyEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_RALLY_EFFECT_TYPE,
+    eventNumber,
     player: rallyingPlayer,
     card: cardToBurn,
   };

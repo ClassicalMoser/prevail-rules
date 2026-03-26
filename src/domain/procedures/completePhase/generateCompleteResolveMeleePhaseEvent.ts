@@ -14,11 +14,13 @@ import {
  */
 export function generateCompleteResolveMeleePhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): CompleteResolveMeleePhaseEvent<TBoard, 'completeResolveMeleePhase'> {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE,
+    eventNumber,
   };
 }

@@ -56,7 +56,7 @@ describe('generateResolveMeleeEvent', () => {
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
     const phase = createResolveMeleePhaseState(s);
     const full = updatePhaseState(s, phase);
-    const event = generateResolveMeleeEvent(full);
+    const event = generateResolveMeleeEvent(full, 0);
     expect(event.whiteUnitRetreated).toBe(true);
     expect(event.blackUnitRetreated).toBe(true);
     expect(event.whiteLegalRetreatOptions).toBeInstanceOf(Set);
@@ -65,7 +65,7 @@ describe('generateResolveMeleeEvent', () => {
 
   it('given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat and empty sets', () => {
     const full = meleeResolutionGameState();
-    const event = generateResolveMeleeEvent(full);
+    const event = generateResolveMeleeEvent(full, 0);
     expect(event.effectType).toBe('resolveMelee');
     expect(event.location).toBe('E-5');
     expect(event.whiteUnitWithPlacement.unit.playerSide).toBe('white');
@@ -101,7 +101,7 @@ describe('generateResolveMeleeEvent', () => {
       currentMeleeResolutionState: melee,
     });
     const full = updatePhaseState(s, phase);
-    expect(() => generateResolveMeleeEvent(full)).toThrow(
+    expect(() => generateResolveMeleeEvent(full, 0)).toThrow(
       'White commitment is still pending',
     );
   });
@@ -112,7 +112,7 @@ describe('generateResolveMeleeEvent', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveMeleeEvent(full)).toThrow(
+    expect(() => generateResolveMeleeEvent(full, 0)).toThrow(
       'Not in resolveMelee phase',
     );
   });
@@ -130,7 +130,7 @@ describe('generateResolveMeleeEvent', () => {
     };
     const phase = createResolveMeleePhaseState(s);
     const full = updatePhaseState(s, phase);
-    expect(() => generateResolveMeleeEvent(full)).toThrow(
+    expect(() => generateResolveMeleeEvent(full, 0)).toThrow(
       'Units not found on board',
     );
   });

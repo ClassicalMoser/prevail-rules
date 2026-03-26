@@ -43,6 +43,7 @@ describe('applyChooseCardEvent', () => {
       );
 
       const event: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
@@ -67,6 +68,7 @@ describe('applyChooseCardEvent', () => {
       );
 
       const event: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'white',
@@ -94,6 +96,7 @@ describe('applyChooseCardEvent', () => {
 
       // First player chooses
       const firstEvent: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
@@ -108,6 +111,7 @@ describe('applyChooseCardEvent', () => {
 
       // Second player chooses
       const secondEvent: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'white',
@@ -128,6 +132,7 @@ describe('applyChooseCardEvent', () => {
       );
 
       const event: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
@@ -152,6 +157,7 @@ describe('applyChooseCardEvent', () => {
       const originalHand = [...state.cardState.black.inHand];
 
       const event: ChooseCardEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',

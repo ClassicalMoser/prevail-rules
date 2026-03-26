@@ -54,6 +54,7 @@ describe('applyIssueCommandEvent', () => {
       const command = commandCards[0].command;
 
       const event: IssueCommandEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'issueCommand',
         player: 'black',
@@ -82,6 +83,7 @@ describe('applyIssueCommandEvent', () => {
       const command = commandCards[1].command;
 
       const event: IssueCommandEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'issueCommand',
         player: 'white',
@@ -111,6 +113,7 @@ describe('applyIssueCommandEvent', () => {
       const command = commandCards[0].command;
 
       const event: IssueCommandEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'issueCommand',
         player: 'black',
@@ -145,6 +148,7 @@ describe('applyIssueCommandEvent', () => {
         state.currentRoundState.commandedUnits.size;
 
       const event: IssueCommandEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'issueCommand',
         player: 'black',

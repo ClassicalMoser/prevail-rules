@@ -20,6 +20,8 @@ export interface ResolveInitiativeEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_INITIATIVE_EFFECT_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The player with initiative. */
   player: PlayerSide;
 }
@@ -29,6 +31,8 @@ const _resolveInitiativeEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(RESOLVE_INITIATIVE_EFFECT_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The player with initiative. */
   player: playerSideSchema,
 });
@@ -46,5 +50,6 @@ const _assertExactResolveInitiativeEvent: AssertExact<
 export const resolveInitiativeEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveInitiative'>;
+  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
 }> = _resolveInitiativeEventSchemaObject;

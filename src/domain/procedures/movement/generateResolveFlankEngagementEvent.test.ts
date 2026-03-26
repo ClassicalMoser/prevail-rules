@@ -56,7 +56,7 @@ describe('generateResolveFlankEngagementEvent', () => {
       }),
     );
 
-    const event = generateResolveFlankEngagementEvent(full);
+    const event = generateResolveFlankEngagementEvent(full, 0);
 
     expect(event.defenderWithPlacement.unit).toBe(defender);
     expect(event.defenderWithPlacement.placement).toEqual(

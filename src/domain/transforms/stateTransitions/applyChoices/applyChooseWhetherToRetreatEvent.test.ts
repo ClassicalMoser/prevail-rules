@@ -32,6 +32,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
   it('given front engagement and white choosesToRetreat true, defendingUnitRetreats is true', () => {
     const state = createStateWithFrontEngagement();
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseWhetherToRetreat',
       player: 'white',
@@ -49,6 +50,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
   it('given same stack and white choosesToRetreat false, defendingUnitRetreats is false', () => {
     const state = createStateWithFrontEngagement();
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseWhetherToRetreat',
       player: 'white',
@@ -66,6 +68,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
   it('given black defender events, true vs false flip defendingUnitRetreats the same as white', () => {
     const state = createStateWithFrontEngagement();
     const retreatEvent: ChooseWhetherToRetreatEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseWhetherToRetreat',
       player: 'black',
@@ -93,6 +96,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     const engagementBefore =
       getFrontEngagementStateFromMovement(state).engagementResolutionState;
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseWhetherToRetreat',
       player: 'white',
@@ -113,6 +117,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
       createPlayCardsPhaseState(),
     );
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseWhetherToRetreat',
       player: 'white',
@@ -131,6 +136,7 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     });
     const stateInPhase = updatePhaseState(state, phaseState);
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseWhetherToRetreat',
       player: 'white',

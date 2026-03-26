@@ -12,14 +12,14 @@ import { generateCompleteCleanupPhaseEvent } from './generateCompleteCleanupPhas
 describe('generateCompleteCleanupPhaseEvent', () => {
   it('given any game state, emits gameEffect with effectType completeCleanupPhase', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
-    const event = generateCompleteCleanupPhaseEvent(state);
+    const event = generateCompleteCleanupPhaseEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeCleanupPhase');
   });
 
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateCompleteCleanupPhaseEvent(createEmptyGameState());
-    const b = generateCompleteCleanupPhaseEvent(createEmptyGameState());
+    const a = generateCompleteCleanupPhaseEvent(createEmptyGameState(), 0);
+    const b = generateCompleteCleanupPhaseEvent(createEmptyGameState(), 0);
     expect(a).toEqual(b);
   });
 });

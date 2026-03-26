@@ -23,6 +23,7 @@ import {
  */
 export function generateResolveEngageRetreatOptionEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): ResolveEngageRetreatOptionEvent<TBoard, 'resolveEngageRetreatOption'> {
   const movementResolutionState = getMovementResolutionState(state);
   const engagementState = getFrontEngagementStateFromMovement(state);
@@ -58,6 +59,7 @@ export function generateResolveEngageRetreatOptionEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
+    eventNumber,
     defendingUnitCanRetreat,
   };
 }

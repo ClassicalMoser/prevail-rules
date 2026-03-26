@@ -21,6 +21,8 @@ export interface ResolveRallyEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_RALLY_EFFECT_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The player who is resolving the rally. */
   player: PlayerSide;
   /** The card to burn */
@@ -32,6 +34,8 @@ const _resolveRallyEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(RESOLVE_RALLY_EFFECT_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The player who is resolving the rally. */
   player: playerSideSchema,
   /** The card to burn */
@@ -51,6 +55,7 @@ const _assertExactResolveRallyEvent: AssertExact<
 export const resolveRallyEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveRally'>;
+  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   card: typeof cardSchema;
 }> = _resolveRallyEventSchemaObject;

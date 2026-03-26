@@ -28,7 +28,7 @@ describe('generateCompleteMoveCommandersPhaseEvent', () => {
   it('given both inPlay populated, maps each side command into remainingCommands sets', () => {
     const state = createGameStateInCompleteStep();
 
-    const event = generateCompleteMoveCommandersPhaseEvent(state);
+    const event = generateCompleteMoveCommandersPhaseEvent(state, 0);
 
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeMoveCommandersPhase');
@@ -52,7 +52,7 @@ describe('generateCompleteMoveCommandersPhaseEvent', () => {
       step: 'complete',
     });
 
-    const event = generateCompleteMoveCommandersPhaseEvent(stateWithPhase);
+    const event = generateCompleteMoveCommandersPhaseEvent(stateWithPhase, 0);
 
     expect(event.remainingCommandsFirstPlayer.size).toBe(0);
     expect(event.remainingCommandsSecondPlayer.size).toBe(0);
@@ -70,7 +70,7 @@ describe('generateCompleteMoveCommandersPhaseEvent', () => {
       step: 'complete',
     });
 
-    const event = generateCompleteMoveCommandersPhaseEvent(state);
+    const event = generateCompleteMoveCommandersPhaseEvent(state, 0);
 
     expect(event.remainingCommandsFirstPlayer).toEqual(
       new Set([commandCards[1].command]),

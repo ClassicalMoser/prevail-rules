@@ -14,11 +14,13 @@ import {
  */
 export function generateCompleteCleanupPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): CompleteCleanupPhaseEvent<TBoard, 'completeCleanupPhase'> {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_CLEANUP_PHASE_EFFECT_TYPE,
+    eventNumber,
   };
 }

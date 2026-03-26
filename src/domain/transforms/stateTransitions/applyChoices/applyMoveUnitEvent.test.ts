@@ -21,6 +21,7 @@ describe('applyMoveUnitEvent', () => {
     const stateWithUnit = updateBoardState(state, boardWithUnit);
 
     const event: MoveUnitEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveUnit',
       player: 'black',

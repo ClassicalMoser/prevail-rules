@@ -36,6 +36,7 @@ describe('applyResolveUnitsBrokenEvent', () => {
 
     const full = state as GameState<StandardBoard>;
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'resolveUnitsBroken' as const,
       player: 'white' as const,
@@ -77,6 +78,7 @@ describe('applyResolveUnitsBrokenEvent', () => {
     });
 
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'resolveUnitsBroken' as const,
       player: 'white' as const,

@@ -23,7 +23,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
       base,
       createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
-    const event = generateResolveUnitsBrokenEvent(full);
+    const event = generateResolveUnitsBrokenEvent(full, 0);
     expect(event.effectType).toBe('resolveUnitsBroken');
     expect(event.player).toBe('white');
     expect(event.unitTypes).toEqual([]);
@@ -35,7 +35,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
       base,
       createCleanupPhaseState({ step: 'secondPlayerResolveRally' }),
     );
-    const event = generateResolveUnitsBrokenEvent(full);
+    const event = generateResolveUnitsBrokenEvent(full, 0);
     expect(event.player).toBe('black');
   });
 
@@ -45,7 +45,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
       base,
       createCleanupPhaseState({ step: 'discardPlayedCards' }),
     );
-    expect(() => generateResolveUnitsBrokenEvent(full)).toThrow(
+    expect(() => generateResolveUnitsBrokenEvent(full, 0)).toThrow(
       'Cleanup phase is not on a resolveRally step: discardPlayedCards',
     );
   });
@@ -56,7 +56,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveUnitsBrokenEvent(full)).toThrow(
+    expect(() => generateResolveUnitsBrokenEvent(full, 0)).toThrow(
       'Expected cleanup phase, got playCards',
     );
   });
@@ -81,7 +81,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
       createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
 
-    const event = generateResolveUnitsBrokenEvent(full);
+    const event = generateResolveUnitsBrokenEvent(full, 0);
     expect(event.unitTypes).toHaveLength(1);
     expect(event.unitTypes[0]!.id).toBe(unitType.id);
   });
@@ -105,7 +105,7 @@ describe('generateResolveUnitsBrokenEvent', () => {
       createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
 
-    const event = generateResolveUnitsBrokenEvent(full);
+    const event = generateResolveUnitsBrokenEvent(full, 0);
     const ids = event.unitTypes.map((t) => t.id).sort();
     expect(ids).toEqual(['1', '2']);
   });

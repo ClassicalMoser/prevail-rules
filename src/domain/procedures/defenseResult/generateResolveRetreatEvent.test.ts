@@ -49,7 +49,7 @@ describe('generateResolveRetreatEvent', () => {
     });
     const full = updatePhaseState(withBoard, phase);
 
-    const event = generateResolveRetreatEvent(full);
+    const event = generateResolveRetreatEvent(full, 0);
     expect(event.effectType).toBe('resolveRetreat');
     expect(event.startingPosition).toEqual(unitWithPlacement);
     expect(event.finalPosition.placement).toEqual(finalPos);
@@ -94,7 +94,7 @@ describe('generateResolveRetreatEvent', () => {
     });
     const full = updatePhaseState(s, phase);
 
-    const event = generateResolveRetreatEvent(full);
+    const event = generateResolveRetreatEvent(full, 0);
     expect(event.startingPosition.unit).toBe(whiteUnit);
     expect(event.finalPosition.placement).toEqual(finalPos);
   });
@@ -105,7 +105,7 @@ describe('generateResolveRetreatEvent', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveRetreatEvent(full)).toThrow(
+    expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
       'Retreat resolution not expected in phase: playCards',
     );
   });
@@ -131,7 +131,7 @@ describe('generateResolveRetreatEvent', () => {
     });
     const full = updatePhaseState(withBoard, phase);
 
-    const event = generateResolveRetreatEvent(full);
+    const event = generateResolveRetreatEvent(full, 0);
     expect(event.finalPosition.placement).toBeUndefined();
   });
 });

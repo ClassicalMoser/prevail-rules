@@ -14,6 +14,8 @@ export interface ChooseRetreatOptionEvent<
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The player who is choosing the retreat option. */
   player: PlayerSide;
   /** The retreat option to choose from. */
@@ -25,6 +27,8 @@ const _chooseRetreatOptionEventSchemaObject = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   /** The type of player choice. */
   choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The player who is choosing the retreat option. */
   player: playerSideSchema,
   /** The retreat option to choose from. */
@@ -44,6 +48,7 @@ const _assertExactChooseRetreatOptionEvent: AssertExact<
 export const chooseRetreatOptionEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'chooseRetreatOption'>;
+  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   retreatOption: typeof unitPlacementSchema;
 }> = _chooseRetreatOptionEventSchemaObject;

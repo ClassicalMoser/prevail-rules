@@ -32,6 +32,7 @@ describe('applyCompleteMeleeResolutionEvent', () => {
     );
 
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'completeMeleeResolution' as const,
     } satisfies CompleteMeleeResolutionEvent<StandardBoard>;

@@ -16,6 +16,8 @@ export interface SetupUnitsEvent<
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof SETUP_UNITS_CHOICE_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The player who is setting up the units. */
   player: PlayerSide;
   /** The units to setup, each with its placement. */
@@ -27,6 +29,8 @@ const _setupUnitsEventSchemaObject = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   /** The type of player choice. */
   choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The player who is setting up the units. */
   player: playerSideSchema,
   /** The units to setup, each with its placement. */
@@ -45,6 +49,7 @@ const _assertExactSetupUnitsEvent: AssertExact<
 export const setupUnitsEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'setupUnits'>;
+  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   unitPlacements: z.ZodSet<typeof unitWithPlacementSchema>;
 }> = _setupUnitsEventSchemaObject;

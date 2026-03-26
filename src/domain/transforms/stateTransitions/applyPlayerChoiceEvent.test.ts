@@ -76,6 +76,7 @@ describe('applyPlayerChoiceEvent', () => {
     (choiceType, handler) => {
       const state = createEmptyGameState();
       const event = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType,
         player: 'black',
@@ -92,6 +93,7 @@ describe('applyPlayerChoiceEvent', () => {
   it('given playerChoice with bogus choiceType cast, throws unknown player choice type', () => {
     const state = createEmptyGameState();
     const event = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'unknown',
       player: 'black',

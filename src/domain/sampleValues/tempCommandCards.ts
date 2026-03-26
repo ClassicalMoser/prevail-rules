@@ -2,7 +2,7 @@ import type { Card } from '@entities';
 
 export const commandCards: readonly Card[] = [
   {
-    id: 'card-1',
+    id: '00000000-0000-4000-8000-000000000001',
     version: '1.0.0',
     name: 'Command Card 1',
     initiative: 1,
@@ -39,7 +39,7 @@ export const commandCards: readonly Card[] = [
     unitPreservation: [],
   },
   {
-    id: '2',
+    id: '00000000-0000-4000-8000-000000000002',
     name: 'Command Card 2',
     version: '1.0.0',
     initiative: 2,
@@ -71,7 +71,7 @@ export const commandCards: readonly Card[] = [
     unitPreservation: [],
   },
   {
-    id: '3',
+    id: '00000000-0000-4000-8000-000000000003',
     name: 'Command Card 3',
     version: '1.0.0',
     initiative: 3,
@@ -103,7 +103,7 @@ export const commandCards: readonly Card[] = [
     unitPreservation: [],
   },
   {
-    id: '4',
+    id: '00000000-0000-4000-8000-000000000004',
     name: 'Command Card 4',
     version: '1.0.0',
     initiative: 4,

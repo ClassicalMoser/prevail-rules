@@ -20,6 +20,7 @@ describe('isLegalMove', () => {
       });
       gameState.boardState = board;
       const moveUnitEvent: MoveUnitEvent<Board> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'moveUnit',
         player: 'black',
@@ -39,6 +40,7 @@ describe('isLegalMove', () => {
       const unitInstance = createTestUnit('black', { speed: 2 });
       const gameState = createEmptyGameState();
       const moveUnitEvent: MoveUnitEvent<Board> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'moveUnit',
         player: 'black',

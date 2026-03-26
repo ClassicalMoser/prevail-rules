@@ -66,6 +66,7 @@ describe('applyResolveRangedAttackEvent', () => {
     patch: RangedEventPatch,
   ): ResolveRangedAttackEvent<StandardBoard> {
     return {
+      eventNumber: 0,
       eventType: 'gameEffect',
       effectType: 'resolveRangedAttack',
       defenderWithPlacement,

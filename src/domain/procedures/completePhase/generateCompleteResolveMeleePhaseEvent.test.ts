@@ -11,14 +11,14 @@ import { generateCompleteResolveMeleePhaseEvent } from './generateCompleteResolv
 describe('generateCompleteResolveMeleePhaseEvent', () => {
   it('given any game state, emits gameEffect with effectType completeResolveMeleePhase', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
-    const event = generateCompleteResolveMeleePhaseEvent(state);
+    const event = generateCompleteResolveMeleePhaseEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeResolveMeleePhase');
   });
 
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateCompleteResolveMeleePhaseEvent(createEmptyGameState());
-    const b = generateCompleteResolveMeleePhaseEvent(createEmptyGameState());
+    const a = generateCompleteResolveMeleePhaseEvent(createEmptyGameState(), 0);
+    const b = generateCompleteResolveMeleePhaseEvent(createEmptyGameState(), 0);
     expect(a).toEqual(b);
   });
 });

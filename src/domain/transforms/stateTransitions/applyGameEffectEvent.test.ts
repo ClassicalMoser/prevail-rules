@@ -102,6 +102,7 @@ describe('applyGameEffectEvent', () => {
     (effectType, handler) => {
       const state = createEmptyGameState();
       const event = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType,
       } as GameEffectEvent<StandardBoard, GameEffectType>;
@@ -117,6 +118,7 @@ describe('applyGameEffectEvent', () => {
   it('given gameEffect with bogus effectType cast, throws unhandled game effect', () => {
     const state = createEmptyGameState();
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect',
       effectType: 'unknown',
     } as unknown as GameEffectEvent<StandardBoard, GameEffectType>;

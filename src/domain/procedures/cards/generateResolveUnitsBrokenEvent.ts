@@ -31,6 +31,7 @@ import {
  */
 export function generateResolveUnitsBrokenEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'> {
   const phaseState = getCleanupPhaseState(state);
 
@@ -64,6 +65,7 @@ export function generateResolveUnitsBrokenEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
+    eventNumber,
     player,
     unitTypes: brokenTypes,
   };

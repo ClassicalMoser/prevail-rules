@@ -29,6 +29,7 @@ describe('applyCompleteUnitMovementEvent', () => {
     );
 
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'completeUnitMovement' as const,
     } satisfies CompleteUnitMovementEvent<StandardBoard>;

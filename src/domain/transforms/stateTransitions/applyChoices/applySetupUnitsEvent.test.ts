@@ -18,6 +18,7 @@ describe('applySetupUnitsEvent', () => {
     });
 
     const event: SetupUnitsEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'setupUnits',
       player: 'black',
@@ -47,6 +48,7 @@ describe('applySetupUnitsEvent', () => {
     });
 
     const event: SetupUnitsEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'setupUnits',
       player: 'black',
@@ -75,6 +77,7 @@ describe('applySetupUnitsEvent', () => {
     const originalBoardRef = state.boardState;
 
     const event: SetupUnitsEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'setupUnits',
       player: 'black',
@@ -93,6 +96,7 @@ describe('applySetupUnitsEvent', () => {
     const state = createEmptyGameState();
 
     const event: SetupUnitsEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'setupUnits',
       player: 'black',

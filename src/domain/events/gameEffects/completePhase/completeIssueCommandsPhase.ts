@@ -23,6 +23,8 @@ export interface CompleteIssueCommandsPhaseEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /**
    * Board coordinates with engaged units to resolve in the resolve-melee phase.
    * Produced by the procedure from the board at transition time; apply trusts the log.
@@ -33,12 +35,15 @@ export interface CompleteIssueCommandsPhaseEvent<
 const _completeIssueCommandsPhaseEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
   remainingEngagements: z.ZodSet<z.ZodType<BoardCoordinate<Board>>>;
 }> = z.object({
   /** The type of the event. */
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** Engaged spaces to queue for melee resolution. */
   remainingEngagements: z.set(boardCoordinateSchema),
 });
@@ -56,5 +61,6 @@ const _assertExactCompleteIssueCommandsPhaseEvent: AssertExact<
 export const completeIssueCommandsPhaseEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'completeIssueCommandsPhase'>;
+  eventNumber: z.ZodNumber;
   remainingEngagements: z.ZodSet<z.ZodType<BoardCoordinate<Board>>>;
 }> = _completeIssueCommandsPhaseEventSchemaObject;

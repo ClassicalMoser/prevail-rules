@@ -41,7 +41,7 @@ describe('generateResolveReverseEvent', () => {
     });
     const full = updatePhaseState(withBoard, phase);
 
-    const event = generateResolveReverseEvent(full);
+    const event = generateResolveReverseEvent(full, 0);
     expect(event.effectType).toBe('resolveReverse');
     expect(event.attackResolutionContext).toBe('rangedAttack');
     expect(event.unitInstance).toEqual(unitWithPlacement);
@@ -76,7 +76,7 @@ describe('generateResolveReverseEvent', () => {
     });
     const full = updatePhaseState(s, phase);
 
-    const event = generateResolveReverseEvent(full);
+    const event = generateResolveReverseEvent(full, 0);
     expect(event.effectType).toBe('resolveReverse');
     expect(event.attackResolutionContext).toBe('melee');
     expect(event.unitInstance.unit).toBe(whiteUnit);
@@ -85,7 +85,7 @@ describe('generateResolveReverseEvent', () => {
 
   it('given empty game with no phase slice, throws no current phase state', () => {
     const full = createEmptyGameState();
-    expect(() => generateResolveReverseEvent(full)).toThrow(
+    expect(() => generateResolveReverseEvent(full, 0)).toThrow(
       'No current phase state found',
     );
   });
@@ -95,7 +95,7 @@ describe('generateResolveReverseEvent', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
-    expect(() => generateResolveReverseEvent(full)).toThrow(
+    expect(() => generateResolveReverseEvent(full, 0)).toThrow(
       'Reverse resolution not expected in phase: playCards',
     );
   });

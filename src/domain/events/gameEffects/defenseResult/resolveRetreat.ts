@@ -30,6 +30,8 @@ export interface ResolveRetreatEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_RETREAT_EFFECT_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The starting position of the unit. */
   startingPosition: UnitWithPlacement<Board>;
   /** The final position the unit is retreating to (determined by player choice or auto-selected). */
@@ -37,9 +39,12 @@ export interface ResolveRetreatEvent<
 }
 
 const _resolveRetreatEventSchemaObject = z.object({
+  /** The type of the event. */
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(RESOLVE_RETREAT_EFFECT_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The starting position of the unit. */
   startingPosition: unitWithPlacementSchema,
   /** The final position the unit is retreating to (determined by player choice or auto-selected). */
@@ -59,6 +64,7 @@ const _assertExactResolveRetreatEvent: AssertExact<
 export const resolveRetreatEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveRetreat'>;
+  eventNumber: z.ZodNumber;
   startingPosition: typeof unitWithPlacementSchema;
   finalPosition: typeof unitWithPlacementSchema;
 }> = _resolveRetreatEventSchemaObject;

@@ -26,6 +26,8 @@ export interface CommitToMeleeEvent<
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof COMMIT_TO_MELEE_CHOICE_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The player who is committing the card. */
   player: PlayerSide;
   /** The card to commit from the player's hand. */
@@ -41,8 +43,12 @@ const meleeModifierTypesEnum: z.ZodEnum<{
 }> = z.enum(meleeModifierTypes);
 
 const _commitToMeleeEventSchemaObject = z.object({
+  /** The type of the event. */
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+  /** The type of player choice. */
   choiceType: z.literal(COMMIT_TO_MELEE_CHOICE_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   player: playerSideSchema,
   committedCard: cardSchema,
   modifierTypes: z.array(meleeModifierTypesEnum),
@@ -61,6 +67,7 @@ const _assertExactCommitToMeleeEvent: AssertExact<
 export const commitToMeleeEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'commitToMelee'>;
+  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   committedCard: typeof cardSchema;
   modifierTypes: z.ZodArray<typeof meleeModifierTypesEnum>;

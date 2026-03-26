@@ -146,6 +146,7 @@ describe('applyResolveRoutEvent', () => {
       const routState = attackApplyState.routState!;
 
       const event: ResolveRoutEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRout',
         routResolutionSource: 'rangedAttack',
@@ -166,6 +167,7 @@ describe('applyResolveRoutEvent', () => {
       const routState = attackApplyState.routState!;
 
       const event: ResolveRoutEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRout',
         routResolutionSource: 'rangedAttack',
@@ -192,6 +194,7 @@ describe('applyResolveRoutEvent', () => {
       const routState = attackApplyState.routState!;
 
       const event: ResolveRoutEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRout',
         routResolutionSource: 'melee',
@@ -215,6 +218,7 @@ describe('applyResolveRoutEvent', () => {
       const routState = attackApplyState.routState!;
 
       const event: ResolveRoutEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRout',
         routResolutionSource: 'melee',
@@ -254,6 +258,7 @@ describe('applyResolveRoutEvent', () => {
       const stateWithRally = updatePhaseState(state, phaseState);
 
       const event: ResolveRoutEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRout',
         routResolutionSource: 'rally',
@@ -285,6 +290,7 @@ describe('applyResolveRoutEvent', () => {
       const rout = resolution.routState!;
 
       const event: ResolveRoutEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRout',
         routResolutionSource: 'rearEngagementMovement',
@@ -315,6 +321,7 @@ describe('applyResolveRoutEvent', () => {
       const originalNumberToDiscard = routState.numberToDiscard;
 
       const event: ResolveRoutEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRout',
         routResolutionSource: 'rangedAttack',
@@ -333,6 +340,7 @@ describe('applyResolveRoutEvent', () => {
       const state = createStateWithMeleeRout('black');
 
       const event: ResolveRoutEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRout',
         routResolutionSource: 'melee',
@@ -360,6 +368,7 @@ describe('applyResolveRoutEvent', () => {
       const stateWithoutRout = updatePhaseState(state, phaseState);
 
       const event: ResolveRoutEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRout',
         routResolutionSource: 'rangedAttack',

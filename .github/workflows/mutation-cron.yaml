@@ -1,3 +1,6 @@
+# One Stryker run per matrix row. Use a scalar matrix (`shard`) so GitHub fans out to
+# multiple jobs; do not use `name` inside matrix.include — it is reserved and collapses the matrix.
+# Parallelism = multiple jobs at once (subject to org concurrency); `--mutate` only shrinks each run.
 name: Mutation tests
 
 on:
@@ -8,18 +11,15 @@ on:
 
 jobs:
   mutation:
+    name: Mutation (${{ matrix.shard }})
     strategy:
       fail-fast: false
       matrix:
         shard:
-          - name: procedures
-            mutate: 'src/domain/procedures/**/*.{ts,js}'
-          - name: transforms
-            mutate: 'src/domain/transforms/**/*.{ts,js}'
-          - name: queries
-            mutate: 'src/domain/queries/**/*.{ts,js}'
-          - name: entities-validation
-            mutate: 'src/domain/entities/**/*.{ts,js},src/domain/validation/**/*.{ts,js},src/domain/events/**/*.{ts,js},src/domain/ruleValues/**/*.{ts,js}'
+          - procedures
+          - transforms
+          - queries
+          - entities-validation
     runs-on: ubuntu-latest
     timeout-minutes: 330
     steps:
@@ -35,13 +35,35 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Mutation tests (${{ matrix.shard.name }})
-        run: pnpm exec stryker run --mutate "${{ matrix.shard.mutate }},!src/domain/**/*.test.{ts,js},!src/domain/testing/**/*.{ts,js},!src/domain/sampleValues/**/*.{ts,js},!dist/**/*.{ts,js},!**/index.{ts,js}"
+      - name: Mutation tests
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          set -euo pipefail
+          case "$SHARD" in
+            procedures)
+              PATTERN='src/domain/procedures/**/*.{ts,js}'
+              ;;
+            transforms)
+              PATTERN='src/domain/transforms/**/*.{ts,js}'
+              ;;
+            queries)
+              PATTERN='src/domain/queries/**/*.{ts,js}'
+              ;;
+            entities-validation)
+              PATTERN='src/domain/entities/**/*.{ts,js},src/domain/validation/**/*.{ts,js},src/domain/events/**/*.{ts,js},src/domain/ruleValues/**/*.{ts,js}'
+              ;;
+            *)
+              echo "Unknown shard: $SHARD"
+              exit 1
+              ;;
+          esac
+          pnpm exec stryker run --mutate "${PATTERN},!src/domain/**/*.test.{ts,js},!src/domain/testing/**/*.{ts,js},!src/domain/sampleValues/**/*.{ts,js},!dist/**/*.{ts,js},!**/index.{ts,js}"
 
       - name: Upload mutation report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: stryker-mutation-report-${{ matrix.shard.name }}
+          name: stryker-mutation-report-${{ matrix.shard }}
           path: reports/
           if-no-files-found: warn

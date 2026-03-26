@@ -48,6 +48,7 @@ describe('applyMoveCommanderEvent', () => {
       );
 
       const event: MoveCommanderEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'moveCommander',
         player: 'black',
@@ -79,6 +80,7 @@ describe('applyMoveCommanderEvent', () => {
       );
 
       const event: MoveCommanderEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'moveCommander',
         player: 'white',
@@ -108,6 +110,7 @@ describe('applyMoveCommanderEvent', () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
 
       const event: MoveCommanderEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'moveCommander',
         player: 'black',
@@ -126,6 +129,7 @@ describe('applyMoveCommanderEvent', () => {
       const state = createGameStateInMoveCommandersStep('moveSecondCommander');
 
       const event: MoveCommanderEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'moveCommander',
         player: 'white',
@@ -149,6 +153,7 @@ describe('applyMoveCommanderEvent', () => {
       const originalStep = state.currentRoundState.currentPhaseState?.step;
 
       const event: MoveCommanderEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'moveCommander',
         player: 'black',

@@ -105,6 +105,7 @@ describe('applyResolveRetreatEvent', () => {
       const retreatState = getRetreatStateFromRangedAttack(state);
 
       const event: ResolveRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
@@ -136,6 +137,7 @@ describe('applyResolveRetreatEvent', () => {
       const retreatState = getRetreatStateFromRangedAttack(state);
 
       const event: ResolveRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
@@ -166,6 +168,7 @@ describe('applyResolveRetreatEvent', () => {
       };
 
       const event: ResolveRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
@@ -192,6 +195,7 @@ describe('applyResolveRetreatEvent', () => {
       const retreatState = getRetreatStateFromMelee(state, 'black');
 
       const event: ResolveRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
@@ -218,6 +222,7 @@ describe('applyResolveRetreatEvent', () => {
       const retreatState = getRetreatStateFromMelee(state, 'white');
 
       const event: ResolveRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
@@ -248,6 +253,7 @@ describe('applyResolveRetreatEvent', () => {
       const originalBoardState = state.boardState;
 
       const event: ResolveRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,

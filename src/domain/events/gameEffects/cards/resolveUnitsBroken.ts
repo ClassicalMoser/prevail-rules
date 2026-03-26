@@ -22,6 +22,8 @@ export interface ResolveUnitsBrokenEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_UNITS_BROKEN_EFFECT_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The player whose units are being checked. */
   player: PlayerSide;
   /** The unit types that are broken. */
@@ -33,6 +35,8 @@ const _resolveUnitsBrokenEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(RESOLVE_UNITS_BROKEN_EFFECT_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The player whose units are being checked. */
   player: playerSideSchema,
   /** The unit types that are broken. */
@@ -52,6 +56,7 @@ const _assertExactResolveUnitsBrokenEvent: AssertExact<
 export const resolveUnitsBrokenEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveUnitsBroken'>;
+  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   unitTypes: z.ZodArray<typeof unitTypeSchema>;
 }> = _resolveUnitsBrokenEventSchemaObject;

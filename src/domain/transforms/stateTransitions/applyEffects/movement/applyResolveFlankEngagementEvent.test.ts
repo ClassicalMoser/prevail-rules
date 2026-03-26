@@ -48,6 +48,7 @@ describe('applyResolveFlankEngagementEvent', () => {
     );
 
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'resolveFlankEngagement' as const,
       defenderWithPlacement,

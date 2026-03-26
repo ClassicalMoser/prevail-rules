@@ -102,6 +102,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
 
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
         retreatResolutionContext: 'rangedAttack',
@@ -127,6 +128,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
 
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
         retreatResolutionContext: 'rangedAttack',
@@ -147,6 +149,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
 
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
         retreatResolutionContext: 'melee',
@@ -165,6 +168,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
 
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
         retreatResolutionContext: 'melee',
@@ -187,6 +191,7 @@ describe('applyTriggerRoutFromRetreatEvent', () => {
 
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
         retreatResolutionContext: 'rangedAttack',

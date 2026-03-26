@@ -20,6 +20,7 @@ import {
  */
 export function generateCompleteAttackApplyEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): CompleteAttackApplyEvent<TBoard, 'completeAttackApply'> {
   const phaseState = getCurrentPhaseState(state);
 
@@ -28,6 +29,7 @@ export function generateCompleteAttackApplyEvent<TBoard extends Board>(
     return {
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
+      eventNumber,
       attackType: 'ranged',
       defendingPlayer: attackApply.defendingUnit.playerSide,
     };
@@ -49,6 +51,7 @@ export function generateCompleteAttackApplyEvent<TBoard extends Board>(
     return {
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
+      eventNumber,
       attackType: 'melee',
       defendingPlayer,
     };

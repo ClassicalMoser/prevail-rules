@@ -30,6 +30,7 @@ import {
  */
 export function generateResolveMeleeEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): ResolveMeleeEvent<TBoard, 'resolveMelee'> {
   const meleeState = getMeleeResolutionReadyForAttackCalculation(state);
   const meleeCoordinate = meleeState.location;
@@ -110,6 +111,7 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_MELEE_EFFECT_TYPE,
+    eventNumber,
     location: meleeCoordinate,
     whiteUnitWithPlacement: whiteUnit,
     blackUnitWithPlacement: blackUnit,

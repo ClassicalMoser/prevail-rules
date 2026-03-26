@@ -24,6 +24,7 @@ import {
  */
 export function generateResolveReverseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): ResolveReverseEvent<TBoard, 'resolveReverse'> {
   const phaseState = getCurrentPhaseState(state);
 
@@ -53,6 +54,7 @@ export function generateResolveReverseEvent<TBoard extends Board>(
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_REVERSE_EFFECT_TYPE,
     attackResolutionContext,
+    eventNumber,
     unitInstance: reverseState.reversingUnit,
     newUnitPlacement: {
       unit: reverseState.reversingUnit.unit,

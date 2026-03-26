@@ -24,10 +24,9 @@ export type { MoveUnitEvent } from './moveUnit';
 export { moveUnitEventSchema } from './moveUnit';
 export type { PerformRangedAttackEvent } from './performRangedAttack';
 export { performRangedAttackEventSchema } from './performRangedAttack';
-export type { PlayerChoiceEvent, PlayerChoiceType } from './playerChoice';
-export {
-  playerChoiceEventSchema,
-  playerChoiceTypeSchema,
-} from './playerChoice';
+export type { PlayerChoiceEvent } from './playerChoice';
+export { playerChoiceEventSchema } from './playerChoice';
+export type { PlayerChoiceType } from './playerChoiceTypes';
+export { playerChoices, playerChoiceTypeSchema } from './playerChoiceTypes';
 export type { SetupUnitsEvent } from './setupUnit';
 export { setupUnitsEventSchema } from './setupUnit';

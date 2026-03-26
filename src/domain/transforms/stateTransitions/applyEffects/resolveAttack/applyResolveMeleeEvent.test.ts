@@ -59,6 +59,7 @@ describe('applyResolveMeleeEvent', () => {
     placements: ReturnType<typeof unitPlacements>,
   ): ResolveMeleeEvent<StandardBoard> {
     return {
+      eventNumber: 0,
       eventType: 'gameEffect',
       effectType: 'resolveMelee',
       location: 'E-5',

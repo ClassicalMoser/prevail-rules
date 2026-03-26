@@ -12,14 +12,14 @@ import { generateCompleteUnitMovementEvent } from './generateCompleteUnitMovemen
 describe('generateCompleteUnitMovementEvent', () => {
   it('given any game state, emits gameEffect with effectType completeUnitMovement', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
-    const event = generateCompleteUnitMovementEvent(state);
+    const event = generateCompleteUnitMovementEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeUnitMovement');
   });
 
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateCompleteUnitMovementEvent(createEmptyGameState());
-    const b = generateCompleteUnitMovementEvent(createEmptyGameState());
+    const a = generateCompleteUnitMovementEvent(createEmptyGameState(), 0);
+    const b = generateCompleteUnitMovementEvent(createEmptyGameState(), 0);
     expect(a).toEqual(b);
   });
 });

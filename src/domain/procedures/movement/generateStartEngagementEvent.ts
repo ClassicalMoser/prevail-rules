@@ -21,6 +21,7 @@ import {
  */
 export function generateStartEngagementEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): StartEngagementEvent<TBoard, 'startEngagement'> {
   const movementResolutionState = getMovementResolutionState(state);
 
@@ -40,6 +41,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
     return {
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
+      eventNumber,
       engagementType: 'rear',
       defenderWithPlacement,
     };
@@ -50,6 +52,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
     return {
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
+      eventNumber,
       engagementType: 'flank',
       defenderWithPlacement,
     };
@@ -60,6 +63,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
     return {
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
+      eventNumber,
       engagementType: 'front',
       defenderWithPlacement,
     };

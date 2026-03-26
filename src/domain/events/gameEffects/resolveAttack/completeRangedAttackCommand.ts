@@ -15,6 +15,8 @@ export interface CompleteRangedAttackCommandEvent<
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
 }
 
 const _completeRangedAttackCommandEventSchemaObject = z.object({
@@ -22,6 +24,8 @@ const _completeRangedAttackCommandEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   /** The type of game effect. */
   effectType: z.literal(COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
 });
 
 type CompleteRangedAttackCommandEventSchemaType = z.infer<
@@ -37,4 +41,5 @@ const _assertExactCompleteRangedAttackCommandEvent: AssertExact<
 export const completeRangedAttackCommandEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'completeRangedAttackCommand'>;
+  eventNumber: z.ZodNumber;
 }> = _completeRangedAttackCommandEventSchemaObject;

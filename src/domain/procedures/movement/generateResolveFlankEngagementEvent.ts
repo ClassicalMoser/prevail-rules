@@ -22,6 +22,7 @@ import {
  */
 export function generateResolveFlankEngagementEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): ResolveFlankEngagementEvent<TBoard, 'resolveFlankEngagement'> {
   const engagementState = getFlankEngagementStateFromMovement(state);
 
@@ -39,6 +40,7 @@ export function generateResolveFlankEngagementEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
+    eventNumber,
     defenderWithPlacement,
     newFacing,
   };

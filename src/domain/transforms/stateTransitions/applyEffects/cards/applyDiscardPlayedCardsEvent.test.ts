@@ -31,6 +31,7 @@ describe('applyDiscardPlayedCardsEvent', () => {
     const blackPlayedBefore = full.cardState.black.played.length;
 
     const event = {
+      eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'discardPlayedCards' as const,
     } satisfies DiscardPlayedCardsEvent<StandardBoard>;

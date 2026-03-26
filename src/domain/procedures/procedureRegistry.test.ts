@@ -22,6 +22,7 @@ describe('generateEventFromProcedure', () => {
       const state = procedureRegistryStateFactories[effectType]();
       const event = generateEventFromProcedure(
         state,
+        0,
         effectType as never,
       ) as GameEffectEvent<StandardBoard, GameEffectType>;
       expect(event.eventType).toBe('gameEffect');
@@ -29,10 +30,10 @@ describe('generateEventFromProcedure', () => {
     },
   );
 
-  it('given effectType not in registry, throws naming the bogus key', () => {
+  it('given effectType not in registry, throws naming the non-existent key', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
     expect(() =>
-      generateEventFromProcedure(state, 'notARealEffect' as never),
+      generateEventFromProcedure(state, 0, 'notARealEffect' as never),
     ).toThrow('No procedure exists for effect type: notARealEffect');
   });
 });

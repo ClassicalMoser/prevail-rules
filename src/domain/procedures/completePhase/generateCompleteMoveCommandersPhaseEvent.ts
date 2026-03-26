@@ -17,6 +17,7 @@ import { getOtherPlayer } from '@queries';
  */
 export function generateCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): CompleteMoveCommandersPhaseEvent<TBoard, 'completeMoveCommandersPhase'> {
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
@@ -34,6 +35,7 @@ export function generateCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
+    eventNumber,
     remainingCommandsFirstPlayer,
     remainingCommandsSecondPlayer,
   };

@@ -29,6 +29,7 @@ import { calculateInitiative, getPlayCardsPhaseState } from '@queries';
  */
 export function generateResolveInitiativeEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): ResolveInitiativeEvent<TBoard, 'resolveInitiative'> {
   const phaseState = getPlayCardsPhaseState(state);
 
@@ -57,6 +58,7 @@ export function generateResolveInitiativeEvent<TBoard extends Board>(
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_INITIATIVE_EFFECT_TYPE,
+    eventNumber,
     player: playerWithInitiative,
   };
 }

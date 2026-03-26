@@ -115,6 +115,7 @@ describe('applyResolveReverseEvent', () => {
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
         attackResolutionContext: 'rangedAttack',
@@ -145,6 +146,7 @@ describe('applyResolveReverseEvent', () => {
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
         attackResolutionContext: 'rangedAttack',
@@ -182,6 +184,7 @@ describe('applyResolveReverseEvent', () => {
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
         attackResolutionContext: 'rangedAttack',
@@ -212,6 +215,7 @@ describe('applyResolveReverseEvent', () => {
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
         attackResolutionContext: 'melee',
@@ -245,6 +249,7 @@ describe('applyResolveReverseEvent', () => {
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
         attackResolutionContext: 'melee',
@@ -279,6 +284,7 @@ describe('applyResolveReverseEvent', () => {
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
         attackResolutionContext: 'rangedAttack',

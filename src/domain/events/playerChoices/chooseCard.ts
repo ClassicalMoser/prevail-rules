@@ -16,6 +16,8 @@ export interface ChooseCardEvent<
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof CHOOSE_CARD_CHOICE_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The player who is choosing the card. */
   player: PlayerSide;
   /** The card to choose from the player's hand. */
@@ -27,6 +29,8 @@ const _chooseCardEventSchemaObject = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   /** The type of player choice. */
   choiceType: z.literal(CHOOSE_CARD_CHOICE_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The player who is choosing the card. */
   player: playerSideSchema,
   /** The card to choose from the player's hand. */
@@ -45,6 +49,7 @@ const _assertExactChooseCardEvent: AssertExact<
 export const chooseCardEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'chooseCard'>;
+  eventNumber: z.ZodNumber;
   player: z.ZodType<PlayerSide>;
   card: z.ZodType<Card>;
 }> = _chooseCardEventSchemaObject;

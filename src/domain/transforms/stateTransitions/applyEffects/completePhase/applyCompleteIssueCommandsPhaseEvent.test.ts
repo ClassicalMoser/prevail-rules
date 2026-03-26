@@ -19,6 +19,7 @@ function issueCommandsCompleteEvent(
   remainingEngagements: Set<BoardCoordinate<StandardBoard>>,
 ): CompleteIssueCommandsPhaseEvent<StandardBoard> {
   return {
+    eventNumber: 0,
     eventType: 'gameEffect',
     effectType: 'completeIssueCommandsPhase',
     remainingEngagements,

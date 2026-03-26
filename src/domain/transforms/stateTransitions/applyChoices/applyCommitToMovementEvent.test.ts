@@ -35,6 +35,7 @@ describe('applyCommitToMovementEvent', () => {
       }),
     );
     const event: CommitToMovementEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'commitToMovement',
       player: 'black',
@@ -71,6 +72,7 @@ describe('applyCommitToMovementEvent', () => {
       }),
     );
     const event: CommitToMovementEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'commitToMovement',
       player: 'white',
@@ -107,6 +109,7 @@ describe('applyCommitToMovementEvent', () => {
       }),
     );
     const event: CommitToMovementEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'commitToMovement',
       player: 'black',

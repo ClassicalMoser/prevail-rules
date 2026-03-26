@@ -61,7 +61,7 @@ describe('generateResolveEngageRetreatOptionEvent', () => {
       defendingSpeed: 4,
       engagingSpeed: 2,
     });
-    const event = generateResolveEngageRetreatOptionEvent(full);
+    const event = generateResolveEngageRetreatOptionEvent(full, 0);
     expect(event.defendingUnitCanRetreat).toBe(true);
   });
 
@@ -70,7 +70,7 @@ describe('generateResolveEngageRetreatOptionEvent', () => {
       defendingSpeed: 2,
       engagingSpeed: 4,
     });
-    const event = generateResolveEngageRetreatOptionEvent(full);
+    const event = generateResolveEngageRetreatOptionEvent(full, 0);
     expect(event.defendingUnitCanRetreat).toBe(false);
   });
 });

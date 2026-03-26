@@ -19,6 +19,7 @@ describe('applyChooseRallyEvent', () => {
     });
     const stateInStep = updatePhaseState(state, phaseState);
     const event: ChooseRallyEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRally',
       player: 'black',
@@ -41,6 +42,7 @@ describe('applyChooseRallyEvent', () => {
     });
     const stateInStep = updatePhaseState(state, phaseState);
     const event: ChooseRallyEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRally',
       player: 'black',
@@ -63,6 +65,7 @@ describe('applyChooseRallyEvent', () => {
     });
     const stateInStep = updatePhaseState(state, phaseState);
     const event: ChooseRallyEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRally',
       player: 'white',
@@ -85,6 +88,7 @@ describe('applyChooseRallyEvent', () => {
     });
     const stateInStep = updatePhaseState(state, phaseState);
     const event: ChooseRallyEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRally',
       player: 'white',
@@ -108,6 +112,7 @@ describe('applyChooseRallyEvent', () => {
     });
     const stateInStep = updatePhaseState(state, phaseState);
     const event: ChooseRallyEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRally',
       player: 'black',

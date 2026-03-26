@@ -35,6 +35,8 @@ export type TriggerRoutFromRetreatEvent<
       effectType: _TEffectType;
       /** Retreat substep lives under ranged attack resolution. */
       retreatResolutionContext: typeof RANGED_ATTACK_RESOLUTION_CONTEXT;
+      /** The ordered index of the event in the round, zero-indexed. */
+      eventNumber: number;
     }
   | {
       /** The type of the event. */
@@ -45,6 +47,8 @@ export type TriggerRoutFromRetreatEvent<
       retreatResolutionContext: typeof MELEE_ATTACK_RESOLUTION_CONTEXT;
       /** The player whose retreat has no legal options. */
       retreatingPlayer: PlayerSide;
+      /** The ordered index of the event in the round, zero-indexed. */
+      eventNumber: number;
     };
 
 const _triggerRoutFromRetreatSharedFieldsSchemaObject: z.ZodObject<{
@@ -63,10 +67,13 @@ const _triggerRoutFromRetreatRangedAttackSchemaObject: z.ZodObject<{
   retreatResolutionContext: z.ZodLiteral<
     typeof RANGED_ATTACK_RESOLUTION_CONTEXT
   >;
+  eventNumber: z.ZodNumber;
 }> = _triggerRoutFromRetreatSharedFieldsSchemaObject.merge(
   z.object({
     /** Ranged attack resolution path. */
     retreatResolutionContext: z.literal(RANGED_ATTACK_RESOLUTION_CONTEXT),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
   }),
 );
 
@@ -77,15 +84,19 @@ const _triggerRoutFromRetreatMeleeSchemaObject: z.ZodObject<{
     typeof MELEE_ATTACK_RESOLUTION_CONTEXT
   >;
   retreatingPlayer: typeof playerSideSchema;
+  eventNumber: z.ZodNumber;
 }> = _triggerRoutFromRetreatSharedFieldsSchemaObject.merge(
   z.object({
     /** Melee resolution path. */
     retreatResolutionContext: z.literal(MELEE_ATTACK_RESOLUTION_CONTEXT),
     /** The player whose retreat has no legal options. */
     retreatingPlayer: playerSideSchema,
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
   }),
 );
 
+/** Branches share `effectType`; nested discrimination uses `retreatResolutionContext`. */
 const _triggerRoutFromRetreatEventSchemaObject: z.ZodDiscriminatedUnion<
   [
     typeof _triggerRoutFromRetreatRangedAttackSchemaObject,

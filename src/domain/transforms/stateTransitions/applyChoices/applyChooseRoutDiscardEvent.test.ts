@@ -46,6 +46,7 @@ describe('applyChooseRoutDiscardEvent', () => {
       'white',
     );
     const event: ChooseRoutDiscardEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRoutDiscard',
       player: 'white',
@@ -67,6 +68,7 @@ describe('applyChooseRoutDiscardEvent', () => {
       'black',
     );
     const event: ChooseRoutDiscardEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRoutDiscard',
       player: 'black',
@@ -89,6 +91,7 @@ describe('applyChooseRoutDiscardEvent', () => {
       createPlayCardsPhaseState(),
     );
     const event: ChooseRoutDiscardEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRoutDiscard',
       player: 'white',
@@ -107,6 +110,7 @@ describe('applyChooseRoutDiscardEvent', () => {
     });
     const stateInCleanup = updatePhaseState(state, phaseState);
     const event: ChooseRoutDiscardEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRoutDiscard',
       player: 'white',

@@ -25,6 +25,8 @@ export interface MoveUnitEvent<
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof MOVE_UNIT_CHOICE_TYPE;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The player who is moving the unit. */
   player: PlayerSide;
   /** The unit to move. */
@@ -40,6 +42,8 @@ const _moveUnitEventSchemaObject = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   /** The type of player choice. */
   choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The player who is moving the unit. */
   player: playerSideSchema,
   /** The unit to move. */
@@ -62,6 +66,7 @@ const _assertExactMoveUnitEvent: AssertExact<
 export const moveUnitEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'moveUnit'>;
+  eventNumber: z.ZodNumber;
   player: z.ZodType<PlayerSide>;
   unit: z.ZodType<UnitWithPlacement<Board>>;
   to: z.ZodType<UnitPlacement<Board>>;

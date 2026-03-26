@@ -43,6 +43,7 @@ describe('applyResolveInitiativeEvent', () => {
       const state = createGameStateInAssignInitiativeStep();
 
       const event: ResolveInitiativeEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveInitiative',
         player: 'black',
@@ -57,6 +58,7 @@ describe('applyResolveInitiativeEvent', () => {
       const state = createGameStateInAssignInitiativeStep();
 
       const event: ResolveInitiativeEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveInitiative',
         player: 'white',
@@ -73,12 +75,14 @@ describe('applyResolveInitiativeEvent', () => {
       const state = createGameStateInAssignInitiativeStep();
 
       const blackEvent: ResolveInitiativeEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveInitiative',
         player: 'black',
       };
 
       const whiteEvent: ResolveInitiativeEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveInitiative',
         player: 'white',
@@ -99,6 +103,7 @@ describe('applyResolveInitiativeEvent', () => {
       const originalStep = state.currentRoundState.currentPhaseState?.step;
 
       const event: ResolveInitiativeEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveInitiative',
         player: 'black',
@@ -122,6 +127,7 @@ describe('applyResolveInitiativeEvent', () => {
       });
 
       const event: ResolveInitiativeEvent<StandardBoard> = {
+        eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveInitiative',
         player: 'black',

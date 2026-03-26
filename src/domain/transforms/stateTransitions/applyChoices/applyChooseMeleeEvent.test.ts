@@ -32,6 +32,7 @@ describe('applyChooseMeleeEvent', () => {
   it('given E-5 and E-6 pending and black chooses E-5, set shrinks to E-6 and current location E-5', () => {
     const state = createStateInResolveMeleeStep(['E-5', 'E-6']);
     const event: ChooseMeleeResolutionEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseMeleeResolution',
       player: 'black',
@@ -51,6 +52,7 @@ describe('applyChooseMeleeEvent', () => {
     const originalRemaining = originalPhaseState.remainingEngagements;
 
     const event: ChooseMeleeResolutionEvent<StandardBoard> = {
+      eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseMeleeResolution',
       player: 'white',

@@ -11,14 +11,20 @@ import { generateCompleteRangedAttackCommandEvent } from './generateCompleteRang
 describe('generateCompleteRangedAttackCommandEvent', () => {
   it('given any game state, emits gameEffect with effectType completeRangedAttackCommand', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
-    const event = generateCompleteRangedAttackCommandEvent(state);
+    const event = generateCompleteRangedAttackCommandEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeRangedAttackCommand');
   });
 
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateCompleteRangedAttackCommandEvent(createEmptyGameState());
-    const b = generateCompleteRangedAttackCommandEvent(createEmptyGameState());
+    const a = generateCompleteRangedAttackCommandEvent(
+      createEmptyGameState(),
+      0,
+    );
+    const b = generateCompleteRangedAttackCommandEvent(
+      createEmptyGameState(),
+      0,
+    );
     expect(a).toEqual(b);
   });
 });

@@ -30,6 +30,8 @@ export interface ResolveReverseEvent<
    * Set by `generateResolveReverseEvent` in `src/domain/procedures/`.
    */
   attackResolutionContext: AttackResolutionContext;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The unit that is being reversed. */
   unitInstance: UnitWithPlacement<Board>;
   /** The new unit placement after the reverse. */
@@ -43,6 +45,8 @@ const _resolveReverseEventSchemaObject = z.object({
   effectType: z.literal(RESOLVE_REVERSE_EFFECT_TYPE),
   /** Ranged vs melee attack-resolution path holding this reverse. */
   attackResolutionContext: attackResolutionContextSchema,
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: z.number(),
   /** The unit that is being reversed. */
   unitInstance: unitWithPlacementSchema,
   /** The new unit placement after the reverse. */
@@ -63,6 +67,7 @@ export const resolveReverseEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'resolveReverse'>;
   attackResolutionContext: typeof attackResolutionContextSchema;
+  eventNumber: z.ZodNumber;
   unitInstance: typeof unitWithPlacementSchema;
   newUnitPlacement: typeof unitWithPlacementSchema;
 }> = _resolveReverseEventSchemaObject;

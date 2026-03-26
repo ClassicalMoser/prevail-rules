@@ -28,6 +28,7 @@ describe('applyCompleteCleanupPhaseEvent', () => {
   }
 
   const event: CompleteCleanupPhaseEvent<StandardBoard> = {
+    eventNumber: 0,
     eventType: 'gameEffect',
     effectType: 'completeCleanupPhase',
   };

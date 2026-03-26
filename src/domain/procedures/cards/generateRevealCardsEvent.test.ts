@@ -12,14 +12,14 @@ import { generateRevealCardsEvent } from './generateRevealCardsEvent';
 describe('generateRevealCardsEvent', () => {
   it('given any game state, emits gameEffect with effectType revealCards', () => {
     const state: GameState<StandardBoard> = createEmptyGameState();
-    const event = generateRevealCardsEvent(state);
+    const event = generateRevealCardsEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('revealCards');
   });
 
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateRevealCardsEvent(createEmptyGameState());
-    const b = generateRevealCardsEvent(createEmptyGameState());
+    const a = generateRevealCardsEvent(createEmptyGameState(), 0);
+    const b = generateRevealCardsEvent(createEmptyGameState(), 0);
     expect(a).toEqual(b);
   });
 });

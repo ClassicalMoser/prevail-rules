@@ -11,11 +11,13 @@ import { GAME_EFFECT_EVENT_TYPE, REVEAL_CARDS_EFFECT_TYPE } from '@events';
  */
 export function generateRevealCardsEvent<TBoard extends Board>(
   state: GameState<TBoard>,
+  eventNumber: number,
 ): RevealCardsEvent<TBoard, 'revealCards'> {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: REVEAL_CARDS_EFFECT_TYPE,
+    eventNumber,
   };
 }
