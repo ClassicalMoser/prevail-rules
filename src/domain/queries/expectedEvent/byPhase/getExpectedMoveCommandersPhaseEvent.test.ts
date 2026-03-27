@@ -1,9 +1,6 @@
 import type { GameState, StandardBoard } from '@entities';
-import {
-  expectedGameEffectSchema,
-  expectedPlayerInputSchema,
-  MOVE_COMMANDERS_PHASE,
-} from '@entities';
+import { MOVE_COMMANDERS_PHASE } from '@entities';
+import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 import { createEmptyGameState } from '@testing';
 import { updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';

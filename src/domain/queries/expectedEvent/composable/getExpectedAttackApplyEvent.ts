@@ -1,9 +1,5 @@
-import type {
-  AttackApplyState,
-  Board,
-  ExpectedEventInfo,
-  GameState,
-} from '@entities';
+import type { AttackApplyState, Board, GameState } from '@entities';
+import type { ExpectedEventInfo } from '@events';
 import { canReverseUnit } from '@queries/sequencing';
 import {
   getExpectedRetreatEvent,

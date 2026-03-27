@@ -1,10 +1,10 @@
 import type {
   Board,
-  ExpectedEventInfo,
   GameState,
   PlayerSide,
   RangedAttackResolutionState,
 } from '@entities';
+import type { ExpectedEventInfo } from '@events';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getExpectedAttackApplyEvent } from '../composable';
 

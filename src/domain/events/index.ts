@@ -8,6 +8,20 @@ export {
 export type { Event, EventType } from './eventType';
 
 export {
+  expectedEventInfoSchema,
+  expectedGameEffectSchema,
+  expectedPlayerInputSchema,
+  playerSources,
+  playerSourceSchema,
+} from './expectedEvent';
+export type {
+  ExpectedEventInfo,
+  ExpectedGameEffect,
+  ExpectedPlayerInput,
+  PlayerSource,
+} from './expectedEvent';
+
+export {
   ATTACK_RESOLUTION_CONTEXT_VALUES,
   attackResolutionContextSchema,
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
@@ -100,7 +114,6 @@ export type {
   StartEngagementEvent,
   TriggerRoutFromRetreatEvent,
 } from './gameEffects';
-
 export type { ChooseCardEvent } from './playerChoices';
 export { chooseCardEventSchema } from './playerChoices';
 export type { ChooseMeleeResolutionEvent } from './playerChoices';
@@ -132,5 +145,6 @@ export {
   playerChoiceEventSchema,
   playerChoiceTypeSchema,
 } from './playerChoices';
+
 export type { SetupUnitsEvent } from './playerChoices';
 export { setupUnitsEventSchema } from './playerChoices';

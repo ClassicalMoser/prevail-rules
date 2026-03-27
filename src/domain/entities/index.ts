@@ -65,22 +65,6 @@ export type {
 export { engagementType, engagementTypeSchema } from './engagementType';
 export type { EngagementType } from './engagementType';
 
-// Expected event models.
-export {
-  expectedEventInfoSchema,
-  expectedGameEffectSchema,
-  expectedPlayerInputSchema,
-  playerSources,
-  playerSourceSchema,
-} from './expectedEvent';
-
-export type {
-  ExpectedEventInfo,
-  ExpectedGameEffect,
-  ExpectedPlayerInput,
-  PlayerSource,
-} from './expectedEvent';
-
 // Game models.
 export { gameSchema } from './game';
 

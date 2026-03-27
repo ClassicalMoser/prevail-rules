@@ -51,9 +51,12 @@ describe('validatePlayerChoice', () => {
       card: commandCards[2],
     };
 
-    const { result } = validatePlayerChoice(event, state);
+    const validation = validatePlayerChoice(event, state);
 
-    expect(result).toBe(true);
+    // eslint-disable-next-line no-console
+    console.log(validation);
+
+    expect(validation.result).toBe(true);
   });
 
   it('fails when a game effect is expected instead of player input', () => {
@@ -70,6 +73,9 @@ describe('validatePlayerChoice', () => {
     };
 
     const validation = validatePlayerChoice(event, state);
+
+    // eslint-disable-next-line no-console
+    console.log(validation);
 
     expect(validation.result).toBe(false);
     if (validation.result !== false) throw new Error('expected fail');
@@ -109,6 +115,9 @@ describe('validatePlayerChoice', () => {
     const validation = validatePlayerChoice(event, state);
 
     const expectedErrorMessage = 'Expected input from white, not black';
+
+    // eslint-disable-next-line no-console
+    console.log(validation);
 
     expect(validation.result).toBe(false);
     if (validation.result !== false) throw new Error('expected fail');
@@ -155,6 +164,9 @@ describe('validatePlayerChoice', () => {
       };
 
       const validation = validatePlayerChoice(event, state);
+
+      // eslint-disable-next-line no-console
+      console.log(validation);
 
       expect(validation.result).toBe(false);
       if (validation.result !== false) throw new Error('expected fail');

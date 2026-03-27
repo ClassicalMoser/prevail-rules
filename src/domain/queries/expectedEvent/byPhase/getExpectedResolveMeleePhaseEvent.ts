@@ -1,4 +1,5 @@
-import type { Board, ExpectedEventInfo, GameState } from '@entities';
+import type { Board, GameState } from '@entities';
+import type { ExpectedEventInfo } from '@events';
 import { getResolveMeleePhaseState } from '@queries/sequencing';
 import { getExpectedMeleeResolutionEvent } from '../iterated';
 

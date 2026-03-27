@@ -1,9 +1,5 @@
-import type {
-  Board,
-  ExpectedEventInfo,
-  GameState,
-  PlayerSide,
-} from '@entities';
+import type { Board, GameState, PlayerSide } from '@entities';
+import type { ExpectedEventInfo } from '@events';
 
 /**
  * Gets the expected event to start resolving a command for a unit.

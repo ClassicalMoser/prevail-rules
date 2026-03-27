@@ -1,4 +1,4 @@
-import type { Board } from '@entities/board';
+import type { Board } from '@entities';
 import type { GameEffectType } from '@ruleValues';
 import type { AssertExact } from '@utils';
 /**

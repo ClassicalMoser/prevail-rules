@@ -3,7 +3,7 @@ import type {
   IssueCommandsPhaseStep,
   StandardBoard,
 } from '@entities';
-import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@entities';
+import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 import {
   createEmptyGameState,
   createIssueCommandsPhaseState,

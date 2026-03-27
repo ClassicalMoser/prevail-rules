@@ -1,4 +1,5 @@
-import type { Board, ExpectedEventInfo, RetreatState } from '@entities';
+import type { Board, RetreatState } from '@entities';
+import type { ExpectedEventInfo } from '@events';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 
 /**

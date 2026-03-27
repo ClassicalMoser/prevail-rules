@@ -1,4 +1,5 @@
-import type { Board, ExpectedEventInfo, RoutState } from '@entities';
+import type { Board, RoutState } from '@entities';
+import type { ExpectedEventInfo } from '@events';
 
 /**
  * Gets the expected event for rout substeps.

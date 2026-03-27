@@ -1,9 +1,5 @@
-import type {
-  Board,
-  EngagementState,
-  ExpectedEventInfo,
-  GameState,
-} from '@entities';
+import type { Board, EngagementState, GameState } from '@entities';
+import type { ExpectedEventInfo } from '@events';
 import { hasEngagedUnits, hasNoUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
 import { getOtherPlayer } from '@queries/getOtherPlayer';

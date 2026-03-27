@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@entities';
+import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,

@@ -1,10 +1,10 @@
 import type {
   Board,
-  ExpectedEventInfo,
   GameState,
   IssueCommandsPhaseState,
   PlayerSide,
 } from '@entities';
+import type { ExpectedEventInfo } from '@events';
 import { getExpectedMovementResolutionEvent } from './getExpectedMovementResolutionEvent';
 import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttackResolutionEvent';
 

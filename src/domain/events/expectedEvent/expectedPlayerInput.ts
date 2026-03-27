@@ -1,7 +1,7 @@
-import type { Board } from '@entities/board';
-import type { PlayerChoiceType } from '@events';
+import type { Board } from '@entities';
+import type { PlayerChoiceType } from '@events/playerChoices';
 import type { AssertExact } from '@utils';
-import { playerChoiceTypeSchema } from '@events';
+import { playerChoiceTypeSchema } from '@events/playerChoices';
 import { z } from 'zod';
 
 /** Iterable list of valid player sources. */
