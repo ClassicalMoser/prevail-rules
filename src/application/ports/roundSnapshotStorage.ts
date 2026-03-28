@@ -8,13 +8,13 @@ import type { PortResponse } from './portResponse';
  * For client-side use, a simple in-memory map will suffice.
  */
 export interface RoundSnapshotStorage {
-  getRoundSnapshot: <TBoard extends Board>(
+  getRoundSnapshot: (
     gameId: string,
     roundNumber: number,
-  ) => Promise<PortResponse<GameState<TBoard> | undefined>>;
-  saveRoundSnapshot: <TBoard extends Board>(
+  ) => Promise<PortResponse<GameState<Board> | undefined>>;
+  saveRoundSnapshot: (
     gameId: string,
     roundNumber: number,
-    gameState: GameState<TBoard>,
+    gameState: GameState<Board>,
   ) => Promise<PortResponse<void>>;
 }

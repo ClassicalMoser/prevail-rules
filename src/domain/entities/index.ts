@@ -106,7 +106,11 @@ export type {
   PendingCommitment,
 } from './sequence';
 // Game state models.
-export { gameStateSchema } from './sequence';
+export {
+  gameStateSchema,
+  gameStateSchemaForSmallBoard,
+  gameStateSchemaForStandardBoard,
+} from './sequence';
 
 export type { GameState } from './sequence';
 // Phases models.
