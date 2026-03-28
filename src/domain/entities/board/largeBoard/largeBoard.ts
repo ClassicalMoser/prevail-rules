@@ -1,7 +1,6 @@
 import type { AssertExact } from '@utils';
 import type { LargeBoardCoordinateMap } from './largeBoardMap';
 import { z } from 'zod';
-import { LARGE_BOARD_TYPE } from '../board';
 import { largeBoardCoordinateMapSchema } from './largeBoardMap';
 
 /**
@@ -20,7 +19,7 @@ export interface LargeBoard {
   /**
    * The type of board.
    */
-  boardType: typeof LARGE_BOARD_TYPE;
+  boardType: 'large';
   /**
    * The board.
    */
@@ -28,7 +27,7 @@ export interface LargeBoard {
 }
 
 const _largeBoardSchemaObject = z.object({
-  boardType: z.literal(LARGE_BOARD_TYPE),
+  boardType: z.literal('large'),
   board: largeBoardCoordinateMapSchema,
 });
 

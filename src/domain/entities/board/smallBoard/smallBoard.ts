@@ -1,7 +1,6 @@
 import type { AssertExact } from '@utils';
 import type { SmallBoardCoordinateMap } from './smallBoardMap';
 import { z } from 'zod';
-import { SMALL_BOARD_TYPE } from '../board';
 import { smallBoardCoordinateMapSchema } from './smallBoardMap';
 
 /**
@@ -20,7 +19,7 @@ export interface SmallBoard {
   /**
    * The type of board.
    */
-  boardType: typeof SMALL_BOARD_TYPE;
+  boardType: 'small';
   /**
    * The board.
    */
@@ -28,7 +27,7 @@ export interface SmallBoard {
 }
 
 const _smallBoardSchemaObject = z.object({
-  boardType: z.literal(SMALL_BOARD_TYPE),
+  boardType: z.literal('small'),
   board: smallBoardCoordinateMapSchema,
 });
 
