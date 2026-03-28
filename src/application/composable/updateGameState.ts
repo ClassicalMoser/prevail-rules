@@ -34,15 +34,20 @@ export async function updateGameState<T extends GameType>(
     gameType,
     gameState,
   };
-  try {
-    for (const subscriber of gameStateSubscribers) {
-      if (subscriber.gameId !== gameId || subscriber.gameType !== gameType) {
-        continue;
-      }
-      subscriber.onGameStateChange(change);
+  for (const subscriber of gameStateSubscribers) {
+    if (subscriber.gameId !== gameId || subscriber.gameType !== gameType) {
+      continue;
     }
-  } catch (error) {
-    throw new Error(`Error updating game state: ${error}`);
+    try {
+      subscriber.onGameStateChange(change);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      subscriber.onError(err);
+      return {
+        result: false,
+        errorReason: err.message,
+      };
+    }
   }
   return {
     result: true,

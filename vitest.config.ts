@@ -43,8 +43,10 @@ export default defineConfig({
   },
   test: {
     watch: false,
-    // Only run test files in the domain folder
-    include: ['src/domain/**/*.test.{js,ts}'],
+    include: [
+      'src/domain/**/*.test.{js,ts}',
+      'src/application/**/*.test.{js,ts}',
+    ],
     // Exclude build output and node_modules
     exclude: ['dist/**', 'node_modules/**'],
     coverage: {

@@ -1,31 +1,36 @@
 import type { BoardForGameType, Game, GameState, GameType } from '@entities';
-import type { EnginePorts, PortResponse } from '../ports';
+import type { EnginePorts, GameStateChange, PortResponse } from '../ports';
 import { createEmptyGameState } from '@transforms';
 
 export const startNewGame = async <T extends GameType>(
   gameType: T,
   ports: EnginePorts,
-): Promise<void> => {
-  const selectGameState = (gameType: T): GameState<BoardForGameType[T]> => {
-    switch (gameType) {
-      case 'standard':
-        return createEmptyGameState({
-          boardSize: 'standard',
-        });
-      case 'mini':
-        return createEmptyGameState({
-          boardSize: 'small',
-        });
-      case 'tutorial':
-        return createEmptyGameState({
-          boardSize: 'small',
-        });
-      default:
-        throw new Error(`Unknown gameType: ${gameType}`);
+): Promise<PortResponse<void>> => {
+  let gameState: GameState<BoardForGameType[T]>;
+  switch (gameType) {
+    case 'standard':
+      gameState = createEmptyGameState({
+        boardSize: 'standard',
+      }) as GameState<BoardForGameType[T]>;
+      break;
+    case 'mini':
+      gameState = createEmptyGameState({
+        boardSize: 'small',
+      }) as GameState<BoardForGameType[T]>;
+      break;
+    case 'tutorial':
+      gameState = createEmptyGameState({
+        boardSize: 'small',
+      }) as GameState<BoardForGameType[T]>;
+      break;
+    default: {
+      const _exhaustive: never = gameType;
+      return {
+        result: false,
+        errorReason: `Unknown gameType: ${_exhaustive}`,
+      };
     }
-  };
-
-  const gameState = selectGameState(gameType);
+  }
 
   // Temporary: No content yet.
   const game: Game<GameType> = {
@@ -45,9 +50,41 @@ export const startNewGame = async <T extends GameType>(
     },
     gameState,
   };
-  const result: PortResponse<void> = await ports.gameStorage.saveNewGame(game);
+  const saveResult: PortResponse<void> =
+    await ports.gameStorage.saveNewGame(game);
 
-  if (!result?.result) {
-    throw new Error(result?.errorReason ?? 'Unknown error');
+  if (!saveResult.result) {
+    return {
+      result: false,
+      errorReason: saveResult.errorReason,
+    };
   }
+
+  const change: GameStateChange = {
+    gameId: game.id,
+    gameType: game.gameType,
+    gameState: game.gameState as GameState<BoardForGameType[GameType]>,
+  };
+  for (const subscriber of ports.gameStateSubscribers) {
+    if (
+      subscriber.gameId !== game.id ||
+      subscriber.gameType !== game.gameType
+    ) {
+      continue;
+    }
+    try {
+      subscriber.onGameStateChange(change);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      subscriber.onError(err);
+      return {
+        result: false,
+        errorReason: err.message,
+      };
+    }
+  }
+  return {
+    result: true,
+    data: undefined,
+  };
 };

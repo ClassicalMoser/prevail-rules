@@ -11,7 +11,7 @@ import { startNewGame as startNewGameFunction } from './useCases/startNewGame';
  * @returns The game runner instance, structured according to the GameRunner interface.
  */
 export function createGameRunner(ports: EnginePorts): GameRunner {
-  const startNewGame = (gameType: GameType): Promise<void> =>
+  const startNewGame = (gameType: GameType): Promise<PortResponse<void>> =>
     startNewGameFunction(gameType, ports);
 
   const handlePlayerChoiceSubmission = (
