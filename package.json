@@ -25,6 +25,10 @@
     "./domain": {
       "types": "./dist/domain/index.d.ts",
       "import": "./dist/domain/index.js"
+    },
+    "./application": {
+      "types": "./dist/application/index.d.ts",
+      "import": "./dist/application/index.js"
     }
   },
   "main": "./dist/index.js",

@@ -9,23 +9,23 @@ import type { PortResponse } from './portResponse';
  * it can be used to reconstruct the game state at any point in time.
  */
 export interface EventStreamStorage {
-  getEventStream: <TBoard extends Board>(
+  getEventStream: (
     gameId: string,
     roundNumber: number,
-  ) => Promise<PortResponse<readonly Event<TBoard, EventType>[] | undefined>>;
-  addEventToStream: <TBoard extends Board>(
+  ) => Promise<PortResponse<readonly Event<Board, EventType>[] | undefined>>;
+  addEventToStream: (
     gameId: string,
     roundNumber: number,
-    event: Event<TBoard, EventType>,
-  ) => PortResponse<readonly Event<TBoard>[] | undefined>;
+    event: Event<Board, EventType>,
+  ) => PortResponse<readonly Event<Board>[] | undefined>;
   flushEventStream: (gameId: string, roundNumber: number) => PortResponse<void>;
-  newEventStream: <TBoard extends Board>(
+  newEventStream: (
     gameId: string,
     roundNumber: number,
-  ) => PortResponse<readonly Event<TBoard, EventType>[]>;
-  truncateEventStream: <TBoard extends Board>(
+  ) => PortResponse<readonly Event<Board, EventType>[]>;
+  truncateEventStream: (
     gameId: string,
     roundNumber: number,
     firstEventToRemove: number,
-  ) => PortResponse<readonly Event<TBoard, EventType>[]>;
+  ) => PortResponse<readonly Event<Board, EventType>[]>;
 }

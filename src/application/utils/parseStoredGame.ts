@@ -5,6 +5,12 @@ import {
   tutorialGameSchema,
 } from '@entities';
 
+/**
+ * **Boundary:** validates untrusted / stored data and returns a typed {@link Game}.
+ * Call after `GameStorage.getGame` (or equivalent) so downstream code can use `Game<T>` and
+ * correlated state instead of pushing those generics through every adapter.
+ */
+
 /** Interpret game object as specific {@link GameType} using the Zod schema. */
 export function parseStoredGame(
   gameType: 'standard',

@@ -29,7 +29,7 @@ export async function updateGameState<T extends GameType>(
       errorReason: updateResult.errorReason,
     };
   }
-  const change: GameStateChange<T> = {
+  const change: GameStateChange = {
     gameId,
     gameType,
     gameState,

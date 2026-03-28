@@ -2,10 +2,9 @@ import type { Board, Game, GameState, GameType } from '@entities';
 import type { PortResponse } from './portResponse';
 
 /**
- * The port for reading and updating games.
- * Async functions are provided for each operation,
- * but due to frequent invocation, response times shou
- * how to handle persistent storage.
+ * Persistence for full game records and current {@link GameState}.
+ * Implementations typically deal in JSON or DB rows; signatures use wide entity types on purpose.
+ * Parse and narrow with `parseStoredGame` (e.g. via `getGame`) before driving rules.
  */
 export interface GameStorage {
   getGame: (

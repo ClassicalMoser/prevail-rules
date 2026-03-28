@@ -6,8 +6,8 @@ import type { BoardForGameType, GameState, GameType } from '@entities';
  * `GameType` at boundaries where the variant is unknown. Narrow `T` (e.g. `GameStateChange<'standard'>`)
  * for a fully correlated subscriber.
  */
-export interface GameStateChange<T extends GameType = GameType> {
+export interface GameStateChange {
   gameId: string;
-  gameType: T;
-  gameState: GameState<BoardForGameType[T]>;
+  gameType: GameType;
+  gameState: GameState<BoardForGameType[GameType]>;
 }

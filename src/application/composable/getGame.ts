@@ -2,6 +2,7 @@ import type { Game, GameType } from '@entities';
 import type { GameStorage, PortResponse } from '../ports';
 import { parseStoredGame } from '../utils';
 
+/** Loads via `GameStorage` (wide types), then `parseStoredGame`; yields correlated `Game<T>`. */
 export async function getGame<TGame extends GameType>(
   gameId: string,
   gameType: TGame,
