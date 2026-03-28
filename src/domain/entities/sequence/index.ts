@@ -13,7 +13,12 @@ export {
   pendingCommitmentSchema,
 } from './commitment';
 export type { GameState } from './gameState';
-export { gameStateSchema } from './gameState';
+export {
+  gameStateSchema,
+  gameStateSchemaForBoard,
+  gameStateSchemaForSmallBoard,
+  gameStateSchemaForStandardBoard,
+} from './gameState';
 export { cleanupPhaseStateSchema, cleanupPhaseSteps } from './phases';
 export type { CleanupPhaseState, CleanupPhaseStep } from './phases';
 export {

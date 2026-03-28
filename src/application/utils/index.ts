@@ -1,0 +1,1 @@
+export { parseStoredGame } from './parseStoredGame';

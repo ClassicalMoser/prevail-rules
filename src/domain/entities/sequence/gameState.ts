@@ -1,11 +1,15 @@
-import type { Board } from '@entities/board';
+import type { Board, SmallBoard, StandardBoard } from '@entities/board';
 import type { CardState } from '@entities/card';
 import type { PlayerSide } from '@entities/player';
 import type { UnitInstance } from '@entities/unit';
 import type { AssertExact } from '@utils';
 import type { RoundState } from './roundState';
 
-import { boardSchema } from '@entities/board';
+import {
+  boardSchema,
+  smallBoardSchema,
+  standardBoardSchema,
+} from '@entities/board';
 import { cardStateSchema } from '@entities/card';
 import { playerSideSchema } from '@entities/player';
 import { unitInstanceSchema } from '@entities/unit';
@@ -66,3 +70,31 @@ const _assertExactGameState: AssertExact<
  */
 export const gameStateSchema: z.ZodType<GameState<Board>> =
   _gameStateSchemaObject;
+
+/**
+ * {@link GameState} with a specific board schema (standard / small / large).
+ * `currentRoundState` stays {@link RoundState}<{@link Board}> at runtime; narrow via {@link boardState}.
+ */
+export function gameStateSchemaForBoard<TBoard extends Board>(
+  boardStateSchema: z.ZodType<TBoard>,
+): z.ZodType<GameState<TBoard>> {
+  return z.object({
+    currentRoundNumber: z.int().min(0),
+    currentRoundState: roundStateSchema,
+    currentInitiative: playerSideSchema,
+    boardState: boardStateSchema,
+    cardState: cardStateSchema,
+    reservedUnits: z.set(unitInstanceSchema),
+    routedUnits: z.set(unitInstanceSchema),
+    lostCommanders: z.set(playerSideSchema),
+  });
+}
+
+/** {@link GameState} for a standard board. */
+export const gameStateSchemaForStandardBoard: z.ZodType<
+  GameState<StandardBoard>
+> = gameStateSchemaForBoard(standardBoardSchema);
+
+/** {@link GameState} for a small board (mini / tutorial games). */
+export const gameStateSchemaForSmallBoard: z.ZodType<GameState<SmallBoard>> =
+  gameStateSchemaForBoard(smallBoardSchema);

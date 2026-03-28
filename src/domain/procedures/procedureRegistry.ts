@@ -45,7 +45,8 @@ type GameEffectEventUnion<TBoard extends Board> = GameEffectEvent<
  * based on the effect type.
  * Procedures are not strictly deterministic (some generate randomness);
  * the event (with results) is what makes it deterministically replayable.
- * TypeScript will enforce the correct return types based on the effect type.
+ * When `effectType` is a string literal (or a generic type parameter extending `GameEffectType`),
+ * the return type is `GameEffectEvent<TBoard, that literal>`.
  *
  * @param state - The current game state
  * @param eventNumber - The ordered index of this event in the round (zero-indexed)
@@ -55,130 +56,10 @@ type GameEffectEventUnion<TBoard extends Board> = GameEffectEvent<
  *
  * @example
  * ```typescript
- * // Generate resolveRally event (randomly selects card)
  * const event = generateEventFromProcedure(state, 0, 'resolveRally');
- * // event is ResolveRallyEvent<TBoard, 'resolveRally'>
- *
- * // Generate resolveUnitsBroken event
- * const event = generateEventFromProcedure(state, 0, 'resolveUnitsBroken');
- * // event is ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'>
+ * // event: GameEffectEvent<TBoard, 'resolveRally'>
  * ```
  */
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'completeAttackApply',
-): GameEffectEvent<TBoard, 'completeAttackApply'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'completeCleanupPhase',
-): GameEffectEvent<TBoard, 'completeCleanupPhase'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'completeIssueCommandsPhase',
-): GameEffectEvent<TBoard, 'completeIssueCommandsPhase'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'completeMeleeResolution',
-): GameEffectEvent<TBoard, 'completeMeleeResolution'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'completeMoveCommandersPhase',
-): GameEffectEvent<TBoard, 'completeMoveCommandersPhase'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'completePlayCardsPhase',
-): GameEffectEvent<TBoard, 'completePlayCardsPhase'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'completeRangedAttackCommand',
-): GameEffectEvent<TBoard, 'completeRangedAttackCommand'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'completeResolveMeleePhase',
-): GameEffectEvent<TBoard, 'completeResolveMeleePhase'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'completeUnitMovement',
-): GameEffectEvent<TBoard, 'completeUnitMovement'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'discardPlayedCards',
-): GameEffectEvent<TBoard, 'discardPlayedCards'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'resolveEngageRetreatOption',
-): GameEffectEvent<TBoard, 'resolveEngageRetreatOption'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'resolveFlankEngagement',
-): GameEffectEvent<TBoard, 'resolveFlankEngagement'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'resolveInitiative',
-): GameEffectEvent<TBoard, 'resolveInitiative'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'resolveMelee',
-): GameEffectEvent<TBoard, 'resolveMelee'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'resolveRally',
-): GameEffectEvent<TBoard, 'resolveRally'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'resolveRangedAttack',
-): GameEffectEvent<TBoard, 'resolveRangedAttack'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'resolveRetreat',
-): GameEffectEvent<TBoard, 'resolveRetreat'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'resolveReverse',
-): GameEffectEvent<TBoard, 'resolveReverse'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'resolveRout',
-): GameEffectEvent<TBoard, 'resolveRout'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'resolveUnitsBroken',
-): GameEffectEvent<TBoard, 'resolveUnitsBroken'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'revealCards',
-): GameEffectEvent<TBoard, 'revealCards'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'startEngagement',
-): GameEffectEvent<TBoard, 'startEngagement'>;
-export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
-  eventNumber: number,
-  effectType: 'triggerRoutFromRetreat',
-): GameEffectEvent<TBoard, 'triggerRoutFromRetreat'>;
 export function generateEventFromProcedure<
   TBoard extends Board,
   TGameEffectType extends GameEffectType,
@@ -186,6 +67,11 @@ export function generateEventFromProcedure<
   state: GameState<TBoard>,
   eventNumber: number,
   effectType: TGameEffectType,
+): GameEffectEvent<TBoard, TGameEffectType>;
+export function generateEventFromProcedure<TBoard extends Board>(
+  state: GameState<TBoard>,
+  eventNumber: number,
+  effectType: GameEffectType,
 ): GameEffectEventUnion<TBoard> {
   switch (effectType) {
     case 'completeAttackApply':

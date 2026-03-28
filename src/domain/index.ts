@@ -35,6 +35,9 @@ export {
   gameTypeEnum,
   gameTypeStructureSchema,
   lineSchema,
+  miniGameSchema,
+  standardGameSchema,
+  tutorialGameSchema,
 } from '@entities';
 export {
   attackResultSchema,
@@ -139,6 +142,7 @@ export type {
 } from '@entities';
 export type {
   AttackResult,
+  BoardForGameType,
   Commitment,
   CompletedCommitment,
   DeclinedCommitment,

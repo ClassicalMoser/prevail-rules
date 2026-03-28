@@ -66,9 +66,14 @@ export { engagementType, engagementTypeSchema } from './engagementType';
 export type { EngagementType } from './engagementType';
 
 // Game models.
-export { gameSchema } from './game';
+export {
+  gameSchema,
+  miniGameSchema,
+  standardGameSchema,
+  tutorialGameSchema,
+} from './game';
 
-export type { Game } from './game';
+export type { BoardForGameType, Game } from './game';
 
 // Game types.
 export { gameType, gameTypeEnum, gameTypeStructureSchema } from './gameType';
