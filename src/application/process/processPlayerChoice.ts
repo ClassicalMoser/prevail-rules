@@ -5,13 +5,7 @@ import type {
   ValidationResult,
 } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type {
-  EventStreamStorage,
-  GameStateSubscriber,
-  GameStorage,
-  PortResponse,
-  RoundSnapshotStorage,
-} from '../ports';
+import type { EnginePorts, PortResponse } from '../ports';
 import { validatePlayerChoice } from '@validation';
 import { getGameState, getNextEventNumber } from '../composable';
 import { processEvent } from './processEvent';
@@ -20,14 +14,10 @@ export async function processPlayerChoice<T extends GameType>(
   gameId: string,
   gameType: T,
   playerChoice: PlayerChoiceEvent<BoardForGameType[T], PlayerChoiceType>,
-  gameStorage: GameStorage,
-  roundSnapshotStorage: RoundSnapshotStorage,
-  eventStreamStorage: EventStreamStorage,
-  gameStateSubscribers: GameStateSubscriber[],
+  ports: EnginePorts,
 ): Promise<PortResponse<GameState<BoardForGameType[T]>>> {
-  // Get the game state
   const gameState: GameState<BoardForGameType[T]> | undefined =
-    await getGameState(gameId, gameType, gameStorage);
+    await getGameState(gameId, gameType, ports.gameStorage);
   if (!gameState) {
     return {
       result: false,
@@ -35,7 +25,6 @@ export async function processPlayerChoice<T extends GameType>(
     };
   }
 
-  // Validate the player choice
   const validation: ValidationResult = validatePlayerChoice(
     playerChoice,
     gameState,
@@ -47,11 +36,10 @@ export async function processPlayerChoice<T extends GameType>(
     };
   }
 
-  // Get the next event number
   const nextEventNumber: PortResponse<number> = await getNextEventNumber(
     gameId,
     gameState.currentRoundNumber,
-    eventStreamStorage,
+    ports.eventStreamStorage,
   );
   if (!nextEventNumber.result) {
     return {
@@ -60,23 +48,12 @@ export async function processPlayerChoice<T extends GameType>(
     };
   }
 
-  // Check if the event number matches
-  const eventNumbersMatch: boolean =
-    nextEventNumber.data === playerChoice.eventNumber;
-  if (!eventNumbersMatch) {
+  if (nextEventNumber.data !== playerChoice.eventNumber) {
     return {
       result: false,
       errorReason: 'Event number mismatch',
     };
   }
 
-  return processEvent(
-    gameId,
-    gameType,
-    playerChoice,
-    gameStorage,
-    roundSnapshotStorage,
-    eventStreamStorage,
-    gameStateSubscribers,
-  );
+  return processEvent(gameId, gameType, playerChoice, gameState, ports);
 }

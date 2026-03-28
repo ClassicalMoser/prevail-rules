@@ -1,3 +1,4 @@
+export type { EnginePorts } from './enginePorts';
 /**
  * **Outbound ports** (driven by the application, implemented by infrastructure).
  *

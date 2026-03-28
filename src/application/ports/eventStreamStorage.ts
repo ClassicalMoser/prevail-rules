@@ -17,15 +17,18 @@ export interface EventStreamStorage {
     gameId: string,
     roundNumber: number,
     event: Event<Board, EventType>,
-  ) => PortResponse<readonly Event<Board>[] | undefined>;
-  flushEventStream: (gameId: string, roundNumber: number) => PortResponse<void>;
+  ) => Promise<PortResponse<readonly Event<Board>[] | undefined>>;
+  flushEventStream: (
+    gameId: string,
+    roundNumber: number,
+  ) => Promise<PortResponse<void>>;
   newEventStream: (
     gameId: string,
     roundNumber: number,
-  ) => PortResponse<readonly Event<Board, EventType>[]>;
+  ) => Promise<PortResponse<readonly Event<Board, EventType>[]>>;
   truncateEventStream: (
     gameId: string,
     roundNumber: number,
     firstEventToRemove: number,
-  ) => PortResponse<readonly Event<Board, EventType>[]>;
+  ) => Promise<PortResponse<readonly Event<Board, EventType>[]>>;
 }

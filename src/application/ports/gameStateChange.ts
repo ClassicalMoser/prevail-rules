@@ -2,9 +2,8 @@ import type { BoardForGameType, GameState, GameType } from '@entities';
 
 /**
  * Payload after a successful persisted game-state update.
- * `T` ties {@link GameStateChange.gameType} to {@link GameStateChange.gameState}; use the default
- * `GameType` at boundaries where the variant is unknown. Narrow `T` (e.g. `GameStateChange<'standard'>`)
- * for a fully correlated subscriber.
+ * Both fields are intentionally wide: {@link gameType} and {@link gameState} are uncorrelated at the
+ * type level so ports and subscribers don't need to be generic. Narrow after load if needed.
  */
 export interface GameStateChange {
   gameId: string;

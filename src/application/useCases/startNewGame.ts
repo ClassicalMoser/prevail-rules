@@ -1,10 +1,10 @@
 import type { BoardForGameType, Game, GameState, GameType } from '@entities';
-import type { GameStorage, PortResponse } from '../ports';
+import type { EnginePorts, PortResponse } from '../ports';
 import { createEmptyGameState } from '@transforms';
 
 export const startNewGame = async <T extends GameType>(
   gameType: T,
-  gameStorage: GameStorage,
+  ports: EnginePorts,
 ): Promise<void> => {
   const selectGameState = (gameType: T): GameState<BoardForGameType[T]> => {
     switch (gameType) {
@@ -45,7 +45,7 @@ export const startNewGame = async <T extends GameType>(
     },
     gameState,
   };
-  const result: PortResponse<void> = await gameStorage.saveNewGame(game);
+  const result: PortResponse<void> = await ports.gameStorage.saveNewGame(game);
 
   if (!result?.result) {
     throw new Error(result?.errorReason ?? 'Unknown error');

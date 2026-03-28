@@ -14,8 +14,14 @@ export interface GameStorage {
   saveNewGame: <T extends GameType>(
     game: Game<T>,
   ) => Promise<PortResponse<void>>;
-  updateGameState: <TBoard extends Board>(
+  /**
+   * `gameState` is intentionally wide (`GameState<Board>`). {@link Game} ties `gameState` to
+   * `gameType` (`GameState<BoardForGameType[T]>`), so merging into an existing `Game` usually
+   * needs a single assertion (e.g. `{ ...game, gameState } as Game`) or a re-parse through
+   * `parseStoredGame` / board-specific schemas—same as any JSON round-trip.
+   */
+  updateGameState: (
     gameId: string,
-    gameState: GameState<TBoard>,
+    gameState: GameState<Board>,
   ) => Promise<PortResponse<void>>;
 }

@@ -1,31 +1,19 @@
 import type { BoardForGameType, GameType } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type {
-  EventStreamStorage,
-  GameStateSubscriber,
-  GameStorage,
-  PortResponse,
-  RoundSnapshotStorage,
-} from '../ports';
+import type { EnginePorts, PortResponse } from '../ports';
 import { advanceEffects, processPlayerChoice } from '../process';
 
 export async function handlePlayerChoiceSubmission<T extends GameType>(
   gameId: string,
   gameType: T,
   playerChoice: PlayerChoiceEvent<BoardForGameType[T], PlayerChoiceType>,
-  gameStorage: GameStorage,
-  roundSnapshotStorage: RoundSnapshotStorage,
-  eventStreamStorage: EventStreamStorage,
-  gameStateSubscribers: GameStateSubscriber[],
+  ports: EnginePorts,
 ): Promise<PortResponse<void>> {
   const processResult = await processPlayerChoice(
     gameId,
     gameType,
     playerChoice,
-    gameStorage,
-    roundSnapshotStorage,
-    eventStreamStorage,
-    gameStateSubscribers,
+    ports,
   );
   if (!processResult.result) {
     return {
@@ -33,15 +21,11 @@ export async function handlePlayerChoiceSubmission<T extends GameType>(
       errorReason: processResult.errorReason,
     };
   }
-  const currentGameState = processResult.data;
   const advanceResult = await advanceEffects(
     gameId,
     gameType,
-    currentGameState,
-    gameStorage,
-    roundSnapshotStorage,
-    eventStreamStorage,
-    gameStateSubscribers,
+    processResult.data,
+    ports,
   );
   if (!advanceResult.result) {
     return advanceResult;
