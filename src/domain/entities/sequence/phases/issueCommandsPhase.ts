@@ -7,7 +7,6 @@ import { commandSchema } from '@entities/card';
 import { unitInstanceSchema } from '@entities/unit';
 import { z } from 'zod';
 import { commandResolutionStateSchema } from '../substeps';
-import { ISSUE_COMMANDS_PHASE } from './phases';
 
 /** Iterable list of valid steps in the issue commands phase. */
 export const issueCommandsPhaseSteps = [
@@ -51,7 +50,7 @@ export const issueCommandsPhaseStepSchema: z.ZodType<IssueCommandsPhaseStep> =
 /** The state of the issue commands phase. */
 export interface IssueCommandsPhaseState<TBoard extends Board> {
   /** The current phase of the round. */
-  phase: typeof ISSUE_COMMANDS_PHASE;
+  phase: 'issueCommands';
   /** The step of the issue commands phase. */
   step: IssueCommandsPhaseStep;
   /** The remaining commands for the first player. */
@@ -68,7 +67,7 @@ export interface IssueCommandsPhaseState<TBoard extends Board> {
 
 const _issueCommandsPhaseStateSchemaObject = z.object({
   /** The current phase of the round. */
-  phase: z.literal(ISSUE_COMMANDS_PHASE),
+  phase: z.literal('issueCommands'),
   /** The step of the issue commands phase. */
   step: issueCommandsPhaseStepSchema,
   /** The remaining commands for the first player. */

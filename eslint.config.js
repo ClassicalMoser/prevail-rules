@@ -48,6 +48,7 @@ export default antfu(
         'error',
         {
           rootDir: 'src',
+          crossBoundaryStyle: 'alias',
           boundaries,
         },
       ],
@@ -74,6 +75,7 @@ export default antfu(
         'error',
         {
           rootDir: 'src',
+          crossBoundaryStyle: 'alias',
           enforceBoundaries: false, // Skip boundary allow/deny rules, but still enforce path format
           boundaries,
         },

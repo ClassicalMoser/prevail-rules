@@ -3,7 +3,6 @@ import type { RallyResolutionState } from '../substeps';
 
 import { z } from 'zod';
 import { rallyResolutionStateSchema } from '../substeps';
-import { CLEANUP_PHASE } from './phases';
 
 /** Iterable list of valid steps in the cleanup phase. */
 export const cleanupPhaseSteps = [
@@ -39,7 +38,7 @@ const _assertExactCleanupPhaseStep: AssertExact<
 /** The state of the cleanup phase. */
 export interface CleanupPhaseState {
   /** The current phase of the round. */
-  phase: typeof CLEANUP_PHASE;
+  phase: 'cleanup';
   /** The step of the cleanup phase. */
   step: CleanupPhaseStep;
   /** The state of the first player's rally resolution (unit support checks). */
@@ -50,7 +49,7 @@ export interface CleanupPhaseState {
 
 const _cleanupPhaseStateSchemaObject = z.object({
   /** The current phase of the round. */
-  phase: z.literal(CLEANUP_PHASE),
+  phase: z.literal('cleanup'),
   /** The step of the cleanup phase. */
   step: cleanupPhaseStepSchema,
   /** The state of the first player's rally resolution (unit support checks). */

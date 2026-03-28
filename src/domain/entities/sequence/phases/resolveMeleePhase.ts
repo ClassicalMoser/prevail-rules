@@ -5,7 +5,6 @@ import type { MeleeResolutionState } from '../substeps';
 import { boardCoordinateSchema } from '@entities/board';
 import { z } from 'zod';
 import { meleeResolutionStateSchema } from '../substeps';
-import { RESOLVE_MELEE_PHASE } from './phases';
 
 /** Iterable list of valid steps in the resolve melee phase. */
 export const resolveMeleePhaseSteps = [
@@ -35,7 +34,7 @@ const _assertExactResolveMeleePhaseStep: AssertExact<
 /** The state of the resolve melee phase. */
 export interface ResolveMeleePhaseState<TBoard extends Board> {
   /** The current phase of the round. */
-  phase: typeof RESOLVE_MELEE_PHASE;
+  phase: 'resolveMelee';
   /** The step of the resolve melee phase. */
   step: ResolveMeleePhaseStep;
   /** The state of the ongoing melee resolution. */
@@ -46,7 +45,7 @@ export interface ResolveMeleePhaseState<TBoard extends Board> {
 
 const _resolveMeleePhaseStateSchemaObject = z.object({
   /** The current phase of the round. */
-  phase: z.literal(RESOLVE_MELEE_PHASE),
+  phase: z.literal('resolveMelee'),
   /** The step of the resolve melee phase. */
   step: resolveMeleePhaseStepSchema,
   /** The state of the ongoing melee resolution. */
