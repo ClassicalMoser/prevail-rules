@@ -1,4 +1,4 @@
-import { CLEANUP_PHASE } from '@entities';
+import { CLEANUP_PHASE } from '@game';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { getIsFirstPlayerForResolveRallyStep } from './getIsFirstPlayerForResolveRallyStep';

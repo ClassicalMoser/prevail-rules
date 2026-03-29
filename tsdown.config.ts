@@ -13,6 +13,7 @@ export default defineConfig({
   }),
   alias: {
     '@entities': './src/entities',
+    '@game': './src/game',
     '@queries': './src/functions',
     '@commands': './src/commands',
     '@testing': './src/testing',

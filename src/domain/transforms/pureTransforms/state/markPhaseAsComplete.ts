@@ -1,4 +1,5 @@
-import type { Board, PhaseState } from '@entities';
+import type { Board } from '@entities';
+import type { PhaseState } from '@game';
 
 /**
  * Creates a new phase state with the step set to 'complete'.

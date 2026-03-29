@@ -1,4 +1,4 @@
-import { CLEANUP_PHASE, PLAY_CARDS_PHASE } from '@entities';
+import { CLEANUP_PHASE, PLAY_CARDS_PHASE } from '@game';
 import { describe, expect, it } from 'vitest';
 import { markPhaseAsComplete } from './markPhaseAsComplete';
 

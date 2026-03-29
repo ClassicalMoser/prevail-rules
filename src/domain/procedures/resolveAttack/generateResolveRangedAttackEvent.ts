@@ -1,5 +1,6 @@
-import type { Board, GameState, UnitPlacement } from '@entities';
+import type { Board, UnitPlacement } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
+import type { GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_RANGED_ATTACK_EFFECT_TYPE,

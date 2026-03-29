@@ -1,5 +1,6 @@
-import type { Board, GameState, IssueCommandsPhaseState } from '@entities';
+import type { Board } from '@entities';
 import type { CompleteRangedAttackCommandEvent } from '@events';
+import type { GameState, IssueCommandsPhaseState } from '@game';
 import { getIssueCommandsPhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 

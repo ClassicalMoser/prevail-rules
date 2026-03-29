@@ -1,10 +1,9 @@
+import type { Board, PlayerSide } from '@entities';
 import type {
   AttackApplyState,
-  Board,
   GameState,
-  PlayerSide,
   ResolveMeleePhaseState,
-} from '@entities';
+} from '@game';
 import {
   getAttackApplyStateFromMelee,
   getMeleeResolutionState,

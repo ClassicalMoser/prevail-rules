@@ -1,4 +1,5 @@
-import type { AttackApplyState, Board, GameState, RoutState } from '@entities';
+import type { Board } from '@entities';
+import type { AttackApplyState, GameState, RoutState } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
 

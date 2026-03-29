@@ -1,10 +1,5 @@
-import type {
-  Board,
-  GameState,
-  Modifier,
-  UnitInstance,
-  UnitStatName,
-} from '@entities';
+import type { Board, Modifier, UnitInstance, UnitStatName } from '@entities';
+import type { GameState } from '@game';
 import { isDefenseStat, matchesUnitRequirements } from '@validation';
 import { getSpacesWithinDistance } from './boardSpace';
 import { getCommanderSpace } from './getCommanderSpace';

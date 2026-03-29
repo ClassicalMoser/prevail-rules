@@ -1,4 +1,5 @@
-import type { Board, GameState, PlayerSide, ValidationResult } from '@entities';
+import type { Board, PlayerSide, ValidationResult } from '@entities';
+import type { GameState } from '@game';
 import { getBoardCoordinates, getBoardSpace } from '@queries';
 
 export function eachCommanderPresentOnce(

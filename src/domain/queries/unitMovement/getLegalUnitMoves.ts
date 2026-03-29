@@ -1,10 +1,10 @@
 import type {
   Board,
   BoardSpace,
-  GameState,
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
+import type { GameState } from '@game';
 import { hasSingleUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
 import { isSameUnitInstance } from '@validation';

@@ -1,13 +1,12 @@
-import type { Board } from '@entities/board';
-import type { RoutState } from '@entities/sequence';
-import type { UnitInstance } from '@entities/unit';
+import type { Board, UnitInstance } from '@entities';
+import type { AttackResult } from '@game/attackResult';
 import type { AssertExact } from '@utils';
-import type { AttackResult } from '../attackResult';
 import type { RetreatState } from './retreatSubstep';
 import type { ReverseState } from './reverseSubstep';
-import { unitInstanceSchema } from '@entities/unit';
+import type { RoutState } from './routSubstep';
+import { unitInstanceSchema } from '@entities';
+import { attackResultSchema } from '@game/attackResult';
 import { z } from 'zod';
-import { attackResultSchema } from '../attackResult';
 import { retreatStateSchema } from './retreatSubstep';
 import { reverseStateSchema } from './reverseSubstep';
 import { routStateSchema } from './routSubstep';

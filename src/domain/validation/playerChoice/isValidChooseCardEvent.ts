@@ -1,5 +1,6 @@
-import type { Board, GameState, ValidationResult } from '@entities';
+import type { Board, ValidationResult } from '@entities';
 import type { ChooseCardEvent } from '@events';
+import type { GameState } from '@game';
 
 /**
  * Validates whether a ChooseCardEvent can be applied to the current game state.

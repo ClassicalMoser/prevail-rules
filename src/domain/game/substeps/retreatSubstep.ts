@@ -1,11 +1,7 @@
-import type { Board } from '@entities/board';
-import type { UnitPlacement, UnitWithPlacement } from '@entities/unitLocation';
+import type { Board, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import type { RoutState } from './routSubstep';
-import {
-  unitPlacementSchema,
-  unitWithPlacementSchema,
-} from '@entities/unitLocation';
+import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
 import { z } from 'zod';
 import { routStateSchema } from './routSubstep';
 

@@ -1,12 +1,10 @@
+import type { StandardBoard, UnitInstance, UnitPlacement } from '@entities';
 import type {
   EngagementState,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
-  StandardBoard,
-  UnitInstance,
-  UnitPlacement,
-} from '@entities';
+} from '@game';
 import { createUnitWithPlacement } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 import { createRoutState } from './substepStates';

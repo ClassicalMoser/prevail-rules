@@ -1,5 +1,6 @@
-import type { Board, GameState, MeleeResolutionState } from '@entities';
+import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
+import type { GameState, MeleeResolutionState } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getDefendingPlayerForNextIncompleteMeleeAttackApply } from '@queries/sequencing';
 import { getExpectedAttackApplyEvent } from '../composable';

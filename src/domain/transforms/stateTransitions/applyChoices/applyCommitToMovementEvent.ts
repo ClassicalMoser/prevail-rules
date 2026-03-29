@@ -1,5 +1,6 @@
-import type { Board, GameState, MovementResolutionState } from '@entities';
+import type { Board } from '@entities';
 import type { CommitToMovementEvent } from '@events';
+import type { GameState, MovementResolutionState } from '@game';
 import { getMovementResolutionState } from '@queries';
 import {
   discardCardsFromHand,

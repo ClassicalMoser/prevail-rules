@@ -1,18 +1,22 @@
-import type { Board, SmallBoard, StandardBoard } from '@entities/board';
-import type { CardState } from '@entities/card';
-import type { PlayerSide } from '@entities/player';
-import type { UnitInstance } from '@entities/unit';
+import type {
+  Board,
+  CardState,
+  PlayerSide,
+  SmallBoard,
+  StandardBoard,
+  UnitInstance,
+} from '@entities';
 import type { AssertExact } from '@utils';
 import type { RoundState } from './roundState';
 
 import {
   boardSchema,
+  cardStateSchema,
+  playerSideSchema,
   smallBoardSchema,
   standardBoardSchema,
-} from '@entities/board';
-import { cardStateSchema } from '@entities/card';
-import { playerSideSchema } from '@entities/player';
-import { unitInstanceSchema } from '@entities/unit';
+  unitInstanceSchema,
+} from '@entities';
 import { z } from 'zod';
 import { roundStateSchema } from './roundState';
 

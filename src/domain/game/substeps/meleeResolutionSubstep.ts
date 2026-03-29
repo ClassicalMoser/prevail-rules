@@ -1,10 +1,10 @@
-import type { Board, BoardCoordinate } from '@entities/board';
+import type { Board, BoardCoordinate } from '@entities';
+import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
-import type { Commitment } from '../commitment';
 import type { AttackApplyState } from './attackApplySubstep';
-import { boardCoordinateSchema } from '@entities/board';
+import { boardCoordinateSchema } from '@entities';
+import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
-import { commitmentSchema } from '../commitment';
 import { attackApplyStateSchema } from './attackApplySubstep';
 
 /**

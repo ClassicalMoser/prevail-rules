@@ -1,4 +1,5 @@
-import type { Board, GameState, PhaseState } from '@entities';
+import type { Board } from '@entities';
+import type { GameState, PhaseState } from '@game';
 
 /**
  * Creates a new game state with the phase state updated.

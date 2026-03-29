@@ -1,5 +1,6 @@
-import type { Board, GameState, IssueCommandsPhaseState } from '@entities';
+import type { Board } from '@entities';
 import type { StartEngagementEvent } from '@events';
+import type { GameState, IssueCommandsPhaseState } from '@game';
 import {
   getIssueCommandsPhaseState,
   getMovementResolutionState,

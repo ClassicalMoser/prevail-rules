@@ -1,4 +1,5 @@
-import type { Board, GameState, UnitInstance } from '@entities';
+import type { Board, UnitInstance } from '@entities';
+import type { GameState } from '@game';
 import { hasUnitInSet } from '@queries';
 
 /* Pure transform to add a unit to the routed units set immutably with no side effects. */

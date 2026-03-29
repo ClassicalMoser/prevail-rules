@@ -1,4 +1,4 @@
-import type { RearEngagementResolutionState } from '@entities';
+import type { RearEngagementResolutionState } from '@game';
 import {
   createEmptyGameState,
   createFrontEngagementState,

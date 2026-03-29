@@ -1,5 +1,6 @@
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { CompleteMoveCommandersPhaseEvent } from '@events';
+import type { GameState } from '@game';
 import {
   COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,

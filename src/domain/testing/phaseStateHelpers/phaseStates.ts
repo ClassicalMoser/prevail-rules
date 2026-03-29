@@ -1,3 +1,4 @@
+import type { StandardBoard } from '@entities';
 import type {
   CleanupPhaseState,
   GameState,
@@ -5,14 +6,14 @@ import type {
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
   ResolveMeleePhaseState,
-  StandardBoard,
-} from '@entities';
+} from '@game';
 import {
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,
   PLAY_CARDS_PHASE,
   RESOLVE_MELEE_PHASE,
-} from '@entities';
+} from '@game';
+
 import { createMeleeResolutionState } from './commandResolutionStates';
 
 /**

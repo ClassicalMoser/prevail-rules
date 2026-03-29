@@ -1,9 +1,6 @@
-import type { Game, GameType } from '@entities';
-import {
-  miniGameSchema,
-  standardGameSchema,
-  tutorialGameSchema,
-} from '@entities';
+import type { GameType } from '@entities';
+import type { Game } from '@game';
+import { miniGameSchema, standardGameSchema, tutorialGameSchema } from '@game';
 
 /**
  * **Boundary:** validates untrusted / stored data and returns a typed {@link Game}.

@@ -1,5 +1,4 @@
 import type {
-  GameState,
   PlayerSide,
   StandardBoard,
   StandardBoardCoordinate,
@@ -7,6 +6,7 @@ import type {
   UnitInstance,
   UnitType,
 } from '@entities';
+import type { GameState } from '@game';
 import { createEmptyGameState } from '@testing/createEmptyGameState';
 import { createBoardWithEngagedUnits } from './boardWithEngagedUnits';
 import { createBoardWithSingleUnit } from './boardWithSingleUnit';

@@ -1,6 +1,8 @@
-import type { GameState, StandardBoard } from '@entities';
-import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@entities';
+import type { StandardBoard } from '@entities';
+import type { GameState } from '@game';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
+
+import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms';

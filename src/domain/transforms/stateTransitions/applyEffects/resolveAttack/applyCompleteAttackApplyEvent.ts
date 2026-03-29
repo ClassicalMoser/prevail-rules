@@ -1,5 +1,6 @@
-import type { AttackApplyState, Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
+import type { AttackApplyState, GameState } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,

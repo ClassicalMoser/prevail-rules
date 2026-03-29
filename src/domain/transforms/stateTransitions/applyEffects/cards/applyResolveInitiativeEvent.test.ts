@@ -1,6 +1,8 @@
-import type { GameState, StandardBoard } from '@entities';
+import type { StandardBoard } from '@entities';
 import type { ResolveInitiativeEvent } from '@events';
-import { PLAY_CARDS_PHASE } from '@entities';
+import type { GameState } from '@game';
+import { PLAY_CARDS_PHASE } from '@game';
+
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';

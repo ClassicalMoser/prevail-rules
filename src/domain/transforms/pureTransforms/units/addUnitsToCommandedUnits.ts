@@ -1,4 +1,5 @@
-import type { Board, GameState, UnitInstance } from '@entities';
+import type { Board, UnitInstance } from '@entities';
+import type { GameState } from '@game';
 import { updateRoundState } from '../state';
 
 /**

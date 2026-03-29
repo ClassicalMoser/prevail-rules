@@ -1,13 +1,10 @@
-import type {
-  BoardForGameType,
-  GameState,
-  GameType,
-  ValidationResult,
-} from '@entities';
+import type { GameType, ValidationResult } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
+import type { BoardForGameType, GameState } from '@game';
 import type { EnginePorts, PortResponse } from '../ports';
+import { getExpectedEvent } from '@queries';
 import { validatePlayerChoice } from '@validation';
-import { getGameState, getNextEventNumber } from '../composable';
+import { getGameState } from '../composable';
 import { processEvent } from './processEvent';
 
 export async function processPlayerChoice<T extends GameType>(
@@ -36,19 +33,8 @@ export async function processPlayerChoice<T extends GameType>(
     };
   }
 
-  const nextEventNumber: PortResponse<number> = await getNextEventNumber(
-    gameId,
-    gameState.currentRoundNumber,
-    ports.eventStreamStorage,
-  );
-  if (!nextEventNumber.result) {
-    return {
-      result: false,
-      errorReason: nextEventNumber.errorReason,
-    };
-  }
-
-  if (nextEventNumber.data !== playerChoice.eventNumber) {
+  const expected = getExpectedEvent(gameState);
+  if (expected.eventNumber !== playerChoice.eventNumber) {
     return {
       result: false,
       errorReason: 'Event number mismatch',

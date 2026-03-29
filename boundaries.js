@@ -42,7 +42,7 @@ export const boundaries = [
     identifier: '@entities',
     dir: 'domain/entities',
     alias: '@entities',
-    allowImportsFrom: ['@events', '@ruleValues'],
+    allowImportsFrom: ['@ruleValues'],
     allowTypeImportsFrom: ['@utils'],
     // Mutual dependency layer with events and rule values
     // No functions, no tests, pure declarative structures.
@@ -60,7 +60,13 @@ export const boundaries = [
     identifier: '@queries',
     dir: 'domain/queries',
     alias: '@queries',
-    allowImportsFrom: ['@entities', '@ruleValues', '@validation', '@events'],
+    allowImportsFrom: [
+      '@entities',
+      '@ruleValues',
+      '@validation',
+      '@events',
+      '@game',
+    ],
     allowTypeImportsFrom: ['@utils'],
     // Mutual dependency layer with validation
     // Inwardly dependent on entities, events, and rule values
@@ -73,6 +79,7 @@ export const boundaries = [
     allowImportsFrom: [
       '@entities',
       '@queries',
+      '@game',
       '@ruleValues',
       '@events',
       '@transforms',
@@ -99,9 +106,27 @@ export const boundaries = [
     allowImportsFrom: [
       '@ruleValues',
       '@entities',
+      '@game',
       '@events',
       '@queries',
       '@validation',
+    ],
+    allowTypeImportsFrom: ['@utils'],
+    // State transition functions for applying events to game state.
+    // Depends on structures and functions from other layers.
+    // No runtime, pure functions.
+  },
+  {
+    identifier: '@game',
+    dir: 'domain/game',
+    alias: '@game',
+    allowImportsFrom: [
+      '@entities',
+      '@events',
+      '@queries',
+      '@validation',
+      '@ruleValues',
+      '@transforms',
     ],
     allowTypeImportsFrom: ['@utils'],
     // State transition functions for applying events to game state.
@@ -119,6 +144,7 @@ export const boundaries = [
       '@events',
       '@utils',
       '@validation',
+      '@game',
       '@sampleValues',
       '@transforms',
     ],

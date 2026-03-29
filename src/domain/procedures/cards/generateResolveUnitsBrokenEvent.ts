@@ -1,5 +1,6 @@
-import type { Board, GameState, PlayerSide, UnitType } from '@entities';
+import type { Board, PlayerSide, UnitType } from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
+import type { GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_UNITS_BROKEN_EFFECT_TYPE,

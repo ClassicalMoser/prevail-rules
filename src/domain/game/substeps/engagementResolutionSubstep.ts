@@ -1,10 +1,7 @@
-import type { Board } from '@entities/board';
-import type { UnitInstance } from '@entities/unit';
-import type { UnitPlacement } from '@entities/unitLocation';
+import type { Board, UnitInstance, UnitPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import type { EngagementResolutionState } from './engagement';
-import { unitInstanceSchema } from '@entities/unit';
-import { unitPlacementSchema } from '@entities/unitLocation';
+import { unitInstanceSchema, unitPlacementSchema } from '@entities';
 import { z } from 'zod';
 import { engagementResolutionStateSchema } from './engagement';
 

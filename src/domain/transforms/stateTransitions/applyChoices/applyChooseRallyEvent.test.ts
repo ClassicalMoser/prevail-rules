@@ -1,6 +1,7 @@
 import type { StandardBoard } from '@entities';
 import type { ChooseRallyEvent } from '@events';
-import { CLEANUP_PHASE } from '@entities';
+import { CLEANUP_PHASE } from '@game';
+
 import { getCleanupPhaseState } from '@queries';
 import { createCleanupPhaseState, createEmptyGameState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';

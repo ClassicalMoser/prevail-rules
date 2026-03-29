@@ -1,4 +1,5 @@
-import type { BoardForGameType, GameState, GameType } from '@entities';
+import type { GameType } from '@entities';
+import type { BoardForGameType, GameState } from '@game';
 import type { GameStorage } from '../ports';
 import { getGame } from './getGame';
 

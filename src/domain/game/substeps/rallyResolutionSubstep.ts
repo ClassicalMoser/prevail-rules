@@ -1,8 +1,8 @@
-import type { UnitInstance } from '@entities/unit';
+import type { UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
 import type { RoutState } from './routSubstep';
 
-import { unitInstanceSchema } from '@entities/unit';
+import { unitInstanceSchema } from '@entities';
 import { z } from 'zod';
 import { routStateSchema } from './routSubstep';
 

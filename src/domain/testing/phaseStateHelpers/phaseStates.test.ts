@@ -3,7 +3,7 @@ import {
   MOVE_COMMANDERS_PHASE,
   PLAY_CARDS_PHASE,
   RESOLVE_MELEE_PHASE,
-} from '@entities';
+} from '@game';
 import { createEmptyGameState } from '@testing/createEmptyGameState';
 import { describe, expect, it } from 'vitest';
 import {

@@ -1,5 +1,6 @@
-import type { Board, GameState, PlayCardsPhaseState } from '@entities';
+import type { Board } from '@entities';
 import type { ChooseCardEvent } from '@events';
+import type { GameState, PlayCardsPhaseState } from '@game';
 import { getPlayCardsPhaseState } from '@queries';
 import {
   chooseCard,

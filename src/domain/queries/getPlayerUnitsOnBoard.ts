@@ -1,4 +1,5 @@
-import type { Board, GameState, PlayerSide, UnitInstance } from '@entities';
+import type { Board, PlayerSide, UnitInstance } from '@entities';
+import type { GameState } from '@game';
 import { hasEngagedUnits, hasSingleUnit } from '@entities';
 import { getBoardCoordinates, getBoardSpace } from './boardSpace';
 

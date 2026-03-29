@@ -1,11 +1,11 @@
 import type {
   Board,
   BoardCoordinate,
-  GameState,
   UnitFacing,
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
+import type { GameState } from '@game';
 import { unitFacings } from '@entities';
 import {
   getForwardSpace,

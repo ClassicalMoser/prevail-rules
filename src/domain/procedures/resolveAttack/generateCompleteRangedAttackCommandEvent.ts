@@ -1,5 +1,6 @@
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { CompleteRangedAttackCommandEvent } from '@events';
+import type { GameState } from '@game';
 import {
   COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,

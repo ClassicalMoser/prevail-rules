@@ -1,4 +1,5 @@
-import type { Board, Game, GameState, GameType } from '@entities';
+import type { Board, GameType } from '@entities';
+import type { Game, GameState } from '@game';
 import type { PortResponse } from './portResponse';
 
 /**

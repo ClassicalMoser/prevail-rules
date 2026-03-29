@@ -1,4 +1,4 @@
-import type { Phase } from '@entities';
+import type { Phase } from '@game';
 import { createEmptyGameState } from '@testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { getExpectedEvent } from './getExpectedEvent';
@@ -42,15 +42,15 @@ describe('getExpectedEvent', () => {
   function expectDelegation(
     phase: Phase,
     delegatedMock: ReturnType<typeof vi.fn>,
-    expectedEvent: { actionType: 'gameEffect'; effectType: string },
+    delegateReturn: { actionType: 'gameEffect'; effectType: string },
   ) {
     const state = createEmptyGameState();
     getCurrentPhaseStateMock.mockReturnValue({ phase });
-    delegatedMock.mockReturnValue(expectedEvent);
+    delegatedMock.mockReturnValue(delegateReturn);
 
     const result = getExpectedEvent(state);
 
-    expect(result).toBe(expectedEvent);
+    expect(result).toEqual({ ...delegateReturn, eventNumber: 0 });
     expect(getCurrentPhaseStateMock).toHaveBeenCalledWith(state);
     expect(delegatedMock).toHaveBeenCalledWith(state);
   }

@@ -1,6 +1,8 @@
-import type { Board, CleanupPhaseState, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { CompleteResolveMeleePhaseEvent } from '@events';
-import { CLEANUP_PHASE } from '@entities';
+import type { CleanupPhaseState, GameState } from '@game';
+import { CLEANUP_PHASE } from '@game';
+
 import { getResolveMeleePhaseState } from '@queries';
 import {
   addCompletedPhase,

@@ -1,10 +1,12 @@
-import type { GameState, StandardBoard } from '@entities';
+import type { StandardBoard } from '@entities';
 import type {
   ChooseCardEvent,
   IssueCommandEvent,
   PlayerChoiceEvent,
 } from '@events';
-import { PLAY_CARDS_PHASE } from '@entities';
+import type { GameState } from '@game';
+import { PLAY_CARDS_PHASE } from '@game';
+
 import * as expectedEventQueries from '@queries';
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
@@ -149,6 +151,7 @@ describe('validatePlayerChoice', () => {
         actionType: 'playerChoice',
         playerSource: 'black',
         choiceType: 'issueCommand',
+        eventNumber: 0,
       });
     });
 

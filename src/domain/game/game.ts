@@ -1,17 +1,20 @@
-import type { Army } from './army';
-import type { BoardType, SmallBoard, StandardBoard } from './board';
-import type { GameType } from './gameType';
-import type { GameState } from './sequence';
+import type {
+  Army,
+  BoardType,
+  GameType,
+  SmallBoard,
+  StandardBoard,
+} from '@entities';
+import type { GameState } from './gameState';
 
+import { armySchema, gameTypeEnum } from '@entities';
 import { gameTypes } from '@ruleValues';
 import { z } from 'zod';
-import { armySchema } from './army';
-import { gameTypeEnum } from './gameType';
 import {
   gameStateSchema,
   gameStateSchemaForSmallBoard,
   gameStateSchemaForStandardBoard,
-} from './sequence';
+} from './gameState';
 
 /**
  * Board shape required for each {@link GameType}.

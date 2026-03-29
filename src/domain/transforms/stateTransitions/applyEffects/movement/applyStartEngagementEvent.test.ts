@@ -1,5 +1,6 @@
-import type { GameState, StandardBoard, UnitWithPlacement } from '@entities';
+import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { StartEngagementEvent } from '@events';
+import type { GameState } from '@game';
 import {
   createEmptyGameState,
   createIssueCommandsPhaseState,

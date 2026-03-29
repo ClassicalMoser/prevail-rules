@@ -1,6 +1,6 @@
-import type { Commitment } from '@entities/sequence';
+import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
-import { commitmentSchema } from '@entities/sequence';
+import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
 
 /** The resolution state of an engagement from the front. */

@@ -1,5 +1,6 @@
-import type { Board, GameState, RoutState } from '@entities';
+import type { Board } from '@entities';
 import type { ResolveRoutEvent, RoutResolutionSource } from '@events';
+import type { GameState, RoutState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ROUT_EFFECT_TYPE } from '@events';
 import {
   getAttackApplyStateFromRangedAttack,

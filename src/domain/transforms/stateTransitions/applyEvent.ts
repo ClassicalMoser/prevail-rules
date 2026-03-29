@@ -10,8 +10,9 @@
  * based on the event's discriminated union type.
  */
 
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { Event } from '@events';
+import type { GameState } from '@game';
 import { applyGameEffectEvent } from './applyGameEffectEvent';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
@@ -36,15 +37,23 @@ export function applyEvent<TBoard extends Board>(
   event: Event<TBoard>,
   state: GameState<TBoard>,
 ): GameState<TBoard> {
-  // Route based on event type (playerChoice vs gameEffect)
+  let newState: GameState<TBoard>;
+
   if (event.eventType === 'playerChoice') {
-    return applyPlayerChoiceEvent(event, state);
+    newState = applyPlayerChoiceEvent(event, state);
   } else if (event.eventType === 'gameEffect') {
-    return applyGameEffectEvent(event, state);
+    newState = applyGameEffectEvent(event, state);
   } else {
-    // This should never happen with proper TypeScript types, but provides runtime safety
     throw new Error(
       `Unknown event type: ${(event as Event<TBoard>).eventType}`,
     );
   }
+
+  return {
+    ...newState,
+    currentRoundState: {
+      ...newState.currentRoundState,
+      events: [...newState.currentRoundState.events, event],
+    },
+  };
 }

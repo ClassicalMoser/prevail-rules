@@ -1,6 +1,8 @@
-import type { GameState, StandardBoard } from '@entities';
+import type { StandardBoard } from '@entities';
 import type { IssueCommandEvent } from '@events';
-import { ISSUE_COMMANDS_PHASE } from '@entities';
+import type { GameState } from '@game';
+import { ISSUE_COMMANDS_PHASE } from '@game';
+
 import { getIssueCommandsPhaseState } from '@queries';
 import { commandCards } from '@sampleValues';
 import { createEmptyGameState, createTestUnit } from '@testing';

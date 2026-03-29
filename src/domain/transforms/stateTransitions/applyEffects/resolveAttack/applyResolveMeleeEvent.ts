@@ -1,17 +1,15 @@
+import type { Board, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { ResolveMeleeEvent } from '@events';
 import type {
   AttackApplyState,
   AttackResult,
-  Board,
   GameState,
   MeleeResolutionState,
   ResolveMeleePhaseState,
   RetreatState,
   ReverseState,
   RoutState,
-  UnitPlacement,
-  UnitWithPlacement,
-} from '@entities';
-import type { ResolveMeleeEvent } from '@events';
+} from '@game';
 import { getMeleeResolutionState, getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 

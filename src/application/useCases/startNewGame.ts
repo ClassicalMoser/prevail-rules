@@ -1,4 +1,5 @@
-import type { BoardForGameType, Game, GameState, GameType } from '@entities';
+import type { GameType } from '@entities';
+import type { BoardForGameType, Game, GameState } from '@game';
 import type { EnginePorts, GameStateChange, PortResponse } from '../ports';
 import { createEmptyGameState } from '@transforms';
 

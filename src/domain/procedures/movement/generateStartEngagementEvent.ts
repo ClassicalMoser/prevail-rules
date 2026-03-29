@@ -1,5 +1,6 @@
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { StartEngagementEvent } from '@events';
+import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from '@events';
 import {
   getMovementResolutionState,

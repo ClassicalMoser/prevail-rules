@@ -1,5 +1,5 @@
+import type { Board } from '@entities';
 import type {
-  Board,
   CleanupPhaseState,
   GameState,
   IssueCommandsPhaseState,
@@ -7,7 +7,7 @@ import type {
   PhaseState,
   PlayCardsPhaseState,
   ResolveMeleePhaseState,
-} from '@entities';
+} from '@game';
 
 /**
  * Gets the current phase state from the game state.

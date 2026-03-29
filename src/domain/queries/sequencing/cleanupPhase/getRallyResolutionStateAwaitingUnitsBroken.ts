@@ -1,4 +1,5 @@
-import type { Board, GameState, RallyResolutionState } from '@entities';
+import type { Board } from '@entities';
+import type { GameState, RallyResolutionState } from '@game';
 import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';
 
 /**

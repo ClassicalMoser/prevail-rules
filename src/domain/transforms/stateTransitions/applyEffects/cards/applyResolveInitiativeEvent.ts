@@ -1,5 +1,6 @@
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { ResolveInitiativeEvent } from '@events';
+import type { GameState } from '@game';
 import { getPlayCardsPhaseState } from '@queries';
 import {
   markPhaseAsComplete,

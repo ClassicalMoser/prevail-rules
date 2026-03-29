@@ -22,6 +22,9 @@ export default defineConfig({
       // Events
       '@events': path.resolve(__dirname, './src/domain/events'),
       '@events/*': path.resolve(__dirname, './src/domain/events/*'),
+      // Game State (sequence types)
+      '@game': path.resolve(__dirname, './src/domain/game'),
+      '@game/*': path.resolve(__dirname, './src/domain/game/*'),
       '@commands': path.resolve(__dirname, './src/domain/events'),
       '@commands/*': path.resolve(__dirname, './src/domain/events/*'),
       // Testing
@@ -58,6 +61,8 @@ export default defineConfig({
         'dist/**/*.{js,ts}',
         // Exclude declaration-only entities
         'src/domain/entities/**/*.{js,ts}',
+        // Exclude declaration-only game state types
+        'src/domain/game/**/*.{js,ts}',
         // Exclude declaration-only events
         'src/domain/events/**/*.{js,ts}',
         // Exclude sample value files

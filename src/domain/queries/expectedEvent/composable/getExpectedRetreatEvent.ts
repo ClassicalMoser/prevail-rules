@@ -1,5 +1,6 @@
-import type { Board, RetreatState } from '@entities';
+import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
+import type { RetreatState } from '@game';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 
 /**

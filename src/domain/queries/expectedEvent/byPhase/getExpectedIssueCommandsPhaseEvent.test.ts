@@ -1,8 +1,5 @@
-import type {
-  GameState,
-  IssueCommandsPhaseStep,
-  StandardBoard,
-} from '@entities';
+import type { StandardBoard } from '@entities';
+import type { GameState, IssueCommandsPhaseStep } from '@game';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 import {
   createEmptyGameState,

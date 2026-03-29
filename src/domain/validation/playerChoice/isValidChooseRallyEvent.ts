@@ -1,5 +1,6 @@
-import type { Board, GameState, ValidationResult } from '@entities';
+import type { Board, ValidationResult } from '@entities';
 import type { ChooseRallyEvent } from '@events';
+import type { GameState } from '@game';
 import { getOtherPlayer } from '@queries';
 
 /**

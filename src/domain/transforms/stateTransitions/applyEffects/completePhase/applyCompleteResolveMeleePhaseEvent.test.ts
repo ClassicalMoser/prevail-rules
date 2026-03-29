@@ -1,6 +1,8 @@
-import type { GameState, StandardBoard } from '@entities';
+import type { StandardBoard } from '@entities';
 import type { CompleteResolveMeleePhaseEvent } from '@events';
-import { CLEANUP_PHASE, RESOLVE_MELEE_PHASE } from '@entities';
+import type { GameState } from '@game';
+import { CLEANUP_PHASE, RESOLVE_MELEE_PHASE } from '@game';
+
 import {
   createEmptyGameState,
   createMeleeResolutionState,

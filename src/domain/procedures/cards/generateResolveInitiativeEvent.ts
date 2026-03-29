@@ -1,5 +1,6 @@
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { ResolveInitiativeEvent } from '@events';
+import type { GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_INITIATIVE_EFFECT_TYPE,

@@ -1,10 +1,6 @@
-import type {
-  Board,
-  CleanupPhaseState,
-  GameState,
-  RallyResolutionState,
-} from '@entities';
+import type { Board } from '@entities';
 import type { ChooseRallyEvent } from '@events';
+import type { CleanupPhaseState, GameState, RallyResolutionState } from '@game';
 import { getCleanupPhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 

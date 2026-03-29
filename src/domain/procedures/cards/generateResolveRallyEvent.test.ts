@@ -1,5 +1,7 @@
-import type { GameState, StandardBoard } from '@entities';
-import { PLAY_CARDS_PHASE } from '@entities';
+import type { StandardBoard } from '@entities';
+import type { GameState } from '@game';
+import { PLAY_CARDS_PHASE } from '@game';
+
 import { createCleanupPhaseState, createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';

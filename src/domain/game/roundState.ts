@@ -1,9 +1,10 @@
-import type { Board } from '@entities/board';
-import type { UnitInstance } from '@entities/unit';
+import type { Board, UnitInstance } from '@entities';
+import type { Event } from '@events';
 import type { AssertExact } from '@utils';
 
 import type { PhaseState } from './phases';
-import { unitInstanceSchema } from '@entities/unit';
+import { unitInstanceSchema } from '@entities';
+import { eventSchema } from '@events';
 import { z } from 'zod';
 import { phaseStateSchema } from './phases';
 
@@ -19,6 +20,8 @@ export interface RoundState<TBoard extends Board> {
   currentPhaseState: PhaseState<TBoard> | undefined;
   /** Units that have been commanded this round. */
   commandedUnits: Set<UnitInstance>;
+  /** Events applied during this round, in order. */
+  events: readonly Event<TBoard>[];
 }
 
 const _roundStateSchemaObject = z.object({
@@ -30,6 +33,8 @@ const _roundStateSchemaObject = z.object({
   currentPhaseState: phaseStateSchema.or(z.undefined()),
   /** Units that have been commanded this round. */
   commandedUnits: z.set(unitInstanceSchema),
+  /** Events applied during this round, in order. */
+  events: z.array(eventSchema).readonly(),
 });
 
 type RoundStateSchemaType = z.infer<typeof _roundStateSchemaObject>;

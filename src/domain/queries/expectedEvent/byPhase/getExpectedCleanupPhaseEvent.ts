@@ -1,5 +1,6 @@
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
+import type { GameState } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getCleanupPhaseState } from '@queries/sequencing';
 import { getExpectedRallyResolutionEvent } from '../composable';

@@ -1,4 +1,5 @@
-import type { Board, GameState, RoutState } from '@entities';
+import type { Board } from '@entities';
+import type { GameState, RoutState } from '@game';
 import {
   getCleanupPhaseState,
   getCurrentPhaseState,

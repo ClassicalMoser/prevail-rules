@@ -1,9 +1,5 @@
-import type {
-  AttackApplyState,
-  Board,
-  GameState,
-  ReverseState,
-} from '@entities';
+import type { Board } from '@entities';
+import type { AttackApplyState, GameState, ReverseState } from '@game';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
 
 /**

@@ -1,10 +1,6 @@
-import type {
-  Board,
-  GameState,
-  IssueCommandsPhaseState,
-  UnitWithPlacement,
-} from '@entities';
+import type { Board, UnitWithPlacement } from '@entities';
 import type { ResolveFlankEngagementEvent } from '@events';
+import type { GameState, IssueCommandsPhaseState } from '@game';
 import {
   getFlankEngagementStateFromMovement,
   getIssueCommandsPhaseState,

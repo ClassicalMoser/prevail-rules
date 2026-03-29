@@ -1,5 +1,6 @@
-import type { Board, GameState, RetreatState } from '@entities';
+import type { Board } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
+import type { GameState, RetreatState } from '@game';
 import { findRetreatState } from '@queries';
 import {
   addUnitToBoard,

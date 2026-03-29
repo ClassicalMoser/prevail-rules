@@ -12,6 +12,13 @@ export {
   declinedCommitmentSchema,
   pendingCommitmentSchema,
 } from './commitment';
+export type { BoardForGameType, Game } from './game';
+export {
+  gameSchema,
+  miniGameSchema,
+  standardGameSchema,
+  tutorialGameSchema,
+} from './game';
 export type { GameState } from './gameState';
 export {
   gameStateSchema,

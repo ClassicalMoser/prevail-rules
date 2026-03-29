@@ -1,5 +1,6 @@
-import type { Board, CleanupPhaseState, GameState, RoutState } from '@entities';
+import type { Board } from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
+import type { CleanupPhaseState, GameState, RoutState } from '@game';
 
 import {
   getCleanupPhaseState,

@@ -1,8 +1,5 @@
-import type {
-  GameState,
-  ResolveMeleePhaseStep,
-  StandardBoard,
-} from '@entities';
+import type { StandardBoard } from '@entities';
+import type { GameState, ResolveMeleePhaseStep } from '@game';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 import {
   createEmptyGameState,

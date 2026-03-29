@@ -1,4 +1,5 @@
-import type { BoardForGameType, GameState, GameType } from '@entities';
+import type { GameType } from '@entities';
+import type { BoardForGameType, GameState } from '@game';
 
 /**
  * Payload after a successful persisted game-state update.

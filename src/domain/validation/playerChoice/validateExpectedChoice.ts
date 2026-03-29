@@ -1,10 +1,11 @@
-import type { Board, GameState, PlayerSide, ValidationResult } from '@entities';
+import type { Board, PlayerSide, ValidationResult } from '@entities';
 import type {
   ExpectedEventInfo,
   PlayerChoiceEvent,
   PlayerChoiceType,
   PlayerSource,
 } from '@events';
+import type { GameState } from '@game';
 import { getExpectedEvent } from '@queries';
 
 /**

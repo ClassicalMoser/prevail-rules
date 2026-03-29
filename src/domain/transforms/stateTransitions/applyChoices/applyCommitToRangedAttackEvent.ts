@@ -1,5 +1,6 @@
-import type { Board, GameState, RangedAttackResolutionState } from '@entities';
+import type { Board } from '@entities';
 import type { CommitToRangedAttackEvent } from '@events';
+import type { GameState, RangedAttackResolutionState } from '@game';
 import { getRangedAttackResolutionState } from '@queries';
 import {
   discardCardsFromHand,

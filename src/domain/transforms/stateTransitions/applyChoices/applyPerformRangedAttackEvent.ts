@@ -1,10 +1,10 @@
+import type { Board } from '@entities';
+import type { PerformRangedAttackEvent } from '@events';
 import type {
-  Board,
   GameState,
   IssueCommandsPhaseState,
   RangedAttackResolutionState,
-} from '@entities';
-import type { PerformRangedAttackEvent } from '@events';
+} from '@game';
 import { getIssueCommandsPhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { isSameUnitInstance } from '@validation';

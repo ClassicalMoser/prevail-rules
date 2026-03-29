@@ -1,10 +1,6 @@
-import type {
-  Board,
-  GameState,
-  MovementResolutionState,
-  PlayerSide,
-} from '@entities';
+import type { Board, PlayerSide } from '@entities';
 import type { ExpectedEventInfo } from '@events';
+import type { GameState, MovementResolutionState } from '@game';
 import { getBoardSpace } from '@queries/boardSpace';
 import { hasEnemyUnit } from '@validation';
 import { getExpectedEngagementEvent } from '../composable';

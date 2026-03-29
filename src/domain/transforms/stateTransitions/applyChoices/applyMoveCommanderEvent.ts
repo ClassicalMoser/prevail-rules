@@ -1,10 +1,6 @@
-import type {
-  Board,
-  BoardCoordinate,
-  GameState,
-  MoveCommandersPhaseState,
-} from '@entities';
+import type { Board, BoardCoordinate } from '@entities';
 import type { MoveCommanderEvent } from '@events';
+import type { GameState, MoveCommandersPhaseState } from '@game';
 import { getMoveCommandersPhaseState } from '@queries';
 import {
   addCommanderToBoard,

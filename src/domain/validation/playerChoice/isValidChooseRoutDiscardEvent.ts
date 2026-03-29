@@ -1,5 +1,6 @@
-import type { Board, GameState, ValidationResult } from '@entities';
+import type { Board, ValidationResult } from '@entities';
 import type { ChooseRoutDiscardEvent } from '@events';
+import type { GameState } from '@game';
 
 import { getOtherPlayer } from '@queries';
 

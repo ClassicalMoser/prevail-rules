@@ -1,4 +1,4 @@
-import type { RallyResolutionState } from '@entities';
+import type { RallyResolutionState } from '@game';
 import {
   createCleanupPhaseState,
   createEmptyGameState,

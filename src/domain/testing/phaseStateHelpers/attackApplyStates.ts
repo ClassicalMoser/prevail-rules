@@ -1,10 +1,10 @@
 import type {
-  AttackApplyState,
   Board,
   StandardBoard,
   UnitInstance,
   UnitWithPlacement,
 } from '@entities';
+import type { AttackApplyState } from '@game';
 import {
   createRetreatState,
   createReverseState,

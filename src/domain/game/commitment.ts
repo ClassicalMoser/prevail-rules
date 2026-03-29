@@ -1,6 +1,6 @@
-import type { Card } from '@entities/card';
+import type { Card } from '@entities';
 import type { AssertExact } from '@utils';
-import { cardSchema } from '@entities/card';
+import { cardSchema } from '@entities';
 import { z } from 'zod';
 
 /** A commitment that has not  */

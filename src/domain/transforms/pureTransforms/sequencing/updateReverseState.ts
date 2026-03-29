@@ -1,4 +1,5 @@
-import type { Board, GameState, ReverseState } from '@entities';
+import type { Board } from '@entities';
+import type { GameState, ReverseState } from '@game';
 import {
   getCurrentPhaseState,
   getIssueCommandsPhaseState,

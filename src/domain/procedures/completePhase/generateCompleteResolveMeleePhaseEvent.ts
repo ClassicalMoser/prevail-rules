@@ -1,5 +1,6 @@
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { CompleteResolveMeleePhaseEvent } from '@events';
+import type { GameState } from '@game';
 import {
   COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,

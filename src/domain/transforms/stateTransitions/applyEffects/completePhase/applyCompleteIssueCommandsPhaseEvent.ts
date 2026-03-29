@@ -1,6 +1,8 @@
-import type { Board, GameState, ResolveMeleePhaseState } from '@entities';
+import type { Board } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import { RESOLVE_MELEE_PHASE } from '@entities';
+import type { GameState, ResolveMeleePhaseState } from '@game';
+import { RESOLVE_MELEE_PHASE } from '@game';
+
 import { getCurrentPhaseState } from '@queries';
 import {
   addCompletedPhase,

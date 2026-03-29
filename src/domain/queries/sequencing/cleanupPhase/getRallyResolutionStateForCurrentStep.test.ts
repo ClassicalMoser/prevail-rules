@@ -1,4 +1,4 @@
-import { CLEANUP_PHASE } from '@entities';
+import { CLEANUP_PHASE } from '@game';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';
@@ -101,6 +101,7 @@ describe('getRallyResolutionStateForCurrentStep', () => {
         secondPlayerRallyResolutionState: undefined,
       },
       commandedUnits: new Set(),
+      events: [],
     };
 
     expect(() => getRallyResolutionStateForCurrentStep(state, 'white')).toThrow(

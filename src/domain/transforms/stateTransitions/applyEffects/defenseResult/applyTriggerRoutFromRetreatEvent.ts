@@ -1,5 +1,6 @@
-import type { Board, GameState, RoutState } from '@entities';
+import type { Board } from '@entities';
 import type { TriggerRoutFromRetreatEvent } from '@events';
+import type { GameState, RoutState } from '@game';
 import { RANGED_ATTACK_RESOLUTION_CONTEXT } from '@events';
 import {
   getRetreatStateFromMelee,

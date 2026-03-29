@@ -1,5 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import { PLAY_CARDS_PHASE } from '@entities';
+import { PLAY_CARDS_PHASE } from '@game';
+
 import { tempUnits } from '@sampleValues';
 import {
   createCleanupPhaseState,

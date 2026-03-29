@@ -1,4 +1,5 @@
-import type { GameState, StandardBoard, UnitWithPlacement } from '@entities';
+import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type { GameState } from '@game';
 import { tempUnits } from '@sampleValues';
 import {
   createAttackApplyState,

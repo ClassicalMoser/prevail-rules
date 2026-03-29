@@ -1,12 +1,11 @@
+import type { Board, ValidationResult } from '@entities';
+import type { Event } from '@events';
 import type {
-  Board,
   CleanupPhaseState,
   GameState,
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
-  ValidationResult,
-} from '@entities';
-import type { Event } from '@events';
+} from '@game';
 import {
   validateCleanupPhaseEvent,
   validateMoveCommandersPhaseEvent,

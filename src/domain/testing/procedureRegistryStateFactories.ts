@@ -1,3 +1,5 @@
+import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type { GameEffectType } from '@events';
 /**
  * Minimal `GameState` builders for each `GameEffectType`, used to drive
  * `generateEventFromProcedure` in registry tests.
@@ -7,18 +9,13 @@
  *
  * No Vitest imports.
  */
-import type {
-  GameState,
-  IssueCommandsPhaseState,
-  StandardBoard,
-  UnitWithPlacement,
-} from '@entities';
-import type { GameEffectType } from '@events';
+import type { GameState, IssueCommandsPhaseState } from '@game';
 import {
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,
   PLAY_CARDS_PHASE,
-} from '@entities';
+} from '@game';
+
 import { commandCards } from '@sampleValues';
 import { addUnitToBoard, updateCardState, updatePhaseState } from '@transforms';
 import { createEmptyGameState } from './createEmptyGameState';

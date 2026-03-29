@@ -1,10 +1,10 @@
+import type { Board } from '@entities';
+import type { ChooseMeleeResolutionEvent } from '@events';
 import type {
-  Board,
   GameState,
   MeleeResolutionState,
   ResolveMeleePhaseState,
-} from '@entities';
-import type { ChooseMeleeResolutionEvent } from '@events';
+} from '@game';
 import { getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 

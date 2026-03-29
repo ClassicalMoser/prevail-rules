@@ -1,4 +1,5 @@
-import type { Board, GameState, ReverseState } from '@entities';
+import type { Board } from '@entities';
+import type { GameState, ReverseState } from '@game';
 import { hasEngagedUnits, hasNoUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
 

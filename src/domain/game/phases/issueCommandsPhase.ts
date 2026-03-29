@@ -1,12 +1,9 @@
-import type { Board } from '@entities/board';
-import type { Command } from '@entities/card';
-import type { UnitInstance } from '@entities/unit';
+import type { Board, Command, UnitInstance } from '@entities';
+import type { CommandResolutionState } from '@game/substeps';
 import type { AssertExact } from '@utils';
-import type { CommandResolutionState } from '../substeps';
-import { commandSchema } from '@entities/card';
-import { unitInstanceSchema } from '@entities/unit';
+import { commandSchema, unitInstanceSchema } from '@entities';
+import { commandResolutionStateSchema } from '@game/substeps';
 import { z } from 'zod';
-import { commandResolutionStateSchema } from '../substeps';
 
 /** Iterable list of valid steps in the issue commands phase. */
 export const issueCommandsPhaseSteps = [

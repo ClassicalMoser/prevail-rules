@@ -1,10 +1,5 @@
-import type {
-  AttackResult,
-  Board,
-  GameState,
-  Modifier,
-  UnitInstance,
-} from '@entities';
+import type { Board, Modifier, UnitInstance } from '@entities';
+import type { AttackResult, GameState } from '@game';
 import { getCurrentUnitStat } from './getCurrentUnitStat';
 
 /**

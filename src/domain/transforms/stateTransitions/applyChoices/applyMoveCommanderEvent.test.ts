@@ -1,10 +1,8 @@
-import type {
-  GameState,
-  StandardBoard,
-  StandardBoardCoordinate,
-} from '@entities';
+import type { StandardBoard, StandardBoardCoordinate } from '@entities';
 import type { MoveCommanderEvent } from '@events';
-import { MOVE_COMMANDERS_PHASE } from '@entities';
+import type { GameState } from '@game';
+import { MOVE_COMMANDERS_PHASE } from '@game';
+
 import { createBoardWithCommander, createEmptyGameState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';

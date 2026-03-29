@@ -1,4 +1,5 @@
-import type { CleanupPhaseStep, GameState, StandardBoard } from '@entities';
+import type { StandardBoard } from '@entities';
+import type { CleanupPhaseStep, GameState } from '@game';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 import {
   createCleanupPhaseState,

@@ -1,5 +1,6 @@
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { ResolveRallyEvent } from '@events';
+import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RALLY_EFFECT_TYPE } from '@events';
 import { getCleanupPhaseState, getOtherPlayer } from '@queries';
 

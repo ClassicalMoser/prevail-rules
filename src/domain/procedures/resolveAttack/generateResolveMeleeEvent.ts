@@ -1,5 +1,6 @@
-import type { Board, GameState, UnitPlacement } from '@entities';
+import type { Board, UnitPlacement } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
+import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
 import {
   applyAttackValue,

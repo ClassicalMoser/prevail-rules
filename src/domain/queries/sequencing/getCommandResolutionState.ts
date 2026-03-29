@@ -1,11 +1,11 @@
+import type { Board } from '@entities';
 import type {
-  Board,
   CommandResolutionState,
   GameState,
   MeleeResolutionState,
   MovementResolutionState,
   RangedAttackResolutionState,
-} from '@entities';
+} from '@game';
 
 /**
  * Gets the current command resolution state from the issue commands phase.

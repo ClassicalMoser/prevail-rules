@@ -1,10 +1,10 @@
-import type { Board, BoardCoordinate } from '@entities/board';
+import type { Board, BoardCoordinate } from '@entities';
 
+import type { MeleeResolutionState } from '@game/substeps';
 import type { AssertExact } from '@utils';
-import type { MeleeResolutionState } from '../substeps';
-import { boardCoordinateSchema } from '@entities/board';
+import { boardCoordinateSchema } from '@entities';
+import { meleeResolutionStateSchema } from '@game/substeps';
 import { z } from 'zod';
-import { meleeResolutionStateSchema } from '../substeps';
 
 /** Iterable list of valid steps in the resolve melee phase. */
 export const resolveMeleePhaseSteps = [

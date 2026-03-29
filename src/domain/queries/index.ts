@@ -21,11 +21,13 @@ export {
   getSpacesWithinDistance,
 } from './boardSpace';
 export { calculateInitiative } from './calculateInitiative';
+export { getLegalPlayCardOptions } from './choiceOptions';
 export {
   isEngagementFromFlank,
   isEngagementFromFront,
   isEngagementFromRear,
 } from './engagement';
+export type { ExpectedEvent } from './expectedEvent';
 export { getExpectedEvent } from './expectedEvent';
 export {
   getAdjacentFacings,

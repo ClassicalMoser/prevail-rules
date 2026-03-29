@@ -1,5 +1,6 @@
-import type { Board, GameState, ReverseState } from '@entities';
+import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
+import type { GameState, ReverseState } from '@game';
 
 /**
  * Gets the expected event for reverse substeps.

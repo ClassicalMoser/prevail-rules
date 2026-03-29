@@ -1,6 +1,8 @@
-import type { Board, GameState, IssueCommandsPhaseState } from '@entities';
+import type { Board } from '@entities';
 import type { CompleteMoveCommandersPhaseEvent } from '@events';
-import { ISSUE_COMMANDS_PHASE } from '@entities';
+import type { GameState, IssueCommandsPhaseState } from '@game';
+import { ISSUE_COMMANDS_PHASE } from '@game';
+
 import { getMoveCommandersPhaseState } from '@queries';
 import {
   addCompletedPhase,

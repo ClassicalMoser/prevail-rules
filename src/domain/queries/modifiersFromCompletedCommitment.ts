@@ -1,4 +1,5 @@
-import type { Commitment, Modifier } from '@entities';
+import type { Modifier } from '@entities';
+import type { Commitment } from '@game';
 
 /**
  * Returns the committed card’s modifiers when `commitmentType === 'completed'`;

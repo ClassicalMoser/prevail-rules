@@ -1,5 +1,6 @@
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { TriggerRoutFromRetreatEvent } from '@events';
+import type { GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   RANGED_ATTACK_RESOLUTION_CONTEXT,

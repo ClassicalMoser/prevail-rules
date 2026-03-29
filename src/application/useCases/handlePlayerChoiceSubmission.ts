@@ -1,5 +1,6 @@
-import type { BoardForGameType, GameType } from '@entities';
+import type { GameType } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
+import type { BoardForGameType } from '@game';
 import type { EnginePorts, PortResponse } from '../ports';
 import { advanceEffects, processPlayerChoice } from '../process';
 

@@ -1,9 +1,9 @@
+import type { Board } from '@entities';
 import type {
-  Board,
   GameState,
   MeleeResolutionState,
   ResolveMeleePhaseState,
-} from '@entities';
+} from '@game';
 import { getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '../state';
 

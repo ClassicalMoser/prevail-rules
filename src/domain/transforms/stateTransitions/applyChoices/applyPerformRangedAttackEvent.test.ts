@@ -1,5 +1,6 @@
-import type { GameState, StandardBoard, UnitInstance } from '@entities';
+import type { StandardBoard, UnitInstance } from '@entities';
 import type { PerformRangedAttackEvent } from '@events';
+import type { GameState } from '@game';
 import {
   getIssueCommandsPhaseState,
   getRangedAttackResolutionState,

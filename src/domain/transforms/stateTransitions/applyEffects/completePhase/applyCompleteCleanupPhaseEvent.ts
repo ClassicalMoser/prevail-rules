@@ -1,6 +1,8 @@
-import type { Board, GameState, PlayCardsPhaseState } from '@entities';
+import type { Board } from '@entities';
 import type { CompleteCleanupPhaseEvent } from '@events';
-import { PLAY_CARDS_PHASE } from '@entities';
+import type { GameState, PlayCardsPhaseState } from '@game';
+import { PLAY_CARDS_PHASE } from '@game';
+
 import {
   updateCurrentRoundNumber,
   updateRoundState,
@@ -33,9 +35,10 @@ export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
   // Update the round state
   const stateWithRound = updateRoundState(state, {
     roundNumber: newRoundNumber,
-    completedPhases: new Set(), // Reset completed phases for new round
+    completedPhases: new Set(),
     currentPhaseState: newPhaseState,
-    commandedUnits: new Set(), // Reset commanded units for new round
+    commandedUnits: new Set(),
+    events: [],
   });
 
   // Update the game state with the new round number

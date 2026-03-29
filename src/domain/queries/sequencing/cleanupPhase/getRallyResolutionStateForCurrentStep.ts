@@ -1,4 +1,5 @@
-import type { Board, GameState, RallyResolutionState } from '@entities';
+import type { Board } from '@entities';
+import type { GameState, RallyResolutionState } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getCleanupPhaseState } from '../getPhaseState';
 import { getCurrentRallyResolutionState } from '../getSubstep';

@@ -2,8 +2,9 @@
  * Routes player choice events to their corresponding apply functions.
  */
 
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
+import type { GameState } from '@game';
 import {
   applyChooseCardEvent,
   applyChooseMeleeEvent,

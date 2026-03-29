@@ -1,10 +1,6 @@
-import type {
-  Board,
-  CardState,
-  GameState,
-  RallyResolutionState,
-} from '@entities';
+import type { Board, CardState } from '@entities';
 import type { ResolveRallyEvent } from '@events';
+import type { GameState, RallyResolutionState } from '@game';
 import {
   getCleanupPhaseState,
   getNextStepForResolveRally,

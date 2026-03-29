@@ -1,9 +1,5 @@
-import type {
-  Board,
-  GameState,
-  PlayerSide,
-  UnitWithPlacement,
-} from '@entities';
+import type { Board, PlayerSide, UnitWithPlacement } from '@entities';
+import type { GameState } from '@game';
 import { getBoardCoordinates } from './boardSpace';
 import { getPlayerUnitWithPosition } from './unitPresence';
 

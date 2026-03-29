@@ -1,5 +1,6 @@
-import type { Board, GameState, ReverseState } from '@entities';
+import type { Board } from '@entities';
 import type { ResolveReverseEvent } from '@events';
+import type { GameState, ReverseState } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,

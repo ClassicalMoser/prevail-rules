@@ -1,12 +1,12 @@
 import type {
   Board,
   BoardSize,
-  GameState,
   LargeBoard,
   PlayerSide,
   SmallBoard,
   StandardBoard,
 } from '@entities';
+import type { GameState } from '@game';
 import {
   createEmptyLargeBoard,
   createEmptySmallBoard,
@@ -69,6 +69,7 @@ export function createEmptyGameState<
       completedPhases: new Set(),
       currentPhaseState: undefined,
       commandedUnits: new Set(),
+      events: [],
     },
     currentInitiative: options?.currentInitiative ?? 'black',
     boardState: board,

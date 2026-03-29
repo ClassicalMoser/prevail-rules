@@ -1,8 +1,8 @@
+import type { RallyResolutionState } from '@game/substeps';
 import type { AssertExact } from '@utils';
-import type { RallyResolutionState } from '../substeps';
 
+import { rallyResolutionStateSchema } from '@game/substeps';
 import { z } from 'zod';
-import { rallyResolutionStateSchema } from '../substeps';
 
 /** Iterable list of valid steps in the cleanup phase. */
 export const cleanupPhaseSteps = [

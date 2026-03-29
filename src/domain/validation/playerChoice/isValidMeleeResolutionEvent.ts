@@ -1,6 +1,7 @@
-import type { Board, GameState, ValidationResult } from '@entities';
+import type { Board, ValidationResult } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
-import { RESOLVE_MELEE_PHASE } from '@entities';
+import type { GameState } from '@game';
+import { RESOLVE_MELEE_PHASE } from '@game';
 
 /**
  * Validates whether a choose melee resolution event is legal for the current state.

@@ -1,14 +1,10 @@
-import type { Board } from '@entities/board';
-import type { UnitPlacement, UnitWithPlacement } from '@entities/unitLocation';
+import type { Board, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
-import type { Commitment } from '../commitment';
 import type { EngagementState } from './engagement';
-import {
-  unitPlacementSchema,
-  unitWithPlacementSchema,
-} from '@entities/unitLocation';
+import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
+import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
-import { commitmentSchema } from '../commitment';
 import { engagementStateSchema } from './engagement';
 
 /**

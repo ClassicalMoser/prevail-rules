@@ -1,4 +1,5 @@
-import type { Board, GameState, PlayerSide } from '@entities';
+import type { Board, PlayerSide } from '@entities';
+import type { GameState } from '@game';
 
 /**
  * Creates a new game state with the current initiative player updated.

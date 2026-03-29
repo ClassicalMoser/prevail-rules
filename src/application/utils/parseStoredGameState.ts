@@ -1,8 +1,9 @@
-import type { BoardForGameType, GameState, GameType } from '@entities';
+import type { GameType } from '@entities';
+import type { BoardForGameType, GameState } from '@game';
 import {
   gameStateSchemaForSmallBoard,
   gameStateSchemaForStandardBoard,
-} from '@entities';
+} from '@game';
 
 /**
  * **Boundary:** validates untrusted / stored data and returns a typed {@link GameState}.

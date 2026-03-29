@@ -1,5 +1,6 @@
-import type { Board, GameState, UnitWithPlacement } from '@entities';
+import type { Board, UnitWithPlacement } from '@entities';
 import type { MoveUnitEvent } from '@events';
+import type { GameState } from '@game';
 import { getLegalUnitMoves } from '@queries';
 
 /**

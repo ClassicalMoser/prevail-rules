@@ -30,57 +30,12 @@ export {
 export {
   engagementType,
   engagementTypeSchema,
-  gameSchema,
   gameType,
   gameTypeEnum,
   gameTypeStructureSchema,
   lineSchema,
-  miniGameSchema,
-  standardGameSchema,
-  tutorialGameSchema,
 } from '@entities';
-export {
-  attackResultSchema,
-  CLEANUP_PHASE,
-  cleanupPhaseStateSchema,
-  cleanupPhaseSteps,
-  commitmentSchema,
-  completedCommitmentSchema,
-  declinedCommitmentSchema,
-  gameStateSchema,
-  pendingCommitmentSchema,
-  playerSchema,
-  playerSides,
-  playerSideSchema,
-} from '@entities';
-export {
-  ISSUE_COMMANDS_PHASE,
-  issueCommandsPhaseStateSchema,
-  issueCommandsPhaseSteps,
-  MOVE_COMMANDERS_PHASE,
-  moveCommandersPhaseStateSchema,
-  moveCommandersPhaseSteps,
-  phases,
-  phaseStateSchema,
-  PLAY_CARDS_PHASE,
-  playCardsPhaseStateSchema,
-  playCardsPhaseSteps,
-  RESOLVE_MELEE_PHASE,
-} from '@entities';
-export {
-  attackApplyStateSchema,
-  commandResolutionStateSchema,
-  engagementResolutionStateSchema,
-  engagementStateSchema,
-  flankEngagementResolutionStateSchema,
-  frontEngagementResolutionStateSchema,
-  meleeResolutionStateSchema,
-  movementResolutionStateSchema,
-  rallyResolutionStateSchema,
-  resolveMeleePhaseStateSchema,
-  resolveMeleePhaseSteps,
-  roundStateSchema,
-} from '@entities';
+export { playerSchema, playerSides, playerSideSchema } from '@entities';
 export {
   areSameSide,
   diagonalFacings,
@@ -88,11 +43,6 @@ export {
   hasNoUnit,
   hasSingleUnit,
   orthogonalFacings,
-  rangedAttackResolutionStateSchema,
-  rearEngagementResolutionStateSchema,
-  retreatStateSchema,
-  reverseStateSchema,
-  routStateSchema,
   unitFacings,
 } from '@entities';
 export {
@@ -141,50 +91,11 @@ export type {
   StatModifier,
 } from '@entities';
 export type {
-  AttackResult,
-  BoardForGameType,
-  Commitment,
-  CompletedCommitment,
-  DeclinedCommitment,
-  Game,
-  GameState,
   GameType,
   GameTypeStructure,
   Line,
-  PendingCommitment,
   Player,
   PlayerSide,
-} from '@entities';
-export type {
-  AttackApplyState,
-  CleanupPhaseState,
-  CleanupPhaseStep,
-  IssueCommandsPhaseState,
-  IssueCommandsPhaseStep,
-  MoveCommandersPhaseState,
-  MoveCommandersPhaseStep,
-  Phase,
-  PhaseState,
-  PlayCardsPhaseState,
-  PlayCardsPhaseStep,
-  ResolveMeleePhaseState,
-  ResolveMeleePhaseStep,
-  RoundState,
-} from '@entities';
-export type {
-  CommandResolutionState,
-  EngagementResolutionState,
-  EngagementState,
-  FlankEngagementResolutionState,
-  FrontEngagementResolutionState,
-  MeleeResolutionState,
-  MovementResolutionState,
-  RallyResolutionState,
-  RangedAttackResolutionState,
-  RearEngagementResolutionState,
-  RetreatState,
-  ReverseState,
-  RoutState,
   UnitFacing,
 } from '@entities';
 export type {
@@ -354,6 +265,98 @@ export type {
   SetupUnitsEvent,
 } from '@events';
 export {
+  gameSchema,
+  miniGameSchema,
+  standardGameSchema,
+  tutorialGameSchema,
+} from '@game';
+export type { BoardForGameType, Game } from '@game';
+export {
+  attackResultSchema,
+  CLEANUP_PHASE,
+  cleanupPhaseStateSchema,
+  cleanupPhaseSteps,
+  commitmentSchema,
+  completedCommitmentSchema,
+  declinedCommitmentSchema,
+  gameStateSchema,
+  pendingCommitmentSchema,
+} from '@game';
+export {
+  ISSUE_COMMANDS_PHASE,
+  issueCommandsPhaseStateSchema,
+  issueCommandsPhaseSteps,
+  MOVE_COMMANDERS_PHASE,
+  moveCommandersPhaseStateSchema,
+  moveCommandersPhaseSteps,
+  phases,
+  phaseStateSchema,
+  PLAY_CARDS_PHASE,
+  playCardsPhaseStateSchema,
+  playCardsPhaseSteps,
+  RESOLVE_MELEE_PHASE,
+} from '@game';
+export {
+  attackApplyStateSchema,
+  commandResolutionStateSchema,
+  engagementResolutionStateSchema,
+  engagementStateSchema,
+  flankEngagementResolutionStateSchema,
+  frontEngagementResolutionStateSchema,
+  meleeResolutionStateSchema,
+  movementResolutionStateSchema,
+  rallyResolutionStateSchema,
+  resolveMeleePhaseStateSchema,
+  resolveMeleePhaseSteps,
+  roundStateSchema,
+} from '@game';
+export {
+  rangedAttackResolutionStateSchema,
+  rearEngagementResolutionStateSchema,
+  retreatStateSchema,
+  reverseStateSchema,
+  routStateSchema,
+} from '@game';
+export type {
+  AttackResult,
+  Commitment,
+  CompletedCommitment,
+  DeclinedCommitment,
+  GameState,
+  PendingCommitment,
+} from '@game';
+export type {
+  AttackApplyState,
+  CleanupPhaseState,
+  CleanupPhaseStep,
+  IssueCommandsPhaseState,
+  IssueCommandsPhaseStep,
+  MoveCommandersPhaseState,
+  MoveCommandersPhaseStep,
+  Phase,
+  PhaseState,
+  PlayCardsPhaseState,
+  PlayCardsPhaseStep,
+  ResolveMeleePhaseState,
+  ResolveMeleePhaseStep,
+  RoundState,
+} from '@game';
+export type {
+  CommandResolutionState,
+  EngagementResolutionState,
+  EngagementState,
+  FlankEngagementResolutionState,
+  FrontEngagementResolutionState,
+  MeleeResolutionState,
+  MovementResolutionState,
+  RallyResolutionState,
+  RangedAttackResolutionState,
+  RearEngagementResolutionState,
+  RetreatState,
+  ReverseState,
+  RoutState,
+} from '@game';
+export {
   applyAttackValue,
   getAdjacentSpaces,
   getBackSpaces,
@@ -439,6 +442,7 @@ export {
 } from '@queries';
 export {
   checkDiagonalMove,
+  getLegalPlayCardOptions,
   getLegalRetreats,
   getLegalUnitMoves,
   getPlayerUnitWithPosition,

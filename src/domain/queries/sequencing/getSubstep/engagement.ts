@@ -1,11 +1,11 @@
+import type { Board } from '@entities';
 import type {
-  Board,
   EngagementState,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   GameState,
   RearEngagementResolutionState,
-} from '@entities';
+} from '@game';
 import { getMovementResolutionState } from '../getCommandResolutionState';
 
 /**

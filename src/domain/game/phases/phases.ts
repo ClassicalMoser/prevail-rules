@@ -1,4 +1,4 @@
-import type { Board } from '@entities/board';
+import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import type { CleanupPhaseState } from './cleanupPhase';
 import type { IssueCommandsPhaseState } from './issueCommandsPhase';

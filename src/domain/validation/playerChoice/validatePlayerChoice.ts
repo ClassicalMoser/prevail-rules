@@ -1,5 +1,6 @@
-import type { Board, GameState, ValidationResult } from '@entities';
+import type { Board, ValidationResult } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
+import type { GameState } from '@game';
 import { playerChoiceEventSchema } from '@events';
 import { validateExpectedChoice } from './validateExpectedChoice';
 import { validateLegalPlayerChoice } from './validateLegalPlayerChoice';

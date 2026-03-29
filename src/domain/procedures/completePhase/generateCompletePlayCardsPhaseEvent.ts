@@ -1,5 +1,6 @@
-import type { Board, GameState } from '@entities';
+import type { Board } from '@entities';
 import type { CompletePlayCardsPhaseEvent } from '@events';
+import type { GameState } from '@game';
 import {
   COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,

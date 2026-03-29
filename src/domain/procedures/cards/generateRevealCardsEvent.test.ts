@@ -1,4 +1,5 @@
-import type { GameState, StandardBoard } from '@entities';
+import type { StandardBoard } from '@entities';
+import type { GameState } from '@game';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 

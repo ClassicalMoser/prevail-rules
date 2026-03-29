@@ -1,10 +1,6 @@
-import type {
-  Board,
-  CleanupPhaseState,
-  GameState,
-  ValidationResult,
-} from '@entities';
+import type { Board, ValidationResult } from '@entities';
 import type { Event } from '@events';
+import type { CleanupPhaseState, GameState } from '@game';
 import { validatePlayerChoice } from '@validation/playerChoice';
 
 /**

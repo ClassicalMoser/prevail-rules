@@ -1,10 +1,5 @@
-import type {
-  Board,
-  BoardCoordinate,
-  GameState,
-  PlayerSide,
-  UnitFacing,
-} from '@entities';
+import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
+import type { GameState } from '@game';
 import { getForwardSpace } from '@queries/boardSpace';
 import { getAdjacentFacings } from '@queries/facings';
 import { canMoveThrough, isDiagonalFacing } from '@validation';

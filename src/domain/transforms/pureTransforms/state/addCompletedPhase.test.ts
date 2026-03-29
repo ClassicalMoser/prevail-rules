@@ -1,4 +1,4 @@
-import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@entities';
+import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 import { createEmptyGameState } from '@testing';
 import { addCompletedPhase } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';

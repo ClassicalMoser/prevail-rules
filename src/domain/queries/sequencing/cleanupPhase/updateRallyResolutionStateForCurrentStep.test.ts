@@ -1,5 +1,5 @@
-import type { RallyResolutionState } from '@entities';
-import { CLEANUP_PHASE } from '@entities';
+import type { RallyResolutionState } from '@game';
+import { CLEANUP_PHASE } from '@game';
 import { describe, expect, it } from 'vitest';
 import { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
 

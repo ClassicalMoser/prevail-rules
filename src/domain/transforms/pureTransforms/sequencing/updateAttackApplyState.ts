@@ -1,4 +1,5 @@
-import type { AttackApplyState, Board, GameState } from '@entities';
+import type { Board } from '@entities';
+import type { AttackApplyState, GameState } from '@game';
 import {
   getCurrentPhaseState,
   getIssueCommandsPhaseState,

@@ -1,15 +1,15 @@
+import type { Board } from '@entities';
+import type { ResolveRangedAttackEvent } from '@events';
 import type {
   AttackApplyState,
   AttackResult,
-  Board,
   GameState,
   IssueCommandsPhaseState,
   RangedAttackResolutionState,
   RetreatState,
   ReverseState,
   RoutState,
-} from '@entities';
-import type { ResolveRangedAttackEvent } from '@events';
+} from '@game';
 import {
   getIssueCommandsPhaseState,
   getRangedAttackResolutionState,

@@ -1,4 +1,5 @@
-import type { Game, GameType } from '@entities';
+import type { GameType } from '@entities';
+import type { Game } from '@game';
 import type { GameStorage, PortResponse } from '../ports';
 import { parseStoredGame } from '../utils';
 

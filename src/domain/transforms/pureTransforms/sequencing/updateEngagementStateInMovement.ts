@@ -1,4 +1,5 @@
-import type { Board, EngagementState, GameState } from '@entities';
+import type { Board } from '@entities';
+import type { EngagementState, GameState } from '@game';
 import { getMovementResolutionState } from '@queries';
 import { updateCommandResolutionState } from './updateCommandResolutionState';
 

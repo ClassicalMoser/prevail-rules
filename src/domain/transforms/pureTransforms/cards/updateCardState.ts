@@ -1,4 +1,5 @@
-import type { Board, CardState, GameState } from '@entities';
+import type { Board, CardState } from '@entities';
+import type { GameState } from '@game';
 
 /**
  * Creates a new game state with the card state updated.

@@ -1,5 +1,7 @@
-import type { IssueCommandsPhaseState, StandardBoard } from '@entities';
-import { ISSUE_COMMANDS_PHASE } from '@entities';
+import type { StandardBoard } from '@entities';
+import type { IssueCommandsPhaseState } from '@game';
+import { ISSUE_COMMANDS_PHASE } from '@game';
+
 import {
   createEmptyGameState,
   createGameStateWithEngagedUnits,

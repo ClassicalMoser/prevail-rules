@@ -1,9 +1,9 @@
+import type { StandardBoard } from '@entities';
 import type {
   CommandResolutionState,
   GameState,
   MeleeResolutionState,
-  StandardBoard,
-} from '@entities';
+} from '@game';
 import { createTestUnit } from '@testing/unitHelpers';
 
 /**

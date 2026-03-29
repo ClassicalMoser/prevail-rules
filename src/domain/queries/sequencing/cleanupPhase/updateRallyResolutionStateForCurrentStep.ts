@@ -1,4 +1,5 @@
-import type { Board, CleanupPhaseState, RallyResolutionState } from '@entities';
+import type { Board } from '@entities';
+import type { CleanupPhaseState, RallyResolutionState } from '@game';
 
 /**
  * Updates the rally resolution state for the current cleanup phase step.

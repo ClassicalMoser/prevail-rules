@@ -1,5 +1,7 @@
-import type { GameState, StandardBoard, UnitWithPlacement } from '@entities';
-import { PLAY_CARDS_PHASE } from '@entities';
+import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type { GameState } from '@game';
+import { PLAY_CARDS_PHASE } from '@game';
+
 import {
   createAttackApplyStateWithRetreat,
   createEmptyGameState,
