@@ -2,7 +2,7 @@ import type { StandardBoard } from '@entities';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
@@ -29,12 +29,12 @@ describe('getLegalPlayCardOptions', () => {
       black: {
         ...current.black,
         awaitingPlay: null,
-        inHand: [commandCards[2]],
+        inHand: [tempCommandCards[2]],
       },
       white: {
         ...current.white,
         awaitingPlay: null,
-        inHand: [commandCards[3], commandCards[4]],
+        inHand: [tempCommandCards[3], tempCommandCards[4]],
       },
     }));
   }
@@ -48,11 +48,11 @@ describe('getLegalPlayCardOptions', () => {
       expect(o.eventNumber).toBe(0);
     }
     expect(options.filter((o) => o.player === 'black')).toEqual([
-      { ...chooseCardBase, player: 'black', card: commandCards[2] },
+      { ...chooseCardBase, player: 'black', card: tempCommandCards[2] },
     ]);
     expect(options.filter((o) => o.player === 'white')).toEqual([
-      { ...chooseCardBase, player: 'white', card: commandCards[3] },
-      { ...chooseCardBase, player: 'white', card: commandCards[4] },
+      { ...chooseCardBase, player: 'white', card: tempCommandCards[3] },
+      { ...chooseCardBase, player: 'white', card: tempCommandCards[4] },
     ]);
   });
 
@@ -66,37 +66,41 @@ describe('getLegalPlayCardOptions', () => {
         ...current,
         black: {
           ...current.black,
-          awaitingPlay: commandCards[0],
+          awaitingPlay: tempCommandCards[0],
           inHand: [],
         },
         white: {
           ...current.white,
           awaitingPlay: null,
-          inHand: [commandCards[2]],
+          inHand: [tempCommandCards[2]],
         },
       }),
     );
 
     const options = getLegalPlayCardOptions(state);
     expect(options).toEqual([
-      { ...chooseCardBase, player: 'white', card: commandCards[2] },
+      { ...chooseCardBase, player: 'white', card: tempCommandCards[2] },
     ]);
   });
 
-  it('returns empty when not in playCards phase', () => {
+  it('throws when not in playCards phase', () => {
     const state = updatePhaseState(createEmptyGameState(), {
       phase: 'moveCommanders',
       step: 'moveFirstCommander',
     });
-    expect(getLegalPlayCardOptions(state)).toEqual([]);
+    expect(() => getLegalPlayCardOptions(state)).toThrow(
+      'Expected playCards phase, got moveCommanders',
+    );
   });
 
-  it('returns empty when playCards is not on chooseCards step', () => {
+  it('throws when playCards is not on chooseCards step', () => {
     const state = updatePhaseState(createEmptyGameState(), {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
     });
-    expect(getLegalPlayCardOptions(state)).toEqual([]);
+    expect(() => getLegalPlayCardOptions(state)).toThrow(
+      'Not in choose cards step',
+    );
   });
 
   it('returns empty when both players already have awaitingPlay set', () => {
@@ -109,12 +113,12 @@ describe('getLegalPlayCardOptions', () => {
         ...current,
         black: {
           ...current.black,
-          awaitingPlay: commandCards[0],
+          awaitingPlay: tempCommandCards[0],
           inHand: [],
         },
         white: {
           ...current.white,
-          awaitingPlay: commandCards[1],
+          awaitingPlay: tempCommandCards[1],
           inHand: [],
         },
       }),

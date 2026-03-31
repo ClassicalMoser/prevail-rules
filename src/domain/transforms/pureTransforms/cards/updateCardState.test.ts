@@ -1,4 +1,4 @@
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { updateCardState } from './updateCardState';
@@ -13,13 +13,13 @@ describe('updateCardState', () => {
       ...state.cardState,
       black: {
         ...state.cardState.black,
-        inHand: [commandCards[0]],
+        inHand: [tempCommandCards[0]],
       },
     };
 
     const newState = updateCardState(state, newCardState);
 
-    expect(newState.cardState.black.inHand).toEqual([commandCards[0]]);
+    expect(newState.cardState.black.inHand).toEqual([tempCommandCards[0]]);
     expect(newState.cardState.white).toBe(state.cardState.white);
   });
 
@@ -30,11 +30,11 @@ describe('updateCardState', () => {
       ...current,
       black: {
         ...current.black,
-        inHand: [commandCards[0]],
+        inHand: [tempCommandCards[0]],
       },
     }));
 
-    expect(newState.cardState.black.inHand).toEqual([commandCards[0]]);
+    expect(newState.cardState.black.inHand).toEqual([tempCommandCards[0]]);
   });
 
   it('given not mutate the original state', () => {
@@ -43,10 +43,10 @@ describe('updateCardState', () => {
 
     updateCardState(state, (current) => ({
       ...current,
-      black: { ...current.black, inHand: [commandCards[0]] },
+      black: { ...current.black, inHand: [tempCommandCards[0]] },
     }));
 
     expect(state.cardState).toBe(originalCardState);
-    expect(state.cardState.black.inHand).not.toContain(commandCards[0]);
+    expect(state.cardState.black.inHand).not.toContain(tempCommandCards[0]);
   });
 });

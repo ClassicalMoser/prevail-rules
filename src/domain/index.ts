@@ -465,7 +465,7 @@ export {
   traitSchema,
 } from '@ruleValues';
 export type { Trait } from '@ruleValues';
-export { commandCards, tempUnits } from '@sampleValues';
+export { tempCommandCards, tempUnits } from '@sampleValues';
 export {
   addCommanderToBoard,
   addCommanderToLostCommanders,

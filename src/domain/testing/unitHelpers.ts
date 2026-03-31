@@ -15,7 +15,7 @@ import { getUnitByStatValue } from './getUnitByStatValue';
  *
  * @param playerSide - Which player the unit belongs to
  * @param options - Optional configuration for the unit
- * @param options.unitType - Specific unit type to use (if not provided, will use stat-based lookup)
+ * @param options.unitType - Specific unit type to use (if not provided, will use stat-based lookup in `tempUnits`)
  * @param options.instanceNumber - Unit instance number (defaults to 1)
  * @param options.flexibility - Flexibility stat value (used if unitType not provided)
  * @param options.attack - Attack stat value (used if unitType not provided)
@@ -52,7 +52,6 @@ export function createTestUnit(
     return createUnitInstance(playerSide, options.unitType, instanceNumber);
   }
 
-  // Collect all specified stats
   const specifiedStats: Array<{ stat: UnitStatName; value: number }> = [];
   if (options?.flexibility !== undefined) {
     specifiedStats.push({ stat: 'flexibility', value: options.flexibility });
@@ -76,7 +75,6 @@ export function createTestUnit(
     specifiedStats.push({ stat: 'rout', value: options.rout });
   }
 
-  // Find a unit matching all specified stats
   if (specifiedStats.length > 0) {
     const unitType = tempUnits.find((unit) =>
       specifiedStats.every(({ stat, value }) => unit.stats[stat] === value),
@@ -92,14 +90,12 @@ export function createTestUnit(
     return createUnitInstance(playerSide, unitType, instanceNumber);
   }
 
-  // Default: use attack value 3 (common in tests)
   const unitType = getUnitByStatValue('attack', 3);
   return createUnitInstance(playerSide, unitType, instanceNumber);
 }
 
 /**
- * Creates a unit instance by looking up a unit with a specific stat value.
- * This is a convenience wrapper around getUnitByStatValue and createUnitInstance.
+ * Creates a unit instance by looking up a unit with a specific stat value in `tempUnits`.
  *
  * @param playerSide - The player side of the unit
  * @param stat - The stat name to search by

@@ -3,7 +3,7 @@ import type { GameState } from '@game';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
@@ -58,7 +58,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
         const state = createGameStateInPlayCardsStep('chooseCards');
         const stateWithBlackCard = updateCardState(state, (current) => ({
           ...current,
-          black: { ...current.black, awaitingPlay: commandCards[0] },
+          black: { ...current.black, awaitingPlay: tempCommandCards[0] },
         }));
 
         const expectedEvent =
@@ -78,7 +78,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
         const stateWithWhiteCard = updateCardState(state, (current) => ({
           ...current,
           black: { ...current.black, awaitingPlay: null },
-          white: { ...current.white, awaitingPlay: commandCards[0] },
+          white: { ...current.white, awaitingPlay: tempCommandCards[0] },
         }));
 
         const expectedEvent =

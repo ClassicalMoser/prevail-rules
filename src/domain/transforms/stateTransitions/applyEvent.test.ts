@@ -1,7 +1,7 @@
 import type { StandardBoard } from '@entities';
 import type { Event } from '@events';
 import type { GameState } from '@game';
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { applyEvent } from './applyEvent';
@@ -28,7 +28,7 @@ describe('applyEvent', () => {
       eventType: 'playerChoice',
       choiceType: 'chooseCard',
       player: 'black',
-      card: commandCards[0],
+      card: tempCommandCards[0],
     };
     const mockReturnState = {
       ...state,
@@ -72,7 +72,7 @@ describe('applyEvent', () => {
       eventType: 'playerChoice',
       choiceType: 'chooseCard',
       player: 'black',
-      card: commandCards[0],
+      card: tempCommandCards[0],
     };
     const event2: Event<StandardBoard> = {
       eventNumber: 1,

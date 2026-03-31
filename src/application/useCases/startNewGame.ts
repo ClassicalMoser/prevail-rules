@@ -42,12 +42,12 @@ export const startNewGame = async <T extends GameType>(
     blackArmy: {
       id: '00000000-0000-0000-0000-000000000000',
       units: new Set(),
-      commandCards: new Set(),
+      tempCommandCards: new Set(),
     },
     whiteArmy: {
       id: '00000000-0000-0000-0000-000000000000',
       units: new Set(),
-      commandCards: new Set(),
+      tempCommandCards: new Set(),
     },
     gameState,
   };

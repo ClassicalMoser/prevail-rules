@@ -304,7 +304,7 @@ describe('getLinesFromUnit', () => {
   describe('unitType filtering', () => {
     it('given only include units of specified types', () => {
       const unitType1 = getUnitByTrait('mounted');
-      const unitType2 = getUnitByTrait('spear');
+      const unitType2 = getUnitByTrait('phalanx');
       const unit1 = createTestUnit('black', {
         unitType: unitType1,
         instanceNumber: 1,

@@ -3,7 +3,7 @@ import type { RevealCardsEvent } from '@events';
 import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
@@ -23,12 +23,12 @@ describe('applyRevealCardsEvent', () => {
       ...current,
       black: {
         ...current.black,
-        awaitingPlay: commandCards[0],
+        awaitingPlay: tempCommandCards[0],
         inPlay: null,
       },
       white: {
         ...current.white,
-        awaitingPlay: commandCards[1],
+        awaitingPlay: tempCommandCards[1],
         inPlay: null,
       },
     }));
@@ -140,7 +140,7 @@ describe('applyRevealCardsEvent', () => {
         ...current,
         black: {
           ...current.black,
-          awaitingPlay: commandCards[0],
+          awaitingPlay: tempCommandCards[0],
         },
         white: {
           ...current.white,
@@ -173,7 +173,7 @@ describe('applyRevealCardsEvent', () => {
         },
         white: {
           ...current.white,
-          awaitingPlay: commandCards[0],
+          awaitingPlay: tempCommandCards[0],
         },
       }));
       const stateWithPhase = updatePhaseState(stateWithCards, {

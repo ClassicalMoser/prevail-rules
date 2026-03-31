@@ -1,5 +1,5 @@
 import type { Modifier } from '@entities';
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
 
 import { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
@@ -22,7 +22,7 @@ describe('modifiersFromCompletedCommitment', () => {
   });
 
   it('given completed commitment with card, returns that card modifiers', () => {
-    const card = commandCards[0];
+    const card = tempCommandCards[0];
     const expected: Modifier[] = card.modifiers;
     expect(
       modifiersFromCompletedCommitment({

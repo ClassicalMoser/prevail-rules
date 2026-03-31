@@ -4,7 +4,7 @@ import type { GameState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getIssueCommandsPhaseState } from '@queries';
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState, createTestUnit } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { isSameUnitInstance } from '@validation';
@@ -25,16 +25,16 @@ describe('applyIssueCommandEvent', () => {
       ...current,
       black: {
         ...current.black,
-        inPlay: commandCards[0],
+        inPlay: tempCommandCards[0],
       },
       white: {
         ...current.white,
-        inPlay: commandCards[1],
+        inPlay: tempCommandCards[1],
       },
     }));
 
-    const blackCommand = commandCards[0].command;
-    const whiteCommand = commandCards[1].command;
+    const blackCommand = tempCommandCards[0].command;
+    const whiteCommand = tempCommandCards[1].command;
 
     const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: ISSUE_COMMANDS_PHASE,
@@ -53,7 +53,7 @@ describe('applyIssueCommandEvent', () => {
     it('given black issues their remaining command with one unit, command drops from first-player set and unit commanded', () => {
       const state = createGameStateWithCommands();
       const unit = createTestUnit('black', { attack: 3 });
-      const command = commandCards[0].command;
+      const command = tempCommandCards[0].command;
 
       const event: IssueCommandEvent<StandardBoard> = {
         eventNumber: 0,
@@ -82,7 +82,7 @@ describe('applyIssueCommandEvent', () => {
     it('given white issues second-player command, remainingCommandsSecondPlayer loses that command', () => {
       const state = createGameStateWithCommands();
       const unit = createTestUnit('white', { attack: 3 });
-      const command = commandCards[1].command;
+      const command = tempCommandCards[1].command;
 
       const event: IssueCommandEvent<StandardBoard> = {
         eventNumber: 0,
@@ -112,7 +112,7 @@ describe('applyIssueCommandEvent', () => {
       const state = createGameStateWithCommands();
       const unit1 = createTestUnit('black', { attack: 3 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
-      const command = commandCards[0].command;
+      const command = tempCommandCards[0].command;
 
       const event: IssueCommandEvent<StandardBoard> = {
         eventNumber: 0,
@@ -142,7 +142,7 @@ describe('applyIssueCommandEvent', () => {
     it('given phase commandedUnits and remaining set sizes before apply, input state unchanged after apply', () => {
       const state = createGameStateWithCommands();
       const unit = createTestUnit('black', { attack: 3 });
-      const command = commandCards[0].command;
+      const command = tempCommandCards[0].command;
       const phaseState = getIssueCommandsPhaseState(state);
       const originalRemainingCommandsSize =
         phaseState.remainingCommandsFirstPlayer.size;

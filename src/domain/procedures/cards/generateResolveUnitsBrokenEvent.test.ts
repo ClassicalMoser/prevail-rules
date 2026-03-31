@@ -108,6 +108,6 @@ describe('generateResolveUnitsBrokenEvent', () => {
 
     const event = generateResolveUnitsBrokenEvent(full, 0);
     const ids = event.unitTypes.map((t) => t.id).sort();
-    expect(ids).toEqual(['1', '2']);
+    expect(ids).toEqual([tempUnits[0]!.id, tempUnits[1]!.id].sort());
   });
 });

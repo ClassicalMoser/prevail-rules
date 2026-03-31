@@ -8,7 +8,7 @@ import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import * as expectedEventQueries from '@queries';
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -29,12 +29,12 @@ describe('validatePlayerChoice', () => {
       black: {
         ...current.black,
         awaitingPlay: null,
-        inHand: [commandCards[2]],
+        inHand: [tempCommandCards[2]],
       },
       white: {
         ...current.white,
         awaitingPlay: null,
-        inHand: [commandCards[3]],
+        inHand: [tempCommandCards[3]],
       },
     }));
   }
@@ -50,7 +50,7 @@ describe('validatePlayerChoice', () => {
       choiceType: 'chooseCard',
       eventNumber: 0,
       player: 'black',
-      card: commandCards[2],
+      card: tempCommandCards[2],
     };
 
     const validation = validatePlayerChoice(event, state);
@@ -71,7 +71,7 @@ describe('validatePlayerChoice', () => {
       choiceType: 'chooseCard',
       eventNumber: 0,
       player: 'black',
-      card: commandCards[0],
+      card: tempCommandCards[0],
     };
 
     const validation = validatePlayerChoice(event, state);
@@ -95,13 +95,13 @@ describe('validatePlayerChoice', () => {
         ...current,
         black: {
           ...current.black,
-          awaitingPlay: commandCards[0],
+          awaitingPlay: tempCommandCards[0],
           inHand: [],
         },
         white: {
           ...current.white,
           awaitingPlay: null,
-          inHand: [commandCards[2]],
+          inHand: [tempCommandCards[2]],
         },
       }),
     );
@@ -111,7 +111,7 @@ describe('validatePlayerChoice', () => {
       choiceType: 'chooseCard',
       eventNumber: 0,
       player: 'black',
-      card: commandCards[0],
+      card: tempCommandCards[0],
     };
 
     const validation = validatePlayerChoice(event, state);
@@ -162,7 +162,7 @@ describe('validatePlayerChoice', () => {
         choiceType: 'issueCommand',
         eventNumber: 0,
         player: 'black',
-        command: commandCards[0].command,
+        command: tempCommandCards[0].command,
         units: new Set(),
       };
 

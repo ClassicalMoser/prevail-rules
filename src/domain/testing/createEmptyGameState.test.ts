@@ -2,7 +2,7 @@
  * createEmptyGameState (testing helper): minimal game state for tests; seeds sample cards in awaitingPlay/inPlay.
  * For full initializer behavior see `transforms/initializations/createEmptyGameState.test.ts`.
  */
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
 import { createEmptyGameState } from './createEmptyGameState';
 
@@ -37,9 +37,9 @@ describe('createEmptyGameState', () => {
   it('uses fixed sample cards for awaitingPlay and inPlay on both sides', () => {
     const gameState = createEmptyGameState();
 
-    expect(gameState.cardState.black.awaitingPlay).toEqual(commandCards[0]);
-    expect(gameState.cardState.black.inPlay).toEqual(commandCards[1]);
-    expect(gameState.cardState.white.awaitingPlay).toEqual(commandCards[0]);
-    expect(gameState.cardState.white.inPlay).toEqual(commandCards[1]);
+    expect(gameState.cardState.black.awaitingPlay).toEqual(tempCommandCards[0]);
+    expect(gameState.cardState.black.inPlay).toEqual(tempCommandCards[1]);
+    expect(gameState.cardState.white.awaitingPlay).toEqual(tempCommandCards[0]);
+    expect(gameState.cardState.white.inPlay).toEqual(tempCommandCards[1]);
   });
 });

@@ -1,6 +1,6 @@
 import type { PlayerSide, StandardBoard } from '@entities';
 import type { GameState } from '@game';
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyStandardBoard } from '@transforms';
 
 /**
@@ -33,16 +33,16 @@ export function createEmptyGameState(options?: {
     cardState: {
       black: {
         inHand: [],
-        awaitingPlay: commandCards[0],
-        inPlay: commandCards[1],
+        awaitingPlay: tempCommandCards[0],
+        inPlay: tempCommandCards[1],
         played: [],
         discarded: [],
         burnt: [],
       },
       white: {
         inHand: [],
-        awaitingPlay: commandCards[0],
-        inPlay: commandCards[1],
+        awaitingPlay: tempCommandCards[0],
+        inPlay: tempCommandCards[1],
         played: [],
         discarded: [],
         burnt: [],

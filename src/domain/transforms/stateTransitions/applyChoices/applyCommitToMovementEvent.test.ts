@@ -1,7 +1,7 @@
 import type { StandardBoard } from '@entities';
 import type { CommitToMovementEvent } from '@events';
 import { getMovementResolutionState } from '@queries';
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
@@ -20,7 +20,7 @@ describe('applyCommitToMovementEvent', () => {
     const state = createEmptyGameState();
     const stateWithBlackCardInHand = updateCardState(state, (c) => ({
       ...c,
-      black: { ...c.black, inHand: [commandCards[0]] },
+      black: { ...c.black, inHand: [tempCommandCards[0]] },
     }));
     const movementState = createMovementResolutionState(
       stateWithBlackCardInHand,
@@ -39,7 +39,7 @@ describe('applyCommitToMovementEvent', () => {
       eventType: 'playerChoice',
       choiceType: 'commitToMovement',
       player: 'black',
-      committedCard: commandCards[0],
+      committedCard: tempCommandCards[0],
       modifierTypes: [],
     };
 
@@ -48,7 +48,7 @@ describe('applyCommitToMovementEvent', () => {
 
     expect(newMovement.commitment).toEqual({
       commitmentType: 'completed',
-      card: commandCards[0],
+      card: tempCommandCards[0],
     });
     expect(newState.cardState.black.inHand).toHaveLength(0);
   });
@@ -57,7 +57,7 @@ describe('applyCommitToMovementEvent', () => {
     const state = createEmptyGameState();
     const stateWithWhiteCardInHand = updateCardState(state, (c) => ({
       ...c,
-      white: { ...c.white, inHand: [commandCards[0]] },
+      white: { ...c.white, inHand: [tempCommandCards[0]] },
     }));
     const movementState = createMovementResolutionState(
       stateWithWhiteCardInHand,
@@ -76,7 +76,7 @@ describe('applyCommitToMovementEvent', () => {
       eventType: 'playerChoice',
       choiceType: 'commitToMovement',
       player: 'white',
-      committedCard: commandCards[0],
+      committedCard: tempCommandCards[0],
       modifierTypes: [],
     };
 
@@ -85,7 +85,7 @@ describe('applyCommitToMovementEvent', () => {
 
     expect(newMovement.commitment).toEqual({
       commitmentType: 'completed',
-      card: commandCards[0],
+      card: tempCommandCards[0],
     });
     expect(newState.cardState.white.inHand).toHaveLength(0);
   });
@@ -94,7 +94,7 @@ describe('applyCommitToMovementEvent', () => {
     const state = createEmptyGameState();
     const stateWithBlackCardInHand = updateCardState(state, (c) => ({
       ...c,
-      black: { ...c.black, inHand: [commandCards[0]] },
+      black: { ...c.black, inHand: [tempCommandCards[0]] },
     }));
     const movementState = createMovementResolutionState(
       stateWithBlackCardInHand,
@@ -113,7 +113,7 @@ describe('applyCommitToMovementEvent', () => {
       eventType: 'playerChoice',
       choiceType: 'commitToMovement',
       player: 'black',
-      committedCard: commandCards[0],
+      committedCard: tempCommandCards[0],
       modifierTypes: [],
     };
 

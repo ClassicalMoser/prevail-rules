@@ -1,2 +1,16 @@
-export { commandCards } from './tempCommandCards';
-export { tempUnits } from './tempUnits';
+export { tempCommandCards } from './tempCommandCards';
+export {
+  africanElephants,
+  africanVeterans,
+  alaeSocii,
+  equites,
+  libyanSpearmen,
+  manipularLegion,
+  numidianCavalry,
+  numidianSkirmishers,
+  punicCitizenCavalry,
+  punicCitizenSpearmen,
+  tempUnits,
+  velites,
+} from './tempUnits';
+export { tinyStarterArmy } from './tinyStarterArmy';

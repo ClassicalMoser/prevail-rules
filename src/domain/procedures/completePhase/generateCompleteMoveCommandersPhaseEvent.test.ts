@@ -2,7 +2,7 @@ import type { StandardBoard } from '@entities';
 import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
@@ -18,8 +18,8 @@ describe('generateCompleteMoveCommandersPhaseEvent', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const stateWithCards = updateCardState(state, (current) => ({
       ...current,
-      black: { ...current.black, inPlay: commandCards[0] },
-      white: { ...current.white, inPlay: commandCards[1] },
+      black: { ...current.black, inPlay: tempCommandCards[0] },
+      white: { ...current.white, inPlay: tempCommandCards[1] },
     }));
     return updatePhaseState(stateWithCards, {
       phase: MOVE_COMMANDERS_PHASE,
@@ -35,10 +35,10 @@ describe('generateCompleteMoveCommandersPhaseEvent', () => {
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeMoveCommandersPhase');
     expect(event.remainingCommandsFirstPlayer).toEqual(
-      new Set([commandCards[0].command]),
+      new Set([tempCommandCards[0].command]),
     );
     expect(event.remainingCommandsSecondPlayer).toEqual(
-      new Set([commandCards[1].command]),
+      new Set([tempCommandCards[1].command]),
     );
   });
 
@@ -64,8 +64,8 @@ describe('generateCompleteMoveCommandersPhaseEvent', () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const withCards = updateCardState(base, (current) => ({
       ...current,
-      black: { ...current.black, inPlay: commandCards[0] },
-      white: { ...current.white, inPlay: commandCards[1] },
+      black: { ...current.black, inPlay: tempCommandCards[0] },
+      white: { ...current.white, inPlay: tempCommandCards[1] },
     }));
     const state = updatePhaseState(withCards, {
       phase: MOVE_COMMANDERS_PHASE,
@@ -75,10 +75,10 @@ describe('generateCompleteMoveCommandersPhaseEvent', () => {
     const event = generateCompleteMoveCommandersPhaseEvent(state, 0);
 
     expect(event.remainingCommandsFirstPlayer).toEqual(
-      new Set([commandCards[1].command]),
+      new Set([tempCommandCards[1].command]),
     );
     expect(event.remainingCommandsSecondPlayer).toEqual(
-      new Set([commandCards[0].command]),
+      new Set([tempCommandCards[0].command]),
     );
   });
 });

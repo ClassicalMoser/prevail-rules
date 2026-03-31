@@ -21,7 +21,10 @@ export {
   getSpacesWithinDistance,
 } from './boardSpace';
 export { calculateInitiative } from './calculateInitiative';
-export { getLegalPlayCardOptions } from './choiceOptions';
+export {
+  getLegalChooseMeleeResolutionEvents,
+  getLegalPlayCardOptions,
+} from './choiceOptions';
 export {
   isEngagementFromFlank,
   isEngagementFromFront,

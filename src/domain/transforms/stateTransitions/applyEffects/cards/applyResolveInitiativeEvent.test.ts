@@ -3,7 +3,7 @@ import type { ResolveInitiativeEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
@@ -22,12 +22,12 @@ describe('applyResolveInitiativeEvent', () => {
       ...current,
       black: {
         ...current.black,
-        inPlay: commandCards[0],
+        inPlay: tempCommandCards[0],
         awaitingPlay: null,
       },
       white: {
         ...current.white,
-        inPlay: commandCards[1],
+        inPlay: tempCommandCards[1],
         awaitingPlay: null,
       },
     }));

@@ -1,4 +1,4 @@
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { updatePlayerCardState } from './updatePlayerCardState';
@@ -12,10 +12,10 @@ describe('updatePlayerCardState', () => {
 
     const newState = updatePlayerCardState(state, 'black', {
       ...state.cardState.black,
-      inHand: [commandCards[0]],
+      inHand: [tempCommandCards[0]],
     });
 
-    expect(newState.cardState.black.inHand).toEqual([commandCards[0]]);
+    expect(newState.cardState.black.inHand).toEqual([tempCommandCards[0]]);
     expect(newState.cardState.white).toBe(state.cardState.white);
   });
 
@@ -24,10 +24,10 @@ describe('updatePlayerCardState', () => {
 
     const newState = updatePlayerCardState(state, 'white', (current) => ({
       ...current,
-      inHand: [commandCards[1]],
+      inHand: [tempCommandCards[1]],
     }));
 
-    expect(newState.cardState.white.inHand).toEqual([commandCards[1]]);
+    expect(newState.cardState.white.inHand).toEqual([tempCommandCards[1]]);
     expect(newState.cardState.black).toBe(state.cardState.black);
   });
 
@@ -37,11 +37,11 @@ describe('updatePlayerCardState', () => {
 
     updatePlayerCardState(state, 'black', (current) => ({
       ...current,
-      inHand: [commandCards[0]],
+      inHand: [tempCommandCards[0]],
     }));
 
     expect(state.cardState.black).toBe(originalBlackCardState);
-    expect(state.cardState.black.inHand).not.toContain(commandCards[0]);
+    expect(state.cardState.black.inHand).not.toContain(tempCommandCards[0]);
   });
 
   it('given update correct player', () => {
@@ -49,10 +49,10 @@ describe('updatePlayerCardState', () => {
 
     const newState = updatePlayerCardState(state, 'white', (current) => ({
       ...current,
-      inHand: [commandCards[1]],
+      inHand: [tempCommandCards[1]],
     }));
 
-    expect(newState.cardState.white.inHand).toEqual([commandCards[1]]);
-    expect(newState.cardState.black.inHand).not.toContain(commandCards[1]);
+    expect(newState.cardState.white.inHand).toEqual([tempCommandCards[1]]);
+    expect(newState.cardState.black.inHand).not.toContain(tempCommandCards[1]);
   });
 });

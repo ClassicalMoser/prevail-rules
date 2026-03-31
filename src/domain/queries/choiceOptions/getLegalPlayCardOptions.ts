@@ -2,6 +2,10 @@ import type { Board } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
+import {
+  getNextEventNumber,
+  getPlayCardsPhaseState,
+} from '@queries/sequencing';
 
 /**
  * Returns every legal play-card choice for the current state during the
@@ -16,20 +20,24 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 export function getLegalPlayCardOptions<TBoard extends Board>(
   gameState: GameState<TBoard>,
 ): ChooseCardEvent<TBoard>[] {
-  const currentPhaseState = gameState.currentRoundState?.currentPhaseState;
-  if (!currentPhaseState || currentPhaseState.phase !== 'playCards') {
-    return [];
-  }
-  if (currentPhaseState.step !== 'chooseCards') {
-    return [];
+  // Make sure we're in the choose cards step
+  const phaseState = getPlayCardsPhaseState(gameState);
+  if (phaseState.step !== 'chooseCards') {
+    throw new Error('Not in choose cards step');
   }
 
-  const eventNumber = gameState.currentRoundState.events.length;
+  // Get the next event number
+  const eventNumber = getNextEventNumber(gameState);
+
+  // See who has legal choices
   const { black, white } = gameState.cardState;
   const blackStillChoosing = black.awaitingPlay === null;
   const whiteStillChoosing = white.awaitingPlay === null;
 
+  // Build the result
   const result: ChooseCardEvent<TBoard>[] = [];
+
+  // If black is still choosing, add all the cards in their hand as legal choices
   if (blackStillChoosing) {
     for (const card of black.inHand) {
       result.push({
@@ -41,6 +49,8 @@ export function getLegalPlayCardOptions<TBoard extends Board>(
       });
     }
   }
+
+  // If white is still choosing, add all the cards in their hand as legal choices
   if (whiteStillChoosing) {
     for (const card of white.inHand) {
       result.push({
@@ -52,5 +62,7 @@ export function getLegalPlayCardOptions<TBoard extends Board>(
       });
     }
   }
+
+  // Return the result
   return result;
 }

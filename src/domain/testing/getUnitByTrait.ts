@@ -3,15 +3,15 @@ import type { Trait } from '@ruleValues';
 import { tempUnits } from '@sampleValues';
 
 /**
- * Finds a unit type by matching one or more traits.
+ * Finds a unit type in sample data matching the given traits (all required).
+ * Use this when a test needs a real roster row; do not assert outcomes that depend on stats
+ * you have not read from that row—set up state from those stats or use an explicit {@link UnitType}.
  *
- * @param traits - The trait(s) to search for. If multiple traits are provided, the unit must have all of them.
- * @returns The matching unit type
- * @throws {Error} If no unit is found with the specified trait(s)
+ * @throws {Error} If no unit in `tempUnits` has all of the traits
  */
 export function getUnitByTrait(...traits: Trait[]): UnitType {
-  const unit = tempUnits.find((unit) =>
-    traits.every((trait) => unit.traits.includes(trait)),
+  const unit = tempUnits.find((u) =>
+    traits.every((trait) => u.traits.includes(trait)),
   );
   if (!unit) {
     const traitsStr =

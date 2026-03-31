@@ -68,7 +68,7 @@ describe('createGameState', () => {
 
   it('given defaults, creates a game state with full control syntax', () => {
     const gameState = createGameState([
-      { coord: 'E-5', player: 'black', attack: 3, flexibility: 2 },
+      { coord: 'E-5', player: 'black', attack: 3, flexibility: 1 },
       { coord: 'E-6', player: 'white', attack: 4 },
     ]);
     const blackUnit = getPlayerUnitWithPosition(

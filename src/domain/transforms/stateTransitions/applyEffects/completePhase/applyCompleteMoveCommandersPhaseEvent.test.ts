@@ -3,20 +3,20 @@ import type { CompleteMoveCommandersPhaseEvent } from '@events';
 import type { GameState } from '@game';
 import { ISSUE_COMMANDS_PHASE, MOVE_COMMANDERS_PHASE } from '@game';
 
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
 import { applyCompleteMoveCommandersPhaseEvent } from './applyCompleteMoveCommandersPhaseEvent';
 
-/** Matches procedure output for black initiative + commandCards[0]/[1] in play. */
+/** Matches procedure output for black initiative + tempCommandCards[0]/[1] in play. */
 function moveCommandersCompleteEventFromDefaultCards(): CompleteMoveCommandersPhaseEvent<StandardBoard> {
   return {
     eventNumber: 0,
     eventType: 'gameEffect',
     effectType: 'completeMoveCommandersPhase',
-    remainingCommandsFirstPlayer: new Set([commandCards[0].command]),
-    remainingCommandsSecondPlayer: new Set([commandCards[1].command]),
+    remainingCommandsFirstPlayer: new Set([tempCommandCards[0].command]),
+    remainingCommandsSecondPlayer: new Set([tempCommandCards[1].command]),
   };
 }
 
@@ -39,7 +39,7 @@ function moveCommandersCompleteEvent(
  * default factory event). Phase guard requires `moveCommanders`.
  */
 describe('applyCompleteMoveCommandersPhaseEvent', () => {
-  /** moveCommanders.complete, black initiative, commandCards[0]/[1] inPlay. */
+  /** moveCommanders.complete, black initiative, tempCommandCards[0]/[1] inPlay. */
   function createGameStateInCompleteStep(): GameState<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: 'black' });
 
@@ -47,11 +47,11 @@ describe('applyCompleteMoveCommandersPhaseEvent', () => {
       ...current,
       black: {
         ...current.black,
-        inPlay: commandCards[0],
+        inPlay: tempCommandCards[0],
       },
       white: {
         ...current.white,
-        inPlay: commandCards[1],
+        inPlay: tempCommandCards[1],
       },
     }));
 
@@ -176,11 +176,11 @@ describe('applyCompleteMoveCommandersPhaseEvent', () => {
         ...current,
         black: {
           ...current.black,
-          inPlay: commandCards[0],
+          inPlay: tempCommandCards[0],
         },
         white: {
           ...current.white,
-          inPlay: commandCards[1],
+          inPlay: tempCommandCards[1],
         },
       }));
       const stateWithWrongStep = updatePhaseState(stateWithCards, {
@@ -203,10 +203,10 @@ describe('applyCompleteMoveCommandersPhaseEvent', () => {
         throw new Error('Expected issueCommands phase');
       }
       expect(phaseState.remainingCommandsFirstPlayer).toEqual(
-        new Set([commandCards[0].command]),
+        new Set([tempCommandCards[0].command]),
       );
       expect(phaseState.remainingCommandsSecondPlayer).toEqual(
-        new Set([commandCards[1].command]),
+        new Set([tempCommandCards[1].command]),
       );
     });
 

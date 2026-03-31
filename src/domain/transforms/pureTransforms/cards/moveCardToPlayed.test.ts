@@ -1,4 +1,4 @@
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { moveCardToPlayed } from './moveCardToPlayed';
@@ -13,7 +13,7 @@ describe('moveCardToPlayed', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        inPlay: commandCards[0],
+        inPlay: tempCommandCards[0],
         played: [],
       },
     };
@@ -21,7 +21,7 @@ describe('moveCardToPlayed', () => {
     const newCardState = moveCardToPlayed(cardState, 'black');
 
     expect(newCardState.black.inPlay).toBeNull();
-    expect(newCardState.black.played).toEqual([commandCards[0]]);
+    expect(newCardState.black.played).toEqual([tempCommandCards[0]]);
     expect(newCardState.white).toBe(cardState.white);
   });
 
@@ -31,16 +31,16 @@ describe('moveCardToPlayed', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        inPlay: commandCards[1],
-        played: [commandCards[0]],
+        inPlay: tempCommandCards[1],
+        played: [tempCommandCards[0]],
       },
     };
 
     const newCardState = moveCardToPlayed(cardState, 'black');
 
     expect(newCardState.black.played).toEqual([
-      commandCards[0],
-      commandCards[1],
+      tempCommandCards[0],
+      tempCommandCards[1],
     ]);
   });
 
@@ -68,7 +68,7 @@ describe('moveCardToPlayed', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        inPlay: commandCards[0],
+        inPlay: tempCommandCards[0],
         played: [],
       },
     };

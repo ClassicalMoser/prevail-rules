@@ -1,18 +1,18 @@
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { describe, expect, it } from 'vitest';
 import { createTestCard, getCards, getCardsByCount } from './cardHelpers';
 
 /**
- * getCards: Gets cards from the commandCards array by their indices.
+ * getCards: Gets cards from the tempCommandCards array by their indices.
  */
 describe('getCards', () => {
   it('given context, returns cards at specified indices', () => {
     const cards = getCards(0, 1, 2);
 
     expect(cards).toHaveLength(3);
-    expect(cards[0]).toBe(commandCards[0]);
-    expect(cards[1]).toBe(commandCards[1]);
-    expect(cards[2]).toBe(commandCards[2]);
+    expect(cards[0]).toBe(tempCommandCards[0]);
+    expect(cards[1]).toBe(tempCommandCards[1]);
+    expect(cards[2]).toBe(tempCommandCards[2]);
   });
 
   it('given no indices provided, returns empty array', () => {
@@ -25,7 +25,7 @@ describe('getCards', () => {
     const cards = getCards(0);
 
     expect(cards).toHaveLength(1);
-    expect(cards[0]).toBe(commandCards[0]);
+    expect(cards[0]).toBe(tempCommandCards[0]);
   });
 
   it('given error when index is out of bounds (negative), throws', () => {
@@ -33,14 +33,14 @@ describe('getCards', () => {
   });
 
   it('given error when index is out of bounds (too large), throws', () => {
-    expect(() => getCards(commandCards.length)).toThrow(
-      `Card index ${commandCards.length} is out of bounds`,
+    expect(() => getCards(tempCommandCards.length)).toThrow(
+      `Card index ${tempCommandCards.length} is out of bounds`,
     );
   });
 
   it('given error when any index is out of bounds, throws', () => {
-    expect(() => getCards(0, 1, commandCards.length)).toThrow(
-      `Card index ${commandCards.length} is out of bounds`,
+    expect(() => getCards(0, 1, tempCommandCards.length)).toThrow(
+      `Card index ${tempCommandCards.length} is out of bounds`,
     );
   });
 });
@@ -50,16 +50,16 @@ describe('getCardsByCount', () => {
     const cards = getCardsByCount(3);
 
     expect(cards).toHaveLength(3);
-    expect(cards[0]).toBe(commandCards[0]);
-    expect(cards[1]).toBe(commandCards[1]);
-    expect(cards[2]).toBe(commandCards[2]);
+    expect(cards[0]).toBe(tempCommandCards[0]);
+    expect(cards[1]).toBe(tempCommandCards[1]);
+    expect(cards[2]).toBe(tempCommandCards[2]);
   });
 
   it('given context, returns single card by default', () => {
     const cards = getCardsByCount();
 
     expect(cards).toHaveLength(1);
-    expect(cards[0]).toBe(commandCards[0]);
+    expect(cards[0]).toBe(tempCommandCards[0]);
   });
 
   it('given count is 0, returns empty array', () => {
@@ -75,16 +75,16 @@ describe('getCardsByCount', () => {
   });
 
   it('given error when count exceeds available cards, throws', () => {
-    expect(() => getCardsByCount(commandCards.length + 1)).toThrow(
-      `Requested ${commandCards.length + 1} cards but only ${commandCards.length} are available`,
+    expect(() => getCardsByCount(tempCommandCards.length + 1)).toThrow(
+      `Requested ${tempCommandCards.length + 1} cards but only ${tempCommandCards.length} are available`,
     );
   });
 
   it('given count equals available cards, returns all available cards', () => {
-    const cards = getCardsByCount(commandCards.length);
+    const cards = getCardsByCount(tempCommandCards.length);
 
-    expect(cards).toHaveLength(commandCards.length);
-    expect(cards).toEqual([...commandCards]);
+    expect(cards).toHaveLength(tempCommandCards.length);
+    expect(cards).toEqual([...tempCommandCards]);
   });
 });
 

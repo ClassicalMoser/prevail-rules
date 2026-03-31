@@ -2,7 +2,7 @@ import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
-import { tempUnits } from '@sampleValues';
+import { equites, punicCitizenSpearmen } from '@sampleValues';
 import {
   createEmptyGameState,
   createMeleeResolutionState,
@@ -14,8 +14,8 @@ import { describe, expect, it } from 'vitest';
 
 import { generateResolveMeleeEvent } from './generateResolveMeleeEvent';
 
-/** Spearmen (retreat 5): with default test `inPlay` command card (+1 attack), total strike stays below retreat. */
-const spearmenType = tempUnits[1]!;
+/** Citizen spearmen (retreat 6, attack 3): with default test `inPlay` (+1 attack), strike stays below retreat. */
+const spearmenType = punicCitizenSpearmen;
 
 /**
  * `resolveMelee` compares strike vs retreat at a shared cell, sets rout/retreat booleans, and
@@ -44,8 +44,8 @@ describe('generateResolveMeleeEvent', () => {
 
   it('given cavalry vs cavalry on E-5, both retreated true and each gets a non-empty legal set', () => {
     const state = createEmptyGameState();
-    const whiteUnit = createTestUnit('white', { unitType: tempUnits[3] }); // Cavalry: attack 4, retreat 4
-    const blackUnit = createTestUnit('black', { unitType: tempUnits[3] });
+    const whiteUnit = createTestUnit('white', { unitType: equites });
+    const blackUnit = createTestUnit('black', { unitType: equites });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
       unit: whiteUnit,
       placement: { coordinate: 'E-5', facing: 'north' },

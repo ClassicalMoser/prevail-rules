@@ -13,6 +13,7 @@ export { isValidLine } from './isValidLine';
 export { matchesUnitRequirements } from './matchesUnitRequirements';
 export {
   isValidChooseCardEvent,
+  isValidChooseMeleeResolutionEvent,
   isValidChooseRallyEvent,
   isValidChooseRoutDiscardEvent,
   isValidMoveCommanderEvent,

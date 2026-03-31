@@ -1,4 +1,4 @@
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { burnCardFromPlayed } from './burnCardFromPlayed';
@@ -13,7 +13,7 @@ describe('burnCardFromPlayed', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        played: [commandCards[0], commandCards[1]],
+        played: [tempCommandCards[0], tempCommandCards[1]],
         burnt: [],
       },
     };
@@ -21,11 +21,11 @@ describe('burnCardFromPlayed', () => {
     const newCardState = burnCardFromPlayed(
       cardState,
       'black',
-      commandCards[0],
+      tempCommandCards[0],
     );
 
-    expect(newCardState.black.played).toEqual([commandCards[1]]);
-    expect(newCardState.black.burnt).toEqual([commandCards[0]]);
+    expect(newCardState.black.played).toEqual([tempCommandCards[1]]);
+    expect(newCardState.black.burnt).toEqual([tempCommandCards[0]]);
     expect(newCardState.white).toBe(cardState.white);
   });
 
@@ -35,15 +35,15 @@ describe('burnCardFromPlayed', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        played: [commandCards[0]],
+        played: [tempCommandCards[0]],
         burnt: [],
       },
     };
 
     expect(() =>
-      burnCardFromPlayed(cardState, 'black', commandCards[1]),
+      burnCardFromPlayed(cardState, 'black', tempCommandCards[1]),
     ).toThrow(
-      `Card ${commandCards[1].id} not found in black player's played cards`,
+      `Card ${tempCommandCards[1].id} not found in black player's played cards`,
     );
   });
 
@@ -53,14 +53,14 @@ describe('burnCardFromPlayed', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        played: [commandCards[0]],
+        played: [tempCommandCards[0]],
         burnt: [],
       },
     };
     const originalPlayed = cardState.black.played;
     const originalBurnt = cardState.black.burnt;
 
-    burnCardFromPlayed(cardState, 'black', commandCards[0]);
+    burnCardFromPlayed(cardState, 'black', tempCommandCards[0]);
 
     expect(cardState.black.played).toBe(originalPlayed);
     expect(cardState.black.burnt).toBe(originalBurnt);
@@ -72,20 +72,20 @@ describe('burnCardFromPlayed', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        played: [commandCards[0], commandCards[1]],
-        burnt: [commandCards[2]],
+        played: [tempCommandCards[0], tempCommandCards[1]],
+        burnt: [tempCommandCards[2]],
       },
     };
 
     const newCardState = burnCardFromPlayed(
       cardState,
       'black',
-      commandCards[0],
+      tempCommandCards[0],
     );
 
     expect(newCardState.black.burnt).toEqual([
-      commandCards[2],
-      commandCards[0],
+      tempCommandCards[2],
+      tempCommandCards[0],
     ]);
   });
 });

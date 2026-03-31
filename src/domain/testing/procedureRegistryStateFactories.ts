@@ -16,7 +16,7 @@ import {
   PLAY_CARDS_PHASE,
 } from '@game';
 
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { addUnitToBoard, updateCardState, updatePhaseState } from '@transforms';
 import { createEmptyGameState } from './createEmptyGameState';
 import {
@@ -81,8 +81,8 @@ export const procedureRegistryStateFactories: Record<
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const stateWithCards = updateCardState(state, (current) => ({
       ...current,
-      black: { ...current.black, inPlay: commandCards[0] },
-      white: { ...current.white, inPlay: commandCards[1] },
+      black: { ...current.black, inPlay: tempCommandCards[0] },
+      white: { ...current.white, inPlay: tempCommandCards[1] },
     }));
     return updatePhaseState(stateWithCards, {
       phase: MOVE_COMMANDERS_PHASE,

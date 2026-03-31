@@ -12,6 +12,9 @@ export {
   getMovementResolutionState,
   getRangedAttackResolutionState,
 } from './getCommandResolutionState';
+export { getCurrentEventStream } from './getCurrentEventStream';
+export { getCurrentInitiative } from './getCurrentInitiative';
+export { getNextEventNumber } from './getNextEventNumber';
 export {
   getCleanupPhaseState,
   getCurrentPhaseState,
@@ -20,6 +23,7 @@ export {
   getPlayCardsPhaseState,
   getResolveMeleePhaseState,
 } from './getPhaseState';
+export { getRemainingMeleeEngagements } from './getRemainingMeleeEngagements';
 export {
   canReverseUnit,
   findRetreatState,

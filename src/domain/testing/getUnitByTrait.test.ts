@@ -13,10 +13,10 @@ describe('getUnitByTrait', () => {
   });
 
   it('given context, returns unit type with all given traits', () => {
-    const unitType = getUnitByTrait('formation', 'sword');
+    const unitType = getUnitByTrait('formation', 'phalanx');
     expect(unitType).toBeDefined();
     expect(unitType.traits).toContain('formation');
-    expect(unitType.traits).toContain('sword');
+    expect(unitType.traits).toContain('phalanx');
   });
 
   it('given when no unit has the trait, throws', () => {

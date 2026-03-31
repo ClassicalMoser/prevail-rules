@@ -1,8 +1,8 @@
-import type { StandardBoard } from '@entities';
+import type { Card, StandardBoard } from '@entities';
 import type { GameState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
 
-import { commandCards } from '@sampleValues';
+import { PLAY_CARDS_PHASE } from '@game';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms';
 import { describe, expect, it } from 'vitest';
@@ -18,8 +18,8 @@ describe('generateResolveInitiativeEvent', () => {
    * then `currentInitiative` stamped (defaults black).
    */
   function createGameStateInAssignInitiativeStep(
-    whiteCard: (typeof commandCards)[number],
-    blackCard: (typeof commandCards)[number],
+    whiteCard: Card,
+    blackCard: Card,
     currentInitiative: 'black' | 'white' = 'black',
   ): GameState<StandardBoard> {
     const state = createEmptyGameState();
@@ -54,8 +54,12 @@ describe('generateResolveInitiativeEvent', () => {
   describe('winner selection', () => {
     it('given white inPlay lower initiative than black, resolveInitiative.player is white', () => {
       // Sample deck must contain distinct initiative values (1 vs 2).
-      const whiteCard = commandCards.find((c) => c.initiative === 1);
-      const blackCard = commandCards.find((c) => c.initiative === 2);
+      const whiteCard = tempCommandCards.find(
+        (card: Card) => card.initiative === 1,
+      );
+      const blackCard = tempCommandCards.find(
+        (card: Card) => card.initiative === 2,
+      );
 
       if (!whiteCard || !blackCard) {
         throw new Error(
@@ -77,8 +81,12 @@ describe('generateResolveInitiativeEvent', () => {
     });
 
     it('given black inPlay lower initiative than white, resolveInitiative.player is black', () => {
-      const whiteCard = commandCards.find((c) => c.initiative === 2);
-      const blackCard = commandCards.find((c) => c.initiative === 1);
+      const whiteCard = tempCommandCards.find(
+        (card: Card) => card.initiative === 2,
+      );
+      const blackCard = tempCommandCards.find(
+        (card: Card) => card.initiative === 1,
+      );
 
       if (!whiteCard || !blackCard) {
         throw new Error(
@@ -100,7 +108,7 @@ describe('generateResolveInitiativeEvent', () => {
     });
 
     it('given identical initiative on both inPlay cards, keeps currentInitiative player', () => {
-      const card = commandCards[0];
+      const card = tempCommandCards[0];
 
       // Tie break: still black when currentInitiative is black
       const stateWithBlack = createGameStateInAssignInitiativeStep(
@@ -136,7 +144,7 @@ describe('generateResolveInitiativeEvent', () => {
     });
 
     it('given white inPlay null at assignInitiative, throws', () => {
-      const blackCard = commandCards[0];
+      const blackCard = tempCommandCards[0];
       const state = createEmptyGameState();
 
       const stateWithCards = updateCardState(state, (current) => ({
@@ -164,7 +172,7 @@ describe('generateResolveInitiativeEvent', () => {
     });
 
     it('given black inPlay null at assignInitiative, throws', () => {
-      const whiteCard = commandCards[0];
+      const whiteCard = tempCommandCards[0];
       const state = createEmptyGameState();
 
       const stateWithCards = updateCardState(state, (current) => ({

@@ -3,7 +3,7 @@ import type { ChooseCardEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
 import { describe, expect, it } from 'vitest';
@@ -16,8 +16,8 @@ import { applyChooseCardEvent } from './applyChooseCardEvent';
 describe('applyChooseCardEvent', () => {
   /** playCards.chooseCards with the supplied hands and no card awaiting play yet. */
   function createGameStateInChooseCardsStep(
-    blackHand: typeof commandCards,
-    whiteHand: typeof commandCards,
+    blackHand: typeof tempCommandCards,
+    whiteHand: typeof tempCommandCards,
   ): GameState<StandardBoard> {
     const state = createEmptyGameState();
 
@@ -40,8 +40,8 @@ describe('applyChooseCardEvent', () => {
   describe('hand and awaitingPlay', () => {
     it('given black picks first card from two in hand, that card is awaitingPlay and hand shrinks', () => {
       const state = createGameStateInChooseCardsStep(
-        [commandCards[0], commandCards[1]],
-        [commandCards[2]],
+        [tempCommandCards[0], tempCommandCards[1]],
+        [tempCommandCards[2]],
       );
 
       const event: ChooseCardEvent<StandardBoard> = {
@@ -49,24 +49,24 @@ describe('applyChooseCardEvent', () => {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
-        card: commandCards[0],
+        card: tempCommandCards[0],
       };
 
       const newState = applyChooseCardEvent(event, state);
 
       // Card should be removed from hand
-      expect(newState.cardState.black.inHand).toEqual([commandCards[1]]);
+      expect(newState.cardState.black.inHand).toEqual([tempCommandCards[1]]);
       // Card should be in awaitingPlay
-      expect(newState.cardState.black.awaitingPlay).toBe(commandCards[0]);
+      expect(newState.cardState.black.awaitingPlay).toBe(tempCommandCards[0]);
       // White player's state should be unchanged
-      expect(newState.cardState.white.inHand).toEqual([commandCards[2]]);
+      expect(newState.cardState.white.inHand).toEqual([tempCommandCards[2]]);
       expect(newState.cardState.white.awaitingPlay).toBeNull();
     });
 
     it('given white picks middle card, white hand and awaitingPlay update and black unchanged', () => {
       const state = createGameStateInChooseCardsStep(
-        [commandCards[0]],
-        [commandCards[1], commandCards[2]],
+        [tempCommandCards[0]],
+        [tempCommandCards[1], tempCommandCards[2]],
       );
 
       const event: ChooseCardEvent<StandardBoard> = {
@@ -74,17 +74,17 @@ describe('applyChooseCardEvent', () => {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'white',
-        card: commandCards[1],
+        card: tempCommandCards[1],
       };
 
       const newState = applyChooseCardEvent(event, state);
 
       // Card should be removed from hand
-      expect(newState.cardState.white.inHand).toEqual([commandCards[2]]);
+      expect(newState.cardState.white.inHand).toEqual([tempCommandCards[2]]);
       // Card should be in awaitingPlay
-      expect(newState.cardState.white.awaitingPlay).toBe(commandCards[1]);
+      expect(newState.cardState.white.awaitingPlay).toBe(tempCommandCards[1]);
       // Black player's state should be unchanged
-      expect(newState.cardState.black.inHand).toEqual([commandCards[0]]);
+      expect(newState.cardState.black.inHand).toEqual([tempCommandCards[0]]);
       expect(newState.cardState.black.awaitingPlay).toBeNull();
     });
   });
@@ -92,8 +92,8 @@ describe('applyChooseCardEvent', () => {
   describe('when both sides have chosen', () => {
     it('given black then white each choose their only card, step becomes revealCards', () => {
       const state = createGameStateInChooseCardsStep(
-        [commandCards[0]],
-        [commandCards[1]],
+        [tempCommandCards[0]],
+        [tempCommandCards[1]],
       );
 
       // First player chooses
@@ -102,7 +102,7 @@ describe('applyChooseCardEvent', () => {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
-        card: commandCards[0],
+        card: tempCommandCards[0],
       };
       const afterFirst = applyChooseCardEvent(firstEvent, state);
 
@@ -117,7 +117,7 @@ describe('applyChooseCardEvent', () => {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'white',
-        card: commandCards[1],
+        card: tempCommandCards[1],
       };
       const afterSecond = applyChooseCardEvent(secondEvent, afterFirst);
 
@@ -129,8 +129,8 @@ describe('applyChooseCardEvent', () => {
 
     it('given only black chooses while white still has a card, step stays chooseCards', () => {
       const state = createGameStateInChooseCardsStep(
-        [commandCards[0], commandCards[1]],
-        [commandCards[2]],
+        [tempCommandCards[0], tempCommandCards[1]],
+        [tempCommandCards[2]],
       );
 
       const event: ChooseCardEvent<StandardBoard> = {
@@ -138,7 +138,7 @@ describe('applyChooseCardEvent', () => {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
-        card: commandCards[0],
+        card: tempCommandCards[0],
       };
 
       const newState = applyChooseCardEvent(event, state);
@@ -153,8 +153,8 @@ describe('applyChooseCardEvent', () => {
   describe('structural update', () => {
     it('given prior black hand snapshot, apply leaves input state object unchanged', () => {
       const state = createGameStateInChooseCardsStep(
-        [commandCards[0], commandCards[1]],
-        [commandCards[2]],
+        [tempCommandCards[0], tempCommandCards[1]],
+        [tempCommandCards[2]],
       );
       const originalHand = [...state.cardState.black.inHand];
 
@@ -163,7 +163,7 @@ describe('applyChooseCardEvent', () => {
         eventType: 'playerChoice',
         choiceType: 'chooseCard',
         player: 'black',
-        card: commandCards[0],
+        card: tempCommandCards[0],
       };
 
       applyChooseCardEvent(event, state);

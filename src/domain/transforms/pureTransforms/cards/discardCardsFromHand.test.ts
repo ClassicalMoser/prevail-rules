@@ -1,4 +1,4 @@
-import { commandCards } from '@sampleValues';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { discardCardsFromHand } from './discardCardsFromHand';
@@ -13,20 +13,20 @@ describe('discardCardsFromHand', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        inHand: [commandCards[0], commandCards[1], commandCards[2]],
+        inHand: [tempCommandCards[0], tempCommandCards[1], tempCommandCards[2]],
         discarded: [],
       },
     };
 
     const newCardState = discardCardsFromHand(cardState, 'black', [
-      commandCards[0].id,
-      commandCards[2].id,
+      tempCommandCards[0].id,
+      tempCommandCards[2].id,
     ]);
 
-    expect(newCardState.black.inHand).toEqual([commandCards[1]]);
+    expect(newCardState.black.inHand).toEqual([tempCommandCards[1]]);
     expect(newCardState.black.discarded).toEqual([
-      commandCards[0],
-      commandCards[2],
+      tempCommandCards[0],
+      tempCommandCards[2],
     ]);
     expect(newCardState.white).toBe(cardState.white);
   });
@@ -37,14 +37,14 @@ describe('discardCardsFromHand', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        inHand: [commandCards[0], commandCards[1]],
+        inHand: [tempCommandCards[0], tempCommandCards[1]],
         discarded: [],
       },
     };
     const originalHand = cardState.black.inHand;
     const originalDiscarded = cardState.black.discarded;
 
-    discardCardsFromHand(cardState, 'black', [commandCards[0].id]);
+    discardCardsFromHand(cardState, 'black', [tempCommandCards[0].id]);
 
     expect(cardState.black.inHand).toBe(originalHand);
     expect(cardState.black.discarded).toBe(originalDiscarded);
@@ -56,18 +56,18 @@ describe('discardCardsFromHand', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        inHand: [commandCards[0], commandCards[1]],
-        discarded: [commandCards[2]],
+        inHand: [tempCommandCards[0], tempCommandCards[1]],
+        discarded: [tempCommandCards[2]],
       },
     };
 
     const newCardState = discardCardsFromHand(cardState, 'black', [
-      commandCards[0].id,
+      tempCommandCards[0].id,
     ]);
 
     expect(newCardState.black.discarded).toEqual([
-      commandCards[2],
-      commandCards[0],
+      tempCommandCards[2],
+      tempCommandCards[0],
     ]);
   });
 
@@ -77,22 +77,22 @@ describe('discardCardsFromHand', () => {
       ...gameState.cardState,
       black: {
         ...gameState.cardState.black,
-        inHand: [commandCards[0], commandCards[1], commandCards[2]],
+        inHand: [tempCommandCards[0], tempCommandCards[1], tempCommandCards[2]],
         discarded: [],
       },
     };
 
     const newCardState = discardCardsFromHand(cardState, 'black', [
-      commandCards[0].id,
-      commandCards[1].id,
-      commandCards[2].id,
+      tempCommandCards[0].id,
+      tempCommandCards[1].id,
+      tempCommandCards[2].id,
     ]);
 
     expect(newCardState.black.inHand).toEqual([]);
     expect(newCardState.black.discarded).toEqual([
-      commandCards[0],
-      commandCards[1],
-      commandCards[2],
+      tempCommandCards[0],
+      tempCommandCards[1],
+      tempCommandCards[2],
     ]);
   });
 });

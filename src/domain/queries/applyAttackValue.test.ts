@@ -1,6 +1,26 @@
+import type { UnitType } from '@entities';
 import { createEmptyGameState, createTestUnit } from '@testing';
 import { describe, expect, it } from 'vitest';
 import { applyAttackValue } from './applyAttackValue';
+
+/** Explicit type: stacked rout/reverse/retreat thresholds come from applyAttackValue rules, not from tempUnits. */
+const unitTypeWithStackedDefense: UnitType = {
+  id: '00000000-0000-4000-8000-000000000001',
+  name: 'Test stacked defense',
+  traits: [],
+  stats: {
+    attack: 1,
+    range: 0,
+    speed: 1,
+    flexibility: 1,
+    reverse: 4,
+    retreat: 3,
+    rout: 5,
+  },
+  cost: 1,
+  limit: 1,
+  routPenalty: 0,
+};
 
 /**
  * applyAttackValue: compares attack value to the unit's current rout, reverse, and retreat stats and returns
@@ -76,9 +96,7 @@ describe('applyAttackValue', () => {
     it('given attack below all three, all flags false', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', {
-        rout: 5,
-        reverse: 4,
-        retreat: 3,
+        unitType: unitTypeWithStackedDefense,
       });
       const result2 = applyAttackValue(gameState, 2, unit);
       expect(result2).toEqual({
@@ -90,9 +108,7 @@ describe('applyAttackValue', () => {
     it('given attack meets retreat only then retreat and reverse', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', {
-        rout: 5,
-        reverse: 4,
-        retreat: 3,
+        unitType: unitTypeWithStackedDefense,
       });
       const result3 = applyAttackValue(gameState, 3, unit);
       const result4 = applyAttackValue(gameState, 4, unit);
@@ -110,9 +126,7 @@ describe('applyAttackValue', () => {
     it('given attack meets rout or higher, all flags true', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', {
-        rout: 5,
-        reverse: 4,
-        retreat: 3,
+        unitType: unitTypeWithStackedDefense,
       });
       const result5 = applyAttackValue(gameState, 5, unit);
       const result6 = applyAttackValue(gameState, 6, unit);

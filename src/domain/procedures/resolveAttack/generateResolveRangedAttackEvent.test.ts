@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import { tempUnits } from '@sampleValues';
+import { equites, punicCitizenSpearmen, velites } from '@sampleValues';
 import {
   createAttackApplyState,
   createEmptyGameState,
@@ -13,8 +13,8 @@ import { describe, expect, it } from 'vitest';
 
 import { generateResolveRangedAttackEvent } from './generateResolveRangedAttackEvent';
 
-/** Spearmen (retreat 5): default test `inPlay` card (+1 attack) keeps total strike below retreat. */
-const spearmenType = tempUnits[1];
+/** Citizen spearmen: default `inPlay` (+1 attack) keeps strike below retreat. */
+const spearmenType = punicCitizenSpearmen;
 
 /**
  * `resolveRangedAttack` is the first ranged strike roll: attacker/defender commitments must be
@@ -44,9 +44,9 @@ describe('generateResolveRangedAttackEvent', () => {
     return updatePhaseState(withBoard, phase);
   }
 
-  it('given balloons defender (retreat 0) vs cavalry attacker, retreated true with legal set', () => {
+  it('given low-retreat defender vs cavalry attacker, retreated true with legal set', () => {
     const state = createEmptyGameState();
-    const defendingUnit = createTestUnit('white', { unitType: tempUnits[4] }); // Balloons: retreat 0
+    const defendingUnit = createTestUnit('white', { unitType: velites });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
       unit: defendingUnit,
       placement: { coordinate: 'E-5', facing: 'north' },
@@ -57,7 +57,7 @@ describe('generateResolveRangedAttackEvent', () => {
     };
     const ranged = createRangedAttackResolutionState(withBoard, {
       defendingUnit,
-      attackingUnit: createTestUnit('black', { unitType: tempUnits[3] }), // Cavalry attack 4
+      attackingUnit: createTestUnit('black', { unitType: equites }),
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: ranged,
