@@ -20,7 +20,7 @@ import {
   standardUnitWithPlacementSchema,
 } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import { type ZodDiscriminatedUnion, z } from 'zod';
 
 /** The type of the resolve ranged attack game effect. */
 export const RESOLVE_RANGED_ATTACK_EFFECT_TYPE = 'resolveRangedAttack' as const;
@@ -75,7 +75,17 @@ export type ResolveRangedAttackEvent<
       ? LargeResolveRangedAttackEvent
       : ResolveRangedAttackEventUnion;
 
-const _standardResolveRangedAttackEventSchemaObject = z.object({
+const _standardResolveRangedAttackEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'standard'>;
+  defenderWithPlacement: typeof standardUnitWithPlacementSchema;
+  legalRetreatOptions: z.ZodSet<typeof standardUnitPlacementSchema>;
+  routed: z.ZodBoolean;
+  reversed: z.ZodBoolean;
+  retreated: z.ZodBoolean;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -96,7 +106,17 @@ const _assertExactStandardResolveRangedAttackEvent: AssertExact<
   StandardResolveRangedAttackEventSchemaType
 > = true;
 
-const _smallResolveRangedAttackEventSchemaObject = z.object({
+const _smallResolveRangedAttackEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'small'>;
+  defenderWithPlacement: typeof smallUnitWithPlacementSchema;
+  legalRetreatOptions: z.ZodSet<typeof smallUnitPlacementSchema>;
+  routed: z.ZodBoolean;
+  reversed: z.ZodBoolean;
+  retreated: z.ZodBoolean;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -117,7 +137,17 @@ const _assertExactSmallResolveRangedAttackEvent: AssertExact<
   SmallResolveRangedAttackEventSchemaType
 > = true;
 
-const _largeResolveRangedAttackEventSchemaObject = z.object({
+const _largeResolveRangedAttackEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'large'>;
+  defenderWithPlacement: typeof largeUnitWithPlacementSchema;
+  legalRetreatOptions: z.ZodSet<typeof largeUnitPlacementSchema>;
+  routed: z.ZodBoolean;
+  reversed: z.ZodBoolean;
+  retreated: z.ZodBoolean;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -138,11 +168,21 @@ const _assertExactLargeResolveRangedAttackEvent: AssertExact<
   LargeResolveRangedAttackEventSchemaType
 > = true;
 
-const _resolveRangedAttackEventSchemaObject = z.union([
-  _standardResolveRangedAttackEventSchemaObject,
-  _smallResolveRangedAttackEventSchemaObject,
-  _largeResolveRangedAttackEventSchemaObject,
-]);
+type _ResolveRangedAttackEventDiscriminatedUnion = ZodDiscriminatedUnion<
+  readonly [
+    typeof _standardResolveRangedAttackEventSchemaObject,
+    typeof _smallResolveRangedAttackEventSchemaObject,
+    typeof _largeResolveRangedAttackEventSchemaObject,
+  ],
+  'boardType'
+>;
+
+const _resolveRangedAttackEventSchemaObject: _ResolveRangedAttackEventDiscriminatedUnion =
+  z.discriminatedUnion('boardType', [
+    _standardResolveRangedAttackEventSchemaObject,
+    _smallResolveRangedAttackEventSchemaObject,
+    _largeResolveRangedAttackEventSchemaObject,
+  ]);
 
 type ResolveRangedAttackEventSchemaType = z.infer<
   typeof _resolveRangedAttackEventSchemaObject
@@ -154,6 +194,5 @@ const _assertExactResolveRangedAttackEvent: AssertExact<
 > = true;
 
 /** The schema for a resolve ranged attack event. */
-export const resolveRangedAttackEventSchema: z.ZodType<
-  ResolveRangedAttackEvent<Board>
-> = _resolveRangedAttackEventSchemaObject;
+export const resolveRangedAttackEventSchema: typeof _resolveRangedAttackEventSchemaObject =
+  _resolveRangedAttackEventSchemaObject;

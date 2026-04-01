@@ -16,7 +16,7 @@ import {
   standardBoardCoordinateSchema,
 } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import { type ZodDiscriminatedUnion, z } from 'zod';
 
 /** The type of the choose melee resolution event. */
 export const CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE =
@@ -66,7 +66,14 @@ export type ChooseMeleeResolutionEvent<
       ? LargeChooseMeleeResolutionEvent
       : ChooseMeleeResolutionEventUnion;
 
-const _standardChooseMeleeResolutionEventSchemaObject = z.object({
+const _standardChooseMeleeResolutionEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  choiceType: z.ZodLiteral<typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  player: typeof playerSideSchema;
+  boardType: z.ZodLiteral<'standard'>;
+  space: typeof standardBoardCoordinateSchema;
+}> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE),
   eventNumber: z.number(),
@@ -84,7 +91,14 @@ const _assertExactStandardChooseMeleeResolutionEvent: AssertExact<
   StandardChooseMeleeResolutionEventSchemaType
 > = true;
 
-const _smallChooseMeleeResolutionEventSchemaObject = z.object({
+const _smallChooseMeleeResolutionEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  choiceType: z.ZodLiteral<typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  player: typeof playerSideSchema;
+  boardType: z.ZodLiteral<'small'>;
+  space: typeof smallBoardCoordinateSchema;
+}> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE),
   eventNumber: z.number(),
@@ -102,7 +116,14 @@ const _assertExactSmallChooseMeleeResolutionEvent: AssertExact<
   SmallChooseMeleeResolutionEventSchemaType
 > = true;
 
-const _largeChooseMeleeResolutionEventSchemaObject = z.object({
+const _largeChooseMeleeResolutionEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  choiceType: z.ZodLiteral<typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  player: typeof playerSideSchema;
+  boardType: z.ZodLiteral<'large'>;
+  space: typeof largeBoardCoordinateSchema;
+}> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE),
   eventNumber: z.number(),
@@ -120,11 +141,21 @@ const _assertExactLargeChooseMeleeResolutionEvent: AssertExact<
   LargeChooseMeleeResolutionEventSchemaType
 > = true;
 
-const _chooseMeleeResolutionEventSchemaObject = z.union([
-  _standardChooseMeleeResolutionEventSchemaObject,
-  _smallChooseMeleeResolutionEventSchemaObject,
-  _largeChooseMeleeResolutionEventSchemaObject,
-]);
+type _ChooseMeleeResolutionEventDiscriminatedUnion = ZodDiscriminatedUnion<
+  readonly [
+    typeof _standardChooseMeleeResolutionEventSchemaObject,
+    typeof _smallChooseMeleeResolutionEventSchemaObject,
+    typeof _largeChooseMeleeResolutionEventSchemaObject,
+  ],
+  'boardType'
+>;
+
+const _chooseMeleeResolutionEventSchemaObject: _ChooseMeleeResolutionEventDiscriminatedUnion =
+  z.discriminatedUnion('boardType', [
+    _standardChooseMeleeResolutionEventSchemaObject,
+    _smallChooseMeleeResolutionEventSchemaObject,
+    _largeChooseMeleeResolutionEventSchemaObject,
+  ]);
 
 type ChooseMeleeResolutionEventSchemaType = z.infer<
   typeof _chooseMeleeResolutionEventSchemaObject
@@ -136,6 +167,5 @@ const _assertExactChooseMeleeResolutionEvent: AssertExact<
 > = true;
 
 /** The schema for a choose melee resolution event. */
-export const chooseMeleeResolutionEventSchema: z.ZodType<
-  ChooseMeleeResolutionEvent<Board>
-> = _chooseMeleeResolutionEventSchemaObject;
+export const chooseMeleeResolutionEventSchema: typeof _chooseMeleeResolutionEventSchemaObject =
+  _chooseMeleeResolutionEventSchemaObject;

@@ -12,6 +12,7 @@ import type {
   StandardUnitWithPlacement,
 } from '@entities';
 import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import {
   largeUnitPlacementSchema,
   largeUnitWithPlacementSchema,
@@ -85,7 +86,16 @@ export type MoveUnitEvent<
 // Per-variant Zod schemas
 // ---------------------------------------------------------------------------
 
-const _standardMoveUnitEventSchemaObject = z.object({
+const _standardMoveUnitEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  choiceType: z.ZodLiteral<typeof MOVE_UNIT_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  player: typeof playerSideSchema;
+  boardType: z.ZodLiteral<'standard'>;
+  unit: typeof standardUnitWithPlacementSchema;
+  to: typeof standardUnitPlacementSchema;
+  moveCommander: z.ZodBoolean;
+}> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
   eventNumber: z.number(),
@@ -105,7 +115,16 @@ const _assertExactStandardMoveUnitEvent: AssertExact<
   StandardMoveUnitEventSchemaType
 > = true;
 
-const _smallMoveUnitEventSchemaObject = z.object({
+const _smallMoveUnitEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  choiceType: z.ZodLiteral<typeof MOVE_UNIT_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  player: typeof playerSideSchema;
+  boardType: z.ZodLiteral<'small'>;
+  unit: typeof smallUnitWithPlacementSchema;
+  to: typeof smallUnitPlacementSchema;
+  moveCommander: z.ZodBoolean;
+}> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
   eventNumber: z.number(),
@@ -125,7 +144,16 @@ const _assertExactSmallMoveUnitEvent: AssertExact<
   SmallMoveUnitEventSchemaType
 > = true;
 
-const _largeMoveUnitEventSchemaObject = z.object({
+const _largeMoveUnitEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  choiceType: z.ZodLiteral<typeof MOVE_UNIT_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  player: typeof playerSideSchema;
+  boardType: z.ZodLiteral<'large'>;
+  unit: typeof largeUnitWithPlacementSchema;
+  to: typeof largeUnitPlacementSchema;
+  moveCommander: z.ZodBoolean;
+}> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
   eventNumber: z.number(),
@@ -149,12 +177,21 @@ const _assertExactLargeMoveUnitEvent: AssertExact<
 // Wide union schema
 // ---------------------------------------------------------------------------
 
-/** `z.union` (not nested DU): parent `playerChoiceEventSchema` discriminates on `choiceType`. */
-const _moveUnitEventSchemaObject = z.union([
-  _standardMoveUnitEventSchemaObject,
-  _smallMoveUnitEventSchemaObject,
-  _largeMoveUnitEventSchemaObject,
-]);
+type _MoveUnitEventDiscriminatedUnion = ZodDiscriminatedUnion<
+  readonly [
+    typeof _standardMoveUnitEventSchemaObject,
+    typeof _smallMoveUnitEventSchemaObject,
+    typeof _largeMoveUnitEventSchemaObject,
+  ],
+  'boardType'
+>;
+
+const _moveUnitEventSchemaObject: _MoveUnitEventDiscriminatedUnion =
+  z.discriminatedUnion('boardType', [
+    _standardMoveUnitEventSchemaObject,
+    _smallMoveUnitEventSchemaObject,
+    _largeMoveUnitEventSchemaObject,
+  ]);
 
 type MoveUnitEventSchemaType = z.infer<typeof _moveUnitEventSchemaObject>;
 
@@ -164,5 +201,5 @@ const _assertExactMoveUnitEvent: AssertExact<
 > = true;
 
 /** The schema for a move unit event. */
-export const moveUnitEventSchema: z.ZodType<MoveUnitEvent<Board>> =
+export const moveUnitEventSchema: typeof _moveUnitEventSchemaObject =
   _moveUnitEventSchemaObject;

@@ -16,7 +16,7 @@ import {
 } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 
-import { z } from 'zod';
+import { type ZodDiscriminatedUnion, z } from 'zod';
 import { attackResolutionContextSchema } from './attackResolutionContext';
 
 /** The type of the resolve reverse game effect. */
@@ -71,7 +71,15 @@ export type ResolveReverseEvent<
       ? LargeResolveReverseEvent
       : ResolveReverseEventUnion;
 
-const _standardResolveReverseEventSchemaObject = z.object({
+const _standardResolveReverseEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_REVERSE_EFFECT_TYPE>;
+  attackResolutionContext: typeof attackResolutionContextSchema;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'standard'>;
+  unitInstance: typeof standardUnitWithPlacementSchema;
+  newUnitPlacement: typeof standardUnitWithPlacementSchema;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_REVERSE_EFFECT_TYPE),
   attackResolutionContext: attackResolutionContextSchema,
@@ -90,7 +98,15 @@ const _assertExactStandardResolveReverseEvent: AssertExact<
   StandardResolveReverseEventSchemaType
 > = true;
 
-const _smallResolveReverseEventSchemaObject = z.object({
+const _smallResolveReverseEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_REVERSE_EFFECT_TYPE>;
+  attackResolutionContext: typeof attackResolutionContextSchema;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'small'>;
+  unitInstance: typeof smallUnitWithPlacementSchema;
+  newUnitPlacement: typeof smallUnitWithPlacementSchema;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_REVERSE_EFFECT_TYPE),
   attackResolutionContext: attackResolutionContextSchema,
@@ -109,7 +125,15 @@ const _assertExactSmallResolveReverseEvent: AssertExact<
   SmallResolveReverseEventSchemaType
 > = true;
 
-const _largeResolveReverseEventSchemaObject = z.object({
+const _largeResolveReverseEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_REVERSE_EFFECT_TYPE>;
+  attackResolutionContext: typeof attackResolutionContextSchema;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'large'>;
+  unitInstance: typeof largeUnitWithPlacementSchema;
+  newUnitPlacement: typeof largeUnitWithPlacementSchema;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_REVERSE_EFFECT_TYPE),
   attackResolutionContext: attackResolutionContextSchema,
@@ -128,11 +152,21 @@ const _assertExactLargeResolveReverseEvent: AssertExact<
   LargeResolveReverseEventSchemaType
 > = true;
 
-const _resolveReverseEventSchemaObject = z.union([
-  _standardResolveReverseEventSchemaObject,
-  _smallResolveReverseEventSchemaObject,
-  _largeResolveReverseEventSchemaObject,
-]);
+type _ResolveReverseEventDiscriminatedUnion = ZodDiscriminatedUnion<
+  readonly [
+    typeof _standardResolveReverseEventSchemaObject,
+    typeof _smallResolveReverseEventSchemaObject,
+    typeof _largeResolveReverseEventSchemaObject,
+  ],
+  'boardType'
+>;
+
+const _resolveReverseEventSchemaObject: _ResolveReverseEventDiscriminatedUnion =
+  z.discriminatedUnion('boardType', [
+    _standardResolveReverseEventSchemaObject,
+    _smallResolveReverseEventSchemaObject,
+    _largeResolveReverseEventSchemaObject,
+  ]);
 
 type ResolveReverseEventSchemaType = z.infer<
   typeof _resolveReverseEventSchemaObject
@@ -144,5 +178,5 @@ const _assertExactResolveReverseEvent: AssertExact<
 > = true;
 
 /** The schema for a resolve reverse event. */
-export const resolveReverseEventSchema: z.ZodType<ResolveReverseEvent<Board>> =
+export const resolveReverseEventSchema: typeof _resolveReverseEventSchemaObject =
   _resolveReverseEventSchemaObject;
