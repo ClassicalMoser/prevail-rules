@@ -23,8 +23,9 @@ export function createBoardWithUnits(
   let board = createEmptyStandardBoard();
   for (const { unit, coordinate, facing } of units) {
     board = addUnitToBoard(board, {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate, facing },
+      placement: { boardType: 'standard' as const, coordinate, facing },
     });
   }
   return board;

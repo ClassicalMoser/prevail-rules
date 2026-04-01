@@ -1,6 +1,11 @@
 import type { Board, UnitWithPlacement } from '@entities';
 import type { ResolveFlankEngagementEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState } from '@game';
+import type {
+  GameState,
+  IssueCommandsPhaseState,
+  MovementResolutionState,
+  PhaseState,
+} from '@game';
 import {
   getFlankEngagementStateFromMovement,
   getIssueCommandsPhaseState,
@@ -30,12 +35,13 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
 
   const { unit, placement } = event.defenderWithPlacement;
 
-  const removedUnitBoard = removeUnitFromBoard<TBoard>(state.boardState, {
-    unit,
-    placement,
-  });
+  const removedUnitBoard = removeUnitFromBoard<TBoard>(
+    state.boardState,
+    event.defenderWithPlacement,
+  );
 
   const newUnitWithPlacement: UnitWithPlacement<TBoard> = {
+    boardType: event.defenderWithPlacement.boardType,
     unit,
     placement: {
       ...placement,
@@ -61,12 +67,15 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
   const newMovementState = {
     ...movementState,
     engagementState: newEngagementState,
-  };
+  } as MovementResolutionState;
 
   const newPhaseState: IssueCommandsPhaseState<TBoard> = {
     ...phaseState,
     currentCommandResolutionState: newMovementState,
   };
 
-  return updatePhaseState(updateBoardState(state, updatedBoard), newPhaseState);
+  return updatePhaseState(
+    updateBoardState(state, updatedBoard),
+    newPhaseState as PhaseState<TBoard>,
+  );
 }

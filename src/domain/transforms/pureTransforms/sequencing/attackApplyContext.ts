@@ -22,7 +22,7 @@ import { updateAttackApplyState } from './updateAttackApplyState';
 export function getAttackApplyStateFromContext<TBoard extends Board>(
   state: GameState<TBoard>,
   player?: PlayerSide,
-): AttackApplyState<TBoard> {
+): AttackApplyState {
   const phaseState = getCurrentPhaseState<TBoard>(state);
 
   // Handle ranged attack resolution (in issueCommands phase)
@@ -61,8 +61,8 @@ export function getAttackApplyStateFromContext<TBoard extends Board>(
 export function updateAttackApplySubstep<TBoard extends Board, TSubstep>(
   state: GameState<TBoard>,
   updateFn: (
-    attackApplyState: AttackApplyState<TBoard>,
-  ) => AttackApplyState<TBoard>,
+    attackApplyState: AttackApplyState,
+  ) => AttackApplyState,
   getPlayer: (substep: TSubstep) => PlayerSide,
   substepState: TSubstep,
 ): GameState<TBoard> {

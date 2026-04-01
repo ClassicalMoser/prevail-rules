@@ -43,8 +43,8 @@ describe('getExpectedRetreatEvent', () => {
   it('given multiple options exist, asks the player to choose a retreat option', () => {
     const retreatState = createRetreatState(unitPlacement, {
       legalRetreatOptions: new Set([
-        { coordinate: 'E-4', facing: 'north' },
-        { coordinate: 'E-6', facing: 'north' },
+        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'north' },
+        { boardType: 'standard' as const, coordinate: 'E-6', facing: 'north' },
       ]),
       finalPosition: undefined,
     });
@@ -58,8 +58,14 @@ describe('getExpectedRetreatEvent', () => {
 
   it('given the final position is already chosen, returns resolveRetreat', () => {
     const retreatState = createRetreatState(unitPlacement, {
-      legalRetreatOptions: new Set([{ coordinate: 'E-4', facing: 'north' }]),
-      finalPosition: { coordinate: 'E-4', facing: 'north' },
+      legalRetreatOptions: new Set([
+        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'north' },
+      ]),
+      finalPosition: {
+        boardType: 'standard' as const,
+        coordinate: 'E-4',
+        facing: 'north',
+      },
     });
 
     expect(getExpectedRetreatEvent(retreatState)).toEqual({
@@ -71,8 +77,14 @@ describe('getExpectedRetreatEvent', () => {
   it('given when the retreat is already complete, throws', () => {
     const retreatState = createRetreatState(unitPlacement, {
       completed: true,
-      legalRetreatOptions: new Set([{ coordinate: 'E-4', facing: 'north' }]),
-      finalPosition: { coordinate: 'E-4', facing: 'north' },
+      legalRetreatOptions: new Set([
+        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'north' },
+      ]),
+      finalPosition: {
+        boardType: 'standard' as const,
+        coordinate: 'E-4',
+        facing: 'north',
+      },
     });
 
     expect(() => getExpectedRetreatEvent(retreatState)).toThrow(
@@ -97,7 +109,9 @@ describe('getExpectedRetreatEvent', () => {
 
   it('given when a single retreat option was not preselected, throws', () => {
     const retreatState = createRetreatState(unitPlacement, {
-      legalRetreatOptions: new Set([{ coordinate: 'E-4', facing: 'north' }]),
+      legalRetreatOptions: new Set([
+        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'north' },
+      ]),
       finalPosition: undefined,
     });
 

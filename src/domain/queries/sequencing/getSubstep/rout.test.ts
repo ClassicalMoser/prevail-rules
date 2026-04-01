@@ -1,5 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { AttackApplyState, GameState } from '@game';
+import type { GameState } from '@game';
+import type { StandardAttackApplyState } from '@game/substeps';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRout,
@@ -22,8 +23,9 @@ import {
 describe('getRoutStateFromAttackApply', () => {
   it('given apply with rout nested, returns that rout substep', () => {
     const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyState<any> = {
+    const attackApplyState: StandardAttackApplyState = {
       substepType: 'attackApply' as const,
+      boardType: 'standard' as const,
       defendingUnit: unit,
       attackResult: {
         unitRouted: true,
@@ -51,8 +53,9 @@ describe('getRoutStateFromAttackApply', () => {
 
   it('given apply without routState, throws no rout in attack apply', () => {
     const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyState<any> = {
+    const attackApplyState: StandardAttackApplyState = {
       substepType: 'attackApply' as const,
+      boardType: 'standard' as const,
       defendingUnit: unit,
       attackResult: {
         unitRouted: false,
@@ -81,12 +84,22 @@ describe('getRoutStateFromMeleeResolutionByInitiative', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };

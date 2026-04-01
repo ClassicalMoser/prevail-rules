@@ -14,7 +14,7 @@ import { getExpectedAttackApplyEvent } from '../composable';
  */
 export function getExpectedRangedAttackResolutionEvent<TBoard extends Board>(
   gameState: GameState<TBoard>,
-  resolutionState: RangedAttackResolutionState<TBoard>,
+  resolutionState: RangedAttackResolutionState,
   attackingPlayer: PlayerSide,
 ): ExpectedEventInfo<TBoard> {
   // Fast rejection: if already completed, this is an invalid state

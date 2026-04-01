@@ -68,12 +68,22 @@ describe('generateResolveUnitsBrokenEvent', () => {
     const u1 = createTestUnit('white', { unitType, instanceNumber: 1 });
     const u2 = createTestUnit('white', { unitType, instanceNumber: 2 });
     const wp1: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: u1,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const wp2: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: u2,
-      placement: { coordinate: 'E-6', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-6',
+        facing: 'north',
+      },
     };
     let s = { ...base, boardState: addUnitToBoard(base.boardState, wp1) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, wp2) };
@@ -92,12 +102,22 @@ describe('generateResolveUnitsBrokenEvent', () => {
     const u1 = createTestUnit('white', { unitType: tempUnits[0] });
     const u2 = createTestUnit('white', { unitType: tempUnits[1] });
     const wp1: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: u1,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const wp2: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: u2,
-      placement: { coordinate: 'E-6', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-6',
+        facing: 'north',
+      },
     };
     let s = { ...base, boardState: addUnitToBoard(base.boardState, wp1) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, wp2) };

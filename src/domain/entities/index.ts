@@ -14,10 +14,13 @@ export {
   boardSpaceSchema,
   coordinateLayoutMap,
   getCoordinateLayout,
+  largeBoardCoordinateSchema,
   largeBoardSchema,
   largeCoordinateLayout,
+  smallBoardCoordinateSchema,
   smallBoardSchema,
   smallCoordinateLayout,
+  standardBoardCoordinateSchema,
   standardBoardSchema,
   standardCoordinateLayout,
 } from './board';
@@ -105,9 +108,26 @@ export type {
 } from './unit';
 
 // Unit locations.
-export { unitPlacementSchema, unitWithPlacementSchema } from './unitLocation';
-
-export type { UnitPlacement, UnitWithPlacement } from './unitLocation';
+export {
+  largeUnitPlacementSchema,
+  largeUnitWithPlacementSchema,
+  smallUnitPlacementSchema,
+  smallUnitWithPlacementSchema,
+  standardUnitPlacementSchema,
+  standardUnitWithPlacementSchema,
+  unitPlacementSchema,
+  unitWithPlacementSchema,
+} from './unitLocation';
+export type {
+  LargeUnitPlacement,
+  LargeUnitWithPlacement,
+  SmallUnitPlacement,
+  SmallUnitWithPlacement,
+  StandardUnitPlacement,
+  StandardUnitWithPlacement,
+  UnitPlacement,
+  UnitWithPlacement,
+} from './unitLocation';
 // Unit presence models.
 export {
   engagedUnitPresenceSchema,

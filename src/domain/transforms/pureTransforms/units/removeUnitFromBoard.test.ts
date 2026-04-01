@@ -23,11 +23,9 @@ describe('removeUnitFromBoard', () => {
     facing: UnitFacing,
   ): UnitWithPlacement<StandardBoard> => {
     return {
+      boardType: 'standard' as const,
       unit,
-      placement: {
-        coordinate: coord,
-        facing,
-      },
+      placement: { boardType: 'standard' as const, coordinate: coord, facing },
     };
   };
 

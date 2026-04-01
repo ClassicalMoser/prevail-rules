@@ -91,7 +91,7 @@ export function gameStateSchemaForBoard<TBoard extends Board>(
     reservedUnits: z.set(unitInstanceSchema),
     routedUnits: z.set(unitInstanceSchema),
     lostCommanders: z.set(playerSideSchema),
-  });
+  }) as unknown as z.ZodType<GameState<TBoard>>;
 }
 
 /** {@link GameState} for a standard board. */

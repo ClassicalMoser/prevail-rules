@@ -26,8 +26,13 @@ describe('generateTriggerRoutFromRetreatEvent', () => {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: retreatingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const withBoard = {
       ...state,
@@ -54,12 +59,22 @@ describe('generateTriggerRoutFromRetreatEvent', () => {
       { attack: 2 },
     );
     const retreatingWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: retreatingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const otherWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: otherUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let s = {
       ...state,
@@ -101,12 +116,22 @@ describe('generateTriggerRoutFromRetreatEvent', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };

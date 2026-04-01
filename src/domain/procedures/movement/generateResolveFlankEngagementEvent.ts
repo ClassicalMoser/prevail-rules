@@ -1,4 +1,4 @@
-import type { Board } from '@entities';
+import type { Board, BoardCoordinate } from '@entities';
 import type { ResolveFlankEngagementEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -29,7 +29,7 @@ export function generateResolveFlankEngagementEvent<TBoard extends Board>(
 
   const defenderWithPlacement = getSingleUnitWithPlacementAtCoordinate(
     state.boardState,
-    engagementState.targetPlacement.coordinate,
+    engagementState.targetPlacement.coordinate as BoardCoordinate<TBoard>,
   );
 
   // Get the engaging unit's facing

@@ -1,4 +1,4 @@
-import type { Board } from '@entities';
+import type { Board, BoardCoordinate } from '@entities';
 import type { ResolveEngageRetreatOptionEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -31,7 +31,7 @@ export function generateResolveEngageRetreatOptionEvent<TBoard extends Board>(
 
   const { unit: defendingUnit } = getSingleUnitWithPlacementAtCoordinate(
     state.boardState,
-    engagementState.targetPlacement.coordinate,
+    engagementState.targetPlacement.coordinate as BoardCoordinate<TBoard>,
   );
   const engagingUnit = engagementState.engagingUnit;
 

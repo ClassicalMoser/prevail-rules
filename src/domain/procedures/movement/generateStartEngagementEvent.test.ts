@@ -32,18 +32,29 @@ describe('generateStartEngagementEvent', () => {
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, {
+        boardType: 'standard' as const,
         unit: defender,
-        placement: { coordinate: 'E-6', facing: options.defenderFacing },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-6',
+          facing: options.defenderFacing,
+        },
       }),
     };
     const movement = createMovementResolutionState(withBoard, {
       targetPlacement: {
+        boardType: 'standard' as const,
         coordinate: 'E-6',
         facing: options.engagingFacing,
       },
       movingUnit: {
+        boardType: 'standard' as const,
         unit: createTestUnit('black'),
-        placement: { coordinate: 'E-5', facing: 'east' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'east',
+        },
       },
     });
     const phase = createIssueCommandsPhaseState(withBoard, {

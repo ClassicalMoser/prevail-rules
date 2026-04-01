@@ -31,13 +31,22 @@ describe('getEngagementStateFromMovement', () => {
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: createMovementResolutionState(state, {
           movingUnit: {
+            boardType: 'standard' as const,
             unit: engagingUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5',
+              facing: 'north',
+            },
           },
           engagementState: {
             ...createFrontEngagementState(),
             engagingUnit,
-            targetPlacement: { coordinate: 'E-6', facing: 'north' },
+            targetPlacement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-6',
+              facing: 'north',
+            },
           },
         }),
       }),
@@ -88,13 +97,22 @@ describe('getFlankEngagementStateFromMovement', () => {
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: createMovementResolutionState(state, {
           movingUnit: {
+            boardType: 'standard' as const,
             unit: engagingUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5',
+              facing: 'north',
+            },
           },
           engagementState: {
             ...createFlankEngagementState(),
             engagingUnit,
-            targetPlacement: { coordinate: 'E-6', facing: 'north' },
+            targetPlacement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-6',
+              facing: 'north',
+            },
           },
         }),
       }),
@@ -113,13 +131,22 @@ describe('getFlankEngagementStateFromMovement', () => {
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: createMovementResolutionState(state, {
           movingUnit: {
+            boardType: 'standard' as const,
             unit: engagingUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5',
+              facing: 'north',
+            },
           },
           engagementState: {
             ...createFrontEngagementState(),
             engagingUnit,
-            targetPlacement: { coordinate: 'E-6', facing: 'north' },
+            targetPlacement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-6',
+              facing: 'north',
+            },
           },
         }),
       }),
@@ -140,13 +167,22 @@ describe('getFrontEngagementStateFromMovement', () => {
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: createMovementResolutionState(state, {
           movingUnit: {
+            boardType: 'standard' as const,
             unit: engagingUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5',
+              facing: 'north',
+            },
           },
           engagementState: {
             ...createFrontEngagementState(),
             engagingUnit,
-            targetPlacement: { coordinate: 'E-6', facing: 'north' },
+            targetPlacement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-6',
+              facing: 'north',
+            },
           },
         }),
       }),
@@ -167,13 +203,22 @@ describe('getFrontEngagementStateFromMovement', () => {
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: createMovementResolutionState(state, {
           movingUnit: {
+            boardType: 'standard' as const,
             unit: engagingUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5',
+              facing: 'north',
+            },
           },
           engagementState: {
             ...createFlankEngagementState(),
             engagingUnit,
-            targetPlacement: { coordinate: 'E-6', facing: 'north' },
+            targetPlacement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-6',
+              facing: 'north',
+            },
           },
         }),
       }),
@@ -195,8 +240,13 @@ describe('getRearEngagementStateFromMovement', () => {
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: createMovementResolutionState(state, {
           movingUnit: {
+            boardType: 'standard' as const,
             unit: engagingUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5',
+              facing: 'north',
+            },
           },
           engagementState: {
             ...createRearEngagementState({
@@ -205,7 +255,11 @@ describe('getRearEngagementStateFromMovement', () => {
               }),
             }),
             engagingUnit,
-            targetPlacement: { coordinate: 'E-6', facing: 'north' },
+            targetPlacement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-6',
+              facing: 'north',
+            },
           },
         }),
       }),
@@ -229,13 +283,22 @@ describe('getRearEngagementStateFromMovement', () => {
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: createMovementResolutionState(state, {
           movingUnit: {
+            boardType: 'standard' as const,
             unit: engagingUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5',
+              facing: 'north',
+            },
           },
           engagementState: {
             ...createFrontEngagementState(),
             engagingUnit,
-            targetPlacement: { coordinate: 'E-6', facing: 'north' },
+            targetPlacement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-6',
+              facing: 'north',
+            },
           },
         }),
       }),

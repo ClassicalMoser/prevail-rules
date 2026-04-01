@@ -29,8 +29,13 @@ describe('getRetreatStateFromAttackApply', () => {
   it('given apply with retreat substep, returns retreat with same retreating unit', () => {
     const unit = createTestUnit('black', { attack: 2 });
     const attackApplyState = createAttackApplyStateWithRetreat({
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     });
 
     const result = getRetreatStateFromAttackApply(attackApplyState);
@@ -62,8 +67,13 @@ describe('getRetreatStateFromRangedAttack', () => {
             attackingUnit,
             defendingUnit,
             attackApplyState: createAttackApplyStateWithRetreat({
+              boardType: 'standard' as const,
               unit: defendingUnit,
-              placement: { coordinate: 'E-5', facing: 'north' },
+              placement: {
+                boardType: 'standard' as const,
+                coordinate: 'E-5',
+                facing: 'north',
+              },
             }),
           },
         ),
@@ -131,6 +141,7 @@ describe('getRetreatStateFromMelee', () => {
       {
         currentMeleeResolutionState: {
           substepType: 'meleeResolution' as const,
+          boardType: 'standard' as const,
           location: 'E-5',
           whiteCommitment: {
             commitmentType: 'completed',
@@ -141,8 +152,13 @@ describe('getRetreatStateFromMelee', () => {
             card: state.cardState.black.inPlay!,
           },
           whiteAttackApplyState: createAttackApplyStateWithRetreat({
+            boardType: 'standard' as const,
             unit: whiteUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5',
+              facing: 'north',
+            },
           }),
           blackAttackApplyState: createAttackApplyState(
             createTestUnit('black', { attack: 2 }),
@@ -165,6 +181,7 @@ describe('getRetreatStateFromMelee', () => {
       {
         currentMeleeResolutionState: {
           substepType: 'meleeResolution' as const,
+          boardType: 'standard' as const,
           location: 'E-5',
           whiteCommitment: {
             commitmentType: 'completed',
@@ -178,8 +195,13 @@ describe('getRetreatStateFromMelee', () => {
             createTestUnit('white', { attack: 2 }),
           ),
           blackAttackApplyState: createAttackApplyStateWithRetreat({
+            boardType: 'standard' as const,
             unit: blackUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5',
+              facing: 'north',
+            },
           }),
           completed: false,
         },
@@ -198,6 +220,7 @@ describe('getRetreatStateFromMelee', () => {
       {
         currentMeleeResolutionState: {
           substepType: 'meleeResolution' as const,
+          boardType: 'standard' as const,
           location: 'E-5',
           whiteCommitment: {
             commitmentType: 'completed',
@@ -242,8 +265,13 @@ describe('findRetreatState', () => {
           {
             defendingUnit,
             attackApplyState: createAttackApplyStateWithRetreat({
+              boardType: 'standard' as const,
               unit: defendingUnit,
-              placement: { coordinate: 'E-5', facing: 'north' },
+              placement: {
+                boardType: 'standard' as const,
+                coordinate: 'E-5',
+                facing: 'north',
+              },
             }),
           },
         ),
@@ -263,6 +291,7 @@ describe('findRetreatState', () => {
       {
         currentMeleeResolutionState: {
           substepType: 'meleeResolution' as const,
+          boardType: 'standard' as const,
           location: 'E-5',
           whiteCommitment: {
             commitmentType: 'completed',
@@ -273,8 +302,13 @@ describe('findRetreatState', () => {
             card: state.cardState.black.inPlay!,
           },
           whiteAttackApplyState: createAttackApplyStateWithRetreat({
+            boardType: 'standard' as const,
             unit: whiteUnit,
-            placement: { coordinate: 'E-5', facing: 'north' },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5',
+              facing: 'north',
+            },
           }),
           blackAttackApplyState: createAttackApplyState(
             createTestUnit('black', { attack: 2 }),
@@ -314,8 +348,13 @@ describe('findRetreatState', () => {
           {
             defendingUnit,
             attackApplyState: createAttackApplyStateWithRetreat({
+              boardType: 'standard' as const,
               unit: defendingUnit,
-              placement: { coordinate: 'E-5', facing: 'north' },
+              placement: {
+                boardType: 'standard' as const,
+                coordinate: 'E-5',
+                facing: 'north',
+              },
             }),
           },
         ),
@@ -329,19 +368,33 @@ describe('findRetreatState', () => {
 });
 
 describe('getRetreatStateReadyForResolveFromMelee', () => {
-  const finalPos = { coordinate: 'E-6' as const, facing: 'south' as const };
+  const finalPos = {
+    boardType: 'standard' as const,
+    coordinate: 'E-6' as const,
+    facing: 'south' as const,
+  };
 
   it('given white initiative and white retreat final E-6 south ready, returns white retreat', () => {
     const state = createEmptyGameState({ currentInitiative: 'white' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
@@ -374,12 +427,22 @@ describe('getRetreatStateReadyForResolveFromMelee', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
@@ -411,12 +474,22 @@ describe('getRetreatStateReadyForResolveFromMelee', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
@@ -440,12 +513,22 @@ describe('getRetreatStateReadyForResolveFromMelee', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };

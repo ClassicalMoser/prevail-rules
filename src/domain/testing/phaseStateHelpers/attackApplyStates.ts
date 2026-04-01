@@ -1,25 +1,18 @@
-import type {
-  Board,
-  StandardBoard,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
-import type { AttackApplyState } from '@game';
+import type { StandardBoard, UnitInstance, UnitWithPlacement } from '@entities';
+import type { StandardAttackApplyState } from '@game/substeps';
 import {
   createRetreatState,
   createReverseState,
   createRoutState,
 } from './substepStates';
 
-/**
- * Creates an AttackApplyState with sensible defaults.
- */
-export function createAttackApplyState<TBoard extends Board>(
+function baseAttackApplyState(
   defendingUnit: UnitInstance,
-  overrides?: Partial<AttackApplyState<TBoard>>,
-): AttackApplyState<TBoard> {
+  overrides?: Partial<StandardAttackApplyState>,
+): StandardAttackApplyState {
   return {
     substepType: 'attackApply' as const,
+    boardType: 'standard' as const,
     defendingUnit,
     attackResult: {
       unitRouted: false,
@@ -35,13 +28,23 @@ export function createAttackApplyState<TBoard extends Board>(
 }
 
 /**
+ * Creates an AttackApplyState for the standard board (test harness default).
+ */
+export function createAttackApplyState(
+  defendingUnit: UnitInstance,
+  overrides?: Partial<StandardAttackApplyState>,
+): StandardAttackApplyState {
+  return baseAttackApplyState(defendingUnit, overrides);
+}
+
+/**
  * Creates an AttackApplyState with a retreat state.
  */
 export function createAttackApplyStateWithRetreat(
   retreatingUnit: UnitWithPlacement<StandardBoard>,
-  overrides?: Partial<AttackApplyState<StandardBoard>>,
-): AttackApplyState<StandardBoard> {
-  return createAttackApplyState(retreatingUnit.unit, {
+  overrides?: Partial<StandardAttackApplyState>,
+): StandardAttackApplyState {
+  return baseAttackApplyState(retreatingUnit.unit, {
     attackResult: {
       unitRouted: false,
       unitRetreated: true,
@@ -53,13 +56,13 @@ export function createAttackApplyStateWithRetreat(
 }
 
 /**
- * Creates an AttackApplyState with a rout state.
+ * Creates an AttackApplyState with a rout state (standard board; test harness default).
  */
-export function createAttackApplyStateWithRout<TBoard extends Board>(
+export function createAttackApplyStateWithRout(
   defendingUnit: UnitInstance,
-  overrides?: Partial<AttackApplyState<TBoard>>,
-): AttackApplyState<TBoard> {
-  return createAttackApplyState(defendingUnit, {
+  overrides?: Partial<StandardAttackApplyState>,
+): StandardAttackApplyState {
+  return baseAttackApplyState(defendingUnit, {
     attackResult: {
       unitRouted: true,
       unitRetreated: false,
@@ -73,11 +76,11 @@ export function createAttackApplyStateWithRout<TBoard extends Board>(
 /**
  * Creates an AttackApplyState with a reverse state.
  */
-export function createAttackApplyStateWithReverse<TBoard extends Board>(
-  reversingUnit: UnitWithPlacement<TBoard>,
-  overrides?: Partial<AttackApplyState<TBoard>>,
-): AttackApplyState<TBoard> {
-  return createAttackApplyState(reversingUnit.unit, {
+export function createAttackApplyStateWithReverse(
+  reversingUnit: UnitWithPlacement<StandardBoard>,
+  overrides?: Partial<StandardAttackApplyState>,
+): StandardAttackApplyState {
+  return baseAttackApplyState(reversingUnit.unit, {
     attackResult: {
       unitRouted: false,
       unitRetreated: false,

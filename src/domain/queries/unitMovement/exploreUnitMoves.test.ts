@@ -442,14 +442,10 @@ describe('exploreUnitMoves', () => {
       });
       expect(hasForwardMove).toBe(false);
       // Should not be able to move parallel (east) during retreat
-      const hasRightMove = exploreResultHasMatch(moves, {
-        coordinate: 'E-6',
-      });
+      const hasRightMove = exploreResultHasMatch(moves, { coordinate: 'E-6' });
       expect(hasRightMove).toBe(false);
       // Should not be able to move parallel (west) during retreat
-      const hasLeftMove = exploreResultHasMatch(moves, {
-        coordinate: 'E-4',
-      });
+      const hasLeftMove = exploreResultHasMatch(moves, { coordinate: 'E-4' });
       expect(hasLeftMove).toBe(false);
     });
 

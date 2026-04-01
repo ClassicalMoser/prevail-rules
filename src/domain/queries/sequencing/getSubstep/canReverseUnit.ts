@@ -1,4 +1,4 @@
-import type { Board } from '@entities';
+import type { Board, BoardCoordinate } from '@entities';
 import type { GameState, ReverseState } from '@game';
 import { hasEngagedUnits, hasNoUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
@@ -13,11 +13,14 @@ import { getBoardSpace } from '@queries/boardSpace';
  * @throws Error if the unit is not present at the coordinate
  */
 export function canReverseUnit<TBoard extends Board>(
-  reverseState: ReverseState<TBoard>,
+  reverseState: ReverseState,
   gameState: GameState<TBoard>,
 ): boolean {
   const coordinate = reverseState.reversingUnit.placement.coordinate;
-  const boardSpace = getBoardSpace(gameState.boardState, coordinate);
+  const boardSpace = getBoardSpace(
+    gameState.boardState,
+    coordinate as BoardCoordinate<TBoard>,
+  );
 
   // If there's no unit at the coordinate, this is an invalid state
   if (hasNoUnit(boardSpace.unitPresence)) {

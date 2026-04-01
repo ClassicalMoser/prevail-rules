@@ -20,7 +20,7 @@ export function applyCompleteUnitMovementEvent<TBoard extends Board>(
 ): GameState<TBoard> {
   const movementState = getMovementResolutionState(state);
 
-  const newMovementState: MovementResolutionState<TBoard> = {
+  const newMovementState: MovementResolutionState = {
     ...movementState,
     completed: true,
   };

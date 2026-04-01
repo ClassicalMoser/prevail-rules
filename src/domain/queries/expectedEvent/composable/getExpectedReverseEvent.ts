@@ -12,7 +12,7 @@ import type { GameState, ReverseState } from '@game';
  * @returns Information about what event is expected
  */
 export function getExpectedReverseEvent<TBoard extends Board>(
-  reverseState: ReverseState<TBoard>,
+  reverseState: ReverseState,
   _gameState: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
   // Check if reverse is completed (all work done, ready for parent to handle)

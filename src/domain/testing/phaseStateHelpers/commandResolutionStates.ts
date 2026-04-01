@@ -1,34 +1,37 @@
 import type { StandardBoard } from '@entities';
+import type { GameState } from '@game';
 import type {
-  CommandResolutionState,
-  GameState,
-  MeleeResolutionState,
-} from '@game';
+  StandardMeleeResolutionState,
+  StandardMovementResolutionState,
+  StandardRangedAttackResolutionState,
+} from '@game/substeps';
 import { createTestUnit } from '@testing/unitHelpers';
 
 /**
- * Creates a MovementResolutionState with sensible defaults.
+ * Creates a MovementResolutionState with sensible defaults (standard board).
  */
 export function createMovementResolutionState(
   state: GameState<StandardBoard>,
-  overrides?: Partial<
-    Extract<
-      CommandResolutionState<StandardBoard>,
-      { commandResolutionType: 'movement' }
-    >
-  >,
-): Extract<
-  CommandResolutionState<StandardBoard>,
-  { commandResolutionType: 'movement' }
-> {
+  overrides?: Partial<StandardMovementResolutionState>,
+): StandardMovementResolutionState {
   return {
     substepType: 'commandResolution' as const,
     commandResolutionType: 'movement' as const,
+    boardType: 'standard' as const,
     movingUnit: {
+      boardType: 'standard' as const,
       unit: createTestUnit('black', { attack: 2 }),
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     },
-    targetPlacement: { coordinate: 'E-6', facing: 'north' },
+    targetPlacement: {
+      boardType: 'standard' as const,
+      coordinate: 'E-6',
+      facing: 'north',
+    },
     moveCommander: false,
     commitment: {
       commitmentType: 'completed',
@@ -41,23 +44,16 @@ export function createMovementResolutionState(
 }
 
 /**
- * Creates a RangedAttackResolutionState with sensible defaults.
+ * Creates a RangedAttackResolutionState with sensible defaults (standard board).
  */
 export function createRangedAttackResolutionState(
   state: GameState<StandardBoard>,
-  overrides?: Partial<
-    Extract<
-      CommandResolutionState<StandardBoard>,
-      { commandResolutionType: 'rangedAttack' }
-    >
-  >,
-): Extract<
-  CommandResolutionState<StandardBoard>,
-  { commandResolutionType: 'rangedAttack' }
-> {
+  overrides?: Partial<StandardRangedAttackResolutionState>,
+): StandardRangedAttackResolutionState {
   return {
     substepType: 'commandResolution' as const,
     commandResolutionType: 'rangedAttack' as const,
+    boardType: 'standard' as const,
     attackingUnit: createTestUnit('black', { attack: 2 }),
     defendingUnit: createTestUnit('white', { attack: 2 }),
     attackingCommitment: {
@@ -76,14 +72,15 @@ export function createRangedAttackResolutionState(
 }
 
 /**
- * Creates a MeleeResolutionState with sensible defaults.
+ * Creates a MeleeResolutionState with sensible defaults (standard board).
  */
 export function createMeleeResolutionState(
   state: GameState<StandardBoard>,
-  overrides?: Partial<MeleeResolutionState<StandardBoard>>,
-): MeleeResolutionState<StandardBoard> {
+  overrides?: Partial<StandardMeleeResolutionState>,
+): StandardMeleeResolutionState {
   return {
     substepType: 'meleeResolution' as const,
+    boardType: 'standard' as const,
     location: 'E-5',
     whiteCommitment: {
       commitmentType: 'completed',

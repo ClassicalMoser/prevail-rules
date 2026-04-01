@@ -1,4 +1,4 @@
-import type { Board } from '@entities';
+import type { Board, UnitWithPlacement } from '@entities';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState, ReverseState } from '@game';
 import {
@@ -27,11 +27,11 @@ export function applyResolveReverseEvent<TBoard extends Board>(
 ): GameState<TBoard> {
   const removedUnitBoard = removeUnitFromBoard<TBoard>(
     state.boardState,
-    event.unitInstance,
+    event.unitInstance as UnitWithPlacement<TBoard>,
   );
   const addedUnitBoard = addUnitToBoard<TBoard>(
     removedUnitBoard,
-    event.newUnitPlacement,
+    event.newUnitPlacement as UnitWithPlacement<TBoard>,
   );
 
   const attackApplyState =
@@ -41,11 +41,11 @@ export function applyResolveReverseEvent<TBoard extends Board>(
 
   const currentReverseState = getReverseStateFromAttackApply(attackApplyState);
 
-  const newReverseState: ReverseState<TBoard> = {
+  const newReverseState = {
     ...currentReverseState,
     finalPosition: event.newUnitPlacement.placement,
     completed: true,
-  };
+  } as ReverseState;
 
   const stateWithUpdatedReverse = updateReverseState(state, newReverseState);
   return updateBoardState(stateWithUpdatedReverse, addedUnitBoard);

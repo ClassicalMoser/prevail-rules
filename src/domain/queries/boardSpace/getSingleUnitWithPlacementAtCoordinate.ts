@@ -15,8 +15,10 @@ export function getSingleUnitWithPlacementAtCoordinate<TBoard extends Board>(
     throw new Error('Expected exactly one unit at coordinate');
   }
   return {
+    boardType: board.boardType,
     unit: space.unitPresence.unit,
     placement: {
+      boardType: board.boardType,
       coordinate,
       facing: space.unitPresence.facing,
     },

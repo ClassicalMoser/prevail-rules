@@ -1,5 +1,9 @@
 import type { Board } from '@entities';
-import type { EngagementState, GameState } from '@game';
+import type {
+  EngagementState,
+  GameState,
+  MovementResolutionState,
+} from '@game';
 import { getMovementResolutionState } from '@queries';
 import { updateCommandResolutionState } from './updateCommandResolutionState';
 
@@ -13,12 +17,15 @@ import { updateCommandResolutionState } from './updateCommandResolutionState';
  */
 export function updateEngagementStateInMovement<TBoard extends Board>(
   state: GameState<TBoard>,
-  engagementState: EngagementState<TBoard>,
+  engagementState: EngagementState,
 ): GameState<TBoard> {
   const movementState = getMovementResolutionState(state);
   const newMovementState = {
     ...movementState,
     engagementState,
   };
-  return updateCommandResolutionState(state, newMovementState);
+  return updateCommandResolutionState(
+    state,
+    newMovementState as MovementResolutionState,
+  );
 }

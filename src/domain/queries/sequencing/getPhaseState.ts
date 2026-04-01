@@ -91,7 +91,7 @@ export function getIssueCommandsPhaseState<TBoard extends Board>(
  */
 export function getResolveMeleePhaseState<TBoard extends Board>(
   state: GameState<TBoard>,
-): ResolveMeleePhaseState<TBoard> {
+): ResolveMeleePhaseState {
   const phaseState = getCurrentPhaseState(state);
   if (phaseState.phase !== 'resolveMelee') {
     throw new Error(`Expected resolveMelee phase, got ${phaseState.phase}`);

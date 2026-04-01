@@ -34,7 +34,7 @@ export function applyCommitToMovementEvent<TBoard extends Board>(
     commitmentType: 'completed' as const,
     card: event.committedCard,
   };
-  const newMovementState: MovementResolutionState<TBoard> = {
+  const newMovementState: MovementResolutionState = {
     ...movementState,
     commitment: newCommitment,
   };

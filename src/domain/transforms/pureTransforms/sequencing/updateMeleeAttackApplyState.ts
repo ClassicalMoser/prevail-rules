@@ -2,6 +2,7 @@ import type { Board, PlayerSide } from '@entities';
 import type {
   AttackApplyState,
   GameState,
+  MeleeResolutionState,
   ResolveMeleePhaseState,
 } from '@game';
 import {
@@ -31,7 +32,7 @@ import { updatePhaseState } from '../state';
 export function updateMeleeAttackApplyState<TBoard extends Board>(
   state: GameState<TBoard>,
   player: PlayerSide,
-  attackApplyState: AttackApplyState<TBoard>,
+  attackApplyState: AttackApplyState,
 ): GameState<TBoard> {
   const resolveMeleePhaseState = getResolveMeleePhaseState(state);
   const meleeState = getMeleeResolutionState(state);
@@ -41,12 +42,12 @@ export function updateMeleeAttackApplyState<TBoard extends Board>(
     ...(player === 'white'
       ? { whiteAttackApplyState: attackApplyState }
       : { blackAttackApplyState: attackApplyState }),
-  };
+  } as MeleeResolutionState;
 
-  const newPhaseState: ResolveMeleePhaseState<TBoard> = {
+  const newPhaseState = {
     ...resolveMeleePhaseState,
     currentMeleeResolutionState: newMeleeState,
-  };
+  } as ResolveMeleePhaseState;
 
   return updatePhaseState(state, newPhaseState);
 }

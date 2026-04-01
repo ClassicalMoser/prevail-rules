@@ -1,5 +1,6 @@
 import type { StandardBoard } from '@entities';
-import type { EngagementState, GameState } from '@game';
+import type { GameState } from '@game';
+import type { StandardEngagementState } from '@game/substeps';
 import {
   createEmptyGameState,
   createGameStateWithUnits,
@@ -88,8 +89,13 @@ describe('getExpectedMovementResolutionEvent', () => {
     const resolutionState = createMovementResolutionState(gameState, {
       engagementState: {
         substepType: 'engagementResolution',
+        boardType: 'standard' as const,
         engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
-        targetPlacement: { coordinate: 'E-6', facing: 'north' },
+        targetPlacement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-6',
+          facing: 'north',
+        },
         engagementResolutionState: {
           engagementType: 'front',
           defensiveCommitment: {
@@ -100,12 +106,13 @@ describe('getExpectedMovementResolutionEvent', () => {
           defendingUnitRetreats: false,
           defendingUnitRetreated: undefined,
         },
-      } as EngagementState<StandardBoard>,
+        completed: false,
+      } as StandardEngagementState,
     });
     resolutionState.engagementState = {
       ...resolutionState.engagementState,
       completed: true,
-    } as EngagementState<StandardBoard>;
+    } as StandardEngagementState;
 
     expect(
       getExpectedMovementResolutionEvent(gameState, resolutionState, 'black'),
@@ -120,8 +127,13 @@ describe('getExpectedMovementResolutionEvent', () => {
     const resolutionState = createMovementResolutionState(gameState, {
       engagementState: {
         substepType: 'engagementResolution',
+        boardType: 'standard' as const,
         engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
-        targetPlacement: { coordinate: 'E-6', facing: 'north' },
+        targetPlacement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-6',
+          facing: 'north',
+        },
         engagementResolutionState: {
           engagementType: 'front',
           defensiveCommitment: {
@@ -132,7 +144,8 @@ describe('getExpectedMovementResolutionEvent', () => {
           defendingUnitRetreats: undefined,
           defendingUnitRetreated: undefined,
         },
-      } as EngagementState<StandardBoard>,
+        completed: false,
+      } as StandardEngagementState,
     });
     const expectedEvent = {
       actionType: 'gameEffect',

@@ -16,7 +16,7 @@ import { getExpectedAttackApplyEvent } from '../composable';
  */
 export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
   gameState: GameState<TBoard>,
-  meleeState: MeleeResolutionState<TBoard>,
+  meleeState: MeleeResolutionState,
 ): ExpectedEventInfo<TBoard> {
   // Fast rejection: if already completed, this is an invalid state
   if (meleeState.completed) {

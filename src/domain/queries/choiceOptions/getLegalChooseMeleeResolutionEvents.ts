@@ -1,4 +1,4 @@
-import type { Board } from '@entities';
+import type { Board, BoardCoordinate } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
@@ -37,7 +37,7 @@ export function getLegalChooseMeleeResolutionEvents<TBoard extends Board>(
       choiceType: 'chooseMeleeResolution',
       eventNumber,
       player: activePlayer,
-      space: engagementCoordinate,
+      space: engagementCoordinate as BoardCoordinate<TBoard>,
     });
   }
 

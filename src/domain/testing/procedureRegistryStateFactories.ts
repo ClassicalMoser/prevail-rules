@@ -45,8 +45,13 @@ export const procedureRegistryStateFactories: Record<
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: defendingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const stateWithUnit = {
       ...state,
@@ -117,8 +122,10 @@ export const procedureRegistryStateFactories: Record<
       engagingUnit: createUnitByStat('black', 'speed', 2),
     };
     const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: defender,
       placement: {
+        boardType: 'standard' as const,
         coordinate: engagementState.targetPlacement.coordinate,
         facing: 'south',
       },
@@ -145,8 +152,10 @@ export const procedureRegistryStateFactories: Record<
     const defender = createTestUnit('white');
     const flank = createFlankEngagementState();
     const defenderPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: defender,
       placement: {
+        boardType: 'standard' as const,
         coordinate: flank.targetPlacement.coordinate,
         facing: 'east',
       },
@@ -178,12 +187,22 @@ export const procedureRegistryStateFactories: Record<
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
@@ -212,8 +231,13 @@ export const procedureRegistryStateFactories: Record<
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: defendingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const withBoard = {
       ...state,
@@ -232,14 +256,23 @@ export const procedureRegistryStateFactories: Record<
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: retreatingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
-    const finalPos = { coordinate: 'E-6' as const, facing: 'south' as const };
+    const finalPos = {
+      boardType: 'standard' as const,
+      coordinate: 'E-6' as const,
+      facing: 'south' as const,
+    };
     const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement, {
       retreatState: createRetreatState(unitWithPlacement, {
         finalPosition: finalPos,
@@ -259,8 +292,13 @@ export const procedureRegistryStateFactories: Record<
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: defendingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const withBoard = {
       ...state,
@@ -281,8 +319,13 @@ export const procedureRegistryStateFactories: Record<
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: defendingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const withBoard = {
       ...state,
@@ -316,15 +359,29 @@ export const procedureRegistryStateFactories: Record<
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, {
+        boardType: 'standard' as const,
         unit: defender,
-        placement: { coordinate: 'E-6', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-6',
+          facing: 'south',
+        },
       }),
     };
     const movement = createMovementResolutionState(withBoard, {
-      targetPlacement: { coordinate: 'E-6', facing: 'north' },
+      targetPlacement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-6',
+        facing: 'north',
+      },
       movingUnit: {
+        boardType: 'standard' as const,
         unit: createTestUnit('black'),
-        placement: { coordinate: 'E-5', facing: 'east' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'east',
+        },
       },
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
@@ -337,8 +394,13 @@ export const procedureRegistryStateFactories: Record<
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: retreatingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const withBoard = {
       ...state,

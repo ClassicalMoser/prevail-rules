@@ -165,8 +165,10 @@ describe('isValidLine', () => {
       ];
       const invalidLine: Line = {
         unitPlacements: units.map((unit, i) => ({
+          boardType: 'standard' as const,
           unit,
           placement: {
+            boardType: 'standard' as const,
             coordinate: coordinates[i]!,
             facing: 'north',
           },
@@ -182,12 +184,22 @@ describe('isValidLine', () => {
       const invalidLine = {
         unitPlacements: [
           {
+            boardType: 'standard' as const,
             unit: unit1,
-            placement: { coordinate: 'E-5' as const, facing: 'north' as const },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5' as const,
+              facing: 'north' as const,
+            },
           },
           {
+            boardType: 'standard' as const,
             unit: unit2,
-            placement: { coordinate: 'E-6' as const, facing: 'north' as const },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-6' as const,
+              facing: 'north' as const,
+            },
           },
         ],
       };
@@ -206,12 +218,22 @@ describe('isValidLine', () => {
       const invalidLine = {
         unitPlacements: [
           {
+            boardType: 'standard' as const,
             unit: unit1,
-            placement: { coordinate: 'E-5' as const, facing: 'north' as const },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5' as const,
+              facing: 'north' as const,
+            },
           },
           {
+            boardType: 'standard' as const,
             unit: unit2,
-            placement: { coordinate: 'E-6' as const, facing: 'east' as const },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-6' as const,
+              facing: 'east' as const,
+            },
           },
         ],
       };
@@ -225,12 +247,22 @@ describe('isValidLine', () => {
       const invalidLine = {
         unitPlacements: [
           {
+            boardType: 'standard' as const,
             unit: unit1,
-            placement: { coordinate: 'E-5' as const, facing: 'north' as const },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5' as const,
+              facing: 'north' as const,
+            },
           },
           {
+            boardType: 'standard' as const,
             unit: unit2,
-            placement: { coordinate: 'E-7' as const, facing: 'north' as const }, // Gap at E-6
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-7' as const,
+              facing: 'north' as const,
+            }, // Gap at E-6
           },
         ],
       };
@@ -244,12 +276,22 @@ describe('isValidLine', () => {
       const invalidLine = {
         unitPlacements: [
           {
+            boardType: 'standard' as const,
             unit: unit1,
-            placement: { coordinate: 'E-5' as const, facing: 'north' as const },
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'E-5' as const,
+              facing: 'north' as const,
+            },
           },
           {
+            boardType: 'standard' as const,
             unit: unit2,
-            placement: { coordinate: 'F-5' as const, facing: 'north' as const }, // Not in flanking spaces (should be E-6 or E-4)
+            placement: {
+              boardType: 'standard' as const,
+              coordinate: 'F-5' as const,
+              facing: 'north' as const,
+            }, // Not in flanking spaces (should be E-6 or E-4)
           },
         ],
       };
@@ -266,15 +308,19 @@ describe('isValidLine', () => {
       const invalidLine = {
         unitPlacements: [
           {
+            boardType: 'standard' as const,
             unit: unit1,
             placement: {
+              boardType: 'standard' as const,
               coordinate: 'E-5' as const,
               facing: 'northEast' as const,
             },
           },
           {
+            boardType: 'standard' as const,
             unit: unit2,
             placement: {
+              boardType: 'standard' as const,
               coordinate: 'D-5' as const,
               facing: 'northEast' as const,
             }, // Not in flanking spaces (should be D-4 or F-6)

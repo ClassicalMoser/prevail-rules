@@ -82,9 +82,11 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
     defendingCommitmentModifiers,
   );
 
+  const placement = getPositionOfUnit(state.boardState, defendingUnit);
   const defenderWithPlacement = {
+    boardType: state.boardState.boardType,
     unit: defendingUnit,
-    placement: getPositionOfUnit(state.boardState, defendingUnit),
+    placement,
   };
 
   let legalRetreatOptions: Set<UnitPlacement<TBoard>>;

@@ -28,8 +28,13 @@ describe('updateRoutState', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const stateWithUnit = {
       ...state,
@@ -55,12 +60,22 @@ describe('updateRoutState', () => {
       { attack: 2 },
     );
     const routedPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: routedUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const otherPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: otherUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let stateWithUnits = {
       ...state,

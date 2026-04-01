@@ -11,8 +11,8 @@ import { getMeleeResolutionState } from '../getCommandResolutionState';
  * @throws Error if reverse state is missing
  */
 export function getReverseStateFromAttackApply<TBoard extends Board>(
-  attackApplyState: AttackApplyState<TBoard>,
-): ReverseState<TBoard> {
+  attackApplyState: AttackApplyState,
+): ReverseState {
   if (!attackApplyState.reverseState) {
     throw new Error('No reverse state found in attack apply state');
   }
@@ -24,7 +24,7 @@ export function getReverseStateFromAttackApply<TBoard extends Board>(
  */
 export function getReverseStateFromMeleeResolutionByInitiative<
   TBoard extends Board,
->(state: GameState<TBoard>): ReverseState<TBoard> {
+>(state: GameState<TBoard>): ReverseState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const firstPlayerAttackApply =

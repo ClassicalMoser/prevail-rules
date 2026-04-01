@@ -28,22 +28,23 @@ export function applyChooseMeleeEvent<TBoard extends Board>(
   );
 
   // Create a new melee resolution state for the space chosen
-  const newMeleeResolutionState: MeleeResolutionState<TBoard> = {
-    substepType: 'meleeResolution',
+  const newMeleeResolutionState = {
+    substepType: 'meleeResolution' as const,
+    boardType: currentPhaseState.boardType,
     location: space,
-    whiteCommitment: { commitmentType: 'pending' },
-    blackCommitment: { commitmentType: 'pending' },
+    whiteCommitment: { commitmentType: 'pending' as const },
+    blackCommitment: { commitmentType: 'pending' as const },
     whiteAttackApplyState: undefined,
     blackAttackApplyState: undefined,
     completed: false,
-  };
+  } as MeleeResolutionState;
 
   // Update the phase state with the two new values
-  const newPhaseState: ResolveMeleePhaseState<TBoard> = {
+  const newPhaseState = {
     ...currentPhaseState,
     remainingEngagements: newRemainingEngagements,
     currentMeleeResolutionState: newMeleeResolutionState,
-  };
+  } as ResolveMeleePhaseState;
 
   // Return the new game state
   const newGameState = updatePhaseState(state, newPhaseState);

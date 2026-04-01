@@ -1,5 +1,11 @@
 import type { Board } from '@entities';
-import type { GameState, ReverseState } from '@game';
+import type {
+  GameState,
+  MeleeResolutionState,
+  PhaseState,
+  RangedAttackResolutionState,
+  ReverseState,
+} from '@game';
 import {
   getCurrentPhaseState,
   getIssueCommandsPhaseState,
@@ -19,7 +25,7 @@ import { updatePhaseState } from '../state';
  */
 export function updateReverseState<TBoard extends Board>(
   state: GameState<TBoard>,
-  reverseState: ReverseState<TBoard>,
+  reverseState: ReverseState,
 ): GameState<TBoard> {
   const phaseState = getCurrentPhaseState<TBoard>(state);
 
@@ -38,8 +44,8 @@ export function updateReverseState<TBoard extends Board>(
         currentCommandResolutionState: {
           ...ranged,
           attackApplyState: { ...attackApply, reverseState },
-        },
-      });
+        } as RangedAttackResolutionState,
+      } as PhaseState<TBoard>);
     }
 
     throw new Error(
@@ -62,8 +68,8 @@ export function updateReverseState<TBoard extends Board>(
         currentMeleeResolutionState: {
           ...melee,
           whiteAttackApplyState: { ...whiteApply, reverseState },
-        },
-      });
+        } as MeleeResolutionState,
+      } as PhaseState<TBoard>);
     }
 
     const blackApply = melee.blackAttackApplyState;
@@ -75,8 +81,8 @@ export function updateReverseState<TBoard extends Board>(
       currentMeleeResolutionState: {
         ...melee,
         blackAttackApplyState: { ...blackApply, reverseState },
-      },
-    });
+      } as MeleeResolutionState,
+    } as PhaseState<TBoard>);
   }
 
   throw new Error(

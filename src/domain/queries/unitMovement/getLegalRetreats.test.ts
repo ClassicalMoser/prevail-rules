@@ -76,8 +76,10 @@ describe('getLegalRetreats', () => {
       );
 
       const unitWithPlacement = {
+        boardType: 'standard' as const,
         unit: primaryUnit,
         placement: {
+          boardType: 'standard' as const,
           coordinate: 'G-8' as const,
           facing: 'west' as const,
         },
@@ -100,10 +102,12 @@ describe('getLegalRetreats', () => {
       let board = gameState.boardState;
       const additionalEnemyUnit = createTestUnit('white', { speed: 2 });
       const placementBehindPrimaryUnit = {
+        boardType: 'standard' as const,
         coordinate: 'G-9' as const,
         facing: 'west' as const,
       };
       const additionalEnemyUnitWithPlacement = {
+        boardType: 'standard' as const,
         unit: additionalEnemyUnit,
         placement: placementBehindPrimaryUnit,
       };
@@ -132,10 +136,12 @@ describe('getLegalRetreats', () => {
       let board = gameState.boardState;
       const additionalEnemyUnit = createTestUnit('white', { speed: 2 });
       const placementBehindPrimaryUnit = {
+        boardType: 'standard' as const,
         coordinate: 'F-9' as const,
         facing: 'west' as const,
       };
       const additionalEnemyUnitWithPlacement = {
+        boardType: 'standard' as const,
         unit: additionalEnemyUnit,
         placement: placementBehindPrimaryUnit,
       };
@@ -164,10 +170,12 @@ describe('getLegalRetreats', () => {
       let board = gameState.boardState;
       const additionalEnemyUnit = createTestUnit('white', { speed: 2 });
       const placementBehindPrimaryUnit = {
+        boardType: 'standard' as const,
         coordinate: 'G-9' as const,
         facing: 'north' as const,
       };
       const additionalEnemyUnitWithPlacement = {
+        boardType: 'standard' as const,
         unit: additionalEnemyUnit,
         placement: placementBehindPrimaryUnit,
       };
@@ -235,8 +243,10 @@ describe('getLegalRetreats', () => {
       const gameState = createGameState([]);
       const unit = createTestUnit('black');
       const unitWithPlacement = {
+        boardType: 'standard' as const,
         unit,
         placement: {
+          boardType: 'standard' as const,
           coordinate: 'G-8' as const,
           facing: 'west' as const,
         },
@@ -260,8 +270,10 @@ describe('getLegalRetreats', () => {
       // Create a different unit instance
       const differentUnit = createTestUnit('black', { instanceNumber: 999 });
       const unitWithPlacement = {
+        boardType: 'standard' as const,
         unit: differentUnit,
         placement: {
+          boardType: 'standard' as const,
           coordinate: 'G-8' as const,
           facing: 'west' as const,
         },
@@ -282,11 +294,13 @@ describe('getLegalRetreats', () => {
         'west',
       );
       const unitWithPlacement = {
+        boardType: 'standard' as const,
         unit: {
           ...secondaryUnit,
           instanceNumber: secondaryUnit.instanceNumber + 1,
         },
         placement: {
+          boardType: 'standard' as const,
           coordinate: 'G-8' as const,
           facing: 'east' as const,
         },
@@ -315,6 +329,7 @@ describe('getLegalRetreats', () => {
           instanceNumber: unit.unit.instanceNumber + 1,
         },
         placement: {
+          boardType: 'standard' as const,
           coordinate: 'G-8' as const,
           facing: 'west' as const,
         },
@@ -335,8 +350,10 @@ describe('getLegalRetreats', () => {
       );
 
       const unitWithPlacement = {
+        boardType: 'standard' as const,
         unit: primaryUnit,
         placement: {
+          boardType: 'standard' as const,
           coordinate: 'G-8' as const,
           facing: 'north' as const,
         },
@@ -361,8 +378,10 @@ describe('getLegalRetreats', () => {
 
       // Secondary unit faces opposite to primary (east)
       const unitWithPlacement = {
+        boardType: 'standard' as const,
         unit: secondaryUnit,
         placement: {
+          boardType: 'standard' as const,
           coordinate: 'G-8' as const,
           facing: 'east' as const, // Opposite of west
         },
@@ -373,6 +392,7 @@ describe('getLegalRetreats', () => {
       expect(retreats.size).toBe(1);
       expect([...retreats]).toEqual([
         expect.objectContaining({
+          boardType: 'standard' as const,
           coordinate: 'G-7',
           facing: 'east',
         }),

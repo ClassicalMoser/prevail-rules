@@ -1,10 +1,10 @@
 import type { StandardBoard, UnitInstance, UnitPlacement } from '@entities';
 import type {
-  EngagementState,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
-} from '@game';
+  StandardEngagementState,
+} from '@game/substeps';
 import { createUnitWithPlacement } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 import { createRoutState } from './substepStates';
@@ -13,6 +13,7 @@ const defaultEngagingUnit = (): UnitInstance =>
   createUnitWithPlacement({ playerSide: 'black' }).unit;
 
 const defaultTargetPlacement: UnitPlacement<StandardBoard> = {
+  boardType: 'standard' as const,
   coordinate: 'E-5',
   facing: 'north',
 };
@@ -22,11 +23,12 @@ const defaultTargetPlacement: UnitPlacement<StandardBoard> = {
  */
 export function createFrontEngagementState(
   overrides?: Partial<FrontEngagementResolutionState>,
-): EngagementState<StandardBoard> & {
+): StandardEngagementState & {
   engagementResolutionState: FrontEngagementResolutionState;
 } {
   return {
     substepType: 'engagementResolution',
+    boardType: 'standard' as const,
     engagingUnit: defaultEngagingUnit(),
     targetPlacement: defaultTargetPlacement,
     engagementResolutionState: {
@@ -46,11 +48,12 @@ export function createFrontEngagementState(
  */
 export function createFlankEngagementState(
   overrides?: Partial<FlankEngagementResolutionState>,
-): EngagementState<StandardBoard> & {
+): StandardEngagementState & {
   engagementResolutionState: FlankEngagementResolutionState;
 } {
   return {
     substepType: 'engagementResolution',
+    boardType: 'standard' as const,
     engagingUnit: defaultEngagingUnit(),
     targetPlacement: defaultTargetPlacement,
     engagementResolutionState: {
@@ -67,11 +70,12 @@ export function createFlankEngagementState(
  */
 export function createRearEngagementState(
   overrides?: Partial<RearEngagementResolutionState>,
-): EngagementState<StandardBoard> & {
+): StandardEngagementState & {
   engagementResolutionState: RearEngagementResolutionState;
 } {
   return {
     substepType: 'engagementResolution',
+    boardType: 'standard' as const,
     engagingUnit: defaultEngagingUnit(),
     targetPlacement: defaultTargetPlacement,
     engagementResolutionState: {

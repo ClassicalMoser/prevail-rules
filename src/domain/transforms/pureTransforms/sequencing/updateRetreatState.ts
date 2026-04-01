@@ -1,5 +1,11 @@
 import type { Board } from '@entities';
-import type { GameState, RetreatState } from '@game';
+import type {
+  GameState,
+  MeleeResolutionState,
+  PhaseState,
+  RangedAttackResolutionState,
+  RetreatState,
+} from '@game';
 import {
   getCurrentPhaseState,
   getIssueCommandsPhaseState,
@@ -22,7 +28,7 @@ import { updatePhaseState } from '../state';
  */
 export function updateRetreatState<TBoard extends Board>(
   state: GameState<TBoard>,
-  retreatState: RetreatState<TBoard>,
+  retreatState: RetreatState,
 ): GameState<TBoard> {
   const phaseState = getCurrentPhaseState<TBoard>(state);
 
@@ -41,8 +47,8 @@ export function updateRetreatState<TBoard extends Board>(
         currentCommandResolutionState: {
           ...ranged,
           attackApplyState: { ...attackApply, retreatState },
-        },
-      });
+        } as RangedAttackResolutionState,
+      } as PhaseState<TBoard>);
     }
 
     // TODO: commandResolutionType === 'movement' with engagement retreat
@@ -66,8 +72,8 @@ export function updateRetreatState<TBoard extends Board>(
         currentMeleeResolutionState: {
           ...melee,
           whiteAttackApplyState: { ...whiteApply, retreatState },
-        },
-      });
+        } as MeleeResolutionState,
+      } as PhaseState<TBoard>);
     }
 
     const blackApply = melee.blackAttackApplyState;
@@ -79,8 +85,8 @@ export function updateRetreatState<TBoard extends Board>(
       currentMeleeResolutionState: {
         ...melee,
         blackAttackApplyState: { ...blackApply, retreatState },
-      },
-    });
+      } as MeleeResolutionState,
+    } as PhaseState<TBoard>);
   }
 
   throw new Error(

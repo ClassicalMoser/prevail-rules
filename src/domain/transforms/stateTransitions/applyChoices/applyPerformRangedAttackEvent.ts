@@ -3,6 +3,7 @@ import type { PerformRangedAttackEvent } from '@events';
 import type {
   GameState,
   IssueCommandsPhaseState,
+  PhaseState,
   RangedAttackResolutionState,
 } from '@game';
 import { getIssueCommandsPhaseState } from '@queries';
@@ -58,9 +59,10 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
     ),
   );
 
-  const rangedAttackResolutionState: RangedAttackResolutionState<TBoard> = {
-    substepType: 'commandResolution',
-    commandResolutionType: 'rangedAttack',
+  const rangedAttackResolutionState = {
+    substepType: 'commandResolution' as const,
+    commandResolutionType: 'rangedAttack' as const,
+    boardType: state.boardState.boardType,
     attackingUnit,
     defendingUnit,
     supportingUnits,
@@ -68,7 +70,7 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
     defendingCommitment: { commitmentType: 'pending' },
     attackApplyState: undefined,
     completed: false,
-  };
+  } as RangedAttackResolutionState;
 
   const newPhaseState: IssueCommandsPhaseState<TBoard> = {
     ...currentPhaseState,
@@ -81,6 +83,9 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
       : newRemainingAttacker,
   };
 
-  const newGameState = updatePhaseState(state, newPhaseState);
+  const newGameState = updatePhaseState(
+    state,
+    newPhaseState as PhaseState<TBoard>,
+  );
   return newGameState;
 }

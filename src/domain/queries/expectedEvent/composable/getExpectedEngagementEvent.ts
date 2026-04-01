@@ -1,4 +1,4 @@
-import type { Board } from '@entities';
+import type { Board, BoardCoordinate } from '@entities';
 import type { ExpectedEventInfo } from '@events';
 import type { EngagementState, GameState } from '@game';
 import { hasEngagedUnits, hasNoUnit } from '@entities';
@@ -19,14 +19,14 @@ import { getExpectedRoutEvent } from '.';
  */
 export function getExpectedEngagementEvent<TBoard extends Board>(
   gameState: GameState<TBoard>,
-  engagementState: EngagementState<TBoard>,
+  engagementState: EngagementState,
 ): ExpectedEventInfo<TBoard> {
   const attackingPlayer = engagementState.engagingUnit.playerSide;
   const defendingPlayer = getOtherPlayer(attackingPlayer);
   const board = gameState.boardState;
   const spaceState = getBoardSpace(
     board,
-    engagementState.targetPlacement.coordinate,
+    engagementState.targetPlacement.coordinate as BoardCoordinate<TBoard>,
   );
   // Basic defensive checks to ensure we're not in an invalid state
   const defendingUnitPresence = spaceState.unitPresence;

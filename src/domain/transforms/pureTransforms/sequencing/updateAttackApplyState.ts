@@ -1,5 +1,11 @@
 import type { Board } from '@entities';
-import type { AttackApplyState, GameState } from '@game';
+import type {
+  AttackApplyState,
+  GameState,
+  MeleeResolutionState,
+  PhaseState,
+  RangedAttackResolutionState,
+} from '@game';
 import {
   getCurrentPhaseState,
   getIssueCommandsPhaseState,
@@ -19,7 +25,7 @@ import { updatePhaseState } from '../state';
  */
 export function updateAttackApplyState<TBoard extends Board>(
   state: GameState<TBoard>,
-  attackApplyState: AttackApplyState<TBoard>,
+  attackApplyState: AttackApplyState,
 ): GameState<TBoard> {
   const phaseState = getCurrentPhaseState<TBoard>(state);
 
@@ -33,8 +39,11 @@ export function updateAttackApplyState<TBoard extends Board>(
     }
     return updatePhaseState(state, {
       ...issueState,
-      currentCommandResolutionState: { ...ranged, attackApplyState },
-    });
+      currentCommandResolutionState: {
+        ...ranged,
+        attackApplyState,
+      } as RangedAttackResolutionState,
+    } as PhaseState<TBoard>);
   }
 
   if (phaseState.phase === 'resolveMelee') {
@@ -48,8 +57,8 @@ export function updateAttackApplyState<TBoard extends Board>(
         currentMeleeResolutionState: {
           ...melee,
           whiteAttackApplyState: attackApplyState,
-        },
-      });
+        } as MeleeResolutionState,
+      } as PhaseState<TBoard>);
     }
 
     return updatePhaseState(state, {
@@ -57,8 +66,8 @@ export function updateAttackApplyState<TBoard extends Board>(
       currentMeleeResolutionState: {
         ...melee,
         blackAttackApplyState: attackApplyState,
-      },
-    });
+      } as MeleeResolutionState,
+    } as PhaseState<TBoard>);
   }
 
   throw new Error(

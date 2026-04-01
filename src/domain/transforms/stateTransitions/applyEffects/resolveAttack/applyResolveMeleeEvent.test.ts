@@ -45,12 +45,22 @@ describe('applyResolveMeleeEvent', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     return {
       whiteUnitWithPlacement: {
+        boardType: 'standard' as const,
         unit: whiteUnit,
-        placement: { coordinate: 'E-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
+        },
       },
       blackUnitWithPlacement: {
+        boardType: 'standard' as const,
         unit: blackUnit,
-        placement: { coordinate: 'E-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'south',
+        },
       },
     };
   }
@@ -122,6 +132,7 @@ describe('applyResolveMeleeEvent', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const only = {
+      boardType: 'standard' as const,
       coordinate: 'E-6' as const,
       facing: 'south' as const,
     };
@@ -144,8 +155,8 @@ describe('applyResolveMeleeEvent', () => {
     const event: ResolveMeleeEvent<StandardBoard> = {
       ...baseMeleeEvent(placements),
       whiteLegalRetreatOptions: new Set([
-        { coordinate: 'E-6', facing: 'south' },
-        { coordinate: 'E-4', facing: 'south' },
+        { boardType: 'standard' as const, coordinate: 'E-6', facing: 'south' },
+        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'south' },
       ]),
       whiteUnitRetreated: true,
     };

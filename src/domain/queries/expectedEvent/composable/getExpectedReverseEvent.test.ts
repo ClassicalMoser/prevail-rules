@@ -25,7 +25,11 @@ describe('getExpectedReverseEvent', () => {
   it('given when the reverse is already complete, throws', () => {
     const reverseState = createReverseState(unitPlacement, {
       completed: true,
-      finalPosition: { coordinate: 'E-4', facing: 'south' },
+      finalPosition: {
+        boardType: 'standard' as const,
+        coordinate: 'E-4',
+        facing: 'south',
+      },
     });
     const gameState = createEmptyGameState();
 
@@ -36,7 +40,11 @@ describe('getExpectedReverseEvent', () => {
 
   it('given when the final position is already set but the state is incomplete, throws', () => {
     const reverseState = createReverseState(unitPlacement, {
-      finalPosition: { coordinate: 'E-4', facing: 'south' },
+      finalPosition: {
+        boardType: 'standard' as const,
+        coordinate: 'E-4',
+        facing: 'south',
+      },
     });
     const gameState = createEmptyGameState();
 

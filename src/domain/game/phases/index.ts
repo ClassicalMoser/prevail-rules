@@ -36,6 +36,9 @@ export {
   resolveMeleePhaseSteps,
 } from './resolveMeleePhase';
 export type {
+  LargeResolveMeleePhaseState,
   ResolveMeleePhaseState,
   ResolveMeleePhaseStep,
+  SmallResolveMeleePhaseState,
+  StandardResolveMeleePhaseState,
 } from './resolveMeleePhase';

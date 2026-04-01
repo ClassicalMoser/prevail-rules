@@ -18,7 +18,7 @@ import {
  * @returns Information about what event is expected
  */
 export function getExpectedAttackApplyEvent<TBoard extends Board>(
-  attackApplyState: AttackApplyState<TBoard>,
+  attackApplyState: AttackApplyState,
   gameState: GameState<TBoard>,
 ): ExpectedEventInfo<TBoard> {
   const attackResult = attackApplyState.attackResult;

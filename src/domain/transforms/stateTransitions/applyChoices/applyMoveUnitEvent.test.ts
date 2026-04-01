@@ -26,7 +26,11 @@ describe('applyMoveUnitEvent', () => {
       choiceType: 'moveUnit',
       player: 'black',
       unit: unitWithPlacement,
-      to: { coordinate: 'E-7', facing: 'north' },
+      to: {
+        boardType: 'standard' as const,
+        coordinate: 'E-7',
+        facing: 'north',
+      },
       moveCommander: false,
     };
 

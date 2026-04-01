@@ -59,7 +59,7 @@ export interface IssueCommandsPhaseState<TBoard extends Board> {
   /** remainingUnitsSecondPlayer */
   remainingUnitsSecondPlayer: Set<UnitInstance>;
   /** The state of the ongoing command resolution (movement or ranged attack). */
-  currentCommandResolutionState: CommandResolutionState<TBoard> | undefined;
+  currentCommandResolutionState: CommandResolutionState | undefined;
 }
 
 const _issueCommandsPhaseStateSchemaObject = z.object({
@@ -96,7 +96,5 @@ export const issueCommandsPhaseStateSchema: z.ZodObject<{
   remainingUnitsFirstPlayer: z.ZodSet<z.ZodType<UnitInstance>>;
   remainingCommandsSecondPlayer: z.ZodSet<z.ZodType<Command>>;
   remainingUnitsSecondPlayer: z.ZodSet<z.ZodType<UnitInstance>>;
-  currentCommandResolutionState: z.ZodType<
-    CommandResolutionState<Board> | undefined
-  >;
+  currentCommandResolutionState: z.ZodType<CommandResolutionState | undefined>;
 }> = _issueCommandsPhaseStateSchemaObject;

@@ -12,7 +12,7 @@ import { getMeleeResolutionState } from '../getCommandResolutionState';
  * @throws Error if rout state is missing
  */
 export function getRoutStateFromAttackApply<TBoard extends Board>(
-  attackApplyState: AttackApplyState<TBoard>,
+  attackApplyState: AttackApplyState,
 ): RoutState {
   if (!attackApplyState.routState) {
     throw new Error('No rout state found in attack apply state');

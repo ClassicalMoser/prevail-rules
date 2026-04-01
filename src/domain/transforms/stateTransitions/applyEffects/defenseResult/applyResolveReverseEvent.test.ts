@@ -30,8 +30,13 @@ describe('applyResolveReverseEvent', () => {
     const state = createEmptyGameState();
     const reversingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: reversingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
 
     const stateWithUnit = {
@@ -64,13 +69,23 @@ describe('applyResolveReverseEvent', () => {
     const opponentUnit = createTestUnit(opponentPlayer, { attack: 2 });
 
     const reversingUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: reversingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     // Opponent was at E-5 but has already retreated/routed to a different coordinate
     const opponentUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: opponentUnit,
-      placement: { coordinate: 'E-4', facing: 'south' }, // Moved away after retreat/rout
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-4',
+        facing: 'south',
+      }, // Moved away after retreat/rout
     };
 
     // Only the reversing unit is on the board (opponent has already retreated/routed)
@@ -111,8 +126,13 @@ describe('applyResolveReverseEvent', () => {
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
       const newPlacement: UnitWithPlacement<StandardBoard> = {
+        boardType: 'standard' as const,
         unit: reverseState.reversingUnit.unit,
-        placement: { coordinate: 'E-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'south',
+        },
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
@@ -142,8 +162,13 @@ describe('applyResolveReverseEvent', () => {
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
       const newPlacement: UnitWithPlacement<StandardBoard> = {
+        boardType: 'standard' as const,
         unit: reverseState.reversingUnit.unit,
-        placement: { coordinate: 'E-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'south',
+        },
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
@@ -174,14 +199,24 @@ describe('applyResolveReverseEvent', () => {
       const stateWithOtherUnit = {
         ...state,
         boardState: addUnitToBoard(state.boardState, {
+          boardType: 'standard' as const,
           unit: otherUnit,
-          placement: { coordinate: 'D-5', facing: 'north' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'D-5',
+            facing: 'north',
+          },
         }),
       };
 
       const newPlacement: UnitWithPlacement<StandardBoard> = {
+        boardType: 'standard' as const,
         unit: reverseState.reversingUnit.unit,
-        placement: { coordinate: 'E-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'south',
+        },
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
@@ -211,8 +246,13 @@ describe('applyResolveReverseEvent', () => {
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
       const newPlacement: UnitWithPlacement<StandardBoard> = {
+        boardType: 'standard' as const,
         unit: reverseState.reversingUnit.unit,
-        placement: { coordinate: 'E-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'south',
+        },
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
@@ -245,8 +285,13 @@ describe('applyResolveReverseEvent', () => {
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
       const newPlacement: UnitWithPlacement<StandardBoard> = {
+        boardType: 'standard' as const,
         unit: reverseState.reversingUnit.unit,
-        placement: { coordinate: 'E-5', facing: 'east' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'east',
+        },
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {
@@ -280,8 +325,13 @@ describe('applyResolveReverseEvent', () => {
       const originalBoardState = state.boardState;
 
       const newPlacement: UnitWithPlacement<StandardBoard> = {
+        boardType: 'standard' as const,
         unit: reverseState.reversingUnit.unit,
-        placement: { coordinate: 'E-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'south',
+        },
       };
 
       const event: ResolveReverseEvent<StandardBoard> = {

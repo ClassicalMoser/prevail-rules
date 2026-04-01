@@ -23,17 +23,32 @@ describe('canMoveThrough', () => {
       let board = createEmptyStandardBoard();
       // Add engaged units at D-5
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('black'),
-        placement: { coordinate: 'D-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'D-5',
+          facing: 'north',
+        },
       });
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('white'),
-        placement: { coordinate: 'D-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'D-5',
+          facing: 'south',
+        },
       });
       // Add unit attempting to move through
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('black'),
-        placement: { coordinate: 'E-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
+        },
       });
       const gameState = createGameState([
         { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },

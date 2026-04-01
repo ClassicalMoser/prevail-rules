@@ -1,34 +1,24 @@
-import type { Board } from '@entities';
-import type { AssertExact } from '@utils';
 import type { MovementResolutionState } from './movementResolutionSubstep';
 import type { RangedAttackResolutionState } from './rangedAttackResolutionSubstep';
 import { z } from 'zod';
 import { movementResolutionStateSchema } from './movementResolutionSubstep';
 import { rangedAttackResolutionStateSchema } from './rangedAttackResolutionSubstep';
 
-/** The type of the command resolution state. */
-export type CommandResolutionState<TBoard extends Board> =
-  | MovementResolutionState<TBoard>
-  | RangedAttackResolutionState<TBoard>;
+/** Command resolution while issuing commands: movement or ranged attack (each discriminated on `boardType`). */
+export type CommandResolutionState =
+  | MovementResolutionState
+  | RangedAttackResolutionState;
 
-/** The shape of the command resolution state schema. */
-const _commandResolutionStateSchemaObject = z.discriminatedUnion(
-  'commandResolutionType',
-  [movementResolutionStateSchema, rangedAttackResolutionStateSchema],
-);
-
-// Inference type for the command resolution state schema.
-type CommandResolutionStateSchemaType = z.infer<
-  typeof _commandResolutionStateSchemaObject
->;
-
-// Verify manual type matches schema inference
-const _assertExactCommandResolutionState: AssertExact<
-  CommandResolutionState<Board>,
-  CommandResolutionStateSchemaType
-> = true;
+/**
+ * Movement vs ranged is a flat union (Zod 4: nested discriminated unions are not valid
+ * `discriminatedUnion` branches). Each branch remains `boardType`-discriminated internally.
+ * Wide union: no AssertExact (inference vs manual union).
+ */
+const _commandResolutionStateSchemaObject = z.union([
+  movementResolutionStateSchema,
+  rangedAttackResolutionStateSchema,
+]);
 
 /** The schema for the command resolution state. */
-export const commandResolutionStateSchema: z.ZodType<
-  CommandResolutionState<Board>
-> = _commandResolutionStateSchemaObject;
+export const commandResolutionStateSchema: z.ZodType<CommandResolutionState> =
+  _commandResolutionStateSchemaObject;

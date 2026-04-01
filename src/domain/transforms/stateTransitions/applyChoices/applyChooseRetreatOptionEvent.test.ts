@@ -24,6 +24,7 @@ import { applyChooseRetreatOptionEvent } from './applyChooseRetreatOptionEvent';
  */
 describe('applyChooseRetreatOptionEvent', () => {
   const chosenPosition = {
+    boardType: 'standard' as const,
     coordinate: 'E-4' as const,
     facing: 'north' as const,
   };
@@ -33,8 +34,13 @@ describe('applyChooseRetreatOptionEvent', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const stateWithUnit = {
       ...state,
@@ -75,12 +81,22 @@ describe('applyChooseRetreatOptionEvent', () => {
       { attack: 2 },
     );
     const retreatingPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: retreatingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const otherPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: otherUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let stateWithUnits = {
       ...state,

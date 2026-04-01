@@ -90,6 +90,7 @@ describe('getAttackApplyStateFromMelee', () => {
       {
         currentMeleeResolutionState: {
           substepType: 'meleeResolution' as const,
+          boardType: 'standard' as const,
           location: 'E-5',
           whiteCommitment: {
             commitmentType: 'completed',
@@ -119,6 +120,7 @@ describe('getAttackApplyStateFromMelee', () => {
       {
         currentMeleeResolutionState: {
           substepType: 'meleeResolution' as const,
+          boardType: 'standard' as const,
           location: 'E-5',
           whiteCommitment: {
             commitmentType: 'completed',
@@ -157,6 +159,7 @@ describe('getAttackApplyStateFromMelee', () => {
       {
         currentMeleeResolutionState: {
           substepType: 'meleeResolution' as const,
+          boardType: 'standard' as const,
           location: 'E-5',
           whiteCommitment: {
             commitmentType: 'completed',

@@ -12,7 +12,7 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
  * @returns Information about what event is expected
  */
 export function getExpectedRetreatEvent<TBoard extends Board>(
-  retreatState: RetreatState<TBoard>,
+  retreatState: RetreatState,
 ): ExpectedEventInfo<TBoard> {
   // Check if retreat is completed (all work done, ready for parent to handle)
   if (retreatState.completed) {

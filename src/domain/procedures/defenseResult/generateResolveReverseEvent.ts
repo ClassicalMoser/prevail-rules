@@ -29,7 +29,7 @@ export function generateResolveReverseEvent<TBoard extends Board>(
 ): ResolveReverseEvent<TBoard, 'resolveReverse'> {
   const phaseState = getCurrentPhaseState(state);
 
-  let reverseState: ReverseState<TBoard>;
+  let reverseState: ReverseState;
 
   if (phaseState.phase === 'issueCommands') {
     reverseState = getReverseStateFromAttackApply(
@@ -58,8 +58,10 @@ export function generateResolveReverseEvent<TBoard extends Board>(
     eventNumber,
     unitInstance: reverseState.reversingUnit,
     newUnitPlacement: {
+      boardType: reverseState.reversingUnit.boardType,
       unit: reverseState.reversingUnit.unit,
       placement: {
+        boardType: reverseState.reversingUnit.placement.boardType,
         coordinate: reverseState.reversingUnit.placement.coordinate,
         facing: newFacing,
       },

@@ -5,6 +5,7 @@ import type {
   AttackResult,
   GameState,
   IssueCommandsPhaseState,
+  PhaseState,
   RangedAttackResolutionState,
   RetreatState,
   ReverseState,
@@ -33,6 +34,7 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
 
   const defendingUnit = event.defenderWithPlacement.unit;
   const unitWithPlacement = event.defenderWithPlacement;
+  const boardType = state.boardState.boardType;
 
   const attackResult: AttackResult = {
     unitRouted: event.routed,
@@ -41,8 +43,8 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
   };
 
   let routState: RoutState | undefined;
-  let retreatState: RetreatState<TBoard> | undefined;
-  let reverseState: ReverseState<TBoard> | undefined;
+  let retreatState: RetreatState | undefined;
+  let reverseState: ReverseState | undefined;
 
   if (attackResult.unitRouted) {
     routState = {
@@ -60,40 +62,43 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
 
     retreatState = {
       substepType: 'retreat',
+      boardType,
       retreatingUnit: unitWithPlacement,
       legalRetreatOptions,
       finalPosition,
       routState: undefined,
       completed: false,
-    };
+    } as RetreatState;
   } else if (attackResult.unitReversed) {
     reverseState = {
       substepType: 'reverse',
+      boardType,
       reversingUnit: unitWithPlacement,
       finalPosition: undefined,
       completed: false,
-    };
+    } as ReverseState;
   }
 
-  const attackApplyState: AttackApplyState<TBoard> = {
-    substepType: 'attackApply',
+  const attackApplyState = {
+    substepType: 'attackApply' as const,
+    boardType,
     defendingUnit,
     attackResult,
     routState,
     retreatState,
     reverseState,
     completed: false,
-  };
+  } as AttackApplyState;
 
-  const newRangedAttackState: RangedAttackResolutionState<TBoard> = {
+  const newRangedAttackState = {
     ...rangedAttackState,
     attackApplyState,
-  };
+  } as RangedAttackResolutionState;
 
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
+  const newPhaseState = {
     ...phaseState,
     currentCommandResolutionState: newRangedAttackState,
-  };
+  } as IssueCommandsPhaseState<TBoard>;
 
-  return updatePhaseState(state, newPhaseState);
+  return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
 }

@@ -23,14 +23,23 @@ import { generateResolveRetreatEvent } from './generateResolveRetreatEvent';
  * initiative player’s path first.
  */
 describe('generateResolveRetreatEvent', () => {
-  const finalPos = { coordinate: 'E-6' as const, facing: 'south' as const };
+  const finalPos = {
+    boardType: 'standard' as const,
+    coordinate: 'E-6' as const,
+    facing: 'south' as const,
+  };
 
   it('given ranged attack-apply with retreat substep and E-6 south final, event carries that placement', () => {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: retreatingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const withBoard = {
       ...state,
@@ -62,12 +71,22 @@ describe('generateResolveRetreatEvent', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
@@ -76,7 +95,11 @@ describe('generateResolveRetreatEvent', () => {
       finalPosition: finalPos,
     });
     const blackRetreat = createRetreatState(blackWp, {
-      finalPosition: { coordinate: 'E-4', facing: 'south' },
+      finalPosition: {
+        boardType: 'standard' as const,
+        coordinate: 'E-4',
+        facing: 'south',
+      },
     });
 
     const whiteApply = createAttackApplyStateWithRetreat(whiteWp, {
@@ -115,8 +138,13 @@ describe('generateResolveRetreatEvent', () => {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: retreatingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const withBoard = {
       ...state,

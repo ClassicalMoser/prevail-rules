@@ -21,6 +21,7 @@ describe('applyChooseMeleeEvent', () => {
     const state = createEmptyGameState();
     return updatePhaseState(state, {
       phase: RESOLVE_MELEE_PHASE,
+      boardType: 'standard' as const,
       step: 'resolveMelee',
       remainingEngagements: new Set(remainingSpaces),
       currentMeleeResolutionState: undefined,

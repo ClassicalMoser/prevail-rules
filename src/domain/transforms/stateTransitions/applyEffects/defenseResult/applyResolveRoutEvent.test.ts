@@ -35,8 +35,13 @@ describe('applyResolveRoutEvent', () => {
     const state = createEmptyGameState();
     const routedUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: routedUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
 
     const stateWithUnit = {
@@ -67,12 +72,22 @@ describe('applyResolveRoutEvent', () => {
     );
 
     const routedUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: routedUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const otherUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: otherUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
 
     let stateWithUnits = {
@@ -106,14 +121,28 @@ describe('applyResolveRoutEvent', () => {
     const attacker = createTestUnit('black', { attack: 2 });
     const movement = createMovementResolutionState(state, {
       movingUnit: {
+        boardType: 'standard' as const,
         unit: attacker,
-        placement: { coordinate: 'E-4', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-4',
+          facing: 'south',
+        },
       },
-      targetPlacement: { coordinate: 'E-5', facing: 'south' },
+      targetPlacement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
       engagementState: {
         substepType: 'engagementResolution',
+        boardType: 'standard' as const,
         engagingUnit: attacker,
-        targetPlacement: { coordinate: 'E-5', facing: 'south' },
+        targetPlacement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'south',
+        },
         engagementResolutionState: {
           engagementType: 'rear',
           routState: {
@@ -278,7 +307,7 @@ describe('applyResolveRoutEvent', () => {
     it('given rear engagement rout under movement CRS, event penalty matches summed unit penalties', () => {
       const state = createStateWithRearEngagementRoutAwaitingPenalty();
       const movement = getIssueCommandsPhaseState(state)
-        .currentCommandResolutionState as MovementResolutionState<StandardBoard>;
+        .currentCommandResolutionState as MovementResolutionState;
       const resolution = movement.engagementState!.engagementResolutionState;
       if (resolution.engagementType !== 'rear') {
         throw new Error('expected rear');
@@ -299,7 +328,7 @@ describe('applyResolveRoutEvent', () => {
 
       const newState = applyResolveRoutEvent(event, state);
       const newMovement = getIssueCommandsPhaseState(newState)
-        .currentCommandResolutionState as MovementResolutionState<StandardBoard>;
+        .currentCommandResolutionState as MovementResolutionState;
       const newResolution =
         newMovement.engagementState!.engagementResolutionState;
       if (newResolution.engagementType !== 'rear') {

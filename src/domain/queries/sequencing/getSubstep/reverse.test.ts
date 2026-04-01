@@ -1,5 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { AttackApplyState, GameState } from '@game';
+import type { GameState } from '@game';
+import type { StandardAttackApplyState } from '@game/substeps';
 import {
   createAttackApplyStateWithReverse,
   createEmptyGameState,
@@ -22,8 +23,9 @@ import {
 describe('getReverseStateFromAttackApply', () => {
   it('given apply with reverse substep, returns reverseState', () => {
     const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyState<any> = {
+    const attackApplyState: StandardAttackApplyState = {
       substepType: 'attackApply' as const,
+      boardType: 'standard' as const,
       defendingUnit: unit,
       attackResult: {
         unitRouted: false,
@@ -34,9 +36,15 @@ describe('getReverseStateFromAttackApply', () => {
       retreatState: undefined,
       reverseState: {
         substepType: 'reverse' as const,
+        boardType: 'standard' as const,
         reversingUnit: {
+          boardType: 'standard' as const,
           unit,
-          placement: { coordinate: 'E-5', facing: 'north' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-5',
+            facing: 'north',
+          },
         },
         finalPosition: undefined,
         completed: false,
@@ -51,8 +59,9 @@ describe('getReverseStateFromAttackApply', () => {
 
   it('given error when reverse state is missing, throws', () => {
     const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyState<any> = {
+    const attackApplyState: StandardAttackApplyState = {
       substepType: 'attackApply' as const,
+      boardType: 'standard' as const,
       defendingUnit: unit,
       attackResult: {
         unitRouted: false,
@@ -81,12 +90,22 @@ describe('getReverseStateFromMeleeResolutionByInitiative', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'east' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'east',
+      },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'west' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'west',
+      },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
@@ -147,12 +166,22 @@ describe('getReverseStateFromMeleeResolutionByInitiative', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'east' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'east',
+      },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'west' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'west',
+      },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
@@ -160,6 +189,7 @@ describe('getReverseStateFromMeleeResolutionByInitiative', () => {
     const doneWhite = createAttackApplyStateWithReverse(whiteWp, {
       reverseState: {
         substepType: 'reverse',
+        boardType: 'standard' as const,
         reversingUnit: whiteWp,
         finalPosition: whiteWp.placement,
         completed: false,
@@ -168,6 +198,7 @@ describe('getReverseStateFromMeleeResolutionByInitiative', () => {
     const doneBlack = createAttackApplyStateWithReverse(blackWp, {
       reverseState: {
         substepType: 'reverse',
+        boardType: 'standard' as const,
         reversingUnit: blackWp,
         finalPosition: blackWp.placement,
         completed: false,

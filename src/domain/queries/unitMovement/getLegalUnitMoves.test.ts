@@ -152,8 +152,10 @@ describe('getLegalUnitMoves', () => {
       );
 
       const unitWithPlacement = {
+        boardType: 'standard' as const,
         unit: primaryUnit,
         placement: {
+          boardType: 'standard' as const,
           coordinate: 'D-7' as const,
           facing: 'southEast' as const,
         },

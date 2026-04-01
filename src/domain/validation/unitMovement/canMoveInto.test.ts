@@ -25,17 +25,32 @@ describe('canMoveInto', () => {
       let board = createEmptyStandardBoard();
       // Add engaged units at D-5
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('black'),
-        placement: { coordinate: 'D-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'D-5',
+          facing: 'north',
+        },
       });
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('white'),
-        placement: { coordinate: 'D-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'D-5',
+          facing: 'south',
+        },
       });
       // Add unit attempting to move into
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('black'),
-        placement: { coordinate: 'E-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
+        },
       });
       expect(
         canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
@@ -147,8 +162,13 @@ describe('canMoveInto', () => {
     it('given an invalid unitPresence, returns false', () => {
       let board = createEmptyStandardBoard();
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('black'),
-        placement: { coordinate: 'E-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
+        },
       });
       board.board['D-5']!.unitPresence = {
         presenceType: 'invalid' as any, // Bad type assertion to test error case

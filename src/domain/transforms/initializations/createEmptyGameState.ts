@@ -19,7 +19,7 @@ function shellForBoard<TBoard extends Board>(board: TBoard): GameState<TBoard> {
       commandedUnits: new Set(),
       events: [],
     },
-    currentInitiative: 'white',
+    currentInitiative: 'black',
     boardState: board,
     cardState: {
       black: {

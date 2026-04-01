@@ -1,4 +1,4 @@
-import type { Board } from '@entities';
+import type { Board, UnitWithPlacement } from '@entities';
 import type { SetupUnitsEvent } from '@events';
 import type { GameState } from '@game';
 import { addUnitToBoard, updateBoardState } from '@transforms/pureTransforms';
@@ -21,7 +21,8 @@ export function applySetupUnitsEvent<TBoard extends Board>(
 
   // Add each unit to the board in sequence
   const newBoard: TBoard = [...unitPlacements].reduce<TBoard>(
-    (board, unitPlacement) => addUnitToBoard<TBoard>(board, unitPlacement),
+    (board, unitPlacement) =>
+      addUnitToBoard<TBoard>(board, unitPlacement as UnitWithPlacement<TBoard>),
     startingBoard,
   );
 

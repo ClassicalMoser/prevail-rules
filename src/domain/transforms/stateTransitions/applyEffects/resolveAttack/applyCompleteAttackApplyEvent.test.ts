@@ -1,6 +1,7 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
+import type { StandardMeleeResolutionState } from '@game/substeps';
 import {
   getAttackApplyStateFromRangedAttack,
   getMeleeResolutionState,
@@ -28,8 +29,13 @@ describe('applyCompleteAttackApplyEvent', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: defendingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
 
     const stateWithUnit = {
@@ -57,12 +63,22 @@ describe('applyCompleteAttackApplyEvent', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
 
     const whiteUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
 
     let stateWithUnits = {
@@ -245,7 +261,7 @@ describe('applyCompleteAttackApplyEvent', () => {
         currentMeleeResolutionState: {
           ...meleeState,
           whiteAttackApplyState: undefined,
-        },
+        } as StandardMeleeResolutionState,
       });
       const stateMissingWhiteApply = updatePhaseState(state, phaseState);
 

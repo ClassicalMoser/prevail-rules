@@ -18,7 +18,7 @@ import { getMovementResolutionState } from '../getCommandResolutionState';
  */
 export function getEngagementStateFromMovement<TBoard extends Board>(
   state: GameState<TBoard>,
-): EngagementState<TBoard> {
+): EngagementState {
   const movementState = getMovementResolutionState(state);
   if (!movementState.engagementState) {
     throw new Error('No engagement state found in movement resolution');
@@ -36,14 +36,14 @@ export function getEngagementStateFromMovement<TBoard extends Board>(
  */
 export function getFlankEngagementStateFromMovement<TBoard extends Board>(
   state: GameState<TBoard>,
-): EngagementState<TBoard> & {
+): EngagementState & {
   engagementResolutionState: FlankEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
   if (engagementState.engagementResolutionState.engagementType !== 'flank') {
     throw new Error('Engagement type is not flank');
   }
-  return engagementState as EngagementState<TBoard> & {
+  return engagementState as EngagementState & {
     engagementResolutionState: FlankEngagementResolutionState;
   };
 }
@@ -58,14 +58,14 @@ export function getFlankEngagementStateFromMovement<TBoard extends Board>(
  */
 export function getFrontEngagementStateFromMovement<TBoard extends Board>(
   state: GameState<TBoard>,
-): EngagementState<TBoard> & {
+): EngagementState & {
   engagementResolutionState: FrontEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
   if (engagementState.engagementResolutionState.engagementType !== 'front') {
     throw new Error('Engagement type is not front');
   }
-  return engagementState as EngagementState<TBoard> & {
+  return engagementState as EngagementState & {
     engagementResolutionState: FrontEngagementResolutionState;
   };
 }
@@ -80,14 +80,14 @@ export function getFrontEngagementStateFromMovement<TBoard extends Board>(
  */
 export function getRearEngagementStateFromMovement<TBoard extends Board>(
   state: GameState<TBoard>,
-): EngagementState<TBoard> & {
+): EngagementState & {
   engagementResolutionState: RearEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
   if (engagementState.engagementResolutionState.engagementType !== 'rear') {
     throw new Error('Engagement type is not rear');
   }
-  return engagementState as EngagementState<TBoard> & {
+  return engagementState as EngagementState & {
     engagementResolutionState: RearEngagementResolutionState;
   };
 }

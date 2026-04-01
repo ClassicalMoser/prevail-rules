@@ -15,8 +15,8 @@ import {
  * @throws Error if retreat state is missing
  */
 export function getRetreatStateFromAttackApply<TBoard extends Board>(
-  attackApplyState: AttackApplyState<TBoard>,
-): RetreatState<TBoard> {
+  attackApplyState: AttackApplyState,
+): RetreatState {
   if (!attackApplyState.retreatState) {
     throw new Error('No retreat state found in attack apply state');
   }
@@ -33,7 +33,7 @@ export function getRetreatStateFromAttackApply<TBoard extends Board>(
  */
 export function getRetreatStateFromRangedAttack<TBoard extends Board>(
   state: GameState<TBoard>,
-): RetreatState<TBoard> {
+): RetreatState {
   const attackApplyState = getAttackApplyStateFromRangedAttack(state);
   return getRetreatStateFromAttackApply(attackApplyState);
 }
@@ -50,7 +50,7 @@ export function getRetreatStateFromRangedAttack<TBoard extends Board>(
 export function getRetreatStateFromMelee<TBoard extends Board>(
   state: GameState<TBoard>,
   player: 'white' | 'black',
-): RetreatState<TBoard> {
+): RetreatState {
   const attackApplyState = getAttackApplyStateFromMelee(state, player);
   return getRetreatStateFromAttackApply(attackApplyState);
 }
@@ -61,7 +61,7 @@ export function getRetreatStateFromMelee<TBoard extends Board>(
  */
 export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
   state: GameState<TBoard>,
-): RetreatState<TBoard> {
+): RetreatState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const firstPlayerAttackApply =
@@ -105,7 +105,7 @@ export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
 export function findRetreatState<TBoard extends Board>(
   state: GameState<TBoard>,
   player: 'white' | 'black',
-): RetreatState<TBoard> {
+): RetreatState {
   const phaseState = state.currentRoundState.currentPhaseState;
   if (!phaseState) {
     throw new Error('No current phase state found');

@@ -1,4 +1,4 @@
-import type { Board } from '@entities';
+import type { Board, BoardCoordinate } from '@entities';
 import type { StartEngagementEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from '@events';
@@ -31,7 +31,8 @@ export function generateStartEngagementEvent<TBoard extends Board>(
 
   const defenderWithPlacement = getSingleUnitWithPlacementAtCoordinate(
     state.boardState,
-    movementResolutionState.targetPlacement.coordinate,
+    movementResolutionState.targetPlacement
+      .coordinate as BoardCoordinate<TBoard>,
   );
   const defendingFacing = defenderWithPlacement.placement.facing;
 

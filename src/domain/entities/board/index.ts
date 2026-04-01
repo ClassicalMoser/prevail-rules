@@ -16,11 +16,14 @@ export {
 } from './coordinateLayout';
 export type { CoordinateLayout, CoordinateLayoutMap } from './coordinateLayout';
 
-export { largeBoardSchema } from './largeBoard';
+export { largeBoardCoordinateSchema, largeBoardSchema } from './largeBoard';
 export type { LargeBoard, LargeBoardCoordinate } from './largeBoard';
 
-export { smallBoardSchema } from './smallBoard';
+export { smallBoardCoordinateSchema, smallBoardSchema } from './smallBoard';
 export type { SmallBoard, SmallBoardCoordinate } from './smallBoard';
 
-export { standardBoardSchema } from './standardBoard';
+export {
+  standardBoardCoordinateSchema,
+  standardBoardSchema,
+} from './standardBoard';
 export type { StandardBoard, StandardBoardCoordinate } from './standardBoard';

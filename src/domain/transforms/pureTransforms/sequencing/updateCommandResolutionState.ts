@@ -25,7 +25,7 @@ import { updatePhaseState } from '../state';
  */
 export function updateCommandResolutionState<TBoard extends Board>(
   state: GameState<TBoard>,
-  commandResolutionState: CommandResolutionState<TBoard>,
+  commandResolutionState: CommandResolutionState,
 ): GameState<TBoard> {
   const issueCommandsPhaseState = getIssueCommandsPhaseState(state);
 

@@ -32,8 +32,10 @@ export function createUnitWithPlacement(options?: {
   const playerSide = options?.playerSide ?? 'black';
   const unit = createTestUnit(playerSide, options?.unitOptions);
   return {
+    boardType: 'standard' as const,
     unit,
     placement: {
+      boardType: 'standard' as const,
       coordinate: options?.coordinate ?? 'E-5',
       facing: options?.facing ?? 'north',
     },

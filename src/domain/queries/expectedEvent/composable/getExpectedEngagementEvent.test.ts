@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { EngagementState } from '@game';
+import type { StandardEngagementState } from '@game/substeps';
 import {
   createFlankEngagementState,
   createFrontEngagementState,
@@ -265,7 +265,7 @@ describe('getExpectedEngagementEvent', () => {
         ...createFrontEngagementState().engagementResolutionState,
         engagementType: 'invalid',
       } as never,
-    } as EngagementState<StandardBoard>;
+    } as StandardEngagementState;
 
     expect(() =>
       getExpectedEngagementEvent(gameState, engagementState),

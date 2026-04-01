@@ -17,7 +17,7 @@ import {
  */
 export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
   state: GameState<TBoard>,
-): AttackApplyState<TBoard> {
+): AttackApplyState {
   const rangedAttackState = getRangedAttackResolutionState(state);
   if (!rangedAttackState.attackApplyState) {
     throw new Error('No attack apply state found in ranged attack resolution');
@@ -38,7 +38,7 @@ export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
 export function getAttackApplyStateFromMelee<TBoard extends Board>(
   state: GameState<TBoard>,
   player: 'white' | 'black',
-): AttackApplyState<TBoard> {
+): AttackApplyState {
   const meleeState = getMeleeResolutionState(state);
   const attackApplyState =
     player === 'white'
@@ -62,7 +62,7 @@ export function getDefendingPlayerForNextIncompleteMeleeAttackApply<
   TBoard extends Board,
 >(
   gameState: GameState<TBoard>,
-  meleeState: MeleeResolutionState<TBoard>,
+  meleeState: MeleeResolutionState,
 ): PlayerSide | null {
   const firstPlayer = gameState.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);

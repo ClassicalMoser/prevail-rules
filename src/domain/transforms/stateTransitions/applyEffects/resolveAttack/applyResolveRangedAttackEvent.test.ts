@@ -37,8 +37,13 @@ describe('applyResolveRangedAttackEvent', () => {
     }));
     const defender = createTestUnit('white', { attack: 2 });
     const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: defender,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const ranged = createRangedAttackResolutionState(withCards, {
       defendingUnit: defender,
@@ -122,6 +127,7 @@ describe('applyResolveRangedAttackEvent', () => {
   it('given retreated with sole legal E-6 south, retreat finalPosition equals that placement', () => {
     const { full, defenderWithPlacement } = createRangedResolutionFixture();
     const onlyOption = {
+      boardType: 'standard' as const,
       coordinate: 'E-6' as const,
       facing: 'south' as const,
     };
@@ -144,8 +150,8 @@ describe('applyResolveRangedAttackEvent', () => {
     {
       description: 'multiple legal retreats',
       legalRetreatOptions: new Set([
-        { coordinate: 'E-6', facing: 'south' },
-        { coordinate: 'E-4', facing: 'south' },
+        { boardType: 'standard' as const, coordinate: 'E-6', facing: 'south' },
+        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'south' },
       ]),
     },
     {

@@ -24,8 +24,13 @@ describe('updateReverseState', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const stateWithUnit = {
       ...state,
@@ -51,12 +56,22 @@ describe('updateReverseState', () => {
       { attack: 2 },
     );
     const reversingPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: reversingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const otherPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: otherUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     let stateWithUnits = {
       ...state,
@@ -84,11 +99,20 @@ describe('updateReverseState', () => {
     const state = createStateWithRangedAttackReverse();
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const newReverse = createReverseState(placement, {
-      finalPosition: { coordinate: 'E-5', facing: 'south' },
+      finalPosition: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
       completed: true,
     });
 
@@ -116,8 +140,13 @@ describe('updateReverseState', () => {
     const state = createStateWithMeleeReverse('white');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const newReverse = createReverseState(placement, { completed: true });
 
@@ -136,8 +165,13 @@ describe('updateReverseState', () => {
     const state = createStateWithMeleeReverse('black');
     const unit = createTestUnit('black', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const newReverse = createReverseState(placement, { completed: true });
 
@@ -156,8 +190,13 @@ describe('updateReverseState', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const attackApply = createAttackApplyState(unit);
     const phaseState = createIssueCommandsPhaseState(state, {
@@ -180,8 +219,13 @@ describe('updateReverseState', () => {
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
 
     expect(() =>
@@ -197,8 +241,13 @@ describe('updateReverseState', () => {
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
 
     expect(() =>
@@ -213,12 +262,22 @@ describe('updateReverseState', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     const melee = createMeleeResolutionState(state, {
       whiteAttackApplyState: createAttackApplyState(whiteUnit),
@@ -241,12 +300,22 @@ describe('updateReverseState', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: whiteUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const blackPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: blackUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
     const melee = createMeleeResolutionState(state, {
       whiteAttackApplyState: createAttackApplyStateWithReverse(whitePlacement),
@@ -272,8 +341,13 @@ describe('updateReverseState', () => {
     );
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
 
     expect(() =>

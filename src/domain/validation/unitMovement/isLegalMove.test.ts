@@ -15,8 +15,13 @@ describe('isLegalMove', () => {
       const gameState = createEmptyGameState();
       let board = gameState.boardState;
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: unitInstance,
-        placement: { coordinate: 'E-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
+        },
       });
       gameState.boardState = board;
       const moveUnitEvent: MoveUnitEvent<Board> = {
@@ -25,10 +30,19 @@ describe('isLegalMove', () => {
         choiceType: 'moveUnit',
         player: 'black',
         unit: {
+          boardType: 'standard' as const,
           unit: unitInstance,
-          placement: { coordinate: 'E-5', facing: 'north' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-5',
+            facing: 'north',
+          },
         },
-        to: { coordinate: 'E-4', facing: 'north' },
+        to: {
+          boardType: 'standard' as const,
+          coordinate: 'E-4',
+          facing: 'north',
+        },
         moveCommander: false,
       };
       const isLegal = isLegalMove(moveUnitEvent, gameState);
@@ -45,10 +59,19 @@ describe('isLegalMove', () => {
         choiceType: 'moveUnit',
         player: 'black',
         unit: {
+          boardType: 'standard' as const,
           unit: unitInstance,
-          placement: { coordinate: 'E-5', facing: 'north' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-5',
+            facing: 'north',
+          },
         },
-        to: { coordinate: 'E-6', facing: 'north' },
+        to: {
+          boardType: 'standard' as const,
+          coordinate: 'E-6',
+          facing: 'north',
+        },
         moveCommander: false,
       };
       const isLegal = isLegalMove(moveUnitEvent, gameState);

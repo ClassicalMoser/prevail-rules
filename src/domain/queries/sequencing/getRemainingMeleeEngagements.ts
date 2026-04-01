@@ -7,8 +7,8 @@ import type { ResolveMeleePhaseState } from '@game';
  * @param phaseState - Narrowed resolve-melee phase state
  * @returns The remaining engagements set (same reference as on the phase state)
  */
-export function getRemainingMeleeEngagements<TBoard extends Board>(
-  phaseState: ResolveMeleePhaseState<TBoard>,
-): Set<BoardCoordinate<TBoard>> {
-  return phaseState.remainingEngagements;
+export function getRemainingMeleeEngagements(
+  phaseState: ResolveMeleePhaseState,
+): Set<BoardCoordinate<Board>> {
+  return phaseState.remainingEngagements as Set<BoardCoordinate<Board>>;
 }

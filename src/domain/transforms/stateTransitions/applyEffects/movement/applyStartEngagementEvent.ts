@@ -1,6 +1,11 @@
 import type { Board } from '@entities';
 import type { StartEngagementEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState } from '@game';
+import type {
+  GameState,
+  IssueCommandsPhaseState,
+  MovementResolutionState,
+  PhaseState,
+} from '@game';
 import {
   getIssueCommandsPhaseState,
   getMovementResolutionState,
@@ -74,6 +79,7 @@ export function applyStartEngagementEvent<TBoard extends Board>(
   // Create engagement state
   const engagementState = {
     substepType: 'engagementResolution' as const,
+    boardType: movementState.boardType,
     engagingUnit,
     targetPlacement: movementState.targetPlacement,
     engagementResolutionState,
@@ -84,7 +90,7 @@ export function applyStartEngagementEvent<TBoard extends Board>(
   const newMovementState = {
     ...movementState,
     engagementState,
-  };
+  } as MovementResolutionState;
 
   // Update phase state
   const newPhaseState: IssueCommandsPhaseState<TBoard> = {
@@ -92,5 +98,5 @@ export function applyStartEngagementEvent<TBoard extends Board>(
     currentCommandResolutionState: newMovementState,
   };
 
-  return updatePhaseState(state, newPhaseState);
+  return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
 }

@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { ReverseState } from '@game';
+import type { StandardReverseState } from '@game/substeps';
 import {
   createEmptyGameState,
   createGameStateWithEngagedUnits,
@@ -20,16 +20,27 @@ describe('canReverseUnit', () => {
     const stateWithUnit = {
       ...state,
       boardState: addUnitToBoard(state.boardState, {
+        boardType: 'standard' as const,
         unit,
-        placement: { coordinate: 'E-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
+        },
       }),
     };
 
-    const reverseState: ReverseState<StandardBoard> = {
+    const reverseState: StandardReverseState = {
       substepType: 'reverse',
+      boardType: 'standard' as const,
       reversingUnit: {
+        boardType: 'standard' as const,
         unit,
-        placement: { coordinate: 'E-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
+        },
       },
       finalPosition: undefined,
       completed: false,
@@ -48,11 +59,17 @@ describe('canReverseUnit', () => {
       'north',
     );
 
-    const reverseState: ReverseState<StandardBoard> = {
+    const reverseState: StandardReverseState = {
       substepType: 'reverse',
+      boardType: 'standard' as const,
       reversingUnit: {
+        boardType: 'standard' as const,
         unit: primaryUnit,
-        placement: { coordinate: 'E-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
+        },
       },
       finalPosition: undefined,
       completed: false,
@@ -71,11 +88,17 @@ describe('canReverseUnit', () => {
       'north',
     );
 
-    const reverseState: ReverseState<StandardBoard> = {
+    const reverseState: StandardReverseState = {
       substepType: 'reverse',
+      boardType: 'standard' as const,
       reversingUnit: {
+        boardType: 'standard' as const,
         unit: secondaryUnit,
-        placement: { coordinate: 'E-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'south',
+        },
       },
       finalPosition: undefined,
       completed: false,
@@ -88,11 +111,17 @@ describe('canReverseUnit', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState();
 
-    const reverseState: ReverseState<StandardBoard> = {
+    const reverseState: StandardReverseState = {
       substepType: 'reverse',
+      boardType: 'standard' as const,
       reversingUnit: {
+        boardType: 'standard' as const,
         unit,
-        placement: { coordinate: 'E-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
+        },
       },
       finalPosition: undefined,
       completed: false,

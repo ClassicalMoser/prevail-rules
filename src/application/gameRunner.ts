@@ -1,4 +1,4 @@
-import type { Board, GameType } from '@entities';
+import type { GameType, SmallBoard, StandardBoard } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
 import type { EnginePorts, PortResponse } from './ports';
 import type { GameRunner } from './ports/gameRunner';
@@ -17,7 +17,10 @@ export function createGameRunner(ports: EnginePorts): GameRunner {
   const handlePlayerChoiceSubmission = (
     gameId: string,
     gameType: GameType,
-    playerChoice: PlayerChoiceEvent<Board, PlayerChoiceType>,
+    playerChoice: PlayerChoiceEvent<
+      StandardBoard | SmallBoard,
+      PlayerChoiceType
+    >,
   ): Promise<PortResponse<void>> =>
     handlePlayerChoiceSubmissionFunction(gameId, gameType, playerChoice, ports);
 

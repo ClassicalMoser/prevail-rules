@@ -1,30 +1,38 @@
 import type {
-  Board,
   PlayerSide,
   StandardBoard,
   UnitInstance,
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
+import type { RallyResolutionState, RoutState } from '@game';
 import type {
-  RallyResolutionState,
-  RetreatState,
-  ReverseState,
-  RoutState,
-} from '@game';
+  StandardRetreatState,
+  StandardReverseState,
+} from '@game/substeps';
+
 /**
  * Creates a RetreatState with sensible defaults.
  */
 export function createRetreatState(
   unit: UnitWithPlacement<StandardBoard>,
-  overrides?: Partial<RetreatState<StandardBoard>>,
-): RetreatState<StandardBoard> {
+  overrides?: Partial<StandardRetreatState>,
+): StandardRetreatState {
   const legalRetreatOptions = new Set<UnitPlacement<StandardBoard>>([
-    { coordinate: 'E-4' as const, facing: 'north' },
-    { coordinate: 'E-6' as const, facing: 'north' },
+    {
+      boardType: 'standard' as const,
+      coordinate: 'E-4' as const,
+      facing: 'north',
+    },
+    {
+      boardType: 'standard' as const,
+      coordinate: 'E-6' as const,
+      facing: 'north',
+    },
   ]);
   return {
     substepType: 'retreat' as const,
+    boardType: 'standard' as const,
     retreatingUnit: unit,
     legalRetreatOptions,
     finalPosition: undefined,
@@ -56,12 +64,13 @@ export function createRoutState(
 /**
  * Creates a ReverseState with sensible defaults.
  */
-export function createReverseState<TBoard extends Board>(
-  unit: UnitWithPlacement<TBoard>,
-  overrides?: Partial<ReverseState<TBoard>>,
-): ReverseState<TBoard> {
+export function createReverseState(
+  unit: UnitWithPlacement<StandardBoard>,
+  overrides?: Partial<StandardReverseState>,
+): StandardReverseState {
   return {
     substepType: 'reverse',
+    boardType: 'standard' as const,
     reversingUnit: unit,
     finalPosition: undefined,
     completed: false,

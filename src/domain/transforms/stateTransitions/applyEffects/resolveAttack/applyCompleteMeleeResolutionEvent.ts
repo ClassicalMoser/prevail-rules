@@ -20,7 +20,7 @@ export function applyCompleteMeleeResolutionEvent<TBoard extends Board>(
   const phaseState = getResolveMeleePhaseState(state);
 
   // Clear the current melee resolution state
-  const newPhaseState: ResolveMeleePhaseState<TBoard> = {
+  const newPhaseState: ResolveMeleePhaseState = {
     ...phaseState,
     currentMeleeResolutionState: undefined,
   };

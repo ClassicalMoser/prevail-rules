@@ -37,7 +37,7 @@ export function applyCommitToRangedAttackEvent<TBoard extends Board>(
     commitmentType: 'completed' as const,
     card: event.committedCard,
   };
-  const newRangedAttackState: RangedAttackResolutionState<TBoard> = {
+  const newRangedAttackState: RangedAttackResolutionState = {
     ...rangedAttackState,
     ...(isAttackingPlayer
       ? { attackingCommitment: newCommitment }

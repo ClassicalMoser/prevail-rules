@@ -30,7 +30,7 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
   if (event.attackType === 'ranged') {
     const currentAttackApplyState = getAttackApplyStateFromRangedAttack(state);
 
-    const newAttackApplyState: AttackApplyState<TBoard> = {
+    const newAttackApplyState: AttackApplyState = {
       ...currentAttackApplyState,
       completed: true,
     };
@@ -41,7 +41,7 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
   if (event.attackType === 'melee') {
     const current = getAttackApplyStateFromMelee(state, event.defendingPlayer);
 
-    const newAttackApplyState: AttackApplyState<TBoard> = {
+    const newAttackApplyState: AttackApplyState = {
       ...current,
       completed: true,
     };

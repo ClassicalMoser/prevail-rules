@@ -1,4 +1,4 @@
-import type { Board, PlayerSide } from '@entities';
+import type { Board, BoardCoordinate, PlayerSide } from '@entities';
 import type { ExpectedEventInfo } from '@events';
 import type { GameState, MovementResolutionState } from '@game';
 import { getBoardSpace } from '@queries/boardSpace';
@@ -15,7 +15,7 @@ import { getExpectedEngagementEvent } from '../composable';
  */
 export function getExpectedMovementResolutionEvent<TBoard extends Board>(
   gameState: GameState<TBoard>,
-  resolutionState: MovementResolutionState<TBoard>,
+  resolutionState: MovementResolutionState,
   player: PlayerSide,
 ): ExpectedEventInfo<TBoard> {
   // Fast rejection: if already completed, this is an invalid state
@@ -40,7 +40,7 @@ export function getExpectedMovementResolutionEvent<TBoard extends Board>(
   const board = gameState.boardState;
   const targetSpace = getBoardSpace(
     board,
-    resolutionState.targetPlacement.coordinate,
+    resolutionState.targetPlacement.coordinate as BoardCoordinate<TBoard>,
   );
 
   if (hasEnemyUnit(player, targetSpace).result) {

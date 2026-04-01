@@ -24,7 +24,7 @@ export function generateResolveRetreatEvent<TBoard extends Board>(
 ): ResolveRetreatEvent<TBoard, 'resolveRetreat'> {
   const phaseState = getCurrentPhaseState(state);
 
-  let retreatState: RetreatState<TBoard>;
+  let retreatState: RetreatState;
   if (phaseState.phase === 'issueCommands') {
     retreatState = getRetreatStateFromRangedAttack(state);
   } else if (phaseState.phase === 'resolveMelee') {
@@ -43,6 +43,7 @@ export function generateResolveRetreatEvent<TBoard extends Board>(
     eventNumber,
     startingPosition: retreatState.retreatingUnit,
     finalPosition: {
+      boardType: retreatState.retreatingUnit.boardType,
       unit: retreatState.retreatingUnit.unit,
       placement: finalPlacement,
     },

@@ -147,6 +147,7 @@ export function exploreUnitMoves<TBoard extends Board>(
         // Explore each new facing.
         for (const newFacing of newFacings) {
           const newPlacement: UnitPlacement<TBoard> = {
+            boardType: board.boardType,
             coordinate: currentCoordinate,
             facing: newFacing,
           };
@@ -165,7 +166,11 @@ export function exploreUnitMoves<TBoard extends Board>(
           // Retreats cannot end in the initial position.
           // Regardless, the initial position will always continue exploring.
           explore(
-            { coordinate: currentCoordinate, facing: newFacing },
+            {
+              boardType: board.boardType,
+              coordinate: currentCoordinate,
+              facing: newFacing,
+            },
             remainingSpeed,
             remainingFlexibility - 1,
             false,
@@ -231,6 +236,7 @@ export function exploreUnitMoves<TBoard extends Board>(
         // If we can move into the space, we add it to the results.
         if (isLegalEnd) {
           const newPlacement: UnitPlacement<TBoard> = {
+            boardType: board.boardType,
             coordinate: nextCoordinate,
             facing: currentFacing,
           };
@@ -261,7 +267,11 @@ export function exploreUnitMoves<TBoard extends Board>(
         // If we can move through, we should keep exploring.
         if (shouldContinueExploring) {
           explore(
-            { coordinate: nextCoordinate, facing: currentFacing },
+            {
+              boardType: board.boardType,
+              coordinate: nextCoordinate,
+              facing: currentFacing,
+            },
             remainingSpeed - 1,
             remainingFlexibility,
             false,
@@ -284,6 +294,7 @@ export function exploreUnitMoves<TBoard extends Board>(
                 );
                 if (canMoveIntoNewFacing) {
                   const newPlacement: UnitPlacement<TBoard> = {
+                    boardType: board.boardType,
                     coordinate: nextCoordinate,
                     facing: newFacing,
                   };
@@ -300,7 +311,11 @@ export function exploreUnitMoves<TBoard extends Board>(
                 }
                 // Explore the new space with the new facings.
                 explore(
-                  { coordinate: nextCoordinate, facing: newFacing },
+                  {
+                    boardType: board.boardType,
+                    coordinate: nextCoordinate,
+                    facing: newFacing,
+                  },
                   remainingSpeed - 1,
                   remainingFlexibility - 1,
                   false,

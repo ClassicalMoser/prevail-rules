@@ -28,8 +28,13 @@ describe('applyResolveRetreatEvent', () => {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: retreatingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
 
     // Add unit to board
@@ -63,12 +68,22 @@ describe('applyResolveRetreatEvent', () => {
     );
 
     const retreatingUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: retreatingUnit,
-      placement: { coordinate: 'E-5', facing: 'north' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
     };
     const otherUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: otherUnit,
-      placement: { coordinate: 'E-5', facing: 'south' },
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
+      },
     };
 
     // Add both units to board (engaged)
@@ -111,8 +126,13 @@ describe('applyResolveRetreatEvent', () => {
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
         finalPosition: {
+          boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
-          placement: { coordinate: 'E-4', facing: 'north' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-4',
+            facing: 'north',
+          },
         },
       };
 
@@ -143,8 +163,13 @@ describe('applyResolveRetreatEvent', () => {
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
         finalPosition: {
+          boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
-          placement: { coordinate: 'E-4', facing: 'north' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-4',
+            facing: 'north',
+          },
         },
       };
 
@@ -163,8 +188,13 @@ describe('applyResolveRetreatEvent', () => {
       const stateWithOtherUnit = {
         ...state,
         boardState: addUnitToBoard(state.boardState, {
+          boardType: 'standard' as const,
           unit: otherUnit,
-          placement: { coordinate: 'D-5', facing: 'north' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'D-5',
+            facing: 'north',
+          },
         }),
       };
 
@@ -174,8 +204,13 @@ describe('applyResolveRetreatEvent', () => {
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
         finalPosition: {
+          boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
-          placement: { coordinate: 'E-4', facing: 'north' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-4',
+            facing: 'north',
+          },
         },
       };
 
@@ -201,8 +236,13 @@ describe('applyResolveRetreatEvent', () => {
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
         finalPosition: {
+          boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
-          placement: { coordinate: 'E-4', facing: 'north' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-4',
+            facing: 'north',
+          },
         },
       };
 
@@ -228,8 +268,13 @@ describe('applyResolveRetreatEvent', () => {
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
         finalPosition: {
+          boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
-          placement: { coordinate: 'E-6', facing: 'south' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-6',
+            facing: 'south',
+          },
         },
       };
 
@@ -259,8 +304,13 @@ describe('applyResolveRetreatEvent', () => {
         effectType: 'resolveRetreat',
         startingPosition: retreatState.retreatingUnit,
         finalPosition: {
+          boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
-          placement: { coordinate: 'E-4', facing: 'north' },
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-4',
+            facing: 'north',
+          },
         },
       };
 

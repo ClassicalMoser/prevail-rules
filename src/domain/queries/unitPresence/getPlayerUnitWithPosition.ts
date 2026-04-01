@@ -57,8 +57,10 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
   if (hasSingleUnit(unitPresence)) {
     if (isFriendlyUnit(unitPresence.unit, playerSide)) {
       return {
+        boardType: board.boardType,
         unit: unitPresence.unit,
         placement: {
+          boardType: board.boardType,
           coordinate,
           facing: unitPresence.facing,
         },
@@ -74,8 +76,10 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
     // Check primary unit first
     if (isFriendlyUnit(unitPresence.primaryUnit, playerSide)) {
       return {
+        boardType: board.boardType,
         unit: unitPresence.primaryUnit,
         placement: {
+          boardType: board.boardType,
           coordinate,
           facing: unitPresence.primaryFacing,
         },
@@ -85,8 +89,10 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
     // (There are only two sides, and friendly units cannot engage each other)
     else {
       return {
+        boardType: board.boardType,
         unit: unitPresence.secondaryUnit,
         placement: {
+          boardType: board.boardType,
           coordinate,
           facing: getOppositeFacing(unitPresence.primaryFacing),
         },

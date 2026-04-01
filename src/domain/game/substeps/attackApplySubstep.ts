@@ -1,14 +1,35 @@
-import type { Board, UnitInstance } from '@entities';
+import type {
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+  UnitInstance,
+} from '@entities';
 import type { AttackResult } from '@game/attackResult';
 import type { AssertExact } from '@utils';
-import type { RetreatState } from './retreatSubstep';
-import type { ReverseState } from './reverseSubstep';
+import type {
+  LargeRetreatState,
+  SmallRetreatState,
+  StandardRetreatState,
+} from './retreatSubstep';
+import type {
+  LargeReverseState,
+  SmallReverseState,
+  StandardReverseState,
+} from './reverseSubstep';
 import type { RoutState } from './routSubstep';
 import { unitInstanceSchema } from '@entities';
 import { attackResultSchema } from '@game/attackResult';
 import { z } from 'zod';
-import { retreatStateSchema } from './retreatSubstep';
-import { reverseStateSchema } from './reverseSubstep';
+import {
+  largeRetreatStateSchema,
+  smallRetreatStateSchema,
+  standardRetreatStateSchema,
+} from './retreatSubstep';
+import {
+  largeReverseStateSchema,
+  smallReverseStateSchema,
+  standardReverseStateSchema,
+} from './reverseSubstep';
 import { routStateSchema } from './routSubstep';
 
 /**
@@ -26,7 +47,7 @@ import { routStateSchema } from './routSubstep';
  * The expected event query `getExpectedAttackApplyEvent()` is composable and
  * can be called from any parent context that contains this state.
  */
-export interface AttackApplyState<TBoard extends Board> {
+export interface AttackApplyStateBase {
   /** The type of the substep. */
   substepType: 'attackApply';
   /** The unit that is being attacked. */
@@ -35,47 +56,122 @@ export interface AttackApplyState<TBoard extends Board> {
   attackResult: AttackResult;
   /** The state of the rout. */
   routState: RoutState | undefined;
-  /** The state of the retreat. */
-  retreatState: RetreatState<TBoard> | undefined;
-  /** The state of the reverse. */
-  reverseState: ReverseState<TBoard> | undefined;
   /** Whether the attack apply substep is complete. */
   completed: boolean;
 }
 
-/** The schema for the state of the attack apply substep. */
-const _attackApplyStateSchemaObject = z.object({
-  /** The type of the substep. */
+/** Attack apply on a standard board. */
+export interface StandardAttackApplyState extends AttackApplyStateBase {
+  boardType: 'standard';
+  retreatState: StandardRetreatState | undefined;
+  reverseState: StandardReverseState | undefined;
+}
+
+/** Attack apply on a small board. */
+export interface SmallAttackApplyState extends AttackApplyStateBase {
+  boardType: 'small';
+  retreatState: SmallRetreatState | undefined;
+  reverseState: SmallReverseState | undefined;
+}
+
+/** Attack apply on a large board. */
+export interface LargeAttackApplyState extends AttackApplyStateBase {
+  boardType: 'large';
+  retreatState: LargeRetreatState | undefined;
+  reverseState: LargeReverseState | undefined;
+}
+
+/** Attack apply for any board size (discriminated on `boardType`). */
+export type AttackApplyState =
+  | StandardAttackApplyState
+  | SmallAttackApplyState
+  | LargeAttackApplyState;
+
+// ---------------------------------------------------------------------------
+// Per-variant Zod schemas
+// ---------------------------------------------------------------------------
+
+const _standardAttackApplyStateSchemaObject = z.object({
   substepType: z.literal('attackApply'),
-  /** The unit that is being attacked. */
+  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
   defendingUnit: unitInstanceSchema,
-  /** The result of the attack. */
   attackResult: attackResultSchema,
-  /** The state of the rout. */
   routState: routStateSchema.or(z.undefined()),
-  /** The state of the retreat. */
-  retreatState: retreatStateSchema.or(z.undefined()),
-  /** The state of the reverse. */
-  reverseState: reverseStateSchema.or(z.undefined()),
-  /** Whether the attack apply substep is complete. */
+  retreatState: standardRetreatStateSchema.or(z.undefined()),
+  reverseState: standardReverseStateSchema.or(z.undefined()),
   completed: z.boolean(),
 });
 
-type AttackApplyStateSchemaType = z.infer<typeof _attackApplyStateSchemaObject>;
+type StandardAttackApplyStateSchemaType = z.infer<
+  typeof _standardAttackApplyStateSchemaObject
+>;
 
-/** The schema for the state of the attack apply substep. */
-export const attackApplyStateSchema: z.ZodObject<{
-  substepType: z.ZodLiteral<'attackApply'>;
-  defendingUnit: z.ZodType<UnitInstance>;
-  attackResult: z.ZodType<AttackResult>;
-  routState: z.ZodType<RoutState | undefined>;
-  retreatState: z.ZodType<RetreatState<Board> | undefined>;
-  reverseState: z.ZodType<ReverseState<Board> | undefined>;
-  completed: z.ZodType<boolean>;
-}> = _attackApplyStateSchemaObject;
-
-// Assert that the attack apply state is exact.
-const _assertExactAttackApplyState: AssertExact<
-  AttackApplyState<Board>,
-  AttackApplyStateSchemaType
+const _assertExactStandardAttackApplyState: AssertExact<
+  StandardAttackApplyState,
+  StandardAttackApplyStateSchemaType
 > = true;
+
+export const standardAttackApplyStateSchema: z.ZodType<StandardAttackApplyState> =
+  _standardAttackApplyStateSchemaObject;
+
+const _smallAttackApplyStateSchemaObject = z.object({
+  substepType: z.literal('attackApply'),
+  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  defendingUnit: unitInstanceSchema,
+  attackResult: attackResultSchema,
+  routState: routStateSchema.or(z.undefined()),
+  retreatState: smallRetreatStateSchema.or(z.undefined()),
+  reverseState: smallReverseStateSchema.or(z.undefined()),
+  completed: z.boolean(),
+});
+
+type SmallAttackApplyStateSchemaType = z.infer<
+  typeof _smallAttackApplyStateSchemaObject
+>;
+
+const _assertExactSmallAttackApplyState: AssertExact<
+  SmallAttackApplyState,
+  SmallAttackApplyStateSchemaType
+> = true;
+
+export const smallAttackApplyStateSchema: z.ZodType<SmallAttackApplyState> =
+  _smallAttackApplyStateSchemaObject;
+
+const _largeAttackApplyStateSchemaObject = z.object({
+  substepType: z.literal('attackApply'),
+  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  defendingUnit: unitInstanceSchema,
+  attackResult: attackResultSchema,
+  routState: routStateSchema.or(z.undefined()),
+  retreatState: largeRetreatStateSchema.or(z.undefined()),
+  reverseState: largeReverseStateSchema.or(z.undefined()),
+  completed: z.boolean(),
+});
+
+type LargeAttackApplyStateSchemaType = z.infer<
+  typeof _largeAttackApplyStateSchemaObject
+>;
+
+const _assertExactLargeAttackApplyState: AssertExact<
+  LargeAttackApplyState,
+  LargeAttackApplyStateSchemaType
+> = true;
+
+export const largeAttackApplyStateSchema: z.ZodType<LargeAttackApplyState> =
+  _largeAttackApplyStateSchemaObject;
+
+// ---------------------------------------------------------------------------
+// Wide union schema
+// ---------------------------------------------------------------------------
+
+const _attackApplyStateSchemaObject = z.discriminatedUnion('boardType', [
+  _standardAttackApplyStateSchemaObject,
+  _smallAttackApplyStateSchemaObject,
+  _largeAttackApplyStateSchemaObject,
+]);
+
+/**
+ * Schema for attack-apply state (any board). Per-variant AssertExact above; wide union not asserted.
+ */
+export const attackApplyStateSchema: z.ZodType<AttackApplyState> =
+  _attackApplyStateSchemaObject;

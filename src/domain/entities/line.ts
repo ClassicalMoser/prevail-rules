@@ -1,4 +1,5 @@
 import type { AssertExact } from '@utils';
+import type { Board } from './board';
 import type { UnitWithPlacement } from './unitLocation';
 import { z } from 'zod';
 import { unitWithPlacementSchema } from './unitLocation';
@@ -8,7 +9,7 @@ import { unitWithPlacementSchema } from './unitLocation';
  * and facing the same or opposite direction.
  */
 export interface Line {
-  unitPlacements: UnitWithPlacement<any>[];
+  unitPlacements: UnitWithPlacement<Board>[];
 }
 
 const _lineSchemaObject = z.object({

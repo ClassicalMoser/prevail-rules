@@ -27,8 +27,10 @@ describe('applyResolveFlankEngagementEvent', () => {
     const defender = createTestUnit('white');
     const flank = createFlankEngagementState();
     const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
       unit: defender,
       placement: {
+        boardType: 'standard' as const,
         coordinate: flank.targetPlacement.coordinate,
         facing: 'east',
       },

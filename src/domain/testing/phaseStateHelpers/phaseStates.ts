@@ -5,8 +5,8 @@ import type {
   IssueCommandsPhaseState,
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
-  ResolveMeleePhaseState,
 } from '@game';
+import type { StandardResolveMeleePhaseState } from '@game/phases/resolveMeleePhase';
 import {
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,
@@ -66,10 +66,11 @@ export function createIssueCommandsPhaseState(
  */
 export function createResolveMeleePhaseState(
   state: GameState<StandardBoard>,
-  overrides?: Partial<ResolveMeleePhaseState<StandardBoard>>,
-): ResolveMeleePhaseState<StandardBoard> {
+  overrides?: Partial<StandardResolveMeleePhaseState>,
+): StandardResolveMeleePhaseState {
   return {
     phase: RESOLVE_MELEE_PHASE,
+    boardType: 'standard' as const,
     step: 'resolveMelee',
     currentMeleeResolutionState: createMeleeResolutionState(state),
     remainingEngagements: new Set(),

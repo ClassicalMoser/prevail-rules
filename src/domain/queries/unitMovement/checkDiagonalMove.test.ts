@@ -60,18 +60,33 @@ describe('checkDiagonalMove', () => {
 
       // Add engaged units at D-5 (first unit, then second with opposite facing creates engagement)
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('black', { speed: 2 }),
-        placement: { coordinate: 'D-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'D-5',
+          facing: 'north',
+        },
       });
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('white', { speed: 2 }),
-        placement: { coordinate: 'D-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'D-5',
+          facing: 'south',
+        },
       });
 
       // Add unit under test at E-5
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('black', { speed: 2, instanceNumber: 3 }),
-        placement: { coordinate: 'E-5', facing: 'northEast' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'northEast',
+        },
       });
 
       const gameState = createEmptyGameState();
@@ -86,28 +101,53 @@ describe('checkDiagonalMove', () => {
 
       // Add engaged units at D-5 (first unit, then second with opposite facing creates engagement)
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('black', { speed: 2 }),
-        placement: { coordinate: 'D-5', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'D-5',
+          facing: 'north',
+        },
       });
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('white', { speed: 2 }),
-        placement: { coordinate: 'D-5', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'D-5',
+          facing: 'south',
+        },
       });
 
       // Add engaged units at E-6
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('black', { speed: 2, instanceNumber: 2 }),
-        placement: { coordinate: 'E-6', facing: 'north' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-6',
+          facing: 'north',
+        },
       });
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('white', { speed: 2, instanceNumber: 2 }),
-        placement: { coordinate: 'E-6', facing: 'south' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-6',
+          facing: 'south',
+        },
       });
 
       // Add unit under test at E-5
       board = addUnitToBoard(board, {
+        boardType: 'standard' as const,
         unit: createTestUnit('black', { speed: 2, instanceNumber: 3 }),
-        placement: { coordinate: 'E-5', facing: 'northEast' },
+        placement: {
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'northEast',
+        },
       });
 
       const gameState = createEmptyGameState();

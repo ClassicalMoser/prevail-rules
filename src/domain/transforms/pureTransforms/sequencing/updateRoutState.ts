@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameState, RoutState } from '@game';
+import type { GameState, PhaseState, RoutState } from '@game';
 import {
   getCleanupPhaseState,
   getCurrentPhaseState,
@@ -46,7 +46,7 @@ export function updateRoutState<TBoard extends Board>(
           ...ranged,
           attackApplyState: { ...attackApply, routState },
         },
-      });
+      } as PhaseState<TBoard>);
     }
 
     if (commandState?.commandResolutionType === 'movement') {
@@ -72,7 +72,7 @@ export function updateRoutState<TBoard extends Board>(
               },
             },
           },
-        });
+        } as PhaseState<TBoard>);
       }
     }
 
@@ -97,7 +97,7 @@ export function updateRoutState<TBoard extends Board>(
           ...melee,
           whiteAttackApplyState: { ...whiteApply, routState },
         },
-      });
+      } as PhaseState<TBoard>);
     }
 
     const blackApply = melee.blackAttackApplyState;
@@ -110,7 +110,7 @@ export function updateRoutState<TBoard extends Board>(
         ...melee,
         blackAttackApplyState: { ...blackApply, routState },
       },
-    });
+    } as PhaseState<TBoard>);
   }
 
   if (phaseState.phase === 'cleanup') {
@@ -128,7 +128,7 @@ export function updateRoutState<TBoard extends Board>(
       newRallyState,
       cleanupPhaseState.step,
     );
-    return updatePhaseState(state, newPhaseState);
+    return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
   }
 
   throw new Error(

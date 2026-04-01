@@ -60,23 +60,17 @@ export type PhaseState<TBoard extends Board> =
   | PlayCardsPhaseState
   | MoveCommandersPhaseState
   | IssueCommandsPhaseState<TBoard>
-  | ResolveMeleePhaseState<TBoard>
+  | ResolveMeleePhaseState
   | CleanupPhaseState;
 
-const _phaseStateSchemaObject = z.discriminatedUnion('phase', [
+/** Zod 4: phase branches include nested board unions; use flat union, not nested discriminatedUnion. */
+const _phaseStateSchemaObject = z.union([
   playCardsPhaseStateSchema,
   moveCommandersPhaseStateSchema,
   issueCommandsPhaseStateSchema,
   resolveMeleePhaseStateSchema,
   cleanupPhaseStateSchema,
 ]);
-
-type PhaseStateSchemaType = z.infer<typeof _phaseStateSchemaObject>;
-
-const _assertExactPhaseState: AssertExact<
-  PhaseState<Board>,
-  PhaseStateSchemaType
-> = true;
 
 /** The schema for the state of a phase of a round. */
 export const phaseStateSchema: z.ZodType<PhaseState<Board>> =

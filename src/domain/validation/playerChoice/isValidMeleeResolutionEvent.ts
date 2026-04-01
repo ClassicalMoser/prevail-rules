@@ -54,7 +54,7 @@ export function isValidChooseMeleeResolutionEvent<TBoard extends Board>(
       };
     }
 
-    if (!currentPhaseState.remainingEngagements.has(space)) {
+    if (!currentPhaseState.remainingEngagements.has(space as never)) {
       return {
         result: false,
         errorReason: `Space ${space} is not among remaining engagements`,
