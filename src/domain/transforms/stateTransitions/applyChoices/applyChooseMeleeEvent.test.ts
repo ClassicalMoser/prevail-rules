@@ -34,6 +34,7 @@ describe('applyChooseMeleeEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseMeleeResolution',
+      boardType: 'standard',
       player: 'black',
       space: 'E-5',
     };
@@ -54,6 +55,7 @@ describe('applyChooseMeleeEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseMeleeResolution',
+      boardType: 'standard',
       player: 'white',
       space: 'E-6',
     };

@@ -132,7 +132,8 @@ export type GameEffectEvent<
   TGameEffectType extends GameEffectType,
 > = Extract<GameEffectEventUnion<TBoard>, { effectType: TGameEffectType }>;
 
-const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
+/** `z.union`: Layer 3 spatial effects use inner `z.union` of `boardType` variants (Zod 4). */
+const _gameEffectEventSchemaObject = z.union([
   completeAttackApplyEventSchema,
   completeCleanupPhaseEventSchema,
   completeIssueCommandsPhaseEventSchema,

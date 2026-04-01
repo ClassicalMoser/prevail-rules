@@ -44,7 +44,10 @@ export function applyGameEffectEvent<TBoard extends Board>(
     case 'completeCleanupPhase':
       return applyCompleteCleanupPhaseEvent(event, state);
     case 'completeIssueCommandsPhase':
-      return applyCompleteIssueCommandsPhaseEvent(event, state);
+      return applyCompleteIssueCommandsPhaseEvent(
+        event,
+        state,
+      ) as GameState<TBoard>;
     case 'completeMeleeResolution':
       return applyCompleteMeleeResolutionEvent(event, state);
     case 'completeMoveCommandersPhase':
@@ -68,21 +71,24 @@ export function applyGameEffectEvent<TBoard extends Board>(
     case 'revealCards':
       return applyRevealCardsEvent(event, state);
     case 'resolveMelee':
-      return applyResolveMeleeEvent(event, state);
+      return applyResolveMeleeEvent(event, state) as GameState<TBoard>;
     case 'resolveRangedAttack':
-      return applyResolveRangedAttackEvent(event, state);
+      return applyResolveRangedAttackEvent(event, state) as GameState<TBoard>;
     case 'resolveRetreat':
-      return applyResolveRetreatEvent(event, state);
+      return applyResolveRetreatEvent(event, state) as GameState<TBoard>;
     case 'resolveReverse':
-      return applyResolveReverseEvent(event, state);
+      return applyResolveReverseEvent(event, state) as GameState<TBoard>;
     case 'resolveRout':
       return applyResolveRoutEvent(event, state);
     case 'resolveEngageRetreatOption':
       return applyResolveEngageRetreatOptionEvent(event, state);
     case 'resolveFlankEngagement':
-      return applyResolveFlankEngagementEvent(event, state);
+      return applyResolveFlankEngagementEvent(
+        event,
+        state,
+      ) as GameState<TBoard>;
     case 'startEngagement':
-      return applyStartEngagementEvent(event, state);
+      return applyStartEngagementEvent(event, state) as GameState<TBoard>;
     case 'triggerRoutFromRetreat':
       return applyTriggerRoutFromRetreatEvent(event, state);
     default: {

@@ -39,14 +39,17 @@ export function generateStartEngagementEvent<TBoard extends Board>(
   // Check engagement type in priority order: rear, flank, front
   // Rear is most severe, so check it first
   const rearCheck = isEngagementFromRear(engagingFacing, defendingFacing);
+  const boardType = state.boardState.boardType;
+
   if (rearCheck.result) {
     return {
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       eventNumber,
       engagementType: 'rear',
+      boardType,
       defenderWithPlacement,
-    };
+    } as unknown as StartEngagementEvent<TBoard, 'startEngagement'>;
   }
 
   const flankCheck = isEngagementFromFlank(engagingFacing, defendingFacing);
@@ -56,8 +59,9 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       eventNumber,
       engagementType: 'flank',
+      boardType,
       defenderWithPlacement,
-    };
+    } as unknown as StartEngagementEvent<TBoard, 'startEngagement'>;
   }
 
   const frontCheck = isEngagementFromFront(engagingFacing, defendingFacing);
@@ -67,8 +71,9 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       eventNumber,
       engagementType: 'front',
+      boardType,
       defenderWithPlacement,
-    };
+    } as unknown as StartEngagementEvent<TBoard, 'startEngagement'>;
   }
 
   // If none of the checks passed, this is an invalid state

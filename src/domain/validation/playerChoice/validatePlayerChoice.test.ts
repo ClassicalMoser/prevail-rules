@@ -131,6 +131,7 @@ describe('validatePlayerChoice', () => {
     const event = {
       eventType: 'playerChoice' as const,
       choiceType: 'moveCommander' as const,
+      boardType: 'standard' as const,
       eventNumber: 0,
       player: 'black' as const,
       from: 'E-5' as const,

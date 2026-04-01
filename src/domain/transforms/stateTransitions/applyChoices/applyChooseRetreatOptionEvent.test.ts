@@ -62,6 +62,7 @@ describe('applyChooseRetreatOptionEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRetreatOption',
+      boardType: 'standard',
       player: 'white',
       retreatOption: chosenPosition,
     };
@@ -126,6 +127,7 @@ describe('applyChooseRetreatOptionEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRetreatOption',
+      boardType: 'standard',
       player: 'white',
       retreatOption: chosenPosition,
     };
@@ -142,6 +144,7 @@ describe('applyChooseRetreatOptionEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRetreatOption',
+      boardType: 'standard',
       player: 'black',
       retreatOption: chosenPosition,
     };
@@ -164,6 +167,7 @@ describe('applyChooseRetreatOptionEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'chooseRetreatOption',
+      boardType: 'standard',
       player: 'white',
       retreatOption: chosenPosition,
     };

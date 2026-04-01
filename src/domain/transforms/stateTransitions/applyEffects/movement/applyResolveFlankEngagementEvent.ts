@@ -37,17 +37,17 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
 
   const removedUnitBoard = removeUnitFromBoard<TBoard>(
     state.boardState,
-    event.defenderWithPlacement,
+    event.defenderWithPlacement as UnitWithPlacement<TBoard>,
   );
 
-  const newUnitWithPlacement: UnitWithPlacement<TBoard> = {
+  const newUnitWithPlacement = {
     boardType: event.defenderWithPlacement.boardType,
     unit,
     placement: {
       ...placement,
       facing: event.newFacing,
     },
-  };
+  } as UnitWithPlacement<TBoard>;
   const updatedBoard = addUnitToBoard<TBoard>(
     removedUnitBoard,
     newUnitWithPlacement,

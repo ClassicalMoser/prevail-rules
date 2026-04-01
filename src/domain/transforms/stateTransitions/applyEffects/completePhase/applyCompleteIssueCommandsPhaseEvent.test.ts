@@ -19,6 +19,7 @@ function issueCommandsCompleteEvent(
     eventNumber: 0,
     eventType: 'gameEffect',
     effectType: 'completeIssueCommandsPhase',
+    boardType: 'standard',
     remainingEngagements,
   };
 }

@@ -28,6 +28,7 @@ describe('isLegalMove', () => {
         eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'moveUnit',
+        boardType: 'standard',
         player: 'black',
         unit: {
           boardType: 'standard' as const,
@@ -57,6 +58,7 @@ describe('isLegalMove', () => {
         eventNumber: 0,
         eventType: 'playerChoice',
         choiceType: 'moveUnit',
+        boardType: 'standard',
         player: 'black',
         unit: {
           boardType: 'standard' as const,

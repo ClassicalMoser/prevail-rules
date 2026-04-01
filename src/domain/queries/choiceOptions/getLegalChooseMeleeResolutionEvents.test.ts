@@ -51,6 +51,7 @@ describe('getLegalChooseMeleeResolutionEvents', () => {
       expect(o).toEqual({
         eventType: PLAYER_CHOICE_EVENT_TYPE,
         choiceType: 'chooseMeleeResolution',
+        boardType: 'standard',
         eventNumber: 0,
         player: 'white',
         space: o.space,

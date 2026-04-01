@@ -1,4 +1,8 @@
-import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type {
+  StandardBoard,
+  StandardUnitWithPlacement,
+  UnitWithPlacement,
+} from '@entities';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -139,8 +143,9 @@ describe('applyResolveReverseEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        boardType: 'standard',
         attackResolutionContext: 'rangedAttack',
-        unitInstance: reverseState.reversingUnit,
+        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
         newUnitPlacement: newPlacement,
       };
 
@@ -175,8 +180,9 @@ describe('applyResolveReverseEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        boardType: 'standard',
         attackResolutionContext: 'rangedAttack',
-        unitInstance: reverseState.reversingUnit,
+        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
         newUnitPlacement: newPlacement,
       };
 
@@ -223,8 +229,9 @@ describe('applyResolveReverseEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        boardType: 'standard',
         attackResolutionContext: 'rangedAttack',
-        unitInstance: reverseState.reversingUnit,
+        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
         newUnitPlacement: newPlacement,
       };
 
@@ -259,8 +266,9 @@ describe('applyResolveReverseEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        boardType: 'standard',
         attackResolutionContext: 'melee',
-        unitInstance: reverseState.reversingUnit,
+        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
         newUnitPlacement: newPlacement,
       };
 
@@ -298,8 +306,9 @@ describe('applyResolveReverseEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        boardType: 'standard',
         attackResolutionContext: 'melee',
-        unitInstance: reverseState.reversingUnit,
+        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
         newUnitPlacement: newPlacement,
       };
 
@@ -338,8 +347,9 @@ describe('applyResolveReverseEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveReverse',
+        boardType: 'standard',
         attackResolutionContext: 'rangedAttack',
-        unitInstance: reverseState.reversingUnit,
+        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
         newUnitPlacement: newPlacement,
       };
 

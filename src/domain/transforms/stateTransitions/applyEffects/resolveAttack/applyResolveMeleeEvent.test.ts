@@ -73,6 +73,7 @@ describe('applyResolveMeleeEvent', () => {
       eventNumber: 0,
       eventType: 'gameEffect',
       effectType: 'resolveMelee',
+      boardType: 'standard',
       location: 'E-5',
       whiteUnitWithPlacement: placements.whiteUnitWithPlacement,
       blackUnitWithPlacement: placements.blackUnitWithPlacement,

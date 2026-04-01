@@ -37,8 +37,9 @@ export function getLegalChooseMeleeResolutionEvents<TBoard extends Board>(
       choiceType: 'chooseMeleeResolution',
       eventNumber,
       player: activePlayer,
+      boardType: phaseState.boardType,
       space: engagementCoordinate as BoardCoordinate<TBoard>,
-    });
+    } as unknown as ChooseMeleeResolutionEvent<TBoard>);
   }
 
   // If there are no legal choose melee resolution events,

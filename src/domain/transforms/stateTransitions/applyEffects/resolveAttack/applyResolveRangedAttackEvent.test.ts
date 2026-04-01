@@ -74,6 +74,7 @@ describe('applyResolveRangedAttackEvent', () => {
       eventNumber: 0,
       eventType: 'gameEffect',
       effectType: 'resolveRangedAttack',
+      boardType: 'standard',
       defenderWithPlacement,
       routed: false,
       retreated: false,

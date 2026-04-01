@@ -56,10 +56,10 @@ export type PlayerChoiceEvent<
   | SetupUnitsEvent<TBoard, 'setupUnits'>;
 
 /**
- * Discriminated by `choiceType`. Zod 4 resolves the branch via `input["choiceType"]`; object key
- * order in each branch schema does not need to match declaration order.
+ * `z.union` (not `discriminatedUnion` on `choiceType`): Layer 3 spatial choices use `z.union` of
+ * `boardType` branches; nested unions are not composable as DU members under Zod 4.
  */
-const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
+const _playerChoiceEventSchemaObject = z.union([
   chooseCardEventSchema,
   chooseMeleeResolutionEventSchema,
   chooseRallyEventSchema,

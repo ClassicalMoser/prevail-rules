@@ -1,4 +1,8 @@
-import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type {
+  StandardBoard,
+  StandardUnitWithPlacement,
+  UnitWithPlacement,
+} from '@entities';
 import type { ResolveRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -124,7 +128,9 @@ describe('applyResolveRetreatEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
-        startingPosition: retreatState.retreatingUnit,
+        boardType: 'standard',
+        startingPosition:
+          retreatState.retreatingUnit as StandardUnitWithPlacement,
         finalPosition: {
           boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
@@ -161,7 +167,9 @@ describe('applyResolveRetreatEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
-        startingPosition: retreatState.retreatingUnit,
+        boardType: 'standard',
+        startingPosition:
+          retreatState.retreatingUnit as StandardUnitWithPlacement,
         finalPosition: {
           boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
@@ -202,7 +210,9 @@ describe('applyResolveRetreatEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
-        startingPosition: retreatState.retreatingUnit,
+        boardType: 'standard',
+        startingPosition:
+          retreatState.retreatingUnit as StandardUnitWithPlacement,
         finalPosition: {
           boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
@@ -234,7 +244,9 @@ describe('applyResolveRetreatEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
-        startingPosition: retreatState.retreatingUnit,
+        boardType: 'standard',
+        startingPosition:
+          retreatState.retreatingUnit as StandardUnitWithPlacement,
         finalPosition: {
           boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
@@ -266,7 +278,9 @@ describe('applyResolveRetreatEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
-        startingPosition: retreatState.retreatingUnit,
+        boardType: 'standard',
+        startingPosition:
+          retreatState.retreatingUnit as StandardUnitWithPlacement,
         finalPosition: {
           boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,
@@ -302,7 +316,9 @@ describe('applyResolveRetreatEvent', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         effectType: 'resolveRetreat',
-        startingPosition: retreatState.retreatingUnit,
+        boardType: 'standard',
+        startingPosition:
+          retreatState.retreatingUnit as StandardUnitWithPlacement,
         finalPosition: {
           boardType: 'standard' as const,
           unit: retreatState.retreatingUnit.unit,

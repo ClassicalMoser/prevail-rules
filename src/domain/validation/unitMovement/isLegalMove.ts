@@ -17,7 +17,7 @@ export function isLegalMove<TBoard extends Board>(
   // Get the move unit event
   const { unit, to } = moveUnitEvent;
   try {
-    const unitWithPlacement: UnitWithPlacement<TBoard> = unit;
+    const unitWithPlacement = unit as UnitWithPlacement<TBoard>;
     const legalMoves = getLegalUnitMoves(unitWithPlacement, gameState);
     // Set.has() uses reference equality, so we need to check by value
     return [...legalMoves].some(

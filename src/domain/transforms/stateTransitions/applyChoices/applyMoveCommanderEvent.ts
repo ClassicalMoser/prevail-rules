@@ -24,8 +24,8 @@ export function applyMoveCommanderEvent<TBoard extends Board>(
 ): GameState<TBoard> {
   const currentPhaseState = getMoveCommandersPhaseState(state);
   const side = event.player;
-  const originalCoordinate: BoardCoordinate<TBoard> = event.from;
-  const newCoordinate: BoardCoordinate<TBoard> = event.to;
+  const originalCoordinate = event.from as BoardCoordinate<TBoard>;
+  const newCoordinate = event.to as BoardCoordinate<TBoard>;
 
   // Remove commander from source space, then add at destination
   const removedCommanderBoard = removeCommanderFromBoard<TBoard>(

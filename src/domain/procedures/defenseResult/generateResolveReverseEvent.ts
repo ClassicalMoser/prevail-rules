@@ -56,6 +56,7 @@ export function generateResolveReverseEvent<TBoard extends Board>(
     effectType: RESOLVE_REVERSE_EFFECT_TYPE,
     attackResolutionContext,
     eventNumber,
+    boardType: reverseState.boardType,
     unitInstance: reverseState.reversingUnit,
     newUnitPlacement: {
       boardType: reverseState.reversingUnit.boardType,
@@ -66,5 +67,5 @@ export function generateResolveReverseEvent<TBoard extends Board>(
         facing: newFacing,
       },
     },
-  };
+  } as unknown as ResolveReverseEvent<TBoard, 'resolveReverse'>;
 }

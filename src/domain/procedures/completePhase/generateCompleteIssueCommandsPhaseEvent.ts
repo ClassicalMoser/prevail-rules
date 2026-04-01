@@ -29,6 +29,10 @@ export function generateCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
     eventNumber,
+    boardType: state.boardState.boardType,
     remainingEngagements,
-  };
+  } as unknown as CompleteIssueCommandsPhaseEvent<
+    TBoard,
+    'completeIssueCommandsPhase'
+  >;
 }

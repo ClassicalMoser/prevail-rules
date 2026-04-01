@@ -100,10 +100,11 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
     eventNumber,
+    boardType: rangedAttackState.boardType,
     defenderWithPlacement,
     legalRetreatOptions,
     routed: attackResult.unitRouted,
     reversed: attackResult.unitReversed,
     retreated: attackResult.unitRetreated,
-  };
+  } as unknown as ResolveRangedAttackEvent<TBoard, 'resolveRangedAttack'>;
 }

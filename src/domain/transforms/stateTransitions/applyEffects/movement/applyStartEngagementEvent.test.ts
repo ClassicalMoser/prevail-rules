@@ -72,6 +72,7 @@ describe('applyStartEngagementEvent', () => {
       eventType: 'gameEffect' as const,
       effectType: 'startEngagement' as const,
       engagementType: 'front' as const,
+      boardType: 'standard' as const,
       defenderWithPlacement,
     } satisfies StartEngagementEvent<StandardBoard>;
 
@@ -96,6 +97,7 @@ describe('applyStartEngagementEvent', () => {
       eventType: 'gameEffect' as const,
       effectType: 'startEngagement' as const,
       engagementType: 'rear' as const,
+      boardType: 'standard' as const,
       defenderWithPlacement,
     } satisfies StartEngagementEvent<StandardBoard>;
 
@@ -119,6 +121,7 @@ describe('applyStartEngagementEvent', () => {
       eventType: 'gameEffect' as const,
       effectType: 'startEngagement' as const,
       engagementType: 'flank' as const,
+      boardType: 'standard' as const,
       defenderWithPlacement,
     } satisfies StartEngagementEvent<StandardBoard>;
 

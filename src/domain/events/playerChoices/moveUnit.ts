@@ -1,14 +1,25 @@
 import type {
   Board,
+  LargeBoard,
+  LargeUnitPlacement,
+  LargeUnitWithPlacement,
   PlayerSide,
-  UnitPlacement,
-  UnitWithPlacement,
+  SmallBoard,
+  SmallUnitPlacement,
+  SmallUnitWithPlacement,
+  StandardBoard,
+  StandardUnitPlacement,
+  StandardUnitWithPlacement,
 } from '@entities';
 import type { AssertExact } from '@utils';
 import {
+  largeUnitPlacementSchema,
+  largeUnitWithPlacementSchema,
   playerSideSchema,
-  unitPlacementSchema,
-  unitWithPlacementSchema,
+  smallUnitPlacementSchema,
+  smallUnitWithPlacementSchema,
+  standardUnitPlacementSchema,
+  standardUnitWithPlacementSchema,
 } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
@@ -16,11 +27,7 @@ import { z } from 'zod';
 /** The type of the move unit event. */
 export const MOVE_UNIT_CHOICE_TYPE = 'moveUnit' as const;
 
-/** An event to move a unit from one space to another. */
-export interface MoveUnitEvent<
-  TBoard extends Board,
-  _TChoiceType extends 'moveUnit' = 'moveUnit',
-> {
+interface MoveUnitEventBase {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -29,46 +36,133 @@ export interface MoveUnitEvent<
   eventNumber: number;
   /** The player who is moving the unit. */
   player: PlayerSide;
-  /** The unit to move. */
-  unit: UnitWithPlacement<TBoard>;
-  /** The space the unit is moving to. */
-  to: UnitPlacement<TBoard>;
   /** Whether to move the commander with the unit. */
   moveCommander: boolean;
 }
 
-const _moveUnitEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  /** The type of player choice. */
-  choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player who is moving the unit. */
-  player: playerSideSchema,
+/** Move unit on a standard board. */
+export interface StandardMoveUnitEvent extends MoveUnitEventBase {
+  boardType: 'standard';
   /** The unit to move. */
-  unit: unitWithPlacementSchema,
+  unit: StandardUnitWithPlacement;
   /** The space the unit is moving to. */
-  to: unitPlacementSchema,
-  /** Whether to move the commander with the unit. */
+  to: StandardUnitPlacement;
+}
+
+/** Move unit on a small board. */
+export interface SmallMoveUnitEvent extends MoveUnitEventBase {
+  boardType: 'small';
+  unit: SmallUnitWithPlacement;
+  to: SmallUnitPlacement;
+}
+
+/** Move unit on a large board. */
+export interface LargeMoveUnitEvent extends MoveUnitEventBase {
+  boardType: 'large';
+  unit: LargeUnitWithPlacement;
+  to: LargeUnitPlacement;
+}
+
+/** Move unit for any board size (discriminated on `boardType`). */
+export type MoveUnitEventUnion =
+  | StandardMoveUnitEvent
+  | SmallMoveUnitEvent
+  | LargeMoveUnitEvent;
+
+export type MoveUnitEvent<
+  TBoard extends Board = Board,
+  _TChoiceType extends typeof MOVE_UNIT_CHOICE_TYPE =
+    typeof MOVE_UNIT_CHOICE_TYPE,
+> = TBoard extends StandardBoard
+  ? StandardMoveUnitEvent
+  : TBoard extends SmallBoard
+    ? SmallMoveUnitEvent
+    : TBoard extends LargeBoard
+      ? LargeMoveUnitEvent
+      : MoveUnitEventUnion;
+
+// ---------------------------------------------------------------------------
+// Per-variant Zod schemas
+// ---------------------------------------------------------------------------
+
+const _standardMoveUnitEventSchemaObject = z.object({
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+  choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
+  eventNumber: z.number(),
+  player: playerSideSchema,
+  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  unit: standardUnitWithPlacementSchema,
+  to: standardUnitPlacementSchema,
   moveCommander: z.boolean(),
 });
 
+type StandardMoveUnitEventSchemaType = z.infer<
+  typeof _standardMoveUnitEventSchemaObject
+>;
+
+const _assertExactStandardMoveUnitEvent: AssertExact<
+  StandardMoveUnitEvent,
+  StandardMoveUnitEventSchemaType
+> = true;
+
+const _smallMoveUnitEventSchemaObject = z.object({
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+  choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
+  eventNumber: z.number(),
+  player: playerSideSchema,
+  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  unit: smallUnitWithPlacementSchema,
+  to: smallUnitPlacementSchema,
+  moveCommander: z.boolean(),
+});
+
+type SmallMoveUnitEventSchemaType = z.infer<
+  typeof _smallMoveUnitEventSchemaObject
+>;
+
+const _assertExactSmallMoveUnitEvent: AssertExact<
+  SmallMoveUnitEvent,
+  SmallMoveUnitEventSchemaType
+> = true;
+
+const _largeMoveUnitEventSchemaObject = z.object({
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+  choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
+  eventNumber: z.number(),
+  player: playerSideSchema,
+  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  unit: largeUnitWithPlacementSchema,
+  to: largeUnitPlacementSchema,
+  moveCommander: z.boolean(),
+});
+
+type LargeMoveUnitEventSchemaType = z.infer<
+  typeof _largeMoveUnitEventSchemaObject
+>;
+
+const _assertExactLargeMoveUnitEvent: AssertExact<
+  LargeMoveUnitEvent,
+  LargeMoveUnitEventSchemaType
+> = true;
+
+// ---------------------------------------------------------------------------
+// Wide union schema
+// ---------------------------------------------------------------------------
+
+/** `z.union` (not nested DU): parent `playerChoiceEventSchema` discriminates on `choiceType`. */
+const _moveUnitEventSchemaObject = z.union([
+  _standardMoveUnitEventSchemaObject,
+  _smallMoveUnitEventSchemaObject,
+  _largeMoveUnitEventSchemaObject,
+]);
+
 type MoveUnitEventSchemaType = z.infer<typeof _moveUnitEventSchemaObject>;
 
-// Verify manual type matches schema inference
 const _assertExactMoveUnitEvent: AssertExact<
   MoveUnitEvent<Board>,
   MoveUnitEventSchemaType
 > = true;
 
 /** The schema for a move unit event. */
-export const moveUnitEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'playerChoice'>;
-  choiceType: z.ZodLiteral<'moveUnit'>;
-  eventNumber: z.ZodNumber;
-  player: z.ZodType<PlayerSide>;
-  unit: z.ZodType<UnitWithPlacement<Board>>;
-  to: z.ZodType<UnitPlacement<Board>>;
-  moveCommander: z.ZodType<boolean>;
-}> = _moveUnitEventSchemaObject;
+export const moveUnitEventSchema: z.ZodType<MoveUnitEvent<Board>> =
+  _moveUnitEventSchemaObject;

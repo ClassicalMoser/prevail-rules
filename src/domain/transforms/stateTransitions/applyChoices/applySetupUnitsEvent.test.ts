@@ -21,6 +21,7 @@ describe('applySetupUnitsEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'setupUnits',
+      boardType: 'standard',
       player: 'black',
       unitPlacements: new Set([unitWithPlacement]),
     };
@@ -51,6 +52,7 @@ describe('applySetupUnitsEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'setupUnits',
+      boardType: 'standard',
       player: 'black',
       unitPlacements: new Set([blackUnit, whiteUnit]),
     };
@@ -80,6 +82,7 @@ describe('applySetupUnitsEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'setupUnits',
+      boardType: 'standard',
       player: 'black',
       unitPlacements: new Set([unitWithPlacement]),
     };
@@ -99,6 +102,7 @@ describe('applySetupUnitsEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'setupUnits',
+      boardType: 'standard',
       player: 'black',
       unitPlacements: new Set(),
     };

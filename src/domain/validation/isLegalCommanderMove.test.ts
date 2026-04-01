@@ -15,6 +15,7 @@ describe('valid moves', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
+      boardType: 'standard',
       player: 'black',
       from: 'E-5',
       to: 'E-6', // Adjacent space
@@ -31,6 +32,7 @@ describe('valid moves', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
+      boardType: 'standard',
       player: 'black',
       from: 'E-5',
       to: 'E-9', // Exactly 4 spaces away
@@ -47,6 +49,7 @@ describe('valid moves', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
+      boardType: 'standard',
       player: 'white',
       from: 'F-6',
       to: 'F-5', // Adjacent space
@@ -63,6 +66,7 @@ describe('valid moves', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
+      boardType: 'standard',
       player: 'black',
       from: 'E-5',
       to: 'D-4', // Diagonal, distance 1
@@ -81,6 +85,7 @@ describe('invalid moves', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
+      boardType: 'standard',
       player: 'black',
       from: 'E-5',
       to: 'E-6',
@@ -97,6 +102,7 @@ describe('invalid moves', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
+      boardType: 'standard',
       player: 'black',
       from: 'E-5',
       to: 'E-6',
@@ -113,6 +119,7 @@ describe('invalid moves', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
+      boardType: 'standard',
       player: 'black',
       from: 'E-5',
       to: 'E-10', // 5 spaces away, beyond COMMANDER_MOVE_DISTANCE (4)
@@ -129,6 +136,7 @@ describe('invalid moves', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
+      boardType: 'standard',
       player: 'black',
       from: 'Z-99' as StandardBoardCoordinate, // Invalid coordinate
       to: 'E-5',
@@ -145,6 +153,7 @@ describe('invalid moves', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
+      boardType: 'standard',
       player: 'black',
       from: 'E-5',
       to: 'Z-99' as StandardBoardCoordinate, // Invalid coordinate

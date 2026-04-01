@@ -54,6 +54,7 @@ describe('applyResolveFlankEngagementEvent', () => {
       eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'resolveFlankEngagement' as const,
+      boardType: 'standard' as const,
       defenderWithPlacement,
       newFacing: 'south',
     } satisfies ResolveFlankEngagementEvent<StandardBoard>;

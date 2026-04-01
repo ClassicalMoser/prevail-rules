@@ -42,7 +42,8 @@ export function generateResolveFlankEngagementEvent<TBoard extends Board>(
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
     eventNumber,
+    boardType: state.boardState.boardType,
     defenderWithPlacement,
     newFacing,
-  };
+  } as unknown as ResolveFlankEngagementEvent<TBoard, 'resolveFlankEngagement'>;
 }

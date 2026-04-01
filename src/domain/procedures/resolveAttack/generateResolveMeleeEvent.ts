@@ -113,6 +113,7 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_MELEE_EFFECT_TYPE,
     eventNumber,
+    boardType: state.boardState.boardType,
     location: meleeCoordinate,
     whiteUnitWithPlacement: whiteUnit,
     blackUnitWithPlacement: blackUnit,
@@ -124,5 +125,5 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
     blackUnitRetreated: blackUnitResult.unitRetreated,
     whiteUnitReversed: whiteUnitResult.unitReversed,
     blackUnitReversed: blackUnitResult.unitReversed,
-  };
+  } as unknown as ResolveMeleeEvent<TBoard, 'resolveMelee'>;
 }

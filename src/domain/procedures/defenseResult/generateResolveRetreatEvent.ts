@@ -41,11 +41,12 @@ export function generateResolveRetreatEvent<TBoard extends Board>(
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_RETREAT_EFFECT_TYPE,
     eventNumber,
+    boardType: retreatState.boardType,
     startingPosition: retreatState.retreatingUnit,
     finalPosition: {
       boardType: retreatState.retreatingUnit.boardType,
       unit: retreatState.retreatingUnit.unit,
       placement: finalPlacement,
     },
-  };
+  } as unknown as ResolveRetreatEvent<TBoard, 'resolveRetreat'>;
 }

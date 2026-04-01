@@ -24,6 +24,7 @@ describe('applyMoveUnitEvent', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       choiceType: 'moveUnit',
+      boardType: 'standard',
       player: 'black',
       unit: unitWithPlacement,
       to: {

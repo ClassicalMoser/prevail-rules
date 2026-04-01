@@ -1,17 +1,27 @@
-import type { Board, PlayerSide, UnitWithPlacement } from '@entities';
+import type {
+  Board,
+  LargeBoard,
+  LargeUnitWithPlacement,
+  PlayerSide,
+  SmallBoard,
+  SmallUnitWithPlacement,
+  StandardBoard,
+  StandardUnitWithPlacement,
+} from '@entities';
 import type { AssertExact } from '@utils';
-import { playerSideSchema, unitWithPlacementSchema } from '@entities';
+import {
+  largeUnitWithPlacementSchema,
+  playerSideSchema,
+  smallUnitWithPlacementSchema,
+  standardUnitWithPlacementSchema,
+} from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
 /** The type of the setup units event. */
 export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits' as const;
 
-/** An event to setup multiple units on the board. */
-export interface SetupUnitsEvent<
-  _TBoard extends Board,
-  _TChoiceType extends 'setupUnits' = 'setupUnits',
-> {
+interface SetupUnitsEventBase {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -20,36 +30,108 @@ export interface SetupUnitsEvent<
   eventNumber: number;
   /** The player who is setting up the units. */
   player: PlayerSide;
-  /** The units to setup, each with its placement. */
-  unitPlacements: Set<UnitWithPlacement<Board>>;
 }
 
-const _setupUnitsEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  /** The type of player choice. */
-  choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player who is setting up the units. */
-  player: playerSideSchema,
+export interface StandardSetupUnitsEvent extends SetupUnitsEventBase {
+  boardType: 'standard';
   /** The units to setup, each with its placement. */
-  unitPlacements: z.set(unitWithPlacementSchema),
+  unitPlacements: Set<StandardUnitWithPlacement>;
+}
+
+export interface SmallSetupUnitsEvent extends SetupUnitsEventBase {
+  boardType: 'small';
+  unitPlacements: Set<SmallUnitWithPlacement>;
+}
+
+export interface LargeSetupUnitsEvent extends SetupUnitsEventBase {
+  boardType: 'large';
+  unitPlacements: Set<LargeUnitWithPlacement>;
+}
+
+export type SetupUnitsEventUnion =
+  | StandardSetupUnitsEvent
+  | SmallSetupUnitsEvent
+  | LargeSetupUnitsEvent;
+
+export type SetupUnitsEvent<
+  TBoard extends Board = Board,
+  _TChoiceType extends typeof SETUP_UNITS_CHOICE_TYPE =
+    typeof SETUP_UNITS_CHOICE_TYPE,
+> = TBoard extends StandardBoard
+  ? StandardSetupUnitsEvent
+  : TBoard extends SmallBoard
+    ? SmallSetupUnitsEvent
+    : TBoard extends LargeBoard
+      ? LargeSetupUnitsEvent
+      : SetupUnitsEventUnion;
+
+const _standardSetupUnitsEventSchemaObject = z.object({
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+  choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
+  eventNumber: z.number(),
+  player: playerSideSchema,
+  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  unitPlacements: z.set(standardUnitWithPlacementSchema),
 });
+
+type StandardSetupUnitsEventSchemaType = z.infer<
+  typeof _standardSetupUnitsEventSchemaObject
+>;
+
+const _assertExactStandardSetupUnitsEvent: AssertExact<
+  StandardSetupUnitsEvent,
+  StandardSetupUnitsEventSchemaType
+> = true;
+
+const _smallSetupUnitsEventSchemaObject = z.object({
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+  choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
+  eventNumber: z.number(),
+  player: playerSideSchema,
+  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  unitPlacements: z.set(smallUnitWithPlacementSchema),
+});
+
+type SmallSetupUnitsEventSchemaType = z.infer<
+  typeof _smallSetupUnitsEventSchemaObject
+>;
+
+const _assertExactSmallSetupUnitsEvent: AssertExact<
+  SmallSetupUnitsEvent,
+  SmallSetupUnitsEventSchemaType
+> = true;
+
+const _largeSetupUnitsEventSchemaObject = z.object({
+  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+  choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
+  eventNumber: z.number(),
+  player: playerSideSchema,
+  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  unitPlacements: z.set(largeUnitWithPlacementSchema),
+});
+
+type LargeSetupUnitsEventSchemaType = z.infer<
+  typeof _largeSetupUnitsEventSchemaObject
+>;
+
+const _assertExactLargeSetupUnitsEvent: AssertExact<
+  LargeSetupUnitsEvent,
+  LargeSetupUnitsEventSchemaType
+> = true;
+
+const _setupUnitsEventSchemaObject = z.union([
+  _standardSetupUnitsEventSchemaObject,
+  _smallSetupUnitsEventSchemaObject,
+  _largeSetupUnitsEventSchemaObject,
+]);
 
 type SetupUnitsEventSchemaType = z.infer<typeof _setupUnitsEventSchemaObject>;
 
-// Verify manual type matches schema inference
 const _assertExactSetupUnitsEvent: AssertExact<
   SetupUnitsEvent<Board>,
   SetupUnitsEventSchemaType
 > = true;
 
 /** The schema for a setup units event. */
-export const setupUnitsEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'playerChoice'>;
-  choiceType: z.ZodLiteral<'setupUnits'>;
-  eventNumber: z.ZodNumber;
-  player: typeof playerSideSchema;
-  unitPlacements: z.ZodSet<typeof unitWithPlacementSchema>;
-}> = _setupUnitsEventSchemaObject;
+export const setupUnitsEventSchema: z.ZodType<SetupUnitsEvent<Board>> =
+  _setupUnitsEventSchemaObject;
