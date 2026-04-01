@@ -32,6 +32,7 @@ export {
   updateCurrentRoundNumber,
   updatePhaseState,
   updateRemainingCommandsForPlayer,
+  updateRoundEventStream,
   updateRoundState,
 } from './state';
 export {

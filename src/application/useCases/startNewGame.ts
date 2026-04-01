@@ -8,29 +8,24 @@ export const startNewGame = async <T extends GameType>(
   ports: EnginePorts,
 ): Promise<PortResponse<void>> => {
   let gameState: GameState<BoardForGameType[T]>;
-  switch (gameType) {
+  switch (gameType as T) {
     case 'standard':
-      gameState = createEmptyGameState({
-        boardSize: 'standard',
-      }) as GameState<BoardForGameType[T]>;
+      gameState = createEmptyGameState('standard') as GameState<
+        BoardForGameType[T]
+      >;
       break;
     case 'mini':
-      gameState = createEmptyGameState({
-        boardSize: 'small',
-      }) as GameState<BoardForGameType[T]>;
+      gameState = createEmptyGameState('mini') as GameState<
+        BoardForGameType[T]
+      >;
       break;
     case 'tutorial':
-      gameState = createEmptyGameState({
-        boardSize: 'small',
-      }) as GameState<BoardForGameType[T]>;
+      gameState = createEmptyGameState('tutorial') as GameState<
+        BoardForGameType[T]
+      >;
       break;
-    default: {
-      const _exhaustive: never = gameType;
-      return {
-        result: false,
-        errorReason: `Unknown gameType: ${_exhaustive}`,
-      };
-    }
+    default:
+      throw new Error(`Unknown gameType: ${gameType}`);
   }
 
   // Temporary: No content yet.

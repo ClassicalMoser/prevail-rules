@@ -1,5 +1,11 @@
 // Main entry point — explicit re-exports only (no `export *`).
 export {
+  blackArmyUUID,
+  blackTinyStarterArmy,
+  whiteArmyUUID,
+  whiteTinyStarterArmy,
+} from './tinyStarterArmy';
+export {
   armySchema,
   attackTypes,
   attackTypeSchema,
@@ -459,6 +465,7 @@ export { getPositionOfUnit } from '@queries';
 export {
   COMMANDER_MOVE_DISTANCE,
   gameTypes,
+  getBoardSizeForGameType,
   MAX_LINE_LENGTH,
   MIN_FLEXIBILITY_THRESHOLD,
   traits,
@@ -537,4 +544,5 @@ export {
   isValidMoveCommanderEvent,
   validatePlayerChoice,
 } from '@validation';
+
 export { hasEnemyUnit, isDefenseStat, validateEvent } from '@validation';

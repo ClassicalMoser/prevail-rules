@@ -4,7 +4,7 @@ import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { createEmptyGameState, createResolveMeleePhaseState } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateRoundEventStream } from '@transforms';
 import { isValidChooseMeleeResolutionEvent } from '@validation';
 import { describe, expect, it } from 'vitest';
 import { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolutionEvents';
@@ -32,13 +32,7 @@ describe('getLegalChooseMeleeResolutionEvents', () => {
     });
     let state = updatePhaseState(base, phase);
     if (options?.eventStream) {
-      state = {
-        ...state,
-        currentRoundState: {
-          ...state.currentRoundState,
-          events: options.eventStream,
-        },
-      };
+      state = updateRoundEventStream(state, options.eventStream);
     }
     return state;
   }

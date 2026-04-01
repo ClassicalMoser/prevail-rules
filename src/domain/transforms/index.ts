@@ -35,6 +35,7 @@ export {
   updateRetreatRoutState,
   updateRetreatState,
   updateReverseState,
+  updateRoundEventStream,
   updateRoundState,
   updateRoutState,
 } from './pureTransforms';

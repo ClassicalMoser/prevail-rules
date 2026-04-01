@@ -1,68 +1,16 @@
-import type {
-  Board,
-  BoardSize,
-  LargeBoard,
-  PlayerSide,
-  SmallBoard,
-  StandardBoard,
-} from '@entities';
-import type { GameState } from '@game';
+import type { Board, GameType, SmallBoard, StandardBoard } from '@entities';
+import type { BoardForGameType, GameState } from '@game';
 import {
-  createEmptyLargeBoard,
   createEmptySmallBoard,
   createEmptyStandardBoard,
 } from './createEmptyBoard';
 
 /**
- * Creates an empty game state with default values.
- * - Round number starts at 0
- * - Round state has round number 1, no completed phases, no current phase, no commanded units
- * - Initiative starts with black player
- * - Board is an empty standard board
- * - Card state has empty hands, with default cards for awaitingPlay and inPlay
- * - No routed units
- *
- * @param options - Optional configuration
- * @param options.currentInitiative - Which player has initiative (defaults to 'black')
- * @param options.boardSize - The size of the board (defaults to 'standard')
- * @returns A clean game state ready for testing or game initialization
+ * Resolves which board size {@link createEmptyGameState} will use (default `standard`).
  */
-export function createEmptyGameState<StandardBoard extends Board>(options: {
-  currentInitiative?: PlayerSide;
-  boardSize: 'standard';
-}): GameState<StandardBoard>;
-export function createEmptyGameState<SmallBoard extends Board>(options: {
-  currentInitiative?: PlayerSide;
-  boardSize: 'small';
-}): GameState<SmallBoard>;
-export function createEmptyGameState<LargeBoard extends Board>(options: {
-  currentInitiative?: PlayerSide;
-  boardSize: 'large';
-}): GameState<LargeBoard>;
-export function createEmptyGameState(options?: {
-  currentInitiative?: PlayerSide;
-}): GameState<StandardBoard>;
-export function createEmptyGameState<
-  TBoard extends Board = StandardBoard,
->(options?: {
-  currentInitiative?: PlayerSide;
-  boardSize?: BoardSize;
-}): GameState<TBoard> {
-  let board: TBoard;
-  switch (options?.boardSize) {
-    case 'large':
-      board = createEmptyLargeBoard() satisfies LargeBoard as TBoard;
-      break;
-    case 'small':
-      board = createEmptySmallBoard() satisfies SmallBoard as TBoard;
-      break;
-    case 'standard':
-      board = createEmptyStandardBoard() satisfies StandardBoard as TBoard;
-      break;
-    default:
-      board = createEmptyStandardBoard() satisfies StandardBoard as TBoard;
-  }
-  const emptyGameState: GameState<TBoard> = {
+
+function shellForBoard<TBoard extends Board>(board: TBoard): GameState<TBoard> {
+  return {
     currentRoundNumber: 0,
     currentRoundState: {
       roundNumber: 1,
@@ -71,7 +19,7 @@ export function createEmptyGameState<
       commandedUnits: new Set(),
       events: [],
     },
-    currentInitiative: options?.currentInitiative ?? 'black',
+    currentInitiative: 'white',
     boardState: board,
     cardState: {
       black: {
@@ -95,5 +43,37 @@ export function createEmptyGameState<
     routedUnits: new Set(),
     lostCommanders: new Set(),
   };
-  return emptyGameState;
+}
+
+/**
+ * Builds an empty game state for a given game type.
+ *
+ * Overloads give a precise return type per `gameType`; a single generic
+ * `TGameType extends GameType` is not narrowed by `switch`, so `shellForBoard`’s
+ * `GameState<SmallBoard>` / `GameState<StandardBoard>` would not otherwise check
+ * against `GameState<BoardForGameType[TGameType]>`.
+ */
+export function createEmptyGameState<TGameType extends 'standard'>(
+  gameType: TGameType,
+): GameState<StandardBoard>;
+export function createEmptyGameState<TGameType extends 'mini' | 'tutorial'>(
+  gameType: TGameType,
+): GameState<SmallBoard>;
+export function createEmptyGameState<TGameType extends GameType>(
+  gameType: TGameType,
+): GameState<BoardForGameType[TGameType]>;
+export function createEmptyGameState<TGameType extends GameType>(
+  gameType: TGameType,
+): GameState<StandardBoard> | GameState<SmallBoard> {
+  switch (gameType) {
+    case 'tutorial':
+    case 'mini':
+      return shellForBoard(createEmptySmallBoard());
+    case 'standard':
+      return shellForBoard(createEmptyStandardBoard());
+    default: {
+      const _exhaustive: never = gameType;
+      throw new Error(`Unknown gameType: ${_exhaustive}`);
+    }
+  }
 }

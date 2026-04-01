@@ -1,5 +1,5 @@
 export { gameEffects, type GameEffectType } from './gameEffectTypes';
-export { gameTypes } from './gameTypes';
+export { gameTypes, getBoardSizeForGameType } from './gameTypes';
 export {
   COMMANDER_MOVE_DISTANCE,
   MAX_LINE_LENGTH,

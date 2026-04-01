@@ -13,4 +13,3 @@ export {
   tempUnits,
   velites,
 } from './tempUnits';
-export { tinyStarterArmy } from './tinyStarterArmy';

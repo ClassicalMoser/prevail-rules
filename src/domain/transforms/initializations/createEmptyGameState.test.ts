@@ -6,7 +6,7 @@ import { createEmptyGameState } from './createEmptyGameState';
 
 describe('createEmptyGameState', () => {
   it('given defaults, produces empty board and card piles with round scaffolding', () => {
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
 
     expect(gameState.currentRoundNumber).toBe(0);
     expect(gameState.currentRoundState.roundNumber).toBe(1);
@@ -26,14 +26,8 @@ describe('createEmptyGameState', () => {
     expect(gameState.routedUnits.size).toBe(0);
   });
 
-  it('given defaults, creates a game state with custom initiative', () => {
-    const gameState = createEmptyGameState({ currentInitiative: 'white' });
-
-    expect(gameState.currentInitiative).toBe('white');
-  });
-
   it('initializes awaitingPlay and inPlay to null for both players', () => {
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
 
     expect(gameState.cardState.black.awaitingPlay).toBeNull();
     expect(gameState.cardState.black.inPlay).toBeNull();
@@ -41,18 +35,18 @@ describe('createEmptyGameState', () => {
     expect(gameState.cardState.white.inPlay).toBeNull();
   });
 
-  it('given defaults, creates a game state with a large board size', () => {
-    const gameState = createEmptyGameState({ boardSize: 'large' });
-    expect(gameState.boardState.boardType).toBe('large');
+  it('given tutorial game type, creates a game state with a small board size', () => {
+    const gameState = createEmptyGameState('tutorial');
+    expect(gameState.boardState.boardType).toBe('small');
   });
 
-  it('given defaults, creates a game state with a standard board size', () => {
-    const gameState = createEmptyGameState({ boardSize: 'standard' });
+  it('given standard game type, creates a game state with a standard board size', () => {
+    const gameState = createEmptyGameState('standard');
     expect(gameState.boardState.boardType).toBe('standard');
   });
 
-  it('given defaults, creates a game state with a small board size', () => {
-    const gameState = createEmptyGameState({ boardSize: 'small' });
+  it('given mini game type, creates a game state with a small board size', () => {
+    const gameState = createEmptyGameState('mini');
     expect(gameState.boardState.boardType).toBe('small');
   });
 });

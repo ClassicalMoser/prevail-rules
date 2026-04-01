@@ -1,14 +1,7 @@
-import type {
-  Army,
-  BoardType,
-  GameType,
-  SmallBoard,
-  StandardBoard,
-} from '@entities';
+import type { Army, GameType, SmallBoard, StandardBoard } from '@entities';
 import type { GameState } from './gameState';
 
 import { armySchema, gameTypeEnum } from '@entities';
-import { gameTypes } from '@ruleValues';
 import { z } from 'zod';
 import {
   gameStateSchema,
@@ -25,10 +18,6 @@ export interface BoardForGameType {
   mini: SmallBoard;
   tutorial: SmallBoard;
 }
-
-const boardTypeForGameType = Object.fromEntries(
-  gameTypes.map(({ type, boardSize }) => [type, boardSize] as const),
-) as Record<GameType, BoardType>;
 
 /**
  * A complete game of Prevail: Ancient Battles.
@@ -52,33 +41,22 @@ export interface Game<T extends GameType = GameType> {
   gameState: GameState<BoardForGameType[T]>;
 }
 
-const _gameSchemaObject = z
-  .object({
-    /** The unique identifier of the game. */
-    id: z.uuid(),
-    /** The type of game. */
-    gameType: gameTypeEnum,
-    /** The unique identifier of the player on the black side of the game. */
-    blackPlayer: z.uuid(),
-    /** The unique identifier of the player on the white side of the game. */
-    whitePlayer: z.uuid(),
-    /** The army brought by the black player. */
-    blackArmy: armySchema,
-    /** The army brought by the white player. */
-    whiteArmy: armySchema,
-    /** The state of the game. */
-    gameState: gameStateSchema,
-  })
-  .superRefine((data, ctx) => {
-    const expected = boardTypeForGameType[data.gameType];
-    if (data.gameState.boardState.boardType !== expected) {
-      ctx.addIssue({
-        code: 'custom',
-        message: `gameType "${data.gameType}" requires boardState.boardType "${expected}", got "${data.gameState.boardState.boardType}"`,
-        path: ['gameState', 'boardState', 'boardType'],
-      });
-    }
-  });
+const _gameSchemaObject = z.object({
+  /** The unique identifier of the game. */
+  id: z.uuid(),
+  /** The type of game. */
+  gameType: gameTypeEnum,
+  /** The unique identifier of the player on the black side of the game. */
+  blackPlayer: z.uuid(),
+  /** The unique identifier of the player on the white side of the game. */
+  whitePlayer: z.uuid(),
+  /** The army brought by the black player. */
+  blackArmy: armySchema,
+  /** The army brought by the white player. */
+  whiteArmy: armySchema,
+  /** The state of the game. */
+  gameState: gameStateSchema,
+});
 
 /**
  * The schema for a complete game of Prevail: Ancient Battles.
@@ -86,6 +64,10 @@ const _gameSchemaObject = z
  *
  * Output is typed as `Game<GameType>`. Zod infers `gameState` as the wide board union;
  * `superRefine` enforces the board family at runtime.
+ *
+ * @remarks The board-family relation is not a Zod refine on this object: use
+ * {@link validateGameBoardMatchesGameType} at the call site, or {@link standardGameSchema} /
+ * {@link miniGameSchema} / {@link tutorialGameSchema} when the game type is fixed.
  */
 export const gameSchema = _gameSchemaObject as z.ZodType<Game<GameType>>;
 
