@@ -93,10 +93,10 @@ export function applyStartEngagementEvent<TBoard extends Board>(
   } as MovementResolutionState;
 
   // Update phase state
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     ...phaseState,
     currentCommandResolutionState: newMovementState,
   };
 
-  return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
+  return updatePhaseState(state, newPhaseState as PhaseState);
 }

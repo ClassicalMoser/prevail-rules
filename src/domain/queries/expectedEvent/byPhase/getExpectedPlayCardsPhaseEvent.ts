@@ -11,7 +11,7 @@ import { getPlayCardsPhaseState } from '@queries/sequencing';
  */
 export function getExpectedPlayCardsPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   const phaseState = getPlayCardsPhaseState(state);
 
   switch (phaseState.step) {

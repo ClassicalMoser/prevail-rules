@@ -12,7 +12,7 @@ import { getExpectedMeleeResolutionEvent } from '../iterated';
  */
 export function getExpectedResolveMeleePhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   const phaseState = getResolveMeleePhaseState(state);
   const firstPlayer = state.currentInitiative;
 

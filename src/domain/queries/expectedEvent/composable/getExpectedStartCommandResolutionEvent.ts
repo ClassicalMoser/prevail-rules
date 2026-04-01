@@ -13,7 +13,7 @@ import type { GameState } from '@game';
 export function getExpectedStartCommandResolutionEvent<TBoard extends Board>(
   state: GameState<TBoard>,
   player: PlayerSide,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   const activeCard = state.cardState[player].inPlay;
   if (!activeCard) {
     throw new Error(`${player} player has no active card`);

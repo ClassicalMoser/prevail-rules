@@ -35,7 +35,7 @@ describe('applyCompleteIssueCommandsPhaseEvent', () => {
     const whiteUnit = createTestUnit('white', { attack: 3 });
     const state = createGameStateWithEngagedUnits(blackUnit, whiteUnit, 'E-5');
 
-    const initialPhaseState: IssueCommandsPhaseState<StandardBoard> = {
+    const initialPhaseState: IssueCommandsPhaseState = {
       phase: ISSUE_COMMANDS_PHASE,
       step: 'complete',
       remainingCommandsFirstPlayer: new Set(),

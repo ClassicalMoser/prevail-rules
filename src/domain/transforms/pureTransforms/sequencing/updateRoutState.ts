@@ -28,7 +28,7 @@ export function updateRoutState<TBoard extends Board>(
   state: GameState<TBoard>,
   routState: RoutState,
 ): GameState<TBoard> {
-  const phaseState = getCurrentPhaseState<TBoard>(state);
+  const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
     const issueState = getIssueCommandsPhaseState(state);
@@ -46,7 +46,7 @@ export function updateRoutState<TBoard extends Board>(
           ...ranged,
           attackApplyState: { ...attackApply, routState },
         },
-      } as PhaseState<TBoard>);
+      } as PhaseState);
     }
 
     if (commandState?.commandResolutionType === 'movement') {
@@ -72,7 +72,7 @@ export function updateRoutState<TBoard extends Board>(
               },
             },
           },
-        } as PhaseState<TBoard>);
+        } as PhaseState);
       }
     }
 
@@ -97,7 +97,7 @@ export function updateRoutState<TBoard extends Board>(
           ...melee,
           whiteAttackApplyState: { ...whiteApply, routState },
         },
-      } as PhaseState<TBoard>);
+      } as PhaseState);
     }
 
     const blackApply = melee.blackAttackApplyState;
@@ -110,7 +110,7 @@ export function updateRoutState<TBoard extends Board>(
         ...melee,
         blackAttackApplyState: { ...blackApply, routState },
       },
-    } as PhaseState<TBoard>);
+    } as PhaseState);
   }
 
   if (phaseState.phase === 'cleanup') {
@@ -128,7 +128,7 @@ export function updateRoutState<TBoard extends Board>(
       newRallyState,
       cleanupPhaseState.step,
     );
-    return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
+    return updatePhaseState(state, newPhaseState as PhaseState);
   }
 
   throw new Error(

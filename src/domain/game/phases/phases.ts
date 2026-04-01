@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import type { CleanupPhaseState } from './cleanupPhase';
 import type { IssueCommandsPhaseState } from './issueCommandsPhase';
@@ -55,11 +54,16 @@ export const phaseSchema: z.ZodType<Phase> = _phaseSchemaObject;
 // Verify manual type matches schema inference
 const _assertExactPhase: AssertExact<Phase, PhaseSchemaType> = true;
 
-/** The state of a phase of a round. */
-export type PhaseState<TBoard extends Board> =
+/**
+ * The state of a phase of a round.
+ *
+ * Spatial branches (`issueCommands`, `resolveMelee`) carry their own `boardType` / nested DUs where
+ * needed; this union is not parameterized by `TBoard` (Layer 4).
+ */
+export type PhaseState =
   | PlayCardsPhaseState
   | MoveCommandersPhaseState
-  | IssueCommandsPhaseState<TBoard>
+  | IssueCommandsPhaseState
   | ResolveMeleePhaseState
   | CleanupPhaseState;
 
@@ -73,5 +77,4 @@ const _phaseStateSchemaObject = z.union([
 ]);
 
 /** The schema for the state of a phase of a round. */
-export const phaseStateSchema: z.ZodType<PhaseState<Board>> =
-  _phaseStateSchemaObject;
+export const phaseStateSchema: z.ZodType<PhaseState> = _phaseStateSchemaObject;

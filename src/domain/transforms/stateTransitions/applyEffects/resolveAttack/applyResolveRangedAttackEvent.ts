@@ -98,7 +98,7 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
   const newPhaseState = {
     ...phaseState,
     currentCommandResolutionState: newRangedAttackState,
-  } as IssueCommandsPhaseState<TBoard>;
+  } as IssueCommandsPhaseState;
 
-  return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
+  return updatePhaseState(state, newPhaseState as PhaseState);
 }

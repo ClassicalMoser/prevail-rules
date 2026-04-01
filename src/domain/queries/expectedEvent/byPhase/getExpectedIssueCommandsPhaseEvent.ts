@@ -14,7 +14,7 @@ import { getExpectedCommandResolutionEvent } from '../iterated';
  */
 export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   const phaseState = getIssueCommandsPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);

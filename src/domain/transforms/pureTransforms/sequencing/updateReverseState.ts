@@ -27,7 +27,7 @@ export function updateReverseState<TBoard extends Board>(
   state: GameState<TBoard>,
   reverseState: ReverseState,
 ): GameState<TBoard> {
-  const phaseState = getCurrentPhaseState<TBoard>(state);
+  const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
     const issueState = getIssueCommandsPhaseState(state);
@@ -45,7 +45,7 @@ export function updateReverseState<TBoard extends Board>(
           ...ranged,
           attackApplyState: { ...attackApply, reverseState },
         } as RangedAttackResolutionState,
-      } as PhaseState<TBoard>);
+      } as PhaseState);
     }
 
     throw new Error(
@@ -69,7 +69,7 @@ export function updateReverseState<TBoard extends Board>(
           ...melee,
           whiteAttackApplyState: { ...whiteApply, reverseState },
         } as MeleeResolutionState,
-      } as PhaseState<TBoard>);
+      } as PhaseState);
     }
 
     const blackApply = melee.blackAttackApplyState;
@@ -82,7 +82,7 @@ export function updateReverseState<TBoard extends Board>(
         ...melee,
         blackAttackApplyState: { ...blackApply, reverseState },
       } as MeleeResolutionState,
-    } as PhaseState<TBoard>);
+    } as PhaseState);
   }
 
   throw new Error(

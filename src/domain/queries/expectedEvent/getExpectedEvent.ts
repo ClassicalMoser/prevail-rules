@@ -11,17 +11,17 @@ import {
 } from './byPhase';
 
 /** ExpectedEventInfo enriched with the next event number derived from state. */
-export type ExpectedEvent<TBoard extends Board> = ExpectedEventInfo<TBoard> & {
+export type ExpectedEvent = ExpectedEventInfo & {
   eventNumber: number;
 };
 
 export function getExpectedEvent<TBoard extends Board>(
   state: GameState<TBoard>,
-): ExpectedEvent<TBoard> {
+): ExpectedEvent {
   const phaseState = getCurrentPhaseState(state);
   const eventNumber = state.currentRoundState.events.length;
 
-  let info: ExpectedEventInfo<TBoard>;
+  let info: ExpectedEventInfo;
   switch (phaseState.phase) {
     case 'playCards':
       info = getExpectedPlayCardsPhaseEvent(state);

@@ -13,7 +13,7 @@ import { getExpectedRallyResolutionEvent } from '../composable';
  */
 export function getExpectedCleanupPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   const phaseState = getCleanupPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);

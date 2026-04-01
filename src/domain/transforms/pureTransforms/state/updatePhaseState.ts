@@ -20,7 +20,7 @@ import type { GameState, PhaseState } from '@game';
  */
 export function updatePhaseState<TBoard extends Board>(
   state: GameState<TBoard>,
-  phaseState: PhaseState<TBoard>,
+  phaseState: PhaseState,
 ): GameState<TBoard> {
   return {
     ...state,

@@ -47,8 +47,8 @@ export function createMoveCommandersPhaseState(
  */
 export function createIssueCommandsPhaseState(
   state: GameState<StandardBoard>,
-  overrides?: Partial<IssueCommandsPhaseState<StandardBoard>>,
-): IssueCommandsPhaseState<StandardBoard> {
+  overrides?: Partial<IssueCommandsPhaseState>,
+): IssueCommandsPhaseState {
   return {
     phase: ISSUE_COMMANDS_PHASE,
     step: 'firstPlayerResolveCommands',

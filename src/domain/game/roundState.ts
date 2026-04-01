@@ -15,9 +15,9 @@ export interface RoundState<TBoard extends Board> {
   /** The number of the round. */
   roundNumber: number;
   /** The phases that have been completed in the round. */
-  completedPhases: Set<PhaseState<TBoard>>;
+  completedPhases: Set<PhaseState>;
   /** The state of the current phase of the round. */
-  currentPhaseState: PhaseState<TBoard> | undefined;
+  currentPhaseState: PhaseState | undefined;
   /** Units that have been commanded this round. */
   commandedUnits: Set<UnitInstance>;
   /** Events applied during this round, in order. */

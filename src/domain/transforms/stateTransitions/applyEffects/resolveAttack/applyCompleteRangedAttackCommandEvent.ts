@@ -21,7 +21,7 @@ export function applyCompleteRangedAttackCommandEvent<TBoard extends Board>(
   const phaseState = getIssueCommandsPhaseState(state);
 
   // Clear from currentCommandResolutionState to allow advancing to next command
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     ...phaseState,
     currentCommandResolutionState: undefined,
   };

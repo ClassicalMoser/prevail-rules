@@ -17,7 +17,7 @@ import { updateRoundState } from '@transforms/pureTransforms';
  */
 export function addCompletedPhase<TBoard extends Board>(
   state: GameState<TBoard>,
-  completedPhase: PhaseState<TBoard>,
+  completedPhase: PhaseState,
 ): GameState<TBoard> {
   const newCompletedPhases = new Set(state.currentRoundState.completedPhases);
   newCompletedPhases.add(completedPhase);

@@ -130,5 +130,5 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
     currentMeleeResolutionState: newMeleeState,
   } as ResolveMeleePhaseState;
 
-  return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
+  return updatePhaseState(state, newPhaseState as PhaseState);
 }

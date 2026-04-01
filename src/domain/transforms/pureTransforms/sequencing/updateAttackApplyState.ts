@@ -27,7 +27,7 @@ export function updateAttackApplyState<TBoard extends Board>(
   state: GameState<TBoard>,
   attackApplyState: AttackApplyState,
 ): GameState<TBoard> {
-  const phaseState = getCurrentPhaseState<TBoard>(state);
+  const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
     const issueState = getIssueCommandsPhaseState(state);
@@ -43,7 +43,7 @@ export function updateAttackApplyState<TBoard extends Board>(
         ...ranged,
         attackApplyState,
       } as RangedAttackResolutionState,
-    } as PhaseState<TBoard>);
+    } as PhaseState);
   }
 
   if (phaseState.phase === 'resolveMelee') {
@@ -58,7 +58,7 @@ export function updateAttackApplyState<TBoard extends Board>(
           ...melee,
           whiteAttackApplyState: attackApplyState,
         } as MeleeResolutionState,
-      } as PhaseState<TBoard>);
+      } as PhaseState);
     }
 
     return updatePhaseState(state, {
@@ -67,7 +67,7 @@ export function updateAttackApplyState<TBoard extends Board>(
         ...melee,
         blackAttackApplyState: attackApplyState,
       } as MeleeResolutionState,
-    } as PhaseState<TBoard>);
+    } as PhaseState);
   }
 
   throw new Error(

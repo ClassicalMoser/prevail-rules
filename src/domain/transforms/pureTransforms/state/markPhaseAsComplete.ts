@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { PhaseState } from '@game';
 
 /**
@@ -13,10 +12,9 @@ import type { PhaseState } from '@game';
  * const completedPhase = markPhaseAsComplete(phaseState);
  * ```
  */
-export function markPhaseAsComplete<
-  TBoard extends Board,
-  TPhaseState extends PhaseState<TBoard>,
->(phaseState: TPhaseState): TPhaseState {
+export function markPhaseAsComplete<TPhaseState extends PhaseState>(
+  phaseState: TPhaseState,
+): TPhaseState {
   return {
     ...phaseState,
     step: 'complete',

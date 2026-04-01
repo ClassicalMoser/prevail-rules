@@ -12,7 +12,7 @@ import { getMoveCommandersPhaseState } from '@queries/sequencing';
  */
 export function getExpectedMoveCommandersPhaseEvent<TBoard extends Board>(
   state: GameState<TBoard>,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   const phaseState = getMoveCommandersPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);

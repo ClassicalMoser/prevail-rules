@@ -70,7 +70,7 @@ export const procedureRegistryStateFactories: Record<
   completeCleanupPhase: (): GameState<StandardBoard> => createEmptyGameState(),
 
   completeIssueCommandsPhase: (): GameState<StandardBoard> => {
-    const initialPhaseState: IssueCommandsPhaseState<StandardBoard> = {
+    const initialPhaseState: IssueCommandsPhaseState = {
       phase: ISSUE_COMMANDS_PHASE,
       step: 'complete',
       remainingCommandsFirstPlayer: new Set(),

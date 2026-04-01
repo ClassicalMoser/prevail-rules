@@ -29,7 +29,7 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
 
   const stateWithCompletedPhase = addCompletedPhase(state, currentPhaseState);
 
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     phase: ISSUE_COMMANDS_PHASE,
     step: 'firstPlayerIssueCommands',
     remainingCommandsFirstPlayer: event.remainingCommandsFirstPlayer,

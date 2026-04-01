@@ -12,7 +12,7 @@ import type { RoutState } from '@game';
  */
 export function getExpectedRoutEvent<TBoard extends Board>(
   routState: RoutState,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   // Check if rout is completed (all work done, ready for parent to handle)
   if (routState.completed) {
     throw new Error('Rout state is already complete');

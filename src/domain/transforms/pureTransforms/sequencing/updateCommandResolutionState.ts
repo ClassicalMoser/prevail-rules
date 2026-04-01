@@ -33,7 +33,7 @@ export function updateCommandResolutionState<TBoard extends Board>(
     throw new Error('No current command resolution state found');
   }
 
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     ...issueCommandsPhaseState,
     currentCommandResolutionState: commandResolutionState,
   };

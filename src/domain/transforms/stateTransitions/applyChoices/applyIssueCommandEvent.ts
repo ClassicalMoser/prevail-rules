@@ -41,7 +41,7 @@ export function applyIssueCommandEvent<TBoard extends Board>(
   );
 
   // Update phase state with new remaining commands
-  const newPhaseState: IssueCommandsPhaseState<TBoard> =
+  const newPhaseState: IssueCommandsPhaseState =
     updateRemainingCommandsForPlayer(
       phaseState,
       player,

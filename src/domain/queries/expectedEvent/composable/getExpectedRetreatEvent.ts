@@ -13,7 +13,7 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
  */
 export function getExpectedRetreatEvent<TBoard extends Board>(
   retreatState: RetreatState,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   // Check if retreat is completed (all work done, ready for parent to handle)
   if (retreatState.completed) {
     throw new Error('Retreat state is already complete');

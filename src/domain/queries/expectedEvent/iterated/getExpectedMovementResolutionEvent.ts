@@ -17,7 +17,7 @@ export function getExpectedMovementResolutionEvent<TBoard extends Board>(
   gameState: GameState<TBoard>,
   resolutionState: MovementResolutionState,
   player: PlayerSide,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   // Fast rejection: if already completed, this is an invalid state
   if (resolutionState.completed) {
     throw new Error('Movement resolution state is already complete');

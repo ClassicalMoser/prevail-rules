@@ -42,7 +42,7 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
 
   const newState = updatePhaseState(
     stateWithCompletedPhase,
-    newPhaseState as PhaseState<TBoard>,
+    newPhaseState as PhaseState,
   );
   return newState;
 }

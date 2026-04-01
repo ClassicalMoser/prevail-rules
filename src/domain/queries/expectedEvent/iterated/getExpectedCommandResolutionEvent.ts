@@ -14,9 +14,9 @@ import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttac
  */
 export function getExpectedCommandResolutionEvent<TBoard extends Board>(
   gameState: GameState<TBoard>,
-  resolutionState: IssueCommandsPhaseState<TBoard>['currentCommandResolutionState'],
+  resolutionState: IssueCommandsPhaseState['currentCommandResolutionState'],
   resolvingPlayer: PlayerSide,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   if (!resolutionState) {
     throw new Error('No command resolution state found');
   }

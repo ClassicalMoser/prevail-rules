@@ -72,7 +72,7 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
     completed: false,
   } as RangedAttackResolutionState;
 
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     ...currentPhaseState,
     currentCommandResolutionState: rangedAttackResolutionState,
     remainingUnitsFirstPlayer: isFirstPlayer
@@ -85,7 +85,7 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
 
   const newGameState = updatePhaseState(
     state,
-    newPhaseState as PhaseState<TBoard>,
+    newPhaseState as PhaseState,
   );
   return newGameState;
 }

@@ -19,7 +19,7 @@ import type {
  */
 export function getCurrentPhaseState<TBoard extends Board>(
   state: GameState<TBoard>,
-): PhaseState<TBoard> {
+): PhaseState {
   const phaseState = state.currentRoundState.currentPhaseState;
   if (!phaseState) {
     throw new Error('No current phase state found');
@@ -73,7 +73,7 @@ export function getMoveCommandersPhaseState<TBoard extends Board>(
  */
 export function getIssueCommandsPhaseState<TBoard extends Board>(
   state: GameState<TBoard>,
-): IssueCommandsPhaseState<TBoard> {
+): IssueCommandsPhaseState {
   const phaseState = getCurrentPhaseState(state);
   if (phaseState.phase !== 'issueCommands') {
     throw new Error(`Expected issueCommands phase, got ${phaseState.phase}`);

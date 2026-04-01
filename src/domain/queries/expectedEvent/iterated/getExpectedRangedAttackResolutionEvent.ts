@@ -16,7 +16,7 @@ export function getExpectedRangedAttackResolutionEvent<TBoard extends Board>(
   gameState: GameState<TBoard>,
   resolutionState: RangedAttackResolutionState,
   attackingPlayer: PlayerSide,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   // Fast rejection: if already completed, this is an invalid state
   if (resolutionState.completed) {
     throw new Error('Ranged attack resolution state is already complete');

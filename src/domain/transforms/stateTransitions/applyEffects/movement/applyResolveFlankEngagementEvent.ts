@@ -69,13 +69,13 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
     engagementState: newEngagementState,
   } as MovementResolutionState;
 
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     ...phaseState,
     currentCommandResolutionState: newMovementState,
   };
 
   return updatePhaseState(
     updateBoardState(state, updatedBoard),
-    newPhaseState as PhaseState<TBoard>,
+    newPhaseState as PhaseState,
   );
 }

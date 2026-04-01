@@ -20,7 +20,7 @@ import {
 export function getExpectedAttackApplyEvent<TBoard extends Board>(
   attackApplyState: AttackApplyState,
   gameState: GameState<TBoard>,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   const attackResult = attackApplyState.attackResult;
 
   // Check if there are any results

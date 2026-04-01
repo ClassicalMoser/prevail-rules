@@ -20,7 +20,7 @@ import { getExpectedRoutEvent } from '.';
 export function getExpectedEngagementEvent<TBoard extends Board>(
   gameState: GameState<TBoard>,
   engagementState: EngagementState,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   const attackingPlayer = engagementState.engagingUnit.playerSide;
   const defendingPlayer = getOtherPlayer(attackingPlayer);
   const board = gameState.boardState;

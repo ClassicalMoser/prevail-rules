@@ -14,7 +14,7 @@ import type { GameState, ReverseState } from '@game';
 export function getExpectedReverseEvent<TBoard extends Board>(
   reverseState: ReverseState,
   _gameState: GameState<TBoard>,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   // Check if reverse is completed (all work done, ready for parent to handle)
   if (reverseState.completed) {
     throw new Error('Reverse state is already complete');

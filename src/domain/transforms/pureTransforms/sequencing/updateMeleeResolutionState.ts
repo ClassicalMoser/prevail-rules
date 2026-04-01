@@ -39,5 +39,5 @@ export function updateMeleeResolutionState<TBoard extends Board>(
     currentMeleeResolutionState: meleeResolutionState,
   } as ResolveMeleePhaseState;
 
-  return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
+  return updatePhaseState(state, newPhaseState as PhaseState);
 }
