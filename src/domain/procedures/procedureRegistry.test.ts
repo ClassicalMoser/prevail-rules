@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { GameEffectEvent, GameEffectType } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { gameEffects } from '@events';
 import {
   createEmptyGameState,

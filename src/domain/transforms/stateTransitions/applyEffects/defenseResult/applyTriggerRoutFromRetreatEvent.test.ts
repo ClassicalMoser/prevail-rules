@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { TriggerRoutFromRetreatEvent } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import {
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,

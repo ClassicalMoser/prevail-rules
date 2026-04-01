@@ -1,10 +1,9 @@
-import type { StandardBoard } from '@entities';
-import type { GameStateWithBoard, StandardGameState } from '@game';
 import type {
+  StandardGameState,
   StandardMeleeResolutionState,
   StandardMovementResolutionState,
   StandardRangedAttackResolutionState,
-} from '@game/substeps';
+} from '@game';
 import { createTestUnit } from '@testing/unitHelpers';
 
 /**

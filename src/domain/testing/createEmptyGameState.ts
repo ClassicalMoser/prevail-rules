@@ -1,5 +1,5 @@
-import type { PlayerSide, StandardBoard } from '@entities';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { PlayerSide } from '@entities';
+import type { StandardGameState } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import { createEmptyStandardBoard } from '@transforms';
 

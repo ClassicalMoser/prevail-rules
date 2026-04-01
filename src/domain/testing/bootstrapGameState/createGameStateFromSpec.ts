@@ -1,5 +1,5 @@
 import type { PlayerSide, StandardBoard } from '@entities';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import type { UnitPlacementSpec } from './unitPlacementSpec';
 import { createBoardWithUnits } from '@testing/createBoard';
 import { createEmptyGameState } from '@testing/createEmptyGameState';

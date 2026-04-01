@@ -1,4 +1,3 @@
-import type { StandardBoard } from '@entities';
 import type { IssueCommandsPhaseState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 

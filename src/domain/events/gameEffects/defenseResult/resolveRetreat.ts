@@ -9,13 +9,14 @@ import type {
 } from '@entities';
 import type { AssertExact } from '@utils';
 
+import type { ZodDiscriminatedUnion } from 'zod';
 import {
   largeUnitWithPlacementSchema,
   smallUnitWithPlacementSchema,
   standardUnitWithPlacementSchema,
 } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { type ZodDiscriminatedUnion, z } from 'zod';
+import { z } from 'zod';
 
 /** The type of the resolve retreat game effect. */
 export const RESOLVE_RETREAT_EFFECT_TYPE = 'resolveRetreat' as const;

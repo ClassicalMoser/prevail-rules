@@ -5,11 +5,12 @@ import type {
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
-import type { RallyResolutionState, RoutState } from '@game';
 import type {
+  RallyResolutionState,
+  RoutState,
   StandardRetreatState,
   StandardReverseState,
-} from '@game/substeps';
+} from '@game';
 
 /**
  * Creates a RetreatState with sensible defaults.

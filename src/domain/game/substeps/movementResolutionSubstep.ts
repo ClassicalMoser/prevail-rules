@@ -14,11 +14,11 @@ import type {
 } from './engagement';
 import {
   largeUnitPlacementSchema,
+  largeUnitWithPlacementSchema,
   smallUnitPlacementSchema,
+  smallUnitWithPlacementSchema,
   standardUnitPlacementSchema,
   standardUnitWithPlacementSchema,
-  smallUnitWithPlacementSchema,
-  largeUnitWithPlacementSchema,
 } from '@entities';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';

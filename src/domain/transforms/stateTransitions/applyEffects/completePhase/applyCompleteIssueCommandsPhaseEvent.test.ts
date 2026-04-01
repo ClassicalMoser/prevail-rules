@@ -1,10 +1,6 @@
 import type { BoardCoordinate, StandardBoard } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import type {
-  GameStateWithBoard,
-  IssueCommandsPhaseState,
-  StandardGameState,
-} from '@game';
+import type { IssueCommandsPhaseState, StandardGameState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import {

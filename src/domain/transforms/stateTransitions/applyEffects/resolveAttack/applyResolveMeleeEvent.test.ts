@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { getMeleeResolutionState } from '@queries';
 import {
   createEmptyGameState,

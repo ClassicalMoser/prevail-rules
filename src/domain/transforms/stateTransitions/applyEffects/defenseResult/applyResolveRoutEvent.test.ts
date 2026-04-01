@@ -1,10 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { ResolveRoutEvent } from '@events';
-import type {
-  GameStateWithBoard,
-  MovementResolutionState,
-  StandardGameState,
-} from '@game';
+import type { MovementResolutionState, StandardGameState } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,

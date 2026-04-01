@@ -7,11 +7,11 @@ import type {
 } from '@entities';
 import type { AssertExact } from '@utils';
 import type { EngagementResolutionState } from './engagementResolutionState';
-import { unitInstanceSchema } from '@entities';
 import {
   largeUnitPlacementSchema,
   smallUnitPlacementSchema,
   standardUnitPlacementSchema,
+  unitInstanceSchema,
 } from '@entities';
 import { z } from 'zod';
 import { engagementResolutionStateSchema } from './engagementResolutionState';

@@ -1,5 +1,9 @@
 import type { Board, PlayerSide } from '@entities';
-import type { AttackApplyState, GameStateWithBoard, MeleeResolutionState } from '@game';
+import type {
+  AttackApplyState,
+  GameStateWithBoard,
+  MeleeResolutionState,
+} from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import {
   getMeleeResolutionState,

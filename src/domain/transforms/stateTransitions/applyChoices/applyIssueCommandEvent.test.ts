@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { IssueCommandEvent } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getIssueCommandsPhaseState } from '@queries';

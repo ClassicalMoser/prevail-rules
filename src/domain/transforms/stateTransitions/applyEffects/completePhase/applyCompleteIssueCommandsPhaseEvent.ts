@@ -1,6 +1,10 @@
 import type { Board } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import type { GameStateWithBoard, PhaseState, ResolveMeleePhaseState } from '@game';
+import type {
+  GameStateWithBoard,
+  PhaseState,
+  ResolveMeleePhaseState,
+} from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';
 
 import { getCurrentPhaseState } from '@queries';

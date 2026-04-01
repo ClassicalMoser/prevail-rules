@@ -8,15 +8,16 @@ import type {
   StandardUnitWithPlacement,
 } from '@entities';
 import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import type { AttackResolutionContext } from './attackResolutionContext';
 import {
   largeUnitWithPlacementSchema,
   smallUnitWithPlacementSchema,
   standardUnitWithPlacementSchema,
 } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 
-import { type ZodDiscriminatedUnion, z } from 'zod';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 import { attackResolutionContextSchema } from './attackResolutionContext';
 
 /** The type of the resolve reverse game effect. */

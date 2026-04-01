@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { CLEANUP_PHASE } from '@game';
 
 import { getBoardSpace } from '@queries';

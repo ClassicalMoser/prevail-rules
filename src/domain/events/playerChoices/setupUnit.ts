@@ -9,6 +9,7 @@ import type {
   StandardUnitWithPlacement,
 } from '@entities';
 import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import {
   largeUnitWithPlacementSchema,
   playerSideSchema,
@@ -16,7 +17,7 @@ import {
   standardUnitWithPlacementSchema,
 } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { type ZodDiscriminatedUnion, z } from 'zod';
+import { z } from 'zod';
 
 /** The type of the setup units event. */
 export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits' as const;

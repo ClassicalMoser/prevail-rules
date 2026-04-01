@@ -1,11 +1,5 @@
 import type { GameType } from '@entities';
-import type {
-  Game,
-  GameOfType,
-  MiniGame,
-  StandardGame,
-  TutorialGame,
-} from '@game';
+import type { Game, MiniGame, StandardGame, TutorialGame } from '@game';
 import { miniGameSchema, standardGameSchema, tutorialGameSchema } from '@game';
 
 /**

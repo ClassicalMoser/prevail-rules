@@ -60,16 +60,24 @@ Generic aliases `Event<TBoard>` / `MoveUnitEvent<TBoard>` etc. still work via co
 
 ## Layers
 
-Each layer ends with `tsc` clean and full `npm test`.
+Each layer ends with `tsc` clean and full `npm test`. **Layers 1–5** are complete as a migration milestone; **Layer 6** is ongoing optional cleanup.
 
-| Layer | Scope                                                                                                                | Status   |
-| ----- | -------------------------------------------------------------------------------------------------------------------- | -------- |
-| 1     | Placement atoms                                                                                                      | **Done** |
-| 2     | Substeps + `CommandResolutionState` (see Layer 2 above)                                                              | **Done** |
-| 3     | Spatial player choices + spatial game effects (see Layer 3 above)                                                    | **Done** |
-| 4     | Pass-through envelopes; non-generic `RoundState`; wide event log; `GameState` DU + `GameStateWithBoard<T>`           | **Done** |
-| 5     | `Game` as `gameType` DU; `BoardForGameType<T>` from `Game`; `validateGameBoardMatchesGameType`; traits on `Game` TBD | **Done** |
-| 6     | De-genericize queries/transforms where possible                                                                      | Pending  |
+| Layer | Scope                                                                                                                | Status      |
+| ----- | -------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 1     | Placement atoms                                                                                                      | **Done**    |
+| 2     | Substeps + `CommandResolutionState` (see Layer 2 above)                                                              | **Done**    |
+| 3     | Spatial player choices + spatial game effects (see Layer 3 above)                                                    | **Done**    |
+| 4     | Pass-through envelopes; non-generic `RoundState`; wide event log; `GameState` DU + `GameStateWithBoard<T>`           | **Done**    |
+| 5     | `Game` as `gameType` DU; `BoardForGameType<T>` from `Game`; `validateGameBoardMatchesGameType`; traits on `Game` TBD | **Done**    |
+| 6     | De-genericize queries/transforms incrementally (optional; see below)                                                 | **Backlog** |
+
+## Layer 6 (incremental backlog)
+
+Layers **1–5** are the **planned migration**: spatial and root game shapes are discriminated; persistence and composable seams are documented.
+
+**Layer 6** is **not** a single deliverable. Many domain functions still take **`GameStateWithBoard<TBoard>`** or **`<TBoard extends Board>`** so callers keep compile-time correlation between state, coordinates, and placements. Removing those parameters is **optional** and should happen **small PR by small PR** when a function truly only needs wide **`GameState`** / **`Board`** and tests stay green.
+
+**`BoardForGameType<T>`** remains the right tool for **application** code that keys on **`GameType`**. The “remove **`BoardForGameType`**” line in the target outcome below is a **long-term** aspiration, not a Layer 6 gate.
 
 ## Target outcome (end state)
 

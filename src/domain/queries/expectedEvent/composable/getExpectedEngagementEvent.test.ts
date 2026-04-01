@@ -1,5 +1,4 @@
-import type { StandardBoard } from '@entities';
-import type { StandardEngagementState } from '@game/substeps';
+import type { StandardEngagementState } from '@game';
 import {
   createFlankEngagementState,
   createFrontEngagementState,

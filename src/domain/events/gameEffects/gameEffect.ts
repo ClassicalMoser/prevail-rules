@@ -17,6 +17,7 @@
 import type { Board } from '@entities';
 import type { GameEffectType } from '@ruleValues';
 import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import type {
   DiscardPlayedCardsEvent,
   ResolveInitiativeEvent,
@@ -51,7 +52,7 @@ import type {
   ResolveRangedAttackEvent,
 } from './resolveAttack';
 import { gameEffects } from '@ruleValues';
-import { type ZodDiscriminatedUnion, z } from 'zod';
+import { z } from 'zod';
 import {
   discardPlayedCardsEventSchema,
   resolveInitiativeEventSchema,

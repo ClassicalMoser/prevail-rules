@@ -1,6 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { GameStateWithBoard, StandardGameState } from '@game';
-import type { StandardAttackApplyState } from '@game/substeps';
+import type { StandardAttackApplyState, StandardGameState } from '@game';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRout,

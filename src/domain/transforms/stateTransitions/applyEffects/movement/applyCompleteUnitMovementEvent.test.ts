@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { CompleteUnitMovementEvent } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { getMovementResolutionState } from '@queries';
 import {
   createEmptyGameState,

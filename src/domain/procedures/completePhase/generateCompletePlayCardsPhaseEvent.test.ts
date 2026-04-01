@@ -1,5 +1,4 @@
-import type { StandardBoard } from '@entities';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import {
   COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,

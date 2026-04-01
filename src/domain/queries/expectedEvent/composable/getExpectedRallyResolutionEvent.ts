@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
 import type { RallyResolutionState } from '@game';
 import { getExpectedRoutEvent } from '.';
@@ -11,7 +10,7 @@ import { getExpectedRoutEvent } from '.';
  * @param rallyState - The rally resolution state
  * @returns Information about what event is expected
  */
-export function getExpectedRallyResolutionEvent<TBoard extends Board>(
+export function getExpectedRallyResolutionEvent(
   rallyState: RallyResolutionState,
 ): ExpectedEventInfo {
   // Fast rejection: if already completed, this is an invalid state

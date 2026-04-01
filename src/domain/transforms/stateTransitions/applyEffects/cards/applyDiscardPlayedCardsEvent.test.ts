@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { DiscardPlayedCardsEvent } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import {
   createCleanupPhaseState,
   createEmptyGameState,

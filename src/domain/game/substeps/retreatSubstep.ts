@@ -9,11 +9,11 @@ import type { AssertExact } from '@utils';
 import type { RoutState } from './routSubstep';
 import {
   largeUnitPlacementSchema,
+  largeUnitWithPlacementSchema,
   smallUnitPlacementSchema,
+  smallUnitWithPlacementSchema,
   standardUnitPlacementSchema,
   standardUnitWithPlacementSchema,
-  smallUnitWithPlacementSchema,
-  largeUnitWithPlacementSchema,
 } from '@entities';
 import { z } from 'zod';
 import { routStateSchema } from './routSubstep';

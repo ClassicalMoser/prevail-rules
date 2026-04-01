@@ -9,6 +9,7 @@ import type {
   StandardUnitPlacement,
 } from '@entities';
 import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import {
   largeUnitPlacementSchema,
   playerSideSchema,
@@ -16,7 +17,7 @@ import {
   standardUnitPlacementSchema,
 } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { type ZodDiscriminatedUnion, z } from 'zod';
+import { z } from 'zod';
 
 export const CHOOSE_RETREAT_OPTION_CHOICE_TYPE = 'chooseRetreatOption' as const;
 

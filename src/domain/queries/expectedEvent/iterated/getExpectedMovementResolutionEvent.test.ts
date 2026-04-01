@@ -1,6 +1,4 @@
-import type { StandardBoard } from '@entities';
-import type { GameStateWithBoard, StandardGameState } from '@game';
-import type { StandardEngagementState } from '@game/substeps';
+import type { StandardEngagementState, StandardGameState } from '@game';
 import {
   createEmptyGameState,
   createGameStateWithUnits,

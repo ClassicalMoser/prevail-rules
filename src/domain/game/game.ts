@@ -1,11 +1,10 @@
 import type { Army, GameType } from '@entities';
 import type { SmallGameState, StandardGameState } from './gameState';
 
-import { armySchema, gameTypeEnum } from '@entities';
-import { getBoardSizeForGameType } from '@ruleValues/gameTypes';
+import { armySchema } from '@entities';
+import { getBoardSizeForGameType } from '@ruleValues';
 import { z } from 'zod';
 import {
-  gameStateSchema,
   gameStateSchemaForSmallBoard,
   gameStateSchemaForStandardBoard,
 } from './gameState';

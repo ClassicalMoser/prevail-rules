@@ -4,7 +4,7 @@ import type {
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
   StandardEngagementState,
-} from '@game/substeps';
+} from '@game';
 import { createUnitWithPlacement } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 import { createRoutState } from './substepStates';

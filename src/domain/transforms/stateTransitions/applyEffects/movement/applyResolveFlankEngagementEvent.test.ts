@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { ResolveFlankEngagementEvent } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { hasSingleUnit } from '@entities';
 import { getBoardSpace } from '@queries';
 import {

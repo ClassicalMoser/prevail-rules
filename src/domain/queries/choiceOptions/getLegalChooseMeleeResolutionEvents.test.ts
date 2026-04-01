@@ -1,6 +1,6 @@
 import type { BoardCoordinate, StandardBoard } from '@entities';
 import type { Event } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { createEmptyGameState, createResolveMeleePhaseState } from '@testing';

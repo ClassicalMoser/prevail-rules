@@ -8,13 +8,14 @@ import type {
   StandardBoardCoordinate,
 } from '@entities';
 import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import {
   largeBoardCoordinateSchema,
   smallBoardCoordinateSchema,
   standardBoardCoordinateSchema,
 } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { type ZodDiscriminatedUnion, z } from 'zod';
+import { z } from 'zod';
 
 /**
  * Literal discriminator for {@link CompleteIssueCommandsPhaseEvent.effectType}.

@@ -1,12 +1,11 @@
-import type { StandardBoard } from '@entities';
 import type {
   CleanupPhaseState,
   IssueCommandsPhaseState,
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
   StandardGameState,
+  StandardResolveMeleePhaseState,
 } from '@game';
-import type { StandardResolveMeleePhaseState } from '@game/phases/resolveMeleePhase';
 import {
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,

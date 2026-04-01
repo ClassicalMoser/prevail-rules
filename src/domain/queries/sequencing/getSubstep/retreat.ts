@@ -14,7 +14,7 @@ import {
  * @returns The retreat state
  * @throws Error if retreat state is missing
  */
-export function getRetreatStateFromAttackApply<TBoard extends Board>(
+export function getRetreatStateFromAttackApply(
   attackApplyState: AttackApplyState,
 ): RetreatState {
   if (!attackApplyState.retreatState) {

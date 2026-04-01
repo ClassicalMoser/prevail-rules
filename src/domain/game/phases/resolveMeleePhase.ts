@@ -5,22 +5,22 @@ import type {
   StandardBoard,
 } from '@entities';
 
+import type {
+  LargeMeleeResolutionState,
+  SmallMeleeResolutionState,
+  StandardMeleeResolutionState,
+} from '@game/substeps';
 import type { AssertExact } from '@utils';
 import {
   largeBoardCoordinateSchema,
   smallBoardCoordinateSchema,
   standardBoardCoordinateSchema,
 } from '@entities';
-import type {
-  LargeMeleeResolutionState,
-  SmallMeleeResolutionState,
-  StandardMeleeResolutionState,
-} from '../substeps/meleeResolutionSubstep';
 import {
   largeMeleeResolutionStateSchema,
   smallMeleeResolutionStateSchema,
   standardMeleeResolutionStateSchema,
-} from '../substeps/meleeResolutionSubstep';
+} from '@game/substeps';
 import { z } from 'zod';
 
 /** Iterable list of valid steps in the resolve melee phase. */

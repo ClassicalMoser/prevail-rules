@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { createEmptyGameState } from '@testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {

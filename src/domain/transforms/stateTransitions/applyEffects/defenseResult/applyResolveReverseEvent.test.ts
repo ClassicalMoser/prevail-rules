@@ -4,7 +4,7 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import type { ResolveReverseEvent } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,

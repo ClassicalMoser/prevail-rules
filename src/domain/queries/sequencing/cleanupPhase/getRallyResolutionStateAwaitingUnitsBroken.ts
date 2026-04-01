@@ -14,7 +14,10 @@ import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionState
  */
 export function getRallyResolutionStateAwaitingUnitsBroken<
   TBoard extends Board,
->(state: GameStateWithBoard<TBoard>, player: 'white' | 'black'): RallyResolutionState {
+>(
+  state: GameStateWithBoard<TBoard>,
+  player: 'white' | 'black',
+): RallyResolutionState {
   const rallyState = getRallyResolutionStateForCurrentStep(state, player);
   if (!rallyState.rallyResolved) {
     throw new Error('Rally has not been resolved yet');

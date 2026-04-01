@@ -1,7 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
-import type { StandardMeleeResolutionState } from '@game/substeps';
+import type { StandardGameState, StandardMeleeResolutionState } from '@game';
 import {
   getAttackApplyStateFromRangedAttack,
   getMeleeResolutionState,

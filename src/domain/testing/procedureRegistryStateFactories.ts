@@ -9,11 +9,7 @@ import type { GameEffectType } from '@events';
  *
  * No Vitest imports.
  */
-import type {
-  GameStateWithBoard,
-  IssueCommandsPhaseState,
-  StandardGameState,
-} from '@game';
+import type { IssueCommandsPhaseState, StandardGameState } from '@game';
 import {
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,

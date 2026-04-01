@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
 import type { RetreatState } from '@game';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
@@ -11,7 +10,7 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
  * @param retreatState - The retreat state
  * @returns Information about what event is expected
  */
-export function getExpectedRetreatEvent<TBoard extends Board>(
+export function getExpectedRetreatEvent(
   retreatState: RetreatState,
 ): ExpectedEventInfo {
   // Check if retreat is completed (all work done, ready for parent to handle)

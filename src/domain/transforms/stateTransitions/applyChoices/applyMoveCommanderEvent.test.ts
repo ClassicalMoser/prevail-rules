@@ -1,6 +1,6 @@
 import type { StandardBoard, StandardBoardCoordinate } from '@entities';
 import type { MoveCommanderEvent } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 
 import { createBoardWithCommander, createEmptyGameState } from '@testing';

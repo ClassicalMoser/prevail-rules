@@ -1,12 +1,11 @@
 import type {
   PlayerSide,
-  StandardBoard,
   StandardBoardCoordinate,
   UnitFacing,
   UnitInstance,
   UnitType,
 } from '@entities';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { createEmptyGameState } from '@testing/createEmptyGameState';
 import { createBoardWithEngagedUnits } from './boardWithEngagedUnits';
 import { createBoardWithSingleUnit } from './boardWithSingleUnit';

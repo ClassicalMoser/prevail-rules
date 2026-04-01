@@ -1,5 +1,6 @@
 import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import type { ChooseCardEvent } from './chooseCard';
 import type { ChooseMeleeResolutionEvent } from './chooseMeleeResolution';
 import type { ChooseRallyEvent } from './chooseRally';
@@ -14,9 +15,9 @@ import type { MoveCommanderEvent } from './moveCommander';
 import type { MoveUnitEvent } from './moveUnit';
 import type { PerformRangedAttackEvent } from './performRangedAttack';
 import type { PlayerChoiceType } from './playerChoiceTypes';
-import type { SetupUnitsEvent } from './setupUnit';
 
-import { type ZodDiscriminatedUnion, z } from 'zod';
+import type { SetupUnitsEvent } from './setupUnit';
+import { z } from 'zod';
 import { chooseCardEventSchema } from './chooseCard';
 import { chooseMeleeResolutionEventSchema } from './chooseMeleeResolution';
 import { chooseRallyEventSchema } from './chooseRally';

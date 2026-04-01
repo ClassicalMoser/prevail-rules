@@ -9,6 +9,7 @@ import type {
   StandardBoardCoordinate,
 } from '@entities';
 import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import {
   largeBoardCoordinateSchema,
   playerSideSchema,
@@ -16,7 +17,7 @@ import {
   standardBoardCoordinateSchema,
 } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { type ZodDiscriminatedUnion, z } from 'zod';
+import { z } from 'zod';
 
 /** The type of the choose melee resolution event. */
 export const CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE =

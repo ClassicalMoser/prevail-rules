@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
 import type { RoutState } from '@game';
 
@@ -10,9 +9,7 @@ import type { RoutState } from '@game';
  * @param routState - The rout state
  * @returns Information about what event is expected.
  */
-export function getExpectedRoutEvent<TBoard extends Board>(
-  routState: RoutState,
-): ExpectedEventInfo {
+export function getExpectedRoutEvent(routState: RoutState): ExpectedEventInfo {
   // Check if rout is completed (all work done, ready for parent to handle)
   if (routState.completed) {
     throw new Error('Rout state is already complete');

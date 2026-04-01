@@ -70,11 +70,22 @@ export type { Phase, PhaseState } from './phases';
 export { playCardsPhaseStateSchema, playCardsPhaseSteps } from './phases';
 export type { PlayCardsPhaseState, PlayCardsPhaseStep } from './phases';
 export { resolveMeleePhaseStateSchema, resolveMeleePhaseSteps } from './phases';
-export type { ResolveMeleePhaseState, ResolveMeleePhaseStep } from './phases';
+export type {
+  LargeResolveMeleePhaseState,
+  ResolveMeleePhaseState,
+  ResolveMeleePhaseStep,
+  SmallResolveMeleePhaseState,
+  StandardResolveMeleePhaseState,
+} from './phases';
 export type { RoundState } from './roundState';
 export { roundStateSchema } from './roundState';
 export { attackApplyStateSchema } from './substeps';
-export type { AttackApplyState } from './substeps';
+export type {
+  AttackApplyState,
+  LargeAttackApplyState,
+  SmallAttackApplyState,
+  StandardAttackApplyState,
+} from './substeps';
 export { commandResolutionStateSchema } from './substeps';
 export type { CommandResolutionState } from './substeps';
 export {
@@ -89,19 +100,47 @@ export type {
   EngagementState,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
+  LargeEngagementState,
   RearEngagementResolutionState,
+  SmallEngagementState,
+  StandardEngagementState,
 } from './substeps';
 export { meleeResolutionStateSchema } from './substeps';
-export type { MeleeResolutionState } from './substeps';
+export type {
+  LargeMeleeResolutionState,
+  MeleeResolutionState,
+  SmallMeleeResolutionState,
+  StandardMeleeResolutionState,
+} from './substeps';
 export { movementResolutionStateSchema } from './substeps';
-export type { MovementResolutionState } from './substeps';
+export type {
+  LargeMovementResolutionState,
+  MovementResolutionState,
+  SmallMovementResolutionState,
+  StandardMovementResolutionState,
+} from './substeps';
 export { rallyResolutionStateSchema } from './substeps';
 export type { RallyResolutionState } from './substeps';
 export { rangedAttackResolutionStateSchema } from './substeps';
-export type { RangedAttackResolutionState } from './substeps';
+export type {
+  LargeRangedAttackResolutionState,
+  RangedAttackResolutionState,
+  SmallRangedAttackResolutionState,
+  StandardRangedAttackResolutionState,
+} from './substeps';
 export { retreatStateSchema } from './substeps';
-export type { RetreatState } from './substeps';
+export type {
+  LargeRetreatState,
+  RetreatState,
+  SmallRetreatState,
+  StandardRetreatState,
+} from './substeps';
 export { reverseStateSchema } from './substeps';
-export type { ReverseState } from './substeps';
+export type {
+  LargeReverseState,
+  ReverseState,
+  SmallReverseState,
+  StandardReverseState,
+} from './substeps';
 export { routStateSchema } from './substeps';
 export type { RoutState } from './substeps';

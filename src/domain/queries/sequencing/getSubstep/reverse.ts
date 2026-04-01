@@ -10,7 +10,7 @@ import { getMeleeResolutionState } from '../getCommandResolutionState';
  * @returns The reverse state
  * @throws Error if reverse state is missing
  */
-export function getReverseStateFromAttackApply<TBoard extends Board>(
+export function getReverseStateFromAttackApply(
   attackApplyState: AttackApplyState,
 ): ReverseState {
   if (!attackApplyState.reverseState) {

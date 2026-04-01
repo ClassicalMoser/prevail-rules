@@ -1,5 +1,4 @@
-import type { StandardBoard } from '@entities';
-import type { StandardReverseState } from '@game/substeps';
+import type { StandardReverseState } from '@game';
 import {
   createEmptyGameState,
   createGameStateWithEngagedUnits,

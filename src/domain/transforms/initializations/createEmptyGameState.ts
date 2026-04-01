@@ -1,4 +1,4 @@
-import type { Board, GameType, SmallBoard, StandardBoard } from '@entities';
+import type { Board, GameType } from '@entities';
 import type {
   BoardForGameType,
   GameStateWithBoard,

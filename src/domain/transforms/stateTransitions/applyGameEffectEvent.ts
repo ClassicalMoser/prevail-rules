@@ -73,11 +73,20 @@ export function applyGameEffectEvent<TBoard extends Board>(
     case 'resolveMelee':
       return applyResolveMeleeEvent(event, state) as GameStateWithBoard<TBoard>;
     case 'resolveRangedAttack':
-      return applyResolveRangedAttackEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyResolveRangedAttackEvent(
+        event,
+        state,
+      ) as GameStateWithBoard<TBoard>;
     case 'resolveRetreat':
-      return applyResolveRetreatEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyResolveRetreatEvent(
+        event,
+        state,
+      ) as GameStateWithBoard<TBoard>;
     case 'resolveReverse':
-      return applyResolveReverseEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyResolveReverseEvent(
+        event,
+        state,
+      ) as GameStateWithBoard<TBoard>;
     case 'resolveRout':
       return applyResolveRoutEvent(event, state);
     case 'resolveEngageRetreatOption':
@@ -88,7 +97,10 @@ export function applyGameEffectEvent<TBoard extends Board>(
         state,
       ) as GameStateWithBoard<TBoard>;
     case 'startEngagement':
-      return applyStartEngagementEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyStartEngagementEvent(
+        event,
+        state,
+      ) as GameStateWithBoard<TBoard>;
     case 'triggerRoutFromRetreat':
       return applyTriggerRoutFromRetreatEvent(event, state);
     default: {

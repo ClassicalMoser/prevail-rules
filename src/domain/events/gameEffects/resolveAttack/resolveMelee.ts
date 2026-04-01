@@ -14,6 +14,7 @@ import type {
   StandardUnitWithPlacement,
 } from '@entities';
 import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import {
   largeBoardCoordinateSchema,
   largeUnitPlacementSchema,
@@ -26,7 +27,7 @@ import {
   standardUnitWithPlacementSchema,
 } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { type ZodDiscriminatedUnion, z } from 'zod';
+import { z } from 'zod';
 
 /** The type of the resolve melee game effect. */
 export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;

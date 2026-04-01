@@ -4,7 +4,7 @@ import type {
   IssueCommandEvent,
   PlayerChoiceEvent,
 } from '@events';
-import type { GameStateWithBoard, StandardGameState } from '@game';
+import type { StandardGameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import * as expectedEventQueries from '@queries';

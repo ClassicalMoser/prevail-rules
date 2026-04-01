@@ -60,9 +60,7 @@ export function getAttackApplyStateFromContext<TBoard extends Board>(
  */
 export function updateAttackApplySubstep<TBoard extends Board, TSubstep>(
   state: GameStateWithBoard<TBoard>,
-  updateFn: (
-    attackApplyState: AttackApplyState,
-  ) => AttackApplyState,
+  updateFn: (attackApplyState: AttackApplyState) => AttackApplyState,
   getPlayer: (substep: TSubstep) => PlayerSide,
   substepState: TSubstep,
 ): GameStateWithBoard<TBoard> {
