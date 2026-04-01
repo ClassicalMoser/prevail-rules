@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import type { StandardEngagementState } from '@game/substeps';
 import {
   createEmptyGameState,
@@ -29,7 +29,7 @@ describe('getExpectedMovementResolutionEvent', () => {
     vi.clearAllMocks();
   });
 
-  function createGameStateWithTargetEnemy(): GameState<StandardBoard> {
+  function createGameStateWithTargetEnemy(): StandardGameState {
     const state = createGameStateWithUnits([
       {
         unit: createTestUnit('white'),

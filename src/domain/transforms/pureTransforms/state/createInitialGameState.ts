@@ -1,5 +1,5 @@
 import type { Army, GameType, UnitInstance } from '@entities';
-import type { BoardForGameType, GameState } from '@game';
+import type { BoardForGameType, GameStateWithBoard } from '@game';
 
 import {
   createEmptyGameState,
@@ -15,12 +15,12 @@ export function createInitialGameState<TGameType extends GameType>(options: {
   gameType: TGameType;
   whiteArmy: Army;
   blackArmy: Army;
-}): GameState<BoardForGameType[TGameType]> {
+}): GameStateWithBoard<BoardForGameType[TGameType]> {
   const { whiteArmy, blackArmy } = options;
 
   type BoardSize = BoardForGameType[TGameType];
 
-  const emptyGameState: GameState<BoardSize> = createEmptyGameState(
+  const emptyGameState: GameStateWithBoard<BoardSize> = createEmptyGameState(
     options.gameType,
   );
 
@@ -36,7 +36,9 @@ export function createInitialGameState<TGameType extends GameType>(options: {
     }
   }
 
-  const gameStateWithReservedUnits: GameState<BoardForGameType[TGameType]> = {
+  const gameStateWithReservedUnits: GameStateWithBoard<
+    BoardForGameType[TGameType]
+  > = {
     ...emptyGameState,
     reservedUnits,
   };

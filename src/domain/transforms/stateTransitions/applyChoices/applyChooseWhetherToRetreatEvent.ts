@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ChooseWhetherToRetreatEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { getFrontEngagementStateFromMovement } from '@queries';
 import { updateEngagementStateInMovement } from '@transforms/pureTransforms';
 
@@ -15,8 +15,8 @@ import { updateEngagementStateInMovement } from '@transforms/pureTransforms';
  */
 export function applyChooseWhetherToRetreatEvent<TBoard extends Board>(
   event: ChooseWhetherToRetreatEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   // Finds the front engagement state from the movement state
   const engagementState = getFrontEngagementStateFromMovement(state);
 

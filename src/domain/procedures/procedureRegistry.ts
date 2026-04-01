@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { GameEffectEvent, GameEffectType } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   generateDiscardPlayedCardsEvent,
   generateResolveInitiativeEvent,
@@ -65,12 +65,12 @@ export function generateEventFromProcedure<
   TBoard extends Board,
   TGameEffectType extends GameEffectType,
 >(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
   effectType: TGameEffectType,
 ): GameEffectEvent<TBoard, TGameEffectType>;
 export function generateEventFromProcedure<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
   effectType: GameEffectType,
 ): GameEffectEventUnion<TBoard> {

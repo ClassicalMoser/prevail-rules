@@ -1,7 +1,7 @@
 import type { Board } from '@entities';
 import type {
   AttackApplyState,
-  GameState,
+  GameStateWithBoard,
   MeleeResolutionState,
   PhaseState,
   RangedAttackResolutionState,
@@ -24,9 +24,9 @@ import { updatePhaseState } from '../state';
  * @returns A new game state with the updated attack apply state
  */
 export function updateAttackApplyState<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   attackApplyState: AttackApplyState,
-): GameState<TBoard> {
+): GameStateWithBoard<TBoard> {
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {

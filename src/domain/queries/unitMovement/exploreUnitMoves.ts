@@ -5,7 +5,7 @@ import type {
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { unitFacings } from '@entities';
 import {
   getForwardSpace,
@@ -39,7 +39,7 @@ export interface MoveResult<TBoard extends Board> {
  * @returns Set of all explored move destinations with their metadata, including the amount of flexibility and speed used to reach each destination
  */
 export function exploreUnitMoves<TBoard extends Board>(
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
   unitWithPlacement: UnitWithPlacement<TBoard>,
   direction: 'advance' | 'retreat',
 ): Set<MoveResult<TBoard>> {

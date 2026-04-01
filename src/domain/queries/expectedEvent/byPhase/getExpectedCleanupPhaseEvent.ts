@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getCleanupPhaseState } from '@queries/sequencing';
 import { getExpectedRallyResolutionEvent } from '../composable';
@@ -12,7 +12,7 @@ import { getExpectedRallyResolutionEvent } from '../composable';
  * @returns Information about what event is expected
  */
 export function getExpectedCleanupPhaseEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): ExpectedEventInfo {
   const phaseState = getCleanupPhaseState(state);
   const firstPlayer = state.currentInitiative;

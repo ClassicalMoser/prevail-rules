@@ -1,5 +1,5 @@
 import type { GameType } from '@entities';
-import type { BoardForGameType, Game, GameState } from '@game';
+import type { BoardForGameType, Game, GameStateWithBoard } from '@game';
 import type { EnginePorts, GameStateChange, PortResponse } from '../ports';
 import { createEmptyGameState } from '@transforms';
 
@@ -7,20 +7,20 @@ export const startNewGame = async <T extends GameType>(
   gameType: T,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> => {
-  let gameState: GameState<BoardForGameType[T]>;
+  let gameState: GameStateWithBoard<BoardForGameType[T]>;
   switch (gameType as T) {
     case 'standard':
-      gameState = createEmptyGameState('standard') as GameState<
+      gameState = createEmptyGameState('standard') as GameStateWithBoard<
         BoardForGameType[T]
       >;
       break;
     case 'mini':
-      gameState = createEmptyGameState('mini') as GameState<
+      gameState = createEmptyGameState('mini') as GameStateWithBoard<
         BoardForGameType[T]
       >;
       break;
     case 'tutorial':
-      gameState = createEmptyGameState('tutorial') as GameState<
+      gameState = createEmptyGameState('tutorial') as GameStateWithBoard<
         BoardForGameType[T]
       >;
       break;
@@ -59,7 +59,7 @@ export const startNewGame = async <T extends GameType>(
   const change: GameStateChange = {
     gameId: game.id,
     gameType: game.gameType,
-    gameState: game.gameState as GameState<BoardForGameType[GameType]>,
+    gameState: game.gameState as GameStateWithBoard<BoardForGameType[GameType]>,
   };
   for (const subscriber of ports.gameStateSubscribers) {
     if (

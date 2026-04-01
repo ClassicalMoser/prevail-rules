@@ -1,5 +1,5 @@
 import type { Board, PlayerSide } from '@entities';
-import type { AttackApplyState, GameState } from '@game';
+import type { AttackApplyState, GameStateWithBoard } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -20,7 +20,7 @@ import { updateAttackApplyState } from './updateAttackApplyState';
  * @throws Error if not in a phase that supports attack apply substeps
  */
 export function getAttackApplyStateFromContext<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   player?: PlayerSide,
 ): AttackApplyState {
   const phaseState = getCurrentPhaseState(state);
@@ -59,13 +59,13 @@ export function getAttackApplyStateFromContext<TBoard extends Board>(
  * @returns A new game state with the updated attack apply state
  */
 export function updateAttackApplySubstep<TBoard extends Board, TSubstep>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   updateFn: (
     attackApplyState: AttackApplyState,
   ) => AttackApplyState,
   getPlayer: (substep: TSubstep) => PlayerSide,
   substepState: TSubstep,
-): GameState<TBoard> {
+): GameStateWithBoard<TBoard> {
   const phaseState = getCurrentPhaseState(state);
 
   // Handle ranged attack resolution (in issueCommands phase)

@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { getMeleeResolutionState } from '@queries';
 import {
   createEmptyGameState,
@@ -20,7 +20,7 @@ import { applyResolveMeleeEvent } from './applyResolveMeleeEvent';
  */
 describe('applyResolveMeleeEvent', () => {
   /** resolveMelee phase with default melee CRS and both inPlay command cards set. */
-  function baseMeleeGameState(): GameState<StandardBoard> {
+  function baseMeleeGameState(): StandardGameState {
     const base = createEmptyGameState();
     const withCards = updateCardState(base, (c) => ({
       ...c,

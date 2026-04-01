@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveRallyEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RALLY_EFFECT_TYPE } from '@events';
 import { getCleanupPhaseState, getOtherPlayer } from '@queries';
 
@@ -24,7 +24,7 @@ import { getCleanupPhaseState, getOtherPlayer } from '@queries';
  * ```
  */
 export function generateResolveRallyEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): ResolveRallyEvent<TBoard, 'resolveRally'> {
   const phaseState = getCleanupPhaseState(state);

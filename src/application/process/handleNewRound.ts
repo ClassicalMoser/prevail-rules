@@ -1,5 +1,5 @@
 import type { GameType } from '@entities';
-import type { BoardForGameType, GameState } from '@game';
+import type { BoardForGameType, GameState, GameStateWithBoard } from '@game';
 import type { EnginePorts, PortResponse } from '../ports';
 
 /**
@@ -14,7 +14,7 @@ import type { EnginePorts, PortResponse } from '../ports';
  */
 export async function handleNewRound<T extends GameType>(
   gameId: string,
-  gameState: GameState<BoardForGameType[T]>,
+  gameState: GameStateWithBoard<BoardForGameType[T]>,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> {
   const { roundSnapshotStorage, eventStreamStorage } = ports;
@@ -22,7 +22,7 @@ export async function handleNewRound<T extends GameType>(
   const roundSnapshotResult = await roundSnapshotStorage.saveRoundSnapshot(
     gameId,
     gameState.currentRoundNumber,
-    gameState,
+    gameState as GameState,
   );
   if (!roundSnapshotResult.result) {
     return {

@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
-import type { AttackApplyState, GameState } from '@game';
+import type { AttackApplyState, GameStateWithBoard } from '@game';
 import { canReverseUnit } from '@queries/sequencing';
 import {
   getExpectedRetreatEvent,
@@ -19,7 +19,7 @@ import {
  */
 export function getExpectedAttackApplyEvent<TBoard extends Board>(
   attackApplyState: AttackApplyState,
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
 ): ExpectedEventInfo {
   const attackResult = attackApplyState.attackResult;
 

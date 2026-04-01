@@ -4,7 +4,7 @@ import type {
   IssueCommandEvent,
   PlayerChoiceEvent,
 } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import * as expectedEventQueries from '@queries';
@@ -18,7 +18,7 @@ import { validatePlayerChoice } from './validatePlayerChoice';
  * validatePlayerChoice: Validates a player choice against the current game state.
  */
 describe('validatePlayerChoice', () => {
-  function stateInPlayCardsChooseCards(): GameState<StandardBoard> {
+  function stateInPlayCardsChooseCards(): StandardGameState {
     const base = createEmptyGameState();
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,

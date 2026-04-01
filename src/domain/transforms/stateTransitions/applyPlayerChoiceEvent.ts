@@ -4,7 +4,7 @@
 
 import type { Board } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   applyChooseCardEvent,
   applyChooseMeleeEvent,
@@ -27,8 +27,8 @@ import {
  */
 export function applyPlayerChoiceEvent<TBoard extends Board>(
   event: PlayerChoiceEvent<TBoard, PlayerChoiceType>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   switch (event.choiceType) {
     case 'chooseCard':
       return applyChooseCardEvent(event, state);

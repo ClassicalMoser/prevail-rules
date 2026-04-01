@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteMeleeResolutionEvent } from '@events';
-import type { GameState, ResolveMeleePhaseState } from '@game';
+import type { GameStateWithBoard, ResolveMeleePhaseState } from '@game';
 import { getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
@@ -15,8 +15,8 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyCompleteMeleeResolutionEvent<TBoard extends Board>(
   _event: CompleteMeleeResolutionEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const phaseState = getResolveMeleePhaseState(state);
 
   // Clear the current melee resolution state

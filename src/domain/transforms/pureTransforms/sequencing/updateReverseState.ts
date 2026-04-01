@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type {
-  GameState,
+  GameStateWithBoard,
   MeleeResolutionState,
   PhaseState,
   RangedAttackResolutionState,
@@ -24,9 +24,9 @@ import { updatePhaseState } from '../state';
  * @returns A new game state with the updated reverse state
  */
 export function updateReverseState<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   reverseState: ReverseState,
-): GameState<TBoard> {
+): GameStateWithBoard<TBoard> {
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {

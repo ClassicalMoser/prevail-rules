@@ -1,6 +1,6 @@
 import type { Board, CardState } from '@entities';
 import type { ResolveRallyEvent } from '@events';
-import type { GameState, RallyResolutionState } from '@game';
+import type { GameStateWithBoard, RallyResolutionState } from '@game';
 import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
@@ -27,8 +27,8 @@ import {
  */
 export function applyResolveRallyEvent<TBoard extends Board>(
   event: ResolveRallyEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const { player, card } = event;
   const phaseState = getCleanupPhaseState(state);
 

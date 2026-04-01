@@ -3,7 +3,7 @@ import type { ResolveRangedAttackEvent } from '@events';
 import type {
   AttackApplyState,
   AttackResult,
-  GameState,
+  GameStateWithBoard,
   IssueCommandsPhaseState,
   PhaseState,
   RangedAttackResolutionState,
@@ -27,8 +27,8 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyResolveRangedAttackEvent<TBoard extends Board>(
   event: ResolveRangedAttackEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const phaseState = getIssueCommandsPhaseState(state);
   const rangedAttackState = getRangedAttackResolutionState(state);
 

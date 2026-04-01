@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { AttackApplyState, GameState, RoutState } from '@game';
+import type { AttackApplyState, GameStateWithBoard, RoutState } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
 
@@ -26,7 +26,7 @@ export function getRoutStateFromAttackApply<TBoard extends Board>(
  */
 export function getRoutStateFromMeleeResolutionByInitiative<
   TBoard extends Board,
->(state: GameState<TBoard>): RoutState {
+>(state: GameStateWithBoard<TBoard>): RoutState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);

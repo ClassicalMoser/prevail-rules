@@ -1,6 +1,6 @@
 import type { Board, PlayerSide, UnitType } from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
@@ -31,7 +31,7 @@ import {
  * ```
  */
 export function generateResolveUnitsBrokenEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'> {
   const phaseState = getCleanupPhaseState(state);

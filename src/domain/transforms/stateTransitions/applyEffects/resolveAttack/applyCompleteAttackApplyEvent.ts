@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
-import type { AttackApplyState, GameState } from '@game';
+import type { AttackApplyState, GameStateWithBoard } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -25,8 +25,8 @@ import {
  */
 export function applyCompleteAttackApplyEvent<TBoard extends Board>(
   event: CompleteAttackApplyEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   if (event.attackType === 'ranged') {
     const currentAttackApplyState = getAttackApplyStateFromRangedAttack(state);
 

@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
@@ -14,7 +14,7 @@ import { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMove
  */
 describe('generateCompleteMoveCommandersPhaseEvent', () => {
   /** Black initiative, both inPlay set, MOVE_COMMANDERS_PHASE step `complete`. */
-  function createGameStateInCompleteStep(): GameState<StandardBoard> {
+  function createGameStateInCompleteStep(): StandardGameState {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const stateWithCards = updateCardState(state, (current) => ({
       ...current,

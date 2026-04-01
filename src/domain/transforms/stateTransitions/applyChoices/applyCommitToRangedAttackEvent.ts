@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CommitToRangedAttackEvent } from '@events';
-import type { GameState, RangedAttackResolutionState } from '@game';
+import type { GameStateWithBoard, RangedAttackResolutionState } from '@game';
 import { getRangedAttackResolutionState } from '@queries';
 import {
   discardCardsFromHand,
@@ -20,8 +20,8 @@ import {
  */
 export function applyCommitToRangedAttackEvent<TBoard extends Board>(
   event: CommitToRangedAttackEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const rangedAttackState = getRangedAttackResolutionState(state);
   const player = event.player;
   const attackingPlayer = rangedAttackState.attackingUnit.playerSide;

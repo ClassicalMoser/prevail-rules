@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { GameEffectEvent, GameEffectType } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { gameEffects } from '@events';
 import {
   createEmptyGameState,
@@ -32,7 +32,7 @@ describe('generateEventFromProcedure', () => {
   );
 
   it('given effectType not in registry, throws naming the non-existent key', () => {
-    const state: GameState<StandardBoard> = createEmptyGameState();
+    const state: StandardGameState = createEmptyGameState();
     expect(() =>
       generateEventFromProcedure(state, 0, 'notARealEffect' as never),
     ).toThrow('No procedure exists for effect type: notARealEffect');

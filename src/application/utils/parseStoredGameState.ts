@@ -1,5 +1,5 @@
 import type { GameType } from '@entities';
-import type { BoardForGameType, GameState } from '@game';
+import type { BoardForGameType, GameStateWithBoard } from '@game';
 import {
   gameStateSchemaForSmallBoard,
   gameStateSchemaForStandardBoard,
@@ -13,23 +13,23 @@ import {
 export function parseStoredGameState(
   gameType: 'standard',
   data: unknown,
-): GameState<BoardForGameType['standard']>;
+): GameStateWithBoard<BoardForGameType['standard']>;
 export function parseStoredGameState(
   gameType: 'mini',
   data: unknown,
-): GameState<BoardForGameType['mini']>;
+): GameStateWithBoard<BoardForGameType['mini']>;
 export function parseStoredGameState(
   gameType: 'tutorial',
   data: unknown,
-): GameState<BoardForGameType['tutorial']>;
+): GameStateWithBoard<BoardForGameType['tutorial']>;
 export function parseStoredGameState(
   gameType: GameType,
   data: unknown,
-): GameState<BoardForGameType[GameType]>;
+): GameStateWithBoard<BoardForGameType[GameType]>;
 export function parseStoredGameState(
   gameType: GameType,
   data: unknown,
-): GameState<BoardForGameType[GameType]> {
+): GameStateWithBoard<BoardForGameType[GameType]> {
   switch (gameType) {
     case 'standard': {
       const parsed = gameStateSchemaForStandardBoard.safeParse(data);

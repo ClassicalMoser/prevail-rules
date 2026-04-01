@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate, PlayerSide } from '@entities';
 import type { ExpectedEventInfo } from '@events';
-import type { GameState, MovementResolutionState } from '@game';
+import type { GameStateWithBoard, MovementResolutionState } from '@game';
 import { getBoardSpace } from '@queries/boardSpace';
 import { hasEnemyUnit } from '@validation';
 import { getExpectedEngagementEvent } from '../composable';
@@ -14,7 +14,7 @@ import { getExpectedEngagementEvent } from '../composable';
  * @returns Information about what event is expected
  */
 export function getExpectedMovementResolutionEvent<TBoard extends Board>(
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
   resolutionState: MovementResolutionState,
   player: PlayerSide,
 ): ExpectedEventInfo {

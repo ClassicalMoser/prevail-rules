@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteUnitMovementEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,
@@ -14,7 +14,7 @@ import {
  * @returns A complete CompleteUnitMovementEvent
  */
 export function generateCompleteUnitMovementEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): CompleteUnitMovementEvent<TBoard, 'completeUnitMovement'> {
   // Return is independent of state, so we can ignore it

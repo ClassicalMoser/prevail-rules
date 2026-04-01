@@ -1,5 +1,5 @@
 import type { GameType } from '@entities';
-import type { BoardForGameType, GameState } from '@game';
+import type { BoardForGameType, GameStateWithBoard } from '@game';
 
 /**
  * Payload after a successful persisted game-state update.
@@ -9,5 +9,5 @@ import type { BoardForGameType, GameState } from '@game';
 export interface GameStateChange {
   gameId: string;
   gameType: GameType;
-  gameState: GameState<BoardForGameType[GameType]>;
+  gameState: GameStateWithBoard<BoardForGameType[GameType]>;
 }

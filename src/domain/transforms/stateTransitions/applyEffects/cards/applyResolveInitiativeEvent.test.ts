@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { ResolveInitiativeEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
@@ -15,7 +15,7 @@ import { applyResolveInitiativeEvent } from './applyResolveInitiativeEvent';
  */
 describe('applyResolveInitiativeEvent', () => {
   /** playCards.assignInitiative with both inPlay populated from two command cards. */
-  function createGameStateInAssignInitiativeStep(): GameState<StandardBoard> {
+  function createGameStateInAssignInitiativeStep(): StandardGameState {
     const state = createEmptyGameState();
 
     const stateWithCards = updateCardState(state, (current) => ({

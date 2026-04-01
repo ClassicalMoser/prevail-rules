@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import type {
   StandardMeleeResolutionState,
   StandardMovementResolutionState,
@@ -11,7 +11,7 @@ import { createTestUnit } from '@testing/unitHelpers';
  * Creates a MovementResolutionState with sensible defaults (standard board).
  */
 export function createMovementResolutionState(
-  state: GameState<StandardBoard>,
+  state: StandardGameState,
   overrides?: Partial<StandardMovementResolutionState>,
 ): StandardMovementResolutionState {
   return {
@@ -47,7 +47,7 @@ export function createMovementResolutionState(
  * Creates a RangedAttackResolutionState with sensible defaults (standard board).
  */
 export function createRangedAttackResolutionState(
-  state: GameState<StandardBoard>,
+  state: StandardGameState,
   overrides?: Partial<StandardRangedAttackResolutionState>,
 ): StandardRangedAttackResolutionState {
   return {
@@ -75,7 +75,7 @@ export function createRangedAttackResolutionState(
  * Creates a MeleeResolutionState with sensible defaults (standard board).
  */
 export function createMeleeResolutionState(
-  state: GameState<StandardBoard>,
+  state: StandardGameState,
   overrides?: Partial<StandardMeleeResolutionState>,
 ): StandardMeleeResolutionState {
   return {

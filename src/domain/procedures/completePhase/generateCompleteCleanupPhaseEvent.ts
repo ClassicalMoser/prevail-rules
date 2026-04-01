@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteCleanupPhaseEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   COMPLETE_CLEANUP_PHASE_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,
@@ -14,7 +14,7 @@ import {
  * @returns A complete CompleteCleanupPhaseEvent
  */
 export function generateCompleteCleanupPhaseEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): CompleteCleanupPhaseEvent<TBoard, 'completeCleanupPhase'> {
   // Return is independent of state, so we can ignore it

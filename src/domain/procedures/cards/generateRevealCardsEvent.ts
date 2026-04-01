@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { RevealCardsEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, REVEAL_CARDS_EFFECT_TYPE } from '@events';
 
 /**
@@ -11,7 +11,7 @@ import { GAME_EFFECT_EVENT_TYPE, REVEAL_CARDS_EFFECT_TYPE } from '@events';
  * @returns A complete RevealCardsEvent
  */
 export function generateRevealCardsEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): RevealCardsEvent<TBoard, 'revealCards'> {
   // Return is independent of state, so we can ignore it

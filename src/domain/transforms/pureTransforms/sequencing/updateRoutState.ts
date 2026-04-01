@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameState, PhaseState, RoutState } from '@game';
+import type { GameStateWithBoard, PhaseState, RoutState } from '@game';
 import {
   getCleanupPhaseState,
   getCurrentPhaseState,
@@ -25,9 +25,9 @@ import { updatePhaseState } from '../state';
  * @returns A new game state with the updated rout state
  */
 export function updateRoutState<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   routState: RoutState,
-): GameState<TBoard> {
+): GameStateWithBoard<TBoard> {
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {

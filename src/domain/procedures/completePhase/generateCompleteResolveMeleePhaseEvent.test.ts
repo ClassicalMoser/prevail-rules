@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 
@@ -11,7 +11,7 @@ import { generateCompleteResolveMeleePhaseEvent } from './generateCompleteResolv
  */
 describe('generateCompleteResolveMeleePhaseEvent', () => {
   it('given any game state, emits gameEffect with effectType completeResolveMeleePhase', () => {
-    const state: GameState<StandardBoard> = createEmptyGameState();
+    const state: StandardGameState = createEmptyGameState();
     const event = generateCompleteResolveMeleePhaseEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeResolveMeleePhase');

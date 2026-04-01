@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getIssueCommandsPhaseState } from '@queries/sequencing';
 import { getExpectedStartCommandResolutionEvent } from '../composable';
@@ -13,7 +13,7 @@ import { getExpectedCommandResolutionEvent } from '../iterated';
  * @returns Information about what event is expected
  */
 export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): ExpectedEventInfo {
   const phaseState = getIssueCommandsPhaseState(state);
   const firstPlayer = state.currentInitiative;

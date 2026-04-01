@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 
@@ -12,7 +12,7 @@ import { generateDiscardPlayedCardsEvent } from './generateDiscardPlayedCardsEve
  */
 describe('generateDiscardPlayedCardsEvent', () => {
   it('given any game state, emits gameEffect with effectType discardPlayedCards', () => {
-    const state: GameState<StandardBoard> = createEmptyGameState();
+    const state: StandardGameState = createEmptyGameState();
     const event = generateDiscardPlayedCardsEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('discardPlayedCards');

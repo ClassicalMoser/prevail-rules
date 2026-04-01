@@ -1,5 +1,5 @@
 import type { GameType } from '@entities';
-import type { BoardForGameType, GameState } from '@game';
+import type { BoardForGameType, GameState, GameStateWithBoard } from '@game';
 import type {
   GameStateChange,
   GameStateSubscriber,
@@ -19,11 +19,14 @@ import type {
 export async function updateGameState<T extends GameType>(
   gameId: string,
   gameType: T,
-  gameState: GameState<BoardForGameType[T]>,
+  gameState: GameStateWithBoard<BoardForGameType[T]>,
   gameStorage: GameStorage,
   gameStateSubscribers: GameStateSubscriber[],
 ): Promise<PortResponse<void>> {
-  const updateResult = await gameStorage.updateGameState(gameId, gameState);
+  const updateResult = await gameStorage.updateGameState(
+    gameId,
+    gameState as GameState,
+  );
   if (!updateResult.result) {
     return {
       result: false,

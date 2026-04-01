@@ -3,7 +3,7 @@ import type {
   EngagementState,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
-  GameState,
+  GameStateWithBoard,
   RearEngagementResolutionState,
 } from '@game';
 import { getMovementResolutionState } from '../getCommandResolutionState';
@@ -17,7 +17,7 @@ import { getMovementResolutionState } from '../getCommandResolutionState';
  * @throws Error if not resolving a movement or engagement state is missing
  */
 export function getEngagementStateFromMovement<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): EngagementState {
   const movementState = getMovementResolutionState(state);
   if (!movementState.engagementState) {
@@ -35,7 +35,7 @@ export function getEngagementStateFromMovement<TBoard extends Board>(
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not flank
  */
 export function getFlankEngagementStateFromMovement<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): EngagementState & {
   engagementResolutionState: FlankEngagementResolutionState;
 } {
@@ -57,7 +57,7 @@ export function getFlankEngagementStateFromMovement<TBoard extends Board>(
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not front
  */
 export function getFrontEngagementStateFromMovement<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): EngagementState & {
   engagementResolutionState: FrontEngagementResolutionState;
 } {
@@ -79,7 +79,7 @@ export function getFrontEngagementStateFromMovement<TBoard extends Board>(
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not rear
  */
 export function getRearEngagementStateFromMovement<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): EngagementState & {
   engagementResolutionState: RearEngagementResolutionState;
 } {

@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate } from '@entities';
 import type { StartEngagementEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from '@events';
 import {
   getMovementResolutionState,
@@ -21,7 +21,7 @@ import {
  * @throws Error if not in issueCommands phase, no movement resolution, or no enemy unit at target
  */
 export function generateStartEngagementEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): StartEngagementEvent<TBoard, 'startEngagement'> {
   const movementResolutionState = getMovementResolutionState(state);

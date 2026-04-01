@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveInitiativeEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_INITIATIVE_EFFECT_TYPE,
@@ -29,7 +29,7 @@ import { calculateInitiative, getPlayCardsPhaseState } from '@queries';
  * ```
  */
 export function generateResolveInitiativeEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): ResolveInitiativeEvent<TBoard, 'resolveInitiative'> {
   const phaseState = getPlayCardsPhaseState(state);

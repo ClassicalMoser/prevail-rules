@@ -298,6 +298,9 @@ export {
   completedCommitmentSchema,
   declinedCommitmentSchema,
   gameStateSchema,
+  gameStateSchemaForLargeBoard,
+  gameStateSchemaForSmallBoard,
+  gameStateSchemaForStandardBoard,
   pendingCommitmentSchema,
 } from '@game';
 export {
@@ -341,7 +344,12 @@ export type {
   CompletedCommitment,
   DeclinedCommitment,
   GameState,
+  GameStateBase,
+  GameStateWithBoard,
+  LargeGameState,
   PendingCommitment,
+  SmallGameState,
+  StandardGameState,
 } from '@game';
 export type {
   AttackApplyState,

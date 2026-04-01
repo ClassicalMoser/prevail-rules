@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
-import type { GameState, RetreatState } from '@game';
+import type { GameStateWithBoard, RetreatState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from '@events';
 import {
   getCurrentPhaseState,
@@ -19,7 +19,7 @@ import {
  * @returns A complete ResolveRetreatEvent with the retreating unit and final position
  */
 export function generateResolveRetreatEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): ResolveRetreatEvent<TBoard, 'resolveRetreat'> {
   const phaseState = getCurrentPhaseState(state);

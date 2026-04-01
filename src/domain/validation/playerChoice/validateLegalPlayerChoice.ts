@@ -1,6 +1,6 @@
 import type { Board, ValidationResult } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { isValidChooseCardEvent } from './isValidChooseCardEvent';
 import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
 import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
@@ -24,7 +24,7 @@ function legalChoiceNotImplemented(
  */
 export function validateLegalPlayerChoice<TBoard extends Board>(
   event: PlayerChoiceEvent<TBoard, PlayerChoiceType>,
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): ValidationResult {
   switch (event.choiceType) {
     case 'chooseCard':

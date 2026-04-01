@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 
 import { MOVE_COMMANDERS_PHASE } from '@game';
@@ -18,7 +18,7 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
   function createGameStateInMoveCommandersStep(
     step: 'moveFirstCommander' | 'moveSecondCommander' | 'complete',
     currentInitiative: 'black' | 'white' = 'black',
-  ): GameState<StandardBoard> {
+  ): StandardGameState {
     const state = createEmptyGameState({ currentInitiative });
 
     const stateWithPhase = updatePhaseState(state, {

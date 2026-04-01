@@ -1,6 +1,6 @@
 import type { Board, ValidationResult } from '@entities';
 import type { ChooseRoutDiscardEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 
 import { getOtherPlayer } from '@queries';
 
@@ -14,7 +14,7 @@ import { getOtherPlayer } from '@queries';
  */
 export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
   event: ChooseRoutDiscardEvent<TBoard>,
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): ValidationResult {
   const { player, cardIds } = event;
   const currentPhaseState = state.currentRoundState.currentPhaseState;

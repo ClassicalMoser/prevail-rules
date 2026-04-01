@@ -19,10 +19,17 @@ export {
   standardGameSchema,
   tutorialGameSchema,
 } from './game';
-export type { GameState } from './gameState';
+export type {
+  GameState,
+  GameStateBase,
+  GameStateWithBoard,
+  LargeGameState,
+  SmallGameState,
+  StandardGameState,
+} from './gameState';
 export {
   gameStateSchema,
-  gameStateSchemaForBoard,
+  gameStateSchemaForLargeBoard,
   gameStateSchemaForSmallBoard,
   gameStateSchemaForStandardBoard,
 } from './gameState';

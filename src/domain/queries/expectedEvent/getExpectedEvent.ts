@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { getCurrentPhaseState } from '@queries/sequencing';
 import {
   getExpectedCleanupPhaseEvent,
@@ -16,7 +16,7 @@ export type ExpectedEvent = ExpectedEventInfo & {
 };
 
 export function getExpectedEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): ExpectedEvent {
   const phaseState = getCurrentPhaseState(state);
   const eventNumber = state.currentRoundState.events.length;

@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ChooseCardEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import {
   getNextEventNumber,
@@ -18,7 +18,7 @@ import {
  * {@link getExpectedPlayCardsPhaseEvent} for the chooseCards step.
  */
 export function getLegalPlayCardOptions<TBoard extends Board>(
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
 ): ChooseCardEvent<TBoard>[] {
   // Make sure we're in the choose cards step
   const phaseState = getPlayCardsPhaseState(gameState);

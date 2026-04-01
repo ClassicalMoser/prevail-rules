@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { DiscardPlayedCardsEvent } from '@events';
-import type { CleanupPhaseState, GameState } from '@game';
+import type { CleanupPhaseState, GameStateWithBoard } from '@game';
 import { getCleanupPhaseState } from '@queries';
 import {
   moveCardToPlayed,
@@ -23,8 +23,8 @@ import {
  */
 export function applyDiscardPlayedCardsEvent<TBoard extends Board>(
   _event: DiscardPlayedCardsEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const phaseState = getCleanupPhaseState(state);
 
   const stateWithCards = updateCardState(state, (current) =>

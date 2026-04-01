@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { Event } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -33,7 +33,7 @@ describe('applyEvent', () => {
     const mockReturnState = {
       ...state,
       currentRoundNumber: 99,
-    } as GameState<StandardBoard>;
+    } as StandardGameState;
     vi.mocked(applyPlayerChoiceEvent).mockReturnValue(mockReturnState);
 
     const result = applyEvent(event, state);
@@ -54,7 +54,7 @@ describe('applyEvent', () => {
     const mockReturnState = {
       ...state,
       currentRoundNumber: 1,
-    } as GameState<StandardBoard>;
+    } as StandardGameState;
     vi.mocked(applyGameEffectEvent).mockReturnValue(mockReturnState);
 
     const result = applyEvent(event, state);

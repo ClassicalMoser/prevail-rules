@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,
@@ -20,7 +20,7 @@ import {
  * @returns A complete CompleteAttackApplyEvent
  */
 export function generateCompleteAttackApplyEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): CompleteAttackApplyEvent<TBoard, 'completeAttackApply'> {
   const phaseState = getCurrentPhaseState(state);

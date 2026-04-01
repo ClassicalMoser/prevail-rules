@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { getResolveMeleePhaseState } from '@queries/sequencing';
 import { getExpectedMeleeResolutionEvent } from '../iterated';
 
@@ -11,7 +11,7 @@ import { getExpectedMeleeResolutionEvent } from '../iterated';
  * @returns Information about what event is expected
  */
 export function getExpectedResolveMeleePhaseEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): ExpectedEventInfo {
   const phaseState = getResolveMeleePhaseState(state);
   const firstPlayer = state.currentInitiative;

@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { RevealCardsEvent } from '@events';
-import type { GameState, PlayCardsPhaseState } from '@game';
+import type { GameStateWithBoard, PlayCardsPhaseState } from '@game';
 import { getPlayCardsPhaseState } from '@queries';
 import {
   revealCard,
@@ -22,8 +22,8 @@ import {
  */
 export function applyRevealCardsEvent<TBoard extends Board>(
   _event: RevealCardsEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const phaseState = getPlayCardsPhaseState(state);
 
   // Move both players' cards from awaitingPlay to inPlay

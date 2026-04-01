@@ -3,7 +3,7 @@ import type { GameState } from '@game';
 import { getBoardCoordinates, getBoardSpace } from '@queries';
 
 export function eachCommanderPresentOnce(
-  gameState: GameState<Board>,
+  gameState: GameState,
 ): ValidationResult {
   try {
     // We expect one commander per player

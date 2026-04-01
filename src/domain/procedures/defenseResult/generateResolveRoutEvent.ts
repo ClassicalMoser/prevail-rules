@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveRoutEvent, RoutResolutionSource } from '@events';
-import type { GameState, RoutState } from '@game';
+import type { GameStateWithBoard, RoutState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ROUT_EFFECT_TYPE } from '@events';
 import {
   getAttackApplyStateFromRangedAttack,
@@ -22,7 +22,7 @@ import {
  * @throws Error if not in a valid state for rout resolution
  */
 export function generateResolveRoutEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): ResolveRoutEvent<TBoard, 'resolveRout'> {
   const phaseState = getCurrentPhaseState(state);

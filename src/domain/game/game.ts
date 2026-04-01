@@ -1,5 +1,5 @@
 import type { Army, GameType, SmallBoard, StandardBoard } from '@entities';
-import type { GameState } from './gameState';
+import type { GameStateWithBoard } from './gameState';
 
 import { armySchema, gameTypeEnum } from '@entities';
 import { z } from 'zod';
@@ -38,7 +38,7 @@ export interface Game<T extends GameType = GameType> {
   /** The army brought by the white player. */
   whiteArmy: Army;
   /** The state of the game. */
-  gameState: GameState<BoardForGameType[T]>;
+  gameState: GameStateWithBoard<BoardForGameType[T]>;
 }
 
 const _gameSchemaObject = z.object({

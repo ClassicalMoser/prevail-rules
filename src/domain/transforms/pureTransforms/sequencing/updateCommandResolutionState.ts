@@ -1,7 +1,7 @@
 import type { Board } from '@entities';
 import type {
   CommandResolutionState,
-  GameState,
+  GameStateWithBoard,
   IssueCommandsPhaseState,
 } from '@game';
 import { getIssueCommandsPhaseState } from '@queries';
@@ -24,9 +24,9 @@ import { updatePhaseState } from '../state';
  * ```
  */
 export function updateCommandResolutionState<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   commandResolutionState: CommandResolutionState,
-): GameState<TBoard> {
+): GameStateWithBoard<TBoard> {
   const issueCommandsPhaseState = getIssueCommandsPhaseState(state);
 
   if (!issueCommandsPhaseState.currentCommandResolutionState) {
