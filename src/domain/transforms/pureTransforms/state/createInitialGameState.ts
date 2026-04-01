@@ -15,10 +15,10 @@ export function createInitialGameState<TGameType extends GameType>(options: {
   gameType: TGameType;
   whiteArmy: Army;
   blackArmy: Army;
-}): GameStateWithBoard<BoardForGameType[TGameType]> {
+}): GameStateWithBoard<BoardForGameType<TGameType>> {
   const { whiteArmy, blackArmy } = options;
 
-  type BoardSize = BoardForGameType[TGameType];
+  type BoardSize = BoardForGameType<TGameType>;
 
   const emptyGameState: GameStateWithBoard<BoardSize> = createEmptyGameState(
     options.gameType,
@@ -37,7 +37,7 @@ export function createInitialGameState<TGameType extends GameType>(options: {
   }
 
   const gameStateWithReservedUnits: GameStateWithBoard<
-    BoardForGameType[TGameType]
+    BoardForGameType<TGameType>
   > = {
     ...emptyGameState,
     reservedUnits,

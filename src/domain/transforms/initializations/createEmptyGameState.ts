@@ -58,7 +58,7 @@ function shellForBoard<TBoard extends Board>(
  * Overloads give a precise return type per `gameType`; a single generic
  * `TGameType extends GameType` is not narrowed by `switch`, so `shellForBoard`’s
  * `SmallGameState` / `StandardGameState` would not otherwise check
- * against `GameStateWithBoard<BoardForGameType[TGameType]>`.
+ * against `GameStateWithBoard<BoardForGameType<TGameType>>`.
  */
 export function createEmptyGameState<TGameType extends 'standard'>(
   gameType: TGameType,
@@ -68,7 +68,7 @@ export function createEmptyGameState<TGameType extends 'mini' | 'tutorial'>(
 ): SmallGameState;
 export function createEmptyGameState<TGameType extends GameType>(
   gameType: TGameType,
-): GameStateWithBoard<BoardForGameType[TGameType]>;
+): GameStateWithBoard<BoardForGameType<TGameType>>;
 export function createEmptyGameState<TGameType extends GameType>(
   gameType: TGameType,
 ): StandardGameState | SmallGameState {

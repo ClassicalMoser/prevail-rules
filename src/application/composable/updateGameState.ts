@@ -19,7 +19,7 @@ import type {
 export async function updateGameState<T extends GameType>(
   gameId: string,
   gameType: T,
-  gameState: GameStateWithBoard<BoardForGameType[T]>,
+  gameState: GameStateWithBoard<BoardForGameType<T>>,
   gameStorage: GameStorage,
   gameStateSubscribers: GameStateSubscriber[],
 ): Promise<PortResponse<void>> {
@@ -36,7 +36,7 @@ export async function updateGameState<T extends GameType>(
   const change: GameStateChange = {
     gameId,
     gameType,
-    gameState,
+    gameState: gameState as GameState,
   };
   for (const subscriber of gameStateSubscribers) {
     if (subscriber.gameId !== gameId || subscriber.gameType !== gameType) {

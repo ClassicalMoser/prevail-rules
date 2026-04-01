@@ -1,13 +1,13 @@
 import type { GameType } from '@entities';
-import type { BoardForGameType, GameStateWithBoard } from '@game';
+import type { GameState } from '@game';
 
 /**
  * Payload after a successful persisted game-state update.
- * Both fields are intentionally wide: {@link gameType} and {@link gameState} are uncorrelated at the
- * type level so ports and subscribers don't need to be generic. Narrow after load if needed.
+ * {@link gameType} and {@link gameState} are wide at the type level so ports and subscribers
+ * stay non-generic; narrow after load (e.g. with {@link parseStoredGameState}) if needed.
  */
 export interface GameStateChange {
   gameId: string;
   gameType: GameType;
-  gameState: GameStateWithBoard<BoardForGameType[GameType]>;
+  gameState: GameState;
 }

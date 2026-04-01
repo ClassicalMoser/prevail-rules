@@ -1,32 +1,31 @@
 import type { GameType } from '@entities';
-import type { Game } from '@game';
+import type {
+  Game,
+  GameOfType,
+  MiniGame,
+  StandardGame,
+  TutorialGame,
+} from '@game';
 import { miniGameSchema, standardGameSchema, tutorialGameSchema } from '@game';
 
 /**
  * **Boundary:** validates untrusted / stored data and returns a typed {@link Game}.
- * Call after `GameStorage.getGame` (or equivalent) so downstream code can use `Game<T>` and
- * correlated state instead of pushing those generics through every adapter.
+ * Call after `GameStorage.getGame` (or equivalent) so downstream code can narrow on `gameType`.
  */
 
 /** Interpret game object as specific {@link GameType} using the Zod schema. */
 export function parseStoredGame(
   gameType: 'standard',
   data: unknown,
-): Game<'standard'>;
-export function parseStoredGame(gameType: 'mini', data: unknown): Game<'mini'>;
+): StandardGame;
+export function parseStoredGame(gameType: 'mini', data: unknown): MiniGame;
 export function parseStoredGame(
   gameType: 'tutorial',
   data: unknown,
-): Game<'tutorial'>;
+): TutorialGame;
 /** When `gameType` is only known as {@link GameType}, the result is the wide {@link Game} union. */
-export function parseStoredGame(
-  gameType: GameType,
-  data: unknown,
-): Game<GameType>;
-export function parseStoredGame(
-  gameType: GameType,
-  data: unknown,
-): Game<GameType> {
+export function parseStoredGame(gameType: GameType, data: unknown): Game;
+export function parseStoredGame(gameType: GameType, data: unknown): Game {
   switch (gameType) {
     case 'standard': {
       const parsed = standardGameSchema.safeParse(data);

@@ -287,8 +287,17 @@ export {
   miniGameSchema,
   standardGameSchema,
   tutorialGameSchema,
+  validateGameBoardMatchesGameType,
 } from '@game';
-export type { BoardForGameType, Game } from '@game';
+export type {
+  BoardForGameType,
+  Game,
+  GameBase,
+  GameOfType,
+  MiniGame,
+  StandardGame,
+  TutorialGame,
+} from '@game';
 export {
   attackResultSchema,
   CLEANUP_PHASE,

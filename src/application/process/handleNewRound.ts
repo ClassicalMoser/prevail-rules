@@ -14,7 +14,7 @@ import type { EnginePorts, PortResponse } from '../ports';
  */
 export async function handleNewRound<T extends GameType>(
   gameId: string,
-  gameState: GameStateWithBoard<BoardForGameType[T]>,
+  gameState: GameStateWithBoard<BoardForGameType<T>>,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> {
   const { roundSnapshotStorage, eventStreamStorage } = ports;

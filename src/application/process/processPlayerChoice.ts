@@ -10,10 +10,10 @@ import { processEvent } from './processEvent';
 export async function processPlayerChoice<T extends GameType>(
   gameId: string,
   gameType: T,
-  playerChoice: PlayerChoiceEvent<BoardForGameType[T], PlayerChoiceType>,
+  playerChoice: PlayerChoiceEvent<BoardForGameType<T>, PlayerChoiceType>,
   ports: EnginePorts,
-): Promise<PortResponse<GameStateWithBoard<BoardForGameType[T]>>> {
-  const gameState: GameStateWithBoard<BoardForGameType[T]> | undefined =
+): Promise<PortResponse<GameStateWithBoard<BoardForGameType<T>>>> {
+  const gameState: GameStateWithBoard<BoardForGameType<T>> | undefined =
     await getGameState(gameId, gameType, ports.gameStorage);
   if (!gameState) {
     return {

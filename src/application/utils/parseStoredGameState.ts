@@ -13,23 +13,23 @@ import {
 export function parseStoredGameState(
   gameType: 'standard',
   data: unknown,
-): GameStateWithBoard<BoardForGameType['standard']>;
+): GameStateWithBoard<BoardForGameType<'standard'>>;
 export function parseStoredGameState(
   gameType: 'mini',
   data: unknown,
-): GameStateWithBoard<BoardForGameType['mini']>;
+): GameStateWithBoard<BoardForGameType<'mini'>>;
 export function parseStoredGameState(
   gameType: 'tutorial',
   data: unknown,
-): GameStateWithBoard<BoardForGameType['tutorial']>;
+): GameStateWithBoard<BoardForGameType<'tutorial'>>;
 export function parseStoredGameState(
   gameType: GameType,
   data: unknown,
-): GameStateWithBoard<BoardForGameType[GameType]>;
+): GameStateWithBoard<BoardForGameType<GameType>>;
 export function parseStoredGameState(
   gameType: GameType,
   data: unknown,
-): GameStateWithBoard<BoardForGameType[GameType]> {
+): GameStateWithBoard<BoardForGameType<GameType>> {
   switch (gameType) {
     case 'standard': {
       const parsed = gameStateSchemaForStandardBoard.safeParse(data);

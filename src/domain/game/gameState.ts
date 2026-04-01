@@ -59,9 +59,18 @@ export type GameState = StandardGameState | SmallGameState | LargeGameState;
 
 /**
  * Game state correlated with a generic `TBoard` (e.g. procedure/transform type parameters).
- * Prefer {@link GameState} when you mean “any board”; use this when `TBoard` must flow through generics.
+ * `GameStateBase & { boardState: TBoard }` keeps `state.boardState` and nested types
+ * (`UnitPlacement<TBoard>`, etc.) correlated under a naked `TBoard extends Board` type parameter.
+ * A conditional alias (like `MoveUnitEvent<TBoard>`) would widen unresolved generics to
+ * {@link GameState} and break procedure/query typing.
+ *
+ * Mode-specific setup / victory / rules **traits** belong on the {@link Game} / `gameType` side
+ * (Layer 5 DU), not on {@link GameState} branches — so this intersection remains the right shape
+ * for generic board threading.
+ *
+ * Prefer {@link GameState} when you mean “any board”.
  */
-export type GameStateWithBoard<TBoard extends Board> = GameStateBase & {
+export type GameStateWithBoard<TBoard extends Board = Board> = GameStateBase & {
   boardState: TBoard;
 };
 
