@@ -11,7 +11,7 @@ import { updateRemainingCommandsForPlayer } from './updateRemainingCommandsForPl
  */
 describe('updateRemainingCommandsForPlayer', () => {
   it('given update remainingCommandsFirstPlayer when player is initiative player', () => {
-    const phaseState: IssueCommandsPhaseState<StandardBoard> = {
+    const phaseState: IssueCommandsPhaseState = {
       phase: ISSUE_COMMANDS_PHASE,
       step: 'firstPlayerIssueCommands' as const,
       remainingCommandsFirstPlayer: new Set(),
@@ -38,7 +38,7 @@ describe('updateRemainingCommandsForPlayer', () => {
   });
 
   it('given update remainingCommandsSecondPlayer when player is not initiative player', () => {
-    const phaseState: IssueCommandsPhaseState<StandardBoard> = {
+    const phaseState: IssueCommandsPhaseState = {
       phase: ISSUE_COMMANDS_PHASE,
       step: 'firstPlayerIssueCommands' as const,
       remainingCommandsFirstPlayer: new Set(),
@@ -63,7 +63,7 @@ describe('updateRemainingCommandsForPlayer', () => {
   });
 
   it('given not mutate the original phase state', () => {
-    const phaseState: IssueCommandsPhaseState<StandardBoard> = {
+    const phaseState: IssueCommandsPhaseState = {
       phase: ISSUE_COMMANDS_PHASE,
       step: 'firstPlayerIssueCommands' as const,
       remainingCommandsFirstPlayer: new Set(),

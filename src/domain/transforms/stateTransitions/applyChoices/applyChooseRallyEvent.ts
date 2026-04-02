@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ChooseRallyEvent } from '@events';
-import type { CleanupPhaseState, GameState, RallyResolutionState } from '@game';
+import type { CleanupPhaseState, GameStateWithBoard, RallyResolutionState } from '@game';
 import { getCleanupPhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
@@ -28,8 +28,8 @@ function initialRallyResolutionState(
  */
 export function applyChooseRallyEvent<TBoard extends Board>(
   event: ChooseRallyEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const currentPhaseState = getCleanupPhaseState(state);
   const { performRally } = event;
   let newPhaseState: CleanupPhaseState;

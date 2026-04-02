@@ -1,6 +1,6 @@
 import type { Board, ValidationResult } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { playerChoiceEventSchema } from '@events';
 import { validateExpectedChoice } from './validateExpectedChoice';
 import { validateLegalPlayerChoice } from './validateLegalPlayerChoice';
@@ -16,7 +16,7 @@ import { validateLegalPlayerChoice } from './validateLegalPlayerChoice';
  */
 export function validatePlayerChoice<TBoard extends Board>(
   event: PlayerChoiceEvent<TBoard, PlayerChoiceType>,
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): ValidationResult {
   // Step 1: Validate that the player choice matches the expected event
   try {

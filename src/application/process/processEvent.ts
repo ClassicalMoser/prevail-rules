@@ -1,6 +1,6 @@
 import type { GameType } from '@entities';
 import type { Event, EventType } from '@events';
-import type { BoardForGameType, GameState } from '@game';
+import type { BoardForGameType, GameStateWithBoard } from '@game';
 import type { EnginePorts, PortResponse } from '../ports';
 import { applyEvent } from '@transforms';
 import { updateGameState } from '../composable';
@@ -9,10 +9,10 @@ import { handleNewRound } from './handleNewRound';
 export async function processEvent<T extends GameType>(
   gameId: string,
   gameTypeForUpdate: T,
-  event: Event<BoardForGameType[T], EventType>,
-  gameState: GameState<BoardForGameType[T]>,
+  event: Event<BoardForGameType<T>, EventType>,
+  gameState: GameStateWithBoard<BoardForGameType<T>>,
   ports: EnginePorts,
-): Promise<PortResponse<GameState<BoardForGameType[T]>>> {
+): Promise<PortResponse<GameStateWithBoard<BoardForGameType<T>>>> {
   const addEventResult = await ports.eventStreamStorage.addEventToStream(
     gameId,
     gameState.currentRoundNumber,
@@ -25,7 +25,7 @@ export async function processEvent<T extends GameType>(
     };
   }
 
-  const newGameState = applyEvent<BoardForGameType[T]>(event, gameState);
+  const newGameState = applyEvent<BoardForGameType<T>>(event, gameState);
 
   const updateResult = await updateGameState(
     gameId,

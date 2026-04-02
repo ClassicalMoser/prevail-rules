@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
-import type { CleanupPhaseState, GameState, RoutState } from '@game';
+import type { CleanupPhaseState, GameStateWithBoard, RoutState } from '@game';
 
 import {
   getCleanupPhaseState,
@@ -28,8 +28,8 @@ import {
  */
 export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
   event: ResolveUnitsBrokenEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const { player, unitTypes } = event;
   const phaseState = getCleanupPhaseState(state);
 

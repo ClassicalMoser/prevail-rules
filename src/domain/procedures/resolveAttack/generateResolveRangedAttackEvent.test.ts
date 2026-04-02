@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { equites, punicCitizenSpearmen, velites } from '@sampleValues';
 import {
   createAttackApplyState,
@@ -23,7 +23,7 @@ const spearmenType = punicCitizenSpearmen;
  */
 describe('generateResolveRangedAttackEvent', () => {
   /** Spearmen duel on E-5 under issueCommands ranged CRS; default commitments resolved. */
-  function rangedResolutionGameState(): GameState<StandardBoard> {
+  function rangedResolutionGameState(): StandardGameState {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { unitType: spearmenType });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {

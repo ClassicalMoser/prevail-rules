@@ -4,7 +4,7 @@
 
 import type { Board } from '@entities';
 import type { GameEffectEvent, GameEffectType } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   applyCompleteAttackApplyEvent,
   applyCompleteCleanupPhaseEvent,
@@ -36,8 +36,8 @@ import {
  */
 export function applyGameEffectEvent<TBoard extends Board>(
   event: GameEffectEvent<TBoard, GameEffectType>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   switch (event.effectType) {
     case 'completeAttackApply':
       return applyCompleteAttackApplyEvent(event, state);
@@ -47,7 +47,7 @@ export function applyGameEffectEvent<TBoard extends Board>(
       return applyCompleteIssueCommandsPhaseEvent(
         event,
         state,
-      ) as GameState<TBoard>;
+      ) as GameStateWithBoard<TBoard>;
     case 'completeMeleeResolution':
       return applyCompleteMeleeResolutionEvent(event, state);
     case 'completeMoveCommandersPhase':
@@ -71,13 +71,13 @@ export function applyGameEffectEvent<TBoard extends Board>(
     case 'revealCards':
       return applyRevealCardsEvent(event, state);
     case 'resolveMelee':
-      return applyResolveMeleeEvent(event, state) as GameState<TBoard>;
+      return applyResolveMeleeEvent(event, state) as GameStateWithBoard<TBoard>;
     case 'resolveRangedAttack':
-      return applyResolveRangedAttackEvent(event, state) as GameState<TBoard>;
+      return applyResolveRangedAttackEvent(event, state) as GameStateWithBoard<TBoard>;
     case 'resolveRetreat':
-      return applyResolveRetreatEvent(event, state) as GameState<TBoard>;
+      return applyResolveRetreatEvent(event, state) as GameStateWithBoard<TBoard>;
     case 'resolveReverse':
-      return applyResolveReverseEvent(event, state) as GameState<TBoard>;
+      return applyResolveReverseEvent(event, state) as GameStateWithBoard<TBoard>;
     case 'resolveRout':
       return applyResolveRoutEvent(event, state);
     case 'resolveEngageRetreatOption':
@@ -86,9 +86,9 @@ export function applyGameEffectEvent<TBoard extends Board>(
       return applyResolveFlankEngagementEvent(
         event,
         state,
-      ) as GameState<TBoard>;
+      ) as GameStateWithBoard<TBoard>;
     case 'startEngagement':
-      return applyStartEngagementEvent(event, state) as GameState<TBoard>;
+      return applyStartEngagementEvent(event, state) as GameStateWithBoard<TBoard>;
     case 'triggerRoutFromRetreat':
       return applyTriggerRoutFromRetreatEvent(event, state);
     default: {

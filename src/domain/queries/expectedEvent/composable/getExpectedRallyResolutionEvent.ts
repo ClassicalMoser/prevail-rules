@@ -13,7 +13,7 @@ import { getExpectedRoutEvent } from '.';
  */
 export function getExpectedRallyResolutionEvent<TBoard extends Board>(
   rallyState: RallyResolutionState,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   // Fast rejection: if already completed, this is an invalid state
   if (rallyState.completed) {
     throw new Error('Rally resolution state is already complete');

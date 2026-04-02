@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteMoveCommandersPhaseEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState } from '@game';
+import type { GameStateWithBoard, IssueCommandsPhaseState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getMoveCommandersPhaseState } from '@queries';
@@ -23,13 +23,13 @@ import {
  */
 export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
   event: CompleteMoveCommandersPhaseEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const currentPhaseState = getMoveCommandersPhaseState(state);
 
   const stateWithCompletedPhase = addCompletedPhase(state, currentPhaseState);
 
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     phase: ISSUE_COMMANDS_PHASE,
     step: 'firstPlayerIssueCommands',
     remainingCommandsFirstPlayer: event.remainingCommandsFirstPlayer,

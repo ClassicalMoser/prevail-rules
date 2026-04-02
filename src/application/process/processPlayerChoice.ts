@@ -1,6 +1,6 @@
 import type { GameType, ValidationResult } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { BoardForGameType, GameState } from '@game';
+import type { BoardForGameType, GameStateWithBoard } from '@game';
 import type { EnginePorts, PortResponse } from '../ports';
 import { getExpectedEvent } from '@queries';
 import { validatePlayerChoice } from '@validation';
@@ -10,10 +10,10 @@ import { processEvent } from './processEvent';
 export async function processPlayerChoice<T extends GameType>(
   gameId: string,
   gameType: T,
-  playerChoice: PlayerChoiceEvent<BoardForGameType[T], PlayerChoiceType>,
+  playerChoice: PlayerChoiceEvent<BoardForGameType<T>, PlayerChoiceType>,
   ports: EnginePorts,
-): Promise<PortResponse<GameState<BoardForGameType[T]>>> {
-  const gameState: GameState<BoardForGameType[T]> | undefined =
+): Promise<PortResponse<GameStateWithBoard<BoardForGameType<T>>>> {
+  const gameState: GameStateWithBoard<BoardForGameType<T>> | undefined =
     await getGameState(gameId, gameType, ports.gameStorage);
   if (!gameState) {
     return {

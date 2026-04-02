@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { getCleanupPhaseState } from '../getPhaseState';
 
 /**
@@ -10,7 +10,7 @@ import { getCleanupPhaseState } from '../getPhaseState';
  * @throws Error if not in a resolveRally step
  */
 export function getIsFirstPlayerForResolveRallyStep<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): boolean {
   const phaseState = getCleanupPhaseState(state);
 

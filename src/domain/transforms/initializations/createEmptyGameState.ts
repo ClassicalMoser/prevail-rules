@@ -1,5 +1,10 @@
 import type { Board, GameType, SmallBoard, StandardBoard } from '@entities';
-import type { BoardForGameType, GameState } from '@game';
+import type {
+  BoardForGameType,
+  GameStateWithBoard,
+  SmallGameState,
+  StandardGameState,
+} from '@game';
 import {
   createEmptySmallBoard,
   createEmptyStandardBoard,
@@ -9,7 +14,9 @@ import {
  * Resolves which board size {@link createEmptyGameState} will use (default `standard`).
  */
 
-function shellForBoard<TBoard extends Board>(board: TBoard): GameState<TBoard> {
+function shellForBoard<TBoard extends Board>(
+  board: TBoard,
+): GameStateWithBoard<TBoard> {
   return {
     currentRoundNumber: 0,
     currentRoundState: {
@@ -50,21 +57,21 @@ function shellForBoard<TBoard extends Board>(board: TBoard): GameState<TBoard> {
  *
  * Overloads give a precise return type per `gameType`; a single generic
  * `TGameType extends GameType` is not narrowed by `switch`, so `shellForBoard`’s
- * `GameState<SmallBoard>` / `GameState<StandardBoard>` would not otherwise check
- * against `GameState<BoardForGameType[TGameType]>`.
+ * `SmallGameState` / `StandardGameState` would not otherwise check
+ * against `GameStateWithBoard<BoardForGameType<TGameType>>`.
  */
 export function createEmptyGameState<TGameType extends 'standard'>(
   gameType: TGameType,
-): GameState<StandardBoard>;
+): StandardGameState;
 export function createEmptyGameState<TGameType extends 'mini' | 'tutorial'>(
   gameType: TGameType,
-): GameState<SmallBoard>;
+): SmallGameState;
 export function createEmptyGameState<TGameType extends GameType>(
   gameType: TGameType,
-): GameState<BoardForGameType[TGameType]>;
+): GameStateWithBoard<BoardForGameType<TGameType>>;
 export function createEmptyGameState<TGameType extends GameType>(
   gameType: TGameType,
-): GameState<StandardBoard> | GameState<SmallBoard> {
+): StandardGameState | SmallGameState {
   switch (gameType) {
     case 'tutorial':
     case 'mini':

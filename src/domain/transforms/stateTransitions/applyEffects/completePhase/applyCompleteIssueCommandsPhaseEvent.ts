@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import type { GameState, PhaseState, ResolveMeleePhaseState } from '@game';
+import type { GameStateWithBoard, PhaseState, ResolveMeleePhaseState } from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';
 
 import { getCurrentPhaseState } from '@queries';
@@ -23,8 +23,8 @@ import {
  */
 export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
   event: CompleteIssueCommandsPhaseEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const phaseState = getCurrentPhaseState(state);
 
   const stateWithCompletedPhase = addCompletedPhase(state, phaseState);
@@ -42,7 +42,7 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
 
   const newState = updatePhaseState(
     stateWithCompletedPhase,
-    newPhaseState as PhaseState<TBoard>,
+    newPhaseState as PhaseState,
   );
   return newState;
 }

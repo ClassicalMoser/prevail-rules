@@ -1,6 +1,6 @@
 import type { BoardCoordinate, StandardBoard } from '@entities';
 import type { Event } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { createEmptyGameState, createResolveMeleePhaseState } from '@testing';
@@ -18,7 +18,7 @@ describe('getLegalChooseMeleeResolutionEvents', () => {
     initiative?: 'black' | 'white';
     remaining?: Iterable<BoardCoordinate<StandardBoard>>;
     eventStream?: readonly Event<StandardBoard>[];
-  }): GameState<StandardBoard> {
+  }): StandardGameState {
     const base = createEmptyGameState({
       currentInitiative: options?.initiative ?? 'black',
     });

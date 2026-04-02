@@ -1,5 +1,5 @@
 import type { Board, PlayerSide } from '@entities';
-import type { AttackApplyState, GameState, MeleeResolutionState } from '@game';
+import type { AttackApplyState, GameStateWithBoard, MeleeResolutionState } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import {
   getMeleeResolutionState,
@@ -16,7 +16,7 @@ import {
  * @throws Error if not resolving a ranged attack or attack apply state is missing
  */
 export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): AttackApplyState {
   const rangedAttackState = getRangedAttackResolutionState(state);
   if (!rangedAttackState.attackApplyState) {
@@ -36,7 +36,7 @@ export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
  * @throws Error if not in resolveMelee phase or attack apply state is missing
  */
 export function getAttackApplyStateFromMelee<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   player: 'white' | 'black',
 ): AttackApplyState {
   const meleeState = getMeleeResolutionState(state);
@@ -61,7 +61,7 @@ export function getAttackApplyStateFromMelee<TBoard extends Board>(
 export function getDefendingPlayerForNextIncompleteMeleeAttackApply<
   TBoard extends Board,
 >(
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
   meleeState: MeleeResolutionState,
 ): PlayerSide | null {
   const firstPlayer = gameState.currentInitiative;

@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 
 /**
  * Creates a new game state with the current round number updated.
@@ -14,9 +14,9 @@ import type { GameState } from '@game';
  * ```
  */
 export function updateCurrentRoundNumber<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   roundNumber: number,
-): GameState<TBoard> {
+): GameStateWithBoard<TBoard> {
   return {
     ...state,
     currentRoundNumber: roundNumber,

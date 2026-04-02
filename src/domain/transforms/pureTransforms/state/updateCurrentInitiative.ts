@@ -1,5 +1,5 @@
 import type { Board, PlayerSide } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 
 /**
  * Creates a new game state with the current initiative player updated.
@@ -9,9 +9,9 @@ import type { GameState } from '@game';
  * @returns A new game state with the updated initiative
  */
 export function updateCurrentInitiative<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   player: PlayerSide,
-): GameState<TBoard> {
+): GameStateWithBoard<TBoard> {
   return {
     ...state,
     currentInitiative: player,

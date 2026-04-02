@@ -1,6 +1,6 @@
 import type { GameType } from '@entities';
 import type { GameEffectEvent, GameEffectType } from '@events';
-import type { BoardForGameType, GameState } from '@game';
+import type { BoardForGameType, GameStateWithBoard } from '@game';
 import type { EnginePorts, PortResponse } from '../ports';
 import { generateEventFromProcedure } from '@procedures';
 import { getExpectedEvent } from '@queries';
@@ -18,18 +18,20 @@ import { processEvent } from './processEvent';
 export async function advanceEffects<T extends GameType>(
   gameId: string,
   gameTypeForUpdate: T,
-  gameState: GameState<BoardForGameType[T]>,
+  gameState: GameStateWithBoard<BoardForGameType<T>>,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> {
   let currentGameState = gameState;
   let expectedEvent = getExpectedEvent(gameState);
   while (expectedEvent.actionType === 'gameEffect') {
-    const event: GameEffectEvent<BoardForGameType[T], GameEffectType> =
-      generateEventFromProcedure(
-        currentGameState,
-        expectedEvent.eventNumber,
-        expectedEvent.effectType,
-      );
+    const event: GameEffectEvent<
+      BoardForGameType<T>,
+      GameEffectType
+    > = generateEventFromProcedure(
+      currentGameState,
+      expectedEvent.eventNumber,
+      expectedEvent.effectType,
+    );
     const processResult = await processEvent(
       gameId,
       gameTypeForUpdate,

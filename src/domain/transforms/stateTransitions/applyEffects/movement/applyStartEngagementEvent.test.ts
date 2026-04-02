@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { StartEngagementEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
@@ -20,7 +20,7 @@ import { applyStartEngagementEvent } from './applyStartEngagementEvent';
 describe('applyStartEngagementEvent', () => {
   /** Black E-5 moving into white on E-6 with north-facing target placement. */
   function stateWithMovementToEnemy(): {
-    state: GameState<StandardBoard>;
+    state: StandardGameState;
     defenderWithPlacement: UnitWithPlacement<StandardBoard>;
   } {
     const state = createEmptyGameState();

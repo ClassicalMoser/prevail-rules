@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ExpectedEventInfo } from '@events';
-import type { GameState, MeleeResolutionState } from '@game';
+import type { GameStateWithBoard, MeleeResolutionState } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getDefendingPlayerForNextIncompleteMeleeAttackApply } from '@queries/sequencing';
 import { getExpectedAttackApplyEvent } from '../composable';
@@ -15,9 +15,9 @@ import { getExpectedAttackApplyEvent } from '../composable';
  * @returns Information about what event is expected
  */
 export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
   meleeState: MeleeResolutionState,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   // Fast rejection: if already completed, this is an invalid state
   if (meleeState.completed) {
     throw new Error('Melee resolution state is already complete');

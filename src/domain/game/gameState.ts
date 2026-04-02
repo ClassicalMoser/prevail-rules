@@ -1,6 +1,7 @@
 import type {
   Board,
   CardState,
+  LargeBoard,
   PlayerSide,
   SmallBoard,
   StandardBoard,
@@ -10,8 +11,8 @@ import type { AssertExact } from '@utils';
 import type { RoundState } from './roundState';
 
 import {
-  boardSchema,
   cardStateSchema,
+  largeBoardSchema,
   playerSideSchema,
   smallBoardSchema,
   standardBoardSchema,
@@ -20,16 +21,14 @@ import {
 import { z } from 'zod';
 import { roundStateSchema } from './roundState';
 
-/** The state of a game of Prevail: Ancient Battles. */
-export interface GameState<TBoard extends Board> {
+/** Shared fields for all board sizes (discriminated by `boardState.boardType`). */
+export interface GameStateBase {
   /** The current round number of the game. */
   currentRoundNumber: number;
   /** The state of the current round of the game. */
-  currentRoundState: RoundState<TBoard>;
+  currentRoundState: RoundState;
   /** Which player currently has initiative. */
   currentInitiative: PlayerSide;
-  /** The state of the board. */
-  boardState: TBoard;
   /** The state of both players' cards. */
   cardState: CardState;
   /** Units not yet placed on the board. */
@@ -40,65 +39,87 @@ export interface GameState<TBoard extends Board> {
   lostCommanders: Set<PlayerSide>;
 }
 
-const _gameStateSchemaObject = z.object({
-  /** The current round number of the game. */
+export interface StandardGameState extends GameStateBase {
+  boardState: StandardBoard;
+}
+
+export interface SmallGameState extends GameStateBase {
+  boardState: SmallBoard;
+}
+
+export interface LargeGameState extends GameStateBase {
+  boardState: LargeBoard;
+}
+
+/**
+ * All game states, discriminated by `boardState` (`boardType` on the board).
+ * Narrow with `if (state.boardState.boardType === 'standard')` → {@link StandardGameState}.
+ */
+export type GameState = StandardGameState | SmallGameState | LargeGameState;
+
+/**
+ * Game state correlated with a generic `TBoard` (e.g. procedure/transform type parameters).
+ * `GameStateBase & { boardState: TBoard }` keeps `state.boardState` and nested types
+ * (`UnitPlacement<TBoard>`, etc.) correlated under a naked `TBoard extends Board` type parameter.
+ * A conditional alias (like `MoveUnitEvent<TBoard>`) would widen unresolved generics to
+ * {@link GameState} and break procedure/query typing.
+ *
+ * Mode-specific setup / victory / rules **traits** belong on the {@link Game} / `gameType` side
+ * (Layer 5 DU), not on {@link GameState} branches — so this intersection remains the right shape
+ * for generic board threading.
+ *
+ * Prefer {@link GameState} when you mean “any board”.
+ */
+export type GameStateWithBoard<TBoard extends Board = Board> = GameStateBase & {
+  boardState: TBoard;
+};
+
+const _gameStateSharedFields = {
   currentRoundNumber: z.int().min(0),
-  /** The state of the current round of the game. */
   currentRoundState: roundStateSchema,
-  /** Which player currently has initiative. */
   currentInitiative: playerSideSchema,
-  /** The state of the board. */
-  boardState: boardSchema,
-  /** The state of both players' cards. */
   cardState: cardStateSchema,
-  /** Units not yet placed on the board. */
   reservedUnits: z.set(unitInstanceSchema),
-  /** The units that have been routed during the game. */
   routedUnits: z.set(unitInstanceSchema),
-  /** The commanders that have been lost during the game. */
   lostCommanders: z.set(playerSideSchema),
+} as const;
+
+const _standardGameStateSchemaObject = z.object({
+  ..._gameStateSharedFields,
+  boardState: standardBoardSchema,
 });
+
+const _smallGameStateSchemaObject = z.object({
+  ..._gameStateSharedFields,
+  boardState: smallBoardSchema,
+});
+
+const _largeGameStateSchemaObject = z.object({
+  ..._gameStateSharedFields,
+  boardState: largeBoardSchema,
+});
+
+const _gameStateSchemaObject = z.union([
+  _standardGameStateSchemaObject,
+  _smallGameStateSchemaObject,
+  _largeGameStateSchemaObject,
+]);
 
 type GameStateSchemaType = z.infer<typeof _gameStateSchemaObject>;
 
-// Schema validates GameState<Board> (the base union type)
-const _assertExactGameState: AssertExact<
-  GameState<Board>,
-  GameStateSchemaType
-> = true;
+const _assertExactGameState: AssertExact<GameState, GameStateSchemaType> = true;
 
-/**
- * The schema for the state of a game of Prevail: Ancient Battles.
- * This schema validates GameState<Board> (the base union type).
- * For type-safe usage, use the generic GameState<TBoard> interface.
- */
-export const gameStateSchema: z.ZodType<GameState<Board>> =
-  _gameStateSchemaObject;
+/** Wide schema: union of per-board game state shapes (discriminated at `boardState.boardType`). */
+export const gameStateSchema: z.ZodType<GameState> = _gameStateSchemaObject;
 
-/**
- * {@link GameState} with a specific board schema (standard / small / large).
- * `currentRoundState` stays {@link RoundState}<{@link Board}> at runtime; narrow via {@link boardState}.
- */
-export function gameStateSchemaForBoard<TBoard extends Board>(
-  boardStateSchema: z.ZodType<TBoard>,
-): z.ZodType<GameState<TBoard>> {
-  return z.object({
-    currentRoundNumber: z.int().min(0),
-    currentRoundState: roundStateSchema,
-    currentInitiative: playerSideSchema,
-    boardState: boardStateSchema,
-    cardState: cardStateSchema,
-    reservedUnits: z.set(unitInstanceSchema),
-    routedUnits: z.set(unitInstanceSchema),
-    lostCommanders: z.set(playerSideSchema),
-  }) as unknown as z.ZodType<GameState<TBoard>>;
-}
+/** {@link StandardGameState} */
+export const gameStateSchemaForStandardBoard: z.ZodType<StandardGameState> =
+  _standardGameStateSchemaObject;
 
-/** {@link GameState} for a standard board. */
-export const gameStateSchemaForStandardBoard: z.ZodType<
-  GameState<StandardBoard>
-> = gameStateSchemaForBoard(standardBoardSchema);
+/** {@link SmallGameState} */
+export const gameStateSchemaForSmallBoard: z.ZodType<SmallGameState> =
+  _smallGameStateSchemaObject;
 
-/** {@link GameState} for a small board (mini / tutorial games). */
-export const gameStateSchemaForSmallBoard: z.ZodType<GameState<SmallBoard>> =
-  gameStateSchemaForBoard(smallBoardSchema);
+/** {@link LargeGameState} */
+export const gameStateSchemaForLargeBoard: z.ZodType<LargeGameState> =
+  _largeGameStateSchemaObject;

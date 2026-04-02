@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate } from '@entities';
-import type { GameState, ReverseState } from '@game';
+import type { GameStateWithBoard, ReverseState } from '@game';
 import { hasEngagedUnits, hasNoUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
 
@@ -14,7 +14,7 @@ import { getBoardSpace } from '@queries/boardSpace';
  */
 export function canReverseUnit<TBoard extends Board>(
   reverseState: ReverseState,
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
 ): boolean {
   const coordinate = reverseState.reversingUnit.placement.coordinate;
   const boardSpace = getBoardSpace(

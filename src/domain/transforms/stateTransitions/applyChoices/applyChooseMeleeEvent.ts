@@ -1,7 +1,7 @@
 import type { Board } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
 import type {
-  GameState,
+  GameStateWithBoard,
   MeleeResolutionState,
   ResolveMeleePhaseState,
 } from '@game';
@@ -17,8 +17,8 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyChooseMeleeEvent<TBoard extends Board>(
   event: ChooseMeleeResolutionEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const { space } = event;
   const currentPhaseState = getResolveMeleePhaseState(state);
 

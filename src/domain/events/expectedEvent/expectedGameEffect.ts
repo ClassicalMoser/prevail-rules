@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameEffectType } from '@ruleValues';
 import type { AssertExact } from '@utils';
 /**
@@ -9,8 +8,9 @@ import { z } from 'zod';
 
 /**
  * Expected event is a game effect (deterministic action).
+ * Board-agnostic: spatial payloads live on {@link GameEffectEvent}, not here (Layer 4).
  */
-export interface ExpectedGameEffect<_TBoard extends Board> {
+export interface ExpectedGameEffect {
   /** Discriminator for the union. */
   actionType: 'gameEffect';
   /** The specific effect type expected (e.g., 'resolveRally', 'revealCards'). */
@@ -33,6 +33,6 @@ export const expectedGameEffectSchema: z.ZodObject<{
 }> = _expectedGameEffectSchemaObject;
 
 const _assertExactExpectedGameEffect: AssertExact<
-  ExpectedGameEffect<Board>,
+  ExpectedGameEffect,
   ExpectedGameEffectSchemaType
 > = true;

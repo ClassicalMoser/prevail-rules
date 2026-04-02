@@ -1,6 +1,6 @@
 import type { Board, ValidationResult } from '@entities';
 import type { Event } from '@events';
-import type { GameState, MoveCommandersPhaseState } from '@game';
+import type { GameStateWithBoard, MoveCommandersPhaseState } from '@game';
 import { validatePlayerChoice } from '@validation/playerChoice';
 
 /**
@@ -12,7 +12,7 @@ import { validatePlayerChoice } from '@validation/playerChoice';
  */
 export function validateMoveCommandersPhaseEvent<TBoard extends Board>(
   event: Event<TBoard>,
-  state: GameState<TBoard> & {
+  state: GameStateWithBoard<TBoard> & {
     currentRoundState: {
       currentPhaseState: MoveCommandersPhaseState;
     };

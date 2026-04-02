@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { RevealCardsEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
@@ -16,7 +16,7 @@ import { applyRevealCardsEvent } from './applyRevealCardsEvent';
  */
 describe('applyRevealCardsEvent', () => {
   /** playCards.revealCards with black/white awaitingPlay set and inPlay empty. */
-  function createGameStateInRevealCardsStep(): GameState<StandardBoard> {
+  function createGameStateInRevealCardsStep(): StandardGameState {
     const state = createEmptyGameState();
 
     const stateWithCards = updateCardState(state, (current) => ({

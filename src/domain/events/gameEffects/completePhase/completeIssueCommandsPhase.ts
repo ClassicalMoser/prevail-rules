@@ -14,7 +14,7 @@ import {
   standardBoardCoordinateSchema,
 } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import { type ZodDiscriminatedUnion, z } from 'zod';
 
 /**
  * Literal discriminator for {@link CompleteIssueCommandsPhaseEvent.effectType}.
@@ -71,7 +71,13 @@ export type CompleteIssueCommandsPhaseEvent<
       ? LargeCompleteIssueCommandsPhaseEvent
       : CompleteIssueCommandsPhaseEventUnion;
 
-const _standardCompleteIssueCommandsPhaseEventSchemaObject = z.object({
+const _standardCompleteIssueCommandsPhaseEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'standard'>;
+  remainingEngagements: z.ZodSet<typeof standardBoardCoordinateSchema>;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -88,7 +94,13 @@ const _assertExactStandardCompleteIssueCommandsPhaseEvent: AssertExact<
   StandardCompleteIssueCommandsPhaseEventSchemaType
 > = true;
 
-const _smallCompleteIssueCommandsPhaseEventSchemaObject = z.object({
+const _smallCompleteIssueCommandsPhaseEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'small'>;
+  remainingEngagements: z.ZodSet<typeof smallBoardCoordinateSchema>;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -105,7 +117,13 @@ const _assertExactSmallCompleteIssueCommandsPhaseEvent: AssertExact<
   SmallCompleteIssueCommandsPhaseEventSchemaType
 > = true;
 
-const _largeCompleteIssueCommandsPhaseEventSchemaObject = z.object({
+const _largeCompleteIssueCommandsPhaseEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'large'>;
+  remainingEngagements: z.ZodSet<typeof largeBoardCoordinateSchema>;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -122,11 +140,21 @@ const _assertExactLargeCompleteIssueCommandsPhaseEvent: AssertExact<
   LargeCompleteIssueCommandsPhaseEventSchemaType
 > = true;
 
-const _completeIssueCommandsPhaseEventSchemaObject = z.union([
-  _standardCompleteIssueCommandsPhaseEventSchemaObject,
-  _smallCompleteIssueCommandsPhaseEventSchemaObject,
-  _largeCompleteIssueCommandsPhaseEventSchemaObject,
-]);
+type _CompleteIssueCommandsPhaseEventDiscriminatedUnion = ZodDiscriminatedUnion<
+  readonly [
+    typeof _standardCompleteIssueCommandsPhaseEventSchemaObject,
+    typeof _smallCompleteIssueCommandsPhaseEventSchemaObject,
+    typeof _largeCompleteIssueCommandsPhaseEventSchemaObject,
+  ],
+  'boardType'
+>;
+
+const _completeIssueCommandsPhaseEventSchemaObject: _CompleteIssueCommandsPhaseEventDiscriminatedUnion =
+  z.discriminatedUnion('boardType', [
+    _standardCompleteIssueCommandsPhaseEventSchemaObject,
+    _smallCompleteIssueCommandsPhaseEventSchemaObject,
+    _largeCompleteIssueCommandsPhaseEventSchemaObject,
+  ]);
 
 type CompleteIssueCommandsPhaseEventSchemaType = z.infer<
   typeof _completeIssueCommandsPhaseEventSchemaObject
@@ -138,6 +166,5 @@ const _assertExactCompleteIssueCommandsPhaseEvent: AssertExact<
 > = true;
 
 /** The schema for a complete issue commands phase event. */
-export const completeIssueCommandsPhaseEventSchema: z.ZodType<
-  CompleteIssueCommandsPhaseEvent<Board>
-> = _completeIssueCommandsPhaseEventSchemaObject;
+export const completeIssueCommandsPhaseEventSchema: typeof _completeIssueCommandsPhaseEventSchemaObject =
+  _completeIssueCommandsPhaseEventSchemaObject;

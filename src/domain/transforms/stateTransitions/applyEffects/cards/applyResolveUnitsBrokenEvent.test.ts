@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { CLEANUP_PHASE } from '@game';
 
 import { getBoardSpace } from '@queries';
@@ -36,7 +36,7 @@ describe('applyResolveUnitsBrokenEvent', () => {
       secondPlayerRallyResolutionState: undefined,
     };
 
-    const full = state as GameState<StandardBoard>;
+    const full = state as StandardGameState;
     const event = {
       eventNumber: 0,
       eventType: 'gameEffect' as const,
@@ -71,7 +71,7 @@ describe('applyResolveUnitsBrokenEvent', () => {
       }),
     );
 
-    const full: GameState<StandardBoard> = updatePhaseState(withBoard, {
+    const full: StandardGameState = updatePhaseState(withBoard, {
       phase: CLEANUP_PHASE,
       step: 'firstPlayerResolveRally',
       firstPlayerRallyResolutionState: {

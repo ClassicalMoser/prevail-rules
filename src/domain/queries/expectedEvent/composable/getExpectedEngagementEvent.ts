@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate } from '@entities';
 import type { ExpectedEventInfo } from '@events';
-import type { EngagementState, GameState } from '@game';
+import type { EngagementState, GameStateWithBoard } from '@game';
 import { hasEngagedUnits, hasNoUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
@@ -18,9 +18,9 @@ import { getExpectedRoutEvent } from '.';
  * @returns Information about what event is expected
  */
 export function getExpectedEngagementEvent<TBoard extends Board>(
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
   engagementState: EngagementState,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   const attackingPlayer = engagementState.engagingUnit.playerSide;
   const defendingPlayer = getOtherPlayer(attackingPlayer);
   const board = gameState.boardState;

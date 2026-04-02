@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type {
-  GameState,
+  GameStateWithBoard,
   MeleeResolutionState,
   PhaseState,
   ResolveMeleePhaseState,
@@ -25,9 +25,9 @@ import { updatePhaseState } from '../state';
  * ```
  */
 export function updateMeleeResolutionState<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   meleeResolutionState: MeleeResolutionState,
-): GameState<TBoard> {
+): GameStateWithBoard<TBoard> {
   const resolveMeleePhaseState = getResolveMeleePhaseState(state);
 
   if (!resolveMeleePhaseState.currentMeleeResolutionState) {
@@ -39,5 +39,5 @@ export function updateMeleeResolutionState<TBoard extends Board>(
     currentMeleeResolutionState: meleeResolutionState,
   } as ResolveMeleePhaseState;
 
-  return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
+  return updatePhaseState(state, newPhaseState as PhaseState);
 }

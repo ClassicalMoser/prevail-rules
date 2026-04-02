@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CommitToMeleeEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { getMeleeResolutionState } from '@queries';
 import {
   discardCardsFromHand,
@@ -19,8 +19,8 @@ import {
  */
 export function applyCommitToMeleeEvent<TBoard extends Board>(
   event: CommitToMeleeEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const meleeState = getMeleeResolutionState(state);
   const player = event.player;
 

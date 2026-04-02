@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import {
   COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,
@@ -17,7 +17,7 @@ import { generateCompletePlayCardsPhaseEvent } from './generateCompletePlayCards
  */
 describe('generateCompletePlayCardsPhaseEvent', () => {
   /** Minimal valid snapshot: PLAY_CARDS_PHASE + step `complete` (other fields default). */
-  function createGameStateInCompleteStep(): GameState<StandardBoard> {
+  function createGameStateInCompleteStep(): StandardGameState {
     const state = createEmptyGameState();
 
     const stateWithPhase = updatePhaseState(state, {
@@ -60,7 +60,7 @@ describe('generateCompletePlayCardsPhaseEvent', () => {
           ...base.currentRoundState,
           roundNumber: 100,
         },
-      } satisfies GameState<StandardBoard>;
+      } satisfies StandardGameState;
 
       expect(generateCompletePlayCardsPhaseEvent(stateBlackInit, 0)).toEqual(
         expectedEvent,

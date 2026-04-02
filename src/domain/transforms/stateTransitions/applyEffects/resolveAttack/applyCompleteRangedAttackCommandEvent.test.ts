@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { CompleteRangedAttackCommandEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
@@ -25,7 +25,7 @@ describe('applyCompleteRangedAttackCommandEvent', () => {
       black: { ...c.black, inPlay: createTestCard() },
     }));
     const ranged = createRangedAttackResolutionState(withCards);
-    const full: GameState<StandardBoard> = updatePhaseState(
+    const full: StandardGameState = updatePhaseState(
       withCards,
       createIssueCommandsPhaseState(withCards, {
         currentCommandResolutionState: ranged,

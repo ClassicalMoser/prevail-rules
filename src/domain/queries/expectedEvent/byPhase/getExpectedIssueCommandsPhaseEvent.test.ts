@@ -1,5 +1,9 @@
 import type { StandardBoard } from '@entities';
-import type { GameState, IssueCommandsPhaseStep } from '@game';
+import type {
+  GameStateWithBoard,
+  IssueCommandsPhaseStep,
+  StandardGameState,
+} from '@game';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 import {
   createEmptyGameState,
@@ -20,9 +24,9 @@ describe('getExpectedIssueCommandsPhaseEvent', () => {
     step: IssueCommandsPhaseStep,
     currentInitiative: 'black' | 'white' = 'black',
     buildOverrides?: (
-      state: GameState<StandardBoard>,
+      state: StandardGameState,
     ) => Parameters<typeof createIssueCommandsPhaseState>[1],
-  ): GameState<StandardBoard> {
+  ): StandardGameState {
     const state = createEmptyGameState({ currentInitiative });
     state.cardState.black.inPlay = createTestCard();
     state.cardState.white.inPlay = createTestCard();

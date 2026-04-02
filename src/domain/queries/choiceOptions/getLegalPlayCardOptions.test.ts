@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
@@ -18,7 +18,7 @@ const chooseCardBase = {
  * getLegalPlayCardOptions: pending players' in-hand cards during playCards / chooseCards.
  */
 describe('getLegalPlayCardOptions', () => {
-  function stateChooseCardsBothPending(): GameState<StandardBoard> {
+  function stateChooseCardsBothPending(): StandardGameState {
     const base = createEmptyGameState();
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,

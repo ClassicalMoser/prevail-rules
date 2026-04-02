@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveInitiativeEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { getPlayCardsPhaseState } from '@queries';
 import {
   markPhaseAsComplete,
@@ -22,8 +22,8 @@ import {
  */
 export function applyResolveInitiativeEvent<TBoard extends Board>(
   event: ResolveInitiativeEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const phaseState = getPlayCardsPhaseState(state);
 
   // Advance to complete step

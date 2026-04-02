@@ -4,7 +4,7 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import type { ResolveReverseEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -30,7 +30,7 @@ import { applyResolveReverseEvent } from './applyResolveReverseEvent';
  */
 describe('applyResolveReverseEvent', () => {
   /** issueCommands + ranged apply in reverse substep for white on E-5. */
-  function createStateWithRangedAttackReverse(): GameState<StandardBoard> {
+  function createStateWithRangedAttackReverse(): StandardGameState {
     const state = createEmptyGameState();
     const reversingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -66,7 +66,7 @@ describe('applyResolveReverseEvent', () => {
    */
   function createStateWithMeleeReverse(
     reversingPlayer: 'white' | 'black',
-  ): GameState<StandardBoard> {
+  ): StandardGameState {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const reversingUnit = createTestUnit(reversingPlayer, { attack: 2 });
     const opponentPlayer = reversingPlayer === 'white' ? 'black' : 'white';

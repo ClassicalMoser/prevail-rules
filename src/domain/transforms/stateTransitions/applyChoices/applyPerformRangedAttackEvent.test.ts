@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitInstance } from '@entities';
 import type { PerformRangedAttackEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import {
   getIssueCommandsPhaseState,
   getRangedAttackResolutionState,
@@ -27,7 +27,7 @@ describe('applyPerformRangedAttackEvent', () => {
     remainingUnitsFirstPlayer: Set<UnitInstance>,
     remainingUnitsSecondPlayer: Set<UnitInstance>,
     currentInitiative: 'black' | 'white' = 'black',
-  ): GameState<StandardBoard> {
+  ): StandardGameState {
     const state = createEmptyGameState({ currentInitiative });
     return updatePhaseState(
       state,

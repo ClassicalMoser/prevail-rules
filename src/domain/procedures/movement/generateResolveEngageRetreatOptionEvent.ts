@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate } from '@entities';
 import type { ResolveEngageRetreatOptionEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
@@ -23,7 +23,7 @@ import {
  * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
  */
 export function generateResolveEngageRetreatOptionEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): ResolveEngageRetreatOptionEvent<TBoard, 'resolveEngageRetreatOption'> {
   const movementResolutionState = getMovementResolutionState(state);

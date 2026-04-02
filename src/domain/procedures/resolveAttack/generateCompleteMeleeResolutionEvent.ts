@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteMeleeResolutionEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,
@@ -15,7 +15,7 @@ import {
  * @returns A complete CompleteMeleeResolutionEvent
  */
 export function generateCompleteMeleeResolutionEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): CompleteMeleeResolutionEvent<TBoard, 'completeMeleeResolution'> {
   // Return is independent of state, so we can ignore it

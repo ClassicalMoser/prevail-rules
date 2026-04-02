@@ -1,4 +1,4 @@
-import type { Board, Command, UnitInstance } from '@entities';
+import type { Command, UnitInstance } from '@entities';
 import type { CommandResolutionState } from '@game/substeps';
 import type { AssertExact } from '@utils';
 import { commandSchema, unitInstanceSchema } from '@entities';
@@ -44,8 +44,13 @@ const _assertExactIssueCommandsPhaseStep: AssertExact<
 export const issueCommandsPhaseStepSchema: z.ZodType<IssueCommandsPhaseStep> =
   _issueCommandsPhaseStepSchemaObject;
 
-/** The state of the issue commands phase. */
-export interface IssueCommandsPhaseState<TBoard extends Board> {
+/**
+ * The state of the issue commands phase.
+ *
+ * Board-sized data lives in {@link CommandResolutionState} and `GameState.boardState`, not here;
+ * this envelope is board-agnostic (Layer 4 pass-through hygiene).
+ */
+export interface IssueCommandsPhaseState {
   /** The current phase of the round. */
   phase: 'issueCommands';
   /** The step of the issue commands phase. */
@@ -84,7 +89,7 @@ type IssueCommandsPhaseStateSchemaType = z.infer<
   typeof _issueCommandsPhaseStateSchemaObject
 >;
 const _assertExactIssueCommandsPhaseState: AssertExact<
-  IssueCommandsPhaseState<Board>,
+  IssueCommandsPhaseState,
   IssueCommandsPhaseStateSchemaType
 > = true;
 

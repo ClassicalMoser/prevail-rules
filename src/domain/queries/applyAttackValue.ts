@@ -1,5 +1,5 @@
 import type { Board, Modifier, UnitInstance } from '@entities';
-import type { AttackResult, GameState } from '@game';
+import type { AttackResult, GameStateWithBoard } from '@game';
 import { getCurrentUnitStat } from './getCurrentUnitStat';
 
 /**
@@ -12,7 +12,7 @@ import { getCurrentUnitStat } from './getCurrentUnitStat';
  * @returns The result of the attack.
  */
 export function applyAttackValue<TBoard extends Board>(
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
   attackValue: number,
   unit: UnitInstance,
   defendingModifiers?: Modifier[],

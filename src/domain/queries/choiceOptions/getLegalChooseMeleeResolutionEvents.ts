@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import {
   getCurrentInitiative,
@@ -10,7 +10,7 @@ import {
 } from '@queries/sequencing';
 
 export function getLegalChooseMeleeResolutionEvents<TBoard extends Board>(
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
 ): ChooseMeleeResolutionEvent<TBoard>[] {
   const phaseState = getResolveMeleePhaseState(gameState);
   if (phaseState.step !== 'resolveMelee') {

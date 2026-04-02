@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
@@ -18,7 +18,7 @@ describe('getExpectedPlayCardsPhaseEvent', () => {
    */
   function createGameStateInPlayCardsStep(
     step: 'chooseCards' | 'revealCards' | 'assignInitiative' | 'complete',
-  ): GameState<StandardBoard> {
+  ): StandardGameState {
     const state = createEmptyGameState();
 
     const stateWithPhase = updatePhaseState(state, {

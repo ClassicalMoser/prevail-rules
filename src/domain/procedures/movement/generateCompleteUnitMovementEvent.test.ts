@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { createEmptyGameState } from '@testing';
 import { describe, expect, it } from 'vitest';
 
@@ -12,7 +12,7 @@ import { generateCompleteUnitMovementEvent } from './generateCompleteUnitMovemen
  */
 describe('generateCompleteUnitMovementEvent', () => {
   it('given any game state, emits gameEffect with effectType completeUnitMovement', () => {
-    const state: GameState<StandardBoard> = createEmptyGameState();
+    const state: StandardGameState = createEmptyGameState();
     const event = generateCompleteUnitMovementEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeUnitMovement');

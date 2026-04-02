@@ -26,7 +26,7 @@ import {
   standardUnitWithPlacementSchema,
 } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import { type ZodDiscriminatedUnion, z } from 'zod';
 
 /** The type of the resolve melee game effect. */
 export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;
@@ -101,7 +101,23 @@ export type ResolveMeleeEvent<
       ? LargeResolveMeleeEvent
       : ResolveMeleeEventUnion;
 
-const _standardResolveMeleeEventSchemaObject = z.object({
+const _standardResolveMeleeEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_MELEE_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'standard'>;
+  location: typeof standardBoardCoordinateSchema;
+  whiteUnitWithPlacement: typeof standardUnitWithPlacementSchema;
+  blackUnitWithPlacement: typeof standardUnitWithPlacementSchema;
+  whiteLegalRetreatOptions: z.ZodSet<typeof standardUnitPlacementSchema>;
+  blackLegalRetreatOptions: z.ZodSet<typeof standardUnitPlacementSchema>;
+  whiteUnitRouted: z.ZodBoolean;
+  blackUnitRouted: z.ZodBoolean;
+  whiteUnitRetreated: z.ZodBoolean;
+  blackUnitRetreated: z.ZodBoolean;
+  whiteUnitReversed: z.ZodBoolean;
+  blackUnitReversed: z.ZodBoolean;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -128,7 +144,23 @@ const _assertExactStandardResolveMeleeEvent: AssertExact<
   StandardResolveMeleeEventSchemaType
 > = true;
 
-const _smallResolveMeleeEventSchemaObject = z.object({
+const _smallResolveMeleeEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_MELEE_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'small'>;
+  location: typeof smallBoardCoordinateSchema;
+  whiteUnitWithPlacement: typeof smallUnitWithPlacementSchema;
+  blackUnitWithPlacement: typeof smallUnitWithPlacementSchema;
+  whiteLegalRetreatOptions: z.ZodSet<typeof smallUnitPlacementSchema>;
+  blackLegalRetreatOptions: z.ZodSet<typeof smallUnitPlacementSchema>;
+  whiteUnitRouted: z.ZodBoolean;
+  blackUnitRouted: z.ZodBoolean;
+  whiteUnitRetreated: z.ZodBoolean;
+  blackUnitRetreated: z.ZodBoolean;
+  whiteUnitReversed: z.ZodBoolean;
+  blackUnitReversed: z.ZodBoolean;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -155,7 +187,23 @@ const _assertExactSmallResolveMeleeEvent: AssertExact<
   SmallResolveMeleeEventSchemaType
 > = true;
 
-const _largeResolveMeleeEventSchemaObject = z.object({
+const _largeResolveMeleeEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_MELEE_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<'large'>;
+  location: typeof largeBoardCoordinateSchema;
+  whiteUnitWithPlacement: typeof largeUnitWithPlacementSchema;
+  blackUnitWithPlacement: typeof largeUnitWithPlacementSchema;
+  whiteLegalRetreatOptions: z.ZodSet<typeof largeUnitPlacementSchema>;
+  blackLegalRetreatOptions: z.ZodSet<typeof largeUnitPlacementSchema>;
+  whiteUnitRouted: z.ZodBoolean;
+  blackUnitRouted: z.ZodBoolean;
+  whiteUnitRetreated: z.ZodBoolean;
+  blackUnitRetreated: z.ZodBoolean;
+  whiteUnitReversed: z.ZodBoolean;
+  blackUnitReversed: z.ZodBoolean;
+}> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -182,11 +230,21 @@ const _assertExactLargeResolveMeleeEvent: AssertExact<
   LargeResolveMeleeEventSchemaType
 > = true;
 
-const _resolveMeleeEventSchemaObject = z.union([
-  _standardResolveMeleeEventSchemaObject,
-  _smallResolveMeleeEventSchemaObject,
-  _largeResolveMeleeEventSchemaObject,
-]);
+type _ResolveMeleeEventDiscriminatedUnion = ZodDiscriminatedUnion<
+  readonly [
+    typeof _standardResolveMeleeEventSchemaObject,
+    typeof _smallResolveMeleeEventSchemaObject,
+    typeof _largeResolveMeleeEventSchemaObject,
+  ],
+  'boardType'
+>;
+
+const _resolveMeleeEventSchemaObject: _ResolveMeleeEventDiscriminatedUnion =
+  z.discriminatedUnion('boardType', [
+    _standardResolveMeleeEventSchemaObject,
+    _smallResolveMeleeEventSchemaObject,
+    _largeResolveMeleeEventSchemaObject,
+  ]);
 
 type ResolveMeleeEventSchemaType = z.infer<
   typeof _resolveMeleeEventSchemaObject
@@ -198,5 +256,5 @@ const _assertExactResolveMeleeEvent: AssertExact<
 > = true;
 
 /** The schema for a resolve melee event. */
-export const resolveMeleeEventSchema: z.ZodType<ResolveMeleeEvent<Board>> =
+export const resolveMeleeEventSchema: typeof _resolveMeleeEventSchemaObject =
   _resolveMeleeEventSchemaObject;

@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { getForwardSpace } from '@queries/boardSpace';
 import { getAdjacentFacings } from '@queries/facings';
 import { canMoveThrough, isDiagonalFacing } from '@validation';
@@ -22,7 +22,7 @@ import { canMoveThrough, isDiagonalFacing } from '@validation';
 export function checkDiagonalMove<TBoard extends Board>(
   unitSide: PlayerSide,
   currentUnitFlexibility: number,
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
   currentCoordinate: BoardCoordinate<TBoard>,
   targetCoordinate: BoardCoordinate<TBoard>,
   currentFacing: UnitFacing,

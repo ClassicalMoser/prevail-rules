@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
-import type { Event } from '@events';
-import type { GameState } from '@game';
+import type { Event, EventType } from '@events';
+import type { GameStateWithBoard } from '@game';
 
 /**
  * Gets the current event stream for the given game state.
@@ -9,7 +9,7 @@ import type { GameState } from '@game';
  * @returns The current event stream
  */
 export function getCurrentEventStream<TBoard extends Board>(
-  state: GameState<TBoard>,
-): readonly Event<TBoard>[] {
+  state: GameStateWithBoard<TBoard>,
+): readonly Event<Board, EventType>[] {
   return state.currentRoundState.events;
 }

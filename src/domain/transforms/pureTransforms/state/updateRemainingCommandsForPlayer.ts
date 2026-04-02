@@ -1,4 +1,4 @@
-import type { Board, Command, PlayerSide } from '@entities';
+import type { Command, PlayerSide } from '@entities';
 import type { IssueCommandsPhaseState } from '@game';
 
 /**
@@ -22,12 +22,12 @@ import type { IssueCommandsPhaseState } from '@game';
  * );
  * ```
  */
-export function updateRemainingCommandsForPlayer<TBoard extends Board>(
-  phaseState: IssueCommandsPhaseState<TBoard>,
+export function updateRemainingCommandsForPlayer(
+  phaseState: IssueCommandsPhaseState,
   player: PlayerSide,
   initiativePlayer: PlayerSide,
   remainingCommands: Set<Command>,
-): IssueCommandsPhaseState<TBoard> {
+): IssueCommandsPhaseState {
   const isFirstPlayer = player === initiativePlayer;
 
   return {

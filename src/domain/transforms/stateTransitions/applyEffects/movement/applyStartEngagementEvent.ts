@@ -1,7 +1,7 @@
 import type { Board } from '@entities';
 import type { StartEngagementEvent } from '@events';
 import type {
-  GameState,
+  GameStateWithBoard,
   IssueCommandsPhaseState,
   MovementResolutionState,
   PhaseState,
@@ -24,8 +24,8 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyStartEngagementEvent<TBoard extends Board>(
   event: StartEngagementEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
 
@@ -93,10 +93,10 @@ export function applyStartEngagementEvent<TBoard extends Board>(
   } as MovementResolutionState;
 
   // Update phase state
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     ...phaseState,
     currentCommandResolutionState: newMovementState,
   };
 
-  return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
+  return updatePhaseState(state, newPhaseState as PhaseState);
 }

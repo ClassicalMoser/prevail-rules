@@ -1,5 +1,5 @@
 import type { Board, Modifier, UnitInstance, UnitStatName } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { isDefenseStat, matchesUnitRequirements } from '@validation';
 import { getSpacesWithinDistance } from './boardSpace';
 import { getCommanderSpace } from './getCommanderSpace';
@@ -18,7 +18,7 @@ import { getPositionOfUnit } from './unitPresence';
 export function getCurrentUnitStat<TBoard extends Board>(
   unit: UnitInstance,
   stat: UnitStatName,
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
   modifiers?: Modifier[],
 ): number {
   // Get the base stat value

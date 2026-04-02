@@ -5,7 +5,7 @@ import type {
   PlayerChoiceType,
   PlayerSource,
 } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { getExpectedEvent } from '@queries';
 
 /**
@@ -38,11 +38,11 @@ export function validateExpectedChoice<
   TPlayerChoiceType extends PlayerChoiceType,
 >(
   event: PlayerChoiceEvent<TBoard, TPlayerChoiceType>,
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
 ): ValidationResult {
   try {
     // Get the expected event, and handle any errors that may occur
-    let expected: ExpectedEventInfo<TBoard>;
+    let expected: ExpectedEventInfo;
     try {
       expected = getExpectedEvent(state);
     } catch (error) {

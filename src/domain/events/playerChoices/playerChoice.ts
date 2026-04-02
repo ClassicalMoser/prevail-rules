@@ -16,7 +16,7 @@ import type { PerformRangedAttackEvent } from './performRangedAttack';
 import type { PlayerChoiceType } from './playerChoiceTypes';
 import type { SetupUnitsEvent } from './setupUnit';
 
-import { z } from 'zod';
+import { type ZodDiscriminatedUnion, z } from 'zod';
 import { chooseCardEventSchema } from './chooseCard';
 import { chooseMeleeResolutionEventSchema } from './chooseMeleeResolution';
 import { chooseRallyEventSchema } from './chooseRally';
@@ -56,36 +56,56 @@ export type PlayerChoiceEvent<
   | SetupUnitsEvent<TBoard, 'setupUnits'>;
 
 /**
- * `z.union` (not `discriminatedUnion` on `choiceType`): Layer 3 spatial choices use `z.union` of
- * `boardType` branches; nested unions are not composable as DU members under Zod 4.
+ * Discriminated by `choiceType`. Spatial choices nest `z.discriminatedUnion('boardType', …)`.
+ * Per-variant spatial schemas use explicit `z.ZodObject<…>` so `--isolatedDeclarations` can emit
+ * `typeof` exports without losing `$ZodTypeDiscriminable` for this outer DU.
  */
-const _playerChoiceEventSchemaObject = z.union([
-  chooseCardEventSchema,
-  chooseMeleeResolutionEventSchema,
-  chooseRallyEventSchema,
-  chooseRoutDiscardEventSchema,
-  chooseRetreatOptionEventSchema,
-  chooseWhetherToRetreatEventSchema,
-  commitToMeleeEventSchema,
-  commitToMovementEventSchema,
-  commitToRangedAttackEventSchema,
-  issueCommandEventSchema,
-  moveCommanderEventSchema,
-  moveUnitEventSchema,
-  performRangedAttackEventSchema,
-  setupUnitsEventSchema,
-]);
+type _PlayerChoiceEventDiscriminatedUnion = ZodDiscriminatedUnion<
+  readonly [
+    typeof chooseCardEventSchema,
+    typeof chooseMeleeResolutionEventSchema,
+    typeof chooseRallyEventSchema,
+    typeof chooseRoutDiscardEventSchema,
+    typeof chooseRetreatOptionEventSchema,
+    typeof chooseWhetherToRetreatEventSchema,
+    typeof commitToMeleeEventSchema,
+    typeof commitToMovementEventSchema,
+    typeof commitToRangedAttackEventSchema,
+    typeof issueCommandEventSchema,
+    typeof moveCommanderEventSchema,
+    typeof moveUnitEventSchema,
+    typeof performRangedAttackEventSchema,
+    typeof setupUnitsEventSchema,
+  ],
+  'choiceType'
+>;
+
+const _playerChoiceEventSchemaObject: _PlayerChoiceEventDiscriminatedUnion =
+  z.discriminatedUnion('choiceType', [
+    chooseCardEventSchema,
+    chooseMeleeResolutionEventSchema,
+    chooseRallyEventSchema,
+    chooseRoutDiscardEventSchema,
+    chooseRetreatOptionEventSchema,
+    chooseWhetherToRetreatEventSchema,
+    commitToMeleeEventSchema,
+    commitToMovementEventSchema,
+    commitToRangedAttackEventSchema,
+    issueCommandEventSchema,
+    moveCommanderEventSchema,
+    moveUnitEventSchema,
+    performRangedAttackEventSchema,
+    setupUnitsEventSchema,
+  ]);
 
 type PlayerChoiceEventSchemaType = z.infer<
   typeof _playerChoiceEventSchemaObject
 >;
 
 /** The schema for a player choice event. */
-export const playerChoiceEventSchema: z.ZodType<
-  PlayerChoiceEvent<Board, PlayerChoiceType>
-> = _playerChoiceEventSchemaObject;
+export const playerChoiceEventSchema: typeof _playerChoiceEventSchemaObject =
+  _playerChoiceEventSchemaObject;
 
-// Verify manual type matches schema inference
 const _assertExactPlayerChoiceEvent: AssertExact<
   PlayerChoiceEvent<Board, PlayerChoiceType>,
   PlayerChoiceEventSchemaType

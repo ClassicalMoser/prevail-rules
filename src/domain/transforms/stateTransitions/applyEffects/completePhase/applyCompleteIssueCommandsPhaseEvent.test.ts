@@ -1,6 +1,10 @@
 import type { BoardCoordinate, StandardBoard } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState } from '@game';
+import type {
+  GameStateWithBoard,
+  IssueCommandsPhaseState,
+  StandardGameState,
+} from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import {
@@ -30,12 +34,12 @@ function issueCommandsCompleteEvent(
  */
 describe('applyCompleteIssueCommandsPhaseEvent', () => {
   /** issueCommands.complete with E-5 engaged pair from factory and empty command queues. */
-  function createGameStateInCompleteStep(): GameState<StandardBoard> {
+  function createGameStateInCompleteStep(): StandardGameState {
     const blackUnit = createTestUnit('black', { attack: 3 });
     const whiteUnit = createTestUnit('white', { attack: 3 });
     const state = createGameStateWithEngagedUnits(blackUnit, whiteUnit, 'E-5');
 
-    const initialPhaseState: IssueCommandsPhaseState<StandardBoard> = {
+    const initialPhaseState: IssueCommandsPhaseState = {
       phase: ISSUE_COMMANDS_PHASE,
       step: 'complete',
       remainingCommandsFirstPlayer: new Set(),

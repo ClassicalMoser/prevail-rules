@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { TriggerRoutFromRetreatEvent } from '@events';
-import type { GameState, RoutState } from '@game';
+import type { GameStateWithBoard, RoutState } from '@game';
 import { RANGED_ATTACK_RESOLUTION_CONTEXT } from '@events';
 import {
   getRetreatStateFromMelee,
@@ -18,8 +18,8 @@ import { updateRetreatRoutState } from '@transforms/pureTransforms';
  */
 export function applyTriggerRoutFromRetreatEvent<TBoard extends Board>(
   event: TriggerRoutFromRetreatEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const retreatState =
     event.retreatResolutionContext === RANGED_ATTACK_RESOLUTION_CONTEXT
       ? getRetreatStateFromRangedAttack(state)

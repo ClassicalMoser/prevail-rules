@@ -4,7 +4,7 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { getRangedAttackResolutionState } from '@queries';
 import {
   createEmptyGameState,
@@ -25,7 +25,7 @@ import { applyResolveRangedAttackEvent } from './applyResolveRangedAttackEvent';
 describe('applyResolveRangedAttackEvent', () => {
   /** issueCommands + ranged CRS with white defender on E-5 and both inPlay cards. */
   function createRangedResolutionFixture(): {
-    full: GameState<StandardBoard>;
+    full: StandardGameState;
     defender: ReturnType<typeof createTestUnit>;
     defenderWithPlacement: UnitWithPlacement<StandardBoard>;
   } {

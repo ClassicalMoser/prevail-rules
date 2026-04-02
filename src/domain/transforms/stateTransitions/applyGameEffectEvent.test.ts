@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { GameEffectEvent, GameEffectType } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { createEmptyGameState } from '@testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
@@ -59,8 +59,8 @@ vi.mock('./applyEffects', () => ({
 /** Router passes (event, state); handlers share this signature. */
 type ApplyGameEffectHandler = (
   event: GameEffectEvent<StandardBoard, GameEffectType>,
-  state: GameState<StandardBoard>,
-) => GameState<StandardBoard>;
+  state: StandardGameState,
+) => StandardGameState;
 
 const gameEffectCases: ReadonlyArray<[GameEffectType, ApplyGameEffectHandler]> =
   [

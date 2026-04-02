@@ -12,10 +12,10 @@ export interface RoundSnapshotStorage {
   getRoundSnapshot: (
     gameId: string,
     roundNumber: number,
-  ) => Promise<PortResponse<GameState<Board> | undefined>>;
+  ) => Promise<PortResponse<GameState | undefined>>;
   saveRoundSnapshot: (
     gameId: string,
     roundNumber: number,
-    gameState: GameState<Board>,
+    gameState: GameState,
   ) => Promise<PortResponse<void>>;
 }

@@ -1,7 +1,7 @@
 import type { Board } from '@entities';
 import type { PerformRangedAttackEvent } from '@events';
 import type {
-  GameState,
+  GameStateWithBoard,
   IssueCommandsPhaseState,
   PhaseState,
   RangedAttackResolutionState,
@@ -23,8 +23,8 @@ import { isSameUnitInstance } from '@validation';
  */
 export function applyPerformRangedAttackEvent<TBoard extends Board>(
   event: PerformRangedAttackEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const currentPhaseState = getIssueCommandsPhaseState(state);
   const attackingPlayer = event.player;
   const attackingUnit = event.unit.unit;
@@ -72,7 +72,7 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
     completed: false,
   } as RangedAttackResolutionState;
 
-  const newPhaseState: IssueCommandsPhaseState<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     ...currentPhaseState,
     currentCommandResolutionState: rangedAttackResolutionState,
     remainingUnitsFirstPlayer: isFirstPlayer
@@ -83,9 +83,6 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
       : newRemainingAttacker,
   };
 
-  const newGameState = updatePhaseState(
-    state,
-    newPhaseState as PhaseState<TBoard>,
-  );
+  const newGameState = updatePhaseState(state, newPhaseState as PhaseState);
   return newGameState;
 }

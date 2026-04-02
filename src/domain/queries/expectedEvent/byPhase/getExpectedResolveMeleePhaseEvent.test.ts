@@ -1,5 +1,9 @@
 import type { StandardBoard } from '@entities';
-import type { GameState, ResolveMeleePhaseStep } from '@game';
+import type {
+  GameStateWithBoard,
+  ResolveMeleePhaseStep,
+  StandardGameState,
+} from '@game';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 import {
   createEmptyGameState,
@@ -17,9 +21,9 @@ describe('getExpectedResolveMeleePhaseEvent', () => {
   function createGameStateInResolveMeleeStep(
     step: ResolveMeleePhaseStep,
     buildOverrides?: (
-      state: GameState<StandardBoard>,
+      state: StandardGameState,
     ) => Parameters<typeof createResolveMeleePhaseState>[1],
-  ): GameState<StandardBoard> {
+  ): StandardGameState {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     state.cardState.black.inPlay = createTestCard();
     state.cardState.white.inPlay = createTestCard();

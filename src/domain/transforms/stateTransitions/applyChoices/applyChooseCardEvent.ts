@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ChooseCardEvent } from '@events';
-import type { GameState, PlayCardsPhaseState } from '@game';
+import type { GameStateWithBoard, PlayCardsPhaseState } from '@game';
 import { getPlayCardsPhaseState } from '@queries';
 import {
   chooseCard,
@@ -19,8 +19,8 @@ import {
  */
 export function applyChooseCardEvent<TBoard extends Board>(
   event: ChooseCardEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const { player, card } = event;
   const currentPhaseState: PlayCardsPhaseState = getPlayCardsPhaseState(state);
 

@@ -287,8 +287,17 @@ export {
   miniGameSchema,
   standardGameSchema,
   tutorialGameSchema,
+  validateGameBoardMatchesGameType,
 } from '@game';
-export type { BoardForGameType, Game } from '@game';
+export type {
+  BoardForGameType,
+  Game,
+  GameBase,
+  GameOfType,
+  MiniGame,
+  StandardGame,
+  TutorialGame,
+} from '@game';
 export {
   attackResultSchema,
   CLEANUP_PHASE,
@@ -298,6 +307,9 @@ export {
   completedCommitmentSchema,
   declinedCommitmentSchema,
   gameStateSchema,
+  gameStateSchemaForLargeBoard,
+  gameStateSchemaForSmallBoard,
+  gameStateSchemaForStandardBoard,
   pendingCommitmentSchema,
 } from '@game';
 export {
@@ -341,7 +353,12 @@ export type {
   CompletedCommitment,
   DeclinedCommitment,
   GameState,
+  GameStateBase,
+  GameStateWithBoard,
+  LargeGameState,
   PendingCommitment,
+  SmallGameState,
+  StandardGameState,
 } from '@game';
 export type {
   AttackApplyState,

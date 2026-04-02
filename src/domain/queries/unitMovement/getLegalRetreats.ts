@@ -4,7 +4,7 @@ import type {
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import type { MoveResult } from './exploreUnitMoves';
 import { areSameSide, hasNoUnit, hasSingleUnit } from '@entities';
 import {
@@ -47,7 +47,7 @@ import { exploreUnitMoves } from './exploreUnitMoves';
  */
 export function getLegalRetreats<TBoard extends Board>(
   unitWithPlacement: UnitWithPlacement<TBoard>,
-  gameState: GameState<TBoard>,
+  gameState: GameStateWithBoard<TBoard>,
 ): Set<UnitPlacement<TBoard>> {
   // Get the board state
   const board = gameState.boardState;

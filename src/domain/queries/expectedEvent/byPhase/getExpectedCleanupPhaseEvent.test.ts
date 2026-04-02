@@ -1,5 +1,9 @@
 import type { StandardBoard } from '@entities';
-import type { CleanupPhaseStep, GameState } from '@game';
+import type {
+  CleanupPhaseStep,
+  GameStateWithBoard,
+  StandardGameState,
+} from '@game';
 import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
 import {
   createCleanupPhaseState,
@@ -16,7 +20,7 @@ describe('getExpectedCleanupPhaseEvent', () => {
   function createGameStateInCleanupStep(
     step: CleanupPhaseStep,
     currentInitiative: 'black' | 'white' = 'black',
-  ): GameState<StandardBoard> {
+  ): StandardGameState {
     const state = createEmptyGameState({ currentInitiative });
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step,

@@ -7,7 +7,7 @@ import { advanceEffects, processPlayerChoice } from '../process';
 export async function handlePlayerChoiceSubmission<T extends GameType>(
   gameId: string,
   gameType: T,
-  playerChoice: PlayerChoiceEvent<BoardForGameType[T], PlayerChoiceType>,
+  playerChoice: PlayerChoiceEvent<BoardForGameType<T>, PlayerChoiceType>,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> {
   const processResult = await processPlayerChoice(

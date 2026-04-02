@@ -51,7 +51,7 @@ import type {
   ResolveRangedAttackEvent,
 } from './resolveAttack';
 import { gameEffects } from '@ruleValues';
-import { z } from 'zod';
+import { type ZodDiscriminatedUnion, z } from 'zod';
 import {
   discardPlayedCardsEventSchema,
   resolveInitiativeEventSchema,
@@ -132,42 +132,73 @@ export type GameEffectEvent<
   TGameEffectType extends GameEffectType,
 > = Extract<GameEffectEventUnion<TBoard>, { effectType: TGameEffectType }>;
 
-/** `z.union`: Layer 3 spatial effects use inner `z.union` of `boardType` variants (Zod 4). */
-const _gameEffectEventSchemaObject = z.union([
-  completeAttackApplyEventSchema,
-  completeCleanupPhaseEventSchema,
-  completeIssueCommandsPhaseEventSchema,
-  completeMoveCommandersPhaseEventSchema,
-  completePlayCardsPhaseEventSchema,
-  completeMeleeResolutionEventSchema,
-  completeRangedAttackCommandEventSchema,
-  completeResolveMeleePhaseEventSchema,
-  discardPlayedCardsEventSchema,
-  resolveEngageRetreatOptionEventSchema,
-  resolveFlankEngagementEventSchema,
-  resolveInitiativeEventSchema,
-  resolveMeleeEventSchema,
-  resolveRallyEventSchema,
-  resolveRangedAttackEventSchema,
-  resolveRetreatEventSchema,
-  resolveReverseEventSchema,
-  resolveRoutEventSchema,
-  resolveUnitsBrokenEventSchema,
-  revealCardsEventSchema,
-  completeUnitMovementEventSchema,
-  startEngagementEventSchema,
-  triggerRoutFromRetreatEventSchema,
-]);
+/**
+ * Discriminated by `effectType`. Spatial effects nest `boardType` DUs; spatial modules use explicit
+ * `z.ZodObject<…>` on variants so nested DUs stay composable under `--isolatedDeclarations`.
+ */
+type _GameEffectEventDiscriminatedUnion = ZodDiscriminatedUnion<
+  readonly [
+    typeof completeAttackApplyEventSchema,
+    typeof completeCleanupPhaseEventSchema,
+    typeof completeIssueCommandsPhaseEventSchema,
+    typeof completeMoveCommandersPhaseEventSchema,
+    typeof completePlayCardsPhaseEventSchema,
+    typeof completeMeleeResolutionEventSchema,
+    typeof completeRangedAttackCommandEventSchema,
+    typeof completeResolveMeleePhaseEventSchema,
+    typeof discardPlayedCardsEventSchema,
+    typeof resolveEngageRetreatOptionEventSchema,
+    typeof resolveFlankEngagementEventSchema,
+    typeof resolveInitiativeEventSchema,
+    typeof resolveMeleeEventSchema,
+    typeof resolveRallyEventSchema,
+    typeof resolveRangedAttackEventSchema,
+    typeof resolveRetreatEventSchema,
+    typeof resolveReverseEventSchema,
+    typeof resolveRoutEventSchema,
+    typeof resolveUnitsBrokenEventSchema,
+    typeof revealCardsEventSchema,
+    typeof completeUnitMovementEventSchema,
+    typeof startEngagementEventSchema,
+    typeof triggerRoutFromRetreatEventSchema,
+  ],
+  'effectType'
+>;
+
+const _gameEffectEventSchemaObject: _GameEffectEventDiscriminatedUnion =
+  z.discriminatedUnion('effectType', [
+    completeAttackApplyEventSchema,
+    completeCleanupPhaseEventSchema,
+    completeIssueCommandsPhaseEventSchema,
+    completeMoveCommandersPhaseEventSchema,
+    completePlayCardsPhaseEventSchema,
+    completeMeleeResolutionEventSchema,
+    completeRangedAttackCommandEventSchema,
+    completeResolveMeleePhaseEventSchema,
+    discardPlayedCardsEventSchema,
+    resolveEngageRetreatOptionEventSchema,
+    resolveFlankEngagementEventSchema,
+    resolveInitiativeEventSchema,
+    resolveMeleeEventSchema,
+    resolveRallyEventSchema,
+    resolveRangedAttackEventSchema,
+    resolveRetreatEventSchema,
+    resolveReverseEventSchema,
+    resolveRoutEventSchema,
+    resolveUnitsBrokenEventSchema,
+    revealCardsEventSchema,
+    completeUnitMovementEventSchema,
+    startEngagementEventSchema,
+    triggerRoutFromRetreatEventSchema,
+  ]);
 
 type GameEffectEventSchemaType = z.infer<typeof _gameEffectEventSchemaObject>;
 
-// Verify manual type matches schema inference
+/** The schema for a game effect event. */
+export const gameEffectEventSchema: typeof _gameEffectEventSchemaObject =
+  _gameEffectEventSchemaObject;
+
 const _assertExactGameEffect: AssertExact<
   GameEffectEvent<Board, GameEffectType>,
   GameEffectEventSchemaType
 > = true;
-
-/** The schema for a game effect event. */
-export const gameEffectEventSchema: z.ZodType<
-  GameEffectEvent<Board, GameEffectType>
-> = _gameEffectEventSchemaObject;

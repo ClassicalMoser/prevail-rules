@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import { createCleanupPhaseState, createEmptyGameState } from '@testing';
@@ -16,7 +16,7 @@ describe('generateResolveRallyEvent', () => {
   /** Moves testing-helper `inPlay` card into `played` for `played` side; firstPlayerChooseRally. */
   function cleanupChooseRallyState(
     played: 'black' | 'white',
-  ): GameState<StandardBoard> {
+  ): StandardGameState {
     const base = createEmptyGameState();
     const card = base.cardState[played].inPlay!;
     const withPlayed = updateCardState(base, (c) => ({

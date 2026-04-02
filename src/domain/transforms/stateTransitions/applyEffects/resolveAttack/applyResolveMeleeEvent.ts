@@ -3,7 +3,7 @@ import type { ResolveMeleeEvent } from '@events';
 import type {
   AttackApplyState,
   AttackResult,
-  GameState,
+  GameStateWithBoard,
   MeleeResolutionState,
   PhaseState,
   ResolveMeleePhaseState,
@@ -24,8 +24,8 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyResolveMeleeEvent<TBoard extends Board>(
   event: ResolveMeleeEvent<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
   const phaseState = getResolveMeleePhaseState(state);
   const meleeState = getMeleeResolutionState(state);
   const boardType = meleeState.boardType;
@@ -130,5 +130,5 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
     currentMeleeResolutionState: newMeleeState,
   } as ResolveMeleePhaseState;
 
-  return updatePhaseState(state, newPhaseState as PhaseState<TBoard>);
+  return updatePhaseState(state, newPhaseState as PhaseState);
 }

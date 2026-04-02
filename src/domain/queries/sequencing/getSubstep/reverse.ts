@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { AttackApplyState, GameState, ReverseState } from '@game';
+import type { AttackApplyState, GameStateWithBoard, ReverseState } from '@game';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
 
 /**
@@ -24,7 +24,7 @@ export function getReverseStateFromAttackApply<TBoard extends Board>(
  */
 export function getReverseStateFromMeleeResolutionByInitiative<
   TBoard extends Board,
->(state: GameState<TBoard>): ReverseState {
+>(state: GameStateWithBoard<TBoard>): ReverseState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const firstPlayerAttackApply =

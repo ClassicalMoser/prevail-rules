@@ -1,6 +1,6 @@
 import type { Board, PlayerSide } from '@entities';
 import type { ExpectedEventInfo } from '@events';
-import type { GameState, IssueCommandsPhaseState } from '@game';
+import type { GameStateWithBoard, IssueCommandsPhaseState } from '@game';
 import { getExpectedMovementResolutionEvent } from './getExpectedMovementResolutionEvent';
 import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttackResolutionEvent';
 
@@ -13,10 +13,10 @@ import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttac
  * @returns Information about what event is expected
  */
 export function getExpectedCommandResolutionEvent<TBoard extends Board>(
-  gameState: GameState<TBoard>,
-  resolutionState: IssueCommandsPhaseState<TBoard>['currentCommandResolutionState'],
+  gameState: GameStateWithBoard<TBoard>,
+  resolutionState: IssueCommandsPhaseState['currentCommandResolutionState'],
   resolvingPlayer: PlayerSide,
-): ExpectedEventInfo<TBoard> {
+): ExpectedEventInfo {
   if (!resolutionState) {
     throw new Error('No command resolution state found');
   }

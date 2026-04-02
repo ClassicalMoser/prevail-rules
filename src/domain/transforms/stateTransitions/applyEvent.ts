@@ -12,7 +12,7 @@
 
 import type { Board } from '@entities';
 import type { Event } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import { applyGameEffectEvent } from './applyGameEffectEvent';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
@@ -35,9 +35,9 @@ import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
  */
 export function applyEvent<TBoard extends Board>(
   event: Event<TBoard>,
-  state: GameState<TBoard>,
-): GameState<TBoard> {
-  let newState: GameState<TBoard>;
+  state: GameStateWithBoard<TBoard>,
+): GameStateWithBoard<TBoard> {
+  let newState: GameStateWithBoard<TBoard>;
 
   if (event.eventType === 'playerChoice') {
     newState = applyPlayerChoiceEvent(event, state);

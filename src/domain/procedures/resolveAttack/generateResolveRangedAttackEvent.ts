@@ -1,6 +1,6 @@
 import type { Board, UnitPlacement } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateWithBoard } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
@@ -29,7 +29,7 @@ import {
  * @throws Error if not in a valid state for ranged attack resolution
  */
 export function generateResolveRangedAttackEvent<TBoard extends Board>(
-  state: GameState<TBoard>,
+  state: GameStateWithBoard<TBoard>,
   eventNumber: number,
 ): ResolveRangedAttackEvent<TBoard, 'resolveRangedAttack'> {
   const rangedAttackState = getRangedAttackResolutionState(state);

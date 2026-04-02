@@ -1,5 +1,5 @@
 import type { PlayerSide, StandardBoard } from '@entities';
-import type { GameState } from '@game';
+import type { GameStateWithBoard, StandardGameState } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import { createEmptyStandardBoard } from '@transforms';
 
@@ -18,7 +18,7 @@ import { createEmptyStandardBoard } from '@transforms';
  */
 export function createEmptyGameState(options?: {
   currentInitiative?: PlayerSide;
-}): GameState<StandardBoard> {
+}): StandardGameState {
   return {
     currentRoundNumber: 0,
     currentRoundState: {
