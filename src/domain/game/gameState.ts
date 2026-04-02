@@ -1,125 +1,75 @@
-import type {
-  Board,
-  CardState,
-  LargeBoard,
-  PlayerSide,
-  SmallBoard,
-  StandardBoard,
-  UnitInstance,
-} from '@entities';
-import type { AssertExact } from '@utils';
-import type { RoundState } from './roundState';
+import type { Board, LargeBoard, SmallBoard, StandardBoard } from '@entities';
+import type { GameStateBase } from './gameStateShared';
+import type { LargeGameState } from './largeGameState';
+import type { SmallGameState } from './smallGameState';
+import type { StandardGameState } from './standardGameState';
 
-import {
-  cardStateSchema,
-  largeBoardSchema,
-  playerSideSchema,
-  smallBoardSchema,
-  standardBoardSchema,
-  unitInstanceSchema,
-} from '@entities';
 import { z } from 'zod';
-import { roundStateSchema } from './roundState';
+import { gameStateSchemaForLargeBoard } from './largeGameState';
+import { gameStateSchemaForSmallBoard } from './smallGameState';
+import { gameStateSchemaForStandardBoard } from './standardGameState';
 
-/** Shared fields for all board sizes (discriminated by `boardState.boardType`). */
-export interface GameStateBase {
-  /** The current round number of the game. */
-  currentRoundNumber: number;
-  /** The state of the current round of the game. */
-  currentRoundState: RoundState;
-  /** Which player currently has initiative. */
-  currentInitiative: PlayerSide;
-  /** The state of both players' cards. */
-  cardState: CardState;
-  /** Units not yet placed on the board. */
-  reservedUnits: Set<UnitInstance>;
-  /** The units that have been routed during the game. */
-  routedUnits: Set<UnitInstance>;
-  /** The commanders that have been lost during the game. */
-  lostCommanders: Set<PlayerSide>;
-}
+export type { GameStateBase } from './gameStateShared';
+export type { LargeGameState } from './largeGameState';
+export { gameStateSchemaForLargeBoard } from './largeGameState';
+export type { SmallGameState } from './smallGameState';
+export { gameStateSchemaForSmallBoard } from './smallGameState';
+export type { StandardGameState } from './standardGameState';
+export { gameStateSchemaForStandardBoard } from './standardGameState';
 
-export interface StandardGameState extends GameStateBase {
-  boardState: StandardBoard;
-}
-
-export interface SmallGameState extends GameStateBase {
-  boardState: SmallBoard;
-}
-
-export interface LargeGameState extends GameStateBase {
-  boardState: LargeBoard;
-}
+/** `boardType` literal aligned with {@link StandardBoard} / {@link SmallBoard} / {@link LargeBoard}. */
+type BoardTypeForBoard<TBoard extends Board> = TBoard extends StandardBoard
+  ? 'standard'
+  : TBoard extends SmallBoard
+    ? 'small'
+    : TBoard extends LargeBoard
+      ? 'large'
+      : never;
 
 /**
- * All game states, discriminated by `boardState` (`boardType` on the board).
- * Narrow with `if (state.boardState.boardType === 'standard')` → {@link StandardGameState}.
+ * All game states, discriminated by root {@link StandardGameState.boardType} /
+ * {@link SmallGameState.boardType} / {@link LargeGameState.boardType} (same values as
+ * `boardState.boardType`, enforced by Zod and narrowing without generics).
  */
 export type GameState = StandardGameState | SmallGameState | LargeGameState;
 
 /**
  * Game state correlated with a generic `TBoard` (e.g. procedure/transform type parameters).
- * `GameStateBase & { boardState: TBoard }` keeps `state.boardState` and nested types
- * (`UnitPlacement<TBoard>`, etc.) correlated under a naked `TBoard extends Board` type parameter.
- * A conditional alias (like `MoveUnitEvent<TBoard>`) would widen unresolved generics to
- * {@link GameState} and break procedure/query typing.
- *
- * Mode-specific setup / victory / rules **traits** belong on the {@link Game} / `gameType` side
- * (Layer 5 DU), not on {@link GameState} branches — so this intersection remains the right shape
- * for generic board threading.
+ * `boardType` and `boardState` stay in lockstep with `TBoard` under a naked
+ * `TBoard extends Board` type parameter.
  *
  * Prefer {@link GameState} when you mean “any board”.
  */
 export type GameStateWithBoard<TBoard extends Board = Board> = GameStateBase & {
+  boardType: BoardTypeForBoard<TBoard>;
   boardState: TBoard;
 };
 
-const _gameStateSharedFields = {
-  currentRoundNumber: z.int().min(0),
-  currentRoundState: roundStateSchema,
-  currentInitiative: playerSideSchema,
-  cardState: cardStateSchema,
-  reservedUnits: z.set(unitInstanceSchema),
-  routedUnits: z.set(unitInstanceSchema),
-  lostCommanders: z.set(playerSideSchema),
-} as const;
+// ---------------------------------------------------------------------------
+// Zod
+// ---------------------------------------------------------------------------
 
-const _standardGameStateSchemaObject = z.object({
-  ..._gameStateSharedFields,
-  boardState: standardBoardSchema,
-});
+// Branch exports are `z.ZodType<…>` for `.d.ts`; runtime values are ZodObject — cast for discriminatedUnion.
+const _gameStateDiscriminatedUnion = z.discriminatedUnion('boardType', [
+  gameStateSchemaForStandardBoard,
+  gameStateSchemaForSmallBoard,
+  gameStateSchemaForLargeBoard,
+] as unknown as Parameters<typeof z.discriminatedUnion>[1]);
 
-const _smallGameStateSchemaObject = z.object({
-  ..._gameStateSharedFields,
-  boardState: smallBoardSchema,
-});
+const _gameStateSchemaObject = _gameStateDiscriminatedUnion.superRefine(
+  (state, ctx) => {
+    const s = state as GameState;
+    if (s.boardType !== s.boardState.boardType) {
+      ctx.addIssue({
+        code: 'custom',
+        message:
+          'boardType must equal boardState.boardType (root literal must match nested board)',
+        path: ['boardState', 'boardType'],
+      });
+    }
+  },
+);
 
-const _largeGameStateSchemaObject = z.object({
-  ..._gameStateSharedFields,
-  boardState: largeBoardSchema,
-});
-
-const _gameStateSchemaObject = z.union([
-  _standardGameStateSchemaObject,
-  _smallGameStateSchemaObject,
-  _largeGameStateSchemaObject,
-]);
-
-type GameStateSchemaType = z.infer<typeof _gameStateSchemaObject>;
-
-const _assertExactGameState: AssertExact<GameState, GameStateSchemaType> = true;
-
-/** Wide schema: union of per-board game state shapes (discriminated at `boardState.boardType`). */
-export const gameStateSchema: z.ZodType<GameState> = _gameStateSchemaObject;
-
-/** {@link StandardGameState} */
-export const gameStateSchemaForStandardBoard: z.ZodType<StandardGameState> =
-  _standardGameStateSchemaObject;
-
-/** {@link SmallGameState} */
-export const gameStateSchemaForSmallBoard: z.ZodType<SmallGameState> =
-  _smallGameStateSchemaObject;
-
-/** {@link LargeGameState} */
-export const gameStateSchemaForLargeBoard: z.ZodType<LargeGameState> =
-  _largeGameStateSchemaObject;
+/** Wide schema: discriminated on root `boardType` (must match nested `boardState.boardType`). */
+export const gameStateSchema: z.ZodType<GameState> =
+  _gameStateSchemaObject as z.ZodType<GameState>;

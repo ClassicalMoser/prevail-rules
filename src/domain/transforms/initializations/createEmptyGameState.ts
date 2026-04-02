@@ -18,6 +18,7 @@ function shellForBoard<TBoard extends Board>(
   board: TBoard,
 ): GameStateWithBoard<TBoard> {
   return {
+    boardType: board.boardType as GameStateWithBoard<TBoard>['boardType'],
     currentRoundNumber: 0,
     currentRoundState: {
       roundNumber: 1,

@@ -1,42 +1,13 @@
-import type { Army, GameType } from '@entities';
-import type { SmallGameState, StandardGameState } from './gameState';
+import type { GameType } from '@entities';
+import type { MiniGame } from './miniGame';
+import type { StandardGame } from './standardGame';
+import type { TutorialGame } from './tutorialGame';
 
-import { armySchema } from '@entities';
 import { getBoardSizeForGameType } from '@ruleValues';
 import { z } from 'zod';
-import {
-  gameStateSchemaForSmallBoard,
-  gameStateSchemaForStandardBoard,
-} from './gameState';
-
-/** Shared fields for every stored game record (discriminated by `gameType`). */
-export interface GameBase {
-  /** The unique identifier of the game. */
-  id: string;
-  /** The unique identifier of the player on the black side of the game. */
-  blackPlayer: string;
-  /** The unique identifier of the player on the white side of the game. */
-  whitePlayer: string;
-  /** The army brought by the black player. */
-  blackArmy: Army;
-  /** The army brought by the white player. */
-  whiteArmy: Army;
-}
-
-export interface StandardGame extends GameBase {
-  gameType: 'standard';
-  gameState: StandardGameState;
-}
-
-export interface MiniGame extends GameBase {
-  gameType: 'mini';
-  gameState: SmallGameState;
-}
-
-export interface TutorialGame extends GameBase {
-  gameType: 'tutorial';
-  gameState: SmallGameState;
-}
+import { miniGameSchema } from './miniGame';
+import { standardGameSchema } from './standardGame';
+import { tutorialGameSchema } from './tutorialGame';
 
 /**
  * A complete game, discriminated by `gameType`.
@@ -54,63 +25,31 @@ export type BoardForGameType<T extends GameType> =
   GameOfType<T>['gameState']['boardState'];
 
 /**
- * Whether `gameState.boardState` matches the board family for `gameType` per {@link gameTypes} / {@link getBoardSizeForGameType}.
+ * Whether `gameState.boardType` (and nested `boardState.boardType`) match the board family for
+ * `gameType` per {@link gameTypes} / {@link getBoardSizeForGameType}.
  */
 export function validateGameBoardMatchesGameType(game: Game): boolean {
+  const root = game.gameState.boardType;
+  const nested = game.gameState.boardState.boardType;
+  if (root !== nested) {
+    return false;
+  }
   const expected = getBoardSizeForGameType(game.gameType);
-  const bt = game.gameState.boardState.boardType;
   return (
-    (expected === 'standard' && bt === 'standard') ||
-    (expected === 'small' && bt === 'small')
+    (expected === 'standard' && root === 'standard') ||
+    (expected === 'small' && root === 'small')
   );
 }
 
-const _standardGameSchemaObject = z.object({
-  id: z.uuid(),
-  gameType: z.literal('standard'),
-  blackPlayer: z.uuid(),
-  whitePlayer: z.uuid(),
-  blackArmy: armySchema,
-  whiteArmy: armySchema,
-  gameState: gameStateSchemaForStandardBoard,
-});
-
-const _miniGameSchemaObject = z.object({
-  id: z.uuid(),
-  gameType: z.literal('mini'),
-  blackPlayer: z.uuid(),
-  whitePlayer: z.uuid(),
-  blackArmy: armySchema,
-  whiteArmy: armySchema,
-  gameState: gameStateSchemaForSmallBoard,
-});
-
-const _tutorialGameSchemaObject = z.object({
-  id: z.uuid(),
-  gameType: z.literal('tutorial'),
-  blackPlayer: z.uuid(),
-  whitePlayer: z.uuid(),
-  blackArmy: armySchema,
-  whiteArmy: armySchema,
-  gameState: gameStateSchemaForSmallBoard,
-});
-
-/** Validates a {@link Game} when `gameType` is known to be `standard`. */
-export const standardGameSchema =
-  _standardGameSchemaObject as z.ZodType<StandardGame>;
-
-/** Validates a {@link Game} when `gameType` is known to be `mini`. */
-export const miniGameSchema = _miniGameSchemaObject as z.ZodType<MiniGame>;
-
-/** Validates a {@link Game} when `gameType` is known to be `tutorial`. */
-export const tutorialGameSchema =
-  _tutorialGameSchemaObject as z.ZodType<TutorialGame>;
+// ---------------------------------------------------------------------------
+// Zod
+// ---------------------------------------------------------------------------
 
 const _gameDiscriminatedUnion = z.discriminatedUnion('gameType', [
-  _standardGameSchemaObject,
-  _miniGameSchemaObject,
-  _tutorialGameSchemaObject,
-]);
+  standardGameSchema,
+  miniGameSchema,
+  tutorialGameSchema,
+] as unknown as Parameters<typeof z.discriminatedUnion>[1]);
 
 /**
  * Schema for any {@link Game}. Also checks {@link validateGameBoardMatchesGameType}.
@@ -118,12 +57,19 @@ const _gameDiscriminatedUnion = z.discriminatedUnion('gameType', [
  * When `gameType` is fixed, prefer {@link standardGameSchema} / {@link miniGameSchema} / {@link tutorialGameSchema}.
  */
 export const gameSchema = _gameDiscriminatedUnion.superRefine((g, ctx) => {
-  if (!validateGameBoardMatchesGameType(g)) {
+  if (!validateGameBoardMatchesGameType(g as Game)) {
     ctx.addIssue({
       code: 'custom',
       message:
-        'gameState.boardState.boardType does not match gameType per @ruleValues/gameTypes',
-      path: ['gameState', 'boardState'],
+        'gameState.boardType / boardState.boardType do not match gameType per @ruleValues/gameTypes',
+      path: ['gameState', 'boardType'],
     });
   }
 }) as z.ZodType<Game>;
+
+export type { MiniGame } from './miniGame';
+export { miniGameSchema } from './miniGame';
+export type { StandardGame } from './standardGame';
+export { standardGameSchema } from './standardGame';
+export type { TutorialGame } from './tutorialGame';
+export { tutorialGameSchema } from './tutorialGame';

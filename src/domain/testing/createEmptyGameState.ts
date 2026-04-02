@@ -20,6 +20,7 @@ export function createEmptyGameState(options?: {
   currentInitiative?: PlayerSide;
 }): StandardGameState {
   return {
+    boardType: 'standard',
     currentRoundNumber: 0,
     currentRoundState: {
       roundNumber: 1,

@@ -15,7 +15,6 @@ export {
 export type {
   BoardForGameType,
   Game,
-  GameBase,
   GameOfType,
   MiniGame,
   StandardGame,
