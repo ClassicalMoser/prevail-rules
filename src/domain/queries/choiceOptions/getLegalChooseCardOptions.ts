@@ -1,14 +1,11 @@
-import type { Board } from '@entities';
-import type { ChooseCardEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
-import {
-  getNextEventNumber,
-  getPlayCardsPhaseState,
-} from '@queries/sequencing';
+import type { Board } from "@entities";
+import type { ChooseCardEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { PLAYER_CHOICE_EVENT_TYPE } from "@events";
+import { getNextEventNumber, getPlayCardsPhaseState } from "@queries/sequencing";
 
 /**
- * Returns every legal play-card choice for the current state during the
+ * Returns every legal choose-card choice for the current state during the
  * play-cards "chooseCards" step: each pending player's in-hand cards as
  * complete {@link ChooseCardEvent} payloads (with `eventNumber` derived from
  * the round's event stream). Empty when no choice is expected (wrong
@@ -17,13 +14,13 @@ import {
  * Aligns with {@link isValidChooseCardEvent} and
  * {@link getExpectedPlayCardsPhaseEvent} for the chooseCards step.
  */
-export function getLegalPlayCardOptions<TBoard extends Board>(
+export function getLegalChooseCardOptions<TBoard extends Board>(
   gameState: GameStateWithBoard<TBoard>,
 ): ChooseCardEvent<TBoard>[] {
   // Make sure we're in the choose cards step
   const phaseState = getPlayCardsPhaseState(gameState);
-  if (phaseState.step !== 'chooseCards') {
-    throw new Error('Not in choose cards step');
+  if (phaseState.step !== "chooseCards") {
+    throw new Error("Not in choose cards step");
   }
 
   // Get the next event number
@@ -43,8 +40,8 @@ export function getLegalPlayCardOptions<TBoard extends Board>(
       result.push({
         eventNumber,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
-        choiceType: 'chooseCard',
-        player: 'black',
+        choiceType: "chooseCard",
+        player: "black",
         card,
       });
     }
@@ -56,8 +53,8 @@ export function getLegalPlayCardOptions<TBoard extends Board>(
       result.push({
         eventNumber,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
-        choiceType: 'chooseCard',
-        player: 'white',
+        choiceType: "chooseCard",
+        player: "white",
         card,
       });
     }

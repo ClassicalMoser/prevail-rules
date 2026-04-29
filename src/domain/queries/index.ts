@@ -1,4 +1,4 @@
-export { applyAttackValue } from './applyAttackValue';
+export { applyAttackValue } from "./applyAttackValue";
 export {
   getAdjacentSpaces,
   getBackSpaces,
@@ -19,35 +19,28 @@ export {
   getSpacesInArc,
   getSpacesInDirection,
   getSpacesWithinDistance,
-} from './boardSpace';
-export { calculateInitiative } from './calculateInitiative';
-export {
-  getLegalChooseMeleeResolutionEvents,
-  getLegalPlayCardOptions,
-} from './choiceOptions';
-export {
-  isEngagementFromFlank,
-  isEngagementFromFront,
-  isEngagementFromRear,
-} from './engagement';
-export type { ExpectedEvent } from './expectedEvent';
-export { getExpectedEvent } from './expectedEvent';
+} from "./boardSpace";
+export { calculateInitiative } from "./calculateInitiative";
+export { getLegalChooseCardOptions, getLegalChooseMeleeResolutionEvents } from "./choiceOptions";
+export { isEngagementFromFlank, isEngagementFromFront, isEngagementFromRear } from "./engagement";
+export type { ExpectedEvent } from "./expectedEvent";
+export { getExpectedEvent } from "./expectedEvent";
 export {
   getAdjacentFacings,
   getLeftFacing,
   getOppositeFacing,
   getOrthogonalFacings,
   getRightFacing,
-} from './facings';
-export { findMatchingCommand } from './findMatchingCommand';
-export { getCurrentUnitStat } from './getCurrentUnitStat';
-export { getLinesFromUnit } from './getLine';
-export { getMeleeSupportValue } from './getMeleeSupportValue';
-export { getOtherPlayer } from './getOtherPlayer';
-export { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
-export { getPlayerUnitsWithPlacementOnBoard } from './getPlayerUnitsWithPlacementOnBoard';
-export { getSupportedUnitTypes } from './getSupportedUnitTypes';
-export { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
+} from "./facings";
+export { findMatchingCommand } from "./findMatchingCommand";
+export { getCurrentUnitStat } from "./getCurrentUnitStat";
+export { getLinesFromUnit } from "./getLine";
+export { getMeleeSupportValue } from "./getMeleeSupportValue";
+export { getOtherPlayer } from "./getOtherPlayer";
+export { getPlayerUnitsOnBoard } from "./getPlayerUnitsOnBoard";
+export { getPlayerUnitsWithPlacementOnBoard } from "./getPlayerUnitsWithPlacementOnBoard";
+export { getSupportedUnitTypes } from "./getSupportedUnitTypes";
+export { modifiersFromCompletedCommitment } from "./modifiersFromCompletedCommitment";
 export {
   canReverseUnit,
   findRetreatState,
@@ -87,11 +80,7 @@ export {
   getRoutStateFromRally,
   getRoutStateFromRearEngagement,
   updateRallyResolutionStateForCurrentStep,
-} from './sequencing';
-export { hasUnitInSet, isFriendlyUnit, setWithoutUnit } from './unit';
-export {
-  checkDiagonalMove,
-  getLegalRetreats,
-  getLegalUnitMoves,
-} from './unitMovement';
-export { getPlayerUnitWithPosition, getPositionOfUnit } from './unitPresence';
+} from "./sequencing";
+export { hasUnitInSet, isFriendlyUnit, setWithoutUnit } from "./unit";
+export { checkDiagonalMove, getLegalRetreats, getLegalUnitMoves } from "./unitMovement";
+export { getPlayerUnitWithPosition, getPositionOfUnit } from "./unitPresence";

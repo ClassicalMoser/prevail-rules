@@ -1,0 +1,41 @@
+{
+  "details": {
+    "bleed": false
+  },
+  "card": {
+    "id": "card-shield-wall",
+    "version": "2.0.1",
+    "name": "Heroic Legionaries",
+    "initiative": 4,
+    "modifiers": ["attack"],
+    "command": {
+      "size": "lines",
+      "type": "movement",
+      "number": 1,
+      "restrictions": {
+        "inspirationRangeRestriction": 2,
+        "traitRestrictions": ["heavy", "shielded"],
+        "unitRestrictions": ["unit-heavy-infantry", "unit-spearmen"]
+      },
+      "modifiers": []
+    },
+    "roundEffect": {
+      "restrictions": {
+        "inspirationRangeRestriction": 3,
+        "traitRestrictions": ["shielded"],
+        "unitRestrictions": []
+      },
+      "modifiers": [
+        {
+          "type": "defense",
+          "value": 1
+        },
+        {
+          "type": "speed",
+          "value": -1
+        }
+      ]
+    },
+    "unitPreservation": "Manipular Legion"
+  }
+}

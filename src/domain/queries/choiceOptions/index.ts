@@ -1,2 +1,3 @@
-export { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolutionEvents';
-export { getLegalPlayCardOptions } from './getLegalPlayCardOptions';
+export { getLegalChooseCardOptions } from "./getLegalChooseCardOptions";
+export { getLegalChooseMeleeResolutionEvents } from "./getLegalChooseMeleeResolutionEvents";
+export { getLegalChooseRallyEvent } from "./getLegalChooseRallyEvent";
