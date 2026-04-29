@@ -1,4 +1,4 @@
-export { updateBoardState } from './board';
+export { updateBoardState } from "./board";
 export {
   burnCardFromPlayed,
   chooseCard,
@@ -8,12 +8,12 @@ export {
   revealCard,
   updateCardState,
   updatePlayerCardState,
-} from './cards';
+} from "./cards";
 export {
   addCommanderToBoard,
   addCommanderToLostCommanders,
   removeCommanderFromBoard,
-} from './commanders';
+} from "./commanders";
 export {
   updateAttackApplyState,
   updateCommandResolutionState,
@@ -24,7 +24,7 @@ export {
   updateRetreatState,
   updateReverseState,
   updateRoutState,
-} from './sequencing';
+} from "./sequencing";
 export {
   addCompletedPhase,
   markPhaseAsComplete,
@@ -34,11 +34,11 @@ export {
   updateRemainingCommandsForPlayer,
   updateRoundEventStream,
   updateRoundState,
-} from './state';
+} from "./state";
 export {
   addUnitsToCommandedUnits,
   addUnitToBoard,
   addUnitToRouted,
   removeUnitFromBoard,
   removeUnitFromReserve,
-} from './units';
+} from "./units";

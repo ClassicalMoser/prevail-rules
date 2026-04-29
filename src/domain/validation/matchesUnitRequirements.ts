@@ -1,5 +1,5 @@
-import type { UnitType, ValidationResult } from '@entities';
-import type { Trait } from '@ruleValues';
+import type { UnitType, ValidationResult } from "@entities";
+import type { Trait } from "@ruleValues";
 
 /**
  * Determines whether a unit type matches the specified requirements.
@@ -26,13 +26,11 @@ export function matchesUnitRequirements(
     };
   }
   if (traits.length && !unitTypeIds.length) {
-    const hasAllTraits = traits.every((trait) =>
-      unitType.traits.includes(trait),
-    );
+    const hasAllTraits = traits.every((trait) => unitType.traits.includes(trait));
     if (!hasAllTraits) {
       return {
         result: false,
-        errorReason: 'Unit type does not have all required traits',
+        errorReason: "Unit type does not have all required traits",
       };
     }
     return {
@@ -45,7 +43,7 @@ export function matchesUnitRequirements(
     if (!isInUnitTypeIds) {
       return {
         result: false,
-        errorReason: 'Unit type is not in the specified types',
+        errorReason: "Unit type is not in the specified types",
       };
     }
     return {
@@ -56,14 +54,14 @@ export function matchesUnitRequirements(
   if (!hasAllTraits) {
     return {
       result: false,
-      errorReason: 'Unit type does not have all required traits',
+      errorReason: "Unit type does not have all required traits",
     };
   }
   const isInUnitTypeIds = unitTypeIds.includes(unitType.id);
   if (!isInUnitTypeIds) {
     return {
       result: false,
-      errorReason: 'Unit type is not in the specified types',
+      errorReason: "Unit type is not in the specified types",
     };
   }
   return {

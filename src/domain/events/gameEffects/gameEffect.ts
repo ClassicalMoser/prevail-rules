@@ -14,71 +14,71 @@
  * ## `gameEffects` import
  * From `@ruleValues/gameEffectTypes` only — not `@entities` (circular init with this file).
  */
-import type { Board } from '@entities';
-import type { GameEffectType } from '@ruleValues';
-import type { AssertExact } from '@utils';
-import type { ZodDiscriminatedUnion } from 'zod';
+import type { Board } from "@entities";
+import type { GameEffectType } from "@ruleValues";
+import type { AssertExact } from "@utils";
+import type { ZodDiscriminatedUnion } from "zod";
 import type {
   DiscardPlayedCardsEvent,
   ResolveInitiativeEvent,
   ResolveRallyEvent,
   ResolveUnitsBrokenEvent,
   RevealCardsEvent,
-} from './cards';
+} from "./cards";
 import type {
   CompleteCleanupPhaseEvent,
   CompleteIssueCommandsPhaseEvent,
   CompleteMoveCommandersPhaseEvent,
   CompletePlayCardsPhaseEvent,
   CompleteResolveMeleePhaseEvent,
-} from './completePhase';
+} from "./completePhase";
 import type {
   ResolveRetreatEvent,
   ResolveReverseEvent,
   ResolveRoutEvent,
   TriggerRoutFromRetreatEvent,
-} from './defenseResult';
+} from "./defenseResult";
 import type {
   CompleteUnitMovementEvent,
   ResolveEngageRetreatOptionEvent,
   ResolveFlankEngagementEvent,
   StartEngagementEvent,
-} from './movement';
+} from "./movement";
 import type {
   CompleteAttackApplyEvent,
   CompleteMeleeResolutionEvent,
   CompleteRangedAttackCommandEvent,
   ResolveMeleeEvent,
   ResolveRangedAttackEvent,
-} from './resolveAttack';
-import { gameEffects } from '@ruleValues';
-import { z } from 'zod';
+} from "./resolveAttack";
+import { gameEffects } from "@ruleValues";
+import { z } from "zod";
 import {
   discardPlayedCardsEventSchema,
   resolveInitiativeEventSchema,
   resolveRallyEventSchema,
   resolveUnitsBrokenEventSchema,
   revealCardsEventSchema,
-} from './cards';
+} from "./cards";
 import {
   completeCleanupPhaseEventSchema,
   completeIssueCommandsPhaseEventSchema,
   completeMoveCommandersPhaseEventSchema,
   completePlayCardsPhaseEventSchema,
   completeResolveMeleePhaseEventSchema,
-} from './completePhase';
+} from "./completePhase";
 import {
   resolveRetreatEventSchema,
   resolveReverseEventSchema,
   resolveRoutEventSchema,
   triggerRoutFromRetreatEventSchema,
-} from './defenseResult';
+} from "./defenseResult";
 import {
   completeUnitMovementEventSchema,
   resolveEngageRetreatOptionEventSchema,
   resolveFlankEngagementEventSchema,
   startEngagementEventSchema,
-} from './movement';
+} from "./movement";
 
 import {
   completeAttackApplyEventSchema,
@@ -86,52 +86,51 @@ import {
   completeRangedAttackCommandEventSchema,
   resolveMeleeEventSchema,
   resolveRangedAttackEventSchema,
-} from './resolveAttack';
+} from "./resolveAttack";
 
 export { gameEffects, type GameEffectType };
 
 /** The schema for a game effect type. */
-export const gameEffectTypeSchema: z.ZodType<GameEffectType> =
-  z.enum(gameEffects);
+export const gameEffectTypeSchema: z.ZodType<GameEffectType> = z.enum(gameEffects);
 
 /**
  * Base union of all game effect events (unfiltered).
  * Used internally to create filtered types.
  */
 type GameEffectEventUnion<TBoard extends Board> =
-  | CompleteAttackApplyEvent<TBoard, 'completeAttackApply'>
-  | CompleteCleanupPhaseEvent<TBoard, 'completeCleanupPhase'>
-  | CompleteIssueCommandsPhaseEvent<TBoard, 'completeIssueCommandsPhase'>
-  | CompleteMoveCommandersPhaseEvent<TBoard, 'completeMoveCommandersPhase'>
-  | CompletePlayCardsPhaseEvent<TBoard, 'completePlayCardsPhase'>
-  | CompleteMeleeResolutionEvent<TBoard, 'completeMeleeResolution'>
-  | CompleteRangedAttackCommandEvent<TBoard, 'completeRangedAttackCommand'>
-  | CompleteResolveMeleePhaseEvent<TBoard, 'completeResolveMeleePhase'>
-  | DiscardPlayedCardsEvent<TBoard, 'discardPlayedCards'>
-  | ResolveEngageRetreatOptionEvent<TBoard, 'resolveEngageRetreatOption'>
-  | ResolveFlankEngagementEvent<TBoard, 'resolveFlankEngagement'>
-  | ResolveInitiativeEvent<TBoard, 'resolveInitiative'>
-  | ResolveMeleeEvent<TBoard, 'resolveMelee'>
-  | ResolveRallyEvent<TBoard, 'resolveRally'>
-  | ResolveRangedAttackEvent<TBoard, 'resolveRangedAttack'>
-  | ResolveRetreatEvent<TBoard, 'resolveRetreat'>
-  | ResolveReverseEvent<TBoard, 'resolveReverse'>
-  | ResolveRoutEvent<TBoard, 'resolveRout'>
-  | ResolveUnitsBrokenEvent<TBoard, 'resolveUnitsBroken'>
-  | RevealCardsEvent<TBoard, 'revealCards'>
-  | CompleteUnitMovementEvent<TBoard, 'completeUnitMovement'>
-  | StartEngagementEvent<TBoard, 'startEngagement'>
-  | TriggerRoutFromRetreatEvent<TBoard, 'triggerRoutFromRetreat'>;
+  | CompleteAttackApplyEvent<TBoard, "completeAttackApply">
+  | CompleteCleanupPhaseEvent<TBoard, "completeCleanupPhase">
+  | CompleteIssueCommandsPhaseEvent<TBoard, "completeIssueCommandsPhase">
+  | CompleteMoveCommandersPhaseEvent<TBoard, "completeMoveCommandersPhase">
+  | CompletePlayCardsPhaseEvent<TBoard, "completePlayCardsPhase">
+  | CompleteMeleeResolutionEvent<TBoard, "completeMeleeResolution">
+  | CompleteRangedAttackCommandEvent<TBoard, "completeRangedAttackCommand">
+  | CompleteResolveMeleePhaseEvent<TBoard, "completeResolveMeleePhase">
+  | DiscardPlayedCardsEvent<TBoard, "discardPlayedCards">
+  | ResolveEngageRetreatOptionEvent<TBoard, "resolveEngageRetreatOption">
+  | ResolveFlankEngagementEvent<TBoard, "resolveFlankEngagement">
+  | ResolveInitiativeEvent<TBoard, "resolveInitiative">
+  | ResolveMeleeEvent<TBoard, "resolveMelee">
+  | ResolveRallyEvent<TBoard, "resolveRally">
+  | ResolveRangedAttackEvent<TBoard, "resolveRangedAttack">
+  | ResolveRetreatEvent<TBoard, "resolveRetreat">
+  | ResolveReverseEvent<TBoard, "resolveReverse">
+  | ResolveRoutEvent<TBoard, "resolveRout">
+  | ResolveUnitsBrokenEvent<TBoard, "resolveUnitsBroken">
+  | RevealCardsEvent<TBoard, "revealCards">
+  | CompleteUnitMovementEvent<TBoard, "completeUnitMovement">
+  | StartEngagementEvent<TBoard, "startEngagement">
+  | TriggerRoutFromRetreatEvent<TBoard, "triggerRoutFromRetreat">;
 
 /**
  * Game effect event type filtered by effect type.
  * Extracts only the event type that matches the specified effectType.
  * This ensures type safety - GameEffectEvent<TBoard, 'resolveRally'> is ONLY ResolveRallyEvent.
  */
-export type GameEffectEvent<
-  TBoard extends Board,
-  TGameEffectType extends GameEffectType,
-> = Extract<GameEffectEventUnion<TBoard>, { effectType: TGameEffectType }>;
+export type GameEffectEvent<TBoard extends Board, TGameEffectType extends GameEffectType> = Extract<
+  GameEffectEventUnion<TBoard>,
+  { effectType: TGameEffectType }
+>;
 
 /**
  * Discriminated by `effectType`. Spatial effects nest `boardType` DUs; spatial modules use explicit
@@ -163,11 +162,12 @@ type _GameEffectEventDiscriminatedUnion = ZodDiscriminatedUnion<
     typeof startEngagementEventSchema,
     typeof triggerRoutFromRetreatEventSchema,
   ],
-  'effectType'
+  "effectType"
 >;
 
-const _gameEffectEventSchemaObject: _GameEffectEventDiscriminatedUnion =
-  z.discriminatedUnion('effectType', [
+const _gameEffectEventSchemaObject: _GameEffectEventDiscriminatedUnion = z.discriminatedUnion(
+  "effectType",
+  [
     completeAttackApplyEventSchema,
     completeCleanupPhaseEventSchema,
     completeIssueCommandsPhaseEventSchema,
@@ -191,7 +191,8 @@ const _gameEffectEventSchemaObject: _GameEffectEventDiscriminatedUnion =
     completeUnitMovementEventSchema,
     startEngagementEventSchema,
     triggerRoutFromRetreatEventSchema,
-  ]);
+  ],
+);
 
 type GameEffectEventSchemaType = z.infer<typeof _gameEffectEventSchemaObject>;
 

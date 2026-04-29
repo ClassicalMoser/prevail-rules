@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate } from '@entities';
-import { diagonalFacings } from '@entities';
-import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
-import { getForwardSpace } from '../getForwardSpace';
+import type { Board, BoardCoordinate } from "@entities";
+import { diagonalFacings } from "@entities";
+import { filterUndefinedSpaces } from "../filterUndefinedSpaces";
+import { getForwardSpace } from "../getForwardSpace";
 
 /**
  * Get the diagonally adjacent spaces for a given coordinate.

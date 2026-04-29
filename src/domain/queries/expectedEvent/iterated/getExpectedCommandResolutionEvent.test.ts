@@ -2,90 +2,87 @@ import {
   createEmptyGameState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
-} from '@testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+} from "@testing";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getExpectedCommandResolutionEvent } from './getExpectedCommandResolutionEvent';
+import { getExpectedCommandResolutionEvent } from "./getExpectedCommandResolutionEvent";
 
-const {
-  getExpectedMovementResolutionEventMock,
-  getExpectedRangedAttackResolutionEventMock,
-} = vi.hoisted(() => ({
-  getExpectedMovementResolutionEventMock: vi.fn(),
-  getExpectedRangedAttackResolutionEventMock: vi.fn(),
-}));
+const { getExpectedMovementResolutionEventMock, getExpectedRangedAttackResolutionEventMock } =
+  vi.hoisted(() => ({
+    getExpectedMovementResolutionEventMock: vi.fn(),
+    getExpectedRangedAttackResolutionEventMock: vi.fn(),
+  }));
 
-vi.mock('./getExpectedMovementResolutionEvent', () => ({
+vi.mock("./getExpectedMovementResolutionEvent", () => ({
   getExpectedMovementResolutionEvent: getExpectedMovementResolutionEventMock,
 }));
-vi.mock('./getExpectedRangedAttackResolutionEvent', () => ({
-  getExpectedRangedAttackResolutionEvent:
-    getExpectedRangedAttackResolutionEventMock,
+vi.mock("./getExpectedRangedAttackResolutionEvent", () => ({
+  getExpectedRangedAttackResolutionEvent: getExpectedRangedAttackResolutionEventMock,
 }));
 
 /**
  * getExpectedCommandResolutionEvent: next event while resolving the active command (nested by sub-step).
  */
-describe('getExpectedCommandResolutionEvent', () => {
+describe("getExpectedCommandResolutionEvent", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('given delegate movement command resolution to the movement resolver', () => {
+  it("given delegate movement command resolution to the movement resolver", () => {
     const gameState = createEmptyGameState();
     const resolutionState = createMovementResolutionState(gameState);
     const expectedEvent = {
-      actionType: 'gameEffect',
-      effectType: 'move',
+      actionType: "gameEffect",
+      effectType: "move",
     } as const;
     getExpectedMovementResolutionEventMock.mockReturnValue(expectedEvent);
 
-    expect(
-      getExpectedCommandResolutionEvent(gameState, resolutionState, 'black'),
-    ).toBe(expectedEvent);
+    expect(getExpectedCommandResolutionEvent(gameState, resolutionState, "black")).toBe(
+      expectedEvent,
+    );
     expect(getExpectedMovementResolutionEventMock).toHaveBeenCalledWith(
       gameState,
       resolutionState,
-      'black',
+      "black",
     );
   });
 
-  it('given delegate ranged attack command resolution to the ranged attack resolver', () => {
+  it("given delegate ranged attack command resolution to the ranged attack resolver", () => {
     const gameState = createEmptyGameState();
     const resolutionState = createRangedAttackResolutionState(gameState);
     const expectedEvent = {
-      actionType: 'gameEffect',
-      effectType: 'attack',
+      actionType: "gameEffect",
+      effectType: "attack",
     } as const;
     getExpectedRangedAttackResolutionEventMock.mockReturnValue(expectedEvent);
 
-    expect(
-      getExpectedCommandResolutionEvent(gameState, resolutionState, 'white'),
-    ).toBe(expectedEvent);
+    expect(getExpectedCommandResolutionEvent(gameState, resolutionState, "white")).toBe(
+      expectedEvent,
+    );
     expect(getExpectedRangedAttackResolutionEventMock).toHaveBeenCalledWith(
       gameState,
       resolutionState,
-      'white',
+      "white",
     );
   });
 
-  it('given when no command resolution state exists, throws', () => {
+  it("given when no command resolution state exists, throws", () => {
     const gameState = createEmptyGameState();
 
-    expect(() =>
-      getExpectedCommandResolutionEvent(gameState, undefined, 'black'),
-    ).toThrow('No command resolution state found');
+    expect(() => getExpectedCommandResolutionEvent(gameState, undefined, "black")).toThrow(
+      "No command resolution state found",
+    );
   });
 
-  it('given for an invalid command resolution type, throws', () => {
+  it("given for an invalid command resolution type, throws", () => {
     const gameState = createEmptyGameState();
     const resolutionState = {
       ...createMovementResolutionState(gameState),
-      commandResolutionType: 'invalid',
+      commandResolutionType: "invalid",
     } as never;
 
-    expect(() =>
-      getExpectedCommandResolutionEvent(gameState, resolutionState, 'black'),
-    ).toThrow('Invalid command resolution type: invalid');
+    expect(() => getExpectedCommandResolutionEvent(gameState, resolutionState, "black")).toThrow(
+      "Invalid command resolution type: invalid",
+    );
   });
 });

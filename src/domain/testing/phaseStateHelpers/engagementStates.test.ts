@@ -1,42 +1,40 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 import {
   createFlankEngagementState,
   createFrontEngagementState,
   createRearEngagementState,
-} from './engagementStates';
+} from "./engagementStates";
 
 /**
  * createFrontEngagementState: Creates a front EngagementState with sensible defaults.
  */
-describe('createFrontEngagementState', () => {
-  it('given context, returns engagement state with front resolution', () => {
+describe("createFrontEngagementState", () => {
+  it("given context, returns engagement state with front resolution", () => {
     const state = createFrontEngagementState();
-    expect(state.substepType).toBe('engagementResolution');
-    expect(state.engagementResolutionState.engagementType).toBe('front');
-    expect(
-      state.engagementResolutionState.defensiveCommitment.commitmentType,
-    ).toBe('pending');
+    expect(state.substepType).toBe("engagementResolution");
+    expect(state.engagementResolutionState.engagementType).toBe("front");
+    expect(state.engagementResolutionState.defensiveCommitment.commitmentType).toBe("pending");
     expect(state.completed).toBe(false);
   });
 });
 
-describe('createFlankEngagementState', () => {
-  it('given context, returns engagement state with flank resolution', () => {
+describe("createFlankEngagementState", () => {
+  it("given context, returns engagement state with flank resolution", () => {
     const state = createFlankEngagementState();
-    expect(state.engagementResolutionState.engagementType).toBe('flank');
+    expect(state.engagementResolutionState.engagementType).toBe("flank");
     expect(state.engagementResolutionState.defenderRotated).toBe(false);
     expect(state.completed).toBe(false);
   });
 });
 
-describe('createRearEngagementState', () => {
-  it('given context, returns engagement state with rear resolution and rout state', () => {
+describe("createRearEngagementState", () => {
+  it("given context, returns engagement state with rear resolution and rout state", () => {
     const state = createRearEngagementState();
-    expect(state.engagementResolutionState.engagementType).toBe('rear');
+    expect(state.engagementResolutionState.engagementType).toBe("rear");
     expect(state.engagementResolutionState.routState).toEqual(
       expect.objectContaining({
-        substepType: 'rout',
-        player: 'white',
+        substepType: "rout",
+        player: "white",
         completed: false,
       }),
     );

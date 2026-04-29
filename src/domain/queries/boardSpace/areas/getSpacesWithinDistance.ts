@@ -1,5 +1,5 @@
-import type { Board, BoardCoordinate } from '@entities';
-import { getAdjacentSpaces } from '../adjacency';
+import type { Board, BoardCoordinate } from "@entities";
+import { getAdjacentSpaces } from "../adjacency";
 
 /**
  * Get all spaces within a given distance from a coordinate.
@@ -25,11 +25,7 @@ export function getSpacesWithinDistance<TBoard extends Board>(
   let currentLevel = new Set<BoardCoordinate<TBoard>>([coordinate]);
 
   // Iterate through each distance level
-  for (
-    let currentDistance = 1;
-    currentDistance <= distance;
-    currentDistance++
-  ) {
+  for (let currentDistance = 1; currentDistance <= distance; currentDistance++) {
     // Set to track spaces at the next distance level
     const nextLevel = new Set<BoardCoordinate<TBoard>>();
 

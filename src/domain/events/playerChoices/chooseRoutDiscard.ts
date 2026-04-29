@@ -1,11 +1,11 @@
-import type { Board, PlayerSide } from '@entities';
-import type { AssertExact } from '@utils';
-import { playerSideSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board, PlayerSide } from "@entities";
+import type { AssertExact } from "@utils";
+import { playerSideSchema } from "@entities";
+import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
 /** The type of the choose rout discard event. */
-export const CHOOSE_ROUT_DISCARD_CHOICE_TYPE = 'chooseRoutDiscard' as const;
+export const CHOOSE_ROUT_DISCARD_CHOICE_TYPE = "chooseRoutDiscard" as const;
 
 /**
  * An event to choose which cards to discard as a penalty for routed units.
@@ -13,7 +13,7 @@ export const CHOOSE_ROUT_DISCARD_CHOICE_TYPE = 'chooseRoutDiscard' as const;
  */
 export interface ChooseRoutDiscardEvent<
   _TBoard extends Board,
-  _TChoiceType extends 'chooseRoutDiscard' = 'chooseRoutDiscard',
+  _TChoiceType extends "chooseRoutDiscard" = "chooseRoutDiscard",
 > {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -40,14 +40,12 @@ const _chooseRoutDiscardEventSchemaObject = z.object({
   cardIds: z.array(z.string()),
 });
 
-type ChooseRoutDiscardEventSchemaType = z.infer<
-  typeof _chooseRoutDiscardEventSchemaObject
->;
+type ChooseRoutDiscardEventSchemaType = z.infer<typeof _chooseRoutDiscardEventSchemaObject>;
 
 /** The schema for a choose rout discard event. */
 export const chooseRoutDiscardEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'playerChoice'>;
-  choiceType: z.ZodLiteral<'chooseRoutDiscard'>;
+  eventType: z.ZodLiteral<"playerChoice">;
+  choiceType: z.ZodLiteral<"chooseRoutDiscard">;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   cardIds: z.ZodArray<z.ZodString>;

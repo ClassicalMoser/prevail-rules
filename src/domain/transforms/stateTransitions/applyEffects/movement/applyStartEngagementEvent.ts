@@ -1,16 +1,13 @@
-import type { Board } from '@entities';
-import type { StartEngagementEvent } from '@events';
+import type { Board } from "@entities";
+import type { StartEngagementEvent } from "@events";
 import type {
   GameStateWithBoard,
   IssueCommandsPhaseState,
   MovementResolutionState,
   PhaseState,
-} from '@game';
-import {
-  getIssueCommandsPhaseState,
-  getMovementResolutionState,
-} from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+} from "@game";
+import { getIssueCommandsPhaseState, getMovementResolutionState } from "@queries";
+import { updatePhaseState } from "@transforms/pureTransforms";
 
 /**
  * Applies a StartEngagementEvent to the game state.
@@ -36,12 +33,12 @@ export function applyStartEngagementEvent<TBoard extends Board>(
   // Create the appropriate engagement resolution state based on engagement type
   const engagementResolutionState = (() => {
     switch (event.engagementType) {
-      case 'rear': {
+      case "rear": {
         // Rear engagement: create rout state immediately
         return {
-          engagementType: 'rear' as const,
+          engagementType: "rear" as const,
           routState: {
-            substepType: 'rout' as const,
+            substepType: "rout" as const,
             player: defendingPlayer,
             unitsToRout: new Set([defendingUnit]),
             numberToDiscard: defendingUnit.unitType.routPenalty,
@@ -51,18 +48,18 @@ export function applyStartEngagementEvent<TBoard extends Board>(
           completed: false,
         };
       }
-      case 'flank': {
+      case "flank": {
         // Flank engagement: defender will be rotated
         return {
-          engagementType: 'flank' as const,
+          engagementType: "flank" as const,
           defenderRotated: false,
         };
       }
-      case 'front': {
+      case "front": {
         // Front engagement: requires check for defensive commitment
         return {
-          engagementType: 'front' as const,
-          defensiveCommitment: { commitmentType: 'pending' as const },
+          engagementType: "front" as const,
+          defensiveCommitment: { commitmentType: "pending" as const },
           defendingUnitCanRetreat: undefined,
           defendingUnitRetreats: undefined,
           defendingUnitRetreated: undefined,
@@ -78,7 +75,7 @@ export function applyStartEngagementEvent<TBoard extends Board>(
 
   // Create engagement state
   const engagementState = {
-    substepType: 'engagementResolution' as const,
+    substepType: "engagementResolution" as const,
     boardType: movementState.boardType,
     engagingUnit,
     targetPlacement: movementState.targetPlacement,

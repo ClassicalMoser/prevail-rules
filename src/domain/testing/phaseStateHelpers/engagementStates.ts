@@ -1,21 +1,21 @@
-import type { StandardBoard, UnitInstance, UnitPlacement } from '@entities';
+import type { StandardBoard, UnitInstance, UnitPlacement } from "@entities";
 import type {
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
   StandardEngagementState,
-} from '@game';
-import { createUnitWithPlacement } from '@testing/testHelpers';
-import { createTestUnit } from '@testing/unitHelpers';
-import { createRoutState } from './substepStates';
+} from "@game";
+import { createUnitWithPlacement } from "@testing/testHelpers";
+import { createTestUnit } from "@testing/unitHelpers";
+import { createRoutState } from "./substepStates";
 
 const defaultEngagingUnit = (): UnitInstance =>
-  createUnitWithPlacement({ playerSide: 'black' }).unit;
+  createUnitWithPlacement({ playerSide: "black" }).unit;
 
 const defaultTargetPlacement: UnitPlacement<StandardBoard> = {
-  boardType: 'standard' as const,
-  coordinate: 'E-5',
-  facing: 'north',
+  boardType: "standard" as const,
+  coordinate: "E-5",
+  facing: "north",
 };
 
 /**
@@ -27,13 +27,13 @@ export function createFrontEngagementState(
   engagementResolutionState: FrontEngagementResolutionState;
 } {
   return {
-    substepType: 'engagementResolution',
-    boardType: 'standard' as const,
+    substepType: "engagementResolution",
+    boardType: "standard" as const,
     engagingUnit: defaultEngagingUnit(),
     targetPlacement: defaultTargetPlacement,
     engagementResolutionState: {
-      engagementType: 'front',
-      defensiveCommitment: { commitmentType: 'pending' },
+      engagementType: "front",
+      defensiveCommitment: { commitmentType: "pending" },
       defendingUnitCanRetreat: undefined,
       defendingUnitRetreats: undefined,
       defendingUnitRetreated: undefined,
@@ -52,12 +52,12 @@ export function createFlankEngagementState(
   engagementResolutionState: FlankEngagementResolutionState;
 } {
   return {
-    substepType: 'engagementResolution',
-    boardType: 'standard' as const,
+    substepType: "engagementResolution",
+    boardType: "standard" as const,
     engagingUnit: defaultEngagingUnit(),
     targetPlacement: defaultTargetPlacement,
     engagementResolutionState: {
-      engagementType: 'flank',
+      engagementType: "flank",
       defenderRotated: false,
       ...overrides,
     },
@@ -74,13 +74,13 @@ export function createRearEngagementState(
   engagementResolutionState: RearEngagementResolutionState;
 } {
   return {
-    substepType: 'engagementResolution',
-    boardType: 'standard' as const,
+    substepType: "engagementResolution",
+    boardType: "standard" as const,
     engagingUnit: defaultEngagingUnit(),
     targetPlacement: defaultTargetPlacement,
     engagementResolutionState: {
-      engagementType: 'rear',
-      routState: createRoutState('white', createTestUnit('white')),
+      engagementType: "rear",
+      routState: createRoutState("white", createTestUnit("white")),
       completed: false,
       ...overrides,
     },

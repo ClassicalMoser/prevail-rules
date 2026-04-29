@@ -1,12 +1,12 @@
-import type { Board } from '@entities';
-import type { ResolveRetreatEvent } from '@events';
-import type { GameStateWithBoard, RetreatState } from '@game';
-import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from '@events';
+import type { Board } from "@entities";
+import type { ResolveRetreatEvent } from "@events";
+import type { GameStateWithBoard, RetreatState } from "@game";
+import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from "@events";
 import {
   getCurrentPhaseState,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,
-} from '@queries';
+} from "@queries";
 
 /**
  * Generates a ResolveRetreatEvent by reading the finalPosition from the retreat state.
@@ -21,18 +21,16 @@ import {
 export function generateResolveRetreatEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): ResolveRetreatEvent<TBoard, 'resolveRetreat'> {
+): ResolveRetreatEvent<TBoard, "resolveRetreat"> {
   const phaseState = getCurrentPhaseState(state);
 
   let retreatState: RetreatState;
-  if (phaseState.phase === 'issueCommands') {
+  if (phaseState.phase === "issueCommands") {
     retreatState = getRetreatStateFromRangedAttack(state);
-  } else if (phaseState.phase === 'resolveMelee') {
+  } else if (phaseState.phase === "resolveMelee") {
     retreatState = getRetreatStateReadyForResolveFromMelee(state);
   } else {
-    throw new Error(
-      `Retreat resolution not expected in phase: ${phaseState.phase}`,
-    );
+    throw new Error(`Retreat resolution not expected in phase: ${phaseState.phase}`);
   }
 
   const finalPlacement = retreatState.finalPosition!;
@@ -48,5 +46,5 @@ export function generateResolveRetreatEvent<TBoard extends Board>(
       unit: retreatState.retreatingUnit.unit,
       placement: finalPlacement,
     },
-  } as unknown as ResolveRetreatEvent<TBoard, 'resolveRetreat'>;
+  } as unknown as ResolveRetreatEvent<TBoard, "resolveRetreat">;
 }

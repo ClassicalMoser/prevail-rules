@@ -1,5 +1,5 @@
-import type { BoardSpace, PlayerSide, ValidationResult } from '@entities';
-import { hasEngagedUnits, hasSingleUnit } from '@entities';
+import type { BoardSpace, PlayerSide, ValidationResult } from "@entities";
+import { hasEngagedUnits, hasSingleUnit } from "@entities";
 
 /**
  * Checks if an enemy unit is found in the space.
@@ -7,10 +7,7 @@ import { hasEngagedUnits, hasSingleUnit } from '@entities';
  * @param space - The space to check.
  * @returns True if an enemy unit is found in the space, false otherwise.
  */
-export function hasEnemyUnit(
-  playerSide: PlayerSide,
-  space: BoardSpace,
-): ValidationResult {
+export function hasEnemyUnit(playerSide: PlayerSide, space: BoardSpace): ValidationResult {
   try {
     // If the space has engaged units, there is an enemy unit.
     if (hasEngagedUnits(space.unitPresence)) {
@@ -26,7 +23,7 @@ export function hasEnemyUnit(
       if (!isEnemy) {
         return {
           result: false,
-          errorReason: 'Unit is not an enemy',
+          errorReason: "Unit is not an enemy",
         };
       }
       return {
@@ -36,12 +33,12 @@ export function hasEnemyUnit(
     // Otherwise, no unit - no enemy unit.
     return {
       result: false,
-      errorReason: 'No enemy unit found',
+      errorReason: "No enemy unit found",
     };
   } catch (error) {
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

@@ -1,14 +1,14 @@
-import type { AssertExact } from '@utils';
-import type { LargeBoard } from './largeBoard';
-import type { SmallBoard } from './smallBoard';
-import type { StandardBoard } from './standardBoard';
+import type { AssertExact } from "@utils";
+import type { LargeBoard } from "./largeBoard";
+import type { SmallBoard } from "./smallBoard";
+import type { StandardBoard } from "./standardBoard";
 
-import { z } from 'zod';
-import { largeBoardSchema } from './largeBoard';
-import { smallBoardSchema } from './smallBoard';
-import { standardBoardSchema } from './standardBoard';
+import { z } from "zod";
+import { largeBoardSchema } from "./largeBoard";
+import { smallBoardSchema } from "./smallBoard";
+import { standardBoardSchema } from "./standardBoard";
 
-export const boardSizeType = ['standard', 'small', 'large'] as const;
+export const boardSizeType = ["standard", "small", "large"] as const;
 
 /**
  * A size of a board.
@@ -27,7 +27,7 @@ const _assertExactBoardSize: AssertExact<BoardSize, BoardSizeEnumType> = true;
 /**
  * List of valid board types.
  */
-export const boardType = ['small', 'standard', 'large'] as const;
+export const boardType = ["small", "standard", "large"] as const;
 
 /**
  * The type of a board.
@@ -35,20 +35,20 @@ export const boardType = ['small', 'standard', 'large'] as const;
 export type BoardType = (typeof boardType)[number];
 
 /** The small board type. */
-export const SMALL_BOARD_TYPE: 'small' = boardType[0];
+export const SMALL_BOARD_TYPE: "small" = boardType[0];
 
 /** The standard board type. */
-export const STANDARD_BOARD_TYPE: 'standard' = boardType[1];
+export const STANDARD_BOARD_TYPE: "standard" = boardType[1];
 
 /** The large board type. */
-export const LARGE_BOARD_TYPE: 'large' = boardType[2];
+export const LARGE_BOARD_TYPE: "large" = boardType[2];
 
 /**
  * A board of the game.
  */
 export type Board = StandardBoard | SmallBoard | LargeBoard;
 
-const _boardSchemaObject = z.discriminatedUnion('boardType', [
+const _boardSchemaObject = z.discriminatedUnion("boardType", [
   smallBoardSchema,
   standardBoardSchema,
   largeBoardSchema,

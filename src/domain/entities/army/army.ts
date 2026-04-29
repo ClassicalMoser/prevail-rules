@@ -1,10 +1,10 @@
-import type { Card } from '@entities/card';
-import type { AssertExact } from '@utils';
-import type { UnitCount } from './unitCount';
+import type { Card } from "@entities/card";
+import type { AssertExact } from "@utils";
+import type { UnitCount } from "./unitCount";
 
-import { cardSchema } from '@entities/card';
-import { z } from 'zod';
-import { unitCountSchema } from './unitCount';
+import { cardSchema } from "@entities/card";
+import { z } from "zod";
+import { unitCountSchema } from "./unitCount";
 
 /**
  * An army of troops.

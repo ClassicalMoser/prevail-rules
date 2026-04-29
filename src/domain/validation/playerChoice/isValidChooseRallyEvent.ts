@@ -1,7 +1,7 @@
-import type { Board, ValidationResult } from '@entities';
-import type { ChooseRallyEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getOtherPlayer } from '@queries';
+import type { Board, ValidationResult } from "@entities";
+import type { ChooseRallyEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getOtherPlayer } from "@queries";
 
 /**
  * Validates whether a ChooseRallyEvent can be applied to the current game state.
@@ -34,12 +34,12 @@ export function isValidChooseRallyEvent<TBoard extends Board>(
     if (!currentPhaseState) {
       return {
         result: false,
-        errorReason: 'No current phase state found',
+        errorReason: "No current phase state found",
       };
     }
 
     // Check correct phase
-    if (currentPhaseState.phase !== 'cleanup') {
+    if (currentPhaseState.phase !== "cleanup") {
       return {
         result: false,
         errorReason: `Current phase is ${currentPhaseState.phase}, not cleanup`,
@@ -50,14 +50,14 @@ export function isValidChooseRallyEvent<TBoard extends Board>(
     const firstPlayer = state.currentInitiative;
     const secondPlayer = getOtherPlayer(firstPlayer);
 
-    if (currentPhaseState.step === 'firstPlayerChooseRally') {
+    if (currentPhaseState.step === "firstPlayerChooseRally") {
       if (player !== firstPlayer) {
         return {
           result: false,
           errorReason: `Expected ${firstPlayer} (first player) to choose rally, not ${player}`,
         };
       }
-    } else if (currentPhaseState.step === 'secondPlayerChooseRally') {
+    } else if (currentPhaseState.step === "secondPlayerChooseRally") {
       if (player !== secondPlayer) {
         return {
           result: false,
@@ -78,7 +78,7 @@ export function isValidChooseRallyEvent<TBoard extends Board>(
   } catch (error) {
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

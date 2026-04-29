@@ -1,15 +1,13 @@
-import type { Board, ValidationResult } from '@entities';
-import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { isValidChooseCardEvent } from './isValidChooseCardEvent';
-import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
-import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
-import { isValidChooseMeleeResolutionEvent } from './isValidMeleeResolutionEvent';
-import { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
+import type { Board, ValidationResult } from "@entities";
+import type { PlayerChoiceEvent, PlayerChoiceType } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { isValidChooseCardEvent } from "./isValidChooseCardEvent";
+import { isValidChooseRallyEvent } from "./isValidChooseRallyEvent";
+import { isValidChooseRoutDiscardEvent } from "./isValidChooseRoutDiscardEvent";
+import { isValidChooseMeleeResolutionEvent } from "./isValidMeleeResolutionEvent";
+import { isValidMoveCommanderEvent } from "./isValidMoveCommanderEvent";
 
-function legalChoiceNotImplemented(
-  choiceType: PlayerChoiceType,
-): ValidationResult {
+function legalChoiceNotImplemented(choiceType: PlayerChoiceType): ValidationResult {
   return {
     result: false,
     errorReason: `Legal validation not implemented for ${choiceType}`,
@@ -27,25 +25,25 @@ export function validateLegalPlayerChoice<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
 ): ValidationResult {
   switch (event.choiceType) {
-    case 'chooseCard':
+    case "chooseCard":
       return isValidChooseCardEvent(event, state);
-    case 'chooseMeleeResolution':
+    case "chooseMeleeResolution":
       return isValidChooseMeleeResolutionEvent(event, state);
-    case 'moveCommander':
+    case "moveCommander":
       return isValidMoveCommanderEvent(event, state);
-    case 'chooseRally':
+    case "chooseRally":
       return isValidChooseRallyEvent(event, state);
-    case 'chooseRoutDiscard':
+    case "chooseRoutDiscard":
       return isValidChooseRoutDiscardEvent(event, state);
-    case 'chooseRetreatOption':
-    case 'chooseWhetherToRetreat':
-    case 'commitToMelee':
-    case 'commitToMovement':
-    case 'commitToRangedAttack':
-    case 'issueCommand':
-    case 'moveUnit':
-    case 'performRangedAttack':
-    case 'setupUnits':
+    case "chooseRetreatOption":
+    case "chooseWhetherToRetreat":
+    case "commitToMelee":
+    case "commitToMovement":
+    case "commitToRangedAttack":
+    case "issueCommand":
+    case "moveUnit":
+    case "performRangedAttack":
+    case "setupUnits":
       return legalChoiceNotImplemented(event.choiceType);
     default: {
       const _exhaustive: never = event;

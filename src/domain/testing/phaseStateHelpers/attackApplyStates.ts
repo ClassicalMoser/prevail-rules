@@ -1,18 +1,14 @@
-import type { StandardBoard, UnitInstance, UnitWithPlacement } from '@entities';
-import type { StandardAttackApplyState } from '@game';
-import {
-  createRetreatState,
-  createReverseState,
-  createRoutState,
-} from './substepStates';
+import type { StandardBoard, UnitInstance, UnitWithPlacement } from "@entities";
+import type { StandardAttackApplyState } from "@game";
+import { createRetreatState, createReverseState, createRoutState } from "./substepStates";
 
 function baseAttackApplyState(
   defendingUnit: UnitInstance,
   overrides?: Partial<StandardAttackApplyState>,
 ): StandardAttackApplyState {
   return {
-    substepType: 'attackApply' as const,
-    boardType: 'standard' as const,
+    substepType: "attackApply" as const,
+    boardType: "standard" as const,
     defendingUnit,
     attackResult: {
       unitRouted: false,

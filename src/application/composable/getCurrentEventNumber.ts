@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { Event, EventType } from '@events';
-import type { EventStreamStorage, PortResponse } from '../ports';
+import type { Board } from "@entities";
+import type { Event, EventType } from "@events";
+import type { EventStreamStorage, PortResponse } from "../ports";
 
 /**
  * Gets the current event number for a given game and round.
@@ -15,10 +15,7 @@ export async function getCurrentEventNumber(
   eventStreamStorage: EventStreamStorage,
 ): Promise<PortResponse<number | undefined>> {
   // Get the event stream
-  const streamResult = await eventStreamStorage.getEventStream(
-    gameId,
-    roundNumber,
-  );
+  const streamResult = await eventStreamStorage.getEventStream(gameId, roundNumber);
 
   // If the event stream is not found, return an error
   if (!streamResult.result) {
@@ -29,14 +26,13 @@ export async function getCurrentEventNumber(
   }
 
   // Get the events
-  const events: readonly Event<Board, EventType>[] | undefined =
-    streamResult.data;
+  const events: readonly Event<Board, EventType>[] | undefined = streamResult.data;
 
   // If there is no event stream, return an error
   if (!events) {
     return {
       result: false,
-      errorReason: 'Event stream not found',
+      errorReason: "Event stream not found",
     };
   }
 
@@ -55,7 +51,7 @@ export async function getCurrentEventNumber(
   if (lastEvent?.eventNumber !== events.length - 1) {
     return {
       result: false,
-      errorReason: 'Event stream corrupted',
+      errorReason: "Event stream corrupted",
     };
   }
 

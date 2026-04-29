@@ -1,14 +1,10 @@
-import type { Board, PlayerSide } from '@entities';
-import type {
-  AttackApplyState,
-  GameStateWithBoard,
-  MeleeResolutionState,
-} from '@game';
-import { getOtherPlayer } from '@queries/getOtherPlayer';
+import type { Board, PlayerSide } from "@entities";
+import type { AttackApplyState, GameStateWithBoard, MeleeResolutionState } from "@game";
+import { getOtherPlayer } from "@queries/getOtherPlayer";
 import {
   getMeleeResolutionState,
   getRangedAttackResolutionState,
-} from '../getCommandResolutionState';
+} from "../getCommandResolutionState";
 
 /**
  * Gets the attack apply state from a ranged attack resolution.
@@ -24,7 +20,7 @@ export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
 ): AttackApplyState {
   const rangedAttackState = getRangedAttackResolutionState(state);
   if (!rangedAttackState.attackApplyState) {
-    throw new Error('No attack apply state found in ranged attack resolution');
+    throw new Error("No attack apply state found in ranged attack resolution");
   }
   return rangedAttackState.attackApplyState;
 }
@@ -41,17 +37,13 @@ export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
  */
 export function getAttackApplyStateFromMelee<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
-  player: 'white' | 'black',
+  player: "white" | "black",
 ): AttackApplyState {
   const meleeState = getMeleeResolutionState(state);
   const attackApplyState =
-    player === 'white'
-      ? meleeState.whiteAttackApplyState
-      : meleeState.blackAttackApplyState;
+    player === "white" ? meleeState.whiteAttackApplyState : meleeState.blackAttackApplyState;
   if (!attackApplyState) {
-    throw new Error(
-      `No ${player} attack apply state found in melee resolution`,
-    );
+    throw new Error(`No ${player} attack apply state found in melee resolution`);
   }
   return attackApplyState;
 }
@@ -62,19 +54,15 @@ export function getAttackApplyStateFromMelee<TBoard extends Board>(
  *
  * @returns `null` if either attack-apply state is missing, or both are already complete
  */
-export function getDefendingPlayerForNextIncompleteMeleeAttackApply<
-  TBoard extends Board,
->(
+export function getDefendingPlayerForNextIncompleteMeleeAttackApply<TBoard extends Board>(
   gameState: GameStateWithBoard<TBoard>,
   meleeState: MeleeResolutionState,
 ): PlayerSide | null {
   const firstPlayer = gameState.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 
-  const firstPlayerAttackApplyState =
-    meleeState[`${firstPlayer}AttackApplyState`];
-  const secondPlayerAttackApplyState =
-    meleeState[`${secondPlayer}AttackApplyState`];
+  const firstPlayerAttackApplyState = meleeState[`${firstPlayer}AttackApplyState`];
+  const secondPlayerAttackApplyState = meleeState[`${secondPlayer}AttackApplyState`];
 
   if (!firstPlayerAttackApplyState || !secondPlayerAttackApplyState) {
     return null;

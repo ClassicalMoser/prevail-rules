@@ -1,10 +1,7 @@
-import type { Board } from '@entities';
-import type { CompleteCleanupPhaseEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  COMPLETE_CLEANUP_PHASE_EFFECT_TYPE,
-  GAME_EFFECT_EVENT_TYPE,
-} from '@events';
+import type { Board } from "@entities";
+import type { CompleteCleanupPhaseEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { COMPLETE_CLEANUP_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
 
 /**
  * Generates a CompleteCleanupPhaseEvent to complete the cleanup phase,
@@ -16,7 +13,7 @@ import {
 export function generateCompleteCleanupPhaseEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): CompleteCleanupPhaseEvent<TBoard, 'completeCleanupPhase'> {
+): CompleteCleanupPhaseEvent<TBoard, "completeCleanupPhase"> {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {

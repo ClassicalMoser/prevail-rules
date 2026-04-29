@@ -1,6 +1,6 @@
-import type { Board, UnitWithPlacement, ValidationResult } from '@entities';
-import { getPlayerUnitWithPosition } from '@queries';
-import { isSameUnitInstance } from './unitEquivalence';
+import type { Board, UnitWithPlacement, ValidationResult } from "@entities";
+import { getPlayerUnitWithPosition } from "@queries";
+import { isSameUnitInstance } from "./unitEquivalence";
 
 /**
  * Determines whether a unit is at a specific placement on the board.
@@ -29,18 +29,15 @@ export function isAtPlacement<TBoard extends Board>(
     if (!friendlyUnitWithPlacement) {
       return {
         result: false,
-        errorReason: 'No friendly unit at coordinate',
+        errorReason: "No friendly unit at coordinate",
       };
     }
 
     // If the friendly unit is not facing the same direction as the declared facing, the unit is not at the placement.
-    if (
-      friendlyUnitWithPlacement.placement.facing !==
-      unitWithPlacement.placement.facing
-    ) {
+    if (friendlyUnitWithPlacement.placement.facing !== unitWithPlacement.placement.facing) {
       return {
         result: false,
-        errorReason: 'Declared facing does not match facing of unit present',
+        errorReason: "Declared facing does not match facing of unit present",
       };
     }
 
@@ -53,7 +50,7 @@ export function isAtPlacement<TBoard extends Board>(
     if (!isSameUnit) {
       return {
         result: false,
-        errorReason: 'Unit is not at the placement',
+        errorReason: "Unit is not at the placement",
       };
     }
 
@@ -65,7 +62,7 @@ export function isAtPlacement<TBoard extends Board>(
     // Any error means the unit is not at the placement.
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

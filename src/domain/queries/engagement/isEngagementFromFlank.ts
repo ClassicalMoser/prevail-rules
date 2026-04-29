@@ -1,5 +1,5 @@
-import type { UnitFacing, ValidationResult } from '@entities';
-import { getOrthogonalFacings } from '@queries/facings';
+import type { UnitFacing, ValidationResult } from "@entities";
+import { getOrthogonalFacings } from "@queries/facings";
 
 /**
  * Determines if an engagement is from the flank.
@@ -19,6 +19,6 @@ export function isEngagementFromFlank(
   }
   return {
     result: false,
-    errorReason: 'Attacker is not facing orthogonal to the defender',
+    errorReason: "Attacker is not facing orthogonal to the defender",
   };
 }

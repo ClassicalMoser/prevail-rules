@@ -1,10 +1,5 @@
-import type {
-  StandardBoard,
-  StandardBoardCoordinate,
-  UnitFacing,
-  UnitInstance,
-} from '@entities';
-import { createEmptyStandardBoard } from '@transforms';
+import type { StandardBoard, StandardBoardCoordinate, UnitFacing, UnitInstance } from "@entities";
+import { createEmptyStandardBoard } from "@transforms";
 
 /**
  * Creates a board with engaged units at a coordinate.
@@ -18,14 +13,14 @@ import { createEmptyStandardBoard } from '@transforms';
 export function createBoardWithEngagedUnits(
   primaryUnit: UnitInstance,
   secondaryUnit: UnitInstance,
-  coord: StandardBoardCoordinate = 'E-5',
-  primaryFacing: UnitFacing = 'north',
+  coord: StandardBoardCoordinate = "E-5",
+  primaryFacing: UnitFacing = "north",
 ): StandardBoard {
   const board = createEmptyStandardBoard();
   board.board[coord] = {
     ...board.board[coord],
     unitPresence: {
-      presenceType: 'engaged',
+      presenceType: "engaged",
       primaryUnit,
       primaryFacing,
       secondaryUnit,

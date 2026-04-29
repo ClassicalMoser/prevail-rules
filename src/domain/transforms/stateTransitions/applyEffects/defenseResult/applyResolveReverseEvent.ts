@@ -1,17 +1,17 @@
-import type { Board, UnitWithPlacement } from '@entities';
-import type { ResolveReverseEvent } from '@events';
-import type { GameStateWithBoard, ReverseState } from '@game';
+import type { Board, UnitWithPlacement } from "@entities";
+import type { ResolveReverseEvent } from "@events";
+import type { GameStateWithBoard, ReverseState } from "@game";
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
   getReverseStateFromAttackApply,
-} from '@queries';
+} from "@queries";
 import {
   addUnitToBoard,
   removeUnitFromBoard,
   updateBoardState,
   updateReverseState,
-} from '@transforms/pureTransforms';
+} from "@transforms/pureTransforms";
 
 /**
  * Applies a ResolveReverseEvent to the game state.
@@ -35,7 +35,7 @@ export function applyResolveReverseEvent<TBoard extends Board>(
   );
 
   const attackApplyState =
-    event.attackResolutionContext === 'rangedAttack'
+    event.attackResolutionContext === "rangedAttack"
       ? getAttackApplyStateFromRangedAttack(state)
       : getAttackApplyStateFromMelee(state, event.unitInstance.unit.playerSide);
 

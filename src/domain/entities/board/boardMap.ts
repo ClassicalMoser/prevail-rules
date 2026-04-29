@@ -1,6 +1,6 @@
-import type { BoardSpace } from './boardSpace';
-import { z } from 'zod';
-import { boardSpaceSchema } from './boardSpace';
+import type { BoardSpace } from "./boardSpace";
+import { z } from "zod";
+import { boardSpaceSchema } from "./boardSpace";
 
 /**
  * Creates a Zod object schema for a board with all required coordinates.

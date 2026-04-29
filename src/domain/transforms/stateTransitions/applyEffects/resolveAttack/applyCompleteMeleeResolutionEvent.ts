@@ -1,8 +1,8 @@
-import type { Board } from '@entities';
-import type { CompleteMeleeResolutionEvent } from '@events';
-import type { GameStateWithBoard, ResolveMeleePhaseState } from '@game';
-import { getResolveMeleePhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import type { Board } from "@entities";
+import type { CompleteMeleeResolutionEvent } from "@events";
+import type { GameStateWithBoard, ResolveMeleePhaseState } from "@game";
+import { getResolveMeleePhaseState } from "@queries";
+import { updatePhaseState } from "@transforms/pureTransforms";
 
 /**
  * Applies a CompleteMeleeResolutionEvent to the game state.

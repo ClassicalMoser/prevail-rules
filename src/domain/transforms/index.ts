@@ -4,7 +4,7 @@ export {
   createEmptySmallBoard,
   createEmptyStandardBoard,
   createUnitInstance,
-} from './initializations';
+} from "./initializations";
 export {
   addCommanderToBoard,
   addCommanderToLostCommanders,
@@ -38,5 +38,5 @@ export {
   updateRoundEventStream,
   updateRoundState,
   updateRoutState,
-} from './pureTransforms';
-export { applyEvent } from './stateTransitions';
+} from "./pureTransforms";
+export { applyEvent } from "./stateTransitions";

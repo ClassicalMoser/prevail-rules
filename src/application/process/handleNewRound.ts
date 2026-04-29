@@ -1,6 +1,6 @@
-import type { GameType } from '@entities';
-import type { BoardForGameType, GameState, GameStateWithBoard } from '@game';
-import type { EnginePorts, PortResponse } from '../ports';
+import type { GameType } from "@entities";
+import type { BoardForGameType, GameState, GameStateWithBoard } from "@game";
+import type { EnginePorts, PortResponse } from "../ports";
 
 /**
  * Called at the START of a new round.

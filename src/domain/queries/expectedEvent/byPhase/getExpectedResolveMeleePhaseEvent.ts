@@ -1,8 +1,8 @@
-import type { Board } from '@entities';
-import type { ExpectedEventInfo } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getResolveMeleePhaseState } from '@queries/sequencing';
-import { getExpectedMeleeResolutionEvent } from '../iterated';
+import type { Board } from "@entities";
+import type { ExpectedEventInfo } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getResolveMeleePhaseState } from "@queries/sequencing";
+import { getExpectedMeleeResolutionEvent } from "../iterated";
 
 /**
  * Gets information about the expected event for the Resolve Melee phase.
@@ -17,35 +17,30 @@ export function getExpectedResolveMeleePhaseEvent<TBoard extends Board>(
   const firstPlayer = state.currentInitiative;
 
   switch (phaseState.step) {
-    case 'resolveMelee': {
+    case "resolveMelee": {
       // Check if there's an ongoing melee resolution
       if (phaseState.currentMeleeResolutionState) {
-        return getExpectedMeleeResolutionEvent(
-          state,
-          phaseState.currentMeleeResolutionState,
-        );
+        return getExpectedMeleeResolutionEvent(state, phaseState.currentMeleeResolutionState);
       }
 
       // No ongoing resolution - check if there are remaining engagements to resolve
       if (phaseState.remainingEngagements.size > 0) {
         // Initiative player chooses which engagement to resolve
         return {
-          actionType: 'playerChoice',
+          actionType: "playerChoice",
           playerSource: firstPlayer,
-          choiceType: 'chooseMeleeResolution',
+          choiceType: "chooseMeleeResolution",
         };
       }
 
       // All engagements resolved - should have advanced to complete step
-      throw new Error(
-        'All engagements resolved but step not advanced to complete',
-      );
+      throw new Error("All engagements resolved but step not advanced to complete");
     }
 
-    case 'complete':
+    case "complete":
       return {
-        actionType: 'gameEffect',
-        effectType: 'completeResolveMeleePhase',
+        actionType: "gameEffect",
+        effectType: "completeResolveMeleePhase",
       };
 
     default: {

@@ -1,10 +1,10 @@
-import type { Board } from '@entities';
-import type { ExpectedEventInfo } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getIssueCommandsPhaseState } from '@queries/sequencing';
-import { getExpectedStartCommandResolutionEvent } from '../composable';
-import { getExpectedCommandResolutionEvent } from '../iterated';
+import type { Board } from "@entities";
+import type { ExpectedEventInfo } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getOtherPlayer } from "@queries/getOtherPlayer";
+import { getIssueCommandsPhaseState } from "@queries/sequencing";
+import { getExpectedStartCommandResolutionEvent } from "../composable";
+import { getExpectedCommandResolutionEvent } from "../iterated";
 
 /**
  * Gets information about the expected event for the Issue Commands phase.
@@ -20,22 +20,22 @@ export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
   const secondPlayer = getOtherPlayer(firstPlayer);
 
   switch (phaseState.step) {
-    case 'firstPlayerIssueCommands':
+    case "firstPlayerIssueCommands":
       // If there are remaining commands, expect issueCommand
       if (phaseState.remainingCommandsFirstPlayer.size > 0) {
         return {
-          actionType: 'playerChoice',
+          actionType: "playerChoice",
           playerSource: firstPlayer,
-          choiceType: 'issueCommand',
+          choiceType: "issueCommand",
         };
       }
       // All commands issued - should have advanced to firstPlayerResolveCommands
       // This state should not occur if applyIssueCommandEvent properly advances steps
       throw new Error(
-        'All first player commands issued but step not advanced to firstPlayerResolveCommands',
+        "All first player commands issued but step not advanced to firstPlayerResolveCommands",
       );
 
-    case 'firstPlayerResolveCommands': {
+    case "firstPlayerResolveCommands": {
       // Check if there's an ongoing command resolution
       if (phaseState.currentCommandResolutionState) {
         return getExpectedCommandResolutionEvent(
@@ -51,25 +51,25 @@ export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
       }
       // All units resolved - should have advanced to secondPlayerIssueCommands
       throw new Error(
-        'All first player units resolved but step not advanced to secondPlayerIssueCommands',
+        "All first player units resolved but step not advanced to secondPlayerIssueCommands",
       );
     }
 
-    case 'secondPlayerIssueCommands':
+    case "secondPlayerIssueCommands":
       // If there are remaining commands, expect issueCommand
       if (phaseState.remainingCommandsSecondPlayer.size > 0) {
         return {
-          actionType: 'playerChoice',
+          actionType: "playerChoice",
           playerSource: secondPlayer,
-          choiceType: 'issueCommand',
+          choiceType: "issueCommand",
         };
       }
       // All commands issued - should have advanced to secondPlayerResolveCommands
       throw new Error(
-        'All second player commands issued but step not advanced to secondPlayerResolveCommands',
+        "All second player commands issued but step not advanced to secondPlayerResolveCommands",
       );
 
-    case 'secondPlayerResolveCommands': {
+    case "secondPlayerResolveCommands": {
       // Check if there's an ongoing command resolution
       if (phaseState.currentCommandResolutionState) {
         return getExpectedCommandResolutionEvent(
@@ -84,15 +84,13 @@ export function getExpectedIssueCommandsPhaseEvent<TBoard extends Board>(
         return getExpectedStartCommandResolutionEvent(state, secondPlayer);
       }
       // All units resolved - should have advanced to complete
-      throw new Error(
-        'All second player units resolved but step not advanced to complete',
-      );
+      throw new Error("All second player units resolved but step not advanced to complete");
     }
 
-    case 'complete':
+    case "complete":
       return {
-        actionType: 'gameEffect',
-        effectType: 'completeIssueCommandsPhase',
+        actionType: "gameEffect",
+        effectType: "completeIssueCommandsPhase",
       };
 
     default: {

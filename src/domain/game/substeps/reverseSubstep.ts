@@ -4,8 +4,8 @@ import type {
   StandardBoard,
   UnitPlacement,
   UnitWithPlacement,
-} from '@entities';
-import type { AssertExact } from '@utils';
+} from "@entities";
+import type { AssertExact } from "@utils";
 import {
   largeUnitPlacementSchema,
   largeUnitWithPlacementSchema,
@@ -13,8 +13,8 @@ import {
   smallUnitWithPlacementSchema,
   standardUnitPlacementSchema,
   standardUnitWithPlacementSchema,
-} from '@entities';
-import { z } from 'zod';
+} from "@entities";
+import { z } from "zod";
 
 /**
  * Composable substep that handles unit reversal after an attack.
@@ -27,53 +27,48 @@ import { z } from 'zod';
  */
 export interface ReverseStateBase {
   /** The type of the substep. */
-  substepType: 'reverse';
+  substepType: "reverse";
   /** Whether the reverse has been completed. */
   completed: boolean;
 }
 
 /** Reverse on a standard board. */
 export interface StandardReverseState extends ReverseStateBase {
-  boardType: 'standard';
+  boardType: "standard";
   reversingUnit: UnitWithPlacement<StandardBoard>;
   finalPosition: UnitPlacement<StandardBoard> | undefined;
 }
 
 /** Reverse on a small board. */
 export interface SmallReverseState extends ReverseStateBase {
-  boardType: 'small';
+  boardType: "small";
   reversingUnit: UnitWithPlacement<SmallBoard>;
   finalPosition: UnitPlacement<SmallBoard> | undefined;
 }
 
 /** Reverse on a large board. */
 export interface LargeReverseState extends ReverseStateBase {
-  boardType: 'large';
+  boardType: "large";
   reversingUnit: UnitWithPlacement<LargeBoard>;
   finalPosition: UnitPlacement<LargeBoard> | undefined;
 }
 
 /** Reverse substep for any board size (discriminated on `boardType`). */
-export type ReverseState =
-  | StandardReverseState
-  | SmallReverseState
-  | LargeReverseState;
+export type ReverseState = StandardReverseState | SmallReverseState | LargeReverseState;
 
 // ---------------------------------------------------------------------------
 // Per-variant Zod schemas
 // ---------------------------------------------------------------------------
 
 const _standardReverseStateSchemaObject = z.object({
-  substepType: z.literal('reverse'),
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  substepType: z.literal("reverse"),
+  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
   reversingUnit: standardUnitWithPlacementSchema,
   finalPosition: standardUnitPlacementSchema.or(z.undefined()),
   completed: z.boolean(),
 });
 
-type StandardReverseStateSchemaType = z.infer<
-  typeof _standardReverseStateSchemaObject
->;
+type StandardReverseStateSchemaType = z.infer<typeof _standardReverseStateSchemaObject>;
 
 const _assertExactStandardReverseState: AssertExact<
   StandardReverseState,
@@ -84,50 +79,40 @@ export const standardReverseStateSchema: z.ZodType<StandardReverseState> =
   _standardReverseStateSchemaObject;
 
 const _smallReverseStateSchemaObject = z.object({
-  substepType: z.literal('reverse'),
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  substepType: z.literal("reverse"),
+  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
   reversingUnit: smallUnitWithPlacementSchema,
   finalPosition: smallUnitPlacementSchema.or(z.undefined()),
   completed: z.boolean(),
 });
 
-type SmallReverseStateSchemaType = z.infer<
-  typeof _smallReverseStateSchemaObject
->;
+type SmallReverseStateSchemaType = z.infer<typeof _smallReverseStateSchemaObject>;
 
-const _assertExactSmallReverseState: AssertExact<
-  SmallReverseState,
-  SmallReverseStateSchemaType
-> = true;
+const _assertExactSmallReverseState: AssertExact<SmallReverseState, SmallReverseStateSchemaType> =
+  true;
 
-export const smallReverseStateSchema: z.ZodType<SmallReverseState> =
-  _smallReverseStateSchemaObject;
+export const smallReverseStateSchema: z.ZodType<SmallReverseState> = _smallReverseStateSchemaObject;
 
 const _largeReverseStateSchemaObject = z.object({
-  substepType: z.literal('reverse'),
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  substepType: z.literal("reverse"),
+  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
   reversingUnit: largeUnitWithPlacementSchema,
   finalPosition: largeUnitPlacementSchema.or(z.undefined()),
   completed: z.boolean(),
 });
 
-type LargeReverseStateSchemaType = z.infer<
-  typeof _largeReverseStateSchemaObject
->;
+type LargeReverseStateSchemaType = z.infer<typeof _largeReverseStateSchemaObject>;
 
-const _assertExactLargeReverseState: AssertExact<
-  LargeReverseState,
-  LargeReverseStateSchemaType
-> = true;
+const _assertExactLargeReverseState: AssertExact<LargeReverseState, LargeReverseStateSchemaType> =
+  true;
 
-export const largeReverseStateSchema: z.ZodType<LargeReverseState> =
-  _largeReverseStateSchemaObject;
+export const largeReverseStateSchema: z.ZodType<LargeReverseState> = _largeReverseStateSchemaObject;
 
 // ---------------------------------------------------------------------------
 // Wide union schema
 // ---------------------------------------------------------------------------
 
-const _reverseStateSchemaObject = z.discriminatedUnion('boardType', [
+const _reverseStateSchemaObject = z.discriminatedUnion("boardType", [
   _standardReverseStateSchemaObject,
   _smallReverseStateSchemaObject,
   _largeReverseStateSchemaObject,
@@ -136,5 +121,4 @@ const _reverseStateSchemaObject = z.discriminatedUnion('boardType', [
 /**
  * Schema for reverse state (any board). Per-variant AssertExact above; wide union not asserted.
  */
-export const reverseStateSchema: z.ZodType<ReverseState> =
-  _reverseStateSchemaObject;
+export const reverseStateSchema: z.ZodType<ReverseState> = _reverseStateSchemaObject;

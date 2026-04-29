@@ -1,8 +1,8 @@
-import type { Board, BoardCoordinate, PlayerSide } from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { unitFacings } from '@entities';
-import { getBoardSpace, getForwardSpace } from '@queries/boardSpace';
-import { diagonalIsClear, hasEnemyUnit, isDiagonalFacing } from '@validation';
+import type { Board, BoardCoordinate, PlayerSide } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { unitFacings } from "@entities";
+import { getBoardSpace, getForwardSpace } from "@queries/boardSpace";
+import { diagonalIsClear, hasEnemyUnit, isDiagonalFacing } from "@validation";
 
 export function exploreCommanderMoves<TBoard extends Board>(
   playerSide: PlayerSide,
@@ -18,18 +18,12 @@ export function exploreCommanderMoves<TBoard extends Board>(
 
   // Track the visited states to avoid revisiting
   const visitedStates = new Set<string>();
-  const getStateKey = (
-    coordinate: BoardCoordinate<TBoard>,
-    remainingDistance: number,
-  ): string => {
+  const getStateKey = (coordinate: BoardCoordinate<TBoard>, remainingDistance: number): string => {
     return `${coordinate}|${remainingDistance}`;
   };
 
   // Recursive function to explore the moves
-  function explore(
-    currentCoordinate: BoardCoordinate<TBoard>,
-    remainingDistance: number,
-  ): void {
+  function explore(currentCoordinate: BoardCoordinate<TBoard>, remainingDistance: number): void {
     // Check if we have already visited this state
     const stateKey = getStateKey(currentCoordinate, remainingDistance);
     if (visitedStates.has(stateKey)) {

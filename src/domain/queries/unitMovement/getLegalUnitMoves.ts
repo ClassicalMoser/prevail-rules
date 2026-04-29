@@ -1,14 +1,9 @@
-import type {
-  Board,
-  BoardSpace,
-  UnitPlacement,
-  UnitWithPlacement,
-} from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { hasSingleUnit } from '@entities';
-import { getBoardSpace } from '@queries/boardSpace';
-import { isSameUnitInstance } from '@validation';
-import { exploreUnitMoves } from './exploreUnitMoves';
+import type { Board, BoardSpace, UnitPlacement, UnitWithPlacement } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { hasSingleUnit } from "@entities";
+import { getBoardSpace } from "@queries/boardSpace";
+import { isSameUnitInstance } from "@validation";
+import { exploreUnitMoves } from "./exploreUnitMoves";
 
 /**
  * Calculates all legal moves for a unit from a given starting position.
@@ -36,29 +31,23 @@ export function getLegalUnitMoves<TBoard extends Board>(
   // Get the board state
   const board = gameState.boardState;
   // The reported starting position must be a valid board space
-  const boardSpace: BoardSpace = getBoardSpace(
-    board,
-    startingPosition.coordinate,
-  );
+  const boardSpace: BoardSpace = getBoardSpace(board, startingPosition.coordinate);
   // Check if the unit is free to move
   if (!hasSingleUnit(boardSpace.unitPresence)) {
-    throw new Error('No movable unit at starting position');
+    throw new Error("No movable unit at starting position");
   }
   // Check if the reported unit is present at the starting position
-  const sameUnit = isSameUnitInstance(
-    boardSpace.unitPresence.unit,
-    unit,
-  ).result;
+  const sameUnit = isSameUnitInstance(boardSpace.unitPresence.unit, unit).result;
   if (!sameUnit) {
-    throw new Error('Unit is not present at the starting position');
+    throw new Error("Unit is not present at the starting position");
   }
   // Check if the reported facing is valid
   if (boardSpace.unitPresence.facing !== startingPosition.facing) {
-    throw new Error('Reported facing is inaccurate');
+    throw new Error("Reported facing is inaccurate");
   }
 
   // Get the legal moves by exploring all combinations of speed and flexibility
-  const legalMoves = exploreUnitMoves(gameState, unitWithPlacement, 'advance');
+  const legalMoves = exploreUnitMoves(gameState, unitWithPlacement, "advance");
 
   // Convert the legal moves to an array for iteration
   const legalMovesArray = [...legalMoves];

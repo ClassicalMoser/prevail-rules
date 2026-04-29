@@ -22,7 +22,7 @@ This project delivers four core engines that work together to provide a complete
 **Usage:**
 
 ```typescript
-import { applyEvent } from '@transforms';
+import { applyEvent } from "@transforms";
 
 const newState = applyEvent(event, currentState);
 // newState is a new immutable object, currentState is unchanged
@@ -52,7 +52,7 @@ const newState = applyEvent(event, currentState);
 **Usage:**
 
 ```typescript
-import { validateEvent } from '@validation';
+import { validateEvent } from "@validation";
 
 const validation = validateEvent(event, state);
 if (!validation.result) {
@@ -88,10 +88,10 @@ const newState = applyEvent(event, state);
 **Usage:**
 
 ```typescript
-import { procedureRegistry } from '@procedures';
+import { procedureRegistry } from "@procedures";
 
 // Generate a game effect event
-const event = procedureRegistry.resolveRally(state, 'white', randomSeed);
+const event = procedureRegistry.resolveRally(state, "white", randomSeed);
 
 // Apply the generated event
 const newState = applyEvent(event, state);
@@ -126,14 +126,14 @@ const newState = applyEvent(event, state);
 **Usage:**
 
 ```typescript
-import { getExpectedEvent } from '@queries/expectedEvent';
+import { getExpectedEvent } from "@queries/expectedEvent";
 
 const expected = getExpectedEvent(state);
 
-if (expected.actionType === 'playerChoice') {
+if (expected.actionType === "playerChoice") {
   // Wait for player input
   console.log(`Waiting for ${expected.playerSource} to ${expected.choiceType}`);
-} else if (expected.actionType === 'gameEffect') {
+} else if (expected.actionType === "gameEffect") {
   // Generate game effect
   if (requiresProcedure(expected.effectType)) {
     const event = procedureRegistry[expected.effectType](state, ...params);
@@ -174,19 +174,14 @@ This architecture enables:
 // 1. Determine what's expected next
 const expected = getExpectedEvent(state);
 
-if (
-  expected.actionType === 'gameEffect' &&
-  expected.effectType === 'resolveRally'
-) {
+if (expected.actionType === "gameEffect" && expected.effectType === "resolveRally") {
   // 2. Generate the event using procedure library
-  const event = procedureRegistry.resolveRally(state, 'white', randomSeed);
+  const event = procedureRegistry.resolveRally(state, "white", randomSeed);
 
   // 3. Validate the event (optional but recommended)
   const validation = validateEvent(event, state);
   if (!validation.result) {
-    throw new Error(
-      `Generated event failed validation: ${validation.errorReason}`,
-    );
+    throw new Error(`Generated event failed validation: ${validation.errorReason}`);
   }
 
   // 4. Apply the event using transform engine

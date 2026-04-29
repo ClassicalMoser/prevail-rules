@@ -1,24 +1,24 @@
-import { defineConfig } from 'tsdown';
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ['src/domain/index.ts', 'src/application/index.ts'],
-  format: ['esm'],
+  entry: ["src/domain/index.ts", "src/application/index.ts"],
+  format: ["esm"],
   unbundle: false,
   sourcemap: false,
   clean: true,
-  outDir: 'dist',
+  outDir: "dist",
   outExtensions: () => ({
-    js: '.js',
-    dts: '.d.ts',
+    js: ".js",
+    dts: ".d.ts",
   }),
   alias: {
-    '@entities': './src/entities',
-    '@game': './src/game',
-    '@queries': './src/functions',
-    '@commands': './src/commands',
-    '@testing': './src/testing',
-    '@utils': './src/utils',
-    '@validation': './src/validation',
-    '@sampleValues': './src/sampleValues',
+    "@entities": "./src/entities",
+    "@game": "./src/game",
+    "@queries": "./src/functions",
+    "@commands": "./src/commands",
+    "@testing": "./src/testing",
+    "@utils": "./src/utils",
+    "@validation": "./src/validation",
+    "@sampleValues": "./src/sampleValues",
   },
 });

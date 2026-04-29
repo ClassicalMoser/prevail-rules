@@ -1,20 +1,10 @@
-import type {
-  CardState,
-  LargeBoard,
-  PlayerSide,
-  UnitInstance,
-} from '@entities';
-import type { AssertExact } from '@utils';
-import type { RoundState } from './roundState';
+import type { CardState, LargeBoard, PlayerSide, UnitInstance } from "@entities";
+import type { AssertExact } from "@utils";
+import type { RoundState } from "./roundState";
 
-import {
-  cardStateSchema,
-  largeBoardSchema,
-  playerSideSchema,
-  unitInstanceSchema,
-} from '@entities';
-import { z } from 'zod';
-import { roundStateSchema } from './roundState';
+import { cardStateSchema, largeBoardSchema, playerSideSchema, unitInstanceSchema } from "@entities";
+import { z } from "zod";
+import { roundStateSchema } from "./roundState";
 
 /**
  * Game state on a **large** board.
@@ -25,7 +15,7 @@ export interface LargeGameState {
    * Root discriminator for {@link GameState}; must match `boardState.boardType` (`'large'`).
    * One literal for TS narrowing and Zod — no extra type parameters.
    */
-  boardType: 'large';
+  boardType: "large";
   /** The current round number of the game. */
   currentRoundNumber: number;
   /** The state of the current round of the game. */
@@ -49,7 +39,7 @@ export interface LargeGameState {
 // ---------------------------------------------------------------------------
 
 const _largeGameStateSchemaObject = z.object({
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
   currentRoundNumber: z.int().min(0),
   currentRoundState: roundStateSchema,
   currentInitiative: playerSideSchema,
@@ -62,11 +52,7 @@ const _largeGameStateSchemaObject = z.object({
 
 type LargeGameStateSchemaType = z.infer<typeof _largeGameStateSchemaObject>;
 
-const _assertExactLargeGameState: AssertExact<
-  LargeGameState,
-  LargeGameStateSchemaType
-> = true;
+const _assertExactLargeGameState: AssertExact<LargeGameState, LargeGameStateSchemaType> = true;
 
 /** {@link LargeGameState} */
-export const gameStateSchemaForLargeBoard: z.ZodType<LargeGameState> =
-  _largeGameStateSchemaObject;
+export const gameStateSchemaForLargeBoard: z.ZodType<LargeGameState> = _largeGameStateSchemaObject;

@@ -1,23 +1,23 @@
-import type { RallyResolutionState } from '@game/substeps';
-import type { AssertExact } from '@utils';
+import type { RallyResolutionState } from "@game/substeps";
+import type { AssertExact } from "@utils";
 
-import { rallyResolutionStateSchema } from '@game/substeps';
-import { z } from 'zod';
+import { rallyResolutionStateSchema } from "@game/substeps";
+import { z } from "zod";
 
 /** Iterable list of valid steps in the cleanup phase. */
 export const cleanupPhaseSteps = [
   /** Expect single gameEffect: move played to played cards pile */
-  'discardPlayedCards',
+  "discardPlayedCards",
   /** Expect single player choice: the initiative player's choose rally choice */
-  'firstPlayerChooseRally',
+  "firstPlayerChooseRally",
   /** Expect single gameEffect: the resolve rally effect (includes unit support) */
-  'firstPlayerResolveRally',
+  "firstPlayerResolveRally",
   /** Expect single player choice: the non-initiative player's choose rally choice */
-  'secondPlayerChooseRally',
+  "secondPlayerChooseRally",
   /** Expect single gameEffect: the resolve rally effect (includes unit support) */
-  'secondPlayerResolveRally',
+  "secondPlayerResolveRally",
   /** Expect single gameEffect: advance round and reset phase to play cards phase */
-  'complete',
+  "complete",
 ] as const;
 
 /** The step of the cleanup phase. */
@@ -27,18 +27,15 @@ const _cleanupPhaseStepSchemaObject = z.enum(cleanupPhaseSteps);
 type CleanupPhaseStepSchemaType = z.infer<typeof _cleanupPhaseStepSchemaObject>;
 
 /** The schema for the step of the cleanup phase. */
-export const cleanupPhaseStepSchema: z.ZodType<CleanupPhaseStep> =
-  _cleanupPhaseStepSchemaObject;
+export const cleanupPhaseStepSchema: z.ZodType<CleanupPhaseStep> = _cleanupPhaseStepSchemaObject;
 
-const _assertExactCleanupPhaseStep: AssertExact<
-  CleanupPhaseStep,
-  CleanupPhaseStepSchemaType
-> = true;
+const _assertExactCleanupPhaseStep: AssertExact<CleanupPhaseStep, CleanupPhaseStepSchemaType> =
+  true;
 
 /** The state of the cleanup phase. */
 export interface CleanupPhaseState {
   /** The current phase of the round. */
-  phase: 'cleanup';
+  phase: "cleanup";
   /** The step of the cleanup phase. */
   step: CleanupPhaseStep;
   /** The state of the first player's rally resolution (unit support checks). */
@@ -49,30 +46,24 @@ export interface CleanupPhaseState {
 
 const _cleanupPhaseStateSchemaObject = z.object({
   /** The current phase of the round. */
-  phase: z.literal('cleanup'),
+  phase: z.literal("cleanup"),
   /** The step of the cleanup phase. */
   step: cleanupPhaseStepSchema,
   /** The state of the first player's rally resolution (unit support checks). */
   firstPlayerRallyResolutionState: rallyResolutionStateSchema.or(z.undefined()),
   /** The state of the second player's rally resolution (unit support checks). */
-  secondPlayerRallyResolutionState: rallyResolutionStateSchema.or(
-    z.undefined(),
-  ),
+  secondPlayerRallyResolutionState: rallyResolutionStateSchema.or(z.undefined()),
 });
 
-type CleanupPhaseStateSchemaType = z.infer<
-  typeof _cleanupPhaseStateSchemaObject
->;
+type CleanupPhaseStateSchemaType = z.infer<typeof _cleanupPhaseStateSchemaObject>;
 
 /** The schema for the state of the cleanup phase. */
 export const cleanupPhaseStateSchema: z.ZodObject<{
-  phase: z.ZodLiteral<'cleanup'>;
+  phase: z.ZodLiteral<"cleanup">;
   step: z.ZodType<CleanupPhaseStep>;
   firstPlayerRallyResolutionState: z.ZodType<RallyResolutionState | undefined>;
   secondPlayerRallyResolutionState: z.ZodType<RallyResolutionState | undefined>;
 }> = _cleanupPhaseStateSchemaObject;
 
-const _assertExactCleanupPhaseState: AssertExact<
-  CleanupPhaseState,
-  CleanupPhaseStateSchemaType
-> = true;
+const _assertExactCleanupPhaseState: AssertExact<CleanupPhaseState, CleanupPhaseStateSchemaType> =
+  true;

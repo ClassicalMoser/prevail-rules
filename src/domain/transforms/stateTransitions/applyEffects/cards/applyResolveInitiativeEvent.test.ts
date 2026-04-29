@@ -1,19 +1,19 @@
-import type { StandardBoard } from '@entities';
-import type { ResolveInitiativeEvent } from '@events';
-import type { StandardGameState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
+import type { StandardBoard } from "@entities";
+import type { ResolveInitiativeEvent } from "@events";
+import type { StandardGameState } from "@game";
+import { PLAY_CARDS_PHASE } from "@game";
 
-import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
-import { describe, expect, it } from 'vitest';
-import { applyResolveInitiativeEvent } from './applyResolveInitiativeEvent';
+import { tempCommandCards } from "@sampleValues";
+import { createEmptyGameState } from "@testing";
+import { updateCardState, updatePhaseState } from "@transforms/pureTransforms";
+import { describe, expect, it } from "vitest";
+import { applyResolveInitiativeEvent } from "./applyResolveInitiativeEvent";
 
 /**
  * `resolveInitiative` writes `currentInitiative` from the event and finishes the playCards
  * phase (`complete`). Wrong step still applies mechanically (trusted event path).
  */
-describe('applyResolveInitiativeEvent', () => {
+describe("applyResolveInitiativeEvent", () => {
   /** playCards.assignInitiative with both inPlay populated from two command cards. */
   function createGameStateInAssignInitiativeStep(): StandardGameState {
     const state = createEmptyGameState();
@@ -34,113 +34,107 @@ describe('applyResolveInitiativeEvent', () => {
 
     const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
-      step: 'assignInitiative',
+      step: "assignInitiative",
     });
 
     return stateWithPhase;
   }
 
-  describe('initiative and phase completion', () => {
-    it('given event player black, currentInitiative becomes black', () => {
+  describe("initiative and phase completion", () => {
+    it("given event player black, currentInitiative becomes black", () => {
       const state = createGameStateInAssignInitiativeStep();
 
       const event: ResolveInitiativeEvent<StandardBoard> = {
         eventNumber: 0,
-        eventType: 'gameEffect',
-        effectType: 'resolveInitiative',
-        player: 'black',
+        eventType: "gameEffect",
+        effectType: "resolveInitiative",
+        player: "black",
       };
 
       const newState = applyResolveInitiativeEvent(event, state);
 
-      expect(newState.currentInitiative).toBe('black');
+      expect(newState.currentInitiative).toBe("black");
     });
 
-    it('given event player white, playCards step becomes complete', () => {
+    it("given event player white, playCards step becomes complete", () => {
       const state = createGameStateInAssignInitiativeStep();
 
       const event: ResolveInitiativeEvent<StandardBoard> = {
         eventNumber: 0,
-        eventType: 'gameEffect',
-        effectType: 'resolveInitiative',
-        player: 'white',
+        eventType: "gameEffect",
+        effectType: "resolveInitiative",
+        player: "white",
       };
 
       const newState = applyResolveInitiativeEvent(event, state);
 
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'complete',
-      );
+      expect(newState.currentRoundState.currentPhaseState?.step).toBe("complete");
     });
 
-    it('given same base state, black then white events each set initiative without sharing output', () => {
+    it("given same base state, black then white events each set initiative without sharing output", () => {
       const state = createGameStateInAssignInitiativeStep();
 
       const blackEvent: ResolveInitiativeEvent<StandardBoard> = {
         eventNumber: 0,
-        eventType: 'gameEffect',
-        effectType: 'resolveInitiative',
-        player: 'black',
+        eventType: "gameEffect",
+        effectType: "resolveInitiative",
+        player: "black",
       };
 
       const whiteEvent: ResolveInitiativeEvent<StandardBoard> = {
         eventNumber: 0,
-        eventType: 'gameEffect',
-        effectType: 'resolveInitiative',
-        player: 'white',
+        eventType: "gameEffect",
+        effectType: "resolveInitiative",
+        player: "white",
       };
 
       const stateWithBlack = applyResolveInitiativeEvent(blackEvent, state);
-      expect(stateWithBlack.currentInitiative).toBe('black');
+      expect(stateWithBlack.currentInitiative).toBe("black");
 
       const stateWithWhite = applyResolveInitiativeEvent(whiteEvent, state);
-      expect(stateWithWhite.currentInitiative).toBe('white');
+      expect(stateWithWhite.currentInitiative).toBe("white");
     });
   });
 
-  describe('structural update', () => {
-    it('given initiative and step before apply, input root initiative and step unchanged', () => {
+  describe("structural update", () => {
+    it("given initiative and step before apply, input root initiative and step unchanged", () => {
       const state = createGameStateInAssignInitiativeStep();
       const originalInitiative = state.currentInitiative;
       const originalStep = state.currentRoundState.currentPhaseState?.step;
 
       const event: ResolveInitiativeEvent<StandardBoard> = {
         eventNumber: 0,
-        eventType: 'gameEffect',
-        effectType: 'resolveInitiative',
-        player: 'black',
+        eventType: "gameEffect",
+        effectType: "resolveInitiative",
+        player: "black",
       };
 
       applyResolveInitiativeEvent(event, state);
 
       expect(state.currentInitiative).toBe(originalInitiative);
-      expect(state.currentRoundState.currentPhaseState?.step).toBe(
-        originalStep,
-      );
+      expect(state.currentRoundState.currentPhaseState?.step).toBe(originalStep);
     });
   });
 
-  describe('trusted mechanical apply', () => {
-    it('given playCards chooseCards step, still sets initiative black and step complete', () => {
+  describe("trusted mechanical apply", () => {
+    it("given playCards chooseCards step, still sets initiative black and step complete", () => {
       const state = createGameStateInAssignInitiativeStep();
       const stateWithWrongStep = updatePhaseState(state, {
         phase: PLAY_CARDS_PHASE,
-        step: 'chooseCards',
+        step: "chooseCards",
       });
 
       const event: ResolveInitiativeEvent<StandardBoard> = {
         eventNumber: 0,
-        eventType: 'gameEffect',
-        effectType: 'resolveInitiative',
-        player: 'black',
+        eventType: "gameEffect",
+        effectType: "resolveInitiative",
+        player: "black",
       };
 
       const newState = applyResolveInitiativeEvent(event, stateWithWrongStep);
 
-      expect(newState.currentInitiative).toBe('black');
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'complete',
-      );
+      expect(newState.currentInitiative).toBe("black");
+      expect(newState.currentRoundState.currentPhaseState?.step).toBe("complete");
     });
   });
 });

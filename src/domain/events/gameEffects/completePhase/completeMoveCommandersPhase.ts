@@ -1,8 +1,8 @@
-import type { Board, Command } from '@entities';
-import type { AssertExact } from '@utils';
-import { commandSchema } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board, Command } from "@entities";
+import type { AssertExact } from "@utils";
+import { commandSchema } from "@entities";
+import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
 /**
  * Literal discriminator for {@link CompleteMoveCommandersPhaseEvent.effectType}.
@@ -11,14 +11,12 @@ import { z } from 'zod';
  * command set from in-play cards; that derivation stays in the procedure so apply only writes
  * the sets onto state.
  */
-export const COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE =
-  'completeMoveCommandersPhase' as const;
+export const COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE = "completeMoveCommandersPhase" as const;
 
 /** Event to complete the move commanders phase and advance to issue commands phase. */
 export interface CompleteMoveCommandersPhaseEvent<
   _TBoard extends Board,
-  _TEffectType extends 'completeMoveCommandersPhase' =
-    'completeMoveCommandersPhase',
+  _TEffectType extends "completeMoveCommandersPhase" = "completeMoveCommandersPhase",
 > {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
@@ -67,8 +65,8 @@ const _assertExactCompleteMoveCommandersPhaseEvent: AssertExact<
 
 /** The schema for a complete move commanders phase event. */
 export const completeMoveCommandersPhaseEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'gameEffect'>;
-  effectType: z.ZodLiteral<'completeMoveCommandersPhase'>;
+  eventType: z.ZodLiteral<"gameEffect">;
+  effectType: z.ZodLiteral<"completeMoveCommandersPhase">;
   eventNumber: z.ZodNumber;
   remainingCommandsFirstPlayer: z.ZodSet<typeof commandSchema>;
   remainingCommandsSecondPlayer: z.ZodSet<typeof commandSchema>;

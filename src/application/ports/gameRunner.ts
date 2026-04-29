@@ -1,6 +1,6 @@
-import type { GameType, SmallBoard, StandardBoard } from '@entities';
-import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { PortResponse } from './portResponse';
+import type { GameType, SmallBoard, StandardBoard } from "@entities";
+import type { PlayerChoiceEvent, PlayerChoiceType } from "@events";
+import type { PortResponse } from "./portResponse";
 
 /** Boards used by playable {@link GameType} variants (excludes unused large board). */
 type GamePlayBoard = StandardBoard | SmallBoard;

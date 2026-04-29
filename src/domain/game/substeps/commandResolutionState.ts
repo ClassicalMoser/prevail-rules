@@ -1,13 +1,11 @@
-import type { MovementResolutionState } from './movementResolutionSubstep';
-import type { RangedAttackResolutionState } from './rangedAttackResolutionSubstep';
-import { z } from 'zod';
-import { movementResolutionStateSchema } from './movementResolutionSubstep';
-import { rangedAttackResolutionStateSchema } from './rangedAttackResolutionSubstep';
+import type { MovementResolutionState } from "./movementResolutionSubstep";
+import type { RangedAttackResolutionState } from "./rangedAttackResolutionSubstep";
+import { z } from "zod";
+import { movementResolutionStateSchema } from "./movementResolutionSubstep";
+import { rangedAttackResolutionStateSchema } from "./rangedAttackResolutionSubstep";
 
 /** Command resolution while issuing commands: movement or ranged attack (each discriminated on `boardType`). */
-export type CommandResolutionState =
-  | MovementResolutionState
-  | RangedAttackResolutionState;
+export type CommandResolutionState = MovementResolutionState | RangedAttackResolutionState;
 
 /**
  * Movement vs ranged is a flat union (Zod 4: nested discriminated unions are not valid

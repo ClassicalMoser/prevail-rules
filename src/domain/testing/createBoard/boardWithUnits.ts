@@ -1,10 +1,5 @@
-import type {
-  StandardBoard,
-  StandardBoardCoordinate,
-  UnitFacing,
-  UnitInstance,
-} from '@entities';
-import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
+import type { StandardBoard, StandardBoardCoordinate, UnitFacing, UnitInstance } from "@entities";
+import { addUnitToBoard, createEmptyStandardBoard } from "@transforms";
 
 /**
  * Creates a board with units at specified positions.
@@ -23,9 +18,9 @@ export function createBoardWithUnits(
   let board = createEmptyStandardBoard();
   for (const { unit, coordinate, facing } of units) {
     board = addUnitToBoard(board, {
-      boardType: 'standard' as const,
+      boardType: "standard" as const,
       unit,
-      placement: { boardType: 'standard' as const, coordinate, facing },
+      placement: { boardType: "standard" as const, coordinate, facing },
     });
   }
   return board;

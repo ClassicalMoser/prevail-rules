@@ -1,8 +1,8 @@
-import type { Board, PlayerSide } from '@entities';
-import type { ExpectedEventInfo } from '@events';
-import type { GameStateWithBoard, IssueCommandsPhaseState } from '@game';
-import { getExpectedMovementResolutionEvent } from './getExpectedMovementResolutionEvent';
-import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttackResolutionEvent';
+import type { Board, PlayerSide } from "@entities";
+import type { ExpectedEventInfo } from "@events";
+import type { GameStateWithBoard, IssueCommandsPhaseState } from "@game";
+import { getExpectedMovementResolutionEvent } from "./getExpectedMovementResolutionEvent";
+import { getExpectedRangedAttackResolutionEvent } from "./getExpectedRangedAttackResolutionEvent";
 
 /**
  * Gets the expected event for the next substep in an ongoing command resolution.
@@ -14,29 +14,21 @@ import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttac
  */
 export function getExpectedCommandResolutionEvent<TBoard extends Board>(
   gameState: GameStateWithBoard<TBoard>,
-  resolutionState: IssueCommandsPhaseState['currentCommandResolutionState'],
+  resolutionState: IssueCommandsPhaseState["currentCommandResolutionState"],
   resolvingPlayer: PlayerSide,
 ): ExpectedEventInfo {
   if (!resolutionState) {
-    throw new Error('No command resolution state found');
+    throw new Error("No command resolution state found");
   }
 
   // Handle movement resolution substeps
-  if (resolutionState.commandResolutionType === 'movement') {
-    return getExpectedMovementResolutionEvent(
-      gameState,
-      resolutionState,
-      resolvingPlayer,
-    );
+  if (resolutionState.commandResolutionType === "movement") {
+    return getExpectedMovementResolutionEvent(gameState, resolutionState, resolvingPlayer);
   }
 
   // Handle ranged attack resolution substeps
-  if (resolutionState.commandResolutionType === 'rangedAttack') {
-    return getExpectedRangedAttackResolutionEvent(
-      gameState,
-      resolutionState,
-      resolvingPlayer,
-    );
+  if (resolutionState.commandResolutionType === "rangedAttack") {
+    return getExpectedRangedAttackResolutionEvent(gameState, resolutionState, resolvingPlayer);
   }
 
   // Exhaustiveness check

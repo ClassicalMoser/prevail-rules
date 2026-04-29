@@ -1,11 +1,8 @@
-import type { Board } from '@entities';
-import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
-  GAME_EFFECT_EVENT_TYPE,
-} from '@events';
-import { getBoardCoordinatesWithEngagedUnits } from '@queries';
+import type { Board } from "@entities";
+import type { CompleteIssueCommandsPhaseEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
+import { getBoardCoordinatesWithEngagedUnits } from "@queries";
 
 /**
  * Generates a CompleteIssueCommandsPhaseEvent to complete the issue commands phase
@@ -20,10 +17,8 @@ import { getBoardCoordinatesWithEngagedUnits } from '@queries';
 export function generateCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): CompleteIssueCommandsPhaseEvent<TBoard, 'completeIssueCommandsPhase'> {
-  const remainingEngagements = getBoardCoordinatesWithEngagedUnits(
-    state.boardState,
-  );
+): CompleteIssueCommandsPhaseEvent<TBoard, "completeIssueCommandsPhase"> {
+  const remainingEngagements = getBoardCoordinatesWithEngagedUnits(state.boardState);
 
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
@@ -31,8 +26,5 @@ export function generateCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
     eventNumber,
     boardType: state.boardState.boardType,
     remainingEngagements,
-  } as unknown as CompleteIssueCommandsPhaseEvent<
-    TBoard,
-    'completeIssueCommandsPhase'
-  >;
+  } as unknown as CompleteIssueCommandsPhaseEvent<TBoard, "completeIssueCommandsPhase">;
 }

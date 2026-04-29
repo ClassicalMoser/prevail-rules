@@ -1,2 +1,2 @@
-export type { ExpectedEvent } from './getExpectedEvent';
-export { getExpectedEvent } from './getExpectedEvent';
+export type { ExpectedEvent } from "./getExpectedEvent";
+export { getExpectedEvent } from "./getExpectedEvent";

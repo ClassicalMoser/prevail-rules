@@ -1,5 +1,5 @@
-import type { Command } from '@entities';
-import { areModifiersArraysEqual, areRestrictionsEqual } from '@validation';
+import type { Command } from "@entities";
+import { areModifiersArraysEqual, areRestrictionsEqual } from "@validation";
 
 /**
  * Finds a matching command in a set of commands by comparing all properties.
@@ -25,19 +25,13 @@ export function findMatchingCommand(
     }
 
     // Compare restrictions object
-    const restrictionsComparison = areRestrictionsEqual(
-      c.restrictions,
-      targetCommand.restrictions,
-    );
+    const restrictionsComparison = areRestrictionsEqual(c.restrictions, targetCommand.restrictions);
     if (!restrictionsComparison.result) {
       return false;
     }
 
     // Compare modifiers array
-    const modifiersComparison = areModifiersArraysEqual(
-      c.modifiers,
-      targetCommand.modifiers,
-    );
+    const modifiersComparison = areModifiersArraysEqual(c.modifiers, targetCommand.modifiers);
     if (!modifiersComparison.result) {
       return false;
     }

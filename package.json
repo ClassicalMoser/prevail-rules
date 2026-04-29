@@ -1,22 +1,24 @@
 {
   "name": "@classicalmoser/prevail-rules",
-  "type": "module",
   "version": "0.0.1",
-  "packageManager": "pnpm@10.33.0",
   "description": "Rules for the web-based board game Prevail: Ancient Battles",
-  "author": "ClassicalMoser",
+  "keywords": [
+    "ancient-battles",
+    "board-game",
+    "prevail",
+    "rules",
+    "typescript"
+  ],
   "license": "ISC",
+  "author": "ClassicalMoser",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ClassicalMoser/prevail-rules.git"
   },
-  "keywords": [
-    "prevail",
-    "ancient-battles",
-    "board-game",
-    "rules",
-    "typescript"
-  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -31,23 +33,21 @@
       "import": "./dist/application/index.js"
     }
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
-    "format": "prettier --write .",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "format": "oxfmt --write .",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
-    "test:eslint-rule": "vitest run --config eslint-rules/vitest.config.ts",
     "test:mutation": "stryker run",
     "typecheck": "tsc --noEmit",
     "build": "tsdown",
-    "build:eslint-rule": "tsdown --config eslint-rules/tsdown.config.ts && mv eslint-rules/eslint-plugin-import-boundaries.mjs eslint-rules/eslint-plugin-import-boundaries.js 2>/dev/null || true",
     "prepublishOnly": "npm run build",
-    "validate": "npm run lint:fix && npm run format && npm run typecheck",
+    "validate": "npm run lint && npm run format && npm run typecheck",
     "version:patch": "tsx scripts/version-bump.ts patch",
     "version:minor": "tsx scripts/version-bump.ts minor"
   },
@@ -55,29 +55,26 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^7.7.3",
-    "@rolldown/binding-darwin-x64": "1.0.0-rc.12",
-    "@stryker-mutator/core": "^9.6.0",
-    "@stryker-mutator/typescript-checker": "^9.6.0",
-    "@stryker-mutator/vitest-runner": "^9.6.0",
-    "@types/node": "^25.5.0",
-    "@vitest/coverage-v8": "^4.1.2",
-    "eslint": "^10.1.0",
-    "eslint-config-prettier": "^10.1.8",
+    "@antfu/eslint-config": "^8.2.0",
+    "@rolldown/binding-darwin-x64": "1.0.0-rc.17",
+    "@stryker-mutator/core": "^9.6.1",
+    "@stryker-mutator/typescript-checker": "^9.6.1",
+    "@stryker-mutator/vitest-runner": "^9.6.1",
+    "@types/node": "^25.6.0",
+    "@vitest/coverage-v8": "^4.1.5",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-import-boundaries": "^0.5.3",
+    "eslint-plugin-import-boundaries": "^0.8.1",
     "eslint-plugin-node": "^11.1.0",
-    "prettier": "^3.8.1",
-    "tsdown": "0.21.7",
+    "oxfmt": "^0.47.0",
+    "oxlint": "^1.62.0",
+    "tsdown": "0.21.10",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.2",
-    "vitest": "4.1.2"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "typescript": "^6.0.3",
+    "vitest": "4.1.5"
   },
   "volta": {
     "node": "20.20.0",
     "pnpm": "9.7.0"
-  }
+  },
+  "packageManager": "pnpm@10.33.2"
 }

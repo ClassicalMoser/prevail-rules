@@ -4,31 +4,31 @@ export {
   generateResolveRallyEvent,
   generateResolveUnitsBrokenEvent,
   generateRevealCardsEvent,
-} from './cards';
+} from "./cards";
 export {
   generateCompleteCleanupPhaseEvent,
   generateCompleteIssueCommandsPhaseEvent,
   generateCompleteMoveCommandersPhaseEvent,
   generateCompletePlayCardsPhaseEvent,
   generateCompleteResolveMeleePhaseEvent,
-} from './completePhase';
+} from "./completePhase";
 export {
   generateResolveRetreatEvent,
   generateResolveReverseEvent,
   generateResolveRoutEvent,
   generateTriggerRoutFromRetreatEvent,
-} from './defenseResult';
+} from "./defenseResult";
 export {
   generateCompleteUnitMovementEvent,
   generateResolveEngageRetreatOptionEvent,
   generateResolveFlankEngagementEvent,
   generateStartEngagementEvent,
-} from './movement';
-export { generateEventFromProcedure } from './procedureRegistry';
+} from "./movement";
+export { generateEventFromProcedure } from "./procedureRegistry";
 export {
   generateCompleteAttackApplyEvent,
   generateCompleteMeleeResolutionEvent,
   generateCompleteRangedAttackCommandEvent,
   generateResolveMeleeEvent,
   generateResolveRangedAttackEvent,
-} from './resolveAttack';
+} from "./resolveAttack";

@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { GameStateWithBoard, RoutState } from '@game';
-import { getMovementResolutionState } from '../getCommandResolutionState';
+import type { Board } from "@entities";
+import type { GameStateWithBoard, RoutState } from "@game";
+import { getMovementResolutionState } from "../getCommandResolutionState";
 
 /**
  * Rout state for a **rear** engagement inside the current **movement** command resolution.
@@ -12,19 +12,17 @@ export function getRoutStateFromRearEngagement<TBoard extends Board>(
   const movement = getMovementResolutionState(state);
   const engagement = movement.engagementState;
   if (engagement === undefined) {
-    throw new Error('Movement resolution has no engagement state');
+    throw new Error("Movement resolution has no engagement state");
   }
 
   const resolution = engagement.engagementResolutionState;
 
-  if (resolution.engagementType !== 'rear') {
-    throw new Error(
-      `Expected rear engagement for movement rout, got ${resolution.engagementType}`,
-    );
+  if (resolution.engagementType !== "rear") {
+    throw new Error(`Expected rear engagement for movement rout, got ${resolution.engagementType}`);
   }
 
   if (resolution.routState === undefined) {
-    throw new Error('Rear engagement has no rout state');
+    throw new Error("Rear engagement has no rout state");
   }
 
   return resolution.routState;

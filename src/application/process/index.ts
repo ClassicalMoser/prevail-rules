@@ -1,2 +1,2 @@
-export { advanceEffects } from './advanceEffects';
-export { processPlayerChoice } from './processPlayerChoice';
+export { advanceEffects } from "./advanceEffects";
+export { processPlayerChoice } from "./processPlayerChoice";

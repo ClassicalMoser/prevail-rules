@@ -1,4 +1,4 @@
-import type { PhaseState } from '@game';
+import type { PhaseState } from "@game";
 
 /**
  * Creates a new phase state with the step set to 'complete'.
@@ -17,6 +17,6 @@ export function markPhaseAsComplete<TPhaseState extends PhaseState>(
 ): TPhaseState {
   return {
     ...phaseState,
-    step: 'complete',
+    step: "complete",
   } satisfies TPhaseState;
 }

@@ -1,17 +1,17 @@
-import type { Army } from '@entities';
-import type { AssertExact } from '@utils';
-import type { SmallGameState } from './smallGameState';
+import type { Army } from "@entities";
+import type { AssertExact } from "@utils";
+import type { SmallGameState } from "./smallGameState";
 
-import { armySchema } from '@entities';
-import { z } from 'zod';
-import { gameStateSchemaForSmallBoard } from './smallGameState';
+import { armySchema } from "@entities";
+import { z } from "zod";
+import { gameStateSchemaForSmallBoard } from "./smallGameState";
 
 /**
  * A **mini** game (`gameType === 'mini'`).
  * Every field is documented here so IDE hover does not jump through a shared base interface.
  */
 export interface MiniGame {
-  gameType: 'mini';
+  gameType: "mini";
   gameState: SmallGameState;
   /** The unique identifier of the game. */
   id: string;
@@ -30,7 +30,7 @@ export interface MiniGame {
 // ---------------------------------------------------------------------------
 
 const _miniGameSchemaObject: z.ZodType<MiniGame> = z.object({
-  gameType: z.literal('mini'),
+  gameType: z.literal("mini"),
   gameState: gameStateSchemaForSmallBoard,
   id: z.uuid(),
   blackPlayer: z.uuid(),

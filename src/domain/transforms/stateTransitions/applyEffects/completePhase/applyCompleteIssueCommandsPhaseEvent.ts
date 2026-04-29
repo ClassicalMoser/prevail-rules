@@ -1,17 +1,10 @@
-import type { Board } from '@entities';
-import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import type {
-  GameStateWithBoard,
-  PhaseState,
-  ResolveMeleePhaseState,
-} from '@game';
-import { RESOLVE_MELEE_PHASE } from '@game';
+import type { Board } from "@entities";
+import type { CompleteIssueCommandsPhaseEvent } from "@events";
+import type { GameStateWithBoard, PhaseState, ResolveMeleePhaseState } from "@game";
+import { RESOLVE_MELEE_PHASE } from "@game";
 
-import { getCurrentPhaseState } from '@queries';
-import {
-  addCompletedPhase,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { getCurrentPhaseState } from "@queries";
+import { addCompletedPhase, updatePhaseState } from "@transforms/pureTransforms";
 
 /**
  * Applies a CompleteIssueCommandsPhaseEvent to the game state.
@@ -36,7 +29,7 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
   const newPhaseState = {
     phase: RESOLVE_MELEE_PHASE,
     boardType: state.boardState.boardType,
-    step: 'resolveMelee' as const,
+    step: "resolveMelee" as const,
     // Initialize with undefined, resolution order is up to the player
     currentMeleeResolutionState: undefined,
     // Initialize with all engaged units on the board,
@@ -44,9 +37,6 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
     remainingEngagements: event.remainingEngagements,
   } as ResolveMeleePhaseState;
 
-  const newState = updatePhaseState(
-    stateWithCompletedPhase,
-    newPhaseState as PhaseState,
-  );
+  const newState = updatePhaseState(stateWithCompletedPhase, newPhaseState as PhaseState);
   return newState;
 }

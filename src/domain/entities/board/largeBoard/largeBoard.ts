@@ -1,7 +1,7 @@
-import type { AssertExact } from '@utils';
-import type { LargeBoardCoordinateMap } from './largeBoardMap';
-import { z } from 'zod';
-import { largeBoardCoordinateMapSchema } from './largeBoardMap';
+import type { AssertExact } from "@utils";
+import type { LargeBoardCoordinateMap } from "./largeBoardMap";
+import { z } from "zod";
+import { largeBoardCoordinateMapSchema } from "./largeBoardMap";
 
 /**
  * A large board for the game.
@@ -19,7 +19,7 @@ export interface LargeBoard {
   /**
    * The type of board.
    */
-  boardType: 'large';
+  boardType: "large";
   /**
    * The board.
    */
@@ -27,7 +27,7 @@ export interface LargeBoard {
 }
 
 const _largeBoardSchemaObject = z.object({
-  boardType: z.literal('large'),
+  boardType: z.literal("large"),
   board: largeBoardCoordinateMapSchema,
 });
 
@@ -37,10 +37,9 @@ type LargeBoardSchemaType = z.infer<typeof _largeBoardSchemaObject>;
  * The schema for a large board.
  */
 export const largeBoardSchema: z.ZodObject<{
-  boardType: z.ZodLiteral<'large'>;
+  boardType: z.ZodLiteral<"large">;
   board: typeof largeBoardCoordinateMapSchema;
 }> = _largeBoardSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactLargeBoard: AssertExact<LargeBoard, LargeBoardSchemaType> =
-  true;
+const _assertExactLargeBoard: AssertExact<LargeBoard, LargeBoardSchemaType> = true;

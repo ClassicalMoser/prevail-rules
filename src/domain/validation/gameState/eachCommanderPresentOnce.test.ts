@@ -1,17 +1,17 @@
-import type { FailValidationResult, PlayerSide } from '@entities';
-import { createBoardWithCommander, createEmptyGameState } from '@testing';
-import { describe, expect, it } from 'vitest';
-import { eachCommanderPresentOnce } from './eachCommanderPresentOnce';
+import type { FailValidationResult, PlayerSide } from "@entities";
+import { createBoardWithCommander, createEmptyGameState } from "@testing";
+import { describe, expect, it } from "vitest";
+import { eachCommanderPresentOnce } from "./eachCommanderPresentOnce";
 
 /**
  * eachCommanderPresentOnce: eachCommanderPresentOnce.
  */
-describe('eachCommanderPresentOnce', () => {
-  describe('valid cases', () => {
-    it('given both commanders are present on the board, returns true', () => {
+describe("eachCommanderPresentOnce", () => {
+  describe("valid cases", () => {
+    it("given both commanders are present on the board, returns true", () => {
       const gameState = createEmptyGameState();
-      let board = createBoardWithCommander('black', 'E-5');
-      board = createBoardWithCommander('white', 'E-6', board);
+      let board = createBoardWithCommander("black", "E-5");
+      board = createBoardWithCommander("white", "E-6", board);
 
       const { result } = eachCommanderPresentOnce({
         ...gameState,
@@ -20,9 +20,9 @@ describe('eachCommanderPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('given both commanders are in lostCommanders, returns true', () => {
+    it("given both commanders are in lostCommanders, returns true", () => {
       const gameState = createEmptyGameState();
-      const lostCommanders = new Set<PlayerSide>(['black', 'white']);
+      const lostCommanders = new Set<PlayerSide>(["black", "white"]);
 
       const { result } = eachCommanderPresentOnce({
         ...gameState,
@@ -31,10 +31,10 @@ describe('eachCommanderPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('given one commander is on board and one is lost, returns true', () => {
+    it("given one commander is on board and one is lost, returns true", () => {
       const gameState = createEmptyGameState();
-      const board = createBoardWithCommander('black', 'E-5');
-      const lostCommanders = new Set<PlayerSide>(['white']);
+      const board = createBoardWithCommander("black", "E-5");
+      const lostCommanders = new Set<PlayerSide>(["white"]);
 
       const { result } = eachCommanderPresentOnce({
         ...gameState,
@@ -44,12 +44,12 @@ describe('eachCommanderPresentOnce', () => {
       expect(result).toBe(true);
     });
 
-    it('given both commanders are on the same space, returns true', () => {
+    it("given both commanders are on the same space, returns true", () => {
       const gameState = createEmptyGameState();
       const board = createEmptyGameState().boardState;
-      board.board['E-5'] = {
-        ...board.board['E-5'],
-        commanders: new Set<PlayerSide>(['black', 'white']),
+      board.board["E-5"] = {
+        ...board.board["E-5"],
+        commanders: new Set<PlayerSide>(["black", "white"]),
       };
 
       const { result } = eachCommanderPresentOnce({
@@ -60,13 +60,13 @@ describe('eachCommanderPresentOnce', () => {
     });
   });
 
-  describe('duplicate commanders', () => {
-    it.each(['black', 'white'] as const)(
-      'should return false when %s commander appears twice on the board',
+  describe("duplicate commanders", () => {
+    it.each(["black", "white"] as const)(
+      "should return false when %s commander appears twice on the board",
       (commander) => {
         const gameState = createEmptyGameState();
-        let board = createBoardWithCommander(commander, 'E-5');
-        board = createBoardWithCommander(commander, 'E-6', board);
+        let board = createBoardWithCommander(commander, "E-5");
+        board = createBoardWithCommander(commander, "E-6", board);
 
         const { result } = eachCommanderPresentOnce({
           ...gameState,
@@ -76,11 +76,11 @@ describe('eachCommanderPresentOnce', () => {
       },
     );
 
-    it.each(['black', 'white'] as const)(
-      'should return false when %s commander appears on board and in lostCommanders',
+    it.each(["black", "white"] as const)(
+      "should return false when %s commander appears on board and in lostCommanders",
       (commander) => {
         const gameState = createEmptyGameState();
-        const board = createBoardWithCommander(commander, 'E-5');
+        const board = createBoardWithCommander(commander, "E-5");
         const lostCommanders = new Set<PlayerSide>([commander]);
 
         const { result } = eachCommanderPresentOnce({
@@ -93,14 +93,13 @@ describe('eachCommanderPresentOnce', () => {
     );
   });
 
-  describe('missing commanders', () => {
-    it.each(['black', 'white'] as const)(
-      'should return false when %s commander is missing',
+  describe("missing commanders", () => {
+    it.each(["black", "white"] as const)(
+      "should return false when %s commander is missing",
       (missingCommander) => {
         const gameState = createEmptyGameState();
-        const presentCommander =
-          missingCommander === 'black' ? 'white' : 'black';
-        const board = createBoardWithCommander(presentCommander, 'E-5');
+        const presentCommander = missingCommander === "black" ? "white" : "black";
+        const board = createBoardWithCommander(presentCommander, "E-5");
 
         const { result } = eachCommanderPresentOnce({
           ...gameState,
@@ -110,7 +109,7 @@ describe('eachCommanderPresentOnce', () => {
       },
     );
 
-    it('given both commanders are missing, returns false', () => {
+    it("given both commanders are missing, returns false", () => {
       const gameState = createEmptyGameState();
 
       const { result } = eachCommanderPresentOnce(gameState);
@@ -118,11 +117,11 @@ describe('eachCommanderPresentOnce', () => {
     });
   });
 
-  describe('error handling', () => {
-    it('given an error occurs during validation, returns false', () => {
+  describe("error handling", () => {
+    it("given an error occurs during validation, returns false", () => {
       const gameState = createEmptyGameState();
       const board = createEmptyGameState().boardState;
-      delete (board.board as any)['E-5'];
+      delete (board.board as any)["E-5"];
 
       const validationResult = eachCommanderPresentOnce({
         ...gameState,

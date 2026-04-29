@@ -1,1 +1,1 @@
-export { applyEvent } from './applyEvent';
+export { applyEvent } from "./applyEvent";

@@ -1,14 +1,14 @@
-import type { Board } from '@entities';
-import type { CompleteResolveMeleePhaseEvent } from '@events';
-import type { CleanupPhaseState, GameStateWithBoard } from '@game';
-import { CLEANUP_PHASE } from '@game';
+import type { Board } from "@entities";
+import type { CompleteResolveMeleePhaseEvent } from "@events";
+import type { CleanupPhaseState, GameStateWithBoard } from "@game";
+import { CLEANUP_PHASE } from "@game";
 
-import { getResolveMeleePhaseState } from '@queries';
+import { getResolveMeleePhaseState } from "@queries";
 import {
   addCompletedPhase,
   markPhaseAsComplete,
   updatePhaseState,
-} from '@transforms/pureTransforms';
+} from "@transforms/pureTransforms";
 
 /**
  * Applies a CompleteResolveMeleePhaseEvent to the game state.
@@ -37,7 +37,7 @@ export function applyCompleteResolveMeleePhaseEvent<TBoard extends Board>(
   // Create the new cleanup phase state
   const newPhaseState: CleanupPhaseState = {
     phase: CLEANUP_PHASE,
-    step: 'discardPlayedCards',
+    step: "discardPlayedCards",
     firstPlayerRallyResolutionState: undefined,
     secondPlayerRallyResolutionState: undefined,
   };

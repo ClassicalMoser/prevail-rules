@@ -1,12 +1,9 @@
-import type { Board } from '@entities';
-import type { CompleteCleanupPhaseEvent } from '@events';
-import type { GameStateWithBoard, PlayCardsPhaseState } from '@game';
-import { PLAY_CARDS_PHASE } from '@game';
+import type { Board } from "@entities";
+import type { CompleteCleanupPhaseEvent } from "@events";
+import type { GameStateWithBoard, PlayCardsPhaseState } from "@game";
+import { PLAY_CARDS_PHASE } from "@game";
 
-import {
-  updateCurrentRoundNumber,
-  updateRoundState,
-} from '@transforms/pureTransforms';
+import { updateCurrentRoundNumber, updateRoundState } from "@transforms/pureTransforms";
 
 /**
  * Applies a CompleteCleanupPhaseEvent to the game state.
@@ -29,7 +26,7 @@ export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
   // Create the new play cards phase state for the next round
   const newPhaseState: PlayCardsPhaseState = {
     phase: PLAY_CARDS_PHASE,
-    step: 'chooseCards',
+    step: "chooseCards",
   };
 
   // Update the round state

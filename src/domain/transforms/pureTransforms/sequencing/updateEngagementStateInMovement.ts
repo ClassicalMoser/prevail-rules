@@ -1,11 +1,7 @@
-import type { Board } from '@entities';
-import type {
-  EngagementState,
-  GameStateWithBoard,
-  MovementResolutionState,
-} from '@game';
-import { getMovementResolutionState } from '@queries';
-import { updateCommandResolutionState } from './updateCommandResolutionState';
+import type { Board } from "@entities";
+import type { EngagementState, GameStateWithBoard, MovementResolutionState } from "@game";
+import { getMovementResolutionState } from "@queries";
+import { updateCommandResolutionState } from "./updateCommandResolutionState";
 
 /**
  * Updates the engagement state within the current movement resolution (issue commands phase).
@@ -24,8 +20,5 @@ export function updateEngagementStateInMovement<TBoard extends Board>(
     ...movementState,
     engagementState,
   };
-  return updateCommandResolutionState(
-    state,
-    newMovementState as MovementResolutionState,
-  );
+  return updateCommandResolutionState(state, newMovementState as MovementResolutionState);
 }

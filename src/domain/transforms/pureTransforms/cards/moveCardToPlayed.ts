@@ -1,4 +1,4 @@
-import type { CardState, PlayerSide } from '@entities';
+import type { CardState, PlayerSide } from "@entities";
 
 /**
  * Moves a player's card from inPlay to played pile.
@@ -8,10 +8,7 @@ import type { CardState, PlayerSide } from '@entities';
  * @param player - The player whose card to move to played pile
  * @returns New CardState with the card moved to played
  */
-export function moveCardToPlayed(
-  cardState: CardState,
-  player: PlayerSide,
-): CardState {
+export function moveCardToPlayed(cardState: CardState, player: PlayerSide): CardState {
   const playerCardState = cardState[player];
   const cardInPlay = playerCardState.inPlay;
 

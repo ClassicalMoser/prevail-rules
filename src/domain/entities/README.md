@@ -91,13 +91,10 @@ For discriminated unions, follow the same pattern with an unconstrained schema o
 
 ```typescript
 // 1. Define the union type
-export type UnitPresence =
-  | NoneUnitPresence
-  | SingleUnitPresence
-  | EngagedUnitPresence;
+export type UnitPresence = NoneUnitPresence | SingleUnitPresence | EngagedUnitPresence;
 
 // 2. Define unconstrained discriminated union schema object
-const _unitPresenceSchemaObject = z.discriminatedUnion('presenceType', [
+const _unitPresenceSchemaObject = z.discriminatedUnion("presenceType", [
   noneUnitPresenceSchema,
   singleUnitPresenceSchema,
   engagedUnitPresenceSchema,
@@ -110,14 +107,10 @@ type UnitPresenceSchemaType = z.infer<typeof _unitPresenceSchemaObject>;
 /**
  * The schema for unit presence in a space.
  */
-export const unitPresenceSchema: z.ZodType<UnitPresence> =
-  _unitPresenceSchemaObject;
+export const unitPresenceSchema: z.ZodType<UnitPresence> = _unitPresenceSchemaObject;
 
 // 5. Assert type match
-const _assertExactUnitPresence: AssertExact<
-  UnitPresence,
-  UnitPresenceSchemaType
-> = true;
+const _assertExactUnitPresence: AssertExact<UnitPresence, UnitPresenceSchemaType> = true;
 ```
 
 **Why this pattern?**
@@ -133,14 +126,14 @@ const _assertExactUnitPresence: AssertExact<
 
 ```typescript
 // ✅ Still use barrel for types (no initialization issues)
-import type { CleanupPhaseState, PlayCardsPhaseState } from '@entities';
+import type { CleanupPhaseState, PlayCardsPhaseState } from "@entities";
 
 // ✅ Correct - direct import for schemas used in discriminated unions
-import { cleanupPhaseStateSchema } from './cleanupPhase';
-import { moveCommandersPhaseStateSchema } from './moveCommandersPhase';
-import { playCardsPhaseStateSchema } from './playCardsPhase';
+import { cleanupPhaseStateSchema } from "./cleanupPhase";
+import { moveCommandersPhaseStateSchema } from "./moveCommandersPhase";
+import { playCardsPhaseStateSchema } from "./playCardsPhase";
 
-const _phaseStateSchemaObject = z.discriminatedUnion('phase', [
+const _phaseStateSchemaObject = z.discriminatedUnion("phase", [
   playCardsPhaseStateSchema,
   moveCommandersPhaseStateSchema,
   cleanupPhaseStateSchema,
@@ -203,10 +196,10 @@ This prevents using the wrong coordinate type with a board:
 ```typescript
 // ✅ Type-safe
 const standardBoard: StandardBoard = createEmptyStandardBoard();
-const space = getBoardSpace(standardBoard, 'E-5'); // StandardBoardCoordinate
+const space = getBoardSpace(standardBoard, "E-5"); // StandardBoardCoordinate
 
 // ❌ Type error
-const smallCoord: SmallBoardCoordinate = 'A-1';
+const smallCoord: SmallBoardCoordinate = "A-1";
 const space = getBoardSpace(standardBoard, smallCoord); // Error!
 ```
 

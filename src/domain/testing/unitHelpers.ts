@@ -1,12 +1,7 @@
-import type {
-  PlayerSide,
-  UnitInstance,
-  UnitStatName,
-  UnitType,
-} from '@entities';
-import { tempUnits } from '@sampleValues';
-import { createUnitInstance } from '@transforms';
-import { getUnitByStatValue } from './getUnitByStatValue';
+import type { PlayerSide, UnitInstance, UnitStatName, UnitType } from "@entities";
+import { tempUnits } from "@sampleValues";
+import { createUnitInstance } from "@transforms";
+import { getUnitByStatValue } from "./getUnitByStatValue";
 
 /**
  * Creates a unit instance for testing with sensible defaults.
@@ -54,25 +49,25 @@ export function createTestUnit(
 
   const specifiedStats: Array<{ stat: UnitStatName; value: number }> = [];
   if (options?.flexibility !== undefined) {
-    specifiedStats.push({ stat: 'flexibility', value: options.flexibility });
+    specifiedStats.push({ stat: "flexibility", value: options.flexibility });
   }
   if (options?.attack !== undefined) {
-    specifiedStats.push({ stat: 'attack', value: options.attack });
+    specifiedStats.push({ stat: "attack", value: options.attack });
   }
   if (options?.speed !== undefined) {
-    specifiedStats.push({ stat: 'speed', value: options.speed });
+    specifiedStats.push({ stat: "speed", value: options.speed });
   }
   if (options?.range !== undefined) {
-    specifiedStats.push({ stat: 'range', value: options.range });
+    specifiedStats.push({ stat: "range", value: options.range });
   }
   if (options?.reverse !== undefined) {
-    specifiedStats.push({ stat: 'reverse', value: options.reverse });
+    specifiedStats.push({ stat: "reverse", value: options.reverse });
   }
   if (options?.retreat !== undefined) {
-    specifiedStats.push({ stat: 'retreat', value: options.retreat });
+    specifiedStats.push({ stat: "retreat", value: options.retreat });
   }
   if (options?.rout !== undefined) {
-    specifiedStats.push({ stat: 'rout', value: options.rout });
+    specifiedStats.push({ stat: "rout", value: options.rout });
   }
 
   if (specifiedStats.length > 0) {
@@ -82,15 +77,13 @@ export function createTestUnit(
     if (!unitType) {
       const statDescriptions = specifiedStats
         .map(({ stat, value }) => `${stat}=${value}`)
-        .join(', ');
-      throw new Error(
-        `No unit found matching all specified stats: ${statDescriptions}.`,
-      );
+        .join(", ");
+      throw new Error(`No unit found matching all specified stats: ${statDescriptions}.`);
     }
     return createUnitInstance(playerSide, unitType, instanceNumber);
   }
 
-  const unitType = getUnitByStatValue('attack', 3);
+  const unitType = getUnitByStatValue("attack", 3);
   return createUnitInstance(playerSide, unitType, instanceNumber);
 }
 

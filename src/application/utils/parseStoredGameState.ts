@@ -1,9 +1,6 @@
-import type { GameType } from '@entities';
-import type { BoardForGameType, GameStateWithBoard } from '@game';
-import {
-  gameStateSchemaForSmallBoard,
-  gameStateSchemaForStandardBoard,
-} from '@game';
+import type { GameType } from "@entities";
+import type { BoardForGameType, GameStateWithBoard } from "@game";
+import { gameStateSchemaForSmallBoard, gameStateSchemaForStandardBoard } from "@game";
 
 /**
  * **Boundary:** validates untrusted / stored data and returns a typed {@link GameState}.
@@ -11,17 +8,17 @@ import {
  */
 
 export function parseStoredGameState(
-  gameType: 'standard',
+  gameType: "standard",
   data: unknown,
-): GameStateWithBoard<BoardForGameType<'standard'>>;
+): GameStateWithBoard<BoardForGameType<"standard">>;
 export function parseStoredGameState(
-  gameType: 'mini',
+  gameType: "mini",
   data: unknown,
-): GameStateWithBoard<BoardForGameType<'mini'>>;
+): GameStateWithBoard<BoardForGameType<"mini">>;
 export function parseStoredGameState(
-  gameType: 'tutorial',
+  gameType: "tutorial",
   data: unknown,
-): GameStateWithBoard<BoardForGameType<'tutorial'>>;
+): GameStateWithBoard<BoardForGameType<"tutorial">>;
 export function parseStoredGameState(
   gameType: GameType,
   data: unknown,
@@ -31,15 +28,15 @@ export function parseStoredGameState(
   data: unknown,
 ): GameStateWithBoard<BoardForGameType<GameType>> {
   switch (gameType) {
-    case 'standard': {
+    case "standard": {
       const parsed = gameStateSchemaForStandardBoard.safeParse(data);
       if (!parsed.success) {
         throw new Error(parsed.error.message);
       }
       return parsed.data;
     }
-    case 'mini':
-    case 'tutorial': {
+    case "mini":
+    case "tutorial": {
       const parsed = gameStateSchemaForSmallBoard.safeParse(data);
       if (!parsed.success) {
         throw new Error(parsed.error.message);

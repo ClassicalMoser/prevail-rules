@@ -5,7 +5,7 @@ export {
   getFlankingSpaces,
   getFrontSpaces,
   getOrthogonallyAdjacentSpaces,
-} from './adjacency';
+} from "./adjacency";
 export {
   getInlineSpaces,
   getSpacesAhead,
@@ -13,11 +13,11 @@ export {
   getSpacesInArc,
   getSpacesInDirection,
   getSpacesWithinDistance,
-} from './areas';
-export { getBoardCoordinates } from './getBoardCoordinates';
-export { getBoardCoordinatesWithEngagedUnits } from './getBoardCoordinatesWithEngagedUnits';
-export { getBoardSpace } from './getBoardSpace';
-export { getForwardSpace } from './getForwardSpace';
-export { getForwardSpacesToEdge } from './getForwardSpacesToEdge';
-export { getRearwardSpace } from './getRearwardSpace';
-export { getSingleUnitWithPlacementAtCoordinate } from './getSingleUnitWithPlacementAtCoordinate';
+} from "./areas";
+export { getBoardCoordinates } from "./getBoardCoordinates";
+export { getBoardCoordinatesWithEngagedUnits } from "./getBoardCoordinatesWithEngagedUnits";
+export { getBoardSpace } from "./getBoardSpace";
+export { getForwardSpace } from "./getForwardSpace";
+export { getForwardSpacesToEdge } from "./getForwardSpacesToEdge";
+export { getRearwardSpace } from "./getRearwardSpace";
+export { getSingleUnitWithPlacementAtCoordinate } from "./getSingleUnitWithPlacementAtCoordinate";

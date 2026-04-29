@@ -1,14 +1,14 @@
-import type { Board } from '@entities';
-import type { PerformRangedAttackEvent } from '@events';
+import type { Board } from "@entities";
+import type { PerformRangedAttackEvent } from "@events";
 import type {
   GameStateWithBoard,
   IssueCommandsPhaseState,
   PhaseState,
   RangedAttackResolutionState,
-} from '@game';
-import { getIssueCommandsPhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
-import { isSameUnitInstance } from '@validation';
+} from "@game";
+import { getIssueCommandsPhaseState } from "@queries";
+import { updatePhaseState } from "@transforms/pureTransforms";
+import { isSameUnitInstance } from "@validation";
 
 /**
  * Applies a PerformRangedAttackEvent to the game state.
@@ -54,20 +54,18 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
 
   // Remove defending unit from defender's remaining
   const newRemainingDefender = new Set(
-    [...remainingDefender].filter(
-      (unit) => !isSameUnitInstance(unit, defendingUnit).result,
-    ),
+    [...remainingDefender].filter((unit) => !isSameUnitInstance(unit, defendingUnit).result),
   );
 
   const rangedAttackResolutionState = {
-    substepType: 'commandResolution' as const,
-    commandResolutionType: 'rangedAttack' as const,
+    substepType: "commandResolution" as const,
+    commandResolutionType: "rangedAttack" as const,
     boardType: state.boardState.boardType,
     attackingUnit,
     defendingUnit,
     supportingUnits,
-    attackingCommitment: { commitmentType: 'pending' },
-    defendingCommitment: { commitmentType: 'pending' },
+    attackingCommitment: { commitmentType: "pending" },
+    defendingCommitment: { commitmentType: "pending" },
     attackApplyState: undefined,
     completed: false,
   } as RangedAttackResolutionState;
@@ -75,12 +73,8 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
   const newPhaseState: IssueCommandsPhaseState = {
     ...currentPhaseState,
     currentCommandResolutionState: rangedAttackResolutionState,
-    remainingUnitsFirstPlayer: isFirstPlayer
-      ? newRemainingAttacker
-      : newRemainingDefender,
-    remainingUnitsSecondPlayer: isFirstPlayer
-      ? newRemainingDefender
-      : newRemainingAttacker,
+    remainingUnitsFirstPlayer: isFirstPlayer ? newRemainingAttacker : newRemainingDefender,
+    remainingUnitsSecondPlayer: isFirstPlayer ? newRemainingDefender : newRemainingAttacker,
   };
 
   const newGameState = updatePhaseState(state, newPhaseState as PhaseState);

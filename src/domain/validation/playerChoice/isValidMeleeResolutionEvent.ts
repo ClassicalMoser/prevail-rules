@@ -1,7 +1,7 @@
-import type { Board, ValidationResult } from '@entities';
-import type { ChooseMeleeResolutionEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { RESOLVE_MELEE_PHASE } from '@game';
+import type { Board, ValidationResult } from "@entities";
+import type { ChooseMeleeResolutionEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { RESOLVE_MELEE_PHASE } from "@game";
 
 /**
  * Validates whether a choose melee resolution event is legal for the current state.
@@ -21,7 +21,7 @@ export function isValidChooseMeleeResolutionEvent<TBoard extends Board>(
     if (!currentPhaseState) {
       return {
         result: false,
-        errorReason: 'No current phase state found',
+        errorReason: "No current phase state found",
       };
     }
 
@@ -32,7 +32,7 @@ export function isValidChooseMeleeResolutionEvent<TBoard extends Board>(
       };
     }
 
-    if (currentPhaseState.step !== 'resolveMelee') {
+    if (currentPhaseState.step !== "resolveMelee") {
       return {
         result: false,
         errorReason: `Resolve melee phase is on ${currentPhaseState.step} step, not resolveMelee`,
@@ -42,15 +42,14 @@ export function isValidChooseMeleeResolutionEvent<TBoard extends Board>(
     if (currentPhaseState.currentMeleeResolutionState !== undefined) {
       return {
         result: false,
-        errorReason:
-          'Melee resolution is already in progress; cannot choose a new engagement',
+        errorReason: "Melee resolution is already in progress; cannot choose a new engagement",
       };
     }
 
     if (currentPhaseState.remainingEngagements.size === 0) {
       return {
         result: false,
-        errorReason: 'No remaining engagements to resolve',
+        errorReason: "No remaining engagements to resolve",
       };
     }
 
@@ -74,7 +73,7 @@ export function isValidChooseMeleeResolutionEvent<TBoard extends Board>(
   } catch (error) {
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

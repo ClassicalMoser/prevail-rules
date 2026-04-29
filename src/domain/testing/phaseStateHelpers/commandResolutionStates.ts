@@ -3,8 +3,8 @@ import type {
   StandardMeleeResolutionState,
   StandardMovementResolutionState,
   StandardRangedAttackResolutionState,
-} from '@game';
-import { createTestUnit } from '@testing/unitHelpers';
+} from "@game";
+import { createTestUnit } from "@testing/unitHelpers";
 
 /**
  * Creates a MovementResolutionState with sensible defaults (standard board).
@@ -14,26 +14,26 @@ export function createMovementResolutionState(
   overrides?: Partial<StandardMovementResolutionState>,
 ): StandardMovementResolutionState {
   return {
-    substepType: 'commandResolution' as const,
-    commandResolutionType: 'movement' as const,
-    boardType: 'standard' as const,
+    substepType: "commandResolution" as const,
+    commandResolutionType: "movement" as const,
+    boardType: "standard" as const,
     movingUnit: {
-      boardType: 'standard' as const,
-      unit: createTestUnit('black', { attack: 2 }),
+      boardType: "standard" as const,
+      unit: createTestUnit("black", { attack: 2 }),
       placement: {
-        boardType: 'standard' as const,
-        coordinate: 'E-5',
-        facing: 'north',
+        boardType: "standard" as const,
+        coordinate: "E-5",
+        facing: "north",
       },
     },
     targetPlacement: {
-      boardType: 'standard' as const,
-      coordinate: 'E-6',
-      facing: 'north',
+      boardType: "standard" as const,
+      coordinate: "E-6",
+      facing: "north",
     },
     moveCommander: false,
     commitment: {
-      commitmentType: 'completed',
+      commitmentType: "completed",
       card: state.cardState.black.inPlay!,
     },
     engagementState: undefined,
@@ -50,17 +50,17 @@ export function createRangedAttackResolutionState(
   overrides?: Partial<StandardRangedAttackResolutionState>,
 ): StandardRangedAttackResolutionState {
   return {
-    substepType: 'commandResolution' as const,
-    commandResolutionType: 'rangedAttack' as const,
-    boardType: 'standard' as const,
-    attackingUnit: createTestUnit('black', { attack: 2 }),
-    defendingUnit: createTestUnit('white', { attack: 2 }),
+    substepType: "commandResolution" as const,
+    commandResolutionType: "rangedAttack" as const,
+    boardType: "standard" as const,
+    attackingUnit: createTestUnit("black", { attack: 2 }),
+    defendingUnit: createTestUnit("white", { attack: 2 }),
     attackingCommitment: {
-      commitmentType: 'completed',
+      commitmentType: "completed",
       card: state.cardState.black.inPlay!,
     },
     defendingCommitment: {
-      commitmentType: 'completed',
+      commitmentType: "completed",
       card: state.cardState.white.inPlay!,
     },
     supportingUnits: new Set(),
@@ -78,15 +78,15 @@ export function createMeleeResolutionState(
   overrides?: Partial<StandardMeleeResolutionState>,
 ): StandardMeleeResolutionState {
   return {
-    substepType: 'meleeResolution' as const,
-    boardType: 'standard' as const,
-    location: 'E-5',
+    substepType: "meleeResolution" as const,
+    boardType: "standard" as const,
+    location: "E-5",
     whiteCommitment: {
-      commitmentType: 'completed',
+      commitmentType: "completed",
       card: state.cardState.white.inPlay!,
     },
     blackCommitment: {
-      commitmentType: 'completed',
+      commitmentType: "completed",
       card: state.cardState.black.inPlay!,
     },
     whiteAttackApplyState: undefined,

@@ -1,4 +1,4 @@
-import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type { StandardBoard, UnitWithPlacement } from "@entities";
 import {
   createAttackApplyStateWithRetreat,
   createEmptyGameState,
@@ -7,25 +7,25 @@ import {
   createRetreatState,
   createRoutState,
   createTestUnit,
-} from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
-import { describe, expect, it } from 'vitest';
-import { updateRetreatRoutState } from './updateRetreatRoutState';
+} from "@testing";
+import { addUnitToBoard, updatePhaseState } from "@transforms/pureTransforms";
+import { describe, expect, it } from "vitest";
+import { updateRetreatRoutState } from "./updateRetreatRoutState";
 
 /**
  * updateRetreatRoutState: Creates a new game state with the rout state updated within a retreat state.
  */
-describe('updateRetreatRoutState', () => {
+describe("updateRetreatRoutState", () => {
   function createStateWithRangedAttackRetreat() {
     const state = createEmptyGameState();
-    const unit = createTestUnit('white', { attack: 2 });
+    const unit = createTestUnit("white", { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+      boardType: "standard" as const,
       unit,
       placement: {
-        boardType: 'standard' as const,
-        coordinate: 'E-5',
-        facing: 'north',
+        boardType: "standard" as const,
+        coordinate: "E-5",
+        facing: "north",
       },
     };
     const stateWithUnit = {
@@ -34,43 +34,33 @@ describe('updateRetreatRoutState', () => {
     };
     const retreatState = createRetreatState(placement, {
       legalRetreatOptions: new Set(),
-      routState: createRoutState('white', unit),
+      routState: createRoutState("white", unit),
     });
     const attackApply = createAttackApplyStateWithRetreat(placement, {
       retreatState,
     });
     const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: createRangedAttackResolutionState(
-        stateWithUnit,
-        {
-          attackApplyState: attackApply,
-        },
-      ),
+      currentCommandResolutionState: createRangedAttackResolutionState(stateWithUnit, {
+        attackApplyState: attackApply,
+      }),
     });
     return updatePhaseState(stateWithUnit, phaseState);
   }
 
-  it('given update rout state within retreat in ranged attack resolution', () => {
+  it("given update rout state within retreat in ranged attack resolution", () => {
     const state = createStateWithRangedAttackRetreat();
-    const unit = createTestUnit('white', { attack: 2 });
-    const newRout = createRoutState('white', unit, { numberToDiscard: 2 });
+    const unit = createTestUnit("white", { attack: 2 });
+    const newRout = createRoutState("white", unit, { numberToDiscard: 2 });
 
     const newState = updateRetreatRoutState(state, newRout);
 
     const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('issueCommands');
-    if (
-      phase?.phase !== 'issueCommands' ||
-      !phase.currentCommandResolutionState
-    )
-      throw new Error('phase');
-    if (
-      phase.currentCommandResolutionState.commandResolutionType !==
-      'rangedAttack'
-    )
-      throw new Error('type');
-    const retreat =
-      phase.currentCommandResolutionState.attackApplyState?.retreatState;
+    expect(phase?.phase).toBe("issueCommands");
+    if (phase?.phase !== "issueCommands" || !phase.currentCommandResolutionState)
+      throw new Error("phase");
+    if (phase.currentCommandResolutionState.commandResolutionType !== "rangedAttack")
+      throw new Error("type");
+    const retreat = phase.currentCommandResolutionState.attackApplyState?.retreatState;
     expect(retreat?.routState?.numberToDiscard).toBe(2);
   });
 });

@@ -1,9 +1,9 @@
-import type { Board, ValidationResult } from '@entities';
-import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { playerChoiceEventSchema } from '@events';
-import { validateExpectedChoice } from './validateExpectedChoice';
-import { validateLegalPlayerChoice } from './validateLegalPlayerChoice';
+import type { Board, ValidationResult } from "@entities";
+import type { PlayerChoiceEvent, PlayerChoiceType } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { playerChoiceEventSchema } from "@events";
+import { validateExpectedChoice } from "./validateExpectedChoice";
+import { validateLegalPlayerChoice } from "./validateLegalPlayerChoice";
 
 /**
  * Validates a player choice against the current game state.
@@ -51,7 +51,7 @@ export function validatePlayerChoice<TBoard extends Board>(
       errorReason:
         error instanceof Error
           ? `Error validating player choice: ${error.message}`
-          : 'Unknown error validating player choice',
+          : "Unknown error validating player choice",
     };
   }
 }

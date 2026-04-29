@@ -1,16 +1,15 @@
-import type { AssertExact } from '@utils';
-import type { SmallBoardColumnNumber } from './smallColumnNumbers';
+import type { AssertExact } from "@utils";
+import type { SmallBoardColumnNumber } from "./smallColumnNumbers";
 
-import type { SmallBoardRowLetter } from './smallRowLetters';
-import { z } from 'zod';
-import { smallBoardColumnNumbers } from './smallColumnNumbers';
-import { smallBoardRowLetters } from './smallRowLetters';
+import type { SmallBoardRowLetter } from "./smallRowLetters";
+import { z } from "zod";
+import { smallBoardColumnNumbers } from "./smallColumnNumbers";
+import { smallBoardRowLetters } from "./smallRowLetters";
 
 /**
  * A valid coordinate on a small board (A-1 through H-12).
  */
-export type SmallBoardCoordinate =
-  `${SmallBoardRowLetter}-${SmallBoardColumnNumber}`;
+export type SmallBoardCoordinate = `${SmallBoardRowLetter}-${SmallBoardColumnNumber}`;
 
 /**
  * An iterable array of all valid coordinates on a small board (A-1 through H-12), generated from row letters and column numbers.
@@ -21,13 +20,10 @@ const computedCoordinates = smallBoardRowLetters.flatMap((row) =>
   smallBoardColumnNumbers.map((column) => `${row}-${column}`),
 );
 
-export const smallBoardCoordinates =
-  computedCoordinates as readonly SmallBoardCoordinate[]; // This cast is safe.
+export const smallBoardCoordinates = computedCoordinates as readonly SmallBoardCoordinate[]; // This cast is safe.
 
 const _smallBoardCoordinatesSchema = z.enum(smallBoardCoordinates);
-type SmallBoardCoordinatesSchemaType = z.infer<
-  typeof _smallBoardCoordinatesSchema
->;
+type SmallBoardCoordinatesSchemaType = z.infer<typeof _smallBoardCoordinatesSchema>;
 
 const _assertExactSmallBoardCoordinates: AssertExact<
   SmallBoardCoordinate,

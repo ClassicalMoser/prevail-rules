@@ -1,18 +1,18 @@
-import type { AssertExact } from '@utils';
-import { z } from 'zod';
+import type { AssertExact } from "@utils";
+import { z } from "zod";
 
 /**
  * The names of all possible unit stats.
  * Every stat is required on every unit type.
  */
 export const unitStatNames = [
-  'attack',
-  'range',
-  'speed',
-  'flexibility',
-  'reverse',
-  'retreat',
-  'rout',
+  "attack",
+  "range",
+  "speed",
+  "flexibility",
+  "reverse",
+  "retreat",
+  "rout",
 ] as const;
 
 export type UnitStatName = (typeof unitStatNames)[number];
@@ -21,14 +21,10 @@ const _unitStatNameSchemaObject = z.enum(unitStatNames);
 
 type UnitStatNameSchemaType = z.infer<typeof _unitStatNameSchemaObject>;
 
-export const unitStatNameSchema: z.ZodType<UnitStatName> =
-  _unitStatNameSchemaObject;
+export const unitStatNameSchema: z.ZodType<UnitStatName> = _unitStatNameSchemaObject;
 
 // Assert type match at compile time
-const _assertExactUnitStatName: AssertExact<
-  UnitStatName,
-  UnitStatNameSchemaType
-> = true;
+const _assertExactUnitStatName: AssertExact<UnitStatName, UnitStatNameSchemaType> = true;
 
 /**
  * Unit stats with all stat names as required keys.

@@ -1,16 +1,15 @@
-import type { Board } from '@entities';
-import type { AssertExact } from '@utils';
-import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board } from "@entities";
+import type { AssertExact } from "@utils";
+import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
 /** The type of the complete play cards phase game effect. */
-export const COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE =
-  'completePlayCardsPhase' as const;
+export const COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE = "completePlayCardsPhase" as const;
 
 /** Event to complete the play cards phase and advance to move commanders phase. */
 export interface CompletePlayCardsPhaseEvent<
   _TBoard extends Board,
-  _TEffectType extends 'completePlayCardsPhase' = 'completePlayCardsPhase',
+  _TEffectType extends "completePlayCardsPhase" = "completePlayCardsPhase",
 > {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
@@ -40,7 +39,7 @@ const _assertExactCompletePlayCardsPhaseEvent: AssertExact<
 
 /** The schema for a complete play cards phase event. */
 export const completePlayCardsPhaseEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'gameEffect'>;
-  effectType: z.ZodLiteral<'completePlayCardsPhase'>;
+  eventType: z.ZodLiteral<"gameEffect">;
+  effectType: z.ZodLiteral<"completePlayCardsPhase">;
   eventNumber: z.ZodNumber;
 }> = _completePlayCardsPhaseEventSchemaObject;

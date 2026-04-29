@@ -1,20 +1,10 @@
-import type {
-  CardState,
-  PlayerSide,
-  SmallBoard,
-  UnitInstance,
-} from '@entities';
-import type { AssertExact } from '@utils';
-import type { RoundState } from './roundState';
+import type { CardState, PlayerSide, SmallBoard, UnitInstance } from "@entities";
+import type { AssertExact } from "@utils";
+import type { RoundState } from "./roundState";
 
-import {
-  cardStateSchema,
-  playerSideSchema,
-  smallBoardSchema,
-  unitInstanceSchema,
-} from '@entities';
-import { z } from 'zod';
-import { roundStateSchema } from './roundState';
+import { cardStateSchema, playerSideSchema, smallBoardSchema, unitInstanceSchema } from "@entities";
+import { z } from "zod";
+import { roundStateSchema } from "./roundState";
 
 /**
  * Game state on a **small** board.
@@ -25,7 +15,7 @@ export interface SmallGameState {
    * Root discriminator for {@link GameState}; must match `boardState.boardType` (`'small'`).
    * One literal for TS narrowing and Zod — no extra type parameters.
    */
-  boardType: 'small';
+  boardType: "small";
   /** The current round number of the game. */
   currentRoundNumber: number;
   /** The state of the current round of the game. */
@@ -49,7 +39,7 @@ export interface SmallGameState {
 // ---------------------------------------------------------------------------
 
 const _smallGameStateSchemaObject = z.object({
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
   currentRoundNumber: z.int().min(0),
   currentRoundState: roundStateSchema,
   currentInitiative: playerSideSchema,
@@ -62,11 +52,7 @@ const _smallGameStateSchemaObject = z.object({
 
 type SmallGameStateSchemaType = z.infer<typeof _smallGameStateSchemaObject>;
 
-const _assertExactSmallGameState: AssertExact<
-  SmallGameState,
-  SmallGameStateSchemaType
-> = true;
+const _assertExactSmallGameState: AssertExact<SmallGameState, SmallGameStateSchemaType> = true;
 
 /** {@link SmallGameState} */
-export const gameStateSchemaForSmallBoard: z.ZodType<SmallGameState> =
-  _smallGameStateSchemaObject;
+export const gameStateSchemaForSmallBoard: z.ZodType<SmallGameState> = _smallGameStateSchemaObject;

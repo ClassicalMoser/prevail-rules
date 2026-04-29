@@ -1,5 +1,5 @@
-import type { StandardBoard, UnitWithPlacement } from '@entities';
-import { PLAY_CARDS_PHASE } from '@game';
+import type { StandardBoard, UnitWithPlacement } from "@entities";
+import { PLAY_CARDS_PHASE } from "@game";
 
 import {
   createAttackApplyStateWithReverse,
@@ -9,28 +9,28 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
-} from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
-import { describe, expect, it } from 'vitest';
+} from "@testing";
+import { addUnitToBoard, updatePhaseState } from "@transforms";
+import { describe, expect, it } from "vitest";
 
-import { generateResolveReverseEvent } from './generateResolveReverseEvent';
+import { generateResolveReverseEvent } from "./generateResolveReverseEvent";
 
 /**
  * `resolveReverse` is the defender pivoting to strike back: context is ranged vs melee,
  * unit is the reversing defender’s board placement, and new placement is the factory default
  * from the reverse substep (facing flips for the shown geometries).
  */
-describe('generateResolveReverseEvent', () => {
-  it('given ranged attack-apply in reverse substep, context rangedAttack and E-5 south facing', () => {
+describe("generateResolveReverseEvent", () => {
+  it("given ranged attack-apply in reverse substep, context rangedAttack and E-5 south facing", () => {
     const state = createEmptyGameState();
-    const defendingUnit = createTestUnit('white', { attack: 2 });
+    const defendingUnit = createTestUnit("white", { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+      boardType: "standard" as const,
       unit: defendingUnit,
       placement: {
-        boardType: 'standard' as const,
-        coordinate: 'E-5',
-        facing: 'north',
+        boardType: "standard" as const,
+        coordinate: "E-5",
+        facing: "north",
       },
     };
     const withBoard = {
@@ -48,33 +48,33 @@ describe('generateResolveReverseEvent', () => {
     const full = updatePhaseState(withBoard, phase);
 
     const event = generateResolveReverseEvent(full, 0);
-    expect(event.effectType).toBe('resolveReverse');
-    expect(event.attackResolutionContext).toBe('rangedAttack');
+    expect(event.effectType).toBe("resolveReverse");
+    expect(event.attackResolutionContext).toBe("rangedAttack");
     expect(event.unitInstance).toEqual(unitWithPlacement);
-    expect(event.newUnitPlacement.placement.facing).toBe('south');
-    expect(event.newUnitPlacement.placement.coordinate).toBe('E-5');
+    expect(event.newUnitPlacement.placement.facing).toBe("south");
+    expect(event.newUnitPlacement.placement.coordinate).toBe("E-5");
   });
 
-  it('given white initiative and both melee applies in reverse, uses white unit and west facing', () => {
-    const state = createEmptyGameState({ currentInitiative: 'white' });
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
+  it("given white initiative and both melee applies in reverse, uses white unit and west facing", () => {
+    const state = createEmptyGameState({ currentInitiative: "white" });
+    const whiteUnit = createTestUnit("white", { attack: 2 });
+    const blackUnit = createTestUnit("black", { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+      boardType: "standard" as const,
       unit: whiteUnit,
       placement: {
-        boardType: 'standard' as const,
-        coordinate: 'E-5',
-        facing: 'east',
+        boardType: "standard" as const,
+        coordinate: "E-5",
+        facing: "east",
       },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+      boardType: "standard" as const,
       unit: blackUnit,
       placement: {
-        boardType: 'standard' as const,
-        coordinate: 'E-5',
-        facing: 'west',
+        boardType: "standard" as const,
+        coordinate: "E-5",
+        facing: "west",
       },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
@@ -93,26 +93,24 @@ describe('generateResolveReverseEvent', () => {
     const full = updatePhaseState(s, phase);
 
     const event = generateResolveReverseEvent(full, 0);
-    expect(event.effectType).toBe('resolveReverse');
-    expect(event.attackResolutionContext).toBe('melee');
+    expect(event.effectType).toBe("resolveReverse");
+    expect(event.attackResolutionContext).toBe("melee");
     expect(event.unitInstance.unit).toBe(whiteUnit);
-    expect(event.newUnitPlacement.placement.facing).toBe('west');
+    expect(event.newUnitPlacement.placement.facing).toBe("west");
   });
 
-  it('given empty game with no phase slice, throws no current phase state', () => {
+  it("given empty game with no phase slice, throws no current phase state", () => {
     const full = createEmptyGameState();
-    expect(() => generateResolveReverseEvent(full, 0)).toThrow(
-      'No current phase state found',
-    );
+    expect(() => generateResolveReverseEvent(full, 0)).toThrow("No current phase state found");
   });
 
-  it('given playCards phase, throws reverse resolution phase guard', () => {
+  it("given playCards phase, throws reverse resolution phase guard", () => {
     const full = updatePhaseState(createEmptyGameState(), {
       phase: PLAY_CARDS_PHASE,
-      step: 'complete',
+      step: "complete",
     });
     expect(() => generateResolveReverseEvent(full, 0)).toThrow(
-      'Reverse resolution not expected in phase: playCards',
+      "Reverse resolution not expected in phase: playCards",
     );
   });
 });

@@ -1,17 +1,17 @@
-import type { Army } from '@entities';
-import type { AssertExact } from '@utils';
-import type { SmallGameState } from './smallGameState';
+import type { Army } from "@entities";
+import type { AssertExact } from "@utils";
+import type { SmallGameState } from "./smallGameState";
 
-import { armySchema } from '@entities';
-import { z } from 'zod';
-import { gameStateSchemaForSmallBoard } from './smallGameState';
+import { armySchema } from "@entities";
+import { z } from "zod";
+import { gameStateSchemaForSmallBoard } from "./smallGameState";
 
 /**
  * A **tutorial** game (`gameType === 'tutorial'`).
  * Every field is documented here so IDE hover does not jump through a shared base interface.
  */
 export interface TutorialGame {
-  gameType: 'tutorial';
+  gameType: "tutorial";
   gameState: SmallGameState;
   /** The unique identifier of the game. */
   id: string;
@@ -30,7 +30,7 @@ export interface TutorialGame {
 // ---------------------------------------------------------------------------
 
 const _tutorialGameSchemaObject: z.ZodType<TutorialGame> = z.object({
-  gameType: z.literal('tutorial'),
+  gameType: z.literal("tutorial"),
   gameState: gameStateSchemaForSmallBoard,
   id: z.uuid(),
   blackPlayer: z.uuid(),
@@ -41,11 +41,7 @@ const _tutorialGameSchemaObject: z.ZodType<TutorialGame> = z.object({
 
 type TutorialGameSchemaType = z.infer<typeof _tutorialGameSchemaObject>;
 
-const _assertExactTutorialGame: AssertExact<
-  TutorialGame,
-  TutorialGameSchemaType
-> = true;
+const _assertExactTutorialGame: AssertExact<TutorialGame, TutorialGameSchemaType> = true;
 
 /** Validates a {@link Game} when `gameType` is known to be `tutorial`. */
-export const tutorialGameSchema: z.ZodType<TutorialGame> =
-  _tutorialGameSchemaObject;
+export const tutorialGameSchema: z.ZodType<TutorialGame> = _tutorialGameSchemaObject;

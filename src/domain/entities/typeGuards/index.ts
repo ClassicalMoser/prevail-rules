@@ -1,4 +1,4 @@
-export { areSameSide } from './areSameSide';
-export { hasEngagedUnits } from './hasEngagedUnits';
-export { hasNoUnit } from './hasNoUnit';
-export { hasSingleUnit } from './hasSingleUnit';
+export { areSameSide } from "./areSameSide";
+export { hasEngagedUnits } from "./hasEngagedUnits";
+export { hasNoUnit } from "./hasNoUnit";
+export { hasSingleUnit } from "./hasSingleUnit";

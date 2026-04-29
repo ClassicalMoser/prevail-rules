@@ -1,8 +1,8 @@
-import type { AssertExact } from '@utils';
-import { z } from 'zod';
+import type { AssertExact } from "@utils";
+import { z } from "zod";
 
 /** Iterable list of valid attack types. */
-export const attackTypes = ['melee', 'ranged'] as const;
+export const attackTypes = ["melee", "ranged"] as const;
 
 /** The type of attack (melee or ranged). */
 export type AttackType = (typeof attackTypes)[number];
@@ -16,5 +16,4 @@ type AttackTypeSchemaType = z.infer<typeof _attackTypeSchemaObject>;
 export const attackTypeSchema: z.ZodType<AttackType> = _attackTypeSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactAttackType: AssertExact<AttackType, AttackTypeSchemaType> =
-  true;
+const _assertExactAttackType: AssertExact<AttackType, AttackTypeSchemaType> = true;

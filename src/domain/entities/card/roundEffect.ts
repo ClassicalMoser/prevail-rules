@@ -1,10 +1,10 @@
-import type { AssertExact } from '@utils';
-import type { Modifier } from './modifiers';
-import type { Restrictions } from './restrictions';
+import type { AssertExact } from "@utils";
+import type { Modifier } from "./modifiers";
+import type { Restrictions } from "./restrictions";
 
-import { z } from 'zod';
-import { modifierSchema } from './modifiers';
-import { restrictionsSchema } from './restrictions';
+import { z } from "zod";
+import { modifierSchema } from "./modifiers";
+import { restrictionsSchema } from "./restrictions";
 
 /**
  * The round effect of a card.
@@ -28,9 +28,7 @@ type RoundEffectSchemaType = z.infer<typeof _roundEffectSchemaObject>;
 /**
  * The schema for a round effect.
  */
-export const roundEffectSchema: z.ZodType<RoundEffect> =
-  _roundEffectSchemaObject;
+export const roundEffectSchema: z.ZodType<RoundEffect> = _roundEffectSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactRoundEffect: AssertExact<RoundEffect, RoundEffectSchemaType> =
-  true;
+const _assertExactRoundEffect: AssertExact<RoundEffect, RoundEffectSchemaType> = true;

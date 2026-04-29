@@ -1,197 +1,127 @@
-import type { StandardBoardCoordinate } from '@entities';
-import { createEmptyStandardBoard } from '@transforms/initializations';
-import { describe, expect, it } from 'vitest';
-import { addCommanderToBoard } from './addCommanderToBoard';
-import { removeCommanderFromBoard } from './removeCommanderFromBoard';
+import type { StandardBoardCoordinate } from "@entities";
+import { createEmptyStandardBoard } from "@transforms/initializations";
+import { describe, expect, it } from "vitest";
+import { addCommanderToBoard } from "./addCommanderToBoard";
+import { removeCommanderFromBoard } from "./removeCommanderFromBoard";
 
 /**
  * removeCommanderFromBoard: removeCommanderFromBoard.
  */
-describe('removeCommanderFromBoard', () => {
-  const coordinate: StandardBoardCoordinate = 'E-5';
+describe("removeCommanderFromBoard", () => {
+  const coordinate: StandardBoardCoordinate = "E-5";
 
-  describe('removing commander from space with one commander', () => {
-    it('given remove commander and leave empty set', () => {
+  describe("removing commander from space with one commander", () => {
+    it("given remove commander and leave empty set", () => {
       const board = createEmptyStandardBoard();
-      const boardWithCommander = addCommanderToBoard(
-        board,
-        'black',
-        coordinate,
-      );
+      const boardWithCommander = addCommanderToBoard(board, "black", coordinate);
 
-      const newBoard = removeCommanderFromBoard(
-        boardWithCommander,
-        coordinate,
-        'black',
-      );
+      const newBoard = removeCommanderFromBoard(boardWithCommander, coordinate, "black");
 
       expect(newBoard).not.toBe(boardWithCommander);
       expect(newBoard.board[coordinate]?.commanders).toEqual(new Set());
     });
 
-    it('given not mutate the original board', () => {
+    it("given not mutate the original board", () => {
       const board = createEmptyStandardBoard();
-      const boardWithCommander = addCommanderToBoard(
-        board,
-        'white',
-        coordinate,
-      );
+      const boardWithCommander = addCommanderToBoard(board, "white", coordinate);
 
-      removeCommanderFromBoard(boardWithCommander, coordinate, 'white');
+      removeCommanderFromBoard(boardWithCommander, coordinate, "white");
 
-      expect(boardWithCommander.board[coordinate]?.commanders).toEqual(
-        new Set(['white']),
-      );
+      expect(boardWithCommander.board[coordinate]?.commanders).toEqual(new Set(["white"]));
     });
   });
 
-  describe('removing commander from space with multiple commanders', () => {
-    it('given remove one commander and leave the other', () => {
+  describe("removing commander from space with multiple commanders", () => {
+    it("given remove one commander and leave the other", () => {
       const board = createEmptyStandardBoard();
-      const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
-      const boardWithBoth = addCommanderToBoard(
-        boardWithWhite,
-        'black',
-        coordinate,
-      );
+      const boardWithWhite = addCommanderToBoard(board, "white", coordinate);
+      const boardWithBoth = addCommanderToBoard(boardWithWhite, "black", coordinate);
 
-      const newBoard = removeCommanderFromBoard(
-        boardWithBoth,
-        coordinate,
-        'white',
-      );
+      const newBoard = removeCommanderFromBoard(boardWithBoth, coordinate, "white");
 
       expect(newBoard).not.toBe(boardWithBoth);
-      expect(newBoard.board[coordinate]?.commanders).toEqual(
-        new Set(['black']),
+      expect(newBoard.board[coordinate]?.commanders).toEqual(new Set(["black"]));
+    });
+
+    it("given remove black commander and leave white", () => {
+      const board = createEmptyStandardBoard();
+      const boardWithWhite = addCommanderToBoard(board, "white", coordinate);
+      const boardWithBoth = addCommanderToBoard(boardWithWhite, "black", coordinate);
+
+      const newBoard = removeCommanderFromBoard(boardWithBoth, coordinate, "black");
+
+      expect(newBoard.board[coordinate]?.commanders).toEqual(new Set(["white"]));
+    });
+
+    it("given removing from multiple commanders, does not mutate the original board", () => {
+      const board = createEmptyStandardBoard();
+      const boardWithWhite = addCommanderToBoard(board, "white", coordinate);
+      const boardWithBoth = addCommanderToBoard(boardWithWhite, "black", coordinate);
+
+      removeCommanderFromBoard(boardWithBoth, coordinate, "white");
+
+      expect(boardWithBoth.board[coordinate]?.commanders).toEqual(new Set(["white", "black"]));
+    });
+  });
+
+  describe("error cases", () => {
+    it("given error when commander is not present, throws", () => {
+      const board = createEmptyStandardBoard();
+
+      expect(() => removeCommanderFromBoard(board, coordinate, "black")).toThrow(
+        "Commander not present to remove",
       );
     });
 
-    it('given remove black commander and leave white', () => {
+    it("given error when trying to remove wrong commander, throws", () => {
       const board = createEmptyStandardBoard();
-      const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
-      const boardWithBoth = addCommanderToBoard(
-        boardWithWhite,
-        'black',
-        coordinate,
-      );
+      const boardWithWhite = addCommanderToBoard(board, "white", coordinate);
 
-      const newBoard = removeCommanderFromBoard(
-        boardWithBoth,
-        coordinate,
-        'black',
-      );
-
-      expect(newBoard.board[coordinate]?.commanders).toEqual(
-        new Set(['white']),
+      expect(() => removeCommanderFromBoard(boardWithWhite, coordinate, "black")).toThrow(
+        "Commander not present to remove",
       );
     });
 
-    it('given removing from multiple commanders, does not mutate the original board', () => {
+    it("given error when trying to remove already removed commander, throws", () => {
       const board = createEmptyStandardBoard();
-      const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
-      const boardWithBoth = addCommanderToBoard(
-        boardWithWhite,
-        'black',
-        coordinate,
-      );
+      const boardWithCommander = addCommanderToBoard(board, "black", coordinate);
+      const boardAfterRemoval = removeCommanderFromBoard(boardWithCommander, coordinate, "black");
 
-      removeCommanderFromBoard(boardWithBoth, coordinate, 'white');
-
-      expect(boardWithBoth.board[coordinate]?.commanders).toEqual(
-        new Set(['white', 'black']),
+      expect(() => removeCommanderFromBoard(boardAfterRemoval, coordinate, "black")).toThrow(
+        "Commander not present to remove",
       );
     });
   });
 
-  describe('error cases', () => {
-    it('given error when commander is not present, throws', () => {
+  describe("preserving other board spaces", () => {
+    it("given preserve commanders on other spaces", () => {
       const board = createEmptyStandardBoard();
+      const otherCoord: StandardBoardCoordinate = "D-4";
+      const boardWithCommander1 = addCommanderToBoard(board, "black", coordinate);
+      const boardWithBoth = addCommanderToBoard(boardWithCommander1, "white", otherCoord);
 
-      expect(() =>
-        removeCommanderFromBoard(board, coordinate, 'black'),
-      ).toThrow('Commander not present to remove');
-    });
-
-    it('given error when trying to remove wrong commander, throws', () => {
-      const board = createEmptyStandardBoard();
-      const boardWithWhite = addCommanderToBoard(board, 'white', coordinate);
-
-      expect(() =>
-        removeCommanderFromBoard(boardWithWhite, coordinate, 'black'),
-      ).toThrow('Commander not present to remove');
-    });
-
-    it('given error when trying to remove already removed commander, throws', () => {
-      const board = createEmptyStandardBoard();
-      const boardWithCommander = addCommanderToBoard(
-        board,
-        'black',
-        coordinate,
-      );
-      const boardAfterRemoval = removeCommanderFromBoard(
-        boardWithCommander,
-        coordinate,
-        'black',
-      );
-
-      expect(() =>
-        removeCommanderFromBoard(boardAfterRemoval, coordinate, 'black'),
-      ).toThrow('Commander not present to remove');
-    });
-  });
-
-  describe('preserving other board spaces', () => {
-    it('given preserve commanders on other spaces', () => {
-      const board = createEmptyStandardBoard();
-      const otherCoord: StandardBoardCoordinate = 'D-4';
-      const boardWithCommander1 = addCommanderToBoard(
-        board,
-        'black',
-        coordinate,
-      );
-      const boardWithBoth = addCommanderToBoard(
-        boardWithCommander1,
-        'white',
-        otherCoord,
-      );
-
-      const newBoard = removeCommanderFromBoard(
-        boardWithBoth,
-        coordinate,
-        'black',
-      );
+      const newBoard = removeCommanderFromBoard(boardWithBoth, coordinate, "black");
 
       expect(newBoard.board[coordinate]?.commanders).toEqual(new Set());
-      expect(newBoard.board[otherCoord]?.commanders).toEqual(
-        new Set(['white']),
-      );
+      expect(newBoard.board[otherCoord]?.commanders).toEqual(new Set(["white"]));
     });
 
-    it('given preserve units on other spaces', () => {
+    it("given preserve units on other spaces", () => {
       const board = createEmptyStandardBoard();
-      const otherCoord: StandardBoardCoordinate = 'D-4';
-      const boardWithCommander = addCommanderToBoard(
-        board,
-        'black',
-        coordinate,
-      );
+      const otherCoord: StandardBoardCoordinate = "D-4";
+      const boardWithCommander = addCommanderToBoard(board, "black", coordinate);
       // Add a unit to another space
       boardWithCommander.board[otherCoord] = {
         ...boardWithCommander.board[otherCoord]!,
         unitPresence: {
-          presenceType: 'none',
+          presenceType: "none",
         },
       };
 
-      const newBoard = removeCommanderFromBoard(
-        boardWithCommander,
-        coordinate,
-        'black',
-      );
+      const newBoard = removeCommanderFromBoard(boardWithCommander, coordinate, "black");
 
       expect(newBoard.board[otherCoord]?.unitPresence).toEqual({
-        presenceType: 'none',
+        presenceType: "none",
       });
     });
   });

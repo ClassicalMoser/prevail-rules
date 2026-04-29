@@ -7,20 +7,20 @@ import type {
   SmallUnitWithPlacement,
   StandardBoard,
   StandardUnitWithPlacement,
-} from '@entities';
-import type { AssertExact } from '@utils';
-import type { ZodDiscriminatedUnion } from 'zod';
+} from "@entities";
+import type { AssertExact } from "@utils";
+import type { ZodDiscriminatedUnion } from "zod";
 import {
   largeUnitWithPlacementSchema,
   playerSideSchema,
   smallUnitWithPlacementSchema,
   standardUnitWithPlacementSchema,
-} from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+} from "@entities";
+import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
 /** The type of the setup units event. */
-export const SETUP_UNITS_CHOICE_TYPE = 'setupUnits' as const;
+export const SETUP_UNITS_CHOICE_TYPE = "setupUnits" as const;
 
 interface SetupUnitsEventBase {
   /** The type of the event. */
@@ -34,18 +34,18 @@ interface SetupUnitsEventBase {
 }
 
 export interface StandardSetupUnitsEvent extends SetupUnitsEventBase {
-  boardType: 'standard';
+  boardType: "standard";
   /** The units to setup, each with its placement. */
   unitPlacements: Set<StandardUnitWithPlacement>;
 }
 
 export interface SmallSetupUnitsEvent extends SetupUnitsEventBase {
-  boardType: 'small';
+  boardType: "small";
   unitPlacements: Set<SmallUnitWithPlacement>;
 }
 
 export interface LargeSetupUnitsEvent extends SetupUnitsEventBase {
-  boardType: 'large';
+  boardType: "large";
   unitPlacements: Set<LargeUnitWithPlacement>;
 }
 
@@ -56,8 +56,7 @@ export type SetupUnitsEventUnion =
 
 export type SetupUnitsEvent<
   TBoard extends Board = Board,
-  _TChoiceType extends typeof SETUP_UNITS_CHOICE_TYPE =
-    typeof SETUP_UNITS_CHOICE_TYPE,
+  _TChoiceType extends typeof SETUP_UNITS_CHOICE_TYPE = typeof SETUP_UNITS_CHOICE_TYPE,
 > = TBoard extends StandardBoard
   ? StandardSetupUnitsEvent
   : TBoard extends SmallBoard
@@ -71,20 +70,18 @@ const _standardSetupUnitsEventSchemaObject: z.ZodObject<{
   choiceType: z.ZodLiteral<typeof SETUP_UNITS_CHOICE_TYPE>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  boardType: z.ZodLiteral<'standard'>;
+  boardType: z.ZodLiteral<"standard">;
   unitPlacements: z.ZodSet<typeof standardUnitWithPlacementSchema>;
 }> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
   eventNumber: z.number(),
   player: playerSideSchema,
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
   unitPlacements: z.set(standardUnitWithPlacementSchema),
 });
 
-type StandardSetupUnitsEventSchemaType = z.infer<
-  typeof _standardSetupUnitsEventSchemaObject
->;
+type StandardSetupUnitsEventSchemaType = z.infer<typeof _standardSetupUnitsEventSchemaObject>;
 
 const _assertExactStandardSetupUnitsEvent: AssertExact<
   StandardSetupUnitsEvent,
@@ -96,20 +93,18 @@ const _smallSetupUnitsEventSchemaObject: z.ZodObject<{
   choiceType: z.ZodLiteral<typeof SETUP_UNITS_CHOICE_TYPE>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  boardType: z.ZodLiteral<'small'>;
+  boardType: z.ZodLiteral<"small">;
   unitPlacements: z.ZodSet<typeof smallUnitWithPlacementSchema>;
 }> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
   eventNumber: z.number(),
   player: playerSideSchema,
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
   unitPlacements: z.set(smallUnitWithPlacementSchema),
 });
 
-type SmallSetupUnitsEventSchemaType = z.infer<
-  typeof _smallSetupUnitsEventSchemaObject
->;
+type SmallSetupUnitsEventSchemaType = z.infer<typeof _smallSetupUnitsEventSchemaObject>;
 
 const _assertExactSmallSetupUnitsEvent: AssertExact<
   SmallSetupUnitsEvent,
@@ -121,20 +116,18 @@ const _largeSetupUnitsEventSchemaObject: z.ZodObject<{
   choiceType: z.ZodLiteral<typeof SETUP_UNITS_CHOICE_TYPE>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  boardType: z.ZodLiteral<'large'>;
+  boardType: z.ZodLiteral<"large">;
   unitPlacements: z.ZodSet<typeof largeUnitWithPlacementSchema>;
 }> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
   eventNumber: z.number(),
   player: playerSideSchema,
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
   unitPlacements: z.set(largeUnitWithPlacementSchema),
 });
 
-type LargeSetupUnitsEventSchemaType = z.infer<
-  typeof _largeSetupUnitsEventSchemaObject
->;
+type LargeSetupUnitsEventSchemaType = z.infer<typeof _largeSetupUnitsEventSchemaObject>;
 
 const _assertExactLargeSetupUnitsEvent: AssertExact<
   LargeSetupUnitsEvent,
@@ -147,15 +140,17 @@ type _SetupUnitsEventDiscriminatedUnion = ZodDiscriminatedUnion<
     typeof _smallSetupUnitsEventSchemaObject,
     typeof _largeSetupUnitsEventSchemaObject,
   ],
-  'boardType'
+  "boardType"
 >;
 
-const _setupUnitsEventSchemaObject: _SetupUnitsEventDiscriminatedUnion =
-  z.discriminatedUnion('boardType', [
+const _setupUnitsEventSchemaObject: _SetupUnitsEventDiscriminatedUnion = z.discriminatedUnion(
+  "boardType",
+  [
     _standardSetupUnitsEventSchemaObject,
     _smallSetupUnitsEventSchemaObject,
     _largeSetupUnitsEventSchemaObject,
-  ]);
+  ],
+);
 
 type SetupUnitsEventSchemaType = z.infer<typeof _setupUnitsEventSchemaObject>;
 

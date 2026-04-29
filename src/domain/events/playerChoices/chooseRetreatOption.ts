@@ -7,19 +7,19 @@ import type {
   SmallUnitPlacement,
   StandardBoard,
   StandardUnitPlacement,
-} from '@entities';
-import type { AssertExact } from '@utils';
-import type { ZodDiscriminatedUnion } from 'zod';
+} from "@entities";
+import type { AssertExact } from "@utils";
+import type { ZodDiscriminatedUnion } from "zod";
 import {
   largeUnitPlacementSchema,
   playerSideSchema,
   smallUnitPlacementSchema,
   standardUnitPlacementSchema,
-} from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+} from "@entities";
+import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
-export const CHOOSE_RETREAT_OPTION_CHOICE_TYPE = 'chooseRetreatOption' as const;
+export const CHOOSE_RETREAT_OPTION_CHOICE_TYPE = "chooseRetreatOption" as const;
 
 interface ChooseRetreatOptionEventBase {
   /** The type of the event. */
@@ -33,18 +33,18 @@ interface ChooseRetreatOptionEventBase {
 }
 
 export interface StandardChooseRetreatOptionEvent extends ChooseRetreatOptionEventBase {
-  boardType: 'standard';
+  boardType: "standard";
   /** The retreat option to choose from. */
   retreatOption: StandardUnitPlacement;
 }
 
 export interface SmallChooseRetreatOptionEvent extends ChooseRetreatOptionEventBase {
-  boardType: 'small';
+  boardType: "small";
   retreatOption: SmallUnitPlacement;
 }
 
 export interface LargeChooseRetreatOptionEvent extends ChooseRetreatOptionEventBase {
-  boardType: 'large';
+  boardType: "large";
   retreatOption: LargeUnitPlacement;
 }
 
@@ -70,14 +70,14 @@ const _standardChooseRetreatOptionEventSchemaObject: z.ZodObject<{
   choiceType: z.ZodLiteral<typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  boardType: z.ZodLiteral<'standard'>;
+  boardType: z.ZodLiteral<"standard">;
   retreatOption: typeof standardUnitPlacementSchema;
 }> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
   eventNumber: z.number(),
   player: playerSideSchema,
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
   retreatOption: standardUnitPlacementSchema,
 });
 
@@ -95,14 +95,14 @@ const _smallChooseRetreatOptionEventSchemaObject: z.ZodObject<{
   choiceType: z.ZodLiteral<typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  boardType: z.ZodLiteral<'small'>;
+  boardType: z.ZodLiteral<"small">;
   retreatOption: typeof smallUnitPlacementSchema;
 }> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
   eventNumber: z.number(),
   player: playerSideSchema,
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
   retreatOption: smallUnitPlacementSchema,
 });
 
@@ -120,14 +120,14 @@ const _largeChooseRetreatOptionEventSchemaObject: z.ZodObject<{
   choiceType: z.ZodLiteral<typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  boardType: z.ZodLiteral<'large'>;
+  boardType: z.ZodLiteral<"large">;
   retreatOption: typeof largeUnitPlacementSchema;
 }> = z.object({
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
   eventNumber: z.number(),
   player: playerSideSchema,
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
   retreatOption: largeUnitPlacementSchema,
 });
 
@@ -146,19 +146,17 @@ type _ChooseRetreatOptionEventDiscriminatedUnion = ZodDiscriminatedUnion<
     typeof _smallChooseRetreatOptionEventSchemaObject,
     typeof _largeChooseRetreatOptionEventSchemaObject,
   ],
-  'boardType'
+  "boardType"
 >;
 
 const _chooseRetreatOptionEventSchemaObject: _ChooseRetreatOptionEventDiscriminatedUnion =
-  z.discriminatedUnion('boardType', [
+  z.discriminatedUnion("boardType", [
     _standardChooseRetreatOptionEventSchemaObject,
     _smallChooseRetreatOptionEventSchemaObject,
     _largeChooseRetreatOptionEventSchemaObject,
   ]);
 
-type ChooseRetreatOptionEventSchemaType = z.infer<
-  typeof _chooseRetreatOptionEventSchemaObject
->;
+type ChooseRetreatOptionEventSchemaType = z.infer<typeof _chooseRetreatOptionEventSchemaObject>;
 
 const _assertExactChooseRetreatOptionEvent: AssertExact<
   ChooseRetreatOptionEvent<Board>,

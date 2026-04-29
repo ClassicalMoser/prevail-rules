@@ -1,4 +1,4 @@
-import type { CardState, PlayerSide } from '@entities';
+import type { CardState, PlayerSide } from "@entities";
 
 /**
  * Moves a player's card from awaitingPlay to inPlay.
@@ -9,15 +9,12 @@ import type { CardState, PlayerSide } from '@entities';
  * @returns New CardState with the card moved from awaitingPlay to inPlay
  * @throws Error if player has no card awaiting play
  */
-export function revealCard(
-  cardState: CardState,
-  player: PlayerSide,
-): CardState {
+export function revealCard(cardState: CardState, player: PlayerSide): CardState {
   const playerCardState = cardState[player];
   const awaitingCard = playerCardState.awaitingPlay;
 
   if (!awaitingCard) {
-    const capitalizedPlayer = player === 'black' ? 'Black' : 'White';
+    const capitalizedPlayer = player === "black" ? "Black" : "White";
     throw new Error(`${capitalizedPlayer} player has no card awaiting play`);
   }
 

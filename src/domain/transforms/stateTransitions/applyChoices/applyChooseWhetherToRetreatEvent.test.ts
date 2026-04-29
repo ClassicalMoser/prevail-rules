@@ -1,6 +1,6 @@
-import type { StandardBoard } from '@entities';
-import type { ChooseWhetherToRetreatEvent } from '@events';
-import { getFrontEngagementStateFromMovement } from '@queries';
+import type { StandardBoard } from "@entities";
+import type { ChooseWhetherToRetreatEvent } from "@events";
+import { getFrontEngagementStateFromMovement } from "@queries";
 import {
   createEmptyGameState,
   createFrontEngagementState,
@@ -8,16 +8,16 @@ import {
   createMovementResolutionState,
   createPlayCardsPhaseState,
   createRangedAttackResolutionState,
-} from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
-import { describe, expect, it } from 'vitest';
-import { applyChooseWhetherToRetreatEvent } from './applyChooseWhetherToRetreatEvent';
+} from "@testing";
+import { updatePhaseState } from "@transforms/pureTransforms";
+import { describe, expect, it } from "vitest";
+import { applyChooseWhetherToRetreatEvent } from "./applyChooseWhetherToRetreatEvent";
 
 /**
  * Front engagement during movement: defender commits whether to attempt retreat before the
  * engine resolves strike; stored on `engagementResolutionState.defendingUnitRetreats`.
  */
-describe('applyChooseWhetherToRetreatEvent', () => {
+describe("applyChooseWhetherToRetreatEvent", () => {
   /** issueCommands with movement CRS and default front engagement factory state. */
   function createStateWithFrontEngagement() {
     const state = createEmptyGameState();
@@ -29,49 +29,45 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     return updatePhaseState(state, phaseState);
   }
 
-  it('given front engagement and white choosesToRetreat true, defendingUnitRetreats is true', () => {
+  it("given front engagement and white choosesToRetreat true, defendingUnitRetreats is true", () => {
     const state = createStateWithFrontEngagement();
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
       eventNumber: 0,
-      eventType: 'playerChoice',
-      choiceType: 'chooseWhetherToRetreat',
-      player: 'white',
+      eventType: "playerChoice",
+      choiceType: "chooseWhetherToRetreat",
+      player: "white",
       choosesToRetreat: true,
     };
 
     const newState = applyChooseWhetherToRetreatEvent(event, state);
     const engagementState = getFrontEngagementStateFromMovement(newState);
 
-    expect(
-      engagementState.engagementResolutionState.defendingUnitRetreats,
-    ).toBe(true);
+    expect(engagementState.engagementResolutionState.defendingUnitRetreats).toBe(true);
   });
 
-  it('given same stack and white choosesToRetreat false, defendingUnitRetreats is false', () => {
+  it("given same stack and white choosesToRetreat false, defendingUnitRetreats is false", () => {
     const state = createStateWithFrontEngagement();
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
       eventNumber: 0,
-      eventType: 'playerChoice',
-      choiceType: 'chooseWhetherToRetreat',
-      player: 'white',
+      eventType: "playerChoice",
+      choiceType: "chooseWhetherToRetreat",
+      player: "white",
       choosesToRetreat: false,
     };
 
     const newState = applyChooseWhetherToRetreatEvent(event, state);
     const engagementState = getFrontEngagementStateFromMovement(newState);
 
-    expect(
-      engagementState.engagementResolutionState.defendingUnitRetreats,
-    ).toBe(false);
+    expect(engagementState.engagementResolutionState.defendingUnitRetreats).toBe(false);
   });
 
-  it('given black defender events, true vs false flip defendingUnitRetreats the same as white', () => {
+  it("given black defender events, true vs false flip defendingUnitRetreats the same as white", () => {
     const state = createStateWithFrontEngagement();
     const retreatEvent: ChooseWhetherToRetreatEvent<StandardBoard> = {
       eventNumber: 0,
-      eventType: 'playerChoice',
-      choiceType: 'chooseWhetherToRetreat',
-      player: 'black',
+      eventType: "playerChoice",
+      choiceType: "chooseWhetherToRetreat",
+      player: "black",
       choosesToRetreat: true,
     };
     const stayEvent: ChooseWhetherToRetreatEvent<StandardBoard> = {
@@ -80,56 +76,50 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     };
 
     expect(
-      getFrontEngagementStateFromMovement(
-        applyChooseWhetherToRetreatEvent(retreatEvent, state),
-      ).engagementResolutionState.defendingUnitRetreats,
+      getFrontEngagementStateFromMovement(applyChooseWhetherToRetreatEvent(retreatEvent, state))
+        .engagementResolutionState.defendingUnitRetreats,
     ).toBe(true);
     expect(
-      getFrontEngagementStateFromMovement(
-        applyChooseWhetherToRetreatEvent(stayEvent, state),
-      ).engagementResolutionState.defendingUnitRetreats,
+      getFrontEngagementStateFromMovement(applyChooseWhetherToRetreatEvent(stayEvent, state))
+        .engagementResolutionState.defendingUnitRetreats,
     ).toBe(false);
   });
 
-  it('given engagement snapshot before apply, input movement engagement slice unchanged after apply', () => {
+  it("given engagement snapshot before apply, input movement engagement slice unchanged after apply", () => {
     const state = createStateWithFrontEngagement();
-    const engagementBefore =
-      getFrontEngagementStateFromMovement(state).engagementResolutionState;
+    const engagementBefore = getFrontEngagementStateFromMovement(state).engagementResolutionState;
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
       eventNumber: 0,
-      eventType: 'playerChoice',
-      choiceType: 'chooseWhetherToRetreat',
-      player: 'white',
+      eventType: "playerChoice",
+      choiceType: "chooseWhetherToRetreat",
+      player: "white",
       choosesToRetreat: true,
     };
 
     applyChooseWhetherToRetreatEvent(event, state);
 
-    expect(
-      getFrontEngagementStateFromMovement(state).engagementResolutionState,
-    ).toEqual(engagementBefore);
+    expect(getFrontEngagementStateFromMovement(state).engagementResolutionState).toEqual(
+      engagementBefore,
+    );
   });
 
-  it('given playCards phase, throws not in issueCommands', () => {
+  it("given playCards phase, throws not in issueCommands", () => {
     const state = createEmptyGameState();
-    const stateInPlayCards = updatePhaseState(
-      state,
-      createPlayCardsPhaseState(),
-    );
+    const stateInPlayCards = updatePhaseState(state, createPlayCardsPhaseState());
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
       eventNumber: 0,
-      eventType: 'playerChoice',
-      choiceType: 'chooseWhetherToRetreat',
-      player: 'white',
+      eventType: "playerChoice",
+      choiceType: "chooseWhetherToRetreat",
+      player: "white",
       choosesToRetreat: true,
     };
 
-    expect(() =>
-      applyChooseWhetherToRetreatEvent(event, stateInPlayCards),
-    ).toThrow('Not in issueCommands phase');
+    expect(() => applyChooseWhetherToRetreatEvent(event, stateInPlayCards)).toThrow(
+      "Not in issueCommands phase",
+    );
   });
 
-  it('given issueCommands ranged CRS, throws current command resolution is not movement', () => {
+  it("given issueCommands ranged CRS, throws current command resolution is not movement", () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createRangedAttackResolutionState(state),
@@ -137,14 +127,14 @@ describe('applyChooseWhetherToRetreatEvent', () => {
     const stateInPhase = updatePhaseState(state, phaseState);
     const event: ChooseWhetherToRetreatEvent<StandardBoard> = {
       eventNumber: 0,
-      eventType: 'playerChoice',
-      choiceType: 'chooseWhetherToRetreat',
-      player: 'white',
+      eventType: "playerChoice",
+      choiceType: "chooseWhetherToRetreat",
+      player: "white",
       choosesToRetreat: true,
     };
 
     expect(() => applyChooseWhetherToRetreatEvent(event, stateInPhase)).toThrow(
-      'Current command resolution is not a movement',
+      "Current command resolution is not a movement",
     );
   });
 });

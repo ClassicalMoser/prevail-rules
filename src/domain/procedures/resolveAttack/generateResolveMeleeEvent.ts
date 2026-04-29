@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate, UnitPlacement } from '@entities';
-import type { ResolveMeleeEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
+import type { Board, BoardCoordinate, UnitPlacement } from "@entities";
+import type { ResolveMeleeEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from "@events";
 import {
   applyAttackValue,
   getCurrentUnitStat,
@@ -10,7 +10,7 @@ import {
   getMeleeSupportValue,
   getPlayerUnitWithPosition,
   modifiersFromCompletedCommitment,
-} from '@queries';
+} from "@queries";
 
 /**
  * Generates a ResolveMeleeEvent by calculating attack values for both units
@@ -32,31 +32,29 @@ import {
 export function generateResolveMeleeEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): ResolveMeleeEvent<TBoard, 'resolveMelee'> {
+): ResolveMeleeEvent<TBoard, "resolveMelee"> {
   const meleeState = getMeleeResolutionReadyForAttackCalculation(state);
   const meleeCoordinate = meleeState.location;
 
   const whiteUnit = getPlayerUnitWithPosition(
     state.boardState,
     meleeCoordinate as BoardCoordinate<TBoard>,
-    'white',
+    "white",
   );
   const blackUnit = getPlayerUnitWithPosition(
     state.boardState,
     meleeCoordinate as BoardCoordinate<TBoard>,
-    'black',
+    "black",
   );
 
   if (!whiteUnit || !blackUnit) {
-    throw new Error('Units not found on board');
+    throw new Error("Units not found on board");
   }
-  const whiteCommitmentModifiers = modifiersFromCompletedCommitment(
-    meleeState.whiteCommitment,
-  );
+  const whiteCommitmentModifiers = modifiersFromCompletedCommitment(meleeState.whiteCommitment);
 
   const whiteAttackValue = getCurrentUnitStat(
     whiteUnit.unit,
-    'attack',
+    "attack",
     state,
     whiteCommitmentModifiers,
   );
@@ -65,13 +63,11 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
 
   const totalWhiteAttackValue = whiteAttackValue + whiteSupportValue;
 
-  const blackCommitmentModifiers = modifiersFromCompletedCommitment(
-    meleeState.blackCommitment,
-  );
+  const blackCommitmentModifiers = modifiersFromCompletedCommitment(meleeState.blackCommitment);
 
   const blackAttackValue = getCurrentUnitStat(
     blackUnit.unit,
-    'attack',
+    "attack",
     state,
     blackCommitmentModifiers,
   );
@@ -82,18 +78,10 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
 
   // Apply attack values to determine results
   // White unit attacks black unit
-  const blackUnitResult = applyAttackValue(
-    state,
-    totalWhiteAttackValue,
-    blackUnit.unit,
-  );
+  const blackUnitResult = applyAttackValue(state, totalWhiteAttackValue, blackUnit.unit);
 
   // Black unit attacks white unit
-  const whiteUnitResult = applyAttackValue(
-    state,
-    totalBlackAttackValue,
-    whiteUnit.unit,
-  );
+  const whiteUnitResult = applyAttackValue(state, totalBlackAttackValue, whiteUnit.unit);
 
   let whiteLegalRetreatOptions: Set<UnitPlacement<TBoard>>;
   if (whiteUnitResult.unitRetreated) {
@@ -125,5 +113,5 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
     blackUnitRetreated: blackUnitResult.unitRetreated,
     whiteUnitReversed: whiteUnitResult.unitReversed,
     blackUnitReversed: blackUnitResult.unitReversed,
-  } as unknown as ResolveMeleeEvent<TBoard, 'resolveMelee'>;
+  } as unknown as ResolveMeleeEvent<TBoard, "resolveMelee">;
 }

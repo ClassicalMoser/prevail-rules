@@ -1,24 +1,19 @@
-import type { Board, GameType } from '@entities';
+import type { Board, GameType } from "@entities";
 import type {
   BoardForGameType,
   GameStateWithBoard,
   SmallGameState,
   StandardGameState,
-} from '@game';
-import {
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-} from './createEmptyBoard';
+} from "@game";
+import { createEmptySmallBoard, createEmptyStandardBoard } from "./createEmptyBoard";
 
 /**
  * Resolves which board size {@link createEmptyGameState} will use (default `standard`).
  */
 
-function shellForBoard<TBoard extends Board>(
-  board: TBoard,
-): GameStateWithBoard<TBoard> {
+function shellForBoard<TBoard extends Board>(board: TBoard): GameStateWithBoard<TBoard> {
   return {
-    boardType: board.boardType as GameStateWithBoard<TBoard>['boardType'],
+    boardType: board.boardType as GameStateWithBoard<TBoard>["boardType"],
     currentRoundNumber: 0,
     currentRoundState: {
       roundNumber: 1,
@@ -27,7 +22,7 @@ function shellForBoard<TBoard extends Board>(
       commandedUnits: new Set(),
       events: [],
     },
-    currentInitiative: 'black',
+    currentInitiative: "black",
     boardState: board,
     cardState: {
       black: {
@@ -61,10 +56,10 @@ function shellForBoard<TBoard extends Board>(
  * `SmallGameState` / `StandardGameState` would not otherwise check
  * against `GameStateWithBoard<BoardForGameType<TGameType>>`.
  */
-export function createEmptyGameState<TGameType extends 'standard'>(
+export function createEmptyGameState<TGameType extends "standard">(
   gameType: TGameType,
 ): StandardGameState;
-export function createEmptyGameState<TGameType extends 'mini' | 'tutorial'>(
+export function createEmptyGameState<TGameType extends "mini" | "tutorial">(
   gameType: TGameType,
 ): SmallGameState;
 export function createEmptyGameState<TGameType extends GameType>(
@@ -74,10 +69,10 @@ export function createEmptyGameState<TGameType extends GameType>(
   gameType: TGameType,
 ): StandardGameState | SmallGameState {
   switch (gameType) {
-    case 'tutorial':
-    case 'mini':
+    case "tutorial":
+    case "mini":
       return shellForBoard(createEmptySmallBoard());
-    case 'standard':
+    case "standard":
       return shellForBoard(createEmptyStandardBoard());
     default: {
       const _exhaustive: never = gameType;

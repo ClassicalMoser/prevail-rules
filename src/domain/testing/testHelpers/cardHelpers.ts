@@ -1,6 +1,6 @@
-import type { Card, Modifier, Restrictions } from '@entities';
-import type { Trait } from '@ruleValues';
-import { tempCommandCards } from '@sampleValues';
+import type { Card, Modifier, Restrictions } from "@entities";
+import type { Trait } from "@ruleValues";
+import { tempCommandCards } from "@sampleValues";
 
 /**
  * Gets cards from the tempCommandCards array by their indices.
@@ -27,9 +27,7 @@ export function getCardsByCount(count: number = 1): Card[] {
     throw new Error(`Count must be non-negative, got ${count}`);
   }
   if (count > tempCommandCards.length) {
-    throw new Error(
-      `Requested ${count} cards but only ${tempCommandCards.length} are available`,
-    );
+    throw new Error(`Requested ${count} cards but only ${tempCommandCards.length} are available`);
   }
   return tempCommandCards.slice(0, count);
 }
@@ -60,9 +58,9 @@ export interface CreateTestCardOptions {
  */
 export function createTestCard(options: CreateTestCardOptions = {}): Card {
   const {
-    id = 'test-card',
-    name = 'Test Card',
-    version = '1.0.0',
+    id = "test-card",
+    name = "Test Card",
+    version = "1.0.0",
     initiative = 1,
     modifiers = [],
     roundEffectModifiers = [],
@@ -73,7 +71,7 @@ export function createTestCard(options: CreateTestCardOptions = {}): Card {
   } = options;
 
   const createRestrictions = (
-    restrictions: CreateTestCardOptions['roundEffectRestrictions'],
+    restrictions: CreateTestCardOptions["roundEffectRestrictions"],
   ): Restrictions => ({
     inspirationRangeRestriction: restrictions?.inspirationRangeRestriction,
     traitRestrictions: restrictions?.traitRestrictions ?? [],
@@ -87,8 +85,8 @@ export function createTestCard(options: CreateTestCardOptions = {}): Card {
     initiative,
     modifiers,
     command: {
-      size: 'units',
-      type: 'movement',
+      size: "units",
+      type: "movement",
       number: 1,
       restrictions: createRestrictions(commandRestrictions),
       modifiers: commandModifiers,

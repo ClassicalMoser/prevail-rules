@@ -1,16 +1,10 @@
-import type { Board } from '@entities';
-import type { ChooseRallyEvent } from '@events';
-import type {
-  CleanupPhaseState,
-  GameStateWithBoard,
-  RallyResolutionState,
-} from '@game';
-import { getCleanupPhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import type { Board } from "@entities";
+import type { ChooseRallyEvent } from "@events";
+import type { CleanupPhaseState, GameStateWithBoard, RallyResolutionState } from "@game";
+import { getCleanupPhaseState } from "@queries";
+import { updatePhaseState } from "@transforms/pureTransforms";
 
-function initialRallyResolutionState(
-  playerRallied: boolean,
-): RallyResolutionState {
+function initialRallyResolutionState(playerRallied: boolean): RallyResolutionState {
   return {
     playerRallied,
     rallyResolved: false,
@@ -38,30 +32,26 @@ export function applyChooseRallyEvent<TBoard extends Board>(
   const { performRally } = event;
   let newPhaseState: CleanupPhaseState;
 
-  if (currentPhaseState.step === 'firstPlayerChooseRally') {
+  if (currentPhaseState.step === "firstPlayerChooseRally") {
     // Create rally resolution state and advance
     newPhaseState = {
       ...currentPhaseState,
-      firstPlayerRallyResolutionState:
-        initialRallyResolutionState(performRally),
+      firstPlayerRallyResolutionState: initialRallyResolutionState(performRally),
       step: performRally
-        ? 'firstPlayerResolveRally' // Ready to resolve rally
-        : 'secondPlayerChooseRally', // Resolution skipped, next player to choose rally
+        ? "firstPlayerResolveRally" // Ready to resolve rally
+        : "secondPlayerChooseRally", // Resolution skipped, next player to choose rally
     };
-  } else if (currentPhaseState.step === 'secondPlayerChooseRally') {
+  } else if (currentPhaseState.step === "secondPlayerChooseRally") {
     // Create rally resolution state and advance
     newPhaseState = {
       ...currentPhaseState,
-      secondPlayerRallyResolutionState:
-        initialRallyResolutionState(performRally),
+      secondPlayerRallyResolutionState: initialRallyResolutionState(performRally),
       step: performRally
-        ? 'secondPlayerResolveRally' // Ready to resolve rally
-        : 'complete', // Resolution skipped, next step is complete
+        ? "secondPlayerResolveRally" // Ready to resolve rally
+        : "complete", // Resolution skipped, next step is complete
     };
   } else {
-    throw new Error(
-      `Cleanup phase is not on a chooseRally step: ${currentPhaseState.step}`,
-    );
+    throw new Error(`Cleanup phase is not on a chooseRally step: ${currentPhaseState.step}`);
   }
 
   const newGameState = updatePhaseState(state, newPhaseState);

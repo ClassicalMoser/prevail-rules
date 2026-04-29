@@ -1,12 +1,12 @@
-import type { Restrictions } from '@entities';
-import { describe, expect, it } from 'vitest';
-import { areRestrictionsEqual } from './areRestrictionsEqual';
+import type { Restrictions } from "@entities";
+import { describe, expect, it } from "vitest";
+import { areRestrictionsEqual } from "./areRestrictionsEqual";
 
 /**
  * areRestrictionsEqual: Compares two Restrictions objects for equality by comparing all properties.
  */
-describe('areRestrictionsEqual', () => {
-  it('given both restrictions have identical properties, returns true', () => {
+describe("areRestrictionsEqual", () => {
+  it("given both restrictions have identical properties, returns true", () => {
     const restrictions1: Restrictions = {
       inspirationRangeRestriction: 1,
       traitRestrictions: [],
@@ -21,33 +21,33 @@ describe('areRestrictionsEqual', () => {
     expect(result).toBe(true);
   });
 
-  it('given comparing restrictions to itself, returns true', () => {
+  it("given comparing restrictions to itself, returns true", () => {
     const restrictions: Restrictions = {
       inspirationRangeRestriction: 2,
-      traitRestrictions: ['sword'],
-      unitRestrictions: ['unit-id-1'],
+      traitRestrictions: ["sword"],
+      unitRestrictions: ["unit-id-1"],
     };
     const { result } = areRestrictionsEqual(restrictions, restrictions);
     expect(result).toBe(true);
   });
 
-  it('given different object references with same values, returns true', () => {
+  it("given different object references with same values, returns true", () => {
     const restrictions1: Restrictions = {
       inspirationRangeRestriction: 3,
-      traitRestrictions: ['skirmish'],
-      unitRestrictions: ['unit-id-2'],
+      traitRestrictions: ["skirmish"],
+      unitRestrictions: ["unit-id-2"],
     };
     const restrictions2: Restrictions = {
       inspirationRangeRestriction: 3,
-      traitRestrictions: ['skirmish'],
-      unitRestrictions: ['unit-id-2'],
+      traitRestrictions: ["skirmish"],
+      unitRestrictions: ["unit-id-2"],
     };
     const { result } = areRestrictionsEqual(restrictions1, restrictions2);
     expect(result).toBe(true);
   });
 
-  describe('inspirationRangeRestriction differences', () => {
-    it('given inspirationRangeRestriction differs, returns false', () => {
+  describe("inspirationRangeRestriction differences", () => {
+    it("given inspirationRangeRestriction differs, returns false", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
@@ -58,19 +58,14 @@ describe('areRestrictionsEqual', () => {
         traitRestrictions: [],
         unitRestrictions: [],
       };
-      const validationResult = areRestrictionsEqual(
-        restrictions1,
-        restrictions2,
-      );
+      const validationResult = areRestrictionsEqual(restrictions1, restrictions2);
       expect(validationResult.result).toBe(false);
       if (!validationResult.result) {
-        expect(validationResult.errorReason).toContain(
-          'inspirationRangeRestriction',
-        );
+        expect(validationResult.errorReason).toContain("inspirationRangeRestriction");
       }
     });
 
-    it('given one is undefined and the other is not, returns false', () => {
+    it("given one is undefined and the other is not, returns false", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: undefined,
         traitRestrictions: [],
@@ -85,7 +80,7 @@ describe('areRestrictionsEqual', () => {
       expect(result).toBe(false);
     });
 
-    it('given both are undefined, returns true', () => {
+    it("given both are undefined, returns true", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: undefined,
         traitRestrictions: [],
@@ -101,77 +96,67 @@ describe('areRestrictionsEqual', () => {
     });
   });
 
-  describe('traitRestrictions differences', () => {
-    it('given traitRestrictions arrays have different lengths, returns false', () => {
+  describe("traitRestrictions differences", () => {
+    it("given traitRestrictions arrays have different lengths, returns false", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['sword'],
+        traitRestrictions: ["sword"],
         unitRestrictions: [],
       };
       const restrictions2: Restrictions = {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['sword', 'skirmish'],
+        traitRestrictions: ["sword", "skirmish"],
         unitRestrictions: [],
       };
-      const validationResult = areRestrictionsEqual(
-        restrictions1,
-        restrictions2,
-      );
+      const validationResult = areRestrictionsEqual(restrictions1, restrictions2);
       expect(validationResult.result).toBe(false);
       if (!validationResult.result) {
-        expect(validationResult.errorReason).toContain(
-          'traitRestrictions array lengths',
-        );
+        expect(validationResult.errorReason).toContain("traitRestrictions array lengths");
       }
     });
 
-    it('given traitRestrictions differ at an index, returns false', () => {
+    it("given traitRestrictions differ at an index, returns false", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['sword'],
+        traitRestrictions: ["sword"],
         unitRestrictions: [],
       };
       const restrictions2: Restrictions = {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['skirmish'],
+        traitRestrictions: ["skirmish"],
         unitRestrictions: [],
       };
-      const validationResult = areRestrictionsEqual(
-        restrictions1,
-        restrictions2,
-      );
+      const validationResult = areRestrictionsEqual(restrictions1, restrictions2);
       expect(validationResult.result).toBe(false);
       if (!validationResult.result) {
-        expect(validationResult.errorReason).toContain(
-          'traitRestrictions at index',
-        );
+        expect(validationResult.errorReason).toContain("traitRestrictions at index");
       }
     });
 
-    it('given traitRestrictions arrays match, returns true', () => {
+    it("given traitRestrictions arrays match, returns true", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['sword', 'skirmish'],
+        traitRestrictions: ["sword", "skirmish"],
         unitRestrictions: [],
       };
       const restrictions2: Restrictions = {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['sword', 'skirmish'],
+        traitRestrictions: ["sword", "skirmish"],
         unitRestrictions: [],
       };
       const { result } = areRestrictionsEqual(restrictions1, restrictions2);
       expect(result).toBe(true);
     });
 
-    it('given traitRestrictions have same elements but different order, returns false', () => {
+    it("given traitRestrictions have same elements but different order, returns false", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['sword', 'skirmish'],
+        traitRestrictions: ["sword", "skirmish"],
         unitRestrictions: [],
       };
       const restrictions2: Restrictions = {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['skirmish', 'sword'],
+        traitRestrictions: ["skirmish", "sword"],
         unitRestrictions: [],
       };
       const { result } = areRestrictionsEqual(restrictions1, restrictions2);
@@ -179,95 +164,82 @@ describe('areRestrictionsEqual', () => {
     });
   });
 
-  describe('unitRestrictions differences', () => {
-    it('given unitRestrictions arrays have different lengths, returns false', () => {
+  describe("unitRestrictions differences", () => {
+    it("given unitRestrictions arrays have different lengths, returns false", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
-        unitRestrictions: ['unit-id-1'],
+        unitRestrictions: ["unit-id-1"],
       };
       const restrictions2: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
-        unitRestrictions: ['unit-id-1', 'unit-id-2'],
+        unitRestrictions: ["unit-id-1", "unit-id-2"],
       };
-      const validationResult = areRestrictionsEqual(
-        restrictions1,
-        restrictions2,
-      );
+      const validationResult = areRestrictionsEqual(restrictions1, restrictions2);
       expect(validationResult.result).toBe(false);
       if (!validationResult.result) {
-        expect(validationResult.errorReason).toContain(
-          'unitRestrictions array lengths',
-        );
+        expect(validationResult.errorReason).toContain("unitRestrictions array lengths");
       }
     });
 
-    it('given unitRestrictions differ at an index, returns false', () => {
+    it("given unitRestrictions differ at an index, returns false", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
-        unitRestrictions: ['unit-id-1'],
+        unitRestrictions: ["unit-id-1"],
       };
       const restrictions2: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
-        unitRestrictions: ['unit-id-2'],
+        unitRestrictions: ["unit-id-2"],
       };
-      const validationResult = areRestrictionsEqual(
-        restrictions1,
-        restrictions2,
-      );
+      const validationResult = areRestrictionsEqual(restrictions1, restrictions2);
       expect(validationResult.result).toBe(false);
       if (!validationResult.result) {
-        expect(validationResult.errorReason).toContain(
-          'unitRestrictions at index',
-        );
+        expect(validationResult.errorReason).toContain("unitRestrictions at index");
       }
     });
 
-    it('given unitRestrictions arrays match, returns true', () => {
+    it("given unitRestrictions arrays match, returns true", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
-        unitRestrictions: ['unit-id-1', 'unit-id-2'],
+        unitRestrictions: ["unit-id-1", "unit-id-2"],
       };
       const restrictions2: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
-        unitRestrictions: ['unit-id-1', 'unit-id-2'],
+        unitRestrictions: ["unit-id-1", "unit-id-2"],
       };
       const { result } = areRestrictionsEqual(restrictions1, restrictions2);
       expect(result).toBe(true);
     });
 
-    it('given unitRestrictions have same elements but different order, returns false', () => {
+    it("given unitRestrictions have same elements but different order, returns false", () => {
       const restrictions1: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
-        unitRestrictions: ['unit-id-1', 'unit-id-2'],
+        unitRestrictions: ["unit-id-1", "unit-id-2"],
       };
       const restrictions2: Restrictions = {
         inspirationRangeRestriction: 1,
         traitRestrictions: [],
-        unitRestrictions: ['unit-id-2', 'unit-id-1'],
+        unitRestrictions: ["unit-id-2", "unit-id-1"],
       };
       const { result } = areRestrictionsEqual(restrictions1, restrictions2);
       expect(result).toBe(false);
     });
   });
 
-  it('given comparing restrictions to undefined, returns false', () => {
+  it("given comparing restrictions to undefined, returns false", () => {
     const restrictions: Restrictions = {
       inspirationRangeRestriction: 1,
       traitRestrictions: [],
       unitRestrictions: [],
     };
     // Intentional type error to test the function
-    const { result } = areRestrictionsEqual(
-      restrictions,
-      undefined as unknown as Restrictions,
-    );
+    const { result } = areRestrictionsEqual(restrictions, undefined as unknown as Restrictions);
     expect(result).toBe(false);
   });
 });

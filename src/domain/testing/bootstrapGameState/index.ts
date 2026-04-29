@@ -1,2 +1,2 @@
-export { createBoard, createGameState } from './createGameStateFromSpec';
-export type { UnitPlacementSpec } from './unitPlacementSpec';
+export { createBoard, createGameState } from "./createGameStateFromSpec";
+export type { UnitPlacementSpec } from "./unitPlacementSpec";

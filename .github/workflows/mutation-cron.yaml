@@ -6,7 +6,7 @@ name: Mutation tests
 on:
   schedule:
     # UTC-only cron: 06:00 UTC = midnight Chicago in CST; 01:00 Chicago in CDT (no single UTC time matches both).
-    - cron: '0 6 * * *'
+    - cron: "0 6 * * *"
   workflow_dispatch:
 
 jobs:

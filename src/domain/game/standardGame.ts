@@ -1,17 +1,17 @@
-import type { Army } from '@entities';
-import type { AssertExact } from '@utils';
-import type { StandardGameState } from './standardGameState';
+import type { Army } from "@entities";
+import type { AssertExact } from "@utils";
+import type { StandardGameState } from "./standardGameState";
 
-import { armySchema } from '@entities';
-import { z } from 'zod';
-import { gameStateSchemaForStandardBoard } from './standardGameState';
+import { armySchema } from "@entities";
+import { z } from "zod";
+import { gameStateSchemaForStandardBoard } from "./standardGameState";
 
 /**
  * A **standard** game (`gameType === 'standard'`).
  * Every field is documented here so IDE hover does not jump through a shared base interface.
  */
 export interface StandardGame {
-  gameType: 'standard';
+  gameType: "standard";
   gameState: StandardGameState;
   /** The unique identifier of the game. */
   id: string;
@@ -30,7 +30,7 @@ export interface StandardGame {
 // ---------------------------------------------------------------------------
 
 const _standardGameSchemaObject: z.ZodType<StandardGame> = z.object({
-  gameType: z.literal('standard'),
+  gameType: z.literal("standard"),
   gameState: gameStateSchemaForStandardBoard,
   id: z.uuid(),
   blackPlayer: z.uuid(),
@@ -41,11 +41,7 @@ const _standardGameSchemaObject: z.ZodType<StandardGame> = z.object({
 
 type StandardGameSchemaType = z.infer<typeof _standardGameSchemaObject>;
 
-const _assertExactStandardGame: AssertExact<
-  StandardGame,
-  StandardGameSchemaType
-> = true;
+const _assertExactStandardGame: AssertExact<StandardGame, StandardGameSchemaType> = true;
 
 /** Validates a {@link Game} when `gameType` is known to be `standard`. */
-export const standardGameSchema: z.ZodType<StandardGame> =
-  _standardGameSchemaObject;
+export const standardGameSchema: z.ZodType<StandardGame> = _standardGameSchemaObject;

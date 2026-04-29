@@ -1,5 +1,5 @@
 /** Application layer: use cases, process pipeline, and port types. Narrow storage payloads in composables before `process/*`. */
-export { createGameRunner } from './gameRunner';
+export { createGameRunner } from "./gameRunner";
 export type {
   EnginePorts,
   EventStreamStorage,
@@ -9,4 +9,4 @@ export type {
   GameStorage,
   PortResponse,
   RoundSnapshotStorage,
-} from './ports';
+} from "./ports";

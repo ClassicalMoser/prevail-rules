@@ -320,10 +320,10 @@ All state changes go through events:
 > ⚠️ **Note**: The Rules Engine is currently a work in progress. The example below shows a general representation of the planned API.
 
 ```typescript
-import { RulesEngine } from '@transforms';
-import { createEmptyStandardBoard } from '@queries';
-import { MoveUnitEvent } from '@events';
-import type { GameState } from '@entities';
+import { RulesEngine } from "@transforms";
+import { createEmptyStandardBoard } from "@queries";
+import { MoveUnitEvent } from "@events";
+import type { GameState } from "@entities";
 
 // Create initial game state
 const initialState: GameState = {
@@ -331,7 +331,7 @@ const initialState: GameState = {
   currentRoundState: {
     /* ... */
   },
-  currentInitiative: 'white',
+  currentInitiative: "white",
   boardState: createEmptyStandardBoard(),
   cardState: {
     /* ... */
@@ -344,14 +344,14 @@ const engine = new RulesEngine();
 
 // Player inputs a move event
 const moveEvent: MoveUnitEvent = {
-  eventType: 'playerChoice',
-  choiceType: 'moveUnit',
-  player: 'white',
+  eventType: "playerChoice",
+  choiceType: "moveUnit",
+  player: "white",
   unit: {
     /* ... */
   },
-  from: { coordinate: 'E-5', facing: 'north' },
-  to: { coordinate: 'D-5', facing: 'north' },
+  from: { coordinate: "E-5", facing: "north" },
+  to: { coordinate: "D-5", facing: "north" },
 };
 
 // Game validates, then either applies or rejects
@@ -363,7 +363,7 @@ if (result.success) {
   // Check result.triggeredEvents for automatic events (e.g., engagement)
 } else {
   // Event was rejected - handle result.errors
-  console.error('Move rejected:', result.errors);
+  console.error("Move rejected:", result.errors);
 }
 ```
 

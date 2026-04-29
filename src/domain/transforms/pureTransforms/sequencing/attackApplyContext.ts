@@ -1,11 +1,11 @@
-import type { Board, PlayerSide } from '@entities';
-import type { AttackApplyState, GameStateWithBoard } from '@game';
+import type { Board, PlayerSide } from "@entities";
+import type { AttackApplyState, GameStateWithBoard } from "@game";
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
   getCurrentPhaseState,
-} from '@queries';
-import { updateAttackApplyState } from './updateAttackApplyState';
+} from "@queries";
+import { updateAttackApplyState } from "./updateAttackApplyState";
 
 /**
  * Gets the attack apply state from the current game state context.
@@ -26,23 +26,19 @@ export function getAttackApplyStateFromContext<TBoard extends Board>(
   const phaseState = getCurrentPhaseState(state);
 
   // Handle ranged attack resolution (in issueCommands phase)
-  if (phaseState.phase === 'issueCommands') {
+  if (phaseState.phase === "issueCommands") {
     return getAttackApplyStateFromRangedAttack(state);
   }
 
   // Handle melee resolution (in resolveMelee phase)
-  if (phaseState.phase === 'resolveMelee') {
+  if (phaseState.phase === "resolveMelee") {
     if (!player) {
-      throw new Error(
-        'Player parameter required for melee attack apply state context',
-      );
+      throw new Error("Player parameter required for melee attack apply state context");
     }
     return getAttackApplyStateFromMelee(state, player);
   }
 
-  throw new Error(
-    `Attack apply state not available in phase: ${phaseState.phase}`,
-  );
+  throw new Error(`Attack apply state not available in phase: ${phaseState.phase}`);
 }
 
 /**
@@ -67,21 +63,19 @@ export function updateAttackApplySubstep<TBoard extends Board, TSubstep>(
   const phaseState = getCurrentPhaseState(state);
 
   // Handle ranged attack resolution (in issueCommands phase)
-  if (phaseState.phase === 'issueCommands') {
+  if (phaseState.phase === "issueCommands") {
     const attackApplyState = getAttackApplyStateFromRangedAttack(state);
     const updatedAttackApplyState = updateFn(attackApplyState);
     return updateAttackApplyState(state, updatedAttackApplyState);
   }
 
   // Handle melee resolution (in resolveMelee phase)
-  if (phaseState.phase === 'resolveMelee') {
+  if (phaseState.phase === "resolveMelee") {
     const player = getPlayer(substepState);
     const attackApplyState = getAttackApplyStateFromMelee(state, player);
     const updatedAttackApplyState = updateFn(attackApplyState);
     return updateAttackApplyState(state, updatedAttackApplyState);
   }
 
-  throw new Error(
-    `Attack apply substep update not expected in phase: ${phaseState.phase}`,
-  );
+  throw new Error(`Attack apply substep update not expected in phase: ${phaseState.phase}`);
 }

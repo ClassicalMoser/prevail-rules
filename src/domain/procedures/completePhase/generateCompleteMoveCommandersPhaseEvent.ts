@@ -1,11 +1,8 @@
-import type { Board } from '@entities';
-import type { CompleteMoveCommandersPhaseEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
-  GAME_EFFECT_EVENT_TYPE,
-} from '@events';
-import { getOtherPlayer } from '@queries';
+import type { Board } from "@entities";
+import type { CompleteMoveCommandersPhaseEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
+import { getOtherPlayer } from "@queries";
 
 /**
  * Generates a CompleteMoveCommandersPhaseEvent to complete the move commanders phase
@@ -19,7 +16,7 @@ import { getOtherPlayer } from '@queries';
 export function generateCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): CompleteMoveCommandersPhaseEvent<TBoard, 'completeMoveCommandersPhase'> {
+): CompleteMoveCommandersPhaseEvent<TBoard, "completeMoveCommandersPhase"> {
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 

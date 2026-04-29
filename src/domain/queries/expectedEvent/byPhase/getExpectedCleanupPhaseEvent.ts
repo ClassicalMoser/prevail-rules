@@ -1,9 +1,9 @@
-import type { Board } from '@entities';
-import type { ExpectedEventInfo } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getCleanupPhaseState } from '@queries/sequencing';
-import { getExpectedRallyResolutionEvent } from '../composable';
+import type { Board } from "@entities";
+import type { ExpectedEventInfo } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getOtherPlayer } from "@queries/getOtherPlayer";
+import { getCleanupPhaseState } from "@queries/sequencing";
+import { getExpectedRallyResolutionEvent } from "../composable";
 
 /**
  * Gets information about the expected event for the Cleanup phase.
@@ -19,50 +19,50 @@ export function getExpectedCleanupPhaseEvent<TBoard extends Board>(
   const secondPlayer = getOtherPlayer(firstPlayer);
 
   switch (phaseState.step) {
-    case 'discardPlayedCards':
+    case "discardPlayedCards":
       return {
-        actionType: 'gameEffect',
-        effectType: 'discardPlayedCards',
+        actionType: "gameEffect",
+        effectType: "discardPlayedCards",
       };
 
-    case 'firstPlayerChooseRally':
+    case "firstPlayerChooseRally":
       return {
-        actionType: 'playerChoice',
+        actionType: "playerChoice",
         playerSource: firstPlayer,
-        choiceType: 'chooseRally',
+        choiceType: "chooseRally",
       };
 
-    case 'secondPlayerChooseRally':
+    case "secondPlayerChooseRally":
       return {
-        actionType: 'playerChoice',
+        actionType: "playerChoice",
         playerSource: secondPlayer,
-        choiceType: 'chooseRally',
+        choiceType: "chooseRally",
       };
 
-    case 'firstPlayerResolveRally': {
+    case "firstPlayerResolveRally": {
       const rallyState = phaseState.firstPlayerRallyResolutionState;
 
       if (!rallyState) {
-        throw new Error('First player rally resolution state not found');
+        throw new Error("First player rally resolution state not found");
       }
 
       return getExpectedRallyResolutionEvent(rallyState);
     }
 
-    case 'secondPlayerResolveRally': {
+    case "secondPlayerResolveRally": {
       const rallyState = phaseState.secondPlayerRallyResolutionState;
 
       if (!rallyState) {
-        throw new Error('Second player rally resolution state not found');
+        throw new Error("Second player rally resolution state not found");
       }
 
       return getExpectedRallyResolutionEvent(rallyState);
     }
 
-    case 'complete':
+    case "complete":
       return {
-        actionType: 'gameEffect',
-        effectType: 'completeCleanupPhase',
+        actionType: "gameEffect",
+        effectType: "completeCleanupPhase",
       };
 
     default: {

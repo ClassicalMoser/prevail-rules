@@ -1,22 +1,22 @@
-import type { Board, UnitWithPlacement } from '@entities';
-import type { ResolveFlankEngagementEvent } from '@events';
+import type { Board, UnitWithPlacement } from "@entities";
+import type { ResolveFlankEngagementEvent } from "@events";
 import type {
   GameStateWithBoard,
   IssueCommandsPhaseState,
   MovementResolutionState,
   PhaseState,
-} from '@game';
+} from "@game";
 import {
   getFlankEngagementStateFromMovement,
   getIssueCommandsPhaseState,
   getMovementResolutionState,
-} from '@queries';
+} from "@queries";
 import {
   addUnitToBoard,
   removeUnitFromBoard,
   updateBoardState,
   updatePhaseState,
-} from '@transforms/pureTransforms';
+} from "@transforms/pureTransforms";
 
 /**
  * Applies a ResolveFlankEngagementEvent to the game state.
@@ -48,10 +48,7 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
       facing: event.newFacing,
     },
   } as UnitWithPlacement<TBoard>;
-  const updatedBoard = addUnitToBoard<TBoard>(
-    removedUnitBoard,
-    newUnitWithPlacement,
-  );
+  const updatedBoard = addUnitToBoard<TBoard>(removedUnitBoard, newUnitWithPlacement);
 
   const newFlankResolutionState = {
     ...flankResolutionState,
@@ -74,8 +71,5 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
     currentCommandResolutionState: newMovementState,
   };
 
-  return updatePhaseState(
-    updateBoardState(state, updatedBoard),
-    newPhaseState as PhaseState,
-  );
+  return updatePhaseState(updateBoardState(state, updatedBoard), newPhaseState as PhaseState);
 }

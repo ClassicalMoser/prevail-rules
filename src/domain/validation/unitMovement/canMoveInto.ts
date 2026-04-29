@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
-import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from '@entities';
-import { getBoardSpace } from '@queries';
-import { canEngageEnemy } from './canEngageEnemy';
+import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from "@entities";
+import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from "@entities";
+import { getBoardSpace } from "@queries";
+import { canEngageEnemy } from "./canEngageEnemy";
 
 /**
  * Determines whether a unit can move into (end its movement at) a specific coordinate.
@@ -23,7 +23,7 @@ export function canMoveInto<TBoard extends Board>(
   moveStartCoordinate: BoardCoordinate<TBoard>,
   currentFacing: UnitFacing,
   remainingFlexibility: number,
-  direction: 'advance' | 'retreat',
+  direction: "advance" | "retreat",
 ): boolean {
   try {
     // Find the board space at the given coordinate.
@@ -48,7 +48,7 @@ export function canMoveInto<TBoard extends Board>(
       }
       // Player can advance into a space with an enemy unit
       // if they can engage the enemy.
-      if (direction === 'advance') {
+      if (direction === "advance") {
         return canEngageEnemy(
           unitSide,
           board,

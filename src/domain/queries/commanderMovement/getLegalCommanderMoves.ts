@@ -1,8 +1,8 @@
-import type { Board, BoardCoordinate, PlayerSide } from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { getBoardSpace } from '@queries/boardSpace';
-import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';
-import { exploreCommanderMoves } from './exploreCommanderMoves';
+import type { Board, BoardCoordinate, PlayerSide } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { getBoardSpace } from "@queries/boardSpace";
+import { COMMANDER_MOVE_DISTANCE } from "@ruleValues";
+import { exploreCommanderMoves } from "./exploreCommanderMoves";
 
 export function getLegalCommanderMoves<TBoard extends Board>(
   playerSide: PlayerSide,
@@ -20,16 +20,11 @@ export function getLegalCommanderMoves<TBoard extends Board>(
   // Get the commander
   const containsCommander = space.commanders.has(playerSide);
   if (!containsCommander) {
-    throw new Error('Starting position does not contain specified commander');
+    throw new Error("Starting position does not contain specified commander");
   }
 
   // Get the legal moves by exploring reachable spaces
-  const legalMoves = exploreCommanderMoves(
-    playerSide,
-    startingPosition,
-    gameState,
-    maxDistance,
-  );
+  const legalMoves = exploreCommanderMoves(playerSide, startingPosition, gameState, maxDistance);
 
   // Get the set of final legal positions
   return legalMoves;

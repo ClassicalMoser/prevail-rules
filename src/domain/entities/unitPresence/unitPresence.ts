@@ -1,22 +1,19 @@
-import type { AssertExact } from '@utils';
-import type { EngagedUnitPresence } from './engagedUnitPresence';
-import type { NoneUnitPresence } from './noneUnitPresence';
-import type { SingleUnitPresence } from './singleUnitPresence';
+import type { AssertExact } from "@utils";
+import type { EngagedUnitPresence } from "./engagedUnitPresence";
+import type { NoneUnitPresence } from "./noneUnitPresence";
+import type { SingleUnitPresence } from "./singleUnitPresence";
 
-import { z } from 'zod';
-import { engagedUnitPresenceSchema } from './engagedUnitPresence';
-import { noneUnitPresenceSchema } from './noneUnitPresence';
-import { singleUnitPresenceSchema } from './singleUnitPresence';
+import { z } from "zod";
+import { engagedUnitPresenceSchema } from "./engagedUnitPresence";
+import { noneUnitPresenceSchema } from "./noneUnitPresence";
+import { singleUnitPresenceSchema } from "./singleUnitPresence";
 
 /**
  * Unit presence in a space.
  */
-export type UnitPresence =
-  | NoneUnitPresence
-  | SingleUnitPresence
-  | EngagedUnitPresence;
+export type UnitPresence = NoneUnitPresence | SingleUnitPresence | EngagedUnitPresence;
 
-const _unitPresenceSchemaObject = z.discriminatedUnion('presenceType', [
+const _unitPresenceSchemaObject = z.discriminatedUnion("presenceType", [
   noneUnitPresenceSchema,
   singleUnitPresenceSchema,
   engagedUnitPresenceSchema,
@@ -56,11 +53,7 @@ type UnitPresenceTypeSchemaType = z.infer<typeof _unitPresenceSchemaObject>;
  * }
  * ```
  */
-export const unitPresenceSchema: z.ZodType<UnitPresence> =
-  _unitPresenceSchemaObject;
+export const unitPresenceSchema: z.ZodType<UnitPresence> = _unitPresenceSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactUnitPresence: AssertExact<
-  UnitPresence,
-  UnitPresenceTypeSchemaType
-> = true;
+const _assertExactUnitPresence: AssertExact<UnitPresence, UnitPresenceTypeSchemaType> = true;

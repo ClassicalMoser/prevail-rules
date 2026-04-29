@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { CleanupPhaseState, GameStateWithBoard } from '@game';
-import { getCleanupPhaseState } from '../getPhaseState';
+import type { Board } from "@entities";
+import type { CleanupPhaseState, GameStateWithBoard } from "@game";
+import { getCleanupPhaseState } from "../getPhaseState";
 
 /**
  * Gets the next step after resolving rally for the current step.
@@ -11,18 +11,16 @@ import { getCleanupPhaseState } from '../getPhaseState';
  */
 export function getNextStepForResolveRally<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
-): CleanupPhaseState['step'] {
+): CleanupPhaseState["step"] {
   const phaseState = getCleanupPhaseState(state);
 
-  if (phaseState.step === 'firstPlayerResolveRally') {
-    return 'secondPlayerChooseRally';
+  if (phaseState.step === "firstPlayerResolveRally") {
+    return "secondPlayerChooseRally";
   }
 
-  if (phaseState.step === 'secondPlayerResolveRally') {
-    return 'complete';
+  if (phaseState.step === "secondPlayerResolveRally") {
+    return "complete";
   }
 
-  throw new Error(
-    `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
-  );
+  throw new Error(`Cleanup phase is not on a resolveRally step: ${phaseState.step}`);
 }

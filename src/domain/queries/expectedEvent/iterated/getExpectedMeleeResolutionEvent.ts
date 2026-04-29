@@ -1,9 +1,9 @@
-import type { Board } from '@entities';
-import type { ExpectedEventInfo } from '@events';
-import type { GameStateWithBoard, MeleeResolutionState } from '@game';
-import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getDefendingPlayerForNextIncompleteMeleeAttackApply } from '@queries/sequencing';
-import { getExpectedAttackApplyEvent } from '../composable';
+import type { Board } from "@entities";
+import type { ExpectedEventInfo } from "@events";
+import type { GameStateWithBoard, MeleeResolutionState } from "@game";
+import { getOtherPlayer } from "@queries/getOtherPlayer";
+import { getDefendingPlayerForNextIncompleteMeleeAttackApply } from "@queries/sequencing";
+import { getExpectedAttackApplyEvent } from "../composable";
 
 /**
  * Gets the expected event for melee resolution substeps.
@@ -20,7 +20,7 @@ export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
 ): ExpectedEventInfo {
   // Fast rejection: if already completed, this is an invalid state
   if (meleeState.completed) {
-    throw new Error('Melee resolution state is already complete');
+    throw new Error("Melee resolution state is already complete");
   }
 
   const firstPlayer = gameState.currentInitiative;
@@ -29,26 +29,24 @@ export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
   // Get commitments and attack apply states based on initiative order
   const firstPlayerCommitment = meleeState[`${firstPlayer}Commitment`];
   const secondPlayerCommitment = meleeState[`${secondPlayer}Commitment`];
-  const firstPlayerAttackApplyState =
-    meleeState[`${firstPlayer}AttackApplyState`];
-  const secondPlayerAttackApplyState =
-    meleeState[`${secondPlayer}AttackApplyState`];
+  const firstPlayerAttackApplyState = meleeState[`${firstPlayer}AttackApplyState`];
+  const secondPlayerAttackApplyState = meleeState[`${secondPlayer}AttackApplyState`];
 
   // Check first player's commitment
-  if (firstPlayerCommitment.commitmentType === 'pending') {
+  if (firstPlayerCommitment.commitmentType === "pending") {
     return {
-      actionType: 'playerChoice',
+      actionType: "playerChoice",
       playerSource: firstPlayer,
-      choiceType: 'commitToMelee',
+      choiceType: "commitToMelee",
     };
   }
 
   // Check second player's commitment
-  if (secondPlayerCommitment.commitmentType === 'pending') {
+  if (secondPlayerCommitment.commitmentType === "pending") {
     return {
-      actionType: 'playerChoice',
+      actionType: "playerChoice",
       playerSource: secondPlayer,
-      choiceType: 'commitToMelee',
+      choiceType: "commitToMelee",
     };
   }
 
@@ -56,14 +54,16 @@ export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
   // resolveMelee creates both attackApplyStates
   if (!firstPlayerAttackApplyState || !secondPlayerAttackApplyState) {
     return {
-      actionType: 'gameEffect',
-      effectType: 'resolveMelee',
+      actionType: "gameEffect",
+      effectType: "resolveMelee",
     };
   }
 
   // resolveMelee has been applied (both attackApplyStates exist)
-  const nextDefendingPlayer =
-    getDefendingPlayerForNextIncompleteMeleeAttackApply(gameState, meleeState);
+  const nextDefendingPlayer = getDefendingPlayerForNextIncompleteMeleeAttackApply(
+    gameState,
+    meleeState,
+  );
   if (nextDefendingPlayer !== null) {
     return getExpectedAttackApplyEvent(
       meleeState[`${nextDefendingPlayer}AttackApplyState`]!,
@@ -73,7 +73,7 @@ export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
 
   // Both attack apply states are complete, melee resolution should be complete
   return {
-    actionType: 'gameEffect',
-    effectType: 'completeMeleeResolution',
+    actionType: "gameEffect",
+    effectType: "completeMeleeResolution",
   };
 }

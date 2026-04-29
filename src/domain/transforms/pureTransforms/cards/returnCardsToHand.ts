@@ -1,4 +1,4 @@
-import type { CardState, PlayerSide } from '@entities';
+import type { CardState, PlayerSide } from "@entities";
 
 /**
  * Returns all played and discarded cards to the player's hand.
@@ -8,10 +8,7 @@ import type { CardState, PlayerSide } from '@entities';
  * @param player - The player whose cards to return
  * @returns New CardState with played and discarded cards returned to hand
  */
-export function returnCardsToHand(
-  cardState: CardState,
-  player: PlayerSide,
-): CardState {
+export function returnCardsToHand(cardState: CardState, player: PlayerSide): CardState {
   const playerCardState = cardState[player];
 
   const newHand = [

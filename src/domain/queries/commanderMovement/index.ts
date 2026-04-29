@@ -1,1 +1,1 @@
-export { getLegalCommanderMoves } from './getLegalCommanderMoves';
+export { getLegalCommanderMoves } from "./getLegalCommanderMoves";

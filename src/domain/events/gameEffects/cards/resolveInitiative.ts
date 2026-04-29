@@ -1,11 +1,11 @@
-import type { Board, PlayerSide } from '@entities';
-import type { AssertExact } from '@utils';
-import { playerSideSchema } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board, PlayerSide } from "@entities";
+import type { AssertExact } from "@utils";
+import { playerSideSchema } from "@entities";
+import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
 /** The type of the resolve initiative game effect. */
-export const RESOLVE_INITIATIVE_EFFECT_TYPE = 'resolveInitiative' as const;
+export const RESOLVE_INITIATIVE_EFFECT_TYPE = "resolveInitiative" as const;
 
 /** The event to resolve the initiative.
  * Which player has initiative for the round.
@@ -14,7 +14,7 @@ export const RESOLVE_INITIATIVE_EFFECT_TYPE = 'resolveInitiative' as const;
  */
 export interface ResolveInitiativeEvent<
   _TBoard extends Board,
-  _TEffectType extends 'resolveInitiative' = 'resolveInitiative',
+  _TEffectType extends "resolveInitiative" = "resolveInitiative",
 > {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
@@ -37,9 +37,7 @@ const _resolveInitiativeEventSchemaObject = z.object({
   player: playerSideSchema,
 });
 
-type ResolveInitiativeEventSchemaType = z.infer<
-  typeof _resolveInitiativeEventSchemaObject
->;
+type ResolveInitiativeEventSchemaType = z.infer<typeof _resolveInitiativeEventSchemaObject>;
 
 const _assertExactResolveInitiativeEvent: AssertExact<
   ResolveInitiativeEvent<Board>,
@@ -48,8 +46,8 @@ const _assertExactResolveInitiativeEvent: AssertExact<
 
 /** The schema for a resolve initiative event. */
 export const resolveInitiativeEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'gameEffect'>;
-  effectType: z.ZodLiteral<'resolveInitiative'>;
+  eventType: z.ZodLiteral<"gameEffect">;
+  effectType: z.ZodLiteral<"resolveInitiative">;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
 }> = _resolveInitiativeEventSchemaObject;

@@ -1,8 +1,8 @@
-import type { UnitFacing, UnitInstance } from '@entities/unit';
-import type { AssertExact } from '@utils';
-import { unitFacingSchema, unitInstanceSchema } from '@entities/unit';
-import { z } from 'zod';
-import { ENGAGED_UNIT_PRESENCE_TYPE } from './unitPresenceType';
+import type { UnitFacing, UnitInstance } from "@entities/unit";
+import type { AssertExact } from "@utils";
+import { unitFacingSchema, unitInstanceSchema } from "@entities/unit";
+import { z } from "zod";
+import { ENGAGED_UNIT_PRESENCE_TYPE } from "./unitPresenceType";
 
 /**
  * Two units are engaged in combat in the space.
@@ -29,15 +29,13 @@ const _engagedUnitPresenceSchemaObject = z.object({
   secondaryUnit: unitInstanceSchema,
 });
 
-type EngagedUnitPresenceSchemaType = z.infer<
-  typeof _engagedUnitPresenceSchemaObject
->;
+type EngagedUnitPresenceSchemaType = z.infer<typeof _engagedUnitPresenceSchemaObject>;
 
 /**
  * The schema for two units engaged in combat in a space.
  */
 export const engagedUnitPresenceSchema: z.ZodObject<{
-  presenceType: z.ZodLiteral<'engaged'>;
+  presenceType: z.ZodLiteral<"engaged">;
   primaryUnit: typeof unitInstanceSchema;
   primaryFacing: typeof unitFacingSchema;
   secondaryUnit: typeof unitInstanceSchema;

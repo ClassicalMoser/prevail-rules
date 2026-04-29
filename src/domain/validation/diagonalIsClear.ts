@@ -1,15 +1,10 @@
-import type {
-  Board,
-  BoardCoordinate,
-  PlayerSide,
-  ValidationResult,
-} from '@entities';
+import type { Board, BoardCoordinate, PlayerSide, ValidationResult } from "@entities";
 import {
   getBoardSpace,
   getDiagonallyAdjacentSpaces,
   getOrthogonallyAdjacentSpaces,
-} from '@queries';
-import { hasEnemyUnit } from './unitPresence';
+} from "@queries";
+import { hasEnemyUnit } from "./unitPresence";
 
 export function diagonalIsClear<TBoard extends Board>(
   playerSide: PlayerSide,
@@ -19,32 +14,21 @@ export function diagonalIsClear<TBoard extends Board>(
 ): ValidationResult {
   try {
     // Check if the origin space is a diagonal space
-    const originDiagonalSpaces = getDiagonallyAdjacentSpaces(
-      board,
-      originCoordinate,
-    );
+    const originDiagonalSpaces = getDiagonallyAdjacentSpaces(board, originCoordinate);
     if (!originDiagonalSpaces.has(targetCoordinate)) {
       // Target space is not a diagonal space - check is irrelevant
       return {
         result: false,
-        errorReason: 'Target space is not a diagonal space',
+        errorReason: "Target space is not a diagonal space",
       };
     }
 
     // Find the shared orthogonal spaces between the origin and target spaces
-    const originOrthogonalSpaces = getOrthogonallyAdjacentSpaces(
-      board,
-      originCoordinate,
-    );
-    const targetOrthogonalSpaces = getOrthogonallyAdjacentSpaces(
-      board,
-      targetCoordinate,
-    );
+    const originOrthogonalSpaces = getOrthogonallyAdjacentSpaces(board, originCoordinate);
+    const targetOrthogonalSpaces = getOrthogonallyAdjacentSpaces(board, targetCoordinate);
     // Find intersection: spaces that are in both sets
     const sharedOrthogonalSpaces = new Set(
-      [...originOrthogonalSpaces].filter((space) =>
-        targetOrthogonalSpaces.has(space),
-      ),
+      [...originOrthogonalSpaces].filter((space) => targetOrthogonalSpaces.has(space)),
     );
 
     // Check if the spaces are diagonally adjacent
@@ -53,17 +37,14 @@ export function diagonalIsClear<TBoard extends Board>(
       // Spaces are not diagonally adjacent - check is irrelevant
       return {
         result: false,
-        errorReason: 'Spaces are not diagonally adjacent',
+        errorReason: "Spaces are not diagonally adjacent",
       };
     }
 
     // Get the enemy spaces
     const enemySpaces = [...sharedOrthogonalSpaces].filter((space) => {
       // Check if the space has an enemy unit
-      const { result: hasEnemyUnitResult } = hasEnemyUnit(
-        playerSide,
-        getBoardSpace(board, space),
-      );
+      const { result: hasEnemyUnitResult } = hasEnemyUnit(playerSide, getBoardSpace(board, space));
       return hasEnemyUnitResult;
     });
 
@@ -72,7 +53,7 @@ export function diagonalIsClear<TBoard extends Board>(
       // Diagonal is blocked by enemy units
       return {
         result: false,
-        errorReason: 'Diagonal is blocked by enemy units',
+        errorReason: "Diagonal is blocked by enemy units",
       };
     }
     // Diagonal is not blocked by enemy units
@@ -82,7 +63,7 @@ export function diagonalIsClear<TBoard extends Board>(
   } catch (error) {
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

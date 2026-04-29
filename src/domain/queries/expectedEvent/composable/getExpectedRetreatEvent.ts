@@ -1,6 +1,6 @@
-import type { ExpectedEventInfo } from '@events';
-import type { RetreatState } from '@game';
-import { getExpectedRoutEvent } from './getExpectedRoutEvent';
+import type { ExpectedEventInfo } from "@events";
+import type { RetreatState } from "@game";
+import { getExpectedRoutEvent } from "./getExpectedRoutEvent";
 
 /**
  * Gets the expected event for retreat substeps.
@@ -10,12 +10,10 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
  * @param retreatState - The retreat state
  * @returns Information about what event is expected
  */
-export function getExpectedRetreatEvent(
-  retreatState: RetreatState,
-): ExpectedEventInfo {
+export function getExpectedRetreatEvent(retreatState: RetreatState): ExpectedEventInfo {
   // Check if retreat is completed (all work done, ready for parent to handle)
   if (retreatState.completed) {
-    throw new Error('Retreat state is already complete');
+    throw new Error("Retreat state is already complete");
   }
 
   // Check if there are no legal retreat options
@@ -23,8 +21,8 @@ export function getExpectedRetreatEvent(
     // If the rout state is not populated, trigger a rout from the retreat
     if (!retreatState.routState) {
       return {
-        actionType: 'gameEffect',
-        effectType: 'triggerRoutFromRetreat',
+        actionType: "gameEffect",
+        effectType: "triggerRoutFromRetreat",
       };
     }
     // If the rout state is populated, check if it's completed
@@ -32,9 +30,7 @@ export function getExpectedRetreatEvent(
       return getExpectedRoutEvent(retreatState.routState);
     }
     // Rout is complete, retreat should be complete too (but we already checked completed above)
-    throw new Error(
-      'Retreat state has completed rout but not marked as completed',
-    );
+    throw new Error("Retreat state has completed rout but not marked as completed");
   }
 
   // Check if the final position has been determined
@@ -42,21 +38,19 @@ export function getExpectedRetreatEvent(
     // Multiple retreat options exist - player must choose
     // If only one option exists, it should be auto-selected (finalPosition set) when state is created
     if (retreatState.legalRetreatOptions.size === 1) {
-      throw new Error(
-        'RetreatState with single option should have finalPosition set immediately',
-      );
+      throw new Error("RetreatState with single option should have finalPosition set immediately");
     }
     // Multiple options - player must choose
     return {
-      actionType: 'playerChoice',
+      actionType: "playerChoice",
       playerSource: retreatState.retreatingUnit.unit.playerSide,
-      choiceType: 'chooseRetreatOption',
+      choiceType: "chooseRetreatOption",
     };
   }
   // Final position determined (either by player choice or auto-selected if single option)
   // Expect resolve retreat effect to move the unit
   return {
-    actionType: 'gameEffect',
-    effectType: 'resolveRetreat',
+    actionType: "gameEffect",
+    effectType: "resolveRetreat",
   };
 }

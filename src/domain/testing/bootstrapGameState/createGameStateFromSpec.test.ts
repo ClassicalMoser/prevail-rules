@@ -1,251 +1,163 @@
-import { getPlayerUnitWithPosition } from '@queries';
-import { describe, expect, it } from 'vitest';
-import { createBoard, createGameState } from './createGameStateFromSpec';
+import { getPlayerUnitWithPosition } from "@queries";
+import { describe, expect, it } from "vitest";
+import { createBoard, createGameState } from "./createGameStateFromSpec";
 
 /**
  * createGameState: Creates a game state with units placed according to the provided specifications.
  */
-describe('createGameState', () => {
-  it('given defaults, creates a game state with units using tuple syntax', () => {
+describe("createGameState", () => {
+  it("given defaults, creates a game state with units using tuple syntax", () => {
     const gameState = createGameState([
-      ['E-5', 'black'],
-      ['E-6', 'white'],
+      ["E-5", "black"],
+      ["E-6", "white"],
     ]);
-    expect(gameState.boardState.boardType).toBe('standard');
-    const blackUnit = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-5',
-      'black',
-    );
-    const whiteUnit = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-6',
-      'white',
-    );
+    expect(gameState.boardState.boardType).toBe("standard");
+    const blackUnit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
+    const whiteUnit = getPlayerUnitWithPosition(gameState.boardState, "E-6", "white");
     expect(blackUnit).toBeDefined();
     expect(whiteUnit).toBeDefined();
-    expect(blackUnit?.unit.playerSide).toBe('black');
-    expect(whiteUnit?.unit.playerSide).toBe('white');
+    expect(blackUnit?.unit.playerSide).toBe("black");
+    expect(whiteUnit?.unit.playerSide).toBe("white");
   });
 
-  it('given defaults, creates a game state with units using tuple syntax with facing', () => {
+  it("given defaults, creates a game state with units using tuple syntax with facing", () => {
     const gameState = createGameState([
-      ['E-5', 'black', 'north'],
-      ['E-6', 'white', 'south'],
+      ["E-5", "black", "north"],
+      ["E-6", "white", "south"],
     ]);
-    const blackUnit = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-5',
-      'black',
-    );
-    const whiteUnit = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-6',
-      'white',
-    );
-    expect(blackUnit?.placement.facing).toBe('north');
-    expect(whiteUnit?.placement.facing).toBe('south');
+    const blackUnit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
+    const whiteUnit = getPlayerUnitWithPosition(gameState.boardState, "E-6", "white");
+    expect(blackUnit?.placement.facing).toBe("north");
+    expect(whiteUnit?.placement.facing).toBe("south");
   });
 
-  it('given defaults, creates a game state with units using object syntax', () => {
+  it("given defaults, creates a game state with units using object syntax", () => {
     const gameState = createGameState([
-      { coord: 'E-5', player: 'black' },
-      { coord: 'E-6', player: 'white', facing: 'east' },
+      { coord: "E-5", player: "black" },
+      { coord: "E-6", player: "white", facing: "east" },
     ]);
-    const blackUnit = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-5',
-      'black',
-    );
-    const whiteUnit = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-6',
-      'white',
-    );
-    expect(blackUnit?.placement.facing).toBe('north');
-    expect(whiteUnit?.placement.facing).toBe('east');
+    const blackUnit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
+    const whiteUnit = getPlayerUnitWithPosition(gameState.boardState, "E-6", "white");
+    expect(blackUnit?.placement.facing).toBe("north");
+    expect(whiteUnit?.placement.facing).toBe("east");
   });
 
-  it('given defaults, creates a game state with full control syntax', () => {
+  it("given defaults, creates a game state with full control syntax", () => {
     const gameState = createGameState([
-      { coord: 'E-5', player: 'black', attack: 3, flexibility: 1 },
-      { coord: 'E-6', player: 'white', attack: 4 },
+      { coord: "E-5", player: "black", attack: 3, flexibility: 1 },
+      { coord: "E-6", player: "white", attack: 4 },
     ]);
-    const blackUnit = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-5',
-      'black',
-    );
-    const whiteUnit = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-6',
-      'white',
-    );
+    const blackUnit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
+    const whiteUnit = getPlayerUnitWithPosition(gameState.boardState, "E-6", "white");
     expect(blackUnit).toBeDefined();
     expect(whiteUnit).toBeDefined();
   });
 
-  it('given assign sequential instance numbers automatically', () => {
+  it("given assign sequential instance numbers automatically", () => {
     const gameState = createGameState([
-      ['E-5', 'black'],
-      ['E-6', 'black'],
-      ['E-7', 'black'],
+      ["E-5", "black"],
+      ["E-6", "black"],
+      ["E-7", "black"],
     ]);
-    const unit1 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-5',
-      'black',
-    );
-    const unit2 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-6',
-      'black',
-    );
-    const unit3 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-7',
-      'black',
-    );
+    const unit1 = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
+    const unit2 = getPlayerUnitWithPosition(gameState.boardState, "E-6", "black");
+    const unit3 = getPlayerUnitWithPosition(gameState.boardState, "E-7", "black");
     expect(unit1?.unit.instanceNumber).toBe(1);
     expect(unit2?.unit.instanceNumber).toBe(2);
     expect(unit3?.unit.instanceNumber).toBe(3);
   });
 
-  it('given respect custom instance numbers when provided', () => {
+  it("given respect custom instance numbers when provided", () => {
     const gameState = createGameState([
-      { coord: 'E-5', player: 'black', instanceNumber: 5 },
-      { coord: 'E-6', player: 'black', instanceNumber: 10 },
+      { coord: "E-5", player: "black", instanceNumber: 5 },
+      { coord: "E-6", player: "black", instanceNumber: 10 },
     ]);
-    const unit1 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-5',
-      'black',
-    );
-    const unit2 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-6',
-      'black',
-    );
+    const unit1 = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
+    const unit2 = getPlayerUnitWithPosition(gameState.boardState, "E-6", "black");
     expect(unit1?.unit.instanceNumber).toBe(5);
     expect(unit2?.unit.instanceNumber).toBe(10);
   });
 
-  it('given allow explicit instance numbers to repeat', () => {
+  it("given allow explicit instance numbers to repeat", () => {
     const gameState = createGameState([
-      { coord: 'E-5', player: 'black', instanceNumber: 1 },
-      { coord: 'E-6', player: 'white', instanceNumber: 1 },
+      { coord: "E-5", player: "black", instanceNumber: 1 },
+      { coord: "E-6", player: "white", instanceNumber: 1 },
     ]);
-    const unit1 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-5',
-      'black',
-    );
-    const unit2 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-6',
-      'white',
-    );
+    const unit1 = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
+    const unit2 = getPlayerUnitWithPosition(gameState.boardState, "E-6", "white");
     expect(unit1?.unit.instanceNumber).toBe(1);
     expect(unit2?.unit.instanceNumber).toBe(1);
   });
 
-  it('given continue auto-assigning after explicit numbers', () => {
+  it("given continue auto-assigning after explicit numbers", () => {
     const gameState = createGameState([
-      ['E-5', 'black'],
-      { coord: 'E-6', player: 'white', instanceNumber: 99 },
-      ['E-7', 'black'],
-      ['E-8', 'white'],
+      ["E-5", "black"],
+      { coord: "E-6", player: "white", instanceNumber: 99 },
+      ["E-7", "black"],
+      ["E-8", "white"],
     ]);
-    const unit1 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-5',
-      'black',
-    );
-    const unit2 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-6',
-      'white',
-    );
-    const unit3 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-7',
-      'black',
-    );
-    const unit4 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-8',
-      'white',
-    );
+    const unit1 = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
+    const unit2 = getPlayerUnitWithPosition(gameState.boardState, "E-6", "white");
+    const unit3 = getPlayerUnitWithPosition(gameState.boardState, "E-7", "black");
+    const unit4 = getPlayerUnitWithPosition(gameState.boardState, "E-8", "white");
     expect(unit1?.unit.instanceNumber).toBe(1);
     expect(unit2?.unit.instanceNumber).toBe(99);
     expect(unit3?.unit.instanceNumber).toBe(2);
     expect(unit4?.unit.instanceNumber).toBe(3);
   });
 
-  it('given accept custom initiative', () => {
-    const gameState = createGameState([], { currentInitiative: 'white' });
-    expect(gameState.currentInitiative).toBe('white');
+  it("given accept custom initiative", () => {
+    const gameState = createGameState([], { currentInitiative: "white" });
+    expect(gameState.currentInitiative).toBe("white");
   });
 
-  it('given no units provided, creates an empty game state', () => {
+  it("given no units provided, creates an empty game state", () => {
     const gameState = createGameState([]);
-    expect(gameState.boardState.boardType).toBe('standard');
-    expect(gameState.currentInitiative).toBe('black');
+    expect(gameState.boardState.boardType).toBe("standard");
+    expect(gameState.currentInitiative).toBe("black");
   });
 
-  it('given support mixing tuple and object syntax', () => {
+  it("given support mixing tuple and object syntax", () => {
     const gameState = createGameState([
-      ['E-5', 'black'],
-      { coord: 'E-6', player: 'white', facing: 'east' },
-      ['E-7', 'black', 'south'],
+      ["E-5", "black"],
+      { coord: "E-6", player: "white", facing: "east" },
+      ["E-7", "black", "south"],
     ]);
-    const unit1 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-5',
-      'black',
-    );
-    const unit2 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-6',
-      'white',
-    );
-    const unit3 = getPlayerUnitWithPosition(
-      gameState.boardState,
-      'E-7',
-      'black',
-    );
-    expect(unit1?.placement.facing).toBe('north');
-    expect(unit2?.placement.facing).toBe('east');
-    expect(unit3?.placement.facing).toBe('south');
+    const unit1 = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
+    const unit2 = getPlayerUnitWithPosition(gameState.boardState, "E-6", "white");
+    const unit3 = getPlayerUnitWithPosition(gameState.boardState, "E-7", "black");
+    expect(unit1?.placement.facing).toBe("north");
+    expect(unit2?.placement.facing).toBe("east");
+    expect(unit3?.placement.facing).toBe("south");
   });
 });
 
-describe('createBoard', () => {
-  it('given defaults, creates a board with units using tuple syntax', () => {
+describe("createBoard", () => {
+  it("given defaults, creates a board with units using tuple syntax", () => {
     const board = createBoard([
-      ['E-5', 'black'],
-      ['E-6', 'white'],
+      ["E-5", "black"],
+      ["E-6", "white"],
     ]);
-    expect(board.boardType).toBe('standard');
-    const blackUnit = getPlayerUnitWithPosition(board, 'E-5', 'black');
-    const whiteUnit = getPlayerUnitWithPosition(board, 'E-6', 'white');
+    expect(board.boardType).toBe("standard");
+    const blackUnit = getPlayerUnitWithPosition(board, "E-5", "black");
+    const whiteUnit = getPlayerUnitWithPosition(board, "E-6", "white");
     expect(blackUnit).toBeDefined();
     expect(whiteUnit).toBeDefined();
   });
 
-  it('given defaults, creates a board with units using object syntax', () => {
+  it("given defaults, creates a board with units using object syntax", () => {
     const board = createBoard([
-      { coord: 'E-5', player: 'black', attack: 3 },
-      { coord: 'E-6', player: 'white', flexibility: 2 },
+      { coord: "E-5", player: "black", attack: 3 },
+      { coord: "E-6", player: "white", flexibility: 2 },
     ]);
-    const blackUnit = getPlayerUnitWithPosition(board, 'E-5', 'black');
-    const whiteUnit = getPlayerUnitWithPosition(board, 'E-6', 'white');
+    const blackUnit = getPlayerUnitWithPosition(board, "E-5", "black");
+    const whiteUnit = getPlayerUnitWithPosition(board, "E-6", "white");
     expect(blackUnit).toBeDefined();
     expect(whiteUnit).toBeDefined();
   });
 
-  it('given no units provided, creates an empty board', () => {
+  it("given no units provided, creates an empty board", () => {
     const board = createBoard([]);
-    expect(board.boardType).toBe('standard');
+    expect(board.boardType).toBe("standard");
   });
 });

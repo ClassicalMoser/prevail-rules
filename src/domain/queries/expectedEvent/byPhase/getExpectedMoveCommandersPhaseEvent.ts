@@ -1,8 +1,8 @@
-import type { Board } from '@entities';
-import type { ExpectedEventInfo } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getMoveCommandersPhaseState } from '@queries/sequencing';
+import type { Board } from "@entities";
+import type { ExpectedEventInfo } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getOtherPlayer } from "@queries/getOtherPlayer";
+import { getMoveCommandersPhaseState } from "@queries/sequencing";
 
 /**
  * Gets information about the expected event for the MoveCommanders phase.
@@ -18,24 +18,24 @@ export function getExpectedMoveCommandersPhaseEvent<TBoard extends Board>(
   const secondPlayer = getOtherPlayer(firstPlayer);
 
   switch (phaseState.step) {
-    case 'moveFirstCommander':
+    case "moveFirstCommander":
       return {
-        actionType: 'playerChoice',
+        actionType: "playerChoice",
         playerSource: firstPlayer,
-        choiceType: 'moveCommander',
+        choiceType: "moveCommander",
       };
 
-    case 'moveSecondCommander':
+    case "moveSecondCommander":
       return {
-        actionType: 'playerChoice',
+        actionType: "playerChoice",
         playerSource: secondPlayer,
-        choiceType: 'moveCommander',
+        choiceType: "moveCommander",
       };
 
-    case 'complete':
+    case "complete":
       return {
-        actionType: 'gameEffect',
-        effectType: 'completeMoveCommandersPhase',
+        actionType: "gameEffect",
+        effectType: "completeMoveCommandersPhase",
       };
 
     default: {

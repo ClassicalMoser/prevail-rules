@@ -1,33 +1,33 @@
-import type { StandardBoard } from '@entities';
-import type { Event } from '@events';
-import type { StandardGameState } from '@game';
-import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { applyEvent } from './applyEvent';
-import { applyGameEffectEvent } from './applyGameEffectEvent';
-import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
+import type { StandardBoard } from "@entities";
+import type { Event } from "@events";
+import type { StandardGameState } from "@game";
+import { tempCommandCards } from "@sampleValues";
+import { createEmptyGameState } from "@testing";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { applyEvent } from "./applyEvent";
+import { applyGameEffectEvent } from "./applyGameEffectEvent";
+import { applyPlayerChoiceEvent } from "./applyPlayerChoiceEvent";
 
-vi.mock('./applyPlayerChoiceEvent');
-vi.mock('./applyGameEffectEvent');
+vi.mock("./applyPlayerChoiceEvent");
+vi.mock("./applyGameEffectEvent");
 
 /**
  * `applyEvent` is the single entry for applying any `Event` to game state: it narrows on
  * `eventType` and delegates to `applyPlayerChoiceEvent` or `applyGameEffectEvent`. Anything
  * else should fail fast (exhaustiveness / unknown tag).
  */
-describe('applyEvent', () => {
+describe("applyEvent", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('given playerChoice chooseCard event, delegates to applyPlayerChoiceEvent and appends event', () => {
+  it("given playerChoice chooseCard event, delegates to applyPlayerChoiceEvent and appends event", () => {
     const state = createEmptyGameState();
     const event: Event<StandardBoard> = {
       eventNumber: 0,
-      eventType: 'playerChoice',
-      choiceType: 'chooseCard',
-      player: 'black',
+      eventType: "playerChoice",
+      choiceType: "chooseCard",
+      player: "black",
       card: tempCommandCards[0],
     };
     const mockReturnState = {
@@ -44,12 +44,12 @@ describe('applyEvent', () => {
     expect(result.currentRoundState.events).toEqual([event]);
   });
 
-  it('given gameEffect revealCards event, delegates to applyGameEffectEvent and appends event', () => {
+  it("given gameEffect revealCards event, delegates to applyGameEffectEvent and appends event", () => {
     const state = createEmptyGameState();
     const event: Event<StandardBoard> = {
       eventNumber: 0,
-      eventType: 'gameEffect',
-      effectType: 'revealCards' as const,
+      eventType: "gameEffect",
+      effectType: "revealCards" as const,
     };
     const mockReturnState = {
       ...state,
@@ -65,19 +65,19 @@ describe('applyEvent', () => {
     expect(result.currentRoundState.events).toEqual([event]);
   });
 
-  it('accumulates events across multiple applyEvent calls', () => {
+  it("accumulates events across multiple applyEvent calls", () => {
     const state = createEmptyGameState();
     const event1: Event<StandardBoard> = {
       eventNumber: 0,
-      eventType: 'playerChoice',
-      choiceType: 'chooseCard',
-      player: 'black',
+      eventType: "playerChoice",
+      choiceType: "chooseCard",
+      player: "black",
       card: tempCommandCards[0],
     };
     const event2: Event<StandardBoard> = {
       eventNumber: 1,
-      eventType: 'gameEffect',
-      effectType: 'revealCards' as const,
+      eventType: "gameEffect",
+      effectType: "revealCards" as const,
     };
 
     vi.mocked(applyPlayerChoiceEvent).mockImplementation((_e, s) => s);
@@ -89,14 +89,12 @@ describe('applyEvent', () => {
     expect(after2.currentRoundState.events).toEqual([event1, event2]);
   });
 
-  it('given event with unknown eventType cast, throws and does not call choice or effect applier', () => {
+  it("given event with unknown eventType cast, throws and does not call choice or effect applier", () => {
     const state = createEmptyGameState();
     // Use bad cast to trigger type error
-    const event = { eventType: 'unknown' } as unknown as Event<StandardBoard>;
+    const event = { eventType: "unknown" } as unknown as Event<StandardBoard>;
 
-    expect(() => applyEvent(event, state)).toThrow(
-      'Unknown event type: unknown',
-    );
+    expect(() => applyEvent(event, state)).toThrow("Unknown event type: unknown");
 
     expect(applyPlayerChoiceEvent).not.toHaveBeenCalled();
     expect(applyGameEffectEvent).not.toHaveBeenCalled();

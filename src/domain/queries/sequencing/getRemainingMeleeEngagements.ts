@@ -1,5 +1,5 @@
-import type { Board, BoardCoordinate } from '@entities';
-import type { ResolveMeleePhaseState } from '@game';
+import type { Board, BoardCoordinate } from "@entities";
+import type { ResolveMeleePhaseState } from "@game";
 
 /**
  * Gets the set of board spaces still awaiting melee resolution for this phase.

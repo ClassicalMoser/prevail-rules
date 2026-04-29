@@ -1,14 +1,14 @@
-import type { Board } from '@entities';
-import type { ExpectedEventInfo } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getCurrentPhaseState } from '@queries/sequencing';
+import type { Board } from "@entities";
+import type { ExpectedEventInfo } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getCurrentPhaseState } from "@queries/sequencing";
 import {
   getExpectedCleanupPhaseEvent,
   getExpectedIssueCommandsPhaseEvent,
   getExpectedMoveCommandersPhaseEvent,
   getExpectedPlayCardsPhaseEvent,
   getExpectedResolveMeleePhaseEvent,
-} from './byPhase';
+} from "./byPhase";
 
 /** ExpectedEventInfo enriched with the next event number derived from state. */
 export type ExpectedEvent = ExpectedEventInfo & {
@@ -23,23 +23,23 @@ export function getExpectedEvent<TBoard extends Board>(
 
   let info: ExpectedEventInfo;
   switch (phaseState.phase) {
-    case 'playCards':
+    case "playCards":
       info = getExpectedPlayCardsPhaseEvent(state);
       break;
-    case 'moveCommanders':
+    case "moveCommanders":
       info = getExpectedMoveCommandersPhaseEvent(state);
       break;
-    case 'issueCommands':
+    case "issueCommands":
       info = getExpectedIssueCommandsPhaseEvent(state);
       break;
-    case 'resolveMelee':
+    case "resolveMelee":
       info = getExpectedResolveMeleePhaseEvent(state);
       break;
-    case 'cleanup':
+    case "cleanup":
       info = getExpectedCleanupPhaseEvent(state);
       break;
     default:
-      throw new Error('Invalid phase');
+      throw new Error("Invalid phase");
   }
 
   return { ...info, eventNumber };

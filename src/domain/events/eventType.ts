@@ -1,18 +1,14 @@
-import type { Board } from '@entities';
-import type { AssertExact } from '@utils';
-import type { GameEffectEvent, GameEffectType } from './gameEffects';
-import type { PlayerChoiceEvent, PlayerChoiceType } from './playerChoices';
+import type { Board } from "@entities";
+import type { AssertExact } from "@utils";
+import type { GameEffectEvent, GameEffectType } from "./gameEffects";
+import type { PlayerChoiceEvent, PlayerChoiceType } from "./playerChoices";
 
-import { z } from 'zod';
-import { eventTypes } from './eventTypeLiterals';
-import { gameEffectEventSchema } from './gameEffects';
-import { playerChoiceEventSchema } from './playerChoices';
+import { z } from "zod";
+import { eventTypes } from "./eventTypeLiterals";
+import { gameEffectEventSchema } from "./gameEffects";
+import { playerChoiceEventSchema } from "./playerChoices";
 
-export {
-  eventTypes,
-  GAME_EFFECT_EVENT_TYPE,
-  PLAYER_CHOICE_EVENT_TYPE,
-} from './eventTypeLiterals';
+export { eventTypes, GAME_EFFECT_EVENT_TYPE, PLAYER_CHOICE_EVENT_TYPE } from "./eventTypeLiterals";
 
 /** The type of an event. */
 export type EventType = (typeof eventTypes)[number];
@@ -25,10 +21,7 @@ const _assertExactEventType: AssertExact<EventType, EventTypeSchemaType> = true;
 /** The schema for the type of an event. */
 export const eventTypeSchema: z.ZodType<EventType> = _eventTypeSchemaObject;
 
-export type Event<
-  TBoard extends Board,
-  _TEventType extends EventType = EventType,
-> =
+export type Event<TBoard extends Board, _TEventType extends EventType = EventType> =
   | PlayerChoiceEvent<TBoard, PlayerChoiceType>
   | GameEffectEvent<TBoard, GameEffectType>;
 
@@ -46,18 +39,11 @@ export type Event<
  * at runtime - a gameEffect with wrong eventType won't match playerChoice schemas.
  * The nested discriminated unions provide efficient validation within each category.
  */
-const _eventSchemaObject = z.union([
-  playerChoiceEventSchema,
-  gameEffectEventSchema,
-]);
+const _eventSchemaObject = z.union([playerChoiceEventSchema, gameEffectEventSchema]);
 
 type EventSchemaType = z.infer<typeof _eventSchemaObject>;
 
-const _assertExactEvent: AssertExact<
-  Event<Board, EventType>,
-  EventSchemaType
-> = true;
+const _assertExactEvent: AssertExact<Event<Board, EventType>, EventSchemaType> = true;
 
 /** The schema for all game events. */
-export const eventSchema: z.ZodType<Event<Board, EventType>> =
-  _eventSchemaObject;
+export const eventSchema: z.ZodType<Event<Board, EventType>> = _eventSchemaObject;

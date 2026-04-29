@@ -1,5 +1,5 @@
-import type { Modifier, ValidationResult } from '@entities';
-import { areModifiersEqual } from './areModifiersEqual';
+import type { Modifier, ValidationResult } from "@entities";
+import { areModifiersEqual } from "./areModifiersEqual";
 
 /**
  * Compares two arrays of Modifiers for equality.
@@ -37,7 +37,7 @@ export function areModifiersArraysEqual(
   } catch (error) {
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

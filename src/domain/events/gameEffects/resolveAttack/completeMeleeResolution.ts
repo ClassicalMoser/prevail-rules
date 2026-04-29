@@ -1,14 +1,13 @@
-import type { Board } from '@entities';
-import type { AssertExact } from '@utils';
-import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board } from "@entities";
+import type { AssertExact } from "@utils";
+import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
-export const COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE =
-  'completeMeleeResolution' as const;
+export const COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE = "completeMeleeResolution" as const;
 
 export interface CompleteMeleeResolutionEvent<
   _TBoard extends Board,
-  _TEffectType extends 'completeMeleeResolution' = 'completeMeleeResolution',
+  _TEffectType extends "completeMeleeResolution" = "completeMeleeResolution",
 > {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
@@ -38,7 +37,7 @@ const _assertExactCompleteMeleeResolutionEvent: AssertExact<
 
 /** The schema for a complete melee resolution event. */
 export const completeMeleeResolutionEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'gameEffect'>;
-  effectType: z.ZodLiteral<'completeMeleeResolution'>;
+  eventType: z.ZodLiteral<"gameEffect">;
+  effectType: z.ZodLiteral<"completeMeleeResolution">;
   eventNumber: z.ZodNumber;
 }> = _completeMeleeResolutionEventSchemaObject;

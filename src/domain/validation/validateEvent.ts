@@ -1,16 +1,16 @@
-import type { Board, ValidationResult } from '@entities';
-import type { Event } from '@events';
+import type { Board, ValidationResult } from "@entities";
+import type { Event } from "@events";
 import type {
   CleanupPhaseState,
   GameStateWithBoard,
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
-} from '@game';
+} from "@game";
 import {
   validateCleanupPhaseEvent,
   validateMoveCommandersPhaseEvent,
   validatePlayCardsPhaseEvent,
-} from './phaseValidation';
+} from "./phaseValidation";
 
 /**
  * Validates an event against the current game state.
@@ -38,14 +38,14 @@ export function validateEvent<TBoard extends Board>(
   if (!roundState) {
     return {
       result: false,
-      errorReason: 'No round state found',
+      errorReason: "No round state found",
     };
   }
 
   if (!roundState.currentPhaseState) {
     return {
       result: false,
-      errorReason: 'No current phase state found',
+      errorReason: "No current phase state found",
     };
   }
 
@@ -53,7 +53,7 @@ export function validateEvent<TBoard extends Board>(
 
   // Route to phase-specific validation
   switch (currentPhase.phase) {
-    case 'playCards':
+    case "playCards":
       return validatePlayCardsPhaseEvent(
         event,
         state as GameStateWithBoard<TBoard> & {
@@ -63,7 +63,7 @@ export function validateEvent<TBoard extends Board>(
         },
       );
 
-    case 'moveCommanders':
+    case "moveCommanders":
       return validateMoveCommandersPhaseEvent(
         event,
         state as GameStateWithBoard<TBoard> & {
@@ -73,21 +73,21 @@ export function validateEvent<TBoard extends Board>(
         },
       );
 
-    case 'issueCommands':
+    case "issueCommands":
       // TODO: Implement validateIssueCommandsPhaseEvent
       return {
         result: false,
-        errorReason: 'IssueCommands phase validation not yet implemented',
+        errorReason: "IssueCommands phase validation not yet implemented",
       };
 
-    case 'resolveMelee':
+    case "resolveMelee":
       // TODO: Implement validateResolveMeleePhaseEvent
       return {
         result: false,
-        errorReason: 'ResolveMelee phase validation not yet implemented',
+        errorReason: "ResolveMelee phase validation not yet implemented",
       };
 
-    case 'cleanup':
+    case "cleanup":
       return validateCleanupPhaseEvent(
         event,
         state as GameStateWithBoard<TBoard> & {

@@ -1,19 +1,19 @@
-import type { Board } from '@entities';
+import type { Board } from "@entities";
 import type {
   GameStateWithBoard,
   MeleeResolutionState,
   PhaseState,
   RangedAttackResolutionState,
   ReverseState,
-} from '@game';
+} from "@game";
 import {
   getCurrentPhaseState,
   getIssueCommandsPhaseState,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
-} from '@queries';
-import { updatePhaseState } from '../state';
+} from "@queries";
+import { updatePhaseState } from "../state";
 
 /**
  * Creates a new game state with the reverse state updated in an attack apply state.
@@ -29,15 +29,15 @@ export function updateReverseState<TBoard extends Board>(
 ): GameStateWithBoard<TBoard> {
   const phaseState = getCurrentPhaseState(state);
 
-  if (phaseState.phase === 'issueCommands') {
+  if (phaseState.phase === "issueCommands") {
     const issueState = getIssueCommandsPhaseState(state);
     const commandState = issueState.currentCommandResolutionState;
 
-    if (commandState?.commandResolutionType === 'rangedAttack') {
+    if (commandState?.commandResolutionType === "rangedAttack") {
       const ranged = getRangedAttackResolutionState(state);
       const attackApply = ranged.attackApplyState;
       if (!attackApply?.reverseState) {
-        throw new Error('No reverse state found in attack apply state');
+        throw new Error("No reverse state found in attack apply state");
       }
       return updatePhaseState(state, {
         ...issueState,
@@ -49,19 +49,19 @@ export function updateReverseState<TBoard extends Board>(
     }
 
     throw new Error(
-      `Reverse state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? 'none'})`,
+      `Reverse state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? "none"})`,
     );
   }
 
-  if (phaseState.phase === 'resolveMelee') {
+  if (phaseState.phase === "resolveMelee") {
     const resolveMelee = getResolveMeleePhaseState(state);
     const melee = getMeleeResolutionState(state);
     const player = reverseState.reversingUnit.unit.playerSide;
 
-    if (player === 'white') {
+    if (player === "white") {
       const whiteApply = melee.whiteAttackApplyState;
       if (!whiteApply?.reverseState) {
-        throw new Error('No reverse state found in attack apply state');
+        throw new Error("No reverse state found in attack apply state");
       }
       return updatePhaseState(state, {
         ...resolveMelee,
@@ -74,7 +74,7 @@ export function updateReverseState<TBoard extends Board>(
 
     const blackApply = melee.blackAttackApplyState;
     if (!blackApply?.reverseState) {
-      throw new Error('No reverse state found in attack apply state');
+      throw new Error("No reverse state found in attack apply state");
     }
     return updatePhaseState(state, {
       ...resolveMelee,
@@ -85,7 +85,5 @@ export function updateReverseState<TBoard extends Board>(
     } as PhaseState);
   }
 
-  throw new Error(
-    `Reverse state update not expected in phase: ${phaseState.phase}`,
-  );
+  throw new Error(`Reverse state update not expected in phase: ${phaseState.phase}`);
 }

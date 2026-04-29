@@ -1,8 +1,8 @@
-import type { Board, BoardCoordinate, PlayerSide } from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { hasEngagedUnits, hasNoUnit } from '@entities';
-import { getBoardSpace, getCurrentUnitStat } from '@queries';
-import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
+import type { Board, BoardCoordinate, PlayerSide } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { hasEngagedUnits, hasNoUnit } from "@entities";
+import { getBoardSpace, getCurrentUnitStat } from "@queries";
+import { MIN_FLEXIBILITY_THRESHOLD } from "@ruleValues";
 
 /**
  * Determines whether a unit can move through (pass over) a specific coordinate.
@@ -48,11 +48,10 @@ export function canMoveThrough<TBoard extends Board>(
       // the legal threshold.
       const currentSpaceUnitFlexibility = getCurrentUnitStat(
         spaceUnitPresence.unit,
-        'flexibility',
+        "flexibility",
         gameState,
       );
-      const combinedFlexibility =
-        currentUnitFlexibility + currentSpaceUnitFlexibility;
+      const combinedFlexibility = currentUnitFlexibility + currentSpaceUnitFlexibility;
       if (combinedFlexibility < MIN_FLEXIBILITY_THRESHOLD) {
         return false;
       }

@@ -1,4 +1,4 @@
-import type { Card, CardState, PlayerSide } from '@entities';
+import type { Card, CardState, PlayerSide } from "@entities";
 
 /**
  * Burns a specific card from the player's played pile.
@@ -19,9 +19,7 @@ export function burnCardFromPlayed(
 
   const cardIndex = playerCardState.played.findIndex((c) => c.id === card.id);
   if (cardIndex === -1) {
-    throw new Error(
-      `Card ${card.id} not found in ${player} player's played cards`,
-    );
+    throw new Error(`Card ${card.id} not found in ${player} player's played cards`);
   }
 
   const newPlayed = playerCardState.played.filter((c) => c.id !== card.id);

@@ -1,14 +1,11 @@
-import type { StandardBoard } from '@entities';
-import type { GameEffectEvent, GameEffectType } from '@events';
-import type { StandardGameState } from '@game';
-import { gameEffects } from '@events';
-import {
-  createEmptyGameState,
-  procedureRegistryStateFactories,
-} from '@testing';
-import { describe, expect, it } from 'vitest';
+import type { StandardBoard } from "@entities";
+import type { GameEffectEvent, GameEffectType } from "@events";
+import type { StandardGameState } from "@game";
+import { gameEffects } from "@events";
+import { createEmptyGameState, procedureRegistryStateFactories } from "@testing";
+import { describe, expect, it } from "vitest";
 
-import { generateEventFromProcedure } from './procedureRegistry';
+import { generateEventFromProcedure } from "./procedureRegistry";
 
 /**
  * Central dispatch: `generateEventFromProcedure` is overloaded per `effectType` literal.
@@ -16,25 +13,24 @@ import { generateEventFromProcedure } from './procedureRegistry';
  * emitted `gameEffect` matches that key. `effectType as never` satisfies overload resolution
  * when the argument is a dynamic union element.
  */
-describe('generateEventFromProcedure', () => {
+describe("generateEventFromProcedure", () => {
   it.each([...gameEffects])(
-    'given factory state for %s, returns gameEffect with matching effectType',
+    "given factory state for %s, returns gameEffect with matching effectType",
     (effectType) => {
       const state = procedureRegistryStateFactories[effectType]();
-      const event = generateEventFromProcedure(
-        state,
-        0,
-        effectType as never,
-      ) as GameEffectEvent<StandardBoard, GameEffectType>;
-      expect(event.eventType).toBe('gameEffect');
+      const event = generateEventFromProcedure(state, 0, effectType as never) as GameEffectEvent<
+        StandardBoard,
+        GameEffectType
+      >;
+      expect(event.eventType).toBe("gameEffect");
       expect(event.effectType).toBe(effectType);
     },
   );
 
-  it('given effectType not in registry, throws naming the non-existent key', () => {
+  it("given effectType not in registry, throws naming the non-existent key", () => {
     const state: StandardGameState = createEmptyGameState();
-    expect(() =>
-      generateEventFromProcedure(state, 0, 'notARealEffect' as never),
-    ).toThrow('No procedure exists for effect type: notARealEffect');
+    expect(() => generateEventFromProcedure(state, 0, "notARealEffect" as never)).toThrow(
+      "No procedure exists for effect type: notARealEffect",
+    );
   });
 });

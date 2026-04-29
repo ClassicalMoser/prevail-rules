@@ -1,6 +1,6 @@
-import type { ExpectedEventInfo } from '@events';
-import type { RallyResolutionState } from '@game';
-import { getExpectedRoutEvent } from '.';
+import type { ExpectedEventInfo } from "@events";
+import type { RallyResolutionState } from "@game";
+import { getExpectedRoutEvent } from ".";
 
 /**
  * Gets the expected event for rally resolution substeps.
@@ -15,36 +15,36 @@ export function getExpectedRallyResolutionEvent(
 ): ExpectedEventInfo {
   // Fast rejection: if already completed, this is an invalid state
   if (rallyState.completed) {
-    throw new Error('Rally resolution state is already complete');
+    throw new Error("Rally resolution state is already complete");
   }
 
   // Check substep progression
   if (!rallyState.rallyResolved) {
     return {
-      actionType: 'gameEffect',
-      effectType: 'resolveRally',
+      actionType: "gameEffect",
+      effectType: "resolveRally",
     };
   }
 
   if (rallyState.unitsLostSupport === undefined) {
     return {
-      actionType: 'gameEffect',
-      effectType: 'resolveUnitsBroken',
+      actionType: "gameEffect",
+      effectType: "resolveUnitsBroken",
     };
   }
 
   if (rallyState.unitsLostSupport.size > 0) {
     if (rallyState.routState === undefined) {
-      throw new Error('Rout state is required when units lost support');
+      throw new Error("Rout state is required when units lost support");
     }
     // Check if rout is completed
     if (!rallyState.routState.completed) {
       return getExpectedRoutEvent(rallyState.routState);
     }
     // Rout is complete, rally resolution should be complete (all nested work done)
-    throw new Error('Rally resolution complete but step not advanced');
+    throw new Error("Rally resolution complete but step not advanced");
   }
 
   // No units lost support, rally fully resolved, should have advanced to next step
-  throw new Error('Rally resolution complete but step not advanced');
+  throw new Error("Rally resolution complete but step not advanced");
 }

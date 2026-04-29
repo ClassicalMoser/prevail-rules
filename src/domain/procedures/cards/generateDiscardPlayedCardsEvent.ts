@@ -1,10 +1,7 @@
-import type { Board } from '@entities';
-import type { DiscardPlayedCardsEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  DISCARD_PLAYED_CARDS_EFFECT_TYPE,
-  GAME_EFFECT_EVENT_TYPE,
-} from '@events';
+import type { Board } from "@entities";
+import type { DiscardPlayedCardsEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { DISCARD_PLAYED_CARDS_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
 
 /**
  * Generates a DiscardPlayedCardsEvent to discard all played cards.
@@ -16,7 +13,7 @@ import {
 export function generateDiscardPlayedCardsEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): DiscardPlayedCardsEvent<TBoard, 'discardPlayedCards'> {
+): DiscardPlayedCardsEvent<TBoard, "discardPlayedCards"> {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {

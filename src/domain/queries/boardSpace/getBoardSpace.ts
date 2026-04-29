@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, BoardSpace } from '@entities';
+import type { Board, BoardCoordinate, BoardSpace } from "@entities";
 
 /**
  * Gets the board space at the given coordinate.
@@ -47,9 +47,7 @@ export function getBoardSpace<TBoard extends Board>(
 
   // If the space is undefined, the coordinate does not exist on the board.
   if (space === undefined) {
-    throw new Error(
-      `Coordinate ${coordinate} does not exist on ${board.boardType} board.`,
-    );
+    throw new Error(`Coordinate ${coordinate} does not exist on ${board.boardType} board.`);
   }
 
   // Return the space.

@@ -1,11 +1,7 @@
-import type { Board, UnitWithPlacement } from '@entities';
-import type { MoveUnitEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  addUnitToBoard,
-  removeUnitFromBoard,
-  updateBoardState,
-} from '@transforms/pureTransforms';
+import type { Board, UnitWithPlacement } from "@entities";
+import type { MoveUnitEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { addUnitToBoard, removeUnitFromBoard, updateBoardState } from "@transforms/pureTransforms";
 
 /**
  * Applies a MoveUnitEvent to the game state.

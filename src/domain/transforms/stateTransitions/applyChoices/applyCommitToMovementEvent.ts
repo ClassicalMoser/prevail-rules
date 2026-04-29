@@ -1,12 +1,12 @@
-import type { Board } from '@entities';
-import type { CommitToMovementEvent } from '@events';
-import type { GameStateWithBoard, MovementResolutionState } from '@game';
-import { getMovementResolutionState } from '@queries';
+import type { Board } from "@entities";
+import type { CommitToMovementEvent } from "@events";
+import type { GameStateWithBoard, MovementResolutionState } from "@game";
+import { getMovementResolutionState } from "@queries";
 import {
   discardCardsFromHand,
   updateCardState,
   updateCommandResolutionState,
-} from '@transforms/pureTransforms';
+} from "@transforms/pureTransforms";
 
 /**
  * Applies a CommitToMovementEvent to the game state.
@@ -25,13 +25,11 @@ export function applyCommitToMovementEvent<TBoard extends Board>(
   const player = event.player;
 
   // Discard committed card from player's hand
-  const newCardState = discardCardsFromHand(state.cardState, player, [
-    event.committedCard.id,
-  ]);
+  const newCardState = discardCardsFromHand(state.cardState, player, [event.committedCard.id]);
 
   // Mark movement commitment as completed with the chosen card
   const newCommitment = {
-    commitmentType: 'completed' as const,
+    commitmentType: "completed" as const,
     card: event.committedCard,
   };
   const newMovementState: MovementResolutionState = {
@@ -40,9 +38,6 @@ export function applyCommitToMovementEvent<TBoard extends Board>(
   };
 
   const stateWithCards = updateCardState(state, newCardState);
-  const newGameState = updateCommandResolutionState(
-    stateWithCards,
-    newMovementState,
-  );
+  const newGameState = updateCommandResolutionState(stateWithCards, newMovementState);
   return newGameState;
 }

@@ -4,30 +4,30 @@ export {
   applyResolveRallyEvent,
   applyResolveUnitsBrokenEvent,
   applyRevealCardsEvent,
-} from './cards';
+} from "./cards";
 export {
   applyCompleteCleanupPhaseEvent,
   applyCompleteIssueCommandsPhaseEvent,
   applyCompleteMoveCommandersPhaseEvent,
   applyCompletePlayCardsPhaseEvent,
   applyCompleteResolveMeleePhaseEvent,
-} from './completePhase';
+} from "./completePhase";
 export {
   applyResolveRetreatEvent,
   applyResolveReverseEvent,
   applyResolveRoutEvent,
   applyTriggerRoutFromRetreatEvent,
-} from './defenseResult';
+} from "./defenseResult";
 export {
   applyCompleteUnitMovementEvent,
   applyResolveEngageRetreatOptionEvent,
   applyResolveFlankEngagementEvent,
   applyStartEngagementEvent,
-} from './movement';
+} from "./movement";
 export {
   applyCompleteAttackApplyEvent,
   applyCompleteMeleeResolutionEvent,
   applyCompleteRangedAttackCommandEvent,
   applyResolveMeleeEvent,
   applyResolveRangedAttackEvent,
-} from './resolveAttack';
+} from "./resolveAttack";

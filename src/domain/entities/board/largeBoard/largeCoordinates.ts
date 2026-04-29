@@ -1,16 +1,15 @@
-import type { AssertExact } from '@utils';
-import type { LargeBoardColumnNumber } from './largeColumnNumbers';
+import type { AssertExact } from "@utils";
+import type { LargeBoardColumnNumber } from "./largeColumnNumbers";
 
-import type { LargeBoardRowLetter } from './largeRowLetters';
-import { z } from 'zod';
-import { largeBoardColumnNumbers } from './largeColumnNumbers';
-import { largeBoardRowLetters } from './largeRowLetters';
+import type { LargeBoardRowLetter } from "./largeRowLetters";
+import { z } from "zod";
+import { largeBoardColumnNumbers } from "./largeColumnNumbers";
+import { largeBoardRowLetters } from "./largeRowLetters";
 
 /**
  * A valid coordinate on a large board (A-1 through X-36).
  */
-export type LargeBoardCoordinate =
-  `${LargeBoardRowLetter}-${LargeBoardColumnNumber}`;
+export type LargeBoardCoordinate = `${LargeBoardRowLetter}-${LargeBoardColumnNumber}`;
 
 /**
  * An iterable array of all valid coordinates on a large board (A-1 through X-36), generated from row letters and column numbers.
@@ -21,13 +20,10 @@ const computedCoordinates = largeBoardRowLetters.flatMap((row) =>
   largeBoardColumnNumbers.map((column) => `${row}-${column}`),
 );
 
-export const largeBoardCoordinates =
-  computedCoordinates as readonly LargeBoardCoordinate[]; // This cast is safe.
+export const largeBoardCoordinates = computedCoordinates as readonly LargeBoardCoordinate[]; // This cast is safe.
 
 const _largeBoardCoordinatesSchema = z.enum(largeBoardCoordinates);
-type LargeBoardCoordinatesSchemaType = z.infer<
-  typeof _largeBoardCoordinatesSchema
->;
+type LargeBoardCoordinatesSchemaType = z.infer<typeof _largeBoardCoordinatesSchema>;
 
 const _assertExactLargeBoardCoordinates: AssertExact<
   LargeBoardCoordinate,

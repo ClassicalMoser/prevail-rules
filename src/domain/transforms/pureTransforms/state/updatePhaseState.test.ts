@@ -1,17 +1,17 @@
-import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
-import { describe, expect, it } from 'vitest';
-import { updatePhaseState } from './updatePhaseState';
+import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from "@game";
+import { createEmptyGameState } from "@testing";
+import { describe, expect, it } from "vitest";
+import { updatePhaseState } from "./updatePhaseState";
 
 /**
  * updatePhaseState: Creates a new game state with the phase state updated.
  */
-describe('updatePhaseState', () => {
-  it('given update the phase state', () => {
+describe("updatePhaseState", () => {
+  it("given update the phase state", () => {
     const state = createEmptyGameState();
     const newPhaseState = {
       phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards',
+      step: "chooseCards",
     } as const;
 
     const newState = updatePhaseState(state, newPhaseState);
@@ -19,12 +19,12 @@ describe('updatePhaseState', () => {
     expect(newState.currentRoundState.currentPhaseState).toEqual(newPhaseState);
   });
 
-  it('given not mutate the original state', () => {
+  it("given not mutate the original state", () => {
     const state = createEmptyGameState();
     const originalPhaseState = state.currentRoundState.currentPhaseState;
     const newPhaseState = {
       phase: MOVE_COMMANDERS_PHASE,
-      step: 'moveFirstCommander',
+      step: "moveFirstCommander",
     } as const;
 
     updatePhaseState(state, newPhaseState);
@@ -32,18 +32,16 @@ describe('updatePhaseState', () => {
     expect(state.currentRoundState.currentPhaseState).toBe(originalPhaseState);
   });
 
-  it('given update to different phase and step', () => {
+  it("given update to different phase and step", () => {
     const state = createEmptyGameState();
     const newPhaseState = {
       phase: MOVE_COMMANDERS_PHASE,
-      step: 'complete',
+      step: "complete",
     } as const;
 
     const newState = updatePhaseState(state, newPhaseState);
 
-    expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
-      MOVE_COMMANDERS_PHASE,
-    );
-    expect(newState.currentRoundState.currentPhaseState?.step).toBe('complete');
+    expect(newState.currentRoundState.currentPhaseState?.phase).toBe(MOVE_COMMANDERS_PHASE);
+    expect(newState.currentRoundState.currentPhaseState?.step).toBe("complete");
   });
 });

@@ -1,12 +1,7 @@
-import type { Board, PlayerSide, ValidationResult } from '@entities';
-import type {
-  ExpectedEventInfo,
-  PlayerChoiceEvent,
-  PlayerChoiceType,
-  PlayerSource,
-} from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getExpectedEvent } from '@queries';
+import type { Board, PlayerSide, ValidationResult } from "@entities";
+import type { ExpectedEventInfo, PlayerChoiceEvent, PlayerChoiceType, PlayerSource } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getExpectedEvent } from "@queries";
 
 /**
  * Small helper function to compare a narrow PlayerSide to the broader PlayerSource.
@@ -15,11 +10,8 @@ import { getExpectedEvent } from '@queries';
  * @param source - The expected source
  * @returns True if the player matches the expected source, false otherwise
  */
-function playerMatchesExpectedSource(
-  player: PlayerSide,
-  source: PlayerSource,
-): boolean {
-  if (source === 'bothPlayers') {
+function playerMatchesExpectedSource(player: PlayerSide, source: PlayerSource): boolean {
+  if (source === "bothPlayers") {
     return true;
   }
   return player === source;
@@ -52,12 +44,12 @@ export function validateExpectedChoice<
         errorReason:
           error instanceof Error
             ? `Error resolving expected event: ${error.message}`
-            : 'Unknown error resolving expected event',
+            : "Unknown error resolving expected event",
       };
     }
 
     // Ensure that we are expecting a player choice
-    if (expected.actionType !== 'playerChoice') {
+    if (expected.actionType !== "playerChoice") {
       return {
         result: false,
         errorReason: `Expected ${expected.actionType}, not a player choice`,
@@ -91,7 +83,7 @@ export function validateExpectedChoice<
       errorReason:
         error instanceof Error
           ? `Error validating expected choice: ${error.message}`
-          : 'Unknown error validating expected choice',
+          : "Unknown error validating expected choice",
     };
   }
 }

@@ -8,28 +8,27 @@
  *
  * Tuple-typed value arrays satisfy `--isolatedDeclarations` (no spread-composed exports).
  */
-import type { Board, UnitInstance } from '@entities';
-import type { AssertExact } from '@utils';
-import type { AttackResolutionContext } from './attackResolutionContext';
-import { unitInstanceSchema } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import type { Board, UnitInstance } from "@entities";
+import type { AssertExact } from "@utils";
+import type { AttackResolutionContext } from "./attackResolutionContext";
+import { unitInstanceSchema } from "@entities";
+import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
 
-import { z } from 'zod';
+import { z } from "zod";
 import {
   attackResolutionContextSchema,
   MELEE_ATTACK_RESOLUTION_CONTEXT,
   RANGED_ATTACK_RESOLUTION_CONTEXT,
-} from './attackResolutionContext';
+} from "./attackResolutionContext";
 
 /** The type of the resolve rout game effect. */
-export const RESOLVE_ROUT_EFFECT_TYPE = 'resolveRout' as const;
+export const RESOLVE_ROUT_EFFECT_TYPE = "resolveRout" as const;
 
 /** Rout originating from cleanup rally resolution, not attack apply. */
-export const RALLY_ROUT_RESOLUTION_SOURCE = 'rally' as const;
+export const RALLY_ROUT_RESOLUTION_SOURCE = "rally" as const;
 
 /** Rout originating from rear engagement during unit movement resolution. */
-export const REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE =
-  'rearEngagementMovement' as const;
+export const REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE = "rearEngagementMovement" as const;
 
 export type RoutResolutionSourceNonAttack =
   | typeof RALLY_ROUT_RESOLUTION_SOURCE
@@ -42,9 +41,7 @@ export const ROUT_RESOLUTION_SOURCE_NON_ATTACK_VALUES: readonly [
 ] = [RALLY_ROUT_RESOLUTION_SOURCE, REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE];
 
 /** Attack-apply paths plus rally / rear-engagement movement. */
-export type RoutResolutionSource =
-  | AttackResolutionContext
-  | RoutResolutionSourceNonAttack;
+export type RoutResolutionSource = AttackResolutionContext | RoutResolutionSourceNonAttack;
 
 /**
  * All rout sources in declaration order (matches `z.union` composition: attack enum ∪ non-attack
@@ -62,15 +59,15 @@ export const ROUT_RESOLUTION_SOURCE_VALUES: readonly [
   REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE,
 ];
 
-const _routResolutionSourceNonAttackSchemaObject: z.ZodType<RoutResolutionSourceNonAttack> =
-  z.enum(ROUT_RESOLUTION_SOURCE_NON_ATTACK_VALUES);
+const _routResolutionSourceNonAttackSchemaObject: z.ZodType<RoutResolutionSourceNonAttack> = z.enum(
+  ROUT_RESOLUTION_SOURCE_NON_ATTACK_VALUES,
+);
 
 // Union (not a flat four-way enum) keeps `attackResolutionContext` as the single shared schema.
-const _routResolutionSourceSchemaObject: z.ZodType<RoutResolutionSource> =
-  z.union([
-    attackResolutionContextSchema,
-    _routResolutionSourceNonAttackSchemaObject,
-  ]);
+const _routResolutionSourceSchemaObject: z.ZodType<RoutResolutionSource> = z.union([
+  attackResolutionContextSchema,
+  _routResolutionSourceNonAttackSchemaObject,
+]);
 
 export const routResolutionSourceSchema: typeof _routResolutionSourceSchemaObject =
   _routResolutionSourceSchemaObject;
@@ -82,7 +79,7 @@ export const routResolutionSourceSchema: typeof _routResolutionSourceSchemaObjec
  */
 export interface ResolveRoutEvent<
   _TBoard extends Board,
-  _TEffectType extends 'resolveRout' = 'resolveRout',
+  _TEffectType extends "resolveRout" = "resolveRout",
 > {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
@@ -122,8 +119,8 @@ const _assertExactResolveRoutEvent: AssertExact<
 
 /** The schema for a resolve rout event. */
 export const resolveRoutEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'gameEffect'>;
-  effectType: z.ZodLiteral<'resolveRout'>;
+  eventType: z.ZodLiteral<"gameEffect">;
+  effectType: z.ZodLiteral<"resolveRout">;
   routResolutionSource: typeof routResolutionSourceSchema;
   eventNumber: z.ZodNumber;
   unitInstances: z.ZodSet<typeof unitInstanceSchema>;

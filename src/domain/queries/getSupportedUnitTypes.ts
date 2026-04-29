@@ -1,5 +1,5 @@
-import type { Board, PlayerSide } from '@entities';
-import type { GameStateWithBoard } from '@game';
+import type { Board, PlayerSide } from "@entities";
+import type { GameStateWithBoard } from "@game";
 
 /**
  * Gets the set of unit type IDs that are currently supported by the player's cards in hand.

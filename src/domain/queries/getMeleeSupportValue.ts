@@ -1,6 +1,6 @@
-import type { Board, UnitWithPlacement } from '@entities';
-import { hasEngagedUnits, hasNoUnit } from '@entities';
-import { diagonalIsClear } from '@validation';
+import type { Board, UnitWithPlacement } from "@entities";
+import { hasEngagedUnits, hasNoUnit } from "@entities";
+import { diagonalIsClear } from "@validation";
 import {
   getAdjacentSpaces,
   getBoardSpace,
@@ -8,13 +8,10 @@ import {
   getFlankingSpaces,
   getFrontSpaces,
   getSpacesBehind,
-} from './boardSpace';
-import { getPlayerUnitWithPosition } from './unitPresence';
+} from "./boardSpace";
+import { getPlayerUnitWithPosition } from "./unitPresence";
 
-export function getMeleeSupportValue(
-  board: Board,
-  unit: UnitWithPlacement<Board>,
-): number {
+export function getMeleeSupportValue(board: Board, unit: UnitWithPlacement<Board>): number {
   const playerSide = unit.unit.playerSide;
   const unitCoordinate = unit.placement.coordinate;
   const unitFacing = unit.placement.facing;
@@ -23,9 +20,7 @@ export function getMeleeSupportValue(
   // Get the spaces behind the primary unit
   const spacesBehind = getSpacesBehind(board, unitCoordinate, unitFacing);
   // Filter out the spaces behind the primary unit since they cannot provide support
-  const adjacentSpacesNotBehind = [...adjacentSpaces].filter(
-    (space) => !spacesBehind.has(space),
-  );
+  const adjacentSpacesNotBehind = [...adjacentSpaces].filter((space) => !spacesBehind.has(space));
 
   // Collect unengaged friendly units that can provide support;
   // - check engagement first to avoid unnecessary unit lookups
@@ -35,10 +30,7 @@ export function getMeleeSupportValue(
   for (const space of adjacentSpacesNotBehind) {
     const boardSpace = getBoardSpace(board, space);
     // Skip spaces with no units or engaged units - they cannot provide support
-    if (
-      hasEngagedUnits(boardSpace.unitPresence) ||
-      hasNoUnit(boardSpace.unitPresence)
-    ) {
+    if (hasEngagedUnits(boardSpace.unitPresence) || hasNoUnit(boardSpace.unitPresence)) {
       continue;
     }
 
@@ -53,12 +45,7 @@ export function getMeleeSupportValue(
     if (diagonalSpaces.has(space)) {
       // Unit is diagonally adjacent to the primary unit
       // Check if the diagonal is clear of enemy units blocking it
-      const diagonalClear = diagonalIsClear(
-        playerSide,
-        board,
-        unitCoordinate,
-        space,
-      );
+      const diagonalClear = diagonalIsClear(playerSide, board, unitCoordinate, space);
       if (diagonalClear.result) {
         // Diagonal is clear, add the unit to the possible support units
         potentialSupportUnits.push(unit);
@@ -89,11 +76,7 @@ export function getMeleeSupportValue(
       continue;
     }
     // If it is not, check if it is flanking the primary unit
-    const flankingSpaces = getFlankingSpaces(
-      board,
-      supportCoordinate,
-      supportFacing,
-    );
+    const flankingSpaces = getFlankingSpaces(board, supportCoordinate, supportFacing);
     // If it is, add weak support of one
     if (flankingSpaces.has(unitCoordinate)) {
       supportValue += 1;

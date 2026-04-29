@@ -1,5 +1,5 @@
-import type { Board } from '@entities';
-import type { GameStateWithBoard, PhaseState, RoutState } from '@game';
+import type { Board } from "@entities";
+import type { GameStateWithBoard, PhaseState, RoutState } from "@game";
 import {
   getCleanupPhaseState,
   getCurrentPhaseState,
@@ -9,8 +9,8 @@ import {
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
   updateRallyResolutionStateForCurrentStep,
-} from '@queries';
-import { updatePhaseState } from '../state';
+} from "@queries";
+import { updatePhaseState } from "../state";
 
 /**
  * Creates a new game state with the rout state updated.
@@ -30,15 +30,15 @@ export function updateRoutState<TBoard extends Board>(
 ): GameStateWithBoard<TBoard> {
   const phaseState = getCurrentPhaseState(state);
 
-  if (phaseState.phase === 'issueCommands') {
+  if (phaseState.phase === "issueCommands") {
     const issueState = getIssueCommandsPhaseState(state);
     const commandState = issueState.currentCommandResolutionState;
 
-    if (commandState?.commandResolutionType === 'rangedAttack') {
+    if (commandState?.commandResolutionType === "rangedAttack") {
       const ranged = getRangedAttackResolutionState(state);
       const attackApply = ranged.attackApplyState;
       if (!attackApply?.routState) {
-        throw new Error('No rout state found in attack apply state');
+        throw new Error("No rout state found in attack apply state");
       }
       return updatePhaseState(state, {
         ...issueState,
@@ -49,7 +49,7 @@ export function updateRoutState<TBoard extends Board>(
       } as PhaseState);
     }
 
-    if (commandState?.commandResolutionType === 'movement') {
+    if (commandState?.commandResolutionType === "movement") {
       const movement = commandState;
       const engagement = movement.engagementState;
       const resolution = engagement?.engagementResolutionState;
@@ -57,7 +57,7 @@ export function updateRoutState<TBoard extends Board>(
       // `resolution` to be the rear branch (no `engagement === undefined` merge path).
       if (
         engagement !== undefined &&
-        resolution?.engagementType === 'rear' &&
+        resolution?.engagementType === "rear" &&
         resolution.routState !== undefined
       ) {
         return updatePhaseState(state, {
@@ -77,19 +77,19 @@ export function updateRoutState<TBoard extends Board>(
     }
 
     throw new Error(
-      `Rout state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? 'none'})`,
+      `Rout state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? "none"})`,
     );
   }
 
-  if (phaseState.phase === 'resolveMelee') {
+  if (phaseState.phase === "resolveMelee") {
     const resolveMelee = getResolveMeleePhaseState(state);
     const melee = getMeleeResolutionState(state);
     const player = routState.player;
 
-    if (player === 'white') {
+    if (player === "white") {
       const whiteApply = melee.whiteAttackApplyState;
       if (!whiteApply?.routState) {
-        throw new Error('No rout state found in attack apply state');
+        throw new Error("No rout state found in attack apply state");
       }
       return updatePhaseState(state, {
         ...resolveMelee,
@@ -102,7 +102,7 @@ export function updateRoutState<TBoard extends Board>(
 
     const blackApply = melee.blackAttackApplyState;
     if (!blackApply?.routState) {
-      throw new Error('No rout state found in attack apply state');
+      throw new Error("No rout state found in attack apply state");
     }
     return updatePhaseState(state, {
       ...resolveMelee,
@@ -113,11 +113,11 @@ export function updateRoutState<TBoard extends Board>(
     } as PhaseState);
   }
 
-  if (phaseState.phase === 'cleanup') {
+  if (phaseState.phase === "cleanup") {
     const cleanupPhaseState = getCleanupPhaseState(state);
     const rallyState = getCurrentRallyResolutionState(state);
     if (!rallyState.routState) {
-      throw new Error('No rout state found in rally resolution state');
+      throw new Error("No rout state found in rally resolution state");
     }
     const newRallyState = {
       ...rallyState,
@@ -131,7 +131,5 @@ export function updateRoutState<TBoard extends Board>(
     return updatePhaseState(state, newPhaseState as PhaseState);
   }
 
-  throw new Error(
-    `Rout state update not expected in phase: ${phaseState.phase}`,
-  );
+  throw new Error(`Rout state update not expected in phase: ${phaseState.phase}`);
 }

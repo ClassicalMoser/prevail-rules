@@ -4,12 +4,12 @@ import type {
   UnitFacing,
   UnitInstance,
   UnitType,
-} from '@entities';
-import type { StandardGameState } from '@game';
-import { createEmptyGameState } from '@testing/createEmptyGameState';
-import { createBoardWithEngagedUnits } from './boardWithEngagedUnits';
-import { createBoardWithSingleUnit } from './boardWithSingleUnit';
-import { createBoardWithUnits } from './boardWithUnits';
+} from "@entities";
+import type { StandardGameState } from "@game";
+import { createEmptyGameState } from "@testing/createEmptyGameState";
+import { createBoardWithEngagedUnits } from "./boardWithEngagedUnits";
+import { createBoardWithSingleUnit } from "./boardWithSingleUnit";
+import { createBoardWithUnits } from "./boardWithUnits";
 
 /**
  * Creates a game state with a single unit at a coordinate.
@@ -36,16 +36,11 @@ export function createGameStateWithSingleUnit(
 export function createGameStateWithEngagedUnits(
   primaryUnit: UnitInstance,
   secondaryUnit: UnitInstance,
-  coord: StandardBoardCoordinate = 'E-5',
-  primaryFacing: UnitFacing = 'north',
+  coord: StandardBoardCoordinate = "E-5",
+  primaryFacing: UnitFacing = "north",
 ): StandardGameState {
   const gameState = createEmptyGameState();
-  const board = createBoardWithEngagedUnits(
-    primaryUnit,
-    secondaryUnit,
-    coord,
-    primaryFacing,
-  );
+  const board = createBoardWithEngagedUnits(primaryUnit, secondaryUnit, coord, primaryFacing);
   return { ...gameState, boardState: board };
 }
 

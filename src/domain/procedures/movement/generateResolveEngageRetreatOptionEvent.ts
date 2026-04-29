@@ -1,17 +1,14 @@
-import type { Board, BoardCoordinate } from '@entities';
-import type { ResolveEngageRetreatOptionEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  GAME_EFFECT_EVENT_TYPE,
-  RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
-} from '@events';
+import type { Board, BoardCoordinate } from "@entities";
+import type { ResolveEngageRetreatOptionEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE } from "@events";
 import {
   getCurrentUnitStat,
   getFrontEngagementStateFromMovement,
   getMovementResolutionState,
   getSingleUnitWithPlacementAtCoordinate,
   modifiersFromCompletedCommitment,
-} from '@queries';
+} from "@queries";
 
 /**
  * Generates a ResolveEngageRetreatOptionEvent by determining if the defending unit
@@ -25,7 +22,7 @@ import {
 export function generateResolveEngageRetreatOptionEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): ResolveEngageRetreatOptionEvent<TBoard, 'resolveEngageRetreatOption'> {
+): ResolveEngageRetreatOptionEvent<TBoard, "resolveEngageRetreatOption"> {
   const movementResolutionState = getMovementResolutionState(state);
   const engagementState = getFrontEngagementStateFromMovement(state);
 
@@ -35,24 +32,12 @@ export function generateResolveEngageRetreatOptionEvent<TBoard extends Board>(
   );
   const engagingUnit = engagementState.engagingUnit;
 
-  const commitmentModifiers = modifiersFromCompletedCommitment(
-    movementResolutionState.commitment,
-  );
+  const commitmentModifiers = modifiersFromCompletedCommitment(movementResolutionState.commitment);
 
   // Get current speed values for both units
-  const defendingSpeed = getCurrentUnitStat(
-    defendingUnit,
-    'speed',
-    state,
-    commitmentModifiers,
-  );
+  const defendingSpeed = getCurrentUnitStat(defendingUnit, "speed", state, commitmentModifiers);
 
-  const engagingSpeed = getCurrentUnitStat(
-    engagingUnit,
-    'speed',
-    state,
-    commitmentModifiers,
-  );
+  const engagingSpeed = getCurrentUnitStat(engagingUnit, "speed", state, commitmentModifiers);
 
   // Retreat is possible if defending unit has higher speed than engaging unit
   const defendingUnitCanRetreat = defendingSpeed > engagingSpeed;

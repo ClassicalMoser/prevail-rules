@@ -1,5 +1,5 @@
-import type { CardState, PlayerSide, UnitInstance } from '@entities';
-import type { RoundState } from './roundState';
+import type { CardState, PlayerSide, UnitInstance } from "@entities";
+import type { RoundState } from "./roundState";
 
 /**
  * Non-board slice of {@link GameState} used only for {@link GameStateWithBoard} (generic

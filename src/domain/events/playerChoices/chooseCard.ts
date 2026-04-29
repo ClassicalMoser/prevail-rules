@@ -1,16 +1,16 @@
-import type { Board, Card, PlayerSide } from '@entities';
-import type { AssertExact } from '@utils';
-import { cardSchema, playerSideSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board, Card, PlayerSide } from "@entities";
+import type { AssertExact } from "@utils";
+import { cardSchema, playerSideSchema } from "@entities";
+import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
 /** The type of the choose card event. */
-export const CHOOSE_CARD_CHOICE_TYPE = 'chooseCard' as const;
+export const CHOOSE_CARD_CHOICE_TYPE = "chooseCard" as const;
 
 /** An eventto choose a card from the player's hand. */
 export interface ChooseCardEvent<
   _TBoard extends Board,
-  _TChoiceType extends 'chooseCard' = 'chooseCard',
+  _TChoiceType extends "chooseCard" = "chooseCard",
 > {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -47,8 +47,8 @@ const _assertExactChooseCardEvent: AssertExact<
 
 /** The schema for a choose card event. */
 export const chooseCardEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'playerChoice'>;
-  choiceType: z.ZodLiteral<'chooseCard'>;
+  eventType: z.ZodLiteral<"playerChoice">;
+  choiceType: z.ZodLiteral<"chooseCard">;
   eventNumber: z.ZodNumber;
   player: z.ZodType<PlayerSide>;
   card: z.ZodType<Card>;

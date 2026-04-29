@@ -4,8 +4,8 @@ import type {
   UnitFacing,
   UnitInstance,
   UnitType,
-} from '@entities';
-import { createTestUnit } from '@testing/unitHelpers';
+} from "@entities";
+import { createTestUnit } from "@testing/unitHelpers";
 
 /**
  * Short-hand unit placement specification for bootstrapping test scenarios.
@@ -39,9 +39,7 @@ export type UnitPlacementSpec =
 /**
  * Extracts the explicitly specified instance number from a spec, if any.
  */
-export function getExplicitInstanceNumber(
-  spec: UnitPlacementSpec,
-): number | undefined {
+export function getExplicitInstanceNumber(spec: UnitPlacementSpec): number | undefined {
   if (Array.isArray(spec)) {
     return undefined;
   }
@@ -60,7 +58,7 @@ export function normalizeUnitPlacement(
   facing: UnitFacing;
 } {
   if (Array.isArray(spec)) {
-    const [coord, player, facing = 'north'] = spec;
+    const [coord, player, facing = "north"] = spec;
     const unit = createTestUnit(player, { instanceNumber });
     return { unit, coordinate: coord, facing };
   }
@@ -68,7 +66,7 @@ export function normalizeUnitPlacement(
   const {
     coord,
     player,
-    facing = 'north',
+    facing = "north",
     instanceNumber: explicitInstanceNumber = instanceNumber,
     ...unitOptions
   } = spec;

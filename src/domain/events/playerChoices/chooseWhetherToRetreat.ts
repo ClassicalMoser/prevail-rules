@@ -1,16 +1,15 @@
-import type { Board, PlayerSide } from '@entities';
-import type { AssertExact } from '@utils';
-import { playerSideSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board, PlayerSide } from "@entities";
+import type { AssertExact } from "@utils";
+import { playerSideSchema } from "@entities";
+import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
-export const CHOOSE_WHETHER_TO_RETREAT_CHOICE_TYPE =
-  'chooseWhetherToRetreat' as const;
+export const CHOOSE_WHETHER_TO_RETREAT_CHOICE_TYPE = "chooseWhetherToRetreat" as const;
 
 /** The event for a player choosing whether to retreat. */
 export interface ChooseWhetherToRetreatEvent<
   _TBoard extends Board,
-  _TChoiceType extends 'chooseWhetherToRetreat' = 'chooseWhetherToRetreat',
+  _TChoiceType extends "chooseWhetherToRetreat" = "chooseWhetherToRetreat",
 > {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -48,8 +47,8 @@ const _assertExactChooseWhetherToRetreatEvent: AssertExact<
 
 /** The schema for a player choice whether or not to retreat. */
 export const chooseWhetherToRetreatEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'playerChoice'>;
-  choiceType: z.ZodLiteral<'chooseWhetherToRetreat'>;
+  eventType: z.ZodLiteral<"playerChoice">;
+  choiceType: z.ZodLiteral<"chooseWhetherToRetreat">;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   choosesToRetreat: z.ZodBoolean;

@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { GameStateWithBoard, PhaseState } from '@game';
-import { updateRoundState } from '@transforms/pureTransforms';
+import type { Board } from "@entities";
+import type { GameStateWithBoard, PhaseState } from "@game";
+import { updateRoundState } from "@transforms/pureTransforms";
 
 /**
  * Adds a completed phase to the completed phases set.

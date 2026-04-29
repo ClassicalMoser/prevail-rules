@@ -1,10 +1,7 @@
-import type { Board } from '@entities';
-import type { CompletePlayCardsPhaseEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
-  GAME_EFFECT_EVENT_TYPE,
-} from '@events';
+import type { Board } from "@entities";
+import type { CompletePlayCardsPhaseEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
 
 /**
  * Generates a CompletePlayCardsPhaseEvent to complete the play cards phase
@@ -16,7 +13,7 @@ import {
 export function generateCompletePlayCardsPhaseEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): CompletePlayCardsPhaseEvent<TBoard, 'completePlayCardsPhase'> {
+): CompletePlayCardsPhaseEvent<TBoard, "completePlayCardsPhase"> {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {

@@ -1,5 +1,5 @@
-import type { AssertExact } from '@utils';
-import { z } from 'zod';
+import type { AssertExact } from "@utils";
+import { z } from "zod";
 
 /**
  * The elevation of each corner of a space.

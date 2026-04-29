@@ -1,12 +1,12 @@
-import type { UnitType } from '@entities';
-import { createEmptyGameState, createTestUnit } from '@testing';
-import { describe, expect, it } from 'vitest';
-import { applyAttackValue } from './applyAttackValue';
+import type { UnitType } from "@entities";
+import { createEmptyGameState, createTestUnit } from "@testing";
+import { describe, expect, it } from "vitest";
+import { applyAttackValue } from "./applyAttackValue";
 
 /** Explicit type: stacked rout/reverse/retreat thresholds come from applyAttackValue rules, not from tempUnits. */
 const unitTypeWithStackedDefense: UnitType = {
-  id: '00000000-0000-4000-8000-000000000001',
-  name: 'Test stacked defense',
+  id: "00000000-0000-4000-8000-000000000001",
+  name: "Test stacked defense",
   traits: [],
   stats: {
     attack: 1,
@@ -26,76 +26,76 @@ const unitTypeWithStackedDefense: UnitType = {
  * applyAttackValue: compares attack value to the unit's current rout, reverse, and retreat stats and returns
  * which thresholds are met or exceeded.
  */
-describe('applyAttackValue', () => {
-  describe('when attack strictly exceeds a threshold', () => {
-    it('given rout threshold passed, unitRouted true', () => {
+describe("applyAttackValue", () => {
+  describe("when attack strictly exceeds a threshold", () => {
+    it("given rout threshold passed, unitRouted true", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', { rout: 3 });
+      const unit = createTestUnit("black", { rout: 3 });
       const result = applyAttackValue(gameState, 4, unit);
       expect(result.unitRouted).toEqual(true);
     });
 
-    it('given reverse threshold passed, unitReversed true', () => {
+    it("given reverse threshold passed, unitReversed true", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', { reverse: 3 });
+      const unit = createTestUnit("black", { reverse: 3 });
       const result = applyAttackValue(gameState, 4, unit);
       expect(result.unitReversed).toEqual(true);
     });
 
-    it('given retreat threshold passed, unitRetreated true', () => {
+    it("given retreat threshold passed, unitRetreated true", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', { retreat: 3 });
+      const unit = createTestUnit("black", { retreat: 3 });
       const result = applyAttackValue(gameState, 4, unit);
       expect(result.unitRetreated).toEqual(true);
     });
   });
 
-  describe('when attack equals a threshold', () => {
-    it('given attack equals rout, unitRouted true', () => {
+  describe("when attack equals a threshold", () => {
+    it("given attack equals rout, unitRouted true", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', { rout: 3 });
+      const unit = createTestUnit("black", { rout: 3 });
       const result = applyAttackValue(gameState, 3, unit);
       expect(result.unitRouted).toEqual(true);
     });
-    it('given attack equals reverse, unitReversed true', () => {
+    it("given attack equals reverse, unitReversed true", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', { reverse: 3 });
+      const unit = createTestUnit("black", { reverse: 3 });
       const result = applyAttackValue(gameState, 3, unit);
       expect(result.unitReversed).toEqual(true);
     });
-    it('given attack equals retreat, unitRetreated true', () => {
+    it("given attack equals retreat, unitRetreated true", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', { retreat: 3 });
+      const unit = createTestUnit("black", { retreat: 3 });
       const result = applyAttackValue(gameState, 3, unit);
       expect(result.unitRetreated).toEqual(true);
     });
   });
 
-  describe('when attack is below each threshold', () => {
-    it('given attack below rout, unitRouted false', () => {
+  describe("when attack is below each threshold", () => {
+    it("given attack below rout, unitRouted false", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', { rout: 3 });
+      const unit = createTestUnit("black", { rout: 3 });
       const result = applyAttackValue(gameState, 2, unit);
       expect(result.unitRouted).toEqual(false);
     });
-    it('given attack below reverse, unitReversed false', () => {
+    it("given attack below reverse, unitReversed false", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', { reverse: 3 });
+      const unit = createTestUnit("black", { reverse: 3 });
       const result = applyAttackValue(gameState, 2, unit);
       expect(result.unitReversed).toEqual(false);
     });
-    it('given attack below retreat, unitRetreated false', () => {
+    it("given attack below retreat, unitRetreated false", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', { retreat: 3 });
+      const unit = createTestUnit("black", { retreat: 3 });
       const result = applyAttackValue(gameState, 2, unit);
       expect(result.unitRetreated).toEqual(false);
     });
   });
 
-  describe('stacked rout, reverse, retreat on one unit', () => {
-    it('given attack below all three, all flags false', () => {
+  describe("stacked rout, reverse, retreat on one unit", () => {
+    it("given attack below all three, all flags false", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', {
+      const unit = createTestUnit("black", {
         unitType: unitTypeWithStackedDefense,
       });
       const result2 = applyAttackValue(gameState, 2, unit);
@@ -105,9 +105,9 @@ describe('applyAttackValue', () => {
         unitRetreated: false,
       });
     });
-    it('given attack meets retreat only then retreat and reverse', () => {
+    it("given attack meets retreat only then retreat and reverse", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', {
+      const unit = createTestUnit("black", {
         unitType: unitTypeWithStackedDefense,
       });
       const result3 = applyAttackValue(gameState, 3, unit);
@@ -123,9 +123,9 @@ describe('applyAttackValue', () => {
         unitRetreated: true,
       });
     });
-    it('given attack meets rout or higher, all flags true', () => {
+    it("given attack meets rout or higher, all flags true", () => {
       const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', {
+      const unit = createTestUnit("black", {
         unitType: unitTypeWithStackedDefense,
       });
       const result5 = applyAttackValue(gameState, 5, unit);

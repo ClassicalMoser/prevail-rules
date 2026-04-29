@@ -1,12 +1,8 @@
-import type { Board } from '@entities';
-import type { ChooseCardEvent } from '@events';
-import type { GameStateWithBoard, PlayCardsPhaseState } from '@game';
-import { getPlayCardsPhaseState } from '@queries';
-import {
-  chooseCard,
-  updateCardState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import type { Board } from "@entities";
+import type { ChooseCardEvent } from "@events";
+import type { GameStateWithBoard, PlayCardsPhaseState } from "@game";
+import { getPlayCardsPhaseState } from "@queries";
+import { chooseCard, updateCardState, updatePhaseState } from "@transforms/pureTransforms";
 
 /**
  * Applies a ChooseCardEvent to the game state.
@@ -31,14 +27,13 @@ export function applyChooseCardEvent<TBoard extends Board>(
 
   // Check if both players have now chosen cards
   const bothPlayersChosen =
-    newCardState.black.awaitingPlay !== null &&
-    newCardState.white.awaitingPlay !== null;
+    newCardState.black.awaitingPlay !== null && newCardState.white.awaitingPlay !== null;
 
   // If both players have chosen, advance step to revealCards
   const newPhaseState: PlayCardsPhaseState = bothPlayersChosen
     ? {
         ...currentPhaseState,
-        step: 'revealCards',
+        step: "revealCards",
       }
     : currentPhaseState;
 

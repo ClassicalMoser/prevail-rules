@@ -5,15 +5,15 @@ import type {
   PlayCardsPhaseState,
   StandardGameState,
   StandardResolveMeleePhaseState,
-} from '@game';
+} from "@game";
 import {
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,
   PLAY_CARDS_PHASE,
   RESOLVE_MELEE_PHASE,
-} from '@game';
+} from "@game";
 
-import { createMeleeResolutionState } from './commandResolutionStates';
+import { createMeleeResolutionState } from "./commandResolutionStates";
 
 /**
  * Creates a PlayCardsPhaseState with sensible defaults.
@@ -23,7 +23,7 @@ export function createPlayCardsPhaseState(
 ): PlayCardsPhaseState {
   return {
     phase: PLAY_CARDS_PHASE,
-    step: 'chooseCards',
+    step: "chooseCards",
     ...overrides,
   };
 }
@@ -36,7 +36,7 @@ export function createMoveCommandersPhaseState(
 ): MoveCommandersPhaseState {
   return {
     phase: MOVE_COMMANDERS_PHASE,
-    step: 'moveFirstCommander',
+    step: "moveFirstCommander",
     ...overrides,
   };
 }
@@ -50,7 +50,7 @@ export function createIssueCommandsPhaseState(
 ): IssueCommandsPhaseState {
   return {
     phase: ISSUE_COMMANDS_PHASE,
-    step: 'firstPlayerResolveCommands',
+    step: "firstPlayerResolveCommands",
     remainingCommandsFirstPlayer: new Set(),
     remainingUnitsFirstPlayer: new Set(),
     remainingCommandsSecondPlayer: new Set(),
@@ -69,8 +69,8 @@ export function createResolveMeleePhaseState(
 ): StandardResolveMeleePhaseState {
   return {
     phase: RESOLVE_MELEE_PHASE,
-    boardType: 'standard' as const,
-    step: 'resolveMelee',
+    boardType: "standard" as const,
+    step: "resolveMelee",
     currentMeleeResolutionState: createMeleeResolutionState(state),
     remainingEngagements: new Set(),
     ...overrides,
@@ -80,12 +80,10 @@ export function createResolveMeleePhaseState(
 /**
  * Creates a CleanupPhaseState with sensible defaults.
  */
-export function createCleanupPhaseState(
-  overrides?: Partial<CleanupPhaseState>,
-): CleanupPhaseState {
+export function createCleanupPhaseState(overrides?: Partial<CleanupPhaseState>): CleanupPhaseState {
   return {
-    phase: 'cleanup' as const,
-    step: 'discardPlayedCards',
+    phase: "cleanup" as const,
+    step: "discardPlayedCards",
     firstPlayerRallyResolutionState: undefined,
     secondPlayerRallyResolutionState: undefined,
     ...overrides,

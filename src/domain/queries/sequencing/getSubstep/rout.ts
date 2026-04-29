@@ -1,7 +1,7 @@
-import type { Board } from '@entities';
-import type { AttackApplyState, GameStateWithBoard, RoutState } from '@game';
-import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getMeleeResolutionState } from '../getCommandResolutionState';
+import type { Board } from "@entities";
+import type { AttackApplyState, GameStateWithBoard, RoutState } from "@game";
+import { getOtherPlayer } from "@queries/getOtherPlayer";
+import { getMeleeResolutionState } from "../getCommandResolutionState";
 
 /**
  * Gets the rout state from an attack apply state.
@@ -11,11 +11,9 @@ import { getMeleeResolutionState } from '../getCommandResolutionState';
  * @returns The rout state
  * @throws Error if rout state is missing
  */
-export function getRoutStateFromAttackApply(
-  attackApplyState: AttackApplyState,
-): RoutState {
+export function getRoutStateFromAttackApply(attackApplyState: AttackApplyState): RoutState {
   if (!attackApplyState.routState) {
-    throw new Error('No rout state found in attack apply state');
+    throw new Error("No rout state found in attack apply state");
   }
   return attackApplyState.routState;
 }
@@ -24,9 +22,9 @@ export function getRoutStateFromAttackApply(
  * Rout state from melee resolution, in initiative order (first player's apply first).
  * Assumes resolveMelee phase and that one attack-apply carries an active rout.
  */
-export function getRoutStateFromMeleeResolutionByInitiative<
-  TBoard extends Board,
->(state: GameStateWithBoard<TBoard>): RoutState {
+export function getRoutStateFromMeleeResolutionByInitiative<TBoard extends Board>(
+  state: GameStateWithBoard<TBoard>,
+): RoutState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
@@ -40,5 +38,5 @@ export function getRoutStateFromMeleeResolutionByInitiative<
   if (secondApply?.routState) {
     return secondApply.routState;
   }
-  throw new Error('No rout state found in melee resolution');
+  throw new Error("No rout state found in melee resolution");
 }

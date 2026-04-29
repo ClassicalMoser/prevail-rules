@@ -1,5 +1,5 @@
-import type { Board, BoardCoordinate, PlayerSide } from '@entities';
-import { getBoardCoordinates, getBoardSpace } from './boardSpace';
+import type { Board, BoardCoordinate, PlayerSide } from "@entities";
+import { getBoardCoordinates, getBoardSpace } from "./boardSpace";
 
 /**
  * Gets the board coordinate containing the commander for a given player side.

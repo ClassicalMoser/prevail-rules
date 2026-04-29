@@ -1,6 +1,6 @@
-import type { Board, ValidationResult } from '@entities';
-import type { ChooseCardEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
+import type { Board, ValidationResult } from "@entities";
+import type { ChooseCardEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
 
 /**
  * Validates whether a ChooseCardEvent can be applied to the current game state.
@@ -33,12 +33,12 @@ export function isValidChooseCardEvent<TBoard extends Board>(
     if (!currentPhaseState) {
       return {
         result: false,
-        errorReason: 'No current phase state found',
+        errorReason: "No current phase state found",
       };
     }
 
     // Check correct phase
-    if (currentPhaseState.phase !== 'playCards') {
+    if (currentPhaseState.phase !== "playCards") {
       return {
         result: false,
         errorReason: `Current phase is ${currentPhaseState.phase}, not playCards`,
@@ -46,7 +46,7 @@ export function isValidChooseCardEvent<TBoard extends Board>(
     }
 
     // Check correct step
-    if (currentPhaseState.step !== 'chooseCards') {
+    if (currentPhaseState.step !== "chooseCards") {
       return {
         result: false,
         errorReason: `Play cards phase is on ${currentPhaseState.step} step, not chooseCards`,
@@ -78,7 +78,7 @@ export function isValidChooseCardEvent<TBoard extends Board>(
   } catch (error) {
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

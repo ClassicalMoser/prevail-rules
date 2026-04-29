@@ -1,45 +1,42 @@
-import type { Board } from '@entities';
-import type { GameEffectEvent, GameEffectType } from '@events';
-import type { GameStateWithBoard } from '@game';
+import type { Board } from "@entities";
+import type { GameEffectEvent, GameEffectType } from "@events";
+import type { GameStateWithBoard } from "@game";
 import {
   generateDiscardPlayedCardsEvent,
   generateResolveInitiativeEvent,
   generateResolveRallyEvent,
   generateResolveUnitsBrokenEvent,
   generateRevealCardsEvent,
-} from './cards';
+} from "./cards";
 import {
   generateCompleteCleanupPhaseEvent,
   generateCompleteIssueCommandsPhaseEvent,
   generateCompleteMoveCommandersPhaseEvent,
   generateCompletePlayCardsPhaseEvent,
   generateCompleteResolveMeleePhaseEvent,
-} from './completePhase';
+} from "./completePhase";
 import {
   generateResolveRetreatEvent,
   generateResolveReverseEvent,
   generateResolveRoutEvent,
   generateTriggerRoutFromRetreatEvent,
-} from './defenseResult';
+} from "./defenseResult";
 import {
   generateCompleteUnitMovementEvent,
   generateResolveEngageRetreatOptionEvent,
   generateResolveFlankEngagementEvent,
   generateStartEngagementEvent,
-} from './movement';
+} from "./movement";
 import {
   generateCompleteAttackApplyEvent,
   generateCompleteMeleeResolutionEvent,
   generateCompleteRangedAttackCommandEvent,
   generateResolveMeleeEvent,
   generateResolveRangedAttackEvent,
-} from './resolveAttack';
+} from "./resolveAttack";
 
 // Import the unfiltered union type for the implementation signature
-type GameEffectEventUnion<TBoard extends Board> = GameEffectEvent<
-  TBoard,
-  GameEffectType
->;
+type GameEffectEventUnion<TBoard extends Board> = GameEffectEvent<TBoard, GameEffectType>;
 
 /**
  * Generates a game effect event using the appropriate procedure
@@ -75,129 +72,127 @@ export function generateEventFromProcedure<TBoard extends Board>(
   effectType: GameEffectType,
 ): GameEffectEventUnion<TBoard> {
   switch (effectType) {
-    case 'completeAttackApply':
-      return generateCompleteAttackApplyEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'completeAttackApply'>;
-    case 'completeCleanupPhase':
-      return generateCompleteCleanupPhaseEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'completeCleanupPhase'>;
-    case 'completeIssueCommandsPhase':
-      return generateCompleteIssueCommandsPhaseEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'completeIssueCommandsPhase'>;
-    case 'completeMeleeResolution':
-      return generateCompleteMeleeResolutionEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'completeMeleeResolution'>;
-    case 'completeMoveCommandersPhase':
-      return generateCompleteMoveCommandersPhaseEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'completeMoveCommandersPhase'>;
-    case 'completePlayCardsPhase':
-      return generateCompletePlayCardsPhaseEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'completePlayCardsPhase'>;
-    case 'completeRangedAttackCommand':
-      return generateCompleteRangedAttackCommandEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'completeRangedAttackCommand'>;
-    case 'completeResolveMeleePhase':
-      return generateCompleteResolveMeleePhaseEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'completeResolveMeleePhase'>;
-    case 'completeUnitMovement':
-      return generateCompleteUnitMovementEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'completeUnitMovement'>;
-    case 'discardPlayedCards':
-      return generateDiscardPlayedCardsEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'discardPlayedCards'>;
-    case 'resolveEngageRetreatOption':
-      return generateResolveEngageRetreatOptionEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'resolveEngageRetreatOption'>;
-    case 'resolveFlankEngagement':
-      return generateResolveFlankEngagementEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'resolveFlankEngagement'>;
-    case 'resolveInitiative':
-      return generateResolveInitiativeEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'resolveInitiative'>;
-    case 'resolveMelee':
-      return generateResolveMeleeEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'resolveMelee'>;
-    case 'resolveRally': {
-      return generateResolveRallyEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'resolveRally'>;
+    case "completeAttackApply":
+      return generateCompleteAttackApplyEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "completeAttackApply"
+      >;
+    case "completeCleanupPhase":
+      return generateCompleteCleanupPhaseEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "completeCleanupPhase"
+      >;
+    case "completeIssueCommandsPhase":
+      return generateCompleteIssueCommandsPhaseEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "completeIssueCommandsPhase"
+      >;
+    case "completeMeleeResolution":
+      return generateCompleteMeleeResolutionEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "completeMeleeResolution"
+      >;
+    case "completeMoveCommandersPhase":
+      return generateCompleteMoveCommandersPhaseEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "completeMoveCommandersPhase"
+      >;
+    case "completePlayCardsPhase":
+      return generateCompletePlayCardsPhaseEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "completePlayCardsPhase"
+      >;
+    case "completeRangedAttackCommand":
+      return generateCompleteRangedAttackCommandEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "completeRangedAttackCommand"
+      >;
+    case "completeResolveMeleePhase":
+      return generateCompleteResolveMeleePhaseEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "completeResolveMeleePhase"
+      >;
+    case "completeUnitMovement":
+      return generateCompleteUnitMovementEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "completeUnitMovement"
+      >;
+    case "discardPlayedCards":
+      return generateDiscardPlayedCardsEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "discardPlayedCards"
+      >;
+    case "resolveEngageRetreatOption":
+      return generateResolveEngageRetreatOptionEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "resolveEngageRetreatOption"
+      >;
+    case "resolveFlankEngagement":
+      return generateResolveFlankEngagementEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "resolveFlankEngagement"
+      >;
+    case "resolveInitiative":
+      return generateResolveInitiativeEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "resolveInitiative"
+      >;
+    case "resolveMelee":
+      return generateResolveMeleeEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "resolveMelee"
+      >;
+    case "resolveRally": {
+      return generateResolveRallyEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "resolveRally"
+      >;
     }
-    case 'resolveRangedAttack':
-      return generateResolveRangedAttackEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'resolveRangedAttack'>;
-    case 'resolveRetreat':
-      return generateResolveRetreatEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'resolveRetreat'>;
-    case 'resolveReverse':
-      return generateResolveReverseEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'resolveReverse'>;
-    case 'resolveRout':
-      return generateResolveRoutEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'resolveRout'>;
-    case 'resolveUnitsBroken': {
-      return generateResolveUnitsBrokenEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'resolveUnitsBroken'>;
+    case "resolveRangedAttack":
+      return generateResolveRangedAttackEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "resolveRangedAttack"
+      >;
+    case "resolveRetreat":
+      return generateResolveRetreatEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "resolveRetreat"
+      >;
+    case "resolveReverse":
+      return generateResolveReverseEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "resolveReverse"
+      >;
+    case "resolveRout":
+      return generateResolveRoutEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "resolveRout"
+      >;
+    case "resolveUnitsBroken": {
+      return generateResolveUnitsBrokenEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "resolveUnitsBroken"
+      >;
     }
-    case 'revealCards':
-      return generateRevealCardsEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'revealCards'>;
-    case 'startEngagement':
-      return generateStartEngagementEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'startEngagement'>;
-    case 'triggerRoutFromRetreat':
-      return generateTriggerRoutFromRetreatEvent(
-        state,
-        eventNumber,
-      ) satisfies GameEffectEvent<TBoard, 'triggerRoutFromRetreat'>;
+    case "revealCards":
+      return generateRevealCardsEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "revealCards"
+      >;
+    case "startEngagement":
+      return generateStartEngagementEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "startEngagement"
+      >;
+    case "triggerRoutFromRetreat":
+      return generateTriggerRoutFromRetreatEvent(state, eventNumber) satisfies GameEffectEvent<
+        TBoard,
+        "triggerRoutFromRetreat"
+      >;
 
     default: {
       const _exhaustive: never = effectType;
-      throw new Error(
-        `No procedure exists for effect type: ${_exhaustive as string}`,
-      );
+      throw new Error(`No procedure exists for effect type: ${_exhaustive as string}`);
     }
   }
 }

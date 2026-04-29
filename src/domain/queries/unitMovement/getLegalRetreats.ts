@@ -1,21 +1,12 @@
-import type {
-  Board,
-  UnitFacing,
-  UnitPlacement,
-  UnitWithPlacement,
-} from '@entities';
-import type { GameStateWithBoard } from '@game';
-import type { MoveResult } from './exploreUnitMoves';
-import { areSameSide, hasNoUnit, hasSingleUnit } from '@entities';
-import {
-  getBoardSpace,
-  getFrontSpaces,
-  getSpacesBehind,
-} from '@queries/boardSpace';
-import { getOppositeFacing } from '@queries/facings';
-import { getCurrentUnitStat } from '@queries/getCurrentUnitStat';
-import { isSameUnitInstance } from '@validation';
-import { exploreUnitMoves } from './exploreUnitMoves';
+import type { Board, UnitFacing, UnitPlacement, UnitWithPlacement } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import type { MoveResult } from "./exploreUnitMoves";
+import { areSameSide, hasNoUnit, hasSingleUnit } from "@entities";
+import { getBoardSpace, getFrontSpaces, getSpacesBehind } from "@queries/boardSpace";
+import { getOppositeFacing } from "@queries/facings";
+import { getCurrentUnitStat } from "@queries/getCurrentUnitStat";
+import { isSameUnitInstance } from "@validation";
+import { exploreUnitMoves } from "./exploreUnitMoves";
 
 /**
  * Finds all legal retreat moves for a unit.
@@ -58,7 +49,7 @@ export function getLegalRetreats<TBoard extends Board>(
 
   // Check the space for unit presence
   if (hasNoUnit(boardSpace.unitPresence)) {
-    throw new Error('No unit present at starting position');
+    throw new Error("No unit present at starting position");
   }
 
   let foundMatchFacing: UnitFacing | undefined;
@@ -66,56 +57,37 @@ export function getLegalRetreats<TBoard extends Board>(
     if (isSameUnitInstance(boardSpace.unitPresence.unit, unit).result) {
       foundMatchFacing = boardSpace.unitPresence.facing;
     } else {
-      throw new Error('Unit is not present at the starting position');
+      throw new Error("Unit is not present at the starting position");
     }
     // Type guarantee: has engaged units.
   } else {
-    const isPrimary = isSameUnitInstance(
-      boardSpace.unitPresence.primaryUnit,
-      unit,
-    ).result;
-    const isSecondary = isSameUnitInstance(
-      boardSpace.unitPresence.secondaryUnit,
-      unit,
-    ).result;
+    const isPrimary = isSameUnitInstance(boardSpace.unitPresence.primaryUnit, unit).result;
+    const isSecondary = isSameUnitInstance(boardSpace.unitPresence.secondaryUnit, unit).result;
     if (!isPrimary && !isSecondary) {
-      throw new Error('Unit is not present at the starting position');
+      throw new Error("Unit is not present at the starting position");
     }
     if (isPrimary) {
       foundMatchFacing = boardSpace.unitPresence.primaryFacing;
     } else {
-      foundMatchFacing = getOppositeFacing(
-        boardSpace.unitPresence.primaryFacing,
-      );
+      foundMatchFacing = getOppositeFacing(boardSpace.unitPresence.primaryFacing);
     }
   }
 
   if (!foundMatchFacing || foundMatchFacing !== facing) {
-    throw new Error('Unit facing mismatch');
+    throw new Error("Unit facing mismatch");
   }
 
   // Get the spaces behind the starting position for validation
-  const spacesBehind = getSpacesBehind(
-    board,
-    startingPosition.coordinate,
-    startingPosition.facing,
-  );
+  const spacesBehind = getSpacesBehind(board, startingPosition.coordinate, startingPosition.facing);
 
   // If there is an unengaged enemy unit facing us
   // in the spaces behind the starting position, we cannot retreat
   for (const space of spacesBehind) {
     const spaceUnitPresence = getBoardSpace(board, space).unitPresence;
-    if (
-      hasSingleUnit(spaceUnitPresence) &&
-      !areSameSide(spaceUnitPresence.unit, unit)
-    ) {
+    if (hasSingleUnit(spaceUnitPresence) && !areSameSide(spaceUnitPresence.unit, unit)) {
       // Single enemy unit found.
       // Check if it's facing us
-      const frontSpaces = getFrontSpaces(
-        board,
-        space,
-        spaceUnitPresence.facing,
-      );
+      const frontSpaces = getFrontSpaces(board, space, spaceUnitPresence.facing);
       if (frontSpaces.has(startingPosition.coordinate)) {
         // Enemy unit is facing us.
         // We cannot retreat.
@@ -126,11 +98,7 @@ export function getLegalRetreats<TBoard extends Board>(
 
   // If we get here, we can retreat.
   // Explore moves backwards from the starting position
-  const exploredMoves = exploreUnitMoves(
-    gameState,
-    unitWithPlacement,
-    'retreat',
-  );
+  const exploredMoves = exploreUnitMoves(gameState, unitWithPlacement, "retreat");
 
   // Convert the explored moves to an array for iteration.
   const legalRetreatsArray = [...exploredMoves];
@@ -139,12 +107,8 @@ export function getLegalRetreats<TBoard extends Board>(
   const minimumRetreats = new Set<MoveResult<TBoard>>();
 
   // Get the current speed and flexibility of the unit for iteration limits.
-  const currentUnitSpeed = getCurrentUnitStat(unit, 'speed', gameState);
-  const currentUnitFlexibility = getCurrentUnitStat(
-    unit,
-    'flexibility',
-    gameState,
-  );
+  const currentUnitSpeed = getCurrentUnitStat(unit, "speed", gameState);
+  const currentUnitFlexibility = getCurrentUnitStat(unit, "flexibility", gameState);
 
   // Start with zero flexibility, up to the unit's flexibility limit.
   let foundMinimumRetreats = false;
@@ -154,15 +118,10 @@ export function getLegalRetreats<TBoard extends Board>(
     flexibility++
   ) {
     // Start with speed 1, up to the unit's speed limit.
-    for (
-      let speed = 1;
-      speed <= currentUnitSpeed && !foundMinimumRetreats;
-      speed++
-    ) {
+    for (let speed = 1; speed <= currentUnitSpeed && !foundMinimumRetreats; speed++) {
       // Find all moves with the current speed and flexibility level.
       const legalRetreats = legalRetreatsArray.filter(
-        (r: MoveResult<TBoard>) =>
-          r.speedUsed === speed && r.flexibilityUsed === flexibility,
+        (r: MoveResult<TBoard>) => r.speedUsed === speed && r.flexibilityUsed === flexibility,
       );
       // If we found any moves with the current speed and flexibility,
       // we add them to the minimum retreats set and exit both loops.

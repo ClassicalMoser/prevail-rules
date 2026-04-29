@@ -1,10 +1,7 @@
-import type { Board } from '@entities';
-import type { CompleteMeleeResolutionEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE,
-  GAME_EFFECT_EVENT_TYPE,
-} from '@events';
+import type { Board } from "@entities";
+import type { CompleteMeleeResolutionEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
 
 /**
  * Generates a CompleteMeleeResolutionEvent to complete a melee resolution.
@@ -17,7 +14,7 @@ import {
 export function generateCompleteMeleeResolutionEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): CompleteMeleeResolutionEvent<TBoard, 'completeMeleeResolution'> {
+): CompleteMeleeResolutionEvent<TBoard, "completeMeleeResolution"> {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {

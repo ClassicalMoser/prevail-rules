@@ -1,8 +1,8 @@
-import type { Board, ValidationResult } from '@entities';
-import type { ChooseRoutDiscardEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
+import type { Board, ValidationResult } from "@entities";
+import type { ChooseRoutDiscardEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
 
-import { getOtherPlayer } from '@queries';
+import { getOtherPlayer } from "@queries";
 
 /**
  * Validates a ChooseRoutDiscardEvent.
@@ -19,10 +19,10 @@ export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
   const { player, cardIds } = event;
   const currentPhaseState = state.currentRoundState.currentPhaseState;
 
-  if (!currentPhaseState || currentPhaseState.phase !== 'cleanup') {
+  if (!currentPhaseState || currentPhaseState.phase !== "cleanup") {
     return {
       result: false,
-      errorReason: 'Current phase is not cleanup',
+      errorReason: "Current phase is not cleanup",
     };
   }
 
@@ -31,7 +31,7 @@ export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
   const secondPlayer = getOtherPlayer(firstPlayer);
   let rallyState;
 
-  if (currentPhaseState.step === 'firstPlayerResolveRally') {
+  if (currentPhaseState.step === "firstPlayerResolveRally") {
     if (player !== firstPlayer) {
       return {
         result: false,
@@ -39,7 +39,7 @@ export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
       };
     }
     rallyState = currentPhaseState.firstPlayerRallyResolutionState;
-  } else if (currentPhaseState.step === 'secondPlayerResolveRally') {
+  } else if (currentPhaseState.step === "secondPlayerResolveRally") {
     if (player !== secondPlayer) {
       return {
         result: false,
@@ -57,21 +57,21 @@ export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
   if (!rallyState) {
     return {
       result: false,
-      errorReason: 'Rally resolution state not found',
+      errorReason: "Rally resolution state not found",
     };
   }
 
   if (!rallyState.routState) {
     return {
       result: false,
-      errorReason: 'No rout state found',
+      errorReason: "No rout state found",
     };
   }
 
   if (rallyState.routState.cardsChosen) {
     return {
       result: false,
-      errorReason: 'Rout discards already chosen',
+      errorReason: "Rout discards already chosen",
     };
   }
 
@@ -103,7 +103,7 @@ export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
   if (uniqueCardIds.size !== cardIds.length) {
     return {
       result: false,
-      errorReason: 'Duplicate card IDs in discard selection',
+      errorReason: "Duplicate card IDs in discard selection",
     };
   }
 

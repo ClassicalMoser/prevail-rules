@@ -1,5 +1,5 @@
-import type { Board } from '@entities';
-import type { GameStateWithBoard } from '@game';
+import type { Board } from "@entities";
+import type { GameStateWithBoard } from "@game";
 
 /**
  * Creates a new game state with the current round number updated.

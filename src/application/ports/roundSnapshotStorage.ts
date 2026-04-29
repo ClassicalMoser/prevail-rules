@@ -1,5 +1,5 @@
-import type { GameState } from '@game';
-import type { PortResponse } from './portResponse';
+import type { GameState } from "@game";
+import type { PortResponse } from "./portResponse";
 
 /**
  * The port for storing and retrieving round snapshots.

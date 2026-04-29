@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { GameStateWithBoard, RallyResolutionState } from '@game';
-import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';
+import type { Board } from "@entities";
+import type { GameStateWithBoard, RallyResolutionState } from "@game";
+import { getRallyResolutionStateForCurrentStep } from "./getRallyResolutionStateForCurrentStep";
 
 /**
  * Rally resolution state for the current resolve-rally step when the player has chosen to rally
@@ -14,14 +14,14 @@ import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionState
  */
 export function getRallyResolutionStateAwaitingBurn<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
-  player: 'white' | 'black',
+  player: "white" | "black",
 ): RallyResolutionState {
   const rallyState = getRallyResolutionStateForCurrentStep(state, player);
   if (!rallyState.playerRallied) {
-    throw new Error('Player did not choose to rally');
+    throw new Error("Player did not choose to rally");
   }
   if (rallyState.rallyResolved) {
-    throw new Error('Rally has already been resolved');
+    throw new Error("Rally has already been resolved");
   }
   return rallyState;
 }

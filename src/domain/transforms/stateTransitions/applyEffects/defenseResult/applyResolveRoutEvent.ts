@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { ResolveRoutEvent } from '@events';
-import type { GameStateWithBoard, RoutState } from '@game';
+import type { Board } from "@entities";
+import type { ResolveRoutEvent } from "@events";
+import type { GameStateWithBoard, RoutState } from "@game";
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -8,8 +8,8 @@ import {
   getRoutStateFromAttackApply,
   getRoutStateFromRally,
   getRoutStateFromRearEngagement,
-} from '@queries';
-import { updateRoutState } from '@transforms/pureTransforms';
+} from "@queries";
+import { updateRoutState } from "@transforms/pureTransforms";
 
 /**
  * Applies a ResolveRoutEvent to the game state.
@@ -27,29 +27,27 @@ export function applyResolveRoutEvent<TBoard extends Board>(
   let currentRoutState: RoutState;
 
   switch (event.routResolutionSource) {
-    case 'rangedAttack': {
+    case "rangedAttack": {
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       currentRoutState = getRoutStateFromAttackApply(attackApplyState);
       break;
     }
-    case 'melee': {
+    case "melee": {
       const routedUnit = event.unitInstances.values().next().value;
       const meleePlayer = routedUnit?.playerSide;
       if (meleePlayer === undefined) {
-        throw new Error(
-          'Melee rout resolution requires at least one unit instance',
-        );
+        throw new Error("Melee rout resolution requires at least one unit instance");
       }
       const attackApplyState = getAttackApplyStateFromMelee(state, meleePlayer);
       currentRoutState = getRoutStateFromAttackApply(attackApplyState);
       break;
     }
-    case 'rally': {
+    case "rally": {
       const rallyState = getCurrentRallyResolutionState(state);
       currentRoutState = getRoutStateFromRally(rallyState);
       break;
     }
-    case 'rearEngagementMovement': {
+    case "rearEngagementMovement": {
       currentRoutState = getRoutStateFromRearEngagement(state);
       break;
     }

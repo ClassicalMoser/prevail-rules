@@ -1,17 +1,11 @@
-import type { AssertExact } from '@utils';
-import { z } from 'zod';
+import type { AssertExact } from "@utils";
+import { z } from "zod";
 
 /** All stat modifiers that can be used on a card.
  * This includes all unit stats except the defense stats (reverse, retreat, rout),
  * which are replaced with a single 'defense' type.
  */
-export const statModifiers = [
-  'attack',
-  'range',
-  'speed',
-  'flexibility',
-  'defense',
-] as const;
+export const statModifiers = ["attack", "range", "speed", "flexibility", "defense"] as const;
 
 export type StatModifier = (typeof statModifiers)[number];
 
@@ -21,14 +15,10 @@ type StatModifierSchemaType = z.infer<typeof _statModifierSchemaObject>;
 /**
  * The schema for a stat modifier.
  */
-export const statModifierSchema: z.ZodType<StatModifier> =
-  _statModifierSchemaObject;
+export const statModifierSchema: z.ZodType<StatModifier> = _statModifierSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactStatModifier: AssertExact<
-  StatModifier,
-  StatModifierSchemaType
-> = true;
+const _assertExactStatModifier: AssertExact<StatModifier, StatModifierSchemaType> = true;
 
 /**
  * A modifier on a card.

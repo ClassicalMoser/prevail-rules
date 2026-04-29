@@ -1,8 +1,8 @@
-import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { getForwardSpace } from '@queries/boardSpace';
-import { getAdjacentFacings } from '@queries/facings';
-import { canMoveThrough, isDiagonalFacing } from '@validation';
+import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { getForwardSpace } from "@queries/boardSpace";
+import { getAdjacentFacings } from "@queries/facings";
+import { canMoveThrough, isDiagonalFacing } from "@validation";
 
 /**
  * Checks if a unit can make a diagonal move through the target space.
@@ -32,7 +32,7 @@ export function checkDiagonalMove<TBoard extends Board>(
   // Check if the facing is diagonal
   const { result: isDiagonalFacingResult } = isDiagonalFacing(currentFacing);
   if (!isDiagonalFacingResult) {
-    throw new Error('Facing must be diagonal');
+    throw new Error("Facing must be diagonal");
   }
 
   // Get adjacent facings (orthogonal directions)
@@ -41,8 +41,7 @@ export function checkDiagonalMove<TBoard extends Board>(
   // Get the orthogonal pass-through spaces for each adjacent facing
   const orthogonalPassThroughSpaces: BoardCoordinate<TBoard>[] = Array.from(
     adjacentFacings,
-    (adjacentFacing) =>
-      getForwardSpace(board, currentCoordinate, adjacentFacing),
+    (adjacentFacing) => getForwardSpace(board, currentCoordinate, adjacentFacing),
   ).filter((space) => space !== undefined);
 
   // Filter out spaces that we can't move through
@@ -55,11 +54,7 @@ export function checkDiagonalMove<TBoard extends Board>(
 
   // Can continue if we can move through the target and have a valid pass-through space
   return (
-    canMoveThrough(
-      unitSide,
-      currentUnitFlexibility,
-      targetCoordinate,
-      gameState,
-    ) && canMakeDiagonalMove
+    canMoveThrough(unitSide, currentUnitFlexibility, targetCoordinate, gameState) &&
+    canMakeDiagonalMove
   );
 }

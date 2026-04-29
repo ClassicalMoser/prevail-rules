@@ -1,12 +1,12 @@
-import type { Board } from '@entities';
-import type { ResolveInitiativeEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getPlayCardsPhaseState } from '@queries';
+import type { Board } from "@entities";
+import type { ResolveInitiativeEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getPlayCardsPhaseState } from "@queries";
 import {
   markPhaseAsComplete,
   updateCurrentInitiative,
   updatePhaseState,
-} from '@transforms/pureTransforms';
+} from "@transforms/pureTransforms";
 
 /**
  * Applies a ResolveInitiativeEvent to the game state.

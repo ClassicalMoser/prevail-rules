@@ -1,8 +1,8 @@
-import type { Board } from '@entities';
-import type { CompleteRangedAttackCommandEvent } from '@events';
-import type { GameStateWithBoard, IssueCommandsPhaseState } from '@game';
-import { getIssueCommandsPhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import type { Board } from "@entities";
+import type { CompleteRangedAttackCommandEvent } from "@events";
+import type { GameStateWithBoard, IssueCommandsPhaseState } from "@game";
+import { getIssueCommandsPhaseState } from "@queries";
+import { updatePhaseState } from "@transforms/pureTransforms";
 
 /**
  * Applies a CompleteRangedAttackCommandEvent to the game state.

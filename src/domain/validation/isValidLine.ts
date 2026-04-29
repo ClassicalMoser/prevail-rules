@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate, Line, ValidationResult } from '@entities';
-import { areSameSide } from '@entities';
-import { getFlankingSpaces, getOppositeFacing } from '@queries';
-import { MAX_LINE_LENGTH } from '@ruleValues';
+import type { Board, BoardCoordinate, Line, ValidationResult } from "@entities";
+import { areSameSide } from "@entities";
+import { getFlankingSpaces, getOppositeFacing } from "@queries";
+import { MAX_LINE_LENGTH } from "@ruleValues";
 
 /**
  * Determines whether a line is valid according to game rules.
@@ -16,21 +16,15 @@ import { MAX_LINE_LENGTH } from '@ruleValues';
  * @param line - The line to validate
  * @returns ValidationResult indicating if the line is valid
  */
-export function isValidLine<TBoard extends Board>(
-  board: TBoard,
-  line: Line,
-): ValidationResult {
+export function isValidLine<TBoard extends Board>(board: TBoard, line: Line): ValidationResult {
   try {
     const { unitPlacements } = line;
 
     // Check length: must have at least 1 unit and at most MAX_LINE_LENGTH
-    if (
-      unitPlacements.length === 0 ||
-      unitPlacements.length > MAX_LINE_LENGTH
-    ) {
+    if (unitPlacements.length === 0 || unitPlacements.length > MAX_LINE_LENGTH) {
       return {
         result: false,
-        errorReason: 'Line length is invalid',
+        errorReason: "Line length is invalid",
       };
     }
 
@@ -53,7 +47,7 @@ export function isValidLine<TBoard extends Board>(
       if (!areSameSide(firstUnit.unit, unit.unit)) {
         return {
           result: false,
-          errorReason: 'Units are not on the same side',
+          errorReason: "Units are not on the same side",
         };
       }
 
@@ -62,7 +56,7 @@ export function isValidLine<TBoard extends Board>(
       if (unitFacing !== firstFacing && unitFacing !== oppositeFacing) {
         return {
           result: false,
-          errorReason: 'Invalid facings present',
+          errorReason: "Invalid facings present",
         };
       }
     }
@@ -71,21 +65,15 @@ export function isValidLine<TBoard extends Board>(
     // Lines form perpendicular to a unit's facing, so units must be in flanking spaces
     for (let i = 0; i < unitPlacements.length - 1; i++) {
       const currentUnit = unitPlacements[i]!;
-      const nextCoord = unitPlacements[i + 1]!.placement
-        .coordinate as BoardCoordinate<TBoard>;
-      const currentCoord = currentUnit.placement
-        .coordinate as BoardCoordinate<TBoard>;
+      const nextCoord = unitPlacements[i + 1]!.placement.coordinate as BoardCoordinate<TBoard>;
+      const currentCoord = currentUnit.placement.coordinate as BoardCoordinate<TBoard>;
       const currentFacing = currentUnit.placement.facing;
 
-      const flankingSpaces = getFlankingSpaces(
-        board,
-        currentCoord,
-        currentFacing,
-      );
+      const flankingSpaces = getFlankingSpaces(board, currentCoord, currentFacing);
       if (!flankingSpaces.has(nextCoord)) {
         return {
           result: false,
-          errorReason: 'Units are not contiguous',
+          errorReason: "Units are not contiguous",
         };
       }
     }
@@ -97,7 +85,7 @@ export function isValidLine<TBoard extends Board>(
     // Any error means the line is invalid
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

@@ -1,11 +1,11 @@
-import type { Board } from '@entities';
+import type { Board } from "@entities";
 import type {
   CommandResolutionState,
   GameStateWithBoard,
   MeleeResolutionState,
   MovementResolutionState,
   RangedAttackResolutionState,
-} from '@game';
+} from "@game";
 
 /**
  * Gets the current command resolution state from the issue commands phase.
@@ -19,12 +19,12 @@ export function getCurrentCommandResolutionState<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
 ): CommandResolutionState {
   const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState || phaseState.phase !== 'issueCommands') {
-    throw new Error('Not in issueCommands phase');
+  if (!phaseState || phaseState.phase !== "issueCommands") {
+    throw new Error("Not in issueCommands phase");
   }
   const commandResolutionState = phaseState.currentCommandResolutionState;
   if (!commandResolutionState) {
-    throw new Error('No current command resolution state');
+    throw new Error("No current command resolution state");
   }
   return commandResolutionState;
 }
@@ -41,8 +41,8 @@ export function getRangedAttackResolutionState<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
 ): RangedAttackResolutionState {
   const commandResolutionState = getCurrentCommandResolutionState(state);
-  if (commandResolutionState.commandResolutionType !== 'rangedAttack') {
-    throw new Error('Current command resolution is not a ranged attack');
+  if (commandResolutionState.commandResolutionType !== "rangedAttack") {
+    throw new Error("Current command resolution is not a ranged attack");
   }
   return commandResolutionState;
 }
@@ -59,8 +59,8 @@ export function getMovementResolutionState<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
 ): MovementResolutionState {
   const commandResolutionState = getCurrentCommandResolutionState(state);
-  if (commandResolutionState.commandResolutionType !== 'movement') {
-    throw new Error('Current command resolution is not a movement');
+  if (commandResolutionState.commandResolutionType !== "movement") {
+    throw new Error("Current command resolution is not a movement");
   }
   return commandResolutionState;
 }
@@ -77,11 +77,11 @@ export function getMeleeResolutionState<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
 ): MeleeResolutionState {
   const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState || phaseState.phase !== 'resolveMelee') {
-    throw new Error('Not in resolveMelee phase');
+  if (!phaseState || phaseState.phase !== "resolveMelee") {
+    throw new Error("Not in resolveMelee phase");
   }
   if (!phaseState.currentMeleeResolutionState) {
-    throw new Error('No current melee resolution state');
+    throw new Error("No current melee resolution state");
   }
   return phaseState.currentMeleeResolutionState;
 }
@@ -92,18 +92,18 @@ export function getMeleeResolutionState<TBoard extends Board>(
  *
  * @throws Error if commitments are pending or attack apply already exists
  */
-export function getMeleeResolutionReadyForAttackCalculation<
-  TBoard extends Board,
->(state: GameStateWithBoard<TBoard>): MeleeResolutionState {
+export function getMeleeResolutionReadyForAttackCalculation<TBoard extends Board>(
+  state: GameStateWithBoard<TBoard>,
+): MeleeResolutionState {
   const meleeState = getMeleeResolutionState(state);
-  if (meleeState.whiteCommitment.commitmentType === 'pending') {
-    throw new Error('White commitment is still pending');
+  if (meleeState.whiteCommitment.commitmentType === "pending") {
+    throw new Error("White commitment is still pending");
   }
-  if (meleeState.blackCommitment.commitmentType === 'pending') {
-    throw new Error('Black commitment is still pending');
+  if (meleeState.blackCommitment.commitmentType === "pending") {
+    throw new Error("Black commitment is still pending");
   }
   if (meleeState.whiteAttackApplyState || meleeState.blackAttackApplyState) {
-    throw new Error('Attack apply states already exist');
+    throw new Error("Attack apply states already exist");
   }
   return meleeState;
 }

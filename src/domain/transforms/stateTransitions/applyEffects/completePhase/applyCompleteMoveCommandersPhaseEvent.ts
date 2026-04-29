@@ -1,13 +1,10 @@
-import type { Board } from '@entities';
-import type { CompleteMoveCommandersPhaseEvent } from '@events';
-import type { GameStateWithBoard, IssueCommandsPhaseState } from '@game';
-import { ISSUE_COMMANDS_PHASE } from '@game';
+import type { Board } from "@entities";
+import type { CompleteMoveCommandersPhaseEvent } from "@events";
+import type { GameStateWithBoard, IssueCommandsPhaseState } from "@game";
+import { ISSUE_COMMANDS_PHASE } from "@game";
 
-import { getMoveCommandersPhaseState } from '@queries';
-import {
-  addCompletedPhase,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { getMoveCommandersPhaseState } from "@queries";
+import { addCompletedPhase, updatePhaseState } from "@transforms/pureTransforms";
 
 /**
  * Applies a CompleteMoveCommandersPhaseEvent to the game state.
@@ -31,7 +28,7 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
 
   const newPhaseState: IssueCommandsPhaseState = {
     phase: ISSUE_COMMANDS_PHASE,
-    step: 'firstPlayerIssueCommands',
+    step: "firstPlayerIssueCommands",
     remainingCommandsFirstPlayer: event.remainingCommandsFirstPlayer,
     remainingUnitsFirstPlayer: new Set(),
     remainingCommandsSecondPlayer: event.remainingCommandsSecondPlayer,

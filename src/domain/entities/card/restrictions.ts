@@ -1,7 +1,7 @@
-import type { Trait } from '@ruleValues';
-import type { AssertExact } from '@utils';
-import { traitSchema } from '@ruleValues';
-import { z } from 'zod';
+import type { Trait } from "@ruleValues";
+import type { AssertExact } from "@utils";
+import { traitSchema } from "@ruleValues";
+import { z } from "zod";
 
 /**
  * The restrictions of a card command or round effect.
@@ -29,11 +29,7 @@ type RestrictionsSchemaType = z.infer<typeof _restrictionsSchemaObject>;
 /**
  * The schema for the restrictions on a card command or round effect.
  */
-export const restrictionsSchema: z.ZodType<Restrictions> =
-  _restrictionsSchemaObject;
+export const restrictionsSchema: z.ZodType<Restrictions> = _restrictionsSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactRestrictions: AssertExact<
-  Restrictions,
-  RestrictionsSchemaType
-> = true;
+const _assertExactRestrictions: AssertExact<Restrictions, RestrictionsSchemaType> = true;

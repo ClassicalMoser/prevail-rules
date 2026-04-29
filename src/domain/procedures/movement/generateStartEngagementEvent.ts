@@ -1,14 +1,14 @@
-import type { Board, BoardCoordinate } from '@entities';
-import type { StartEngagementEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from '@events';
+import type { Board, BoardCoordinate } from "@entities";
+import type { StartEngagementEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from "@events";
 import {
   getMovementResolutionState,
   getSingleUnitWithPlacementAtCoordinate,
   isEngagementFromFlank,
   isEngagementFromFront,
   isEngagementFromRear,
-} from '@queries';
+} from "@queries";
 
 /**
  * Generates a StartEngagementEvent by determining the engagement type
@@ -23,7 +23,7 @@ import {
 export function generateStartEngagementEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): StartEngagementEvent<TBoard, 'startEngagement'> {
+): StartEngagementEvent<TBoard, "startEngagement"> {
   const movementResolutionState = getMovementResolutionState(state);
 
   // Get the engaging unit's facing from its target placement
@@ -31,8 +31,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
 
   const defenderWithPlacement = getSingleUnitWithPlacementAtCoordinate(
     state.boardState,
-    movementResolutionState.targetPlacement
-      .coordinate as BoardCoordinate<TBoard>,
+    movementResolutionState.targetPlacement.coordinate as BoardCoordinate<TBoard>,
   );
   const defendingFacing = defenderWithPlacement.placement.facing;
 
@@ -46,10 +45,10 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       eventNumber,
-      engagementType: 'rear',
+      engagementType: "rear",
       boardType,
       defenderWithPlacement,
-    } as unknown as StartEngagementEvent<TBoard, 'startEngagement'>;
+    } as unknown as StartEngagementEvent<TBoard, "startEngagement">;
   }
 
   const flankCheck = isEngagementFromFlank(engagingFacing, defendingFacing);
@@ -58,10 +57,10 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       eventNumber,
-      engagementType: 'flank',
+      engagementType: "flank",
       boardType,
       defenderWithPlacement,
-    } as unknown as StartEngagementEvent<TBoard, 'startEngagement'>;
+    } as unknown as StartEngagementEvent<TBoard, "startEngagement">;
   }
 
   const frontCheck = isEngagementFromFront(engagingFacing, defendingFacing);
@@ -70,10 +69,10 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       eventType: GAME_EFFECT_EVENT_TYPE,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       eventNumber,
-      engagementType: 'front',
+      engagementType: "front",
       boardType,
       defenderWithPlacement,
-    } as unknown as StartEngagementEvent<TBoard, 'startEngagement'>;
+    } as unknown as StartEngagementEvent<TBoard, "startEngagement">;
   }
 
   // If none of the checks passed, this is an invalid state

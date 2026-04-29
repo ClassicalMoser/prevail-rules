@@ -1,12 +1,12 @@
-import type { Commitment } from '@game/commitment';
-import type { AssertExact } from '@utils';
-import { commitmentSchema } from '@game/commitment';
-import { z } from 'zod';
+import type { Commitment } from "@game/commitment";
+import type { AssertExact } from "@utils";
+import { commitmentSchema } from "@game/commitment";
+import { z } from "zod";
 
 /** The resolution state of an engagement from the front. */
 export interface FrontEngagementResolutionState {
   /** The type of engagement. */
-  engagementType: 'front';
+  engagementType: "front";
   /** The commitment of the defending player. */
   defensiveCommitment: Commitment;
   /** Whether the defending unit can retreat. */
@@ -19,7 +19,7 @@ export interface FrontEngagementResolutionState {
 
 const _frontEngagementResolutionStateSchemaObject = z.object({
   /** The type of engagement. */
-  engagementType: z.literal('front'),
+  engagementType: z.literal("front"),
   /** The commitment of the defending player. */
   defensiveCommitment: commitmentSchema,
   /** Whether the defending unit can retreat. */
@@ -41,7 +41,7 @@ const _assertExactFrontEngagementResolutionState: AssertExact<
 
 /** The schema for the front engagement resolution state. */
 export const frontEngagementResolutionStateSchema: z.ZodObject<{
-  engagementType: z.ZodLiteral<'front'>;
+  engagementType: z.ZodLiteral<"front">;
   defensiveCommitment: z.ZodType<Commitment>;
   defendingUnitCanRetreat: z.ZodType<boolean | undefined>;
   defendingUnitRetreats: z.ZodType<boolean | undefined>;

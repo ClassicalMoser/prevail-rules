@@ -1,10 +1,7 @@
-import type { Army, GameType, UnitInstance } from '@entities';
-import type { BoardForGameType, GameStateWithBoard } from '@game';
+import type { Army, GameType, UnitInstance } from "@entities";
+import type { BoardForGameType, GameStateWithBoard } from "@game";
 
-import {
-  createEmptyGameState,
-  createUnitInstance,
-} from '@transforms/initializations';
+import { createEmptyGameState, createUnitInstance } from "@transforms/initializations";
 
 /**
  * Builds a {@link GameState} for a new game: empty board and round state, white initiative,
@@ -20,25 +17,21 @@ export function createInitialGameState<TGameType extends GameType>(options: {
 
   type BoardSize = BoardForGameType<TGameType>;
 
-  const emptyGameState: GameStateWithBoard<BoardSize> = createEmptyGameState(
-    options.gameType,
-  );
+  const emptyGameState: GameStateWithBoard<BoardSize> = createEmptyGameState(options.gameType);
 
   const reservedUnits = new Set<UnitInstance>();
   for (const unit of whiteArmy.units) {
     for (let i = 1; i <= unit.count; i++) {
-      reservedUnits.add(createUnitInstance('white', unit.unitType, i + 1));
+      reservedUnits.add(createUnitInstance("white", unit.unitType, i + 1));
     }
   }
   for (const unit of blackArmy.units) {
     for (let i = 1; i <= unit.count; i++) {
-      reservedUnits.add(createUnitInstance('black', unit.unitType, i + 1));
+      reservedUnits.add(createUnitInstance("black", unit.unitType, i + 1));
     }
   }
 
-  const gameStateWithReservedUnits: GameStateWithBoard<
-    BoardForGameType<TGameType>
-  > = {
+  const gameStateWithReservedUnits: GameStateWithBoard<BoardForGameType<TGameType>> = {
     ...emptyGameState,
     reservedUnits,
   };

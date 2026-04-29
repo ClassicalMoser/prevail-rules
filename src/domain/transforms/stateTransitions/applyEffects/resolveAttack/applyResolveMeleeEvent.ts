@@ -1,5 +1,5 @@
-import type { Board, UnitPlacement, UnitWithPlacement } from '@entities';
-import type { ResolveMeleeEvent } from '@events';
+import type { Board, UnitPlacement, UnitWithPlacement } from "@entities";
+import type { ResolveMeleeEvent } from "@events";
 import type {
   AttackApplyState,
   AttackResult,
@@ -10,9 +10,9 @@ import type {
   RetreatState,
   ReverseState,
   RoutState,
-} from '@game';
-import { getMeleeResolutionState, getResolveMeleePhaseState } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+} from "@game";
+import { getMeleeResolutionState, getResolveMeleePhaseState } from "@queries";
+import { updatePhaseState } from "@transforms/pureTransforms";
 
 /**
  * Applies a ResolveMeleeEvent to the game state.
@@ -47,11 +47,7 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
     attackResult: AttackResult,
     legalRetreatOptionsFromEvent: Set<UnitPlacement<TBoard>>,
   ): AttackApplyState | undefined => {
-    if (
-      !attackResult.unitRouted &&
-      !attackResult.unitRetreated &&
-      !attackResult.unitReversed
-    ) {
+    if (!attackResult.unitRouted && !attackResult.unitRetreated && !attackResult.unitReversed) {
       return undefined;
     }
 
@@ -61,7 +57,7 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
 
     if (attackResult.unitRouted) {
       routState = {
-        substepType: 'rout',
+        substepType: "rout",
         player: unitWithPlacement.unit.playerSide,
         unitsToRout: new Set([unitWithPlacement.unit]),
         numberToDiscard: undefined,
@@ -71,12 +67,10 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
     } else if (attackResult.unitRetreated) {
       const legalRetreatOptions = legalRetreatOptionsFromEvent;
       const finalPosition =
-        legalRetreatOptions.size === 1
-          ? [...legalRetreatOptions][0]
-          : undefined;
+        legalRetreatOptions.size === 1 ? [...legalRetreatOptions][0] : undefined;
 
       retreatState = {
-        substepType: 'retreat',
+        substepType: "retreat",
         boardType,
         retreatingUnit: unitWithPlacement,
         legalRetreatOptions,
@@ -88,7 +82,7 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
       // Invariant: at least one of rout/retreat/reverse is true (see guard above), and
       // we are not in rout or retreat, so this must be reverse.
       reverseState = {
-        substepType: 'reverse',
+        substepType: "reverse",
         boardType,
         reversingUnit: unitWithPlacement,
         finalPosition: undefined,
@@ -97,7 +91,7 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
     }
 
     return {
-      substepType: 'attackApply',
+      substepType: "attackApply",
       boardType,
       defendingUnit: unitWithPlacement.unit,
       attackResult,

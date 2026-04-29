@@ -4,8 +4,8 @@ import type {
   UnitFacing,
   UnitType,
   UnitWithPlacement,
-} from '@entities';
-import { createTestUnit } from '@testing/unitHelpers';
+} from "@entities";
+import { createTestUnit } from "@testing/unitHelpers";
 
 /**
  * Creates a UnitWithPlacement for testing with sensible defaults.
@@ -13,7 +13,7 @@ import { createTestUnit } from '@testing/unitHelpers';
 export function createUnitWithPlacement(options?: {
   coordinate?: StandardBoardCoordinate;
   facing?: UnitFacing;
-  playerSide?: 'black' | 'white';
+  playerSide?: "black" | "white";
   unitOptions?: {
     unitType?: UnitType;
     instanceNumber?: number;
@@ -29,15 +29,15 @@ export function createUnitWithPlacement(options?: {
     routPenalty?: number;
   };
 }): UnitWithPlacement<StandardBoard> {
-  const playerSide = options?.playerSide ?? 'black';
+  const playerSide = options?.playerSide ?? "black";
   const unit = createTestUnit(playerSide, options?.unitOptions);
   return {
-    boardType: 'standard' as const,
+    boardType: "standard" as const,
     unit,
     placement: {
-      boardType: 'standard' as const,
-      coordinate: options?.coordinate ?? 'E-5',
-      facing: options?.facing ?? 'north',
+      boardType: "standard" as const,
+      coordinate: options?.coordinate ?? "E-5",
+      facing: options?.facing ?? "north",
     },
   };
 }

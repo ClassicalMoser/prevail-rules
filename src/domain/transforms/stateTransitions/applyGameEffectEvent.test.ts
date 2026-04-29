@@ -1,8 +1,8 @@
-import type { StandardBoard } from '@entities';
-import type { GameEffectEvent, GameEffectType } from '@events';
-import type { StandardGameState } from '@game';
-import { createEmptyGameState } from '@testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { StandardBoard } from "@entities";
+import type { GameEffectEvent, GameEffectType } from "@events";
+import type { StandardGameState } from "@game";
+import { createEmptyGameState } from "@testing";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   applyCompleteAttackApplyEvent,
   applyCompleteCleanupPhaseEvent,
@@ -27,10 +27,10 @@ import {
   applyRevealCardsEvent,
   applyStartEngagementEvent,
   applyTriggerRoutFromRetreatEvent,
-} from './applyEffects';
-import { applyGameEffectEvent } from './applyGameEffectEvent';
+} from "./applyEffects";
+import { applyGameEffectEvent } from "./applyGameEffectEvent";
 
-vi.mock('./applyEffects', () => ({
+vi.mock("./applyEffects", () => ({
   applyCompleteAttackApplyEvent: vi.fn(),
   applyCompleteCleanupPhaseEvent: vi.fn(),
   applyCompleteIssueCommandsPhaseEvent: vi.fn(),
@@ -62,49 +62,48 @@ type ApplyGameEffectHandler = (
   state: StandardGameState,
 ) => StandardGameState;
 
-const gameEffectCases: ReadonlyArray<[GameEffectType, ApplyGameEffectHandler]> =
-  [
-    ['completeAttackApply', applyCompleteAttackApplyEvent],
-    ['completeCleanupPhase', applyCompleteCleanupPhaseEvent],
-    ['completeIssueCommandsPhase', applyCompleteIssueCommandsPhaseEvent],
-    ['completeMeleeResolution', applyCompleteMeleeResolutionEvent],
-    ['completeMoveCommandersPhase', applyCompleteMoveCommandersPhaseEvent],
-    ['completePlayCardsPhase', applyCompletePlayCardsPhaseEvent],
-    ['completeRangedAttackCommand', applyCompleteRangedAttackCommandEvent],
-    ['completeResolveMeleePhase', applyCompleteResolveMeleePhaseEvent],
-    ['completeUnitMovement', applyCompleteUnitMovementEvent],
-    ['discardPlayedCards', applyDiscardPlayedCardsEvent],
-    ['resolveEngageRetreatOption', applyResolveEngageRetreatOptionEvent],
-    ['resolveFlankEngagement', applyResolveFlankEngagementEvent],
-    ['resolveInitiative', applyResolveInitiativeEvent],
-    ['resolveMelee', applyResolveMeleeEvent],
-    ['resolveRally', applyResolveRallyEvent],
-    ['resolveRangedAttack', applyResolveRangedAttackEvent],
-    ['resolveRetreat', applyResolveRetreatEvent],
-    ['resolveReverse', applyResolveReverseEvent],
-    ['resolveRout', applyResolveRoutEvent],
-    ['resolveUnitsBroken', applyResolveUnitsBrokenEvent],
-    ['revealCards', applyRevealCardsEvent],
-    ['startEngagement', applyStartEngagementEvent],
-    ['triggerRoutFromRetreat', applyTriggerRoutFromRetreatEvent],
-  ] as ReadonlyArray<[GameEffectType, ApplyGameEffectHandler]>;
+const gameEffectCases: ReadonlyArray<[GameEffectType, ApplyGameEffectHandler]> = [
+  ["completeAttackApply", applyCompleteAttackApplyEvent],
+  ["completeCleanupPhase", applyCompleteCleanupPhaseEvent],
+  ["completeIssueCommandsPhase", applyCompleteIssueCommandsPhaseEvent],
+  ["completeMeleeResolution", applyCompleteMeleeResolutionEvent],
+  ["completeMoveCommandersPhase", applyCompleteMoveCommandersPhaseEvent],
+  ["completePlayCardsPhase", applyCompletePlayCardsPhaseEvent],
+  ["completeRangedAttackCommand", applyCompleteRangedAttackCommandEvent],
+  ["completeResolveMeleePhase", applyCompleteResolveMeleePhaseEvent],
+  ["completeUnitMovement", applyCompleteUnitMovementEvent],
+  ["discardPlayedCards", applyDiscardPlayedCardsEvent],
+  ["resolveEngageRetreatOption", applyResolveEngageRetreatOptionEvent],
+  ["resolveFlankEngagement", applyResolveFlankEngagementEvent],
+  ["resolveInitiative", applyResolveInitiativeEvent],
+  ["resolveMelee", applyResolveMeleeEvent],
+  ["resolveRally", applyResolveRallyEvent],
+  ["resolveRangedAttack", applyResolveRangedAttackEvent],
+  ["resolveRetreat", applyResolveRetreatEvent],
+  ["resolveReverse", applyResolveReverseEvent],
+  ["resolveRout", applyResolveRoutEvent],
+  ["resolveUnitsBroken", applyResolveUnitsBrokenEvent],
+  ["revealCards", applyRevealCardsEvent],
+  ["startEngagement", applyStartEngagementEvent],
+  ["triggerRoutFromRetreat", applyTriggerRoutFromRetreatEvent],
+] as ReadonlyArray<[GameEffectType, ApplyGameEffectHandler]>;
 
 /**
  * `applyGameEffectEvent` is a typed switch: every `GameEffectType` routes to exactly one
  * `applyEffects/*` handler, all invoked as `(event, state) => nextState`.
  */
-describe('applyGameEffectEvent', () => {
+describe("applyGameEffectEvent", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it.each(gameEffectCases)(
-    'given gameEffect with effectType %s, delegates to matching handler and returns its state',
+    "given gameEffect with effectType %s, delegates to matching handler and returns its state",
     (effectType, handler) => {
       const state = createEmptyGameState();
       const event = {
         eventNumber: 0,
-        eventType: 'gameEffect',
+        eventType: "gameEffect",
         effectType,
       } as GameEffectEvent<StandardBoard, GameEffectType>;
       vi.mocked(handler).mockReturnValue(state);
@@ -116,16 +115,16 @@ describe('applyGameEffectEvent', () => {
     },
   );
 
-  it('given gameEffect with bogus effectType cast, throws unhandled game effect', () => {
+  it("given gameEffect with bogus effectType cast, throws unhandled game effect", () => {
     const state = createEmptyGameState();
     const event = {
       eventNumber: 0,
-      eventType: 'gameEffect',
-      effectType: 'unknown',
+      eventType: "gameEffect",
+      effectType: "unknown",
     } as unknown as GameEffectEvent<StandardBoard, GameEffectType>;
 
     expect(() => applyGameEffectEvent(event, state)).toThrow(
-      'Unreachable: unhandled game effect event (effectType not in switch)',
+      "Unreachable: unhandled game effect event (effectType not in switch)",
     );
   });
 });

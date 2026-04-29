@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { Event, EventType } from '@events';
-import type { GameStateWithBoard } from '@game';
+import type { Board } from "@entities";
+import type { Event, EventType } from "@events";
+import type { GameStateWithBoard } from "@game";
 
 /**
  * Gets the current event stream for the given game state.

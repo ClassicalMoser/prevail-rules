@@ -1,27 +1,24 @@
-import type { Board, Card, PlayerSide, StatModifier } from '@entities';
-import type { AssertExact } from '@utils';
-import { cardSchema, playerSideSchema } from '@entities';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board, Card, PlayerSide, StatModifier } from "@entities";
+import type { AssertExact } from "@utils";
+import { cardSchema, playerSideSchema } from "@entities";
+import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
 /** The type of the commit to ranged attack event. */
-export const COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE =
-  'commitToRangedAttack' as const;
+export const COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE = "commitToRangedAttack" as const;
 
-const rangedAttackModifierTypes = ['range', 'attack', 'flexibility'] as const;
+const rangedAttackModifierTypes = ["range", "attack", "flexibility"] as const;
 type RangedAttackModifier = (typeof rangedAttackModifierTypes)[number];
 
 // Type-level guarantee that RangedAttackModifier extends StatModifier
-const _assertRangedAttackModifierExtendsStatModifier: [
-  RangedAttackModifier,
-] extends [StatModifier]
+const _assertRangedAttackModifierExtendsStatModifier: [RangedAttackModifier] extends [StatModifier]
   ? true
   : never = true;
 
 /** An event to commit a card to a ranged attack. */
 export interface CommitToRangedAttackEvent<
   _TBoard extends Board,
-  _TChoiceType extends 'commitToRangedAttack' = 'commitToRangedAttack',
+  _TChoiceType extends "commitToRangedAttack" = "commitToRangedAttack",
 > {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -38,9 +35,9 @@ export interface CommitToRangedAttackEvent<
 }
 
 const rangedAttackModifierTypesEnum: z.ZodEnum<{
-  range: 'range';
-  attack: 'attack';
-  flexibility: 'flexibility';
+  range: "range";
+  attack: "attack";
+  flexibility: "flexibility";
 }> = z.enum(rangedAttackModifierTypes);
 
 const _commitToRangedAttackEventSchemaObject = z.object({
@@ -58,9 +55,7 @@ const _commitToRangedAttackEventSchemaObject = z.object({
   modifierTypes: z.array(rangedAttackModifierTypesEnum),
 });
 
-type CommitToRangedAttackEventSchemaType = z.infer<
-  typeof _commitToRangedAttackEventSchemaObject
->;
+type CommitToRangedAttackEventSchemaType = z.infer<typeof _commitToRangedAttackEventSchemaObject>;
 
 const _assertExactCommitToRangedAttackEvent: AssertExact<
   CommitToRangedAttackEvent<Board>,
@@ -69,8 +64,8 @@ const _assertExactCommitToRangedAttackEvent: AssertExact<
 
 /** The schema for a commit to ranged attack event. */
 export const commitToRangedAttackEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'playerChoice'>;
-  choiceType: z.ZodLiteral<'commitToRangedAttack'>;
+  eventType: z.ZodLiteral<"playerChoice">;
+  choiceType: z.ZodLiteral<"commitToRangedAttack">;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   committedCard: typeof cardSchema;

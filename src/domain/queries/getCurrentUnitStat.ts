@@ -1,10 +1,10 @@
-import type { Board, Modifier, UnitInstance, UnitStatName } from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { isDefenseStat, matchesUnitRequirements } from '@validation';
-import { getSpacesWithinDistance } from './boardSpace';
-import { getCommanderSpace } from './getCommanderSpace';
-import { hasUnitInSet } from './unit';
-import { getPositionOfUnit } from './unitPresence';
+import type { Board, Modifier, UnitInstance, UnitStatName } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { isDefenseStat, matchesUnitRequirements } from "@validation";
+import { getSpacesWithinDistance } from "./boardSpace";
+import { getCommanderSpace } from "./getCommanderSpace";
+import { hasUnitInSet } from "./unit";
+import { getPositionOfUnit } from "./unitPresence";
 
 /**
  * Gets the current stat value of a unit.
@@ -46,9 +46,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
     statIsDefense: boolean,
   ) =>
     modifiers.find(
-      (modifier) =>
-        modifier.type === stat ||
-        (statIsDefense && modifier.type === 'defense'),
+      (modifier) => modifier.type === stat || (statIsDefense && modifier.type === "defense"),
     );
 
   // Step 1: Terrain (not yet implemented)
@@ -59,25 +57,17 @@ export function getCurrentUnitStat<TBoard extends Board>(
 
   // First check if there is a matching modifier in the round effect
   if (activeRoundEffect) {
-    const matchingModifier = findMatchingModifier(
-      activeRoundEffect.modifiers,
-      stat,
-      statIsDefense,
-    );
+    const matchingModifier = findMatchingModifier(activeRoundEffect.modifiers, stat, statIsDefense);
     // If there is a matching modifier, check if the unit satisfies the restrictions
     if (matchingModifier) {
       let satisfiesAllRestrictions = true;
       let satisfiesInspirationRangeRestriction = false;
       let satisfiesUnitRestrictions = true;
-      const inspirationRange =
-        activeRoundEffect.restrictions.inspirationRangeRestriction;
+      const inspirationRange = activeRoundEffect.restrictions.inspirationRangeRestriction;
       if (inspirationRange) {
         const unitPlacement = getPositionOfUnit(gameState.boardState, unit);
         const unitPosition = unitPlacement.coordinate;
-        const commanderSpace = getCommanderSpace(
-          unit.playerSide,
-          gameState.boardState,
-        );
+        const commanderSpace = getCommanderSpace(unit.playerSide, gameState.boardState);
         // Don't throw if commander is not on board.
         // It means the commander was defeated.
 
@@ -90,8 +80,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
           );
 
           // Check if the unit is within range.
-          satisfiesInspirationRangeRestriction =
-            spacesWithinDistance.has(unitPosition);
+          satisfiesInspirationRangeRestriction = spacesWithinDistance.has(unitPosition);
         }
         // If the range is specified, it must be satisfied.
         satisfiesAllRestrictions = satisfiesInspirationRangeRestriction;
@@ -105,8 +94,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
       ).result;
 
       // Combine the existing restriction satisfaction with the new one.
-      satisfiesAllRestrictions =
-        satisfiesAllRestrictions && satisfiesUnitRestrictions;
+      satisfiesAllRestrictions = satisfiesAllRestrictions && satisfiesUnitRestrictions;
 
       // If the unit satisfies the restrictions, add the modifier to the total
       if (satisfiesAllRestrictions) {
@@ -123,11 +111,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
 
   // If the unit was commanded, check if there is a matching modifier
   if (unitWasCommanded) {
-    const matchingModifier = findMatchingModifier(
-      activeCommandModifiers,
-      stat,
-      statIsDefense,
-    );
+    const matchingModifier = findMatchingModifier(activeCommandModifiers, stat, statIsDefense);
     // If there is, add the modifier to the total
     if (matchingModifier) {
       totalModifier += matchingModifier.value;
@@ -136,11 +120,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
 
   // Step 4: Additional modifiers
   if (modifiers) {
-    const matchingModifier = findMatchingModifier(
-      modifiers,
-      stat,
-      statIsDefense,
-    );
+    const matchingModifier = findMatchingModifier(modifiers, stat, statIsDefense);
     if (matchingModifier) {
       totalModifier += matchingModifier.value;
     }

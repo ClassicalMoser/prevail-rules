@@ -1,6 +1,6 @@
-import type { Board, UnitInstance } from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { updateRoundState } from '../state';
+import type { Board, UnitInstance } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { updateRoundState } from "../state";
 
 /**
  * Adds units to the commandedUnits set in the current round state.

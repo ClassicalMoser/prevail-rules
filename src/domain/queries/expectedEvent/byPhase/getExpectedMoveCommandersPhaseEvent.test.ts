@@ -1,22 +1,22 @@
-import type { StandardGameState } from '@game';
-import { expectedGameEffectSchema, expectedPlayerInputSchema } from '@events';
+import type { StandardGameState } from "@game";
+import { expectedGameEffectSchema, expectedPlayerInputSchema } from "@events";
 
-import { MOVE_COMMANDERS_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
-import { updatePhaseState } from '@transforms';
-import { describe, expect, it } from 'vitest';
-import { getExpectedMoveCommandersPhaseEvent } from './getExpectedMoveCommandersPhaseEvent';
+import { MOVE_COMMANDERS_PHASE } from "@game";
+import { createEmptyGameState } from "@testing";
+import { updatePhaseState } from "@transforms";
+import { describe, expect, it } from "vitest";
+import { getExpectedMoveCommandersPhaseEvent } from "./getExpectedMoveCommandersPhaseEvent";
 
 /**
  * getExpectedMoveCommandersPhaseEvent: next event during move-commanders phase.
  */
-describe('getExpectedMoveCommandersPhaseEvent', () => {
+describe("getExpectedMoveCommandersPhaseEvent", () => {
   /**
    * Helper to create a game state in the moveCommanders phase with a specific step
    */
   function createGameStateInMoveCommandersStep(
-    step: 'moveFirstCommander' | 'moveSecondCommander' | 'complete',
-    currentInitiative: 'black' | 'white' = 'black',
+    step: "moveFirstCommander" | "moveSecondCommander" | "complete",
+    currentInitiative: "black" | "white" = "black",
   ): StandardGameState {
     const state = createEmptyGameState({ currentInitiative });
 
@@ -28,101 +28,78 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
     return stateWithPhase;
   }
 
-  describe('expected events by step', () => {
-    it('given step is moveFirstCommander, returns firstPlayer moveCommander', () => {
-      const state = createGameStateInMoveCommandersStep(
-        'moveFirstCommander',
-        'black',
-      );
+  describe("expected events by step", () => {
+    it("given step is moveFirstCommander, returns firstPlayer moveCommander", () => {
+      const state = createGameStateInMoveCommandersStep("moveFirstCommander", "black");
 
       const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
 
-      expect(expectedEvent.actionType).toBe('playerChoice');
-      const resultIsExpectedPlayerInput =
-        expectedPlayerInputSchema.safeParse(expectedEvent);
+      expect(expectedEvent.actionType).toBe("playerChoice");
+      const resultIsExpectedPlayerInput = expectedPlayerInputSchema.safeParse(expectedEvent);
       expect(resultIsExpectedPlayerInput.success).toBe(true);
-      expect(resultIsExpectedPlayerInput.data?.playerSource).toBe('black');
-      expect(resultIsExpectedPlayerInput.data?.choiceType).toBe(
-        'moveCommander',
-      );
+      expect(resultIsExpectedPlayerInput.data?.playerSource).toBe("black");
+      expect(resultIsExpectedPlayerInput.data?.choiceType).toBe("moveCommander");
     });
 
-    it('given step is moveSecondCommander, returns secondPlayer moveCommander', () => {
-      const state = createGameStateInMoveCommandersStep(
-        'moveSecondCommander',
-        'black',
-      );
+    it("given step is moveSecondCommander, returns secondPlayer moveCommander", () => {
+      const state = createGameStateInMoveCommandersStep("moveSecondCommander", "black");
 
       const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
 
-      expect(expectedEvent.actionType).toBe('playerChoice');
-      const resultIsExpectedPlayerInput =
-        expectedPlayerInputSchema.safeParse(expectedEvent);
+      expect(expectedEvent.actionType).toBe("playerChoice");
+      const resultIsExpectedPlayerInput = expectedPlayerInputSchema.safeParse(expectedEvent);
       expect(resultIsExpectedPlayerInput.success).toBe(true);
-      expect(resultIsExpectedPlayerInput.data?.playerSource).toBe('white');
-      expect(resultIsExpectedPlayerInput.data?.choiceType).toBe(
-        'moveCommander',
-      );
+      expect(resultIsExpectedPlayerInput.data?.playerSource).toBe("white");
+      expect(resultIsExpectedPlayerInput.data?.choiceType).toBe("moveCommander");
     });
 
-    it('given step is complete, returns completeMoveCommandersPhase gameEffect', () => {
-      const state = createGameStateInMoveCommandersStep('complete');
+    it("given step is complete, returns completeMoveCommandersPhase gameEffect", () => {
+      const state = createGameStateInMoveCommandersStep("complete");
 
       const expectedEvent = getExpectedMoveCommandersPhaseEvent(state);
 
-      expect(expectedEvent.actionType).toBe('gameEffect');
-      const resultIsExpectedGameEffect =
-        expectedGameEffectSchema.safeParse(expectedEvent);
+      expect(expectedEvent.actionType).toBe("gameEffect");
+      const resultIsExpectedGameEffect = expectedGameEffectSchema.safeParse(expectedEvent);
       expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe(
-        'completeMoveCommandersPhase',
-      );
+      expect(resultIsExpectedGameEffect.data?.effectType).toBe("completeMoveCommandersPhase");
     });
 
-    it('given correctly identify first and second player based on initiative', () => {
+    it("given correctly identify first and second player based on initiative", () => {
       // Test with white as initiative
       const stateWithWhiteInitiative = createGameStateInMoveCommandersStep(
-        'moveFirstCommander',
-        'white',
+        "moveFirstCommander",
+        "white",
       );
 
-      const expectedEventWhite = getExpectedMoveCommandersPhaseEvent(
-        stateWithWhiteInitiative,
-      );
+      const expectedEventWhite = getExpectedMoveCommandersPhaseEvent(stateWithWhiteInitiative);
 
-      expect(expectedEventWhite.actionType).toBe('playerChoice');
+      expect(expectedEventWhite.actionType).toBe("playerChoice");
       const resultIsExpectedPlayerInputWhite =
         expectedPlayerInputSchema.safeParse(expectedEventWhite);
       expect(resultIsExpectedPlayerInputWhite.success).toBe(true);
-      expect(resultIsExpectedPlayerInputWhite.data?.playerSource).toBe('white');
-      expect(resultIsExpectedPlayerInputWhite.data?.choiceType).toBe(
-        'moveCommander',
-      );
+      expect(resultIsExpectedPlayerInputWhite.data?.playerSource).toBe("white");
+      expect(resultIsExpectedPlayerInputWhite.data?.choiceType).toBe("moveCommander");
 
       // Test with black as initiative
       const stateWithBlackInitiative = createGameStateInMoveCommandersStep(
-        'moveFirstCommander',
-        'black',
+        "moveFirstCommander",
+        "black",
       );
 
-      const expectedEventBlack = getExpectedMoveCommandersPhaseEvent(
-        stateWithBlackInitiative,
-      );
+      const expectedEventBlack = getExpectedMoveCommandersPhaseEvent(stateWithBlackInitiative);
 
-      expect(expectedEventBlack.actionType).toBe('playerChoice');
+      expect(expectedEventBlack.actionType).toBe("playerChoice");
       const resultIsExpectedPlayerInputBlack =
         expectedPlayerInputSchema.safeParse(expectedEventBlack);
       expect(resultIsExpectedPlayerInputBlack.success).toBe(true);
-      expect(resultIsExpectedPlayerInputBlack.data?.playerSource).toBe('black');
-      expect(resultIsExpectedPlayerInputBlack.data?.choiceType).toBe(
-        'moveCommander',
-      );
+      expect(resultIsExpectedPlayerInputBlack.data?.playerSource).toBe("black");
+      expect(resultIsExpectedPlayerInputBlack.data?.choiceType).toBe("moveCommander");
     });
   });
 
-  describe('error cases', () => {
-    it('given for invalid step, throws', () => {
-      const state = createGameStateInMoveCommandersStep('moveFirstCommander');
+  describe("error cases", () => {
+    it("given for invalid step, throws", () => {
+      const state = createGameStateInMoveCommandersStep("moveFirstCommander");
       // Bad type cast to test default case
       const stateWithInvalidStep = {
         ...state,
@@ -130,14 +107,14 @@ describe('getExpectedMoveCommandersPhaseEvent', () => {
           ...state.currentRoundState,
           currentPhaseState: {
             ...state.currentRoundState.currentPhaseState!,
-            step: 'invalidStep' as any,
+            step: "invalidStep" as any,
           },
         },
       };
 
-      expect(() =>
-        getExpectedMoveCommandersPhaseEvent(stateWithInvalidStep),
-      ).toThrow('Invalid moveCommanders phase step: invalidStep');
+      expect(() => getExpectedMoveCommandersPhaseEvent(stateWithInvalidStep)).toThrow(
+        "Invalid moveCommanders phase step: invalidStep",
+      );
     });
   });
 });

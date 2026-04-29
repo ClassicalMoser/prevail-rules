@@ -1,11 +1,6 @@
-import type {
-  Board,
-  BoardCoordinate,
-  CoordinateLayout,
-  UnitFacing,
-} from '@entities';
-import { getCoordinateLayout, unitFacingSchema } from '@entities';
-import { getColumnDelta, getRowDelta } from './deltas';
+import type { Board, BoardCoordinate, CoordinateLayout, UnitFacing } from "@entities";
+import { getCoordinateLayout, unitFacingSchema } from "@entities";
+import { getColumnDelta, getRowDelta } from "./deltas";
 
 /**
  * Internal helper that performs the coordinate calculation.
@@ -17,13 +12,13 @@ export function getForwardSpaceWithLayout<TCoordinate extends string>(
   facing: UnitFacing,
   layout: CoordinateLayout<TCoordinate>,
 ): TCoordinate | undefined {
-  if (!coordinate.includes('-')) {
+  if (!coordinate.includes("-")) {
     throw new Error(`Invalid coordinate: ${coordinate}`);
   }
   // Parse coordinate - already validated at boundary, so we trust the format
   // Coordinates are formatted as "Row-Column" (e.g., "E-5" = row E, column 5)
-  const inputRow = coordinate.split('-')[0];
-  const inputColumn = coordinate.split('-')[1];
+  const inputRow = coordinate.split("-")[0];
+  const inputColumn = coordinate.split("-")[1];
 
   // Convert string coordinates to array indices (O(1) via prebuilt maps)
   const currentRowIndex = layout.getRowIndex(inputRow);
@@ -94,9 +89,5 @@ export function getForwardSpace<TBoard extends Board>(
   facing: UnitFacing,
 ): BoardCoordinate<TBoard> | undefined {
   const layout = getCoordinateLayout(board);
-  return getForwardSpaceWithLayout<BoardCoordinate<TBoard>>(
-    coordinate,
-    facing,
-    layout,
-  );
+  return getForwardSpaceWithLayout<BoardCoordinate<TBoard>>(coordinate, facing, layout);
 }

@@ -1,5 +1,5 @@
-import type { Board, PlayerSide } from '@entities';
-import type { GameStateWithBoard } from '@game';
+import type { Board, PlayerSide } from "@entities";
+import type { GameStateWithBoard } from "@game";
 
 /**
  * Gets which player currently has initiative.

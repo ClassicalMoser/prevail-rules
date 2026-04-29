@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { getCleanupPhaseState } from '../getPhaseState';
+import type { Board } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { getCleanupPhaseState } from "../getPhaseState";
 
 /**
  * Gets whether the current resolveRally step is for the first player.
@@ -14,15 +14,13 @@ export function getIsFirstPlayerForResolveRallyStep<TBoard extends Board>(
 ): boolean {
   const phaseState = getCleanupPhaseState(state);
 
-  if (phaseState.step === 'firstPlayerResolveRally') {
+  if (phaseState.step === "firstPlayerResolveRally") {
     return true;
   }
 
-  if (phaseState.step === 'secondPlayerResolveRally') {
+  if (phaseState.step === "secondPlayerResolveRally") {
     return false;
   }
 
-  throw new Error(
-    `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
-  );
+  throw new Error(`Cleanup phase is not on a resolveRally step: ${phaseState.step}`);
 }

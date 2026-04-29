@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { getCurrentEventStream } from './getCurrentEventStream';
+import type { Board } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { getCurrentEventStream } from "./getCurrentEventStream";
 
 /**
  * Gets the next event number for the given game state.

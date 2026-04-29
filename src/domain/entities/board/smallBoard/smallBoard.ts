@@ -1,7 +1,7 @@
-import type { AssertExact } from '@utils';
-import type { SmallBoardCoordinateMap } from './smallBoardMap';
-import { z } from 'zod';
-import { smallBoardCoordinateMapSchema } from './smallBoardMap';
+import type { AssertExact } from "@utils";
+import type { SmallBoardCoordinateMap } from "./smallBoardMap";
+import { z } from "zod";
+import { smallBoardCoordinateMapSchema } from "./smallBoardMap";
 
 /**
  * A small board for the game.
@@ -19,7 +19,7 @@ export interface SmallBoard {
   /**
    * The type of board.
    */
-  boardType: 'small';
+  boardType: "small";
   /**
    * The board.
    */
@@ -27,7 +27,7 @@ export interface SmallBoard {
 }
 
 const _smallBoardSchemaObject = z.object({
-  boardType: z.literal('small'),
+  boardType: z.literal("small"),
   board: smallBoardCoordinateMapSchema,
 });
 
@@ -37,10 +37,9 @@ type SmallBoardSchemaType = z.infer<typeof _smallBoardSchemaObject>;
  * The schema for a small board.
  */
 export const smallBoardSchema: z.ZodObject<{
-  boardType: z.ZodLiteral<'small'>;
+  boardType: z.ZodLiteral<"small">;
   board: typeof smallBoardCoordinateMapSchema;
 }> = _smallBoardSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactSmallBoard: AssertExact<SmallBoard, SmallBoardSchemaType> =
-  true;
+const _assertExactSmallBoard: AssertExact<SmallBoard, SmallBoardSchemaType> = true;

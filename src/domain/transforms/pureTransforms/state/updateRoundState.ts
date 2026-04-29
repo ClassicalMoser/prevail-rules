@@ -1,5 +1,5 @@
-import type { Board } from '@entities';
-import type { GameStateWithBoard, RoundState } from '@game';
+import type { Board } from "@entities";
+import type { GameStateWithBoard, RoundState } from "@game";
 
 /**
  * Creates a new game state with the round state updated.

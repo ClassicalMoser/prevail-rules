@@ -1,4 +1,4 @@
-export type { EnginePorts } from './enginePorts';
+export type { EnginePorts } from "./enginePorts";
 /**
  * **Outbound ports** (driven by the application, implemented by infrastructure).
  *
@@ -7,10 +7,10 @@ export type { EnginePorts } from './enginePorts';
  * are established **after** load (`parseStoredGame`, `getGame`, `getGameState`), then passed into
  * `process/*` where stricter typing pays off.
  */
-export type { EventStreamStorage } from './eventStreamStorage';
-export type { GameRunner } from './gameRunner';
-export type { GameStateChange } from './gameStateChange';
-export type { GameStateSubscriber } from './gameStateSubscriber';
-export type { GameStorage } from './gameStorage';
-export type { PortResponse } from './portResponse';
-export type { RoundSnapshotStorage } from './roundSnapshotStorage';
+export type { EventStreamStorage } from "./eventStreamStorage";
+export type { GameRunner } from "./gameRunner";
+export type { GameStateChange } from "./gameStateChange";
+export type { GameStateSubscriber } from "./gameStateSubscriber";
+export type { GameStorage } from "./gameStorage";
+export type { PortResponse } from "./portResponse";
+export type { RoundSnapshotStorage } from "./roundSnapshotStorage";

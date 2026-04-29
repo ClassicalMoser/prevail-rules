@@ -1,11 +1,6 @@
-import type { GameType } from '@entities';
-import type { BoardForGameType, GameState, GameStateWithBoard } from '@game';
-import type {
-  GameStateChange,
-  GameStateSubscriber,
-  GameStorage,
-  PortResponse,
-} from '../ports';
+import type { GameType } from "@entities";
+import type { BoardForGameType, GameState, GameStateWithBoard } from "@game";
+import type { GameStateChange, GameStateSubscriber, GameStorage, PortResponse } from "../ports";
 
 /**
  * Updates the game state for a given game and game type.
@@ -23,10 +18,7 @@ export async function updateGameState<T extends GameType>(
   gameStorage: GameStorage,
   gameStateSubscribers: GameStateSubscriber[],
 ): Promise<PortResponse<void>> {
-  const updateResult = await gameStorage.updateGameState(
-    gameId,
-    gameState as GameState,
-  );
+  const updateResult = await gameStorage.updateGameState(gameId, gameState as GameState);
   if (!updateResult.result) {
     return {
       result: false,

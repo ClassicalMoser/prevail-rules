@@ -1,11 +1,11 @@
-import type { StandardBoard } from '@entities';
-import type { Event } from '@events';
-import { createEmptyGameState } from '@testing';
-import { describe, expect, it } from 'vitest';
-import { getCurrentEventStream } from './getCurrentEventStream';
+import type { StandardBoard } from "@entities";
+import type { Event } from "@events";
+import { createEmptyGameState } from "@testing";
+import { describe, expect, it } from "vitest";
+import { getCurrentEventStream } from "./getCurrentEventStream";
 
-describe('getCurrentEventStream', () => {
-  it('returns the current round events array (same reference)', () => {
+describe("getCurrentEventStream", () => {
+  it("returns the current round events array (same reference)", () => {
     const state = createEmptyGameState();
     const stream = getCurrentEventStream(state);
 
@@ -13,13 +13,13 @@ describe('getCurrentEventStream', () => {
     expect(stream).toEqual([]);
   });
 
-  it('reflects events attached to the round state', () => {
+  it("reflects events attached to the round state", () => {
     const state = createEmptyGameState();
     const events: readonly Event<StandardBoard>[] = [
       {
         eventNumber: 0,
-        eventType: 'gameEffect',
-        effectType: 'revealCards',
+        eventType: "gameEffect",
+        effectType: "revealCards",
       },
     ];
     state.currentRoundState = {

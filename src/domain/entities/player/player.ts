@@ -1,5 +1,5 @@
-import type { AssertExact } from '@utils';
-import { z } from 'zod';
+import type { AssertExact } from "@utils";
+import { z } from "zod";
 
 /**
  * A player in the game.

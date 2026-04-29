@@ -1,10 +1,7 @@
-import type { Board } from '@entities';
-import type { CompleteUnitMovementEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE,
-  GAME_EFFECT_EVENT_TYPE,
-} from '@events';
+import type { Board } from "@entities";
+import type { CompleteUnitMovementEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
 
 /**
  * Generates a CompleteUnitMovementEvent to complete a unit movement.
@@ -16,7 +13,7 @@ import {
 export function generateCompleteUnitMovementEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): CompleteUnitMovementEvent<TBoard, 'completeUnitMovement'> {
+): CompleteUnitMovementEvent<TBoard, "completeUnitMovement"> {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {

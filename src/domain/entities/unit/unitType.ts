@@ -1,9 +1,9 @@
-import type { Trait } from '@ruleValues';
-import type { AssertExact } from '@utils';
-import type { UnitStats } from './unitStat';
-import { traitSchema } from '@ruleValues';
-import { z } from 'zod';
-import { unitStatsSchema } from './unitStat';
+import type { Trait } from "@ruleValues";
+import type { AssertExact } from "@utils";
+import type { UnitStats } from "./unitStat";
+import { traitSchema } from "@ruleValues";
+import { z } from "zod";
+import { unitStatsSchema } from "./unitStat";
 
 /**
  * A unit of troops.

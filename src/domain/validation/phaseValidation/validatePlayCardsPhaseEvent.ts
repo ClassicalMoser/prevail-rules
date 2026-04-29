@@ -1,7 +1,7 @@
-import type { Board, ValidationResult } from '@entities';
-import type { Event } from '@events';
-import type { GameStateWithBoard, PlayCardsPhaseState } from '@game';
-import { validatePlayerChoice } from '@validation/playerChoice';
+import type { Board, ValidationResult } from "@entities";
+import type { Event } from "@events";
+import type { GameStateWithBoard, PlayCardsPhaseState } from "@game";
+import { validatePlayerChoice } from "@validation/playerChoice";
 
 /**
  * Validates an event for the PlayCards phase.
@@ -21,49 +21,40 @@ export function validatePlayCardsPhaseEvent<TBoard extends Board>(
   const phaseState = state.currentRoundState.currentPhaseState;
 
   switch (phaseState.step) {
-    case 'chooseCards':
-      if (event.eventType === 'playerChoice') {
+    case "chooseCards":
+      if (event.eventType === "playerChoice") {
         return validatePlayerChoice(event, state);
       }
       return {
         result: false,
-        errorReason: 'Expected ChooseCardEvent',
+        errorReason: "Expected ChooseCardEvent",
       };
 
-    case 'revealCards':
-      if (
-        event.eventType === 'gameEffect' &&
-        event.effectType === 'revealCards'
-      ) {
+    case "revealCards":
+      if (event.eventType === "gameEffect" && event.effectType === "revealCards") {
         return { result: true };
       }
       return {
         result: false,
-        errorReason: 'Expected RevealCardsEvent',
+        errorReason: "Expected RevealCardsEvent",
       };
 
-    case 'assignInitiative':
-      if (
-        event.eventType === 'gameEffect' &&
-        event.effectType === 'resolveInitiative'
-      ) {
+    case "assignInitiative":
+      if (event.eventType === "gameEffect" && event.effectType === "resolveInitiative") {
         return { result: true };
       }
       return {
         result: false,
-        errorReason: 'Expected ResolveInitiativeEvent',
+        errorReason: "Expected ResolveInitiativeEvent",
       };
 
-    case 'complete':
-      if (
-        event.eventType === 'gameEffect' &&
-        event.effectType === 'completePlayCardsPhase'
-      ) {
+    case "complete":
+      if (event.eventType === "gameEffect" && event.effectType === "completePlayCardsPhase") {
         return { result: true };
       }
       return {
         result: false,
-        errorReason: 'Expected CompletePlayCardsPhaseEvent',
+        errorReason: "Expected CompletePlayCardsPhaseEvent",
       };
 
     default:

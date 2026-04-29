@@ -1,12 +1,12 @@
-import type { AssertExact } from '@utils';
-import type { Command } from './command';
-import type { Modifier } from './modifiers';
-import type { RoundEffect } from './roundEffect';
+import type { AssertExact } from "@utils";
+import type { Command } from "./command";
+import type { Modifier } from "./modifiers";
+import type { RoundEffect } from "./roundEffect";
 
-import { z } from 'zod';
-import { commandSchema } from './command';
-import { modifierSchema } from './modifiers';
-import { roundEffectSchema } from './roundEffect';
+import { z } from "zod";
+import { commandSchema } from "./command";
+import { modifierSchema } from "./modifiers";
+import { roundEffectSchema } from "./roundEffect";
 
 /**
  * A card in the game.
@@ -35,7 +35,7 @@ const _cardSchemaObject = z.object({
   id: z.uuid(),
   /** The version of the card. */
   version: z.string().regex(/^\d+\.\d+\.\d+$/, {
-    message: 'Version must be a valid semver string (e.g., 1.0.0, 1.12.35)',
+    message: "Version must be a valid semver string (e.g., 1.0.0, 1.12.35)",
   }),
   /** The name of the card, regardless of version. */
   name: z.string(),

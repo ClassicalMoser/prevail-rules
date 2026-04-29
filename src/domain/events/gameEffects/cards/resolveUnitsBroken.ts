@@ -1,11 +1,11 @@
-import type { Board, PlayerSide, UnitType } from '@entities';
-import type { AssertExact } from '@utils';
-import { playerSideSchema, unitTypeSchema } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board, PlayerSide, UnitType } from "@entities";
+import type { AssertExact } from "@utils";
+import { playerSideSchema, unitTypeSchema } from "@entities";
+import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
 /** The type of the resolve units broken game effect. */
-export const RESOLVE_UNITS_BROKEN_EFFECT_TYPE = 'resolveUnitsBroken' as const;
+export const RESOLVE_UNITS_BROKEN_EFFECT_TYPE = "resolveUnitsBroken" as const;
 
 /** After a player performs a rally, they must check that their
  * hand still supports all unit types in their army. If any unit type
@@ -16,7 +16,7 @@ export const RESOLVE_UNITS_BROKEN_EFFECT_TYPE = 'resolveUnitsBroken' as const;
 /** An event to resolve units that are no longer supported. */
 export interface ResolveUnitsBrokenEvent<
   _TBoard extends Board,
-  _TEffectType extends 'resolveUnitsBroken' = 'resolveUnitsBroken',
+  _TEffectType extends "resolveUnitsBroken" = "resolveUnitsBroken",
 > {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
@@ -43,9 +43,7 @@ const _resolveUnitsBrokenEventSchemaObject = z.object({
   unitTypes: z.array(unitTypeSchema),
 });
 
-type ResolveUnitsBrokenEventSchemaType = z.infer<
-  typeof _resolveUnitsBrokenEventSchemaObject
->;
+type ResolveUnitsBrokenEventSchemaType = z.infer<typeof _resolveUnitsBrokenEventSchemaObject>;
 
 const _assertExactResolveUnitsBrokenEvent: AssertExact<
   ResolveUnitsBrokenEvent<Board>,
@@ -54,8 +52,8 @@ const _assertExactResolveUnitsBrokenEvent: AssertExact<
 
 /** The schema for a resolve units broken event. */
 export const resolveUnitsBrokenEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'gameEffect'>;
-  effectType: z.ZodLiteral<'resolveUnitsBroken'>;
+  eventType: z.ZodLiteral<"gameEffect">;
+  effectType: z.ZodLiteral<"resolveUnitsBroken">;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   unitTypes: z.ZodArray<typeof unitTypeSchema>;

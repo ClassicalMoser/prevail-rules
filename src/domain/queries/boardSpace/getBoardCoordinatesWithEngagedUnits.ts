@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate } from '@entities';
-import { hasEngagedUnits } from '@entities';
-import { getBoardCoordinates } from './getBoardCoordinates';
-import { getBoardSpace } from './getBoardSpace';
+import type { Board, BoardCoordinate } from "@entities";
+import { hasEngagedUnits } from "@entities";
+import { getBoardCoordinates } from "./getBoardCoordinates";
+import { getBoardSpace } from "./getBoardSpace";
 
 /**
  * Returns every board coordinate whose space has engaged units.

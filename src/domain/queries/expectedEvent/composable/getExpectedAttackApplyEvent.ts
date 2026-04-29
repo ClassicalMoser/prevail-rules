@@ -1,12 +1,8 @@
-import type { Board } from '@entities';
-import type { ExpectedEventInfo } from '@events';
-import type { AttackApplyState, GameStateWithBoard } from '@game';
-import { canReverseUnit } from '@queries/sequencing';
-import {
-  getExpectedRetreatEvent,
-  getExpectedReverseEvent,
-  getExpectedRoutEvent,
-} from '.';
+import type { Board } from "@entities";
+import type { ExpectedEventInfo } from "@events";
+import type { AttackApplyState, GameStateWithBoard } from "@game";
+import { canReverseUnit } from "@queries/sequencing";
+import { getExpectedRetreatEvent, getExpectedReverseEvent, getExpectedRoutEvent } from ".";
 
 /**
  * Gets the expected event for attack apply substeps.
@@ -25,9 +21,7 @@ export function getExpectedAttackApplyEvent<TBoard extends Board>(
 
   // Check if there are any results
   const hasResults =
-    attackResult.unitRouted ||
-    attackResult.unitRetreated ||
-    attackResult.unitReversed;
+    attackResult.unitRouted || attackResult.unitRetreated || attackResult.unitReversed;
 
   // If no results reported, state was not initialized correctly
   if (
@@ -36,7 +30,7 @@ export function getExpectedAttackApplyEvent<TBoard extends Board>(
       attackApplyState.reverseState === undefined &&
       attackApplyState.routState === undefined)
   ) {
-    throw new Error('Attack apply state not initialized correctly');
+    throw new Error("Attack apply state not initialized correctly");
   }
 
   // Results reported, check which need resolution
@@ -48,11 +42,11 @@ export function getExpectedAttackApplyEvent<TBoard extends Board>(
     // If unit was routed, no further resolution is needed
     if (!attackApplyState.completed) {
       return {
-        actionType: 'gameEffect',
-        effectType: 'completeAttackApply',
+        actionType: "gameEffect",
+        effectType: "completeAttackApply",
       };
     }
-    throw new Error('Attack apply state is already complete');
+    throw new Error("Attack apply state is already complete");
   }
 
   if (attackResult.unitRetreated && attackApplyState.retreatState) {
@@ -67,11 +61,11 @@ export function getExpectedAttackApplyEvent<TBoard extends Board>(
       if (!canReverseUnit(attackApplyState.reverseState, gameState)) {
         // Units are still engaged - reverse cannot happen, skip to completeAttackApply
         if (attackApplyState.completed) {
-          throw new Error('Attack apply state is already complete');
+          throw new Error("Attack apply state is already complete");
         }
         return {
-          actionType: 'gameEffect',
-          effectType: 'completeAttackApply',
+          actionType: "gameEffect",
+          effectType: "completeAttackApply",
         };
       }
       return getExpectedReverseEvent(attackApplyState.reverseState, gameState);
@@ -81,11 +75,11 @@ export function getExpectedAttackApplyEvent<TBoard extends Board>(
 
   if (!attackApplyState.completed) {
     return {
-      actionType: 'gameEffect',
-      effectType: 'completeAttackApply',
+      actionType: "gameEffect",
+      effectType: "completeAttackApply",
     };
   }
 
   // All attack results resolved, command resolution should be complete
-  throw new Error('Attack apply state is already complete');
+  throw new Error("Attack apply state is already complete");
 }

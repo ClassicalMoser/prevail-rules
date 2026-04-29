@@ -4,7 +4,7 @@ import type {
   FailValidationResult,
   PlayerCardState,
   ValidationResult,
-} from '@entities';
+} from "@entities";
 
 export function eachCardPresentOnce(
   blackStartingHand: Set<Card>,
@@ -54,14 +54,14 @@ export function eachCardPresentOnce(
           // Card is present more than once in this player's state
           return {
             result: false,
-            errorReason: 'Card is present more than once',
+            errorReason: "Card is present more than once",
           };
         }
         if (!removeExpectedCard(card)) {
           // Unexpected card in this player's state
           return {
             result: false,
-            errorReason: 'Unexpected card',
+            errorReason: "Unexpected card",
           };
         }
         seenInPlayerState.push(card);
@@ -112,7 +112,7 @@ export function eachCardPresentOnce(
       if (expectedCards.size !== 0) {
         const validateError: FailValidationResult = {
           result: false,
-          errorReason: 'Expected cards not found',
+          errorReason: "Expected cards not found",
         };
         return validateError;
       }
@@ -122,17 +122,11 @@ export function eachCardPresentOnce(
     };
 
     // Validate each player's state
-    const blackPlayerValid = validatePlayerState(
-      blackStartingHand,
-      cardState.black,
-    );
+    const blackPlayerValid = validatePlayerState(blackStartingHand, cardState.black);
     if (!blackPlayerValid.result) {
       return blackPlayerValid;
     }
-    const whitePlayerValid = validatePlayerState(
-      whiteStartingHand,
-      cardState.white,
-    );
+    const whitePlayerValid = validatePlayerState(whiteStartingHand, cardState.white);
     if (!whitePlayerValid.result) {
       return whitePlayerValid;
     }
@@ -143,7 +137,7 @@ export function eachCardPresentOnce(
     // Any error means the game state is invalid
     return {
       result: false,
-      errorReason: 'Unknown error',
+      errorReason: "Unknown error",
     };
   }
 }

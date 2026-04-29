@@ -1,15 +1,15 @@
-import type { AssertExact } from '@utils';
-import type { Modifier } from './modifiers';
-import type { Restrictions } from './restrictions';
+import type { AssertExact } from "@utils";
+import type { Modifier } from "./modifiers";
+import type { Restrictions } from "./restrictions";
 
-import { z } from 'zod';
-import { modifierSchema } from './modifiers';
-import { restrictionsSchema } from './restrictions';
+import { z } from "zod";
+import { modifierSchema } from "./modifiers";
+import { restrictionsSchema } from "./restrictions";
 
 /**
  * The iterable list of types of commands that can be used on a card.
  */
-export const commandTypes = ['movement', 'rangedAttack'] as const;
+export const commandTypes = ["movement", "rangedAttack"] as const;
 
 /**
  * The types of commands that can be used on a card.
@@ -22,19 +22,15 @@ type CommandTypesSchemaType = z.infer<typeof _commandTypesSchemaObject>;
 /**
  * The schema for the types of commands that can be used on a card.
  */
-export const commandTypesSchema: z.ZodType<CommandType> =
-  _commandTypesSchemaObject;
+export const commandTypesSchema: z.ZodType<CommandType> = _commandTypesSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactCommandType: AssertExact<
-  CommandType,
-  CommandTypesSchemaType
-> = true;
+const _assertExactCommandType: AssertExact<CommandType, CommandTypesSchemaType> = true;
 
 /**
  * The iterable list of sizes of commands that can be used on a card.
  */
-export const commandSizes = ['units', 'lines'] as const;
+export const commandSizes = ["units", "lines"] as const;
 
 /**
  * The sizes of commands that can be used on a card.
@@ -47,14 +43,10 @@ type CommandSizesSchemaType = z.infer<typeof _commandSizesSchemaObject>;
 /**
  * The schema for the sizes of commands that can be used on a card.
  */
-export const commandSizesSchema: z.ZodType<CommandSize> =
-  _commandSizesSchemaObject;
+export const commandSizesSchema: z.ZodType<CommandSize> = _commandSizesSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactCommandSize: AssertExact<
-  CommandSize,
-  CommandSizesSchemaType
-> = true;
+const _assertExactCommandSize: AssertExact<CommandSize, CommandSizesSchemaType> = true;
 
 /**
  * The restrictions of a card command on a card.

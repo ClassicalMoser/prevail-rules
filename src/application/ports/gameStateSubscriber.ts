@@ -1,5 +1,5 @@
-import type { GameType } from '@entities';
-import type { GameStateChange } from './gameStateChange';
+import type { GameType } from "@entities";
+import type { GameStateChange } from "./gameStateChange";
 
 /**
  * Receives updates for one game instance (`gameId` + `gameType` must match the change).

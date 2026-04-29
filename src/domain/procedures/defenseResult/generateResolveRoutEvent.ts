@@ -1,7 +1,7 @@
-import type { Board } from '@entities';
-import type { ResolveRoutEvent, RoutResolutionSource } from '@events';
-import type { GameStateWithBoard, RoutState } from '@game';
-import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ROUT_EFFECT_TYPE } from '@events';
+import type { Board } from "@entities";
+import type { ResolveRoutEvent, RoutResolutionSource } from "@events";
+import type { GameStateWithBoard, RoutState } from "@game";
+import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ROUT_EFFECT_TYPE } from "@events";
 import {
   getAttackApplyStateFromRangedAttack,
   getCurrentCommandResolutionState,
@@ -10,7 +10,7 @@ import {
   getRoutStateFromCleanupPhaseForResolveRout,
   getRoutStateFromMeleeResolutionByInitiative,
   getRoutStateFromRearEngagement,
-} from '@queries';
+} from "@queries";
 
 /**
  * Generates a ResolveRoutEvent by calculating the rout penalty
@@ -24,37 +24,31 @@ import {
 export function generateResolveRoutEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): ResolveRoutEvent<TBoard, 'resolveRout'> {
+): ResolveRoutEvent<TBoard, "resolveRout"> {
   const phaseState = getCurrentPhaseState(state);
 
   let routState: RoutState;
   let routResolutionSource: RoutResolutionSource;
 
-  if (phaseState.phase === 'issueCommands') {
+  if (phaseState.phase === "issueCommands") {
     const crs = getCurrentCommandResolutionState(state);
-    if (crs.commandResolutionType === 'movement') {
+    if (crs.commandResolutionType === "movement") {
       routState = getRoutStateFromRearEngagement(state);
-      routResolutionSource = 'rearEngagementMovement';
-    } else if (crs.commandResolutionType === 'rangedAttack') {
-      routState = getRoutStateFromAttackApply(
-        getAttackApplyStateFromRangedAttack(state),
-      );
-      routResolutionSource = 'rangedAttack';
+      routResolutionSource = "rearEngagementMovement";
+    } else if (crs.commandResolutionType === "rangedAttack") {
+      routState = getRoutStateFromAttackApply(getAttackApplyStateFromRangedAttack(state));
+      routResolutionSource = "rangedAttack";
     } else {
-      throw new Error(
-        'Current command resolution is not movement or ranged attack',
-      );
+      throw new Error("Current command resolution is not movement or ranged attack");
     }
-  } else if (phaseState.phase === 'resolveMelee') {
+  } else if (phaseState.phase === "resolveMelee") {
     routState = getRoutStateFromMeleeResolutionByInitiative(state);
-    routResolutionSource = 'melee';
-  } else if (phaseState.phase === 'cleanup') {
+    routResolutionSource = "melee";
+  } else if (phaseState.phase === "cleanup") {
     routState = getRoutStateFromCleanupPhaseForResolveRout(state);
-    routResolutionSource = 'rally';
+    routResolutionSource = "rally";
   } else {
-    throw new Error(
-      `Rout resolution not expected in phase: ${phaseState.phase}`,
-    );
+    throw new Error(`Rout resolution not expected in phase: ${phaseState.phase}`);
   }
 
   const totalPenalty = [...routState.unitsToRout].reduce(

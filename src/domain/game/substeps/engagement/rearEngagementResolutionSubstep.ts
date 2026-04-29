@@ -1,12 +1,12 @@
-import type { AssertExact } from '@utils';
-import type { RoutState } from '../routSubstep';
-import { z } from 'zod';
-import { routStateSchema } from '../routSubstep';
+import type { AssertExact } from "@utils";
+import type { RoutState } from "../routSubstep";
+import { z } from "zod";
+import { routStateSchema } from "../routSubstep";
 
 /** The resolution state of an engagement from the rear. */
 export interface RearEngagementResolutionState {
   /** The type of engagement. */
-  engagementType: 'rear';
+  engagementType: "rear";
   /** The state of the rout. */
   routState: RoutState;
   /** Whether the rear engagement resolution substep is complete. */
@@ -15,7 +15,7 @@ export interface RearEngagementResolutionState {
 
 const _rearEngagementResolutionStateSchemaObject = z.object({
   /** The type of engagement. */
-  engagementType: z.literal('rear'),
+  engagementType: z.literal("rear"),
   /** The state of the rout. */
   routState: routStateSchema,
   /** Whether the rear engagement resolution substep is complete. */
@@ -33,7 +33,7 @@ const _assertExactRearEngagementResolutionState: AssertExact<
 
 /** The schema for the rear engagement resolution state. */
 export const rearEngagementResolutionStateSchema: z.ZodObject<{
-  engagementType: z.ZodLiteral<'rear'>;
+  engagementType: z.ZodLiteral<"rear">;
   routState: z.ZodType<RoutState>;
   completed: z.ZodType<boolean>;
 }> = _rearEngagementResolutionStateSchemaObject;

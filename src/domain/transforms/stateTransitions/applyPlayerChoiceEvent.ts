@@ -2,9 +2,9 @@
  * Routes player choice events to their corresponding apply functions.
  */
 
-import type { Board } from '@entities';
-import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { GameStateWithBoard } from '@game';
+import type { Board } from "@entities";
+import type { PlayerChoiceEvent, PlayerChoiceType } from "@events";
+import type { GameStateWithBoard } from "@game";
 import {
   applyChooseCardEvent,
   applyChooseMeleeEvent,
@@ -20,7 +20,7 @@ import {
   applyMoveUnitEvent,
   applyPerformRangedAttackEvent,
   applySetupUnitsEvent,
-} from './applyChoices';
+} from "./applyChoices";
 
 /**
  * Routes player choice events to their corresponding apply functions.
@@ -30,33 +30,33 @@ export function applyPlayerChoiceEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
 ): GameStateWithBoard<TBoard> {
   switch (event.choiceType) {
-    case 'chooseCard':
+    case "chooseCard":
       return applyChooseCardEvent(event, state);
-    case 'chooseMeleeResolution':
+    case "chooseMeleeResolution":
       return applyChooseMeleeEvent(event, state);
-    case 'chooseRally':
+    case "chooseRally":
       return applyChooseRallyEvent(event, state);
-    case 'chooseRetreatOption':
+    case "chooseRetreatOption":
       return applyChooseRetreatOptionEvent(event, state);
-    case 'chooseRoutDiscard':
+    case "chooseRoutDiscard":
       return applyChooseRoutDiscardEvent(event, state);
-    case 'chooseWhetherToRetreat':
+    case "chooseWhetherToRetreat":
       return applyChooseWhetherToRetreatEvent(event, state);
-    case 'commitToMelee':
+    case "commitToMelee":
       return applyCommitToMeleeEvent(event, state);
-    case 'commitToMovement':
+    case "commitToMovement":
       return applyCommitToMovementEvent(event, state);
-    case 'commitToRangedAttack':
+    case "commitToRangedAttack":
       return applyCommitToRangedAttackEvent(event, state);
-    case 'issueCommand':
+    case "issueCommand":
       return applyIssueCommandEvent(event, state);
-    case 'moveCommander':
+    case "moveCommander":
       return applyMoveCommanderEvent(event, state);
-    case 'moveUnit':
+    case "moveUnit":
       return applyMoveUnitEvent(event, state);
-    case 'performRangedAttack':
+    case "performRangedAttack":
       return applyPerformRangedAttackEvent(event, state);
-    case 'setupUnits':
+    case "setupUnits":
       return applySetupUnitsEvent(event, state);
     default: {
       // Exhaustiveness check for TypeScript

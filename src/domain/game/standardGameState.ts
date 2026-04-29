@@ -1,20 +1,15 @@
-import type {
-  CardState,
-  PlayerSide,
-  StandardBoard,
-  UnitInstance,
-} from '@entities';
-import type { AssertExact } from '@utils';
-import type { RoundState } from './roundState';
+import type { CardState, PlayerSide, StandardBoard, UnitInstance } from "@entities";
+import type { AssertExact } from "@utils";
+import type { RoundState } from "./roundState";
 
 import {
   cardStateSchema,
   playerSideSchema,
   standardBoardSchema,
   unitInstanceSchema,
-} from '@entities';
-import { z } from 'zod';
-import { roundStateSchema } from './roundState';
+} from "@entities";
+import { z } from "zod";
+import { roundStateSchema } from "./roundState";
 
 /**
  * Game state on a **standard** board.
@@ -25,7 +20,7 @@ export interface StandardGameState {
    * Root discriminator for {@link GameState}; must match `boardState.boardType` (`'standard'`).
    * One literal for TS narrowing and Zod — no extra type parameters.
    */
-  boardType: 'standard';
+  boardType: "standard";
   /** The current round number of the game. */
   currentRoundNumber: number;
   /** The state of the current round of the game. */
@@ -49,7 +44,7 @@ export interface StandardGameState {
 // ---------------------------------------------------------------------------
 
 const _standardGameStateSchemaObject = z.object({
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
   currentRoundNumber: z.int().min(0),
   currentRoundState: roundStateSchema,
   currentInitiative: playerSideSchema,
@@ -60,14 +55,10 @@ const _standardGameStateSchemaObject = z.object({
   boardState: standardBoardSchema,
 });
 
-type StandardGameStateSchemaType = z.infer<
-  typeof _standardGameStateSchemaObject
->;
+type StandardGameStateSchemaType = z.infer<typeof _standardGameStateSchemaObject>;
 
-const _assertExactStandardGameState: AssertExact<
-  StandardGameState,
-  StandardGameStateSchemaType
-> = true;
+const _assertExactStandardGameState: AssertExact<StandardGameState, StandardGameStateSchemaType> =
+  true;
 
 /** {@link StandardGameState} */
 export const gameStateSchemaForStandardBoard: z.ZodType<StandardGameState> =

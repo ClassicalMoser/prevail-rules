@@ -1,10 +1,10 @@
-import type { AssertExact } from '@utils';
-import type { BoardSize } from './board';
-import { z } from 'zod';
-import { boardSizeEnum } from './board';
+import type { AssertExact } from "@utils";
+import type { BoardSize } from "./board";
+import { z } from "zod";
+import { boardSizeEnum } from "./board";
 
 /** Iterable list of game types. */
-export const gameType = ['standard', 'mini', 'tutorial'] as const;
+export const gameType = ["standard", "mini", "tutorial"] as const;
 
 /**
  * A type of game.
@@ -33,18 +33,13 @@ const _gameTypeStructureSchemaObject = z.object({
   boardSize: boardSizeEnum,
 });
 
-type GameTypeStructureSchemaType = z.infer<
-  typeof _gameTypeStructureSchemaObject
->;
+type GameTypeStructureSchemaType = z.infer<typeof _gameTypeStructureSchemaObject>;
 
 /**
  * The schema for a game type structure.
  */
-export const gameTypeStructureSchema: z.ZodType<GameTypeStructure> =
-  _gameTypeStructureSchemaObject;
+export const gameTypeStructureSchema: z.ZodType<GameTypeStructure> = _gameTypeStructureSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactGameTypeStructure: AssertExact<
-  GameTypeStructure,
-  GameTypeStructureSchemaType
-> = true;
+const _assertExactGameTypeStructure: AssertExact<GameTypeStructure, GameTypeStructureSchemaType> =
+  true;

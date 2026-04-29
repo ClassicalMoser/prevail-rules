@@ -10,11 +10,11 @@
  * based on the event's discriminated union type.
  */
 
-import type { Board } from '@entities';
-import type { Event } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { applyGameEffectEvent } from './applyGameEffectEvent';
-import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
+import type { Board } from "@entities";
+import type { Event } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { applyGameEffectEvent } from "./applyGameEffectEvent";
+import { applyPlayerChoiceEvent } from "./applyPlayerChoiceEvent";
 
 /**
  * Applies an event to the game state, returning a new immutable game state.
@@ -39,14 +39,12 @@ export function applyEvent<TBoard extends Board>(
 ): GameStateWithBoard<TBoard> {
   let newState: GameStateWithBoard<TBoard>;
 
-  if (event.eventType === 'playerChoice') {
+  if (event.eventType === "playerChoice") {
     newState = applyPlayerChoiceEvent(event, state);
-  } else if (event.eventType === 'gameEffect') {
+  } else if (event.eventType === "gameEffect") {
     newState = applyGameEffectEvent(event, state);
   } else {
-    throw new Error(
-      `Unknown event type: ${(event as Event<TBoard>).eventType}`,
-    );
+    throw new Error(`Unknown event type: ${(event as Event<TBoard>).eventType}`);
   }
 
   return {

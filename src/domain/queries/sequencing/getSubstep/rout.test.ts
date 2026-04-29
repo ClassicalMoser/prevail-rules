@@ -1,5 +1,5 @@
-import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { StandardAttackApplyState, StandardGameState } from '@game';
+import type { StandardBoard, UnitWithPlacement } from "@entities";
+import type { StandardAttackApplyState, StandardGameState } from "@game";
 import {
   createAttackApplyState,
   createAttackApplyStateWithRout,
@@ -7,24 +7,21 @@ import {
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
-} from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
-import { describe, expect, it } from 'vitest';
-import {
-  getRoutStateFromAttackApply,
-  getRoutStateFromMeleeResolutionByInitiative,
-} from './rout';
+} from "@testing";
+import { addUnitToBoard, updatePhaseState } from "@transforms";
+import { describe, expect, it } from "vitest";
+import { getRoutStateFromAttackApply, getRoutStateFromMeleeResolutionByInitiative } from "./rout";
 
 /**
  * Rout substep accessors: read rout from a single apply, or pick melee side by initiative when
  * both players might have rout substeps.
  */
-describe('getRoutStateFromAttackApply', () => {
-  it('given apply with rout nested, returns that rout substep', () => {
-    const unit = createTestUnit('black', { attack: 2 });
+describe("getRoutStateFromAttackApply", () => {
+  it("given apply with rout nested, returns that rout substep", () => {
+    const unit = createTestUnit("black", { attack: 2 });
     const attackApplyState: StandardAttackApplyState = {
-      substepType: 'attackApply' as const,
-      boardType: 'standard' as const,
+      substepType: "attackApply" as const,
+      boardType: "standard" as const,
       defendingUnit: unit,
       attackResult: {
         unitRouted: true,
@@ -32,8 +29,8 @@ describe('getRoutStateFromAttackApply', () => {
         unitReversed: false,
       },
       routState: {
-        substepType: 'rout' as const,
-        player: 'black' as const,
+        substepType: "rout" as const,
+        player: "black" as const,
         unitsToRout: new Set([unit]),
         numberToDiscard: 1,
         cardsChosen: false,
@@ -45,16 +42,16 @@ describe('getRoutStateFromAttackApply', () => {
     };
 
     const result = getRoutStateFromAttackApply(attackApplyState);
-    expect(result.substepType).toBe('rout');
-    expect(result.player).toBe('black');
+    expect(result.substepType).toBe("rout");
+    expect(result.player).toBe("black");
     expect(result.unitsToRout.has(unit)).toBe(true);
   });
 
-  it('given apply without routState, throws no rout in attack apply', () => {
-    const unit = createTestUnit('black', { attack: 2 });
+  it("given apply without routState, throws no rout in attack apply", () => {
+    const unit = createTestUnit("black", { attack: 2 });
     const attackApplyState: StandardAttackApplyState = {
-      substepType: 'attackApply' as const,
-      boardType: 'standard' as const,
+      substepType: "attackApply" as const,
+      boardType: "standard" as const,
       defendingUnit: unit,
       attackResult: {
         unitRouted: false,
@@ -68,36 +65,36 @@ describe('getRoutStateFromAttackApply', () => {
     };
 
     expect(() => getRoutStateFromAttackApply(attackApplyState)).toThrow(
-      'No rout state found in attack apply state',
+      "No rout state found in attack apply state",
     );
   });
 });
 
-describe('getRoutStateFromMeleeResolutionByInitiative', () => {
+describe("getRoutStateFromMeleeResolutionByInitiative", () => {
   /** Engaged E-5 pair; toggle which side’s apply uses createAttackApplyStateWithRout. */
   function meleeStateWithRouts(
-    initiative: 'white' | 'black',
+    initiative: "white" | "black",
     opts: { whiteHasRout?: boolean; blackHasRout?: boolean },
   ): StandardGameState {
     const state = createEmptyGameState({ currentInitiative: initiative });
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
+    const whiteUnit = createTestUnit("white", { attack: 2 });
+    const blackUnit = createTestUnit("black", { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+      boardType: "standard" as const,
       unit: whiteUnit,
       placement: {
-        boardType: 'standard' as const,
-        coordinate: 'E-5',
-        facing: 'north',
+        boardType: "standard" as const,
+        coordinate: "E-5",
+        facing: "north",
       },
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+      boardType: "standard" as const,
       unit: blackUnit,
       placement: {
-        boardType: 'standard' as const,
-        coordinate: 'E-5',
-        facing: 'south',
+        boardType: "standard" as const,
+        coordinate: "E-5",
+        facing: "south",
       },
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
@@ -120,33 +117,33 @@ describe('getRoutStateFromMeleeResolutionByInitiative', () => {
     return updatePhaseState(s, phase);
   }
 
-  it('given black initiative and only black rout, returns black rout', () => {
-    const state = meleeStateWithRouts('black', {
+  it("given black initiative and only black rout, returns black rout", () => {
+    const state = meleeStateWithRouts("black", {
       whiteHasRout: false,
       blackHasRout: true,
     });
     const rout = getRoutStateFromMeleeResolutionByInitiative(state);
-    expect(rout.player).toBe('black');
+    expect(rout.player).toBe("black");
     expect(rout.unitsToRout.size).toBeGreaterThan(0);
   });
 
-  it('given black initiative but black has no rout, falls back to white rout', () => {
-    const state = meleeStateWithRouts('black', {
+  it("given black initiative but black has no rout, falls back to white rout", () => {
+    const state = meleeStateWithRouts("black", {
       whiteHasRout: true,
       blackHasRout: false,
     });
     const rout = getRoutStateFromMeleeResolutionByInitiative(state);
-    expect(rout.player).toBe('white');
+    expect(rout.player).toBe("white");
     expect(rout.unitsToRout.size).toBeGreaterThan(0);
   });
 
-  it('given neither apply has rout, throws no rout in melee resolution', () => {
-    const state = meleeStateWithRouts('white', {
+  it("given neither apply has rout, throws no rout in melee resolution", () => {
+    const state = meleeStateWithRouts("white", {
       whiteHasRout: false,
       blackHasRout: false,
     });
     expect(() => getRoutStateFromMeleeResolutionByInitiative(state)).toThrow(
-      'No rout state found in melee resolution',
+      "No rout state found in melee resolution",
     );
   });
 });

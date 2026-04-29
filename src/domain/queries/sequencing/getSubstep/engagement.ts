@@ -1,12 +1,12 @@
-import type { Board } from '@entities';
+import type { Board } from "@entities";
 import type {
   EngagementState,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   GameStateWithBoard,
   RearEngagementResolutionState,
-} from '@game';
-import { getMovementResolutionState } from '../getCommandResolutionState';
+} from "@game";
+import { getMovementResolutionState } from "../getCommandResolutionState";
 
 /**
  * Gets the engagement state from a movement resolution.
@@ -21,7 +21,7 @@ export function getEngagementStateFromMovement<TBoard extends Board>(
 ): EngagementState {
   const movementState = getMovementResolutionState(state);
   if (!movementState.engagementState) {
-    throw new Error('No engagement state found in movement resolution');
+    throw new Error("No engagement state found in movement resolution");
   }
   return movementState.engagementState;
 }
@@ -40,8 +40,8 @@ export function getFlankEngagementStateFromMovement<TBoard extends Board>(
   engagementResolutionState: FlankEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
-  if (engagementState.engagementResolutionState.engagementType !== 'flank') {
-    throw new Error('Engagement type is not flank');
+  if (engagementState.engagementResolutionState.engagementType !== "flank") {
+    throw new Error("Engagement type is not flank");
   }
   return engagementState as EngagementState & {
     engagementResolutionState: FlankEngagementResolutionState;
@@ -62,8 +62,8 @@ export function getFrontEngagementStateFromMovement<TBoard extends Board>(
   engagementResolutionState: FrontEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
-  if (engagementState.engagementResolutionState.engagementType !== 'front') {
-    throw new Error('Engagement type is not front');
+  if (engagementState.engagementResolutionState.engagementType !== "front") {
+    throw new Error("Engagement type is not front");
   }
   return engagementState as EngagementState & {
     engagementResolutionState: FrontEngagementResolutionState;
@@ -84,8 +84,8 @@ export function getRearEngagementStateFromMovement<TBoard extends Board>(
   engagementResolutionState: RearEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
-  if (engagementState.engagementResolutionState.engagementType !== 'rear') {
-    throw new Error('Engagement type is not rear');
+  if (engagementState.engagementResolutionState.engagementType !== "rear") {
+    throw new Error("Engagement type is not rear");
   }
   return engagementState as EngagementState & {
     engagementResolutionState: RearEngagementResolutionState;

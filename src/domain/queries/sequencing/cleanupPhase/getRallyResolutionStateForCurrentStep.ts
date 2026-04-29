@@ -1,8 +1,8 @@
-import type { Board } from '@entities';
-import type { GameStateWithBoard, RallyResolutionState } from '@game';
-import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getCleanupPhaseState } from '../getPhaseState';
-import { getCurrentRallyResolutionState } from '../getSubstep';
+import type { Board } from "@entities";
+import type { GameStateWithBoard, RallyResolutionState } from "@game";
+import { getOtherPlayer } from "@queries/getOtherPlayer";
+import { getCleanupPhaseState } from "../getPhaseState";
+import { getCurrentRallyResolutionState } from "../getSubstep";
 
 /**
  * Gets the rally resolution state for the current cleanup phase step.
@@ -15,28 +15,22 @@ import { getCurrentRallyResolutionState } from '../getSubstep';
  */
 export function getRallyResolutionStateForCurrentStep<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
-  player: 'white' | 'black',
+  player: "white" | "black",
 ): RallyResolutionState {
   const phaseState = getCleanupPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 
-  if (phaseState.step === 'firstPlayerResolveRally') {
+  if (phaseState.step === "firstPlayerResolveRally") {
     if (player !== firstPlayer) {
-      throw new Error(
-        `Expected ${firstPlayer} (first player) to resolve rally, got ${player}`,
-      );
+      throw new Error(`Expected ${firstPlayer} (first player) to resolve rally, got ${player}`);
     }
-  } else if (phaseState.step === 'secondPlayerResolveRally') {
+  } else if (phaseState.step === "secondPlayerResolveRally") {
     if (player !== secondPlayer) {
-      throw new Error(
-        `Expected ${secondPlayer} (second player) to resolve rally, got ${player}`,
-      );
+      throw new Error(`Expected ${secondPlayer} (second player) to resolve rally, got ${player}`);
     }
   } else {
-    throw new Error(
-      `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
-    );
+    throw new Error(`Cleanup phase is not on a resolveRally step: ${phaseState.step}`);
   }
 
   return getCurrentRallyResolutionState(state);

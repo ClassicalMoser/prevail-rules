@@ -1,4 +1,4 @@
-import type { Card, PlayerSide } from '@entities';
+import type { Card, PlayerSide } from "@entities";
 
 /**
  * Calculates which player receives initiative based on card values.
@@ -38,11 +38,11 @@ export function calculateInitiative(
 
   // Lower initiative value wins
   if (whiteInitiative < blackInitiative) {
-    return 'white';
+    return "white";
   }
 
   if (blackInitiative < whiteInitiative) {
-    return 'black';
+    return "black";
   }
 
   // Tie: current holder keeps it

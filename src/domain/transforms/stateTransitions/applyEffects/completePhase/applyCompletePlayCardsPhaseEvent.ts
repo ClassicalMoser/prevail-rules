@@ -1,13 +1,10 @@
-import type { Board } from '@entities';
-import type { CompletePlayCardsPhaseEvent } from '@events';
-import type { GameStateWithBoard, MoveCommandersPhaseState } from '@game';
-import { MOVE_COMMANDERS_PHASE } from '@game';
+import type { Board } from "@entities";
+import type { CompletePlayCardsPhaseEvent } from "@events";
+import type { GameStateWithBoard, MoveCommandersPhaseState } from "@game";
+import { MOVE_COMMANDERS_PHASE } from "@game";
 
-import { getPlayCardsPhaseState } from '@queries';
-import {
-  addCompletedPhase,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { getPlayCardsPhaseState } from "@queries";
+import { addCompletedPhase, updatePhaseState } from "@transforms/pureTransforms";
 
 /**
  * Applies a CompletePlayCardsPhaseEvent to the game state.
@@ -33,7 +30,7 @@ export function applyCompletePlayCardsPhaseEvent<TBoard extends Board>(
   // Create the new move commanders phase state
   const newPhaseState: MoveCommandersPhaseState = {
     phase: MOVE_COMMANDERS_PHASE,
-    step: 'moveFirstCommander',
+    step: "moveFirstCommander",
   };
 
   return updatePhaseState(stateWithCompletedPhase, newPhaseState);

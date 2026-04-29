@@ -1,12 +1,12 @@
-import type { Board } from '@entities';
-import type { CommitToMeleeEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getMeleeResolutionState } from '@queries';
+import type { Board } from "@entities";
+import type { CommitToMeleeEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getMeleeResolutionState } from "@queries";
 import {
   discardCardsFromHand,
   updateCardState,
   updateMeleeResolutionState,
-} from '@transforms/pureTransforms';
+} from "@transforms/pureTransforms";
 
 /**
  * Applies a CommitToMeleeEvent to the game state.
@@ -25,26 +25,21 @@ export function applyCommitToMeleeEvent<TBoard extends Board>(
   const player = event.player;
 
   // Discard committed card from player's hand
-  const newCardState = discardCardsFromHand(state.cardState, player, [
-    event.committedCard.id,
-  ]);
+  const newCardState = discardCardsFromHand(state.cardState, player, [event.committedCard.id]);
 
   // Mark this player's commitment as completed with the chosen card
   const newCommitment = {
-    commitmentType: 'completed' as const,
+    commitmentType: "completed" as const,
     card: event.committedCard,
   };
   const newMeleeState = {
     ...meleeState,
-    ...(player === 'white'
+    ...(player === "white"
       ? { whiteCommitment: newCommitment }
       : { blackCommitment: newCommitment }),
   };
 
   const stateWithCards = updateCardState(state, newCardState);
-  const newGameState = updateMeleeResolutionState(
-    stateWithCards,
-    newMeleeState,
-  );
+  const newGameState = updateMeleeResolutionState(stateWithCards, newMeleeState);
   return newGameState;
 }

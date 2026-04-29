@@ -1,4 +1,4 @@
-import type { PlayerSide } from '@entities';
+import type { PlayerSide } from "@entities";
 
 /**
  * Gets the opposite player from the one provided.
@@ -6,10 +6,10 @@ import type { PlayerSide } from '@entities';
  * @returns The opposite player side
  */
 export function getOtherPlayer(player: PlayerSide): PlayerSide {
-  if (player === 'black') {
-    return 'white';
-  } else if (player === 'white') {
-    return 'black';
+  if (player === "black") {
+    return "white";
+  } else if (player === "white") {
+    return "black";
   } else {
     throw new Error(`Invalid player side: ${player}`);
   }

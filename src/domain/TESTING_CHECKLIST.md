@@ -200,7 +200,7 @@ Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary a
 ### For Procedures
 
 ```typescript
-describe('generateXEvent', () => {
+describe("generateXEvent", () => {
   // ✅ GOOD: Use existing helpers from @testing
   function createTestState(): GameState<StandardBoard> {
     const state = createEmptyGameState();
@@ -219,14 +219,14 @@ describe('generateXEvent', () => {
   //   };
   // }
 
-  it('should return correct event type', () => {
+  it("should return correct event type", () => {
     const state = createTestState();
     const event = generateXEvent(state);
-    expect(event.eventType).toBe('gameEffect');
-    expect(event.effectType).toBe('x');
+    expect(event.eventType).toBe("gameEffect");
+    expect(event.effectType).toBe("x");
   });
 
-  it('should be deterministic', () => {
+  it("should be deterministic", () => {
     // Test determinism if applicable
   });
 });
@@ -235,27 +235,27 @@ describe('generateXEvent', () => {
 ### For Expected Events
 
 ```typescript
-describe('getExpectedXEvent', () => {
+describe("getExpectedXEvent", () => {
   // ✅ GOOD: Use existing helpers + pure transforms
   function createTestState(): GameState<StandardBoard> {
     const state = createEmptyGameState();
-    const unit = createTestUnit('white', { attack: 2 });
+    const unit = createTestUnit("white", { attack: 2 });
     const stateWithUnit = {
       ...state,
       boardState: addUnitToBoard(state.boardState, {
         unit,
-        placement: { coordinate: 'E-5', facing: 'north' },
+        placement: { coordinate: "E-5", facing: "north" },
       }),
     };
     return updatePhaseState(stateWithUnit, createXPhaseState(stateWithUnit));
   }
 
-  it('should return expected event info', () => {
+  it("should return expected event info", () => {
     const state = createTestState();
     const result = getExpectedXEvent(state);
     const parsed = expectedGameEffectSchema.safeParse(result);
     expect(parsed.success).toBe(true);
-    expect(parsed.data?.effectType).toBe('x');
+    expect(parsed.data?.effectType).toBe("x");
   });
 });
 ```

@@ -1,9 +1,9 @@
-import type { Army, GameType } from '@entities';
-import type { BoardForGameType, Game, GameStateWithBoard } from '@game';
-import type { EnginePorts, GameStateChange, PortResponse } from '../ports';
-import { createEmptyGameState } from '@transforms';
+import type { Army, GameType } from "@entities";
+import type { BoardForGameType, Game, GameStateWithBoard } from "@game";
+import type { EnginePorts, GameStateChange, PortResponse } from "../ports";
+import { createEmptyGameState } from "@transforms";
 
-const placeholderId = '00000000-0000-0000-0000-000000000000';
+const placeholderId = "00000000-0000-0000-0000-000000000000";
 
 function placeholderArmy(): Army {
   return {
@@ -19,20 +19,14 @@ export const startNewGame = async <T extends GameType>(
 ): Promise<PortResponse<void>> => {
   let gameState: GameStateWithBoard<BoardForGameType<T>>;
   switch (gameType as T) {
-    case 'standard':
-      gameState = createEmptyGameState('standard') as GameStateWithBoard<
-        BoardForGameType<T>
-      >;
+    case "standard":
+      gameState = createEmptyGameState("standard") as GameStateWithBoard<BoardForGameType<T>>;
       break;
-    case 'mini':
-      gameState = createEmptyGameState('mini') as GameStateWithBoard<
-        BoardForGameType<T>
-      >;
+    case "mini":
+      gameState = createEmptyGameState("mini") as GameStateWithBoard<BoardForGameType<T>>;
       break;
-    case 'tutorial':
-      gameState = createEmptyGameState('tutorial') as GameStateWithBoard<
-        BoardForGameType<T>
-      >;
+    case "tutorial":
+      gameState = createEmptyGameState("tutorial") as GameStateWithBoard<BoardForGameType<T>>;
       break;
     default:
       throw new Error(`Unknown gameType: ${gameType}`);
@@ -40,49 +34,44 @@ export const startNewGame = async <T extends GameType>(
 
   let game: Game;
   switch (gameType as T) {
-    case 'standard':
+    case "standard":
       game = {
         id: placeholderId,
-        gameType: 'standard',
+        gameType: "standard",
         blackPlayer: placeholderId,
         whitePlayer: placeholderId,
         blackArmy: placeholderArmy(),
         whiteArmy: placeholderArmy(),
-        gameState: gameState as GameStateWithBoard<
-          BoardForGameType<'standard'>
-        >,
+        gameState: gameState as GameStateWithBoard<BoardForGameType<"standard">>,
       };
       break;
-    case 'mini':
+    case "mini":
       game = {
         id: placeholderId,
-        gameType: 'mini',
+        gameType: "mini",
         blackPlayer: placeholderId,
         whitePlayer: placeholderId,
         blackArmy: placeholderArmy(),
         whiteArmy: placeholderArmy(),
-        gameState: gameState as GameStateWithBoard<BoardForGameType<'mini'>>,
+        gameState: gameState as GameStateWithBoard<BoardForGameType<"mini">>,
       };
       break;
-    case 'tutorial':
+    case "tutorial":
       game = {
         id: placeholderId,
-        gameType: 'tutorial',
+        gameType: "tutorial",
         blackPlayer: placeholderId,
         whitePlayer: placeholderId,
         blackArmy: placeholderArmy(),
         whiteArmy: placeholderArmy(),
-        gameState: gameState as GameStateWithBoard<
-          BoardForGameType<'tutorial'>
-        >,
+        gameState: gameState as GameStateWithBoard<BoardForGameType<"tutorial">>,
       };
       break;
     default:
       throw new Error(`Unknown gameType: ${gameType}`);
   }
 
-  const saveResult: PortResponse<void> =
-    await ports.gameStorage.saveNewGame(game);
+  const saveResult: PortResponse<void> = await ports.gameStorage.saveNewGame(game);
 
   if (!saveResult.result) {
     return {
@@ -97,10 +86,7 @@ export const startNewGame = async <T extends GameType>(
     gameState: game.gameState,
   };
   for (const subscriber of ports.gameStateSubscribers) {
-    if (
-      subscriber.gameId !== game.id ||
-      subscriber.gameType !== game.gameType
-    ) {
+    if (subscriber.gameId !== game.id || subscriber.gameType !== game.gameType) {
       continue;
     }
     try {

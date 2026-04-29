@@ -4,18 +4,14 @@ import type {
   UnitFacing,
   UnitPlacement,
   UnitWithPlacement,
-} from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { unitFacings } from '@entities';
-import {
-  getForwardSpace,
-  getRearwardSpace,
-  getSpacesBehind,
-} from '@queries/boardSpace';
-import { getAdjacentFacings } from '@queries/facings';
-import { getCurrentUnitStat } from '@queries/getCurrentUnitStat';
-import { canMoveInto, canMoveThrough, isDiagonalFacing } from '@validation';
-import { checkDiagonalMove } from './checkDiagonalMove';
+} from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { unitFacings } from "@entities";
+import { getForwardSpace, getRearwardSpace, getSpacesBehind } from "@queries/boardSpace";
+import { getAdjacentFacings } from "@queries/facings";
+import { getCurrentUnitStat } from "@queries/getCurrentUnitStat";
+import { canMoveInto, canMoveThrough, isDiagonalFacing } from "@validation";
+import { checkDiagonalMove } from "./checkDiagonalMove";
 
 /**
  * Represents the result of an explored move.
@@ -41,7 +37,7 @@ export interface MoveResult<TBoard extends Board> {
 export function exploreUnitMoves<TBoard extends Board>(
   gameState: GameStateWithBoard<TBoard>,
   unitWithPlacement: UnitWithPlacement<TBoard>,
-  direction: 'advance' | 'retreat',
+  direction: "advance" | "retreat",
 ): Set<MoveResult<TBoard>> {
   // Get the board state
   const board = gameState.boardState;
@@ -53,23 +49,14 @@ export function exploreUnitMoves<TBoard extends Board>(
   const unitSide = unit.playerSide;
 
   // Get the current unit flexibility and speed
-  const currentUnitFlexibility = getCurrentUnitStat(
-    unit,
-    'flexibility',
-    gameState,
-  );
-  const currentUnitSpeed = getCurrentUnitStat(unit, 'speed', gameState);
+  const currentUnitFlexibility = getCurrentUnitStat(unit, "flexibility", gameState);
+  const currentUnitSpeed = getCurrentUnitStat(unit, "speed", gameState);
 
   // Determine which function to use for getting next space
-  const getSpaceInDirection =
-    direction === 'advance' ? getForwardSpace : getRearwardSpace;
+  const getSpaceInDirection = direction === "advance" ? getForwardSpace : getRearwardSpace;
 
   // Cache valid retreat spaces
-  const validRetreatSpaces = getSpacesBehind(
-    board,
-    initialCoordinate,
-    initialFacing,
-  );
+  const validRetreatSpaces = getSpacesBehind(board, initialCoordinate, initialFacing);
 
   // Helper for checking if a space is a valid retreat space
   function isValidRetreatSpace(coordinate: BoardCoordinate<TBoard>): boolean {
@@ -97,8 +84,7 @@ export function exploreUnitMoves<TBoard extends Board>(
     remainingFlexibility: number,
     isTruePosition: boolean,
   ): void => {
-    const { coordinate: currentCoordinate, facing: currentFacing } =
-      currentPlacement;
+    const { coordinate: currentCoordinate, facing: currentFacing } = currentPlacement;
 
     const stateKey = getStateKey(
       currentCoordinate,
@@ -121,7 +107,7 @@ export function exploreUnitMoves<TBoard extends Board>(
     // to prevent repeated rotation in one space.
     if (isTruePosition) {
       // If advancing, add the initial position to the results.
-      if (direction === 'advance') {
+      if (direction === "advance") {
         results.add({
           placement: currentPlacement,
           flexibilityUsed: 0,
@@ -132,15 +118,15 @@ export function exploreUnitMoves<TBoard extends Board>(
       // Sometimes we can turn in the initial position.
       if (remainingFlexibility > 0) {
         let newFacings = new Set<UnitFacing>();
-        if (direction === 'retreat') {
+        if (direction === "retreat") {
           // For a retreat, in our initial position,
           // we can only turn to adjacent facings.
           newFacings = getAdjacentFacings(initialFacing);
-        } else if (direction === 'advance') {
+        } else if (direction === "advance") {
           // For an advance, we can turn to any facing.
           newFacings = new Set(unitFacings);
         } else {
-          throw new Error('Invalid direction');
+          throw new Error("Invalid direction");
         }
         // Do not turn to the same facing.
         newFacings.delete(initialFacing);
@@ -155,11 +141,10 @@ export function exploreUnitMoves<TBoard extends Board>(
           const newMoveResult: MoveResult<TBoard> = {
             placement: newPlacement,
             // -1 because we're using 1 flexibility to turn.
-            flexibilityUsed:
-              currentUnitFlexibility - (remainingFlexibility - 1),
+            flexibilityUsed: currentUnitFlexibility - (remainingFlexibility - 1),
             speedUsed: currentUnitSpeed - remainingSpeed,
           };
-          if (direction === 'advance') {
+          if (direction === "advance") {
             // Advances can end in the initial position.
             results.add(newMoveResult);
           }
@@ -181,11 +166,7 @@ export function exploreUnitMoves<TBoard extends Board>(
 
     // Try moving in direction if we have speed remaining
     if (remainingSpeed > 0) {
-      const nextCoordinate = getSpaceInDirection(
-        board,
-        currentCoordinate,
-        currentFacing,
-      );
+      const nextCoordinate = getSpaceInDirection(board, currentCoordinate, currentFacing);
       // If there is no space in the direction, we stop here.
       if (nextCoordinate !== undefined) {
         // If there is a space in the direction we have three steps:
@@ -197,8 +178,7 @@ export function exploreUnitMoves<TBoard extends Board>(
         // — this means we continue exploring the move by calling explore again.
 
         // 1. Check if the facing is diagonal.
-        const { result: isDiagonalFacingResult } =
-          isDiagonalFacing(currentFacing);
+        const { result: isDiagonalFacingResult } = isDiagonalFacing(currentFacing);
         if (isDiagonalFacingResult) {
           // If the facing is diagonal, check if we can reach the target space.
           const canReachTarget = checkDiagonalMove(
@@ -227,7 +207,7 @@ export function exploreUnitMoves<TBoard extends Board>(
           direction,
         );
 
-        if (direction === 'retreat') {
+        if (direction === "retreat") {
           if (!isValidRetreatSpace(nextCoordinate)) {
             isLegalEnd = false;
           }
@@ -257,7 +237,7 @@ export function exploreUnitMoves<TBoard extends Board>(
           gameState,
         );
 
-        if (direction === 'retreat') {
+        if (direction === "retreat") {
           // Retreats can only move through spaces behind the starting position.
           if (!isValidRetreatSpace(nextCoordinate)) {
             shouldContinueExploring = false;
@@ -301,8 +281,7 @@ export function exploreUnitMoves<TBoard extends Board>(
                   const newMoveResult: MoveResult<TBoard> = {
                     placement: newPlacement,
                     // -1 because we're using 1 flexibility to turn.
-                    flexibilityUsed:
-                      currentUnitFlexibility - (remainingFlexibility - 1),
+                    flexibilityUsed: currentUnitFlexibility - (remainingFlexibility - 1),
                     speedUsed: currentUnitSpeed - (remainingSpeed - 1),
                   };
                   // Doesn't need to check if it's a valid retreat space

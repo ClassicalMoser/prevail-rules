@@ -1,18 +1,18 @@
-import type { Board, CardState } from '@entities';
-import type { ResolveRallyEvent } from '@events';
-import type { GameStateWithBoard, RallyResolutionState } from '@game';
+import type { Board, CardState } from "@entities";
+import type { ResolveRallyEvent } from "@events";
+import type { GameStateWithBoard, RallyResolutionState } from "@game";
 import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
   getRallyResolutionStateAwaitingBurn,
   updateRallyResolutionStateForCurrentStep,
-} from '@queries';
+} from "@queries";
 import {
   burnCardFromPlayed,
   returnCardsToHand,
   updateCardState,
   updatePhaseState,
-} from '@transforms/pureTransforms';
+} from "@transforms/pureTransforms";
 
 /**
  * Applies a ResolveRallyEvent to the game state.

@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate, UnitFacing } from '@entities';
+import type { StandardBoardCoordinate, UnitFacing } from "@entities";
 
 /**
  * Checks if a coordinate (and optionally facing) is present in a set of legal moves.
@@ -9,8 +9,6 @@ export function hasMove(
   facing?: UnitFacing,
 ): boolean {
   return [...legalMoves].some(
-    (move) =>
-      move.coordinate === coordinate &&
-      (facing === undefined || move.facing === facing),
+    (move) => move.coordinate === coordinate && (facing === undefined || move.facing === facing),
   );
 }

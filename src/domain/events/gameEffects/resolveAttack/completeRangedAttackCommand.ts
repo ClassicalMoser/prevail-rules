@@ -1,15 +1,13 @@
-import type { Board } from '@entities';
-import type { AssertExact } from '@utils';
-import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board } from "@entities";
+import type { AssertExact } from "@utils";
+import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
-export const COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE =
-  'completeRangedAttackCommand' as const;
+export const COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE = "completeRangedAttackCommand" as const;
 
 export interface CompleteRangedAttackCommandEvent<
   _TBoard extends Board,
-  _TEffectType extends 'completeRangedAttackCommand' =
-    'completeRangedAttackCommand',
+  _TEffectType extends "completeRangedAttackCommand" = "completeRangedAttackCommand",
 > {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
@@ -39,7 +37,7 @@ const _assertExactCompleteRangedAttackCommandEvent: AssertExact<
 
 /** The schema for a complete ranged attack command event. */
 export const completeRangedAttackCommandEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'gameEffect'>;
-  effectType: z.ZodLiteral<'completeRangedAttackCommand'>;
+  eventType: z.ZodLiteral<"gameEffect">;
+  effectType: z.ZodLiteral<"completeRangedAttackCommand">;
   eventNumber: z.ZodNumber;
 }> = _completeRangedAttackCommandEventSchemaObject;

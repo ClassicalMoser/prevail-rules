@@ -1,5 +1,5 @@
-import type { Modifier } from '@entities';
-import type { Commitment } from '@game';
+import type { Modifier } from "@entities";
+import type { Commitment } from "@game";
 
 /**
  * Returns the committed card’s modifiers when `commitmentType === 'completed'`;
@@ -7,10 +7,8 @@ import type { Commitment } from '@game';
  *
  * Used when computing stats with optional card modifiers (melee, ranged, movement).
  */
-export function modifiersFromCompletedCommitment(
-  commitment: Commitment,
-): Modifier[] | undefined {
-  if (commitment.commitmentType !== 'completed') {
+export function modifiersFromCompletedCommitment(commitment: Commitment): Modifier[] | undefined {
+  if (commitment.commitmentType !== "completed") {
     return undefined;
   }
   return commitment.card.modifiers;

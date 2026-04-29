@@ -1,17 +1,17 @@
-import type { RallyResolutionState } from '@game';
-import { CLEANUP_PHASE } from '@game';
-import { describe, expect, it } from 'vitest';
-import { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
+import type { RallyResolutionState } from "@game";
+import { CLEANUP_PHASE } from "@game";
+import { describe, expect, it } from "vitest";
+import { updateRallyResolutionStateForCurrentStep } from "./updateRallyResolutionStateForCurrentStep";
 
 /**
  * Immutable cleanup phase update: writes the new rally slice for the active resolve-rally step
  * and advances `step` in the same object shape.
  */
-describe('updateRallyResolutionStateForCurrentStep', () => {
-  it('given firstPlayerResolveRally, replaces first bucket and sets next step secondPlayerChooseRally', () => {
+describe("updateRallyResolutionStateForCurrentStep", () => {
+  it("given firstPlayerResolveRally, replaces first bucket and sets next step secondPlayerChooseRally", () => {
     const phaseState = {
       phase: CLEANUP_PHASE,
-      step: 'firstPlayerResolveRally' as const,
+      step: "firstPlayerResolveRally" as const,
       firstPlayerRallyResolutionState: {
         playerRallied: true,
         rallyResolved: false,
@@ -33,19 +33,17 @@ describe('updateRallyResolutionStateForCurrentStep', () => {
     const newPhaseState = updateRallyResolutionStateForCurrentStep(
       phaseState,
       updatedRallyState,
-      'secondPlayerChooseRally',
+      "secondPlayerChooseRally",
     );
 
-    expect(newPhaseState.firstPlayerRallyResolutionState).toEqual(
-      updatedRallyState,
-    );
-    expect(newPhaseState.step).toBe('secondPlayerChooseRally');
+    expect(newPhaseState.firstPlayerRallyResolutionState).toEqual(updatedRallyState);
+    expect(newPhaseState.step).toBe("secondPlayerChooseRally");
   });
 
-  it('given secondPlayerResolveRally, replaces second bucket and step complete', () => {
+  it("given secondPlayerResolveRally, replaces second bucket and step complete", () => {
     const phaseState = {
       phase: CLEANUP_PHASE,
-      step: 'secondPlayerResolveRally' as const,
+      step: "secondPlayerResolveRally" as const,
       firstPlayerRallyResolutionState: undefined,
       secondPlayerRallyResolutionState: {
         playerRallied: true,
@@ -67,19 +65,17 @@ describe('updateRallyResolutionStateForCurrentStep', () => {
     const newPhaseState = updateRallyResolutionStateForCurrentStep(
       phaseState,
       updatedRallyState,
-      'complete',
+      "complete",
     );
 
-    expect(newPhaseState.secondPlayerRallyResolutionState).toEqual(
-      updatedRallyState,
-    );
-    expect(newPhaseState.step).toBe('complete');
+    expect(newPhaseState.secondPlayerRallyResolutionState).toEqual(updatedRallyState);
+    expect(newPhaseState.step).toBe("complete");
   });
 
-  it('given discardPlayedCards step, throws not on resolveRally step', () => {
+  it("given discardPlayedCards step, throws not on resolveRally step", () => {
     const phaseState = {
       phase: CLEANUP_PHASE,
-      step: 'discardPlayedCards' as const,
+      step: "discardPlayedCards" as const,
       firstPlayerRallyResolutionState: undefined,
       secondPlayerRallyResolutionState: undefined,
     };
@@ -93,11 +89,7 @@ describe('updateRallyResolutionStateForCurrentStep', () => {
     };
 
     expect(() =>
-      updateRallyResolutionStateForCurrentStep(
-        phaseState,
-        updatedRallyState,
-        'complete',
-      ),
-    ).toThrow('Cleanup phase is not on a resolveRally step');
+      updateRallyResolutionStateForCurrentStep(phaseState, updatedRallyState, "complete"),
+    ).toThrow("Cleanup phase is not on a resolveRally step");
   });
 });

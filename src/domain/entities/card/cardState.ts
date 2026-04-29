@@ -1,7 +1,7 @@
-import type { AssertExact } from '@utils';
-import type { PlayerCardState } from './playerCardState';
-import { z } from 'zod';
-import { playerCardStateSchema } from './playerCardState';
+import type { AssertExact } from "@utils";
+import type { PlayerCardState } from "./playerCardState";
+import { z } from "zod";
+import { playerCardStateSchema } from "./playerCardState";
 
 /** The state of all cards in the game. */
 export interface CardState {

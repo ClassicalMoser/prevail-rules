@@ -1,12 +1,12 @@
-import type { Board } from './board';
-import type { LargeBoard, LargeBoardCoordinate } from './largeBoard';
-import type { SmallBoard, SmallBoardCoordinate } from './smallBoard';
-import type { StandardBoard, StandardBoardCoordinate } from './standardBoard';
+import type { Board } from "./board";
+import type { LargeBoard, LargeBoardCoordinate } from "./largeBoard";
+import type { SmallBoard, SmallBoardCoordinate } from "./smallBoard";
+import type { StandardBoard, StandardBoardCoordinate } from "./standardBoard";
 
-import { z } from 'zod';
-import { largeBoardCoordinates } from './largeBoard';
-import { smallBoardCoordinates } from './smallBoard';
-import { standardBoardCoordinates } from './standardBoard';
+import { z } from "zod";
+import { largeBoardCoordinates } from "./largeBoard";
+import { smallBoardCoordinates } from "./smallBoard";
+import { standardBoardCoordinates } from "./standardBoard";
 
 /**
  * All valid coordinates across all board types, deduplicated.
@@ -17,11 +17,7 @@ import { standardBoardCoordinates } from './standardBoard';
  * while preserving literal types for proper enum inference.
  */
 const allBoardCoordinates = [
-  ...new Set([
-    ...standardBoardCoordinates,
-    ...smallBoardCoordinates,
-    ...largeBoardCoordinates,
-  ]),
+  ...new Set([...standardBoardCoordinates, ...smallBoardCoordinates, ...largeBoardCoordinates]),
 ] as const satisfies readonly (
   | StandardBoardCoordinate
   | SmallBoardCoordinate
@@ -41,11 +37,7 @@ const allBoardCoordinates = [
 export const boardCoordinateSchema: z.ZodType<BoardCoordinate<Board>> = z.enum(
   allBoardCoordinates as [
     StandardBoardCoordinate | SmallBoardCoordinate | LargeBoardCoordinate,
-    ...(
-      | StandardBoardCoordinate
-      | SmallBoardCoordinate
-      | LargeBoardCoordinate
-    )[],
+    ...(StandardBoardCoordinate | SmallBoardCoordinate | LargeBoardCoordinate)[],
   ],
 );
 

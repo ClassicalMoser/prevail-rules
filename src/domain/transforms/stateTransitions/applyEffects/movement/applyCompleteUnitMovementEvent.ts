@@ -1,8 +1,8 @@
-import type { Board } from '@entities';
-import type { CompleteUnitMovementEvent } from '@events';
-import type { GameStateWithBoard, MovementResolutionState } from '@game';
-import { getMovementResolutionState } from '@queries';
-import { updateCommandResolutionState } from '@transforms/pureTransforms';
+import type { Board } from "@entities";
+import type { CompleteUnitMovementEvent } from "@events";
+import type { GameStateWithBoard, MovementResolutionState } from "@game";
+import { getMovementResolutionState } from "@queries";
+import { updateCommandResolutionState } from "@transforms/pureTransforms";
 
 /**
  * Applies a CompleteUnitMovementEvent to the game state.

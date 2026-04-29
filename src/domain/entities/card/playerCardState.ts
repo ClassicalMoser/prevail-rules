@@ -1,7 +1,7 @@
-import type { AssertExact } from '@utils';
-import type { Card } from './card';
-import { z } from 'zod';
-import { cardSchema } from './card';
+import type { AssertExact } from "@utils";
+import type { Card } from "./card";
+import { z } from "zod";
+import { cardSchema } from "./card";
 
 /** The state of a player's cards. */
 export interface PlayerCardState {
@@ -37,11 +37,7 @@ const _playerCardStateSchemaObject = z.object({
 type PlayerCardStateSchemaType = z.infer<typeof _playerCardStateSchemaObject>;
 
 /** The schema for a player's card state. */
-export const playerCardStateSchema: z.ZodType<PlayerCardState> =
-  _playerCardStateSchemaObject;
+export const playerCardStateSchema: z.ZodType<PlayerCardState> = _playerCardStateSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactPlayerCardState: AssertExact<
-  PlayerCardState,
-  PlayerCardStateSchemaType
-> = true;
+const _assertExactPlayerCardState: AssertExact<PlayerCardState, PlayerCardStateSchemaType> = true;

@@ -1,7 +1,7 @@
-import type { Board } from '@entities';
-import type { GameStateWithBoard, RoutState } from '@game';
-import { findRetreatState } from '@queries';
-import { updateRetreatState } from './updateRetreatState';
+import type { Board } from "@entities";
+import type { GameStateWithBoard, RoutState } from "@game";
+import { findRetreatState } from "@queries";
+import { updateRetreatState } from "./updateRetreatState";
 
 /**
  * Creates a new game state with the rout state updated within a retreat state.

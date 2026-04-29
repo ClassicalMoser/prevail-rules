@@ -1,35 +1,35 @@
-import { CLEANUP_PHASE, PLAY_CARDS_PHASE } from '@game';
-import { describe, expect, it } from 'vitest';
-import { markPhaseAsComplete } from './markPhaseAsComplete';
+import { CLEANUP_PHASE, PLAY_CARDS_PHASE } from "@game";
+import { describe, expect, it } from "vitest";
+import { markPhaseAsComplete } from "./markPhaseAsComplete";
 
 /**
  * markPhaseAsComplete: Creates a new phase state with the step set to 'complete'.
  */
-describe('markPhaseAsComplete', () => {
-  it('given mark play cards phase as complete', () => {
+describe("markPhaseAsComplete", () => {
+  it("given mark play cards phase as complete", () => {
     const phaseState = {
       phase: PLAY_CARDS_PHASE,
-      step: 'chooseCards' as const,
+      step: "chooseCards" as const,
     };
 
     const completedPhase = markPhaseAsComplete(phaseState);
 
-    expect(completedPhase.step).toBe('complete');
+    expect(completedPhase.step).toBe("complete");
     expect(completedPhase.phase).toBe(PLAY_CARDS_PHASE);
     expect(completedPhase).not.toBe(phaseState);
   });
 
-  it('given mark cleanup phase as complete', () => {
+  it("given mark cleanup phase as complete", () => {
     const phaseState = {
       phase: CLEANUP_PHASE,
-      step: 'discardPlayedCards' as const,
+      step: "discardPlayedCards" as const,
       firstPlayerRallyResolutionState: undefined,
       secondPlayerRallyResolutionState: undefined,
     };
 
     const completedPhase = markPhaseAsComplete(phaseState);
 
-    expect(completedPhase.step).toBe('complete');
+    expect(completedPhase.step).toBe("complete");
     expect(completedPhase.phase).toBe(CLEANUP_PHASE);
     expect(completedPhase.firstPlayerRallyResolutionState).toBe(
       phaseState.firstPlayerRallyResolutionState,
@@ -37,10 +37,10 @@ describe('markPhaseAsComplete', () => {
     expect(completedPhase).not.toBe(phaseState);
   });
 
-  it('given preserve all other phase state properties', () => {
+  it("given preserve all other phase state properties", () => {
     const phaseState = {
       phase: CLEANUP_PHASE,
-      step: 'firstPlayerResolveRally' as const,
+      step: "firstPlayerResolveRally" as const,
       firstPlayerRallyResolutionState: {
         playerRallied: true,
         rallyResolved: false,
@@ -53,7 +53,7 @@ describe('markPhaseAsComplete', () => {
 
     const completedPhase = markPhaseAsComplete(phaseState);
 
-    expect(completedPhase.step).toBe('complete');
+    expect(completedPhase.step).toBe("complete");
     expect(completedPhase.firstPlayerRallyResolutionState).toBe(
       phaseState.firstPlayerRallyResolutionState,
     );

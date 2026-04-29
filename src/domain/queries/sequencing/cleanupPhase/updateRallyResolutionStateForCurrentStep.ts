@@ -1,5 +1,5 @@
-import type { Board } from '@entities';
-import type { CleanupPhaseState, RallyResolutionState } from '@game';
+import type { Board } from "@entities";
+import type { CleanupPhaseState, RallyResolutionState } from "@game";
 
 /**
  * Updates the rally resolution state for the current cleanup phase step.
@@ -14,9 +14,9 @@ import type { CleanupPhaseState, RallyResolutionState } from '@game';
 export function updateRallyResolutionStateForCurrentStep<_TBoard extends Board>(
   phaseState: CleanupPhaseState,
   rallyState: RallyResolutionState,
-  nextStep: CleanupPhaseState['step'],
+  nextStep: CleanupPhaseState["step"],
 ): CleanupPhaseState {
-  if (phaseState.step === 'firstPlayerResolveRally') {
+  if (phaseState.step === "firstPlayerResolveRally") {
     return {
       ...phaseState,
       firstPlayerRallyResolutionState: rallyState,
@@ -24,7 +24,7 @@ export function updateRallyResolutionStateForCurrentStep<_TBoard extends Board>(
     };
   }
 
-  if (phaseState.step === 'secondPlayerResolveRally') {
+  if (phaseState.step === "secondPlayerResolveRally") {
     return {
       ...phaseState,
       secondPlayerRallyResolutionState: rallyState,
@@ -32,7 +32,5 @@ export function updateRallyResolutionStateForCurrentStep<_TBoard extends Board>(
     };
   }
 
-  throw new Error(
-    `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
-  );
+  throw new Error(`Cleanup phase is not on a resolveRally step: ${phaseState.step}`);
 }

@@ -1,10 +1,10 @@
-import type { UnitInstance } from '@entities';
-import type { AssertExact } from '@utils';
-import type { RoutState } from './routSubstep';
+import type { UnitInstance } from "@entities";
+import type { AssertExact } from "@utils";
+import type { RoutState } from "./routSubstep";
 
-import { unitInstanceSchema } from '@entities';
-import { z } from 'zod';
-import { routStateSchema } from './routSubstep';
+import { unitInstanceSchema } from "@entities";
+import { z } from "zod";
+import { routStateSchema } from "./routSubstep";
 
 /**
  * Context-specific substep that resolves unit support consequences after a rally.
@@ -43,9 +43,7 @@ const _rallyResolutionStateSchemaObject = z.object({
   completed: z.boolean(),
 });
 
-type RallyResolutionStateSchemaType = z.infer<
-  typeof _rallyResolutionStateSchemaObject
->;
+type RallyResolutionStateSchemaType = z.infer<typeof _rallyResolutionStateSchemaObject>;
 
 const _assertExactRallyResolutionState: AssertExact<
   RallyResolutionState,

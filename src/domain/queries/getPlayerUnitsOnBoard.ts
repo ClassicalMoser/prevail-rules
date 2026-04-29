@@ -1,7 +1,7 @@
-import type { Board, PlayerSide, UnitInstance } from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { hasEngagedUnits, hasSingleUnit } from '@entities';
-import { getBoardCoordinates, getBoardSpace } from './boardSpace';
+import type { Board, PlayerSide, UnitInstance } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { hasEngagedUnits, hasSingleUnit } from "@entities";
+import { getBoardCoordinates, getBoardSpace } from "./boardSpace";
 
 /**
  * Gets all unit instances for a player that are currently on the board.

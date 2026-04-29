@@ -1,8 +1,8 @@
-import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { ResolveFlankEngagementEvent } from '@events';
-import type { StandardGameState } from '@game';
-import { hasSingleUnit } from '@entities';
-import { getBoardSpace } from '@queries';
+import type { StandardBoard, UnitWithPlacement } from "@entities";
+import type { ResolveFlankEngagementEvent } from "@events";
+import type { StandardGameState } from "@game";
+import { hasSingleUnit } from "@entities";
+import { getBoardSpace } from "@queries";
 import {
   createEmptyGameState,
   createFlankEngagementState,
@@ -10,29 +10,29 @@ import {
   createMovementResolutionState,
   createTestCard,
   createTestUnit,
-} from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
-import { describe, expect, it } from 'vitest';
+} from "@testing";
+import { addUnitToBoard, updatePhaseState } from "@transforms/pureTransforms";
+import { describe, expect, it } from "vitest";
 
-import { applyResolveFlankEngagementEvent } from './applyResolveFlankEngagementEvent';
+import { applyResolveFlankEngagementEvent } from "./applyResolveFlankEngagementEvent";
 
 /**
  * Flank engagement resolution: rotates the defender on the board to `newFacing`, marks the
  * flank substep complete with `defenderRotated`, and finishes the movement engagement slice.
  */
-describe('applyResolveFlankEngagementEvent', () => {
-  it('given flank engagement and event newFacing south, board and engagement state reflect rotation and completion', () => {
+describe("applyResolveFlankEngagementEvent", () => {
+  it("given flank engagement and event newFacing south, board and engagement state reflect rotation and completion", () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
-    const defender = createTestUnit('white');
+    const defender = createTestUnit("white");
     const flank = createFlankEngagementState();
     const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+      boardType: "standard" as const,
       unit: defender,
       placement: {
-        boardType: 'standard' as const,
+        boardType: "standard" as const,
         coordinate: flank.targetPlacement.coordinate,
-        facing: 'east',
+        facing: "east",
       },
     };
     const withBoard = {
@@ -52,33 +52,30 @@ describe('applyResolveFlankEngagementEvent', () => {
 
     const event = {
       eventNumber: 0,
-      eventType: 'gameEffect' as const,
-      effectType: 'resolveFlankEngagement' as const,
-      boardType: 'standard' as const,
+      eventType: "gameEffect" as const,
+      effectType: "resolveFlankEngagement" as const,
+      boardType: "standard" as const,
       defenderWithPlacement,
-      newFacing: 'south',
+      newFacing: "south",
     } satisfies ResolveFlankEngagementEvent<StandardBoard>;
 
     const next = applyResolveFlankEngagementEvent(event, full);
-    const space = getBoardSpace(
-      next.boardState,
-      flank.targetPlacement.coordinate,
-    );
+    const space = getBoardSpace(next.boardState, flank.targetPlacement.coordinate);
     if (!hasSingleUnit(space.unitPresence)) {
-      throw new Error('Expected single unit on defender space');
+      throw new Error("Expected single unit on defender space");
     }
-    expect(space.unitPresence.facing).toBe('south');
+    expect(space.unitPresence.facing).toBe("south");
 
     const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== 'issueCommands') {
-      throw new Error('Expected issueCommands phase');
+    if (!phase || phase.phase !== "issueCommands") {
+      throw new Error("Expected issueCommands phase");
     }
     const cmd = phase.currentCommandResolutionState;
-    if (cmd?.commandResolutionType !== 'movement') throw new Error('movement');
+    if (cmd?.commandResolutionType !== "movement") throw new Error("movement");
     const es = cmd.engagementState;
     expect(es?.completed).toBe(true);
-    if (es?.engagementResolutionState.engagementType !== 'flank') {
-      throw new Error('Expected flank');
+    if (es?.engagementResolutionState.engagementType !== "flank") {
+      throw new Error("Expected flank");
     }
     expect(es.engagementResolutionState.defenderRotated).toBe(true);
   });

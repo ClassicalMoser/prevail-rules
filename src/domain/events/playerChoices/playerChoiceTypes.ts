@@ -1,5 +1,5 @@
-import type { AssertExact } from '@utils';
-import { z } from 'zod';
+import type { AssertExact } from "@utils";
+import { z } from "zod";
 
 /**
  * Choice-type literals and schema only — no per-choice event imports.
@@ -9,20 +9,20 @@ import { z } from 'zod';
 
 /** Iterable list of valid player choices. Built from individual event constants. */
 export const playerChoices = [
-  'chooseCard',
-  'chooseMeleeResolution',
-  'chooseRally',
-  'chooseRoutDiscard',
-  'chooseRetreatOption',
-  'commitToMelee',
-  'commitToMovement',
-  'chooseWhetherToRetreat',
-  'commitToRangedAttack',
-  'issueCommand',
-  'moveCommander',
-  'moveUnit',
-  'performRangedAttack',
-  'setupUnits',
+  "chooseCard",
+  "chooseMeleeResolution",
+  "chooseRally",
+  "chooseRoutDiscard",
+  "chooseRetreatOption",
+  "commitToMelee",
+  "commitToMovement",
+  "chooseWhetherToRetreat",
+  "commitToRangedAttack",
+  "issueCommand",
+  "moveCommander",
+  "moveUnit",
+  "performRangedAttack",
+  "setupUnits",
 ] as const;
 
 export type PlayerChoiceType = (typeof playerChoices)[number];
@@ -31,11 +31,8 @@ const _playerChoiceTypeSchemaObject = z.enum(playerChoices);
 
 type PlayerChoiceTypeSchemaType = z.infer<typeof _playerChoiceTypeSchemaObject>;
 
-const _assertExactPlayerChoiceType: AssertExact<
-  PlayerChoiceType,
-  PlayerChoiceTypeSchemaType
-> = true;
+const _assertExactPlayerChoiceType: AssertExact<PlayerChoiceType, PlayerChoiceTypeSchemaType> =
+  true;
 
 /** The schema for a player choice type. */
-export const playerChoiceTypeSchema: z.ZodType<PlayerChoiceType> =
-  _playerChoiceTypeSchemaObject;
+export const playerChoiceTypeSchema: z.ZodType<PlayerChoiceType> = _playerChoiceTypeSchemaObject;

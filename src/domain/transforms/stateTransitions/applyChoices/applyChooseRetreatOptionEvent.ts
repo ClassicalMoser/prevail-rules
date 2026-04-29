@@ -1,8 +1,8 @@
-import type { Board } from '@entities';
-import type { ChooseRetreatOptionEvent } from '@events';
-import type { GameStateWithBoard, RetreatState } from '@game';
-import { findRetreatState } from '@queries';
-import { updateRetreatState } from '@transforms/pureTransforms';
+import type { Board } from "@entities";
+import type { ChooseRetreatOptionEvent } from "@events";
+import type { GameStateWithBoard, RetreatState } from "@game";
+import { findRetreatState } from "@queries";
+import { updateRetreatState } from "@transforms/pureTransforms";
 
 /**
  * Applies a ChooseRetreatOptionEvent to the game state.
@@ -30,9 +30,6 @@ export function applyChooseRetreatOptionEvent<TBoard extends Board>(
     finalPosition: event.retreatOption,
   };
   // Return the new game state with the updated retreat state
-  const newGameState = updateRetreatState(
-    state,
-    newRetreatState as RetreatState,
-  );
+  const newGameState = updateRetreatState(state, newRetreatState as RetreatState);
   return newGameState;
 }

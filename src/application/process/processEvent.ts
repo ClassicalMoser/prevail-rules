@@ -1,10 +1,10 @@
-import type { GameType } from '@entities';
-import type { Event, EventType } from '@events';
-import type { BoardForGameType, GameStateWithBoard } from '@game';
-import type { EnginePorts, PortResponse } from '../ports';
-import { applyEvent } from '@transforms';
-import { updateGameState } from '../composable';
-import { handleNewRound } from './handleNewRound';
+import type { GameType } from "@entities";
+import type { Event, EventType } from "@events";
+import type { BoardForGameType, GameStateWithBoard } from "@game";
+import type { EnginePorts, PortResponse } from "../ports";
+import { applyEvent } from "@transforms";
+import { updateGameState } from "../composable";
+import { handleNewRound } from "./handleNewRound";
 
 export async function processEvent<T extends GameType>(
   gameId: string,
@@ -42,15 +42,8 @@ export async function processEvent<T extends GameType>(
   }
 
   // If we've just started a new round, handle the new round
-  if (
-    event.eventType === 'gameEffect' &&
-    event.effectType === 'completeCleanupPhase'
-  ) {
-    const handleNewRoundResult = await handleNewRound(
-      gameId,
-      newGameState,
-      ports,
-    );
+  if (event.eventType === "gameEffect" && event.effectType === "completeCleanupPhase") {
+    const handleNewRoundResult = await handleNewRound(gameId, newGameState, ports);
     if (!handleNewRoundResult.result) {
       return handleNewRoundResult;
     }

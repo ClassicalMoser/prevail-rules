@@ -4,14 +4,14 @@ import type {
   StandardBoard,
   UnitPlacement,
   UnitWithPlacement,
-} from '@entities';
-import type { Commitment } from '@game/commitment';
-import type { AssertExact } from '@utils';
+} from "@entities";
+import type { Commitment } from "@game/commitment";
+import type { AssertExact } from "@utils";
 import type {
   LargeEngagementState,
   SmallEngagementState,
   StandardEngagementState,
-} from './engagement';
+} from "./engagement";
 import {
   largeUnitPlacementSchema,
   largeUnitWithPlacementSchema,
@@ -19,14 +19,14 @@ import {
   smallUnitWithPlacementSchema,
   standardUnitPlacementSchema,
   standardUnitWithPlacementSchema,
-} from '@entities';
-import { commitmentSchema } from '@game/commitment';
-import { z } from 'zod';
+} from "@entities";
+import { commitmentSchema } from "@game/commitment";
+import { z } from "zod";
 import {
   largeEngagementStateSchema,
   smallEngagementStateSchema,
   standardEngagementStateSchema,
-} from './engagement';
+} from "./engagement";
 
 /**
  * Context-specific substep that resolves movement commands.
@@ -39,9 +39,9 @@ import {
  */
 export interface MovementResolutionStateBase {
   /** The type of the substep. */
-  substepType: 'commandResolution';
+  substepType: "commandResolution";
   /** The type of command resolution. */
-  commandResolutionType: 'movement';
+  commandResolutionType: "movement";
   /** Whether to move the commander with the unit. */
   moveCommander: boolean;
   /** The commitment of the moving player. */
@@ -51,21 +51,21 @@ export interface MovementResolutionStateBase {
 }
 
 export interface StandardMovementResolutionState extends MovementResolutionStateBase {
-  boardType: 'standard';
+  boardType: "standard";
   movingUnit: UnitWithPlacement<StandardBoard>;
   targetPlacement: UnitPlacement<StandardBoard>;
   engagementState: StandardEngagementState | undefined;
 }
 
 export interface SmallMovementResolutionState extends MovementResolutionStateBase {
-  boardType: 'small';
+  boardType: "small";
   movingUnit: UnitWithPlacement<SmallBoard>;
   targetPlacement: UnitPlacement<SmallBoard>;
   engagementState: SmallEngagementState | undefined;
 }
 
 export interface LargeMovementResolutionState extends MovementResolutionStateBase {
-  boardType: 'large';
+  boardType: "large";
   movingUnit: UnitWithPlacement<LargeBoard>;
   targetPlacement: UnitPlacement<LargeBoard>;
   engagementState: LargeEngagementState | undefined;
@@ -77,9 +77,9 @@ export type MovementResolutionState =
   | LargeMovementResolutionState;
 
 const _standardMovementResolutionStateSchemaObject = z.object({
-  substepType: z.literal('commandResolution'),
-  commandResolutionType: z.literal('movement'),
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  substepType: z.literal("commandResolution"),
+  commandResolutionType: z.literal("movement"),
+  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
   movingUnit: standardUnitWithPlacementSchema,
   targetPlacement: standardUnitPlacementSchema,
   moveCommander: z.boolean(),
@@ -101,9 +101,9 @@ export const standardMovementResolutionStateSchema: z.ZodType<StandardMovementRe
   _standardMovementResolutionStateSchemaObject;
 
 const _smallMovementResolutionStateSchemaObject = z.object({
-  substepType: z.literal('commandResolution'),
-  commandResolutionType: z.literal('movement'),
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  substepType: z.literal("commandResolution"),
+  commandResolutionType: z.literal("movement"),
+  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
   movingUnit: smallUnitWithPlacementSchema,
   targetPlacement: smallUnitPlacementSchema,
   moveCommander: z.boolean(),
@@ -125,9 +125,9 @@ export const smallMovementResolutionStateSchema: z.ZodType<SmallMovementResoluti
   _smallMovementResolutionStateSchemaObject;
 
 const _largeMovementResolutionStateSchemaObject = z.object({
-  substepType: z.literal('commandResolution'),
-  commandResolutionType: z.literal('movement'),
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  substepType: z.literal("commandResolution"),
+  commandResolutionType: z.literal("movement"),
+  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
   movingUnit: largeUnitWithPlacementSchema,
   targetPlacement: largeUnitPlacementSchema,
   moveCommander: z.boolean(),
@@ -148,7 +148,7 @@ const _assertExactLargeMovementResolutionState: AssertExact<
 export const largeMovementResolutionStateSchema: z.ZodType<LargeMovementResolutionState> =
   _largeMovementResolutionStateSchemaObject;
 
-const _movementResolutionStateSchemaObject = z.discriminatedUnion('boardType', [
+const _movementResolutionStateSchemaObject = z.discriminatedUnion("boardType", [
   _standardMovementResolutionStateSchemaObject,
   _smallMovementResolutionStateSchemaObject,
   _largeMovementResolutionStateSchemaObject,

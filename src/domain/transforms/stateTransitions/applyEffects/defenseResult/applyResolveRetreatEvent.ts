@@ -1,13 +1,13 @@
-import type { Board, UnitWithPlacement } from '@entities';
-import type { ResolveRetreatEvent } from '@events';
-import type { GameStateWithBoard, RetreatState } from '@game';
-import { findRetreatState } from '@queries';
+import type { Board, UnitWithPlacement } from "@entities";
+import type { ResolveRetreatEvent } from "@events";
+import type { GameStateWithBoard, RetreatState } from "@game";
+import { findRetreatState } from "@queries";
 import {
   addUnitToBoard,
   removeUnitFromBoard,
   updateBoardState,
   updateRetreatState,
-} from '@transforms/pureTransforms';
+} from "@transforms/pureTransforms";
 
 /**
  * Applies a ResolveRetreatEvent to the game state.

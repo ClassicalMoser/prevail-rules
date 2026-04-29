@@ -4,21 +4,21 @@ import type {
   LargeBoard,
   SmallBoard,
   StandardBoard,
-} from '@entities/board';
-import type { UnitFacing } from '@entities/unit';
-import type { AssertExact } from '@utils';
+} from "@entities/board";
+import type { UnitFacing } from "@entities/unit";
+import type { AssertExact } from "@utils";
 
 import {
   largeBoardCoordinateSchema,
   smallBoardCoordinateSchema,
   standardBoardCoordinateSchema,
-} from '@entities/board';
-import { unitFacingSchema } from '@entities/unit';
-import z from 'zod';
+} from "@entities/board";
+import { unitFacingSchema } from "@entities/unit";
+import z from "zod";
 
 /** The position and facing of a unit on the board. */
 export interface UnitPlacement<TBoard extends Board> {
-  boardType: TBoard['boardType'];
+  boardType: TBoard["boardType"];
   coordinate: BoardCoordinate<TBoard>;
   facing: UnitFacing;
 }
@@ -37,14 +37,12 @@ export type LargeUnitPlacement = UnitPlacement<LargeBoard>;
 // ---------------------------------------------------------------------------
 
 const _standardUnitPlacementSchemaObject = z.object({
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
   coordinate: standardBoardCoordinateSchema,
   facing: unitFacingSchema,
 });
 
-type StandardUnitPlacementSchemaType = z.infer<
-  typeof _standardUnitPlacementSchemaObject
->;
+type StandardUnitPlacementSchemaType = z.infer<typeof _standardUnitPlacementSchemaObject>;
 
 const _assertExactStandardUnitPlacement: AssertExact<
   StandardUnitPlacement,
@@ -55,14 +53,12 @@ export const standardUnitPlacementSchema: z.ZodType<StandardUnitPlacement> =
   _standardUnitPlacementSchemaObject;
 
 const _smallUnitPlacementSchemaObject = z.object({
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
   coordinate: smallBoardCoordinateSchema,
   facing: unitFacingSchema,
 });
 
-type SmallUnitPlacementSchemaType = z.infer<
-  typeof _smallUnitPlacementSchemaObject
->;
+type SmallUnitPlacementSchemaType = z.infer<typeof _smallUnitPlacementSchemaObject>;
 
 const _assertExactSmallUnitPlacement: AssertExact<
   SmallUnitPlacement,
@@ -73,14 +69,12 @@ export const smallUnitPlacementSchema: z.ZodType<SmallUnitPlacement> =
   _smallUnitPlacementSchemaObject;
 
 const _largeUnitPlacementSchemaObject = z.object({
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
   coordinate: largeBoardCoordinateSchema,
   facing: unitFacingSchema,
 });
 
-type LargeUnitPlacementSchemaType = z.infer<
-  typeof _largeUnitPlacementSchemaObject
->;
+type LargeUnitPlacementSchemaType = z.infer<typeof _largeUnitPlacementSchemaObject>;
 
 const _assertExactLargeUnitPlacement: AssertExact<
   LargeUnitPlacement,
@@ -94,7 +88,7 @@ export const largeUnitPlacementSchema: z.ZodType<LargeUnitPlacement> =
 // Wide (union) schema — validates any board's placements
 // ---------------------------------------------------------------------------
 
-const _unitPlacementSchemaObject = z.discriminatedUnion('boardType', [
+const _unitPlacementSchemaObject = z.discriminatedUnion("boardType", [
   _standardUnitPlacementSchemaObject,
   _smallUnitPlacementSchemaObject,
   _largeUnitPlacementSchemaObject,
@@ -106,5 +100,4 @@ const _unitPlacementSchemaObject = z.discriminatedUnion('boardType', [
  * is not identical to {@link UnitPlacement}<{@link Board}> at the type level (coordinate
  * literals vs schema inference), so we do not assert the wide union exactly.
  */
-export const unitPlacementSchema: z.ZodType<UnitPlacement<Board>> =
-  _unitPlacementSchemaObject;
+export const unitPlacementSchema: z.ZodType<UnitPlacement<Board>> = _unitPlacementSchemaObject;

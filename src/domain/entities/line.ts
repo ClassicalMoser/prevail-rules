@@ -1,8 +1,8 @@
-import type { AssertExact } from '@utils';
-import type { Board } from './board';
-import type { UnitWithPlacement } from './unitLocation';
-import { z } from 'zod';
-import { unitWithPlacementSchema } from './unitLocation';
+import type { AssertExact } from "@utils";
+import type { Board } from "./board";
+import type { UnitWithPlacement } from "./unitLocation";
+import { z } from "zod";
+import { unitWithPlacementSchema } from "./unitLocation";
 
 /**
  * A line is a group of friendly units that are beside each other

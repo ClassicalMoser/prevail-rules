@@ -1,11 +1,11 @@
-import type { Board, Card, PlayerSide } from '@entities';
-import type { AssertExact } from '@utils';
-import { cardSchema, playerSideSchema } from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+import type { Board, Card, PlayerSide } from "@entities";
+import type { AssertExact } from "@utils";
+import { cardSchema, playerSideSchema } from "@entities";
+import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
 /** The type of the resolve rally game effect. */
-export const RESOLVE_RALLY_EFFECT_TYPE = 'resolveRally' as const;
+export const RESOLVE_RALLY_EFFECT_TYPE = "resolveRally" as const;
 
 /** To perform a rally, a player must burn a random card from their played commands.
  * Afterwards, they return all discarded and played cards to their hand.
@@ -15,7 +15,7 @@ export const RESOLVE_RALLY_EFFECT_TYPE = 'resolveRally' as const;
 /** A command to resolve a rally. */
 export interface ResolveRallyEvent<
   _TBoard extends Board,
-  _TEffectType extends 'resolveRally' = 'resolveRally',
+  _TEffectType extends "resolveRally" = "resolveRally",
 > {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
@@ -42,9 +42,7 @@ const _resolveRallyEventSchemaObject = z.object({
   card: cardSchema,
 });
 
-type ResolveRallyEventSchemaType = z.infer<
-  typeof _resolveRallyEventSchemaObject
->;
+type ResolveRallyEventSchemaType = z.infer<typeof _resolveRallyEventSchemaObject>;
 
 const _assertExactResolveRallyEvent: AssertExact<
   ResolveRallyEvent<Board>,
@@ -53,8 +51,8 @@ const _assertExactResolveRallyEvent: AssertExact<
 
 /** The schema for a resolve rally event. */
 export const resolveRallyEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<'gameEffect'>;
-  effectType: z.ZodLiteral<'resolveRally'>;
+  eventType: z.ZodLiteral<"gameEffect">;
+  effectType: z.ZodLiteral<"resolveRally">;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   card: typeof cardSchema;

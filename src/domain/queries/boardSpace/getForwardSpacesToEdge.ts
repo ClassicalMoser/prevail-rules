@@ -1,6 +1,6 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
-import { filterUndefinedSpaces } from './filterUndefinedSpaces';
-import { getForwardSpace } from './getForwardSpace';
+import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import { filterUndefinedSpaces } from "./filterUndefinedSpaces";
+import { getForwardSpace } from "./getForwardSpace";
 
 /**
  * Get the forward spaces to the edge for a given coordinate and facing.

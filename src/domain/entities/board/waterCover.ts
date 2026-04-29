@@ -1,5 +1,5 @@
-import type { AssertExact } from '@utils';
-import { z } from 'zod';
+import type { AssertExact } from "@utils";
+import { z } from "zod";
 
 /**
  * Whether the space is covered by water.
@@ -82,5 +82,4 @@ type waterCoverSchemaType = z.infer<typeof _waterCoverSchemaObject>;
 export const waterCoverSchema: z.ZodType<WaterCover> = _waterCoverSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactWaterCover: AssertExact<WaterCover, waterCoverSchemaType> =
-  true;
+const _assertExactWaterCover: AssertExact<WaterCover, waterCoverSchemaType> = true;

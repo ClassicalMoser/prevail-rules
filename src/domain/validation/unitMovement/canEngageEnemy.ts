@@ -1,5 +1,5 @@
-import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
-import { hasSingleUnit } from '@entities';
+import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from "@entities";
+import { hasSingleUnit } from "@entities";
 import {
   getBackSpaces,
   getBoardSpace,
@@ -7,7 +7,7 @@ import {
   getFrontSpaces,
   getOppositeFacing,
   getSpacesBehind,
-} from '@queries';
+} from "@queries";
 
 /**
  * Incremental function to check whether engagement is legal from an adjacent space.
@@ -49,21 +49,9 @@ export function canEngageEnemy<TBoard extends Board>(
     getBoardSpace(board, adjacentCoordinate);
 
     // We're moving from a different space - check if we're coming from front/flank/back
-    const enemyFrontSpaces = getFrontSpaces(
-      board,
-      destinationCoordinate,
-      enemyFacing,
-    );
-    const enemyFlankSpaces = getFlankingSpaces(
-      board,
-      destinationCoordinate,
-      enemyFacing,
-    );
-    const enemyBackSpaces = getBackSpaces(
-      board,
-      destinationCoordinate,
-      enemyFacing,
-    );
+    const enemyFrontSpaces = getFrontSpaces(board, destinationCoordinate, enemyFacing);
+    const enemyFlankSpaces = getFlankingSpaces(board, destinationCoordinate, enemyFacing);
+    const enemyBackSpaces = getBackSpaces(board, destinationCoordinate, enemyFacing);
 
     // If coming from flank: no further checks needed.
     // Defending unit will be forced to face this unit.
@@ -73,11 +61,7 @@ export function canEngageEnemy<TBoard extends Board>(
 
     // If coming from back: must have started move behind the enemy.
     if (enemyBackSpaces.has(adjacentCoordinate)) {
-      const spacesBehindEnemy = getSpacesBehind(
-        board,
-        destinationCoordinate,
-        enemyFacing,
-      );
+      const spacesBehindEnemy = getSpacesBehind(board, destinationCoordinate, enemyFacing);
       if (spacesBehindEnemy.has(moveStartCoordinate)) {
         // We can engage an enemy from the back if we started the move behind them.
         return true;

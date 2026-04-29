@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { Event, EventType } from '@events';
-import type { PortResponse } from './portResponse';
+import type { Board } from "@entities";
+import type { Event, EventType } from "@events";
+import type { PortResponse } from "./portResponse";
 
 /**
  * The port for storing and retrieving the current round's event stream.
@@ -18,10 +18,7 @@ export interface EventStreamStorage {
     roundNumber: number,
     event: Event<Board, EventType>,
   ) => Promise<PortResponse<readonly Event<Board>[] | undefined>>;
-  flushEventStream: (
-    gameId: string,
-    roundNumber: number,
-  ) => Promise<PortResponse<void>>;
+  flushEventStream: (gameId: string, roundNumber: number) => Promise<PortResponse<void>>;
   newEventStream: (
     gameId: string,
     roundNumber: number,

@@ -4,17 +4,17 @@ export {
   getRallyResolutionStateAwaitingUnitsBroken,
   getRallyResolutionStateForCurrentStep,
   updateRallyResolutionStateForCurrentStep,
-} from './cleanupPhase';
+} from "./cleanupPhase";
 export {
   getCurrentCommandResolutionState,
   getMeleeResolutionReadyForAttackCalculation,
   getMeleeResolutionState,
   getMovementResolutionState,
   getRangedAttackResolutionState,
-} from './getCommandResolutionState';
-export { getCurrentEventStream } from './getCurrentEventStream';
-export { getCurrentInitiative } from './getCurrentInitiative';
-export { getNextEventNumber } from './getNextEventNumber';
+} from "./getCommandResolutionState";
+export { getCurrentEventStream } from "./getCurrentEventStream";
+export { getCurrentInitiative } from "./getCurrentInitiative";
+export { getNextEventNumber } from "./getNextEventNumber";
 export {
   getCleanupPhaseState,
   getCurrentPhaseState,
@@ -22,8 +22,8 @@ export {
   getMoveCommandersPhaseState,
   getPlayCardsPhaseState,
   getResolveMeleePhaseState,
-} from './getPhaseState';
-export { getRemainingMeleeEngagements } from './getRemainingMeleeEngagements';
+} from "./getPhaseState";
+export { getRemainingMeleeEngagements } from "./getRemainingMeleeEngagements";
 export {
   canReverseUnit,
   findRetreatState,
@@ -47,4 +47,4 @@ export {
   getRoutStateFromMeleeResolutionByInitiative,
   getRoutStateFromRally,
   getRoutStateFromRearEngagement,
-} from './getSubstep';
+} from "./getSubstep";

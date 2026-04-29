@@ -1,13 +1,13 @@
-import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { describe, expect, it } from 'vitest';
-import { updateCardState } from './updateCardState';
+import { tempCommandCards } from "@sampleValues";
+import { createEmptyGameState } from "@testing";
+import { describe, expect, it } from "vitest";
+import { updateCardState } from "./updateCardState";
 
 /**
  * updateCardState: Creates a new game state with the card state updated.
  */
-describe('updateCardState', () => {
-  it('given update card state with object', () => {
+describe("updateCardState", () => {
+  it("given update card state with object", () => {
     const state = createEmptyGameState();
     const newCardState = {
       ...state.cardState,
@@ -23,7 +23,7 @@ describe('updateCardState', () => {
     expect(newState.cardState.white).toBe(state.cardState.white);
   });
 
-  it('given update card state with function', () => {
+  it("given update card state with function", () => {
     const state = createEmptyGameState();
 
     const newState = updateCardState(state, (current) => ({
@@ -37,7 +37,7 @@ describe('updateCardState', () => {
     expect(newState.cardState.black.inHand).toEqual([tempCommandCards[0]]);
   });
 
-  it('given not mutate the original state', () => {
+  it("given not mutate the original state", () => {
     const state = createEmptyGameState();
     const originalCardState = state.cardState;
 

@@ -1,7 +1,7 @@
-import type { Board } from '@entities';
-import type { RevealCardsEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { GAME_EFFECT_EVENT_TYPE, REVEAL_CARDS_EFFECT_TYPE } from '@events';
+import type { Board } from "@entities";
+import type { RevealCardsEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { GAME_EFFECT_EVENT_TYPE, REVEAL_CARDS_EFFECT_TYPE } from "@events";
 
 /**
  * Generates a RevealCardsEvent by revealing both players' awaitingPlay cards.
@@ -13,7 +13,7 @@ import { GAME_EFFECT_EVENT_TYPE, REVEAL_CARDS_EFFECT_TYPE } from '@events';
 export function generateRevealCardsEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): RevealCardsEvent<TBoard, 'revealCards'> {
+): RevealCardsEvent<TBoard, "revealCards"> {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {

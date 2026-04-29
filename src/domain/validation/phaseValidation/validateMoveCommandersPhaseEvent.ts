@@ -1,7 +1,7 @@
-import type { Board, ValidationResult } from '@entities';
-import type { Event } from '@events';
-import type { GameStateWithBoard, MoveCommandersPhaseState } from '@game';
-import { validatePlayerChoice } from '@validation/playerChoice';
+import type { Board, ValidationResult } from "@entities";
+import type { Event } from "@events";
+import type { GameStateWithBoard, MoveCommandersPhaseState } from "@game";
+import { validatePlayerChoice } from "@validation/playerChoice";
 
 /**
  * Validates an event for the MoveCommanders phase.
@@ -21,26 +21,23 @@ export function validateMoveCommandersPhaseEvent<TBoard extends Board>(
   const phaseState = state.currentRoundState.currentPhaseState;
 
   switch (phaseState.step) {
-    case 'moveFirstCommander':
-    case 'moveSecondCommander':
-      if (event.eventType === 'playerChoice') {
+    case "moveFirstCommander":
+    case "moveSecondCommander":
+      if (event.eventType === "playerChoice") {
         return validatePlayerChoice(event, state);
       }
       return {
         result: false,
-        errorReason: 'Expected MoveCommanderEvent',
+        errorReason: "Expected MoveCommanderEvent",
       };
 
-    case 'complete':
-      if (
-        event.eventType === 'gameEffect' &&
-        event.effectType === 'completeMoveCommandersPhase'
-      ) {
+    case "complete":
+      if (event.eventType === "gameEffect" && event.effectType === "completeMoveCommandersPhase") {
         return { result: true };
       }
       return {
         result: false,
-        errorReason: 'Expected CompleteMoveCommandersPhaseEvent',
+        errorReason: "Expected CompleteMoveCommandersPhaseEvent",
       };
 
     default:

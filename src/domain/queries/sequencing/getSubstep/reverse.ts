@@ -1,6 +1,6 @@
-import type { Board } from '@entities';
-import type { AttackApplyState, GameStateWithBoard, ReverseState } from '@game';
-import { getMeleeResolutionState } from '../getCommandResolutionState';
+import type { Board } from "@entities";
+import type { AttackApplyState, GameStateWithBoard, ReverseState } from "@game";
+import { getMeleeResolutionState } from "../getCommandResolutionState";
 
 /**
  * Gets the reverse state from an attack apply state.
@@ -10,11 +10,9 @@ import { getMeleeResolutionState } from '../getCommandResolutionState';
  * @returns The reverse state
  * @throws Error if reverse state is missing
  */
-export function getReverseStateFromAttackApply(
-  attackApplyState: AttackApplyState,
-): ReverseState {
+export function getReverseStateFromAttackApply(attackApplyState: AttackApplyState): ReverseState {
   if (!attackApplyState.reverseState) {
-    throw new Error('No reverse state found in attack apply state');
+    throw new Error("No reverse state found in attack apply state");
   }
   return attackApplyState.reverseState;
 }
@@ -22,19 +20,15 @@ export function getReverseStateFromAttackApply(
 /**
  * Active reverse substep from melee resolution (initiative order), when still awaiting facing resolution.
  */
-export function getReverseStateFromMeleeResolutionByInitiative<
-  TBoard extends Board,
->(state: GameStateWithBoard<TBoard>): ReverseState {
+export function getReverseStateFromMeleeResolutionByInitiative<TBoard extends Board>(
+  state: GameStateWithBoard<TBoard>,
+): ReverseState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const firstPlayerAttackApply =
-    firstPlayer === 'white'
-      ? meleeState.whiteAttackApplyState
-      : meleeState.blackAttackApplyState;
+    firstPlayer === "white" ? meleeState.whiteAttackApplyState : meleeState.blackAttackApplyState;
   const secondPlayerAttackApply =
-    firstPlayer === 'white'
-      ? meleeState.blackAttackApplyState
-      : meleeState.whiteAttackApplyState;
+    firstPlayer === "white" ? meleeState.blackAttackApplyState : meleeState.whiteAttackApplyState;
 
   if (
     firstPlayerAttackApply?.reverseState &&
@@ -48,5 +42,5 @@ export function getReverseStateFromMeleeResolutionByInitiative<
   ) {
     return secondPlayerAttackApply.reverseState;
   }
-  throw new Error('No reverse state found in melee resolution');
+  throw new Error("No reverse state found in melee resolution");
 }

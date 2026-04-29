@@ -1,5 +1,5 @@
-import type { Board } from '@entities';
-import type { ResolveRangedAttackEvent } from '@events';
+import type { Board } from "@entities";
+import type { ResolveRangedAttackEvent } from "@events";
 import type {
   AttackApplyState,
   AttackResult,
@@ -10,12 +10,9 @@ import type {
   RetreatState,
   ReverseState,
   RoutState,
-} from '@game';
-import {
-  getIssueCommandsPhaseState,
-  getRangedAttackResolutionState,
-} from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+} from "@game";
+import { getIssueCommandsPhaseState, getRangedAttackResolutionState } from "@queries";
+import { updatePhaseState } from "@transforms/pureTransforms";
 
 /**
  * Applies a ResolveRangedAttackEvent to the game state.
@@ -48,7 +45,7 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
 
   if (attackResult.unitRouted) {
     routState = {
-      substepType: 'rout',
+      substepType: "rout",
       player: defendingUnit.playerSide,
       unitsToRout: new Set([defendingUnit]),
       numberToDiscard: undefined,
@@ -57,11 +54,10 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
     };
   } else if (attackResult.unitRetreated) {
     const legalRetreatOptions = event.legalRetreatOptions;
-    const finalPosition =
-      legalRetreatOptions.size === 1 ? [...legalRetreatOptions][0] : undefined;
+    const finalPosition = legalRetreatOptions.size === 1 ? [...legalRetreatOptions][0] : undefined;
 
     retreatState = {
-      substepType: 'retreat',
+      substepType: "retreat",
       boardType,
       retreatingUnit: unitWithPlacement,
       legalRetreatOptions,
@@ -71,7 +67,7 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
     } as RetreatState;
   } else if (attackResult.unitReversed) {
     reverseState = {
-      substepType: 'reverse',
+      substepType: "reverse",
       boardType,
       reversingUnit: unitWithPlacement,
       finalPosition: undefined,
@@ -80,7 +76,7 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
   }
 
   const attackApplyState = {
-    substepType: 'attackApply' as const,
+    substepType: "attackApply" as const,
     boardType,
     defendingUnit,
     attackResult,

@@ -1,12 +1,12 @@
-import { createEmptyGameState } from '@testing';
-import { describe, expect, it } from 'vitest';
-import { updateCurrentRoundNumber } from './updateCurrentRoundNumber';
+import { createEmptyGameState } from "@testing";
+import { describe, expect, it } from "vitest";
+import { updateCurrentRoundNumber } from "./updateCurrentRoundNumber";
 
 /**
  * updateCurrentRoundNumber: Creates a new game state with the current round number updated.
  */
-describe('updateCurrentRoundNumber', () => {
-  it('given update the current round number', () => {
+describe("updateCurrentRoundNumber", () => {
+  it("given update the current round number", () => {
     const state = createEmptyGameState();
     const newRoundNumber = 5;
 
@@ -16,7 +16,7 @@ describe('updateCurrentRoundNumber', () => {
     expect(newState).not.toBe(state);
   });
 
-  it('given preserve all other state properties', () => {
+  it("given preserve all other state properties", () => {
     const state = createEmptyGameState();
     const newRoundNumber = 3;
 

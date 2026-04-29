@@ -1,8 +1,8 @@
-import type { Board } from '@entities';
-import type { ResolveRallyEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RALLY_EFFECT_TYPE } from '@events';
-import { getCleanupPhaseState, getOtherPlayer } from '@queries';
+import type { Board } from "@entities";
+import type { ResolveRallyEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RALLY_EFFECT_TYPE } from "@events";
+import { getCleanupPhaseState, getOtherPlayer } from "@queries";
 
 /**
  * Generates a ResolveRallyEvent by randomly selecting a card to burn.
@@ -26,20 +26,18 @@ import { getCleanupPhaseState, getOtherPlayer } from '@queries';
 export function generateResolveRallyEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): ResolveRallyEvent<TBoard, 'resolveRally'> {
+): ResolveRallyEvent<TBoard, "resolveRally"> {
   const phaseState = getCleanupPhaseState(state);
 
   const rallyingPlayer =
-    phaseState.step === 'firstPlayerChooseRally'
+    phaseState.step === "firstPlayerChooseRally"
       ? state.currentInitiative
       : getOtherPlayer(state.currentInitiative);
 
   const playedCards = state.cardState[rallyingPlayer].played;
 
   if (playedCards.length === 0) {
-    throw new Error(
-      `Player ${rallyingPlayer} has no played cards to burn for rally`,
-    );
+    throw new Error(`Player ${rallyingPlayer} has no played cards to burn for rally`);
   }
 
   // Randomly select card (at most 11 cards, so Math.random() is sufficient)

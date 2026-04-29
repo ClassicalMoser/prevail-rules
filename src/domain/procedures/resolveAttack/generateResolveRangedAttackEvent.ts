@@ -1,10 +1,7 @@
-import type { Board, UnitPlacement } from '@entities';
-import type { ResolveRangedAttackEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  GAME_EFFECT_EVENT_TYPE,
-  RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
-} from '@events';
+import type { Board, UnitPlacement } from "@entities";
+import type { ResolveRangedAttackEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RANGED_ATTACK_EFFECT_TYPE } from "@events";
 import {
   applyAttackValue,
   getCurrentUnitStat,
@@ -12,7 +9,7 @@ import {
   getPositionOfUnit,
   getRangedAttackResolutionState,
   modifiersFromCompletedCommitment,
-} from '@queries';
+} from "@queries";
 
 /**
  * Generates a ResolveRangedAttackEvent by calculating the attack value
@@ -31,21 +28,21 @@ import {
 export function generateResolveRangedAttackEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): ResolveRangedAttackEvent<TBoard, 'resolveRangedAttack'> {
+): ResolveRangedAttackEvent<TBoard, "resolveRangedAttack"> {
   const rangedAttackState = getRangedAttackResolutionState(state);
 
   // Both commitments must be resolved before calculating attack
-  if (rangedAttackState.attackingCommitment.commitmentType === 'pending') {
-    throw new Error('Attacking commitment is still pending');
+  if (rangedAttackState.attackingCommitment.commitmentType === "pending") {
+    throw new Error("Attacking commitment is still pending");
   }
 
-  if (rangedAttackState.defendingCommitment.commitmentType === 'pending') {
-    throw new Error('Defending commitment is still pending');
+  if (rangedAttackState.defendingCommitment.commitmentType === "pending") {
+    throw new Error("Defending commitment is still pending");
   }
 
   // Attack apply state should not exist yet (this procedure creates it)
   if (rangedAttackState.attackApplyState) {
-    throw new Error('Attack apply state already exists');
+    throw new Error("Attack apply state already exists");
   }
 
   const attackingUnit = rangedAttackState.attackingUnit;
@@ -58,7 +55,7 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
   // Get the base attack value of the attacking unit
   const baseAttackValue = getCurrentUnitStat(
     attackingUnit,
-    'attack',
+    "attack",
     state,
     attackingCommitmentModifiers,
   );
@@ -106,5 +103,5 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
     routed: attackResult.unitRouted,
     reversed: attackResult.unitReversed,
     retreated: attackResult.unitRetreated,
-  } as unknown as ResolveRangedAttackEvent<TBoard, 'resolveRangedAttack'>;
+  } as unknown as ResolveRangedAttackEvent<TBoard, "resolveRangedAttack">;
 }

@@ -1,5 +1,5 @@
-import type { Board, BoardCoordinate } from '@entities';
-import { getCoordinateLayout } from '@entities';
+import type { Board, BoardCoordinate } from "@entities";
+import { getCoordinateLayout } from "@entities";
 
 /**
  * Gets all coordinates for a board in a type-safe way.

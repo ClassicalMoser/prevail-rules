@@ -1,5 +1,5 @@
-import type { EventStreamStorage, PortResponse } from '../ports';
-import { getCurrentEventNumber } from './getCurrentEventNumber';
+import type { EventStreamStorage, PortResponse } from "../ports";
+import { getCurrentEventNumber } from "./getCurrentEventNumber";
 
 /**
  * Gets the next event number for a given game and round.

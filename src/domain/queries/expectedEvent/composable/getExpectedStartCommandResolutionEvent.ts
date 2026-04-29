@@ -1,6 +1,6 @@
-import type { Board, PlayerSide } from '@entities';
-import type { ExpectedEventInfo } from '@events';
-import type { GameStateWithBoard } from '@game';
+import type { Board, PlayerSide } from "@entities";
+import type { ExpectedEventInfo } from "@events";
+import type { GameStateWithBoard } from "@game";
 
 /**
  * Gets the expected event to start resolving a command for a unit.
@@ -19,21 +19,19 @@ export function getExpectedStartCommandResolutionEvent<TBoard extends Board>(
     throw new Error(`${player} player has no active card`);
   }
   // Command type determines what action is expected to start resolution
-  if (activeCard.command.type === 'movement') {
+  if (activeCard.command.type === "movement") {
     return {
-      actionType: 'playerChoice',
+      actionType: "playerChoice",
       playerSource: player,
-      choiceType: 'moveUnit',
+      choiceType: "moveUnit",
     };
-  } else if (activeCard.command.type === 'rangedAttack') {
+  } else if (activeCard.command.type === "rangedAttack") {
     return {
-      actionType: 'playerChoice',
+      actionType: "playerChoice",
       playerSource: player,
-      choiceType: 'performRangedAttack',
+      choiceType: "performRangedAttack",
     };
   } else {
-    throw new Error(
-      `Invalid command type: ${activeCard.command.type as string}`,
-    );
+    throw new Error(`Invalid command type: ${activeCard.command.type as string}`);
   }
 }

@@ -1,13 +1,13 @@
-import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { describe, expect, it } from 'vitest';
-import { moveCardToPlayed } from './moveCardToPlayed';
+import { tempCommandCards } from "@sampleValues";
+import { createEmptyGameState } from "@testing";
+import { describe, expect, it } from "vitest";
+import { moveCardToPlayed } from "./moveCardToPlayed";
 
 /**
  * moveCardToPlayed: Moves a player's card from inPlay to played pile.
  */
-describe('moveCardToPlayed', () => {
-  it('given move card from inPlay to played', () => {
+describe("moveCardToPlayed", () => {
+  it("given move card from inPlay to played", () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -18,14 +18,14 @@ describe('moveCardToPlayed', () => {
       },
     };
 
-    const newCardState = moveCardToPlayed(cardState, 'black');
+    const newCardState = moveCardToPlayed(cardState, "black");
 
     expect(newCardState.black.inPlay).toBeNull();
     expect(newCardState.black.played).toEqual([tempCommandCards[0]]);
     expect(newCardState.white).toBe(cardState.white);
   });
 
-  it('given append to existing played cards', () => {
+  it("given append to existing played cards", () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -36,15 +36,12 @@ describe('moveCardToPlayed', () => {
       },
     };
 
-    const newCardState = moveCardToPlayed(cardState, 'black');
+    const newCardState = moveCardToPlayed(cardState, "black");
 
-    expect(newCardState.black.played).toEqual([
-      tempCommandCards[0],
-      tempCommandCards[1],
-    ]);
+    expect(newCardState.black.played).toEqual([tempCommandCards[0], tempCommandCards[1]]);
   });
 
-  it('given context, returns unchanged state if no card in play', () => {
+  it("given context, returns unchanged state if no card in play", () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -55,14 +52,14 @@ describe('moveCardToPlayed', () => {
       },
     };
 
-    const newCardState = moveCardToPlayed(cardState, 'black');
+    const newCardState = moveCardToPlayed(cardState, "black");
 
     expect(newCardState).toBe(cardState);
     expect(newCardState.black.inPlay).toBeNull();
     expect(newCardState.black.played).toEqual([]);
   });
 
-  it('given not mutate the original card state', () => {
+  it("given not mutate the original card state", () => {
     const gameState = createEmptyGameState();
     const cardState = {
       ...gameState.cardState,
@@ -75,7 +72,7 @@ describe('moveCardToPlayed', () => {
     const originalInPlay = cardState.black.inPlay;
     const originalPlayed = cardState.black.played;
 
-    moveCardToPlayed(cardState, 'black');
+    moveCardToPlayed(cardState, "black");
 
     expect(cardState.black.inPlay).toBe(originalInPlay);
     expect(cardState.black.played).toBe(originalPlayed);

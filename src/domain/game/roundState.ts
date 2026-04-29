@@ -1,12 +1,12 @@
-import type { Board, UnitInstance } from '@entities';
-import type { Event, EventType } from '@events';
-import type { AssertExact } from '@utils';
+import type { Board, UnitInstance } from "@entities";
+import type { Event, EventType } from "@events";
+import type { AssertExact } from "@utils";
 
-import type { PhaseState } from './phases';
-import { unitInstanceSchema } from '@entities';
-import { eventSchema } from '@events';
-import { z } from 'zod';
-import { phaseStateSchema } from './phases';
+import type { PhaseState } from "./phases";
+import { unitInstanceSchema } from "@entities";
+import { eventSchema } from "@events";
+import { z } from "zod";
+import { phaseStateSchema } from "./phases";
 
 /**
  * The state of a round of the game.
@@ -48,5 +48,4 @@ type RoundStateSchemaType = z.infer<typeof _roundStateSchemaObject>;
 export const roundStateSchema: z.ZodType<RoundState> = _roundStateSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactRoundState: AssertExact<RoundState, RoundStateSchemaType> =
-  true;
+const _assertExactRoundState: AssertExact<RoundState, RoundStateSchemaType> = true;

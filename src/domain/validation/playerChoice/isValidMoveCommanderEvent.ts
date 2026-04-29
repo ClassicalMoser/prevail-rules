@@ -1,7 +1,7 @@
-import type { Board, ValidationResult } from '@entities';
-import type { MoveCommanderEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getOtherPlayer } from '@queries';
+import type { Board, ValidationResult } from "@entities";
+import type { MoveCommanderEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getOtherPlayer } from "@queries";
 
 /**
  * Validates whether a MoveCommanderEvent can be applied to the current game state.
@@ -34,12 +34,12 @@ export function isValidMoveCommanderEvent<TBoard extends Board>(
     if (!currentPhaseState) {
       return {
         result: false,
-        errorReason: 'No current phase state found',
+        errorReason: "No current phase state found",
       };
     }
 
     // Check correct phase
-    if (currentPhaseState.phase !== 'moveCommanders') {
+    if (currentPhaseState.phase !== "moveCommanders") {
       return {
         result: false,
         errorReason: `Current phase is ${currentPhaseState.phase}, not moveCommanders`,
@@ -50,14 +50,14 @@ export function isValidMoveCommanderEvent<TBoard extends Board>(
     const firstPlayer = state.currentInitiative;
     const secondPlayer = getOtherPlayer(firstPlayer);
 
-    if (currentPhaseState.step === 'moveFirstCommander') {
+    if (currentPhaseState.step === "moveFirstCommander") {
       if (player !== firstPlayer) {
         return {
           result: false,
           errorReason: `Expected ${firstPlayer} (initiative player) to move, not ${player}`,
         };
       }
-    } else if (currentPhaseState.step === 'moveSecondCommander') {
+    } else if (currentPhaseState.step === "moveSecondCommander") {
       if (player !== secondPlayer) {
         return {
           result: false,
@@ -78,7 +78,7 @@ export function isValidMoveCommanderEvent<TBoard extends Board>(
   } catch (error) {
     return {
       result: false,
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
+      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

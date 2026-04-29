@@ -1,4 +1,4 @@
-export { tempCommandCards } from './tempCommandCards';
+export { tempCommandCards } from "./tempCommandCards";
 export {
   africanElephants,
   africanVeterans,
@@ -12,4 +12,4 @@ export {
   punicCitizenSpearmen,
   tempUnits,
   velites,
-} from './tempUnits';
+} from "./tempUnits";

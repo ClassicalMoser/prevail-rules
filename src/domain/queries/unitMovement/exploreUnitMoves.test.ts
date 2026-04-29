@@ -1,15 +1,15 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
-import type { MoveResult } from './exploreUnitMoves';
-import { unitFacings } from '@entities';
-import { getPlayerUnitWithPosition } from '@queries/unitPresence';
-import { createGameState } from '@testing';
-import { describe, expect, it } from 'vitest';
-import { exploreUnitMoves } from './exploreUnitMoves';
+import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import type { MoveResult } from "./exploreUnitMoves";
+import { unitFacings } from "@entities";
+import { getPlayerUnitWithPosition } from "@queries/unitPresence";
+import { createGameState } from "@testing";
+import { describe, expect, it } from "vitest";
+import { exploreUnitMoves } from "./exploreUnitMoves";
 
 /**
  * exploreUnitMoves: full move search with flexibility and speed usage per placement.
  */
-describe('exploreUnitMoves', () => {
+describe("exploreUnitMoves", () => {
   // Test helper to reduce repetition.
   function exploreResultHasMatch<TBoard extends Board>(
     moves: Set<MoveResult<TBoard>>,
@@ -28,10 +28,7 @@ describe('exploreUnitMoves', () => {
       if (facing !== undefined && m.placement.facing !== facing) {
         return false;
       }
-      if (
-        flexibilityUsed !== undefined &&
-        m.flexibilityUsed !== flexibilityUsed
-      ) {
+      if (flexibilityUsed !== undefined && m.flexibilityUsed !== flexibilityUsed) {
         return false;
       }
       if (speedUsed !== undefined && m.speedUsed !== speedUsed) {
@@ -42,70 +39,56 @@ describe('exploreUnitMoves', () => {
     return result !== undefined;
   }
 
-  describe('initial position', () => {
-    it('given include starting position for advance', () => {
-      const gameState = createGameState([['E-5', 'black', 'north']]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+  describe("initial position", () => {
+    it("given include starting position for advance", () => {
+      const gameState = createGameState([["E-5", "black", "north"]]);
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
 
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasStartingPosition = exploreResultHasMatch(moves, {
-        coordinate: 'E-5',
-        facing: 'north',
+        coordinate: "E-5",
+        facing: "north",
         flexibilityUsed: 0,
         speedUsed: 0,
       });
       expect(hasStartingPosition).toBe(true);
     });
 
-    it('given not include starting position for retreat', () => {
-      const gameState = createGameState([['E-5', 'black', 'north']]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+    it("given not include starting position for retreat", () => {
+      const gameState = createGameState([["E-5", "black", "north"]]);
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
 
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const moves = exploreUnitMoves(gameState, unit, "retreat");
       const hasStartingPosition = exploreResultHasMatch(moves, {
-        coordinate: 'E-5',
+        coordinate: "E-5",
       });
       expect(hasStartingPosition).toBe(false);
     });
 
-    it('given allow all turns in place for advance', () => {
+    it("given allow all turns in place for advance", () => {
       const gameState = createGameState([
         {
-          coord: 'E-5',
-          player: 'black',
-          facing: 'north',
+          coord: "E-5",
+          player: "black",
+          facing: "north",
           flexibility: 2,
         },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const unitFacingsMinusStart = unitFacings.filter(
-        (facing) => facing !== 'north',
-      );
+      const moves = exploreUnitMoves(gameState, unit, "advance");
+      const unitFacingsMinusStart = unitFacings.filter((facing) => facing !== "north");
       const allFacingsResults = unitFacingsMinusStart.map((facing) =>
         exploreResultHasMatch(moves, {
-          coordinate: 'E-5',
+          coordinate: "E-5",
           facing,
           flexibilityUsed: 1,
           speedUsed: 0,
@@ -114,87 +97,75 @@ describe('exploreUnitMoves', () => {
       expect(allFacingsResults.every((result) => result)).toBe(true);
     });
 
-    it('given not include starting position with different speed', () => {
+    it("given not include starting position with different speed", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
+        { coord: "E-5", player: "black", facing: "north", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasStartingPositionWithSpeedOne = exploreResultHasMatch(moves, {
-        coordinate: 'E-5',
-        facing: 'north',
+        coordinate: "E-5",
+        facing: "north",
         speedUsed: 1,
       });
       const hasStartingPositionWithSpeedTwo = exploreResultHasMatch(moves, {
-        coordinate: 'E-5',
-        facing: 'north',
+        coordinate: "E-5",
+        facing: "north",
         speedUsed: 2,
       });
       expect(hasStartingPositionWithSpeedOne).toBe(false);
       expect(hasStartingPositionWithSpeedTwo).toBe(false);
     });
   });
-  describe('advance direction', () => {
-    it('given the unit has speed, includes a forward move', () => {
+  describe("advance direction", () => {
+    it("given the unit has speed, includes a forward move", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
+        { coord: "E-5", player: "black", facing: "north", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasForwardMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
+        coordinate: "D-5",
         speedUsed: 1,
       });
       expect(hasForwardMove).toBe(true);
     });
 
-    it('given speed > 1, includes multiple forward moves', () => {
+    it("given speed > 1, includes multiple forward moves", () => {
       const gameState = createGameState([
         {
-          coord: 'E-5',
-          player: 'black',
-          facing: 'north',
+          coord: "E-5",
+          player: "black",
+          facing: "north",
           speed: 3,
         },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasOneMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        facing: 'north',
+        coordinate: "D-5",
+        facing: "north",
         flexibilityUsed: 0,
         speedUsed: 1,
       });
       const hasTwoMoves = exploreResultHasMatch(moves, {
-        coordinate: 'C-5',
-        facing: 'north',
+        coordinate: "C-5",
+        facing: "north",
         flexibilityUsed: 0,
         speedUsed: 2,
       });
       const hasThreeMoves = exploreResultHasMatch(moves, {
-        coordinate: 'B-5',
-        facing: 'north',
+        coordinate: "B-5",
+        facing: "north",
         flexibilityUsed: 0,
         speedUsed: 3,
       });
@@ -203,34 +174,30 @@ describe('exploreUnitMoves', () => {
       expect(hasThreeMoves).toBe(true);
     });
 
-    it('given the unit has speed and flexibility, includes turning moves', () => {
+    it("given the unit has speed and flexibility, includes turning moves", () => {
       const gameState = createGameState([
         {
-          coord: 'E-5',
-          player: 'black',
-          facing: 'north',
+          coord: "E-5",
+          player: "black",
+          facing: "north",
           speed: 2,
           flexibility: 2,
         },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasForwardLeftMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-4',
-        facing: 'northWest',
+        coordinate: "D-4",
+        facing: "northWest",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
       const hasForwardRightMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-6',
-        facing: 'northEast',
+        coordinate: "D-6",
+        facing: "northEast",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
@@ -238,37 +205,33 @@ describe('exploreUnitMoves', () => {
       expect(hasForwardRightMove).toBe(true);
     });
 
-    it('given include turn then move sequences in advance', () => {
+    it("given include turn then move sequences in advance", () => {
       const gameState = createGameState([
         {
-          coord: 'E-5',
-          player: 'black',
-          facing: 'north',
+          coord: "E-5",
+          player: "black",
+          facing: "north",
           speed: 2,
           flexibility: 2,
         },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       // Turn first, then move in the new direction
       // This is already tested by "turning moves" test above
       // But we verify it works for all diagonal directions
       const hasNorthWestMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-4',
-        facing: 'northWest',
+        coordinate: "D-4",
+        facing: "northWest",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
       const hasNorthEastMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-6',
-        facing: 'northEast',
+        coordinate: "D-6",
+        facing: "northEast",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
@@ -276,100 +239,84 @@ describe('exploreUnitMoves', () => {
       expect(hasNorthEastMove).toBe(true);
     });
 
-    it('given not include moves that exceed speed', () => {
+    it("given not include moves that exceed speed", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
+        { coord: "E-5", player: "black", facing: "north", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasExcessiveMove = exploreResultHasMatch(moves, {
-        coordinate: 'B-5',
+        coordinate: "B-5",
       });
       expect(hasExcessiveMove).toBe(false);
     });
 
-    it('given not include moves that exceed flexibility', () => {
+    it("given not include moves that exceed flexibility", () => {
       const gameState = createGameState([
         {
-          coord: 'E-5',
-          player: 'black',
-          facing: 'north',
+          coord: "E-5",
+          player: "black",
+          facing: "north",
           speed: 2,
           flexibility: 1,
         },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       // Should not be able to turn twice
       const hasDoubleTurn = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        facing: 'south',
+        coordinate: "D-5",
+        facing: "south",
         flexibilityUsed: 2,
       });
       expect(hasDoubleTurn).toBe(false);
     });
   });
 
-  describe('retreat direction', () => {
-    it('given the unit has speed, includes a rearward move', () => {
+  describe("retreat direction", () => {
+    it("given the unit has speed, includes a rearward move", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
+        { coord: "E-5", player: "black", facing: "north", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const moves = exploreUnitMoves(gameState, unit, "retreat");
       // Retreat moves rearward (south when facing north)
       const hasRearwardMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
-        facing: 'north',
+        coordinate: "F-5",
+        facing: "north",
         flexibilityUsed: 0,
         speedUsed: 1,
       });
       expect(hasRearwardMove).toBe(true);
     });
 
-    it('given speed > 1, includes multiple rearward moves', () => {
+    it("given speed > 1, includes multiple rearward moves", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
+        { coord: "E-5", player: "black", facing: "north", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const moves = exploreUnitMoves(gameState, unit, "retreat");
       const hasOneMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
-        facing: 'north',
+        coordinate: "F-5",
+        facing: "north",
         flexibilityUsed: 0,
         speedUsed: 1,
       });
       const hasTwoMoves = exploreResultHasMatch(moves, {
-        coordinate: 'G-5',
-        facing: 'north',
+        coordinate: "G-5",
+        facing: "north",
         flexibilityUsed: 0,
         speedUsed: 2,
       });
@@ -377,37 +324,33 @@ describe('exploreUnitMoves', () => {
       expect(hasTwoMoves).toBe(true);
     });
 
-    it('given the unit has speed and flexibility, includes turning moves', () => {
+    it("given the unit has speed and flexibility, includes turning moves", () => {
       const gameState = createGameState([
         {
-          coord: 'E-5',
-          player: 'black',
-          facing: 'north',
+          coord: "E-5",
+          player: "black",
+          facing: "north",
           speed: 2,
           flexibility: 2,
         },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const moves = exploreUnitMoves(gameState, unit, "retreat");
       // Turn to adjacent facing then move rearward
       // When facing north, adjacent facings are northEast and northWest
       // Rearward from northEast would be southEast, rearward from northWest would be southWest
       const hasTurnLeftThenMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-6',
-        facing: 'northWest',
+        coordinate: "F-6",
+        facing: "northWest",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
       const hasTurnRightThenMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-4',
-        facing: 'northEast',
+        coordinate: "F-4",
+        facing: "northEast",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
@@ -415,124 +358,108 @@ describe('exploreUnitMoves', () => {
       expect(hasTurnRightThenMove).toBe(true);
     });
 
-    it('given only allow moves to spaces behind starting position', () => {
+    it("given only allow moves to spaces behind starting position", () => {
       const gameState = createGameState([
         {
-          coord: 'E-5',
-          player: 'black',
-          facing: 'north',
+          coord: "E-5",
+          player: "black",
+          facing: "north",
           speed: 2,
           flexibility: 2,
         },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const moves = exploreUnitMoves(gameState, unit, "retreat");
       // Should not be able to move forward (north) during retreat
       const hasForwardMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        facing: 'north',
+        coordinate: "D-5",
+        facing: "north",
         speedUsed: 1,
       });
       expect(hasForwardMove).toBe(false);
       // Should not be able to move parallel (east) during retreat
-      const hasRightMove = exploreResultHasMatch(moves, { coordinate: 'E-6' });
+      const hasRightMove = exploreResultHasMatch(moves, { coordinate: "E-6" });
       expect(hasRightMove).toBe(false);
       // Should not be able to move parallel (west) during retreat
-      const hasLeftMove = exploreResultHasMatch(moves, { coordinate: 'E-4' });
+      const hasLeftMove = exploreResultHasMatch(moves, { coordinate: "E-4" });
       expect(hasLeftMove).toBe(false);
     });
 
-    it('given include move then turn sequences for retreat', () => {
+    it("given include move then turn sequences for retreat", () => {
       const gameState = createGameState([
         {
-          coord: 'E-5',
-          player: 'black',
-          facing: 'north',
+          coord: "E-5",
+          player: "black",
+          facing: "north",
           speed: 2,
           flexibility: 2,
         },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const moves = exploreUnitMoves(gameState, unit, "retreat");
       // Move rearward then turn to adjacent facing
       const hasMoveThenTurn = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
-        facing: 'northEast',
+        coordinate: "F-5",
+        facing: "northEast",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
       expect(hasMoveThenTurn).toBe(true);
     });
-    it('given include turn then move sequences for retreat', () => {
+    it("given include turn then move sequences for retreat", () => {
       const gameState = createGameState([
         {
-          coord: 'E-5',
-          player: 'black',
-          facing: 'north',
+          coord: "E-5",
+          player: "black",
+          facing: "north",
           speed: 2,
           flexibility: 2,
         },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const moves = exploreUnitMoves(gameState, unit, "retreat");
       const hasTurnRightThenMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-4',
-        facing: 'northEast',
+        coordinate: "F-4",
+        facing: "northEast",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
       const hasTurnLeftThenMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-6',
-        facing: 'northWest',
+        coordinate: "F-6",
+        facing: "northWest",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
       expect(hasTurnRightThenMove).toBe(true);
       expect(hasTurnLeftThenMove).toBe(true);
     });
-    it('given not turn in the initial position if no flexibility', () => {
+    it("given not turn in the initial position if no flexibility", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', flexibility: 0 },
+        { coord: "E-5", player: "black", facing: "north", flexibility: 0 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const moves = exploreUnitMoves(gameState, unit, "retreat");
       const hasRightTurnAndMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-4',
-        facing: 'northEast',
+        coordinate: "F-4",
+        facing: "northEast",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
       const hasLeftTurnAndMove = exploreResultHasMatch(moves, {
-        coordinate: 'F-6',
-        facing: 'northWest',
+        coordinate: "F-6",
+        facing: "northWest",
         flexibilityUsed: 1,
         speedUsed: 1,
       });
@@ -540,178 +467,140 @@ describe('exploreUnitMoves', () => {
       expect(hasLeftTurnAndMove).toBe(false);
     });
   });
-  describe('obstacle handling', () => {
-    it('given not move straight through an enemy unit', () => {
+  describe("obstacle handling", () => {
+    it("given not move straight through an enemy unit", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
-        { coord: 'D-5', player: 'white', facing: 'north', speed: 2 },
+        { coord: "E-5", player: "black", facing: "north", speed: 2 },
+        { coord: "D-5", player: "white", facing: "north", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasMove = exploreResultHasMatch(moves, {
-        coordinate: 'C-5',
-        facing: 'north',
+        coordinate: "C-5",
+        facing: "north",
         flexibilityUsed: 0,
         speedUsed: 2,
       });
       expect(hasMove).toBe(false);
     });
-    it('can navigate around an enemy unit', () => {
+    it("can navigate around an enemy unit", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
-        { coord: 'D-5', player: 'white', facing: 'north', speed: 2 },
+        { coord: "E-5", player: "black", facing: "north", speed: 2 },
+        { coord: "D-5", player: "white", facing: "north", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasLeftThenRightMove = exploreResultHasMatch(moves, {
-        coordinate: 'C-5',
-        facing: 'northEast',
+        coordinate: "C-5",
+        facing: "northEast",
         flexibilityUsed: 2,
         speedUsed: 2,
       });
       const hasRightThenLeftMove = exploreResultHasMatch(moves, {
-        coordinate: 'C-5',
-        facing: 'northWest',
+        coordinate: "C-5",
+        facing: "northWest",
         flexibilityUsed: 2,
         speedUsed: 2,
       });
       expect(hasLeftThenRightMove).toBe(true);
       expect(hasRightThenLeftMove).toBe(true);
     });
-    it('can engage an enemy unit', () => {
+    it("can engage an enemy unit", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
-        { coord: 'D-5', player: 'white', facing: 'south', speed: 2 },
+        { coord: "E-5", player: "black", facing: "north", speed: 2 },
+        { coord: "D-5", player: "white", facing: "south", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasMove = exploreResultHasMatch(moves, {
-        coordinate: 'D-5',
-        facing: 'north',
+        coordinate: "D-5",
+        facing: "north",
         flexibilityUsed: 0,
         speedUsed: 1,
       });
       expect(hasMove).toBe(true);
     });
-    it('given not pass through diagonal enemy line', () => {
+    it("given not pass through diagonal enemy line", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'northEast', speed: 2 },
-        { coord: 'B-3', player: 'white', facing: 'southWest', speed: 2 },
-        { coord: 'C-4', player: 'white', facing: 'southWest', speed: 2 },
-        { coord: 'D-5', player: 'white', facing: 'southWest', speed: 2 },
-        { coord: 'E-6', player: 'white', facing: 'southWest', speed: 2 },
-        { coord: 'F-7', player: 'white', facing: 'southWest', speed: 2 },
+        { coord: "E-5", player: "black", facing: "northEast", speed: 2 },
+        { coord: "B-3", player: "white", facing: "southWest", speed: 2 },
+        { coord: "C-4", player: "white", facing: "southWest", speed: 2 },
+        { coord: "D-5", player: "white", facing: "southWest", speed: 2 },
+        { coord: "E-6", player: "white", facing: "southWest", speed: 2 },
+        { coord: "F-7", player: "white", facing: "southWest", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasMoveThroughEnemyLine = exploreResultHasMatch(moves, {
-        coordinate: 'D-6',
+        coordinate: "D-6",
       });
       expect(hasMoveThroughEnemyLine).toBe(false);
     });
-    it('cannot encircle in one turn', () => {
+    it("cannot encircle in one turn", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', speed: 3 },
-        { coord: 'D-4', player: 'white', facing: 'south', speed: 2 },
+        { coord: "E-5", player: "black", facing: "north", speed: 3 },
+        { coord: "D-4", player: "white", facing: "south", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
+      const moves = exploreUnitMoves(gameState, unit, "advance");
       const hasMoveThroughEnemyLine = exploreResultHasMatch(moves, {
-        coordinate: 'D-4',
-        facing: 'south',
+        coordinate: "D-4",
+        facing: "south",
       });
       expect(hasMoveThroughEnemyLine).toBe(false);
     });
-    it('cannot retreat into an enemy unit', () => {
+    it("cannot retreat into an enemy unit", () => {
       const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north', speed: 2 },
-        { coord: 'F-5', player: 'white', facing: 'south', speed: 2 },
+        { coord: "E-5", player: "black", facing: "north", speed: 2 },
+        { coord: "F-5", player: "white", facing: "south", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'retreat');
+      const moves = exploreUnitMoves(gameState, unit, "retreat");
       const hasMoveIntoEnemyUnit = exploreResultHasMatch(moves, {
-        coordinate: 'F-5',
+        coordinate: "F-5",
       });
       expect(hasMoveIntoEnemyUnit).toBe(false);
     });
   });
-  describe('edge cases', () => {
-    it('given the direction is invalid, throws', () => {
-      const gameState = createGameState([
-        { coord: 'E-5', player: 'black', facing: 'north' },
-      ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'E-5',
-        'black',
-      );
+  describe("edge cases", () => {
+    it("given the direction is invalid, throws", () => {
+      const gameState = createGameState([{ coord: "E-5", player: "black", facing: "north" }]);
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "E-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
       // Bad type assertion to trigger the error
-      const direction = 'invalid' as 'advance' | 'retreat';
-      expect(() => exploreUnitMoves(gameState, unit, direction)).toThrow(
-        'Invalid direction',
-      );
+      const direction = "invalid" as "advance" | "retreat";
+      expect(() => exploreUnitMoves(gameState, unit, direction)).toThrow("Invalid direction");
     });
-    it('given not explore off the map or throw for the edge', () => {
+    it("given not explore off the map or throw for the edge", () => {
       const gameState = createGameState([
-        { coord: 'A-5', player: 'black', facing: 'north', speed: 2 },
+        { coord: "A-5", player: "black", facing: "north", speed: 2 },
       ]);
-      const unit = getPlayerUnitWithPosition(
-        gameState.boardState,
-        'A-5',
-        'black',
-      );
+      const unit = getPlayerUnitWithPosition(gameState.boardState, "A-5", "black");
       if (!unit) {
-        throw new Error('Unit not found');
+        throw new Error("Unit not found");
       }
-      const moves = exploreUnitMoves(gameState, unit, 'advance');
-      const undefinedResults = [...moves].filter(
-        (m) => m.placement.coordinate === undefined,
-      );
+      const moves = exploreUnitMoves(gameState, unit, "advance");
+      const undefinedResults = [...moves].filter((m) => m.placement.coordinate === undefined);
       expect(undefinedResults.length).toBe(0);
     });
   });

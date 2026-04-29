@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate } from '@entities';
-import { orthogonalFacings } from '@entities';
-import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
-import { getForwardSpace } from '../getForwardSpace';
+import type { Board, BoardCoordinate } from "@entities";
+import { orthogonalFacings } from "@entities";
+import { filterUndefinedSpaces } from "../filterUndefinedSpaces";
+import { getForwardSpace } from "../getForwardSpace";
 
 /**
  * Get the orthogonally adjacent spaces for a given coordinate.
@@ -16,9 +16,7 @@ export function getOrthogonallyAdjacentSpaces<TBoard extends Board>(
 ): Set<BoardCoordinate<TBoard>> {
   // Get the orthogonal spaces
   const orthogonalSpaces = new Set(
-    orthogonalFacings.map((facing) =>
-      getForwardSpace(board, coordinate, facing),
-    ),
+    orthogonalFacings.map((facing) => getForwardSpace(board, coordinate, facing)),
   );
   // Filter out undefined values
   const validOrthogonalSpaces = filterUndefinedSpaces(orthogonalSpaces);

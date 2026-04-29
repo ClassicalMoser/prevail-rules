@@ -1,7 +1,7 @@
-import type { Board, PlayerSide, UnitWithPlacement } from '@entities';
-import type { GameStateWithBoard } from '@game';
-import { getBoardCoordinates } from './boardSpace';
-import { getPlayerUnitWithPosition } from './unitPresence';
+import type { Board, PlayerSide, UnitWithPlacement } from "@entities";
+import type { GameStateWithBoard } from "@game";
+import { getBoardCoordinates } from "./boardSpace";
+import { getPlayerUnitWithPosition } from "./unitPresence";
 
 /**
  * Gets all unit instances with their placements for a player that are currently on the board.
@@ -24,11 +24,7 @@ export function getPlayerUnitsWithPlacementOnBoard<TBoard extends Board>(
   const coordinates = getBoardCoordinates(state.boardState);
 
   for (const coordinate of coordinates) {
-    const unitWithPlacement = getPlayerUnitWithPosition(
-      state.boardState,
-      coordinate,
-      player,
-    );
+    const unitWithPlacement = getPlayerUnitWithPosition(state.boardState, coordinate, player);
     if (unitWithPlacement) {
       units.add(unitWithPlacement);
     }

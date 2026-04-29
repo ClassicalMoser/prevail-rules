@@ -1,8 +1,8 @@
-import type { Board } from '@entities';
-import type { ChooseWhetherToRetreatEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import { getFrontEngagementStateFromMovement } from '@queries';
-import { updateEngagementStateInMovement } from '@transforms/pureTransforms';
+import type { Board } from "@entities";
+import type { ChooseWhetherToRetreatEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { getFrontEngagementStateFromMovement } from "@queries";
+import { updateEngagementStateInMovement } from "@transforms/pureTransforms";
 
 /**
  * Applies a ChooseWhetherToRetreatEvent to the game state.
@@ -29,9 +29,6 @@ export function applyChooseWhetherToRetreatEvent<TBoard extends Board>(
     },
   };
 
-  const newGameState = updateEngagementStateInMovement(
-    state,
-    newEngagementState,
-  );
+  const newGameState = updateEngagementStateInMovement(state, newEngagementState);
   return newGameState;
 }

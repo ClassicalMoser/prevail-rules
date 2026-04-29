@@ -1,6 +1,6 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
-import { getOppositeFacing } from '@queries/facings';
-import { getFrontSpaces } from './getFrontSpaces';
+import type { Board, BoardCoordinate, UnitFacing } from "@entities";
+import { getOppositeFacing } from "@queries/facings";
+import { getFrontSpaces } from "./getFrontSpaces";
 
 /**
  * Get the back spaces for a given coordinate and facing, including diagonals

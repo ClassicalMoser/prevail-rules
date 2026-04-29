@@ -1,15 +1,12 @@
-import type { Board, BoardCoordinate } from '@entities';
-import type { ResolveFlankEngagementEvent } from '@events';
-import type { GameStateWithBoard } from '@game';
-import {
-  GAME_EFFECT_EVENT_TYPE,
-  RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
-} from '@events';
+import type { Board, BoardCoordinate } from "@entities";
+import type { ResolveFlankEngagementEvent } from "@events";
+import type { GameStateWithBoard } from "@game";
+import { GAME_EFFECT_EVENT_TYPE, RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE } from "@events";
 import {
   getFlankEngagementStateFromMovement,
   getOppositeFacing,
   getSingleUnitWithPlacementAtCoordinate,
-} from '@queries';
+} from "@queries";
 
 /**
  * Generates a ResolveFlankEngagementEvent by calculating the new facing
@@ -24,7 +21,7 @@ import {
 export function generateResolveFlankEngagementEvent<TBoard extends Board>(
   state: GameStateWithBoard<TBoard>,
   eventNumber: number,
-): ResolveFlankEngagementEvent<TBoard, 'resolveFlankEngagement'> {
+): ResolveFlankEngagementEvent<TBoard, "resolveFlankEngagement"> {
   const engagementState = getFlankEngagementStateFromMovement(state);
 
   const defenderWithPlacement = getSingleUnitWithPlacementAtCoordinate(
@@ -45,5 +42,5 @@ export function generateResolveFlankEngagementEvent<TBoard extends Board>(
     boardType: state.boardState.boardType,
     defenderWithPlacement,
     newFacing,
-  } as unknown as ResolveFlankEngagementEvent<TBoard, 'resolveFlankEngagement'>;
+  } as unknown as ResolveFlankEngagementEvent<TBoard, "resolveFlankEngagement">;
 }

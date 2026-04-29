@@ -1,7 +1,7 @@
-import type { PlayerSide } from '@entities';
-import type { StandardGameState } from '@game';
-import { tempCommandCards } from '@sampleValues';
-import { createEmptyStandardBoard } from '@transforms';
+import type { PlayerSide } from "@entities";
+import type { StandardGameState } from "@game";
+import { tempCommandCards } from "@sampleValues";
+import { createEmptyStandardBoard } from "@transforms";
 
 /**
  * Creates an empty game state with default values.
@@ -20,7 +20,7 @@ export function createEmptyGameState(options?: {
   currentInitiative?: PlayerSide;
 }): StandardGameState {
   return {
-    boardType: 'standard',
+    boardType: "standard",
     currentRoundNumber: 0,
     currentRoundState: {
       roundNumber: 1,
@@ -29,7 +29,7 @@ export function createEmptyGameState(options?: {
       commandedUnits: new Set(),
       events: [],
     },
-    currentInitiative: options?.currentInitiative ?? 'black',
+    currentInitiative: options?.currentInitiative ?? "black",
     boardState: createEmptyStandardBoard(),
     cardState: {
       black: {

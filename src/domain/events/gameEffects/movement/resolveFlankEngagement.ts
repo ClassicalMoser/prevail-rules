@@ -7,20 +7,19 @@ import type {
   StandardBoard,
   StandardUnitWithPlacement,
   UnitFacing,
-} from '@entities';
-import type { AssertExact } from '@utils';
-import type { ZodDiscriminatedUnion } from 'zod';
+} from "@entities";
+import type { AssertExact } from "@utils";
+import type { ZodDiscriminatedUnion } from "zod";
 import {
   largeUnitWithPlacementSchema,
   smallUnitWithPlacementSchema,
   standardUnitWithPlacementSchema,
   unitFacingSchema,
-} from '@entities';
-import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
-import { z } from 'zod';
+} from "@entities";
+import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
+import { z } from "zod";
 
-export const RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE =
-  'resolveFlankEngagement' as const;
+export const RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE = "resolveFlankEngagement" as const;
 
 interface ResolveFlankEngagementEventBase {
   /** The type of the event. */
@@ -37,17 +36,17 @@ interface ResolveFlankEngagementEventBase {
  * Completes flank engagement by rotating the defender to face the attacker.
  */
 export interface StandardResolveFlankEngagementEvent extends ResolveFlankEngagementEventBase {
-  boardType: 'standard';
+  boardType: "standard";
   defenderWithPlacement: StandardUnitWithPlacement;
 }
 
 export interface SmallResolveFlankEngagementEvent extends ResolveFlankEngagementEventBase {
-  boardType: 'small';
+  boardType: "small";
   defenderWithPlacement: SmallUnitWithPlacement;
 }
 
 export interface LargeResolveFlankEngagementEvent extends ResolveFlankEngagementEventBase {
-  boardType: 'large';
+  boardType: "large";
   defenderWithPlacement: LargeUnitWithPlacement;
 }
 
@@ -72,14 +71,14 @@ const _standardResolveFlankEngagementEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
-  boardType: z.ZodLiteral<'standard'>;
+  boardType: z.ZodLiteral<"standard">;
   defenderWithPlacement: typeof standardUnitWithPlacementSchema;
   newFacing: typeof unitFacingSchema;
 }> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE),
   eventNumber: z.number(),
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
   defenderWithPlacement: standardUnitWithPlacementSchema,
   newFacing: unitFacingSchema,
 });
@@ -97,14 +96,14 @@ const _smallResolveFlankEngagementEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
-  boardType: z.ZodLiteral<'small'>;
+  boardType: z.ZodLiteral<"small">;
   defenderWithPlacement: typeof smallUnitWithPlacementSchema;
   newFacing: typeof unitFacingSchema;
 }> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE),
   eventNumber: z.number(),
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
   defenderWithPlacement: smallUnitWithPlacementSchema,
   newFacing: unitFacingSchema,
 });
@@ -122,14 +121,14 @@ const _largeResolveFlankEngagementEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
-  boardType: z.ZodLiteral<'large'>;
+  boardType: z.ZodLiteral<"large">;
   defenderWithPlacement: typeof largeUnitWithPlacementSchema;
   newFacing: typeof unitFacingSchema;
 }> = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE),
   eventNumber: z.number(),
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
   defenderWithPlacement: largeUnitWithPlacementSchema,
   newFacing: unitFacingSchema,
 });
@@ -149,11 +148,11 @@ type _ResolveFlankEngagementEventDiscriminatedUnion = ZodDiscriminatedUnion<
     typeof _smallResolveFlankEngagementEventSchemaObject,
     typeof _largeResolveFlankEngagementEventSchemaObject,
   ],
-  'boardType'
+  "boardType"
 >;
 
 const _resolveFlankEngagementEventSchemaObject: _ResolveFlankEngagementEventDiscriminatedUnion =
-  z.discriminatedUnion('boardType', [
+  z.discriminatedUnion("boardType", [
     _standardResolveFlankEngagementEventSchemaObject,
     _smallResolveFlankEngagementEventSchemaObject,
     _largeResolveFlankEngagementEventSchemaObject,
