@@ -60,7 +60,7 @@ export function getExpectedMovementResolutionEvent(
     }
     // If the engagement state is not complete,
     // we need to get the expected engagement event
-    return getExpectedEngagementEvent(engagementState);
+    return getExpectedEngagementEvent(gameState, engagementState);
   }
 
   // If we are not engaging an enemy unit, we can finish our movement

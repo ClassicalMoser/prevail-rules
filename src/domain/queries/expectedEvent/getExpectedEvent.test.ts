@@ -50,7 +50,7 @@ describe("getExpectedEvent", () => {
 
     const result = getExpectedEvent(state);
 
-    expect(result).toEqual({ ...delegateReturn, eventNumber: 0 });
+    expect(result).toEqual({ ...delegateReturn, expectedEventNumber: 0 });
     expect(getCurrentPhaseStateMock).toHaveBeenCalledWith(state);
     expect(delegatedMock).toHaveBeenCalledWith(state);
   }

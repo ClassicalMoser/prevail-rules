@@ -100,7 +100,7 @@ describe("getExpectedMovementResolutionEvent", () => {
             defendingUnitRetreats: false,
             defendingUnitRetreated: undefined,
           },
-          completed: false,
+          completed: true,
         },
       });
 

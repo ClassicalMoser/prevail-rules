@@ -115,12 +115,13 @@ export const startNewGame = async (
 
   const change: GameStateChange = {
     gameId: game.id,
+    gameType: game.gameType,
     gameState: broadenedGame.gameState,
   };
   for (const subscriber of ports.gameStateSubscribers) {
     if (
       subscriber.gameId !== change.gameId ||
-      subscriber.gameMode.name !== change.gameState.boardType
+      subscriber.gameMode.name !== change.gameType
     ) {
       continue;
     }

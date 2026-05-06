@@ -1,3 +1,4 @@
+import type { GameModeName } from "@entities";
 import type { GameState } from "@game";
 
 /**
@@ -7,5 +8,6 @@ import type { GameState } from "@game";
  */
 export interface GameStateChange {
   gameId: string;
+  gameType?: GameModeName;
   gameState: GameState;
 }

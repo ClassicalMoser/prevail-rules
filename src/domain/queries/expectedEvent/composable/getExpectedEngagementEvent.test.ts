@@ -1,4 +1,5 @@
 import {
+  createEmptyGameState,
   createFlankEngagementState,
   createFrontEngagementState,
   createRearEngagementState,
@@ -21,7 +22,7 @@ describe("getExpectedEngagementEvent", () => {
       defenderRotated: false,
     });
 
-    expect(getExpectedEngagementEvent(engagementState)).toEqual({
+    expect(getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toEqual({
       actionType: "gameEffect",
       effectType: "resolveFlankEngagement",
     });
@@ -33,7 +34,7 @@ describe("getExpectedEngagementEvent", () => {
       completed: true,
     };
 
-    expect(() => getExpectedEngagementEvent(engagementState)).toThrow(
+    expect(() => getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toThrow(
       "Engagement state is already complete",
     );
   });
@@ -43,7 +44,7 @@ describe("getExpectedEngagementEvent", () => {
       defenderRotated: true,
     });
 
-    expect(() => getExpectedEngagementEvent(engagementState)).toThrow(
+    expect(() => getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toThrow(
       "Flank engagement resolution complete but not marked as completed",
     );
   });
@@ -51,7 +52,7 @@ describe("getExpectedEngagementEvent", () => {
   it("given resolve rout for rear engagement when rout is not complete", () => {
     const engagementState = createRearEngagementState();
 
-    expect(getExpectedEngagementEvent(engagementState)).toEqual({
+    expect(getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toEqual({
       actionType: "gameEffect",
       effectType: "resolveRout",
     });
@@ -67,7 +68,7 @@ describe("getExpectedEngagementEvent", () => {
       completed: true,
     });
 
-    expect(() => getExpectedEngagementEvent(engagementState)).toThrow(
+    expect(() => getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toThrow(
       "Rear engagement resolution state is already complete",
     );
   });
@@ -81,7 +82,7 @@ describe("getExpectedEngagementEvent", () => {
       }),
     });
 
-    expect(() => getExpectedEngagementEvent(engagementState)).toThrow(
+    expect(() => getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toThrow(
       "Rear engagement resolution complete but not advanced",
     );
   });
@@ -89,7 +90,7 @@ describe("getExpectedEngagementEvent", () => {
   it("given a front engagement is pending, asks the defender to commit to movement", () => {
     const engagementState = createFrontEngagementState();
 
-    expect(getExpectedEngagementEvent(engagementState)).toEqual({
+    expect(getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toEqual({
       actionType: "playerChoice",
       playerSource: "white",
       choiceType: "commitToMovement",
@@ -107,7 +108,7 @@ describe("getExpectedEngagementEvent", () => {
       defendingUnitRetreated: undefined,
     });
 
-    expect(getExpectedEngagementEvent(engagementState)).toEqual({
+    expect(getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toEqual({
       actionType: "gameEffect",
       effectType: "resolveEngageRetreatOption",
     });
@@ -124,7 +125,7 @@ describe("getExpectedEngagementEvent", () => {
       defendingUnitRetreated: undefined,
     });
 
-    expect(getExpectedEngagementEvent(engagementState)).toEqual({
+    expect(getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toEqual({
       actionType: "playerChoice",
       playerSource: "white",
       choiceType: "chooseWhetherToRetreat",
@@ -142,7 +143,7 @@ describe("getExpectedEngagementEvent", () => {
       defendingUnitRetreated: undefined,
     });
 
-    expect(getExpectedEngagementEvent(engagementState)).toEqual({
+    expect(getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toEqual({
       actionType: "playerChoice",
       playerSource: "white",
       choiceType: "chooseRetreatOption",
@@ -160,7 +161,7 @@ describe("getExpectedEngagementEvent", () => {
       defendingUnitRetreated: undefined,
     });
 
-    expect(() => getExpectedEngagementEvent(engagementState)).toThrow(
+    expect(() => getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toThrow(
       "Defending unit cannot retreat",
     );
   });
@@ -176,7 +177,7 @@ describe("getExpectedEngagementEvent", () => {
       defendingUnitRetreated: undefined,
     });
 
-    expect(() => getExpectedEngagementEvent(engagementState)).toThrow(
+    expect(() => getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toThrow(
       "Front engagement resolution complete but not marked as completed",
     );
   });
@@ -192,7 +193,7 @@ describe("getExpectedEngagementEvent", () => {
       defendingUnitRetreated: true,
     });
 
-    expect(() => getExpectedEngagementEvent(engagementState)).toThrow(
+    expect(() => getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toThrow(
       "Front engagement resolution complete but not marked as completed",
     );
   });
@@ -206,6 +207,6 @@ describe("getExpectedEngagementEvent", () => {
       } as never,
     };
 
-    expect(() => getExpectedEngagementEvent(engagementState)).toThrow("Invalid engagement type");
+    expect(() => getExpectedEngagementEvent(createEmptyGameState(), engagementState)).toThrow("Invalid engagement type");
   });
 });
