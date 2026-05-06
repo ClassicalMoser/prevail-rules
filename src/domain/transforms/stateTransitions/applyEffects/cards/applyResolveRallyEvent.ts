@@ -1,6 +1,6 @@
 import type { Board, CardState } from "@entities";
 import type { ResolveRallyEvent } from "@events";
-import type { GameStateWithBoard, RallyResolutionState } from "@game";
+import type { GameState, GameStateForBoard, RallyResolutionState } from "@game";
 import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
@@ -26,14 +26,17 @@ import {
  * @returns A new game state with rally resolved
  */
 export function applyResolveRallyEvent<TBoard extends Board>(
-  event: ResolveRallyEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: ResolveRallyEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   const { player, card } = event;
-  const phaseState = getCleanupPhaseState(state);
+  // Safe broad type cast because we know the event is for the board type
+  const phaseState = getCleanupPhaseState(state as GameState);
 
   const rallyState = getRallyResolutionStateAwaitingBurn(state, player);
-  const nextStep = getNextStepForResolveRally(state);
+
+  // Safe broad type cast because we know the event is for the board type
+  const nextStep = getNextStepForResolveRally(state as GameState);
 
   // Compose pure transforms
   let newCardState: CardState = state.cardState;

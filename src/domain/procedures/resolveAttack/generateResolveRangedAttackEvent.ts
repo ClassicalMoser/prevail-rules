@@ -1,7 +1,7 @@
 import type { Board, UnitPlacement } from "@entities";
-import type { ResolveRangedAttackEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameStateForBoard } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RANGED_ATTACK_EFFECT_TYPE } from "@events";
+import type { ResolveRangedAttackEventForBoard } from "@events";
 import {
   applyAttackValue,
   getCurrentUnitStat,
@@ -26,9 +26,9 @@ import {
  * @throws Error if not in a valid state for ranged attack resolution
  */
 export function generateResolveRangedAttackEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): ResolveRangedAttackEvent<TBoard, "resolveRangedAttack"> {
+): ResolveRangedAttackEventForBoard<TBoard> {
   const rangedAttackState = getRangedAttackResolutionState(state);
 
   // Both commitments must be resolved before calculating attack
@@ -103,5 +103,5 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
     routed: attackResult.unitRouted,
     reversed: attackResult.unitReversed,
     retreated: attackResult.unitRetreated,
-  } as unknown as ResolveRangedAttackEvent<TBoard, "resolveRangedAttack">;
+  };
 }

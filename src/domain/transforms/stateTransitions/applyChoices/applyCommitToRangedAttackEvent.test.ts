@@ -1,4 +1,3 @@
-import type { StandardBoard } from "@entities";
 import type { CommitToRangedAttackEvent } from "@events";
 import { getRangedAttackResolutionState } from "@queries";
 import { tempCommandCards } from "@sampleValues";
@@ -31,7 +30,7 @@ describe("applyCommitToRangedAttackEvent", () => {
         currentCommandResolutionState: rangedState,
       }),
     );
-    const event: CommitToRangedAttackEvent<StandardBoard> = {
+    const event: CommitToRangedAttackEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "commitToRangedAttack",
@@ -65,7 +64,7 @@ describe("applyCommitToRangedAttackEvent", () => {
         currentCommandResolutionState: rangedState,
       }),
     );
-    const event: CommitToRangedAttackEvent<StandardBoard> = {
+    const event: CommitToRangedAttackEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "commitToRangedAttack",

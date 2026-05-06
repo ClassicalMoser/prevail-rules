@@ -1,18 +1,14 @@
 import type { Board, ValidationResult } from "@entities";
-import type { Event } from "@events";
-import type { GameStateWithBoard, MoveCommandersPhaseState } from "@game";
+import type { EventForBoard, PlayerChoiceEvent } from "@events";
+import type { GameState, GameStateForBoard, MoveCommandersPhaseState } from "@game";
 import { validatePlayerChoice } from "@validation/playerChoice";
 
 /**
- * Validates an event for the MoveCommanders phase.
- *
- * @param event - The event to validate
- * @param state - The current game state with MoveCommanders phase
- * @returns ValidationResult indicating if the event is valid
+ * @deprecated Validation under rework.
  */
 export function validateMoveCommandersPhaseEvent<TBoard extends Board>(
-  event: Event<TBoard>,
-  state: GameStateWithBoard<TBoard> & {
+  event: EventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard> & {
     currentRoundState: {
       currentPhaseState: MoveCommandersPhaseState;
     };
@@ -24,7 +20,7 @@ export function validateMoveCommandersPhaseEvent<TBoard extends Board>(
     case "moveFirstCommander":
     case "moveSecondCommander":
       if (event.eventType === "playerChoice") {
-        return validatePlayerChoice(event, state);
+        return validatePlayerChoice(event as PlayerChoiceEvent, state as GameState);
       }
       return {
         result: false,

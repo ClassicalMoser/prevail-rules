@@ -1,6 +1,6 @@
-import type { Board, PlayerSide } from "@entities";
+import type { PlayerSide } from "@entities";
 import type { ExpectedEventInfo } from "@events";
-import type { GameStateWithBoard, RangedAttackResolutionState } from "@game";
+import type { GameState, RangedAttackResolutionState } from "@game";
 import { getOtherPlayer } from "@queries/getOtherPlayer";
 import { getExpectedAttackApplyEvent } from "../composable";
 
@@ -12,8 +12,8 @@ import { getExpectedAttackApplyEvent } from "../composable";
  * @param attackingPlayer - The player performing the attack
  * @returns Information about what event is expected
  */
-export function getExpectedRangedAttackResolutionEvent<TBoard extends Board>(
-  gameState: GameStateWithBoard<TBoard>,
+export function getExpectedRangedAttackResolutionEvent(
+  gameState: GameState,
   resolutionState: RangedAttackResolutionState,
   attackingPlayer: PlayerSide,
 ): ExpectedEventInfo {

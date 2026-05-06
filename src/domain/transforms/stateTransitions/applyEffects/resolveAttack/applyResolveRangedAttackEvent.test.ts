@@ -1,6 +1,6 @@
-import type { StandardBoard, UnitPlacement, UnitWithPlacement } from "@entities";
-import type { ResolveRangedAttackEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { StandardBoard, UnitInstance, UnitPlacement, UnitWithPlacement } from "@entities";
+import type { ResolveRangedAttackEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { getRangedAttackResolutionState } from "@queries";
 import {
   createEmptyGameState,
@@ -21,8 +21,8 @@ import { applyResolveRangedAttackEvent } from "./applyResolveRangedAttackEvent";
 describe("applyResolveRangedAttackEvent", () => {
   /** issueCommands + ranged CRS with white defender on E-5 and both inPlay cards. */
   function createRangedResolutionFixture(): {
-    full: StandardGameState;
-    defender: ReturnType<typeof createTestUnit>;
+    full: GameStateForBoard<StandardBoard>;
+    defender: UnitInstance;
     defenderWithPlacement: UnitWithPlacement<StandardBoard>;
   } {
     const base = createEmptyGameState();
@@ -55,17 +55,17 @@ describe("applyResolveRangedAttackEvent", () => {
 
   type RangedEventPatch = Partial<
     Omit<
-      ResolveRangedAttackEvent<StandardBoard>,
+      ResolveRangedAttackEventForBoard<StandardBoard>,
       "defenderWithPlacement" | "eventType" | "effectType"
     >
   > &
-    Pick<ResolveRangedAttackEvent<StandardBoard>, "legalRetreatOptions">;
+    Pick<ResolveRangedAttackEventForBoard<StandardBoard>, "legalRetreatOptions">;
 
   /** Game effect merge: defaults plus patch (legalRetreatOptions required in patch). */
   function rangedEvent(
     defenderWithPlacement: UnitWithPlacement<StandardBoard>,
     patch: RangedEventPatch,
-  ): ResolveRangedAttackEvent<StandardBoard> {
+  ): ResolveRangedAttackEventForBoard<StandardBoard> {
     return {
       eventNumber: 0,
       eventType: "gameEffect",

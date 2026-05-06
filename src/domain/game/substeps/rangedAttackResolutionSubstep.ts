@@ -1,11 +1,7 @@
-import type { LargeBoard, SmallBoard, StandardBoard, UnitInstance } from "@entities";
+import type { Board, LargeBoard, SmallBoard, StandardBoard, UnitInstance } from "@entities";
 import type { Commitment } from "@game/commitment";
 import type { AssertExact } from "@utils";
-import type {
-  LargeAttackApplyState,
-  SmallAttackApplyState,
-  StandardAttackApplyState,
-} from "./attackApplySubstep";
+import type { AttackApplyStateForBoard } from "./attackApplySubstep";
 import { unitInstanceSchema } from "@entities";
 import { commitmentSchema } from "@game/commitment";
 import { z } from "zod";
@@ -24,17 +20,21 @@ import {
  *
  * Unlike composable substeps, this state is only used in one specific context.
  */
-export interface RangedAttackResolutionStateBase {
+export interface RangedAttackResolutionStateForBoard<TBoard extends Board> {
   /** The type of the substep. */
   substepType: "commandResolution";
   /** The type of command resolution. */
   commandResolutionType: "rangedAttack";
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
   /** The unit that is attacking. */
   attackingUnit: UnitInstance;
   /** The unit that is being attacked. */
   defendingUnit: UnitInstance;
   /** The supporting units. */
   supportingUnits: Set<UnitInstance>;
+  /** The state of the attack apply. */
+  attackApplyState: AttackApplyStateForBoard<TBoard> | undefined;
   /** The commitment of the attacking player. */
   attackingCommitment: Commitment;
   /** The commitment of the defending player. */
@@ -43,25 +43,10 @@ export interface RangedAttackResolutionStateBase {
   completed: boolean;
 }
 
-export interface StandardRangedAttackResolutionState extends RangedAttackResolutionStateBase {
-  boardType: "standard";
-  attackApplyState: StandardAttackApplyState | undefined;
-}
-
-export interface SmallRangedAttackResolutionState extends RangedAttackResolutionStateBase {
-  boardType: "small";
-  attackApplyState: SmallAttackApplyState | undefined;
-}
-
-export interface LargeRangedAttackResolutionState extends RangedAttackResolutionStateBase {
-  boardType: "large";
-  attackApplyState: LargeAttackApplyState | undefined;
-}
-
 export type RangedAttackResolutionState =
-  | StandardRangedAttackResolutionState
-  | SmallRangedAttackResolutionState
-  | LargeRangedAttackResolutionState;
+  | RangedAttackResolutionStateForBoard<SmallBoard>
+  | RangedAttackResolutionStateForBoard<StandardBoard>
+  | RangedAttackResolutionStateForBoard<LargeBoard>;
 
 const _standardRangedAttackResolutionStateSchemaObject = z.object({
   substepType: z.literal("commandResolution"),
@@ -81,12 +66,13 @@ type StandardRangedAttackResolutionStateSchemaType = z.infer<
 >;
 
 const _assertExactStandardRangedAttackResolutionState: AssertExact<
-  StandardRangedAttackResolutionState,
+  RangedAttackResolutionStateForBoard<StandardBoard>,
   StandardRangedAttackResolutionStateSchemaType
 > = true;
 
-export const standardRangedAttackResolutionStateSchema: z.ZodType<StandardRangedAttackResolutionState> =
-  _standardRangedAttackResolutionStateSchemaObject;
+export const standardRangedAttackResolutionStateSchema: z.ZodType<
+  RangedAttackResolutionStateForBoard<StandardBoard>
+> = _standardRangedAttackResolutionStateSchemaObject;
 
 const _smallRangedAttackResolutionStateSchemaObject = z.object({
   substepType: z.literal("commandResolution"),
@@ -106,12 +92,13 @@ type SmallRangedAttackResolutionStateSchemaType = z.infer<
 >;
 
 const _assertExactSmallRangedAttackResolutionState: AssertExact<
-  SmallRangedAttackResolutionState,
+  RangedAttackResolutionStateForBoard<SmallBoard>,
   SmallRangedAttackResolutionStateSchemaType
 > = true;
 
-export const smallRangedAttackResolutionStateSchema: z.ZodType<SmallRangedAttackResolutionState> =
-  _smallRangedAttackResolutionStateSchemaObject;
+export const smallRangedAttackResolutionStateSchema: z.ZodType<
+  RangedAttackResolutionStateForBoard<SmallBoard>
+> = _smallRangedAttackResolutionStateSchemaObject;
 
 const _largeRangedAttackResolutionStateSchemaObject = z.object({
   substepType: z.literal("commandResolution"),
@@ -131,12 +118,13 @@ type LargeRangedAttackResolutionStateSchemaType = z.infer<
 >;
 
 const _assertExactLargeRangedAttackResolutionState: AssertExact<
-  LargeRangedAttackResolutionState,
+  RangedAttackResolutionStateForBoard<LargeBoard>,
   LargeRangedAttackResolutionStateSchemaType
 > = true;
 
-export const largeRangedAttackResolutionStateSchema: z.ZodType<LargeRangedAttackResolutionState> =
-  _largeRangedAttackResolutionStateSchemaObject;
+export const largeRangedAttackResolutionStateSchema: z.ZodType<
+  RangedAttackResolutionStateForBoard<LargeBoard>
+> = _largeRangedAttackResolutionStateSchemaObject;
 
 const _rangedAttackResolutionStateSchemaObject = z.discriminatedUnion("boardType", [
   _standardRangedAttackResolutionStateSchemaObject,
@@ -144,6 +132,15 @@ const _rangedAttackResolutionStateSchemaObject = z.discriminatedUnion("boardType
   _largeRangedAttackResolutionStateSchemaObject,
 ]);
 
-/** Schema for ranged attack resolution (any board). Per-variant AssertExact above; wide union not asserted. */
+type RangedAttackResolutionStateSchemaType = z.infer<
+  typeof _rangedAttackResolutionStateSchemaObject
+>;
+
+const _assertExactRangedAttackResolutionState: AssertExact<
+  RangedAttackResolutionState,
+  RangedAttackResolutionStateSchemaType
+> = true;
+
+/** Schema for ranged attack resolution (any board) */
 export const rangedAttackResolutionStateSchema: z.ZodType<RangedAttackResolutionState> =
   _rangedAttackResolutionStateSchemaObject;

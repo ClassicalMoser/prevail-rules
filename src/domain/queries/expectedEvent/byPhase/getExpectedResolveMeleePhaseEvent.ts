@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { ExpectedEventInfo } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import { getResolveMeleePhaseState } from "@queries/sequencing";
 import { getExpectedMeleeResolutionEvent } from "../iterated";
 
@@ -10,9 +9,7 @@ import { getExpectedMeleeResolutionEvent } from "../iterated";
  * @param state - The current game state with Resolve Melee phase
  * @returns Information about what event is expected
  */
-export function getExpectedResolveMeleePhaseEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): ExpectedEventInfo {
+export function getExpectedResolveMeleePhaseEvent(state: GameState): ExpectedEventInfo {
   const phaseState = getResolveMeleePhaseState(state);
   const firstPlayer = state.currentInitiative;
 

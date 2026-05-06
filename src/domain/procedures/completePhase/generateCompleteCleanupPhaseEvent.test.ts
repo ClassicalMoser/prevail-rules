@@ -1,8 +1,9 @@
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { createEmptyGameState } from "@testing";
 import { describe, expect, it } from "vitest";
 
 import { generateCompleteCleanupPhaseEvent } from "./generateCompleteCleanupPhaseEvent";
+import { StandardBoard } from "@entities";
 
 /**
  * End of cleanup: advance round and return to play-cards phase. Emitted event is a fixed
@@ -11,7 +12,7 @@ import { generateCompleteCleanupPhaseEvent } from "./generateCompleteCleanupPhas
  */
 describe("generateCompleteCleanupPhaseEvent", () => {
   it("given any game state, emits gameEffect with effectType completeCleanupPhase", () => {
-    const state: StandardGameState = createEmptyGameState();
+    const state: GameStateForBoard<StandardBoard> = createEmptyGameState();
     const event = generateCompleteCleanupPhaseEvent(state, 0);
     expect(event.eventType).toBe("gameEffect");
     expect(event.effectType).toBe("completeCleanupPhase");

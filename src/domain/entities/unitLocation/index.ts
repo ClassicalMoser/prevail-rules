@@ -4,12 +4,7 @@ export {
   standardUnitPlacementSchema,
   unitPlacementSchema,
 } from "./unitPlacement";
-export type {
-  LargeUnitPlacement,
-  SmallUnitPlacement,
-  StandardUnitPlacement,
-  UnitPlacement,
-} from "./unitPlacement";
+export type { UnitPlacement } from "./unitPlacement";
 
 export {
   largeUnitWithPlacementSchema,
@@ -17,9 +12,4 @@ export {
   standardUnitWithPlacementSchema,
   unitWithPlacementSchema,
 } from "./unitWithPlacement";
-export type {
-  LargeUnitWithPlacement,
-  SmallUnitWithPlacement,
-  StandardUnitWithPlacement,
-  UnitWithPlacement,
-} from "./unitWithPlacement";
+export type { UnitWithPlacement } from "./unitWithPlacement";

@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { ChooseRallyEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import { PLAYER_CHOICE_EVENT_TYPE } from "@events";
 import { getOtherPlayer } from "@queries/getOtherPlayer";
 import {
@@ -9,9 +8,7 @@ import {
   getNextEventNumber,
 } from "@queries/sequencing";
 
-export function getLegalChooseRallyEvent<TBoard extends Board>(
-  gameState: GameStateWithBoard<TBoard>,
-): ChooseRallyEvent<TBoard>[] {
+export function getLegalChooseRallyEvent(gameState: GameState): ChooseRallyEvent[] {
   // Make sure we're in the choose rally step
   const phaseState = getCleanupPhaseState(gameState);
   if (
@@ -28,7 +25,7 @@ export function getLegalChooseRallyEvent<TBoard extends Board>(
   const firstPlayer = getCurrentInitiative(gameState);
 
   // Build the result
-  const result: ChooseRallyEvent<TBoard>[] = [];
+  const result: ChooseRallyEvent[] = [];
 
   // If the active player is the first player, add a legal choose rally event
   if (phaseState.step === "firstPlayerChooseRally") {

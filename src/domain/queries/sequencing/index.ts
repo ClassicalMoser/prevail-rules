@@ -18,10 +18,13 @@ export { getNextEventNumber } from "./getNextEventNumber";
 export {
   getCleanupPhaseState,
   getCurrentPhaseState,
+  getCurrentPhaseStateForBoard,
   getIssueCommandsPhaseState,
+  getIssueCommandsPhaseStateForBoard,
   getMoveCommandersPhaseState,
   getPlayCardsPhaseState,
   getResolveMeleePhaseState,
+  getResolveMeleePhaseStateForBoard,
 } from "./getPhaseState";
 export { getRemainingMeleeEngagements } from "./getRemainingMeleeEngagements";
 export {

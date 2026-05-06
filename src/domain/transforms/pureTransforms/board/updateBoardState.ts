@@ -1,5 +1,5 @@
 import type { Board } from "@entities";
-import type { GameStateWithBoard } from "@game";
+import type { GameStateForBoard } from "@game";
 
 /**
  * Creates a new game state with the board state updated.
@@ -16,9 +16,9 @@ import type { GameStateWithBoard } from "@game";
  * ```
  */
 export function updateBoardState<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   boardState: TBoard,
-): GameStateWithBoard<TBoard> {
+): GameStateForBoard<TBoard> {
   return {
     ...state,
     boardState,

@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
 import type { CompletePlayCardsPhaseEvent } from "@events";
-import type { GameStateWithBoard, MoveCommandersPhaseState } from "@game";
+import type { GameState, GameStateForBoard, MoveCommandersPhaseState } from "@game";
 import { MOVE_COMMANDERS_PHASE } from "@game";
 
 import { getPlayCardsPhaseState } from "@queries";
@@ -19,10 +19,11 @@ import { addCompletedPhase, updatePhaseState } from "@transforms/pureTransforms"
  * @returns A new game state with the phase advanced
  */
 export function applyCompletePlayCardsPhaseEvent<TBoard extends Board>(
-  _event: CompletePlayCardsPhaseEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getPlayCardsPhaseState(state);
+  _event: CompletePlayCardsPhaseEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  // Safe type broadening: No spatial information on PlayCardsPhaseState
+  const phaseState = getPlayCardsPhaseState(state as GameState);
 
   // Add the completed phase to the set of completed phases
   const stateWithCompletedPhase = addCompletedPhase(state, phaseState);

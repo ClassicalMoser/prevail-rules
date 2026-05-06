@@ -1,3 +1,4 @@
+import type { CleanupPhaseState, PlayCardsPhaseState } from "@game";
 import { CLEANUP_PHASE, PLAY_CARDS_PHASE } from "@game";
 import { describe, expect, it } from "vitest";
 import { markPhaseAsComplete } from "./markPhaseAsComplete";
@@ -7,9 +8,9 @@ import { markPhaseAsComplete } from "./markPhaseAsComplete";
  */
 describe("markPhaseAsComplete", () => {
   it("given mark play cards phase as complete", () => {
-    const phaseState = {
+    const phaseState: PlayCardsPhaseState = {
       phase: PLAY_CARDS_PHASE,
-      step: "chooseCards" as const,
+      step: "chooseCards",
     };
 
     const completedPhase = markPhaseAsComplete(phaseState);
@@ -20,9 +21,9 @@ describe("markPhaseAsComplete", () => {
   });
 
   it("given mark cleanup phase as complete", () => {
-    const phaseState = {
+    const phaseState: CleanupPhaseState = {
       phase: CLEANUP_PHASE,
-      step: "discardPlayedCards" as const,
+      step: "discardPlayedCards",
       firstPlayerRallyResolutionState: undefined,
       secondPlayerRallyResolutionState: undefined,
     };
@@ -38,9 +39,9 @@ describe("markPhaseAsComplete", () => {
   });
 
   it("given preserve all other phase state properties", () => {
-    const phaseState = {
+    const phaseState: CleanupPhaseState = {
       phase: CLEANUP_PHASE,
-      step: "firstPlayerResolveRally" as const,
+      step: "firstPlayerResolveRally",
       firstPlayerRallyResolutionState: {
         playerRallied: true,
         rallyResolved: false,

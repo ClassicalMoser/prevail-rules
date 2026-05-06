@@ -181,7 +181,7 @@ describe("getCurrentUnitStat", () => {
         ...createTestCard(),
         command: {
           ...createTestCard().command,
-          modifiers: undefined as unknown as never[],
+          modifiers: [],
         },
       };
 

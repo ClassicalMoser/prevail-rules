@@ -1,8 +1,9 @@
+import { StandardBoard } from "@entities";
 import type {
-  StandardGameState,
-  StandardMeleeResolutionState,
-  StandardMovementResolutionState,
-  StandardRangedAttackResolutionState,
+  GameStateForBoard,
+  MeleeResolutionStateForBoard,
+  MovementResolutionStateForBoard,
+  RangedAttackResolutionStateForBoard,
 } from "@game";
 import { createTestUnit } from "@testing/unitHelpers";
 
@@ -10,9 +11,9 @@ import { createTestUnit } from "@testing/unitHelpers";
  * Creates a MovementResolutionState with sensible defaults (standard board).
  */
 export function createMovementResolutionState(
-  state: StandardGameState,
-  overrides?: Partial<StandardMovementResolutionState>,
-): StandardMovementResolutionState {
+  state: GameStateForBoard<StandardBoard>,
+  overrides?: Partial<MovementResolutionStateForBoard<StandardBoard>>,
+): MovementResolutionStateForBoard<StandardBoard> {
   return {
     substepType: "commandResolution" as const,
     commandResolutionType: "movement" as const,
@@ -46,9 +47,9 @@ export function createMovementResolutionState(
  * Creates a RangedAttackResolutionState with sensible defaults (standard board).
  */
 export function createRangedAttackResolutionState(
-  state: StandardGameState,
-  overrides?: Partial<StandardRangedAttackResolutionState>,
-): StandardRangedAttackResolutionState {
+  state: GameStateForBoard<StandardBoard>,
+  overrides?: Partial<RangedAttackResolutionStateForBoard<StandardBoard>>,
+): RangedAttackResolutionStateForBoard<StandardBoard> {
   return {
     substepType: "commandResolution" as const,
     commandResolutionType: "rangedAttack" as const,
@@ -74,9 +75,9 @@ export function createRangedAttackResolutionState(
  * Creates a MeleeResolutionState with sensible defaults (standard board).
  */
 export function createMeleeResolutionState(
-  state: StandardGameState,
-  overrides?: Partial<StandardMeleeResolutionState>,
-): StandardMeleeResolutionState {
+  state: GameStateForBoard<StandardBoard>,
+  overrides?: Partial<MeleeResolutionStateForBoard<StandardBoard>>,
+): MeleeResolutionStateForBoard<StandardBoard> {
   return {
     substepType: "meleeResolution" as const,
     boardType: "standard" as const,

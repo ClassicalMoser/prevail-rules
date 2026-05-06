@@ -1,6 +1,6 @@
 import type { StandardBoard } from "@entities";
-import type { Event } from "@events";
-import type { StandardGameState } from "@game";
+import type { EventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { PLAYER_CHOICE_EVENT_TYPE } from "@events";
 import { PLAY_CARDS_PHASE } from "@game";
 import { createCleanupPhaseState, createEmptyGameState } from "@testing";
@@ -21,8 +21,8 @@ describe("getLegalChooseRallyEvent", () => {
   function stateChooseRally(options: {
     step: "firstPlayerChooseRally" | "secondPlayerChooseRally";
     initiative?: "black" | "white";
-    eventStream?: readonly Event<StandardBoard>[];
-  }): StandardGameState {
+    eventStream?: readonly EventForBoard<StandardBoard>[];
+  }): GameStateForBoard<StandardBoard> {
     const base = createEmptyGameState({
       currentInitiative: options.initiative ?? "black",
     });
@@ -79,7 +79,7 @@ describe("getLegalChooseRallyEvent", () => {
   });
 
   it("uses getNextEventNumber for eventNumber", () => {
-    const prior: readonly Event<StandardBoard>[] = [
+    const prior: readonly EventForBoard<StandardBoard>[] = [
       {
         eventNumber: 0,
         eventType: "gameEffect",

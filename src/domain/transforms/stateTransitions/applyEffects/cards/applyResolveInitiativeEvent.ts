@@ -1,10 +1,10 @@
 import type { Board } from "@entities";
 import type { ResolveInitiativeEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState, GameStateForBoard } from "@game";
 import { getPlayCardsPhaseState } from "@queries";
 import {
   markPhaseAsComplete,
-  updateCurrentInitiative,
+  updateCurrentInitiativeForBoard,
   updatePhaseState,
 } from "@transforms/pureTransforms";
 
@@ -21,15 +21,17 @@ import {
  * @returns A new game state with initiative assigned
  */
 export function applyResolveInitiativeEvent<TBoard extends Board>(
-  event: ResolveInitiativeEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getPlayCardsPhaseState(state);
+  event: ResolveInitiativeEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  // Safe broad type cast because we know the event is for the board type
+  const phaseState = getPlayCardsPhaseState(state as GameState);
 
   // Advance to complete step
   const newPhaseState = markPhaseAsComplete(phaseState);
 
-  const stateWithInitiative = updateCurrentInitiative(state, event.player);
+  // Safe broad type cast because we know the event is for the board type
+  const stateWithInitiative = updateCurrentInitiativeForBoard(state, event.player);
   const stateWithPhase = updatePhaseState(stateWithInitiative, newPhaseState);
 
   return stateWithPhase;

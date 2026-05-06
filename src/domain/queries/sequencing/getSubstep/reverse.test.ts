@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { StandardAttackApplyState, StandardGameState } from "@game";
+import type { AttackApplyStateForBoard, GameStateForBoard } from "@game";
 import {
   createAttackApplyStateWithReverse,
   createEmptyGameState,
@@ -22,7 +22,7 @@ import {
 describe("getReverseStateFromAttackApply", () => {
   it("given apply with reverse substep, returns reverseState", () => {
     const unit = createTestUnit("black", { attack: 2 });
-    const attackApplyState: StandardAttackApplyState = {
+    const attackApplyState: AttackApplyStateForBoard<StandardBoard> = {
       substepType: "attackApply" as const,
       boardType: "standard" as const,
       defendingUnit: unit,
@@ -58,7 +58,7 @@ describe("getReverseStateFromAttackApply", () => {
 
   it("given error when reverse state is missing, throws", () => {
     const unit = createTestUnit("black", { attack: 2 });
-    const attackApplyState: StandardAttackApplyState = {
+    const attackApplyState: AttackApplyStateForBoard<StandardBoard> = {
       substepType: "attackApply" as const,
       boardType: "standard" as const,
       defendingUnit: unit,
@@ -81,7 +81,10 @@ describe("getReverseStateFromAttackApply", () => {
 
 describe("getReverseStateFromMeleeResolutionByInitiative", () => {
   /** Both sides in reverse substeps; optional finalPosition on initiative side to simulate done. */
-  function stateWithReverse(initiative: "white" | "black", firstFinal?: "set"): StandardGameState {
+  function stateWithReverse(
+    initiative: "white" | "black",
+    firstFinal?: "set",
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: initiative });
     const whiteUnit = createTestUnit("white", { attack: 2 });
     const blackUnit = createTestUnit("black", { attack: 2 });

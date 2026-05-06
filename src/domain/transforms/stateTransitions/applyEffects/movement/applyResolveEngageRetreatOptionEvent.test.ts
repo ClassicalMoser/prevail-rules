@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from "@entities";
 import type { ResolveEngageRetreatOptionEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import {
   createEmptyGameState,
   createFrontEngagementState,
@@ -50,19 +50,19 @@ describe("applyResolveEngageRetreatOptionEvent", () => {
       targetPlacement: engagementState.targetPlacement,
       engagementState,
     });
-    const full: StandardGameState = updatePhaseState(
+    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withBoard,
       createIssueCommandsPhaseState(withBoard, {
         currentCommandResolutionState: movement,
       }),
     );
 
-    const event = {
+    const event: ResolveEngageRetreatOptionEvent = {
       eventNumber: 0,
       eventType: "gameEffect" as const,
       effectType: "resolveEngageRetreatOption" as const,
       defendingUnitCanRetreat: true,
-    } satisfies ResolveEngageRetreatOptionEvent<StandardBoard>;
+    };
 
     const next = applyResolveEngageRetreatOptionEvent(event, full);
     const phase = next.currentRoundState.currentPhaseState;

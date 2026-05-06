@@ -1,5 +1,5 @@
 import type { PlayerSide, StandardBoard } from "@entities";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import type { UnitPlacementSpec } from "./unitPlacementSpec";
 import { createBoardWithUnits } from "@testing/createBoard";
 import { createEmptyGameState } from "@testing/createEmptyGameState";
@@ -11,7 +11,7 @@ import { assignInstanceNumbers, normalizeUnitPlacement } from "./unitPlacementSp
 export function createGameState(
   units: UnitPlacementSpec[],
   options?: { currentInitiative?: PlayerSide },
-): StandardGameState {
+): GameStateForBoard<StandardBoard> {
   const gameState = createEmptyGameState(options);
   const assignments = assignInstanceNumbers(units);
   const normalizedUnits = assignments.map(({ spec, instanceNumber }) =>

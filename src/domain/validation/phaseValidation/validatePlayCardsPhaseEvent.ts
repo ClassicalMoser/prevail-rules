@@ -1,18 +1,14 @@
 import type { Board, ValidationResult } from "@entities";
-import type { Event } from "@events";
-import type { GameStateWithBoard, PlayCardsPhaseState } from "@game";
+import type { EventForBoard, PlayerChoiceEvent } from "@events";
+import type { GameState, GameStateForBoard, PlayCardsPhaseState } from "@game";
 import { validatePlayerChoice } from "@validation/playerChoice";
 
 /**
- * Validates an event for the PlayCards phase.
- *
- * @param event - The event to validate
- * @param state - The current game state with PlayCards phase
- * @returns ValidationResult indicating if the event is valid
+ * @deprecated Validation under rework.
  */
 export function validatePlayCardsPhaseEvent<TBoard extends Board>(
-  event: Event<TBoard>,
-  state: GameStateWithBoard<TBoard> & {
+  event: EventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard> & {
     currentRoundState: {
       currentPhaseState: PlayCardsPhaseState;
     };
@@ -23,7 +19,7 @@ export function validatePlayCardsPhaseEvent<TBoard extends Board>(
   switch (phaseState.step) {
     case "chooseCards":
       if (event.eventType === "playerChoice") {
-        return validatePlayerChoice(event, state);
+        return validatePlayerChoice(event as PlayerChoiceEvent, state as GameState);
       }
       return {
         result: false,

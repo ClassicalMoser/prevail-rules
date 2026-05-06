@@ -1,6 +1,5 @@
 import type { StandardBoard } from "@entities";
-import type { CompleteResolveMeleePhaseEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { CLEANUP_PHASE, RESOLVE_MELEE_PHASE } from "@game";
 
 import {
@@ -27,20 +26,14 @@ describe("applyCompleteResolveMeleePhaseEvent", () => {
       black: { ...c.black, inPlay: createTestCard() },
     }));
     const melee = createMeleeResolutionState(withCards);
-    const full: StandardGameState = updatePhaseState(
+    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withCards,
       createResolveMeleePhaseState(withCards, {
         currentMeleeResolutionState: melee,
       }),
     );
 
-    const event = {
-      eventNumber: 0,
-      eventType: "gameEffect" as const,
-      effectType: "completeResolveMeleePhase" as const,
-    } satisfies CompleteResolveMeleePhaseEvent<StandardBoard>;
-
-    const next = applyCompleteResolveMeleePhaseEvent(event, full);
+    const next = applyCompleteResolveMeleePhaseEvent(full);
     const phase = next.currentRoundState.currentPhaseState;
     expect(phase?.phase).toBe(CLEANUP_PHASE);
     if (phase?.phase !== "cleanup") throw new Error("cleanup");

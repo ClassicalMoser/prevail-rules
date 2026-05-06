@@ -1,6 +1,6 @@
-import type { Board, BoardCoordinate } from "@entities";
-import type { ResolveFlankEngagementEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { Board } from "@entities";
+import type { ResolveFlankEngagementEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE } from "@events";
 import {
   getFlankEngagementStateFromMovement,
@@ -19,14 +19,14 @@ import {
  * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
  */
 export function generateResolveFlankEngagementEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): ResolveFlankEngagementEvent<TBoard, "resolveFlankEngagement"> {
+): ResolveFlankEngagementEventForBoard<TBoard> {
   const engagementState = getFlankEngagementStateFromMovement(state);
 
   const defenderWithPlacement = getSingleUnitWithPlacementAtCoordinate(
     state.boardState,
-    engagementState.targetPlacement.coordinate as BoardCoordinate<TBoard>,
+    engagementState.targetPlacement.coordinate,
   );
 
   // Get the engaging unit's facing
@@ -42,5 +42,5 @@ export function generateResolveFlankEngagementEvent<TBoard extends Board>(
     boardType: state.boardState.boardType,
     defenderWithPlacement,
     newFacing,
-  } as unknown as ResolveFlankEngagementEvent<TBoard, "resolveFlankEngagement">;
+  };
 }

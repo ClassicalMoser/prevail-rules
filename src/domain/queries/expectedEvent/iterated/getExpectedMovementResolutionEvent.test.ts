@@ -1,4 +1,5 @@
-import type { StandardEngagementState, StandardGameState } from "@game";
+import type { StandardBoard } from "@entities";
+import type { GameStateForBoard, MovementResolutionStateForBoard } from "@game";
 import {
   createEmptyGameState,
   createGameStateWithUnits,
@@ -19,6 +20,18 @@ vi.mock("../composable", () => ({
   getExpectedEngagementEvent: getExpectedEngagementEventMock,
 }));
 
+function createGameStateWithTargetEnemy(): GameStateForBoard<StandardBoard> {
+  const state = createGameStateWithUnits([
+    {
+      unit: createTestUnit("white"),
+      coordinate: "E-6",
+      facing: "north",
+    },
+  ]);
+  state.cardState.black.inPlay = createTestCard();
+  return state;
+}
+
 /**
  * getExpectedMovementResolutionEvent: next event while resolving a movement command.
  */
@@ -26,18 +39,6 @@ describe("getExpectedMovementResolutionEvent", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-
-  function createGameStateWithTargetEnemy(): StandardGameState {
-    const state = createGameStateWithUnits([
-      {
-        unit: createTestUnit("white"),
-        coordinate: "E-6",
-        facing: "north",
-      },
-    ]);
-    state.cardState.black.inPlay = createTestCard();
-    return state;
-  }
 
   it("given commitment is pending, asks the player to commit to movement", () => {
     const gameState = createGameStateWithUnits([]);
@@ -78,33 +79,30 @@ describe("getExpectedMovementResolutionEvent", () => {
 
   it("given complete unit movement when engagement is already complete", () => {
     const gameState = createGameStateWithTargetEnemy();
-    const resolutionState = createMovementResolutionState(gameState, {
-      engagementState: {
-        substepType: "engagementResolution",
-        boardType: "standard" as const,
-        engagingUnit: createUnitWithPlacement({ playerSide: "black" }).unit,
-        targetPlacement: {
+    const resolutionState: MovementResolutionStateForBoard<StandardBoard> =
+      createMovementResolutionState(gameState, {
+        engagementState: {
+          substepType: "engagementResolution",
           boardType: "standard" as const,
-          coordinate: "E-6",
-          facing: "north",
-        },
-        engagementResolutionState: {
-          engagementType: "front",
-          defensiveCommitment: {
-            commitmentType: "completed",
-            card: createTestCard(),
+          engagingUnit: createUnitWithPlacement({ playerSide: "black" }).unit,
+          targetPlacement: {
+            boardType: "standard" as const,
+            coordinate: "E-6",
+            facing: "north",
           },
-          defendingUnitCanRetreat: true,
-          defendingUnitRetreats: false,
-          defendingUnitRetreated: undefined,
+          engagementResolutionState: {
+            engagementType: "front",
+            defensiveCommitment: {
+              commitmentType: "completed",
+              card: createTestCard(),
+            },
+            defendingUnitCanRetreat: true,
+            defendingUnitRetreats: false,
+            defendingUnitRetreated: undefined,
+          },
+          completed: false,
         },
-        completed: false,
-      } as StandardEngagementState,
-    });
-    resolutionState.engagementState = {
-      ...resolutionState.engagementState,
-      completed: true,
-    } as StandardEngagementState;
+      });
 
     expect(getExpectedMovementResolutionEvent(gameState, resolutionState, "black")).toEqual({
       actionType: "gameEffect",
@@ -135,7 +133,7 @@ describe("getExpectedMovementResolutionEvent", () => {
           defendingUnitRetreated: undefined,
         },
         completed: false,
-      } as StandardEngagementState,
+      },
     });
     const expectedEvent = {
       actionType: "gameEffect",

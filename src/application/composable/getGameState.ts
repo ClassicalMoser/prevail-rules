@@ -1,16 +1,21 @@
-import type { GameType } from "@entities";
-import type { BoardForGameType, GameStateWithBoard } from "@game";
+import type { Game, GameState } from "@game";
 import type { GameStorage } from "../ports";
 import { getGame } from "./getGame";
 
-export async function getGameState<T extends GameType>(
+/**
+ * Gets the game state for a given game.
+ * @param gameId - The ID of the game to get the game state for.
+ * @param gameStorage - The game storage to use.
+ * @returns The game state.
+ */
+export async function getGameState(
   gameId: string,
-  gameType: T,
   gameStorage: GameStorage,
-): Promise<GameStateWithBoard<BoardForGameType<T>> | undefined> {
-  const game = await getGame(gameId, gameType, gameStorage);
+): Promise<GameState | undefined> {
+  const game: Game | undefined = await getGame(gameId, gameStorage);
   if (!game) {
     return undefined;
   }
-  return game.gameState as GameStateWithBoard<BoardForGameType<T>>;
+
+  return game.gameState;
 }

@@ -1,13 +1,16 @@
-import type { Board } from "@entities";
-import type { CompleteAttackApplyEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
-import { COMPLETE_ATTACK_APPLY_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
+import {
+  COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
+  CompleteAttackApplyEvent,
+  GAME_EFFECT_EVENT_TYPE,
+} from "@events";
 import {
   getAttackApplyStateFromRangedAttack,
-  getCurrentPhaseState,
+  getCurrentPhaseStateForBoard,
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
   getMeleeResolutionState,
 } from "@queries";
+import { Board } from "@entities";
+import type { GameState, GameStateForBoard, MeleeResolutionState } from "@game";
 
 /**
  * Generates a CompleteAttackApplyEvent to complete an attack apply substep.
@@ -17,10 +20,10 @@ import {
  * @returns A complete CompleteAttackApplyEvent
  */
 export function generateCompleteAttackApplyEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): CompleteAttackApplyEvent<TBoard, "completeAttackApply"> {
-  const phaseState = getCurrentPhaseState(state);
+): CompleteAttackApplyEvent {
+  const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
 
   if (phaseState.phase === "issueCommands") {
     const attackApply = getAttackApplyStateFromRangedAttack(state);
@@ -35,7 +38,11 @@ export function generateCompleteAttackApplyEvent<TBoard extends Board>(
 
   if (phaseState.phase === "resolveMelee") {
     const meleeState = getMeleeResolutionState(state);
-    const defendingPlayer = getDefendingPlayerForNextIncompleteMeleeAttackApply(state, meleeState);
+    // Safe type broadening for more generic function signature
+    const defendingPlayer = getDefendingPlayerForNextIncompleteMeleeAttackApply(
+      state as GameState,
+      meleeState as MeleeResolutionState,
+    );
 
     if (defendingPlayer === null) {
       throw new Error("No incomplete attack apply state found in melee resolution");

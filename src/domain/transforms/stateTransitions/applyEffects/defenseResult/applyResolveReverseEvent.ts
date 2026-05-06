@@ -1,6 +1,6 @@
-import type { Board, UnitWithPlacement } from "@entities";
-import type { ResolveReverseEvent } from "@events";
-import type { GameStateWithBoard, ReverseState } from "@game";
+import type { Board } from "@entities";
+import type { ResolveReverseEventForBoard } from "@events";
+import type { GameStateForBoard, ReverseStateForBoard } from "@game";
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -22,17 +22,11 @@ import {
  * @returns A new game state with the unit's facing updated and reverse state marked as completed
  */
 export function applyResolveReverseEvent<TBoard extends Board>(
-  event: ResolveReverseEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const removedUnitBoard = removeUnitFromBoard<TBoard>(
-    state.boardState,
-    event.unitInstance as UnitWithPlacement<TBoard>,
-  );
-  const addedUnitBoard = addUnitToBoard<TBoard>(
-    removedUnitBoard,
-    event.newUnitPlacement as UnitWithPlacement<TBoard>,
-  );
+  event: ResolveReverseEventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const removedUnitBoard = removeUnitFromBoard(state.boardState, event.unitInstance);
+  const addedUnitBoard = addUnitToBoard(removedUnitBoard, event.newUnitPlacement);
 
   const attackApplyState =
     event.attackResolutionContext === "rangedAttack"
@@ -41,11 +35,11 @@ export function applyResolveReverseEvent<TBoard extends Board>(
 
   const currentReverseState = getReverseStateFromAttackApply(attackApplyState);
 
-  const newReverseState = {
+  const newReverseState: ReverseStateForBoard<TBoard> = {
     ...currentReverseState,
     finalPosition: event.newUnitPlacement.placement,
     completed: true,
-  } as ReverseState;
+  };
 
   const stateWithUpdatedReverse = updateReverseState(state, newReverseState);
   return updateBoardState(stateWithUpdatedReverse, addedUnitBoard);

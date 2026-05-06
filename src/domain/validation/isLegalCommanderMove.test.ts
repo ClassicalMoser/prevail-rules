@@ -1,5 +1,5 @@
 import type { StandardBoard, StandardBoardCoordinate } from "@entities";
-import type { MoveCommanderEvent } from "@events";
+import type { MoveCommanderEventForBoard } from "@events";
 import { createBoardWithCommander } from "@testing";
 import { createEmptyStandardBoard } from "@transforms";
 import { describe, expect, it } from "vitest";
@@ -11,7 +11,7 @@ import { isLegalCommanderMove } from "./isLegalCommanderMove";
 describe("valid moves", () => {
   it("given commander moves within distance 1, returns true", () => {
     const board = createBoardWithCommander("black", "E-5");
-    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+    const moveCommanderEvent: MoveCommanderEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "moveCommander",
@@ -28,7 +28,7 @@ describe("valid moves", () => {
 
   it("given commander moves within distance 4, returns true", () => {
     const board = createBoardWithCommander("black", "E-5");
-    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+    const moveCommanderEvent: MoveCommanderEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "moveCommander",
@@ -45,7 +45,7 @@ describe("valid moves", () => {
 
   it("given white commander moves within distance, returns true", () => {
     const board = createBoardWithCommander("white", "F-6");
-    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+    const moveCommanderEvent: MoveCommanderEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "moveCommander",
@@ -62,7 +62,7 @@ describe("valid moves", () => {
 
   it("given commander moves diagonally within distance, returns true", () => {
     const board = createBoardWithCommander("black", "E-5");
-    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+    const moveCommanderEvent: MoveCommanderEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "moveCommander",
@@ -81,7 +81,7 @@ describe("valid moves", () => {
 describe("invalid moves", () => {
   it("given commander is not at starting position, returns false", () => {
     const board = createEmptyStandardBoard(); // No commander on board
-    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+    const moveCommanderEvent: MoveCommanderEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "moveCommander",
@@ -98,7 +98,7 @@ describe("invalid moves", () => {
 
   it("given wrong player's commander is at starting position, returns false", () => {
     const board = createBoardWithCommander("white", "E-5"); // White commander, not black
-    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+    const moveCommanderEvent: MoveCommanderEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "moveCommander",
@@ -115,7 +115,7 @@ describe("invalid moves", () => {
 
   it("given destination is beyond move distance, returns false", () => {
     const board = createBoardWithCommander("black", "E-5");
-    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+    const moveCommanderEvent: MoveCommanderEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "moveCommander",
@@ -132,7 +132,7 @@ describe("invalid moves", () => {
 
   it("given starting coordinate is invalid, returns false", () => {
     const board = createEmptyStandardBoard();
-    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+    const moveCommanderEvent: MoveCommanderEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "moveCommander",
@@ -149,7 +149,7 @@ describe("invalid moves", () => {
 
   it("given destination coordinate is invalid, returns false", () => {
     const board = createBoardWithCommander("black", "E-5");
-    const moveCommanderEvent: MoveCommanderEvent<StandardBoard> = {
+    const moveCommanderEvent: MoveCommanderEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "moveCommander",

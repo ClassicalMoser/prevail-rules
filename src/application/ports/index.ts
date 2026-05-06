@@ -3,7 +3,7 @@ export type { EnginePorts } from "./enginePorts";
  * **Outbound ports** (driven by the application, implemented by infrastructure).
  *
  * Types here stay **relatively wide** (`Game`, `GameState<TBoard extends Board>`, …): adapters
- * only see storage and transport shapes. **Correlated** variants (`GameOfType<T>`, `GameStateWithBoard<BoardForGameType<T>>`)
+ * only see storage and transport shapes. **Correlated** variants (`GameOfType<T>`, `GameStateForBoard<BoardForGameMode<T>>`)
  * are established **after** load (`parseStoredGame`, `getGame`, `getGameState`), then passed into
  * `process/*` where stricter typing pays off.
  */

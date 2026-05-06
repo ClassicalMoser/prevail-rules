@@ -1,9 +1,9 @@
 import type { Board } from "@entities";
 import type {
-  EngagementState,
+  EngagementStateForBoard,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
-  GameStateWithBoard,
+  GameStateForBoard,
   RearEngagementResolutionState,
 } from "@game";
 import { getMovementResolutionState } from "../getCommandResolutionState";
@@ -17,8 +17,8 @@ import { getMovementResolutionState } from "../getCommandResolutionState";
  * @throws Error if not resolving a movement or engagement state is missing
  */
 export function getEngagementStateFromMovement<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): EngagementState {
+  state: GameStateForBoard<TBoard>,
+): EngagementStateForBoard<TBoard> {
   const movementState = getMovementResolutionState(state);
   if (!movementState.engagementState) {
     throw new Error("No engagement state found in movement resolution");
@@ -35,17 +35,20 @@ export function getEngagementStateFromMovement<TBoard extends Board>(
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not flank
  */
 export function getFlankEngagementStateFromMovement<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): EngagementState & {
+  state: GameStateForBoard<TBoard>,
+): EngagementStateForBoard<TBoard> & {
   engagementResolutionState: FlankEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
   if (engagementState.engagementResolutionState.engagementType !== "flank") {
     throw new Error("Engagement type is not flank");
   }
-  return engagementState as EngagementState & {
-    engagementResolutionState: FlankEngagementResolutionState;
+  // Spread back into object for cleaner type inference
+  const flankEngagementState = {
+    ...engagementState,
+    engagementResolutionState: engagementState.engagementResolutionState,
   };
+  return flankEngagementState;
 }
 
 /**
@@ -57,17 +60,20 @@ export function getFlankEngagementStateFromMovement<TBoard extends Board>(
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not front
  */
 export function getFrontEngagementStateFromMovement<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): EngagementState & {
+  state: GameStateForBoard<TBoard>,
+): EngagementStateForBoard<TBoard> & {
   engagementResolutionState: FrontEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
   if (engagementState.engagementResolutionState.engagementType !== "front") {
     throw new Error("Engagement type is not front");
   }
-  return engagementState as EngagementState & {
-    engagementResolutionState: FrontEngagementResolutionState;
+  // Spread back into object for cleaner type inference
+  const frontEngagementState = {
+    ...engagementState,
+    engagementResolutionState: engagementState.engagementResolutionState,
   };
+  return frontEngagementState;
 }
 
 /**
@@ -79,15 +85,18 @@ export function getFrontEngagementStateFromMovement<TBoard extends Board>(
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not rear
  */
 export function getRearEngagementStateFromMovement<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): EngagementState & {
+  state: GameStateForBoard<TBoard>,
+): EngagementStateForBoard<TBoard> & {
   engagementResolutionState: RearEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
   if (engagementState.engagementResolutionState.engagementType !== "rear") {
     throw new Error("Engagement type is not rear");
   }
-  return engagementState as EngagementState & {
-    engagementResolutionState: RearEngagementResolutionState;
+  // Spread back into object for cleaner type inference
+  const rearEngagementState = {
+    ...engagementState,
+    engagementResolutionState: engagementState.engagementResolutionState,
   };
+  return rearEngagementState;
 }

@@ -1,13 +1,13 @@
 import type { Board } from "@entities";
-import type { GameStateWithBoard, PhaseState, RoutState } from "@game";
+import type { GameState, GameStateForBoard, RoutState } from "@game";
 import {
   getCleanupPhaseState,
-  getCurrentPhaseState,
+  getCurrentPhaseStateForBoard,
   getCurrentRallyResolutionState,
-  getIssueCommandsPhaseState,
+  getIssueCommandsPhaseStateForBoard,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
-  getResolveMeleePhaseState,
+  getResolveMeleePhaseStateForBoard,
   updateRallyResolutionStateForCurrentStep,
 } from "@queries";
 import { updatePhaseState } from "../state";
@@ -25,13 +25,13 @@ import { updatePhaseState } from "../state";
  * @returns A new game state with the updated rout state
  */
 export function updateRoutState<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   routState: RoutState,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getCurrentPhaseState(state);
+): GameStateForBoard<TBoard> {
+  const phaseState = getCurrentPhaseStateForBoard(state);
 
   if (phaseState.phase === "issueCommands") {
-    const issueState = getIssueCommandsPhaseState(state);
+    const issueState = getIssueCommandsPhaseStateForBoard(state);
     const commandState = issueState.currentCommandResolutionState;
 
     if (commandState?.commandResolutionType === "rangedAttack") {
@@ -46,7 +46,7 @@ export function updateRoutState<TBoard extends Board>(
           ...ranged,
           attackApplyState: { ...attackApply, routState },
         },
-      } as PhaseState);
+      });
     }
 
     if (commandState?.commandResolutionType === "movement") {
@@ -72,7 +72,7 @@ export function updateRoutState<TBoard extends Board>(
               },
             },
           },
-        } as PhaseState);
+        });
       }
     }
 
@@ -82,7 +82,7 @@ export function updateRoutState<TBoard extends Board>(
   }
 
   if (phaseState.phase === "resolveMelee") {
-    const resolveMelee = getResolveMeleePhaseState(state);
+    const resolveMelee = getResolveMeleePhaseStateForBoard(state);
     const melee = getMeleeResolutionState(state);
     const player = routState.player;
 
@@ -97,7 +97,7 @@ export function updateRoutState<TBoard extends Board>(
           ...melee,
           whiteAttackApplyState: { ...whiteApply, routState },
         },
-      } as PhaseState);
+      });
     }
 
     const blackApply = melee.blackAttackApplyState;
@@ -110,11 +110,12 @@ export function updateRoutState<TBoard extends Board>(
         ...melee,
         blackAttackApplyState: { ...blackApply, routState },
       },
-    } as PhaseState);
+    });
   }
 
   if (phaseState.phase === "cleanup") {
-    const cleanupPhaseState = getCleanupPhaseState(state);
+    // Safe type broadening for more generic function signature
+    const cleanupPhaseState = getCleanupPhaseState(state as GameState);
     const rallyState = getCurrentRallyResolutionState(state);
     if (!rallyState.routState) {
       throw new Error("No rout state found in rally resolution state");
@@ -128,7 +129,7 @@ export function updateRoutState<TBoard extends Board>(
       newRallyState,
       cleanupPhaseState.step,
     );
-    return updatePhaseState(state, newPhaseState as PhaseState);
+    return updatePhaseState(state, newPhaseState);
   }
 
   throw new Error(`Rout state update not expected in phase: ${phaseState.phase}`);

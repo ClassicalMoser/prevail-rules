@@ -1,5 +1,12 @@
-export { boardSchema, boardSizeEnum } from "./board";
-export type { Board, BoardSize, BoardType } from "./board";
+export { boardSchema, boardType, boardTypeEnum } from "./board";
+export type {
+  Board,
+  BoardOfType,
+  BoardType,
+  LARGE_BOARD_TYPE,
+  SMALL_BOARD_TYPE,
+  STANDARD_BOARD_TYPE,
+} from "./board";
 
 export { boardCoordinateSchema } from "./boardCoordinates";
 export type { BoardCoordinate } from "./boardCoordinates";

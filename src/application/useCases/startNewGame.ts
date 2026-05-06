@@ -1,5 +1,6 @@
-import type { Army, GameType } from "@entities";
-import type { BoardForGameType, Game, GameStateWithBoard } from "@game";
+import { gameModes } from "@entities";
+import type { Army, GameMode, GameModeName } from "@entities";
+import type { Game, GameForMode, GameState } from "@game";
 import type { EnginePorts, GameStateChange, PortResponse } from "../ports";
 import { createEmptyGameState } from "@transforms";
 
@@ -13,65 +14,97 @@ function placeholderArmy(): Army {
   };
 }
 
-export const startNewGame = async <T extends GameType>(
-  gameType: T,
+export const startNewGame = async (
+  gameMode: GameModeName,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> => {
-  let gameState: GameStateWithBoard<BoardForGameType<T>>;
-  switch (gameType as T) {
-    case "standard":
-      gameState = createEmptyGameState("standard") as GameStateWithBoard<BoardForGameType<T>>;
+  let gameState: GameState;
+  switch (gameMode) {
+    case "tutorial":
+      gameState = createEmptyGameState("tutorial");
       break;
     case "mini":
-      gameState = createEmptyGameState("mini") as GameStateWithBoard<BoardForGameType<T>>;
+      gameState = createEmptyGameState("mini");
       break;
-    case "tutorial":
-      gameState = createEmptyGameState("tutorial") as GameStateWithBoard<BoardForGameType<T>>;
+    case "standard":
+      gameState = createEmptyGameState("standard");
       break;
-    default:
-      throw new Error(`Unknown gameType: ${gameType}`);
+    case "epic":
+      gameState = createEmptyGameState("epic");
+      break;
+    default: {
+      const _exhaustive: never = gameMode;
+      throw new Error(`Unknown gameMode: ${_exhaustive}`);
+    }
   }
 
-  let game: Game;
-  switch (gameType as T) {
-    case "standard":
+  const boardSize = gameModes.find((gameModeObject) => gameModeObject.name === gameMode)?.boardSize;
+
+  if (boardSize === undefined) {
+    throw new Error(`Game mode ${gameMode} missing board size definition!`);
+  }
+
+  let game: GameForMode<GameMode>;
+  switch (gameMode) {
+    case "tutorial":
       game = {
         id: placeholderId,
-        gameType: "standard",
+        gameType: "tutorial",
+        boardType: boardSize,
         blackPlayer: placeholderId,
         whitePlayer: placeholderId,
         blackArmy: placeholderArmy(),
         whiteArmy: placeholderArmy(),
-        gameState: gameState as GameStateWithBoard<BoardForGameType<"standard">>,
+        gameState,
       };
       break;
     case "mini":
       game = {
         id: placeholderId,
         gameType: "mini",
+        boardType: boardSize,
         blackPlayer: placeholderId,
         whitePlayer: placeholderId,
         blackArmy: placeholderArmy(),
         whiteArmy: placeholderArmy(),
-        gameState: gameState as GameStateWithBoard<BoardForGameType<"mini">>,
+        gameState,
       };
       break;
-    case "tutorial":
+    case "standard":
       game = {
         id: placeholderId,
-        gameType: "tutorial",
+        gameType: "standard",
+        boardType: boardSize,
         blackPlayer: placeholderId,
         whitePlayer: placeholderId,
         blackArmy: placeholderArmy(),
         whiteArmy: placeholderArmy(),
-        gameState: gameState as GameStateWithBoard<BoardForGameType<"tutorial">>,
+        gameState,
       };
       break;
-    default:
-      throw new Error(`Unknown gameType: ${gameType}`);
+    case "epic":
+      game = {
+        id: placeholderId,
+        gameType: "epic",
+        boardType: boardSize,
+        blackPlayer: placeholderId,
+        whitePlayer: placeholderId,
+        blackArmy: placeholderArmy(),
+        whiteArmy: placeholderArmy(),
+        gameState,
+      };
+      break;
+    default: {
+      const _exhaustive: never = gameMode;
+      throw new Error(`Unknown gameMode: ${_exhaustive}`);
+    }
   }
 
-  const saveResult: PortResponse<void> = await ports.gameStorage.saveNewGame(game);
+  // We narrow first to ensure type match at creation time.
+  // Then we broaden to save for facility in the runner.
+  const broadenedGame = game as Game;
+
+  const saveResult: PortResponse<void> = await ports.gameStorage.saveNewGame(broadenedGame);
 
   if (!saveResult.result) {
     return {
@@ -82,11 +115,13 @@ export const startNewGame = async <T extends GameType>(
 
   const change: GameStateChange = {
     gameId: game.id,
-    gameType: game.gameType,
-    gameState: game.gameState,
+    gameState: broadenedGame.gameState,
   };
   for (const subscriber of ports.gameStateSubscribers) {
-    if (subscriber.gameId !== game.id || subscriber.gameType !== game.gameType) {
+    if (
+      subscriber.gameId !== change.gameId ||
+      subscriber.gameMode.name !== change.gameState.boardType
+    ) {
       continue;
     }
     try {

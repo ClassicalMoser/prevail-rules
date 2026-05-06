@@ -1,5 +1,5 @@
 import type { Board } from "@entities";
-import type { AttackApplyState, GameStateWithBoard, ReverseState } from "@game";
+import type { AttackApplyStateForBoard, GameStateForBoard, ReverseStateForBoard } from "@game";
 import { getMeleeResolutionState } from "../getCommandResolutionState";
 
 /**
@@ -10,7 +10,9 @@ import { getMeleeResolutionState } from "../getCommandResolutionState";
  * @returns The reverse state
  * @throws Error if reverse state is missing
  */
-export function getReverseStateFromAttackApply(attackApplyState: AttackApplyState): ReverseState {
+export function getReverseStateFromAttackApply<TBoard extends Board>(
+  attackApplyState: AttackApplyStateForBoard<TBoard>,
+): ReverseStateForBoard<TBoard> {
   if (!attackApplyState.reverseState) {
     throw new Error("No reverse state found in attack apply state");
   }
@@ -21,8 +23,8 @@ export function getReverseStateFromAttackApply(attackApplyState: AttackApplyStat
  * Active reverse substep from melee resolution (initiative order), when still awaiting facing resolution.
  */
 export function getReverseStateFromMeleeResolutionByInitiative<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): ReverseState {
+  state: GameStateForBoard<TBoard>,
+): ReverseStateForBoard<TBoard> {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const firstPlayerAttackApply =

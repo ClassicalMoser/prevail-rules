@@ -1,16 +1,4 @@
-/**
- * ESLint boundary configuration for the boundary-alias-vs-relative rule.
- * This file defines all architectural boundaries and their import rules.
- *
- * @typedef {object} BoundaryConfig
- * @property {string} dir - Relative directory path from rootDir
- * @property {string} alias - Import alias (e.g., '@entities')
- * @property {string[]} [allowImportsFrom] - Boundaries that can be imported from (value imports)
- * @property {string[]} [denyImportsFrom] - Boundaries that cannot be imported from
- * @property {string[]} [allowTypeImportsFrom] - Boundaries that can be imported as types (type-only imports)
- * @property {'alias'|'relative'|'inherit'} [nestedPathFormat] - Path format for nested boundaries
- * @property {'error'|'warn'} [severity] - Severity for violations in this boundary
- */
+import type { BoundaryConfig } from "eslint-plugin-import-boundaries";
 
 /**
  * Boundary definitions for the hexagonal architecture.
@@ -22,7 +10,7 @@
  *
  * @type {BoundaryConfig[]}
  */
-export const boundaries = [
+export const boundaries: BoundaryConfig[] = [
   {
     identifier: "@utils",
     dir: "domain/utils",
@@ -42,8 +30,7 @@ export const boundaries = [
     identifier: "@entities",
     dir: "domain/entities",
     alias: "@entities",
-    allowImportsFrom: ["@ruleValues"],
-    allowTypeImportsFrom: ["@utils"],
+    allowImportsFrom: ["@ruleValues", "@utils"],
     // Mutual dependency layer with events and rule values
     // No functions, no tests, pure declarative structures.
   },
@@ -51,8 +38,8 @@ export const boundaries = [
     identifier: "@events",
     dir: "domain/events",
     alias: "@events",
-    allowImportsFrom: ["@entities", "@ruleValues"],
-    allowTypeImportsFrom: ["@utils"],
+    allowImportsFrom: ["@entities", "@ruleValues", "@utils"],
+
     // Mutual dependency layer with entities and rule values
     // No functions, no tests, pure declarative structures.
   },
@@ -60,8 +47,7 @@ export const boundaries = [
     identifier: "@queries",
     dir: "domain/queries",
     alias: "@queries",
-    allowImportsFrom: ["@entities", "@ruleValues", "@validation", "@events", "@game"],
-    allowTypeImportsFrom: ["@utils"],
+    allowImportsFrom: ["@entities", "@ruleValues", "@validation", "@events", "@game", "@utils"],
     // Mutual dependency layer with validation
     // Inwardly dependent on entities, events, and rule values
     // Queries are pure functions, no runtime.
@@ -70,8 +56,15 @@ export const boundaries = [
     identifier: "@validation",
     dir: "domain/validation",
     alias: "@validation",
-    allowImportsFrom: ["@entities", "@queries", "@game", "@ruleValues", "@events", "@transforms"],
-    allowTypeImportsFrom: ["@utils"],
+    allowImportsFrom: [
+      "@entities",
+      "@queries",
+      "@game",
+      "@ruleValues",
+      "@events",
+      "@transforms",
+      "@utils",
+    ],
     // Mutual dependency layer with queries
     // Inwardly dependent on entities, events, and rule values
     // Validation is pure functions, no runtime.
@@ -90,8 +83,15 @@ export const boundaries = [
     identifier: "@transforms",
     dir: "domain/transforms",
     alias: "@transforms",
-    allowImportsFrom: ["@ruleValues", "@entities", "@game", "@events", "@queries", "@validation"],
-    allowTypeImportsFrom: ["@utils"],
+    allowImportsFrom: [
+      "@ruleValues",
+      "@entities",
+      "@game",
+      "@events",
+      "@queries",
+      "@validation",
+      "@utils",
+    ],
     // State transition functions for applying events to game state.
     // Depends on structures and functions from other layers.
     // No runtime, pure functions.
@@ -107,8 +107,8 @@ export const boundaries = [
       "@validation",
       "@ruleValues",
       "@transforms",
+      "@utils",
     ],
-    allowTypeImportsFrom: ["@utils"],
     // State transition functions for applying events to game state.
     // Depends on structures and functions from other layers.
     // No runtime, pure functions.

@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { ExpectedEventInfo } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import { getPlayCardsPhaseState } from "@queries/sequencing";
 
 /**
@@ -9,9 +8,7 @@ import { getPlayCardsPhaseState } from "@queries/sequencing";
  * @param state - The current game state with PlayCards phase
  * @returns Information about what event is expected
  */
-export function getExpectedPlayCardsPhaseEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): ExpectedEventInfo {
+export function getExpectedPlayCardsPhaseEvent(state: GameState): ExpectedEventInfo {
   const phaseState = getPlayCardsPhaseState(state);
 
   switch (phaseState.step) {

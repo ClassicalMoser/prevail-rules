@@ -1,12 +1,4 @@
-import type {
-  Board,
-  LargeBoard,
-  LargeUnitWithPlacement,
-  SmallBoard,
-  SmallUnitWithPlacement,
-  StandardBoard,
-  StandardUnitWithPlacement,
-} from "@entities";
+import type { Board, LargeBoard, SmallBoard, StandardBoard, UnitWithPlacement } from "@entities";
 import type { AssertExact } from "@utils";
 
 import type { ZodDiscriminatedUnion } from "zod";
@@ -21,48 +13,51 @@ import { z } from "zod";
 /** The type of the resolve retreat game effect. */
 export const RESOLVE_RETREAT_EFFECT_TYPE = "resolveRetreat" as const;
 
-interface ResolveRetreatEventBase {
+export interface ResolveRetreatEventForBoard<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_RETREAT_EFFECT_TYPE;
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
+  /** The starting position of the unit. */
+  startingPosition: UnitWithPlacement<TBoard>;
+  /** The final position of the unit. */
+  finalPosition: UnitWithPlacement<TBoard>;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
 }
 
-export interface StandardResolveRetreatEvent extends ResolveRetreatEventBase {
-  boardType: "standard";
-  startingPosition: StandardUnitWithPlacement;
-  finalPosition: StandardUnitWithPlacement;
-}
+export type ResolveRetreatEvent =
+  | ResolveRetreatEventForBoard<SmallBoard>
+  | ResolveRetreatEventForBoard<StandardBoard>
+  | ResolveRetreatEventForBoard<LargeBoard>;
 
-export interface SmallResolveRetreatEvent extends ResolveRetreatEventBase {
-  boardType: "small";
-  startingPosition: SmallUnitWithPlacement;
-  finalPosition: SmallUnitWithPlacement;
-}
+const _smallResolveRetreatEventSchemaObject: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof RESOLVE_RETREAT_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  boardType: z.ZodLiteral<"small">;
+  startingPosition: typeof smallUnitWithPlacementSchema;
+  finalPosition: typeof smallUnitWithPlacementSchema;
+}> = z.object({
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  effectType: z.literal(RESOLVE_RETREAT_EFFECT_TYPE),
+  eventNumber: z.number(),
+  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
+  startingPosition: smallUnitWithPlacementSchema,
+  finalPosition: smallUnitWithPlacementSchema,
+});
 
-export interface LargeResolveRetreatEvent extends ResolveRetreatEventBase {
-  boardType: "large";
-  startingPosition: LargeUnitWithPlacement;
-  finalPosition: LargeUnitWithPlacement;
-}
+type SmallResolveRetreatEventSchemaType = z.infer<typeof _smallResolveRetreatEventSchemaObject>;
 
-export type ResolveRetreatEventUnion =
-  | StandardResolveRetreatEvent
-  | SmallResolveRetreatEvent
-  | LargeResolveRetreatEvent;
+const _assertExactSmallResolveRetreatEvent: AssertExact<
+  ResolveRetreatEventForBoard<SmallBoard>,
+  SmallResolveRetreatEventSchemaType
+> = true;
 
-export type ResolveRetreatEvent<
-  TBoard extends Board = Board,
-  _TEffectType extends typeof RESOLVE_RETREAT_EFFECT_TYPE = typeof RESOLVE_RETREAT_EFFECT_TYPE,
-> = TBoard extends StandardBoard
-  ? StandardResolveRetreatEvent
-  : TBoard extends SmallBoard
-    ? SmallResolveRetreatEvent
-    : TBoard extends LargeBoard
-      ? LargeResolveRetreatEvent
-      : ResolveRetreatEventUnion;
+export const smallResolveRetreatEventSchema: typeof _smallResolveRetreatEventSchemaObject =
+  _smallResolveRetreatEventSchemaObject;
 
 const _standardResolveRetreatEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
@@ -85,32 +80,12 @@ type StandardResolveRetreatEventSchemaType = z.infer<
 >;
 
 const _assertExactStandardResolveRetreatEvent: AssertExact<
-  StandardResolveRetreatEvent,
+  ResolveRetreatEventForBoard<StandardBoard>,
   StandardResolveRetreatEventSchemaType
 > = true;
 
-const _smallResolveRetreatEventSchemaObject: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof RESOLVE_RETREAT_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
-  boardType: z.ZodLiteral<"small">;
-  startingPosition: typeof smallUnitWithPlacementSchema;
-  finalPosition: typeof smallUnitWithPlacementSchema;
-}> = z.object({
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  effectType: z.literal(RESOLVE_RETREAT_EFFECT_TYPE),
-  eventNumber: z.number(),
-  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
-  startingPosition: smallUnitWithPlacementSchema,
-  finalPosition: smallUnitWithPlacementSchema,
-});
-
-type SmallResolveRetreatEventSchemaType = z.infer<typeof _smallResolveRetreatEventSchemaObject>;
-
-const _assertExactSmallResolveRetreatEvent: AssertExact<
-  SmallResolveRetreatEvent,
-  SmallResolveRetreatEventSchemaType
-> = true;
+export const standardResolveRetreatEventSchema: typeof _standardResolveRetreatEventSchemaObject =
+  _standardResolveRetreatEventSchemaObject;
 
 const _largeResolveRetreatEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
@@ -131,9 +106,12 @@ const _largeResolveRetreatEventSchemaObject: z.ZodObject<{
 type LargeResolveRetreatEventSchemaType = z.infer<typeof _largeResolveRetreatEventSchemaObject>;
 
 const _assertExactLargeResolveRetreatEvent: AssertExact<
-  LargeResolveRetreatEvent,
+  ResolveRetreatEventForBoard<LargeBoard>,
   LargeResolveRetreatEventSchemaType
 > = true;
+
+export const largeResolveRetreatEventSchema: typeof _largeResolveRetreatEventSchemaObject =
+  _largeResolveRetreatEventSchemaObject;
 
 type _ResolveRetreatEventDiscriminatedUnion = ZodDiscriminatedUnion<
   readonly [
@@ -154,7 +132,7 @@ const _resolveRetreatEventSchemaObject: _ResolveRetreatEventDiscriminatedUnion =
 type ResolveRetreatEventSchemaType = z.infer<typeof _resolveRetreatEventSchemaObject>;
 
 const _assertExactResolveRetreatEvent: AssertExact<
-  ResolveRetreatEvent<Board>,
+  ResolveRetreatEvent,
   ResolveRetreatEventSchemaType
 > = true;
 

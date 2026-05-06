@@ -6,11 +6,21 @@ export {
 } from "./attackResolutionContext";
 export type { AttackResolutionContext } from "./attackResolutionContext";
 export { RESOLVE_RETREAT_EFFECT_TYPE } from "./resolveRetreat";
-export type { ResolveRetreatEvent } from "./resolveRetreat";
-export { resolveRetreatEventSchema } from "./resolveRetreat";
+export type { ResolveRetreatEvent, ResolveRetreatEventForBoard } from "./resolveRetreat";
+export {
+  largeResolveRetreatEventSchema,
+  resolveRetreatEventSchema,
+  smallResolveRetreatEventSchema,
+  standardResolveRetreatEventSchema,
+} from "./resolveRetreat";
 export { RESOLVE_REVERSE_EFFECT_TYPE } from "./resolveReverse";
-export type { ResolveReverseEvent } from "./resolveReverse";
-export { resolveReverseEventSchema } from "./resolveReverse";
+export type { ResolveReverseEvent, ResolveReverseEventForBoard } from "./resolveReverse";
+export {
+  largeResolveReverseEventSchema,
+  resolveReverseEventSchema,
+  smallResolveReverseEventSchema,
+  standardResolveReverseEventSchema,
+} from "./resolveReverse";
 export {
   RALLY_ROUT_RESOLUTION_SOURCE,
   REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE,

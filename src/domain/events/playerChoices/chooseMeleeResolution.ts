@@ -1,12 +1,10 @@
 import type {
   Board,
+  BoardCoordinate,
   LargeBoard,
-  LargeBoardCoordinate,
   PlayerSide,
   SmallBoard,
-  SmallBoardCoordinate,
   StandardBoard,
-  StandardBoardCoordinate,
 } from "@entities";
 import type { AssertExact } from "@utils";
 import type { ZodDiscriminatedUnion } from "zod";
@@ -22,49 +20,25 @@ import { z } from "zod";
 /** The type of the choose melee resolution event. */
 export const CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE = "chooseMeleeResolution" as const;
 
-interface ChooseMeleeResolutionEventBase {
+export interface ChooseMeleeResolutionEventForBoard<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE;
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
+  /** The space the melee is occurring in. */
+  space: BoardCoordinate<TBoard>;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
   /** The player who is choosing the melee resolution. */
   player: PlayerSide;
 }
 
-export interface StandardChooseMeleeResolutionEvent extends ChooseMeleeResolutionEventBase {
-  boardType: "standard";
-  /** The space the melee is occurring in. */
-  space: StandardBoardCoordinate;
-}
-
-export interface SmallChooseMeleeResolutionEvent extends ChooseMeleeResolutionEventBase {
-  boardType: "small";
-  space: SmallBoardCoordinate;
-}
-
-export interface LargeChooseMeleeResolutionEvent extends ChooseMeleeResolutionEventBase {
-  boardType: "large";
-  space: LargeBoardCoordinate;
-}
-
-export type ChooseMeleeResolutionEventUnion =
-  | StandardChooseMeleeResolutionEvent
-  | SmallChooseMeleeResolutionEvent
-  | LargeChooseMeleeResolutionEvent;
-
-export type ChooseMeleeResolutionEvent<
-  TBoard extends Board = Board,
-  _TChoiceType extends typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE =
-    typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE,
-> = TBoard extends StandardBoard
-  ? StandardChooseMeleeResolutionEvent
-  : TBoard extends SmallBoard
-    ? SmallChooseMeleeResolutionEvent
-    : TBoard extends LargeBoard
-      ? LargeChooseMeleeResolutionEvent
-      : ChooseMeleeResolutionEventUnion;
+export type ChooseMeleeResolutionEvent =
+  | ChooseMeleeResolutionEventForBoard<StandardBoard>
+  | ChooseMeleeResolutionEventForBoard<SmallBoard>
+  | ChooseMeleeResolutionEventForBoard<LargeBoard>;
 
 const _standardChooseMeleeResolutionEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
@@ -87,9 +61,12 @@ type StandardChooseMeleeResolutionEventSchemaType = z.infer<
 >;
 
 const _assertExactStandardChooseMeleeResolutionEvent: AssertExact<
-  StandardChooseMeleeResolutionEvent,
+  ChooseMeleeResolutionEventForBoard<StandardBoard>,
   StandardChooseMeleeResolutionEventSchemaType
 > = true;
+
+export const standardChooseMeleeResolutionEventSchema: typeof _standardChooseMeleeResolutionEventSchemaObject =
+  _standardChooseMeleeResolutionEventSchemaObject;
 
 const _smallChooseMeleeResolutionEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
@@ -112,9 +89,12 @@ type SmallChooseMeleeResolutionEventSchemaType = z.infer<
 >;
 
 const _assertExactSmallChooseMeleeResolutionEvent: AssertExact<
-  SmallChooseMeleeResolutionEvent,
+  ChooseMeleeResolutionEventForBoard<SmallBoard>,
   SmallChooseMeleeResolutionEventSchemaType
 > = true;
+
+export const smallChooseMeleeResolutionEventSchema: typeof _smallChooseMeleeResolutionEventSchemaObject =
+  _smallChooseMeleeResolutionEventSchemaObject;
 
 const _largeChooseMeleeResolutionEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
@@ -137,9 +117,12 @@ type LargeChooseMeleeResolutionEventSchemaType = z.infer<
 >;
 
 const _assertExactLargeChooseMeleeResolutionEvent: AssertExact<
-  LargeChooseMeleeResolutionEvent,
+  ChooseMeleeResolutionEventForBoard<LargeBoard>,
   LargeChooseMeleeResolutionEventSchemaType
 > = true;
+
+export const largeChooseMeleeResolutionEventSchema: typeof _largeChooseMeleeResolutionEventSchemaObject =
+  _largeChooseMeleeResolutionEventSchemaObject;
 
 type _ChooseMeleeResolutionEventDiscriminatedUnion = ZodDiscriminatedUnion<
   readonly [
@@ -160,7 +143,7 @@ const _chooseMeleeResolutionEventSchemaObject: _ChooseMeleeResolutionEventDiscri
 type ChooseMeleeResolutionEventSchemaType = z.infer<typeof _chooseMeleeResolutionEventSchemaObject>;
 
 const _assertExactChooseMeleeResolutionEvent: AssertExact<
-  ChooseMeleeResolutionEvent<Board>,
+  ChooseMeleeResolutionEvent,
   ChooseMeleeResolutionEventSchemaType
 > = true;
 

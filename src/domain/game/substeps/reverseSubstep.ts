@@ -1,4 +1,5 @@
 import type {
+  Board,
   LargeBoard,
   SmallBoard,
   StandardBoard,
@@ -25,36 +26,23 @@ import { z } from "zod";
  * The expected event query `getExpectedReverseEvent()` is composable and
  * can be called from any parent context that contains this state.
  */
-export interface ReverseStateBase {
+export interface ReverseStateForBoard<TBoard extends Board> {
   /** The type of the substep. */
   substepType: "reverse";
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
+  /** The unit that is reversing. */
+  reversingUnit: UnitWithPlacement<TBoard>;
+  /** The final position of the reversing unit. */
+  finalPosition: UnitPlacement<TBoard> | undefined;
   /** Whether the reverse has been completed. */
   completed: boolean;
 }
 
-/** Reverse on a standard board. */
-export interface StandardReverseState extends ReverseStateBase {
-  boardType: "standard";
-  reversingUnit: UnitWithPlacement<StandardBoard>;
-  finalPosition: UnitPlacement<StandardBoard> | undefined;
-}
-
-/** Reverse on a small board. */
-export interface SmallReverseState extends ReverseStateBase {
-  boardType: "small";
-  reversingUnit: UnitWithPlacement<SmallBoard>;
-  finalPosition: UnitPlacement<SmallBoard> | undefined;
-}
-
-/** Reverse on a large board. */
-export interface LargeReverseState extends ReverseStateBase {
-  boardType: "large";
-  reversingUnit: UnitWithPlacement<LargeBoard>;
-  finalPosition: UnitPlacement<LargeBoard> | undefined;
-}
-
-/** Reverse substep for any board size (discriminated on `boardType`). */
-export type ReverseState = StandardReverseState | SmallReverseState | LargeReverseState;
+export type ReverseState =
+  | ReverseStateForBoard<SmallBoard>
+  | ReverseStateForBoard<StandardBoard>
+  | ReverseStateForBoard<LargeBoard>;
 
 // ---------------------------------------------------------------------------
 // Per-variant Zod schemas
@@ -71,11 +59,11 @@ const _standardReverseStateSchemaObject = z.object({
 type StandardReverseStateSchemaType = z.infer<typeof _standardReverseStateSchemaObject>;
 
 const _assertExactStandardReverseState: AssertExact<
-  StandardReverseState,
+  ReverseStateForBoard<StandardBoard>,
   StandardReverseStateSchemaType
 > = true;
 
-export const standardReverseStateSchema: z.ZodType<StandardReverseState> =
+export const standardReverseStateSchema: z.ZodType<ReverseStateForBoard<StandardBoard>> =
   _standardReverseStateSchemaObject;
 
 const _smallReverseStateSchemaObject = z.object({
@@ -88,10 +76,13 @@ const _smallReverseStateSchemaObject = z.object({
 
 type SmallReverseStateSchemaType = z.infer<typeof _smallReverseStateSchemaObject>;
 
-const _assertExactSmallReverseState: AssertExact<SmallReverseState, SmallReverseStateSchemaType> =
-  true;
+const _assertExactSmallReverseState: AssertExact<
+  ReverseStateForBoard<SmallBoard>,
+  SmallReverseStateSchemaType
+> = true;
 
-export const smallReverseStateSchema: z.ZodType<SmallReverseState> = _smallReverseStateSchemaObject;
+export const smallReverseStateSchema: z.ZodType<ReverseStateForBoard<SmallBoard>> =
+  _smallReverseStateSchemaObject;
 
 const _largeReverseStateSchemaObject = z.object({
   substepType: z.literal("reverse"),
@@ -103,10 +94,13 @@ const _largeReverseStateSchemaObject = z.object({
 
 type LargeReverseStateSchemaType = z.infer<typeof _largeReverseStateSchemaObject>;
 
-const _assertExactLargeReverseState: AssertExact<LargeReverseState, LargeReverseStateSchemaType> =
-  true;
+const _assertExactLargeReverseState: AssertExact<
+  ReverseStateForBoard<LargeBoard>,
+  LargeReverseStateSchemaType
+> = true;
 
-export const largeReverseStateSchema: z.ZodType<LargeReverseState> = _largeReverseStateSchemaObject;
+export const largeReverseStateSchema: z.ZodType<ReverseStateForBoard<LargeBoard>> =
+  _largeReverseStateSchemaObject;
 
 // ---------------------------------------------------------------------------
 // Wide union schema
@@ -117,6 +111,10 @@ const _reverseStateSchemaObject = z.discriminatedUnion("boardType", [
   _smallReverseStateSchemaObject,
   _largeReverseStateSchemaObject,
 ]);
+
+type ReverseStateSchemaType = z.infer<typeof _reverseStateSchemaObject>;
+
+const _assertExactReverseState: AssertExact<ReverseState, ReverseStateSchemaType> = true;
 
 /**
  * Schema for reverse state (any board). Per-variant AssertExact above; wide union not asserted.

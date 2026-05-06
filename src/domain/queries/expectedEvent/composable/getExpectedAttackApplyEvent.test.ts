@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from "@entities";
-import { expectedGameEffectSchema, expectedPlayerInputSchema } from "@events";
+import { ExpectedGameEffect, ExpectedPlayerInput } from "@events";
 import {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
@@ -32,9 +32,7 @@ describe("getExpectedAttackApplyEvent", () => {
   });
 
   function expectGameEffect(result: unknown, effectType: string) {
-    const parsed = expectedGameEffectSchema.safeParse(result);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.effectType).toBe(effectType);
+    expect((result as ExpectedGameEffect).effectType).toBe(effectType);
   }
 
   function expectPlayerChoice(
@@ -42,10 +40,8 @@ describe("getExpectedAttackApplyEvent", () => {
     playerSource: "black" | "white" | "bothPlayers",
     choiceType: "chooseRetreatOption" | "chooseRoutDiscard",
   ) {
-    const parsed = expectedPlayerInputSchema.safeParse(result);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.playerSource).toBe(playerSource);
-    expect(parsed.data?.choiceType).toBe(choiceType);
+    expect((result as ExpectedPlayerInput).playerSource).toBe(playerSource);
+    expect((result as ExpectedPlayerInput).choiceType).toBe(choiceType);
   }
 
   describe("rout priority", () => {

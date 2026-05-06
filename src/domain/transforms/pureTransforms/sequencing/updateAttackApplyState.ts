@@ -1,17 +1,11 @@
 import type { Board } from "@entities";
-import type {
-  AttackApplyState,
-  GameStateWithBoard,
-  MeleeResolutionState,
-  PhaseState,
-  RangedAttackResolutionState,
-} from "@game";
+import type { AttackApplyStateForBoard, GameStateForBoard } from "@game";
 import {
-  getCurrentPhaseState,
-  getIssueCommandsPhaseState,
+  getCurrentPhaseStateForBoard,
+  getIssueCommandsPhaseStateForBoard,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
-  getResolveMeleePhaseState,
+  getResolveMeleePhaseStateForBoard,
 } from "@queries";
 import { updatePhaseState } from "../state";
 
@@ -24,13 +18,13 @@ import { updatePhaseState } from "../state";
  * @returns A new game state with the updated attack apply state
  */
 export function updateAttackApplyState<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-  attackApplyState: AttackApplyState,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getCurrentPhaseState(state);
+  state: GameStateForBoard<TBoard>,
+  attackApplyState: AttackApplyStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const phaseState = getCurrentPhaseStateForBoard(state);
 
   if (phaseState.phase === "issueCommands") {
-    const issueState = getIssueCommandsPhaseState(state);
+    const issueState = getIssueCommandsPhaseStateForBoard(state);
     const ranged = getRangedAttackResolutionState(state);
     if (!ranged.attackApplyState) {
       throw new Error("No attack apply state found in ranged attack resolution state");
@@ -40,12 +34,12 @@ export function updateAttackApplyState<TBoard extends Board>(
       currentCommandResolutionState: {
         ...ranged,
         attackApplyState,
-      } as RangedAttackResolutionState,
-    } as PhaseState);
+      },
+    });
   }
 
   if (phaseState.phase === "resolveMelee") {
-    const resolveMelee = getResolveMeleePhaseState(state);
+    const resolveMelee = getResolveMeleePhaseStateForBoard(state);
     const melee = getMeleeResolutionState(state);
     const player = attackApplyState.defendingUnit.playerSide;
 
@@ -55,8 +49,8 @@ export function updateAttackApplyState<TBoard extends Board>(
         currentMeleeResolutionState: {
           ...melee,
           whiteAttackApplyState: attackApplyState,
-        } as MeleeResolutionState,
-      } as PhaseState);
+        },
+      });
     }
 
     return updatePhaseState(state, {
@@ -64,8 +58,8 @@ export function updateAttackApplyState<TBoard extends Board>(
       currentMeleeResolutionState: {
         ...melee,
         blackAttackApplyState: attackApplyState,
-      } as MeleeResolutionState,
-    } as PhaseState);
+      },
+    });
   }
 
   throw new Error(`Attack apply state update not expected in phase: ${phaseState.phase}`);

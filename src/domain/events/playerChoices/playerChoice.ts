@@ -1,110 +1,184 @@
-import type { Board } from "@entities";
+import type { Board, LargeBoard, SmallBoard, StandardBoard } from "@entities";
 import type { AssertExact } from "@utils";
-import type { ZodDiscriminatedUnion } from "zod";
 import type { ChooseCardEvent } from "./chooseCard";
-import type { ChooseMeleeResolutionEvent } from "./chooseMeleeResolution";
 import type { ChooseRallyEvent } from "./chooseRally";
-import type { ChooseRetreatOptionEvent } from "./chooseRetreatOption";
 import type { ChooseRoutDiscardEvent } from "./chooseRoutDiscard";
+import type { ChooseRetreatOptionEventForBoard } from "./chooseRetreatOption";
+import type { ChooseMeleeResolutionEventForBoard } from "./chooseMeleeResolution";
 import type { ChooseWhetherToRetreatEvent } from "./chooseWhetherToRetreat";
 import type { CommitToMeleeEvent } from "./commitToMelee";
 import type { CommitToMovementEvent } from "./commitToMovement";
 import type { CommitToRangedAttackEvent } from "./commitToRangedAttack";
 import type { IssueCommandEvent } from "./issueCommand";
-import type { MoveCommanderEvent } from "./moveCommander";
-import type { MoveUnitEvent } from "./moveUnit";
-import type { PerformRangedAttackEvent } from "./performRangedAttack";
+import type { MoveCommanderEventForBoard } from "./moveCommander";
+import type { MoveUnitEventForBoard } from "./moveUnit";
+import type { PerformRangedAttackEventForBoard } from "./performRangedAttack";
+import type { SetupUnitsEventForBoard } from "./setupUnit";
 import type { PlayerChoiceType } from "./playerChoiceTypes";
 
-import type { SetupUnitsEvent } from "./setupUnit";
 import { z } from "zod";
 import { chooseCardEventSchema } from "./chooseCard";
-import { chooseMeleeResolutionEventSchema } from "./chooseMeleeResolution";
+import {
+  largeChooseMeleeResolutionEventSchema,
+  smallChooseMeleeResolutionEventSchema,
+  standardChooseMeleeResolutionEventSchema,
+} from "./chooseMeleeResolution";
 import { chooseRallyEventSchema } from "./chooseRally";
-import { chooseRetreatOptionEventSchema } from "./chooseRetreatOption";
+import {
+  largeChooseRetreatOptionEventSchema,
+  smallChooseRetreatOptionEventSchema,
+  standardChooseRetreatOptionEventSchema,
+} from "./chooseRetreatOption";
 import { chooseRoutDiscardEventSchema } from "./chooseRoutDiscard";
 import { chooseWhetherToRetreatEventSchema } from "./chooseWhetherToRetreat";
 import { commitToMeleeEventSchema } from "./commitToMelee";
 import { commitToMovementEventSchema } from "./commitToMovement";
 import { commitToRangedAttackEventSchema } from "./commitToRangedAttack";
 import { issueCommandEventSchema } from "./issueCommand";
-import { moveCommanderEventSchema } from "./moveCommander";
-import { moveUnitEventSchema } from "./moveUnit";
-import { performRangedAttackEventSchema } from "./performRangedAttack";
-import { setupUnitsEventSchema } from "./setupUnit";
+import {
+  largeMoveCommanderEventSchema,
+  smallMoveCommanderEventSchema,
+  standardMoveCommanderEventSchema,
+} from "./moveCommander";
+import {
+  largeMoveUnitEventSchema,
+  smallMoveUnitEventSchema,
+  standardMoveUnitEventSchema,
+} from "./moveUnit";
+import {
+  largePerformRangedAttackEventSchema,
+  smallPerformRangedAttackEventSchema,
+  standardPerformRangedAttackEventSchema,
+} from "./performRangedAttack";
+import {
+  largeSetupUnitsEventSchema,
+  smallSetupUnitsEventSchema,
+  standardSetupUnitsEventSchema,
+} from "./setupUnit";
 
 export type { PlayerChoiceType } from "./playerChoiceTypes";
 export { playerChoices, playerChoiceTypeSchema } from "./playerChoiceTypes";
 
 /** An event that represents a player choice. */
-export type PlayerChoiceEvent<TBoard extends Board, _TPlayerChoiceType extends PlayerChoiceType> =
-  | ChooseCardEvent<TBoard, "chooseCard">
-  | ChooseMeleeResolutionEvent<TBoard, "chooseMeleeResolution">
-  | ChooseRallyEvent<TBoard, "chooseRally">
-  | ChooseRoutDiscardEvent<TBoard, "chooseRoutDiscard">
-  | ChooseRetreatOptionEvent<TBoard, "chooseRetreatOption">
-  | ChooseWhetherToRetreatEvent<TBoard, "chooseWhetherToRetreat">
-  | CommitToMeleeEvent<TBoard, "commitToMelee">
-  | CommitToMovementEvent<TBoard, "commitToMovement">
-  | CommitToRangedAttackEvent<TBoard, "commitToRangedAttack">
-  | IssueCommandEvent<TBoard, "issueCommand">
-  | MoveCommanderEvent<TBoard, "moveCommander">
-  | MoveUnitEvent<TBoard, "moveUnit">
-  | PerformRangedAttackEvent<TBoard, "performRangedAttack">
-  | SetupUnitsEvent<TBoard, "setupUnits">;
+export type PlayerChoiceEventUnionForBoard<TBoard extends Board> =
+  | ChooseCardEvent
+  | ChooseMeleeResolutionEventForBoard<TBoard>
+  | ChooseRallyEvent
+  | ChooseRoutDiscardEvent
+  | ChooseRetreatOptionEventForBoard<TBoard>
+  | ChooseWhetherToRetreatEvent
+  | CommitToMeleeEvent
+  | CommitToMovementEvent
+  | CommitToRangedAttackEvent
+  | IssueCommandEvent
+  | MoveCommanderEventForBoard<TBoard>
+  | MoveUnitEventForBoard<TBoard>
+  | PerformRangedAttackEventForBoard<TBoard>
+  | SetupUnitsEventForBoard<TBoard>;
 
 /**
- * Discriminated by `choiceType`. Spatial choices nest `z.discriminatedUnion('boardType', …)`.
- * Per-variant spatial schemas use explicit `z.ZodObject<…>` so `--isolatedDeclarations` can emit
- * `typeof` exports without losing `$ZodTypeDiscriminable` for this outer DU.
+ * Player choice event type filtered by choice type.
+ * Extracts only the event type that matches the specified choiceType.
+ * This ensures type safety - PlayerChoiceEvent<TBoard, 'chooseCard'> is ONLY ChooseCardEvent.
  */
-type _PlayerChoiceEventDiscriminatedUnion = ZodDiscriminatedUnion<
-  readonly [
-    typeof chooseCardEventSchema,
-    typeof chooseMeleeResolutionEventSchema,
-    typeof chooseRallyEventSchema,
-    typeof chooseRoutDiscardEventSchema,
-    typeof chooseRetreatOptionEventSchema,
-    typeof chooseWhetherToRetreatEventSchema,
-    typeof commitToMeleeEventSchema,
-    typeof commitToMovementEventSchema,
-    typeof commitToRangedAttackEventSchema,
-    typeof issueCommandEventSchema,
-    typeof moveCommanderEventSchema,
-    typeof moveUnitEventSchema,
-    typeof performRangedAttackEventSchema,
-    typeof setupUnitsEventSchema,
-  ],
-  "choiceType"
->;
+export type PlayerChoiceEventForBoard<
+  TBoard extends Board,
+  TPlayerChoiceType extends PlayerChoiceType = PlayerChoiceType,
+> = Extract<PlayerChoiceEventUnionForBoard<TBoard>, { choiceType: TPlayerChoiceType }>;
 
-const _playerChoiceEventSchemaObject: _PlayerChoiceEventDiscriminatedUnion = z.discriminatedUnion(
-  "choiceType",
-  [
-    chooseCardEventSchema,
-    chooseMeleeResolutionEventSchema,
-    chooseRallyEventSchema,
-    chooseRoutDiscardEventSchema,
-    chooseRetreatOptionEventSchema,
-    chooseWhetherToRetreatEventSchema,
-    commitToMeleeEventSchema,
-    commitToMovementEventSchema,
-    commitToRangedAttackEventSchema,
-    issueCommandEventSchema,
-    moveCommanderEventSchema,
-    moveUnitEventSchema,
-    performRangedAttackEventSchema,
-    setupUnitsEventSchema,
-  ],
-);
+export type PlayerChoiceEvent =
+  | PlayerChoiceEventForBoard<StandardBoard>
+  | PlayerChoiceEventForBoard<SmallBoard>
+  | PlayerChoiceEventForBoard<LargeBoard>;
 
-type PlayerChoiceEventSchemaType = z.infer<typeof _playerChoiceEventSchemaObject>;
+const _smallPlayerChoiceEventSchemaObject = z.discriminatedUnion("choiceType", [
+  chooseCardEventSchema,
+  smallChooseMeleeResolutionEventSchema,
+  chooseRallyEventSchema,
+  chooseRoutDiscardEventSchema,
+  smallChooseRetreatOptionEventSchema,
+  chooseWhetherToRetreatEventSchema,
+  commitToMeleeEventSchema,
+  commitToMovementEventSchema,
+  commitToRangedAttackEventSchema,
+  issueCommandEventSchema,
+  smallMoveCommanderEventSchema,
+  smallMoveUnitEventSchema,
+  smallPerformRangedAttackEventSchema,
+  smallSetupUnitsEventSchema,
+]);
 
-/** The schema for a player choice event. */
-export const playerChoiceEventSchema: typeof _playerChoiceEventSchemaObject =
-  _playerChoiceEventSchemaObject;
-
-const _assertExactPlayerChoiceEvent: AssertExact<
-  PlayerChoiceEvent<Board, PlayerChoiceType>,
-  PlayerChoiceEventSchemaType
+const _assertExactSmallPlayerChoiceEvent: AssertExact<
+  PlayerChoiceEventForBoard<SmallBoard>,
+  SmallPlayerChoiceEventSchemaType
 > = true;
+
+type SmallPlayerChoiceEventSchemaType = z.infer<typeof _smallPlayerChoiceEventSchemaObject>;
+
+export const smallPlayerChoiceEventSchema: z.ZodType<PlayerChoiceEventForBoard<SmallBoard>> =
+  _smallPlayerChoiceEventSchemaObject;
+
+const _standardPlayerChoiceEventSchemaObject = z.discriminatedUnion("choiceType", [
+  chooseCardEventSchema,
+  standardChooseMeleeResolutionEventSchema,
+  chooseRallyEventSchema,
+  chooseRoutDiscardEventSchema,
+  standardChooseRetreatOptionEventSchema,
+  chooseWhetherToRetreatEventSchema,
+  commitToMeleeEventSchema,
+  commitToMovementEventSchema,
+  commitToRangedAttackEventSchema,
+  issueCommandEventSchema,
+  standardMoveCommanderEventSchema,
+  standardMoveUnitEventSchema,
+  standardPerformRangedAttackEventSchema,
+  standardSetupUnitsEventSchema,
+]);
+
+type StandardPlayerChoiceEventSchemaType = z.infer<typeof _standardPlayerChoiceEventSchemaObject>;
+
+const _assertExactStandardPlayerChoiceEvent: AssertExact<
+  PlayerChoiceEventForBoard<StandardBoard>,
+  StandardPlayerChoiceEventSchemaType
+> = true;
+
+export const standardPlayerChoiceEventSchema: z.ZodType<PlayerChoiceEventForBoard<StandardBoard>> =
+  _standardPlayerChoiceEventSchemaObject;
+
+const _largePlayerChoiceEventSchemaObject = z.discriminatedUnion("choiceType", [
+  chooseCardEventSchema,
+  largeChooseMeleeResolutionEventSchema,
+  chooseRallyEventSchema,
+  chooseRoutDiscardEventSchema,
+  largeChooseRetreatOptionEventSchema,
+  chooseWhetherToRetreatEventSchema,
+  commitToMeleeEventSchema,
+  commitToMovementEventSchema,
+  commitToRangedAttackEventSchema,
+  issueCommandEventSchema,
+  largeMoveCommanderEventSchema,
+  largeMoveUnitEventSchema,
+  largePerformRangedAttackEventSchema,
+  largeSetupUnitsEventSchema,
+]);
+
+type LargePlayerChoiceEventSchemaType = z.infer<typeof _largePlayerChoiceEventSchemaObject>;
+
+const _assertExactLargePlayerChoiceEvent: AssertExact<
+  PlayerChoiceEventForBoard<LargeBoard>,
+  LargePlayerChoiceEventSchemaType
+> = true;
+
+export const largePlayerChoiceEventSchema: z.ZodType<PlayerChoiceEventForBoard<LargeBoard>> =
+  _largePlayerChoiceEventSchemaObject;
+
+export const playerChoiceEventSchema: z.ZodType<PlayerChoiceEvent> = z.union([
+  smallPlayerChoiceEventSchema,
+  standardPlayerChoiceEventSchema,
+  largePlayerChoiceEventSchema,
+]);
+
+type PlayerChoiceEventSchemaType = z.infer<typeof playerChoiceEventSchema>;
+
+const _assertExactPlayerChoiceEvent: AssertExact<PlayerChoiceEvent, PlayerChoiceEventSchemaType> =
+  true;

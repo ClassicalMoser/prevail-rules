@@ -1,6 +1,6 @@
-import type { Board, PlayerSide } from "@entities";
+import type { PlayerSide } from "@entities";
 import type { ExpectedEventInfo } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 
 /**
  * Gets the expected event to start resolving a command for a unit.
@@ -10,8 +10,8 @@ import type { GameStateWithBoard } from "@game";
  * @param player - The player whose units need to be resolved
  * @returns Information about what event is expected
  */
-export function getExpectedStartCommandResolutionEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+export function getExpectedStartCommandResolutionEvent(
+  state: GameState,
   player: PlayerSide,
 ): ExpectedEventInfo {
   const activeCard = state.cardState[player].inPlay;

@@ -1,6 +1,6 @@
 import type { Command, StandardBoard } from "@entities";
 import type { CompleteMoveCommandersPhaseEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { ISSUE_COMMANDS_PHASE, MOVE_COMMANDERS_PHASE } from "@game";
 
 import { tempCommandCards } from "@sampleValues";
@@ -10,7 +10,7 @@ import { describe, expect, it } from "vitest";
 import { applyCompleteMoveCommandersPhaseEvent } from "./applyCompleteMoveCommandersPhaseEvent";
 
 /** Matches procedure output for black initiative + tempCommandCards[0]/[1] in play. */
-function moveCommandersCompleteEventFromDefaultCards(): CompleteMoveCommandersPhaseEvent<StandardBoard> {
+function moveCommandersCompleteEventFromDefaultCards(): CompleteMoveCommandersPhaseEvent {
   return {
     eventNumber: 0,
     eventType: "gameEffect",
@@ -23,7 +23,7 @@ function moveCommandersCompleteEventFromDefaultCards(): CompleteMoveCommandersPh
 function moveCommandersCompleteEvent(
   first: Set<Command>,
   second: Set<Command>,
-): CompleteMoveCommandersPhaseEvent<StandardBoard> {
+): CompleteMoveCommandersPhaseEvent {
   return {
     eventNumber: 0,
     eventType: "gameEffect",
@@ -40,7 +40,7 @@ function moveCommandersCompleteEvent(
  */
 describe("applyCompleteMoveCommandersPhaseEvent", () => {
   /** moveCommanders.complete, black initiative, tempCommandCards[0]/[1] inPlay. */
-  function createGameStateInCompleteStep(): StandardGameState {
+  function createGameStateInCompleteStep(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: "black" });
 
     const stateWithCards = updateCardState(state, (current) => ({
@@ -240,12 +240,13 @@ describe("applyCompleteMoveCommandersPhaseEvent", () => {
   describe("phase guard", () => {
     it("given issueCommands phase, throws expected moveCommanders phase", () => {
       const state = createEmptyGameState();
-      const stateWrongPhase = updatePhaseState(state, {
+      const stateWrongPhase: GameStateForBoard<StandardBoard> = updatePhaseState(state, {
         phase: ISSUE_COMMANDS_PHASE,
         step: "firstPlayerIssueCommands",
+        boardType: "standard",
         remainingCommandsFirstPlayer: new Set(),
-        remainingCommandsSecondPlayer: new Set(),
         remainingUnitsFirstPlayer: new Set(),
+        remainingCommandsSecondPlayer: new Set(),
         remainingUnitsSecondPlayer: new Set(),
         currentCommandResolutionState: undefined,
       });

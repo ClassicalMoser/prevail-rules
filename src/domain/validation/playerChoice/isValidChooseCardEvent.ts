@@ -1,6 +1,6 @@
 import type { Board, ValidationResult } from "@entities";
 import type { ChooseCardEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameStateForBoard } from "@game";
 
 /**
  * Validates whether a ChooseCardEvent can be applied to the current game state.
@@ -22,8 +22,8 @@ import type { GameStateWithBoard } from "@game";
  * ```
  */
 export function isValidChooseCardEvent<TBoard extends Board>(
-  event: ChooseCardEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
+  event: ChooseCardEvent,
+  state: GameStateForBoard<TBoard>,
 ): ValidationResult {
   try {
     const { player, card } = event;

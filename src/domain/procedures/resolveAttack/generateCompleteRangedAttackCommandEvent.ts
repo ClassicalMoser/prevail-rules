@@ -1,7 +1,8 @@
-import type { Board } from "@entities";
-import type { CompleteRangedAttackCommandEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
-import { COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
+import {
+  COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE,
+  CompleteRangedAttackCommandEvent,
+  GAME_EFFECT_EVENT_TYPE,
+} from "@events";
 
 /**
  * Generates a CompleteRangedAttackCommandEvent to complete a ranged attack command.
@@ -11,12 +12,9 @@ import { COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } fr
  * @param state - The current game state
  * @returns A complete CompleteRangedAttackCommandEvent
  */
-export function generateCompleteRangedAttackCommandEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+export function generateCompleteRangedAttackCommandEvent(
   eventNumber: number,
-): CompleteRangedAttackCommandEvent<TBoard, "completeRangedAttackCommand"> {
-  // Return is independent of state, so we can ignore it
-  const _stateUnused = state;
+): CompleteRangedAttackCommandEvent {
   return {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE,

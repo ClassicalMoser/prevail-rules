@@ -1,12 +1,4 @@
-import type {
-  Board,
-  LargeBoard,
-  LargeBoardCoordinate,
-  SmallBoard,
-  SmallBoardCoordinate,
-  StandardBoard,
-  StandardBoardCoordinate,
-} from "@entities";
+import type { Board, BoardCoordinate, LargeBoard, SmallBoard, StandardBoard } from "@entities";
 import type { AssertExact } from "@utils";
 import type { ZodDiscriminatedUnion } from "zod";
 import {
@@ -25,51 +17,23 @@ import { z } from "zod";
  */
 export const COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE = "completeIssueCommandsPhase" as const;
 
-interface CompleteIssueCommandsPhaseEventBase {
+export interface CompleteIssueCommandsPhaseEventForBoard<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE;
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
+  /** The remaining engagements. */
+  remainingEngagements: Set<BoardCoordinate<TBoard>>;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
 }
 
-/** Event to complete the issue commands phase and advance to resolve melee phase. */
-export interface StandardCompleteIssueCommandsPhaseEvent extends CompleteIssueCommandsPhaseEventBase {
-  boardType: "standard";
-  /**
-   * Board coordinates with engaged units to resolve in the resolve-melee phase.
-   * Produced by the procedure from the board at transition time; apply trusts the log.
-   */
-  remainingEngagements: Set<StandardBoardCoordinate>;
-}
-
-export interface SmallCompleteIssueCommandsPhaseEvent extends CompleteIssueCommandsPhaseEventBase {
-  boardType: "small";
-  remainingEngagements: Set<SmallBoardCoordinate>;
-}
-
-export interface LargeCompleteIssueCommandsPhaseEvent extends CompleteIssueCommandsPhaseEventBase {
-  boardType: "large";
-  remainingEngagements: Set<LargeBoardCoordinate>;
-}
-
-export type CompleteIssueCommandsPhaseEventUnion =
-  | StandardCompleteIssueCommandsPhaseEvent
-  | SmallCompleteIssueCommandsPhaseEvent
-  | LargeCompleteIssueCommandsPhaseEvent;
-
-export type CompleteIssueCommandsPhaseEvent<
-  TBoard extends Board = Board,
-  _TEffectType extends typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE =
-    typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
-> = TBoard extends StandardBoard
-  ? StandardCompleteIssueCommandsPhaseEvent
-  : TBoard extends SmallBoard
-    ? SmallCompleteIssueCommandsPhaseEvent
-    : TBoard extends LargeBoard
-      ? LargeCompleteIssueCommandsPhaseEvent
-      : CompleteIssueCommandsPhaseEventUnion;
+export type CompleteIssueCommandsPhaseEvent =
+  | CompleteIssueCommandsPhaseEventForBoard<SmallBoard>
+  | CompleteIssueCommandsPhaseEventForBoard<StandardBoard>
+  | CompleteIssueCommandsPhaseEventForBoard<LargeBoard>;
 
 const _standardCompleteIssueCommandsPhaseEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
@@ -90,9 +54,12 @@ type StandardCompleteIssueCommandsPhaseEventSchemaType = z.infer<
 >;
 
 const _assertExactStandardCompleteIssueCommandsPhaseEvent: AssertExact<
-  StandardCompleteIssueCommandsPhaseEvent,
+  CompleteIssueCommandsPhaseEventForBoard<StandardBoard>,
   StandardCompleteIssueCommandsPhaseEventSchemaType
 > = true;
+
+export const standardCompleteIssueCommandsPhaseEventSchema: typeof _standardCompleteIssueCommandsPhaseEventSchemaObject =
+  _standardCompleteIssueCommandsPhaseEventSchemaObject;
 
 const _smallCompleteIssueCommandsPhaseEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
@@ -113,9 +80,12 @@ type SmallCompleteIssueCommandsPhaseEventSchemaType = z.infer<
 >;
 
 const _assertExactSmallCompleteIssueCommandsPhaseEvent: AssertExact<
-  SmallCompleteIssueCommandsPhaseEvent,
+  CompleteIssueCommandsPhaseEventForBoard<SmallBoard>,
   SmallCompleteIssueCommandsPhaseEventSchemaType
 > = true;
+
+export const smallCompleteIssueCommandsPhaseEventSchema: typeof _smallCompleteIssueCommandsPhaseEventSchemaObject =
+  _smallCompleteIssueCommandsPhaseEventSchemaObject;
 
 const _largeCompleteIssueCommandsPhaseEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
@@ -136,9 +106,12 @@ type LargeCompleteIssueCommandsPhaseEventSchemaType = z.infer<
 >;
 
 const _assertExactLargeCompleteIssueCommandsPhaseEvent: AssertExact<
-  LargeCompleteIssueCommandsPhaseEvent,
+  CompleteIssueCommandsPhaseEventForBoard<LargeBoard>,
   LargeCompleteIssueCommandsPhaseEventSchemaType
 > = true;
+
+export const largeCompleteIssueCommandsPhaseEventSchema: typeof _largeCompleteIssueCommandsPhaseEventSchemaObject =
+  _largeCompleteIssueCommandsPhaseEventSchemaObject;
 
 type _CompleteIssueCommandsPhaseEventDiscriminatedUnion = ZodDiscriminatedUnion<
   readonly [
@@ -161,7 +134,7 @@ type CompleteIssueCommandsPhaseEventSchemaType = z.infer<
 >;
 
 const _assertExactCompleteIssueCommandsPhaseEvent: AssertExact<
-  CompleteIssueCommandsPhaseEvent<Board>,
+  CompleteIssueCommandsPhaseEvent,
   CompleteIssueCommandsPhaseEventSchemaType
 > = true;
 

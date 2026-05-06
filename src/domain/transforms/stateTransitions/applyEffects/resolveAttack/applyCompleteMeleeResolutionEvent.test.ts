@@ -1,6 +1,6 @@
 import type { StandardBoard } from "@entities";
 import type { CompleteMeleeResolutionEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import {
   createEmptyGameState,
   createMeleeResolutionState,
@@ -25,18 +25,18 @@ describe("applyCompleteMeleeResolutionEvent", () => {
       black: { ...c.black, inPlay: createTestCard() },
     }));
     const melee = createMeleeResolutionState(withCards);
-    const full: StandardGameState = updatePhaseState(
+    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withCards,
       createResolveMeleePhaseState(withCards, {
         currentMeleeResolutionState: melee,
       }),
     );
 
-    const event = {
+    const event: CompleteMeleeResolutionEvent = {
       eventNumber: 0,
       eventType: "gameEffect" as const,
       effectType: "completeMeleeResolution" as const,
-    } satisfies CompleteMeleeResolutionEvent<StandardBoard>;
+    };
 
     const next = applyCompleteMeleeResolutionEvent(event, full);
     const phase = next.currentRoundState.currentPhaseState;

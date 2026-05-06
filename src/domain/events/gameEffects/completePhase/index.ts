@@ -2,8 +2,16 @@ export { COMPLETE_CLEANUP_PHASE_EFFECT_TYPE } from "./completeCleanupPhase";
 export type { CompleteCleanupPhaseEvent } from "./completeCleanupPhase";
 export { completeCleanupPhaseEventSchema } from "./completeCleanupPhase";
 export { COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE } from "./completeIssueCommandsPhase";
-export type { CompleteIssueCommandsPhaseEvent } from "./completeIssueCommandsPhase";
-export { completeIssueCommandsPhaseEventSchema } from "./completeIssueCommandsPhase";
+export type {
+  CompleteIssueCommandsPhaseEvent,
+  CompleteIssueCommandsPhaseEventForBoard,
+} from "./completeIssueCommandsPhase";
+export {
+  completeIssueCommandsPhaseEventSchema,
+  largeCompleteIssueCommandsPhaseEventSchema,
+  smallCompleteIssueCommandsPhaseEventSchema,
+  standardCompleteIssueCommandsPhaseEventSchema,
+} from "./completeIssueCommandsPhase";
 export { COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE } from "./completeMoveCommandersPhase";
 export type { CompleteMoveCommandersPhaseEvent } from "./completeMoveCommandersPhase";
 export { completeMoveCommandersPhaseEventSchema } from "./completeMoveCommandersPhase";

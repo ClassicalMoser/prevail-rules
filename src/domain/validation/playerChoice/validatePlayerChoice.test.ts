@@ -1,6 +1,6 @@
 import type { StandardBoard } from "@entities";
-import type { ChooseCardEvent, IssueCommandEvent, PlayerChoiceEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { ChooseCardEvent, IssueCommandEvent, PlayerChoiceEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { PLAY_CARDS_PHASE } from "@game";
 
 import * as expectedEventQueries from "@queries";
@@ -14,7 +14,7 @@ import { validatePlayerChoice } from "./validatePlayerChoice";
  * validatePlayerChoice: Validates a player choice against the current game state.
  */
 describe("validatePlayerChoice", () => {
-  function stateInPlayCardsChooseCards(): StandardGameState {
+  function stateInPlayCardsChooseCards(): GameStateForBoard<StandardBoard> {
     const base = createEmptyGameState();
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
@@ -41,7 +41,7 @@ describe("validatePlayerChoice", () => {
 
   it("passes when the expected choice matches and is legal", () => {
     const state = stateInPlayCardsChooseCards();
-    const event: ChooseCardEvent<StandardBoard> = {
+    const event: ChooseCardEvent = {
       eventType: "playerChoice",
       choiceType: "chooseCard",
       eventNumber: 0,
@@ -62,7 +62,7 @@ describe("validatePlayerChoice", () => {
       phase: PLAY_CARDS_PHASE,
       step: "revealCards",
     });
-    const event: ChooseCardEvent<StandardBoard> = {
+    const event: ChooseCardEvent = {
       eventType: "playerChoice",
       choiceType: "chooseCard",
       eventNumber: 0,
@@ -102,7 +102,7 @@ describe("validatePlayerChoice", () => {
       }),
     );
 
-    const event: ChooseCardEvent<StandardBoard> = {
+    const event: ChooseCardEvent = {
       eventType: "playerChoice",
       choiceType: "chooseCard",
       eventNumber: 0,
@@ -132,7 +132,7 @@ describe("validatePlayerChoice", () => {
       player: "black" as const,
       from: "E-5" as const,
       to: "E-6" as const,
-    } satisfies PlayerChoiceEvent<StandardBoard, "moveCommander">;
+    } satisfies PlayerChoiceEventForBoard<StandardBoard>;
 
     const validation = validatePlayerChoice(event, state);
 
@@ -148,13 +148,13 @@ describe("validatePlayerChoice", () => {
         actionType: "playerChoice",
         playerSource: "black",
         choiceType: "issueCommand",
-        eventNumber: 0,
+        expectedEventNumber: 0,
       });
     });
 
     it("returns a not-implemented error", () => {
       const state = stateInPlayCardsChooseCards();
-      const event: IssueCommandEvent<StandardBoard> = {
+      const event: IssueCommandEvent = {
         eventType: "playerChoice",
         choiceType: "issueCommand",
         eventNumber: 0,

@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
 import type { RevealCardsEvent } from "@events";
-import type { GameStateWithBoard, PlayCardsPhaseState } from "@game";
+import type { GameState, GameStateForBoard, PlayCardsPhaseState } from "@game";
 import { getPlayCardsPhaseState } from "@queries";
 import { revealCard, updateCardState, updatePhaseState } from "@transforms/pureTransforms";
 
@@ -17,10 +17,11 @@ import { revealCard, updateCardState, updatePhaseState } from "@transforms/pureT
  * @returns A new game state with cards revealed
  */
 export function applyRevealCardsEvent<TBoard extends Board>(
-  _event: RevealCardsEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getPlayCardsPhaseState(state);
+  _event: RevealCardsEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  // Safe broad type cast because we know the event is for the board type
+  const phaseState = getPlayCardsPhaseState(state as GameState);
 
   // Move both players' cards from awaitingPlay to inPlay
   let newCardState = revealCard(state.cardState, "black");

@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate, UnitPlacement } from "@entities";
-import type { ResolveMeleeEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { ResolveMeleeEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from "@events";
 import {
   applyAttackValue,
@@ -30,9 +30,9 @@ import {
  * @throws Error if not in a valid state for melee resolution
  */
 export function generateResolveMeleeEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): ResolveMeleeEvent<TBoard, "resolveMelee"> {
+): ResolveMeleeEventForBoard<TBoard> {
   const meleeState = getMeleeResolutionReadyForAttackCalculation(state);
   const meleeCoordinate = meleeState.location;
 
@@ -113,5 +113,5 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
     blackUnitRetreated: blackUnitResult.unitRetreated,
     whiteUnitReversed: whiteUnitResult.unitReversed,
     blackUnitReversed: blackUnitResult.unitReversed,
-  } as unknown as ResolveMeleeEvent<TBoard, "resolveMelee">;
+  };
 }

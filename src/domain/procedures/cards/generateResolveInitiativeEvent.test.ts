@@ -1,5 +1,5 @@
 import type { Card } from "@entities";
-import type { StandardGameState } from "@game";
+import type { GameState } from "@game";
 
 import { PLAY_CARDS_PHASE } from "@game";
 import { tempCommandCards } from "@sampleValues";
@@ -21,7 +21,7 @@ describe("generateResolveInitiativeEvent", () => {
     whiteCard: Card,
     blackCard: Card,
     currentInitiative: "black" | "white" = "black",
-  ): StandardGameState {
+  ): GameState {
     const state = createEmptyGameState();
 
     const stateWithCards = updateCardState(state, (current) => ({

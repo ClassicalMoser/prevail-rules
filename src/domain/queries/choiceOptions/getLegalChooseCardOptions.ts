@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { ChooseCardEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import { PLAYER_CHOICE_EVENT_TYPE } from "@events";
 import { getNextEventNumber, getPlayCardsPhaseState } from "@queries/sequencing";
 
@@ -14,9 +13,7 @@ import { getNextEventNumber, getPlayCardsPhaseState } from "@queries/sequencing"
  * Aligns with {@link isValidChooseCardEvent} and
  * {@link getExpectedPlayCardsPhaseEvent} for the chooseCards step.
  */
-export function getLegalChooseCardOptions<TBoard extends Board>(
-  gameState: GameStateWithBoard<TBoard>,
-): ChooseCardEvent<TBoard>[] {
+export function getLegalChooseCardOptions(gameState: GameState): ChooseCardEvent[] {
   // Make sure we're in the choose cards step
   const phaseState = getPlayCardsPhaseState(gameState);
   if (phaseState.step !== "chooseCards") {
@@ -32,7 +29,7 @@ export function getLegalChooseCardOptions<TBoard extends Board>(
   const whiteStillChoosing = white.awaitingPlay === null;
 
   // Build the result
-  const result: ChooseCardEvent<TBoard>[] = [];
+  const result: ChooseCardEvent[] = [];
 
   // If black is still choosing, add all the cards in their hand as legal choices
   if (blackStillChoosing) {

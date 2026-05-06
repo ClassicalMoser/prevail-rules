@@ -1,4 +1,4 @@
-import type { Board, PlayerSide } from "@entities";
+import type { PlayerSide } from "@entities";
 import type { AssertExact } from "@utils";
 import { playerSideSchema } from "@entities";
 import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
@@ -8,10 +8,7 @@ import { z } from "zod";
 export const CHOOSE_RALLY_CHOICE_TYPE = "chooseRally" as const;
 
 /** An event to choose a rally from the player's hand. */
-export interface ChooseRallyEvent<
-  _TBoard extends Board,
-  _TChoiceType extends "chooseRally" = "chooseRally",
-> {
+export interface ChooseRallyEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -40,10 +37,8 @@ const _chooseRallyEventSchemaObject = z.object({
 type ChooseRallyEventSchemaType = z.infer<typeof _chooseRallyEventSchemaObject>;
 
 // Verify manual type matches schema inference
-const _assertExactChooseRallyEvent: AssertExact<
-  ChooseRallyEvent<Board>,
-  ChooseRallyEventSchemaType
-> = true;
+const _assertExactChooseRallyEvent: AssertExact<ChooseRallyEvent, ChooseRallyEventSchemaType> =
+  true;
 
 /** The schema for a choose rally event. */
 export const chooseRallyEventSchema: z.ZodObject<{

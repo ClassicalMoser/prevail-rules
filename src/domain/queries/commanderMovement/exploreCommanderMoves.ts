@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate, PlayerSide } from "@entities";
-import type { GameStateWithBoard } from "@game";
+import type { GameStateForBoard } from "@game";
 import { unitFacings } from "@entities";
 import { getBoardSpace, getForwardSpace } from "@queries/boardSpace";
 import { diagonalIsClear, hasEnemyUnit, isDiagonalFacing } from "@validation";
@@ -7,7 +7,7 @@ import { diagonalIsClear, hasEnemyUnit, isDiagonalFacing } from "@validation";
 export function exploreCommanderMoves<TBoard extends Board>(
   playerSide: PlayerSide,
   startingCoordinate: BoardCoordinate<TBoard>,
-  gameState: GameStateWithBoard<TBoard>,
+  gameState: GameStateForBoard<TBoard>,
   maxDistance: number,
 ): Set<BoardCoordinate<TBoard>> {
   // Get the board state

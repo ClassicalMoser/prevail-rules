@@ -1,4 +1,3 @@
-import type { StandardBoard } from "@entities";
 import type { CommitToMovementEvent } from "@events";
 import { getMovementResolutionState } from "@queries";
 import { tempCommandCards } from "@sampleValues";
@@ -31,7 +30,7 @@ describe("applyCommitToMovementEvent", () => {
         currentCommandResolutionState: movementState,
       }),
     );
-    const event: CommitToMovementEvent<StandardBoard> = {
+    const event: CommitToMovementEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "commitToMovement",
@@ -65,7 +64,7 @@ describe("applyCommitToMovementEvent", () => {
         currentCommandResolutionState: movementState,
       }),
     );
-    const event: CommitToMovementEvent<StandardBoard> = {
+    const event: CommitToMovementEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "commitToMovement",
@@ -99,7 +98,7 @@ describe("applyCommitToMovementEvent", () => {
         currentCommandResolutionState: movementState,
       }),
     );
-    const event: CommitToMovementEvent<StandardBoard> = {
+    const event: CommitToMovementEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "commitToMovement",

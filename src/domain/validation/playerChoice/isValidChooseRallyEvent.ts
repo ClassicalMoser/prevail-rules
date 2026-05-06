@@ -1,6 +1,6 @@
 import type { Board, ValidationResult } from "@entities";
 import type { ChooseRallyEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameStateForBoard } from "@game";
 import { getOtherPlayer } from "@queries";
 
 /**
@@ -23,8 +23,8 @@ import { getOtherPlayer } from "@queries";
  * ```
  */
 export function isValidChooseRallyEvent<TBoard extends Board>(
-  event: ChooseRallyEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
+  event: ChooseRallyEvent,
+  state: GameStateForBoard<TBoard>,
 ): ValidationResult {
   try {
     const { player } = event;

@@ -1,11 +1,7 @@
-import type { BoardCoordinate, LargeBoard, SmallBoard, StandardBoard } from "@entities";
+import type { Board, BoardCoordinate, LargeBoard, SmallBoard, StandardBoard } from "@entities";
 import type { Commitment } from "@game/commitment";
 import type { AssertExact } from "@utils";
-import type {
-  LargeAttackApplyState,
-  SmallAttackApplyState,
-  StandardAttackApplyState,
-} from "./attackApplySubstep";
+import type { AttackApplyStateForBoard } from "./attackApplySubstep";
 import {
   largeBoardCoordinateSchema,
   smallBoardCoordinateSchema,
@@ -29,9 +25,17 @@ import {
  * Unlike composable substeps, this state is only used in one specific context.
  * Repeated for each melee that needs to be resolved in a round.
  */
-export interface MeleeResolutionStateBase {
+export interface MeleeResolutionStateForBoard<TBoard extends Board> {
   /** The type of the substep. */
   substepType: "meleeResolution";
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
+  /** The location of the melee. */
+  location: BoardCoordinate<TBoard>;
+  /** The state of the white player's attack apply. */
+  whiteAttackApplyState: AttackApplyStateForBoard<TBoard> | undefined;
+  /** The state of the black player's attack apply. */
+  blackAttackApplyState: AttackApplyStateForBoard<TBoard> | undefined;
   /** The white player's commitment.
    */
   whiteCommitment: Commitment;
@@ -42,31 +46,10 @@ export interface MeleeResolutionStateBase {
   completed: boolean;
 }
 
-export interface StandardMeleeResolutionState extends MeleeResolutionStateBase {
-  boardType: "standard";
-  location: BoardCoordinate<StandardBoard>;
-  whiteAttackApplyState: StandardAttackApplyState | undefined;
-  blackAttackApplyState: StandardAttackApplyState | undefined;
-}
-
-export interface SmallMeleeResolutionState extends MeleeResolutionStateBase {
-  boardType: "small";
-  location: BoardCoordinate<SmallBoard>;
-  whiteAttackApplyState: SmallAttackApplyState | undefined;
-  blackAttackApplyState: SmallAttackApplyState | undefined;
-}
-
-export interface LargeMeleeResolutionState extends MeleeResolutionStateBase {
-  boardType: "large";
-  location: BoardCoordinate<LargeBoard>;
-  whiteAttackApplyState: LargeAttackApplyState | undefined;
-  blackAttackApplyState: LargeAttackApplyState | undefined;
-}
-
 export type MeleeResolutionState =
-  | StandardMeleeResolutionState
-  | SmallMeleeResolutionState
-  | LargeMeleeResolutionState;
+  | MeleeResolutionStateForBoard<SmallBoard>
+  | MeleeResolutionStateForBoard<StandardBoard>
+  | MeleeResolutionStateForBoard<LargeBoard>;
 
 const _standardMeleeResolutionStateSchemaObject = z.object({
   substepType: z.literal("meleeResolution"),
@@ -84,12 +67,13 @@ type StandardMeleeResolutionStateSchemaType = z.infer<
 >;
 
 const _assertExactStandardMeleeResolutionState: AssertExact<
-  StandardMeleeResolutionState,
+  MeleeResolutionStateForBoard<StandardBoard>,
   StandardMeleeResolutionStateSchemaType
 > = true;
 
-export const standardMeleeResolutionStateSchema: z.ZodType<StandardMeleeResolutionState> =
-  _standardMeleeResolutionStateSchemaObject;
+export const standardMeleeResolutionStateSchema: z.ZodType<
+  MeleeResolutionStateForBoard<StandardBoard>
+> = _standardMeleeResolutionStateSchemaObject;
 
 const _smallMeleeResolutionStateSchemaObject = z.object({
   substepType: z.literal("meleeResolution"),
@@ -105,11 +89,11 @@ const _smallMeleeResolutionStateSchemaObject = z.object({
 type SmallMeleeResolutionStateSchemaType = z.infer<typeof _smallMeleeResolutionStateSchemaObject>;
 
 const _assertExactSmallMeleeResolutionState: AssertExact<
-  SmallMeleeResolutionState,
+  MeleeResolutionStateForBoard<SmallBoard>,
   SmallMeleeResolutionStateSchemaType
 > = true;
 
-export const smallMeleeResolutionStateSchema: z.ZodType<SmallMeleeResolutionState> =
+export const smallMeleeResolutionStateSchema: z.ZodType<MeleeResolutionStateForBoard<SmallBoard>> =
   _smallMeleeResolutionStateSchemaObject;
 
 const _largeMeleeResolutionStateSchemaObject = z.object({
@@ -126,11 +110,11 @@ const _largeMeleeResolutionStateSchemaObject = z.object({
 type LargeMeleeResolutionStateSchemaType = z.infer<typeof _largeMeleeResolutionStateSchemaObject>;
 
 const _assertExactLargeMeleeResolutionState: AssertExact<
-  LargeMeleeResolutionState,
+  MeleeResolutionStateForBoard<LargeBoard>,
   LargeMeleeResolutionStateSchemaType
 > = true;
 
-export const largeMeleeResolutionStateSchema: z.ZodType<LargeMeleeResolutionState> =
+export const largeMeleeResolutionStateSchema: z.ZodType<MeleeResolutionStateForBoard<LargeBoard>> =
   _largeMeleeResolutionStateSchemaObject;
 
 const _meleeResolutionStateSchemaObject = z.discriminatedUnion("boardType", [
@@ -139,6 +123,13 @@ const _meleeResolutionStateSchemaObject = z.discriminatedUnion("boardType", [
   _largeMeleeResolutionStateSchemaObject,
 ]);
 
-/** Schema for melee resolution (any board). Per-variant AssertExact above; wide union not asserted. */
+type MeleeResolutionStateSchemaType = z.infer<typeof _meleeResolutionStateSchemaObject>;
+
+const _assertExactMeleeResolutionState: AssertExact<
+  MeleeResolutionState,
+  MeleeResolutionStateSchemaType
+> = true;
+
+/** Schema for melee resolution (any board). */
 export const meleeResolutionStateSchema: z.ZodType<MeleeResolutionState> =
   _meleeResolutionStateSchemaObject;

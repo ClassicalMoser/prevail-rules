@@ -1,23 +1,20 @@
-import type { GameType } from "@entities";
-import type { PlayerChoiceEvent, PlayerChoiceType } from "@events";
-import type { BoardForGameType } from "@game";
+import type { PlayerChoiceEvent } from "@events";
 import type { EnginePorts, PortResponse } from "../ports";
 import { advanceEffects, processPlayerChoice } from "../process";
 
-export async function handlePlayerChoiceSubmission<T extends GameType>(
+export async function handlePlayerChoiceSubmission(
   gameId: string,
-  gameType: T,
-  playerChoice: PlayerChoiceEvent<BoardForGameType<T>, PlayerChoiceType>,
+  playerChoice: PlayerChoiceEvent,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> {
-  const processResult = await processPlayerChoice(gameId, gameType, playerChoice, ports);
+  const processResult = await processPlayerChoice(gameId, playerChoice, ports);
   if (!processResult.result) {
     return {
       result: false,
       errorReason: processResult.errorReason,
     };
   }
-  const advanceResult = await advanceEffects(gameId, gameType, processResult.data, ports);
+  const advanceResult = await advanceEffects(gameId, processResult.data, ports);
   if (!advanceResult.result) {
     return advanceResult;
   }

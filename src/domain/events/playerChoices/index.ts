@@ -1,10 +1,16 @@
 export type { ChooseCardEvent } from "./chooseCard";
 export { chooseCardEventSchema } from "./chooseCard";
-export type { ChooseMeleeResolutionEvent } from "./chooseMeleeResolution";
+export type {
+  ChooseMeleeResolutionEvent,
+  ChooseMeleeResolutionEventForBoard,
+} from "./chooseMeleeResolution";
 export { chooseMeleeResolutionEventSchema } from "./chooseMeleeResolution";
 export type { ChooseRallyEvent } from "./chooseRally";
 export { chooseRallyEventSchema } from "./chooseRally";
-export type { ChooseRetreatOptionEvent } from "./chooseRetreatOption";
+export type {
+  ChooseRetreatOptionEvent,
+  ChooseRetreatOptionEventForBoard,
+} from "./chooseRetreatOption";
 export { chooseRetreatOptionEventSchema } from "./chooseRetreatOption";
 export type { ChooseRoutDiscardEvent } from "./chooseRoutDiscard";
 export { chooseRoutDiscardEventSchema } from "./chooseRoutDiscard";
@@ -18,15 +24,23 @@ export type { CommitToRangedAttackEvent } from "./commitToRangedAttack";
 export { commitToRangedAttackEventSchema } from "./commitToRangedAttack";
 export type { IssueCommandEvent } from "./issueCommand";
 export { issueCommandEventSchema } from "./issueCommand";
-export type { MoveCommanderEvent } from "./moveCommander";
+export type { MoveCommanderEvent, MoveCommanderEventForBoard } from "./moveCommander";
 export { moveCommanderEventSchema } from "./moveCommander";
-export type { MoveUnitEvent } from "./moveUnit";
+export type { MoveUnitEvent, MoveUnitEventForBoard } from "./moveUnit";
 export { moveUnitEventSchema } from "./moveUnit";
-export type { PerformRangedAttackEvent } from "./performRangedAttack";
+export type {
+  PerformRangedAttackEvent,
+  PerformRangedAttackEventForBoard,
+} from "./performRangedAttack";
 export { performRangedAttackEventSchema } from "./performRangedAttack";
-export type { PlayerChoiceEvent } from "./playerChoice";
-export { playerChoiceEventSchema } from "./playerChoice";
+export type { PlayerChoiceEvent, PlayerChoiceEventForBoard } from "./playerChoice";
+export {
+  largePlayerChoiceEventSchema,
+  playerChoiceEventSchema,
+  smallPlayerChoiceEventSchema,
+  standardPlayerChoiceEventSchema,
+} from "./playerChoice";
 export type { PlayerChoiceType } from "./playerChoiceTypes";
 export { playerChoices, playerChoiceTypeSchema } from "./playerChoiceTypes";
-export type { SetupUnitsEvent } from "./setupUnit";
+export type { SetupUnitsEvent, SetupUnitsEventForBoard } from "./setupUnit";
 export { setupUnitsEventSchema } from "./setupUnit";

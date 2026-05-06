@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { CompleteMoveCommandersPhaseEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import { COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
 import { getOtherPlayer } from "@queries";
 
@@ -13,10 +12,10 @@ import { getOtherPlayer } from "@queries";
  * @param state - The current game state
  * @returns A complete CompleteMoveCommandersPhaseEvent
  */
-export function generateCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+export function generateCompleteMoveCommandersPhaseEvent(
+  state: GameState,
   eventNumber: number,
-): CompleteMoveCommandersPhaseEvent<TBoard, "completeMoveCommandersPhase"> {
+): CompleteMoveCommandersPhaseEvent {
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 

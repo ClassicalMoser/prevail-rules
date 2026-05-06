@@ -1,11 +1,11 @@
 import type { Board } from "@entities";
 import type { ResolveRoutEvent, RoutResolutionSource } from "@events";
-import type { GameStateWithBoard, RoutState } from "@game";
+import type { GameStateForBoard, RoutState } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ROUT_EFFECT_TYPE } from "@events";
 import {
   getAttackApplyStateFromRangedAttack,
   getCurrentCommandResolutionState,
-  getCurrentPhaseState,
+  getCurrentPhaseStateForBoard,
   getRoutStateFromAttackApply,
   getRoutStateFromCleanupPhaseForResolveRout,
   getRoutStateFromMeleeResolutionByInitiative,
@@ -22,10 +22,10 @@ import {
  * @throws Error if not in a valid state for rout resolution
  */
 export function generateResolveRoutEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): ResolveRoutEvent<TBoard, "resolveRout"> {
-  const phaseState = getCurrentPhaseState(state);
+): ResolveRoutEvent {
+  const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
 
   let routState: RoutState;
   let routResolutionSource: RoutResolutionSource;

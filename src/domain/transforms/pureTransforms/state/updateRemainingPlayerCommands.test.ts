@@ -1,18 +1,20 @@
-import type { IssueCommandsPhaseState } from "@game";
+import type { IssueCommandsPhaseStateForBoard } from "@game";
 import { ISSUE_COMMANDS_PHASE } from "@game";
 
 import { createTestCard } from "@testing";
 import { describe, expect, it } from "vitest";
-import { updateRemainingCommandsForPlayer } from "./updateRemainingCommandsForPlayer";
+import { updateRemainingPlayerCommands } from "./updateRemainingPlayerCommands";
+import { StandardBoard } from "@entities";
 
 /**
  * updateRemainingCommandsForPlayer: Updates the remaining commands for a specific player in the issue commands phase state.
  */
 describe("updateRemainingCommandsForPlayer", () => {
   it("given update remainingCommandsFirstPlayer when player is initiative player", () => {
-    const phaseState: IssueCommandsPhaseState = {
+    const phaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
       phase: ISSUE_COMMANDS_PHASE,
       step: "firstPlayerIssueCommands" as const,
+      boardType: "standard",
       remainingCommandsFirstPlayer: new Set(),
       remainingUnitsFirstPlayer: new Set(),
       remainingCommandsSecondPlayer: new Set(),
@@ -23,7 +25,7 @@ describe("updateRemainingCommandsForPlayer", () => {
     const command = createTestCard().command;
     const newCommands = new Set([command]);
 
-    const newPhaseState = updateRemainingCommandsForPlayer(
+    const newPhaseState = updateRemainingPlayerCommands(
       phaseState,
       "black",
       "black", // initiative player
@@ -35,9 +37,10 @@ describe("updateRemainingCommandsForPlayer", () => {
   });
 
   it("given update remainingCommandsSecondPlayer when player is not initiative player", () => {
-    const phaseState: IssueCommandsPhaseState = {
+    const phaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
       phase: ISSUE_COMMANDS_PHASE,
       step: "firstPlayerIssueCommands" as const,
+      boardType: "standard",
       remainingCommandsFirstPlayer: new Set(),
       remainingUnitsFirstPlayer: new Set(),
       remainingCommandsSecondPlayer: new Set(),
@@ -48,7 +51,7 @@ describe("updateRemainingCommandsForPlayer", () => {
     const command = createTestCard().command;
     const newCommands = new Set([command]);
 
-    const newPhaseState = updateRemainingCommandsForPlayer(
+    const newPhaseState = updateRemainingPlayerCommands(
       phaseState,
       "white",
       "black", // initiative player
@@ -60,9 +63,10 @@ describe("updateRemainingCommandsForPlayer", () => {
   });
 
   it("given not mutate the original phase state", () => {
-    const phaseState: IssueCommandsPhaseState = {
+    const phaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
       phase: ISSUE_COMMANDS_PHASE,
       step: "firstPlayerIssueCommands" as const,
+      boardType: "standard",
       remainingCommandsFirstPlayer: new Set(),
       remainingUnitsFirstPlayer: new Set(),
       remainingCommandsSecondPlayer: new Set(),
@@ -73,7 +77,7 @@ describe("updateRemainingCommandsForPlayer", () => {
     const command = createTestCard().command;
     const newCommands = new Set([command]);
 
-    updateRemainingCommandsForPlayer(phaseState, "black", "black", newCommands);
+    updateRemainingPlayerCommands(phaseState, "black", "black", newCommands);
 
     expect(phaseState.remainingCommandsFirstPlayer.size).toBe(0);
   });

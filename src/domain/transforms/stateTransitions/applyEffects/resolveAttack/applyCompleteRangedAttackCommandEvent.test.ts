@@ -1,12 +1,12 @@
-import type { StandardBoard } from "@entities";
 import type { CompleteRangedAttackCommandEvent } from "@events";
-import type { StandardGameState } from "@game";
 import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestCard,
 } from "@testing";
+import { StandardBoard } from "@entities";
+import type { GameStateForBoard } from "@game";
 import { updateCardState, updatePhaseState } from "@transforms/pureTransforms";
 import { describe, expect, it } from "vitest";
 
@@ -25,7 +25,7 @@ describe("applyCompleteRangedAttackCommandEvent", () => {
       black: { ...c.black, inPlay: createTestCard() },
     }));
     const ranged = createRangedAttackResolutionState(withCards);
-    const full: StandardGameState = updatePhaseState(
+    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withCards,
       createIssueCommandsPhaseState(withCards, {
         currentCommandResolutionState: ranged,
@@ -36,7 +36,7 @@ describe("applyCompleteRangedAttackCommandEvent", () => {
       eventNumber: 0,
       eventType: "gameEffect" as const,
       effectType: "completeRangedAttackCommand" as const,
-    } satisfies CompleteRangedAttackCommandEvent<StandardBoard>;
+    } satisfies CompleteRangedAttackCommandEvent;
 
     const next = applyCompleteRangedAttackCommandEvent(event, full);
     const phase = next.currentRoundState.currentPhaseState;

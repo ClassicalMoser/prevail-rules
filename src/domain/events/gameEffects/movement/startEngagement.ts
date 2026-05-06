@@ -2,11 +2,9 @@ import type {
   Board,
   EngagementType,
   LargeBoard,
-  LargeUnitWithPlacement,
   SmallBoard,
-  SmallUnitWithPlacement,
   StandardBoard,
-  StandardUnitWithPlacement,
+  UnitWithPlacement,
 } from "@entities";
 import type { AssertExact } from "@utils";
 import type { ZodDiscriminatedUnion } from "zod";
@@ -22,56 +20,27 @@ import { z } from "zod";
 /** The type of the start engagement game effect. */
 export const START_ENGAGEMENT_EFFECT_TYPE = "startEngagement" as const;
 
-interface StartEngagementEventBase {
+export interface StartEngagementEventForBoard<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof START_ENGAGEMENT_EFFECT_TYPE;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
+  /** The type of board. */
+  boardType: TBoard["boardType"];
   /** The type of engagement. */
   engagementType: EngagementType;
+  /** The defender with placement. */
+  defenderWithPlacement: UnitWithPlacement<TBoard>;
 }
 
-export interface StandardStartEngagementEvent extends StartEngagementEventBase {
-  boardType: "standard";
-  defenderWithPlacement: StandardUnitWithPlacement;
-}
+export type StartEngagementEvent =
+  | StartEngagementEventForBoard<StandardBoard>
+  | StartEngagementEventForBoard<SmallBoard>
+  | StartEngagementEventForBoard<LargeBoard>;
 
-export interface SmallStartEngagementEvent extends StartEngagementEventBase {
-  boardType: "small";
-  defenderWithPlacement: SmallUnitWithPlacement;
-}
-
-export interface LargeStartEngagementEvent extends StartEngagementEventBase {
-  boardType: "large";
-  defenderWithPlacement: LargeUnitWithPlacement;
-}
-
-export type StartEngagementEventUnion =
-  | StandardStartEngagementEvent
-  | SmallStartEngagementEvent
-  | LargeStartEngagementEvent;
-
-export type StartEngagementEvent<
-  TBoard extends Board = Board,
-  _TEffectType extends typeof START_ENGAGEMENT_EFFECT_TYPE = typeof START_ENGAGEMENT_EFFECT_TYPE,
-> = TBoard extends StandardBoard
-  ? StandardStartEngagementEvent
-  : TBoard extends SmallBoard
-    ? SmallStartEngagementEvent
-    : TBoard extends LargeBoard
-      ? LargeStartEngagementEvent
-      : StartEngagementEventUnion;
-
-const _standardStartEngagementEventSchemaObject: z.ZodObject<{
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
-  eventNumber: z.ZodNumber;
-  engagementType: typeof engagementTypeSchema;
-  boardType: z.ZodLiteral<"standard">;
-  defenderWithPlacement: typeof standardUnitWithPlacementSchema;
-}> = z.object({
+const _standardStartEngagementEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -85,18 +54,20 @@ type StandardStartEngagementEventSchemaType = z.infer<
 >;
 
 const _assertExactStandardStartEngagementEvent: AssertExact<
-  StandardStartEngagementEvent,
+  StartEngagementEventForBoard<StandardBoard>,
   StandardStartEngagementEventSchemaType
 > = true;
 
-const _smallStartEngagementEventSchemaObject: z.ZodObject<{
+export const standardStartEngagementEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
   engagementType: typeof engagementTypeSchema;
-  boardType: z.ZodLiteral<"small">;
-  defenderWithPlacement: typeof smallUnitWithPlacementSchema;
-}> = z.object({
+  boardType: z.ZodLiteral<"standard">;
+  defenderWithPlacement: typeof standardUnitWithPlacementSchema;
+}> = _standardStartEngagementEventSchemaObject;
+
+const _smallStartEngagementEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -108,18 +79,20 @@ const _smallStartEngagementEventSchemaObject: z.ZodObject<{
 type SmallStartEngagementEventSchemaType = z.infer<typeof _smallStartEngagementEventSchemaObject>;
 
 const _assertExactSmallStartEngagementEvent: AssertExact<
-  SmallStartEngagementEvent,
+  StartEngagementEventForBoard<SmallBoard>,
   SmallStartEngagementEventSchemaType
 > = true;
 
-const _largeStartEngagementEventSchemaObject: z.ZodObject<{
+export const smallStartEngagementEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
   engagementType: typeof engagementTypeSchema;
-  boardType: z.ZodLiteral<"large">;
-  defenderWithPlacement: typeof largeUnitWithPlacementSchema;
-}> = z.object({
+  boardType: z.ZodLiteral<"small">;
+  defenderWithPlacement: typeof smallUnitWithPlacementSchema;
+}> = _smallStartEngagementEventSchemaObject;
+
+const _largeStartEngagementEventSchemaObject = z.object({
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
   eventNumber: z.number(),
@@ -131,9 +104,18 @@ const _largeStartEngagementEventSchemaObject: z.ZodObject<{
 type LargeStartEngagementEventSchemaType = z.infer<typeof _largeStartEngagementEventSchemaObject>;
 
 const _assertExactLargeStartEngagementEvent: AssertExact<
-  LargeStartEngagementEvent,
+  StartEngagementEventForBoard<LargeBoard>,
   LargeStartEngagementEventSchemaType
 > = true;
+
+export const largeStartEngagementEventSchema: z.ZodObject<{
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  engagementType: typeof engagementTypeSchema;
+  boardType: z.ZodLiteral<"large">;
+  defenderWithPlacement: typeof largeUnitWithPlacementSchema;
+}> = _largeStartEngagementEventSchemaObject;
 
 type _StartEngagementEventDiscriminatedUnion = ZodDiscriminatedUnion<
   readonly [
@@ -154,10 +136,37 @@ const _startEngagementEventSchemaObject: _StartEngagementEventDiscriminatedUnion
 type StartEngagementEventSchemaType = z.infer<typeof _startEngagementEventSchemaObject>;
 
 const _assertExactStartEngagementEvent: AssertExact<
-  StartEngagementEvent<Board>,
+  StartEngagementEvent,
   StartEngagementEventSchemaType
 > = true;
 
 /** The schema for a start engagement event. */
-export const startEngagementEventSchema: typeof _startEngagementEventSchemaObject =
-  _startEngagementEventSchemaObject;
+export const startEngagementEventSchema: ZodDiscriminatedUnion<
+  readonly [
+    z.ZodObject<{
+      eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+      effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
+      eventNumber: z.ZodNumber;
+      engagementType: typeof engagementTypeSchema;
+      boardType: z.ZodLiteral<"standard">;
+      defenderWithPlacement: typeof standardUnitWithPlacementSchema;
+    }>,
+    z.ZodObject<{
+      eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+      effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
+      eventNumber: z.ZodNumber;
+      engagementType: typeof engagementTypeSchema;
+      boardType: z.ZodLiteral<"small">;
+      defenderWithPlacement: typeof smallUnitWithPlacementSchema;
+    }>,
+    z.ZodObject<{
+      eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+      effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
+      eventNumber: z.ZodNumber;
+      engagementType: typeof engagementTypeSchema;
+      boardType: z.ZodLiteral<"large">;
+      defenderWithPlacement: typeof largeUnitWithPlacementSchema;
+    }>,
+  ],
+  "boardType"
+> = _startEngagementEventSchemaObject;

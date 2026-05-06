@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import {
   createEmptyGameState,
   createFlankEngagementState,
@@ -52,7 +52,7 @@ describe("generateResolveFlankEngagementEvent", () => {
       engagementState: flank,
     });
 
-    const full: StandardGameState = updatePhaseState(
+    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withBoard,
       createIssueCommandsPhaseState(withBoard, {
         currentCommandResolutionState: movement,

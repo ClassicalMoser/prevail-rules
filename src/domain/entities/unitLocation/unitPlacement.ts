@@ -23,15 +23,6 @@ export interface UnitPlacement<TBoard extends Board> {
   facing: UnitFacing;
 }
 
-/** {@link UnitPlacement} on a {@link StandardBoard}. */
-export type StandardUnitPlacement = UnitPlacement<StandardBoard>;
-
-/** {@link UnitPlacement} on a {@link SmallBoard}. */
-export type SmallUnitPlacement = UnitPlacement<SmallBoard>;
-
-/** {@link UnitPlacement} on a {@link LargeBoard}. */
-export type LargeUnitPlacement = UnitPlacement<LargeBoard>;
-
 // ---------------------------------------------------------------------------
 // Per-variant Zod schemas
 // ---------------------------------------------------------------------------
@@ -45,11 +36,11 @@ const _standardUnitPlacementSchemaObject = z.object({
 type StandardUnitPlacementSchemaType = z.infer<typeof _standardUnitPlacementSchemaObject>;
 
 const _assertExactStandardUnitPlacement: AssertExact<
-  StandardUnitPlacement,
+  UnitPlacement<StandardBoard>,
   StandardUnitPlacementSchemaType
 > = true;
 
-export const standardUnitPlacementSchema: z.ZodType<StandardUnitPlacement> =
+export const standardUnitPlacementSchema: z.ZodType<UnitPlacement<StandardBoard>> =
   _standardUnitPlacementSchemaObject;
 
 const _smallUnitPlacementSchemaObject = z.object({
@@ -61,11 +52,11 @@ const _smallUnitPlacementSchemaObject = z.object({
 type SmallUnitPlacementSchemaType = z.infer<typeof _smallUnitPlacementSchemaObject>;
 
 const _assertExactSmallUnitPlacement: AssertExact<
-  SmallUnitPlacement,
+  UnitPlacement<SmallBoard>,
   SmallUnitPlacementSchemaType
 > = true;
 
-export const smallUnitPlacementSchema: z.ZodType<SmallUnitPlacement> =
+export const smallUnitPlacementSchema: z.ZodType<UnitPlacement<SmallBoard>> =
   _smallUnitPlacementSchemaObject;
 
 const _largeUnitPlacementSchemaObject = z.object({
@@ -77,11 +68,11 @@ const _largeUnitPlacementSchemaObject = z.object({
 type LargeUnitPlacementSchemaType = z.infer<typeof _largeUnitPlacementSchemaObject>;
 
 const _assertExactLargeUnitPlacement: AssertExact<
-  LargeUnitPlacement,
+  UnitPlacement<LargeBoard>,
   LargeUnitPlacementSchemaType
 > = true;
 
-export const largeUnitPlacementSchema: z.ZodType<LargeUnitPlacement> =
+export const largeUnitPlacementSchema: z.ZodType<UnitPlacement<LargeBoard>> =
   _largeUnitPlacementSchemaObject;
 
 // ---------------------------------------------------------------------------
@@ -93,6 +84,13 @@ const _unitPlacementSchemaObject = z.discriminatedUnion("boardType", [
   _smallUnitPlacementSchemaObject,
   _largeUnitPlacementSchemaObject,
 ]);
+
+type UnitPlacementSchemaType = z.infer<typeof _unitPlacementSchemaObject>;
+
+const _assertExactUnitPlacement: AssertExact<
+  UnitPlacement<SmallBoard> | UnitPlacement<StandardBoard> | UnitPlacement<LargeBoard>,
+  UnitPlacementSchemaType
+> = true;
 
 /**
  * The schema for a unit placement (any board type).

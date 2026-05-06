@@ -1,4 +1,3 @@
-import type { StandardBoard } from "@entities";
 import type { CommitToMeleeEvent } from "@events";
 import { getMeleeResolutionState } from "@queries";
 import { tempCommandCards } from "@sampleValues";
@@ -31,7 +30,7 @@ describe("applyCommitToMeleeEvent", () => {
         currentMeleeResolutionState: meleeState,
       }),
     );
-    const event: CommitToMeleeEvent<StandardBoard> = {
+    const event: CommitToMeleeEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "commitToMelee",
@@ -68,7 +67,7 @@ describe("applyCommitToMeleeEvent", () => {
         currentMeleeResolutionState: meleeState,
       }),
     );
-    const event: CommitToMeleeEvent<StandardBoard> = {
+    const event: CommitToMeleeEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "commitToMelee",

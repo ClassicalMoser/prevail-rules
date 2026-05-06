@@ -1,11 +1,6 @@
 import type { Board } from "@entities";
-import type {
-  GameStateWithBoard,
-  MeleeResolutionState,
-  PhaseState,
-  ResolveMeleePhaseState,
-} from "@game";
-import { getResolveMeleePhaseState } from "@queries";
+import type { GameStateForBoard, MeleeResolutionStateForBoard } from "@game";
+import { getResolveMeleePhaseStateForBoard } from "@queries";
 import { updatePhaseState } from "../state";
 
 /**
@@ -25,10 +20,10 @@ import { updatePhaseState } from "../state";
  * ```
  */
 export function updateMeleeResolutionState<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-  meleeResolutionState: MeleeResolutionState,
-): GameStateWithBoard<TBoard> {
-  const resolveMeleePhaseState = getResolveMeleePhaseState(state);
+  state: GameStateForBoard<TBoard>,
+  meleeResolutionState: MeleeResolutionStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const resolveMeleePhaseState = getResolveMeleePhaseStateForBoard(state);
 
   if (!resolveMeleePhaseState.currentMeleeResolutionState) {
     throw new Error("No current melee resolution state found");
@@ -37,7 +32,7 @@ export function updateMeleeResolutionState<TBoard extends Board>(
   const newPhaseState = {
     ...resolveMeleePhaseState,
     currentMeleeResolutionState: meleeResolutionState,
-  } as ResolveMeleePhaseState;
+  };
 
-  return updatePhaseState(state, newPhaseState as PhaseState);
+  return updatePhaseState(state, newPhaseState);
 }

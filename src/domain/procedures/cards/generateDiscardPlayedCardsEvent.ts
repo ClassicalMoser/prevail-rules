@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { DiscardPlayedCardsEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import { DISCARD_PLAYED_CARDS_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
 
 /**
@@ -10,10 +9,10 @@ import { DISCARD_PLAYED_CARDS_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@event
  * @param state - The current game state
  * @returns A complete DiscardPlayedCardsEvent
  */
-export function generateDiscardPlayedCardsEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+export function generateDiscardPlayedCardsEvent(
+  state: GameState,
   eventNumber: number,
-): DiscardPlayedCardsEvent<TBoard, "discardPlayedCards"> {
+): DiscardPlayedCardsEvent {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {

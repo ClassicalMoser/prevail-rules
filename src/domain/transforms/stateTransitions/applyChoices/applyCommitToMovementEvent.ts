@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
 import type { CommitToMovementEvent } from "@events";
-import type { GameStateWithBoard, MovementResolutionState } from "@game";
+import type { GameStateForBoard, MovementResolutionStateForBoard } from "@game";
 import { getMovementResolutionState } from "@queries";
 import {
   discardCardsFromHand,
@@ -18,9 +18,9 @@ import {
  * @returns A new game state with the commitment updated
  */
 export function applyCommitToMovementEvent<TBoard extends Board>(
-  event: CommitToMovementEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: CommitToMovementEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   const movementState = getMovementResolutionState(state);
   const player = event.player;
 
@@ -32,7 +32,7 @@ export function applyCommitToMovementEvent<TBoard extends Board>(
     commitmentType: "completed" as const,
     card: event.committedCard,
   };
-  const newMovementState: MovementResolutionState = {
+  const newMovementState: MovementResolutionStateForBoard<TBoard> = {
     ...movementState,
     commitment: newCommitment,
   };

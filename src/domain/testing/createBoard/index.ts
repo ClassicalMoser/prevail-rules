@@ -6,4 +6,4 @@ export {
   createGameStateWithEngagedUnits,
   createGameStateWithSingleUnit,
   createGameStateWithUnits,
-} from "./gameStateWithBoard";
+} from "./gameStateForBoard";

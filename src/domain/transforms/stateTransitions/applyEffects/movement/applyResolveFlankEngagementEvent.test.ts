@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { ResolveFlankEngagementEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { ResolveFlankEngagementEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { hasSingleUnit } from "@entities";
 import { getBoardSpace } from "@queries";
 import {
@@ -43,21 +43,21 @@ describe("applyResolveFlankEngagementEvent", () => {
       targetPlacement: flank.targetPlacement,
       engagementState: flank,
     });
-    const full: StandardGameState = updatePhaseState(
+    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withBoard,
       createIssueCommandsPhaseState(withBoard, {
         currentCommandResolutionState: movement,
       }),
     );
 
-    const event = {
+    const event: ResolveFlankEngagementEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "gameEffect" as const,
       effectType: "resolveFlankEngagement" as const,
       boardType: "standard" as const,
       defenderWithPlacement,
       newFacing: "south",
-    } satisfies ResolveFlankEngagementEvent<StandardBoard>;
+    };
 
     const next = applyResolveFlankEngagementEvent(event, full);
     const space = getBoardSpace(next.boardState, flank.targetPlacement.coordinate);

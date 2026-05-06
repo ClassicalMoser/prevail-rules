@@ -1,10 +1,10 @@
 import type {
   CleanupPhaseState,
-  IssueCommandsPhaseState,
+  GameStateForBoard,
+  IssueCommandsPhaseStateForBoard,
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
-  StandardGameState,
-  StandardResolveMeleePhaseState,
+  ResolveMeleePhaseStateForBoard,
 } from "@game";
 import {
   ISSUE_COMMANDS_PHASE,
@@ -14,6 +14,7 @@ import {
 } from "@game";
 
 import { createMeleeResolutionState } from "./commandResolutionStates";
+import { StandardBoard } from "@entities";
 
 /**
  * Creates a PlayCardsPhaseState with sensible defaults.
@@ -45,12 +46,13 @@ export function createMoveCommandersPhaseState(
  * Creates an IssueCommandsPhaseState with sensible defaults.
  */
 export function createIssueCommandsPhaseState(
-  state: StandardGameState,
-  overrides?: Partial<IssueCommandsPhaseState>,
-): IssueCommandsPhaseState {
+  state: GameStateForBoard<StandardBoard>,
+  overrides?: Partial<IssueCommandsPhaseStateForBoard<StandardBoard>>,
+): IssueCommandsPhaseStateForBoard<StandardBoard> {
   return {
     phase: ISSUE_COMMANDS_PHASE,
     step: "firstPlayerResolveCommands",
+    boardType: "standard" as const,
     remainingCommandsFirstPlayer: new Set(),
     remainingUnitsFirstPlayer: new Set(),
     remainingCommandsSecondPlayer: new Set(),
@@ -64,9 +66,9 @@ export function createIssueCommandsPhaseState(
  * Creates a ResolveMeleePhaseState with sensible defaults.
  */
 export function createResolveMeleePhaseState(
-  state: StandardGameState,
-  overrides?: Partial<StandardResolveMeleePhaseState>,
-): StandardResolveMeleePhaseState {
+  state: GameStateForBoard<StandardBoard>,
+  overrides?: Partial<ResolveMeleePhaseStateForBoard<StandardBoard>>,
+): ResolveMeleePhaseStateForBoard<StandardBoard> {
   return {
     phase: RESOLVE_MELEE_PHASE,
     boardType: "standard" as const,

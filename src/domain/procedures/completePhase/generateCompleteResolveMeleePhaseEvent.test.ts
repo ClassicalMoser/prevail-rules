@@ -1,8 +1,9 @@
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { createEmptyGameState } from "@testing";
 import { describe, expect, it } from "vitest";
 
 import { generateCompleteResolveMeleePhaseEvent } from "./generateCompleteResolveMeleePhaseEvent";
+import { StandardBoard } from "@entities";
 
 /**
  * Closes the resolve-melee phase after all engagements are processed. Generator returns
@@ -10,7 +11,7 @@ import { generateCompleteResolveMeleePhaseEvent } from "./generateCompleteResolv
  */
 describe("generateCompleteResolveMeleePhaseEvent", () => {
   it("given any game state, emits gameEffect with effectType completeResolveMeleePhase", () => {
-    const state: StandardGameState = createEmptyGameState();
+    const state: GameStateForBoard<StandardBoard> = createEmptyGameState();
     const event = generateCompleteResolveMeleePhaseEvent(state, 0);
     expect(event.eventType).toBe("gameEffect");
     expect(event.effectType).toBe("completeResolveMeleePhase");

@@ -1,4 +1,11 @@
-import type { LargeBoard, SmallBoard, StandardBoard, UnitInstance, UnitPlacement } from "@entities";
+import type {
+  Board,
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+  UnitInstance,
+  UnitPlacement,
+} from "@entities";
 import type { AssertExact } from "@utils";
 import type { EngagementResolutionState } from "./engagementResolutionState";
 import {
@@ -23,52 +30,25 @@ import { engagementResolutionStateSchema } from "./engagementResolutionState";
  * The expected event query `getExpectedEngagementEvent()` is composable and
  * can be called from any parent context that contains this state.
  */
-export interface EngagementStateBase {
+export interface EngagementStateForBoard<TBoard extends Board> {
   /** The type of the substep. */
   substepType: "engagementResolution";
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
   /** The unit that is engaging. */
   engagingUnit: UnitInstance;
+  /** The target placement of the engagement. */
+  targetPlacement: UnitPlacement<TBoard>;
   /** The resolution state of the engagement. */
   engagementResolutionState: EngagementResolutionState;
   /** Whether the engagement is complete. */
   completed: boolean;
 }
 
-export interface StandardEngagementState extends EngagementStateBase {
-  boardType: "standard";
-  targetPlacement: UnitPlacement<StandardBoard>;
-}
-
-export interface SmallEngagementState extends EngagementStateBase {
-  boardType: "small";
-  targetPlacement: UnitPlacement<SmallBoard>;
-}
-
-export interface LargeEngagementState extends EngagementStateBase {
-  boardType: "large";
-  targetPlacement: UnitPlacement<LargeBoard>;
-}
-
-export type EngagementState = StandardEngagementState | SmallEngagementState | LargeEngagementState;
-
-const _standardEngagementStateSchemaObject = z.object({
-  substepType: z.literal("engagementResolution"),
-  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
-  engagingUnit: unitInstanceSchema,
-  targetPlacement: standardUnitPlacementSchema,
-  engagementResolutionState: engagementResolutionStateSchema,
-  completed: z.boolean(),
-});
-
-type StandardEngagementStateSchemaType = z.infer<typeof _standardEngagementStateSchemaObject>;
-
-const _assertExactStandardEngagementState: AssertExact<
-  StandardEngagementState,
-  StandardEngagementStateSchemaType
-> = true;
-
-export const standardEngagementStateSchema: z.ZodType<StandardEngagementState> =
-  _standardEngagementStateSchemaObject;
+export type EngagementState =
+  | EngagementStateForBoard<SmallBoard>
+  | EngagementStateForBoard<StandardBoard>
+  | EngagementStateForBoard<LargeBoard>;
 
 const _smallEngagementStateSchemaObject = z.object({
   substepType: z.literal("engagementResolution"),
@@ -82,12 +62,31 @@ const _smallEngagementStateSchemaObject = z.object({
 type SmallEngagementStateSchemaType = z.infer<typeof _smallEngagementStateSchemaObject>;
 
 const _assertExactSmallEngagementState: AssertExact<
-  SmallEngagementState,
+  EngagementStateForBoard<SmallBoard>,
   SmallEngagementStateSchemaType
 > = true;
 
-export const smallEngagementStateSchema: z.ZodType<SmallEngagementState> =
+export const smallEngagementStateSchema: z.ZodType<EngagementStateForBoard<SmallBoard>> =
   _smallEngagementStateSchemaObject;
+
+const _standardEngagementStateSchemaObject = z.object({
+  substepType: z.literal("engagementResolution"),
+  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
+  engagingUnit: unitInstanceSchema,
+  targetPlacement: standardUnitPlacementSchema,
+  engagementResolutionState: engagementResolutionStateSchema,
+  completed: z.boolean(),
+});
+
+type StandardEngagementStateSchemaType = z.infer<typeof _standardEngagementStateSchemaObject>;
+
+const _assertExactStandardEngagementState: AssertExact<
+  EngagementStateForBoard<StandardBoard>,
+  StandardEngagementStateSchemaType
+> = true;
+
+export const standardEngagementStateSchema: z.ZodType<EngagementStateForBoard<StandardBoard>> =
+  _standardEngagementStateSchemaObject;
 
 const _largeEngagementStateSchemaObject = z.object({
   substepType: z.literal("engagementResolution"),
@@ -101,11 +100,11 @@ const _largeEngagementStateSchemaObject = z.object({
 type LargeEngagementStateSchemaType = z.infer<typeof _largeEngagementStateSchemaObject>;
 
 const _assertExactLargeEngagementState: AssertExact<
-  LargeEngagementState,
+  EngagementStateForBoard<LargeBoard>,
   LargeEngagementStateSchemaType
 > = true;
 
-export const largeEngagementStateSchema: z.ZodType<LargeEngagementState> =
+export const largeEngagementStateSchema: z.ZodType<EngagementStateForBoard<LargeBoard>> =
   _largeEngagementStateSchemaObject;
 
 const _engagementStateSchemaObject = z.discriminatedUnion("boardType", [
@@ -114,5 +113,8 @@ const _engagementStateSchemaObject = z.discriminatedUnion("boardType", [
   _largeEngagementStateSchemaObject,
 ]);
 
-/** Schema for engagement state (any board). Per-variant AssertExact above; wide union not asserted. */
+type EngagementStateSchemaType = z.infer<typeof _engagementStateSchemaObject>;
+
+const _assertExactEngagementState: AssertExact<EngagementState, EngagementStateSchemaType> = true;
+
 export const engagementStateSchema: z.ZodType<EngagementState> = _engagementStateSchemaObject;

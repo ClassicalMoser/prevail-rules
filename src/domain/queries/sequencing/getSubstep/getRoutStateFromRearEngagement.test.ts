@@ -1,4 +1,3 @@
-import type { RearEngagementResolutionState } from "@game";
 import {
   createEmptyGameState,
   createFrontEngagementState,
@@ -9,10 +8,12 @@ import {
   createTestCard,
   createTestUnit,
 } from "@testing";
+import { StandardBoard } from "@entities";
 import { updatePhaseState } from "@transforms";
 import { describe, expect, it } from "vitest";
 
 import { getRoutStateFromRearEngagement } from "./getRoutStateFromRearEngagement";
+import { EngagementStateForBoard } from "@game";
 
 /**
  * Rear-contact movement: the nested rear engagement must carry a rout substep; this unwraps it
@@ -76,6 +77,7 @@ describe("getRoutStateFromRearEngagement", () => {
   });
 
   it("given rear engagement shape without routState, throws rear has no rout", () => {
+    // TODO: Is this an excessively defensive test?
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const rearBroken = {
@@ -83,8 +85,8 @@ describe("getRoutStateFromRearEngagement", () => {
       engagementResolutionState: {
         engagementType: "rear" as const,
         completed: false,
-      } as unknown as RearEngagementResolutionState,
-    };
+      },
+    } as unknown as EngagementStateForBoard<StandardBoard>;
     const movement = createMovementResolutionState(state, {
       engagementState: rearBroken,
     });

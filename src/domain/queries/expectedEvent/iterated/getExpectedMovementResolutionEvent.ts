@@ -1,6 +1,6 @@
-import type { Board, BoardCoordinate, PlayerSide } from "@entities";
+import type { PlayerSide } from "@entities";
 import type { ExpectedEventInfo } from "@events";
-import type { GameStateWithBoard, MovementResolutionState } from "@game";
+import type { GameState, MovementResolutionState } from "@game";
 import { getBoardSpace } from "@queries/boardSpace";
 import { hasEnemyUnit } from "@validation";
 import { getExpectedEngagementEvent } from "../composable";
@@ -13,8 +13,8 @@ import { getExpectedEngagementEvent } from "../composable";
  * @param player - The player resolving the movement
  * @returns Information about what event is expected
  */
-export function getExpectedMovementResolutionEvent<TBoard extends Board>(
-  gameState: GameStateWithBoard<TBoard>,
+export function getExpectedMovementResolutionEvent(
+  gameState: GameState,
   resolutionState: MovementResolutionState,
   player: PlayerSide,
 ): ExpectedEventInfo {
@@ -38,10 +38,7 @@ export function getExpectedMovementResolutionEvent<TBoard extends Board>(
   // we need to check if we are engaging an enemy unit
 
   const board = gameState.boardState;
-  const targetSpace = getBoardSpace(
-    board,
-    resolutionState.targetPlacement.coordinate as BoardCoordinate<TBoard>,
-  );
+  const targetSpace = getBoardSpace(board, resolutionState.targetPlacement.coordinate);
 
   if (hasEnemyUnit(player, targetSpace).result) {
     // If we are, we need to see if we've alredy started an engagement
@@ -63,7 +60,7 @@ export function getExpectedMovementResolutionEvent<TBoard extends Board>(
     }
     // If the engagement state is not complete,
     // we need to get the expected engagement event
-    return getExpectedEngagementEvent(gameState, engagementState);
+    return getExpectedEngagementEvent(engagementState);
   }
 
   // If we are not engaging an enemy unit, we can finish our movement

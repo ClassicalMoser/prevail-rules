@@ -1,6 +1,4 @@
-import type { StandardBoard } from "@entities";
 import type { ResolveRallyEvent } from "@events";
-import type { StandardGameState } from "@game";
 import { CLEANUP_PHASE } from "@game";
 
 import { createEmptyGameState, createTestCard } from "@testing";
@@ -32,14 +30,14 @@ describe("applyResolveRallyEvent", () => {
       secondPlayerRallyResolutionState: undefined,
     };
 
-    const full = state as StandardGameState;
-    const event = {
+    const full = state;
+    const event: ResolveRallyEvent = {
       eventNumber: 0,
       eventType: "gameEffect" as const,
       effectType: "resolveRally" as const,
       player: "white" as const,
       card,
-    } satisfies ResolveRallyEvent<StandardBoard>;
+    };
 
     const next = applyResolveRallyEvent(event, full);
     const phase = next.currentRoundState.currentPhaseState;

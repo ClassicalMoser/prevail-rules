@@ -1,6 +1,6 @@
 import type { StandardBoard } from "@entities";
 import type { CompletePlayCardsPhaseEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from "@game";
 
 import { createEmptyGameState, createPlayCardsPhaseState } from "@testing";
@@ -16,16 +16,16 @@ import { applyCompletePlayCardsPhaseEvent } from "./applyCompletePlayCardsPhaseE
 describe("applyCompletePlayCardsPhaseEvent", () => {
   it("given playCards complete step, next phase moveCommanders and completedPhases lists playCards", () => {
     const state = createEmptyGameState();
-    const full: StandardGameState = updatePhaseState(
+    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       state,
       createPlayCardsPhaseState({ step: "complete" }),
     );
 
-    const event = {
+    const event: CompletePlayCardsPhaseEvent = {
       eventNumber: 0,
-      eventType: "gameEffect" as const,
-      effectType: "completePlayCardsPhase" as const,
-    } satisfies CompletePlayCardsPhaseEvent<StandardBoard>;
+      eventType: "gameEffect",
+      effectType: "completePlayCardsPhase",
+    };
 
     const next = applyCompletePlayCardsPhaseEvent(event, full);
     const phase = next.currentRoundState.currentPhaseState;

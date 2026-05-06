@@ -1,5 +1,10 @@
 import type { Board, PlayerSide } from "@entities";
-import type { AttackApplyState, GameStateWithBoard, MeleeResolutionState } from "@game";
+import type {
+  AttackApplyStateForBoard,
+  GameState,
+  GameStateForBoard,
+  MeleeResolutionState,
+} from "@game";
 import { getOtherPlayer } from "@queries/getOtherPlayer";
 import {
   getMeleeResolutionState,
@@ -16,8 +21,8 @@ import {
  * @throws Error if not resolving a ranged attack or attack apply state is missing
  */
 export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): AttackApplyState {
+  state: GameStateForBoard<TBoard>,
+): AttackApplyStateForBoard<TBoard> {
   const rangedAttackState = getRangedAttackResolutionState(state);
   if (!rangedAttackState.attackApplyState) {
     throw new Error("No attack apply state found in ranged attack resolution");
@@ -36,9 +41,9 @@ export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
  * @throws Error if not in resolveMelee phase or attack apply state is missing
  */
 export function getAttackApplyStateFromMelee<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   player: "white" | "black",
-): AttackApplyState {
+): AttackApplyStateForBoard<TBoard> {
   const meleeState = getMeleeResolutionState(state);
   const attackApplyState =
     player === "white" ? meleeState.whiteAttackApplyState : meleeState.blackAttackApplyState;
@@ -54,8 +59,8 @@ export function getAttackApplyStateFromMelee<TBoard extends Board>(
  *
  * @returns `null` if either attack-apply state is missing, or both are already complete
  */
-export function getDefendingPlayerForNextIncompleteMeleeAttackApply<TBoard extends Board>(
-  gameState: GameStateWithBoard<TBoard>,
+export function getDefendingPlayerForNextIncompleteMeleeAttackApply(
+  gameState: GameState,
   meleeState: MeleeResolutionState,
 ): PlayerSide | null {
   const firstPlayer = gameState.currentInitiative;

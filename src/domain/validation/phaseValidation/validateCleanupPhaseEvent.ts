@@ -1,6 +1,6 @@
 import type { Board, ValidationResult } from "@entities";
-import type { Event } from "@events";
-import type { CleanupPhaseState, GameStateWithBoard } from "@game";
+import type { EventForBoard, PlayerChoiceEvent } from "@events";
+import type { CleanupPhaseState, GameState, GameStateForBoard } from "@game";
 import { validatePlayerChoice } from "@validation/playerChoice";
 
 /**
@@ -11,8 +11,8 @@ import { validatePlayerChoice } from "@validation/playerChoice";
  * @returns ValidationResult indicating if the event is valid
  */
 export function validateCleanupPhaseEvent<TBoard extends Board>(
-  event: Event<TBoard>,
-  state: GameStateWithBoard<TBoard> & {
+  event: EventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard> & {
     currentRoundState: {
       currentPhaseState: CleanupPhaseState;
     };
@@ -33,7 +33,7 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
     case "firstPlayerChooseRally":
     case "secondPlayerChooseRally":
       if (event.eventType === "playerChoice") {
-        return validatePlayerChoice(event, state);
+        return validatePlayerChoice(event as PlayerChoiceEvent, state as GameState);
       }
       return {
         result: false,
@@ -83,7 +83,7 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
         if (!rallyState.routState.cardsChosen) {
           // Expect chooseRoutDiscard
           if (event.eventType === "playerChoice") {
-            return validatePlayerChoice(event, state);
+            return validatePlayerChoice(event as PlayerChoiceEvent, state as GameState);
           }
           return {
             result: false,

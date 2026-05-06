@@ -1,9 +1,9 @@
 import type { Board } from "@entities";
 import type { TriggerRoutFromRetreatEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameStateForBoard } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, RANGED_ATTACK_RESOLUTION_CONTEXT } from "@events";
 import {
-  getCurrentPhaseState,
+  getCurrentPhaseStateForBoard,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
 } from "@queries";
@@ -13,10 +13,10 @@ import {
  * so apply does not branch on phase or probe players.
  */
 export function generateTriggerRoutFromRetreatEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): TriggerRoutFromRetreatEvent<TBoard, "triggerRoutFromRetreat"> {
-  const phaseState = getCurrentPhaseState(state);
+): TriggerRoutFromRetreatEvent {
+  const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
 
   if (phaseState.phase === "issueCommands") {
     getRetreatStateFromRangedAttack(state);

@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { ResolveRallyEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RALLY_EFFECT_TYPE } from "@events";
 import { getCleanupPhaseState, getOtherPlayer } from "@queries";
 
@@ -23,10 +22,10 @@ import { getCleanupPhaseState, getOtherPlayer } from "@queries";
  * // Event is now in the log with the random result baked in, making it replayable
  * ```
  */
-export function generateResolveRallyEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+export function generateResolveRallyEvent(
+  state: GameState,
   eventNumber: number,
-): ResolveRallyEvent<TBoard, "resolveRally"> {
+): ResolveRallyEvent {
   const phaseState = getCleanupPhaseState(state);
 
   const rallyingPlayer =

@@ -3,8 +3,8 @@
  */
 
 import type { Board } from "@entities";
-import type { GameEffectEvent, GameEffectType } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameEffectEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import {
   applyCompleteAttackApplyEvent,
   applyCompleteCleanupPhaseEvent,
@@ -35,16 +35,16 @@ import {
  * Routes game effect events to their corresponding apply functions.
  */
 export function applyGameEffectEvent<TBoard extends Board>(
-  event: GameEffectEvent<TBoard, GameEffectType>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: GameEffectEventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   switch (event.effectType) {
     case "completeAttackApply":
       return applyCompleteAttackApplyEvent(event, state);
     case "completeCleanupPhase":
       return applyCompleteCleanupPhaseEvent(event, state);
     case "completeIssueCommandsPhase":
-      return applyCompleteIssueCommandsPhaseEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyCompleteIssueCommandsPhaseEvent(event, state);
     case "completeMeleeResolution":
       return applyCompleteMeleeResolutionEvent(event, state);
     case "completeMoveCommandersPhase":
@@ -54,7 +54,7 @@ export function applyGameEffectEvent<TBoard extends Board>(
     case "completeRangedAttackCommand":
       return applyCompleteRangedAttackCommandEvent(event, state);
     case "completeResolveMeleePhase":
-      return applyCompleteResolveMeleePhaseEvent(event, state);
+      return applyCompleteResolveMeleePhaseEvent(state);
     case "completeUnitMovement":
       return applyCompleteUnitMovementEvent(event, state);
     case "discardPlayedCards":
@@ -68,21 +68,21 @@ export function applyGameEffectEvent<TBoard extends Board>(
     case "revealCards":
       return applyRevealCardsEvent(event, state);
     case "resolveMelee":
-      return applyResolveMeleeEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyResolveMeleeEvent(event, state);
     case "resolveRangedAttack":
-      return applyResolveRangedAttackEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyResolveRangedAttackEvent(event, state);
     case "resolveRetreat":
-      return applyResolveRetreatEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyResolveRetreatEvent(event, state);
     case "resolveReverse":
-      return applyResolveReverseEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyResolveReverseEvent(event, state);
     case "resolveRout":
       return applyResolveRoutEvent(event, state);
     case "resolveEngageRetreatOption":
       return applyResolveEngageRetreatOptionEvent(event, state);
     case "resolveFlankEngagement":
-      return applyResolveFlankEngagementEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyResolveFlankEngagementEvent(event, state);
     case "startEngagement":
-      return applyStartEngagementEvent(event, state) as GameStateWithBoard<TBoard>;
+      return applyStartEngagementEvent(event, state);
     case "triggerRoutFromRetreat":
       return applyTriggerRoutFromRetreatEvent(event, state);
     default: {

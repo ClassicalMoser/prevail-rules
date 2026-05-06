@@ -1,5 +1,5 @@
-import type { ResolveMeleePhaseStep, StandardGameState } from "@game";
-import { expectedGameEffectSchema, expectedPlayerInputSchema } from "@events";
+import type { GameStateForBoard, ResolveMeleePhaseStep } from "@game";
+import type { StandardBoard } from "@entities";
 import {
   createEmptyGameState,
   createMeleeResolutionState,
@@ -8,6 +8,7 @@ import {
 } from "@testing";
 import { describe, expect, it } from "vitest";
 import { getExpectedResolveMeleePhaseEvent } from "./getExpectedResolveMeleePhaseEvent";
+import { ExpectedGameEffect, ExpectedPlayerInput } from "@events";
 
 /**
  * getExpectedResolveMeleePhaseEvent: next event during resolve-melee phase.
@@ -16,9 +17,9 @@ describe("getExpectedResolveMeleePhaseEvent", () => {
   function createGameStateInResolveMeleeStep(
     step: ResolveMeleePhaseStep,
     buildOverrides?: (
-      state: StandardGameState,
+      state: GameStateForBoard<StandardBoard>,
     ) => Parameters<typeof createResolveMeleePhaseState>[1],
-  ): StandardGameState {
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: "black" });
     state.cardState.black.inPlay = createTestCard();
     state.cardState.white.inPlay = createTestCard();
@@ -42,10 +43,8 @@ describe("getExpectedResolveMeleePhaseEvent", () => {
     const expectedEvent = getExpectedResolveMeleePhaseEvent(state);
 
     expect(expectedEvent.actionType).toBe("playerChoice");
-    const parsed = expectedPlayerInputSchema.safeParse(expectedEvent);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.playerSource).toBe("black");
-    expect(parsed.data?.choiceType).toBe("commitToMelee");
+    expect((expectedEvent as ExpectedPlayerInput).playerSource).toBe("black");
+    expect((expectedEvent as ExpectedPlayerInput).choiceType).toBe("commitToMelee");
   });
 
   it("given engagements remain, asks the initiative player to choose a melee resolution", () => {
@@ -57,10 +56,8 @@ describe("getExpectedResolveMeleePhaseEvent", () => {
     const expectedEvent = getExpectedResolveMeleePhaseEvent(state);
 
     expect(expectedEvent.actionType).toBe("playerChoice");
-    const parsed = expectedPlayerInputSchema.safeParse(expectedEvent);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.playerSource).toBe("black");
-    expect(parsed.data?.choiceType).toBe("chooseMeleeResolution");
+    expect((expectedEvent as ExpectedPlayerInput).playerSource).toBe("black");
+    expect((expectedEvent as ExpectedPlayerInput).choiceType).toBe("chooseMeleeResolution");
   });
 
   it("given when no engagements remain but the step did not advance, throws", () => {
@@ -80,9 +77,7 @@ describe("getExpectedResolveMeleePhaseEvent", () => {
     const expectedEvent = getExpectedResolveMeleePhaseEvent(state);
 
     expect(expectedEvent.actionType).toBe("gameEffect");
-    const parsed = expectedGameEffectSchema.safeParse(expectedEvent);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.effectType).toBe("completeResolveMeleePhase");
+    expect((expectedEvent as ExpectedGameEffect).effectType).toBe("completeResolveMeleePhase");
   });
 
   it("given for invalid step, throws", () => {

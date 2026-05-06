@@ -1,4 +1,3 @@
-import type { Board } from "@entities";
 import type { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
 import type { AssertExact } from "@utils";
 import { z } from "zod";
@@ -7,10 +6,7 @@ import { z } from "zod";
 export const COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE = "completeUnitMovement" as const;
 
 /** The event for the game resolution of a unit movement. */
-export interface CompleteUnitMovementEvent<
-  _TBoard extends Board,
-  _TEffectType extends "completeUnitMovement" = "completeUnitMovement",
-> {
+export interface CompleteUnitMovementEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -31,7 +27,7 @@ const _completeUnitMovementEventSchemaObject = z.object({
 type CompleteUnitMovementEventSchemaType = z.infer<typeof _completeUnitMovementEventSchemaObject>;
 
 const _assertExactCompleteUnitMovementEvent: AssertExact<
-  CompleteUnitMovementEvent<Board>,
+  CompleteUnitMovementEvent,
   CompleteUnitMovementEventSchemaType
 > = true;
 

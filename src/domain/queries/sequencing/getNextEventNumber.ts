@@ -1,6 +1,6 @@
-import type { Board } from "@entities";
-import type { GameStateWithBoard } from "@game";
+import type { GameState, GameStateForBoard } from "@game";
 import { getCurrentEventStream } from "./getCurrentEventStream";
+import { Board } from "@entities";
 
 /**
  * Gets the next event number for the given game state.
@@ -8,9 +8,8 @@ import { getCurrentEventStream } from "./getCurrentEventStream";
  * @param gameState - The game state
  * @returns The next event number
  */
-export function getNextEventNumber<TBoard extends Board>(
-  gameState: GameStateWithBoard<TBoard>,
-): number {
-  const eventStream = getCurrentEventStream(gameState);
+export function getNextEventNumber(gameState: GameState): number {
+  // Safe broadening used since the shape of the return is irrelevant to the function
+  const eventStream = getCurrentEventStream(gameState as GameStateForBoard<Board>);
   return eventStream.length;
 }

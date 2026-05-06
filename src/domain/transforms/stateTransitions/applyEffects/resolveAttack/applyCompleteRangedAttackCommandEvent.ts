@@ -1,7 +1,7 @@
 import type { Board } from "@entities";
 import type { CompleteRangedAttackCommandEvent } from "@events";
-import type { GameStateWithBoard, IssueCommandsPhaseState } from "@game";
-import { getIssueCommandsPhaseState } from "@queries";
+import type { GameStateForBoard, IssueCommandsPhaseStateForBoard } from "@game";
+import { getIssueCommandsPhaseStateForBoard } from "@queries";
 import { updatePhaseState } from "@transforms/pureTransforms";
 
 /**
@@ -15,13 +15,13 @@ import { updatePhaseState } from "@transforms/pureTransforms";
  * @returns A new game state with the ranged attack resolution state cleared
  */
 export function applyCompleteRangedAttackCommandEvent<TBoard extends Board>(
-  _event: CompleteRangedAttackCommandEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getIssueCommandsPhaseState(state);
+  _event: CompleteRangedAttackCommandEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const phaseState = getIssueCommandsPhaseStateForBoard(state);
 
   // Clear from currentCommandResolutionState to allow advancing to next command
-  const newPhaseState: IssueCommandsPhaseState = {
+  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
     ...phaseState,
     currentCommandResolutionState: undefined,
   };

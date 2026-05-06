@@ -1,5 +1,4 @@
-import type { Board } from "@entities";
-import type { Event, EventType } from "@events";
+import type { Event } from "@events";
 import type { EventStreamStorage } from "../ports";
 import { parseStoredEventStream } from "../utils";
 
@@ -8,7 +7,7 @@ export async function getEventStream(
   gameId: string,
   roundNumber: number,
   eventStreamStorage: EventStreamStorage,
-): Promise<readonly Event<Board, EventType>[] | undefined> {
+): Promise<readonly Event[] | undefined> {
   const result = await eventStreamStorage.getEventStream(gameId, roundNumber);
   if (!result.result) {
     throw new Error(result.errorReason ?? "Unknown error");

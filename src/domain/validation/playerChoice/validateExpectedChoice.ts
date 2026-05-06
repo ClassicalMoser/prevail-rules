@@ -1,6 +1,6 @@
-import type { Board, PlayerSide, ValidationResult } from "@entities";
-import type { ExpectedEventInfo, PlayerChoiceEvent, PlayerChoiceType, PlayerSource } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { PlayerSide, ValidationResult } from "@entities";
+import type { ExpectedEventInfo, PlayerChoiceEvent, PlayerSource } from "@events";
+import type { GameState } from "@game";
 import { getExpectedEvent } from "@queries";
 
 /**
@@ -25,12 +25,9 @@ function playerMatchesExpectedSource(player: PlayerSide, source: PlayerSource): 
  * @param state - The current game state
  * @returns ValidationResult indicating if the player choice event is expected
  */
-export function validateExpectedChoice<
-  TBoard extends Board,
-  TPlayerChoiceType extends PlayerChoiceType,
->(
-  event: PlayerChoiceEvent<TBoard, TPlayerChoiceType>,
-  state: GameStateWithBoard<TBoard>,
+export function validateExpectedChoice(
+  event: PlayerChoiceEvent,
+  state: GameState,
 ): ValidationResult {
   try {
     // Get the expected event, and handle any errors that may occur

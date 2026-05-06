@@ -1,8 +1,9 @@
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { createEmptyGameState } from "@testing";
 import { describe, expect, it } from "vitest";
 
 import { generateDiscardPlayedCardsEvent } from "./generateDiscardPlayedCardsEvent";
+import { StandardBoard } from "@entities";
 
 /**
  * Cleanup phase entry: signal to discard all played command cards from both sides.
@@ -11,7 +12,7 @@ import { generateDiscardPlayedCardsEvent } from "./generateDiscardPlayedCardsEve
  */
 describe("generateDiscardPlayedCardsEvent", () => {
   it("given any game state, emits gameEffect with effectType discardPlayedCards", () => {
-    const state: StandardGameState = createEmptyGameState();
+    const state: GameStateForBoard<StandardBoard> = createEmptyGameState();
     const event = generateDiscardPlayedCardsEvent(state, 0);
     expect(event.eventType).toBe("gameEffect");
     expect(event.effectType).toBe("discardPlayedCards");

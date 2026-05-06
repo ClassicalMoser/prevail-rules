@@ -1,11 +1,11 @@
 import type { Board, Command } from "@entities";
 import type { IssueCommandEvent } from "@events";
-import type { GameStateWithBoard, IssueCommandsPhaseState } from "@game";
-import { findMatchingCommand, getIssueCommandsPhaseState } from "@queries";
+import type { GameStateForBoard, IssueCommandsPhaseStateForBoard } from "@game";
+import { findMatchingCommand, getIssueCommandsPhaseStateForBoard } from "@queries";
 import {
   addUnitsToCommandedUnits,
   updatePhaseState,
-  updateRemainingCommandsForPlayer,
+  updateRemainingPlayerCommands,
 } from "@transforms/pureTransforms";
 
 /**
@@ -18,10 +18,10 @@ import {
  * @returns A new game state with the command issued
  */
 export function applyIssueCommandEvent<TBoard extends Board>(
-  event: IssueCommandEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getIssueCommandsPhaseState(state);
+  event: IssueCommandEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const phaseState = getIssueCommandsPhaseStateForBoard(state);
   const player = event.player;
   const command = event.command;
   const units = event.units;
@@ -41,7 +41,7 @@ export function applyIssueCommandEvent<TBoard extends Board>(
   );
 
   // Update phase state with new remaining commands
-  const newPhaseState: IssueCommandsPhaseState = updateRemainingCommandsForPlayer(
+  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = updateRemainingPlayerCommands(
     phaseState,
     player,
     state.currentInitiative,

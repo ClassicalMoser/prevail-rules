@@ -29,9 +29,10 @@ export {
   addCompletedPhase,
   markPhaseAsComplete,
   updateCurrentInitiative,
+  updateCurrentInitiativeForBoard,
   updateCurrentRoundNumber,
   updatePhaseState,
-  updateRemainingCommandsForPlayer,
+  updateRemainingPlayerCommands,
   updateRoundEventStream,
   updateRoundState,
 } from "./state";

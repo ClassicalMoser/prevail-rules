@@ -1,5 +1,5 @@
-import type { Board, PlayerSide } from "@entities";
-import type { GameStateWithBoard } from "@game";
+import type { PlayerSide } from "@entities";
+import type { GameState } from "@game";
 
 /**
  * Gets which player currently has initiative.
@@ -7,8 +7,6 @@ import type { GameStateWithBoard } from "@game";
  * @param state - The game state
  * @returns The player side with initiative
  */
-export function getCurrentInitiative<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): PlayerSide {
+export function getCurrentInitiative(state: GameState): PlayerSide {
   return state.currentInitiative;
 }

@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { ExpectedEventInfo } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import { getOtherPlayer } from "@queries/getOtherPlayer";
 import { getMoveCommandersPhaseState } from "@queries/sequencing";
 
@@ -10,9 +9,7 @@ import { getMoveCommandersPhaseState } from "@queries/sequencing";
  * @param state - The current game state with MoveCommanders phase
  * @returns Information about what event is expected
  */
-export function getExpectedMoveCommandersPhaseEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): ExpectedEventInfo {
+export function getExpectedMoveCommandersPhaseEvent(state: GameState): ExpectedEventInfo {
   const phaseState = getMoveCommandersPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);

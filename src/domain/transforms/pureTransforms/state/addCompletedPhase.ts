@@ -1,5 +1,5 @@
 import type { Board } from "@entities";
-import type { GameStateWithBoard, PhaseState } from "@game";
+import type { GameStateForBoard, PhaseStateForBoard } from "@game";
 import { updateRoundState } from "@transforms/pureTransforms";
 
 /**
@@ -16,9 +16,9 @@ import { updateRoundState } from "@transforms/pureTransforms";
  * ```
  */
 export function addCompletedPhase<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-  completedPhase: PhaseState,
-): GameStateWithBoard<TBoard> {
+  state: GameStateForBoard<TBoard>,
+  completedPhase: PhaseStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   const newCompletedPhases = new Set(state.currentRoundState.completedPhases);
   newCompletedPhases.add(completedPhase);
 

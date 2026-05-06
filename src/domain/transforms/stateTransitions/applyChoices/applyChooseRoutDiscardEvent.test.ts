@@ -1,4 +1,3 @@
-import type { StandardBoard } from "@entities";
 import type { ChooseRoutDiscardEvent } from "@events";
 import { getCurrentRallyResolutionState } from "@queries";
 import {
@@ -41,7 +40,7 @@ describe("applyChooseRoutDiscardEvent", () => {
 
   it("given firstPlayerResolveRally rout for white, empty cardIds sets cardsChosen and same step", () => {
     const state = createStateInResolveRallyWithRout("firstPlayerResolveRally", "white");
-    const event: ChooseRoutDiscardEvent<StandardBoard> = {
+    const event: ChooseRoutDiscardEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRoutDiscard",
@@ -60,7 +59,7 @@ describe("applyChooseRoutDiscardEvent", () => {
 
   it("given secondPlayerResolveRally rout for black, empty cardIds sets cardsChosen and same step", () => {
     const state = createStateInResolveRallyWithRout("secondPlayerResolveRally", "black");
-    const event: ChooseRoutDiscardEvent<StandardBoard> = {
+    const event: ChooseRoutDiscardEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRoutDiscard",
@@ -80,7 +79,7 @@ describe("applyChooseRoutDiscardEvent", () => {
   it("given playCards phase, throws expected cleanup phase", () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(state, createPlayCardsPhaseState());
-    const event: ChooseRoutDiscardEvent<StandardBoard> = {
+    const event: ChooseRoutDiscardEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRoutDiscard",
@@ -99,7 +98,7 @@ describe("applyChooseRoutDiscardEvent", () => {
       step: "discardPlayedCards",
     });
     const stateInCleanup = updatePhaseState(state, phaseState);
-    const event: ChooseRoutDiscardEvent<StandardBoard> = {
+    const event: ChooseRoutDiscardEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRoutDiscard",

@@ -1,4 +1,4 @@
-import type { StandardGameState } from "@game";
+import type { GameState } from "@game";
 import { PLAY_CARDS_PHASE } from "@game";
 
 import { createCleanupPhaseState, createEmptyGameState } from "@testing";
@@ -13,7 +13,7 @@ import { generateResolveRallyEvent } from "./generateResolveRallyEvent";
  */
 describe("generateResolveRallyEvent", () => {
   /** Moves testing-helper `inPlay` card into `played` for `played` side; firstPlayerChooseRally. */
-  function cleanupChooseRallyState(played: "black" | "white"): StandardGameState {
+  function cleanupChooseRallyState(played: "black" | "white"): GameState {
     const base = createEmptyGameState();
     const card = base.cardState[played].inPlay!;
     const withPlayed = updateCardState(base, (c) => ({

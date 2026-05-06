@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { ResolveInitiativeEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_INITIATIVE_EFFECT_TYPE } from "@events";
 import { calculateInitiative, getPlayCardsPhaseState } from "@queries";
 
@@ -25,10 +24,10 @@ import { calculateInitiative, getPlayCardsPhaseState } from "@queries";
  * // Event is now in the log with the initiative result baked in
  * ```
  */
-export function generateResolveInitiativeEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+export function generateResolveInitiativeEvent(
+  state: GameState,
   eventNumber: number,
-): ResolveInitiativeEvent<TBoard, "resolveInitiative"> {
+): ResolveInitiativeEvent {
   const phaseState = getPlayCardsPhaseState(state);
 
   if (phaseState.step !== "assignInitiative") {

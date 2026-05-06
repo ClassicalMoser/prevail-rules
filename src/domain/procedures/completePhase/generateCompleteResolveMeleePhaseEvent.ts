@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { CompleteResolveMeleePhaseEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import { COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
 
 /**
@@ -10,10 +9,10 @@ import { COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from
  * @param state - The current game state
  * @returns A complete CompleteResolveMeleePhaseEvent
  */
-export function generateCompleteResolveMeleePhaseEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+export function generateCompleteResolveMeleePhaseEvent(
+  state: GameState,
   eventNumber: number,
-): CompleteResolveMeleePhaseEvent<TBoard, "completeResolveMeleePhase"> {
+): CompleteResolveMeleePhaseEvent {
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {

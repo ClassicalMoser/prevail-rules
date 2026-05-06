@@ -1,9 +1,9 @@
 import type { StandardBoard, UnitInstance, UnitPlacement } from "@entities";
 import type {
+  EngagementStateForBoard,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
-  StandardEngagementState,
 } from "@game";
 import { createUnitWithPlacement } from "@testing/testHelpers";
 import { createTestUnit } from "@testing/unitHelpers";
@@ -14,7 +14,7 @@ const defaultEngagingUnit = (): UnitInstance =>
 
 const defaultTargetPlacement: UnitPlacement<StandardBoard> = {
   boardType: "standard" as const,
-  coordinate: "E-5",
+  coordinate: "E-5" as const,
   facing: "north",
 };
 
@@ -23,7 +23,7 @@ const defaultTargetPlacement: UnitPlacement<StandardBoard> = {
  */
 export function createFrontEngagementState(
   overrides?: Partial<FrontEngagementResolutionState>,
-): StandardEngagementState & {
+): EngagementStateForBoard<StandardBoard> & {
   engagementResolutionState: FrontEngagementResolutionState;
 } {
   return {
@@ -48,7 +48,7 @@ export function createFrontEngagementState(
  */
 export function createFlankEngagementState(
   overrides?: Partial<FlankEngagementResolutionState>,
-): StandardEngagementState & {
+): EngagementStateForBoard<StandardBoard> & {
   engagementResolutionState: FlankEngagementResolutionState;
 } {
   return {
@@ -70,7 +70,7 @@ export function createFlankEngagementState(
  */
 export function createRearEngagementState(
   overrides?: Partial<RearEngagementResolutionState>,
-): StandardEngagementState & {
+): EngagementStateForBoard<StandardBoard> & {
   engagementResolutionState: RearEngagementResolutionState;
 } {
   return {

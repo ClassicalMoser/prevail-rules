@@ -1,10 +1,11 @@
-import type { IssueCommandsPhaseState } from "@game";
+import type { GameStateForBoard, IssueCommandsPhaseStateForBoard } from "@game";
 import { ISSUE_COMMANDS_PHASE } from "@game";
 
 import { createEmptyGameState, createGameStateWithEngagedUnits, createTestUnit } from "@testing";
-import { updatePhaseState } from "@transforms";
 import { describe, expect, it } from "vitest";
 import { generateCompleteIssueCommandsPhaseEvent } from "./generateCompleteIssueCommandsPhaseEvent";
+import { StandardBoard } from "@entities";
+import { updatePhaseState } from "@transforms";
 
 /**
  * Issue-commands phase is done: emit `completeIssueCommandsPhase` with `remainingEngagements`
@@ -12,10 +13,13 @@ import { generateCompleteIssueCommandsPhaseEvent } from "./generateCompleteIssue
  */
 describe("generateCompleteIssueCommandsPhaseEvent", () => {
   /** Puts `state` in ISSUE_COMMANDS_PHASE step `complete` with empty command queues. */
-  function stateInIssueCommandsComplete(state = createEmptyGameState()): typeof state {
-    const initialPhaseState: IssueCommandsPhaseState = {
+  function stateInIssueCommandsComplete(
+    state = createEmptyGameState(),
+  ): GameStateForBoard<StandardBoard> {
+    const initialPhaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
       phase: ISSUE_COMMANDS_PHASE,
       step: "complete",
+      boardType: state.boardState.boardType,
       remainingCommandsFirstPlayer: new Set(),
       remainingUnitsFirstPlayer: new Set(),
       remainingCommandsSecondPlayer: new Set(),

@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import {
   createEmptyGameState,
   createFrontEngagementState,
@@ -20,7 +20,7 @@ import { generateResolveEngageRetreatOptionEvent } from "./generateResolveEngage
 function buildStateWithFrontEngagement(options: {
   defendingSpeed: number;
   engagingSpeed: number;
-}): StandardGameState {
+}): GameStateForBoard<StandardBoard> {
   const state = createEmptyGameState();
   state.cardState.black.inPlay = createTestCard();
   const defender = createUnitByStat("white", "speed", options.defendingSpeed);

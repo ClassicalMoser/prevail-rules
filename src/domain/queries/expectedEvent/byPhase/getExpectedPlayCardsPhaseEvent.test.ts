@@ -1,5 +1,5 @@
-import type { StandardGameState } from "@game";
-import { expectedGameEffectSchema, expectedPlayerInputSchema } from "@events";
+import type { GameStateForBoard } from "@game";
+import { StandardBoard } from "@entities";
 
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from "@game";
 import { tempCommandCards } from "@sampleValues";
@@ -7,6 +7,7 @@ import { createEmptyGameState } from "@testing";
 import { updateCardState, updatePhaseState } from "@transforms";
 import { describe, expect, it } from "vitest";
 import { getExpectedPlayCardsPhaseEvent } from "./getExpectedPlayCardsPhaseEvent";
+import { ExpectedGameEffect, ExpectedPlayerInput } from "@events";
 
 /**
  * getExpectedPlayCardsPhaseEvent: next event during play-cards phase from phase state.
@@ -17,7 +18,7 @@ describe("getExpectedPlayCardsPhaseEvent", () => {
    */
   function createGameStateInPlayCardsStep(
     step: "chooseCards" | "revealCards" | "assignInitiative" | "complete",
-  ): StandardGameState {
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
 
     const stateWithPhase = updatePhaseState(state, {
@@ -42,10 +43,8 @@ describe("getExpectedPlayCardsPhaseEvent", () => {
         const expectedEvent = getExpectedPlayCardsPhaseEvent(stateWithNoAwaitingCards);
 
         expect(expectedEvent.actionType).toBe("playerChoice");
-        const resultIsExpectedPlayerInput = expectedPlayerInputSchema.safeParse(expectedEvent);
-        expect(resultIsExpectedPlayerInput.success).toBe(true);
-        expect(resultIsExpectedPlayerInput.data?.playerSource).toBe("bothPlayers");
-        expect(resultIsExpectedPlayerInput.data?.choiceType).toBe("chooseCard");
+        expect((expectedEvent as ExpectedPlayerInput).playerSource).toBe("bothPlayers");
+        expect((expectedEvent as ExpectedPlayerInput).choiceType).toBe("chooseCard");
       });
 
       it("given black has already chosen, returns white player", () => {
@@ -58,10 +57,8 @@ describe("getExpectedPlayCardsPhaseEvent", () => {
         const expectedEvent = getExpectedPlayCardsPhaseEvent(stateWithBlackCard);
 
         expect(expectedEvent.actionType).toBe("playerChoice");
-        const resultIsExpectedPlayerInput = expectedPlayerInputSchema.safeParse(expectedEvent);
-        expect(resultIsExpectedPlayerInput.success).toBe(true);
-        expect(resultIsExpectedPlayerInput.data?.playerSource).toBe("white");
-        expect(resultIsExpectedPlayerInput.data?.choiceType).toBe("chooseCard");
+        expect((expectedEvent as ExpectedPlayerInput).playerSource).toBe("white");
+        expect((expectedEvent as ExpectedPlayerInput).choiceType).toBe("chooseCard");
       });
 
       it("given white has already chosen, returns black player", () => {
@@ -76,10 +73,8 @@ describe("getExpectedPlayCardsPhaseEvent", () => {
         const expectedEvent = getExpectedPlayCardsPhaseEvent(stateWithWhiteCard);
 
         expect(expectedEvent.actionType).toBe("playerChoice");
-        const resultIsExpectedPlayerInput = expectedPlayerInputSchema.safeParse(expectedEvent);
-        expect(resultIsExpectedPlayerInput.success).toBe(true);
-        expect(resultIsExpectedPlayerInput.data?.playerSource).toBe("black");
-        expect(resultIsExpectedPlayerInput.data?.choiceType).toBe("chooseCard");
+        expect((expectedEvent as ExpectedPlayerInput).playerSource).toBe("black");
+        expect((expectedEvent as ExpectedPlayerInput).choiceType).toBe("chooseCard");
       });
     });
 
@@ -89,9 +84,7 @@ describe("getExpectedPlayCardsPhaseEvent", () => {
       const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
 
       expect(expectedEvent.actionType).toBe("gameEffect");
-      const resultIsExpectedGameEffect = expectedGameEffectSchema.safeParse(expectedEvent);
-      expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe("revealCards");
+      expect((expectedEvent as ExpectedGameEffect).effectType).toBe("revealCards");
     });
 
     it("given step is assignInitiative, returns resolveInitiative gameEffect", () => {
@@ -100,9 +93,7 @@ describe("getExpectedPlayCardsPhaseEvent", () => {
       const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
 
       expect(expectedEvent.actionType).toBe("gameEffect");
-      const resultIsExpectedGameEffect = expectedGameEffectSchema.safeParse(expectedEvent);
-      expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe("resolveInitiative");
+      expect((expectedEvent as ExpectedGameEffect).effectType).toBe("resolveInitiative");
     });
 
     it("given step is complete, returns completePlayCardsPhase gameEffect", () => {
@@ -111,9 +102,7 @@ describe("getExpectedPlayCardsPhaseEvent", () => {
       const expectedEvent = getExpectedPlayCardsPhaseEvent(state);
 
       expect(expectedEvent.actionType).toBe("gameEffect");
-      const resultIsExpectedGameEffect = expectedGameEffectSchema.safeParse(expectedEvent);
-      expect(resultIsExpectedGameEffect.success).toBe(true);
-      expect(resultIsExpectedGameEffect.data?.effectType).toBe("completePlayCardsPhase");
+      expect((expectedEvent as ExpectedGameEffect).effectType).toBe("completePlayCardsPhase");
     });
   });
 

@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
-import type { ExpectedEventInfo } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { ExpectedEvent, ExpectedEventInfo } from "@events";
+import type { GameState } from "@game";
 import { getCurrentPhaseState } from "@queries/sequencing";
 import {
   getExpectedCleanupPhaseEvent,
@@ -10,14 +9,14 @@ import {
   getExpectedResolveMeleePhaseEvent,
 } from "./byPhase";
 
-/** ExpectedEventInfo enriched with the next event number derived from state. */
-export type ExpectedEvent = ExpectedEventInfo & {
-  eventNumber: number;
-};
-
-export function getExpectedEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): ExpectedEvent {
+/**
+ * Dispatcher function to identify which event to expect next.
+ *
+ * @param state - The game state, only argument required.
+ * @returns Discriminator information to identify which event and number to expect next,
+ * as well as which player(s) to expect input from.
+ */
+export function getExpectedEvent(state: GameState): ExpectedEvent {
   const phaseState = getCurrentPhaseState(state);
   const eventNumber = state.currentRoundState.events.length;
 
@@ -41,6 +40,6 @@ export function getExpectedEvent<TBoard extends Board>(
     default:
       throw new Error("Invalid phase");
   }
-
-  return { ...info, eventNumber };
+  const expectedEvent: ExpectedEvent = { ...info, expectedEventNumber: eventNumber };
+  return expectedEvent;
 }

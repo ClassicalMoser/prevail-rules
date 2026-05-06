@@ -1,14 +1,15 @@
 import type { Board, UnitWithPlacement } from "@entities";
-import type { ResolveFlankEngagementEvent } from "@events";
+import type { ResolveFlankEngagementEventForBoard } from "@events";
 import type {
-  GameStateWithBoard,
-  IssueCommandsPhaseState,
-  MovementResolutionState,
-  PhaseState,
+  EngagementStateForBoard,
+  FlankEngagementResolutionState,
+  GameStateForBoard,
+  IssueCommandsPhaseStateForBoard,
+  MovementResolutionStateForBoard,
 } from "@game";
 import {
   getFlankEngagementStateFromMovement,
-  getIssueCommandsPhaseState,
+  getIssueCommandsPhaseStateForBoard,
   getMovementResolutionState,
 } from "@queries";
 import {
@@ -25,22 +26,19 @@ import {
  * narrowing); does not call `getPositionOfUnit`.
  */
 export function applyResolveFlankEngagementEvent<TBoard extends Board>(
-  event: ResolveFlankEngagementEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getIssueCommandsPhaseState(state);
+  event: ResolveFlankEngagementEventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const phaseState = getIssueCommandsPhaseStateForBoard(state);
   const movementState = getMovementResolutionState(state);
   const engagementState = getFlankEngagementStateFromMovement(state);
   const flankResolutionState = engagementState.engagementResolutionState;
 
   const { unit, placement } = event.defenderWithPlacement;
 
-  const removedUnitBoard = removeUnitFromBoard<TBoard>(
-    state.boardState,
-    event.defenderWithPlacement as UnitWithPlacement<TBoard>,
-  );
+  const removedUnitBoard = removeUnitFromBoard(state.boardState, event.defenderWithPlacement);
 
-  const newUnitWithPlacement = {
+  const newUnitWithPlacement: UnitWithPlacement<TBoard> = {
     boardType: event.defenderWithPlacement.boardType,
     unit,
     placement: {
@@ -50,26 +48,26 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
   } as UnitWithPlacement<TBoard>;
   const updatedBoard = addUnitToBoard<TBoard>(removedUnitBoard, newUnitWithPlacement);
 
-  const newFlankResolutionState = {
+  const newFlankResolutionState: FlankEngagementResolutionState = {
     ...flankResolutionState,
     defenderRotated: true,
   };
 
-  const newEngagementState = {
+  const newEngagementState: EngagementStateForBoard<TBoard> = {
     ...engagementState,
     engagementResolutionState: newFlankResolutionState,
     completed: true,
   };
 
-  const newMovementState = {
+  const newMovementState: MovementResolutionStateForBoard<TBoard> = {
     ...movementState,
     engagementState: newEngagementState,
-  } as MovementResolutionState;
+  };
 
-  const newPhaseState: IssueCommandsPhaseState = {
+  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
     ...phaseState,
     currentCommandResolutionState: newMovementState,
   };
 
-  return updatePhaseState(updateBoardState(state, updatedBoard), newPhaseState as PhaseState);
+  return updatePhaseState(updateBoardState(state, updatedBoard), newPhaseState);
 }

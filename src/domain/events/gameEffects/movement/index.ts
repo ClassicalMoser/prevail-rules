@@ -5,8 +5,21 @@ export { RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE } from "./resolveEngageRetrea
 export type { ResolveEngageRetreatOptionEvent } from "./resolveEngageRetreatOption";
 export { resolveEngageRetreatOptionEventSchema } from "./resolveEngageRetreatOption";
 export { RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE } from "./resolveFlankEngagement";
-export type { ResolveFlankEngagementEvent } from "./resolveFlankEngagement";
-export { resolveFlankEngagementEventSchema } from "./resolveFlankEngagement";
+export type {
+  ResolveFlankEngagementEvent,
+  ResolveFlankEngagementEventForBoard,
+} from "./resolveFlankEngagement";
+export {
+  largeResolveFlankEngagementEventSchema,
+  resolveFlankEngagementEventSchema,
+  smallResolveFlankEngagementEventSchema,
+  standardResolveFlankEngagementEventSchema,
+} from "./resolveFlankEngagement";
 export { START_ENGAGEMENT_EFFECT_TYPE } from "./startEngagement";
-export type { StartEngagementEvent } from "./startEngagement";
-export { startEngagementEventSchema } from "./startEngagement";
+export type { StartEngagementEvent, StartEngagementEventForBoard } from "./startEngagement";
+export {
+  largeStartEngagementEventSchema,
+  smallStartEngagementEventSchema,
+  standardStartEngagementEventSchema,
+  startEngagementEventSchema,
+} from "./startEngagement";

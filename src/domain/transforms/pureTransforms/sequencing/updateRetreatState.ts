@@ -1,17 +1,11 @@
 import type { Board } from "@entities";
-import type {
-  GameStateWithBoard,
-  MeleeResolutionState,
-  PhaseState,
-  RangedAttackResolutionState,
-  RetreatState,
-} from "@game";
+import type { GameStateForBoard, RetreatStateForBoard } from "@game";
 import {
-  getCurrentPhaseState,
-  getIssueCommandsPhaseState,
+  getCurrentPhaseStateForBoard,
+  getIssueCommandsPhaseStateForBoard,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
-  getResolveMeleePhaseState,
+  getResolveMeleePhaseStateForBoard,
 } from "@queries";
 import { updatePhaseState } from "../state";
 
@@ -27,13 +21,13 @@ import { updatePhaseState } from "../state";
  * @returns A new game state with the updated retreat state
  */
 export function updateRetreatState<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-  retreatState: RetreatState,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getCurrentPhaseState(state);
+  state: GameStateForBoard<TBoard>,
+  retreatState: RetreatStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const phaseState = getCurrentPhaseStateForBoard(state);
 
   if (phaseState.phase === "issueCommands") {
-    const issueState = getIssueCommandsPhaseState(state);
+    const issueState = getIssueCommandsPhaseStateForBoard(state);
     const commandState = issueState.currentCommandResolutionState;
 
     if (commandState?.commandResolutionType === "rangedAttack") {
@@ -47,8 +41,8 @@ export function updateRetreatState<TBoard extends Board>(
         currentCommandResolutionState: {
           ...ranged,
           attackApplyState: { ...attackApply, retreatState },
-        } as RangedAttackResolutionState,
-      } as PhaseState);
+        },
+      });
     }
 
     // TODO: commandResolutionType === 'movement' with engagement retreat
@@ -58,7 +52,7 @@ export function updateRetreatState<TBoard extends Board>(
   }
 
   if (phaseState.phase === "resolveMelee") {
-    const resolveMelee = getResolveMeleePhaseState(state);
+    const resolveMelee = getResolveMeleePhaseStateForBoard(state);
     const melee = getMeleeResolutionState(state);
     const player = retreatState.retreatingUnit.unit.playerSide;
 
@@ -72,8 +66,8 @@ export function updateRetreatState<TBoard extends Board>(
         currentMeleeResolutionState: {
           ...melee,
           whiteAttackApplyState: { ...whiteApply, retreatState },
-        } as MeleeResolutionState,
-      } as PhaseState);
+        },
+      });
     }
 
     const blackApply = melee.blackAttackApplyState;
@@ -85,8 +79,8 @@ export function updateRetreatState<TBoard extends Board>(
       currentMeleeResolutionState: {
         ...melee,
         blackAttackApplyState: { ...blackApply, retreatState },
-      } as MeleeResolutionState,
-    } as PhaseState);
+      },
+    });
   }
 
   throw new Error(`Retreat state update not expected in phase: ${phaseState.phase}`);

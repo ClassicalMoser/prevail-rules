@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
-import type { ChooseRetreatOptionEvent } from "@events";
-import type { GameStateWithBoard, RetreatState } from "@game";
+import type { ChooseRetreatOptionEventForBoard } from "@events";
+import type { GameStateForBoard, RetreatStateForBoard } from "@game";
 import { findRetreatState } from "@queries";
 import { updateRetreatState } from "@transforms/pureTransforms";
 
@@ -19,17 +19,17 @@ import { updateRetreatState } from "@transforms/pureTransforms";
  * @returns A new game state with the retreat option chosen
  */
 export function applyChooseRetreatOptionEvent<TBoard extends Board>(
-  event: ChooseRetreatOptionEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: ChooseRetreatOptionEventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   // Finds the retreat state for the player, regardless of the phase
   const retreatState = findRetreatState(state, event.player);
   // Updates the retreat state with the new final position
-  const newRetreatState = {
+  const newRetreatState: RetreatStateForBoard<TBoard> = {
     ...retreatState,
     finalPosition: event.retreatOption,
   };
   // Return the new game state with the updated retreat state
-  const newGameState = updateRetreatState(state, newRetreatState as RetreatState);
+  const newGameState = updateRetreatState(state, newRetreatState);
   return newGameState;
 }

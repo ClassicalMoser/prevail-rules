@@ -9,7 +9,7 @@ import type { GameEffectType } from "@events";
  *
  * No Vitest imports.
  */
-import type { IssueCommandsPhaseState, StandardGameState } from "@game";
+import type { GameStateForBoard, IssueCommandsPhaseStateForBoard } from "@game";
 import { ISSUE_COMMANDS_PHASE, MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from "@game";
 
 import { tempCommandCards } from "@sampleValues";
@@ -33,8 +33,11 @@ import { createTestCard } from "./testHelpers";
 import { createTestUnit, createUnitByStat } from "./unitHelpers";
 
 /** Minimal valid state per effect so registry dispatch reaches the target procedure. */
-export const procedureRegistryStateFactories: Record<GameEffectType, () => StandardGameState> = {
-  completeAttackApply: (): StandardGameState => {
+export const procedureRegistryStateFactories: Record<
+  GameEffectType,
+  () => GameStateForBoard<StandardBoard>
+> = {
+  completeAttackApply: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit("white", { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -60,10 +63,11 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     return updatePhaseState(stateWithUnit, phaseState);
   },
 
-  completeCleanupPhase: (): StandardGameState => createEmptyGameState(),
+  completeCleanupPhase: (): GameStateForBoard<StandardBoard> => createEmptyGameState(),
 
-  completeIssueCommandsPhase: (): StandardGameState => {
-    const initialPhaseState: IssueCommandsPhaseState = {
+  completeIssueCommandsPhase: (): GameStateForBoard<StandardBoard> => {
+    const initialPhaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
+      boardType: "standard" as const,
       phase: ISSUE_COMMANDS_PHASE,
       step: "complete",
       remainingCommandsFirstPlayer: new Set(),
@@ -75,7 +79,7 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     return updatePhaseState(createEmptyGameState(), initialPhaseState);
   },
 
-  completeMoveCommandersPhase: (): StandardGameState => {
+  completeMoveCommandersPhase: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState({ currentInitiative: "black" });
     const stateWithCards = updateCardState(state, (current) => ({
       ...current,
@@ -88,21 +92,21 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     });
   },
 
-  completePlayCardsPhase: (): StandardGameState =>
+  completePlayCardsPhase: (): GameStateForBoard<StandardBoard> =>
     updatePhaseState(createEmptyGameState(), {
       phase: PLAY_CARDS_PHASE,
       step: "complete",
     }),
 
-  completeMeleeResolution: (): StandardGameState => createEmptyGameState(),
+  completeMeleeResolution: (): GameStateForBoard<StandardBoard> => createEmptyGameState(),
 
-  completeRangedAttackCommand: (): StandardGameState => createEmptyGameState(),
+  completeRangedAttackCommand: (): GameStateForBoard<StandardBoard> => createEmptyGameState(),
 
-  completeResolveMeleePhase: (): StandardGameState => createEmptyGameState(),
+  completeResolveMeleePhase: (): GameStateForBoard<StandardBoard> => createEmptyGameState(),
 
-  discardPlayedCards: (): StandardGameState => createEmptyGameState(),
+  discardPlayedCards: (): GameStateForBoard<StandardBoard> => createEmptyGameState(),
 
-  resolveEngageRetreatOption: (): StandardGameState => {
+  resolveEngageRetreatOption: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat("white", "speed", 4);
@@ -136,7 +140,7 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     );
   },
 
-  resolveFlankEngagement: (): StandardGameState => {
+  resolveFlankEngagement: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit("white");
@@ -166,13 +170,13 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     );
   },
 
-  resolveInitiative: (): StandardGameState =>
+  resolveInitiative: (): GameStateForBoard<StandardBoard> =>
     updatePhaseState(createEmptyGameState(), {
       phase: PLAY_CARDS_PHASE,
       step: "assignInitiative",
     }),
 
-  resolveMelee: (): StandardGameState => {
+  resolveMelee: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState();
     const whiteUnit = createTestUnit("white", { attack: 2 });
     const blackUnit = createTestUnit("black", { attack: 2 });
@@ -200,7 +204,7 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     return updatePhaseState(s, phase);
   },
 
-  resolveRally: (): StandardGameState => {
+  resolveRally: (): GameStateForBoard<StandardBoard> => {
     const base = createEmptyGameState();
     const played = "black" as const;
     const card = base.cardState[played].inPlay!;
@@ -217,7 +221,7 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     );
   },
 
-  resolveRangedAttack: (): StandardGameState => {
+  resolveRangedAttack: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit("white", { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -242,7 +246,7 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     return updatePhaseState(withBoard, phase);
   },
 
-  resolveRetreat: (): StandardGameState => {
+  resolveRetreat: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit("white", { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -278,7 +282,7 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     return updatePhaseState(withBoard, phase);
   },
 
-  resolveReverse: (): StandardGameState => {
+  resolveReverse: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit("white", { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -305,7 +309,7 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     return updatePhaseState(withBoard, phase);
   },
 
-  resolveRout: (): StandardGameState => {
+  resolveRout: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit("white", { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -332,17 +336,17 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     return updatePhaseState(withBoard, phase);
   },
 
-  resolveUnitsBroken: (): StandardGameState =>
+  resolveUnitsBroken: (): GameStateForBoard<StandardBoard> =>
     updatePhaseState(
       createEmptyGameState({ currentInitiative: "white" }),
       createCleanupPhaseState({ step: "firstPlayerResolveRally" }),
     ),
 
-  revealCards: (): StandardGameState => createEmptyGameState(),
+  revealCards: (): GameStateForBoard<StandardBoard> => createEmptyGameState(),
 
-  completeUnitMovement: (): StandardGameState => createEmptyGameState(),
+  completeUnitMovement: (): GameStateForBoard<StandardBoard> => createEmptyGameState(),
 
-  startEngagement: (): StandardGameState => {
+  startEngagement: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit("white");
@@ -380,7 +384,7 @@ export const procedureRegistryStateFactories: Record<GameEffectType, () => Stand
     return updatePhaseState(withBoard, phase);
   },
 
-  triggerRoutFromRetreat: (): StandardGameState => {
+  triggerRoutFromRetreat: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit("white", { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {

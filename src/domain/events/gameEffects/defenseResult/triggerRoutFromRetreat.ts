@@ -1,4 +1,4 @@
-import type { Board, PlayerSide } from "@entities";
+import type { PlayerSide } from "@entities";
 import type { AssertExact } from "@utils";
 import { playerSideSchema } from "@entities";
 import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
@@ -23,15 +23,12 @@ export const TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE = "triggerRoutFromRetreat" as
  *
  * Procedure `generateTriggerRoutFromRetreatEvent` sets the branch; apply trusts it.
  */
-export type TriggerRoutFromRetreatEvent<
-  _TBoard extends Board,
-  _TEffectType extends "triggerRoutFromRetreat" = "triggerRoutFromRetreat",
-> =
+export type TriggerRoutFromRetreatEvent =
   | {
       /** The type of the event. */
       eventType: typeof GAME_EFFECT_EVENT_TYPE;
       /** The type of game effect. */
-      effectType: _TEffectType;
+      effectType: typeof TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE;
       /** Retreat substep lives under ranged attack resolution. */
       retreatResolutionContext: typeof RANGED_ATTACK_RESOLUTION_CONTEXT;
       /** The ordered index of the event in the round, zero-indexed. */
@@ -41,7 +38,7 @@ export type TriggerRoutFromRetreatEvent<
       /** The type of the event. */
       eventType: typeof GAME_EFFECT_EVENT_TYPE;
       /** The type of game effect. */
-      effectType: _TEffectType;
+      effectType: typeof TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE;
       /** Retreat substep lives under this player's melee attack-apply. */
       retreatResolutionContext: typeof MELEE_ATTACK_RESOLUTION_CONTEXT;
       /** The player whose retreat has no legal options. */
@@ -124,6 +121,6 @@ export const triggerRoutFromRetreatEventSchema: typeof _triggerRoutFromRetreatEv
   _triggerRoutFromRetreatEventSchemaObject;
 
 const _assertExactTriggerRoutFromRetreatEvent: AssertExact<
-  TriggerRoutFromRetreatEvent<Board>,
+  TriggerRoutFromRetreatEvent,
   TriggerRoutFromRetreatEventSchemaType
 > = true;

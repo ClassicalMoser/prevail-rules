@@ -1,5 +1,4 @@
-import type { GameType } from "@entities";
-import type { BoardForGameType, GameState, GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import type { EnginePorts, PortResponse } from "../ports";
 
 /**
@@ -12,9 +11,9 @@ import type { EnginePorts, PortResponse } from "../ports";
  * @param ports - The engine ports.
  * @returns The result of the operation.
  */
-export async function handleNewRound<T extends GameType>(
+export async function handleNewRound(
   gameId: string,
-  gameState: GameStateWithBoard<BoardForGameType<T>>,
+  gameState: GameState,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> {
   const { roundSnapshotStorage, eventStreamStorage } = ports;

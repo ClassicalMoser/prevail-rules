@@ -1,5 +1,5 @@
 import type { Board } from "@entities";
-import type { MoveUnitEvent } from "@events";
+import type { MoveUnitEventForBoard } from "@events";
 import { createEmptyGameState, createTestUnit } from "@testing";
 import { addUnitToBoard } from "@transforms";
 import { describe, expect, it } from "vitest";
@@ -24,7 +24,7 @@ describe("isLegalMove", () => {
         },
       });
       gameState.boardState = board;
-      const moveUnitEvent: MoveUnitEvent<Board> = {
+      const moveUnitEvent: MoveUnitEventForBoard<Board> = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "moveUnit",
@@ -54,7 +54,7 @@ describe("isLegalMove", () => {
     it("given a move that is not legal, returns false", () => {
       const unitInstance = createTestUnit("black", { speed: 2 });
       const gameState = createEmptyGameState();
-      const moveUnitEvent: MoveUnitEvent<Board> = {
+      const moveUnitEvent: MoveUnitEventForBoard<Board> = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "moveUnit",

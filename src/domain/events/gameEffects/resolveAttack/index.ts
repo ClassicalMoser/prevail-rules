@@ -7,9 +7,22 @@ export { completeMeleeResolutionEventSchema } from "./completeMeleeResolution";
 export { COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE } from "./completeRangedAttackCommand";
 export type { CompleteRangedAttackCommandEvent } from "./completeRangedAttackCommand";
 export { completeRangedAttackCommandEventSchema } from "./completeRangedAttackCommand";
-export { RESOLVE_MELEE_EFFECT_TYPE } from "./resolveMelee";
-export type { ResolveMeleeEvent } from "./resolveMelee";
-export { resolveMeleeEventSchema } from "./resolveMelee";
+export type { ResolveMeleeEvent, ResolveMeleeEventForBoard } from "./resolveMelee";
+export {
+  largeResolveMeleeEventSchema,
+  RESOLVE_MELEE_EFFECT_TYPE,
+  resolveMeleeEventSchema,
+  smallResolveMeleeEventSchema,
+  standardResolveMeleeEventSchema,
+} from "./resolveMelee";
 export { RESOLVE_RANGED_ATTACK_EFFECT_TYPE } from "./resolveRangedAttack";
-export type { ResolveRangedAttackEvent } from "./resolveRangedAttack";
-export { resolveRangedAttackEventSchema } from "./resolveRangedAttack";
+export type {
+  ResolveRangedAttackEvent,
+  ResolveRangedAttackEventForBoard,
+} from "./resolveRangedAttack";
+export {
+  largeResolveRangedAttackEventSchema,
+  resolveRangedAttackEventSchema,
+  smallResolveRangedAttackEventSchema,
+  standardResolveRangedAttackEventSchema,
+} from "./resolveRangedAttack";

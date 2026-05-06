@@ -1,4 +1,4 @@
-import type { Board, PlayerSide, UnitType } from "@entities";
+import type { PlayerSide, UnitType } from "@entities";
 import type { AssertExact } from "@utils";
 import { playerSideSchema, unitTypeSchema } from "@entities";
 import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
@@ -14,10 +14,7 @@ export const RESOLVE_UNITS_BROKEN_EFFECT_TYPE = "resolveUnitsBroken" as const;
  */
 
 /** An event to resolve units that are no longer supported. */
-export interface ResolveUnitsBrokenEvent<
-  _TBoard extends Board,
-  _TEffectType extends "resolveUnitsBroken" = "resolveUnitsBroken",
-> {
+export interface ResolveUnitsBrokenEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -46,7 +43,7 @@ const _resolveUnitsBrokenEventSchemaObject = z.object({
 type ResolveUnitsBrokenEventSchemaType = z.infer<typeof _resolveUnitsBrokenEventSchemaObject>;
 
 const _assertExactResolveUnitsBrokenEvent: AssertExact<
-  ResolveUnitsBrokenEvent<Board>,
+  ResolveUnitsBrokenEvent,
   ResolveUnitsBrokenEventSchemaType
 > = true;
 

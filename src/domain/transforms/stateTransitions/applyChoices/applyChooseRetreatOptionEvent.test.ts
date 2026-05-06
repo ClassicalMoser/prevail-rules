@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { ChooseRetreatOptionEvent } from "@events";
+import type { ChooseRetreatOptionEventForBoard } from "@events";
 import { getRetreatStateFromMelee, getRetreatStateFromRangedAttack } from "@queries";
 import {
   createAttackApplyStateWithRetreat,
@@ -54,7 +54,7 @@ describe("applyChooseRetreatOptionEvent", () => {
 
   it("given ranged retreat flow, white chooses E-4 north, retreat substep finalPosition matches", () => {
     const state = createStateWithRangedAttackRetreat();
-    const event: ChooseRetreatOptionEvent<StandardBoard> = {
+    const event: ChooseRetreatOptionEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRetreatOption",
@@ -119,7 +119,7 @@ describe("applyChooseRetreatOptionEvent", () => {
 
   it("given white melee retreat apply, white chooses E-4 north, white retreat finalPosition matches", () => {
     const state = createStateWithMeleeRetreat("white");
-    const event: ChooseRetreatOptionEvent<StandardBoard> = {
+    const event: ChooseRetreatOptionEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRetreatOption",
@@ -136,7 +136,7 @@ describe("applyChooseRetreatOptionEvent", () => {
 
   it("given black melee retreat apply, black chooses E-4 north, black retreat finalPosition matches", () => {
     const state = createStateWithMeleeRetreat("black");
-    const event: ChooseRetreatOptionEvent<StandardBoard> = {
+    const event: ChooseRetreatOptionEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRetreatOption",
@@ -159,7 +159,7 @@ describe("applyChooseRetreatOptionEvent", () => {
         currentCommandResolutionState: createMovementResolutionState(state),
       }),
     );
-    const event: ChooseRetreatOptionEvent<StandardBoard> = {
+    const event: ChooseRetreatOptionEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRetreatOption",

@@ -5,7 +5,7 @@ import {
   createGameStateWithEngagedUnits,
   createGameStateWithSingleUnit,
   createGameStateWithUnits,
-} from "./gameStateWithBoard";
+} from "./gameStateForBoard";
 
 /**
  * createGameStateWithSingleUnit: Creates a game state with a single unit at a coordinate.

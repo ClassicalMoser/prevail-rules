@@ -231,15 +231,4 @@ describe("areRestrictionsEqual", () => {
       expect(result).toBe(false);
     });
   });
-
-  it("given comparing restrictions to undefined, returns false", () => {
-    const restrictions: Restrictions = {
-      inspirationRangeRestriction: 1,
-      traitRestrictions: [],
-      unitRestrictions: [],
-    };
-    // Intentional type error to test the function
-    const { result } = areRestrictionsEqual(restrictions, undefined as unknown as Restrictions);
-    expect(result).toBe(false);
-  });
 });

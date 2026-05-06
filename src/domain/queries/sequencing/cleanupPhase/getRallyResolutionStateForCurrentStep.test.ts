@@ -94,6 +94,7 @@ describe("getRallyResolutionStateForCurrentStep", () => {
     state.currentRoundState = {
       roundNumber: 1,
       completedPhases: new Set(),
+      boardType: "standard",
       currentPhaseState: {
         phase: CLEANUP_PHASE,
         step: "discardPlayedCards",

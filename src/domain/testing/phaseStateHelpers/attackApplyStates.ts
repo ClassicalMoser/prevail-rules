@@ -1,11 +1,11 @@
 import type { StandardBoard, UnitInstance, UnitWithPlacement } from "@entities";
-import type { StandardAttackApplyState } from "@game";
+import type { AttackApplyStateForBoard } from "@game";
 import { createRetreatState, createReverseState, createRoutState } from "./substepStates";
 
 function baseAttackApplyState(
   defendingUnit: UnitInstance,
-  overrides?: Partial<StandardAttackApplyState>,
-): StandardAttackApplyState {
+  overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
+): AttackApplyStateForBoard<StandardBoard> {
   return {
     substepType: "attackApply" as const,
     boardType: "standard" as const,
@@ -28,8 +28,8 @@ function baseAttackApplyState(
  */
 export function createAttackApplyState(
   defendingUnit: UnitInstance,
-  overrides?: Partial<StandardAttackApplyState>,
-): StandardAttackApplyState {
+  overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
+): AttackApplyStateForBoard<StandardBoard> {
   return baseAttackApplyState(defendingUnit, overrides);
 }
 
@@ -38,8 +38,8 @@ export function createAttackApplyState(
  */
 export function createAttackApplyStateWithRetreat(
   retreatingUnit: UnitWithPlacement<StandardBoard>,
-  overrides?: Partial<StandardAttackApplyState>,
-): StandardAttackApplyState {
+  overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
+): AttackApplyStateForBoard<StandardBoard> {
   return baseAttackApplyState(retreatingUnit.unit, {
     attackResult: {
       unitRouted: false,
@@ -56,8 +56,8 @@ export function createAttackApplyStateWithRetreat(
  */
 export function createAttackApplyStateWithRout(
   defendingUnit: UnitInstance,
-  overrides?: Partial<StandardAttackApplyState>,
-): StandardAttackApplyState {
+  overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
+): AttackApplyStateForBoard<StandardBoard> {
   return baseAttackApplyState(defendingUnit, {
     attackResult: {
       unitRouted: true,
@@ -74,8 +74,8 @@ export function createAttackApplyStateWithRout(
  */
 export function createAttackApplyStateWithReverse(
   reversingUnit: UnitWithPlacement<StandardBoard>,
-  overrides?: Partial<StandardAttackApplyState>,
-): StandardAttackApplyState {
+  overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
+): AttackApplyStateForBoard<StandardBoard> {
   return baseAttackApplyState(reversingUnit.unit, {
     attackResult: {
       unitRouted: false,

@@ -1,14 +1,10 @@
-import type { Board } from "@entities";
 import type { AssertExact } from "@utils";
 import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
 import { z } from "zod";
 
 export const COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE = "completeMeleeResolution" as const;
 
-export interface CompleteMeleeResolutionEvent<
-  _TBoard extends Board,
-  _TEffectType extends "completeMeleeResolution" = "completeMeleeResolution",
-> {
+export interface CompleteMeleeResolutionEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -31,7 +27,7 @@ type CompleteMeleeResolutionEventSchemaType = z.infer<
 >;
 
 const _assertExactCompleteMeleeResolutionEvent: AssertExact<
-  CompleteMeleeResolutionEvent<Board>,
+  CompleteMeleeResolutionEvent,
   CompleteMeleeResolutionEventSchemaType
 > = true;
 

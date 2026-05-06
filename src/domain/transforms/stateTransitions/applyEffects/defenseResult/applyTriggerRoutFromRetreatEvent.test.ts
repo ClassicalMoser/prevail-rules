@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from "@entities";
 import type { TriggerRoutFromRetreatEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { getRetreatStateFromMelee, getRetreatStateFromRangedAttack } from "@queries";
 import {
   createAttackApplyStateWithRetreat,
@@ -21,7 +21,7 @@ import { applyTriggerRoutFromRetreatEvent } from "./applyTriggerRoutFromRetreatE
  */
 describe("applyTriggerRoutFromRetreatEvent", () => {
   /** issueCommands + ranged retreat substep only (no rout yet). */
-  function createStateWithRangedAttackRetreat(): StandardGameState {
+  function createStateWithRangedAttackRetreat(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit("white", { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -51,7 +51,9 @@ describe("applyTriggerRoutFromRetreatEvent", () => {
   }
 
   /** resolveMelee + one-sided retreat apply for the named player. */
-  function createStateWithMeleeRetreat(retreatingPlayer: "white" | "black"): StandardGameState {
+  function createStateWithMeleeRetreat(
+    retreatingPlayer: "white" | "black",
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: "black" });
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(retreatingPlayer === "white" ? "black" : "white", {
@@ -106,7 +108,7 @@ describe("applyTriggerRoutFromRetreatEvent", () => {
       const retreatState = getRetreatStateFromRangedAttack(state);
 
       // Event does not specify player - function determines it from state
-      const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
+      const event: TriggerRoutFromRetreatEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "triggerRoutFromRetreat",
@@ -128,7 +130,7 @@ describe("applyTriggerRoutFromRetreatEvent", () => {
       const state = createStateWithRangedAttackRetreat();
 
       // Event does not specify player - function determines it from state
-      const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
+      const event: TriggerRoutFromRetreatEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "triggerRoutFromRetreat",
@@ -149,7 +151,7 @@ describe("applyTriggerRoutFromRetreatEvent", () => {
       const state = createStateWithMeleeRetreat("black");
 
       // Event does not specify player - function determines it from state
-      const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
+      const event: TriggerRoutFromRetreatEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "triggerRoutFromRetreat",
@@ -168,7 +170,7 @@ describe("applyTriggerRoutFromRetreatEvent", () => {
       const state = createStateWithMeleeRetreat("white");
 
       // Event does not specify player - function determines it from state
-      const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
+      const event: TriggerRoutFromRetreatEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "triggerRoutFromRetreat",
@@ -191,7 +193,7 @@ describe("applyTriggerRoutFromRetreatEvent", () => {
       const originalRoutState = retreatState.routState;
 
       // Event does not specify player - function determines it from state
-      const event: TriggerRoutFromRetreatEvent<StandardBoard> = {
+      const event: TriggerRoutFromRetreatEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "triggerRoutFromRetreat",

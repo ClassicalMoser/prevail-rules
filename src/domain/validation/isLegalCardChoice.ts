@@ -1,4 +1,4 @@
-import type { Board, Card, CardState, ValidationResult } from "@entities";
+import type { Card, CardState, ValidationResult } from "@entities";
 import type { ChooseCardEvent } from "@events";
 
 /**
@@ -8,9 +8,9 @@ import type { ChooseCardEvent } from "@events";
  * @param chooseCardEvent - The card choice event to validate
  * @returns True if the card is in the player's hand, false otherwise
  */
-export function isLegalCardChoice<TBoard extends Board>(
+export function isLegalCardChoice(
   cardState: CardState,
-  chooseCardEvent: ChooseCardEvent<TBoard>,
+  chooseCardEvent: ChooseCardEvent,
 ): ValidationResult {
   try {
     const { card } = chooseCardEvent;

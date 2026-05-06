@@ -1,14 +1,10 @@
-import type { Board } from "@entities";
 import type { AssertExact } from "@utils";
 import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
 import { z } from "zod";
 
 export const RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE = "resolveEngageRetreatOption" as const;
 
-export interface ResolveEngageRetreatOptionEvent<
-  _TBoard extends Board,
-  _TEffectType extends "resolveEngageRetreatOption" = "resolveEngageRetreatOption",
-> {
+export interface ResolveEngageRetreatOptionEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -35,7 +31,7 @@ type ResolveEngageRetreatOptionEventSchemaType = z.infer<
 >;
 
 const _assertExactResolveEngageRetreatOptionEvent: AssertExact<
-  ResolveEngageRetreatOptionEvent<Board>,
+  ResolveEngageRetreatOptionEvent,
   ResolveEngageRetreatOptionEventSchemaType
 > = true;
 

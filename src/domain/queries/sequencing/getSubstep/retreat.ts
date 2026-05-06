@@ -1,5 +1,5 @@
 import type { Board } from "@entities";
-import type { AttackApplyState, GameStateWithBoard, RetreatState } from "@game";
+import type { AttackApplyStateForBoard, GameStateForBoard, RetreatStateForBoard } from "@game";
 import { getMeleeResolutionState } from "../getCommandResolutionState";
 import { getAttackApplyStateFromMelee, getAttackApplyStateFromRangedAttack } from "./attackApply";
 
@@ -11,7 +11,9 @@ import { getAttackApplyStateFromMelee, getAttackApplyStateFromRangedAttack } fro
  * @returns The retreat state
  * @throws Error if retreat state is missing
  */
-export function getRetreatStateFromAttackApply(attackApplyState: AttackApplyState): RetreatState {
+export function getRetreatStateFromAttackApply<TBoard extends Board>(
+  attackApplyState: AttackApplyStateForBoard<TBoard>,
+): RetreatStateForBoard<TBoard> {
   if (!attackApplyState.retreatState) {
     throw new Error("No retreat state found in attack apply state");
   }
@@ -27,8 +29,8 @@ export function getRetreatStateFromAttackApply(attackApplyState: AttackApplyStat
  * @throws Error if any step in the navigation is missing
  */
 export function getRetreatStateFromRangedAttack<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): RetreatState {
+  state: GameStateForBoard<TBoard>,
+): RetreatStateForBoard<TBoard> {
   const attackApplyState = getAttackApplyStateFromRangedAttack(state);
   return getRetreatStateFromAttackApply(attackApplyState);
 }
@@ -43,9 +45,9 @@ export function getRetreatStateFromRangedAttack<TBoard extends Board>(
  * @throws Error if any step in the navigation is missing
  */
 export function getRetreatStateFromMelee<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   player: "white" | "black",
-): RetreatState {
+): RetreatStateForBoard<TBoard> {
   const attackApplyState = getAttackApplyStateFromMelee(state, player);
   return getRetreatStateFromAttackApply(attackApplyState);
 }
@@ -55,8 +57,8 @@ export function getRetreatStateFromMelee<TBoard extends Board>(
  * Initiative order matches attack-apply sequencing.
  */
 export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): RetreatState {
+  state: GameStateForBoard<TBoard>,
+): RetreatStateForBoard<TBoard> {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const firstPlayerAttackApply =
@@ -92,9 +94,9 @@ export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
  * @throws Error if retreat state not found in any context
  */
 export function findRetreatState<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   player: "white" | "black",
-): RetreatState {
+): RetreatStateForBoard<TBoard> {
   const phaseState = state.currentRoundState.currentPhaseState;
   if (!phaseState) {
     throw new Error("No current phase state found");

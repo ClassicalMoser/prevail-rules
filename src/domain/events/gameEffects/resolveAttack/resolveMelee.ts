@@ -1,17 +1,11 @@
 import type {
   Board,
+  BoardCoordinate,
   LargeBoard,
-  LargeBoardCoordinate,
-  LargeUnitPlacement,
-  LargeUnitWithPlacement,
   SmallBoard,
-  SmallBoardCoordinate,
-  SmallUnitPlacement,
-  SmallUnitWithPlacement,
   StandardBoard,
-  StandardBoardCoordinate,
-  StandardUnitPlacement,
-  StandardUnitWithPlacement,
+  UnitPlacement,
+  UnitWithPlacement,
 } from "@entities";
 import type { AssertExact } from "@utils";
 import type { ZodDiscriminatedUnion } from "zod";
@@ -32,13 +26,30 @@ import { z } from "zod";
 /** The type of the resolve melee game effect. */
 export const RESOLVE_MELEE_EFFECT_TYPE = "resolveMelee" as const;
 
-interface ResolveMeleeEventBase {
+/**
+ * Deterministic melee resolution after engagement, supports, and committed cards.
+ * Initiative orders substeps; the procedure computes attack outcomes and snapshots anything
+ * apply would otherwise have to re-query from the board.
+ */
+export interface ResolveMeleeEventForBoard<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
   effectType: typeof RESOLVE_MELEE_EFFECT_TYPE;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
+  /** The type of board. */
+  boardType: TBoard["boardType"];
+  /** The coordinate of the engagement. */
+  location: BoardCoordinate<TBoard>;
+  /** The white player's unit with placement. */
+  whiteUnitWithPlacement: UnitWithPlacement<TBoard>;
+  /** The black player's unit with placement. */
+  blackUnitWithPlacement: UnitWithPlacement<TBoard>;
+  /** The white player's legal retreat options. */
+  whiteLegalRetreatOptions: Set<UnitPlacement<TBoard>>;
+  /** The black player's legal retreat options. */
+  blackLegalRetreatOptions: Set<UnitPlacement<TBoard>>;
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: boolean;
   /** Whether the black player's unit is routed. */
@@ -53,53 +64,10 @@ interface ResolveMeleeEventBase {
   blackUnitReversed: boolean;
 }
 
-/**
- * Deterministic melee resolution after engagement, supports, and committed cards.
- * Initiative orders substeps; the procedure computes attack outcomes and snapshots anything
- * apply would otherwise have to re-query from the board.
- */
-export interface StandardResolveMeleeEvent extends ResolveMeleeEventBase {
-  boardType: "standard";
-  location: StandardBoardCoordinate;
-  whiteUnitWithPlacement: StandardUnitWithPlacement;
-  blackUnitWithPlacement: StandardUnitWithPlacement;
-  whiteLegalRetreatOptions: Set<StandardUnitPlacement>;
-  blackLegalRetreatOptions: Set<StandardUnitPlacement>;
-}
-
-export interface SmallResolveMeleeEvent extends ResolveMeleeEventBase {
-  boardType: "small";
-  location: SmallBoardCoordinate;
-  whiteUnitWithPlacement: SmallUnitWithPlacement;
-  blackUnitWithPlacement: SmallUnitWithPlacement;
-  whiteLegalRetreatOptions: Set<SmallUnitPlacement>;
-  blackLegalRetreatOptions: Set<SmallUnitPlacement>;
-}
-
-export interface LargeResolveMeleeEvent extends ResolveMeleeEventBase {
-  boardType: "large";
-  location: LargeBoardCoordinate;
-  whiteUnitWithPlacement: LargeUnitWithPlacement;
-  blackUnitWithPlacement: LargeUnitWithPlacement;
-  whiteLegalRetreatOptions: Set<LargeUnitPlacement>;
-  blackLegalRetreatOptions: Set<LargeUnitPlacement>;
-}
-
-export type ResolveMeleeEventUnion =
-  | StandardResolveMeleeEvent
-  | SmallResolveMeleeEvent
-  | LargeResolveMeleeEvent;
-
-export type ResolveMeleeEvent<
-  TBoard extends Board = Board,
-  _TEffectType extends typeof RESOLVE_MELEE_EFFECT_TYPE = typeof RESOLVE_MELEE_EFFECT_TYPE,
-> = TBoard extends StandardBoard
-  ? StandardResolveMeleeEvent
-  : TBoard extends SmallBoard
-    ? SmallResolveMeleeEvent
-    : TBoard extends LargeBoard
-      ? LargeResolveMeleeEvent
-      : ResolveMeleeEventUnion;
+export type ResolveMeleeEvent =
+  | ResolveMeleeEventForBoard<StandardBoard>
+  | ResolveMeleeEventForBoard<SmallBoard>
+  | ResolveMeleeEventForBoard<LargeBoard>;
 
 const _standardResolveMeleeEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
@@ -138,9 +106,12 @@ const _standardResolveMeleeEventSchemaObject: z.ZodObject<{
 type StandardResolveMeleeEventSchemaType = z.infer<typeof _standardResolveMeleeEventSchemaObject>;
 
 const _assertExactStandardResolveMeleeEvent: AssertExact<
-  StandardResolveMeleeEvent,
+  ResolveMeleeEventForBoard<StandardBoard>,
   StandardResolveMeleeEventSchemaType
 > = true;
+
+export const standardResolveMeleeEventSchema: typeof _standardResolveMeleeEventSchemaObject =
+  _standardResolveMeleeEventSchemaObject;
 
 const _smallResolveMeleeEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
@@ -179,9 +150,12 @@ const _smallResolveMeleeEventSchemaObject: z.ZodObject<{
 type SmallResolveMeleeEventSchemaType = z.infer<typeof _smallResolveMeleeEventSchemaObject>;
 
 const _assertExactSmallResolveMeleeEvent: AssertExact<
-  SmallResolveMeleeEvent,
+  ResolveMeleeEventForBoard<SmallBoard>,
   SmallResolveMeleeEventSchemaType
 > = true;
+
+export const smallResolveMeleeEventSchema: typeof _smallResolveMeleeEventSchemaObject =
+  _smallResolveMeleeEventSchemaObject;
 
 const _largeResolveMeleeEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
@@ -220,9 +194,12 @@ const _largeResolveMeleeEventSchemaObject: z.ZodObject<{
 type LargeResolveMeleeEventSchemaType = z.infer<typeof _largeResolveMeleeEventSchemaObject>;
 
 const _assertExactLargeResolveMeleeEvent: AssertExact<
-  LargeResolveMeleeEvent,
+  ResolveMeleeEventForBoard<LargeBoard>,
   LargeResolveMeleeEventSchemaType
 > = true;
+
+export const largeResolveMeleeEventSchema: typeof _largeResolveMeleeEventSchemaObject =
+  _largeResolveMeleeEventSchemaObject;
 
 type _ResolveMeleeEventDiscriminatedUnion = ZodDiscriminatedUnion<
   readonly [
@@ -244,10 +221,8 @@ const _resolveMeleeEventSchemaObject: _ResolveMeleeEventDiscriminatedUnion = z.d
 
 type ResolveMeleeEventSchemaType = z.infer<typeof _resolveMeleeEventSchemaObject>;
 
-const _assertExactResolveMeleeEvent: AssertExact<
-  ResolveMeleeEvent<Board>,
-  ResolveMeleeEventSchemaType
-> = true;
+const _assertExactResolveMeleeEvent: AssertExact<ResolveMeleeEvent, ResolveMeleeEventSchemaType> =
+  true;
 
 /** The schema for a resolve melee event. */
 export const resolveMeleeEventSchema: typeof _resolveMeleeEventSchemaObject =

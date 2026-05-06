@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
 import type { ResolveRoutEvent } from "@events";
-import type { GameStateWithBoard, RoutState } from "@game";
+import type { GameStateForBoard, RoutState } from "@game";
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -21,9 +21,9 @@ import { updateRoutState } from "@transforms/pureTransforms";
  * @returns A new game state with the rout penalty set
  */
 export function applyResolveRoutEvent<TBoard extends Board>(
-  event: ResolveRoutEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: ResolveRoutEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   let currentRoutState: RoutState;
 
   switch (event.routResolutionSource) {

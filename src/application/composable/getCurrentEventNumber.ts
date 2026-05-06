@@ -1,5 +1,4 @@
-import type { Board } from "@entities";
-import type { Event, EventType } from "@events";
+import type { Event } from "@events";
 import type { EventStreamStorage, PortResponse } from "../ports";
 
 /**
@@ -26,7 +25,7 @@ export async function getCurrentEventNumber(
   }
 
   // Get the events
-  const events: readonly Event<Board, EventType>[] | undefined = streamResult.data;
+  const events: readonly Event[] | undefined = streamResult.data;
 
   // If there is no event stream, return an error
   if (!events) {

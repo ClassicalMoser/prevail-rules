@@ -40,6 +40,7 @@
     "format": "oxfmt --write .",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
+    "lint:gen-boundaries": "tsx scripts/generateOxlintBoundaries.ts",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
@@ -52,11 +53,11 @@
     "version:minor": "tsx scripts/version-bump.ts minor"
   },
   "dependencies": {
-    "zod": "^4.3.6"
+    "zod": "^4.4.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^8.2.0",
-    "@rolldown/binding-darwin-x64": "1.0.0-rc.17",
+    "@rolldown/binding-darwin-x64": "1.0.0-rc.18",
     "@stryker-mutator/core": "^9.6.1",
     "@stryker-mutator/typescript-checker": "^9.6.1",
     "@stryker-mutator/vitest-runner": "^9.6.1",

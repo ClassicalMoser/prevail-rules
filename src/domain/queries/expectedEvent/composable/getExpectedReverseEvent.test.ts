@@ -1,4 +1,4 @@
-import { createEmptyGameState, createReverseState, createUnitWithPlacement } from "@testing";
+import { createReverseState, createUnitWithPlacement } from "@testing";
 import { describe, expect, it } from "vitest";
 import { getExpectedReverseEvent } from "./getExpectedReverseEvent";
 
@@ -10,9 +10,8 @@ describe("getExpectedReverseEvent", () => {
 
   it("given resolve reverse when the final position has not been determined yet", () => {
     const reverseState = createReverseState(unitPlacement);
-    const gameState = createEmptyGameState();
 
-    expect(getExpectedReverseEvent(reverseState, gameState)).toEqual({
+    expect(getExpectedReverseEvent(reverseState)).toEqual({
       actionType: "gameEffect",
       effectType: "resolveReverse",
     });
@@ -27,9 +26,8 @@ describe("getExpectedReverseEvent", () => {
         facing: "south",
       },
     });
-    const gameState = createEmptyGameState();
 
-    expect(() => getExpectedReverseEvent(reverseState, gameState)).toThrow(
+    expect(() => getExpectedReverseEvent(reverseState)).toThrow(
       "Reverse state is already complete",
     );
   });
@@ -42,9 +40,8 @@ describe("getExpectedReverseEvent", () => {
         facing: "south",
       },
     });
-    const gameState = createEmptyGameState();
 
-    expect(() => getExpectedReverseEvent(reverseState, gameState)).toThrow(
+    expect(() => getExpectedReverseEvent(reverseState)).toThrow(
       "Reverse state has final position but not marked as completed",
     );
   });

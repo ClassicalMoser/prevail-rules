@@ -1,12 +1,13 @@
 import type { Board } from "@entities";
-import type { StartEngagementEvent } from "@events";
+import type { StartEngagementEventForBoard } from "@events";
 import type {
-  GameStateWithBoard,
-  IssueCommandsPhaseState,
-  MovementResolutionState,
-  PhaseState,
+  EngagementResolutionState,
+  EngagementStateForBoard,
+  GameStateForBoard,
+  IssueCommandsPhaseStateForBoard,
+  MovementResolutionStateForBoard,
 } from "@game";
-import { getIssueCommandsPhaseState, getMovementResolutionState } from "@queries";
+import { getIssueCommandsPhaseStateForBoard, getMovementResolutionState } from "@queries";
 import { updatePhaseState } from "@transforms/pureTransforms";
 
 /**
@@ -20,10 +21,10 @@ import { updatePhaseState } from "@transforms/pureTransforms";
  * @returns A new game state with the engagement state created
  */
 export function applyStartEngagementEvent<TBoard extends Board>(
-  event: StartEngagementEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getIssueCommandsPhaseState(state);
+  event: StartEngagementEventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const phaseState = getIssueCommandsPhaseStateForBoard(state);
   const movementState = getMovementResolutionState(state);
 
   const defendingUnit = event.defenderWithPlacement.unit;
@@ -31,7 +32,7 @@ export function applyStartEngagementEvent<TBoard extends Board>(
   const defendingPlayer = defendingUnit.playerSide;
 
   // Create the appropriate engagement resolution state based on engagement type
-  const engagementResolutionState = (() => {
+  const engagementResolutionState: EngagementResolutionState = (() => {
     switch (event.engagementType) {
       case "rear": {
         // Rear engagement: create rout state immediately
@@ -74,7 +75,7 @@ export function applyStartEngagementEvent<TBoard extends Board>(
   })();
 
   // Create engagement state
-  const engagementState = {
+  const engagementState: EngagementStateForBoard<TBoard> = {
     substepType: "engagementResolution" as const,
     boardType: movementState.boardType,
     engagingUnit,
@@ -84,16 +85,16 @@ export function applyStartEngagementEvent<TBoard extends Board>(
   };
 
   // Update movement resolution state
-  const newMovementState = {
+  const newMovementState: MovementResolutionStateForBoard<TBoard> = {
     ...movementState,
     engagementState,
-  } as MovementResolutionState;
+  };
 
   // Update phase state
-  const newPhaseState: IssueCommandsPhaseState = {
+  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
     ...phaseState,
     currentCommandResolutionState: newMovementState,
   };
 
-  return updatePhaseState(state, newPhaseState as PhaseState);
+  return updatePhaseState(state, newPhaseState);
 }

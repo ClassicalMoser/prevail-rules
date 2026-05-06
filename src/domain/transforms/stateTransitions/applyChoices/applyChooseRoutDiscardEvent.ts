@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
 import type { ChooseRoutDiscardEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameStateForBoard } from "@game";
 import { getCurrentRallyResolutionState, getRoutStateFromRally } from "@queries";
 import { updateRoutState } from "@transforms/pureTransforms";
 
@@ -14,9 +14,9 @@ import { updateRoutState } from "@transforms/pureTransforms";
  * @returns A new game state with the rout discard choice recorded
  */
 export function applyChooseRoutDiscardEvent<TBoard extends Board>(
-  event: ChooseRoutDiscardEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: ChooseRoutDiscardEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   // Find the relevant game states for this event
   const rallyState = getCurrentRallyResolutionState(state);
   const routState = getRoutStateFromRally(rallyState);

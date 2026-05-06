@@ -1,14 +1,10 @@
-import type { Board } from "@entities";
 import type { AssertExact } from "@utils";
 import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
 import { z } from "zod";
 
 export const COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE = "completeRangedAttackCommand" as const;
 
-export interface CompleteRangedAttackCommandEvent<
-  _TBoard extends Board,
-  _TEffectType extends "completeRangedAttackCommand" = "completeRangedAttackCommand",
-> {
+export interface CompleteRangedAttackCommandEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -31,7 +27,7 @@ type CompleteRangedAttackCommandEventSchemaType = z.infer<
 >;
 
 const _assertExactCompleteRangedAttackCommandEvent: AssertExact<
-  CompleteRangedAttackCommandEvent<Board>,
+  CompleteRangedAttackCommandEvent,
   CompleteRangedAttackCommandEventSchemaType
 > = true;
 

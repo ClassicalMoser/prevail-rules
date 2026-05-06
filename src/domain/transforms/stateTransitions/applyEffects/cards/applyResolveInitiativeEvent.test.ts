@@ -1,6 +1,6 @@
 import type { StandardBoard } from "@entities";
 import type { ResolveInitiativeEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { PLAY_CARDS_PHASE } from "@game";
 
 import { tempCommandCards } from "@sampleValues";
@@ -15,7 +15,7 @@ import { applyResolveInitiativeEvent } from "./applyResolveInitiativeEvent";
  */
 describe("applyResolveInitiativeEvent", () => {
   /** playCards.assignInitiative with both inPlay populated from two command cards. */
-  function createGameStateInAssignInitiativeStep(): StandardGameState {
+  function createGameStateInAssignInitiativeStep(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
 
     const stateWithCards = updateCardState(state, (current) => ({
@@ -44,7 +44,7 @@ describe("applyResolveInitiativeEvent", () => {
     it("given event player black, currentInitiative becomes black", () => {
       const state = createGameStateInAssignInitiativeStep();
 
-      const event: ResolveInitiativeEvent<StandardBoard> = {
+      const event: ResolveInitiativeEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveInitiative",
@@ -59,7 +59,7 @@ describe("applyResolveInitiativeEvent", () => {
     it("given event player white, playCards step becomes complete", () => {
       const state = createGameStateInAssignInitiativeStep();
 
-      const event: ResolveInitiativeEvent<StandardBoard> = {
+      const event: ResolveInitiativeEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveInitiative",
@@ -74,14 +74,14 @@ describe("applyResolveInitiativeEvent", () => {
     it("given same base state, black then white events each set initiative without sharing output", () => {
       const state = createGameStateInAssignInitiativeStep();
 
-      const blackEvent: ResolveInitiativeEvent<StandardBoard> = {
+      const blackEvent: ResolveInitiativeEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveInitiative",
         player: "black",
       };
 
-      const whiteEvent: ResolveInitiativeEvent<StandardBoard> = {
+      const whiteEvent: ResolveInitiativeEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveInitiative",
@@ -102,7 +102,7 @@ describe("applyResolveInitiativeEvent", () => {
       const originalInitiative = state.currentInitiative;
       const originalStep = state.currentRoundState.currentPhaseState?.step;
 
-      const event: ResolveInitiativeEvent<StandardBoard> = {
+      const event: ResolveInitiativeEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveInitiative",
@@ -124,7 +124,7 @@ describe("applyResolveInitiativeEvent", () => {
         step: "chooseCards",
       });
 
-      const event: ResolveInitiativeEvent<StandardBoard> = {
+      const event: ResolveInitiativeEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveInitiative",

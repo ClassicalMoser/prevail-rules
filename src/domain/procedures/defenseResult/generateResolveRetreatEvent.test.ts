@@ -160,7 +160,8 @@ describe("generateResolveRetreatEvent", () => {
     });
     const full = updatePhaseState(withBoard, phase);
 
-    const event = generateResolveRetreatEvent(full, 0);
-    expect(event.finalPosition.placement).toBeUndefined();
+    expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
+      "Retreat state has no final position",
+    );
   });
 });

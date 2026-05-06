@@ -1,6 +1,6 @@
 import type { StandardBoard } from "@entities";
 import type { RevealCardsEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from "@game";
 
 import { tempCommandCards } from "@sampleValues";
@@ -16,7 +16,7 @@ import { applyRevealCardsEvent } from "./applyRevealCardsEvent";
  */
 describe("applyRevealCardsEvent", () => {
   /** playCards.revealCards with black/white awaitingPlay set and inPlay empty. */
-  function createGameStateInRevealCardsStep(): StandardGameState {
+  function createGameStateInRevealCardsStep(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
 
     const stateWithCards = updateCardState(state, (current) => ({
@@ -47,7 +47,7 @@ describe("applyRevealCardsEvent", () => {
       const blackCard = state.cardState.black.awaitingPlay;
       const whiteCard = state.cardState.white.awaitingPlay;
 
-      const event: RevealCardsEvent<StandardBoard> = {
+      const event: RevealCardsEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "revealCards",
@@ -67,7 +67,7 @@ describe("applyRevealCardsEvent", () => {
     it("given revealCards step, next playCards step is assignInitiative", () => {
       const state = createGameStateInRevealCardsStep();
 
-      const event: RevealCardsEvent<StandardBoard> = {
+      const event: RevealCardsEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "revealCards",
@@ -83,7 +83,7 @@ describe("applyRevealCardsEvent", () => {
     it("given no current phase slice, throws no current phase state", () => {
       const state = createEmptyGameState();
 
-      const event: RevealCardsEvent<StandardBoard> = {
+      const event: RevealCardsEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "revealCards",
@@ -99,7 +99,7 @@ describe("applyRevealCardsEvent", () => {
         step: "moveFirstCommander",
       });
 
-      const event: RevealCardsEvent<StandardBoard> = {
+      const event: RevealCardsEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "revealCards",
@@ -117,7 +117,7 @@ describe("applyRevealCardsEvent", () => {
         step: "chooseCards",
       });
 
-      const event: RevealCardsEvent<StandardBoard> = {
+      const event: RevealCardsEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "revealCards",
@@ -146,7 +146,7 @@ describe("applyRevealCardsEvent", () => {
         step: "revealCards",
       });
 
-      const event: RevealCardsEvent<StandardBoard> = {
+      const event: RevealCardsEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "revealCards",
@@ -175,7 +175,7 @@ describe("applyRevealCardsEvent", () => {
         step: "revealCards",
       });
 
-      const event: RevealCardsEvent<StandardBoard> = {
+      const event: RevealCardsEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "revealCards",
@@ -193,7 +193,7 @@ describe("applyRevealCardsEvent", () => {
       const originalBlackAwaiting = state.cardState.black.awaitingPlay;
       const originalWhiteAwaiting = state.cardState.white.awaitingPlay;
 
-      const event: RevealCardsEvent<StandardBoard> = {
+      const event: RevealCardsEvent = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "revealCards",

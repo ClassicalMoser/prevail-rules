@@ -10,7 +10,6 @@ export type { AttackType } from "./attackType";
 export {
   boardCoordinateSchema,
   boardSchema,
-  boardSizeEnum,
   boardSpaceSchema,
   coordinateLayoutMap,
   getCoordinateLayout,
@@ -27,7 +26,7 @@ export {
 export type {
   Board,
   BoardCoordinate,
-  BoardSize,
+  BoardOfType,
   BoardSpace,
   BoardType,
   CoordinateLayout,
@@ -68,10 +67,16 @@ export type {
 export { engagementType, engagementTypeSchema } from "./engagementType";
 export type { EngagementType } from "./engagementType";
 
-// Game types.
-export { gameType, gameTypeEnum, gameTypeStructureSchema } from "./gameType";
-
-export type { GameType, GameTypeStructure } from "./gameType";
+// Game modes.
+export { gameModes, gameModeSchema } from "./gameModes";
+export type {
+  EpicGameMode,
+  GameMode,
+  GameModeName,
+  MiniGameMode,
+  StandardGameMode,
+  TutorialGameMode,
+} from "./gameModes";
 
 // Line models.
 export { lineSchema } from "./line";
@@ -107,16 +112,7 @@ export {
   unitPlacementSchema,
   unitWithPlacementSchema,
 } from "./unitLocation";
-export type {
-  LargeUnitPlacement,
-  LargeUnitWithPlacement,
-  SmallUnitPlacement,
-  SmallUnitWithPlacement,
-  StandardUnitPlacement,
-  StandardUnitWithPlacement,
-  UnitPlacement,
-  UnitWithPlacement,
-} from "./unitLocation";
+export type { UnitPlacement, UnitWithPlacement } from "./unitLocation";
 // Unit presence models.
 export {
   engagedUnitPresenceSchema,

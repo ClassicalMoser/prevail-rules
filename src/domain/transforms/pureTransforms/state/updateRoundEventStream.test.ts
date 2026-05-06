@@ -1,5 +1,5 @@
 import type { StandardBoard } from "@entities";
-import type { Event } from "@events";
+import type { EventForBoard } from "@events";
 import { createEmptyGameState } from "@testing";
 import { describe, expect, it } from "vitest";
 import { updateRoundEventStream } from "./updateRoundEventStream";
@@ -7,7 +7,7 @@ import { updateRoundEventStream } from "./updateRoundEventStream";
 describe("updateRoundEventStream", () => {
   it("sets currentRoundState.events to the given stream", () => {
     const state = createEmptyGameState();
-    const events: readonly Event<StandardBoard>[] = [
+    const events: readonly EventForBoard<StandardBoard>[] = [
       {
         eventNumber: 0,
         eventType: "gameEffect",

@@ -1,7 +1,11 @@
 import type { Board } from "@entities";
-import type { ChooseMeleeResolutionEvent } from "@events";
-import type { GameStateWithBoard, MeleeResolutionState, ResolveMeleePhaseState } from "@game";
-import { getResolveMeleePhaseState } from "@queries";
+import type { ChooseMeleeResolutionEventForBoard } from "@events";
+import type {
+  GameStateForBoard,
+  MeleeResolutionStateForBoard,
+  ResolveMeleePhaseStateForBoard,
+} from "@game";
+import { getResolveMeleePhaseStateForBoard } from "@queries";
 import { updatePhaseState } from "@transforms/pureTransforms";
 
 /** Applies the choose melee resolution event to the game state.
@@ -12,11 +16,11 @@ import { updatePhaseState } from "@transforms/pureTransforms";
  * @returns A new game state with the melee resolution updated
  */
 export function applyChooseMeleeEvent<TBoard extends Board>(
-  event: ChooseMeleeResolutionEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: ChooseMeleeResolutionEventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   const { space } = event;
-  const currentPhaseState = getResolveMeleePhaseState(state);
+  const currentPhaseState = getResolveMeleePhaseStateForBoard(state);
 
   // Update the remaining engagements with the space removed
   const newRemainingEngagements = new Set(
@@ -24,7 +28,7 @@ export function applyChooseMeleeEvent<TBoard extends Board>(
   );
 
   // Create a new melee resolution state for the space chosen
-  const newMeleeResolutionState = {
+  const newMeleeResolutionState: MeleeResolutionStateForBoard<TBoard> = {
     substepType: "meleeResolution" as const,
     boardType: currentPhaseState.boardType,
     location: space,
@@ -33,14 +37,14 @@ export function applyChooseMeleeEvent<TBoard extends Board>(
     whiteAttackApplyState: undefined,
     blackAttackApplyState: undefined,
     completed: false,
-  } as MeleeResolutionState;
+  };
 
   // Update the phase state with the two new values
-  const newPhaseState = {
+  const newPhaseState: ResolveMeleePhaseStateForBoard<TBoard> = {
     ...currentPhaseState,
     remainingEngagements: newRemainingEngagements,
     currentMeleeResolutionState: newMeleeResolutionState,
-  } as ResolveMeleePhaseState;
+  };
 
   // Return the new game state
   const newGameState = updatePhaseState(state, newPhaseState);

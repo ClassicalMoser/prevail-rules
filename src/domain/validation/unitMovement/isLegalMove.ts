@@ -1,6 +1,6 @@
 import type { Board, UnitWithPlacement } from "@entities";
-import type { MoveUnitEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import { MoveUnitEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { getLegalUnitMoves } from "@queries";
 
 /**
@@ -11,8 +11,8 @@ import { getLegalUnitMoves } from "@queries";
  * @returns True if the move is legal, false otherwise
  */
 export function isLegalMove<TBoard extends Board>(
-  moveUnitEvent: MoveUnitEvent<TBoard>,
-  gameState: GameStateWithBoard<TBoard>,
+  moveUnitEvent: MoveUnitEventForBoard<TBoard>,
+  gameState: GameStateForBoard<TBoard>,
 ): boolean {
   // Get the move unit event
   const { unit, to } = moveUnitEvent;

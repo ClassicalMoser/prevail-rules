@@ -1,9 +1,9 @@
-import type { Board } from "@entities";
-import type { ResolveRetreatEvent } from "@events";
-import type { GameStateWithBoard, RetreatState } from "@game";
+import type { Board, UnitPlacement } from "@entities";
+import type { ResolveRetreatEventForBoard } from "@events";
+import type { GameStateForBoard, RetreatStateForBoard } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from "@events";
 import {
-  getCurrentPhaseState,
+  getCurrentPhaseStateForBoard,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,
 } from "@queries";
@@ -19,12 +19,12 @@ import {
  * @returns A complete ResolveRetreatEvent with the retreating unit and final position
  */
 export function generateResolveRetreatEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): ResolveRetreatEvent<TBoard, "resolveRetreat"> {
-  const phaseState = getCurrentPhaseState(state);
+): ResolveRetreatEventForBoard<TBoard> {
+  const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
 
-  let retreatState: RetreatState;
+  let retreatState: RetreatStateForBoard<TBoard>;
   if (phaseState.phase === "issueCommands") {
     retreatState = getRetreatStateFromRangedAttack(state);
   } else if (phaseState.phase === "resolveMelee") {
@@ -33,9 +33,13 @@ export function generateResolveRetreatEvent<TBoard extends Board>(
     throw new Error(`Retreat resolution not expected in phase: ${phaseState.phase}`);
   }
 
-  const finalPlacement = retreatState.finalPosition!;
+  if (!retreatState.finalPosition) {
+    throw new Error("Retreat state has no final position");
+  }
 
-  return {
+  const finalPlacement: UnitPlacement<TBoard> = retreatState.finalPosition;
+
+  const gameEffectEvent: ResolveRetreatEventForBoard<TBoard> = {
     eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_RETREAT_EFFECT_TYPE,
     eventNumber,
@@ -46,5 +50,7 @@ export function generateResolveRetreatEvent<TBoard extends Board>(
       unit: retreatState.retreatingUnit.unit,
       placement: finalPlacement,
     },
-  } as unknown as ResolveRetreatEvent<TBoard, "resolveRetreat">;
+  };
+
+  return gameEffectEvent;
 }

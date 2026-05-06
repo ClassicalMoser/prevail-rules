@@ -1,6 +1,5 @@
-import type { StandardBoard } from "@entities";
 import type { ChooseCardEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { PLAY_CARDS_PHASE } from "@game";
 
 import { tempCommandCards } from "@sampleValues";
@@ -8,6 +7,7 @@ import { createEmptyGameState } from "@testing";
 import { updateCardState, updatePhaseState } from "@transforms/pureTransforms";
 import { describe, expect, it } from "vitest";
 import { applyChooseCardEvent } from "./applyChooseCardEvent";
+import { StandardBoard } from "@entities";
 
 /**
  * Play-cards `chooseCards`: the chosen command card leaves `inHand` and sits in `awaitingPlay`
@@ -18,7 +18,7 @@ describe("applyChooseCardEvent", () => {
   function createGameStateInChooseCardsStep(
     blackHand: typeof tempCommandCards,
     whiteHand: typeof tempCommandCards,
-  ): StandardGameState {
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
 
     // Set up card state with hands and no awaiting cards
@@ -44,7 +44,7 @@ describe("applyChooseCardEvent", () => {
         [tempCommandCards[2]],
       );
 
-      const event: ChooseCardEvent<StandardBoard> = {
+      const event: ChooseCardEvent = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "chooseCard",
@@ -69,7 +69,7 @@ describe("applyChooseCardEvent", () => {
         [tempCommandCards[1], tempCommandCards[2]],
       );
 
-      const event: ChooseCardEvent<StandardBoard> = {
+      const event: ChooseCardEvent = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "chooseCard",
@@ -94,7 +94,7 @@ describe("applyChooseCardEvent", () => {
       const state = createGameStateInChooseCardsStep([tempCommandCards[0]], [tempCommandCards[1]]);
 
       // First player chooses
-      const firstEvent: ChooseCardEvent<StandardBoard> = {
+      const firstEvent: ChooseCardEvent = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "chooseCard",
@@ -107,7 +107,7 @@ describe("applyChooseCardEvent", () => {
       expect(afterFirst.currentRoundState.currentPhaseState?.step).toBe("chooseCards");
 
       // Second player chooses
-      const secondEvent: ChooseCardEvent<StandardBoard> = {
+      const secondEvent: ChooseCardEvent = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "chooseCard",
@@ -126,7 +126,7 @@ describe("applyChooseCardEvent", () => {
         [tempCommandCards[2]],
       );
 
-      const event: ChooseCardEvent<StandardBoard> = {
+      const event: ChooseCardEvent = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "chooseCard",
@@ -149,7 +149,7 @@ describe("applyChooseCardEvent", () => {
       );
       const originalHand = [...state.cardState.black.inHand];
 
-      const event: ChooseCardEvent<StandardBoard> = {
+      const event: ChooseCardEvent = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "chooseCard",

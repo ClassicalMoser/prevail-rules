@@ -1,4 +1,4 @@
-import type { Board, Card, PlayerSide, StatModifier } from "@entities";
+import type { Card, PlayerSide, StatModifier } from "@entities";
 import type { AssertExact } from "@utils";
 import { cardSchema, playerSideSchema } from "@entities";
 import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
@@ -16,10 +16,7 @@ const _assertMeleeModifierExtendsStatModifier: [MeleeModifier] extends [StatModi
   : never = true;
 
 /** An event to commit a card to a unit's melee. */
-export interface CommitToMeleeEvent<
-  _TBoard extends Board,
-  _TChoiceType extends "commitToMelee" = "commitToMelee",
-> {
+export interface CommitToMeleeEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -55,7 +52,7 @@ const _commitToMeleeEventSchemaObject = z.object({
 type CommitToMeleeEventSchemaType = z.infer<typeof _commitToMeleeEventSchemaObject>;
 
 const _assertExactCommitToMeleeEvent: AssertExact<
-  CommitToMeleeEvent<Board>,
+  CommitToMeleeEvent,
   CommitToMeleeEventSchemaType
 > = true;
 

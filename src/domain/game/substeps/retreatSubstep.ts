@@ -1,4 +1,5 @@
 import type {
+  Board,
   LargeBoard,
   SmallBoard,
   StandardBoard,
@@ -32,41 +33,27 @@ import { routStateSchema } from "./routSubstep";
  * The expected event query `getExpectedRetreatEvent()` is composable and
  * delegates to `getExpectedRoutEvent()` when a rout state is present.
  */
-export interface RetreatStateBase {
+export interface RetreatStateForBoard<TBoard extends Board> {
   /** The type of the substep. */
   substepType: "retreat";
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
+  /** The unit that is retreating. */
+  retreatingUnit: UnitWithPlacement<TBoard>;
+  /** The legal retreat options. */
+  legalRetreatOptions: Set<UnitPlacement<TBoard>>;
+  /** The final position of the retreating unit. */
+  finalPosition: UnitPlacement<TBoard> | undefined;
   /** The state of a rout caused by the retreat. */
   routState: RoutState | undefined;
   /** Whether the retreat has been completed. */
   completed: boolean;
 }
 
-/** Retreat on a standard board. */
-export interface StandardRetreatState extends RetreatStateBase {
-  boardType: "standard";
-  retreatingUnit: UnitWithPlacement<StandardBoard>;
-  legalRetreatOptions: Set<UnitPlacement<StandardBoard>>;
-  finalPosition: UnitPlacement<StandardBoard> | undefined;
-}
-
-/** Retreat on a small board. */
-export interface SmallRetreatState extends RetreatStateBase {
-  boardType: "small";
-  retreatingUnit: UnitWithPlacement<SmallBoard>;
-  legalRetreatOptions: Set<UnitPlacement<SmallBoard>>;
-  finalPosition: UnitPlacement<SmallBoard> | undefined;
-}
-
-/** Retreat on a large board. */
-export interface LargeRetreatState extends RetreatStateBase {
-  boardType: "large";
-  retreatingUnit: UnitWithPlacement<LargeBoard>;
-  legalRetreatOptions: Set<UnitPlacement<LargeBoard>>;
-  finalPosition: UnitPlacement<LargeBoard> | undefined;
-}
-
-/** Retreat substep for any board size (discriminated on `boardType`). */
-export type RetreatState = StandardRetreatState | SmallRetreatState | LargeRetreatState;
+export type RetreatState =
+  | RetreatStateForBoard<SmallBoard>
+  | RetreatStateForBoard<StandardBoard>
+  | RetreatStateForBoard<LargeBoard>;
 
 // ---------------------------------------------------------------------------
 // Per-variant Zod schemas
@@ -85,11 +72,11 @@ const _standardRetreatStateSchemaObject = z.object({
 type StandardRetreatStateSchemaType = z.infer<typeof _standardRetreatStateSchemaObject>;
 
 const _assertExactStandardRetreatState: AssertExact<
-  StandardRetreatState,
+  RetreatStateForBoard<StandardBoard>,
   StandardRetreatStateSchemaType
 > = true;
 
-export const standardRetreatStateSchema: z.ZodType<StandardRetreatState> =
+export const standardRetreatStateSchema: z.ZodType<RetreatStateForBoard<StandardBoard>> =
   _standardRetreatStateSchemaObject;
 
 const _smallRetreatStateSchemaObject = z.object({
@@ -104,10 +91,13 @@ const _smallRetreatStateSchemaObject = z.object({
 
 type SmallRetreatStateSchemaType = z.infer<typeof _smallRetreatStateSchemaObject>;
 
-const _assertExactSmallRetreatState: AssertExact<SmallRetreatState, SmallRetreatStateSchemaType> =
-  true;
+const _assertExactSmallRetreatState: AssertExact<
+  RetreatStateForBoard<SmallBoard>,
+  SmallRetreatStateSchemaType
+> = true;
 
-export const smallRetreatStateSchema: z.ZodType<SmallRetreatState> = _smallRetreatStateSchemaObject;
+export const smallRetreatStateSchema: z.ZodType<RetreatStateForBoard<SmallBoard>> =
+  _smallRetreatStateSchemaObject;
 
 const _largeRetreatStateSchemaObject = z.object({
   substepType: z.literal("retreat"),
@@ -121,10 +111,13 @@ const _largeRetreatStateSchemaObject = z.object({
 
 type LargeRetreatStateSchemaType = z.infer<typeof _largeRetreatStateSchemaObject>;
 
-const _assertExactLargeRetreatState: AssertExact<LargeRetreatState, LargeRetreatStateSchemaType> =
-  true;
+const _assertExactLargeRetreatState: AssertExact<
+  RetreatStateForBoard<LargeBoard>,
+  LargeRetreatStateSchemaType
+> = true;
 
-export const largeRetreatStateSchema: z.ZodType<LargeRetreatState> = _largeRetreatStateSchemaObject;
+export const largeRetreatStateSchema: z.ZodType<RetreatStateForBoard<LargeBoard>> =
+  _largeRetreatStateSchemaObject;
 
 // ---------------------------------------------------------------------------
 // Wide union schema

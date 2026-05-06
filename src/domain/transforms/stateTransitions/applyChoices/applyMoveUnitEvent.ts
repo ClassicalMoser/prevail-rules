@@ -1,6 +1,6 @@
 import type { Board, UnitWithPlacement } from "@entities";
-import type { MoveUnitEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { MoveUnitEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { addUnitToBoard, removeUnitFromBoard, updateBoardState } from "@transforms/pureTransforms";
 
 /**
@@ -13,9 +13,9 @@ import { addUnitToBoard, removeUnitFromBoard, updateBoardState } from "@transfor
  * @returns A new game state with the unit moved
  */
 export function applyMoveUnitEvent<TBoard extends Board>(
-  event: MoveUnitEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: MoveUnitEventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   const originalUnitWithPlacement = event.unit;
   const newUnitWithPlacement = {
     ...originalUnitWithPlacement,

@@ -1,24 +1,7 @@
-import type { StandardBoard } from "@entities";
-import type { PlayerChoiceEvent, PlayerChoiceType } from "@events";
-import type { StandardGameState } from "@game";
+import type { PlayerChoiceEventForBoard } from "@events";
 import { createEmptyGameState } from "@testing";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  applyChooseCardEvent,
-  applyChooseMeleeEvent,
-  applyChooseRallyEvent,
-  applyChooseRetreatOptionEvent,
-  applyChooseRoutDiscardEvent,
-  applyChooseWhetherToRetreatEvent,
-  applyCommitToMeleeEvent,
-  applyCommitToMovementEvent,
-  applyCommitToRangedAttackEvent,
-  applyIssueCommandEvent,
-  applyMoveCommanderEvent,
-  applyMoveUnitEvent,
-  applyPerformRangedAttackEvent,
-  applySetupUnitsEvent,
-} from "./applyChoices";
+import { applyChooseCardEvent } from "./applyChoices";
 import { applyPlayerChoiceEvent } from "./applyPlayerChoiceEvent";
 
 vi.mock("./applyChoices", () => ({
@@ -38,65 +21,41 @@ vi.mock("./applyChoices", () => ({
   applySetupUnitsEvent: vi.fn(),
 }));
 
-/** Router passes (event, state); handlers share this signature. */
-type ApplyPlayerChoiceHandler = (
-  event: PlayerChoiceEvent<StandardBoard, PlayerChoiceType>,
-  state: StandardGameState,
-) => StandardGameState;
-
-const playerChoiceCases: ReadonlyArray<[PlayerChoiceType, ApplyPlayerChoiceHandler]> = [
-  ["chooseCard", applyChooseCardEvent],
-  ["chooseMeleeResolution", applyChooseMeleeEvent],
-  ["chooseRally", applyChooseRallyEvent],
-  ["chooseRetreatOption", applyChooseRetreatOptionEvent],
-  ["chooseRoutDiscard", applyChooseRoutDiscardEvent],
-  ["chooseWhetherToRetreat", applyChooseWhetherToRetreatEvent],
-  ["commitToMelee", applyCommitToMeleeEvent],
-  ["commitToMovement", applyCommitToMovementEvent],
-  ["commitToRangedAttack", applyCommitToRangedAttackEvent],
-  ["issueCommand", applyIssueCommandEvent],
-  ["moveCommander", applyMoveCommanderEvent],
-  ["moveUnit", applyMoveUnitEvent],
-  ["performRangedAttack", applyPerformRangedAttackEvent],
-  ["setupUnits", applySetupUnitsEvent],
-] as ReadonlyArray<[PlayerChoiceType, ApplyPlayerChoiceHandler]>;
-
 /**
- * `applyPlayerChoiceEvent` mirrors the game-effect router: each `PlayerChoiceType` maps to one
- * `applyChoices/*` function with the same `(event, state)` shape.
+ * Smoke tests only: real routing coverage lives on each `applyChoices/*` module.
  */
 describe("applyPlayerChoiceEvent", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it.each(playerChoiceCases)(
-    "given playerChoice with choiceType %s, delegates to matching handler and returns its state",
-    (choiceType, handler) => {
-      const state = createEmptyGameState();
-      const event = {
-        eventNumber: 0,
-        eventType: "playerChoice",
-        choiceType,
-        player: "black",
-      } as PlayerChoiceEvent<StandardBoard, PlayerChoiceType>;
-      vi.mocked(handler).mockReturnValue(state);
+  it("delegates to the handler for the matching choiceType and returns its result", () => {
+    const state = createEmptyGameState();
+    const event = {
+      eventNumber: 0,
+      eventType: "playerChoice" as const,
+      boardType: "standard" as const,
+      player: "black" as const,
+      choiceType: "chooseCard" as const,
+    } as unknown as PlayerChoiceEventForBoard<typeof state.boardState>;
 
-      const result = applyPlayerChoiceEvent(event, state);
+    vi.mocked(applyChooseCardEvent).mockReturnValue(state);
 
-      expect(handler).toHaveBeenCalledWith(event, state);
-      expect(result).toBe(state);
-    },
-  );
+    const result = applyPlayerChoiceEvent(event, state);
 
-  it("given playerChoice with bogus choiceType cast, throws unknown player choice type", () => {
+    expect(applyChooseCardEvent).toHaveBeenCalledWith(event, state);
+    expect(result).toBe(state);
+  });
+
+  it("throws when choiceType is not handled by the switch", () => {
     const state = createEmptyGameState();
     const event = {
       eventNumber: 0,
       eventType: "playerChoice",
-      choiceType: "unknown",
+      boardType: "standard",
       player: "black",
-    } as unknown as PlayerChoiceEvent<StandardBoard, PlayerChoiceType>;
+      choiceType: "unknown",
+    } as unknown as PlayerChoiceEventForBoard<typeof state.boardState>;
 
     expect(() => applyPlayerChoiceEvent(event, state)).toThrow(
       "Unknown player choice event type: unknown",

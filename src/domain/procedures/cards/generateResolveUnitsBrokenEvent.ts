@@ -1,13 +1,13 @@
-import type { Board, PlayerSide, UnitType } from "@entities";
 import type { ResolveUnitsBrokenEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_UNITS_BROKEN_EFFECT_TYPE } from "@events";
+import type { GameState } from "@game";
 import {
   getCleanupPhaseState,
   getOtherPlayer,
   getPlayerUnitsOnBoard,
   getSupportedUnitTypes,
 } from "@queries";
+import type { PlayerSide, UnitType } from "@entities";
 
 /**
  * Generates a ResolveUnitsBrokenEvent for unit types that lost support after a rally.
@@ -27,10 +27,10 @@ import {
  * const newState = applyEvent(event, state);
  * ```
  */
-export function generateResolveUnitsBrokenEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+export function generateResolveUnitsBrokenEvent(
+  state: GameState,
   eventNumber: number,
-): ResolveUnitsBrokenEvent<TBoard, "resolveUnitsBroken"> {
+): ResolveUnitsBrokenEvent {
   const phaseState = getCleanupPhaseState(state);
 
   // Determine which player just rallied based on the step

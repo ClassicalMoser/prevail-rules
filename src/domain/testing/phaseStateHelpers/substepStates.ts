@@ -7,9 +7,9 @@ import type {
 } from "@entities";
 import type {
   RallyResolutionState,
+  RetreatStateForBoard,
+  ReverseStateForBoard,
   RoutState,
-  StandardRetreatState,
-  StandardReverseState,
 } from "@game";
 
 /**
@@ -17,8 +17,8 @@ import type {
  */
 export function createRetreatState(
   unit: UnitWithPlacement<StandardBoard>,
-  overrides?: Partial<StandardRetreatState>,
-): StandardRetreatState {
+  overrides?: Partial<RetreatStateForBoard<StandardBoard>>,
+): RetreatStateForBoard<StandardBoard> {
   const legalRetreatOptions = new Set<UnitPlacement<StandardBoard>>([
     {
       boardType: "standard" as const,
@@ -67,8 +67,8 @@ export function createRoutState(
  */
 export function createReverseState(
   unit: UnitWithPlacement<StandardBoard>,
-  overrides?: Partial<StandardReverseState>,
-): StandardReverseState {
+  overrides?: Partial<ReverseStateForBoard<StandardBoard>>,
+): ReverseStateForBoard<StandardBoard> {
   return {
     substepType: "reverse",
     boardType: "standard" as const,

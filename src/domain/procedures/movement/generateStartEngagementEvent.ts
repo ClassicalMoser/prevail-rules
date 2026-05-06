@@ -1,6 +1,6 @@
-import type { Board, BoardCoordinate } from "@entities";
-import type { StartEngagementEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { Board } from "@entities";
+import type { StartEngagementEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from "@events";
 import {
   getMovementResolutionState,
@@ -21,9 +21,9 @@ import {
  * @throws Error if not in issueCommands phase, no movement resolution, or no enemy unit at target
  */
 export function generateStartEngagementEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): StartEngagementEvent<TBoard, "startEngagement"> {
+): StartEngagementEventForBoard<TBoard> {
   const movementResolutionState = getMovementResolutionState(state);
 
   // Get the engaging unit's facing from its target placement
@@ -31,7 +31,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
 
   const defenderWithPlacement = getSingleUnitWithPlacementAtCoordinate(
     state.boardState,
-    movementResolutionState.targetPlacement.coordinate as BoardCoordinate<TBoard>,
+    movementResolutionState.targetPlacement.coordinate,
   );
   const defendingFacing = defenderWithPlacement.placement.facing;
 
@@ -48,7 +48,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       engagementType: "rear",
       boardType,
       defenderWithPlacement,
-    } as unknown as StartEngagementEvent<TBoard, "startEngagement">;
+    };
   }
 
   const flankCheck = isEngagementFromFlank(engagingFacing, defendingFacing);
@@ -60,7 +60,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       engagementType: "flank",
       boardType,
       defenderWithPlacement,
-    } as unknown as StartEngagementEvent<TBoard, "startEngagement">;
+    };
   }
 
   const frontCheck = isEngagementFromFront(engagingFacing, defendingFacing);
@@ -72,7 +72,7 @@ export function generateStartEngagementEvent<TBoard extends Board>(
       engagementType: "front",
       boardType,
       defenderWithPlacement,
-    } as unknown as StartEngagementEvent<TBoard, "startEngagement">;
+    };
   }
 
   // If none of the checks passed, this is an invalid state

@@ -1,5 +1,5 @@
 import type { StandardBoard } from "@entities";
-import type { SetupUnitsEvent } from "@events";
+import type { SetupUnitsEventForBoard } from "@events";
 import { createEmptyGameState, createUnitWithPlacement } from "@testing";
 import { describe, expect, it } from "vitest";
 import { applySetupUnitsEvent } from "./applySetupUnitsEvent";
@@ -17,7 +17,7 @@ describe("applySetupUnitsEvent", () => {
       playerSide: "black",
     });
 
-    const event: SetupUnitsEvent<StandardBoard> = {
+    const event: SetupUnitsEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "setupUnits",
@@ -48,7 +48,7 @@ describe("applySetupUnitsEvent", () => {
       playerSide: "white",
     });
 
-    const event: SetupUnitsEvent<StandardBoard> = {
+    const event: SetupUnitsEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "setupUnits",
@@ -76,7 +76,7 @@ describe("applySetupUnitsEvent", () => {
     });
     const originalBoardRef = state.boardState;
 
-    const event: SetupUnitsEvent<StandardBoard> = {
+    const event: SetupUnitsEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "setupUnits",
@@ -94,7 +94,7 @@ describe("applySetupUnitsEvent", () => {
   it("given empty unitPlacements set, returned boardState is same reference as input", () => {
     const state = createEmptyGameState();
 
-    const event: SetupUnitsEvent<StandardBoard> = {
+    const event: SetupUnitsEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "setupUnits",

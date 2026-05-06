@@ -1,4 +1,4 @@
-import type { Board, Command } from "@entities";
+import type { Command } from "@entities";
 import type { AssertExact } from "@utils";
 import { commandSchema } from "@entities";
 import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
@@ -14,10 +14,7 @@ import { z } from "zod";
 export const COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE = "completeMoveCommandersPhase" as const;
 
 /** Event to complete the move commanders phase and advance to issue commands phase. */
-export interface CompleteMoveCommandersPhaseEvent<
-  _TBoard extends Board,
-  _TEffectType extends "completeMoveCommandersPhase" = "completeMoveCommandersPhase",
-> {
+export interface CompleteMoveCommandersPhaseEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -59,7 +56,7 @@ type CompleteMoveCommandersPhaseEventSchemaType = z.infer<
 >;
 
 const _assertExactCompleteMoveCommandersPhaseEvent: AssertExact<
-  CompleteMoveCommandersPhaseEvent<Board>,
+  CompleteMoveCommandersPhaseEvent,
   CompleteMoveCommandersPhaseEventSchemaType
 > = true;
 

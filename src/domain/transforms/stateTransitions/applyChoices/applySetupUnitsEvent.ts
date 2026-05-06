@@ -1,6 +1,6 @@
 import type { Board, UnitWithPlacement } from "@entities";
-import type { SetupUnitsEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { SetupUnitsEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { addUnitToBoard, updateBoardState } from "@transforms/pureTransforms";
 
 /**
@@ -13,9 +13,9 @@ import { addUnitToBoard, updateBoardState } from "@transforms/pureTransforms";
  * @returns A new game state with the units placed on the board
  */
 export function applySetupUnitsEvent<TBoard extends Board>(
-  event: SetupUnitsEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: SetupUnitsEventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   const unitPlacements = event.unitPlacements;
   const startingBoard = state.boardState;
 

@@ -1,25 +1,19 @@
 {
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "npm.scriptRunner": "vp",
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.oxlint": "explicit",
-    "source.format.oxc": "always"
-  },
+  "oxc.fmt.configPath": "./vite.config.ts",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
-  // Enable oxlint for all supported languages
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit"
+  },
   "testing.coverageToolbarEnabled": true,
   "typescript.suggest.autoImports": true,
   "typescript.preferences.autoImportFileExcludePatterns": [
     "**/node_modules/**/lodash", // Exclude lodash from auto-import suggestions
     "**/node_modules/**/moment" // Exclude moment from auto-import suggestions
-  ],
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  ]
 }

@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate } from "@entities";
-import type { MoveCommanderEvent } from "@events";
-import type { GameStateWithBoard, MoveCommandersPhaseState } from "@game";
+import type { MoveCommanderEventForBoard } from "@events";
+import type { GameState, GameStateForBoard, MoveCommandersPhaseState } from "@game";
 import { getMoveCommandersPhaseState } from "@queries";
 import {
   addCommanderToBoard,
@@ -19,10 +19,11 @@ import {
  * @returns A new game state with the commander moved
  */
 export function applyMoveCommanderEvent<TBoard extends Board>(
-  event: MoveCommanderEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const currentPhaseState = getMoveCommandersPhaseState(state);
+  event: MoveCommanderEventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  // Safe type broadening because we know the event is for the board type
+  const currentPhaseState = getMoveCommandersPhaseState(state as GameState);
   const side = event.player;
   const originalCoordinate = event.from as BoardCoordinate<TBoard>;
   const newCoordinate = event.to as BoardCoordinate<TBoard>;

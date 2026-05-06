@@ -1,6 +1,6 @@
 import type { StandardBoard } from "@entities";
 import type { DiscardPlayedCardsEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { createCleanupPhaseState, createEmptyGameState, createTestCard } from "@testing";
 import { updateCardState, updatePhaseState } from "@transforms/pureTransforms";
 import { describe, expect, it } from "vitest";
@@ -19,7 +19,7 @@ describe("applyDiscardPlayedCardsEvent", () => {
       white: { ...c.white, inPlay: createTestCard() },
       black: { ...c.black, inPlay: createTestCard() },
     }));
-    const full: StandardGameState = updatePhaseState(
+    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withCards,
       createCleanupPhaseState({ step: "discardPlayedCards" }),
     );
@@ -31,7 +31,7 @@ describe("applyDiscardPlayedCardsEvent", () => {
       eventNumber: 0,
       eventType: "gameEffect" as const,
       effectType: "discardPlayedCards" as const,
-    } satisfies DiscardPlayedCardsEvent<StandardBoard>;
+    } satisfies DiscardPlayedCardsEvent;
 
     const next = applyDiscardPlayedCardsEvent(event, full);
     const phase = next.currentRoundState.currentPhaseState;

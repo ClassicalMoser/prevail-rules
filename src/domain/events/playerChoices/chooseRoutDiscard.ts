@@ -1,4 +1,4 @@
-import type { Board, PlayerSide } from "@entities";
+import type { PlayerSide } from "@entities";
 import type { AssertExact } from "@utils";
 import { playerSideSchema } from "@entities";
 import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
@@ -11,10 +11,7 @@ export const CHOOSE_ROUT_DISCARD_CHOICE_TYPE = "chooseRoutDiscard" as const;
  * An event to choose which cards to discard as a penalty for routed units.
  * The player must select a number of cards equal to the total rout penalty.
  */
-export interface ChooseRoutDiscardEvent<
-  _TBoard extends Board,
-  _TChoiceType extends "chooseRoutDiscard" = "chooseRoutDiscard",
-> {
+export interface ChooseRoutDiscardEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -53,6 +50,6 @@ export const chooseRoutDiscardEventSchema: z.ZodObject<{
 
 // Verify manual type matches schema inference
 const _assertExactChooseRoutDiscardEvent: AssertExact<
-  ChooseRoutDiscardEvent<Board>,
+  ChooseRoutDiscardEvent,
   ChooseRoutDiscardEventSchemaType
 > = true;

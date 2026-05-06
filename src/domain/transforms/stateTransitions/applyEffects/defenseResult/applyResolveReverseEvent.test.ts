@@ -1,6 +1,6 @@
-import type { StandardBoard, StandardUnitWithPlacement, UnitWithPlacement } from "@entities";
-import type { ResolveReverseEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { StandardBoard, UnitWithPlacement } from "@entities";
+import type { ResolveReverseEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -26,7 +26,7 @@ import { applyResolveReverseEvent } from "./applyResolveReverseEvent";
  */
 describe("applyResolveReverseEvent", () => {
   /** issueCommands + ranged apply in reverse substep for white on E-5. */
-  function createStateWithRangedAttackReverse(): StandardGameState {
+  function createStateWithRangedAttackReverse(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
     const reversingUnit = createTestUnit("white", { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -59,7 +59,9 @@ describe("applyResolveReverseEvent", () => {
    * Melee reverse: reversing side on E-5 alone; opponent already “gone” with retreat apply at E-4
    * so engagement geometry matches post-retreat resolution.
    */
-  function createStateWithMeleeReverse(reversingPlayer: "white" | "black"): StandardGameState {
+  function createStateWithMeleeReverse(
+    reversingPlayer: "white" | "black",
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: "black" });
     const reversingUnit = createTestUnit(reversingPlayer, { attack: 2 });
     const opponentPlayer = reversingPlayer === "white" ? "black" : "white";
@@ -129,13 +131,13 @@ describe("applyResolveReverseEvent", () => {
         },
       };
 
-      const event: ResolveReverseEvent<StandardBoard> = {
+      const event: ResolveReverseEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveReverse",
         boardType: "standard",
         attackResolutionContext: "rangedAttack",
-        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
+        unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
 
@@ -164,13 +166,13 @@ describe("applyResolveReverseEvent", () => {
         },
       };
 
-      const event: ResolveReverseEvent<StandardBoard> = {
+      const event: ResolveReverseEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveReverse",
         boardType: "standard",
         attackResolutionContext: "rangedAttack",
-        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
+        unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
 
@@ -212,13 +214,13 @@ describe("applyResolveReverseEvent", () => {
         },
       };
 
-      const event: ResolveReverseEvent<StandardBoard> = {
+      const event: ResolveReverseEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveReverse",
         boardType: "standard",
         attackResolutionContext: "rangedAttack",
-        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
+        unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
 
@@ -249,13 +251,13 @@ describe("applyResolveReverseEvent", () => {
         },
       };
 
-      const event: ResolveReverseEvent<StandardBoard> = {
+      const event: ResolveReverseEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveReverse",
         boardType: "standard",
         attackResolutionContext: "melee",
-        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
+        unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
 
@@ -285,13 +287,13 @@ describe("applyResolveReverseEvent", () => {
         },
       };
 
-      const event: ResolveReverseEvent<StandardBoard> = {
+      const event: ResolveReverseEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveReverse",
         boardType: "standard",
         attackResolutionContext: "melee",
-        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
+        unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
 
@@ -322,13 +324,13 @@ describe("applyResolveReverseEvent", () => {
         },
       };
 
-      const event: ResolveReverseEvent<StandardBoard> = {
+      const event: ResolveReverseEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "gameEffect",
         effectType: "resolveReverse",
         boardType: "standard",
         attackResolutionContext: "rangedAttack",
-        unitInstance: reverseState.reversingUnit as StandardUnitWithPlacement,
+        unitInstance: reverseState.reversingUnit,
         newUnitPlacement: newPlacement,
       };
 

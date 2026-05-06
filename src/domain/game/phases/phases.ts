@@ -1,16 +1,25 @@
 import type { AssertExact } from "@utils";
 import type { CleanupPhaseState } from "./cleanupPhase";
-import type { IssueCommandsPhaseState } from "./issueCommandsPhase";
+import type { IssueCommandsPhaseStateForBoard } from "./issueCommandsPhase";
 import type { MoveCommandersPhaseState } from "./moveCommandersPhase";
 import type { PlayCardsPhaseState } from "./playCardsPhase";
 
-import type { ResolveMeleePhaseState } from "./resolveMeleePhase";
+import type { ResolveMeleePhaseStateForBoard } from "./resolveMeleePhase";
 import { z } from "zod";
 import { cleanupPhaseStateSchema } from "./cleanupPhase";
-import { issueCommandsPhaseStateSchema } from "./issueCommandsPhase";
+import {
+  largeIssueCommandsPhaseStateSchema,
+  smallIssueCommandsPhaseStateSchema,
+  standardIssueCommandsPhaseStateSchema,
+} from "./issueCommandsPhase";
 import { moveCommandersPhaseStateSchema } from "./moveCommandersPhase";
 import { playCardsPhaseStateSchema } from "./playCardsPhase";
-import { resolveMeleePhaseStateSchema } from "./resolveMeleePhase";
+import {
+  largeResolveMeleePhaseStateSchema,
+  smallResolveMeleePhaseStateSchema,
+  standardResolveMeleePhaseStateSchema,
+} from "./resolveMeleePhase";
+import { Board, LargeBoard, SmallBoard, StandardBoard } from "@entities";
 
 /**
  * Iterable list of valid phases for a round.
@@ -57,24 +66,75 @@ const _assertExactPhase: AssertExact<Phase, PhaseSchemaType> = true;
 /**
  * The state of a phase of a round.
  *
- * Spatial branches (`issueCommands`, `resolveMelee`) carry their own `boardType` / nested DUs where
- * needed; this union is not parameterized by `TBoard` (Layer 4).
+ * Spatial branches (`issueCommands`, `resolveMelee`) correlate nested state with `TBoard`.
  */
-export type PhaseState =
+export type PhaseStateForBoard<TBoard extends Board> =
   | PlayCardsPhaseState
   | MoveCommandersPhaseState
-  | IssueCommandsPhaseState
-  | ResolveMeleePhaseState
+  | IssueCommandsPhaseStateForBoard<TBoard>
+  | ResolveMeleePhaseStateForBoard<TBoard>
   | CleanupPhaseState;
 
+export type PhaseState =
+  | PhaseStateForBoard<SmallBoard>
+  | PhaseStateForBoard<StandardBoard>
+  | PhaseStateForBoard<LargeBoard>;
+
 /** Zod 4: phase branches include nested board unions; use flat union, not nested discriminatedUnion. */
-const _phaseStateSchemaObject = z.union([
+const _smallPhaseStateSchemaObject = z.union([
   playCardsPhaseStateSchema,
   moveCommandersPhaseStateSchema,
-  issueCommandsPhaseStateSchema,
-  resolveMeleePhaseStateSchema,
+  smallIssueCommandsPhaseStateSchema,
+  smallResolveMeleePhaseStateSchema,
   cleanupPhaseStateSchema,
 ]);
 
+type SmallPhaseStateSchemaType = z.infer<typeof _smallPhaseStateSchemaObject>;
+const _assertExactSmallPhaseState: AssertExact<
+  PhaseStateForBoard<SmallBoard>,
+  SmallPhaseStateSchemaType
+> = true;
+
+export const smallPhaseStateSchema: z.ZodType<PhaseStateForBoard<SmallBoard>> =
+  _smallPhaseStateSchemaObject;
+
+const _standardPhaseStateSchemaObject = z.union([
+  playCardsPhaseStateSchema,
+  moveCommandersPhaseStateSchema,
+  standardIssueCommandsPhaseStateSchema,
+  standardResolveMeleePhaseStateSchema,
+  cleanupPhaseStateSchema,
+]);
+
+type StandardPhaseStateSchemaType = z.infer<typeof _standardPhaseStateSchemaObject>;
+const _assertExactStandardPhaseState: AssertExact<
+  PhaseStateForBoard<StandardBoard>,
+  StandardPhaseStateSchemaType
+> = true;
+
+export const standardPhaseStateSchema: z.ZodType<PhaseStateForBoard<StandardBoard>> =
+  _standardPhaseStateSchemaObject;
+
+const _largePhaseStateSchemaObject = z.union([
+  playCardsPhaseStateSchema,
+  moveCommandersPhaseStateSchema,
+  largeIssueCommandsPhaseStateSchema,
+  largeResolveMeleePhaseStateSchema,
+  cleanupPhaseStateSchema,
+]);
+
+type LargePhaseStateSchemaType = z.infer<typeof _largePhaseStateSchemaObject>;
+const _assertExactLargePhaseState: AssertExact<
+  PhaseStateForBoard<LargeBoard>,
+  LargePhaseStateSchemaType
+> = true;
+
+export const largePhaseStateSchema: z.ZodType<PhaseStateForBoard<LargeBoard>> =
+  _largePhaseStateSchemaObject;
+
 /** The schema for the state of a phase of a round. */
-export const phaseStateSchema: z.ZodType<PhaseState> = _phaseStateSchemaObject;
+export const phaseStateSchema: z.ZodType<PhaseState> = z.union([
+  _smallPhaseStateSchemaObject,
+  _standardPhaseStateSchemaObject,
+  _largePhaseStateSchemaObject,
+]);

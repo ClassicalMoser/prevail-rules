@@ -1,4 +1,3 @@
-import type { Board } from "@entities";
 import type { AssertExact } from "@utils";
 import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
 import { z } from "zod";
@@ -11,10 +10,7 @@ export const DISCARD_PLAYED_CARDS_EFFECT_TYPE = "discardPlayedCards" as const;
  * Moves both players' cards from inPlay to discard pile.
  * This is the first step of the cleanup phase.
  */
-export interface DiscardPlayedCardsEvent<
-  _TBoard extends Board,
-  _TEffectType extends "discardPlayedCards" = "discardPlayedCards",
-> {
+export interface DiscardPlayedCardsEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -35,7 +31,7 @@ const _discardPlayedCardsEventSchemaObject = z.object({
 type DiscardPlayedCardsEventSchemaType = z.infer<typeof _discardPlayedCardsEventSchemaObject>;
 
 const _assertExactDiscardPlayedCardsEvent: AssertExact<
-  DiscardPlayedCardsEvent<Board>,
+  DiscardPlayedCardsEvent,
   DiscardPlayedCardsEventSchemaType
 > = true;
 

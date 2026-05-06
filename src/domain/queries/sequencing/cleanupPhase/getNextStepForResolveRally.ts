@@ -1,5 +1,4 @@
-import type { Board } from "@entities";
-import type { CleanupPhaseState, GameStateWithBoard } from "@game";
+import type { CleanupPhaseState, GameState } from "@game";
 import { getCleanupPhaseState } from "../getPhaseState";
 
 /**
@@ -9,9 +8,7 @@ import { getCleanupPhaseState } from "../getPhaseState";
  * @returns The next step to transition to
  * @throws Error if not in a resolveRally step
  */
-export function getNextStepForResolveRally<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-): CleanupPhaseState["step"] {
+export function getNextStepForResolveRally(state: GameState): CleanupPhaseState["step"] {
   const phaseState = getCleanupPhaseState(state);
 
   if (phaseState.step === "firstPlayerResolveRally") {

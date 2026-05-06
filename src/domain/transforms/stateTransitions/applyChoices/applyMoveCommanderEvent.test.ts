@@ -1,6 +1,6 @@
 import type { StandardBoard, StandardBoardCoordinate } from "@entities";
-import type { MoveCommanderEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { MoveCommanderEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { MOVE_COMMANDERS_PHASE } from "@game";
 
 import { createBoardWithCommander, createEmptyGameState } from "@testing";
@@ -18,7 +18,7 @@ describe("applyMoveCommanderEvent", () => {
     step: "moveFirstCommander" | "moveSecondCommander",
     blackCommanderCoord: StandardBoardCoordinate = "E-5",
     whiteCommanderCoord: StandardBoardCoordinate = "E-6",
-  ): StandardGameState {
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: "black" });
 
     let board = createBoardWithCommander("black", blackCommanderCoord);
@@ -41,7 +41,7 @@ describe("applyMoveCommanderEvent", () => {
     it("given moveFirstCommander and black E-5 to E-7, black leaves E-5 and white still on E-6", () => {
       const state = createGameStateInMoveCommandersStep("moveFirstCommander", "E-5", "E-6");
 
-      const event: MoveCommanderEvent<StandardBoard> = {
+      const event: MoveCommanderEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "moveCommander",
@@ -64,7 +64,7 @@ describe("applyMoveCommanderEvent", () => {
     it("given moveSecondCommander and white E-6 to E-8, white leaves E-6 and black still on E-5", () => {
       const state = createGameStateInMoveCommandersStep("moveSecondCommander", "E-5", "E-6");
 
-      const event: MoveCommanderEvent<StandardBoard> = {
+      const event: MoveCommanderEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "moveCommander",
@@ -89,7 +89,7 @@ describe("applyMoveCommanderEvent", () => {
     it("given black completes first commander move, phase step is moveSecondCommander", () => {
       const state = createGameStateInMoveCommandersStep("moveFirstCommander");
 
-      const event: MoveCommanderEvent<StandardBoard> = {
+      const event: MoveCommanderEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "moveCommander",
@@ -107,7 +107,7 @@ describe("applyMoveCommanderEvent", () => {
     it("given white completes second commander move, phase step is complete", () => {
       const state = createGameStateInMoveCommandersStep("moveSecondCommander");
 
-      const event: MoveCommanderEvent<StandardBoard> = {
+      const event: MoveCommanderEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "moveCommander",
@@ -129,7 +129,7 @@ describe("applyMoveCommanderEvent", () => {
       const originalBlackCommanderPresent = state.boardState.board["E-5"]?.commanders.has("black");
       const originalStep = state.currentRoundState.currentPhaseState?.step;
 
-      const event: MoveCommanderEvent<StandardBoard> = {
+      const event: MoveCommanderEventForBoard<StandardBoard> = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "moveCommander",

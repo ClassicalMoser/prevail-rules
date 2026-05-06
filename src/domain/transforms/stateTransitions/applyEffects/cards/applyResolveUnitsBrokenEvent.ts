@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
 import type { ResolveUnitsBrokenEvent } from "@events";
-import type { CleanupPhaseState, GameStateWithBoard, RoutState } from "@game";
+import type { CleanupPhaseState, GameState, GameStateForBoard, RoutState } from "@game";
 
 import {
   getCleanupPhaseState,
@@ -27,14 +27,17 @@ import {
  * @returns A new game state with units routed
  */
 export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
-  event: ResolveUnitsBrokenEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: ResolveUnitsBrokenEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   const { player, unitTypes } = event;
-  const phaseState = getCleanupPhaseState(state);
+  // Safe broad type cast because we know the event is for the board type
+  const phaseState = getCleanupPhaseState(state as GameState);
 
   const rallyState = getRallyResolutionStateAwaitingUnitsBroken(state, player);
-  const defaultNextStep = getNextStepForResolveRally(state);
+
+  // Safe broad type cast because we know the event is for the board type
+  const defaultNextStep = getNextStepForResolveRally(state as GameState);
 
   // Find all unit instances of the broken types on the board
   const brokenTypeIds = new Set(unitTypes.map((type) => type.id));

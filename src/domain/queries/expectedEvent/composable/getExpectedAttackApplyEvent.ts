@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { ExpectedEventInfo } from "@events";
-import type { AttackApplyState, GameStateWithBoard } from "@game";
+import type { AttackApplyState, GameState } from "@game";
 import { canReverseUnit } from "@queries/sequencing";
 import { getExpectedRetreatEvent, getExpectedReverseEvent, getExpectedRoutEvent } from ".";
 
@@ -13,9 +12,9 @@ import { getExpectedRetreatEvent, getExpectedReverseEvent, getExpectedRoutEvent 
  * @param gameState - The game state, needed for melee reverse engagement checks
  * @returns Information about what event is expected
  */
-export function getExpectedAttackApplyEvent<TBoard extends Board>(
+export function getExpectedAttackApplyEvent(
   attackApplyState: AttackApplyState,
-  gameState: GameStateWithBoard<TBoard>,
+  gameState: GameState,
 ): ExpectedEventInfo {
   const attackResult = attackApplyState.attackResult;
 
@@ -68,7 +67,7 @@ export function getExpectedAttackApplyEvent<TBoard extends Board>(
           effectType: "completeAttackApply",
         };
       }
-      return getExpectedReverseEvent(attackApplyState.reverseState, gameState);
+      return getExpectedReverseEvent(attackApplyState.reverseState);
     }
     // Reverse is complete, continue to check if attack apply is complete
   }

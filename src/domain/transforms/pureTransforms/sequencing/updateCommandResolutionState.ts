@@ -1,6 +1,10 @@
 import type { Board } from "@entities";
-import type { CommandResolutionState, GameStateWithBoard, IssueCommandsPhaseState } from "@game";
-import { getIssueCommandsPhaseState } from "@queries";
+import type {
+  CommandResolutionStateForBoard,
+  GameStateForBoard,
+  IssueCommandsPhaseStateForBoard,
+} from "@game";
+import { getIssueCommandsPhaseStateForBoard } from "@queries";
 import { updatePhaseState } from "../state";
 
 /**
@@ -20,16 +24,16 @@ import { updatePhaseState } from "../state";
  * ```
  */
 export function updateCommandResolutionState<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-  commandResolutionState: CommandResolutionState,
-): GameStateWithBoard<TBoard> {
-  const issueCommandsPhaseState = getIssueCommandsPhaseState(state);
+  state: GameStateForBoard<TBoard>,
+  commandResolutionState: CommandResolutionStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const issueCommandsPhaseState = getIssueCommandsPhaseStateForBoard(state);
 
   if (!issueCommandsPhaseState.currentCommandResolutionState) {
     throw new Error("No current command resolution state found");
   }
 
-  const newPhaseState: IssueCommandsPhaseState = {
+  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
     ...issueCommandsPhaseState,
     currentCommandResolutionState: commandResolutionState,
   };

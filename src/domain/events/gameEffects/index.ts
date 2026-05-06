@@ -42,6 +42,7 @@ export {
 export type {
   CompleteCleanupPhaseEvent,
   CompleteIssueCommandsPhaseEvent,
+  CompleteIssueCommandsPhaseEventForBoard,
   CompleteMoveCommandersPhaseEvent,
   CompletePlayCardsPhaseEvent,
   CompleteResolveMeleePhaseEvent,
@@ -71,14 +72,22 @@ export {
 export type {
   AttackResolutionContext,
   ResolveRetreatEvent,
+  ResolveRetreatEventForBoard,
   ResolveReverseEvent,
+  ResolveReverseEventForBoard,
   ResolveRoutEvent,
   RoutResolutionSource,
   RoutResolutionSourceNonAttack,
   TriggerRoutFromRetreatEvent,
 } from "./defenseResult";
-export { gameEffectEventSchema, gameEffectTypeSchema } from "./gameEffect";
-export type { GameEffectEvent } from "./gameEffect";
+export {
+  gameEffectEventSchema,
+  gameEffectTypeSchema,
+  largeGameEffectEventSchema,
+  smallGameEffectEventSchema,
+  standardGameEffectEventSchema,
+} from "./gameEffect";
+export type { GameEffectEvent, GameEffectEventForBoard } from "./gameEffect";
 export { gameEffects, type GameEffectType } from "./gameEffect";
 export {
   COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE,
@@ -94,7 +103,9 @@ export type {
   CompleteUnitMovementEvent,
   ResolveEngageRetreatOptionEvent,
   ResolveFlankEngagementEvent,
+  ResolveFlankEngagementEventForBoard,
   StartEngagementEvent,
+  StartEngagementEventForBoard,
 } from "./movement";
 export {
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
@@ -113,5 +124,7 @@ export type {
   CompleteMeleeResolutionEvent,
   CompleteRangedAttackCommandEvent,
   ResolveMeleeEvent,
+  ResolveMeleeEventForBoard,
   ResolveRangedAttackEvent,
+  ResolveRangedAttackEventForBoard,
 } from "./resolveAttack";

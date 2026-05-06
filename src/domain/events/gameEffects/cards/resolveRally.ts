@@ -1,4 +1,4 @@
-import type { Board, Card, PlayerSide } from "@entities";
+import type { Card, PlayerSide } from "@entities";
 import type { AssertExact } from "@utils";
 import { cardSchema, playerSideSchema } from "@entities";
 import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
@@ -13,10 +13,7 @@ export const RESOLVE_RALLY_EFFECT_TYPE = "resolveRally" as const;
  */
 
 /** A command to resolve a rally. */
-export interface ResolveRallyEvent<
-  _TBoard extends Board,
-  _TEffectType extends "resolveRally" = "resolveRally",
-> {
+export interface ResolveRallyEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -44,10 +41,8 @@ const _resolveRallyEventSchemaObject = z.object({
 
 type ResolveRallyEventSchemaType = z.infer<typeof _resolveRallyEventSchemaObject>;
 
-const _assertExactResolveRallyEvent: AssertExact<
-  ResolveRallyEvent<Board>,
-  ResolveRallyEventSchemaType
-> = true;
+const _assertExactResolveRallyEvent: AssertExact<ResolveRallyEvent, ResolveRallyEventSchemaType> =
+  true;
 
 /** The schema for a resolve rally event. */
 export const resolveRallyEventSchema: z.ZodObject<{

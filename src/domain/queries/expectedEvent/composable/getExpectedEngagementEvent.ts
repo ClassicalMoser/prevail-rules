@@ -1,10 +1,6 @@
-import type { Board, BoardCoordinate } from "@entities";
 import type { ExpectedEventInfo } from "@events";
-import type { EngagementState, GameStateWithBoard } from "@game";
-import { hasEngagedUnits, hasNoUnit } from "@entities";
-import { getBoardSpace } from "@queries/boardSpace";
+import type { EngagementState } from "@game";
 import { getOtherPlayer } from "@queries/getOtherPlayer";
-import { isFriendlyUnit } from "@queries/unit";
 import { getExpectedRoutEvent } from ".";
 
 /**
@@ -12,34 +8,13 @@ import { getExpectedRoutEvent } from ".";
  * This is a composable function that can be used in any context where
  * engagement state appears (movement resolution, etc.).
  *
- * @param gameState - The game state, needed to read what's happening on the board
  * @param engagementState - The engagement state, relevant to this engagement resolution
  * Prevents having to scan through phases to find the engagement state
  * @returns Information about what event is expected
  */
-export function getExpectedEngagementEvent<TBoard extends Board>(
-  gameState: GameStateWithBoard<TBoard>,
-  engagementState: EngagementState,
-): ExpectedEventInfo {
+export function getExpectedEngagementEvent(engagementState: EngagementState): ExpectedEventInfo {
   const attackingPlayer = engagementState.engagingUnit.playerSide;
   const defendingPlayer = getOtherPlayer(attackingPlayer);
-  const board = gameState.boardState;
-  const spaceState = getBoardSpace(
-    board,
-    engagementState.targetPlacement.coordinate as BoardCoordinate<TBoard>,
-  );
-  // Basic defensive checks to ensure we're not in an invalid state
-  const defendingUnitPresence = spaceState.unitPresence;
-  if (hasNoUnit(defendingUnitPresence)) {
-    throw new Error("nothing to engage");
-  }
-  if (hasEngagedUnits(defendingUnitPresence)) {
-    throw new Error("defending unit is already engaged");
-  }
-  const defendingUnit = defendingUnitPresence.unit;
-  if (isFriendlyUnit(defendingUnit, defendingPlayer)) {
-    throw new Error("defending unit is friendly");
-  }
 
   const resolutionState = engagementState.engagementResolutionState;
   const engagementType = resolutionState.engagementType;

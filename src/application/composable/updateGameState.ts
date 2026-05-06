@@ -1,5 +1,4 @@
-import type { GameType } from "@entities";
-import type { BoardForGameType, GameState, GameStateWithBoard } from "@game";
+import type { GameState } from "@game";
 import type { GameStateChange, GameStateSubscriber, GameStorage, PortResponse } from "../ports";
 
 /**
@@ -11,10 +10,9 @@ import type { GameStateChange, GameStateSubscriber, GameStorage, PortResponse } 
  * @param gameStateSubscribers - The game state subscribers to notify.
  * @returns The result of the operation.
  */
-export async function updateGameState<T extends GameType>(
+export async function updateGameState(
   gameId: string,
-  gameType: T,
-  gameState: GameStateWithBoard<BoardForGameType<T>>,
+  gameState: GameState,
   gameStorage: GameStorage,
   gameStateSubscribers: GameStateSubscriber[],
 ): Promise<PortResponse<void>> {
@@ -27,11 +25,10 @@ export async function updateGameState<T extends GameType>(
   }
   const change: GameStateChange = {
     gameId,
-    gameType,
-    gameState: gameState as GameState,
+    gameState,
   };
   for (const subscriber of gameStateSubscribers) {
-    if (subscriber.gameId !== gameId || subscriber.gameType !== gameType) {
+    if (subscriber.gameId !== gameId) {
       continue;
     }
     try {

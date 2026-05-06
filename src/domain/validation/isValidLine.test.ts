@@ -1,4 +1,4 @@
-import type { Line, StandardBoard, StandardBoardCoordinate } from "@entities";
+import type { Board, Line, StandardBoard, StandardBoardCoordinate } from "@entities";
 import { getLinesFromUnit, getPlayerUnitWithPosition } from "@queries";
 import { createBoardWithUnits, createTestUnit } from "@testing";
 import { createEmptyStandardBoard } from "@transforms";
@@ -307,7 +307,8 @@ describe("isValidLine", () => {
   });
   describe("edge cases", () => {
     it("given a bad input type, returns false instead of throwing", () => {
-      const board = undefined as unknown as StandardBoard;
+      // Intentionally bad type casts to test the function
+      const board = undefined as unknown as Board;
       const line = undefined as unknown as Line;
       const { result } = isValidLine(board, line);
       expect(result).toBe(false);

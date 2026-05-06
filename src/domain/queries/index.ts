@@ -23,7 +23,6 @@ export {
 export { calculateInitiative } from "./calculateInitiative";
 export { getLegalChooseCardOptions, getLegalChooseMeleeResolutionEvents } from "./choiceOptions";
 export { isEngagementFromFlank, isEngagementFromFront, isEngagementFromRear } from "./engagement";
-export type { ExpectedEvent } from "./expectedEvent";
 export { getExpectedEvent } from "./expectedEvent";
 export {
   getAdjacentFacings,
@@ -49,12 +48,14 @@ export {
   getCleanupPhaseState,
   getCurrentCommandResolutionState,
   getCurrentPhaseState,
+  getCurrentPhaseStateForBoard,
   getCurrentRallyResolutionState,
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
   getEngagementStateFromMovement,
   getFlankEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
   getIssueCommandsPhaseState,
+  getIssueCommandsPhaseStateForBoard,
   getMeleeResolutionReadyForAttackCalculation,
   getMeleeResolutionState,
   getMoveCommandersPhaseState,
@@ -68,6 +69,7 @@ export {
   getRangedAttackResolutionState,
   getRearEngagementStateFromMovement,
   getResolveMeleePhaseState,
+  getResolveMeleePhaseStateForBoard,
   getRetreatStateFromAttackApply,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,

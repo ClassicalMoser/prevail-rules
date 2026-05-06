@@ -11,7 +11,6 @@ export {
   attackTypeSchema,
   boardCoordinateSchema,
   boardSchema,
-  boardSizeEnum,
   boardSpaceSchema,
   coordinateLayoutMap,
   getCoordinateLayout,
@@ -36,11 +35,11 @@ export {
 export {
   engagementType,
   engagementTypeSchema,
-  gameType,
-  gameTypeEnum,
-  gameTypeStructureSchema,
+  gameModes,
+  gameModeSchema,
   lineSchema,
 } from "@entities";
+export type { GameMode, GameModeName } from "@entities";
 export { playerSchema, playerSides, playerSideSchema } from "@entities";
 export {
   areSameSide,
@@ -77,7 +76,6 @@ export type {
   AttackType,
   Board,
   BoardCoordinate,
-  BoardSize,
   BoardSpace,
   BoardType,
   CoordinateLayout,
@@ -102,19 +100,13 @@ export type {
   StandardBoardCoordinate,
   StatModifier,
 } from "@entities";
-export type { GameType, GameTypeStructure, Line, Player, PlayerSide, UnitFacing } from "@entities";
+export type { Line, Player, PlayerSide, UnitFacing } from "@entities";
 export type {
   EngagedUnitPresence,
   FailValidationResult,
-  LargeUnitPlacement,
-  LargeUnitWithPlacement,
   NoneUnitPresence,
   PassValidationResult,
   SingleUnitPresence,
-  SmallUnitPlacement,
-  SmallUnitWithPlacement,
-  StandardUnitPlacement,
-  StandardUnitWithPlacement,
   UnitInstance,
   UnitPlacement,
   UnitPresence,
@@ -275,21 +267,8 @@ export type {
   PlayerChoiceType,
   SetupUnitsEvent,
 } from "@events";
-export {
-  gameSchema,
-  miniGameSchema,
-  standardGameSchema,
-  tutorialGameSchema,
-  validateGameBoardMatchesGameType,
-} from "@game";
-export type {
-  BoardForGameType,
-  Game,
-  GameOfType,
-  MiniGame,
-  StandardGame,
-  TutorialGame,
-} from "@game";
+export { gameSchema, miniGameSchema, standardGameSchema, tutorialGameSchema } from "@game";
+export type { Game, GameForMode, GameStateForBoard } from "@game";
 export {
   attackResultSchema,
   CLEANUP_PHASE,
@@ -299,15 +278,13 @@ export {
   completedCommitmentSchema,
   declinedCommitmentSchema,
   gameStateSchema,
-  gameStateSchemaForLargeBoard,
-  gameStateSchemaForSmallBoard,
-  gameStateSchemaForStandardBoard,
   pendingCommitmentSchema,
 } from "@game";
 export {
   ISSUE_COMMANDS_PHASE,
   issueCommandsPhaseStateSchema,
   issueCommandsPhaseSteps,
+  largeIssueCommandsPhaseStateSchema,
   MOVE_COMMANDERS_PHASE,
   moveCommandersPhaseStateSchema,
   moveCommandersPhaseSteps,
@@ -317,6 +294,8 @@ export {
   playCardsPhaseStateSchema,
   playCardsPhaseSteps,
   RESOLVE_MELEE_PHASE,
+  smallIssueCommandsPhaseStateSchema,
+  standardIssueCommandsPhaseStateSchema,
 } from "@game";
 export {
   attackApplyStateSchema,
@@ -345,18 +324,14 @@ export type {
   CompletedCommitment,
   DeclinedCommitment,
   GameState,
-  GameStateBase,
-  GameStateWithBoard,
-  LargeGameState,
   PendingCommitment,
-  SmallGameState,
-  StandardGameState,
 } from "@game";
 export type {
   AttackApplyState,
   CleanupPhaseState,
   CleanupPhaseStep,
   IssueCommandsPhaseState,
+  IssueCommandsPhaseStateForBoard,
   IssueCommandsPhaseStep,
   MoveCommandersPhaseState,
   MoveCommandersPhaseStep,
@@ -486,8 +461,6 @@ export { getPositionOfUnit } from "@queries";
 export type { Trait } from "@ruleValues";
 export {
   COMMANDER_MOVE_DISTANCE,
-  gameTypes,
-  getBoardSizeForGameType,
   MAX_LINE_LENGTH,
   MIN_FLEXIBILITY_THRESHOLD,
   traits,
@@ -529,7 +502,7 @@ export {
   updateMeleeResolutionState,
   updatePhaseState,
   updatePlayerCardState,
-  updateRemainingCommandsForPlayer,
+  updateRemainingPlayerCommands,
   updateRetreatRoutState,
   updateRetreatState,
   updateReverseState,

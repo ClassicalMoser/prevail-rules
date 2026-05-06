@@ -1,10 +1,6 @@
-import type { BoardCoordinate, LargeBoard, SmallBoard, StandardBoard } from "@entities";
+import type { Board, BoardCoordinate, LargeBoard, SmallBoard, StandardBoard } from "@entities";
 
-import type {
-  LargeMeleeResolutionState,
-  SmallMeleeResolutionState,
-  StandardMeleeResolutionState,
-} from "@game/substeps";
+import type { MeleeResolutionStateForBoard } from "@game/substeps";
 import type { AssertExact } from "@utils";
 import {
   largeBoardCoordinateSchema,
@@ -42,35 +38,23 @@ const _assertExactResolveMeleePhaseStep: AssertExact<
 > = true;
 
 /** The state of the resolve melee phase. */
-export interface ResolveMeleePhaseStateBase {
+export interface ResolveMeleePhaseStateForBoard<TBoard extends Board> {
   /** The current phase of the round. */
   phase: "resolveMelee";
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
   /** The step of the resolve melee phase. */
   step: ResolveMeleePhaseStep;
-}
-
-export interface StandardResolveMeleePhaseState extends ResolveMeleePhaseStateBase {
-  boardType: "standard";
-  currentMeleeResolutionState: StandardMeleeResolutionState | undefined;
-  remainingEngagements: Set<BoardCoordinate<StandardBoard>>;
-}
-
-export interface SmallResolveMeleePhaseState extends ResolveMeleePhaseStateBase {
-  boardType: "small";
-  currentMeleeResolutionState: SmallMeleeResolutionState | undefined;
-  remainingEngagements: Set<BoardCoordinate<SmallBoard>>;
-}
-
-export interface LargeResolveMeleePhaseState extends ResolveMeleePhaseStateBase {
-  boardType: "large";
-  currentMeleeResolutionState: LargeMeleeResolutionState | undefined;
-  remainingEngagements: Set<BoardCoordinate<LargeBoard>>;
+  /** The current melee resolution state. */
+  currentMeleeResolutionState: MeleeResolutionStateForBoard<TBoard> | undefined;
+  /** The remaining engagements. */
+  remainingEngagements: Set<BoardCoordinate<TBoard>>;
 }
 
 export type ResolveMeleePhaseState =
-  | StandardResolveMeleePhaseState
-  | SmallResolveMeleePhaseState
-  | LargeResolveMeleePhaseState;
+  | ResolveMeleePhaseStateForBoard<SmallBoard>
+  | ResolveMeleePhaseStateForBoard<StandardBoard>
+  | ResolveMeleePhaseStateForBoard<LargeBoard>;
 
 const _standardResolveMeleePhaseStateSchemaObject = z.object({
   phase: z.literal("resolveMelee"),
@@ -85,12 +69,13 @@ type StandardResolveMeleePhaseStateSchemaType = z.infer<
 >;
 
 const _assertExactStandardResolveMeleePhaseState: AssertExact<
-  StandardResolveMeleePhaseState,
+  ResolveMeleePhaseStateForBoard<StandardBoard>,
   StandardResolveMeleePhaseStateSchemaType
 > = true;
 
-export const standardResolveMeleePhaseStateSchema: z.ZodType<StandardResolveMeleePhaseState> =
-  _standardResolveMeleePhaseStateSchemaObject;
+export const standardResolveMeleePhaseStateSchema: z.ZodType<
+  ResolveMeleePhaseStateForBoard<StandardBoard>
+> = _standardResolveMeleePhaseStateSchemaObject;
 
 const _smallResolveMeleePhaseStateSchemaObject = z.object({
   phase: z.literal("resolveMelee"),
@@ -105,12 +90,13 @@ type SmallResolveMeleePhaseStateSchemaType = z.infer<
 >;
 
 const _assertExactSmallResolveMeleePhaseState: AssertExact<
-  SmallResolveMeleePhaseState,
+  ResolveMeleePhaseStateForBoard<SmallBoard>,
   SmallResolveMeleePhaseStateSchemaType
 > = true;
 
-export const smallResolveMeleePhaseStateSchema: z.ZodType<SmallResolveMeleePhaseState> =
-  _smallResolveMeleePhaseStateSchemaObject;
+export const smallResolveMeleePhaseStateSchema: z.ZodType<
+  ResolveMeleePhaseStateForBoard<SmallBoard>
+> = _smallResolveMeleePhaseStateSchemaObject;
 
 const _largeResolveMeleePhaseStateSchemaObject = z.object({
   phase: z.literal("resolveMelee"),
@@ -125,12 +111,13 @@ type LargeResolveMeleePhaseStateSchemaType = z.infer<
 >;
 
 const _assertExactLargeResolveMeleePhaseState: AssertExact<
-  LargeResolveMeleePhaseState,
+  ResolveMeleePhaseStateForBoard<LargeBoard>,
   LargeResolveMeleePhaseStateSchemaType
 > = true;
 
-export const largeResolveMeleePhaseStateSchema: z.ZodType<LargeResolveMeleePhaseState> =
-  _largeResolveMeleePhaseStateSchemaObject;
+export const largeResolveMeleePhaseStateSchema: z.ZodType<
+  ResolveMeleePhaseStateForBoard<LargeBoard>
+> = _largeResolveMeleePhaseStateSchemaObject;
 
 const _resolveMeleePhaseStateSchemaObject = z.union([
   _standardResolveMeleePhaseStateSchemaObject,

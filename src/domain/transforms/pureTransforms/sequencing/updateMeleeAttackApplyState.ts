@@ -1,11 +1,6 @@
 import type { Board, PlayerSide } from "@entities";
-import type {
-  AttackApplyState,
-  GameStateWithBoard,
-  MeleeResolutionState,
-  ResolveMeleePhaseState,
-} from "@game";
-import { getMeleeResolutionState, getResolveMeleePhaseState } from "@queries";
+import type { AttackApplyStateForBoard, GameStateForBoard } from "@game";
+import { getMeleeResolutionState, getResolveMeleePhaseStateForBoard } from "@queries";
 import { updatePhaseState } from "../state";
 
 /**
@@ -26,11 +21,11 @@ import { updatePhaseState } from "../state";
  * ```
  */
 export function updateMeleeAttackApplyState<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   player: PlayerSide,
-  attackApplyState: AttackApplyState,
-): GameStateWithBoard<TBoard> {
-  const resolveMeleePhaseState = getResolveMeleePhaseState(state);
+  attackApplyState: AttackApplyStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const resolveMeleePhaseState = getResolveMeleePhaseStateForBoard(state);
   const meleeState = getMeleeResolutionState(state);
 
   const newMeleeState = {
@@ -38,12 +33,12 @@ export function updateMeleeAttackApplyState<TBoard extends Board>(
     ...(player === "white"
       ? { whiteAttackApplyState: attackApplyState }
       : { blackAttackApplyState: attackApplyState }),
-  } as MeleeResolutionState;
+  };
 
   const newPhaseState = {
     ...resolveMeleePhaseState,
     currentMeleeResolutionState: newMeleeState,
-  } as ResolveMeleePhaseState;
+  };
 
   return updatePhaseState(state, newPhaseState);
 }

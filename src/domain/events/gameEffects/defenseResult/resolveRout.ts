@@ -8,7 +8,7 @@
  *
  * Tuple-typed value arrays satisfy `--isolatedDeclarations` (no spread-composed exports).
  */
-import type { Board, UnitInstance } from "@entities";
+import type { UnitInstance } from "@entities";
 import type { AssertExact } from "@utils";
 import type { AttackResolutionContext } from "./attackResolutionContext";
 import { unitInstanceSchema } from "@entities";
@@ -77,10 +77,7 @@ export const routResolutionSourceSchema: typeof _routResolutionSourceSchemaObjec
  *
  * `routResolutionSource` is procedure-filled so apply can `switch` without scanning the board.
  */
-export interface ResolveRoutEvent<
-  _TBoard extends Board,
-  _TEffectType extends "resolveRout" = "resolveRout",
-> {
+export interface ResolveRoutEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -112,10 +109,8 @@ const _resolveRoutEventSchemaObject = z.object({
 
 type ResolveRoutEventSchemaType = z.infer<typeof _resolveRoutEventSchemaObject>;
 
-const _assertExactResolveRoutEvent: AssertExact<
-  ResolveRoutEvent<Board>,
-  ResolveRoutEventSchemaType
-> = true;
+const _assertExactResolveRoutEvent: AssertExact<ResolveRoutEvent, ResolveRoutEventSchemaType> =
+  true;
 
 /** The schema for a resolve rout event. */
 export const resolveRoutEventSchema: z.ZodObject<{

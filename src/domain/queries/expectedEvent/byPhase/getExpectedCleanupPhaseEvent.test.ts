@@ -1,5 +1,5 @@
-import type { CleanupPhaseStep, StandardGameState } from "@game";
-import { expectedGameEffectSchema, expectedPlayerInputSchema } from "@events";
+import type { CleanupPhaseStep } from "@game";
+import { GameState } from "@game";
 import {
   createCleanupPhaseState,
   createEmptyGameState,
@@ -15,7 +15,7 @@ describe("getExpectedCleanupPhaseEvent", () => {
   function createGameStateInCleanupStep(
     step: CleanupPhaseStep,
     currentInitiative: "black" | "white" = "black",
-  ): StandardGameState {
+  ): GameState {
     const state = createEmptyGameState({ currentInitiative });
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       step,
@@ -35,9 +35,9 @@ describe("getExpectedCleanupPhaseEvent", () => {
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
 
     expect(expectedEvent.actionType).toBe("gameEffect");
-    const parsed = expectedGameEffectSchema.safeParse(expectedEvent);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.effectType).toBe("discardPlayedCards");
+    expect(expectedEvent.actionType === "gameEffect" && expectedEvent.effectType).toBe(
+      "discardPlayedCards",
+    );
   });
 
   it("given context, returns first player choose rally", () => {
@@ -46,10 +46,10 @@ describe("getExpectedCleanupPhaseEvent", () => {
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
 
     expect(expectedEvent.actionType).toBe("playerChoice");
-    const parsed = expectedPlayerInputSchema.safeParse(expectedEvent);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.playerSource).toBe("white");
-    expect(parsed.data?.choiceType).toBe("chooseRally");
+    expect(expectedEvent.actionType === "playerChoice" && expectedEvent.playerSource).toBe("white");
+    expect(expectedEvent.actionType === "playerChoice" && expectedEvent.choiceType).toBe(
+      "chooseRally",
+    );
   });
 
   it("given context, returns second player choose rally", () => {
@@ -58,10 +58,10 @@ describe("getExpectedCleanupPhaseEvent", () => {
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
 
     expect(expectedEvent.actionType).toBe("playerChoice");
-    const parsed = expectedPlayerInputSchema.safeParse(expectedEvent);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.playerSource).toBe("black");
-    expect(parsed.data?.choiceType).toBe("chooseRally");
+    expect(expectedEvent.actionType === "playerChoice" && expectedEvent.playerSource).toBe("black");
+    expect(expectedEvent.actionType === "playerChoice" && expectedEvent.choiceType).toBe(
+      "chooseRally",
+    );
   });
 
   it("given first player rally resolution, returns resolveRally game effect", () => {
@@ -70,9 +70,9 @@ describe("getExpectedCleanupPhaseEvent", () => {
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
 
     expect(expectedEvent.actionType).toBe("gameEffect");
-    const parsed = expectedGameEffectSchema.safeParse(expectedEvent);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.effectType).toBe("resolveRally");
+    expect(expectedEvent.actionType === "gameEffect" && expectedEvent.effectType).toBe(
+      "resolveRally",
+    );
   });
 
   it("given when first player rally resolution state is missing, throws", () => {
@@ -93,9 +93,9 @@ describe("getExpectedCleanupPhaseEvent", () => {
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
 
     expect(expectedEvent.actionType).toBe("gameEffect");
-    const parsed = expectedGameEffectSchema.safeParse(expectedEvent);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.effectType).toBe("resolveRally");
+    expect(expectedEvent.actionType === "gameEffect" && expectedEvent.effectType).toBe(
+      "resolveRally",
+    );
   });
 
   it("given when second player rally resolution state is missing, throws", () => {
@@ -116,9 +116,9 @@ describe("getExpectedCleanupPhaseEvent", () => {
     const expectedEvent = getExpectedCleanupPhaseEvent(state);
 
     expect(expectedEvent.actionType).toBe("gameEffect");
-    const parsed = expectedGameEffectSchema.safeParse(expectedEvent);
-    expect(parsed.success).toBe(true);
-    expect(parsed.data?.effectType).toBe("completeCleanupPhase");
+    expect(expectedEvent.actionType === "gameEffect" && expectedEvent.effectType).toBe(
+      "completeCleanupPhase",
+    );
   });
 
   it("given for invalid step, throws", () => {

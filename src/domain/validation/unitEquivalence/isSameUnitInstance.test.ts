@@ -1,8 +1,8 @@
-import type { UnitInstance } from "@entities";
 import { getUnitByStatValue } from "@testing";
 import { createUnitInstance } from "@transforms";
 import { describe, expect, it } from "vitest";
 import { isSameUnitInstance } from "./isSameUnitInstance";
+import { UnitInstance } from "@entities";
 
 /**
  * isSameUnitInstance: Determines whether two unit instances are the same unit.

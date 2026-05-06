@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
 import type { CommitToRangedAttackEvent } from "@events";
-import type { GameStateWithBoard, RangedAttackResolutionState } from "@game";
+import type { GameStateForBoard, RangedAttackResolutionStateForBoard } from "@game";
 import { getRangedAttackResolutionState } from "@queries";
 import {
   discardCardsFromHand,
@@ -19,9 +19,9 @@ import {
  * @returns A new game state with the commitment updated
  */
 export function applyCommitToRangedAttackEvent<TBoard extends Board>(
-  event: CommitToRangedAttackEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: CommitToRangedAttackEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   const rangedAttackState = getRangedAttackResolutionState(state);
   const player = event.player;
   const attackingPlayer = rangedAttackState.attackingUnit.playerSide;
@@ -35,7 +35,7 @@ export function applyCommitToRangedAttackEvent<TBoard extends Board>(
     commitmentType: "completed" as const,
     card: event.committedCard,
   };
-  const newRangedAttackState: RangedAttackResolutionState = {
+  const newRangedAttackState: RangedAttackResolutionStateForBoard<TBoard> = {
     ...rangedAttackState,
     ...(isAttackingPlayer
       ? { attackingCommitment: newCommitment }

@@ -1,5 +1,5 @@
 import type { StandardBoard } from "@entities";
-import type { MoveUnitEvent } from "@events";
+import type { MoveUnitEventForBoard } from "@events";
 import { createEmptyGameState, createUnitWithPlacement } from "@testing";
 import { addUnitToBoard, updateBoardState } from "@transforms/pureTransforms";
 import { describe, expect, it } from "vitest";
@@ -20,7 +20,7 @@ describe("applyMoveUnitEvent", () => {
     const boardWithUnit = addUnitToBoard(state.boardState, unitWithPlacement);
     const stateWithUnit = updateBoardState(state, boardWithUnit);
 
-    const event: MoveUnitEvent<StandardBoard> = {
+    const event: MoveUnitEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "moveUnit",

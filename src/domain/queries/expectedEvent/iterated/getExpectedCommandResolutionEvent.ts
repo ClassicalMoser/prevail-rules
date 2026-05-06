@@ -1,6 +1,6 @@
-import type { Board, PlayerSide } from "@entities";
+import type { PlayerSide } from "@entities";
 import type { ExpectedEventInfo } from "@events";
-import type { GameStateWithBoard, IssueCommandsPhaseState } from "@game";
+import type { GameState, IssueCommandsPhaseState } from "@game";
 import { getExpectedMovementResolutionEvent } from "./getExpectedMovementResolutionEvent";
 import { getExpectedRangedAttackResolutionEvent } from "./getExpectedRangedAttackResolutionEvent";
 
@@ -12,8 +12,8 @@ import { getExpectedRangedAttackResolutionEvent } from "./getExpectedRangedAttac
  * @param resolvingPlayer - The player currently resolving commands
  * @returns Information about what event is expected
  */
-export function getExpectedCommandResolutionEvent<TBoard extends Board>(
-  gameState: GameStateWithBoard<TBoard>,
+export function getExpectedCommandResolutionEvent(
+  gameState: GameState,
   resolutionState: IssueCommandsPhaseState["currentCommandResolutionState"],
   resolvingPlayer: PlayerSide,
 ): ExpectedEventInfo {

@@ -1,12 +1,10 @@
 import type {
   Board,
+  BoardCoordinate,
   LargeBoard,
-  LargeBoardCoordinate,
   PlayerSide,
   SmallBoard,
-  SmallBoardCoordinate,
   StandardBoard,
-  StandardBoardCoordinate,
 } from "@entities";
 import type { AssertExact } from "@utils";
 import type { ZodDiscriminatedUnion } from "zod";
@@ -22,50 +20,27 @@ import { z } from "zod";
 /** The type of the move commander event. */
 export const MOVE_COMMANDER_CHOICE_TYPE = "moveCommander" as const;
 
-interface MoveCommanderEventBase {
+export interface MoveCommanderEventForBoard<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof MOVE_COMMANDER_CHOICE_TYPE;
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
+  /** The coordinate the commander is moving from. */
+  from: BoardCoordinate<TBoard>;
+  /** The coordinate the commander is moving to. */
+  to: BoardCoordinate<TBoard>;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
   /** The player who is moving the commander. */
   player: PlayerSide;
 }
 
-export interface StandardMoveCommanderEvent extends MoveCommanderEventBase {
-  boardType: "standard";
-  from: StandardBoardCoordinate;
-  to: StandardBoardCoordinate;
-}
-
-export interface SmallMoveCommanderEvent extends MoveCommanderEventBase {
-  boardType: "small";
-  from: SmallBoardCoordinate;
-  to: SmallBoardCoordinate;
-}
-
-export interface LargeMoveCommanderEvent extends MoveCommanderEventBase {
-  boardType: "large";
-  from: LargeBoardCoordinate;
-  to: LargeBoardCoordinate;
-}
-
-export type MoveCommanderEventUnion =
-  | StandardMoveCommanderEvent
-  | SmallMoveCommanderEvent
-  | LargeMoveCommanderEvent;
-
-export type MoveCommanderEvent<
-  TBoard extends Board = Board,
-  _TChoiceType extends typeof MOVE_COMMANDER_CHOICE_TYPE = typeof MOVE_COMMANDER_CHOICE_TYPE,
-> = TBoard extends StandardBoard
-  ? StandardMoveCommanderEvent
-  : TBoard extends SmallBoard
-    ? SmallMoveCommanderEvent
-    : TBoard extends LargeBoard
-      ? LargeMoveCommanderEvent
-      : MoveCommanderEventUnion;
+export type MoveCommanderEvent =
+  | MoveCommanderEventForBoard<StandardBoard>
+  | MoveCommanderEventForBoard<SmallBoard>
+  | MoveCommanderEventForBoard<LargeBoard>;
 
 const _standardMoveCommanderEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
@@ -88,9 +63,12 @@ const _standardMoveCommanderEventSchemaObject: z.ZodObject<{
 type StandardMoveCommanderEventSchemaType = z.infer<typeof _standardMoveCommanderEventSchemaObject>;
 
 const _assertExactStandardMoveCommanderEvent: AssertExact<
-  StandardMoveCommanderEvent,
+  MoveCommanderEventForBoard<StandardBoard>,
   StandardMoveCommanderEventSchemaType
 > = true;
+
+export const standardMoveCommanderEventSchema: typeof _standardMoveCommanderEventSchemaObject =
+  _standardMoveCommanderEventSchemaObject;
 
 const _smallMoveCommanderEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
@@ -113,9 +91,12 @@ const _smallMoveCommanderEventSchemaObject: z.ZodObject<{
 type SmallMoveCommanderEventSchemaType = z.infer<typeof _smallMoveCommanderEventSchemaObject>;
 
 const _assertExactSmallMoveCommanderEvent: AssertExact<
-  SmallMoveCommanderEvent,
+  MoveCommanderEventForBoard<SmallBoard>,
   SmallMoveCommanderEventSchemaType
 > = true;
+
+export const smallMoveCommanderEventSchema: typeof _smallMoveCommanderEventSchemaObject =
+  _smallMoveCommanderEventSchemaObject;
 
 const _largeMoveCommanderEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
@@ -138,9 +119,12 @@ const _largeMoveCommanderEventSchemaObject: z.ZodObject<{
 type LargeMoveCommanderEventSchemaType = z.infer<typeof _largeMoveCommanderEventSchemaObject>;
 
 const _assertExactLargeMoveCommanderEvent: AssertExact<
-  LargeMoveCommanderEvent,
+  MoveCommanderEventForBoard<LargeBoard>,
   LargeMoveCommanderEventSchemaType
 > = true;
+
+export const largeMoveCommanderEventSchema: typeof _largeMoveCommanderEventSchemaObject =
+  _largeMoveCommanderEventSchemaObject;
 
 type _MoveCommanderEventDiscriminatedUnion = ZodDiscriminatedUnion<
   readonly [
@@ -163,7 +147,7 @@ const _moveCommanderEventSchemaObject: _MoveCommanderEventDiscriminatedUnion = z
 type MoveCommanderEventSchemaType = z.infer<typeof _moveCommanderEventSchemaObject>;
 
 const _assertExactMoveCommanderEvent: AssertExact<
-  MoveCommanderEvent<Board>,
+  MoveCommanderEvent,
   MoveCommanderEventSchemaType
 > = true;
 

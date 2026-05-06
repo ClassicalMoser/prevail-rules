@@ -1,4 +1,4 @@
-import type { StandardBoard, UnitWithPlacement } from "@entities";
+import type { StandardBoard, UnitType, UnitWithPlacement } from "@entities";
 import { PLAY_CARDS_PHASE } from "@game";
 
 import { tempUnits } from "@sampleValues";
@@ -114,7 +114,7 @@ describe("generateResolveUnitsBrokenEvent", () => {
     const full = updatePhaseState(s, createCleanupPhaseState({ step: "firstPlayerResolveRally" }));
 
     const event = generateResolveUnitsBrokenEvent(full, 0);
-    const ids = event.unitTypes.map((t) => t.id).sort();
+    const ids = event.unitTypes.map((t: UnitType) => t.id).sort();
     expect(ids).toEqual([tempUnits[0]!.id, tempUnits[1]!.id].sort());
   });
 });

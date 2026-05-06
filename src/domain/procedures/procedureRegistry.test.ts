@@ -1,7 +1,6 @@
 import type { StandardBoard } from "@entities";
-import type { GameEffectEvent, GameEffectType } from "@events";
-import type { StandardGameState } from "@game";
-import { gameEffects } from "@events";
+import type { GameStateForBoard } from "@game";
+import { gameEffects, GameEffectType } from "@events";
 import { createEmptyGameState, procedureRegistryStateFactories } from "@testing";
 import { describe, expect, it } from "vitest";
 
@@ -18,18 +17,16 @@ describe("generateEventFromProcedure", () => {
     "given factory state for %s, returns gameEffect with matching effectType",
     (effectType) => {
       const state = procedureRegistryStateFactories[effectType]();
-      const event = generateEventFromProcedure(state, 0, effectType as never) as GameEffectEvent<
-        StandardBoard,
-        GameEffectType
-      >;
+      const event = generateEventFromProcedure(state, 0, effectType);
       expect(event.eventType).toBe("gameEffect");
       expect(event.effectType).toBe(effectType);
     },
   );
 
   it("given effectType not in registry, throws naming the non-existent key", () => {
-    const state: StandardGameState = createEmptyGameState();
-    expect(() => generateEventFromProcedure(state, 0, "notARealEffect" as never)).toThrow(
+    const state: GameStateForBoard<StandardBoard> = createEmptyGameState();
+    // Deliberate use of unsafe cast to GameEffectType to test the error message
+    expect(() => generateEventFromProcedure(state, 0, "notARealEffect" as GameEffectType)).toThrow(
       "No procedure exists for effect type: notARealEffect",
     );
   });

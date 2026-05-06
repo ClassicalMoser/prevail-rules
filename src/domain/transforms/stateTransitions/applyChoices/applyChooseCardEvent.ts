@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
 import type { ChooseCardEvent } from "@events";
-import type { GameStateWithBoard, PlayCardsPhaseState } from "@game";
+import type { GameState, GameStateForBoard, PlayCardsPhaseState } from "@game";
 import { getPlayCardsPhaseState } from "@queries";
 import { chooseCard, updateCardState, updatePhaseState } from "@transforms/pureTransforms";
 
@@ -14,11 +14,12 @@ import { chooseCard, updateCardState, updatePhaseState } from "@transforms/pureT
  * @returns A new game state with the card chosen
  */
 export function applyChooseCardEvent<TBoard extends Board>(
-  event: ChooseCardEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  event: ChooseCardEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   const { player, card } = event;
-  const currentPhaseState: PlayCardsPhaseState = getPlayCardsPhaseState(state);
+  // Safe broad type cast because we know the event is for the board type
+  const currentPhaseState: PlayCardsPhaseState = getPlayCardsPhaseState(state as GameState);
 
   // Choose the card
   const newCardState = chooseCard(state.cardState, player, card);

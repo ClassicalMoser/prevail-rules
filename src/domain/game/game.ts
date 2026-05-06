@@ -1,73 +1,138 @@
-import type { GameType } from "@entities";
-import type { MiniGame } from "./miniGame";
-import type { StandardGame } from "./standardGame";
-import type { TutorialGame } from "./tutorialGame";
+import type {
+  Army,
+  BoardOfType,
+  EpicGameMode,
+  GameMode,
+  LargeBoard,
+  MiniGameMode,
+  SmallBoard,
+  StandardBoard,
+  StandardGameMode,
+  TutorialGameMode,
+} from "@entities";
+import type { AssertExact } from "@utils";
+import type { GameStateForBoard } from "./gameState";
 
-import { getBoardSizeForGameType } from "@ruleValues";
+import { armySchema } from "@entities";
 import { z } from "zod";
-import { miniGameSchema } from "./miniGame";
-import { standardGameSchema } from "./standardGame";
-import { tutorialGameSchema } from "./tutorialGame";
+import { largeGameStateSchema, smallGameStateSchema, standardGameStateSchema } from "./gameState";
 
 /**
- * A complete game, discriminated by `gameType`.
- * Narrow with `game.gameType === 'standard'` → {@link StandardGame} and {@link StandardGameState}.
+ * A **standard** game (`gameType === 'standard'`).
+ * Every field is documented here so IDE hover does not jump through a shared base interface.
  */
-export type Game = StandardGame | MiniGame | TutorialGame;
-
-/** The {@link Game} branch for a literal {@link GameType}. */
-export type GameOfType<T extends GameType> = Extract<Game, { gameType: T }>;
-
-/**
- * Board type for a {@link GameType}, derived from the {@link Game} union (`mini` / `tutorial` → {@link SmallGameState}).
- */
-export type BoardForGameType<T extends GameType> = GameOfType<T>["gameState"]["boardState"];
-
-/**
- * Whether `gameState.boardType` (and nested `boardState.boardType`) match the board family for
- * `gameType` per {@link gameTypes} / {@link getBoardSizeForGameType}.
- */
-export function validateGameBoardMatchesGameType(game: Game): boolean {
-  const root = game.gameState.boardType;
-  const nested = game.gameState.boardState.boardType;
-  if (root !== nested) {
-    return false;
-  }
-  const expected = getBoardSizeForGameType(game.gameType);
-  return (
-    (expected === "standard" && root === "standard") || (expected === "small" && root === "small")
-  );
+export interface GameForMode<TGameMode extends GameMode> {
+  gameType: TGameMode["name"];
+  boardType: TGameMode["boardSize"];
+  gameState: GameStateForBoard<BoardOfType<TGameMode["boardSize"]>>;
+  /** The unique identifier of the game. */
+  id: string;
+  /** The unique identifier of the player on the black side of the game. */
+  blackPlayer: string;
+  /** The unique identifier of the player on the white side of the game. */
+  whitePlayer: string;
+  /** The army brought by the black player. */
+  blackArmy: Army;
+  /** The army brought by the white player. */
+  whiteArmy: Army;
 }
+
+export type Game =
+  | GameForMode<StandardGameMode>
+  | GameForMode<MiniGameMode>
+  | GameForMode<TutorialGameMode>
+  | GameForMode<EpicGameMode>;
 
 // ---------------------------------------------------------------------------
 // Zod
 // ---------------------------------------------------------------------------
 
-const _gameDiscriminatedUnion = z.discriminatedUnion("gameType", [
-  standardGameSchema,
-  miniGameSchema,
-  tutorialGameSchema,
-] as unknown as Parameters<typeof z.discriminatedUnion>[1]);
+const _standardGameSchemaObject = z.object({
+  gameType: z.literal("standard"),
+  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
+  gameState: standardGameStateSchema,
+  id: z.uuid(),
+  blackPlayer: z.uuid(),
+  whitePlayer: z.uuid(),
+  blackArmy: armySchema,
+  whiteArmy: armySchema,
+});
 
-/**
- * Schema for any {@link Game}. Also checks {@link validateGameBoardMatchesGameType}.
- *
- * When `gameType` is fixed, prefer {@link standardGameSchema} / {@link miniGameSchema} / {@link tutorialGameSchema}.
- */
-export const gameSchema = _gameDiscriminatedUnion.superRefine((g, ctx) => {
-  if (!validateGameBoardMatchesGameType(g as Game)) {
-    ctx.addIssue({
-      code: "custom",
-      message:
-        "gameState.boardType / boardState.boardType do not match gameType per @ruleValues/gameTypes",
-      path: ["gameState", "boardType"],
-    });
-  }
-}) as z.ZodType<Game>;
+type StandardGameSchemaType = z.infer<typeof _standardGameSchemaObject>;
 
-export type { MiniGame } from "./miniGame";
-export { miniGameSchema } from "./miniGame";
-export type { StandardGame } from "./standardGame";
-export { standardGameSchema } from "./standardGame";
-export type { TutorialGame } from "./tutorialGame";
-export { tutorialGameSchema } from "./tutorialGame";
+const _assertExactStandardGame: AssertExact<
+  GameForMode<StandardGameMode>,
+  StandardGameSchemaType
+> = true;
+
+/** Validates a {@link Game} when `gameType` is known to be `standard`. */
+export const standardGameSchema: z.ZodType<GameForMode<StandardGameMode>> =
+  _standardGameSchemaObject;
+
+const _miniGameSchemaObject = z.object({
+  gameType: z.literal("mini"),
+  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
+  gameState: smallGameStateSchema,
+  id: z.uuid(),
+  blackPlayer: z.uuid(),
+  whitePlayer: z.uuid(),
+  blackArmy: armySchema,
+  whiteArmy: armySchema,
+});
+
+type MiniGameSchemaType = z.infer<typeof _miniGameSchemaObject>;
+
+const _assertExactMiniGame: AssertExact<GameForMode<MiniGameMode>, MiniGameSchemaType> = true;
+
+export const miniGameSchema: z.ZodType<GameForMode<MiniGameMode>> = _miniGameSchemaObject;
+
+const _tutorialGameSchemaObject = z.object({
+  gameType: z.literal("tutorial"),
+  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
+  gameState: smallGameStateSchema,
+  id: z.uuid(),
+  blackPlayer: z.uuid(),
+  whitePlayer: z.uuid(),
+  blackArmy: armySchema,
+  whiteArmy: armySchema,
+});
+
+type TutorialGameSchemaType = z.infer<typeof _tutorialGameSchemaObject>;
+
+const _assertExactTutorialGame: AssertExact<
+  GameForMode<TutorialGameMode>,
+  TutorialGameSchemaType
+> = true;
+
+export const tutorialGameSchema: z.ZodType<GameForMode<TutorialGameMode>> =
+  _tutorialGameSchemaObject;
+
+const _epicGameSchemaObject = z.object({
+  gameType: z.literal("epic"),
+  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
+  gameState: largeGameStateSchema,
+  id: z.uuid(),
+  blackPlayer: z.uuid(),
+  whitePlayer: z.uuid(),
+  blackArmy: armySchema,
+  whiteArmy: armySchema,
+});
+
+type EpicGameSchemaType = z.infer<typeof _epicGameSchemaObject>;
+
+const _assertExactEpicGame: AssertExact<GameForMode<EpicGameMode>, EpicGameSchemaType> = true;
+
+export const epicGameSchema: z.ZodType<GameForMode<EpicGameMode>> = _epicGameSchemaObject;
+
+const _gameSchemaObject = z.discriminatedUnion("gameType", [
+  _standardGameSchemaObject,
+  _miniGameSchemaObject,
+  _tutorialGameSchemaObject,
+  _epicGameSchemaObject,
+]);
+
+type GameSchemaType = z.infer<typeof _gameSchemaObject>;
+
+const _assertExactGame: AssertExact<Game, GameSchemaType> = true;
+
+export const gameSchema: z.ZodType<Game> = _gameSchemaObject;

@@ -1,33 +1,7 @@
-import type { StandardBoard } from "@entities";
-import type { GameEffectEvent, GameEffectType } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameEffectEventForBoard } from "@events";
 import { createEmptyGameState } from "@testing";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  applyCompleteAttackApplyEvent,
-  applyCompleteCleanupPhaseEvent,
-  applyCompleteIssueCommandsPhaseEvent,
-  applyCompleteMeleeResolutionEvent,
-  applyCompleteMoveCommandersPhaseEvent,
-  applyCompletePlayCardsPhaseEvent,
-  applyCompleteRangedAttackCommandEvent,
-  applyCompleteResolveMeleePhaseEvent,
-  applyCompleteUnitMovementEvent,
-  applyDiscardPlayedCardsEvent,
-  applyResolveEngageRetreatOptionEvent,
-  applyResolveFlankEngagementEvent,
-  applyResolveInitiativeEvent,
-  applyResolveMeleeEvent,
-  applyResolveRallyEvent,
-  applyResolveRangedAttackEvent,
-  applyResolveRetreatEvent,
-  applyResolveReverseEvent,
-  applyResolveRoutEvent,
-  applyResolveUnitsBrokenEvent,
-  applyRevealCardsEvent,
-  applyStartEngagementEvent,
-  applyTriggerRoutFromRetreatEvent,
-} from "./applyEffects";
+import { applyDiscardPlayedCardsEvent } from "./applyEffects";
 import { applyGameEffectEvent } from "./applyGameEffectEvent";
 
 vi.mock("./applyEffects", () => ({
@@ -56,72 +30,38 @@ vi.mock("./applyEffects", () => ({
   applyTriggerRoutFromRetreatEvent: vi.fn(),
 }));
 
-/** Router passes (event, state); handlers share this signature. */
-type ApplyGameEffectHandler = (
-  event: GameEffectEvent<StandardBoard, GameEffectType>,
-  state: StandardGameState,
-) => StandardGameState;
-
-const gameEffectCases: ReadonlyArray<[GameEffectType, ApplyGameEffectHandler]> = [
-  ["completeAttackApply", applyCompleteAttackApplyEvent],
-  ["completeCleanupPhase", applyCompleteCleanupPhaseEvent],
-  ["completeIssueCommandsPhase", applyCompleteIssueCommandsPhaseEvent],
-  ["completeMeleeResolution", applyCompleteMeleeResolutionEvent],
-  ["completeMoveCommandersPhase", applyCompleteMoveCommandersPhaseEvent],
-  ["completePlayCardsPhase", applyCompletePlayCardsPhaseEvent],
-  ["completeRangedAttackCommand", applyCompleteRangedAttackCommandEvent],
-  ["completeResolveMeleePhase", applyCompleteResolveMeleePhaseEvent],
-  ["completeUnitMovement", applyCompleteUnitMovementEvent],
-  ["discardPlayedCards", applyDiscardPlayedCardsEvent],
-  ["resolveEngageRetreatOption", applyResolveEngageRetreatOptionEvent],
-  ["resolveFlankEngagement", applyResolveFlankEngagementEvent],
-  ["resolveInitiative", applyResolveInitiativeEvent],
-  ["resolveMelee", applyResolveMeleeEvent],
-  ["resolveRally", applyResolveRallyEvent],
-  ["resolveRangedAttack", applyResolveRangedAttackEvent],
-  ["resolveRetreat", applyResolveRetreatEvent],
-  ["resolveReverse", applyResolveReverseEvent],
-  ["resolveRout", applyResolveRoutEvent],
-  ["resolveUnitsBroken", applyResolveUnitsBrokenEvent],
-  ["revealCards", applyRevealCardsEvent],
-  ["startEngagement", applyStartEngagementEvent],
-  ["triggerRoutFromRetreat", applyTriggerRoutFromRetreatEvent],
-] as ReadonlyArray<[GameEffectType, ApplyGameEffectHandler]>;
-
 /**
- * `applyGameEffectEvent` is a typed switch: every `GameEffectType` routes to exactly one
- * `applyEffects/*` handler, all invoked as `(event, state) => nextState`.
+ * Smoke tests only: real routing coverage lives on each `applyEffects/*` module.
  */
 describe("applyGameEffectEvent", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it.each(gameEffectCases)(
-    "given gameEffect with effectType %s, delegates to matching handler and returns its state",
-    (effectType, handler) => {
-      const state = createEmptyGameState();
-      const event = {
-        eventNumber: 0,
-        eventType: "gameEffect",
-        effectType,
-      } as GameEffectEvent<StandardBoard, GameEffectType>;
-      vi.mocked(handler).mockReturnValue(state);
+  it("delegates to the handler for the matching effectType and returns its result", () => {
+    const state = createEmptyGameState();
+    const event = {
+      eventNumber: 0,
+      eventType: "gameEffect" as const,
+      boardType: "standard" as const,
+      effectType: "discardPlayedCards" as const,
+    } as GameEffectEventForBoard<typeof state.boardState>;
 
-      const result = applyGameEffectEvent(event, state);
+    vi.mocked(applyDiscardPlayedCardsEvent).mockReturnValue(state);
 
-      expect(handler).toHaveBeenCalledWith(event, state);
-      expect(result).toBe(state);
-    },
-  );
+    const result = applyGameEffectEvent(event, state);
 
-  it("given gameEffect with bogus effectType cast, throws unhandled game effect", () => {
+    expect(applyDiscardPlayedCardsEvent).toHaveBeenCalledWith(event, state);
+    expect(result).toBe(state);
+  });
+
+  it("throws when effectType is not handled by the switch", () => {
     const state = createEmptyGameState();
     const event = {
       eventNumber: 0,
       eventType: "gameEffect",
       effectType: "unknown",
-    } as unknown as GameEffectEvent<StandardBoard, GameEffectType>;
+    } as unknown as GameEffectEventForBoard<typeof state.boardState>;
 
     expect(() => applyGameEffectEvent(event, state)).toThrow(
       "Unreachable: unhandled game effect event (effectType not in switch)",

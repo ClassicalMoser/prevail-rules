@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { StandardAttackApplyState, StandardGameState } from "@game";
+import type { AttackApplyStateForBoard, GameStateForBoard } from "@game";
 import {
   createAttackApplyState,
   createAttackApplyStateWithRout,
@@ -19,7 +19,7 @@ import { getRoutStateFromAttackApply, getRoutStateFromMeleeResolutionByInitiativ
 describe("getRoutStateFromAttackApply", () => {
   it("given apply with rout nested, returns that rout substep", () => {
     const unit = createTestUnit("black", { attack: 2 });
-    const attackApplyState: StandardAttackApplyState = {
+    const attackApplyState: AttackApplyStateForBoard<StandardBoard> = {
       substepType: "attackApply" as const,
       boardType: "standard" as const,
       defendingUnit: unit,
@@ -49,7 +49,7 @@ describe("getRoutStateFromAttackApply", () => {
 
   it("given apply without routState, throws no rout in attack apply", () => {
     const unit = createTestUnit("black", { attack: 2 });
-    const attackApplyState: StandardAttackApplyState = {
+    const attackApplyState: AttackApplyStateForBoard<StandardBoard> = {
       substepType: "attackApply" as const,
       boardType: "standard" as const,
       defendingUnit: unit,
@@ -75,7 +75,7 @@ describe("getRoutStateFromMeleeResolutionByInitiative", () => {
   function meleeStateWithRouts(
     initiative: "white" | "black",
     opts: { whiteHasRout?: boolean; blackHasRout?: boolean },
-  ): StandardGameState {
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: initiative });
     const whiteUnit = createTestUnit("white", { attack: 2 });
     const blackUnit = createTestUnit("black", { attack: 2 });

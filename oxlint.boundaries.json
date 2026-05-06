@@ -1,0 +1,242 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "overrides": [
+    {
+      "files": ["src/**/*.ts", "src/**/*.js"],
+      "rules": {
+        "import-boundaries/enforce": [
+          "error",
+          {
+            "rootDir": "src",
+            "crossBoundaryStyle": "alias",
+            "boundaries": [
+              {
+                "identifier": "@utils",
+                "dir": "domain/utils",
+                "alias": "@utils"
+              },
+              {
+                "identifier": "@ruleValues",
+                "dir": "domain/ruleValues",
+                "alias": "@ruleValues",
+                "allowTypeImportsFrom": ["@entities", "@events", "@utils"]
+              },
+              {
+                "identifier": "@entities",
+                "dir": "domain/entities",
+                "alias": "@entities",
+                "allowImportsFrom": ["@ruleValues", "@utils"]
+              },
+              {
+                "identifier": "@events",
+                "dir": "domain/events",
+                "alias": "@events",
+                "allowImportsFrom": ["@entities", "@ruleValues", "@utils"]
+              },
+              {
+                "identifier": "@queries",
+                "dir": "domain/queries",
+                "alias": "@queries",
+                "allowImportsFrom": [
+                  "@entities",
+                  "@ruleValues",
+                  "@validation",
+                  "@events",
+                  "@game",
+                  "@utils"
+                ]
+              },
+              {
+                "identifier": "@validation",
+                "dir": "domain/validation",
+                "alias": "@validation",
+                "allowImportsFrom": [
+                  "@entities",
+                  "@queries",
+                  "@game",
+                  "@ruleValues",
+                  "@events",
+                  "@transforms",
+                  "@utils"
+                ]
+              },
+              {
+                "identifier": "@sampleValues",
+                "dir": "domain/sampleValues",
+                "alias": "@sampleValues",
+                "allowTypeImportsFrom": ["@entities"]
+              },
+              {
+                "identifier": "@transforms",
+                "dir": "domain/transforms",
+                "alias": "@transforms",
+                "allowImportsFrom": [
+                  "@ruleValues",
+                  "@entities",
+                  "@game",
+                  "@events",
+                  "@queries",
+                  "@validation",
+                  "@utils"
+                ]
+              },
+              {
+                "identifier": "@game",
+                "dir": "domain/game",
+                "alias": "@game",
+                "allowImportsFrom": [
+                  "@entities",
+                  "@events",
+                  "@queries",
+                  "@validation",
+                  "@ruleValues",
+                  "@transforms",
+                  "@utils"
+                ]
+              },
+              {
+                "identifier": "@testing",
+                "dir": "domain/testing",
+                "alias": "@testing",
+                "allowImportsFrom": [
+                  "@entities",
+                  "@queries",
+                  "@ruleValues",
+                  "@events",
+                  "@utils",
+                  "@validation",
+                  "@game",
+                  "@sampleValues",
+                  "@transforms"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "jsPlugins": ["eslint-plugin-import-boundaries"]
+    },
+    {
+      "files": [
+        "**/*.test.{ts,js}",
+        "**/*.spec.{ts,js}",
+        "**/*.mock.{ts,js}",
+        "**/__tests__/**",
+        "**/__mocks__/**"
+      ],
+      "rules": {
+        "import-boundaries/enforce": [
+          "error",
+          {
+            "rootDir": "src",
+            "crossBoundaryStyle": "alias",
+            "boundaries": [
+              {
+                "identifier": "@utils",
+                "dir": "domain/utils",
+                "alias": "@utils"
+              },
+              {
+                "identifier": "@ruleValues",
+                "dir": "domain/ruleValues",
+                "alias": "@ruleValues",
+                "allowTypeImportsFrom": ["@entities", "@events", "@utils"]
+              },
+              {
+                "identifier": "@entities",
+                "dir": "domain/entities",
+                "alias": "@entities",
+                "allowImportsFrom": ["@ruleValues", "@utils"]
+              },
+              {
+                "identifier": "@events",
+                "dir": "domain/events",
+                "alias": "@events",
+                "allowImportsFrom": ["@entities", "@ruleValues", "@utils"]
+              },
+              {
+                "identifier": "@queries",
+                "dir": "domain/queries",
+                "alias": "@queries",
+                "allowImportsFrom": [
+                  "@entities",
+                  "@ruleValues",
+                  "@validation",
+                  "@events",
+                  "@game",
+                  "@utils"
+                ]
+              },
+              {
+                "identifier": "@validation",
+                "dir": "domain/validation",
+                "alias": "@validation",
+                "allowImportsFrom": [
+                  "@entities",
+                  "@queries",
+                  "@game",
+                  "@ruleValues",
+                  "@events",
+                  "@transforms",
+                  "@utils"
+                ]
+              },
+              {
+                "identifier": "@sampleValues",
+                "dir": "domain/sampleValues",
+                "alias": "@sampleValues",
+                "allowTypeImportsFrom": ["@entities"]
+              },
+              {
+                "identifier": "@transforms",
+                "dir": "domain/transforms",
+                "alias": "@transforms",
+                "allowImportsFrom": [
+                  "@ruleValues",
+                  "@entities",
+                  "@game",
+                  "@events",
+                  "@queries",
+                  "@validation",
+                  "@utils"
+                ]
+              },
+              {
+                "identifier": "@game",
+                "dir": "domain/game",
+                "alias": "@game",
+                "allowImportsFrom": [
+                  "@entities",
+                  "@events",
+                  "@queries",
+                  "@validation",
+                  "@ruleValues",
+                  "@transforms",
+                  "@utils"
+                ]
+              },
+              {
+                "identifier": "@testing",
+                "dir": "domain/testing",
+                "alias": "@testing",
+                "allowImportsFrom": [
+                  "@entities",
+                  "@queries",
+                  "@ruleValues",
+                  "@events",
+                  "@utils",
+                  "@validation",
+                  "@game",
+                  "@sampleValues",
+                  "@transforms"
+                ]
+              }
+            ],
+            "enforceBoundaries": false
+          }
+        ]
+      },
+      "jsPlugins": ["eslint-plugin-import-boundaries"]
+    }
+  ]
+}

@@ -1,5 +1,12 @@
-import type { Army, GameType, UnitInstance } from "@entities";
-import type { BoardForGameType, GameStateWithBoard } from "@game";
+import type {
+  Army,
+  GameModeName,
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+  UnitInstance,
+} from "@entities";
+import type { GameState, GameStateForBoard } from "@game";
 
 import { createEmptyGameState, createUnitInstance } from "@transforms/initializations";
 
@@ -8,16 +15,52 @@ import { createEmptyGameState, createUnitInstance } from "@transforms/initializa
  * units from each {@link Army} in {@link GameState.reservedUnits}, and each army's command
  * cards in that player's hand (`cardState.*.inHand`).
  */
-export function createInitialGameState<TGameType extends GameType>(options: {
-  gameType: TGameType;
+export function createInitialGameState(options: {
+  gameMode: "tutorial";
   whiteArmy: Army;
   blackArmy: Army;
-}): GameStateWithBoard<BoardForGameType<TGameType>> {
+}): GameStateForBoard<SmallBoard>;
+export function createInitialGameState(options: {
+  gameMode: "mini";
+  whiteArmy: Army;
+  blackArmy: Army;
+}): GameStateForBoard<SmallBoard>;
+export function createInitialGameState(options: {
+  gameMode: "standard";
+  whiteArmy: Army;
+  blackArmy: Army;
+}): GameStateForBoard<StandardBoard>;
+export function createInitialGameState(options: {
+  gameMode: "epic";
+  whiteArmy: Army;
+  blackArmy: Army;
+}): GameStateForBoard<LargeBoard>;
+export function createInitialGameState(options: {
+  gameMode: GameModeName;
+  whiteArmy: Army;
+  blackArmy: Army;
+}): GameState {
   const { whiteArmy, blackArmy } = options;
 
-  type BoardSize = BoardForGameType<TGameType>;
+  let emptyGameState;
+  switch (options.gameMode) {
+    case "tutorial":
+      emptyGameState = createEmptyGameState(options.gameMode);
+      break;
+    case "mini":
+      emptyGameState = createEmptyGameState(options.gameMode);
+      break;
+    case "standard":
+      emptyGameState = createEmptyGameState(options.gameMode);
+      break;
+    case "epic":
+      emptyGameState = createEmptyGameState(options.gameMode);
+      break;
+  }
 
-  const emptyGameState: GameStateWithBoard<BoardSize> = createEmptyGameState(options.gameType);
+  if (!emptyGameState) {
+    throw new Error(`Unknown gameMode: ${options.gameMode}`);
+  }
 
   const reservedUnits = new Set<UnitInstance>();
   for (const unit of whiteArmy.units) {
@@ -31,7 +74,7 @@ export function createInitialGameState<TGameType extends GameType>(options: {
     }
   }
 
-  const gameStateWithReservedUnits: GameStateWithBoard<BoardForGameType<TGameType>> = {
+  const gameStateWithReservedUnits = {
     ...emptyGameState,
     reservedUnits,
   };

@@ -1,12 +1,10 @@
 import type {
   Board,
   LargeBoard,
-  LargeUnitWithPlacement,
   PlayerSide,
   SmallBoard,
-  SmallUnitWithPlacement,
   StandardBoard,
-  StandardUnitWithPlacement,
+  UnitWithPlacement,
 } from "@entities";
 import type { AssertExact } from "@utils";
 import type { ZodDiscriminatedUnion } from "zod";
@@ -22,57 +20,29 @@ import { z } from "zod";
 /** The type of the perform ranged attack event. */
 export const PERFORM_RANGED_ATTACK_CHOICE_TYPE = "performRangedAttack" as const;
 
-interface PerformRangedAttackEventBase {
+export interface PerformRangedAttackEventForBoard<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE;
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
+  /** The unit that is performing the ranged attack. */
+  unit: UnitWithPlacement<TBoard>;
+  /** The target unit that is being attacked. */
+  targetUnit: UnitWithPlacement<TBoard>;
+  /** Any supporting units. */
+  supportingUnits: Set<UnitWithPlacement<TBoard>>;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
   /** The player who is performing the ranged attack. */
   player: PlayerSide;
 }
 
-export interface StandardPerformRangedAttackEvent extends PerformRangedAttackEventBase {
-  boardType: "standard";
-  /** The unit that is performing the ranged attack. */
-  unit: StandardUnitWithPlacement;
-  /** The target unit that is being attacked. */
-  targetUnit: StandardUnitWithPlacement;
-  /** Any supporting units. */
-  supportingUnits: Set<StandardUnitWithPlacement>;
-}
-
-export interface SmallPerformRangedAttackEvent extends PerformRangedAttackEventBase {
-  boardType: "small";
-  unit: SmallUnitWithPlacement;
-  targetUnit: SmallUnitWithPlacement;
-  supportingUnits: Set<SmallUnitWithPlacement>;
-}
-
-export interface LargePerformRangedAttackEvent extends PerformRangedAttackEventBase {
-  boardType: "large";
-  unit: LargeUnitWithPlacement;
-  targetUnit: LargeUnitWithPlacement;
-  supportingUnits: Set<LargeUnitWithPlacement>;
-}
-
-export type PerformRangedAttackEventUnion =
-  | StandardPerformRangedAttackEvent
-  | SmallPerformRangedAttackEvent
-  | LargePerformRangedAttackEvent;
-
-export type PerformRangedAttackEvent<
-  TBoard extends Board = Board,
-  _TChoiceType extends typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE =
-    typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE,
-> = TBoard extends StandardBoard
-  ? StandardPerformRangedAttackEvent
-  : TBoard extends SmallBoard
-    ? SmallPerformRangedAttackEvent
-    : TBoard extends LargeBoard
-      ? LargePerformRangedAttackEvent
-      : PerformRangedAttackEventUnion;
+export type PerformRangedAttackEvent =
+  | PerformRangedAttackEventForBoard<StandardBoard>
+  | PerformRangedAttackEventForBoard<SmallBoard>
+  | PerformRangedAttackEventForBoard<LargeBoard>;
 
 const _standardPerformRangedAttackEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
@@ -94,12 +64,15 @@ const _standardPerformRangedAttackEventSchemaObject: z.ZodObject<{
   supportingUnits: z.set(standardUnitWithPlacementSchema),
 });
 
+export const standardPerformRangedAttackEventSchema: typeof _standardPerformRangedAttackEventSchemaObject =
+  _standardPerformRangedAttackEventSchemaObject;
+
 type StandardPerformRangedAttackEventSchemaType = z.infer<
   typeof _standardPerformRangedAttackEventSchemaObject
 >;
 
 const _assertExactStandardPerformRangedAttackEvent: AssertExact<
-  StandardPerformRangedAttackEvent,
+  PerformRangedAttackEventForBoard<StandardBoard>,
   StandardPerformRangedAttackEventSchemaType
 > = true;
 
@@ -123,12 +96,15 @@ const _smallPerformRangedAttackEventSchemaObject: z.ZodObject<{
   supportingUnits: z.set(smallUnitWithPlacementSchema),
 });
 
+export const smallPerformRangedAttackEventSchema: typeof _smallPerformRangedAttackEventSchemaObject =
+  _smallPerformRangedAttackEventSchemaObject;
+
 type SmallPerformRangedAttackEventSchemaType = z.infer<
   typeof _smallPerformRangedAttackEventSchemaObject
 >;
 
 const _assertExactSmallPerformRangedAttackEvent: AssertExact<
-  SmallPerformRangedAttackEvent,
+  PerformRangedAttackEventForBoard<SmallBoard>,
   SmallPerformRangedAttackEventSchemaType
 > = true;
 
@@ -152,12 +128,15 @@ const _largePerformRangedAttackEventSchemaObject: z.ZodObject<{
   supportingUnits: z.set(largeUnitWithPlacementSchema),
 });
 
+export const largePerformRangedAttackEventSchema: typeof _largePerformRangedAttackEventSchemaObject =
+  _largePerformRangedAttackEventSchemaObject;
+
 type LargePerformRangedAttackEventSchemaType = z.infer<
   typeof _largePerformRangedAttackEventSchemaObject
 >;
 
 const _assertExactLargePerformRangedAttackEvent: AssertExact<
-  LargePerformRangedAttackEvent,
+  PerformRangedAttackEventForBoard<LargeBoard>,
   LargePerformRangedAttackEventSchemaType
 > = true;
 
@@ -180,7 +159,7 @@ const _performRangedAttackEventSchemaObject: _PerformRangedAttackEventDiscrimina
 type PerformRangedAttackEventSchemaType = z.infer<typeof _performRangedAttackEventSchemaObject>;
 
 const _assertExactPerformRangedAttackEvent: AssertExact<
-  PerformRangedAttackEvent<Board>,
+  PerformRangedAttackEvent,
   PerformRangedAttackEventSchemaType
 > = true;
 

@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { PLAY_CARDS_PHASE } from "@game";
 
 import {
@@ -22,7 +22,7 @@ import { generateTriggerRoutFromRetreatEvent } from "./generateTriggerRoutFromRe
  * explicit when both sides could theoretically be in retreat substeps.
  */
 describe("generateTriggerRoutFromRetreatEvent", () => {
-  function stateWithRangedRetreat(): StandardGameState {
+  function stateWithRangedRetreat(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit("white", { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
@@ -49,7 +49,9 @@ describe("generateTriggerRoutFromRetreatEvent", () => {
     return updatePhaseState(withBoard, phase);
   }
 
-  function stateWithMeleeRetreat(retreatingPlayer: "white" | "black"): StandardGameState {
+  function stateWithMeleeRetreat(
+    retreatingPlayer: "white" | "black",
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: "black" });
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(retreatingPlayer === "white" ? "black" : "white", {

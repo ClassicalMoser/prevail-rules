@@ -1,6 +1,6 @@
-import type { Board, BoardCoordinate } from "@entities";
+import type { Board } from "@entities";
 import type { ResolveEngageRetreatOptionEvent } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { GameStateForBoard } from "@game";
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE } from "@events";
 import {
   getCurrentUnitStat,
@@ -20,15 +20,15 @@ import {
  * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
  */
 export function generateResolveEngageRetreatOptionEvent<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): ResolveEngageRetreatOptionEvent<TBoard, "resolveEngageRetreatOption"> {
+): ResolveEngageRetreatOptionEvent {
   const movementResolutionState = getMovementResolutionState(state);
   const engagementState = getFrontEngagementStateFromMovement(state);
 
   const { unit: defendingUnit } = getSingleUnitWithPlacementAtCoordinate(
     state.boardState,
-    engagementState.targetPlacement.coordinate as BoardCoordinate<TBoard>,
+    engagementState.targetPlacement.coordinate,
   );
   const engagingUnit = engagementState.engagingUnit;
 

@@ -1,4 +1,4 @@
-import type { Board, Card, PlayerSide, StatModifier } from "@entities";
+import type { Card, PlayerSide, StatModifier } from "@entities";
 import type { AssertExact } from "@utils";
 import { cardSchema, playerSideSchema } from "@entities";
 import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
@@ -16,10 +16,7 @@ const _assertRangedAttackModifierExtendsStatModifier: [RangedAttackModifier] ext
   : never = true;
 
 /** An event to commit a card to a ranged attack. */
-export interface CommitToRangedAttackEvent<
-  _TBoard extends Board,
-  _TChoiceType extends "commitToRangedAttack" = "commitToRangedAttack",
-> {
+export interface CommitToRangedAttackEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -58,7 +55,7 @@ const _commitToRangedAttackEventSchemaObject = z.object({
 type CommitToRangedAttackEventSchemaType = z.infer<typeof _commitToRangedAttackEventSchemaObject>;
 
 const _assertExactCommitToRangedAttackEvent: AssertExact<
-  CommitToRangedAttackEvent<Board>,
+  CommitToRangedAttackEvent,
   CommitToRangedAttackEventSchemaType
 > = true;
 

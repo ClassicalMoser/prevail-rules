@@ -1,4 +1,4 @@
-import type { GameType } from "@entities";
+import type { GameMode } from "@entities";
 import type { GameStateChange } from "./gameStateChange";
 
 /**
@@ -6,7 +6,7 @@ import type { GameStateChange } from "./gameStateChange";
  */
 export interface GameStateSubscriber {
   gameId: string;
-  gameType: GameType;
+  gameMode: GameMode;
   onGameStateChange: (change: GameStateChange) => void;
   onError: (error: Error) => void;
 }

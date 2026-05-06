@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
-import type { Event, EventType } from "@events";
-import type { GameStateWithBoard } from "@game";
+import type { EventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 
 /**
  * Sets the current round's ordered event log (replay tail, tests, or harness state).
@@ -11,9 +11,9 @@ import type { GameStateWithBoard } from "@game";
  * @returns A new game state with the updated round event stream
  */
 export function updateRoundEventStream<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
-  events: readonly Event<Board, EventType>[],
-): GameStateWithBoard<TBoard> {
+  state: GameStateForBoard<TBoard>,
+  events: readonly EventForBoard<TBoard>[],
+): GameStateForBoard<TBoard> {
   return {
     ...state,
     currentRoundState: {

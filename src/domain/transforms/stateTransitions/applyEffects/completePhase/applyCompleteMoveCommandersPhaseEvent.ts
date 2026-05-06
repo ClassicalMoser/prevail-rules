@@ -1,7 +1,11 @@
 import type { Board } from "@entities";
 import type { CompleteMoveCommandersPhaseEvent } from "@events";
-import type { GameStateWithBoard, IssueCommandsPhaseState } from "@game";
-import { ISSUE_COMMANDS_PHASE } from "@game";
+import type {
+  GameStateForBoard,
+  IssueCommandsPhaseStateForBoard,
+  MoveCommandersPhaseState,
+} from "@game";
+import { GameState, ISSUE_COMMANDS_PHASE } from "@game";
 
 import { getMoveCommandersPhaseState } from "@queries";
 import { addCompletedPhase, updatePhaseState } from "@transforms/pureTransforms";
@@ -19,16 +23,20 @@ import { addCompletedPhase, updatePhaseState } from "@transforms/pureTransforms"
  * @returns A new game state with the phase advanced
  */
 export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
-  event: CompleteMoveCommandersPhaseEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const currentPhaseState = getMoveCommandersPhaseState(state);
+  event: CompleteMoveCommandersPhaseEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  // Safe type broadening: No spatial information on MoveCommandersPhaseState
+  const currentPhaseState: MoveCommandersPhaseState = getMoveCommandersPhaseState(
+    state as GameState,
+  );
 
   const stateWithCompletedPhase = addCompletedPhase(state, currentPhaseState);
 
-  const newPhaseState: IssueCommandsPhaseState = {
+  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
     phase: ISSUE_COMMANDS_PHASE,
     step: "firstPlayerIssueCommands",
+    boardType: state.boardState.boardType,
     remainingCommandsFirstPlayer: event.remainingCommandsFirstPlayer,
     remainingUnitsFirstPlayer: new Set(),
     remainingCommandsSecondPlayer: event.remainingCommandsSecondPlayer,

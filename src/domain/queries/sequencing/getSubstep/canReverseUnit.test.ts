@@ -1,8 +1,9 @@
-import type { StandardReverseState } from "@game";
+import type { ReverseStateForBoard } from "@game";
 import { createEmptyGameState, createGameStateWithEngagedUnits, createTestUnit } from "@testing";
 import { addUnitToBoard } from "@transforms";
 import { describe, expect, it } from "vitest";
 import { canReverseUnit } from "./canReverseUnit";
+import { StandardBoard } from "@entities";
 
 /**
  * Reverse is only legal when the reversing unit is alone on its hex (opponent already left
@@ -25,7 +26,7 @@ describe("canReverseUnit", () => {
       }),
     };
 
-    const reverseState: StandardReverseState = {
+    const reverseState: ReverseStateForBoard<StandardBoard> = {
       substepType: "reverse",
       boardType: "standard" as const,
       reversingUnit: {
@@ -49,7 +50,7 @@ describe("canReverseUnit", () => {
     const secondaryUnit = createTestUnit("black", { attack: 2 });
     const state = createGameStateWithEngagedUnits(primaryUnit, secondaryUnit, "E-5", "north");
 
-    const reverseState: StandardReverseState = {
+    const reverseState: ReverseStateForBoard<StandardBoard> = {
       substepType: "reverse",
       boardType: "standard" as const,
       reversingUnit: {
@@ -73,7 +74,7 @@ describe("canReverseUnit", () => {
     const secondaryUnit = createTestUnit("black", { attack: 2 });
     const state = createGameStateWithEngagedUnits(primaryUnit, secondaryUnit, "E-5", "north");
 
-    const reverseState: StandardReverseState = {
+    const reverseState: ReverseStateForBoard<StandardBoard> = {
       substepType: "reverse",
       boardType: "standard" as const,
       reversingUnit: {
@@ -96,7 +97,7 @@ describe("canReverseUnit", () => {
     const unit = createTestUnit("white", { attack: 2 });
     const state = createEmptyGameState();
 
-    const reverseState: StandardReverseState = {
+    const reverseState: ReverseStateForBoard<StandardBoard> = {
       substepType: "reverse",
       boardType: "standard" as const,
       reversingUnit: {

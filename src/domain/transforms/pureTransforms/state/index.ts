@@ -1,8 +1,11 @@
 export { addCompletedPhase } from "./addCompletedPhase";
 export { markPhaseAsComplete } from "./markPhaseAsComplete";
-export { updateCurrentInitiative } from "./updateCurrentInitiative";
+export {
+  updateCurrentInitiative,
+  updateCurrentInitiativeForBoard,
+} from "./updateCurrentInitiative";
 export { updateCurrentRoundNumber } from "./updateCurrentRoundNumber";
 export { updatePhaseState } from "./updatePhaseState";
-export { updateRemainingCommandsForPlayer } from "./updateRemainingCommandsForPlayer";
+export { updateRemainingPlayerCommands } from "./updateRemainingPlayerCommands";
 export { updateRoundEventStream } from "./updateRoundEventStream";
 export { updateRoundState } from "./updateRoundState";

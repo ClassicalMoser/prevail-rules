@@ -1,5 +1,5 @@
 import type { Board, UnitInstance } from "@entities";
-import type { GameStateWithBoard } from "@game";
+import type { GameStateForBoard } from "@game";
 import { updateRoundState } from "../state";
 
 /**
@@ -16,9 +16,9 @@ import { updateRoundState } from "../state";
  * ```
  */
 export function addUnitsToCommandedUnits<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   units: Set<UnitInstance>,
-): GameStateWithBoard<TBoard> {
+): GameStateForBoard<TBoard> {
   const previousCommandedUnits = state.currentRoundState.commandedUnits;
   const newCommandedUnits = new Set([...previousCommandedUnits, ...units]);
   return updateRoundState(state, {

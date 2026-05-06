@@ -1,4 +1,3 @@
-import type { Board } from "@entities";
 import type { AssertExact } from "@utils";
 import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
 import { z } from "zod";
@@ -11,10 +10,7 @@ import { z } from "zod";
 export const COMPLETE_CLEANUP_PHASE_EFFECT_TYPE = "completeCleanupPhase" as const;
 
 /** Event to complete the cleanup phase, advance round, and reset to play cards phase. */
-export interface CompleteCleanupPhaseEvent<
-  _TBoard extends Board,
-  _TEffectType extends "completeCleanupPhase" = "completeCleanupPhase",
-> {
+export interface CompleteCleanupPhaseEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -35,7 +31,7 @@ const _completeCleanupPhaseEventSchemaObject = z.object({
 type CompleteCleanupPhaseEventSchemaType = z.infer<typeof _completeCleanupPhaseEventSchemaObject>;
 
 const _assertExactCompleteCleanupPhaseEvent: AssertExact<
-  CompleteCleanupPhaseEvent<Board>,
+  CompleteCleanupPhaseEvent,
   CompleteCleanupPhaseEventSchemaType
 > = true;
 

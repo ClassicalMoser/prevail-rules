@@ -1,6 +1,5 @@
-import type { Board } from "@entities";
 import type { ExpectedEventInfo } from "@events";
-import type { GameStateWithBoard, MeleeResolutionState } from "@game";
+import type { GameState, MeleeResolutionState } from "@game";
 import { getOtherPlayer } from "@queries/getOtherPlayer";
 import { getDefendingPlayerForNextIncompleteMeleeAttackApply } from "@queries/sequencing";
 import { getExpectedAttackApplyEvent } from "../composable";
@@ -14,8 +13,8 @@ import { getExpectedAttackApplyEvent } from "../composable";
  * @param meleeState - The melee resolution state
  * @returns Information about what event is expected
  */
-export function getExpectedMeleeResolutionEvent<TBoard extends Board>(
-  gameState: GameStateWithBoard<TBoard>,
+export function getExpectedMeleeResolutionEvent(
+  gameState: GameState,
   meleeState: MeleeResolutionState,
 ): ExpectedEventInfo {
   // Fast rejection: if already completed, this is an invalid state

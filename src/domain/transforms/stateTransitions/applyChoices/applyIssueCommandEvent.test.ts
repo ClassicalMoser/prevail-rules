@@ -1,6 +1,5 @@
-import type { StandardBoard } from "@entities";
 import type { IssueCommandEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { ISSUE_COMMANDS_PHASE } from "@game";
 
 import { getIssueCommandsPhaseState } from "@queries";
@@ -10,6 +9,7 @@ import { updateCardState, updatePhaseState } from "@transforms/pureTransforms";
 import { isSameUnitInstance } from "@validation";
 import { describe, expect, it } from "vitest";
 import { applyIssueCommandEvent } from "./applyIssueCommandEvent";
+import { StandardBoard } from "@entities";
 
 /**
  * Issue-commands: spending a command type removes it from the side’s remaining set and adds
@@ -19,7 +19,7 @@ describe("applyIssueCommandEvent", () => {
   /** firstPlayerIssueCommands with one command left per side from two inPlay cards. */
   function createGameStateWithCommands(
     currentInitiative: "black" | "white" = "black",
-  ): StandardGameState {
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative });
     const stateWithCards = updateCardState(state, (current) => ({
       ...current,
@@ -39,6 +39,7 @@ describe("applyIssueCommandEvent", () => {
     const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: ISSUE_COMMANDS_PHASE,
       step: "firstPlayerIssueCommands",
+      boardType: "standard",
       remainingCommandsFirstPlayer: new Set([blackCommand]),
       remainingUnitsFirstPlayer: new Set(),
       remainingCommandsSecondPlayer: new Set([whiteCommand]),
@@ -55,7 +56,7 @@ describe("applyIssueCommandEvent", () => {
       const unit = createTestUnit("black", { attack: 3 });
       const command = tempCommandCards[0].command;
 
-      const event: IssueCommandEvent<StandardBoard> = {
+      const event: IssueCommandEvent = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "issueCommand",
@@ -84,7 +85,7 @@ describe("applyIssueCommandEvent", () => {
       const unit = createTestUnit("white", { attack: 3 });
       const command = tempCommandCards[1].command;
 
-      const event: IssueCommandEvent<StandardBoard> = {
+      const event: IssueCommandEvent = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "issueCommand",
@@ -114,7 +115,7 @@ describe("applyIssueCommandEvent", () => {
       const unit2 = createTestUnit("black", { attack: 3, instanceNumber: 2 });
       const command = tempCommandCards[0].command;
 
-      const event: IssueCommandEvent<StandardBoard> = {
+      const event: IssueCommandEvent = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "issueCommand",
@@ -147,7 +148,7 @@ describe("applyIssueCommandEvent", () => {
       const originalRemainingCommandsSize = phaseState.remainingCommandsFirstPlayer.size;
       const originalCommandedUnitsSize = state.currentRoundState.commandedUnits.size;
 
-      const event: IssueCommandEvent<StandardBoard> = {
+      const event: IssueCommandEvent = {
         eventNumber: 0,
         eventType: "playerChoice",
         choiceType: "issueCommand",

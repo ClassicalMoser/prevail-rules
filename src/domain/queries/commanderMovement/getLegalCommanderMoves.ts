@@ -1,12 +1,12 @@
 import type { Board, BoardCoordinate, PlayerSide } from "@entities";
-import type { GameStateWithBoard } from "@game";
+import type { GameStateForBoard } from "@game";
 import { getBoardSpace } from "@queries/boardSpace";
 import { COMMANDER_MOVE_DISTANCE } from "@ruleValues";
 import { exploreCommanderMoves } from "./exploreCommanderMoves";
 
 export function getLegalCommanderMoves<TBoard extends Board>(
   playerSide: PlayerSide,
-  gameState: GameStateWithBoard<TBoard>,
+  gameState: GameStateForBoard<TBoard>,
   startingPosition: BoardCoordinate<TBoard>,
 ): Set<BoardCoordinate<TBoard>> {
   // Get the maximum distance a commander can move

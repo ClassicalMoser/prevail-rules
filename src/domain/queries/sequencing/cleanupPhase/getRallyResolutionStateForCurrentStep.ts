@@ -1,5 +1,5 @@
 import type { Board } from "@entities";
-import type { GameStateWithBoard, RallyResolutionState } from "@game";
+import type { GameState, GameStateForBoard, RallyResolutionState } from "@game";
 import { getOtherPlayer } from "@queries/getOtherPlayer";
 import { getCleanupPhaseState } from "../getPhaseState";
 import { getCurrentRallyResolutionState } from "../getSubstep";
@@ -14,10 +14,11 @@ import { getCurrentRallyResolutionState } from "../getSubstep";
  * @throws Error if not in a resolveRally step, player doesn't match, or rally state is missing
  */
 export function getRallyResolutionStateForCurrentStep<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   player: "white" | "black",
 ): RallyResolutionState {
-  const phaseState = getCleanupPhaseState(state);
+  // Safe type broadening for more generic function signature
+  const phaseState = getCleanupPhaseState(state as GameState);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 

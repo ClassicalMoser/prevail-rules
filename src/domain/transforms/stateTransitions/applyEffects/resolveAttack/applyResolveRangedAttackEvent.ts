@@ -1,17 +1,16 @@
 import type { Board } from "@entities";
-import type { ResolveRangedAttackEvent } from "@events";
+import type { ResolveRangedAttackEventForBoard } from "@events";
 import type {
-  AttackApplyState,
+  AttackApplyStateForBoard,
   AttackResult,
-  GameStateWithBoard,
-  IssueCommandsPhaseState,
-  PhaseState,
-  RangedAttackResolutionState,
-  RetreatState,
-  ReverseState,
+  GameStateForBoard,
+  IssueCommandsPhaseStateForBoard,
+  RangedAttackResolutionStateForBoard,
+  RetreatStateForBoard,
+  ReverseStateForBoard,
   RoutState,
 } from "@game";
-import { getIssueCommandsPhaseState, getRangedAttackResolutionState } from "@queries";
+import { getIssueCommandsPhaseStateForBoard, getRangedAttackResolutionState } from "@queries";
 import { updatePhaseState } from "@transforms/pureTransforms";
 
 /**
@@ -23,10 +22,10 @@ import { updatePhaseState } from "@transforms/pureTransforms";
  * @returns A new game state with the attack apply state created
  */
 export function applyResolveRangedAttackEvent<TBoard extends Board>(
-  event: ResolveRangedAttackEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getIssueCommandsPhaseState(state);
+  event: ResolveRangedAttackEventForBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  const phaseState = getIssueCommandsPhaseStateForBoard(state);
   const rangedAttackState = getRangedAttackResolutionState(state);
 
   const defendingUnit = event.defenderWithPlacement.unit;
@@ -40,8 +39,8 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
   };
 
   let routState: RoutState | undefined;
-  let retreatState: RetreatState | undefined;
-  let reverseState: ReverseState | undefined;
+  let retreatState: RetreatStateForBoard<TBoard> | undefined;
+  let reverseState: ReverseStateForBoard<TBoard> | undefined;
 
   if (attackResult.unitRouted) {
     routState = {
@@ -64,7 +63,7 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
       finalPosition,
       routState: undefined,
       completed: false,
-    } as RetreatState;
+    };
   } else if (attackResult.unitReversed) {
     reverseState = {
       substepType: "reverse",
@@ -72,10 +71,10 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
       reversingUnit: unitWithPlacement,
       finalPosition: undefined,
       completed: false,
-    } as ReverseState;
+    };
   }
 
-  const attackApplyState = {
+  const attackApplyState: AttackApplyStateForBoard<TBoard> = {
     substepType: "attackApply" as const,
     boardType,
     defendingUnit,
@@ -84,17 +83,17 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
     retreatState,
     reverseState,
     completed: false,
-  } as AttackApplyState;
+  };
 
-  const newRangedAttackState = {
+  const newRangedAttackState: RangedAttackResolutionStateForBoard<TBoard> = {
     ...rangedAttackState,
     attackApplyState,
-  } as RangedAttackResolutionState;
+  };
 
-  const newPhaseState = {
+  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
     ...phaseState,
     currentCommandResolutionState: newRangedAttackState,
-  } as IssueCommandsPhaseState;
+  };
 
-  return updatePhaseState(state, newPhaseState as PhaseState);
+  return updatePhaseState(state, newPhaseState);
 }

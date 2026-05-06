@@ -1,15 +1,11 @@
 import type {
   Board,
   LargeBoard,
-  LargeUnitPlacement,
-  LargeUnitWithPlacement,
   PlayerSide,
   SmallBoard,
-  SmallUnitPlacement,
-  SmallUnitWithPlacement,
   StandardBoard,
-  StandardUnitPlacement,
-  StandardUnitWithPlacement,
+  UnitPlacement,
+  UnitWithPlacement,
 } from "@entities";
 import type { AssertExact } from "@utils";
 import type { ZodDiscriminatedUnion } from "zod";
@@ -28,55 +24,29 @@ import { z } from "zod";
 /** The type of the move unit event. */
 export const MOVE_UNIT_CHOICE_TYPE = "moveUnit" as const;
 
-interface MoveUnitEventBase {
+export interface MoveUnitEventForBoard<TBoard extends Board> {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof MOVE_UNIT_CHOICE_TYPE;
+  /** The type of the board. */
+  boardType: TBoard["boardType"];
+  /** The unit to move. */
+  unit: UnitWithPlacement<TBoard>;
+  /** The space the unit is moving to. */
+  to: UnitPlacement<TBoard>;
+  /** Whether to move the commander with the unit. */
+  moveCommander: boolean;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
   /** The player who is moving the unit. */
   player: PlayerSide;
-  /** Whether to move the commander with the unit. */
-  moveCommander: boolean;
 }
 
-/** Move unit on a standard board. */
-export interface StandardMoveUnitEvent extends MoveUnitEventBase {
-  boardType: "standard";
-  /** The unit to move. */
-  unit: StandardUnitWithPlacement;
-  /** The space the unit is moving to. */
-  to: StandardUnitPlacement;
-}
-
-/** Move unit on a small board. */
-export interface SmallMoveUnitEvent extends MoveUnitEventBase {
-  boardType: "small";
-  unit: SmallUnitWithPlacement;
-  to: SmallUnitPlacement;
-}
-
-/** Move unit on a large board. */
-export interface LargeMoveUnitEvent extends MoveUnitEventBase {
-  boardType: "large";
-  unit: LargeUnitWithPlacement;
-  to: LargeUnitPlacement;
-}
-
-/** Move unit for any board size (discriminated on `boardType`). */
-export type MoveUnitEventUnion = StandardMoveUnitEvent | SmallMoveUnitEvent | LargeMoveUnitEvent;
-
-export type MoveUnitEvent<
-  TBoard extends Board = Board,
-  _TChoiceType extends typeof MOVE_UNIT_CHOICE_TYPE = typeof MOVE_UNIT_CHOICE_TYPE,
-> = TBoard extends StandardBoard
-  ? StandardMoveUnitEvent
-  : TBoard extends SmallBoard
-    ? SmallMoveUnitEvent
-    : TBoard extends LargeBoard
-      ? LargeMoveUnitEvent
-      : MoveUnitEventUnion;
+export type MoveUnitEvent =
+  | MoveUnitEventForBoard<StandardBoard>
+  | MoveUnitEventForBoard<SmallBoard>
+  | MoveUnitEventForBoard<LargeBoard>;
 
 // ---------------------------------------------------------------------------
 // Per-variant Zod schemas
@@ -105,9 +75,12 @@ const _standardMoveUnitEventSchemaObject: z.ZodObject<{
 type StandardMoveUnitEventSchemaType = z.infer<typeof _standardMoveUnitEventSchemaObject>;
 
 const _assertExactStandardMoveUnitEvent: AssertExact<
-  StandardMoveUnitEvent,
+  MoveUnitEventForBoard<StandardBoard>,
   StandardMoveUnitEventSchemaType
 > = true;
+
+export const standardMoveUnitEventSchema: typeof _standardMoveUnitEventSchemaObject =
+  _standardMoveUnitEventSchemaObject;
 
 const _smallMoveUnitEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
@@ -132,9 +105,12 @@ const _smallMoveUnitEventSchemaObject: z.ZodObject<{
 type SmallMoveUnitEventSchemaType = z.infer<typeof _smallMoveUnitEventSchemaObject>;
 
 const _assertExactSmallMoveUnitEvent: AssertExact<
-  SmallMoveUnitEvent,
+  MoveUnitEventForBoard<SmallBoard>,
   SmallMoveUnitEventSchemaType
 > = true;
+
+export const smallMoveUnitEventSchema: typeof _smallMoveUnitEventSchemaObject =
+  _smallMoveUnitEventSchemaObject;
 
 const _largeMoveUnitEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
@@ -159,9 +135,12 @@ const _largeMoveUnitEventSchemaObject: z.ZodObject<{
 type LargeMoveUnitEventSchemaType = z.infer<typeof _largeMoveUnitEventSchemaObject>;
 
 const _assertExactLargeMoveUnitEvent: AssertExact<
-  LargeMoveUnitEvent,
+  MoveUnitEventForBoard<LargeBoard>,
   LargeMoveUnitEventSchemaType
 > = true;
+
+export const largeMoveUnitEventSchema: typeof _largeMoveUnitEventSchemaObject =
+  _largeMoveUnitEventSchemaObject;
 
 // ---------------------------------------------------------------------------
 // Wide union schema
@@ -187,7 +166,7 @@ const _moveUnitEventSchemaObject: _MoveUnitEventDiscriminatedUnion = z.discrimin
 
 type MoveUnitEventSchemaType = z.infer<typeof _moveUnitEventSchemaObject>;
 
-const _assertExactMoveUnitEvent: AssertExact<MoveUnitEvent<Board>, MoveUnitEventSchemaType> = true;
+const _assertExactMoveUnitEvent: AssertExact<MoveUnitEvent, MoveUnitEventSchemaType> = true;
 
 /** The schema for a move unit event. */
 export const moveUnitEventSchema: typeof _moveUnitEventSchemaObject = _moveUnitEventSchemaObject;

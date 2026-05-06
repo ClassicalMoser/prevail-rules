@@ -1,5 +1,5 @@
-import type { Command, PlayerSide } from "@entities";
-import type { IssueCommandsPhaseState } from "@game";
+import type { Board, Command, PlayerSide } from "@entities";
+import type { IssueCommandsPhaseStateForBoard } from "@game";
 
 /**
  * Updates the remaining commands for a specific player in the issue commands phase state.
@@ -22,12 +22,12 @@ import type { IssueCommandsPhaseState } from "@game";
  * );
  * ```
  */
-export function updateRemainingCommandsForPlayer(
-  phaseState: IssueCommandsPhaseState,
+export function updateRemainingPlayerCommands<TBoard extends Board>(
+  phaseState: IssueCommandsPhaseStateForBoard<TBoard>,
   player: PlayerSide,
   initiativePlayer: PlayerSide,
   remainingCommands: Set<Command>,
-): IssueCommandsPhaseState {
+): IssueCommandsPhaseStateForBoard<TBoard> {
   const isFirstPlayer = player === initiativePlayer;
 
   return {

@@ -1,5 +1,5 @@
-import type { UnitFacing } from "@entities";
-import type { StandardGameState } from "@game";
+import type { StandardBoard, UnitFacing } from "@entities";
+import type { GameStateForBoard } from "@game";
 import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
@@ -23,7 +23,7 @@ describe("generateStartEngagementEvent", () => {
     defenderFacing: UnitFacing;
     engagingFacing: UnitFacing;
   }): {
-    full: StandardGameState;
+    full: GameStateForBoard<StandardBoard>;
     defender: ReturnType<typeof createTestUnit>;
   } {
     const state = createEmptyGameState();

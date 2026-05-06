@@ -1,5 +1,5 @@
 import type { Board } from "@entities";
-import type { GameStateWithBoard, RallyResolutionState } from "@game";
+import type { GameStateForBoard, RallyResolutionState } from "@game";
 import { getRallyResolutionStateForCurrentStep } from "./getRallyResolutionStateForCurrentStep";
 
 /**
@@ -13,7 +13,7 @@ import { getRallyResolutionStateForCurrentStep } from "./getRallyResolutionState
  * @throws Error if wrong step/player, rally not resolved yet, or units-broken already applied
  */
 export function getRallyResolutionStateAwaitingUnitsBroken<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   player: "white" | "black",
 ): RallyResolutionState {
   const rallyState = getRallyResolutionStateForCurrentStep(state, player);

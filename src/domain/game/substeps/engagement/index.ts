@@ -1,12 +1,7 @@
 export type { EngagementResolutionState } from "./engagementResolutionState";
 export { engagementResolutionStateSchema } from "./engagementResolutionState";
 
-export type {
-  EngagementState,
-  LargeEngagementState,
-  SmallEngagementState,
-  StandardEngagementState,
-} from "./engagementSubstep";
+export type { EngagementState, EngagementStateForBoard } from "./engagementSubstep";
 export {
   engagementStateSchema,
   largeEngagementStateSchema,

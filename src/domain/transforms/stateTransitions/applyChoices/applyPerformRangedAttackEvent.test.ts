@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitInstance } from "@entities";
-import type { PerformRangedAttackEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { PerformRangedAttackEventForBoard } from "@events";
+import type { GameStateForBoard } from "@game";
 import { getIssueCommandsPhaseState, getRangedAttackResolutionState } from "@queries";
 import {
   createEmptyGameState,
@@ -24,7 +24,7 @@ describe("applyPerformRangedAttackEvent", () => {
     remainingUnitsFirstPlayer: Set<UnitInstance>,
     remainingUnitsSecondPlayer: Set<UnitInstance>,
     currentInitiative: "black" | "white" = "black",
-  ): StandardGameState {
+  ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative });
     return updatePhaseState(
       state,
@@ -53,7 +53,7 @@ describe("applyPerformRangedAttackEvent", () => {
       new Set(),
     );
 
-    const event: PerformRangedAttackEvent<StandardBoard> = {
+    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "performRangedAttack",
@@ -105,7 +105,7 @@ describe("applyPerformRangedAttackEvent", () => {
       new Set(),
     );
 
-    const event: PerformRangedAttackEvent<StandardBoard> = {
+    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "performRangedAttack",
@@ -146,7 +146,7 @@ describe("applyPerformRangedAttackEvent", () => {
       new Set([defender.unit]),
     );
 
-    const event: PerformRangedAttackEvent<StandardBoard> = {
+    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "performRangedAttack",
@@ -191,7 +191,7 @@ describe("applyPerformRangedAttackEvent", () => {
       new Set(),
     );
 
-    const event: PerformRangedAttackEvent<StandardBoard> = {
+    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "performRangedAttack",
@@ -242,7 +242,7 @@ describe("applyPerformRangedAttackEvent", () => {
       new Set(),
     );
 
-    const event: PerformRangedAttackEvent<StandardBoard> = {
+    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "performRangedAttack",
@@ -289,7 +289,7 @@ describe("applyPerformRangedAttackEvent", () => {
       "black",
     );
 
-    const event: PerformRangedAttackEvent<StandardBoard> = {
+    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "performRangedAttack",

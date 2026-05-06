@@ -1,5 +1,5 @@
 import type { Board } from "@entities";
-import type { GameStateWithBoard, RallyResolutionState, RoutState } from "@game";
+import type { GameState, GameStateForBoard, RallyResolutionState, RoutState } from "@game";
 import { getCleanupPhaseState } from "../getPhaseState";
 
 /**
@@ -12,10 +12,10 @@ import { getCleanupPhaseState } from "../getPhaseState";
  * @throws Error if not in cleanup phase or rally resolution state is missing
  */
 export function getRallyResolutionState<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
   player: "white" | "black",
 ): RallyResolutionState {
-  const phaseState = getCleanupPhaseState(state);
+  const phaseState = getCleanupPhaseState(state as GameState);
   const firstPlayer = state.currentInitiative;
   const isFirstPlayer = player === firstPlayer;
 
@@ -38,9 +38,9 @@ export function getRallyResolutionState<TBoard extends Board>(
  * @throws Error if not in a resolveRally step or rally resolution state is missing
  */
 export function getCurrentRallyResolutionState<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
 ): RallyResolutionState {
-  const phaseState = getCleanupPhaseState(state);
+  const phaseState = getCleanupPhaseState(state as GameState);
   const step = phaseState.step;
 
   if (step === "firstPlayerResolveRally") {
@@ -80,9 +80,9 @@ export function getRoutStateFromRally(rallyState: RallyResolutionState): RoutSta
  * Matches which rally resolution bucket is active for the current cleanup step.
  */
 export function getRoutStateFromCleanupPhaseForResolveRout<TBoard extends Board>(
-  state: GameStateWithBoard<TBoard>,
+  state: GameStateForBoard<TBoard>,
 ): RoutState {
-  const phaseState = getCleanupPhaseState(state);
+  const phaseState = getCleanupPhaseState(state as GameState);
   const isFirstPlayerStep =
     phaseState.step === "firstPlayerResolveRally" || phaseState.step === "firstPlayerChooseRally";
 

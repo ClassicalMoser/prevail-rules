@@ -8,43 +8,33 @@ import { largeBoardSchema } from "./largeBoard";
 import { smallBoardSchema } from "./smallBoard";
 import { standardBoardSchema } from "./standardBoard";
 
-export const boardSizeType = ["standard", "small", "large"] as const;
-
-/**
- * A size of a board.
- */
-export type BoardSize = (typeof boardSizeType)[number];
-
-export const boardSizeEnum: z.ZodType<BoardSize> = z.enum(boardSizeType);
-
-type BoardSizeEnumType = z.infer<typeof boardSizeEnum>;
-
-/**
- * Assert that the board size type matches the schema.
- */
-const _assertExactBoardSize: AssertExact<BoardSize, BoardSizeEnumType> = true;
-
-/**
- * List of valid board types.
- */
-export const boardType = ["small", "standard", "large"] as const;
+export const boardType = ["standard", "small", "large"] as const;
 
 /**
  * The type of a board.
  */
 export type BoardType = (typeof boardType)[number];
 
-/** The small board type. */
-export const SMALL_BOARD_TYPE: "small" = boardType[0];
+export const boardTypeEnum: z.ZodType<BoardType> = z.enum(boardType);
 
-/** The standard board type. */
-export const STANDARD_BOARD_TYPE: "standard" = boardType[1];
-
-/** The large board type. */
-export const LARGE_BOARD_TYPE: "large" = boardType[2];
+type BoardTypeEnumType = z.infer<typeof boardTypeEnum>;
 
 /**
- * A board of the game.
+ * Assert that the board size type matches the schema.
+ */
+const _assertExactBoardType: AssertExact<BoardType, BoardTypeEnumType> = true;
+
+/** The small board type. */
+export const SMALL_BOARD_TYPE: "small" = boardType[0] as "small";
+
+/** The standard board type. */
+export const STANDARD_BOARD_TYPE: "standard" = boardType[1] as "standard";
+
+/** The large board type. */
+export const LARGE_BOARD_TYPE: "large" = boardType[2] as "large";
+
+/**
+ * A board of the game, discriminated by `boardType`.
  */
 export type Board = StandardBoard | SmallBoard | LargeBoard;
 
@@ -53,6 +43,8 @@ const _boardSchemaObject = z.discriminatedUnion("boardType", [
   standardBoardSchema,
   largeBoardSchema,
 ]);
+
+export type BoardOfType<T extends BoardType> = Extract<Board, { boardType: T }>;
 
 /**
  * Schema-inferred type with strict coordinate types via intersection override.

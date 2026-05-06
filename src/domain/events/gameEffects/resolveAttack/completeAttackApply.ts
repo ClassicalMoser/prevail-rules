@@ -1,4 +1,4 @@
-import type { AttackType, Board, PlayerSide } from "@entities";
+import type { AttackType, PlayerSide } from "@entities";
 import type { AssertExact } from "@utils";
 import { attackTypeSchema, playerSideSchema } from "@entities";
 import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
@@ -14,10 +14,7 @@ export const COMPLETE_ATTACK_APPLY_EFFECT_TYPE = "completeAttackApply" as const;
  * states (one per side). Apply must know which subtree to clear without inferring from board or
  * initiative; the procedure encodes that explicitly.
  */
-export interface CompleteAttackApplyEvent<
-  _TBoard extends Board,
-  _TEffectType extends "completeAttackApply" = "completeAttackApply",
-> {
+export interface CompleteAttackApplyEvent {
   /** The type of the event. */
   eventType: typeof GAME_EFFECT_EVENT_TYPE;
   /** The type of game effect. */
@@ -61,6 +58,6 @@ export const completeAttackApplyEventSchema: z.ZodObject<{
 }> = _completeAttackApplyEventSchemaObject;
 
 const _assertExactCompleteAttackApplyEvent: AssertExact<
-  CompleteAttackApplyEvent<Board>,
+  CompleteAttackApplyEvent,
   CompleteAttackApplyEventSchemaType
 > = true;

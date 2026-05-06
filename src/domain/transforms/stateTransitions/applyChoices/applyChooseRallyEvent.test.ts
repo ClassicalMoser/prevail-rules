@@ -1,4 +1,3 @@
-import type { StandardBoard } from "@entities";
 import type { ChooseRallyEvent } from "@events";
 import { CLEANUP_PHASE } from "@game";
 
@@ -19,7 +18,7 @@ describe("applyChooseRallyEvent", () => {
       step: "firstPlayerChooseRally",
     });
     const stateInStep = updatePhaseState(state, phaseState);
-    const event: ChooseRallyEvent<StandardBoard> = {
+    const event: ChooseRallyEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRally",
@@ -40,7 +39,7 @@ describe("applyChooseRallyEvent", () => {
       step: "firstPlayerChooseRally",
     });
     const stateInStep = updatePhaseState(state, phaseState);
-    const event: ChooseRallyEvent<StandardBoard> = {
+    const event: ChooseRallyEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRally",
@@ -61,7 +60,7 @@ describe("applyChooseRallyEvent", () => {
       step: "secondPlayerChooseRally",
     });
     const stateInStep = updatePhaseState(state, phaseState);
-    const event: ChooseRallyEvent<StandardBoard> = {
+    const event: ChooseRallyEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRally",
@@ -82,7 +81,7 @@ describe("applyChooseRallyEvent", () => {
       step: "secondPlayerChooseRally",
     });
     const stateInStep = updatePhaseState(state, phaseState);
-    const event: ChooseRallyEvent<StandardBoard> = {
+    const event: ChooseRallyEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRally",
@@ -104,7 +103,7 @@ describe("applyChooseRallyEvent", () => {
       step: "discardPlayedCards",
     });
     const stateInStep = updatePhaseState(state, phaseState);
-    const event: ChooseRallyEvent<StandardBoard> = {
+    const event: ChooseRallyEvent = {
       eventNumber: 0,
       eventType: "playerChoice",
       choiceType: "chooseRally",

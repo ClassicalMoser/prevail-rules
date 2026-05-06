@@ -1,6 +1,5 @@
 import type { StandardBoard } from "@entities";
-import type { CompleteUnitMovementEvent } from "@events";
-import type { StandardGameState } from "@game";
+import type { GameStateForBoard } from "@game";
 import { getMovementResolutionState } from "@queries";
 import {
   createEmptyGameState,
@@ -22,7 +21,7 @@ describe("applyCompleteUnitMovementEvent", () => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const movement = createMovementResolutionState(state);
-    const full: StandardGameState = updatePhaseState(
+    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: movement,
@@ -33,7 +32,7 @@ describe("applyCompleteUnitMovementEvent", () => {
       eventNumber: 0,
       eventType: "gameEffect" as const,
       effectType: "completeUnitMovement" as const,
-    } satisfies CompleteUnitMovementEvent<StandardBoard>;
+    };
 
     const next = applyCompleteUnitMovementEvent(event, full);
     const cmd = getMovementResolutionState(next);

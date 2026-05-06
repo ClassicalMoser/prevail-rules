@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
 import type { CompleteCleanupPhaseEvent } from "@events";
-import type { GameStateWithBoard, PlayCardsPhaseState } from "@game";
+import type { GameStateForBoard, PlayCardsPhaseState } from "@game";
 import { PLAY_CARDS_PHASE } from "@game";
 
 import { updateCurrentRoundNumber, updateRoundState } from "@transforms/pureTransforms";
@@ -17,9 +17,9 @@ import { updateCurrentRoundNumber, updateRoundState } from "@transforms/pureTran
  * @returns A new game state with the round advanced
  */
 export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
-  _event: CompleteCleanupPhaseEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
+  _event: CompleteCleanupPhaseEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
   // Increment round number
   const newRoundNumber = state.currentRoundState.roundNumber + 1;
 
@@ -30,8 +30,9 @@ export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
   };
 
   // Update the round state
-  const stateWithRound = updateRoundState(state, {
+  const stateWithRound: GameStateForBoard<TBoard> = updateRoundState(state, {
     roundNumber: newRoundNumber,
+    boardType: state.boardState.boardType,
     completedPhases: new Set(),
     currentPhaseState: newPhaseState,
     commandedUnits: new Set(),

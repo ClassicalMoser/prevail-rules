@@ -1,5 +1,5 @@
-import type { PlayerSide } from "@entities";
-import type { StandardGameState } from "@game";
+import type { PlayerSide, StandardBoard } from "@entities";
+import type { GameStateForBoard } from "@game";
 import { tempCommandCards } from "@sampleValues";
 import { createEmptyStandardBoard } from "@transforms";
 
@@ -18,12 +18,13 @@ import { createEmptyStandardBoard } from "@transforms";
  */
 export function createEmptyGameState(options?: {
   currentInitiative?: PlayerSide;
-}): StandardGameState {
+}): GameStateForBoard<StandardBoard> {
   return {
     boardType: "standard",
     currentRoundNumber: 0,
     currentRoundState: {
       roundNumber: 1,
+      boardType: "standard",
       completedPhases: new Set(),
       currentPhaseState: undefined,
       commandedUnits: new Set(),

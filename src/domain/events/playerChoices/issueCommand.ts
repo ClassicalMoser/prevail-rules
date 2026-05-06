@@ -1,4 +1,4 @@
-import type { Board, Command, PlayerSide, UnitInstance } from "@entities";
+import type { Command, PlayerSide, UnitInstance } from "@entities";
 import type { AssertExact } from "@utils";
 import { commandSchema, playerSideSchema, unitInstanceSchema } from "@entities";
 import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
@@ -7,10 +7,7 @@ import { z } from "zod";
 /** The type of the issue command event. */
 export const ISSUE_COMMAND_CHOICE_TYPE = "issueCommand" as const;
 
-export interface IssueCommandEvent<
-  _TBoard extends Board,
-  _TChoiceType extends "issueCommand" = "issueCommand",
-> {
+export interface IssueCommandEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
@@ -42,10 +39,8 @@ const _issueCommandEventSchemaObject = z.object({
 
 type IssueCommandEventSchemaType = z.infer<typeof _issueCommandEventSchemaObject>;
 
-const _assertExactIssueCommandEvent: AssertExact<
-  IssueCommandEvent<Board>,
-  IssueCommandEventSchemaType
-> = true;
+const _assertExactIssueCommandEvent: AssertExact<IssueCommandEvent, IssueCommandEventSchemaType> =
+  true;
 
 /** The schema for the issue commands event. */
 export const issueCommandEventSchema: z.ZodObject<{

@@ -1,6 +1,6 @@
 import type { Board } from "@entities";
 import type { DiscardPlayedCardsEvent } from "@events";
-import type { CleanupPhaseState, GameStateWithBoard } from "@game";
+import type { CleanupPhaseState, GameState, GameStateForBoard } from "@game";
 import { getCleanupPhaseState } from "@queries";
 import { moveCardToPlayed, updateCardState, updatePhaseState } from "@transforms/pureTransforms";
 
@@ -18,10 +18,11 @@ import { moveCardToPlayed, updateCardState, updatePhaseState } from "@transforms
  * @returns A new game state with cards moved to played pile
  */
 export function applyDiscardPlayedCardsEvent<TBoard extends Board>(
-  _event: DiscardPlayedCardsEvent<TBoard>,
-  state: GameStateWithBoard<TBoard>,
-): GameStateWithBoard<TBoard> {
-  const phaseState = getCleanupPhaseState(state);
+  _event: DiscardPlayedCardsEvent,
+  state: GameStateForBoard<TBoard>,
+): GameStateForBoard<TBoard> {
+  // Safe broad type cast because we know the event is for the board type
+  const phaseState = getCleanupPhaseState(state as GameState);
 
   const stateWithCards = updateCardState(state, (current) =>
     moveCardToPlayed(moveCardToPlayed(current, "white"), "black"),

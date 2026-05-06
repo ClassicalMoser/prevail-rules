@@ -1,5 +1,4 @@
-import type { Board } from "@entities";
-import type { Event, EventType } from "@events";
+import type { Event } from "@events";
 import type { PortResponse } from "./portResponse";
 
 /**
@@ -12,20 +11,17 @@ export interface EventStreamStorage {
   getEventStream: (
     gameId: string,
     roundNumber: number,
-  ) => Promise<PortResponse<readonly Event<Board, EventType>[] | undefined>>;
+  ) => Promise<PortResponse<readonly Event[] | undefined>>;
   addEventToStream: (
     gameId: string,
     roundNumber: number,
-    event: Event<Board, EventType>,
-  ) => Promise<PortResponse<readonly Event<Board>[] | undefined>>;
+    event: Event,
+  ) => Promise<PortResponse<readonly Event[] | undefined>>;
   flushEventStream: (gameId: string, roundNumber: number) => Promise<PortResponse<void>>;
-  newEventStream: (
-    gameId: string,
-    roundNumber: number,
-  ) => Promise<PortResponse<readonly Event<Board, EventType>[]>>;
+  newEventStream: (gameId: string, roundNumber: number) => Promise<PortResponse<readonly Event[]>>;
   truncateEventStream: (
     gameId: string,
     roundNumber: number,
     firstEventToRemove: number,
-  ) => Promise<PortResponse<readonly Event<Board, EventType>[]>>;
+  ) => Promise<PortResponse<readonly Event[]>>;
 }

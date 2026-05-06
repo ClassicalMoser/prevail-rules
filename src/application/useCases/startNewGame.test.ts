@@ -1,6 +1,7 @@
 import type { EnginePorts } from "../ports";
 import { describe, expect, it, vi } from "vitest";
 import { startNewGame } from "./startNewGame";
+import { gameModes } from "@entities";
 
 const placeholderGameId = "00000000-0000-0000-0000-000000000000";
 
@@ -35,7 +36,7 @@ describe("startNewGame", () => {
       gameStateSubscribers: [
         {
           gameId: placeholderGameId,
-          gameType: "mini",
+          gameMode: gameModes[1],
           onGameStateChange,
           onError: vi.fn(),
         },
@@ -62,19 +63,19 @@ describe("startNewGame", () => {
       gameStateSubscribers: [
         {
           gameId: placeholderGameId,
-          gameType: "mini",
+          gameMode: gameModes[1],
           onGameStateChange: matching,
           onError: vi.fn(),
         },
         {
           gameId: "11111111-1111-1111-1111-111111111111",
-          gameType: "mini",
+          gameMode: gameModes[1],
           onGameStateChange: wrongId,
           onError: vi.fn(),
         },
         {
           gameId: placeholderGameId,
-          gameType: "standard",
+          gameMode: gameModes[2],
           onGameStateChange: wrongType,
           onError: vi.fn(),
         },
@@ -116,7 +117,7 @@ describe("startNewGame", () => {
       gameStateSubscribers: [
         {
           gameId: placeholderGameId,
-          gameType: "mini",
+          gameMode: gameModes[1],
           onGameStateChange,
           onError,
         },
