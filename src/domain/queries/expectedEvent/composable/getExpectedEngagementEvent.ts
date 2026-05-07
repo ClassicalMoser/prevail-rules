@@ -1,5 +1,5 @@
 import type { ExpectedEventInfo } from "@events";
-import type { EngagementState } from "@game";
+import type { EngagementState, GameState } from "@game";
 import { getOtherPlayer } from "@queries/getOtherPlayer";
 import { getExpectedRoutEvent } from ".";
 
@@ -12,7 +12,10 @@ import { getExpectedRoutEvent } from ".";
  * Prevents having to scan through phases to find the engagement state
  * @returns Information about what event is expected
  */
-export function getExpectedEngagementEvent(engagementState: EngagementState): ExpectedEventInfo {
+export function getExpectedEngagementEvent(
+  _gameState: GameState,
+  engagementState: EngagementState,
+): ExpectedEventInfo {
   const attackingPlayer = engagementState.engagingUnit.playerSide;
   const defendingPlayer = getOtherPlayer(attackingPlayer);
 

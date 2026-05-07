@@ -4,10 +4,8 @@ import type {
   GameStateForBoard,
   MeleeResolutionStateForBoard,
   MovementResolutionStateForBoard,
-  PhaseStateForBoard,
   RangedAttackResolutionStateForBoard,
 } from "@game";
-import { getCurrentPhaseStateForBoard } from "./getPhaseState";
 
 /**
  * Gets the current command resolution state from the issue commands phase.
@@ -20,8 +18,8 @@ import { getCurrentPhaseStateForBoard } from "./getPhaseState";
 export function getCurrentCommandResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): CommandResolutionStateForBoard<TBoard> {
-  const phaseState: PhaseStateForBoard<TBoard> = getCurrentPhaseStateForBoard(state);
-  if (phaseState.phase !== "issueCommands") {
+  const phaseState = state.currentRoundState.currentPhaseState;
+  if (!phaseState || phaseState.phase !== "issueCommands") {
     throw new Error("Not in issueCommands phase");
   }
   const commandResolutionState: CommandResolutionStateForBoard<TBoard> | undefined =
