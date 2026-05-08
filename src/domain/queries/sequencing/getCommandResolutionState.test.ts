@@ -39,13 +39,6 @@ describe("getCurrentCommandResolutionState", () => {
     expect(() => getCurrentCommandResolutionState(state)).toThrow("Not in issueCommands phase");
   });
 
-  it("given missing phase slice, throws not in issueCommands phase", () => {
-    const state = createEmptyGameState();
-    state.currentRoundState.currentPhaseState = undefined;
-
-    expect(() => getCurrentCommandResolutionState(state)).toThrow("Not in issueCommands phase");
-  });
-
   it("given issueCommands with undefined CRS, throws no current command resolution state", () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(state);

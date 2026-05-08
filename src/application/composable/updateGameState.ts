@@ -1,5 +1,6 @@
 import type { GameState } from "@game";
 import type { GameStateChange, GameStateSubscriber, GameStorage, PortResponse } from "../ports";
+import { GameModeName } from "@entities";
 
 /**
  * Updates the game state for a given game and game type.
@@ -12,6 +13,7 @@ import type { GameStateChange, GameStateSubscriber, GameStorage, PortResponse } 
  */
 export async function updateGameState(
   gameId: string,
+  gameMode: GameModeName,
   gameState: GameState,
   gameStorage: GameStorage,
   gameStateSubscribers: GameStateSubscriber[],
@@ -25,6 +27,7 @@ export async function updateGameState(
   }
   const change: GameStateChange = {
     gameId,
+    gameMode,
     gameState,
   };
   for (const subscriber of gameStateSubscribers) {

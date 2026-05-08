@@ -16,9 +16,10 @@ export function createGameRunner(ports: EnginePorts): GameRunner {
 
   const handlePlayerChoiceSubmission = (
     gameId: string,
+    gameMode: GameModeName,
     playerChoice: PlayerChoiceEvent,
   ): Promise<PortResponse<void>> =>
-    handlePlayerChoiceSubmissionFunction(gameId, playerChoice, ports);
+    handlePlayerChoiceSubmissionFunction(gameId, gameMode, playerChoice, ports);
 
   return {
     startNewGame,
