@@ -7,6 +7,7 @@ export interface GameRunner {
   /** Applies the choice, then runs chained game effects until the next player-facing event. */
   handlePlayerChoiceSubmission: (
     gameId: string,
+    gameMode: GameModeName,
     playerChoice: PlayerChoiceEvent,
   ) => Promise<PortResponse<void>>;
 }

@@ -4,9 +4,11 @@ import { applyEvent } from "@transforms";
 import { updateGameState } from "../composable";
 import { handleNewRound } from "./handleNewRound";
 import { Event } from "@events";
+import { GameModeName } from "@entities";
 
 export async function processEvent(
   gameId: string,
+  gameMode: GameModeName,
   event: Event,
   gameState: GameState,
   ports: EnginePorts,
@@ -27,6 +29,7 @@ export async function processEvent(
 
   const updateResult = await updateGameState(
     gameId,
+    gameMode,
     newGameState,
     ports.gameStorage,
     ports.gameStateSubscribers,

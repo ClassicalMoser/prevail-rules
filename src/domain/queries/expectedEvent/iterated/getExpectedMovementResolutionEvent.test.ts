@@ -100,7 +100,7 @@ describe("getExpectedMovementResolutionEvent", () => {
             defendingUnitRetreats: false,
             defendingUnitRetreated: undefined,
           },
-          completed: false,
+          completed: true,
         },
       });
 
@@ -144,10 +144,7 @@ describe("getExpectedMovementResolutionEvent", () => {
     expect(getExpectedMovementResolutionEvent(gameState, resolutionState, "black")).toBe(
       expectedEvent,
     );
-    expect(getExpectedEngagementEventMock).toHaveBeenCalledWith(
-      gameState,
-      resolutionState.engagementState,
-    );
+    expect(getExpectedEngagementEventMock).toHaveBeenCalledWith(resolutionState.engagementState);
   });
 
   it("given when the movement resolution is already complete, throws", () => {

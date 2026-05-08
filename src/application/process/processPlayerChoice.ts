@@ -1,4 +1,4 @@
-import type { ValidationResult } from "@entities";
+import type { GameModeName, ValidationResult } from "@entities";
 import type { PlayerChoiceEvent } from "@events";
 import type { GameState } from "@game";
 import type { EnginePorts, PortResponse } from "../ports";
@@ -9,6 +9,7 @@ import { processEvent } from "./processEvent";
 
 export async function processPlayerChoice(
   gameId: string,
+  gameMode: GameModeName,
   playerChoice: PlayerChoiceEvent,
   ports: EnginePorts,
 ): Promise<PortResponse<GameState>> {
@@ -36,5 +37,5 @@ export async function processPlayerChoice(
     };
   }
 
-  return processEvent(gameId, playerChoice, gameState, ports);
+  return processEvent(gameId, gameMode, playerChoice, gameState, ports);
 }

@@ -50,7 +50,7 @@ describe("startNewGame", () => {
     const [change] = onGameStateChange.mock.calls[0] ?? [];
     expect(change).toMatchObject({
       gameId: placeholderGameId,
-      gameType: "mini",
+      gameMode: gameModes[1].name,
     });
     expect(change?.gameState).toBeDefined();
   });
