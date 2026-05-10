@@ -1,5 +1,5 @@
-import type { UnitType, ValidationResult } from "@entities";
-import type { Trait } from "@ruleValues";
+import type { UnitType, ValidationResult } from '@entities';
+import type { Trait } from '@ruleValues';
 
 /**
  * Determines whether a unit type matches the specified requirements.
@@ -9,7 +9,7 @@ import type { Trait } from "@ruleValues";
  * @param unitTypeIds - Array of unit type ids that the unit must match (unit must be in the array)
  * @returns True if the unit matches all requirements, false otherwise
  *
- * @remarks
+ * NOTES:
  * - If both traits and unitTypes are empty arrays, returns true (no requirements)
  * - If only traits are specified, checks that the unit has at least one of the specified traits
  * - If only unitTypes are specified, checks that the unit is in the specified array
@@ -20,30 +20,32 @@ export function matchesUnitRequirements(
   traits: Trait[],
   unitTypeIds: string[],
 ): ValidationResult {
-  if (!traits.length && !unitTypeIds.length) {
+  if (traits.length === 0 && unitTypeIds.length === 0) {
     return {
       result: true,
     };
   }
-  if (traits.length && !unitTypeIds.length) {
-    const hasAllTraits = traits.every((trait) => unitType.traits.includes(trait));
+  if (traits.length > 0 && unitTypeIds.length === 0) {
+    const hasAllTraits = traits.every((trait) =>
+      unitType.traits.includes(trait),
+    );
     if (!hasAllTraits) {
       return {
+        errorReason: 'Unit type does not have all required traits',
         result: false,
-        errorReason: "Unit type does not have all required traits",
       };
     }
     return {
       result: true,
     };
   }
-  if (!traits.length && unitTypeIds.length) {
+  if (traits.length === 0 && unitTypeIds.length > 0) {
     // Compare by id since UnitType is identified by its unique id field
     const isInUnitTypeIds = unitTypeIds.includes(unitType.id);
     if (!isInUnitTypeIds) {
       return {
+        errorReason: 'Unit type is not in the specified types',
         result: false,
-        errorReason: "Unit type is not in the specified types",
       };
     }
     return {
@@ -53,15 +55,15 @@ export function matchesUnitRequirements(
   const hasAllTraits = traits.every((trait) => unitType.traits.includes(trait));
   if (!hasAllTraits) {
     return {
+      errorReason: 'Unit type does not have all required traits',
       result: false,
-      errorReason: "Unit type does not have all required traits",
     };
   }
   const isInUnitTypeIds = unitTypeIds.includes(unitType.id);
   if (!isInUnitTypeIds) {
     return {
+      errorReason: 'Unit type is not in the specified types',
       result: false,
-      errorReason: "Unit type is not in the specified types",
     };
   }
   return {

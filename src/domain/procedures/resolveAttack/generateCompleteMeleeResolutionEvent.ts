@@ -1,5 +1,8 @@
-import type { CompleteMeleeResolutionEvent } from "@events";
-import { COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
+import type { CompleteMeleeResolutionEvent } from '@events';
+import {
+  COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE,
+  GAME_EFFECT_EVENT_TYPE,
+} from '@events';
 
 /**
  * Generates a CompleteMeleeResolutionEvent to complete a melee resolution.
@@ -13,8 +16,8 @@ export function generateCompleteMeleeResolutionEvent(
   eventNumber: number,
 ): CompleteMeleeResolutionEvent {
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE,
     eventNumber,
+    eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

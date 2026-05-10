@@ -1,11 +1,11 @@
-import type { AttackType, PlayerSide } from "@entities";
-import type { AssertExact } from "@utils";
-import { attackTypeSchema, playerSideSchema } from "@entities";
-import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+import type { AttackType, PlayerSide } from '@entities';
+import type { AssertExact } from '@utils';
+import { attackTypeSchema, playerSideSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
 /** The type of the complete attack apply game effect. */
-export const COMPLETE_ATTACK_APPLY_EFFECT_TYPE = "completeAttackApply" as const;
+export const COMPLETE_ATTACK_APPLY_EFFECT_TYPE = 'completeAttackApply' as const;
 
 /**
  * Closes the attack-apply substep and advances sequencing (routed / reverse / retreat / etc.).
@@ -46,7 +46,9 @@ const _completeAttackApplyEventSchemaObject: z.ZodObject<{
   defendingPlayer: playerSideSchema,
 });
 
-type CompleteAttackApplyEventSchemaType = z.infer<typeof _completeAttackApplyEventSchemaObject>;
+type CompleteAttackApplyEventSchemaType = z.infer<
+  typeof _completeAttackApplyEventSchemaObject
+>;
 
 /** The schema for a complete attack apply event. */
 export const completeAttackApplyEventSchema: z.ZodObject<{

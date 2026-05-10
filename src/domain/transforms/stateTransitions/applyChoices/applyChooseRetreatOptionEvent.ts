@@ -1,8 +1,8 @@
-import type { Board } from "@entities";
-import type { ChooseRetreatOptionEventForBoard } from "@events";
-import type { GameStateForBoard, RetreatStateForBoard } from "@game";
-import { findRetreatState } from "@queries";
-import { updateRetreatState } from "@transforms/pureTransforms";
+import type { Board } from '@entities';
+import type { ChooseRetreatOptionEventForBoard } from '@events';
+import type { GameStateForBoard, RetreatStateForBoard } from '@game';
+import { findRetreatState } from '@queries';
+import { updateRetreatState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseRetreatOptionEvent to the game state.

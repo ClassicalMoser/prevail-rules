@@ -1,30 +1,30 @@
-import type { StandardBoard } from "@entities";
-import type { EventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
-import { PLAYER_CHOICE_EVENT_TYPE } from "@events";
-import { PLAY_CARDS_PHASE } from "@game";
-import { createCleanupPhaseState, createEmptyGameState } from "@testing";
-import { updatePhaseState, updateRoundEventStream } from "@transforms";
-import { describe, expect, it } from "vitest";
-import { getLegalChooseRallyEvent } from "./getLegalChooseRallyEvent";
+import type { StandardBoard } from '@entities';
+import type { EventForBoard } from '@events';
+import type { GameStateForBoard } from '@game';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
+import { PLAY_CARDS_PHASE } from '@game';
+import { createCleanupPhaseState, createEmptyGameState } from '@testing';
+import { updatePhaseState, updateRoundEventStream } from '@transforms';
+
+import { getLegalChooseRallyEvent } from './getLegalChooseRallyEvent';
 
 const chooseRallyBase = {
+  choiceType: 'chooseRally' as const,
   eventType: PLAYER_CHOICE_EVENT_TYPE,
-  choiceType: "chooseRally" as const,
 };
 
 /**
- * getLegalChooseRallyEvent: both performRally choices for whichever player may choose
+ * GetLegalChooseRallyEvent: both performRally choices for whichever player may choose
  * during cleanup firstPlayerChooseRally / secondPlayerChooseRally.
  */
-describe("getLegalChooseRallyEvent", () => {
+describe(getLegalChooseRallyEvent, () => {
   function stateChooseRally(options: {
-    step: "firstPlayerChooseRally" | "secondPlayerChooseRally";
-    initiative?: "black" | "white";
+    step: 'firstPlayerChooseRally' | 'secondPlayerChooseRally';
+    initiative?: 'black' | 'white';
     eventStream?: readonly EventForBoard<StandardBoard>[];
   }): GameStateForBoard<StandardBoard> {
     const base = createEmptyGameState({
-      currentInitiative: options.initiative ?? "black",
+      currentInitiative: options.initiative ?? 'black',
     });
     const phase = createCleanupPhaseState({ step: options.step });
     let state = updatePhaseState(base, phase);
@@ -34,61 +34,61 @@ describe("getLegalChooseRallyEvent", () => {
     return state;
   }
 
-  it("firstPlayerChooseRally: returns true/false for initiative player", () => {
+  it('firstPlayerChooseRally: returns true/false for initiative player', () => {
     const state = stateChooseRally({
-      step: "firstPlayerChooseRally",
-      initiative: "white",
+      initiative: 'white',
+      step: 'firstPlayerChooseRally',
     });
 
-    expect(getLegalChooseRallyEvent(state)).toEqual([
+    expect(getLegalChooseRallyEvent(state)).toStrictEqual([
       {
         ...chooseRallyBase,
         eventNumber: 0,
-        player: "white",
         performRally: true,
+        player: 'white',
       },
       {
         ...chooseRallyBase,
         eventNumber: 0,
-        player: "white",
         performRally: false,
+        player: 'white',
       },
     ]);
   });
 
-  it("secondPlayerChooseRally: returns true/false for the other player", () => {
+  it('secondPlayerChooseRally: returns true/false for the other player', () => {
     const state = stateChooseRally({
-      step: "secondPlayerChooseRally",
-      initiative: "black",
+      initiative: 'black',
+      step: 'secondPlayerChooseRally',
     });
 
-    expect(getLegalChooseRallyEvent(state)).toEqual([
+    expect(getLegalChooseRallyEvent(state)).toStrictEqual([
       {
         ...chooseRallyBase,
         eventNumber: 0,
-        player: "white",
         performRally: true,
+        player: 'white',
       },
       {
         ...chooseRallyBase,
         eventNumber: 0,
-        player: "white",
         performRally: false,
+        player: 'white',
       },
     ]);
   });
 
-  it("uses getNextEventNumber for eventNumber", () => {
+  it('uses getNextEventNumber for eventNumber', () => {
     const prior: readonly EventForBoard<StandardBoard>[] = [
       {
+        effectType: 'revealCards',
         eventNumber: 0,
-        eventType: "gameEffect",
-        effectType: "revealCards",
+        eventType: 'gameEffect',
       },
     ];
     const state = stateChooseRally({
-      step: "firstPlayerChooseRally",
       eventStream: prior,
+      step: 'firstPlayerChooseRally',
     });
 
     const options = getLegalChooseRallyEvent(state);
@@ -98,21 +98,25 @@ describe("getLegalChooseRallyEvent", () => {
     expect(options[1]!.eventNumber).toBe(1);
   });
 
-  it("throws when cleanup step is not a choose-rally step", () => {
+  it('throws when cleanup step is not a choose-rally step', () => {
     const state = updatePhaseState(
       createEmptyGameState(),
-      createCleanupPhaseState({ step: "discardPlayedCards" }),
+      createCleanupPhaseState({ step: 'discardPlayedCards' }),
     );
 
-    expect(() => getLegalChooseRallyEvent(state)).toThrow("Not in choose rally step");
+    expect(() => getLegalChooseRallyEvent(state)).toThrow(
+      'Not in choose rally step',
+    );
   });
 
-  it("throws when not in cleanup phase", () => {
+  it('throws when not in cleanup phase', () => {
     const state = updatePhaseState(createEmptyGameState(), {
       phase: PLAY_CARDS_PHASE,
-      step: "chooseCards",
+      step: 'chooseCards',
     });
 
-    expect(() => getLegalChooseRallyEvent(state)).toThrow("Expected cleanup phase, got playCards");
+    expect(() => getLegalChooseRallyEvent(state)).toThrow(
+      'Expected cleanup phase, got playCards',
+    );
   });
 });

@@ -1,8 +1,12 @@
-import type { Board } from "@entities";
-import type { DiscardPlayedCardsEvent } from "@events";
-import type { CleanupPhaseState, GameState, GameStateForBoard } from "@game";
-import { getCleanupPhaseState } from "@queries";
-import { moveCardToPlayed, updateCardState, updatePhaseState } from "@transforms/pureTransforms";
+import type { Board } from '@entities';
+import type { DiscardPlayedCardsEvent } from '@events';
+import type { CleanupPhaseState, GameState, GameStateForBoard } from '@game';
+import { getCleanupPhaseState } from '@queries';
+import {
+  moveCardToPlayed,
+  updateCardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a DiscardPlayedCardsEvent to the game state.
@@ -25,12 +29,12 @@ export function applyDiscardPlayedCardsEvent<TBoard extends Board>(
   const phaseState = getCleanupPhaseState(state as GameState);
 
   const stateWithCards = updateCardState(state, (current) =>
-    moveCardToPlayed(moveCardToPlayed(current, "white"), "black"),
+    moveCardToPlayed(moveCardToPlayed(current, 'white'), 'black'),
   );
 
   const newPhaseState: CleanupPhaseState = {
     ...phaseState,
-    step: "firstPlayerChooseRally",
+    step: 'firstPlayerChooseRally',
   };
 
   return updatePhaseState(stateWithCards, newPhaseState);

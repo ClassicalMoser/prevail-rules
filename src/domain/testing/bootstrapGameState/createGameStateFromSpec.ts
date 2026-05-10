@@ -1,9 +1,12 @@
-import type { PlayerSide, StandardBoard } from "@entities";
-import type { GameStateForBoard } from "@game";
-import type { UnitPlacementSpec } from "./unitPlacementSpec";
-import { createBoardWithUnits } from "@testing/createBoard";
-import { createEmptyGameState } from "@testing/createEmptyGameState";
-import { assignInstanceNumbers, normalizeUnitPlacement } from "./unitPlacementSpec";
+import type { PlayerSide, StandardBoard } from '@entities';
+import type { GameStateForBoard } from '@game';
+import type { UnitPlacementSpec } from './unitPlacementSpec';
+import { createBoardWithUnits } from '@testing/createBoard';
+import { createEmptyGameState } from '@testing/createEmptyGameState';
+import {
+  assignInstanceNumbers,
+  normalizeUnitPlacement,
+} from './unitPlacementSpec';
 
 /**
  * Creates a game state with units placed according to the provided specifications.

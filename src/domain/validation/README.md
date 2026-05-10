@@ -31,7 +31,11 @@ export function isAtPlacement<TBoard extends Board>(
 ): boolean {
   try {
     // All validation logic here
-    const friendlyUnit = getPlayerUnitWithPosition(board, coordinate, playerSide);
+    const friendlyUnit = getPlayerUnitWithPosition(
+      board,
+      coordinate,
+      playerSide,
+    );
     // ... validation checks ...
     return true;
   } catch {

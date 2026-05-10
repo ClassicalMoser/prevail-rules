@@ -1,41 +1,45 @@
-import { tempCommandCards } from "@sampleValues";
-import { createEmptyGameState } from "@testing";
-import { describe, expect, it } from "vitest";
-import { updatePlayerCardState } from "./updatePlayerCardState";
+import { tempCommandCards } from '@sampleValues';
+import { createEmptyGameState } from '@testing';
+
+import { updatePlayerCardState } from './updatePlayerCardState';
 
 /**
- * updatePlayerCardState: Creates a new game state with a player's card state updated.
+ * UpdatePlayerCardState: Creates a new game state with a player's card state updated.
  */
-describe("updatePlayerCardState", () => {
-  it("given update player card state with object", () => {
+describe(updatePlayerCardState, () => {
+  it('given update player card state with object', () => {
     const state = createEmptyGameState();
 
-    const newState = updatePlayerCardState(state, "black", {
+    const newState = updatePlayerCardState(state, 'black', {
       ...state.cardState.black,
       inHand: [tempCommandCards[0]],
     });
 
-    expect(newState.cardState.black.inHand).toEqual([tempCommandCards[0]]);
+    expect(newState.cardState.black.inHand).toStrictEqual([
+      tempCommandCards[0],
+    ]);
     expect(newState.cardState.white).toBe(state.cardState.white);
   });
 
-  it("given update player card state with function", () => {
+  it('given update player card state with function', () => {
     const state = createEmptyGameState();
 
-    const newState = updatePlayerCardState(state, "white", (current) => ({
+    const newState = updatePlayerCardState(state, 'white', (current) => ({
       ...current,
       inHand: [tempCommandCards[1]],
     }));
 
-    expect(newState.cardState.white.inHand).toEqual([tempCommandCards[1]]);
+    expect(newState.cardState.white.inHand).toStrictEqual([
+      tempCommandCards[1],
+    ]);
     expect(newState.cardState.black).toBe(state.cardState.black);
   });
 
-  it("given not mutate the original state", () => {
+  it('given not mutate the original state', () => {
     const state = createEmptyGameState();
     const originalBlackCardState = state.cardState.black;
 
-    updatePlayerCardState(state, "black", (current) => ({
+    updatePlayerCardState(state, 'black', (current) => ({
       ...current,
       inHand: [tempCommandCards[0]],
     }));
@@ -44,15 +48,17 @@ describe("updatePlayerCardState", () => {
     expect(state.cardState.black.inHand).not.toContain(tempCommandCards[0]);
   });
 
-  it("given update correct player", () => {
+  it('given update correct player', () => {
     const state = createEmptyGameState();
 
-    const newState = updatePlayerCardState(state, "white", (current) => ({
+    const newState = updatePlayerCardState(state, 'white', (current) => ({
       ...current,
       inHand: [tempCommandCards[1]],
     }));
 
-    expect(newState.cardState.white.inHand).toEqual([tempCommandCards[1]]);
+    expect(newState.cardState.white.inHand).toStrictEqual([
+      tempCommandCards[1],
+    ]);
     expect(newState.cardState.black.inHand).not.toContain(tempCommandCards[1]);
   });
 });

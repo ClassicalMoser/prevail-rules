@@ -1,5 +1,5 @@
-import type { GameState } from "@game";
-import type { EnginePorts, PortResponse } from "../ports";
+import type { GameState } from '@game';
+import type { EnginePorts, PortResponse } from '../ports';
 
 /**
  * Called at the START of a new round.
@@ -25,8 +25,8 @@ export async function handleNewRound(
   );
   if (!roundSnapshotResult.result) {
     return {
-      result: false,
       errorReason: roundSnapshotResult.errorReason,
+      result: false,
     };
   }
 
@@ -38,8 +38,8 @@ export async function handleNewRound(
     );
     if (!eventStreamResult.result) {
       return {
-        result: false,
         errorReason: eventStreamResult.errorReason,
+        result: false,
       };
     }
   }
@@ -51,14 +51,14 @@ export async function handleNewRound(
   );
   if (!newEventStreamResult.result) {
     return {
-      result: false,
       errorReason: newEventStreamResult.errorReason,
+      result: false,
     };
   }
 
   // If everything succeeded, return success
   return {
-    result: true,
     data: undefined,
+    result: true,
   };
 }

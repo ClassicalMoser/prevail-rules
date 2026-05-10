@@ -1,6 +1,6 @@
-import type { GameModeName } from "@entities";
-import type { PlayerChoiceEvent } from "@events";
-import type { PortResponse } from "./portResponse";
+import type { GameModeName } from '@entities';
+import type { PlayerChoiceEvent } from '@events';
+import type { PortResponse } from './portResponse';
 
 export interface GameRunner {
   startNewGame: (gameMode: GameModeName) => Promise<PortResponse<void>>;

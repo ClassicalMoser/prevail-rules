@@ -1,13 +1,16 @@
-import type { ResolveUnitsBrokenEvent } from "@events";
-import { GAME_EFFECT_EVENT_TYPE, RESOLVE_UNITS_BROKEN_EFFECT_TYPE } from "@events";
-import type { GameState } from "@game";
+import type { ResolveUnitsBrokenEvent } from '@events';
+import {
+  GAME_EFFECT_EVENT_TYPE,
+  RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
+} from '@events';
+import type { GameState } from '@game';
 import {
   getCleanupPhaseState,
   getOtherPlayer,
   getPlayerUnitsOnBoard,
   getSupportedUnitTypes,
-} from "@queries";
-import type { PlayerSide, UnitType } from "@entities";
+} from '@queries';
+import type { PlayerSide, UnitType } from '@entities';
 
 /**
  * Generates a ResolveUnitsBrokenEvent for unit types that lost support after a rally.
@@ -37,12 +40,14 @@ export function generateResolveUnitsBrokenEvent(
   const firstPlayer = state.currentInitiative;
   let player: PlayerSide;
 
-  if (phaseState.step === "firstPlayerResolveRally") {
+  if (phaseState.step === 'firstPlayerResolveRally') {
     player = firstPlayer;
-  } else if (phaseState.step === "secondPlayerResolveRally") {
+  } else if (phaseState.step === 'secondPlayerResolveRally') {
     player = getOtherPlayer(firstPlayer);
   } else {
-    throw new Error(`Cleanup phase is not on a resolveRally step: ${phaseState.step}`);
+    throw new Error(
+      `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
+    );
   }
   const supportedTypeIds = getSupportedUnitTypes(state, player);
   const unitsOnBoard = getPlayerUnitsOnBoard(state, player);
@@ -59,9 +64,9 @@ export function generateResolveUnitsBrokenEvent(
   }
 
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
     eventNumber,
+    eventType: GAME_EFFECT_EVENT_TYPE,
     player,
     unitTypes: brokenTypes,
   };

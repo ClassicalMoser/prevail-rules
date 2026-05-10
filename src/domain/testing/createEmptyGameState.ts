@@ -1,7 +1,7 @@
-import type { PlayerSide, StandardBoard } from "@entities";
-import type { GameStateForBoard } from "@game";
-import { tempCommandCards } from "@sampleValues";
-import { createEmptyStandardBoard } from "@transforms";
+import type { PlayerSide, StandardBoard } from '@entities';
+import type { GameStateForBoard } from '@game';
+import { tempCommandCards } from '@sampleValues';
+import { createEmptyStandardBoard } from '@transforms';
 
 /**
  * Creates an empty game state with default values.
@@ -20,38 +20,38 @@ export function createEmptyGameState(options?: {
   currentInitiative?: PlayerSide;
 }): GameStateForBoard<StandardBoard> {
   return {
-    boardType: "standard",
-    currentRoundNumber: 0,
-    currentRoundState: {
-      roundNumber: 1,
-      boardType: "standard",
-      completedPhases: new Set(),
-      currentPhaseState: undefined,
-      commandedUnits: new Set(),
-      events: [],
-    },
-    currentInitiative: options?.currentInitiative ?? "black",
     boardState: createEmptyStandardBoard(),
+    boardType: 'standard',
     cardState: {
       black: {
-        inHand: [],
         awaitingPlay: tempCommandCards[0],
+        burnt: [],
+        discarded: [],
+        inHand: [],
         inPlay: tempCommandCards[1],
         played: [],
-        discarded: [],
-        burnt: [],
       },
       white: {
-        inHand: [],
         awaitingPlay: tempCommandCards[0],
+        burnt: [],
+        discarded: [],
+        inHand: [],
         inPlay: tempCommandCards[1],
         played: [],
-        discarded: [],
-        burnt: [],
       },
     },
+    currentInitiative: options?.currentInitiative ?? 'black',
+    currentRoundNumber: 0,
+    currentRoundState: {
+      boardType: 'standard',
+      commandedUnits: new Set(),
+      completedPhases: new Set(),
+      currentPhaseState: undefined,
+      events: [],
+      roundNumber: 1,
+    },
+    lostCommanders: new Set(),
     reservedUnits: new Set(),
     routedUnits: new Set(),
-    lostCommanders: new Set(),
   };
 }

@@ -1,24 +1,31 @@
-import type { Board, LargeBoard, SmallBoard, StandardBoard } from "@entities";
-import type { AssertExact } from "@utils";
-import type { GameEffectEventForBoard, GameEffectType } from "./gameEffects";
-import type { PlayerChoiceEventForBoard, PlayerChoiceType } from "./playerChoices";
+import type { Board, LargeBoard, SmallBoard, StandardBoard } from '@entities';
+import type { AssertExact } from '@utils';
+import type { GameEffectEventForBoard, GameEffectType } from './gameEffects';
+import type {
+  PlayerChoiceEventForBoard,
+  PlayerChoiceType,
+} from './playerChoices';
 
-import { z } from "zod";
-import { eventTypes } from "./eventTypeLiterals";
+import { z } from 'zod';
+import { eventTypes } from './eventTypeLiterals';
 import {
   gameEffectEventSchema,
   largeGameEffectEventSchema,
   smallGameEffectEventSchema,
   standardGameEffectEventSchema,
-} from "./gameEffects";
+} from './gameEffects';
 import {
   largePlayerChoiceEventSchema,
   playerChoiceEventSchema,
   smallPlayerChoiceEventSchema,
   standardPlayerChoiceEventSchema,
-} from "./playerChoices";
+} from './playerChoices';
 
-export { eventTypes, GAME_EFFECT_EVENT_TYPE, PLAYER_CHOICE_EVENT_TYPE } from "./eventTypeLiterals";
+export {
+  eventTypes,
+  GAME_EFFECT_EVENT_TYPE,
+  PLAYER_CHOICE_EVENT_TYPE,
+} from './eventTypeLiterals';
 
 /** The type of an event. */
 export type EventType = (typeof eventTypes)[number];
@@ -40,23 +47,30 @@ export type EventUnion<TBoard extends Board> =
  * Extracts only the event type that matches the specified eventType.
  * This ensures type safety - Event<TBoard, 'playerChoice'> is ONLY PlayerChoiceEvent.
  */
-export type EventForBoard<TBoard extends Board, TEventType extends EventType = EventType> = Extract<
-  EventUnion<TBoard>,
-  { eventType: TEventType }
->;
+export type EventForBoard<
+  TBoard extends Board,
+  TEventType extends EventType = EventType,
+> = Extract<EventUnion<TBoard>, { eventType: TEventType }>;
 
 export type Event =
   | EventForBoard<SmallBoard>
   | EventForBoard<StandardBoard>
   | EventForBoard<LargeBoard>;
 
-const _smallEventSchemaObject = z.union([smallPlayerChoiceEventSchema, smallGameEffectEventSchema]);
+const _smallEventSchemaObject = z.union([
+  smallPlayerChoiceEventSchema,
+  smallGameEffectEventSchema,
+]);
 
 type SmallEventSchemaType = z.infer<typeof _smallEventSchemaObject>;
 
-const _assertExactSmallEvent: AssertExact<EventForBoard<SmallBoard>, SmallEventSchemaType> = true;
+const _assertExactSmallEvent: AssertExact<
+  EventForBoard<SmallBoard>,
+  SmallEventSchemaType
+> = true;
 
-export const smallEventSchema: z.ZodType<EventForBoard<SmallBoard>> = _smallEventSchemaObject;
+export const smallEventSchema: z.ZodType<EventForBoard<SmallBoard>> =
+  _smallEventSchemaObject;
 
 const _standardEventSchemaObject = z.union([
   standardPlayerChoiceEventSchema,
@@ -73,13 +87,20 @@ const _assertExactStandardEvent: AssertExact<
 export const standardEventSchema: z.ZodType<EventForBoard<StandardBoard>> =
   _standardEventSchemaObject;
 
-const _largeEventSchemaObject = z.union([largePlayerChoiceEventSchema, largeGameEffectEventSchema]);
+const _largeEventSchemaObject = z.union([
+  largePlayerChoiceEventSchema,
+  largeGameEffectEventSchema,
+]);
 
 type LargeEventSchemaType = z.infer<typeof _largeEventSchemaObject>;
 
-const _assertExactLargeEvent: AssertExact<EventForBoard<LargeBoard>, LargeEventSchemaType> = true;
+const _assertExactLargeEvent: AssertExact<
+  EventForBoard<LargeBoard>,
+  LargeEventSchemaType
+> = true;
 
-export const largeEventSchema: z.ZodType<EventForBoard<LargeBoard>> = _largeEventSchemaObject;
+export const largeEventSchema: z.ZodType<EventForBoard<LargeBoard>> =
+  _largeEventSchemaObject;
 
 /**
  * Unconstrained union schema object for all events.
@@ -95,7 +116,10 @@ export const largeEventSchema: z.ZodType<EventForBoard<LargeBoard>> = _largeEven
  * at runtime - a gameEffect with wrong eventType won't match playerChoice schemas.
  * The nested discriminated unions provide efficient validation within each category.
  */
-const _eventSchemaObject = z.union([playerChoiceEventSchema, gameEffectEventSchema]);
+const _eventSchemaObject = z.union([
+  playerChoiceEventSchema,
+  gameEffectEventSchema,
+]);
 
 type EventSchemaType = z.infer<typeof _eventSchemaObject>;
 

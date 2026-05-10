@@ -5,33 +5,39 @@ import type {
   SmallBoard,
   StandardBoard,
   UnitInstance,
-} from "@entities";
-import type { GameState, GameStateForBoard } from "@game";
+} from '@entities';
+import type { GameState, GameStateForBoard } from '@game';
 
-import { createEmptyGameState, createUnitInstance } from "@transforms/initializations";
+import {
+  createEmptyGameState,
+  createUnitInstance,
+} from '@transforms/initializations';
 
 /**
  * Builds a {@link GameState} for a new game: empty board and round state, white initiative,
  * units from each {@link Army} in {@link GameState.reservedUnits}, and each army's command
  * cards in that player's hand (`cardState.*.inHand`).
  */
+export function createInitialGameState(
+  options:
+    | {
+        gameMode: 'tutorial';
+        whiteArmy: Army;
+        blackArmy: Army;
+      }
+    | {
+        gameMode: 'mini';
+        whiteArmy: Army;
+        blackArmy: Army;
+      },
+): GameStateForBoard<SmallBoard>;
 export function createInitialGameState(options: {
-  gameMode: "tutorial";
-  whiteArmy: Army;
-  blackArmy: Army;
-}): GameStateForBoard<SmallBoard>;
-export function createInitialGameState(options: {
-  gameMode: "mini";
-  whiteArmy: Army;
-  blackArmy: Army;
-}): GameStateForBoard<SmallBoard>;
-export function createInitialGameState(options: {
-  gameMode: "standard";
+  gameMode: 'standard';
   whiteArmy: Army;
   blackArmy: Army;
 }): GameStateForBoard<StandardBoard>;
 export function createInitialGameState(options: {
-  gameMode: "epic";
+  gameMode: 'epic';
   whiteArmy: Army;
   blackArmy: Army;
 }): GameStateForBoard<LargeBoard>;
@@ -44,33 +50,37 @@ export function createInitialGameState(options: {
 
   let emptyGameState;
   switch (options.gameMode) {
-    case "tutorial":
+    case 'tutorial': {
       emptyGameState = createEmptyGameState(options.gameMode);
       break;
-    case "mini":
+    }
+    case 'mini': {
       emptyGameState = createEmptyGameState(options.gameMode);
       break;
-    case "standard":
+    }
+    case 'standard': {
       emptyGameState = createEmptyGameState(options.gameMode);
       break;
-    case "epic":
+    }
+    case 'epic': {
       emptyGameState = createEmptyGameState(options.gameMode);
       break;
-  }
-
-  if (!emptyGameState) {
-    throw new Error(`Unknown gameMode: ${options.gameMode}`);
+    }
+    default: {
+      const _exhaustive: never = options.gameMode;
+      throw new Error(`Unknown gameMode: ${_exhaustive}`);
+    }
   }
 
   const reservedUnits = new Set<UnitInstance>();
   for (const unit of whiteArmy.units) {
     for (let i = 1; i <= unit.count; i++) {
-      reservedUnits.add(createUnitInstance("white", unit.unitType, i + 1));
+      reservedUnits.add(createUnitInstance('white', unit.unitType, i + 1));
     }
   }
   for (const unit of blackArmy.units) {
     for (let i = 1; i <= unit.count; i++) {
-      reservedUnits.add(createUnitInstance("black", unit.unitType, i + 1));
+      reservedUnits.add(createUnitInstance('black', unit.unitType, i + 1));
     }
   }
 

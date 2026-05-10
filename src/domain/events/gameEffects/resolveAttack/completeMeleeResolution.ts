@@ -1,8 +1,9 @@
-import type { AssertExact } from "@utils";
-import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
-export const COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE = "completeMeleeResolution" as const;
+export const COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE =
+  'completeMeleeResolution' as const;
 
 export interface CompleteMeleeResolutionEvent {
   /** The type of the event. */
@@ -33,7 +34,7 @@ const _assertExactCompleteMeleeResolutionEvent: AssertExact<
 
 /** The schema for a complete melee resolution event. */
 export const completeMeleeResolutionEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<"gameEffect">;
-  effectType: z.ZodLiteral<"completeMeleeResolution">;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'completeMeleeResolution'>;
   eventNumber: z.ZodNumber;
 }> = _completeMeleeResolutionEventSchemaObject;

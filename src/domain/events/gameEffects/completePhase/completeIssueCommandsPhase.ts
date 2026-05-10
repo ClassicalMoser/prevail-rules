@@ -1,13 +1,19 @@
-import type { Board, BoardCoordinate, LargeBoard, SmallBoard, StandardBoard } from "@entities";
-import type { AssertExact } from "@utils";
-import type { ZodDiscriminatedUnion } from "zod";
+import type {
+  Board,
+  BoardCoordinate,
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+} from '@entities';
+import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import {
   largeBoardCoordinateSchema,
   smallBoardCoordinateSchema,
   standardBoardCoordinateSchema,
-} from "@entities";
-import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+} from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
 /**
  * Literal discriminator for {@link CompleteIssueCommandsPhaseEvent.effectType}.
@@ -15,7 +21,8 @@ import { z } from "zod";
  * Phase transition: issue commands → resolve melee. `remainingEngagements` is a board-derived
  * snapshot so apply does not scan for engaged coordinates at transition time.
  */
-export const COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE = "completeIssueCommandsPhase" as const;
+export const COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE =
+  'completeIssueCommandsPhase' as const;
 
 export interface CompleteIssueCommandsPhaseEventForBoard<TBoard extends Board> {
   /** The type of the event. */
@@ -23,7 +30,7 @@ export interface CompleteIssueCommandsPhaseEventForBoard<TBoard extends Board> {
   /** The type of game effect. */
   effectType: typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE;
   /** The type of the board. */
-  boardType: TBoard["boardType"];
+  boardType: TBoard['boardType'];
   /** The remaining engagements. */
   remainingEngagements: Set<BoardCoordinate<TBoard>>;
   /** The ordered index of the event in the round, zero-indexed. */
@@ -39,13 +46,13 @@ const _standardCompleteIssueCommandsPhaseEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
-  boardType: z.ZodLiteral<"standard">;
+  boardType: z.ZodLiteral<'standard'>;
   remainingEngagements: z.ZodSet<typeof standardBoardCoordinateSchema>;
 }> = z.object({
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
   effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
   eventNumber: z.number(),
-  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   remainingEngagements: z.set(standardBoardCoordinateSchema),
 });
 
@@ -65,13 +72,13 @@ const _smallCompleteIssueCommandsPhaseEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
-  boardType: z.ZodLiteral<"small">;
+  boardType: z.ZodLiteral<'small'>;
   remainingEngagements: z.ZodSet<typeof smallBoardCoordinateSchema>;
 }> = z.object({
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  boardType: z.literal('small' satisfies SmallBoard['boardType']),
   effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
   eventNumber: z.number(),
-  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   remainingEngagements: z.set(smallBoardCoordinateSchema),
 });
 
@@ -91,13 +98,13 @@ const _largeCompleteIssueCommandsPhaseEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
-  boardType: z.ZodLiteral<"large">;
+  boardType: z.ZodLiteral<'large'>;
   remainingEngagements: z.ZodSet<typeof largeBoardCoordinateSchema>;
 }> = z.object({
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  boardType: z.literal('large' satisfies LargeBoard['boardType']),
   effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
   eventNumber: z.number(),
-  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   remainingEngagements: z.set(largeBoardCoordinateSchema),
 });
 
@@ -119,11 +126,11 @@ type _CompleteIssueCommandsPhaseEventDiscriminatedUnion = ZodDiscriminatedUnion<
     typeof _smallCompleteIssueCommandsPhaseEventSchemaObject,
     typeof _largeCompleteIssueCommandsPhaseEventSchemaObject,
   ],
-  "boardType"
+  'boardType'
 >;
 
 const _completeIssueCommandsPhaseEventSchemaObject: _CompleteIssueCommandsPhaseEventDiscriminatedUnion =
-  z.discriminatedUnion("boardType", [
+  z.discriminatedUnion('boardType', [
     _standardCompleteIssueCommandsPhaseEventSchemaObject,
     _smallCompleteIssueCommandsPhaseEventSchemaObject,
     _largeCompleteIssueCommandsPhaseEventSchemaObject,

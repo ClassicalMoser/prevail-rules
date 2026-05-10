@@ -1,7 +1,10 @@
-import type { AttackType, StandardBoard, UnitWithPlacement } from "@entities";
-import type { CompleteAttackApplyEvent } from "@events";
-import type { GameStateForBoard } from "@game";
-import { getAttackApplyStateFromRangedAttack, getMeleeResolutionState } from "@queries";
+import type { AttackType, StandardBoard, UnitWithPlacement } from '@entities';
+import type { CompleteAttackApplyEvent } from '@events';
+import type { GameStateForBoard } from '@game';
+import {
+  getAttackApplyStateFromRangedAttack,
+  getMeleeResolutionState,
+} from '@queries';
 import {
   createAttackApplyState,
   createEmptyGameState,
@@ -10,28 +13,28 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
-} from "@testing";
-import { addUnitToBoard, updatePhaseState } from "@transforms/pureTransforms";
-import { describe, expect, it } from "vitest";
-import { applyCompleteAttackApplyEvent } from "./applyCompleteAttackApplyEvent";
+} from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+
+import { applyCompleteAttackApplyEvent } from './applyCompleteAttackApplyEvent';
 
 /**
  * Marks the active attack-apply substep finished for the defending player named in the event
  * (ranged single apply vs melee side chosen by initiative order).
  */
-describe("applyCompleteAttackApplyEvent", () => {
-  /** issueCommands + ranged CRS + incomplete apply for white defender on E-5. */
+describe(applyCompleteAttackApplyEvent, () => {
+  /** IssueCommands + ranged CRS + incomplete apply for white defender on E-5. */
   function createStateWithRangedAttackApply(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
-    const defendingUnit = createTestUnit("white", { attack: 2 });
+    const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: defendingUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: defendingUnit,
     };
 
     const stateWithUnit = {
@@ -50,31 +53,31 @@ describe("applyCompleteAttackApplyEvent", () => {
     return updatePhaseState(stateWithUnit, phaseState);
   }
 
-  /** resolveMelee + two applies; pass side still incomplete or omit for both complete. */
+  /** ResolveMelee + two applies; pass side still incomplete or omit for both complete. */
   function createStateWithMeleeApply(
-    incompletePlayer?: "white" | "black",
+    incompletePlayer?: 'white' | 'black',
   ): GameStateForBoard<StandardBoard> {
-    const state = createEmptyGameState({ currentInitiative: "black" });
-    const whiteUnit = createTestUnit("white", { attack: 2 });
-    const blackUnit = createTestUnit("black", { attack: 2 });
+    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackUnit = createTestUnit('black', { attack: 2 });
 
     const whiteUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: whiteUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: whiteUnit,
     };
     const blackUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: blackUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "south",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
       },
+      unit: blackUnit,
     };
 
     let stateWithUnits = {
@@ -83,19 +86,22 @@ describe("applyCompleteAttackApplyEvent", () => {
     };
     stateWithUnits = {
       ...stateWithUnits,
-      boardState: addUnitToBoard(stateWithUnits.boardState, blackUnitWithPlacement),
+      boardState: addUnitToBoard(
+        stateWithUnits.boardState,
+        blackUnitWithPlacement,
+      ),
     };
 
     const whiteAttackApply = createAttackApplyState(whiteUnit, {
-      completed: incompletePlayer !== "white",
+      completed: incompletePlayer !== 'white',
     });
     const blackAttackApply = createAttackApplyState(blackUnit, {
-      completed: incompletePlayer !== "black",
+      completed: incompletePlayer !== 'black',
     });
 
     const meleeState = createMeleeResolutionState(stateWithUnits, {
-      whiteAttackApplyState: whiteAttackApply,
       blackAttackApplyState: blackAttackApply,
+      whiteAttackApplyState: whiteAttackApply,
     });
     const phaseState = createResolveMeleePhaseState(stateWithUnits, {
       currentMeleeResolutionState: meleeState,
@@ -104,120 +110,124 @@ describe("applyCompleteAttackApplyEvent", () => {
     return updatePhaseState(stateWithUnits, phaseState);
   }
 
-  describe("ranged apply", () => {
-    it("given incomplete ranged apply, event defending white sets completed true", () => {
+  describe('ranged apply', () => {
+    it('given incomplete ranged apply, event defending white sets completed true', () => {
       const state = createStateWithRangedAttackApply();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-      expect(attackApplyState.completed).toBe(false);
+      expect(attackApplyState.completed).toBeFalsy();
 
       const event: CompleteAttackApplyEvent = {
+        attackType: 'ranged',
+        defendingPlayer: 'white',
+        effectType: 'completeAttackApply',
         eventNumber: 0,
-        eventType: "gameEffect",
-        effectType: "completeAttackApply",
-        attackType: "ranged",
-        defendingPlayer: "white",
+        eventType: 'gameEffect',
       };
 
       const newState = applyCompleteAttackApplyEvent(event, state);
       const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
 
-      expect(newAttackApplyState.completed).toBe(true);
+      expect(newAttackApplyState.completed).toBeTruthy();
     });
 
-    it("given same completion, substepType defendingUnit and attackResult unchanged besides completed", () => {
+    it('given same completion, substepType defendingUnit and attackResult unchanged besides completed', () => {
       const state = createStateWithRangedAttackApply();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
 
       const event: CompleteAttackApplyEvent = {
+        attackType: 'ranged',
+        defendingPlayer: 'white',
+        effectType: 'completeAttackApply',
         eventNumber: 0,
-        eventType: "gameEffect",
-        effectType: "completeAttackApply",
-        attackType: "ranged",
-        defendingPlayer: "white",
+        eventType: 'gameEffect',
       };
 
       const newState = applyCompleteAttackApplyEvent(event, state);
       const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
 
-      expect(newAttackApplyState.substepType).toBe("attackApply");
-      expect(newAttackApplyState.defendingUnit).toEqual(attackApplyState.defendingUnit);
-      expect(newAttackApplyState.attackResult).toEqual(attackApplyState.attackResult);
+      expect(newAttackApplyState.substepType).toBe('attackApply');
+      expect(newAttackApplyState.defendingUnit).toStrictEqual(
+        attackApplyState.defendingUnit,
+      );
+      expect(newAttackApplyState.attackResult).toStrictEqual(
+        attackApplyState.attackResult,
+      );
     });
   });
 
-  describe("melee apply", () => {
-    it("given black initiative and black apply incomplete, completeAttackApply for black marks that side", () => {
-      const state = createStateWithMeleeApply("black");
+  describe('melee apply', () => {
+    it('given black initiative and black apply incomplete, completeAttackApply for black marks that side', () => {
+      const state = createStateWithMeleeApply('black');
       const meleeState = getMeleeResolutionState(state);
       const firstPlayer = state.currentInitiative;
       const firstPlayerAttackApply =
-        firstPlayer === "white"
+        firstPlayer === 'white'
           ? meleeState.whiteAttackApplyState
           : meleeState.blackAttackApplyState;
 
-      expect(firstPlayerAttackApply?.completed).toBe(false);
+      expect(firstPlayerAttackApply?.completed).toBeFalsy();
 
       const event: CompleteAttackApplyEvent = {
+        attackType: 'melee',
+        defendingPlayer: 'black',
+        effectType: 'completeAttackApply',
         eventNumber: 0,
-        eventType: "gameEffect",
-        effectType: "completeAttackApply",
-        attackType: "melee",
-        defendingPlayer: "black",
+        eventType: 'gameEffect',
       };
 
       const newState = applyCompleteAttackApplyEvent(event, state);
       const newMeleeState = getMeleeResolutionState(newState);
       const newFirstPlayerAttackApply =
-        firstPlayer === "white"
+        firstPlayer === 'white'
           ? newMeleeState.whiteAttackApplyState
           : newMeleeState.blackAttackApplyState;
 
-      expect(newFirstPlayerAttackApply?.completed).toBe(true);
+      expect(newFirstPlayerAttackApply?.completed).toBeTruthy();
     });
 
-    it("given white apply still incomplete after black done, event for white completes white apply", () => {
-      const state = createStateWithMeleeApply("white");
+    it('given white apply still incomplete after black done, event for white completes white apply', () => {
+      const state = createStateWithMeleeApply('white');
       const meleeState = getMeleeResolutionState(state);
       const firstPlayer = state.currentInitiative;
-      const secondPlayer = firstPlayer === "white" ? "black" : "white";
+      const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
       const secondPlayerAttackApply =
-        secondPlayer === "white"
+        secondPlayer === 'white'
           ? meleeState.whiteAttackApplyState
           : meleeState.blackAttackApplyState;
 
-      expect(secondPlayerAttackApply?.completed).toBe(false);
+      expect(secondPlayerAttackApply?.completed).toBeFalsy();
 
       const event: CompleteAttackApplyEvent = {
+        attackType: 'melee',
+        defendingPlayer: 'white',
+        effectType: 'completeAttackApply',
         eventNumber: 0,
-        eventType: "gameEffect",
-        effectType: "completeAttackApply",
-        attackType: "melee",
-        defendingPlayer: "white",
+        eventType: 'gameEffect',
       };
 
       const newState = applyCompleteAttackApplyEvent(event, state);
       const newMeleeState = getMeleeResolutionState(newState);
       const newSecondPlayerAttackApply =
-        secondPlayer === "white"
+        secondPlayer === 'white'
           ? newMeleeState.whiteAttackApplyState
           : newMeleeState.blackAttackApplyState;
 
-      expect(newSecondPlayerAttackApply?.completed).toBe(true);
+      expect(newSecondPlayerAttackApply?.completed).toBeTruthy();
     });
   });
 
-  describe("structural update", () => {
-    it("given ranged apply completed false before apply, input apply object unchanged after apply", () => {
+  describe('structural update', () => {
+    it('given ranged apply completed false before apply, input apply object unchanged after apply', () => {
       const state = createStateWithRangedAttackApply();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const originalCompleted = attackApplyState.completed;
 
       const event: CompleteAttackApplyEvent = {
+        attackType: 'ranged',
+        defendingPlayer: 'white',
+        effectType: 'completeAttackApply',
         eventNumber: 0,
-        eventType: "gameEffect",
-        effectType: "completeAttackApply",
-        attackType: "ranged",
-        defendingPlayer: "white",
+        eventType: 'gameEffect',
       };
 
       applyCompleteAttackApplyEvent(event, state);
@@ -226,9 +236,9 @@ describe("applyCompleteAttackApplyEvent", () => {
     });
   });
 
-  describe("errors", () => {
-    it("given melee missing whiteAttackApplyState, complete for white throws no white apply", () => {
-      const state = createStateWithMeleeApply("black");
+  describe('errors', () => {
+    it('given melee missing whiteAttackApplyState, complete for white throws no white apply', () => {
+      const state = createStateWithMeleeApply('black');
       const meleeState = getMeleeResolutionState(state);
       const phaseState = createResolveMeleePhaseState(state, {
         currentMeleeResolutionState: {
@@ -239,31 +249,31 @@ describe("applyCompleteAttackApplyEvent", () => {
       const stateMissingWhiteApply = updatePhaseState(state, phaseState);
 
       const event: CompleteAttackApplyEvent = {
+        attackType: 'melee',
+        defendingPlayer: 'white',
+        effectType: 'completeAttackApply',
         eventNumber: 0,
-        eventType: "gameEffect",
-        effectType: "completeAttackApply",
-        attackType: "melee",
-        defendingPlayer: "white",
+        eventType: 'gameEffect',
       };
 
-      expect(() => applyCompleteAttackApplyEvent(event, stateMissingWhiteApply)).toThrow(
-        "No white attack apply state found in melee resolution",
-      );
+      expect(() =>
+        applyCompleteAttackApplyEvent(event, stateMissingWhiteApply),
+      ).toThrow('No white attack apply state found in melee resolution');
     });
 
-    it("given attackType siege cast, throws unknown attack type for completeAttackApply", () => {
+    it('given attackType siege cast, throws unknown attack type for completeAttackApply', () => {
       const state = createEmptyGameState();
       const event: CompleteAttackApplyEvent = {
         eventNumber: 0,
-        eventType: "gameEffect" as const,
-        effectType: "completeAttackApply",
+        eventType: 'gameEffect' as const,
+        effectType: 'completeAttackApply',
         // Intentionally bad cast to test failure path
-        attackType: "siege" as unknown as AttackType,
-        defendingPlayer: "white",
+        attackType: 'siege' as unknown as AttackType,
+        defendingPlayer: 'white',
       };
 
       expect(() => applyCompleteAttackApplyEvent(event, state)).toThrow(
-        "Unknown attack type for completeAttackApply: siege",
+        'Unknown attack type for completeAttackApply: siege',
       );
     });
   });

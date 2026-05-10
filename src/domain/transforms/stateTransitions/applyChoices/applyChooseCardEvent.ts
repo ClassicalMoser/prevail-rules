@@ -1,8 +1,12 @@
-import type { Board } from "@entities";
-import type { ChooseCardEvent } from "@events";
-import type { GameState, GameStateForBoard, PlayCardsPhaseState } from "@game";
-import { getPlayCardsPhaseState } from "@queries";
-import { chooseCard, updateCardState, updatePhaseState } from "@transforms/pureTransforms";
+import type { Board } from '@entities';
+import type { ChooseCardEvent } from '@events';
+import type { GameState, GameStateForBoard, PlayCardsPhaseState } from '@game';
+import { getPlayCardsPhaseState } from '@queries';
+import {
+  chooseCard,
+  updateCardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseCardEvent to the game state.
@@ -19,7 +23,9 @@ export function applyChooseCardEvent<TBoard extends Board>(
 ): GameStateForBoard<TBoard> {
   const { player, card } = event;
   // Safe broad type cast because we know the event is for the board type
-  const currentPhaseState: PlayCardsPhaseState = getPlayCardsPhaseState(state as GameState);
+  const currentPhaseState: PlayCardsPhaseState = getPlayCardsPhaseState(
+    state as GameState,
+  );
 
   // Choose the card
   const newCardState = chooseCard(state.cardState, player, card);
@@ -28,13 +34,14 @@ export function applyChooseCardEvent<TBoard extends Board>(
 
   // Check if both players have now chosen cards
   const bothPlayersChosen =
-    newCardState.black.awaitingPlay !== null && newCardState.white.awaitingPlay !== null;
+    newCardState.black.awaitingPlay !== null &&
+    newCardState.white.awaitingPlay !== null;
 
   // If both players have chosen, advance step to revealCards
   const newPhaseState: PlayCardsPhaseState = bothPlayersChosen
     ? {
         ...currentPhaseState,
-        step: "revealCards",
+        step: 'revealCards',
       }
     : currentPhaseState;
 

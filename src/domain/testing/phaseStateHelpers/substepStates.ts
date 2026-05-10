@@ -4,13 +4,13 @@ import type {
   UnitInstance,
   UnitPlacement,
   UnitWithPlacement,
-} from "@entities";
+} from '@entities';
 import type {
   RallyResolutionState,
   RetreatStateForBoard,
   ReverseStateForBoard,
   RoutState,
-} from "@game";
+} from '@game';
 
 /**
  * Creates a RetreatState with sensible defaults.
@@ -21,24 +21,24 @@ export function createRetreatState(
 ): RetreatStateForBoard<StandardBoard> {
   const legalRetreatOptions = new Set<UnitPlacement<StandardBoard>>([
     {
-      boardType: "standard" as const,
-      coordinate: "E-4" as const,
-      facing: "north",
+      boardType: 'standard' as const,
+      coordinate: 'E-4' as const,
+      facing: 'north',
     },
     {
-      boardType: "standard" as const,
-      coordinate: "E-6" as const,
-      facing: "north",
+      boardType: 'standard' as const,
+      coordinate: 'E-6' as const,
+      facing: 'north',
     },
   ]);
   return {
-    substepType: "retreat" as const,
-    boardType: "standard" as const,
-    retreatingUnit: unit,
-    legalRetreatOptions,
-    finalPosition: undefined,
-    routState: undefined,
+    boardType: 'standard' as const,
     completed: false,
+    finalPosition: undefined,
+    legalRetreatOptions,
+    retreatingUnit: unit,
+    routState: undefined,
+    substepType: 'retreat' as const,
     ...overrides,
   };
 }
@@ -52,12 +52,12 @@ export function createRoutState(
   overrides?: Partial<RoutState>,
 ): RoutState {
   return {
-    substepType: "rout",
-    player,
-    unitsToRout: new Set([unit]),
-    numberToDiscard: undefined,
     cardsChosen: false,
     completed: false,
+    numberToDiscard: undefined,
+    player,
+    substepType: 'rout',
+    unitsToRout: new Set([unit]),
     ...overrides,
   };
 }
@@ -70,11 +70,11 @@ export function createReverseState(
   overrides?: Partial<ReverseStateForBoard<StandardBoard>>,
 ): ReverseStateForBoard<StandardBoard> {
   return {
-    substepType: "reverse",
-    boardType: "standard" as const,
-    reversingUnit: unit,
-    finalPosition: undefined,
+    boardType: 'standard' as const,
     completed: false,
+    finalPosition: undefined,
+    reversingUnit: unit,
+    substepType: 'reverse',
     ...overrides,
   };
 }
@@ -86,11 +86,11 @@ export function createRallyResolutionState(
   overrides?: Partial<RallyResolutionState>,
 ): RallyResolutionState {
   return {
+    completed: false,
     playerRallied: false,
     rallyResolved: false,
-    unitsLostSupport: undefined,
     routState: undefined,
-    completed: false,
+    unitsLostSupport: undefined,
     ...overrides,
   };
 }

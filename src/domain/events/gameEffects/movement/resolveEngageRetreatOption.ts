@@ -1,8 +1,9 @@
-import type { AssertExact } from "@utils";
-import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
-export const RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE = "resolveEngageRetreatOption" as const;
+export const RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE =
+  'resolveEngageRetreatOption' as const;
 
 export interface ResolveEngageRetreatOptionEvent {
   /** The type of the event. */
@@ -37,8 +38,8 @@ const _assertExactResolveEngageRetreatOptionEvent: AssertExact<
 
 /** The schema for a resolve engage retreat option event. */
 export const resolveEngageRetreatOptionEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<"gameEffect">;
-  effectType: z.ZodLiteral<"resolveEngageRetreatOption">;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'resolveEngageRetreatOption'>;
   eventNumber: z.ZodNumber;
   defendingUnitCanRetreat: z.ZodBoolean;
 }> = _resolveEngageRetreatOptionEventSchemaObject;

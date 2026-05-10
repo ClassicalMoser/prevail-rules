@@ -1,8 +1,11 @@
-import type { Board } from "@entities";
-import type { ChooseRoutDiscardEvent } from "@events";
-import type { GameStateForBoard } from "@game";
-import { getCurrentRallyResolutionState, getRoutStateFromRally } from "@queries";
-import { updateRoutState } from "@transforms/pureTransforms";
+import type { Board } from '@entities';
+import type { ChooseRoutDiscardEvent } from '@events';
+import type { GameStateForBoard } from '@game';
+import {
+  getCurrentRallyResolutionState,
+  getRoutStateFromRally,
+} from '@queries';
+import { updateRoutState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseRoutDiscardEvent to the game state.

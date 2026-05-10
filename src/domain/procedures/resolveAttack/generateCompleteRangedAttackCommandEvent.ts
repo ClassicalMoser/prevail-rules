@@ -1,8 +1,8 @@
+import type { CompleteRangedAttackCommandEvent } from '@events';
 import {
   COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE,
-  CompleteRangedAttackCommandEvent,
   GAME_EFFECT_EVENT_TYPE,
-} from "@events";
+} from '@events';
 
 /**
  * Generates a CompleteRangedAttackCommandEvent to complete a ranged attack command.
@@ -16,8 +16,8 @@ export function generateCompleteRangedAttackCommandEvent(
   eventNumber: number,
 ): CompleteRangedAttackCommandEvent {
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_RANGED_ATTACK_COMMAND_EFFECT_TYPE,
     eventNumber,
+    eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

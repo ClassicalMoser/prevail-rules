@@ -1,6 +1,11 @@
-import type { Board, EngagedUnitPresence, SingleUnitPresence, UnitWithPlacement } from "@entities";
-import { hasEngagedUnits, hasSingleUnit } from "@entities";
-import { getBoardSpace, getOppositeFacing, isFriendlyUnit } from "@queries";
+import type {
+  Board,
+  EngagedUnitPresence,
+  SingleUnitPresence,
+  UnitWithPlacement,
+} from '@entities';
+import { hasEngagedUnits, hasSingleUnit } from '@entities';
+import { getBoardSpace, getOppositeFacing, isFriendlyUnit } from '@queries';
 
 /**
  * Adds a unit to a board (pure function, returns new board).
@@ -11,23 +16,23 @@ export function addUnitToBoard<TBoard extends Board>(
 ): TBoard {
   const side = unit.unit.playerSide;
   const coord = unit.placement.coordinate;
-  const facing = unit.placement.facing;
+  const { facing } = unit.placement;
   const space = getBoardSpace(board, coord);
   const existingUnitPresence = space.unitPresence;
   if (hasEngagedUnits(existingUnitPresence)) {
-    throw new Error("Cannot add unit to space with engaged units");
+    throw new Error('Cannot add unit to space with engaged units');
   }
   if (hasSingleUnit(existingUnitPresence)) {
     if (isFriendlyUnit(existingUnitPresence.unit, side)) {
-      throw new Error("Cannot add unit to space with friendly unit");
+      throw new Error('Cannot add unit to space with friendly unit');
     }
     if (existingUnitPresence.facing !== getOppositeFacing(facing)) {
-      throw new Error("Engaged unit must have opposite facing");
+      throw new Error('Engaged unit must have opposite facing');
     }
     const newUnitPresence: EngagedUnitPresence = {
-      presenceType: "engaged",
-      primaryUnit: existingUnitPresence.unit,
+      presenceType: 'engaged',
       primaryFacing: existingUnitPresence.facing,
+      primaryUnit: existingUnitPresence.unit,
       secondaryUnit: unit.unit,
     };
     const newBoard = {
@@ -43,9 +48,9 @@ export function addUnitToBoard<TBoard extends Board>(
     return newBoard;
   }
   const newUnitPresence: SingleUnitPresence = {
-    presenceType: "single",
-    unit: unit.unit,
     facing,
+    presenceType: 'single',
+    unit: unit.unit,
   };
   const newBoard = {
     ...board,

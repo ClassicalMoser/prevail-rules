@@ -1,8 +1,13 @@
-import type { Board, BoardCoordinate, PlayerSide, UnitWithPlacement } from "@entities";
-import { hasNoUnit, hasSingleUnit } from "@entities";
-import { getBoardSpace } from "@queries/boardSpace";
-import { getOppositeFacing } from "@queries/facings";
-import { isFriendlyUnit } from "@queries/unit";
+import type {
+  Board,
+  BoardCoordinate,
+  PlayerSide,
+  UnitWithPlacement,
+} from '@entities';
+import { hasNoUnit, hasSingleUnit } from '@entities';
+import { getBoardSpace } from '@queries/boardSpace';
+import { getOppositeFacing } from '@queries/facings';
+import { isFriendlyUnit } from '@queries/unit';
 
 /**
  * Extracts the friendly unit and its placement from a board space for a given player side.
@@ -41,7 +46,7 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
   coordinate: BoardCoordinate<TBoard>,
   playerSide: PlayerSide,
 ): UnitWithPlacement<TBoard> | undefined {
-  const unitPresence = getBoardSpace(board, coordinate).unitPresence;
+  const { unitPresence } = getBoardSpace(board, coordinate);
 
   // If there's no unit, return undefined
   if (hasNoUnit(unitPresence)) {
@@ -53,45 +58,36 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
     if (isFriendlyUnit(unitPresence.unit, playerSide)) {
       return {
         boardType: board.boardType,
-        unit: unitPresence.unit,
         placement: {
           boardType: board.boardType,
           coordinate,
           facing: unitPresence.facing,
         },
+        unit: unitPresence.unit,
       };
     }
     // Enemy unit - return undefined
     return undefined;
   }
-
-  // If not, units must be engaged; return the friendly unit
-  // (primary or secondary) with correct facing
-  else {
-    // Check primary unit first
-    if (isFriendlyUnit(unitPresence.primaryUnit, playerSide)) {
-      return {
+  // Check primary unit first
+  if (isFriendlyUnit(unitPresence.primaryUnit, playerSide)) {
+    return {
+      boardType: board.boardType,
+      placement: {
         boardType: board.boardType,
-        unit: unitPresence.primaryUnit,
-        placement: {
-          boardType: board.boardType,
-          coordinate,
-          facing: unitPresence.primaryFacing,
-        },
-      };
-    }
-    // If the primary unit is not friendly, the secondary unit must be.
-    // (There are only two sides, and friendly units cannot engage each other)
-    else {
-      return {
-        boardType: board.boardType,
-        unit: unitPresence.secondaryUnit,
-        placement: {
-          boardType: board.boardType,
-          coordinate,
-          facing: getOppositeFacing(unitPresence.primaryFacing),
-        },
-      };
-    }
+        coordinate,
+        facing: unitPresence.primaryFacing,
+      },
+      unit: unitPresence.primaryUnit,
+    };
   }
+  return {
+    boardType: board.boardType,
+    placement: {
+      boardType: board.boardType,
+      coordinate,
+      facing: getOppositeFacing(unitPresence.primaryFacing),
+    },
+    unit: unitPresence.secondaryUnit,
+  };
 }

@@ -1,4 +1,4 @@
-import type { BoundaryConfig } from "eslint-plugin-import-boundaries";
+import type { BoundaryConfig } from 'eslint-plugin-import-boundaries';
 
 /**
  * Boundary definitions for the hexagonal architecture.
@@ -12,122 +12,129 @@ import type { BoundaryConfig } from "eslint-plugin-import-boundaries";
  */
 export const boundaries: BoundaryConfig[] = [
   {
-    identifier: "@utils",
-    dir: "domain/utils",
-    alias: "@utils",
+    alias: '@utils',
+    dir: 'domain/utils',
+    identifier: '@utils',
     // Pure utility types and functions
     // No dependencies on other layers
     // No structures or schemas
   },
   {
-    identifier: "@ruleValues",
-    dir: "domain/ruleValues",
-    alias: "@ruleValues",
-    allowTypeImportsFrom: ["@entities", "@events", "@utils"],
+    alias: '@ruleValues',
+    allowTypeImportsFrom: ['@entities', '@events', '@utils'],
+    dir: 'domain/ruleValues',
+    identifier: '@ruleValues',
     // Type imports ONLY, strictly for core rule definitions
   },
   {
-    identifier: "@entities",
-    dir: "domain/entities",
-    alias: "@entities",
-    allowImportsFrom: ["@ruleValues", "@utils"],
+    alias: '@entities',
+    allowImportsFrom: ['@ruleValues', '@utils'],
+    dir: 'domain/entities',
+    identifier: '@entities',
     // Mutual dependency layer with events and rule values
     // No functions, no tests, pure declarative structures.
   },
   {
-    identifier: "@events",
-    dir: "domain/events",
-    alias: "@events",
-    allowImportsFrom: ["@entities", "@ruleValues", "@utils"],
+    alias: '@events',
+    allowImportsFrom: ['@entities', '@ruleValues', '@utils'],
+    dir: 'domain/events',
+    identifier: '@events',
 
     // Mutual dependency layer with entities and rule values
     // No functions, no tests, pure declarative structures.
   },
   {
-    identifier: "@queries",
-    dir: "domain/queries",
-    alias: "@queries",
-    allowImportsFrom: ["@entities", "@ruleValues", "@validation", "@events", "@game", "@utils"],
+    alias: '@queries',
+    allowImportsFrom: [
+      '@entities',
+      '@ruleValues',
+      '@validation',
+      '@events',
+      '@game',
+      '@utils',
+    ],
+    dir: 'domain/queries',
+    identifier: '@queries',
     // Mutual dependency layer with validation
     // Inwardly dependent on entities, events, and rule values
     // Queries are pure functions, no runtime.
   },
   {
-    identifier: "@validation",
-    dir: "domain/validation",
-    alias: "@validation",
+    alias: '@validation',
     allowImportsFrom: [
-      "@entities",
-      "@queries",
-      "@game",
-      "@ruleValues",
-      "@events",
-      "@transforms",
-      "@utils",
+      '@entities',
+      '@queries',
+      '@game',
+      '@ruleValues',
+      '@events',
+      '@transforms',
+      '@utils',
     ],
+    dir: 'domain/validation',
+    identifier: '@validation',
     // Mutual dependency layer with queries
     // Inwardly dependent on entities, events, and rule values
     // Validation is pure functions, no runtime.
     // ALWAYS returns boolean, never throws errors.
   },
   {
-    identifier: "@sampleValues",
-    dir: "domain/sampleValues",
-    alias: "@sampleValues",
-    allowTypeImportsFrom: ["@entities"],
+    alias: '@sampleValues',
+    allowTypeImportsFrom: ['@entities'],
+    dir: 'domain/sampleValues',
+    identifier: '@sampleValues',
     // Database surrogate for development and testing.
     // Placeholder values for cards and units.
     // Pure declarative structures.
   },
   {
-    identifier: "@transforms",
-    dir: "domain/transforms",
-    alias: "@transforms",
+    alias: '@transforms',
     allowImportsFrom: [
-      "@ruleValues",
-      "@entities",
-      "@game",
-      "@events",
-      "@queries",
-      "@validation",
-      "@utils",
+      '@ruleValues',
+      '@entities',
+      '@game',
+      '@events',
+      '@queries',
+      '@validation',
+      '@utils',
     ],
+    dir: 'domain/transforms',
+    identifier: '@transforms',
     // State transition functions for applying events to game state.
     // Depends on structures and functions from other layers.
     // No runtime, pure functions.
   },
   {
-    identifier: "@game",
-    dir: "domain/game",
-    alias: "@game",
+    alias: '@game',
     allowImportsFrom: [
-      "@entities",
-      "@events",
-      "@queries",
-      "@validation",
-      "@ruleValues",
-      "@transforms",
-      "@utils",
+      '@entities',
+      '@events',
+      '@queries',
+      '@validation',
+      '@ruleValues',
+      '@transforms',
+      '@utils',
     ],
+    dir: 'domain/game',
+    identifier: '@game',
     // State transition functions for applying events to game state.
     // Depends on structures and functions from other layers.
     // No runtime, pure functions.
   },
   {
-    identifier: "@testing",
-    dir: "domain/testing",
-    alias: "@testing",
+    alias: '@testing',
     allowImportsFrom: [
-      "@entities",
-      "@queries",
-      "@ruleValues",
-      "@events",
-      "@utils",
-      "@validation",
-      "@game",
-      "@sampleValues",
-      "@transforms",
+      '@entities',
+      '@queries',
+      '@ruleValues',
+      '@events',
+      '@utils',
+      '@validation',
+      '@game',
+      '@sampleValues',
+      '@transforms',
     ],
+    dir: 'domain/testing',
+    identifier: '@testing',
     // May depend on all layers, no restrictions.
     // May only be used in tests.
   },

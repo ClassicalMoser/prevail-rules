@@ -1,5 +1,5 @@
-import type { UnitFacing, ValidationResult } from "@entities";
-import { getAdjacentFacings } from "@queries/facings";
+import type { UnitFacing, ValidationResult } from '@entities';
+import { getAdjacentFacings } from '@queries/facings';
 
 /**
  * Determines if an engagement is from the rear.
@@ -19,7 +19,7 @@ export function isEngagementFromRear(
     };
   }
   return {
+    errorReason: 'Attacker is not facing a similar direction to the defender',
     result: false,
-    errorReason: "Attacker is not facing a similar direction to the defender",
   };
 }

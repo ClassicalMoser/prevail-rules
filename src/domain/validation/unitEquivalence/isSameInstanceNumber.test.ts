@@ -1,50 +1,53 @@
-import type { UnitInstance } from "@entities";
-import { createTestUnit } from "@testing";
-import { describe, expect, it } from "vitest";
-import { isSameInstanceNumber } from "./isSameInstanceNumber";
+import type { UnitInstance } from '@entities';
+import { createTestUnit } from '@testing';
+
+import { isSameInstanceNumber } from './isSameInstanceNumber';
 
 /**
- * isSameInstanceNumber: Determines whether two unit instances have the same instance number.
+ * IsSameInstanceNumber: Determines whether two unit instances have the same instance number.
  */
-describe("isSameInstanceNumber", () => {
-  it("given both units have the same instance number, returns true", () => {
-    const unit1 = createTestUnit("black", { attack: 3, instanceNumber: 1 });
-    const unit2 = createTestUnit("black", { attack: 4, instanceNumber: 1 });
+describe(isSameInstanceNumber, () => {
+  it('given both units have the same instance number, returns true', () => {
+    const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
+    const unit2 = createTestUnit('black', { attack: 4, instanceNumber: 1 });
     const { result } = isSameInstanceNumber(unit1, unit2);
-    expect(result).toBe(true);
+    expect(result).toBeTruthy();
   });
 
-  it("given units have different instance numbers, returns false", () => {
-    const unit1 = createTestUnit("black", { attack: 3, instanceNumber: 1 });
-    const unit2 = createTestUnit("black", { attack: 3, instanceNumber: 2 });
+  it('given units have different instance numbers, returns false', () => {
+    const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
+    const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const { result } = isSameInstanceNumber(unit1, unit2);
-    expect(result).toBe(false);
+    expect(result).toBeFalsy();
   });
 
-  it("given comparing a unit to itself, returns true", () => {
-    const unit = createTestUnit("black", { attack: 3, instanceNumber: 1 });
+  it('given comparing a unit to itself, returns true', () => {
+    const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const { result } = isSameInstanceNumber(unit, unit);
-    expect(result).toBe(true);
+    expect(result).toBeTruthy();
   });
 
-  it("given different sides with same instance number, returns true", () => {
-    const unit1 = createTestUnit("black", { attack: 3, instanceNumber: 1 });
-    const unit2 = createTestUnit("white", { attack: 3, instanceNumber: 1 });
+  it('given different sides with same instance number, returns true', () => {
+    const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
+    const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     const { result } = isSameInstanceNumber(unit1, unit2);
-    expect(result).toBe(true);
+    expect(result).toBeTruthy();
   });
 
-  it("given different instance numbers even with same type, returns false", () => {
-    const unit1 = createTestUnit("black", { attack: 3, instanceNumber: 1 });
-    const unit2 = createTestUnit("black", { attack: 3, instanceNumber: 3 });
+  it('given different instance numbers even with same type, returns false', () => {
+    const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
+    const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 3 });
     const { result } = isSameInstanceNumber(unit1, unit2);
-    expect(result).toBe(false);
+    expect(result).toBeFalsy();
   });
 
-  it("given comparing a unit to undefined, returns false", () => {
-    const unit = createTestUnit("black", { attack: 3, instanceNumber: 1 });
+  it('given comparing a unit to undefined, returns false', () => {
+    const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     // Intentional type error to test the function
-    const { result } = isSameInstanceNumber(unit, undefined as unknown as UnitInstance);
-    expect(result).toBe(false);
+    const { result } = isSameInstanceNumber(
+      unit,
+      undefined as unknown as UnitInstance,
+    );
+    expect(result).toBeFalsy();
   });
 });

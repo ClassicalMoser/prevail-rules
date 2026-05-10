@@ -1,14 +1,17 @@
-import type { Board } from "@entities";
-import type { ResolveEngageRetreatOptionEvent } from "@events";
-import type { GameStateForBoard } from "@game";
-import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE } from "@events";
+import type { Board } from '@entities';
+import type { ResolveEngageRetreatOptionEvent } from '@events';
+import type { GameStateForBoard } from '@game';
+import {
+  GAME_EFFECT_EVENT_TYPE,
+  RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
+} from '@events';
 import {
   getCurrentUnitStat,
   getFrontEngagementStateFromMovement,
   getMovementResolutionState,
   getSingleUnitWithPlacementAtCoordinate,
   modifiersFromCompletedCommitment,
-} from "@queries";
+} from '@queries';
 
 /**
  * Generates a ResolveEngageRetreatOptionEvent by determining if the defending unit
@@ -30,22 +33,34 @@ export function generateResolveEngageRetreatOptionEvent<TBoard extends Board>(
     state.boardState,
     engagementState.targetPlacement.coordinate,
   );
-  const engagingUnit = engagementState.engagingUnit;
+  const { engagingUnit } = engagementState;
 
-  const commitmentModifiers = modifiersFromCompletedCommitment(movementResolutionState.commitment);
+  const commitmentModifiers = modifiersFromCompletedCommitment(
+    movementResolutionState.commitment,
+  );
 
   // Get current speed values for both units
-  const defendingSpeed = getCurrentUnitStat(defendingUnit, "speed", state, commitmentModifiers);
+  const defendingSpeed = getCurrentUnitStat(
+    defendingUnit,
+    'speed',
+    state,
+    commitmentModifiers,
+  );
 
-  const engagingSpeed = getCurrentUnitStat(engagingUnit, "speed", state, commitmentModifiers);
+  const engagingSpeed = getCurrentUnitStat(
+    engagingUnit,
+    'speed',
+    state,
+    commitmentModifiers,
+  );
 
   // Retreat is possible if defending unit has higher speed than engaging unit
   const defendingUnitCanRetreat = defendingSpeed > engagingSpeed;
 
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
+    defendingUnitCanRetreat,
     effectType: RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
     eventNumber,
-    defendingUnitCanRetreat,
+    eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

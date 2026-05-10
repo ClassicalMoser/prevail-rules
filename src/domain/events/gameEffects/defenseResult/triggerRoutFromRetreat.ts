@@ -1,16 +1,17 @@
-import type { PlayerSide } from "@entities";
-import type { AssertExact } from "@utils";
-import { playerSideSchema } from "@entities";
-import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+import type { PlayerSide } from '@entities';
+import type { AssertExact } from '@utils';
+import { playerSideSchema } from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
 import {
   MELEE_ATTACK_RESOLUTION_CONTEXT,
   RANGED_ATTACK_RESOLUTION_CONTEXT,
-} from "./attackResolutionContext";
+} from './attackResolutionContext';
 
 /** The type of the trigger rout from retreat game effect. */
-export const TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE = "triggerRoutFromRetreat" as const;
+export const TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE =
+  'triggerRoutFromRetreat' as const;
 
 /**
  * When a retreat has **no** legal positions, the rules replace retreat with rout. This effect
@@ -60,7 +61,9 @@ const _triggerRoutFromRetreatSharedFieldsSchemaObject: z.ZodObject<{
 const _triggerRoutFromRetreatRangedAttackSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE>;
-  retreatResolutionContext: z.ZodLiteral<typeof RANGED_ATTACK_RESOLUTION_CONTEXT>;
+  retreatResolutionContext: z.ZodLiteral<
+    typeof RANGED_ATTACK_RESOLUTION_CONTEXT
+  >;
   eventNumber: z.ZodNumber;
 }> = _triggerRoutFromRetreatSharedFieldsSchemaObject.merge(
   z.object({
@@ -74,7 +77,9 @@ const _triggerRoutFromRetreatRangedAttackSchemaObject: z.ZodObject<{
 const _triggerRoutFromRetreatMeleeSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE>;
-  retreatResolutionContext: z.ZodLiteral<typeof MELEE_ATTACK_RESOLUTION_CONTEXT>;
+  retreatResolutionContext: z.ZodLiteral<
+    typeof MELEE_ATTACK_RESOLUTION_CONTEXT
+  >;
   retreatingPlayer: typeof playerSideSchema;
   eventNumber: z.ZodNumber;
 }> = _triggerRoutFromRetreatSharedFieldsSchemaObject.merge(
@@ -94,8 +99,8 @@ const _triggerRoutFromRetreatEventSchemaObject: z.ZodDiscriminatedUnion<
     typeof _triggerRoutFromRetreatRangedAttackSchemaObject,
     typeof _triggerRoutFromRetreatMeleeSchemaObject,
   ],
-  "retreatResolutionContext"
-> = z.discriminatedUnion("retreatResolutionContext", [
+  'retreatResolutionContext'
+> = z.discriminatedUnion('retreatResolutionContext', [
   _triggerRoutFromRetreatRangedAttackSchemaObject,
   _triggerRoutFromRetreatMeleeSchemaObject,
 ]);

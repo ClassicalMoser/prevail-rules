@@ -1,7 +1,7 @@
-import type { Phase } from "@game";
-import { createEmptyGameState } from "@testing";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getExpectedEvent } from "./getExpectedEvent";
+import type { Phase } from '@game';
+import { createEmptyGameState } from '@testing';
+
+import { getExpectedEvent } from './getExpectedEvent';
 
 const {
   getCurrentPhaseStateMock,
@@ -19,11 +19,11 @@ const {
   getExpectedResolveMeleePhaseEventMock: vi.fn(),
 }));
 
-vi.mock("@queries/sequencing", () => ({
+vi.mock(import('@queries/sequencing'), () => ({
   getCurrentPhaseState: getCurrentPhaseStateMock,
 }));
 
-vi.mock("./byPhase", () => ({
+vi.mock(import('./byPhase'), () => ({
   getExpectedCleanupPhaseEvent: getExpectedCleanupPhaseEventMock,
   getExpectedIssueCommandsPhaseEvent: getExpectedIssueCommandsPhaseEventMock,
   getExpectedMoveCommandersPhaseEvent: getExpectedMoveCommandersPhaseEventMock,
@@ -32,9 +32,9 @@ vi.mock("./byPhase", () => ({
 }));
 
 /**
- * getExpectedEvent: top-level router to the next expected event from full game state.
+ * GetExpectedEvent: top-level router to the next expected event from full game state.
  */
-describe("getExpectedEvent", () => {
+describe(getExpectedEvent, () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -42,7 +42,7 @@ describe("getExpectedEvent", () => {
   function expectDelegation(
     phase: Phase,
     delegatedMock: ReturnType<typeof vi.fn>,
-    delegateReturn: { actionType: "gameEffect"; effectType: string },
+    delegateReturn: { actionType: 'gameEffect'; effectType: string },
   ) {
     const state = createEmptyGameState();
     getCurrentPhaseStateMock.mockReturnValue({ phase });
@@ -50,50 +50,54 @@ describe("getExpectedEvent", () => {
 
     const result = getExpectedEvent(state);
 
-    expect(result).toEqual({ ...delegateReturn, expectedEventNumber: 0 });
+    expect(result).toStrictEqual({ ...delegateReturn, expectedEventNumber: 0 });
     expect(getCurrentPhaseStateMock).toHaveBeenCalledWith(state);
     expect(delegatedMock).toHaveBeenCalledWith(state);
   }
 
-  it("given delegate playCards to the play cards phase handler", () => {
-    expectDelegation("playCards", getExpectedPlayCardsPhaseEventMock, {
-      actionType: "gameEffect",
-      effectType: "playCardsEvent",
+  it('given delegate playCards to the play cards phase handler', () => {
+    expectDelegation('playCards', getExpectedPlayCardsPhaseEventMock, {
+      actionType: 'gameEffect',
+      effectType: 'playCardsEvent',
     });
   });
 
-  it("given delegate moveCommanders to the move commanders phase handler", () => {
-    expectDelegation("moveCommanders", getExpectedMoveCommandersPhaseEventMock, {
-      actionType: "gameEffect",
-      effectType: "moveCommandersEvent",
+  it('given delegate moveCommanders to the move commanders phase handler', () => {
+    expectDelegation(
+      'moveCommanders',
+      getExpectedMoveCommandersPhaseEventMock,
+      {
+        actionType: 'gameEffect',
+        effectType: 'moveCommandersEvent',
+      },
+    );
+  });
+
+  it('given delegate issueCommands to the issue commands phase handler', () => {
+    expectDelegation('issueCommands', getExpectedIssueCommandsPhaseEventMock, {
+      actionType: 'gameEffect',
+      effectType: 'issueCommandsEvent',
     });
   });
 
-  it("given delegate issueCommands to the issue commands phase handler", () => {
-    expectDelegation("issueCommands", getExpectedIssueCommandsPhaseEventMock, {
-      actionType: "gameEffect",
-      effectType: "issueCommandsEvent",
+  it('given delegate resolveMelee to the resolve melee phase handler', () => {
+    expectDelegation('resolveMelee', getExpectedResolveMeleePhaseEventMock, {
+      actionType: 'gameEffect',
+      effectType: 'resolveMeleeEvent',
     });
   });
 
-  it("given delegate resolveMelee to the resolve melee phase handler", () => {
-    expectDelegation("resolveMelee", getExpectedResolveMeleePhaseEventMock, {
-      actionType: "gameEffect",
-      effectType: "resolveMeleeEvent",
+  it('given delegate cleanup to the cleanup phase handler', () => {
+    expectDelegation('cleanup', getExpectedCleanupPhaseEventMock, {
+      actionType: 'gameEffect',
+      effectType: 'cleanupEvent',
     });
   });
 
-  it("given delegate cleanup to the cleanup phase handler", () => {
-    expectDelegation("cleanup", getExpectedCleanupPhaseEventMock, {
-      actionType: "gameEffect",
-      effectType: "cleanupEvent",
-    });
-  });
-
-  it("given for an invalid phase, throws", () => {
+  it('given for an invalid phase, throws', () => {
     const state = createEmptyGameState();
-    getCurrentPhaseStateMock.mockReturnValue({ phase: "invalidPhase" });
+    getCurrentPhaseStateMock.mockReturnValue({ phase: 'invalidPhase' });
 
-    expect(() => getExpectedEvent(state)).toThrow("Invalid phase");
+    expect(() => getExpectedEvent(state)).toThrow('Invalid phase');
   });
 });

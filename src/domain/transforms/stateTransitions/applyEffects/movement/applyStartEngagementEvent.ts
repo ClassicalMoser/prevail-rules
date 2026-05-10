@@ -1,14 +1,17 @@
-import type { Board } from "@entities";
-import type { StartEngagementEventForBoard } from "@events";
+import type { Board } from '@entities';
+import type { StartEngagementEventForBoard } from '@events';
 import type {
   EngagementResolutionState,
   EngagementStateForBoard,
   GameStateForBoard,
   IssueCommandsPhaseStateForBoard,
   MovementResolutionStateForBoard,
-} from "@game";
-import { getIssueCommandsPhaseStateForBoard, getMovementResolutionState } from "@queries";
-import { updatePhaseState } from "@transforms/pureTransforms";
+} from '@game';
+import {
+  getIssueCommandsPhaseStateForBoard,
+  getMovementResolutionState,
+} from '@queries';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a StartEngagementEvent to the game state.
@@ -34,36 +37,36 @@ export function applyStartEngagementEvent<TBoard extends Board>(
   // Create the appropriate engagement resolution state based on engagement type
   const engagementResolutionState: EngagementResolutionState = (() => {
     switch (event.engagementType) {
-      case "rear": {
+      case 'rear': {
         // Rear engagement: create rout state immediately
         return {
-          engagementType: "rear" as const,
+          completed: false,
+          engagementType: 'rear' as const,
           routState: {
-            substepType: "rout" as const,
-            player: defendingPlayer,
-            unitsToRout: new Set([defendingUnit]),
-            numberToDiscard: defendingUnit.unitType.routPenalty,
             cardsChosen: false,
             completed: false,
+            numberToDiscard: defendingUnit.unitType.routPenalty,
+            player: defendingPlayer,
+            substepType: 'rout' as const,
+            unitsToRout: new Set([defendingUnit]),
           },
-          completed: false,
         };
       }
-      case "flank": {
+      case 'flank': {
         // Flank engagement: defender will be rotated
         return {
-          engagementType: "flank" as const,
           defenderRotated: false,
+          engagementType: 'flank' as const,
         };
       }
-      case "front": {
+      case 'front': {
         // Front engagement: requires check for defensive commitment
         return {
-          engagementType: "front" as const,
-          defensiveCommitment: { commitmentType: "pending" as const },
           defendingUnitCanRetreat: undefined,
-          defendingUnitRetreats: undefined,
           defendingUnitRetreated: undefined,
+          defendingUnitRetreats: undefined,
+          defensiveCommitment: { commitmentType: 'pending' as const },
+          engagementType: 'front' as const,
         };
       }
       default: {
@@ -76,12 +79,12 @@ export function applyStartEngagementEvent<TBoard extends Board>(
 
   // Create engagement state
   const engagementState: EngagementStateForBoard<TBoard> = {
-    substepType: "engagementResolution" as const,
     boardType: movementState.boardType,
-    engagingUnit,
-    targetPlacement: movementState.targetPlacement,
-    engagementResolutionState,
     completed: false,
+    engagementResolutionState,
+    engagingUnit,
+    substepType: 'engagementResolution' as const,
+    targetPlacement: movementState.targetPlacement,
   };
 
   // Update movement resolution state

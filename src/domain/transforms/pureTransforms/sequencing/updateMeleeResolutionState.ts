@@ -1,7 +1,7 @@
-import type { Board } from "@entities";
-import type { GameStateForBoard, MeleeResolutionStateForBoard } from "@game";
-import { getResolveMeleePhaseStateForBoard } from "@queries";
-import { updatePhaseState } from "../state";
+import type { Board } from '@entities';
+import type { GameStateForBoard, MeleeResolutionStateForBoard } from '@game';
+import { getResolveMeleePhaseStateForBoard } from '@queries';
+import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the melee resolution state updated in the resolve melee phase.
@@ -26,7 +26,7 @@ export function updateMeleeResolutionState<TBoard extends Board>(
   const resolveMeleePhaseState = getResolveMeleePhaseStateForBoard(state);
 
   if (!resolveMeleePhaseState.currentMeleeResolutionState) {
-    throw new Error("No current melee resolution state found");
+    throw new Error('No current melee resolution state found');
   }
 
   const newPhaseState = {

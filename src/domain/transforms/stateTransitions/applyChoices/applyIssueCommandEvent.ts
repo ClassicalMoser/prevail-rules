@@ -1,12 +1,15 @@
-import type { Board, Command } from "@entities";
-import type { IssueCommandEvent } from "@events";
-import type { GameStateForBoard, IssueCommandsPhaseStateForBoard } from "@game";
-import { findMatchingCommand, getIssueCommandsPhaseStateForBoard } from "@queries";
+import type { Board, Command } from '@entities';
+import type { IssueCommandEvent } from '@events';
+import type { GameStateForBoard, IssueCommandsPhaseStateForBoard } from '@game';
+import {
+  findMatchingCommand,
+  getIssueCommandsPhaseStateForBoard,
+} from '@queries';
 import {
   addUnitsToCommandedUnits,
   updatePhaseState,
   updateRemainingPlayerCommands,
-} from "@transforms/pureTransforms";
+} from '@transforms/pureTransforms';
 
 /**
  * Applies an IssueCommandEvent to the game state.
@@ -22,9 +25,9 @@ export function applyIssueCommandEvent<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   const phaseState = getIssueCommandsPhaseStateForBoard(state);
-  const player = event.player;
-  const command = event.command;
-  const units = event.units;
+  const { player } = event;
+  const { command } = event;
+  const { units } = event;
 
   // Determine if this is the first or second player
   const isFirstPlayer = player === state.currentInitiative;
@@ -33,20 +36,21 @@ export function applyIssueCommandEvent<TBoard extends Board>(
     : phaseState.remainingCommandsSecondPlayer;
 
   // Resolve set member to remove (pre-validated: command is in remaining commands)
-  const matchingCommand = findMatchingCommand(remainingCommands, command)!;
+  const matchingCommand = findMatchingCommand(remainingCommands, command);
 
   // Remove the matching command from remaining commands
-  const newRemainingCommands: Set<Command> = new Set(
+  const newRemainingCommands = new Set<Command>(
     [...remainingCommands].filter((c) => c !== matchingCommand),
   );
 
   // Update phase state with new remaining commands
-  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = updateRemainingPlayerCommands(
-    phaseState,
-    player,
-    state.currentInitiative,
-    newRemainingCommands,
-  );
+  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> =
+    updateRemainingPlayerCommands(
+      phaseState,
+      player,
+      state.currentInitiative,
+      newRemainingCommands,
+    );
 
   const stateWithPhase = updatePhaseState(state, newPhaseState);
 

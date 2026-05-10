@@ -1,5 +1,5 @@
-import type { ExpectedEventInfo } from "@events";
-import type { ReverseState } from "@game";
+import type { ExpectedEventInfo } from '@events';
+import type { ReverseState } from '@game';
 
 /**
  * Gets the expected event for reverse substeps.
@@ -10,21 +10,25 @@ import type { ReverseState } from "@game";
  * @param _gameState - The game state (required for consistency, engagement check handled by caller)
  * @returns Information about what event is expected
  */
-export function getExpectedReverseEvent(reverseState: ReverseState): ExpectedEventInfo {
+export function getExpectedReverseEvent(
+  reverseState: ReverseState,
+): ExpectedEventInfo {
   // Check if reverse is completed (all work done, ready for parent to handle)
   if (reverseState.completed) {
-    throw new Error("Reverse state is already complete");
+    throw new Error('Reverse state is already complete');
   }
 
   // Check if the final position has been determined
   if (reverseState.finalPosition === undefined) {
     // Reverse is deterministic - expect resolve reverse effect
     return {
-      actionType: "gameEffect",
-      effectType: "resolveReverse",
+      actionType: 'gameEffect',
+      effectType: 'resolveReverse',
     };
   }
   // Final position determined but not completed - this shouldn't happen if completed is set correctly
   // But we'll throw an error to be safe
-  throw new Error("Reverse state has final position but not marked as completed");
+  throw new Error(
+    'Reverse state has final position but not marked as completed',
+  );
 }

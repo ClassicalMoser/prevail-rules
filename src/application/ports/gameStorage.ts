@@ -1,5 +1,5 @@
-import type { Game, GameState } from "@game";
-import type { PortResponse } from "./portResponse";
+import type { Game, GameState } from '@game';
+import type { PortResponse } from './portResponse';
 
 /**
  * Persistence for full game records and current {@link GameState}.
@@ -15,5 +15,8 @@ export interface GameStorage {
    * (e.g. `{ ...game, gameState } as Game`) or a re-parse through `parseStoredGame` / per-variant
    * game schemas—same as any JSON round-trip.
    */
-  updateGameState: (gameId: string, gameState: GameState) => Promise<PortResponse<void>>;
+  updateGameState: (
+    gameId: string,
+    gameState: GameState,
+  ) => Promise<PortResponse<void>>;
 }

@@ -1,10 +1,10 @@
-import type { GameEffectEventForBoard } from "@events";
-import { createEmptyGameState } from "@testing";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { applyDiscardPlayedCardsEvent } from "./applyEffects";
-import { applyGameEffectEvent } from "./applyGameEffectEvent";
+import type { GameEffectEventForBoard } from '@events';
+import { createEmptyGameState } from '@testing';
 
-vi.mock("./applyEffects", () => ({
+import { applyDiscardPlayedCardsEvent } from './applyEffects';
+import { applyGameEffectEvent } from './applyGameEffectEvent';
+
+vi.mock(import('./applyEffects'), () => ({
   applyCompleteAttackApplyEvent: vi.fn(),
   applyCompleteCleanupPhaseEvent: vi.fn(),
   applyCompleteIssueCommandsPhaseEvent: vi.fn(),
@@ -33,18 +33,18 @@ vi.mock("./applyEffects", () => ({
 /**
  * Smoke tests only: real routing coverage lives on each `applyEffects/*` module.
  */
-describe("applyGameEffectEvent", () => {
+describe(applyGameEffectEvent, () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("delegates to the handler for the matching effectType and returns its result", () => {
+  it('delegates to the handler for the matching effectType and returns its result', () => {
     const state = createEmptyGameState();
     const event = {
+      boardType: 'standard' as const,
+      effectType: 'discardPlayedCards' as const,
       eventNumber: 0,
-      eventType: "gameEffect" as const,
-      boardType: "standard" as const,
-      effectType: "discardPlayedCards" as const,
+      eventType: 'gameEffect' as const,
     } as GameEffectEventForBoard<typeof state.boardState>;
 
     vi.mocked(applyDiscardPlayedCardsEvent).mockReturnValue(state);
@@ -55,16 +55,16 @@ describe("applyGameEffectEvent", () => {
     expect(result).toBe(state);
   });
 
-  it("throws when effectType is not handled by the switch", () => {
+  it('throws when effectType is not handled by the switch', () => {
     const state = createEmptyGameState();
     const event = {
+      effectType: 'unknown',
       eventNumber: 0,
-      eventType: "gameEffect",
-      effectType: "unknown",
+      eventType: 'gameEffect',
     } as unknown as GameEffectEventForBoard<typeof state.boardState>;
 
     expect(() => applyGameEffectEvent(event, state)).toThrow(
-      "Unreachable: unhandled game effect event (effectType not in switch)",
+      'Unreachable: unhandled game effect event (effectType not in switch)',
     );
   });
 });

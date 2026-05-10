@@ -1,6 +1,6 @@
-import type { Board } from "@entities";
-import type { EventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
+import type { Board } from '@entities';
+import type { EventForBoard } from '@events';
+import type { GameStateForBoard } from '@game';
 
 /**
  * Sets the current round's ordered event log (replay tail, tests, or harness state).

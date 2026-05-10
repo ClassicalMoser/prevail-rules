@@ -37,7 +37,10 @@ export function throwIfUndefined<T>(value: T | undefined, message: string): T {
  * @returns The same value, narrowed to `T`
  * @throws Error with the supplied message when `value` is falsy
  */
-export function throwIfFalsy<T>(value: T | null | undefined, message: string): T {
+export function throwIfFalsy<T>(
+  value: T | null | undefined,
+  message: string,
+): T {
   if (!value) {
     throw new Error(message);
   }

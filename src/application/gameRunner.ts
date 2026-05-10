@@ -1,9 +1,9 @@
-import type { GameModeName } from "@entities";
-import type { PlayerChoiceEvent } from "@events";
-import type { EnginePorts, PortResponse } from "./ports";
-import type { GameRunner } from "./ports/gameRunner";
-import { handlePlayerChoiceSubmission as handlePlayerChoiceSubmissionFunction } from "./useCases/handlePlayerChoiceSubmission";
-import { startNewGame as startNewGameFunction } from "./useCases/startNewGame";
+import type { GameModeName } from '@entities';
+import type { PlayerChoiceEvent } from '@events';
+import type { EnginePorts, PortResponse } from './ports';
+import type { GameRunner } from './ports/gameRunner';
+import { handlePlayerChoiceSubmission as handlePlayerChoiceSubmissionFunction } from './useCases/handlePlayerChoiceSubmission';
+import { startNewGame as startNewGameFunction } from './useCases/startNewGame';
 
 /**
  * The root factory function to create the game runner in any context.
@@ -22,7 +22,7 @@ export function createGameRunner(ports: EnginePorts): GameRunner {
     handlePlayerChoiceSubmissionFunction(gameId, gameMode, playerChoice, ports);
 
   return {
-    startNewGame,
     handlePlayerChoiceSubmission,
+    startNewGame,
   };
 }

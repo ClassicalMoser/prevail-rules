@@ -1,6 +1,9 @@
-import type { DiscardPlayedCardsEvent } from "@events";
-import type { GameState } from "@game";
-import { DISCARD_PLAYED_CARDS_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
+import type { DiscardPlayedCardsEvent } from '@events';
+import type { GameState } from '@game';
+import {
+  DISCARD_PLAYED_CARDS_EFFECT_TYPE,
+  GAME_EFFECT_EVENT_TYPE,
+} from '@events';
 
 /**
  * Generates a DiscardPlayedCardsEvent to discard all played cards.
@@ -16,8 +19,8 @@ export function generateDiscardPlayedCardsEvent(
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: DISCARD_PLAYED_CARDS_EFFECT_TYPE,
     eventNumber,
+    eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

@@ -1,19 +1,24 @@
-import type { LargeBoard, SmallBoard, StandardBoard, ValidationResult } from "@entities";
-import type { PlayerChoiceEvent, PlayerChoiceEventForBoard } from "@events";
-import type { GameState } from "@game";
-import { validateExpectedChoice } from "./validateExpectedChoice";
+import type {
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+  ValidationResult,
+} from '@entities';
+import type { PlayerChoiceEvent, PlayerChoiceEventForBoard } from '@events';
+import type { GameState } from '@game';
+import { validateExpectedChoice } from './validateExpectedChoice';
 import {
   largePlayerChoiceEventSchema,
   smallPlayerChoiceEventSchema,
   standardPlayerChoiceEventSchema,
-} from "@events";
-import { validateLegalPlayerChoice } from "./validateLegalPlayerChoice";
-import { ZodError } from "zod";
+} from '@events';
+import { validateLegalPlayerChoice } from './validateLegalPlayerChoice';
+import type { ZodError } from 'zod';
 
 function handleParseFailure(error: ZodError): ValidationResult {
   return {
-    result: false,
     errorReason: `Invalid player choice event: ${error.message}`,
+    result: false,
   };
 }
 
@@ -26,10 +31,13 @@ function handleParseFailure(error: ZodError): ValidationResult {
  * @param state - The current game state
  * @returns ValidationResult indicating if the player choice is both expected and legal
  */
-export function validatePlayerChoice(event: PlayerChoiceEvent, state: GameState): ValidationResult {
+export function validatePlayerChoice(
+  event: PlayerChoiceEvent,
+  state: GameState,
+): ValidationResult {
   try {
     // Step 1: Validate that the player choice is expected:
-    // choice type and player source match expected event
+    // Choice type and player source match expected event
     // Does not check that the choice is legal under the rules.
     // Also does not narrow based on board type.
     const expectedValidation = validateExpectedChoice(event, state);
@@ -42,37 +50,40 @@ export function validatePlayerChoice(event: PlayerChoiceEvent, state: GameState)
     // Step 2: Validate that the player choice is legal under the rules
 
     // VERY IMPORTANT: Validate that the player choice event is a strictly valid PlayerChoiceEvent
-    // for the specific board type.
+    // For the specific board type.
     // This will save all possible type headaches down the line.
-    const boardType = state.boardType;
+    const { boardType } = state;
     let safelyParsed;
     switch (boardType) {
-      case "small": {
+      case 'small': {
         safelyParsed = smallPlayerChoiceEventSchema.safeParse(event);
         if (!safelyParsed.success) {
           handleParseFailure(safelyParsed.error);
         }
-        const eventForBoard = safelyParsed.data as PlayerChoiceEventForBoard<SmallBoard>;
+        const eventForBoard =
+          safelyParsed.data as PlayerChoiceEventForBoard<SmallBoard>;
         const legalValidation = validateLegalPlayerChoice(eventForBoard, state);
         // Return pass or fail, since this is the last validation step.
         return legalValidation;
       }
-      case "standard": {
+      case 'standard': {
         safelyParsed = standardPlayerChoiceEventSchema.safeParse(event);
         if (!safelyParsed.success) {
           handleParseFailure(safelyParsed.error);
         }
-        const eventForBoard = safelyParsed.data as PlayerChoiceEventForBoard<StandardBoard>;
+        const eventForBoard =
+          safelyParsed.data as PlayerChoiceEventForBoard<StandardBoard>;
         const legalValidation = validateLegalPlayerChoice(eventForBoard, state);
         // Return pass or fail, since this is the last validation step.
         return legalValidation;
       }
-      case "large": {
+      case 'large': {
         safelyParsed = largePlayerChoiceEventSchema.safeParse(event);
         if (!safelyParsed.success) {
           handleParseFailure(safelyParsed.error);
         }
-        const eventForBoard = safelyParsed.data as PlayerChoiceEventForBoard<LargeBoard>;
+        const eventForBoard =
+          safelyParsed.data as PlayerChoiceEventForBoard<LargeBoard>;
         const legalValidation = validateLegalPlayerChoice(eventForBoard, state);
         // Return pass or fail, since this is the last validation step.
         return legalValidation;
@@ -85,11 +96,11 @@ export function validatePlayerChoice(event: PlayerChoiceEvent, state: GameState)
   } catch (error) {
     // Catch any errors that may occur since validations may never throw
     return {
-      result: false,
       errorReason:
         error instanceof Error
           ? `Error validating player choice: ${error.message}`
-          : "Unknown error validating player choice",
+          : 'Unknown error validating player choice',
+      result: false,
     };
   }
 }

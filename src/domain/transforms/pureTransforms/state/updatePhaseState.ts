@@ -1,5 +1,5 @@
-import type { Board } from "@entities";
-import type { GameStateForBoard, PhaseStateForBoard } from "@game";
+import type { Board } from '@entities';
+import type { GameStateForBoard, PhaseStateForBoard } from '@game';
 
 /**
  * Narrow case, update phase state for a specific board type.

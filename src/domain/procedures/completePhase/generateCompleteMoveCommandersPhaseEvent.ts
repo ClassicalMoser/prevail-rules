@@ -1,7 +1,10 @@
-import type { CompleteMoveCommandersPhaseEvent } from "@events";
-import type { GameState } from "@game";
-import { COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
-import { getOtherPlayer } from "@queries";
+import type { CompleteMoveCommandersPhaseEvent } from '@events';
+import type { GameState } from '@game';
+import {
+  COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
+  GAME_EFFECT_EVENT_TYPE,
+} from '@events';
+import { getOtherPlayer } from '@queries';
 
 /**
  * Generates a CompleteMoveCommandersPhaseEvent to complete the move commanders phase
@@ -23,16 +26,16 @@ export function generateCompleteMoveCommandersPhaseEvent(
   const secondPlayerCard = state.cardState[secondPlayer].inPlay;
 
   const remainingCommandsFirstPlayer = new Set(
-    firstPlayerCard != null ? [firstPlayerCard.command] : [],
+    firstPlayerCard !== null ? [firstPlayerCard.command] : [],
   );
   const remainingCommandsSecondPlayer = new Set(
-    secondPlayerCard != null ? [secondPlayerCard.command] : [],
+    secondPlayerCard !== null ? [secondPlayerCard.command] : [],
   );
 
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,
     eventNumber,
+    eventType: GAME_EFFECT_EVENT_TYPE,
     remainingCommandsFirstPlayer,
     remainingCommandsSecondPlayer,
   };

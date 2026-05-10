@@ -1,4 +1,4 @@
-import type { StandardBoard, UnitWithPlacement } from "@entities";
+import type { StandardBoard, UnitWithPlacement } from '@entities';
 import {
   createAttackApplyState,
   createEmptyGameState,
@@ -8,26 +8,26 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
-} from "@testing";
-import { addUnitToBoard, updatePhaseState } from "@transforms/pureTransforms";
-import { describe, expect, it } from "vitest";
-import { updateAttackApplyState } from "./updateAttackApplyState";
+} from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+
+import { updateAttackApplyState } from './updateAttackApplyState';
 
 /**
- * updateAttackApplyState: Creates a new game state with the attack apply state updated.
+ * UpdateAttackApplyState: Creates a new game state with the attack apply state updated.
  */
-describe("updateAttackApplyState", () => {
+describe(updateAttackApplyState, () => {
   function createStateWithRangedAttackApply() {
     const state = createEmptyGameState();
-    const unit = createTestUnit("white", { attack: 2 });
+    const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit,
     };
     const stateWithUnit = {
       ...state,
@@ -44,12 +44,12 @@ describe("updateAttackApplyState", () => {
   }
 
   function createStateWithMeleeApply() {
-    const state = createEmptyGameState({ currentInitiative: "black" });
-    const whiteUnit = createTestUnit("white", { attack: 2 });
-    const blackUnit = createTestUnit("black", { attack: 2 });
+    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
-      whiteAttackApplyState: createAttackApplyState(whiteUnit),
       blackAttackApplyState: createAttackApplyState(blackUnit),
+      whiteAttackApplyState: createAttackApplyState(whiteUnit),
     });
     return updatePhaseState(
       state,
@@ -59,50 +59,70 @@ describe("updateAttackApplyState", () => {
     );
   }
 
-  it("given update attack apply state in ranged attack resolution", () => {
+  it('given update attack apply state in ranged attack resolution', () => {
     const state = createStateWithRangedAttackApply();
-    const unit = createTestUnit("white", { attack: 2 });
+    const unit = createTestUnit('white', { attack: 2 });
     const updated = createAttackApplyState(unit, { completed: true });
 
     const newState = updateAttackApplyState(state, updated);
 
     const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe("issueCommands");
-    if (phase?.phase !== "issueCommands" || !phase.currentCommandResolutionState)
-      throw new Error("phase");
-    expect(phase.currentCommandResolutionState.substepType).toBe("commandResolution");
-    if (phase.currentCommandResolutionState.commandResolutionType !== "rangedAttack")
-      throw new Error("type");
-    expect(phase.currentCommandResolutionState.attackApplyState?.completed).toBe(true);
+    expect(phase?.phase).toBe('issueCommands');
+    if (
+      phase?.phase !== 'issueCommands' ||
+      !phase.currentCommandResolutionState
+    ) {
+      throw new Error('phase');
+    }
+    expect(phase.currentCommandResolutionState.substepType).toBe(
+      'commandResolution',
+    );
+    if (
+      phase.currentCommandResolutionState.commandResolutionType !==
+      'rangedAttack'
+    ) {
+      throw new Error('type');
+    }
+    expect(
+      phase.currentCommandResolutionState.attackApplyState?.completed,
+    ).toBeTruthy();
   });
 
-  it("given update white attack apply state in melee resolution", () => {
+  it('given update white attack apply state in melee resolution', () => {
     const state = createStateWithMeleeApply();
-    const whiteUnit = createTestUnit("white", { attack: 2 });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
     const updated = createAttackApplyState(whiteUnit, { completed: true });
 
     const newState = updateAttackApplyState(state, updated);
 
     const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe("resolveMelee");
-    if (phase?.phase !== "resolveMelee") throw new Error("phase");
-    expect(phase.currentMeleeResolutionState?.whiteAttackApplyState?.completed).toBe(true);
+    expect(phase?.phase).toBe('resolveMelee');
+    if (phase?.phase !== 'resolveMelee') {
+      throw new Error('phase');
+    }
+    expect(
+      phase.currentMeleeResolutionState?.whiteAttackApplyState?.completed,
+    ).toBeTruthy();
   });
 
-  it("given update black attack apply state in melee resolution", () => {
+  it('given update black attack apply state in melee resolution', () => {
     const state = createStateWithMeleeApply();
-    const blackUnit = createTestUnit("black", { attack: 2 });
+    const blackUnit = createTestUnit('black', { attack: 2 });
     const updated = createAttackApplyState(blackUnit, { completed: true });
 
     const newState = updateAttackApplyState(state, updated);
 
     const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe("resolveMelee");
-    if (phase?.phase !== "resolveMelee") throw new Error("phase");
-    expect(phase.currentMeleeResolutionState?.blackAttackApplyState?.completed).toBe(true);
+    expect(phase?.phase).toBe('resolveMelee');
+    if (phase?.phase !== 'resolveMelee') {
+      throw new Error('phase');
+    }
+    expect(
+      phase.currentMeleeResolutionState?.blackAttackApplyState?.completed,
+    ).toBeTruthy();
   });
 
-  it("given when ranged attack resolution has no attack apply state, throws", () => {
+  it('given when ranged attack resolution has no attack apply state, throws', () => {
     const state = createEmptyGameState();
     const ranged = createRangedAttackResolutionState(state, {
       attackApplyState: undefined,
@@ -111,20 +131,23 @@ describe("updateAttackApplyState", () => {
       currentCommandResolutionState: ranged,
     });
     const stateInPhase = updatePhaseState(state, phaseState);
-    const unit = createTestUnit("white", { attack: 2 });
+    const unit = createTestUnit('white', { attack: 2 });
 
-    expect(() => updateAttackApplyState(stateInPhase, createAttackApplyState(unit))).toThrow(
-      "No attack apply state found in ranged attack resolution state",
-    );
+    expect(() =>
+      updateAttackApplyState(stateInPhase, createAttackApplyState(unit)),
+    ).toThrow('No attack apply state found in ranged attack resolution state');
   });
 
-  it("given when not in issueCommands or resolveMelee phase, throws", () => {
+  it('given when not in issueCommands or resolveMelee phase, throws', () => {
     const state = createEmptyGameState();
-    const stateInPlayCards = updatePhaseState(state, createPlayCardsPhaseState());
-    const unit = createTestUnit("white", { attack: 2 });
-
-    expect(() => updateAttackApplyState(stateInPlayCards, createAttackApplyState(unit))).toThrow(
-      "Attack apply state update not expected in phase: playCards",
+    const stateInPlayCards = updatePhaseState(
+      state,
+      createPlayCardsPhaseState(),
     );
+    const unit = createTestUnit('white', { attack: 2 });
+
+    expect(() =>
+      updateAttackApplyState(stateInPlayCards, createAttackApplyState(unit)),
+    ).toThrow('Attack apply state update not expected in phase: playCards');
   });
 });

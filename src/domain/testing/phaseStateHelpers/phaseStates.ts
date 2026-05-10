@@ -5,16 +5,16 @@ import type {
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
   ResolveMeleePhaseStateForBoard,
-} from "@game";
+} from '@game';
 import {
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,
   PLAY_CARDS_PHASE,
   RESOLVE_MELEE_PHASE,
-} from "@game";
+} from '@game';
 
-import { createMeleeResolutionState } from "./commandResolutionStates";
-import { StandardBoard } from "@entities";
+import { createMeleeResolutionState } from './commandResolutionStates';
+import type { StandardBoard } from '@entities';
 
 /**
  * Creates a PlayCardsPhaseState with sensible defaults.
@@ -24,7 +24,7 @@ export function createPlayCardsPhaseState(
 ): PlayCardsPhaseState {
   return {
     phase: PLAY_CARDS_PHASE,
-    step: "chooseCards",
+    step: 'chooseCards',
     ...overrides,
   };
 }
@@ -37,7 +37,7 @@ export function createMoveCommandersPhaseState(
 ): MoveCommandersPhaseState {
   return {
     phase: MOVE_COMMANDERS_PHASE,
-    step: "moveFirstCommander",
+    step: 'moveFirstCommander',
     ...overrides,
   };
 }
@@ -50,14 +50,14 @@ export function createIssueCommandsPhaseState(
   overrides?: Partial<IssueCommandsPhaseStateForBoard<StandardBoard>>,
 ): IssueCommandsPhaseStateForBoard<StandardBoard> {
   return {
-    phase: ISSUE_COMMANDS_PHASE,
-    step: "firstPlayerResolveCommands",
-    boardType: "standard" as const,
-    remainingCommandsFirstPlayer: new Set(),
-    remainingUnitsFirstPlayer: new Set(),
-    remainingCommandsSecondPlayer: new Set(),
-    remainingUnitsSecondPlayer: new Set(),
+    boardType: 'standard' as const,
     currentCommandResolutionState: undefined,
+    phase: ISSUE_COMMANDS_PHASE,
+    remainingCommandsFirstPlayer: new Set(),
+    remainingCommandsSecondPlayer: new Set(),
+    remainingUnitsFirstPlayer: new Set(),
+    remainingUnitsSecondPlayer: new Set(),
+    step: 'firstPlayerResolveCommands',
     ...overrides,
   };
 }
@@ -70,11 +70,11 @@ export function createResolveMeleePhaseState(
   overrides?: Partial<ResolveMeleePhaseStateForBoard<StandardBoard>>,
 ): ResolveMeleePhaseStateForBoard<StandardBoard> {
   return {
-    phase: RESOLVE_MELEE_PHASE,
-    boardType: "standard" as const,
-    step: "resolveMelee",
+    boardType: 'standard' as const,
     currentMeleeResolutionState: createMeleeResolutionState(state),
+    phase: RESOLVE_MELEE_PHASE,
     remainingEngagements: new Set(),
+    step: 'resolveMelee',
     ...overrides,
   };
 }
@@ -82,12 +82,14 @@ export function createResolveMeleePhaseState(
 /**
  * Creates a CleanupPhaseState with sensible defaults.
  */
-export function createCleanupPhaseState(overrides?: Partial<CleanupPhaseState>): CleanupPhaseState {
+export function createCleanupPhaseState(
+  overrides?: Partial<CleanupPhaseState>,
+): CleanupPhaseState {
   return {
-    phase: "cleanup" as const,
-    step: "discardPlayedCards",
     firstPlayerRallyResolutionState: undefined,
+    phase: 'cleanup' as const,
     secondPlayerRallyResolutionState: undefined,
+    step: 'discardPlayedCards',
     ...overrides,
   };
 }

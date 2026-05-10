@@ -1,17 +1,16 @@
-import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { GameStateForBoard } from "@game";
-import { equites, punicCitizenSpearmen, velites } from "@sampleValues";
+import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type { GameStateForBoard } from '@game';
+import { equites, punicCitizenSpearmen, velites } from '@sampleValues';
 import {
   createAttackApplyState,
   createEmptyGameState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestUnit,
-} from "@testing";
-import { addUnitToBoard, updatePhaseState } from "@transforms";
-import { describe, expect, it } from "vitest";
+} from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
-import { generateResolveRangedAttackEvent } from "./generateResolveRangedAttackEvent";
+import { generateResolveRangedAttackEvent } from './generateResolveRangedAttackEvent';
 
 /** Citizen spearmen: default `inPlay` (+1 attack) keeps strike below retreat. */
 const spearmenType = punicCitizenSpearmen;
@@ -21,27 +20,27 @@ const spearmenType = punicCitizenSpearmen;
  * settled, and there must be no attack-apply substep yet. Outcome exposes rout/retreat/reverse
  * flags and optional legal retreat cells when retreat applies.
  */
-describe("generateResolveRangedAttackEvent", () => {
+describe(generateResolveRangedAttackEvent, () => {
   /** Spearmen duel on E-5 under issueCommands ranged CRS; default commitments resolved. */
   function rangedResolutionGameState(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
-    const defendingUnit = createTestUnit("white", { unitType: spearmenType });
+    const defendingUnit = createTestUnit('white', { unitType: spearmenType });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: defendingUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: defendingUnit,
     };
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
     const ranged = createRangedAttackResolutionState(withBoard, {
+      attackingUnit: createTestUnit('black', { unitType: spearmenType }),
       defendingUnit,
-      attackingUnit: createTestUnit("black", { unitType: spearmenType }),
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: ranged,
@@ -49,133 +48,130 @@ describe("generateResolveRangedAttackEvent", () => {
     return updatePhaseState(withBoard, phase);
   }
 
-  it("given low-retreat defender vs cavalry attacker, retreated true with legal set", () => {
+  it('given low-retreat defender vs cavalry attacker, retreated true with legal set', () => {
     const state = createEmptyGameState();
-    const defendingUnit = createTestUnit("white", { unitType: velites });
+    const defendingUnit = createTestUnit('white', { unitType: velites });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: defendingUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: defendingUnit,
     };
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
     const ranged = createRangedAttackResolutionState(withBoard, {
+      attackingUnit: createTestUnit('black', { unitType: equites }),
       defendingUnit,
-      attackingUnit: createTestUnit("black", { unitType: equites }),
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
     const event = generateResolveRangedAttackEvent(full, 0);
-    expect(event.retreated).toBe(true);
+    expect(event.retreated).toBeTruthy();
     expect(event.legalRetreatOptions).toBeInstanceOf(Set);
   });
 
-  it("given spearmen mirror below retreat threshold, routed/retreated/reversed booleans and empty set", () => {
+  it('given spearmen mirror below retreat threshold, routed/retreated/reversed booleans and empty set', () => {
     const full = rangedResolutionGameState();
     const event = generateResolveRangedAttackEvent(full, 0);
-    expect(event.effectType).toBe("resolveRangedAttack");
-    expect(event.defenderWithPlacement.unit.playerSide).toBe("white");
-    expect(event.defenderWithPlacement.placement.coordinate).toBe("E-5");
-    expect(typeof event.routed).toBe("boolean");
-    expect(typeof event.retreated).toBe("boolean");
-    expect(typeof event.reversed).toBe("boolean");
-    expect(event.retreated).toBe(false);
+    expect(event.effectType).toBe('resolveRangedAttack');
+    expect(event.defenderWithPlacement.unit.playerSide).toBe('white');
+    expect(event.defenderWithPlacement.placement.coordinate).toBe('E-5');
+    expect(event.retreated).toBeFalsy();
     expect(event.legalRetreatOptions).toBeInstanceOf(Set);
     expect(event.legalRetreatOptions.size).toBe(0);
   });
 
-  it("given defending commitment pending on ranged CRS, throws defending commitment guard", () => {
+  it('given defending commitment pending on ranged CRS, throws defending commitment guard', () => {
     const state = createEmptyGameState();
-    const defendingUnit = createTestUnit("white", { attack: 2 });
+    const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: defendingUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: defendingUnit,
     };
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
     const ranged = createRangedAttackResolutionState(withBoard, {
+      defendingCommitment: { commitmentType: 'pending' },
       defendingUnit,
-      defendingCommitment: { commitmentType: "pending" },
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
     expect(() => generateResolveRangedAttackEvent(full, 0)).toThrow(
-      "Defending commitment is still pending",
+      'Defending commitment is still pending',
     );
   });
 
-  it("given attacking commitment pending on ranged CRS, throws attacking commitment guard", () => {
+  it('given attacking commitment pending on ranged CRS, throws attacking commitment guard', () => {
     const state = createEmptyGameState();
-    const defendingUnit = createTestUnit("white", { attack: 2 });
+    const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: defendingUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: defendingUnit,
     };
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
     const ranged = createRangedAttackResolutionState(withBoard, {
+      attackingCommitment: { commitmentType: 'pending' },
       defendingUnit,
-      attackingCommitment: { commitmentType: "pending" },
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
     expect(() => generateResolveRangedAttackEvent(full, 0)).toThrow(
-      "Attacking commitment is still pending",
+      'Attacking commitment is still pending',
     );
   });
 
-  it("given ranged CRS already holding attackApplyState, throws attack apply already exists", () => {
+  it('given ranged CRS already holding attackApplyState, throws attack apply already exists', () => {
     const state = createEmptyGameState();
-    const defendingUnit = createTestUnit("white", { attack: 2 });
+    const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: defendingUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: defendingUnit,
     };
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
     const ranged = createRangedAttackResolutionState(withBoard, {
-      defendingUnit,
       attackApplyState: createAttackApplyState(defendingUnit),
+      defendingUnit,
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: ranged,
     });
     const full = updatePhaseState(withBoard, phase);
     expect(() => generateResolveRangedAttackEvent(full, 0)).toThrow(
-      "Attack apply state already exists",
+      'Attack apply state already exists',
     );
   });
 });

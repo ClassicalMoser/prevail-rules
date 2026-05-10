@@ -1,5 +1,5 @@
-import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { GameStateForBoard } from "@game";
+import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type { GameStateForBoard } from '@game';
 import {
   createEmptyGameState,
   createFrontEngagementState,
@@ -7,11 +7,10 @@ import {
   createMovementResolutionState,
   createTestCard,
   createUnitByStat,
-} from "@testing";
-import { addUnitToBoard, updatePhaseState } from "@transforms";
-import { describe, expect, it } from "vitest";
+} from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
-import { generateResolveEngageRetreatOptionEvent } from "./generateResolveEngageRetreatOptionEvent";
+import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
 
 /**
  * Minimal front-engagement stack: defender on `createFrontEngagementState` default cell (E-5),
@@ -23,28 +22,28 @@ function buildStateWithFrontEngagement(options: {
 }): GameStateForBoard<StandardBoard> {
   const state = createEmptyGameState();
   state.cardState.black.inPlay = createTestCard();
-  const defender = createUnitByStat("white", "speed", options.defendingSpeed);
+  const defender = createUnitByStat('white', 'speed', options.defendingSpeed);
   const front = createFrontEngagementState();
   const engagementState = {
     ...front,
-    engagingUnit: createUnitByStat("black", "speed", options.engagingSpeed),
+    engagingUnit: createUnitByStat('black', 'speed', options.engagingSpeed),
   };
   const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
-    boardType: "standard" as const,
-    unit: defender,
+    boardType: 'standard' as const,
     placement: {
-      boardType: "standard" as const,
+      boardType: 'standard' as const,
       coordinate: engagementState.targetPlacement.coordinate,
-      facing: "south",
+      facing: 'south',
     },
+    unit: defender,
   };
   const withBoard = {
     ...state,
     boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
   };
   const movement = createMovementResolutionState(withBoard, {
-    targetPlacement: engagementState.targetPlacement,
     engagementState,
+    targetPlacement: engagementState.targetPlacement,
   });
   return updatePhaseState(
     withBoard,
@@ -58,22 +57,22 @@ function buildStateWithFrontEngagement(options: {
  * Front engagement: defendingUnitCanRetreat is true iff defender’s current speed exceeds
  * engager’s (see procedure). black.inPlay only satisfies movement factory commitment.
  */
-describe("generateResolveEngageRetreatOptionEvent", () => {
-  it("given defender speed 4 and engager speed 2, defendingUnitCanRetreat is true", () => {
+describe(generateResolveEngageRetreatOptionEvent, () => {
+  it('given defender speed 4 and engager speed 2, defendingUnitCanRetreat is true', () => {
     const full = buildStateWithFrontEngagement({
       defendingSpeed: 4,
       engagingSpeed: 2,
     });
     const event = generateResolveEngageRetreatOptionEvent(full, 0);
-    expect(event.defendingUnitCanRetreat).toBe(true);
+    expect(event.defendingUnitCanRetreat).toBeTruthy();
   });
 
-  it("given defender speed 2 and engager speed 4, defendingUnitCanRetreat is false", () => {
+  it('given defender speed 2 and engager speed 4, defendingUnitCanRetreat is false', () => {
     const full = buildStateWithFrontEngagement({
       defendingSpeed: 2,
       engagingSpeed: 4,
     });
     const event = generateResolveEngageRetreatOptionEvent(full, 0);
-    expect(event.defendingUnitCanRetreat).toBe(false);
+    expect(event.defendingUnitCanRetreat).toBeFalsy();
   });
 });

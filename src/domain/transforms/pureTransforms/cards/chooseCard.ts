@@ -1,4 +1,4 @@
-import type { Card, CardState, PlayerSide } from "@entities";
+import type { Card, CardState, PlayerSide } from '@entities';
 
 /**
  * Moves a card from a player's hand to awaitingPlay (choosing a card for play).
@@ -10,14 +10,20 @@ import type { Card, CardState, PlayerSide } from "@entities";
  * @returns New CardState with the card moved
  * @throws Error if card is not in the player's hand
  */
-export function chooseCard(cardState: CardState, player: PlayerSide, card: Card): CardState {
+export function chooseCard(
+  cardState: CardState,
+  player: PlayerSide,
+  card: Card,
+): CardState {
   const playerCardState = cardState[player];
-  const inHand = playerCardState.inHand;
+  const { inHand } = playerCardState;
   const cardInHand = inHand.find((c) => c.id === card.id);
 
   if (!cardInHand) {
-    const capitalizedPlayer = player === "black" ? "Black" : "White";
-    throw new Error(`Card ${card.id} not found in ${capitalizedPlayer} player's hand`);
+    const capitalizedPlayer = player === 'black' ? 'Black' : 'White';
+    throw new Error(
+      `Card ${card.id} not found in ${capitalizedPlayer} player's hand`,
+    );
   }
 
   const newHand = inHand.filter((c) => c.id !== card.id);
@@ -26,8 +32,8 @@ export function chooseCard(cardState: CardState, player: PlayerSide, card: Card)
     ...cardState,
     [player]: {
       ...playerCardState,
-      inHand: newHand,
       awaitingPlay: cardInHand,
+      inHand: newHand,
     },
   };
 }

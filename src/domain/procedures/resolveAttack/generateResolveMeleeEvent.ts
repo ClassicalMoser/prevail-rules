@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate, UnitPlacement } from "@entities";
-import type { ResolveMeleeEventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
-import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from "@events";
+import type { Board, BoardCoordinate, UnitPlacement } from '@entities';
+import type { ResolveMeleeEventForBoard } from '@events';
+import type { GameStateForBoard } from '@game';
+import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
 import {
   applyAttackValue,
   getCurrentUnitStat,
@@ -10,7 +10,7 @@ import {
   getMeleeSupportValue,
   getPlayerUnitWithPosition,
   modifiersFromCompletedCommitment,
-} from "@queries";
+} from '@queries';
 
 /**
  * Generates a ResolveMeleeEvent by calculating attack values for both units
@@ -39,22 +39,24 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
   const whiteUnit = getPlayerUnitWithPosition(
     state.boardState,
     meleeCoordinate as BoardCoordinate<TBoard>,
-    "white",
+    'white',
   );
   const blackUnit = getPlayerUnitWithPosition(
     state.boardState,
     meleeCoordinate as BoardCoordinate<TBoard>,
-    "black",
+    'black',
   );
 
   if (!whiteUnit || !blackUnit) {
-    throw new Error("Units not found on board");
+    throw new Error('Units not found on board');
   }
-  const whiteCommitmentModifiers = modifiersFromCompletedCommitment(meleeState.whiteCommitment);
+  const whiteCommitmentModifiers = modifiersFromCompletedCommitment(
+    meleeState.whiteCommitment,
+  );
 
   const whiteAttackValue = getCurrentUnitStat(
     whiteUnit.unit,
-    "attack",
+    'attack',
     state,
     whiteCommitmentModifiers,
   );
@@ -63,11 +65,13 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
 
   const totalWhiteAttackValue = whiteAttackValue + whiteSupportValue;
 
-  const blackCommitmentModifiers = modifiersFromCompletedCommitment(meleeState.blackCommitment);
+  const blackCommitmentModifiers = modifiersFromCompletedCommitment(
+    meleeState.blackCommitment,
+  );
 
   const blackAttackValue = getCurrentUnitStat(
     blackUnit.unit,
-    "attack",
+    'attack',
     state,
     blackCommitmentModifiers,
   );
@@ -78,10 +82,18 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
 
   // Apply attack values to determine results
   // White unit attacks black unit
-  const blackUnitResult = applyAttackValue(state, totalWhiteAttackValue, blackUnit.unit);
+  const blackUnitResult = applyAttackValue(
+    state,
+    totalWhiteAttackValue,
+    blackUnit.unit,
+  );
 
   // Black unit attacks white unit
-  const whiteUnitResult = applyAttackValue(state, totalBlackAttackValue, whiteUnit.unit);
+  const whiteUnitResult = applyAttackValue(
+    state,
+    totalBlackAttackValue,
+    whiteUnit.unit,
+  );
 
   let whiteLegalRetreatOptions: Set<UnitPlacement<TBoard>>;
   if (whiteUnitResult.unitRetreated) {
@@ -98,20 +110,20 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
   }
 
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
+    blackLegalRetreatOptions,
+    blackUnitRetreated: blackUnitResult.unitRetreated,
+    blackUnitReversed: blackUnitResult.unitReversed,
+    blackUnitRouted: blackUnitResult.unitRouted,
+    blackUnitWithPlacement: blackUnit,
+    boardType: state.boardState.boardType,
     effectType: RESOLVE_MELEE_EFFECT_TYPE,
     eventNumber,
-    boardType: state.boardState.boardType,
+    eventType: GAME_EFFECT_EVENT_TYPE,
     location: meleeCoordinate,
-    whiteUnitWithPlacement: whiteUnit,
-    blackUnitWithPlacement: blackUnit,
     whiteLegalRetreatOptions,
-    blackLegalRetreatOptions,
-    whiteUnitRouted: whiteUnitResult.unitRouted,
-    blackUnitRouted: blackUnitResult.unitRouted,
     whiteUnitRetreated: whiteUnitResult.unitRetreated,
-    blackUnitRetreated: blackUnitResult.unitRetreated,
     whiteUnitReversed: whiteUnitResult.unitReversed,
-    blackUnitReversed: blackUnitResult.unitReversed,
+    whiteUnitRouted: whiteUnitResult.unitRouted,
+    whiteUnitWithPlacement: whiteUnit,
   };
 }

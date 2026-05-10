@@ -1,7 +1,7 @@
-import type { Board, ValidationResult } from "@entities";
-import type { EventForBoard, PlayerChoiceEvent } from "@events";
-import type { CleanupPhaseState, GameState, GameStateForBoard } from "@game";
-import { validatePlayerChoice } from "@validation/playerChoice";
+import type { Board, ValidationResult } from '@entities';
+import type { EventForBoard, PlayerChoiceEvent } from '@events';
+import type { CleanupPhaseState, GameState, GameStateForBoard } from '@game';
+import { validatePlayerChoice } from '@validation/playerChoice';
 
 /**
  * Validates an event for the Cleanup phase.
@@ -21,97 +21,117 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
   const phaseState = state.currentRoundState.currentPhaseState;
 
   switch (phaseState.step) {
-    case "discardPlayedCards":
-      if (event.eventType === "gameEffect" && event.effectType === "discardPlayedCards") {
+    case 'discardPlayedCards': {
+      if (
+        event.eventType === 'gameEffect' &&
+        event.effectType === 'discardPlayedCards'
+      ) {
         return { result: true };
       }
       return {
+        errorReason: 'Expected DiscardPlayedCardsEvent',
         result: false,
-        errorReason: "Expected DiscardPlayedCardsEvent",
       };
+    }
 
-    case "firstPlayerChooseRally":
-    case "secondPlayerChooseRally":
-      if (event.eventType === "playerChoice") {
-        return validatePlayerChoice(event as PlayerChoiceEvent, state as GameState);
+    case 'firstPlayerChooseRally':
+    case 'secondPlayerChooseRally': {
+      if (event.eventType === 'playerChoice') {
+        return validatePlayerChoice(
+          event as PlayerChoiceEvent,
+          state as GameState,
+        );
       }
       return {
+        errorReason: 'Expected ChooseRallyEvent',
         result: false,
-        errorReason: "Expected ChooseRallyEvent",
       };
+    }
 
-    case "firstPlayerResolveRally":
-    case "secondPlayerResolveRally": {
+    case 'firstPlayerResolveRally':
+    case 'secondPlayerResolveRally': {
       // Complex substep - check rally resolution state to determine expected event
-      const isFirstPlayer = phaseState.step === "firstPlayerResolveRally";
+      const isFirstPlayer = phaseState.step === 'firstPlayerResolveRally';
       const rallyState = isFirstPlayer
         ? phaseState.firstPlayerRallyResolutionState
         : phaseState.secondPlayerRallyResolutionState;
 
       if (!rallyState) {
         return {
+          errorReason: 'Rally resolution state not found',
           result: false,
-          errorReason: "Rally resolution state not found",
         };
       }
 
       // Check substep progression
       if (!rallyState.rallyResolved) {
         // Expect resolveRally
-        if (event.eventType === "gameEffect" && event.effectType === "resolveRally") {
+        if (
+          event.eventType === 'gameEffect' &&
+          event.effectType === 'resolveRally'
+        ) {
           return { result: true };
         }
         return {
+          errorReason: 'Expected resolveRally game effect',
           result: false,
-          errorReason: "Expected resolveRally game effect",
         };
       }
 
       if (rallyState.unitsLostSupport === undefined) {
         // Expect resolveUnitsBroken
-        if (event.eventType === "gameEffect" && event.effectType === "resolveUnitsBroken") {
+        if (
+          event.eventType === 'gameEffect' &&
+          event.effectType === 'resolveUnitsBroken'
+        ) {
           return { result: true };
         }
         return {
+          errorReason: 'Expected resolveUnitsBroken game effect',
           result: false,
-          errorReason: "Expected resolveUnitsBroken game effect",
         };
       }
 
       // Check for rout state
-      if (rallyState.routState) {
-        if (!rallyState.routState.cardsChosen) {
-          // Expect chooseRoutDiscard
-          if (event.eventType === "playerChoice") {
-            return validatePlayerChoice(event as PlayerChoiceEvent, state as GameState);
-          }
-          return {
-            result: false,
-            errorReason: "Expected chooseRoutDiscard player choice",
-          };
+      if (rallyState.routState && !rallyState.routState.cardsChosen) {
+        // Expect chooseRoutDiscard
+        if (event.eventType === 'playerChoice') {
+          return validatePlayerChoice(
+            event as PlayerChoiceEvent,
+            state as GameState,
+          );
         }
+        return {
+          errorReason: 'Expected chooseRoutDiscard player choice',
+          result: false,
+        };
       }
 
       // Rally fully resolved - should have advanced
       return {
+        errorReason: 'Rally resolution complete but step not advanced',
         result: false,
-        errorReason: "Rally resolution complete but step not advanced",
       };
     }
 
-    case "complete":
-      if (event.eventType === "gameEffect" && event.effectType === "completeCleanupPhase") {
+    case 'complete': {
+      if (
+        event.eventType === 'gameEffect' &&
+        event.effectType === 'completeCleanupPhase'
+      ) {
         return { result: true };
       }
       return {
+        errorReason: 'Expected CompleteCleanupPhaseEvent',
         result: false,
-        errorReason: "Expected CompleteCleanupPhaseEvent",
       };
+    }
 
-    default:
+    default: {
       return {
-        result: false,
         errorReason: `Invalid cleanup phase step: ${phaseState.step}`,
+        result: false,
       };
+    }
   }
 }

@@ -1,7 +1,10 @@
-import type { ChooseCardEvent } from "@events";
-import type { GameState } from "@game";
-import { PLAYER_CHOICE_EVENT_TYPE } from "@events";
-import { getNextEventNumber, getPlayCardsPhaseState } from "@queries/sequencing";
+import type { ChooseCardEvent } from '@events';
+import type { GameState } from '@game';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
+import {
+  getNextEventNumber,
+  getPlayCardsPhaseState,
+} from '@queries/sequencing';
 
 /**
  * Returns every legal choose-card choice for the current state during the
@@ -13,11 +16,13 @@ import { getNextEventNumber, getPlayCardsPhaseState } from "@queries/sequencing"
  * Aligns with {@link isValidChooseCardEvent} and
  * {@link getExpectedPlayCardsPhaseEvent} for the chooseCards step.
  */
-export function getLegalChooseCardOptions(gameState: GameState): ChooseCardEvent[] {
+export function getLegalChooseCardOptions(
+  gameState: GameState,
+): ChooseCardEvent[] {
   // Make sure we're in the choose cards step
   const phaseState = getPlayCardsPhaseState(gameState);
-  if (phaseState.step !== "chooseCards") {
-    throw new Error("Not in choose cards step");
+  if (phaseState.step !== 'chooseCards') {
+    throw new Error('Not in choose cards step');
   }
 
   // Get the next event number
@@ -35,11 +40,11 @@ export function getLegalChooseCardOptions(gameState: GameState): ChooseCardEvent
   if (blackStillChoosing) {
     for (const card of black.inHand) {
       result.push({
+        card,
+        choiceType: 'chooseCard',
         eventNumber,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
-        choiceType: "chooseCard",
-        player: "black",
-        card,
+        player: 'black',
       });
     }
   }
@@ -48,11 +53,11 @@ export function getLegalChooseCardOptions(gameState: GameState): ChooseCardEvent
   if (whiteStillChoosing) {
     for (const card of white.inHand) {
       result.push({
+        card,
+        choiceType: 'chooseCard',
         eventNumber,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
-        choiceType: "chooseCard",
-        player: "white",
-        card,
+        player: 'white',
       });
     }
   }

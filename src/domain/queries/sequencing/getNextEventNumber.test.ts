@@ -1,28 +1,28 @@
-import type { StandardBoard } from "@entities";
-import type { EventForBoard } from "@events";
-import { createEmptyGameState } from "@testing";
-import { describe, expect, it } from "vitest";
-import { getNextEventNumber } from "./getNextEventNumber";
+import type { StandardBoard } from '@entities';
+import type { EventForBoard } from '@events';
+import { createEmptyGameState } from '@testing';
 
-describe("getNextEventNumber", () => {
-  it("returns 0 when the round has no events yet", () => {
+import { getNextEventNumber } from './getNextEventNumber';
+
+describe(getNextEventNumber, () => {
+  it('returns 0 when the round has no events yet', () => {
     const state = createEmptyGameState();
     expect(getNextEventNumber(state)).toBe(0);
   });
 
-  it("returns the length of the current round event stream", () => {
+  it('returns the length of the current round event stream', () => {
     const state = createEmptyGameState();
     const events: readonly EventForBoard<StandardBoard>[] = [
       {
+        effectType: 'revealCards',
         eventNumber: 0,
-        eventType: "gameEffect",
-        effectType: "revealCards",
+        eventType: 'gameEffect',
       },
       {
+        effectType: 'resolveInitiative',
         eventNumber: 1,
-        eventType: "gameEffect",
-        effectType: "resolveInitiative",
-        player: "black",
+        eventType: 'gameEffect',
+        player: 'black',
       },
     ];
     state.currentRoundState = {

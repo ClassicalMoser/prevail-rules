@@ -1,6 +1,6 @@
-import type { Game, GameState } from "@game";
-import type { GameStorage } from "../ports";
-import { getGame } from "./getGame";
+import type { Game, GameState } from '@game';
+import type { GameStorage } from '../ports';
+import { getGame } from './getGame';
 
 /**
  * Gets the game state for a given game.

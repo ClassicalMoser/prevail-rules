@@ -1,7 +1,14 @@
-import type { Board } from "@entities";
-import type { AttackApplyStateForBoard, GameStateForBoard, RetreatStateForBoard } from "@game";
-import { getMeleeResolutionState } from "../getCommandResolutionState";
-import { getAttackApplyStateFromMelee, getAttackApplyStateFromRangedAttack } from "./attackApply";
+import type { Board } from '@entities';
+import type {
+  AttackApplyStateForBoard,
+  GameStateForBoard,
+  RetreatStateForBoard,
+} from '@game';
+import { getMeleeResolutionState } from '../getCommandResolutionState';
+import {
+  getAttackApplyStateFromMelee,
+  getAttackApplyStateFromRangedAttack,
+} from './attackApply';
 
 /**
  * Gets the retreat state from an attack apply state.
@@ -15,7 +22,7 @@ export function getRetreatStateFromAttackApply<TBoard extends Board>(
   attackApplyState: AttackApplyStateForBoard<TBoard>,
 ): RetreatStateForBoard<TBoard> {
   if (!attackApplyState.retreatState) {
-    throw new Error("No retreat state found in attack apply state");
+    throw new Error('No retreat state found in attack apply state');
   }
   return attackApplyState.retreatState;
 }
@@ -46,7 +53,7 @@ export function getRetreatStateFromRangedAttack<TBoard extends Board>(
  */
 export function getRetreatStateFromMelee<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-  player: "white" | "black",
+  player: 'white' | 'black',
 ): RetreatStateForBoard<TBoard> {
   const attackApplyState = getAttackApplyStateFromMelee(state, player);
   return getRetreatStateFromAttackApply(attackApplyState);
@@ -62,9 +69,13 @@ export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const firstPlayerAttackApply =
-    firstPlayer === "white" ? meleeState.whiteAttackApplyState : meleeState.blackAttackApplyState;
+    firstPlayer === 'white'
+      ? meleeState.whiteAttackApplyState
+      : meleeState.blackAttackApplyState;
   const secondPlayerAttackApply =
-    firstPlayer === "white" ? meleeState.blackAttackApplyState : meleeState.whiteAttackApplyState;
+    firstPlayer === 'white'
+      ? meleeState.blackAttackApplyState
+      : meleeState.whiteAttackApplyState;
 
   if (
     firstPlayerAttackApply?.retreatState &&
@@ -80,7 +91,9 @@ export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
   ) {
     return secondPlayerAttackApply.retreatState;
   }
-  throw new Error("No retreat state with finalPosition found in melee resolution");
+  throw new Error(
+    'No retreat state with finalPosition found in melee resolution',
+  );
 }
 
 /**
@@ -95,15 +108,15 @@ export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
  */
 export function findRetreatState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-  player: "white" | "black",
+  player: 'white' | 'black',
 ): RetreatStateForBoard<TBoard> {
   const phaseState = state.currentRoundState.currentPhaseState;
   if (!phaseState) {
-    throw new Error("No current phase state found");
+    throw new Error('No current phase state found');
   }
 
   // Try ranged attack resolution first
-  if (phaseState.phase === "issueCommands") {
+  if (phaseState.phase === 'issueCommands') {
     try {
       const retreatState = getRetreatStateFromRangedAttack(state);
       if (retreatState.retreatingUnit.unit.playerSide === player) {
@@ -115,7 +128,7 @@ export function findRetreatState<TBoard extends Board>(
   }
 
   // Try melee resolution
-  if (phaseState.phase === "resolveMelee") {
+  if (phaseState.phase === 'resolveMelee') {
     try {
       return getRetreatStateFromMelee(state, player);
     } catch {

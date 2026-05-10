@@ -1,23 +1,23 @@
-import type { Board, UnitWithPlacement } from "@entities";
-import type { ResolveFlankEngagementEventForBoard } from "@events";
+import type { Board, UnitWithPlacement } from '@entities';
+import type { ResolveFlankEngagementEventForBoard } from '@events';
 import type {
   EngagementStateForBoard,
   FlankEngagementResolutionState,
   GameStateForBoard,
   IssueCommandsPhaseStateForBoard,
   MovementResolutionStateForBoard,
-} from "@game";
+} from '@game';
 import {
   getFlankEngagementStateFromMovement,
   getIssueCommandsPhaseStateForBoard,
   getMovementResolutionState,
-} from "@queries";
+} from '@queries';
 import {
   addUnitToBoard,
   removeUnitFromBoard,
   updateBoardState,
   updatePhaseState,
-} from "@transforms/pureTransforms";
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveFlankEngagementEvent to the game state.
@@ -36,17 +36,23 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
 
   const { unit, placement } = event.defenderWithPlacement;
 
-  const removedUnitBoard = removeUnitFromBoard(state.boardState, event.defenderWithPlacement);
+  const removedUnitBoard = removeUnitFromBoard(
+    state.boardState,
+    event.defenderWithPlacement,
+  );
 
   const newUnitWithPlacement: UnitWithPlacement<TBoard> = {
     boardType: event.defenderWithPlacement.boardType,
-    unit,
     placement: {
       ...placement,
       facing: event.newFacing,
     },
+    unit,
   } as UnitWithPlacement<TBoard>;
-  const updatedBoard = addUnitToBoard<TBoard>(removedUnitBoard, newUnitWithPlacement);
+  const updatedBoard = addUnitToBoard<TBoard>(
+    removedUnitBoard,
+    newUnitWithPlacement,
+  );
 
   const newFlankResolutionState: FlankEngagementResolutionState = {
     ...flankResolutionState,
@@ -55,8 +61,8 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
 
   const newEngagementState: EngagementStateForBoard<TBoard> = {
     ...engagementState,
-    engagementResolutionState: newFlankResolutionState,
     completed: true,
+    engagementResolutionState: newFlankResolutionState,
   };
 
   const newMovementState: MovementResolutionStateForBoard<TBoard> = {

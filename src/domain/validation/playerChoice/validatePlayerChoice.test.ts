@@ -1,24 +1,21 @@
-import type { StandardBoard } from "@entities";
-import type { ChooseCardEvent, IssueCommandEvent, PlayerChoiceEventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
-import { PLAY_CARDS_PHASE } from "@game";
-
-import * as expectedEventQueries from "@queries";
-import { tempCommandCards } from "@sampleValues";
-import { createEmptyGameState } from "@testing";
-import { updateCardState, updatePhaseState } from "@transforms";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { validatePlayerChoice } from "./validatePlayerChoice";
+import type { StandardBoard } from '@entities';
+import type { ChooseCardEvent, PlayerChoiceEventForBoard } from '@events';
+import type { GameStateForBoard } from '@game';
+import { PLAY_CARDS_PHASE } from '@game';
+import { tempCommandCards } from '@sampleValues';
+import { createEmptyGameState } from '@testing';
+import { updateCardState, updatePhaseState } from '@transforms';
+import { validatePlayerChoice } from './validatePlayerChoice';
 
 /**
- * validatePlayerChoice: Validates a player choice against the current game state.
+ * ValidatePlayerChoice: Validates a player choice against the current game state.
  */
-describe("validatePlayerChoice", () => {
+describe(validatePlayerChoice, () => {
   function stateInPlayCardsChooseCards(): GameStateForBoard<StandardBoard> {
     const base = createEmptyGameState();
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
-      step: "chooseCards",
+      step: 'chooseCards',
     });
     return updateCardState(withPhase, (current) => ({
       ...current,
@@ -39,14 +36,14 @@ describe("validatePlayerChoice", () => {
     vi.restoreAllMocks();
   });
 
-  it("passes when the expected choice matches and is legal", () => {
+  it('passes when the expected choice matches and is legal', () => {
     const state = stateInPlayCardsChooseCards();
     const event: ChooseCardEvent = {
-      eventType: "playerChoice",
-      choiceType: "chooseCard",
-      eventNumber: 0,
-      player: "black",
       card: tempCommandCards[2],
+      choiceType: 'chooseCard',
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      player: 'black',
     };
 
     const validation = validatePlayerChoice(event, state);
@@ -54,20 +51,20 @@ describe("validatePlayerChoice", () => {
     // eslint-disable-next-line no-console
     console.log(validation);
 
-    expect(validation.result).toBe(true);
+    expect(validation.result).toBeTruthy();
   });
 
-  it("fails when a game effect is expected instead of player input", () => {
+  it('fails when a game effect is expected instead of player input', () => {
     const state = updatePhaseState(createEmptyGameState(), {
       phase: PLAY_CARDS_PHASE,
-      step: "revealCards",
+      step: 'revealCards',
     });
     const event: ChooseCardEvent = {
-      eventType: "playerChoice",
-      choiceType: "chooseCard",
-      eventNumber: 0,
-      player: "black",
       card: tempCommandCards[0],
+      choiceType: 'chooseCard',
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      player: 'black',
     };
 
     const validation = validatePlayerChoice(event, state);
@@ -75,17 +72,19 @@ describe("validatePlayerChoice", () => {
     // eslint-disable-next-line no-console
     console.log(validation);
 
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) throw new Error("expected fail");
-    expect(validation.errorReason).toContain("gameEffect");
-    expect(validation.errorReason).toContain("not a player choice");
+    expect(validation.result).toBeFalsy();
+    if (validation.result !== false) {
+      throw new Error('expected fail');
+    }
+    expect(validation.errorReason).toContain('gameEffect');
+    expect(validation.errorReason).toContain('not a player choice');
   });
 
-  it("fails when the wrong player acts for the expected source", () => {
+  it('fails when the wrong player acts for the expected source', () => {
     const state = updateCardState(
       updatePhaseState(createEmptyGameState(), {
         phase: PLAY_CARDS_PHASE,
-        step: "chooseCards",
+        step: 'chooseCards',
       }),
       (current) => ({
         ...current,
@@ -103,75 +102,46 @@ describe("validatePlayerChoice", () => {
     );
 
     const event: ChooseCardEvent = {
-      eventType: "playerChoice",
-      choiceType: "chooseCard",
-      eventNumber: 0,
-      player: "black",
       card: tempCommandCards[0],
+      choiceType: 'chooseCard',
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      player: 'black',
     };
 
     const validation = validatePlayerChoice(event, state);
 
-    const expectedErrorMessage = "Expected input from white, not black";
+    const expectedErrorMessage = 'Expected input from white, not black';
 
     // eslint-disable-next-line no-console
     console.log(validation);
 
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) throw new Error("expected fail");
+    expect(validation.result).toBeFalsy();
+    if (validation.result !== false) {
+      throw new Error('expected fail');
+    }
     expect(validation.errorReason).toMatch(expectedErrorMessage);
   });
 
-  it("fails when choice type does not match the expected choice", () => {
+  it('fails when choice type does not match the expected choice', () => {
     const state = stateInPlayCardsChooseCards();
     const event = {
-      eventType: "playerChoice" as const,
-      choiceType: "moveCommander" as const,
-      boardType: "standard" as const,
+      boardType: 'standard' as const,
+      choiceType: 'moveCommander' as const,
       eventNumber: 0,
-      player: "black" as const,
-      from: "E-5" as const,
-      to: "E-6" as const,
+      eventType: 'playerChoice' as const,
+      from: 'E-5' as const,
+      player: 'black' as const,
+      to: 'E-6' as const,
     } satisfies PlayerChoiceEventForBoard<StandardBoard>;
 
     const validation = validatePlayerChoice(event, state);
 
-    expect(validation.result).toBe(false);
-    if (validation.result !== false) throw new Error("expected fail");
-    expect(validation.errorReason).toContain("chooseCard");
-    expect(validation.errorReason).toContain("moveCommander");
-  });
-
-  describe("when legal validation is not implemented for the choice type", () => {
-    beforeEach(() => {
-      vi.spyOn(expectedEventQueries, "getExpectedEvent").mockReturnValue({
-        actionType: "playerChoice",
-        playerSource: "black",
-        choiceType: "issueCommand",
-        expectedEventNumber: 0,
-      });
-    });
-
-    it("returns a not-implemented error", () => {
-      const state = stateInPlayCardsChooseCards();
-      const event: IssueCommandEvent = {
-        eventType: "playerChoice",
-        choiceType: "issueCommand",
-        eventNumber: 0,
-        player: "black",
-        command: tempCommandCards[0].command,
-        units: new Set(),
-      };
-
-      const validation = validatePlayerChoice(event, state);
-
-      // eslint-disable-next-line no-console
-      console.log(validation);
-
-      expect(validation.result).toBe(false);
-      if (validation.result !== false) throw new Error("expected fail");
-      expect(validation.errorReason).toContain("not implemented");
-      expect(validation.errorReason).toContain("issueCommand");
-    });
+    expect(validation.result).toBeFalsy();
+    if (validation.result !== false) {
+      throw new Error('expected fail');
+    }
+    expect(validation.errorReason).toContain('chooseCard');
+    expect(validation.errorReason).toContain('moveCommander');
   });
 });

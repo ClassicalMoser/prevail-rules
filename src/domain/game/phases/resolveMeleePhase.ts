@@ -1,32 +1,40 @@
-import type { Board, BoardCoordinate, LargeBoard, SmallBoard, StandardBoard } from "@entities";
+import type {
+  Board,
+  BoardCoordinate,
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+} from '@entities';
 
-import type { MeleeResolutionStateForBoard } from "@game/substeps";
-import type { AssertExact } from "@utils";
+import type { MeleeResolutionStateForBoard } from '@game/substeps';
+import type { AssertExact } from '@utils';
 import {
   largeBoardCoordinateSchema,
   smallBoardCoordinateSchema,
   standardBoardCoordinateSchema,
-} from "@entities";
+} from '@entities';
 import {
   largeMeleeResolutionStateSchema,
   smallMeleeResolutionStateSchema,
   standardMeleeResolutionStateSchema,
-} from "@game/substeps";
-import { z } from "zod";
+} from '@game/substeps';
+import { z } from 'zod';
 
 /** Iterable list of valid steps in the resolve melee phase. */
 export const resolveMeleePhaseSteps = [
   /** Most complex step: Loop through remaining engagements and expect resolve melee events */
-  "resolveMelee",
+  'resolveMelee',
   /** Expect single gameEffect: advance to cleanup phase */
-  "complete",
+  'complete',
 ] as const;
 
 /** The step of the resolve melee phase. */
 export type ResolveMeleePhaseStep = (typeof resolveMeleePhaseSteps)[number];
 
 const _resolveMeleePhaseStepSchemaObject = z.enum(resolveMeleePhaseSteps);
-type ResolveMeleePhaseStepSchemaType = z.infer<typeof _resolveMeleePhaseStepSchemaObject>;
+type ResolveMeleePhaseStepSchemaType = z.infer<
+  typeof _resolveMeleePhaseStepSchemaObject
+>;
 
 /** The schema for the step of the resolve melee phase. */
 export const resolveMeleePhaseStepSchema: z.ZodType<ResolveMeleePhaseStep> =
@@ -40,9 +48,9 @@ const _assertExactResolveMeleePhaseStep: AssertExact<
 /** The state of the resolve melee phase. */
 export interface ResolveMeleePhaseStateForBoard<TBoard extends Board> {
   /** The current phase of the round. */
-  phase: "resolveMelee";
+  phase: 'resolveMelee';
   /** The type of the board. */
-  boardType: TBoard["boardType"];
+  boardType: TBoard['boardType'];
   /** The step of the resolve melee phase. */
   step: ResolveMeleePhaseStep;
   /** The current melee resolution state. */
@@ -57,11 +65,13 @@ export type ResolveMeleePhaseState =
   | ResolveMeleePhaseStateForBoard<LargeBoard>;
 
 const _standardResolveMeleePhaseStateSchemaObject = z.object({
-  phase: z.literal("resolveMelee"),
-  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
-  step: _resolveMeleePhaseStepSchemaObject,
-  currentMeleeResolutionState: standardMeleeResolutionStateSchema.or(z.undefined()),
+  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  currentMeleeResolutionState: standardMeleeResolutionStateSchema.or(
+    z.undefined(),
+  ),
+  phase: z.literal('resolveMelee'),
   remainingEngagements: z.set(standardBoardCoordinateSchema),
+  step: _resolveMeleePhaseStepSchemaObject,
 });
 
 type StandardResolveMeleePhaseStateSchemaType = z.infer<
@@ -78,11 +88,13 @@ export const standardResolveMeleePhaseStateSchema: z.ZodType<
 > = _standardResolveMeleePhaseStateSchemaObject;
 
 const _smallResolveMeleePhaseStateSchemaObject = z.object({
-  phase: z.literal("resolveMelee"),
-  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
-  step: _resolveMeleePhaseStepSchemaObject,
-  currentMeleeResolutionState: smallMeleeResolutionStateSchema.or(z.undefined()),
+  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  currentMeleeResolutionState: smallMeleeResolutionStateSchema.or(
+    z.undefined(),
+  ),
+  phase: z.literal('resolveMelee'),
   remainingEngagements: z.set(smallBoardCoordinateSchema),
+  step: _resolveMeleePhaseStepSchemaObject,
 });
 
 type SmallResolveMeleePhaseStateSchemaType = z.infer<
@@ -99,11 +111,13 @@ export const smallResolveMeleePhaseStateSchema: z.ZodType<
 > = _smallResolveMeleePhaseStateSchemaObject;
 
 const _largeResolveMeleePhaseStateSchemaObject = z.object({
-  phase: z.literal("resolveMelee"),
-  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
-  step: _resolveMeleePhaseStepSchemaObject,
-  currentMeleeResolutionState: largeMeleeResolutionStateSchema.or(z.undefined()),
+  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  currentMeleeResolutionState: largeMeleeResolutionStateSchema.or(
+    z.undefined(),
+  ),
+  phase: z.literal('resolveMelee'),
   remainingEngagements: z.set(largeBoardCoordinateSchema),
+  step: _resolveMeleePhaseStepSchemaObject,
 });
 
 type LargeResolveMeleePhaseStateSchemaType = z.infer<

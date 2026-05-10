@@ -1,13 +1,13 @@
-import type { Board } from "@entities";
-import type { GameStateForBoard, RetreatStateForBoard } from "@game";
+import type { Board } from '@entities';
+import type { GameStateForBoard, RetreatStateForBoard } from '@game';
 import {
   getCurrentPhaseStateForBoard,
   getIssueCommandsPhaseStateForBoard,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
   getResolveMeleePhaseStateForBoard,
-} from "@queries";
-import { updatePhaseState } from "../state";
+} from '@queries';
+import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the retreat state updated.
@@ -26,15 +26,15 @@ export function updateRetreatState<TBoard extends Board>(
 ): GameStateForBoard<TBoard> {
   const phaseState = getCurrentPhaseStateForBoard(state);
 
-  if (phaseState.phase === "issueCommands") {
+  if (phaseState.phase === 'issueCommands') {
     const issueState = getIssueCommandsPhaseStateForBoard(state);
     const commandState = issueState.currentCommandResolutionState;
 
-    if (commandState?.commandResolutionType === "rangedAttack") {
+    if (commandState?.commandResolutionType === 'rangedAttack') {
       const ranged = getRangedAttackResolutionState(state);
       const attackApply = ranged.attackApplyState;
       if (!attackApply?.retreatState) {
-        throw new Error("No retreat state found in attack apply state");
+        throw new Error('No retreat state found in attack apply state');
       }
       return updatePhaseState(state, {
         ...issueState,
@@ -47,19 +47,19 @@ export function updateRetreatState<TBoard extends Board>(
 
     // TODO: commandResolutionType === 'movement' with engagement retreat
     throw new Error(
-      `Retreat state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? "none"})`,
+      `Retreat state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? 'none'})`,
     );
   }
 
-  if (phaseState.phase === "resolveMelee") {
+  if (phaseState.phase === 'resolveMelee') {
     const resolveMelee = getResolveMeleePhaseStateForBoard(state);
     const melee = getMeleeResolutionState(state);
     const player = retreatState.retreatingUnit.unit.playerSide;
 
-    if (player === "white") {
+    if (player === 'white') {
       const whiteApply = melee.whiteAttackApplyState;
       if (!whiteApply?.retreatState) {
-        throw new Error("No retreat state found in attack apply state");
+        throw new Error('No retreat state found in attack apply state');
       }
       return updatePhaseState(state, {
         ...resolveMelee,
@@ -72,7 +72,7 @@ export function updateRetreatState<TBoard extends Board>(
 
     const blackApply = melee.blackAttackApplyState;
     if (!blackApply?.retreatState) {
-      throw new Error("No retreat state found in attack apply state");
+      throw new Error('No retreat state found in attack apply state');
     }
     return updatePhaseState(state, {
       ...resolveMelee,
@@ -83,5 +83,7 @@ export function updateRetreatState<TBoard extends Board>(
     });
   }
 
-  throw new Error(`Retreat state update not expected in phase: ${phaseState.phase}`);
+  throw new Error(
+    `Retreat state update not expected in phase: ${phaseState.phase}`,
+  );
 }

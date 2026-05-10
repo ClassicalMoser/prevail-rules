@@ -1,7 +1,7 @@
-import type { Board } from "@entities";
-import type { GameStateForBoard, RetreatStateForBoard, RoutState } from "@game";
-import { findRetreatState } from "@queries";
-import { updateRetreatState } from "./updateRetreatState";
+import type { Board } from '@entities';
+import type { GameStateForBoard, RetreatStateForBoard, RoutState } from '@game';
+import { findRetreatState } from '@queries';
+import { updateRetreatState } from './updateRetreatState';
 
 /**
  * Creates a new game state with the rout state updated within a retreat state.
@@ -28,7 +28,10 @@ export function updateRetreatRoutState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   routState: RoutState,
 ): GameStateForBoard<TBoard> {
-  const currentRetreat: RetreatStateForBoard<TBoard> = findRetreatState(state, routState.player);
+  const currentRetreat: RetreatStateForBoard<TBoard> = findRetreatState(
+    state,
+    routState.player,
+  );
   const newState = updateRetreatState(state, { ...currentRetreat, routState });
   return newState;
 }

@@ -5,44 +5,46 @@ import type {
   SmallBoard,
   StandardBoard,
   UnitInstance,
-} from "@entities";
-import type { CommandResolutionStateForBoard } from "@game/substeps";
-import type { AssertExact } from "@utils";
-import { commandSchema, unitInstanceSchema } from "@entities";
+} from '@entities';
+import type { CommandResolutionStateForBoard } from '@game/substeps';
+import type { AssertExact } from '@utils';
+import { commandSchema, unitInstanceSchema } from '@entities';
 import {
   largeCommandResolutionStateSchema,
   smallCommandResolutionStateSchema,
   standardCommandResolutionStateSchema,
-} from "@game/substeps";
-import { z } from "zod";
+} from '@game/substeps';
+import { z } from 'zod';
 
 /** Iterable list of valid steps in the issue commands phase. */
 export const issueCommandsPhaseSteps = [
   /** Complex step:Loop through remaining initiative player's commands
    * and expect issue commands events
    */
-  "firstPlayerIssueCommands",
+  'firstPlayerIssueCommands',
   /** Complex step: Loop through remaining initiative player's issued commands and expect resolve commands events
    * and expect resolve commands events (move or ranged attack)
    */
-  "firstPlayerResolveCommands",
+  'firstPlayerResolveCommands',
   /** Complex step: Loop through remaining non-initiative player's commands
    * and expect issue commands events
    */
-  "secondPlayerIssueCommands",
+  'secondPlayerIssueCommands',
   /** Complex step: Loop through remaining non-initiative player's issued commands
    * and expect resolve commands events (move or ranged attack)
    */
-  "secondPlayerResolveCommands",
+  'secondPlayerResolveCommands',
   /** Expect single gameEffect: advance phase to resolve melee phase */
-  "complete", // GameEffect, advance phase to resolve melee phase
+  'complete', // GameEffect, advance phase to resolve melee phase
 ] as const;
 
 /** The step of the issue commands phase. */
 export type IssueCommandsPhaseStep = (typeof issueCommandsPhaseSteps)[number];
 
 const _issueCommandsPhaseStepSchemaObject = z.enum(issueCommandsPhaseSteps);
-type IssueCommandsPhaseStepSchemaType = z.infer<typeof _issueCommandsPhaseStepSchemaObject>;
+type IssueCommandsPhaseStepSchemaType = z.infer<
+  typeof _issueCommandsPhaseStepSchemaObject
+>;
 
 const _assertExactIssueCommandsPhaseStep: AssertExact<
   IssueCommandsPhaseStep,
@@ -61,21 +63,23 @@ export const issueCommandsPhaseStepSchema: z.ZodType<IssueCommandsPhaseStep> =
  */
 export interface IssueCommandsPhaseStateForBoard<TBoard extends Board> {
   /** The current phase of the round. */
-  phase: "issueCommands";
+  phase: 'issueCommands';
   /** The step of the issue commands phase. */
   step: IssueCommandsPhaseStep;
   /** The board size. */
-  boardType: TBoard["boardType"];
+  boardType: TBoard['boardType'];
   /** The remaining commands for the first player. */
   remainingCommandsFirstPlayer: Set<Command>;
-  /** remainingUnitsFirstPlayer */
+  /** RemainingUnitsFirstPlayer */
   remainingUnitsFirstPlayer: Set<UnitInstance>;
   /** The remaining commands for the second player. */
   remainingCommandsSecondPlayer: Set<Command>;
-  /** remainingUnitsSecondPlayer */
+  /** RemainingUnitsSecondPlayer */
   remainingUnitsSecondPlayer: Set<UnitInstance>;
   /** The state of the ongoing command resolution (movement or ranged attack). */
-  currentCommandResolutionState: CommandResolutionStateForBoard<TBoard> | undefined;
+  currentCommandResolutionState:
+    | CommandResolutionStateForBoard<TBoard>
+    | undefined;
 }
 
 export type IssueCommandsPhaseState =
@@ -85,21 +89,23 @@ export type IssueCommandsPhaseState =
 
 const _smallIssueCommandsPhaseStateSchemaObject = z.object({
   /** The current phase of the round. */
-  phase: z.literal("issueCommands"),
+  phase: z.literal('issueCommands'),
   /** The step of the issue commands phase. */
   step: _issueCommandsPhaseStepSchemaObject,
   /** The board size. */
-  boardType: z.literal("small"),
+  boardType: z.literal('small'),
   /** The remaining commands for the first player. */
   remainingCommandsFirstPlayer: z.set(commandSchema),
-  /** remainingUnitsFirstPlayer */
+  /** RemainingUnitsFirstPlayer */
   remainingUnitsFirstPlayer: z.set(unitInstanceSchema),
   /** The remaining commands for the second player. */
   remainingCommandsSecondPlayer: z.set(commandSchema),
-  /** remainingUnitsSecondPlayer */
+  /** RemainingUnitsSecondPlayer */
   remainingUnitsSecondPlayer: z.set(unitInstanceSchema),
   /** The state of the ongoing command resolution (movement or ranged attack). */
-  currentCommandResolutionState: smallCommandResolutionStateSchema.or(z.undefined()),
+  currentCommandResolutionState: smallCommandResolutionStateSchema.or(
+    z.undefined(),
+  ),
 });
 
 type SmallIssueCommandsPhaseStateSchemaType = z.infer<
@@ -117,14 +123,16 @@ export const smallIssueCommandsPhaseStateSchema: z.ZodType<
 >;
 
 const _standardIssueCommandsPhaseStateSchemaObject = z.object({
-  phase: z.literal("issueCommands"),
-  step: _issueCommandsPhaseStepSchemaObject,
-  boardType: z.literal("standard"),
+  boardType: z.literal('standard'),
+  currentCommandResolutionState: standardCommandResolutionStateSchema.or(
+    z.undefined(),
+  ),
+  phase: z.literal('issueCommands'),
   remainingCommandsFirstPlayer: z.set(commandSchema),
-  remainingUnitsFirstPlayer: z.set(unitInstanceSchema),
   remainingCommandsSecondPlayer: z.set(commandSchema),
+  remainingUnitsFirstPlayer: z.set(unitInstanceSchema),
   remainingUnitsSecondPlayer: z.set(unitInstanceSchema),
-  currentCommandResolutionState: standardCommandResolutionStateSchema.or(z.undefined()),
+  step: _issueCommandsPhaseStepSchemaObject,
 });
 
 type StandardIssueCommandsPhaseStateSchemaType = z.infer<
@@ -142,14 +150,16 @@ export const standardIssueCommandsPhaseStateSchema: z.ZodType<
 >;
 
 const _largeIssueCommandsPhaseStateSchemaObject = z.object({
-  phase: z.literal("issueCommands"),
-  step: _issueCommandsPhaseStepSchemaObject,
-  boardType: z.literal("large"),
+  boardType: z.literal('large'),
+  currentCommandResolutionState: largeCommandResolutionStateSchema.or(
+    z.undefined(),
+  ),
+  phase: z.literal('issueCommands'),
   remainingCommandsFirstPlayer: z.set(commandSchema),
-  remainingUnitsFirstPlayer: z.set(unitInstanceSchema),
   remainingCommandsSecondPlayer: z.set(commandSchema),
+  remainingUnitsFirstPlayer: z.set(unitInstanceSchema),
   remainingUnitsSecondPlayer: z.set(unitInstanceSchema),
-  currentCommandResolutionState: largeCommandResolutionStateSchema.or(z.undefined()),
+  step: _issueCommandsPhaseStepSchemaObject,
 });
 
 type LargeIssueCommandsPhaseStateSchemaType = z.infer<

@@ -1,5 +1,5 @@
-import type { Board } from "@entities";
-import type { PhaseStateForBoard } from "@game";
+import type { Board } from '@entities';
+import type { PhaseStateForBoard } from '@game';
 
 /**
  * Creates a new phase state with `step` set to `"complete"`.
@@ -19,6 +19,6 @@ export function markPhaseAsComplete<
   TBoard extends Board,
   TPhase extends PhaseStateForBoard<TBoard>,
 >(phaseState: TPhase): TPhase {
-  const completedPhase: TPhase = { ...phaseState, step: "complete" };
+  const completedPhase: TPhase = { ...phaseState, step: 'complete' };
   return completedPhase;
 }

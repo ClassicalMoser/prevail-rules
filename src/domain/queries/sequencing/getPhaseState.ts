@@ -1,4 +1,4 @@
-import { Board } from "@entities";
+import type { Board } from '@entities';
 import type {
   CleanupPhaseState,
   GameState,
@@ -11,8 +11,8 @@ import type {
   PlayCardsPhaseState,
   ResolveMeleePhaseState,
   ResolveMeleePhaseStateForBoard,
-} from "@game";
-import { throwIfUndefined } from "@utils";
+} from '@game';
+import { throwIfUndefined } from '@utils';
 
 /**
  * Gets the current phase state from the game state.
@@ -27,7 +27,7 @@ export function getCurrentPhaseStateForBoard<TBoard extends Board>(
 ): PhaseStateForBoard<TBoard> {
   const phaseState = throwIfUndefined(
     state.currentRoundState.currentPhaseState,
-    "No current phase state found",
+    'No current phase state found',
   );
   return phaseState;
 }
@@ -42,7 +42,7 @@ export function getCurrentPhaseStateForBoard<TBoard extends Board>(
 export function getCurrentPhaseState(state: GameState): PhaseState {
   return throwIfUndefined(
     state.currentRoundState.currentPhaseState,
-    "No current phase state found",
+    'No current phase state found',
   );
 }
 
@@ -56,7 +56,7 @@ export function getCurrentPhaseState(state: GameState): PhaseState {
  */
 export function getPlayCardsPhaseState(state: GameState): PlayCardsPhaseState {
   const phaseState = getCurrentPhaseState(state);
-  if (phaseState.phase !== "playCards") {
+  if (phaseState.phase !== 'playCards') {
     throw new Error(`Expected playCards phase, got ${phaseState.phase}`);
   }
   return phaseState;
@@ -70,9 +70,11 @@ export function getPlayCardsPhaseState(state: GameState): PlayCardsPhaseState {
  * @returns The move commanders phase state
  * @throws Error if not in moveCommanders phase or phase state is missing
  */
-export function getMoveCommandersPhaseState(state: GameState): MoveCommandersPhaseState {
+export function getMoveCommandersPhaseState(
+  state: GameState,
+): MoveCommandersPhaseState {
   const phaseState = getCurrentPhaseState(state);
-  if (phaseState.phase !== "moveCommanders") {
+  if (phaseState.phase !== 'moveCommanders') {
     throw new Error(`Expected moveCommanders phase, got ${phaseState.phase}`);
   }
   return phaseState;
@@ -89,7 +91,7 @@ export function getIssueCommandsPhaseStateForBoard<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): IssueCommandsPhaseStateForBoard<TBoard> {
   const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
-  if (phaseState.phase !== "issueCommands") {
+  if (phaseState.phase !== 'issueCommands') {
     throw new Error(`Expected issueCommands phase, got ${phaseState.phase}`);
   }
   return phaseState;
@@ -103,9 +105,11 @@ export function getIssueCommandsPhaseStateForBoard<TBoard extends Board>(
  * @returns The issue commands phase state
  * @throws Error if not in issueCommands phase or phase state is missing
  */
-export function getIssueCommandsPhaseState(state: GameState): IssueCommandsPhaseState {
+export function getIssueCommandsPhaseState(
+  state: GameState,
+): IssueCommandsPhaseState {
   const phaseState = getCurrentPhaseState(state);
-  if (phaseState.phase !== "issueCommands") {
+  if (phaseState.phase !== 'issueCommands') {
     throw new Error(`Expected issueCommands phase, got ${phaseState.phase}`);
   }
   return phaseState;
@@ -123,7 +127,7 @@ export function getResolveMeleePhaseStateForBoard<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): ResolveMeleePhaseStateForBoard<TBoard> {
   const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
-  if (phaseState.phase !== "resolveMelee") {
+  if (phaseState.phase !== 'resolveMelee') {
     throw new Error(`Expected resolveMelee phase, got ${phaseState.phase}`);
   }
   return phaseState;
@@ -136,9 +140,11 @@ export function getResolveMeleePhaseStateForBoard<TBoard extends Board>(
  * @returns The resolve melee phase state
  * @throws Error if not in resolveMelee phase or phase state is missing
  */
-export function getResolveMeleePhaseState(state: GameState): ResolveMeleePhaseState {
+export function getResolveMeleePhaseState(
+  state: GameState,
+): ResolveMeleePhaseState {
   const phaseState = getCurrentPhaseState(state);
-  if (phaseState.phase !== "resolveMelee") {
+  if (phaseState.phase !== 'resolveMelee') {
     throw new Error(`Expected resolveMelee phase, got ${phaseState.phase}`);
   }
   return phaseState;
@@ -154,7 +160,7 @@ export function getResolveMeleePhaseState(state: GameState): ResolveMeleePhaseSt
  */
 export function getCleanupPhaseState(state: GameState): CleanupPhaseState {
   const phaseState = getCurrentPhaseState(state);
-  if (phaseState.phase !== "cleanup") {
+  if (phaseState.phase !== 'cleanup') {
     throw new Error(`Expected cleanup phase, got ${phaseState.phase}`);
   }
   return phaseState;

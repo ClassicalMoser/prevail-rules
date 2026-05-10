@@ -1,18 +1,18 @@
-import type { Board, CardState } from "@entities";
-import type { ResolveRallyEvent } from "@events";
-import type { GameState, GameStateForBoard, RallyResolutionState } from "@game";
+import type { Board, CardState } from '@entities';
+import type { ResolveRallyEvent } from '@events';
+import type { GameState, GameStateForBoard, RallyResolutionState } from '@game';
 import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
   getRallyResolutionStateAwaitingBurn,
   updateRallyResolutionStateForCurrentStep,
-} from "@queries";
+} from '@queries';
 import {
   burnCardFromPlayed,
   returnCardsToHand,
   updateCardState,
   updatePhaseState,
-} from "@transforms/pureTransforms";
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveRallyEvent to the game state.
@@ -47,7 +47,7 @@ export function applyResolveRallyEvent<TBoard extends Board>(
   const updatedRallyResolutionState: RallyResolutionState = {
     ...rallyState,
     rallyResolved: true,
-    unitsLostSupport: new Set([]), // TODO: Calculate which units lost support
+    unitsLostSupport: new Set(), // TODO: Calculate which units lost support
     routState: undefined,
   };
 

@@ -1,23 +1,29 @@
-import type { EngagementType, StandardBoard, UnitWithPlacement } from "@entities";
-import type { StartEngagementEvent, StartEngagementEventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
+import type {
+  EngagementType,
+  StandardBoard,
+  UnitWithPlacement,
+} from '@entities';
+import type {
+  StartEngagementEvent,
+  StartEngagementEventForBoard,
+} from '@events';
+import type { GameStateForBoard } from '@game';
 import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createTestCard,
   createTestUnit,
-} from "@testing";
-import { addUnitToBoard, updatePhaseState } from "@transforms/pureTransforms";
-import { describe, expect, it } from "vitest";
+} from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
-import { applyStartEngagementEvent } from "./applyStartEngagementEvent";
+import { applyStartEngagementEvent } from './applyStartEngagementEvent';
 
 /**
  * When a move enters an enemy hex, this seeds `engagementState` on the movement CRS from the
  * procedure’s `engagementType` (front vs rear rout vs flank rotation pipeline).
  */
-describe("applyStartEngagementEvent", () => {
+describe(applyStartEngagementEvent, () => {
   /** Black E-5 moving into white on E-6 with north-facing target placement. */
   function stateWithMovementToEnemy(): {
     state: GameStateForBoard<StandardBoard>;
@@ -25,129 +31,143 @@ describe("applyStartEngagementEvent", () => {
   } {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
-    const defendingUnit = createTestUnit("white");
-    const blackMover = createTestUnit("black");
+    const defendingUnit = createTestUnit('white');
+    const blackMover = createTestUnit('black');
     const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: defendingUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-6",
-        facing: "south",
+        boardType: 'standard' as const,
+        coordinate: 'E-6',
+        facing: 'south',
       },
+      unit: defendingUnit,
     };
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
     };
     const movement = createMovementResolutionState(withBoard, {
-      targetPlacement: {
-        boardType: "standard" as const,
-        coordinate: "E-6",
-        facing: "north",
-      },
       movingUnit: {
-        boardType: "standard" as const,
-        unit: blackMover,
+        boardType: 'standard' as const,
         placement: {
-          boardType: "standard" as const,
-          coordinate: "E-5",
-          facing: "north",
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
         },
+        unit: blackMover,
+      },
+      targetPlacement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-6',
+        facing: 'north',
       },
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: movement,
     });
     return {
-      state: updatePhaseState(withBoard, phase),
       defenderWithPlacement,
+      state: updatePhaseState(withBoard, phase),
     };
   }
 
-  it("given event engagementType front, movement engagement is front and engager is movingUnit", () => {
+  it('given event engagementType front, movement engagement is front and engager is movingUnit', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      eventNumber: 0,
-      eventType: "gameEffect" as const,
-      effectType: "startEngagement" as const,
-      engagementType: "front" as const,
-      boardType: "standard" as const,
+      boardType: 'standard' as const,
       defenderWithPlacement,
+      effectType: 'startEngagement' as const,
+      engagementType: 'front' as const,
+      eventNumber: 0,
+      eventType: 'gameEffect' as const,
     };
 
     const next = applyStartEngagementEvent(event, state);
     const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== "issueCommands") {
-      throw new Error("Expected issueCommands phase");
+    if (!phase || phase.phase !== 'issueCommands') {
+      throw new Error('Expected issueCommands phase');
     }
     const cmd = phase.currentCommandResolutionState;
-    expect(cmd?.commandResolutionType).toBe("movement");
-    if (cmd?.commandResolutionType !== "movement") throw new Error("movement");
-    expect(cmd.engagementState?.engagementResolutionState.engagementType).toBe("front");
+    expect(cmd?.commandResolutionType).toBe('movement');
+    if (cmd?.commandResolutionType !== 'movement') {
+      throw new Error('movement');
+    }
+    expect(cmd.engagementState?.engagementResolutionState.engagementType).toBe(
+      'front',
+    );
     expect(cmd.engagementState?.engagingUnit).toBe(cmd.movingUnit.unit);
   });
 
-  it("given event engagementType rear, rear routState player matches defender side", () => {
+  it('given event engagementType rear, rear routState player matches defender side', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      eventNumber: 0,
-      eventType: "gameEffect" as const,
-      effectType: "startEngagement" as const,
-      engagementType: "rear" as const,
-      boardType: "standard" as const,
+      boardType: 'standard' as const,
       defenderWithPlacement,
+      effectType: 'startEngagement' as const,
+      engagementType: 'rear' as const,
+      eventNumber: 0,
+      eventType: 'gameEffect' as const,
     };
 
     const next = applyStartEngagementEvent(event, state);
     const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== "issueCommands") {
-      throw new Error("Expected issueCommands phase");
+    if (!phase || phase.phase !== 'issueCommands') {
+      throw new Error('Expected issueCommands phase');
     }
     const cmd = phase.currentCommandResolutionState;
-    if (cmd?.commandResolutionType !== "movement") throw new Error("movement");
+    if (cmd?.commandResolutionType !== 'movement') {
+      throw new Error('movement');
+    }
     const res = cmd.engagementState?.engagementResolutionState;
-    expect(res?.engagementType).toBe("rear");
-    if (res?.engagementType !== "rear") throw new Error("rear");
+    expect(res?.engagementType).toBe('rear');
+    if (res?.engagementType !== 'rear') {
+      throw new Error('rear');
+    }
     expect(res.routState?.player).toBe(defenderWithPlacement.unit.playerSide);
   });
 
-  it("given event engagementType flank, flank substep present and defenderRotated false", () => {
+  it('given event engagementType flank, flank substep present and defenderRotated false', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      eventNumber: 0,
-      eventType: "gameEffect" as const,
-      effectType: "startEngagement" as const,
-      engagementType: "flank" as const,
-      boardType: "standard" as const,
+      boardType: 'standard' as const,
       defenderWithPlacement,
+      effectType: 'startEngagement' as const,
+      engagementType: 'flank' as const,
+      eventNumber: 0,
+      eventType: 'gameEffect' as const,
     };
 
     const next = applyStartEngagementEvent(event, state);
     const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== "issueCommands") {
-      throw new Error("Expected issueCommands phase");
+    if (!phase || phase.phase !== 'issueCommands') {
+      throw new Error('Expected issueCommands phase');
     }
     const cmd = phase.currentCommandResolutionState;
-    if (cmd?.commandResolutionType !== "movement") throw new Error("movement");
+    if (cmd?.commandResolutionType !== 'movement') {
+      throw new Error('movement');
+    }
     const res = cmd.engagementState?.engagementResolutionState;
-    expect(res?.engagementType).toBe("flank");
-    if (res?.engagementType !== "flank") throw new Error("flank");
-    expect(res.defenderRotated).toBe(false);
+    expect(res?.engagementType).toBe('flank');
+    if (res?.engagementType !== 'flank') {
+      throw new Error('flank');
+    }
+    expect(res.defenderRotated).toBeFalsy();
   });
 
-  it("given bogus engagementType siege cast, throws unknown engagement type", () => {
+  it('given bogus engagementType siege cast, throws unknown engagement type', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEventForBoard<StandardBoard> = {
       eventNumber: 0,
-      eventType: "gameEffect" as const,
-      effectType: "startEngagement" as const,
+      eventType: 'gameEffect' as const,
+      effectType: 'startEngagement' as const,
       // Intentionally bad cast to test failure path
-      engagementType: "siege" as unknown as EngagementType,
-      boardType: "standard" as const,
+      engagementType: 'siege' as unknown as EngagementType,
+      boardType: 'standard' as const,
       defenderWithPlacement,
     };
 
-    expect(() => applyStartEngagementEvent(event, state)).toThrow("Unknown engagement type: siege");
+    expect(() => applyStartEngagementEvent(event, state)).toThrow(
+      'Unknown engagement type: siege',
+    );
   });
 });

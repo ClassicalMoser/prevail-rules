@@ -1,9 +1,10 @@
-import type { AssertExact } from "@utils";
-import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
 /** The type of the complete resolve melee phase game effect. */
-export const COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE = "completeResolveMeleePhase" as const;
+export const COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE =
+  'completeResolveMeleePhase' as const;
 
 /** Event to complete the resolve melee phase and advance to cleanup phase. */
 export interface CompleteResolveMeleePhaseEvent {
@@ -35,7 +36,7 @@ const _assertExactCompleteResolveMeleePhaseEvent: AssertExact<
 
 /** The schema for a complete resolve melee phase event. */
 export const completeResolveMeleePhaseEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<"gameEffect">;
-  effectType: z.ZodLiteral<"completeResolveMeleePhase">;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'completeResolveMeleePhase'>;
   eventNumber: z.ZodNumber;
 }> = _completeResolveMeleePhaseEventSchemaObject;

@@ -1,12 +1,12 @@
-import type { GameMode, GameModeName } from "@entities";
-import type { Game, GameForMode } from "@game";
+import type { GameMode, GameModeName } from '@entities';
+import type { Game, GameForMode } from '@game';
 import {
   epicGameSchema,
   gameSchema,
   miniGameSchema,
   standardGameSchema,
   tutorialGameSchema,
-} from "@game";
+} from '@game';
 
 /**
  * **Boundary:** validates untrusted / stored data and returns a typed {@link Game}.
@@ -16,12 +16,13 @@ import {
 /**
  * Interpret stored JSON using the Zod schema for the given {@link GameMode}.
  *
- * @warning This function relies on two assumptions:
+ * Warning: This function relies on two assumptions:
  * 1. The game mode name is an effective discriminant on both the type and the zod schema.
  * 2. The zod schema is asserted to match the type exactly and passes compile-time checks.
  *
  * In the case of generic game mode assertion, it will return broadly.
  * If the return sub-type matters, specify the type parameter more narrowly.
+ *
  */
 export function parseStoredGameForMode<TGameMode extends GameMode>(
   gameMode: TGameMode,
@@ -30,18 +31,22 @@ export function parseStoredGameForMode<TGameMode extends GameMode>(
   const modeName: GameModeName = gameMode.name;
   let game;
   switch (modeName) {
-    case "tutorial":
+    case 'tutorial': {
       game = tutorialGameSchema.parse(data);
       break;
-    case "mini":
+    }
+    case 'mini': {
       game = miniGameSchema.parse(data);
       break;
-    case "standard":
+    }
+    case 'standard': {
       game = standardGameSchema.parse(data);
       break;
-    case "epic":
+    }
+    case 'epic': {
       game = epicGameSchema.parse(data);
       break;
+    }
     default: {
       const _exhaustive: never = modeName;
       throw new Error(`Unknown gameType: ${_exhaustive}`);

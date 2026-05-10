@@ -1,13 +1,13 @@
-import type { Board } from "@entities";
-import type { AttackApplyStateForBoard, GameStateForBoard } from "@game";
+import type { Board } from '@entities';
+import type { AttackApplyStateForBoard, GameStateForBoard } from '@game';
 import {
   getCurrentPhaseStateForBoard,
   getIssueCommandsPhaseStateForBoard,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
   getResolveMeleePhaseStateForBoard,
-} from "@queries";
-import { updatePhaseState } from "../state";
+} from '@queries';
+import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the attack apply state updated.
@@ -23,11 +23,13 @@ export function updateAttackApplyState<TBoard extends Board>(
 ): GameStateForBoard<TBoard> {
   const phaseState = getCurrentPhaseStateForBoard(state);
 
-  if (phaseState.phase === "issueCommands") {
+  if (phaseState.phase === 'issueCommands') {
     const issueState = getIssueCommandsPhaseStateForBoard(state);
     const ranged = getRangedAttackResolutionState(state);
     if (!ranged.attackApplyState) {
-      throw new Error("No attack apply state found in ranged attack resolution state");
+      throw new Error(
+        'No attack apply state found in ranged attack resolution state',
+      );
     }
     return updatePhaseState(state, {
       ...issueState,
@@ -38,12 +40,12 @@ export function updateAttackApplyState<TBoard extends Board>(
     });
   }
 
-  if (phaseState.phase === "resolveMelee") {
+  if (phaseState.phase === 'resolveMelee') {
     const resolveMelee = getResolveMeleePhaseStateForBoard(state);
     const melee = getMeleeResolutionState(state);
     const player = attackApplyState.defendingUnit.playerSide;
 
-    if (player === "white") {
+    if (player === 'white') {
       return updatePhaseState(state, {
         ...resolveMelee,
         currentMeleeResolutionState: {
@@ -62,5 +64,7 @@ export function updateAttackApplyState<TBoard extends Board>(
     });
   }
 
-  throw new Error(`Attack apply state update not expected in phase: ${phaseState.phase}`);
+  throw new Error(
+    `Attack apply state update not expected in phase: ${phaseState.phase}`,
+  );
 }

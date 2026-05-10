@@ -1,8 +1,13 @@
-import type { Board, UnitCount, UnitInstance, ValidationResult } from "@entities";
-import { hasEngagedUnits, hasSingleUnit } from "@entities";
-import { getBoardCoordinates, getBoardSpace } from "@queries";
-import { createUnitInstance } from "@transforms";
-import { isSameUnitInstance } from "@validation/unitEquivalence";
+import type {
+  Board,
+  UnitCount,
+  UnitInstance,
+  ValidationResult,
+} from '@entities';
+import { hasEngagedUnits, hasSingleUnit } from '@entities';
+import { getBoardCoordinates, getBoardSpace } from '@queries';
+import { createUnitInstance } from '@transforms';
+import { isSameUnitInstance } from '@validation/unitEquivalence';
 
 export function eachUnitPresentOnce(
   whiteArmy: Set<UnitCount>,
@@ -16,12 +21,12 @@ export function eachUnitPresentOnce(
     // Unit Instances are 1-indexed for UI purposes
     for (const unitCount of whiteArmy) {
       for (let i = 1; i <= unitCount.count; i++) {
-        expectedUnits.add(createUnitInstance("white", unitCount.unitType, i));
+        expectedUnits.add(createUnitInstance('white', unitCount.unitType, i));
       }
     }
     for (const unitCount of blackArmy) {
       for (let i = 1; i <= unitCount.count; i++) {
-        expectedUnits.add(createUnitInstance("black", unitCount.unitType, i));
+        expectedUnits.add(createUnitInstance('black', unitCount.unitType, i));
       }
     }
 
@@ -39,18 +44,20 @@ export function eachUnitPresentOnce(
         }
       }
       return {
+        errorReason: 'Unexpected unit on board',
         result: false,
-        errorReason: "Unexpected unit on board",
       };
     };
 
     // Helper to check if unit was already seen
     const hasSeenUnit = (unit: UnitInstance): ValidationResult => {
-      const found = seenInGame.some((seen) => isSameUnitInstance(seen, unit).result);
+      const found = seenInGame.some(
+        (seen) => isSameUnitInstance(seen, unit).result,
+      );
       if (found) {
         return {
+          errorReason: 'Duplicate unit on board',
           result: false,
-          errorReason: "Duplicate unit on board",
         };
       }
       return {
@@ -63,7 +70,7 @@ export function eachUnitPresentOnce(
     for (const coordinate of boardCoordinates) {
       const space = getBoardSpace(board, coordinate);
       if (hasSingleUnit(space.unitPresence)) {
-        const unit = space.unitPresence.unit;
+        const { unit } = space.unitPresence;
         const hasSeenUnitResult = hasSeenUnit(unit);
         if (!hasSeenUnitResult.result) {
           // Unit is present more than once
@@ -76,8 +83,8 @@ export function eachUnitPresentOnce(
         }
         seenInGame.push(unit);
       } else if (hasEngagedUnits(space.unitPresence)) {
-        const primaryUnit = space.unitPresence.primaryUnit;
-        const secondaryUnit = space.unitPresence.secondaryUnit;
+        const { primaryUnit } = space.unitPresence;
+        const { secondaryUnit } = space.unitPresence;
         const hasSeenPrimaryUnitResult = hasSeenUnit(primaryUnit);
         if (!hasSeenPrimaryUnitResult.result) {
           // Unit is present more than once
@@ -93,7 +100,8 @@ export function eachUnitPresentOnce(
           // Unexpected unit on board
           return removeExpectedPrimaryUnitResult;
         }
-        const removeExpectedSecondaryUnitResult = removeExpectedUnit(secondaryUnit);
+        const removeExpectedSecondaryUnitResult =
+          removeExpectedUnit(secondaryUnit);
         if (!removeExpectedSecondaryUnitResult.result) {
           // Unexpected unit on board
           return removeExpectedSecondaryUnitResult;
@@ -114,10 +122,10 @@ export function eachUnitPresentOnce(
     }
 
     // If expectedUnits is empty, all expected units were found and no routed units were unexpected
-    if (expectedUnits.size !== 0) {
+    if (expectedUnits.size > 0) {
       return {
+        errorReason: 'One or more units missing from game state',
         result: false,
-        errorReason: "One or more units missing from game state",
       };
     }
     return {
@@ -126,8 +134,8 @@ export function eachUnitPresentOnce(
   } catch (error) {
     // Any error means the game state is invalid
     return {
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,
-      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

@@ -1,4 +1,4 @@
-import type { Board } from "@entities";
+import type { Board } from '@entities';
 import type {
   CommandResolutionStateForBoard,
   GameStateForBoard,
@@ -6,8 +6,8 @@ import type {
   MovementResolutionStateForBoard,
   PhaseStateForBoard,
   RangedAttackResolutionStateForBoard,
-} from "@game";
-import { getCurrentPhaseStateForBoard } from "./getPhaseState";
+} from '@game';
+import { getCurrentPhaseStateForBoard } from './getPhaseState';
 
 /**
  * Gets the current command resolution state from the issue commands phase.
@@ -20,14 +20,16 @@ import { getCurrentPhaseStateForBoard } from "./getPhaseState";
 export function getCurrentCommandResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): CommandResolutionStateForBoard<TBoard> {
-  const phaseState: PhaseStateForBoard<TBoard> = getCurrentPhaseStateForBoard(state);
-  if (phaseState.phase !== "issueCommands") {
-    throw new Error("Not in issueCommands phase");
+  const phaseState: PhaseStateForBoard<TBoard> =
+    getCurrentPhaseStateForBoard(state);
+  if (phaseState.phase !== 'issueCommands') {
+    throw new Error('Not in issueCommands phase');
   }
-  const commandResolutionState: CommandResolutionStateForBoard<TBoard> | undefined =
-    phaseState.currentCommandResolutionState;
+  const commandResolutionState:
+    | CommandResolutionStateForBoard<TBoard>
+    | undefined = phaseState.currentCommandResolutionState;
   if (!commandResolutionState) {
-    throw new Error("No current command resolution state");
+    throw new Error('No current command resolution state');
   }
   return commandResolutionState;
 }
@@ -44,8 +46,8 @@ export function getRangedAttackResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): RangedAttackResolutionStateForBoard<TBoard> {
   const commandResolutionState = getCurrentCommandResolutionState(state);
-  if (commandResolutionState.commandResolutionType !== "rangedAttack") {
-    throw new Error("Current command resolution is not a ranged attack");
+  if (commandResolutionState.commandResolutionType !== 'rangedAttack') {
+    throw new Error('Current command resolution is not a ranged attack');
   }
   return commandResolutionState;
 }
@@ -62,8 +64,8 @@ export function getMovementResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): MovementResolutionStateForBoard<TBoard> {
   const commandResolutionState = getCurrentCommandResolutionState(state);
-  if (commandResolutionState.commandResolutionType !== "movement") {
-    throw new Error("Current command resolution is not a movement");
+  if (commandResolutionState.commandResolutionType !== 'movement') {
+    throw new Error('Current command resolution is not a movement');
   }
   return commandResolutionState;
 }
@@ -80,11 +82,11 @@ export function getMeleeResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): MeleeResolutionStateForBoard<TBoard> {
   const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState || phaseState.phase !== "resolveMelee") {
-    throw new Error("Not in resolveMelee phase");
+  if (!phaseState || phaseState.phase !== 'resolveMelee') {
+    throw new Error('Not in resolveMelee phase');
   }
   if (!phaseState.currentMeleeResolutionState) {
-    throw new Error("No current melee resolution state");
+    throw new Error('No current melee resolution state');
   }
   return phaseState.currentMeleeResolutionState;
 }
@@ -95,18 +97,18 @@ export function getMeleeResolutionState<TBoard extends Board>(
  *
  * @throws Error if commitments are pending or attack apply already exists
  */
-export function getMeleeResolutionReadyForAttackCalculation<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
-): MeleeResolutionStateForBoard<TBoard> {
+export function getMeleeResolutionReadyForAttackCalculation<
+  TBoard extends Board,
+>(state: GameStateForBoard<TBoard>): MeleeResolutionStateForBoard<TBoard> {
   const meleeState = getMeleeResolutionState(state);
-  if (meleeState.whiteCommitment.commitmentType === "pending") {
-    throw new Error("White commitment is still pending");
+  if (meleeState.whiteCommitment.commitmentType === 'pending') {
+    throw new Error('White commitment is still pending');
   }
-  if (meleeState.blackCommitment.commitmentType === "pending") {
-    throw new Error("Black commitment is still pending");
+  if (meleeState.blackCommitment.commitmentType === 'pending') {
+    throw new Error('Black commitment is still pending');
   }
   if (meleeState.whiteAttackApplyState || meleeState.blackAttackApplyState) {
-    throw new Error("Attack apply states already exist");
+    throw new Error('Attack apply states already exist');
   }
   return meleeState;
 }

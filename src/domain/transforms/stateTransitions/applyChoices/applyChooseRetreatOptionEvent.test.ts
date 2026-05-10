@@ -1,6 +1,9 @@
-import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { ChooseRetreatOptionEventForBoard } from "@events";
-import { getRetreatStateFromMelee, getRetreatStateFromRangedAttack } from "@queries";
+import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type { ChooseRetreatOptionEventForBoard } from '@events';
+import {
+  getRetreatStateFromMelee,
+  getRetreatStateFromRangedAttack,
+} from '@queries';
 import {
   createAttackApplyStateWithRetreat,
   createEmptyGameState,
@@ -10,34 +13,34 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
-} from "@testing";
-import { addUnitToBoard, updatePhaseState } from "@transforms/pureTransforms";
-import { describe, expect, it } from "vitest";
-import { applyChooseRetreatOptionEvent } from "./applyChooseRetreatOptionEvent";
+} from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+
+import { applyChooseRetreatOptionEvent } from './applyChooseRetreatOptionEvent';
 
 /**
  * After `resolveRetreat` lists legal cells, the defender picks one: this choice writes
  * `finalPosition` on the active retreat substep (ranged attack-apply or the correct melee side).
  */
-describe("applyChooseRetreatOptionEvent", () => {
+describe(applyChooseRetreatOptionEvent, () => {
   const chosenPosition = {
-    boardType: "standard" as const,
-    coordinate: "E-4" as const,
-    facing: "north" as const,
+    boardType: 'standard' as const,
+    coordinate: 'E-4' as const,
+    facing: 'north' as const,
   };
 
-  /** issueCommands + ranged CRS + retreat substep on white at E-5 (no finalPosition yet). */
+  /** IssueCommands + ranged CRS + retreat substep on white at E-5 (no finalPosition yet). */
   function createStateWithRangedAttackRetreat() {
     const state = createEmptyGameState();
-    const unit = createTestUnit("white", { attack: 2 });
+    const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit,
     };
     const stateWithUnit = {
       ...state,
@@ -45,54 +48,60 @@ describe("applyChooseRetreatOptionEvent", () => {
     };
     const attackApply = createAttackApplyStateWithRetreat(placement);
     const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
-      currentCommandResolutionState: createRangedAttackResolutionState(stateWithUnit, {
-        attackApplyState: attackApply,
-      }),
+      currentCommandResolutionState: createRangedAttackResolutionState(
+        stateWithUnit,
+        {
+          attackApplyState: attackApply,
+        },
+      ),
     });
     return updatePhaseState(stateWithUnit, phaseState);
   }
 
-  it("given ranged retreat flow, white chooses E-4 north, retreat substep finalPosition matches", () => {
+  it('given ranged retreat flow, white chooses E-4 north, retreat substep finalPosition matches', () => {
     const state = createStateWithRangedAttackRetreat();
     const event: ChooseRetreatOptionEventForBoard<StandardBoard> = {
+      boardType: 'standard',
+      choiceType: 'chooseRetreatOption',
       eventNumber: 0,
-      eventType: "playerChoice",
-      choiceType: "chooseRetreatOption",
-      boardType: "standard",
-      player: "white",
+      eventType: 'playerChoice',
+      player: 'white',
       retreatOption: chosenPosition,
     };
 
     const newState = applyChooseRetreatOptionEvent(event, state);
     const retreatState = getRetreatStateFromRangedAttack(newState);
 
-    expect(retreatState.finalPosition).toEqual(chosenPosition);
+    expect(retreatState.finalPosition).toStrictEqual(chosenPosition);
   });
 
-  /** resolveMelee + one-sided retreat apply: both players engaged on E-5 (north vs south). */
-  function createStateWithMeleeRetreat(retreatingPlayer: "white" | "black") {
-    const state = createEmptyGameState({ currentInitiative: "black" });
+  /** ResolveMelee + one-sided retreat apply: both players engaged on E-5 (north vs south). */
+  function createStateWithMeleeRetreat(retreatingPlayer: 'white' | 'black') {
+    const state = createEmptyGameState({ currentInitiative: 'black' });
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
-    const otherUnit = createTestUnit(retreatingPlayer === "white" ? "black" : "white", {
-      attack: 2,
-    });
-    const retreatingPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: retreatingUnit,
-      placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+    const otherUnit = createTestUnit(
+      retreatingPlayer === 'white' ? 'black' : 'white',
+      {
+        attack: 2,
       },
+    );
+    const retreatingPlacement: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
+      unit: retreatingUnit,
     };
     const otherPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: otherUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "south",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
       },
+      unit: otherUnit,
     };
     let stateWithUnits = {
       ...state,
@@ -105,7 +114,7 @@ describe("applyChooseRetreatOptionEvent", () => {
     const attackApply = createAttackApplyStateWithRetreat(retreatingPlacement);
     const melee = createMeleeResolutionState(
       stateWithUnits,
-      retreatingPlayer === "white"
+      retreatingPlayer === 'white'
         ? { whiteAttackApplyState: attackApply }
         : { blackAttackApplyState: attackApply },
     );
@@ -117,41 +126,41 @@ describe("applyChooseRetreatOptionEvent", () => {
     );
   }
 
-  it("given white melee retreat apply, white chooses E-4 north, white retreat finalPosition matches", () => {
-    const state = createStateWithMeleeRetreat("white");
+  it('given white melee retreat apply, white chooses E-4 north, white retreat finalPosition matches', () => {
+    const state = createStateWithMeleeRetreat('white');
     const event: ChooseRetreatOptionEventForBoard<StandardBoard> = {
+      boardType: 'standard',
+      choiceType: 'chooseRetreatOption',
       eventNumber: 0,
-      eventType: "playerChoice",
-      choiceType: "chooseRetreatOption",
-      boardType: "standard",
-      player: "white",
+      eventType: 'playerChoice',
+      player: 'white',
       retreatOption: chosenPosition,
     };
 
     const newState = applyChooseRetreatOptionEvent(event, state);
-    const retreatState = getRetreatStateFromMelee(newState, "white");
+    const retreatState = getRetreatStateFromMelee(newState, 'white');
 
-    expect(retreatState.finalPosition).toEqual(chosenPosition);
+    expect(retreatState.finalPosition).toStrictEqual(chosenPosition);
   });
 
-  it("given black melee retreat apply, black chooses E-4 north, black retreat finalPosition matches", () => {
-    const state = createStateWithMeleeRetreat("black");
+  it('given black melee retreat apply, black chooses E-4 north, black retreat finalPosition matches', () => {
+    const state = createStateWithMeleeRetreat('black');
     const event: ChooseRetreatOptionEventForBoard<StandardBoard> = {
+      boardType: 'standard',
+      choiceType: 'chooseRetreatOption',
       eventNumber: 0,
-      eventType: "playerChoice",
-      choiceType: "chooseRetreatOption",
-      boardType: "standard",
-      player: "black",
+      eventType: 'playerChoice',
+      player: 'black',
       retreatOption: chosenPosition,
     };
 
     const newState = applyChooseRetreatOptionEvent(event, state);
-    const retreatState = getRetreatStateFromMelee(newState, "black");
+    const retreatState = getRetreatStateFromMelee(newState, 'black');
 
-    expect(retreatState.finalPosition).toEqual(chosenPosition);
+    expect(retreatState.finalPosition).toStrictEqual(chosenPosition);
   });
 
-  it("given movement CRS only, white chooseRetreat throws no retreat state for player", () => {
+  it('given movement CRS only, white chooseRetreat throws no retreat state for player', () => {
     const state = createEmptyGameState();
     const stateInIssueCommands = updatePhaseState(
       state,
@@ -160,16 +169,16 @@ describe("applyChooseRetreatOptionEvent", () => {
       }),
     );
     const event: ChooseRetreatOptionEventForBoard<StandardBoard> = {
+      boardType: 'standard',
+      choiceType: 'chooseRetreatOption',
       eventNumber: 0,
-      eventType: "playerChoice",
-      choiceType: "chooseRetreatOption",
-      boardType: "standard",
-      player: "white",
+      eventType: 'playerChoice',
+      player: 'white',
       retreatOption: chosenPosition,
     };
 
-    expect(() => applyChooseRetreatOptionEvent(event, stateInIssueCommands)).toThrow(
-      "No retreat state found for player white",
-    );
+    expect(() =>
+      applyChooseRetreatOptionEvent(event, stateInIssueCommands),
+    ).toThrow('No retreat state found for player white');
   });
 });

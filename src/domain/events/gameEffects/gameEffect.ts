@@ -14,50 +14,50 @@
  * ## `gameEffects` import
  * From `@ruleValues/gameEffectTypes` only — not `@entities` (circular init with this file).
  */
-import type { Board, LargeBoard, SmallBoard, StandardBoard } from "@entities";
-import type { GameEffectType } from "@ruleValues";
+import type { Board, LargeBoard, SmallBoard, StandardBoard } from '@entities';
+import type { GameEffectType } from '@ruleValues';
 import type {
   DiscardPlayedCardsEvent,
   ResolveInitiativeEvent,
   ResolveRallyEvent,
   ResolveUnitsBrokenEvent,
   RevealCardsEvent,
-} from "./cards";
+} from './cards';
 import type {
   CompleteCleanupPhaseEvent,
   CompleteIssueCommandsPhaseEventForBoard,
   CompleteMoveCommandersPhaseEvent,
   CompletePlayCardsPhaseEvent,
   CompleteResolveMeleePhaseEvent,
-} from "./completePhase";
+} from './completePhase';
 import type {
   ResolveRetreatEventForBoard,
   ResolveReverseEventForBoard,
   ResolveRoutEvent,
   TriggerRoutFromRetreatEvent,
-} from "./defenseResult";
+} from './defenseResult';
 import type {
   CompleteUnitMovementEvent,
   ResolveEngageRetreatOptionEvent,
   ResolveFlankEngagementEventForBoard,
   StartEngagementEventForBoard,
-} from "./movement";
+} from './movement';
 import type {
   CompleteAttackApplyEvent,
   CompleteMeleeResolutionEvent,
   CompleteRangedAttackCommandEvent,
   ResolveMeleeEventForBoard,
   ResolveRangedAttackEventForBoard,
-} from "./resolveAttack";
-import { gameEffects } from "@ruleValues";
-import { z } from "zod";
+} from './resolveAttack';
+import { gameEffects } from '@ruleValues';
+import { z } from 'zod';
 import {
   discardPlayedCardsEventSchema,
   resolveInitiativeEventSchema,
   resolveRallyEventSchema,
   resolveUnitsBrokenEventSchema,
   revealCardsEventSchema,
-} from "./cards";
+} from './cards';
 import {
   completeCleanupPhaseEventSchema,
   completeMoveCommandersPhaseEventSchema,
@@ -66,7 +66,7 @@ import {
   largeCompleteIssueCommandsPhaseEventSchema,
   smallCompleteIssueCommandsPhaseEventSchema,
   standardCompleteIssueCommandsPhaseEventSchema,
-} from "./completePhase";
+} from './completePhase';
 import {
   completeUnitMovementEventSchema,
   largeResolveFlankEngagementEventSchema,
@@ -76,7 +76,7 @@ import {
   smallStartEngagementEventSchema,
   standardResolveFlankEngagementEventSchema,
   standardStartEngagementEventSchema,
-} from "./movement";
+} from './movement';
 
 import {
   completeAttackApplyEventSchema,
@@ -88,7 +88,7 @@ import {
   smallResolveRangedAttackEventSchema,
   standardResolveMeleeEventSchema,
   standardResolveRangedAttackEventSchema,
-} from "./resolveAttack";
+} from './resolveAttack';
 import {
   largeResolveRetreatEventSchema,
   largeResolveReverseEventSchema,
@@ -98,13 +98,14 @@ import {
   standardResolveRetreatEventSchema,
   standardResolveReverseEventSchema,
   triggerRoutFromRetreatEventSchema,
-} from "./defenseResult";
-import type { AssertExact } from "@utils";
+} from './defenseResult';
+import type { AssertExact } from '@utils';
 
 export { gameEffects, type GameEffectType };
 
 /** The schema for a game effect type. */
-export const gameEffectTypeSchema: z.ZodType<GameEffectType> = z.enum(gameEffects);
+export const gameEffectTypeSchema: z.ZodType<GameEffectType> =
+  z.enum(gameEffects);
 
 /**
  * Base union of all game effect events (unfiltered).
@@ -143,14 +144,17 @@ type GameEffectEventUnionForBoard<TBoard extends Board> =
 export type GameEffectEventForBoard<
   TBoard extends Board,
   TGameEffectType extends GameEffectType = GameEffectType,
-> = Extract<GameEffectEventUnionForBoard<TBoard>, { effectType: TGameEffectType }>;
+> = Extract<
+  GameEffectEventUnionForBoard<TBoard>,
+  { effectType: TGameEffectType }
+>;
 
 export type GameEffectEvent =
   | GameEffectEventForBoard<SmallBoard>
   | GameEffectEventForBoard<StandardBoard>
   | GameEffectEventForBoard<LargeBoard>;
 
-const _smallGameEffectEventSchemaObject = z.discriminatedUnion("effectType", [
+const _smallGameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeAttackApplyEventSchema,
   completeCleanupPhaseEventSchema,
   smallCompleteIssueCommandsPhaseEventSchema,
@@ -176,53 +180,62 @@ const _smallGameEffectEventSchemaObject = z.discriminatedUnion("effectType", [
   triggerRoutFromRetreatEventSchema,
 ]);
 
-type SmallGameEffectEventSchemaType = z.infer<typeof _smallGameEffectEventSchemaObject>;
+type SmallGameEffectEventSchemaType = z.infer<
+  typeof _smallGameEffectEventSchemaObject
+>;
 
 const _assertExactSmallGameEffect: AssertExact<
   GameEffectEventForBoard<SmallBoard>,
   SmallGameEffectEventSchemaType
 > = true;
 
-export const smallGameEffectEventSchema: z.ZodType<GameEffectEventForBoard<SmallBoard>> =
-  _smallGameEffectEventSchemaObject;
+export const smallGameEffectEventSchema: z.ZodType<
+  GameEffectEventForBoard<SmallBoard>
+> = _smallGameEffectEventSchemaObject;
 
-const _standardGameEffectEventSchemaObject = z.discriminatedUnion("effectType", [
-  completeAttackApplyEventSchema,
-  completeCleanupPhaseEventSchema,
-  standardCompleteIssueCommandsPhaseEventSchema,
-  completeMoveCommandersPhaseEventSchema,
-  completePlayCardsPhaseEventSchema,
-  completeMeleeResolutionEventSchema,
-  completeRangedAttackCommandEventSchema,
-  completeResolveMeleePhaseEventSchema,
-  discardPlayedCardsEventSchema,
-  resolveEngageRetreatOptionEventSchema,
-  standardResolveFlankEngagementEventSchema,
-  resolveInitiativeEventSchema,
-  standardResolveMeleeEventSchema,
-  resolveRallyEventSchema,
-  standardResolveRangedAttackEventSchema,
-  standardResolveRetreatEventSchema,
-  standardResolveReverseEventSchema,
-  resolveRoutEventSchema,
-  resolveUnitsBrokenEventSchema,
-  revealCardsEventSchema,
-  completeUnitMovementEventSchema,
-  standardStartEngagementEventSchema,
-  triggerRoutFromRetreatEventSchema,
-]);
+const _standardGameEffectEventSchemaObject = z.discriminatedUnion(
+  'effectType',
+  [
+    completeAttackApplyEventSchema,
+    completeCleanupPhaseEventSchema,
+    standardCompleteIssueCommandsPhaseEventSchema,
+    completeMoveCommandersPhaseEventSchema,
+    completePlayCardsPhaseEventSchema,
+    completeMeleeResolutionEventSchema,
+    completeRangedAttackCommandEventSchema,
+    completeResolveMeleePhaseEventSchema,
+    discardPlayedCardsEventSchema,
+    resolveEngageRetreatOptionEventSchema,
+    standardResolveFlankEngagementEventSchema,
+    resolveInitiativeEventSchema,
+    standardResolveMeleeEventSchema,
+    resolveRallyEventSchema,
+    standardResolveRangedAttackEventSchema,
+    standardResolveRetreatEventSchema,
+    standardResolveReverseEventSchema,
+    resolveRoutEventSchema,
+    resolveUnitsBrokenEventSchema,
+    revealCardsEventSchema,
+    completeUnitMovementEventSchema,
+    standardStartEngagementEventSchema,
+    triggerRoutFromRetreatEventSchema,
+  ],
+);
 
-type StandardGameEffectEventSchemaType = z.infer<typeof _standardGameEffectEventSchemaObject>;
+type StandardGameEffectEventSchemaType = z.infer<
+  typeof _standardGameEffectEventSchemaObject
+>;
 
 const _assertExactStandardGameEffect: AssertExact<
   GameEffectEventForBoard<StandardBoard>,
   StandardGameEffectEventSchemaType
 > = true;
 
-export const standardGameEffectEventSchema: z.ZodType<GameEffectEventForBoard<StandardBoard>> =
-  _standardGameEffectEventSchemaObject;
+export const standardGameEffectEventSchema: z.ZodType<
+  GameEffectEventForBoard<StandardBoard>
+> = _standardGameEffectEventSchemaObject;
 
-const _largeGameEffectEventSchemaObject = z.discriminatedUnion("effectType", [
+const _largeGameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeAttackApplyEventSchema,
   completeCleanupPhaseEventSchema,
   largeCompleteIssueCommandsPhaseEventSchema,
@@ -248,15 +261,18 @@ const _largeGameEffectEventSchemaObject = z.discriminatedUnion("effectType", [
   triggerRoutFromRetreatEventSchema,
 ]);
 
-type LargeGameEffectEventSchemaType = z.infer<typeof _largeGameEffectEventSchemaObject>;
+type LargeGameEffectEventSchemaType = z.infer<
+  typeof _largeGameEffectEventSchemaObject
+>;
 
 const _assertExactLargeGameEffect: AssertExact<
   GameEffectEventForBoard<LargeBoard>,
   LargeGameEffectEventSchemaType
 > = true;
 
-export const largeGameEffectEventSchema: z.ZodType<GameEffectEventForBoard<LargeBoard>> =
-  _largeGameEffectEventSchemaObject;
+export const largeGameEffectEventSchema: z.ZodType<
+  GameEffectEventForBoard<LargeBoard>
+> = _largeGameEffectEventSchemaObject;
 
 export const gameEffectEventSchema: z.ZodType<GameEffectEvent> = z.union([
   smallGameEffectEventSchema,

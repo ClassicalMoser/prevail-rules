@@ -1,5 +1,5 @@
-import type { Modifier, ValidationResult } from "@entities";
-import { areModifiersEqual } from "./areModifiersEqual";
+import type { Modifier, ValidationResult } from '@entities';
+import { areModifiersEqual } from './areModifiersEqual';
 
 /**
  * Compares two arrays of Modifiers for equality.
@@ -16,8 +16,8 @@ export function areModifiersArraysEqual(
   try {
     if (modifiers1.length !== modifiers2.length) {
       return {
-        result: false,
         errorReason: `Modifier arrays have different lengths: ${modifiers1.length} vs ${modifiers2.length}`,
+        result: false,
       };
     }
 
@@ -25,8 +25,8 @@ export function areModifiersArraysEqual(
       const comparison = areModifiersEqual(modifiers1[i], modifiers2[i]);
       if (!comparison.result) {
         return {
-          result: false,
           errorReason: `Modifier arrays differ at index ${i}: ${comparison.errorReason}`,
+          result: false,
         };
       }
     }
@@ -36,8 +36,8 @@ export function areModifiersArraysEqual(
     };
   } catch (error) {
     return {
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,
-      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

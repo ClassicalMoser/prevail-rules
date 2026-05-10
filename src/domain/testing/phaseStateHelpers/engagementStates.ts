@@ -1,21 +1,21 @@
-import type { StandardBoard, UnitInstance, UnitPlacement } from "@entities";
+import type { StandardBoard, UnitInstance, UnitPlacement } from '@entities';
 import type {
   EngagementStateForBoard,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
-} from "@game";
-import { createUnitWithPlacement } from "@testing/testHelpers";
-import { createTestUnit } from "@testing/unitHelpers";
-import { createRoutState } from "./substepStates";
+} from '@game';
+import { createUnitWithPlacement } from '@testing/testHelpers';
+import { createTestUnit } from '@testing/unitHelpers';
+import { createRoutState } from './substepStates';
 
 const defaultEngagingUnit = (): UnitInstance =>
-  createUnitWithPlacement({ playerSide: "black" }).unit;
+  createUnitWithPlacement({ playerSide: 'black' }).unit;
 
 const defaultTargetPlacement: UnitPlacement<StandardBoard> = {
-  boardType: "standard" as const,
-  coordinate: "E-5" as const,
-  facing: "north",
+  boardType: 'standard' as const,
+  coordinate: 'E-5' as const,
+  facing: 'north',
 };
 
 /**
@@ -27,19 +27,19 @@ export function createFrontEngagementState(
   engagementResolutionState: FrontEngagementResolutionState;
 } {
   return {
-    substepType: "engagementResolution",
-    boardType: "standard" as const,
-    engagingUnit: defaultEngagingUnit(),
-    targetPlacement: defaultTargetPlacement,
+    boardType: 'standard' as const,
+    completed: false,
     engagementResolutionState: {
-      engagementType: "front",
-      defensiveCommitment: { commitmentType: "pending" },
       defendingUnitCanRetreat: undefined,
-      defendingUnitRetreats: undefined,
       defendingUnitRetreated: undefined,
+      defendingUnitRetreats: undefined,
+      defensiveCommitment: { commitmentType: 'pending' },
+      engagementType: 'front',
       ...overrides,
     },
-    completed: false,
+    engagingUnit: defaultEngagingUnit(),
+    substepType: 'engagementResolution',
+    targetPlacement: defaultTargetPlacement,
   };
 }
 
@@ -52,16 +52,16 @@ export function createFlankEngagementState(
   engagementResolutionState: FlankEngagementResolutionState;
 } {
   return {
-    substepType: "engagementResolution",
-    boardType: "standard" as const,
-    engagingUnit: defaultEngagingUnit(),
-    targetPlacement: defaultTargetPlacement,
+    boardType: 'standard' as const,
+    completed: false,
     engagementResolutionState: {
-      engagementType: "flank",
       defenderRotated: false,
+      engagementType: 'flank',
       ...overrides,
     },
-    completed: false,
+    engagingUnit: defaultEngagingUnit(),
+    substepType: 'engagementResolution',
+    targetPlacement: defaultTargetPlacement,
   };
 }
 
@@ -74,16 +74,16 @@ export function createRearEngagementState(
   engagementResolutionState: RearEngagementResolutionState;
 } {
   return {
-    substepType: "engagementResolution",
-    boardType: "standard" as const,
-    engagingUnit: defaultEngagingUnit(),
-    targetPlacement: defaultTargetPlacement,
+    boardType: 'standard' as const,
+    completed: false,
     engagementResolutionState: {
-      engagementType: "rear",
-      routState: createRoutState("white", createTestUnit("white")),
       completed: false,
+      engagementType: 'rear',
+      routState: createRoutState('white', createTestUnit('white')),
       ...overrides,
     },
-    completed: false,
+    engagingUnit: defaultEngagingUnit(),
+    substepType: 'engagementResolution',
+    targetPlacement: defaultTargetPlacement,
   };
 }

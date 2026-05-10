@@ -1,5 +1,9 @@
-import type { PlayerSide, StandardBoard, StandardBoardCoordinate } from "@entities";
-import { addCommanderToBoard, createEmptyStandardBoard } from "@transforms";
+import type {
+  PlayerSide,
+  StandardBoard,
+  StandardBoardCoordinate,
+} from '@entities';
+import { addCommanderToBoard, createEmptyStandardBoard } from '@transforms';
 
 /**
  * Creates a board with a commander at a coordinate.

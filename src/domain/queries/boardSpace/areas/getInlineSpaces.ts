@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate, UnitFacing } from "@entities";
-import { getOrthogonalFacings } from "@queries/facings";
-import { filterUndefinedSpaces } from "../filterUndefinedSpaces";
-import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge";
+import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import { getOrthogonalFacings } from '@queries/facings';
+import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
+import { getForwardSpacesToEdge } from '../getForwardSpacesToEdge';
 
 /**
  * Get the inline spaces for a given coordinate and facing,
@@ -19,7 +19,7 @@ export function getInlineSpaces<TBoard extends Board>(
   facing: UnitFacing,
 ): Set<BoardCoordinate<TBoard>> {
   // Initialize set with the starting coordinate
-  const inlineSpaces: Set<BoardCoordinate<TBoard>> = new Set([coordinate]);
+  const inlineSpaces = new Set<BoardCoordinate<TBoard>>([coordinate]);
 
   // Get the two orthogonal facings (directions perpendicular to the facing)
   const orthogonalFacings = [...getOrthogonalFacings(facing)];
@@ -27,7 +27,9 @@ export function getInlineSpaces<TBoard extends Board>(
   // Get the forward spaces to the edge for each orthogonal facing
   for (const orthogonalFacing of orthogonalFacings) {
     const spaces = getForwardSpacesToEdge(board, coordinate, orthogonalFacing);
-    for (const space of spaces) inlineSpaces.add(space);
+    for (const space of spaces) {
+      inlineSpaces.add(space);
+    }
   }
 
   // Filter out undefined values

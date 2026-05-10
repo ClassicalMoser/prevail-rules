@@ -1,83 +1,83 @@
-import type { Board } from "@entities";
-import type { MoveUnitEventForBoard } from "@events";
-import { createEmptyGameState, createTestUnit } from "@testing";
-import { addUnitToBoard } from "@transforms";
-import { describe, expect, it } from "vitest";
-import { isLegalMove } from "./isLegalMove";
+import type { Board } from '@entities';
+import type { MoveUnitEventForBoard } from '@events';
+import { createEmptyGameState, createTestUnit } from '@testing';
+import { addUnitToBoard } from '@transforms';
+
+import { isLegalMove } from './isLegalMove';
 
 /**
- * isLegalMove: Validates whether a unit move event is legal according to game rules.
+ * IsLegalMove: Validates whether a unit move event is legal according to game rules.
  */
-describe("isLegalMove", () => {
-  describe("core functionality", () => {
-    it("given a legal move, returns true", () => {
-      const unitInstance = createTestUnit("black", { speed: 2 });
+describe(isLegalMove, () => {
+  describe('core functionality', () => {
+    it('given a legal move, returns true', () => {
+      const unitInstance = createTestUnit('black', { speed: 2 });
       const gameState = createEmptyGameState();
       let board = gameState.boardState;
       board = addUnitToBoard(board, {
-        boardType: "standard" as const,
-        unit: unitInstance,
+        boardType: 'standard' as const,
         placement: {
-          boardType: "standard" as const,
-          coordinate: "E-5",
-          facing: "north",
+          boardType: 'standard' as const,
+          coordinate: 'E-5',
+          facing: 'north',
         },
+        unit: unitInstance,
       });
       gameState.boardState = board;
       const moveUnitEvent: MoveUnitEventForBoard<Board> = {
+        boardType: 'standard',
+        choiceType: 'moveUnit',
         eventNumber: 0,
-        eventType: "playerChoice",
-        choiceType: "moveUnit",
-        boardType: "standard",
-        player: "black",
-        unit: {
-          boardType: "standard" as const,
-          unit: unitInstance,
-          placement: {
-            boardType: "standard" as const,
-            coordinate: "E-5",
-            facing: "north",
-          },
-        },
-        to: {
-          boardType: "standard" as const,
-          coordinate: "E-4",
-          facing: "north",
-        },
+        eventType: 'playerChoice',
         moveCommander: false,
+        player: 'black',
+        to: {
+          boardType: 'standard' as const,
+          coordinate: 'E-4',
+          facing: 'north',
+        },
+        unit: {
+          boardType: 'standard' as const,
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-5',
+            facing: 'north',
+          },
+          unit: unitInstance,
+        },
       };
       const isLegal = isLegalMove(moveUnitEvent, gameState);
-      expect(isLegal).toBe(true);
+      expect(isLegal).toBeTruthy();
     });
   });
-  describe("bad inputs", () => {
-    it("given a move that is not legal, returns false", () => {
-      const unitInstance = createTestUnit("black", { speed: 2 });
+  describe('bad inputs', () => {
+    it('given a move that is not legal, returns false', () => {
+      const unitInstance = createTestUnit('black', { speed: 2 });
       const gameState = createEmptyGameState();
       const moveUnitEvent: MoveUnitEventForBoard<Board> = {
+        boardType: 'standard',
+        choiceType: 'moveUnit',
         eventNumber: 0,
-        eventType: "playerChoice",
-        choiceType: "moveUnit",
-        boardType: "standard",
-        player: "black",
-        unit: {
-          boardType: "standard" as const,
-          unit: unitInstance,
-          placement: {
-            boardType: "standard" as const,
-            coordinate: "E-5",
-            facing: "north",
-          },
-        },
-        to: {
-          boardType: "standard" as const,
-          coordinate: "E-6",
-          facing: "north",
-        },
+        eventType: 'playerChoice',
         moveCommander: false,
+        player: 'black',
+        to: {
+          boardType: 'standard' as const,
+          coordinate: 'E-6',
+          facing: 'north',
+        },
+        unit: {
+          boardType: 'standard' as const,
+          placement: {
+            boardType: 'standard' as const,
+            coordinate: 'E-5',
+            facing: 'north',
+          },
+          unit: unitInstance,
+        },
       };
       const isLegal = isLegalMove(moveUnitEvent, gameState);
-      expect(isLegal).toBe(false);
+      expect(isLegal).toBeFalsy();
     });
   });
 });

@@ -1,4 +1,4 @@
-import type { Restrictions, ValidationResult } from "@entities";
+import type { Restrictions, ValidationResult } from '@entities';
 
 /**
  * Compares two Restrictions objects for equality by comparing all properties.
@@ -13,41 +13,58 @@ export function areRestrictionsEqual(
 ): ValidationResult {
   try {
     // Compare inspirationRangeRestriction
-    if (restrictions1.inspirationRangeRestriction !== restrictions2.inspirationRangeRestriction) {
+    if (
+      restrictions1.inspirationRangeRestriction !==
+      restrictions2.inspirationRangeRestriction
+    ) {
       return {
+        errorReason:
+          'Restrictions have different inspirationRangeRestriction values',
         result: false,
-        errorReason: "Restrictions have different inspirationRangeRestriction values",
       };
     }
 
     // Compare traitRestrictions arrays (order matters for arrays)
-    if (restrictions1.traitRestrictions.length !== restrictions2.traitRestrictions.length) {
+    if (
+      restrictions1.traitRestrictions.length !==
+      restrictions2.traitRestrictions.length
+    ) {
       return {
+        errorReason:
+          'Restrictions have different traitRestrictions array lengths',
         result: false,
-        errorReason: "Restrictions have different traitRestrictions array lengths",
       };
     }
     for (let i = 0; i < restrictions1.traitRestrictions.length; i++) {
-      if (restrictions1.traitRestrictions[i] !== restrictions2.traitRestrictions[i]) {
+      if (
+        restrictions1.traitRestrictions[i] !==
+        restrictions2.traitRestrictions[i]
+      ) {
         return {
-          result: false,
           errorReason: `Restrictions have different traitRestrictions at index ${i}`,
+          result: false,
         };
       }
     }
 
     // Compare unitRestrictions arrays (order matters for arrays)
-    if (restrictions1.unitRestrictions.length !== restrictions2.unitRestrictions.length) {
+    if (
+      restrictions1.unitRestrictions.length !==
+      restrictions2.unitRestrictions.length
+    ) {
       return {
+        errorReason:
+          'Restrictions have different unitRestrictions array lengths',
         result: false,
-        errorReason: "Restrictions have different unitRestrictions array lengths",
       };
     }
     for (let i = 0; i < restrictions1.unitRestrictions.length; i++) {
-      if (restrictions1.unitRestrictions[i] !== restrictions2.unitRestrictions[i]) {
+      if (
+        restrictions1.unitRestrictions[i] !== restrictions2.unitRestrictions[i]
+      ) {
         return {
-          result: false,
           errorReason: `Restrictions have different unitRestrictions at index ${i}`,
+          result: false,
         };
       }
     }
@@ -57,8 +74,8 @@ export function areRestrictionsEqual(
     };
   } catch (error) {
     return {
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,
-      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

@@ -1,4 +1,4 @@
-export { boardSchema, boardType, boardTypeEnum } from "./board";
+export { boardSchema, boardType, boardTypeEnum } from './board';
 export type {
   Board,
   BoardOfType,
@@ -6,13 +6,13 @@ export type {
   LARGE_BOARD_TYPE,
   SMALL_BOARD_TYPE,
   STANDARD_BOARD_TYPE,
-} from "./board";
+} from './board';
 
-export { boardCoordinateSchema } from "./boardCoordinates";
-export type { BoardCoordinate } from "./boardCoordinates";
+export { boardCoordinateSchema } from './boardCoordinates';
+export type { BoardCoordinate } from './boardCoordinates';
 
-export { boardSpaceSchema } from "./boardSpace";
-export type { BoardSpace } from "./boardSpace";
+export { boardSpaceSchema } from './boardSpace';
+export type { BoardSpace } from './boardSpace';
 
 export {
   coordinateLayoutMap,
@@ -20,14 +20,17 @@ export {
   largeCoordinateLayout,
   smallCoordinateLayout,
   standardCoordinateLayout,
-} from "./coordinateLayout";
-export type { CoordinateLayout, CoordinateLayoutMap } from "./coordinateLayout";
+} from './coordinateLayout';
+export type { CoordinateLayout, CoordinateLayoutMap } from './coordinateLayout';
 
-export { largeBoardCoordinateSchema, largeBoardSchema } from "./largeBoard";
-export type { LargeBoard, LargeBoardCoordinate } from "./largeBoard";
+export { largeBoardCoordinateSchema, largeBoardSchema } from './largeBoard';
+export type { LargeBoard, LargeBoardCoordinate } from './largeBoard';
 
-export { smallBoardCoordinateSchema, smallBoardSchema } from "./smallBoard";
-export type { SmallBoard, SmallBoardCoordinate } from "./smallBoard";
+export { smallBoardCoordinateSchema, smallBoardSchema } from './smallBoard';
+export type { SmallBoard, SmallBoardCoordinate } from './smallBoard';
 
-export { standardBoardCoordinateSchema, standardBoardSchema } from "./standardBoard";
-export type { StandardBoard, StandardBoardCoordinate } from "./standardBoard";
+export {
+  standardBoardCoordinateSchema,
+  standardBoardSchema,
+} from './standardBoard';
+export type { StandardBoard, StandardBoardCoordinate } from './standardBoard';

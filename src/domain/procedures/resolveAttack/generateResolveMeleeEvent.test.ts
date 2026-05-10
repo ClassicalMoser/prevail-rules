@@ -1,18 +1,17 @@
-import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { GameStateForBoard } from "@game";
-import { PLAY_CARDS_PHASE } from "@game";
+import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type { GameStateForBoard } from '@game';
+import { PLAY_CARDS_PHASE } from '@game';
 
-import { equites, punicCitizenSpearmen } from "@sampleValues";
+import { equites, punicCitizenSpearmen } from '@sampleValues';
 import {
   createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
-} from "@testing";
-import { addUnitToBoard, updatePhaseState } from "@transforms";
-import { describe, expect, it } from "vitest";
+} from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
-import { generateResolveMeleeEvent } from "./generateResolveMeleeEvent";
+import { generateResolveMeleeEvent } from './generateResolveMeleeEvent';
 
 /** Citizen spearmen (retreat 6, attack 3): with default test `inPlay` (+1 attack), strike stays below retreat. */
 const spearmenType = punicCitizenSpearmen;
@@ -22,29 +21,29 @@ const spearmenType = punicCitizenSpearmen;
  * precomputes legal retreat hex sets when retreat is allowed. Commitments must be resolved
  * first; the board must hold both combatants at the melee coordinate.
  */
-describe("generateResolveMeleeEvent", () => {
+describe(generateResolveMeleeEvent, () => {
   /** Default spearmen mirror match on E-5 with empty resolve-melee phase (no pending commitments). */
   function meleeResolutionGameState(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
-    const whiteUnit = createTestUnit("white", { unitType: spearmenType });
-    const blackUnit = createTestUnit("black", { unitType: spearmenType });
+    const whiteUnit = createTestUnit('white', { unitType: spearmenType });
+    const blackUnit = createTestUnit('black', { unitType: spearmenType });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: whiteUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: whiteUnit,
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: blackUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "south",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
       },
+      unit: blackUnit,
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
@@ -52,110 +51,112 @@ describe("generateResolveMeleeEvent", () => {
     return updatePhaseState(s, phase);
   }
 
-  it("given cavalry vs cavalry on E-5, both retreated true and each gets a non-empty legal set", () => {
+  it('given cavalry vs cavalry on E-5, both retreated true and each gets a non-empty legal set', () => {
     const state = createEmptyGameState();
-    const whiteUnit = createTestUnit("white", { unitType: equites });
-    const blackUnit = createTestUnit("black", { unitType: equites });
+    const whiteUnit = createTestUnit('white', { unitType: equites });
+    const blackUnit = createTestUnit('black', { unitType: equites });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: whiteUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: whiteUnit,
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: blackUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "south",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
       },
+      unit: blackUnit,
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
     const phase = createResolveMeleePhaseState(s);
     const full = updatePhaseState(s, phase);
     const event = generateResolveMeleeEvent(full, 0);
-    expect(event.whiteUnitRetreated).toBe(true);
-    expect(event.blackUnitRetreated).toBe(true);
+    expect(event.whiteUnitRetreated).toBeTruthy();
+    expect(event.blackUnitRetreated).toBeTruthy();
     expect(event.whiteLegalRetreatOptions).toBeInstanceOf(Set);
     expect(event.blackLegalRetreatOptions).toBeInstanceOf(Set);
   });
 
-  it("given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat and empty sets", () => {
+  it('given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat and empty sets', () => {
     const full = meleeResolutionGameState();
     const event = generateResolveMeleeEvent(full, 0);
-    expect(event.effectType).toBe("resolveMelee");
-    expect(event.location).toBe("E-5");
-    expect(event.whiteUnitWithPlacement.unit.playerSide).toBe("white");
-    expect(event.blackUnitWithPlacement.unit.playerSide).toBe("black");
-    expect(typeof event.whiteUnitRouted).toBe("boolean");
-    expect(typeof event.blackUnitRouted).toBe("boolean");
-    expect(event.whiteUnitRetreated).toBe(false);
-    expect(event.blackUnitRetreated).toBe(false);
+    expect(event.effectType).toBe('resolveMelee');
+    expect(event.location).toBe('E-5');
+    expect(event.whiteUnitWithPlacement.unit.playerSide).toBe('white');
+    expect(event.blackUnitWithPlacement.unit.playerSide).toBe('black');
+    expect(event.whiteUnitRetreated).toBeFalsy();
+    expect(event.blackUnitRetreated).toBeFalsy();
     expect(event.whiteLegalRetreatOptions).toBeInstanceOf(Set);
     expect(event.blackLegalRetreatOptions).toBeInstanceOf(Set);
     expect(event.whiteLegalRetreatOptions.size).toBe(0);
     expect(event.blackLegalRetreatOptions.size).toBe(0);
   });
 
-  it("given melee CRS with white commitment pending, throws white commitment guard", () => {
+  it('given melee CRS with white commitment pending, throws white commitment guard', () => {
     const state = createEmptyGameState();
-    const whiteUnit = createTestUnit("white", { attack: 2 });
-    const blackUnit = createTestUnit("black", { attack: 2 });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: whiteUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: whiteUnit,
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: blackUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "south",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
       },
+      unit: blackUnit,
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
     const melee = createMeleeResolutionState(s, {
-      whiteCommitment: { commitmentType: "pending" },
+      whiteCommitment: { commitmentType: 'pending' },
     });
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,
     });
     const full = updatePhaseState(s, phase);
-    expect(() => generateResolveMeleeEvent(full, 0)).toThrow("White commitment is still pending");
+    expect(() => generateResolveMeleeEvent(full, 0)).toThrow(
+      'White commitment is still pending',
+    );
   });
 
-  it("given playCards phase, throws not in resolveMelee", () => {
+  it('given playCards phase, throws not in resolveMelee', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
-      step: "complete",
+      step: 'complete',
     });
-    expect(() => generateResolveMeleeEvent(full, 0)).toThrow("Not in resolveMelee phase");
+    expect(() => generateResolveMeleeEvent(full, 0)).toThrow(
+      'Not in resolveMelee phase',
+    );
   });
 
-  it("given only white on E-5 in resolveMelee phase, throws units not found on board", () => {
+  it('given only white on E-5 in resolveMelee phase, throws units not found on board', () => {
     const state = createEmptyGameState();
-    const whiteUnit = createTestUnit("white", { attack: 2 });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: whiteUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: whiteUnit,
     };
     const s = {
       ...state,
@@ -163,6 +164,8 @@ describe("generateResolveMeleeEvent", () => {
     };
     const phase = createResolveMeleePhaseState(s);
     const full = updatePhaseState(s, phase);
-    expect(() => generateResolveMeleeEvent(full, 0)).toThrow("Units not found on board");
+    expect(() => generateResolveMeleeEvent(full, 0)).toThrow(
+      'Units not found on board',
+    );
   });
 });

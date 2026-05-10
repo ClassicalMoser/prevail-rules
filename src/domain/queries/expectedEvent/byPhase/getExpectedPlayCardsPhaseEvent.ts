@@ -1,6 +1,6 @@
-import type { ExpectedEventInfo } from "@events";
-import type { GameState } from "@game";
-import { getPlayCardsPhaseState } from "@queries/sequencing";
+import type { ExpectedEventInfo } from '@events';
+import type { GameState } from '@game';
+import { getPlayCardsPhaseState } from '@queries/sequencing';
 
 /**
  * Gets information about the expected event for the PlayCards phase.
@@ -8,44 +8,49 @@ import { getPlayCardsPhaseState } from "@queries/sequencing";
  * @param state - The current game state with PlayCards phase
  * @returns Information about what event is expected
  */
-export function getExpectedPlayCardsPhaseEvent(state: GameState): ExpectedEventInfo {
+export function getExpectedPlayCardsPhaseEvent(
+  state: GameState,
+): ExpectedEventInfo {
   const phaseState = getPlayCardsPhaseState(state);
 
   switch (phaseState.step) {
-    case "chooseCards": {
+    case 'chooseCards': {
       const blackCardChosen = state.cardState.black.awaitingPlay !== null;
       const whiteCardChosen = state.cardState.white.awaitingPlay !== null;
       const oneCardChosen = blackCardChosen || whiteCardChosen;
       if (oneCardChosen) {
         return {
-          actionType: "playerChoice",
-          playerSource: blackCardChosen ? "white" : "black",
-          choiceType: "chooseCard",
+          actionType: 'playerChoice',
+          choiceType: 'chooseCard',
+          playerSource: blackCardChosen ? 'white' : 'black',
         };
       }
       return {
-        actionType: "playerChoice",
-        playerSource: "bothPlayers",
-        choiceType: "chooseCard",
+        actionType: 'playerChoice',
+        choiceType: 'chooseCard',
+        playerSource: 'bothPlayers',
       };
     }
-    case "revealCards":
+    case 'revealCards': {
       return {
-        actionType: "gameEffect",
-        effectType: "revealCards",
+        actionType: 'gameEffect',
+        effectType: 'revealCards',
       };
+    }
 
-    case "assignInitiative":
+    case 'assignInitiative': {
       return {
-        actionType: "gameEffect",
-        effectType: "resolveInitiative",
+        actionType: 'gameEffect',
+        effectType: 'resolveInitiative',
       };
+    }
 
-    case "complete":
+    case 'complete': {
       return {
-        actionType: "gameEffect",
-        effectType: "completePlayCardsPhase",
+        actionType: 'gameEffect',
+        effectType: 'completePlayCardsPhase',
       };
+    }
 
     default: {
       const _exhaustive: never = phaseState.step;

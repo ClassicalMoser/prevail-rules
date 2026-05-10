@@ -5,8 +5,12 @@ import type {
   LargeBoard,
   SmallBoard,
   StandardBoard,
-} from "@entities";
-import { largeCoordinateLayout, smallCoordinateLayout, standardCoordinateLayout } from "@entities";
+} from '@entities';
+import {
+  largeCoordinateLayout,
+  smallCoordinateLayout,
+  standardCoordinateLayout,
+} from '@entities';
 
 /**
  * Creates an empty board space with default values.
@@ -14,27 +18,27 @@ import { largeCoordinateLayout, smallCoordinateLayout, standardCoordinateLayout 
  */
 function createEmptyBoardSpace(): BoardSpace {
   return {
-    terrainType: "plain",
+    commanders: new Set(),
     elevation: {
-      northWest: 0,
       northEast: 0,
-      southWest: 0,
+      northWest: 0,
       southEast: 0,
+      southWest: 0,
+    },
+    terrainType: 'plain',
+    unitPresence: {
+      presenceType: 'none',
     },
     waterCover: {
+      east: false,
       north: false,
       northEast: false,
-      east: false,
-      southEast: false,
+      northWest: false,
       south: false,
+      southEast: false,
       southWest: false,
       west: false,
-      northWest: false,
     },
-    unitPresence: {
-      presenceType: "none",
-    },
-    commanders: new Set(),
   };
 }
 
@@ -42,8 +46,11 @@ function createEmptyBoardSpace(): BoardSpace {
  * Creates an empty board using the coordinate layout.
  * Generates all coordinates and initializes them with empty spaces.
  */
-function createEmptyBoardWithLayout<TBoard extends Board, TCoordinate extends string>(
-  boardType: "standard" | "small" | "large",
+function createEmptyBoardWithLayout<
+  TBoard extends Board,
+  TCoordinate extends string,
+>(
+  boardType: 'standard' | 'small' | 'large',
   layout: CoordinateLayout<TCoordinate>,
 ): TBoard {
   const board: Record<string, BoardSpace> = {};
@@ -57,8 +64,8 @@ function createEmptyBoardWithLayout<TBoard extends Board, TCoordinate extends st
   }
 
   return {
-    boardType,
     board: board as Record<TCoordinate, BoardSpace>,
+    boardType,
   } as TBoard;
 }
 
@@ -66,19 +73,25 @@ function createEmptyBoardWithLayout<TBoard extends Board, TCoordinate extends st
  * Creates an empty standard board with all coordinates initialized to default spaces.
  */
 export function createEmptyStandardBoard(): StandardBoard {
-  return createEmptyBoardWithLayout("standard", standardCoordinateLayout);
+  return createEmptyBoardWithLayout('standard', standardCoordinateLayout);
 }
 
 /**
  * Creates an empty small board with all coordinates initialized to default spaces.
  */
 export function createEmptySmallBoard(): SmallBoard {
-  return createEmptyBoardWithLayout("small", smallCoordinateLayout) as SmallBoard;
+  return createEmptyBoardWithLayout(
+    'small',
+    smallCoordinateLayout,
+  ) as SmallBoard;
 }
 
 /**
  * Creates an empty large board with all coordinates initialized to default spaces.
  */
 export function createEmptyLargeBoard(): LargeBoard {
-  return createEmptyBoardWithLayout("large", largeCoordinateLayout) as LargeBoard;
+  return createEmptyBoardWithLayout(
+    'large',
+    largeCoordinateLayout,
+  ) as LargeBoard;
 }

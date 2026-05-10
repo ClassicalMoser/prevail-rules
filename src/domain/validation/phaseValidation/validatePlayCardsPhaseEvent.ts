@@ -1,7 +1,7 @@
-import type { Board, ValidationResult } from "@entities";
-import type { EventForBoard, PlayerChoiceEvent } from "@events";
-import type { GameState, GameStateForBoard, PlayCardsPhaseState } from "@game";
-import { validatePlayerChoice } from "@validation/playerChoice";
+import type { Board, ValidationResult } from '@entities';
+import type { EventForBoard, PlayerChoiceEvent } from '@events';
+import type { GameState, GameStateForBoard, PlayCardsPhaseState } from '@game';
+import { validatePlayerChoice } from '@validation/playerChoice';
 
 /**
  * @deprecated Validation under rework.
@@ -17,46 +17,63 @@ export function validatePlayCardsPhaseEvent<TBoard extends Board>(
   const phaseState = state.currentRoundState.currentPhaseState;
 
   switch (phaseState.step) {
-    case "chooseCards":
-      if (event.eventType === "playerChoice") {
-        return validatePlayerChoice(event as PlayerChoiceEvent, state as GameState);
+    case 'chooseCards': {
+      if (event.eventType === 'playerChoice') {
+        return validatePlayerChoice(
+          event as PlayerChoiceEvent,
+          state as GameState,
+        );
       }
       return {
+        errorReason: 'Expected ChooseCardEvent',
         result: false,
-        errorReason: "Expected ChooseCardEvent",
       };
+    }
 
-    case "revealCards":
-      if (event.eventType === "gameEffect" && event.effectType === "revealCards") {
+    case 'revealCards': {
+      if (
+        event.eventType === 'gameEffect' &&
+        event.effectType === 'revealCards'
+      ) {
         return { result: true };
       }
       return {
+        errorReason: 'Expected RevealCardsEvent',
         result: false,
-        errorReason: "Expected RevealCardsEvent",
       };
+    }
 
-    case "assignInitiative":
-      if (event.eventType === "gameEffect" && event.effectType === "resolveInitiative") {
+    case 'assignInitiative': {
+      if (
+        event.eventType === 'gameEffect' &&
+        event.effectType === 'resolveInitiative'
+      ) {
         return { result: true };
       }
       return {
+        errorReason: 'Expected ResolveInitiativeEvent',
         result: false,
-        errorReason: "Expected ResolveInitiativeEvent",
       };
+    }
 
-    case "complete":
-      if (event.eventType === "gameEffect" && event.effectType === "completePlayCardsPhase") {
+    case 'complete': {
+      if (
+        event.eventType === 'gameEffect' &&
+        event.effectType === 'completePlayCardsPhase'
+      ) {
         return { result: true };
       }
       return {
+        errorReason: 'Expected CompletePlayCardsPhaseEvent',
         result: false,
-        errorReason: "Expected CompletePlayCardsPhaseEvent",
       };
+    }
 
-    default:
+    default: {
       return {
-        result: false,
         errorReason: `Invalid playCards phase step: ${phaseState.step}`,
+        result: false,
       };
+    }
   }
 }

@@ -1,19 +1,19 @@
-import type { Board, LargeBoard, SmallBoard, StandardBoard } from "@entities";
-import type { MovementResolutionStateForBoard } from "./movementResolutionSubstep";
-import type { RangedAttackResolutionStateForBoard } from "./rangedAttackResolutionSubstep";
-import type { AssertExact } from "@utils";
+import type { Board, LargeBoard, SmallBoard, StandardBoard } from '@entities';
+import type { MovementResolutionStateForBoard } from './movementResolutionSubstep';
+import type { RangedAttackResolutionStateForBoard } from './rangedAttackResolutionSubstep';
+import type { AssertExact } from '@utils';
 
 import {
   largeMovementResolutionStateSchema,
   smallMovementResolutionStateSchema,
   standardMovementResolutionStateSchema,
-} from "./movementResolutionSubstep";
+} from './movementResolutionSubstep';
 import {
   largeRangedAttackResolutionStateSchema,
   smallRangedAttackResolutionStateSchema,
   standardRangedAttackResolutionStateSchema,
-} from "./rangedAttackResolutionSubstep";
-import { z } from "zod";
+} from './rangedAttackResolutionSubstep';
+import { z } from 'zod';
 
 /** Command resolution while issuing commands: movement or ranged attack (each discriminated on `boardType`). */
 export type CommandResolutionStateForBoard<TBoard extends Board> =
@@ -86,7 +86,9 @@ const _commandResolutionStateSchemaObject = z.union([
   _largeCommandResolutionStateSchemaObject,
 ]);
 
-type CommandResolutionStateSchemaType = z.infer<typeof _commandResolutionStateSchemaObject>;
+type CommandResolutionStateSchemaType = z.infer<
+  typeof _commandResolutionStateSchemaObject
+>;
 
 const _assertExactCommandResolutionState: AssertExact<
   CommandResolutionState,

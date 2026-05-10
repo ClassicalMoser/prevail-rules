@@ -1,5 +1,5 @@
-import { GameModeName } from "@entities";
-import type { GameState } from "@game";
+import type { GameModeName } from '@entities';
+import type { GameState } from '@game';
 
 /**
  * Payload after a successful persisted game-state update.

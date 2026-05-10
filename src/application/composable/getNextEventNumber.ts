@@ -1,5 +1,5 @@
-import type { EventStreamStorage, PortResponse } from "../ports";
-import { getCurrentEventNumber } from "./getCurrentEventNumber";
+import type { EventStreamStorage, PortResponse } from '../ports';
+import { getCurrentEventNumber } from './getCurrentEventNumber';
 
 /**
  * Gets the next event number for a given game and round.
@@ -29,14 +29,14 @@ export async function getNextEventNumber(
   const currentEventNumber = currentEventNumberResult.data;
   if (currentEventNumber === undefined) {
     return {
-      result: true,
       data: 0,
+      result: true,
     };
   }
 
   // Otherwise, return the next event number
   return {
-    result: true,
     data: currentEventNumber + 1,
+    result: true,
   };
 }

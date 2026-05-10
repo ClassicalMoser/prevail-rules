@@ -1,28 +1,28 @@
-import type { CommitToMeleeEvent } from "@events";
-import { getMeleeResolutionState } from "@queries";
-import { tempCommandCards } from "@sampleValues";
+import type { CommitToMeleeEvent } from '@events';
+import { getMeleeResolutionState } from '@queries';
+import { tempCommandCards } from '@sampleValues';
 import {
   createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
-} from "@testing";
-import { updateCardState, updatePhaseState } from "@transforms/pureTransforms";
-import { describe, expect, it } from "vitest";
-import { applyCommitToMeleeEvent } from "./applyCommitToMeleeEvent";
+} from '@testing';
+import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+
+import { applyCommitToMeleeEvent } from './applyCommitToMeleeEvent';
 
 /**
  * Melee commitment: pending side locks in their played command card (and empty modifiers here),
  * moves the card out of hand, and marks `whiteCommitment` / `blackCommitment` completed.
  */
-describe("applyCommitToMeleeEvent", () => {
-  it("given white pending and one card in hand, commit completes white and empties white hand", () => {
+describe(applyCommitToMeleeEvent, () => {
+  it('given white pending and one card in hand, commit completes white and empties white hand', () => {
     const state = createEmptyGameState();
     const stateWithWhiteCardInHand = updateCardState(state, (c) => ({
       ...c,
       white: { ...c.white, inHand: [tempCommandCards[0]] },
     }));
     const meleeState = createMeleeResolutionState(stateWithWhiteCardInHand, {
-      whiteCommitment: { commitmentType: "pending" },
+      whiteCommitment: { commitmentType: 'pending' },
     });
     const stateInPhase = updatePhaseState(
       stateWithWhiteCardInHand,
@@ -31,20 +31,20 @@ describe("applyCommitToMeleeEvent", () => {
       }),
     );
     const event: CommitToMeleeEvent = {
-      eventNumber: 0,
-      eventType: "playerChoice",
-      choiceType: "commitToMelee",
-      player: "white",
+      choiceType: 'commitToMelee',
       committedCard: tempCommandCards[0],
+      eventNumber: 0,
+      eventType: 'playerChoice',
       modifierTypes: [],
+      player: 'white',
     };
 
     const newState = applyCommitToMeleeEvent(event, stateInPhase);
     const newMelee = getMeleeResolutionState(newState);
 
-    expect(newMelee.whiteCommitment).toEqual({
-      commitmentType: "completed",
+    expect(newMelee.whiteCommitment).toStrictEqual({
       card: tempCommandCards[0],
+      commitmentType: 'completed',
     });
     expect(newState.cardState.white.inHand).not.toContainEqual(
       expect.objectContaining({ id: tempCommandCards[0].id }),
@@ -52,14 +52,14 @@ describe("applyCommitToMeleeEvent", () => {
     expect(newState.cardState.white.inHand).toHaveLength(0);
   });
 
-  it("given black pending and one card in hand, commit completes black and empties black hand", () => {
+  it('given black pending and one card in hand, commit completes black and empties black hand', () => {
     const state = createEmptyGameState();
     const stateWithBlackCardInHand = updateCardState(state, (c) => ({
       ...c,
       black: { ...c.black, inHand: [tempCommandCards[0]] },
     }));
     const meleeState = createMeleeResolutionState(stateWithBlackCardInHand, {
-      blackCommitment: { commitmentType: "pending" },
+      blackCommitment: { commitmentType: 'pending' },
     });
     const stateInPhase = updatePhaseState(
       stateWithBlackCardInHand,
@@ -68,20 +68,20 @@ describe("applyCommitToMeleeEvent", () => {
       }),
     );
     const event: CommitToMeleeEvent = {
-      eventNumber: 0,
-      eventType: "playerChoice",
-      choiceType: "commitToMelee",
-      player: "black",
+      choiceType: 'commitToMelee',
       committedCard: tempCommandCards[0],
+      eventNumber: 0,
+      eventType: 'playerChoice',
       modifierTypes: [],
+      player: 'black',
     };
 
     const newState = applyCommitToMeleeEvent(event, stateInPhase);
     const newMelee = getMeleeResolutionState(newState);
 
-    expect(newMelee.blackCommitment).toEqual({
-      commitmentType: "completed",
+    expect(newMelee.blackCommitment).toStrictEqual({
       card: tempCommandCards[0],
+      commitmentType: 'completed',
     });
     expect(newState.cardState.black.inHand).toHaveLength(0);
   });

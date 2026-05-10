@@ -1,8 +1,8 @@
-import type { Board, UnitInstance, UnitPlacement } from "@entities";
-import { hasNoUnit, hasSingleUnit } from "@entities";
-import { getBoardCoordinates, getBoardSpace } from "@queries/boardSpace";
-import { getOppositeFacing } from "@queries/facings";
-import { isSameUnitInstance } from "@validation";
+import type { Board, UnitInstance, UnitPlacement } from '@entities';
+import { hasNoUnit, hasSingleUnit } from '@entities';
+import { getBoardCoordinates, getBoardSpace } from '@queries/boardSpace';
+import { getOppositeFacing } from '@queries/facings';
+import { isSameUnitInstance } from '@validation';
 
 /**
  * Finds the position of a unit on the board by searching all coordinates.
@@ -30,7 +30,7 @@ export function getPositionOfUnit<TBoard extends Board>(
   for (const coordinate of coordinates) {
     // Use getBoardSpace for type-safe access - it handles the generic type alignment
     const space = getBoardSpace(board, coordinate);
-    const unitPresence = space.unitPresence;
+    const { unitPresence } = space;
 
     // Skip empty spaces
     if (hasNoUnit(unitPresence)) {
@@ -66,5 +66,5 @@ export function getPositionOfUnit<TBoard extends Board>(
     }
   }
 
-  throw new Error("Unit not found on board");
+  throw new Error('Unit not found on board');
 }

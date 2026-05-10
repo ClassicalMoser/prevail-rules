@@ -1,4 +1,4 @@
-import type { PlayerSide, UnitInstance, UnitType } from "@entities";
+import type { PlayerSide, UnitInstance, UnitType } from '@entities';
 
 /**
  * Creates a unit instance with the specified properties.
@@ -13,5 +13,5 @@ export function createUnitInstance(
   unitType: UnitType,
   instanceNumber: number,
 ): UnitInstance {
-  return { playerSide, unitType, instanceNumber };
+  return { instanceNumber, playerSide, unitType };
 }

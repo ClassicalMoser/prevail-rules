@@ -1,13 +1,15 @@
-import type { PlayerSide, ValidationResult } from "@entities";
-import type { GameState } from "@game";
-import { getBoardCoordinates, getBoardSpace } from "@queries";
+import type { PlayerSide, ValidationResult } from '@entities';
+import type { GameState } from '@game';
+import { getBoardCoordinates, getBoardSpace } from '@queries';
 
-export function eachCommanderPresentOnce(gameState: GameState): ValidationResult {
+export function eachCommanderPresentOnce(
+  gameState: GameState,
+): ValidationResult {
   try {
     // We expect one commander per player
-    const expectedCommanders: Set<PlayerSide> = new Set(["black", "white"]);
+    const expectedCommanders = new Set<PlayerSide>(['black', 'white']);
     // Track commanders that have been seen
-    const seenCommanders: Set<PlayerSide> = new Set();
+    const seenCommanders = new Set<PlayerSide>();
 
     // Find the board and its coordinates
     const board = gameState.boardState;
@@ -20,15 +22,15 @@ export function eachCommanderPresentOnce(gameState: GameState): ValidationResult
         // Duplicate Commander
         if (seenCommanders.has(commander)) {
           return {
+            errorReason: 'Duplicate commander on board',
             result: false,
-            errorReason: "Duplicate commander on board",
           };
         }
         // Unexpected Commander
         if (!expectedCommanders.has(commander)) {
           return {
+            errorReason: 'Unexpected commander on board',
             result: false,
-            errorReason: "Unexpected commander on board",
           };
         }
         // Add the commander to the seen commanders set
@@ -43,15 +45,15 @@ export function eachCommanderPresentOnce(gameState: GameState): ValidationResult
       // Duplicate Commander
       if (seenCommanders.has(commander)) {
         return {
+          errorReason: 'Duplicate commander in lostCommanders',
           result: false,
-          errorReason: "Duplicate commander in lostCommanders",
         };
       }
       // Unexpected Commander
       if (!expectedCommanders.has(commander)) {
         return {
+          errorReason: 'Unexpected commander in lostCommanders',
           result: false,
-          errorReason: "Unexpected commander in lostCommanders",
         };
       }
       // Add the commander to the seen commanders set
@@ -61,10 +63,10 @@ export function eachCommanderPresentOnce(gameState: GameState): ValidationResult
     }
 
     // If expectedCommanders is empty, all expected commanders were found
-    if (expectedCommanders.size !== 0) {
+    if (expectedCommanders.size > 0) {
       return {
+        errorReason: 'One or more commanders missing from game state',
         result: false,
-        errorReason: "One or more commanders missing from game state",
       };
     }
     return {
@@ -73,8 +75,8 @@ export function eachCommanderPresentOnce(gameState: GameState): ValidationResult
   } catch (error) {
     // Any error means validation fails - return false
     return {
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,
-      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

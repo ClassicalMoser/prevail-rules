@@ -1,7 +1,7 @@
-import type { Board, UnitWithPlacement } from "@entities";
-import { MoveUnitEventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
-import { getLegalUnitMoves } from "@queries";
+import type { Board, UnitWithPlacement } from '@entities';
+import type { MoveUnitEventForBoard } from '@events';
+import type { GameStateForBoard } from '@game';
+import { getLegalUnitMoves } from '@queries';
 
 /**
  * Validates whether a unit move event is legal according to game rules.

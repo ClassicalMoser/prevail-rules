@@ -1,9 +1,12 @@
-import type { Board } from "@entities";
-import type { TriggerRoutFromRetreatEvent } from "@events";
-import type { GameStateForBoard, RoutState } from "@game";
-import { RANGED_ATTACK_RESOLUTION_CONTEXT } from "@events";
-import { getRetreatStateFromMelee, getRetreatStateFromRangedAttack } from "@queries";
-import { updateRetreatRoutState } from "@transforms/pureTransforms";
+import type { Board } from '@entities';
+import type { TriggerRoutFromRetreatEvent } from '@events';
+import type { GameStateForBoard, RoutState } from '@game';
+import { RANGED_ATTACK_RESOLUTION_CONTEXT } from '@events';
+import {
+  getRetreatStateFromMelee,
+  getRetreatStateFromRangedAttack,
+} from '@queries';
+import { updateRetreatRoutState } from '@transforms/pureTransforms';
 
 /**
  * Applies a TriggerRoutFromRetreatEvent to the game state.
@@ -23,12 +26,12 @@ export function applyTriggerRoutFromRetreatEvent<TBoard extends Board>(
       : getRetreatStateFromMelee(state, event.retreatingPlayer);
 
   const routState: RoutState = {
-    substepType: "rout",
-    player: retreatState.retreatingUnit.unit.playerSide,
-    unitsToRout: new Set([retreatState.retreatingUnit.unit]),
-    numberToDiscard: undefined,
     cardsChosen: false,
     completed: false,
+    numberToDiscard: undefined,
+    player: retreatState.retreatingUnit.unit.playerSide,
+    substepType: 'rout',
+    unitsToRout: new Set([retreatState.retreatingUnit.unit]),
   };
 
   return updateRetreatRoutState(state, routState);
