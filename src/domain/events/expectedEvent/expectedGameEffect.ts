@@ -1,4 +1,4 @@
-import type { GameEffectType } from "@ruleValues";
+import type { GameEffectType } from '@ruleValues';
 
 /**
  * Expected event is a game effect (deterministic action).
@@ -6,7 +6,7 @@ import type { GameEffectType } from "@ruleValues";
  */
 export interface ExpectedGameEffect {
   /** Discriminator for the union. */
-  actionType: "gameEffect";
+  actionType: 'gameEffect';
   /** The specific effect type expected (e.g., 'resolveRally', 'revealCards'). */
   effectType: GameEffectType;
 }

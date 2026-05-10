@@ -1,14 +1,18 @@
-import type { Board } from "@entities";
-import type { CompleteMoveCommandersPhaseEvent } from "@events";
+import type { Board } from '@entities';
+import type { CompleteMoveCommandersPhaseEvent } from '@events';
 import type {
+  GameState,
   GameStateForBoard,
   IssueCommandsPhaseStateForBoard,
   MoveCommandersPhaseState,
-} from "@game";
-import { GameState, ISSUE_COMMANDS_PHASE } from "@game";
+} from '@game';
+import { ISSUE_COMMANDS_PHASE } from '@game';
 
-import { getMoveCommandersPhaseState } from "@queries";
-import { addCompletedPhase, updatePhaseState } from "@transforms/pureTransforms";
+import { getMoveCommandersPhaseState } from '@queries';
+import {
+  addCompletedPhase,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteMoveCommandersPhaseEvent to the game state.
@@ -27,21 +31,20 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   // Safe type broadening: No spatial information on MoveCommandersPhaseState
-  const currentPhaseState: MoveCommandersPhaseState = getMoveCommandersPhaseState(
-    state as GameState,
-  );
+  const currentPhaseState: MoveCommandersPhaseState =
+    getMoveCommandersPhaseState(state as GameState);
 
   const stateWithCompletedPhase = addCompletedPhase(state, currentPhaseState);
 
   const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
-    phase: ISSUE_COMMANDS_PHASE,
-    step: "firstPlayerIssueCommands",
     boardType: state.boardState.boardType,
-    remainingCommandsFirstPlayer: event.remainingCommandsFirstPlayer,
-    remainingUnitsFirstPlayer: new Set(),
-    remainingCommandsSecondPlayer: event.remainingCommandsSecondPlayer,
-    remainingUnitsSecondPlayer: new Set(),
     currentCommandResolutionState: undefined,
+    phase: ISSUE_COMMANDS_PHASE,
+    remainingCommandsFirstPlayer: event.remainingCommandsFirstPlayer,
+    remainingCommandsSecondPlayer: event.remainingCommandsSecondPlayer,
+    remainingUnitsFirstPlayer: new Set(),
+    remainingUnitsSecondPlayer: new Set(),
+    step: 'firstPlayerIssueCommands',
   };
 
   return updatePhaseState(stateWithCompletedPhase, newPhaseState);

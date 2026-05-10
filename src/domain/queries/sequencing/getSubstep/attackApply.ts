@@ -1,15 +1,15 @@
-import type { Board, PlayerSide } from "@entities";
+import type { Board, PlayerSide } from '@entities';
 import type {
   AttackApplyStateForBoard,
   GameState,
   GameStateForBoard,
   MeleeResolutionState,
-} from "@game";
-import { getOtherPlayer } from "@queries/getOtherPlayer";
+} from '@game';
+import { getOtherPlayer } from '@queries/getOtherPlayer';
 import {
   getMeleeResolutionState,
   getRangedAttackResolutionState,
-} from "../getCommandResolutionState";
+} from '../getCommandResolutionState';
 
 /**
  * Gets the attack apply state from a ranged attack resolution.
@@ -25,7 +25,7 @@ export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
 ): AttackApplyStateForBoard<TBoard> {
   const rangedAttackState = getRangedAttackResolutionState(state);
   if (!rangedAttackState.attackApplyState) {
-    throw new Error("No attack apply state found in ranged attack resolution");
+    throw new Error('No attack apply state found in ranged attack resolution');
   }
   return rangedAttackState.attackApplyState;
 }
@@ -42,13 +42,17 @@ export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
  */
 export function getAttackApplyStateFromMelee<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-  player: "white" | "black",
+  player: 'white' | 'black',
 ): AttackApplyStateForBoard<TBoard> {
   const meleeState = getMeleeResolutionState(state);
   const attackApplyState =
-    player === "white" ? meleeState.whiteAttackApplyState : meleeState.blackAttackApplyState;
+    player === 'white'
+      ? meleeState.whiteAttackApplyState
+      : meleeState.blackAttackApplyState;
   if (!attackApplyState) {
-    throw new Error(`No ${player} attack apply state found in melee resolution`);
+    throw new Error(
+      `No ${player} attack apply state found in melee resolution`,
+    );
   }
   return attackApplyState;
 }
@@ -66,8 +70,10 @@ export function getDefendingPlayerForNextIncompleteMeleeAttackApply(
   const firstPlayer = gameState.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 
-  const firstPlayerAttackApplyState = meleeState[`${firstPlayer}AttackApplyState`];
-  const secondPlayerAttackApplyState = meleeState[`${secondPlayer}AttackApplyState`];
+  const firstPlayerAttackApplyState =
+    meleeState[`${firstPlayer}AttackApplyState`];
+  const secondPlayerAttackApplyState =
+    meleeState[`${secondPlayer}AttackApplyState`];
 
   if (!firstPlayerAttackApplyState || !secondPlayerAttackApplyState) {
     return null;

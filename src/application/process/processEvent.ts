@@ -1,10 +1,10 @@
-import type { GameState } from "@game";
-import type { EnginePorts, PortResponse } from "../ports";
-import { applyEvent } from "@transforms";
-import { updateGameState } from "../composable";
-import { handleNewRound } from "./handleNewRound";
-import { Event } from "@events";
-import { GameModeName } from "@entities";
+import type { GameState } from '@game';
+import type { EnginePorts, PortResponse } from '../ports';
+import { applyEvent } from '@transforms';
+import { updateGameState } from '../composable';
+import { handleNewRound } from './handleNewRound';
+import type { Event } from '@events';
+import type { GameModeName } from '@entities';
 
 export async function processEvent(
   gameId: string,
@@ -20,8 +20,8 @@ export async function processEvent(
   );
   if (!addEventResult.result) {
     return {
-      result: false,
       errorReason: addEventResult.errorReason,
+      result: false,
     };
   }
 
@@ -36,14 +36,21 @@ export async function processEvent(
   );
   if (!updateResult.result) {
     return {
-      result: false,
       errorReason: updateResult.errorReason,
+      result: false,
     };
   }
 
   // If we've just started a new round, handle the new round
-  if (event.eventType === "gameEffect" && event.effectType === "completeCleanupPhase") {
-    const handleNewRoundResult = await handleNewRound(gameId, newGameState, ports);
+  if (
+    event.eventType === 'gameEffect' &&
+    event.effectType === 'completeCleanupPhase'
+  ) {
+    const handleNewRoundResult = await handleNewRound(
+      gameId,
+      newGameState,
+      ports,
+    );
     if (!handleNewRoundResult.result) {
       return handleNewRoundResult;
     }
@@ -51,7 +58,7 @@ export async function processEvent(
 
   // If everything succeeded, return the new game state
   return {
-    result: true,
     data: newGameState,
+    result: true,
   };
 }

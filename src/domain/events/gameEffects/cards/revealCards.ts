@@ -1,9 +1,9 @@
-import type { AssertExact } from "@utils";
-import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
 /** The type of the reveal cards game effect. */
-export const REVEAL_CARDS_EFFECT_TYPE = "revealCards" as const;
+export const REVEAL_CARDS_EFFECT_TYPE = 'revealCards' as const;
 
 /** Event to reveal cards that are awaiting play.
  * Moves both players' awaitingPlay cards to inPlay simultaneously.
@@ -29,12 +29,14 @@ const _revealCardsEventSchemaObject = z.object({
 
 type RevealCardsEventSchemaType = z.infer<typeof _revealCardsEventSchemaObject>;
 
-const _assertExactRevealCardsEvent: AssertExact<RevealCardsEvent, RevealCardsEventSchemaType> =
-  true;
+const _assertExactRevealCardsEvent: AssertExact<
+  RevealCardsEvent,
+  RevealCardsEventSchemaType
+> = true;
 
 /** The schema for a reveal cards event. */
 export const revealCardsEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<"gameEffect">;
-  effectType: z.ZodLiteral<"revealCards">;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'revealCards'>;
   eventNumber: z.ZodNumber;
 }> = _revealCardsEventSchemaObject;

@@ -4,92 +4,102 @@ import type {
   UnitFacing,
   UnitInstance,
   UnitWithPlacement,
-} from "@entities";
-import { createTestUnit } from "@testing";
-import { createEmptyStandardBoard } from "@transforms/initializations";
-import { describe, expect, it } from "vitest";
-import { addUnitToBoard } from "./addUnitToBoard";
+} from '@entities';
+import { createTestUnit } from '@testing';
+import { createEmptyStandardBoard } from '@transforms/initializations';
+
+import { addUnitToBoard } from './addUnitToBoard';
 
 /**
- * addUnitToBoard: Adds a unit to a board (pure function, returns new board).
+ * AddUnitToBoard: Adds a unit to a board (pure function, returns new board).
  */
-describe("addUnitToBoard", () => {
-  const coordinate: StandardBoardCoordinate = "E-5";
+describe(addUnitToBoard, () => {
+  const coordinate: StandardBoardCoordinate = 'E-5';
 
   // Helper function to create a UnitWithPlacement
   const createUnitWithPlacement = (
     unit: UnitInstance,
     coord: StandardBoardCoordinate,
     facing: UnitFacing,
-  ): UnitWithPlacement<StandardBoard> => {
-    return {
-      boardType: "standard" as const,
-      unit,
-      placement: { boardType: "standard" as const, coordinate: coord, facing },
-    };
-  };
+  ): UnitWithPlacement<StandardBoard> => ({
+    boardType: 'standard' as const,
+    placement: { boardType: 'standard' as const, coordinate: coord, facing },
+    unit,
+  });
 
-  describe("empty space", () => {
-    it("given add a single unit to an empty space", () => {
+  describe('empty space', () => {
+    it('given add a single unit to an empty space', () => {
       const board = createEmptyStandardBoard();
-      const unit = createTestUnit("black", { attack: 3 });
-      const unitWithPlacement = createUnitWithPlacement(unit, coordinate, "north");
+      const unit = createTestUnit('black', { attack: 3 });
+      const unitWithPlacement = createUnitWithPlacement(
+        unit,
+        coordinate,
+        'north',
+      );
 
       const newBoard = addUnitToBoard(board, unitWithPlacement);
 
       expect(newBoard).not.toBe(board);
-      expect(newBoard.board[coordinate]?.unitPresence).toEqual({
-        presenceType: "single",
+      expect(newBoard.board[coordinate]?.unitPresence).toStrictEqual({
+        facing: 'north',
+        presenceType: 'single',
         unit,
-        facing: "north",
       });
     });
 
-    it("given not mutate the original board", () => {
+    it('given not mutate the original board', () => {
       const board = createEmptyStandardBoard();
-      const unit = createTestUnit("black", { attack: 3 });
-      const unitWithPlacement = createUnitWithPlacement(unit, coordinate, "north");
+      const unit = createTestUnit('black', { attack: 3 });
+      const unitWithPlacement = createUnitWithPlacement(
+        unit,
+        coordinate,
+        'north',
+      );
 
       addUnitToBoard(board, unitWithPlacement);
 
-      expect(board.board[coordinate]?.unitPresence).toEqual({
-        presenceType: "none",
+      expect(board.board[coordinate]?.unitPresence).toStrictEqual({
+        presenceType: 'none',
       });
     });
 
-    it("given preserve other board spaces", () => {
+    it('given preserve other board spaces', () => {
       const board = createEmptyStandardBoard();
-      const otherCoord: StandardBoardCoordinate = "D-4";
-      const otherUnit = createTestUnit("white", { attack: 3 });
+      const otherCoord: StandardBoardCoordinate = 'D-4';
+      const otherUnit = createTestUnit('white', { attack: 3 });
       board.board[otherCoord] = {
         ...board.board[otherCoord]!,
         unitPresence: {
-          presenceType: "single",
+          facing: 'south',
+          presenceType: 'single',
           unit: otherUnit,
-          facing: "south",
         },
       };
 
-      const unit = createTestUnit("black", { attack: 3 });
-      const unitWithPlacement = createUnitWithPlacement(unit, coordinate, "north");
+      const unit = createTestUnit('black', { attack: 3 });
+      const unitWithPlacement = createUnitWithPlacement(
+        unit,
+        coordinate,
+        'north',
+      );
 
       const newBoard = addUnitToBoard(board, unitWithPlacement);
 
-      expect(newBoard.board[otherCoord]?.unitPresence).toEqual({
-        presenceType: "single",
+      expect(newBoard.board[otherCoord]?.unitPresence).toStrictEqual({
+        facing: 'south',
+        presenceType: 'single',
         unit: otherUnit,
-        facing: "south",
       });
     });
   });
 
-  describe("space with engaged units", () => {
-    it("given error when trying to add unit to space with engaged units, throws", () => {
-      const primaryUnit = createTestUnit("black", {
+  describe('space with engaged units', () => {
+    it('given error when trying to add unit to space with engaged units, throws', () => {
+      const primaryUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
       });
-      const secondaryUnit = createTestUnit("white", {
+      const secondaryUnit = createTestUnit('white', {
         attack: 3,
         instanceNumber: 1,
       });
@@ -97,25 +107,29 @@ describe("addUnitToBoard", () => {
       board.board[coordinate] = {
         ...board.board[coordinate]!,
         unitPresence: {
-          presenceType: "engaged",
+          presenceType: 'engaged',
+          primaryFacing: 'north',
           primaryUnit,
-          primaryFacing: "north",
           secondaryUnit,
         },
       };
 
-      const newUnit = createTestUnit("black", { attack: 3, instanceNumber: 2 });
-      const unitWithPlacement = createUnitWithPlacement(newUnit, coordinate, "south");
+      const newUnit = createTestUnit('black', { attack: 3, instanceNumber: 2 });
+      const unitWithPlacement = createUnitWithPlacement(
+        newUnit,
+        coordinate,
+        'south',
+      );
 
       expect(() => addUnitToBoard(board, unitWithPlacement)).toThrow(
-        "Cannot add unit to space with engaged units",
+        'Cannot add unit to space with engaged units',
       );
     });
   });
 
-  describe("space with friendly single unit", () => {
-    it("given error when trying to add friendly unit to space with friendly unit, throws", () => {
-      const existingUnit = createTestUnit("black", {
+  describe('space with friendly single unit', () => {
+    it('given error when trying to add friendly unit to space with friendly unit, throws', () => {
+      const existingUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
       });
@@ -123,24 +137,28 @@ describe("addUnitToBoard", () => {
       board.board[coordinate] = {
         ...board.board[coordinate]!,
         unitPresence: {
-          presenceType: "single",
+          facing: 'north',
+          presenceType: 'single',
           unit: existingUnit,
-          facing: "north",
         },
       };
 
-      const newUnit = createTestUnit("black", { attack: 3, instanceNumber: 2 });
-      const unitWithPlacement = createUnitWithPlacement(newUnit, coordinate, "south");
+      const newUnit = createTestUnit('black', { attack: 3, instanceNumber: 2 });
+      const unitWithPlacement = createUnitWithPlacement(
+        newUnit,
+        coordinate,
+        'south',
+      );
 
       expect(() => addUnitToBoard(board, unitWithPlacement)).toThrow(
-        "Cannot add unit to space with friendly unit",
+        'Cannot add unit to space with friendly unit',
       );
     });
   });
 
-  describe("space with enemy single unit", () => {
-    it("given adding enemy unit with opposite facing, creates engaged unit presence", () => {
-      const existingUnit = createTestUnit("black", {
+  describe('space with enemy single unit', () => {
+    it('given adding enemy unit with opposite facing, creates engaged unit presence', () => {
+      const existingUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
       });
@@ -148,27 +166,31 @@ describe("addUnitToBoard", () => {
       board.board[coordinate] = {
         ...board.board[coordinate]!,
         unitPresence: {
-          presenceType: "single",
+          facing: 'north',
+          presenceType: 'single',
           unit: existingUnit,
-          facing: "north",
         },
       };
 
-      const newUnit = createTestUnit("white", { attack: 3, instanceNumber: 1 });
-      const unitWithPlacement = createUnitWithPlacement(newUnit, coordinate, "south");
+      const newUnit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
+      const unitWithPlacement = createUnitWithPlacement(
+        newUnit,
+        coordinate,
+        'south',
+      );
 
       const newBoard = addUnitToBoard(board, unitWithPlacement);
 
-      expect(newBoard.board[coordinate]?.unitPresence).toEqual({
-        presenceType: "engaged",
+      expect(newBoard.board[coordinate]?.unitPresence).toStrictEqual({
+        presenceType: 'engaged',
+        primaryFacing: 'north',
         primaryUnit: existingUnit,
-        primaryFacing: "north",
         secondaryUnit: newUnit,
       });
     });
 
-    it("given error when adding enemy unit without opposite facing, throws", () => {
-      const existingUnit = createTestUnit("black", {
+    it('given error when adding enemy unit without opposite facing, throws', () => {
+      const existingUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
       });
@@ -176,22 +198,26 @@ describe("addUnitToBoard", () => {
       board.board[coordinate] = {
         ...board.board[coordinate]!,
         unitPresence: {
-          presenceType: "single",
+          facing: 'north',
+          presenceType: 'single',
           unit: existingUnit,
-          facing: "north",
         },
       };
 
-      const newUnit = createTestUnit("white", { attack: 3, instanceNumber: 1 });
-      const unitWithPlacement = createUnitWithPlacement(newUnit, coordinate, "north");
+      const newUnit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
+      const unitWithPlacement = createUnitWithPlacement(
+        newUnit,
+        coordinate,
+        'north',
+      );
 
       expect(() => addUnitToBoard(board, unitWithPlacement)).toThrow(
-        "Engaged unit must have opposite facing",
+        'Engaged unit must have opposite facing',
       );
     });
 
-    it("given creating engagement, does not mutate the original board", () => {
-      const existingUnit = createTestUnit("black", {
+    it('given creating engagement, does not mutate the original board', () => {
+      const existingUnit = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
       });
@@ -199,21 +225,25 @@ describe("addUnitToBoard", () => {
       board.board[coordinate] = {
         ...board.board[coordinate]!,
         unitPresence: {
-          presenceType: "single",
+          facing: 'north',
+          presenceType: 'single',
           unit: existingUnit,
-          facing: "north",
         },
       };
 
-      const newUnit = createTestUnit("white", { attack: 3, instanceNumber: 1 });
-      const unitWithPlacement = createUnitWithPlacement(newUnit, coordinate, "south");
+      const newUnit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
+      const unitWithPlacement = createUnitWithPlacement(
+        newUnit,
+        coordinate,
+        'south',
+      );
 
       addUnitToBoard(board, unitWithPlacement);
 
-      expect(board.board[coordinate]?.unitPresence).toEqual({
-        presenceType: "single",
+      expect(board.board[coordinate]?.unitPresence).toStrictEqual({
+        facing: 'north',
+        presenceType: 'single',
         unit: existingUnit,
-        facing: "north",
       });
     });
   });

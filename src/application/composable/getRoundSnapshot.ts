@@ -1,7 +1,7 @@
-import type { BoardOfType, GameMode } from "@entities";
-import type { GameStateForBoard } from "@game";
-import type { RoundSnapshotStorage } from "../ports";
-import { parseStoredGameForMode } from "../utils/parseStoredGame";
+import type { BoardOfType, GameMode } from '@entities';
+import type { GameStateForBoard } from '@game';
+import type { RoundSnapshotStorage } from '../ports';
+import { parseStoredGameForMode } from '../utils/parseStoredGame';
 
 /**
  * Loads via `RoundSnapshotStorage` (wide types), then `parseStoredGameState`;
@@ -18,10 +18,13 @@ export async function getRoundSnapshot<TGameMode extends GameMode>(
   roundNumber: number,
   gameMode: TGameMode,
   roundSnapshotStorage: RoundSnapshotStorage,
-): Promise<GameStateForBoard<BoardOfType<TGameMode["boardSize"]>> | undefined> {
-  const result = await roundSnapshotStorage.getRoundSnapshot(gameId, roundNumber);
+): Promise<GameStateForBoard<BoardOfType<TGameMode['boardSize']>> | undefined> {
+  const result = await roundSnapshotStorage.getRoundSnapshot(
+    gameId,
+    roundNumber,
+  );
   if (!result.result) {
-    throw new Error(result.errorReason ?? "Unknown error");
+    throw new Error(result.errorReason ?? 'Unknown error');
   }
   if (result.data === undefined) {
     return undefined;

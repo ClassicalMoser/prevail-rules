@@ -1,12 +1,14 @@
-import type { Card, Modifier, Restrictions } from "@entities";
-import type { Trait } from "@ruleValues";
-import { tempCommandCards } from "@sampleValues";
+import type { Card, Modifier, Restrictions } from '@entities';
+import type { Trait } from '@ruleValues';
+import { tempCommandCards } from '@sampleValues';
 
 /**
  * Gets cards from the tempCommandCards array by their indices.
  */
 export function getCards(...indices: number[]): Card[] {
-  if (indices.length === 0) return [];
+  if (indices.length === 0) {
+    return [];
+  }
   const cards: Card[] = [];
   for (const index of indices) {
     if (index < 0 || index >= tempCommandCards.length) {
@@ -27,7 +29,9 @@ export function getCardsByCount(count: number = 1): Card[] {
     throw new Error(`Count must be non-negative, got ${count}`);
   }
   if (count > tempCommandCards.length) {
-    throw new Error(`Requested ${count} cards but only ${tempCommandCards.length} are available`);
+    throw new Error(
+      `Requested ${count} cards but only ${tempCommandCards.length} are available`,
+    );
   }
   return tempCommandCards.slice(0, count);
 }
@@ -58,9 +62,9 @@ export interface CreateTestCardOptions {
  */
 export function createTestCard(options: CreateTestCardOptions = {}): Card {
   const {
-    id = "test-card",
-    name = "Test Card",
-    version = "1.0.0",
+    id = 'test-card',
+    name = 'Test Card',
+    version = '1.0.0',
     initiative = 1,
     modifiers = [],
     roundEffectModifiers = [],
@@ -71,7 +75,7 @@ export function createTestCard(options: CreateTestCardOptions = {}): Card {
   } = options;
 
   const createRestrictions = (
-    restrictions: CreateTestCardOptions["roundEffectRestrictions"],
+    restrictions: CreateTestCardOptions['roundEffectRestrictions'],
   ): Restrictions => ({
     inspirationRangeRestriction: restrictions?.inspirationRangeRestriction,
     traitRestrictions: restrictions?.traitRestrictions ?? [],
@@ -79,28 +83,28 @@ export function createTestCard(options: CreateTestCardOptions = {}): Card {
   });
 
   return {
-    id,
-    name,
-    version,
-    initiative,
-    modifiers,
     command: {
-      size: "units",
-      type: "movement",
+      modifiers: commandModifiers,
       number: 1,
       restrictions: createRestrictions(commandRestrictions),
-      modifiers: commandModifiers,
+      size: 'units',
+      type: 'movement',
     },
+    id,
+    initiative,
+    modifiers,
+    name,
     roundEffect:
       roundEffectModifiers.length > 0 ||
       roundEffectRestrictions.inspirationRangeRestriction !== undefined ||
       (roundEffectRestrictions.traitRestrictions?.length ?? 0) > 0 ||
       (roundEffectRestrictions.unitRestrictions?.length ?? 0) > 0
         ? {
-            restrictions: createRestrictions(roundEffectRestrictions),
             modifiers: roundEffectModifiers,
+            restrictions: createRestrictions(roundEffectRestrictions),
           }
         : undefined,
     unitPreservation,
+    version,
   };
 }

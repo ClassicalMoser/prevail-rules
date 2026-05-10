@@ -1,5 +1,5 @@
-import type { UnitFacing, ValidationResult } from "@entities";
-import { getOppositeFacing } from "@queries/facings";
+import type { UnitFacing, ValidationResult } from '@entities';
+import { getOppositeFacing } from '@queries/facings';
 
 /**
  * Determines if an engagement is from the front.
@@ -18,7 +18,7 @@ export function isEngagementFromFront(
     };
   }
   return {
+    errorReason: 'Attacker is not facing opposite the defender',
     result: false,
-    errorReason: "Attacker is not facing opposite the defender",
   };
 }

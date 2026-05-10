@@ -1,6 +1,6 @@
-import type { StandardBoard, UnitWithPlacement } from "@entities";
-import type { GameStateForBoard } from "@game";
-import { PLAY_CARDS_PHASE } from "@game";
+import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type { GameStateForBoard } from '@game';
+import { PLAY_CARDS_PHASE } from '@game';
 
 import {
   createAttackApplyStateWithRetreat,
@@ -10,29 +10,28 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
-} from "@testing";
-import { addUnitToBoard, updatePhaseState } from "@transforms";
-import { describe, expect, it } from "vitest";
+} from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
-import { generateTriggerRoutFromRetreatEvent } from "./generateTriggerRoutFromRetreatEvent";
+import { generateTriggerRoutFromRetreatEvent } from './generateTriggerRoutFromRetreatEvent';
 
 /**
  * When the defender cannot retreat legally, the engine emits `triggerRoutFromRetreat` so the
  * rout flow can start instead. Context is ranged vs melee; in melee the retreating player is
  * explicit when both sides could theoretically be in retreat substeps.
  */
-describe("generateTriggerRoutFromRetreatEvent", () => {
+describe(generateTriggerRoutFromRetreatEvent, () => {
   function stateWithRangedRetreat(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
-    const retreatingUnit = createTestUnit("white", { attack: 2 });
+    const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: retreatingUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: retreatingUnit,
     };
     const withBoard = {
       ...state,
@@ -40,8 +39,8 @@ describe("generateTriggerRoutFromRetreatEvent", () => {
     };
     const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement);
     const ranged = createRangedAttackResolutionState(withBoard, {
-      defendingUnit: retreatingUnit,
       attackApplyState: attackApply,
+      defendingUnit: retreatingUnit,
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: ranged,
@@ -50,30 +49,33 @@ describe("generateTriggerRoutFromRetreatEvent", () => {
   }
 
   function stateWithMeleeRetreat(
-    retreatingPlayer: "white" | "black",
+    retreatingPlayer: 'white' | 'black',
   ): GameStateForBoard<StandardBoard> {
-    const state = createEmptyGameState({ currentInitiative: "black" });
+    const state = createEmptyGameState({ currentInitiative: 'black' });
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
-    const otherUnit = createTestUnit(retreatingPlayer === "white" ? "black" : "white", {
-      attack: 2,
-    });
-    const retreatingWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: retreatingUnit,
-      placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+    const otherUnit = createTestUnit(
+      retreatingPlayer === 'white' ? 'black' : 'white',
+      {
+        attack: 2,
       },
+    );
+    const retreatingWp: UnitWithPlacement<StandardBoard> = {
+      boardType: 'standard' as const,
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
+      unit: retreatingUnit,
     };
     const otherWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: otherUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "south",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
       },
+      unit: otherUnit,
     };
     let s = {
       ...state,
@@ -83,7 +85,7 @@ describe("generateTriggerRoutFromRetreatEvent", () => {
     const attackApply = createAttackApplyStateWithRetreat(retreatingWp);
     const melee = createMeleeResolutionState(
       s,
-      retreatingPlayer === "white"
+      retreatingPlayer === 'white'
         ? { whiteAttackApplyState: attackApply }
         : { blackAttackApplyState: attackApply },
     );
@@ -93,45 +95,45 @@ describe("generateTriggerRoutFromRetreatEvent", () => {
     return updatePhaseState(s, phase);
   }
 
-  it("given ranged resolution with retreat substep, retreatResolutionContext is rangedAttack", () => {
+  it('given ranged resolution with retreat substep, retreatResolutionContext is rangedAttack', () => {
     const full = stateWithRangedRetreat();
     const event = generateTriggerRoutFromRetreatEvent(full, 0);
-    expect(event.effectType).toBe("triggerRoutFromRetreat");
-    expect(event.retreatResolutionContext).toBe("rangedAttack");
-    expect(event).not.toHaveProperty("retreatingPlayer");
+    expect(event.effectType).toBe('triggerRoutFromRetreat');
+    expect(event.retreatResolutionContext).toBe('rangedAttack');
+    expect(event).not.toHaveProperty('retreatingPlayer');
   });
 
-  it("given melee with only white in retreat apply, context melee and retreatingPlayer white", () => {
-    const full = stateWithMeleeRetreat("white");
+  it('given melee with only white in retreat apply, context melee and retreatingPlayer white', () => {
+    const full = stateWithMeleeRetreat('white');
     const event = generateTriggerRoutFromRetreatEvent(full, 0);
-    expect(event.effectType).toBe("triggerRoutFromRetreat");
-    expect(event.retreatResolutionContext).toBe("melee");
-    if (event.retreatResolutionContext === "melee") {
-      expect(event.retreatingPlayer).toBe("white");
+    expect(event.effectType).toBe('triggerRoutFromRetreat');
+    expect(event.retreatResolutionContext).toBe('melee');
+    if (event.retreatResolutionContext === 'melee') {
+      expect(event.retreatingPlayer).toBe('white');
     }
   });
 
-  it("given white initiative and both could retreat, picks white retreat path for melee context", () => {
-    const state = createEmptyGameState({ currentInitiative: "white" });
-    const whiteUnit = createTestUnit("white", { attack: 2 });
-    const blackUnit = createTestUnit("black", { attack: 2 });
+  it('given white initiative and both could retreat, picks white retreat path for melee context', () => {
+    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: whiteUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: whiteUnit,
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: blackUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "south",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
       },
+      unit: blackUnit,
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
@@ -145,20 +147,20 @@ describe("generateTriggerRoutFromRetreatEvent", () => {
     const full = updatePhaseState(s, phase);
 
     const event = generateTriggerRoutFromRetreatEvent(full, 0);
-    expect(event.retreatResolutionContext).toBe("melee");
-    if (event.retreatResolutionContext === "melee") {
-      expect(event.retreatingPlayer).toBe("white");
+    expect(event.retreatResolutionContext).toBe('melee');
+    if (event.retreatResolutionContext === 'melee') {
+      expect(event.retreatingPlayer).toBe('white');
     }
   });
 
-  it("given playCards phase, throws retreat rout phase guard", () => {
+  it('given playCards phase, throws retreat rout phase guard', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
-      step: "complete",
+      step: 'complete',
     });
     expect(() => generateTriggerRoutFromRetreatEvent(full, 0)).toThrow(
-      "Retreat rout not expected in phase: playCards",
+      'Retreat rout not expected in phase: playCards',
     );
   });
 });

@@ -1,5 +1,5 @@
-import type { UnitFacing, ValidationResult } from "@entities";
-import { diagonalFacings } from "@entities";
+import type { UnitFacing, ValidationResult } from '@entities';
+import { diagonalFacings } from '@entities';
 
 /**
  * Check if a facing is a diagonal facing.
@@ -10,8 +10,8 @@ export function isDiagonalFacing(facing: UnitFacing): ValidationResult {
   const isDiagonal = (diagonalFacings as readonly string[]).includes(facing);
   if (!isDiagonal) {
     return {
+      errorReason: 'Facing is not a diagonal facing',
       result: false,
-      errorReason: "Facing is not a diagonal facing",
     };
   }
   return {

@@ -10,11 +10,11 @@
  * based on the event's discriminated union type.
  */
 
-import type { Board } from "@entities";
-import type { Event, EventForBoard } from "@events";
-import type { GameState, GameStateForBoard } from "@game";
-import { applyGameEffectEvent } from "./applyGameEffectEvent";
-import { applyPlayerChoiceEvent } from "./applyPlayerChoiceEvent";
+import type { Board } from '@entities';
+import type { Event, EventForBoard } from '@events';
+import type { GameState, GameStateForBoard } from '@game';
+import { applyGameEffectEvent } from './applyGameEffectEvent';
+import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
 /**
  * Applies an event to the game state, returning a new immutable game state.
@@ -39,12 +39,14 @@ export function applyEventForBoard<TBoard extends Board>(
 ): GameStateForBoard<TBoard> {
   let newState: GameStateForBoard<TBoard>;
 
-  if (event.eventType === "playerChoice") {
+  if (event.eventType === 'playerChoice') {
     newState = applyPlayerChoiceEvent<TBoard>(event, state);
-  } else if (event.eventType === "gameEffect") {
+  } else if (event.eventType === 'gameEffect') {
     newState = applyGameEffectEvent<TBoard>(event, state);
   } else {
-    throw new Error(`Unknown event type: ${(event as EventForBoard<TBoard>).eventType}`);
+    throw new Error(
+      `Unknown event type: ${(event as EventForBoard<TBoard>).eventType}`,
+    );
   }
 
   // Return the new state with the event added to the events array
@@ -60,7 +62,7 @@ export function applyEventForBoard<TBoard extends Board>(
 /**
  * Wider version of applyEventForBoard that does not require a type argument.
  *
- * @warning This function assumes the following:
+ * WARNING: This function assumes the following:
  * 1. Any event that carries board information specifies the board type on a `boardType` property.
  * 2. The game state also carries the board type on a `boardType` property.
  *
@@ -69,7 +71,7 @@ export function applyEventForBoard<TBoard extends Board>(
  */
 export function applyEvent(event: Event, state: GameState): GameState {
   const gameStateBoardType = state.boardType;
-  const eventHasBoardType = "boardType" in event;
+  const eventHasBoardType = 'boardType' in event;
   if (eventHasBoardType && event.boardType !== gameStateBoardType) {
     throw new Error(
       `Event board type mismatch: Expected ${gameStateBoardType}, got ${event.boardType}`,

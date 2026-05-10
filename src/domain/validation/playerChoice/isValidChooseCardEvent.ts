@@ -1,6 +1,6 @@
-import type { Board, ValidationResult } from "@entities";
-import type { ChooseCardEvent } from "@events";
-import type { GameStateForBoard } from "@game";
+import type { Board, ValidationResult } from '@entities';
+import type { ChooseCardEvent } from '@events';
+import type { GameStateForBoard } from '@game';
 
 /**
  * Validates whether a ChooseCardEvent can be applied to the current game state.
@@ -27,37 +27,37 @@ export function isValidChooseCardEvent<TBoard extends Board>(
 ): ValidationResult {
   try {
     const { player, card } = event;
-    const currentPhaseState = state.currentRoundState.currentPhaseState;
+    const { currentPhaseState } = state.currentRoundState;
 
     // Check phase state exists
     if (!currentPhaseState) {
       return {
+        errorReason: 'No current phase state found',
         result: false,
-        errorReason: "No current phase state found",
       };
     }
 
     // Check correct phase
-    if (currentPhaseState.phase !== "playCards") {
+    if (currentPhaseState.phase !== 'playCards') {
       return {
-        result: false,
         errorReason: `Current phase is ${currentPhaseState.phase}, not playCards`,
+        result: false,
       };
     }
 
     // Check correct step
-    if (currentPhaseState.step !== "chooseCards") {
+    if (currentPhaseState.step !== 'chooseCards') {
       return {
-        result: false,
         errorReason: `Play cards phase is on ${currentPhaseState.step} step, not chooseCards`,
+        result: false,
       };
     }
 
     // Check player hasn't already chosen
     if (state.cardState[player].awaitingPlay !== null) {
       return {
-        result: false,
         errorReason: `Player ${player} has already chosen a card`,
+        result: false,
       };
     }
 
@@ -66,8 +66,8 @@ export function isValidChooseCardEvent<TBoard extends Board>(
     const cardInHand = playerHand.some((c) => c.id === card.id);
     if (!cardInHand) {
       return {
-        result: false,
         errorReason: `Card ${card.id} is not in ${player} player's hand`,
+        result: false,
       };
     }
 
@@ -77,8 +77,8 @@ export function isValidChooseCardEvent<TBoard extends Board>(
     };
   } catch (error) {
     return {
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,
-      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

@@ -1,51 +1,56 @@
-import type { GameStateForBoard } from "@game";
-import type { StandardBoard } from "@entities";
+import type { GameStateForBoard } from '@game';
+import type { StandardBoard } from '@entities';
 
-import { COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
-import { PLAY_CARDS_PHASE } from "@game";
-import { createEmptyGameState } from "@testing";
-import { updatePhaseState } from "@transforms";
-import { describe, expect, it } from "vitest";
-import { generateCompletePlayCardsPhaseEvent } from "./generateCompletePlayCardsPhaseEvent";
+import {
+  COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
+  GAME_EFFECT_EVENT_TYPE,
+} from '@events';
+import { PLAY_CARDS_PHASE } from '@game';
+import { createEmptyGameState } from '@testing';
+import { updatePhaseState } from '@transforms';
+
+import { generateCompletePlayCardsPhaseEvent } from './generateCompletePlayCardsPhaseEvent';
 
 /**
  * After both sides have played cards, this effect closes the play-cards phase. The generator
  * returns a constant payload only — it does not read initiative, round, or card fields.
  */
-describe("generateCompletePlayCardsPhaseEvent", () => {
+describe(generateCompletePlayCardsPhaseEvent, () => {
   /** Minimal valid snapshot: PLAY_CARDS_PHASE + step `complete` (other fields default). */
   function createGameStateInCompleteStep(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
 
     const stateWithPhase = updatePhaseState(state, {
       phase: PLAY_CARDS_PHASE,
-      step: "complete",
+      step: 'complete',
     });
 
     return stateWithPhase;
   }
 
-  describe("state-independent payload", () => {
+  describe('state-independent payload', () => {
     const expectedEvent = {
+      effectType: COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
       eventNumber: 0,
       eventType: GAME_EFFECT_EVENT_TYPE,
-      effectType: COMPLETE_PLAY_CARDS_PHASE_EFFECT_TYPE,
     };
 
-    it("given playCards complete step, emits literal completePlayCardsPhase effect", () => {
+    it('given playCards complete step, emits literal completePlayCardsPhase effect', () => {
       const state = createGameStateInCompleteStep();
 
-      expect(generateCompletePlayCardsPhaseEvent(state, 0)).toEqual(expectedEvent);
+      expect(generateCompletePlayCardsPhaseEvent(state, 0)).toStrictEqual(
+        expectedEvent,
+      );
     });
 
-    it("given different initiative, round counters, or same phase shape, still emits identical effect", () => {
+    it('given different initiative, round counters, or same phase shape, still emits identical effect', () => {
       const base = createEmptyGameState();
       const stateBlackInit = createGameStateInCompleteStep();
       const stateWhiteInit = updatePhaseState(
-        createEmptyGameState({ currentInitiative: "white" }),
+        createEmptyGameState({ currentInitiative: 'white' }),
         {
           phase: PLAY_CARDS_PHASE,
-          step: "complete",
+          step: 'complete',
         },
       );
       const stateDifferentRound = {
@@ -57,9 +62,15 @@ describe("generateCompletePlayCardsPhaseEvent", () => {
         },
       } satisfies GameStateForBoard<StandardBoard>;
 
-      expect(generateCompletePlayCardsPhaseEvent(stateBlackInit, 0)).toEqual(expectedEvent);
-      expect(generateCompletePlayCardsPhaseEvent(stateWhiteInit, 0)).toEqual(expectedEvent);
-      expect(generateCompletePlayCardsPhaseEvent(stateDifferentRound, 0)).toEqual(expectedEvent);
+      expect(
+        generateCompletePlayCardsPhaseEvent(stateBlackInit, 0),
+      ).toStrictEqual(expectedEvent);
+      expect(
+        generateCompletePlayCardsPhaseEvent(stateWhiteInit, 0),
+      ).toStrictEqual(expectedEvent);
+      expect(
+        generateCompletePlayCardsPhaseEvent(stateDifferentRound, 0),
+      ).toStrictEqual(expectedEvent);
     });
   });
 });

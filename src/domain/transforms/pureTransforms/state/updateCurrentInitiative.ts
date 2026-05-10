@@ -5,8 +5,8 @@ import type {
   PlayerSide,
   SmallBoard,
   StandardBoard,
-} from "@entities";
-import type { GameState, GameStateForBoard } from "@game";
+} from '@entities';
+import type { GameState, GameStateForBoard } from '@game';
 
 /**
  * Creates a new game state with the current initiative player updated.
@@ -25,24 +25,30 @@ export function updateCurrentInitiativeForBoard<TBoard extends Board>(
   };
 }
 
-export function updateCurrentInitiative(state: GameState, player: PlayerSide): GameState {
+export function updateCurrentInitiative(
+  state: GameState,
+  player: PlayerSide,
+): GameState {
   const board: BoardType = state.boardType;
   switch (board) {
-    case "small":
+    case 'small': {
       return updateCurrentInitiativeForBoard<SmallBoard>(
         state as GameStateForBoard<SmallBoard>,
         player,
       );
-    case "standard":
+    }
+    case 'standard': {
       return updateCurrentInitiativeForBoard<StandardBoard>(
         state as GameStateForBoard<StandardBoard>,
         player,
       );
-    case "large":
+    }
+    case 'large': {
       return updateCurrentInitiativeForBoard<LargeBoard>(
         state as GameStateForBoard<LargeBoard>,
         player,
       );
+    }
     default: {
       const _exhaustive: never = board;
       throw new Error(`Unknown board type: ${board}`);

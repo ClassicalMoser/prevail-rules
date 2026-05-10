@@ -1,5 +1,5 @@
-import type { Board, PlayerCardState } from "@entities";
-import type { GameStateForBoard } from "@game";
+import type { Board, PlayerCardState } from '@entities';
+import type { GameStateForBoard } from '@game';
 
 /**
  * Creates a new game state with a player's card state updated.
@@ -28,12 +28,14 @@ import type { GameStateForBoard } from "@game";
  */
 export function updatePlayerCardState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-  player: "black" | "white",
-  playerCardState: PlayerCardState | ((current: PlayerCardState) => PlayerCardState),
+  player: 'black' | 'white',
+  playerCardState:
+    | PlayerCardState
+    | ((current: PlayerCardState) => PlayerCardState),
 ): GameStateForBoard<TBoard> {
   const currentPlayerCardState = state.cardState[player];
   const newPlayerCardState =
-    typeof playerCardState === "function"
+    typeof playerCardState === 'function'
       ? playerCardState(currentPlayerCardState)
       : playerCardState;
 

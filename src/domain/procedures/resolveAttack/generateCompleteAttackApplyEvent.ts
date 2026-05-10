@@ -1,16 +1,16 @@
+import type { CompleteAttackApplyEvent } from '@events';
 import {
   COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
-  CompleteAttackApplyEvent,
   GAME_EFFECT_EVENT_TYPE,
-} from "@events";
+} from '@events';
 import {
   getAttackApplyStateFromRangedAttack,
   getCurrentPhaseStateForBoard,
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
   getMeleeResolutionState,
-} from "@queries";
-import { Board } from "@entities";
-import type { GameState, GameStateForBoard, MeleeResolutionState } from "@game";
+} from '@queries';
+import type { Board } from '@entities';
+import type { GameState, GameStateForBoard, MeleeResolutionState } from '@game';
 
 /**
  * Generates a CompleteAttackApplyEvent to complete an attack apply substep.
@@ -25,18 +25,18 @@ export function generateCompleteAttackApplyEvent<TBoard extends Board>(
 ): CompleteAttackApplyEvent {
   const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
 
-  if (phaseState.phase === "issueCommands") {
+  if (phaseState.phase === 'issueCommands') {
     const attackApply = getAttackApplyStateFromRangedAttack(state);
     return {
-      eventType: GAME_EFFECT_EVENT_TYPE,
+      attackType: 'ranged',
+      defendingPlayer: attackApply.defendingUnit.playerSide,
       effectType: COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
       eventNumber,
-      attackType: "ranged",
-      defendingPlayer: attackApply.defendingUnit.playerSide,
+      eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }
 
-  if (phaseState.phase === "resolveMelee") {
+  if (phaseState.phase === 'resolveMelee') {
     const meleeState = getMeleeResolutionState(state);
     // Safe type broadening for more generic function signature
     const defendingPlayer = getDefendingPlayerForNextIncompleteMeleeAttackApply(
@@ -45,17 +45,21 @@ export function generateCompleteAttackApplyEvent<TBoard extends Board>(
     );
 
     if (defendingPlayer === null) {
-      throw new Error("No incomplete attack apply state found in melee resolution");
+      throw new Error(
+        'No incomplete attack apply state found in melee resolution',
+      );
     }
 
     return {
-      eventType: GAME_EFFECT_EVENT_TYPE,
+      attackType: 'melee',
+      defendingPlayer,
       effectType: COMPLETE_ATTACK_APPLY_EFFECT_TYPE,
       eventNumber,
-      attackType: "melee",
-      defendingPlayer,
+      eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }
 
-  throw new Error(`completeAttackApply not expected in phase: ${phaseState.phase}`);
+  throw new Error(
+    `completeAttackApply not expected in phase: ${phaseState.phase}`,
+  );
 }

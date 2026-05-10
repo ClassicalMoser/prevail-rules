@@ -1,24 +1,28 @@
-import type { StandardBoard, UnitInstance, UnitWithPlacement } from "@entities";
-import type { AttackApplyStateForBoard } from "@game";
-import { createRetreatState, createReverseState, createRoutState } from "./substepStates";
+import type { StandardBoard, UnitInstance, UnitWithPlacement } from '@entities';
+import type { AttackApplyStateForBoard } from '@game';
+import {
+  createRetreatState,
+  createReverseState,
+  createRoutState,
+} from './substepStates';
 
 function baseAttackApplyState(
   defendingUnit: UnitInstance,
   overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
 ): AttackApplyStateForBoard<StandardBoard> {
   return {
-    substepType: "attackApply" as const,
-    boardType: "standard" as const,
-    defendingUnit,
     attackResult: {
-      unitRouted: false,
       unitRetreated: false,
       unitReversed: false,
+      unitRouted: false,
     },
-    routState: undefined,
+    boardType: 'standard' as const,
+    completed: false,
+    defendingUnit,
     retreatState: undefined,
     reverseState: undefined,
-    completed: false,
+    routState: undefined,
+    substepType: 'attackApply' as const,
     ...overrides,
   };
 }
@@ -42,9 +46,9 @@ export function createAttackApplyStateWithRetreat(
 ): AttackApplyStateForBoard<StandardBoard> {
   return baseAttackApplyState(retreatingUnit.unit, {
     attackResult: {
-      unitRouted: false,
       unitRetreated: true,
       unitReversed: false,
+      unitRouted: false,
     },
     retreatState: createRetreatState(retreatingUnit),
     ...overrides,
@@ -60,9 +64,9 @@ export function createAttackApplyStateWithRout(
 ): AttackApplyStateForBoard<StandardBoard> {
   return baseAttackApplyState(defendingUnit, {
     attackResult: {
-      unitRouted: true,
       unitRetreated: false,
       unitReversed: false,
+      unitRouted: true,
     },
     routState: createRoutState(defendingUnit.playerSide, defendingUnit),
     ...overrides,
@@ -78,9 +82,9 @@ export function createAttackApplyStateWithReverse(
 ): AttackApplyStateForBoard<StandardBoard> {
   return baseAttackApplyState(reversingUnit.unit, {
     attackResult: {
-      unitRouted: false,
       unitRetreated: false,
       unitReversed: true,
+      unitRouted: false,
     },
     reverseState: createReverseState(reversingUnit),
     ...overrides,

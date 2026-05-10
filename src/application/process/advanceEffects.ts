@@ -1,10 +1,10 @@
-import type { GameEffectEvent } from "@events";
-import type { GameState } from "@game";
-import type { EnginePorts, PortResponse } from "../ports";
-import { generateEventFromProcedure } from "@procedures";
-import { getExpectedEvent } from "@queries";
-import { processEvent } from "./processEvent";
-import { GameModeName } from "@entities";
+import type { GameEffectEvent } from '@events';
+import type { GameState } from '@game';
+import type { EnginePorts, PortResponse } from '../ports';
+import { generateEventFromProcedure } from '@procedures';
+import { getExpectedEvent } from '@queries';
+import { processEvent } from './processEvent';
+import type { GameModeName } from '@entities';
 
 /**
  * Advances the game state up to the next player choice.
@@ -23,13 +23,19 @@ export async function advanceEffects(
 ): Promise<PortResponse<void>> {
   let currentGameState = gameState;
   let expectedEvent = getExpectedEvent(gameState);
-  while (expectedEvent.actionType === "gameEffect") {
+  while (expectedEvent.actionType === 'gameEffect') {
     const event: GameEffectEvent = generateEventFromProcedure(
       currentGameState,
       expectedEvent.expectedEventNumber,
       expectedEvent.effectType,
     );
-    const processResult = await processEvent(gameId, gameMode, event, currentGameState, ports);
+    const processResult = await processEvent(
+      gameId,
+      gameMode,
+      event,
+      currentGameState,
+      ports,
+    );
     if (!processResult.result) {
       return processResult;
     }
@@ -37,7 +43,7 @@ export async function advanceEffects(
     expectedEvent = getExpectedEvent(currentGameState);
   }
   return {
-    result: true,
     data: undefined,
+    result: true,
   };
 }

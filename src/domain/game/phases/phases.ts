@@ -1,35 +1,35 @@
-import type { AssertExact } from "@utils";
-import type { CleanupPhaseState } from "./cleanupPhase";
-import type { IssueCommandsPhaseStateForBoard } from "./issueCommandsPhase";
-import type { MoveCommandersPhaseState } from "./moveCommandersPhase";
-import type { PlayCardsPhaseState } from "./playCardsPhase";
+import type { AssertExact } from '@utils';
+import type { CleanupPhaseState } from './cleanupPhase';
+import type { IssueCommandsPhaseStateForBoard } from './issueCommandsPhase';
+import type { MoveCommandersPhaseState } from './moveCommandersPhase';
+import type { PlayCardsPhaseState } from './playCardsPhase';
 
-import type { ResolveMeleePhaseStateForBoard } from "./resolveMeleePhase";
-import { z } from "zod";
-import { cleanupPhaseStateSchema } from "./cleanupPhase";
+import type { ResolveMeleePhaseStateForBoard } from './resolveMeleePhase';
+import { z } from 'zod';
+import { cleanupPhaseStateSchema } from './cleanupPhase';
 import {
   largeIssueCommandsPhaseStateSchema,
   smallIssueCommandsPhaseStateSchema,
   standardIssueCommandsPhaseStateSchema,
-} from "./issueCommandsPhase";
-import { moveCommandersPhaseStateSchema } from "./moveCommandersPhase";
-import { playCardsPhaseStateSchema } from "./playCardsPhase";
+} from './issueCommandsPhase';
+import { moveCommandersPhaseStateSchema } from './moveCommandersPhase';
+import { playCardsPhaseStateSchema } from './playCardsPhase';
 import {
   largeResolveMeleePhaseStateSchema,
   smallResolveMeleePhaseStateSchema,
   standardResolveMeleePhaseStateSchema,
-} from "./resolveMeleePhase";
-import { Board, LargeBoard, SmallBoard, StandardBoard } from "@entities";
+} from './resolveMeleePhase';
+import type { Board, LargeBoard, SmallBoard, StandardBoard } from '@entities';
 
 /**
  * Iterable list of valid phases for a round.
  */
 export const phases = [
-  "playCards",
-  "moveCommanders",
-  "issueCommands",
-  "resolveMelee",
-  "cleanup",
+  'playCards',
+  'moveCommanders',
+  'issueCommands',
+  'resolveMelee',
+  'cleanup',
 ] as const;
 
 /**
@@ -38,19 +38,19 @@ export const phases = [
 export type Phase = (typeof phases)[number];
 
 /** The play cards phase. */
-export const PLAY_CARDS_PHASE: "playCards" = phases[0];
+export const PLAY_CARDS_PHASE: 'playCards' = phases[0];
 
 /** The move commanders phase. */
-export const MOVE_COMMANDERS_PHASE: "moveCommanders" = phases[1];
+export const MOVE_COMMANDERS_PHASE: 'moveCommanders' = phases[1];
 
 /** The issue commands phase. */
-export const ISSUE_COMMANDS_PHASE: "issueCommands" = phases[2];
+export const ISSUE_COMMANDS_PHASE: 'issueCommands' = phases[2];
 
 /** The resolve melee phase. */
-export const RESOLVE_MELEE_PHASE: "resolveMelee" = phases[3];
+export const RESOLVE_MELEE_PHASE: 'resolveMelee' = phases[3];
 
 /** The cleanup phase. */
-export const CLEANUP_PHASE: "cleanup" = phases[4];
+export const CLEANUP_PHASE: 'cleanup' = phases[4];
 
 const _phaseSchemaObject = z.enum(phases);
 type PhaseSchemaType = z.infer<typeof _phaseSchemaObject>;
@@ -106,14 +106,17 @@ const _standardPhaseStateSchemaObject = z.union([
   cleanupPhaseStateSchema,
 ]);
 
-type StandardPhaseStateSchemaType = z.infer<typeof _standardPhaseStateSchemaObject>;
+type StandardPhaseStateSchemaType = z.infer<
+  typeof _standardPhaseStateSchemaObject
+>;
 const _assertExactStandardPhaseState: AssertExact<
   PhaseStateForBoard<StandardBoard>,
   StandardPhaseStateSchemaType
 > = true;
 
-export const standardPhaseStateSchema: z.ZodType<PhaseStateForBoard<StandardBoard>> =
-  _standardPhaseStateSchemaObject;
+export const standardPhaseStateSchema: z.ZodType<
+  PhaseStateForBoard<StandardBoard>
+> = _standardPhaseStateSchemaObject;
 
 const _largePhaseStateSchemaObject = z.union([
   playCardsPhaseStateSchema,

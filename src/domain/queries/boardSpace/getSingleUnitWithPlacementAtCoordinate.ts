@@ -1,6 +1,6 @@
-import type { Board, BoardCoordinate, UnitWithPlacement } from "@entities";
-import { hasSingleUnit } from "@entities";
-import { getBoardSpace } from "./getBoardSpace";
+import type { Board, BoardCoordinate, UnitWithPlacement } from '@entities';
+import { hasSingleUnit } from '@entities';
+import { getBoardSpace } from './getBoardSpace';
 
 /**
  * Unit with placement at a coordinate when the space holds exactly one unit.
@@ -12,15 +12,15 @@ export function getSingleUnitWithPlacementAtCoordinate<TBoard extends Board>(
 ): UnitWithPlacement<TBoard> {
   const space = getBoardSpace(board, coordinate);
   if (!hasSingleUnit(space.unitPresence)) {
-    throw new Error("Expected exactly one unit at coordinate");
+    throw new Error('Expected exactly one unit at coordinate');
   }
   return {
     boardType: board.boardType,
-    unit: space.unitPresence.unit,
     placement: {
       boardType: board.boardType,
       coordinate,
       facing: space.unitPresence.facing,
     },
+    unit: space.unitPresence.unit,
   };
 }

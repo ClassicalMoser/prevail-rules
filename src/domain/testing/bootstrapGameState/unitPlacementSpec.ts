@@ -4,8 +4,8 @@ import type {
   UnitFacing,
   UnitInstance,
   UnitType,
-} from "@entities";
-import { createTestUnit } from "@testing/unitHelpers";
+} from '@entities';
+import { createTestUnit } from '@testing/unitHelpers';
 
 /**
  * Short-hand unit placement specification for bootstrapping test scenarios.
@@ -39,7 +39,9 @@ export type UnitPlacementSpec =
 /**
  * Extracts the explicitly specified instance number from a spec, if any.
  */
-export function getExplicitInstanceNumber(spec: UnitPlacementSpec): number | undefined {
+export function getExplicitInstanceNumber(
+  spec: UnitPlacementSpec,
+): number | undefined {
   if (Array.isArray(spec)) {
     return undefined;
   }
@@ -58,15 +60,15 @@ export function normalizeUnitPlacement(
   facing: UnitFacing;
 } {
   if (Array.isArray(spec)) {
-    const [coord, player, facing = "north"] = spec;
+    const [coord, player, facing = 'north'] = spec;
     const unit = createTestUnit(player, { instanceNumber });
-    return { unit, coordinate: coord, facing };
+    return { coordinate: coord, facing, unit };
   }
 
   const {
     coord,
     player,
-    facing = "north",
+    facing = 'north',
     instanceNumber: explicitInstanceNumber = instanceNumber,
     ...unitOptions
   } = spec;
@@ -77,9 +79,9 @@ export function normalizeUnitPlacement(
   });
 
   return {
-    unit,
     coordinate: coord,
     facing,
+    unit,
   };
 }
 
@@ -90,16 +92,16 @@ export function normalizeUnitPlacement(
  */
 export function assignInstanceNumbers(
   specs: UnitPlacementSpec[],
-): Array<{ spec: UnitPlacementSpec; instanceNumber: number }> {
+): { spec: UnitPlacementSpec; instanceNumber: number }[] {
   let nextAutoNumber = 1;
-  const result: Array<{ spec: UnitPlacementSpec; instanceNumber: number }> = [];
+  const result: { spec: UnitPlacementSpec; instanceNumber: number }[] = [];
 
   for (const spec of specs) {
     const explicit = getExplicitInstanceNumber(spec);
     if (explicit !== undefined) {
-      result.push({ spec, instanceNumber: explicit });
+      result.push({ instanceNumber: explicit, spec });
     } else {
-      result.push({ spec, instanceNumber: nextAutoNumber });
+      result.push({ instanceNumber: nextAutoNumber, spec });
       nextAutoNumber++;
     }
   }

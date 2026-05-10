@@ -1,17 +1,19 @@
-import type { Card, PlayerSide, StatModifier } from "@entities";
-import type { AssertExact } from "@utils";
-import { cardSchema, playerSideSchema } from "@entities";
-import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+import type { Card, PlayerSide, StatModifier } from '@entities';
+import type { AssertExact } from '@utils';
+import { cardSchema, playerSideSchema } from '@entities';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
 /** The type of the commit to movement event. */
-export const COMMIT_TO_MOVEMENT_CHOICE_TYPE = "commitToMovement" as const;
+export const COMMIT_TO_MOVEMENT_CHOICE_TYPE = 'commitToMovement' as const;
 
-const movementModifierTypes = ["speed", "flexibility"] as const;
+const movementModifierTypes = ['speed', 'flexibility'] as const;
 type MovementModifier = (typeof movementModifierTypes)[number];
 
 // Type-level guarantee that MovementModifier extends StatModifier
-const _assertMovementModifierExtendsStatModifier: [MovementModifier] extends [StatModifier]
+const _assertMovementModifierExtendsStatModifier: [MovementModifier] extends [
+  StatModifier,
+]
   ? true
   : never = true;
 
@@ -32,8 +34,8 @@ export interface CommitToMovementEvent {
 }
 
 const movementModifierTypesEnum: z.ZodEnum<{
-  speed: "speed";
-  flexibility: "flexibility";
+  speed: 'speed';
+  flexibility: 'flexibility';
 }> = z.enum(movementModifierTypes);
 
 const _commitToMovementEventSchemaObject = z.object({
@@ -51,7 +53,9 @@ const _commitToMovementEventSchemaObject = z.object({
   modifierTypes: z.array(movementModifierTypesEnum),
 });
 
-type CommitToMovementEventSchemaType = z.infer<typeof _commitToMovementEventSchemaObject>;
+type CommitToMovementEventSchemaType = z.infer<
+  typeof _commitToMovementEventSchemaObject
+>;
 
 const _assertExactCommitToMovementEvent: AssertExact<
   CommitToMovementEvent,
@@ -60,8 +64,8 @@ const _assertExactCommitToMovementEvent: AssertExact<
 
 /** The schema for a commit to movement event. */
 export const commitToMovementEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<"playerChoice">;
-  choiceType: z.ZodLiteral<"commitToMovement">;
+  eventType: z.ZodLiteral<'playerChoice'>;
+  choiceType: z.ZodLiteral<'commitToMovement'>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   committedCard: typeof cardSchema;

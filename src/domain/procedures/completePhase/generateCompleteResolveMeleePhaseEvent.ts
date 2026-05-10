@@ -1,6 +1,9 @@
-import type { CompleteResolveMeleePhaseEvent } from "@events";
-import type { GameState } from "@game";
-import { COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
+import type { CompleteResolveMeleePhaseEvent } from '@events';
+import type { GameState } from '@game';
+import {
+  COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE,
+  GAME_EFFECT_EVENT_TYPE,
+} from '@events';
 
 /**
  * Generates a CompleteResolveMeleePhaseEvent to complete the resolve melee phase
@@ -16,8 +19,8 @@ export function generateCompleteResolveMeleePhaseEvent(
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_RESOLVE_MELEE_PHASE_EFFECT_TYPE,
     eventNumber,
+    eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

@@ -1,7 +1,7 @@
-import type { Board, BoardCoordinate, Line, ValidationResult } from "@entities";
-import { areSameSide } from "@entities";
-import { getFlankingSpaces, getOppositeFacing } from "@queries";
-import { MAX_LINE_LENGTH } from "@ruleValues";
+import type { Board, BoardCoordinate, Line, ValidationResult } from '@entities';
+import { areSameSide } from '@entities';
+import { getFlankingSpaces, getOppositeFacing } from '@queries';
+import { MAX_LINE_LENGTH } from '@ruleValues';
 
 /**
  * Determines whether a line is valid according to game rules.
@@ -16,15 +16,21 @@ import { MAX_LINE_LENGTH } from "@ruleValues";
  * @param line - The line to validate
  * @returns ValidationResult indicating if the line is valid
  */
-export function isValidLine<TBoard extends Board>(board: TBoard, line: Line): ValidationResult {
+export function isValidLine<TBoard extends Board>(
+  board: TBoard,
+  line: Line,
+): ValidationResult {
   try {
     const { unitPlacements } = line;
 
     // Check length: must have at least 1 unit and at most MAX_LINE_LENGTH
-    if (unitPlacements.length === 0 || unitPlacements.length > MAX_LINE_LENGTH) {
+    if (
+      unitPlacements.length === 0 ||
+      unitPlacements.length > MAX_LINE_LENGTH
+    ) {
       return {
+        errorReason: 'Line length is invalid',
         result: false,
-        errorReason: "Line length is invalid",
       };
     }
 
@@ -35,19 +41,19 @@ export function isValidLine<TBoard extends Board>(board: TBoard, line: Line): Va
       };
     }
 
-    const firstUnit = unitPlacements[0]!;
+    const firstUnit = unitPlacements[0];
     const firstFacing = firstUnit.placement.facing;
     const oppositeFacing = getOppositeFacing(firstFacing);
 
     // Check all units are same side and face same/opposite direction
     for (let i = 1; i < unitPlacements.length; i++) {
-      const unit = unitPlacements[i]!;
+      const unit = unitPlacements[i];
 
       // Check same side
       if (!areSameSide(firstUnit.unit, unit.unit)) {
         return {
+          errorReason: 'Units are not on the same side',
           result: false,
-          errorReason: "Units are not on the same side",
         };
       }
 
@@ -55,8 +61,8 @@ export function isValidLine<TBoard extends Board>(board: TBoard, line: Line): Va
       const unitFacing = unit.placement.facing;
       if (unitFacing !== firstFacing && unitFacing !== oppositeFacing) {
         return {
+          errorReason: 'Invalid facings present',
           result: false,
-          errorReason: "Invalid facings present",
         };
       }
     }
@@ -64,16 +70,22 @@ export function isValidLine<TBoard extends Board>(board: TBoard, line: Line): Va
     // Check contiguity: each unit must be in the flanking spaces of the previous unit
     // Lines form perpendicular to a unit's facing, so units must be in flanking spaces
     for (let i = 0; i < unitPlacements.length - 1; i++) {
-      const currentUnit = unitPlacements[i]!;
-      const nextCoord = unitPlacements[i + 1]!.placement.coordinate as BoardCoordinate<TBoard>;
-      const currentCoord = currentUnit.placement.coordinate as BoardCoordinate<TBoard>;
+      const currentUnit = unitPlacements[i];
+      const nextCoord = unitPlacements[i + 1].placement
+        .coordinate as BoardCoordinate<TBoard>;
+      const currentCoord = currentUnit.placement
+        .coordinate as BoardCoordinate<TBoard>;
       const currentFacing = currentUnit.placement.facing;
 
-      const flankingSpaces = getFlankingSpaces(board, currentCoord, currentFacing);
+      const flankingSpaces = getFlankingSpaces(
+        board,
+        currentCoord,
+        currentFacing,
+      );
       if (!flankingSpaces.has(nextCoord)) {
         return {
+          errorReason: 'Units are not contiguous',
           result: false,
-          errorReason: "Units are not contiguous",
         };
       }
     }
@@ -84,8 +96,8 @@ export function isValidLine<TBoard extends Board>(board: TBoard, line: Line): Va
   } catch (error) {
     // Any error means the line is invalid
     return {
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,
-      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

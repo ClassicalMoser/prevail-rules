@@ -1,6 +1,6 @@
-import type { ExpectedGameEffect } from "./expectedGameEffect";
+import type { ExpectedGameEffect } from './expectedGameEffect';
 
-import type { ExpectedPlayerInput } from "./expectedPlayerInput";
+import type { ExpectedPlayerInput } from './expectedPlayerInput';
 
 /**
  * Discriminated union of all expected event types.

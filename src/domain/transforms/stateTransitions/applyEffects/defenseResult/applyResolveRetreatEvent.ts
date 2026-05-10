@@ -1,13 +1,13 @@
-import type { Board } from "@entities";
-import type { ResolveRetreatEventForBoard } from "@events";
-import type { GameStateForBoard, RetreatStateForBoard } from "@game";
-import { findRetreatState } from "@queries";
+import type { Board } from '@entities';
+import type { ResolveRetreatEventForBoard } from '@events';
+import type { GameStateForBoard, RetreatStateForBoard } from '@game';
+import { findRetreatState } from '@queries';
 import {
   addUnitToBoard,
   removeUnitFromBoard,
   updateBoardState,
   updateRetreatState,
-} from "@transforms/pureTransforms";
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveRetreatEvent to the game state.
@@ -23,7 +23,10 @@ export function applyResolveRetreatEvent<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   // Move the unit on the board
-  const removedUnitBoard = removeUnitFromBoard(state.boardState, event.startingPosition);
+  const removedUnitBoard = removeUnitFromBoard(
+    state.boardState,
+    event.startingPosition,
+  );
   const addedUnitBoard = addUnitToBoard(removedUnitBoard, event.finalPosition);
 
   // Get the current retreat state to update

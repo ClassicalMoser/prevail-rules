@@ -1,7 +1,7 @@
-import type { Board } from "@entities";
-import type { EngagementStateForBoard, GameStateForBoard } from "@game";
-import { getMovementResolutionState } from "@queries";
-import { updateCommandResolutionState } from "./updateCommandResolutionState";
+import type { Board } from '@entities';
+import type { EngagementStateForBoard, GameStateForBoard } from '@game';
+import { getMovementResolutionState } from '@queries';
+import { updateCommandResolutionState } from './updateCommandResolutionState';
 
 /**
  * Updates the engagement state within the current movement resolution (issue commands phase).

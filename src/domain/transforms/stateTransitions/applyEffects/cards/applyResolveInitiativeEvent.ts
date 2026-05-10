@@ -1,12 +1,12 @@
-import type { Board } from "@entities";
-import type { ResolveInitiativeEvent } from "@events";
-import type { GameState, GameStateForBoard } from "@game";
-import { getPlayCardsPhaseState } from "@queries";
+import type { Board } from '@entities';
+import type { ResolveInitiativeEvent } from '@events';
+import type { GameState, GameStateForBoard } from '@game';
+import { getPlayCardsPhaseState } from '@queries';
 import {
   markPhaseAsComplete,
   updateCurrentInitiativeForBoard,
   updatePhaseState,
-} from "@transforms/pureTransforms";
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveInitiativeEvent to the game state.
@@ -31,7 +31,10 @@ export function applyResolveInitiativeEvent<TBoard extends Board>(
   const newPhaseState = markPhaseAsComplete(phaseState);
 
   // Safe broad type cast because we know the event is for the board type
-  const stateWithInitiative = updateCurrentInitiativeForBoard(state, event.player);
+  const stateWithInitiative = updateCurrentInitiativeForBoard(
+    state,
+    event.player,
+  );
   const stateWithPhase = updatePhaseState(stateWithInitiative, newPhaseState);
 
   return stateWithPhase;

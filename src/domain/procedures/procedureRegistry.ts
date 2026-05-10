@@ -1,39 +1,43 @@
-import type { GameEffectEvent, GameEffectEventForBoard, GameEffectType } from "@events";
-import type { GameState, GameStateForBoard } from "@game";
+import type {
+  GameEffectEvent,
+  GameEffectEventForBoard,
+  GameEffectType,
+} from '@events';
+import type { GameState, GameStateForBoard } from '@game';
 import {
   generateDiscardPlayedCardsEvent,
   generateResolveInitiativeEvent,
   generateResolveRallyEvent,
   generateResolveUnitsBrokenEvent,
   generateRevealCardsEvent,
-} from "./cards";
+} from './cards';
 import {
   generateCompleteCleanupPhaseEvent,
   generateCompleteIssueCommandsPhaseEvent,
   generateCompleteMoveCommandersPhaseEvent,
   generateCompletePlayCardsPhaseEvent,
   generateCompleteResolveMeleePhaseEvent,
-} from "./completePhase";
+} from './completePhase';
 import {
   generateResolveRetreatEvent,
   generateResolveReverseEvent,
   generateResolveRoutEvent,
   generateTriggerRoutFromRetreatEvent,
-} from "./defenseResult";
+} from './defenseResult';
 import {
   generateCompleteUnitMovementEvent,
   generateResolveEngageRetreatOptionEvent,
   generateResolveFlankEngagementEvent,
   generateStartEngagementEvent,
-} from "./movement";
+} from './movement';
 import {
   generateCompleteAttackApplyEvent,
   generateCompleteMeleeResolutionEvent,
   generateCompleteRangedAttackCommandEvent,
   generateResolveMeleeEvent,
   generateResolveRangedAttackEvent,
-} from "./resolveAttack";
-import { Board } from "@entities";
+} from './resolveAttack';
+import type { Board } from '@entities';
 
 /**
  * Generates a game effect event using the appropriate procedure
@@ -49,7 +53,7 @@ import { Board } from "@entities";
  * @returns The generated game effect event with the specific type for the effect
  * @throws Error if the effect type doesn't have a procedure
  *
- * @warning Game state is trusted as internally consistent for this function.
+ * WARNING: Game state is trusted as internally consistent for this function.
  */
 export function generateEventFromProcedureForBoard<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
@@ -57,66 +61,98 @@ export function generateEventFromProcedureForBoard<TBoard extends Board>(
   effectType: GameEffectType,
 ): GameEffectEventForBoard<TBoard> {
   switch (effectType) {
-    case "completeAttackApply":
+    case 'completeAttackApply': {
       return generateCompleteAttackApplyEvent(state, eventNumber);
-    case "completeCleanupPhase":
+    }
+    case 'completeCleanupPhase': {
       // Widen type to GameState since spatial information is not needed
       return generateCompleteCleanupPhaseEvent(state as GameState, eventNumber);
-    case "completeIssueCommandsPhase":
+    }
+    case 'completeIssueCommandsPhase': {
       return generateCompleteIssueCommandsPhaseEvent(state, eventNumber);
-    case "completeMeleeResolution":
+    }
+    case 'completeMeleeResolution': {
       return generateCompleteMeleeResolutionEvent(eventNumber);
-    case "completeMoveCommandersPhase":
+    }
+    case 'completeMoveCommandersPhase': {
       // Widen type to GameState since spatial information is not needed
-      return generateCompleteMoveCommandersPhaseEvent(state as GameState, eventNumber);
-    case "completePlayCardsPhase":
+      return generateCompleteMoveCommandersPhaseEvent(
+        state as GameState,
+        eventNumber,
+      );
+    }
+    case 'completePlayCardsPhase': {
       // Widen type to GameState since spatial information is not needed
-      return generateCompletePlayCardsPhaseEvent(state as GameState, eventNumber);
-    case "completeRangedAttackCommand":
+      return generateCompletePlayCardsPhaseEvent(
+        state as GameState,
+        eventNumber,
+      );
+    }
+    case 'completeRangedAttackCommand': {
       return generateCompleteRangedAttackCommandEvent(eventNumber);
-    case "completeResolveMeleePhase":
+    }
+    case 'completeResolveMeleePhase': {
       // Widen type to GameState since spatial information is not needed
-      return generateCompleteResolveMeleePhaseEvent(state as GameState, eventNumber);
-    case "completeUnitMovement":
+      return generateCompleteResolveMeleePhaseEvent(
+        state as GameState,
+        eventNumber,
+      );
+    }
+    case 'completeUnitMovement': {
       return generateCompleteUnitMovementEvent(eventNumber);
-    case "discardPlayedCards":
+    }
+    case 'discardPlayedCards': {
       // Widen type to GameState since spatial information is not needed
       return generateDiscardPlayedCardsEvent(state as GameState, eventNumber);
-    case "resolveEngageRetreatOption":
+    }
+    case 'resolveEngageRetreatOption': {
       return generateResolveEngageRetreatOptionEvent(state, eventNumber);
-    case "resolveFlankEngagement":
+    }
+    case 'resolveFlankEngagement': {
       return generateResolveFlankEngagementEvent(state, eventNumber);
-    case "resolveInitiative":
+    }
+    case 'resolveInitiative': {
       // Widen type to GameState since spatial information is not needed
       return generateResolveInitiativeEvent(state as GameState, eventNumber);
-    case "resolveMelee":
+    }
+    case 'resolveMelee': {
       return generateResolveMeleeEvent(state, eventNumber);
-    case "resolveRally": {
+    }
+    case 'resolveRally': {
       // Widen type to GameState since spatial information is not needed
       return generateResolveRallyEvent(state as GameState, eventNumber);
     }
-    case "resolveRangedAttack":
+    case 'resolveRangedAttack': {
       return generateResolveRangedAttackEvent(state, eventNumber);
-    case "resolveRetreat":
+    }
+    case 'resolveRetreat': {
       return generateResolveRetreatEvent(state, eventNumber);
-    case "resolveReverse":
+    }
+    case 'resolveReverse': {
       return generateResolveReverseEvent(state, eventNumber);
-    case "resolveRout":
+    }
+    case 'resolveRout': {
       return generateResolveRoutEvent(state, eventNumber);
-    case "resolveUnitsBroken": {
+    }
+    case 'resolveUnitsBroken': {
       // Widen type to GameState since spatial information is not needed
       return generateResolveUnitsBrokenEvent(state as GameState, eventNumber);
     }
-    case "revealCards":
+    case 'revealCards': {
       return generateRevealCardsEvent(eventNumber);
-    case "startEngagement":
+    }
+    case 'startEngagement': {
       return generateStartEngagementEvent(state, eventNumber);
-    case "triggerRoutFromRetreat":
+    }
+    case 'triggerRoutFromRetreat': {
       return generateTriggerRoutFromRetreatEvent(state, eventNumber);
+    }
 
     default: {
       const _exhaustive: never = effectType;
-      throw new Error(`No procedure exists for effect type: ${_exhaustive as string}`);
+      throw new Error(
+        `No procedure exists for effect type: ${_exhaustive as string}`,
+      );
     }
   }
 }
@@ -126,14 +162,17 @@ export function generateEventFromProcedure(
   eventNumber: number,
   effectType: GameEffectType,
 ): GameEffectEvent {
-  const boardType = state.boardType;
+  const { boardType } = state;
   switch (boardType) {
-    case "small":
+    case 'small': {
       return generateEventFromProcedureForBoard(state, eventNumber, effectType);
-    case "standard":
+    }
+    case 'standard': {
       return generateEventFromProcedureForBoard(state, eventNumber, effectType);
-    case "large":
+    }
+    case 'large': {
       return generateEventFromProcedureForBoard(state, eventNumber, effectType);
+    }
     default: {
       const _exhaustive: never = boardType;
       throw new Error(`Unknown board type: ${_exhaustive as string}`);

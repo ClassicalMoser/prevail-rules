@@ -1,13 +1,13 @@
-import type { ExpectedEvent, ExpectedEventInfo } from "@events";
-import type { GameState } from "@game";
-import { getCurrentPhaseState } from "@queries/sequencing";
+import type { ExpectedEvent, ExpectedEventInfo } from '@events';
+import type { GameState } from '@game';
+import { getCurrentPhaseState } from '@queries/sequencing';
 import {
   getExpectedCleanupPhaseEvent,
   getExpectedIssueCommandsPhaseEvent,
   getExpectedMoveCommandersPhaseEvent,
   getExpectedPlayCardsPhaseEvent,
   getExpectedResolveMeleePhaseEvent,
-} from "./byPhase";
+} from './byPhase';
 
 /**
  * Dispatcher function to identify which event to expect next.
@@ -22,24 +22,33 @@ export function getExpectedEvent(state: GameState): ExpectedEvent {
 
   let info: ExpectedEventInfo;
   switch (phaseState.phase) {
-    case "playCards":
+    case 'playCards': {
       info = getExpectedPlayCardsPhaseEvent(state);
       break;
-    case "moveCommanders":
+    }
+    case 'moveCommanders': {
       info = getExpectedMoveCommandersPhaseEvent(state);
       break;
-    case "issueCommands":
+    }
+    case 'issueCommands': {
       info = getExpectedIssueCommandsPhaseEvent(state);
       break;
-    case "resolveMelee":
+    }
+    case 'resolveMelee': {
       info = getExpectedResolveMeleePhaseEvent(state);
       break;
-    case "cleanup":
+    }
+    case 'cleanup': {
       info = getExpectedCleanupPhaseEvent(state);
       break;
-    default:
-      throw new Error("Invalid phase");
+    }
+    default: {
+      throw new Error('Invalid phase');
+    }
   }
-  const expectedEvent: ExpectedEvent = { ...info, expectedEventNumber: eventNumber };
+  const expectedEvent: ExpectedEvent = {
+    ...info,
+    expectedEventNumber: eventNumber,
+  };
   return expectedEvent;
 }

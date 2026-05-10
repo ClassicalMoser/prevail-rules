@@ -1,8 +1,8 @@
-import type { ExpectedEventInfo } from "@events";
-import type { GameState } from "@game";
-import { getOtherPlayer } from "@queries/getOtherPlayer";
-import { getCleanupPhaseState } from "@queries/sequencing";
-import { getExpectedRallyResolutionEvent } from "../composable";
+import type { ExpectedEventInfo } from '@events';
+import type { GameState } from '@game';
+import { getOtherPlayer } from '@queries/getOtherPlayer';
+import { getCleanupPhaseState } from '@queries/sequencing';
+import { getExpectedRallyResolutionEvent } from '../composable';
 
 /**
  * Gets information about the expected event for the Cleanup phase.
@@ -10,57 +10,63 @@ import { getExpectedRallyResolutionEvent } from "../composable";
  * @param state - The current game state with Cleanup phase
  * @returns Information about what event is expected
  */
-export function getExpectedCleanupPhaseEvent(state: GameState): ExpectedEventInfo {
+export function getExpectedCleanupPhaseEvent(
+  state: GameState,
+): ExpectedEventInfo {
   const phaseState = getCleanupPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 
   switch (phaseState.step) {
-    case "discardPlayedCards":
+    case 'discardPlayedCards': {
       return {
-        actionType: "gameEffect",
-        effectType: "discardPlayedCards",
+        actionType: 'gameEffect',
+        effectType: 'discardPlayedCards',
       };
+    }
 
-    case "firstPlayerChooseRally":
+    case 'firstPlayerChooseRally': {
       return {
-        actionType: "playerChoice",
+        actionType: 'playerChoice',
+        choiceType: 'chooseRally',
         playerSource: firstPlayer,
-        choiceType: "chooseRally",
       };
+    }
 
-    case "secondPlayerChooseRally":
+    case 'secondPlayerChooseRally': {
       return {
-        actionType: "playerChoice",
+        actionType: 'playerChoice',
+        choiceType: 'chooseRally',
         playerSource: secondPlayer,
-        choiceType: "chooseRally",
       };
+    }
 
-    case "firstPlayerResolveRally": {
+    case 'firstPlayerResolveRally': {
       const rallyState = phaseState.firstPlayerRallyResolutionState;
 
       if (!rallyState) {
-        throw new Error("First player rally resolution state not found");
+        throw new Error('First player rally resolution state not found');
       }
 
       return getExpectedRallyResolutionEvent(rallyState);
     }
 
-    case "secondPlayerResolveRally": {
+    case 'secondPlayerResolveRally': {
       const rallyState = phaseState.secondPlayerRallyResolutionState;
 
       if (!rallyState) {
-        throw new Error("Second player rally resolution state not found");
+        throw new Error('Second player rally resolution state not found');
       }
 
       return getExpectedRallyResolutionEvent(rallyState);
     }
 
-    case "complete":
+    case 'complete': {
       return {
-        actionType: "gameEffect",
-        effectType: "completeCleanupPhase",
+        actionType: 'gameEffect',
+        effectType: 'completeCleanupPhase',
       };
+    }
 
     default: {
       const _exhaustive: never = phaseState.step;

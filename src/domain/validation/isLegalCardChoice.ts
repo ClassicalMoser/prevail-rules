@@ -1,5 +1,5 @@
-import type { Card, CardState, ValidationResult } from "@entities";
-import type { ChooseCardEvent } from "@events";
+import type { Card, CardState, ValidationResult } from '@entities';
+import type { ChooseCardEvent } from '@events';
 
 /**
  * Validates whether a card choice command is legal.
@@ -16,18 +16,24 @@ export function isLegalCardChoice(
     const { card } = chooseCardEvent;
     let playerHand: Card[];
     switch (chooseCardEvent.player) {
-      case "black":
+      case 'black': {
         playerHand = cardState.black.inHand;
         break;
-      case "white":
+      }
+      case 'white': {
         playerHand = cardState.white.inHand;
         break;
+      }
+      default: {
+        const _exhaustive: never = chooseCardEvent.player;
+        throw new Error(`Unknown player: ${_exhaustive}`);
+      }
     }
     const isInHand = playerHand.includes(card);
     if (!isInHand) {
       return {
+        errorReason: 'Card is not in player hand',
         result: false,
-        errorReason: "Card is not in player hand",
       };
     }
     return {
@@ -35,8 +41,8 @@ export function isLegalCardChoice(
     };
   } catch (error) {
     return {
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,
-      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

@@ -1,7 +1,7 @@
-import type { Board, ValidationResult } from "@entities";
-import type { MoveCommanderEventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
-import { getOtherPlayer } from "@queries";
+import type { Board, ValidationResult } from '@entities';
+import type { MoveCommanderEventForBoard } from '@events';
+import type { GameStateForBoard } from '@game';
+import { getOtherPlayer } from '@queries';
 
 /**
  * Validates whether a MoveCommanderEvent can be applied to the current game state.
@@ -28,21 +28,21 @@ export function isValidMoveCommanderEvent<TBoard extends Board>(
 ): ValidationResult {
   try {
     const { player } = event;
-    const currentPhaseState = state.currentRoundState.currentPhaseState;
+    const { currentPhaseState } = state.currentRoundState;
 
     // Check phase state exists
     if (!currentPhaseState) {
       return {
+        errorReason: 'No current phase state found',
         result: false,
-        errorReason: "No current phase state found",
       };
     }
 
     // Check correct phase
-    if (currentPhaseState.phase !== "moveCommanders") {
+    if (currentPhaseState.phase !== 'moveCommanders') {
       return {
-        result: false,
         errorReason: `Current phase is ${currentPhaseState.phase}, not moveCommanders`,
+        result: false,
       };
     }
 
@@ -50,24 +50,24 @@ export function isValidMoveCommanderEvent<TBoard extends Board>(
     const firstPlayer = state.currentInitiative;
     const secondPlayer = getOtherPlayer(firstPlayer);
 
-    if (currentPhaseState.step === "moveFirstCommander") {
+    if (currentPhaseState.step === 'moveFirstCommander') {
       if (player !== firstPlayer) {
         return {
-          result: false,
           errorReason: `Expected ${firstPlayer} (initiative player) to move, not ${player}`,
+          result: false,
         };
       }
-    } else if (currentPhaseState.step === "moveSecondCommander") {
+    } else if (currentPhaseState.step === 'moveSecondCommander') {
       if (player !== secondPlayer) {
         return {
-          result: false,
           errorReason: `Expected ${secondPlayer} (non-initiative player) to move, not ${player}`,
+          result: false,
         };
       }
     } else {
       return {
-        result: false,
         errorReason: `Move commanders phase is on ${currentPhaseState.step} step, not moveFirstCommander or moveSecondCommander`,
+        result: false,
       };
     }
 
@@ -77,8 +77,8 @@ export function isValidMoveCommanderEvent<TBoard extends Board>(
     };
   } catch (error) {
     return {
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,
-      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

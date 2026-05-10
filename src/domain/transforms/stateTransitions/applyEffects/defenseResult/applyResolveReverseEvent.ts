@@ -1,17 +1,17 @@
-import type { Board } from "@entities";
-import type { ResolveReverseEventForBoard } from "@events";
-import type { GameStateForBoard, ReverseStateForBoard } from "@game";
+import type { Board } from '@entities';
+import type { ResolveReverseEventForBoard } from '@events';
+import type { GameStateForBoard, ReverseStateForBoard } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
   getReverseStateFromAttackApply,
-} from "@queries";
+} from '@queries';
 import {
   addUnitToBoard,
   removeUnitFromBoard,
   updateBoardState,
   updateReverseState,
-} from "@transforms/pureTransforms";
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveReverseEvent to the game state.
@@ -25,11 +25,17 @@ export function applyResolveReverseEvent<TBoard extends Board>(
   event: ResolveReverseEventForBoard<TBoard>,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
-  const removedUnitBoard = removeUnitFromBoard(state.boardState, event.unitInstance);
-  const addedUnitBoard = addUnitToBoard(removedUnitBoard, event.newUnitPlacement);
+  const removedUnitBoard = removeUnitFromBoard(
+    state.boardState,
+    event.unitInstance,
+  );
+  const addedUnitBoard = addUnitToBoard(
+    removedUnitBoard,
+    event.newUnitPlacement,
+  );
 
   const attackApplyState =
-    event.attackResolutionContext === "rangedAttack"
+    event.attackResolutionContext === 'rangedAttack'
       ? getAttackApplyStateFromRangedAttack(state)
       : getAttackApplyStateFromMelee(state, event.unitInstance.unit.playerSide);
 
@@ -37,8 +43,8 @@ export function applyResolveReverseEvent<TBoard extends Board>(
 
   const newReverseState: ReverseStateForBoard<TBoard> = {
     ...currentReverseState,
-    finalPosition: event.newUnitPlacement.placement,
     completed: true,
+    finalPosition: event.newUnitPlacement.placement,
   };
 
   const stateWithUpdatedReverse = updateReverseState(state, newReverseState);

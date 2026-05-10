@@ -1,51 +1,54 @@
-import type { EnginePorts } from "../ports";
-import { describe, expect, it, vi } from "vitest";
-import { startNewGame } from "./startNewGame";
-import { gameModes } from "@entities";
+import type { EnginePorts } from '../ports';
 
-const placeholderGameId = "00000000-0000-0000-0000-000000000000";
+import { startNewGame } from './startNewGame';
+import { gameModes } from '@entities';
+
+const placeholderGameId = '00000000-0000-0000-0000-000000000000';
 
 function createEnginePorts(overrides: {
-  gameStateSubscribers?: EnginePorts["gameStateSubscribers"];
+  gameStateSubscribers?: EnginePorts['gameStateSubscribers'];
 }): EnginePorts {
   return {
+    eventStreamStorage: {
+      addEventToStream: vi.fn(),
+      flushEventStream: vi.fn(),
+      getEventStream: vi.fn(),
+      newEventStream: vi.fn(),
+      truncateEventStream: vi.fn(),
+    },
+    gameStateSubscribers: overrides.gameStateSubscribers ?? [],
     gameStorage: {
       getGame: vi.fn(),
-      saveNewGame: vi.fn().mockResolvedValue({ result: true as const, data: undefined }),
+      saveNewGame: vi
+        .fn()
+        .mockResolvedValue({ data: undefined, result: true as const }),
       updateGameState: vi.fn(),
     },
     roundSnapshotStorage: {
       getRoundSnapshot: vi.fn(),
       saveRoundSnapshot: vi.fn(),
     },
-    eventStreamStorage: {
-      getEventStream: vi.fn(),
-      addEventToStream: vi.fn(),
-      flushEventStream: vi.fn(),
-      newEventStream: vi.fn(),
-      truncateEventStream: vi.fn(),
-    },
-    gameStateSubscribers: overrides.gameStateSubscribers ?? [],
   };
 }
 
-describe("startNewGame", () => {
-  it("notifies matching subscribers with initial game state after save succeeds", async () => {
+describe(startNewGame, () => {
+  it('notifies matching subscribers with initial game state after save succeeds', async () => {
+    expect.hasAssertions();
     const onGameStateChange = vi.fn();
     const ports = createEnginePorts({
       gameStateSubscribers: [
         {
           gameId: placeholderGameId,
           gameMode: gameModes[1],
-          onGameStateChange,
           onError: vi.fn(),
+          onGameStateChange,
         },
       ],
     });
 
-    const outcome = await startNewGame("mini", ports);
+    const outcome = await startNewGame('mini', ports);
 
-    expect(outcome).toEqual({ result: true, data: undefined });
+    expect(outcome).toStrictEqual({ data: undefined, result: true });
     expect(onGameStateChange).toHaveBeenCalledTimes(1);
     const [change] = onGameStateChange.mock.calls[0] ?? [];
     expect(change).toMatchObject({
@@ -55,7 +58,8 @@ describe("startNewGame", () => {
     expect(change?.gameState).toBeDefined();
   });
 
-  it("does not notify subscribers when gameId or gameType does not match", async () => {
+  it('does not notify subscribers when gameId or gameType does not match', async () => {
+    expect.hasAssertions();
     const matching = vi.fn();
     const wrongId = vi.fn();
     const wrongType = vi.fn();
@@ -64,51 +68,53 @@ describe("startNewGame", () => {
         {
           gameId: placeholderGameId,
           gameMode: gameModes[1],
-          onGameStateChange: matching,
           onError: vi.fn(),
+          onGameStateChange: matching,
         },
         {
-          gameId: "11111111-1111-1111-1111-111111111111",
+          gameId: '11111111-1111-1111-1111-111111111111',
           gameMode: gameModes[1],
-          onGameStateChange: wrongId,
           onError: vi.fn(),
+          onGameStateChange: wrongId,
         },
         {
           gameId: placeholderGameId,
           gameMode: gameModes[2],
-          onGameStateChange: wrongType,
           onError: vi.fn(),
+          onGameStateChange: wrongType,
         },
       ],
     });
 
-    const outcome = await startNewGame("mini", ports);
+    const outcome = await startNewGame('mini', ports);
 
-    expect(outcome).toEqual({ result: true, data: undefined });
+    expect(outcome).toStrictEqual({ data: undefined, result: true });
     expect(matching).toHaveBeenCalledTimes(1);
     expect(wrongId).not.toHaveBeenCalled();
     expect(wrongType).not.toHaveBeenCalled();
   });
 
-  it("returns failure when saveNewGame fails", async () => {
+  it('returns failure when saveNewGame fails', async () => {
+    expect.hasAssertions();
     const ports = createEnginePorts({
       gameStateSubscribers: [],
     });
     vi.mocked(ports.gameStorage.saveNewGame).mockResolvedValueOnce({
+      errorReason: 'Game already exists',
       result: false,
-      errorReason: "Game already exists",
     });
 
-    const outcome = await startNewGame("mini", ports);
+    const outcome = await startNewGame('mini', ports);
 
-    expect(outcome).toEqual({
+    expect(outcome).toStrictEqual({
+      errorReason: 'Game already exists',
       result: false,
-      errorReason: "Game already exists",
     });
   });
 
-  it("calls onError and returns failure when a subscriber throws", async () => {
-    const boom = new Error("subscriber failed");
+  it('calls onError and returns failure when a subscriber throws', async () => {
+    expect.hasAssertions();
+    const boom = new Error('subscriber failed');
     const onGameStateChange = vi.fn(() => {
       throw boom;
     });
@@ -118,17 +124,17 @@ describe("startNewGame", () => {
         {
           gameId: placeholderGameId,
           gameMode: gameModes[1],
-          onGameStateChange,
           onError,
+          onGameStateChange,
         },
       ],
     });
 
-    const outcome = await startNewGame("mini", ports);
+    const outcome = await startNewGame('mini', ports);
 
-    expect(outcome).toEqual({
+    expect(outcome).toStrictEqual({
+      errorReason: 'subscriber failed',
       result: false,
-      errorReason: "subscriber failed",
     });
     expect(onError).toHaveBeenCalledWith(boom);
   });

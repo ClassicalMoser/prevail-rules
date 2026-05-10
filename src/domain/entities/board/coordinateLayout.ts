@@ -8,17 +8,20 @@
  * internal functions trust types.
  */
 
-import type { AssertExact } from "@utils";
-import type { Board } from "./board";
-import type { BoardCoordinate } from "./boardCoordinates";
-import type { LargeBoardCoordinate } from "./largeBoard";
-import type { SmallBoardCoordinate } from "./smallBoard";
-import type { StandardBoardCoordinate } from "./standardBoard";
+import type { AssertExact } from '@utils';
+import type { Board } from './board';
+import type { BoardCoordinate } from './boardCoordinates';
+import type { LargeBoardCoordinate } from './largeBoard';
+import type { SmallBoardCoordinate } from './smallBoard';
+import type { StandardBoardCoordinate } from './standardBoard';
 
-import { z } from "zod";
-import { largeBoardColumnNumbers, largeBoardRowLetters } from "./largeBoard";
-import { smallBoardColumnNumbers, smallBoardRowLetters } from "./smallBoard";
-import { standardBoardColumnNumbers, standardBoardRowLetters } from "./standardBoard";
+import { z } from 'zod';
+import { largeBoardColumnNumbers, largeBoardRowLetters } from './largeBoard';
+import { smallBoardColumnNumbers, smallBoardRowLetters } from './smallBoard';
+import {
+  standardBoardColumnNumbers,
+  standardBoardRowLetters,
+} from './standardBoard';
 
 function buildIndexMap(arr: readonly string[]): Map<string, number> {
   return new Map(arr.map((s, i) => [s, i]));
@@ -47,28 +50,30 @@ const smallColumnIndexMap = buildIndexMap(smallBoardColumnNumbers);
 const largeRowIndexMap = buildIndexMap(largeBoardRowLetters);
 const largeColumnIndexMap = buildIndexMap(largeBoardColumnNumbers);
 
-export const standardCoordinateLayout: CoordinateLayout<StandardBoardCoordinate> = {
-  rowLetters: standardBoardRowLetters,
-  columnNumbers: standardBoardColumnNumbers,
-  createCoordinate: (row, column) => `${row}-${column}` as StandardBoardCoordinate,
-  getRowIndex: (row) => standardRowIndexMap.get(row) ?? -1,
-  getColumnIndex: (col) => standardColumnIndexMap.get(col) ?? -1,
-} as const;
+export const standardCoordinateLayout: CoordinateLayout<StandardBoardCoordinate> =
+  {
+    columnNumbers: standardBoardColumnNumbers,
+    createCoordinate: (row, column) =>
+      `${row}-${column}` as StandardBoardCoordinate,
+    getColumnIndex: (col) => standardColumnIndexMap.get(col) ?? -1,
+    getRowIndex: (row) => standardRowIndexMap.get(row) ?? -1,
+    rowLetters: standardBoardRowLetters,
+  } as const;
 
 export const smallCoordinateLayout: CoordinateLayout<SmallBoardCoordinate> = {
-  rowLetters: smallBoardRowLetters,
   columnNumbers: smallBoardColumnNumbers,
   createCoordinate: (row, column) => `${row}-${column}` as SmallBoardCoordinate,
-  getRowIndex: (row) => smallRowIndexMap.get(row) ?? -1,
   getColumnIndex: (col) => smallColumnIndexMap.get(col) ?? -1,
+  getRowIndex: (row) => smallRowIndexMap.get(row) ?? -1,
+  rowLetters: smallBoardRowLetters,
 } as const;
 
 export const largeCoordinateLayout: CoordinateLayout<LargeBoardCoordinate> = {
-  rowLetters: largeBoardRowLetters,
   columnNumbers: largeBoardColumnNumbers,
   createCoordinate: (row, column) => `${row}-${column}` as LargeBoardCoordinate,
-  getRowIndex: (row) => largeRowIndexMap.get(row) ?? -1,
   getColumnIndex: (col) => largeColumnIndexMap.get(col) ?? -1,
+  getRowIndex: (row) => largeRowIndexMap.get(row) ?? -1,
+  rowLetters: largeBoardRowLetters,
 } as const;
 
 /**
@@ -76,30 +81,32 @@ export const largeCoordinateLayout: CoordinateLayout<LargeBoardCoordinate> = {
  * CoordinateLayoutMap (AssertExact); Zod cannot express board-specific coordinate literal return types.
  */
 const _coordinateLayoutMapSchemaObject = z.object({
-  standard: z.object({
-    rowLetters: z.array(z.string()).readonly(),
+  large: z.object({
     columnNumbers: z.array(z.string()).readonly(),
     createCoordinate: z.any(),
-    getRowIndex: z.any(),
     getColumnIndex: z.any(),
+    getRowIndex: z.any(),
+    rowLetters: z.array(z.string()).readonly(),
   }),
   small: z.object({
-    rowLetters: z.array(z.string()).readonly(),
     columnNumbers: z.array(z.string()).readonly(),
     createCoordinate: z.any(),
-    getRowIndex: z.any(),
     getColumnIndex: z.any(),
+    getRowIndex: z.any(),
+    rowLetters: z.array(z.string()).readonly(),
   }),
-  large: z.object({
-    rowLetters: z.array(z.string()).readonly(),
+  standard: z.object({
     columnNumbers: z.array(z.string()).readonly(),
     createCoordinate: z.any(),
-    getRowIndex: z.any(),
     getColumnIndex: z.any(),
+    getRowIndex: z.any(),
+    rowLetters: z.array(z.string()).readonly(),
   }),
 });
 
-type CoordinateLayoutMapSchemaType = z.infer<typeof _coordinateLayoutMapSchemaObject>;
+type CoordinateLayoutMapSchemaType = z.infer<
+  typeof _coordinateLayoutMapSchemaObject
+>;
 export const coordinateLayoutMapSchema: z.ZodType<CoordinateLayoutMap> =
   _coordinateLayoutMapSchemaObject;
 
@@ -113,9 +120,9 @@ export interface CoordinateLayoutMap {
  * Type-safe map from board type to coordinate layout.
  */
 export const coordinateLayoutMap: CoordinateLayoutMap = {
-  standard: standardCoordinateLayout,
-  small: smallCoordinateLayout,
   large: largeCoordinateLayout,
+  small: smallCoordinateLayout,
+  standard: standardCoordinateLayout,
 } as const;
 
 const _assertExactCoordinateLayoutMap = true satisfies AssertExact<

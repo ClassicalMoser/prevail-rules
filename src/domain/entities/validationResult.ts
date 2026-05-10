@@ -1,5 +1,5 @@
-import type { AssertExact } from "@utils";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { z } from 'zod';
 
 export interface PassValidationResult {
   result: true;
@@ -9,7 +9,9 @@ const passValidationResultSchemaObject = z.object({
   result: z.literal(true) as z.ZodLiteral<true>,
 });
 
-type PassValidationResultSchemaType = z.infer<typeof passValidationResultSchemaObject>;
+type PassValidationResultSchemaType = z.infer<
+  typeof passValidationResultSchemaObject
+>;
 
 export const passValidationResultSchema: z.ZodType<PassValidationResult> =
   passValidationResultSchemaObject;
@@ -25,11 +27,13 @@ export interface FailValidationResult {
 }
 
 const failValidationResultSchemaObject = z.object({
-  result: z.literal(false) as z.ZodLiteral<false>,
   errorReason: z.string(),
+  result: z.literal(false) as z.ZodLiteral<false>,
 });
 
-type FailValidationResultSchemaType = z.infer<typeof failValidationResultSchemaObject>;
+type FailValidationResultSchemaType = z.infer<
+  typeof failValidationResultSchemaObject
+>;
 
 export const failValidationResultSchema: z.ZodType<FailValidationResult> =
   failValidationResultSchemaObject;
@@ -41,14 +45,17 @@ const _assertExactFailValidationResult: AssertExact<
 
 export type ValidationResult = PassValidationResult | FailValidationResult;
 
-const validationResultSchemaObject = z.discriminatedUnion("result", [
+const validationResultSchemaObject = z.discriminatedUnion('result', [
   passValidationResultSchemaObject,
   failValidationResultSchemaObject,
 ]) as z.ZodType<ValidationResult>;
 
 type ValidationResultSchemaType = z.infer<typeof validationResultSchemaObject>;
 
-export const validationResultSchema: z.ZodType<ValidationResult> = validationResultSchemaObject;
+export const validationResultSchema: z.ZodType<ValidationResult> =
+  validationResultSchemaObject;
 
-const _assertExactValidationResult: AssertExact<ValidationResult, ValidationResultSchemaType> =
-  true;
+const _assertExactValidationResult: AssertExact<
+  ValidationResult,
+  ValidationResultSchemaType
+> = true;

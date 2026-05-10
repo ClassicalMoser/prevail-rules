@@ -1,13 +1,17 @@
-import type { Board, BoardCoordinate } from "@entities";
-import type { MoveCommanderEventForBoard } from "@events";
-import type { GameState, GameStateForBoard, MoveCommandersPhaseState } from "@game";
-import { getMoveCommandersPhaseState } from "@queries";
+import type { Board, BoardCoordinate } from '@entities';
+import type { MoveCommanderEventForBoard } from '@events';
+import type {
+  GameState,
+  GameStateForBoard,
+  MoveCommandersPhaseState,
+} from '@game';
+import { getMoveCommandersPhaseState } from '@queries';
 import {
   addCommanderToBoard,
   removeCommanderFromBoard,
   updateBoardState,
   updatePhaseState,
-} from "@transforms/pureTransforms";
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a MoveCommanderEvent to the game state.
@@ -41,8 +45,10 @@ export function applyMoveCommanderEvent<TBoard extends Board>(
   );
 
   // Advance step: first commander -> second, second -> complete
-  const newStep: MoveCommandersPhaseState["step"] =
-    currentPhaseState.step === "moveFirstCommander" ? "moveSecondCommander" : "complete";
+  const newStep: MoveCommandersPhaseState['step'] =
+    currentPhaseState.step === 'moveFirstCommander'
+      ? 'moveSecondCommander'
+      : 'complete';
   const newPhaseState: MoveCommandersPhaseState = {
     ...currentPhaseState,
     step: newStep,

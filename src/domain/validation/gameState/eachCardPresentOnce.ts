@@ -4,7 +4,7 @@ import type {
   FailValidationResult,
   PlayerCardState,
   ValidationResult,
-} from "@entities";
+} from '@entities';
 
 export function eachCardPresentOnce(
   blackStartingHand: Set<Card>,
@@ -39,9 +39,8 @@ export function eachCardPresentOnce(
       };
 
       // Helper to check if card was already seen in this player's state
-      const hasSeenCard = (card: Card): boolean => {
-        return seenInPlayerState.some((seen) => seen.id === card.id);
-      };
+      const hasSeenCard = (card: Card): boolean =>
+        seenInPlayerState.some((seen) => seen.id === card.id);
 
       // Helper to process a single card
       const processCard = (card: Card | null): ValidationResult => {
@@ -53,15 +52,15 @@ export function eachCardPresentOnce(
         if (hasSeenCard(card)) {
           // Card is present more than once in this player's state
           return {
+            errorReason: 'Card is present more than once',
             result: false,
-            errorReason: "Card is present more than once",
           };
         }
         if (!removeExpectedCard(card)) {
           // Unexpected card in this player's state
           return {
+            errorReason: 'Unexpected card',
             result: false,
-            errorReason: "Unexpected card",
           };
         }
         seenInPlayerState.push(card);
@@ -82,8 +81,8 @@ export function eachCardPresentOnce(
           const cardResult = processCard(card);
           if (!cardResult.result) {
             const validateError: FailValidationResult = {
-              result: false,
               errorReason: cardResult.errorReason,
+              result: false,
             };
             return validateError;
           }
@@ -94,25 +93,25 @@ export function eachCardPresentOnce(
       const awaitingPlayResult = processCard(playerState.awaitingPlay);
       if (!awaitingPlayResult.result) {
         const validateError: FailValidationResult = {
-          result: false,
           errorReason: awaitingPlayResult.errorReason,
+          result: false,
         };
         return validateError;
       }
       const inPlayResult = processCard(playerState.inPlay);
       if (!inPlayResult.result) {
         const validateError: FailValidationResult = {
-          result: false,
           errorReason: inPlayResult.errorReason,
+          result: false,
         };
         return validateError;
       }
 
       // If expectedCards is empty, all expected cards for this player were found
-      if (expectedCards.size !== 0) {
+      if (expectedCards.size > 0) {
         const validateError: FailValidationResult = {
+          errorReason: 'Expected cards not found',
           result: false,
-          errorReason: "Expected cards not found",
         };
         return validateError;
       }
@@ -122,11 +121,17 @@ export function eachCardPresentOnce(
     };
 
     // Validate each player's state
-    const blackPlayerValid = validatePlayerState(blackStartingHand, cardState.black);
+    const blackPlayerValid = validatePlayerState(
+      blackStartingHand,
+      cardState.black,
+    );
     if (!blackPlayerValid.result) {
       return blackPlayerValid;
     }
-    const whitePlayerValid = validatePlayerState(whiteStartingHand, cardState.white);
+    const whitePlayerValid = validatePlayerState(
+      whiteStartingHand,
+      cardState.white,
+    );
     if (!whitePlayerValid.result) {
       return whitePlayerValid;
     }
@@ -136,8 +141,8 @@ export function eachCardPresentOnce(
   } catch {
     // Any error means the game state is invalid
     return {
+      errorReason: 'Unknown error',
       result: false,
-      errorReason: "Unknown error",
     };
   }
 }

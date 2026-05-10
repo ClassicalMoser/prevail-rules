@@ -1,5 +1,5 @@
-import type { StandardBoard, UnitWithPlacement } from "@entities";
-import { PLAY_CARDS_PHASE } from "@game";
+import type { StandardBoard, UnitWithPlacement } from '@entities';
+import { PLAY_CARDS_PHASE } from '@game';
 
 import {
   createAttackApplyStateWithRetreat,
@@ -10,11 +10,10 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
-} from "@testing";
-import { addUnitToBoard, updatePhaseState } from "@transforms";
-import { describe, expect, it } from "vitest";
+} from '@testing';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 
-import { generateResolveRetreatEvent } from "./generateResolveRetreatEvent";
+import { generateResolveRetreatEvent } from './generateResolveRetreatEvent';
 
 /**
  * `resolveRetreat` closes a legal retreat: starting placement is the defender on the board,
@@ -22,24 +21,24 @@ import { generateResolveRetreatEvent } from "./generateResolveRetreatEvent";
  * one defender’s attack-apply; melee can hold two retreats and the procedure picks the
  * initiative player’s path first.
  */
-describe("generateResolveRetreatEvent", () => {
+describe(generateResolveRetreatEvent, () => {
   const finalPos = {
-    boardType: "standard" as const,
-    coordinate: "E-6" as const,
-    facing: "south" as const,
+    boardType: 'standard' as const,
+    coordinate: 'E-6' as const,
+    facing: 'south' as const,
   };
 
-  it("given ranged attack-apply with retreat substep and E-6 south final, event carries that placement", () => {
+  it('given ranged attack-apply with retreat substep and E-6 south final, event carries that placement', () => {
     const state = createEmptyGameState();
-    const retreatingUnit = createTestUnit("white", { attack: 2 });
+    const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: retreatingUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: retreatingUnit,
     };
     const withBoard = {
       ...state,
@@ -51,8 +50,8 @@ describe("generateResolveRetreatEvent", () => {
       }),
     });
     const ranged = createRangedAttackResolutionState(withBoard, {
-      defendingUnit: retreatingUnit,
       attackApplyState: attackApply,
+      defendingUnit: retreatingUnit,
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: ranged,
@@ -60,33 +59,33 @@ describe("generateResolveRetreatEvent", () => {
     const full = updatePhaseState(withBoard, phase);
 
     const event = generateResolveRetreatEvent(full, 0);
-    expect(event.effectType).toBe("resolveRetreat");
-    expect(event.startingPosition).toEqual(unitWithPlacement);
-    expect(event.finalPosition.placement).toEqual(finalPos);
+    expect(event.effectType).toBe('resolveRetreat');
+    expect(event.startingPosition).toStrictEqual(unitWithPlacement);
+    expect(event.finalPosition.placement).toStrictEqual(finalPos);
     expect(event.finalPosition.unit).toBe(retreatingUnit);
   });
 
-  it("given white initiative and both sides in retreat substep, uses white final E-6 not black E-4", () => {
-    const state = createEmptyGameState({ currentInitiative: "white" });
-    const whiteUnit = createTestUnit("white", { attack: 2 });
-    const blackUnit = createTestUnit("black", { attack: 2 });
+  it('given white initiative and both sides in retreat substep, uses white final E-6 not black E-4', () => {
+    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: whiteUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: whiteUnit,
     };
     const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: blackUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "south",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'south',
       },
+      unit: blackUnit,
     };
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
@@ -96,9 +95,9 @@ describe("generateResolveRetreatEvent", () => {
     });
     const blackRetreat = createRetreatState(blackWp, {
       finalPosition: {
-        boardType: "standard" as const,
-        coordinate: "E-4",
-        facing: "south",
+        boardType: 'standard' as const,
+        coordinate: 'E-4',
+        facing: 'south',
       },
     });
 
@@ -110,8 +109,8 @@ describe("generateResolveRetreatEvent", () => {
     });
 
     const melee = createMeleeResolutionState(s, {
-      whiteAttackApplyState: whiteApply,
       blackAttackApplyState: blackApply,
+      whiteAttackApplyState: whiteApply,
     });
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,
@@ -120,31 +119,31 @@ describe("generateResolveRetreatEvent", () => {
 
     const event = generateResolveRetreatEvent(full, 0);
     expect(event.startingPosition.unit).toBe(whiteUnit);
-    expect(event.finalPosition.placement).toEqual(finalPos);
+    expect(event.finalPosition.placement).toStrictEqual(finalPos);
   });
 
-  it("given playCards phase, throws retreat resolution phase guard", () => {
+  it('given playCards phase, throws retreat resolution phase guard', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
-      step: "complete",
+      step: 'complete',
     });
     expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
-      "Retreat resolution not expected in phase: playCards",
+      'Retreat resolution not expected in phase: playCards',
     );
   });
 
-  it("given ranged apply with retreat substep but no finalPosition yet, still emits with undefined placement", () => {
+  it('given ranged apply with retreat substep but no finalPosition yet, still emits with undefined placement', () => {
     const state = createEmptyGameState();
-    const retreatingUnit = createTestUnit("white", { attack: 2 });
+    const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: "standard" as const,
-      unit: retreatingUnit,
+      boardType: 'standard' as const,
       placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
       },
+      unit: retreatingUnit,
     };
     const withBoard = {
       ...state,
@@ -152,8 +151,8 @@ describe("generateResolveRetreatEvent", () => {
     };
     const attackApply = createAttackApplyStateWithRetreat(unitWithPlacement);
     const ranged = createRangedAttackResolutionState(withBoard, {
-      defendingUnit: retreatingUnit,
       attackApplyState: attackApply,
+      defendingUnit: retreatingUnit,
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: ranged,
@@ -161,7 +160,7 @@ describe("generateResolveRetreatEvent", () => {
     const full = updatePhaseState(withBoard, phase);
 
     expect(() => generateResolveRetreatEvent(full, 0)).toThrow(
-      "Retreat state has no final position",
+      'Retreat state has no final position',
     );
   });
 });

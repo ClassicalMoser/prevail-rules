@@ -1,11 +1,11 @@
-import { StandardBoard } from "@entities";
+import type { StandardBoard } from '@entities';
 import type {
   GameStateForBoard,
   MeleeResolutionStateForBoard,
   MovementResolutionStateForBoard,
   RangedAttackResolutionStateForBoard,
-} from "@game";
-import { createTestUnit } from "@testing/unitHelpers";
+} from '@game';
+import { createTestUnit } from '@testing/unitHelpers';
 
 /**
  * Creates a MovementResolutionState with sensible defaults (standard board).
@@ -15,30 +15,34 @@ export function createMovementResolutionState(
   overrides?: Partial<MovementResolutionStateForBoard<StandardBoard>>,
 ): MovementResolutionStateForBoard<StandardBoard> {
   return {
-    substepType: "commandResolution" as const,
-    commandResolutionType: "movement" as const,
-    boardType: "standard" as const,
-    movingUnit: {
-      boardType: "standard" as const,
-      unit: createTestUnit("black", { attack: 2 }),
-      placement: {
-        boardType: "standard" as const,
-        coordinate: "E-5",
-        facing: "north",
-      },
-    },
-    targetPlacement: {
-      boardType: "standard" as const,
-      coordinate: "E-6",
-      facing: "north",
-    },
-    moveCommander: false,
+    boardType: 'standard' as const,
+    commandResolutionType: 'movement' as const,
     commitment: {
-      commitmentType: "completed",
+      // Assertion is only valid because a card is always in play outside of the playCard and cleanup phases.
+      // Will lead to unexpected behavior if called in other phases.
+      // Since this is a test helper, there is no reason for defensive checks.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       card: state.cardState.black.inPlay!,
+      commitmentType: 'completed',
     },
-    engagementState: undefined,
     completed: false,
+    engagementState: undefined,
+    moveCommander: false,
+    movingUnit: {
+      boardType: 'standard' as const,
+      placement: {
+        boardType: 'standard' as const,
+        coordinate: 'E-5',
+        facing: 'north',
+      },
+      unit: createTestUnit('black', { attack: 2 }),
+    },
+    substepType: 'commandResolution' as const,
+    targetPlacement: {
+      boardType: 'standard' as const,
+      coordinate: 'E-6',
+      facing: 'north',
+    },
     ...overrides,
   };
 }
@@ -51,22 +55,26 @@ export function createRangedAttackResolutionState(
   overrides?: Partial<RangedAttackResolutionStateForBoard<StandardBoard>>,
 ): RangedAttackResolutionStateForBoard<StandardBoard> {
   return {
-    substepType: "commandResolution" as const,
-    commandResolutionType: "rangedAttack" as const,
-    boardType: "standard" as const,
-    attackingUnit: createTestUnit("black", { attack: 2 }),
-    defendingUnit: createTestUnit("white", { attack: 2 }),
-    attackingCommitment: {
-      commitmentType: "completed",
-      card: state.cardState.black.inPlay!,
-    },
-    defendingCommitment: {
-      commitmentType: "completed",
-      card: state.cardState.white.inPlay!,
-    },
-    supportingUnits: new Set(),
     attackApplyState: undefined,
+    attackingCommitment: {
+      // Valid assertion, see note in createMovementResolutionState.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      card: state.cardState.black.inPlay!,
+      commitmentType: 'completed',
+    },
+    attackingUnit: createTestUnit('black', { attack: 2 }),
+    boardType: 'standard' as const,
+    commandResolutionType: 'rangedAttack' as const,
     completed: false,
+    defendingCommitment: {
+      // Valid assertion, see note in createMovementResolutionState.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      card: state.cardState.white.inPlay!,
+      commitmentType: 'completed',
+    },
+    defendingUnit: createTestUnit('white', { attack: 2 }),
+    substepType: 'commandResolution' as const,
+    supportingUnits: new Set(),
     ...overrides,
   };
 }
@@ -79,20 +87,24 @@ export function createMeleeResolutionState(
   overrides?: Partial<MeleeResolutionStateForBoard<StandardBoard>>,
 ): MeleeResolutionStateForBoard<StandardBoard> {
   return {
-    substepType: "meleeResolution" as const,
-    boardType: "standard" as const,
-    location: "E-5",
-    whiteCommitment: {
-      commitmentType: "completed",
-      card: state.cardState.white.inPlay!,
-    },
-    blackCommitment: {
-      commitmentType: "completed",
-      card: state.cardState.black.inPlay!,
-    },
-    whiteAttackApplyState: undefined,
     blackAttackApplyState: undefined,
+    blackCommitment: {
+      // Valid assertion, see note in createMovementResolutionState.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      card: state.cardState.black.inPlay!,
+      commitmentType: 'completed',
+    },
+    boardType: 'standard' as const,
     completed: false,
+    location: 'E-5',
+    substepType: 'meleeResolution' as const,
+    whiteAttackApplyState: undefined,
+    whiteCommitment: {
+      // Valid assertion, see note in createMovementResolutionState.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      card: state.cardState.white.inPlay!,
+      commitmentType: 'completed',
+    },
     ...overrides,
   };
 }

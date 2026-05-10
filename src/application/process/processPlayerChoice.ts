@@ -1,11 +1,11 @@
-import type { GameModeName, ValidationResult } from "@entities";
-import type { PlayerChoiceEvent } from "@events";
-import type { GameState } from "@game";
-import type { EnginePorts, PortResponse } from "../ports";
-import { getExpectedEvent } from "@queries";
-import { validatePlayerChoice } from "@validation";
-import { getGameState } from "../composable";
-import { processEvent } from "./processEvent";
+import type { GameModeName, ValidationResult } from '@entities';
+import type { PlayerChoiceEvent } from '@events';
+import type { GameState } from '@game';
+import type { EnginePorts, PortResponse } from '../ports';
+import { getExpectedEvent } from '@queries';
+import { validatePlayerChoice } from '@validation';
+import { getGameState } from '../composable';
+import { processEvent } from './processEvent';
 
 export async function processPlayerChoice(
   gameId: string,
@@ -13,27 +13,33 @@ export async function processPlayerChoice(
   playerChoice: PlayerChoiceEvent,
   ports: EnginePorts,
 ): Promise<PortResponse<GameState>> {
-  const gameState: GameState | undefined = await getGameState(gameId, ports.gameStorage);
+  const gameState: GameState | undefined = await getGameState(
+    gameId,
+    ports.gameStorage,
+  );
   if (!gameState) {
     return {
+      errorReason: 'Game state not initialized',
       result: false,
-      errorReason: "Game state not initialized",
     };
   }
 
-  const validation: ValidationResult = validatePlayerChoice(playerChoice, gameState);
+  const validation: ValidationResult = validatePlayerChoice(
+    playerChoice,
+    gameState,
+  );
   if (!validation.result) {
     return {
-      result: false,
       errorReason: validation.errorReason,
+      result: false,
     };
   }
 
   const expected = getExpectedEvent(gameState);
   if (expected.expectedEventNumber !== playerChoice.eventNumber) {
     return {
+      errorReason: 'Event number mismatch',
       result: false,
-      errorReason: "Event number mismatch",
     };
   }
 

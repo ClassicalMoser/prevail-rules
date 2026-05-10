@@ -1,7 +1,7 @@
-import type { PlayerSide, UnitInstance } from "@entities";
-import type { GameState } from "@game";
-import { hasEngagedUnits, hasSingleUnit } from "@entities";
-import { getBoardCoordinates, getBoardSpace } from "./boardSpace";
+import type { PlayerSide, UnitInstance } from '@entities';
+import type { GameState } from '@game';
+import { hasEngagedUnits, hasSingleUnit } from '@entities';
+import { getBoardCoordinates, getBoardSpace } from './boardSpace';
 
 /**
  * Gets all unit instances for a player that are currently on the board.
@@ -16,19 +16,23 @@ import { getBoardCoordinates, getBoardSpace } from "./boardSpace";
  * // Returns Set([unitInstance1, unitInstance2, ...])
  * ```
  */
-export function getPlayerUnitsOnBoard(state: GameState, player: PlayerSide): Set<UnitInstance> {
+export function getPlayerUnitsOnBoard(
+  state: GameState,
+  player: PlayerSide,
+): Set<UnitInstance> {
   const units = new Set<UnitInstance>();
   const coordinates = getBoardCoordinates(state.boardState);
 
   for (const coordinate of coordinates) {
     const space = getBoardSpace(state.boardState, coordinate);
-    const unitPresence = space.unitPresence;
+    const { unitPresence } = space;
 
     // Check if this space has units for the player
-    if (hasSingleUnit(unitPresence)) {
-      if (unitPresence.unit.playerSide === player) {
-        units.add(unitPresence.unit);
-      }
+    if (
+      hasSingleUnit(unitPresence) &&
+      unitPresence.unit.playerSide === player
+    ) {
+      units.add(unitPresence.unit);
     }
     if (hasEngagedUnits(unitPresence)) {
       if (unitPresence.primaryUnit.playerSide === player) {

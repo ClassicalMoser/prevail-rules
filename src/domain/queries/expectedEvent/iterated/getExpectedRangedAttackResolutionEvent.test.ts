@@ -1,20 +1,23 @@
-import { createEmptyGameState, createRangedAttackResolutionState, createTestCard } from "@testing";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  createEmptyGameState,
+  createRangedAttackResolutionState,
+  createTestCard,
+} from '@testing';
 
-import { getExpectedRangedAttackResolutionEvent } from "./getExpectedRangedAttackResolutionEvent";
+import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttackResolutionEvent';
 
 const { getExpectedAttackApplyEventMock } = vi.hoisted(() => ({
   getExpectedAttackApplyEventMock: vi.fn(),
 }));
 
-vi.mock("../composable", () => ({
+vi.mock(import('../composable'), () => ({
   getExpectedAttackApplyEvent: getExpectedAttackApplyEventMock,
 }));
 
 /**
- * getExpectedRangedAttackResolutionEvent: next event while resolving a ranged attack command.
+ * GetExpectedRangedAttackResolutionEvent: next event while resolving a ranged attack command.
  */
-describe("getExpectedRangedAttackResolutionEvent", () => {
+describe(getExpectedRangedAttackResolutionEvent, () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -26,108 +29,140 @@ describe("getExpectedRangedAttackResolutionEvent", () => {
     return state;
   }
 
-  it("given their commitment is pending, asks the attacking player to commit", () => {
+  it('given their commitment is pending, asks the attacking player to commit', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
-      attackingCommitment: { commitmentType: "pending" },
+      attackingCommitment: { commitmentType: 'pending' },
     });
 
-    expect(getExpectedRangedAttackResolutionEvent(gameState, resolutionState, "black")).toEqual({
-      actionType: "playerChoice",
-      playerSource: "black",
-      choiceType: "commitToRangedAttack",
+    expect(
+      getExpectedRangedAttackResolutionEvent(
+        gameState,
+        resolutionState,
+        'black',
+      ),
+    ).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'commitToRangedAttack',
+      playerSource: 'black',
     });
   });
 
-  it("given their commitment is pending, asks the defending player to commit", () => {
+  it('given their commitment is pending, asks the defending player to commit', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
-      defendingCommitment: { commitmentType: "pending" },
+      defendingCommitment: { commitmentType: 'pending' },
     });
 
-    expect(getExpectedRangedAttackResolutionEvent(gameState, resolutionState, "black")).toEqual({
-      actionType: "playerChoice",
-      playerSource: "white",
-      choiceType: "commitToRangedAttack",
+    expect(
+      getExpectedRangedAttackResolutionEvent(
+        gameState,
+        resolutionState,
+        'black',
+      ),
+    ).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'commitToRangedAttack',
+      playerSource: 'white',
     });
   });
 
-  it("given resolve ranged attack when both commitments are complete and no attack apply state exists", () => {
+  it('given resolve ranged attack when both commitments are complete and no attack apply state exists', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackApplyState: undefined,
     });
 
-    expect(getExpectedRangedAttackResolutionEvent(gameState, resolutionState, "black")).toEqual({
-      actionType: "gameEffect",
-      effectType: "resolveRangedAttack",
+    expect(
+      getExpectedRangedAttackResolutionEvent(
+        gameState,
+        resolutionState,
+        'black',
+      ),
+    ).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'resolveRangedAttack',
     });
   });
 
-  it("given delegate to attack apply when attack apply is in progress", () => {
+  it('given delegate to attack apply when attack apply is in progress', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackApplyState: {
-        substepType: "attackApply",
-        defendingUnit: createTestCard(),
         attackResult: {
-          unitRouted: true,
           unitRetreated: false,
           unitReversed: false,
+          unitRouted: true,
         },
-        routState: undefined,
+        completed: false,
+        defendingUnit: createTestCard(),
         retreatState: undefined,
         reverseState: undefined,
-        completed: false,
+        routState: undefined,
+        substepType: 'attackApply',
       } as never,
     });
     const expectedEvent = {
-      actionType: "gameEffect",
-      effectType: "attackApply",
+      actionType: 'gameEffect',
+      effectType: 'attackApply',
     } as const;
     getExpectedAttackApplyEventMock.mockReturnValue(expectedEvent);
 
-    expect(getExpectedRangedAttackResolutionEvent(gameState, resolutionState, "black")).toBe(
-      expectedEvent,
-    );
+    expect(
+      getExpectedRangedAttackResolutionEvent(
+        gameState,
+        resolutionState,
+        'black',
+      ),
+    ).toBe(expectedEvent);
     expect(getExpectedAttackApplyEventMock).toHaveBeenCalledWith(
       resolutionState.attackApplyState,
       gameState,
     );
   });
 
-  it("given attack apply is complete, returns completeRangedAttackCommand", () => {
+  it('given attack apply is complete, returns completeRangedAttackCommand', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       attackApplyState: {
-        substepType: "attackApply",
-        defendingUnit: createTestCard(),
         attackResult: {
-          unitRouted: true,
           unitRetreated: false,
           unitReversed: false,
+          unitRouted: true,
         },
-        routState: undefined,
+        completed: true,
+        defendingUnit: createTestCard(),
         retreatState: undefined,
         reverseState: undefined,
-        completed: true,
+        routState: undefined,
+        substepType: 'attackApply',
       } as never,
     });
 
-    expect(getExpectedRangedAttackResolutionEvent(gameState, resolutionState, "black")).toEqual({
-      actionType: "gameEffect",
-      effectType: "completeRangedAttackCommand",
+    expect(
+      getExpectedRangedAttackResolutionEvent(
+        gameState,
+        resolutionState,
+        'black',
+      ),
+    ).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeRangedAttackCommand',
     });
   });
 
-  it("given when the ranged attack resolution is already complete, throws", () => {
+  it('given when the ranged attack resolution is already complete, throws', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
       completed: true,
     });
 
     expect(() =>
-      getExpectedRangedAttackResolutionEvent(gameState, resolutionState, "black"),
-    ).toThrow("Ranged attack resolution state is already complete");
+      getExpectedRangedAttackResolutionEvent(
+        gameState,
+        resolutionState,
+        'black',
+      ),
+    ).toThrow('Ranged attack resolution state is already complete');
   });
 });

@@ -1,6 +1,11 @@
-import type { Board } from "@entities";
-import type { GameState, GameStateForBoard, RallyResolutionState, RoutState } from "@game";
-import { getCleanupPhaseState } from "../getPhaseState";
+import type { Board } from '@entities';
+import type {
+  GameState,
+  GameStateForBoard,
+  RallyResolutionState,
+  RoutState,
+} from '@game';
+import { getCleanupPhaseState } from '../getPhaseState';
 
 /**
  * Gets the rally resolution state from cleanup phase for a specific player.
@@ -13,7 +18,7 @@ import { getCleanupPhaseState } from "../getPhaseState";
  */
 export function getRallyResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-  player: "white" | "black",
+  player: 'white' | 'black',
 ): RallyResolutionState {
   const phaseState = getCleanupPhaseState(state as GameState);
   const firstPlayer = state.currentInitiative;
@@ -41,18 +46,18 @@ export function getCurrentRallyResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): RallyResolutionState {
   const phaseState = getCleanupPhaseState(state as GameState);
-  const step = phaseState.step;
+  const { step } = phaseState;
 
-  if (step === "firstPlayerResolveRally") {
+  if (step === 'firstPlayerResolveRally') {
     if (!phaseState.firstPlayerRallyResolutionState) {
-      throw new Error("No first player rally resolution state found");
+      throw new Error('No first player rally resolution state found');
     }
     return phaseState.firstPlayerRallyResolutionState;
   }
 
-  if (step === "secondPlayerResolveRally") {
+  if (step === 'secondPlayerResolveRally') {
     if (!phaseState.secondPlayerRallyResolutionState) {
-      throw new Error("No second player rally resolution state found");
+      throw new Error('No second player rally resolution state found');
     }
     return phaseState.secondPlayerRallyResolutionState;
   }
@@ -68,9 +73,11 @@ export function getCurrentRallyResolutionState<TBoard extends Board>(
  * @returns The rout state
  * @throws Error if rout state is missing
  */
-export function getRoutStateFromRally(rallyState: RallyResolutionState): RoutState {
+export function getRoutStateFromRally(
+  rallyState: RallyResolutionState,
+): RoutState {
   if (!rallyState.routState) {
-    throw new Error("No rout state found in rally resolution state");
+    throw new Error('No rout state found in rally resolution state');
   }
   return rallyState.routState;
 }
@@ -79,19 +86,20 @@ export function getRoutStateFromRally(rallyState: RallyResolutionState): RoutSta
  * Rout state during cleanup when resolving rally (includes chooseRally steps).
  * Matches which rally resolution bucket is active for the current cleanup step.
  */
-export function getRoutStateFromCleanupPhaseForResolveRout<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
-): RoutState {
+export function getRoutStateFromCleanupPhaseForResolveRout<
+  TBoard extends Board,
+>(state: GameStateForBoard<TBoard>): RoutState {
   const phaseState = getCleanupPhaseState(state as GameState);
   const isFirstPlayerStep =
-    phaseState.step === "firstPlayerResolveRally" || phaseState.step === "firstPlayerChooseRally";
+    phaseState.step === 'firstPlayerResolveRally' ||
+    phaseState.step === 'firstPlayerChooseRally';
 
   const rallyState = isFirstPlayerStep
     ? phaseState.firstPlayerRallyResolutionState
     : phaseState.secondPlayerRallyResolutionState;
 
   if (!rallyState?.routState) {
-    throw new Error("No rout state found in rally resolution");
+    throw new Error('No rout state found in rally resolution');
   }
 
   return rallyState.routState;

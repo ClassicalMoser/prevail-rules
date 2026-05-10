@@ -1,7 +1,7 @@
-import { BoardType } from "@entities";
-import type { Event } from "@events";
-import { eventSchema } from "@events";
-import { z } from "zod";
+import type { BoardType } from '@entities';
+import type { Event } from '@events';
+import { eventSchema } from '@events';
+import { z } from 'zod';
 
 const eventStreamSchema: z.ZodType<readonly Event[]> = z.array(eventSchema);
 
@@ -16,11 +16,13 @@ const eventStreamSchema: z.ZodType<readonly Event[]> = z.array(eventSchema);
 export function parseStoredEventStream(data: unknown): readonly Event[] {
   const parsed = eventStreamSchema.parse(data);
   const boardTypes = parsed.flatMap((event): BoardType[] =>
-    "boardType" in event ? [event.boardType] : [],
+    'boardType' in event ? [event.boardType] : [],
   );
   const distinct = new Set(boardTypes);
   if (distinct.size > 1) {
-    throw new Error(`Event stream mixes board types: ${[...distinct].join(", ")}`);
+    throw new Error(
+      `Event stream mixes board types: ${[...distinct].join(', ')}`,
+    );
   }
   return parsed;
 }

@@ -1,6 +1,9 @@
-import type { CompleteCleanupPhaseEvent } from "@events";
-import type { GameState } from "@game";
-import { COMPLETE_CLEANUP_PHASE_EFFECT_TYPE, GAME_EFFECT_EVENT_TYPE } from "@events";
+import type { CompleteCleanupPhaseEvent } from '@events';
+import type { GameState } from '@game';
+import {
+  COMPLETE_CLEANUP_PHASE_EFFECT_TYPE,
+  GAME_EFFECT_EVENT_TYPE,
+} from '@events';
 
 /**
  * Generates a CompleteCleanupPhaseEvent to complete the cleanup phase,
@@ -16,8 +19,8 @@ export function generateCompleteCleanupPhaseEvent(
   // Return is independent of state, so we can ignore it
   const _stateUnused = state;
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: COMPLETE_CLEANUP_PHASE_EFFECT_TYPE,
     eventNumber,
+    eventType: GAME_EFFECT_EVENT_TYPE,
   };
 }

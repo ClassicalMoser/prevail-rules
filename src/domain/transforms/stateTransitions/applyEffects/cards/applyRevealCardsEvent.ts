@@ -1,8 +1,12 @@
-import type { Board } from "@entities";
-import type { RevealCardsEvent } from "@events";
-import type { GameState, GameStateForBoard, PlayCardsPhaseState } from "@game";
-import { getPlayCardsPhaseState } from "@queries";
-import { revealCard, updateCardState, updatePhaseState } from "@transforms/pureTransforms";
+import type { Board } from '@entities';
+import type { RevealCardsEvent } from '@events';
+import type { GameState, GameStateForBoard, PlayCardsPhaseState } from '@game';
+import { getPlayCardsPhaseState } from '@queries';
+import {
+  revealCard,
+  updateCardState,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a RevealCardsEvent to the game state.
@@ -24,13 +28,13 @@ export function applyRevealCardsEvent<TBoard extends Board>(
   const phaseState = getPlayCardsPhaseState(state as GameState);
 
   // Move both players' cards from awaitingPlay to inPlay
-  let newCardState = revealCard(state.cardState, "black");
-  newCardState = revealCard(newCardState, "white");
+  let newCardState = revealCard(state.cardState, 'black');
+  newCardState = revealCard(newCardState, 'white');
 
   // Advance to assignInitiative step
   const newPhaseState: PlayCardsPhaseState = {
     ...phaseState,
-    step: "assignInitiative",
+    step: 'assignInitiative',
   };
 
   const stateWithCards = updateCardState(state, newCardState);

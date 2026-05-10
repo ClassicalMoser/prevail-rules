@@ -1,7 +1,10 @@
-import type { Board, PlayerSide } from "@entities";
-import type { AttackApplyStateForBoard, GameStateForBoard } from "@game";
-import { getMeleeResolutionState, getResolveMeleePhaseStateForBoard } from "@queries";
-import { updatePhaseState } from "../state";
+import type { Board, PlayerSide } from '@entities';
+import type { AttackApplyStateForBoard, GameStateForBoard } from '@game';
+import {
+  getMeleeResolutionState,
+  getResolveMeleePhaseStateForBoard,
+} from '@queries';
+import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the attack apply state updated for a specific player in melee resolution.
@@ -30,7 +33,7 @@ export function updateMeleeAttackApplyState<TBoard extends Board>(
 
   const newMeleeState = {
     ...meleeState,
-    ...(player === "white"
+    ...(player === 'white'
       ? { whiteAttackApplyState: attackApplyState }
       : { blackAttackApplyState: attackApplyState }),
   };

@@ -1,21 +1,23 @@
-import type { ChooseRallyEvent } from "@events";
-import type { GameState } from "@game";
-import { PLAYER_CHOICE_EVENT_TYPE } from "@events";
-import { getOtherPlayer } from "@queries/getOtherPlayer";
+import type { ChooseRallyEvent } from '@events';
+import type { GameState } from '@game';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
+import { getOtherPlayer } from '@queries/getOtherPlayer';
 import {
   getCleanupPhaseState,
   getCurrentInitiative,
   getNextEventNumber,
-} from "@queries/sequencing";
+} from '@queries/sequencing';
 
-export function getLegalChooseRallyEvent(gameState: GameState): ChooseRallyEvent[] {
+export function getLegalChooseRallyEvent(
+  gameState: GameState,
+): ChooseRallyEvent[] {
   // Make sure we're in the choose rally step
   const phaseState = getCleanupPhaseState(gameState);
   if (
-    phaseState.step !== "firstPlayerChooseRally" &&
-    phaseState.step !== "secondPlayerChooseRally"
+    phaseState.step !== 'firstPlayerChooseRally' &&
+    phaseState.step !== 'secondPlayerChooseRally'
   ) {
-    throw new Error("Not in choose rally step");
+    throw new Error('Not in choose rally step');
   }
 
   // Get the next event number
@@ -28,14 +30,14 @@ export function getLegalChooseRallyEvent(gameState: GameState): ChooseRallyEvent
   const result: ChooseRallyEvent[] = [];
 
   // If the active player is the first player, add a legal choose rally event
-  if (phaseState.step === "firstPlayerChooseRally") {
+  if (phaseState.step === 'firstPlayerChooseRally') {
     for (const performRally of [true, false]) {
       result.push({
+        choiceType: 'chooseRally',
         eventNumber,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
-        choiceType: "chooseRally",
-        player: firstPlayer,
         performRally,
+        player: firstPlayer,
       });
     }
   }
@@ -43,14 +45,14 @@ export function getLegalChooseRallyEvent(gameState: GameState): ChooseRallyEvent
   const secondPlayer = getOtherPlayer(firstPlayer);
 
   // If the active player is the second player, add a legal choose rally event
-  if (phaseState.step === "secondPlayerChooseRally") {
+  if (phaseState.step === 'secondPlayerChooseRally') {
     for (const performRally of [true, false]) {
       result.push({
+        choiceType: 'chooseRally',
         eventNumber,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
-        choiceType: "chooseRally",
-        player: secondPlayer,
         performRally,
+        player: secondPlayer,
       });
     }
   }

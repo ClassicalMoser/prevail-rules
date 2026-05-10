@@ -1,5 +1,5 @@
-import type { Board } from "@entities";
-import type { ResolveRangedAttackEventForBoard } from "@events";
+import type { Board } from '@entities';
+import type { ResolveRangedAttackEventForBoard } from '@events';
 import type {
   AttackApplyStateForBoard,
   AttackResult,
@@ -9,9 +9,12 @@ import type {
   RetreatStateForBoard,
   ReverseStateForBoard,
   RoutState,
-} from "@game";
-import { getIssueCommandsPhaseStateForBoard, getRangedAttackResolutionState } from "@queries";
-import { updatePhaseState } from "@transforms/pureTransforms";
+} from '@game';
+import {
+  getIssueCommandsPhaseStateForBoard,
+  getRangedAttackResolutionState,
+} from '@queries';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveRangedAttackEvent to the game state.
@@ -30,12 +33,12 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
 
   const defendingUnit = event.defenderWithPlacement.unit;
   const unitWithPlacement = event.defenderWithPlacement;
-  const boardType = state.boardState.boardType;
+  const { boardType } = state.boardState;
 
   const attackResult: AttackResult = {
-    unitRouted: event.routed,
     unitRetreated: event.retreated,
     unitReversed: event.reversed,
+    unitRouted: event.routed,
   };
 
   let routState: RoutState | undefined;
@@ -44,45 +47,46 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
 
   if (attackResult.unitRouted) {
     routState = {
-      substepType: "rout",
-      player: defendingUnit.playerSide,
-      unitsToRout: new Set([defendingUnit]),
-      numberToDiscard: undefined,
       cardsChosen: false,
       completed: false,
+      numberToDiscard: undefined,
+      player: defendingUnit.playerSide,
+      substepType: 'rout',
+      unitsToRout: new Set([defendingUnit]),
     };
   } else if (attackResult.unitRetreated) {
-    const legalRetreatOptions = event.legalRetreatOptions;
-    const finalPosition = legalRetreatOptions.size === 1 ? [...legalRetreatOptions][0] : undefined;
+    const { legalRetreatOptions } = event;
+    const finalPosition =
+      legalRetreatOptions.size === 1 ? [...legalRetreatOptions][0] : undefined;
 
     retreatState = {
-      substepType: "retreat",
       boardType,
-      retreatingUnit: unitWithPlacement,
-      legalRetreatOptions,
-      finalPosition,
-      routState: undefined,
       completed: false,
+      finalPosition,
+      legalRetreatOptions,
+      retreatingUnit: unitWithPlacement,
+      routState: undefined,
+      substepType: 'retreat',
     };
   } else if (attackResult.unitReversed) {
     reverseState = {
-      substepType: "reverse",
       boardType,
-      reversingUnit: unitWithPlacement,
-      finalPosition: undefined,
       completed: false,
+      finalPosition: undefined,
+      reversingUnit: unitWithPlacement,
+      substepType: 'reverse',
     };
   }
 
   const attackApplyState: AttackApplyStateForBoard<TBoard> = {
-    substepType: "attackApply" as const,
-    boardType,
-    defendingUnit,
     attackResult,
-    routState,
+    boardType,
+    completed: false,
+    defendingUnit,
     retreatState,
     reverseState,
-    completed: false,
+    routState,
+    substepType: 'attackApply' as const,
   };
 
   const newRangedAttackState: RangedAttackResolutionStateForBoard<TBoard> = {

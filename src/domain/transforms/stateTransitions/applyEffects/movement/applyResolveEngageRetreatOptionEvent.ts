@@ -1,16 +1,16 @@
-import type { Board } from "@entities";
-import type { ResolveEngageRetreatOptionEvent } from "@events";
+import type { Board } from '@entities';
+import type { ResolveEngageRetreatOptionEvent } from '@events';
 import type {
   GameStateForBoard,
   IssueCommandsPhaseStateForBoard,
   MovementResolutionStateForBoard,
-} from "@game";
+} from '@game';
 import {
   getFrontEngagementStateFromMovement,
   getIssueCommandsPhaseStateForBoard,
   getMovementResolutionState,
-} from "@queries";
-import { updatePhaseState } from "@transforms/pureTransforms";
+} from '@queries';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveEngageRetreatOptionEvent to the game state.

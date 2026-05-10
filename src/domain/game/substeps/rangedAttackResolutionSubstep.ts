@@ -1,15 +1,21 @@
-import type { Board, LargeBoard, SmallBoard, StandardBoard, UnitInstance } from "@entities";
-import type { Commitment } from "@game/commitment";
-import type { AssertExact } from "@utils";
-import type { AttackApplyStateForBoard } from "./attackApplySubstep";
-import { unitInstanceSchema } from "@entities";
-import { commitmentSchema } from "@game/commitment";
-import { z } from "zod";
+import type {
+  Board,
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+  UnitInstance,
+} from '@entities';
+import type { Commitment } from '@game/commitment';
+import type { AssertExact } from '@utils';
+import type { AttackApplyStateForBoard } from './attackApplySubstep';
+import { unitInstanceSchema } from '@entities';
+import { commitmentSchema } from '@game/commitment';
+import { z } from 'zod';
 import {
   largeAttackApplyStateSchema,
   smallAttackApplyStateSchema,
   standardAttackApplyStateSchema,
-} from "./attackApplySubstep";
+} from './attackApplySubstep';
 
 /**
  * Context-specific substep that resolves ranged attack commands.
@@ -22,11 +28,11 @@ import {
  */
 export interface RangedAttackResolutionStateForBoard<TBoard extends Board> {
   /** The type of the substep. */
-  substepType: "commandResolution";
+  substepType: 'commandResolution';
   /** The type of command resolution. */
-  commandResolutionType: "rangedAttack";
+  commandResolutionType: 'rangedAttack';
   /** The type of the board. */
-  boardType: TBoard["boardType"];
+  boardType: TBoard['boardType'];
   /** The unit that is attacking. */
   attackingUnit: UnitInstance;
   /** The unit that is being attacked. */
@@ -49,16 +55,16 @@ export type RangedAttackResolutionState =
   | RangedAttackResolutionStateForBoard<LargeBoard>;
 
 const _standardRangedAttackResolutionStateSchemaObject = z.object({
-  substepType: z.literal("commandResolution"),
-  commandResolutionType: z.literal("rangedAttack"),
-  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
-  attackingUnit: unitInstanceSchema,
-  defendingUnit: unitInstanceSchema,
-  supportingUnits: z.set(unitInstanceSchema),
-  attackingCommitment: commitmentSchema,
-  defendingCommitment: commitmentSchema,
   attackApplyState: standardAttackApplyStateSchema.or(z.undefined()),
+  attackingCommitment: commitmentSchema,
+  attackingUnit: unitInstanceSchema,
+  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  commandResolutionType: z.literal('rangedAttack'),
   completed: z.boolean(),
+  defendingCommitment: commitmentSchema,
+  defendingUnit: unitInstanceSchema,
+  substepType: z.literal('commandResolution'),
+  supportingUnits: z.set(unitInstanceSchema),
 });
 
 type StandardRangedAttackResolutionStateSchemaType = z.infer<
@@ -75,16 +81,16 @@ export const standardRangedAttackResolutionStateSchema: z.ZodType<
 > = _standardRangedAttackResolutionStateSchemaObject;
 
 const _smallRangedAttackResolutionStateSchemaObject = z.object({
-  substepType: z.literal("commandResolution"),
-  commandResolutionType: z.literal("rangedAttack"),
-  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
-  attackingUnit: unitInstanceSchema,
-  defendingUnit: unitInstanceSchema,
-  supportingUnits: z.set(unitInstanceSchema),
-  attackingCommitment: commitmentSchema,
-  defendingCommitment: commitmentSchema,
   attackApplyState: smallAttackApplyStateSchema.or(z.undefined()),
+  attackingCommitment: commitmentSchema,
+  attackingUnit: unitInstanceSchema,
+  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  commandResolutionType: z.literal('rangedAttack'),
   completed: z.boolean(),
+  defendingCommitment: commitmentSchema,
+  defendingUnit: unitInstanceSchema,
+  substepType: z.literal('commandResolution'),
+  supportingUnits: z.set(unitInstanceSchema),
 });
 
 type SmallRangedAttackResolutionStateSchemaType = z.infer<
@@ -101,16 +107,16 @@ export const smallRangedAttackResolutionStateSchema: z.ZodType<
 > = _smallRangedAttackResolutionStateSchemaObject;
 
 const _largeRangedAttackResolutionStateSchemaObject = z.object({
-  substepType: z.literal("commandResolution"),
-  commandResolutionType: z.literal("rangedAttack"),
-  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
-  attackingUnit: unitInstanceSchema,
-  defendingUnit: unitInstanceSchema,
-  supportingUnits: z.set(unitInstanceSchema),
-  attackingCommitment: commitmentSchema,
-  defendingCommitment: commitmentSchema,
   attackApplyState: largeAttackApplyStateSchema.or(z.undefined()),
+  attackingCommitment: commitmentSchema,
+  attackingUnit: unitInstanceSchema,
+  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  commandResolutionType: z.literal('rangedAttack'),
   completed: z.boolean(),
+  defendingCommitment: commitmentSchema,
+  defendingUnit: unitInstanceSchema,
+  substepType: z.literal('commandResolution'),
+  supportingUnits: z.set(unitInstanceSchema),
 });
 
 type LargeRangedAttackResolutionStateSchemaType = z.infer<
@@ -126,11 +132,14 @@ export const largeRangedAttackResolutionStateSchema: z.ZodType<
   RangedAttackResolutionStateForBoard<LargeBoard>
 > = _largeRangedAttackResolutionStateSchemaObject;
 
-const _rangedAttackResolutionStateSchemaObject = z.discriminatedUnion("boardType", [
-  _standardRangedAttackResolutionStateSchemaObject,
-  _smallRangedAttackResolutionStateSchemaObject,
-  _largeRangedAttackResolutionStateSchemaObject,
-]);
+const _rangedAttackResolutionStateSchemaObject = z.discriminatedUnion(
+  'boardType',
+  [
+    _standardRangedAttackResolutionStateSchemaObject,
+    _smallRangedAttackResolutionStateSchemaObject,
+    _largeRangedAttackResolutionStateSchemaObject,
+  ],
+);
 
 type RangedAttackResolutionStateSchemaType = z.infer<
   typeof _rangedAttackResolutionStateSchemaObject

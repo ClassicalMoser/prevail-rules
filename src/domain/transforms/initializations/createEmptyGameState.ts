@@ -1,50 +1,58 @@
-import type { Board, GameModeName, LargeBoard, SmallBoard, StandardBoard } from "@entities";
-import type { GameState, GameStateForBoard } from "@game";
+import type {
+  Board,
+  GameModeName,
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+} from '@entities';
+import type { GameState, GameStateForBoard } from '@game';
 import {
   createEmptyLargeBoard,
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from "./createEmptyBoard";
+} from './createEmptyBoard';
 
 /**
  * Resolves which board size {@link createEmptyGameState} will use (default `standard`).
  */
 
-function shellForBoard<TBoard extends Board>(board: TBoard): GameStateForBoard<TBoard> {
+function shellForBoard<TBoard extends Board>(
+  board: TBoard,
+): GameStateForBoard<TBoard> {
   return {
-    boardType: board.boardType as GameStateForBoard<TBoard>["boardType"],
-    currentRoundNumber: 0,
-    currentRoundState: {
-      roundNumber: 1,
-      boardType: board.boardType,
-      completedPhases: new Set(),
-      currentPhaseState: undefined,
-      commandedUnits: new Set(),
-      events: [],
-    },
-    currentInitiative: "black",
     boardState: board,
+    boardType: board.boardType as GameStateForBoard<TBoard>['boardType'],
     cardState: {
       black: {
-        inHand: [],
         awaitingPlay: null,
+        burnt: [],
+        discarded: [],
+        inHand: [],
         inPlay: null,
         played: [],
-        discarded: [],
-        burnt: [],
       },
       white: {
-        inHand: [],
         awaitingPlay: null,
+        burnt: [],
+        discarded: [],
+        inHand: [],
         inPlay: null,
         played: [],
-        discarded: [],
-        burnt: [],
       },
     },
+    currentInitiative: 'black',
+    currentRoundNumber: 0,
+    currentRoundState: {
+      boardType: board.boardType,
+      commandedUnits: new Set(),
+      completedPhases: new Set(),
+      currentPhaseState: undefined,
+      events: [],
+      roundNumber: 1,
+    },
+    lostCommanders: new Set(),
     reservedUnits: new Set(),
     routedUnits: new Set(),
-    lostCommanders: new Set(),
   };
 }
 
@@ -57,19 +65,27 @@ function shellForBoard<TBoard extends Board>(board: TBoard): GameStateForBoard<T
  * against `GameStateForBoard<BoardForGameMode<TGameMode>>`.
  */
 
-export function createEmptyGameState(name: "tutorial"): GameStateForBoard<SmallBoard>;
-export function createEmptyGameState(name: "mini"): GameStateForBoard<SmallBoard>;
-export function createEmptyGameState(name: "standard"): GameStateForBoard<StandardBoard>;
-export function createEmptyGameState(name: "epic"): GameStateForBoard<LargeBoard>;
+export function createEmptyGameState(
+  name: 'mini' | 'tutorial',
+): GameStateForBoard<SmallBoard>;
+export function createEmptyGameState(
+  name: 'standard',
+): GameStateForBoard<StandardBoard>;
+export function createEmptyGameState(
+  name: 'epic',
+): GameStateForBoard<LargeBoard>;
 export function createEmptyGameState(name: GameModeName): GameState {
   switch (name) {
-    case "tutorial":
-    case "mini":
+    case 'tutorial':
+    case 'mini': {
       return shellForBoard(createEmptySmallBoard());
-    case "standard":
+    }
+    case 'standard': {
       return shellForBoard(createEmptyStandardBoard());
-    case "epic":
+    }
+    case 'epic': {
       return shellForBoard(createEmptyLargeBoard());
+    }
     default: {
       const _exhaustive: never = name;
       throw new Error(`Unknown gameMode: ${_exhaustive}`);

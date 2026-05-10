@@ -1,9 +1,9 @@
-import type { PlayerSide } from "@entities";
-import type { ExpectedEventInfo } from "@events";
-import type { GameState, MovementResolutionState } from "@game";
-import { getBoardSpace } from "@queries/boardSpace";
-import { hasEnemyUnit } from "@validation";
-import { getExpectedEngagementEvent } from "../composable";
+import type { PlayerSide } from '@entities';
+import type { ExpectedEventInfo } from '@events';
+import type { GameState, MovementResolutionState } from '@game';
+import { getBoardSpace } from '@queries/boardSpace';
+import { hasEnemyUnit } from '@validation';
+import { getExpectedEngagementEvent } from '../composable';
 
 /**
  * Gets the expected event for movement resolution substeps.
@@ -20,52 +20,55 @@ export function getExpectedMovementResolutionEvent(
 ): ExpectedEventInfo {
   // Fast rejection: if already completed, this is an invalid state
   if (resolutionState.completed) {
-    throw new Error("Movement resolution state is already complete");
+    throw new Error('Movement resolution state is already complete');
   }
 
   // Check commitment state
-  if (resolutionState.commitment.commitmentType === "pending") {
+  if (resolutionState.commitment.commitmentType === 'pending') {
     // If the commitment has not been completed, that is what we expect next
     return {
-      actionType: "playerChoice",
+      actionType: 'playerChoice',
+      choiceType: 'commitToMovement',
       playerSource: player,
-      choiceType: "commitToMovement",
     };
   }
 
   // The commitment has been completed.
   // Before we can finish our movement,
-  // we need to check if we are engaging an enemy unit
+  // We need to check if we are engaging an enemy unit
 
   const board = gameState.boardState;
-  const targetSpace = getBoardSpace(board, resolutionState.targetPlacement.coordinate);
+  const targetSpace = getBoardSpace(
+    board,
+    resolutionState.targetPlacement.coordinate,
+  );
 
   if (hasEnemyUnit(player, targetSpace).result) {
     // If we are, we need to see if we've alredy started an engagement
-    const engagementState = resolutionState.engagementState;
+    const { engagementState } = resolutionState;
     if (!engagementState) {
       // If we haven't started an engagement, we need to start one
       return {
-        actionType: "gameEffect",
-        effectType: "startEngagement",
+        actionType: 'gameEffect',
+        effectType: 'startEngagement',
       };
     }
     // If we have an engagement state, we need to check if it is complete
     if (engagementState.completed) {
       // If the engagement is complete, we can finish our movement
       return {
-        actionType: "gameEffect",
-        effectType: "completeUnitMovement",
+        actionType: 'gameEffect',
+        effectType: 'completeUnitMovement',
       };
     }
     // If the engagement state is not complete,
-    // we need to get the expected engagement event
+    // We need to get the expected engagement event
     return getExpectedEngagementEvent(engagementState);
   }
 
   // If we are not engaging an enemy unit, we can finish our movement
   return {
-    actionType: "gameEffect",
-    effectType: "completeUnitMovement",
+    actionType: 'gameEffect',
+    effectType: 'completeUnitMovement',
   };
 }

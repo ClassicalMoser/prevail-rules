@@ -1,8 +1,8 @@
-import type { Board, BoardCoordinate, PlayerSide } from "@entities";
-import type { GameStateForBoard } from "@game";
-import { hasEngagedUnits, hasNoUnit } from "@entities";
-import { getBoardSpace, getCurrentUnitStat } from "@queries";
-import { MIN_FLEXIBILITY_THRESHOLD } from "@ruleValues";
+import type { Board, BoardCoordinate, PlayerSide } from '@entities';
+import type { GameStateForBoard } from '@game';
+import { hasEngagedUnits, hasNoUnit } from '@entities';
+import { getBoardSpace, getCurrentUnitStat } from '@queries';
+import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
 
 /**
  * Determines whether a unit can move through (pass over) a specific coordinate.
@@ -36,26 +36,24 @@ export function canMoveThrough<TBoard extends Board>(
     if (hasEngagedUnits(spaceUnitPresence)) {
       return false;
     }
-
-    // If the space has a single unit, further checks are needed.
-    else {
-      // Player cannot move through an unfriendly unit.
-      if (spaceUnitPresence.unit.playerSide !== unitSide) {
-        return false;
-      }
-      // A player can only move through their own unit if the combined
-      // flexibility value of the two units equals or exceeds
-      // the legal threshold.
-      const currentSpaceUnitFlexibility = getCurrentUnitStat(
-        spaceUnitPresence.unit,
-        "flexibility",
-        gameState,
-      );
-      const combinedFlexibility = currentUnitFlexibility + currentSpaceUnitFlexibility;
-      if (combinedFlexibility < MIN_FLEXIBILITY_THRESHOLD) {
-        return false;
-      }
+    // Player cannot move through an unfriendly unit.
+    if (spaceUnitPresence.unit.playerSide !== unitSide) {
+      return false;
     }
+    // A player can only move through their own unit if the combined
+    // Flexibility value of the two units equals or exceeds
+    // The legal threshold.
+    const currentSpaceUnitFlexibility = getCurrentUnitStat(
+      spaceUnitPresence.unit,
+      'flexibility',
+      gameState,
+    );
+    const combinedFlexibility =
+      currentUnitFlexibility + currentSpaceUnitFlexibility;
+    if (combinedFlexibility < MIN_FLEXIBILITY_THRESHOLD) {
+      return false;
+    }
+
     return true;
   } catch {
     // If the coordinate doesn't exist, the unit cannot move through it.

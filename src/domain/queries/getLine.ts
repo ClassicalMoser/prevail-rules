@@ -1,10 +1,16 @@
-import type { Board, BoardCoordinate, Line, UnitType, UnitWithPlacement } from "@entities";
-import type { Trait } from "@ruleValues";
-import { MAX_LINE_LENGTH } from "@ruleValues";
-import { isAtPlacement, matchesUnitRequirements } from "@validation";
-import { getForwardSpacesToEdge } from "./boardSpace";
-import { getLeftFacing, getOppositeFacing, getRightFacing } from "./facings";
-import { getPlayerUnitWithPosition } from "./unitPresence";
+import type {
+  Board,
+  BoardCoordinate,
+  Line,
+  UnitType,
+  UnitWithPlacement,
+} from '@entities';
+import type { Trait } from '@ruleValues';
+import { MAX_LINE_LENGTH } from '@ruleValues';
+import { isAtPlacement, matchesUnitRequirements } from '@validation';
+import { getForwardSpacesToEdge } from './boardSpace';
+import { getLeftFacing, getOppositeFacing, getRightFacing } from './facings';
+import { getPlayerUnitWithPosition } from './unitPresence';
 
 /**
  * Get all possible lines that include a given unit.
@@ -37,7 +43,7 @@ export function getLinesFromUnit<TBoard extends Board>(
   // Validate that the unit is actually at the reported position
   const { result: isAtPlacementResult } = isAtPlacement(board, unit);
   if (!isAtPlacementResult) {
-    throw new Error("Unit is not at reported placement");
+    throw new Error('Unit is not at reported placement');
   }
 
   const friendlySide = unit.unit.playerSide;
@@ -59,7 +65,11 @@ export function getLinesFromUnit<TBoard extends Board>(
   const canJoinLine = (
     coordinate: BoardCoordinate<TBoard>,
   ): UnitWithPlacement<TBoard> | undefined => {
-    const playerUnit = getPlayerUnitWithPosition(board, coordinate, friendlySide);
+    const playerUnit = getPlayerUnitWithPosition(
+      board,
+      coordinate,
+      friendlySide,
+    );
     // No friendly unit: stop expanding (empty space or enemy unit)
     if (!playerUnit) {
       return undefined;

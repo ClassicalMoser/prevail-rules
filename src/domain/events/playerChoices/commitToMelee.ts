@@ -1,17 +1,19 @@
-import type { Card, PlayerSide, StatModifier } from "@entities";
-import type { AssertExact } from "@utils";
-import { cardSchema, playerSideSchema } from "@entities";
-import { PLAYER_CHOICE_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+import type { Card, PlayerSide, StatModifier } from '@entities';
+import type { AssertExact } from '@utils';
+import { cardSchema, playerSideSchema } from '@entities';
+import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
 /** The type of the commit to melee event. */
-export const COMMIT_TO_MELEE_CHOICE_TYPE = "commitToMelee" as const;
+export const COMMIT_TO_MELEE_CHOICE_TYPE = 'commitToMelee' as const;
 
-const meleeModifierTypes = ["attack", "defense", "flexibility"] as const;
+const meleeModifierTypes = ['attack', 'defense', 'flexibility'] as const;
 type MeleeModifier = (typeof meleeModifierTypes)[number];
 
 // Type-level guarantee that MeleeModifier extends StatModifier
-const _assertMeleeModifierExtendsStatModifier: [MeleeModifier] extends [StatModifier]
+const _assertMeleeModifierExtendsStatModifier: [MeleeModifier] extends [
+  StatModifier,
+]
   ? true
   : never = true;
 
@@ -32,9 +34,9 @@ export interface CommitToMeleeEvent {
 }
 
 const meleeModifierTypesEnum: z.ZodEnum<{
-  attack: "attack";
-  defense: "defense";
-  flexibility: "flexibility";
+  attack: 'attack';
+  defense: 'defense';
+  flexibility: 'flexibility';
 }> = z.enum(meleeModifierTypes);
 
 const _commitToMeleeEventSchemaObject = z.object({
@@ -49,7 +51,9 @@ const _commitToMeleeEventSchemaObject = z.object({
   modifierTypes: z.array(meleeModifierTypesEnum),
 });
 
-type CommitToMeleeEventSchemaType = z.infer<typeof _commitToMeleeEventSchemaObject>;
+type CommitToMeleeEventSchemaType = z.infer<
+  typeof _commitToMeleeEventSchemaObject
+>;
 
 const _assertExactCommitToMeleeEvent: AssertExact<
   CommitToMeleeEvent,
@@ -58,8 +62,8 @@ const _assertExactCommitToMeleeEvent: AssertExact<
 
 /** The schema for a commit to melee event. */
 export const commitToMeleeEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<"playerChoice">;
-  choiceType: z.ZodLiteral<"commitToMelee">;
+  eventType: z.ZodLiteral<'playerChoice'>;
+  choiceType: z.ZodLiteral<'commitToMelee'>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   committedCard: typeof cardSchema;

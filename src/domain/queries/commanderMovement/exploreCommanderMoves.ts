@@ -1,8 +1,8 @@
-import type { Board, BoardCoordinate, PlayerSide } from "@entities";
-import type { GameStateForBoard } from "@game";
-import { unitFacings } from "@entities";
-import { getBoardSpace, getForwardSpace } from "@queries/boardSpace";
-import { diagonalIsClear, hasEnemyUnit, isDiagonalFacing } from "@validation";
+import type { Board, BoardCoordinate, PlayerSide } from '@entities';
+import type { GameStateForBoard } from '@game';
+import { unitFacings } from '@entities';
+import { getBoardSpace, getForwardSpace } from '@queries/boardSpace';
+import { diagonalIsClear, hasEnemyUnit, isDiagonalFacing } from '@validation';
 
 export function exploreCommanderMoves<TBoard extends Board>(
   playerSide: PlayerSide,
@@ -18,12 +18,16 @@ export function exploreCommanderMoves<TBoard extends Board>(
 
   // Track the visited states to avoid revisiting
   const visitedStates = new Set<string>();
-  const getStateKey = (coordinate: BoardCoordinate<TBoard>, remainingDistance: number): string => {
-    return `${coordinate}|${remainingDistance}`;
-  };
+  const getStateKey = (
+    coordinate: BoardCoordinate<TBoard>,
+    remainingDistance: number,
+  ): string => `${coordinate}|${remainingDistance}`;
 
   // Recursive function to explore the moves
-  function explore(currentCoordinate: BoardCoordinate<TBoard>, remainingDistance: number): void {
+  function explore(
+    currentCoordinate: BoardCoordinate<TBoard>,
+    remainingDistance: number,
+  ): void {
     // Check if we have already visited this state
     const stateKey = getStateKey(currentCoordinate, remainingDistance);
     if (visitedStates.has(stateKey)) {
@@ -44,7 +48,7 @@ export function exploreCommanderMoves<TBoard extends Board>(
         continue;
       }
       // If the facing is diagonal,
-      // we need to check if we can even reach the target space
+      // We need to check if we can even reach the target space
       const { result: isDiagonalFacingResult } = isDiagonalFacing(facing);
       if (isDiagonalFacingResult) {
         // Check if the enemy blocks the diagonal

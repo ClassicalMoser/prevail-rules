@@ -1,6 +1,6 @@
-import { writeFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { boundaries } from "../boundaries.js";
+import { writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { boundaries } from '../boundaries.js';
 
 /**
  * Generates `oxlint.boundaries.json` from the typed `boundaries.ts` source.
@@ -14,38 +14,45 @@ import { boundaries } from "../boundaries.js";
  */
 
 const baseRuleConfig = {
-  rootDir: "src",
-  crossBoundaryStyle: "alias",
   boundaries,
+  crossBoundaryStyle: 'alias',
+  rootDir: 'src',
 } as const;
 
 const config = {
-  $schema: "./node_modules/oxlint/configuration_schema.json",
+  $schema: './node_modules/oxlint/configuration_schema.json',
   overrides: [
     {
-      files: ["src/**/*.ts", "src/**/*.js"],
+      files: ['src/**/*.ts', 'src/**/*.js'],
+      jsPlugins: ['eslint-plugin-import-boundaries'],
       rules: {
-        "import-boundaries/enforce": ["error", baseRuleConfig],
+        'import-boundaries/enforce': ['error', baseRuleConfig],
       },
-      jsPlugins: ["eslint-plugin-import-boundaries"],
     },
     {
       files: [
-        "**/*.test.{ts,js}",
-        "**/*.spec.{ts,js}",
-        "**/*.mock.{ts,js}",
-        "**/__tests__/**",
-        "**/__mocks__/**",
+        '**/*.test.{ts,js}',
+        '**/*.spec.{ts,js}',
+        '**/*.mock.{ts,js}',
+        '**/__tests__/**',
+        '**/__mocks__/**',
       ],
+      jsPlugins: ['eslint-plugin-import-boundaries'],
       rules: {
-        "import-boundaries/enforce": ["error", { ...baseRuleConfig, enforceBoundaries: false }],
+        'import-boundaries/enforce': [
+          'error',
+          { ...baseRuleConfig, enforceBoundaries: false },
+        ],
       },
-      jsPlugins: ["eslint-plugin-import-boundaries"],
     },
   ],
 };
 
-const outputPath = resolve(import.meta.dirname, "..", "oxlint.boundaries.json");
+const outputPath = resolve(
+  import.meta.dirname,
+  '..',
+  'oxlint/oxlint.boundaries.json',
+);
 writeFileSync(outputPath, `${JSON.stringify(config, null, 2)}\n`);
 
 // eslint-disable-next-line no-console

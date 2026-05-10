@@ -1,13 +1,13 @@
-import type { Board } from "@entities";
-import type { PerformRangedAttackEventForBoard } from "@events";
+import type { Board } from '@entities';
+import type { PerformRangedAttackEventForBoard } from '@events';
 import type {
   GameStateForBoard,
   IssueCommandsPhaseStateForBoard,
   RangedAttackResolutionStateForBoard,
-} from "@game";
-import { getIssueCommandsPhaseStateForBoard } from "@queries";
-import { updatePhaseState } from "@transforms/pureTransforms";
-import { isSameUnitInstance } from "@validation";
+} from '@game';
+import { getIssueCommandsPhaseStateForBoard } from '@queries';
+import { updatePhaseState } from '@transforms/pureTransforms';
+import { isSameUnitInstance } from '@validation';
 
 /**
  * Applies a PerformRangedAttackEvent to the game state.
@@ -43,9 +43,13 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
   // Remove attacking and supporting units from attacker's remaining (value equality via isSameUnitInstance)
   const newRemainingAttacker = new Set(
     [...remainingAttacker].filter((unit) => {
-      if (isSameUnitInstance(unit, attackingUnit).result) return false;
+      if (isSameUnitInstance(unit, attackingUnit).result) {
+        return false;
+      }
       for (const supportingUnit of supportingUnits) {
-        if (isSameUnitInstance(unit, supportingUnit).result) return false;
+        if (isSameUnitInstance(unit, supportingUnit).result) {
+          return false;
+        }
       }
       return true;
     }),
@@ -53,27 +57,34 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
 
   // Remove defending unit from defender's remaining
   const newRemainingDefender = new Set(
-    [...remainingDefender].filter((unit) => !isSameUnitInstance(unit, defendingUnit).result),
+    [...remainingDefender].filter(
+      (unit) => !isSameUnitInstance(unit, defendingUnit).result,
+    ),
   );
 
-  const rangedAttackResolutionState: RangedAttackResolutionStateForBoard<TBoard> = {
-    substepType: "commandResolution" as const,
-    commandResolutionType: "rangedAttack" as const,
-    boardType: state.boardState.boardType,
-    attackingUnit,
-    defendingUnit,
-    supportingUnits,
-    attackingCommitment: { commitmentType: "pending" },
-    defendingCommitment: { commitmentType: "pending" },
-    attackApplyState: undefined,
-    completed: false,
-  };
+  const rangedAttackResolutionState: RangedAttackResolutionStateForBoard<TBoard> =
+    {
+      attackApplyState: undefined,
+      attackingCommitment: { commitmentType: 'pending' },
+      attackingUnit,
+      boardType: state.boardState.boardType,
+      commandResolutionType: 'rangedAttack' as const,
+      completed: false,
+      defendingCommitment: { commitmentType: 'pending' },
+      defendingUnit,
+      substepType: 'commandResolution' as const,
+      supportingUnits,
+    };
 
   const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
     ...currentPhaseState,
     currentCommandResolutionState: rangedAttackResolutionState,
-    remainingUnitsFirstPlayer: isFirstPlayer ? newRemainingAttacker : newRemainingDefender,
-    remainingUnitsSecondPlayer: isFirstPlayer ? newRemainingDefender : newRemainingAttacker,
+    remainingUnitsFirstPlayer: isFirstPlayer
+      ? newRemainingAttacker
+      : newRemainingDefender,
+    remainingUnitsSecondPlayer: isFirstPlayer
+      ? newRemainingDefender
+      : newRemainingAttacker,
   };
 
   const newGameState = updatePhaseState(state, newPhaseState);

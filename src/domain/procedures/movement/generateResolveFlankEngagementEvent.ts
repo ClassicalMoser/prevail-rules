@@ -1,12 +1,15 @@
-import type { Board } from "@entities";
-import type { ResolveFlankEngagementEventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
-import { GAME_EFFECT_EVENT_TYPE, RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE } from "@events";
+import type { Board } from '@entities';
+import type { ResolveFlankEngagementEventForBoard } from '@events';
+import type { GameStateForBoard } from '@game';
+import {
+  GAME_EFFECT_EVENT_TYPE,
+  RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
+} from '@events';
 import {
   getFlankEngagementStateFromMovement,
   getOppositeFacing,
   getSingleUnitWithPlacementAtCoordinate,
-} from "@queries";
+} from '@queries';
 
 /**
  * Generates a ResolveFlankEngagementEvent by calculating the new facing
@@ -36,11 +39,11 @@ export function generateResolveFlankEngagementEvent<TBoard extends Board>(
   const newFacing = getOppositeFacing(engagingFacing);
 
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
-    effectType: RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
-    eventNumber,
     boardType: state.boardState.boardType,
     defenderWithPlacement,
+    effectType: RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
+    eventNumber,
+    eventType: GAME_EFFECT_EVENT_TYPE,
     newFacing,
   };
 }

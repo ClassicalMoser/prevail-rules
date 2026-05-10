@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, BoardSpace } from "@entities";
+import type { Board, BoardCoordinate, BoardSpace } from '@entities';
 
 /**
  * Gets the board space at the given coordinate.
@@ -41,13 +41,15 @@ export function getBoardSpace<TBoard extends Board>(
   coordinate: BoardCoordinate<TBoard>,
 ): BoardSpace {
   // TypeScript needs help here: we know TBoard and BoardCoordinate<TBoard> align,
-  // but the union type of board.board prevents direct indexing.
+  // But the union type of board.board prevents direct indexing.
   // The generic constraint ensures type safety at compile time.
   const space = board.board[coordinate as keyof typeof board.board];
 
   // If the space is undefined, the coordinate does not exist on the board.
   if (space === undefined) {
-    throw new Error(`Coordinate ${coordinate} does not exist on ${board.boardType} board.`);
+    throw new Error(
+      `Coordinate ${coordinate} does not exist on ${board.boardType} board.`,
+    );
   }
 
   // Return the space.

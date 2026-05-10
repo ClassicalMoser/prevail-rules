@@ -1,5 +1,5 @@
-import type { Board, Command, PlayerSide } from "@entities";
-import type { IssueCommandsPhaseStateForBoard } from "@game";
+import type { Board, Command, PlayerSide } from '@entities';
+import type { IssueCommandsPhaseStateForBoard } from '@game';
 
 /**
  * Updates the remaining commands for a specific player in the issue commands phase state.

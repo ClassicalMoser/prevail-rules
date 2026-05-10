@@ -1,14 +1,14 @@
-import type { Board } from "@entities";
-import type { StartEngagementEventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
-import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from "@events";
+import type { Board } from '@entities';
+import type { StartEngagementEventForBoard } from '@events';
+import type { GameStateForBoard } from '@game';
+import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from '@events';
 import {
   getMovementResolutionState,
   getSingleUnitWithPlacementAtCoordinate,
   isEngagementFromFlank,
   isEngagementFromFront,
   isEngagementFromRear,
-} from "@queries";
+} from '@queries';
 
 /**
  * Generates a StartEngagementEvent by determining the engagement type
@@ -38,40 +38,40 @@ export function generateStartEngagementEvent<TBoard extends Board>(
   // Check engagement type in priority order: rear, flank, front
   // Rear is most severe, so check it first
   const rearCheck = isEngagementFromRear(engagingFacing, defendingFacing);
-  const boardType = state.boardState.boardType;
+  const { boardType } = state.boardState;
 
   if (rearCheck.result) {
     return {
-      eventType: GAME_EFFECT_EVENT_TYPE,
-      effectType: START_ENGAGEMENT_EFFECT_TYPE,
-      eventNumber,
-      engagementType: "rear",
       boardType,
       defenderWithPlacement,
+      effectType: START_ENGAGEMENT_EFFECT_TYPE,
+      engagementType: 'rear',
+      eventNumber,
+      eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }
 
   const flankCheck = isEngagementFromFlank(engagingFacing, defendingFacing);
   if (flankCheck.result) {
     return {
-      eventType: GAME_EFFECT_EVENT_TYPE,
-      effectType: START_ENGAGEMENT_EFFECT_TYPE,
-      eventNumber,
-      engagementType: "flank",
       boardType,
       defenderWithPlacement,
+      effectType: START_ENGAGEMENT_EFFECT_TYPE,
+      engagementType: 'flank',
+      eventNumber,
+      eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }
 
   const frontCheck = isEngagementFromFront(engagingFacing, defendingFacing);
   if (frontCheck.result) {
     return {
-      eventType: GAME_EFFECT_EVENT_TYPE,
-      effectType: START_ENGAGEMENT_EFFECT_TYPE,
-      eventNumber,
-      engagementType: "front",
       boardType,
       defenderWithPlacement,
+      effectType: START_ENGAGEMENT_EFFECT_TYPE,
+      engagementType: 'front',
+      eventNumber,
+      eventType: GAME_EFFECT_EVENT_TYPE,
     };
   }
 

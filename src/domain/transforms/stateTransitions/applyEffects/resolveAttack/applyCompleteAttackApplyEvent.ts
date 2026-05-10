@@ -1,8 +1,14 @@
-import type { Board } from "@entities";
-import type { CompleteAttackApplyEvent } from "@events";
-import type { AttackApplyStateForBoard, GameStateForBoard } from "@game";
-import { getAttackApplyStateFromMelee, getAttackApplyStateFromRangedAttack } from "@queries";
-import { updateAttackApplyState, updateMeleeAttackApplyState } from "@transforms/pureTransforms";
+import type { Board } from '@entities';
+import type { CompleteAttackApplyEvent } from '@events';
+import type { AttackApplyStateForBoard, GameStateForBoard } from '@game';
+import {
+  getAttackApplyStateFromMelee,
+  getAttackApplyStateFromRangedAttack,
+} from '@queries';
+import {
+  updateAttackApplyState,
+  updateMeleeAttackApplyState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CompleteAttackApplyEvent to the game state.
@@ -21,7 +27,7 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
   event: CompleteAttackApplyEvent,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
-  if (event.attackType === "ranged") {
+  if (event.attackType === 'ranged') {
     const currentAttackApplyState = getAttackApplyStateFromRangedAttack(state);
 
     const newAttackApplyState: AttackApplyStateForBoard<TBoard> = {
@@ -32,7 +38,7 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
     return updateAttackApplyState(state, newAttackApplyState);
   }
 
-  if (event.attackType === "melee") {
+  if (event.attackType === 'melee') {
     const current = getAttackApplyStateFromMelee(state, event.defendingPlayer);
 
     const newAttackApplyState: AttackApplyStateForBoard<TBoard> = {
@@ -41,10 +47,16 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
     };
 
     // Update the melee attack apply state
-    return updateMeleeAttackApplyState(state, event.defendingPlayer, newAttackApplyState);
+    return updateMeleeAttackApplyState(
+      state,
+      event.defendingPlayer,
+      newAttackApplyState,
+    );
   }
 
   // Should not occur, but convenient and inexpensive to check for type safety anyway.
   const _exhaustive: never = event.attackType;
-  throw new Error(`Unknown attack type for completeAttackApply: ${_exhaustive}`);
+  throw new Error(
+    `Unknown attack type for completeAttackApply: ${_exhaustive}`,
+  );
 }

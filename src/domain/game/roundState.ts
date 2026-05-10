@@ -1,13 +1,27 @@
-import type { Board, UnitInstance } from "@entities";
-import type { PhaseStateForBoard } from "./phases";
-import type { EventForBoard } from "@events";
+import type {
+  Board,
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+  UnitInstance,
+} from '@entities';
+import type { PhaseStateForBoard } from './phases';
+import type { EventForBoard } from '@events';
 
-import { largePhaseStateSchema, smallPhaseStateSchema, standardPhaseStateSchema } from "./phases";
-import { LargeBoard, SmallBoard, StandardBoard, unitInstanceSchema } from "@entities";
-import { largeEventSchema, smallEventSchema, standardEventSchema } from "@events";
-import { z } from "zod";
+import {
+  largePhaseStateSchema,
+  smallPhaseStateSchema,
+  standardPhaseStateSchema,
+} from './phases';
+import { unitInstanceSchema } from '@entities';
+import {
+  largeEventSchema,
+  smallEventSchema,
+  standardEventSchema,
+} from '@events';
+import { z } from 'zod';
 
-import type { AssertExact } from "@utils";
+import type { AssertExact } from '@utils';
 
 /**
  * The state of a round of the game.
@@ -18,7 +32,7 @@ export interface RoundStateForBoard<TBoard extends Board> {
   /** The number of the round. */
   roundNumber: number;
   /** The type of the board. */
-  boardType: TBoard["boardType"];
+  boardType: TBoard['boardType'];
   /** The phases that have been completed in the round. */
   completedPhases: Set<PhaseStateForBoard<TBoard>>;
   /** The state of the current phase of the round. */
@@ -38,7 +52,7 @@ const _smallRoundStateSchemaObject = z.object({
   /** The number of the round. */
   roundNumber: z.int().positive(),
   /** The type of the board. */
-  boardType: z.literal("small"),
+  boardType: z.literal('small'),
   /** The phases that have been completed in the round. */
   completedPhases: z.set(smallPhaseStateSchema),
   /** The state of the current phase of the round. */
@@ -63,7 +77,7 @@ const _standardRoundStateSchemaObject = z.object({
   /** The number of the round. */
   roundNumber: z.int().positive(),
   /** The type of the board. */
-  boardType: z.literal("standard"),
+  boardType: z.literal('standard'),
   /** The phases that have been completed in the round. */
   completedPhases: z.set(standardPhaseStateSchema),
   /** The state of the current phase of the round. */
@@ -74,21 +88,24 @@ const _standardRoundStateSchemaObject = z.object({
   events: z.array(standardEventSchema).readonly(),
 });
 
-type StandardRoundStateSchemaType = z.infer<typeof _standardRoundStateSchemaObject>;
+type StandardRoundStateSchemaType = z.infer<
+  typeof _standardRoundStateSchemaObject
+>;
 
 const _assertExactStandardRoundState: AssertExact<
   RoundStateForBoard<StandardBoard>,
   StandardRoundStateSchemaType
 > = true;
 
-export const standardRoundStateSchema: z.ZodType<RoundStateForBoard<StandardBoard>> =
-  _standardRoundStateSchemaObject;
+export const standardRoundStateSchema: z.ZodType<
+  RoundStateForBoard<StandardBoard>
+> = _standardRoundStateSchemaObject;
 
 const _largeRoundStateSchemaObject = z.object({
   /** The number of the round. */
   roundNumber: z.int().positive(),
   /** The type of the board. */
-  boardType: z.literal("large"),
+  boardType: z.literal('large'),
   /** The phases that have been completed in the round. */
   completedPhases: z.set(largePhaseStateSchema),
   /** The state of the current phase of the round. */
@@ -109,7 +126,7 @@ const _assertExactLargeRoundState: AssertExact<
 export const largeRoundStateSchema: z.ZodType<RoundStateForBoard<LargeBoard>> =
   _largeRoundStateSchemaObject;
 
-const _roundStateSchemaObject = z.discriminatedUnion("boardType", [
+const _roundStateSchemaObject = z.discriminatedUnion('boardType', [
   _smallRoundStateSchemaObject,
   _standardRoundStateSchemaObject,
   _largeRoundStateSchemaObject,
@@ -117,6 +134,7 @@ const _roundStateSchemaObject = z.discriminatedUnion("boardType", [
 
 type RoundStateSchemaType = z.infer<typeof _roundStateSchemaObject>;
 
-const _assertExactRoundState: AssertExact<RoundState, RoundStateSchemaType> = true;
+const _assertExactRoundState: AssertExact<RoundState, RoundStateSchemaType> =
+  true;
 
 export const roundStateSchema: z.ZodType<RoundState> = _roundStateSchemaObject;

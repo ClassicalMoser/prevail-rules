@@ -5,9 +5,9 @@ import type {
   StandardBoard,
   UnitPlacement,
   UnitWithPlacement,
-} from "@entities";
-import type { AssertExact } from "@utils";
-import type { ZodDiscriminatedUnion } from "zod";
+} from '@entities';
+import type { AssertExact } from '@utils';
+import type { ZodDiscriminatedUnion } from 'zod';
 import {
   largeUnitPlacementSchema,
   largeUnitWithPlacementSchema,
@@ -15,12 +15,12 @@ import {
   smallUnitWithPlacementSchema,
   standardUnitPlacementSchema,
   standardUnitWithPlacementSchema,
-} from "@entities";
-import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+} from '@entities';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
 /** The type of the resolve ranged attack game effect. */
-export const RESOLVE_RANGED_ATTACK_EFFECT_TYPE = "resolveRangedAttack" as const;
+export const RESOLVE_RANGED_ATTACK_EFFECT_TYPE = 'resolveRangedAttack' as const;
 
 export interface ResolveRangedAttackEventForBoard<TBoard extends Board> {
   /** The type of the event. */
@@ -28,7 +28,7 @@ export interface ResolveRangedAttackEventForBoard<TBoard extends Board> {
   /** The type of game effect. */
   effectType: typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE;
   /** The type of the board. */
-  boardType: TBoard["boardType"];
+  boardType: TBoard['boardType'];
   /** Whether the unit is routed. */
   routed: boolean;
   /** Whether the unit is reversed. */
@@ -52,22 +52,22 @@ const _standardResolveRangedAttackEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
-  boardType: z.ZodLiteral<"standard">;
+  boardType: z.ZodLiteral<'standard'>;
   defenderWithPlacement: typeof standardUnitWithPlacementSchema;
   legalRetreatOptions: z.ZodSet<typeof standardUnitPlacementSchema>;
   routed: z.ZodBoolean;
   reversed: z.ZodBoolean;
   retreated: z.ZodBoolean;
 }> = z.object({
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+  defenderWithPlacement: standardUnitWithPlacementSchema,
   effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
   eventNumber: z.number(),
-  boardType: z.literal("standard" satisfies StandardBoard["boardType"]),
-  defenderWithPlacement: standardUnitWithPlacementSchema,
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   legalRetreatOptions: z.set(standardUnitPlacementSchema),
-  routed: z.boolean(),
-  reversed: z.boolean(),
   retreated: z.boolean(),
+  reversed: z.boolean(),
+  routed: z.boolean(),
 });
 
 type StandardResolveRangedAttackEventSchemaType = z.infer<
@@ -86,22 +86,22 @@ const _smallResolveRangedAttackEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
-  boardType: z.ZodLiteral<"small">;
+  boardType: z.ZodLiteral<'small'>;
   defenderWithPlacement: typeof smallUnitWithPlacementSchema;
   legalRetreatOptions: z.ZodSet<typeof smallUnitPlacementSchema>;
   routed: z.ZodBoolean;
   reversed: z.ZodBoolean;
   retreated: z.ZodBoolean;
 }> = z.object({
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+  defenderWithPlacement: smallUnitWithPlacementSchema,
   effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
   eventNumber: z.number(),
-  boardType: z.literal("small" satisfies SmallBoard["boardType"]),
-  defenderWithPlacement: smallUnitWithPlacementSchema,
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   legalRetreatOptions: z.set(smallUnitPlacementSchema),
-  routed: z.boolean(),
-  reversed: z.boolean(),
   retreated: z.boolean(),
+  reversed: z.boolean(),
+  routed: z.boolean(),
 });
 
 type SmallResolveRangedAttackEventSchemaType = z.infer<
@@ -120,22 +120,22 @@ const _largeResolveRangedAttackEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
-  boardType: z.ZodLiteral<"large">;
+  boardType: z.ZodLiteral<'large'>;
   defenderWithPlacement: typeof largeUnitWithPlacementSchema;
   legalRetreatOptions: z.ZodSet<typeof largeUnitPlacementSchema>;
   routed: z.ZodBoolean;
   reversed: z.ZodBoolean;
   retreated: z.ZodBoolean;
 }> = z.object({
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  boardType: z.literal('large' satisfies LargeBoard['boardType']),
+  defenderWithPlacement: largeUnitWithPlacementSchema,
   effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
   eventNumber: z.number(),
-  boardType: z.literal("large" satisfies LargeBoard["boardType"]),
-  defenderWithPlacement: largeUnitWithPlacementSchema,
+  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   legalRetreatOptions: z.set(largeUnitPlacementSchema),
-  routed: z.boolean(),
-  reversed: z.boolean(),
   retreated: z.boolean(),
+  reversed: z.boolean(),
+  routed: z.boolean(),
 });
 
 type LargeResolveRangedAttackEventSchemaType = z.infer<
@@ -156,17 +156,19 @@ type _ResolveRangedAttackEventDiscriminatedUnion = ZodDiscriminatedUnion<
     typeof _smallResolveRangedAttackEventSchemaObject,
     typeof _largeResolveRangedAttackEventSchemaObject,
   ],
-  "boardType"
+  'boardType'
 >;
 
 const _resolveRangedAttackEventSchemaObject: _ResolveRangedAttackEventDiscriminatedUnion =
-  z.discriminatedUnion("boardType", [
+  z.discriminatedUnion('boardType', [
     _standardResolveRangedAttackEventSchemaObject,
     _smallResolveRangedAttackEventSchemaObject,
     _largeResolveRangedAttackEventSchemaObject,
   ]);
 
-type ResolveRangedAttackEventSchemaType = z.infer<typeof _resolveRangedAttackEventSchemaObject>;
+type ResolveRangedAttackEventSchemaType = z.infer<
+  typeof _resolveRangedAttackEventSchemaObject
+>;
 
 const _assertExactResolveRangedAttackEvent: AssertExact<
   ResolveRangedAttackEvent,

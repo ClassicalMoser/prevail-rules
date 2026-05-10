@@ -1,14 +1,14 @@
-import type { AssertExact } from "@utils";
-import type { LargeBoard } from "./largeBoard";
-import type { SmallBoard } from "./smallBoard";
-import type { StandardBoard } from "./standardBoard";
+import type { AssertExact } from '@utils';
+import type { LargeBoard } from './largeBoard';
+import type { SmallBoard } from './smallBoard';
+import type { StandardBoard } from './standardBoard';
 
-import { z } from "zod";
-import { largeBoardSchema } from "./largeBoard";
-import { smallBoardSchema } from "./smallBoard";
-import { standardBoardSchema } from "./standardBoard";
+import { z } from 'zod';
+import { largeBoardSchema } from './largeBoard';
+import { smallBoardSchema } from './smallBoard';
+import { standardBoardSchema } from './standardBoard';
 
-export const boardType = ["standard", "small", "large"] as const;
+export const boardType = ['standard', 'small', 'large'] as const;
 
 /**
  * The type of a board.
@@ -25,20 +25,20 @@ type BoardTypeEnumType = z.infer<typeof boardTypeEnum>;
 const _assertExactBoardType: AssertExact<BoardType, BoardTypeEnumType> = true;
 
 /** The small board type. */
-export const SMALL_BOARD_TYPE: "small" = boardType[0] as "small";
+export const SMALL_BOARD_TYPE: 'small' = boardType[0] as 'small';
 
 /** The standard board type. */
-export const STANDARD_BOARD_TYPE: "standard" = boardType[1] as "standard";
+export const STANDARD_BOARD_TYPE: 'standard' = boardType[1] as 'standard';
 
 /** The large board type. */
-export const LARGE_BOARD_TYPE: "large" = boardType[2] as "large";
+export const LARGE_BOARD_TYPE: 'large' = boardType[2] as 'large';
 
 /**
  * A board of the game, discriminated by `boardType`.
  */
 export type Board = StandardBoard | SmallBoard | LargeBoard;
 
-const _boardSchemaObject = z.discriminatedUnion("boardType", [
+const _boardSchemaObject = z.discriminatedUnion('boardType', [
   smallBoardSchema,
   standardBoardSchema,
   largeBoardSchema,

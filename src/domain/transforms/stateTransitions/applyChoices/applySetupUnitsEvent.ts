@@ -1,7 +1,7 @@
-import type { Board, UnitWithPlacement } from "@entities";
-import type { SetupUnitsEventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
-import { addUnitToBoard, updateBoardState } from "@transforms/pureTransforms";
+import type { Board, UnitWithPlacement } from '@entities';
+import type { SetupUnitsEventForBoard } from '@events';
+import type { GameStateForBoard } from '@game';
+import { addUnitToBoard, updateBoardState } from '@transforms/pureTransforms';
 
 /**
  * Applies a SetupUnitsEvent to the game state.
@@ -16,7 +16,7 @@ export function applySetupUnitsEvent<TBoard extends Board>(
   event: SetupUnitsEventForBoard<TBoard>,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
-  const unitPlacements = event.unitPlacements;
+  const { unitPlacements } = event;
   const startingBoard = state.boardState;
 
   // Add each unit to the board in sequence

@@ -1,6 +1,11 @@
-import type { GameState } from "@game";
-import type { GameStateChange, GameStateSubscriber, GameStorage, PortResponse } from "../ports";
-import { GameModeName } from "@entities";
+import type { GameState } from '@game';
+import type {
+  GameStateChange,
+  GameStateSubscriber,
+  GameStorage,
+  PortResponse,
+} from '../ports';
+import type { GameModeName } from '@entities';
 
 /**
  * Updates the game state for a given game and game type.
@@ -18,11 +23,14 @@ export async function updateGameState(
   gameStorage: GameStorage,
   gameStateSubscribers: GameStateSubscriber[],
 ): Promise<PortResponse<void>> {
-  const updateResult = await gameStorage.updateGameState(gameId, gameState as GameState);
+  const updateResult = await gameStorage.updateGameState(
+    gameId,
+    gameState as GameState,
+  );
   if (!updateResult.result) {
     return {
-      result: false,
       errorReason: updateResult.errorReason,
+      result: false,
     };
   }
   const change: GameStateChange = {
@@ -40,13 +48,13 @@ export async function updateGameState(
       const err = error instanceof Error ? error : new Error(String(error));
       subscriber.onError(err);
       return {
-        result: false,
         errorReason: err.message,
+        result: false,
       };
     }
   }
   return {
-    result: true,
     data: undefined,
+    result: true,
   };
 }

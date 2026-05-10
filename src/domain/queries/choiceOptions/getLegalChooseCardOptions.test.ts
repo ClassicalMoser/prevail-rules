@@ -1,27 +1,27 @@
-import type { GameState } from "@game";
-import { PLAY_CARDS_PHASE } from "@game";
+import type { GameState } from '@game';
+import { PLAY_CARDS_PHASE } from '@game';
 
-import { tempCommandCards } from "@sampleValues";
-import { createEmptyGameState } from "@testing";
-import { updateCardState, updatePhaseState } from "@transforms";
-import { describe, expect, it } from "vitest";
-import { getLegalChooseCardOptions } from "./getLegalChooseCardOptions";
+import { tempCommandCards } from '@sampleValues';
+import { createEmptyGameState } from '@testing';
+import { updateCardState, updatePhaseState } from '@transforms';
+
+import { getLegalChooseCardOptions } from './getLegalChooseCardOptions';
 
 const chooseCardBase = {
+  choiceType: 'chooseCard' as const,
   eventNumber: 0,
-  eventType: "playerChoice" as const,
-  choiceType: "chooseCard" as const,
+  eventType: 'playerChoice' as const,
 };
 
 /**
- * getLegalChooseCardOptions: pending players' in-hand cards during playCards / chooseCards.
+ * GetLegalChooseCardOptions: pending players' in-hand cards during playCards / chooseCards.
  */
-describe("getLegalChooseCardOptions", () => {
+describe(getLegalChooseCardOptions, () => {
   function stateChooseCardsBothPending(): GameState {
     const base = createEmptyGameState();
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
-      step: "chooseCards",
+      step: 'chooseCards',
     });
     return updateCardState(withPhase, (current) => ({
       ...current,
@@ -38,7 +38,7 @@ describe("getLegalChooseCardOptions", () => {
     }));
   }
 
-  it("returns each in-hand card as a full ChooseCardEvent with eventNumber when both still choose", () => {
+  it('returns each in-hand card as a full ChooseCardEvent with eventNumber when both still choose', () => {
     const state = stateChooseCardsBothPending();
     const options = getLegalChooseCardOptions(state);
 
@@ -46,20 +46,20 @@ describe("getLegalChooseCardOptions", () => {
     for (const o of options) {
       expect(o.eventNumber).toBe(0);
     }
-    expect(options.filter((o) => o.player === "black")).toEqual([
-      { ...chooseCardBase, player: "black", card: tempCommandCards[2] },
+    expect(options.filter((o) => o.player === 'black')).toStrictEqual([
+      { ...chooseCardBase, card: tempCommandCards[2], player: 'black' },
     ]);
-    expect(options.filter((o) => o.player === "white")).toEqual([
-      { ...chooseCardBase, player: "white", card: tempCommandCards[3] },
-      { ...chooseCardBase, player: "white", card: tempCommandCards[4] },
+    expect(options.filter((o) => o.player === 'white')).toStrictEqual([
+      { ...chooseCardBase, card: tempCommandCards[3], player: 'white' },
+      { ...chooseCardBase, card: tempCommandCards[4], player: 'white' },
     ]);
   });
 
-  it("returns only the other player options when one has already chosen", () => {
+  it('returns only the other player options when one has already chosen', () => {
     const state = updateCardState(
       updatePhaseState(createEmptyGameState(), {
         phase: PLAY_CARDS_PHASE,
-        step: "chooseCards",
+        step: 'chooseCards',
       }),
       (current) => ({
         ...current,
@@ -77,32 +77,36 @@ describe("getLegalChooseCardOptions", () => {
     );
 
     const options = getLegalChooseCardOptions(state);
-    expect(options).toEqual([{ ...chooseCardBase, player: "white", card: tempCommandCards[2] }]);
+    expect(options).toStrictEqual([
+      { ...chooseCardBase, card: tempCommandCards[2], player: 'white' },
+    ]);
   });
 
-  it("throws when not in playCards phase", () => {
+  it('throws when not in playCards phase', () => {
     const state = updatePhaseState(createEmptyGameState(), {
-      phase: "moveCommanders",
-      step: "moveFirstCommander",
+      phase: 'moveCommanders',
+      step: 'moveFirstCommander',
     });
     expect(() => getLegalChooseCardOptions(state)).toThrow(
-      "Expected playCards phase, got moveCommanders",
+      'Expected playCards phase, got moveCommanders',
     );
   });
 
-  it("throws when playCards is not on chooseCards step", () => {
+  it('throws when playCards is not on chooseCards step', () => {
     const state = updatePhaseState(createEmptyGameState(), {
       phase: PLAY_CARDS_PHASE,
-      step: "revealCards",
+      step: 'revealCards',
     });
-    expect(() => getLegalChooseCardOptions(state)).toThrow("Not in choose cards step");
+    expect(() => getLegalChooseCardOptions(state)).toThrow(
+      'Not in choose cards step',
+    );
   });
 
-  it("returns empty when both players already have awaitingPlay set", () => {
+  it('returns empty when both players already have awaitingPlay set', () => {
     const state = updateCardState(
       updatePhaseState(createEmptyGameState(), {
         phase: PLAY_CARDS_PHASE,
-        step: "chooseCards",
+        step: 'chooseCards',
       }),
       (current) => ({
         ...current,
@@ -119,6 +123,6 @@ describe("getLegalChooseCardOptions", () => {
       }),
     );
 
-    expect(getLegalChooseCardOptions(state)).toEqual([]);
+    expect(getLegalChooseCardOptions(state)).toStrictEqual([]);
   });
 });

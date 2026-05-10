@@ -2,9 +2,9 @@
  * Routes game effect events to their corresponding apply functions.
  */
 
-import type { Board } from "@entities";
-import type { GameEffectEventForBoard } from "@events";
-import type { GameStateForBoard } from "@game";
+import type { Board } from '@entities';
+import type { GameEffectEventForBoard } from '@events';
+import type { GameStateForBoard } from '@game';
 import {
   applyCompleteAttackApplyEvent,
   applyCompleteCleanupPhaseEvent,
@@ -29,7 +29,7 @@ import {
   applyRevealCardsEvent,
   applyStartEngagementEvent,
   applyTriggerRoutFromRetreatEvent,
-} from "./applyEffects";
+} from './applyEffects';
 
 /**
  * Routes game effect events to their corresponding apply functions.
@@ -39,55 +39,80 @@ export function applyGameEffectEvent<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   switch (event.effectType) {
-    case "completeAttackApply":
+    case 'completeAttackApply': {
       return applyCompleteAttackApplyEvent(event, state);
-    case "completeCleanupPhase":
+    }
+    case 'completeCleanupPhase': {
       return applyCompleteCleanupPhaseEvent(event, state);
-    case "completeIssueCommandsPhase":
+    }
+    case 'completeIssueCommandsPhase': {
       return applyCompleteIssueCommandsPhaseEvent(event, state);
-    case "completeMeleeResolution":
+    }
+    case 'completeMeleeResolution': {
       return applyCompleteMeleeResolutionEvent(event, state);
-    case "completeMoveCommandersPhase":
+    }
+    case 'completeMoveCommandersPhase': {
       return applyCompleteMoveCommandersPhaseEvent(event, state);
-    case "completePlayCardsPhase":
+    }
+    case 'completePlayCardsPhase': {
       return applyCompletePlayCardsPhaseEvent(event, state);
-    case "completeRangedAttackCommand":
+    }
+    case 'completeRangedAttackCommand': {
       return applyCompleteRangedAttackCommandEvent(event, state);
-    case "completeResolveMeleePhase":
+    }
+    case 'completeResolveMeleePhase': {
       return applyCompleteResolveMeleePhaseEvent(state);
-    case "completeUnitMovement":
+    }
+    case 'completeUnitMovement': {
       return applyCompleteUnitMovementEvent(event, state);
-    case "discardPlayedCards":
+    }
+    case 'discardPlayedCards': {
       return applyDiscardPlayedCardsEvent(event, state);
-    case "resolveInitiative":
+    }
+    case 'resolveInitiative': {
       return applyResolveInitiativeEvent(event, state);
-    case "resolveRally":
+    }
+    case 'resolveRally': {
       return applyResolveRallyEvent(event, state);
-    case "resolveUnitsBroken":
+    }
+    case 'resolveUnitsBroken': {
       return applyResolveUnitsBrokenEvent(event, state);
-    case "revealCards":
+    }
+    case 'revealCards': {
       return applyRevealCardsEvent(event, state);
-    case "resolveMelee":
+    }
+    case 'resolveMelee': {
       return applyResolveMeleeEvent(event, state);
-    case "resolveRangedAttack":
+    }
+    case 'resolveRangedAttack': {
       return applyResolveRangedAttackEvent(event, state);
-    case "resolveRetreat":
+    }
+    case 'resolveRetreat': {
       return applyResolveRetreatEvent(event, state);
-    case "resolveReverse":
+    }
+    case 'resolveReverse': {
       return applyResolveReverseEvent(event, state);
-    case "resolveRout":
+    }
+    case 'resolveRout': {
       return applyResolveRoutEvent(event, state);
-    case "resolveEngageRetreatOption":
+    }
+    case 'resolveEngageRetreatOption': {
       return applyResolveEngageRetreatOptionEvent(event, state);
-    case "resolveFlankEngagement":
+    }
+    case 'resolveFlankEngagement': {
       return applyResolveFlankEngagementEvent(event, state);
-    case "startEngagement":
+    }
+    case 'startEngagement': {
       return applyStartEngagementEvent(event, state);
-    case "triggerRoutFromRetreat":
+    }
+    case 'triggerRoutFromRetreat': {
       return applyTriggerRoutFromRetreatEvent(event, state);
+    }
     default: {
       const _exhaustive: never = event;
-      throw new Error("Unreachable: unhandled game effect event (effectType not in switch)");
+      throw new Error(
+        'Unreachable: unhandled game effect event (effectType not in switch)',
+      );
     }
   }
 }

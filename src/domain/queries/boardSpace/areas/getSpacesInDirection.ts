@@ -1,8 +1,8 @@
-import type { Board, BoardCoordinate, UnitFacing } from "@entities";
-import { filterUndefinedSpaces } from "../filterUndefinedSpaces";
-import { getForwardSpacesToEdge } from "../getForwardSpacesToEdge";
+import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
+import { getForwardSpacesToEdge } from '../getForwardSpacesToEdge';
 
-import { getInlineSpaces } from "./getInlineSpaces";
+import { getInlineSpaces } from './getInlineSpaces';
 
 /**
  * Internal helper that extends spaces in a given direction.
@@ -23,7 +23,9 @@ function getSpacesInDirection<TBoard extends Board>(
   // Add the inline spaces for all initial spaces (prevents checkerboard for diagonal facings)
   for (const space of initialSpaces) {
     const inlineSpaces = getInlineSpaces(board, space, extensionFacing);
-    for (const inlineSpace of inlineSpaces) spaces.add(inlineSpace);
+    for (const inlineSpace of inlineSpaces) {
+      spaces.add(inlineSpace);
+    }
   }
 
   // Add all spaces extending to the edge
@@ -31,7 +33,9 @@ function getSpacesInDirection<TBoard extends Board>(
   const spacesArray = [...spaces];
   for (const space of spacesArray) {
     const spacesToEdge = getForwardSpacesToEdge(board, space, extensionFacing);
-    for (const spaceToEdge of spacesToEdge) spaces.add(spaceToEdge);
+    for (const spaceToEdge of spacesToEdge) {
+      spaces.add(spaceToEdge);
+    }
   }
 
   // Filter out undefined values

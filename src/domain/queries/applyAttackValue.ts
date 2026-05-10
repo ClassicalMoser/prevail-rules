@@ -1,6 +1,6 @@
-import type { Board, Modifier, UnitInstance } from "@entities";
-import type { AttackResult, GameStateForBoard } from "@game";
-import { getCurrentUnitStat } from "./getCurrentUnitStat";
+import type { Board, Modifier, UnitInstance } from '@entities';
+import type { AttackResult, GameStateForBoard } from '@game';
+import { getCurrentUnitStat } from './getCurrentUnitStat';
 
 /**
  * Applies an attack value to a unit and returns the result.
@@ -18,9 +18,24 @@ export function applyAttackValue<TBoard extends Board>(
   defendingModifiers?: Modifier[],
 ): AttackResult {
   // Get the defensive stats of the unit
-  const currentRoutValue = getCurrentUnitStat(unit, "rout", gameState, defendingModifiers);
-  const currentRetreatValue = getCurrentUnitStat(unit, "retreat", gameState, defendingModifiers);
-  const currentReverseValue = getCurrentUnitStat(unit, "reverse", gameState, defendingModifiers);
+  const currentRoutValue = getCurrentUnitStat(
+    unit,
+    'rout',
+    gameState,
+    defendingModifiers,
+  );
+  const currentRetreatValue = getCurrentUnitStat(
+    unit,
+    'retreat',
+    gameState,
+    defendingModifiers,
+  );
+  const currentReverseValue = getCurrentUnitStat(
+    unit,
+    'reverse',
+    gameState,
+    defendingModifiers,
+  );
 
   // Check if the unit is routed, retreated, or reversed
   const unitRouted = attackValue >= currentRoutValue;
@@ -29,8 +44,8 @@ export function applyAttackValue<TBoard extends Board>(
 
   // Return the result
   return {
-    unitRouted,
-    unitReversed,
     unitRetreated,
+    unitReversed,
+    unitRouted,
   };
 }

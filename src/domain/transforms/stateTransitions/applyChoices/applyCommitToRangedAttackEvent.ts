@@ -1,12 +1,15 @@
-import type { Board } from "@entities";
-import type { CommitToRangedAttackEvent } from "@events";
-import type { GameStateForBoard, RangedAttackResolutionStateForBoard } from "@game";
-import { getRangedAttackResolutionState } from "@queries";
+import type { Board } from '@entities';
+import type { CommitToRangedAttackEvent } from '@events';
+import type {
+  GameStateForBoard,
+  RangedAttackResolutionStateForBoard,
+} from '@game';
+import { getRangedAttackResolutionState } from '@queries';
 import {
   discardCardsFromHand,
   updateCardState,
   updateCommandResolutionState,
-} from "@transforms/pureTransforms";
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a CommitToRangedAttackEvent to the game state.
@@ -23,17 +26,19 @@ export function applyCommitToRangedAttackEvent<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   const rangedAttackState = getRangedAttackResolutionState(state);
-  const player = event.player;
+  const { player } = event;
   const attackingPlayer = rangedAttackState.attackingUnit.playerSide;
   const isAttackingPlayer = player === attackingPlayer;
 
   // Discard committed card from player's hand
-  const newCardState = discardCardsFromHand(state.cardState, player, [event.committedCard.id]);
+  const newCardState = discardCardsFromHand(state.cardState, player, [
+    event.committedCard.id,
+  ]);
 
   // Mark attacking or defending commitment as completed with the chosen card
   const newCommitment = {
-    commitmentType: "completed" as const,
     card: event.committedCard,
+    commitmentType: 'completed' as const,
   };
   const newRangedAttackState: RangedAttackResolutionStateForBoard<TBoard> = {
     ...rangedAttackState,
@@ -43,6 +48,9 @@ export function applyCommitToRangedAttackEvent<TBoard extends Board>(
   };
 
   const stateWithCards = updateCardState(state, newCardState);
-  const newGameState = updateCommandResolutionState(stateWithCards, newRangedAttackState);
+  const newGameState = updateCommandResolutionState(
+    stateWithCards,
+    newRangedAttackState,
+  );
   return newGameState;
 }

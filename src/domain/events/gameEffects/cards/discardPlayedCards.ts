@@ -1,9 +1,9 @@
-import type { AssertExact } from "@utils";
-import { GAME_EFFECT_EVENT_TYPE } from "@events/eventTypeLiterals";
-import { z } from "zod";
+import type { AssertExact } from '@utils';
+import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
+import { z } from 'zod';
 
 /** The type of the discard played cards game effect. */
-export const DISCARD_PLAYED_CARDS_EFFECT_TYPE = "discardPlayedCards" as const;
+export const DISCARD_PLAYED_CARDS_EFFECT_TYPE = 'discardPlayedCards' as const;
 
 /**
  * Event to discard played cards.
@@ -28,7 +28,9 @@ const _discardPlayedCardsEventSchemaObject = z.object({
   eventNumber: z.number(),
 });
 
-type DiscardPlayedCardsEventSchemaType = z.infer<typeof _discardPlayedCardsEventSchemaObject>;
+type DiscardPlayedCardsEventSchemaType = z.infer<
+  typeof _discardPlayedCardsEventSchemaObject
+>;
 
 const _assertExactDiscardPlayedCardsEvent: AssertExact<
   DiscardPlayedCardsEvent,
@@ -37,7 +39,7 @@ const _assertExactDiscardPlayedCardsEvent: AssertExact<
 
 /** The schema for a discard played cards event. */
 export const discardPlayedCardsEventSchema: z.ZodObject<{
-  eventType: z.ZodLiteral<"gameEffect">;
-  effectType: z.ZodLiteral<"discardPlayedCards">;
+  eventType: z.ZodLiteral<'gameEffect'>;
+  effectType: z.ZodLiteral<'discardPlayedCards'>;
   eventNumber: z.ZodNumber;
 }> = _discardPlayedCardsEventSchemaObject;

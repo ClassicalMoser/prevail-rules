@@ -1,7 +1,11 @@
-import type { ExpectedEventInfo } from "@events";
-import type { AttackApplyState, GameState } from "@game";
-import { canReverseUnit } from "@queries/sequencing";
-import { getExpectedRetreatEvent, getExpectedReverseEvent, getExpectedRoutEvent } from ".";
+import type { ExpectedEventInfo } from '@events';
+import type { AttackApplyState, GameState } from '@game';
+import { canReverseUnit } from '@queries/sequencing';
+import {
+  getExpectedRetreatEvent,
+  getExpectedReverseEvent,
+  getExpectedRoutEvent,
+} from '.';
 
 /**
  * Gets the expected event for attack apply substeps.
@@ -16,11 +20,13 @@ export function getExpectedAttackApplyEvent(
   attackApplyState: AttackApplyState,
   gameState: GameState,
 ): ExpectedEventInfo {
-  const attackResult = attackApplyState.attackResult;
+  const { attackResult } = attackApplyState;
 
   // Check if there are any results
   const hasResults =
-    attackResult.unitRouted || attackResult.unitRetreated || attackResult.unitReversed;
+    attackResult.unitRouted ||
+    attackResult.unitRetreated ||
+    attackResult.unitReversed;
 
   // If no results reported, state was not initialized correctly
   if (
@@ -29,7 +35,7 @@ export function getExpectedAttackApplyEvent(
       attackApplyState.reverseState === undefined &&
       attackApplyState.routState === undefined)
   ) {
-    throw new Error("Attack apply state not initialized correctly");
+    throw new Error('Attack apply state not initialized correctly');
   }
 
   // Results reported, check which need resolution
@@ -41,44 +47,48 @@ export function getExpectedAttackApplyEvent(
     // If unit was routed, no further resolution is needed
     if (!attackApplyState.completed) {
       return {
-        actionType: "gameEffect",
-        effectType: "completeAttackApply",
+        actionType: 'gameEffect',
+        effectType: 'completeAttackApply',
       };
     }
-    throw new Error("Attack apply state is already complete");
+    throw new Error('Attack apply state is already complete');
   }
 
-  if (attackResult.unitRetreated && attackApplyState.retreatState) {
-    if (!attackApplyState.retreatState.completed) {
-      return getExpectedRetreatEvent(attackApplyState.retreatState);
-    }
+  if (
+    attackResult.unitRetreated &&
+    attackApplyState.retreatState &&
+    !attackApplyState.retreatState.completed
+  ) {
+    return getExpectedRetreatEvent(attackApplyState.retreatState);
   }
 
-  if (attackResult.unitReversed && attackApplyState.reverseState) {
-    if (!attackApplyState.reverseState.completed) {
-      // In melee, if units are still engaged, reverse cannot happen
-      if (!canReverseUnit(attackApplyState.reverseState, gameState)) {
-        // Units are still engaged - reverse cannot happen, skip to completeAttackApply
-        if (attackApplyState.completed) {
-          throw new Error("Attack apply state is already complete");
-        }
-        return {
-          actionType: "gameEffect",
-          effectType: "completeAttackApply",
-        };
+  if (
+    attackResult.unitReversed &&
+    attackApplyState.reverseState &&
+    !attackApplyState.reverseState.completed
+  ) {
+    // In melee, if units are still engaged, reverse cannot happen
+    if (!canReverseUnit(attackApplyState.reverseState, gameState)) {
+      // Units are still engaged - reverse cannot happen, skip to completeAttackApply
+      if (attackApplyState.completed) {
+        throw new Error('Attack apply state is already complete');
       }
-      return getExpectedReverseEvent(attackApplyState.reverseState);
+      return {
+        actionType: 'gameEffect',
+        effectType: 'completeAttackApply',
+      };
     }
+    return getExpectedReverseEvent(attackApplyState.reverseState);
     // Reverse is complete, continue to check if attack apply is complete
   }
 
   if (!attackApplyState.completed) {
     return {
-      actionType: "gameEffect",
-      effectType: "completeAttackApply",
+      actionType: 'gameEffect',
+      effectType: 'completeAttackApply',
     };
   }
 
   // All attack results resolved, command resolution should be complete
-  throw new Error("Attack apply state is already complete");
+  throw new Error('Attack apply state is already complete');
 }

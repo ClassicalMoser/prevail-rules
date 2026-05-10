@@ -1,7 +1,7 @@
-import type { Board, ValidationResult } from "@entities";
-import type { MoveCommanderEventForBoard } from "@events";
-import { getBoardSpace, getSpacesWithinDistance } from "@queries";
-import { COMMANDER_MOVE_DISTANCE } from "@ruleValues";
+import type { Board, ValidationResult } from '@entities';
+import type { MoveCommanderEventForBoard } from '@events';
+import { getBoardSpace, getSpacesWithinDistance } from '@queries';
+import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';
 
 /**
  * Validates whether a commander move event is legal.
@@ -24,19 +24,23 @@ export function isLegalCommanderMove<TBoard extends Board>(
     // Check if the player's commander is actually at the starting position
     if (!fromSpace.commanders.has(player)) {
       return {
+        errorReason: 'Commander is not at the starting position',
         result: false,
-        errorReason: "Commander is not at the starting position",
       };
     }
 
     // Validate that the destination is within the commander's move distance
-    const spacesWithinDistance = getSpacesWithinDistance(boardState, from, COMMANDER_MOVE_DISTANCE);
+    const spacesWithinDistance = getSpacesWithinDistance(
+      boardState,
+      from,
+      COMMANDER_MOVE_DISTANCE,
+    );
 
     const isWithinDistance = spacesWithinDistance.has(to);
     if (!isWithinDistance) {
       return {
-        result: false,
         errorReason: "Destination is beyond the commander's move distance",
+        result: false,
       };
     }
     return {
@@ -45,8 +49,8 @@ export function isLegalCommanderMove<TBoard extends Board>(
   } catch (error) {
     // Any error means the move is not legal.
     return {
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,
-      errorReason: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

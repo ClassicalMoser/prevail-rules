@@ -1,7 +1,10 @@
-import type { ResolveInitiativeEvent } from "@events";
-import type { GameState } from "@game";
-import { GAME_EFFECT_EVENT_TYPE, RESOLVE_INITIATIVE_EFFECT_TYPE } from "@events";
-import { calculateInitiative, getPlayCardsPhaseState } from "@queries";
+import type { ResolveInitiativeEvent } from '@events';
+import type { GameState } from '@game';
+import {
+  GAME_EFFECT_EVENT_TYPE,
+  RESOLVE_INITIATIVE_EFFECT_TYPE,
+} from '@events';
+import { calculateInitiative, getPlayCardsPhaseState } from '@queries';
 
 /**
  * Generates a ResolveInitiativeEvent by calculating which player receives initiative
@@ -30,28 +33,32 @@ export function generateResolveInitiativeEvent(
 ): ResolveInitiativeEvent {
   const phaseState = getPlayCardsPhaseState(state);
 
-  if (phaseState.step !== "assignInitiative") {
-    throw new Error("Play cards phase is not on assignInitiative step");
+  if (phaseState.step !== 'assignInitiative') {
+    throw new Error('Play cards phase is not on assignInitiative step');
   }
 
   const whiteCard = state.cardState.white.inPlay;
   const blackCard = state.cardState.black.inPlay;
 
   if (!whiteCard) {
-    throw new Error("White player has no card in play");
+    throw new Error('White player has no card in play');
   }
 
   if (!blackCard) {
-    throw new Error("Black player has no card in play");
+    throw new Error('Black player has no card in play');
   }
 
   // Calculate which player receives initiative
-  const playerWithInitiative = calculateInitiative(whiteCard, blackCard, state.currentInitiative);
+  const playerWithInitiative = calculateInitiative(
+    whiteCard,
+    blackCard,
+    state.currentInitiative,
+  );
 
   return {
-    eventType: GAME_EFFECT_EVENT_TYPE,
     effectType: RESOLVE_INITIATIVE_EFFECT_TYPE,
     eventNumber,
+    eventType: GAME_EFFECT_EVENT_TYPE,
     player: playerWithInitiative,
   };
 }
