@@ -175,7 +175,7 @@ Functions that take a gameState and return a gameEffect event. These are used by
 Game constants and configuration values.
 
 - `traits.ts` - Unit trait definitions
-- `gameTypes.ts` - Game type configurations
+- `gameModes.ts` - Game mode configurations
 - `ruleValues.ts` - General rule constants
 
 #### 8. **Sample Values** (`sampleValues/`)

@@ -15,6 +15,7 @@ export async function processPlayerChoice(
 ): Promise<PortResponse<GameState>> {
   const gameState: GameState | undefined = await getGameState(
     gameId,
+    gameMode,
     ports.gameStorage,
   );
   if (!gameState) {

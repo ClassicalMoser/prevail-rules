@@ -39,7 +39,7 @@ describe(startNewGame, () => {
       gameStateSubscribers: [
         {
           gameId: placeholderGameId,
-          gameMode: gameModes[1],
+          gameMode: gameModes[1].name,
           onError: vi.fn(),
           onGameStateChange,
         },
@@ -58,30 +58,30 @@ describe(startNewGame, () => {
     expect(change?.gameState).toBeDefined();
   });
 
-  it('does not notify subscribers when gameId or gameType does not match', async () => {
+  it('does not notify subscribers when gameId or gameMode does not match', async () => {
     expect.hasAssertions();
     const matching = vi.fn();
     const wrongId = vi.fn();
-    const wrongType = vi.fn();
+    const wrongMode = vi.fn();
     const ports = createEnginePorts({
       gameStateSubscribers: [
         {
           gameId: placeholderGameId,
-          gameMode: gameModes[1],
+          gameMode: gameModes[1].name,
           onError: vi.fn(),
           onGameStateChange: matching,
         },
         {
           gameId: '11111111-1111-1111-1111-111111111111',
-          gameMode: gameModes[1],
+          gameMode: gameModes[1].name,
           onError: vi.fn(),
           onGameStateChange: wrongId,
         },
         {
           gameId: placeholderGameId,
-          gameMode: gameModes[2],
+          gameMode: gameModes[2].name,
           onError: vi.fn(),
-          onGameStateChange: wrongType,
+          onGameStateChange: wrongMode,
         },
       ],
     });
@@ -91,7 +91,7 @@ describe(startNewGame, () => {
     expect(outcome).toStrictEqual({ data: undefined, result: true });
     expect(matching).toHaveBeenCalledTimes(1);
     expect(wrongId).not.toHaveBeenCalled();
-    expect(wrongType).not.toHaveBeenCalled();
+    expect(wrongMode).not.toHaveBeenCalled();
   });
 
   it('returns failure when saveNewGame fails', async () => {
@@ -123,7 +123,7 @@ describe(startNewGame, () => {
       gameStateSubscribers: [
         {
           gameId: placeholderGameId,
-          gameMode: gameModes[1],
+          gameMode: gameModes[1].name,
           onError,
           onGameStateChange,
         },

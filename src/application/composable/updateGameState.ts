@@ -10,7 +10,7 @@ import type { GameModeName } from '@entities';
 /**
  * Updates the game state for a given game and game type.
  * @param gameId - The ID of the game to update the state for.
- * @param gameType - The type of the game to update the state for.
+ * @param gameMode - The mode of the game to update the state for.
  * @param gameState - The new game state to set.
  * @param gameStorage - The game storage to use.
  * @param gameStateSubscribers - The game state subscribers to notify.

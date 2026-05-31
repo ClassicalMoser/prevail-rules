@@ -57,9 +57,9 @@ function shellForBoard<TBoard extends Board>(
 }
 
 /**
- * Builds an empty game state for a given game type.
+ * Builds an empty game state for a given game mode.
  *
- * Overloads give a precise return type per `gameType`; a single generic
+ * Overloads give a precise return type per `gameMode`; a single generic
  * `TGameMode extends GameMode` is not narrowed by `switch`, so `shellForBoard`’s
  * `SmallGameState` / `StandardGameState` would not otherwise check
  * against `GameStateForBoard<BoardForGameMode<TGameMode>>`.
