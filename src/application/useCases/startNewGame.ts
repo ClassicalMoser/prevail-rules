@@ -9,7 +9,7 @@ const placeholderId = '00000000-0000-0000-0000-000000000000';
 function placeholderArmy(): Army {
   return {
     id: placeholderId,
-    tempCommandCards: new Set(),
+    commandCards: new Set(),
     units: new Set(),
   };
 }
@@ -58,7 +58,7 @@ export const startNewGame = async (
         blackPlayer: placeholderId,
         boardType: boardSize,
         gameState,
-        gameType: 'tutorial',
+        gameMode: 'tutorial',
         id: placeholderId,
         whiteArmy: placeholderArmy(),
         whitePlayer: placeholderId,
@@ -71,7 +71,7 @@ export const startNewGame = async (
         blackPlayer: placeholderId,
         boardType: boardSize,
         gameState,
-        gameType: 'mini',
+        gameMode: 'mini',
         id: placeholderId,
         whiteArmy: placeholderArmy(),
         whitePlayer: placeholderId,
@@ -84,7 +84,7 @@ export const startNewGame = async (
         blackPlayer: placeholderId,
         boardType: boardSize,
         gameState,
-        gameType: 'standard',
+        gameMode: 'standard',
         id: placeholderId,
         whiteArmy: placeholderArmy(),
         whitePlayer: placeholderId,
@@ -97,7 +97,7 @@ export const startNewGame = async (
         blackPlayer: placeholderId,
         boardType: boardSize,
         gameState,
-        gameType: 'epic',
+        gameMode: 'epic',
         id: placeholderId,
         whiteArmy: placeholderArmy(),
         whitePlayer: placeholderId,
@@ -132,7 +132,7 @@ export const startNewGame = async (
   for (const subscriber of ports.gameStateSubscribers) {
     if (
       subscriber.gameId !== change.gameId ||
-      subscriber.gameMode.name !== change.gameMode
+      subscriber.gameMode !== change.gameMode
     ) {
       continue;
     }

@@ -36,7 +36,7 @@ const makeArmyCards = (): Card[] => {
 
 const makeArmy = (id: string): Army => ({
   id,
-  tempCommandCards: new Set(makeArmyCards()),
+  commandCards: new Set(makeArmyCards()),
   units: new Set(makeArmyUnits()),
 });
 

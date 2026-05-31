@@ -22,11 +22,11 @@ import {
 } from './gameState';
 
 /**
- * A **standard** game (`gameType === 'standard'`).
+ * A **standard** game (`gameMode === 'standard'`).
  * Every field is documented here so IDE hover does not jump through a shared base interface.
  */
 export interface GameForMode<TGameMode extends GameMode> {
-  gameType: TGameMode['name'];
+  gameMode: TGameMode['name'];
   boardType: TGameMode['boardSize'];
   gameState: GameStateForBoard<BoardOfType<TGameMode['boardSize']>>;
   /** The unique identifier of the game. */
@@ -56,7 +56,7 @@ const _standardGameSchemaObject = z.object({
   blackPlayer: z.uuid(),
   boardType: z.literal('standard' satisfies StandardBoard['boardType']),
   gameState: standardGameStateSchema,
-  gameType: z.literal('standard'),
+  gameMode: z.literal('standard'),
   id: z.uuid(),
   whiteArmy: armySchema,
   whitePlayer: z.uuid(),
@@ -69,7 +69,7 @@ const _assertExactStandardGame: AssertExact<
   StandardGameSchemaType
 > = true;
 
-/** Validates a {@link Game} when `gameType` is known to be `standard`. */
+/** Validates a {@link Game} when `gameMode` is known to be `standard`. */
 export const standardGameSchema: z.ZodType<GameForMode<StandardGameMode>> =
   _standardGameSchemaObject;
 
@@ -78,7 +78,7 @@ const _miniGameSchemaObject = z.object({
   blackPlayer: z.uuid(),
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
   gameState: smallGameStateSchema,
-  gameType: z.literal('mini'),
+  gameMode: z.literal('mini'),
   id: z.uuid(),
   whiteArmy: armySchema,
   whitePlayer: z.uuid(),
@@ -99,7 +99,7 @@ const _tutorialGameSchemaObject = z.object({
   blackPlayer: z.uuid(),
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
   gameState: smallGameStateSchema,
-  gameType: z.literal('tutorial'),
+  gameMode: z.literal('tutorial'),
   id: z.uuid(),
   whiteArmy: armySchema,
   whitePlayer: z.uuid(),
@@ -120,7 +120,7 @@ const _epicGameSchemaObject = z.object({
   blackPlayer: z.uuid(),
   boardType: z.literal('large' satisfies LargeBoard['boardType']),
   gameState: largeGameStateSchema,
-  gameType: z.literal('epic'),
+  gameMode: z.literal('epic'),
   id: z.uuid(),
   whiteArmy: armySchema,
   whitePlayer: z.uuid(),
@@ -136,7 +136,7 @@ const _assertExactEpicGame: AssertExact<
 export const epicGameSchema: z.ZodType<GameForMode<EpicGameMode>> =
   _epicGameSchemaObject;
 
-const _gameSchemaObject = z.discriminatedUnion('gameType', [
+const _gameSchemaObject = z.discriminatedUnion('gameMode', [
   _standardGameSchemaObject,
   _miniGameSchemaObject,
   _tutorialGameSchemaObject,

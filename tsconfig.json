@@ -5,6 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "rootDir": ".",
     "paths": {
       "@entities": ["./src/domain/entities/index"],
       "@entities/*": ["./src/domain/entities/*"],

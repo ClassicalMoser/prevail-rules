@@ -10,7 +10,7 @@ import {
 
 /**
  * **Boundary:** validates untrusted / stored data and returns a typed {@link Game}.
- * Call after `GameStorage.getGame` (or equivalent) so downstream code can narrow on `gameType`.
+ * Call after `GameStorage.getGame` (or equivalent) so downstream code can narrow on `gameMode`.
  */
 
 /**
@@ -49,7 +49,7 @@ export function parseStoredGameForMode<TGameMode extends GameMode>(
     }
     default: {
       const _exhaustive: never = modeName;
-      throw new Error(`Unknown gameType: ${_exhaustive}`);
+      throw new Error(`Unknown gameMode: ${_exhaustive}`);
     }
   }
   return game as GameForMode<TGameMode>;
