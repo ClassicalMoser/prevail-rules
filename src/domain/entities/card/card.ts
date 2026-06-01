@@ -7,6 +7,8 @@ import { z } from 'zod';
 import { commandSchema } from './command';
 import { modifierSchema } from './modifiers';
 import { roundEffectSchema } from './roundEffect';
+import type { UnitSupport } from './unitSupport';
+import { unitSupportSchema } from './unitSupport';
 
 /**
  * A card in the game.
@@ -26,8 +28,8 @@ export interface Card {
   command: Command;
   /** The round effect of the card, if any. */
   roundEffect: RoundEffect | undefined;
-  /** The units this card preserves */
-  unitPreservation: string[];
+  /** The unit support this card provides */
+  unitSupport: UnitSupport[];
 }
 
 const _cardSchemaObject = z.object({
@@ -47,8 +49,8 @@ const _cardSchemaObject = z.object({
   command: commandSchema,
   /** The round effect of the card, if any. */
   roundEffect: roundEffectSchema.or(z.undefined()),
-  /** The units this card preserves */
-  unitPreservation: z.array(z.uuid()),
+  /** The unit support this card provides */
+  unitSupport: z.array(unitSupportSchema),
 });
 
 type CardSchemaType = z.infer<typeof _cardSchemaObject>;

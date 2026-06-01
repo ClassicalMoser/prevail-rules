@@ -1,4 +1,4 @@
-import type { GameModeName } from '@classicalmoser/prevail-rules/domain';
+import type { GameModeName } from '@entities';
 import type { GameStateChange } from './gameStateChange';
 
 /**

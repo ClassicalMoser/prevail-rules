@@ -18,6 +18,19 @@ import {
 const manipularOrAlae = [manipularLegion.id, alaeSocii.id] as const;
 const spearOrPike = [punicCitizenSpearmen.id, libyanSpearmen.id] as const;
 
+const fourVelitesUnitSupport = [
+  { count: 4, supportType: 'unitType' as const, unitTypeId: velites.id },
+];
+
+const twoManipularTwoAlaeUnitSupport = [
+  {
+    count: 2,
+    supportType: 'unitType' as const,
+    unitTypeId: manipularLegion.id,
+  },
+  { count: 2, supportType: 'unitType' as const, unitTypeId: alaeSocii.id },
+];
+
 export const tempCommandCards: readonly Card[] = [
   {
     command: {
@@ -43,7 +56,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -70,7 +83,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -97,7 +110,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -124,7 +137,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -151,7 +164,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -181,7 +194,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [...spearOrPike],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -208,7 +221,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -238,7 +251,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -265,7 +278,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -292,7 +305,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -319,7 +332,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -346,7 +359,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -373,7 +386,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -400,7 +413,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [equites.id],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -427,7 +440,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [velites.id],
       },
     },
-    unitPreservation: [velites.id, velites.id, velites.id, velites.id],
+    unitSupport: fourVelitesUnitSupport,
     version: '1.0.0',
   },
   {
@@ -454,7 +467,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [...manipularOrAlae],
       },
     },
-    unitPreservation: [...manipularOrAlae, ...manipularOrAlae],
+    unitSupport: twoManipularTwoAlaeUnitSupport,
     version: '1.0.0',
   },
   {
@@ -481,7 +494,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [...manipularOrAlae],
       },
     },
-    unitPreservation: [...manipularOrAlae, ...manipularOrAlae],
+    unitSupport: twoManipularTwoAlaeUnitSupport,
     version: '1.0.0',
   },
   {
@@ -508,7 +521,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [...manipularOrAlae],
       },
     },
-    unitPreservation: [...manipularOrAlae, ...manipularOrAlae],
+    unitSupport: twoManipularTwoAlaeUnitSupport,
     version: '1.0.0',
   },
   {
@@ -535,7 +548,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [manipularLegion.id],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -562,7 +575,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -582,7 +595,7 @@ export const tempCommandCards: readonly Card[] = [
     modifiers: [{ type: 'flexibility', value: 1 }],
     name: 'Coordinated Maneuver',
     roundEffect: undefined,
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -605,7 +618,7 @@ export const tempCommandCards: readonly Card[] = [
     modifiers: [{ type: 'attack', value: 1 }],
     name: 'Chaotic Destruction',
     roundEffect: undefined,
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -628,7 +641,7 @@ export const tempCommandCards: readonly Card[] = [
     modifiers: [{ type: 'defense', value: 1 }],
     name: 'Brace for Impact',
     roundEffect: undefined,
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -655,7 +668,7 @@ export const tempCommandCards: readonly Card[] = [
         unitRestrictions: [],
       },
     },
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
   {
@@ -675,7 +688,7 @@ export const tempCommandCards: readonly Card[] = [
     modifiers: [{ type: 'flexibility', value: 1 }],
     name: 'Combined Arms Tactics',
     roundEffect: undefined,
-    unitPreservation: [],
+    unitSupport: [],
     version: '1.0.0',
   },
 ] as const satisfies readonly Card[];
