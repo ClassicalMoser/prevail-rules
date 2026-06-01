@@ -50,17 +50,22 @@ export {
   roundEffectSchema,
   statModifiers,
   statModifierSchema,
+  unitSupportSchema,
 } from './card';
 export type {
   Card,
   CardState,
   Command,
   CommandType,
+  GenericUnitSupport,
   Modifier,
   PlayerCardState,
   Restrictions,
   RoundEffect,
   StatModifier,
+  TraitUnitSupport,
+  UnitSupport,
+  UnitTypeUnitSupport,
 } from './card';
 
 // Engagement types.

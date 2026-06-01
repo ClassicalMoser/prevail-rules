@@ -12,3 +12,10 @@ export { restrictionsSchema } from './restrictions';
 export type { Restrictions } from './restrictions';
 export { roundEffectSchema } from './roundEffect';
 export type { RoundEffect } from './roundEffect';
+export { unitSupportSchema } from './unitSupport';
+export type {
+  GenericUnitSupport,
+  TraitUnitSupport,
+  UnitSupport,
+  UnitTypeUnitSupport,
+} from './unitSupport';

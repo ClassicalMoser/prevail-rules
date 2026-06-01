@@ -1,4 +1,4 @@
-import type { Card, Modifier, Restrictions } from '@entities';
+import type { Card, Modifier, Restrictions, UnitSupport } from '@entities';
 import type { Trait } from '@ruleValues';
 import { tempCommandCards } from '@sampleValues';
 
@@ -54,7 +54,7 @@ export interface CreateTestCardOptions {
     traitRestrictions?: Trait[];
     unitRestrictions?: string[];
   };
-  unitPreservation?: string[];
+  unitSupport?: UnitSupport[];
 }
 
 /**
@@ -71,7 +71,7 @@ export function createTestCard(options: CreateTestCardOptions = {}): Card {
     roundEffectRestrictions = {},
     commandModifiers = [],
     commandRestrictions = {},
-    unitPreservation = [],
+    unitSupport = [],
   } = options;
 
   const createRestrictions = (
@@ -104,7 +104,7 @@ export function createTestCard(options: CreateTestCardOptions = {}): Card {
             restrictions: createRestrictions(roundEffectRestrictions),
           }
         : undefined,
-    unitPreservation,
+    unitSupport,
     version,
   };
 }

@@ -5,7 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "rootDir": ".",
+    "rootDir": "src",
     "paths": {
       "@entities": ["./src/domain/entities/index"],
       "@entities/*": ["./src/domain/entities/*"],
@@ -42,5 +42,5 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }
