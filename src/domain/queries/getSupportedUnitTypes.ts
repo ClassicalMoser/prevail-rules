@@ -23,13 +23,11 @@ export function getSupportedUnitTypes(
   const playerHand = state.cardState[player].inHand;
 
   for (const card of playerHand) {
-    for (const support of card.unitSupport) {
-      if (support.supportType === 'unitType') {
-        supportedTypes.add(support.unitTypeId);
-      }
-      if (support.supportType === 'trait') {
-        supportedTypes.add(support.trait);
-      }
+    if (card.unitSupport.supportType === 'unitType') {
+      supportedTypes.add(card.unitSupport.unitTypeId);
+    }
+    if (card.unitSupport.supportType === 'trait') {
+      supportedTypes.add(card.unitSupport.trait);
     }
   }
 

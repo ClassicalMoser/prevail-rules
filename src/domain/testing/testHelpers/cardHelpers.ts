@@ -54,7 +54,7 @@ export interface CreateTestCardOptions {
     traitRestrictions?: Trait[];
     unitRestrictions?: string[];
   };
-  unitSupport?: UnitSupport[];
+  unitSupport?: UnitSupport;
 }
 
 /**
@@ -71,7 +71,7 @@ export function createTestCard(options: CreateTestCardOptions = {}): Card {
     roundEffectRestrictions = {},
     commandModifiers = [],
     commandRestrictions = {},
-    unitSupport = [],
+    unitSupport = { count: 0, supportType: 'generic' },
   } = options;
 
   const createRestrictions = (

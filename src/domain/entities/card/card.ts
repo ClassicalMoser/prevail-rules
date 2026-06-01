@@ -29,7 +29,7 @@ export interface Card {
   /** The round effect of the card, if any. */
   roundEffect: RoundEffect | undefined;
   /** The unit support this card provides */
-  unitSupport: UnitSupport[];
+  unitSupport: UnitSupport;
 }
 
 const _cardSchemaObject = z.object({
@@ -50,7 +50,7 @@ const _cardSchemaObject = z.object({
   /** The round effect of the card, if any. */
   roundEffect: roundEffectSchema.or(z.undefined()),
   /** The unit support this card provides */
-  unitSupport: z.array(unitSupportSchema),
+  unitSupport: unitSupportSchema,
 });
 
 type CardSchemaType = z.infer<typeof _cardSchemaObject>;
