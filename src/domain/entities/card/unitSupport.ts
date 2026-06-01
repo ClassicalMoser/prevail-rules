@@ -17,7 +17,7 @@ const _genericUnitSupportSchemaObject = z.object({
   /** Support applies to any units. */
   supportType: z.literal('generic'),
   /** The number of units that this card supports. */
-  count: z.number(),
+  count: z.int().min(1).max(4),
 });
 
 type GenericUnitSupportSchemaType = z.infer<
@@ -29,7 +29,7 @@ type GenericUnitSupportSchemaType = z.infer<
  */
 export const genericUnitSupportSchema: z.ZodObject<{
   supportType: z.ZodLiteral<'generic'>;
-  count: z.ZodNumber;
+  count: z.ZodInt;
 }> = _genericUnitSupportSchemaObject;
 
 const _assertExactGenericUnitSupport: AssertExact<
@@ -55,7 +55,7 @@ const _traitUnitSupportSchemaObject = z.object({
   /** The trait that this card supports. */
   trait: traitSchema,
   /** The number of units that this card supports. */
-  count: z.number(),
+  count: z.int().min(1).max(4),
 });
 
 type TraitUnitSupportSchemaType = z.infer<typeof _traitUnitSupportSchemaObject>;
@@ -66,7 +66,7 @@ type TraitUnitSupportSchemaType = z.infer<typeof _traitUnitSupportSchemaObject>;
 export const traitUnitSupportSchema: z.ZodObject<{
   supportType: z.ZodLiteral<'trait'>;
   trait: typeof traitSchema;
-  count: z.ZodNumber;
+  count: z.ZodInt;
 }> = _traitUnitSupportSchemaObject;
 
 const _assertExactTraitUnitSupport: AssertExact<
@@ -92,7 +92,7 @@ const _unitTypeUnitSupportSchemaObject = z.object({
   /** The unit type ID that this card supports. */
   unitTypeId: z.uuid(),
   /** The number of units that this card supports. */
-  count: z.number(),
+  count: z.int().min(1).max(4),
 });
 
 type UnitTypeUnitSupportSchemaType = z.infer<
@@ -105,7 +105,7 @@ type UnitTypeUnitSupportSchemaType = z.infer<
 export const unitTypeUnitSupportSchema: z.ZodObject<{
   supportType: z.ZodLiteral<'unitType'>;
   unitTypeId: z.ZodUUID;
-  count: z.ZodNumber;
+  count: z.ZodInt;
 }> = _unitTypeUnitSupportSchemaObject;
 
 const _assertExactUnitTypeUnitSupport: AssertExact<
