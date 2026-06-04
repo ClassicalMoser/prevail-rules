@@ -9,8 +9,8 @@ const placeholderId = '00000000-0000-0000-0000-000000000000';
 function placeholderArmy(): Army {
   return {
     id: placeholderId,
+    units: [],
     commandCards: new Set(),
-    units: new Set(),
   };
 }
 

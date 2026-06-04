@@ -22,7 +22,6 @@ import {
 } from './gameState';
 
 /**
- * A **standard** game (`gameMode === 'standard'`).
  * Every field is documented here so IDE hover does not jump through a shared base interface.
  */
 export interface GameForMode<TGameMode extends GameMode> {

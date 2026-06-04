@@ -18,40 +18,25 @@ describe(getSupportedUnitTypes, () => {
     const state = createEmptyGameState();
     state.cardState.white.inHand = [
       createTestCard({
-        unitSupport: [
-          {
-            count: 1,
-            supportType: 'unitType',
-            unitTypeId: '00000000-0000-4000-8000-000000000001',
-          },
-          {
-            count: 1,
-            supportType: 'unitType',
-            unitTypeId: '00000000-0000-4000-8000-000000000002',
-          },
-        ],
+        unitSupport: {
+          count: 1,
+          supportType: 'unitType',
+          unitTypeId: '00000000-0000-4000-8000-000000000001',
+        },
       }),
       createTestCard({
-        unitSupport: [
-          {
-            count: 1,
-            supportType: 'unitType',
-            unitTypeId: '00000000-0000-4000-8000-000000000002',
-          },
-          {
-            count: 1,
-            supportType: 'unitType',
-            unitTypeId: '00000000-0000-4000-8000-000000000003',
-          },
-        ],
+        unitSupport: {
+          count: 1,
+          supportType: 'unitType',
+          unitTypeId: '00000000-0000-4000-8000-000000000003',
+        },
       }),
-      createTestCard({ unitSupport: [] }),
+      createTestCard({ unitSupport: { count: 1, supportType: 'generic' } }),
     ];
 
     expect(getSupportedUnitTypes(state, 'white')).toStrictEqual(
       new Set([
         '00000000-0000-4000-8000-000000000001',
-        '00000000-0000-4000-8000-000000000002',
         '00000000-0000-4000-8000-000000000003',
       ]),
     );
