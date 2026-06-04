@@ -13,7 +13,7 @@ export interface Army {
   /** The unique identifier of the army. */
   id: string;
   /** The units in the army. */
-  units: Set<UnitCount>;
+  units: UnitCount[];
   /** The command cards in the army. */
   commandCards: Set<Card>;
 }
@@ -22,7 +22,7 @@ const _armySchemaObject = z.object({
   /** The unique identifier of the army. */
   id: z.uuid(),
   /** The units in the army. */
-  units: z.set(unitCountSchema),
+  units: z.array(unitCountSchema),
   /** The command cards in the army. */
   commandCards: z.set(cardSchema),
 });

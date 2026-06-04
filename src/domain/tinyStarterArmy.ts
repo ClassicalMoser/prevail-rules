@@ -37,7 +37,7 @@ const makeArmyCards = (): Card[] => {
 const makeArmy = (id: string): Army => ({
   id,
   commandCards: new Set(makeArmyCards()),
-  units: new Set(makeArmyUnits()),
+  units: makeArmyUnits(),
 });
 
 export const whiteArmyUUID = '00000010-0000-1234-0000-000000000001';
