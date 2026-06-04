@@ -19,7 +19,7 @@ export function getExpectedRetreatEvent(
   }
 
   // Check if there are no legal retreat options
-  if (retreatState.legalRetreatOptions.size === 0) {
+  if (retreatState.legalRetreatOptions.length === 0) {
     // If the rout state is not populated, trigger a rout from the retreat
     if (!retreatState.routState) {
       return {
@@ -41,7 +41,7 @@ export function getExpectedRetreatEvent(
   if (retreatState.finalPosition === undefined) {
     // Multiple retreat options exist - player must choose
     // If only one option exists, it should be auto-selected (finalPosition set) when state is created
-    if (retreatState.legalRetreatOptions.size === 1) {
+    if (retreatState.legalRetreatOptions.length === 1) {
       throw new Error(
         'RetreatState with single option should have finalPosition set immediately',
       );

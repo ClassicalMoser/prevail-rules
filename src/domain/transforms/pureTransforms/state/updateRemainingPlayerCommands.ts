@@ -26,7 +26,7 @@ export function updateRemainingPlayerCommands<TBoard extends Board>(
   phaseState: IssueCommandsPhaseStateForBoard<TBoard>,
   player: PlayerSide,
   initiativePlayer: PlayerSide,
-  remainingCommands: Set<Command>,
+  remainingCommands: Command[],
 ): IssueCommandsPhaseStateForBoard<TBoard> {
   const isFirstPlayer = player === initiativePlayer;
 

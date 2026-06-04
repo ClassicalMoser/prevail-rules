@@ -24,7 +24,7 @@ export interface RoutState {
   /** The player that is discarding cards. */
   player: PlayerSide;
   /** The units that are being routed. */
-  unitsToRout: Set<UnitInstance>;
+  unitsToRout: UnitInstance[];
   /** The number of cards to discard. */
   numberToDiscard: number | undefined;
   /** Whether the cards have been chosen. */
@@ -40,7 +40,7 @@ const _routStateSchemaObject = z.object({
   /** The player that is discarding cards. */
   player: playerSideSchema,
   /** The units that are being routed. */
-  unitsToRout: z.set(unitInstanceSchema),
+  unitsToRout: z.array(unitInstanceSchema),
   /** The number of cards to discard. */
   numberToDiscard: z.number().or(z.undefined()),
   /** Whether the cards have been chosen. */

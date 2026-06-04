@@ -157,9 +157,9 @@ describe(getRoutStateFromRally, () => {
         numberToDiscard: 1,
         player: 'black' as const,
         substepType: 'rout' as const,
-        unitsToRout: new Set([unit]),
+        unitsToRout: [unit],
       },
-      unitsLostSupport: new Set(),
+      unitsLostSupport: [],
     };
 
     const result = getRoutStateFromRally(rallyState);
@@ -173,7 +173,7 @@ describe(getRoutStateFromRally, () => {
       playerRallied: true,
       rallyResolved: true,
       routState: undefined,
-      unitsLostSupport: new Set(),
+      unitsLostSupport: [],
     };
 
     expect(() => getRoutStateFromRally(rallyState)).toThrow(
@@ -197,16 +197,16 @@ describe(getRoutStateFromCleanupPhaseForResolveRout, () => {
           numberToDiscard: undefined,
           player: 'white',
           substepType: 'rout',
-          unitsToRout: new Set([unit]),
+          unitsToRout: [unit],
         },
-        unitsLostSupport: new Set(),
+        unitsLostSupport: [],
       },
       secondPlayerRallyResolutionState: undefined,
       step: 'firstPlayerResolveRally',
     });
 
     const rout = getRoutStateFromCleanupPhaseForResolveRout(state);
-    expect(rout.unitsToRout.has(unit)).toBeTruthy();
+    expect(rout.unitsToRout.includes(unit)).toBeTruthy();
   });
 
   it('returns rout from second player rally on secondPlayerResolveRally', () => {
@@ -224,15 +224,15 @@ describe(getRoutStateFromCleanupPhaseForResolveRout, () => {
           numberToDiscard: undefined,
           player: 'black',
           substepType: 'rout',
-          unitsToRout: new Set([unit]),
+          unitsToRout: [unit],
         },
-        unitsLostSupport: new Set(),
+        unitsLostSupport: [],
       },
       step: 'secondPlayerResolveRally',
     });
 
     const rout = getRoutStateFromCleanupPhaseForResolveRout(state);
-    expect(rout.unitsToRout.has(unit)).toBeTruthy();
+    expect(rout.unitsToRout.includes(unit)).toBeTruthy();
   });
 
   it('throws when rally bucket has no rout state', () => {
@@ -243,7 +243,7 @@ describe(getRoutStateFromCleanupPhaseForResolveRout, () => {
         playerRallied: true,
         rallyResolved: true,
         routState: undefined,
-        unitsLostSupport: new Set(),
+        unitsLostSupport: [],
       },
       secondPlayerRallyResolutionState: undefined,
       step: 'firstPlayerResolveRally',

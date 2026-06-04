@@ -51,7 +51,7 @@ describe(applyResolveUnitsBrokenEvent, () => {
     }
     expect(phase.step).toBe('secondPlayerChooseRally');
     const rs = phase.firstPlayerRallyResolutionState;
-    expect(rs?.unitsLostSupport).toStrictEqual(new Set());
+    expect(rs?.unitsLostSupport).toStrictEqual([]);
     expect(rs?.routState).toBeUndefined();
   });
 
@@ -98,7 +98,7 @@ describe(applyResolveUnitsBrokenEvent, () => {
     const space = getBoardSpace(next.boardState, 'E-5');
     expect(space.unitPresence.presenceType).toBe('none');
 
-    expect(next.routedUnits.has(unit)).toBeTruthy();
+    expect(next.routedUnits.includes(unit)).toBeTruthy();
 
     const phase = next.currentRoundState.currentPhaseState;
     if (!phase || phase.phase !== CLEANUP_PHASE) {
@@ -107,7 +107,7 @@ describe(applyResolveUnitsBrokenEvent, () => {
     expect(phase.step).toBe('firstPlayerResolveRally');
 
     const rs = phase.firstPlayerRallyResolutionState;
-    expect(rs?.unitsLostSupport?.has(unit)).toBeTruthy();
+    expect(rs?.unitsLostSupport?.includes(unit)).toBeTruthy();
     expect(rs?.routState?.numberToDiscard).toBe(unit.unitType.routPenalty);
     expect(rs?.routState?.completed).toBeFalsy();
   });

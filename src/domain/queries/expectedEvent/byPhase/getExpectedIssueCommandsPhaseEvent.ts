@@ -21,7 +21,7 @@ export function getExpectedIssueCommandsPhaseEvent(
   switch (phaseState.step) {
     case 'firstPlayerIssueCommands': {
       // If there are remaining commands, expect issueCommand
-      if (phaseState.remainingCommandsFirstPlayer.size > 0) {
+      if (phaseState.remainingCommandsFirstPlayer.length > 0) {
         return {
           actionType: 'playerChoice',
           choiceType: 'issueCommand',
@@ -46,7 +46,7 @@ export function getExpectedIssueCommandsPhaseEvent(
       }
 
       // No ongoing resolution - check if there are remaining units to resolve
-      if (phaseState.remainingUnitsFirstPlayer.size > 0) {
+      if (phaseState.remainingUnitsFirstPlayer.length > 0) {
         return getExpectedStartCommandResolutionEvent(state, firstPlayer);
       }
       // All units resolved - should have advanced to secondPlayerIssueCommands
@@ -57,7 +57,7 @@ export function getExpectedIssueCommandsPhaseEvent(
 
     case 'secondPlayerIssueCommands': {
       // If there are remaining commands, expect issueCommand
-      if (phaseState.remainingCommandsSecondPlayer.size > 0) {
+      if (phaseState.remainingCommandsSecondPlayer.length > 0) {
         return {
           actionType: 'playerChoice',
           choiceType: 'issueCommand',
@@ -81,7 +81,7 @@ export function getExpectedIssueCommandsPhaseEvent(
       }
 
       // No ongoing resolution - check if there are remaining units to resolve
-      if (phaseState.remainingUnitsSecondPlayer.size > 0) {
+      if (phaseState.remainingUnitsSecondPlayer.length > 0) {
         return getExpectedStartCommandResolutionEvent(state, secondPlayer);
       }
       // All units resolved - should have advanced to complete

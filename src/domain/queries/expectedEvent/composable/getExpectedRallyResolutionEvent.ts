@@ -33,7 +33,7 @@ export function getExpectedRallyResolutionEvent(
     };
   }
 
-  if (rallyState.unitsLostSupport.size > 0) {
+  if (rallyState.unitsLostSupport.length > 0) {
     if (rallyState.routState === undefined) {
       throw new Error('Rout state is required when units lost support');
     }

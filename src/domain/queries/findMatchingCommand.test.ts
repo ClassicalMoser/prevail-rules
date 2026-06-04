@@ -17,7 +17,7 @@ describe(findMatchingCommand, () => {
         unitRestrictions: ['11111111-1111-1111-1111-111111111111'],
       },
     }).command;
-    const commands = new Set([matchingCommand]);
+    const commands = [matchingCommand];
     const targetCommand = {
       ...matchingCommand,
       modifiers: [...matchingCommand.modifiers],
@@ -31,7 +31,7 @@ describe(findMatchingCommand, () => {
 
   it('given command type differs, returns undefined', () => {
     const { command } = createTestCard();
-    const commands = new Set([command]);
+    const commands = [command];
     const targetCommand = {
       ...command,
       type: 'rangedAttack' as const,
@@ -42,7 +42,7 @@ describe(findMatchingCommand, () => {
 
   it('given primitive field differs, returns undefined', () => {
     const { command } = createTestCard();
-    const commands = new Set([command]);
+    const commands = [command];
     const targetCommand = {
       ...command,
       number: command.number + 1,
@@ -53,7 +53,7 @@ describe(findMatchingCommand, () => {
 
   it('given command size differs, returns undefined', () => {
     const { command } = createTestCard();
-    const commands = new Set([command]);
+    const commands = [command];
     const targetCommand = {
       ...command,
       size: 'lines' as const,
@@ -70,7 +70,7 @@ describe(findMatchingCommand, () => {
         unitRestrictions: ['11111111-1111-1111-1111-111111111111'],
       },
     });
-    const commands = new Set([command]);
+    const commands = [command];
     const targetCommand = {
       ...command,
       restrictions: {
@@ -86,7 +86,7 @@ describe(findMatchingCommand, () => {
     const { command } = createTestCard({
       commandModifiers: [{ type: 'attack', value: 1 }],
     });
-    const commands = new Set([command]);
+    const commands = [command];
     const targetCommand: Command = {
       ...command,
       modifiers: [{ type: 'speed', value: 1 }],

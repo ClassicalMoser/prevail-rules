@@ -10,9 +10,9 @@ describe(createEmptyGameState, () => {
 
     expect(gameState.currentRoundNumber).toBe(0);
     expect(gameState.currentRoundState.roundNumber).toBe(1);
-    expect(gameState.currentRoundState.completedPhases.size).toBe(0);
+    expect(gameState.currentRoundState.completedPhases.length).toBe(0);
     expect(gameState.currentRoundState.currentPhaseState).toBeUndefined();
-    expect(gameState.currentRoundState.commandedUnits.size).toBe(0);
+    expect(gameState.currentRoundState.commandedUnits.length).toBe(0);
     expect(gameState.currentInitiative).toBe('black');
     expect(gameState.boardState.boardType).toBe('standard');
     expect(gameState.cardState.black.inHand).toStrictEqual([]);
@@ -23,7 +23,7 @@ describe(createEmptyGameState, () => {
     expect(gameState.cardState.white.played).toStrictEqual([]);
     expect(gameState.cardState.white.discarded).toStrictEqual([]);
     expect(gameState.cardState.white.burnt).toStrictEqual([]);
-    expect(gameState.routedUnits.size).toBe(0);
+    expect(gameState.routedUnits.length).toBe(0);
   });
 
   it('initializes awaitingPlay and inPlay to null for both players', () => {

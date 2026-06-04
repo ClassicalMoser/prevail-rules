@@ -19,7 +19,7 @@ export function createRetreatState(
   unit: UnitWithPlacement<StandardBoard>,
   overrides?: Partial<RetreatStateForBoard<StandardBoard>>,
 ): RetreatStateForBoard<StandardBoard> {
-  const legalRetreatOptions = new Set<UnitPlacement<StandardBoard>>([
+  const legalRetreatOptions: UnitPlacement<StandardBoard>[] = [
     {
       boardType: 'standard' as const,
       coordinate: 'E-4' as const,
@@ -30,7 +30,7 @@ export function createRetreatState(
       coordinate: 'E-6' as const,
       facing: 'north',
     },
-  ]);
+  ];
   return {
     boardType: 'standard' as const,
     completed: false,
@@ -57,7 +57,7 @@ export function createRoutState(
     numberToDiscard: undefined,
     player,
     substepType: 'rout',
-    unitsToRout: new Set([unit]),
+    unitsToRout: [unit],
     ...overrides,
   };
 }

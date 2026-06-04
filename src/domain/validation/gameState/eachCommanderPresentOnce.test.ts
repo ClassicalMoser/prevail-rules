@@ -22,7 +22,7 @@ describe(eachCommanderPresentOnce, () => {
 
     it('given both commanders are in lostCommanders, returns true', () => {
       const gameState = createEmptyGameState();
-      const lostCommanders = new Set<PlayerSide>(['black', 'white']);
+      const lostCommanders: PlayerSide[] = ['black', 'white'];
 
       const { result } = eachCommanderPresentOnce({
         ...gameState,
@@ -34,7 +34,7 @@ describe(eachCommanderPresentOnce, () => {
     it('given one commander is on board and one is lost, returns true', () => {
       const gameState = createEmptyGameState();
       const board = createBoardWithCommander('black', 'E-5');
-      const lostCommanders = new Set<PlayerSide>(['white']);
+      const lostCommanders: PlayerSide[] = ['white'];
 
       const { result } = eachCommanderPresentOnce({
         ...gameState,
@@ -49,7 +49,7 @@ describe(eachCommanderPresentOnce, () => {
       const board = createEmptyGameState().boardState;
       board.board['E-5'] = {
         ...board.board['E-5'],
-        commanders: new Set<PlayerSide>(['black', 'white']),
+        commanders: ['black', 'white'],
       };
 
       const { result } = eachCommanderPresentOnce({
@@ -81,7 +81,7 @@ describe(eachCommanderPresentOnce, () => {
       (commander) => {
         const gameState = createEmptyGameState();
         const board = createBoardWithCommander(commander, 'E-5');
-        const lostCommanders = new Set<PlayerSide>([commander]);
+        const lostCommanders = [commander];
 
         const { result } = eachCommanderPresentOnce({
           ...gameState,

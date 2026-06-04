@@ -27,7 +27,7 @@ describe(updateRallyResolutionStateForCurrentStep, () => {
       playerRallied: true,
       rallyResolved: true,
       routState: undefined,
-      unitsLostSupport: new Set(),
+      unitsLostSupport: [],
     };
 
     const newPhaseState = updateRallyResolutionStateForCurrentStep(
@@ -61,7 +61,7 @@ describe(updateRallyResolutionStateForCurrentStep, () => {
       playerRallied: true,
       rallyResolved: true,
       routState: undefined,
-      unitsLostSupport: new Set(),
+      unitsLostSupport: [],
     };
 
     const newPhaseState = updateRallyResolutionStateForCurrentStep(
@@ -89,7 +89,7 @@ describe(updateRallyResolutionStateForCurrentStep, () => {
       playerRallied: true,
       rallyResolved: true,
       routState: undefined,
-      unitsLostSupport: new Set(),
+      unitsLostSupport: [],
     };
 
     expect(() =>

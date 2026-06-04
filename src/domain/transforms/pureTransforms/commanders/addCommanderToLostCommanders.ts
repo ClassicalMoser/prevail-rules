@@ -6,10 +6,10 @@ export function addCommanderToLostCommanders<TBoard extends Board>(
   gameState: GameStateForBoard<TBoard>,
   playerSide: PlayerSide,
 ): GameStateForBoard<TBoard> {
-  if (gameState.lostCommanders.has(playerSide)) {
+  if (gameState.lostCommanders.includes(playerSide)) {
     throw new Error('Commander already lost');
   }
-  const newLostCommanders = new Set([...gameState.lostCommanders, playerSide]);
+  const newLostCommanders = [...gameState.lostCommanders, playerSide];
   return {
     ...gameState,
     lostCommanders: newLostCommanders,

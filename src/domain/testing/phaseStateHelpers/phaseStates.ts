@@ -53,10 +53,10 @@ export function createIssueCommandsPhaseState(
     boardType: 'standard' as const,
     currentCommandResolutionState: undefined,
     phase: ISSUE_COMMANDS_PHASE,
-    remainingCommandsFirstPlayer: new Set(),
-    remainingCommandsSecondPlayer: new Set(),
-    remainingUnitsFirstPlayer: new Set(),
-    remainingUnitsSecondPlayer: new Set(),
+    remainingCommandsFirstPlayer: [],
+    remainingCommandsSecondPlayer: [],
+    remainingUnitsFirstPlayer: [],
+    remainingUnitsSecondPlayer: [],
     step: 'firstPlayerResolveCommands',
     ...overrides,
   };
@@ -73,7 +73,7 @@ export function createResolveMeleePhaseState(
     boardType: 'standard' as const,
     currentMeleeResolutionState: createMeleeResolutionState(state),
     phase: RESOLVE_MELEE_PHASE,
-    remainingEngagements: new Set(),
+    remainingEngagements: [],
     step: 'resolveMelee',
     ...overrides,
   };

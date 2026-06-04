@@ -42,7 +42,7 @@ describe('createIssueCommandsPhaseState function', () => {
     const state = createIssueCommandsPhaseState(gameState);
     expect(state.phase).toBe(ISSUE_COMMANDS_PHASE);
     expect(state.step).toBe('firstPlayerResolveCommands');
-    expect(state.remainingCommandsFirstPlayer.size).toBe(0);
+    expect(state.remainingCommandsFirstPlayer.length).toBe(0);
     expect(state.currentCommandResolutionState).toBeUndefined();
   });
 });
@@ -55,7 +55,7 @@ describe('createResolveMeleePhaseState function', () => {
     expect(state.phase).toBe(RESOLVE_MELEE_PHASE);
     expect(state.step).toBe('resolveMelee');
     expect(state.currentMeleeResolutionState).toBeDefined();
-    expect(state.remainingEngagements.size).toBe(0);
+    expect(state.remainingEngagements.length).toBe(0);
   });
 });
 

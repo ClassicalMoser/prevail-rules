@@ -55,7 +55,7 @@ describe(generateResolveRoutEvent, () => {
     expect(event.effectType).toBe('resolveRout');
     expect(event.routResolutionSource).toBe('rangedAttack');
     expect(event.penalty).toBe(defendingUnit.unitType.routPenalty);
-    expect(event.unitInstances.has(defendingUnit)).toBeTruthy();
+    expect(event.unitInstances.includes(defendingUnit)).toBeTruthy();
   });
 
   it('given black initiative and rout on both melee applies, uses black unit and melee source', () => {
@@ -97,7 +97,7 @@ describe(generateResolveRoutEvent, () => {
 
     const event = generateResolveRoutEvent(full, 0);
     expect(event.routResolutionSource).toBe('melee');
-    expect(event.unitInstances.has(blackUnit)).toBeTruthy();
+    expect(event.unitInstances.includes(blackUnit)).toBeTruthy();
     expect(event.penalty).toBe(blackUnit.unitType.routPenalty);
   });
 
@@ -131,7 +131,7 @@ describe(generateResolveRoutEvent, () => {
 
     const event = generateResolveRoutEvent(full, 0);
     expect(event.routResolutionSource).toBe('rearEngagementMovement');
-    expect(event.unitInstances.has(whiteUnit)).toBeTruthy();
+    expect(event.unitInstances.includes(whiteUnit)).toBeTruthy();
   });
 
   it('given cleanup firstPlayerResolveRally with nested routState, source rally and listed unit', () => {
@@ -150,9 +150,9 @@ describe(generateResolveRoutEvent, () => {
             numberToDiscard: undefined,
             player: 'white',
             substepType: 'rout',
-            unitsToRout: new Set([unit]),
+            unitsToRout: [unit],
           },
-          unitsLostSupport: new Set(),
+          unitsLostSupport: [],
         },
         step: 'firstPlayerResolveRally',
       }),
@@ -160,7 +160,7 @@ describe(generateResolveRoutEvent, () => {
 
     const event = generateResolveRoutEvent(full, 0);
     expect(event.routResolutionSource).toBe('rally');
-    expect(event.unitInstances.has(unit)).toBeTruthy();
+    expect(event.unitInstances.includes(unit)).toBeTruthy();
   });
 
   it('given issueCommands with invalid melee-shaped CRS, throws movement/ranged expectation', () => {

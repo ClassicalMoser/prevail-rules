@@ -24,8 +24,8 @@ describe(applyPerformRangedAttackEvent, () => {
   /** IssueCommands at first or second resolve step with the given remaining unit sets. */
   function createStateInResolveStep(
     step: 'firstPlayerResolveCommands' | 'secondPlayerResolveCommands',
-    remainingUnitsFirstPlayer: Set<UnitInstance>,
-    remainingUnitsSecondPlayer: Set<UnitInstance>,
+    remainingUnitsFirstPlayer: UnitInstance[],
+    remainingUnitsSecondPlayer: UnitInstance[],
     currentInitiative: 'black' | 'white' = 'black',
   ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative });
@@ -52,8 +52,8 @@ describe(applyPerformRangedAttackEvent, () => {
     });
     const state = createStateInResolveStep(
       'firstPlayerResolveCommands',
-      new Set([attacker.unit]),
-      new Set(),
+      [attacker.unit],
+      [],
     );
 
     const event: PerformRangedAttackEventForBoard<StandardBoard> = {
@@ -62,7 +62,7 @@ describe(applyPerformRangedAttackEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
-      supportingUnits: new Set(),
+      supportingUnits: [],
       targetUnit: defender,
       unit: attacker,
     };
@@ -84,10 +84,10 @@ describe(applyPerformRangedAttackEvent, () => {
     expect(ranged.defendingCommitment).toStrictEqual({
       commitmentType: 'pending',
     });
-    expect(ranged.supportingUnits.size).toBe(0);
+    expect(ranged.supportingUnits.length).toBe(0);
 
     const remainingFirst = phaseState.remainingUnitsFirstPlayer;
-    expect(remainingFirst.size).toBe(0);
+    expect(remainingFirst.length).toBe(0);
     expect(
       [...remainingFirst].some(
         (u) => isSameUnitInstance(u, attacker.unit).result,
@@ -114,8 +114,8 @@ describe(applyPerformRangedAttackEvent, () => {
     });
     const state = createStateInResolveStep(
       'firstPlayerResolveCommands',
-      new Set([attacker.unit, otherUnit.unit]),
-      new Set(),
+      [attacker.unit, otherUnit.unit],
+      [],
     );
 
     const event: PerformRangedAttackEventForBoard<StandardBoard> = {
@@ -124,7 +124,7 @@ describe(applyPerformRangedAttackEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
-      supportingUnits: new Set(),
+      supportingUnits: [],
       targetUnit: defender,
       unit: attacker,
     };
@@ -133,7 +133,7 @@ describe(applyPerformRangedAttackEvent, () => {
     const phaseState = getIssueCommandsPhaseState(newState);
     const remainingFirst = phaseState.remainingUnitsFirstPlayer;
 
-    expect(remainingFirst.size).toBe(1);
+    expect(remainingFirst.length).toBe(1);
     expect(
       [...remainingFirst].some(
         (u) => isSameUnitInstance(u, otherUnit.unit).result,
@@ -159,8 +159,8 @@ describe(applyPerformRangedAttackEvent, () => {
     });
     const state = createStateInResolveStep(
       'firstPlayerResolveCommands',
-      new Set([attacker.unit]),
-      new Set([defender.unit]),
+      [attacker.unit],
+      [defender.unit],
     );
 
     const event: PerformRangedAttackEventForBoard<StandardBoard> = {
@@ -169,7 +169,7 @@ describe(applyPerformRangedAttackEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
-      supportingUnits: new Set(),
+      supportingUnits: [],
       targetUnit: defender,
       unit: attacker,
     };
@@ -177,7 +177,7 @@ describe(applyPerformRangedAttackEvent, () => {
     const newState = applyPerformRangedAttackEvent(event, state);
     const phaseState = getIssueCommandsPhaseState(newState);
 
-    expect(phaseState.remainingUnitsSecondPlayer.size).toBe(0);
+    expect(phaseState.remainingUnitsSecondPlayer.length).toBe(0);
     expect(
       [...phaseState.remainingUnitsSecondPlayer].some(
         (u) => isSameUnitInstance(u, defender.unit).result,
@@ -204,8 +204,8 @@ describe(applyPerformRangedAttackEvent, () => {
     });
     const state = createStateInResolveStep(
       'firstPlayerResolveCommands',
-      new Set([attacker.unit, supporter.unit]),
-      new Set(),
+      [attacker.unit, supporter.unit],
+      [],
     );
 
     const event: PerformRangedAttackEventForBoard<StandardBoard> = {
@@ -214,7 +214,7 @@ describe(applyPerformRangedAttackEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
-      supportingUnits: new Set([supporter]),
+      supportingUnits: [supporter],
       targetUnit: defender,
       unit: attacker,
     };
@@ -223,13 +223,13 @@ describe(applyPerformRangedAttackEvent, () => {
     const phaseState = getIssueCommandsPhaseState(newState);
     const ranged = getRangedAttackResolutionState(newState);
 
-    expect(ranged.supportingUnits.size).toBe(1);
+    expect(ranged.supportingUnits.length).toBe(1);
     expect(
       [...ranged.supportingUnits].some(
         (u) => isSameUnitInstance(u, supporter.unit).result,
       ),
     ).toBeTruthy();
-    expect(phaseState.remainingUnitsFirstPlayer.size).toBe(0);
+    expect(phaseState.remainingUnitsFirstPlayer.length).toBe(0);
   });
 
   it('given two supporters in remaining, ranged holds both and first-player remaining ends empty', () => {
@@ -257,8 +257,8 @@ describe(applyPerformRangedAttackEvent, () => {
     });
     const state = createStateInResolveStep(
       'firstPlayerResolveCommands',
-      new Set([attacker.unit, supporter1.unit, supporter2.unit]),
-      new Set(),
+      [attacker.unit, supporter1.unit, supporter2.unit],
+      [],
     );
 
     const event: PerformRangedAttackEventForBoard<StandardBoard> = {
@@ -267,7 +267,7 @@ describe(applyPerformRangedAttackEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
-      supportingUnits: new Set([supporter1, supporter2]),
+      supportingUnits: [supporter1, supporter2],
       targetUnit: defender,
       unit: attacker,
     };
@@ -276,8 +276,8 @@ describe(applyPerformRangedAttackEvent, () => {
     const phaseState = getIssueCommandsPhaseState(newState);
     const ranged = getRangedAttackResolutionState(newState);
 
-    expect(ranged.supportingUnits.size).toBe(2);
-    expect(phaseState.remainingUnitsFirstPlayer.size).toBe(0);
+    expect(ranged.supportingUnits.length).toBe(2);
+    expect(phaseState.remainingUnitsFirstPlayer.length).toBe(0);
     expect(
       [...phaseState.remainingUnitsFirstPlayer].some(
         (u) => isSameUnitInstance(u, supporter1.unit).result,
@@ -303,8 +303,8 @@ describe(applyPerformRangedAttackEvent, () => {
     });
     const state = createStateInResolveStep(
       'secondPlayerResolveCommands',
-      new Set(),
-      new Set([attacker.unit]),
+      [],
+      [attacker.unit],
       'black',
     );
 
@@ -314,7 +314,7 @@ describe(applyPerformRangedAttackEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'white',
-      supportingUnits: new Set(),
+      supportingUnits: [],
       targetUnit: defender,
       unit: attacker,
     };
@@ -322,7 +322,7 @@ describe(applyPerformRangedAttackEvent, () => {
     const newState = applyPerformRangedAttackEvent(event, state);
     const phaseState = getIssueCommandsPhaseState(newState);
 
-    expect(phaseState.remainingUnitsSecondPlayer.size).toBe(0);
+    expect(phaseState.remainingUnitsSecondPlayer.length).toBe(0);
     expect(
       getRangedAttackResolutionState(newState).attackingUnit,
     ).toBeDefined();

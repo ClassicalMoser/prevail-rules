@@ -15,15 +15,15 @@ describe('updateRemainingCommandsForPlayer', () => {
       boardType: 'standard',
       currentCommandResolutionState: undefined,
       phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: new Set(),
-      remainingCommandsSecondPlayer: new Set(),
-      remainingUnitsFirstPlayer: new Set(),
-      remainingUnitsSecondPlayer: new Set(),
+      remainingCommandsFirstPlayer: [],
+      remainingCommandsSecondPlayer: [],
+      remainingUnitsFirstPlayer: [],
+      remainingUnitsSecondPlayer: [],
       step: 'firstPlayerIssueCommands' as const,
     };
 
     const { command } = createTestCard();
-    const newCommands = new Set([command]);
+    const newCommands = [command];
 
     const newPhaseState = updateRemainingPlayerCommands(
       phaseState,
@@ -45,15 +45,15 @@ describe('updateRemainingCommandsForPlayer', () => {
       boardType: 'standard',
       currentCommandResolutionState: undefined,
       phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: new Set(),
-      remainingCommandsSecondPlayer: new Set(),
-      remainingUnitsFirstPlayer: new Set(),
-      remainingUnitsSecondPlayer: new Set(),
+      remainingCommandsFirstPlayer: [],
+      remainingCommandsSecondPlayer: [],
+      remainingUnitsFirstPlayer: [],
+      remainingUnitsSecondPlayer: [],
       step: 'firstPlayerIssueCommands' as const,
     };
 
     const { command } = createTestCard();
-    const newCommands = new Set([command]);
+    const newCommands = [command];
 
     const newPhaseState = updateRemainingPlayerCommands(
       phaseState,
@@ -75,18 +75,18 @@ describe('updateRemainingCommandsForPlayer', () => {
       boardType: 'standard',
       currentCommandResolutionState: undefined,
       phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: new Set(),
-      remainingCommandsSecondPlayer: new Set(),
-      remainingUnitsFirstPlayer: new Set(),
-      remainingUnitsSecondPlayer: new Set(),
+      remainingCommandsFirstPlayer: [],
+      remainingCommandsSecondPlayer: [],
+      remainingUnitsFirstPlayer: [],
+      remainingUnitsSecondPlayer: [],
       step: 'firstPlayerIssueCommands' as const,
     };
 
     const { command } = createTestCard();
-    const newCommands = new Set([command]);
+    const newCommands = [command];
 
     updateRemainingPlayerCommands(phaseState, 'black', 'black', newCommands);
 
-    expect(phaseState.remainingCommandsFirstPlayer.size).toBe(0);
+    expect(phaseState.remainingCommandsFirstPlayer.length).toBe(0);
   });
 });

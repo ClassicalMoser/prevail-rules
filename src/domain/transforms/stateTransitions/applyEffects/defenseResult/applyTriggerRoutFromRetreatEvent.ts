@@ -31,7 +31,7 @@ export function applyTriggerRoutFromRetreatEvent<TBoard extends Board>(
     numberToDiscard: undefined,
     player: retreatState.retreatingUnit.unit.playerSide,
     substepType: 'rout',
-    unitsToRout: new Set([retreatState.retreatingUnit.unit]),
+    unitsToRout: [retreatState.retreatingUnit.unit],
   };
 
   return updateRetreatRoutState(state, routState);

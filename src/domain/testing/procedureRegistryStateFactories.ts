@@ -75,10 +75,10 @@ export const procedureRegistryStateFactories: Record<
       boardType: 'standard' as const,
       currentCommandResolutionState: undefined,
       phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: new Set(),
-      remainingCommandsSecondPlayer: new Set(),
-      remainingUnitsFirstPlayer: new Set(),
-      remainingUnitsSecondPlayer: new Set(),
+      remainingCommandsFirstPlayer: [],
+      remainingCommandsSecondPlayer: [],
+      remainingUnitsFirstPlayer: [],
+      remainingUnitsSecondPlayer: [],
       step: 'complete',
     };
     return updatePhaseState(createEmptyGameState(), initialPhaseState);

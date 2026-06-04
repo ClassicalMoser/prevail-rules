@@ -93,8 +93,8 @@ describe(getRallyResolutionStateForCurrentStep, () => {
     state.currentInitiative = 'white';
     state.currentRoundState = {
       boardType: 'standard',
-      commandedUnits: new Set(),
-      completedPhases: new Set(),
+      commandedUnits: [],
+      completedPhases: [],
       currentPhaseState: {
         firstPlayerRallyResolutionState: undefined,
         phase: CLEANUP_PHASE,

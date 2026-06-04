@@ -58,7 +58,7 @@ describe(getExpectedResolveMeleePhaseEvent, () => {
   it('given engagements remain, asks the initiative player to choose a melee resolution', () => {
     const state = createGameStateInResolveMeleeStep('resolveMelee', () => ({
       currentMeleeResolutionState: undefined,
-      remainingEngagements: new Set(['E-5']),
+      remainingEngagements: ['E-5'] as const,
     }));
 
     const expectedEvent = getExpectedResolveMeleePhaseEvent(state);
@@ -73,7 +73,7 @@ describe(getExpectedResolveMeleePhaseEvent, () => {
   it('given when no engagements remain but the step did not advance, throws', () => {
     const state = createGameStateInResolveMeleeStep('resolveMelee', () => ({
       currentMeleeResolutionState: undefined,
-      remainingEngagements: new Set(),
+      remainingEngagements: [] as const,
     }));
 
     expect(() => getExpectedResolveMeleePhaseEvent(state)).toThrow(

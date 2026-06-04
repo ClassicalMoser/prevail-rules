@@ -78,7 +78,7 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
           numberToDiscard: totalPenalty,
           player,
           substepType: 'rout' as const,
-          unitsToRout: new Set(unitsToRout.map((u) => u.unit)),
+          unitsToRout: unitsToRout.map((u) => u.unit),
         } satisfies RoutState)
       : undefined;
 
@@ -86,7 +86,7 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
   const updatedRallyState = {
     ...rallyState,
     routState,
-    unitsLostSupport: new Set(unitsToRout.map((u) => u.unit)),
+    unitsLostSupport: unitsToRout.map((u) => u.unit),
   };
 
   // Next step: stay on same step if penalty, otherwise advance

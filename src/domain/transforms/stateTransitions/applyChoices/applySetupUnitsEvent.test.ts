@@ -23,7 +23,7 @@ describe(applySetupUnitsEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
-      unitPlacements: new Set([unitWithPlacement]),
+      unitPlacements: [unitWithPlacement],
     };
 
     const newState = applySetupUnitsEvent(event, state);
@@ -56,7 +56,7 @@ describe(applySetupUnitsEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
-      unitPlacements: new Set([blackUnit, whiteUnit]),
+      unitPlacements: [blackUnit, whiteUnit],
     };
 
     const newState = applySetupUnitsEvent(event, state);
@@ -88,7 +88,7 @@ describe(applySetupUnitsEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
-      unitPlacements: new Set([unitWithPlacement]),
+      unitPlacements: [unitWithPlacement],
     };
 
     applySetupUnitsEvent(event, state);
@@ -108,7 +108,7 @@ describe(applySetupUnitsEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
-      unitPlacements: new Set(),
+      unitPlacements: [],
     };
 
     const newState = applySetupUnitsEvent(event, state);

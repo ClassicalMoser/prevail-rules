@@ -19,8 +19,8 @@ export function addCompletedPhase<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   completedPhase: PhaseStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
-  const newCompletedPhases = new Set(state.currentRoundState.completedPhases);
-  newCompletedPhases.add(completedPhase);
+  const newCompletedPhases = [...state.currentRoundState.completedPhases];
+  newCompletedPhases.push(completedPhase);
 
   // Update the round state with the new completed phases
   const newState = updateRoundState(state, {

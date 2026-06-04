@@ -26,7 +26,7 @@ describe(removeCommanderFromBoard, () => {
       );
 
       expect(newBoard).not.toBe(boardWithCommander);
-      expect(newBoard.board[coordinate]?.commanders).toStrictEqual(new Set());
+      expect(newBoard.board[coordinate]?.commanders).toStrictEqual([]);
     });
 
     it('given not mutate the original board', () => {
@@ -39,9 +39,9 @@ describe(removeCommanderFromBoard, () => {
 
       removeCommanderFromBoard(boardWithCommander, coordinate, 'white');
 
-      expect(boardWithCommander.board[coordinate]?.commanders).toStrictEqual(
-        new Set(['white']),
-      );
+      expect(boardWithCommander.board[coordinate]?.commanders).toStrictEqual([
+        'white',
+      ]);
     });
   });
 
@@ -62,9 +62,7 @@ describe(removeCommanderFromBoard, () => {
       );
 
       expect(newBoard).not.toBe(boardWithBoth);
-      expect(newBoard.board[coordinate]?.commanders).toStrictEqual(
-        new Set(['black']),
-      );
+      expect(newBoard.board[coordinate]?.commanders).toStrictEqual(['black']);
     });
 
     it('given remove black commander and leave white', () => {
@@ -82,9 +80,7 @@ describe(removeCommanderFromBoard, () => {
         'black',
       );
 
-      expect(newBoard.board[coordinate]?.commanders).toStrictEqual(
-        new Set(['white']),
-      );
+      expect(newBoard.board[coordinate]?.commanders).toStrictEqual(['white']);
     });
 
     it('given removing from multiple commanders, does not mutate the original board', () => {
@@ -98,9 +94,10 @@ describe(removeCommanderFromBoard, () => {
 
       removeCommanderFromBoard(boardWithBoth, coordinate, 'white');
 
-      expect(boardWithBoth.board[coordinate]?.commanders).toStrictEqual(
-        new Set(['white', 'black']),
-      );
+      expect(boardWithBoth.board[coordinate]?.commanders).toStrictEqual([
+        'white',
+        'black',
+      ]);
     });
   });
 
@@ -162,10 +159,8 @@ describe(removeCommanderFromBoard, () => {
         'black',
       );
 
-      expect(newBoard.board[coordinate]?.commanders).toStrictEqual(new Set());
-      expect(newBoard.board[otherCoord]?.commanders).toStrictEqual(
-        new Set(['white']),
-      );
+      expect(newBoard.board[coordinate]?.commanders).toStrictEqual([]);
+      expect(newBoard.board[otherCoord]?.commanders).toStrictEqual(['white']);
     });
 
     it('given preserve units on other spaces', () => {

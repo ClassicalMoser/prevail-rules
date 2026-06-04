@@ -16,9 +16,11 @@ describe(addCompletedPhase, () => {
     const newState = addCompletedPhase(state, phaseState);
 
     expect(
-      newState.currentRoundState.completedPhases.has(phaseState),
+      newState.currentRoundState.completedPhases.includes(phaseState),
     ).toBeTruthy();
-    expect(state.currentRoundState.completedPhases.has(phaseState)).toBeFalsy();
+    expect(
+      state.currentRoundState.completedPhases.includes(phaseState),
+    ).toBeFalsy();
   });
 
   it('given not mutate the original state', () => {
@@ -51,10 +53,10 @@ describe(addCompletedPhase, () => {
     const stateWithBoth = addCompletedPhase(stateWithFirst, secondPhase);
 
     expect(
-      stateWithBoth.currentRoundState.completedPhases.has(firstPhase),
+      stateWithBoth.currentRoundState.completedPhases.includes(firstPhase),
     ).toBeTruthy();
     expect(
-      stateWithBoth.currentRoundState.completedPhases.has(secondPhase),
+      stateWithBoth.currentRoundState.completedPhases.includes(secondPhase),
     ).toBeTruthy();
   });
 });

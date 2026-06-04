@@ -35,8 +35,8 @@ export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
   // Update the round state
   const stateWithRound: GameStateForBoard<TBoard> = updateRoundState(state, {
     boardType: state.boardState.boardType,
-    commandedUnits: new Set(),
-    completedPhases: new Set(),
+    commandedUnits: [],
+    completedPhases: [],
     currentPhaseState: newPhaseState,
     events: [],
     roundNumber: newRoundNumber,

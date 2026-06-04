@@ -45,7 +45,7 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
   const createAttackApplyState = (
     unitWithPlacement: UnitWithPlacement<TBoard>,
     attackResult: AttackResult,
-    legalRetreatOptionsFromEvent: Set<UnitPlacement<TBoard>>,
+    legalRetreatOptionsFromEvent: UnitPlacement<TBoard>[],
   ): AttackApplyStateForBoard<TBoard> | undefined => {
     if (
       !attackResult.unitRouted &&
@@ -66,12 +66,12 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
         numberToDiscard: undefined,
         player: unitWithPlacement.unit.playerSide,
         substepType: 'rout',
-        unitsToRout: new Set([unitWithPlacement.unit]),
+        unitsToRout: [unitWithPlacement.unit],
       };
     } else if (attackResult.unitRetreated) {
       const legalRetreatOptions = legalRetreatOptionsFromEvent;
       const finalPosition =
-        legalRetreatOptions.size === 1
+        legalRetreatOptions.length === 1
           ? [...legalRetreatOptions][0]
           : undefined;
 

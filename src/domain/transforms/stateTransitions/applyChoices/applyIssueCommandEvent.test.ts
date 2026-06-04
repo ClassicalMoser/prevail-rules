@@ -40,10 +40,10 @@ describe(applyIssueCommandEvent, () => {
       boardType: 'standard',
       currentCommandResolutionState: undefined,
       phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: new Set([blackCommand]),
-      remainingCommandsSecondPlayer: new Set([whiteCommand]),
-      remainingUnitsFirstPlayer: new Set(),
-      remainingUnitsSecondPlayer: new Set(),
+      remainingCommandsFirstPlayer: [blackCommand],
+      remainingCommandsSecondPlayer: [whiteCommand],
+      remainingUnitsFirstPlayer: [],
+      remainingUnitsSecondPlayer: [],
       step: 'firstPlayerIssueCommands',
     });
 
@@ -62,7 +62,7 @@ describe(applyIssueCommandEvent, () => {
         eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
-        units: new Set([unit]),
+        units: [unit],
       };
 
       const newState = applyIssueCommandEvent(event, state);
@@ -72,7 +72,9 @@ describe(applyIssueCommandEvent, () => {
         throw new Error('Expected issueCommands phase');
       }
 
-      expect(phaseState.remainingCommandsFirstPlayer.has(command)).toBeFalsy();
+      expect(
+        phaseState.remainingCommandsFirstPlayer.includes(command),
+      ).toBeFalsy();
       // Check unit presence using value equality, not reference equality
       const unitInCommandedUnits = [
         ...newState.currentRoundState.commandedUnits,
@@ -91,7 +93,7 @@ describe(applyIssueCommandEvent, () => {
         eventNumber: 0,
         eventType: 'playerChoice',
         player: 'white',
-        units: new Set([unit]),
+        units: [unit],
       };
 
       const newState = applyIssueCommandEvent(event, state);
@@ -101,7 +103,9 @@ describe(applyIssueCommandEvent, () => {
         throw new Error('Expected issueCommands phase');
       }
 
-      expect(phaseState.remainingCommandsSecondPlayer.has(command)).toBeFalsy();
+      expect(
+        phaseState.remainingCommandsSecondPlayer.includes(command),
+      ).toBeFalsy();
       // Check unit presence using value equality, not reference equality
       const unitInCommandedUnits = [
         ...newState.currentRoundState.commandedUnits,
@@ -121,7 +125,7 @@ describe(applyIssueCommandEvent, () => {
         eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
-        units: new Set([unit1, unit2]),
+        units: [unit1, unit2],
       };
 
       const newState = applyIssueCommandEvent(event, state);
@@ -135,7 +139,7 @@ describe(applyIssueCommandEvent, () => {
       ].some((u) => isSameUnitInstance(u, unit2).result);
       expect(unit1InCommandedUnits).toBeTruthy();
       expect(unit2InCommandedUnits).toBeTruthy();
-      expect(newState.currentRoundState.commandedUnits.size).toBe(2);
+      expect(newState.currentRoundState.commandedUnits.length).toBe(2);
     });
   });
 
@@ -146,9 +150,9 @@ describe(applyIssueCommandEvent, () => {
       const { command } = tempCommandCards[0];
       const phaseState = getIssueCommandsPhaseState(state);
       const originalRemainingCommandsSize =
-        phaseState.remainingCommandsFirstPlayer.size;
+        phaseState.remainingCommandsFirstPlayer.length;
       const originalCommandedUnitsSize =
-        state.currentRoundState.commandedUnits.size;
+        state.currentRoundState.commandedUnits.length;
 
       const event: IssueCommandEvent = {
         choiceType: 'issueCommand',
@@ -156,17 +160,17 @@ describe(applyIssueCommandEvent, () => {
         eventNumber: 0,
         eventType: 'playerChoice',
         player: 'black',
-        units: new Set([unit]),
+        units: [unit],
       };
 
       applyIssueCommandEvent(event, state);
 
       // Original state should be unchanged
       const phaseStateAfter = getIssueCommandsPhaseState(state);
-      expect(phaseStateAfter.remainingCommandsFirstPlayer.size).toBe(
+      expect(phaseStateAfter.remainingCommandsFirstPlayer.length).toBe(
         originalRemainingCommandsSize,
       );
-      expect(state.currentRoundState.commandedUnits.size).toBe(
+      expect(state.currentRoundState.commandedUnits.length).toBe(
         originalCommandedUnitsSize,
       );
     });

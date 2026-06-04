@@ -35,7 +35,7 @@ export interface BoardSpace {
   /**
    * The commanders in the space.
    */
-  commanders: Set<PlayerSide>;
+  commanders: PlayerSide[];
 }
 
 const _boardSpaceSchemaObject = z.object({
@@ -58,7 +58,7 @@ const _boardSpaceSchemaObject = z.object({
   /**
    * The commanders in the space.
    */
-  commanders: z.set(playerSideSchema),
+  commanders: z.array(playerSideSchema),
 });
 
 type boardSpaceSchemaType = z.infer<typeof _boardSpaceSchemaObject>;

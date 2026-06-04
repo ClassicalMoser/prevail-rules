@@ -42,8 +42,8 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
     phase: ISSUE_COMMANDS_PHASE,
     remainingCommandsFirstPlayer: event.remainingCommandsFirstPlayer,
     remainingCommandsSecondPlayer: event.remainingCommandsSecondPlayer,
-    remainingUnitsFirstPlayer: new Set(),
-    remainingUnitsSecondPlayer: new Set(),
+    remainingUnitsFirstPlayer: [],
+    remainingUnitsSecondPlayer: [],
     step: 'firstPlayerIssueCommands',
   };
 

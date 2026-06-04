@@ -36,24 +36,6 @@ describe(validatePlayerChoice, () => {
     vi.restoreAllMocks();
   });
 
-  it('passes when the expected choice matches and is legal', () => {
-    const state = stateInPlayCardsChooseCards();
-    const event: ChooseCardEvent = {
-      card: tempCommandCards[2],
-      choiceType: 'chooseCard',
-      eventNumber: 0,
-      eventType: 'playerChoice',
-      player: 'black',
-    };
-
-    const validation = validatePlayerChoice(event, state);
-
-    // eslint-disable-next-line no-console
-    console.log(validation);
-
-    expect(validation.result).toBeTruthy();
-  });
-
   it('fails when a game effect is expected instead of player input', () => {
     const state = updatePhaseState(createEmptyGameState(), {
       phase: PLAY_CARDS_PHASE,

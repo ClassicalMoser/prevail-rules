@@ -80,8 +80,6 @@ describe(generateResolveMeleeEvent, () => {
     const event = generateResolveMeleeEvent(full, 0);
     expect(event.whiteUnitRetreated).toBeTruthy();
     expect(event.blackUnitRetreated).toBeTruthy();
-    expect(event.whiteLegalRetreatOptions).toBeInstanceOf(Set);
-    expect(event.blackLegalRetreatOptions).toBeInstanceOf(Set);
   });
 
   it('given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat and empty sets', () => {
@@ -93,10 +91,8 @@ describe(generateResolveMeleeEvent, () => {
     expect(event.blackUnitWithPlacement.unit.playerSide).toBe('black');
     expect(event.whiteUnitRetreated).toBeFalsy();
     expect(event.blackUnitRetreated).toBeFalsy();
-    expect(event.whiteLegalRetreatOptions).toBeInstanceOf(Set);
-    expect(event.blackLegalRetreatOptions).toBeInstanceOf(Set);
-    expect(event.whiteLegalRetreatOptions.size).toBe(0);
-    expect(event.blackLegalRetreatOptions.size).toBe(0);
+    expect(event.whiteLegalRetreatOptions.length).toBe(0);
+    expect(event.blackLegalRetreatOptions.length).toBe(0);
   });
 
   it('given melee CRS with white commitment pending, throws white commitment guard', () => {

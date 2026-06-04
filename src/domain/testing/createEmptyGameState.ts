@@ -44,14 +44,14 @@ export function createEmptyGameState(options?: {
     currentRoundNumber: 0,
     currentRoundState: {
       boardType: 'standard',
-      commandedUnits: new Set(),
-      completedPhases: new Set(),
+      commandedUnits: [],
+      completedPhases: [],
       currentPhaseState: undefined,
       events: [],
       roundNumber: 1,
     },
-    lostCommanders: new Set(),
-    reservedUnits: new Set(),
-    routedUnits: new Set(),
+    lostCommanders: [],
+    reservedUnits: [],
+    routedUnits: [],
   };
 }

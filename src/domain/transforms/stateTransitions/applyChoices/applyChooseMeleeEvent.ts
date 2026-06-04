@@ -43,7 +43,7 @@ export function applyChooseMeleeEvent<TBoard extends Board>(
   const newPhaseState: ResolveMeleePhaseStateForBoard<TBoard> = {
     ...currentPhaseState,
     currentMeleeResolutionState: newMeleeResolutionState,
-    remainingEngagements: newRemainingEngagements,
+    remainingEngagements: [...newRemainingEngagements],
   };
 
   // Return the new game state

@@ -26,7 +26,7 @@ export function getExpectedResolveMeleePhaseEvent(
       }
 
       // No ongoing resolution - check if there are remaining engagements to resolve
-      if (phaseState.remainingEngagements.size > 0) {
+      if (phaseState.remainingEngagements.length > 0) {
         // Initiative player chooses which engagement to resolve
         return {
           actionType: 'playerChoice',

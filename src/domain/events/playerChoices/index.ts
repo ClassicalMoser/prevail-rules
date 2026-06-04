@@ -23,7 +23,10 @@ export { commitToMovementEventSchema } from './commitToMovement';
 export type { CommitToRangedAttackEvent } from './commitToRangedAttack';
 export { commitToRangedAttackEventSchema } from './commitToRangedAttack';
 export type { IssueCommandEvent } from './issueCommand';
-export { issueCommandEventSchema } from './issueCommand';
+export {
+  issueCommandEventSchema,
+  ISSUE_COMMAND_CHOICE_TYPE,
+} from './issueCommand';
 export type {
   MoveCommanderEvent,
   MoveCommanderEventForBoard,
@@ -35,7 +38,10 @@ export type {
   PerformRangedAttackEvent,
   PerformRangedAttackEventForBoard,
 } from './performRangedAttack';
-export { performRangedAttackEventSchema } from './performRangedAttack';
+export {
+  performRangedAttackEventSchema,
+  PERFORM_RANGED_ATTACK_CHOICE_TYPE,
+} from './performRangedAttack';
 export type {
   PlayerChoiceEvent,
   PlayerChoiceEventForBoard,

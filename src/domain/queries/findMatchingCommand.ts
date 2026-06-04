@@ -9,7 +9,7 @@ import { areModifiersArraysEqual, areRestrictionsEqual } from '@validation';
  * @returns The matching command if found, undefined otherwise
  */
 export function findMatchingCommand(
-  commands: Set<Command>,
+  commands: Command[],
   targetCommand: Command,
 ): Command | undefined {
   return [...commands].find((c) => {

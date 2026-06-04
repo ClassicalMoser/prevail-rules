@@ -64,7 +64,7 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
   );
 
   // Each supporting unit provides 1 support value. Simple as that.
-  const supportValue = rangedAttackState.supportingUnits.size;
+  const supportValue = rangedAttackState.supportingUnits.length;
 
   // Add the base attack value and the support value to get the total attack value
   const totalAttackValue = baseAttackValue + supportValue;
@@ -102,7 +102,7 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
     effectType: RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
     eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
-    legalRetreatOptions,
+    legalRetreatOptions: [...legalRetreatOptions],
     retreated: attackResult.unitRetreated,
     reversed: attackResult.unitReversed,
     routed: attackResult.unitRouted,

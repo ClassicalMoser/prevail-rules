@@ -69,7 +69,7 @@ describe(applyResolveMeleeEvent, () => {
     placements: ReturnType<typeof unitPlacements>,
   ): ResolveMeleeEventForBoard<StandardBoard> {
     return {
-      blackLegalRetreatOptions: new Set(),
+      blackLegalRetreatOptions: [],
       blackUnitRetreated: false,
       blackUnitReversed: false,
       blackUnitRouted: false,
@@ -79,7 +79,7 @@ describe(applyResolveMeleeEvent, () => {
       eventNumber: 0,
       eventType: 'gameEffect',
       location: 'E-5',
-      whiteLegalRetreatOptions: new Set(),
+      whiteLegalRetreatOptions: [],
       whiteUnitRetreated: false,
       whiteUnitReversed: false,
       whiteUnitRouted: false,
@@ -138,7 +138,7 @@ describe(applyResolveMeleeEvent, () => {
     };
     const event: ResolveMeleeEventForBoard<StandardBoard> = {
       ...baseMeleeEvent(placements),
-      whiteLegalRetreatOptions: new Set([only]),
+      whiteLegalRetreatOptions: [only],
       whiteUnitRetreated: true,
     };
 
@@ -154,10 +154,10 @@ describe(applyResolveMeleeEvent, () => {
     const placements = unitPlacements();
     const event: ResolveMeleeEventForBoard<StandardBoard> = {
       ...baseMeleeEvent(placements),
-      whiteLegalRetreatOptions: new Set([
+      whiteLegalRetreatOptions: [
         { boardType: 'standard' as const, coordinate: 'E-6', facing: 'south' },
         { boardType: 'standard' as const, coordinate: 'E-4', facing: 'south' },
-      ]),
+      ],
       whiteUnitRetreated: true,
     };
 

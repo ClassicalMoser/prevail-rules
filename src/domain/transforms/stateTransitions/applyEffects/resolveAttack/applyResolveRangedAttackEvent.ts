@@ -52,12 +52,14 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
       numberToDiscard: undefined,
       player: defendingUnit.playerSide,
       substepType: 'rout',
-      unitsToRout: new Set([defendingUnit]),
+      unitsToRout: [defendingUnit],
     };
   } else if (attackResult.unitRetreated) {
     const { legalRetreatOptions } = event;
     const finalPosition =
-      legalRetreatOptions.size === 1 ? [...legalRetreatOptions][0] : undefined;
+      legalRetreatOptions.length === 1
+        ? [...legalRetreatOptions][0]
+        : undefined;
 
     retreatState = {
       boardType,

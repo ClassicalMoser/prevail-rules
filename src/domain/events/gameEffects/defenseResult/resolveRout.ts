@@ -90,7 +90,7 @@ export interface ResolveRoutEvent {
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
   /** The unit instances that are being routed. */
-  unitInstances: Set<UnitInstance>;
+  unitInstances: UnitInstance[];
   /** The penalty for routing the units (sum of all units' rout penalties). */
   penalty: number;
 }
@@ -105,7 +105,7 @@ const _resolveRoutEventSchemaObject = z.object({
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: z.number(),
   /** The unit instances that are being routed. */
-  unitInstances: z.set(unitInstanceSchema),
+  unitInstances: z.array(unitInstanceSchema),
   /** The penalty for routing the units (sum of all units' rout penalties). */
   penalty: z.number(),
 });
@@ -123,6 +123,6 @@ export const resolveRoutEventSchema: z.ZodObject<{
   effectType: z.ZodLiteral<'resolveRout'>;
   routResolutionSource: typeof routResolutionSourceSchema;
   eventNumber: z.ZodNumber;
-  unitInstances: z.ZodSet<typeof unitInstanceSchema>;
+  unitInstances: z.ZodArray<typeof unitInstanceSchema>;
   penalty: z.ZodNumber;
 }> = _resolveRoutEventSchemaObject;

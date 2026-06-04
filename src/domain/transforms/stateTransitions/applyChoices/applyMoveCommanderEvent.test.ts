@@ -59,15 +59,15 @@ describe(applyMoveCommanderEvent, () => {
 
       // Commander should be removed from original location
       expect(
-        newState.boardState.board['E-5']?.commanders.has('black'),
+        newState.boardState.board['E-5']?.commanders.includes('black'),
       ).toBeFalsy();
       // Commander should be at new location
       expect(
-        newState.boardState.board['E-7']?.commanders.has('black'),
+        newState.boardState.board['E-7']?.commanders.includes('black'),
       ).toBeTruthy();
       // White commander should be unchanged
       expect(
-        newState.boardState.board['E-6']?.commanders.has('white'),
+        newState.boardState.board['E-6']?.commanders.includes('white'),
       ).toBeTruthy();
     });
 
@@ -92,15 +92,15 @@ describe(applyMoveCommanderEvent, () => {
 
       // Commander should be removed from original location
       expect(
-        newState.boardState.board['E-6']?.commanders.has('white'),
+        newState.boardState.board['E-6']?.commanders.includes('white'),
       ).toBeFalsy();
       // Commander should be at new location
       expect(
-        newState.boardState.board['E-8']?.commanders.has('white'),
+        newState.boardState.board['E-8']?.commanders.includes('white'),
       ).toBeTruthy();
       // Black commander should be unchanged
       expect(
-        newState.boardState.board['E-5']?.commanders.has('black'),
+        newState.boardState.board['E-5']?.commanders.includes('black'),
       ).toBeTruthy();
     });
   });
@@ -151,7 +151,7 @@ describe(applyMoveCommanderEvent, () => {
     it('given black commander and step before apply, input board and step unchanged after apply', () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
       const originalBlackCommanderPresent =
-        state.boardState.board['E-5']?.commanders.has('black');
+        state.boardState.board['E-5']?.commanders.includes('black');
       const originalStep = state.currentRoundState.currentPhaseState?.step;
 
       const event: MoveCommanderEventForBoard<StandardBoard> = {
@@ -166,7 +166,7 @@ describe(applyMoveCommanderEvent, () => {
 
       applyMoveCommanderEvent(event, state);
 
-      expect(state.boardState.board['E-5']?.commanders.has('black')).toBe(
+      expect(state.boardState.board['E-5']?.commanders.includes('black')).toBe(
         originalBlackCommanderPresent,
       );
       expect(state.currentRoundState.currentPhaseState?.step).toBe(

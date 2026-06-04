@@ -8,7 +8,7 @@ export function addCommanderToBoard<TBoard extends Board>(
 ): TBoard {
   const space = getBoardSpace(board, coordinate);
   const existingCommanders = space.commanders;
-  const newCommanders = new Set([...existingCommanders, playerSide]);
+  const newCommanders = [...existingCommanders, playerSide];
   const newSpace = {
     ...space,
     commanders: newCommanders,

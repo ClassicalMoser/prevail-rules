@@ -39,7 +39,7 @@ describe(getRoutStateFromAttackApply, () => {
         numberToDiscard: 1,
         player: 'black' as const,
         substepType: 'rout' as const,
-        unitsToRout: new Set([unit]),
+        unitsToRout: [unit],
       },
       substepType: 'attackApply' as const,
     };
@@ -47,7 +47,7 @@ describe(getRoutStateFromAttackApply, () => {
     const result = getRoutStateFromAttackApply(attackApplyState);
     expect(result.substepType).toBe('rout');
     expect(result.player).toBe('black');
-    expect(result.unitsToRout.has(unit)).toBeTruthy();
+    expect(result.unitsToRout.includes(unit)).toBeTruthy();
   });
 
   it('given apply without routState, throws no rout in attack apply', () => {
@@ -127,7 +127,7 @@ describe(getRoutStateFromMeleeResolutionByInitiative, () => {
     });
     const rout = getRoutStateFromMeleeResolutionByInitiative(state);
     expect(rout.player).toBe('black');
-    expect(rout.unitsToRout.size).toBeGreaterThan(0);
+    expect(rout.unitsToRout.length).toBeGreaterThan(0);
   });
 
   it('given black initiative but black has no rout, falls back to white rout', () => {
@@ -137,7 +137,7 @@ describe(getRoutStateFromMeleeResolutionByInitiative, () => {
     });
     const rout = getRoutStateFromMeleeResolutionByInitiative(state);
     expect(rout.player).toBe('white');
-    expect(rout.unitsToRout.size).toBeGreaterThan(0);
+    expect(rout.unitsToRout.length).toBeGreaterThan(0);
   });
 
   it('given neither apply has rout, throws no rout in melee resolution', () => {

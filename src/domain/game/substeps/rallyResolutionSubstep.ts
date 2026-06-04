@@ -23,7 +23,7 @@ export interface RallyResolutionState {
   /** Whether the rally has been resolved. */
   rallyResolved: boolean;
   /** Units that lost support after the rally. */
-  unitsLostSupport: Set<UnitInstance> | undefined;
+  unitsLostSupport: UnitInstance[] | undefined;
   /** The rout discard penalty state (if units were routed). */
   routState: RoutState | undefined;
   /** Whether the rally resolution substep is complete. */
@@ -36,7 +36,7 @@ const _rallyResolutionStateSchemaObject = z.object({
   /** Whether the rally has been resolved. */
   rallyResolved: z.boolean(),
   /** Units that lost support after the rally. */
-  unitsLostSupport: z.set(unitInstanceSchema).or(z.undefined()),
+  unitsLostSupport: z.array(unitInstanceSchema).or(z.undefined()),
   /** The rout discard penalty state (if units were routed). */
   routState: routStateSchema.or(z.undefined()),
   /** Whether the rally resolution substep is complete. */
@@ -56,7 +56,7 @@ const _assertExactRallyResolutionState: AssertExact<
 export const rallyResolutionStateSchema: z.ZodObject<{
   playerRallied: z.ZodBoolean;
   rallyResolved: z.ZodBoolean;
-  unitsLostSupport: z.ZodType<Set<UnitInstance> | undefined>;
+  unitsLostSupport: z.ZodType<UnitInstance[] | undefined>;
   routState: z.ZodType<RoutState | undefined>;
   completed: z.ZodType<boolean>;
 }> = _rallyResolutionStateSchemaObject;

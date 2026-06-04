@@ -19,7 +19,7 @@ export interface IssueCommandEvent {
   /** The commands to issue. */
   command: Command;
   /** The units to apply the commands to. */
-  units: Set<UnitInstance>;
+  units: UnitInstance[];
 }
 
 const _issueCommandEventSchemaObject = z.object({
@@ -34,7 +34,7 @@ const _issueCommandEventSchemaObject = z.object({
   /** The commands to issue. */
   command: commandSchema,
   /** The units to apply the commands to. */
-  units: z.set(unitInstanceSchema),
+  units: z.array(unitInstanceSchema),
 });
 
 type IssueCommandEventSchemaType = z.infer<
@@ -53,5 +53,5 @@ export const issueCommandEventSchema: z.ZodObject<{
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   command: typeof commandSchema;
-  units: z.ZodSet<typeof unitInstanceSchema>;
+  units: z.ZodArray<typeof unitInstanceSchema>;
 }> = _issueCommandEventSchemaObject;

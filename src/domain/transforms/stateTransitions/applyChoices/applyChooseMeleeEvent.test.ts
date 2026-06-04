@@ -23,7 +23,7 @@ describe(applyChooseMeleeEvent, () => {
       boardType: 'standard' as const,
       currentMeleeResolutionState: undefined,
       phase: RESOLVE_MELEE_PHASE,
-      remainingEngagements: new Set(remainingSpaces),
+      remainingEngagements: remainingSpaces,
       step: 'resolveMelee',
     });
   }
@@ -42,7 +42,7 @@ describe(applyChooseMeleeEvent, () => {
     const newState = applyChooseMeleeEvent(event, state);
     const phaseState = getResolveMeleePhaseState(newState);
 
-    expect(phaseState.remainingEngagements).toStrictEqual(new Set(['E-6']));
+    expect(phaseState.remainingEngagements).toStrictEqual(['E-6']);
     expect(phaseState.currentMeleeResolutionState?.location).toBe('E-5');
   });
 

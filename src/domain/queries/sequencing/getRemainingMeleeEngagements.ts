@@ -9,6 +9,6 @@ import type { ResolveMeleePhaseStateForBoard } from '@game';
  */
 export function getRemainingMeleeEngagements<TBoard extends Board>(
   phaseState: ResolveMeleePhaseStateForBoard<TBoard>,
-): Set<BoardCoordinate<TBoard>> {
+): BoardCoordinate<TBoard>[] {
   return phaseState.remainingEngagements;
 }
