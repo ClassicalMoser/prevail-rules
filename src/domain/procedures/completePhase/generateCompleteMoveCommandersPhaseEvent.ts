@@ -25,12 +25,10 @@ export function generateCompleteMoveCommandersPhaseEvent(
   const firstPlayerCard = state.cardState[firstPlayer].inPlay;
   const secondPlayerCard = state.cardState[secondPlayer].inPlay;
 
-  const remainingCommandsFirstPlayer = new Set(
-    firstPlayerCard !== null ? [firstPlayerCard.command] : [],
-  );
-  const remainingCommandsSecondPlayer = new Set(
-    secondPlayerCard !== null ? [secondPlayerCard.command] : [],
-  );
+  const remainingCommandsFirstPlayer =
+    firstPlayerCard !== null ? [firstPlayerCard.command] : [];
+  const remainingCommandsSecondPlayer =
+    secondPlayerCard !== null ? [secondPlayerCard.command] : [];
 
   return {
     effectType: COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,

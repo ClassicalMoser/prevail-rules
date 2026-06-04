@@ -13,7 +13,7 @@ describe(addCommanderToLostCommanders, () => {
       const newGameState = addCommanderToLostCommanders(gameState, 'black');
 
       expect(newGameState).not.toBe(gameState);
-      expect(newGameState.lostCommanders).toStrictEqual(new Set(['black']));
+      expect(newGameState.lostCommanders).toStrictEqual(['black']);
     });
 
     it('given not mutate the original game state', () => {
@@ -21,7 +21,7 @@ describe(addCommanderToLostCommanders, () => {
 
       addCommanderToLostCommanders(gameState, 'white');
 
-      expect(gameState.lostCommanders).toStrictEqual(new Set());
+      expect(gameState.lostCommanders).toStrictEqual([]);
     });
   });
 
@@ -38,9 +38,7 @@ describe(addCommanderToLostCommanders, () => {
         'white',
       );
 
-      expect(newGameState.lostCommanders).toStrictEqual(
-        new Set(['black', 'white']),
-      );
+      expect(newGameState.lostCommanders).toStrictEqual(['black', 'white']);
     });
 
     it('given adding second commander, does not mutate the original game state', () => {
@@ -52,9 +50,7 @@ describe(addCommanderToLostCommanders, () => {
 
       addCommanderToLostCommanders(gameStateWithBlack, 'white');
 
-      expect(gameStateWithBlack.lostCommanders).toStrictEqual(
-        new Set(['black']),
-      );
+      expect(gameStateWithBlack.lostCommanders).toStrictEqual(['black']);
     });
   });
 

@@ -74,7 +74,7 @@ export function createRangedAttackResolutionState(
     },
     defendingUnit: createTestUnit('white', { attack: 2 }),
     substepType: 'commandResolution' as const,
-    supportingUnits: new Set(),
+    supportingUnits: [],
     ...overrides,
   };
 }

@@ -34,11 +34,11 @@ export interface RoundStateForBoard<TBoard extends Board> {
   /** The type of the board. */
   boardType: TBoard['boardType'];
   /** The phases that have been completed in the round. */
-  completedPhases: Set<PhaseStateForBoard<TBoard>>;
+  completedPhases: PhaseStateForBoard<TBoard>[];
   /** The state of the current phase of the round. */
   currentPhaseState: PhaseStateForBoard<TBoard> | undefined;
   /** Units that have been commanded this round. */
-  commandedUnits: Set<UnitInstance>;
+  commandedUnits: UnitInstance[];
   /** Events applied during this round, in order. */
   events: readonly EventForBoard<TBoard>[];
 }
@@ -54,11 +54,11 @@ const _smallRoundStateSchemaObject = z.object({
   /** The type of the board. */
   boardType: z.literal('small'),
   /** The phases that have been completed in the round. */
-  completedPhases: z.set(smallPhaseStateSchema),
+  completedPhases: z.array(smallPhaseStateSchema),
   /** The state of the current phase of the round. */
   currentPhaseState: smallPhaseStateSchema.or(z.undefined()),
   /** Units that have been commanded this round. */
-  commandedUnits: z.set(unitInstanceSchema),
+  commandedUnits: z.array(unitInstanceSchema),
   /** Events applied during this round, in order. */
   events: z.array(smallEventSchema).readonly(),
 });
@@ -79,11 +79,11 @@ const _standardRoundStateSchemaObject = z.object({
   /** The type of the board. */
   boardType: z.literal('standard'),
   /** The phases that have been completed in the round. */
-  completedPhases: z.set(standardPhaseStateSchema),
+  completedPhases: z.array(standardPhaseStateSchema),
   /** The state of the current phase of the round. */
   currentPhaseState: standardPhaseStateSchema.or(z.undefined()),
   /** Units that have been commanded this round. */
-  commandedUnits: z.set(unitInstanceSchema),
+  commandedUnits: z.array(unitInstanceSchema),
   /** Events applied during this round, in order. */
   events: z.array(standardEventSchema).readonly(),
 });
@@ -107,11 +107,11 @@ const _largeRoundStateSchemaObject = z.object({
   /** The type of the board. */
   boardType: z.literal('large'),
   /** The phases that have been completed in the round. */
-  completedPhases: z.set(largePhaseStateSchema),
+  completedPhases: z.array(largePhaseStateSchema),
   /** The state of the current phase of the round. */
   currentPhaseState: largePhaseStateSchema.or(z.undefined()),
   /** Units that have been commanded this round. */
-  commandedUnits: z.set(unitInstanceSchema),
+  commandedUnits: z.array(unitInstanceSchema),
   /** Events applied during this round, in order. */
   events: z.array(largeEventSchema).readonly(),
 });

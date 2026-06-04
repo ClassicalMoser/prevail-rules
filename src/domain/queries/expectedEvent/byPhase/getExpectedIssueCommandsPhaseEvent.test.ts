@@ -31,10 +31,10 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       state,
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: undefined,
-        remainingCommandsFirstPlayer: new Set(),
-        remainingCommandsSecondPlayer: new Set(),
-        remainingUnitsFirstPlayer: new Set(),
-        remainingUnitsSecondPlayer: new Set(),
+        remainingCommandsFirstPlayer: [],
+        remainingCommandsSecondPlayer: [],
+        remainingUnitsFirstPlayer: [],
+        remainingUnitsSecondPlayer: [],
         step,
         ...overrides,
       }),
@@ -46,7 +46,7 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       'firstPlayerIssueCommands',
       'black',
       () => ({
-        remainingCommandsFirstPlayer: new Set([createTestCard().command]),
+        remainingCommandsFirstPlayer: [createTestCard().command],
       }),
     );
 
@@ -88,9 +88,7 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       'firstPlayerResolveCommands',
       'black',
       () => ({
-        remainingUnitsFirstPlayer: new Set([
-          createTestUnit('black', { attack: 3 }),
-        ]),
+        remainingUnitsFirstPlayer: [createTestUnit('black', { attack: 3 })],
       }),
     );
 
@@ -114,7 +112,7 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       'secondPlayerIssueCommands',
       'black',
       () => ({
-        remainingCommandsSecondPlayer: new Set([createTestCard().command]),
+        remainingCommandsSecondPlayer: [createTestCard().command],
       }),
     );
 
@@ -156,9 +154,7 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       'secondPlayerResolveCommands',
       'black',
       () => ({
-        remainingUnitsSecondPlayer: new Set([
-          createTestUnit('white', { attack: 3 }),
-        ]),
+        remainingUnitsSecondPlayer: [createTestUnit('white', { attack: 3 })],
       }),
     );
 

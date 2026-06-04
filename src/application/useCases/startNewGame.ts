@@ -10,7 +10,7 @@ function placeholderArmy(): Army {
   return {
     id: placeholderId,
     units: [],
-    commandCards: new Set(),
+    commandCards: [],
   };
 }
 

@@ -24,10 +24,10 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
       boardType: state.boardState.boardType,
       currentCommandResolutionState: undefined,
       phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: new Set(),
-      remainingCommandsSecondPlayer: new Set(),
-      remainingUnitsFirstPlayer: new Set(),
-      remainingUnitsSecondPlayer: new Set(),
+      remainingCommandsFirstPlayer: [],
+      remainingCommandsSecondPlayer: [],
+      remainingUnitsFirstPlayer: [],
+      remainingUnitsSecondPlayer: [],
       step: 'complete',
     };
     return updatePhaseState(state, initialPhaseState);
@@ -43,7 +43,7 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
 
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeIssueCommandsPhase');
-    expect(event.remainingEngagements.has('E-5')).toBeTruthy();
+    expect(event.remainingEngagements.includes('E-5')).toBeTruthy();
   });
 
   it('given empty board and phase complete, remainingEngagements is empty', () => {
@@ -51,7 +51,7 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
 
     const event = generateCompleteIssueCommandsPhaseEvent(stateWithPhase, 0);
 
-    expect(event.remainingEngagements.size).toBe(0);
+    expect(event.remainingEngagements.length).toBe(0);
   });
 
   it('given same phase shell, engaged vs empty board yields different remainingEngagements', () => {
@@ -65,7 +65,7 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
     const eventEmpty = generateCompleteIssueCommandsPhaseEvent(empty, 0);
     const eventEngaged = generateCompleteIssueCommandsPhaseEvent(engaged, 0);
 
-    expect(eventEmpty.remainingEngagements.size).toBe(0);
-    expect(eventEngaged.remainingEngagements.has('E-5')).toBeTruthy();
+    expect(eventEmpty.remainingEngagements.length).toBe(0);
+    expect(eventEngaged.remainingEngagements.includes('E-5')).toBeTruthy();
   });
 });

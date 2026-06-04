@@ -38,7 +38,7 @@ export interface RangedAttackResolutionStateForBoard<TBoard extends Board> {
   /** The unit that is being attacked. */
   defendingUnit: UnitInstance;
   /** The supporting units. */
-  supportingUnits: Set<UnitInstance>;
+  supportingUnits: UnitInstance[];
   /** The state of the attack apply. */
   attackApplyState: AttackApplyStateForBoard<TBoard> | undefined;
   /** The commitment of the attacking player. */
@@ -64,7 +64,7 @@ const _standardRangedAttackResolutionStateSchemaObject = z.object({
   defendingCommitment: commitmentSchema,
   defendingUnit: unitInstanceSchema,
   substepType: z.literal('commandResolution'),
-  supportingUnits: z.set(unitInstanceSchema),
+  supportingUnits: z.array(unitInstanceSchema),
 });
 
 type StandardRangedAttackResolutionStateSchemaType = z.infer<
@@ -90,7 +90,7 @@ const _smallRangedAttackResolutionStateSchemaObject = z.object({
   defendingCommitment: commitmentSchema,
   defendingUnit: unitInstanceSchema,
   substepType: z.literal('commandResolution'),
-  supportingUnits: z.set(unitInstanceSchema),
+  supportingUnits: z.array(unitInstanceSchema),
 });
 
 type SmallRangedAttackResolutionStateSchemaType = z.infer<
@@ -116,7 +116,7 @@ const _largeRangedAttackResolutionStateSchemaObject = z.object({
   defendingCommitment: commitmentSchema,
   defendingUnit: unitInstanceSchema,
   substepType: z.literal('commandResolution'),
-  supportingUnits: z.set(unitInstanceSchema),
+  supportingUnits: z.array(unitInstanceSchema),
 });
 
 type LargeRangedAttackResolutionStateSchemaType = z.infer<

@@ -30,7 +30,7 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
   const defendingUnit = event.targetUnit.unit;
   // Convert the supporting units to an array for iteration
   const supportingUnitsArray = [...event.supportingUnits];
-  const supportingUnits = new Set(supportingUnitsArray.map((uwp) => uwp.unit));
+  const supportingUnits = supportingUnitsArray.map((uwp) => uwp.unit);
 
   const isFirstPlayer = attackingPlayer === state.currentInitiative;
   const remainingAttacker = isFirstPlayer
@@ -80,11 +80,11 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
     ...currentPhaseState,
     currentCommandResolutionState: rangedAttackResolutionState,
     remainingUnitsFirstPlayer: isFirstPlayer
-      ? newRemainingAttacker
-      : newRemainingDefender,
+      ? [...newRemainingAttacker]
+      : [...newRemainingDefender],
     remainingUnitsSecondPlayer: isFirstPlayer
-      ? newRemainingDefender
-      : newRemainingAttacker,
+      ? [...newRemainingDefender]
+      : [...newRemainingAttacker],
   };
 
   const newGameState = updatePhaseState(state, newPhaseState);

@@ -47,7 +47,7 @@ export function applyResolveRallyEvent<TBoard extends Board>(
   const updatedRallyResolutionState: RallyResolutionState = {
     ...rallyState,
     rallyResolved: true,
-    unitsLostSupport: new Set(), // TODO: Calculate which units lost support
+    unitsLostSupport: [], // TODO: Calculate which units lost support
     routState: undefined,
   };
 

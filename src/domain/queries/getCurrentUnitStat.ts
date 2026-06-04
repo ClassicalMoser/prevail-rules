@@ -3,8 +3,8 @@ import type { GameStateForBoard } from '@game';
 import { isDefenseStat, matchesUnitRequirements } from '@validation';
 import { getSpacesWithinDistance } from './boardSpace';
 import { getCommanderSpace } from './getCommanderSpace';
-import { hasUnitInSet } from './unit';
 import { getPositionOfUnit } from './unitPresence';
+import { hasUnitInArray } from './unit';
 
 /**
  * Gets the current stat value of a unit.
@@ -119,7 +119,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
   const activeCommandModifiers = activeCard?.command.modifiers ?? [];
   // First check if the unit was commanded
   const { commandedUnits } = gameState.currentRoundState;
-  const unitWasCommanded = hasUnitInSet(commandedUnits, unit);
+  const unitWasCommanded = hasUnitInArray(commandedUnits, unit);
 
   // If the unit was commanded, check if there is a matching modifier
   if (unitWasCommanded) {

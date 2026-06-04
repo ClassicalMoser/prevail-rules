@@ -22,7 +22,7 @@ export function isLegalCommanderMove<TBoard extends Board>(
     // Validate that the commander is at the starting position
     const fromSpace = getBoardSpace(boardState, from);
     // Check if the player's commander is actually at the starting position
-    if (!fromSpace.commanders.has(player)) {
+    if (!fromSpace.commanders.includes(player)) {
       return {
         errorReason: 'Commander is not at the starting position',
         result: false,

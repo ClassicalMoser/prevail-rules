@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, PlayerSide } from '@entities';
+import type { Board, BoardCoordinate, BoardSpace, PlayerSide } from '@entities';
 import { getBoardSpace } from '@queries';
 
 /* Pure transform to remove a commander from the board immutably with no side effects. */
@@ -9,13 +9,13 @@ export function removeCommanderFromBoard<TBoard extends Board>(
 ): TBoard {
   const space = getBoardSpace(board, coordinate);
   const existingCommanders = space.commanders;
-  if (!existingCommanders.has(playerSide)) {
+  if (!existingCommanders.includes(playerSide)) {
     throw new Error('Commander not present to remove');
   }
-  const newCommanders = new Set(
-    [...existingCommanders].filter((commander) => commander !== playerSide),
+  const newCommanders = [...existingCommanders].filter(
+    (commander) => commander !== playerSide,
   );
-  const newSpace = {
+  const newSpace: BoardSpace = {
     ...space,
     commanders: newCommanders,
   };

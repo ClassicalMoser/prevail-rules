@@ -136,7 +136,7 @@ describe(applyTriggerRoutFromRetreatEvent, () => {
         retreatState.retreatingUnit.unit.playerSide,
       );
       expect(
-        newRetreatState.routState?.unitsToRout.has(
+        newRetreatState.routState?.unitsToRout.includes(
           retreatState.retreatingUnit.unit,
         ),
       ).toBeTruthy();

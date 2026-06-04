@@ -41,6 +41,6 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/application/transport/portableTypes"],
+  "include": ["src/**/*.ts", "src/transport/portableTypes"],
   "exclude": ["node_modules", "dist"]
 }

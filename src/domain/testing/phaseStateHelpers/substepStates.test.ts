@@ -17,7 +17,7 @@ describe(createRetreatState, () => {
     const state = createRetreatState(unit);
     expect(state.substepType).toBe('retreat');
     expect(state.retreatingUnit).toBe(unit);
-    expect(state.legalRetreatOptions.size).toBe(2);
+    expect(state.legalRetreatOptions.length).toBe(2);
     expect(state.completed).toBeFalsy();
   });
 });
@@ -28,7 +28,7 @@ describe(createRoutState, () => {
     const state = createRoutState('white', unit);
     expect(state.substepType).toBe('rout');
     expect(state.player).toBe('white');
-    expect(state.unitsToRout.has(unit)).toBeTruthy();
+    expect(state.unitsToRout.includes(unit)).toBeTruthy();
     expect(state.completed).toBeFalsy();
   });
 });

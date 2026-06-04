@@ -110,7 +110,7 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
   }
 
   return {
-    blackLegalRetreatOptions,
+    blackLegalRetreatOptions: [...blackLegalRetreatOptions],
     blackUnitRetreated: blackUnitResult.unitRetreated,
     blackUnitReversed: blackUnitResult.unitReversed,
     blackUnitRouted: blackUnitResult.unitRouted,
@@ -120,7 +120,7 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
     eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     location: meleeCoordinate,
-    whiteLegalRetreatOptions,
+    whiteLegalRetreatOptions: [...whiteLegalRetreatOptions],
     whiteUnitRetreated: whiteUnitResult.unitRetreated,
     whiteUnitReversed: whiteUnitResult.unitReversed,
     whiteUnitRouted: whiteUnitResult.unitRouted,

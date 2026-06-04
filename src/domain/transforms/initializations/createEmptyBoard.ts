@@ -18,7 +18,7 @@ import {
  */
 function createEmptyBoardSpace(): BoardSpace {
   return {
-    commanders: new Set(),
+    commanders: [],
     elevation: {
       northEast: 0,
       northWest: 0,

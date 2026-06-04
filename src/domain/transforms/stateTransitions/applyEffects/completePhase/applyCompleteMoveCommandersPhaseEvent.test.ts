@@ -15,14 +15,14 @@ function moveCommandersCompleteEventFromDefaultCards(): CompleteMoveCommandersPh
     effectType: 'completeMoveCommandersPhase',
     eventNumber: 0,
     eventType: 'gameEffect',
-    remainingCommandsFirstPlayer: new Set([tempCommandCards[0].command]),
-    remainingCommandsSecondPlayer: new Set([tempCommandCards[1].command]),
+    remainingCommandsFirstPlayer: [tempCommandCards[0].command],
+    remainingCommandsSecondPlayer: [tempCommandCards[1].command],
   };
 }
 
 function moveCommandersCompleteEvent(
-  first: Set<Command>,
-  second: Set<Command>,
+  first: Command[],
+  second: Command[],
 ): CompleteMoveCommandersPhaseEvent {
   return {
     effectType: 'completeMoveCommandersPhase',
@@ -109,12 +109,12 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
         throw new Error('Expected issueCommands phase');
       }
 
-      expect(phaseState.remainingCommandsFirstPlayer).toStrictEqual(
-        new Set([blackCard.command]),
-      );
-      expect(phaseState.remainingCommandsSecondPlayer).toStrictEqual(
-        new Set([whiteCard.command]),
-      );
+      expect(phaseState.remainingCommandsFirstPlayer).toStrictEqual([
+        blackCard.command,
+      ]);
+      expect(phaseState.remainingCommandsSecondPlayer).toStrictEqual([
+        whiteCard.command,
+      ]);
     });
 
     it('given default event, both remainingUnits* start empty', () => {
@@ -129,8 +129,8 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
         throw new Error('Expected issueCommands phase');
       }
 
-      expect(phaseState.remainingUnitsFirstPlayer.size).toBe(0);
-      expect(phaseState.remainingUnitsSecondPlayer.size).toBe(0);
+      expect(phaseState.remainingUnitsFirstPlayer.length).toBe(0);
+      expect(phaseState.remainingUnitsSecondPlayer.length).toBe(0);
     });
 
     it('given default event, issueCommands has no currentCommandResolutionState', () => {
@@ -154,7 +154,7 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
       const state = createGameStateInCompleteStep();
       const originalPhase = state.currentRoundState.currentPhaseState?.phase;
       const originalCompletedPhasesSize =
-        state.currentRoundState.completedPhases.size;
+        state.currentRoundState.completedPhases.length;
 
       const event = moveCommandersCompleteEventFromDefaultCards();
 
@@ -163,7 +163,7 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
       expect(state.currentRoundState.currentPhaseState?.phase).toBe(
         originalPhase,
       );
-      expect(state.currentRoundState.completedPhases.size).toBe(
+      expect(state.currentRoundState.completedPhases.length).toBe(
         originalCompletedPhasesSize,
       );
     });
@@ -202,12 +202,12 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
       if (!phaseState || phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
-      expect(phaseState.remainingCommandsFirstPlayer).toStrictEqual(
-        new Set([tempCommandCards[0].command]),
-      );
-      expect(phaseState.remainingCommandsSecondPlayer).toStrictEqual(
-        new Set([tempCommandCards[1].command]),
-      );
+      expect(phaseState.remainingCommandsFirstPlayer).toStrictEqual([
+        tempCommandCards[0].command,
+      ]);
+      expect(phaseState.remainingCommandsSecondPlayer).toStrictEqual([
+        tempCommandCards[1].command,
+      ]);
     });
 
     it('given inPlay null both sides and event empty command sets, issueCommands queues empty', () => {
@@ -228,7 +228,7 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
         step: 'complete',
       });
 
-      const event = moveCommandersCompleteEvent(new Set(), new Set());
+      const event = moveCommandersCompleteEvent([], []);
 
       const newState = applyCompleteMoveCommandersPhaseEvent(
         event,
@@ -239,13 +239,13 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
       if (!phaseState || phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
-      expect(phaseState.remainingCommandsFirstPlayer.size).toBe(0);
-      expect(phaseState.remainingCommandsSecondPlayer.size).toBe(0);
+      expect(phaseState.remainingCommandsFirstPlayer.length).toBe(0);
+      expect(phaseState.remainingCommandsSecondPlayer.length).toBe(0);
     });
 
     it('given cards still inPlay but event passes empty sets, issueCommands ignores inPlay', () => {
       const state = createGameStateInCompleteStep();
-      const event = moveCommandersCompleteEvent(new Set(), new Set());
+      const event = moveCommandersCompleteEvent([], []);
 
       const newState = applyCompleteMoveCommandersPhaseEvent(event, state);
 
@@ -253,8 +253,8 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
       if (!phaseState || phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
-      expect(phaseState.remainingCommandsFirstPlayer.size).toBe(0);
-      expect(phaseState.remainingCommandsSecondPlayer.size).toBe(0);
+      expect(phaseState.remainingCommandsFirstPlayer.length).toBe(0);
+      expect(phaseState.remainingCommandsSecondPlayer.length).toBe(0);
     });
   });
 
@@ -266,10 +266,10 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
           boardType: 'standard',
           currentCommandResolutionState: undefined,
           phase: ISSUE_COMMANDS_PHASE,
-          remainingCommandsFirstPlayer: new Set(),
-          remainingCommandsSecondPlayer: new Set(),
-          remainingUnitsFirstPlayer: new Set(),
-          remainingUnitsSecondPlayer: new Set(),
+          remainingCommandsFirstPlayer: [],
+          remainingCommandsSecondPlayer: [],
+          remainingUnitsFirstPlayer: [],
+          remainingUnitsSecondPlayer: [],
           step: 'firstPlayerIssueCommands',
         });
 

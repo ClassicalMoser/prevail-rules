@@ -44,7 +44,7 @@ describe(createAttackApplyStateWithRout, () => {
     const unit = createTestUnit('white');
     const state = createAttackApplyStateWithRout(unit);
     expect(state.attackResult.unitRouted).toBeTruthy();
-    expect(state.routState?.unitsToRout.has(unit)).toBeTruthy();
+    expect(state.routState?.unitsToRout.includes(unit)).toBeTruthy();
   });
 });
 

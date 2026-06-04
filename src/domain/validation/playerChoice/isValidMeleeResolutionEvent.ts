@@ -47,14 +47,14 @@ export function isValidChooseMeleeResolutionEvent<TBoard extends Board>(
       };
     }
 
-    if (currentPhaseState.remainingEngagements.size === 0) {
+    if (currentPhaseState.remainingEngagements.length === 0) {
       return {
         errorReason: 'No remaining engagements to resolve',
         result: false,
       };
     }
 
-    if (!currentPhaseState.remainingEngagements.has(space as never)) {
+    if (!currentPhaseState.remainingEngagements.includes(space as never)) {
       return {
         errorReason: `Space ${space} is not among remaining engagements`,
         result: false,

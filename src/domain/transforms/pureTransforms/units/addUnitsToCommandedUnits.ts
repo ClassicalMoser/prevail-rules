@@ -17,12 +17,12 @@ import { updateRoundState } from '../state';
  */
 export function addUnitsToCommandedUnits<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-  units: Set<UnitInstance>,
+  units: UnitInstance[],
 ): GameStateForBoard<TBoard> {
   const previousCommandedUnits = state.currentRoundState.commandedUnits;
   const newCommandedUnits = new Set([...previousCommandedUnits, ...units]);
   return updateRoundState(state, {
     ...state.currentRoundState,
-    commandedUnits: newCommandedUnits,
+    commandedUnits: [...newCommandedUnits],
   });
 }

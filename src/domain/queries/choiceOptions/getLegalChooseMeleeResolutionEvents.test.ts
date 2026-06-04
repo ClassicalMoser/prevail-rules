@@ -28,7 +28,7 @@ describe(getLegalChooseMeleeResolutionEvents, () => {
     );
     const phase = createResolveMeleePhaseState(base, {
       currentMeleeResolutionState: undefined,
-      remainingEngagements: remaining,
+      remainingEngagements: [...remaining],
     });
     let state = updatePhaseState(base, phase);
     if (options?.eventStream) {
@@ -113,7 +113,7 @@ describe(getLegalChooseMeleeResolutionEvents, () => {
     const base = createEmptyGameState();
     const phase = createResolveMeleePhaseState(base, {
       currentMeleeResolutionState: undefined,
-      remainingEngagements: new Set<BoardCoordinate<StandardBoard>>(['E-5']),
+      remainingEngagements: ['E-5'] as const,
       step: 'complete',
     });
     const state = updatePhaseState(base, phase);

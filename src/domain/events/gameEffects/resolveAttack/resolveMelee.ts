@@ -47,9 +47,9 @@ export interface ResolveMeleeEventForBoard<TBoard extends Board> {
   /** The black player's unit with placement. */
   blackUnitWithPlacement: UnitWithPlacement<TBoard>;
   /** The white player's legal retreat options. */
-  whiteLegalRetreatOptions: Set<UnitPlacement<TBoard>>;
+  whiteLegalRetreatOptions: UnitPlacement<TBoard>[];
   /** The black player's legal retreat options. */
-  blackLegalRetreatOptions: Set<UnitPlacement<TBoard>>;
+  blackLegalRetreatOptions: UnitPlacement<TBoard>[];
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: boolean;
   /** Whether the black player's unit is routed. */
@@ -77,8 +77,8 @@ const _standardResolveMeleeEventSchemaObject: z.ZodObject<{
   location: typeof standardBoardCoordinateSchema;
   whiteUnitWithPlacement: typeof standardUnitWithPlacementSchema;
   blackUnitWithPlacement: typeof standardUnitWithPlacementSchema;
-  whiteLegalRetreatOptions: z.ZodSet<typeof standardUnitPlacementSchema>;
-  blackLegalRetreatOptions: z.ZodSet<typeof standardUnitPlacementSchema>;
+  whiteLegalRetreatOptions: z.ZodArray<typeof standardUnitPlacementSchema>;
+  blackLegalRetreatOptions: z.ZodArray<typeof standardUnitPlacementSchema>;
   whiteUnitRouted: z.ZodBoolean;
   blackUnitRouted: z.ZodBoolean;
   whiteUnitRetreated: z.ZodBoolean;
@@ -86,7 +86,7 @@ const _standardResolveMeleeEventSchemaObject: z.ZodObject<{
   whiteUnitReversed: z.ZodBoolean;
   blackUnitReversed: z.ZodBoolean;
 }> = z.object({
-  blackLegalRetreatOptions: z.set(standardUnitPlacementSchema),
+  blackLegalRetreatOptions: z.array(standardUnitPlacementSchema),
   blackUnitRetreated: z.boolean(),
   blackUnitReversed: z.boolean(),
   blackUnitRouted: z.boolean(),
@@ -96,7 +96,7 @@ const _standardResolveMeleeEventSchemaObject: z.ZodObject<{
   eventNumber: z.number(),
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   location: standardBoardCoordinateSchema,
-  whiteLegalRetreatOptions: z.set(standardUnitPlacementSchema),
+  whiteLegalRetreatOptions: z.array(standardUnitPlacementSchema),
   whiteUnitRetreated: z.boolean(),
   whiteUnitReversed: z.boolean(),
   whiteUnitRouted: z.boolean(),
@@ -123,8 +123,8 @@ const _smallResolveMeleeEventSchemaObject: z.ZodObject<{
   location: typeof smallBoardCoordinateSchema;
   whiteUnitWithPlacement: typeof smallUnitWithPlacementSchema;
   blackUnitWithPlacement: typeof smallUnitWithPlacementSchema;
-  whiteLegalRetreatOptions: z.ZodSet<typeof smallUnitPlacementSchema>;
-  blackLegalRetreatOptions: z.ZodSet<typeof smallUnitPlacementSchema>;
+  whiteLegalRetreatOptions: z.ZodArray<typeof smallUnitPlacementSchema>;
+  blackLegalRetreatOptions: z.ZodArray<typeof smallUnitPlacementSchema>;
   whiteUnitRouted: z.ZodBoolean;
   blackUnitRouted: z.ZodBoolean;
   whiteUnitRetreated: z.ZodBoolean;
@@ -132,7 +132,7 @@ const _smallResolveMeleeEventSchemaObject: z.ZodObject<{
   whiteUnitReversed: z.ZodBoolean;
   blackUnitReversed: z.ZodBoolean;
 }> = z.object({
-  blackLegalRetreatOptions: z.set(smallUnitPlacementSchema),
+  blackLegalRetreatOptions: z.array(smallUnitPlacementSchema),
   blackUnitRetreated: z.boolean(),
   blackUnitReversed: z.boolean(),
   blackUnitRouted: z.boolean(),
@@ -142,7 +142,7 @@ const _smallResolveMeleeEventSchemaObject: z.ZodObject<{
   eventNumber: z.number(),
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   location: smallBoardCoordinateSchema,
-  whiteLegalRetreatOptions: z.set(smallUnitPlacementSchema),
+  whiteLegalRetreatOptions: z.array(smallUnitPlacementSchema),
   whiteUnitRetreated: z.boolean(),
   whiteUnitReversed: z.boolean(),
   whiteUnitRouted: z.boolean(),
@@ -169,8 +169,8 @@ const _largeResolveMeleeEventSchemaObject: z.ZodObject<{
   location: typeof largeBoardCoordinateSchema;
   whiteUnitWithPlacement: typeof largeUnitWithPlacementSchema;
   blackUnitWithPlacement: typeof largeUnitWithPlacementSchema;
-  whiteLegalRetreatOptions: z.ZodSet<typeof largeUnitPlacementSchema>;
-  blackLegalRetreatOptions: z.ZodSet<typeof largeUnitPlacementSchema>;
+  whiteLegalRetreatOptions: z.ZodArray<typeof largeUnitPlacementSchema>;
+  blackLegalRetreatOptions: z.ZodArray<typeof largeUnitPlacementSchema>;
   whiteUnitRouted: z.ZodBoolean;
   blackUnitRouted: z.ZodBoolean;
   whiteUnitRetreated: z.ZodBoolean;
@@ -178,7 +178,7 @@ const _largeResolveMeleeEventSchemaObject: z.ZodObject<{
   whiteUnitReversed: z.ZodBoolean;
   blackUnitReversed: z.ZodBoolean;
 }> = z.object({
-  blackLegalRetreatOptions: z.set(largeUnitPlacementSchema),
+  blackLegalRetreatOptions: z.array(largeUnitPlacementSchema),
   blackUnitRetreated: z.boolean(),
   blackUnitReversed: z.boolean(),
   blackUnitRouted: z.boolean(),
@@ -188,7 +188,7 @@ const _largeResolveMeleeEventSchemaObject: z.ZodObject<{
   eventNumber: z.number(),
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
   location: largeBoardCoordinateSchema,
-  whiteLegalRetreatOptions: z.set(largeUnitPlacementSchema),
+  whiteLegalRetreatOptions: z.array(largeUnitPlacementSchema),
   whiteUnitRetreated: z.boolean(),
   whiteUnitReversed: z.boolean(),
   whiteUnitRouted: z.boolean(),

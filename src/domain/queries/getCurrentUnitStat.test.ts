@@ -197,7 +197,7 @@ describe(getCurrentUnitStat, () => {
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
-      gameState.currentRoundState.commandedUnits = new Set([unit]);
+      gameState.currentRoundState.commandedUnits = [unit];
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
 
@@ -210,7 +210,7 @@ describe(getCurrentUnitStat, () => {
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
-      gameState.currentRoundState.commandedUnits = new Set([unit]);
+      gameState.currentRoundState.commandedUnits = [unit];
       gameState.cardState.black.inPlay = {
         ...createTestCard(),
         command: {
@@ -230,7 +230,7 @@ describe(getCurrentUnitStat, () => {
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
-      gameState.currentRoundState.commandedUnits = new Set([unit]);
+      gameState.currentRoundState.commandedUnits = [unit];
       gameState.cardState.black.inPlay = createTestCard({
         commandModifiers: [{ type: 'attack', value: 2 }],
       });
@@ -245,7 +245,7 @@ describe(getCurrentUnitStat, () => {
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
-      gameState.currentRoundState.commandedUnits = new Set(); // Empty
+      gameState.currentRoundState.commandedUnits = []; // Empty
       gameState.cardState.black.inPlay = createTestCard({
         commandModifiers: [{ type: 'attack', value: 2 }],
       });
@@ -260,7 +260,7 @@ describe(getCurrentUnitStat, () => {
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
-      gameState.currentRoundState.commandedUnits = new Set([unit]);
+      gameState.currentRoundState.commandedUnits = [unit];
       gameState.cardState.black.inPlay = createTestCard({
         commandModifiers: [{ type: 'speed', value: 1 }], // Different stat
       });
@@ -321,7 +321,7 @@ describe(getCurrentUnitStat, () => {
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
-      gameState.currentRoundState.commandedUnits = new Set([unit]);
+      gameState.currentRoundState.commandedUnits = [unit];
       gameState.cardState.black.inPlay = createTestCard({
         commandModifiers: [{ type: 'attack', value: 1 }],
         roundEffectModifiers: [{ type: 'attack', value: 2 }],

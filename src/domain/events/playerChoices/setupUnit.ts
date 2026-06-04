@@ -28,7 +28,7 @@ export interface SetupUnitsEventForBoard<TBoard extends Board> {
   /** The type of the board. */
   boardType: TBoard['boardType'];
   /** The units to setup, each with its placement. */
-  unitPlacements: Set<UnitWithPlacement<TBoard>>;
+  unitPlacements: UnitWithPlacement<TBoard>[];
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
   /** The player who is setting up the units. */
@@ -44,7 +44,7 @@ const _standardSetupUnitsEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
   choiceType: z.ZodLiteral<typeof SETUP_UNITS_CHOICE_TYPE>;
   boardType: z.ZodLiteral<'standard'>;
-  unitPlacements: z.ZodSet<typeof standardUnitWithPlacementSchema>;
+  unitPlacements: z.ZodArray<typeof standardUnitWithPlacementSchema>;
   player: typeof playerSideSchema;
   eventNumber: z.ZodNumber;
 }> = z.object({
@@ -53,7 +53,7 @@ const _standardSetupUnitsEventSchemaObject: z.ZodObject<{
   eventNumber: z.number(),
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   player: playerSideSchema,
-  unitPlacements: z.set(standardUnitWithPlacementSchema),
+  unitPlacements: z.array(standardUnitWithPlacementSchema),
 });
 
 type StandardSetupUnitsEventSchemaType = z.infer<
@@ -74,14 +74,14 @@ const _smallSetupUnitsEventSchemaObject: z.ZodObject<{
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   boardType: z.ZodLiteral<'small'>;
-  unitPlacements: z.ZodSet<typeof smallUnitWithPlacementSchema>;
+  unitPlacements: z.ZodArray<typeof smallUnitWithPlacementSchema>;
 }> = z.object({
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
   choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
   eventNumber: z.number(),
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   player: playerSideSchema,
-  unitPlacements: z.set(smallUnitWithPlacementSchema),
+  unitPlacements: z.array(smallUnitWithPlacementSchema),
 });
 
 type SmallSetupUnitsEventSchemaType = z.infer<
@@ -102,14 +102,14 @@ const _largeSetupUnitsEventSchemaObject: z.ZodObject<{
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
   boardType: z.ZodLiteral<'large'>;
-  unitPlacements: z.ZodSet<typeof largeUnitWithPlacementSchema>;
+  unitPlacements: z.ZodArray<typeof largeUnitWithPlacementSchema>;
 }> = z.object({
   boardType: z.literal('large'),
   choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
   eventNumber: z.number(),
   eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
   player: playerSideSchema,
-  unitPlacements: z.set(largeUnitWithPlacementSchema),
+  unitPlacements: z.array(largeUnitWithPlacementSchema),
 });
 
 type LargeSetupUnitsEventSchemaType = z.infer<

@@ -4,7 +4,6 @@ import type {
   LargeBoard,
   SmallBoard,
   StandardBoard,
-  UnitInstance,
 } from '@entities';
 import type { GameState, GameStateForBoard } from '@game';
 
@@ -72,15 +71,15 @@ export function createInitialGameState(options: {
     }
   }
 
-  const reservedUnits = new Set<UnitInstance>();
+  const reservedUnits = [];
   for (const unit of whiteArmy.units) {
     for (let i = 1; i <= unit.count; i++) {
-      reservedUnits.add(createUnitInstance('white', unit.unitType, i + 1));
+      reservedUnits.push(createUnitInstance('white', unit.unitType, i + 1));
     }
   }
   for (const unit of blackArmy.units) {
     for (let i = 1; i <= unit.count; i++) {
-      reservedUnits.add(createUnitInstance('black', unit.unitType, i + 1));
+      reservedUnits.push(createUnitInstance('black', unit.unitType, i + 1));
     }
   }
 

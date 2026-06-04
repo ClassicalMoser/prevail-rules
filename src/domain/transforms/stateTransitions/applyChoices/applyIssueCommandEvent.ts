@@ -1,4 +1,4 @@
-import type { Board, Command } from '@entities';
+import type { Board } from '@entities';
 import type { IssueCommandEvent } from '@events';
 import type { GameStateForBoard, IssueCommandsPhaseStateForBoard } from '@game';
 import {
@@ -39,8 +39,8 @@ export function applyIssueCommandEvent<TBoard extends Board>(
   const matchingCommand = findMatchingCommand(remainingCommands, command);
 
   // Remove the matching command from remaining commands
-  const newRemainingCommands = new Set<Command>(
-    [...remainingCommands].filter((c) => c !== matchingCommand),
+  const newRemainingCommands = [...remainingCommands].filter(
+    (c) => c !== matchingCommand,
   );
 
   // Update phase state with new remaining commands

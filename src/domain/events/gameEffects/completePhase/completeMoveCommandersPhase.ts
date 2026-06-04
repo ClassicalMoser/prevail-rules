@@ -26,19 +26,19 @@ export interface CompleteMoveCommandersPhaseEvent {
    * Remaining commands for the initiative player for the new issue-commands phase.
    * Derived from that player's in-play card when the procedure runs; apply trusts the log.
    */
-  remainingCommandsFirstPlayer: Set<Command>;
+  remainingCommandsFirstPlayer: Command[];
   /**
    * Remaining commands for the non-initiative player for the new issue-commands phase.
    */
-  remainingCommandsSecondPlayer: Set<Command>;
+  remainingCommandsSecondPlayer: Command[];
 }
 
 const _completeMoveCommandersPhaseEventSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
-  remainingCommandsFirstPlayer: z.ZodSet<typeof commandSchema>;
-  remainingCommandsSecondPlayer: z.ZodSet<typeof commandSchema>;
+  remainingCommandsFirstPlayer: z.ZodArray<typeof commandSchema>;
+  remainingCommandsSecondPlayer: z.ZodArray<typeof commandSchema>;
 }> = z.object({
   /** The type of the event. */
   eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
@@ -47,9 +47,9 @@ const _completeMoveCommandersPhaseEventSchemaObject: z.ZodObject<{
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: z.number(),
   /** Mirrors `remainingCommandsFirstPlayer` on {@link CompleteMoveCommandersPhaseEvent}. */
-  remainingCommandsFirstPlayer: z.set(commandSchema),
+  remainingCommandsFirstPlayer: z.array(commandSchema),
   /** Mirrors `remainingCommandsSecondPlayer` on {@link CompleteMoveCommandersPhaseEvent}. */
-  remainingCommandsSecondPlayer: z.set(commandSchema),
+  remainingCommandsSecondPlayer: z.array(commandSchema),
 });
 
 type CompleteMoveCommandersPhaseEventSchemaType = z.infer<
@@ -66,6 +66,6 @@ export const completeMoveCommandersPhaseEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'completeMoveCommandersPhase'>;
   eventNumber: z.ZodNumber;
-  remainingCommandsFirstPlayer: z.ZodSet<typeof commandSchema>;
-  remainingCommandsSecondPlayer: z.ZodSet<typeof commandSchema>;
+  remainingCommandsFirstPlayer: z.ZodArray<typeof commandSchema>;
+  remainingCommandsSecondPlayer: z.ZodArray<typeof commandSchema>;
 }> = _completeMoveCommandersPhaseEventSchemaObject;

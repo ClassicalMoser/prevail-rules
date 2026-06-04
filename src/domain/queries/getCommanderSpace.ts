@@ -15,7 +15,7 @@ export function getCommanderSpace<TBoard extends Board>(
   const coordinates = getBoardCoordinates(board);
   for (const coordinate of coordinates) {
     const space = getBoardSpace(board, coordinate);
-    if (space.commanders.has(side)) {
+    if (space.commanders.includes(side)) {
       return coordinate;
     }
   }

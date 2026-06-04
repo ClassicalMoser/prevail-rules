@@ -89,7 +89,7 @@ describe(applyResolveRangedAttackEvent, () => {
   it('given no branch flags and empty legal retreats, attackApply has no rout retreat reverse substeps', () => {
     const { full, defenderWithPlacement } = createRangedResolutionFixture();
     const event = rangedEvent(defenderWithPlacement, {
-      legalRetreatOptions: new Set(),
+      legalRetreatOptions: [],
     });
 
     const next = applyResolveRangedAttackEvent(event, full);
@@ -102,7 +102,7 @@ describe(applyResolveRangedAttackEvent, () => {
   it('given reversed true, attackResult unitReversed and reverse substep present', () => {
     const { full, defenderWithPlacement } = createRangedResolutionFixture();
     const event = rangedEvent(defenderWithPlacement, {
-      legalRetreatOptions: new Set(),
+      legalRetreatOptions: [],
       reversed: true,
     });
 
@@ -116,7 +116,7 @@ describe(applyResolveRangedAttackEvent, () => {
     const { full, defender, defenderWithPlacement } =
       createRangedResolutionFixture();
     const event = rangedEvent(defenderWithPlacement, {
-      legalRetreatOptions: new Set(),
+      legalRetreatOptions: [],
       routed: true,
     });
 
@@ -124,7 +124,7 @@ describe(applyResolveRangedAttackEvent, () => {
     const ra = getRangedAttackResolutionState(next);
     expect(ra.attackApplyState?.routState?.substepType).toBe('rout');
     expect(
-      ra.attackApplyState?.routState?.unitsToRout.has(defender),
+      ra.attackApplyState?.routState?.unitsToRout.includes(defender),
     ).toBeTruthy();
   });
 
@@ -136,7 +136,7 @@ describe(applyResolveRangedAttackEvent, () => {
       facing: 'south' as const,
     };
     const event = rangedEvent(defenderWithPlacement, {
-      legalRetreatOptions: new Set([onlyOption]),
+      legalRetreatOptions: [onlyOption],
       retreated: true,
     });
 
@@ -149,18 +149,18 @@ describe(applyResolveRangedAttackEvent, () => {
 
   it.each<{
     description: string;
-    legalRetreatOptions: Set<UnitPlacement<StandardBoard>>;
+    legalRetreatOptions: UnitPlacement<StandardBoard>[];
   }>([
     {
       description: 'multiple legal retreats',
-      legalRetreatOptions: new Set([
+      legalRetreatOptions: [
         { boardType: 'standard' as const, coordinate: 'E-6', facing: 'south' },
         { boardType: 'standard' as const, coordinate: 'E-4', facing: 'south' },
-      ]),
+      ],
     },
     {
       description: 'no legal retreat options',
-      legalRetreatOptions: new Set(),
+      legalRetreatOptions: [],
     },
   ])(
     'given retreated true and $description, retreat finalPosition is undefined',

@@ -41,7 +41,7 @@ export interface RetreatStateForBoard<TBoard extends Board> {
   /** The unit that is retreating. */
   retreatingUnit: UnitWithPlacement<TBoard>;
   /** The legal retreat options. */
-  legalRetreatOptions: Set<UnitPlacement<TBoard>>;
+  legalRetreatOptions: UnitPlacement<TBoard>[];
   /** The final position of the retreating unit. */
   finalPosition: UnitPlacement<TBoard> | undefined;
   /** The state of a rout caused by the retreat. */
@@ -63,7 +63,7 @@ const _standardRetreatStateSchemaObject = z.object({
   boardType: z.literal('standard' satisfies StandardBoard['boardType']),
   completed: z.boolean(),
   finalPosition: standardUnitPlacementSchema.or(z.undefined()),
-  legalRetreatOptions: z.set(standardUnitPlacementSchema),
+  legalRetreatOptions: z.array(standardUnitPlacementSchema),
   retreatingUnit: standardUnitWithPlacementSchema,
   routState: routStateSchema.or(z.undefined()),
   substepType: z.literal('retreat'),
@@ -86,7 +86,7 @@ const _smallRetreatStateSchemaObject = z.object({
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
   completed: z.boolean(),
   finalPosition: smallUnitPlacementSchema.or(z.undefined()),
-  legalRetreatOptions: z.set(smallUnitPlacementSchema),
+  legalRetreatOptions: z.array(smallUnitPlacementSchema),
   retreatingUnit: smallUnitWithPlacementSchema,
   routState: routStateSchema.or(z.undefined()),
   substepType: z.literal('retreat'),
@@ -109,7 +109,7 @@ const _largeRetreatStateSchemaObject = z.object({
   boardType: z.literal('large' satisfies LargeBoard['boardType']),
   completed: z.boolean(),
   finalPosition: largeUnitPlacementSchema.or(z.undefined()),
-  legalRetreatOptions: z.set(largeUnitPlacementSchema),
+  legalRetreatOptions: z.array(largeUnitPlacementSchema),
   retreatingUnit: largeUnitWithPlacementSchema,
   routState: routStateSchema.or(z.undefined()),
   substepType: z.literal('retreat'),

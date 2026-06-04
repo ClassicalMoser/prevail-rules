@@ -90,7 +90,13 @@ export {
   getRoutStateFromRearEngagement,
   updateRallyResolutionStateForCurrentStep,
 } from './sequencing';
-export { hasUnitInSet, isFriendlyUnit, setWithoutUnit } from './unit';
+export {
+  hasUnitInArray,
+  hasUnitInSet,
+  arrayWithoutUnit,
+  isFriendlyUnit,
+  setWithoutUnit,
+} from './unit';
 export {
   checkDiagonalMove,
   getLegalRetreats,

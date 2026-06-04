@@ -13,7 +13,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { applyCompleteIssueCommandsPhaseEvent } from './applyCompleteIssueCommandsPhaseEvent';
 
 function issueCommandsCompleteEventForBoard(
-  remainingEngagements: Set<BoardCoordinate<StandardBoard>>,
+  remainingEngagements: BoardCoordinate<StandardBoard>[],
 ): CompleteIssueCommandsPhaseEventForBoard<StandardBoard> {
   return {
     boardType: 'standard',
@@ -39,10 +39,10 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
       boardType: 'standard',
       currentCommandResolutionState: undefined,
       phase: ISSUE_COMMANDS_PHASE,
-      remainingCommandsFirstPlayer: new Set(),
-      remainingCommandsSecondPlayer: new Set(),
-      remainingUnitsFirstPlayer: new Set(),
-      remainingUnitsSecondPlayer: new Set(),
+      remainingCommandsFirstPlayer: [],
+      remainingCommandsSecondPlayer: [],
+      remainingUnitsFirstPlayer: [],
+      remainingUnitsSecondPlayer: [],
       step: 'complete',
     };
     const stateWithPhase = updatePhaseState(state, initialPhaseState);
@@ -55,7 +55,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
       const state = createGameStateInCompleteStep();
 
       const event: CompleteIssueCommandsPhaseEventForBoard<StandardBoard> =
-        issueCommandsCompleteEventForBoard(new Set(['E-5']));
+        issueCommandsCompleteEventForBoard(['E-5']);
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
 
@@ -71,7 +71,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
       const state = createGameStateInCompleteStep();
 
       const event: CompleteIssueCommandsPhaseEventForBoard<StandardBoard> =
-        issueCommandsCompleteEventForBoard(new Set(['E-5']));
+        issueCommandsCompleteEventForBoard(['E-5']);
 
       const newState: GameStateForBoard<StandardBoard> =
         applyCompleteIssueCommandsPhaseEvent(event, state);
@@ -85,7 +85,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
       const state = createGameStateInCompleteStep();
 
       const event: CompleteIssueCommandsPhaseEventForBoard<StandardBoard> =
-        issueCommandsCompleteEventForBoard(new Set(['E-5']));
+        issueCommandsCompleteEventForBoard(['E-5']);
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
 
@@ -94,7 +94,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
         throw new Error('Expected resolveMelee phase');
       }
 
-      expect(phaseState.remainingEngagements.has('E-5')).toBeTruthy();
+      expect(phaseState.remainingEngagements.includes('E-5')).toBeTruthy();
     });
 
     it('given event lists E-5 and E-6 after second engagement hacked onto board, set has both', () => {
@@ -130,16 +130,16 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
           boardType: 'standard',
           currentCommandResolutionState: undefined,
           phase: ISSUE_COMMANDS_PHASE,
-          remainingCommandsFirstPlayer: new Set(),
-          remainingCommandsSecondPlayer: new Set(),
-          remainingUnitsFirstPlayer: new Set(),
-          remainingUnitsSecondPlayer: new Set(),
+          remainingCommandsFirstPlayer: [],
+          remainingCommandsSecondPlayer: [],
+          remainingUnitsFirstPlayer: [],
+          remainingUnitsSecondPlayer: [],
           step: 'complete',
         },
       );
 
       const event: CompleteIssueCommandsPhaseEventForBoard<StandardBoard> =
-        issueCommandsCompleteEventForBoard(new Set(['E-5', 'E-6']));
+        issueCommandsCompleteEventForBoard(['E-5', 'E-6']);
 
       const newState = applyCompleteIssueCommandsPhaseEvent(
         event,
@@ -151,16 +151,16 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
         throw new Error('Expected resolveMelee phase');
       }
 
-      expect(phaseState.remainingEngagements.has('E-5')).toBeTruthy();
-      expect(phaseState.remainingEngagements.has('E-6')).toBeTruthy();
-      expect(phaseState.remainingEngagements.size).toBe(2);
+      expect(phaseState.remainingEngagements.includes('E-5')).toBeTruthy();
+      expect(phaseState.remainingEngagements.includes('E-6')).toBeTruthy();
+      expect(phaseState.remainingEngagements.length).toBe(2);
     });
 
     it('given standard handoff, new resolveMelee slice has no currentMeleeResolutionState', () => {
       const state = createGameStateInCompleteStep();
 
       const event: CompleteIssueCommandsPhaseEventForBoard<StandardBoard> =
-        issueCommandsCompleteEventForBoard(new Set(['E-5']));
+        issueCommandsCompleteEventForBoard(['E-5']);
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
 
@@ -178,17 +178,17 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
       const state = createGameStateInCompleteStep();
       const originalPhase = state.currentRoundState.currentPhaseState?.phase;
       const originalCompletedPhasesSize =
-        state.currentRoundState.completedPhases.size;
+        state.currentRoundState.completedPhases.length;
 
       const event: CompleteIssueCommandsPhaseEventForBoard<StandardBoard> =
-        issueCommandsCompleteEventForBoard(new Set(['E-5']));
+        issueCommandsCompleteEventForBoard(['E-5']);
 
       applyCompleteIssueCommandsPhaseEvent(event, state);
 
       expect(state.currentRoundState.currentPhaseState?.phase).toBe(
         originalPhase,
       );
-      expect(state.currentRoundState.completedPhases.size).toBe(
+      expect(state.currentRoundState.completedPhases.length).toBe(
         originalCompletedPhasesSize,
       );
     });
@@ -198,7 +198,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
     it('given empty remainingEngagements event despite board engagement, queue stays empty', () => {
       const state = createGameStateInCompleteStep();
       const event: CompleteIssueCommandsPhaseEventForBoard<StandardBoard> =
-        issueCommandsCompleteEventForBoard(new Set());
+        issueCommandsCompleteEventForBoard([]);
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
 
@@ -206,7 +206,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
       if (!phaseState || phaseState.phase !== 'resolveMelee') {
         throw new Error('Expected resolveMelee phase');
       }
-      expect(phaseState.remainingEngagements.size).toBe(0);
+      expect(phaseState.remainingEngagements.length).toBe(0);
     });
 
     it('given issueCommands firstPlayerIssueCommands step, still advances to resolveMelee phase', () => {
@@ -219,7 +219,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
       );
 
       const event: CompleteIssueCommandsPhaseEventForBoard<StandardBoard> =
-        issueCommandsCompleteEventForBoard(new Set(['E-5']));
+        issueCommandsCompleteEventForBoard(['E-5']);
 
       const newState = applyCompleteIssueCommandsPhaseEvent(
         event,

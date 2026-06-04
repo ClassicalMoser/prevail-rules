@@ -56,7 +56,7 @@ export interface ResolveMeleePhaseStateForBoard<TBoard extends Board> {
   /** The current melee resolution state. */
   currentMeleeResolutionState: MeleeResolutionStateForBoard<TBoard> | undefined;
   /** The remaining engagements. */
-  remainingEngagements: Set<BoardCoordinate<TBoard>>;
+  remainingEngagements: BoardCoordinate<TBoard>[];
 }
 
 export type ResolveMeleePhaseState =
@@ -70,7 +70,7 @@ const _standardResolveMeleePhaseStateSchemaObject = z.object({
     z.undefined(),
   ),
   phase: z.literal('resolveMelee'),
-  remainingEngagements: z.set(standardBoardCoordinateSchema),
+  remainingEngagements: z.array(standardBoardCoordinateSchema),
   step: _resolveMeleePhaseStepSchemaObject,
 });
 
@@ -93,7 +93,7 @@ const _smallResolveMeleePhaseStateSchemaObject = z.object({
     z.undefined(),
   ),
   phase: z.literal('resolveMelee'),
-  remainingEngagements: z.set(smallBoardCoordinateSchema),
+  remainingEngagements: z.array(smallBoardCoordinateSchema),
   step: _resolveMeleePhaseStepSchemaObject,
 });
 
@@ -116,7 +116,7 @@ const _largeResolveMeleePhaseStateSchemaObject = z.object({
     z.undefined(),
   ),
   phase: z.literal('resolveMelee'),
-  remainingEngagements: z.set(largeBoardCoordinateSchema),
+  remainingEngagements: z.array(largeBoardCoordinateSchema),
   step: _resolveMeleePhaseStepSchemaObject,
 });
 

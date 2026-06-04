@@ -67,14 +67,14 @@ describe(applyCompleteCleanupPhaseEvent, () => {
       const completedEntry = createPlayCardsPhaseState({ step: 'complete' });
       const state = updateRoundState(base, {
         ...base.currentRoundState,
-        commandedUnits: new Set([unit]),
-        completedPhases: new Set([completedEntry]),
+        commandedUnits: [unit],
+        completedPhases: [completedEntry],
       });
 
       const newState = applyCompleteCleanupPhaseEvent(event, state);
 
-      expect(newState.currentRoundState.completedPhases.size).toBe(0);
-      expect(newState.currentRoundState.commandedUnits.size).toBe(0);
+      expect(newState.currentRoundState.completedPhases.length).toBe(0);
+      expect(newState.currentRoundState.commandedUnits.length).toBe(0);
     });
   });
 

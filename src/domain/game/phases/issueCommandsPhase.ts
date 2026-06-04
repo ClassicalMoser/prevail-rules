@@ -69,13 +69,13 @@ export interface IssueCommandsPhaseStateForBoard<TBoard extends Board> {
   /** The board size. */
   boardType: TBoard['boardType'];
   /** The remaining commands for the first player. */
-  remainingCommandsFirstPlayer: Set<Command>;
+  remainingCommandsFirstPlayer: Command[];
   /** RemainingUnitsFirstPlayer */
-  remainingUnitsFirstPlayer: Set<UnitInstance>;
+  remainingUnitsFirstPlayer: UnitInstance[];
   /** The remaining commands for the second player. */
-  remainingCommandsSecondPlayer: Set<Command>;
+  remainingCommandsSecondPlayer: Command[];
   /** RemainingUnitsSecondPlayer */
-  remainingUnitsSecondPlayer: Set<UnitInstance>;
+  remainingUnitsSecondPlayer: UnitInstance[];
   /** The state of the ongoing command resolution (movement or ranged attack). */
   currentCommandResolutionState:
     | CommandResolutionStateForBoard<TBoard>
@@ -95,13 +95,13 @@ const _smallIssueCommandsPhaseStateSchemaObject = z.object({
   /** The board size. */
   boardType: z.literal('small'),
   /** The remaining commands for the first player. */
-  remainingCommandsFirstPlayer: z.set(commandSchema),
+  remainingCommandsFirstPlayer: z.array(commandSchema),
   /** RemainingUnitsFirstPlayer */
-  remainingUnitsFirstPlayer: z.set(unitInstanceSchema),
+  remainingUnitsFirstPlayer: z.array(unitInstanceSchema),
   /** The remaining commands for the second player. */
-  remainingCommandsSecondPlayer: z.set(commandSchema),
+  remainingCommandsSecondPlayer: z.array(commandSchema),
   /** RemainingUnitsSecondPlayer */
-  remainingUnitsSecondPlayer: z.set(unitInstanceSchema),
+  remainingUnitsSecondPlayer: z.array(unitInstanceSchema),
   /** The state of the ongoing command resolution (movement or ranged attack). */
   currentCommandResolutionState: smallCommandResolutionStateSchema.or(
     z.undefined(),
@@ -128,10 +128,10 @@ const _standardIssueCommandsPhaseStateSchemaObject = z.object({
     z.undefined(),
   ),
   phase: z.literal('issueCommands'),
-  remainingCommandsFirstPlayer: z.set(commandSchema),
-  remainingCommandsSecondPlayer: z.set(commandSchema),
-  remainingUnitsFirstPlayer: z.set(unitInstanceSchema),
-  remainingUnitsSecondPlayer: z.set(unitInstanceSchema),
+  remainingCommandsFirstPlayer: z.array(commandSchema),
+  remainingCommandsSecondPlayer: z.array(commandSchema),
+  remainingUnitsFirstPlayer: z.array(unitInstanceSchema),
+  remainingUnitsSecondPlayer: z.array(unitInstanceSchema),
   step: _issueCommandsPhaseStepSchemaObject,
 });
 
@@ -155,10 +155,10 @@ const _largeIssueCommandsPhaseStateSchemaObject = z.object({
     z.undefined(),
   ),
   phase: z.literal('issueCommands'),
-  remainingCommandsFirstPlayer: z.set(commandSchema),
-  remainingCommandsSecondPlayer: z.set(commandSchema),
-  remainingUnitsFirstPlayer: z.set(unitInstanceSchema),
-  remainingUnitsSecondPlayer: z.set(unitInstanceSchema),
+  remainingCommandsFirstPlayer: z.array(commandSchema),
+  remainingCommandsSecondPlayer: z.array(commandSchema),
+  remainingUnitsFirstPlayer: z.array(unitInstanceSchema),
+  remainingUnitsSecondPlayer: z.array(unitInstanceSchema),
   step: _issueCommandsPhaseStepSchemaObject,
 });
 

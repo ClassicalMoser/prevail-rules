@@ -42,11 +42,11 @@ export interface GameStateForBoard<TBoard extends Board> {
   /** The state of both players' cards. */
   cardState: CardState;
   /** Units not yet placed on the board. */
-  reservedUnits: Set<UnitInstance>;
+  reservedUnits: UnitInstance[];
   /** The units that have been routed during the game. */
-  routedUnits: Set<UnitInstance>;
+  routedUnits: UnitInstance[];
   /** The commanders that have been lost during the game. */
-  lostCommanders: Set<PlayerSide>;
+  lostCommanders: PlayerSide[];
   /** Board and piece layout for the standard size. */
   boardState: TBoard;
 }
@@ -67,9 +67,9 @@ const _smallGameStateSchemaObject = z.object({
   currentInitiative: playerSideSchema,
   currentRoundNumber: z.int().min(0),
   currentRoundState: smallRoundStateSchema,
-  lostCommanders: z.set(playerSideSchema),
-  reservedUnits: z.set(unitInstanceSchema),
-  routedUnits: z.set(unitInstanceSchema),
+  lostCommanders: z.array(playerSideSchema),
+  reservedUnits: z.array(unitInstanceSchema),
+  routedUnits: z.array(unitInstanceSchema),
 });
 
 type SmallGameStateSchemaType = z.infer<typeof _smallGameStateSchemaObject>;
@@ -89,9 +89,9 @@ const _standardGameStateSchemaObject = z.object({
   currentInitiative: playerSideSchema,
   currentRoundNumber: z.int().min(0),
   currentRoundState: standardRoundStateSchema,
-  lostCommanders: z.set(playerSideSchema),
-  reservedUnits: z.set(unitInstanceSchema),
-  routedUnits: z.set(unitInstanceSchema),
+  lostCommanders: z.array(playerSideSchema),
+  reservedUnits: z.array(unitInstanceSchema),
+  routedUnits: z.array(unitInstanceSchema),
 });
 
 type StandardGameStateSchemaType = z.infer<
@@ -114,9 +114,9 @@ const _largeGameStateSchemaObject = z.object({
   currentInitiative: playerSideSchema,
   currentRoundNumber: z.int().min(0),
   currentRoundState: largeRoundStateSchema,
-  lostCommanders: z.set(playerSideSchema),
-  reservedUnits: z.set(unitInstanceSchema),
-  routedUnits: z.set(unitInstanceSchema),
+  lostCommanders: z.array(playerSideSchema),
+  reservedUnits: z.array(unitInstanceSchema),
+  routedUnits: z.array(unitInstanceSchema),
 });
 
 type LargeGameStateSchemaType = z.infer<typeof _largeGameStateSchemaObject>;

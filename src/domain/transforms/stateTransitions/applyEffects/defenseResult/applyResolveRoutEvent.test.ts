@@ -133,7 +133,7 @@ describe(applyResolveRoutEvent, () => {
             numberToDiscard: undefined,
             player: 'white',
             substepType: 'rout',
-            unitsToRout: new Set([defender]),
+            unitsToRout: [defender],
           },
         },
         engagingUnit: attacker,
@@ -177,7 +177,7 @@ describe(applyResolveRoutEvent, () => {
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'rangedAttack',
-        unitInstances: new Set([routState.unitsToRout.values().next().value!]),
+        unitInstances: [routState.unitsToRout[0]],
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -198,7 +198,7 @@ describe(applyResolveRoutEvent, () => {
         eventType: 'gameEffect',
         penalty: 3,
         routResolutionSource: 'rangedAttack',
-        unitInstances: new Set([routState.unitsToRout.values().next().value!]),
+        unitInstances: [routState.unitsToRout[0]],
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -225,7 +225,7 @@ describe(applyResolveRoutEvent, () => {
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'melee',
-        unitInstances: new Set([routState.unitsToRout.values().next().value!]),
+        unitInstances: [routState.unitsToRout[0]],
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -249,7 +249,7 @@ describe(applyResolveRoutEvent, () => {
         eventType: 'gameEffect',
         penalty: 1,
         routResolutionSource: 'melee',
-        unitInstances: new Set([routState.unitsToRout.values().next().value!]),
+        unitInstances: [routState.unitsToRout[0]],
       };
 
       const newState = applyResolveRoutEvent(event, state);
@@ -273,7 +273,7 @@ describe(applyResolveRoutEvent, () => {
         playerRallied: true,
         rallyResolved: false,
         routState,
-        unitsLostSupport: new Set(),
+        unitsLostSupport: [],
       });
 
       const phaseState = createCleanupPhaseState({
@@ -289,7 +289,7 @@ describe(applyResolveRoutEvent, () => {
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'rally',
-        unitInstances: new Set([routedUnit]),
+        unitInstances: [routedUnit],
       };
 
       const newState = applyResolveRoutEvent(event, stateWithRally);
@@ -319,7 +319,7 @@ describe(applyResolveRoutEvent, () => {
         effectType: 'resolveRout',
         eventNumber: 0,
         eventType: 'gameEffect',
-        penalty: [...rout.unitsToRout].reduce(
+        penalty: rout.unitsToRout.reduce(
           (sum, u) => sum + u.unitType.routPenalty,
           0,
         ),
@@ -352,7 +352,7 @@ describe(applyResolveRoutEvent, () => {
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'rangedAttack',
-        unitInstances: new Set([routState.unitsToRout.values().next().value!]),
+        unitInstances: [routState.unitsToRout[0]],
       };
 
       applyResolveRoutEvent(event, state);
@@ -371,7 +371,7 @@ describe(applyResolveRoutEvent, () => {
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'melee',
-        unitInstances: new Set(),
+        unitInstances: [],
       };
 
       expect(() => applyResolveRoutEvent(event, state)).toThrow(
@@ -399,7 +399,7 @@ describe(applyResolveRoutEvent, () => {
         eventType: 'gameEffect',
         penalty: 2,
         routResolutionSource: 'rangedAttack',
-        unitInstances: new Set([unit]),
+        unitInstances: [unit],
       };
 
       expect(() => applyResolveRoutEvent(event, stateWithoutRout)).toThrow(

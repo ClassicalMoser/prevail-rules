@@ -155,7 +155,10 @@ export type {
   PerformRangedAttackEvent,
   PerformRangedAttackEventForBoard,
 } from './playerChoices';
-export { performRangedAttackEventSchema } from './playerChoices';
+export {
+  performRangedAttackEventSchema,
+  PERFORM_RANGED_ATTACK_CHOICE_TYPE,
+} from './playerChoices';
 export type { PlayerChoiceEvent, PlayerChoiceType } from './playerChoices';
 export {
   playerChoiceEventSchema,
@@ -170,3 +173,5 @@ export {
   smallPlayerChoiceEventSchema,
   standardPlayerChoiceEventSchema,
 } from './playerChoices';
+
+export { ISSUE_COMMAND_CHOICE_TYPE } from './playerChoices';

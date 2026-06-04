@@ -53,7 +53,7 @@ describe(getRallyResolutionStateAwaitingUnitsBroken, () => {
     ).toThrow('Rally has not been resolved yet');
   });
 
-  it('given unitsLostSupport already a Set, throws units lost support already resolved', () => {
+  it('given unitsLostSupport already an array, throws units lost support already resolved', () => {
     const state = stateFirstPlayerResolveRally();
     const ps = state.currentRoundState.currentPhaseState;
     if (!ps || ps.phase !== CLEANUP_PHASE) {
@@ -61,7 +61,7 @@ describe(getRallyResolutionStateAwaitingUnitsBroken, () => {
     }
     ps.firstPlayerRallyResolutionState = {
       ...afterBurnBeforeUnitsBroken,
-      unitsLostSupport: new Set(),
+      unitsLostSupport: [],
     };
 
     expect(() =>

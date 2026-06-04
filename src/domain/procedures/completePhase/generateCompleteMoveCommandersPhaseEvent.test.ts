@@ -34,12 +34,12 @@ describe(generateCompleteMoveCommandersPhaseEvent, () => {
 
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeMoveCommandersPhase');
-    expect(event.remainingCommandsFirstPlayer).toStrictEqual(
-      new Set([tempCommandCards[0].command]),
-    );
-    expect(event.remainingCommandsSecondPlayer).toStrictEqual(
-      new Set([tempCommandCards[1].command]),
-    );
+    expect(event.remainingCommandsFirstPlayer).toStrictEqual([
+      tempCommandCards[0].command,
+    ]);
+    expect(event.remainingCommandsSecondPlayer).toStrictEqual([
+      tempCommandCards[1].command,
+    ]);
   });
 
   it('given both inPlay null at phase complete, remaining command sets are empty', () => {
@@ -56,8 +56,8 @@ describe(generateCompleteMoveCommandersPhaseEvent, () => {
 
     const event = generateCompleteMoveCommandersPhaseEvent(stateWithPhase, 0);
 
-    expect(event.remainingCommandsFirstPlayer.size).toBe(0);
-    expect(event.remainingCommandsSecondPlayer.size).toBe(0);
+    expect(event.remainingCommandsFirstPlayer.length).toBe(0);
+    expect(event.remainingCommandsSecondPlayer.length).toBe(0);
   });
 
   it('given white initiative, white command is first-player set and black is second', () => {
@@ -74,11 +74,11 @@ describe(generateCompleteMoveCommandersPhaseEvent, () => {
 
     const event = generateCompleteMoveCommandersPhaseEvent(state, 0);
 
-    expect(event.remainingCommandsFirstPlayer).toStrictEqual(
-      new Set([tempCommandCards[1].command]),
-    );
-    expect(event.remainingCommandsSecondPlayer).toStrictEqual(
-      new Set([tempCommandCards[0].command]),
-    );
+    expect(event.remainingCommandsFirstPlayer).toStrictEqual([
+      tempCommandCards[1].command,
+    ]);
+    expect(event.remainingCommandsSecondPlayer).toStrictEqual([
+      tempCommandCards[0].command,
+    ]);
   });
 });

@@ -48,7 +48,7 @@ export function applyStartEngagementEvent<TBoard extends Board>(
             numberToDiscard: defendingUnit.unitType.routPenalty,
             player: defendingPlayer,
             substepType: 'rout' as const,
-            unitsToRout: new Set([defendingUnit]),
+            unitsToRout: [defendingUnit],
           },
         };
       }

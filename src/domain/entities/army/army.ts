@@ -15,7 +15,7 @@ export interface Army {
   /** The units in the army. */
   units: UnitCount[];
   /** The command cards in the army. */
-  commandCards: Set<Card>;
+  commandCards: Card[];
 }
 
 const _armySchemaObject = z.object({
@@ -24,7 +24,7 @@ const _armySchemaObject = z.object({
   /** The units in the army. */
   units: z.array(unitCountSchema),
   /** The command cards in the army. */
-  commandCards: z.set(cardSchema),
+  commandCards: z.array(cardSchema),
 });
 
 type ArmySchemaType = z.infer<typeof _armySchemaObject>;

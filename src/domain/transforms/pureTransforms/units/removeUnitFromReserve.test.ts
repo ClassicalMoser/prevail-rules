@@ -10,22 +10,22 @@ describe(removeUnitFromReserve, () => {
     it('given remove unit and leave empty set', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { attack: 3 });
-      gameState.reservedUnits = new Set([unit]);
+      gameState.reservedUnits = [unit];
 
       const newGameState = removeUnitFromReserve(gameState, unit);
 
       expect(newGameState).not.toBe(gameState);
-      expect(newGameState.reservedUnits.size).toBe(0);
+      expect(newGameState.reservedUnits.length).toBe(0);
     });
 
     it('given not mutate the original game state', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { attack: 3 });
-      gameState.reservedUnits = new Set([unit]);
+      gameState.reservedUnits = [unit];
 
       removeUnitFromReserve(gameState, unit);
 
-      expect(gameState.reservedUnits.size).toBe(1);
+      expect(gameState.reservedUnits.length).toBe(1);
       expect([...gameState.reservedUnits]).toContain(unit);
     });
   });
@@ -35,11 +35,11 @@ describe(removeUnitFromReserve, () => {
       const gameState = createEmptyGameState();
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-      gameState.reservedUnits = new Set([unit1, unit2]);
+      gameState.reservedUnits = [unit1, unit2];
 
       const newGameState = removeUnitFromReserve(gameState, unit1);
 
-      expect(newGameState.reservedUnits.size).toBe(1);
+      expect(newGameState.reservedUnits.length).toBe(1);
       expect([...newGameState.reservedUnits]).toContain(unit2);
       expect([...newGameState.reservedUnits]).not.toContain(unit1);
     });
@@ -51,7 +51,7 @@ describe(removeUnitFromReserve, () => {
         instanceNumber: 1,
       });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-      gameState.reservedUnits = new Set([unitInReserve, unit2]);
+      gameState.reservedUnits = [unitInReserve, unit2];
       const sameValueDifferentRef = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -62,7 +62,7 @@ describe(removeUnitFromReserve, () => {
         sameValueDifferentRef,
       );
 
-      expect(newGameState.reservedUnits.size).toBe(1);
+      expect(newGameState.reservedUnits.length).toBe(1);
       expect([...newGameState.reservedUnits]).toContain(unit2);
     });
 
@@ -70,11 +70,11 @@ describe(removeUnitFromReserve, () => {
       const gameState = createEmptyGameState();
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-      gameState.reservedUnits = new Set([unit1, unit2]);
+      gameState.reservedUnits = [unit1, unit2];
 
       removeUnitFromReserve(gameState, unit1);
 
-      expect(gameState.reservedUnits.size).toBe(2);
+      expect(gameState.reservedUnits.length).toBe(2);
       expect([...gameState.reservedUnits]).toContain(unit1);
       expect([...gameState.reservedUnits]).toContain(unit2);
     });
@@ -94,7 +94,7 @@ describe(removeUnitFromReserve, () => {
       const gameState = createEmptyGameState();
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
-      gameState.reservedUnits = new Set([unit1]);
+      gameState.reservedUnits = [unit1];
 
       expect(() => removeUnitFromReserve(gameState, unit2)).toThrow(
         'Unit not present in reserve',
@@ -104,7 +104,7 @@ describe(removeUnitFromReserve, () => {
     it('given error when trying to remove already removed unit, throws', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { attack: 3 });
-      gameState.reservedUnits = new Set([unit]);
+      gameState.reservedUnits = [unit];
       const gameStateAfterRemoval = removeUnitFromReserve(gameState, unit);
 
       expect(() => removeUnitFromReserve(gameStateAfterRemoval, unit)).toThrow(
@@ -117,7 +117,7 @@ describe(removeUnitFromReserve, () => {
     it('given preserve routed units', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { attack: 3 });
-      gameState.reservedUnits = new Set([unit]);
+      gameState.reservedUnits = [unit];
 
       const newGameState = removeUnitFromReserve(gameState, unit);
 

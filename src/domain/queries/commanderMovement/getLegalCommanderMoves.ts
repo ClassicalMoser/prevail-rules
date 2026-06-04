@@ -18,7 +18,7 @@ export function getLegalCommanderMoves<TBoard extends Board>(
   // Get the space at the starting position
   const space = getBoardSpace(board, startingPosition);
   // Get the commander
-  const containsCommander = space.commanders.has(playerSide);
+  const containsCommander = space.commanders.includes(playerSide);
   if (!containsCommander) {
     throw new Error('Starting position does not contain specified commander');
   }

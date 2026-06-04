@@ -24,7 +24,7 @@ describe(getExpectedRallyResolutionEvent, () => {
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
       routState: createRoutState('black', unit),
-      unitsLostSupport: new Set([unit]),
+      unitsLostSupport: [unit],
     });
 
     expect(getExpectedRallyResolutionEvent(rallyState)).toStrictEqual({
@@ -50,7 +50,7 @@ describe(getExpectedRallyResolutionEvent, () => {
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
       routState: undefined,
-      unitsLostSupport: new Set([unit]),
+      unitsLostSupport: [unit],
     });
 
     expect(() => getExpectedRallyResolutionEvent(rallyState)).toThrow(
@@ -62,7 +62,7 @@ describe(getExpectedRallyResolutionEvent, () => {
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
       routState: undefined,
-      unitsLostSupport: new Set(),
+      unitsLostSupport: [],
     });
 
     expect(() => getExpectedRallyResolutionEvent(rallyState)).toThrow(
@@ -89,7 +89,7 @@ describe(getExpectedRallyResolutionEvent, () => {
         completed: true,
         numberToDiscard: 1,
       }),
-      unitsLostSupport: new Set([unit]),
+      unitsLostSupport: [unit],
     });
 
     expect(() => getExpectedRallyResolutionEvent(rallyState)).toThrow(

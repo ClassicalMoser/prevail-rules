@@ -74,7 +74,6 @@ describe(generateResolveRangedAttackEvent, () => {
     const full = updatePhaseState(withBoard, phase);
     const event = generateResolveRangedAttackEvent(full, 0);
     expect(event.retreated).toBeTruthy();
-    expect(event.legalRetreatOptions).toBeInstanceOf(Set);
   });
 
   it('given spearmen mirror below retreat threshold, routed/retreated/reversed booleans and empty set', () => {
@@ -84,8 +83,7 @@ describe(generateResolveRangedAttackEvent, () => {
     expect(event.defenderWithPlacement.unit.playerSide).toBe('white');
     expect(event.defenderWithPlacement.placement.coordinate).toBe('E-5');
     expect(event.retreated).toBeFalsy();
-    expect(event.legalRetreatOptions).toBeInstanceOf(Set);
-    expect(event.legalRetreatOptions.size).toBe(0);
+    expect(event.legalRetreatOptions.length).toBe(0);
   });
 
   it('given defending commitment pending on ranged CRS, throws defending commitment guard', () => {
