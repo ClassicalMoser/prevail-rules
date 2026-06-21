@@ -41,6 +41,9 @@ export default defineConfig({
       // Rule Values
       '@ruleValues': path.resolve(__dirname, './src/domain/ruleValues'),
       '@ruleValues/*': path.resolve(__dirname, './src/domain/ruleValues/*'),
+      // Application
+      '@application': path.resolve(__dirname, './src/application'),
+      '@application/*': path.resolve(__dirname, './src/application/*'),
     },
   },
   test: {

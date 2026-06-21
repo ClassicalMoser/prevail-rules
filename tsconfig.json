@@ -7,6 +7,8 @@
     "resolveJsonModule": true,
     "rootDir": "src",
     "paths": {
+      "@application": ["./src/application/index"],
+      "@application/*": ["./src/application/*"],
       "@entities": ["./src/domain/entities/index"],
       "@entities/*": ["./src/domain/entities/*"],
       "@queries": ["./src/domain/queries/index"],
@@ -41,6 +43,6 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/domain/logCommandCard.js"],
   "exclude": ["node_modules", "dist"]
 }
