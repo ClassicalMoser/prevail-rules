@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "vite-plus": "^0.1.20",
-    "zod": "^4.4.2"
+    "zod": "4.4.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^8.2.0",
