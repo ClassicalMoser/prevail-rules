@@ -9,6 +9,7 @@ const unitTypeWithStackedDefense: UnitType = {
   id: '00000000-0000-4000-8000-000000000001',
   limit: 1,
   name: 'Test stacked defense',
+  version: '1.0.0',
   routPenalty: 0,
   stats: {
     attack: 1,
