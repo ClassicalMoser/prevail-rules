@@ -99,6 +99,7 @@ export type {
   StandardBoard,
   StandardBoardCoordinate,
   StatModifier,
+  UnitSupport,
 } from '@entities';
 export type { Line, Player, PlayerSide, UnitFacing } from '@entities';
 export type {

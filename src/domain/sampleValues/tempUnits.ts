@@ -13,6 +13,7 @@ export const velites: UnitType = {
   id: '92a23063-1ebc-45c7-84e9-adec4bb1ffb4',
   limit: 8,
   name: 'Velites',
+  version: '1.0.0',
   routPenalty: 0,
   stats: {
     attack: 2,
@@ -31,6 +32,7 @@ export const manipularLegion: UnitType = {
   id: '6bb57a16-946b-4c79-b551-eb0480041c3f',
   limit: 8,
   name: 'Manipular Legion',
+  version: '1.0.0',
   routPenalty: 2,
   stats: {
     attack: 4,
@@ -49,6 +51,7 @@ export const alaeSocii: UnitType = {
   id: 'a75545cf-8487-460d-bd4f-207fcb7c3269',
   limit: 8,
   name: 'Alae Socii',
+  version: '1.0.0',
   routPenalty: 1,
   stats: {
     attack: 4,
@@ -67,6 +70,7 @@ export const equites: UnitType = {
   id: 'a88ea489-c6f8-445f-b737-9a0e8dae1cdd',
   limit: 4,
   name: 'Equites',
+  version: '1.0.0',
   routPenalty: 2,
   stats: {
     attack: 4,
@@ -85,6 +89,7 @@ export const numidianSkirmishers: UnitType = {
   id: '01d30d13-e881-4979-9679-d2da6c83af8e',
   limit: 8,
   name: 'Numidian Skirmishers',
+  version: '1.0.0',
   routPenalty: 0,
   stats: {
     attack: 2,
@@ -103,6 +108,7 @@ export const numidianCavalry: UnitType = {
   id: 'e76f376c-9b1b-4e35-a52b-202fbd7dca51',
   limit: 4,
   name: 'Numidian Cavalry',
+  version: '1.0.0',
   routPenalty: 0,
   stats: {
     attack: 2,
@@ -121,6 +127,7 @@ export const punicCitizenCavalry: UnitType = {
   id: '8b2e4ffb-d338-4f81-a894-2ef806976f06',
   limit: 4,
   name: 'Punic Citizen Cavalry',
+  version: '1.0.0',
   routPenalty: 2,
   stats: {
     attack: 4,
@@ -139,6 +146,7 @@ export const punicCitizenSpearmen: UnitType = {
   id: '1c8a25b0-d326-4e0f-b65f-6df338cf3e5f',
   limit: 8,
   name: 'Punic Citizen Spearmen',
+  version: '1.0.0',
   routPenalty: 2,
   stats: {
     attack: 3,
@@ -157,6 +165,7 @@ export const libyanSpearmen: UnitType = {
   id: '35650b53-3dd1-4983-a206-d3d409ba44fc',
   limit: 8,
   name: 'Libyan Spearmen',
+  version: '1.0.0',
   routPenalty: 1,
   stats: {
     attack: 4,
@@ -175,6 +184,7 @@ export const africanVeterans: UnitType = {
   id: 'a66d22ea-6111-42a6-a7f1-215574cf5b51',
   limit: 4,
   name: 'African Veterans',
+  version: '1.0.0',
   routPenalty: 2,
   stats: {
     attack: 4,
@@ -193,6 +203,7 @@ export const africanElephants: UnitType = {
   id: '9faf0f5f-fd46-46ab-8d97-a2307168255e',
   limit: 2,
   name: 'African Elephants',
+  version: '1.0.0',
   routPenalty: 2,
   stats: {
     attack: 6,
