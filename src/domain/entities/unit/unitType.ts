@@ -32,7 +32,7 @@ const _unitTypeSchemaObject = z.object({
   /** Not sure yet how the units will be identified,
    * but we need to have a unique identifier for each unit type.
    */
-  id: z.string(),
+  id: z.uuid(),
   /** The name of the unit, capitalized with spaces. */
   name: z.string(),
   /** The version of the unit. */
