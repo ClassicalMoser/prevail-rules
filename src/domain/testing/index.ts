@@ -41,6 +41,7 @@ export {
   getCards,
   getCardsByCount,
   hasMove,
+  updateCardState,
 } from './testHelpers';
 export {
   createTestUnit,

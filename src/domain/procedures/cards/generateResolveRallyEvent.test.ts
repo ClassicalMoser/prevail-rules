@@ -1,8 +1,12 @@
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
-import { createCleanupPhaseState, createEmptyGameState } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms';
+import {
+  createCleanupPhaseState,
+  createEmptyGameState,
+  updateCardState,
+} from '@testing';
+import { updatePhaseState } from '@transforms';
 
 import { generateResolveRallyEvent } from './generateResolveRallyEvent';
 
@@ -15,13 +19,13 @@ describe(generateResolveRallyEvent, () => {
   function cleanupChooseRallyState(played: 'black' | 'white'): GameState {
     const base = createEmptyGameState();
     const card = base.cardState[played].inPlay!;
-    const withPlayed = updateCardState(base, (c) => ({
-      ...c,
+    const withPlayed = updateCardState(base, {
+      ...base.cardState,
       [played]: {
-        ...c[played],
+        ...base.cardState[played],
         played: [card],
       },
-    }));
+    });
     return updatePhaseState(
       withPlayed,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
@@ -39,13 +43,13 @@ describe(generateResolveRallyEvent, () => {
   it('given white initiative and secondPlayerChooseRally, acting side without initiative (black) supplies card', () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const card = base.cardState.black.inPlay!;
-    const withPlayed = updateCardState(base, (c) => ({
-      ...c,
+    const withPlayed = updateCardState(base, {
+      ...base.cardState,
       black: {
-        ...c.black,
+        ...base.cardState.black,
         played: [card],
       },
-    }));
+    });
     const full = updatePhaseState(
       withPlayed,
       createCleanupPhaseState({ step: 'secondPlayerChooseRally' }),

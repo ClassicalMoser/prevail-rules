@@ -43,7 +43,7 @@ describe('createIssueCommandsPhaseState function', () => {
     expect(state.phase).toBe(ISSUE_COMMANDS_PHASE);
     expect(state.step).toBe('firstPlayerResolveCommands');
     expect(state.remainingCommandsFirstPlayer.length).toBe(0);
-    expect(state.currentCommandResolutionState).toBeUndefined();
+    expect(state.currentCommandResolutionState).toBe('pending');
   });
 });
 
@@ -65,6 +65,6 @@ describe('createCleanupPhaseState function', () => {
     const state = createCleanupPhaseState();
     expect(state.phase).toBe('cleanup');
     expect(state.step).toBe('discardPlayedCards');
-    expect(state.firstPlayerRallyResolutionState).toBeUndefined();
+    expect(state.firstPlayerRallyResolutionState).toBe('pending');
   });
 });

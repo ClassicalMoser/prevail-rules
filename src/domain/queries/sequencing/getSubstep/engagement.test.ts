@@ -63,7 +63,7 @@ describe(getEngagementStateFromMovement, () => {
       state,
       createIssueCommandsPhaseState(state, {
         currentCommandResolutionState: createMovementResolutionState(state, {
-          engagementState: undefined,
+          engagementState: 'pending' as const,
         }),
       }),
     );

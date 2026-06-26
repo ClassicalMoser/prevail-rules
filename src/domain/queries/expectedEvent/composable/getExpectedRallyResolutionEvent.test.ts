@@ -36,7 +36,7 @@ describe(getExpectedRallyResolutionEvent, () => {
   it('given resolve broken units when the rally is resolved and no support was lost yet', () => {
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
-      unitsLostSupport: undefined,
+      unitsLostSupport: 'pending' as const,
     });
 
     expect(getExpectedRallyResolutionEvent(rallyState)).toStrictEqual({
@@ -49,7 +49,7 @@ describe(getExpectedRallyResolutionEvent, () => {
     const unit = createTestUnit('black');
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
-      routState: undefined,
+      routState: 'pending' as const,
       unitsLostSupport: [unit],
     });
 
@@ -61,7 +61,7 @@ describe(getExpectedRallyResolutionEvent, () => {
   it('given when the rally is resolved but no units lost support and the state is incomplete, throws', () => {
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
-      routState: undefined,
+      routState: 'pending' as const,
       unitsLostSupport: [],
     });
 

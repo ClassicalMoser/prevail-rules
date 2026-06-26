@@ -1,4 +1,4 @@
-import type { Card, CardState } from '@entities';
+import type { AuthoritativeCardState, Card } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import { tempCommandCards } from '@sampleValues';
 
@@ -9,8 +9,12 @@ import { isLegalCardChoice } from './isLegalCardChoice';
  */
 describe(isLegalCardChoice, () => {
   // Helper to create a card state with cards in hand
-  function createCardState(blackHand: Card[], whiteHand: Card[]): CardState {
+  function createCardState(
+    blackHand: Card[],
+    whiteHand: Card[],
+  ): AuthoritativeCardState {
     return {
+      visibility: 'authoritative',
       black: {
         awaitingPlay: tempCommandCards[0],
         burnt: [],

@@ -17,7 +17,7 @@ import {
 } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
-import { addUnitToBoard, updateCardState, updatePhaseState } from '@transforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms';
 import { createEmptyGameState } from './createEmptyGameState';
 import {
   createAttackApplyState,
@@ -33,7 +33,7 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
 } from './phaseStateHelpers';
-import { createTestCard } from './testHelpers';
+import { createTestCard, updateCardState } from './testHelpers';
 import { createTestUnit, createUnitByStat } from './unitHelpers';
 
 /** Minimal valid state per effect so registry dispatch reaches the target procedure. */
@@ -73,7 +73,7 @@ export const procedureRegistryStateFactories: Record<
   completeIssueCommandsPhase: (): GameStateForBoard<StandardBoard> => {
     const initialPhaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
       boardType: 'standard' as const,
-      currentCommandResolutionState: undefined,
+      currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [],
       remainingCommandsSecondPlayer: [],
@@ -89,11 +89,11 @@ export const procedureRegistryStateFactories: Record<
 
   completeMoveCommandersPhase: (): GameStateForBoard<StandardBoard> => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
-    const stateWithCards = updateCardState(state, (current) => ({
-      ...current,
-      black: { ...current.black, inPlay: tempCommandCards[0] },
-      white: { ...current.white, inPlay: tempCommandCards[1] },
-    }));
+    const stateWithCards = updateCardState(state, {
+      ...state.cardState,
+      black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
+      white: { ...state.cardState.white, inPlay: tempCommandCards[1] },
+    });
     return updatePhaseState(stateWithCards, {
       phase: MOVE_COMMANDERS_PHASE,
       step: 'complete',
@@ -224,13 +224,13 @@ export const procedureRegistryStateFactories: Record<
     // And that the test helper is only called in those phases.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const card = base.cardState[played].inPlay!;
-    const withPlayed = updateCardState(base, (c) => ({
-      ...c,
+    const withPlayed = updateCardState(base, {
+      ...base.cardState,
       [played]: {
-        ...c[played],
+        ...base.cardState[played],
         played: [card],
       },
-    }));
+    });
     return updatePhaseState(
       withPlayed,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),

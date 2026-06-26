@@ -54,7 +54,7 @@ export interface ResolveMeleePhaseStateForBoard<TBoard extends Board> {
   /** The step of the resolve melee phase. */
   step: ResolveMeleePhaseStep;
   /** The current melee resolution state. */
-  currentMeleeResolutionState: MeleeResolutionStateForBoard<TBoard> | undefined;
+  currentMeleeResolutionState: MeleeResolutionStateForBoard<TBoard> | 'pending';
   /** The remaining engagements. */
   remainingEngagements: BoardCoordinate<TBoard>[];
 }
@@ -67,7 +67,7 @@ export type ResolveMeleePhaseState =
 const _standardResolveMeleePhaseStateSchemaObject = z.object({
   boardType: z.literal('standard' satisfies StandardBoard['boardType']),
   currentMeleeResolutionState: standardMeleeResolutionStateSchema.or(
-    z.undefined(),
+    z.literal('pending'),
   ),
   phase: z.literal('resolveMelee'),
   remainingEngagements: z.array(standardBoardCoordinateSchema),
@@ -90,7 +90,7 @@ export const standardResolveMeleePhaseStateSchema: z.ZodType<
 const _smallResolveMeleePhaseStateSchemaObject = z.object({
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
   currentMeleeResolutionState: smallMeleeResolutionStateSchema.or(
-    z.undefined(),
+    z.literal('pending'),
   ),
   phase: z.literal('resolveMelee'),
   remainingEngagements: z.array(smallBoardCoordinateSchema),
@@ -113,7 +113,7 @@ export const smallResolveMeleePhaseStateSchema: z.ZodType<
 const _largeResolveMeleePhaseStateSchemaObject = z.object({
   boardType: z.literal('large' satisfies LargeBoard['boardType']),
   currentMeleeResolutionState: largeMeleeResolutionStateSchema.or(
-    z.undefined(),
+    z.literal('pending'),
   ),
   phase: z.literal('resolveMelee'),
   remainingEngagements: z.array(largeBoardCoordinateSchema),

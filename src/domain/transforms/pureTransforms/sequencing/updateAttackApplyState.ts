@@ -26,7 +26,7 @@ export function updateAttackApplyState<TBoard extends Board>(
   if (phaseState.phase === 'issueCommands') {
     const issueState = getIssueCommandsPhaseStateForBoard(state);
     const ranged = getRangedAttackResolutionState(state);
-    if (!ranged.attackApplyState) {
+    if (ranged.attackApplyState === 'pending') {
       throw new Error(
         'No attack apply state found in ranged attack resolution state',
       );

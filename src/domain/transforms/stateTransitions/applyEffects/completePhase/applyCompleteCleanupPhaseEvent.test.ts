@@ -11,6 +11,7 @@ import {
   createTestUnit,
 } from '@testing';
 import { updatePhaseState, updateRoundState } from '@transforms/pureTransforms';
+import { throwIfNone } from '@utils';
 
 import { applyCompleteCleanupPhaseEvent } from './applyCompleteCleanupPhaseEvent';
 
@@ -41,12 +42,12 @@ describe(applyCompleteCleanupPhaseEvent, () => {
 
       const newState = applyCompleteCleanupPhaseEvent(event, state);
 
-      expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
-        PLAY_CARDS_PHASE,
+      const phase = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
       );
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'chooseCards',
-      );
+      expect(phase.phase).toBe(PLAY_CARDS_PHASE);
+      expect(phase.step).toBe('chooseCards');
     });
 
     it('given cleanup.complete, currentRoundState.roundNumber and currentRoundNumber both increment', () => {
@@ -81,14 +82,17 @@ describe(applyCompleteCleanupPhaseEvent, () => {
   describe('structural update', () => {
     it('given phase and round before apply, input cleanup phase and round unchanged after apply', () => {
       const state = createGameStateInCleanupCompleteStep();
-      const originalPhase = state.currentRoundState.currentPhaseState?.phase;
+      const originalPhase = throwIfNone(
+        state.currentRoundState.currentPhaseState,
+        'phase',
+      ).phase;
       const originalRound = state.currentRoundState.roundNumber;
 
       applyCompleteCleanupPhaseEvent(event, state);
 
-      expect(state.currentRoundState.currentPhaseState?.phase).toBe(
-        originalPhase,
-      );
+      expect(
+        throwIfNone(state.currentRoundState.currentPhaseState, 'phase').phase,
+      ).toBe(originalPhase);
       expect(state.currentRoundState.roundNumber).toBe(originalRound);
     });
   });
@@ -107,9 +111,10 @@ describe(applyCompleteCleanupPhaseEvent, () => {
       const newState = applyCompleteCleanupPhaseEvent(event, state);
 
       expect(newState.currentRoundState.roundNumber).toBe(priorRound + 1);
-      expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
-        PLAY_CARDS_PHASE,
-      );
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase')
+          .phase,
+      ).toBe(PLAY_CARDS_PHASE);
     });
 
     it('given bare empty state without phase, still increments round and sets playCards.chooseCards', () => {
@@ -119,9 +124,10 @@ describe(applyCompleteCleanupPhaseEvent, () => {
       const newState = applyCompleteCleanupPhaseEvent(event, state);
 
       expect(newState.currentRoundState.roundNumber).toBe(priorRound + 1);
-      expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
-        PLAY_CARDS_PHASE,
-      );
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase')
+          .phase,
+      ).toBe(PLAY_CARDS_PHASE);
     });
   });
 });

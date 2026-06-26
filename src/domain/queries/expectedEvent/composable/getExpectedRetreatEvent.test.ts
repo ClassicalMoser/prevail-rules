@@ -14,9 +14,9 @@ describe(getExpectedRetreatEvent, () => {
 
   it('given trigger rout when there are no legal retreat options and no rout state', () => {
     const retreatState = createRetreatState(unitPlacement, {
-      finalPosition: undefined,
+      finalPosition: 'pending' as const,
       legalRetreatOptions: [],
-      routState: undefined,
+      routState: 'pending' as const,
     });
 
     expect(getExpectedRetreatEvent(retreatState)).toStrictEqual({
@@ -27,7 +27,7 @@ describe(getExpectedRetreatEvent, () => {
 
   it('given delegate to rout when retreat has no options and rout is not complete', () => {
     const retreatState = createRetreatState(unitPlacement, {
-      finalPosition: undefined,
+      finalPosition: 'pending' as const,
       legalRetreatOptions: [],
       routState: createRoutState('black', unitPlacement.unit, {
         cardsChosen: false,
@@ -42,7 +42,7 @@ describe(getExpectedRetreatEvent, () => {
 
   it('given multiple options exist, asks the player to choose a retreat option', () => {
     const retreatState = createRetreatState(unitPlacement, {
-      finalPosition: undefined,
+      finalPosition: 'pending' as const,
       legalRetreatOptions: [
         { boardType: 'standard' as const, coordinate: 'E-4', facing: 'north' },
         { boardType: 'standard' as const, coordinate: 'E-6', facing: 'north' },
@@ -109,7 +109,7 @@ describe(getExpectedRetreatEvent, () => {
 
   it('given when a single retreat option was not preselected, throws', () => {
     const retreatState = createRetreatState(unitPlacement, {
-      finalPosition: undefined,
+      finalPosition: 'pending' as const,
       legalRetreatOptions: [
         { boardType: 'standard' as const, coordinate: 'E-4', facing: 'north' },
       ],

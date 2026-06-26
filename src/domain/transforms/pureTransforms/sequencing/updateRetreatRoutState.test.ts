@@ -1,4 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
+import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyStateWithRetreat,
   createEmptyGameState,
@@ -57,22 +58,26 @@ describe(updateRetreatRoutState, () => {
 
     const newState = updateRetreatRoutState(state, newRout);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('issueCommands');
-    if (
-      phase?.phase !== 'issueCommands' ||
-      !phase.currentCommandResolutionState
-    ) {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('issueCommands');
+    if (phase.phase !== 'issueCommands') {
       throw new Error('phase');
     }
-    if (
-      phase.currentCommandResolutionState.commandResolutionType !==
-      'rangedAttack'
-    ) {
+    const commandState = throwIfPending(
+      phase.currentCommandResolutionState,
+      'command',
+    );
+    if (commandState.commandResolutionType !== 'rangedAttack') {
       throw new Error('type');
     }
-    const retreat =
-      phase.currentCommandResolutionState.attackApplyState?.retreatState;
-    expect(retreat?.routState?.numberToDiscard).toBe(2);
+    const attackApply = throwIfPending(
+      commandState.attackApplyState,
+      'attack apply',
+    );
+    const retreat = throwIfPending(attackApply.retreatState, 'retreat');
+    expect(throwIfPending(retreat.routState, 'rout').numberToDiscard).toBe(2);
   });
 });

@@ -14,6 +14,8 @@ export interface UnitType {
   id: string;
   /** The capitalized name of the unit. */
   name: string;
+  /** The link to the unit's image. */
+  imageUrl: string | null;
   /** The version of the unit. */
   version: string;
   /** The traits of the unit. */
@@ -35,12 +37,14 @@ const _unitTypeSchemaObject = z.object({
   id: z.uuid(),
   /** The name of the unit, capitalized with spaces. */
   name: z.string(),
+  /** The link to the unit's image. */
+  imageUrl: z.url().nullable(),
   /** The version of the unit. */
-  version: z.string().regex(/^\d+\.\d+\.\d+$/, {
+  version: z.string().regex(/^\d+\.\d+\.\d+$/u, {
     message: 'Version must be a valid semver string (e.g., 1.0.0, 1.12.35)',
   }),
   /** The traits of the unit. */
-  traits: z.array(traitSchema),
+  traits: z.array(traitSchema).min(1).max(4),
   /** The stats of the unit. */
   stats: unitStatsSchema,
   /** The cost of the unit. */

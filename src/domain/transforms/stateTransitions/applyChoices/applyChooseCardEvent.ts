@@ -4,8 +4,8 @@ import type { GameState, GameStateForBoard, PlayCardsPhaseState } from '@game';
 import { getPlayCardsPhaseState } from '@queries';
 import {
   chooseCard,
-  updateCardState,
   updatePhaseState,
+  updatePlayerCardState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -27,15 +27,17 @@ export function applyChooseCardEvent<TBoard extends Board>(
     state as GameState,
   );
 
-  // Choose the card
-  const newCardState = chooseCard(state.cardState, player, card);
-  // Update the card state
-  const stateWithUpdatedPlayer = updateCardState(state, newCardState);
+  // Choose the card on the acting player's owned slice
+  const stateWithUpdatedPlayer = updatePlayerCardState(
+    state,
+    player,
+    chooseCard(state.cardState[player], card),
+  );
 
   // Check if both players have now chosen cards
   const bothPlayersChosen =
-    newCardState.black.awaitingPlay !== null &&
-    newCardState.white.awaitingPlay !== null;
+    stateWithUpdatedPlayer.cardState.black.awaitingPlay !== null &&
+    stateWithUpdatedPlayer.cardState.white.awaitingPlay !== null;
 
   // If both players have chosen, advance step to revealCards
   const newPhaseState: PlayCardsPhaseState = bothPlayersChosen

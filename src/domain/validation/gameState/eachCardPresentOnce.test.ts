@@ -1,4 +1,4 @@
-import type { Card, CardState } from '@entities';
+import type { AuthoritativeCardState, Card } from '@entities';
 import { tempCommandCards } from '@sampleValues';
 
 import { eachCardPresentOnce } from './eachCardPresentOnce';
@@ -25,8 +25,9 @@ describe(eachCardPresentOnce, () => {
     whitePlayed?: Card[],
     whiteDiscarded?: Card[],
     whiteBurnt?: Card[],
-  ): CardState {
+  ): AuthoritativeCardState {
     return {
+      visibility: 'authoritative',
       black: {
         awaitingPlay: blackAwaitingPlay ?? tempCommandCards[0],
         burnt: blackBurnt ?? [],

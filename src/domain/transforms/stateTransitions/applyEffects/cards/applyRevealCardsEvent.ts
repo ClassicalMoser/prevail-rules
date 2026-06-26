@@ -4,8 +4,8 @@ import type { GameState, GameStateForBoard, PlayCardsPhaseState } from '@game';
 import { getPlayCardsPhaseState } from '@queries';
 import {
   revealCard,
-  updateCardState,
   updatePhaseState,
+  updatePlayerCardState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -28,8 +28,16 @@ export function applyRevealCardsEvent<TBoard extends Board>(
   const phaseState = getPlayCardsPhaseState(state as GameState);
 
   // Move both players' cards from awaitingPlay to inPlay
-  let newCardState = revealCard(state.cardState, 'black');
-  newCardState = revealCard(newCardState, 'white');
+  const stateWithBlack = updatePlayerCardState(
+    state,
+    'black',
+    revealCard(state.cardState.black),
+  );
+  const stateWithCards = updatePlayerCardState(
+    stateWithBlack,
+    'white',
+    revealCard(state.cardState.white),
+  );
 
   // Advance to assignInitiative step
   const newPhaseState: PlayCardsPhaseState = {
@@ -37,7 +45,6 @@ export function applyRevealCardsEvent<TBoard extends Board>(
     step: 'assignInitiative',
   };
 
-  const stateWithCards = updateCardState(state, newCardState);
   const stateWithPhase = updatePhaseState(stateWithCards, newPhaseState);
 
   return stateWithPhase;

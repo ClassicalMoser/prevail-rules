@@ -23,6 +23,7 @@ function shellForBoard<TBoard extends Board>(
     boardState: board,
     boardType: board.boardType as GameStateForBoard<TBoard>['boardType'],
     cardState: {
+      visibility: 'authoritative',
       black: {
         awaitingPlay: null,
         burnt: [],
@@ -46,7 +47,7 @@ function shellForBoard<TBoard extends Board>(
       boardType: board.boardType,
       commandedUnits: [],
       completedPhases: [],
-      currentPhaseState: undefined,
+      currentPhaseState: 'none',
       events: [],
       roundNumber: 1,
     },

@@ -1,4 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
+import { throwIfNone, throwIfPending } from '@utils';
 import type { ResolveEngageRetreatOptionEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import {
@@ -64,16 +65,20 @@ describe(applyResolveEngageRetreatOptionEvent, () => {
     };
 
     const next = applyResolveEngageRetreatOptionEvent(event, full);
-    const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== 'issueCommands') {
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    if (phase.phase !== 'issueCommands') {
       throw new Error('Expected issueCommands phase');
     }
-    const cmd = phase.currentCommandResolutionState;
-    if (cmd?.commandResolutionType !== 'movement') {
+    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
+    if (cmd.commandResolutionType !== 'movement') {
       throw new Error('movement');
     }
-    const res = cmd.engagementState?.engagementResolutionState;
-    if (res?.engagementType !== 'front') {
+    const engagement = throwIfPending(cmd.engagementState, 'engagement');
+    const res = engagement.engagementResolutionState;
+    if (res.engagementType !== 'front') {
       throw new Error('front');
     }
     expect(res.defendingUnitCanRetreat).toBeTruthy();

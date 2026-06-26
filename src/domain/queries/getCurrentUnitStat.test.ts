@@ -34,7 +34,7 @@ describe(getCurrentUnitStat, () => {
       gameState.cardState.black.inPlay = createTestCard({
         id: '2',
         initiative: 2,
-        modifiers: [{ type: 'attack', value: 1 }],
+        modifiers: ['attack'],
         name: 'Command Card 2',
         roundEffectModifiers: [],
         roundEffectRestrictions: { inspirationRangeRestriction: 1 },

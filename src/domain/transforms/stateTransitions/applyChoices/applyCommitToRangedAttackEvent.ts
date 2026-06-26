@@ -7,8 +7,8 @@ import type {
 import { getRangedAttackResolutionState } from '@queries';
 import {
   discardCardsFromHand,
-  updateCardState,
   updateCommandResolutionState,
+  updatePlayerCardState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -31,9 +31,11 @@ export function applyCommitToRangedAttackEvent<TBoard extends Board>(
   const isAttackingPlayer = player === attackingPlayer;
 
   // Discard committed card from player's hand
-  const newCardState = discardCardsFromHand(state.cardState, player, [
-    event.committedCard.id,
-  ]);
+  const stateWithCards = updatePlayerCardState(
+    state,
+    player,
+    discardCardsFromHand(state.cardState[player], [event.committedCard.id]),
+  );
 
   // Mark attacking or defending commitment as completed with the chosen card
   const newCommitment = {
@@ -47,7 +49,6 @@ export function applyCommitToRangedAttackEvent<TBoard extends Board>(
       : { defendingCommitment: newCommitment }),
   };
 
-  const stateWithCards = updateCardState(state, newCardState);
   const newGameState = updateCommandResolutionState(
     stateWithCards,
     newRangedAttackState,

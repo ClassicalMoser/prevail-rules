@@ -6,6 +6,7 @@ import type {
   GameStateForBoard,
   RearEngagementResolutionState,
 } from '@game';
+import { throwIfPending } from '@utils';
 import { getMovementResolutionState } from '../getCommandResolutionState';
 
 /**
@@ -20,10 +21,10 @@ export function getEngagementStateFromMovement<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): EngagementStateForBoard<TBoard> {
   const movementState = getMovementResolutionState(state);
-  if (!movementState.engagementState) {
-    throw new Error('No engagement state found in movement resolution');
-  }
-  return movementState.engagementState;
+  return throwIfPending(
+    movementState.engagementState,
+    'No engagement state found in movement resolution',
+  );
 }
 
 /**

@@ -35,7 +35,7 @@ export function generateResolveRetreatEvent<TBoard extends Board>(
     );
   }
 
-  if (!retreatState.finalPosition) {
+  if (retreatState.finalPosition === 'pending') {
     throw new Error('Retreat state has no final position');
   }
 

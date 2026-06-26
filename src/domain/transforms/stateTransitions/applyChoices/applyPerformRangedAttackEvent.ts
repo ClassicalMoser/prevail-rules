@@ -64,7 +64,7 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
 
   const rangedAttackResolutionState: RangedAttackResolutionStateForBoard<TBoard> =
     {
-      attackApplyState: undefined,
+      attackApplyState: 'pending',
       attackingCommitment: { commitmentType: 'pending' },
       attackingUnit,
       boardType: state.boardState.boardType,

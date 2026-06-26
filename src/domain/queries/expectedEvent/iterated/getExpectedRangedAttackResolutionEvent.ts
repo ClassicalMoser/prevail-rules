@@ -44,7 +44,7 @@ export function getExpectedRangedAttackResolutionEvent(
 
   // Both commitments resolved, check if resolveRangedAttack has been applied
   // ResolveRangedAttack calculates the attack and creates attackApplyState
-  if (!resolutionState.attackApplyState) {
+  if (resolutionState.attackApplyState === 'pending') {
     return {
       actionType: 'gameEffect',
       effectType: 'resolveRangedAttack',

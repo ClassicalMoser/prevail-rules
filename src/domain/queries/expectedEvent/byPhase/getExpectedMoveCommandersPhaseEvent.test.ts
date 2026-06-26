@@ -106,12 +106,16 @@ describe(getExpectedMoveCommandersPhaseEvent, () => {
     it('given for invalid step, throws', () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
       // Bad type cast to test default case
+      const phaseState = state.currentRoundState.currentPhaseState;
+      if (phaseState === 'none') {
+        throw new Error('expected phase state');
+      }
       const stateWithInvalidStep = {
         ...state,
         currentRoundState: {
           ...state.currentRoundState,
           currentPhaseState: {
-            ...state.currentRoundState.currentPhaseState!,
+            ...phaseState,
             step: 'invalidStep' as any,
           },
         },

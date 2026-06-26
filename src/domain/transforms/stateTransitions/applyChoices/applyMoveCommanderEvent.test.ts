@@ -5,6 +5,7 @@ import { MOVE_COMMANDERS_PHASE } from '@game';
 
 import { createBoardWithCommander, createEmptyGameState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone } from '@utils';
 
 import { applyMoveCommanderEvent } from './applyMoveCommanderEvent';
 
@@ -121,9 +122,9 @@ describe(applyMoveCommanderEvent, () => {
 
       const newState = applyMoveCommanderEvent(event, state);
 
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'moveSecondCommander',
-      );
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe('moveSecondCommander');
     });
 
     it('given white completes second commander move, phase step is complete', () => {
@@ -141,9 +142,9 @@ describe(applyMoveCommanderEvent, () => {
 
       const newState = applyMoveCommanderEvent(event, state);
 
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'complete',
-      );
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe('complete');
     });
   });
 
@@ -152,7 +153,10 @@ describe(applyMoveCommanderEvent, () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
       const originalBlackCommanderPresent =
         state.boardState.board['E-5']?.commanders.includes('black');
-      const originalStep = state.currentRoundState.currentPhaseState?.step;
+      const originalStep = throwIfNone(
+        state.currentRoundState.currentPhaseState,
+        'phase',
+      ).step;
 
       const event: MoveCommanderEventForBoard<StandardBoard> = {
         boardType: 'standard',
@@ -169,9 +173,9 @@ describe(applyMoveCommanderEvent, () => {
       expect(state.boardState.board['E-5']?.commanders.includes('black')).toBe(
         originalBlackCommanderPresent,
       );
-      expect(state.currentRoundState.currentPhaseState?.step).toBe(
-        originalStep,
-      );
+      expect(
+        throwIfNone(state.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe(originalStep);
     });
   });
 });

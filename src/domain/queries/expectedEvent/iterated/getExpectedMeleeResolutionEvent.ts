@@ -2,6 +2,7 @@ import type { ExpectedEventInfo } from '@events';
 import type { GameState, MeleeResolutionState } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getDefendingPlayerForNextIncompleteMeleeAttackApply } from '@queries/sequencing';
+import { throwIfPending } from '@utils';
 import { getExpectedAttackApplyEvent } from '../composable';
 
 /**
@@ -53,7 +54,10 @@ export function getExpectedMeleeResolutionEvent(
 
   // Both commitments resolved, check if resolveMelee has been applied
   // ResolveMelee creates both attackApplyStates
-  if (!firstPlayerAttackApplyState || !secondPlayerAttackApplyState) {
+  if (
+    firstPlayerAttackApplyState === 'pending' ||
+    secondPlayerAttackApplyState === 'pending'
+  ) {
     return {
       actionType: 'gameEffect',
       effectType: 'resolveMelee',
@@ -65,9 +69,10 @@ export function getExpectedMeleeResolutionEvent(
     getDefendingPlayerForNextIncompleteMeleeAttackApply(gameState, meleeState);
   if (nextDefendingPlayer !== null) {
     return getExpectedAttackApplyEvent(
-      // We already checked that this is safe, but typescript cannot infer from parameterized string key.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      meleeState[`${nextDefendingPlayer}AttackApplyState`]!,
+      throwIfPending(
+        meleeState[`${nextDefendingPlayer}AttackApplyState`],
+        `No ${nextDefendingPlayer} attack apply state found in melee resolution`,
+      ),
       gameState,
     );
   }

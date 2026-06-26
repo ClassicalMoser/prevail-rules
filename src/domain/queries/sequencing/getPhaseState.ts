@@ -12,7 +12,7 @@ import type {
   ResolveMeleePhaseState,
   ResolveMeleePhaseStateForBoard,
 } from '@game';
-import { throwIfUndefined } from '@utils';
+import { throwIfNone } from '@utils';
 
 /**
  * Gets the current phase state from the game state.
@@ -25,7 +25,7 @@ import { throwIfUndefined } from '@utils';
 export function getCurrentPhaseStateForBoard<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): PhaseStateForBoard<TBoard> {
-  const phaseState = throwIfUndefined(
+  const phaseState = throwIfNone(
     state.currentRoundState.currentPhaseState,
     'No current phase state found',
   );
@@ -40,7 +40,7 @@ export function getCurrentPhaseStateForBoard<TBoard extends Board>(
  * @throws Error if phase state is missing
  */
 export function getCurrentPhaseState(state: GameState): PhaseState {
-  return throwIfUndefined(
+  return throwIfNone(
     state.currentRoundState.currentPhaseState,
     'No current phase state found',
   );

@@ -26,7 +26,7 @@ export function createMovementResolutionState(
       commitmentType: 'completed',
     },
     completed: false,
-    engagementState: undefined,
+    engagementState: 'pending',
     moveCommander: false,
     movingUnit: {
       boardType: 'standard' as const,
@@ -55,7 +55,7 @@ export function createRangedAttackResolutionState(
   overrides?: Partial<RangedAttackResolutionStateForBoard<StandardBoard>>,
 ): RangedAttackResolutionStateForBoard<StandardBoard> {
   return {
-    attackApplyState: undefined,
+    attackApplyState: 'pending',
     attackingCommitment: {
       // Valid assertion, see note in createMovementResolutionState.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -87,7 +87,7 @@ export function createMeleeResolutionState(
   overrides?: Partial<MeleeResolutionStateForBoard<StandardBoard>>,
 ): MeleeResolutionStateForBoard<StandardBoard> {
   return {
-    blackAttackApplyState: undefined,
+    blackAttackApplyState: 'pending',
     blackCommitment: {
       // Valid assertion, see note in createMovementResolutionState.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -98,7 +98,7 @@ export function createMeleeResolutionState(
     completed: false,
     location: 'E-5',
     substepType: 'meleeResolution' as const,
-    whiteAttackApplyState: undefined,
+    whiteAttackApplyState: 'pending',
     whiteCommitment: {
       // Valid assertion, see note in createMovementResolutionState.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

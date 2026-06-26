@@ -4,8 +4,13 @@ import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getIssueCommandsPhaseState } from '@queries';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, createTestUnit } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import {
+  createEmptyGameState,
+  createTestUnit,
+  updateCardState,
+} from '@testing';
+import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone } from '@utils';
 import { isSameUnitInstance } from '@validation';
 
 import { applyIssueCommandEvent } from './applyIssueCommandEvent';
@@ -21,24 +26,24 @@ describe(applyIssueCommandEvent, () => {
     currentInitiative: 'black' | 'white' = 'black',
   ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative });
-    const stateWithCards = updateCardState(state, (current) => ({
-      ...current,
+    const stateWithCards = updateCardState(state, {
+      ...state.cardState,
       black: {
-        ...current.black,
+        ...state.cardState.black,
         inPlay: tempCommandCards[0],
       },
       white: {
-        ...current.white,
+        ...state.cardState.white,
         inPlay: tempCommandCards[1],
       },
-    }));
+    });
 
     const blackCommand = tempCommandCards[0].command;
     const whiteCommand = tempCommandCards[1].command;
 
     const stateWithPhase = updatePhaseState(stateWithCards, {
       boardType: 'standard',
-      currentCommandResolutionState: undefined,
+      currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [blackCommand],
       remainingCommandsSecondPlayer: [whiteCommand],
@@ -67,8 +72,11 @@ describe(applyIssueCommandEvent, () => {
 
       const newState = applyIssueCommandEvent(event, state);
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'issueCommands') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
 
@@ -98,8 +106,11 @@ describe(applyIssueCommandEvent, () => {
 
       const newState = applyIssueCommandEvent(event, state);
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'issueCommands') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
 

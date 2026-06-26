@@ -44,7 +44,7 @@ export function getExpectedCleanupPhaseEvent(
     case 'firstPlayerResolveRally': {
       const rallyState = phaseState.firstPlayerRallyResolutionState;
 
-      if (!rallyState) {
+      if (rallyState === 'pending') {
         throw new Error('First player rally resolution state not found');
       }
 
@@ -54,7 +54,7 @@ export function getExpectedCleanupPhaseEvent(
     case 'secondPlayerResolveRally': {
       const rallyState = phaseState.secondPlayerRallyResolutionState;
 
-      if (!rallyState) {
+      if (rallyState === 'pending') {
         throw new Error('Second player rally resolution state not found');
       }
 

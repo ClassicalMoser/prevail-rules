@@ -4,6 +4,7 @@ import {
   createResolveMeleePhaseState,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateMeleeResolutionState } from './updateMeleeResolutionState';
 
@@ -22,14 +23,16 @@ describe(updateMeleeResolutionState, () => {
     const updatedMelee = createMeleeResolutionState(state, { completed: true });
     const newState = updateMeleeResolutionState(stateInPhase, updatedMelee);
 
-    expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
-      'resolveMelee',
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
     );
-    const newPhaseState = newState.currentRoundState.currentPhaseState;
-    if (newPhaseState?.phase !== 'resolveMelee') {
+    expect(phase.phase).toBe('resolveMelee');
+    if (phase.phase !== 'resolveMelee') {
       throw new Error('phase');
     }
-    expect(newPhaseState.currentMeleeResolutionState?.completed).toBeTruthy();
+    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
+    expect(melee.completed).toBeTruthy();
   });
 
   it('given not mutate the original state', () => {
@@ -39,10 +42,13 @@ describe(updateMeleeResolutionState, () => {
       currentMeleeResolutionState: meleeState,
     });
     const stateInPhase = updatePhaseState(state, phaseState);
+    const origPhase = throwIfNone(
+      stateInPhase.currentRoundState.currentPhaseState,
+      'phase',
+    );
     const originalMelee =
-      stateInPhase.currentRoundState.currentPhaseState?.phase === 'resolveMelee'
-        ? stateInPhase.currentRoundState.currentPhaseState
-            .currentMeleeResolutionState
+      origPhase.phase === 'resolveMelee'
+        ? throwIfPending(origPhase.currentMeleeResolutionState, 'melee')
         : undefined;
 
     updateMeleeResolutionState(stateInPhase, {
@@ -50,18 +56,21 @@ describe(updateMeleeResolutionState, () => {
       completed: true,
     });
 
-    expect(
-      stateInPhase.currentRoundState.currentPhaseState?.phase ===
-        'resolveMelee' &&
-        stateInPhase.currentRoundState.currentPhaseState
-          .currentMeleeResolutionState,
-    ).toBe(originalMelee);
+    const checkPhase = throwIfNone(
+      stateInPhase.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    const currentMelee =
+      checkPhase.phase === 'resolveMelee'
+        ? throwIfPending(checkPhase.currentMeleeResolutionState, 'melee')
+        : undefined;
+    expect(currentMelee).toBe(originalMelee);
   });
 
   it('given when no current melee resolution state is set, throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const phaseState = createResolveMeleePhaseState(state, {
-      currentMeleeResolutionState: undefined,
+      currentMeleeResolutionState: 'pending',
     });
     const stateInPhase = updatePhaseState(state, phaseState);
     const meleeState = createMeleeResolutionState(state);

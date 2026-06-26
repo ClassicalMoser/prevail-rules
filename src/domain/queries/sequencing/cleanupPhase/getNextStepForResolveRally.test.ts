@@ -15,11 +15,11 @@ describe(getNextStepForResolveRally, () => {
         completed: false,
         playerRallied: true,
         rallyResolved: false,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending' as const,
+        unitsLostSupport: 'pending' as const,
       },
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'firstPlayerResolveRally',
     };
 
@@ -30,14 +30,14 @@ describe(getNextStepForResolveRally, () => {
   it('given step is secondPlayerResolveRally, returns complete', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
       secondPlayerRallyResolutionState: {
         completed: false,
         playerRallied: true,
         rallyResolved: false,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending' as const,
+        unitsLostSupport: 'pending' as const,
       },
       step: 'secondPlayerResolveRally',
     };
@@ -49,9 +49,9 @@ describe(getNextStepForResolveRally, () => {
   it('given discardPlayedCards, throws not on resolveRally step', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'discardPlayedCards',
     };
 

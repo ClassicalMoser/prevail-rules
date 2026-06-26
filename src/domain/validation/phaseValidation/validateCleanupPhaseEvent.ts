@@ -56,7 +56,7 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
         ? phaseState.firstPlayerRallyResolutionState
         : phaseState.secondPlayerRallyResolutionState;
 
-      if (!rallyState) {
+      if (rallyState === 'pending') {
         return {
           errorReason: 'Rally resolution state not found',
           result: false,
@@ -78,7 +78,7 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
         };
       }
 
-      if (rallyState.unitsLostSupport === undefined) {
+      if (rallyState.unitsLostSupport === 'pending') {
         // Expect resolveUnitsBroken
         if (
           event.eventType === 'gameEffect' &&
@@ -93,7 +93,10 @@ export function validateCleanupPhaseEvent<TBoard extends Board>(
       }
 
       // Check for rout state
-      if (rallyState.routState && !rallyState.routState.cardsChosen) {
+      if (
+        rallyState.routState !== 'pending' &&
+        !rallyState.routState.cardsChosen
+      ) {
         // Expect chooseRoutDiscard
         if (event.eventType === 'playerChoice') {
           return validatePlayerChoice(

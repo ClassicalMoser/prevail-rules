@@ -5,7 +5,7 @@ import type {
   ValidationResult,
 } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceEventForBoard } from '@events';
-import type { GameState } from '@game';
+import type { GameState, GameStateForBoard } from '@game';
 import { validateExpectedChoice } from './validateExpectedChoice';
 import {
   largePlayerChoiceEventSchema,
@@ -62,7 +62,10 @@ export function validatePlayerChoice(
         }
         const eventForBoard =
           safelyParsed.data as PlayerChoiceEventForBoard<SmallBoard>;
-        const legalValidation = validateLegalPlayerChoice(eventForBoard, state);
+        const legalValidation = validateLegalPlayerChoice(
+          eventForBoard,
+          state as GameStateForBoard<SmallBoard>,
+        );
         // Return pass or fail, since this is the last validation step.
         return legalValidation;
       }
@@ -73,7 +76,10 @@ export function validatePlayerChoice(
         }
         const eventForBoard =
           safelyParsed.data as PlayerChoiceEventForBoard<StandardBoard>;
-        const legalValidation = validateLegalPlayerChoice(eventForBoard, state);
+        const legalValidation = validateLegalPlayerChoice(
+          eventForBoard,
+          state as GameStateForBoard<StandardBoard>,
+        );
         // Return pass or fail, since this is the last validation step.
         return legalValidation;
       }
@@ -84,7 +90,10 @@ export function validatePlayerChoice(
         }
         const eventForBoard =
           safelyParsed.data as PlayerChoiceEventForBoard<LargeBoard>;
-        const legalValidation = validateLegalPlayerChoice(eventForBoard, state);
+        const legalValidation = validateLegalPlayerChoice(
+          eventForBoard,
+          state as GameStateForBoard<LargeBoard>,
+        );
         // Return pass or fail, since this is the last validation step.
         return legalValidation;
       }

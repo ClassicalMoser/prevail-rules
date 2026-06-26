@@ -14,11 +14,11 @@ describe(updateRallyResolutionStateForCurrentStep, () => {
         completed: false,
         playerRallied: true,
         rallyResolved: false,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending' as const,
+        unitsLostSupport: 'pending' as const,
       },
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'firstPlayerResolveRally' as const,
     };
 
@@ -26,7 +26,7 @@ describe(updateRallyResolutionStateForCurrentStep, () => {
       completed: false,
       playerRallied: true,
       rallyResolved: true,
-      routState: undefined,
+      routState: 'pending' as const,
       unitsLostSupport: [],
     };
 
@@ -44,14 +44,14 @@ describe(updateRallyResolutionStateForCurrentStep, () => {
 
   it('given secondPlayerResolveRally, replaces second bucket and step complete', () => {
     const phaseState = {
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
       secondPlayerRallyResolutionState: {
         completed: false,
         playerRallied: true,
         rallyResolved: false,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending' as const,
+        unitsLostSupport: 'pending' as const,
       },
       step: 'secondPlayerResolveRally' as const,
     };
@@ -60,7 +60,7 @@ describe(updateRallyResolutionStateForCurrentStep, () => {
       completed: false,
       playerRallied: true,
       rallyResolved: true,
-      routState: undefined,
+      routState: 'pending' as const,
       unitsLostSupport: [],
     };
 
@@ -78,9 +78,9 @@ describe(updateRallyResolutionStateForCurrentStep, () => {
 
   it('given discardPlayedCards step, throws not on resolveRally step', () => {
     const phaseState = {
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'discardPlayedCards' as const,
     };
 
@@ -88,7 +88,7 @@ describe(updateRallyResolutionStateForCurrentStep, () => {
       completed: false,
       playerRallied: true,
       rallyResolved: true,
-      routState: undefined,
+      routState: 'pending' as const,
       unitsLostSupport: [],
     };
 

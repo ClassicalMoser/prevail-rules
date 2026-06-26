@@ -1,4 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
+import { throwIfNone, throwIfPending } from '@utils';
 import type { ResolveFlankEngagementEventForBoard } from '@events';
 import type { GameStateForBoard } from '@game';
 import { hasSingleUnit } from '@entities';
@@ -68,17 +69,20 @@ describe(applyResolveFlankEngagementEvent, () => {
     }
     expect(space.unitPresence.facing).toBe('south');
 
-    const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== 'issueCommands') {
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    if (phase.phase !== 'issueCommands') {
       throw new Error('Expected issueCommands phase');
     }
-    const cmd = phase.currentCommandResolutionState;
-    if (cmd?.commandResolutionType !== 'movement') {
+    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
+    if (cmd.commandResolutionType !== 'movement') {
       throw new Error('movement');
     }
-    const es = cmd.engagementState;
-    expect(es?.completed).toBeTruthy();
-    if (es?.engagementResolutionState.engagementType !== 'flank') {
+    const es = throwIfPending(cmd.engagementState, 'engagement');
+    expect(es.completed).toBeTruthy();
+    if (es.engagementResolutionState.engagementType !== 'flank') {
       throw new Error('Expected flank');
     }
     expect(es.engagementResolutionState.defenderRotated).toBeTruthy();

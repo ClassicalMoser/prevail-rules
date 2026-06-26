@@ -3,8 +3,8 @@ import type { ChooseCardEvent, PlayerChoiceEventForBoard } from '@events';
 import type { GameStateForBoard } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms';
+import { createEmptyGameState, updateCardState } from '@testing';
+import { updatePhaseState } from '@transforms';
 import { validatePlayerChoice } from './validatePlayerChoice';
 
 /**
@@ -17,19 +17,19 @@ describe(validatePlayerChoice, () => {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    return updateCardState(withPhase, (current) => ({
-      ...current,
+    return updateCardState(withPhase, {
+      ...withPhase.cardState,
       black: {
-        ...current.black,
+        ...withPhase.cardState.black,
         awaitingPlay: null,
         inHand: [tempCommandCards[2]],
       },
       white: {
-        ...current.white,
+        ...withPhase.cardState.white,
         awaitingPlay: null,
         inHand: [tempCommandCards[3]],
       },
-    }));
+    });
   }
 
   afterEach(() => {
@@ -63,25 +63,23 @@ describe(validatePlayerChoice, () => {
   });
 
   it('fails when the wrong player acts for the expected source', () => {
-    const state = updateCardState(
-      updatePhaseState(createEmptyGameState(), {
-        phase: PLAY_CARDS_PHASE,
-        step: 'chooseCards',
-      }),
-      (current) => ({
-        ...current,
-        black: {
-          ...current.black,
-          awaitingPlay: tempCommandCards[0],
-          inHand: [],
-        },
-        white: {
-          ...current.white,
-          awaitingPlay: null,
-          inHand: [tempCommandCards[2]],
-        },
-      }),
-    );
+    const withPhase = updatePhaseState(createEmptyGameState(), {
+      phase: PLAY_CARDS_PHASE,
+      step: 'chooseCards',
+    });
+    const state = updateCardState(withPhase, {
+      ...withPhase.cardState,
+      black: {
+        ...withPhase.cardState.black,
+        awaitingPlay: tempCommandCards[0],
+        inHand: [],
+      },
+      white: {
+        ...withPhase.cardState.white,
+        awaitingPlay: null,
+        inHand: [tempCommandCards[2]],
+      },
+    });
 
     const event: ChooseCardEvent = {
       card: tempCommandCards[0],

@@ -1,12 +1,14 @@
 import type { StandardBoard } from '@entities';
+import { throwIfNone } from '@utils';
 import type { DiscardPlayedCardsEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import {
   createCleanupPhaseState,
   createEmptyGameState,
   createTestCard,
+  updateCardState,
 } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyDiscardPlayedCardsEvent } from './applyDiscardPlayedCardsEvent';
 
@@ -17,11 +19,11 @@ import { applyDiscardPlayedCardsEvent } from './applyDiscardPlayedCardsEvent';
 describe(applyDiscardPlayedCardsEvent, () => {
   it('given discardPlayedCards with both inPlay set, played lengths grow and step firstPlayerChooseRally', () => {
     const base = createEmptyGameState();
-    const withCards = updateCardState(base, (c) => ({
-      ...c,
-      black: { ...c.black, inPlay: createTestCard() },
-      white: { ...c.white, inPlay: createTestCard() },
-    }));
+    const withCards = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inPlay: createTestCard() },
+      white: { ...base.cardState.white, inPlay: createTestCard() },
+    });
     const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withCards,
       createCleanupPhaseState({ step: 'discardPlayedCards' }),
@@ -37,9 +39,12 @@ describe(applyDiscardPlayedCardsEvent, () => {
     } satisfies DiscardPlayedCardsEvent;
 
     const next = applyDiscardPlayedCardsEvent(event, full);
-    const phase = next.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('cleanup');
-    if (phase?.phase !== 'cleanup') {
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('cleanup');
+    if (phase.phase !== 'cleanup') {
       throw new Error('cleanup');
     }
     expect(phase.step).toBe('firstPlayerChooseRally');

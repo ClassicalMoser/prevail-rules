@@ -1,4 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
+import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
   createEmptyGameState,
@@ -155,23 +156,26 @@ describe(updateAttackApplySubstep, () => {
       () => 'white',
       {},
     );
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('issueCommands');
-    if (
-      phase?.phase !== 'issueCommands' ||
-      !phase.currentCommandResolutionState
-    ) {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('issueCommands');
+    if (phase.phase !== 'issueCommands') {
       throw new Error('phase');
     }
-    if (
-      phase.currentCommandResolutionState.commandResolutionType !==
-      'rangedAttack'
-    ) {
+    const commandState = throwIfPending(
+      phase.currentCommandResolutionState,
+      'command',
+    );
+    if (commandState.commandResolutionType !== 'rangedAttack') {
       throw new Error('type');
     }
-    expect(
-      phase.currentCommandResolutionState.attackApplyState?.completed,
-    ).toBeTruthy();
+    const attackApply = throwIfPending(
+      commandState.attackApplyState,
+      'attack apply',
+    );
+    expect(attackApply.completed).toBeTruthy();
   });
 
   it('given update correct player attack apply state in melee context', () => {
@@ -182,17 +186,25 @@ describe(updateAttackApplySubstep, () => {
       () => 'black',
       {},
     );
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('resolveMelee');
-    if (phase?.phase !== 'resolveMelee') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('resolveMelee');
+    if (phase.phase !== 'resolveMelee') {
       throw new Error('phase');
     }
-    expect(
-      phase.currentMeleeResolutionState?.blackAttackApplyState?.completed,
-    ).toBeTruthy();
-    expect(
-      phase.currentMeleeResolutionState?.whiteAttackApplyState?.completed,
-    ).toBeFalsy();
+    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
+    const blackApply = throwIfPending(
+      melee.blackAttackApplyState,
+      'black apply',
+    );
+    const whiteApply = throwIfPending(
+      melee.whiteAttackApplyState,
+      'white apply',
+    );
+    expect(blackApply.completed).toBeTruthy();
+    expect(whiteApply.completed).toBeFalsy();
   });
 
   it('given when not in issueCommands or resolveMelee phase, throws', () => {

@@ -26,7 +26,7 @@ export interface RoutState {
   /** The units that are being routed. */
   unitsToRout: UnitInstance[];
   /** The number of cards to discard. */
-  numberToDiscard: number | undefined;
+  numberToDiscard: number | 'pending';
   /** Whether the cards have been chosen. */
   cardsChosen: boolean;
   /** Whether the rout has been completed. */
@@ -42,7 +42,7 @@ const _routStateSchemaObject = z.object({
   /** The units that are being routed. */
   unitsToRout: z.array(unitInstanceSchema),
   /** The number of cards to discard. */
-  numberToDiscard: z.number().or(z.undefined()),
+  numberToDiscard: z.number().or(z.literal('pending')),
   /** Whether the cards have been chosen. */
   cardsChosen: z.boolean(),
   /** Whether the rout has been completed. */

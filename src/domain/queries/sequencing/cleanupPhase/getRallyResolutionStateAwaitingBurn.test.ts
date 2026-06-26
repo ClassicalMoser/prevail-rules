@@ -8,8 +8,8 @@ const readyToBurn = {
   completed: false,
   playerRallied: true,
   rallyResolved: false,
-  routState: undefined,
-  unitsLostSupport: undefined,
+  routState: 'pending' as const,
+  unitsLostSupport: 'pending' as const,
 };
 
 /** Cleanup on firstPlayerResolveRally with white initiative. */
@@ -19,7 +19,7 @@ function stateFirstPlayerResolveRally() {
   state.currentRoundState.currentPhaseState = {
     firstPlayerRallyResolutionState: { ...readyToBurn },
     phase: CLEANUP_PHASE,
-    secondPlayerRallyResolutionState: undefined,
+    secondPlayerRallyResolutionState: 'pending' as const,
     step: 'firstPlayerResolveRally',
   };
   return state;
@@ -41,7 +41,7 @@ describe(getRallyResolutionStateAwaitingBurn, () => {
   it('given playerRallied false, throws player did not choose to rally', () => {
     const state = stateFirstPlayerResolveRally();
     const ps = state.currentRoundState.currentPhaseState;
-    if (!ps || ps.phase !== CLEANUP_PHASE) {
+    if (ps === 'none' || ps.phase !== CLEANUP_PHASE) {
       throw new Error('expected cleanup');
     }
     ps.firstPlayerRallyResolutionState = {
@@ -57,7 +57,7 @@ describe(getRallyResolutionStateAwaitingBurn, () => {
   it('given rallyResolved true, throws rally already resolved', () => {
     const state = stateFirstPlayerResolveRally();
     const ps = state.currentRoundState.currentPhaseState;
-    if (!ps || ps.phase !== CLEANUP_PHASE) {
+    if (ps === 'none' || ps.phase !== CLEANUP_PHASE) {
       throw new Error('expected cleanup');
     }
     ps.firstPlayerRallyResolutionState = {
@@ -74,9 +74,9 @@ describe(getRallyResolutionStateAwaitingBurn, () => {
     const state = createEmptyGameState();
     state.currentInitiative = 'white';
     state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'discardPlayedCards',
     };
 

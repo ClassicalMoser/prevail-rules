@@ -26,7 +26,7 @@ export function getExpectedRallyResolutionEvent(
     };
   }
 
-  if (rallyState.unitsLostSupport === undefined) {
+  if (rallyState.unitsLostSupport === 'pending') {
     return {
       actionType: 'gameEffect',
       effectType: 'resolveUnitsBroken',
@@ -34,7 +34,7 @@ export function getExpectedRallyResolutionEvent(
   }
 
   if (rallyState.unitsLostSupport.length > 0) {
-    if (rallyState.routState === undefined) {
+    if (rallyState.routState === 'pending') {
       throw new Error('Rout state is required when units lost support');
     }
     // Check if rout is completed

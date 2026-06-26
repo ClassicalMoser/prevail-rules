@@ -13,7 +13,7 @@ export function getCurrentStep<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): string {
   const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState) {
+  if (phaseState === 'none') {
     throw new Error('No current phase state found');
   }
   // All phase states have a step property

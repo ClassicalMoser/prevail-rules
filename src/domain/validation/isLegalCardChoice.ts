@@ -1,4 +1,4 @@
-import type { Card, CardState, ValidationResult } from '@entities';
+import type { AuthoritativeCardState, Card, ValidationResult } from '@entities';
 import type { ChooseCardEvent } from '@events';
 
 /**
@@ -9,7 +9,7 @@ import type { ChooseCardEvent } from '@events';
  * @returns True if the card is in the player's hand, false otherwise
  */
 export function isLegalCardChoice(
-  cardState: CardState,
+  cardState: AuthoritativeCardState,
   chooseCardEvent: ChooseCardEvent,
 ): ValidationResult {
   try {

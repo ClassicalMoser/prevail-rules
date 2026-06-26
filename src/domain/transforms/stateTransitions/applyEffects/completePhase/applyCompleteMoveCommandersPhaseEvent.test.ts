@@ -4,8 +4,9 @@ import type { GameStateForBoard } from '@game';
 import { ISSUE_COMMANDS_PHASE, MOVE_COMMANDERS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { createEmptyGameState, updateCardState } from '@testing';
+import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone } from '@utils';
 
 import { applyCompleteMoveCommandersPhaseEvent } from './applyCompleteMoveCommandersPhaseEvent';
 
@@ -43,17 +44,17 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
   function createGameStateInCompleteStep(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState({ currentInitiative: 'black' });
 
-    const stateWithCards = updateCardState(state, (current) => ({
-      ...current,
+    const stateWithCards = updateCardState(state, {
+      ...state.cardState,
       black: {
-        ...current.black,
+        ...state.cardState.black,
         inPlay: tempCommandCards[0],
       },
       white: {
-        ...current.white,
+        ...state.cardState.white,
         inPlay: tempCommandCards[1],
       },
-    }));
+    });
 
     const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: MOVE_COMMANDERS_PHASE,
@@ -71,12 +72,12 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
 
       const newState = applyCompleteMoveCommandersPhaseEvent(event, state);
 
-      expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
-        'issueCommands',
+      const phase = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
       );
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'firstPlayerIssueCommands',
-      );
+      expect(phase.phase).toBe('issueCommands');
+      expect(phase.step).toBe('firstPlayerIssueCommands');
     });
 
     it('given same handoff, completedPhases records moveCommanders', () => {
@@ -104,8 +105,11 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
 
       const newState = applyCompleteMoveCommandersPhaseEvent(event, state);
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'issueCommands') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
 
@@ -124,8 +128,11 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
 
       const newState = applyCompleteMoveCommandersPhaseEvent(event, state);
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'issueCommands') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
 
@@ -140,19 +147,25 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
 
       const newState = applyCompleteMoveCommandersPhaseEvent(event, state);
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'issueCommands') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
 
-      expect(phaseState.currentCommandResolutionState).toBeUndefined();
+      expect(phaseState.currentCommandResolutionState).toBe('pending');
     });
   });
 
   describe('structural update', () => {
     it('given phase and completedPhases size before apply, input moveCommanders slice unchanged', () => {
       const state = createGameStateInCompleteStep();
-      const originalPhase = state.currentRoundState.currentPhaseState?.phase;
+      const originalPhase = throwIfNone(
+        state.currentRoundState.currentPhaseState,
+        'phase',
+      ).phase;
       const originalCompletedPhasesSize =
         state.currentRoundState.completedPhases.length;
 
@@ -160,9 +173,9 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
 
       applyCompleteMoveCommandersPhaseEvent(event, state);
 
-      expect(state.currentRoundState.currentPhaseState?.phase).toBe(
-        originalPhase,
-      );
+      expect(
+        throwIfNone(state.currentRoundState.currentPhaseState, 'phase').phase,
+      ).toBe(originalPhase);
       expect(state.currentRoundState.completedPhases.length).toBe(
         originalCompletedPhasesSize,
       );
@@ -172,17 +185,17 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
   describe('trusted mechanical apply', () => {
     it('given moveFirstCommander step, still reaches issueCommands with same remaining commands', () => {
       const state = createEmptyGameState({ currentInitiative: 'black' });
-      const stateWithCards = updateCardState(state, (current) => ({
-        ...current,
+      const stateWithCards = updateCardState(state, {
+        ...state.cardState,
         black: {
-          ...current.black,
+          ...state.cardState.black,
           inPlay: tempCommandCards[0],
         },
         white: {
-          ...current.white,
+          ...state.cardState.white,
           inPlay: tempCommandCards[1],
         },
-      }));
+      });
       const stateWithWrongStep = updatePhaseState(stateWithCards, {
         phase: MOVE_COMMANDERS_PHASE,
         step: 'moveFirstCommander',
@@ -195,11 +208,12 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
         stateWithWrongStep,
       );
 
-      expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
-        'issueCommands',
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
       );
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'issueCommands') {
+      expect(phaseState.phase).toBe('issueCommands');
+      if (phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
       expect(phaseState.remainingCommandsFirstPlayer).toStrictEqual([
@@ -212,17 +226,17 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
 
     it('given inPlay null both sides and event empty command sets, issueCommands queues empty', () => {
       const state = createEmptyGameState({ currentInitiative: 'black' });
-      const stateWithNoCards = updateCardState(state, (current) => ({
-        ...current,
+      const stateWithNoCards = updateCardState(state, {
+        ...state.cardState,
         black: {
-          ...current.black,
+          ...state.cardState.black,
           inPlay: null,
         },
         white: {
-          ...current.white,
+          ...state.cardState.white,
           inPlay: null,
         },
-      }));
+      });
       const stateWithPhase = updatePhaseState(stateWithNoCards, {
         phase: MOVE_COMMANDERS_PHASE,
         step: 'complete',
@@ -235,8 +249,11 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
         stateWithPhase,
       );
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'issueCommands') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
       expect(phaseState.remainingCommandsFirstPlayer.length).toBe(0);
@@ -249,8 +266,11 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
 
       const newState = applyCompleteMoveCommandersPhaseEvent(event, state);
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'issueCommands') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
       expect(phaseState.remainingCommandsFirstPlayer.length).toBe(0);
@@ -264,7 +284,7 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
       const stateWrongPhase: GameStateForBoard<StandardBoard> =
         updatePhaseState(state, {
           boardType: 'standard',
-          currentCommandResolutionState: undefined,
+          currentCommandResolutionState: 'pending',
           phase: ISSUE_COMMANDS_PHASE,
           remainingCommandsFirstPlayer: [],
           remainingCommandsSecondPlayer: [],

@@ -6,6 +6,7 @@ import { RESOLVE_MELEE_PHASE } from '@game';
 import { getResolveMeleePhaseState } from '@queries';
 import { createEmptyGameState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfPending } from '@utils';
 
 import { applyChooseMeleeEvent } from './applyChooseMeleeEvent';
 
@@ -21,7 +22,7 @@ describe(applyChooseMeleeEvent, () => {
     const state = createEmptyGameState();
     return updatePhaseState(state, {
       boardType: 'standard' as const,
-      currentMeleeResolutionState: undefined,
+      currentMeleeResolutionState: 'pending',
       phase: RESOLVE_MELEE_PHASE,
       remainingEngagements: remainingSpaces,
       step: 'resolveMelee',
@@ -43,7 +44,9 @@ describe(applyChooseMeleeEvent, () => {
     const phaseState = getResolveMeleePhaseState(newState);
 
     expect(phaseState.remainingEngagements).toStrictEqual(['E-6']);
-    expect(phaseState.currentMeleeResolutionState?.location).toBe('E-5');
+    expect(
+      throwIfPending(phaseState.currentMeleeResolutionState, 'melee').location,
+    ).toBe('E-5');
   });
 
   it('given white chooses E-6, input phase state remainingEngagements reference is untouched', () => {

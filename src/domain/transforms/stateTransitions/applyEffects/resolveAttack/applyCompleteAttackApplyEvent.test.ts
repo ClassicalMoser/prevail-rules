@@ -15,6 +15,7 @@ import {
   createTestUnit,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfPending } from '@utils';
 
 import { applyCompleteAttackApplyEvent } from './applyCompleteAttackApplyEvent';
 
@@ -165,7 +166,9 @@ describe(applyCompleteAttackApplyEvent, () => {
           ? meleeState.whiteAttackApplyState
           : meleeState.blackAttackApplyState;
 
-      expect(firstPlayerAttackApply?.completed).toBeFalsy();
+      expect(
+        throwIfPending(firstPlayerAttackApply, 'apply').completed,
+      ).toBeFalsy();
 
       const event: CompleteAttackApplyEvent = {
         attackType: 'melee',
@@ -182,7 +185,9 @@ describe(applyCompleteAttackApplyEvent, () => {
           ? newMeleeState.whiteAttackApplyState
           : newMeleeState.blackAttackApplyState;
 
-      expect(newFirstPlayerAttackApply?.completed).toBeTruthy();
+      expect(
+        throwIfPending(newFirstPlayerAttackApply, 'apply').completed,
+      ).toBeTruthy();
     });
 
     it('given white apply still incomplete after black done, event for white completes white apply', () => {
@@ -195,7 +200,9 @@ describe(applyCompleteAttackApplyEvent, () => {
           ? meleeState.whiteAttackApplyState
           : meleeState.blackAttackApplyState;
 
-      expect(secondPlayerAttackApply?.completed).toBeFalsy();
+      expect(
+        throwIfPending(secondPlayerAttackApply, 'apply').completed,
+      ).toBeFalsy();
 
       const event: CompleteAttackApplyEvent = {
         attackType: 'melee',
@@ -212,7 +219,9 @@ describe(applyCompleteAttackApplyEvent, () => {
           ? newMeleeState.whiteAttackApplyState
           : newMeleeState.blackAttackApplyState;
 
-      expect(newSecondPlayerAttackApply?.completed).toBeTruthy();
+      expect(
+        throwIfPending(newSecondPlayerAttackApply, 'apply').completed,
+      ).toBeTruthy();
     });
   });
 
@@ -243,7 +252,7 @@ describe(applyCompleteAttackApplyEvent, () => {
       const phaseState = createResolveMeleePhaseState(state, {
         currentMeleeResolutionState: {
           ...meleeState,
-          whiteAttackApplyState: undefined,
+          whiteAttackApplyState: 'pending',
         },
       });
       const stateMissingWhiteApply = updatePhaseState(state, phaseState);

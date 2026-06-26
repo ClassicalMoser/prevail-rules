@@ -4,8 +4,9 @@ import type { GameStateForBoard } from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { createEmptyGameState, updateCardState } from '@testing';
+import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone } from '@utils';
 
 import { applyRevealCardsEvent } from './applyRevealCardsEvent';
 
@@ -19,19 +20,19 @@ describe(applyRevealCardsEvent, () => {
   function createGameStateInRevealCardsStep(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
 
-    const stateWithCards = updateCardState(state, (current) => ({
-      ...current,
+    const stateWithCards = updateCardState(state, {
+      ...state.cardState,
       black: {
-        ...current.black,
+        ...state.cardState.black,
         awaitingPlay: tempCommandCards[0],
         inPlay: null,
       },
       white: {
-        ...current.white,
+        ...state.cardState.white,
         awaitingPlay: tempCommandCards[1],
         inPlay: null,
       },
-    }));
+    });
 
     const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
@@ -75,9 +76,9 @@ describe(applyRevealCardsEvent, () => {
 
       const newState = applyRevealCardsEvent(event, state);
 
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'assignInitiative',
-      );
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe('assignInitiative');
     });
   });
 
@@ -129,24 +130,24 @@ describe(applyRevealCardsEvent, () => {
 
       const newState = applyRevealCardsEvent(event, stateWithWrongStep);
 
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'assignInitiative',
-      );
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe('assignInitiative');
     });
 
     it('given revealCards step but white awaitingPlay null, throws white awaiting guard', () => {
       const state = createEmptyGameState();
-      const stateWithCards = updateCardState(state, (current) => ({
-        ...current,
+      const stateWithCards = updateCardState(state, {
+        ...state.cardState,
         black: {
-          ...current.black,
+          ...state.cardState.black,
           awaitingPlay: tempCommandCards[0],
         },
         white: {
-          ...current.white,
+          ...state.cardState.white,
           awaitingPlay: null, // No awaiting card
         },
-      }));
+      });
       const stateWithPhase = updatePhaseState(stateWithCards, {
         phase: PLAY_CARDS_PHASE,
         step: 'revealCards',
@@ -159,23 +160,23 @@ describe(applyRevealCardsEvent, () => {
       };
 
       expect(() => applyRevealCardsEvent(event, stateWithPhase)).toThrow(
-        'White player has no card awaiting play',
+        'Player has no card awaiting play',
       );
     });
 
     it('given revealCards step but black awaitingPlay null, throws black awaiting guard', () => {
       const state = createEmptyGameState();
-      const stateWithCards = updateCardState(state, (current) => ({
-        ...current,
+      const stateWithCards = updateCardState(state, {
+        ...state.cardState,
         black: {
-          ...current.black,
+          ...state.cardState.black,
           awaitingPlay: null, // No awaiting card
         },
         white: {
-          ...current.white,
+          ...state.cardState.white,
           awaitingPlay: tempCommandCards[0],
         },
-      }));
+      });
       const stateWithPhase = updatePhaseState(stateWithCards, {
         phase: PLAY_CARDS_PHASE,
         step: 'revealCards',
@@ -188,7 +189,7 @@ describe(applyRevealCardsEvent, () => {
       };
 
       expect(() => applyRevealCardsEvent(event, stateWithPhase)).toThrow(
-        'Black player has no card awaiting play',
+        'Player has no card awaiting play',
       );
     });
   });

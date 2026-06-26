@@ -11,7 +11,7 @@ describe(createEmptyGameState, () => {
     expect(gameState.currentRoundNumber).toBe(0);
     expect(gameState.currentRoundState.roundNumber).toBe(1);
     expect(gameState.currentRoundState.completedPhases.length).toBe(0);
-    expect(gameState.currentRoundState.currentPhaseState).toBeUndefined();
+    expect(gameState.currentRoundState.currentPhaseState).toBe('none');
     expect(gameState.currentRoundState.commandedUnits.length).toBe(0);
     expect(gameState.currentInitiative).toBe('black');
     expect(gameState.boardState.boardType).toBe('standard');

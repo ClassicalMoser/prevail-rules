@@ -6,6 +6,7 @@ import type {
   MeleeResolutionState,
 } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
+import { throwIfPending } from '@utils';
 import {
   getMeleeResolutionState,
   getRangedAttackResolutionState,
@@ -24,10 +25,10 @@ export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): AttackApplyStateForBoard<TBoard> {
   const rangedAttackState = getRangedAttackResolutionState(state);
-  if (!rangedAttackState.attackApplyState) {
-    throw new Error('No attack apply state found in ranged attack resolution');
-  }
-  return rangedAttackState.attackApplyState;
+  return throwIfPending(
+    rangedAttackState.attackApplyState,
+    'No attack apply state found in ranged attack resolution',
+  );
 }
 
 /**
@@ -49,12 +50,10 @@ export function getAttackApplyStateFromMelee<TBoard extends Board>(
     player === 'white'
       ? meleeState.whiteAttackApplyState
       : meleeState.blackAttackApplyState;
-  if (!attackApplyState) {
-    throw new Error(
-      `No ${player} attack apply state found in melee resolution`,
-    );
-  }
-  return attackApplyState;
+  return throwIfPending(
+    attackApplyState,
+    `No ${player} attack apply state found in melee resolution`,
+  );
 }
 
 /**
@@ -75,7 +74,10 @@ export function getDefendingPlayerForNextIncompleteMeleeAttackApply(
   const secondPlayerAttackApplyState =
     meleeState[`${secondPlayer}AttackApplyState`];
 
-  if (!firstPlayerAttackApplyState || !secondPlayerAttackApplyState) {
+  if (
+    firstPlayerAttackApplyState === 'pending' ||
+    secondPlayerAttackApplyState === 'pending'
+  ) {
     return null;
   }
 

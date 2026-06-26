@@ -24,10 +24,10 @@ describe(getRallyResolutionState, () => {
         completed: false,
         playerRallied: true,
         rallyResolved: false,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending' as const,
+        unitsLostSupport: 'pending' as const,
       },
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'firstPlayerChooseRally',
     });
 
@@ -38,13 +38,13 @@ describe(getRallyResolutionState, () => {
   it('given white is second player with second bucket set, getRallyState(white) returns it', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       secondPlayerRallyResolutionState: {
         completed: false,
         playerRallied: false,
         rallyResolved: false,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending' as const,
+        unitsLostSupport: 'pending' as const,
       },
       step: 'firstPlayerChooseRally',
     });
@@ -56,8 +56,8 @@ describe(getRallyResolutionState, () => {
   it('given both rally buckets undefined at chooseRally, getRallyState(black) throws', () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: undefined,
-      secondPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'firstPlayerChooseRally',
     });
 
@@ -75,10 +75,10 @@ describe(getCurrentRallyResolutionState, () => {
         completed: false,
         playerRallied: true,
         rallyResolved: false,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending' as const,
+        unitsLostSupport: 'pending' as const,
       },
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'firstPlayerResolveRally',
     });
 
@@ -89,8 +89,8 @@ describe(getCurrentRallyResolutionState, () => {
   it('given firstPlayerResolveRally but first bucket missing, throws', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: undefined,
-      secondPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'firstPlayerResolveRally',
     });
 
@@ -102,13 +102,13 @@ describe(getCurrentRallyResolutionState, () => {
   it('given secondPlayerResolveRally with second bucket, returns that slice', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       secondPlayerRallyResolutionState: {
         completed: false,
         playerRallied: true,
         rallyResolved: false,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending' as const,
+        unitsLostSupport: 'pending' as const,
       },
       step: 'secondPlayerResolveRally',
     });
@@ -120,8 +120,8 @@ describe(getCurrentRallyResolutionState, () => {
   it('given secondPlayerResolveRally but second bucket missing, throws', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: undefined,
-      secondPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'secondPlayerResolveRally',
     });
 
@@ -133,8 +133,8 @@ describe(getCurrentRallyResolutionState, () => {
   it('given cleanup discardPlayedCards step, getCurrentRally throws not resolveRally step', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: undefined,
-      secondPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'discardPlayedCards',
     });
 
@@ -172,7 +172,7 @@ describe(getRoutStateFromRally, () => {
       completed: false,
       playerRallied: true,
       rallyResolved: true,
-      routState: undefined,
+      routState: 'pending' as const,
       unitsLostSupport: [],
     };
 
@@ -194,14 +194,14 @@ describe(getRoutStateFromCleanupPhaseForResolveRout, () => {
         routState: {
           cardsChosen: false,
           completed: false,
-          numberToDiscard: undefined,
+          numberToDiscard: 'pending' as const,
           player: 'white',
           substepType: 'rout',
           unitsToRout: [unit],
         },
         unitsLostSupport: [],
       },
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'firstPlayerResolveRally',
     });
 
@@ -213,7 +213,7 @@ describe(getRoutStateFromCleanupPhaseForResolveRout, () => {
     const unit = createTestUnit('black', { attack: 2 });
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       secondPlayerRallyResolutionState: {
         completed: false,
         playerRallied: true,
@@ -221,7 +221,7 @@ describe(getRoutStateFromCleanupPhaseForResolveRout, () => {
         routState: {
           cardsChosen: false,
           completed: false,
-          numberToDiscard: undefined,
+          numberToDiscard: 'pending' as const,
           player: 'black',
           substepType: 'rout',
           unitsToRout: [unit],
@@ -242,10 +242,10 @@ describe(getRoutStateFromCleanupPhaseForResolveRout, () => {
         completed: false,
         playerRallied: true,
         rallyResolved: true,
-        routState: undefined,
+        routState: 'pending' as const,
         unitsLostSupport: [],
       },
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'firstPlayerResolveRally',
     });
 

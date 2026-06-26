@@ -64,8 +64,8 @@ describe(getExpectedMeleeResolutionEvent, () => {
   it('given resolve melee when both commitments are complete and no attack apply state exists', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      blackAttackApplyState: undefined,
-      whiteAttackApplyState: undefined,
+      blackAttackApplyState: 'pending' as const,
+      whiteAttackApplyState: 'pending' as const,
     });
 
     expect(

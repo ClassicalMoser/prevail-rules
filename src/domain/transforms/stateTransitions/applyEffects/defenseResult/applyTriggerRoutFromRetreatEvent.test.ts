@@ -15,6 +15,7 @@ import {
   createTestUnit,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfPending } from '@utils';
 
 import { applyTriggerRoutFromRetreatEvent } from './applyTriggerRoutFromRetreatEvent';
 
@@ -130,15 +131,11 @@ describe(applyTriggerRoutFromRetreatEvent, () => {
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromRangedAttack(newState);
 
-      expect(newRetreatState.routState).toBeDefined();
-      expect(newRetreatState.routState?.substepType).toBe('rout');
-      expect(newRetreatState.routState?.player).toBe(
-        retreatState.retreatingUnit.unit.playerSide,
-      );
+      const rout = throwIfPending(newRetreatState.routState, 'rout');
+      expect(rout.substepType).toBe('rout');
+      expect(rout.player).toBe(retreatState.retreatingUnit.unit.playerSide);
       expect(
-        newRetreatState.routState?.unitsToRout.includes(
-          retreatState.retreatingUnit.unit,
-        ),
+        rout.unitsToRout.includes(retreatState.retreatingUnit.unit),
       ).toBeTruthy();
     });
 
@@ -156,9 +153,10 @@ describe(applyTriggerRoutFromRetreatEvent, () => {
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromRangedAttack(newState);
 
-      expect(newRetreatState.routState?.numberToDiscard).toBeUndefined();
-      expect(newRetreatState.routState?.cardsChosen).toBeFalsy();
-      expect(newRetreatState.routState?.completed).toBeFalsy();
+      const rout = throwIfPending(newRetreatState.routState, 'rout');
+      expect(rout.numberToDiscard).toBe('pending');
+      expect(rout.cardsChosen).toBeFalsy();
+      expect(rout.completed).toBeFalsy();
     });
   });
 
@@ -178,8 +176,9 @@ describe(applyTriggerRoutFromRetreatEvent, () => {
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromMelee(newState, 'black');
 
-      expect(newRetreatState.routState).toBeDefined();
-      expect(newRetreatState.routState?.player).toBe('black');
+      expect(throwIfPending(newRetreatState.routState, 'rout').player).toBe(
+        'black',
+      );
     });
 
     it('given white melee retreat, melee trigger with retreatingPlayer white seeds rout', () => {
@@ -197,8 +196,9 @@ describe(applyTriggerRoutFromRetreatEvent, () => {
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromMelee(newState, 'white');
 
-      expect(newRetreatState.routState).toBeDefined();
-      expect(newRetreatState.routState?.player).toBe('white');
+      expect(throwIfPending(newRetreatState.routState, 'rout').player).toBe(
+        'white',
+      );
     });
   });
 

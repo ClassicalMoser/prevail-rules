@@ -16,9 +16,9 @@ import type { GameStateForBoard } from './gameState';
 import { armySchema } from '@entities';
 import { z } from 'zod';
 import {
-  largeGameStateSchema,
-  smallGameStateSchema,
-  standardGameStateSchema,
+  largeAuthoritativeGameStateSchema,
+  smallAuthoritativeGameStateSchema,
+  standardAuthoritativeGameStateSchema,
 } from './gameState';
 
 /**
@@ -54,7 +54,7 @@ const _standardGameSchemaObject = z.object({
   blackArmy: armySchema,
   blackPlayer: z.uuid(),
   boardType: z.literal('standard' satisfies StandardBoard['boardType']),
-  gameState: standardGameStateSchema,
+  gameState: standardAuthoritativeGameStateSchema,
   gameMode: z.literal('standard'),
   id: z.uuid(),
   whiteArmy: armySchema,
@@ -76,7 +76,7 @@ const _miniGameSchemaObject = z.object({
   blackArmy: armySchema,
   blackPlayer: z.uuid(),
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
-  gameState: smallGameStateSchema,
+  gameState: smallAuthoritativeGameStateSchema,
   gameMode: z.literal('mini'),
   id: z.uuid(),
   whiteArmy: armySchema,
@@ -97,7 +97,7 @@ const _tutorialGameSchemaObject = z.object({
   blackArmy: armySchema,
   blackPlayer: z.uuid(),
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
-  gameState: smallGameStateSchema,
+  gameState: smallAuthoritativeGameStateSchema,
   gameMode: z.literal('tutorial'),
   id: z.uuid(),
   whiteArmy: armySchema,
@@ -118,7 +118,7 @@ const _epicGameSchemaObject = z.object({
   blackArmy: armySchema,
   blackPlayer: z.uuid(),
   boardType: z.literal('large' satisfies LargeBoard['boardType']),
-  gameState: largeGameStateSchema,
+  gameState: largeAuthoritativeGameStateSchema,
   gameMode: z.literal('epic'),
   id: z.uuid(),
   whiteArmy: armySchema,

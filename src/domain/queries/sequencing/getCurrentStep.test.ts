@@ -51,7 +51,7 @@ describe(getCurrentStep, () => {
 
   it('given undefined currentPhaseState, throws no current phase state', () => {
     const state = createEmptyGameState();
-    state.currentRoundState.currentPhaseState = undefined;
+    state.currentRoundState.currentPhaseState = 'none';
 
     expect(() => getCurrentStep(state)).toThrow('No current phase state found');
   });

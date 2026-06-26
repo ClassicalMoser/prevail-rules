@@ -45,7 +45,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000001',
     initiative: 1,
-    modifiers: [{ type: 'attack', value: 1 }],
+    modifiers: ['attack'],
     name: 'Strike',
     roundEffect: {
       modifiers: [{ type: 'attack', value: 1 }],
@@ -72,7 +72,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000002',
     initiative: 2,
-    modifiers: [{ type: 'attack', value: 1 }],
+    modifiers: ['attack'],
     name: 'Evade',
     roundEffect: {
       modifiers: [],
@@ -99,7 +99,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000003',
     initiative: 3,
-    modifiers: [{ type: 'attack', value: 1 }],
+    modifiers: ['attack'],
     name: 'Volley',
     roundEffect: {
       modifiers: [],
@@ -126,7 +126,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000004',
     initiative: 4,
-    modifiers: [{ type: 'attack', value: 1 }],
+    modifiers: ['attack'],
     name: 'Charge',
     roundEffect: {
       modifiers: [],
@@ -153,7 +153,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000005',
     initiative: 1,
-    modifiers: [{ type: 'speed', value: 1 }],
+    modifiers: ['speed'],
     name: 'Move',
     roundEffect: {
       modifiers: [{ type: 'flexibility', value: 1 }],
@@ -183,7 +183,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000006',
     initiative: 1,
-    modifiers: [{ type: 'defense', value: 1 }],
+    modifiers: ['defense'],
     name: 'Brace',
     roundEffect: {
       modifiers: [{ type: 'attack', value: 1 }],
@@ -210,7 +210,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000007',
     initiative: 1,
-    modifiers: [{ type: 'defense', value: 1 }],
+    modifiers: ['defense'],
     name: 'Screen',
     roundEffect: {
       modifiers: [{ type: 'attack', value: 1 }],
@@ -240,7 +240,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000008',
     initiative: 2,
-    modifiers: [{ type: 'attack', value: 1 }],
+    modifiers: ['attack'],
     name: 'Rampage',
     roundEffect: {
       modifiers: [{ type: 'defense', value: 1 }],
@@ -267,7 +267,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000009',
     initiative: 2,
-    modifiers: [{ type: 'speed', value: 1 }],
+    modifiers: ['speed'],
     name: 'Organize',
     roundEffect: {
       modifiers: [{ type: 'speed', value: 1 }],
@@ -294,7 +294,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-00000000000a',
     initiative: 2,
-    modifiers: [{ type: 'speed', value: 1 }],
+    modifiers: ['speed'],
     name: 'Recede',
     roundEffect: {
       modifiers: [{ type: 'speed', value: 1 }],
@@ -321,7 +321,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-00000000000b',
     initiative: 2,
-    modifiers: [{ type: 'attack', value: 1 }],
+    modifiers: ['attack'],
     name: 'Overrun',
     roundEffect: {
       modifiers: [{ type: 'defense', value: 1 }],
@@ -348,7 +348,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-00000000000c',
     initiative: 2,
-    modifiers: [{ type: 'flexibility', value: 1 }],
+    modifiers: ['flexibility'],
     name: 'Advance',
     roundEffect: {
       modifiers: [{ type: 'attack', value: 1 }],
@@ -375,7 +375,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-00000000000d',
     initiative: 2,
-    modifiers: [{ type: 'flexibility', value: 1 }],
+    modifiers: ['flexibility'],
     name: 'Coordinate',
     roundEffect: {
       modifiers: [{ type: 'defense', value: 1 }],
@@ -402,7 +402,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-00000000000e',
     initiative: 2,
-    modifiers: [{ type: 'flexibility', value: 1 }],
+    modifiers: ['flexibility'],
     name: 'Noble Cavalry',
     roundEffect: {
       modifiers: [{ type: 'attack', value: 1 }],
@@ -429,7 +429,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-00000000000f',
     initiative: 3,
-    modifiers: [{ type: 'attack', value: 1 }],
+    modifiers: ['attack'],
     name: 'Fearless Velites',
     roundEffect: {
       modifiers: [{ type: 'attack', value: 1 }],
@@ -456,7 +456,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000010',
     initiative: 3,
-    modifiers: [{ type: 'range', value: 1 }],
+    modifiers: ['range'],
     name: 'Socketed Pilum',
     roundEffect: {
       modifiers: [{ type: 'range', value: 1 }],
@@ -483,7 +483,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000011',
     initiative: 3,
-    modifiers: [{ type: 'flexibility', value: 1 }],
+    modifiers: ['flexibility'],
     name: 'Quincunx Formation',
     roundEffect: {
       modifiers: [],
@@ -510,7 +510,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000012',
     initiative: 3,
-    modifiers: [{ type: 'flexibility', value: 1 }],
+    modifiers: ['flexibility'],
     name: 'Triplex Acies',
     roundEffect: {
       modifiers: [{ type: 'speed', value: -1 }],
@@ -537,7 +537,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000013',
     initiative: 3,
-    modifiers: [{ type: 'defense', value: 1 }],
+    modifiers: ['defense'],
     name: 'Down to the Triarii',
     roundEffect: {
       modifiers: [{ type: 'defense', value: 2 }],
@@ -564,7 +564,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000014',
     initiative: 3,
-    modifiers: [{ type: 'speed', value: 1 }],
+    modifiers: ['speed'],
     name: 'Give Ground',
     roundEffect: {
       modifiers: [{ type: 'speed', value: 1 }],
@@ -591,9 +591,16 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000015',
     initiative: 3,
-    modifiers: [{ type: 'flexibility', value: 1 }],
+    modifiers: ['flexibility'],
     name: 'Coordinated Maneuver',
-    roundEffect: undefined,
+    roundEffect: {
+      modifiers: [{ type: 'flexibility', value: 1 }],
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+    },
     unitSupport: { count: 1, supportType: 'generic' },
     version: '1.0.0',
   },
@@ -614,9 +621,16 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000016',
     initiative: 3,
-    modifiers: [{ type: 'attack', value: 1 }],
+    modifiers: ['attack'],
     name: 'Chaotic Destruction',
-    roundEffect: undefined,
+    roundEffect: {
+      modifiers: [{ type: 'attack', value: 1 }],
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+    },
     unitSupport: { count: 1, supportType: 'generic' },
     version: '1.0.0',
   },
@@ -637,9 +651,16 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000017',
     initiative: 4,
-    modifiers: [{ type: 'defense', value: 1 }],
+    modifiers: ['defense'],
     name: 'Brace for Impact',
-    roundEffect: undefined,
+    roundEffect: {
+      modifiers: [{ type: 'defense', value: 1 }],
+      restrictions: {
+        inspirationRangeRestriction: 1,
+        traitRestrictions: ['phalanx'],
+        unitRestrictions: [],
+      },
+    },
     unitSupport: { count: 1, supportType: 'generic' },
     version: '1.0.0',
   },
@@ -657,7 +678,7 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000018',
     initiative: 4,
-    modifiers: [{ type: 'defense', value: 1 }],
+    modifiers: ['defense'],
     name: 'Persistent Formation',
     roundEffect: {
       modifiers: [{ type: 'defense', value: 2 }],
@@ -684,9 +705,16 @@ export const tempCommandCards: readonly Card[] = [
     },
     id: '00000000-0000-4000-8000-000000000019',
     initiative: 4,
-    modifiers: [{ type: 'flexibility', value: 1 }],
+    modifiers: ['flexibility'],
     name: 'Combined Arms Tactics',
-    roundEffect: undefined,
+    roundEffect: {
+      modifiers: [{ type: 'flexibility', value: 1 }],
+      restrictions: {
+        inspirationRangeRestriction: 2,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+    },
     unitSupport: { count: 1, supportType: 'generic' },
     version: '1.0.0',
   },

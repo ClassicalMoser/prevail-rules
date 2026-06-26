@@ -1,35 +1,27 @@
-import type { CardState, PlayerSide } from '@entities';
+import type { OwnedCardState } from '@entities';
 
 /**
  * Pure transform to move specified cards from hand to discarded pile.
+ * Operates on a single player's owned card state.
  *
- * @param cardState - The current card state
- * @param player - The player whose cards are being discarded
+ * @param owned - The player's current owned card state
  * @param cardIds - The IDs of the cards to discard
- * @returns A new card state with cards moved from hand to discarded
+ * @returns A new owned card state with cards moved from hand to discarded
  */
 export function discardCardsFromHand(
-  cardState: CardState,
-  player: PlayerSide,
+  owned: OwnedCardState,
   cardIds: string[],
-): CardState {
-  const playerCardState = cardState[player];
-  const cardsInHand = playerCardState.inHand;
-
+): OwnedCardState {
   // Create set for O(1) lookup
   const cardIdSet = new Set(cardIds);
 
   // Separate cards to keep and cards to discard
-  const cardsToKeep = cardsInHand.filter((card) => !cardIdSet.has(card.id));
-  const cardsToDiscard = cardsInHand.filter((card) => cardIdSet.has(card.id));
+  const cardsToKeep = owned.inHand.filter((card) => !cardIdSet.has(card.id));
+  const cardsToDiscard = owned.inHand.filter((card) => cardIdSet.has(card.id));
 
-  // Return new card state
   return {
-    ...cardState,
-    [player]: {
-      ...playerCardState,
-      discarded: [...playerCardState.discarded, ...cardsToDiscard],
-      inHand: cardsToKeep,
-    },
+    ...owned,
+    discarded: [...owned.discarded, ...cardsToDiscard],
+    inHand: cardsToKeep,
   };
 }

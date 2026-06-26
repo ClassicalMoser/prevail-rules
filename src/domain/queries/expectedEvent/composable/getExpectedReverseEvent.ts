@@ -19,7 +19,7 @@ export function getExpectedReverseEvent(
   }
 
   // Check if the final position has been determined
-  if (reverseState.finalPosition === undefined) {
+  if (reverseState.finalPosition === 'pending') {
     // Reverse is deterministic - expect resolve reverse effect
     return {
       actionType: 'gameEffect',

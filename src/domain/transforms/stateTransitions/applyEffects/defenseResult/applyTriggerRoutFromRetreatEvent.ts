@@ -28,7 +28,7 @@ export function applyTriggerRoutFromRetreatEvent<TBoard extends Board>(
   const routState: RoutState = {
     cardsChosen: false,
     completed: false,
-    numberToDiscard: undefined,
+    numberToDiscard: 'pending',
     player: retreatState.retreatingUnit.unit.playerSide,
     substepType: 'rout',
     unitsToRout: [retreatState.retreatingUnit.unit],

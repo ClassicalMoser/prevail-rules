@@ -72,7 +72,7 @@ describe(getExpectedCommandResolutionEvent, () => {
     const gameState = createEmptyGameState();
 
     expect(() =>
-      getExpectedCommandResolutionEvent(gameState, undefined, 'black'),
+      getExpectedCommandResolutionEvent(gameState, 'pending', 'black'),
     ).toThrow('No command resolution state found');
   });
 

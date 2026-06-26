@@ -17,7 +17,7 @@ export function getExpectedCommandResolutionEvent(
   resolutionState: IssueCommandsPhaseState['currentCommandResolutionState'],
   resolvingPlayer: PlayerSide,
 ): ExpectedEventInfo {
-  if (!resolutionState) {
+  if (resolutionState === 'pending') {
     throw new Error('No command resolution state found');
   }
 

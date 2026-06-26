@@ -40,9 +40,9 @@ export function applyCompleteResolveMeleePhaseEvent<TBoard extends Board>(
 
   // Create the new cleanup phase state
   const newPhaseState: CleanupPhaseState = {
-    firstPlayerRallyResolutionState: undefined,
+    firstPlayerRallyResolutionState: 'pending',
     phase: CLEANUP_PHASE,
-    secondPlayerRallyResolutionState: undefined,
+    secondPlayerRallyResolutionState: 'pending',
     step: 'discardPlayedCards',
   };
 

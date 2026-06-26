@@ -72,7 +72,7 @@ describe(areRestrictionsEqual, () => {
 
     it('given one is undefined and the other is not, returns false', () => {
       const restrictions1: Restrictions = {
-        inspirationRangeRestriction: undefined,
+        inspirationRangeRestriction: -1,
         traitRestrictions: [],
         unitRestrictions: [],
       };
@@ -87,12 +87,12 @@ describe(areRestrictionsEqual, () => {
 
     it('given both are undefined, returns true', () => {
       const restrictions1: Restrictions = {
-        inspirationRangeRestriction: undefined,
+        inspirationRangeRestriction: -1,
         traitRestrictions: [],
         unitRestrictions: [],
       };
       const restrictions2: Restrictions = {
-        inspirationRangeRestriction: undefined,
+        inspirationRangeRestriction: -1,
         traitRestrictions: [],
         unitRestrictions: [],
       };

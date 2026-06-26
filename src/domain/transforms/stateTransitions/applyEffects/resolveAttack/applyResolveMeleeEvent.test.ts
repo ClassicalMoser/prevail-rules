@@ -8,8 +8,10 @@ import {
   createResolveMeleePhaseState,
   createTestCard,
   createTestUnit,
+  updateCardState,
 } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfPending } from '@utils';
 
 import { applyResolveMeleeEvent } from './applyResolveMeleeEvent';
 
@@ -21,11 +23,11 @@ describe(applyResolveMeleeEvent, () => {
   /** ResolveMelee phase with default melee CRS and both inPlay command cards set. */
   function baseMeleeGameState(): GameStateForBoard<StandardBoard> {
     const base = createEmptyGameState();
-    const withCards = updateCardState(base, (c) => ({
-      ...c,
-      black: { ...c.black, inPlay: createTestCard() },
-      white: { ...c.white, inPlay: createTestCard() },
-    }));
+    const withCards = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inPlay: createTestCard() },
+      white: { ...base.cardState.white, inPlay: createTestCard() },
+    });
     const melee = createMeleeResolutionState(withCards);
     return updatePhaseState(
       withCards,
@@ -94,8 +96,8 @@ describe(applyResolveMeleeEvent, () => {
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
-    expect(melee.whiteAttackApplyState).toBeUndefined();
-    expect(melee.blackAttackApplyState).toBeUndefined();
+    expect(melee.whiteAttackApplyState).toBe('pending');
+    expect(melee.blackAttackApplyState).toBe('pending');
   });
 
   it('given whiteUnitReversed true, white apply gains reverse substep and black stays undefined', () => {
@@ -108,10 +110,11 @@ describe(applyResolveMeleeEvent, () => {
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
-    expect(melee.whiteAttackApplyState?.reverseState?.substepType).toBe(
+    const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
+    expect(throwIfPending(whiteApply.reverseState, 'reverse').substepType).toBe(
       'reverse',
     );
-    expect(melee.blackAttackApplyState).toBeUndefined();
+    expect(melee.blackAttackApplyState).toBe('pending');
   });
 
   it('given whiteUnitRouted true, white apply gains rout substep', () => {
@@ -124,8 +127,11 @@ describe(applyResolveMeleeEvent, () => {
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
-    expect(melee.whiteAttackApplyState?.routState?.substepType).toBe('rout');
-    expect(melee.blackAttackApplyState).toBeUndefined();
+    const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
+    expect(throwIfPending(whiteApply.routState, 'rout').substepType).toBe(
+      'rout',
+    );
+    expect(melee.blackAttackApplyState).toBe('pending');
   });
 
   it('given white retreated with one legal hex E-6 south, retreat finalPosition auto-fills', () => {
@@ -144,8 +150,9 @@ describe(applyResolveMeleeEvent, () => {
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
+    const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
     expect(
-      melee.whiteAttackApplyState?.retreatState?.finalPosition,
+      throwIfPending(whiteApply.retreatState, 'retreat').finalPosition,
     ).toStrictEqual(only);
   });
 
@@ -163,8 +170,9 @@ describe(applyResolveMeleeEvent, () => {
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
+    const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
     expect(
-      melee.whiteAttackApplyState?.retreatState?.finalPosition,
-    ).toBeUndefined();
+      throwIfPending(whiteApply.retreatState, 'retreat').finalPosition,
+    ).toBe('pending');
   });
 });

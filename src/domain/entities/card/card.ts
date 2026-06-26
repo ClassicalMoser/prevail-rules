@@ -1,14 +1,30 @@
 import type { AssertExact } from '@utils';
 import type { Command } from './command';
-import type { Modifier } from './modifiers';
+import type { StatModifier } from './modifiers';
 import type { RoundEffect } from './roundEffect';
 
 import { z } from 'zod';
 import { commandSchema } from './command';
-import { modifierSchema } from './modifiers';
+import { statModifierSchema } from './modifiers';
 import { roundEffectSchema } from './roundEffect';
 import type { UnitSupport } from './unitSupport';
 import { unitSupportSchema } from './unitSupport';
+
+/** A hidden card, which is not visible to the player. */
+export type HiddenCard = 'hidden';
+
+/** The schema shape for a hidden card. */
+const _hiddenCardSchemaObject = z.literal('hidden');
+
+/** The type for a hidden card. */
+type HiddenCardSchemaType = z.infer<typeof _hiddenCardSchemaObject>;
+
+/** Assert that the hidden card type matches the schema. */
+const _assertExactHiddenCard: AssertExact<HiddenCard, HiddenCardSchemaType> =
+  true;
+
+/** The schema for a hidden card. */
+export const hiddenCardSchema: z.ZodType<HiddenCard> = _hiddenCardSchemaObject;
 
 /**
  * A card in the game.
@@ -23,11 +39,11 @@ export interface Card {
   /** The initiative value of the card. */
   initiative: number;
   /** The modifiers the card can discard for. */
-  modifiers: Modifier[];
+  modifiers: StatModifier[];
   /** The command to be used on the card. */
   command: Command;
   /** The round effect of the card, if any. */
-  roundEffect: RoundEffect | undefined;
+  roundEffect: RoundEffect;
   /** The unit support this card provides */
   unitSupport: UnitSupport;
 }
@@ -36,19 +52,19 @@ const _cardSchemaObject = z.object({
   /** The unique identifier of the card. */
   id: z.uuid(),
   /** The version of the card. */
-  version: z.string().regex(/^\d+\.\d+\.\d+$/, {
+  version: z.string().regex(/^\d+\.\d+\.\d+$/u, {
     message: 'Version must be a valid semver string (e.g., 1.0.0, 1.12.35)',
   }),
   /** The name of the card, regardless of version. */
-  name: z.string(),
+  name: z.string().min(3),
   /** The initiative value of the card. */
   initiative: z.int().min(1).max(4),
   /** The modifiers the card can discard for. */
-  modifiers: z.array(modifierSchema),
+  modifiers: z.array(statModifierSchema).min(1).max(2),
   /** The command of the card. */
   command: commandSchema,
   /** The round effect of the card, if any. */
-  roundEffect: roundEffectSchema.or(z.undefined()),
+  roundEffect: roundEffectSchema,
   /** The unit support this card provides */
   unitSupport: unitSupportSchema,
 });

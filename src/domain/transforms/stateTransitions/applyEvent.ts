@@ -77,7 +77,10 @@ export function applyEvent(event: Event, state: GameState): GameState {
       `Event board type mismatch: Expected ${gameStateBoardType}, got ${event.boardType}`,
     );
   }
-  const newState = applyEventForBoard(event as EventForBoard<Board>, state);
+  const newState = applyEventForBoard(
+    event as EventForBoard<Board>,
+    state as GameStateForBoard<Board>,
+  );
   // IMPORTANT: Cast is significant, see warning above.
   return newState as GameState;
 }

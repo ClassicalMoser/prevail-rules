@@ -43,9 +43,9 @@ export interface RetreatStateForBoard<TBoard extends Board> {
   /** The legal retreat options. */
   legalRetreatOptions: UnitPlacement<TBoard>[];
   /** The final position of the retreating unit. */
-  finalPosition: UnitPlacement<TBoard> | undefined;
+  finalPosition: UnitPlacement<TBoard> | 'pending';
   /** The state of a rout caused by the retreat. */
-  routState: RoutState | undefined;
+  routState: RoutState | 'pending';
   /** Whether the retreat has been completed. */
   completed: boolean;
 }
@@ -62,10 +62,10 @@ export type RetreatState =
 const _standardRetreatStateSchemaObject = z.object({
   boardType: z.literal('standard' satisfies StandardBoard['boardType']),
   completed: z.boolean(),
-  finalPosition: standardUnitPlacementSchema.or(z.undefined()),
+  finalPosition: standardUnitPlacementSchema.or(z.literal('pending')),
   legalRetreatOptions: z.array(standardUnitPlacementSchema),
   retreatingUnit: standardUnitWithPlacementSchema,
-  routState: routStateSchema.or(z.undefined()),
+  routState: routStateSchema.or(z.literal('pending')),
   substepType: z.literal('retreat'),
 });
 
@@ -85,10 +85,10 @@ export const standardRetreatStateSchema: z.ZodType<
 const _smallRetreatStateSchemaObject = z.object({
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
   completed: z.boolean(),
-  finalPosition: smallUnitPlacementSchema.or(z.undefined()),
+  finalPosition: smallUnitPlacementSchema.or(z.literal('pending')),
   legalRetreatOptions: z.array(smallUnitPlacementSchema),
   retreatingUnit: smallUnitWithPlacementSchema,
-  routState: routStateSchema.or(z.undefined()),
+  routState: routStateSchema.or(z.literal('pending')),
   substepType: z.literal('retreat'),
 });
 
@@ -108,10 +108,10 @@ export const smallRetreatStateSchema: z.ZodType<
 const _largeRetreatStateSchemaObject = z.object({
   boardType: z.literal('large' satisfies LargeBoard['boardType']),
   completed: z.boolean(),
-  finalPosition: largeUnitPlacementSchema.or(z.undefined()),
+  finalPosition: largeUnitPlacementSchema.or(z.literal('pending')),
   legalRetreatOptions: z.array(largeUnitPlacementSchema),
   retreatingUnit: largeUnitWithPlacementSchema,
-  routState: routStateSchema.or(z.undefined()),
+  routState: routStateSchema.or(z.literal('pending')),
   substepType: z.literal('retreat'),
 });
 

@@ -5,8 +5,9 @@ import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
+  updateCardState,
 } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCommitToMovementEvent } from './applyCommitToMovementEvent';
 
@@ -17,10 +18,10 @@ import { applyCommitToMovementEvent } from './applyCommitToMovementEvent';
 describe(applyCommitToMovementEvent, () => {
   it('given black pending movement and one card in hand, commitment completed and hand empty', () => {
     const state = createEmptyGameState();
-    const stateWithBlackCardInHand = updateCardState(state, (c) => ({
-      ...c,
-      black: { ...c.black, inHand: [tempCommandCards[0]] },
-    }));
+    const stateWithBlackCardInHand = updateCardState(state, {
+      ...state.cardState,
+      black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
+    });
     const movementState = createMovementResolutionState(
       stateWithBlackCardInHand,
       {
@@ -54,10 +55,10 @@ describe(applyCommitToMovementEvent, () => {
 
   it('given white pending movement and one card in hand, same shape for white side', () => {
     const state = createEmptyGameState();
-    const stateWithWhiteCardInHand = updateCardState(state, (c) => ({
-      ...c,
-      white: { ...c.white, inHand: [tempCommandCards[0]] },
-    }));
+    const stateWithWhiteCardInHand = updateCardState(state, {
+      ...state.cardState,
+      white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },
+    });
     const movementState = createMovementResolutionState(
       stateWithWhiteCardInHand,
       {
@@ -91,10 +92,10 @@ describe(applyCommitToMovementEvent, () => {
 
   it('given hand and commitment snapshot before apply, input state hand and movement slice unchanged', () => {
     const state = createEmptyGameState();
-    const stateWithBlackCardInHand = updateCardState(state, (c) => ({
-      ...c,
-      black: { ...c.black, inHand: [tempCommandCards[0]] },
-    }));
+    const stateWithBlackCardInHand = updateCardState(state, {
+      ...state.cardState,
+      black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
+    });
     const movementState = createMovementResolutionState(
       stateWithBlackCardInHand,
       {

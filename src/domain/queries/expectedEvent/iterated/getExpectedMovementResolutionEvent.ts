@@ -46,7 +46,7 @@ export function getExpectedMovementResolutionEvent(
   if (hasEnemyUnit(player, targetSpace).result) {
     // If we are, we need to see if we've alredy started an engagement
     const { engagementState } = resolutionState;
-    if (!engagementState) {
+    if (engagementState === 'pending') {
       // If we haven't started an engagement, we need to start one
       return {
         actionType: 'gameEffect',

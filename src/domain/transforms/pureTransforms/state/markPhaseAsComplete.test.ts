@@ -22,9 +22,9 @@ describe(markPhaseAsComplete, () => {
 
   it('given mark cleanup phase as complete', () => {
     const phaseState: CleanupPhaseState = {
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending',
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending',
       step: 'discardPlayedCards',
     };
 
@@ -44,11 +44,11 @@ describe(markPhaseAsComplete, () => {
         completed: false,
         playerRallied: true,
         rallyResolved: false,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending',
+        unitsLostSupport: 'pending',
       },
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending',
       step: 'firstPlayerResolveRally',
     };
 

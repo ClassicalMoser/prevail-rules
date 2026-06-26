@@ -4,6 +4,7 @@ import type {
   GameStateForBoard,
   RoutState,
 } from '@game';
+import { throwIfPending } from '@utils';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
 
@@ -18,10 +19,10 @@ import { getMeleeResolutionState } from '../getCommandResolutionState';
 export function getRoutStateFromAttackApply<TBoard extends Board>(
   attackApplyState: AttackApplyStateForBoard<TBoard>,
 ): RoutState {
-  if (!attackApplyState.routState) {
-    throw new Error('No rout state found in attack apply state');
-  }
-  return attackApplyState.routState;
+  return throwIfPending(
+    attackApplyState.routState,
+    'No rout state found in attack apply state',
+  );
 }
 
 /**
@@ -38,10 +39,10 @@ export function getRoutStateFromMeleeResolutionByInitiative<
   const firstApply = meleeState[`${firstPlayer}AttackApplyState`];
   const secondApply = meleeState[`${secondPlayer}AttackApplyState`];
 
-  if (firstApply?.routState) {
+  if (firstApply !== 'pending' && firstApply.routState !== 'pending') {
     return firstApply.routState;
   }
-  if (secondApply?.routState) {
+  if (secondApply !== 'pending' && secondApply.routState !== 'pending') {
     return secondApply.routState;
   }
   throw new Error('No rout state found in melee resolution');

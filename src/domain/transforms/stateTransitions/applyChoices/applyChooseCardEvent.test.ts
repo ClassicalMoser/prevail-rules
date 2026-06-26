@@ -3,8 +3,9 @@ import type { GameStateForBoard } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { createEmptyGameState, updateCardState } from '@testing';
+import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone } from '@utils';
 
 import { applyChooseCardEvent } from './applyChooseCardEvent';
 import type { StandardBoard } from '@entities';
@@ -22,11 +23,19 @@ describe(applyChooseCardEvent, () => {
     const state = createEmptyGameState();
 
     // Set up card state with hands and no awaiting cards
-    const stateWithCards = updateCardState(state, (current) => ({
-      ...current,
-      black: { ...current.black, awaitingPlay: null, inHand: [...blackHand] },
-      white: { ...current.white, awaitingPlay: null, inHand: [...whiteHand] },
-    }));
+    const stateWithCards = updateCardState(state, {
+      ...state.cardState,
+      black: {
+        ...state.cardState.black,
+        awaitingPlay: null,
+        inHand: [...blackHand],
+      },
+      white: {
+        ...state.cardState.white,
+        awaitingPlay: null,
+        inHand: [...whiteHand],
+      },
+    });
 
     // Set up phase state
     const stateWithPhase = updatePhaseState(stateWithCards, {
@@ -115,9 +124,10 @@ describe(applyChooseCardEvent, () => {
       const afterFirst = applyChooseCardEvent(firstEvent, state);
 
       // Should still be on chooseCards step
-      expect(afterFirst.currentRoundState.currentPhaseState?.step).toBe(
-        'chooseCards',
-      );
+      expect(
+        throwIfNone(afterFirst.currentRoundState.currentPhaseState, 'phase')
+          .step,
+      ).toBe('chooseCards');
 
       // Second player chooses
       const secondEvent: ChooseCardEvent = {
@@ -130,9 +140,10 @@ describe(applyChooseCardEvent, () => {
       const afterSecond = applyChooseCardEvent(secondEvent, afterFirst);
 
       // Should now be on revealCards step
-      expect(afterSecond.currentRoundState.currentPhaseState?.step).toBe(
-        'revealCards',
-      );
+      expect(
+        throwIfNone(afterSecond.currentRoundState.currentPhaseState, 'phase')
+          .step,
+      ).toBe('revealCards');
     });
 
     it('given only black chooses while white still has a card, step stays chooseCards', () => {
@@ -152,9 +163,9 @@ describe(applyChooseCardEvent, () => {
       const newState = applyChooseCardEvent(event, state);
 
       // Should still be on chooseCards step
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'chooseCards',
-      );
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe('chooseCards');
     });
   });
 

@@ -70,7 +70,7 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
   );
 
   // Initialize rout discard state if penalty exists
-  const routState: RoutState | undefined =
+  const routState: RoutState | 'pending' =
     totalPenalty > 0
       ? ({
           cardsChosen: false,
@@ -80,7 +80,7 @@ export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
           substepType: 'rout' as const,
           unitsToRout: unitsToRout.map((u) => u.unit),
         } satisfies RoutState)
-      : undefined;
+      : 'pending';
 
   // Update rally resolution state with the instances that were routed
   const updatedRallyState = {

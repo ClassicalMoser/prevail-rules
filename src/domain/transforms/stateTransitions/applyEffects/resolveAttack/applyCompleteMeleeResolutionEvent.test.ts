@@ -6,8 +6,9 @@ import {
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestCard,
+  updateCardState,
 } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCompleteMeleeResolutionEvent } from './applyCompleteMeleeResolutionEvent';
 
@@ -18,11 +19,11 @@ import { applyCompleteMeleeResolutionEvent } from './applyCompleteMeleeResolutio
 describe(applyCompleteMeleeResolutionEvent, () => {
   it('given resolveMelee with an active melee slice, after effect currentMeleeResolutionState is undefined', () => {
     const base = createEmptyGameState();
-    const withCards = updateCardState(base, (c) => ({
-      ...c,
-      black: { ...c.black, inPlay: createTestCard() },
-      white: { ...c.white, inPlay: createTestCard() },
-    }));
+    const withCards = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inPlay: createTestCard() },
+      white: { ...base.cardState.white, inPlay: createTestCard() },
+    });
     const melee = createMeleeResolutionState(withCards);
     const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withCards,
@@ -39,9 +40,9 @@ describe(applyCompleteMeleeResolutionEvent, () => {
 
     const next = applyCompleteMeleeResolutionEvent(event, full);
     const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== 'resolveMelee') {
+    if (phase === 'none' || phase.phase !== 'resolveMelee') {
       throw new Error('melee phase');
     }
-    expect(phase.currentMeleeResolutionState).toBeUndefined();
+    expect(phase.currentMeleeResolutionState).toBe('pending');
   });
 });

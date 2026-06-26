@@ -22,7 +22,7 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
   ): GameStateForBoard<StandardBoard> {
     const initialPhaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
       boardType: state.boardState.boardType,
-      currentCommandResolutionState: undefined,
+      currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [],
       remainingCommandsSecondPlayer: [],

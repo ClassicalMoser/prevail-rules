@@ -1,4 +1,5 @@
 import type { ChooseRoutDiscardEvent } from '@events';
+import { throwIfNone, throwIfPending } from '@utils';
 import { getCurrentRallyResolutionState } from '@queries';
 import {
   createCleanupPhaseState,
@@ -53,12 +54,17 @@ describe(applyChooseRoutDiscardEvent, () => {
     };
 
     const newState = applyChooseRoutDiscardEvent(event, state);
-    const phase = newState.currentRoundState.currentPhaseState;
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
     const rallyState = getCurrentRallyResolutionState(newState);
 
-    expect(phase?.phase).toBe('cleanup');
-    expect(phase?.step).toBe('firstPlayerResolveRally');
-    expect(rallyState.routState?.cardsChosen).toBeTruthy();
+    expect(phase.phase).toBe('cleanup');
+    expect(phase.step).toBe('firstPlayerResolveRally');
+    expect(
+      throwIfPending(rallyState.routState, 'rout').cardsChosen,
+    ).toBeTruthy();
   });
 
   it('given secondPlayerResolveRally rout for black, empty cardIds sets cardsChosen and same step', () => {
@@ -75,12 +81,17 @@ describe(applyChooseRoutDiscardEvent, () => {
     };
 
     const newState = applyChooseRoutDiscardEvent(event, state);
-    const phase = newState.currentRoundState.currentPhaseState;
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
     const rallyState = getCurrentRallyResolutionState(newState);
 
-    expect(phase?.phase).toBe('cleanup');
-    expect(phase?.step).toBe('secondPlayerResolveRally');
-    expect(rallyState.routState?.cardsChosen).toBeTruthy();
+    expect(phase.phase).toBe('cleanup');
+    expect(phase.step).toBe('secondPlayerResolveRally');
+    expect(
+      throwIfPending(rallyState.routState, 'rout').cardsChosen,
+    ).toBeTruthy();
   });
 
   it('given playCards phase, throws expected cleanup phase', () => {

@@ -82,7 +82,7 @@ const _commandSchemaObject = z.object({
   /** The restrictions on the command */
   restrictions: restrictionsSchema,
   /** The modifiers the command applies. */
-  modifiers: z.array(modifierSchema),
+  modifiers: z.array(modifierSchema).min(0).max(2),
 });
 
 type CommandSchemaType = z.infer<typeof _commandSchemaObject>;

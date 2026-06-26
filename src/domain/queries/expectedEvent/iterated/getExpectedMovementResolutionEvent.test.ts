@@ -44,7 +44,7 @@ describe(getExpectedMovementResolutionEvent, () => {
     gameState.cardState.black.inPlay = createTestCard();
     const resolutionState = createMovementResolutionState(gameState, {
       commitment: {
-        commitmentType: 'pending',
+        commitmentType: 'pending' as const,
       },
     });
 
@@ -91,7 +91,7 @@ describe(getExpectedMovementResolutionEvent, () => {
           completed: true,
           engagementResolutionState: {
             defendingUnitCanRetreat: true,
-            defendingUnitRetreated: undefined,
+            defendingUnitRetreated: 'pending' as const,
             defendingUnitRetreats: false,
             defensiveCommitment: {
               card: createTestCard(),
@@ -124,9 +124,9 @@ describe(getExpectedMovementResolutionEvent, () => {
         boardType: 'standard' as const,
         completed: false,
         engagementResolutionState: {
-          defendingUnitCanRetreat: undefined,
-          defendingUnitRetreated: undefined,
-          defendingUnitRetreats: undefined,
+          defendingUnitCanRetreat: 'pending' as const,
+          defendingUnitRetreated: 'pending' as const,
+          defendingUnitRetreats: 'pending' as const,
           defensiveCommitment: {
             card: createTestCard(),
             commitmentType: 'completed',

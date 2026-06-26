@@ -13,7 +13,7 @@ describe('updateRemainingCommandsForPlayer', () => {
   it('given update remainingCommandsFirstPlayer when player is initiative player', () => {
     const phaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
       boardType: 'standard',
-      currentCommandResolutionState: undefined,
+      currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [],
       remainingCommandsSecondPlayer: [],
@@ -43,7 +43,7 @@ describe('updateRemainingCommandsForPlayer', () => {
   it('given update remainingCommandsSecondPlayer when player is not initiative player', () => {
     const phaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
       boardType: 'standard',
-      currentCommandResolutionState: undefined,
+      currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [],
       remainingCommandsSecondPlayer: [],
@@ -73,7 +73,7 @@ describe('updateRemainingCommandsForPlayer', () => {
   it('given not mutate the original phase state', () => {
     const phaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
       boardType: 'standard',
-      currentCommandResolutionState: undefined,
+      currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [],
       remainingCommandsSecondPlayer: [],

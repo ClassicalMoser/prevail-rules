@@ -4,6 +4,7 @@ import {
   createMovementResolutionState,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateCommandResolutionState } from './updateCommandResolutionState';
 
@@ -27,14 +28,19 @@ describe(updateCommandResolutionState, () => {
       updatedResolution,
     );
 
-    expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
-      'issueCommands',
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
     );
-    const newPhaseState = newState.currentRoundState.currentPhaseState;
-    if (newPhaseState?.phase !== 'issueCommands') {
+    expect(phase.phase).toBe('issueCommands');
+    if (phase.phase !== 'issueCommands') {
       throw new Error('phase');
     }
-    expect(newPhaseState.currentCommandResolutionState?.completed).toBeTruthy();
+    const commandState = throwIfPending(
+      phase.currentCommandResolutionState,
+      'command',
+    );
+    expect(commandState.completed).toBeTruthy();
   });
 
   it('given not mutate the original state', () => {
@@ -44,29 +50,35 @@ describe(updateCommandResolutionState, () => {
       currentCommandResolutionState: commandResolution,
     });
     const stateInPhase = updatePhaseState(state, phaseState);
+    const origPhase = throwIfNone(
+      stateInPhase.currentRoundState.currentPhaseState,
+      'phase',
+    );
     const originalResolution =
-      stateInPhase.currentRoundState.currentPhaseState?.phase ===
-        'issueCommands' &&
-      stateInPhase.currentRoundState.currentPhaseState
-        .currentCommandResolutionState;
+      origPhase.phase === 'issueCommands'
+        ? throwIfPending(origPhase.currentCommandResolutionState, 'command')
+        : undefined;
 
     updateCommandResolutionState(stateInPhase, {
       ...commandResolution,
       completed: true,
     });
 
-    expect(
-      stateInPhase.currentRoundState.currentPhaseState?.phase ===
-        'issueCommands' &&
-        stateInPhase.currentRoundState.currentPhaseState
-          .currentCommandResolutionState,
-    ).toBe(originalResolution);
+    const checkPhase = throwIfNone(
+      stateInPhase.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    const currentResolution =
+      checkPhase.phase === 'issueCommands'
+        ? throwIfPending(checkPhase.currentCommandResolutionState, 'command')
+        : undefined;
+    expect(currentResolution).toBe(originalResolution);
   });
 
   it('given when no current command resolution state is set, throws', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: undefined,
+      currentCommandResolutionState: 'pending',
     });
     const stateInPhase = updatePhaseState(state, phaseState);
     const commandResolution = createMovementResolutionState(state);

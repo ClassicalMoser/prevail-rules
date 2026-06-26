@@ -95,7 +95,7 @@ describe(getRetreatStateFromRangedAttack, () => {
         currentCommandResolutionState: createRangedAttackResolutionState(
           state,
           {
-            attackApplyState: undefined,
+            attackApplyState: 'pending' as const,
             attackingUnit,
             defendingUnit,
           },
@@ -230,7 +230,7 @@ describe(getRetreatStateFromMelee, () => {
           completed: false,
           location: 'E-5',
           substepType: 'meleeResolution' as const,
-          whiteAttackApplyState: undefined,
+          whiteAttackApplyState: 'pending' as const,
           whiteCommitment: {
             card: state.cardState.white.inPlay!,
             commitmentType: 'completed',

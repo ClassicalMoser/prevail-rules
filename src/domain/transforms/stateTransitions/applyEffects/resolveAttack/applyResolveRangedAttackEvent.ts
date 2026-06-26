@@ -1,4 +1,4 @@
-import type { Board } from '@entities';
+import type { Board, UnitPlacement } from '@entities';
 import type { ResolveRangedAttackEventForBoard } from '@events';
 import type {
   AttackApplyStateForBoard,
@@ -41,25 +41,25 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
     unitRouted: event.routed,
   };
 
-  let routState: RoutState | undefined;
-  let retreatState: RetreatStateForBoard<TBoard> | undefined;
-  let reverseState: ReverseStateForBoard<TBoard> | undefined;
+  let routState: RoutState | 'pending' = 'pending';
+  let retreatState: RetreatStateForBoard<TBoard> | 'pending' = 'pending';
+  let reverseState: ReverseStateForBoard<TBoard> | 'pending' = 'pending';
 
   if (attackResult.unitRouted) {
     routState = {
       cardsChosen: false,
       completed: false,
-      numberToDiscard: undefined,
+      numberToDiscard: 'pending',
       player: defendingUnit.playerSide,
       substepType: 'rout',
       unitsToRout: [defendingUnit],
     };
   } else if (attackResult.unitRetreated) {
     const { legalRetreatOptions } = event;
-    const finalPosition =
+    const finalPosition: UnitPlacement<TBoard> | 'pending' =
       legalRetreatOptions.length === 1
         ? [...legalRetreatOptions][0]
-        : undefined;
+        : 'pending';
 
     retreatState = {
       boardType,
@@ -67,14 +67,14 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
       finalPosition,
       legalRetreatOptions,
       retreatingUnit: unitWithPlacement,
-      routState: undefined,
+      routState: 'pending',
       substepType: 'retreat',
     };
   } else if (attackResult.unitReversed) {
     reverseState = {
       boardType,
       completed: false,
-      finalPosition: undefined,
+      finalPosition: 'pending',
       reversingUnit: unitWithPlacement,
       substepType: 'reverse',
     };

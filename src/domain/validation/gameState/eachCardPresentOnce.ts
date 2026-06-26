@@ -1,21 +1,21 @@
 import type {
   Card,
-  CardState,
+  AuthoritativeCardState,
   FailValidationResult,
-  PlayerCardState,
+  OwnedCardState,
   ValidationResult,
 } from '@entities';
 
 export function eachCardPresentOnce(
   blackStartingHand: Set<Card>,
   whiteStartingHand: Set<Card>,
-  cardState: CardState,
+  cardState: AuthoritativeCardState,
 ): ValidationResult {
   try {
     // Helper to validate a single player's card state against their starting hand
     const validatePlayerState = (
       startingHand: Set<Card>,
-      playerState: PlayerCardState,
+      playerState: OwnedCardState,
     ): ValidationResult => {
       // Build expected cards set for this player (we'll use card ID for equality checks)
       const expectedCards = new Set<Card>();

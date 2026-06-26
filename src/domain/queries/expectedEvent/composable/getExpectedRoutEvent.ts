@@ -16,7 +16,7 @@ export function getExpectedRoutEvent(routState: RoutState): ExpectedEventInfo {
   }
 
   // Check if the unit has been routed yet
-  if (routState.numberToDiscard === undefined) {
+  if (routState.numberToDiscard === 'pending') {
     return {
       actionType: 'gameEffect',
       effectType: 'resolveRout',

@@ -71,7 +71,7 @@ export function getCurrentUnitStat<TBoard extends Board>(
       let satisfiesUnitRestrictions = true;
       const inspirationRange =
         activeRoundEffect.restrictions.inspirationRangeRestriction;
-      if (inspirationRange) {
+      if (inspirationRange >= 0) {
         const unitPlacement = getPositionOfUnit(gameState.boardState, unit);
         const unitPosition = unitPlacement.coordinate;
         const commanderSpace = getCommanderSpace(

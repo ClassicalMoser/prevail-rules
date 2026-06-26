@@ -8,86 +8,69 @@ import { returnCardsToHand } from './returnCardsToHand';
  */
 describe(returnCardsToHand, () => {
   it('given context, returns all played and discarded cards to hand', () => {
-    const gameState = createEmptyGameState();
-    const cardState = {
-      ...gameState.cardState,
-      black: {
-        ...gameState.cardState.black,
-        discarded: [tempCommandCards[2]],
-        inHand: [tempCommandCards[0]],
-        played: [tempCommandCards[1]],
-      },
+    const owned = {
+      ...createEmptyGameState().cardState.black,
+      discarded: [tempCommandCards[2]],
+      inHand: [tempCommandCards[0]],
+      played: [tempCommandCards[1]],
     };
 
-    const newCardState = returnCardsToHand(cardState, 'black');
+    const result = returnCardsToHand(owned);
 
-    expect(newCardState.black.inHand).toStrictEqual([
+    expect(result.inHand).toStrictEqual([
       tempCommandCards[0],
       tempCommandCards[1],
       tempCommandCards[2],
     ]);
-    expect(newCardState.black.played).toStrictEqual([]);
-    expect(newCardState.black.discarded).toStrictEqual([]);
-    expect(newCardState.white).toBe(cardState.white);
+    expect(result.played).toStrictEqual([]);
+    expect(result.discarded).toStrictEqual([]);
   });
 
   it('given handle empty played and discarded', () => {
-    const gameState = createEmptyGameState();
-    const cardState = {
-      ...gameState.cardState,
-      black: {
-        ...gameState.cardState.black,
-        discarded: [],
-        inHand: [tempCommandCards[0]],
-        played: [],
-      },
+    const owned = {
+      ...createEmptyGameState().cardState.black,
+      discarded: [],
+      inHand: [tempCommandCards[0]],
+      played: [],
     };
 
-    const newCardState = returnCardsToHand(cardState, 'black');
+    const result = returnCardsToHand(owned);
 
-    expect(newCardState.black.inHand).toStrictEqual([tempCommandCards[0]]);
-    expect(newCardState.black.played).toStrictEqual([]);
-    expect(newCardState.black.discarded).toStrictEqual([]);
+    expect(result.inHand).toStrictEqual([tempCommandCards[0]]);
+    expect(result.played).toStrictEqual([]);
+    expect(result.discarded).toStrictEqual([]);
   });
 
   it('given preserve order: hand, then played, then discarded', () => {
-    const gameState = createEmptyGameState();
-    const cardState = {
-      ...gameState.cardState,
-      black: {
-        ...gameState.cardState.black,
-        discarded: [tempCommandCards[2]],
-        inHand: [tempCommandCards[0]],
-        played: [tempCommandCards[1]],
-      },
+    const owned = {
+      ...createEmptyGameState().cardState.black,
+      discarded: [tempCommandCards[2]],
+      inHand: [tempCommandCards[0]],
+      played: [tempCommandCards[1]],
     };
 
-    const newCardState = returnCardsToHand(cardState, 'black');
+    const result = returnCardsToHand(owned);
 
-    expect(newCardState.black.inHand[0]).toBe(tempCommandCards[0]);
-    expect(newCardState.black.inHand[1]).toBe(tempCommandCards[1]);
-    expect(newCardState.black.inHand[2]).toBe(tempCommandCards[2]);
+    expect(result.inHand[0]).toBe(tempCommandCards[0]);
+    expect(result.inHand[1]).toBe(tempCommandCards[1]);
+    expect(result.inHand[2]).toBe(tempCommandCards[2]);
   });
 
   it('given not mutate the original card state', () => {
-    const gameState = createEmptyGameState();
-    const cardState = {
-      ...gameState.cardState,
-      black: {
-        ...gameState.cardState.black,
-        discarded: [tempCommandCards[2]],
-        inHand: [tempCommandCards[0]],
-        played: [tempCommandCards[1]],
-      },
+    const owned = {
+      ...createEmptyGameState().cardState.black,
+      discarded: [tempCommandCards[2]],
+      inHand: [tempCommandCards[0]],
+      played: [tempCommandCards[1]],
     };
-    const originalHand = cardState.black.inHand;
-    const originalPlayed = cardState.black.played;
-    const originalDiscarded = cardState.black.discarded;
+    const originalHand = owned.inHand;
+    const originalPlayed = owned.played;
+    const originalDiscarded = owned.discarded;
 
-    returnCardsToHand(cardState, 'black');
+    returnCardsToHand(owned);
 
-    expect(cardState.black.inHand).toBe(originalHand);
-    expect(cardState.black.played).toBe(originalPlayed);
-    expect(cardState.black.discarded).toBe(originalDiscarded);
+    expect(owned.inHand).toBe(originalHand);
+    expect(owned.played).toBe(originalPlayed);
+    expect(owned.discarded).toBe(originalDiscarded);
   });
 });

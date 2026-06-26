@@ -19,7 +19,7 @@ export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
   const { player, cardIds } = event;
   const { currentPhaseState } = state.currentRoundState;
 
-  if (!currentPhaseState || currentPhaseState.phase !== 'cleanup') {
+  if (currentPhaseState === 'none' || currentPhaseState.phase !== 'cleanup') {
     return {
       errorReason: 'Current phase is not cleanup',
       result: false,
@@ -54,14 +54,14 @@ export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
     };
   }
 
-  if (!rallyState) {
+  if (rallyState === 'pending') {
     return {
       errorReason: 'Rally resolution state not found',
       result: false,
     };
   }
 
-  if (!rallyState.routState) {
+  if (rallyState.routState === 'pending') {
     return {
       errorReason: 'No rout state found',
       result: false,

@@ -16,8 +16,8 @@ function initialRallyResolutionState(
     completed: false,
     playerRallied,
     rallyResolved: false,
-    routState: undefined,
-    unitsLostSupport: undefined,
+    routState: 'pending',
+    unitsLostSupport: 'pending',
   };
 }
 

@@ -37,7 +37,7 @@ export function getExpectedIssueCommandsPhaseEvent(
 
     case 'firstPlayerResolveCommands': {
       // Check if there's an ongoing command resolution
-      if (phaseState.currentCommandResolutionState) {
+      if (phaseState.currentCommandResolutionState !== 'pending') {
         return getExpectedCommandResolutionEvent(
           state,
           phaseState.currentCommandResolutionState,
@@ -72,7 +72,7 @@ export function getExpectedIssueCommandsPhaseEvent(
 
     case 'secondPlayerResolveCommands': {
       // Check if there's an ongoing command resolution
-      if (phaseState.currentCommandResolutionState) {
+      if (phaseState.currentCommandResolutionState !== 'pending') {
         return getExpectedCommandResolutionEvent(
           state,
           phaseState.currentCommandResolutionState,

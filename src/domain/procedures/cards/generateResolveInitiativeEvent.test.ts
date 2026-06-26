@@ -3,8 +3,8 @@ import type { GameState } from '@game';
 
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms';
+import { createEmptyGameState, updateCardState } from '@testing';
+import { updatePhaseState } from '@transforms';
 
 import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent';
 
@@ -24,19 +24,19 @@ describe(generateResolveInitiativeEvent, () => {
   ): GameState {
     const state = createEmptyGameState();
 
-    const stateWithCards = updateCardState(state, (current) => ({
-      ...current,
+    const stateWithCards = updateCardState(state, {
+      ...state.cardState,
       black: {
-        ...current.black,
+        ...state.cardState.black,
         awaitingPlay: null,
         inPlay: blackCard,
       },
       white: {
-        ...current.white,
+        ...state.cardState.white,
         awaitingPlay: null,
         inPlay: whiteCard,
       },
-    }));
+    });
 
     const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
@@ -152,19 +152,19 @@ describe(generateResolveInitiativeEvent, () => {
       const blackCard = tempCommandCards[0];
       const state = createEmptyGameState();
 
-      const stateWithCards = updateCardState(state, (current) => ({
-        ...current,
+      const stateWithCards = updateCardState(state, {
+        ...state.cardState,
         black: {
-          ...current.black,
+          ...state.cardState.black,
           awaitingPlay: null,
           inPlay: blackCard,
         },
         white: {
-          ...current.white,
+          ...state.cardState.white,
           awaitingPlay: null,
           inPlay: null,
         },
-      }));
+      });
 
       const stateWithPhase = updatePhaseState(stateWithCards, {
         phase: PLAY_CARDS_PHASE,
@@ -181,19 +181,19 @@ describe(generateResolveInitiativeEvent, () => {
       const whiteCard = tempCommandCards[0];
       const state = createEmptyGameState();
 
-      const stateWithCards = updateCardState(state, (current) => ({
-        ...current,
+      const stateWithCards = updateCardState(state, {
+        ...state.cardState,
         black: {
-          ...current.black,
+          ...state.cardState.black,
           awaitingPlay: null,
           inPlay: null,
         },
         white: {
-          ...current.white,
+          ...state.cardState.white,
           awaitingPlay: null,
           inPlay: whiteCard,
         },
-      }));
+      });
 
       const stateWithPhase = updatePhaseState(stateWithCards, {
         phase: PLAY_CARDS_PHASE,

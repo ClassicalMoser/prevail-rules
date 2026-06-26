@@ -22,7 +22,7 @@ export function getRallyResolutionStateAwaitingUnitsBroken<
   if (!rallyState.rallyResolved) {
     throw new Error('Rally has not been resolved yet');
   }
-  if (rallyState.unitsLostSupport !== undefined) {
+  if (rallyState.unitsLostSupport !== 'pending') {
     throw new Error('Units lost support already resolved');
   }
   return rallyState;

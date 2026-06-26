@@ -42,7 +42,7 @@ export function validateEvent<TBoard extends Board>(
     };
   }
 
-  if (!roundState.currentPhaseState) {
+  if (roundState.currentPhaseState === 'none') {
     return {
       errorReason: 'No current phase state found',
       result: false,

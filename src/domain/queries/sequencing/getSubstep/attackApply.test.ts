@@ -53,7 +53,7 @@ describe(getAttackApplyStateFromRangedAttack, () => {
         currentCommandResolutionState: createRangedAttackResolutionState(
           state,
           {
-            attackApplyState: undefined,
+            attackApplyState: 'pending' as const,
             attackingUnit,
             defendingUnit,
           },
@@ -169,7 +169,7 @@ describe(getAttackApplyStateFromMelee, () => {
           completed: false,
           location: 'E-5',
           substepType: 'meleeResolution' as const,
-          whiteAttackApplyState: undefined,
+          whiteAttackApplyState: 'pending' as const,
           whiteCommitment: {
             card: state.cardState.white.inPlay!,
             commitmentType: 'completed',
@@ -258,7 +258,7 @@ describe(getDefendingPlayerForNextIncompleteMeleeAttackApply, () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const meleeState = createMeleeResolutionState(state, {
       blackAttackApplyState: createAttackApplyState(blackUnit),
-      whiteAttackApplyState: undefined,
+      whiteAttackApplyState: 'pending' as const,
     });
 
     expect(
