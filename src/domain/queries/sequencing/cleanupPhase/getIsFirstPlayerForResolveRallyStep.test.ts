@@ -10,9 +10,9 @@ describe(getIsFirstPlayerForResolveRallyStep, () => {
   it('given firstPlayerResolveRally, returns true', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'firstPlayerResolveRally',
     };
 
@@ -22,9 +22,9 @@ describe(getIsFirstPlayerForResolveRallyStep, () => {
   it('given the second player resolve rally step, returns false', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'secondPlayerResolveRally',
     };
 
@@ -34,9 +34,9 @@ describe(getIsFirstPlayerForResolveRallyStep, () => {
   it('given discardPlayedCards, throws not on resolveRally with step name', () => {
     const state = createEmptyGameState();
     state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: undefined,
+      firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending' as const,
       step: 'discardPlayedCards',
     };
 

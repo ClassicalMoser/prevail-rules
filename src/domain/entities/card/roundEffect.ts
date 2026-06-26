@@ -20,7 +20,7 @@ const _roundEffectSchemaObject = z.object({
   /** The restrictions on the round effect. */
   restrictions: restrictionsSchema,
   /** The modifiers the round effect applies. */
-  modifiers: z.array(modifierSchema),
+  modifiers: z.array(modifierSchema).min(1).max(2),
 });
 
 type RoundEffectSchemaType = z.infer<typeof _roundEffectSchemaObject>;

@@ -9,6 +9,7 @@ import {
   createTestUnit,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone } from '@utils';
 
 import { applyCompleteIssueCommandsPhaseEvent } from './applyCompleteIssueCommandsPhaseEvent';
 
@@ -37,7 +38,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
 
     const initialPhaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
       boardType: 'standard',
-      currentCommandResolutionState: undefined,
+      currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [],
       remainingCommandsSecondPlayer: [],
@@ -59,12 +60,12 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
 
-      expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
-        'resolveMelee',
+      const phase = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
       );
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'resolveMelee',
-      );
+      expect(phase.phase).toBe('resolveMelee');
+      expect(phase.step).toBe('resolveMelee');
     });
 
     it('given same transition, completedPhases gains one issueCommands entry', () => {
@@ -89,8 +90,11 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'resolveMelee') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'resolveMelee') {
         throw new Error('Expected resolveMelee phase');
       }
 
@@ -128,7 +132,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
         state,
         {
           boardType: 'standard',
-          currentCommandResolutionState: undefined,
+          currentCommandResolutionState: 'pending',
           phase: ISSUE_COMMANDS_PHASE,
           remainingCommandsFirstPlayer: [],
           remainingCommandsSecondPlayer: [],
@@ -146,8 +150,11 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
         stateWithPhase,
       );
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'resolveMelee') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'resolveMelee') {
         throw new Error('Expected resolveMelee phase');
       }
 
@@ -164,19 +171,25 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'resolveMelee') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'resolveMelee') {
         throw new Error('Expected resolveMelee phase');
       }
 
-      expect(phaseState.currentMeleeResolutionState).toBeUndefined();
+      expect(phaseState.currentMeleeResolutionState).toBe('pending');
     });
   });
 
   describe('structural update', () => {
     it('given phase and completedPhases size before apply, input issueCommands slice unchanged', () => {
       const state = createGameStateInCompleteStep();
-      const originalPhase = state.currentRoundState.currentPhaseState?.phase;
+      const originalPhase = throwIfNone(
+        state.currentRoundState.currentPhaseState,
+        'phase',
+      ).phase;
       const originalCompletedPhasesSize =
         state.currentRoundState.completedPhases.length;
 
@@ -185,9 +198,9 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
 
       applyCompleteIssueCommandsPhaseEvent(event, state);
 
-      expect(state.currentRoundState.currentPhaseState?.phase).toBe(
-        originalPhase,
-      );
+      expect(
+        throwIfNone(state.currentRoundState.currentPhaseState, 'phase').phase,
+      ).toBe(originalPhase);
       expect(state.currentRoundState.completedPhases.length).toBe(
         originalCompletedPhasesSize,
       );
@@ -202,8 +215,11 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
 
       const newState = applyCompleteIssueCommandsPhaseEvent(event, state);
 
-      const phaseState = newState.currentRoundState.currentPhaseState;
-      if (!phaseState || phaseState.phase !== 'resolveMelee') {
+      const phaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (phaseState.phase !== 'resolveMelee') {
         throw new Error('Expected resolveMelee phase');
       }
       expect(phaseState.remainingEngagements.length).toBe(0);
@@ -226,9 +242,10 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
         stateWithWrongStep,
       );
 
-      expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
-        'resolveMelee',
-      );
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase')
+          .phase,
+      ).toBe('resolveMelee');
     });
   });
 });

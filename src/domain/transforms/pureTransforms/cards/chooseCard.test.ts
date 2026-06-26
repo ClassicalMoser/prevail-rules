@@ -1,4 +1,4 @@
-import type { CardState } from '@entities';
+import type { OwnedCardState } from '@entities';
 import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 
@@ -8,75 +8,39 @@ import { chooseCard } from './chooseCard';
  * ChooseCard: Moves a card from a player's hand to awaitingPlay (choosing a card for play).
  */
 describe(chooseCard, () => {
-  function cardStateWithHands(
-    blackHand: typeof tempCommandCards,
-    whiteHand: typeof tempCommandCards,
-  ): CardState {
+  function ownedWithHand(hand: typeof tempCommandCards): OwnedCardState {
     const state = createEmptyGameState();
     return {
-      ...state.cardState,
-      black: {
-        ...state.cardState.black,
-        awaitingPlay: null,
-        inHand: [...blackHand],
-      },
-      white: {
-        ...state.cardState.white,
-        awaitingPlay: null,
-        inHand: [...whiteHand],
-      },
+      ...state.cardState.black,
+      awaitingPlay: null,
+      inHand: [...hand],
     };
   }
 
-  it('moves card from black hand to awaitingPlay', () => {
-    const cardState = cardStateWithHands(
-      [tempCommandCards[0], tempCommandCards[1]],
-      [tempCommandCards[2]],
-    );
+  it('moves card from hand to awaitingPlay', () => {
+    const owned = ownedWithHand([tempCommandCards[0], tempCommandCards[1]]);
 
-    const result = chooseCard(cardState, 'black', tempCommandCards[0]);
+    const result = chooseCard(owned, tempCommandCards[0]);
 
-    expect(result.black.inHand).toStrictEqual([tempCommandCards[1]]);
-    expect(result.black.awaitingPlay).toBe(tempCommandCards[0]);
-    expect(result.white.inHand).toStrictEqual([tempCommandCards[2]]);
-    expect(result.white.awaitingPlay).toBeNull();
+    expect(result.inHand).toStrictEqual([tempCommandCards[1]]);
+    expect(result.awaitingPlay).toBe(tempCommandCards[0]);
   });
 
-  it('moves card from white hand to awaitingPlay', () => {
-    const cardState = cardStateWithHands(
-      [tempCommandCards[0]],
-      [tempCommandCards[1], tempCommandCards[2]],
-    );
+  it('leaves remaining hand cards in place', () => {
+    const owned = ownedWithHand([tempCommandCards[1], tempCommandCards[2]]);
 
-    const result = chooseCard(cardState, 'white', tempCommandCards[1]);
+    const result = chooseCard(owned, tempCommandCards[1]);
 
-    expect(result.white.inHand).toStrictEqual([tempCommandCards[2]]);
-    expect(result.white.awaitingPlay).toBe(tempCommandCards[1]);
-    expect(result.black.inHand).toStrictEqual([tempCommandCards[0]]);
-    expect(result.black.awaitingPlay).toBeNull();
+    expect(result.inHand).toStrictEqual([tempCommandCards[2]]);
+    expect(result.awaitingPlay).toBe(tempCommandCards[1]);
   });
 
-  it('throws when card not in black player hand', () => {
-    const cardState = cardStateWithHands(
-      [tempCommandCards[0]],
-      [tempCommandCards[1]],
-    );
-    const cardNotInBlackHand = tempCommandCards[1];
+  it('throws when card not in hand', () => {
+    const owned = ownedWithHand([tempCommandCards[0]]);
+    const cardNotInHand = tempCommandCards[1];
 
-    expect(() => chooseCard(cardState, 'black', cardNotInBlackHand)).toThrow(
-      `Card ${tempCommandCards[1].id} not found in Black player's hand`,
-    );
-  });
-
-  it('throws when card not in white player hand', () => {
-    const cardState = cardStateWithHands(
-      [tempCommandCards[0]],
-      [tempCommandCards[1]],
-    );
-    const cardNotInWhiteHand = tempCommandCards[0];
-
-    expect(() => chooseCard(cardState, 'white', cardNotInWhiteHand)).toThrow(
-      `Card ${tempCommandCards[0].id} not found in White player's hand`,
+    expect(() => chooseCard(owned, cardNotInHand)).toThrow(
+      `Card ${tempCommandCards[1].id} not found in player's hand`,
     );
   });
 });

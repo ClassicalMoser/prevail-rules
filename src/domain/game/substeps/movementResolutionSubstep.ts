@@ -50,7 +50,7 @@ export interface MovementResolutionStateForBoard<TBoard extends Board> {
   /** The commitment of the moving player. */
   commitment: Commitment;
   /** The engagement state of the movement. */
-  engagementState: EngagementStateForBoard<TBoard> | undefined;
+  engagementState: EngagementStateForBoard<TBoard> | 'pending';
   /** Whether the movement resolution substep is complete. */
   completed: boolean;
 }
@@ -65,7 +65,7 @@ const _standardMovementResolutionStateSchemaObject = z.object({
   commandResolutionType: z.literal('movement'),
   commitment: commitmentSchema,
   completed: z.boolean(),
-  engagementState: standardEngagementStateSchema.or(z.undefined()),
+  engagementState: standardEngagementStateSchema.or(z.literal('pending')),
   moveCommander: z.boolean(),
   movingUnit: standardUnitWithPlacementSchema,
   substepType: z.literal('commandResolution'),
@@ -90,7 +90,7 @@ const _smallMovementResolutionStateSchemaObject = z.object({
   commandResolutionType: z.literal('movement'),
   commitment: commitmentSchema,
   completed: z.boolean(),
-  engagementState: smallEngagementStateSchema.or(z.undefined()),
+  engagementState: smallEngagementStateSchema.or(z.literal('pending')),
   moveCommander: z.boolean(),
   movingUnit: smallUnitWithPlacementSchema,
   substepType: z.literal('commandResolution'),
@@ -115,7 +115,7 @@ const _largeMovementResolutionStateSchemaObject = z.object({
   commandResolutionType: z.literal('movement'),
   commitment: commitmentSchema,
   completed: z.boolean(),
-  engagementState: largeEngagementStateSchema.or(z.undefined()),
+  engagementState: largeEngagementStateSchema.or(z.literal('pending')),
   moveCommander: z.boolean(),
   movingUnit: largeUnitWithPlacementSchema,
   substepType: z.literal('commandResolution'),

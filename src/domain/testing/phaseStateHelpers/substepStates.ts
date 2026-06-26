@@ -34,10 +34,10 @@ export function createRetreatState(
   return {
     boardType: 'standard' as const,
     completed: false,
-    finalPosition: undefined,
+    finalPosition: 'pending',
     legalRetreatOptions,
     retreatingUnit: unit,
-    routState: undefined,
+    routState: 'pending',
     substepType: 'retreat' as const,
     ...overrides,
   };
@@ -54,7 +54,7 @@ export function createRoutState(
   return {
     cardsChosen: false,
     completed: false,
-    numberToDiscard: undefined,
+    numberToDiscard: 'pending',
     player,
     substepType: 'rout',
     unitsToRout: [unit],
@@ -72,7 +72,7 @@ export function createReverseState(
   return {
     boardType: 'standard' as const,
     completed: false,
-    finalPosition: undefined,
+    finalPosition: 'pending',
     reversingUnit: unit,
     substepType: 'reverse',
     ...overrides,
@@ -89,8 +89,8 @@ export function createRallyResolutionState(
     completed: false,
     playerRallied: false,
     rallyResolved: false,
-    routState: undefined,
-    unitsLostSupport: undefined,
+    routState: 'pending',
+    unitsLostSupport: 'pending',
     ...overrides,
   };
 }

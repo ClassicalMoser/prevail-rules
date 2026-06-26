@@ -5,8 +5,9 @@ import {
   createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
+  updateCardState,
 } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCommitToMeleeEvent } from './applyCommitToMeleeEvent';
 
@@ -17,10 +18,10 @@ import { applyCommitToMeleeEvent } from './applyCommitToMeleeEvent';
 describe(applyCommitToMeleeEvent, () => {
   it('given white pending and one card in hand, commit completes white and empties white hand', () => {
     const state = createEmptyGameState();
-    const stateWithWhiteCardInHand = updateCardState(state, (c) => ({
-      ...c,
-      white: { ...c.white, inHand: [tempCommandCards[0]] },
-    }));
+    const stateWithWhiteCardInHand = updateCardState(state, {
+      ...state.cardState,
+      white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },
+    });
     const meleeState = createMeleeResolutionState(stateWithWhiteCardInHand, {
       whiteCommitment: { commitmentType: 'pending' },
     });
@@ -54,10 +55,10 @@ describe(applyCommitToMeleeEvent, () => {
 
   it('given black pending and one card in hand, commit completes black and empties black hand', () => {
     const state = createEmptyGameState();
-    const stateWithBlackCardInHand = updateCardState(state, (c) => ({
-      ...c,
-      black: { ...c.black, inHand: [tempCommandCards[0]] },
-    }));
+    const stateWithBlackCardInHand = updateCardState(state, {
+      ...state.cardState,
+      black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
+    });
     const meleeState = createMeleeResolutionState(stateWithBlackCardInHand, {
       blackCommitment: { commitmentType: 'pending' },
     });

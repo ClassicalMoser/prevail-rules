@@ -29,7 +29,7 @@ export function updateCommandResolutionState<TBoard extends Board>(
 ): GameStateForBoard<TBoard> {
   const issueCommandsPhaseState = getIssueCommandsPhaseStateForBoard(state);
 
-  if (!issueCommandsPhaseState.currentCommandResolutionState) {
+  if (issueCommandsPhaseState.currentCommandResolutionState === 'pending') {
     throw new Error('No current command resolution state found');
   }
 

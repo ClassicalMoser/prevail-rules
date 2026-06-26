@@ -20,12 +20,30 @@ export {
   standardGameSchema,
   tutorialGameSchema,
 } from './game';
-export type { GameState, GameStateForBoard } from './gameState';
+export type {
+  CardStateForVisibility,
+  GameState,
+  GameStateForBoard,
+  GameStateForVisibility,
+  GameStateVisibility,
+} from './gameState';
 export {
+  authoritativeGameStateSchema,
+  blackSeenGameStateSchema,
   gameStateSchema,
+  largeAuthoritativeGameStateSchema,
+  largeBlackSeenGameStateSchema,
   largeGameStateSchema,
+  largeWhiteSeenGameStateSchema,
+  smallAuthoritativeGameStateSchema,
+  smallBlackSeenGameStateSchema,
   smallGameStateSchema,
+  smallWhiteSeenGameStateSchema,
+  standardAuthoritativeGameStateSchema,
+  standardBlackSeenGameStateSchema,
   standardGameStateSchema,
+  standardWhiteSeenGameStateSchema,
+  whiteSeenGameStateSchema,
 } from './gameState';
 export { cleanupPhaseStateSchema, cleanupPhaseSteps } from './phases';
 export type { CleanupPhaseState, CleanupPhaseStep } from './phases';

@@ -70,7 +70,7 @@ describe(getExpectedRangedAttackResolutionEvent, () => {
   it('given resolve ranged attack when both commitments are complete and no attack apply state exists', () => {
     const gameState = createGameState();
     const resolutionState = createRangedAttackResolutionState(gameState, {
-      attackApplyState: undefined,
+      attackApplyState: 'pending' as const,
     });
 
     expect(
@@ -96,9 +96,9 @@ describe(getExpectedRangedAttackResolutionEvent, () => {
         },
         completed: false,
         defendingUnit: createTestCard(),
-        retreatState: undefined,
-        reverseState: undefined,
-        routState: undefined,
+        retreatState: 'pending' as const,
+        reverseState: 'pending' as const,
+        routState: 'pending' as const,
         substepType: 'attackApply',
       } as never,
     });
@@ -132,9 +132,9 @@ describe(getExpectedRangedAttackResolutionEvent, () => {
         },
         completed: true,
         defendingUnit: createTestCard(),
-        retreatState: undefined,
-        reverseState: undefined,
-        routState: undefined,
+        retreatState: 'pending' as const,
+        reverseState: 'pending' as const,
+        routState: 'pending' as const,
         substepType: 'attackApply',
       } as never,
     });

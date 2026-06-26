@@ -1,4 +1,5 @@
 import type { ResolveRallyEvent } from '@events';
+import { throwIfNone, throwIfPending } from '@utils';
 import { CLEANUP_PHASE } from '@game';
 
 import { createEmptyGameState, createTestCard } from '@testing';
@@ -21,11 +22,11 @@ describe(applyResolveRallyEvent, () => {
         completed: false,
         playerRallied: true,
         rallyResolved: false,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending',
+        unitsLostSupport: 'pending',
       },
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending',
       step: 'firstPlayerResolveRally',
     };
 
@@ -39,12 +40,19 @@ describe(applyResolveRallyEvent, () => {
     };
 
     const next = applyResolveRallyEvent(event, full);
-    const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== CLEANUP_PHASE) {
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    if (phase.phase !== CLEANUP_PHASE) {
       throw new Error('cleanup');
     }
     expect(phase.step).toBe('secondPlayerChooseRally');
-    expect(phase.firstPlayerRallyResolutionState?.rallyResolved).toBeTruthy();
+    const rally = throwIfPending(
+      phase.firstPlayerRallyResolutionState,
+      'rally',
+    );
+    expect(rally.rallyResolved).toBeTruthy();
     expect(next.cardState.white.played).toStrictEqual([]);
   });
 });

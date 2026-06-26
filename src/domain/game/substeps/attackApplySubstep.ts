@@ -50,11 +50,11 @@ export interface AttackApplyStateForBoard<TBoard extends Board> {
   /** The result of the attack. */
   attackResult: AttackResult;
   /** The state of the reverse. */
-  reverseState: ReverseStateForBoard<TBoard> | undefined;
+  reverseState: ReverseStateForBoard<TBoard> | 'pending';
   /** The state of the retreat. */
-  retreatState: RetreatStateForBoard<TBoard> | undefined;
+  retreatState: RetreatStateForBoard<TBoard> | 'pending';
   /** The state of the rout. */
-  routState: RoutState | undefined;
+  routState: RoutState | 'pending';
   /** Whether the attack apply substep is complete. */
   completed: boolean;
 }
@@ -73,9 +73,9 @@ const _standardAttackApplyStateSchemaObject = z.object({
   boardType: z.literal('standard' satisfies StandardBoard['boardType']),
   completed: z.boolean(),
   defendingUnit: unitInstanceSchema,
-  retreatState: standardRetreatStateSchema.or(z.undefined()),
-  reverseState: standardReverseStateSchema.or(z.undefined()),
-  routState: routStateSchema.or(z.undefined()),
+  retreatState: standardRetreatStateSchema.or(z.literal('pending')),
+  reverseState: standardReverseStateSchema.or(z.literal('pending')),
+  routState: routStateSchema.or(z.literal('pending')),
   substepType: z.literal('attackApply'),
 });
 
@@ -97,9 +97,9 @@ const _smallAttackApplyStateSchemaObject = z.object({
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
   completed: z.boolean(),
   defendingUnit: unitInstanceSchema,
-  retreatState: smallRetreatStateSchema.or(z.undefined()),
-  reverseState: smallReverseStateSchema.or(z.undefined()),
-  routState: routStateSchema.or(z.undefined()),
+  retreatState: smallRetreatStateSchema.or(z.literal('pending')),
+  reverseState: smallReverseStateSchema.or(z.literal('pending')),
+  routState: routStateSchema.or(z.literal('pending')),
   substepType: z.literal('attackApply'),
 });
 
@@ -121,9 +121,9 @@ const _largeAttackApplyStateSchemaObject = z.object({
   boardType: z.literal('large' satisfies LargeBoard['boardType']),
   completed: z.boolean(),
   defendingUnit: unitInstanceSchema,
-  retreatState: largeRetreatStateSchema.or(z.undefined()),
-  reverseState: largeReverseStateSchema.or(z.undefined()),
-  routState: routStateSchema.or(z.undefined()),
+  retreatState: largeRetreatStateSchema.or(z.literal('pending')),
+  reverseState: largeReverseStateSchema.or(z.literal('pending')),
+  routState: routStateSchema.or(z.literal('pending')),
   substepType: z.literal('attackApply'),
 });
 

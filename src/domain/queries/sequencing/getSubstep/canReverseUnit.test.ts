@@ -33,7 +33,7 @@ describe(canReverseUnit, () => {
     const reverseState: ReverseStateForBoard<StandardBoard> = {
       boardType: 'standard' as const,
       completed: false,
-      finalPosition: undefined,
+      finalPosition: 'pending' as const,
       reversingUnit: {
         boardType: 'standard' as const,
         placement: {
@@ -62,7 +62,7 @@ describe(canReverseUnit, () => {
     const reverseState: ReverseStateForBoard<StandardBoard> = {
       boardType: 'standard' as const,
       completed: false,
-      finalPosition: undefined,
+      finalPosition: 'pending' as const,
       reversingUnit: {
         boardType: 'standard' as const,
         placement: {
@@ -91,7 +91,7 @@ describe(canReverseUnit, () => {
     const reverseState: ReverseStateForBoard<StandardBoard> = {
       boardType: 'standard' as const,
       completed: false,
-      finalPosition: undefined,
+      finalPosition: 'pending' as const,
       reversingUnit: {
         boardType: 'standard' as const,
         placement: {
@@ -114,7 +114,7 @@ describe(canReverseUnit, () => {
     const reverseState: ReverseStateForBoard<StandardBoard> = {
       boardType: 'standard' as const,
       completed: false,
-      finalPosition: undefined,
+      finalPosition: 'pending' as const,
       reversingUnit: {
         boardType: 'standard' as const,
         placement: {

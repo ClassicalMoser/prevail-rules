@@ -44,7 +44,7 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
   }
 
   // Attack apply state should not exist yet (this procedure creates it)
-  if (rangedAttackState.attackApplyState) {
+  if (rangedAttackState.attackApplyState !== 'pending') {
     throw new Error('Attack apply state already exists');
   }
 

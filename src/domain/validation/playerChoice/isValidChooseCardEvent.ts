@@ -30,7 +30,7 @@ export function isValidChooseCardEvent<TBoard extends Board>(
     const { currentPhaseState } = state.currentRoundState;
 
     // Check phase state exists
-    if (!currentPhaseState) {
+    if (currentPhaseState === 'none') {
       return {
         errorReason: 'No current phase state found',
         result: false,

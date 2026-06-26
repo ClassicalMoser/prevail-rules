@@ -18,7 +18,7 @@ export function getExpectedResolveMeleePhaseEvent(
   switch (phaseState.step) {
     case 'resolveMelee': {
       // Check if there's an ongoing melee resolution
-      if (phaseState.currentMeleeResolutionState) {
+      if (phaseState.currentMeleeResolutionState !== 'pending') {
         return getExpectedMeleeResolutionEvent(
           state,
           phaseState.currentMeleeResolutionState,

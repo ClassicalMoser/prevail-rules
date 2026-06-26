@@ -22,8 +22,9 @@ export {
   cardSchema,
   cardStateSchema,
   commandSchema,
+  commandSizes,
+  commandTypes,
   modifierSchema,
-  playerCardStateSchema,
   restrictionsSchema,
   roundEffectSchema,
   smallCoordinateLayout,
@@ -67,6 +68,7 @@ export {
   unitPresenceSchema,
   unitPresenceType,
   unitStatsSchema,
+  unitStatNames,
   unitTypeSchema,
   unitWithPlacementSchema,
 } from '@entities';
@@ -91,9 +93,9 @@ export type {
   CardState,
   Command,
   CommandType,
+  CommandSize,
   EngagementType,
   Modifier,
-  PlayerCardState,
   Restrictions,
   RoundEffect,
   StandardBoard,
@@ -274,7 +276,15 @@ export {
   standardGameSchema,
   tutorialGameSchema,
 } from '@game';
-export type { Game, GameForMode, GameStateForBoard } from '@game';
+export type {
+  CardStateForVisibility,
+  Game,
+  GameForMode,
+  GameState,
+  GameStateForBoard,
+  GameStateForVisibility,
+  GameStateVisibility,
+} from '@game';
 export {
   attackResultSchema,
   CLEANUP_PHASE,
@@ -329,7 +339,6 @@ export type {
   Commitment,
   CompletedCommitment,
   DeclinedCommitment,
-  GameState,
   PendingCommitment,
 } from '@game';
 export type {
@@ -498,7 +507,6 @@ export {
   revealCard,
   updateAttackApplyState,
   updateBoardState,
-  updateCardState,
   updateCommandResolutionState,
 } from '@transforms';
 export {

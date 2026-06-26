@@ -1,13 +1,23 @@
-export { cardSchema } from './card';
-export type { Card } from './card';
-export { cardStateSchema } from './cardState';
-export type { CardState } from './cardState';
-export { commandSchema } from './command';
-export type { Command, CommandType } from './command';
+export { cardSchema, hiddenCardSchema } from './card';
+export type { Card, HiddenCard } from './card';
+export {
+  authoritativeCardStateSchema,
+  whiteSeenCardStateSchema,
+  blackSeenCardStateSchema,
+  cardStateSchema,
+} from './cardState';
+export type {
+  AuthoritativeCardState,
+  WhiteSeenCardState,
+  BlackSeenCardState,
+  CardState,
+} from './cardState';
+export { hiddenCardStateSchema, ownedCardStateSchema } from './playerCardState';
+export type { HiddenCardState, OwnedCardState } from './playerCardState';
+export { commandSchema, commandSizes, commandTypes } from './command';
+export type { Command, CommandType, CommandSize } from './command';
 export { modifierSchema, statModifiers, statModifierSchema } from './modifiers';
 export type { Modifier, StatModifier } from './modifiers';
-export { playerCardStateSchema } from './playerCardState';
-export type { PlayerCardState } from './playerCardState';
 export { restrictionsSchema } from './restrictions';
 export type { Restrictions } from './restrictions';
 export { roundEffectSchema } from './roundEffect';

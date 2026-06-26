@@ -8,8 +8,8 @@ const afterBurnBeforeUnitsBroken = {
   completed: false,
   playerRallied: true,
   rallyResolved: true,
-  routState: undefined,
-  unitsLostSupport: undefined,
+  routState: 'pending' as const,
+  unitsLostSupport: 'pending' as const,
 };
 
 /** FirstPlayerResolveRally with post-burn rally slice. */
@@ -19,7 +19,7 @@ function stateFirstPlayerResolveRally() {
   state.currentRoundState.currentPhaseState = {
     firstPlayerRallyResolutionState: { ...afterBurnBeforeUnitsBroken },
     phase: CLEANUP_PHASE,
-    secondPlayerRallyResolutionState: undefined,
+    secondPlayerRallyResolutionState: 'pending' as const,
     step: 'firstPlayerResolveRally',
   };
   return state;
@@ -34,13 +34,13 @@ describe(getRallyResolutionStateAwaitingUnitsBroken, () => {
     const state = stateFirstPlayerResolveRally();
     const result = getRallyResolutionStateAwaitingUnitsBroken(state, 'white');
     expect(result.rallyResolved).toBeTruthy();
-    expect(result.unitsLostSupport).toBeUndefined();
+    expect(result.unitsLostSupport).toBe('pending');
   });
 
   it('given rallyResolved false, throws rally not resolved yet', () => {
     const state = stateFirstPlayerResolveRally();
     const ps = state.currentRoundState.currentPhaseState;
-    if (!ps || ps.phase !== CLEANUP_PHASE) {
+    if (ps === 'none' || ps.phase !== CLEANUP_PHASE) {
       throw new Error('expected cleanup');
     }
     ps.firstPlayerRallyResolutionState = {
@@ -56,7 +56,7 @@ describe(getRallyResolutionStateAwaitingUnitsBroken, () => {
   it('given unitsLostSupport already an array, throws units lost support already resolved', () => {
     const state = stateFirstPlayerResolveRally();
     const ps = state.currentRoundState.currentPhaseState;
-    if (!ps || ps.phase !== CLEANUP_PHASE) {
+    if (ps === 'none' || ps.phase !== CLEANUP_PHASE) {
       throw new Error('expected cleanup');
     }
     ps.firstPlayerRallyResolutionState = {

@@ -4,6 +4,7 @@ import type {
   GameStateForBoard,
   RetreatStateForBoard,
 } from '@game';
+import { throwIfPending } from '@utils';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
 import {
   getAttackApplyStateFromMelee,
@@ -21,10 +22,10 @@ import {
 export function getRetreatStateFromAttackApply<TBoard extends Board>(
   attackApplyState: AttackApplyStateForBoard<TBoard>,
 ): RetreatStateForBoard<TBoard> {
-  if (!attackApplyState.retreatState) {
-    throw new Error('No retreat state found in attack apply state');
-  }
-  return attackApplyState.retreatState;
+  return throwIfPending(
+    attackApplyState.retreatState,
+    'No retreat state found in attack apply state',
+  );
 }
 
 /**
@@ -78,15 +79,17 @@ export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
       : meleeState.whiteAttackApplyState;
 
   if (
-    firstPlayerAttackApply?.retreatState &&
-    firstPlayerAttackApply.retreatState.finalPosition !== undefined &&
+    firstPlayerAttackApply !== 'pending' &&
+    firstPlayerAttackApply.retreatState !== 'pending' &&
+    firstPlayerAttackApply.retreatState.finalPosition !== 'pending' &&
     !firstPlayerAttackApply.retreatState.completed
   ) {
     return firstPlayerAttackApply.retreatState;
   }
   if (
-    secondPlayerAttackApply?.retreatState &&
-    secondPlayerAttackApply.retreatState.finalPosition !== undefined &&
+    secondPlayerAttackApply !== 'pending' &&
+    secondPlayerAttackApply.retreatState !== 'pending' &&
+    secondPlayerAttackApply.retreatState.finalPosition !== 'pending' &&
     !secondPlayerAttackApply.retreatState.completed
   ) {
     return secondPlayerAttackApply.retreatState;
@@ -111,7 +114,7 @@ export function findRetreatState<TBoard extends Board>(
   player: 'white' | 'black',
 ): RetreatStateForBoard<TBoard> {
   const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState) {
+  if (phaseState === 'none') {
     throw new Error('No current phase state found');
   }
 

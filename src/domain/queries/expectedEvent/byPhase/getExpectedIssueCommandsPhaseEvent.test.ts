@@ -30,7 +30,7 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
     return updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: undefined,
+        currentCommandResolutionState: 'pending' as const,
         remainingCommandsFirstPlayer: [],
         remainingCommandsSecondPlayer: [],
         remainingUnitsFirstPlayer: [],
@@ -72,7 +72,7 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       (state) => ({
         currentCommandResolutionState: createMovementResolutionState(state, {
           commitment: {
-            commitmentType: 'pending',
+            commitmentType: 'pending' as const,
           },
         }),
       }),
@@ -138,7 +138,7 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       (state) => ({
         currentCommandResolutionState: createMovementResolutionState(state, {
           commitment: {
-            commitmentType: 'pending',
+            commitmentType: 'pending' as const,
           },
         }),
       }),
@@ -184,10 +184,13 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
   it('given for invalid step, throws', () => {
     const state = createGameStateInIssueCommandsStep('complete');
     // Force an invalid issue commands step to hit the default branch.
-    state.currentRoundState.currentPhaseState = {
-      ...state.currentRoundState.currentPhaseState,
-      step: 'invalidStep',
-    } as any;
+    const phaseState = state.currentRoundState.currentPhaseState;
+    if (phaseState !== 'none') {
+      state.currentRoundState.currentPhaseState = {
+        ...phaseState,
+        step: 'invalidStep',
+      } as any;
+    }
 
     expect(() => getExpectedIssueCommandsPhaseEvent(state)).toThrow(
       'Invalid issueCommands phase state: invalidStep',

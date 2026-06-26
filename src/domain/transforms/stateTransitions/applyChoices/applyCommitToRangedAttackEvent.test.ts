@@ -5,8 +5,9 @@ import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
+  updateCardState,
 } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent';
 
@@ -17,10 +18,10 @@ import { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent
 describe(applyCommitToRangedAttackEvent, () => {
   it('given pending attackingCommitment and black holds the card, attacking completed and black hand empty', () => {
     const state = createEmptyGameState();
-    const stateWithBlackCardInHand = updateCardState(state, (c) => ({
-      ...c,
-      black: { ...c.black, inHand: [tempCommandCards[0]] },
-    }));
+    const stateWithBlackCardInHand = updateCardState(state, {
+      ...state.cardState,
+      black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
+    });
     const rangedState = createRangedAttackResolutionState(
       stateWithBlackCardInHand,
       {
@@ -54,10 +55,10 @@ describe(applyCommitToRangedAttackEvent, () => {
 
   it('given pending defendingCommitment and white holds the card, defending completed and white hand empty', () => {
     const state = createEmptyGameState();
-    const stateWithWhiteCardInHand = updateCardState(state, (c) => ({
-      ...c,
-      white: { ...c.white, inHand: [tempCommandCards[0]] },
-    }));
+    const stateWithWhiteCardInHand = updateCardState(state, {
+      ...state.cardState,
+      white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },
+    });
     const rangedState = createRangedAttackResolutionState(
       stateWithWhiteCardInHand,
       {

@@ -1,9 +1,11 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
+import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
   createEmptyGameState,
+  createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMovementResolutionState,
@@ -121,21 +123,28 @@ describe(updateRoutState, () => {
 
     const newState = updateRoutState(stateInPhase, newRout);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('issueCommands');
-    if (phase?.phase !== 'issueCommands') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('issueCommands');
+    if (phase.phase !== 'issueCommands') {
       throw new Error('phase');
     }
-    const cmd = phase.currentCommandResolutionState;
-    if (cmd?.commandResolutionType !== 'movement') {
+    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
+    if (cmd.commandResolutionType !== 'movement') {
       throw new Error('movement');
     }
-    const res = cmd.engagementState?.engagementResolutionState;
-    expect(res?.engagementType).toBe('rear');
-    if (res?.engagementType !== 'rear') {
+    const engagement = throwIfPending(cmd.engagementState, 'engagement');
+    const res = throwIfPending(
+      engagement.engagementResolutionState,
+      'resolution',
+    );
+    expect(res.engagementType).toBe('rear');
+    if (res.engagementType !== 'rear') {
       throw new Error('rear');
     }
-    expect(res.routState?.numberToDiscard).toBe(3);
+    expect(throwIfPending(res.routState, 'rout').numberToDiscard).toBe(3);
   });
 
   it('given update rout state in ranged attack resolution', () => {
@@ -145,24 +154,28 @@ describe(updateRoutState, () => {
 
     const newState = updateRoutState(state, newRout);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('issueCommands');
-    if (
-      phase?.phase !== 'issueCommands' ||
-      !phase.currentCommandResolutionState
-    ) {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('issueCommands');
+    if (phase.phase !== 'issueCommands') {
       throw new Error('phase');
     }
-    if (
-      phase.currentCommandResolutionState.commandResolutionType !==
-      'rangedAttack'
-    ) {
+    const commandState = throwIfPending(
+      phase.currentCommandResolutionState,
+      'command',
+    );
+    if (commandState.commandResolutionType !== 'rangedAttack') {
       throw new Error('type');
     }
-    expect(
-      phase.currentCommandResolutionState.attackApplyState?.routState
-        ?.numberToDiscard,
-    ).toBe(2);
+    const attackApply = throwIfPending(
+      commandState.attackApplyState,
+      'attack apply',
+    );
+    expect(throwIfPending(attackApply.routState, 'rout').numberToDiscard).toBe(
+      2,
+    );
   });
 
   it('given update rout state in melee resolution for white', () => {
@@ -172,15 +185,22 @@ describe(updateRoutState, () => {
 
     const newState = updateRoutState(state, newRout);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('resolveMelee');
-    if (phase?.phase !== 'resolveMelee') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('resolveMelee');
+    if (phase.phase !== 'resolveMelee') {
       throw new Error('phase');
     }
-    expect(
-      phase.currentMeleeResolutionState?.whiteAttackApplyState?.routState
-        ?.numberToDiscard,
-    ).toBe(1);
+    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
+    const whiteApply = throwIfPending(
+      melee.whiteAttackApplyState,
+      'white apply',
+    );
+    expect(throwIfPending(whiteApply.routState, 'rout').numberToDiscard).toBe(
+      1,
+    );
   });
 
   it('given update rout state in melee resolution for black', () => {
@@ -190,15 +210,22 @@ describe(updateRoutState, () => {
 
     const newState = updateRoutState(state, newRout);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('resolveMelee');
-    if (phase?.phase !== 'resolveMelee') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('resolveMelee');
+    if (phase.phase !== 'resolveMelee') {
       throw new Error('phase');
     }
-    expect(
-      phase.currentMeleeResolutionState?.blackAttackApplyState?.routState
-        ?.numberToDiscard,
-    ).toBe(2);
+    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
+    const blackApply = throwIfPending(
+      melee.blackAttackApplyState,
+      'black apply',
+    );
+    expect(throwIfPending(blackApply.routState, 'rout').numberToDiscard).toBe(
+      2,
+    );
   });
 
   it('given update rout state in cleanup phase (routs from lost support)', () => {
@@ -218,14 +245,19 @@ describe(updateRoutState, () => {
 
     const newState = updateRoutState(stateInCleanup, newRout);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('cleanup');
-    if (phase?.phase !== 'cleanup') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('cleanup');
+    if (phase.phase !== 'cleanup') {
       throw new Error('phase');
     }
-    expect(
-      phase.firstPlayerRallyResolutionState?.routState?.numberToDiscard,
-    ).toBe(2);
+    const rally = throwIfPending(
+      phase.firstPlayerRallyResolutionState,
+      'rally',
+    );
+    expect(throwIfPending(rally.routState, 'rout').numberToDiscard).toBe(2);
   });
 
   it('given when no rout state in attack apply, throws', () => {
@@ -247,7 +279,9 @@ describe(updateRoutState, () => {
   it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: createMovementResolutionState(state),
+      currentCommandResolutionState: createMovementResolutionState(state, {
+        engagementState: createFrontEngagementState(),
+      }),
     });
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
@@ -267,9 +301,7 @@ describe(updateRoutState, () => {
 
     expect(() =>
       updateRoutState(stateInPhase, createRoutState('white', unit)),
-    ).toThrow(
-      'Rout state update not expected in issueCommands (command type: none)',
-    );
+    ).toThrow('No command resolution state found');
   });
 
   it('given when melee white attack apply has no rout state, throws', () => {
@@ -317,7 +349,7 @@ describe(updateRoutState, () => {
     const rallyState = createRallyResolutionState({
       playerRallied: true,
       rallyResolved: true,
-      routState: undefined,
+      routState: 'pending',
     });
     const phaseState = createCleanupPhaseState({
       firstPlayerRallyResolutionState: rallyState,

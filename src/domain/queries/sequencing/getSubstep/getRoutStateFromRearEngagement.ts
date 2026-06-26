@@ -1,5 +1,6 @@
 import type { Board } from '@entities';
 import type { GameStateForBoard, RoutState } from '@game';
+import { throwIfPending } from '@utils';
 import { getMovementResolutionState } from '../getCommandResolutionState';
 
 /**
@@ -10,10 +11,10 @@ export function getRoutStateFromRearEngagement<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): RoutState {
   const movement = getMovementResolutionState(state);
-  const engagement = movement.engagementState;
-  if (engagement === undefined) {
-    throw new Error('Movement resolution has no engagement state');
-  }
+  const engagement = throwIfPending(
+    movement.engagementState,
+    'Movement resolution has no engagement state',
+  );
 
   const resolution = engagement.engagementResolutionState;
 
@@ -21,10 +22,6 @@ export function getRoutStateFromRearEngagement<TBoard extends Board>(
     throw new Error(
       `Expected rear engagement for movement rout, got ${resolution.engagementType}`,
     );
-  }
-
-  if (resolution.routState === undefined) {
-    throw new Error('Rear engagement has no rout state');
   }
 
   return resolution.routState;

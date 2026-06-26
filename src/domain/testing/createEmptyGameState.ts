@@ -23,6 +23,7 @@ export function createEmptyGameState(options?: {
     boardState: createEmptyStandardBoard(),
     boardType: 'standard',
     cardState: {
+      visibility: 'authoritative',
       black: {
         awaitingPlay: tempCommandCards[0],
         burnt: [],
@@ -46,7 +47,7 @@ export function createEmptyGameState(options?: {
       boardType: 'standard',
       commandedUnits: [],
       completedPhases: [],
-      currentPhaseState: undefined,
+      currentPhaseState: 'none',
       events: [],
       roundNumber: 1,
     },

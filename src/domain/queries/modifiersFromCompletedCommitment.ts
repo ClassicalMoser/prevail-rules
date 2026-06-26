@@ -13,5 +13,9 @@ export function modifiersFromCompletedCommitment(
   if (commitment.commitmentType !== 'completed') {
     return undefined;
   }
-  return commitment.card.modifiers;
+  const modifiers: Modifier[] = commitment.card.modifiers.map((modifier) => ({
+    type: modifier,
+    value: 1,
+  }));
+  return modifiers;
 }

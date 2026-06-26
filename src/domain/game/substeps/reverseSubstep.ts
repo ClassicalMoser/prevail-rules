@@ -34,7 +34,7 @@ export interface ReverseStateForBoard<TBoard extends Board> {
   /** The unit that is reversing. */
   reversingUnit: UnitWithPlacement<TBoard>;
   /** The final position of the reversing unit. */
-  finalPosition: UnitPlacement<TBoard> | undefined;
+  finalPosition: UnitPlacement<TBoard> | 'pending';
   /** Whether the reverse has been completed. */
   completed: boolean;
 }
@@ -51,7 +51,7 @@ export type ReverseState =
 const _standardReverseStateSchemaObject = z.object({
   boardType: z.literal('standard' satisfies StandardBoard['boardType']),
   completed: z.boolean(),
-  finalPosition: standardUnitPlacementSchema.or(z.undefined()),
+  finalPosition: standardUnitPlacementSchema.or(z.literal('pending')),
   reversingUnit: standardUnitWithPlacementSchema,
   substepType: z.literal('reverse'),
 });
@@ -72,7 +72,7 @@ export const standardReverseStateSchema: z.ZodType<
 const _smallReverseStateSchemaObject = z.object({
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
   completed: z.boolean(),
-  finalPosition: smallUnitPlacementSchema.or(z.undefined()),
+  finalPosition: smallUnitPlacementSchema.or(z.literal('pending')),
   reversingUnit: smallUnitWithPlacementSchema,
   substepType: z.literal('reverse'),
 });
@@ -93,7 +93,7 @@ export const smallReverseStateSchema: z.ZodType<
 const _largeReverseStateSchemaObject = z.object({
   boardType: z.literal('large' satisfies LargeBoard['boardType']),
   completed: z.boolean(),
-  finalPosition: largeUnitPlacementSchema.or(z.undefined()),
+  finalPosition: largeUnitPlacementSchema.or(z.literal('pending')),
   reversingUnit: largeUnitWithPlacementSchema,
   substepType: z.literal('reverse'),
 });

@@ -31,16 +31,16 @@ export function getExpectedAttackApplyEvent(
   // If no results reported, state was not initialized correctly
   if (
     !hasResults ||
-    (attackApplyState.retreatState === undefined &&
-      attackApplyState.reverseState === undefined &&
-      attackApplyState.routState === undefined)
+    (attackApplyState.retreatState === 'pending' &&
+      attackApplyState.reverseState === 'pending' &&
+      attackApplyState.routState === 'pending')
   ) {
     throw new Error('Attack apply state not initialized correctly');
   }
 
   // Results reported, check which need resolution
   // Priority: rout > retreat > reverse (rout is most severe)
-  if (attackResult.unitRouted && attackApplyState.routState) {
+  if (attackResult.unitRouted && attackApplyState.routState !== 'pending') {
     if (!attackApplyState.routState.completed) {
       return getExpectedRoutEvent(attackApplyState.routState);
     }
@@ -56,7 +56,7 @@ export function getExpectedAttackApplyEvent(
 
   if (
     attackResult.unitRetreated &&
-    attackApplyState.retreatState &&
+    attackApplyState.retreatState !== 'pending' &&
     !attackApplyState.retreatState.completed
   ) {
     return getExpectedRetreatEvent(attackApplyState.retreatState);
@@ -64,7 +64,7 @@ export function getExpectedAttackApplyEvent(
 
   if (
     attackResult.unitReversed &&
-    attackApplyState.reverseState &&
+    attackApplyState.reverseState !== 'pending' &&
     !attackApplyState.reverseState.completed
   ) {
     // In melee, if units are still engaged, reverse cannot happen

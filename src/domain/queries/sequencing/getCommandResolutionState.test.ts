@@ -163,7 +163,7 @@ describe(getMeleeResolutionState, () => {
 
   it('given missing phase slice, throws not in resolveMelee phase', () => {
     const state = createEmptyGameState();
-    state.currentRoundState.currentPhaseState = undefined;
+    state.currentRoundState.currentPhaseState = 'none';
 
     expect(() => getMeleeResolutionState(state)).toThrow(
       'Not in resolveMelee phase',
@@ -175,7 +175,7 @@ describe(getMeleeResolutionState, () => {
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
       {
-        currentMeleeResolutionState: undefined,
+        currentMeleeResolutionState: 'pending' as const,
       },
     );
 

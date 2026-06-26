@@ -10,6 +10,7 @@ import {
   getResolveMeleePhaseStateForBoard,
   updateRallyResolutionStateForCurrentStep,
 } from '@queries';
+import { throwIfPending } from '@utils';
 import { updatePhaseState } from '../state';
 
 /**
@@ -32,12 +33,18 @@ export function updateRoutState<TBoard extends Board>(
 
   if (phaseState.phase === 'issueCommands') {
     const issueState = getIssueCommandsPhaseStateForBoard(state);
-    const commandState = issueState.currentCommandResolutionState;
+    const commandState = throwIfPending(
+      issueState.currentCommandResolutionState,
+      'No command resolution state found',
+    );
 
-    if (commandState?.commandResolutionType === 'rangedAttack') {
+    if (commandState.commandResolutionType === 'rangedAttack') {
       const ranged = getRangedAttackResolutionState(state);
-      const attackApply = ranged.attackApplyState;
-      if (!attackApply?.routState) {
+      const attackApply = throwIfPending(
+        ranged.attackApplyState,
+        'No attack apply state found',
+      );
+      if (attackApply.routState === 'pending') {
         throw new Error('No rout state found in attack apply state');
       }
       return updatePhaseState(state, {
@@ -49,17 +56,14 @@ export function updateRoutState<TBoard extends Board>(
       });
     }
 
-    if (commandState?.commandResolutionType === 'movement') {
+    if (commandState.commandResolutionType === 'movement') {
       const movement = commandState;
-      const engagement = movement.engagementState;
-      const resolution = engagement?.engagementResolutionState;
-      // Rear rout lives under `engagementResolutionState`; `engagement` must exist for
-      // `resolution` to be the rear branch (no `engagement === undefined` merge path).
-      if (
-        engagement !== undefined &&
-        resolution?.engagementType === 'rear' &&
-        resolution.routState !== undefined
-      ) {
+      const engagement = throwIfPending(
+        movement.engagementState,
+        'No engagement state found',
+      );
+      const resolution = engagement.engagementResolutionState;
+      if (resolution.engagementType === 'rear') {
         return updatePhaseState(state, {
           ...issueState,
           currentCommandResolutionState: {
@@ -77,7 +81,7 @@ export function updateRoutState<TBoard extends Board>(
     }
 
     throw new Error(
-      `Rout state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? 'none'})`,
+      `Rout state update not expected in issueCommands (command type: ${commandState.commandResolutionType})`,
     );
   }
 
@@ -87,8 +91,11 @@ export function updateRoutState<TBoard extends Board>(
     const { player } = routState;
 
     if (player === 'white') {
-      const whiteApply = melee.whiteAttackApplyState;
-      if (!whiteApply?.routState) {
+      const whiteApply = throwIfPending(
+        melee.whiteAttackApplyState,
+        'No white attack apply state found',
+      );
+      if (whiteApply.routState === 'pending') {
         throw new Error('No rout state found in attack apply state');
       }
       return updatePhaseState(state, {
@@ -100,8 +107,11 @@ export function updateRoutState<TBoard extends Board>(
       });
     }
 
-    const blackApply = melee.blackAttackApplyState;
-    if (!blackApply?.routState) {
+    const blackApply = throwIfPending(
+      melee.blackAttackApplyState,
+      'No black attack apply state found',
+    );
+    if (blackApply.routState === 'pending') {
       throw new Error('No rout state found in attack apply state');
     }
     return updatePhaseState(state, {
@@ -117,7 +127,7 @@ export function updateRoutState<TBoard extends Board>(
     // Safe type broadening for more generic function signature
     const cleanupPhaseState = getCleanupPhaseState(state as GameState);
     const rallyState = getCurrentRallyResolutionState(state);
-    if (!rallyState.routState) {
+    if (rallyState.routState === 'pending') {
       throw new Error('No rout state found in rally resolution state');
     }
     const newRallyState = {

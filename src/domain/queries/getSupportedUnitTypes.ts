@@ -19,6 +19,12 @@ export function getSupportedUnitTypes(
   state: GameState,
   player: PlayerSide,
 ): Set<string> {
+  if (state.cardState.visibility !== 'authoritative') {
+    throw new Error(
+      'getSupportedUnitTypes requires an authoritative card state',
+    );
+  }
+
   const supportedTypes = new Set<string>();
   const playerHand = state.cardState[player].inHand;
 

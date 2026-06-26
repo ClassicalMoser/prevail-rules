@@ -79,7 +79,7 @@ export interface IssueCommandsPhaseStateForBoard<TBoard extends Board> {
   /** The state of the ongoing command resolution (movement or ranged attack). */
   currentCommandResolutionState:
     | CommandResolutionStateForBoard<TBoard>
-    | undefined;
+    | 'pending';
 }
 
 export type IssueCommandsPhaseState =
@@ -104,7 +104,7 @@ const _smallIssueCommandsPhaseStateSchemaObject = z.object({
   remainingUnitsSecondPlayer: z.array(unitInstanceSchema),
   /** The state of the ongoing command resolution (movement or ranged attack). */
   currentCommandResolutionState: smallCommandResolutionStateSchema.or(
-    z.undefined(),
+    z.literal('pending'),
   ),
 });
 
@@ -118,14 +118,12 @@ const _assertExactSmallIssueCommandsPhaseState: AssertExact<
 
 export const smallIssueCommandsPhaseStateSchema: z.ZodType<
   IssueCommandsPhaseStateForBoard<SmallBoard>
-> = _smallIssueCommandsPhaseStateSchemaObject as z.ZodType<
-  IssueCommandsPhaseStateForBoard<SmallBoard>
->;
+> = _smallIssueCommandsPhaseStateSchemaObject;
 
 const _standardIssueCommandsPhaseStateSchemaObject = z.object({
   boardType: z.literal('standard'),
   currentCommandResolutionState: standardCommandResolutionStateSchema.or(
-    z.undefined(),
+    z.literal('pending'),
   ),
   phase: z.literal('issueCommands'),
   remainingCommandsFirstPlayer: z.array(commandSchema),
@@ -145,14 +143,12 @@ const _assertExactStandardIssueCommandsPhaseState: AssertExact<
 
 export const standardIssueCommandsPhaseStateSchema: z.ZodType<
   IssueCommandsPhaseStateForBoard<StandardBoard>
-> = _standardIssueCommandsPhaseStateSchemaObject as z.ZodType<
-  IssueCommandsPhaseStateForBoard<StandardBoard>
->;
+> = _standardIssueCommandsPhaseStateSchemaObject;
 
 const _largeIssueCommandsPhaseStateSchemaObject = z.object({
   boardType: z.literal('large'),
   currentCommandResolutionState: largeCommandResolutionStateSchema.or(
-    z.undefined(),
+    z.literal('pending'),
   ),
   phase: z.literal('issueCommands'),
   remainingCommandsFirstPlayer: z.array(commandSchema),
@@ -172,9 +168,7 @@ const _assertExactLargeIssueCommandsPhaseState: AssertExact<
 
 export const largeIssueCommandsPhaseStateSchema: z.ZodType<
   IssueCommandsPhaseStateForBoard<LargeBoard>
-> = _largeIssueCommandsPhaseStateSchemaObject as z.ZodType<
-  IssueCommandsPhaseStateForBoard<LargeBoard>
->;
+> = _largeIssueCommandsPhaseStateSchemaObject;
 
 const _issueCommandsPhaseStateSchemaObject = z.union([
   _smallIssueCommandsPhaseStateSchemaObject,
@@ -184,4 +178,4 @@ const _issueCommandsPhaseStateSchemaObject = z.union([
 
 /** Schema for issue-commands phase state (any board). Per-variant AssertExact above. */
 export const issueCommandsPhaseStateSchema: z.ZodType<IssueCommandsPhaseState> =
-  _issueCommandsPhaseStateSchemaObject as z.ZodType<IssueCommandsPhaseState>;
+  _issueCommandsPhaseStateSchemaObject;

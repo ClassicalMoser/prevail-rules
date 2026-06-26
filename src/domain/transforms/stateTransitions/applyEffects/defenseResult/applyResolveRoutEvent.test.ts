@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { ResolveRoutEvent } from '@events';
-import type { GameStateForBoard, MovementResolutionState } from '@game';
+import type { GameStateForBoard } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -22,6 +22,7 @@ import {
   createTestUnit,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone, throwIfPending } from '@utils';
 
 import { applyResolveRoutEvent } from './applyResolveRoutEvent';
 
@@ -130,7 +131,7 @@ describe(applyResolveRoutEvent, () => {
           routState: {
             cardsChosen: false,
             completed: false,
-            numberToDiscard: undefined,
+            numberToDiscard: 'pending',
             player: 'white',
             substepType: 'rout',
             unitsToRout: [defender],
@@ -169,7 +170,7 @@ describe(applyResolveRoutEvent, () => {
     it('given ranged rout and event penalty 2, nested routState.numberToDiscard is 2', () => {
       const state = createStateWithRangedAttackRout();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-      const routState = attackApplyState.routState!;
+      const routState = throwIfPending(attackApplyState.routState, 'rout');
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
@@ -182,7 +183,10 @@ describe(applyResolveRoutEvent, () => {
 
       const newState = applyResolveRoutEvent(event, state);
       const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
-      const newRoutState = newAttackApplyState.routState!;
+      const newRoutState = throwIfPending(
+        newAttackApplyState.routState,
+        'rout',
+      );
 
       expect(newRoutState.numberToDiscard).toBe(2);
     });
@@ -190,7 +194,7 @@ describe(applyResolveRoutEvent, () => {
     it('given penalty 3, player unitsToRout and cardsChosen unchanged besides numberToDiscard', () => {
       const state = createStateWithRangedAttackRout();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-      const routState = attackApplyState.routState!;
+      const routState = throwIfPending(attackApplyState.routState, 'rout');
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
@@ -203,7 +207,10 @@ describe(applyResolveRoutEvent, () => {
 
       const newState = applyResolveRoutEvent(event, state);
       const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
-      const newRoutState = newAttackApplyState.routState!;
+      const newRoutState = throwIfPending(
+        newAttackApplyState.routState,
+        'rout',
+      );
 
       expect(newRoutState.substepType).toBe('rout');
       expect(newRoutState.player).toBe(routState.player);
@@ -217,7 +224,7 @@ describe(applyResolveRoutEvent, () => {
     it('given black melee rout, event penalty 2 updates black apply rout numberToDiscard', () => {
       const state = createStateWithMeleeRout('black');
       const attackApplyState = getAttackApplyStateFromMelee(state, 'black');
-      const routState = attackApplyState.routState!;
+      const routState = throwIfPending(attackApplyState.routState, 'rout');
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
@@ -233,7 +240,10 @@ describe(applyResolveRoutEvent, () => {
         newState,
         'black',
       );
-      const newRoutState = newAttackApplyState.routState!;
+      const newRoutState = throwIfPending(
+        newAttackApplyState.routState,
+        'rout',
+      );
 
       expect(newRoutState.numberToDiscard).toBe(2);
     });
@@ -241,7 +251,7 @@ describe(applyResolveRoutEvent, () => {
     it('given white melee rout, event penalty 1 updates white apply rout numberToDiscard', () => {
       const state = createStateWithMeleeRout('white');
       const attackApplyState = getAttackApplyStateFromMelee(state, 'white');
-      const routState = attackApplyState.routState!;
+      const routState = throwIfPending(attackApplyState.routState, 'rout');
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
@@ -257,7 +267,10 @@ describe(applyResolveRoutEvent, () => {
         newState,
         'white',
       );
-      const newRoutState = newAttackApplyState.routState!;
+      const newRoutState = throwIfPending(
+        newAttackApplyState.routState,
+        'rout',
+      );
 
       expect(newRoutState.numberToDiscard).toBe(1);
     });
@@ -293,11 +306,17 @@ describe(applyResolveRoutEvent, () => {
       };
 
       const newState = applyResolveRoutEvent(event, stateWithRally);
-      const newPhaseState = newState.currentRoundState.currentPhaseState;
-      if (!newPhaseState || newPhaseState.phase !== 'cleanup') {
+      const newPhaseState = throwIfNone(
+        newState.currentRoundState.currentPhaseState,
+        'phase',
+      );
+      if (newPhaseState.phase !== 'cleanup') {
         throw new Error('Expected cleanup phase');
       }
-      const newRallyState = newPhaseState.firstPlayerRallyResolutionState!;
+      const newRallyState = throwIfPending(
+        newPhaseState.firstPlayerRallyResolutionState,
+        'rally',
+      );
       const newRoutState = getRoutStateFromRally(newRallyState);
 
       expect(newRoutState.numberToDiscard).toBe(2);
@@ -307,20 +326,33 @@ describe(applyResolveRoutEvent, () => {
   describe('rear engagement movement', () => {
     it('given rear engagement rout under movement CRS, event penalty matches summed unit penalties', () => {
       const state = createStateWithRearEngagementRoutAwaitingPenalty();
-      const movement = getIssueCommandsPhaseState(state)
-        .currentCommandResolutionState as MovementResolutionState;
-      const resolution = movement.engagementState!.engagementResolutionState;
+      const movement = getIssueCommandsPhaseState(state);
+      const commandState = throwIfPending(
+        movement.currentCommandResolutionState,
+        'command',
+      );
+      if (commandState.commandResolutionType !== 'movement') {
+        throw new Error('movement');
+      }
+      const engagement = throwIfPending(
+        commandState.engagementState,
+        'engagement',
+      );
+      const resolution = throwIfPending(
+        engagement.engagementResolutionState,
+        'resolution',
+      );
       if (resolution.engagementType !== 'rear') {
         throw new Error('expected rear');
       }
-      const rout = resolution.routState!;
+      const rout = throwIfPending(resolution.routState, 'rout');
 
       const event: ResolveRoutEvent = {
         effectType: 'resolveRout',
         eventNumber: 0,
         eventType: 'gameEffect',
         penalty: rout.unitsToRout.reduce(
-          (sum, u) => sum + u.unitType.routPenalty,
+          (sum: number, u) => sum + u.unitType.routPenalty,
           0,
         ),
         routResolutionSource: 'rearEngagementMovement',
@@ -328,14 +360,28 @@ describe(applyResolveRoutEvent, () => {
       };
 
       const newState = applyResolveRoutEvent(event, state);
-      const newMovement = getIssueCommandsPhaseState(newState)
-        .currentCommandResolutionState as MovementResolutionState;
-      const newResolution =
-        newMovement.engagementState!.engagementResolutionState;
+      const newMovement = getIssueCommandsPhaseState(newState);
+      const newCommandState = throwIfPending(
+        newMovement.currentCommandResolutionState,
+        'command',
+      );
+      if (newCommandState.commandResolutionType !== 'movement') {
+        throw new Error('movement');
+      }
+      const newEngagement = throwIfPending(
+        newCommandState.engagementState,
+        'engagement',
+      );
+      const newResolution = throwIfPending(
+        newEngagement.engagementResolutionState,
+        'resolution',
+      );
       if (newResolution.engagementType !== 'rear') {
         throw new Error('expected rear');
       }
-      expect(newResolution.routState?.numberToDiscard).toBe(event.penalty);
+      expect(
+        throwIfPending(newResolution.routState, 'rout').numberToDiscard,
+      ).toBe(event.penalty);
     });
   });
 
@@ -343,7 +389,7 @@ describe(applyResolveRoutEvent, () => {
     it('given original rout numberToDiscard undefined, input rout object unchanged after apply', () => {
       const state = createStateWithRangedAttackRout();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-      const routState = attackApplyState.routState!;
+      const routState = throwIfPending(attackApplyState.routState, 'rout');
       const originalNumberToDiscard = routState.numberToDiscard;
 
       const event: ResolveRoutEvent = {
@@ -383,7 +429,7 @@ describe(applyResolveRoutEvent, () => {
       const state = createEmptyGameState();
       const unit = createTestUnit('white', { attack: 2 });
       const attackApplyState = createAttackApplyState(unit, {
-        routState: undefined,
+        routState: 'pending',
       });
       const rangedAttackState = createRangedAttackResolutionState(state, {
         attackApplyState,

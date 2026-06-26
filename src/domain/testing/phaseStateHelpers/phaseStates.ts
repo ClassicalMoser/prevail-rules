@@ -51,7 +51,7 @@ export function createIssueCommandsPhaseState(
 ): IssueCommandsPhaseStateForBoard<StandardBoard> {
   return {
     boardType: 'standard' as const,
-    currentCommandResolutionState: undefined,
+    currentCommandResolutionState: 'pending',
     phase: ISSUE_COMMANDS_PHASE,
     remainingCommandsFirstPlayer: [],
     remainingCommandsSecondPlayer: [],
@@ -86,9 +86,9 @@ export function createCleanupPhaseState(
   overrides?: Partial<CleanupPhaseState>,
 ): CleanupPhaseState {
   return {
-    firstPlayerRallyResolutionState: undefined,
+    firstPlayerRallyResolutionState: 'pending',
     phase: 'cleanup' as const,
-    secondPlayerRallyResolutionState: undefined,
+    secondPlayerRallyResolutionState: 'pending',
     step: 'discardPlayedCards',
     ...overrides,
   };

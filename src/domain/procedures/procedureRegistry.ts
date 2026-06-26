@@ -37,7 +37,7 @@ import {
   generateResolveMeleeEvent,
   generateResolveRangedAttackEvent,
 } from './resolveAttack';
-import type { Board } from '@entities';
+import type { Board, LargeBoard, SmallBoard, StandardBoard } from '@entities';
 
 /**
  * Generates a game effect event using the appropriate procedure
@@ -165,13 +165,25 @@ export function generateEventFromProcedure(
   const { boardType } = state;
   switch (boardType) {
     case 'small': {
-      return generateEventFromProcedureForBoard(state, eventNumber, effectType);
+      return generateEventFromProcedureForBoard(
+        state as GameStateForBoard<SmallBoard>,
+        eventNumber,
+        effectType,
+      );
     }
     case 'standard': {
-      return generateEventFromProcedureForBoard(state, eventNumber, effectType);
+      return generateEventFromProcedureForBoard(
+        state as GameStateForBoard<StandardBoard>,
+        eventNumber,
+        effectType,
+      );
     }
     case 'large': {
-      return generateEventFromProcedureForBoard(state, eventNumber, effectType);
+      return generateEventFromProcedureForBoard(
+        state as GameStateForBoard<LargeBoard>,
+        eventNumber,
+        effectType,
+      );
     }
     default: {
       const _exhaustive: never = boardType;

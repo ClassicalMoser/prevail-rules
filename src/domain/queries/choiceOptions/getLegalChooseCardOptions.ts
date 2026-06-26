@@ -1,6 +1,6 @@
 import type { ChooseCardEvent } from '@events';
-import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
+import type { GameState } from '@game';
 import {
   getNextEventNumber,
   getPlayCardsPhaseState,
@@ -27,6 +27,13 @@ export function getLegalChooseCardOptions(
 
   // Get the next event number
   const eventNumber = getNextEventNumber(gameState);
+
+  // Both players' hands are required, so this resolves only against an authoritative card state.
+  if (gameState.cardState.visibility !== 'authoritative') {
+    throw new Error(
+      'getLegalChooseCardOptions requires an authoritative card state',
+    );
+  }
 
   // See who has legal choices
   const { black, white } = gameState.cardState;

@@ -13,8 +13,10 @@ import {
   createRangedAttackResolutionState,
   createTestCard,
   createTestUnit,
+  updateCardState,
 } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfPending } from '@utils';
 
 import { applyResolveRangedAttackEvent } from './applyResolveRangedAttackEvent';
 
@@ -30,11 +32,11 @@ describe(applyResolveRangedAttackEvent, () => {
     defenderWithPlacement: UnitWithPlacement<StandardBoard>;
   } {
     const base = createEmptyGameState();
-    const withCards = updateCardState(base, (c) => ({
-      ...c,
-      black: { ...c.black, inPlay: createTestCard() },
-      white: { ...c.white, inPlay: createTestCard() },
-    }));
+    const withCards = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inPlay: createTestCard() },
+      white: { ...base.cardState.white, inPlay: createTestCard() },
+    });
     const defender = createTestUnit('white', { attack: 2 });
     const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
       boardType: 'standard' as const,
@@ -94,9 +96,10 @@ describe(applyResolveRangedAttackEvent, () => {
 
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
-    expect(ra.attackApplyState?.routState).toBeUndefined();
-    expect(ra.attackApplyState?.retreatState).toBeUndefined();
-    expect(ra.attackApplyState?.reverseState).toBeUndefined();
+    const apply = throwIfPending(ra.attackApplyState, 'attack apply');
+    expect(apply.routState).toBe('pending');
+    expect(apply.retreatState).toBe('pending');
+    expect(apply.reverseState).toBe('pending');
   });
 
   it('given reversed true, attackResult unitReversed and reverse substep present', () => {
@@ -108,8 +111,11 @@ describe(applyResolveRangedAttackEvent, () => {
 
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
-    expect(ra.attackApplyState?.attackResult.unitReversed).toBeTruthy();
-    expect(ra.attackApplyState?.reverseState?.substepType).toBe('reverse');
+    const apply = throwIfPending(ra.attackApplyState, 'attack apply');
+    expect(apply.attackResult.unitReversed).toBeTruthy();
+    expect(throwIfPending(apply.reverseState, 'reverse').substepType).toBe(
+      'reverse',
+    );
   });
 
   it('given routed true, rout substep lists defending unit instance', () => {
@@ -122,10 +128,10 @@ describe(applyResolveRangedAttackEvent, () => {
 
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
-    expect(ra.attackApplyState?.routState?.substepType).toBe('rout');
-    expect(
-      ra.attackApplyState?.routState?.unitsToRout.includes(defender),
-    ).toBeTruthy();
+    const apply = throwIfPending(ra.attackApplyState, 'attack apply');
+    const rout = throwIfPending(apply.routState, 'rout');
+    expect(rout.substepType).toBe('rout');
+    expect(rout.unitsToRout.includes(defender)).toBeTruthy();
   });
 
   it('given retreated with sole legal E-6 south, retreat finalPosition equals that placement', () => {
@@ -142,9 +148,10 @@ describe(applyResolveRangedAttackEvent, () => {
 
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
-    expect(ra.attackApplyState?.retreatState?.finalPosition).toStrictEqual(
-      onlyOption,
-    );
+    const apply = throwIfPending(ra.attackApplyState, 'attack apply');
+    expect(
+      throwIfPending(apply.retreatState, 'retreat').finalPosition,
+    ).toStrictEqual(onlyOption);
   });
 
   it.each<{
@@ -173,7 +180,10 @@ describe(applyResolveRangedAttackEvent, () => {
 
       const next = applyResolveRangedAttackEvent(event, full);
       const ra = getRangedAttackResolutionState(next);
-      expect(ra.attackApplyState?.retreatState?.finalPosition).toBeUndefined();
+      const apply = throwIfPending(ra.attackApplyState, 'attack apply');
+      expect(throwIfPending(apply.retreatState, 'retreat').finalPosition).toBe(
+        'pending',
+      );
     },
   );
 });

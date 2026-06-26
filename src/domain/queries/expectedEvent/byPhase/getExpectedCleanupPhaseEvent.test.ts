@@ -87,8 +87,8 @@ describe(getExpectedCleanupPhaseEvent, () => {
   it('given when first player rally resolution state is missing, throws', () => {
     const state = createGameStateInCleanupStep('firstPlayerResolveRally');
     const phaseState = state.currentRoundState.currentPhaseState;
-    if (phaseState?.phase === 'cleanup') {
-      phaseState.firstPlayerRallyResolutionState = undefined;
+    if (phaseState !== 'none' && phaseState.phase === 'cleanup') {
+      phaseState.firstPlayerRallyResolutionState = 'pending';
     }
 
     expect(() => getExpectedCleanupPhaseEvent(state)).toThrow(
@@ -110,8 +110,8 @@ describe(getExpectedCleanupPhaseEvent, () => {
   it('given when second player rally resolution state is missing, throws', () => {
     const state = createGameStateInCleanupStep('secondPlayerResolveRally');
     const phaseState = state.currentRoundState.currentPhaseState;
-    if (phaseState?.phase === 'cleanup') {
-      phaseState.secondPlayerRallyResolutionState = undefined;
+    if (phaseState !== 'none' && phaseState.phase === 'cleanup') {
+      phaseState.secondPlayerRallyResolutionState = 'pending';
     }
 
     expect(() => getExpectedCleanupPhaseEvent(state)).toThrow(
@@ -133,10 +133,13 @@ describe(getExpectedCleanupPhaseEvent, () => {
   it('given for invalid step, throws', () => {
     const state = createGameStateInCleanupStep('discardPlayedCards');
     // Force an invalid cleanup step to hit the default branch.
-    state.currentRoundState.currentPhaseState = {
-      ...state.currentRoundState.currentPhaseState,
-      step: 'invalidStep',
-    } as any; // Bad type cast to test default case
+    const phaseState = state.currentRoundState.currentPhaseState;
+    if (phaseState !== 'none') {
+      state.currentRoundState.currentPhaseState = {
+        ...phaseState,
+        step: 'invalidStep',
+      } as any; // Bad type cast to test default case
+    }
 
     expect(() => getExpectedCleanupPhaseEvent(state)).toThrow(
       'Invalid cleanup phase step: invalidStep',

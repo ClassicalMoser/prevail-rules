@@ -30,9 +30,9 @@ export function createFrontEngagementState(
     boardType: 'standard' as const,
     completed: false,
     engagementResolutionState: {
-      defendingUnitCanRetreat: undefined,
-      defendingUnitRetreated: undefined,
-      defendingUnitRetreats: undefined,
+      defendingUnitCanRetreat: 'pending',
+      defendingUnitRetreated: 'pending',
+      defendingUnitRetreats: 'pending',
       defensiveCommitment: { commitmentType: 'pending' },
       engagementType: 'front',
       ...overrides,

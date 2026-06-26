@@ -1,4 +1,10 @@
-import type { Card, Modifier, Restrictions, UnitSupport } from '@entities';
+import type {
+  Card,
+  Restrictions,
+  UnitSupport,
+  Modifier,
+  StatModifier,
+} from '@entities';
 import type { Trait } from '@ruleValues';
 import { tempCommandCards } from '@sampleValues';
 
@@ -41,7 +47,7 @@ export interface CreateTestCardOptions {
   name?: string;
   version?: string;
   initiative?: number;
-  modifiers?: Modifier[];
+  modifiers?: StatModifier[];
   roundEffectModifiers?: Modifier[];
   roundEffectRestrictions?: {
     inspirationRangeRestriction?: number;
@@ -77,7 +83,8 @@ export function createTestCard(options: CreateTestCardOptions = {}): Card {
   const createRestrictions = (
     restrictions: CreateTestCardOptions['roundEffectRestrictions'],
   ): Restrictions => ({
-    inspirationRangeRestriction: restrictions?.inspirationRangeRestriction,
+    inspirationRangeRestriction:
+      restrictions?.inspirationRangeRestriction ?? -1,
     traitRestrictions: restrictions?.traitRestrictions ?? [],
     unitRestrictions: restrictions?.unitRestrictions ?? [],
   });
@@ -96,14 +103,21 @@ export function createTestCard(options: CreateTestCardOptions = {}): Card {
     name,
     roundEffect:
       roundEffectModifiers.length > 0 ||
-      roundEffectRestrictions.inspirationRangeRestriction !== undefined ||
+      roundEffectRestrictions.inspirationRangeRestriction !== -1 ||
       (roundEffectRestrictions.traitRestrictions?.length ?? 0) > 0 ||
       (roundEffectRestrictions.unitRestrictions?.length ?? 0) > 0
         ? {
             modifiers: roundEffectModifiers,
             restrictions: createRestrictions(roundEffectRestrictions),
           }
-        : undefined,
+        : {
+            modifiers: [],
+            restrictions: {
+              inspirationRangeRestriction: -1,
+              traitRestrictions: [],
+              unitRestrictions: [],
+            },
+          },
     unitSupport,
     version,
   };

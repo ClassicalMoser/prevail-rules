@@ -1,4 +1,5 @@
 import type { StandardBoard } from '@entities';
+import { throwIfNone, throwIfPending } from '@utils';
 import type { ResolveUnitsBrokenEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { CLEANUP_PHASE } from '@game';
@@ -27,11 +28,11 @@ describe(applyResolveUnitsBrokenEvent, () => {
         completed: false,
         playerRallied: true,
         rallyResolved: true,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending',
+        unitsLostSupport: 'pending',
       },
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending',
       step: 'firstPlayerResolveRally',
     };
 
@@ -45,14 +46,19 @@ describe(applyResolveUnitsBrokenEvent, () => {
     };
 
     const next = applyResolveUnitsBrokenEvent(event, full);
-    const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== CLEANUP_PHASE) {
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    if (phase.phase !== CLEANUP_PHASE) {
       throw new Error('cleanup');
     }
     expect(phase.step).toBe('secondPlayerChooseRally');
-    const rs = phase.firstPlayerRallyResolutionState;
-    expect(rs?.unitsLostSupport).toStrictEqual([]);
-    expect(rs?.routState).toBeUndefined();
+    const rs = throwIfPending(phase.firstPlayerRallyResolutionState, 'rally');
+    expect(
+      throwIfPending(rs.unitsLostSupport, 'unitsLostSupport'),
+    ).toStrictEqual([]);
+    expect(rs.routState).toBe('pending');
   });
 
   it('given white unit on E-5 with positive routPenalty type, unit removed routedUnits set routState seeded same step', () => {
@@ -77,11 +83,11 @@ describe(applyResolveUnitsBrokenEvent, () => {
         completed: false,
         playerRallied: true,
         rallyResolved: true,
-        routState: undefined,
-        unitsLostSupport: undefined,
+        routState: 'pending',
+        unitsLostSupport: 'pending',
       },
       phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: undefined,
+      secondPlayerRallyResolutionState: 'pending',
       step: 'firstPlayerResolveRally',
     });
 
@@ -100,15 +106,21 @@ describe(applyResolveUnitsBrokenEvent, () => {
 
     expect(next.routedUnits.includes(unit)).toBeTruthy();
 
-    const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== CLEANUP_PHASE) {
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    if (phase.phase !== CLEANUP_PHASE) {
       throw new Error('cleanup');
     }
     expect(phase.step).toBe('firstPlayerResolveRally');
 
-    const rs = phase.firstPlayerRallyResolutionState;
-    expect(rs?.unitsLostSupport?.includes(unit)).toBeTruthy();
-    expect(rs?.routState?.numberToDiscard).toBe(unit.unitType.routPenalty);
-    expect(rs?.routState?.completed).toBeFalsy();
+    const rs = throwIfPending(phase.firstPlayerRallyResolutionState, 'rally');
+    expect(
+      throwIfPending(rs.unitsLostSupport, 'unitsLostSupport').includes(unit),
+    ).toBeTruthy();
+    const rout = throwIfPending(rs.routState, 'rout');
+    expect(rout.numberToDiscard).toBe(unit.unitType.routPenalty);
+    expect(rout.completed).toBeFalsy();
   });
 });

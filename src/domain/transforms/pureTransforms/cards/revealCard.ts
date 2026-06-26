@@ -1,34 +1,23 @@
-import type { CardState, PlayerSide } from '@entities';
+import type { OwnedCardState } from '@entities';
 
 /**
  * Moves a player's card from awaitingPlay to inPlay.
- * Pure function that returns new CardState.
+ * Pure function operating on a single player's owned card state.
  *
- * @param cardState - The current card state
- * @param player - The player whose card to reveal
- * @returns New CardState with the card moved from awaitingPlay to inPlay
+ * @param owned - The player's current owned card state
+ * @returns New owned card state with the card moved from awaitingPlay to inPlay
  * @throws Error if player has no card awaiting play
  */
-export function revealCard(
-  cardState: CardState,
-  player: PlayerSide,
-): CardState {
-  const playerCardState = cardState[player];
-  const awaitingCard = playerCardState.awaitingPlay;
+export function revealCard(owned: OwnedCardState): OwnedCardState {
+  const awaitingCard = owned.awaitingPlay;
 
   if (!awaitingCard) {
-    const capitalizedPlayer = player === 'black' ? 'Black' : 'White';
-    throw new Error(`${capitalizedPlayer} player has no card awaiting play`);
+    throw new Error('Player has no card awaiting play');
   }
 
-  const newPlayerCardState = {
-    ...playerCardState,
+  return {
+    ...owned,
     awaitingPlay: null,
     inPlay: awaitingCard,
-  };
-
-  return {
-    ...cardState,
-    [player]: newPlayerCardState,
   };
 }

@@ -62,9 +62,9 @@ export function applyStartEngagementEvent<TBoard extends Board>(
       case 'front': {
         // Front engagement: requires check for defensive commitment
         return {
-          defendingUnitCanRetreat: undefined,
-          defendingUnitRetreated: undefined,
-          defendingUnitRetreats: undefined,
+          defendingUnitCanRetreat: 'pending',
+          defendingUnitRetreated: 'pending',
+          defendingUnitRetreats: 'pending',
           defensiveCommitment: { commitmentType: 'pending' as const },
           engagementType: 'front' as const,
         };

@@ -1,34 +1,19 @@
-import type { CardState, PlayerSide } from '@entities';
+import type { OwnedCardState } from '@entities';
 
 /**
  * Returns all played and discarded cards to the player's hand.
- * Pure function that returns new CardState.
+ * Pure function operating on a single player's owned card state.
  *
- * @param cardState - The current card state
- * @param player - The player whose cards to return
- * @returns New CardState with played and discarded cards returned to hand
+ * @param owned - The player's current owned card state
+ * @returns New owned card state with played and discarded cards returned to hand
  */
-export function returnCardsToHand(
-  cardState: CardState,
-  player: PlayerSide,
-): CardState {
-  const playerCardState = cardState[player];
+export function returnCardsToHand(owned: OwnedCardState): OwnedCardState {
+  const newHand = [...owned.inHand, ...owned.played, ...owned.discarded];
 
-  const newHand = [
-    ...playerCardState.inHand,
-    ...playerCardState.played,
-    ...playerCardState.discarded,
-  ];
-
-  const newPlayerCardState = {
-    ...playerCardState,
+  return {
+    ...owned,
     discarded: [],
     inHand: newHand,
     played: [],
-  };
-
-  return {
-    ...cardState,
-    [player]: newPlayerCardState,
   };
 }

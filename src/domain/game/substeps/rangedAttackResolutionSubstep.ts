@@ -40,7 +40,7 @@ export interface RangedAttackResolutionStateForBoard<TBoard extends Board> {
   /** The supporting units. */
   supportingUnits: UnitInstance[];
   /** The state of the attack apply. */
-  attackApplyState: AttackApplyStateForBoard<TBoard> | undefined;
+  attackApplyState: AttackApplyStateForBoard<TBoard> | 'pending';
   /** The commitment of the attacking player. */
   attackingCommitment: Commitment;
   /** The commitment of the defending player. */
@@ -55,7 +55,7 @@ export type RangedAttackResolutionState =
   | RangedAttackResolutionStateForBoard<LargeBoard>;
 
 const _standardRangedAttackResolutionStateSchemaObject = z.object({
-  attackApplyState: standardAttackApplyStateSchema.or(z.undefined()),
+  attackApplyState: standardAttackApplyStateSchema.or(z.literal('pending')),
   attackingCommitment: commitmentSchema,
   attackingUnit: unitInstanceSchema,
   boardType: z.literal('standard' satisfies StandardBoard['boardType']),
@@ -81,7 +81,7 @@ export const standardRangedAttackResolutionStateSchema: z.ZodType<
 > = _standardRangedAttackResolutionStateSchemaObject;
 
 const _smallRangedAttackResolutionStateSchemaObject = z.object({
-  attackApplyState: smallAttackApplyStateSchema.or(z.undefined()),
+  attackApplyState: smallAttackApplyStateSchema.or(z.literal('pending')),
   attackingCommitment: commitmentSchema,
   attackingUnit: unitInstanceSchema,
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
@@ -107,7 +107,7 @@ export const smallRangedAttackResolutionStateSchema: z.ZodType<
 > = _smallRangedAttackResolutionStateSchemaObject;
 
 const _largeRangedAttackResolutionStateSchemaObject = z.object({
-  attackApplyState: largeAttackApplyStateSchema.or(z.undefined()),
+  attackApplyState: largeAttackApplyStateSchema.or(z.literal('pending')),
   attackingCommitment: commitmentSchema,
   attackingUnit: unitInstanceSchema,
   boardType: z.literal('large' satisfies LargeBoard['boardType']),

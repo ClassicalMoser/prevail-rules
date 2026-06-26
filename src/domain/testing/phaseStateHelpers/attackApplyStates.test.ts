@@ -35,7 +35,9 @@ describe(createAttackApplyStateWithRetreat, () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
     const state = createAttackApplyStateWithRetreat(unit);
     expect(state.attackResult.unitRetreated).toBeTruthy();
-    expect(state.retreatState?.retreatingUnit).toBe(unit);
+    expect(
+      state.retreatState !== 'pending' && state.retreatState.retreatingUnit,
+    ).toBe(unit);
   });
 });
 
@@ -44,7 +46,10 @@ describe(createAttackApplyStateWithRout, () => {
     const unit = createTestUnit('white');
     const state = createAttackApplyStateWithRout(unit);
     expect(state.attackResult.unitRouted).toBeTruthy();
-    expect(state.routState?.unitsToRout.includes(unit)).toBeTruthy();
+    expect(
+      state.routState !== 'pending' &&
+        state.routState.unitsToRout.includes(unit),
+    ).toBeTruthy();
   });
 });
 
@@ -53,6 +58,8 @@ describe(createAttackApplyStateWithReverse, () => {
     const unit = createUnitWithPlacement();
     const state = createAttackApplyStateWithReverse(unit);
     expect(state.attackResult.unitReversed).toBeTruthy();
-    expect(state.reverseState?.reversingUnit).toBe(unit);
+    expect(
+      state.reverseState !== 'pending' && state.reverseState.reversingUnit,
+    ).toBe(unit);
   });
 });

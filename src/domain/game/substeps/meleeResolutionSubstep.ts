@@ -39,14 +39,12 @@ export interface MeleeResolutionStateForBoard<TBoard extends Board> {
   /** The location of the melee. */
   location: BoardCoordinate<TBoard>;
   /** The state of the white player's attack apply. */
-  whiteAttackApplyState: AttackApplyStateForBoard<TBoard> | undefined;
+  whiteAttackApplyState: AttackApplyStateForBoard<TBoard> | 'pending';
   /** The state of the black player's attack apply. */
-  blackAttackApplyState: AttackApplyStateForBoard<TBoard> | undefined;
-  /** The white player's commitment.
-   */
+  blackAttackApplyState: AttackApplyStateForBoard<TBoard> | 'pending';
+  /** The white player's commitment.*/
   whiteCommitment: Commitment;
-  /** The black player's commitment.
-   */
+  /** The black player's commitment. */
   blackCommitment: Commitment;
   /** Whether the melee resolution substep is complete. */
   completed: boolean;
@@ -58,13 +56,17 @@ export type MeleeResolutionState =
   | MeleeResolutionStateForBoard<LargeBoard>;
 
 const _standardMeleeResolutionStateSchemaObject = z.object({
-  blackAttackApplyState: standardAttackApplyStateSchema.or(z.undefined()),
+  blackAttackApplyState: standardAttackApplyStateSchema.or(
+    z.literal('pending'),
+  ),
   blackCommitment: commitmentSchema,
   boardType: z.literal('standard' satisfies StandardBoard['boardType']),
   completed: z.boolean(),
   location: standardBoardCoordinateSchema,
   substepType: z.literal('meleeResolution'),
-  whiteAttackApplyState: standardAttackApplyStateSchema.or(z.undefined()),
+  whiteAttackApplyState: standardAttackApplyStateSchema.or(
+    z.literal('pending'),
+  ),
   whiteCommitment: commitmentSchema,
 });
 
@@ -82,13 +84,13 @@ export const standardMeleeResolutionStateSchema: z.ZodType<
 > = _standardMeleeResolutionStateSchemaObject;
 
 const _smallMeleeResolutionStateSchemaObject = z.object({
-  blackAttackApplyState: smallAttackApplyStateSchema.or(z.undefined()),
+  blackAttackApplyState: smallAttackApplyStateSchema.or(z.literal('pending')),
   blackCommitment: commitmentSchema,
   boardType: z.literal('small' satisfies SmallBoard['boardType']),
   completed: z.boolean(),
   location: smallBoardCoordinateSchema,
   substepType: z.literal('meleeResolution'),
-  whiteAttackApplyState: smallAttackApplyStateSchema.or(z.undefined()),
+  whiteAttackApplyState: smallAttackApplyStateSchema.or(z.literal('pending')),
   whiteCommitment: commitmentSchema,
 });
 
@@ -106,13 +108,13 @@ export const smallMeleeResolutionStateSchema: z.ZodType<
 > = _smallMeleeResolutionStateSchemaObject;
 
 const _largeMeleeResolutionStateSchemaObject = z.object({
-  blackAttackApplyState: largeAttackApplyStateSchema.or(z.undefined()),
+  blackAttackApplyState: largeAttackApplyStateSchema.or(z.literal('pending')),
   blackCommitment: commitmentSchema,
   boardType: z.literal('large' satisfies LargeBoard['boardType']),
   completed: z.boolean(),
   location: largeBoardCoordinateSchema,
   substepType: z.literal('meleeResolution'),
-  whiteAttackApplyState: largeAttackApplyStateSchema.or(z.undefined()),
+  whiteAttackApplyState: largeAttackApplyStateSchema.or(z.literal('pending')),
   whiteCommitment: commitmentSchema,
 });
 

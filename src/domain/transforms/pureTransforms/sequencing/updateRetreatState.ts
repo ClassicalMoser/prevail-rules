@@ -7,6 +7,7 @@ import {
   getRangedAttackResolutionState,
   getResolveMeleePhaseStateForBoard,
 } from '@queries';
+import { throwIfPending } from '@utils';
 import { updatePhaseState } from '../state';
 
 /**
@@ -28,12 +29,18 @@ export function updateRetreatState<TBoard extends Board>(
 
   if (phaseState.phase === 'issueCommands') {
     const issueState = getIssueCommandsPhaseStateForBoard(state);
-    const commandState = issueState.currentCommandResolutionState;
+    const commandState = throwIfPending(
+      issueState.currentCommandResolutionState,
+      'No command resolution state found',
+    );
 
-    if (commandState?.commandResolutionType === 'rangedAttack') {
+    if (commandState.commandResolutionType === 'rangedAttack') {
       const ranged = getRangedAttackResolutionState(state);
-      const attackApply = ranged.attackApplyState;
-      if (!attackApply?.retreatState) {
+      const attackApply = throwIfPending(
+        ranged.attackApplyState,
+        'No attack apply state found',
+      );
+      if (attackApply.retreatState === 'pending') {
         throw new Error('No retreat state found in attack apply state');
       }
       return updatePhaseState(state, {
@@ -47,7 +54,7 @@ export function updateRetreatState<TBoard extends Board>(
 
     // TODO: commandResolutionType === 'movement' with engagement retreat
     throw new Error(
-      `Retreat state update not expected in issueCommands (command type: ${commandState?.commandResolutionType ?? 'none'})`,
+      `Retreat state update not expected in issueCommands (command type: ${commandState.commandResolutionType})`,
     );
   }
 
@@ -57,8 +64,11 @@ export function updateRetreatState<TBoard extends Board>(
     const player = retreatState.retreatingUnit.unit.playerSide;
 
     if (player === 'white') {
-      const whiteApply = melee.whiteAttackApplyState;
-      if (!whiteApply?.retreatState) {
+      const whiteApply = throwIfPending(
+        melee.whiteAttackApplyState,
+        'No white attack apply state found',
+      );
+      if (whiteApply.retreatState === 'pending') {
         throw new Error('No retreat state found in attack apply state');
       }
       return updatePhaseState(state, {
@@ -70,8 +80,11 @@ export function updateRetreatState<TBoard extends Board>(
       });
     }
 
-    const blackApply = melee.blackAttackApplyState;
-    if (!blackApply?.retreatState) {
+    const blackApply = throwIfPending(
+      melee.blackAttackApplyState,
+      'No black attack apply state found',
+    );
+    if (blackApply.retreatState === 'pending') {
       throw new Error('No retreat state found in attack apply state');
     }
     return updatePhaseState(state, {

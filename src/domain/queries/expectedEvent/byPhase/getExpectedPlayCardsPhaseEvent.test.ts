@@ -3,8 +3,8 @@ import type { StandardBoard } from '@entities';
 
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms';
+import { createEmptyGameState, updateCardState } from '@testing';
+import { updatePhaseState } from '@transforms';
 
 import { getExpectedPlayCardsPhaseEvent } from './getExpectedPlayCardsPhaseEvent';
 import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
@@ -34,11 +34,11 @@ describe(getExpectedPlayCardsPhaseEvent, () => {
       it('given no cards have been chosen, returns bothPlayers', () => {
         const state = createGameStateInPlayCardsStep('chooseCards');
         // Ensure no cards are awaiting play
-        const stateWithNoAwaitingCards = updateCardState(state, (current) => ({
-          ...current,
-          black: { ...current.black, awaitingPlay: null },
-          white: { ...current.white, awaitingPlay: null },
-        }));
+        const stateWithNoAwaitingCards = updateCardState(state, {
+          ...state.cardState,
+          black: { ...state.cardState.black, awaitingPlay: null },
+          white: { ...state.cardState.white, awaitingPlay: null },
+        });
 
         const expectedEvent = getExpectedPlayCardsPhaseEvent(
           stateWithNoAwaitingCards,
@@ -55,10 +55,13 @@ describe(getExpectedPlayCardsPhaseEvent, () => {
 
       it('given black has already chosen, returns white player', () => {
         const state = createGameStateInPlayCardsStep('chooseCards');
-        const stateWithBlackCard = updateCardState(state, (current) => ({
-          ...current,
-          black: { ...current.black, awaitingPlay: tempCommandCards[0] },
-        }));
+        const stateWithBlackCard = updateCardState(state, {
+          ...state.cardState,
+          black: {
+            ...state.cardState.black,
+            awaitingPlay: tempCommandCards[0],
+          },
+        });
 
         const expectedEvent =
           getExpectedPlayCardsPhaseEvent(stateWithBlackCard);
@@ -75,11 +78,14 @@ describe(getExpectedPlayCardsPhaseEvent, () => {
       it('given white has already chosen, returns black player', () => {
         const state = createGameStateInPlayCardsStep('chooseCards');
         // Ensure black has no awaiting card
-        const stateWithWhiteCard = updateCardState(state, (current) => ({
-          ...current,
-          black: { ...current.black, awaitingPlay: null },
-          white: { ...current.white, awaitingPlay: tempCommandCards[0] },
-        }));
+        const stateWithWhiteCard = updateCardState(state, {
+          ...state.cardState,
+          black: { ...state.cardState.black, awaitingPlay: null },
+          white: {
+            ...state.cardState.white,
+            awaitingPlay: tempCommandCards[0],
+          },
+        });
 
         const expectedEvent =
           getExpectedPlayCardsPhaseEvent(stateWithWhiteCard);
@@ -153,12 +159,16 @@ describe(getExpectedPlayCardsPhaseEvent, () => {
     it('given for invalid step, throws', () => {
       const state = createGameStateInPlayCardsStep('chooseCards');
       // Bad type cast to test default case
+      const phaseState = state.currentRoundState.currentPhaseState;
+      if (phaseState === 'none') {
+        throw new Error('expected phase state');
+      }
       const stateWithInvalidStep = {
         ...state,
         currentRoundState: {
           ...state.currentRoundState,
           currentPhaseState: {
-            ...state.currentRoundState.currentPhaseState!,
+            ...phaseState,
             step: 'invalidStep' as any,
           },
         },

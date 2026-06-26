@@ -27,7 +27,7 @@ describe(getLegalChooseMeleeResolutionEvents, () => {
         (['E-5', 'E-6'] as readonly BoardCoordinate<StandardBoard>[]),
     );
     const phase = createResolveMeleePhaseState(base, {
-      currentMeleeResolutionState: undefined,
+      currentMeleeResolutionState: 'pending',
       remainingEngagements: [...remaining],
     });
     let state = updatePhaseState(base, phase);
@@ -112,7 +112,7 @@ describe(getLegalChooseMeleeResolutionEvents, () => {
   it('throws when resolveMelee phase is not on the resolveMelee step', () => {
     const base = createEmptyGameState();
     const phase = createResolveMeleePhaseState(base, {
-      currentMeleeResolutionState: undefined,
+      currentMeleeResolutionState: 'pending',
       remainingEngagements: ['E-5'] as const,
       step: 'complete',
     });

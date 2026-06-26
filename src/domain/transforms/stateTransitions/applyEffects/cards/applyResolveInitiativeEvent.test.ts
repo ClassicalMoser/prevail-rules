@@ -4,8 +4,9 @@ import type { GameStateForBoard } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { createEmptyGameState, updateCardState } from '@testing';
+import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone } from '@utils';
 
 import { applyResolveInitiativeEvent } from './applyResolveInitiativeEvent';
 
@@ -18,19 +19,19 @@ describe(applyResolveInitiativeEvent, () => {
   function createGameStateInAssignInitiativeStep(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
 
-    const stateWithCards = updateCardState(state, (current) => ({
-      ...current,
+    const stateWithCards = updateCardState(state, {
+      ...state.cardState,
       black: {
-        ...current.black,
+        ...state.cardState.black,
         awaitingPlay: null,
         inPlay: tempCommandCards[0],
       },
       white: {
-        ...current.white,
+        ...state.cardState.white,
         awaitingPlay: null,
         inPlay: tempCommandCards[1],
       },
-    }));
+    });
 
     const stateWithPhase = updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
@@ -68,9 +69,9 @@ describe(applyResolveInitiativeEvent, () => {
 
       const newState = applyResolveInitiativeEvent(event, state);
 
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'complete',
-      );
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe('complete');
     });
 
     it('given same base state, black then white events each set initiative without sharing output', () => {
@@ -102,7 +103,10 @@ describe(applyResolveInitiativeEvent, () => {
     it('given initiative and step before apply, input root initiative and step unchanged', () => {
       const state = createGameStateInAssignInitiativeStep();
       const originalInitiative = state.currentInitiative;
-      const originalStep = state.currentRoundState.currentPhaseState?.step;
+      const originalStep = throwIfNone(
+        state.currentRoundState.currentPhaseState,
+        'phase',
+      ).step;
 
       const event: ResolveInitiativeEvent = {
         effectType: 'resolveInitiative',
@@ -114,9 +118,9 @@ describe(applyResolveInitiativeEvent, () => {
       applyResolveInitiativeEvent(event, state);
 
       expect(state.currentInitiative).toBe(originalInitiative);
-      expect(state.currentRoundState.currentPhaseState?.step).toBe(
-        originalStep,
-      );
+      expect(
+        throwIfNone(state.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe(originalStep);
     });
   });
 
@@ -138,9 +142,9 @@ describe(applyResolveInitiativeEvent, () => {
       const newState = applyResolveInitiativeEvent(event, stateWithWrongStep);
 
       expect(newState.currentInitiative).toBe('black');
-      expect(newState.currentRoundState.currentPhaseState?.step).toBe(
-        'complete',
-      );
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe('complete');
     });
   });
 });

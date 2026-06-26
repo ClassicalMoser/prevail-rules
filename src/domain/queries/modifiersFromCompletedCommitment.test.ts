@@ -22,7 +22,10 @@ describe(modifiersFromCompletedCommitment, () => {
 
   it('given completed commitment with card, returns that card modifiers', () => {
     const card = tempCommandCards[0];
-    const expected: Modifier[] = card.modifiers;
+    const expected: Modifier[] = card.modifiers.map((type) => ({
+      type,
+      value: 1,
+    }));
     expect(
       modifiersFromCompletedCommitment({
         card,

@@ -8,82 +8,55 @@ import { burnCardFromPlayed } from './burnCardFromPlayed';
  */
 describe(burnCardFromPlayed, () => {
   it('given move card from played to burnt', () => {
-    const gameState = createEmptyGameState();
-    const cardState = {
-      ...gameState.cardState,
-      black: {
-        ...gameState.cardState.black,
-        burnt: [],
-        played: [tempCommandCards[0], tempCommandCards[1]],
-      },
+    const owned = {
+      ...createEmptyGameState().cardState.black,
+      burnt: [],
+      played: [tempCommandCards[0], tempCommandCards[1]],
     };
 
-    const newCardState = burnCardFromPlayed(
-      cardState,
-      'black',
-      tempCommandCards[0],
-    );
+    const result = burnCardFromPlayed(owned, tempCommandCards[0]);
 
-    expect(newCardState.black.played).toStrictEqual([tempCommandCards[1]]);
-    expect(newCardState.black.burnt).toStrictEqual([tempCommandCards[0]]);
-    expect(newCardState.white).toBe(cardState.white);
+    expect(result.played).toStrictEqual([tempCommandCards[1]]);
+    expect(result.burnt).toStrictEqual([tempCommandCards[0]]);
   });
 
   it('given if card is not in played pile, throws', () => {
-    const gameState = createEmptyGameState();
-    const cardState = {
-      ...gameState.cardState,
-      black: {
-        ...gameState.cardState.black,
-        burnt: [],
-        played: [tempCommandCards[0]],
-      },
+    const owned = {
+      ...createEmptyGameState().cardState.black,
+      burnt: [],
+      played: [tempCommandCards[0]],
     };
 
-    expect(() =>
-      burnCardFromPlayed(cardState, 'black', tempCommandCards[1]),
-    ).toThrow(
-      `Card ${tempCommandCards[1].id} not found in black player's played cards`,
+    expect(() => burnCardFromPlayed(owned, tempCommandCards[1])).toThrow(
+      `Card ${tempCommandCards[1].id} not found in player's played cards`,
     );
   });
 
   it('given not mutate the original card state', () => {
-    const gameState = createEmptyGameState();
-    const cardState = {
-      ...gameState.cardState,
-      black: {
-        ...gameState.cardState.black,
-        burnt: [],
-        played: [tempCommandCards[0]],
-      },
+    const owned = {
+      ...createEmptyGameState().cardState.black,
+      burnt: [],
+      played: [tempCommandCards[0]],
     };
-    const originalPlayed = cardState.black.played;
-    const originalBurnt = cardState.black.burnt;
+    const originalPlayed = owned.played;
+    const originalBurnt = owned.burnt;
 
-    burnCardFromPlayed(cardState, 'black', tempCommandCards[0]);
+    burnCardFromPlayed(owned, tempCommandCards[0]);
 
-    expect(cardState.black.played).toBe(originalPlayed);
-    expect(cardState.black.burnt).toBe(originalBurnt);
+    expect(owned.played).toBe(originalPlayed);
+    expect(owned.burnt).toBe(originalBurnt);
   });
 
   it('given append to existing burnt cards', () => {
-    const gameState = createEmptyGameState();
-    const cardState = {
-      ...gameState.cardState,
-      black: {
-        ...gameState.cardState.black,
-        burnt: [tempCommandCards[2]],
-        played: [tempCommandCards[0], tempCommandCards[1]],
-      },
+    const owned = {
+      ...createEmptyGameState().cardState.black,
+      burnt: [tempCommandCards[2]],
+      played: [tempCommandCards[0], tempCommandCards[1]],
     };
 
-    const newCardState = burnCardFromPlayed(
-      cardState,
-      'black',
-      tempCommandCards[0],
-    );
+    const result = burnCardFromPlayed(owned, tempCommandCards[0]);
 
-    expect(newCardState.black.burnt).toStrictEqual([
+    expect(result.burnt).toStrictEqual([
       tempCommandCards[2],
       tempCommandCards[0],
     ]);

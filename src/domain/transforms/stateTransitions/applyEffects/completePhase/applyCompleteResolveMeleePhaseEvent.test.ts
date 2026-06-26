@@ -1,4 +1,5 @@
 import type { StandardBoard } from '@entities';
+import { throwIfNone } from '@utils';
 import type { GameStateForBoard } from '@game';
 import { CLEANUP_PHASE, RESOLVE_MELEE_PHASE } from '@game';
 
@@ -7,8 +8,9 @@ import {
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestCard,
+  updateCardState,
 } from '@testing';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCompleteResolveMeleePhaseEvent } from './applyCompleteResolveMeleePhaseEvent';
 
@@ -19,11 +21,11 @@ import { applyCompleteResolveMeleePhaseEvent } from './applyCompleteResolveMelee
 describe(applyCompleteResolveMeleePhaseEvent, () => {
   it('given resolveMelee phase with default melee slice, next phase cleanup.discardPlayedCards and melee in completed', () => {
     const base = createEmptyGameState();
-    const withCards = updateCardState(base, (c) => ({
-      ...c,
-      black: { ...c.black, inPlay: createTestCard() },
-      white: { ...c.white, inPlay: createTestCard() },
-    }));
+    const withCards = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inPlay: createTestCard() },
+      white: { ...base.cardState.white, inPlay: createTestCard() },
+    });
     const melee = createMeleeResolutionState(withCards);
     const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withCards,
@@ -33,9 +35,12 @@ describe(applyCompleteResolveMeleePhaseEvent, () => {
     );
 
     const next = applyCompleteResolveMeleePhaseEvent(full);
-    const phase = next.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe(CLEANUP_PHASE);
-    if (phase?.phase !== 'cleanup') {
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe(CLEANUP_PHASE);
+    if (phase.phase !== 'cleanup') {
       throw new Error('cleanup');
     }
     expect(phase.step).toBe('discardPlayedCards');

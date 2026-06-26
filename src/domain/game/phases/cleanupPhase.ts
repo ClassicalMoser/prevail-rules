@@ -42,9 +42,9 @@ export interface CleanupPhaseState {
   /** The step of the cleanup phase. */
   step: CleanupPhaseStep;
   /** The state of the first player's rally resolution (unit support checks). */
-  firstPlayerRallyResolutionState: RallyResolutionState | undefined;
+  firstPlayerRallyResolutionState: RallyResolutionState | 'pending';
   /** The state of the second player's rally resolution (unit support checks). */
-  secondPlayerRallyResolutionState: RallyResolutionState | undefined;
+  secondPlayerRallyResolutionState: RallyResolutionState | 'pending';
 }
 
 const _cleanupPhaseStateSchemaObject = z.object({
@@ -53,10 +53,12 @@ const _cleanupPhaseStateSchemaObject = z.object({
   /** The step of the cleanup phase. */
   step: cleanupPhaseStepSchema,
   /** The state of the first player's rally resolution (unit support checks). */
-  firstPlayerRallyResolutionState: rallyResolutionStateSchema.or(z.undefined()),
+  firstPlayerRallyResolutionState: rallyResolutionStateSchema.or(
+    z.literal('pending'),
+  ),
   /** The state of the second player's rally resolution (unit support checks). */
   secondPlayerRallyResolutionState: rallyResolutionStateSchema.or(
-    z.undefined(),
+    z.literal('pending'),
   ),
 });
 
@@ -68,8 +70,8 @@ type CleanupPhaseStateSchemaType = z.infer<
 export const cleanupPhaseStateSchema: z.ZodObject<{
   phase: z.ZodLiteral<'cleanup'>;
   step: z.ZodType<CleanupPhaseStep>;
-  firstPlayerRallyResolutionState: z.ZodType<RallyResolutionState | undefined>;
-  secondPlayerRallyResolutionState: z.ZodType<RallyResolutionState | undefined>;
+  firstPlayerRallyResolutionState: z.ZodType<RallyResolutionState | 'pending'>;
+  secondPlayerRallyResolutionState: z.ZodType<RallyResolutionState | 'pending'>;
 }> = _cleanupPhaseStateSchemaObject;
 
 const _assertExactCleanupPhaseState: AssertExact<

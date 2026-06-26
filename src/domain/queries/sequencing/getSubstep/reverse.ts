@@ -4,6 +4,7 @@ import type {
   GameStateForBoard,
   ReverseStateForBoard,
 } from '@game';
+import { throwIfPending } from '@utils';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
 
 /**
@@ -17,10 +18,10 @@ import { getMeleeResolutionState } from '../getCommandResolutionState';
 export function getReverseStateFromAttackApply<TBoard extends Board>(
   attackApplyState: AttackApplyStateForBoard<TBoard>,
 ): ReverseStateForBoard<TBoard> {
-  if (!attackApplyState.reverseState) {
-    throw new Error('No reverse state found in attack apply state');
-  }
-  return attackApplyState.reverseState;
+  return throwIfPending(
+    attackApplyState.reverseState,
+    'No reverse state found in attack apply state',
+  );
 }
 
 /**
@@ -41,14 +42,16 @@ export function getReverseStateFromMeleeResolutionByInitiative<
       : meleeState.whiteAttackApplyState;
 
   if (
-    firstPlayerAttackApply?.reverseState &&
-    firstPlayerAttackApply.reverseState.finalPosition === undefined
+    firstPlayerAttackApply !== 'pending' &&
+    firstPlayerAttackApply.reverseState !== 'pending' &&
+    firstPlayerAttackApply.reverseState.finalPosition === 'pending'
   ) {
     return firstPlayerAttackApply.reverseState;
   }
   if (
-    secondPlayerAttackApply?.reverseState &&
-    secondPlayerAttackApply.reverseState.finalPosition === undefined
+    secondPlayerAttackApply !== 'pending' &&
+    secondPlayerAttackApply.reverseState !== 'pending' &&
+    secondPlayerAttackApply.reverseState.finalPosition === 'pending'
   ) {
     return secondPlayerAttackApply.reverseState;
   }

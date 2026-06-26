@@ -36,7 +36,7 @@ export interface RoundStateForBoard<TBoard extends Board> {
   /** The phases that have been completed in the round. */
   completedPhases: PhaseStateForBoard<TBoard>[];
   /** The state of the current phase of the round. */
-  currentPhaseState: PhaseStateForBoard<TBoard> | undefined;
+  currentPhaseState: PhaseStateForBoard<TBoard> | 'none';
   /** Units that have been commanded this round. */
   commandedUnits: UnitInstance[];
   /** Events applied during this round, in order. */
@@ -56,7 +56,7 @@ const _smallRoundStateSchemaObject = z.object({
   /** The phases that have been completed in the round. */
   completedPhases: z.array(smallPhaseStateSchema),
   /** The state of the current phase of the round. */
-  currentPhaseState: smallPhaseStateSchema.or(z.undefined()),
+  currentPhaseState: smallPhaseStateSchema.or(z.literal('none')),
   /** Units that have been commanded this round. */
   commandedUnits: z.array(unitInstanceSchema),
   /** Events applied during this round, in order. */
@@ -81,7 +81,7 @@ const _standardRoundStateSchemaObject = z.object({
   /** The phases that have been completed in the round. */
   completedPhases: z.array(standardPhaseStateSchema),
   /** The state of the current phase of the round. */
-  currentPhaseState: standardPhaseStateSchema.or(z.undefined()),
+  currentPhaseState: standardPhaseStateSchema.or(z.literal('none')),
   /** Units that have been commanded this round. */
   commandedUnits: z.array(unitInstanceSchema),
   /** Events applied during this round, in order. */
@@ -109,7 +109,7 @@ const _largeRoundStateSchemaObject = z.object({
   /** The phases that have been completed in the round. */
   completedPhases: z.array(largePhaseStateSchema),
   /** The state of the current phase of the round. */
-  currentPhaseState: largePhaseStateSchema.or(z.undefined()),
+  currentPhaseState: largePhaseStateSchema.or(z.literal('none')),
   /** Units that have been commanded this round. */
   commandedUnits: z.array(unitInstanceSchema),
   /** Events applied during this round, in order. */

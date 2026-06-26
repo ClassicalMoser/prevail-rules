@@ -10,11 +10,11 @@ export interface FrontEngagementResolutionState {
   /** The commitment of the defending player. */
   defensiveCommitment: Commitment;
   /** Whether the defending unit can retreat. */
-  defendingUnitCanRetreat: boolean | undefined;
+  defendingUnitCanRetreat: 'pending' | boolean;
   /** Whether the defending unit chooses to retreat. */
-  defendingUnitRetreats: boolean | undefined;
+  defendingUnitRetreats: 'pending' | boolean;
   /** Whether the defending unit has retreated. */
-  defendingUnitRetreated: boolean | undefined;
+  defendingUnitRetreated: 'pending' | boolean;
 }
 
 const _frontEngagementResolutionStateSchemaObject = z.object({
@@ -23,11 +23,11 @@ const _frontEngagementResolutionStateSchemaObject = z.object({
   /** The commitment of the defending player. */
   defensiveCommitment: commitmentSchema,
   /** Whether the defending unit can retreat. */
-  defendingUnitCanRetreat: z.boolean().or(z.undefined()),
+  defendingUnitCanRetreat: z.boolean().or(z.literal('pending')),
   /** Whether the defending unit chooses to retreat. */
-  defendingUnitRetreats: z.boolean().or(z.undefined()),
+  defendingUnitRetreats: z.boolean().or(z.literal('pending')),
   /** Whether the defending unit has retreated. */
-  defendingUnitRetreated: z.boolean().or(z.undefined()),
+  defendingUnitRetreated: z.boolean().or(z.literal('pending')),
 });
 
 type FrontEngagementResolutionStateSchemaType = z.infer<
@@ -43,7 +43,7 @@ const _assertExactFrontEngagementResolutionState: AssertExact<
 export const frontEngagementResolutionStateSchema: z.ZodObject<{
   engagementType: z.ZodLiteral<'front'>;
   defensiveCommitment: z.ZodType<Commitment>;
-  defendingUnitCanRetreat: z.ZodType<boolean | undefined>;
-  defendingUnitRetreats: z.ZodType<boolean | undefined>;
-  defendingUnitRetreated: z.ZodType<boolean | undefined>;
+  defendingUnitCanRetreat: z.ZodType<'pending' | boolean>;
+  defendingUnitRetreats: z.ZodType<'pending' | boolean>;
+  defendingUnitRetreated: z.ZodType<'pending' | boolean>;
 }> = _frontEngagementResolutionStateSchemaObject;

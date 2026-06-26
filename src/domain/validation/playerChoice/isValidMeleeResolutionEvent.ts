@@ -18,7 +18,7 @@ export function isValidChooseMeleeResolutionEvent<TBoard extends Board>(
     const { player, space } = event;
     const { currentPhaseState } = state.currentRoundState;
 
-    if (!currentPhaseState) {
+    if (currentPhaseState === 'none') {
       return {
         errorReason: 'No current phase state found',
         result: false,
@@ -39,7 +39,7 @@ export function isValidChooseMeleeResolutionEvent<TBoard extends Board>(
       };
     }
 
-    if (currentPhaseState.currentMeleeResolutionState !== undefined) {
+    if (currentPhaseState.currentMeleeResolutionState !== 'pending') {
       return {
         errorReason:
           'Melee resolution is already in progress; cannot choose a new engagement',

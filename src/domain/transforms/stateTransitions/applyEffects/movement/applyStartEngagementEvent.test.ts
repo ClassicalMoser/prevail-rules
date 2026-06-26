@@ -8,6 +8,7 @@ import type {
   StartEngagementEventForBoard,
 } from '@events';
 import type { GameStateForBoard } from '@game';
+import { throwIfNone, throwIfPending } from '@utils';
 import {
   createEmptyGameState,
   createIssueCommandsPhaseState,
@@ -83,19 +84,21 @@ describe(applyStartEngagementEvent, () => {
     };
 
     const next = applyStartEngagementEvent(event, state);
-    const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== 'issueCommands') {
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    if (phase.phase !== 'issueCommands') {
       throw new Error('Expected issueCommands phase');
     }
-    const cmd = phase.currentCommandResolutionState;
-    expect(cmd?.commandResolutionType).toBe('movement');
-    if (cmd?.commandResolutionType !== 'movement') {
+    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
+    expect(cmd.commandResolutionType).toBe('movement');
+    if (cmd.commandResolutionType !== 'movement') {
       throw new Error('movement');
     }
-    expect(cmd.engagementState?.engagementResolutionState.engagementType).toBe(
-      'front',
-    );
-    expect(cmd.engagementState?.engagingUnit).toBe(cmd.movingUnit.unit);
+    const engagement = throwIfPending(cmd.engagementState, 'engagement');
+    expect(engagement.engagementResolutionState.engagementType).toBe('front');
+    expect(engagement.engagingUnit).toBe(cmd.movingUnit.unit);
   });
 
   it('given event engagementType rear, rear routState player matches defender side', () => {
@@ -110,20 +113,26 @@ describe(applyStartEngagementEvent, () => {
     };
 
     const next = applyStartEngagementEvent(event, state);
-    const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== 'issueCommands') {
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    if (phase.phase !== 'issueCommands') {
       throw new Error('Expected issueCommands phase');
     }
-    const cmd = phase.currentCommandResolutionState;
-    if (cmd?.commandResolutionType !== 'movement') {
+    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
+    if (cmd.commandResolutionType !== 'movement') {
       throw new Error('movement');
     }
-    const res = cmd.engagementState?.engagementResolutionState;
-    expect(res?.engagementType).toBe('rear');
-    if (res?.engagementType !== 'rear') {
+    const engagement = throwIfPending(cmd.engagementState, 'engagement');
+    const res = engagement.engagementResolutionState;
+    expect(res.engagementType).toBe('rear');
+    if (res.engagementType !== 'rear') {
       throw new Error('rear');
     }
-    expect(res.routState?.player).toBe(defenderWithPlacement.unit.playerSide);
+    expect(throwIfPending(res.routState, 'rout').player).toBe(
+      defenderWithPlacement.unit.playerSide,
+    );
   });
 
   it('given event engagementType flank, flank substep present and defenderRotated false', () => {
@@ -138,17 +147,21 @@ describe(applyStartEngagementEvent, () => {
     };
 
     const next = applyStartEngagementEvent(event, state);
-    const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== 'issueCommands') {
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    if (phase.phase !== 'issueCommands') {
       throw new Error('Expected issueCommands phase');
     }
-    const cmd = phase.currentCommandResolutionState;
-    if (cmd?.commandResolutionType !== 'movement') {
+    const cmd = throwIfPending(phase.currentCommandResolutionState, 'command');
+    if (cmd.commandResolutionType !== 'movement') {
       throw new Error('movement');
     }
-    const res = cmd.engagementState?.engagementResolutionState;
-    expect(res?.engagementType).toBe('flank');
-    if (res?.engagementType !== 'flank') {
+    const engagement = throwIfPending(cmd.engagementState, 'engagement');
+    const res = engagement.engagementResolutionState;
+    expect(res.engagementType).toBe('flank');
+    if (res.engagementType !== 'flank') {
       throw new Error('flank');
     }
     expect(res.defenderRotated).toBeFalsy();

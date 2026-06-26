@@ -147,7 +147,7 @@ describe(generateResolveRoutEvent, () => {
           routState: {
             cardsChosen: false,
             completed: false,
-            numberToDiscard: undefined,
+            numberToDiscard: 'pending',
             player: 'white',
             substepType: 'rout',
             unitsToRout: [unit],

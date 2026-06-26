@@ -5,6 +5,7 @@ import type {
   RallyResolutionState,
   RoutState,
 } from '@game';
+import { throwIfPending } from '@utils';
 import { getCleanupPhaseState } from '../getPhaseState';
 
 /**
@@ -28,10 +29,10 @@ export function getRallyResolutionState<TBoard extends Board>(
     ? phaseState.firstPlayerRallyResolutionState
     : phaseState.secondPlayerRallyResolutionState;
 
-  if (!rallyState) {
-    throw new Error(`No ${player} rally resolution state found`);
-  }
-  return rallyState;
+  return throwIfPending(
+    rallyState,
+    `No ${player} rally resolution state found`,
+  );
 }
 
 /**
@@ -49,17 +50,17 @@ export function getCurrentRallyResolutionState<TBoard extends Board>(
   const { step } = phaseState;
 
   if (step === 'firstPlayerResolveRally') {
-    if (!phaseState.firstPlayerRallyResolutionState) {
-      throw new Error('No first player rally resolution state found');
-    }
-    return phaseState.firstPlayerRallyResolutionState;
+    return throwIfPending(
+      phaseState.firstPlayerRallyResolutionState,
+      'No first player rally resolution state found',
+    );
   }
 
   if (step === 'secondPlayerResolveRally') {
-    if (!phaseState.secondPlayerRallyResolutionState) {
-      throw new Error('No second player rally resolution state found');
-    }
-    return phaseState.secondPlayerRallyResolutionState;
+    return throwIfPending(
+      phaseState.secondPlayerRallyResolutionState,
+      'No second player rally resolution state found',
+    );
   }
 
   throw new Error(`Not in a resolveRally step: ${step}`);
@@ -76,10 +77,10 @@ export function getCurrentRallyResolutionState<TBoard extends Board>(
 export function getRoutStateFromRally(
   rallyState: RallyResolutionState,
 ): RoutState {
-  if (!rallyState.routState) {
-    throw new Error('No rout state found in rally resolution state');
-  }
-  return rallyState.routState;
+  return throwIfPending(
+    rallyState.routState,
+    'No rout state found in rally resolution state',
+  );
 }
 
 /**
@@ -98,7 +99,7 @@ export function getRoutStateFromCleanupPhaseForResolveRout<
     ? phaseState.firstPlayerRallyResolutionState
     : phaseState.secondPlayerRallyResolutionState;
 
-  if (!rallyState?.routState) {
+  if (rallyState === 'pending' || rallyState.routState === 'pending') {
     throw new Error('No rout state found in rally resolution');
   }
 

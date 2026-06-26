@@ -65,7 +65,7 @@ export function getExpectedEngagementEvent(
     }
     // If the defensive commitment has been resolved,
     // We need to check if the defending unit can retreat
-    if (resolutionState.defendingUnitCanRetreat === undefined) {
+    if (resolutionState.defendingUnitCanRetreat === 'pending') {
       return {
         actionType: 'gameEffect',
         effectType: 'resolveEngageRetreatOption',
@@ -75,7 +75,7 @@ export function getExpectedEngagementEvent(
       throw new Error('Defending unit cannot retreat');
     }
     // If the defending unit can retreat, we need to check if it has chosen to retreat
-    if (resolutionState.defendingUnitRetreats === undefined) {
+    if (resolutionState.defendingUnitRetreats === 'pending') {
       return {
         actionType: 'playerChoice',
         choiceType: 'chooseWhetherToRetreat',
@@ -89,7 +89,7 @@ export function getExpectedEngagementEvent(
         'Front engagement resolution complete but not marked as completed',
       );
     }
-    if (resolutionState.defendingUnitRetreated === undefined) {
+    if (resolutionState.defendingUnitRetreated === 'pending') {
       return {
         actionType: 'playerChoice',
         choiceType: 'chooseRetreatOption',

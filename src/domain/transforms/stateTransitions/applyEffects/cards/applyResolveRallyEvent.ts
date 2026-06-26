@@ -1,4 +1,4 @@
-import type { Board, CardState } from '@entities';
+import type { Board } from '@entities';
 import type { ResolveRallyEvent } from '@events';
 import type { GameState, GameStateForBoard, RallyResolutionState } from '@game';
 import {
@@ -10,8 +10,8 @@ import {
 import {
   burnCardFromPlayed,
   returnCardsToHand,
-  updateCardState,
   updatePhaseState,
+  updatePlayerCardState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -38,17 +38,19 @@ export function applyResolveRallyEvent<TBoard extends Board>(
   // Safe broad type cast because we know the event is for the board type
   const nextStep = getNextStepForResolveRally(state as GameState);
 
-  // Compose pure transforms
-  let newCardState: CardState = state.cardState;
-  newCardState = burnCardFromPlayed(newCardState, player, card);
-  newCardState = returnCardsToHand(newCardState, player);
+  // Compose pure transforms on the acting player's owned slice
+  const stateWithCards = updatePlayerCardState(
+    state,
+    player,
+    returnCardsToHand(burnCardFromPlayed(state.cardState[player], card)),
+  );
 
   // Mark rally as resolved and initialize unit support checking
   const updatedRallyResolutionState: RallyResolutionState = {
     ...rallyState,
     rallyResolved: true,
     unitsLostSupport: [], // TODO: Calculate which units lost support
-    routState: undefined,
+    routState: 'pending',
   };
 
   // Update phase state with new rally resolution state
@@ -58,6 +60,5 @@ export function applyResolveRallyEvent<TBoard extends Board>(
     nextStep,
   );
 
-  const stateWithCards = updateCardState(state, newCardState);
   return updatePhaseState(stateWithCards, newPhaseState);
 }

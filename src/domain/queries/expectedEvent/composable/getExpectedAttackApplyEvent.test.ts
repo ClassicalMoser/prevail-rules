@@ -334,7 +334,7 @@ describe(getExpectedAttackApplyEvent, () => {
           unitReversed: false,
           unitRouted: true,
         },
-        routState: undefined,
+        routState: 'pending' as const,
       });
 
       expect(() =>

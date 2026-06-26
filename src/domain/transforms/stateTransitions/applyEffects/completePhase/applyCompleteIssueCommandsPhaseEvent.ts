@@ -33,7 +33,7 @@ export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
     boardType: state.boardState.boardType,
     step: 'resolveMelee' as const,
     // Initialize with undefined, resolution order is up to the player
-    currentMeleeResolutionState: undefined,
+    currentMeleeResolutionState: 'pending',
     // Initialize with all engaged units on the board,
     // Set in the event (procedure / machine-generated log)
     remainingEngagements: event.remainingEngagements,

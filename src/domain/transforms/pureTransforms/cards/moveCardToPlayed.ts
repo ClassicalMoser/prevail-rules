@@ -1,33 +1,23 @@
-import type { CardState, PlayerSide } from '@entities';
+import type { OwnedCardState } from '@entities';
 
 /**
  * Moves a player's card from inPlay to played pile.
- * Pure function that returns new CardState.
+ * Pure function operating on a single player's owned card state.
  *
- * @param cardState - The current card state
- * @param player - The player whose card to move to played pile
- * @returns New CardState with the card moved to played
+ * @param owned - The player's current owned card state
+ * @returns New owned card state with the card moved to played
  */
-export function moveCardToPlayed(
-  cardState: CardState,
-  player: PlayerSide,
-): CardState {
-  const playerCardState = cardState[player];
-  const cardInPlay = playerCardState.inPlay;
+export function moveCardToPlayed(owned: OwnedCardState): OwnedCardState {
+  const cardInPlay = owned.inPlay;
 
   if (!cardInPlay) {
     // No card to move, return unchanged
-    return cardState;
+    return owned;
   }
 
-  const newPlayerCardState = {
-    ...playerCardState,
-    inPlay: null,
-    played: [...playerCardState.played, cardInPlay],
-  };
-
   return {
-    ...cardState,
-    [player]: newPlayerCardState,
+    ...owned,
+    inPlay: null,
+    played: [...owned.played, cardInPlay],
   };
 }

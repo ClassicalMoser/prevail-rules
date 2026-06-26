@@ -25,10 +25,8 @@ export function getCurrentCommandResolutionState<TBoard extends Board>(
   if (phaseState.phase !== 'issueCommands') {
     throw new Error('Not in issueCommands phase');
   }
-  const commandResolutionState:
-    | CommandResolutionStateForBoard<TBoard>
-    | undefined = phaseState.currentCommandResolutionState;
-  if (!commandResolutionState) {
+  const commandResolutionState = phaseState.currentCommandResolutionState;
+  if (commandResolutionState === 'pending') {
     throw new Error('No current command resolution state');
   }
   return commandResolutionState;
@@ -82,10 +80,10 @@ export function getMeleeResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
 ): MeleeResolutionStateForBoard<TBoard> {
   const phaseState = state.currentRoundState.currentPhaseState;
-  if (!phaseState || phaseState.phase !== 'resolveMelee') {
+  if (phaseState === 'none' || phaseState.phase !== 'resolveMelee') {
     throw new Error('Not in resolveMelee phase');
   }
-  if (!phaseState.currentMeleeResolutionState) {
+  if (phaseState.currentMeleeResolutionState === 'pending') {
     throw new Error('No current melee resolution state');
   }
   return phaseState.currentMeleeResolutionState;
@@ -107,7 +105,10 @@ export function getMeleeResolutionReadyForAttackCalculation<
   if (meleeState.blackCommitment.commitmentType === 'pending') {
     throw new Error('Black commitment is still pending');
   }
-  if (meleeState.whiteAttackApplyState || meleeState.blackAttackApplyState) {
+  if (
+    meleeState.whiteAttackApplyState !== 'pending' ||
+    meleeState.blackAttackApplyState !== 'pending'
+  ) {
     throw new Error('Attack apply states already exist');
   }
   return meleeState;

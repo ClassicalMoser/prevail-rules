@@ -19,9 +19,9 @@ function baseAttackApplyState(
     boardType: 'standard' as const,
     completed: false,
     defendingUnit,
-    retreatState: undefined,
-    reverseState: undefined,
-    routState: undefined,
+    retreatState: 'pending',
+    reverseState: 'pending',
+    routState: 'pending',
     substepType: 'attackApply' as const,
     ...overrides,
   };

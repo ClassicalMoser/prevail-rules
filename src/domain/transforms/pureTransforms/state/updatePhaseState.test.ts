@@ -43,9 +43,10 @@ describe(updatePhaseState, () => {
 
     const newState = updatePhaseState(state, newPhaseState);
 
-    expect(newState.currentRoundState.currentPhaseState?.phase).toBe(
+    const phaseState = newState.currentRoundState.currentPhaseState;
+    expect(phaseState !== 'none' && phaseState.phase).toBe(
       MOVE_COMMANDERS_PHASE,
     );
-    expect(newState.currentRoundState.currentPhaseState?.step).toBe('complete');
+    expect(phaseState !== 'none' && phaseState.step).toBe('complete');
   });
 });

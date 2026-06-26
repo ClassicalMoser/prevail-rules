@@ -5,6 +5,7 @@ import { applyAttackValue } from './applyAttackValue';
 
 /** Explicit type: stacked rout/reverse/retreat thresholds come from applyAttackValue rules, not from tempUnits. */
 const unitTypeWithStackedDefense: UnitType = {
+  imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
   cost: 1,
   id: '00000000-0000-4000-8000-000000000001',
   limit: 1,

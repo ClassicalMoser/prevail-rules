@@ -6,6 +6,7 @@ import {
   createTestUnit,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateMeleeAttackApplyState } from './updateMeleeAttackApplyState';
 
@@ -34,17 +35,25 @@ describe(updateMeleeAttackApplyState, () => {
 
     const newState = updateMeleeAttackApplyState(state, 'white', updated);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('resolveMelee');
-    if (phase?.phase !== 'resolveMelee') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('resolveMelee');
+    if (phase.phase !== 'resolveMelee') {
       throw new Error('phase');
     }
-    expect(
-      phase.currentMeleeResolutionState?.whiteAttackApplyState?.completed,
-    ).toBeTruthy();
-    expect(
-      phase.currentMeleeResolutionState?.blackAttackApplyState?.completed,
-    ).toBeFalsy();
+    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
+    const whiteApply = throwIfPending(
+      melee.whiteAttackApplyState,
+      'white apply',
+    );
+    const blackApply = throwIfPending(
+      melee.blackAttackApplyState,
+      'black apply',
+    );
+    expect(whiteApply.completed).toBeTruthy();
+    expect(blackApply.completed).toBeFalsy();
   });
 
   it('given update black attack apply state', () => {
@@ -54,26 +63,41 @@ describe(updateMeleeAttackApplyState, () => {
 
     const newState = updateMeleeAttackApplyState(state, 'black', updated);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('resolveMelee');
-    if (phase?.phase !== 'resolveMelee') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('resolveMelee');
+    if (phase.phase !== 'resolveMelee') {
       throw new Error('phase');
     }
-    expect(
-      phase.currentMeleeResolutionState?.blackAttackApplyState?.completed,
-    ).toBeTruthy();
-    expect(
-      phase.currentMeleeResolutionState?.whiteAttackApplyState?.completed,
-    ).toBeFalsy();
+    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
+    const blackApply = throwIfPending(
+      melee.blackAttackApplyState,
+      'black apply',
+    );
+    const whiteApply = throwIfPending(
+      melee.whiteAttackApplyState,
+      'white apply',
+    );
+    expect(blackApply.completed).toBeTruthy();
+    expect(whiteApply.completed).toBeFalsy();
   });
 
   it('given not mutate the original state', () => {
     const state = createStateInResolveMelee();
     const whiteUnit = createTestUnit('white', { attack: 2 });
+    const origPhase = throwIfNone(
+      state.currentRoundState.currentPhaseState,
+      'phase',
+    );
     const originalCompleted =
-      state.currentRoundState.currentPhaseState?.phase === 'resolveMelee'
-        ? state.currentRoundState.currentPhaseState.currentMeleeResolutionState
-            ?.whiteAttackApplyState?.completed
+      origPhase.phase === 'resolveMelee'
+        ? throwIfPending(
+            throwIfPending(origPhase.currentMeleeResolutionState, 'melee')
+              .whiteAttackApplyState,
+            'white apply',
+          ).completed
         : undefined;
 
     updateMeleeAttackApplyState(
@@ -82,10 +106,18 @@ describe(updateMeleeAttackApplyState, () => {
       createAttackApplyState(whiteUnit, { completed: true }),
     );
 
-    expect(
-      state.currentRoundState.currentPhaseState?.phase === 'resolveMelee' &&
-        state.currentRoundState.currentPhaseState.currentMeleeResolutionState
-          ?.whiteAttackApplyState?.completed,
-    ).toBe(originalCompleted);
+    const checkPhase = throwIfNone(
+      state.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    const currentCompleted =
+      checkPhase.phase === 'resolveMelee'
+        ? throwIfPending(
+            throwIfPending(checkPhase.currentMeleeResolutionState, 'melee')
+              .whiteAttackApplyState,
+            'white apply',
+          ).completed
+        : undefined;
+    expect(currentCompleted).toBe(originalCompleted);
   });
 });

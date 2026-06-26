@@ -40,7 +40,7 @@ describe(getExpectedResolveMeleePhaseEvent, () => {
       (gameState) => ({
         currentMeleeResolutionState: createMeleeResolutionState(gameState, {
           blackCommitment: {
-            commitmentType: 'pending',
+            commitmentType: 'pending' as const,
           },
         }),
       }),
@@ -57,7 +57,7 @@ describe(getExpectedResolveMeleePhaseEvent, () => {
 
   it('given engagements remain, asks the initiative player to choose a melee resolution', () => {
     const state = createGameStateInResolveMeleeStep('resolveMelee', () => ({
-      currentMeleeResolutionState: undefined,
+      currentMeleeResolutionState: 'pending' as const,
       remainingEngagements: ['E-5'] as const,
     }));
 
@@ -72,7 +72,7 @@ describe(getExpectedResolveMeleePhaseEvent, () => {
 
   it('given when no engagements remain but the step did not advance, throws', () => {
     const state = createGameStateInResolveMeleeStep('resolveMelee', () => ({
-      currentMeleeResolutionState: undefined,
+      currentMeleeResolutionState: 'pending' as const,
       remainingEngagements: [] as const,
     }));
 
@@ -95,8 +95,12 @@ describe(getExpectedResolveMeleePhaseEvent, () => {
   it('given for invalid step, throws', () => {
     const state = createGameStateInResolveMeleeStep('complete');
     // Force an invalid resolve melee step to hit the default branch.
+    const phaseState = state.currentRoundState.currentPhaseState;
+    if (phaseState === 'none') {
+      throw new Error('expected phase state');
+    }
     state.currentRoundState.currentPhaseState = {
-      ...state.currentRoundState.currentPhaseState,
+      ...phaseState,
       step: 'invalidStep',
     } as any;
 

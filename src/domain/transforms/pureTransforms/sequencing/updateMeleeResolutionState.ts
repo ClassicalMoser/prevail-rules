@@ -25,7 +25,7 @@ export function updateMeleeResolutionState<TBoard extends Board>(
 ): GameStateForBoard<TBoard> {
   const resolveMeleePhaseState = getResolveMeleePhaseStateForBoard(state);
 
-  if (!resolveMeleePhaseState.currentMeleeResolutionState) {
+  if (resolveMeleePhaseState.currentMeleeResolutionState === 'pending') {
     throw new Error('No current melee resolution state found');
   }
 

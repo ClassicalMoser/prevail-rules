@@ -31,8 +31,8 @@ describe(getRoutStateFromAttackApply, () => {
       boardType: 'standard' as const,
       completed: false,
       defendingUnit: unit,
-      retreatState: undefined,
-      reverseState: undefined,
+      retreatState: 'pending' as const,
+      reverseState: 'pending' as const,
       routState: {
         cardsChosen: false,
         completed: false,
@@ -61,9 +61,9 @@ describe(getRoutStateFromAttackApply, () => {
       boardType: 'standard' as const,
       completed: false,
       defendingUnit: unit,
-      retreatState: undefined,
-      reverseState: undefined,
-      routState: undefined,
+      retreatState: 'pending' as const,
+      reverseState: 'pending' as const,
+      routState: 'pending' as const,
       substepType: 'attackApply' as const,
     };
 

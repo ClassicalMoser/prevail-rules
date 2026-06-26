@@ -1,4 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
+import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
   createAttackApplyStateWithReverse,
@@ -121,23 +122,27 @@ describe(updateReverseState, () => {
 
     const newState = updateReverseState(state, newReverse);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('issueCommands');
-    if (
-      phase?.phase !== 'issueCommands' ||
-      !phase.currentCommandResolutionState
-    ) {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('issueCommands');
+    if (phase.phase !== 'issueCommands') {
       throw new Error('phase');
     }
-    if (
-      phase.currentCommandResolutionState.commandResolutionType !==
-      'rangedAttack'
-    ) {
+    const commandState = throwIfPending(
+      phase.currentCommandResolutionState,
+      'command',
+    );
+    if (commandState.commandResolutionType !== 'rangedAttack') {
       throw new Error('type');
     }
+    const attackApply = throwIfPending(
+      commandState.attackApplyState,
+      'attack apply',
+    );
     expect(
-      phase.currentCommandResolutionState.attackApplyState?.reverseState
-        ?.completed,
+      throwIfPending(attackApply.reverseState, 'reverse').completed,
     ).toBeTruthy();
   });
 
@@ -157,14 +162,21 @@ describe(updateReverseState, () => {
 
     const newState = updateReverseState(state, newReverse);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('resolveMelee');
-    if (phase?.phase !== 'resolveMelee') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('resolveMelee');
+    if (phase.phase !== 'resolveMelee') {
       throw new Error('phase');
     }
+    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
+    const whiteApply = throwIfPending(
+      melee.whiteAttackApplyState,
+      'white apply',
+    );
     expect(
-      phase.currentMeleeResolutionState?.whiteAttackApplyState?.reverseState
-        ?.completed,
+      throwIfPending(whiteApply.reverseState, 'reverse').completed,
     ).toBeTruthy();
   });
 
@@ -184,14 +196,21 @@ describe(updateReverseState, () => {
 
     const newState = updateReverseState(state, newReverse);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('resolveMelee');
-    if (phase?.phase !== 'resolveMelee') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('resolveMelee');
+    if (phase.phase !== 'resolveMelee') {
       throw new Error('phase');
     }
+    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
+    const blackApply = throwIfPending(
+      melee.blackAttackApplyState,
+      'black apply',
+    );
     expect(
-      phase.currentMeleeResolutionState?.blackAttackApplyState?.reverseState
-        ?.completed,
+      throwIfPending(blackApply.reverseState, 'reverse').completed,
     ).toBeTruthy();
   });
 
@@ -261,9 +280,7 @@ describe(updateReverseState, () => {
 
     expect(() =>
       updateReverseState(stateInPhase, createReverseState(placement)),
-    ).toThrow(
-      'Reverse state update not expected in issueCommands (command type: none)',
-    );
+    ).toThrow('No command resolution state found');
   });
 
   it('given when melee white attack apply has no reverse state, throws', () => {

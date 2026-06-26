@@ -23,7 +23,6 @@ export {
   revealCard,
   updateAttackApplyState,
   updateBoardState,
-  updateCardState,
   updateCommandResolutionState,
   updateCurrentInitiative,
   updateCurrentRoundNumber,

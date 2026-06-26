@@ -1,4 +1,5 @@
 import type { StandardBoard } from '@entities';
+import { throwIfNone } from '@utils';
 import type { CompletePlayCardsPhaseEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
@@ -27,9 +28,12 @@ describe(applyCompletePlayCardsPhaseEvent, () => {
     };
 
     const next = applyCompletePlayCardsPhaseEvent(event, full);
-    const phase = next.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe(MOVE_COMMANDERS_PHASE);
-    expect(phase?.step).toBe('moveFirstCommander');
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe(MOVE_COMMANDERS_PHASE);
+    expect(phase.step).toBe('moveFirstCommander');
     const completed = [...next.currentRoundState.completedPhases];
     expect(completed).toHaveLength(1);
     expect(completed[0]?.phase).toBe(PLAY_CARDS_PHASE);

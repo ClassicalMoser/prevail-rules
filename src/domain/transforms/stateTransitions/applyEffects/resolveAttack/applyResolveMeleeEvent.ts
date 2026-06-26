@@ -46,34 +46,34 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
     unitWithPlacement: UnitWithPlacement<TBoard>,
     attackResult: AttackResult,
     legalRetreatOptionsFromEvent: UnitPlacement<TBoard>[],
-  ): AttackApplyStateForBoard<TBoard> | undefined => {
+  ): AttackApplyStateForBoard<TBoard> | 'pending' => {
     if (
       !attackResult.unitRouted &&
       !attackResult.unitRetreated &&
       !attackResult.unitReversed
     ) {
-      return undefined;
+      return 'pending';
     }
 
-    let routState: RoutState | undefined;
-    let retreatState: RetreatStateForBoard<TBoard> | undefined;
-    let reverseState: ReverseStateForBoard<TBoard> | undefined;
+    let routState: RoutState | 'pending' = 'pending';
+    let retreatState: RetreatStateForBoard<TBoard> | 'pending' = 'pending';
+    let reverseState: ReverseStateForBoard<TBoard> | 'pending' = 'pending';
 
     if (attackResult.unitRouted) {
       routState = {
         cardsChosen: false,
         completed: false,
-        numberToDiscard: undefined,
+        numberToDiscard: 'pending',
         player: unitWithPlacement.unit.playerSide,
         substepType: 'rout',
         unitsToRout: [unitWithPlacement.unit],
       };
     } else if (attackResult.unitRetreated) {
       const legalRetreatOptions = legalRetreatOptionsFromEvent;
-      const finalPosition =
+      const finalPosition: UnitPlacement<TBoard> | 'pending' =
         legalRetreatOptions.length === 1
           ? [...legalRetreatOptions][0]
-          : undefined;
+          : 'pending';
 
       retreatState = {
         boardType,
@@ -81,7 +81,7 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
         finalPosition,
         legalRetreatOptions,
         retreatingUnit: unitWithPlacement,
-        routState: undefined,
+        routState: 'pending',
         substepType: 'retreat',
       };
     } else {
@@ -90,7 +90,7 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
       reverseState = {
         boardType,
         completed: false,
-        finalPosition: undefined,
+        finalPosition: 'pending',
         reversingUnit: unitWithPlacement,
         substepType: 'reverse',
       };

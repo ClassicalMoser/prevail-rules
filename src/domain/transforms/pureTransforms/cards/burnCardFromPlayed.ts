@@ -1,40 +1,29 @@
-import type { Card, CardState, PlayerSide } from '@entities';
+import type { Card, OwnedCardState } from '@entities';
 
 /**
  * Burns a specific card from the player's played pile.
- * Pure function that returns new CardState.
+ * Pure function operating on a single player's owned card state.
  *
- * @param cardState - The current card state
- * @param player - The player whose card to burn
+ * @param owned - The player's current owned card state
  * @param card - The card to burn
- * @returns New CardState with the card burned
+ * @returns New owned card state with the card burned
  * @throws Error if card is not in played pile
  */
 export function burnCardFromPlayed(
-  cardState: CardState,
-  player: PlayerSide,
+  owned: OwnedCardState,
   card: Card,
-): CardState {
-  const playerCardState = cardState[player];
-
-  const cardIndex = playerCardState.played.findIndex((c) => c.id === card.id);
+): OwnedCardState {
+  const cardIndex = owned.played.findIndex((c) => c.id === card.id);
   if (cardIndex === -1) {
-    throw new Error(
-      `Card ${card.id} not found in ${player} player's played cards`,
-    );
+    throw new Error(`Card ${card.id} not found in player's played cards`);
   }
 
-  const newPlayed = playerCardState.played.filter((c) => c.id !== card.id);
-  const newBurnt = [...playerCardState.burnt, card];
-
-  const newPlayerCardState = {
-    ...playerCardState,
-    burnt: newBurnt,
-    played: newPlayed,
-  };
+  const newPlayed = owned.played.filter((c) => c.id !== card.id);
+  const newBurnt = [...owned.burnt, card];
 
   return {
-    ...cardState,
-    [player]: newPlayerCardState,
+    ...owned,
+    burnt: newBurnt,
+    played: newPlayed,
   };
 }

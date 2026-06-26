@@ -4,6 +4,7 @@ import { CLEANUP_PHASE } from '@game';
 import { getCleanupPhaseState } from '@queries';
 import { createCleanupPhaseState, createEmptyGameState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfPending } from '@utils';
 
 import { applyChooseRallyEvent } from './applyChooseRallyEvent';
 
@@ -31,7 +32,8 @@ describe(applyChooseRallyEvent, () => {
 
     expect(newPhaseState.step).toBe('firstPlayerResolveRally');
     expect(
-      newPhaseState.firstPlayerRallyResolutionState?.playerRallied,
+      throwIfPending(newPhaseState.firstPlayerRallyResolutionState, 'rally')
+        .playerRallied,
     ).toBeTruthy();
   });
 
@@ -54,7 +56,8 @@ describe(applyChooseRallyEvent, () => {
 
     expect(newPhaseState.step).toBe('secondPlayerChooseRally');
     expect(
-      newPhaseState.firstPlayerRallyResolutionState?.playerRallied,
+      throwIfPending(newPhaseState.firstPlayerRallyResolutionState, 'rally')
+        .playerRallied,
     ).toBeFalsy();
   });
 
@@ -77,7 +80,8 @@ describe(applyChooseRallyEvent, () => {
 
     expect(newPhaseState.step).toBe('secondPlayerResolveRally');
     expect(
-      newPhaseState.secondPlayerRallyResolutionState?.playerRallied,
+      throwIfPending(newPhaseState.secondPlayerRallyResolutionState, 'rally')
+        .playerRallied,
     ).toBeTruthy();
   });
 
@@ -100,7 +104,8 @@ describe(applyChooseRallyEvent, () => {
 
     expect(newPhaseState.step).toBe('complete');
     expect(
-      newPhaseState.secondPlayerRallyResolutionState?.playerRallied,
+      throwIfPending(newPhaseState.secondPlayerRallyResolutionState, 'rally')
+        .playerRallied,
     ).toBeFalsy();
   });
 

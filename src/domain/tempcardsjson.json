@@ -599,6 +599,14 @@
     "initiative": 3,
     "modifiers": [{ "type": "flexibility", "value": 1 }],
     "name": "Coordinated Maneuver",
+    "roundEffect": {
+      "modifiers": [{ "type": "flexibility", "value": 1 }],
+      "restrictions": {
+        "inspirationRangeRestriction": 1,
+        "traitRestrictions": [],
+        "unitRestrictions": []
+      }
+    },
     "unitSupport": { "count": 1, "supportType": "generic" },
     "version": "1.0.0"
   },
@@ -621,6 +629,14 @@
     "initiative": 3,
     "modifiers": [{ "type": "attack", "value": 1 }],
     "name": "Chaotic Destruction",
+    "roundEffect": {
+      "modifiers": [{ "type": "attack", "value": 1 }],
+      "restrictions": {
+        "inspirationRangeRestriction": 1,
+        "traitRestrictions": [],
+        "unitRestrictions": []
+      }
+    },
     "unitSupport": { "count": 1, "supportType": "generic" },
     "version": "1.0.0"
   },
@@ -643,6 +659,14 @@
     "initiative": 4,
     "modifiers": [{ "type": "defense", "value": 1 }],
     "name": "Brace for Impact",
+    "roundEffect": {
+      "modifiers": [{ "type": "defense", "value": 1 }],
+      "restrictions": {
+        "inspirationRangeRestriction": 1,
+        "traitRestrictions": ["phalanx"],
+        "unitRestrictions": []
+      }
+    },
     "unitSupport": { "count": 1, "supportType": "generic" },
     "version": "1.0.0"
   },
@@ -689,6 +713,14 @@
     "initiative": 4,
     "modifiers": [{ "type": "flexibility", "value": 1 }],
     "name": "Combined Arms Tactics",
+    "roundEffect": {
+      "modifiers": [{ "type": "flexibility", "value": 1 }],
+      "restrictions": {
+        "inspirationRangeRestriction": 2,
+        "traitRestrictions": [],
+        "unitRestrictions": []
+      }
+    },
     "unitSupport": { "count": 1, "supportType": "generic" },
     "version": "1.0.0"
   }

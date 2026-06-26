@@ -6,7 +6,6 @@ export {
   moveCardToPlayed,
   returnCardsToHand,
   revealCard,
-  updateCardState,
   updatePlayerCardState,
 } from './cards';
 export {

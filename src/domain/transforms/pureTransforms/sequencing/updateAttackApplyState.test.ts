@@ -10,6 +10,7 @@ import {
   createTestUnit,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateAttackApplyState } from './updateAttackApplyState';
 
@@ -66,26 +67,27 @@ describe(updateAttackApplyState, () => {
 
     const newState = updateAttackApplyState(state, updated);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('issueCommands');
-    if (
-      phase?.phase !== 'issueCommands' ||
-      !phase.currentCommandResolutionState
-    ) {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('issueCommands');
+    if (phase.phase !== 'issueCommands') {
       throw new Error('phase');
     }
-    expect(phase.currentCommandResolutionState.substepType).toBe(
-      'commandResolution',
+    const commandState = throwIfPending(
+      phase.currentCommandResolutionState,
+      'command',
     );
-    if (
-      phase.currentCommandResolutionState.commandResolutionType !==
-      'rangedAttack'
-    ) {
+    expect(commandState.substepType).toBe('commandResolution');
+    if (commandState.commandResolutionType !== 'rangedAttack') {
       throw new Error('type');
     }
-    expect(
-      phase.currentCommandResolutionState.attackApplyState?.completed,
-    ).toBeTruthy();
+    const attackApply = throwIfPending(
+      commandState.attackApplyState,
+      'attack apply',
+    );
+    expect(attackApply.completed).toBeTruthy();
   });
 
   it('given update white attack apply state in melee resolution', () => {
@@ -95,14 +97,20 @@ describe(updateAttackApplyState, () => {
 
     const newState = updateAttackApplyState(state, updated);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('resolveMelee');
-    if (phase?.phase !== 'resolveMelee') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('resolveMelee');
+    if (phase.phase !== 'resolveMelee') {
       throw new Error('phase');
     }
-    expect(
-      phase.currentMeleeResolutionState?.whiteAttackApplyState?.completed,
-    ).toBeTruthy();
+    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
+    const whiteApply = throwIfPending(
+      melee.whiteAttackApplyState,
+      'white apply',
+    );
+    expect(whiteApply.completed).toBeTruthy();
   });
 
   it('given update black attack apply state in melee resolution', () => {
@@ -112,20 +120,26 @@ describe(updateAttackApplyState, () => {
 
     const newState = updateAttackApplyState(state, updated);
 
-    const phase = newState.currentRoundState.currentPhaseState;
-    expect(phase?.phase).toBe('resolveMelee');
-    if (phase?.phase !== 'resolveMelee') {
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('resolveMelee');
+    if (phase.phase !== 'resolveMelee') {
       throw new Error('phase');
     }
-    expect(
-      phase.currentMeleeResolutionState?.blackAttackApplyState?.completed,
-    ).toBeTruthy();
+    const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
+    const blackApply = throwIfPending(
+      melee.blackAttackApplyState,
+      'black apply',
+    );
+    expect(blackApply.completed).toBeTruthy();
   });
 
   it('given when ranged attack resolution has no attack apply state, throws', () => {
     const state = createEmptyGameState();
     const ranged = createRangedAttackResolutionState(state, {
-      attackApplyState: undefined,
+      attackApplyState: 'pending',
     });
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: ranged,

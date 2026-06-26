@@ -32,7 +32,7 @@ describe(getCurrentPhaseState, () => {
 
   it('given missing phase slice, throws no current phase state', () => {
     const state = createEmptyGameState();
-    state.currentRoundState.currentPhaseState = undefined;
+    state.currentRoundState.currentPhaseState = 'none';
 
     expect(() => getCurrentPhaseState(state)).toThrow(
       'No current phase state found',
@@ -62,7 +62,7 @@ describe(getPlayCardsPhaseState, () => {
 
   it('given missing phase slice, throws no current phase state for playCards getter', () => {
     const state = createEmptyGameState();
-    state.currentRoundState.currentPhaseState = undefined;
+    state.currentRoundState.currentPhaseState = 'none';
 
     expect(() => getPlayCardsPhaseState(state)).toThrow(
       'No current phase state found',

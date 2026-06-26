@@ -32,11 +32,11 @@ describe(getReverseStateFromAttackApply, () => {
       boardType: 'standard' as const,
       completed: false,
       defendingUnit: unit,
-      retreatState: undefined,
+      retreatState: 'pending' as const,
       reverseState: {
         boardType: 'standard' as const,
         completed: false,
-        finalPosition: undefined,
+        finalPosition: 'pending' as const,
         reversingUnit: {
           boardType: 'standard' as const,
           placement: {
@@ -48,7 +48,7 @@ describe(getReverseStateFromAttackApply, () => {
         },
         substepType: 'reverse' as const,
       },
-      routState: undefined,
+      routState: 'pending' as const,
       substepType: 'attackApply' as const,
     };
 
@@ -69,9 +69,9 @@ describe(getReverseStateFromAttackApply, () => {
       boardType: 'standard' as const,
       completed: false,
       defendingUnit: unit,
-      retreatState: undefined,
-      reverseState: undefined,
-      routState: undefined,
+      retreatState: 'pending' as const,
+      reverseState: 'pending' as const,
+      routState: 'pending' as const,
       substepType: 'attackApply' as const,
     };
 
@@ -116,7 +116,7 @@ describe(getReverseStateFromMeleeResolutionByInitiative, () => {
         finalPosition:
           initiative === 'white' && firstFinal === 'set'
             ? whiteWp.placement
-            : undefined,
+            : 'pending',
       }),
     });
     const blackRev = createAttackApplyStateWithReverse(blackWp, {
@@ -124,7 +124,7 @@ describe(getReverseStateFromMeleeResolutionByInitiative, () => {
         finalPosition:
           initiative === 'black' && firstFinal === 'set'
             ? blackWp.placement
-            : undefined,
+            : 'pending',
       }),
     });
 

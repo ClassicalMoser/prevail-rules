@@ -4,8 +4,8 @@ import type { GameStateForBoard } from '@game';
 import { getMeleeResolutionState } from '@queries';
 import {
   discardCardsFromHand,
-  updateCardState,
   updateMeleeResolutionState,
+  updatePlayerCardState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -25,9 +25,11 @@ export function applyCommitToMeleeEvent<TBoard extends Board>(
   const { player } = event;
 
   // Discard committed card from player's hand
-  const newCardState = discardCardsFromHand(state.cardState, player, [
-    event.committedCard.id,
-  ]);
+  const stateWithCards = updatePlayerCardState(
+    state,
+    player,
+    discardCardsFromHand(state.cardState[player], [event.committedCard.id]),
+  );
 
   // Mark this player's commitment as completed with the chosen card
   const newCommitment = {
@@ -41,7 +43,6 @@ export function applyCommitToMeleeEvent<TBoard extends Board>(
       : { blackCommitment: newCommitment }),
   };
 
-  const stateWithCards = updateCardState(state, newCardState);
   const newGameState = updateMeleeResolutionState(
     stateWithCards,
     newMeleeState,

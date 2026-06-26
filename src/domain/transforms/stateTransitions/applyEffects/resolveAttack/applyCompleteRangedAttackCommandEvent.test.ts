@@ -4,10 +4,11 @@ import {
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestCard,
+  updateCardState,
 } from '@testing';
 import type { StandardBoard } from '@entities';
 import type { GameStateForBoard } from '@game';
-import { updateCardState, updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCompleteRangedAttackCommandEvent } from './applyCompleteRangedAttackCommandEvent';
 
@@ -18,11 +19,11 @@ import { applyCompleteRangedAttackCommandEvent } from './applyCompleteRangedAtta
 describe(applyCompleteRangedAttackCommandEvent, () => {
   it('given issueCommands holding ranged CRS, after effect currentCommandResolutionState is undefined', () => {
     const base = createEmptyGameState();
-    const withCards = updateCardState(base, (c) => ({
-      ...c,
-      black: { ...c.black, inPlay: createTestCard() },
-      white: { ...c.white, inPlay: createTestCard() },
-    }));
+    const withCards = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inPlay: createTestCard() },
+      white: { ...base.cardState.white, inPlay: createTestCard() },
+    });
     const ranged = createRangedAttackResolutionState(withCards);
     const full: GameStateForBoard<StandardBoard> = updatePhaseState(
       withCards,
@@ -39,9 +40,9 @@ describe(applyCompleteRangedAttackCommandEvent, () => {
 
     const next = applyCompleteRangedAttackCommandEvent(event, full);
     const phase = next.currentRoundState.currentPhaseState;
-    if (!phase || phase.phase !== 'issueCommands') {
+    if (phase === 'none' || phase.phase !== 'issueCommands') {
       throw new Error('issue');
     }
-    expect(phase.currentCommandResolutionState).toBeUndefined();
+    expect(phase.currentCommandResolutionState).toBe('pending');
   });
 });

@@ -38,7 +38,7 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
 
   const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
     boardType: state.boardState.boardType,
-    currentCommandResolutionState: undefined,
+    currentCommandResolutionState: 'pending',
     phase: ISSUE_COMMANDS_PHASE,
     remainingCommandsFirstPlayer: event.remainingCommandsFirstPlayer,
     remainingCommandsSecondPlayer: event.remainingCommandsSecondPlayer,
