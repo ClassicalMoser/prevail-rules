@@ -7,7 +7,7 @@ import {
   createPlayCardsPhaseState,
   createRangedAttackResolutionState,
 } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '../';
 
 import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
 
