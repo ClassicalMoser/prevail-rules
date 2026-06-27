@@ -1,6 +1,6 @@
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 import { createEmptyGameState } from '@testing';
-import { addCompletedPhase } from '@transforms/pureTransforms';
+import { addCompletedPhase } from '../';
 
 /**
  * AddCompletedPhase: Adds a completed phase to the completed phases set.

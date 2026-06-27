@@ -3,7 +3,7 @@ import {
   createIssueCommandsPhaseState,
   createMovementResolutionState,
 } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '../';
 import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateCommandResolutionState } from './updateCommandResolutionState';

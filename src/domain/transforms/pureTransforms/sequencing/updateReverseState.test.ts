@@ -13,7 +13,7 @@ import {
   createReverseState,
   createTestUnit,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '../';
 
 import { updateReverseState } from './updateReverseState';
 

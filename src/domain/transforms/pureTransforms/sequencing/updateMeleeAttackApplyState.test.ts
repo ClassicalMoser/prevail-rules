@@ -5,7 +5,7 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import { updatePhaseState } from '../';
 import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateMeleeAttackApplyState } from './updateMeleeAttackApplyState';

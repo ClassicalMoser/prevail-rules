@@ -70,6 +70,7 @@ const config: OxlintConfig = {
     'max-lines': 'off', // Consider changing if team size increases and arbitrary limits are needed.
     'max-lines-per-function': 'off', // Consider changing if team size increases and arbitrary limits are needed.
     'no-duplicate-imports': 'off', // Superseded by import/no-duplicates
+    'no-await-in-loop': 'off', // Await is often entirely reasonable in a loop, especially for dependent logic in a closure..
     'no-loop-func': 'off', // The use of "var" is prohibited, so this rule is mostly extraneous.
     'no-magic-numbers': 'off', // Ad-hoc numbers are allowed, particularly in tests.
     'no-useless-assignment': 'off', // Often used for type assertion checks
@@ -87,6 +88,7 @@ const config: OxlintConfig = {
     'no-warning-comments': 'off', // Warning comments allowed for future reference
     'no-named-export': 'off', // Named exports are preferred for readability
     'no-immediate-mutation': 'off', // Immutable updates are preferred for readability
+    'no-array-for-each': 'off', // ForEach is often the best option for readability.
     'prefer-destructuring': 'off', // Destructuring is not always the best option for readability
     'prefer-ternary': 'off', // Ternary is not always the best option for readability
     'sort-keys': 'off', // Keys are ordered by definition order, not alphabetically.
@@ -99,12 +101,10 @@ const config: OxlintConfig = {
     // They should be re-enabled one by one in the future.
     // Priority: CRITICAL
     'import/no-cycle': 'off',
-    'no-array-for-each': 'off',
     // Priority: HIGH
     'init-declarations': 'off',
     'max-params': 'off',
     'max-depth': 'off',
-    'no-await-in-loop': 'off',
     'no-null': 'off',
     'no-shadow': 'off',
     'vitest/valid-title': 'off',

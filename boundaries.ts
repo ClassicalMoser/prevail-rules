@@ -48,7 +48,6 @@ export const boundaries: BoundaryConfig[] = [
     allowImportsFrom: [
       '@entities',
       '@ruleValues',
-      '@validation',
       '@events',
       '@game',
       '@utils',

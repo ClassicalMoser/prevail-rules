@@ -18,7 +18,7 @@ import {
   createTestCard,
   createTestUnit,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '../';
 
 import { updateRoutState } from './updateRoutState';
 
