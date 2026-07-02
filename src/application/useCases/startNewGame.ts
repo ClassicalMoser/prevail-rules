@@ -1,7 +1,11 @@
 import { gameModes } from '@entities';
 import type { Army, GameMode, GameModeName } from '@entities';
 import type { Game, GameForMode, GameState } from '@game';
-import type { EnginePorts, GameStateChange, PortResponse } from '../ports';
+import type {
+  EnginePorts,
+  GameStateChange,
+  PortResponse,
+} from '@application/ports';
 import { createEmptyGameState } from '@transforms';
 
 const placeholderId = '00000000-0000-0000-0000-000000000000';

@@ -1,7 +1,7 @@
 import type { GameState } from '@game';
-import type { EnginePorts, PortResponse } from '../ports';
+import type { EnginePorts, PortResponse } from '@application/ports';
 import { applyEvent } from '@transforms';
-import { updateGameState } from '../composable';
+import { updateGameState } from '@application/composable';
 import { handleNewRound } from './handleNewRound';
 import type { Event } from '@events';
 import type { GameModeName } from '@entities';

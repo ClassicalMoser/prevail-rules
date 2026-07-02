@@ -1,6 +1,5 @@
 import type { Board, BoardCoordinate, BoardSpace, PlayerSide } from '@entities';
 import { getBoardSpace } from '@queries';
-
 /* Pure transform to remove a commander from the board immutably with no side effects. */
 export function removeCommanderFromBoard<TBoard extends Board>(
   board: TBoard,

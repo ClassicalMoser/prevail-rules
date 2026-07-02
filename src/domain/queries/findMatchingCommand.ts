@@ -1,5 +1,5 @@
 import type { Command } from '@entities';
-import { areModifiersArraysEqual, areRestrictionsEqual } from '@validation';
+import { areModifiersArraysEqual, areRestrictionsEqual } from './equivalence';
 
 /**
  * Finds a matching command in a set of commands by comparing all properties.

@@ -12,7 +12,6 @@ import {
   getSingleUnitWithPlacementAtCoordinate,
   modifiersFromCompletedCommitment,
 } from '@queries';
-
 /**
  * Generates a ResolveEngageRetreatOptionEvent by determining if the defending unit
  * can retreat during a front engagement.

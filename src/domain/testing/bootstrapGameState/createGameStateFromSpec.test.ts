@@ -1,5 +1,4 @@
 import { getPlayerUnitWithPosition } from '@queries';
-
 import { createBoard, createGameState } from './createGameStateFromSpec';
 
 /**

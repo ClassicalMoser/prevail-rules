@@ -5,7 +5,6 @@ import {
   GAME_EFFECT_EVENT_TYPE,
 } from '@events';
 import { getOtherPlayer } from '@queries';
-
 /**
  * Generates a CompleteMoveCommandersPhaseEvent to complete the move commanders phase
  * and advance to issue commands phase.

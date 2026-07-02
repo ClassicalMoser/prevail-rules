@@ -6,7 +6,6 @@ import type {
 } from '@game';
 import { CLEANUP_PHASE } from '@game';
 import { getResolveMeleePhaseStateForBoard } from '@queries';
-
 import {
   addCompletedPhase,
   markPhaseAsComplete,

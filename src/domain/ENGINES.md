@@ -126,7 +126,7 @@ const newState = applyEvent(event, state);
 **Usage:**
 
 ```typescript
-import { getExpectedEvent } from '@queries/expectedEvent';
+import { getExpectedEvent } from '@expected/expectedEvent';
 
 const expected = getExpectedEvent(state);
 

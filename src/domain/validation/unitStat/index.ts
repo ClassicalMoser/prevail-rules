@@ -1,1 +1,0 @@
-export { isDefenseStat } from './isDefenseStat';

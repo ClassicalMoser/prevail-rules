@@ -28,53 +28,147 @@ export const boundaries: BoundaryConfig[] = [
   },
   {
     alias: '@entities',
-    allowImportsFrom: ['@ruleValues', '@utils'],
+    allowImportsFrom: ['@utils', '@ruleValues'],
     dir: 'domain/entities',
     identifier: '@entities',
-    // Mutual dependency layer with events and rule values
-    // No functions, no tests, pure declarative structures.
+    // Schema-first declarative structures. No functions, no tests.
   },
   {
     alias: '@events',
-    allowImportsFrom: ['@entities', '@ruleValues', '@utils'],
+    allowImportsFrom: ['@utils', '@ruleValues', '@entities'],
     dir: 'domain/events',
     identifier: '@events',
-
-    // Mutual dependency layer with entities and rule values
-    // No functions, no tests, pure declarative structures.
+    // Schema-first event definitions. No functions, no tests.
+  },
+  {
+    alias: '@game',
+    allowImportsFrom: ['@utils', '@ruleValues', '@entities', '@events'],
+    dir: 'domain/game',
+    identifier: '@game',
+    // Game state and phase schemas. Depends on entities and events only.
+  },
+  {
+    alias: '@factories',
+    allowImportsFrom: [
+      '@utils',
+      '@ruleValues',
+      '@entities',
+      '@events',
+      '@game',
+    ],
+    dir: 'domain/factories',
+    identifier: '@factories',
+    // Pure constructors for domain values (e.g. unit instances).
   },
   {
     alias: '@queries',
     allowImportsFrom: [
-      '@entities',
+      '@utils',
       '@ruleValues',
+      '@entities',
       '@events',
       '@game',
-      '@utils',
+      '@factories',
     ],
     dir: 'domain/queries',
     identifier: '@queries',
-    // Mutual dependency layer with validation
-    // Inwardly dependent on entities, events, and rule values
-    // Queries are pure functions, no runtime.
+    // Pure reads: geometry, state walking, stats, sequencing getters.
+  },
+  {
+    alias: '@expected',
+    allowImportsFrom: [
+      '@utils',
+      '@ruleValues',
+      '@entities',
+      '@events',
+      '@game',
+      '@factories',
+      '@queries',
+    ],
+    dir: 'domain/expected',
+    identifier: '@expected',
+    // Normative next-event dispatch (what choice or effect is expected).
+  },
+  {
+    alias: '@procedures',
+    allowImportsFrom: [
+      '@utils',
+      '@ruleValues',
+      '@entities',
+      '@events',
+      '@game',
+      '@queries',
+      '@legality',
+    ],
+    dir: 'domain/procedures',
+    identifier: '@procedures',
+    // Deterministic game-effect event generators from game state.
+  },
+  {
+    alias: '@legality',
+    allowImportsFrom: [
+      '@utils',
+      '@ruleValues',
+      '@entities',
+      '@events',
+      '@game',
+      '@factories',
+      '@queries',
+    ],
+    dir: 'domain/legality',
+    identifier: '@legality',
+    // Legal option enumeration and movement rule predicates.
   },
   {
     alias: '@validation',
     allowImportsFrom: [
+      '@utils',
+      '@ruleValues',
       '@entities',
+      '@events',
       '@queries',
       '@game',
-      '@ruleValues',
-      '@events',
-      '@transforms',
-      '@utils',
+      '@factories',
+      '@expected',
+      '@legality',
     ],
     dir: 'domain/validation',
     identifier: '@validation',
-    // Mutual dependency layer with queries
-    // Inwardly dependent on entities, events, and rule values
-    // Validation is pure functions, no runtime.
-    // ALWAYS returns boolean, never throws errors.
+    // Pure validation; always returns boolean, never throws.
+  },
+  {
+    alias: '@transforms',
+    allowImportsFrom: [
+      '@utils',
+      '@ruleValues',
+      '@entities',
+      '@events',
+      '@game',
+      '@queries',
+      '@factories',
+    ],
+    dir: 'domain/transforms',
+    identifier: '@transforms',
+    // State transition functions for applying events to game state.
+  },
+  {
+    alias: '@application',
+    allowImportsFrom: [
+      '@utils',
+      '@ruleValues',
+      '@entities',
+      '@events',
+      '@game',
+      '@queries',
+      '@factories',
+      '@expected',
+      '@procedures',
+      '@transforms',
+      '@validation',
+    ],
+    dir: 'application',
+    identifier: '@application',
+    // Application orchestration; composes domain engines, no rule logic.
   },
   {
     alias: '@sampleValues',
@@ -82,48 +176,14 @@ export const boundaries: BoundaryConfig[] = [
     dir: 'domain/sampleValues',
     identifier: '@sampleValues',
     // Database surrogate for development and testing.
-    // Placeholder values for cards and units.
-    // Pure declarative structures.
-  },
-  {
-    alias: '@transforms',
-    allowImportsFrom: [
-      '@ruleValues',
-      '@entities',
-      '@game',
-      '@events',
-      '@queries',
-      '@validation',
-      '@utils',
-    ],
-    dir: 'domain/transforms',
-    identifier: '@transforms',
-    // State transition functions for applying events to game state.
-    // Depends on structures and functions from other layers.
-    // No runtime, pure functions.
-  },
-  {
-    alias: '@game',
-    allowImportsFrom: [
-      '@entities',
-      '@events',
-      '@queries',
-      '@validation',
-      '@ruleValues',
-      '@transforms',
-      '@utils',
-    ],
-    dir: 'domain/game',
-    identifier: '@game',
-    // State transition functions for applying events to game state.
-    // Depends on structures and functions from other layers.
-    // No runtime, pure functions.
   },
   {
     alias: '@testing',
     allowImportsFrom: [
       '@entities',
       '@queries',
+      '@expected',
+      '@legality',
       '@ruleValues',
       '@events',
       '@utils',
@@ -131,10 +191,11 @@ export const boundaries: BoundaryConfig[] = [
       '@game',
       '@sampleValues',
       '@transforms',
+      '@factories',
+      '@procedures',
     ],
     dir: 'domain/testing',
     identifier: '@testing',
-    // May depend on all layers, no restrictions.
-    // May only be used in tests.
+    // May depend on all layers. May only be used in tests.
   },
 ];

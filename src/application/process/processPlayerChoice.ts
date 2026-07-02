@@ -1,10 +1,10 @@
 import type { GameModeName, ValidationResult } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
 import type { GameState } from '@game';
-import type { EnginePorts, PortResponse } from '../ports';
-import { getExpectedEvent } from '@queries';
+import type { EnginePorts, PortResponse } from '@application/ports';
+import { getExpectedEvent } from '@expected';
 import { validatePlayerChoice } from '@validation';
-import { getGameState } from '../composable';
+import { getGameState } from '@application/composable';
 import { processEvent } from './processEvent';
 
 export async function processPlayerChoice(

@@ -6,7 +6,6 @@ import {
   GAME_EFFECT_EVENT_TYPE,
 } from '@events';
 import { getBoardCoordinatesWithEngagedUnits } from '@queries';
-
 /**
  * Generates a CompleteIssueCommandsPhaseEvent to complete the issue commands phase
  * and advance to resolve melee phase.

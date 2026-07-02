@@ -7,10 +7,8 @@ import type {
 } from '@entities';
 import type { GameState, GameStateForBoard } from '@game';
 
-import {
-  createEmptyGameState,
-  createUnitInstance,
-} from '@transforms/initializations';
+import { createEmptyGameState } from '@transforms/initializations';
+import { createUnitInstance } from '@factories';
 
 /**
  * Builds a {@link GameState} for a new game: empty board and round state, white initiative,

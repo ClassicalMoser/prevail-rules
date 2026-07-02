@@ -5,13 +5,12 @@ import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
 import {
   applyAttackValue,
   getCurrentUnitStat,
-  getLegalRetreats,
   getMeleeResolutionReadyForAttackCalculation,
   getMeleeSupportValue,
   getPlayerUnitWithPosition,
   modifiersFromCompletedCommitment,
 } from '@queries';
-
+import { getLegalRetreats } from '@legality';
 /**
  * Generates a ResolveMeleeEvent by calculating attack values for both units
  * and determining the results (routed, reversed, retreated for each).

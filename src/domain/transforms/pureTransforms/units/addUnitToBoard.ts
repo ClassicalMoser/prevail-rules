@@ -6,7 +6,6 @@ import type {
 } from '@entities';
 import { hasEngagedUnits, hasSingleUnit } from '@entities';
 import { getBoardSpace, getOppositeFacing, isFriendlyUnit } from '@queries';
-
 /**
  * Adds a unit to a board (pure function, returns new board).
  */

@@ -1,4 +1,4 @@
-import type { EventStreamStorage, PortResponse } from '../ports';
+import type { EventStreamStorage, PortResponse } from '@application/ports';
 import { getCurrentEventNumber } from './getCurrentEventNumber';
 
 /**

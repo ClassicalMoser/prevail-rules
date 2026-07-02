@@ -10,7 +10,6 @@ import {
   getOppositeFacing,
   getSingleUnitWithPlacementAtCoordinate,
 } from '@queries';
-
 /**
  * Generates a ResolveFlankEngagementEvent by calculating the new facing
  * for the defending unit in a flank engagement.

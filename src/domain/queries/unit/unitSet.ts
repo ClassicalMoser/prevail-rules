@@ -1,5 +1,5 @@
 import type { UnitInstance } from '@entities';
-import { isSameUnitInstance } from '@validation';
+import { isSameUnitInstance } from '@queries/equivalence';
 
 /**
  * Checks whether a set of units contains a unit by value equality

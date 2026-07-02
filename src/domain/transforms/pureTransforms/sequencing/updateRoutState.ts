@@ -8,8 +8,8 @@ import {
   getMeleeResolutionState,
   getRangedAttackResolutionState,
   getResolveMeleePhaseStateForBoard,
-  updateRallyResolutionStateForCurrentStep,
 } from '@queries';
+import { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
 import { throwIfPending } from '@utils';
 import { updatePhaseState } from '../state';
 

@@ -30,6 +30,7 @@ export {
   updateMeleeResolutionState,
   updatePhaseState,
   updatePlayerCardState,
+  updateRallyResolutionStateForCurrentStep,
   updateRemainingPlayerCommands,
   updateRetreatRoutState,
   updateRetreatState,

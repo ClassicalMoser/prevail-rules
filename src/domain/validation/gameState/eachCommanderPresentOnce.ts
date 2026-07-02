@@ -1,7 +1,6 @@
 import type { PlayerSide, ValidationResult } from '@entities';
 import type { GameState } from '@game';
 import { getBoardCoordinates, getBoardSpace } from '@queries';
-
 export function eachCommanderPresentOnce(
   gameState: GameState,
 ): ValidationResult {

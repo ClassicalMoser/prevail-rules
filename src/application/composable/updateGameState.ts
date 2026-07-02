@@ -4,7 +4,7 @@ import type {
   GameStateSubscriber,
   GameStorage,
   PortResponse,
-} from '../ports';
+} from '@application/ports';
 import type { GameModeName } from '@entities';
 
 /**

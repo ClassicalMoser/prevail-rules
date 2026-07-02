@@ -1,6 +1,6 @@
 import type { BoardOfType, GameMode } from '@entities';
 import type { GameStateForBoard } from '@game';
-import type { RoundSnapshotStorage } from '../ports';
+import type { RoundSnapshotStorage } from '@application/ports';
 import { parseStoredGameForMode } from '../utils/parseStoredGame';
 
 /**

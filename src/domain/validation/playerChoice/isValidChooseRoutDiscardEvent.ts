@@ -3,7 +3,6 @@ import type { ChooseRoutDiscardEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 
 import { getOtherPlayer } from '@queries';
-
 /**
  * Validates a ChooseRoutDiscardEvent.
  * Checks that the player matches, cards exist in hand, and count matches penalty.

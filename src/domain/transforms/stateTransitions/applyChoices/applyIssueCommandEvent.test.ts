@@ -2,7 +2,7 @@ import type { IssueCommandEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
-import { getIssueCommandsPhaseState } from '@queries';
+import { getIssueCommandsPhaseState, isSameUnitInstance } from '@queries';
 import { tempCommandCards } from '@sampleValues';
 import {
   createEmptyGameState,
@@ -11,7 +11,6 @@ import {
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
-import { isSameUnitInstance } from '@validation';
 
 import { applyIssueCommandEvent } from './applyIssueCommandEvent';
 import type { StandardBoard } from '@entities';

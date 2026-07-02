@@ -10,7 +10,6 @@ import {
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
 } from '@queries';
-
 /**
  * Builds the trigger-rout-from-retreat effect with explicit resolution context
  * so apply does not branch on phase or probe players.

@@ -1,9 +1,9 @@
+export { getCurrentStep } from './getCurrentStep';
 export {
   getNextStepForResolveRally,
   getRallyResolutionStateAwaitingBurn,
   getRallyResolutionStateAwaitingUnitsBroken,
   getRallyResolutionStateForCurrentStep,
-  updateRallyResolutionStateForCurrentStep,
 } from './cleanupPhase';
 export {
   getCurrentCommandResolutionState,

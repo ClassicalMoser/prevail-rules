@@ -5,8 +5,7 @@ import type {
   PlayerSource,
 } from '@events';
 import type { GameState } from '@game';
-import { getExpectedEvent } from '@queries';
-
+import { getExpectedEvent } from '@expected';
 /**
  * Small helper function to compare a narrow PlayerSide to the broader PlayerSource.
  *

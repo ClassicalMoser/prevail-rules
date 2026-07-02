@@ -1,5 +1,4 @@
 import { getPlayerUnitWithPosition } from '@queries';
-
 import { createBoardWithCommander } from './boardWithCommander';
 import { createBoardWithSingleUnit } from './boardWithSingleUnit';
 

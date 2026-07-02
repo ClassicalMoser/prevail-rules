@@ -99,8 +99,6 @@ const config: OxlintConfig = {
     // Temporarily disabled rules for sanity.
     // TODO: These are a concession to the existing code, not an opinion.
     // They should be re-enabled one by one in the future.
-    // Priority: CRITICAL
-    'import/no-cycle': 'off',
     // Priority: HIGH
     'init-declarations': 'off',
     'max-params': 'off',

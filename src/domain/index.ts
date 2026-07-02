@@ -405,7 +405,6 @@ export {
   findMatchingCommand,
   getAdjacentFacings,
   getCurrentUnitStat,
-  getExpectedEvent,
   getLeftFacing,
   getLinesFromUnit,
   getMeleeSupportValue,
@@ -414,7 +413,21 @@ export {
   getOtherPlayer,
   getRightFacing,
   modifiersFromCompletedCommitment,
+  getPlayerUnitsOnBoard,
+  getPlayerUnitsWithPlacementOnBoard,
+  getSupportedUnitTypes,
+  getPlayerUnitWithPosition,
+  hasUnitInSet,
+  isFriendlyUnit,
+  setWithoutUnit,
+  areModifiersArraysEqual,
+  areModifiersEqual,
+  areRestrictionsEqual,
+  isSameInstanceNumber,
+  isSameUnitInstance,
+  isSameUnitType,
 } from '@queries';
+export { getExpectedEvent } from '@expected';
 export {
   canReverseUnit,
   findRetreatState,
@@ -425,11 +438,6 @@ export {
   getCurrentPhaseState,
   getCurrentRallyResolutionState,
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
-  getPlayerUnitsOnBoard,
-  getPlayerUnitsWithPlacementOnBoard,
-  getSupportedUnitTypes,
-} from '@queries';
-export {
   getEngagementStateFromMovement,
   getFlankEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
@@ -442,8 +450,6 @@ export {
   getPlayCardsPhaseState,
   getRallyResolutionState,
   getRallyResolutionStateAwaitingBurn,
-} from '@queries';
-export {
   getRallyResolutionStateAwaitingUnitsBroken,
   getRallyResolutionStateForCurrentStep,
   getRangedAttackResolutionState,
@@ -456,22 +462,17 @@ export {
   getReverseStateFromAttackApply,
   getReverseStateFromMeleeResolutionByInitiative,
   getRoutStateFromAttackApply,
+  getRoutStateFromCleanupPhaseForResolveRout,
+  getRoutStateFromMeleeResolutionByInitiative,
+  getRoutStateFromRally,
+  getRoutStateFromRearEngagement,
 } from '@queries';
 export {
   checkDiagonalMove,
   getLegalChooseCardOptions,
   getLegalRetreats,
   getLegalUnitMoves,
-  getPlayerUnitWithPosition,
-  getRoutStateFromCleanupPhaseForResolveRout,
-  getRoutStateFromMeleeResolutionByInitiative,
-  getRoutStateFromRally,
-  getRoutStateFromRearEngagement,
-  hasUnitInSet,
-  isFriendlyUnit,
-  setWithoutUnit,
-  updateRallyResolutionStateForCurrentStep,
-} from '@queries';
+} from '@legality';
 export { getPositionOfUnit } from '@queries';
 export type { Trait } from '@ruleValues';
 export {
@@ -517,6 +518,7 @@ export {
   updatePhaseState,
   updatePlayerCardState,
   updateRemainingPlayerCommands,
+  updateRallyResolutionStateForCurrentStep,
   updateRetreatRoutState,
   updateRetreatState,
   updateReverseState,
@@ -525,32 +527,29 @@ export {
 } from '@transforms';
 export { applyEvent } from '@transforms';
 export {
-  areModifiersArraysEqual,
-  areModifiersEqual,
-  areRestrictionsEqual,
   diagonalIsClear,
-  eachCardPresentOnce,
-  eachUnitPresentOnce,
+  hasEnemyUnit,
   isAtPlacement,
+  isDefenseStat,
   isDiagonalFacing,
-  isLegalCardChoice,
-  isLegalCommanderMove,
   isValidLine,
   matchesUnitRequirements,
+} from '@queries';
+export {
+  eachCardPresentOnce,
+  eachUnitPresentOnce,
+  isLegalCardChoice,
+  isLegalCommanderMove,
 } from '@validation';
 export {
   canEngageEnemy,
   canMoveInto,
   canMoveThrough,
   isLegalMove,
-  isSameInstanceNumber,
-  isSameUnitInstance,
-  isSameUnitType,
   isValidChooseCardEvent,
   isValidChooseRallyEvent,
   isValidChooseRoutDiscardEvent,
   isValidMoveCommanderEvent,
   validatePlayerChoice,
+  validateEvent,
 } from '@validation';
-
-export { hasEnemyUnit, isDefenseStat, validateEvent } from '@validation';
