@@ -43,8 +43,8 @@ importers:
         specifier: ^2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.59.1(eslint@9.39.4)(typescript@6.0.3))(eslint@9.39.4)
       eslint-plugin-import-boundaries:
-        specifier: ^0.8.2
-        version: 0.8.2(eslint@9.39.4)
+        specifier: link:../../eslint-plugin-import-boundaries
+        version: link:../../eslint-plugin-import-boundaries
       eslint-plugin-jsonc:
         specifier: ^3.1.2
         version: 3.1.2(eslint@9.39.4)
@@ -2660,12 +2660,6 @@ packages:
     engines: {node: '>=8.10.0'}
     peerDependencies:
       eslint: '>=4.19.1'
-
-  eslint-plugin-import-boundaries@0.8.2:
-    resolution: {integrity: sha512-hIBU42KB7IKENlW5cDaAp4/8W622o1V5Ld26s1FaeselCV9U2ziXH7foVpK7kRcQW2DiFf5G6s29KtXlMJmYBA==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      eslint: '>=9.0.0'
 
   eslint-plugin-import-lite@0.6.0:
     resolution: {integrity: sha512-80vevx2A7i3H7n1/6pqDO8cc5wRz6OwLDvIyVl9UflBV1N1f46e9Ihzi65IOLYoSxM6YykK2fTw1xm0Ixx6aTQ==}
@@ -5727,8 +5721,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.57.0(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.57.0(typescript@6.0.3)
-      '@typescript-eslint/types': 8.57.0
+      '@typescript-eslint/tsconfig-utils': 8.59.2(typescript@6.0.3)
+      '@typescript-eslint/types': 8.59.2
       debug: 4.4.3
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -6621,10 +6615,6 @@ snapshots:
       eslint: 9.39.4
       eslint-utils: 2.1.0
       regexpp: 3.2.0
-
-  eslint-plugin-import-boundaries@0.8.2(eslint@9.39.4):
-    dependencies:
-      eslint: 9.39.4
 
   eslint-plugin-import-lite@0.6.0(eslint@9.39.4):
     dependencies:

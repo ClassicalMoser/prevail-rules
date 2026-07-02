@@ -2,6 +2,7 @@ import type { StandardBoard, UnitInstance } from '@entities';
 import type { PerformRangedAttackEventForBoard } from '@events';
 import type { GameStateForBoard } from '@game';
 import {
+  isSameUnitInstance,
   getIssueCommandsPhaseState,
   getRangedAttackResolutionState,
 } from '@queries';
@@ -11,7 +12,6 @@ import {
   createUnitWithPlacement,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
-import { isSameUnitInstance } from '@validation';
 
 import { applyPerformRangedAttackEvent } from './applyPerformRangedAttackEvent';
 

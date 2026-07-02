@@ -1,0 +1,392 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "overrides": [
+    {
+      "files": ["src/**/*.ts", "src/**/*.js"],
+      "jsPlugins": ["eslint-plugin-import-boundaries"],
+      "rules": {
+        "import-boundaries/enforce": [
+          "error",
+          {
+            "boundaries": [
+              {
+                "alias": "@utils",
+                "dir": "domain/utils",
+                "identifier": "@utils"
+              },
+              {
+                "alias": "@ruleValues",
+                "allowTypeImportsFrom": ["@entities", "@events", "@utils"],
+                "dir": "domain/ruleValues",
+                "identifier": "@ruleValues"
+              },
+              {
+                "alias": "@entities",
+                "allowImportsFrom": ["@utils", "@ruleValues"],
+                "dir": "domain/entities",
+                "identifier": "@entities"
+              },
+              {
+                "alias": "@events",
+                "allowImportsFrom": ["@utils", "@ruleValues", "@entities"],
+                "dir": "domain/events",
+                "identifier": "@events"
+              },
+              {
+                "alias": "@game",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events"
+                ],
+                "dir": "domain/game",
+                "identifier": "@game"
+              },
+              {
+                "alias": "@factories",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game"
+                ],
+                "dir": "domain/factories",
+                "identifier": "@factories"
+              },
+              {
+                "alias": "@queries",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@factories"
+                ],
+                "dir": "domain/queries",
+                "identifier": "@queries"
+              },
+              {
+                "alias": "@expected",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@factories",
+                  "@queries"
+                ],
+                "dir": "domain/expected",
+                "identifier": "@expected"
+              },
+              {
+                "alias": "@procedures",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@queries",
+                  "@legality"
+                ],
+                "dir": "domain/procedures",
+                "identifier": "@procedures"
+              },
+              {
+                "alias": "@legality",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@factories",
+                  "@queries"
+                ],
+                "dir": "domain/legality",
+                "identifier": "@legality"
+              },
+              {
+                "alias": "@validation",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@queries",
+                  "@game",
+                  "@factories",
+                  "@expected",
+                  "@legality"
+                ],
+                "dir": "domain/validation",
+                "identifier": "@validation"
+              },
+              {
+                "alias": "@transforms",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@queries",
+                  "@factories"
+                ],
+                "dir": "domain/transforms",
+                "identifier": "@transforms"
+              },
+              {
+                "alias": "@application",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@queries",
+                  "@factories",
+                  "@expected",
+                  "@procedures",
+                  "@transforms",
+                  "@validation"
+                ],
+                "dir": "application",
+                "identifier": "@application"
+              },
+              {
+                "alias": "@sampleValues",
+                "allowTypeImportsFrom": ["@entities"],
+                "dir": "domain/sampleValues",
+                "identifier": "@sampleValues"
+              },
+              {
+                "alias": "@testing",
+                "allowImportsFrom": [
+                  "@entities",
+                  "@queries",
+                  "@expected",
+                  "@legality",
+                  "@ruleValues",
+                  "@events",
+                  "@utils",
+                  "@validation",
+                  "@game",
+                  "@sampleValues",
+                  "@transforms",
+                  "@factories",
+                  "@procedures"
+                ],
+                "dir": "domain/testing",
+                "identifier": "@testing"
+              }
+            ],
+            "crossBoundaryStyle": "alias",
+            "rootDir": "src"
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "**/*.test.{ts,js}",
+        "**/*.spec.{ts,js}",
+        "**/*.mock.{ts,js}",
+        "**/__tests__/**",
+        "**/__mocks__/**"
+      ],
+      "jsPlugins": ["eslint-plugin-import-boundaries"],
+      "rules": {
+        "import-boundaries/enforce": [
+          "error",
+          {
+            "boundaries": [
+              {
+                "alias": "@utils",
+                "dir": "domain/utils",
+                "identifier": "@utils"
+              },
+              {
+                "alias": "@ruleValues",
+                "allowTypeImportsFrom": ["@entities", "@events", "@utils"],
+                "dir": "domain/ruleValues",
+                "identifier": "@ruleValues"
+              },
+              {
+                "alias": "@entities",
+                "allowImportsFrom": ["@utils", "@ruleValues"],
+                "dir": "domain/entities",
+                "identifier": "@entities"
+              },
+              {
+                "alias": "@events",
+                "allowImportsFrom": ["@utils", "@ruleValues", "@entities"],
+                "dir": "domain/events",
+                "identifier": "@events"
+              },
+              {
+                "alias": "@game",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events"
+                ],
+                "dir": "domain/game",
+                "identifier": "@game"
+              },
+              {
+                "alias": "@factories",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game"
+                ],
+                "dir": "domain/factories",
+                "identifier": "@factories"
+              },
+              {
+                "alias": "@queries",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@factories"
+                ],
+                "dir": "domain/queries",
+                "identifier": "@queries"
+              },
+              {
+                "alias": "@expected",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@factories",
+                  "@queries"
+                ],
+                "dir": "domain/expected",
+                "identifier": "@expected"
+              },
+              {
+                "alias": "@procedures",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@queries",
+                  "@legality"
+                ],
+                "dir": "domain/procedures",
+                "identifier": "@procedures"
+              },
+              {
+                "alias": "@legality",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@factories",
+                  "@queries"
+                ],
+                "dir": "domain/legality",
+                "identifier": "@legality"
+              },
+              {
+                "alias": "@validation",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@queries",
+                  "@game",
+                  "@factories",
+                  "@expected",
+                  "@legality"
+                ],
+                "dir": "domain/validation",
+                "identifier": "@validation"
+              },
+              {
+                "alias": "@transforms",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@queries",
+                  "@factories"
+                ],
+                "dir": "domain/transforms",
+                "identifier": "@transforms"
+              },
+              {
+                "alias": "@application",
+                "allowImportsFrom": [
+                  "@utils",
+                  "@ruleValues",
+                  "@entities",
+                  "@events",
+                  "@game",
+                  "@queries",
+                  "@factories",
+                  "@expected",
+                  "@procedures",
+                  "@transforms",
+                  "@validation"
+                ],
+                "dir": "application",
+                "identifier": "@application"
+              },
+              {
+                "alias": "@sampleValues",
+                "allowTypeImportsFrom": ["@entities"],
+                "dir": "domain/sampleValues",
+                "identifier": "@sampleValues"
+              },
+              {
+                "alias": "@testing",
+                "allowImportsFrom": [
+                  "@entities",
+                  "@queries",
+                  "@expected",
+                  "@legality",
+                  "@ruleValues",
+                  "@events",
+                  "@utils",
+                  "@validation",
+                  "@game",
+                  "@sampleValues",
+                  "@transforms",
+                  "@factories",
+                  "@procedures"
+                ],
+                "dir": "domain/testing",
+                "identifier": "@testing"
+              }
+            ],
+            "crossBoundaryStyle": "alias",
+            "rootDir": "src",
+            "enforceBoundaries": false
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -5,8 +5,8 @@ import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
   getRallyResolutionStateAwaitingBurn,
-  updateRallyResolutionStateForCurrentStep,
 } from '@queries';
+import { updateRallyResolutionStateForCurrentStep } from '@transforms/pureTransforms/sequencing/updateRallyResolutionStateForCurrentStep';
 import {
   burnCardFromPlayed,
   returnCardsToHand,

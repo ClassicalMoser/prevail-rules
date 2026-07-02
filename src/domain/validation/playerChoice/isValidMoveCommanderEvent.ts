@@ -2,7 +2,6 @@ import type { Board, ValidationResult } from '@entities';
 import type { MoveCommanderEventForBoard } from '@events';
 import type { GameStateForBoard } from '@game';
 import { getOtherPlayer } from '@queries';
-
 /**
  * Validates whether a MoveCommanderEvent can be applied to the current game state.
  * This is used for proactive validation before attempting to apply the event.

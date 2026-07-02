@@ -1,8 +1,8 @@
 import type { GameEffectEvent } from '@events';
 import type { GameState } from '@game';
-import type { EnginePorts, PortResponse } from '../ports';
+import type { EnginePorts, PortResponse } from '@application/ports';
 import { generateEventFromProcedure } from '@procedures';
-import { getExpectedEvent } from '@queries';
+import { getExpectedEvent } from '@expected';
 import { processEvent } from './processEvent';
 import type { GameModeName } from '@entities';
 

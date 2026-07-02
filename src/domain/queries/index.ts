@@ -1,4 +1,5 @@
 export { applyAttackValue } from './applyAttackValue';
+export { diagonalIsClear } from './diagonalIsClear';
 export {
   getAdjacentSpaces,
   getBackSpaces,
@@ -22,24 +23,29 @@ export {
 } from './boardSpace';
 export { calculateInitiative } from './calculateInitiative';
 export {
-  getLegalChooseCardOptions,
-  getLegalChooseMeleeResolutionEvents,
-} from './choiceOptions';
-export {
   isEngagementFromFlank,
   isEngagementFromFront,
   isEngagementFromRear,
 } from './engagement';
-export { getExpectedEvent } from './expectedEvent';
 export {
   getAdjacentFacings,
   getLeftFacing,
   getOppositeFacing,
   getOrthogonalFacings,
   getRightFacing,
+  isDiagonalFacing,
 } from './facings';
+export {
+  areModifiersArraysEqual,
+  areModifiersEqual,
+  areRestrictionsEqual,
+  isSameInstanceNumber,
+  isSameUnitInstance,
+  isSameUnitType,
+} from './equivalence';
 export { findMatchingCommand } from './findMatchingCommand';
 export { getCurrentUnitStat } from './getCurrentUnitStat';
+export { isValidLine } from './isValidLine';
 export { getLinesFromUnit } from './getLine';
 export { getMeleeSupportValue } from './getMeleeSupportValue';
 export { getOtherPlayer } from './getOtherPlayer';
@@ -48,15 +54,32 @@ export { getPlayerUnitsWithPlacementOnBoard } from './getPlayerUnitsWithPlacemen
 export { getSupportedUnitTypes } from './getSupportedUnitTypes';
 export { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
 export {
+  hasUnitInArray,
+  hasUnitInSet,
+  arrayWithoutUnit,
+  isDefenseStat,
+  isFriendlyUnit,
+  matchesUnitRequirements,
+  setWithoutUnit,
+} from './unit';
+export {
+  getPlayerUnitWithPosition,
+  getPositionOfUnit,
+  hasEnemyUnit,
+  isAtPlacement,
+} from './unitPresence';
+export {
   canReverseUnit,
   findRetreatState,
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
   getCleanupPhaseState,
   getCurrentCommandResolutionState,
+  getCurrentInitiative,
   getCurrentPhaseState,
   getCurrentPhaseStateForBoard,
   getCurrentRallyResolutionState,
+  getCurrentStep,
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
   getEngagementStateFromMovement,
   getFlankEngagementStateFromMovement,
@@ -67,6 +90,7 @@ export {
   getMeleeResolutionState,
   getMoveCommandersPhaseState,
   getMovementResolutionState,
+  getNextEventNumber,
   getNextStepForResolveRally,
   getPlayCardsPhaseState,
   getRallyResolutionState,
@@ -75,6 +99,7 @@ export {
   getRallyResolutionStateForCurrentStep,
   getRangedAttackResolutionState,
   getRearEngagementStateFromMovement,
+  getRemainingMeleeEngagements,
   getResolveMeleePhaseState,
   getResolveMeleePhaseStateForBoard,
   getRetreatStateFromAttackApply,
@@ -88,18 +113,5 @@ export {
   getRoutStateFromMeleeResolutionByInitiative,
   getRoutStateFromRally,
   getRoutStateFromRearEngagement,
-  updateRallyResolutionStateForCurrentStep,
+  getCurrentEventStream,
 } from './sequencing';
-export {
-  hasUnitInArray,
-  hasUnitInSet,
-  arrayWithoutUnit,
-  isFriendlyUnit,
-  setWithoutUnit,
-} from './unit';
-export {
-  checkDiagonalMove,
-  getLegalRetreats,
-  getLegalUnitMoves,
-} from './unitMovement';
-export { getPlayerUnitWithPosition, getPositionOfUnit } from './unitPresence';

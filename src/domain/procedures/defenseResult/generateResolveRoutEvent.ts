@@ -11,7 +11,6 @@ import {
   getRoutStateFromMeleeResolutionByInitiative,
   getRoutStateFromRearEngagement,
 } from '@queries';
-
 /**
  * Generates a ResolveRoutEvent by calculating the rout penalty
  * for the unit(s) being routed.

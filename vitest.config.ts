@@ -12,6 +12,10 @@ export default defineConfig({
       // Queries
       '@queries': path.resolve(__dirname, './src/domain/queries'),
       '@queries/*': path.resolve(__dirname, './src/domain/queries/*'),
+      '@expected': path.resolve(__dirname, './src/domain/expected'),
+      '@expected/*': path.resolve(__dirname, './src/domain/expected/*'),
+      '@legality': path.resolve(__dirname, './src/domain/legality'),
+      '@legality/*': path.resolve(__dirname, './src/domain/legality/*'),
       // Transforms
       '@transforms': path.resolve(__dirname, './src/domain/transforms'),
       '@transforms/*': path.resolve(__dirname, './src/domain/transforms/*'),
@@ -21,6 +25,8 @@ export default defineConfig({
       // Events
       '@events': path.resolve(__dirname, './src/domain/events'),
       '@events/*': path.resolve(__dirname, './src/domain/events/*'),
+      '@factories': path.resolve(__dirname, './src/domain/factories'),
+      '@factories/*': path.resolve(__dirname, './src/domain/factories/*'),
       // Game State (sequence types)
       '@game': path.resolve(__dirname, './src/domain/game'),
       '@game/*': path.resolve(__dirname, './src/domain/game/*'),

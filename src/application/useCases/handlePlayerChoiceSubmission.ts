@@ -1,7 +1,7 @@
 import type { PlayerChoiceEvent } from '@events';
-import type { EnginePorts, PortResponse } from '../ports';
-import { advanceEffects, processPlayerChoice } from '../process';
-import type { GameModeName } from '../../domain';
+import type { EnginePorts, PortResponse } from '@application/ports';
+import { advanceEffects, processPlayerChoice } from '@application/process';
+import type { GameModeName } from '@entities';
 
 export async function handlePlayerChoiceSubmission(
   gameId: string,

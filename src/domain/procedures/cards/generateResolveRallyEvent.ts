@@ -2,7 +2,6 @@ import type { ResolveRallyEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RALLY_EFFECT_TYPE } from '@events';
 import { getCleanupPhaseState, getOtherPlayer } from '@queries';
-
 /**
  * Generates a ResolveRallyEvent by randomly selecting a card to burn.
  * The randomness happens here; the event (with the selected card) is what makes it replayable.

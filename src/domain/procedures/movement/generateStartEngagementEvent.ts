@@ -9,7 +9,6 @@ import {
   isEngagementFromFront,
   isEngagementFromRear,
 } from '@queries';
-
 /**
  * Generates a StartEngagementEvent by determining the engagement type
  * based on the relative facing of the engaging unit and defending unit.

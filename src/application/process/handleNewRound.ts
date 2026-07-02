@@ -1,5 +1,5 @@
 import type { GameState } from '@game';
-import type { EnginePorts, PortResponse } from '../ports';
+import type { EnginePorts, PortResponse } from '@application/ports';
 
 /**
  * Called at the START of a new round.

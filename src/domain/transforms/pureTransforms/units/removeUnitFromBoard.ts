@@ -5,9 +5,7 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from '@entities';
-import { getBoardSpace, getOppositeFacing } from '@queries';
-import { isSameUnitInstance } from '@validation';
-
+import { getBoardSpace, getOppositeFacing, isSameUnitInstance } from '@queries';
 /* Pure transform to remove a unit from the board immutably with no side effects. */
 export function removeUnitFromBoard<TBoard extends Board>(
   board: TBoard,

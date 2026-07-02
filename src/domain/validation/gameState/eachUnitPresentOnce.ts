@@ -5,10 +5,12 @@ import type {
   ValidationResult,
 } from '@entities';
 import { hasEngagedUnits, hasSingleUnit } from '@entities';
-import { getBoardCoordinates, getBoardSpace } from '@queries';
-import { createUnitInstance } from '@transforms';
-import { isSameUnitInstance } from '@validation/unitEquivalence';
-
+import { createUnitInstance } from '@factories';
+import {
+  getBoardCoordinates,
+  getBoardSpace,
+  isSameUnitInstance,
+} from '@queries';
 export function eachUnitPresentOnce(
   whiteArmy: Set<UnitCount>,
   blackArmy: Set<UnitCount>,

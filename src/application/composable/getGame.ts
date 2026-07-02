@@ -1,5 +1,5 @@
 import type { Game } from '@game';
-import type { GameStorage } from '../ports';
+import type { GameStorage } from '@application/ports';
 import type { GameModeName } from '@entities';
 
 /**

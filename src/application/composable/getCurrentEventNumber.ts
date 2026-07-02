@@ -1,5 +1,5 @@
 import type { Event } from '@events';
-import type { EventStreamStorage, PortResponse } from '../ports';
+import type { EventStreamStorage, PortResponse } from '@application/ports';
 
 /**
  * Gets the current event number for a given game and round.

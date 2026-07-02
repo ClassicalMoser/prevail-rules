@@ -1,0 +1,104 @@
+import type { ExpectedEventInfo } from '@events';
+import type { GameState } from '@game';
+import { getIssueCommandsPhaseState, getOtherPlayer } from '@queries';
+import { getExpectedStartCommandResolutionEvent } from '../composable';
+import { getExpectedCommandResolutionEvent } from '../iterated';
+
+/**
+ * Gets information about the expected event for the Issue Commands phase.
+ *
+ * @param state - The current game state with Issue Commands phase
+ * @returns Information about what event is expected
+ */
+export function getExpectedIssueCommandsPhaseEvent(
+  state: GameState,
+): ExpectedEventInfo {
+  const phaseState = getIssueCommandsPhaseState(state);
+  const firstPlayer = state.currentInitiative;
+  const secondPlayer = getOtherPlayer(firstPlayer);
+
+  switch (phaseState.step) {
+    case 'firstPlayerIssueCommands': {
+      // If there are remaining commands, expect issueCommand
+      if (phaseState.remainingCommandsFirstPlayer.length > 0) {
+        return {
+          actionType: 'playerChoice',
+          choiceType: 'issueCommand',
+          playerSource: firstPlayer,
+        };
+      }
+      // All commands issued - should have advanced to firstPlayerResolveCommands
+      // This state should not occur if applyIssueCommandEvent properly advances steps
+      throw new Error(
+        'All first player commands issued but step not advanced to firstPlayerResolveCommands',
+      );
+    }
+
+    case 'firstPlayerResolveCommands': {
+      // Check if there's an ongoing command resolution
+      if (phaseState.currentCommandResolutionState !== 'pending') {
+        return getExpectedCommandResolutionEvent(
+          state,
+          phaseState.currentCommandResolutionState,
+          firstPlayer,
+        );
+      }
+
+      // No ongoing resolution - check if there are remaining units to resolve
+      if (phaseState.remainingUnitsFirstPlayer.length > 0) {
+        return getExpectedStartCommandResolutionEvent(state, firstPlayer);
+      }
+      // All units resolved - should have advanced to secondPlayerIssueCommands
+      throw new Error(
+        'All first player units resolved but step not advanced to secondPlayerIssueCommands',
+      );
+    }
+
+    case 'secondPlayerIssueCommands': {
+      // If there are remaining commands, expect issueCommand
+      if (phaseState.remainingCommandsSecondPlayer.length > 0) {
+        return {
+          actionType: 'playerChoice',
+          choiceType: 'issueCommand',
+          playerSource: secondPlayer,
+        };
+      }
+      // All commands issued - should have advanced to secondPlayerResolveCommands
+      throw new Error(
+        'All second player commands issued but step not advanced to secondPlayerResolveCommands',
+      );
+    }
+
+    case 'secondPlayerResolveCommands': {
+      // Check if there's an ongoing command resolution
+      if (phaseState.currentCommandResolutionState !== 'pending') {
+        return getExpectedCommandResolutionEvent(
+          state,
+          phaseState.currentCommandResolutionState,
+          secondPlayer,
+        );
+      }
+
+      // No ongoing resolution - check if there are remaining units to resolve
+      if (phaseState.remainingUnitsSecondPlayer.length > 0) {
+        return getExpectedStartCommandResolutionEvent(state, secondPlayer);
+      }
+      // All units resolved - should have advanced to complete
+      throw new Error(
+        'All second player units resolved but step not advanced to complete',
+      );
+    }
+
+    case 'complete': {
+      return {
+        actionType: 'gameEffect',
+        effectType: 'completeIssueCommandsPhase',
+      };
+    }
+
+    default: {
+      const _exhaustive: never = phaseState.step;
+      throw new Error(`Invalid issueCommands phase state: ${_exhaustive}`);
+    }
+  }
+}

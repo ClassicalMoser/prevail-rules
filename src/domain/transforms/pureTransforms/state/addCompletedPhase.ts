@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { GameStateForBoard, PhaseStateForBoard } from '@game';
-import { updateRoundState } from '../';
+import { updateRoundState } from './updateRoundState';
 
 /**
  * Adds a completed phase to the completed phases set.

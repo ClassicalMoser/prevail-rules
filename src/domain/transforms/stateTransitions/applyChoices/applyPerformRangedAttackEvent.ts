@@ -5,9 +5,12 @@ import type {
   IssueCommandsPhaseStateForBoard,
   RangedAttackResolutionStateForBoard,
 } from '@game';
-import { getIssueCommandsPhaseStateForBoard } from '@queries';
+
+import {
+  getIssueCommandsPhaseStateForBoard,
+  isSameUnitInstance,
+} from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
-import { isSameUnitInstance } from '@validation';
 
 /**
  * Applies a PerformRangedAttackEvent to the game state.

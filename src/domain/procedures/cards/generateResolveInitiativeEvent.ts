@@ -5,7 +5,6 @@ import {
   RESOLVE_INITIATIVE_EFFECT_TYPE,
 } from '@events';
 import { calculateInitiative, getPlayCardsPhaseState } from '@queries';
-
 /**
  * Generates a ResolveInitiativeEvent by calculating which player receives initiative
  * based on the cards currently in play.

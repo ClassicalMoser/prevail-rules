@@ -1,10 +1,9 @@
 import type { Board, Modifier, UnitInstance, UnitStatName } from '@entities';
 import type { GameStateForBoard } from '@game';
-import { isDefenseStat, matchesUnitRequirements } from '@validation';
+import { isDefenseStat, matchesUnitRequirements, hasUnitInArray } from './unit';
 import { getSpacesWithinDistance } from './boardSpace';
 import { getCommanderSpace } from './getCommanderSpace';
 import { getPositionOfUnit } from './unitPresence';
-import { hasUnitInArray } from './unit';
 
 /**
  * Gets the current stat value of a unit.

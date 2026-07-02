@@ -8,12 +8,11 @@ import type { ResolveRangedAttackEventForBoard } from '@events';
 import {
   applyAttackValue,
   getCurrentUnitStat,
-  getLegalRetreats,
   getPositionOfUnit,
   getRangedAttackResolutionState,
   modifiersFromCompletedCommitment,
 } from '@queries';
-
+import { getLegalRetreats } from '@legality';
 /**
  * Generates a ResolveRangedAttackEvent by calculating the attack value
  * and determining the results (routed, reversed, retreated).

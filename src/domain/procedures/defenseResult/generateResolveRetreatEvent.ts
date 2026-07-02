@@ -7,7 +7,6 @@ import {
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,
 } from '@queries';
-
 /**
  * Generates a ResolveRetreatEvent by reading the finalPosition from the retreat state.
  * The finalPosition is already determined (either auto-selected if single option,

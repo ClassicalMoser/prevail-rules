@@ -14,7 +14,6 @@ import {
   getReverseStateFromAttackApply,
   getReverseStateFromMeleeResolutionByInitiative,
 } from '@queries';
-
 /**
  * Generates a ResolveReverseEvent by calculating the new facing
  * (opposite of current facing) for a unit that is being reversed.

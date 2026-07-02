@@ -1,4 +1,4 @@
-import type { EnginePorts } from '../ports';
+import type { EnginePorts } from '@application/ports';
 
 import { startNewGame } from './startNewGame';
 import { gameModes } from '@entities';

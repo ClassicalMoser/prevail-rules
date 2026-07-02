@@ -10,4 +10,5 @@ export { updateMeleeResolutionState } from './updateMeleeResolutionState';
 export { updateRetreatRoutState } from './updateRetreatRoutState';
 export { updateRetreatState } from './updateRetreatState';
 export { updateReverseState } from './updateReverseState';
+export { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
 export { updateRoutState } from './updateRoutState';

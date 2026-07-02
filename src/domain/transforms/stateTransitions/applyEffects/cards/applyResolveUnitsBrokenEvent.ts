@@ -12,8 +12,8 @@ import {
   getNextStepForResolveRally,
   getPlayerUnitsWithPlacementOnBoard,
   getRallyResolutionStateAwaitingUnitsBroken,
-  updateRallyResolutionStateForCurrentStep,
 } from '@queries';
+import { updateRallyResolutionStateForCurrentStep } from '@transforms/pureTransforms/sequencing/updateRallyResolutionStateForCurrentStep';
 import {
   addUnitToRouted,
   removeUnitFromBoard,
