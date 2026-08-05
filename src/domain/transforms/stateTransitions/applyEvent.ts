@@ -70,7 +70,7 @@ export function applyEventForBoard<TBoard extends Board>(
  * The conditions above MUST be satisfied for this function to be safe.
  */
 export function applyEvent(event: Event, state: GameState): GameState {
-  const gameStateBoardType = state.boardType;
+  const gameStateBoardType = state.boardState.boardType;
   const eventHasBoardType = 'boardType' in event;
   if (eventHasBoardType && event.boardType !== gameStateBoardType) {
     throw new Error(

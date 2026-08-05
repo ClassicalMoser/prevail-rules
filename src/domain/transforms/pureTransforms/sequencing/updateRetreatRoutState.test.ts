@@ -20,10 +20,8 @@ describe(updateRetreatRoutState, () => {
   function createStateWithRangedAttackRetreat() {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const placement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },

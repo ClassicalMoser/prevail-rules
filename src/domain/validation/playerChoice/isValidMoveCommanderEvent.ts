@@ -1,5 +1,5 @@
 import type { Board, ValidationResult } from '@entities';
-import type { MoveCommanderEventForBoard } from '@events';
+import type { MoveCommanderEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { getOtherPlayer } from '@queries';
 /**
@@ -22,7 +22,7 @@ import { getOtherPlayer } from '@queries';
  * ```
  */
 export function isValidMoveCommanderEvent<TBoard extends Board>(
-  event: MoveCommanderEventForBoard<TBoard>,
+  event: MoveCommanderEvent,
   state: GameStateForBoard<TBoard>,
 ): ValidationResult {
   try {

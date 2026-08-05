@@ -9,15 +9,13 @@ import { getBoardSpace } from './getBoardSpace';
 export function getSingleUnitWithPlacementAtCoordinate<TBoard extends Board>(
   board: TBoard,
   coordinate: BoardCoordinate<TBoard>,
-): UnitWithPlacement<TBoard> {
+): UnitWithPlacement {
   const space = getBoardSpace(board, coordinate);
   if (!hasSingleUnit(space.unitPresence)) {
     throw new Error('Expected exactly one unit at coordinate');
   }
   return {
-    boardType: board.boardType,
     placement: {
-      boardType: board.boardType,
       coordinate,
       facing: space.unitPresence.facing,
     },

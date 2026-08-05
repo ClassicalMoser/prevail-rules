@@ -1,5 +1,5 @@
-import type { AuthoritativeCardState, Board } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { AuthoritativeCardState } from '@entities';
+import type { GameStateForVisibility } from '@game';
 
 /**
  * Test-harness helper: returns a new game state with the authoritative card
@@ -20,10 +20,10 @@ import type { GameStateForBoard } from '@game';
  * });
  * ```
  */
-export function updateCardState<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+export function updateCardState(
+  state: GameStateForVisibility,
   cardState: AuthoritativeCardState,
-): GameStateForBoard<TBoard> {
+): GameStateForVisibility {
   return {
     ...state,
     cardState,

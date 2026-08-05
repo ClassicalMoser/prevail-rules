@@ -1,25 +1,16 @@
 import type { AssertExact } from '@utils';
 import type { CleanupPhaseState } from './cleanupPhase';
-import type { IssueCommandsPhaseStateForBoard } from './issueCommandsPhase';
+import type { IssueCommandsPhaseState } from './issueCommandsPhase';
 import type { MoveCommandersPhaseState } from './moveCommandersPhase';
 import type { PlayCardsPhaseState } from './playCardsPhase';
 
-import type { ResolveMeleePhaseStateForBoard } from './resolveMeleePhase';
+import type { ResolveMeleePhaseState } from './resolveMeleePhase';
 import { z } from 'zod';
 import { cleanupPhaseStateSchema } from './cleanupPhase';
-import {
-  largeIssueCommandsPhaseStateSchema,
-  smallIssueCommandsPhaseStateSchema,
-  standardIssueCommandsPhaseStateSchema,
-} from './issueCommandsPhase';
 import { moveCommandersPhaseStateSchema } from './moveCommandersPhase';
 import { playCardsPhaseStateSchema } from './playCardsPhase';
-import {
-  largeResolveMeleePhaseStateSchema,
-  smallResolveMeleePhaseStateSchema,
-  standardResolveMeleePhaseStateSchema,
-} from './resolveMeleePhase';
-import type { Board, LargeBoard, SmallBoard, StandardBoard } from '@entities';
+import { issueCommandsPhaseStateSchema } from './issueCommandsPhase';
+import { resolveMeleePhaseStateSchema } from './resolveMeleePhase';
 
 /**
  * Iterable list of valid phases for a round.
@@ -68,76 +59,18 @@ const _assertExactPhase: AssertExact<Phase, PhaseSchemaType> = true;
  *
  * Spatial branches (`issueCommands`, `resolveMelee`) correlate nested state with `TBoard`.
  */
-export type PhaseStateForBoard<TBoard extends Board> =
+export type PhaseState =
   | PlayCardsPhaseState
   | MoveCommandersPhaseState
-  | IssueCommandsPhaseStateForBoard<TBoard>
-  | ResolveMeleePhaseStateForBoard<TBoard>
+  | IssueCommandsPhaseState
+  | ResolveMeleePhaseState
   | CleanupPhaseState;
-
-export type PhaseState =
-  | PhaseStateForBoard<SmallBoard>
-  | PhaseStateForBoard<StandardBoard>
-  | PhaseStateForBoard<LargeBoard>;
-
-/** Zod 4: phase branches include nested board unions; use flat union, not nested discriminatedUnion. */
-const _smallPhaseStateSchemaObject = z.union([
-  playCardsPhaseStateSchema,
-  moveCommandersPhaseStateSchema,
-  smallIssueCommandsPhaseStateSchema,
-  smallResolveMeleePhaseStateSchema,
-  cleanupPhaseStateSchema,
-]);
-
-type SmallPhaseStateSchemaType = z.infer<typeof _smallPhaseStateSchemaObject>;
-const _assertExactSmallPhaseState: AssertExact<
-  PhaseStateForBoard<SmallBoard>,
-  SmallPhaseStateSchemaType
-> = true;
-
-export const smallPhaseStateSchema: z.ZodType<PhaseStateForBoard<SmallBoard>> =
-  _smallPhaseStateSchemaObject;
-
-const _standardPhaseStateSchemaObject = z.union([
-  playCardsPhaseStateSchema,
-  moveCommandersPhaseStateSchema,
-  standardIssueCommandsPhaseStateSchema,
-  standardResolveMeleePhaseStateSchema,
-  cleanupPhaseStateSchema,
-]);
-
-type StandardPhaseStateSchemaType = z.infer<
-  typeof _standardPhaseStateSchemaObject
->;
-const _assertExactStandardPhaseState: AssertExact<
-  PhaseStateForBoard<StandardBoard>,
-  StandardPhaseStateSchemaType
-> = true;
-
-export const standardPhaseStateSchema: z.ZodType<
-  PhaseStateForBoard<StandardBoard>
-> = _standardPhaseStateSchemaObject;
-
-const _largePhaseStateSchemaObject = z.union([
-  playCardsPhaseStateSchema,
-  moveCommandersPhaseStateSchema,
-  largeIssueCommandsPhaseStateSchema,
-  largeResolveMeleePhaseStateSchema,
-  cleanupPhaseStateSchema,
-]);
-
-type LargePhaseStateSchemaType = z.infer<typeof _largePhaseStateSchemaObject>;
-const _assertExactLargePhaseState: AssertExact<
-  PhaseStateForBoard<LargeBoard>,
-  LargePhaseStateSchemaType
-> = true;
-
-export const largePhaseStateSchema: z.ZodType<PhaseStateForBoard<LargeBoard>> =
-  _largePhaseStateSchemaObject;
 
 /** The schema for the state of a phase of a round. */
 export const phaseStateSchema: z.ZodType<PhaseState> = z.union([
-  _smallPhaseStateSchemaObject,
-  _standardPhaseStateSchemaObject,
-  _largePhaseStateSchemaObject,
+  playCardsPhaseStateSchema,
+  moveCommandersPhaseStateSchema,
+  issueCommandsPhaseStateSchema,
+  resolveMeleePhaseStateSchema,
+  cleanupPhaseStateSchema,
 ]);

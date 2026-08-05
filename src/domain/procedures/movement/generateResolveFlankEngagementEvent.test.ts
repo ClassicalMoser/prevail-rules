@@ -29,10 +29,8 @@ describe(generateResolveFlankEngagementEvent, () => {
     const defender = createTestUnit('white');
     const flank = createFlankEngagementState();
     // Factory default: targetPlacement E-5 facing north (engaging facing). If that default changes, expected newFacing below must change with it.
-    const defenderPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const defenderPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: flank.targetPlacement.coordinate,
         facing: 'east',
       },

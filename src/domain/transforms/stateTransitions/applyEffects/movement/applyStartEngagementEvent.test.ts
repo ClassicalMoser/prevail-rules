@@ -3,10 +3,7 @@ import type {
   StandardBoard,
   UnitWithPlacement,
 } from '@entities';
-import type {
-  StartEngagementEvent,
-  StartEngagementEventForBoard,
-} from '@events';
+import type { StartEngagementEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
@@ -28,16 +25,14 @@ describe(applyStartEngagementEvent, () => {
   /** Black E-5 moving into white on E-6 with north-facing target placement. */
   function stateWithMovementToEnemy(): {
     state: GameStateForBoard<StandardBoard>;
-    defenderWithPlacement: UnitWithPlacement<StandardBoard>;
+    defenderWithPlacement: UnitWithPlacement;
   } {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();
     const defendingUnit = createTestUnit('white');
     const blackMover = createTestUnit('black');
-    const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const defenderWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-6',
         facing: 'south',
       },
@@ -49,16 +44,13 @@ describe(applyStartEngagementEvent, () => {
     };
     const movement = createMovementResolutionState(withBoard, {
       movingUnit: {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
         unit: blackMover,
       },
       targetPlacement: {
-        boardType: 'standard' as const,
         coordinate: 'E-6',
         facing: 'north',
       },
@@ -75,7 +67,6 @@ describe(applyStartEngagementEvent, () => {
   it('given event engagementType front, movement engagement is front and engager is movingUnit', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      boardType: 'standard' as const,
       defenderWithPlacement,
       effectType: 'startEngagement' as const,
       engagementType: 'front' as const,
@@ -104,7 +95,6 @@ describe(applyStartEngagementEvent, () => {
   it('given event engagementType rear, rear routState player matches defender side', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      boardType: 'standard' as const,
       defenderWithPlacement,
       effectType: 'startEngagement' as const,
       engagementType: 'rear' as const,
@@ -138,7 +128,6 @@ describe(applyStartEngagementEvent, () => {
   it('given event engagementType flank, flank substep present and defenderRotated false', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
-      boardType: 'standard' as const,
       defenderWithPlacement,
       effectType: 'startEngagement' as const,
       engagementType: 'flank' as const,
@@ -169,13 +158,12 @@ describe(applyStartEngagementEvent, () => {
 
   it('given bogus engagementType siege cast, throws unknown engagement type', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
-    const event: StartEngagementEventForBoard<StandardBoard> = {
+    const event: StartEngagementEvent = {
       eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'startEngagement' as const,
       // Intentionally bad cast to test failure path
       engagementType: 'siege' as unknown as EngagementType,
-      boardType: 'standard' as const,
       defenderWithPlacement,
     };
 

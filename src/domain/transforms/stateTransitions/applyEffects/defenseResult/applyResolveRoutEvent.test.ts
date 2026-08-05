@@ -35,10 +35,8 @@ describe(applyResolveRoutEvent, () => {
   function createStateWithRangedAttackRout(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
     const routedUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -72,19 +70,15 @@ describe(applyResolveRoutEvent, () => {
       { attack: 2 },
     );
 
-    const routedUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const routedUnitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: routedUnit,
     };
-    const otherUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const otherUnitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },
@@ -123,7 +117,6 @@ describe(applyResolveRoutEvent, () => {
     const attacker = createTestUnit('black', { attack: 2 });
     const movement = createMovementResolutionState(state, {
       engagementState: {
-        boardType: 'standard' as const,
         completed: false,
         engagementResolutionState: {
           completed: false,
@@ -140,22 +133,18 @@ describe(applyResolveRoutEvent, () => {
         engagingUnit: attacker,
         substepType: 'engagementResolution',
         targetPlacement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'south',
         },
       },
       movingUnit: {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-4',
           facing: 'south',
         },
         unit: attacker,
       },
       targetPlacement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },

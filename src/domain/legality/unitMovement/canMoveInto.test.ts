@@ -25,18 +25,14 @@ describe(canMoveInto, () => {
       let board = createEmptyStandardBoard();
       // Add engaged units at D-5
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'D-5',
           facing: 'north',
         },
         unit: createTestUnit('black'),
       });
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'D-5',
           facing: 'south',
         },
@@ -44,9 +40,7 @@ describe(canMoveInto, () => {
       });
       // Add unit attempting to move into
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -163,9 +157,7 @@ describe(canMoveInto, () => {
     it('given an invalid unitPresence, returns false', () => {
       let board = createEmptyStandardBoard();
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },

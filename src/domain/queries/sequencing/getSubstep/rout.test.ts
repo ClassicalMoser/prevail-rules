@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { AttackApplyStateForBoard, GameStateForBoard } from '@game';
+import type { AttackApplyState, GameStateForBoard } from '@game';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRout,
@@ -22,13 +22,12 @@ import {
 describe(getRoutStateFromAttackApply, () => {
   it('given apply with rout nested, returns that rout substep', () => {
     const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyStateForBoard<StandardBoard> = {
+    const attackApplyState: AttackApplyState = {
       attackResult: {
         unitRetreated: false,
         unitReversed: false,
         unitRouted: true,
       },
-      boardType: 'standard' as const,
       completed: false,
       defendingUnit: unit,
       retreatState: 'pending' as const,
@@ -52,13 +51,12 @@ describe(getRoutStateFromAttackApply, () => {
 
   it('given apply without routState, throws no rout in attack apply', () => {
     const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyStateForBoard<StandardBoard> = {
+    const attackApplyState: AttackApplyState = {
       attackResult: {
         unitRetreated: false,
         unitReversed: false,
         unitRouted: false,
       },
-      boardType: 'standard' as const,
       completed: false,
       defendingUnit: unit,
       retreatState: 'pending' as const,
@@ -82,19 +80,15 @@ describe(getRoutStateFromMeleeResolutionByInitiative, () => {
     const state = createEmptyGameState({ currentInitiative: initiative });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const whiteWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: whiteUnit,
     };
-    const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const blackWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },

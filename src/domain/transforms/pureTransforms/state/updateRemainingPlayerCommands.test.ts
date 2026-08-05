@@ -1,4 +1,4 @@
-import type { IssueCommandsPhaseStateForBoard } from '@game';
+import type { IssueCommandsPhaseState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { createTestCard } from '@testing';
@@ -11,8 +11,7 @@ import type { StandardBoard } from '@entities';
  */
 describe('updateRemainingCommandsForPlayer', () => {
   it('given update remainingCommandsFirstPlayer when player is initiative player', () => {
-    const phaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const phaseState: IssueCommandsPhaseState = {
       currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [],
@@ -41,8 +40,7 @@ describe('updateRemainingCommandsForPlayer', () => {
   });
 
   it('given update remainingCommandsSecondPlayer when player is not initiative player', () => {
-    const phaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const phaseState: IssueCommandsPhaseState = {
       currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [],
@@ -71,8 +69,7 @@ describe('updateRemainingCommandsForPlayer', () => {
   });
 
   it('given not mutate the original phase state', () => {
-    const phaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const phaseState: IssueCommandsPhaseState = {
       currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [],

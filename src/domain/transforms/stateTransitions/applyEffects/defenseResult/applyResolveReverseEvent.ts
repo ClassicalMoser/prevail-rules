@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
-import type { ResolveReverseEventForBoard } from '@events';
-import type { GameStateForBoard, ReverseStateForBoard } from '@game';
+import type { ResolveReverseEvent } from '@events';
+import type { GameStateForBoard, ReverseState } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -22,7 +22,7 @@ import {
  * @returns A new game state with the unit's facing updated and reverse state marked as completed
  */
 export function applyResolveReverseEvent<TBoard extends Board>(
-  event: ResolveReverseEventForBoard<TBoard>,
+  event: ResolveReverseEvent,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   const removedUnitBoard = removeUnitFromBoard(
@@ -41,7 +41,7 @@ export function applyResolveReverseEvent<TBoard extends Board>(
 
   const currentReverseState = getReverseStateFromAttackApply(attackApplyState);
 
-  const newReverseState: ReverseStateForBoard<TBoard> = {
+  const newReverseState: ReverseState = {
     ...currentReverseState,
     completed: true,
     finalPosition: event.newUnitPlacement.placement,

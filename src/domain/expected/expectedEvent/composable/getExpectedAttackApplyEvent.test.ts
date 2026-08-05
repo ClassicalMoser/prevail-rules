@@ -47,10 +47,8 @@ describe(getExpectedAttackApplyEvent, () => {
   describe('rout priority', () => {
     it('given prioritize rout over retreat and reverse', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const unitPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -108,9 +106,7 @@ describe(getExpectedAttackApplyEvent, () => {
     it('given retreat is not completed, returns expected retreat event', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const attackApplyState = createAttackApplyStateWithRetreat({
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -126,10 +122,8 @@ describe(getExpectedAttackApplyEvent, () => {
 
     it('given continue to completeAttackApply when retreat is completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const unitPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -153,10 +147,8 @@ describe(getExpectedAttackApplyEvent, () => {
     it('given reverse is not completed and unit can reverse, returns expected reverse event', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(true);
-      const unitPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const unitPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -173,10 +165,8 @@ describe(getExpectedAttackApplyEvent, () => {
     it('given reverse cannot happen due to engagement, returns completeAttackApply', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(false);
-      const unitPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const unitPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -199,10 +189,8 @@ describe(getExpectedAttackApplyEvent, () => {
     it('given when reverse cannot happen and attack apply is already complete, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(false);
-      const unitPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const unitPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -222,10 +210,8 @@ describe(getExpectedAttackApplyEvent, () => {
 
     it('given continue to completeAttackApply when reverse is completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const unitPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -237,7 +223,6 @@ describe(getExpectedAttackApplyEvent, () => {
           reverseState: createReverseState(unitPlacement, {
             completed: true,
             finalPosition: {
-              boardType: 'standard' as const,
               coordinate: 'E-5',
               facing: 'south',
             },
@@ -255,10 +240,8 @@ describe(getExpectedAttackApplyEvent, () => {
   describe('completion', () => {
     it('given all substeps are completed, returns completeAttackApply', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const unitPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -270,7 +253,6 @@ describe(getExpectedAttackApplyEvent, () => {
           retreatState: createRetreatState(unitPlacement, {
             completed: true,
             finalPosition: {
-              boardType: 'standard' as const,
               coordinate: 'E-4',
               facing: 'north',
             },
@@ -286,10 +268,8 @@ describe(getExpectedAttackApplyEvent, () => {
 
     it('given when attack apply is already completed, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const unitPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -302,7 +282,6 @@ describe(getExpectedAttackApplyEvent, () => {
           retreatState: createRetreatState(unitPlacement, {
             completed: true,
             finalPosition: {
-              boardType: 'standard' as const,
               coordinate: 'E-4',
               facing: 'north',
             },

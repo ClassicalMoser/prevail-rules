@@ -11,7 +11,7 @@ import { getBoardSpace, getOppositeFacing, isFriendlyUnit } from '@queries';
  */
 export function addUnitToBoard<TBoard extends Board>(
   board: TBoard,
-  unit: UnitWithPlacement<TBoard>,
+  unit: UnitWithPlacement,
 ): TBoard {
   const side = unit.unit.playerSide;
   const coord = unit.placement.coordinate;

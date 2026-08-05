@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { ResolveRetreatEventForBoard } from '@events';
+import type { ResolveRetreatEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import {
   getRetreatStateFromMelee,
@@ -27,10 +27,8 @@ describe(applyResolveRetreatEvent, () => {
   function createStateWithRangedAttackRetreat(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -69,19 +67,15 @@ describe(applyResolveRetreatEvent, () => {
       },
     );
 
-    const retreatingUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const retreatingUnitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: retreatingUnit,
     };
-    const otherUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const otherUnitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },
@@ -123,15 +117,12 @@ describe(applyResolveRetreatEvent, () => {
       const state = createStateWithRangedAttackRetreat();
       const retreatState = getRetreatStateFromRangedAttack(state);
 
-      const event: ResolveRetreatEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
         finalPosition: {
-          boardType: 'standard' as const,
           placement: {
-            boardType: 'standard' as const,
             coordinate: 'E-4',
             facing: 'north',
           },
@@ -161,15 +152,12 @@ describe(applyResolveRetreatEvent, () => {
       const state = createStateWithRangedAttackRetreat();
       const retreatState = getRetreatStateFromRangedAttack(state);
 
-      const event: ResolveRetreatEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
         finalPosition: {
-          boardType: 'standard' as const,
           placement: {
-            boardType: 'standard' as const,
             coordinate: 'E-4',
             facing: 'north',
           },
@@ -193,9 +181,7 @@ describe(applyResolveRetreatEvent, () => {
       const stateWithOtherUnit = {
         ...state,
         boardState: addUnitToBoard(state.boardState, {
-          boardType: 'standard' as const,
           placement: {
-            boardType: 'standard' as const,
             coordinate: 'D-5',
             facing: 'north',
           },
@@ -203,15 +189,12 @@ describe(applyResolveRetreatEvent, () => {
         }),
       };
 
-      const event: ResolveRetreatEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
         finalPosition: {
-          boardType: 'standard' as const,
           placement: {
-            boardType: 'standard' as const,
             coordinate: 'E-4',
             facing: 'north',
           },
@@ -236,15 +219,12 @@ describe(applyResolveRetreatEvent, () => {
       const state = createStateWithMeleeRetreat('black');
       const retreatState = getRetreatStateFromMelee(state, 'black');
 
-      const event: ResolveRetreatEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
         finalPosition: {
-          boardType: 'standard' as const,
           placement: {
-            boardType: 'standard' as const,
             coordinate: 'E-4',
             facing: 'north',
           },
@@ -269,15 +249,12 @@ describe(applyResolveRetreatEvent, () => {
       const state = createStateWithMeleeRetreat('white');
       const retreatState = getRetreatStateFromMelee(state, 'white');
 
-      const event: ResolveRetreatEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
         finalPosition: {
-          boardType: 'standard' as const,
           placement: {
-            boardType: 'standard' as const,
             coordinate: 'E-6',
             facing: 'south',
           },
@@ -306,15 +283,12 @@ describe(applyResolveRetreatEvent, () => {
       const originalCompleted = retreatState.completed;
       const originalBoardState = state.boardState;
 
-      const event: ResolveRetreatEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
         finalPosition: {
-          boardType: 'standard' as const,
           placement: {
-            boardType: 'standard' as const,
             coordinate: 'E-4',
             facing: 'north',
           },

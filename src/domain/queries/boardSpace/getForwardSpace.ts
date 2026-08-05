@@ -15,7 +15,7 @@ import { getColumnDelta, getRowDelta } from './deltas';
 export function getForwardSpaceWithLayout<TCoordinate extends string>(
   coordinate: TCoordinate,
   facing: UnitFacing,
-  layout: CoordinateLayout<TCoordinate>,
+  layout: CoordinateLayout,
 ): TCoordinate | undefined {
   if (!coordinate.includes('-')) {
     throw new Error(`Invalid coordinate: ${coordinate}`);
@@ -62,7 +62,7 @@ export function getForwardSpaceWithLayout<TCoordinate extends string>(
   const newColumn = layout.columnNumbers[newColumnIndex];
 
   // Reconstruct the coordinate string
-  return layout.createCoordinate(newRow, newColumn);
+  return layout.createCoordinate(newRow, newColumn) as TCoordinate;
 }
 
 /**

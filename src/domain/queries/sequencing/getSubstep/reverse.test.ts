@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { AttackApplyStateForBoard, GameStateForBoard } from '@game';
+import type { AttackApplyState, GameStateForBoard } from '@game';
 import {
   createAttackApplyStateWithReverse,
   createEmptyGameState,
@@ -23,24 +23,20 @@ describe(getReverseStateFromAttackApply, () => {
   it('given apply with reverse substep, returns reverseState', () => {
     expect.hasAssertions();
     const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyStateForBoard<StandardBoard> = {
+    const attackApplyState: AttackApplyState = {
       attackResult: {
         unitRetreated: false,
         unitReversed: true,
         unitRouted: false,
       },
-      boardType: 'standard' as const,
       completed: false,
       defendingUnit: unit,
       retreatState: 'pending' as const,
       reverseState: {
-        boardType: 'standard' as const,
         completed: false,
         finalPosition: 'pending' as const,
         reversingUnit: {
-          boardType: 'standard' as const,
           placement: {
-            boardType: 'standard' as const,
             coordinate: 'E-5',
             facing: 'north',
           },
@@ -60,13 +56,12 @@ describe(getReverseStateFromAttackApply, () => {
   it('given error when reverse state is missing, throws', () => {
     expect.hasAssertions();
     const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyStateForBoard<StandardBoard> = {
+    const attackApplyState: AttackApplyState = {
       attackResult: {
         unitRetreated: false,
         unitReversed: false,
         unitRouted: false,
       },
-      boardType: 'standard' as const,
       completed: false,
       defendingUnit: unit,
       retreatState: 'pending' as const,
@@ -90,19 +85,15 @@ describe(getReverseStateFromMeleeResolutionByInitiative, () => {
     const state = createEmptyGameState({ currentInitiative: initiative });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const whiteWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'east',
       },
       unit: whiteUnit,
     };
-    const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const blackWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'west',
       },
@@ -171,19 +162,15 @@ describe(getReverseStateFromMeleeResolutionByInitiative, () => {
     const state = createEmptyGameState({ currentInitiative: 'white' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const whiteWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'east',
       },
       unit: whiteUnit,
     };
-    const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const blackWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'west',
       },
@@ -194,7 +181,6 @@ describe(getReverseStateFromMeleeResolutionByInitiative, () => {
 
     const doneWhite = createAttackApplyStateWithReverse(whiteWp, {
       reverseState: {
-        boardType: 'standard' as const,
         completed: false,
         finalPosition: whiteWp.placement,
         reversingUnit: whiteWp,
@@ -203,7 +189,6 @@ describe(getReverseStateFromMeleeResolutionByInitiative, () => {
     });
     const doneBlack = createAttackApplyStateWithReverse(blackWp, {
       reverseState: {
-        boardType: 'standard' as const,
         completed: false,
         finalPosition: blackWp.placement,
         reversingUnit: blackWp,

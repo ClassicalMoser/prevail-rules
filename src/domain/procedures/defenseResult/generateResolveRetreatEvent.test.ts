@@ -23,7 +23,6 @@ import { generateResolveRetreatEvent } from './generateResolveRetreatEvent';
  */
 describe(generateResolveRetreatEvent, () => {
   const finalPos = {
-    boardType: 'standard' as const,
     coordinate: 'E-6' as const,
     facing: 'south' as const,
   };
@@ -31,10 +30,8 @@ describe(generateResolveRetreatEvent, () => {
   it('given ranged attack-apply with retreat substep and E-6 south final, event carries that placement', () => {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -69,19 +66,15 @@ describe(generateResolveRetreatEvent, () => {
     const state = createEmptyGameState({ currentInitiative: 'white' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const whiteWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: whiteUnit,
     };
-    const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const blackWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },
@@ -95,7 +88,6 @@ describe(generateResolveRetreatEvent, () => {
     });
     const blackRetreat = createRetreatState(blackWp, {
       finalPosition: {
-        boardType: 'standard' as const,
         coordinate: 'E-4',
         facing: 'south',
       },
@@ -136,10 +128,8 @@ describe(generateResolveRetreatEvent, () => {
   it('given ranged apply with retreat substep but no finalPosition yet, still emits with undefined placement', () => {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },

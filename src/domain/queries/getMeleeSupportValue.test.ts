@@ -246,7 +246,7 @@ describe(getMeleeSupportValue, () => {
       );
       // Add support unit at E-6
       board.board['E-6'] = {
-        ...board.board['E-6'],
+        ...board.board['E-6']!,
         unitPresence: {
           facing: 'north',
           presenceType: 'single',
@@ -290,7 +290,7 @@ describe(getMeleeSupportValue, () => {
       );
       // Add primary unit at E-5 and unengaged support unit at E-6
       board.board['E-5'] = {
-        ...board.board['E-5'],
+        ...board.board['E-5']!,
         unitPresence: {
           facing: 'north',
           presenceType: 'single',
@@ -298,7 +298,7 @@ describe(getMeleeSupportValue, () => {
         },
       };
       board.board['E-6'] = {
-        ...board.board['E-6'],
+        ...board.board['E-6']!,
         unitPresence: {
           facing: 'west',
           presenceType: 'single',

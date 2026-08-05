@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate } from '@entities';
-import type { MoveCommanderEventForBoard } from '@events';
+import type { MoveCommanderEvent } from '@events';
 import type {
   GameState,
   GameStateForBoard,
@@ -23,7 +23,7 @@ import {
  * @returns A new game state with the commander moved
  */
 export function applyMoveCommanderEvent<TBoard extends Board>(
-  event: MoveCommanderEventForBoard<TBoard>,
+  event: MoveCommanderEvent,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   // Safe type broadening because we know the event is for the board type
@@ -33,12 +33,12 @@ export function applyMoveCommanderEvent<TBoard extends Board>(
   const newCoordinate = event.to as BoardCoordinate<TBoard>;
 
   // Remove commander from source space, then add at destination
-  const removedCommanderBoard = removeCommanderFromBoard<TBoard>(
-    state.boardState,
+  const removedCommanderBoard = removeCommanderFromBoard(
+    state.boardState as TBoard,
     originalCoordinate,
     side,
   );
-  const addedCommanderBoard = addCommanderToBoard<TBoard>(
+  const addedCommanderBoard = addCommanderToBoard(
     removedCommanderBoard,
     side,
     newCoordinate,

@@ -28,10 +28,8 @@ describe(applyTriggerRoutFromRetreatEvent, () => {
   function createStateWithRangedAttackRetreat(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -68,19 +66,15 @@ describe(applyTriggerRoutFromRetreatEvent, () => {
       },
     );
 
-    const retreatingUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const retreatingUnitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: retreatingUnit,
     };
-    const otherUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const otherUnitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },

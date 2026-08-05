@@ -61,18 +61,14 @@ describe(checkDiagonalMove, () => {
 
       // Add engaged units at D-5 (first unit, then second with opposite facing creates engagement)
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'D-5',
           facing: 'north',
         },
         unit: createTestUnit('black', { speed: 2 }),
       });
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'D-5',
           facing: 'south',
         },
@@ -81,9 +77,7 @@ describe(checkDiagonalMove, () => {
 
       // Add unit under test at E-5
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'northEast',
         },
@@ -103,18 +97,14 @@ describe(checkDiagonalMove, () => {
 
       // Add engaged units at D-5 (first unit, then second with opposite facing creates engagement)
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'D-5',
           facing: 'north',
         },
         unit: createTestUnit('black', { speed: 2 }),
       });
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'D-5',
           facing: 'south',
         },
@@ -123,18 +113,14 @@ describe(checkDiagonalMove, () => {
 
       // Add engaged units at E-6
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-6',
           facing: 'north',
         },
         unit: createTestUnit('black', { instanceNumber: 2, speed: 2 }),
       });
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-6',
           facing: 'south',
         },
@@ -143,9 +129,7 @@ describe(checkDiagonalMove, () => {
 
       // Add unit under test at E-5
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'northEast',
         },

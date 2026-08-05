@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { ResolveReverseEventForBoard } from '@events';
+import type { ResolveReverseEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import {
   getAttackApplyStateFromMelee,
@@ -29,10 +29,8 @@ describe(applyResolveReverseEvent, () => {
   function createStateWithRangedAttackReverse(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
     const reversingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -68,20 +66,16 @@ describe(applyResolveReverseEvent, () => {
     const opponentPlayer = reversingPlayer === 'white' ? 'black' : 'white';
     const opponentUnit = createTestUnit(opponentPlayer, { attack: 2 });
 
-    const reversingUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const reversingUnitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: reversingUnit,
     };
     // Opponent was at E-5 but has already retreated/routed to a different coordinate
-    const opponentUnitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const opponentUnitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-4',
         facing: 'south',
       },
@@ -126,19 +120,16 @@ describe(applyResolveReverseEvent, () => {
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const newPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'south',
         },
         unit: reverseState.reversingUnit.unit,
       };
 
-      const event: ResolveReverseEventForBoard<StandardBoard> = {
+      const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
-        boardType: 'standard',
         effectType: 'resolveReverse',
         eventNumber: 0,
         eventType: 'gameEffect',
@@ -163,19 +154,16 @@ describe(applyResolveReverseEvent, () => {
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const newPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'south',
         },
         unit: reverseState.reversingUnit.unit,
       };
 
-      const event: ResolveReverseEventForBoard<StandardBoard> = {
+      const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
-        boardType: 'standard',
         effectType: 'resolveReverse',
         eventNumber: 0,
         eventType: 'gameEffect',
@@ -204,9 +192,7 @@ describe(applyResolveReverseEvent, () => {
       const stateWithOtherUnit = {
         ...state,
         boardState: addUnitToBoard(state.boardState, {
-          boardType: 'standard' as const,
           placement: {
-            boardType: 'standard' as const,
             coordinate: 'D-5',
             facing: 'north',
           },
@@ -214,19 +200,16 @@ describe(applyResolveReverseEvent, () => {
         }),
       };
 
-      const newPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const newPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'south',
         },
         unit: reverseState.reversingUnit.unit,
       };
 
-      const event: ResolveReverseEventForBoard<StandardBoard> = {
+      const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
-        boardType: 'standard',
         effectType: 'resolveReverse',
         eventNumber: 0,
         eventType: 'gameEffect',
@@ -251,19 +234,16 @@ describe(applyResolveReverseEvent, () => {
       const attackApplyState = getAttackApplyStateFromMelee(state, 'black');
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const newPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'south',
         },
         unit: reverseState.reversingUnit.unit,
       };
 
-      const event: ResolveReverseEventForBoard<StandardBoard> = {
+      const event: ResolveReverseEvent = {
         attackResolutionContext: 'melee',
-        boardType: 'standard',
         effectType: 'resolveReverse',
         eventNumber: 0,
         eventType: 'gameEffect',
@@ -293,19 +273,16 @@ describe(applyResolveReverseEvent, () => {
       const attackApplyState = getAttackApplyStateFromMelee(state, 'white');
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const newPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'east',
         },
         unit: reverseState.reversingUnit.unit,
       };
 
-      const event: ResolveReverseEventForBoard<StandardBoard> = {
+      const event: ResolveReverseEvent = {
         attackResolutionContext: 'melee',
-        boardType: 'standard',
         effectType: 'resolveReverse',
         eventNumber: 0,
         eventType: 'gameEffect',
@@ -336,19 +313,16 @@ describe(applyResolveReverseEvent, () => {
       const originalCompleted = reverseState.completed;
       const originalBoardState = state.boardState;
 
-      const newPlacement: UnitWithPlacement<StandardBoard> = {
-        boardType: 'standard' as const,
+      const newPlacement: UnitWithPlacement = {
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'south',
         },
         unit: reverseState.reversingUnit.unit,
       };
 
-      const event: ResolveReverseEventForBoard<StandardBoard> = {
+      const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
-        boardType: 'standard',
         effectType: 'resolveReverse',
         eventNumber: 0,
         eventType: 'gameEffect',

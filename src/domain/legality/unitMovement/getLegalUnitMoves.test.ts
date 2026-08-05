@@ -15,7 +15,7 @@ import { getLegalUnitMoves } from './getLegalUnitMoves';
 describe(getLegalUnitMoves, () => {
   // Test helper to check if a placement exists in the set
   function placementHasMatch<TBoard extends Board>(
-    placements: Set<UnitPlacement<TBoard>>,
+    placements: Set<UnitPlacement>,
     match: {
       coordinate?: BoardCoordinate<TBoard>;
       facing?: string;
@@ -153,9 +153,7 @@ describe(getLegalUnitMoves, () => {
       );
 
       const unitWithPlacement = {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'D-7' as const,
           facing: 'southEast' as const,
         },

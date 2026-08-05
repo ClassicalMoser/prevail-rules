@@ -14,10 +14,8 @@ export interface GameStorage {
   ): Promise<PortResponse<Game> | undefined>;
   saveNewGame(game: Game): Promise<PortResponse<void>>;
   /**
-   * `gameState` is intentionally wide (`GameStateForBoard`). A full {@link GameForMode} discriminates `gameState`
-   * by `gameMode`, so merging into an existing `Game` usually needs a single assertion
-   * (e.g. `{ ...game, gameState } as Game`) or a re-parse through `parseStoredGame` / per-variant
-   * game schemas—same as any JSON round-trip.
+   * `gameState` is intentionally wide. Merge into an existing {@link Game} via
+   * `{ ...game, gameState }` or re-parse through {@link parseStoredGame}.
    */
   updateGameState: (
     gameId: string,

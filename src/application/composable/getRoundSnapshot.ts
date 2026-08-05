@@ -1,11 +1,10 @@
-import type { BoardOfType, GameMode } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { GameMode } from '@entities';
+import type { GameState } from '@game';
 import type { RoundSnapshotStorage } from '@application/ports';
 import { parseStoredGameForMode } from '../utils/parseStoredGame';
 
 /**
- * Loads via `RoundSnapshotStorage` (wide types), then `parseStoredGameState`;
- * yields correlated board state.
+ * Loads via `RoundSnapshotStorage` (wide types), then `parseStoredGameForMode`.
  *
  * @param gameId - The ID of the game.
  * @param roundNumber - The number of the round.
@@ -13,12 +12,12 @@ import { parseStoredGameForMode } from '../utils/parseStoredGame';
  * @param roundSnapshotStorage - The storage for round snapshots.
  * @returns The round snapshot.
  */
-export async function getRoundSnapshot<TGameMode extends GameMode>(
+export async function getRoundSnapshot(
   gameId: string,
   roundNumber: number,
-  gameMode: TGameMode,
+  gameMode: GameMode,
   roundSnapshotStorage: RoundSnapshotStorage,
-): Promise<GameStateForBoard<BoardOfType<TGameMode['boardSize']>> | undefined> {
+): Promise<GameState | undefined> {
   const result = await roundSnapshotStorage.getRoundSnapshot(
     gameId,
     roundNumber,
@@ -29,5 +28,5 @@ export async function getRoundSnapshot<TGameMode extends GameMode>(
   if (result.data === undefined) {
     return undefined;
   }
-  return parseStoredGameForMode<TGameMode>(gameMode, result.data).gameState;
+  return parseStoredGameForMode(gameMode, result.data).gameState;
 }

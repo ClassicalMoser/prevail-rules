@@ -28,10 +28,8 @@ describe(generateResolveRoutEvent, () => {
   it('given ranged resolution with rout substep on white defender, source rangedAttack and that unit', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -62,19 +60,15 @@ describe(generateResolveRoutEvent, () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const whiteWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: whiteUnit,
     };
-    const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const blackWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },

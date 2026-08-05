@@ -1,11 +1,4 @@
-import type {
-  Board,
-  BoardSpace,
-  CoordinateLayout,
-  LargeBoard,
-  SmallBoard,
-  StandardBoard,
-} from '@entities';
+import type { Board, BoardSpace, CoordinateLayout } from '@entities';
 import {
   largeCoordinateLayout,
   smallCoordinateLayout,
@@ -46,16 +39,12 @@ function createEmptyBoardSpace(): BoardSpace {
  * Creates an empty board using the coordinate layout.
  * Generates all coordinates and initializes them with empty spaces.
  */
-function createEmptyBoardWithLayout<
-  TBoard extends Board,
-  TCoordinate extends string,
->(
-  boardType: 'standard' | 'small' | 'large',
-  layout: CoordinateLayout<TCoordinate>,
-): TBoard {
-  const board: Record<string, BoardSpace> = {};
+function createEmptyBoardWithLayout(
+  boardType: Board['boardType'],
+  layout: CoordinateLayout,
+): Board {
+  const board: Board['board'] = {};
 
-  // Generate all coordinates by combining row letters and column numbers
   for (const row of layout.rowLetters) {
     for (const column of layout.columnNumbers) {
       const coordinate = layout.createCoordinate(row, column);
@@ -64,34 +53,28 @@ function createEmptyBoardWithLayout<
   }
 
   return {
-    board: board as Record<TCoordinate, BoardSpace>,
+    board,
     boardType,
-  } as TBoard;
+  };
 }
 
 /**
  * Creates an empty standard board with all coordinates initialized to default spaces.
  */
-export function createEmptyStandardBoard(): StandardBoard {
+export function createEmptyStandardBoard(): Board {
   return createEmptyBoardWithLayout('standard', standardCoordinateLayout);
 }
 
 /**
  * Creates an empty small board with all coordinates initialized to default spaces.
  */
-export function createEmptySmallBoard(): SmallBoard {
-  return createEmptyBoardWithLayout(
-    'small',
-    smallCoordinateLayout,
-  ) as SmallBoard;
+export function createEmptySmallBoard(): Board {
+  return createEmptyBoardWithLayout('small', smallCoordinateLayout);
 }
 
 /**
  * Creates an empty large board with all coordinates initialized to default spaces.
  */
-export function createEmptyLargeBoard(): LargeBoard {
-  return createEmptyBoardWithLayout(
-    'large',
-    largeCoordinateLayout,
-  ) as LargeBoard;
+export function createEmptyLargeBoard(): Board {
+  return createEmptyBoardWithLayout('large', largeCoordinateLayout);
 }

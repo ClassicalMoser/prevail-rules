@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
-import type { ResolveFlankEngagementEventForBoard } from '@events';
+import type { ResolveFlankEngagementEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { hasSingleUnit } from '@entities';
 import { getBoardSpace } from '@queries';
@@ -26,10 +26,8 @@ describe(applyResolveFlankEngagementEvent, () => {
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');
     const flank = createFlankEngagementState();
-    const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const defenderWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: flank.targetPlacement.coordinate,
         facing: 'east',
       },
@@ -50,8 +48,7 @@ describe(applyResolveFlankEngagementEvent, () => {
       }),
     );
 
-    const event: ResolveFlankEngagementEventForBoard<StandardBoard> = {
-      boardType: 'standard' as const,
+    const event: ResolveFlankEngagementEvent = {
       defenderWithPlacement,
       effectType: 'resolveFlankEngagement' as const,
       eventNumber: 0,

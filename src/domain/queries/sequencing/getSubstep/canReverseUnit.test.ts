@@ -1,4 +1,4 @@
-import type { ReverseStateForBoard } from '@game';
+import type { ReverseState } from '@game';
 import {
   createEmptyGameState,
   createGameStateWithEngagedUnits,
@@ -20,9 +20,7 @@ describe(canReverseUnit, () => {
     const stateWithUnit = {
       ...state,
       boardState: addUnitToBoard(state.boardState, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -30,14 +28,11 @@ describe(canReverseUnit, () => {
       }),
     };
 
-    const reverseState: ReverseStateForBoard<StandardBoard> = {
-      boardType: 'standard' as const,
+    const reverseState: ReverseState = {
       completed: false,
       finalPosition: 'pending' as const,
       reversingUnit: {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -59,14 +54,11 @@ describe(canReverseUnit, () => {
       'north',
     );
 
-    const reverseState: ReverseStateForBoard<StandardBoard> = {
-      boardType: 'standard' as const,
+    const reverseState: ReverseState = {
       completed: false,
       finalPosition: 'pending' as const,
       reversingUnit: {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -88,14 +80,11 @@ describe(canReverseUnit, () => {
       'north',
     );
 
-    const reverseState: ReverseStateForBoard<StandardBoard> = {
-      boardType: 'standard' as const,
+    const reverseState: ReverseState = {
       completed: false,
       finalPosition: 'pending' as const,
       reversingUnit: {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'south',
         },
@@ -111,14 +100,11 @@ describe(canReverseUnit, () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState();
 
-    const reverseState: ReverseStateForBoard<StandardBoard> = {
-      boardType: 'standard' as const,
+    const reverseState: ReverseState = {
       completed: false,
       finalPosition: 'pending' as const,
       reversingUnit: {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },

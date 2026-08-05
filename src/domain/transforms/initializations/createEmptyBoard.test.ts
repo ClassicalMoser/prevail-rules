@@ -1,3 +1,4 @@
+import { boardSchema } from '@entities';
 import {
   createEmptyLargeBoard,
   createEmptySmallBoard,
@@ -13,6 +14,20 @@ describe(createEmptyStandardBoard, () => {
     expect(board.boardType).toBe('standard');
     expect(Object.keys(board.board).length).toBeGreaterThan(0);
   });
+
+  it('parses through boardSchema', () => {
+    const board = createEmptyStandardBoard();
+    expect(boardSchema.parse(board)).toEqual(board);
+  });
+
+  it('round-trips through JSON with exact key set', () => {
+    const board = createEmptyStandardBoard();
+    const parsed = boardSchema.parse(JSON.parse(JSON.stringify(board)));
+    expect(parsed).toEqual(board);
+    expect(new Set(Object.keys(parsed.board))).toEqual(
+      new Set(Object.keys(board.board)),
+    );
+  });
 });
 
 describe(createEmptySmallBoard, () => {
@@ -21,6 +36,20 @@ describe(createEmptySmallBoard, () => {
     expect(board.boardType).toBe('small');
     expect(Object.keys(board.board).length).toBeGreaterThan(0);
   });
+
+  it('parses through boardSchema', () => {
+    const board = createEmptySmallBoard();
+    expect(boardSchema.parse(board)).toEqual(board);
+  });
+
+  it('round-trips through JSON with exact key set', () => {
+    const board = createEmptySmallBoard();
+    const parsed = boardSchema.parse(JSON.parse(JSON.stringify(board)));
+    expect(parsed).toEqual(board);
+    expect(new Set(Object.keys(parsed.board))).toEqual(
+      new Set(Object.keys(board.board)),
+    );
+  });
 });
 
 describe(createEmptyLargeBoard, () => {
@@ -28,5 +57,19 @@ describe(createEmptyLargeBoard, () => {
     const board = createEmptyLargeBoard();
     expect(board.boardType).toBe('large');
     expect(Object.keys(board.board).length).toBeGreaterThan(0);
+  });
+
+  it('parses through boardSchema', () => {
+    const board = createEmptyLargeBoard();
+    expect(boardSchema.parse(board)).toEqual(board);
+  });
+
+  it('round-trips through JSON with exact key set', () => {
+    const board = createEmptyLargeBoard();
+    const parsed = boardSchema.parse(JSON.parse(JSON.stringify(board)));
+    expect(parsed).toEqual(board);
+    expect(new Set(Object.keys(parsed.board))).toEqual(
+      new Set(Object.keys(board.board)),
+    );
   });
 });

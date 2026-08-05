@@ -1,6 +1,6 @@
 import type { Board, PlayerSide } from '@entities';
 import type {
-  AttackApplyStateForBoard,
+  AttackApplyState,
   GameState,
   GameStateForBoard,
   MeleeResolutionState,
@@ -23,7 +23,7 @@ import {
  */
 export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): AttackApplyStateForBoard<TBoard> {
+): AttackApplyState {
   const rangedAttackState = getRangedAttackResolutionState(state);
   return throwIfPending(
     rangedAttackState.attackApplyState,
@@ -44,7 +44,7 @@ export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
 export function getAttackApplyStateFromMelee<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   player: 'white' | 'black',
-): AttackApplyStateForBoard<TBoard> {
+): AttackApplyState {
   const meleeState = getMeleeResolutionState(state);
   const attackApplyState =
     player === 'white'

@@ -24,10 +24,8 @@ describe(generateTriggerRoutFromRetreatEvent, () => {
   function stateWithRangedRetreat(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -59,19 +57,15 @@ describe(generateTriggerRoutFromRetreatEvent, () => {
         attack: 2,
       },
     );
-    const retreatingWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const retreatingWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: retreatingUnit,
     };
-    const otherWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const otherWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },
@@ -117,19 +111,15 @@ describe(generateTriggerRoutFromRetreatEvent, () => {
     const state = createEmptyGameState({ currentInitiative: 'white' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const whiteWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: whiteUnit,
     };
-    const blackWp: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const blackWp: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },

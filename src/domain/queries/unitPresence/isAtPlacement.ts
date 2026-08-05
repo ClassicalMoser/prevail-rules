@@ -11,7 +11,7 @@ import { isSameUnitInstance } from '../equivalence/unitEquivalence';
  */
 export function isAtPlacement<TBoard extends Board>(
   board: TBoard,
-  unitWithPlacement: UnitWithPlacement<TBoard>,
+  unitWithPlacement: UnitWithPlacement,
 ): ValidationResult {
   try {
     // Get the declared coordinate of the unit on the board.

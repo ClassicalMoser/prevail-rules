@@ -41,7 +41,6 @@ describe(applyGameEffectEvent, () => {
   it('delegates to the handler for the matching effectType and returns its result', () => {
     const state = createEmptyGameState();
     const event = {
-      boardType: 'standard' as const,
       effectType: 'discardPlayedCards' as const,
       eventNumber: 0,
       eventType: 'gameEffect' as const,

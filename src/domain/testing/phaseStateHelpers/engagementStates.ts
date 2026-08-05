@@ -1,6 +1,6 @@
-import type { StandardBoard, UnitInstance, UnitPlacement } from '@entities';
+import type { UnitInstance, UnitPlacement } from '@entities';
 import type {
-  EngagementStateForBoard,
+  EngagementState,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
@@ -12,8 +12,7 @@ import { createRoutState } from './substepStates';
 const defaultEngagingUnit = (): UnitInstance =>
   createUnitWithPlacement({ playerSide: 'black' }).unit;
 
-const defaultTargetPlacement: UnitPlacement<StandardBoard> = {
-  boardType: 'standard' as const,
+const defaultTargetPlacement: UnitPlacement = {
   coordinate: 'E-5' as const,
   facing: 'north',
 };
@@ -23,11 +22,10 @@ const defaultTargetPlacement: UnitPlacement<StandardBoard> = {
  */
 export function createFrontEngagementState(
   overrides?: Partial<FrontEngagementResolutionState>,
-): EngagementStateForBoard<StandardBoard> & {
+): EngagementState & {
   engagementResolutionState: FrontEngagementResolutionState;
 } {
   return {
-    boardType: 'standard' as const,
     completed: false,
     engagementResolutionState: {
       defendingUnitCanRetreat: 'pending',
@@ -48,11 +46,10 @@ export function createFrontEngagementState(
  */
 export function createFlankEngagementState(
   overrides?: Partial<FlankEngagementResolutionState>,
-): EngagementStateForBoard<StandardBoard> & {
+): EngagementState & {
   engagementResolutionState: FlankEngagementResolutionState;
 } {
   return {
-    boardType: 'standard' as const,
     completed: false,
     engagementResolutionState: {
       defenderRotated: false,
@@ -70,11 +67,10 @@ export function createFlankEngagementState(
  */
 export function createRearEngagementState(
   overrides?: Partial<RearEngagementResolutionState>,
-): EngagementStateForBoard<StandardBoard> & {
+): EngagementState & {
   engagementResolutionState: RearEngagementResolutionState;
 } {
   return {
-    boardType: 'standard' as const,
     completed: false,
     engagementResolutionState: {
       completed: false,

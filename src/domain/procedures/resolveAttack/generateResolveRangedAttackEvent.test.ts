@@ -25,10 +25,8 @@ describe(generateResolveRangedAttackEvent, () => {
   function rangedResolutionGameState(): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { unitType: spearmenType });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -51,10 +49,8 @@ describe(generateResolveRangedAttackEvent, () => {
   it('given low-retreat defender vs cavalry attacker, retreated true with legal set', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { unitType: velites });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -89,10 +85,8 @@ describe(generateResolveRangedAttackEvent, () => {
   it('given defending commitment pending on ranged CRS, throws defending commitment guard', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -118,10 +112,8 @@ describe(generateResolveRangedAttackEvent, () => {
   it('given attacking commitment pending on ranged CRS, throws attacking commitment guard', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -147,10 +139,8 @@ describe(generateResolveRangedAttackEvent, () => {
   it('given ranged CRS already holding attackApplyState, throws attack apply already exists', () => {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const unitWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },

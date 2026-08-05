@@ -41,7 +41,6 @@ describe(applyIssueCommandEvent, () => {
     const whiteCommand = tempCommandCards[1].command;
 
     const stateWithPhase = updatePhaseState(stateWithCards, {
-      boardType: 'standard',
       currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [blackCommand],

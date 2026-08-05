@@ -23,7 +23,7 @@ import { isSameUnitInstance } from '@queries/equivalence';
 export function getPositionOfUnit<TBoard extends Board>(
   board: TBoard,
   unit: UnitInstance,
-): UnitPlacement<TBoard> {
+): UnitPlacement {
   // Get all coordinates for the board
   const coordinates = getBoardCoordinates(board);
 
@@ -41,7 +41,6 @@ export function getPositionOfUnit<TBoard extends Board>(
     if (hasSingleUnit(unitPresence)) {
       if (isSameUnitInstance(unitPresence.unit, unit).result) {
         return {
-          boardType: board.boardType,
           coordinate,
           facing: unitPresence.facing,
         };
@@ -52,14 +51,12 @@ export function getPositionOfUnit<TBoard extends Board>(
     // Check engaged units (primary or secondary)
     if (isSameUnitInstance(unitPresence.primaryUnit, unit).result) {
       return {
-        boardType: board.boardType,
         coordinate,
         facing: unitPresence.primaryFacing,
       };
     }
     if (isSameUnitInstance(unitPresence.secondaryUnit, unit).result) {
       return {
-        boardType: board.boardType,
         coordinate,
         facing: getOppositeFacing(unitPresence.primaryFacing),
       };

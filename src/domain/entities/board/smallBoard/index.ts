@@ -1,8 +1,5 @@
-export { smallBoardSchema } from './smallBoard';
-export type { SmallBoard } from './smallBoard';
-
-export { smallBoardCoordinateMapSchema } from './smallBoardMap';
-export type { SmallBoardCoordinateMap } from './smallBoardMap';
+export { smallBoardRowLetters } from './smallRowLetters';
+export type { SmallBoardRowLetter } from './smallRowLetters';
 
 export { smallBoardColumnNumbers } from './smallColumnNumbers';
 export type { SmallBoardColumnNumber } from './smallColumnNumbers';
@@ -13,5 +10,4 @@ export {
 } from './smallCoordinates';
 export type { SmallBoardCoordinate } from './smallCoordinates';
 
-export { smallBoardRowLetters } from './smallRowLetters';
-export type { SmallBoardRowLetter } from './smallRowLetters';
+export { smallCoordinateLayout } from './smallCoordinateLayout';

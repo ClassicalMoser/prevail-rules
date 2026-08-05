@@ -1,4 +1,4 @@
-import type { Board, LargeBoard, SmallBoard, StandardBoard } from '@entities';
+import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import type { GameEffectEventForBoard, GameEffectType } from './gameEffects';
 import type {
@@ -8,18 +8,8 @@ import type {
 
 import { z } from 'zod';
 import { eventTypes } from './eventTypeLiterals';
-import {
-  gameEffectEventSchema,
-  largeGameEffectEventSchema,
-  smallGameEffectEventSchema,
-  standardGameEffectEventSchema,
-} from './gameEffects';
-import {
-  largePlayerChoiceEventSchema,
-  playerChoiceEventSchema,
-  smallPlayerChoiceEventSchema,
-  standardPlayerChoiceEventSchema,
-} from './playerChoices';
+import { gameEffectEventSchema } from './gameEffects';
+import { playerChoiceEventSchema } from './playerChoices';
 
 export {
   eventTypes,
@@ -38,69 +28,28 @@ const _assertExactEventType: AssertExact<EventType, EventTypeSchemaType> = true;
 /** The schema for the type of an event. */
 export const eventTypeSchema: z.ZodType<EventType> = _eventTypeSchemaObject;
 
-export type EventUnion<TBoard extends Board> =
-  | PlayerChoiceEventForBoard<TBoard, PlayerChoiceType>
-  | GameEffectEventForBoard<TBoard, GameEffectType>;
+export type EventUnion =
+  | PlayerChoiceEventForBoard<Board, PlayerChoiceType>
+  | GameEffectEventForBoard<Board, GameEffectType>;
 
 /**
  * Event type filtered by event type.
  * Extracts only the event type that matches the specified eventType.
- * This ensures type safety - Event<TBoard, 'playerChoice'> is ONLY PlayerChoiceEvent.
+ */
+export type EventOfType<TEventType extends EventType = EventType> = Extract<
+  EventUnion,
+  { eventType: TEventType }
+>;
+
+export type Event = EventOfType;
+
+/**
+ * @deprecated Board size is not on events. Prefer {@link Event} / {@link EventOfType}.
  */
 export type EventForBoard<
-  TBoard extends Board,
+  _TBoard extends Board = Board,
   TEventType extends EventType = EventType,
-> = Extract<EventUnion<TBoard>, { eventType: TEventType }>;
-
-export type Event =
-  | EventForBoard<SmallBoard>
-  | EventForBoard<StandardBoard>
-  | EventForBoard<LargeBoard>;
-
-const _smallEventSchemaObject = z.union([
-  smallPlayerChoiceEventSchema,
-  smallGameEffectEventSchema,
-]);
-
-type SmallEventSchemaType = z.infer<typeof _smallEventSchemaObject>;
-
-const _assertExactSmallEvent: AssertExact<
-  EventForBoard<SmallBoard>,
-  SmallEventSchemaType
-> = true;
-
-export const smallEventSchema: z.ZodType<EventForBoard<SmallBoard>> =
-  _smallEventSchemaObject;
-
-const _standardEventSchemaObject = z.union([
-  standardPlayerChoiceEventSchema,
-  standardGameEffectEventSchema,
-]);
-
-type StandardEventSchemaType = z.infer<typeof _standardEventSchemaObject>;
-
-const _assertExactStandardEvent: AssertExact<
-  EventForBoard<StandardBoard>,
-  StandardEventSchemaType
-> = true;
-
-export const standardEventSchema: z.ZodType<EventForBoard<StandardBoard>> =
-  _standardEventSchemaObject;
-
-const _largeEventSchemaObject = z.union([
-  largePlayerChoiceEventSchema,
-  largeGameEffectEventSchema,
-]);
-
-type LargeEventSchemaType = z.infer<typeof _largeEventSchemaObject>;
-
-const _assertExactLargeEvent: AssertExact<
-  EventForBoard<LargeBoard>,
-  LargeEventSchemaType
-> = true;
-
-export const largeEventSchema: z.ZodType<EventForBoard<LargeBoard>> =
-  _largeEventSchemaObject;
+> = EventOfType<TEventType>;
 
 /**
  * Unconstrained union schema object for all events.
@@ -111,10 +60,6 @@ export const largeEventSchema: z.ZodType<EventForBoard<LargeBoard>> =
  * This provides effective double-discrimination:
  * - Top level: `eventType` field distinguishes playerChoice vs gameEffect
  * - Nested level: `choiceType`/`effectType` distinguish specific events
- *
- * TypeScript provides compile-time type safety, and Zod validates the shape
- * at runtime - a gameEffect with wrong eventType won't match playerChoice schemas.
- * The nested discriminated unions provide efficient validation within each category.
  */
 const _eventSchemaObject = z.union([
   playerChoiceEventSchema,

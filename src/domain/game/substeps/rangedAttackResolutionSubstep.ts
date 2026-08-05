@@ -1,21 +1,11 @@
-import type {
-  Board,
-  LargeBoard,
-  SmallBoard,
-  StandardBoard,
-  UnitInstance,
-} from '@entities';
+import type { UnitInstance } from '@entities';
 import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
-import type { AttackApplyStateForBoard } from './attackApplySubstep';
+import type { AttackApplyState } from './attackApplySubstep';
 import { unitInstanceSchema } from '@entities';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
-import {
-  largeAttackApplyStateSchema,
-  smallAttackApplyStateSchema,
-  standardAttackApplyStateSchema,
-} from './attackApplySubstep';
+import { attackApplyStateSchema } from './attackApplySubstep';
 
 /**
  * Context-specific substep that resolves ranged attack commands.
@@ -26,13 +16,11 @@ import {
  *
  * Unlike composable substeps, this state is only used in one specific context.
  */
-export interface RangedAttackResolutionStateForBoard<TBoard extends Board> {
+export interface RangedAttackResolutionState {
   /** The type of the substep. */
   substepType: 'commandResolution';
   /** The type of command resolution. */
   commandResolutionType: 'rangedAttack';
-  /** The type of the board. */
-  boardType: TBoard['boardType'];
   /** The unit that is attacking. */
   attackingUnit: UnitInstance;
   /** The unit that is being attacked. */
@@ -40,7 +28,7 @@ export interface RangedAttackResolutionStateForBoard<TBoard extends Board> {
   /** The supporting units. */
   supportingUnits: UnitInstance[];
   /** The state of the attack apply. */
-  attackApplyState: AttackApplyStateForBoard<TBoard> | 'pending';
+  attackApplyState: AttackApplyState | 'pending';
   /** The commitment of the attacking player. */
   attackingCommitment: Commitment;
   /** The commitment of the defending player. */
@@ -49,16 +37,10 @@ export interface RangedAttackResolutionStateForBoard<TBoard extends Board> {
   completed: boolean;
 }
 
-export type RangedAttackResolutionState =
-  | RangedAttackResolutionStateForBoard<SmallBoard>
-  | RangedAttackResolutionStateForBoard<StandardBoard>
-  | RangedAttackResolutionStateForBoard<LargeBoard>;
-
-const _standardRangedAttackResolutionStateSchemaObject = z.object({
-  attackApplyState: standardAttackApplyStateSchema.or(z.literal('pending')),
+const _rangedAttackResolutionStateSchemaObject = z.object({
+  attackApplyState: attackApplyStateSchema.or(z.literal('pending')),
   attackingCommitment: commitmentSchema,
   attackingUnit: unitInstanceSchema,
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
   commandResolutionType: z.literal('rangedAttack'),
   completed: z.boolean(),
   defendingCommitment: commitmentSchema,
@@ -66,80 +48,6 @@ const _standardRangedAttackResolutionStateSchemaObject = z.object({
   substepType: z.literal('commandResolution'),
   supportingUnits: z.array(unitInstanceSchema),
 });
-
-type StandardRangedAttackResolutionStateSchemaType = z.infer<
-  typeof _standardRangedAttackResolutionStateSchemaObject
->;
-
-const _assertExactStandardRangedAttackResolutionState: AssertExact<
-  RangedAttackResolutionStateForBoard<StandardBoard>,
-  StandardRangedAttackResolutionStateSchemaType
-> = true;
-
-export const standardRangedAttackResolutionStateSchema: z.ZodType<
-  RangedAttackResolutionStateForBoard<StandardBoard>
-> = _standardRangedAttackResolutionStateSchemaObject;
-
-const _smallRangedAttackResolutionStateSchemaObject = z.object({
-  attackApplyState: smallAttackApplyStateSchema.or(z.literal('pending')),
-  attackingCommitment: commitmentSchema,
-  attackingUnit: unitInstanceSchema,
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
-  commandResolutionType: z.literal('rangedAttack'),
-  completed: z.boolean(),
-  defendingCommitment: commitmentSchema,
-  defendingUnit: unitInstanceSchema,
-  substepType: z.literal('commandResolution'),
-  supportingUnits: z.array(unitInstanceSchema),
-});
-
-type SmallRangedAttackResolutionStateSchemaType = z.infer<
-  typeof _smallRangedAttackResolutionStateSchemaObject
->;
-
-const _assertExactSmallRangedAttackResolutionState: AssertExact<
-  RangedAttackResolutionStateForBoard<SmallBoard>,
-  SmallRangedAttackResolutionStateSchemaType
-> = true;
-
-export const smallRangedAttackResolutionStateSchema: z.ZodType<
-  RangedAttackResolutionStateForBoard<SmallBoard>
-> = _smallRangedAttackResolutionStateSchemaObject;
-
-const _largeRangedAttackResolutionStateSchemaObject = z.object({
-  attackApplyState: largeAttackApplyStateSchema.or(z.literal('pending')),
-  attackingCommitment: commitmentSchema,
-  attackingUnit: unitInstanceSchema,
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
-  commandResolutionType: z.literal('rangedAttack'),
-  completed: z.boolean(),
-  defendingCommitment: commitmentSchema,
-  defendingUnit: unitInstanceSchema,
-  substepType: z.literal('commandResolution'),
-  supportingUnits: z.array(unitInstanceSchema),
-});
-
-type LargeRangedAttackResolutionStateSchemaType = z.infer<
-  typeof _largeRangedAttackResolutionStateSchemaObject
->;
-
-const _assertExactLargeRangedAttackResolutionState: AssertExact<
-  RangedAttackResolutionStateForBoard<LargeBoard>,
-  LargeRangedAttackResolutionStateSchemaType
-> = true;
-
-export const largeRangedAttackResolutionStateSchema: z.ZodType<
-  RangedAttackResolutionStateForBoard<LargeBoard>
-> = _largeRangedAttackResolutionStateSchemaObject;
-
-const _rangedAttackResolutionStateSchemaObject = z.discriminatedUnion(
-  'boardType',
-  [
-    _standardRangedAttackResolutionStateSchemaObject,
-    _smallRangedAttackResolutionStateSchemaObject,
-    _largeRangedAttackResolutionStateSchemaObject,
-  ],
-);
 
 type RangedAttackResolutionStateSchemaType = z.infer<
   typeof _rangedAttackResolutionStateSchemaObject
@@ -150,6 +58,5 @@ const _assertExactRangedAttackResolutionState: AssertExact<
   RangedAttackResolutionStateSchemaType
 > = true;
 
-/** Schema for ranged attack resolution (any board) */
 export const rangedAttackResolutionStateSchema: z.ZodType<RangedAttackResolutionState> =
   _rangedAttackResolutionStateSchemaObject;

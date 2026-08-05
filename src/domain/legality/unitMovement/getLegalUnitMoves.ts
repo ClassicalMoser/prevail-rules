@@ -28,9 +28,9 @@ import { exploreUnitMoves } from './exploreUnitMoves';
  * @throws {Error} If the unit is not free to move, not present, or facing mismatch
  */
 export function getLegalUnitMoves<TBoard extends Board>(
-  unitWithPlacement: UnitWithPlacement<TBoard>,
+  unitWithPlacement: UnitWithPlacement,
   gameState: GameStateForBoard<TBoard>,
-): Set<UnitPlacement<TBoard>> {
+): Set<UnitPlacement> {
   const { unit, placement: startingPosition } = unitWithPlacement;
   // Get the board state
   const board = gameState.boardState;
@@ -63,7 +63,7 @@ export function getLegalUnitMoves<TBoard extends Board>(
   const legalMovesArray = [...legalMoves];
 
   // Convert the move results to final placements
-  const legalPlacements = new Set<UnitPlacement<TBoard>>(
+  const legalPlacements = new Set<UnitPlacement>(
     legalMovesArray.map((result) => result.placement),
   );
 

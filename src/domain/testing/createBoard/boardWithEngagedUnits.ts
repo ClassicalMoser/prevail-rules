@@ -22,8 +22,12 @@ export function createBoardWithEngagedUnits(
   primaryFacing: UnitFacing = 'north',
 ): StandardBoard {
   const board = createEmptyStandardBoard();
+  const space = board.board[coord];
+  if (!space) {
+    throw new Error(`Expected board space at ${coord}`);
+  }
   board.board[coord] = {
-    ...board.board[coord],
+    ...space,
     unitPresence: {
       presenceType: 'engaged',
       primaryFacing,

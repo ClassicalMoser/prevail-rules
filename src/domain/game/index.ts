@@ -12,13 +12,12 @@ export {
   declinedCommitmentSchema,
   pendingCommitmentSchema,
 } from './commitment';
-export type { Game, GameForMode } from './game';
+export type { Game, GameForVisibility } from './game';
 export {
-  epicGameSchema,
+  authoritativeGameSchema,
+  blackSeenGameSchema,
   gameSchema,
-  miniGameSchema,
-  standardGameSchema,
-  tutorialGameSchema,
+  whiteSeenGameSchema,
 } from './game';
 export type {
   CardStateForVisibility,
@@ -31,18 +30,6 @@ export {
   authoritativeGameStateSchema,
   blackSeenGameStateSchema,
   gameStateSchema,
-  largeAuthoritativeGameStateSchema,
-  largeBlackSeenGameStateSchema,
-  largeGameStateSchema,
-  largeWhiteSeenGameStateSchema,
-  smallAuthoritativeGameStateSchema,
-  smallBlackSeenGameStateSchema,
-  smallGameStateSchema,
-  smallWhiteSeenGameStateSchema,
-  standardAuthoritativeGameStateSchema,
-  standardBlackSeenGameStateSchema,
-  standardGameStateSchema,
-  standardWhiteSeenGameStateSchema,
   whiteSeenGameStateSchema,
 } from './gameState';
 export { cleanupPhaseStateSchema, cleanupPhaseSteps } from './phases';
@@ -50,15 +37,8 @@ export type { CleanupPhaseState, CleanupPhaseStep } from './phases';
 export {
   issueCommandsPhaseStateSchema,
   issueCommandsPhaseSteps,
-  largeIssueCommandsPhaseStateSchema,
-  smallIssueCommandsPhaseStateSchema,
-  standardIssueCommandsPhaseStateSchema,
 } from './phases';
-export type {
-  IssueCommandsPhaseState,
-  IssueCommandsPhaseStateForBoard,
-  IssueCommandsPhaseStep,
-} from './phases';
+export type { IssueCommandsPhaseState, IssueCommandsPhaseStep } from './phases';
 export {
   moveCommandersPhaseStateSchema,
   moveCommandersPhaseSteps,
@@ -76,24 +56,20 @@ export {
   PLAY_CARDS_PHASE,
   RESOLVE_MELEE_PHASE,
 } from './phases';
-export type { Phase, PhaseState, PhaseStateForBoard } from './phases';
+export type { Phase, PhaseState } from './phases';
 export { playCardsPhaseStateSchema, playCardsPhaseSteps } from './phases';
 export type { PlayCardsPhaseState, PlayCardsPhaseStep } from './phases';
 export { resolveMeleePhaseStateSchema, resolveMeleePhaseSteps } from './phases';
 export type {
   ResolveMeleePhaseState,
-  ResolveMeleePhaseStateForBoard,
   ResolveMeleePhaseStep,
 } from './phases';
 export type { RoundState, RoundStateForBoard } from './roundState';
 export { roundStateSchema } from './roundState';
 export { attackApplyStateSchema } from './substeps';
-export type { AttackApplyState, AttackApplyStateForBoard } from './substeps';
+export type { AttackApplyState } from './substeps';
 export { commandResolutionStateSchema } from './substeps';
-export type {
-  CommandResolutionState,
-  CommandResolutionStateForBoard,
-} from './substeps';
+export type { CommandResolutionState } from './substeps';
 export {
   engagementResolutionStateSchema,
   engagementStateSchema,
@@ -104,31 +80,21 @@ export {
 export type {
   EngagementResolutionState,
   EngagementState,
-  EngagementStateForBoard,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
 } from './substeps';
 export { meleeResolutionStateSchema } from './substeps';
-export type {
-  MeleeResolutionState,
-  MeleeResolutionStateForBoard,
-} from './substeps';
+export type { MeleeResolutionState } from './substeps';
 export { movementResolutionStateSchema } from './substeps';
-export type {
-  MovementResolutionState,
-  MovementResolutionStateForBoard,
-} from './substeps';
+export type { MovementResolutionState } from './substeps';
 export { rallyResolutionStateSchema } from './substeps';
 export type { RallyResolutionState } from './substeps';
 export { rangedAttackResolutionStateSchema } from './substeps';
-export type {
-  RangedAttackResolutionState,
-  RangedAttackResolutionStateForBoard,
-} from './substeps';
+export type { RangedAttackResolutionState } from './substeps';
 export { retreatStateSchema } from './substeps';
-export type { RetreatState, RetreatStateForBoard } from './substeps';
+export type { RetreatState } from './substeps';
 export { reverseStateSchema } from './substeps';
-export type { ReverseState, ReverseStateForBoard } from './substeps';
+export type { ReverseState } from './substeps';
 export { routStateSchema } from './substeps';
 export type { RoutState } from './substeps';

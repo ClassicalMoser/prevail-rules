@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameStateForBoard, MovementResolutionStateForBoard } from '@game';
+import type { GameStateForBoard, MovementResolutionState } from '@game';
 import {
   createEmptyGameState,
   createGameStateWithUnits,
@@ -84,10 +84,9 @@ describe(getExpectedMovementResolutionEvent, () => {
 
   it('given complete unit movement when engagement is already complete', () => {
     const gameState = createGameStateWithTargetEnemy();
-    const resolutionState: MovementResolutionStateForBoard<StandardBoard> =
+    const resolutionState: MovementResolutionState =
       createMovementResolutionState(gameState, {
         engagementState: {
-          boardType: 'standard' as const,
           completed: true,
           engagementResolutionState: {
             defendingUnitCanRetreat: true,
@@ -102,7 +101,6 @@ describe(getExpectedMovementResolutionEvent, () => {
           engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
           substepType: 'engagementResolution',
           targetPlacement: {
-            boardType: 'standard' as const,
             coordinate: 'E-6',
             facing: 'north',
           },
@@ -121,7 +119,6 @@ describe(getExpectedMovementResolutionEvent, () => {
     const gameState = createGameStateWithTargetEnemy();
     const resolutionState = createMovementResolutionState(gameState, {
       engagementState: {
-        boardType: 'standard' as const,
         completed: false,
         engagementResolutionState: {
           defendingUnitCanRetreat: 'pending' as const,
@@ -136,7 +133,6 @@ describe(getExpectedMovementResolutionEvent, () => {
         engagingUnit: createUnitWithPlacement({ playerSide: 'black' }).unit,
         substepType: 'engagementResolution',
         targetPlacement: {
-          boardType: 'standard' as const,
           coordinate: 'E-6',
           facing: 'north',
         },

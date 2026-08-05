@@ -1,5 +1,5 @@
-import type { StandardBoard, UnitInstance, UnitWithPlacement } from '@entities';
-import type { AttackApplyStateForBoard } from '@game';
+import type { UnitInstance, UnitWithPlacement } from '@entities';
+import type { AttackApplyState } from '@game';
 import {
   createRetreatState,
   createReverseState,
@@ -8,15 +8,14 @@ import {
 
 function baseAttackApplyState(
   defendingUnit: UnitInstance,
-  overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
-): AttackApplyStateForBoard<StandardBoard> {
+  overrides?: Partial<AttackApplyState>,
+): AttackApplyState {
   return {
     attackResult: {
       unitRetreated: false,
       unitReversed: false,
       unitRouted: false,
     },
-    boardType: 'standard' as const,
     completed: false,
     defendingUnit,
     retreatState: 'pending',
@@ -32,8 +31,8 @@ function baseAttackApplyState(
  */
 export function createAttackApplyState(
   defendingUnit: UnitInstance,
-  overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
-): AttackApplyStateForBoard<StandardBoard> {
+  overrides?: Partial<AttackApplyState>,
+): AttackApplyState {
   return baseAttackApplyState(defendingUnit, overrides);
 }
 
@@ -41,9 +40,9 @@ export function createAttackApplyState(
  * Creates an AttackApplyState with a retreat state.
  */
 export function createAttackApplyStateWithRetreat(
-  retreatingUnit: UnitWithPlacement<StandardBoard>,
-  overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
-): AttackApplyStateForBoard<StandardBoard> {
+  retreatingUnit: UnitWithPlacement,
+  overrides?: Partial<AttackApplyState>,
+): AttackApplyState {
   return baseAttackApplyState(retreatingUnit.unit, {
     attackResult: {
       unitRetreated: true,
@@ -60,8 +59,8 @@ export function createAttackApplyStateWithRetreat(
  */
 export function createAttackApplyStateWithRout(
   defendingUnit: UnitInstance,
-  overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
-): AttackApplyStateForBoard<StandardBoard> {
+  overrides?: Partial<AttackApplyState>,
+): AttackApplyState {
   return baseAttackApplyState(defendingUnit, {
     attackResult: {
       unitRetreated: false,
@@ -77,9 +76,9 @@ export function createAttackApplyStateWithRout(
  * Creates an AttackApplyState with a reverse state.
  */
 export function createAttackApplyStateWithReverse(
-  reversingUnit: UnitWithPlacement<StandardBoard>,
-  overrides?: Partial<AttackApplyStateForBoard<StandardBoard>>,
-): AttackApplyStateForBoard<StandardBoard> {
+  reversingUnit: UnitWithPlacement,
+  overrides?: Partial<AttackApplyState>,
+): AttackApplyState {
   return baseAttackApplyState(reversingUnit.unit, {
     attackResult: {
       unitRetreated: false,

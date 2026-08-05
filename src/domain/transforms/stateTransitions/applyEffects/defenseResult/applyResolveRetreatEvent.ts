@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
-import type { ResolveRetreatEventForBoard } from '@events';
-import type { GameStateForBoard, RetreatStateForBoard } from '@game';
+import type { ResolveRetreatEvent } from '@events';
+import type { GameStateForBoard, RetreatState } from '@game';
 import { findRetreatState } from '@queries';
 import {
   addUnitToBoard,
@@ -19,7 +19,7 @@ import {
  * @returns A new game state with the unit moved and retreat state marked as completed
  */
 export function applyResolveRetreatEvent<TBoard extends Board>(
-  event: ResolveRetreatEventForBoard<TBoard>,
+  event: ResolveRetreatEvent,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   // Move the unit on the board
@@ -34,7 +34,7 @@ export function applyResolveRetreatEvent<TBoard extends Board>(
   const currentRetreatState = findRetreatState(state, retreatingPlayer);
 
   // Mark retreat as completed
-  const newRetreatState: RetreatStateForBoard<TBoard> = {
+  const newRetreatState: RetreatState = {
     ...currentRetreatState,
     completed: true,
   };

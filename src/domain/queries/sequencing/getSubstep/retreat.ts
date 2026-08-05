@@ -1,8 +1,8 @@
 import type { Board } from '@entities';
 import type {
-  AttackApplyStateForBoard,
+  AttackApplyState,
   GameStateForBoard,
-  RetreatStateForBoard,
+  RetreatState,
 } from '@game';
 import { throwIfPending } from '@utils';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
@@ -20,8 +20,8 @@ import {
  * @throws Error if retreat state is missing
  */
 export function getRetreatStateFromAttackApply<TBoard extends Board>(
-  attackApplyState: AttackApplyStateForBoard<TBoard>,
-): RetreatStateForBoard<TBoard> {
+  attackApplyState: AttackApplyState,
+): RetreatState {
   return throwIfPending(
     attackApplyState.retreatState,
     'No retreat state found in attack apply state',
@@ -38,7 +38,7 @@ export function getRetreatStateFromAttackApply<TBoard extends Board>(
  */
 export function getRetreatStateFromRangedAttack<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): RetreatStateForBoard<TBoard> {
+): RetreatState {
   const attackApplyState = getAttackApplyStateFromRangedAttack(state);
   return getRetreatStateFromAttackApply(attackApplyState);
 }
@@ -55,7 +55,7 @@ export function getRetreatStateFromRangedAttack<TBoard extends Board>(
 export function getRetreatStateFromMelee<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   player: 'white' | 'black',
-): RetreatStateForBoard<TBoard> {
+): RetreatState {
   const attackApplyState = getAttackApplyStateFromMelee(state, player);
   return getRetreatStateFromAttackApply(attackApplyState);
 }
@@ -66,7 +66,7 @@ export function getRetreatStateFromMelee<TBoard extends Board>(
  */
 export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): RetreatStateForBoard<TBoard> {
+): RetreatState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const firstPlayerAttackApply =
@@ -112,7 +112,7 @@ export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
 export function findRetreatState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   player: 'white' | 'black',
-): RetreatStateForBoard<TBoard> {
+): RetreatState {
   const phaseState = state.currentRoundState.currentPhaseState;
   if (phaseState === 'none') {
     throw new Error('No current phase state found');

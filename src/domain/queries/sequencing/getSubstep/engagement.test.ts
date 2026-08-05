@@ -34,15 +34,12 @@ describe(getEngagementStateFromMovement, () => {
             ...createFrontEngagementState(),
             engagingUnit,
             targetPlacement: {
-              boardType: 'standard' as const,
               coordinate: 'E-6',
               facing: 'north',
             },
           },
           movingUnit: {
-            boardType: 'standard' as const,
             placement: {
-              boardType: 'standard' as const,
               coordinate: 'E-5',
               facing: 'north',
             },
@@ -100,15 +97,12 @@ describe(getFlankEngagementStateFromMovement, () => {
             ...createFlankEngagementState(),
             engagingUnit,
             targetPlacement: {
-              boardType: 'standard' as const,
               coordinate: 'E-6',
               facing: 'north',
             },
           },
           movingUnit: {
-            boardType: 'standard' as const,
             placement: {
-              boardType: 'standard' as const,
               coordinate: 'E-5',
               facing: 'north',
             },
@@ -134,15 +128,12 @@ describe(getFlankEngagementStateFromMovement, () => {
             ...createFrontEngagementState(),
             engagingUnit,
             targetPlacement: {
-              boardType: 'standard' as const,
               coordinate: 'E-6',
               facing: 'north',
             },
           },
           movingUnit: {
-            boardType: 'standard' as const,
             placement: {
-              boardType: 'standard' as const,
               coordinate: 'E-5',
               facing: 'north',
             },
@@ -170,15 +161,12 @@ describe(getFrontEngagementStateFromMovement, () => {
             ...createFrontEngagementState(),
             engagingUnit,
             targetPlacement: {
-              boardType: 'standard' as const,
               coordinate: 'E-6',
               facing: 'north',
             },
           },
           movingUnit: {
-            boardType: 'standard' as const,
             placement: {
-              boardType: 'standard' as const,
               coordinate: 'E-5',
               facing: 'north',
             },
@@ -206,15 +194,12 @@ describe(getFrontEngagementStateFromMovement, () => {
             ...createFlankEngagementState(),
             engagingUnit,
             targetPlacement: {
-              boardType: 'standard' as const,
               coordinate: 'E-6',
               facing: 'north',
             },
           },
           movingUnit: {
-            boardType: 'standard' as const,
             placement: {
-              boardType: 'standard' as const,
               coordinate: 'E-5',
               facing: 'north',
             },
@@ -247,15 +232,12 @@ describe(getRearEngagementStateFromMovement, () => {
             }),
             engagingUnit,
             targetPlacement: {
-              boardType: 'standard' as const,
               coordinate: 'E-6',
               facing: 'north',
             },
           },
           movingUnit: {
-            boardType: 'standard' as const,
             placement: {
-              boardType: 'standard' as const,
               coordinate: 'E-5',
               facing: 'north',
             },
@@ -286,15 +268,12 @@ describe(getRearEngagementStateFromMovement, () => {
             ...createFrontEngagementState(),
             engagingUnit,
             targetPlacement: {
-              boardType: 'standard' as const,
               coordinate: 'E-6',
               facing: 'north',
             },
           },
           movingUnit: {
-            boardType: 'standard' as const,
             placement: {
-              boardType: 'standard' as const,
               coordinate: 'E-5',
               facing: 'north',
             },

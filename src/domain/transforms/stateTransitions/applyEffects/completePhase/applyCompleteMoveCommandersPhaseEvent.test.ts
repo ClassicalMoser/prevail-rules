@@ -283,7 +283,6 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
       const state = createEmptyGameState();
       const stateWrongPhase: GameStateForBoard<StandardBoard> =
         updatePhaseState(state, {
-          boardType: 'standard',
           currentCommandResolutionState: 'pending',
           phase: ISSUE_COMMANDS_PHASE,
           remainingCommandsFirstPlayer: [],

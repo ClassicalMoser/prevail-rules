@@ -106,7 +106,6 @@ describe(validatePlayerChoice, () => {
   it('fails when choice type does not match the expected choice', () => {
     const state = stateInPlayCardsChooseCards();
     const event = {
-      boardType: 'standard' as const,
       choiceType: 'moveCommander' as const,
       eventNumber: 0,
       eventType: 'playerChoice' as const,

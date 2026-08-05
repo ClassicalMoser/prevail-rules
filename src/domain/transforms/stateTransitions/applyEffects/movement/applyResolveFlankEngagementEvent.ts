@@ -1,11 +1,11 @@
 import type { Board, UnitWithPlacement } from '@entities';
-import type { ResolveFlankEngagementEventForBoard } from '@events';
+import type { ResolveFlankEngagementEvent } from '@events';
 import type {
-  EngagementStateForBoard,
+  EngagementState,
   FlankEngagementResolutionState,
   GameStateForBoard,
-  IssueCommandsPhaseStateForBoard,
-  MovementResolutionStateForBoard,
+  IssueCommandsPhaseState,
+  MovementResolutionState,
 } from '@game';
 import {
   getFlankEngagementStateFromMovement,
@@ -26,7 +26,7 @@ import {
  * narrowing); does not call `getPositionOfUnit`.
  */
 export function applyResolveFlankEngagementEvent<TBoard extends Board>(
-  event: ResolveFlankEngagementEventForBoard<TBoard>,
+  event: ResolveFlankEngagementEvent,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   const phaseState = getIssueCommandsPhaseStateForBoard(state);
@@ -37,19 +37,18 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
   const { unit, placement } = event.defenderWithPlacement;
 
   const removedUnitBoard = removeUnitFromBoard(
-    state.boardState,
+    state.boardState as TBoard,
     event.defenderWithPlacement,
   );
 
-  const newUnitWithPlacement: UnitWithPlacement<TBoard> = {
-    boardType: event.defenderWithPlacement.boardType,
+  const newUnitWithPlacement: UnitWithPlacement = {
     placement: {
       ...placement,
       facing: event.newFacing,
     },
     unit,
-  } as UnitWithPlacement<TBoard>;
-  const updatedBoard = addUnitToBoard<TBoard>(
+  };
+  const updatedBoard = addUnitToBoard(
     removedUnitBoard,
     newUnitWithPlacement,
   );
@@ -59,18 +58,18 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
     defenderRotated: true,
   };
 
-  const newEngagementState: EngagementStateForBoard<TBoard> = {
+  const newEngagementState: EngagementState = {
     ...engagementState,
     completed: true,
     engagementResolutionState: newFlankResolutionState,
   };
 
-  const newMovementState: MovementResolutionStateForBoard<TBoard> = {
+  const newMovementState: MovementResolutionState = {
     ...movementState,
     engagementState: newEngagementState,
   };
 
-  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     ...phaseState,
     currentCommandResolutionState: newMovementState,
   };

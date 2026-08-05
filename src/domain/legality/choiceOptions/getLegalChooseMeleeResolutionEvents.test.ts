@@ -49,7 +49,6 @@ describe(getLegalChooseMeleeResolutionEvents, () => {
     expect(options.map((o) => o.space)).toStrictEqual(['E-4', 'E-5', 'E-6']);
     for (const o of options) {
       expect(o).toStrictEqual({
-        boardType: 'standard',
         choiceType: 'chooseMeleeResolution',
         eventNumber: 0,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
