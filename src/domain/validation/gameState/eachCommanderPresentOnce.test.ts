@@ -48,7 +48,7 @@ describe(eachCommanderPresentOnce, () => {
       const gameState = createEmptyGameState();
       const board = createEmptyGameState().boardState;
       board.board['E-5'] = {
-        ...board.board['E-5'],
+        ...board.board['E-5']!,
         commanders: ['black', 'white'],
       };
 

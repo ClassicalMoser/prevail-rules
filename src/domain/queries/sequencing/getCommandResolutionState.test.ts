@@ -104,9 +104,7 @@ describe(getMovementResolutionState, () => {
       {
         currentCommandResolutionState: createMovementResolutionState(state, {
           movingUnit: {
-            boardType: 'standard' as const,
             placement: {
-              boardType: 'standard' as const,
               coordinate: 'E-5',
               facing: 'north',
             },

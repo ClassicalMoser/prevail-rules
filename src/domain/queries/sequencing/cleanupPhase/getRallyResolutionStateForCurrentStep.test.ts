@@ -92,7 +92,6 @@ describe(getRallyResolutionStateForCurrentStep, () => {
     const state = createEmptyGameState();
     state.currentInitiative = 'white';
     state.currentRoundState = {
-      boardType: 'standard',
       commandedUnits: [],
       completedPhases: [],
       currentPhaseState: {

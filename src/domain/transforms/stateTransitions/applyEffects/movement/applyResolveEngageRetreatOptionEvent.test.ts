@@ -33,10 +33,8 @@ describe(applyResolveEngageRetreatOptionEvent, () => {
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat('white', 'speed', 3);
     const engagementState = baseFrontEngagementState();
-    const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const defenderWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: engagementState.targetPlacement.coordinate,
         facing: 'south',
       },

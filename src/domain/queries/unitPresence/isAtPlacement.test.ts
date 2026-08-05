@@ -38,9 +38,8 @@ describe(isAtPlacement, () => {
     unit: UnitInstance,
     coord: StandardBoardCoordinate,
     facing: UnitFacing,
-  ): UnitWithPlacement<StandardBoard> => ({
-    boardType: 'standard' as const,
-    placement: { boardType: 'standard' as const, coordinate: coord, facing },
+  ): UnitWithPlacement => ({
+    placement: { coordinate: coord, facing },
     unit,
   });
 

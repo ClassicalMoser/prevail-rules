@@ -3,13 +3,9 @@ export type { CleanupPhaseState, CleanupPhaseStep } from './cleanupPhase';
 export {
   issueCommandsPhaseStateSchema,
   issueCommandsPhaseSteps,
-  largeIssueCommandsPhaseStateSchema,
-  smallIssueCommandsPhaseStateSchema,
-  standardIssueCommandsPhaseStateSchema,
 } from './issueCommandsPhase';
 export type {
   IssueCommandsPhaseState,
-  IssueCommandsPhaseStateForBoard,
   IssueCommandsPhaseStep,
 } from './issueCommandsPhase';
 export {
@@ -23,16 +19,13 @@ export type {
 export {
   CLEANUP_PHASE,
   ISSUE_COMMANDS_PHASE,
-  largePhaseStateSchema,
   MOVE_COMMANDERS_PHASE,
   phases,
   phaseStateSchema,
   PLAY_CARDS_PHASE,
   RESOLVE_MELEE_PHASE,
-  smallPhaseStateSchema,
-  standardPhaseStateSchema,
 } from './phases';
-export type { Phase, PhaseState, PhaseStateForBoard } from './phases';
+export type { Phase, PhaseState } from './phases';
 export {
   playCardsPhaseStateSchema,
   playCardsPhaseSteps,
@@ -44,6 +37,5 @@ export {
 } from './resolveMeleePhase';
 export type {
   ResolveMeleePhaseState,
-  ResolveMeleePhaseStateForBoard,
   ResolveMeleePhaseStep,
 } from './resolveMeleePhase';

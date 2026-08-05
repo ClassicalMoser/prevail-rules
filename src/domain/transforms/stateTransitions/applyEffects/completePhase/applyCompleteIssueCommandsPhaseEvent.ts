@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
-import type { CompleteIssueCommandsPhaseEventForBoard } from '@events';
-import type { GameStateForBoard, ResolveMeleePhaseStateForBoard } from '@game';
+import type { CompleteIssueCommandsPhaseEvent } from '@events';
+import type { GameStateForBoard, ResolveMeleePhaseState } from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';
 
 import { getCurrentPhaseStateForBoard } from '@queries';
@@ -22,15 +22,14 @@ import {
  * @returns A new game state with the phase advanced
  */
 export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
-  event: CompleteIssueCommandsPhaseEventForBoard<TBoard>,
+  event: CompleteIssueCommandsPhaseEvent,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   const phaseState = getCurrentPhaseStateForBoard(state);
   const stateWithCompletedPhase = addCompletedPhase(state, phaseState);
 
-  const newPhaseState: ResolveMeleePhaseStateForBoard<TBoard> = {
+  const newPhaseState: ResolveMeleePhaseState = {
     phase: RESOLVE_MELEE_PHASE,
-    boardType: state.boardState.boardType,
     step: 'resolveMelee' as const,
     // Initialize with undefined, resolution order is up to the player
     currentMeleeResolutionState: 'pending',

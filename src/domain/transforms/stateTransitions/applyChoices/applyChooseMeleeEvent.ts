@@ -1,9 +1,9 @@
 import type { Board } from '@entities';
-import type { ChooseMeleeResolutionEventForBoard } from '@events';
+import type { ChooseMeleeResolutionEvent } from '@events';
 import type {
   GameStateForBoard,
-  MeleeResolutionStateForBoard,
-  ResolveMeleePhaseStateForBoard,
+  MeleeResolutionState,
+  ResolveMeleePhaseState,
 } from '@game';
 import { getResolveMeleePhaseStateForBoard } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
@@ -16,7 +16,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @returns A new game state with the melee resolution updated
  */
 export function applyChooseMeleeEvent<TBoard extends Board>(
-  event: ChooseMeleeResolutionEventForBoard<TBoard>,
+  event: ChooseMeleeResolutionEvent,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   const { space } = event;
@@ -28,10 +28,9 @@ export function applyChooseMeleeEvent<TBoard extends Board>(
   );
 
   // Create a new melee resolution state for the space chosen
-  const newMeleeResolutionState: MeleeResolutionStateForBoard<TBoard> = {
+  const newMeleeResolutionState: MeleeResolutionState = {
     blackAttackApplyState: 'pending',
     blackCommitment: { commitmentType: 'pending' as const },
-    boardType: currentPhaseState.boardType,
     completed: false,
     location: space,
     substepType: 'meleeResolution' as const,
@@ -40,7 +39,7 @@ export function applyChooseMeleeEvent<TBoard extends Board>(
   };
 
   // Update the phase state with the two new values
-  const newPhaseState: ResolveMeleePhaseStateForBoard<TBoard> = {
+  const newPhaseState: ResolveMeleePhaseState = {
     ...currentPhaseState,
     currentMeleeResolutionState: newMeleeResolutionState,
     remainingEngagements: [...newRemainingEngagements],

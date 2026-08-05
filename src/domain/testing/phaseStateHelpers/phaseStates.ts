@@ -1,10 +1,10 @@
 import type {
   CleanupPhaseState,
-  GameStateForBoard,
-  IssueCommandsPhaseStateForBoard,
+  GameStateForVisibility,
+  IssueCommandsPhaseState,
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
-  ResolveMeleePhaseStateForBoard,
+  ResolveMeleePhaseState,
 } from '@game';
 import {
   ISSUE_COMMANDS_PHASE,
@@ -14,7 +14,6 @@ import {
 } from '@game';
 
 import { createMeleeResolutionState } from './commandResolutionStates';
-import type { StandardBoard } from '@entities';
 
 /**
  * Creates a PlayCardsPhaseState with sensible defaults.
@@ -46,11 +45,10 @@ export function createMoveCommandersPhaseState(
  * Creates an IssueCommandsPhaseState with sensible defaults.
  */
 export function createIssueCommandsPhaseState(
-  state: GameStateForBoard<StandardBoard>,
-  overrides?: Partial<IssueCommandsPhaseStateForBoard<StandardBoard>>,
-): IssueCommandsPhaseStateForBoard<StandardBoard> {
+  state: GameStateForVisibility,
+  overrides?: Partial<IssueCommandsPhaseState>,
+): IssueCommandsPhaseState {
   return {
-    boardType: 'standard' as const,
     currentCommandResolutionState: 'pending',
     phase: ISSUE_COMMANDS_PHASE,
     remainingCommandsFirstPlayer: [],
@@ -66,11 +64,10 @@ export function createIssueCommandsPhaseState(
  * Creates a ResolveMeleePhaseState with sensible defaults.
  */
 export function createResolveMeleePhaseState(
-  state: GameStateForBoard<StandardBoard>,
-  overrides?: Partial<ResolveMeleePhaseStateForBoard<StandardBoard>>,
-): ResolveMeleePhaseStateForBoard<StandardBoard> {
+  state: GameStateForVisibility,
+  overrides?: Partial<ResolveMeleePhaseState>,
+): ResolveMeleePhaseState {
   return {
-    boardType: 'standard' as const,
     currentMeleeResolutionState: createMeleeResolutionState(state),
     phase: RESOLVE_MELEE_PHASE,
     remainingEngagements: [],

@@ -19,8 +19,8 @@ import { getPlayerUnitWithPosition } from './unitPresence';
 export function getPlayerUnitsWithPlacementOnBoard<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   player: PlayerSide,
-): Set<UnitWithPlacement<TBoard>> {
-  const units = new Set<UnitWithPlacement<TBoard>>();
+): Set<UnitWithPlacement> {
+  const units = new Set<UnitWithPlacement>();
   const coordinates = getBoardCoordinates(state.boardState);
 
   for (const coordinate of coordinates) {

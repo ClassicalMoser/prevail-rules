@@ -23,18 +23,14 @@ describe(canMoveThrough, () => {
       let board = createEmptyStandardBoard();
       // Add engaged units at D-5
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'D-5',
           facing: 'north',
         },
         unit: createTestUnit('black'),
       });
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'D-5',
           facing: 'south',
         },
@@ -42,9 +38,7 @@ describe(canMoveThrough, () => {
       });
       // Add unit attempting to move through
       board = addUnitToBoard(board, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },

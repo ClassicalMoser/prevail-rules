@@ -1,9 +1,9 @@
 import type { Board } from '@entities';
-import type { PerformRangedAttackEventForBoard } from '@events';
+import type { PerformRangedAttackEvent } from '@events';
 import type {
   GameStateForBoard,
-  IssueCommandsPhaseStateForBoard,
-  RangedAttackResolutionStateForBoard,
+  IssueCommandsPhaseState,
+  RangedAttackResolutionState,
 } from '@game';
 
 import {
@@ -24,7 +24,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @returns A new game state with the ranged attack resolution state created
  */
 export function applyPerformRangedAttackEvent<TBoard extends Board>(
-  event: PerformRangedAttackEventForBoard<TBoard>,
+  event: PerformRangedAttackEvent,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   const currentPhaseState = getIssueCommandsPhaseStateForBoard(state);
@@ -65,12 +65,11 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
     ),
   );
 
-  const rangedAttackResolutionState: RangedAttackResolutionStateForBoard<TBoard> =
+  const rangedAttackResolutionState: RangedAttackResolutionState =
     {
       attackApplyState: 'pending',
       attackingCommitment: { commitmentType: 'pending' },
       attackingUnit,
-      boardType: state.boardState.boardType,
       commandResolutionType: 'rangedAttack' as const,
       completed: false,
       defendingCommitment: { commitmentType: 'pending' },
@@ -79,7 +78,7 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
       supportingUnits,
     };
 
-  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     ...currentPhaseState,
     currentCommandResolutionState: rangedAttackResolutionState,
     remainingUnitsFirstPlayer: isFirstPlayer

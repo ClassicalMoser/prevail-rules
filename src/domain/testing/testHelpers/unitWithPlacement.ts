@@ -1,5 +1,4 @@
 import type {
-  StandardBoard,
   StandardBoardCoordinate,
   UnitFacing,
   UnitType,
@@ -28,13 +27,11 @@ export function createUnitWithPlacement(options?: {
     limit?: number;
     routPenalty?: number;
   };
-}): UnitWithPlacement<StandardBoard> {
+}): UnitWithPlacement {
   const playerSide = options?.playerSide ?? 'black';
   const unit = createTestUnit(playerSide, options?.unitOptions);
   return {
-    boardType: 'standard' as const,
     placement: {
-      boardType: 'standard' as const,
       coordinate: options?.coordinate ?? 'E-5',
       facing: options?.facing ?? 'north',
     },

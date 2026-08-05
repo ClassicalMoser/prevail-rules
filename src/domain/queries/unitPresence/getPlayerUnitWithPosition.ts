@@ -45,7 +45,7 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
   board: TBoard,
   coordinate: BoardCoordinate<TBoard>,
   playerSide: PlayerSide,
-): UnitWithPlacement<TBoard> | undefined {
+): UnitWithPlacement | undefined {
   const { unitPresence } = getBoardSpace(board, coordinate);
 
   // If there's no unit, return undefined
@@ -57,9 +57,7 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
   if (hasSingleUnit(unitPresence)) {
     if (isFriendlyUnit(unitPresence.unit, playerSide)) {
       return {
-        boardType: board.boardType,
         placement: {
-          boardType: board.boardType,
           coordinate,
           facing: unitPresence.facing,
         },
@@ -72,9 +70,7 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
   // Check primary unit first
   if (isFriendlyUnit(unitPresence.primaryUnit, playerSide)) {
     return {
-      boardType: board.boardType,
       placement: {
-        boardType: board.boardType,
         coordinate,
         facing: unitPresence.primaryFacing,
       },
@@ -82,9 +78,7 @@ export function getPlayerUnitWithPosition<TBoard extends Board>(
     };
   }
   return {
-    boardType: board.boardType,
     placement: {
-      boardType: board.boardType,
       coordinate,
       facing: getOppositeFacing(unitPresence.primaryFacing),
     },

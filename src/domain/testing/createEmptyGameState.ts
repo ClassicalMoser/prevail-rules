@@ -1,5 +1,5 @@
-import type { PlayerSide, StandardBoard } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { PlayerSide } from '@entities';
+import type { GameStateForVisibility } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import { createEmptyStandardBoard } from '@transforms';
 
@@ -18,10 +18,9 @@ import { createEmptyStandardBoard } from '@transforms';
  */
 export function createEmptyGameState(options?: {
   currentInitiative?: PlayerSide;
-}): GameStateForBoard<StandardBoard> {
+}): GameStateForVisibility {
   return {
     boardState: createEmptyStandardBoard(),
-    boardType: 'standard',
     cardState: {
       visibility: 'authoritative',
       black: {
@@ -44,7 +43,6 @@ export function createEmptyGameState(options?: {
     currentInitiative: options?.currentInitiative ?? 'black',
     currentRoundNumber: 0,
     currentRoundState: {
-      boardType: 'standard',
       commandedUnits: [],
       completedPhases: [],
       currentPhaseState: 'none',

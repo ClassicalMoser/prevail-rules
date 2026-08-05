@@ -36,7 +36,7 @@ import { getPlayerUnitWithPosition, isAtPlacement } from './unitPresence';
  */
 export function getLinesFromUnit<TBoard extends Board>(
   board: TBoard,
-  unit: UnitWithPlacement<TBoard>,
+  unit: UnitWithPlacement,
   traits: Trait[] = [],
   unitTypes: UnitType[] = [],
 ): Set<Line> {
@@ -64,7 +64,7 @@ export function getLinesFromUnit<TBoard extends Board>(
    */
   const canJoinLine = (
     coordinate: BoardCoordinate<TBoard>,
-  ): UnitWithPlacement<TBoard> | undefined => {
+  ): UnitWithPlacement | undefined => {
     const playerUnit = getPlayerUnitWithPosition(
       board,
       coordinate,
@@ -99,7 +99,7 @@ export function getLinesFromUnit<TBoard extends Board>(
 
   // Build the contiguous segment containing our unit
   // Structure: [units left] + [our unit] + [units right]
-  const segment: UnitWithPlacement<TBoard>[] = [unit];
+  const segment: UnitWithPlacement[] = [unit];
 
   // Tracking where the unit will end up in the segment
   let unitIndex = 0;

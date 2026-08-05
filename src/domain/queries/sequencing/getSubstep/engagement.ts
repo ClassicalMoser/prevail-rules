@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type {
-  EngagementStateForBoard,
+  EngagementState,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   GameStateForBoard,
@@ -19,7 +19,7 @@ import { getMovementResolutionState } from '../getCommandResolutionState';
  */
 export function getEngagementStateFromMovement<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): EngagementStateForBoard<TBoard> {
+): EngagementState {
   const movementState = getMovementResolutionState(state);
   return throwIfPending(
     movementState.engagementState,
@@ -37,7 +37,7 @@ export function getEngagementStateFromMovement<TBoard extends Board>(
  */
 export function getFlankEngagementStateFromMovement<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): EngagementStateForBoard<TBoard> & {
+): EngagementState & {
   engagementResolutionState: FlankEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
@@ -62,7 +62,7 @@ export function getFlankEngagementStateFromMovement<TBoard extends Board>(
  */
 export function getFrontEngagementStateFromMovement<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): EngagementStateForBoard<TBoard> & {
+): EngagementState & {
   engagementResolutionState: FrontEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);
@@ -87,7 +87,7 @@ export function getFrontEngagementStateFromMovement<TBoard extends Board>(
  */
 export function getRearEngagementStateFromMovement<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): EngagementStateForBoard<TBoard> & {
+): EngagementState & {
   engagementResolutionState: RearEngagementResolutionState;
 } {
   const engagementState = getEngagementStateFromMovement(state);

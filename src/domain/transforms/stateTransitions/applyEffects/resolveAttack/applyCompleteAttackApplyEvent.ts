@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
-import type { AttackApplyStateForBoard, GameStateForBoard } from '@game';
+import type { AttackApplyState, GameStateForBoard } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -30,7 +30,7 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
   if (event.attackType === 'ranged') {
     const currentAttackApplyState = getAttackApplyStateFromRangedAttack(state);
 
-    const newAttackApplyState: AttackApplyStateForBoard<TBoard> = {
+    const newAttackApplyState: AttackApplyState = {
       ...currentAttackApplyState,
       completed: true,
     };
@@ -41,7 +41,7 @@ export function applyCompleteAttackApplyEvent<TBoard extends Board>(
   if (event.attackType === 'melee') {
     const current = getAttackApplyStateFromMelee(state, event.defendingPlayer);
 
-    const newAttackApplyState: AttackApplyStateForBoard<TBoard> = {
+    const newAttackApplyState: AttackApplyState = {
       ...current,
       completed: true,
     };

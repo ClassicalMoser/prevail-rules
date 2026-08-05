@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameStateForBoard, PhaseStateForBoard } from '@game';
+import type { GameStateForBoard, PhaseState } from '@game';
 
 /**
  * Narrow case, update phase state for a specific board type.
@@ -9,7 +9,7 @@ import type { GameStateForBoard, PhaseStateForBoard } from '@game';
  */
 export function updatePhaseState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-  phaseState: PhaseStateForBoard<TBoard>,
+  phaseState: PhaseState,
 ): GameStateForBoard<TBoard> {
   return {
     ...state,

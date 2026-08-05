@@ -28,10 +28,8 @@ function buildStateWithFrontEngagement(options: {
     ...front,
     engagingUnit: createUnitByStat('black', 'speed', options.engagingSpeed),
   };
-  const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
-    boardType: 'standard' as const,
+  const defenderWithPlacement: UnitWithPlacement = {
     placement: {
-      boardType: 'standard' as const,
       coordinate: engagementState.targetPlacement.coordinate,
       facing: 'south',
     },

@@ -2,7 +2,7 @@ import type { Board } from '@entities';
 import type { CommitToRangedAttackEvent } from '@events';
 import type {
   GameStateForBoard,
-  RangedAttackResolutionStateForBoard,
+  RangedAttackResolutionState,
 } from '@game';
 import { getRangedAttackResolutionState } from '@queries';
 import {
@@ -42,7 +42,7 @@ export function applyCommitToRangedAttackEvent<TBoard extends Board>(
     card: event.committedCard,
     commitmentType: 'completed' as const,
   };
-  const newRangedAttackState: RangedAttackResolutionStateForBoard<TBoard> = {
+  const newRangedAttackState: RangedAttackResolutionState = {
     ...rangedAttackState,
     ...(isAttackingPlayer
       ? { attackingCommitment: newCommitment }

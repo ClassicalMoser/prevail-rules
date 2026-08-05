@@ -1,5 +1,5 @@
 import type { StandardBoard, StandardBoardCoordinate } from '@entities';
-import type { MoveCommanderEventForBoard } from '@events';
+import type { MoveCommanderEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 
@@ -46,8 +46,7 @@ describe(applyMoveCommanderEvent, () => {
         'E-6',
       );
 
-      const event: MoveCommanderEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: MoveCommanderEvent = {
         choiceType: 'moveCommander',
         eventNumber: 0,
         eventType: 'playerChoice',
@@ -79,8 +78,7 @@ describe(applyMoveCommanderEvent, () => {
         'E-6',
       );
 
-      const event: MoveCommanderEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: MoveCommanderEvent = {
         choiceType: 'moveCommander',
         eventNumber: 0,
         eventType: 'playerChoice',
@@ -110,8 +108,7 @@ describe(applyMoveCommanderEvent, () => {
     it('given black completes first commander move, phase step is moveSecondCommander', () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
 
-      const event: MoveCommanderEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: MoveCommanderEvent = {
         choiceType: 'moveCommander',
         eventNumber: 0,
         eventType: 'playerChoice',
@@ -130,8 +127,7 @@ describe(applyMoveCommanderEvent, () => {
     it('given white completes second commander move, phase step is complete', () => {
       const state = createGameStateInMoveCommandersStep('moveSecondCommander');
 
-      const event: MoveCommanderEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: MoveCommanderEvent = {
         choiceType: 'moveCommander',
         eventNumber: 0,
         eventType: 'playerChoice',
@@ -158,8 +154,7 @@ describe(applyMoveCommanderEvent, () => {
         'phase',
       ).step;
 
-      const event: MoveCommanderEventForBoard<StandardBoard> = {
-        boardType: 'standard',
+      const event: MoveCommanderEvent = {
         choiceType: 'moveCommander',
         eventNumber: 0,
         eventType: 'playerChoice',

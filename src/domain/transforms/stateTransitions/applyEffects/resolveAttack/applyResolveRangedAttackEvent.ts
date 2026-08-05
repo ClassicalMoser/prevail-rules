@@ -1,13 +1,13 @@
 import type { Board, UnitPlacement } from '@entities';
-import type { ResolveRangedAttackEventForBoard } from '@events';
+import type { ResolveRangedAttackEvent } from '@events';
 import type {
-  AttackApplyStateForBoard,
+  AttackApplyState,
   AttackResult,
   GameStateForBoard,
-  IssueCommandsPhaseStateForBoard,
-  RangedAttackResolutionStateForBoard,
-  RetreatStateForBoard,
-  ReverseStateForBoard,
+  IssueCommandsPhaseState,
+  RangedAttackResolutionState,
+  RetreatState,
+  ReverseState,
   RoutState,
 } from '@game';
 import {
@@ -25,7 +25,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @returns A new game state with the attack apply state created
  */
 export function applyResolveRangedAttackEvent<TBoard extends Board>(
-  event: ResolveRangedAttackEventForBoard<TBoard>,
+  event: ResolveRangedAttackEvent,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   const phaseState = getIssueCommandsPhaseStateForBoard(state);
@@ -33,7 +33,6 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
 
   const defendingUnit = event.defenderWithPlacement.unit;
   const unitWithPlacement = event.defenderWithPlacement;
-  const { boardType } = state.boardState;
 
   const attackResult: AttackResult = {
     unitRetreated: event.retreated,
@@ -42,8 +41,8 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
   };
 
   let routState: RoutState | 'pending' = 'pending';
-  let retreatState: RetreatStateForBoard<TBoard> | 'pending' = 'pending';
-  let reverseState: ReverseStateForBoard<TBoard> | 'pending' = 'pending';
+  let retreatState: RetreatState | 'pending' = 'pending';
+  let reverseState: ReverseState | 'pending' = 'pending';
 
   if (attackResult.unitRouted) {
     routState = {
@@ -56,13 +55,12 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
     };
   } else if (attackResult.unitRetreated) {
     const { legalRetreatOptions } = event;
-    const finalPosition: UnitPlacement<TBoard> | 'pending' =
+    const finalPosition: UnitPlacement | 'pending' =
       legalRetreatOptions.length === 1
         ? [...legalRetreatOptions][0]
         : 'pending';
 
     retreatState = {
-      boardType,
       completed: false,
       finalPosition,
       legalRetreatOptions,
@@ -72,7 +70,6 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
     };
   } else if (attackResult.unitReversed) {
     reverseState = {
-      boardType,
       completed: false,
       finalPosition: 'pending',
       reversingUnit: unitWithPlacement,
@@ -80,9 +77,8 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
     };
   }
 
-  const attackApplyState: AttackApplyStateForBoard<TBoard> = {
+  const attackApplyState: AttackApplyState = {
     attackResult,
-    boardType,
     completed: false,
     defendingUnit,
     retreatState,
@@ -91,12 +87,12 @@ export function applyResolveRangedAttackEvent<TBoard extends Board>(
     substepType: 'attackApply' as const,
   };
 
-  const newRangedAttackState: RangedAttackResolutionStateForBoard<TBoard> = {
+  const newRangedAttackState: RangedAttackResolutionState = {
     ...rangedAttackState,
     attackApplyState,
   };
 
-  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
+  const newPhaseState: IssueCommandsPhaseState = {
     ...phaseState,
     currentCommandResolutionState: newRangedAttackState,
   };

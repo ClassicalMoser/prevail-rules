@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteUnitMovementEvent } from '@events';
-import type { GameStateForBoard, MovementResolutionStateForBoard } from '@game';
+import type { GameStateForBoard, MovementResolutionState } from '@game';
 import { getMovementResolutionState } from '@queries';
 import { updateCommandResolutionState } from '@transforms/pureTransforms';
 
@@ -20,7 +20,7 @@ export function applyCompleteUnitMovementEvent<TBoard extends Board>(
 ): GameStateForBoard<TBoard> {
   const movementState = getMovementResolutionState(state);
 
-  const newMovementState: MovementResolutionStateForBoard<TBoard> = {
+  const newMovementState: MovementResolutionState = {
     ...movementState,
     completed: true,
   };

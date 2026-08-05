@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate } from '@entities';
-import type { ChooseMeleeResolutionEventForBoard } from '@events';
+import type { ChooseMeleeResolutionEvent } from '@events';
 import type { GameState, GameStateForBoard } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import {
@@ -11,7 +11,7 @@ import {
 
 export function getLegalChooseMeleeResolutionEvents<TBoard extends Board>(
   gameState: GameStateForBoard<TBoard>,
-): ChooseMeleeResolutionEventForBoard<TBoard>[] {
+): ChooseMeleeResolutionEvent[] {
   const phaseState = getResolveMeleePhaseStateForBoard(gameState);
   if (phaseState.step !== 'resolveMelee') {
     throw new Error('Not in resolve melee phase');
@@ -28,12 +28,11 @@ export function getLegalChooseMeleeResolutionEvents<TBoard extends Board>(
     getRemainingMeleeEngagements(phaseState);
 
   // Build the result
-  const result: ChooseMeleeResolutionEventForBoard<TBoard>[] = [];
+  const result: ChooseMeleeResolutionEvent[] = [];
 
   // For each remaining engagement, add a legal choose melee resolution event
   for (const engagementCoordinate of remainingEngagementCoordinates) {
     result.push({
-      boardType: phaseState.boardType,
       choiceType: 'chooseMeleeResolution',
       eventNumber,
       eventType: PLAYER_CHOICE_EVENT_TYPE,

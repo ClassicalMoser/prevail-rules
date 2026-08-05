@@ -1,9 +1,8 @@
-import type { StandardBoard } from '@entities';
 import type {
-  GameStateForBoard,
-  MeleeResolutionStateForBoard,
-  MovementResolutionStateForBoard,
-  RangedAttackResolutionStateForBoard,
+  GameStateForVisibility,
+  MeleeResolutionState,
+  MovementResolutionState,
+  RangedAttackResolutionState,
 } from '@game';
 import { createTestUnit } from '@testing/unitHelpers';
 
@@ -11,11 +10,10 @@ import { createTestUnit } from '@testing/unitHelpers';
  * Creates a MovementResolutionState with sensible defaults (standard board).
  */
 export function createMovementResolutionState(
-  state: GameStateForBoard<StandardBoard>,
-  overrides?: Partial<MovementResolutionStateForBoard<StandardBoard>>,
-): MovementResolutionStateForBoard<StandardBoard> {
+  state: GameStateForVisibility,
+  overrides?: Partial<MovementResolutionState>,
+): MovementResolutionState {
   return {
-    boardType: 'standard' as const,
     commandResolutionType: 'movement' as const,
     commitment: {
       // Assertion is only valid because a card is always in play outside of the playCard and cleanup phases.
@@ -29,9 +27,7 @@ export function createMovementResolutionState(
     engagementState: 'pending',
     moveCommander: false,
     movingUnit: {
-      boardType: 'standard' as const,
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -39,7 +35,6 @@ export function createMovementResolutionState(
     },
     substepType: 'commandResolution' as const,
     targetPlacement: {
-      boardType: 'standard' as const,
       coordinate: 'E-6',
       facing: 'north',
     },
@@ -51,9 +46,9 @@ export function createMovementResolutionState(
  * Creates a RangedAttackResolutionState with sensible defaults (standard board).
  */
 export function createRangedAttackResolutionState(
-  state: GameStateForBoard<StandardBoard>,
-  overrides?: Partial<RangedAttackResolutionStateForBoard<StandardBoard>>,
-): RangedAttackResolutionStateForBoard<StandardBoard> {
+  state: GameStateForVisibility,
+  overrides?: Partial<RangedAttackResolutionState>,
+): RangedAttackResolutionState {
   return {
     attackApplyState: 'pending',
     attackingCommitment: {
@@ -63,7 +58,6 @@ export function createRangedAttackResolutionState(
       commitmentType: 'completed',
     },
     attackingUnit: createTestUnit('black', { attack: 2 }),
-    boardType: 'standard' as const,
     commandResolutionType: 'rangedAttack' as const,
     completed: false,
     defendingCommitment: {
@@ -83,9 +77,9 @@ export function createRangedAttackResolutionState(
  * Creates a MeleeResolutionState with sensible defaults (standard board).
  */
 export function createMeleeResolutionState(
-  state: GameStateForBoard<StandardBoard>,
-  overrides?: Partial<MeleeResolutionStateForBoard<StandardBoard>>,
-): MeleeResolutionStateForBoard<StandardBoard> {
+  state: GameStateForVisibility,
+  overrides?: Partial<MeleeResolutionState>,
+): MeleeResolutionState {
   return {
     blackAttackApplyState: 'pending',
     blackCommitment: {
@@ -94,7 +88,6 @@ export function createMeleeResolutionState(
       card: state.cardState.black.inPlay!,
       commitmentType: 'completed',
     },
-    boardType: 'standard' as const,
     completed: false,
     location: 'E-5',
     substepType: 'meleeResolution' as const,

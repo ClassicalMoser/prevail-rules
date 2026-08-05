@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameStateForBoard, RetreatStateForBoard } from '@game';
+import type { GameStateForBoard, RetreatState } from '@game';
 import {
   getCurrentPhaseStateForBoard,
   getIssueCommandsPhaseStateForBoard,
@@ -23,7 +23,7 @@ import { updatePhaseState } from '../state';
  */
 export function updateRetreatState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-  retreatState: RetreatStateForBoard<TBoard>,
+  retreatState: RetreatState,
 ): GameStateForBoard<TBoard> {
   const phaseState = getCurrentPhaseStateForBoard(state);
 

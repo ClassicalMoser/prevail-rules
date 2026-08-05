@@ -44,8 +44,8 @@ describe(getExpectedRetreatEvent, () => {
     const retreatState = createRetreatState(unitPlacement, {
       finalPosition: 'pending' as const,
       legalRetreatOptions: [
-        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'north' },
-        { boardType: 'standard' as const, coordinate: 'E-6', facing: 'north' },
+        { coordinate: 'E-4', facing: 'north' },
+        { coordinate: 'E-6', facing: 'north' },
       ],
     });
 
@@ -59,12 +59,11 @@ describe(getExpectedRetreatEvent, () => {
   it('given the final position is already chosen, returns resolveRetreat', () => {
     const retreatState = createRetreatState(unitPlacement, {
       finalPosition: {
-        boardType: 'standard' as const,
         coordinate: 'E-4',
         facing: 'north',
       },
       legalRetreatOptions: [
-        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'north' },
+        { coordinate: 'E-4', facing: 'north' },
       ],
     });
 
@@ -78,12 +77,11 @@ describe(getExpectedRetreatEvent, () => {
     const retreatState = createRetreatState(unitPlacement, {
       completed: true,
       finalPosition: {
-        boardType: 'standard' as const,
         coordinate: 'E-4',
         facing: 'north',
       },
       legalRetreatOptions: [
-        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'north' },
+        { coordinate: 'E-4', facing: 'north' },
       ],
     });
 
@@ -111,7 +109,7 @@ describe(getExpectedRetreatEvent, () => {
     const retreatState = createRetreatState(unitPlacement, {
       finalPosition: 'pending' as const,
       legalRetreatOptions: [
-        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'north' },
+        { coordinate: 'E-4', facing: 'north' },
       ],
     });
 

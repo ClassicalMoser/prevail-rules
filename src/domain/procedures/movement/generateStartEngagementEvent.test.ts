@@ -31,9 +31,7 @@ describe(generateStartEngagementEvent, () => {
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-6',
           facing: options.defenderFacing,
         },
@@ -42,16 +40,13 @@ describe(generateStartEngagementEvent, () => {
     };
     const movement = createMovementResolutionState(withBoard, {
       movingUnit: {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'east',
         },
         unit: createTestUnit('black'),
       },
       targetPlacement: {
-        boardType: 'standard' as const,
         coordinate: 'E-6',
         facing: options.engagingFacing,
       },

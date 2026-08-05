@@ -1,38 +1,29 @@
 import type {
   PlayerSide,
-  StandardBoard,
   UnitInstance,
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
-import type {
-  RallyResolutionState,
-  RetreatStateForBoard,
-  ReverseStateForBoard,
-  RoutState,
-} from '@game';
+import type { RallyResolutionState, RetreatState, ReverseState, RoutState } from '@game';
 
 /**
  * Creates a RetreatState with sensible defaults.
  */
 export function createRetreatState(
-  unit: UnitWithPlacement<StandardBoard>,
-  overrides?: Partial<RetreatStateForBoard<StandardBoard>>,
-): RetreatStateForBoard<StandardBoard> {
-  const legalRetreatOptions: UnitPlacement<StandardBoard>[] = [
+  unit: UnitWithPlacement,
+  overrides?: Partial<RetreatState>,
+): RetreatState {
+  const legalRetreatOptions: UnitPlacement[] = [
     {
-      boardType: 'standard' as const,
       coordinate: 'E-4' as const,
       facing: 'north',
     },
     {
-      boardType: 'standard' as const,
       coordinate: 'E-6' as const,
       facing: 'north',
     },
   ];
   return {
-    boardType: 'standard' as const,
     completed: false,
     finalPosition: 'pending',
     legalRetreatOptions,
@@ -66,11 +57,10 @@ export function createRoutState(
  * Creates a ReverseState with sensible defaults.
  */
 export function createReverseState(
-  unit: UnitWithPlacement<StandardBoard>,
-  overrides?: Partial<ReverseStateForBoard<StandardBoard>>,
-): ReverseStateForBoard<StandardBoard> {
+  unit: UnitWithPlacement,
+  overrides?: Partial<ReverseState>,
+): ReverseState {
   return {
-    boardType: 'standard' as const,
     completed: false,
     finalPosition: 'pending',
     reversingUnit: unit,

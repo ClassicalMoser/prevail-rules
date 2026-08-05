@@ -4,7 +4,7 @@ import type {
   UnitPlacement,
   UnitWithPlacement,
 } from '@entities';
-import type { ResolveRangedAttackEventForBoard } from '@events';
+import type { ResolveRangedAttackEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { getRangedAttackResolutionState } from '@queries';
 import {
@@ -29,7 +29,7 @@ describe(applyResolveRangedAttackEvent, () => {
   function createRangedResolutionFixture(): {
     full: GameStateForBoard<StandardBoard>;
     defender: UnitInstance;
-    defenderWithPlacement: UnitWithPlacement<StandardBoard>;
+    defenderWithPlacement: UnitWithPlacement;
   } {
     const base = createEmptyGameState();
     const withCards = updateCardState(base, {
@@ -38,10 +38,8 @@ describe(applyResolveRangedAttackEvent, () => {
       white: { ...base.cardState.white, inPlay: createTestCard() },
     });
     const defender = createTestUnit('white', { attack: 2 });
-    const defenderWithPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const defenderWithPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -61,22 +59,21 @@ describe(applyResolveRangedAttackEvent, () => {
 
   type RangedEventPatch = Partial<
     Omit<
-      ResolveRangedAttackEventForBoard<StandardBoard>,
+      ResolveRangedAttackEvent,
       'defenderWithPlacement' | 'eventType' | 'effectType'
     >
   > &
     Pick<
-      ResolveRangedAttackEventForBoard<StandardBoard>,
+      ResolveRangedAttackEvent,
       'legalRetreatOptions'
     >;
 
   /** Game effect merge: defaults plus patch (legalRetreatOptions required in patch). */
   function rangedEvent(
-    defenderWithPlacement: UnitWithPlacement<StandardBoard>,
+    defenderWithPlacement: UnitWithPlacement,
     patch: RangedEventPatch,
-  ): ResolveRangedAttackEventForBoard<StandardBoard> {
+  ): ResolveRangedAttackEvent {
     return {
-      boardType: 'standard',
       defenderWithPlacement,
       effectType: 'resolveRangedAttack',
       eventNumber: 0,
@@ -137,7 +134,6 @@ describe(applyResolveRangedAttackEvent, () => {
   it('given retreated with sole legal E-6 south, retreat finalPosition equals that placement', () => {
     const { full, defenderWithPlacement } = createRangedResolutionFixture();
     const onlyOption = {
-      boardType: 'standard' as const,
       coordinate: 'E-6' as const,
       facing: 'south' as const,
     };
@@ -156,13 +152,13 @@ describe(applyResolveRangedAttackEvent, () => {
 
   it.each<{
     description: string;
-    legalRetreatOptions: UnitPlacement<StandardBoard>[];
+    legalRetreatOptions: UnitPlacement[];
   }>([
     {
       description: 'multiple legal retreats',
       legalRetreatOptions: [
-        { boardType: 'standard' as const, coordinate: 'E-6', facing: 'south' },
-        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'south' },
+        { coordinate: 'E-6', facing: 'south' },
+        { coordinate: 'E-4', facing: 'south' },
       ],
     },
     {

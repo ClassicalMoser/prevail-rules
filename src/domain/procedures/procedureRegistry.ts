@@ -162,7 +162,7 @@ export function generateEventFromProcedure(
   eventNumber: number,
   effectType: GameEffectType,
 ): GameEffectEvent {
-  const { boardType } = state;
+  const { boardType } = state.boardState;
   switch (boardType) {
     case 'small': {
       return generateEventFromProcedureForBoard(

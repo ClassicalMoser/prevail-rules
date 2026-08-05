@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { ResolveFlankEngagementEventForBoard } from '@events';
+import type { ResolveFlankEngagementEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
@@ -23,7 +23,7 @@ import {
 export function generateResolveFlankEngagementEvent<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): ResolveFlankEngagementEventForBoard<TBoard> {
+): ResolveFlankEngagementEvent {
   const engagementState = getFlankEngagementStateFromMovement(state);
 
   const defenderWithPlacement = getSingleUnitWithPlacementAtCoordinate(
@@ -38,7 +38,6 @@ export function generateResolveFlankEngagementEvent<TBoard extends Board>(
   const newFacing = getOppositeFacing(engagingFacing);
 
   return {
-    boardType: state.boardState.boardType,
     defenderWithPlacement,
     effectType: RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
     eventNumber,

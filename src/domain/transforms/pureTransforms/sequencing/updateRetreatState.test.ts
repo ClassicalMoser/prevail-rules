@@ -24,10 +24,8 @@ describe(updateRetreatState, () => {
   function createStateWithRangedAttackRetreat() {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const placement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -58,19 +56,15 @@ describe(updateRetreatState, () => {
         attack: 2,
       },
     );
-    const retreatingPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const retreatingPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: retreatingUnit,
     };
-    const otherPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const otherPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },
@@ -102,10 +96,8 @@ describe(updateRetreatState, () => {
   it('given update retreat state in ranged attack resolution', () => {
     const state = createStateWithRangedAttackRetreat();
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const placement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -142,10 +134,8 @@ describe(updateRetreatState, () => {
   it('given update retreat state in melee resolution for white', () => {
     const state = createStateWithMeleeRetreat('white');
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const placement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -176,10 +166,8 @@ describe(updateRetreatState, () => {
   it('given update retreat state in melee resolution for black', () => {
     const state = createStateWithMeleeRetreat('black');
     const unit = createTestUnit('black', { attack: 2 });
-    const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const placement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -210,10 +198,8 @@ describe(updateRetreatState, () => {
   it('given when ranged attack apply has no retreat state, throws', () => {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const placement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -239,10 +225,8 @@ describe(updateRetreatState, () => {
     });
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const placement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -261,10 +245,8 @@ describe(updateRetreatState, () => {
     const phaseState = createIssueCommandsPhaseState(state);
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const placement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -280,10 +262,8 @@ describe(updateRetreatState, () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whitePlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const whitePlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -291,9 +271,7 @@ describe(updateRetreatState, () => {
     };
     const melee = createMeleeResolutionState(state, {
       blackAttackApplyState: createAttackApplyStateWithRetreat({
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'south',
         },
@@ -317,10 +295,8 @@ describe(updateRetreatState, () => {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const blackPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const blackPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },
@@ -329,9 +305,7 @@ describe(updateRetreatState, () => {
     const melee = createMeleeResolutionState(state, {
       blackAttackApplyState: createAttackApplyState(blackUnit),
       whiteAttackApplyState: createAttackApplyStateWithRetreat({
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -357,10 +331,8 @@ describe(updateRetreatState, () => {
       createPlayCardsPhaseState(),
     );
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const placement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },

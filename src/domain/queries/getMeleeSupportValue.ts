@@ -13,7 +13,7 @@ import { getPlayerUnitWithPosition } from './unitPresence';
 
 export function getMeleeSupportValue(
   board: Board,
-  unit: UnitWithPlacement<Board>,
+  unit: UnitWithPlacement,
 ): number {
   const { playerSide } = unit.unit;
   const unitCoordinate = unit.placement.coordinate;
@@ -31,7 +31,7 @@ export function getMeleeSupportValue(
   // - check engagement first to avoid unnecessary unit lookups
   // - filter out spaces behind the primary unit
   // - filter out units diagonally blocked by enemy units
-  const potentialSupportUnits: UnitWithPlacement<Board>[] = [];
+  const potentialSupportUnits: UnitWithPlacement[] = [];
   for (const space of adjacentSpacesNotBehind) {
     const boardSpace = getBoardSpace(board, space);
     // Skip spaces with no units or engaged units - they cannot provide support

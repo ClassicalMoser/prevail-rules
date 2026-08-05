@@ -46,9 +46,9 @@ import { exploreUnitMoves } from './exploreUnitMoves';
  * ```
  */
 export function getLegalRetreats<TBoard extends Board>(
-  unitWithPlacement: UnitWithPlacement<TBoard>,
+  unitWithPlacement: UnitWithPlacement,
   gameState: GameStateForBoard<TBoard>,
-): Set<UnitPlacement<TBoard>> {
+): Set<UnitPlacement> {
   // Get the board state
   const board = gameState.boardState;
   const { coordinate } = unitWithPlacement.placement;
@@ -179,7 +179,7 @@ export function getLegalRetreats<TBoard extends Board>(
   const minimumRetreatsArray = [...minimumRetreats];
 
   // Get the positions of the minimum retreats
-  const minimumRetreatPositions = new Set<UnitPlacement<TBoard>>(
+  const minimumRetreatPositions = new Set<UnitPlacement>(
     minimumRetreatsArray.map((r) => r.placement),
   );
 

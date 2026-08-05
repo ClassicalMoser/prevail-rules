@@ -32,7 +32,6 @@ describe(applyPlayerChoiceEvent, () => {
   it('delegates to the handler for the matching choiceType and returns its result', () => {
     const state = createEmptyGameState();
     const event = {
-      boardType: 'standard' as const,
       choiceType: 'chooseCard' as const,
       eventNumber: 0,
       eventType: 'playerChoice' as const,
@@ -50,7 +49,6 @@ describe(applyPlayerChoiceEvent, () => {
   it('throws when choiceType is not handled by the switch', () => {
     const state = createEmptyGameState();
     const event = {
-      boardType: 'standard',
       choiceType: 'unknown',
       eventNumber: 0,
       eventType: 'playerChoice',

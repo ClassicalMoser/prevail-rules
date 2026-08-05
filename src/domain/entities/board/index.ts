@@ -1,36 +1,62 @@
 export { boardSchema, boardType, boardTypeEnum } from './board';
-export type {
-  Board,
-  BoardOfType,
-  BoardType,
-  LARGE_BOARD_TYPE,
-  SMALL_BOARD_TYPE,
-  STANDARD_BOARD_TYPE,
-} from './board';
+export type { Board, BoardType } from './board';
 
-export { boardCoordinateSchema } from './boardCoordinates';
-export type { BoardCoordinate } from './boardCoordinates';
+export {
+  largeBoardSchema,
+  smallBoardSchema,
+  standardBoardSchema,
+} from './aliases';
+export type {
+  BoardOfType,
+  LargeBoard,
+  SmallBoard,
+  StandardBoard,
+} from './aliases';
+
+export { coordinateSchema } from './boardCoordinates';
+export type { Coordinate, BoardCoordinate } from './boardCoordinates';
 
 export { boardSpaceSchema } from './boardSpace';
 export type { BoardSpace } from './boardSpace';
 
-export {
-  coordinateLayoutMap,
-  getCoordinateLayout,
-  largeCoordinateLayout,
-  smallCoordinateLayout,
-  standardCoordinateLayout,
-} from './coordinateLayout';
+export { coordinateLayoutMap, getCoordinateLayout } from './coordinateLayout';
 export type { CoordinateLayout, CoordinateLayoutMap } from './coordinateLayout';
 
-export { largeBoardCoordinateSchema, largeBoardSchema } from './largeBoard';
-export type { LargeBoard, LargeBoardCoordinate } from './largeBoard';
-
-export { smallBoardCoordinateSchema, smallBoardSchema } from './smallBoard';
-export type { SmallBoard, SmallBoardCoordinate } from './smallBoard';
+export {
+  largeBoardCoordinates,
+  largeBoardCoordinateSchema,
+  largeBoardColumnNumbers,
+  largeBoardRowLetters,
+  largeCoordinateLayout,
+} from './largeBoard';
+export type {
+  LargeBoardCoordinate,
+  LargeBoardColumnNumber,
+  LargeBoardRowLetter,
+} from './largeBoard';
 
 export {
+  smallBoardCoordinates,
+  smallBoardCoordinateSchema,
+  smallBoardColumnNumbers,
+  smallBoardRowLetters,
+  smallCoordinateLayout,
+} from './smallBoard';
+export type {
+  SmallBoardCoordinate,
+  SmallBoardColumnNumber,
+  SmallBoardRowLetter,
+} from './smallBoard';
+
+export {
+  standardBoardCoordinates,
   standardBoardCoordinateSchema,
-  standardBoardSchema,
+  standardBoardColumnNumbers,
+  standardBoardRowLetters,
+  standardCoordinateLayout,
 } from './standardBoard';
-export type { StandardBoard, StandardBoardCoordinate } from './standardBoard';
+export type {
+  StandardBoardCoordinate,
+  StandardBoardColumnNumber,
+  StandardBoardRowLetter,
+} from './standardBoard';

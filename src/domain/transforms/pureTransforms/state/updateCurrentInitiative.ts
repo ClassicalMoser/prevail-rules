@@ -29,7 +29,7 @@ export function updateCurrentInitiative(
   state: GameState,
   player: PlayerSide,
 ): GameState {
-  const board: BoardType = state.boardType;
+  const board: BoardType = state.boardState.boardType;
   switch (board) {
     case 'small': {
       return updateCurrentInitiativeForBoard<SmallBoard>(

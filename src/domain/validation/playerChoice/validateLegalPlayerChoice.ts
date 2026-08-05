@@ -1,6 +1,6 @@
 import type { Board, ValidationResult } from '@entities';
-import type { PlayerChoiceEventForBoard, PlayerChoiceType } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
+import type { GameState, GameStateForBoard } from '@game';
 import { isValidChooseCardEvent } from './isValidChooseCardEvent';
 import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
 import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
@@ -22,25 +22,27 @@ function legalChoiceNotImplemented(
  * @param state - The current game state
  * @returns ValidationResult indicating if the player choice event is legal
  */
-export function validateLegalPlayerChoice<TBoard extends Board>(
-  event: PlayerChoiceEventForBoard<TBoard>,
-  state: GameStateForBoard<TBoard>,
+export function validateLegalPlayerChoice(
+  event: PlayerChoiceEvent,
+  state: GameState,
 ): ValidationResult {
+  // Legal validators currently assume authoritative card visibility (card `.id`).
+  const authoritativeState = state as GameStateForBoard<Board>;
   switch (event.choiceType) {
     case 'chooseCard': {
-      return isValidChooseCardEvent(event, state);
+      return isValidChooseCardEvent(event, authoritativeState);
     }
     case 'chooseMeleeResolution': {
-      return isValidChooseMeleeResolutionEvent(event, state);
+      return isValidChooseMeleeResolutionEvent(event, authoritativeState);
     }
     case 'moveCommander': {
-      return isValidMoveCommanderEvent(event, state);
+      return isValidMoveCommanderEvent(event, authoritativeState);
     }
     case 'chooseRally': {
-      return isValidChooseRallyEvent(event, state);
+      return isValidChooseRallyEvent(event, authoritativeState);
     }
     case 'chooseRoutDiscard': {
-      return isValidChooseRoutDiscardEvent(event, state);
+      return isValidChooseRoutDiscardEvent(event, authoritativeState);
     }
     case 'chooseRetreatOption':
     case 'chooseWhetherToRetreat':

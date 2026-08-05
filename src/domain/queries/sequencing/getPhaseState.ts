@@ -4,13 +4,10 @@ import type {
   GameState,
   GameStateForBoard,
   IssueCommandsPhaseState,
-  IssueCommandsPhaseStateForBoard,
   MoveCommandersPhaseState,
   PhaseState,
-  PhaseStateForBoard,
   PlayCardsPhaseState,
   ResolveMeleePhaseState,
-  ResolveMeleePhaseStateForBoard,
 } from '@game';
 import { throwIfNone } from '@utils';
 
@@ -24,7 +21,7 @@ import { throwIfNone } from '@utils';
  */
 export function getCurrentPhaseStateForBoard<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): PhaseStateForBoard<TBoard> {
+): PhaseState {
   const phaseState = throwIfNone(
     state.currentRoundState.currentPhaseState,
     'No current phase state found',
@@ -89,7 +86,7 @@ export function getMoveCommandersPhaseState(
  */
 export function getIssueCommandsPhaseStateForBoard<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): IssueCommandsPhaseStateForBoard<TBoard> {
+): IssueCommandsPhaseState {
   const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
   if (phaseState.phase !== 'issueCommands') {
     throw new Error(`Expected issueCommands phase, got ${phaseState.phase}`);
@@ -125,7 +122,7 @@ export function getIssueCommandsPhaseState(
  */
 export function getResolveMeleePhaseStateForBoard<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): ResolveMeleePhaseStateForBoard<TBoard> {
+): ResolveMeleePhaseState {
   const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
   if (phaseState.phase !== 'resolveMelee') {
     throw new Error(`Expected resolveMelee phase, got ${phaseState.phase}`);

@@ -9,7 +9,7 @@ import { getBoardSpace, getOppositeFacing, isSameUnitInstance } from '@queries';
 /* Pure transform to remove a unit from the board immutably with no side effects. */
 export function removeUnitFromBoard<TBoard extends Board>(
   board: TBoard,
-  unit: UnitWithPlacement<TBoard>,
+  unit: UnitWithPlacement,
 ): TBoard {
   const coord = unit.placement.coordinate;
   const space = getBoardSpace(board, coord);

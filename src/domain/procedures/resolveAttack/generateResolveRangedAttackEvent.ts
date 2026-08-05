@@ -4,7 +4,7 @@ import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
 } from '@events';
-import type { ResolveRangedAttackEventForBoard } from '@events';
+import type { ResolveRangedAttackEvent } from '@events';
 import {
   applyAttackValue,
   getCurrentUnitStat,
@@ -30,7 +30,7 @@ import { getLegalRetreats } from '@legality';
 export function generateResolveRangedAttackEvent<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): ResolveRangedAttackEventForBoard<TBoard> {
+): ResolveRangedAttackEvent {
   const rangedAttackState = getRangedAttackResolutionState(state);
 
   // Both commitments must be resolved before calculating attack
@@ -83,12 +83,11 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
 
   const placement = getPositionOfUnit(state.boardState, defendingUnit);
   const defenderWithPlacement = {
-    boardType: state.boardState.boardType,
     placement,
     unit: defendingUnit,
   };
 
-  let legalRetreatOptions: Set<UnitPlacement<TBoard>>;
+  let legalRetreatOptions: Set<UnitPlacement>;
   if (attackResult.unitRetreated) {
     legalRetreatOptions = getLegalRetreats(defenderWithPlacement, state);
   } else {
@@ -96,7 +95,6 @@ export function generateResolveRangedAttackEvent<TBoard extends Board>(
   }
 
   return {
-    boardType: rangedAttackState.boardType,
     defenderWithPlacement,
     effectType: RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
     eventNumber,

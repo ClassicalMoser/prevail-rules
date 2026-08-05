@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate, UnitPlacement } from '@entities';
-import type { ResolveMeleeEventForBoard } from '@events';
+import type { ResolveMeleeEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
 import {
@@ -31,7 +31,7 @@ import { getLegalRetreats } from '@legality';
 export function generateResolveMeleeEvent<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): ResolveMeleeEventForBoard<TBoard> {
+): ResolveMeleeEvent {
   const meleeState = getMeleeResolutionReadyForAttackCalculation(state);
   const meleeCoordinate = meleeState.location;
 
@@ -94,14 +94,14 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
     whiteUnit.unit,
   );
 
-  let whiteLegalRetreatOptions: Set<UnitPlacement<TBoard>>;
+  let whiteLegalRetreatOptions: Set<UnitPlacement>;
   if (whiteUnitResult.unitRetreated) {
     whiteLegalRetreatOptions = getLegalRetreats(whiteUnit, state);
   } else {
     whiteLegalRetreatOptions = new Set();
   }
 
-  let blackLegalRetreatOptions: Set<UnitPlacement<TBoard>>;
+  let blackLegalRetreatOptions: Set<UnitPlacement>;
   if (blackUnitResult.unitRetreated) {
     blackLegalRetreatOptions = getLegalRetreats(blackUnit, state);
   } else {
@@ -114,7 +114,6 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
     blackUnitReversed: blackUnitResult.unitReversed,
     blackUnitRouted: blackUnitResult.unitRouted,
     blackUnitWithPlacement: blackUnit,
-    boardType: state.boardState.boardType,
     effectType: RESOLVE_MELEE_EFFECT_TYPE,
     eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,

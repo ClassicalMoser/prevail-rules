@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { IssueCommandEvent } from '@events';
-import type { GameStateForBoard, IssueCommandsPhaseStateForBoard } from '@game';
+import type { GameStateForBoard, IssueCommandsPhaseState } from '@game';
 import {
   findMatchingCommand,
   getIssueCommandsPhaseStateForBoard,
@@ -44,7 +44,7 @@ export function applyIssueCommandEvent<TBoard extends Board>(
   );
 
   // Update phase state with new remaining commands
-  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> =
+  const newPhaseState: IssueCommandsPhaseState =
     updateRemainingPlayerCommands(
       phaseState,
       player,

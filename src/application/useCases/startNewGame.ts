@@ -1,6 +1,6 @@
 import { gameModes } from '@entities';
-import type { Army, GameMode, GameModeName } from '@entities';
-import type { Game, GameForMode, GameState } from '@game';
+import type { Army, GameModeName } from '@entities';
+import type { Game, GameForVisibility, GameState } from '@game';
 import type {
   EnginePorts,
   GameStateChange,
@@ -54,72 +54,24 @@ export const startNewGame = async (
     throw new Error(`Game mode ${gameMode} missing board size definition!`);
   }
 
-  let game: GameForMode<GameMode>;
-  switch (gameMode) {
-    case 'tutorial': {
-      game = {
-        blackArmy: placeholderArmy(),
-        blackPlayer: placeholderId,
-        boardType: boardSize,
-        gameState,
-        gameMode: 'tutorial',
-        id: placeholderId,
-        whiteArmy: placeholderArmy(),
-        whitePlayer: placeholderId,
-      };
-      break;
-    }
-    case 'mini': {
-      game = {
-        blackArmy: placeholderArmy(),
-        blackPlayer: placeholderId,
-        boardType: boardSize,
-        gameState,
-        gameMode: 'mini',
-        id: placeholderId,
-        whiteArmy: placeholderArmy(),
-        whitePlayer: placeholderId,
-      };
-      break;
-    }
-    case 'standard': {
-      game = {
-        blackArmy: placeholderArmy(),
-        blackPlayer: placeholderId,
-        boardType: boardSize,
-        gameState,
-        gameMode: 'standard',
-        id: placeholderId,
-        whiteArmy: placeholderArmy(),
-        whitePlayer: placeholderId,
-      };
-      break;
-    }
-    case 'epic': {
-      game = {
-        blackArmy: placeholderArmy(),
-        blackPlayer: placeholderId,
-        boardType: boardSize,
-        gameState,
-        gameMode: 'epic',
-        id: placeholderId,
-        whiteArmy: placeholderArmy(),
-        whitePlayer: placeholderId,
-      };
-      break;
-    }
-    default: {
-      const _exhaustive: never = gameMode;
-      throw new Error(`Unknown gameMode: ${_exhaustive}`);
-    }
+  if (gameState.boardState.boardType !== boardSize) {
+    throw new Error(
+      `Empty game state board size ${gameState.boardState.boardType} does not match mode ${gameMode} (${boardSize}).`,
+    );
   }
 
-  // We narrow first to ensure type match at creation time.
-  // Then we broaden to save for facility in the runner.
-  const broadenedGame = game as Game;
+  const game: GameForVisibility<'authoritative'> = {
+    blackArmy: placeholderArmy(),
+    blackPlayer: placeholderId,
+    gameMode,
+    gameState: gameState as GameForVisibility<'authoritative'>['gameState'],
+    id: placeholderId,
+    whiteArmy: placeholderArmy(),
+    whitePlayer: placeholderId,
+  };
 
   const saveResult: PortResponse<void> =
-    await ports.gameStorage.saveNewGame(broadenedGame);
+    await ports.gameStorage.saveNewGame(game);
 
   if (!saveResult.result) {
     return {
@@ -131,7 +83,7 @@ export const startNewGame = async (
   const change: GameStateChange = {
     gameId: game.id,
     gameMode,
-    gameState: broadenedGame.gameState,
+    gameState: game.gameState,
   };
   for (const subscriber of ports.gameStateSubscribers) {
     if (

@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { ResolveMeleeEventForBoard } from '@events';
+import type { ResolveMeleeEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { getMeleeResolutionState } from '@queries';
 import {
@@ -39,25 +39,21 @@ describe(applyResolveMeleeEvent, () => {
 
   /** Mirror engaged pair on E-5 for event payloads. */
   function unitPlacements(): {
-    whiteUnitWithPlacement: UnitWithPlacement<StandardBoard>;
-    blackUnitWithPlacement: UnitWithPlacement<StandardBoard>;
+    whiteUnitWithPlacement: UnitWithPlacement;
+    blackUnitWithPlacement: UnitWithPlacement;
   } {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     return {
       blackUnitWithPlacement: {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'south',
         },
         unit: blackUnit,
       },
       whiteUnitWithPlacement: {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'north',
         },
@@ -69,14 +65,13 @@ describe(applyResolveMeleeEvent, () => {
   /** Neutral resolveMelee event: no rout/retreat/reverse, empty legal retreat sets. */
   function baseMeleeEvent(
     placements: ReturnType<typeof unitPlacements>,
-  ): ResolveMeleeEventForBoard<StandardBoard> {
+  ): ResolveMeleeEvent {
     return {
       blackLegalRetreatOptions: [],
       blackUnitRetreated: false,
       blackUnitReversed: false,
       blackUnitRouted: false,
       blackUnitWithPlacement: placements.blackUnitWithPlacement,
-      boardType: 'standard',
       effectType: 'resolveMelee',
       eventNumber: 0,
       eventType: 'gameEffect',
@@ -103,7 +98,7 @@ describe(applyResolveMeleeEvent, () => {
   it('given whiteUnitReversed true, white apply gains reverse substep and black stays undefined', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
-    const event: ResolveMeleeEventForBoard<StandardBoard> = {
+    const event: ResolveMeleeEvent = {
       ...baseMeleeEvent(placements),
       whiteUnitReversed: true,
     };
@@ -120,7 +115,7 @@ describe(applyResolveMeleeEvent, () => {
   it('given whiteUnitRouted true, white apply gains rout substep', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
-    const event: ResolveMeleeEventForBoard<StandardBoard> = {
+    const event: ResolveMeleeEvent = {
       ...baseMeleeEvent(placements),
       whiteUnitRouted: true,
     };
@@ -138,11 +133,10 @@ describe(applyResolveMeleeEvent, () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const only = {
-      boardType: 'standard' as const,
       coordinate: 'E-6' as const,
       facing: 'south' as const,
     };
-    const event: ResolveMeleeEventForBoard<StandardBoard> = {
+    const event: ResolveMeleeEvent = {
       ...baseMeleeEvent(placements),
       whiteLegalRetreatOptions: [only],
       whiteUnitRetreated: true,
@@ -159,11 +153,11 @@ describe(applyResolveMeleeEvent, () => {
   it('given white retreated with two legal hexes, retreat finalPosition stays undefined', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
-    const event: ResolveMeleeEventForBoard<StandardBoard> = {
+    const event: ResolveMeleeEvent = {
       ...baseMeleeEvent(placements),
       whiteLegalRetreatOptions: [
-        { boardType: 'standard' as const, coordinate: 'E-6', facing: 'south' },
-        { boardType: 'standard' as const, coordinate: 'E-4', facing: 'south' },
+        { coordinate: 'E-6', facing: 'south' },
+        { coordinate: 'E-4', facing: 'south' },
       ],
       whiteUnitRetreated: true,
     };

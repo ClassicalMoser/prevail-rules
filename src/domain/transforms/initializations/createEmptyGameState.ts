@@ -21,7 +21,6 @@ function shellForBoard<TBoard extends Board>(
 ): GameStateForBoard<TBoard> {
   return {
     boardState: board,
-    boardType: board.boardType as GameStateForBoard<TBoard>['boardType'],
     cardState: {
       visibility: 'authoritative',
       black: {
@@ -44,7 +43,6 @@ function shellForBoard<TBoard extends Board>(
     currentInitiative: 'black',
     currentRoundNumber: 0,
     currentRoundState: {
-      boardType: board.boardType,
       commandedUnits: [],
       completedPhases: [],
       currentPhaseState: 'none',

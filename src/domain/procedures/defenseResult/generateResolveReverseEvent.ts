@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
-import type { ResolveReverseEventForBoard } from '@events';
-import type { GameStateForBoard, ReverseStateForBoard } from '@game';
+import type { ResolveReverseEvent } from '@events';
+import type { GameStateForBoard, ReverseState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   MELEE_ATTACK_RESOLUTION_CONTEXT,
@@ -25,10 +25,10 @@ import {
 export function generateResolveReverseEvent<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): ResolveReverseEventForBoard<TBoard> {
+): ResolveReverseEvent {
   const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
 
-  let reverseState: ReverseStateForBoard<TBoard>;
+  let reverseState: ReverseState;
 
   if (phaseState.phase === 'issueCommands') {
     reverseState = getReverseStateFromAttackApply(
@@ -52,14 +52,11 @@ export function generateResolveReverseEvent<TBoard extends Board>(
 
   return {
     attackResolutionContext,
-    boardType: reverseState.boardType,
     effectType: RESOLVE_REVERSE_EFFECT_TYPE,
     eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     newUnitPlacement: {
-      boardType: reverseState.reversingUnit.boardType,
       placement: {
-        boardType: reverseState.reversingUnit.placement.boardType,
         coordinate: reverseState.reversingUnit.placement.coordinate,
         facing: newFacing,
       },

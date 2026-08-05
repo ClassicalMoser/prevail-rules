@@ -3,7 +3,7 @@ import type { CompleteMoveCommandersPhaseEvent } from '@events';
 import type {
   GameState,
   GameStateForBoard,
-  IssueCommandsPhaseStateForBoard,
+  IssueCommandsPhaseState,
   MoveCommandersPhaseState,
 } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
@@ -36,8 +36,7 @@ export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
 
   const stateWithCompletedPhase = addCompletedPhase(state, currentPhaseState);
 
-  const newPhaseState: IssueCommandsPhaseStateForBoard<TBoard> = {
-    boardType: state.boardState.boardType,
+  const newPhaseState: IssueCommandsPhaseState = {
     currentCommandResolutionState: 'pending',
     phase: ISSUE_COMMANDS_PHASE,
     remainingCommandsFirstPlayer: event.remainingCommandsFirstPlayer,

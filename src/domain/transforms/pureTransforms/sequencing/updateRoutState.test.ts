@@ -29,10 +29,8 @@ describe(updateRoutState, () => {
   function createStateWithRangedAttackRout() {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const placement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
@@ -61,19 +59,15 @@ describe(updateRoutState, () => {
       routingPlayer === 'white' ? 'black' : 'white',
       { attack: 2 },
     );
-    const routedPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const routedPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: routedUnit,
     };
-    const otherPlacement: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const otherPlacement: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'south',
       },

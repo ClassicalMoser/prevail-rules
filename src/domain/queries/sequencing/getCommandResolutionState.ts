@@ -1,11 +1,11 @@
 import type { Board } from '@entities';
 import type {
-  CommandResolutionStateForBoard,
+  CommandResolutionState,
   GameStateForBoard,
-  MeleeResolutionStateForBoard,
-  MovementResolutionStateForBoard,
-  PhaseStateForBoard,
-  RangedAttackResolutionStateForBoard,
+  MeleeResolutionState,
+  MovementResolutionState,
+  PhaseState,
+  RangedAttackResolutionState,
 } from '@game';
 import { getCurrentPhaseStateForBoard } from './getPhaseState';
 
@@ -19,8 +19,8 @@ import { getCurrentPhaseStateForBoard } from './getPhaseState';
  */
 export function getCurrentCommandResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): CommandResolutionStateForBoard<TBoard> {
-  const phaseState: PhaseStateForBoard<TBoard> =
+): CommandResolutionState {
+  const phaseState: PhaseState =
     getCurrentPhaseStateForBoard(state);
   if (phaseState.phase !== 'issueCommands') {
     throw new Error('Not in issueCommands phase');
@@ -42,7 +42,7 @@ export function getCurrentCommandResolutionState<TBoard extends Board>(
  */
 export function getRangedAttackResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): RangedAttackResolutionStateForBoard<TBoard> {
+): RangedAttackResolutionState {
   const commandResolutionState = getCurrentCommandResolutionState(state);
   if (commandResolutionState.commandResolutionType !== 'rangedAttack') {
     throw new Error('Current command resolution is not a ranged attack');
@@ -60,7 +60,7 @@ export function getRangedAttackResolutionState<TBoard extends Board>(
  */
 export function getMovementResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): MovementResolutionStateForBoard<TBoard> {
+): MovementResolutionState {
   const commandResolutionState = getCurrentCommandResolutionState(state);
   if (commandResolutionState.commandResolutionType !== 'movement') {
     throw new Error('Current command resolution is not a movement');
@@ -78,7 +78,7 @@ export function getMovementResolutionState<TBoard extends Board>(
  */
 export function getMeleeResolutionState<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
-): MeleeResolutionStateForBoard<TBoard> {
+): MeleeResolutionState {
   const phaseState = state.currentRoundState.currentPhaseState;
   if (phaseState === 'none' || phaseState.phase !== 'resolveMelee') {
     throw new Error('Not in resolveMelee phase');
@@ -97,7 +97,7 @@ export function getMeleeResolutionState<TBoard extends Board>(
  */
 export function getMeleeResolutionReadyForAttackCalculation<
   TBoard extends Board,
->(state: GameStateForBoard<TBoard>): MeleeResolutionStateForBoard<TBoard> {
+>(state: GameStateForBoard<TBoard>): MeleeResolutionState {
   const meleeState = getMeleeResolutionState(state);
   if (meleeState.whiteCommitment.commitmentType === 'pending') {
     throw new Error('White commitment is still pending');

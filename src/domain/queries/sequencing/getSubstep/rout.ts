@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type {
-  AttackApplyStateForBoard,
+  AttackApplyState,
   GameStateForBoard,
   RoutState,
 } from '@game';
@@ -17,7 +17,7 @@ import { getMeleeResolutionState } from '../getCommandResolutionState';
  * @throws Error if rout state is missing
  */
 export function getRoutStateFromAttackApply<TBoard extends Board>(
-  attackApplyState: AttackApplyStateForBoard<TBoard>,
+  attackApplyState: AttackApplyState,
 ): RoutState {
   return throwIfPending(
     attackApplyState.routState,

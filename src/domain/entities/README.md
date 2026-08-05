@@ -176,39 +176,19 @@ Each variant has a `presenceType` field that acts as the discriminator.
 
 ### Board Types
 
-Board types use discriminated unions based on `boardType`:
+Board size is state, not a type parameter:
 
 ```typescript
-export type Board = StandardBoard | SmallBoard | LargeBoard;
+export interface Board {
+  boardType: BoardType; // 'standard' | 'small' | 'large'
+  board: Partial<Record<Coordinate, BoardSpace>>;
+}
 ```
 
-Each board type has different coordinate systems, enforced by the generic `BoardCoordinate<T>` type.
-
-## Generic Board Types
-
-The board system uses TypeScript generics to ensure coordinate type safety:
-
-```typescript
-export type BoardCoordinate<T extends Board> = T extends StandardBoard
-  ? StandardBoardCoordinate
-  : T extends SmallBoard
-    ? SmallBoardCoordinate
-    : T extends LargeBoard
-      ? LargeBoardCoordinate
-      : never;
-```
-
-This prevents using the wrong coordinate type with a board:
-
-```typescript
-// ✅ Type-safe
-const standardBoard: StandardBoard = createEmptyStandardBoard();
-const space = getBoardSpace(standardBoard, 'E-5'); // StandardBoardCoordinate
-
-// ❌ Type error
-const smallCoord: SmallBoardCoordinate = 'A-1';
-const space = getBoardSpace(standardBoard, smallCoord); // Error!
-```
+`Coordinate` is the union of all size coordinate literals (extensionally the large set).
+Per-size key-set completeness is enforced by `boardSchema` (Zod `partialRecord` +
+`superRefine` against `coordinateLayoutMap`) and by runtime bounds checks in geometry
+helpers — not by compile-time narrowing.
 
 ## Entity Categories
 
@@ -220,9 +200,9 @@ const space = getBoardSpace(standardBoard, smallCoord); // Error!
 
 ### Board Entities
 
-- `Board` - Game board (discriminated union of standard/small/large)
+- `Board` - Game board (`boardType` + partial coordinate map)
 - `BoardSpace` - Individual space on the board
-- `BoardCoordinate` - Coordinate type (generic based on board type)
+- `Coordinate` - Board coordinate (union across all sizes)
 
 ### Unit Entities
 

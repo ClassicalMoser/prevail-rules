@@ -1,18 +1,7 @@
 export { attackApplyStateSchema } from './attackApplySubstep';
-export type {
-  AttackApplyState,
-  AttackApplyStateForBoard,
-} from './attackApplySubstep';
-export {
-  commandResolutionStateSchema,
-  largeCommandResolutionStateSchema,
-  smallCommandResolutionStateSchema,
-  standardCommandResolutionStateSchema,
-} from './commandResolutionState';
-export type {
-  CommandResolutionState,
-  CommandResolutionStateForBoard,
-} from './commandResolutionState';
+export type { AttackApplyState } from './attackApplySubstep';
+export { commandResolutionStateSchema } from './commandResolutionState';
+export type { CommandResolutionState } from './commandResolutionState';
 export {
   engagementResolutionStateSchema,
   engagementStateSchema,
@@ -23,36 +12,21 @@ export {
 export type {
   EngagementResolutionState,
   EngagementState,
-  EngagementStateForBoard,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
   RearEngagementResolutionState,
 } from './engagement';
-export {
-  largeMeleeResolutionStateSchema,
-  meleeResolutionStateSchema,
-  smallMeleeResolutionStateSchema,
-  standardMeleeResolutionStateSchema,
-} from './meleeResolutionSubstep';
-export type {
-  MeleeResolutionState,
-  MeleeResolutionStateForBoard,
-} from './meleeResolutionSubstep';
+export { meleeResolutionStateSchema } from './meleeResolutionSubstep';
+export type { MeleeResolutionState } from './meleeResolutionSubstep';
 export { movementResolutionStateSchema } from './movementResolutionSubstep';
-export type {
-  MovementResolutionState,
-  MovementResolutionStateForBoard,
-} from './movementResolutionSubstep';
+export type { MovementResolutionState } from './movementResolutionSubstep';
 export { rallyResolutionStateSchema } from './rallyResolutionSubstep';
 export type { RallyResolutionState } from './rallyResolutionSubstep';
 export { rangedAttackResolutionStateSchema } from './rangedAttackResolutionSubstep';
-export type {
-  RangedAttackResolutionState,
-  RangedAttackResolutionStateForBoard,
-} from './rangedAttackResolutionSubstep';
+export type { RangedAttackResolutionState } from './rangedAttackResolutionSubstep';
 export { retreatStateSchema } from './retreatSubstep';
-export type { RetreatState, RetreatStateForBoard } from './retreatSubstep';
+export type { RetreatState } from './retreatSubstep';
 export { reverseStateSchema } from './reverseSubstep';
-export type { ReverseState, ReverseStateForBoard } from './reverseSubstep';
+export type { ReverseState } from './reverseSubstep';
 export { routStateSchema } from './routSubstep';
 export type { RoutState } from './routSubstep';

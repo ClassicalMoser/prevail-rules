@@ -1,4 +1,4 @@
-import type { GameStateForBoard, IssueCommandsPhaseStateForBoard } from '@game';
+import type { GameStateForBoard, IssueCommandsPhaseState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import {
@@ -20,8 +20,7 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
   function stateInIssueCommandsComplete(
     state = createEmptyGameState(),
   ): GameStateForBoard<StandardBoard> {
-    const initialPhaseState: IssueCommandsPhaseStateForBoard<StandardBoard> = {
-      boardType: state.boardState.boardType,
+    const initialPhaseState: IssueCommandsPhaseState = {
       currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,
       remainingCommandsFirstPlayer: [],

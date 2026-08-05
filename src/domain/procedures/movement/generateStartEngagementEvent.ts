@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { StartEngagementEventForBoard } from '@events';
+import type { StartEngagementEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from '@events';
 import {
@@ -22,7 +22,7 @@ import {
 export function generateStartEngagementEvent<TBoard extends Board>(
   state: GameStateForBoard<TBoard>,
   eventNumber: number,
-): StartEngagementEventForBoard<TBoard> {
+): StartEngagementEvent {
   const movementResolutionState = getMovementResolutionState(state);
 
   // Get the engaging unit's facing from its target placement
@@ -37,11 +37,8 @@ export function generateStartEngagementEvent<TBoard extends Board>(
   // Check engagement type in priority order: rear, flank, front
   // Rear is most severe, so check it first
   const rearCheck = isEngagementFromRear(engagingFacing, defendingFacing);
-  const { boardType } = state.boardState;
-
   if (rearCheck.result) {
     return {
-      boardType,
       defenderWithPlacement,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'rear',
@@ -53,7 +50,6 @@ export function generateStartEngagementEvent<TBoard extends Board>(
   const flankCheck = isEngagementFromFlank(engagingFacing, defendingFacing);
   if (flankCheck.result) {
     return {
-      boardType,
       defenderWithPlacement,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'flank',
@@ -65,7 +61,6 @@ export function generateStartEngagementEvent<TBoard extends Board>(
   const frontCheck = isEngagementFromFront(engagingFacing, defendingFacing);
   if (frontCheck.result) {
     return {
-      boardType,
       defenderWithPlacement,
       effectType: START_ENGAGEMENT_EFFECT_TYPE,
       engagementType: 'front',

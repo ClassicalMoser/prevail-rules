@@ -57,7 +57,7 @@ describe(getPlayerUnitsOnBoard, () => {
       'north',
     );
     state.boardState.board['F-5'] = {
-      ...state.boardState.board['F-5'],
+      ...state.boardState.board['F-5']!,
       unitPresence: {
         facing: 'south',
         presenceType: 'single',

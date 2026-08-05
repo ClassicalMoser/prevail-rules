@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate } from '@entities';
-import type { ResolveMeleePhaseStateForBoard } from '@game';
+import type { ResolveMeleePhaseState } from '@game';
 
 /**
  * Gets the set of board spaces still awaiting melee resolution for this phase.
@@ -8,7 +8,7 @@ import type { ResolveMeleePhaseStateForBoard } from '@game';
  * @returns The remaining engagements set (same reference as on the phase state)
  */
 export function getRemainingMeleeEngagements<TBoard extends Board>(
-  phaseState: ResolveMeleePhaseStateForBoard<TBoard>,
+  phaseState: ResolveMeleePhaseState,
 ): BoardCoordinate<TBoard>[] {
   return phaseState.remainingEngagements;
 }

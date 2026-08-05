@@ -1,5 +1,5 @@
 import type { Board, ValidationResult } from '@entities';
-import type { MoveCommanderEventForBoard } from '@events';
+import type { MoveCommanderEvent } from '@events';
 import { getBoardSpace, getSpacesWithinDistance } from '@queries';
 import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';
 
@@ -13,7 +13,7 @@ import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';
  * @returns ValidationResult indicating if the move is legal
  */
 export function isLegalCommanderMove<TBoard extends Board>(
-  moveCommanderEvent: MoveCommanderEventForBoard<TBoard>,
+  moveCommanderEvent: MoveCommanderEvent,
   boardState: Board,
 ): ValidationResult {
   try {

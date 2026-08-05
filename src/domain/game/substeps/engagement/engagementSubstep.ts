@@ -1,19 +1,7 @@
-import type {
-  Board,
-  LargeBoard,
-  SmallBoard,
-  StandardBoard,
-  UnitInstance,
-  UnitPlacement,
-} from '@entities';
+import type { UnitInstance, UnitPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import type { EngagementResolutionState } from './engagementResolutionState';
-import {
-  largeUnitPlacementSchema,
-  smallUnitPlacementSchema,
-  standardUnitPlacementSchema,
-  unitInstanceSchema,
-} from '@entities';
+import { unitInstanceSchema, unitPlacementSchema } from '@entities';
 import { z } from 'zod';
 import { engagementResolutionStateSchema } from './engagementResolutionState';
 
@@ -30,97 +18,26 @@ import { engagementResolutionStateSchema } from './engagementResolutionState';
  * The expected event query `getExpectedEngagementEvent()` is composable and
  * can be called from any parent context that contains this state.
  */
-export interface EngagementStateForBoard<TBoard extends Board> {
+export interface EngagementState {
   /** The type of the substep. */
   substepType: 'engagementResolution';
-  /** The type of the board. */
-  boardType: TBoard['boardType'];
   /** The unit that is engaging. */
   engagingUnit: UnitInstance;
   /** The target placement of the engagement. */
-  targetPlacement: UnitPlacement<TBoard>;
+  targetPlacement: UnitPlacement;
   /** The resolution state of the engagement. */
   engagementResolutionState: EngagementResolutionState;
   /** Whether the engagement is complete. */
   completed: boolean;
 }
 
-export type EngagementState =
-  | EngagementStateForBoard<SmallBoard>
-  | EngagementStateForBoard<StandardBoard>
-  | EngagementStateForBoard<LargeBoard>;
-
-const _smallEngagementStateSchemaObject = z.object({
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
+const _engagementStateSchemaObject = z.object({
   completed: z.boolean(),
   engagementResolutionState: engagementResolutionStateSchema,
   engagingUnit: unitInstanceSchema,
   substepType: z.literal('engagementResolution'),
-  targetPlacement: smallUnitPlacementSchema,
+  targetPlacement: unitPlacementSchema,
 });
-
-type SmallEngagementStateSchemaType = z.infer<
-  typeof _smallEngagementStateSchemaObject
->;
-
-const _assertExactSmallEngagementState: AssertExact<
-  EngagementStateForBoard<SmallBoard>,
-  SmallEngagementStateSchemaType
-> = true;
-
-export const smallEngagementStateSchema: z.ZodType<
-  EngagementStateForBoard<SmallBoard>
-> = _smallEngagementStateSchemaObject;
-
-const _standardEngagementStateSchemaObject = z.object({
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
-  completed: z.boolean(),
-  engagementResolutionState: engagementResolutionStateSchema,
-  engagingUnit: unitInstanceSchema,
-  substepType: z.literal('engagementResolution'),
-  targetPlacement: standardUnitPlacementSchema,
-});
-
-type StandardEngagementStateSchemaType = z.infer<
-  typeof _standardEngagementStateSchemaObject
->;
-
-const _assertExactStandardEngagementState: AssertExact<
-  EngagementStateForBoard<StandardBoard>,
-  StandardEngagementStateSchemaType
-> = true;
-
-export const standardEngagementStateSchema: z.ZodType<
-  EngagementStateForBoard<StandardBoard>
-> = _standardEngagementStateSchemaObject;
-
-const _largeEngagementStateSchemaObject = z.object({
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
-  completed: z.boolean(),
-  engagementResolutionState: engagementResolutionStateSchema,
-  engagingUnit: unitInstanceSchema,
-  substepType: z.literal('engagementResolution'),
-  targetPlacement: largeUnitPlacementSchema,
-});
-
-type LargeEngagementStateSchemaType = z.infer<
-  typeof _largeEngagementStateSchemaObject
->;
-
-const _assertExactLargeEngagementState: AssertExact<
-  EngagementStateForBoard<LargeBoard>,
-  LargeEngagementStateSchemaType
-> = true;
-
-export const largeEngagementStateSchema: z.ZodType<
-  EngagementStateForBoard<LargeBoard>
-> = _largeEngagementStateSchemaObject;
-
-const _engagementStateSchemaObject = z.discriminatedUnion('boardType', [
-  _standardEngagementStateSchemaObject,
-  _smallEngagementStateSchemaObject,
-  _largeEngagementStateSchemaObject,
-]);
 
 type EngagementStateSchemaType = z.infer<typeof _engagementStateSchemaObject>;
 

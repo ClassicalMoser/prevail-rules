@@ -1,5 +1,5 @@
 import type { StandardBoard, StandardBoardCoordinate } from '@entities';
-import type { ChooseMeleeResolutionEventForBoard } from '@events';
+import type { ChooseMeleeResolutionEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';
 
@@ -21,7 +21,6 @@ describe(applyChooseMeleeEvent, () => {
   ): GameStateForBoard<StandardBoard> {
     const state = createEmptyGameState();
     return updatePhaseState(state, {
-      boardType: 'standard' as const,
       currentMeleeResolutionState: 'pending',
       phase: RESOLVE_MELEE_PHASE,
       remainingEngagements: remainingSpaces,
@@ -31,8 +30,7 @@ describe(applyChooseMeleeEvent, () => {
 
   it('given E-5 and E-6 pending and black chooses E-5, set shrinks to E-6 and current location E-5', () => {
     const state = createStateInResolveMeleeStep(['E-5', 'E-6']);
-    const event: ChooseMeleeResolutionEventForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const event: ChooseMeleeResolutionEvent = {
       choiceType: 'chooseMeleeResolution',
       eventNumber: 0,
       eventType: 'playerChoice',
@@ -54,8 +52,7 @@ describe(applyChooseMeleeEvent, () => {
     const originalPhaseState = getResolveMeleePhaseState(state);
     const originalRemaining = originalPhaseState.remainingEngagements;
 
-    const event: ChooseMeleeResolutionEventForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const event: ChooseMeleeResolutionEvent = {
       choiceType: 'chooseMeleeResolution',
       eventNumber: 0,
       eventType: 'playerChoice',

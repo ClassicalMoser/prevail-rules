@@ -1,33 +1,30 @@
-import type {
-  Army,
-  BoardOfType,
-  EpicGameMode,
-  GameMode,
-  LargeBoard,
-  MiniGameMode,
-  SmallBoard,
-  StandardBoard,
-  StandardGameMode,
-  TutorialGameMode,
-} from '@entities';
+import type { Army, BoardType, GameModeName } from '@entities';
 import type { AssertExact } from '@utils';
-import type { GameStateForBoard } from './gameState';
+import type {
+  GameStateForVisibility,
+  GameStateVisibility,
+} from './gameState';
 
-import { armySchema } from '@entities';
+import { armySchema, gameModeNames, gameModes } from '@entities';
 import { z } from 'zod';
 import {
-  largeAuthoritativeGameStateSchema,
-  smallAuthoritativeGameStateSchema,
-  standardAuthoritativeGameStateSchema,
+  authoritativeGameStateSchema,
+  blackSeenGameStateSchema,
+  whiteSeenGameStateSchema,
 } from './gameState';
 
 /**
- * Every field is documented here so IDE hover does not jump through a shared base interface.
+ * A game for a card visibility regime.
+ * Board size lives on `gameState.boardState.boardType` and must agree with
+ * the size required by {@link gameMode} (enforced by Zod).
+ *
+ * @param V - Card visibility (`authoritative` | `whiteSeen` | `blackSeen`)
  */
-export interface GameForMode<TGameMode extends GameMode> {
-  gameMode: TGameMode['name'];
-  boardType: TGameMode['boardSize'];
-  gameState: GameStateForBoard<BoardOfType<TGameMode['boardSize']>>;
+export interface GameForVisibility<
+  V extends GameStateVisibility = 'authoritative',
+> {
+  gameMode: GameModeName;
+  gameState: GameStateForVisibility<V>;
   /** The unique identifier of the game. */
   id: string;
   /** The unique identifier of the player on the black side of the game. */
@@ -40,106 +37,114 @@ export interface GameForMode<TGameMode extends GameMode> {
   whiteArmy: Army;
 }
 
+/** Every visibility combination. */
 export type Game =
-  | GameForMode<StandardGameMode>
-  | GameForMode<MiniGameMode>
-  | GameForMode<TutorialGameMode>
-  | GameForMode<EpicGameMode>;
+  | GameForVisibility<'authoritative'>
+  | GameForVisibility<'whiteSeen'>
+  | GameForVisibility<'blackSeen'>;
 
-// ---------------------------------------------------------------------------
-// Zod
-// ---------------------------------------------------------------------------
+function expectedBoardSize(gameMode: GameModeName): BoardType {
+  const mode = gameModes.find((m) => m.name === gameMode);
+  if (!mode) {
+    throw new Error(`Unknown game mode: ${gameMode}`);
+  }
+  return mode.boardSize;
+}
 
-const _standardGameSchemaObject = z.object({
-  blackArmy: armySchema,
-  blackPlayer: z.uuid(),
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
-  gameState: standardAuthoritativeGameStateSchema,
-  gameMode: z.literal('standard'),
-  id: z.uuid(),
-  whiteArmy: armySchema,
-  whitePlayer: z.uuid(),
-});
+function refineGameModeBoardSize(
+  game: {
+    gameMode: GameModeName;
+    gameState: { boardState: { boardType: BoardType } };
+  },
+  ctx: z.RefinementCtx,
+): void {
+  const expected = expectedBoardSize(game.gameMode);
+  const actual = game.gameState.boardState.boardType;
+  if (actual !== expected) {
+    ctx.addIssue({
+      code: 'custom',
+      message: `gameMode ${game.gameMode} requires board size ${expected}, got ${actual}.`,
+      path: ['gameState', 'boardState', 'boardType'],
+    });
+  }
+}
 
-type StandardGameSchemaType = z.infer<typeof _standardGameSchemaObject>;
+const _authoritativeGameSchemaObject = z
+  .object({
+    blackArmy: armySchema,
+    blackPlayer: z.uuid(),
+    gameMode: z.enum(gameModeNames),
+    gameState: authoritativeGameStateSchema,
+    id: z.uuid(),
+    whiteArmy: armySchema,
+    whitePlayer: z.uuid(),
+  })
+  .strict()
+  .superRefine(refineGameModeBoardSize);
 
-const _assertExactStandardGame: AssertExact<
-  GameForMode<StandardGameMode>,
-  StandardGameSchemaType
+type AuthoritativeGameSchemaType = z.infer<
+  typeof _authoritativeGameSchemaObject
+>;
+
+const _assertExactAuthoritativeGame: AssertExact<
+  GameForVisibility<'authoritative'>,
+  AuthoritativeGameSchemaType
 > = true;
 
-/** Validates a {@link Game} when `gameMode` is known to be `standard`. */
-export const standardGameSchema: z.ZodType<GameForMode<StandardGameMode>> =
-  _standardGameSchemaObject;
+export const authoritativeGameSchema: z.ZodType<
+  GameForVisibility<'authoritative'>
+> = _authoritativeGameSchemaObject;
 
-const _miniGameSchemaObject = z.object({
-  blackArmy: armySchema,
-  blackPlayer: z.uuid(),
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
-  gameState: smallAuthoritativeGameStateSchema,
-  gameMode: z.literal('mini'),
-  id: z.uuid(),
-  whiteArmy: armySchema,
-  whitePlayer: z.uuid(),
-});
+const _whiteSeenGameSchemaObject = z
+  .object({
+    blackArmy: armySchema,
+    blackPlayer: z.uuid(),
+    gameMode: z.enum(gameModeNames),
+    gameState: whiteSeenGameStateSchema,
+    id: z.uuid(),
+    whiteArmy: armySchema,
+    whitePlayer: z.uuid(),
+  })
+  .strict()
+  .superRefine(refineGameModeBoardSize);
 
-type MiniGameSchemaType = z.infer<typeof _miniGameSchemaObject>;
+type WhiteSeenGameSchemaType = z.infer<typeof _whiteSeenGameSchemaObject>;
 
-const _assertExactMiniGame: AssertExact<
-  GameForMode<MiniGameMode>,
-  MiniGameSchemaType
+const _assertExactWhiteSeenGame: AssertExact<
+  GameForVisibility<'whiteSeen'>,
+  WhiteSeenGameSchemaType
 > = true;
 
-export const miniGameSchema: z.ZodType<GameForMode<MiniGameMode>> =
-  _miniGameSchemaObject;
+export const whiteSeenGameSchema: z.ZodType<GameForVisibility<'whiteSeen'>> =
+  _whiteSeenGameSchemaObject;
 
-const _tutorialGameSchemaObject = z.object({
-  blackArmy: armySchema,
-  blackPlayer: z.uuid(),
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
-  gameState: smallAuthoritativeGameStateSchema,
-  gameMode: z.literal('tutorial'),
-  id: z.uuid(),
-  whiteArmy: armySchema,
-  whitePlayer: z.uuid(),
-});
+const _blackSeenGameSchemaObject = z
+  .object({
+    blackArmy: armySchema,
+    blackPlayer: z.uuid(),
+    gameMode: z.enum(gameModeNames),
+    gameState: blackSeenGameStateSchema,
+    id: z.uuid(),
+    whiteArmy: armySchema,
+    whitePlayer: z.uuid(),
+  })
+  .strict()
+  .superRefine(refineGameModeBoardSize);
 
-type TutorialGameSchemaType = z.infer<typeof _tutorialGameSchemaObject>;
+type BlackSeenGameSchemaType = z.infer<typeof _blackSeenGameSchemaObject>;
 
-const _assertExactTutorialGame: AssertExact<
-  GameForMode<TutorialGameMode>,
-  TutorialGameSchemaType
+const _assertExactBlackSeenGame: AssertExact<
+  GameForVisibility<'blackSeen'>,
+  BlackSeenGameSchemaType
 > = true;
 
-export const tutorialGameSchema: z.ZodType<GameForMode<TutorialGameMode>> =
-  _tutorialGameSchemaObject;
+export const blackSeenGameSchema: z.ZodType<GameForVisibility<'blackSeen'>> =
+  _blackSeenGameSchemaObject;
 
-const _epicGameSchemaObject = z.object({
-  blackArmy: armySchema,
-  blackPlayer: z.uuid(),
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
-  gameState: largeAuthoritativeGameStateSchema,
-  gameMode: z.literal('epic'),
-  id: z.uuid(),
-  whiteArmy: armySchema,
-  whitePlayer: z.uuid(),
-});
-
-type EpicGameSchemaType = z.infer<typeof _epicGameSchemaObject>;
-
-const _assertExactEpicGame: AssertExact<
-  GameForMode<EpicGameMode>,
-  EpicGameSchemaType
-> = true;
-
-export const epicGameSchema: z.ZodType<GameForMode<EpicGameMode>> =
-  _epicGameSchemaObject;
-
-const _gameSchemaObject = z.discriminatedUnion('gameMode', [
-  _standardGameSchemaObject,
-  _miniGameSchemaObject,
-  _tutorialGameSchemaObject,
-  _epicGameSchemaObject,
+const _gameSchemaObject = z.union([
+  _authoritativeGameSchemaObject,
+  _whiteSeenGameSchemaObject,
+  _blackSeenGameSchemaObject,
 ]);
 
 type GameSchemaType = z.infer<typeof _gameSchemaObject>;

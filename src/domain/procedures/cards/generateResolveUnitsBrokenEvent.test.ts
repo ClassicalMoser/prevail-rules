@@ -66,19 +66,15 @@ describe(generateResolveUnitsBrokenEvent, () => {
     const unitType = tempUnits[0];
     const u1 = createTestUnit('white', { instanceNumber: 1, unitType });
     const u2 = createTestUnit('white', { instanceNumber: 2, unitType });
-    const wp1: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const wp1: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: u1,
     };
-    const wp2: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const wp2: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-6',
         facing: 'north',
       },
@@ -100,19 +96,15 @@ describe(generateResolveUnitsBrokenEvent, () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const u1 = createTestUnit('white', { unitType: tempUnits[0] });
     const u2 = createTestUnit('white', { unitType: tempUnits[1] });
-    const wp1: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const wp1: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-5',
         facing: 'north',
       },
       unit: u1,
     };
-    const wp2: UnitWithPlacement<StandardBoard> = {
-      boardType: 'standard' as const,
+    const wp2: UnitWithPlacement = {
       placement: {
-        boardType: 'standard' as const,
         coordinate: 'E-6',
         facing: 'north',
       },

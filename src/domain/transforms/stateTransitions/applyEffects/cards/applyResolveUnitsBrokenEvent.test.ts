@@ -68,9 +68,7 @@ describe(applyResolveUnitsBrokenEvent, () => {
     const withBoard = updateBoardState(
       base,
       addUnitToBoard(base.boardState, {
-        boardType: 'standard' as const,
         placement: {
-          boardType: 'standard' as const,
           coordinate: 'E-5',
           facing: 'south',
         },

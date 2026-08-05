@@ -1,21 +1,7 @@
-import type {
-  Board,
-  LargeBoard,
-  SmallBoard,
-  StandardBoard,
-  UnitPlacement,
-  UnitWithPlacement,
-} from '@entities';
+import type { UnitPlacement, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import type { RoutState } from './routSubstep';
-import {
-  largeUnitPlacementSchema,
-  largeUnitWithPlacementSchema,
-  smallUnitPlacementSchema,
-  smallUnitWithPlacementSchema,
-  standardUnitPlacementSchema,
-  standardUnitWithPlacementSchema,
-} from '@entities';
+import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
 import { z } from 'zod';
 import { routStateSchema } from './routSubstep';
 
@@ -33,113 +19,36 @@ import { routStateSchema } from './routSubstep';
  * The expected event query `getExpectedRetreatEvent()` is composable and
  * delegates to `getExpectedRoutEvent()` when a rout state is present.
  */
-export interface RetreatStateForBoard<TBoard extends Board> {
+export interface RetreatState {
   /** The type of the substep. */
   substepType: 'retreat';
-  /** The type of the board. */
-  boardType: TBoard['boardType'];
   /** The unit that is retreating. */
-  retreatingUnit: UnitWithPlacement<TBoard>;
+  retreatingUnit: UnitWithPlacement;
   /** The legal retreat options. */
-  legalRetreatOptions: UnitPlacement<TBoard>[];
+  legalRetreatOptions: UnitPlacement[];
   /** The final position of the retreating unit. */
-  finalPosition: UnitPlacement<TBoard> | 'pending';
+  finalPosition: UnitPlacement | 'pending';
   /** The state of a rout caused by the retreat. */
   routState: RoutState | 'pending';
   /** Whether the retreat has been completed. */
   completed: boolean;
 }
 
-export type RetreatState =
-  | RetreatStateForBoard<SmallBoard>
-  | RetreatStateForBoard<StandardBoard>
-  | RetreatStateForBoard<LargeBoard>;
-
-// ---------------------------------------------------------------------------
-// Per-variant Zod schemas
-// ---------------------------------------------------------------------------
-
-const _standardRetreatStateSchemaObject = z.object({
-  boardType: z.literal('standard' satisfies StandardBoard['boardType']),
+const _retreatStateSchemaObject = z.object({
   completed: z.boolean(),
-  finalPosition: standardUnitPlacementSchema.or(z.literal('pending')),
-  legalRetreatOptions: z.array(standardUnitPlacementSchema),
-  retreatingUnit: standardUnitWithPlacementSchema,
+  finalPosition: unitPlacementSchema.or(z.literal('pending')),
+  legalRetreatOptions: z.array(unitPlacementSchema),
+  retreatingUnit: unitWithPlacementSchema,
   routState: routStateSchema.or(z.literal('pending')),
   substepType: z.literal('retreat'),
 });
 
-type StandardRetreatStateSchemaType = z.infer<
-  typeof _standardRetreatStateSchemaObject
->;
+type RetreatStateSchemaType = z.infer<typeof _retreatStateSchemaObject>;
 
-const _assertExactStandardRetreatState: AssertExact<
-  RetreatStateForBoard<StandardBoard>,
-  StandardRetreatStateSchemaType
+const _assertExactRetreatState: AssertExact<
+  RetreatState,
+  RetreatStateSchemaType
 > = true;
 
-export const standardRetreatStateSchema: z.ZodType<
-  RetreatStateForBoard<StandardBoard>
-> = _standardRetreatStateSchemaObject;
-
-const _smallRetreatStateSchemaObject = z.object({
-  boardType: z.literal('small' satisfies SmallBoard['boardType']),
-  completed: z.boolean(),
-  finalPosition: smallUnitPlacementSchema.or(z.literal('pending')),
-  legalRetreatOptions: z.array(smallUnitPlacementSchema),
-  retreatingUnit: smallUnitWithPlacementSchema,
-  routState: routStateSchema.or(z.literal('pending')),
-  substepType: z.literal('retreat'),
-});
-
-type SmallRetreatStateSchemaType = z.infer<
-  typeof _smallRetreatStateSchemaObject
->;
-
-const _assertExactSmallRetreatState: AssertExact<
-  RetreatStateForBoard<SmallBoard>,
-  SmallRetreatStateSchemaType
-> = true;
-
-export const smallRetreatStateSchema: z.ZodType<
-  RetreatStateForBoard<SmallBoard>
-> = _smallRetreatStateSchemaObject;
-
-const _largeRetreatStateSchemaObject = z.object({
-  boardType: z.literal('large' satisfies LargeBoard['boardType']),
-  completed: z.boolean(),
-  finalPosition: largeUnitPlacementSchema.or(z.literal('pending')),
-  legalRetreatOptions: z.array(largeUnitPlacementSchema),
-  retreatingUnit: largeUnitWithPlacementSchema,
-  routState: routStateSchema.or(z.literal('pending')),
-  substepType: z.literal('retreat'),
-});
-
-type LargeRetreatStateSchemaType = z.infer<
-  typeof _largeRetreatStateSchemaObject
->;
-
-const _assertExactLargeRetreatState: AssertExact<
-  RetreatStateForBoard<LargeBoard>,
-  LargeRetreatStateSchemaType
-> = true;
-
-export const largeRetreatStateSchema: z.ZodType<
-  RetreatStateForBoard<LargeBoard>
-> = _largeRetreatStateSchemaObject;
-
-// ---------------------------------------------------------------------------
-// Wide union schema
-// ---------------------------------------------------------------------------
-
-const _retreatStateSchemaObject = z.discriminatedUnion('boardType', [
-  _standardRetreatStateSchemaObject,
-  _smallRetreatStateSchemaObject,
-  _largeRetreatStateSchemaObject,
-]);
-
-/**
- * Schema for retreat state (any board). Per-variant AssertExact above; wide union not asserted.
- */
 export const retreatStateSchema: z.ZodType<RetreatState> =
   _retreatStateSchemaObject;

@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitInstance } from '@entities';
-import type { PerformRangedAttackEventForBoard } from '@events';
+import type { PerformRangedAttackEvent } from '@events';
 import type { GameStateForBoard } from '@game';
 import {
   isSameUnitInstance,
@@ -56,8 +56,7 @@ describe(applyPerformRangedAttackEvent, () => {
       [],
     );
 
-    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const event: PerformRangedAttackEvent = {
       choiceType: 'performRangedAttack',
       eventNumber: 0,
       eventType: 'playerChoice',
@@ -118,8 +117,7 @@ describe(applyPerformRangedAttackEvent, () => {
       [],
     );
 
-    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const event: PerformRangedAttackEvent = {
       choiceType: 'performRangedAttack',
       eventNumber: 0,
       eventType: 'playerChoice',
@@ -163,8 +161,7 @@ describe(applyPerformRangedAttackEvent, () => {
       [defender.unit],
     );
 
-    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const event: PerformRangedAttackEvent = {
       choiceType: 'performRangedAttack',
       eventNumber: 0,
       eventType: 'playerChoice',
@@ -208,8 +205,7 @@ describe(applyPerformRangedAttackEvent, () => {
       [],
     );
 
-    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const event: PerformRangedAttackEvent = {
       choiceType: 'performRangedAttack',
       eventNumber: 0,
       eventType: 'playerChoice',
@@ -261,8 +257,7 @@ describe(applyPerformRangedAttackEvent, () => {
       [],
     );
 
-    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const event: PerformRangedAttackEvent = {
       choiceType: 'performRangedAttack',
       eventNumber: 0,
       eventType: 'playerChoice',
@@ -308,8 +303,7 @@ describe(applyPerformRangedAttackEvent, () => {
       'black',
     );
 
-    const event: PerformRangedAttackEventForBoard<StandardBoard> = {
-      boardType: 'standard',
+    const event: PerformRangedAttackEvent = {
       choiceType: 'performRangedAttack',
       eventNumber: 0,
       eventType: 'playerChoice',

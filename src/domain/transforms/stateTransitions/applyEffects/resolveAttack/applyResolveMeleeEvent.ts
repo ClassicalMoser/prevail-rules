@@ -1,11 +1,11 @@
 import type { Board, UnitPlacement, UnitWithPlacement } from '@entities';
-import type { ResolveMeleeEventForBoard } from '@events';
+import type { ResolveMeleeEvent } from '@events';
 import type {
-  AttackApplyStateForBoard,
+  AttackApplyState,
   AttackResult,
   GameStateForBoard,
-  RetreatStateForBoard,
-  ReverseStateForBoard,
+  RetreatState,
+  ReverseState,
   RoutState,
 } from '@game';
 import {
@@ -23,12 +23,11 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @returns A new game state with the attack apply states created for both players
  */
 export function applyResolveMeleeEvent<TBoard extends Board>(
-  event: ResolveMeleeEventForBoard<TBoard>,
+  event: ResolveMeleeEvent,
   state: GameStateForBoard<TBoard>,
 ): GameStateForBoard<TBoard> {
   const phaseState = getResolveMeleePhaseStateForBoard(state);
   const meleeState = getMeleeResolutionState(state);
-  const { boardType } = meleeState;
 
   const whiteAttackResult: AttackResult = {
     unitRetreated: event.whiteUnitRetreated,
@@ -43,10 +42,10 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
   };
 
   const createAttackApplyState = (
-    unitWithPlacement: UnitWithPlacement<TBoard>,
+    unitWithPlacement: UnitWithPlacement,
     attackResult: AttackResult,
-    legalRetreatOptionsFromEvent: UnitPlacement<TBoard>[],
-  ): AttackApplyStateForBoard<TBoard> | 'pending' => {
+    legalRetreatOptionsFromEvent: UnitPlacement[],
+  ): AttackApplyState | 'pending' => {
     if (
       !attackResult.unitRouted &&
       !attackResult.unitRetreated &&
@@ -56,8 +55,8 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
     }
 
     let routState: RoutState | 'pending' = 'pending';
-    let retreatState: RetreatStateForBoard<TBoard> | 'pending' = 'pending';
-    let reverseState: ReverseStateForBoard<TBoard> | 'pending' = 'pending';
+    let retreatState: RetreatState | 'pending' = 'pending';
+    let reverseState: ReverseState | 'pending' = 'pending';
 
     if (attackResult.unitRouted) {
       routState = {
@@ -70,13 +69,12 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
       };
     } else if (attackResult.unitRetreated) {
       const legalRetreatOptions = legalRetreatOptionsFromEvent;
-      const finalPosition: UnitPlacement<TBoard> | 'pending' =
+      const finalPosition: UnitPlacement | 'pending' =
         legalRetreatOptions.length === 1
           ? [...legalRetreatOptions][0]
           : 'pending';
 
       retreatState = {
-        boardType,
         completed: false,
         finalPosition,
         legalRetreatOptions,
@@ -88,7 +86,6 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
       // Invariant: at least one of rout/retreat/reverse is true (see guard above), and
       // We are not in rout or retreat, so this must be reverse.
       reverseState = {
-        boardType,
         completed: false,
         finalPosition: 'pending',
         reversingUnit: unitWithPlacement,
@@ -98,7 +95,6 @@ export function applyResolveMeleeEvent<TBoard extends Board>(
 
     return {
       attackResult,
-      boardType,
       completed: false,
       defendingUnit: unitWithPlacement.unit,
       retreatState,
