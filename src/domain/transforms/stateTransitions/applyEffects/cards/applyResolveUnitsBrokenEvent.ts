@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
 import type { CleanupPhaseState, GameState, RoutState } from '@game';
 
@@ -26,7 +25,7 @@ import {
  * @param state - The current game state
  * @returns A new game state with units routed
  */
-export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
+export function applyResolveUnitsBrokenEvent(
   event: ResolveUnitsBrokenEvent,
   state: GameState,
 ): GameState {

@@ -38,10 +38,9 @@ const _assertExactChooseRetreatOptionEvent: AssertExact<
 
 /** The schema for a player choice to retreat. */
 export const chooseRetreatOptionEventSchema: z.ZodObject<{
-  choiceType: z.ZodLiteral<typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>,
-  player: typeof playerSideSchema,
-  retreatOption: typeof unitPlacementSchema,
-}> =
-  _chooseRetreatOptionEventSchemaObject;
+  choiceType: z.ZodLiteral<typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  player: typeof playerSideSchema;
+  retreatOption: typeof unitPlacementSchema;
+}> = _chooseRetreatOptionEventSchemaObject;

@@ -1,4 +1,4 @@
-import type { PlayerSide, StandardBoard, StandardBoardCoordinate } from '@entities';
+import type { PlayerSide, Board, Coordinate } from '@entities';
 import { addCommanderToBoard, createEmptyStandardBoard } from '@transforms';
 
 /**
@@ -7,9 +7,9 @@ import { addCommanderToBoard, createEmptyStandardBoard } from '@transforms';
  */
 export function createBoardWithCommander(
   playerSide: PlayerSide,
-  coordinate: StandardBoardCoordinate,
-  board?: StandardBoard,
-): StandardBoard {
+  coordinate: Coordinate,
+  board?: Board,
+): Board {
   const targetBoard = board ?? createEmptyStandardBoard();
   return addCommanderToBoard(targetBoard, playerSide, coordinate);
 }

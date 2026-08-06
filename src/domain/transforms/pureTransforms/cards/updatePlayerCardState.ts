@@ -1,5 +1,9 @@
 import type { OwnedCardState } from '@entities';
-import type { GameStateForVisibility, GameStateVisibility, OwnedPlayerForVisibility } from '@game';
+import type {
+  GameStateForVisibility,
+  GameStateVisibility,
+  OwnedPlayerForVisibility,
+} from '@game';
 
 /**
  * Creates a new game state with an **owned** player's card state updated.

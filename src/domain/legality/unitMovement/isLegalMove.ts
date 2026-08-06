@@ -1,4 +1,4 @@
-import type { Board, UnitWithPlacement } from '@entities';
+import type { UnitWithPlacement } from '@entities';
 import type { MoveUnitEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalUnitMoves } from './getLegalUnitMoves';
@@ -10,7 +10,7 @@ import { getLegalUnitMoves } from './getLegalUnitMoves';
  * @param gameState - The current game state
  * @returns True if the move is legal, false otherwise
  */
-export function isLegalMove<TBoard extends Board>(
+export function isLegalMove(
   moveUnitEvent: MoveUnitEvent,
   gameState: GameState,
 ): boolean {

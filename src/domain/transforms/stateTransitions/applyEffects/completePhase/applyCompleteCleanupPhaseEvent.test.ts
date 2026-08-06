@@ -1,4 +1,3 @@
-import type { StandardBoard } from '@entities';
 import type { CompleteCleanupPhaseEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';

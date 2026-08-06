@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate } from '@entities';
+import type { Board, Coordinate } from '@entities';
 import { unitFacings } from '@entities';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpace } from '../getForwardSpace';
@@ -10,10 +10,10 @@ import { getForwardSpace } from '../getForwardSpace';
  * @param coordinate - The coordinate to get the adjacent spaces for
  * @returns A set of the adjacent space coordinates (up to 8 spaces)
  */
-export function getAdjacentSpaces<TBoard extends Board>(
-  board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
-): Set<BoardCoordinate<TBoard>> {
+export function getAdjacentSpaces(
+  board: Board,
+  coordinate: Coordinate,
+): Set<Coordinate> {
   // One space in each of the eight directions from the given coordinate
   const adjacentSpaces = new Set(
     unitFacings.map((facing) => getForwardSpace(board, coordinate, facing)),

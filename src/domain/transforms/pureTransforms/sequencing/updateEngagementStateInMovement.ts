@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { EngagementState, GameState } from '@game';
 import { getMovementResolutionState } from '@queries';
 import { updateCommandResolutionState } from './updateCommandResolutionState';
@@ -11,7 +10,7 @@ import { updateCommandResolutionState } from './updateCommandResolutionState';
  * @param engagementState - The new engagement state to set
  * @returns A new game state with the updated engagement state
  */
-export function updateEngagementStateInMovement<TBoard extends Board>(
+export function updateEngagementStateInMovement(
   state: GameState,
   engagementState: EngagementState,
 ): GameState {

@@ -17,7 +17,6 @@ const config: OxlintConfig = {
     'oxc',
   ],
   jsPlugins: [
-    'eslint-plugin-unused-imports',
     'eslint-plugin-command',
     'eslint-plugin-jsonc',
     'eslint-plugin-yml',
@@ -177,24 +176,22 @@ const config: OxlintConfig = {
     'no-unused-vars': [
       'error',
       {
-        args: 'none',
+        args: 'after-used',
+        argsIgnorePattern: '^_',
         caughtErrors: 'none',
         ignoreRestSiblings: true,
         vars: 'all',
         varsIgnorePattern: '^_',
+        // Default import cleanup is suggestion-only (save/`explicit` applies it;
+        // `oxlint --fix` does not). `safe-fix` makes both paths match.
+        // `variables: off` prevents unsafe var fixes from aborting import fixes.
+        fix: {
+          imports: 'safe-fix',
+          variables: 'off',
+        },
       },
     ],
     'unicode-bom': ['error', 'never'],
-    'unused-imports/no-unused-vars': [
-      'error',
-      {
-        args: 'after-used',
-        argsIgnorePattern: '^_',
-        ignoreRestSiblings: true,
-        vars: 'all',
-        varsIgnorePattern: '^_',
-      },
-    ],
     'valid-typeof': [
       'error',
       {
@@ -268,7 +265,6 @@ const config: OxlintConfig = {
             allowTernary: true,
           },
         ],
-        'no-unused-vars': 'off',
         'no-useless-constructor': 'off',
         'no-use-before-define': [
           'error',

@@ -1,15 +1,15 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getFrontSpaces } from '../adjacency';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 
-export function getSpacesInArc<TBoard extends Board>(
-  board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+export function getSpacesInArc(
+  board: Board,
+  coordinate: Coordinate,
   facing: UnitFacing,
   range: number,
-): Set<BoardCoordinate<TBoard>> {
+): Set<Coordinate> {
   // Start with the origin space
-  const spacesInArc = new Set<BoardCoordinate<TBoard>>([coordinate]);
+  const spacesInArc = new Set<Coordinate>([coordinate]);
   // Add the spaces in front of the origin space
   for (let i = 0; i < range; i++) {
     // Iterate forward by spaces in front, up to the range.

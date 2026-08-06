@@ -1,4 +1,9 @@
-import type { Board, BoardCoordinate, PlayerSide, UnitWithPlacement } from '@entities';
+import type {
+  Board,
+  Coordinate,
+  PlayerSide,
+  UnitWithPlacement,
+} from '@entities';
 import { hasNoUnit, hasSingleUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
 import { getOppositeFacing } from '@queries/facings';
@@ -36,9 +41,9 @@ import { isFriendlyUnit } from '@queries/unit';
  * // If black unit is secondary in engagement, facing will be opposite primary
  * ```
  */
-export function getPlayerUnitWithPosition<TBoard extends Board>(
-  board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+export function getPlayerUnitWithPosition(
+  board: Board,
+  coordinate: Coordinate,
   playerSide: PlayerSide,
 ): UnitWithPlacement | undefined {
   const { unitPresence } = getBoardSpace(board, coordinate);

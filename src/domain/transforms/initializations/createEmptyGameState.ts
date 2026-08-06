@@ -6,10 +6,6 @@ import {
   createEmptyStandardBoard,
 } from './createEmptyBoard';
 
-/**
- * Resolves which board size {@link createEmptyGameState} will use (default `standard`).
- */
-
 function shell(board: Board): GameState {
   return {
     boardState: board,
@@ -48,11 +44,8 @@ function shell(board: Board): GameState {
 }
 
 /**
- * Builds an empty game state for a given game mode.
- *
- * The return type is precise per `gameMode`; a single generic `TGameMode extends GameMode`
- * is not narrowed by `switch`, so `shell`’s `SmallGameState` / `StandardGameState` would not
- * otherwise check against `GameState<BoardForGameMode<TGameMode>>`.
+ * Builds an empty game state for a given game mode name.
+ * Board size follows the mode catalog (small / standard / large).
  */
 export function createEmptyGameState(name: GameModeName): GameState {
   switch (name) {

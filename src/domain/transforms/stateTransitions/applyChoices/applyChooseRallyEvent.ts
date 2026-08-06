@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ChooseRallyEvent } from '@events';
 import type { CleanupPhaseState, GameState, RallyResolutionState } from '@game';
 import { getCleanupPhaseState } from '@queries';
@@ -26,7 +25,7 @@ function initialRallyResolutionState(
  * @param state - The current game state
  * @returns A new game state with the step advanced
  */
-export function applyChooseRallyEvent<TBoard extends Board>(
+export function applyChooseRallyEvent(
   event: ChooseRallyEvent,
   state: GameState,
 ): GameState {

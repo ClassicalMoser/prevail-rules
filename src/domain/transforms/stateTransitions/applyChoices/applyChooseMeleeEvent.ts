@@ -1,6 +1,9 @@
-import type { Board } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
-import type { GameState, MeleeResolutionState, ResolveMeleePhaseState } from '@game';
+import type {
+  GameState,
+  MeleeResolutionState,
+  ResolveMeleePhaseState,
+} from '@game';
 import { getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
@@ -11,7 +14,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the melee resolution updated
  */
-export function applyChooseMeleeEvent<TBoard extends Board>(
+export function applyChooseMeleeEvent(
   event: ChooseMeleeResolutionEvent,
   state: GameState,
 ): GameState {

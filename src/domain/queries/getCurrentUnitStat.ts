@@ -1,4 +1,4 @@
-import type { Board, Modifier, UnitInstance, UnitStatName } from '@entities';
+import type { Modifier, UnitInstance, UnitStatName } from '@entities';
 import type { GameState } from '@game';
 import { isDefenseStat, matchesUnitRequirements, hasUnitInArray } from './unit';
 import { getSpacesWithinDistance } from './boardSpace';
@@ -14,7 +14,7 @@ import { getPositionOfUnit } from './unitPresence';
  * Usually used for commitment modifiers.
  * @returns The current stat value of the unit.
  */
-export function getCurrentUnitStat<TBoard extends Board>(
+export function getCurrentUnitStat(
   unit: UnitInstance,
   stat: UnitStatName,
   gameState: GameState,

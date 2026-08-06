@@ -1,4 +1,8 @@
-import type { BoardSpace, SingleUnitPresence, UnitPresenceType } from '@entities';
+import type {
+  BoardSpace,
+  SingleUnitPresence,
+  UnitPresenceType,
+} from '@entities';
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,

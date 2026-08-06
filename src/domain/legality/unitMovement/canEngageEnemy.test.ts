@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 import { createGameState } from '@testing';
 
 import { canEngageEnemy } from './canEngageEnemy';
@@ -132,7 +132,7 @@ describe(canEngageEnemy, () => {
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
       const board = gameState.boardState;
-      const invalidCoordinate = 'Z-99' as StandardBoardCoordinate;
+      const invalidCoordinate = 'Z-99' as Coordinate;
       expect(
         canEngageEnemy(
           'black',

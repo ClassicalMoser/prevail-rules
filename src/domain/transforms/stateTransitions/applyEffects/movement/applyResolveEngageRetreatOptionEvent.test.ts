@@ -1,4 +1,4 @@
-import type { StandardBoard, UnitWithPlacement } from '@entities';
+import type { UnitWithPlacement } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
 import type { ResolveEngageRetreatOptionEvent } from '@events';
 import type { GameState } from '@game';

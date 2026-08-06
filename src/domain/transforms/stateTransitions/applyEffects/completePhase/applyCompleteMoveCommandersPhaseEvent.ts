@@ -1,6 +1,9 @@
-import type { Board } from '@entities';
 import type { CompleteMoveCommandersPhaseEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState, MoveCommandersPhaseState } from '@game';
+import type {
+  GameState,
+  IssueCommandsPhaseState,
+  MoveCommandersPhaseState,
+} from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getMoveCommandersPhaseState } from '@queries';
@@ -21,7 +24,7 @@ import {
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
-export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
+export function applyCompleteMoveCommandersPhaseEvent(
   event: CompleteMoveCommandersPhaseEvent,
   state: GameState,
 ): GameState {

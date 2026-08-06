@@ -1,6 +1,11 @@
-import type { Board, ValidationResult } from '@entities';
+import type { ValidationResult } from '@entities';
 import type { Event } from '@events';
-import type { CleanupPhaseState, GameState, MoveCommandersPhaseState, PlayCardsPhaseState } from '@game';
+import type {
+  CleanupPhaseState,
+  GameState,
+  MoveCommandersPhaseState,
+  PlayCardsPhaseState,
+} from '@game';
 import {
   validateCleanupPhaseEvent,
   validateMoveCommandersPhaseEvent,
@@ -24,7 +29,7 @@ import {
  * const newState = applyEvent(event, state);
  * ```
  */
-export function validateEvent<TBoard extends Board>(
+export function validateEvent(
   event: Event,
   state: GameState,
 ): ValidationResult {

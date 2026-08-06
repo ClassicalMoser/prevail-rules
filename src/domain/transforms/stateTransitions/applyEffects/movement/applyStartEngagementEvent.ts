@@ -1,6 +1,11 @@
-import type { Board } from '@entities';
 import type { StartEngagementEvent } from '@events';
-import type { EngagementResolutionState, EngagementState, GameState, IssueCommandsPhaseState, MovementResolutionState } from '@game';
+import type {
+  EngagementResolutionState,
+  EngagementState,
+  GameState,
+  IssueCommandsPhaseState,
+  MovementResolutionState,
+} from '@game';
 import {
   getIssueCommandsPhaseState,
   getMovementResolutionState,
@@ -17,7 +22,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the engagement state created
  */
-export function applyStartEngagementEvent<TBoard extends Board>(
+export function applyStartEngagementEvent(
   event: StartEngagementEvent,
   state: GameState,
 ): GameState {

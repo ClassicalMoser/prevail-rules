@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameState, PhaseState } from '@game';
 import { updateRoundState } from './updateRoundState';
 
@@ -15,7 +14,7 @@ import { updateRoundState } from './updateRoundState';
  * const newState = addCompletedPhase(state, currentPhaseState);
  * ```
  */
-export function addCompletedPhase<TBoard extends Board>(
+export function addCompletedPhase(
   state: GameState,
   completedPhase: PhaseState,
 ): GameState {

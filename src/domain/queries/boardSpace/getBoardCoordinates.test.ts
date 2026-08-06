@@ -1,4 +1,4 @@
-import type { SmallBoard, StandardBoard } from '@entities';
+import type { Board } from '@entities';
 import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
 
 import { getBoardCoordinates } from './getBoardCoordinates';
@@ -12,7 +12,7 @@ const smallBoardCoordinateRegex = /^[A-H]-\d+$/;
 describe(getBoardCoordinates, () => {
   describe('standard board', () => {
     it('given standard board, returns 216 coordinates', () => {
-      const board: StandardBoard = createEmptyStandardBoard();
+      const board: Board = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
       expect(coordinates.length).toBeGreaterThan(0);
@@ -20,7 +20,7 @@ describe(getBoardCoordinates, () => {
     });
 
     it('given standard board, includes corners A-1, A-18, L-1, L-18', () => {
-      const board: StandardBoard = createEmptyStandardBoard();
+      const board: Board = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
       expect(coordinates).toContain('A-1');
@@ -30,7 +30,7 @@ describe(getBoardCoordinates, () => {
     });
 
     it('given standard board, includes interior samples', () => {
-      const board: StandardBoard = createEmptyStandardBoard();
+      const board: Board = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
       expect(coordinates).toContain('E-5');
@@ -38,7 +38,7 @@ describe(getBoardCoordinates, () => {
     });
 
     it('given readonly tuple, runtime allows push (TS readonly only)', () => {
-      const board: StandardBoard = createEmptyStandardBoard();
+      const board: Board = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
       expect(() => {
@@ -49,7 +49,7 @@ describe(getBoardCoordinates, () => {
 
   describe('small board', () => {
     it('given small board, returns 96 coordinates', () => {
-      const board: SmallBoard = createEmptySmallBoard();
+      const board: Board = createEmptySmallBoard();
       const coordinates = getBoardCoordinates(board);
 
       expect(coordinates.length).toBeGreaterThan(0);
@@ -57,7 +57,7 @@ describe(getBoardCoordinates, () => {
     });
 
     it('given small board, includes corners A-1, A-12, H-1, H-12', () => {
-      const board: SmallBoard = createEmptySmallBoard();
+      const board: Board = createEmptySmallBoard();
       const coordinates = getBoardCoordinates(board);
 
       expect(coordinates).toContain('A-1');
@@ -69,7 +69,7 @@ describe(getBoardCoordinates, () => {
 
   describe('type safety', () => {
     it('given standard board, every entry matches standard coordinate pattern', () => {
-      const board: StandardBoard = createEmptyStandardBoard();
+      const board: Board = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
       coordinates.forEach((coord) => {
@@ -78,7 +78,7 @@ describe(getBoardCoordinates, () => {
     });
 
     it('given small board, every entry matches small coordinate pattern', () => {
-      const board: SmallBoard = createEmptySmallBoard();
+      const board: Board = createEmptySmallBoard();
       const coordinates = getBoardCoordinates(board);
 
       coordinates.forEach((coord) => {

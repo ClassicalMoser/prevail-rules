@@ -25,8 +25,8 @@ All validation functions in this directory follow this pattern:
 ### ✅ Correct Pattern
 
 ```typescript
-export function isAtPlacement<TBoard extends Board>(
-  board: TBoard,
+export function isAtPlacement(
+  board: Board,
   unitWithPlacement: UnitWithPlacement,
 ): boolean {
   try {

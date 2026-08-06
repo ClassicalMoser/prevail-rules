@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ResolveEngageRetreatOptionEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -21,7 +20,7 @@ import {
  * unit has a higher current speed value than the engaging unit.
  * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
  */
-export function generateResolveEngageRetreatOptionEvent<TBoard extends Board>(
+export function generateResolveEngageRetreatOptionEvent(
   state: GameState,
   eventNumber: number,
 ): ResolveEngageRetreatOptionEvent {

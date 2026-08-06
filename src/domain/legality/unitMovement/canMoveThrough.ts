@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, PlayerSide } from '@entities';
+import type { Coordinate, PlayerSide } from '@entities';
 import type { GameState } from '@game';
 import { hasEngagedUnits, hasNoUnit } from '@entities';
 import { getBoardSpace, getCurrentUnitStat } from '@queries';
@@ -14,10 +14,10 @@ import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
  * @param gameState - The current game state
  * @returns True if the unit can pass through this coordinate, false otherwise
  */
-export function canMoveThrough<TBoard extends Board>(
+export function canMoveThrough(
   unitSide: PlayerSide,
   currentUnitFlexibility: number,
-  coordinate: BoardCoordinate<TBoard>,
+  coordinate: Coordinate,
   gameState: GameState,
 ): boolean {
   // Get the board state

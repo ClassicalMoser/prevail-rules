@@ -1,5 +1,9 @@
 import type { ResolveRallyEvent } from '@events';
-import type { GameState, GameStateForVisibility, RallyResolutionState } from '@game';
+import type {
+  GameState,
+  GameStateForVisibility,
+  RallyResolutionState,
+} from '@game';
 import {
   getCleanupPhaseState,
   getNextStepForResolveRally,

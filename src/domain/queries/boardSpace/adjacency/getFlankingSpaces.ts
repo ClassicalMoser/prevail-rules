@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getOrthogonalFacings } from '@queries/facings';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpace } from '../getForwardSpace';
@@ -11,11 +11,11 @@ import { getForwardSpace } from '../getForwardSpace';
  * @param facing - The facing to get the flanking spaces for
  * @returns A set of the flanking space coordinates (up to 2 spaces, directly to the right and left)
  */
-export function getFlankingSpaces<TBoard extends Board>(
-  board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+export function getFlankingSpaces(
+  board: Board,
+  coordinate: Coordinate,
   facing: UnitFacing,
-): Set<BoardCoordinate<TBoard>> {
+): Set<Coordinate> {
   // Get orthogonal facings to get the flanking directions
   const orthogonalFacings = [...getOrthogonalFacings(facing)];
   // Set of coordinates and undefined values

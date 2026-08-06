@@ -1,4 +1,9 @@
-import type { StandardBoardCoordinate, UnitFacing, UnitInstance, UnitWithPlacement } from '@entities';
+import type {
+  Coordinate,
+  UnitFacing,
+  UnitInstance,
+  UnitWithPlacement,
+} from '@entities';
 import { createTestUnit } from '@testing';
 import { createEmptyStandardBoard } from '@transforms/initializations';
 
@@ -8,12 +13,12 @@ import { addUnitToBoard } from './addUnitToBoard';
  * AddUnitToBoard: Adds a unit to a board (pure function, returns new board).
  */
 describe(addUnitToBoard, () => {
-  const coordinate: StandardBoardCoordinate = 'E-5';
+  const coordinate: Coordinate = 'E-5';
 
   // Helper function to create a UnitWithPlacement
   const createUnitWithPlacement = (
     unit: UnitInstance,
-    coord: StandardBoardCoordinate,
+    coord: Coordinate,
     facing: UnitFacing,
   ): UnitWithPlacement => ({
     placement: { coordinate: coord, facing },
@@ -58,7 +63,7 @@ describe(addUnitToBoard, () => {
 
     it('given preserve other board spaces', () => {
       const board = createEmptyStandardBoard();
-      const otherCoord: StandardBoardCoordinate = 'D-4';
+      const otherCoord: Coordinate = 'D-4';
       const otherUnit = createTestUnit('white', { attack: 3 });
       board.board[otherCoord] = {
         ...board.board[otherCoord]!,

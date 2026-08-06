@@ -1,5 +1,9 @@
 import type { RevealCardsEvent } from '@events';
-import type { GameState, GameStateForVisibility, PlayCardsPhaseState } from '@game';
+import type {
+  GameState,
+  GameStateForVisibility,
+  PlayCardsPhaseState,
+} from '@game';
 import { getPlayCardsPhaseState } from '@queries';
 import {
   revealCard,

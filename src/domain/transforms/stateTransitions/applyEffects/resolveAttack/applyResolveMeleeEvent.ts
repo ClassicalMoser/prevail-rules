@@ -1,6 +1,13 @@
-import type { Board, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { UnitPlacement, UnitWithPlacement } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
-import type { AttackApplyState, AttackResult, GameState, RetreatState, ReverseState, RoutState } from '@game';
+import type {
+  AttackApplyState,
+  AttackResult,
+  GameState,
+  RetreatState,
+  ReverseState,
+  RoutState,
+} from '@game';
 import { getMeleeResolutionState, getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
@@ -12,7 +19,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the attack apply states created for both players
  */
-export function applyResolveMeleeEvent<TBoard extends Board>(
+export function applyResolveMeleeEvent(
   event: ResolveMeleeEvent,
   state: GameState,
 ): GameState {

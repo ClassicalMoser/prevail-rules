@@ -34,6 +34,8 @@ export {
   engagementType,
   engagementTypeSchema,
   gameModes,
+  gameModeNames,
+  gameModeNameSchema,
   gameModeSchema,
   lineSchema,
 } from '@entities';
@@ -70,11 +72,8 @@ export type {
   Board,
   BoardSpace,
   BoardType,
-  Coordinate,
   CoordinateLayout,
   CoordinateLayoutMap,
-  LargeBoardCoordinate,
-  SmallBoardCoordinate,
   UnitCount,
 } from '@entities';
 export type {
@@ -87,7 +86,7 @@ export type {
   Modifier,
   Restrictions,
   RoundEffect,
-  StandardBoardCoordinate,
+  Coordinate,
   StatModifier,
   UnitSupport,
 } from '@entities';

@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 import { createEmptyGameState, createResolveMeleePhaseState } from '@testing';
 
 import { getRemainingMeleeEngagements } from './getRemainingMeleeEngagements';
@@ -6,7 +6,7 @@ import { getRemainingMeleeEngagements } from './getRemainingMeleeEngagements';
 describe(getRemainingMeleeEngagements, () => {
   it('returns remainingEngagements from resolve-melee phase state (same reference)', () => {
     const state = createEmptyGameState();
-    const remaining: StandardBoardCoordinate[] = ['E-5', 'E-6'];
+    const remaining: Coordinate[] = ['E-5', 'E-6'];
     const phase = createResolveMeleePhaseState(state, {
       remainingEngagements: remaining,
     });
@@ -20,7 +20,7 @@ describe(getRemainingMeleeEngagements, () => {
   it('reflects overrides when the set is replaced on the phase object', () => {
     const state = createEmptyGameState();
     const phase = createResolveMeleePhaseState(state);
-    const next: StandardBoardCoordinate[] = ['E-4'];
+    const next: Coordinate[] = ['E-4'];
     phase.remainingEngagements = next;
 
     expect(getRemainingMeleeEngagements(phase)).toBe(next);

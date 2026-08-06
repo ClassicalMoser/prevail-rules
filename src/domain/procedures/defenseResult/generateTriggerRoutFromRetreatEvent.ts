@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { TriggerRoutFromRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -14,7 +13,7 @@ import {
  * Builds the trigger-rout-from-retreat effect with explicit resolution context
  * so apply does not branch on phase or probe players.
  */
-export function generateTriggerRoutFromRetreatEvent<TBoard extends Board>(
+export function generateTriggerRoutFromRetreatEvent(
   state: GameState,
   eventNumber: number,
 ): TriggerRoutFromRetreatEvent {

@@ -8,7 +8,6 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyChooseCardEvent } from './applyChooseCardEvent';
-import type { StandardBoard } from '@entities';
 
 /**
  * Play-cards `chooseCards`: the chosen command card leaves `inHand` and sits in `awaitingPlay`

@@ -39,10 +39,9 @@ const _assertExactResolveRetreatEvent: AssertExact<
 
 /** The schema for a resolve retreat event. */
 export const resolveRetreatEventSchema: z.ZodObject<{
-  effectType: z.ZodLiteral<typeof RESOLVE_RETREAT_EFFECT_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>,
-  finalPosition: typeof unitWithPlacementSchema,
-  startingPosition: typeof unitWithPlacementSchema,
-}> =
-  _resolveRetreatEventSchemaObject;
+  effectType: z.ZodLiteral<typeof RESOLVE_RETREAT_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  finalPosition: typeof unitWithPlacementSchema;
+  startingPosition: typeof unitWithPlacementSchema;
+}> = _resolveRetreatEventSchemaObject;

@@ -1,4 +1,4 @@
-import type { Board, UnitPlacement } from '@entities';
+import type { UnitPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
@@ -27,7 +27,7 @@ import { getLegalRetreats } from '@legality';
  * @returns A complete ResolveRangedAttackEvent with the defending unit and results
  * @throws Error if not in a valid state for ranged attack resolution
  */
-export function generateResolveRangedAttackEvent<TBoard extends Board>(
+export function generateResolveRangedAttackEvent(
   state: GameState,
   eventNumber: number,
 ): ResolveRangedAttackEvent {

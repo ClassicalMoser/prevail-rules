@@ -1,5 +1,4 @@
 import type { GameState, ResolveMeleePhaseStep } from '@game';
-import type { StandardBoard } from '@entities';
 import {
   createEmptyGameState,
   createMeleeResolutionState,

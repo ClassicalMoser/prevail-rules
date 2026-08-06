@@ -1,6 +1,12 @@
 import type { Board, UnitWithPlacement } from '@entities';
 import type { ResolveFlankEngagementEvent } from '@events';
-import type { EngagementState, FlankEngagementResolutionState, GameState, IssueCommandsPhaseState, MovementResolutionState } from '@game';
+import type {
+  EngagementState,
+  FlankEngagementResolutionState,
+  GameState,
+  IssueCommandsPhaseState,
+  MovementResolutionState,
+} from '@game';
 import {
   getFlankEngagementStateFromMovement,
   getIssueCommandsPhaseState,
@@ -19,7 +25,7 @@ import {
  * Uses `event.defenderWithPlacement` and {@link getFlankEngagementStateFromMovement} (panicky
  * narrowing); does not call `getPositionOfUnit`.
  */
-export function applyResolveFlankEngagementEvent<TBoard extends Board>(
+export function applyResolveFlankEngagementEvent(
   event: ResolveFlankEngagementEvent,
   state: GameState,
 ): GameState {
@@ -31,7 +37,7 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
   const { unit, placement } = event.defenderWithPlacement;
 
   const removedUnitBoard = removeUnitFromBoard(
-    state.boardState as TBoard,
+    state.boardState as Board,
     event.defenderWithPlacement,
   );
 

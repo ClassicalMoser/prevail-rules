@@ -1,4 +1,3 @@
-import type { StandardBoard } from '@entities';
 import type { CompleteMeleeResolutionEvent } from '@events';
 import type { GameState } from '@game';
 import {

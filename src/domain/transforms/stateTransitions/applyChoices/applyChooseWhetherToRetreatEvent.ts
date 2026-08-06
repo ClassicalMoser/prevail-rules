@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ChooseWhetherToRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import { getFrontEngagementStateFromMovement } from '@queries';
@@ -13,7 +12,7 @@ import { updateEngagementStateInMovement } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the retreat decision recorded
  */
-export function applyChooseWhetherToRetreatEvent<TBoard extends Board>(
+export function applyChooseWhetherToRetreatEvent(
   event: ChooseWhetherToRetreatEvent,
   state: GameState,
 ): GameState {

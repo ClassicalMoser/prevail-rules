@@ -1,4 +1,4 @@
-import type { Board, ValidationResult } from '@entities';
+import type { ValidationResult } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
 import type { GameState } from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';
@@ -10,7 +10,7 @@ import { RESOLVE_MELEE_PHASE } from '@game';
  * @param state - The current game state
  * @returns ValidationResult indicating if the event is valid
  */
-export function isValidChooseMeleeResolutionEvent<TBoard extends Board>(
+export function isValidChooseMeleeResolutionEvent(
   event: ChooseMeleeResolutionEvent,
   state: GameState,
 ): ValidationResult {

@@ -1,4 +1,4 @@
-import type { Board, Line, StandardBoard, StandardBoardCoordinate } from '@entities';
+import type { Board, Line, Coordinate } from '@entities';
 import { getLinesFromUnit } from './getLine';
 import { getPlayerUnitWithPosition } from './unitPresence';
 import { createBoardWithUnits, createTestUnit } from '@testing';
@@ -10,7 +10,7 @@ import { isValidLine } from './isValidLine';
  * IsValidLine: Determines whether a line is valid according to game rules.
  */
 describe(isValidLine, () => {
-  const standardBoard: StandardBoard = createEmptyStandardBoard();
+  const standardBoard: Board = createEmptyStandardBoard();
 
   describe('valid lines', () => {
     it('given a single unit, returns true', () => {
@@ -153,7 +153,7 @@ describe(isValidLine, () => {
       const units = Array.from({ length: 9 }, (_, i) =>
         createTestUnit('black', { attack: 3, instanceNumber: i + 1 }),
       );
-      const coordinates: StandardBoardCoordinate[] = [
+      const coordinates: Coordinate[] = [
         'E-1',
         'E-2',
         'E-3',

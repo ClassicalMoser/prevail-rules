@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
@@ -9,7 +9,7 @@ import {
   getResolveMeleePhaseState,
 } from '@queries';
 
-export function getLegalChooseMeleeResolutionEvents<TBoard extends Board>(
+export function getLegalChooseMeleeResolutionEvents(
   gameState: GameState,
 ): ChooseMeleeResolutionEvent[] {
   const phaseState = getResolveMeleePhaseState(gameState);
@@ -37,7 +37,7 @@ export function getLegalChooseMeleeResolutionEvents<TBoard extends Board>(
       eventNumber,
       eventType: PLAYER_CHOICE_EVENT_TYPE,
       player: activePlayer,
-      space: engagementCoordinate as BoardCoordinate<TBoard>,
+      space: engagementCoordinate as Coordinate,
     });
   }
 

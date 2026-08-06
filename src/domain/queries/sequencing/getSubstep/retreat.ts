@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { AttackApplyState, GameState, RetreatState } from '@game';
 import { throwIfPending } from '@utils';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
@@ -32,7 +31,7 @@ export function getRetreatStateFromAttackApply(
  * @returns The retreat state
  * @throws Error if any step in the navigation is missing
  */
-export function getRetreatStateFromRangedAttack<TBoard extends Board>(
+export function getRetreatStateFromRangedAttack(
   state: GameState,
 ): RetreatState {
   const attackApplyState = getAttackApplyStateFromRangedAttack(state);
@@ -48,7 +47,7 @@ export function getRetreatStateFromRangedAttack<TBoard extends Board>(
  * @returns The retreat state
  * @throws Error if any step in the navigation is missing
  */
-export function getRetreatStateFromMelee<TBoard extends Board>(
+export function getRetreatStateFromMelee(
   state: GameState,
   player: 'white' | 'black',
 ): RetreatState {
@@ -60,7 +59,7 @@ export function getRetreatStateFromMelee<TBoard extends Board>(
  * Retreat substep ready for resolveRetreat in melee: finalPosition set, not yet completed.
  * Initiative order matches attack-apply sequencing.
  */
-export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
+export function getRetreatStateReadyForResolveFromMelee(
   state: GameState,
 ): RetreatState {
   const meleeState = getMeleeResolutionState(state);
@@ -105,7 +104,7 @@ export function getRetreatStateReadyForResolveFromMelee<TBoard extends Board>(
  * @returns The retreat state
  * @throws Error if retreat state not found in any context
  */
-export function findRetreatState<TBoard extends Board>(
+export function findRetreatState(
   state: GameState,
   player: 'white' | 'black',
 ): RetreatState {

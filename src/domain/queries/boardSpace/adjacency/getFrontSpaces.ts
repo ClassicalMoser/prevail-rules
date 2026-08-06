@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getAdjacentFacings } from '@queries/facings';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpace } from '../getForwardSpace';
@@ -10,11 +10,11 @@ import { getForwardSpace } from '../getForwardSpace';
  * @param facing - The facing to get the front spaces for
  * @returns A set of the front space coordinates (up to 3 spaces, including diagonals)
  */
-export function getFrontSpaces<TBoard extends Board>(
-  board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+export function getFrontSpaces(
+  board: Board,
+  coordinate: Coordinate,
   facing: UnitFacing,
-): Set<BoardCoordinate<TBoard>> {
+): Set<Coordinate> {
   // Get adjacent facings and add the facing to get the forward facings
   const adjacentFacings = getAdjacentFacings(facing);
   const forwardFacings = [...adjacentFacings, facing];

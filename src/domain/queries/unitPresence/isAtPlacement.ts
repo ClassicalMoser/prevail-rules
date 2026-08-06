@@ -9,8 +9,8 @@ import { isSameUnitInstance } from '../equivalence/unitEquivalence';
  * @param unitWithPlacement - The unit with its placement
  * @returns ValidationResult indicating if the unit is at the placement
  */
-export function isAtPlacement<TBoard extends Board>(
-  board: TBoard,
+export function isAtPlacement(
+  board: Board,
   unitWithPlacement: UnitWithPlacement,
 ): ValidationResult {
   try {

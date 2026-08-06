@@ -42,11 +42,10 @@ const _assertExactMoveCommanderEvent: AssertExact<
 
 /** The schema for a move commander event. */
 export const moveCommanderEventSchema: z.ZodObject<{
-  choiceType: z.ZodLiteral<typeof MOVE_COMMANDER_CHOICE_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>,
-  from: typeof coordinateSchema,
-  player: typeof playerSideSchema,
-  to: typeof coordinateSchema,
-}> =
-  _moveCommanderEventSchemaObject;
+  choiceType: z.ZodLiteral<typeof MOVE_COMMANDER_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  from: typeof coordinateSchema;
+  player: typeof playerSideSchema;
+  to: typeof coordinateSchema;
+}> = _moveCommanderEventSchemaObject;

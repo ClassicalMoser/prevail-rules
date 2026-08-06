@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, UnitPlacement } from '@entities';
+import type { Coordinate, UnitPlacement } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
@@ -28,7 +28,7 @@ import { getLegalRetreats } from '@legality';
  * @returns A complete ResolveMeleeEvent with location and results for both units
  * @throws Error if not in a valid state for melee resolution
  */
-export function generateResolveMeleeEvent<TBoard extends Board>(
+export function generateResolveMeleeEvent(
   state: GameState,
   eventNumber: number,
 ): ResolveMeleeEvent {
@@ -37,12 +37,12 @@ export function generateResolveMeleeEvent<TBoard extends Board>(
 
   const whiteUnit = getPlayerUnitWithPosition(
     state.boardState,
-    meleeCoordinate as BoardCoordinate<TBoard>,
+    meleeCoordinate as Coordinate,
     'white',
   );
   const blackUnit = getPlayerUnitWithPosition(
     state.boardState,
-    meleeCoordinate as BoardCoordinate<TBoard>,
+    meleeCoordinate as Coordinate,
     'black',
   );
 

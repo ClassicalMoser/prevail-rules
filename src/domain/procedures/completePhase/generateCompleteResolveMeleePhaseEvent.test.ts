@@ -2,7 +2,6 @@ import type { GameState } from '@game';
 import { createEmptyGameState } from '@testing';
 
 import { generateCompleteResolveMeleePhaseEvent } from './generateCompleteResolveMeleePhaseEvent';
-import type { StandardBoard } from '@entities';
 
 /**
  * Closes the resolve-melee phase after all engagements are processed. Generator returns

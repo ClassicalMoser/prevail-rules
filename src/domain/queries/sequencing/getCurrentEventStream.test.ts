@@ -1,5 +1,4 @@
 import type { Event } from '@events';
-import type { StandardBoard } from '@entities';
 import { createEmptyGameState } from '@testing';
 
 import { getCurrentEventStream } from './getCurrentEventStream';

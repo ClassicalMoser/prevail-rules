@@ -1,5 +1,10 @@
-import type { Board } from '@entities';
-import type { EngagementState, FlankEngagementResolutionState, FrontEngagementResolutionState, GameState, RearEngagementResolutionState } from '@game';
+import type {
+  EngagementState,
+  FlankEngagementResolutionState,
+  FrontEngagementResolutionState,
+  GameState,
+  RearEngagementResolutionState,
+} from '@game';
 import { throwIfPending } from '@utils';
 import { getMovementResolutionState } from '../getCommandResolutionState';
 
@@ -11,7 +16,7 @@ import { getMovementResolutionState } from '../getCommandResolutionState';
  * @returns The engagement state
  * @throws Error if not resolving a movement or engagement state is missing
  */
-export function getEngagementStateFromMovement<TBoard extends Board>(
+export function getEngagementStateFromMovement(
   state: GameState,
 ): EngagementState {
   const movementState = getMovementResolutionState(state);
@@ -29,7 +34,7 @@ export function getEngagementStateFromMovement<TBoard extends Board>(
  * @returns The engagement state with flank engagement resolution state
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not flank
  */
-export function getFlankEngagementStateFromMovement<TBoard extends Board>(
+export function getFlankEngagementStateFromMovement(
   state: GameState,
 ): EngagementState & {
   engagementResolutionState: FlankEngagementResolutionState;
@@ -54,7 +59,7 @@ export function getFlankEngagementStateFromMovement<TBoard extends Board>(
  * @returns The engagement state with front engagement resolution state
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not front
  */
-export function getFrontEngagementStateFromMovement<TBoard extends Board>(
+export function getFrontEngagementStateFromMovement(
   state: GameState,
 ): EngagementState & {
   engagementResolutionState: FrontEngagementResolutionState;
@@ -79,7 +84,7 @@ export function getFrontEngagementStateFromMovement<TBoard extends Board>(
  * @returns The engagement state with rear engagement resolution state
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not rear
  */
-export function getRearEngagementStateFromMovement<TBoard extends Board>(
+export function getRearEngagementStateFromMovement(
   state: GameState,
 ): EngagementState & {
   engagementResolutionState: RearEngagementResolutionState;

@@ -1,9 +1,9 @@
-import type { StandardBoard, StandardBoardCoordinate, UnitFacing } from '@entities';
+import type { Board, Coordinate, UnitFacing } from '@entities';
 import { createEmptyStandardBoard } from '@transforms';
 
 import { getRightSpace } from './getRightSpace';
 
-const standardBoard: StandardBoard = createEmptyStandardBoard();
+const standardBoard: Board = createEmptyStandardBoard();
 
 /**
  * GetRightSpace: one step to the unit's right from a coordinate and facing; undefined if off the board; throws on
@@ -76,13 +76,13 @@ describe(getRightSpace, () => {
 
   it('given invalid row letter, throws', () => {
     expect(() =>
-      getRightSpace(standardBoard, 'R-12' as StandardBoardCoordinate, 'north'),
+      getRightSpace(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
   it('given invalid column, throws', () => {
     expect(() =>
-      getRightSpace(standardBoard, 'A-19' as StandardBoardCoordinate, 'north'),
+      getRightSpace(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 

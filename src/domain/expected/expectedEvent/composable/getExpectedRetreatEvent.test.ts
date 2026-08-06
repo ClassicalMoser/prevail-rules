@@ -62,9 +62,7 @@ describe(getExpectedRetreatEvent, () => {
         coordinate: 'E-4',
         facing: 'north',
       },
-      legalRetreatOptions: [
-        { coordinate: 'E-4', facing: 'north' },
-      ],
+      legalRetreatOptions: [{ coordinate: 'E-4', facing: 'north' }],
     });
 
     expect(getExpectedRetreatEvent(retreatState)).toStrictEqual({
@@ -80,9 +78,7 @@ describe(getExpectedRetreatEvent, () => {
         coordinate: 'E-4',
         facing: 'north',
       },
-      legalRetreatOptions: [
-        { coordinate: 'E-4', facing: 'north' },
-      ],
+      legalRetreatOptions: [{ coordinate: 'E-4', facing: 'north' }],
     });
 
     expect(() => getExpectedRetreatEvent(retreatState)).toThrow(
@@ -108,9 +104,7 @@ describe(getExpectedRetreatEvent, () => {
   it('given when a single retreat option was not preselected, throws', () => {
     const retreatState = createRetreatState(unitPlacement, {
       finalPosition: 'pending' as const,
-      legalRetreatOptions: [
-        { coordinate: 'E-4', facing: 'north' },
-      ],
+      legalRetreatOptions: [{ coordinate: 'E-4', facing: 'north' }],
     });
 
     expect(() => getExpectedRetreatEvent(retreatState)).toThrow(

@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { IssueCommandEvent } from '@events';
 import type { GameState, IssueCommandsPhaseState } from '@game';
 import { findMatchingCommand, getIssueCommandsPhaseState } from '@queries';
@@ -17,7 +16,7 @@ import {
  * @param state - The current game state
  * @returns A new game state with the command issued
  */
-export function applyIssueCommandEvent<TBoard extends Board>(
+export function applyIssueCommandEvent(
   event: IssueCommandEvent,
   state: GameState,
 ): GameState {

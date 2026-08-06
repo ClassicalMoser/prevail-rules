@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getRightFacing } from '@queries/facings';
 import { getForwardSpace } from './getForwardSpace';
 
@@ -14,11 +14,11 @@ import { getForwardSpace } from './getForwardSpace';
  * (directly to the right of the given coordinate relative to the facing direction)
  * or undefined if the space is out of bounds
  */
-export function getRightSpace<TBoard extends Board>(
-  board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+export function getRightSpace(
+  board: Board,
+  coordinate: Coordinate,
   facing: UnitFacing,
-): BoardCoordinate<TBoard> | undefined {
+): Coordinate | undefined {
   // Get the right-facing direction
   const rightFacing = getRightFacing(facing);
   // Get the right space

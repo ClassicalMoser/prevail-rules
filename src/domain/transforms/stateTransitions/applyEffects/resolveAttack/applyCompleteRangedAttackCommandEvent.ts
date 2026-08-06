@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { CompleteRangedAttackCommandEvent } from '@events';
 import type { GameState, IssueCommandsPhaseState } from '@game';
 import { getIssueCommandsPhaseState } from '@queries';
@@ -14,7 +13,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the ranged attack resolution state cleared
  */
-export function applyCompleteRangedAttackCommandEvent<TBoard extends Board>(
+export function applyCompleteRangedAttackCommandEvent(
   _event: CompleteRangedAttackCommandEvent,
   state: GameState,
 ): GameState {

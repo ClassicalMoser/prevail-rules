@@ -1,6 +1,15 @@
-import type { Board, UnitPlacement } from '@entities';
+import type { UnitPlacement } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
-import type { AttackApplyState, AttackResult, GameState, IssueCommandsPhaseState, RangedAttackResolutionState, RetreatState, ReverseState, RoutState } from '@game';
+import type {
+  AttackApplyState,
+  AttackResult,
+  GameState,
+  IssueCommandsPhaseState,
+  RangedAttackResolutionState,
+  RetreatState,
+  ReverseState,
+  RoutState,
+} from '@game';
 import {
   getIssueCommandsPhaseState,
   getRangedAttackResolutionState,
@@ -15,7 +24,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the attack apply state created
  */
-export function applyResolveRangedAttackEvent<TBoard extends Board>(
+export function applyResolveRangedAttackEvent(
   event: ResolveRangedAttackEvent,
   state: GameState,
 ): GameState {

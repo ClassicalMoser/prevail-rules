@@ -1,5 +1,8 @@
-import type { Board } from '@entities';
-import type { CleanupPhaseState, GameState, ResolveMeleePhaseState } from '@game';
+import type {
+  CleanupPhaseState,
+  GameState,
+  ResolveMeleePhaseState,
+} from '@game';
 import { CLEANUP_PHASE } from '@game';
 import { getResolveMeleePhaseState } from '@queries';
 import {
@@ -20,7 +23,7 @@ import {
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
-export function applyCompleteResolveMeleePhaseEvent<TBoard extends Board>(
+export function applyCompleteResolveMeleePhaseEvent(
   state: GameState,
 ): GameState {
   const phaseState: ResolveMeleePhaseState = getResolveMeleePhaseState(state);

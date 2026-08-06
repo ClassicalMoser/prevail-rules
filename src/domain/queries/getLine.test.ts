@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 import { createBoardWithUnits, createTestUnit, getUnitByTrait } from '@testing';
 
 import { getLinesFromUnit } from './getLine';
@@ -11,7 +11,7 @@ describe(getLinesFromUnit, () => {
   describe('single unit', () => {
     it('given context, returns a single line with just the unit', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const coordinate: StandardBoardCoordinate = 'E-5';
+      const coordinate: Coordinate = 'E-5';
       const board = createBoardWithUnits([
         { coordinate, facing: 'north', unit },
       ]);
@@ -371,7 +371,7 @@ describe(getLinesFromUnit, () => {
         ...unitWithPlacement,
         placement: {
           ...unitWithPlacement.placement,
-          coordinate: 'A-1' as StandardBoardCoordinate,
+          coordinate: 'A-1' as Coordinate,
         },
       };
 

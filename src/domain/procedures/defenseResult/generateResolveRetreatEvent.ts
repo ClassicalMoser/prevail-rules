@@ -1,4 +1,4 @@
-import type { Board, UnitPlacement } from '@entities';
+import type { UnitPlacement } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
 import type { GameState, RetreatState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from '@events';
@@ -17,7 +17,7 @@ import {
  * @param state - The current game state
  * @returns A complete ResolveRetreatEvent with the retreating unit and final position
  */
-export function generateResolveRetreatEvent<TBoard extends Board>(
+export function generateResolveRetreatEvent(
   state: GameState,
   eventNumber: number,
 ): ResolveRetreatEvent {

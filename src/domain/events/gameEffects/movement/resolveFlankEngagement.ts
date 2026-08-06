@@ -39,10 +39,9 @@ const _assertExactResolveFlankEngagementEvent: AssertExact<
 
 /** The schema for a resolve flank engagement event. */
 export const resolveFlankEngagementEventSchema: z.ZodObject<{
-  defenderWithPlacement: typeof unitWithPlacementSchema,
-  effectType: z.ZodLiteral<typeof RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>,
-  newFacing: typeof unitFacingSchema,
-}> =
-  _resolveFlankEngagementEventSchemaObject;
+  defenderWithPlacement: typeof unitWithPlacementSchema;
+  effectType: z.ZodLiteral<typeof RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  newFacing: typeof unitFacingSchema;
+}> = _resolveFlankEngagementEventSchemaObject;

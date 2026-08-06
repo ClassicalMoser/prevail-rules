@@ -1,20 +1,8 @@
 export { boardSchema, boardType, boardTypeEnum } from './board';
 export type { Board, BoardType } from './board';
 
-export {
-  largeBoardSchema,
-  smallBoardSchema,
-  standardBoardSchema,
-} from './aliases';
-export type {
-  BoardOfType,
-  LargeBoard,
-  SmallBoard,
-  StandardBoard,
-} from './aliases';
-
 export { coordinateSchema } from './boardCoordinates';
-export type { Coordinate, BoardCoordinate } from './boardCoordinates';
+export type { Coordinate } from './boardCoordinates';
 
 export { boardSpaceSchema } from './boardSpace';
 export type { BoardSpace } from './boardSpace';

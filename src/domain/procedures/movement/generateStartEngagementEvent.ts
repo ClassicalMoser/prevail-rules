@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { StartEngagementEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, START_ENGAGEMENT_EFFECT_TYPE } from '@events';
@@ -19,7 +18,7 @@ import {
  * @returns A complete StartEngagementEvent with engagement type and `defenderWithPlacement`
  * @throws Error if not in issueCommands phase, no movement resolution, or no enemy unit at target
  */
-export function generateStartEngagementEvent<TBoard extends Board>(
+export function generateStartEngagementEvent(
   state: GameState,
   eventNumber: number,
 ): StartEngagementEvent {

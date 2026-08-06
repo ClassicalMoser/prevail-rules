@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { CompleteCleanupPhaseEvent } from '@events';
 import type { GameState, PlayCardsPhaseState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
@@ -19,7 +18,7 @@ import {
  * @param state - The current game state
  * @returns A new game state with the round advanced
  */
-export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
+export function applyCompleteCleanupPhaseEvent(
   _event: CompleteCleanupPhaseEvent,
   state: GameState,
 ): GameState {

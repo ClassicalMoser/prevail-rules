@@ -1,4 +1,4 @@
-import type { Army, GameModeName, LargeBoard, SmallBoard, StandardBoard } from '@entities';
+import type { Army, GameModeName } from '@entities';
 import type { GameState } from '@game';
 
 import { createEmptyGameState } from '@transforms/initializations';
@@ -9,29 +9,6 @@ import { createUnitInstance } from '@factories';
  * units from each {@link Army} in {@link GameState.reservedUnits}, and each army's command
  * cards in that player's hand (`cardState.*.inHand`).
  */
-export function createInitialGameState(
-  options:
-    | {
-        gameMode: 'tutorial';
-        whiteArmy: Army;
-        blackArmy: Army;
-      }
-    | {
-        gameMode: 'mini';
-        whiteArmy: Army;
-        blackArmy: Army;
-      },
-): GameState;
-export function createInitialGameState(options: {
-  gameMode: 'standard';
-  whiteArmy: Army;
-  blackArmy: Army;
-}): GameState;
-export function createInitialGameState(options: {
-  gameMode: 'epic';
-  whiteArmy: Army;
-  blackArmy: Army;
-}): GameState;
 export function createInitialGameState(options: {
   gameMode: GameModeName;
   whiteArmy: Army;

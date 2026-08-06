@@ -8,7 +8,6 @@ import {
 } from '@testing';
 
 import { generateCompleteIssueCommandsPhaseEvent } from './generateCompleteIssueCommandsPhaseEvent';
-import type { StandardBoard } from '@entities';
 import { updatePhaseState } from '@transforms';
 
 /**

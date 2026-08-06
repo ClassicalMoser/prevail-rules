@@ -1,4 +1,4 @@
-import type { Board, ValidationResult } from '@entities';
+import type { ValidationResult } from '@entities';
 import type { Event, PlayerChoiceEvent } from '@events';
 import type { CleanupPhaseState, GameState } from '@game';
 import { validatePlayerChoice } from '@validation/playerChoice';
@@ -10,7 +10,7 @@ import { validatePlayerChoice } from '@validation/playerChoice';
  * @param state - The current game state with Cleanup phase
  * @returns ValidationResult indicating if the event is valid
  */
-export function validateCleanupPhaseEvent<TBoard extends Board>(
+export function validateCleanupPhaseEvent(
   event: Event,
   state: GameState & {
     currentRoundState: {

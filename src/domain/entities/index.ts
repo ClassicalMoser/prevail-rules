@@ -17,32 +17,21 @@ export {
   getCoordinateLayout,
   largeBoardCoordinateSchema,
   largeBoardCoordinates,
-  largeBoardSchema,
   largeCoordinateLayout,
   smallBoardCoordinateSchema,
   smallBoardCoordinates,
-  smallBoardSchema,
   smallCoordinateLayout,
   standardBoardCoordinateSchema,
   standardBoardCoordinates,
-  standardBoardSchema,
   standardCoordinateLayout,
 } from './board';
 export type {
   Board,
-  BoardOfType,
   BoardSpace,
   BoardType,
-  BoardCoordinate,
-  Coordinate,
   CoordinateLayout,
   CoordinateLayoutMap,
-  LargeBoard,
-  LargeBoardCoordinate,
-  SmallBoard,
-  SmallBoardCoordinate,
-  StandardBoard,
-  StandardBoardCoordinate,
+  Coordinate,
 } from './board';
 
 // Card models.
@@ -90,15 +79,13 @@ export { engagementType, engagementTypeSchema } from './engagementType';
 export type { EngagementType } from './engagementType';
 
 // Game modes.
-export { gameModes, gameModeNames, gameModeSchema } from './gameModes';
-export type {
-  EpicGameMode,
-  GameMode,
-  GameModeName,
-  MiniGameMode,
-  StandardGameMode,
-  TutorialGameMode,
+export {
+  gameModes,
+  gameModeNames,
+  gameModeNameSchema,
+  gameModeSchema,
 } from './gameModes';
+export type { GameMode, GameModeName } from './gameModes';
 
 // Line models.
 export { lineSchema } from './line';

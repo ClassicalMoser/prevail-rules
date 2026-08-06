@@ -45,12 +45,11 @@ const _assertExactPerformRangedAttackEvent: AssertExact<
 
 /** The schema for a perform ranged attack event. */
 export const performRangedAttackEventSchema: z.ZodObject<{
-  choiceType: z.ZodLiteral<typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>,
-  player: typeof playerSideSchema,
-  supportingUnits: z.ZodArray<typeof unitWithPlacementSchema>,
-  targetUnit: typeof unitWithPlacementSchema,
-  unit: typeof unitWithPlacementSchema,
-}> =
-  _performRangedAttackEventSchemaObject;
+  choiceType: z.ZodLiteral<typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  player: typeof playerSideSchema;
+  supportingUnits: z.ZodArray<typeof unitWithPlacementSchema>;
+  targetUnit: typeof unitWithPlacementSchema;
+  unit: typeof unitWithPlacementSchema;
+}> = _performRangedAttackEventSchemaObject;

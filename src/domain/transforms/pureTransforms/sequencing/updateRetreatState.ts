@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameState, RetreatState } from '@game';
 import {
   getCurrentPhaseState,
@@ -21,7 +20,7 @@ import { updatePhaseState } from '../state';
  * @param retreatState - The new retreat state to set
  * @returns A new game state with the updated retreat state
  */
-export function updateRetreatState<TBoard extends Board>(
+export function updateRetreatState(
   state: GameState,
   retreatState: RetreatState,
 ): GameState {

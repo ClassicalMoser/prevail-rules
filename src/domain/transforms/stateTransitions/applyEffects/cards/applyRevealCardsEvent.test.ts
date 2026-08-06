@@ -1,4 +1,3 @@
-import type { StandardBoard } from '@entities';
 import type { RevealCardsEvent } from '@events';
 import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';

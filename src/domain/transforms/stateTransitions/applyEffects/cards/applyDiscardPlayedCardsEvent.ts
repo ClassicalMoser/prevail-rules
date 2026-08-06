@@ -1,5 +1,9 @@
 import type { DiscardPlayedCardsEvent } from '@events';
-import type { CleanupPhaseState, GameState, GameStateForVisibility } from '@game';
+import type {
+  CleanupPhaseState,
+  GameState,
+  GameStateForVisibility,
+} from '@game';
 import { getCleanupPhaseState } from '@queries';
 import {
   moveCardToPlayed,

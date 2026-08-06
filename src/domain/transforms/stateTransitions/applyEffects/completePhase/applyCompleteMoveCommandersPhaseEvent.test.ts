@@ -1,4 +1,4 @@
-import type { Command, StandardBoard } from '@entities';
+import type { Command } from '@entities';
 import type { CompleteMoveCommandersPhaseEvent } from '@events';
 import type { GameState } from '@game';
 import { ISSUE_COMMANDS_PHASE, MOVE_COMMANDERS_PHASE } from '@game';

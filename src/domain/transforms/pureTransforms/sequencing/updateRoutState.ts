@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameState, RoutState } from '@game';
 import {
   getCleanupPhaseState,
@@ -25,7 +24,7 @@ import { updatePhaseState } from '../state';
  * @param routState - The new rout state to set
  * @returns A new game state with the updated rout state
  */
-export function updateRoutState<TBoard extends Board>(
+export function updateRoutState(
   state: GameState,
   routState: RoutState,
 ): GameState {

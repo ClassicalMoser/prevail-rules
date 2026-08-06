@@ -1,4 +1,11 @@
-import type { PlayerSide, StandardBoard, StandardBoardCoordinate, UnitFacing, UnitInstance, UnitWithPlacement } from '@entities';
+import type {
+  PlayerSide,
+  Board,
+  Coordinate,
+  UnitFacing,
+  UnitInstance,
+  UnitWithPlacement,
+} from '@entities';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
@@ -12,8 +19,8 @@ import { isAtPlacement } from './isAtPlacement';
  * IsAtPlacement: Determines whether a unit is at a specific placement on the board.
  */
 describe(isAtPlacement, () => {
-  const standardBoard: StandardBoard = createEmptyStandardBoard();
-  const coordinate: StandardBoardCoordinate = 'E-5';
+  const standardBoard: Board = createEmptyStandardBoard();
+  const coordinate: Coordinate = 'E-5';
 
   // Use stat-based lookups instead of names to avoid brittleness
   const flexibility1UnitType = getUnitByStatValue('flexibility', 1);
@@ -29,7 +36,7 @@ describe(isAtPlacement, () => {
   // Helper function to create a UnitWithPlacement
   const createUnitWithPlacement = (
     unit: UnitInstance,
-    coord: StandardBoardCoordinate,
+    coord: Coordinate,
     facing: UnitFacing,
   ): UnitWithPlacement => ({
     placement: { coordinate: coord, facing },
@@ -39,7 +46,7 @@ describe(isAtPlacement, () => {
   describe('invalid inputs', () => {
     it('given a non-existent coordinate, returns false', () => {
       const unit = createUnit('black');
-      const invalidCoordinate = 'Z-99' as StandardBoardCoordinate;
+      const invalidCoordinate = 'Z-99' as Coordinate;
       const unitWithPlacement = createUnitWithPlacement(
         unit,
         invalidCoordinate,

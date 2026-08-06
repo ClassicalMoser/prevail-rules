@@ -1,4 +1,12 @@
-import type { AuthoritativeCardState, BlackSeenCardState, Board, CardState, PlayerSide, UnitInstance, WhiteSeenCardState } from '@entities';
+import type {
+  AuthoritativeCardState,
+  BlackSeenCardState,
+  Board,
+  CardState,
+  PlayerSide,
+  UnitInstance,
+  WhiteSeenCardState,
+} from '@entities';
 import { z } from 'zod';
 import type { RoundState } from './roundState';
 import type { AssertExact } from '@utils';

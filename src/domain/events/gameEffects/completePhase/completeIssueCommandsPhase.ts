@@ -42,9 +42,8 @@ const _assertExactCompleteIssueCommandsPhaseEvent: AssertExact<
 
 /** The schema for a complete issue commands phase event. */
 export const completeIssueCommandsPhaseEventSchema: z.ZodObject<{
-  effectType: z.ZodLiteral<typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>,
-  remainingEngagements: z.ZodArray<typeof coordinateSchema>,
-}> =
-  _completeIssueCommandsPhaseEventSchemaObject;
+  effectType: z.ZodLiteral<typeof COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  remainingEngagements: z.ZodArray<typeof coordinateSchema>;
+}> = _completeIssueCommandsPhaseEventSchemaObject;

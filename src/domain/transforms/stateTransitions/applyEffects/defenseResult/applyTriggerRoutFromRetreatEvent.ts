@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { TriggerRoutFromRetreatEvent } from '@events';
 import type { GameState, RoutState } from '@game';
 import { RANGED_ATTACK_RESOLUTION_CONTEXT } from '@events';
@@ -16,7 +15,7 @@ import { updateRetreatRoutState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the rout state created in the retreat state
  */
-export function applyTriggerRoutFromRetreatEvent<TBoard extends Board>(
+export function applyTriggerRoutFromRetreatEvent(
   event: TriggerRoutFromRetreatEvent,
   state: GameState,
 ): GameState {

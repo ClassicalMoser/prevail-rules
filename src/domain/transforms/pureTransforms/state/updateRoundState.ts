@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameState, RoundState } from '@game';
 
 /**
@@ -24,7 +23,7 @@ import type { GameState, RoundState } from '@game';
  * }));
  * ```
  */
-export function updateRoundState<TBoard extends Board>(
+export function updateRoundState(
   state: GameState,
   roundState: RoundState,
 ): GameState {

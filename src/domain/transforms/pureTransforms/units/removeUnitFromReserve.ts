@@ -1,7 +1,7 @@
-import type { Board, UnitInstance } from '@entities';
+import type { UnitInstance } from '@entities';
 import type { GameState } from '@game';
 import { hasUnitInArray, arrayWithoutUnit } from '@queries';
-export function removeUnitFromReserve<TBoard extends Board>(
+export function removeUnitFromReserve(
   gameState: GameState,
   unit: UnitInstance,
 ): GameState {

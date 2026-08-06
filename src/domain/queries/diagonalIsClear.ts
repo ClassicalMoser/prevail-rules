@@ -1,4 +1,9 @@
-import type { Board, BoardCoordinate, PlayerSide, ValidationResult } from '@entities';
+import type {
+  Board,
+  Coordinate,
+  PlayerSide,
+  ValidationResult,
+} from '@entities';
 import {
   getBoardSpace,
   getDiagonallyAdjacentSpaces,
@@ -6,11 +11,11 @@ import {
 } from './boardSpace';
 import { hasEnemyUnit } from './unitPresence';
 
-export function diagonalIsClear<TBoard extends Board>(
+export function diagonalIsClear(
   playerSide: PlayerSide,
-  board: TBoard,
-  originCoordinate: BoardCoordinate<TBoard>,
-  targetCoordinate: BoardCoordinate<TBoard>,
+  board: Board,
+  originCoordinate: Coordinate,
+  targetCoordinate: Coordinate,
 ): ValidationResult {
   try {
     // Check if the origin space is a diagonal space

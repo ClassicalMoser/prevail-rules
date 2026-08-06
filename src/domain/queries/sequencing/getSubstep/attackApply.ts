@@ -1,4 +1,4 @@
-import type { Board, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
 import type { AttackApplyState, GameState, MeleeResolutionState } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { throwIfPending } from '@utils';
@@ -16,7 +16,7 @@ import {
  * @returns The attack apply state
  * @throws Error if not resolving a ranged attack or attack apply state is missing
  */
-export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
+export function getAttackApplyStateFromRangedAttack(
   state: GameState,
 ): AttackApplyState {
   const rangedAttackState = getRangedAttackResolutionState(state);
@@ -36,7 +36,7 @@ export function getAttackApplyStateFromRangedAttack<TBoard extends Board>(
  * @returns The attack apply state for the player
  * @throws Error if not in resolveMelee phase or attack apply state is missing
  */
-export function getAttackApplyStateFromMelee<TBoard extends Board>(
+export function getAttackApplyStateFromMelee(
   state: GameState,
   player: 'white' | 'black',
 ): AttackApplyState {

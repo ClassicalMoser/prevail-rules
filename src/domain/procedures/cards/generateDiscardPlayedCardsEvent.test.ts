@@ -2,7 +2,6 @@ import type { GameState } from '@game';
 import { createEmptyGameState } from '@testing';
 
 import { generateDiscardPlayedCardsEvent } from './generateDiscardPlayedCardsEvent';
-import type { StandardBoard } from '@entities';
 
 /**
  * Cleanup phase entry: signal to discard all played command cards from both sides.

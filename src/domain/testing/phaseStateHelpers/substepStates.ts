@@ -1,5 +1,15 @@
-import type { PlayerSide, UnitInstance, UnitPlacement, UnitWithPlacement } from '@entities';
-import type { RallyResolutionState, RetreatState, ReverseState, RoutState } from '@game';
+import type {
+  PlayerSide,
+  UnitInstance,
+  UnitPlacement,
+  UnitWithPlacement,
+} from '@entities';
+import type {
+  RallyResolutionState,
+  RetreatState,
+  ReverseState,
+  RoutState,
+} from '@game';
 
 /**
  * Creates a RetreatState with sensible defaults.

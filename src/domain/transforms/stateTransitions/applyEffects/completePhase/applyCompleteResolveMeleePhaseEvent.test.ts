@@ -1,4 +1,3 @@
-import type { StandardBoard } from '@entities';
 import { throwIfNone } from '@utils';
 import type { GameState } from '@game';
 import { CLEANUP_PHASE, RESOLVE_MELEE_PHASE } from '@game';

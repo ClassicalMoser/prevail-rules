@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
+import type { Board, Coordinate, PlayerSide, UnitFacing } from '@entities';
 import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from '@entities';
 import { getBoardSpace } from '@queries';
 import { canEngageEnemy } from './canEngageEnemy';
@@ -15,12 +15,12 @@ import { canEngageEnemy } from './canEngageEnemy';
  * @param remainingFlexibility - The remaining flexibility at the time of this check
  * @returns True if the unit can end its movement at this coordinate, false otherwise
  */
-export function canMoveInto<TBoard extends Board>(
+export function canMoveInto(
   unitSide: PlayerSide,
-  board: TBoard,
-  destinationCoordinate: BoardCoordinate<TBoard>,
-  adjacentCoordinate: BoardCoordinate<TBoard>,
-  moveStartCoordinate: BoardCoordinate<TBoard>,
+  board: Board,
+  destinationCoordinate: Coordinate,
+  adjacentCoordinate: Coordinate,
+  moveStartCoordinate: Coordinate,
   currentFacing: UnitFacing,
   remainingFlexibility: number,
   direction: 'advance' | 'retreat',

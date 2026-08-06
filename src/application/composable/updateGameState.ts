@@ -1,5 +1,10 @@
 import type { GameState } from '@game';
-import type { GameStateChange, GameStateSubscriber, GameStorage, PortResponse } from '@application/ports';
+import type {
+  GameStateChange,
+  GameStateSubscriber,
+  GameStorage,
+  PortResponse,
+} from '@application/ports';
 import type { GameModeName } from '@entities';
 
 /**
