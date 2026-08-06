@@ -12,10 +12,10 @@ import { updateEngagementStateInMovement } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the retreat decision recorded
  */
-export function applyChooseWhetherToRetreatEvent(
+export function applyChooseWhetherToRetreatEvent<S extends GameState>(
   event: ChooseWhetherToRetreatEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   // Finds the front engagement state from the movement state
   const engagementState = getFrontEngagementStateFromMovement(state);
 

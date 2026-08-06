@@ -10,10 +10,10 @@ import { updateCommandResolutionState } from './updateCommandResolutionState';
  * @param engagementState - The new engagement state to set
  * @returns A new game state with the updated engagement state
  */
-export function updateEngagementStateInMovement(
-  state: GameState,
+export function updateEngagementStateInMovement<S extends GameState>(
+  state: S,
   engagementState: EngagementState,
-): GameState {
+): S {
   const movementState = getMovementResolutionState(state);
   const newMovementState = {
     ...movementState,

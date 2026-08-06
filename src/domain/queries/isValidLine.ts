@@ -1,4 +1,4 @@
-import type { Board, Coordinate, Line, ValidationResult } from '@entities';
+import type { Board, Line, ValidationResult } from '@entities';
 import { areSameSide } from '@entities';
 import { getFlankingSpaces } from './boardSpace';
 import { getOppositeFacing } from './facings';
@@ -69,9 +69,8 @@ export function isValidLine(board: Board, line: Line): ValidationResult {
     // Lines form perpendicular to a unit's facing, so units must be in flanking spaces
     for (let i = 0; i < unitPlacements.length - 1; i++) {
       const currentUnit = unitPlacements[i];
-      const nextCoord = unitPlacements[i + 1].placement
-        .coordinate as Coordinate;
-      const currentCoord = currentUnit.placement.coordinate as Coordinate;
+      const nextCoord = unitPlacements[i + 1].placement.coordinate;
+      const currentCoord = currentUnit.placement.coordinate;
       const currentFacing = currentUnit.placement.facing;
 
       const flankingSpaces = getFlankingSpaces(

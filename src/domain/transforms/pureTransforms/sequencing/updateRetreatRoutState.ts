@@ -23,10 +23,10 @@ import { updateRetreatState } from './updateRetreatState';
  * });
  * ```
  */
-export function updateRetreatRoutState(
-  state: GameState,
+export function updateRetreatRoutState<S extends GameState>(
+  state: S,
   routState: RoutState,
-): GameState {
+): S {
   const currentRetreat: RetreatState = findRetreatState(
     state,
     routState.player,

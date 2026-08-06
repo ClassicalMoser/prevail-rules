@@ -24,13 +24,13 @@ import {
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
-export function applyCompleteMoveCommandersPhaseEvent(
+export function applyCompleteMoveCommandersPhaseEvent<S extends GameState>(
   event: CompleteMoveCommandersPhaseEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   // Safe type broadening: No spatial information on MoveCommandersPhaseState
   const currentPhaseState: MoveCommandersPhaseState =
-    getMoveCommandersPhaseState(state as GameState);
+    getMoveCommandersPhaseState(state);
 
   const stateWithCompletedPhase = addCompletedPhase(state, currentPhaseState);
 

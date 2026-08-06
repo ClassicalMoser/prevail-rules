@@ -23,9 +23,9 @@ import {
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
-export function applyCompleteResolveMeleePhaseEvent(
-  state: GameState,
-): GameState {
+export function applyCompleteResolveMeleePhaseEvent<S extends GameState>(
+  state: S,
+): S {
   const phaseState: ResolveMeleePhaseState = getResolveMeleePhaseState(state);
 
   // Mark the current phase as complete

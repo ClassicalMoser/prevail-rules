@@ -1,10 +1,10 @@
 import type { CommitToMovementEvent } from '@events';
 import type {
   GameState,
-  GameStateForVisibility,
   MovementResolutionState,
+  OwnedPlayerForGameState,
 } from '@game';
-import { getMovementResolutionState } from '@queries';
+import { getMovementResolutionState, getOwnedPlayerCardState } from '@queries';
 import {
   discardCardsFromHand,
   updateCommandResolutionState,
@@ -16,22 +16,23 @@ import {
  * Updates the commitment in the movement resolution state and discards the card.
  * Event is assumed pre-validated (issueCommands phase, movement resolution).
  *
- * Trusts authoritative visibility for owned card slices.
+ * `event.player` must be owned under game state `S`.
  */
-export function applyCommitToMovementEvent(
-  event: CommitToMovementEvent,
-  state: GameState,
-): GameState {
-  const authoritative = state as GameStateForVisibility<'authoritative'>;
-  const movementState = getMovementResolutionState(authoritative);
+export function applyCommitToMovementEvent<S extends GameState>(
+  event: CommitToMovementEvent & { player: OwnedPlayerForGameState<S> },
+  state: S,
+): S {
+  const movementState = getMovementResolutionState(state);
   const { player } = event;
 
+  const ownedPlayerCardState = getOwnedPlayerCardState(state.cardState, player);
+  const discardedCardState = discardCardsFromHand(ownedPlayerCardState, [
+    event.committedCard.id,
+  ]);
   const stateWithCards = updatePlayerCardState(
-    authoritative,
+    state,
     player,
-    discardCardsFromHand(authoritative.cardState[player], [
-      event.committedCard.id,
-    ]),
+    discardedCardState,
   );
 
   const newCommitment = {

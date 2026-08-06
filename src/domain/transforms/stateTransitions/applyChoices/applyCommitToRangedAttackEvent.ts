@@ -1,10 +1,13 @@
 import type { CommitToRangedAttackEvent } from '@events';
 import type {
   GameState,
-  GameStateForVisibility,
+  OwnedPlayerForGameState,
   RangedAttackResolutionState,
 } from '@game';
-import { getRangedAttackResolutionState } from '@queries';
+import {
+  getOwnedPlayerCardState,
+  getRangedAttackResolutionState,
+} from '@queries';
 import {
   discardCardsFromHand,
   updateCommandResolutionState,
@@ -18,24 +21,25 @@ import {
  * Event is assumed pre-validated (issueCommands phase, ranged attack, player is
  * attacker or defender).
  *
- * Trusts authoritative visibility for owned card slices.
+ * `event.player` must be owned under game state `S`.
  */
-export function applyCommitToRangedAttackEvent(
-  event: CommitToRangedAttackEvent,
-  state: GameState,
-): GameState {
-  const authoritative = state as GameStateForVisibility<'authoritative'>;
-  const rangedAttackState = getRangedAttackResolutionState(authoritative);
+export function applyCommitToRangedAttackEvent<S extends GameState>(
+  event: CommitToRangedAttackEvent & { player: OwnedPlayerForGameState<S> },
+  state: S,
+): S {
+  const rangedAttackState = getRangedAttackResolutionState(state);
   const { player } = event;
   const attackingPlayer = rangedAttackState.attackingUnit.playerSide;
   const isAttackingPlayer = player === attackingPlayer;
 
+  const ownedPlayerCardState = getOwnedPlayerCardState(state.cardState, player);
+  const discardedCardState = discardCardsFromHand(ownedPlayerCardState, [
+    event.committedCard.id,
+  ]);
   const stateWithCards = updatePlayerCardState(
-    authoritative,
+    state,
     player,
-    discardCardsFromHand(authoritative.cardState[player], [
-      event.committedCard.id,
-    ]),
+    discardedCardState,
   );
 
   const newCommitment = {

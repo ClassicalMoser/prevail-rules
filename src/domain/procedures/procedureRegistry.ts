@@ -1,5 +1,5 @@
 import type { GameEffectEvent, GameEffectType } from '@events';
-import type { GameState } from '@game';
+import type { GameStateForVisibility } from '@game';
 import {
   generateDiscardPlayedCardsEvent,
   generateResolveInitiativeEvent,
@@ -49,7 +49,7 @@ import {
  * WARNING: Game state is trusted as internally consistent for this function.
  */
 export function generateEventFromProcedure(
-  state: GameState,
+  state: GameStateForVisibility<'authoritative'>,
   eventNumber: number,
   effectType: GameEffectType,
 ): GameEffectEvent {
@@ -115,7 +115,7 @@ export function generateEventFromProcedure(
       return generateResolveUnitsBrokenEvent(state, eventNumber);
     }
     case 'revealCards': {
-      return generateRevealCardsEvent(eventNumber);
+      return generateRevealCardsEvent(state, eventNumber);
     }
     case 'startEngagement': {
       return generateStartEngagementEvent(state, eventNumber);

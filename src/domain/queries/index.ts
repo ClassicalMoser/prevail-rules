@@ -22,6 +22,7 @@ export {
   getSpacesWithinDistance,
 } from './boardSpace';
 export { calculateInitiative } from './calculateInitiative';
+export { getOwnedPlayerCardState } from './cards';
 export {
   isEngagementFromFlank,
   isEngagementFromFront,

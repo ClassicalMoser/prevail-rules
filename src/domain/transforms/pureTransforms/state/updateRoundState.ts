@@ -23,10 +23,10 @@ import type { GameState, RoundState } from '@game';
  * }));
  * ```
  */
-export function updateRoundState(
-  state: GameState,
+export function updateRoundState<S extends GameState>(
+  state: S,
   roundState: RoundState,
-): GameState {
+): S {
   return {
     ...state,
     currentRoundState: roundState,

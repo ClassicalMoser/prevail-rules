@@ -1,4 +1,3 @@
-import type { Coordinate } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
@@ -18,10 +17,10 @@ export function getLegalChooseMeleeResolutionEvents(
   }
 
   // Get the next event number
-  const eventNumber = getNextEventNumber(gameState as GameState);
+  const eventNumber = getNextEventNumber(gameState);
 
   // Get the active player
-  const activePlayer = getCurrentInitiative(gameState as GameState);
+  const activePlayer = getCurrentInitiative(gameState);
 
   // Get the remaining engagements
   const remainingEngagementCoordinates =
@@ -37,7 +36,7 @@ export function getLegalChooseMeleeResolutionEvents(
       eventNumber,
       eventType: PLAYER_CHOICE_EVENT_TYPE,
       player: activePlayer,
-      space: engagementCoordinate as Coordinate,
+      space: engagementCoordinate,
     });
   }
 

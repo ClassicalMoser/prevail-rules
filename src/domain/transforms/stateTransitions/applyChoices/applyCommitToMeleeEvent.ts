@@ -1,6 +1,6 @@
 import type { CommitToMeleeEvent } from '@events';
-import type { GameState, GameStateForVisibility } from '@game';
-import { getMeleeResolutionState } from '@queries';
+import type { GameState, OwnedPlayerForGameState } from '@game';
+import { getMeleeResolutionState, getOwnedPlayerCardState } from '@queries';
 import {
   discardCardsFromHand,
   updateMeleeResolutionState,
@@ -12,22 +12,23 @@ import {
  * Updates the player's commitment in the melee resolution state and discards the card.
  * Event is assumed pre-validated (resolveMelee phase, player's commitment pending).
  *
- * Trusts authoritative visibility for owned card slices.
+ * `event.player` must be owned under game state `S`.
  */
-export function applyCommitToMeleeEvent(
-  event: CommitToMeleeEvent,
-  state: GameState,
-): GameState {
-  const authoritative = state as GameStateForVisibility<'authoritative'>;
-  const meleeState = getMeleeResolutionState(authoritative);
+export function applyCommitToMeleeEvent<S extends GameState>(
+  event: CommitToMeleeEvent & { player: OwnedPlayerForGameState<S> },
+  state: S,
+): S {
+  const meleeState = getMeleeResolutionState(state);
   const { player } = event;
 
+  const ownedCardState = getOwnedPlayerCardState(state.cardState, player);
+  const discardedCardState = discardCardsFromHand(ownedCardState, [
+    event.committedCard.id,
+  ]);
   const stateWithCards = updatePlayerCardState(
-    authoritative,
+    state,
     player,
-    discardCardsFromHand(authoritative.cardState[player], [
-      event.committedCard.id,
-    ]),
+    discardedCardState,
   );
 
   const newCommitment = {

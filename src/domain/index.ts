@@ -270,7 +270,8 @@ export type {
   GameState,
   GameStateForVisibility,
   GameStateVisibility,
-  OwnedPlayerForVisibility,
+  OwnedPlayerForGameState,
+  UnownedPlayerForGameState,
 } from '@game';
 export {
   attackResultSchema,
@@ -281,6 +282,7 @@ export {
   completedCommitmentSchema,
   declinedCommitmentSchema,
   gameStateSchema,
+  isAuthoritativeGameState,
   pendingCommitmentSchema,
 } from '@game';
 export {
@@ -394,6 +396,7 @@ export {
   getOppositeFacing,
   getOrthogonalFacings,
   getOtherPlayer,
+  getOwnedPlayerCardState,
   getRightFacing,
   modifiersFromCompletedCommitment,
   getPlayerUnitsOnBoard,
@@ -483,12 +486,16 @@ export {
 export {
   discardCardsFromHand,
   markPhaseAsComplete,
+  moveBothInPlayToPlayed,
   moveCardToPlayed,
   removeCommanderFromBoard,
   removeUnitFromBoard,
   removeUnitFromReserve,
+  replaceOwnedPlayerCardState,
   returnCardsToHand,
+  revealBothAwaitingCards,
   revealCard,
+  revealHiddenCard,
   updateAttackApplyState,
   updateBoardState,
   updateCommandResolutionState,
@@ -496,6 +503,7 @@ export {
 export {
   updateCurrentInitiative,
   updateCurrentRoundNumber,
+  updateHiddenPlayerCardState,
   updateMeleeAttackApplyState,
   updateMeleeResolutionState,
   updatePhaseState,

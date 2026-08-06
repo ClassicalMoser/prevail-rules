@@ -21,10 +21,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the retreat option resolved
  */
-export function applyResolveEngageRetreatOptionEvent(
+export function applyResolveEngageRetreatOptionEvent<S extends GameState>(
   event: ResolveEngageRetreatOptionEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
   const engagementState = getFrontEngagementStateFromMovement(state);

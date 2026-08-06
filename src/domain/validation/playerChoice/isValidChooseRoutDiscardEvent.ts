@@ -1,8 +1,8 @@
 import type { ValidationResult } from '@entities';
 import type { ChooseRoutDiscardEvent } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type { GameStateForVisibility, GameStateVisibility } from '@game';
 
-import { getOtherPlayer } from '@queries';
+import { getOtherPlayer, getOwnedPlayerCardState } from '@queries';
 /**
  * Validates a ChooseRoutDiscardEvent.
  * Checks that the player matches, cards exist in hand, and count matches penalty.
@@ -13,9 +13,9 @@ import { getOtherPlayer } from '@queries';
  * @param state - The current game state
  * @returns Validation result
  */
-export function isValidChooseRoutDiscardEvent(
+export function isValidChooseRoutDiscardEvent<T extends GameStateVisibility>(
   event: ChooseRoutDiscardEvent,
-  state: GameStateForVisibility<'authoritative'>,
+  state: GameStateForVisibility<T>,
 ): ValidationResult {
   const { player, cardIds } = event;
   const { currentPhaseState } = state.currentRoundState;
@@ -86,8 +86,11 @@ export function isValidChooseRoutDiscardEvent(
   }
 
   // Validate all cards exist in player's hand
-  const playerCardState = state.cardState[event.player];
-  const cardsInHand = playerCardState.inHand;
+  const ownedPlayerCardState = getOwnedPlayerCardState(
+    state.cardState,
+    event.player,
+  );
+  const cardsInHand = ownedPlayerCardState.inHand;
   const handCardIds = new Set(cardsInHand.map((card) => card.id));
 
   for (const cardId of cardIds) {

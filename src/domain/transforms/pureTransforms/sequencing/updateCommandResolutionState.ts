@@ -22,10 +22,10 @@ import { updatePhaseState } from '../state';
  * });
  * ```
  */
-export function updateCommandResolutionState(
-  state: GameState,
+export function updateCommandResolutionState<S extends GameState>(
+  state: S,
   commandResolutionState: CommandResolutionState,
-): GameState {
+): S {
   const issueCommandsPhaseState = getIssueCommandsPhaseState(state);
 
   if (issueCommandsPhaseState.currentCommandResolutionState === 'pending') {

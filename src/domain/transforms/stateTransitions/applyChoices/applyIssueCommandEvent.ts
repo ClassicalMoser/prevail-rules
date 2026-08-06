@@ -16,10 +16,10 @@ import {
  * @param state - The current game state
  * @returns A new game state with the command issued
  */
-export function applyIssueCommandEvent(
+export function applyIssueCommandEvent<S extends GameState>(
   event: IssueCommandEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const phaseState = getIssueCommandsPhaseState(state);
   const { player } = event;
   const { command } = event;

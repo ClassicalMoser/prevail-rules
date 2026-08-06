@@ -16,10 +16,10 @@ import { updatePhaseState } from '../state';
  * @param attackApplyState - The new attack apply state to set
  * @returns A new game state with the updated attack apply state
  */
-export function updateAttackApplyState(
-  state: GameState,
+export function updateAttackApplyState<S extends GameState>(
+  state: S,
   attackApplyState: AttackApplyState,
-): GameState {
+): S {
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {

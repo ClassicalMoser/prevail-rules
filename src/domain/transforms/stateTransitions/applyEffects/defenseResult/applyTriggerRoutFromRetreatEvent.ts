@@ -15,10 +15,10 @@ import { updateRetreatRoutState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the rout state created in the retreat state
  */
-export function applyTriggerRoutFromRetreatEvent(
+export function applyTriggerRoutFromRetreatEvent<S extends GameState>(
   event: TriggerRoutFromRetreatEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const retreatState =
     event.retreatResolutionContext === RANGED_ATTACK_RESOLUTION_CONTEXT
       ? getRetreatStateFromRangedAttack(state)

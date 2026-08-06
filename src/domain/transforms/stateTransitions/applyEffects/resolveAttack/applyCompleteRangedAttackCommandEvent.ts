@@ -13,10 +13,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the ranged attack resolution state cleared
  */
-export function applyCompleteRangedAttackCommandEvent(
+export function applyCompleteRangedAttackCommandEvent<S extends GameState>(
   _event: CompleteRangedAttackCommandEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const phaseState = getIssueCommandsPhaseState(state);
 
   // Clear from currentCommandResolutionState to allow advancing to next command

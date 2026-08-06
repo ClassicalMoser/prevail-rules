@@ -19,10 +19,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the attack apply states created for both players
  */
-export function applyResolveMeleeEvent(
+export function applyResolveMeleeEvent<S extends GameState>(
   event: ResolveMeleeEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const phaseState = getResolveMeleePhaseState(state);
   const meleeState = getMeleeResolutionState(state);
 

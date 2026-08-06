@@ -20,10 +20,10 @@ import {
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
-export function applyCompleteIssueCommandsPhaseEvent(
+export function applyCompleteIssueCommandsPhaseEvent<S extends GameState>(
   event: CompleteIssueCommandsPhaseEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const phaseState = getCurrentPhaseState(state);
   const stateWithCompletedPhase = addCompletedPhase(state, phaseState);
 

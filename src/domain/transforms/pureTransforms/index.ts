@@ -3,9 +3,14 @@ export {
   burnCardFromPlayed,
   chooseCard,
   discardCardsFromHand,
+  moveBothInPlayToPlayed,
   moveCardToPlayed,
+  replaceOwnedPlayerCardState,
   returnCardsToHand,
+  revealBothAwaitingCards,
   revealCard,
+  revealHiddenCard,
+  updateHiddenPlayerCardState,
   updatePlayerCardState,
 } from './cards';
 export {

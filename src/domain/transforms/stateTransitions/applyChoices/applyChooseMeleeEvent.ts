@@ -14,10 +14,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the melee resolution updated
  */
-export function applyChooseMeleeEvent(
+export function applyChooseMeleeEvent<S extends GameState>(
   event: ChooseMeleeResolutionEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const { space } = event;
   const currentPhaseState = getResolveMeleePhaseState(state);
 

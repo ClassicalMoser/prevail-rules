@@ -19,10 +19,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the ranged attack resolution state created
  */
-export function applyPerformRangedAttackEvent(
+export function applyPerformRangedAttackEvent<S extends GameState>(
   event: PerformRangedAttackEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const currentPhaseState = getIssueCommandsPhaseState(state);
   const attackingPlayer = event.player;
   const attackingUnit = event.unit.unit;

@@ -3,6 +3,7 @@ import type { GameState } from '@game';
 import type { Event } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState, createResolveMeleePhaseState } from '@testing';
 import { updatePhaseState, updateRoundEventStream } from '@transforms';
 import { isValidChooseMeleeResolutionEvent } from '@validation';
@@ -69,14 +70,18 @@ describe(getLegalChooseMeleeResolutionEvents, () => {
   it('uses getNextEventNumber for eventNumber on each option', () => {
     const prior: readonly Event[] = [
       {
+        black: tempCommandCards[0],
         effectType: 'revealCards',
         eventNumber: 0,
         eventType: 'gameEffect',
+        white: tempCommandCards[1],
       },
       {
+        black: tempCommandCards[0],
         effectType: 'revealCards',
         eventNumber: 1,
         eventType: 'gameEffect',
+        white: tempCommandCards[1],
       },
     ];
     const state = stateChoosingMeleeEngagement({

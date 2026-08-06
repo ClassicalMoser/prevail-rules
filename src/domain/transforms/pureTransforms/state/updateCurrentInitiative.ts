@@ -8,10 +8,10 @@ import type { GameState } from '@game';
  * @param player - The side that has initiative for the round
  * @returns A new game state with the updated initiative
  */
-export function updateCurrentInitiative(
-  state: GameState,
+export function updateCurrentInitiative<S extends GameState>(
+  state: S,
   player: PlayerSide,
-): GameState {
+): S {
   return {
     ...state,
     currentInitiative: player,

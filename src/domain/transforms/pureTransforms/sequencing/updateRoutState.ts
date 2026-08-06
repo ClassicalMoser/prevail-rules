@@ -24,10 +24,10 @@ import { updatePhaseState } from '../state';
  * @param routState - The new rout state to set
  * @returns A new game state with the updated rout state
  */
-export function updateRoutState(
-  state: GameState,
+export function updateRoutState<S extends GameState>(
+  state: S,
   routState: RoutState,
-): GameState {
+): S {
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
@@ -124,7 +124,7 @@ export function updateRoutState(
 
   if (phaseState.phase === 'cleanup') {
     // Safe type broadening for more generic function signature
-    const cleanupPhaseState = getCleanupPhaseState(state as GameState);
+    const cleanupPhaseState = getCleanupPhaseState(state);
     const rallyState = getCurrentRallyResolutionState(state);
     if (rallyState.routState === 'pending') {
       throw new Error('No rout state found in rally resolution state');

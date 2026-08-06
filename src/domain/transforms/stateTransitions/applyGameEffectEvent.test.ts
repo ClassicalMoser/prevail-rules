@@ -3,6 +3,7 @@ import { createEmptyGameState } from '@testing';
 
 import { applyDiscardPlayedCardsEvent } from './applyEffects';
 import { applyGameEffectEvent } from './applyGameEffectEvent';
+import type { PlayerSide } from '@entities';
 
 vi.mock(import('./applyEffects'), () => ({
   applyCompleteAttackApplyEvent: vi.fn(),
@@ -44,7 +45,7 @@ describe(applyGameEffectEvent, () => {
       effectType: 'discardPlayedCards' as const,
       eventNumber: 0,
       eventType: 'gameEffect' as const,
-    } as GameEffectEvent;
+    } as GameEffectEvent & { player: PlayerSide };
 
     vi.mocked(applyDiscardPlayedCardsEvent).mockReturnValue(state);
 
@@ -61,7 +62,7 @@ describe(applyGameEffectEvent, () => {
       eventNumber: 0,
       eventType: 'gameEffect',
       // Intentional type error to test the function
-    } as unknown as GameEffectEvent;
+    } as unknown as GameEffectEvent & { player: PlayerSide };
 
     expect(() => applyGameEffectEvent(event, state)).toThrow(
       'Unreachable: unhandled game effect event (effectType not in switch)',

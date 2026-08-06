@@ -17,7 +17,7 @@ export function getRallyResolutionStateForCurrentStep(
   player: 'white' | 'black',
 ): RallyResolutionState {
   // Safe type broadening for more generic function signature
-  const phaseState = getCleanupPhaseState(state as GameState);
+  const phaseState = getCleanupPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 

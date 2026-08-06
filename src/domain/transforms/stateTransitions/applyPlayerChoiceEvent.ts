@@ -3,7 +3,7 @@
  */
 
 import type { PlayerChoiceEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameState, OwnedPlayerForGameState } from '@game';
 import {
   applyChooseCardEvent,
   applyChooseMeleeEvent,
@@ -23,11 +23,12 @@ import {
 
 /**
  * Routes player choice events to their corresponding apply functions.
+ * `event.player` must be owned under game state `S`.
  */
-export function applyPlayerChoiceEvent(
-  event: PlayerChoiceEvent,
-  state: GameState,
-): GameState {
+export function applyPlayerChoiceEvent<S extends GameState>(
+  event: PlayerChoiceEvent & { player: OwnedPlayerForGameState<S> },
+  state: S,
+): S {
   switch (event.choiceType) {
     case 'chooseCard': {
       return applyChooseCardEvent(event, state);

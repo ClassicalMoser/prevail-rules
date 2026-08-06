@@ -1,6 +1,6 @@
-import type { ValidationResult } from '@entities';
+import type { Card, ValidationResult } from '@entities';
 import type { ChooseCardEvent } from '@events';
-import type { GameStateForVisibility } from '@game';
+import type { GameStateForVisibility, GameStateVisibility } from '@game';
 
 /**
  * Validates whether a ChooseCardEvent can be applied to the current game state.
@@ -23,9 +23,9 @@ import type { GameStateForVisibility } from '@game';
  * const newState = applyChooseCardEvent(event, state);
  * ```
  */
-export function isValidChooseCardEvent(
+export function isValidChooseCardEvent<T extends GameStateVisibility>(
   event: ChooseCardEvent,
-  state: GameStateForVisibility<'authoritative'>,
+  state: GameStateForVisibility<T>,
 ): ValidationResult {
   try {
     const { player, card } = event;
@@ -64,7 +64,13 @@ export function isValidChooseCardEvent(
     }
 
     // Check card is in player's hand
-    const playerHand = state.cardState[player].inHand;
+    const playerHand: Card[] | 'hidden'[] = state.cardState[player].inHand;
+    if (playerHand.every((c) => c === 'hidden')) {
+      return {
+        errorReason: `Cannot manipulate hidden cards! (${player} player's hand is hidden)`,
+        result: false,
+      };
+    }
     const cardInHand = playerHand.some((c) => c.id === card.id);
     if (!cardInHand) {
       return {

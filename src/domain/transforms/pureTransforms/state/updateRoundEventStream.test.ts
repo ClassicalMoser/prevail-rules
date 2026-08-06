@@ -1,4 +1,5 @@
 import type { Event } from '@events';
+import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 
 import { updateRoundEventStream } from './updateRoundEventStream';
@@ -8,9 +9,11 @@ describe(updateRoundEventStream, () => {
     const state = createEmptyGameState();
     const events: readonly Event[] = [
       {
+        black: tempCommandCards[0],
         effectType: 'revealCards',
         eventNumber: 0,
         eventType: 'gameEffect',
+        white: tempCommandCards[1],
       },
     ];
 

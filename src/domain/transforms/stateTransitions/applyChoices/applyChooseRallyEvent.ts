@@ -25,12 +25,12 @@ function initialRallyResolutionState(
  * @param state - The current game state
  * @returns A new game state with the step advanced
  */
-export function applyChooseRallyEvent(
+export function applyChooseRallyEvent<S extends GameState>(
   event: ChooseRallyEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   // Safe type broadening because we know the event is for the board type
-  const currentPhaseState = getCleanupPhaseState(state as GameState);
+  const currentPhaseState = getCleanupPhaseState(state);
   const { performRally } = event;
   let newPhaseState: CleanupPhaseState;
 

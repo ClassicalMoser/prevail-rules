@@ -32,17 +32,6 @@ export type CardStateForVisibility<V extends GameStateVisibility> =
       : BlackSeenCardState;
 
 /**
- * Players whose card slice is owned (full card info) under visibility `V`.
- * Opponent slices on seen views are hidden and must not be written as owned.
- */
-export type OwnedPlayerForVisibility<V extends GameStateVisibility> =
-  V extends 'whiteSeen'
-    ? 'white'
-    : V extends 'blackSeen'
-      ? 'black'
-      : PlayerSide;
-
-/**
  * Game state for a card visibility regime.
  * Board size lives only on {@link Board.boardType} (`boardState.boardType`).
  *
@@ -69,14 +58,48 @@ export interface GameStateForVisibility<
   boardState: Board;
 }
 
-/** Every visibility combination. */
+/**
+ * Game state at any visibility.
+ * Union of three concrete visibility states (not an object-of-unions), so a
+ * wide {@link GameState} is not assignable to {@link GameStateForVisibility}
+ * for a specific visibility without narrowing.
+ */
 export type GameState =
   | GameStateForVisibility<'authoritative'>
   | GameStateForVisibility<'whiteSeen'>
   | GameStateForVisibility<'blackSeen'>;
 
+/**
+ * Players whose card slice is owned (full card info) under game state `S`.
+ * Opponent slices on seen views are hidden and must not be written as owned.
+ */
+export type OwnedPlayerForGameState<S extends GameState> =
+  S extends GameStateForVisibility<'whiteSeen'>
+    ? 'white'
+    : S extends GameStateForVisibility<'blackSeen'>
+      ? 'black'
+      : PlayerSide;
+
+/**
+ * Players whose card slice is hidden under game state `S`.
+ * Authoritative has no hidden side (`never`).
+ */
+export type UnownedPlayerForGameState<S extends GameState> =
+  S extends GameStateForVisibility<'whiteSeen'>
+    ? 'black'
+    : S extends GameStateForVisibility<'blackSeen'>
+      ? 'white'
+      : never;
+
+/** Narrows {@link GameState} to the authoritative visibility member. */
+export function isAuthoritativeGameState(
+  state: GameState,
+): state is GameStateForVisibility<'authoritative'> {
+  return state.cardState.visibility === 'authoritative';
+}
+
 // ---------------------------------------------------------------------------
-// Zod — three visibility variants; board size is only on boardState.
+// Zod — precise visibility schemas + one wide schema aligned with {@link GameState}.
 // ---------------------------------------------------------------------------
 
 const _authoritativeGameStateSchemaObject = z
@@ -158,9 +181,9 @@ export const blackSeenGameStateSchema: z.ZodType<
 > = _blackSeenGameStateSchemaObject;
 
 const _gameStateSchemaObject = z.union([
-  _authoritativeGameStateSchemaObject,
-  _whiteSeenGameStateSchemaObject,
-  _blackSeenGameStateSchemaObject,
+  authoritativeGameStateSchema,
+  whiteSeenGameStateSchema,
+  blackSeenGameStateSchema,
 ]);
 
 type GameStateSchemaType = z.infer<typeof _gameStateSchemaObject>;

@@ -20,10 +20,10 @@ import {
  * @param state - The current game state
  * @returns A new game state with the unit's facing updated and reverse state marked as completed
  */
-export function applyResolveReverseEvent(
+export function applyResolveReverseEvent<S extends GameState>(
   event: ResolveReverseEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const removedUnitBoard = removeUnitFromBoard(
     state.boardState,
     event.unitInstance,

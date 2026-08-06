@@ -14,10 +14,10 @@ import { updateRoundState } from './updateRoundState';
  * const newState = addCompletedPhase(state, currentPhaseState);
  * ```
  */
-export function addCompletedPhase(
-  state: GameState,
+export function addCompletedPhase<S extends GameState>(
+  state: S,
   completedPhase: PhaseState,
-): GameState {
+): S {
   const newCompletedPhases = [...state.currentRoundState.completedPhases];
   newCompletedPhases.push(completedPhase);
 

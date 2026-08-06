@@ -1,5 +1,5 @@
 import type { RevealCardsEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateForVisibility } from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
@@ -15,9 +15,23 @@ import { applyRevealCardsEvent } from './applyRevealCardsEvent';
  * the step really is revealCards.
  */
 describe(applyRevealCardsEvent, () => {
+  function createRevealEvent(
+    black = tempCommandCards[0],
+    white = tempCommandCards[1],
+  ): RevealCardsEvent {
+    return {
+      black,
+      effectType: 'revealCards',
+      eventNumber: 0,
+      eventType: 'gameEffect',
+      white,
+    };
+  }
+
   /** PlayCards.revealCards with black/white awaitingPlay set and inPlay empty. */
-  function createGameStateInRevealCardsStep(): GameState {
-    const state = createEmptyGameState();
+  function createGameStateInRevealCardsStep(): GameStateForVisibility<'authoritative'> {
+    const state =
+      createEmptyGameState() as GameStateForVisibility<'authoritative'>;
 
     const stateWithCards = updateCardState(state, {
       ...state.cardState,
@@ -33,33 +47,23 @@ describe(applyRevealCardsEvent, () => {
       },
     });
 
-    const stateWithPhase = updatePhaseState(stateWithCards, {
+    return updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
     });
-
-    return stateWithPhase;
   }
 
-  describe('reveal and step', () => {
+  describe('authoritative reveal and step', () => {
     it('given both awaitingPlay set, inPlay receives those cards and awaitingPlay clears', () => {
       const state = createGameStateInRevealCardsStep();
       const blackCard = state.cardState.black.awaitingPlay;
       const whiteCard = state.cardState.white.awaitingPlay;
 
-      const event: RevealCardsEvent = {
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
-      };
+      const newState = applyRevealCardsEvent(createRevealEvent(), state);
 
-      const newState = applyRevealCardsEvent(event, state);
-
-      // Black card should be moved to inPlay
       expect(newState.cardState.black.inPlay).toBe(blackCard);
       expect(newState.cardState.black.awaitingPlay).toBeNull();
 
-      // White card should be moved to inPlay
       expect(newState.cardState.white.inPlay).toBe(whiteCard);
       expect(newState.cardState.white.awaitingPlay).toBeNull();
     });
@@ -67,14 +71,82 @@ describe(applyRevealCardsEvent, () => {
     it('given revealCards step, next playCards step is assignInitiative', () => {
       const state = createGameStateInRevealCardsStep();
 
-      const event: RevealCardsEvent = {
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
+      const newState = applyRevealCardsEvent(createRevealEvent(), state);
+
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe('assignInitiative');
+    });
+  });
+
+  describe('whiteSeen visibility', () => {
+    it('reveals owned white from state and black from event payload', () => {
+      const base = createGameStateInRevealCardsStep();
+      const whiteCard = tempCommandCards[1];
+      const state: GameStateForVisibility<'whiteSeen'> = {
+        ...base,
+        cardState: {
+          visibility: 'whiteSeen',
+          white: {
+            ...base.cardState.white,
+            awaitingPlay: whiteCard,
+            inPlay: null,
+          },
+          black: {
+            awaitingPlay: 'hidden',
+            burnt: [],
+            discarded: [],
+            inHand: ['hidden'],
+            inPlay: null,
+            played: [],
+          },
+        },
       };
 
+      const event = createRevealEvent(tempCommandCards[0], whiteCard);
       const newState = applyRevealCardsEvent(event, state);
 
+      expect(newState.cardState.white.inPlay).toBe(whiteCard);
+      expect(newState.cardState.white.awaitingPlay).toBeNull();
+      expect(newState.cardState.black.inPlay).toBe(event.black);
+      expect(newState.cardState.black.awaitingPlay).toBeNull();
+      expect(
+        throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
+      ).toBe('assignInitiative');
+    });
+  });
+
+  describe('blackSeen visibility', () => {
+    it('reveals owned black from state and white from event payload', () => {
+      const base = createGameStateInRevealCardsStep();
+      const blackCard = tempCommandCards[0];
+      const state: GameStateForVisibility<'blackSeen'> = {
+        ...base,
+        cardState: {
+          visibility: 'blackSeen',
+          black: {
+            ...base.cardState.black,
+            awaitingPlay: blackCard,
+            inPlay: null,
+          },
+          white: {
+            awaitingPlay: 'hidden',
+            burnt: [],
+            discarded: [],
+            inHand: ['hidden'],
+            inPlay: null,
+            played: [],
+          },
+        },
+      };
+
+      const event = createRevealEvent(blackCard, tempCommandCards[1]);
+      const newState = applyRevealCardsEvent(event, state);
+
+      expect(newState.cardState.black.inPlay).toBe(blackCard);
+      expect(newState.cardState.black.awaitingPlay).toBeNull();
+      expect(newState.cardState.white.inPlay).toBe(event.white);
+      expect(newState.cardState.white.awaitingPlay).toBeNull();
       expect(
         throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
       ).toBe('assignInitiative');
@@ -85,13 +157,7 @@ describe(applyRevealCardsEvent, () => {
     it('given no current phase slice, throws no current phase state', () => {
       const state = createEmptyGameState();
 
-      const event: RevealCardsEvent = {
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
-      };
-
-      expect(() => applyRevealCardsEvent(event, state)).toThrow(
+      expect(() => applyRevealCardsEvent(createRevealEvent(), state)).toThrow(
         'No current phase state found',
       );
     });
@@ -103,15 +169,9 @@ describe(applyRevealCardsEvent, () => {
         step: 'moveFirstCommander',
       });
 
-      const event: RevealCardsEvent = {
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
-      };
-
-      expect(() => applyRevealCardsEvent(event, stateWithWrongPhase)).toThrow(
-        'Expected playCards phase, got moveCommanders',
-      );
+      expect(() =>
+        applyRevealCardsEvent(createRevealEvent(), stateWithWrongPhase),
+      ).toThrow('Expected playCards phase, got moveCommanders');
     });
 
     it('given playCards chooseCards step, still flips cards and jumps to assignInitiative', () => {
@@ -121,13 +181,10 @@ describe(applyRevealCardsEvent, () => {
         step: 'chooseCards',
       });
 
-      const event: RevealCardsEvent = {
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
-      };
-
-      const newState = applyRevealCardsEvent(event, stateWithWrongStep);
+      const newState = applyRevealCardsEvent(
+        createRevealEvent(),
+        stateWithWrongStep,
+      );
 
       expect(
         throwIfNone(newState.currentRoundState.currentPhaseState, 'phase').step,
@@ -144,7 +201,7 @@ describe(applyRevealCardsEvent, () => {
         },
         white: {
           ...state.cardState.white,
-          awaitingPlay: null, // No awaiting card
+          awaitingPlay: null,
         },
       });
       const stateWithPhase = updatePhaseState(stateWithCards, {
@@ -152,15 +209,9 @@ describe(applyRevealCardsEvent, () => {
         step: 'revealCards',
       });
 
-      const event: RevealCardsEvent = {
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
-      };
-
-      expect(() => applyRevealCardsEvent(event, stateWithPhase)).toThrow(
-        'Player has no card awaiting play',
-      );
+      expect(() =>
+        applyRevealCardsEvent(createRevealEvent(), stateWithPhase),
+      ).toThrow('Player has no card awaiting play');
     });
 
     it('given revealCards step but black awaitingPlay null, throws black awaiting guard', () => {
@@ -169,7 +220,7 @@ describe(applyRevealCardsEvent, () => {
         ...state.cardState,
         black: {
           ...state.cardState.black,
-          awaitingPlay: null, // No awaiting card
+          awaitingPlay: null,
         },
         white: {
           ...state.cardState.white,
@@ -181,15 +232,9 @@ describe(applyRevealCardsEvent, () => {
         step: 'revealCards',
       });
 
-      const event: RevealCardsEvent = {
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
-      };
-
-      expect(() => applyRevealCardsEvent(event, stateWithPhase)).toThrow(
-        'Player has no card awaiting play',
-      );
+      expect(() =>
+        applyRevealCardsEvent(createRevealEvent(), stateWithPhase),
+      ).toThrow('Player has no card awaiting play');
     });
   });
 
@@ -199,15 +244,8 @@ describe(applyRevealCardsEvent, () => {
       const originalBlackAwaiting = state.cardState.black.awaitingPlay;
       const originalWhiteAwaiting = state.cardState.white.awaitingPlay;
 
-      const event: RevealCardsEvent = {
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
-      };
+      applyRevealCardsEvent(createRevealEvent(), state);
 
-      applyRevealCardsEvent(event, state);
-
-      // Original state should be unchanged
       expect(state.cardState.black.awaitingPlay).toBe(originalBlackAwaiting);
       expect(state.cardState.white.awaitingPlay).toBe(originalWhiteAwaiting);
       expect(state.cardState.black.inPlay).toBeNull();

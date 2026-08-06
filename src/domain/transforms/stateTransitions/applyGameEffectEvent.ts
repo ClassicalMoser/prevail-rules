@@ -32,11 +32,13 @@ import {
 
 /**
  * Routes game effect events to their corresponding apply functions.
+ * Generic over the game-state **object** (`S extends GameState`): same
+ * visibility member out as in — once every leaf is also `<S extends GameState>`.
  */
-export function applyGameEffectEvent(
+export function applyGameEffectEvent<S extends GameState>(
   event: GameEffectEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   switch (event.effectType) {
     case 'completeAttackApply': {
       return applyCompleteAttackApplyEvent(event, state);

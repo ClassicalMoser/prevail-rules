@@ -17,12 +17,12 @@ import {
  * @param state - The current game state
  * @returns A new game state with the commander moved
  */
-export function applyMoveCommanderEvent(
+export function applyMoveCommanderEvent<S extends GameState>(
   event: MoveCommanderEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   // Safe type broadening because we know the event is for the board type
-  const currentPhaseState = getMoveCommandersPhaseState(state as GameState);
+  const currentPhaseState = getMoveCommandersPhaseState(state);
   const side = event.player;
   const originalCoordinate = event.from;
   const newCoordinate = event.to;

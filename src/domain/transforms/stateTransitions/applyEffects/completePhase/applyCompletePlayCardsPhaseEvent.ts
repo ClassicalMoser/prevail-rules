@@ -20,12 +20,12 @@ import {
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
-export function applyCompletePlayCardsPhaseEvent(
+export function applyCompletePlayCardsPhaseEvent<S extends GameState>(
   _event: CompletePlayCardsPhaseEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   // Safe type broadening: No spatial information on PlayCardsPhaseState
-  const phaseState = getPlayCardsPhaseState(state as GameState);
+  const phaseState = getPlayCardsPhaseState(state);
 
   // Add the completed phase to the set of completed phases
   const stateWithCompletedPhase = addCompletedPhase(state, phaseState);

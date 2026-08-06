@@ -1,7 +1,12 @@
 export { burnCardFromPlayed } from './burnCardFromPlayed';
 export { chooseCard } from './chooseCard';
 export { discardCardsFromHand } from './discardCardsFromHand';
+export { moveBothInPlayToPlayed } from './moveBothInPlayToPlayed';
 export { moveCardToPlayed } from './moveCardToPlayed';
+export { replaceOwnedPlayerCardState } from './replaceOwnedPlayerCardState';
 export { returnCardsToHand } from './returnCardsToHand';
+export { revealBothAwaitingCards } from './revealBothAwaitingCards';
 export { revealCard } from './revealCard';
+export { revealHiddenCard } from './revealHiddenCard';
+export { updateHiddenPlayerCardState } from './updateHiddenPlayerCardState';
 export { updatePlayerCardState } from './updatePlayerCardState';

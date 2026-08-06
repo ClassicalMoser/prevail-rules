@@ -18,10 +18,10 @@ import {
  * @param state - The current game state
  * @returns A new game state with the round advanced
  */
-export function applyCompleteCleanupPhaseEvent(
+export function applyCompleteCleanupPhaseEvent<S extends GameState>(
   _event: CompleteCleanupPhaseEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   // Increment round number
   const newRoundNumber = state.currentRoundState.roundNumber + 1;
 
@@ -32,7 +32,7 @@ export function applyCompleteCleanupPhaseEvent(
   };
 
   // Update the round state
-  const stateWithRound: GameState = updateRoundState(state, {
+  const stateWithRound = updateRoundState(state, {
     commandedUnits: [],
     completedPhases: [],
     currentPhaseState: newPhaseState,

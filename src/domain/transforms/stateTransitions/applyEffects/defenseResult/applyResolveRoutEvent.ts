@@ -19,10 +19,10 @@ import { updateRoutState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the rout penalty set
  */
-export function applyResolveRoutEvent(
+export function applyResolveRoutEvent<S extends GameState>(
   event: ResolveRoutEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   let currentRoutState: RoutState;
 
   switch (event.routResolutionSource) {

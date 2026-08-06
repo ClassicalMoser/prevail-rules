@@ -21,7 +21,7 @@ export async function handleNewRound(
   const roundSnapshotResult = await roundSnapshotStorage.saveRoundSnapshot(
     gameId,
     gameState.currentRoundNumber,
-    gameState as GameState,
+    gameState,
   );
   if (!roundSnapshotResult.result) {
     return {
