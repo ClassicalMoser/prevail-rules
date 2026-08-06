@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import { equites, punicCitizenSpearmen } from '@sampleValues';
@@ -23,7 +23,7 @@ const spearmenType = punicCitizenSpearmen;
  */
 describe(generateResolveMeleeEvent, () => {
   /** Default spearmen mirror match on E-5 with empty resolve-melee phase (no pending commitments). */
-  function meleeResolutionGameState(): GameStateForBoard<StandardBoard> {
+  function meleeResolutionGameState(): GameState {
     const state = createEmptyGameState();
     const whiteUnit = createTestUnit('white', { unitType: spearmenType });
     const blackUnit = createTestUnit('black', { unitType: spearmenType });

@@ -7,7 +7,6 @@ import {
 import { addUnitToBoard } from '@transforms';
 
 import { canReverseUnit } from './canReverseUnit';
-import type { StandardBoard } from '@entities';
 
 /**
  * Reverse is only legal when the reversing unit is alone on its hex (opponent already left

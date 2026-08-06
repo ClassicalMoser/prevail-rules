@@ -1,10 +1,4 @@
-import type {
-  EngagedUnitPresence,
-  NoneUnitPresence,
-  SingleUnitPresence,
-  UnitFacing,
-  UnitInstance,
-} from '@entities';
+import type { EngagedUnitPresence, NoneUnitPresence, SingleUnitPresence, UnitFacing, UnitInstance } from '@entities';
 
 /**
  * Creates a none unit presence for testing.

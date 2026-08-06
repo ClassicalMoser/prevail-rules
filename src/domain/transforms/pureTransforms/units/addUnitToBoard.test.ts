@@ -1,10 +1,4 @@
-import type {
-  StandardBoard,
-  StandardBoardCoordinate,
-  UnitFacing,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
+import type { StandardBoardCoordinate, UnitFacing, UnitInstance, UnitWithPlacement } from '@entities';
 import { createTestUnit } from '@testing';
 import { createEmptyStandardBoard } from '@transforms/initializations';
 

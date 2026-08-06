@@ -1,13 +1,13 @@
 import type { Board } from '@entities';
-import type { GameState, GameStateForBoard, RoutState } from '@game';
+import type { GameState, RoutState } from '@game';
 import {
   getCleanupPhaseState,
-  getCurrentPhaseStateForBoard,
+  getCurrentPhaseState,
   getCurrentRallyResolutionState,
-  getIssueCommandsPhaseStateForBoard,
+  getIssueCommandsPhaseState,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
-  getResolveMeleePhaseStateForBoard,
+  getResolveMeleePhaseState,
 } from '@queries';
 import { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
 import { throwIfPending } from '@utils';
@@ -26,13 +26,13 @@ import { updatePhaseState } from '../state';
  * @returns A new game state with the updated rout state
  */
 export function updateRoutState<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   routState: RoutState,
-): GameStateForBoard<TBoard> {
-  const phaseState = getCurrentPhaseStateForBoard(state);
+): GameState {
+  const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
-    const issueState = getIssueCommandsPhaseStateForBoard(state);
+    const issueState = getIssueCommandsPhaseState(state);
     const commandState = throwIfPending(
       issueState.currentCommandResolutionState,
       'No command resolution state found',
@@ -86,7 +86,7 @@ export function updateRoutState<TBoard extends Board>(
   }
 
   if (phaseState.phase === 'resolveMelee') {
-    const resolveMelee = getResolveMeleePhaseStateForBoard(state);
+    const resolveMelee = getResolveMeleePhaseState(state);
     const melee = getMeleeResolutionState(state);
     const { player } = routState;
 

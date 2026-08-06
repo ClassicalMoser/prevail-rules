@@ -1,10 +1,5 @@
-import type {
-  Board,
-  UnitFacing,
-  UnitPlacement,
-  UnitWithPlacement,
-} from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { Board, UnitFacing, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { GameState } from '@game';
 import type { MoveResult } from './exploreUnitMoves';
 import { areSameSide, hasNoUnit, hasSingleUnit } from '@entities';
 import {
@@ -47,7 +42,7 @@ import { exploreUnitMoves } from './exploreUnitMoves';
  */
 export function getLegalRetreats<TBoard extends Board>(
   unitWithPlacement: UnitWithPlacement,
-  gameState: GameStateForBoard<TBoard>,
+  gameState: GameState,
 ): Set<UnitPlacement> {
   // Get the board state
   const board = gameState.boardState;
@@ -136,7 +131,7 @@ export function getLegalRetreats<TBoard extends Board>(
   const legalRetreatsArray = [...exploredMoves];
 
   // Find the moves with the lowest speed, then lowest flexibility.
-  const minimumRetreats = new Set<MoveResult<TBoard>>();
+  const minimumRetreats = new Set<MoveResult>();
 
   // Get the current speed and flexibility of the unit for iteration limits.
   const currentUnitSpeed = getCurrentUnitStat(unit, 'speed', gameState);
@@ -161,7 +156,7 @@ export function getLegalRetreats<TBoard extends Board>(
     ) {
       // Find all moves with the current speed and flexibility level.
       const legalRetreats = legalRetreatsArray.filter(
-        (option: MoveResult<TBoard>) =>
+        (option: MoveResult) =>
           option.speedUsed === speed && option.flexibilityUsed === flexibility,
       );
       // If we found any moves with the current speed and flexibility,

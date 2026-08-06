@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameStateForBoard, RetreatState, RoutState } from '@game';
+import type { GameState, RetreatState, RoutState } from '@game';
 import { findRetreatState } from '@queries';
 import { updateRetreatState } from './updateRetreatState';
 
@@ -25,9 +25,9 @@ import { updateRetreatState } from './updateRetreatState';
  * ```
  */
 export function updateRetreatRoutState<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   routState: RoutState,
-): GameStateForBoard<TBoard> {
+): GameState {
   const currentRetreat: RetreatState = findRetreatState(
     state,
     routState.player,

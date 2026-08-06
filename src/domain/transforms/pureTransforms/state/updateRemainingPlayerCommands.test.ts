@@ -4,7 +4,6 @@ import { ISSUE_COMMANDS_PHASE } from '@game';
 import { createTestCard } from '@testing';
 
 import { updateRemainingPlayerCommands } from './updateRemainingPlayerCommands';
-import type { StandardBoard } from '@entities';
 
 /**
  * UpdateRemainingCommandsForPlayer: Updates the remaining commands for a specific player in the issue commands phase state.

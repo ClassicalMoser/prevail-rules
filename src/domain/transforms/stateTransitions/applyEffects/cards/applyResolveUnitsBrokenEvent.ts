@@ -1,11 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveUnitsBrokenEvent } from '@events';
-import type {
-  CleanupPhaseState,
-  GameState,
-  GameStateForBoard,
-  RoutState,
-} from '@game';
+import type { CleanupPhaseState, GameState, RoutState } from '@game';
 
 import {
   getCleanupPhaseState,
@@ -33,8 +28,8 @@ import {
  */
 export function applyResolveUnitsBrokenEvent<TBoard extends Board>(
   event: ResolveUnitsBrokenEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
+  state: GameState,
+): GameState {
   const { player, unitTypes } = event;
   // Safe broad type cast because we know the event is for the board type
   const phaseState = getCleanupPhaseState(state as GameState);

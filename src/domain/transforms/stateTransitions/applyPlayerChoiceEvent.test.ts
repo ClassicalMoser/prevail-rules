@@ -1,4 +1,4 @@
-import type { PlayerChoiceEventForBoard } from '@events';
+import type { PlayerChoiceEvent } from '@events';
 import { createEmptyGameState } from '@testing';
 
 import { applyChooseCardEvent } from './applyChoices';
@@ -36,7 +36,7 @@ describe(applyPlayerChoiceEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice' as const,
       player: 'black' as const,
-    } as unknown as PlayerChoiceEventForBoard<typeof state.boardState>;
+    } as PlayerChoiceEvent;
 
     vi.mocked(applyChooseCardEvent).mockReturnValue(state);
 
@@ -53,7 +53,7 @@ describe(applyPlayerChoiceEvent, () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
-    } as unknown as PlayerChoiceEventForBoard<typeof state.boardState>;
+    } as unknown as PlayerChoiceEvent;
 
     expect(() => applyPlayerChoiceEvent(event, state)).toThrow(
       'Unknown player choice event type: unknown',

@@ -1,19 +1,21 @@
-import type { Board, ValidationResult } from '@entities';
+import type { ValidationResult } from '@entities';
 import type { ChooseRoutDiscardEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameStateForVisibility } from '@game';
 
 import { getOtherPlayer } from '@queries';
 /**
  * Validates a ChooseRoutDiscardEvent.
  * Checks that the player matches, cards exist in hand, and count matches penalty.
  *
+ * Requires authoritative card visibility so hand cards expose `.id`.
+ *
  * @param event - The choose rout discard event to validate
  * @param state - The current game state
  * @returns Validation result
  */
-export function isValidChooseRoutDiscardEvent<TBoard extends Board>(
+export function isValidChooseRoutDiscardEvent(
   event: ChooseRoutDiscardEvent,
-  state: GameStateForBoard<TBoard>,
+  state: GameStateForVisibility<'authoritative'>,
 ): ValidationResult {
   const { player, cardIds } = event;
   const { currentPhaseState } = state.currentRoundState;

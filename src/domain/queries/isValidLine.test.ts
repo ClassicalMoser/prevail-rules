@@ -1,9 +1,4 @@
-import type {
-  Board,
-  Line,
-  StandardBoard,
-  StandardBoardCoordinate,
-} from '@entities';
+import type { Board, Line, StandardBoard, StandardBoardCoordinate } from '@entities';
 import { getLinesFromUnit } from './getLine';
 import { getPlayerUnitWithPosition } from './unitPresence';
 import { createBoardWithUnits, createTestUnit } from '@testing';

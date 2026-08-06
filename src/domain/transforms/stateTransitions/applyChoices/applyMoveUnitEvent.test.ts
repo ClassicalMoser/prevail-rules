@@ -1,4 +1,3 @@
-import type { StandardBoard } from '@entities';
 import type { MoveUnitEvent } from '@events';
 import { createEmptyGameState, createUnitWithPlacement } from '@testing';
 import { addUnitToBoard, updateBoardState } from '@transforms/pureTransforms';

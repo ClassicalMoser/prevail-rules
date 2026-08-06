@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveFlankEngagementEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
@@ -21,7 +21,7 @@ import {
  * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
  */
 export function generateResolveFlankEngagementEvent<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   eventNumber: number,
 ): ResolveFlankEngagementEvent {
   const engagementState = getFlankEngagementStateFromMovement(state);

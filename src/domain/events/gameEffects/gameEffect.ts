@@ -14,41 +14,12 @@
  * ## `gameEffects` import
  * From `@ruleValues/gameEffectTypes` only — not `@entities` (circular init with this file).
  */
-import type { Board } from '@entities';
 import type { GameEffectType } from '@ruleValues';
-import type {
-  DiscardPlayedCardsEvent,
-  ResolveInitiativeEvent,
-  ResolveRallyEvent,
-  ResolveUnitsBrokenEvent,
-  RevealCardsEvent,
-} from './cards';
-import type {
-  CompleteCleanupPhaseEvent,
-  CompleteIssueCommandsPhaseEvent,
-  CompleteMoveCommandersPhaseEvent,
-  CompletePlayCardsPhaseEvent,
-  CompleteResolveMeleePhaseEvent,
-} from './completePhase';
-import type {
-  ResolveRetreatEvent,
-  ResolveReverseEvent,
-  ResolveRoutEvent,
-  TriggerRoutFromRetreatEvent,
-} from './defenseResult';
-import type {
-  CompleteUnitMovementEvent,
-  ResolveEngageRetreatOptionEvent,
-  ResolveFlankEngagementEvent,
-  StartEngagementEvent,
-} from './movement';
-import type {
-  CompleteAttackApplyEvent,
-  CompleteMeleeResolutionEvent,
-  CompleteRangedAttackCommandEvent,
-  ResolveMeleeEvent,
-  ResolveRangedAttackEvent,
-} from './resolveAttack';
+import type { DiscardPlayedCardsEvent, ResolveInitiativeEvent, ResolveRallyEvent, ResolveUnitsBrokenEvent, RevealCardsEvent } from './cards';
+import type { CompleteCleanupPhaseEvent, CompleteIssueCommandsPhaseEvent, CompleteMoveCommandersPhaseEvent, CompletePlayCardsPhaseEvent, CompleteResolveMeleePhaseEvent } from './completePhase';
+import type { ResolveRetreatEvent, ResolveReverseEvent, ResolveRoutEvent, TriggerRoutFromRetreatEvent } from './defenseResult';
+import type { CompleteUnitMovementEvent, ResolveEngageRetreatOptionEvent, ResolveFlankEngagementEvent, StartEngagementEvent } from './movement';
+import type { CompleteAttackApplyEvent, CompleteMeleeResolutionEvent, CompleteRangedAttackCommandEvent, ResolveMeleeEvent, ResolveRangedAttackEvent } from './resolveAttack';
 import { gameEffects } from '@ruleValues';
 import { z } from 'zod';
 import {
@@ -127,15 +98,6 @@ export type GameEffectEventOfType<
 > = Extract<GameEffectEventUnion, { effectType: TGameEffectType }>;
 
 export type GameEffectEvent = GameEffectEventOfType;
-
-/**
- * @deprecated Board size is not on game-effect events. Prefer
- * {@link GameEffectEvent} / {@link GameEffectEventOfType}.
- */
-export type GameEffectEventForBoard<
-  _TBoard extends Board = Board,
-  TGameEffectType extends GameEffectType = GameEffectType,
-> = GameEffectEventOfType<TGameEffectType>;
 
 const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeAttackApplyEventSchema,

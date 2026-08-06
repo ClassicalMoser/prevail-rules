@@ -1,9 +1,4 @@
-import type {
-  StandardBoard,
-  StandardBoardCoordinate,
-  UnitFacing,
-  UnitInstance,
-} from '@entities';
+import type { StandardBoard, StandardBoardCoordinate, UnitFacing, UnitInstance } from '@entities';
 import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
 
 /**

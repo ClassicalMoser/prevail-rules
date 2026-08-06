@@ -1,17 +1,8 @@
 import type { Board, UnitPlacement } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
-import type {
-  AttackApplyState,
-  AttackResult,
-  GameStateForBoard,
-  IssueCommandsPhaseState,
-  RangedAttackResolutionState,
-  RetreatState,
-  ReverseState,
-  RoutState,
-} from '@game';
+import type { AttackApplyState, AttackResult, GameState, IssueCommandsPhaseState, RangedAttackResolutionState, RetreatState, ReverseState, RoutState } from '@game';
 import {
-  getIssueCommandsPhaseStateForBoard,
+  getIssueCommandsPhaseState,
   getRangedAttackResolutionState,
 } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
@@ -26,9 +17,9 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyResolveRangedAttackEvent<TBoard extends Board>(
   event: ResolveRangedAttackEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  const phaseState = getIssueCommandsPhaseStateForBoard(state);
+  state: GameState,
+): GameState {
+  const phaseState = getIssueCommandsPhaseState(state);
   const rangedAttackState = getRangedAttackResolutionState(state);
 
   const defendingUnit = event.defenderWithPlacement.unit;

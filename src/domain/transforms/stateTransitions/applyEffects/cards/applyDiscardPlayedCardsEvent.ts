@@ -1,6 +1,5 @@
-import type { Board } from '@entities';
 import type { DiscardPlayedCardsEvent } from '@events';
-import type { CleanupPhaseState, GameState, GameStateForBoard } from '@game';
+import type { CleanupPhaseState, GameState, GameStateForVisibility } from '@game';
 import { getCleanupPhaseState } from '@queries';
 import {
   moveCardToPlayed,
@@ -14,29 +13,27 @@ import {
  * Advances the cleanup phase step to `firstPlayerChooseRally`, preserving other cleanup
  * fields from the current phase state when present.
  *
+ * Trusts authoritative visibility for owned card slices.
+ *
  * Step is not re-validated; the event is trusted from the procedure / machine-generated
  * log. Phase is narrowed via `getCleanupPhaseState` (throws if not `cleanup`).
- *
- * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields.
- * @param state - The current game state
- * @returns A new game state with cards moved to played pile
  */
-export function applyDiscardPlayedCardsEvent<TBoard extends Board>(
+export function applyDiscardPlayedCardsEvent(
   _event: DiscardPlayedCardsEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  // Safe broad type cast because we know the event is for the board type
-  const phaseState = getCleanupPhaseState(state as GameState);
+  state: GameState,
+): GameState {
+  const authoritative = state as GameStateForVisibility<'authoritative'>;
+  const phaseState = getCleanupPhaseState(authoritative);
 
   const stateWithWhite = updatePlayerCardState(
-    state,
+    authoritative,
     'white',
-    moveCardToPlayed(state.cardState.white),
+    moveCardToPlayed(authoritative.cardState.white),
   );
   const stateWithCards = updatePlayerCardState(
     stateWithWhite,
     'black',
-    moveCardToPlayed(state.cardState.black),
+    moveCardToPlayed(stateWithWhite.cardState.black),
   );
 
   const newPhaseState: CleanupPhaseState = {

@@ -12,7 +12,7 @@ import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';
  * @param boardState - The current board state
  * @returns ValidationResult indicating if the move is legal
  */
-export function isLegalCommanderMove<TBoard extends Board>(
+export function isLegalCommanderMove(
   moveCommanderEvent: MoveCommanderEvent,
   boardState: Board,
 ): ValidationResult {

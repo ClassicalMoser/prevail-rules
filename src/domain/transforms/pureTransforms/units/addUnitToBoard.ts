@@ -1,9 +1,4 @@
-import type {
-  Board,
-  EngagedUnitPresence,
-  SingleUnitPresence,
-  UnitWithPlacement,
-} from '@entities';
+import type { Board, EngagedUnitPresence, SingleUnitPresence, UnitWithPlacement } from '@entities';
 import { hasEngagedUnits, hasSingleUnit } from '@entities';
 import { getBoardSpace, getOppositeFacing, isFriendlyUnit } from '@queries';
 /**

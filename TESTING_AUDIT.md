@@ -59,7 +59,7 @@ Description: "should return a valid GameState type"
 
 Assertions:
 
-const \_typeCheck: GameState<StandardBoard> = gameState;
+const \_typeCheck: GameState = gameState;
 expect(\_typeCheck).toBe(gameState);
 
 This is a TypeScript compile-time check disguised as a runtime test. \_typeCheck is a reference alias — expect(\_typeCheck).toBe(gameState) is structurally equivalent to expect(gameState).toBe(gameState) and will always be true. The entire test exists only to make the TypeScript compiler happy, but the expect line contributes zero runtime verification. The compile-time check is valid; the expect is noise and misleads the reader into thinking there's runtime coverage here.

@@ -22,9 +22,9 @@ export {
 export type {
   CardStateForVisibility,
   GameState,
-  GameStateForBoard,
   GameStateForVisibility,
   GameStateVisibility,
+  OwnedPlayerForVisibility,
 } from './gameState';
 export {
   authoritativeGameStateSchema,
@@ -60,11 +60,8 @@ export type { Phase, PhaseState } from './phases';
 export { playCardsPhaseStateSchema, playCardsPhaseSteps } from './phases';
 export type { PlayCardsPhaseState, PlayCardsPhaseStep } from './phases';
 export { resolveMeleePhaseStateSchema, resolveMeleePhaseSteps } from './phases';
-export type {
-  ResolveMeleePhaseState,
-  ResolveMeleePhaseStep,
-} from './phases';
-export type { RoundState, RoundStateForBoard } from './roundState';
+export type { ResolveMeleePhaseState, ResolveMeleePhaseStep } from './phases';
+export type { RoundState } from './roundState';
 export { roundStateSchema } from './roundState';
 export { attackApplyStateSchema } from './substeps';
 export type { AttackApplyState } from './substeps';

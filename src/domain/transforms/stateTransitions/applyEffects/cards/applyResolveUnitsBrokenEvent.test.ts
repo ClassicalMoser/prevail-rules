@@ -1,7 +1,7 @@
 import type { StandardBoard } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
 import type { ResolveUnitsBrokenEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { CLEANUP_PHASE } from '@game';
 
 import { getBoardSpace } from '@queries';
@@ -76,7 +76,7 @@ describe(applyResolveUnitsBrokenEvent, () => {
       }),
     );
 
-    const full: GameStateForBoard<StandardBoard> = updatePhaseState(withBoard, {
+    const full: GameState = updatePhaseState(withBoard, {
       firstPlayerRallyResolutionState: {
         completed: false,
         playerRallied: true,

@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { AttackApplyState, GameStateForBoard } from '@game';
+import type { AttackApplyState, GameState } from '@game';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRout,
@@ -76,7 +76,7 @@ describe(getRoutStateFromMeleeResolutionByInitiative, () => {
   function meleeStateWithRouts(
     initiative: 'white' | 'black',
     opts: { whiteHasRout?: boolean; blackHasRout?: boolean },
-  ): GameStateForBoard<StandardBoard> {
+  ): GameState {
     const state = createEmptyGameState({ currentInitiative: initiative });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });

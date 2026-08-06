@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameStateForBoard, RallyResolutionState } from '@game';
+import type { GameState, RallyResolutionState } from '@game';
 import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';
 
 /**
@@ -13,7 +13,7 @@ import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionState
  * @throws Error if wrong step/player, player did not choose to rally, or rally already resolved
  */
 export function getRallyResolutionStateAwaitingBurn<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   player: 'white' | 'black',
 ): RallyResolutionState {
   const rallyState = getRallyResolutionStateForCurrentStep(state, player);

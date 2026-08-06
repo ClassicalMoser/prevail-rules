@@ -10,9 +10,8 @@
  * based on the event's discriminated union type.
  */
 
-import type { Board } from '@entities';
-import type { Event, EventForBoard } from '@events';
-import type { GameState, GameStateForBoard } from '@game';
+import type { Event } from '@events';
+import type { GameState } from '@game';
 import { applyGameEffectEvent } from './applyGameEffectEvent';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
@@ -33,23 +32,17 @@ import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
  * // newState is a new immutable object, currentState is unchanged
  * ```
  */
-export function applyEventForBoard<TBoard extends Board>(
-  event: EventForBoard<TBoard>,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  let newState: GameStateForBoard<TBoard>;
+export function applyEvent(event: Event, state: GameState): GameState {
+  let newState: GameState;
 
   if (event.eventType === 'playerChoice') {
-    newState = applyPlayerChoiceEvent<TBoard>(event, state);
+    newState = applyPlayerChoiceEvent(event, state);
   } else if (event.eventType === 'gameEffect') {
-    newState = applyGameEffectEvent<TBoard>(event, state);
+    newState = applyGameEffectEvent(event, state);
   } else {
-    throw new Error(
-      `Unknown event type: ${(event as EventForBoard<TBoard>).eventType}`,
-    );
+    throw new Error(`Unknown event type: ${(event as Event).eventType}`);
   }
 
-  // Return the new state with the event added to the events array
   return {
     ...newState,
     currentRoundState: {
@@ -57,30 +50,4 @@ export function applyEventForBoard<TBoard extends Board>(
       events: [...newState.currentRoundState.events, event],
     },
   };
-}
-
-/**
- * Wider version of applyEventForBoard that does not require a type argument.
- *
- * WARNING: This function assumes the following:
- * 1. Any event that carries board information specifies the board type on a `boardType` property.
- * 2. The game state also carries the board type on a `boardType` property.
- *
- * Note that events that do not specify their board type are always assumed safe and are not checked.
- * The conditions above MUST be satisfied for this function to be safe.
- */
-export function applyEvent(event: Event, state: GameState): GameState {
-  const gameStateBoardType = state.boardState.boardType;
-  const eventHasBoardType = 'boardType' in event;
-  if (eventHasBoardType && event.boardType !== gameStateBoardType) {
-    throw new Error(
-      `Event board type mismatch: Expected ${gameStateBoardType}, got ${event.boardType}`,
-    );
-  }
-  const newState = applyEventForBoard(
-    event as EventForBoard<Board>,
-    state as GameStateForBoard<Board>,
-  );
-  // IMPORTANT: Cast is significant, see warning above.
-  return newState as GameState;
 }

@@ -1,11 +1,5 @@
 import type { Board } from '@entities';
-import type {
-  EngagementState,
-  FlankEngagementResolutionState,
-  FrontEngagementResolutionState,
-  GameStateForBoard,
-  RearEngagementResolutionState,
-} from '@game';
+import type { EngagementState, FlankEngagementResolutionState, FrontEngagementResolutionState, GameState, RearEngagementResolutionState } from '@game';
 import { throwIfPending } from '@utils';
 import { getMovementResolutionState } from '../getCommandResolutionState';
 
@@ -18,7 +12,7 @@ import { getMovementResolutionState } from '../getCommandResolutionState';
  * @throws Error if not resolving a movement or engagement state is missing
  */
 export function getEngagementStateFromMovement<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
 ): EngagementState {
   const movementState = getMovementResolutionState(state);
   return throwIfPending(
@@ -36,7 +30,7 @@ export function getEngagementStateFromMovement<TBoard extends Board>(
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not flank
  */
 export function getFlankEngagementStateFromMovement<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
 ): EngagementState & {
   engagementResolutionState: FlankEngagementResolutionState;
 } {
@@ -61,7 +55,7 @@ export function getFlankEngagementStateFromMovement<TBoard extends Board>(
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not front
  */
 export function getFrontEngagementStateFromMovement<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
 ): EngagementState & {
   engagementResolutionState: FrontEngagementResolutionState;
 } {
@@ -86,7 +80,7 @@ export function getFrontEngagementStateFromMovement<TBoard extends Board>(
  * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not rear
  */
 export function getRearEngagementStateFromMovement<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
 ): EngagementState & {
   engagementResolutionState: RearEngagementResolutionState;
 } {

@@ -77,15 +77,8 @@ export type {
   RoutResolutionSourceNonAttack,
   TriggerRoutFromRetreatEvent,
 } from './defenseResult';
-export {
-  gameEffectEventSchema,
-  gameEffectTypeSchema,
-} from './gameEffect';
-export type {
-  GameEffectEvent,
-  GameEffectEventForBoard,
-  GameEffectEventOfType,
-} from './gameEffect';
+export { gameEffectEventSchema, gameEffectTypeSchema } from './gameEffect';
+export type { GameEffectEvent, GameEffectEventOfType } from './gameEffect';
 export { gameEffects, type GameEffectType } from './gameEffect';
 export {
   COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE,

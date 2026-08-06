@@ -269,9 +269,9 @@ export type {
   Game,
   GameForVisibility,
   GameState,
-  GameStateForBoard,
   GameStateForVisibility,
   GameStateVisibility,
+  OwnedPlayerForVisibility,
 } from '@game';
 export {
   attackResultSchema,

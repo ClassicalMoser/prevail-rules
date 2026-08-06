@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
 import type { CompleteCleanupPhaseEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import {
@@ -22,7 +22,7 @@ import { applyCompleteCleanupPhaseEvent } from './applyCompleteCleanupPhaseEvent
  */
 describe(applyCompleteCleanupPhaseEvent, () => {
   /** Cleanup.complete with default empty game and black initiative. */
-  function createGameStateInCleanupCompleteStep(): GameStateForBoard<StandardBoard> {
+  function createGameStateInCleanupCompleteStep(): GameState {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     return updatePhaseState(
       state,

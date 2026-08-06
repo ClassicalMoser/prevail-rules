@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { EventForBoard } from '@events';
+import type { Event } from '@events';
 import { createEmptyGameState } from '@testing';
 
 import { getNextEventNumber } from './getNextEventNumber';
@@ -12,7 +12,7 @@ describe(getNextEventNumber, () => {
 
   it('returns the length of the current round event stream', () => {
     const state = createEmptyGameState();
-    const events: readonly EventForBoard<StandardBoard>[] = [
+    const events: readonly Event[] = [
       {
         effectType: 'revealCards',
         eventNumber: 0,

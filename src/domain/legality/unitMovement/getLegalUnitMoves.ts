@@ -1,10 +1,5 @@
-import type {
-  Board,
-  BoardSpace,
-  UnitPlacement,
-  UnitWithPlacement,
-} from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { Board, BoardSpace, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { GameState } from '@game';
 import { hasSingleUnit } from '@entities';
 import { getBoardSpace, isSameUnitInstance } from '@queries';
 import { exploreUnitMoves } from './exploreUnitMoves';
@@ -29,7 +24,7 @@ import { exploreUnitMoves } from './exploreUnitMoves';
  */
 export function getLegalUnitMoves<TBoard extends Board>(
   unitWithPlacement: UnitWithPlacement,
-  gameState: GameStateForBoard<TBoard>,
+  gameState: GameState,
 ): Set<UnitPlacement> {
   const { unit, placement: startingPosition } = unitWithPlacement;
   // Get the board state

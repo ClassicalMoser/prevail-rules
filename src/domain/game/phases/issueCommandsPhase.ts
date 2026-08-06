@@ -48,7 +48,7 @@ export const issueCommandsPhaseStepSchema: z.ZodType<IssueCommandsPhaseStep> =
  * The state of the issue commands phase.
  *
  * Command resolution (movement / ranged attack) is board-correlated via
- * {@link CommandResolutionStateForBoard}; non-spatial fields are shared across boards.
+ * {@link CommandResolutionState}; non-spatial fields are shared across boards.
  */
 export interface IssueCommandsPhaseState {
   /** The current phase of the round. */

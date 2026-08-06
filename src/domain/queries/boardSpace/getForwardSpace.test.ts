@@ -1,20 +1,14 @@
-import type {
-  SmallBoard,
-  SmallBoardCoordinate,
-  StandardBoard,
-  StandardBoardCoordinate,
-  UnitFacing,
-} from '@entities';
+import type { Board, Coordinate, UnitFacing } from '@entities';
 import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
 
 import { getForwardSpace } from './getForwardSpace';
 
-const standardBoard: StandardBoard = createEmptyStandardBoard();
-const smallBoard: SmallBoard = createEmptySmallBoard();
+const standardBoard: Board = createEmptyStandardBoard();
+const smallBoard: Board = createEmptySmallBoard();
 
 /**
- * GetForwardSpace: one step forward from a coordinate along the facing; respects standard vs small board bounds;
- * throws on malformed coordinate or invalid facing.
+ * GetForwardSpace: one step forward along facing using the active board’s layout;
+ * undefined off that board’s edge; throws on malformed coord / invalid facing.
  */
 describe(getForwardSpace, () => {
   describe('standard board', () => {
@@ -116,31 +110,19 @@ describe(getForwardSpace, () => {
 
     it('given coordinate missing dash, throws', () => {
       expect(() =>
-        getForwardSpace(
-          standardBoard,
-          'invalid' as StandardBoardCoordinate,
-          'north',
-        ),
+        getForwardSpace(standardBoard, 'invalid' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid coordinate: invalid'));
     });
 
     it('given invalid row letter, throws', () => {
       expect(() =>
-        getForwardSpace(
-          standardBoard,
-          'R-12' as StandardBoardCoordinate,
-          'north',
-        ),
+        getForwardSpace(standardBoard, 'R-12' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid row: R'));
     });
 
     it('given invalid column, throws', () => {
       expect(() =>
-        getForwardSpace(
-          standardBoard,
-          'A-19' as StandardBoardCoordinate,
-          'north',
-        ),
+        getForwardSpace(standardBoard, 'A-19' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid column: 19'));
     });
 
@@ -150,6 +132,7 @@ describe(getForwardSpace, () => {
       ).toThrow(new Error('Invalid facing: random'));
     });
   });
+
   describe('small board', () => {
     it('given facing south from A-1, returns B-1', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'south')).toBe('B-1');
@@ -183,92 +166,85 @@ describe(getForwardSpace, () => {
       expect(getForwardSpace(smallBoard, 'H-12', 'northWest')).toBe('G-11');
     });
 
-    // Edge cases at H (last row in small board, vs L in standard)
-    it('given facing south from H-5 on small board, returns undefined', () => {
+    it('given facing south from H-5, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'H-5', 'south')).toBeUndefined();
     });
 
-    it('given facing southEast from H-10 on small board, returns undefined', () => {
+    it('given facing southEast from H-10, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'H-10', 'southEast')).toBeUndefined();
     });
 
-    it('given facing southWest from H-3 on small board, returns undefined', () => {
+    it('given facing southWest from H-3, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'H-3', 'southWest')).toBeUndefined();
     });
 
-    // Edge cases at column 12 (last column in small board, vs 18 in standard)
-    it('given facing east from E-12 on small board, returns undefined', () => {
+    it('given facing east from E-12, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'E-12', 'east')).toBeUndefined();
     });
 
-    it('given facing northEast from A-12 on small board, returns undefined', () => {
+    it('given facing northEast from A-12, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'A-12', 'northEast')).toBeUndefined();
     });
 
-    it('given facing southEast from D-12 on small board, returns undefined', () => {
+    it('given facing southEast from D-12, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'D-12', 'southEast')).toBeUndefined();
     });
 
-    // Corner cases at H-12 (bottom-right corner in small board, vs L-18 in standard)
-    it('given facing south from H-12 on small board, returns undefined', () => {
+    it('given facing south from H-12, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'H-12', 'south')).toBeUndefined();
     });
 
-    it('given facing east from H-12 on small board, returns undefined', () => {
+    it('given facing east from H-12, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'H-12', 'east')).toBeUndefined();
     });
 
-    it('given facing southEast from H-12 on small board, returns undefined', () => {
+    it('given facing southEast from H-12, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'H-12', 'southEast')).toBeUndefined();
     });
 
-    // Standard boundary cases that also apply to small board
-    it('given facing north from A-1 on small board, returns undefined', () => {
+    it('given facing north from A-1, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'north')).toBeUndefined();
     });
 
-    it('given facing west from F-1 on small board, returns undefined', () => {
+    it('given facing west from F-1, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'F-1', 'west')).toBeUndefined();
     });
 
-    it('given facing northWest from A-1 on small board, returns undefined', () => {
+    it('given facing northWest from A-1, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'northWest')).toBeUndefined();
     });
 
-    it('given facing southWest from H-1 on small board, returns undefined', () => {
+    it('given facing southWest from H-1, returns undefined', () => {
       expect(getForwardSpace(smallBoard, 'H-1', 'southWest')).toBeUndefined();
     });
 
-    // Validation tests - malformed coordinates
     it('given coordinate missing dash, throws', () => {
       expect(() =>
-        getForwardSpace(smallBoard, 'E5' as SmallBoardCoordinate, 'north'),
+        getForwardSpace(smallBoard, 'E5' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid coordinate: E5'));
     });
 
-    // Validation tests - rows I, J, K, L don't exist in small board
-    it('given row I on small board, throws', () => {
+    it('given standard-only row I, throws', () => {
       expect(() =>
-        getForwardSpace(smallBoard, 'I-5' as SmallBoardCoordinate, 'north'),
+        getForwardSpace(smallBoard, 'I-5' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid row: I'));
     });
 
-    it('given row L on small board, throws', () => {
+    it('given standard-only row L, throws', () => {
       expect(() =>
-        getForwardSpace(smallBoard, 'L-5' as SmallBoardCoordinate, 'north'),
+        getForwardSpace(smallBoard, 'L-5' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid row: L'));
     });
 
-    // Validation tests - columns 13-18 don't exist in small board
-    it('given column 13 on small board, throws', () => {
+    it('given standard-only column 13, throws', () => {
       expect(() =>
-        getForwardSpace(smallBoard, 'A-13' as SmallBoardCoordinate, 'north'),
+        getForwardSpace(smallBoard, 'A-13' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid column: 13'));
     });
 
-    it('given column 18 on small board, throws', () => {
+    it('given standard-only column 18, throws', () => {
       expect(() =>
-        getForwardSpace(smallBoard, 'A-18' as SmallBoardCoordinate, 'north'),
+        getForwardSpace(smallBoard, 'A-18' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid column: 18'));
     });
 

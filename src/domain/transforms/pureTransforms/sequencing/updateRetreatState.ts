@@ -1,11 +1,11 @@
 import type { Board } from '@entities';
-import type { GameStateForBoard, RetreatState } from '@game';
+import type { GameState, RetreatState } from '@game';
 import {
-  getCurrentPhaseStateForBoard,
-  getIssueCommandsPhaseStateForBoard,
+  getCurrentPhaseState,
+  getIssueCommandsPhaseState,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
-  getResolveMeleePhaseStateForBoard,
+  getResolveMeleePhaseState,
 } from '@queries';
 import { throwIfPending } from '@utils';
 import { updatePhaseState } from '../state';
@@ -22,13 +22,13 @@ import { updatePhaseState } from '../state';
  * @returns A new game state with the updated retreat state
  */
 export function updateRetreatState<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   retreatState: RetreatState,
-): GameStateForBoard<TBoard> {
-  const phaseState = getCurrentPhaseStateForBoard(state);
+): GameState {
+  const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
-    const issueState = getIssueCommandsPhaseStateForBoard(state);
+    const issueState = getIssueCommandsPhaseState(state);
     const commandState = throwIfPending(
       issueState.currentCommandResolutionState,
       'No command resolution state found',
@@ -59,7 +59,7 @@ export function updateRetreatState<TBoard extends Board>(
   }
 
   if (phaseState.phase === 'resolveMelee') {
-    const resolveMelee = getResolveMeleePhaseStateForBoard(state);
+    const resolveMelee = getResolveMeleePhaseState(state);
     const melee = getMeleeResolutionState(state);
     const player = retreatState.retreatingUnit.unit.playerSide;
 

@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { ResolveRoutEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -32,7 +32,7 @@ import { applyResolveRoutEvent } from './applyResolveRoutEvent';
  */
 describe(applyResolveRoutEvent, () => {
   /** IssueCommands + ranged apply with rout substep on white at E-5. */
-  function createStateWithRangedAttackRout(): GameStateForBoard<StandardBoard> {
+  function createStateWithRangedAttackRout(): GameState {
     const state = createEmptyGameState();
     const routedUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -62,7 +62,7 @@ describe(applyResolveRoutEvent, () => {
   /** ResolveMelee + rout substep on the named player’s attack apply. */
   function createStateWithMeleeRout(
     routingPlayer: 'white' | 'black',
-  ): GameStateForBoard<StandardBoard> {
+  ): GameState {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const routedUnit = createTestUnit(routingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
@@ -111,7 +111,7 @@ describe(applyResolveRoutEvent, () => {
     return updatePhaseState(stateWithUnits, phaseState);
   }
 
-  function createStateWithRearEngagementRoutAwaitingPenalty(): GameStateForBoard<StandardBoard> {
+  function createStateWithRearEngagementRoutAwaitingPenalty(): GameState {
     const state = createEmptyGameState();
     const defender = createTestUnit('white', { attack: 2 });
     const attacker = createTestUnit('black', { attack: 2 });

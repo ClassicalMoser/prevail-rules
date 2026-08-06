@@ -1,11 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteMoveCommandersPhaseEvent } from '@events';
-import type {
-  GameState,
-  GameStateForBoard,
-  IssueCommandsPhaseState,
-  MoveCommandersPhaseState,
-} from '@game';
+import type { GameState, IssueCommandsPhaseState, MoveCommandersPhaseState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getMoveCommandersPhaseState } from '@queries';
@@ -28,8 +23,8 @@ import {
  */
 export function applyCompleteMoveCommandersPhaseEvent<TBoard extends Board>(
   event: CompleteMoveCommandersPhaseEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
+  state: GameState,
+): GameState {
   // Safe type broadening: No spatial information on MoveCommandersPhaseState
   const currentPhaseState: MoveCommandersPhaseState =
     getMoveCommandersPhaseState(state as GameState);

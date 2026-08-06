@@ -1,6 +1,6 @@
 import type { StandardBoard } from '@entities';
-import type { ChooseCardEvent, PlayerChoiceEventForBoard } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { ChooseCardEvent, PlayerChoiceEvent } from '@events';
+import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState, updateCardState } from '@testing';
@@ -11,7 +11,7 @@ import { validatePlayerChoice } from './validatePlayerChoice';
  * ValidatePlayerChoice: Validates a player choice against the current game state.
  */
 describe(validatePlayerChoice, () => {
-  function stateInPlayCardsChooseCards(): GameStateForBoard<StandardBoard> {
+  function stateInPlayCardsChooseCards(): GameState {
     const base = createEmptyGameState();
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
@@ -112,7 +112,7 @@ describe(validatePlayerChoice, () => {
       from: 'E-5' as const,
       player: 'black' as const,
       to: 'E-6' as const,
-    } satisfies PlayerChoiceEventForBoard<StandardBoard>;
+    } satisfies PlayerChoiceEvent;
 
     const validation = validatePlayerChoice(event, state);
 

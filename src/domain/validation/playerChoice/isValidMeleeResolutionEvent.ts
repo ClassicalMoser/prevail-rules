@@ -1,6 +1,6 @@
 import type { Board, ValidationResult } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';
 
 /**
@@ -12,7 +12,7 @@ import { RESOLVE_MELEE_PHASE } from '@game';
  */
 export function isValidChooseMeleeResolutionEvent<TBoard extends Board>(
   event: ChooseMeleeResolutionEvent,
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
 ): ValidationResult {
   try {
     const { player, space } = event;

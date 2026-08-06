@@ -1,9 +1,4 @@
-import type {
-  StandardBoardCoordinate,
-  UnitFacing,
-  UnitType,
-  UnitWithPlacement,
-} from '@entities';
+import type { StandardBoardCoordinate, UnitFacing, UnitType, UnitWithPlacement } from '@entities';
 import { createTestUnit } from '@testing/unitHelpers';
 
 /**

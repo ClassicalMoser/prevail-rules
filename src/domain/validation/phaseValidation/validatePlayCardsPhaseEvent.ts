@@ -1,14 +1,14 @@
 import type { Board, ValidationResult } from '@entities';
-import type { EventForBoard, PlayerChoiceEvent } from '@events';
-import type { GameState, GameStateForBoard, PlayCardsPhaseState } from '@game';
+import type { Event, PlayerChoiceEvent } from '@events';
+import type { GameState, PlayCardsPhaseState } from '@game';
 import { validatePlayerChoice } from '@validation/playerChoice';
 
 /**
  * @deprecated Validation under rework.
  */
 export function validatePlayCardsPhaseEvent<TBoard extends Board>(
-  event: EventForBoard<TBoard>,
-  state: GameStateForBoard<TBoard> & {
+  event: Event,
+  state: GameState & {
     currentRoundState: {
       currentPhaseState: PlayCardsPhaseState;
     };

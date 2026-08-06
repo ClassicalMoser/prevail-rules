@@ -1,9 +1,9 @@
 import type { Board, UnitPlacement } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
-import type { GameStateForBoard, RetreatState } from '@game';
+import type { GameState, RetreatState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from '@events';
 import {
-  getCurrentPhaseStateForBoard,
+  getCurrentPhaseState,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,
 } from '@queries';
@@ -18,10 +18,10 @@ import {
  * @returns A complete ResolveRetreatEvent with the retreating unit and final position
  */
 export function generateResolveRetreatEvent<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   eventNumber: number,
 ): ResolveRetreatEvent {
-  const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
+  const phaseState = getCurrentPhaseState(state);
 
   let retreatState: RetreatState;
   if (phaseState.phase === 'issueCommands') {

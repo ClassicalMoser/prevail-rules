@@ -1,15 +1,9 @@
 import type { Board, UnitWithPlacement } from '@entities';
 import type { ResolveFlankEngagementEvent } from '@events';
-import type {
-  EngagementState,
-  FlankEngagementResolutionState,
-  GameStateForBoard,
-  IssueCommandsPhaseState,
-  MovementResolutionState,
-} from '@game';
+import type { EngagementState, FlankEngagementResolutionState, GameState, IssueCommandsPhaseState, MovementResolutionState } from '@game';
 import {
   getFlankEngagementStateFromMovement,
-  getIssueCommandsPhaseStateForBoard,
+  getIssueCommandsPhaseState,
   getMovementResolutionState,
 } from '@queries';
 import {
@@ -27,9 +21,9 @@ import {
  */
 export function applyResolveFlankEngagementEvent<TBoard extends Board>(
   event: ResolveFlankEngagementEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  const phaseState = getIssueCommandsPhaseStateForBoard(state);
+  state: GameState,
+): GameState {
+  const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
   const engagementState = getFlankEngagementStateFromMovement(state);
   const flankResolutionState = engagementState.engagementResolutionState;
@@ -48,10 +42,7 @@ export function applyResolveFlankEngagementEvent<TBoard extends Board>(
     },
     unit,
   };
-  const updatedBoard = addUnitToBoard(
-    removedUnitBoard,
-    newUnitWithPlacement,
-  );
+  const updatedBoard = addUnitToBoard(removedUnitBoard, newUnitWithPlacement);
 
   const newFlankResolutionState: FlankEngagementResolutionState = {
     ...flankResolutionState,

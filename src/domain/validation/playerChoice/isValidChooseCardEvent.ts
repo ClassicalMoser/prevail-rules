@@ -1,10 +1,12 @@
-import type { Board, ValidationResult } from '@entities';
+import type { ValidationResult } from '@entities';
 import type { ChooseCardEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameStateForVisibility } from '@game';
 
 /**
  * Validates whether a ChooseCardEvent can be applied to the current game state.
  * This is used for proactive validation before attempting to apply the event.
+ *
+ * Requires authoritative card visibility so hand cards expose `.id`.
  *
  * @param event - The choose card event to validate
  * @param state - The current game state
@@ -21,9 +23,9 @@ import type { GameStateForBoard } from '@game';
  * const newState = applyChooseCardEvent(event, state);
  * ```
  */
-export function isValidChooseCardEvent<TBoard extends Board>(
+export function isValidChooseCardEvent(
   event: ChooseCardEvent,
-  state: GameStateForBoard<TBoard>,
+  state: GameStateForVisibility<'authoritative'>,
 ): ValidationResult {
   try {
     const { player, card } = event;

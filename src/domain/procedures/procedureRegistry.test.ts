@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import type { GameEffectType } from '@events';
 import { gameEffects } from '@events';
 import {
@@ -27,7 +27,7 @@ describe(generateEventFromProcedure, () => {
 
   it('given effectType not in registry, throws naming the non-existent key', () => {
     expect.hasAssertions();
-    const state: GameStateForBoard<StandardBoard> = createEmptyGameState();
+    const state: GameState = createEmptyGameState();
     // Deliberate use of unsafe cast to GameEffectType to test the error message
     expect(() =>
       generateEventFromProcedure(state, 0, 'notARealEffect' as GameEffectType),

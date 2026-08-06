@@ -1,13 +1,9 @@
 import type { Board } from '@entities';
 import type { ResolveEngageRetreatOptionEvent } from '@events';
-import type {
-  GameStateForBoard,
-  IssueCommandsPhaseState,
-  MovementResolutionState,
-} from '@game';
+import type { GameState, IssueCommandsPhaseState, MovementResolutionState } from '@game';
 import {
   getFrontEngagementStateFromMovement,
-  getIssueCommandsPhaseStateForBoard,
+  getIssueCommandsPhaseState,
   getMovementResolutionState,
 } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
@@ -24,9 +20,9 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyResolveEngageRetreatOptionEvent<TBoard extends Board>(
   event: ResolveEngageRetreatOptionEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  const phaseState = getIssueCommandsPhaseStateForBoard(state);
+  state: GameState,
+): GameState {
+  const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
   const engagementState = getFrontEngagementStateFromMovement(state);
 

@@ -1,11 +1,4 @@
-import type {
-  PlayerSide,
-  StandardBoard,
-  StandardBoardCoordinate,
-  UnitFacing,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
+import type { PlayerSide, StandardBoard, StandardBoardCoordinate, UnitFacing, UnitInstance, UnitWithPlacement } from '@entities';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,

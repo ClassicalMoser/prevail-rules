@@ -1,6 +1,6 @@
 import type {
   CleanupPhaseState,
-  GameStateForVisibility,
+  GameState,
   IssueCommandsPhaseState,
   MoveCommandersPhaseState,
   PlayCardsPhaseState,
@@ -45,7 +45,7 @@ export function createMoveCommandersPhaseState(
  * Creates an IssueCommandsPhaseState with sensible defaults.
  */
 export function createIssueCommandsPhaseState(
-  state: GameStateForVisibility,
+  _state: GameState,
   overrides?: Partial<IssueCommandsPhaseState>,
 ): IssueCommandsPhaseState {
   return {
@@ -64,7 +64,7 @@ export function createIssueCommandsPhaseState(
  * Creates a ResolveMeleePhaseState with sensible defaults.
  */
 export function createResolveMeleePhaseState(
-  state: GameStateForVisibility,
+  state: GameState,
   overrides?: Partial<ResolveMeleePhaseState>,
 ): ResolveMeleePhaseState {
   return {

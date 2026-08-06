@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import type { BoardCoordinate, UnitFacing } from '@entities';
 import type { MoveResult } from './exploreUnitMoves';
 import { unitFacings } from '@entities';
 import { getPlayerUnitWithPosition } from '@queries';
@@ -11,10 +11,10 @@ import { exploreUnitMoves } from './exploreUnitMoves';
  */
 describe('exploreUnitMoves function', () => {
   // Test helper to reduce repetition.
-  function exploreResultHasMatch<TBoard extends Board>(
-    moves: Set<MoveResult<TBoard>>,
+  function exploreResultHasMatch(
+    moves: Set<MoveResult>,
     match: {
-      coordinate?: BoardCoordinate<TBoard>;
+      coordinate?: BoardCoordinate;
       facing?: UnitFacing;
       flexibilityUsed?: number;
       speedUsed?: number;

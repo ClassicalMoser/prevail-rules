@@ -1,11 +1,6 @@
 import type { Board, ValidationResult } from '@entities';
-import type { EventForBoard } from '@events';
-import type {
-  CleanupPhaseState,
-  GameStateForBoard,
-  MoveCommandersPhaseState,
-  PlayCardsPhaseState,
-} from '@game';
+import type { Event } from '@events';
+import type { CleanupPhaseState, GameState, MoveCommandersPhaseState, PlayCardsPhaseState } from '@game';
 import {
   validateCleanupPhaseEvent,
   validateMoveCommandersPhaseEvent,
@@ -30,8 +25,8 @@ import {
  * ```
  */
 export function validateEvent<TBoard extends Board>(
-  event: EventForBoard<TBoard>,
-  state: GameStateForBoard<TBoard>,
+  event: Event,
+  state: GameState,
 ): ValidationResult {
   const roundState = state.currentRoundState;
 
@@ -56,7 +51,7 @@ export function validateEvent<TBoard extends Board>(
     case 'playCards': {
       return validatePlayCardsPhaseEvent(
         event,
-        state as GameStateForBoard<TBoard> & {
+        state as GameState & {
           currentRoundState: {
             currentPhaseState: PlayCardsPhaseState;
           };
@@ -67,7 +62,7 @@ export function validateEvent<TBoard extends Board>(
     case 'moveCommanders': {
       return validateMoveCommandersPhaseEvent(
         event,
-        state as GameStateForBoard<TBoard> & {
+        state as GameState & {
           currentRoundState: {
             currentPhaseState: MoveCommandersPhaseState;
           };
@@ -94,7 +89,7 @@ export function validateEvent<TBoard extends Board>(
     case 'cleanup': {
       return validateCleanupPhaseEvent(
         event,
-        state as GameStateForBoard<TBoard> & {
+        state as GameState & {
           currentRoundState: {
             currentPhaseState: CleanupPhaseState;
           };

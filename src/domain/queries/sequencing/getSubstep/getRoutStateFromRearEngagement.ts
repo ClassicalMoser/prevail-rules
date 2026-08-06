@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameStateForBoard, RoutState } from '@game';
+import type { GameState, RoutState } from '@game';
 import { throwIfPending } from '@utils';
 import { getMovementResolutionState } from '../getCommandResolutionState';
 
@@ -8,7 +8,7 @@ import { getMovementResolutionState } from '../getCommandResolutionState';
  * Narrowing helper when `routResolutionSource` is `rearEngagementMovement`.
  */
 export function getRoutStateFromRearEngagement<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
 ): RoutState {
   const movement = getMovementResolutionState(state);
   const engagement = throwIfPending(

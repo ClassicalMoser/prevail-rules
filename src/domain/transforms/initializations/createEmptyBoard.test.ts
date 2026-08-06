@@ -22,7 +22,7 @@ describe(createEmptyStandardBoard, () => {
 
   it('round-trips through JSON with exact key set', () => {
     const board = createEmptyStandardBoard();
-    const parsed = boardSchema.parse(JSON.parse(JSON.stringify(board)));
+    const parsed = boardSchema.parse(structuredClone(board));
     expect(parsed).toEqual(board);
     expect(new Set(Object.keys(parsed.board))).toEqual(
       new Set(Object.keys(board.board)),
@@ -44,7 +44,7 @@ describe(createEmptySmallBoard, () => {
 
   it('round-trips through JSON with exact key set', () => {
     const board = createEmptySmallBoard();
-    const parsed = boardSchema.parse(JSON.parse(JSON.stringify(board)));
+    const parsed = boardSchema.parse(structuredClone(board));
     expect(parsed).toEqual(board);
     expect(new Set(Object.keys(parsed.board))).toEqual(
       new Set(Object.keys(board.board)),
@@ -66,7 +66,7 @@ describe(createEmptyLargeBoard, () => {
 
   it('round-trips through JSON with exact key set', () => {
     const board = createEmptyLargeBoard();
-    const parsed = boardSchema.parse(JSON.parse(JSON.stringify(board)));
+    const parsed = boardSchema.parse(structuredClone(board));
     expect(parsed).toEqual(board);
     expect(new Set(Object.keys(parsed.board))).toEqual(
       new Set(Object.keys(board.board)),

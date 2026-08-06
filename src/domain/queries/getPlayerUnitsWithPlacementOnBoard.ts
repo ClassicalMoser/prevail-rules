@@ -1,5 +1,5 @@
 import type { Board, PlayerSide, UnitWithPlacement } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { getBoardCoordinates } from './boardSpace';
 import { getPlayerUnitWithPosition } from './unitPresence';
 
@@ -17,7 +17,7 @@ import { getPlayerUnitWithPosition } from './unitPresence';
  * ```
  */
 export function getPlayerUnitsWithPlacementOnBoard<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   player: PlayerSide,
 ): Set<UnitWithPlacement> {
   const units = new Set<UnitWithPlacement>();

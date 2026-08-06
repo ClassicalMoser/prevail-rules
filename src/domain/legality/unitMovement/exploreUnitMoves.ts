@@ -1,11 +1,5 @@
-import type {
-  Board,
-  BoardCoordinate,
-  UnitFacing,
-  UnitPlacement,
-  UnitWithPlacement,
-} from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { Board, BoardCoordinate, UnitFacing, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { GameState } from '@game';
 import { unitFacings } from '@entities';
 import {
   getAdjacentFacings,
@@ -25,7 +19,7 @@ import { checkDiagonalMove } from './checkDiagonalMove';
  * @param flexibilityUsed - The amount of flexibility used to reach the placement.
  * @param speedUsed - The amount of speed used to reach the placement.
  */
-export interface MoveResult<TBoard extends Board> {
+export interface MoveResult {
   placement: UnitPlacement;
   flexibilityUsed: number;
   speedUsed: number;
@@ -41,10 +35,10 @@ export interface MoveResult<TBoard extends Board> {
  * @returns Set of all explored move destinations with their metadata, including the amount of flexibility and speed used to reach each destination
  */
 export function exploreUnitMoves<TBoard extends Board>(
-  gameState: GameStateForBoard<TBoard>,
+  gameState: GameState,
   unitWithPlacement: UnitWithPlacement,
   direction: 'advance' | 'retreat',
-): Set<MoveResult<TBoard>> {
+): Set<MoveResult> {
   // Get the board state
   const board = gameState.boardState;
 
@@ -89,7 +83,7 @@ export function exploreUnitMoves<TBoard extends Board>(
     `${coordinate}|${facing}|${remainingSpeed}|${remainingFlexibility}`;
 
   // Collect all explored moves
-  const results = new Set<MoveResult<TBoard>>();
+  const results = new Set<MoveResult>();
 
   // Recursive function to explore moves
   const explore = (
@@ -152,7 +146,7 @@ export function exploreUnitMoves<TBoard extends Board>(
             facing: newFacing,
           };
           // Add the new move result to the results set.
-          const newMoveResult: MoveResult<TBoard> = {
+          const newMoveResult: MoveResult = {
             placement: newPlacement,
             // -1 because we're using 1 flexibility to turn.
             flexibilityUsed:
@@ -236,7 +230,7 @@ export function exploreUnitMoves<TBoard extends Board>(
             coordinate: nextCoordinate,
             facing: currentFacing,
           };
-          const newMoveResult: MoveResult<TBoard> = {
+          const newMoveResult: MoveResult = {
             placement: newPlacement,
             flexibilityUsed: currentUnitFlexibility - remainingFlexibility,
             // -1 because we're using 1 speed to move.
@@ -290,7 +284,7 @@ export function exploreUnitMoves<TBoard extends Board>(
                     coordinate: nextCoordinate,
                     facing: newFacing,
                   };
-                  const newMoveResult: MoveResult<TBoard> = {
+                  const newMoveResult: MoveResult = {
                     placement: newPlacement,
                     // -1 because we're using 1 flexibility to turn.
                     flexibilityUsed:

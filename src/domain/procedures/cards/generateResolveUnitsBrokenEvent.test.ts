@@ -1,4 +1,4 @@
-import type { StandardBoard, UnitType, UnitWithPlacement } from '@entities';
+import type { UnitType, UnitWithPlacement } from '@entities';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import { tempUnits } from '@sampleValues';

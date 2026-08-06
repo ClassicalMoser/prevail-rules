@@ -1,5 +1,5 @@
 import type { ChooseCardEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
@@ -19,7 +19,7 @@ describe(applyChooseCardEvent, () => {
   function createGameStateInChooseCardsStep(
     blackHand: typeof tempCommandCards,
     whiteHand: typeof tempCommandCards,
-  ): GameStateForBoard<StandardBoard> {
+  ): GameState {
     const state = createEmptyGameState();
 
     // Set up card state with hands and no awaiting cards

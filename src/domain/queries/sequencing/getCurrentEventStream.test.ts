@@ -1,4 +1,4 @@
-import type { EventForBoard } from '@events';
+import type { Event } from '@events';
 import type { StandardBoard } from '@entities';
 import { createEmptyGameState } from '@testing';
 
@@ -15,7 +15,7 @@ describe(getCurrentEventStream, () => {
 
   it('reflects events attached to the round state', () => {
     const state = createEmptyGameState();
-    const events: readonly EventForBoard<StandardBoard>[] = [
+    const events: readonly Event[] = [
       {
         effectType: 'revealCards',
         eventNumber: 0,
