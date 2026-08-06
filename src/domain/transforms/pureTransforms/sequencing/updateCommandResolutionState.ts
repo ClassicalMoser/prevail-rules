@@ -1,5 +1,8 @@
-import type { Board } from '@entities';
-import type { CommandResolutionState, GameState, IssueCommandsPhaseState } from '@game';
+import type {
+  CommandResolutionState,
+  GameState,
+  IssueCommandsPhaseState,
+} from '@game';
 import { getIssueCommandsPhaseState } from '@queries';
 import { updatePhaseState } from '../state';
 
@@ -19,7 +22,7 @@ import { updatePhaseState } from '../state';
  * });
  * ```
  */
-export function updateCommandResolutionState<TBoard extends Board>(
+export function updateCommandResolutionState(
   state: GameState,
   commandResolutionState: CommandResolutionState,
 ): GameState {

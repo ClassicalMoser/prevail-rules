@@ -1,4 +1,10 @@
-import type { Board, BoardCoordinate, Line, UnitType, UnitWithPlacement } from '@entities';
+import type {
+  Board,
+  Coordinate,
+  Line,
+  UnitType,
+  UnitWithPlacement,
+} from '@entities';
 import type { Trait } from '@ruleValues';
 import { MAX_LINE_LENGTH } from '@ruleValues';
 import { matchesUnitRequirements } from './unit';
@@ -28,8 +34,8 @@ import { getPlayerUnitWithPosition, isAtPlacement } from './unitPresence';
  * @returns Set of all lines that include the given unit
  * @throws {Error} If the unit is not at its reported placement
  */
-export function getLinesFromUnit<TBoard extends Board>(
-  board: TBoard,
+export function getLinesFromUnit(
+  board: Board,
   unit: UnitWithPlacement,
   traits: Trait[] = [],
   unitTypes: UnitType[] = [],
@@ -57,7 +63,7 @@ export function getLinesFromUnit<TBoard extends Board>(
    * - undefined if we should stop expanding (empty space, enemy unit, wrong facing, or doesn't match requirements)
    */
   const canJoinLine = (
-    coordinate: BoardCoordinate<TBoard>,
+    coordinate: Coordinate,
   ): UnitWithPlacement | undefined => {
     const playerUnit = getPlayerUnitWithPosition(
       board,

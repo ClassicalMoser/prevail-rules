@@ -1,4 +1,4 @@
-import type { BoardCoordinate, SmallBoard } from '@entities';
+import type { Coordinate } from '@entities';
 import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
 
 import { getSpacesBehind } from './getSpacesBehind';
@@ -123,9 +123,9 @@ describe(getSpacesBehind, () => {
       expect(result.has('H-9')).toBeTruthy();
       expect(result.has('D-5')).toBeFalsy();
       expect(result.has('C-4')).toBeFalsy();
-      expect(result.has('A-18' as BoardCoordinate)).toBeFalsy();
-      expect(result.has('L-18' as BoardCoordinate)).toBeFalsy();
-      expect(result.has('L-1' as BoardCoordinate)).toBeFalsy();
+      expect(result.has('A-18' as Coordinate)).toBeFalsy();
+      expect(result.has('L-18' as Coordinate)).toBeFalsy();
+      expect(result.has('L-1' as Coordinate)).toBeFalsy();
     });
   });
 });

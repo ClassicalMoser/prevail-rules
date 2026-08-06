@@ -1,4 +1,4 @@
-import type { AttackType, StandardBoard, UnitWithPlacement } from '@entities';
+import type { AttackType, UnitWithPlacement } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import {

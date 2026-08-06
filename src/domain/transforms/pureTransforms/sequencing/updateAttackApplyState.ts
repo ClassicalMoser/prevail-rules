@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { AttackApplyState, GameState } from '@game';
 import {
   getCurrentPhaseState,
@@ -17,7 +16,7 @@ import { updatePhaseState } from '../state';
  * @param attackApplyState - The new attack apply state to set
  * @returns A new game state with the updated attack apply state
  */
-export function updateAttackApplyState<TBoard extends Board>(
+export function updateAttackApplyState(
   state: GameState,
   attackApplyState: AttackApplyState,
 ): GameState {

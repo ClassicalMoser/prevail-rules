@@ -47,11 +47,10 @@ const _assertExactResolveReverseEvent: AssertExact<
 
 /** The schema for a resolve reverse event. */
 export const resolveReverseEventSchema: z.ZodObject<{
-  attackResolutionContext: typeof attackResolutionContextSchema,
-  effectType: z.ZodLiteral<typeof RESOLVE_REVERSE_EFFECT_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>,
-  newUnitPlacement: typeof unitWithPlacementSchema,
-  unitInstance: typeof unitWithPlacementSchema,
-}> =
-  _resolveReverseEventSchemaObject;
+  attackResolutionContext: typeof attackResolutionContextSchema;
+  effectType: z.ZodLiteral<typeof RESOLVE_REVERSE_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  newUnitPlacement: typeof unitWithPlacementSchema;
+  unitInstance: typeof unitWithPlacementSchema;
+}> = _resolveReverseEventSchemaObject;

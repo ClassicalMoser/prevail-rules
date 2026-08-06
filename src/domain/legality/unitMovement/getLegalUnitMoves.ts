@@ -1,4 +1,4 @@
-import type { Board, BoardSpace, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { BoardSpace, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import { hasSingleUnit } from '@entities';
 import { getBoardSpace, isSameUnitInstance } from '@queries';
@@ -22,7 +22,7 @@ import { exploreUnitMoves } from './exploreUnitMoves';
  * @returns A set of all legal unit placements (coordinate + facing) the unit can reach
  * @throws {Error} If the unit is not free to move, not present, or facing mismatch
  */
-export function getLegalUnitMoves<TBoard extends Board>(
+export function getLegalUnitMoves(
   unitWithPlacement: UnitWithPlacement,
   gameState: GameState,
 ): Set<UnitPlacement> {

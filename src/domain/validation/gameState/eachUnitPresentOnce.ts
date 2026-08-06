@@ -1,4 +1,9 @@
-import type { Board, UnitCount, UnitInstance, ValidationResult } from '@entities';
+import type {
+  Board,
+  UnitCount,
+  UnitInstance,
+  ValidationResult,
+} from '@entities';
 import { hasEngagedUnits, hasSingleUnit } from '@entities';
 import { createUnitInstance } from '@factories';
 import {

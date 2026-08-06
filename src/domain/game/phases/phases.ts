@@ -57,7 +57,7 @@ const _assertExactPhase: AssertExact<Phase, PhaseSchemaType> = true;
 /**
  * The state of a phase of a round.
  *
- * Spatial branches (`issueCommands`, `resolveMelee`) correlate nested state with `TBoard`.
+ * Spatial branches (`issueCommands`, `resolveMelee`) correlate nested state with `Board`.
  */
 export type PhaseState =
   | PlayCardsPhaseState

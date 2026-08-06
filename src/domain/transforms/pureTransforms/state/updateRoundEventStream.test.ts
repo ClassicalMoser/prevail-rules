@@ -1,4 +1,3 @@
-import type { StandardBoard } from '@entities';
 import type { Event } from '@events';
 import { createEmptyGameState } from '@testing';
 

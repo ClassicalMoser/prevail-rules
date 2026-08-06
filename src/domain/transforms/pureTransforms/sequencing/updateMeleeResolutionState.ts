@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameState, MeleeResolutionState } from '@game';
 import { getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '../state';
@@ -19,7 +18,7 @@ import { updatePhaseState } from '../state';
  * });
  * ```
  */
-export function updateMeleeResolutionState<TBoard extends Board>(
+export function updateMeleeResolutionState(
   state: GameState,
   meleeResolutionState: MeleeResolutionState,
 ): GameState {

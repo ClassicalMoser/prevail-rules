@@ -1,4 +1,10 @@
-import type { Card, AuthoritativeCardState, FailValidationResult, OwnedCardState, ValidationResult } from '@entities';
+import type {
+  Card,
+  AuthoritativeCardState,
+  FailValidationResult,
+  OwnedCardState,
+  ValidationResult,
+} from '@entities';
 
 export function eachCardPresentOnce(
   blackStartingHand: Set<Card>,

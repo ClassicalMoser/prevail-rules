@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getOppositeFacing } from '@queries/facings';
 import { getForwardSpace } from './getForwardSpace';
 
@@ -13,11 +13,11 @@ import { getForwardSpace } from './getForwardSpace';
  * (directly behind the given coordinate in the given facing direction)
  * or undefined if the space is out of bounds
  */
-export function getRearwardSpace<TBoard extends Board>(
-  board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+export function getRearwardSpace(
+  board: Board,
+  coordinate: Coordinate,
   facing: UnitFacing,
-): BoardCoordinate<TBoard> | undefined {
+): Coordinate | undefined {
   // Get the opposite facing
   const oppositeFacing = getOppositeFacing(facing);
   // Get the rearward space

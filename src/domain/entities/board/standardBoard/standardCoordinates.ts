@@ -15,7 +15,7 @@ export type StandardBoardCoordinate =
 /**
  * An iterable array of all valid coordinates on a standard board (A-1 through L-18), generated from row letters and column numbers.
  *
- * Runtime validation ensures all coordinates match the StandardBoardCoordinate type pattern.
+ * Runtime validation ensures all coordinates match the Coordinate type pattern.
  */
 export const standardBoardCoordinates: readonly StandardBoardCoordinate[] =
   standardBoardRowLetters.flatMap((row) =>
@@ -23,13 +23,11 @@ export const standardBoardCoordinates: readonly StandardBoardCoordinate[] =
   ) as readonly StandardBoardCoordinate[]; // This cast is safe.
 
 const _standardBoardCoordinatesSchema = z.enum(standardBoardCoordinates);
-type StandardBoardCoordinatesSchemaType = z.infer<
-  typeof _standardBoardCoordinatesSchema
->;
+type CoordinatesSchemaType = z.infer<typeof _standardBoardCoordinatesSchema>;
 
 const _assertExactStandardBoardCoordinates: AssertExact<
   StandardBoardCoordinate,
-  StandardBoardCoordinatesSchemaType
+  CoordinatesSchemaType
 > = true;
 
 /**

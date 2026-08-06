@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
 import type { GameState, RetreatState } from '@game';
 import { findRetreatState } from '@queries';
@@ -18,7 +17,7 @@ import {
  * @param state - The current game state
  * @returns A new game state with the unit moved and retreat state marked as completed
  */
-export function applyResolveRetreatEvent<TBoard extends Board>(
+export function applyResolveRetreatEvent(
   event: ResolveRetreatEvent,
   state: GameState,
 ): GameState {

@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
+import type { Coordinate, PlayerSide, UnitFacing } from '@entities';
 import type { GameState } from '@game';
 import {
   getAdjacentFacings,
@@ -22,12 +22,12 @@ import { canMoveThrough } from './canMoveThrough';
  * @param currentFacing - The facing direction (must be diagonal)
  * @returns Whether the unit can continue moving through the target space
  */
-export function checkDiagonalMove<TBoard extends Board>(
+export function checkDiagonalMove(
   unitSide: PlayerSide,
   currentUnitFlexibility: number,
   gameState: GameState,
-  currentCoordinate: BoardCoordinate<TBoard>,
-  targetCoordinate: BoardCoordinate<TBoard>,
+  currentCoordinate: Coordinate,
+  targetCoordinate: Coordinate,
   currentFacing: UnitFacing,
 ): boolean {
   // Get the board state
@@ -42,7 +42,7 @@ export function checkDiagonalMove<TBoard extends Board>(
   const adjacentFacings = getAdjacentFacings(currentFacing);
 
   // Get the orthogonal pass-through spaces for each adjacent facing
-  const orthogonalPassThroughSpaces: BoardCoordinate<TBoard>[] = Array.from(
+  const orthogonalPassThroughSpaces: Coordinate[] = Array.from(
     adjacentFacings,
     (adjacentFacing) =>
       getForwardSpace(board, currentCoordinate, adjacentFacing),

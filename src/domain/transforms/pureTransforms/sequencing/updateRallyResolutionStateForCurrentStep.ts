@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { CleanupPhaseState, RallyResolutionState } from '@game';
 
 /**
@@ -11,7 +10,7 @@ import type { CleanupPhaseState, RallyResolutionState } from '@game';
  * @returns A new cleanup phase state with the updated rally resolution state
  * @throws Error if not in a resolveRally step
  */
-export function updateRallyResolutionStateForCurrentStep<_TBoard extends Board>(
+export function updateRallyResolutionStateForCurrentStep(
   phaseState: CleanupPhaseState,
   rallyState: RallyResolutionState,
   nextStep: CleanupPhaseState['step'],

@@ -6,7 +6,6 @@ import {
   createTestCard,
   updateCardState,
 } from '@testing';
-import type { StandardBoard } from '@entities';
 import type { GameState } from '@game';
 import { updatePhaseState } from '@transforms/pureTransforms';
 

@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate } from '@entities';
+import type { Board, Coordinate } from '@entities';
 import { getCoordinateLayout } from '@entities';
 
 /**
@@ -10,16 +10,14 @@ import { getCoordinateLayout } from '@entities';
  *
  * @example
  * ```typescript
- * const standardBoard: StandardBoard = createEmptyStandardBoard();
+ * const standardBoard: Board = createEmptyStandardBoard();
  * const coordinates = getBoardCoordinates(standardBoard);
- * // Returns StandardBoardCoordinate[]
+ * // Returns Coordinate[]
  * ```
  */
-export function getBoardCoordinates<TBoard extends Board>(
-  board: TBoard,
-): readonly BoardCoordinate<TBoard>[] {
+export function getBoardCoordinates(board: Board): readonly Coordinate[] {
   const layout = getCoordinateLayout(board);
-  const coordinates: BoardCoordinate<TBoard>[] = [];
+  const coordinates: Coordinate[] = [];
   for (const row of layout.rowLetters) {
     for (const column of layout.columnNumbers) {
       coordinates.push(layout.createCoordinate(row, column));

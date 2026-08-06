@@ -1,4 +1,4 @@
-import type { StandardBoard, StandardBoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 import type { MoveCommanderEvent } from '@events';
 import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE } from '@game';
@@ -17,8 +17,8 @@ describe(applyMoveCommanderEvent, () => {
   /** MoveCommanders phase at the given step with default black E-5 / white E-6 commanders. */
   function createGameStateInMoveCommandersStep(
     step: 'moveFirstCommander' | 'moveSecondCommander',
-    blackCommanderCoord: StandardBoardCoordinate = 'E-5',
-    whiteCommanderCoord: StandardBoardCoordinate = 'E-6',
+    blackCommanderCoord: Coordinate = 'E-5',
+    whiteCommanderCoord: Coordinate = 'E-6',
   ): GameState {
     const state = createEmptyGameState({ currentInitiative: 'black' });
 

@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
 import type { AttackApplyState, GameState } from '@game';
 import {
@@ -23,7 +22,7 @@ import {
  * @param state - The current game state
  * @returns A new game state with the attack apply state marked as completed
  */
-export function applyCompleteAttackApplyEvent<TBoard extends Board>(
+export function applyCompleteAttackApplyEvent(
   event: CompleteAttackApplyEvent,
   state: GameState,
 ): GameState {

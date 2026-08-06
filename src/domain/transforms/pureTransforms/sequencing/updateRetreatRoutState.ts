@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameState, RetreatState, RoutState } from '@game';
 import { findRetreatState } from '@queries';
 import { updateRetreatState } from './updateRetreatState';
@@ -24,7 +23,7 @@ import { updateRetreatState } from './updateRetreatState';
  * });
  * ```
  */
-export function updateRetreatRoutState<TBoard extends Board>(
+export function updateRetreatRoutState(
   state: GameState,
   routState: RoutState,
 ): GameState {

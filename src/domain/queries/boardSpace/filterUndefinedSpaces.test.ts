@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 
 import { filterUndefinedSpaces } from './filterUndefinedSpaces';
 
@@ -7,12 +7,12 @@ import { filterUndefinedSpaces } from './filterUndefinedSpaces';
  */
 describe(filterUndefinedSpaces, () => {
   it('given set includes undefined, returns only defined coordinates', () => {
-    const spaces = new Set<StandardBoardCoordinate | undefined>([
+    const spaces = new Set<Coordinate | undefined>([
       'A-1',
       'A-2',
       undefined,
       'A-3',
-    ]) as Set<StandardBoardCoordinate>;
+    ]) as Set<Coordinate>;
     expect(filterUndefinedSpaces(spaces)).toStrictEqual(
       new Set(['A-1', 'A-2', 'A-3']),
     );

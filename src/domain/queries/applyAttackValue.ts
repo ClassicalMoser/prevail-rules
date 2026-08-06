@@ -1,4 +1,4 @@
-import type { Board, Modifier, UnitInstance } from '@entities';
+import type { Modifier, UnitInstance } from '@entities';
 import type { AttackResult, GameState } from '@game';
 import { getCurrentUnitStat } from './getCurrentUnitStat';
 
@@ -11,7 +11,7 @@ import { getCurrentUnitStat } from './getCurrentUnitStat';
  * Usually used for commitment modifiers.
  * @returns The result of the attack.
  */
-export function applyAttackValue<TBoard extends Board>(
+export function applyAttackValue(
   gameState: GameState,
   attackValue: number,
   unit: UnitInstance,

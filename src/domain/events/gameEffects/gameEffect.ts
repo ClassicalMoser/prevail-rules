@@ -15,11 +15,39 @@
  * From `@ruleValues/gameEffectTypes` only — not `@entities` (circular init with this file).
  */
 import type { GameEffectType } from '@ruleValues';
-import type { DiscardPlayedCardsEvent, ResolveInitiativeEvent, ResolveRallyEvent, ResolveUnitsBrokenEvent, RevealCardsEvent } from './cards';
-import type { CompleteCleanupPhaseEvent, CompleteIssueCommandsPhaseEvent, CompleteMoveCommandersPhaseEvent, CompletePlayCardsPhaseEvent, CompleteResolveMeleePhaseEvent } from './completePhase';
-import type { ResolveRetreatEvent, ResolveReverseEvent, ResolveRoutEvent, TriggerRoutFromRetreatEvent } from './defenseResult';
-import type { CompleteUnitMovementEvent, ResolveEngageRetreatOptionEvent, ResolveFlankEngagementEvent, StartEngagementEvent } from './movement';
-import type { CompleteAttackApplyEvent, CompleteMeleeResolutionEvent, CompleteRangedAttackCommandEvent, ResolveMeleeEvent, ResolveRangedAttackEvent } from './resolveAttack';
+import type {
+  DiscardPlayedCardsEvent,
+  ResolveInitiativeEvent,
+  ResolveRallyEvent,
+  ResolveUnitsBrokenEvent,
+  RevealCardsEvent,
+} from './cards';
+import type {
+  CompleteCleanupPhaseEvent,
+  CompleteIssueCommandsPhaseEvent,
+  CompleteMoveCommandersPhaseEvent,
+  CompletePlayCardsPhaseEvent,
+  CompleteResolveMeleePhaseEvent,
+} from './completePhase';
+import type {
+  ResolveRetreatEvent,
+  ResolveReverseEvent,
+  ResolveRoutEvent,
+  TriggerRoutFromRetreatEvent,
+} from './defenseResult';
+import type {
+  CompleteUnitMovementEvent,
+  ResolveEngageRetreatOptionEvent,
+  ResolveFlankEngagementEvent,
+  StartEngagementEvent,
+} from './movement';
+import type {
+  CompleteAttackApplyEvent,
+  CompleteMeleeResolutionEvent,
+  CompleteRangedAttackCommandEvent,
+  ResolveMeleeEvent,
+  ResolveRangedAttackEvent,
+} from './resolveAttack';
 import { gameEffects } from '@ruleValues';
 import { z } from 'zod';
 import {

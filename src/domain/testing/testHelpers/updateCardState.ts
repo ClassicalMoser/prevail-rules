@@ -1,4 +1,8 @@
-import type { CardStateForVisibility, GameStateForVisibility, GameStateVisibility } from '@game';
+import type {
+  CardStateForVisibility,
+  GameStateForVisibility,
+  GameStateVisibility,
+} from '@game';
 
 /**
  * Test-harness helper: returns a new game state with the authoritative card

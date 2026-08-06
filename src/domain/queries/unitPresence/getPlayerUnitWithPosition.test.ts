@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate, UnitFacing } from '@entities';
+import type { Coordinate, UnitFacing } from '@entities';
 import { getOppositeFacing } from '@queries/facings';
 import {
   createBoardWithEngagedUnits,
@@ -13,7 +13,7 @@ import { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
  * GetPlayerUnitWithPosition: unit + placement at a coordinate for a player (single or engaged slot).
  */
 describe(getPlayerUnitWithPosition, () => {
-  const coordinate: StandardBoardCoordinate = 'E-5';
+  const coordinate: Coordinate = 'E-5';
 
   describe('empty space', () => {
     it('given empty space, returns undefined', () => {
@@ -75,7 +75,7 @@ describe(getPlayerUnitWithPosition, () => {
 
     it('given context, returns the unit with correct coordinate', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const testCoordinate: StandardBoardCoordinate = 'A-1';
+      const testCoordinate: Coordinate = 'A-1';
       const board = createBoardWithUnits([
         { coordinate: testCoordinate, facing: 'north', unit },
       ]);
@@ -225,13 +225,7 @@ describe(getPlayerUnitWithPosition, () => {
 
   describe('edge cases', () => {
     it('given handle different coordinates correctly', () => {
-      const coordinates: StandardBoardCoordinate[] = [
-        'A-1',
-        'A-18',
-        'L-1',
-        'L-18',
-        'E-5',
-      ];
+      const coordinates: Coordinate[] = ['A-1', 'A-18', 'L-1', 'L-18', 'E-5'];
 
       for (const coord of coordinates) {
         const unit = createTestUnit('black', { attack: 3 });
@@ -260,11 +254,7 @@ describe(getPlayerUnitWithPosition, () => {
     it('given when space is invalid, throws', () => {
       const board = createEmptyStandardBoard();
       expect(() =>
-        getPlayerUnitWithPosition(
-          board,
-          'invalid' as StandardBoardCoordinate,
-          'black',
-        ),
+        getPlayerUnitWithPosition(board, 'invalid' as Coordinate, 'black'),
       ).toThrow(
         new Error('Coordinate invalid does not exist on standard board.'),
       );

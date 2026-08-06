@@ -1,4 +1,4 @@
-import type { Board, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
 import type { AttackApplyState, GameState } from '@game';
 import { getMeleeResolutionState, getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '../state';
@@ -20,7 +20,7 @@ import { updatePhaseState } from '../state';
  * });
  * ```
  */
-export function updateMeleeAttackApplyState<TBoard extends Board>(
+export function updateMeleeAttackApplyState(
   state: GameState,
   player: PlayerSide,
   attackApplyState: AttackApplyState,

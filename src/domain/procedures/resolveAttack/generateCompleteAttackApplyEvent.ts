@@ -9,7 +9,6 @@ import {
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
   getMeleeResolutionState,
 } from '@queries';
-import type { Board } from '@entities';
 import type { GameState, MeleeResolutionState } from '@game';
 
 /**
@@ -19,7 +18,7 @@ import type { GameState, MeleeResolutionState } from '@game';
  * @param state - The current game state
  * @returns A complete CompleteAttackApplyEvent
  */
-export function generateCompleteAttackApplyEvent<TBoard extends Board>(
+export function generateCompleteAttackApplyEvent(
   state: GameState,
   eventNumber: number,
 ): CompleteAttackApplyEvent {

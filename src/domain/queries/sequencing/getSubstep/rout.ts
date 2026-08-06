@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { AttackApplyState, GameState, RoutState } from '@game';
 import { throwIfPending } from '@utils';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
@@ -25,9 +24,9 @@ export function getRoutStateFromAttackApply(
  * Rout state from melee resolution, in initiative order (first player's apply first).
  * Assumes resolveMelee phase and that one attack-apply carries an active rout.
  */
-export function getRoutStateFromMeleeResolutionByInitiative<
-  TBoard extends Board,
->(state: GameState): RoutState {
+export function getRoutStateFromMeleeResolutionByInitiative(
+  state: GameState,
+): RoutState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);

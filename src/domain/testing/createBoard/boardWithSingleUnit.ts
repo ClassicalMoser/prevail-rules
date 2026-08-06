@@ -1,4 +1,10 @@
-import type { PlayerSide, StandardBoard, StandardBoardCoordinate, UnitFacing, UnitType } from '@entities';
+import type {
+  PlayerSide,
+  Board,
+  Coordinate,
+  UnitFacing,
+  UnitType,
+} from '@entities';
 import { getUnitByStatValue } from '@testing/getUnitByStatValue';
 import { createUnitInstance } from '@transforms';
 import { createBoardWithUnits } from './boardWithUnits';
@@ -8,7 +14,7 @@ import { createBoardWithUnits } from './boardWithUnits';
  * Uses createBoardWithUnits (and thus addUnitToBoard) for consistency with pure transforms.
  */
 export function createBoardWithSingleUnit(
-  coord: StandardBoardCoordinate,
+  coord: Coordinate,
   playerSide: PlayerSide,
   options?: {
     unitType?: UnitType;
@@ -17,7 +23,7 @@ export function createBoardWithSingleUnit(
     facing?: UnitFacing;
     instanceNumber?: number;
   },
-): StandardBoard {
+): Board {
   const facing = options?.facing ?? 'north';
   const instanceNumber = options?.instanceNumber ?? 1;
 

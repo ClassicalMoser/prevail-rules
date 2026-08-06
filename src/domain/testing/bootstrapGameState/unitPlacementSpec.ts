@@ -1,4 +1,10 @@
-import type { PlayerSide, StandardBoardCoordinate, UnitFacing, UnitInstance, UnitType } from '@entities';
+import type {
+  PlayerSide,
+  Coordinate,
+  UnitFacing,
+  UnitInstance,
+  UnitType,
+} from '@entities';
 import { createTestUnit } from '@testing/unitHelpers';
 
 /**
@@ -10,10 +16,10 @@ import { createTestUnit } from '@testing/unitHelpers';
  * 3. Full control: { coord: 'E-5', player: 'black', facing: 'north', attack: 3 }
  */
 export type UnitPlacementSpec =
-  | [StandardBoardCoordinate, PlayerSide]
-  | [StandardBoardCoordinate, PlayerSide, UnitFacing]
+  | [Coordinate, PlayerSide]
+  | [Coordinate, PlayerSide, UnitFacing]
   | {
-      coord: StandardBoardCoordinate;
+      coord: Coordinate;
       player: PlayerSide;
       facing?: UnitFacing;
       unitType?: UnitType;
@@ -50,7 +56,7 @@ export function normalizeUnitPlacement(
   instanceNumber: number,
 ): {
   unit: UnitInstance;
-  coordinate: StandardBoardCoordinate;
+  coordinate: Coordinate;
   facing: UnitFacing;
 } {
   if (Array.isArray(spec)) {

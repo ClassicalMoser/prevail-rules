@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ChooseRetreatOptionEvent } from '@events';
 import type { GameState, RetreatState } from '@game';
 import { findRetreatState } from '@queries';
@@ -18,7 +17,7 @@ import { updateRetreatState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the retreat option chosen
  */
-export function applyChooseRetreatOptionEvent<TBoard extends Board>(
+export function applyChooseRetreatOptionEvent(
   event: ChooseRetreatOptionEvent,
   state: GameState,
 ): GameState {

@@ -1,5 +1,4 @@
 import type { GameState } from '@game';
-import type { StandardBoard } from '@entities';
 
 import { MOVE_COMMANDERS_PHASE } from '@game';
 import { createEmptyGameState } from '@testing';

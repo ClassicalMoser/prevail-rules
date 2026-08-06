@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate, UnitFacing } from '@entities';
+import type { Coordinate, UnitFacing } from '@entities';
 import { createEmptyStandardBoard } from '@transforms';
 
 import { getFrontSpaces } from './getFrontSpaces';
@@ -61,13 +61,13 @@ describe(getFrontSpaces, () => {
 
   it('given invalid row letter, throws', () => {
     expect(() =>
-      getFrontSpaces(standardBoard, 'R-12' as StandardBoardCoordinate, 'north'),
+      getFrontSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
   it('given invalid column, throws', () => {
     expect(() =>
-      getFrontSpaces(standardBoard, 'A-19' as StandardBoardCoordinate, 'north'),
+      getFrontSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 

@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, PlayerSide, UnitFacing } from '@entities';
+import type { Board, Coordinate, PlayerSide, UnitFacing } from '@entities';
 import { hasSingleUnit } from '@entities';
 import {
   getBackSpaces,
@@ -21,12 +21,12 @@ import {
  * @param remainingFlexibility - The remaining flexibility at the time of this check
  * @returns True if we can engage an enemy at the given coordinate with the given facing, false otherwise
  */
-export function canEngageEnemy<TBoard extends Board>(
+export function canEngageEnemy(
   unitSide: PlayerSide,
-  board: TBoard,
-  destinationCoordinate: BoardCoordinate<TBoard>,
-  adjacentCoordinate: BoardCoordinate<TBoard>,
-  moveStartCoordinate: BoardCoordinate<TBoard>,
+  board: Board,
+  destinationCoordinate: Coordinate,
+  adjacentCoordinate: Coordinate,
+  moveStartCoordinate: Coordinate,
   currentFacing: UnitFacing,
   remainingFlexibility: number,
 ): boolean {

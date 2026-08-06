@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import type { Board, Coordinate, UnitFacing } from '@entities';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpacesToEdge } from '../getForwardSpacesToEdge';
 
@@ -13,11 +13,11 @@ import { getInlineSpaces } from './getInlineSpaces';
  * @param extensionFacing - The facing direction to extend spaces to the edge
  * @returns A set of all spaces in the direction
  */
-function getSpacesInDirection<TBoard extends Board>(
-  board: TBoard,
-  initialSpaces: Set<BoardCoordinate<TBoard>>,
+function getSpacesInDirection(
+  board: Board,
+  initialSpaces: Set<Coordinate>,
   extensionFacing: UnitFacing,
-): Set<BoardCoordinate<TBoard>> {
+): Set<Coordinate> {
   const spaces = new Set(initialSpaces);
 
   // Add the inline spaces for all initial spaces (prevents checkerboard for diagonal facings)

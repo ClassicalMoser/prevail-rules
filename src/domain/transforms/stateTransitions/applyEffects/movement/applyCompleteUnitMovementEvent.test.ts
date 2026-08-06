@@ -1,4 +1,3 @@
-import type { StandardBoard } from '@entities';
 import type { GameState } from '@game';
 import { getMovementResolutionState } from '@queries';
 import {

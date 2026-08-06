@@ -16,7 +16,7 @@ import {
  * @param state - The current game state
  * @returns A new game state with the unit moved
  */
-export function applyMoveUnitEvent<TBoard extends Board>(
+export function applyMoveUnitEvent(
   event: MoveUnitEvent,
   state: GameState,
 ): GameState {
@@ -28,7 +28,7 @@ export function applyMoveUnitEvent<TBoard extends Board>(
 
   // Remove unit from source space, then add at destination
   const removedUnitBoard = removeUnitFromBoard(
-    state.boardState as TBoard,
+    state.boardState as Board,
     originalUnitWithPlacement,
   );
   const newBoard = addUnitToBoard(removedUnitBoard, newUnitWithPlacement);

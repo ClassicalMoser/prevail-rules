@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ResolveFlankEngagementEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -20,7 +19,7 @@ import {
  * @returns Event with `defenderWithPlacement` snapshot and computed `newFacing`
  * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
  */
-export function generateResolveFlankEngagementEvent<TBoard extends Board>(
+export function generateResolveFlankEngagementEvent(
   state: GameState,
   eventNumber: number,
 ): ResolveFlankEngagementEvent {

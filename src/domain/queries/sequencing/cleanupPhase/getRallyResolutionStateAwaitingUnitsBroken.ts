@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameState, RallyResolutionState } from '@game';
 import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';
 
@@ -12,9 +11,10 @@ import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionState
  * @param player - The player whose broken units are being resolved (must match the cleanup step)
  * @throws Error if wrong step/player, rally not resolved yet, or units-broken already applied
  */
-export function getRallyResolutionStateAwaitingUnitsBroken<
-  TBoard extends Board,
->(state: GameState, player: 'white' | 'black'): RallyResolutionState {
+export function getRallyResolutionStateAwaitingUnitsBroken(
+  state: GameState,
+  player: 'white' | 'black',
+): RallyResolutionState {
   const rallyState = getRallyResolutionStateForCurrentStep(state, player);
   if (!rallyState.rallyResolved) {
     throw new Error('Rally has not been resolved yet');

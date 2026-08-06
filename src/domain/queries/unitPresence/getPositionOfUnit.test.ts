@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
@@ -15,7 +15,7 @@ describe(getPositionOfUnit, () => {
   describe('single unit presence', () => {
     it('given find unit at its position', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const coordinate: StandardBoardCoordinate = 'E-5';
+      const coordinate: Coordinate = 'E-5';
       const facing = 'north';
       const board = createBoardWithUnits([{ coordinate, facing, unit }]);
 
@@ -27,7 +27,7 @@ describe(getPositionOfUnit, () => {
 
     it('given find unit with different facing', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const coordinate: StandardBoardCoordinate = 'E-5';
+      const coordinate: Coordinate = 'E-5';
       const facing = 'southEast';
       const board = createBoardWithUnits([{ coordinate, facing, unit }]);
 
@@ -39,7 +39,7 @@ describe(getPositionOfUnit, () => {
 
     it('given find unit at different coordinates', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const coordinate: StandardBoardCoordinate = 'A-1';
+      const coordinate: Coordinate = 'A-1';
       const board = createBoardWithUnits([
         { coordinate, facing: 'north', unit },
       ]);
@@ -54,7 +54,7 @@ describe(getPositionOfUnit, () => {
     it('given find primary unit in engagement', () => {
       const primaryUnit = createTestUnit('black', { attack: 3 });
       const secondaryUnit = createTestUnit('white', { attack: 3 });
-      const coordinate: StandardBoardCoordinate = 'E-5';
+      const coordinate: Coordinate = 'E-5';
       const primaryFacing = 'north';
       const board = createBoardWithEngagedUnits(
         primaryUnit,
@@ -72,7 +72,7 @@ describe(getPositionOfUnit, () => {
     it('given find secondary unit in engagement', () => {
       const primaryUnit = createTestUnit('white', { attack: 3 });
       const secondaryUnit = createTestUnit('black', { attack: 3 });
-      const coordinate: StandardBoardCoordinate = 'E-5';
+      const coordinate: Coordinate = 'E-5';
       const primaryFacing = 'north';
       const board = createBoardWithEngagedUnits(
         primaryUnit,
@@ -91,7 +91,7 @@ describe(getPositionOfUnit, () => {
     it('given if neither unit matches, throws', () => {
       const primaryUnit = createTestUnit('black', { attack: 3 });
       const secondaryUnit = createTestUnit('white', { attack: 3 });
-      const coordinate: StandardBoardCoordinate = 'E-5';
+      const coordinate: Coordinate = 'E-5';
       const primaryFacing = 'north';
       const board = createBoardWithEngagedUnits(
         primaryUnit,

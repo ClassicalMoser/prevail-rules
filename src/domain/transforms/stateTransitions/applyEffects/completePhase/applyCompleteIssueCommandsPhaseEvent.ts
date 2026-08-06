@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
 import type { GameState, ResolveMeleePhaseState } from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';
@@ -21,7 +20,7 @@ import {
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */
-export function applyCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
+export function applyCompleteIssueCommandsPhaseEvent(
   event: CompleteIssueCommandsPhaseEvent,
   state: GameState,
 ): GameState {

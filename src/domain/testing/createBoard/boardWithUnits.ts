@@ -1,4 +1,4 @@
-import type { StandardBoard, StandardBoardCoordinate, UnitFacing, UnitInstance } from '@entities';
+import type { Board, Coordinate, UnitFacing, UnitInstance } from '@entities';
 import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
 
 /**
@@ -11,10 +11,10 @@ import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
 export function createBoardWithUnits(
   units: {
     unit: UnitInstance;
-    coordinate: StandardBoardCoordinate;
+    coordinate: Coordinate;
     facing: UnitFacing;
   }[],
-): StandardBoard {
+): Board {
   let board = createEmptyStandardBoard();
   for (const { unit, coordinate, facing } of units) {
     board = addUnitToBoard(board, {

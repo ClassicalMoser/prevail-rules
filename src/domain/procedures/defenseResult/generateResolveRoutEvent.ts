@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ResolveRoutEvent, RoutResolutionSource } from '@events';
 import type { GameState, RoutState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ROUT_EFFECT_TYPE } from '@events';
@@ -20,7 +19,7 @@ import {
  * @returns A complete ResolveRoutEvent with the routed unit and penalty
  * @throws Error if not in a valid state for rout resolution
  */
-export function generateResolveRoutEvent<TBoard extends Board>(
+export function generateResolveRoutEvent(
   state: GameState,
   eventNumber: number,
 ): ResolveRoutEvent {

@@ -64,7 +64,9 @@ const _resolveMeleeEventSchemaObject = z.object({
   whiteUnitWithPlacement: unitWithPlacementSchema,
 });
 
-type ResolveMeleeEventSchemaType = z.infer<typeof _resolveMeleeEventSchemaObject>;
+type ResolveMeleeEventSchemaType = z.infer<
+  typeof _resolveMeleeEventSchemaObject
+>;
 
 const _assertExactResolveMeleeEvent: AssertExact<
   ResolveMeleeEvent,
@@ -73,19 +75,18 @@ const _assertExactResolveMeleeEvent: AssertExact<
 
 /** The schema for a resolve melee event. */
 export const resolveMeleeEventSchema: z.ZodObject<{
-  blackLegalRetreatOptions: z.ZodArray<typeof unitPlacementSchema>,
-  blackUnitRetreated: z.ZodBoolean,
-  blackUnitReversed: z.ZodBoolean,
-  blackUnitRouted: z.ZodBoolean,
-  blackUnitWithPlacement: typeof unitWithPlacementSchema,
-  effectType: z.ZodLiteral<typeof RESOLVE_MELEE_EFFECT_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>,
-  location: typeof coordinateSchema,
-  whiteLegalRetreatOptions: z.ZodArray<typeof unitPlacementSchema>,
-  whiteUnitRetreated: z.ZodBoolean,
-  whiteUnitReversed: z.ZodBoolean,
-  whiteUnitRouted: z.ZodBoolean,
-  whiteUnitWithPlacement: typeof unitWithPlacementSchema,
-}> =
-  _resolveMeleeEventSchemaObject;
+  blackLegalRetreatOptions: z.ZodArray<typeof unitPlacementSchema>;
+  blackUnitRetreated: z.ZodBoolean;
+  blackUnitReversed: z.ZodBoolean;
+  blackUnitRouted: z.ZodBoolean;
+  blackUnitWithPlacement: typeof unitWithPlacementSchema;
+  effectType: z.ZodLiteral<typeof RESOLVE_MELEE_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  location: typeof coordinateSchema;
+  whiteLegalRetreatOptions: z.ZodArray<typeof unitPlacementSchema>;
+  whiteUnitRetreated: z.ZodBoolean;
+  whiteUnitReversed: z.ZodBoolean;
+  whiteUnitRouted: z.ZodBoolean;
+  whiteUnitWithPlacement: typeof unitWithPlacementSchema;
+}> = _resolveMeleeEventSchemaObject;

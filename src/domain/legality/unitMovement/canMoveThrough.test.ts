@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
 import { createGameState, createTestUnit } from '@testing';
 import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
@@ -127,7 +127,7 @@ describe(canMoveThrough, () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
-      const invalidCoordinate = 'Z-99' as StandardBoardCoordinate;
+      const invalidCoordinate = 'Z-99' as Coordinate;
       expect(
         canMoveThrough('black', 2, invalidCoordinate, gameState),
       ).toBeFalsy();

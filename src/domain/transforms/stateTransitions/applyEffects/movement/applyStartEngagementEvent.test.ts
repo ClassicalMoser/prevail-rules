@@ -1,4 +1,4 @@
-import type { EngagementType, StandardBoard, UnitWithPlacement } from '@entities';
+import type { EngagementType, UnitWithPlacement } from '@entities';
 import type { StartEngagementEvent } from '@events';
 import type { GameState } from '@game';
 import { throwIfNone, throwIfPending } from '@utils';

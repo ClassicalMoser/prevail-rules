@@ -1,5 +1,9 @@
 import type { CommitToMovementEvent } from '@events';
-import type { GameState, GameStateForVisibility, MovementResolutionState } from '@game';
+import type {
+  GameState,
+  GameStateForVisibility,
+  MovementResolutionState,
+} from '@game';
 import { getMovementResolutionState } from '@queries';
 import {
   discardCardsFromHand,

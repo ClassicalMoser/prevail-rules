@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameState, ReverseState } from '@game';
 import {
   getCurrentPhaseState,
@@ -18,7 +17,7 @@ import { updatePhaseState } from '../state';
  * @param reverseState - The new reverse state to set
  * @returns A new game state with the updated reverse state
  */
-export function updateReverseState<TBoard extends Board>(
+export function updateReverseState(
   state: GameState,
   reverseState: ReverseState,
 ): GameState {

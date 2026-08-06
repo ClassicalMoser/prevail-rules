@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, UnitFacing } from '@entities';
+import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getOrthogonalFacings } from '@queries/facings';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpacesToEdge } from '../getForwardSpacesToEdge';
@@ -13,13 +13,13 @@ import { getForwardSpacesToEdge } from '../getForwardSpacesToEdge';
  * @returns A set of the inline space coordinates
  * (unlimited, straight line to the left and right, including the origin space)
  */
-export function getInlineSpaces<TBoard extends Board>(
-  board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+export function getInlineSpaces(
+  board: Board,
+  coordinate: Coordinate,
   facing: UnitFacing,
-): Set<BoardCoordinate<TBoard>> {
+): Set<Coordinate> {
   // Initialize set with the starting coordinate
-  const inlineSpaces = new Set<BoardCoordinate<TBoard>>([coordinate]);
+  const inlineSpaces = new Set<Coordinate>([coordinate]);
 
   // Get the two orthogonal facings (directions perpendicular to the facing)
   const orthogonalFacings = [...getOrthogonalFacings(facing)];

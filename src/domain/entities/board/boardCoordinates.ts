@@ -1,4 +1,3 @@
-import type { Board } from './board';
 import type { StandardBoardCoordinate } from './standardBoard';
 import type { SmallBoardCoordinate } from './smallBoard';
 import type { LargeBoardCoordinate } from './largeBoard';
@@ -22,11 +21,6 @@ export type Coordinate =
   | StandardBoardCoordinate
   | SmallBoardCoordinate
   | LargeBoardCoordinate;
-
-/**
- * @deprecated Use Coordinate instead. Board type is state, not type.
- */
-export type BoardCoordinate<_T extends Board = Board> = Coordinate;
 
 const allCoordinates = [
   ...new Set<Coordinate>([

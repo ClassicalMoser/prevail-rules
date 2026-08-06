@@ -40,10 +40,9 @@ const _assertExactChooseMeleeResolutionEvent: AssertExact<
 
 /** The schema for a choose melee resolution event. */
 export const chooseMeleeResolutionEventSchema: z.ZodObject<{
-  choiceType: z.ZodLiteral<typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>,
-  player: typeof playerSideSchema,
-  space: typeof coordinateSchema,
-}> =
-  _chooseMeleeResolutionEventSchemaObject;
+  choiceType: z.ZodLiteral<typeof CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  player: typeof playerSideSchema;
+  space: typeof coordinateSchema;
+}> = _chooseMeleeResolutionEventSchemaObject;

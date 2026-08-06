@@ -1,4 +1,3 @@
-import type { StandardBoard } from '@entities';
 import type { Event } from '@events';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';

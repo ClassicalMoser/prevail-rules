@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, UnitPlacement } from '@entities';
+import type { Coordinate, UnitPlacement } from '@entities';
 import { getPlayerUnitWithPosition } from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
 import {
@@ -18,10 +18,10 @@ import { getLegalRetreats } from './getLegalRetreats';
  */
 describe(getLegalRetreats, () => {
   // Test helper to check if a placement exists in the set
-  function _placementHasMatch<TBoard extends Board>(
+  function _placementHasMatch(
     placements: Set<UnitPlacement>,
     match: {
-      coordinate?: BoardCoordinate<TBoard>;
+      coordinate?: Coordinate;
       facing?: string;
     },
   ): boolean {

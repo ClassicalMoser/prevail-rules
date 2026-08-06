@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { CompleteUnitMovementEvent } from '@events';
 import type { GameState, MovementResolutionState } from '@game';
 import { getMovementResolutionState } from '@queries';
@@ -14,7 +13,7 @@ import { updateCommandResolutionState } from '@transforms/pureTransforms';
  *
  * Uses {@link getMovementResolutionState} and {@link updateCommandResolutionState}.
  */
-export function applyCompleteUnitMovementEvent<TBoard extends Board>(
+export function applyCompleteUnitMovementEvent(
   _event: CompleteUnitMovementEvent,
   state: GameState,
 ): GameState {

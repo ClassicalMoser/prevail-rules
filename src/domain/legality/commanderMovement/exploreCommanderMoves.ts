@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, PlayerSide } from '@entities';
+import type { Coordinate, PlayerSide } from '@entities';
 import type { GameState } from '@game';
 import { unitFacings } from '@entities';
 import {
@@ -9,28 +9,28 @@ import {
   isDiagonalFacing,
 } from '@queries';
 
-export function exploreCommanderMoves<TBoard extends Board>(
+export function exploreCommanderMoves(
   playerSide: PlayerSide,
-  startingCoordinate: BoardCoordinate<TBoard>,
+  startingCoordinate: Coordinate,
   gameState: GameState,
   maxDistance: number,
-): Set<BoardCoordinate<TBoard>> {
+): Set<Coordinate> {
   // Get the board state
   const board = gameState.boardState;
 
   // Collect the legal moves
-  const legalMoves = new Set<BoardCoordinate<TBoard>>();
+  const legalMoves = new Set<Coordinate>();
 
   // Track the visited states to avoid revisiting
   const visitedStates = new Set<string>();
   const getStateKey = (
-    coordinate: BoardCoordinate<TBoard>,
+    coordinate: Coordinate,
     remainingDistance: number,
   ): string => `${coordinate}|${remainingDistance}`;
 
   // Recursive function to explore the moves
   function explore(
-    currentCoordinate: BoardCoordinate<TBoard>,
+    currentCoordinate: Coordinate,
     remainingDistance: number,
   ): void {
     // Check if we have already visited this state

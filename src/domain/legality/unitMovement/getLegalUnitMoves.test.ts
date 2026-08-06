@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, UnitPlacement } from '@entities';
+import type { Coordinate, UnitPlacement } from '@entities';
 import { getPlayerUnitWithPosition } from '@queries';
 import {
   createGameState,
@@ -14,10 +14,10 @@ import { getLegalUnitMoves } from './getLegalUnitMoves';
  */
 describe(getLegalUnitMoves, () => {
   // Test helper to check if a placement exists in the set
-  function placementHasMatch<TBoard extends Board>(
+  function placementHasMatch(
     placements: Set<UnitPlacement>,
     match: {
-      coordinate?: BoardCoordinate<TBoard>;
+      coordinate?: Coordinate;
       facing?: string;
     },
   ): boolean {

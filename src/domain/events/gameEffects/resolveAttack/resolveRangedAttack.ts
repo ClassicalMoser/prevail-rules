@@ -48,13 +48,12 @@ const _assertExactResolveRangedAttackEvent: AssertExact<
 
 /** The schema for a resolve ranged attack event. */
 export const resolveRangedAttackEventSchema: z.ZodObject<{
-  defenderWithPlacement: typeof unitWithPlacementSchema,
-  effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>,
-  legalRetreatOptions: z.ZodArray<typeof unitPlacementSchema>,
-  retreated: z.ZodBoolean,
-  reversed: z.ZodBoolean,
-  routed: z.ZodBoolean,
-}> =
-  _resolveRangedAttackEventSchemaObject;
+  defenderWithPlacement: typeof unitWithPlacementSchema;
+  effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+  legalRetreatOptions: z.ZodArray<typeof unitPlacementSchema>;
+  retreated: z.ZodBoolean;
+  reversed: z.ZodBoolean;
+  routed: z.ZodBoolean;
+}> = _resolveRangedAttackEventSchemaObject;

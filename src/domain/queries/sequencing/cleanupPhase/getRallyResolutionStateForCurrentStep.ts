@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameState, RallyResolutionState } from '@game';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getCleanupPhaseState } from '../getPhaseState';
@@ -13,7 +12,7 @@ import { getCurrentRallyResolutionState } from '../getSubstep';
  * @returns The rally resolution state for the current step
  * @throws Error if not in a resolveRally step, player doesn't match, or rally state is missing
  */
-export function getRallyResolutionStateForCurrentStep<TBoard extends Board>(
+export function getRallyResolutionStateForCurrentStep(
   state: GameState,
   player: 'white' | 'black',
 ): RallyResolutionState {

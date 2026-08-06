@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 import type { MoveCommanderEvent } from '@events';
 import { createBoardWithCommander } from '@testing';
 import { createEmptyStandardBoard } from '@transforms';
@@ -130,7 +130,7 @@ describe('invalid moves', () => {
       eventType: 'playerChoice',
       choiceType: 'moveCommander',
       player: 'black',
-      from: 'Z-99' as StandardBoardCoordinate, // Invalid coordinate
+      from: 'Z-99' as Coordinate, // Invalid coordinate
       to: 'E-5',
     };
 
@@ -147,7 +147,7 @@ describe('invalid moves', () => {
       eventType: 'playerChoice',
       from: 'E-5',
       player: 'black',
-      to: 'Z-99' as StandardBoardCoordinate, // Invalid coordinate
+      to: 'Z-99' as Coordinate, // Invalid coordinate
     };
 
     const { result } = isLegalCommanderMove(moveCommanderEvent, board);

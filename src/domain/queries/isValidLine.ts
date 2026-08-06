@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, Line, ValidationResult } from '@entities';
+import type { Board, Coordinate, Line, ValidationResult } from '@entities';
 import { areSameSide } from '@entities';
 import { getFlankingSpaces } from './boardSpace';
 import { getOppositeFacing } from './facings';
@@ -17,10 +17,7 @@ import { MAX_LINE_LENGTH } from '@ruleValues';
  * @param line - The line to validate
  * @returns ValidationResult indicating if the line is valid
  */
-export function isValidLine<TBoard extends Board>(
-  board: TBoard,
-  line: Line,
-): ValidationResult {
+export function isValidLine(board: Board, line: Line): ValidationResult {
   try {
     const { unitPlacements } = line;
 
@@ -73,9 +70,8 @@ export function isValidLine<TBoard extends Board>(
     for (let i = 0; i < unitPlacements.length - 1; i++) {
       const currentUnit = unitPlacements[i];
       const nextCoord = unitPlacements[i + 1].placement
-        .coordinate as BoardCoordinate<TBoard>;
-      const currentCoord = currentUnit.placement
-        .coordinate as BoardCoordinate<TBoard>;
+        .coordinate as Coordinate;
+      const currentCoord = currentUnit.placement.coordinate as Coordinate;
       const currentFacing = currentUnit.placement.facing;
 
       const flankingSpaces = getFlankingSpaces(

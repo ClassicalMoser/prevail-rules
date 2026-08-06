@@ -1,4 +1,3 @@
-import type { StandardBoard } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
 import type { ResolveUnitsBrokenEvent } from '@events';
 import type { GameState } from '@game';

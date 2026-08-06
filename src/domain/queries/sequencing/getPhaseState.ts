@@ -1,4 +1,12 @@
-import type { CleanupPhaseState, GameState, IssueCommandsPhaseState, MoveCommandersPhaseState, PhaseState, PlayCardsPhaseState, ResolveMeleePhaseState } from '@game';
+import type {
+  CleanupPhaseState,
+  GameState,
+  IssueCommandsPhaseState,
+  MoveCommandersPhaseState,
+  PhaseState,
+  PlayCardsPhaseState,
+  ResolveMeleePhaseState,
+} from '@game';
 import { throwIfNone } from '@utils';
 
 /**

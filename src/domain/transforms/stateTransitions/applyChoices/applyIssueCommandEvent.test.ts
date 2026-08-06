@@ -13,7 +13,6 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyIssueCommandEvent } from './applyIssueCommandEvent';
-import type { StandardBoard } from '@entities';
 
 /**
  * Issue-commands: spending a command type removes it from the side’s remaining set and adds

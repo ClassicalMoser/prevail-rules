@@ -1,13 +1,15 @@
-import type { Board, EngagedUnitPresence, SingleUnitPresence, UnitWithPlacement } from '@entities';
+import type {
+  Board,
+  EngagedUnitPresence,
+  SingleUnitPresence,
+  UnitWithPlacement,
+} from '@entities';
 import { hasEngagedUnits, hasSingleUnit } from '@entities';
 import { getBoardSpace, getOppositeFacing, isFriendlyUnit } from '@queries';
 /**
  * Adds a unit to a board (pure function, returns new board).
  */
-export function addUnitToBoard<TBoard extends Board>(
-  board: TBoard,
-  unit: UnitWithPlacement,
-): TBoard {
+export function addUnitToBoard(board: Board, unit: UnitWithPlacement): Board {
   const side = unit.unit.playerSide;
   const coord = unit.placement.coordinate;
   const { facing } = unit.placement;

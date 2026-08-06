@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { AttackApplyState, GameState, ReverseState } from '@game';
 import { throwIfPending } from '@utils';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
@@ -23,9 +22,9 @@ export function getReverseStateFromAttackApply(
 /**
  * Active reverse substep from melee resolution (initiative order), when still awaiting facing resolution.
  */
-export function getReverseStateFromMeleeResolutionByInitiative<
-  TBoard extends Board,
->(state: GameState): ReverseState {
+export function getReverseStateFromMeleeResolutionByInitiative(
+  state: GameState,
+): ReverseState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const firstPlayerAttackApply =

@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate } from '@entities';
+import type { Board, Coordinate } from '@entities';
 import { getAdjacentSpaces } from '../adjacency';
 
 /**
@@ -9,20 +9,20 @@ import { getAdjacentSpaces } from '../adjacency';
  * @param distance - The maximum distance (inclusive)
  * @returns A set of all space coordinates within the distance
  */
-export function getSpacesWithinDistance<TBoard extends Board>(
-  board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
+export function getSpacesWithinDistance(
+  board: Board,
+  coordinate: Coordinate,
   distance: number,
-): Set<BoardCoordinate<TBoard>> {
+): Set<Coordinate> {
   // If distance is 0 or negative, return only the starting coordinate
   if (distance <= 0) {
     return new Set([coordinate]);
   }
 
   // Set to track all spaces within distance
-  const spacesWithinDistance = new Set<BoardCoordinate<TBoard>>([coordinate]);
+  const spacesWithinDistance = new Set<Coordinate>([coordinate]);
   // Set to track spaces at the current distance level
-  let currentLevel = new Set<BoardCoordinate<TBoard>>([coordinate]);
+  let currentLevel = new Set<Coordinate>([coordinate]);
 
   // Iterate through each distance level
   for (
@@ -31,7 +31,7 @@ export function getSpacesWithinDistance<TBoard extends Board>(
     currentDistance++
   ) {
     // Set to track spaces at the next distance level
-    const nextLevel = new Set<BoardCoordinate<TBoard>>();
+    const nextLevel = new Set<Coordinate>();
 
     // For each space at the current level, get its adjacent spaces
     for (const space of currentLevel) {

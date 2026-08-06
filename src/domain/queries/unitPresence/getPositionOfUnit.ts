@@ -20,8 +20,8 @@ import { isSameUnitInstance } from '@queries/equivalence';
  * console.log(`Unit is at ${placement.coordinate} facing ${placement.facing}`);
  * ```
  */
-export function getPositionOfUnit<TBoard extends Board>(
-  board: TBoard,
+export function getPositionOfUnit(
+  board: Board,
   unit: UnitInstance,
 ): UnitPlacement {
   // Get all coordinates for the board

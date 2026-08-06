@@ -39,10 +39,9 @@ const _assertExactStartEngagementEvent: AssertExact<
 
 /** The schema for a start engagement event. */
 export const startEngagementEventSchema: z.ZodObject<{
-  defenderWithPlacement: typeof unitWithPlacementSchema,
-  effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>,
-  engagementType: typeof engagementTypeSchema,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>,
-}> =
-  _startEngagementEventSchemaObject;
+  defenderWithPlacement: typeof unitWithPlacementSchema;
+  effectType: z.ZodLiteral<typeof START_ENGAGEMENT_EFFECT_TYPE>;
+  engagementType: typeof engagementTypeSchema;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
+}> = _startEngagementEventSchemaObject;

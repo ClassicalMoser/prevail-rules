@@ -1,11 +1,16 @@
-import type { StandardBoardCoordinate, UnitFacing, UnitType, UnitWithPlacement } from '@entities';
+import type {
+  Coordinate,
+  UnitFacing,
+  UnitType,
+  UnitWithPlacement,
+} from '@entities';
 import { createTestUnit } from '@testing/unitHelpers';
 
 /**
  * Creates a UnitWithPlacement for testing with sensible defaults.
  */
 export function createUnitWithPlacement(options?: {
-  coordinate?: StandardBoardCoordinate;
+  coordinate?: Coordinate;
   facing?: UnitFacing;
   playerSide?: 'black' | 'white';
   unitOptions?: {

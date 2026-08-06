@@ -10,7 +10,7 @@ This project delivers four core engines that work together to provide a complete
 
 **Purpose:** Takes gamestate and event, returns new gamestate (immutable).
 
-**Function:** `applyEvent<TBoard>(event: Event<TBoard>, state: GameState<TBoard>): GameState<TBoard>`
+**Function:** `applyEvent(event: Event, state: GameState): GameState`
 
 **Characteristics:**
 
@@ -40,7 +40,7 @@ const newState = applyEvent(event, currentState);
 
 **Purpose:** Receives gamestate and event, finds correct validation function based on gamestate, runs it, returns validationResult.
 
-**Function:** `validateEvent<TBoard>(event: Event<TBoard>, state: GameState<TBoard>): ValidationResult`
+**Function:** `validateEvent(event: Event, state: GameState): ValidationResult`
 
 **Characteristics:**
 
@@ -76,7 +76,7 @@ const newState = applyEvent(event, state);
 
 **Purpose:** Supply of functions to take a gameState and return a gameEffect event.
 
-**Function:** `generate*Event<TBoard>(state: GameState<TBoard>, ...params): GameEffectEvent<TBoard>`
+**Function:** `generate*Event(state: GameState, ...params): GameEffectEvent`
 
 **Characteristics:**
 
@@ -113,7 +113,7 @@ const newState = applyEvent(event, state);
 
 **Purpose:** Takes gamestate only, determines the expected source of the next event (player, players, or game) and if game, specifies the procedure to produce the next gameEffect.
 
-**Function:** `getExpectedEvent<TBoard>(state: GameState<TBoard>): ExpectedEventInfo<TBoard>`
+**Function:** `getExpectedEvent(state: GameState): ExpectedEventInfo`
 
 **Characteristics:**
 

@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState, ReverseState } from '@game';
 import {
@@ -21,7 +20,7 @@ import {
  * @param state - The current game state
  * @returns A new game state with the unit's facing updated and reverse state marked as completed
  */
-export function applyResolveReverseEvent<TBoard extends Board>(
+export function applyResolveReverseEvent(
   event: ResolveReverseEvent,
   state: GameState,
 ): GameState {

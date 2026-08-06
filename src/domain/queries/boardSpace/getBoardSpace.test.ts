@@ -1,10 +1,10 @@
-import type { SmallBoard, StandardBoard, StandardBoardCoordinate } from '@entities';
+import type { Board, Coordinate } from '@entities';
 import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
 
 import { getBoardSpace } from './getBoardSpace';
 
-const standardBoard: StandardBoard = createEmptyStandardBoard();
-const smallBoard: SmallBoard = createEmptySmallBoard();
+const standardBoard: Board = createEmptyStandardBoard();
+const smallBoard: Board = createEmptySmallBoard();
 
 /**
  * GetBoardSpace: looks up the tile record at a coordinate; throws if the coordinate is missing from the board
@@ -31,13 +31,13 @@ describe(getBoardSpace, () => {
     });
 
     it('given coordinate deleted from board map, throws', () => {
-      const boardWithMissingSpace: StandardBoard = {
+      const boardWithMissingSpace: Board = {
         ...standardBoard,
         board: {
           ...standardBoard.board,
         },
       };
-      delete boardWithMissingSpace.board['E-5' as StandardBoardCoordinate];
+      delete boardWithMissingSpace.board['E-5' as Coordinate];
 
       expect(() => {
         getBoardSpace(boardWithMissingSpace, 'E-5');
@@ -46,7 +46,7 @@ describe(getBoardSpace, () => {
 
     it('given invalid coordinate string for standard board, throws', () => {
       expect(() => {
-        getBoardSpace(standardBoard, 'Y-55' as StandardBoardCoordinate);
+        getBoardSpace(standardBoard, 'Y-55' as Coordinate);
       }).toThrow(
         new Error('Coordinate Y-55 does not exist on standard board.'),
       );

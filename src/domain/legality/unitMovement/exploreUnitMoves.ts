@@ -1,4 +1,9 @@
-import type { Board, BoardCoordinate, UnitFacing, UnitPlacement, UnitWithPlacement } from '@entities';
+import type {
+  Coordinate,
+  UnitFacing,
+  UnitPlacement,
+  UnitWithPlacement,
+} from '@entities';
 import type { GameState } from '@game';
 import { unitFacings } from '@entities';
 import {
@@ -34,7 +39,7 @@ export interface MoveResult {
  * @param direction - The direction of movement: 'forward' or 'backward'
  * @returns Set of all explored move destinations with their metadata, including the amount of flexibility and speed used to reach each destination
  */
-export function exploreUnitMoves<TBoard extends Board>(
+export function exploreUnitMoves(
   gameState: GameState,
   unitWithPlacement: UnitWithPlacement,
   direction: 'advance' | 'retreat',
@@ -68,14 +73,14 @@ export function exploreUnitMoves<TBoard extends Board>(
   );
 
   // Helper for checking if a space is a valid retreat space
-  function isValidRetreatSpace(coordinate: BoardCoordinate<TBoard>): boolean {
+  function isValidRetreatSpace(coordinate: Coordinate): boolean {
     return validRetreatSpaces.has(coordinate);
   }
 
   // Track visited states to avoid revisiting
   const visitedStates = new Set<string>();
   const getStateKey = (
-    coordinate: BoardCoordinate<TBoard>,
+    coordinate: Coordinate,
     facing: UnitFacing,
     remainingSpeed: number,
     remainingFlexibility: number,

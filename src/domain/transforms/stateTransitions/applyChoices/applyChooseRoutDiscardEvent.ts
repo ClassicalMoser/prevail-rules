@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ChooseRoutDiscardEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -16,7 +15,7 @@ import { updateRoutState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the rout discard choice recorded
  */
-export function applyChooseRoutDiscardEvent<TBoard extends Board>(
+export function applyChooseRoutDiscardEvent(
   event: ChooseRoutDiscardEvent,
   state: GameState,
 ): GameState {

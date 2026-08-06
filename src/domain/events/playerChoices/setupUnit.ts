@@ -37,10 +37,9 @@ const _assertExactSetupUnitsEvent: AssertExact<
 
 /** The schema for a setup units event. */
 export const setupUnitsEventSchema: z.ZodObject<{
-  choiceType: z.ZodLiteral<typeof SETUP_UNITS_CHOICE_TYPE>,
-  eventNumber: z.ZodNumber,
-  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>,
-  player: typeof playerSideSchema,
-  unitPlacements: z.ZodArray<typeof unitWithPlacementSchema>,
-}> =
-  _setupUnitsEventSchemaObject;
+  choiceType: z.ZodLiteral<typeof SETUP_UNITS_CHOICE_TYPE>;
+  eventNumber: z.ZodNumber;
+  eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  player: typeof playerSideSchema;
+  unitPlacements: z.ZodArray<typeof unitWithPlacementSchema>;
+}> = _setupUnitsEventSchemaObject;

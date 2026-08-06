@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate, UnitFacing } from '@entities';
+import type { Coordinate, UnitFacing } from '@entities';
 import { createEmptyStandardBoard } from '@transforms';
 
 import { getBackSpaces } from './getBackSpaces';
@@ -50,13 +50,13 @@ describe(getBackSpaces, () => {
 
   it('given invalid row letter, throws', () => {
     expect(() =>
-      getBackSpaces(standardBoard, 'R-12' as StandardBoardCoordinate, 'north'),
+      getBackSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
   it('given invalid column, throws', () => {
     expect(() =>
-      getBackSpaces(standardBoard, 'A-19' as StandardBoardCoordinate, 'north'),
+      getBackSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 

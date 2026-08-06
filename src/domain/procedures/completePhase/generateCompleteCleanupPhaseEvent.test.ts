@@ -2,7 +2,6 @@ import type { GameState } from '@game';
 import { createEmptyGameState } from '@testing';
 
 import { generateCompleteCleanupPhaseEvent } from './generateCompleteCleanupPhaseEvent';
-import type { StandardBoard } from '@entities';
 
 /**
  * End of cleanup: advance round and return to play-cards phase. Emitted event is a fixed

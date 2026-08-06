@@ -52,7 +52,7 @@ The library uses TypeScript generics to ensure board types match their coordinat
 
 ```typescript
 // ✅ Type-safe
-const standardBoard: StandardBoard = createEmptyStandardBoard();
+const standardBoard: Board = createEmptyStandardBoard();
 const space = getBoardSpace(standardBoard, 'E-5');
 
 // ❌ Type error

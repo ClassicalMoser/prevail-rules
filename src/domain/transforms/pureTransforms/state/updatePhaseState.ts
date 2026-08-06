@@ -1,4 +1,8 @@
-import type { GameStateForVisibility, GameStateVisibility, PhaseState } from '@game';
+import type {
+  GameStateForVisibility,
+  GameStateVisibility,
+  PhaseState,
+} from '@game';
 
 /**
  * Returns a new game state with the phase state replaced, preserving visibility.

@@ -1,5 +1,9 @@
 import type { PlayerSide, ValidationResult } from '@entities';
-import type { ExpectedEventInfo, PlayerChoiceEvent, PlayerSource } from '@events';
+import type {
+  ExpectedEventInfo,
+  PlayerChoiceEvent,
+  PlayerSource,
+} from '@events';
 import type { GameState } from '@game';
 import { getExpectedEvent } from '@expected';
 /**

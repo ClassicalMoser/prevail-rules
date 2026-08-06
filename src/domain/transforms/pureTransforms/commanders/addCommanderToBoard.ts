@@ -1,10 +1,10 @@
-import type { Board, BoardCoordinate, PlayerSide } from '@entities';
+import type { Board, Coordinate, PlayerSide } from '@entities';
 import { getBoardSpace } from '@queries';
-export function addCommanderToBoard<TBoard extends Board>(
-  board: TBoard,
+export function addCommanderToBoard(
+  board: Board,
   playerSide: PlayerSide,
-  coordinate: BoardCoordinate<TBoard>,
-): TBoard {
+  coordinate: Coordinate,
+): Board {
   const space = getBoardSpace(board, coordinate);
   const existingCommanders = space.commanders;
   const newCommanders = [...existingCommanders, playerSide];

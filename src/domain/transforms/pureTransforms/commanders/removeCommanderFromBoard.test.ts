@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 import { createEmptyStandardBoard } from '@transforms/initializations';
 
 import { addCommanderToBoard } from './addCommanderToBoard';
@@ -8,7 +8,7 @@ import { removeCommanderFromBoard } from './removeCommanderFromBoard';
  * RemoveCommanderFromBoard: removeCommanderFromBoard.
  */
 describe(removeCommanderFromBoard, () => {
-  const coordinate: StandardBoardCoordinate = 'E-5';
+  const coordinate: Coordinate = 'E-5';
 
   describe('removing commander from space with one commander', () => {
     it('given remove commander and leave empty set', () => {
@@ -141,7 +141,7 @@ describe(removeCommanderFromBoard, () => {
   describe('preserving other board spaces', () => {
     it('given preserve commanders on other spaces', () => {
       const board = createEmptyStandardBoard();
-      const otherCoord: StandardBoardCoordinate = 'D-4';
+      const otherCoord: Coordinate = 'D-4';
       const boardWithCommander1 = addCommanderToBoard(
         board,
         'black',
@@ -165,7 +165,7 @@ describe(removeCommanderFromBoard, () => {
 
     it('given preserve units on other spaces', () => {
       const board = createEmptyStandardBoard();
-      const otherCoord: StandardBoardCoordinate = 'D-4';
+      const otherCoord: Coordinate = 'D-4';
       const boardWithCommander = addCommanderToBoard(
         board,
         'black',

@@ -15,9 +15,9 @@ import type { GameState } from '@game';
  * const newState = updateBoardState(state, newBoard);
  * ```
  */
-export function updateBoardState<TBoard extends Board>(
+export function updateBoardState(
   state: GameState,
-  boardState: TBoard,
+  boardState: Board,
 ): GameState {
   return {
     ...state,

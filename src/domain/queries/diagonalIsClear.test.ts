@@ -1,4 +1,4 @@
-import type { StandardBoardCoordinate } from '@entities';
+import type { Coordinate } from '@entities';
 import {
   createBoardWithSingleUnit,
   createBoardWithUnits,
@@ -12,7 +12,7 @@ import { diagonalIsClear } from './diagonalIsClear';
  * DiagonalIsClear: diagonalIsClear.
  */
 describe(diagonalIsClear, () => {
-  const coordinate: StandardBoardCoordinate = 'E-5';
+  const coordinate: Coordinate = 'E-5';
   const board = createEmptyStandardBoard();
 
   describe('non-diagonal facings', () => {
@@ -137,7 +137,7 @@ describe(diagonalIsClear, () => {
 
   describe('edge cases and error handling', () => {
     it('given coordinate is invalid, returns false', () => {
-      const invalidCoordinate = 'Z-99' as StandardBoardCoordinate;
+      const invalidCoordinate = 'Z-99' as Coordinate;
       const { result } = diagonalIsClear(
         'black',
         board,
@@ -149,7 +149,7 @@ describe(diagonalIsClear, () => {
 
     it('given adjacent coordinate is out of bounds, returns false', () => {
       // Test at edge of board where one adjacent space might be undefined
-      const edgeCoordinate: StandardBoardCoordinate = 'A-1';
+      const edgeCoordinate: Coordinate = 'A-1';
       const { result } = diagonalIsClear(
         'black',
         board,

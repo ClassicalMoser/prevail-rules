@@ -12,7 +12,7 @@ import { addUnitToBoard, updateBoardState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the units placed on the board
  */
-export function applySetupUnitsEvent<TBoard extends Board>(
+export function applySetupUnitsEvent(
   event: SetupUnitsEvent,
   state: GameState,
 ): GameState {
@@ -20,9 +20,9 @@ export function applySetupUnitsEvent<TBoard extends Board>(
   const startingBoard = state.boardState;
 
   // Add each unit to the board in sequence
-  const newBoard: TBoard = [...unitPlacements].reduce<TBoard>(
+  const newBoard: Board = [...unitPlacements].reduce(
     (board, unitPlacement) => addUnitToBoard(board, unitPlacement),
-    startingBoard as TBoard,
+    startingBoard as Board,
   );
 
   const newGameState = updateBoardState(state, newBoard);

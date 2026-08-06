@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ResolveRoutEvent } from '@events';
 import type { GameState, RoutState } from '@game';
 import {
@@ -20,7 +19,7 @@ import { updateRoutState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the rout penalty set
  */
-export function applyResolveRoutEvent<TBoard extends Board>(
+export function applyResolveRoutEvent(
   event: ResolveRoutEvent,
   state: GameState,
 ): GameState {

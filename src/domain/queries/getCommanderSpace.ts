@@ -1,4 +1,4 @@
-import type { Board, BoardCoordinate, PlayerSide } from '@entities';
+import type { Board, Coordinate, PlayerSide } from '@entities';
 import { getBoardCoordinates, getBoardSpace } from './boardSpace';
 
 /**
@@ -8,10 +8,10 @@ import { getBoardCoordinates, getBoardSpace } from './boardSpace';
  * @param board - The board to search
  * @returns The board coordinate containing the commander, or undefined if not found
  */
-export function getCommanderSpace<TBoard extends Board>(
+export function getCommanderSpace(
   side: PlayerSide,
-  board: TBoard,
-): BoardCoordinate<TBoard> | undefined {
+  board: Board,
+): Coordinate | undefined {
   const coordinates = getBoardCoordinates(board);
   for (const coordinate of coordinates) {
     const space = getBoardSpace(board, coordinate);

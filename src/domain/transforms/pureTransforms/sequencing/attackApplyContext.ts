@@ -1,4 +1,4 @@
-import type { Board, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
 import type { AttackApplyState, GameState } from '@game';
 import {
   getAttackApplyStateFromMelee,
@@ -19,7 +19,7 @@ import { updateAttackApplyState } from './updateAttackApplyState';
  * @returns The attack apply state
  * @throws Error if not in a phase that supports attack apply substeps
  */
-export function getAttackApplyStateFromContext<TBoard extends Board>(
+export function getAttackApplyStateFromContext(
   state: GameState,
   player?: PlayerSide,
 ): AttackApplyState {
@@ -58,7 +58,7 @@ export function getAttackApplyStateFromContext<TBoard extends Board>(
  * @param substepState - Substep state to extract player from (required for melee)
  * @returns A new game state with the updated attack apply state
  */
-export function updateAttackApplySubstep<TBoard extends Board, TSubstep>(
+export function updateAttackApplySubstep<TSubstep>(
   state: GameState,
   updateFn: (attackApplyState: AttackApplyState) => AttackApplyState,
   getPlayer: (substep: TSubstep) => PlayerSide,

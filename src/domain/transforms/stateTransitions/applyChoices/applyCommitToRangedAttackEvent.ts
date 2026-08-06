@@ -1,5 +1,9 @@
 import type { CommitToRangedAttackEvent } from '@events';
-import type { GameState, GameStateForVisibility, RangedAttackResolutionState } from '@game';
+import type {
+  GameState,
+  GameStateForVisibility,
+  RangedAttackResolutionState,
+} from '@game';
 import { getRangedAttackResolutionState } from '@queries';
 import {
   discardCardsFromHand,

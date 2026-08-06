@@ -1,6 +1,9 @@
-import type { Board } from '@entities';
 import type { ResolveEngageRetreatOptionEvent } from '@events';
-import type { GameState, IssueCommandsPhaseState, MovementResolutionState } from '@game';
+import type {
+  GameState,
+  IssueCommandsPhaseState,
+  MovementResolutionState,
+} from '@game';
 import {
   getFrontEngagementStateFromMovement,
   getIssueCommandsPhaseState,
@@ -18,7 +21,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the retreat option resolved
  */
-export function applyResolveEngageRetreatOptionEvent<TBoard extends Board>(
+export function applyResolveEngageRetreatOptionEvent(
   event: ResolveEngageRetreatOptionEvent,
   state: GameState,
 ): GameState {

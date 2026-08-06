@@ -1,11 +1,16 @@
-import type { Board, NoneUnitPresence, SingleUnitPresence, UnitWithPlacement } from '@entities';
+import type {
+  Board,
+  NoneUnitPresence,
+  SingleUnitPresence,
+  UnitWithPlacement,
+} from '@entities';
 import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from '@entities';
 import { getBoardSpace, getOppositeFacing, isSameUnitInstance } from '@queries';
 /* Pure transform to remove a unit from the board immutably with no side effects. */
-export function removeUnitFromBoard<TBoard extends Board>(
-  board: TBoard,
+export function removeUnitFromBoard(
+  board: Board,
   unit: UnitWithPlacement,
-): TBoard {
+): Board {
   const coord = unit.placement.coordinate;
   const space = getBoardSpace(board, coord);
   const existingUnitPresence = space.unitPresence;

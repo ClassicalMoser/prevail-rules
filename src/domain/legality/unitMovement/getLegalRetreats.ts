@@ -1,4 +1,4 @@
-import type { Board, UnitFacing, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { UnitFacing, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import type { MoveResult } from './exploreUnitMoves';
 import { areSameSide, hasNoUnit, hasSingleUnit } from '@entities';
@@ -40,7 +40,7 @@ import { exploreUnitMoves } from './exploreUnitMoves';
  * // Returns all retreat options (smallest backward movements)
  * ```
  */
-export function getLegalRetreats<TBoard extends Board>(
+export function getLegalRetreats(
   unitWithPlacement: UnitWithPlacement,
   gameState: GameState,
 ): Set<UnitPlacement> {

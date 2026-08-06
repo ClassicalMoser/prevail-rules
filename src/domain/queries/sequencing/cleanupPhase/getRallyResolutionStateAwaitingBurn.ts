@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { GameState, RallyResolutionState } from '@game';
 import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';
 
@@ -12,7 +11,7 @@ import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionState
  * @param player - The player resolving the rally (must match the cleanup step)
  * @throws Error if wrong step/player, player did not choose to rally, or rally already resolved
  */
-export function getRallyResolutionStateAwaitingBurn<TBoard extends Board>(
+export function getRallyResolutionStateAwaitingBurn(
   state: GameState,
   player: 'white' | 'black',
 ): RallyResolutionState {

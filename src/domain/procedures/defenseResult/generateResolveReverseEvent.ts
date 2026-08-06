@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState, ReverseState } from '@game';
 import {
@@ -22,7 +21,7 @@ import {
  * @returns A complete ResolveReverseEvent with the reversed unit placement
  * @throws Error if not in a valid state for reverse resolution
  */
-export function generateResolveReverseEvent<TBoard extends Board>(
+export function generateResolveReverseEvent(
   state: GameState,
   eventNumber: number,
 ): ResolveReverseEvent {
