@@ -15,10 +15,10 @@ import { updateRoundState } from '../state';
  * const newState = addUnitsToCommandedUnits(state, new Set([unit1, unit2]));
  * ```
  */
-export function addUnitsToCommandedUnits(
-  state: GameState,
+export function addUnitsToCommandedUnits<S extends GameState>(
+  state: S,
   units: UnitInstance[],
-): GameState {
+): S {
   const previousCommandedUnits = state.currentRoundState.commandedUnits;
   const newCommandedUnits = new Set([...previousCommandedUnits, ...units]);
   return updateRoundState(state, {

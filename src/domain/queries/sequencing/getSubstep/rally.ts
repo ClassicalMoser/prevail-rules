@@ -15,7 +15,7 @@ export function getRallyResolutionState(
   state: GameState,
   player: 'white' | 'black',
 ): RallyResolutionState {
-  const phaseState = getCleanupPhaseState(state as GameState);
+  const phaseState = getCleanupPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const isFirstPlayer = player === firstPlayer;
 
@@ -40,7 +40,7 @@ export function getRallyResolutionState(
 export function getCurrentRallyResolutionState(
   state: GameState,
 ): RallyResolutionState {
-  const phaseState = getCleanupPhaseState(state as GameState);
+  const phaseState = getCleanupPhaseState(state);
   const { step } = phaseState;
 
   if (step === 'firstPlayerResolveRally') {
@@ -84,7 +84,7 @@ export function getRoutStateFromRally(
 export function getRoutStateFromCleanupPhaseForResolveRout(
   state: GameState,
 ): RoutState {
-  const phaseState = getCleanupPhaseState(state as GameState);
+  const phaseState = getCleanupPhaseState(state);
   const isFirstPlayerStep =
     phaseState.step === 'firstPlayerResolveRally' ||
     phaseState.step === 'firstPlayerChooseRally';

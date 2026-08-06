@@ -22,10 +22,10 @@ import {
  * @param state - The current game state
  * @returns A new game state with the attack apply state marked as completed
  */
-export function applyCompleteAttackApplyEvent(
+export function applyCompleteAttackApplyEvent<S extends GameState>(
   event: CompleteAttackApplyEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   if (event.attackType === 'ranged') {
     const currentAttackApplyState = getAttackApplyStateFromRangedAttack(state);
 

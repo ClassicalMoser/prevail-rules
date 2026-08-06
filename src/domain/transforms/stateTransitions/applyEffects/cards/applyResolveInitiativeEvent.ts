@@ -19,12 +19,12 @@ import {
  * @param state - The current game state
  * @returns A new game state with initiative assigned
  */
-export function applyResolveInitiativeEvent(
+export function applyResolveInitiativeEvent<S extends GameState>(
   event: ResolveInitiativeEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   // Safe broad type cast because we know the event is for the board type
-  const phaseState = getPlayCardsPhaseState(state as GameState);
+  const phaseState = getPlayCardsPhaseState(state);
 
   // Advance to complete step
   const newPhaseState = markPhaseAsComplete(phaseState);

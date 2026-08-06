@@ -24,12 +24,14 @@ export type {
   GameState,
   GameStateForVisibility,
   GameStateVisibility,
-  OwnedPlayerForVisibility,
+  OwnedPlayerForGameState,
+  UnownedPlayerForGameState,
 } from './gameState';
 export {
   authoritativeGameStateSchema,
   blackSeenGameStateSchema,
   gameStateSchema,
+  isAuthoritativeGameState,
   whiteSeenGameStateSchema,
 } from './gameState';
 export { cleanupPhaseStateSchema, cleanupPhaseSteps } from './phases';

@@ -1,6 +1,6 @@
 import type { ValidationResult } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateForVisibility, GameStateVisibility } from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';
 
 /**
@@ -10,9 +10,11 @@ import { RESOLVE_MELEE_PHASE } from '@game';
  * @param state - The current game state
  * @returns ValidationResult indicating if the event is valid
  */
-export function isValidChooseMeleeResolutionEvent(
+export function isValidChooseMeleeResolutionEvent<
+  T extends GameStateVisibility,
+>(
   event: ChooseMeleeResolutionEvent,
-  state: GameState,
+  state: GameStateForVisibility<T>,
 ): ValidationResult {
   try {
     const { player, space } = event;

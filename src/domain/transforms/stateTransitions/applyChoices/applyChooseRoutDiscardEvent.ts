@@ -15,10 +15,10 @@ import { updateRoutState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the rout discard choice recorded
  */
-export function applyChooseRoutDiscardEvent(
+export function applyChooseRoutDiscardEvent<S extends GameState>(
   event: ChooseRoutDiscardEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   // Find the relevant game states for this event
   const rallyState = getCurrentRallyResolutionState(state);
   const routState = getRoutStateFromRally(rallyState);

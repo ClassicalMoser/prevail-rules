@@ -1,5 +1,5 @@
 import type { ValidationResult } from '@entities';
-import type { Event, PlayerChoiceEvent } from '@events';
+import type { Event } from '@events';
 import type { CleanupPhaseState, GameState } from '@game';
 import { validatePlayerChoice } from '@validation/playerChoice';
 
@@ -37,10 +37,7 @@ export function validateCleanupPhaseEvent(
     case 'firstPlayerChooseRally':
     case 'secondPlayerChooseRally': {
       if (event.eventType === 'playerChoice') {
-        return validatePlayerChoice(
-          event as PlayerChoiceEvent,
-          state as GameState,
-        );
+        return validatePlayerChoice(event, state);
       }
       return {
         errorReason: 'Expected ChooseRallyEvent',
@@ -99,10 +96,7 @@ export function validateCleanupPhaseEvent(
       ) {
         // Expect chooseRoutDiscard
         if (event.eventType === 'playerChoice') {
-          return validatePlayerChoice(
-            event as PlayerChoiceEvent,
-            state as GameState,
-          );
+          return validatePlayerChoice(event, state);
         }
         return {
           errorReason: 'Expected chooseRoutDiscard player choice',

@@ -39,10 +39,8 @@ export const gameModes = [
  */
 export type GameMode = (typeof gameModes)[number];
 
-const _assertExactGameModeNames: AssertExact<
-  GameModeName,
-  GameMode['name']
-> = true;
+const _assertExactGameModeNames: AssertExact<GameModeName, GameMode['name']> =
+  true;
 
 const _assertBoardSizesAreBoardType: AssertExact<
   GameMode['boardSize'],

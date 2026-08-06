@@ -56,8 +56,8 @@ export function getRangedAttackResolutionState(
  * @returns The movement resolution state
  * @throws Error if not resolving a movement
  */
-export function getMovementResolutionState(
-  state: GameState,
+export function getMovementResolutionState<S extends GameState>(
+  state: S,
 ): MovementResolutionState {
   const commandResolutionState = getCurrentCommandResolutionState(state);
   if (commandResolutionState.commandResolutionType !== 'movement') {
@@ -74,8 +74,8 @@ export function getMovementResolutionState(
  * @returns The melee resolution state
  * @throws Error if not in resolveMelee phase or melee resolution state is missing
  */
-export function getMeleeResolutionState(
-  state: GameState,
+export function getMeleeResolutionState<S extends GameState>(
+  state: S,
 ): MeleeResolutionState {
   const phaseState = state.currentRoundState.currentPhaseState;
   if (phaseState === 'none' || phaseState.phase !== 'resolveMelee') {
@@ -93,9 +93,9 @@ export function getMeleeResolutionState(
  *
  * @throws Error if commitments are pending or attack apply already exists
  */
-export function getMeleeResolutionReadyForAttackCalculation(
-  state: GameState,
-): MeleeResolutionState {
+export function getMeleeResolutionReadyForAttackCalculation<
+  S extends GameState,
+>(state: S): MeleeResolutionState {
   const meleeState = getMeleeResolutionState(state);
   if (meleeState.whiteCommitment.commitmentType === 'pending') {
     throw new Error('White commitment is still pending');

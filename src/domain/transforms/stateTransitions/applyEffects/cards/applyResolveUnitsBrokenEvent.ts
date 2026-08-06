@@ -25,18 +25,18 @@ import {
  * @param state - The current game state
  * @returns A new game state with units routed
  */
-export function applyResolveUnitsBrokenEvent(
+export function applyResolveUnitsBrokenEvent<S extends GameState>(
   event: ResolveUnitsBrokenEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const { player, unitTypes } = event;
   // Safe broad type cast because we know the event is for the board type
-  const phaseState = getCleanupPhaseState(state as GameState);
+  const phaseState = getCleanupPhaseState(state);
 
   const rallyState = getRallyResolutionStateAwaitingUnitsBroken(state, player);
 
   // Safe broad type cast because we know the event is for the board type
-  const defaultNextStep = getNextStepForResolveRally(state as GameState);
+  const defaultNextStep = getNextStepForResolveRally(state);
 
   // Find all unit instances of the broken types on the board
   const brokenTypeIds = new Set(unitTypes.map((type) => type.id));

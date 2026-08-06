@@ -15,10 +15,10 @@ import type { GameState } from '@game';
  * const newState = updateBoardState(state, newBoard);
  * ```
  */
-export function updateBoardState(
-  state: GameState,
+export function updateBoardState<S extends GameState>(
+  state: S,
   boardState: Board,
-): GameState {
+): S {
   return {
     ...state,
     boardState,

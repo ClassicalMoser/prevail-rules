@@ -1,4 +1,4 @@
-import type { Coordinate, UnitPlacement } from '@entities';
+import type { UnitPlacement } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
@@ -37,12 +37,12 @@ export function generateResolveMeleeEvent(
 
   const whiteUnit = getPlayerUnitWithPosition(
     state.boardState,
-    meleeCoordinate as Coordinate,
+    meleeCoordinate,
     'white',
   );
   const blackUnit = getPlayerUnitWithPosition(
     state.boardState,
-    meleeCoordinate as Coordinate,
+    meleeCoordinate,
     'black',
   );
 

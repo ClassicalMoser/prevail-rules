@@ -20,10 +20,7 @@ export function validateMoveCommandersPhaseEvent(
     case 'moveFirstCommander':
     case 'moveSecondCommander': {
       if (event.eventType === 'playerChoice') {
-        return validatePlayerChoice(
-          event as PlayerChoiceEvent,
-          state as GameState,
-        );
+        return validatePlayerChoice(event as PlayerChoiceEvent, state);
       }
       return {
         errorReason: 'Expected MoveCommanderEvent',

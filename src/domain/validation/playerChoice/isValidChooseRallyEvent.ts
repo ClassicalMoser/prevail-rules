@@ -1,6 +1,6 @@
 import type { ValidationResult } from '@entities';
 import type { ChooseRallyEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateForVisibility, GameStateVisibility } from '@game';
 import { getOtherPlayer } from '@queries';
 /**
  * Validates whether a ChooseRallyEvent can be applied to the current game state.
@@ -21,9 +21,9 @@ import { getOtherPlayer } from '@queries';
  * const newState = applyChooseRallyEvent(event, state);
  * ```
  */
-export function isValidChooseRallyEvent(
+export function isValidChooseRallyEvent<T extends GameStateVisibility>(
   event: ChooseRallyEvent,
-  state: GameState,
+  state: GameStateForVisibility<T>,
 ): ValidationResult {
   try {
     const { player } = event;

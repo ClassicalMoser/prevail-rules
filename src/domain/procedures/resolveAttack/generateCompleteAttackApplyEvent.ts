@@ -9,7 +9,7 @@ import {
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
   getMeleeResolutionState,
 } from '@queries';
-import type { GameState, MeleeResolutionState } from '@game';
+import type { GameState } from '@game';
 
 /**
  * Generates a CompleteAttackApplyEvent to complete an attack apply substep.
@@ -39,8 +39,8 @@ export function generateCompleteAttackApplyEvent(
     const meleeState = getMeleeResolutionState(state);
     // Safe type broadening for more generic function signature
     const defendingPlayer = getDefendingPlayerForNextIncompleteMeleeAttackApply(
-      state as GameState,
-      meleeState as MeleeResolutionState,
+      state,
+      meleeState,
     );
 
     if (defendingPlayer === null) {

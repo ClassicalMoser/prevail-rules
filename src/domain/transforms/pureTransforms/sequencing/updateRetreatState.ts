@@ -20,10 +20,10 @@ import { updatePhaseState } from '../state';
  * @param retreatState - The new retreat state to set
  * @returns A new game state with the updated retreat state
  */
-export function updateRetreatState(
-  state: GameState,
+export function updateRetreatState<S extends GameState>(
+  state: S,
   retreatState: RetreatState,
-): GameState {
+): S {
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {

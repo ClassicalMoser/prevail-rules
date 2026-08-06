@@ -12,10 +12,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the melee resolution state cleared
  */
-export function applyCompleteMeleeResolutionEvent(
+export function applyCompleteMeleeResolutionEvent<S extends GameState>(
   _event: CompleteMeleeResolutionEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const phaseState = getResolveMeleePhaseState(state);
 
   // Clear the current melee resolution state

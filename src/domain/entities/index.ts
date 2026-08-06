@@ -57,6 +57,7 @@ export type {
   Card,
   CardState,
   OwnedCardState,
+  HiddenCardState,
   AuthoritativeCardState,
   WhiteSeenCardState,
   BlackSeenCardState,

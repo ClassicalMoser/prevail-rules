@@ -1,6 +1,6 @@
 import type { ValidationResult } from '@entities';
 import type { MoveCommanderEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateForVisibility, GameStateVisibility } from '@game';
 import { getOtherPlayer } from '@queries';
 /**
  * Validates whether a MoveCommanderEvent can be applied to the current game state.
@@ -21,9 +21,9 @@ import { getOtherPlayer } from '@queries';
  * const newState = applyMoveCommanderEvent(event, state);
  * ```
  */
-export function isValidMoveCommanderEvent(
+export function isValidMoveCommanderEvent<T extends GameStateVisibility>(
   event: MoveCommanderEvent,
-  state: GameState,
+  state: GameStateForVisibility<T>,
 ): ValidationResult {
   try {
     const { player } = event;

@@ -1,8 +1,4 @@
-import type {
-  GameStateForVisibility,
-  GameStateVisibility,
-  PhaseState,
-} from '@game';
+import type { GameState, PhaseState } from '@game';
 
 /**
  * Returns a new game state with the phase state replaced, preserving visibility.
@@ -11,10 +7,10 @@ import type {
  * @param phaseState - The new phase state to set
  * @returns A new game state with the updated phase state
  */
-export function updatePhaseState<V extends GameStateVisibility>(
-  state: GameStateForVisibility<V>,
+export function updatePhaseState<S extends GameState>(
+  state: S,
   phaseState: PhaseState,
-): GameStateForVisibility<V> {
+): S {
   return {
     ...state,
     currentRoundState: {

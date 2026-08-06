@@ -1,6 +1,6 @@
 import { throwIfNone } from '@utils';
 import type { DiscardPlayedCardsEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameState, GameStateForVisibility } from '@game';
 import {
   createCleanupPhaseState,
   createEmptyGameState,
@@ -16,6 +16,12 @@ import { applyDiscardPlayedCardsEvent } from './applyDiscardPlayedCardsEvent';
  * cleanup step advances to the first rally choice.
  */
 describe(applyDiscardPlayedCardsEvent, () => {
+  const event = {
+    effectType: 'discardPlayedCards' as const,
+    eventNumber: 0,
+    eventType: 'gameEffect' as const,
+  } satisfies DiscardPlayedCardsEvent;
+
   it('given discardPlayedCards with both inPlay set, played lengths grow and step firstPlayerChooseRally', () => {
     const base = createEmptyGameState();
     const withCards = updateCardState(base, {
@@ -31,12 +37,6 @@ describe(applyDiscardPlayedCardsEvent, () => {
     const whitePlayedBefore = full.cardState.white.played.length;
     const blackPlayedBefore = full.cardState.black.played.length;
 
-    const event = {
-      effectType: 'discardPlayedCards' as const,
-      eventNumber: 0,
-      eventType: 'gameEffect' as const,
-    } satisfies DiscardPlayedCardsEvent;
-
     const next = applyDiscardPlayedCardsEvent(event, full);
     const phase = throwIfNone(
       next.currentRoundState.currentPhaseState,
@@ -51,5 +51,37 @@ describe(applyDiscardPlayedCardsEvent, () => {
     expect(next.cardState.black.inPlay).toBeNull();
     expect(next.cardState.white.played).toHaveLength(whitePlayedBefore + 1);
     expect(next.cardState.black.played).toHaveLength(blackPlayedBefore + 1);
+  });
+
+  it('given whiteSeen, moves owned and hidden inPlay to played', () => {
+    const base = createEmptyGameState();
+    const blackCard = createTestCard();
+    const whiteCard = createTestCard();
+    const whiteSeen: GameStateForVisibility<'whiteSeen'> = updatePhaseState(
+      {
+        ...base,
+        cardState: {
+          visibility: 'whiteSeen',
+          white: { ...base.cardState.white, inPlay: whiteCard, played: [] },
+          black: {
+            awaitingPlay: 'hidden',
+            burnt: [],
+            discarded: [],
+            inHand: ['hidden'],
+            inPlay: blackCard,
+            played: [],
+          },
+        },
+      },
+      createCleanupPhaseState({ step: 'discardPlayedCards' }),
+    );
+
+    const next = applyDiscardPlayedCardsEvent(event, whiteSeen);
+
+    expect(next.cardState.visibility).toBe('whiteSeen');
+    expect(next.cardState.white.inPlay).toBeNull();
+    expect(next.cardState.white.played).toStrictEqual([whiteCard]);
+    expect(next.cardState.black.inPlay).toBeNull();
+    expect(next.cardState.black.played).toStrictEqual([blackCard]);
   });
 });

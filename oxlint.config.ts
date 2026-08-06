@@ -77,6 +77,7 @@ const config: OxlintConfig = {
     'sort-imports': 'off', // Superseded by import/sort
     'typescript/no-inferrable-types': 'off', // Excessive clarity is preferable to ambiguity
     'import/no-nodejs-modules': 'off', // Codebase is designed only for NPM-compatible environments
+    'import/unambiguous': 'off', // Script-vs-module guess is obsolete under "type": "module"/TS; false-positives on ambient .d.ts
     'unicorn/no-array-reduce': 'off', // Reduce is often ideal for this idiom.
     'vitest/require-hook': 'off', // Vitest hooks are not required for tests
     'vitest/no-hooks': 'off', // Vitest hooks can be used for setup and teardown where sensible

@@ -1,6 +1,7 @@
 import type { GameModeName, ValidationResult } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
-import type { GameState } from '@game';
+import { isAuthoritativeGameState } from '@game';
+import type { GameStateForVisibility } from '@game';
 import type { EnginePorts, PortResponse } from '@application/ports';
 import { getExpectedEvent } from '@expected';
 import { validatePlayerChoice } from '@validation';
@@ -12,15 +13,18 @@ export async function processPlayerChoice(
   gameMode: GameModeName,
   playerChoice: PlayerChoiceEvent,
   ports: EnginePorts,
-): Promise<PortResponse<GameState>> {
-  const gameState: GameState | undefined = await getGameState(
-    gameId,
-    gameMode,
-    ports.gameStorage,
-  );
+): Promise<PortResponse<GameStateForVisibility<'authoritative'>>> {
+  const gameState = await getGameState(gameId, gameMode, ports.gameStorage);
   if (!gameState) {
     return {
       errorReason: 'Game state not initialized',
+      result: false,
+    };
+  }
+
+  if (!isAuthoritativeGameState(gameState)) {
+    return {
+      errorReason: 'Engine requires authoritative game state',
       result: false,
     };
   }

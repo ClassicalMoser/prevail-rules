@@ -17,10 +17,10 @@ import {
  * @param state - The current game state
  * @returns A new game state with the unit moved and retreat state marked as completed
  */
-export function applyResolveRetreatEvent(
+export function applyResolveRetreatEvent<S extends GameState>(
   event: ResolveRetreatEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   // Move the unit on the board
   const removedUnitBoard = removeUnitFromBoard(
     state.boardState,

@@ -2,6 +2,7 @@ import type { Event } from '@events';
 import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
+import { tempCommandCards } from '@sampleValues';
 import { createCleanupPhaseState, createEmptyGameState } from '@testing';
 import { updatePhaseState, updateRoundEventStream } from '@transforms';
 
@@ -80,9 +81,11 @@ describe(getLegalChooseRallyEvent, () => {
   it('uses getNextEventNumber for eventNumber', () => {
     const prior: readonly Event[] = [
       {
+        black: tempCommandCards[0],
         effectType: 'revealCards',
         eventNumber: 0,
         eventType: 'gameEffect',
+        white: tempCommandCards[1],
       },
     ];
     const state = stateChooseRally({

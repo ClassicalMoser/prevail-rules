@@ -20,11 +20,11 @@ import { updatePhaseState } from '../state';
  * });
  * ```
  */
-export function updateMeleeAttackApplyState(
-  state: GameState,
+export function updateMeleeAttackApplyState<S extends GameState>(
+  state: S,
   player: PlayerSide,
   attackApplyState: AttackApplyState,
-): GameState {
+): S {
   const resolveMeleePhaseState = getResolveMeleePhaseState(state);
   const meleeState = getMeleeResolutionState(state);
 

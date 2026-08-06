@@ -13,10 +13,10 @@ import { updateCommandResolutionState } from '@transforms/pureTransforms';
  *
  * Uses {@link getMovementResolutionState} and {@link updateCommandResolutionState}.
  */
-export function applyCompleteUnitMovementEvent(
+export function applyCompleteUnitMovementEvent<S extends GameState>(
   _event: CompleteUnitMovementEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const movementState = getMovementResolutionState(state);
 
   const newMovementState: MovementResolutionState = {

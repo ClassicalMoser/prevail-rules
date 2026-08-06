@@ -18,10 +18,10 @@ import { updatePhaseState } from '../state';
  * });
  * ```
  */
-export function updateMeleeResolutionState(
-  state: GameState,
+export function updateMeleeResolutionState<S extends GameState>(
+  state: S,
   meleeResolutionState: MeleeResolutionState,
-): GameState {
+): S {
   const resolveMeleePhaseState = getResolveMeleePhaseState(state);
 
   if (resolveMeleePhaseState.currentMeleeResolutionState === 'pending') {

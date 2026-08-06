@@ -45,9 +45,11 @@ describe(applyEvent, () => {
   it('given gameEffect revealCards event, delegates to applyGameEffectEvent and appends event', () => {
     const state = createEmptyGameState();
     const event: Event = {
+      black: tempCommandCards[0],
       effectType: 'revealCards' as const,
       eventNumber: 0,
       eventType: 'gameEffect',
+      white: tempCommandCards[1],
     };
     const mockReturnState = {
       ...state,
@@ -73,9 +75,11 @@ describe(applyEvent, () => {
       player: 'black',
     };
     const event2: Event = {
+      black: tempCommandCards[0],
       effectType: 'revealCards' as const,
       eventNumber: 1,
       eventType: 'gameEffect',
+      white: tempCommandCards[1],
     };
 
     vi.mocked(applyPlayerChoiceEvent).mockImplementation((_e, s) => s);

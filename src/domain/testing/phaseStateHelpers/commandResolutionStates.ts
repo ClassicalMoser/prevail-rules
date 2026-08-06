@@ -1,6 +1,5 @@
 import type {
   GameState,
-  GameStateForVisibility,
   MeleeResolutionState,
   MovementResolutionState,
   RangedAttackResolutionState,
@@ -8,7 +7,7 @@ import type {
 import { createTestUnit } from '@testing/unitHelpers';
 
 function authoritativeCards(state: GameState) {
-  return (state as GameStateForVisibility<'authoritative'>).cardState;
+  return state.cardState;
 }
 
 /**

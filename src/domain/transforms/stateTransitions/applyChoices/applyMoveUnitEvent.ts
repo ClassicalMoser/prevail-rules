@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { MoveUnitEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -16,10 +15,10 @@ import {
  * @param state - The current game state
  * @returns A new game state with the unit moved
  */
-export function applyMoveUnitEvent(
+export function applyMoveUnitEvent<S extends GameState>(
   event: MoveUnitEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const originalUnitWithPlacement = event.unit;
   const newUnitWithPlacement = {
     ...originalUnitWithPlacement,
@@ -28,7 +27,7 @@ export function applyMoveUnitEvent(
 
   // Remove unit from source space, then add at destination
   const removedUnitBoard = removeUnitFromBoard(
-    state.boardState as Board,
+    state.boardState,
     originalUnitWithPlacement,
   );
   const newBoard = addUnitToBoard(removedUnitBoard, newUnitWithPlacement);

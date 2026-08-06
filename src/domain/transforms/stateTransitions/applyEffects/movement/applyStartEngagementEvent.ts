@@ -22,10 +22,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the engagement state created
  */
-export function applyStartEngagementEvent(
+export function applyStartEngagementEvent<S extends GameState>(
   event: StartEngagementEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   const phaseState = getIssueCommandsPhaseState(state);
   const movementState = getMovementResolutionState(state);
 

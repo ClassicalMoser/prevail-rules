@@ -17,10 +17,10 @@ import { updateRetreatState } from '@transforms/pureTransforms';
  * @param state - The current game state
  * @returns A new game state with the retreat option chosen
  */
-export function applyChooseRetreatOptionEvent(
+export function applyChooseRetreatOptionEvent<S extends GameState>(
   event: ChooseRetreatOptionEvent,
-  state: GameState,
-): GameState {
+  state: S,
+): S {
   // Finds the retreat state for the player, regardless of the phase
   const retreatState = findRetreatState(state, event.player);
   // Updates the retreat state with the new final position

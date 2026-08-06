@@ -1,14 +1,9 @@
 import type { DiscardPlayedCardsEvent } from '@events';
-import type {
-  CleanupPhaseState,
-  GameState,
-  GameStateForVisibility,
-} from '@game';
+import type { CleanupPhaseState, GameState } from '@game';
 import { getCleanupPhaseState } from '@queries';
 import {
-  moveCardToPlayed,
+  moveBothInPlayToPlayed,
   updatePhaseState,
-  updatePlayerCardState,
 } from '@transforms/pureTransforms';
 
 /**
@@ -17,28 +12,22 @@ import {
  * Advances the cleanup phase step to `firstPlayerChooseRally`, preserving other cleanup
  * fields from the current phase state when present.
  *
- * Trusts authoritative visibility for owned card slices.
+ * Branching lives in {@link moveBothInPlayToPlayed} (CardState discriminant —
+ * no visibility casts). Works for owned and hidden slices.
  *
  * Step is not re-validated; the event is trusted from the procedure / machine-generated
  * log. Phase is narrowed via `getCleanupPhaseState` (throws if not `cleanup`).
  */
-export function applyDiscardPlayedCardsEvent(
+export function applyDiscardPlayedCardsEvent<S extends GameState>(
   _event: DiscardPlayedCardsEvent,
-  state: GameState,
-): GameState {
-  const authoritative = state as GameStateForVisibility<'authoritative'>;
-  const phaseState = getCleanupPhaseState(authoritative);
+  state: S,
+): S {
+  const phaseState = getCleanupPhaseState(state);
 
-  const stateWithWhite = updatePlayerCardState(
-    authoritative,
-    'white',
-    moveCardToPlayed(authoritative.cardState.white),
-  );
-  const stateWithCards = updatePlayerCardState(
-    stateWithWhite,
-    'black',
-    moveCardToPlayed(stateWithWhite.cardState.black),
-  );
+  const stateWithCards = {
+    ...state,
+    cardState: moveBothInPlayToPlayed(state.cardState),
+  };
 
   const newPhaseState: CleanupPhaseState = {
     ...phaseState,

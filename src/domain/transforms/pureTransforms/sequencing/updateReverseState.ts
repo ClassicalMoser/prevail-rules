@@ -17,10 +17,10 @@ import { updatePhaseState } from '../state';
  * @param reverseState - The new reverse state to set
  * @returns A new game state with the updated reverse state
  */
-export function updateReverseState(
-  state: GameState,
+export function updateReverseState<S extends GameState>(
+  state: S,
   reverseState: ReverseState,
-): GameState {
+): S {
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {

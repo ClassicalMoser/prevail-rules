@@ -12,10 +12,10 @@ import type { GameState } from '@game';
  * const newState = updateCurrentRoundNumber(state, state.currentRoundNumber + 1);
  * ```
  */
-export function updateCurrentRoundNumber(
-  state: GameState,
+export function updateCurrentRoundNumber<S extends GameState>(
+  state: S,
   roundNumber: number,
-): GameState {
+): S {
   return {
     ...state,
     currentRoundNumber: roundNumber,

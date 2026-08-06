@@ -1,5 +1,5 @@
 import type { GameEffectEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameStateForVisibility } from '@game';
 import type { EnginePorts, PortResponse } from '@application/ports';
 import { generateEventFromProcedure } from '@procedures';
 import { getExpectedEvent } from '@expected';
@@ -8,17 +8,18 @@ import type { GameModeName } from '@entities';
 
 /**
  * Advances the game state up to the next player choice.
+ * Procedures need full card info, so the state must be authoritative.
  *
  * @param gameId - The ID of the game to advance.
  * @param gameMode - The game mode.
- * @param gameState - The current game state.
+ * @param gameState - The current authoritative game state.
  * @param ports - The process-level dependency context.
  * @returns The result of the operation.
  */
 export async function advanceEffects(
   gameId: string,
   gameMode: GameModeName,
-  gameState: GameState,
+  gameState: GameStateForVisibility<'authoritative'>,
   ports: EnginePorts,
 ): Promise<PortResponse<void>> {
   let currentGameState = gameState;

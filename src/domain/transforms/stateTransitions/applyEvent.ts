@@ -10,8 +10,8 @@
  * based on the event's discriminated union type.
  */
 
-import type { Event } from '@events';
-import type { GameState } from '@game';
+import type { Event, GameEffectEvent, PlayerChoiceEvent } from '@events';
+import type { GameState, OwnedPlayerForGameState } from '@game';
 import { applyGameEffectEvent } from './applyGameEffectEvent';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
@@ -32,8 +32,13 @@ import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
  * // newState is a new immutable object, currentState is unchanged
  * ```
  */
-export function applyEvent(event: Event, state: GameState): GameState {
-  let newState: GameState;
+export function applyEvent<S extends GameState>(
+  event:
+    | GameEffectEvent
+    | (PlayerChoiceEvent & { player: OwnedPlayerForGameState<S> }),
+  state: S,
+): S {
+  let newState: S;
 
   if (event.eventType === 'playerChoice') {
     newState = applyPlayerChoiceEvent(event, state);

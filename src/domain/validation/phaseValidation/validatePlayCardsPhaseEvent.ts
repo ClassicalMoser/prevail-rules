@@ -1,5 +1,5 @@
 import type { ValidationResult } from '@entities';
-import type { Event, PlayerChoiceEvent } from '@events';
+import type { Event } from '@events';
 import type { GameState, PlayCardsPhaseState } from '@game';
 import { validatePlayerChoice } from '@validation/playerChoice';
 
@@ -19,10 +19,7 @@ export function validatePlayCardsPhaseEvent(
   switch (phaseState.step) {
     case 'chooseCards': {
       if (event.eventType === 'playerChoice') {
-        return validatePlayerChoice(
-          event as PlayerChoiceEvent,
-          state as GameState,
-        );
+        return validatePlayerChoice(event, state);
       }
       return {
         errorReason: 'Expected ChooseCardEvent',

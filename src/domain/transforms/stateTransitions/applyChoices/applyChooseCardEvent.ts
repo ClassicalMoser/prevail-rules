@@ -1,10 +1,10 @@
 import type { ChooseCardEvent } from '@events';
 import type {
   GameState,
-  GameStateForVisibility,
+  OwnedPlayerForGameState,
   PlayCardsPhaseState,
 } from '@game';
-import { getPlayCardsPhaseState } from '@queries';
+import { getOwnedPlayerCardState, getPlayCardsPhaseState } from '@queries';
 import {
   chooseCard,
   updatePhaseState,
@@ -16,21 +16,21 @@ import {
  * Moves the chosen card from the player's hand to awaitingPlay.
  * If both players have now chosen cards, advances the step to 'revealCards'.
  *
- * Trusts authoritative visibility for owned card slices.
+ * `event.player` must be owned under game state `S`.
  */
-export function applyChooseCardEvent(
-  event: ChooseCardEvent,
-  state: GameState,
-): GameState {
-  const authoritative = state as GameStateForVisibility<'authoritative'>;
+export function applyChooseCardEvent<S extends GameState>(
+  event: ChooseCardEvent & { player: OwnedPlayerForGameState<S> },
+  state: S,
+): S {
   const { player, card } = event;
-  const currentPhaseState: PlayCardsPhaseState =
-    getPlayCardsPhaseState(authoritative);
+  const currentPhaseState: PlayCardsPhaseState = getPlayCardsPhaseState(state);
 
+  const ownedCardState = getOwnedPlayerCardState(state.cardState, player);
+  const chosenCard = chooseCard(ownedCardState, card);
   const stateWithUpdatedPlayer = updatePlayerCardState(
-    authoritative,
+    state,
     player,
-    chooseCard(authoritative.cardState[player], card),
+    chosenCard,
   );
 
   const bothPlayersChosen =

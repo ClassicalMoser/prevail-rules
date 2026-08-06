@@ -1,6 +1,6 @@
 import type { ValidationResult } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { GameState, GameStateForVisibility } from '@game';
+import type { GameStateForVisibility, GameStateVisibility } from '@game';
 import { isValidChooseCardEvent } from './isValidChooseCardEvent';
 import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
 import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
@@ -22,27 +22,26 @@ function legalChoiceNotImplemented(
  * @param state - The current game state
  * @returns ValidationResult indicating if the player choice event is legal
  */
-export function validateLegalPlayerChoice(
+export function validateLegalPlayerChoice<T extends GameStateVisibility>(
   event: PlayerChoiceEvent,
-  state: GameState,
+  state: GameStateForVisibility<T>,
 ): ValidationResult {
   // Legal validators currently assume authoritative card visibility (card `.id`).
-  const authoritativeState = state as GameStateForVisibility<'authoritative'>;
   switch (event.choiceType) {
     case 'chooseCard': {
-      return isValidChooseCardEvent(event, authoritativeState);
+      return isValidChooseCardEvent(event, state);
     }
     case 'chooseMeleeResolution': {
-      return isValidChooseMeleeResolutionEvent(event, authoritativeState);
+      return isValidChooseMeleeResolutionEvent(event, state);
     }
     case 'moveCommander': {
-      return isValidMoveCommanderEvent(event, authoritativeState);
+      return isValidMoveCommanderEvent(event, state);
     }
     case 'chooseRally': {
-      return isValidChooseRallyEvent(event, authoritativeState);
+      return isValidChooseRallyEvent(event, state);
     }
     case 'chooseRoutDiscard': {
-      return isValidChooseRoutDiscardEvent(event, authoritativeState);
+      return isValidChooseRoutDiscardEvent(event, state);
     }
     case 'chooseRetreatOption':
     case 'chooseWhetherToRetreat':

@@ -23,10 +23,7 @@ export async function updateGameState(
   gameStorage: GameStorage,
   gameStateSubscribers: GameStateSubscriber[],
 ): Promise<PortResponse<void>> {
-  const updateResult = await gameStorage.updateGameState(
-    gameId,
-    gameState as GameState,
-  );
+  const updateResult = await gameStorage.updateGameState(gameId, gameState);
   if (!updateResult.result) {
     return {
       errorReason: updateResult.errorReason,
