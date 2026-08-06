@@ -1,12 +1,4 @@
-import type {
-  AuthoritativeCardState,
-  BlackSeenCardState,
-  Board,
-  CardState,
-  PlayerSide,
-  UnitInstance,
-  WhiteSeenCardState,
-} from '@entities';
+import type { AuthoritativeCardState, BlackSeenCardState, Board, CardState, PlayerSide, UnitInstance, WhiteSeenCardState } from '@entities';
 import { z } from 'zod';
 import type { RoundState } from './roundState';
 import type { AssertExact } from '@utils';
@@ -30,6 +22,17 @@ export type CardStateForVisibility<V extends GameStateVisibility> =
     : V extends 'whiteSeen'
       ? WhiteSeenCardState
       : BlackSeenCardState;
+
+/**
+ * Players whose card slice is owned (full card info) under visibility `V`.
+ * Opponent slices on seen views are hidden and must not be written as owned.
+ */
+export type OwnedPlayerForVisibility<V extends GameStateVisibility> =
+  V extends 'whiteSeen'
+    ? 'white'
+    : V extends 'blackSeen'
+      ? 'black'
+      : PlayerSide;
 
 /**
  * Game state for a card visibility regime.
@@ -57,12 +60,6 @@ export interface GameStateForVisibility<
   /** Board and piece layout. */
   boardState: Board;
 }
-
-/** @deprecated Use {@link GameStateForVisibility} or {@link GameState}. */
-export type GameStateForBoard<
-  _TBoard extends Board = Board,
-  V extends GameStateVisibility = 'authoritative',
-> = GameStateForVisibility<V>;
 
 /** Every visibility combination. */
 export type GameState =

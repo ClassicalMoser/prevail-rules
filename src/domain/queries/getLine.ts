@@ -1,10 +1,4 @@
-import type {
-  Board,
-  BoardCoordinate,
-  Line,
-  UnitType,
-  UnitWithPlacement,
-} from '@entities';
+import type { Board, BoardCoordinate, Line, UnitType, UnitWithPlacement } from '@entities';
 import type { Trait } from '@ruleValues';
 import { MAX_LINE_LENGTH } from '@ruleValues';
 import { matchesUnitRequirements } from './unit';

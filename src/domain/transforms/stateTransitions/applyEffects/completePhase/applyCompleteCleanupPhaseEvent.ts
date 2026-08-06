@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { CompleteCleanupPhaseEvent } from '@events';
-import type { GameStateForBoard, PlayCardsPhaseState } from '@game';
+import type { GameState, PlayCardsPhaseState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import {
@@ -21,8 +21,8 @@ import {
  */
 export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
   _event: CompleteCleanupPhaseEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
+  state: GameState,
+): GameState {
   // Increment round number
   const newRoundNumber = state.currentRoundState.roundNumber + 1;
 
@@ -33,7 +33,7 @@ export function applyCompleteCleanupPhaseEvent<TBoard extends Board>(
   };
 
   // Update the round state
-  const stateWithRound: GameStateForBoard<TBoard> = updateRoundState(state, {
+  const stateWithRound: GameState = updateRoundState(state, {
     commandedUnits: [],
     completedPhases: [],
     currentPhaseState: newPhaseState,

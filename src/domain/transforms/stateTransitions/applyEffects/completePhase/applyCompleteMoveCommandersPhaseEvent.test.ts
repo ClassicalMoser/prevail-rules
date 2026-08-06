@@ -1,6 +1,6 @@
 import type { Command, StandardBoard } from '@entities';
 import type { CompleteMoveCommandersPhaseEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { ISSUE_COMMANDS_PHASE, MOVE_COMMANDERS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
@@ -41,7 +41,7 @@ function moveCommandersCompleteEvent(
  */
 describe(applyCompleteMoveCommandersPhaseEvent, () => {
   /** MoveCommanders.complete, black initiative, tempCommandCards[0]/[1] inPlay. */
-  function createGameStateInCompleteStep(): GameStateForBoard<StandardBoard> {
+  function createGameStateInCompleteStep(): GameState {
     const state = createEmptyGameState({ currentInitiative: 'black' });
 
     const stateWithCards = updateCardState(state, {
@@ -281,16 +281,15 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
   describe('phase guard', () => {
     it('given issueCommands phase, throws expected moveCommanders phase', () => {
       const state = createEmptyGameState();
-      const stateWrongPhase: GameStateForBoard<StandardBoard> =
-        updatePhaseState(state, {
-          currentCommandResolutionState: 'pending',
-          phase: ISSUE_COMMANDS_PHASE,
-          remainingCommandsFirstPlayer: [],
-          remainingCommandsSecondPlayer: [],
-          remainingUnitsFirstPlayer: [],
-          remainingUnitsSecondPlayer: [],
-          step: 'firstPlayerIssueCommands',
-        });
+      const stateWrongPhase: GameState = updatePhaseState(state, {
+        currentCommandResolutionState: 'pending',
+        phase: ISSUE_COMMANDS_PHASE,
+        remainingCommandsFirstPlayer: [],
+        remainingCommandsSecondPlayer: [],
+        remainingUnitsFirstPlayer: [],
+        remainingUnitsSecondPlayer: [],
+        step: 'firstPlayerIssueCommands',
+      });
 
       const event = moveCommandersCompleteEventFromDefaultCards();
 

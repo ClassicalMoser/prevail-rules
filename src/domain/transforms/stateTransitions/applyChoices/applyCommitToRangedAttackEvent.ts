@@ -1,9 +1,5 @@
-import type { Board } from '@entities';
 import type { CommitToRangedAttackEvent } from '@events';
-import type {
-  GameStateForBoard,
-  RangedAttackResolutionState,
-} from '@game';
+import type { GameState, GameStateForVisibility, RangedAttackResolutionState } from '@game';
 import { getRangedAttackResolutionState } from '@queries';
 import {
   discardCardsFromHand,
@@ -13,31 +9,31 @@ import {
 
 /**
  * Applies a CommitToRangedAttackEvent to the game state.
- * Updates the appropriate commitment (attacking or defending) in the ranged attack resolution state
- * and discards the card.
- * Event is assumed pre-validated (issueCommands phase, ranged attack, player is attacker or defender).
+ * Updates the appropriate commitment (attacking or defending) in the ranged attack
+ * resolution state and discards the card.
+ * Event is assumed pre-validated (issueCommands phase, ranged attack, player is
+ * attacker or defender).
  *
- * @param event - The commit to ranged attack event to apply
- * @param state - The current game state
- * @returns A new game state with the commitment updated
+ * Trusts authoritative visibility for owned card slices.
  */
-export function applyCommitToRangedAttackEvent<TBoard extends Board>(
+export function applyCommitToRangedAttackEvent(
   event: CommitToRangedAttackEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  const rangedAttackState = getRangedAttackResolutionState(state);
+  state: GameState,
+): GameState {
+  const authoritative = state as GameStateForVisibility<'authoritative'>;
+  const rangedAttackState = getRangedAttackResolutionState(authoritative);
   const { player } = event;
   const attackingPlayer = rangedAttackState.attackingUnit.playerSide;
   const isAttackingPlayer = player === attackingPlayer;
 
-  // Discard committed card from player's hand
   const stateWithCards = updatePlayerCardState(
-    state,
+    authoritative,
     player,
-    discardCardsFromHand(state.cardState[player], [event.committedCard.id]),
+    discardCardsFromHand(authoritative.cardState[player], [
+      event.committedCard.id,
+    ]),
   );
 
-  // Mark attacking or defending commitment as completed with the chosen card
   const newCommitment = {
     card: event.committedCard,
     commitmentType: 'completed' as const,
@@ -49,9 +45,5 @@ export function applyCommitToRangedAttackEvent<TBoard extends Board>(
       : { defendingCommitment: newCommitment }),
   };
 
-  const newGameState = updateCommandResolutionState(
-    stateWithCards,
-    newRangedAttackState,
-  );
-  return newGameState;
+  return updateCommandResolutionState(stateWithCards, newRangedAttackState);
 }

@@ -1,6 +1,5 @@
-import type { Board } from '@entities';
 import type { CommitToMovementEvent } from '@events';
-import type { GameStateForBoard, MovementResolutionState } from '@game';
+import type { GameState, GameStateForVisibility, MovementResolutionState } from '@game';
 import { getMovementResolutionState } from '@queries';
 import {
   discardCardsFromHand,
@@ -13,25 +12,24 @@ import {
  * Updates the commitment in the movement resolution state and discards the card.
  * Event is assumed pre-validated (issueCommands phase, movement resolution).
  *
- * @param event - The commit to movement event to apply
- * @param state - The current game state
- * @returns A new game state with the commitment updated
+ * Trusts authoritative visibility for owned card slices.
  */
-export function applyCommitToMovementEvent<TBoard extends Board>(
+export function applyCommitToMovementEvent(
   event: CommitToMovementEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  const movementState = getMovementResolutionState(state);
+  state: GameState,
+): GameState {
+  const authoritative = state as GameStateForVisibility<'authoritative'>;
+  const movementState = getMovementResolutionState(authoritative);
   const { player } = event;
 
-  // Discard committed card from player's hand
   const stateWithCards = updatePlayerCardState(
-    state,
+    authoritative,
     player,
-    discardCardsFromHand(state.cardState[player], [event.committedCard.id]),
+    discardCardsFromHand(authoritative.cardState[player], [
+      event.committedCard.id,
+    ]),
   );
 
-  // Mark movement commitment as completed with the chosen card
   const newCommitment = {
     card: event.committedCard,
     commitmentType: 'completed' as const,
@@ -41,9 +39,5 @@ export function applyCommitToMovementEvent<TBoard extends Board>(
     commitment: newCommitment,
   };
 
-  const newGameState = updateCommandResolutionState(
-    stateWithCards,
-    newMovementState,
-  );
-  return newGameState;
+  return updateCommandResolutionState(stateWithCards, newMovementState);
 }

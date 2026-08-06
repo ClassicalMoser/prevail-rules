@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
-import type { GameStateForBoard, RetreatState } from '@game';
+import type { GameState, RetreatState } from '@game';
 import { findRetreatState } from '@queries';
 import {
   addUnitToBoard,
@@ -20,8 +20,8 @@ import {
  */
 export function applyResolveRetreatEvent<TBoard extends Board>(
   event: ResolveRetreatEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
+  state: GameState,
+): GameState {
   // Move the unit on the board
   const removedUnitBoard = removeUnitFromBoard(
     state.boardState,

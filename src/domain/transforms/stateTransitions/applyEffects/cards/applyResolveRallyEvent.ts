@@ -1,6 +1,5 @@
-import type { Board } from '@entities';
 import type { ResolveRallyEvent } from '@events';
-import type { GameState, GameStateForBoard, RallyResolutionState } from '@game';
+import type { GameState, GameStateForVisibility, RallyResolutionState } from '@game';
 import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
@@ -21,31 +20,27 @@ import {
  * Advances to the appropriate resolveUnitSupport step.
  * Uses {@link getRallyResolutionStateAwaitingBurn} for sequencing invariants.
  *
- * @param event - The resolve rally event to apply
- * @param state - The current game state
- * @returns A new game state with rally resolved
+ * Trusts authoritative visibility for owned card slices.
  */
-export function applyResolveRallyEvent<TBoard extends Board>(
+export function applyResolveRallyEvent(
   event: ResolveRallyEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
+  state: GameState,
+): GameState {
+  const authoritative = state as GameStateForVisibility<'authoritative'>;
   const { player, card } = event;
-  // Safe broad type cast because we know the event is for the board type
-  const phaseState = getCleanupPhaseState(state as GameState);
+  const phaseState = getCleanupPhaseState(authoritative);
 
-  const rallyState = getRallyResolutionStateAwaitingBurn(state, player);
+  const rallyState = getRallyResolutionStateAwaitingBurn(authoritative, player);
+  const nextStep = getNextStepForResolveRally(authoritative);
 
-  // Safe broad type cast because we know the event is for the board type
-  const nextStep = getNextStepForResolveRally(state as GameState);
-
-  // Compose pure transforms on the acting player's owned slice
   const stateWithCards = updatePlayerCardState(
-    state,
+    authoritative,
     player,
-    returnCardsToHand(burnCardFromPlayed(state.cardState[player], card)),
+    returnCardsToHand(
+      burnCardFromPlayed(authoritative.cardState[player], card),
+    ),
   );
 
-  // Mark rally as resolved and initialize unit support checking
   const updatedRallyResolutionState: RallyResolutionState = {
     ...rallyState,
     rallyResolved: true,
@@ -53,7 +48,6 @@ export function applyResolveRallyEvent<TBoard extends Board>(
     routState: 'pending',
   };
 
-  // Update phase state with new rally resolution state
   const newPhaseState = updateRallyResolutionStateForCurrentStep(
     phaseState,
     updatedRallyResolutionState,

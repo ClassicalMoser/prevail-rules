@@ -1,5 +1,5 @@
 import type { StandardBoard } from '@entities';
-import type { GameStateForBoard, MovementResolutionState } from '@game';
+import type { GameState, MovementResolutionState } from '@game';
 import {
   createEmptyGameState,
   createGameStateWithUnits,
@@ -19,7 +19,7 @@ vi.mock(import('../composable'), () => ({
   getExpectedEngagementEvent: getExpectedEngagementEventMock,
 }));
 
-function createGameStateWithTargetEnemy(): GameStateForBoard<StandardBoard> {
+function createGameStateWithTargetEnemy(): GameState {
   const state = createGameStateWithUnits([
     {
       coordinate: 'E-6',

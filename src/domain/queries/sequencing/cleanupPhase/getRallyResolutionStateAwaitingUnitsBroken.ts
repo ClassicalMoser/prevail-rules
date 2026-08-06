@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameStateForBoard, RallyResolutionState } from '@game';
+import type { GameState, RallyResolutionState } from '@game';
 import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';
 
 /**
@@ -14,10 +14,7 @@ import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionState
  */
 export function getRallyResolutionStateAwaitingUnitsBroken<
   TBoard extends Board,
->(
-  state: GameStateForBoard<TBoard>,
-  player: 'white' | 'black',
-): RallyResolutionState {
+>(state: GameState, player: 'white' | 'black'): RallyResolutionState {
   const rallyState = getRallyResolutionStateForCurrentStep(state, player);
   if (!rallyState.rallyResolved) {
     throw new Error('Rally has not been resolved yet');

@@ -5,12 +5,12 @@ import {
 } from '@events';
 import {
   getAttackApplyStateFromRangedAttack,
-  getCurrentPhaseStateForBoard,
+  getCurrentPhaseState,
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
   getMeleeResolutionState,
 } from '@queries';
 import type { Board } from '@entities';
-import type { GameState, GameStateForBoard, MeleeResolutionState } from '@game';
+import type { GameState, MeleeResolutionState } from '@game';
 
 /**
  * Generates a CompleteAttackApplyEvent to complete an attack apply substep.
@@ -20,10 +20,10 @@ import type { GameState, GameStateForBoard, MeleeResolutionState } from '@game';
  * @returns A complete CompleteAttackApplyEvent
  */
 export function generateCompleteAttackApplyEvent<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   eventNumber: number,
 ): CompleteAttackApplyEvent {
-  const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
+  const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
     const attackApply = getAttackApplyStateFromRangedAttack(state);

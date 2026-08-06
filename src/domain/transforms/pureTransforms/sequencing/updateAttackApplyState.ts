@@ -1,11 +1,11 @@
 import type { Board } from '@entities';
-import type { AttackApplyState, GameStateForBoard } from '@game';
+import type { AttackApplyState, GameState } from '@game';
 import {
-  getCurrentPhaseStateForBoard,
-  getIssueCommandsPhaseStateForBoard,
+  getCurrentPhaseState,
+  getIssueCommandsPhaseState,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
-  getResolveMeleePhaseStateForBoard,
+  getResolveMeleePhaseState,
 } from '@queries';
 import { updatePhaseState } from '../state';
 
@@ -18,13 +18,13 @@ import { updatePhaseState } from '../state';
  * @returns A new game state with the updated attack apply state
  */
 export function updateAttackApplyState<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   attackApplyState: AttackApplyState,
-): GameStateForBoard<TBoard> {
-  const phaseState = getCurrentPhaseStateForBoard(state);
+): GameState {
+  const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
-    const issueState = getIssueCommandsPhaseStateForBoard(state);
+    const issueState = getIssueCommandsPhaseState(state);
     const ranged = getRangedAttackResolutionState(state);
     if (ranged.attackApplyState === 'pending') {
       throw new Error(
@@ -41,7 +41,7 @@ export function updateAttackApplyState<TBoard extends Board>(
   }
 
   if (phaseState.phase === 'resolveMelee') {
-    const resolveMelee = getResolveMeleePhaseStateForBoard(state);
+    const resolveMelee = getResolveMeleePhaseState(state);
     const melee = getMeleeResolutionState(state);
     const player = attackApplyState.defendingUnit.playerSide;
 

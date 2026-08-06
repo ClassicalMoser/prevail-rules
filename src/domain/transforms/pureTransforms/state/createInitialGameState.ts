@@ -1,11 +1,5 @@
-import type {
-  Army,
-  GameModeName,
-  LargeBoard,
-  SmallBoard,
-  StandardBoard,
-} from '@entities';
-import type { GameState, GameStateForBoard } from '@game';
+import type { Army, GameModeName, LargeBoard, SmallBoard, StandardBoard } from '@entities';
+import type { GameState } from '@game';
 
 import { createEmptyGameState } from '@transforms/initializations';
 import { createUnitInstance } from '@factories';
@@ -27,17 +21,17 @@ export function createInitialGameState(
         whiteArmy: Army;
         blackArmy: Army;
       },
-): GameStateForBoard<SmallBoard>;
+): GameState;
 export function createInitialGameState(options: {
   gameMode: 'standard';
   whiteArmy: Army;
   blackArmy: Army;
-}): GameStateForBoard<StandardBoard>;
+}): GameState;
 export function createInitialGameState(options: {
   gameMode: 'epic';
   whiteArmy: Army;
   blackArmy: Army;
-}): GameStateForBoard<LargeBoard>;
+}): GameState;
 export function createInitialGameState(options: {
   gameMode: GameModeName;
   whiteArmy: Army;

@@ -1,36 +1,9 @@
-import type { Board } from '@entities';
-import type {
-  CleanupPhaseState,
-  GameState,
-  GameStateForBoard,
-  IssueCommandsPhaseState,
-  MoveCommandersPhaseState,
-  PhaseState,
-  PlayCardsPhaseState,
-  ResolveMeleePhaseState,
-} from '@game';
+import type { CleanupPhaseState, GameState, IssueCommandsPhaseState, MoveCommandersPhaseState, PhaseState, PlayCardsPhaseState, ResolveMeleePhaseState } from '@game';
 import { throwIfNone } from '@utils';
 
 /**
  * Gets the current phase state from the game state.
  * Assumes the phase state exists (validation should happen elsewhere).
- *
- * @param state - The game state
- * @returns The current phase state
- * @throws Error if phase state is missing
- */
-export function getCurrentPhaseStateForBoard<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
-): PhaseState {
-  const phaseState = throwIfNone(
-    state.currentRoundState.currentPhaseState,
-    'No current phase state found',
-  );
-  return phaseState;
-}
-
-/**
- * Broader generic version of {@link getCurrentPhaseStateForBoard}.
  *
  * @param state - The game state
  * @returns The current phase state
@@ -78,23 +51,6 @@ export function getMoveCommandersPhaseState(
 }
 
 /**
- * Narrowed version of {@link getIssueCommandsPhaseStateForBoard}.
- *
- * @param state - The game state for the board
- * @returns The issue commands phase state
- * @throws Error if not in issueCommands phase or phase state is missing
- */
-export function getIssueCommandsPhaseStateForBoard<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
-): IssueCommandsPhaseState {
-  const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
-  if (phaseState.phase !== 'issueCommands') {
-    throw new Error(`Expected issueCommands phase, got ${phaseState.phase}`);
-  }
-  return phaseState;
-}
-
-/**
  * Gets the issue commands phase state from the game state.
  * Assumes we're in the issueCommands phase (validation should happen elsewhere).
  *
@@ -115,23 +71,6 @@ export function getIssueCommandsPhaseState(
 /**
  * Gets the resolve melee phase state from the game state.
  * Assumes we're in the resolveMelee phase (validation should happen elsewhere).
- *
- * @param state - The game state for the board
- * @returns The resolve melee phase state
- * @throws Error if not in resolveMelee phase or phase state is missing
- */
-export function getResolveMeleePhaseStateForBoard<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
-): ResolveMeleePhaseState {
-  const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
-  if (phaseState.phase !== 'resolveMelee') {
-    throw new Error(`Expected resolveMelee phase, got ${phaseState.phase}`);
-  }
-  return phaseState;
-}
-
-/**
- * Broader generic version of {@link getResolveMeleePhaseStateForBoard}.
  *
  * @param state - The game state
  * @returns The resolve melee phase state

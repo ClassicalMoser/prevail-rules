@@ -1,4 +1,3 @@
-import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
 import type { ChooseCardEvent } from './chooseCard';
 import type { ChooseRallyEvent } from './chooseRally';
@@ -59,15 +58,6 @@ export type PlayerChoiceEvent =
 export type PlayerChoiceEventOfType<
   TPlayerChoiceType extends PlayerChoiceType = PlayerChoiceType,
 > = Extract<PlayerChoiceEvent, { choiceType: TPlayerChoiceType }>;
-
-/**
- * @deprecated Board size is not on player-choice events. Prefer
- * {@link PlayerChoiceEvent} / {@link PlayerChoiceEventOfType}.
- */
-export type PlayerChoiceEventForBoard<
-  _TBoard extends Board = Board,
-  TPlayerChoiceType extends PlayerChoiceType = PlayerChoiceType,
-> = PlayerChoiceEventOfType<TPlayerChoiceType>;
 
 const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
   chooseCardEventSchema,

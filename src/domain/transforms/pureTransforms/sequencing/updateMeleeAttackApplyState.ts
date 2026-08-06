@@ -1,9 +1,6 @@
 import type { Board, PlayerSide } from '@entities';
-import type { AttackApplyState, GameStateForBoard } from '@game';
-import {
-  getMeleeResolutionState,
-  getResolveMeleePhaseStateForBoard,
-} from '@queries';
+import type { AttackApplyState, GameState } from '@game';
+import { getMeleeResolutionState, getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '../state';
 
 /**
@@ -24,11 +21,11 @@ import { updatePhaseState } from '../state';
  * ```
  */
 export function updateMeleeAttackApplyState<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   player: PlayerSide,
   attackApplyState: AttackApplyState,
-): GameStateForBoard<TBoard> {
-  const resolveMeleePhaseState = getResolveMeleePhaseStateForBoard(state);
+): GameState {
+  const resolveMeleePhaseState = getResolveMeleePhaseState(state);
   const meleeState = getMeleeResolutionState(state);
 
   const newMeleeState = {

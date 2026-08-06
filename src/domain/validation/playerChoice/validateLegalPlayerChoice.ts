@@ -1,6 +1,6 @@
-import type { Board, ValidationResult } from '@entities';
+import type { ValidationResult } from '@entities';
 import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { GameState, GameStateForBoard } from '@game';
+import type { GameState, GameStateForVisibility } from '@game';
 import { isValidChooseCardEvent } from './isValidChooseCardEvent';
 import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
 import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
@@ -27,7 +27,7 @@ export function validateLegalPlayerChoice(
   state: GameState,
 ): ValidationResult {
   // Legal validators currently assume authoritative card visibility (card `.id`).
-  const authoritativeState = state as GameStateForBoard<Board>;
+  const authoritativeState = state as GameStateForVisibility<'authoritative'>;
   switch (event.choiceType) {
     case 'chooseCard': {
       return isValidChooseCardEvent(event, authoritativeState);

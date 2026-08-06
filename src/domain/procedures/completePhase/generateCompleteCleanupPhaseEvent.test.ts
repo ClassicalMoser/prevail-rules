@@ -1,4 +1,4 @@
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { createEmptyGameState } from '@testing';
 
 import { generateCompleteCleanupPhaseEvent } from './generateCompleteCleanupPhaseEvent';
@@ -11,7 +11,7 @@ import type { StandardBoard } from '@entities';
  */
 describe(generateCompleteCleanupPhaseEvent, () => {
   it('given any game state, emits gameEffect with effectType completeCleanupPhase', () => {
-    const state: GameStateForBoard<StandardBoard> = createEmptyGameState();
+    const state: GameState = createEmptyGameState();
     const event = generateCompleteCleanupPhaseEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeCleanupPhase');

@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { AttackApplyState, GameStateForBoard } from '@game';
+import type { AttackApplyState, GameState } from '@game';
 import {
   createAttackApplyStateWithReverse,
   createEmptyGameState,
@@ -81,7 +81,7 @@ describe(getReverseStateFromMeleeResolutionByInitiative, () => {
   function stateWithReverse(
     initiative: 'white' | 'black',
     firstFinal?: 'set',
-  ): GameStateForBoard<StandardBoard> {
+  ): GameState {
     const state = createEmptyGameState({ currentInitiative: initiative });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });

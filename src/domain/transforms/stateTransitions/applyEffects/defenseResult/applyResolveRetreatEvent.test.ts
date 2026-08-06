@@ -1,6 +1,6 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import {
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
@@ -24,7 +24,7 @@ import { applyResolveRetreatEvent } from './applyResolveRetreatEvent';
  */
 describe(applyResolveRetreatEvent, () => {
   /** IssueCommands + ranged CRS + retreat substep for white on E-5. */
-  function createStateWithRangedAttackRetreat(): GameStateForBoard<StandardBoard> {
+  function createStateWithRangedAttackRetreat(): GameState {
     const state = createEmptyGameState();
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -57,7 +57,7 @@ describe(applyResolveRetreatEvent, () => {
   /** ResolveMelee + one-sided retreat apply for the named player on engaged E-5. */
   function createStateWithMeleeRetreat(
     retreatingPlayer: 'white' | 'black',
-  ): GameStateForBoard<StandardBoard> {
+  ): GameState {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(

@@ -1,4 +1,4 @@
-import type { GameStateForBoard, IssueCommandsPhaseState } from '@game';
+import type { GameState, IssueCommandsPhaseState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import {
@@ -19,7 +19,7 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
   /** Puts `state` in ISSUE_COMMANDS_PHASE step `complete` with empty command queues. */
   function stateInIssueCommandsComplete(
     state = createEmptyGameState(),
-  ): GameStateForBoard<StandardBoard> {
+  ): GameState {
     const initialPhaseState: IssueCommandsPhaseState = {
       currentCommandResolutionState: 'pending',
       phase: ISSUE_COMMANDS_PHASE,

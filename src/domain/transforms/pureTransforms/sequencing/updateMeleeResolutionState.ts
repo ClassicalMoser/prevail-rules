@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
-import type { GameStateForBoard, MeleeResolutionState } from '@game';
-import { getResolveMeleePhaseStateForBoard } from '@queries';
+import type { GameState, MeleeResolutionState } from '@game';
+import { getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '../state';
 
 /**
@@ -20,10 +20,10 @@ import { updatePhaseState } from '../state';
  * ```
  */
 export function updateMeleeResolutionState<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   meleeResolutionState: MeleeResolutionState,
-): GameStateForBoard<TBoard> {
-  const resolveMeleePhaseState = getResolveMeleePhaseStateForBoard(state);
+): GameState {
+  const resolveMeleePhaseState = getResolveMeleePhaseState(state);
 
   if (resolveMeleePhaseState.currentMeleeResolutionState === 'pending') {
     throw new Error('No current melee resolution state found');

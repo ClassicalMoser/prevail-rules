@@ -1,7 +1,7 @@
 import type { StandardBoard } from '@entities';
 import { throwIfNone } from '@utils';
 import type { DiscardPlayedCardsEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import {
   createCleanupPhaseState,
   createEmptyGameState,
@@ -24,7 +24,7 @@ describe(applyDiscardPlayedCardsEvent, () => {
       black: { ...base.cardState.black, inPlay: createTestCard() },
       white: { ...base.cardState.white, inPlay: createTestCard() },
     });
-    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
+    const full: GameState = updatePhaseState(
       withCards,
       createCleanupPhaseState({ step: 'discardPlayedCards' }),
     );

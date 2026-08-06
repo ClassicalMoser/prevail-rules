@@ -1,5 +1,5 @@
 import type { Board, BoardCoordinate, PlayerSide } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { hasEngagedUnits, hasNoUnit } from '@entities';
 import { getBoardSpace, getCurrentUnitStat } from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
@@ -18,7 +18,7 @@ export function canMoveThrough<TBoard extends Board>(
   unitSide: PlayerSide,
   currentUnitFlexibility: number,
   coordinate: BoardCoordinate<TBoard>,
-  gameState: GameStateForBoard<TBoard>,
+  gameState: GameState,
 ): boolean {
   // Get the board state
   const board = gameState.boardState;

@@ -1,4 +1,4 @@
-import type { Board, UnitInstance } from '@entities';
+import type { UnitInstance } from '@entities';
 import type { PhaseState } from './phases';
 import type { Event } from '@events';
 
@@ -26,11 +26,6 @@ export interface RoundState {
   /** Events applied during this round, in order. */
   events: readonly Event[];
 }
-
-/**
- * @deprecated Board size is not on round state. Prefer {@link RoundState}.
- */
-export type RoundStateForBoard<_TBoard extends Board = Board> = RoundState;
 
 const _roundStateSchemaObject = z.object({
   commandedUnits: z.array(unitInstanceSchema),

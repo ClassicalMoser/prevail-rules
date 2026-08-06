@@ -1,6 +1,6 @@
 import type { StandardBoard, StandardBoardCoordinate } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';
 
 import { getResolveMeleePhaseState } from '@queries';
@@ -18,7 +18,7 @@ describe(applyChooseMeleeEvent, () => {
   /** ResolveMelee step with the given engagement queue and no current resolution yet. */
   function createStateInResolveMeleeStep(
     remainingSpaces: StandardBoardCoordinate[],
-  ): GameStateForBoard<StandardBoard> {
+  ): GameState {
     const state = createEmptyGameState();
     return updatePhaseState(state, {
       currentMeleeResolutionState: 'pending',

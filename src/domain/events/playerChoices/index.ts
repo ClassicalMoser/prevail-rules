@@ -32,7 +32,6 @@ export {
 } from './performRangedAttack';
 export type {
   PlayerChoiceEvent,
-  PlayerChoiceEventForBoard,
   PlayerChoiceEventOfType,
 } from './playerChoice';
 export { playerChoiceEventSchema } from './playerChoice';

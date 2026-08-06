@@ -1,6 +1,5 @@
-import type { Board } from '@entities';
 import type { ChooseCardEvent } from '@events';
-import type { GameState, GameStateForBoard, PlayCardsPhaseState } from '@game';
+import type { GameState, GameStateForVisibility, PlayCardsPhaseState } from '@game';
 import { getPlayCardsPhaseState } from '@queries';
 import {
   chooseCard,
@@ -13,33 +12,27 @@ import {
  * Moves the chosen card from the player's hand to awaitingPlay.
  * If both players have now chosen cards, advances the step to 'revealCards'.
  *
- * @param event - The choose card event to apply
- * @param state - The current game state
- * @returns A new game state with the card chosen
+ * Trusts authoritative visibility for owned card slices.
  */
-export function applyChooseCardEvent<TBoard extends Board>(
+export function applyChooseCardEvent(
   event: ChooseCardEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
+  state: GameState,
+): GameState {
+  const authoritative = state as GameStateForVisibility<'authoritative'>;
   const { player, card } = event;
-  // Safe broad type cast because we know the event is for the board type
-  const currentPhaseState: PlayCardsPhaseState = getPlayCardsPhaseState(
-    state as GameState,
-  );
+  const currentPhaseState: PlayCardsPhaseState =
+    getPlayCardsPhaseState(authoritative);
 
-  // Choose the card on the acting player's owned slice
   const stateWithUpdatedPlayer = updatePlayerCardState(
-    state,
+    authoritative,
     player,
-    chooseCard(state.cardState[player], card),
+    chooseCard(authoritative.cardState[player], card),
   );
 
-  // Check if both players have now chosen cards
   const bothPlayersChosen =
     stateWithUpdatedPlayer.cardState.black.awaitingPlay !== null &&
     stateWithUpdatedPlayer.cardState.white.awaitingPlay !== null;
 
-  // If both players have chosen, advance step to revealCards
   const newPhaseState: PlayCardsPhaseState = bothPlayersChosen
     ? {
         ...currentPhaseState,
@@ -47,6 +40,5 @@ export function applyChooseCardEvent<TBoard extends Board>(
       }
     : currentPhaseState;
 
-  const newGameState = updatePhaseState(stateWithUpdatedPlayer, newPhaseState);
-  return newGameState;
+  return updatePhaseState(stateWithUpdatedPlayer, newPhaseState);
 }

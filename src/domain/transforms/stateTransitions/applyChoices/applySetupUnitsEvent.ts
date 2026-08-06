@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { SetupUnitsEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { addUnitToBoard, updateBoardState } from '@transforms/pureTransforms';
 
 /**
@@ -14,8 +14,8 @@ import { addUnitToBoard, updateBoardState } from '@transforms/pureTransforms';
  */
 export function applySetupUnitsEvent<TBoard extends Board>(
   event: SetupUnitsEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
+  state: GameState,
+): GameState {
   const { unitPlacements } = event;
   const startingBoard = state.boardState;
 

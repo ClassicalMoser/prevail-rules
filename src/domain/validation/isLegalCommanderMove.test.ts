@@ -1,4 +1,4 @@
-import type { StandardBoard, StandardBoardCoordinate } from '@entities';
+import type { StandardBoardCoordinate } from '@entities';
 import type { MoveCommanderEvent } from '@events';
 import { createBoardWithCommander } from '@testing';
 import { createEmptyStandardBoard } from '@transforms';

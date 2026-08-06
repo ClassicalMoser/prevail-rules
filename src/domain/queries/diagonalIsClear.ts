@@ -1,9 +1,4 @@
-import type {
-  Board,
-  BoardCoordinate,
-  PlayerSide,
-  ValidationResult,
-} from '@entities';
+import type { Board, BoardCoordinate, PlayerSide, ValidationResult } from '@entities';
 import {
   getBoardSpace,
   getDiagonallyAdjacentSpaces,

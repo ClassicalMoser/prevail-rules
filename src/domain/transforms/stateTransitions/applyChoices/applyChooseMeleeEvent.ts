@@ -1,11 +1,7 @@
 import type { Board } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
-import type {
-  GameStateForBoard,
-  MeleeResolutionState,
-  ResolveMeleePhaseState,
-} from '@game';
-import { getResolveMeleePhaseStateForBoard } from '@queries';
+import type { GameState, MeleeResolutionState, ResolveMeleePhaseState } from '@game';
+import { getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 /** Applies the choose melee resolution event to the game state.
@@ -17,10 +13,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyChooseMeleeEvent<TBoard extends Board>(
   event: ChooseMeleeResolutionEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
+  state: GameState,
+): GameState {
   const { space } = event;
-  const currentPhaseState = getResolveMeleePhaseStateForBoard(state);
+  const currentPhaseState = getResolveMeleePhaseState(state);
 
   // Update the remaining engagements with the space removed
   const newRemainingEngagements = new Set(

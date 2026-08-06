@@ -1,4 +1,5 @@
 import type {
+  GameState,
   GameStateForVisibility,
   MeleeResolutionState,
   MovementResolutionState,
@@ -6,11 +7,15 @@ import type {
 } from '@game';
 import { createTestUnit } from '@testing/unitHelpers';
 
+function authoritativeCards(state: GameState) {
+  return (state as GameStateForVisibility<'authoritative'>).cardState;
+}
+
 /**
  * Creates a MovementResolutionState with sensible defaults (standard board).
  */
 export function createMovementResolutionState(
-  state: GameStateForVisibility,
+  state: GameState,
   overrides?: Partial<MovementResolutionState>,
 ): MovementResolutionState {
   return {
@@ -20,7 +25,7 @@ export function createMovementResolutionState(
       // Will lead to unexpected behavior if called in other phases.
       // Since this is a test helper, there is no reason for defensive checks.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      card: state.cardState.black.inPlay!,
+      card: authoritativeCards(state).black.inPlay!,
       commitmentType: 'completed',
     },
     completed: false,
@@ -46,15 +51,16 @@ export function createMovementResolutionState(
  * Creates a RangedAttackResolutionState with sensible defaults (standard board).
  */
 export function createRangedAttackResolutionState(
-  state: GameStateForVisibility,
+  state: GameState,
   overrides?: Partial<RangedAttackResolutionState>,
 ): RangedAttackResolutionState {
+  const cards = authoritativeCards(state);
   return {
     attackApplyState: 'pending',
     attackingCommitment: {
       // Valid assertion, see note in createMovementResolutionState.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      card: state.cardState.black.inPlay!,
+      card: cards.black.inPlay!,
       commitmentType: 'completed',
     },
     attackingUnit: createTestUnit('black', { attack: 2 }),
@@ -63,7 +69,7 @@ export function createRangedAttackResolutionState(
     defendingCommitment: {
       // Valid assertion, see note in createMovementResolutionState.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      card: state.cardState.white.inPlay!,
+      card: cards.white.inPlay!,
       commitmentType: 'completed',
     },
     defendingUnit: createTestUnit('white', { attack: 2 }),
@@ -77,15 +83,16 @@ export function createRangedAttackResolutionState(
  * Creates a MeleeResolutionState with sensible defaults (standard board).
  */
 export function createMeleeResolutionState(
-  state: GameStateForVisibility,
+  state: GameState,
   overrides?: Partial<MeleeResolutionState>,
 ): MeleeResolutionState {
+  const cards = authoritativeCards(state);
   return {
     blackAttackApplyState: 'pending',
     blackCommitment: {
       // Valid assertion, see note in createMovementResolutionState.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      card: state.cardState.black.inPlay!,
+      card: cards.black.inPlay!,
       commitmentType: 'completed',
     },
     completed: false,
@@ -95,7 +102,7 @@ export function createMeleeResolutionState(
     whiteCommitment: {
       // Valid assertion, see note in createMovementResolutionState.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      card: state.cardState.white.inPlay!,
+      card: cards.white.inPlay!,
       commitmentType: 'completed',
     },
     ...overrides,

@@ -1,11 +1,11 @@
 import type { Board, UnitInstance } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { hasUnitInArray } from '@queries';
 /* Pure transform to add a unit to the routed units set immutably with no side effects. */
 export function addUnitToRouted<TBoard extends Board>(
-  gameState: GameStateForBoard<TBoard>,
+  gameState: GameState,
   unit: UnitInstance,
-): GameStateForBoard<TBoard> {
+): GameState {
   if (hasUnitInArray(gameState.routedUnits, unit)) {
     throw new Error('Unit already routed');
   }

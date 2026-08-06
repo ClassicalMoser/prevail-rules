@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameStateForBoard, PhaseState } from '@game';
+import type { GameState, PhaseState } from '@game';
 import { updateRoundState } from './updateRoundState';
 
 /**
@@ -16,9 +16,9 @@ import { updateRoundState } from './updateRoundState';
  * ```
  */
 export function addCompletedPhase<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   completedPhase: PhaseState,
-): GameStateForBoard<TBoard> {
+): GameState {
   const newCompletedPhases = [...state.currentRoundState.completedPhases];
   newCompletedPhases.push(completedPhase);
 

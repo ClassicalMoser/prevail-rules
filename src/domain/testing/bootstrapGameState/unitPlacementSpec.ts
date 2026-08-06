@@ -1,10 +1,4 @@
-import type {
-  PlayerSide,
-  StandardBoardCoordinate,
-  UnitFacing,
-  UnitInstance,
-  UnitType,
-} from '@entities';
+import type { PlayerSide, StandardBoardCoordinate, UnitFacing, UnitInstance, UnitType } from '@entities';
 import { createTestUnit } from '@testing/unitHelpers';
 
 /**

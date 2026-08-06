@@ -1,5 +1,5 @@
 import type { IssueCommandEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getIssueCommandsPhaseState, isSameUnitInstance } from '@queries';
@@ -23,7 +23,7 @@ describe(applyIssueCommandEvent, () => {
   /** FirstPlayerIssueCommands with one command left per side from two inPlay cards. */
   function createGameStateWithCommands(
     currentInitiative: 'black' | 'white' = 'black',
-  ): GameStateForBoard<StandardBoard> {
+  ): GameState {
     const state = createEmptyGameState({ currentInitiative });
     const stateWithCards = updateCardState(state, {
       ...state.cardState,

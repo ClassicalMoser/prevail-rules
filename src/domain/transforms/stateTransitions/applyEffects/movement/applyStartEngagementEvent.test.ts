@@ -1,10 +1,6 @@
-import type {
-  EngagementType,
-  StandardBoard,
-  UnitWithPlacement,
-} from '@entities';
+import type { EngagementType, StandardBoard, UnitWithPlacement } from '@entities';
 import type { StartEngagementEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createEmptyGameState,
@@ -24,7 +20,7 @@ import { applyStartEngagementEvent } from './applyStartEngagementEvent';
 describe(applyStartEngagementEvent, () => {
   /** Black E-5 moving into white on E-6 with north-facing target placement. */
   function stateWithMovementToEnemy(): {
-    state: GameStateForBoard<StandardBoard>;
+    state: GameState;
     defenderWithPlacement: UnitWithPlacement;
   } {
     const state = createEmptyGameState();

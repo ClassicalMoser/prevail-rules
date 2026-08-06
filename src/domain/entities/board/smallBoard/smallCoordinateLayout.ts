@@ -4,10 +4,10 @@ import type { CoordinateLayout } from '../coordinateLayout';
 import { smallBoardColumnNumbers } from './smallColumnNumbers';
 import { smallBoardRowLetters } from './smallRowLetters';
 
-const rowIndexMap: Map<string, number> = new Map(
+const rowIndexMap = new Map<string, number>(
   smallBoardRowLetters.map((s, i) => [s, i]),
 );
-const columnIndexMap: Map<string, number> = new Map(
+const columnIndexMap = new Map<string, number>(
   smallBoardColumnNumbers.map((s, i) => [s, i]),
 );
 

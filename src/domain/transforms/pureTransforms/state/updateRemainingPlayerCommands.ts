@@ -1,4 +1,4 @@
-import type { Board, Command, PlayerSide } from '@entities';
+import type { Command, PlayerSide } from '@entities';
 import type { IssueCommandsPhaseState } from '@game';
 
 /**
@@ -22,7 +22,7 @@ import type { IssueCommandsPhaseState } from '@game';
  * );
  * ```
  */
-export function updateRemainingPlayerCommands<TBoard extends Board>(
+export function updateRemainingPlayerCommands(
   phaseState: IssueCommandsPhaseState,
   player: PlayerSide,
   initiativePlayer: PlayerSide,

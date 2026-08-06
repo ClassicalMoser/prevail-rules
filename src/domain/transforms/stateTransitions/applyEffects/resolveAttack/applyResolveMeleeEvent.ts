@@ -1,17 +1,7 @@
 import type { Board, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
-import type {
-  AttackApplyState,
-  AttackResult,
-  GameStateForBoard,
-  RetreatState,
-  ReverseState,
-  RoutState,
-} from '@game';
-import {
-  getMeleeResolutionState,
-  getResolveMeleePhaseStateForBoard,
-} from '@queries';
+import type { AttackApplyState, AttackResult, GameState, RetreatState, ReverseState, RoutState } from '@game';
+import { getMeleeResolutionState, getResolveMeleePhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
@@ -24,9 +14,9 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyResolveMeleeEvent<TBoard extends Board>(
   event: ResolveMeleeEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  const phaseState = getResolveMeleePhaseStateForBoard(state);
+  state: GameState,
+): GameState {
+  const phaseState = getResolveMeleePhaseState(state);
   const meleeState = getMeleeResolutionState(state);
 
   const whiteAttackResult: AttackResult = {

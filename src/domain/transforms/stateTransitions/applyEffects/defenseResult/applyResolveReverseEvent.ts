@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveReverseEvent } from '@events';
-import type { GameStateForBoard, ReverseState } from '@game';
+import type { GameState, ReverseState } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -23,8 +23,8 @@ import {
  */
 export function applyResolveReverseEvent<TBoard extends Board>(
   event: ResolveReverseEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
+  state: GameState,
+): GameState {
   const removedUnitBoard = removeUnitFromBoard(
     state.boardState,
     event.unitInstance,

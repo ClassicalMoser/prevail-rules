@@ -5,7 +5,7 @@ export {
   GAME_EFFECT_EVENT_TYPE,
   PLAYER_CHOICE_EVENT_TYPE,
 } from './eventType';
-export type { Event, EventForBoard, EventOfType, EventType } from './eventType';
+export type { Event, EventOfType, EventType } from './eventType';
 
 export type { ExpectedEvent, ExpectedEventInfo } from './expectedEvent';
 export type { ExpectedPlayerInput, PlayerSource } from './expectedEvent';
@@ -87,7 +87,6 @@ export type {
   CompleteUnitMovementEvent,
   DiscardPlayedCardsEvent,
   GameEffectEvent,
-  GameEffectEventForBoard,
   GameEffectType,
   ResolveEngageRetreatOptionEvent,
   ResolveFlankEngagementEvent,
@@ -136,7 +135,6 @@ export {
 } from './playerChoices';
 export type {
   PlayerChoiceEvent,
-  PlayerChoiceEventForBoard,
   PlayerChoiceEventOfType,
   PlayerChoiceType,
 } from './playerChoices';

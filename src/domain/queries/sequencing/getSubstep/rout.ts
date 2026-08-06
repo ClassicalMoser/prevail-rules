@@ -1,9 +1,5 @@
 import type { Board } from '@entities';
-import type {
-  AttackApplyState,
-  GameStateForBoard,
-  RoutState,
-} from '@game';
+import type { AttackApplyState, GameState, RoutState } from '@game';
 import { throwIfPending } from '@utils';
 import { getOtherPlayer } from '@queries/getOtherPlayer';
 import { getMeleeResolutionState } from '../getCommandResolutionState';
@@ -16,7 +12,7 @@ import { getMeleeResolutionState } from '../getCommandResolutionState';
  * @returns The rout state
  * @throws Error if rout state is missing
  */
-export function getRoutStateFromAttackApply<TBoard extends Board>(
+export function getRoutStateFromAttackApply(
   attackApplyState: AttackApplyState,
 ): RoutState {
   return throwIfPending(
@@ -31,7 +27,7 @@ export function getRoutStateFromAttackApply<TBoard extends Board>(
  */
 export function getRoutStateFromMeleeResolutionByInitiative<
   TBoard extends Board,
->(state: GameStateForBoard<TBoard>): RoutState {
+>(state: GameState): RoutState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);

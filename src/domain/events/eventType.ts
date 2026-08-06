@@ -1,10 +1,6 @@
-import type { Board } from '@entities';
 import type { AssertExact } from '@utils';
-import type { GameEffectEventForBoard, GameEffectType } from './gameEffects';
-import type {
-  PlayerChoiceEventForBoard,
-  PlayerChoiceType,
-} from './playerChoices';
+import type { GameEffectEvent } from './gameEffects';
+import type { PlayerChoiceEvent } from './playerChoices';
 
 import { z } from 'zod';
 import { eventTypes } from './eventTypeLiterals';
@@ -28,9 +24,7 @@ const _assertExactEventType: AssertExact<EventType, EventTypeSchemaType> = true;
 /** The schema for the type of an event. */
 export const eventTypeSchema: z.ZodType<EventType> = _eventTypeSchemaObject;
 
-export type EventUnion =
-  | PlayerChoiceEventForBoard<Board, PlayerChoiceType>
-  | GameEffectEventForBoard<Board, GameEffectType>;
+export type EventUnion = PlayerChoiceEvent | GameEffectEvent;
 
 /**
  * Event type filtered by event type.
@@ -42,14 +36,6 @@ export type EventOfType<TEventType extends EventType = EventType> = Extract<
 >;
 
 export type Event = EventOfType;
-
-/**
- * @deprecated Board size is not on events. Prefer {@link Event} / {@link EventOfType}.
- */
-export type EventForBoard<
-  _TBoard extends Board = Board,
-  TEventType extends EventType = EventType,
-> = EventOfType<TEventType>;
 
 /**
  * Unconstrained union schema object for all events.

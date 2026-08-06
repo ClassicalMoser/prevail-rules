@@ -1,6 +1,6 @@
 import type { Board, BoardCoordinate } from '@entities';
 import type { CompleteIssueCommandsPhaseEvent } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import {
   COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE,
   GAME_EFFECT_EVENT_TYPE,
@@ -17,7 +17,7 @@ import { getBoardCoordinatesWithEngagedUnits } from '@queries';
  * @returns A complete CompleteIssueCommandsPhaseEvent
  */
 export function generateCompleteIssueCommandsPhaseEvent<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   eventNumber: number,
 ): CompleteIssueCommandsPhaseEvent {
   const remainingEngagements: Set<BoardCoordinate<TBoard>> =

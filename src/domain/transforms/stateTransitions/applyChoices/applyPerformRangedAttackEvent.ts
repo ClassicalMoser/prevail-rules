@@ -1,15 +1,8 @@
 import type { Board } from '@entities';
 import type { PerformRangedAttackEvent } from '@events';
-import type {
-  GameStateForBoard,
-  IssueCommandsPhaseState,
-  RangedAttackResolutionState,
-} from '@game';
+import type { GameState, IssueCommandsPhaseState, RangedAttackResolutionState } from '@game';
 
-import {
-  getIssueCommandsPhaseStateForBoard,
-  isSameUnitInstance,
-} from '@queries';
+import { getIssueCommandsPhaseState, isSameUnitInstance } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
@@ -25,9 +18,9 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyPerformRangedAttackEvent<TBoard extends Board>(
   event: PerformRangedAttackEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  const currentPhaseState = getIssueCommandsPhaseStateForBoard(state);
+  state: GameState,
+): GameState {
+  const currentPhaseState = getIssueCommandsPhaseState(state);
   const attackingPlayer = event.player;
   const attackingUnit = event.unit.unit;
   const defendingUnit = event.targetUnit.unit;
@@ -65,18 +58,17 @@ export function applyPerformRangedAttackEvent<TBoard extends Board>(
     ),
   );
 
-  const rangedAttackResolutionState: RangedAttackResolutionState =
-    {
-      attackApplyState: 'pending',
-      attackingCommitment: { commitmentType: 'pending' },
-      attackingUnit,
-      commandResolutionType: 'rangedAttack' as const,
-      completed: false,
-      defendingCommitment: { commitmentType: 'pending' },
-      defendingUnit,
-      substepType: 'commandResolution' as const,
-      supportingUnits,
-    };
+  const rangedAttackResolutionState: RangedAttackResolutionState = {
+    attackApplyState: 'pending',
+    attackingCommitment: { commitmentType: 'pending' },
+    attackingUnit,
+    commandResolutionType: 'rangedAttack' as const,
+    completed: false,
+    defendingCommitment: { commitmentType: 'pending' },
+    defendingUnit,
+    substepType: 'commandResolution' as const,
+    supportingUnits,
+  };
 
   const newPhaseState: IssueCommandsPhaseState = {
     ...currentPhaseState,

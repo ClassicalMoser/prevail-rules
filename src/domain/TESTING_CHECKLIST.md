@@ -202,7 +202,7 @@ Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary a
 ```typescript
 describe('generateXEvent', () => {
   // ✅ GOOD: Use existing helpers from @testing
-  function createTestState(): GameState<StandardBoard> {
+  function createTestState(): GameState {
     const state = createEmptyGameState();
     const phaseState = createXPhaseState(state);
     return updatePhaseState(state, phaseState);
@@ -237,7 +237,7 @@ describe('generateXEvent', () => {
 ```typescript
 describe('getExpectedXEvent', () => {
   // ✅ GOOD: Use existing helpers + pure transforms
-  function createTestState(): GameState<StandardBoard> {
+  function createTestState(): GameState {
     const state = createEmptyGameState();
     const unit = createTestUnit('white', { attack: 2 });
     const stateWithUnit = {

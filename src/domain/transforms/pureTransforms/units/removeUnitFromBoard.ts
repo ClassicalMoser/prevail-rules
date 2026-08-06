@@ -1,9 +1,4 @@
-import type {
-  Board,
-  NoneUnitPresence,
-  SingleUnitPresence,
-  UnitWithPlacement,
-} from '@entities';
+import type { Board, NoneUnitPresence, SingleUnitPresence, UnitWithPlacement } from '@entities';
 import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from '@entities';
 import { getBoardSpace, getOppositeFacing, isSameUnitInstance } from '@queries';
 /* Pure transform to remove a unit from the board immutably with no side effects. */

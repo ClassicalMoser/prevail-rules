@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
 import type { ResolveReverseEvent } from '@events';
-import type { GameStateForBoard, ReverseState } from '@game';
+import type { GameState, ReverseState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
   MELEE_ATTACK_RESOLUTION_CONTEXT,
@@ -9,7 +9,7 @@ import {
 } from '@events';
 import {
   getAttackApplyStateFromRangedAttack,
-  getCurrentPhaseStateForBoard,
+  getCurrentPhaseState,
   getOppositeFacing,
   getReverseStateFromAttackApply,
   getReverseStateFromMeleeResolutionByInitiative,
@@ -23,10 +23,10 @@ import {
  * @throws Error if not in a valid state for reverse resolution
  */
 export function generateResolveReverseEvent<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
+  state: GameState,
   eventNumber: number,
 ): ResolveReverseEvent {
-  const phaseState = getCurrentPhaseStateForBoard<TBoard>(state);
+  const phaseState = getCurrentPhaseState(state);
 
   let reverseState: ReverseState;
 

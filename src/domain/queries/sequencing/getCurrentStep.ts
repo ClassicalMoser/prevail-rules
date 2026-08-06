@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 
 /**
  * Gets the current step from the phase state.
@@ -9,9 +9,7 @@ import type { GameStateForBoard } from '@game';
  * @returns The current step
  * @throws Error if phase state is missing
  */
-export function getCurrentStep<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
-): string {
+export function getCurrentStep<TBoard extends Board>(state: GameState): string {
   const phaseState = state.currentRoundState.currentPhaseState;
   if (phaseState === 'none') {
     throw new Error('No current phase state found');

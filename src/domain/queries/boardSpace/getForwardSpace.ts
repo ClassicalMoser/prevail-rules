@@ -1,22 +1,19 @@
-import type {
-  Board,
-  BoardCoordinate,
-  CoordinateLayout,
-  UnitFacing,
-} from '@entities';
+import type { Board, UnitFacing, Coordinate } from '@entities';
 import { getCoordinateLayout, unitFacingSchema } from '@entities';
 import { getColumnDelta, getRowDelta } from './deltas';
 
 /**
- * Internal helper that performs the coordinate calculation.
- * Can be called directly with layout for efficiency when called multiple times.
- * Trusts the types - validation happens at boundaries, not here.
+ * One step forward from `coordinate` along `facing`, using the active board’s
+ * coordinate layout (`board.boardType`).
+ *
+ * Returns `undefined` when that step would leave the board. Throws on a malformed
+ * coordinate string, a row/column outside this board’s layout, or an invalid facing.
  */
-export function getForwardSpaceWithLayout<TCoordinate extends string>(
-  coordinate: TCoordinate,
+export function getForwardSpace(
+  board: Board,
+  coordinate: Coordinate,
   facing: UnitFacing,
-  layout: CoordinateLayout,
-): TCoordinate | undefined {
+): Coordinate | undefined {
   if (!coordinate.includes('-')) {
     throw new Error(`Invalid coordinate: ${coordinate}`);
   }
@@ -24,6 +21,9 @@ export function getForwardSpaceWithLayout<TCoordinate extends string>(
   // Coordinates are formatted as "Row-Column" (e.g., "E-5" = row E, column 5)
   const inputRow = coordinate.split('-')[0];
   const inputColumn = coordinate.split('-')[1];
+
+  // Get the coordinate layout for the board
+  const layout = getCoordinateLayout(board);
 
   // Convert string coordinates to array indices (O(1) via prebuilt maps)
   const currentRowIndex = layout.getRowIndex(inputRow);
@@ -62,41 +62,5 @@ export function getForwardSpaceWithLayout<TCoordinate extends string>(
   const newColumn = layout.columnNumbers[newColumnIndex];
 
   // Reconstruct the coordinate string
-  return layout.createCoordinate(newRow, newColumn) as TCoordinate;
-}
-
-/**
- * Calculates the coordinate of the space directly forward from a given coordinate
- * in the specified facing direction.
- *
- * This is a fundamental building block for movement and area calculation functions.
- * It handles:
- * - Coordinate system translation (string coordinates to indices)
- * - Movement calculation (applying deltas based on facing)
- * - Boundary checking (returns undefined for out-of-bounds spaces)
- *
- * Note: Validation happens at boundaries (when boards/coordinates are created).
- * This function trusts the types and performs no runtime validation.
- *
- * @param board - The board object (used to get coordinate layout)
- * @param coordinate - The starting coordinate (e.g., "E-5")
- * @param facing - The direction the unit is facing (e.g., "north", "southEast")
- * @returns The forward space coordinate, or undefined if the space is out of bounds
- *
- * @example
- * const board: StandardBoard = ...;
- * getForwardSpace(board, "E-5", "north") // Returns "D-5"
- * getForwardSpace(board, "A-1", "north") // Returns undefined (out of bounds)
- */
-export function getForwardSpace<TBoard extends Board>(
-  board: TBoard,
-  coordinate: BoardCoordinate<TBoard>,
-  facing: UnitFacing,
-): BoardCoordinate<TBoard> | undefined {
-  const layout = getCoordinateLayout(board);
-  return getForwardSpaceWithLayout<BoardCoordinate<TBoard>>(
-    coordinate,
-    facing,
-    layout,
-  );
+  return layout.createCoordinate(newRow, newColumn);
 }

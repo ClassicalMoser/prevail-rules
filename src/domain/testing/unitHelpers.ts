@@ -1,9 +1,4 @@
-import type {
-  PlayerSide,
-  UnitInstance,
-  UnitStatName,
-  UnitType,
-} from '@entities';
+import type { PlayerSide, UnitInstance, UnitStatName, UnitType } from '@entities';
 import { tempUnits } from '@sampleValues';
 import { createUnitInstance } from '@transforms';
 import { getUnitByStatValue } from './getUnitByStatValue';

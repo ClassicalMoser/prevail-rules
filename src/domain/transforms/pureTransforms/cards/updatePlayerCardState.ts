@@ -1,12 +1,15 @@
-import type { Board, OwnedCardState } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { OwnedCardState } from '@entities';
+import type { GameStateForVisibility, GameStateVisibility, OwnedPlayerForVisibility } from '@game';
 
 /**
- * Creates a new game state with a player's card state updated.
- * Handles the nested spreading required to update player card state immutably.
+ * Creates a new game state with an **owned** player's card state updated.
+ *
+ * Only players with an {@link OwnedCardState} slice under the state's visibility
+ * may be updated ({@link OwnedPlayerForVisibility}). Opponent slices on
+ * `whiteSeen` / `blackSeen` stay hidden.
  *
  * @param state - The current game state
- * @param player - The player whose card state to update
+ * @param player - Owned-side player for this visibility
  * @param playerCardState - The new owned card state to set for the player
  * @returns A new game state with the updated player card state
  *
@@ -19,16 +22,16 @@ import type { GameStateForBoard } from '@game';
  * });
  * ```
  */
-export function updatePlayerCardState<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
-  player: 'black' | 'white',
+export function updatePlayerCardState<V extends GameStateVisibility>(
+  state: GameStateForVisibility<V>,
+  player: OwnedPlayerForVisibility<V>,
   playerCardState: OwnedCardState,
-): GameStateForBoard<TBoard> {
+): GameStateForVisibility<V> {
   return {
     ...state,
     cardState: {
       ...state.cardState,
       [player]: playerCardState,
     },
-  };
+  } as GameStateForVisibility<V>;
 }

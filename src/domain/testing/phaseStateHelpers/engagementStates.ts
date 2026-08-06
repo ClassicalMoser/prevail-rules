@@ -1,10 +1,5 @@
 import type { UnitInstance, UnitPlacement } from '@entities';
-import type {
-  EngagementState,
-  FlankEngagementResolutionState,
-  FrontEngagementResolutionState,
-  RearEngagementResolutionState,
-} from '@game';
+import type { EngagementState, FlankEngagementResolutionState, FrontEngagementResolutionState, RearEngagementResolutionState } from '@game';
 import { createUnitWithPlacement } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 import { createRoutState } from './substepStates';

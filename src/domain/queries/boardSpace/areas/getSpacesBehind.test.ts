@@ -123,9 +123,9 @@ describe(getSpacesBehind, () => {
       expect(result.has('H-9')).toBeTruthy();
       expect(result.has('D-5')).toBeFalsy();
       expect(result.has('C-4')).toBeFalsy();
-      expect(result.has('A-18' as BoardCoordinate<SmallBoard>)).toBeFalsy();
-      expect(result.has('L-18' as BoardCoordinate<SmallBoard>)).toBeFalsy();
-      expect(result.has('L-1' as BoardCoordinate<SmallBoard>)).toBeFalsy();
+      expect(result.has('A-18' as BoardCoordinate)).toBeFalsy();
+      expect(result.has('L-18' as BoardCoordinate)).toBeFalsy();
+      expect(result.has('L-1' as BoardCoordinate)).toBeFalsy();
     });
   });
 });

@@ -1,9 +1,6 @@
 import type { Army, BoardType, GameModeName } from '@entities';
 import type { AssertExact } from '@utils';
-import type {
-  GameStateForVisibility,
-  GameStateVisibility,
-} from './gameState';
+import type { GameStateForVisibility, GameStateVisibility } from './gameState';
 
 import { armySchema, gameModeNames, gameModes } from '@entities';
 import { z } from 'zod';

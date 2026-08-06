@@ -1,10 +1,4 @@
-import type {
-  PlayerSide,
-  StandardBoard,
-  StandardBoardCoordinate,
-  UnitFacing,
-  UnitType,
-} from '@entities';
+import type { PlayerSide, StandardBoard, StandardBoardCoordinate, UnitFacing, UnitType } from '@entities';
 import { getUnitByStatValue } from '@testing/getUnitByStatValue';
 import { createUnitInstance } from '@transforms';
 import { createBoardWithUnits } from './boardWithUnits';

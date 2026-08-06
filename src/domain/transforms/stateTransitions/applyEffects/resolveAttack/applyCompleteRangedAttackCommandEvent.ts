@@ -1,7 +1,7 @@
 import type { Board } from '@entities';
 import type { CompleteRangedAttackCommandEvent } from '@events';
-import type { GameStateForBoard, IssueCommandsPhaseState } from '@game';
-import { getIssueCommandsPhaseStateForBoard } from '@queries';
+import type { GameState, IssueCommandsPhaseState } from '@game';
+import { getIssueCommandsPhaseState } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
@@ -16,9 +16,9 @@ import { updatePhaseState } from '@transforms/pureTransforms';
  */
 export function applyCompleteRangedAttackCommandEvent<TBoard extends Board>(
   _event: CompleteRangedAttackCommandEvent,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  const phaseState = getIssueCommandsPhaseStateForBoard(state);
+  state: GameState,
+): GameState {
+  const phaseState = getIssueCommandsPhaseState(state);
 
   // Clear from currentCommandResolutionState to allow advancing to next command
   const newPhaseState: IssueCommandsPhaseState = {

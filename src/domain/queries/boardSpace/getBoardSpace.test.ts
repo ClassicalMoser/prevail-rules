@@ -1,8 +1,4 @@
-import type {
-  SmallBoard,
-  StandardBoard,
-  StandardBoardCoordinate,
-} from '@entities';
+import type { SmallBoard, StandardBoard, StandardBoardCoordinate } from '@entities';
 import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
 
 import { getBoardSpace } from './getBoardSpace';

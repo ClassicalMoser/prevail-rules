@@ -1,11 +1,7 @@
 import type { Board } from '@entities';
-import type {
-  CleanupPhaseState,
-  GameStateForBoard,
-  ResolveMeleePhaseState,
-} from '@game';
+import type { CleanupPhaseState, GameState, ResolveMeleePhaseState } from '@game';
 import { CLEANUP_PHASE } from '@game';
-import { getResolveMeleePhaseStateForBoard } from '@queries';
+import { getResolveMeleePhaseState } from '@queries';
 import {
   addCompletedPhase,
   markPhaseAsComplete,
@@ -25,10 +21,9 @@ import {
  * @returns A new game state with the phase advanced
  */
 export function applyCompleteResolveMeleePhaseEvent<TBoard extends Board>(
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
-  const phaseState: ResolveMeleePhaseState =
-    getResolveMeleePhaseStateForBoard(state);
+  state: GameState,
+): GameState {
+  const phaseState: ResolveMeleePhaseState = getResolveMeleePhaseState(state);
 
   // Mark the current phase as complete
   const completedPhase: ResolveMeleePhaseState =

@@ -1,9 +1,4 @@
-import type {
-  Board,
-  BoardCoordinate,
-  PlayerSide,
-  UnitWithPlacement,
-} from '@entities';
+import type { Board, BoardCoordinate, PlayerSide, UnitWithPlacement } from '@entities';
 import { hasNoUnit, hasSingleUnit } from '@entities';
 import { getBoardSpace } from '@queries/boardSpace';
 import { getOppositeFacing } from '@queries/facings';

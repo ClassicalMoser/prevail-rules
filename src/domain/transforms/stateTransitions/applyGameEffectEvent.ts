@@ -2,9 +2,8 @@
  * Routes game effect events to their corresponding apply functions.
  */
 
-import type { Board } from '@entities';
-import type { GameEffectEventForBoard } from '@events';
-import type { GameStateForBoard } from '@game';
+import type { GameEffectEvent } from '@events';
+import type { GameState } from '@game';
 import {
   applyCompleteAttackApplyEvent,
   applyCompleteCleanupPhaseEvent,
@@ -34,10 +33,10 @@ import {
 /**
  * Routes game effect events to their corresponding apply functions.
  */
-export function applyGameEffectEvent<TBoard extends Board>(
-  event: GameEffectEventForBoard<TBoard>,
-  state: GameStateForBoard<TBoard>,
-): GameStateForBoard<TBoard> {
+export function applyGameEffectEvent(
+  event: GameEffectEvent,
+  state: GameState,
+): GameState {
   switch (event.effectType) {
     case 'completeAttackApply': {
       return applyCompleteAttackApplyEvent(event, state);

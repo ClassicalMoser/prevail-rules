@@ -1,5 +1,5 @@
 import type { StandardBoard, UnitWithPlacement } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import {
   createAttackApplyState,
   createCleanupPhaseState,
@@ -21,7 +21,7 @@ import { generateCompleteAttackApplyEvent } from './generateCompleteAttackApplyE
  */
 describe(generateCompleteAttackApplyEvent, () => {
   /** IssueCommands + ranged CRS + default incomplete attack apply for one white defender on E-5. */
-  function createStateWithRangedAttackApply(): GameStateForBoard<StandardBoard> {
+  function createStateWithRangedAttackApply(): GameState {
     const state = createEmptyGameState();
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
@@ -51,7 +51,7 @@ describe(generateCompleteAttackApplyEvent, () => {
   /** ResolveMelee + two completed flags; omit arg for both complete, or pass side still incomplete. */
   function createStateWithMeleeApply(
     incompletePlayer?: 'white' | 'black',
-  ): GameStateForBoard<StandardBoard> {
+  ): GameState {
     const state = createEmptyGameState({ currentInitiative: 'black' });
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });

@@ -7,7 +7,7 @@ import {
   updateCardState,
 } from '@testing';
 import type { StandardBoard } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCompleteRangedAttackCommandEvent } from './applyCompleteRangedAttackCommandEvent';
@@ -25,7 +25,7 @@ describe(applyCompleteRangedAttackCommandEvent, () => {
       white: { ...base.cardState.white, inPlay: createTestCard() },
     });
     const ranged = createRangedAttackResolutionState(withCards);
-    const full: GameStateForBoard<StandardBoard> = updatePhaseState(
+    const full: GameState = updatePhaseState(
       withCards,
       createIssueCommandsPhaseState(withCards, {
         currentCommandResolutionState: ranged,

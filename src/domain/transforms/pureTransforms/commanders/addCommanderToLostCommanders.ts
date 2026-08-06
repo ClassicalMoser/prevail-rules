@@ -1,11 +1,11 @@
 import type { Board, PlayerSide } from '@entities';
-import type { GameStateForBoard } from '@game';
+import type { GameState } from '@game';
 
 /* Pure transform to add a commander to the lost commanders set immutably with no side effects. */
 export function addCommanderToLostCommanders<TBoard extends Board>(
-  gameState: GameStateForBoard<TBoard>,
+  gameState: GameState,
   playerSide: PlayerSide,
-): GameStateForBoard<TBoard> {
+): GameState {
   if (gameState.lostCommanders.includes(playerSide)) {
     throw new Error('Commander already lost');
   }
