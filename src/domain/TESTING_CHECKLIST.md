@@ -291,11 +291,14 @@ describe('getExpectedXEvent', () => {
 
 **Next focus (by impact):**
 
-1. **`validation/validateEvent.ts`** — add router / representative validation tests.
-2. **`defenseResult/generateResolveRoutEvent.ts`** (and siblings) — more scenarios for branches.
-3. **Sequencing queries** — e.g. `getCommandResolutionState.ts` uncovered lines/branches.
-4. **Engagement / units-broken / rally** generators — raise branch % where report shows 50%.
-5. **`procedureRegistry.ts`** — when adding a `gameEffects` entry, add a factory in `testing/procedureRegistryStateFactories.ts` (exported from `@testing`).
+1. **`validateIssueCommandsPhaseEvent` / `validateResolveMeleePhaseEvent`** — still stubs; issueCommands is the bulk of a turn.
+2. **Application layer coverage** — `processEvent`, `handleNewRound`, `updateGameState`, `gameRunner` have little/no colocated coverage; ordering bugs (persist-vs-apply, subscribers, round transitions) live here.
+3. **`validation/validateEvent.ts`** — router / representative validation tests.
+4. **Wire real game start** — `createInitialGameState` exists (reserved units from armies) but `startNewGame` still uses empty `placeholderArmy()`; deal hands separately.
+5. **`defenseResult` / sequencing / engagement generators** — raise branch % where the coverage report is thin.
+6. **`procedureRegistry.ts`** — when adding a `gameEffects` entry, add a factory in `testing/procedureRegistryStateFactories.ts` (exported from `@testing`).
+
+**Known incomplete (not test gaps):** terrain entities are modelled (`terrainType` / `elevation` / `waterCover`) but unused by combat/movement; engagement-during-movement retreat still unimplemented.
 
 ---
 

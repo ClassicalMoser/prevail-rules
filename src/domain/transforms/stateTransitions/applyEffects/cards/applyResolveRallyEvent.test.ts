@@ -9,10 +9,11 @@ import { applyResolveRallyEvent } from './applyResolveRallyEvent';
 
 /**
  * Resolving a rally: the chosen card leaves `played`, the engine marks the per-player rally
- * slice `rallyResolved`, and cleanup advances past that resolve step.
+ * slice `rallyResolved`, and stays on the resolve-rally step so units-broken can run next.
+ * `unitsLostSupport` remains `'pending'` until {@link applyResolveUnitsBrokenEvent}.
  */
 describe(applyResolveRallyEvent, () => {
-  it('given firstPlayerResolveRally with white played card, card consumed played empty and rallyResolved', () => {
+  it('burns the played card, marks rally resolved, and leaves unitsLostSupport pending on the same step', () => {
     const state = createEmptyGameState();
     state.currentInitiative = 'white';
     const card = createTestCard();
@@ -48,16 +49,17 @@ describe(applyResolveRallyEvent, () => {
     if (phase.phase !== CLEANUP_PHASE) {
       throw new Error('cleanup');
     }
-    expect(phase.step).toBe('secondPlayerChooseRally');
+    expect(phase.step).toBe('firstPlayerResolveRally');
     const rally = throwIfPending(
       phase.firstPlayerRallyResolutionState,
       'rally',
     );
     expect(rally.rallyResolved).toBeTruthy();
+    expect(rally.unitsLostSupport).toBe('pending');
     expect(next.cardState.white.played).toStrictEqual([]);
   });
 
-  it('given whiteSeen, resolves white owned slice and leaves black hidden intact', () => {
+  it('on whiteSeen, resolves the white owned slice and leaves black hidden intact', () => {
     const base = createEmptyGameState();
     base.currentInitiative = 'white';
     const card = createTestCard();
@@ -111,7 +113,7 @@ describe(applyResolveRallyEvent, () => {
     expect(next.cardState.black.awaitingPlay).toBe('hidden');
   });
 
-  it('given whiteSeen, throws when event player is black (unowned)', () => {
+  it('on whiteSeen, throws when the event player is black (unowned)', () => {
     const base = createEmptyGameState();
     base.currentInitiative = 'black';
     const card = createTestCard();

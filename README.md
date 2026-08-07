@@ -56,7 +56,7 @@ const space = getBoardSpace(board, 'E-5');
 const offBoard = getForwardSpace(board, 'A-1', 'north'); // undefined
 ```
 
-Card visibility *does* earn a type parameter — it constrains which card fields are readable. See [`src/domain/entities/README.md`](./src/domain/entities/README.md).
+Card visibility _does_ earn a type parameter — it constrains which card fields are readable. See [`src/domain/entities/README.md`](./src/domain/entities/README.md).
 
 ### Validation Functions
 

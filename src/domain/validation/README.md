@@ -23,7 +23,7 @@ Callers branch on `result` and surface `errorReason` when rejecting an event. Se
 
 ## Why This Pattern?
 
-- **Actionable failures**: Orchestrators and clients need *why* an event was rejected, not just `false`.
+- **Actionable failures**: Orchestrators and clients need _why_ an event was rejected, not just `false`.
 - **Fail-safe**: Invalid inputs or getter errors become `FailValidationResult`, not crashes.
 - **Engine contract**: `validateEvent` and phase routers all speak `ValidationResult`; keep leaf validators aligned.
 
@@ -57,10 +57,10 @@ export function isLegalCommanderMove(
 
 **Queries** (`queries/`) extract information. Failure modes differ by function — document each one; do not assume a single convention:
 
-| Function | Missing / out of bounds | Malformed input |
-|---|---|---|
-| `getBoardSpace` | **throws** (coordinate absent from `board.board`) | n/a (key lookup) |
-| `getForwardSpace` | returns **`undefined`** (step leaves the board) | **throws** (bad coordinate string, row/column outside layout, invalid facing) |
+| Function          | Missing / out of bounds                           | Malformed input                                                               |
+| ----------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `getBoardSpace`   | **throws** (coordinate absent from `board.board`) | n/a (key lookup)                                                              |
+| `getForwardSpace` | returns **`undefined`** (step leaves the board)   | **throws** (bad coordinate string, row/column outside layout, invalid facing) |
 
 **Validators** catch throws from getters and turn them into `FailValidationResult`. They treat `undefined` from directional queries as a normal negative case (not an exception).
 
@@ -74,7 +74,7 @@ Some validators require a visibility-narrowed game state so they can read owned 
 export function isValidChooseCardEvent<T extends GameStateVisibility>(
   event: ChooseCardEvent,
   state: GameStateForVisibility<T>,
-): ValidationResult
+): ValidationResult;
 ```
 
 Visibility is a type parameter because it **constrains inputs**. Board size is not — size is asserted at Zod boundaries and via `board.boardType` at runtime. See [`../entities/README.md`](../entities/README.md).

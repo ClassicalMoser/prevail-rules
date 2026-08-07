@@ -1,4 +1,3 @@
-import type { AssertExact } from '@utils';
 import { z } from 'zod';
 
 export const traits = [
@@ -12,16 +11,13 @@ export const traits = [
   'horse',
 ] as const;
 
-export const traitSchema: z.ZodType<Trait> = z.enum(traits);
-
-type TraitSchemaType = z.infer<typeof traitSchema>;
-
 /**
  * A trait of a unit.
  */
 export type Trait = (typeof traits)[number];
 
 /**
- * Check that the trait type matches the schema.
+ * Schema for a unit trait. Both sides derive from the `traits` tuple, so no
+ * separate AssertExact drift check is needed.
  */
-const _assertExactTrait: AssertExact<Trait, TraitSchemaType> = true;
+export const traitSchema: z.ZodType<Trait> = z.enum(traits);

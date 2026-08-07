@@ -2,7 +2,6 @@ import type { ResolveRallyEvent } from '@events';
 import type { GameState, RallyResolutionState } from '@game';
 import {
   getCleanupPhaseState,
-  getNextStepForResolveRally,
   getOwnedPlayerCardState,
   getRallyResolutionStateAwaitingBurn,
 } from '@queries';
@@ -18,7 +17,8 @@ import {
  * Applies a ResolveRallyEvent to the game state.
  * Burns the specified card from played pile, then returns all remaining played
  * and discarded cards to the player's hand.
- * Advances to the appropriate resolveUnitSupport step.
+ * Marks `rallyResolved` and stays on the resolve-rally step with
+ * `unitsLostSupport: 'pending'` so {@link applyResolveUnitsBrokenEvent} can run next.
  * Uses {@link getRallyResolutionStateAwaitingBurn} for sequencing invariants.
  *
  * Requires `event.player` to be owned under the state's visibility
@@ -33,7 +33,6 @@ export function applyResolveRallyEvent<S extends GameState>(
 
   const ownedPlayerCardState = getOwnedPlayerCardState(state.cardState, player);
   const rallyState = getRallyResolutionStateAwaitingBurn(state, player);
-  const nextStep = getNextStepForResolveRally(state);
   const returnedCardsState = returnCardsToHand(
     burnCardFromPlayed(ownedPlayerCardState, card),
   );
@@ -50,14 +49,15 @@ export function applyResolveRallyEvent<S extends GameState>(
   const updatedRallyResolutionState: RallyResolutionState = {
     ...rallyState,
     rallyResolved: true,
-    unitsLostSupport: [], // TODO: Calculate which units lost support
+    // Still pending — computed by applyResolveUnitsBrokenEvent, not here.
+    unitsLostSupport: 'pending',
     routState: 'pending',
   };
 
   const newPhaseState = updateRallyResolutionStateForCurrentStep(
     phaseState,
     updatedRallyResolutionState,
-    nextStep,
+    phaseState.step,
   );
 
   return updatePhaseState(stateWithCards, newPhaseState);

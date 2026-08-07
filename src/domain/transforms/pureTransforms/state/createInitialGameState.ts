@@ -6,8 +6,10 @@ import { createUnitInstance } from '@factories';
 
 /**
  * Builds a {@link GameState} for a new game: empty board and round state, white initiative,
- * units from each {@link Army} in {@link GameState.reservedUnits}, and each army's command
- * cards in that player's hand (`cardState.*.inHand`).
+ * and unit instances from each {@link Army} in {@link GameState.reservedUnits}.
+ *
+ * Does not deal command cards into `cardState` — callers must populate hands separately.
+ * Instance numbers are 1-indexed (`1..count`) to match {@link eachUnitPresentOnce}.
  */
 export function createInitialGameState(options: {
   gameMode: GameModeName;
@@ -43,12 +45,12 @@ export function createInitialGameState(options: {
   const reservedUnits = [];
   for (const unit of whiteArmy.units) {
     for (let i = 1; i <= unit.count; i++) {
-      reservedUnits.push(createUnitInstance('white', unit.unitType, i + 1));
+      reservedUnits.push(createUnitInstance('white', unit.unitType, i));
     }
   }
   for (const unit of blackArmy.units) {
     for (let i = 1; i <= unit.count; i++) {
-      reservedUnits.push(createUnitInstance('black', unit.unitType, i + 1));
+      reservedUnits.push(createUnitInstance('black', unit.unitType, i));
     }
   }
 

@@ -12,12 +12,9 @@ import { routStateSchema } from './routSubstep';
  * - Used in `AttackApplyState` (when unit retreats after an attack)
  * - Used in `EngagementState` (when unit retreats from engagement)
  *
- * It demonstrates a **nearly recursive pattern**:
- * - Can contain `RoutState` (if no legal retreat options exist)
- * - This creates a pattern where routing can occur during retreat
- *
- * The expected event query `getExpectedRetreatEvent()` is composable and
- * delegates to `getExpectedRoutEvent()` when a rout state is present.
+ * May nest a `RoutState` when retreat fails or leads to a rout (composition,
+ * not recursion). `getExpectedRetreatEvent()` delegates to
+ * `getExpectedRoutEvent()` when that nested slice is present.
  */
 export interface RetreatState {
   /** The type of the substep. */

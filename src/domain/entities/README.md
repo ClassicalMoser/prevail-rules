@@ -16,6 +16,9 @@ All entities in this directory follow a **schema-first approach** that ensures b
 
 ```typescript
 // 1. Define interface manually (for better IDE support)
+/**
+ * An entity with a name and id
+ */
 export interface Entity {
   id: string;
   name: string;
@@ -128,34 +131,6 @@ const _assertExactUnitPresence: AssertExact<
 - Individual schemas use explicit `z.ZodObject<...>` annotations for type safety
 - Inferring from unconstrained schema object ensures type drift detection works
 
-### Import Pattern for Discriminated Union Schemas
-
-**Important:** When creating discriminated unions, import schemas directly using `./` relative imports to avoid module initialization order issues:
-
-```typescript
-// ✅ Still use barrel for types (no initialization issues)
-import type { CleanupPhaseState, PlayCardsPhaseState } from '@entities';
-
-// ✅ Correct - direct import for schemas used in discriminated unions
-import { cleanupPhaseStateSchema } from './cleanupPhase';
-import { moveCommandersPhaseStateSchema } from './moveCommandersPhase';
-import { playCardsPhaseStateSchema } from './playCardsPhase';
-
-const _phaseStateSchemaObject = z.discriminatedUnion('phase', [
-  playCardsPhaseStateSchema,
-  moveCommandersPhaseStateSchema,
-  cleanupPhaseStateSchema,
-]);
-```
-
-**Why direct imports?** `z.discriminatedUnion` requires fully initialized schemas at module evaluation time. Importing schemas through barrel files can cause initialization order issues, even without circular dependencies. This pattern is used in:
-
-- `board.ts` - imports board schemas directly
-- `unitPresence.ts` - imports presence schemas directly
-- `phases.ts` - imports phase state schemas directly
-
-This is an exception to the general barrel file import pattern, but it's necessary for correct module initialization.
-
 ### UnitPresence
 
 Represents three possible states of unit presence in a board space:
@@ -206,44 +181,44 @@ breaks assignability at the layout map (see `board.ts` / `getCoordinateLayout`) 
 ways that look like an unrelated type error.
 
 **Visibility earns a type parameter; board size did not.**
-Visibility (`authoritative` | `whiteSeen` | `blackSeen`) *constrains inputs* — which
+Visibility (`authoritative` | `whiteSeen` | `blackSeen`) _constrains inputs_ — which
 card fields are readable or writable — so `GameStateForVisibility<V>` / `CardState`
-discrimination removes casts at call sites. Board size *asserted* completeness rather
+discrimination removes casts at call sites. Board size _asserted_ completeness rather
 than constraining callers; threading it as a type argument inflated signatures without
 cutting casts. Cast count is the readout: keep a parameter only when it narrows what
 callers may pass or read.
 
 ## Entity Categories
 
-### Core Game Entities
+What lives in this directory (`@entities`). Sequencing and composed game state live in [`../game/`](../game/README.md) (`@game`).
 
-- `Game` - Complete game configuration
-- `GameState` - Current game state (round, phase, board, etc.)
-- `Player` - Player information
-
-### Board Entities
+### Board
 
 - `Board` - Game board (`boardType` + partial coordinate map)
 - `BoardSpace` - Individual space on the board
 - `Coordinate` - Board coordinate (union across all sizes)
 
-### Unit Entities
+### Units
 
-- `UnitType` - Unit definition (stats, traits, etc.)
-- `UnitInstance` - Specific instance of a unit on the board
-- `UnitPresence` - Unit presence in a space (discriminated union)
-- `UnitFacing` - Direction a unit is facing
+- `UnitType` / `UnitInstance` - definitions and board instances
+- `UnitPresence` - presence in a space (discriminated union)
+- `UnitFacing` / placement helpers - facing and location
 
-### Card Entities
+### Cards & armies
 
-- `Card` - Command card
-- `Command` - Command on a card
-- `CardState` - Card visibility regimes (`authoritative` | `whiteSeen` | `blackSeen`)
+- `Card` / `Command` - command cards
+- `CardState` - visibility regimes (`authoritative` | `whiteSeen` | `blackSeen`)
+- `Army` / `UnitCount` - army composition
+- `Player` / `PlayerSide` - player identity
 
-### Sequence Entities
+### Shared value types
 
-- `Phase` - Game phase
-- `Round` - Game round
+- `GameMode`, `AttackType`, `EngagementType`, `ValidationResult`, `Line`, …
+
+### In `@game` (not here)
+
+- `Game` / `GameState` - full game configuration and runtime state
+- Phases, round state, and resolution substeps (cleanup, melee, engagement, rally, …)
 
 ## Best Practices
 
