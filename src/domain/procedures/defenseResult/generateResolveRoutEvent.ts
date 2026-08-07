@@ -13,7 +13,7 @@ import {
 /**
  * Generates a ResolveRoutEvent by calculating the rout penalty
  * for the unit(s) being routed.
- * The penalty is the sum of all units' routPenalty values.
+ * The penalty is the sum of all units' morale values.
  *
  * @param state - The current game state
  * @returns A complete ResolveRoutEvent with the routed unit and penalty

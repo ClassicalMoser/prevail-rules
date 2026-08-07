@@ -15,7 +15,7 @@ export const velites: UnitType = {
   imageUrl: 'https://example.com/velites.png',
   name: 'Velites',
   version: '1.0.0',
-  routPenalty: 0,
+  morale: 0,
   stats: {
     attack: 2,
     flexibility: 3,
@@ -35,7 +35,7 @@ export const manipularLegion: UnitType = {
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
   name: 'Manipular Legion',
   version: '1.0.0',
-  routPenalty: 2,
+  morale: 2,
   stats: {
     attack: 4,
     flexibility: 2,
@@ -55,7 +55,7 @@ export const alaeSocii: UnitType = {
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
   name: 'Alae Socii',
   version: '1.0.0',
-  routPenalty: 1,
+  morale: 1,
   stats: {
     attack: 4,
     flexibility: 2,
@@ -75,7 +75,7 @@ export const equites: UnitType = {
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
   name: 'Equites',
   version: '1.0.0',
-  routPenalty: 2,
+  morale: 2,
   stats: {
     attack: 4,
     flexibility: 2,
@@ -95,7 +95,7 @@ export const numidianSkirmishers: UnitType = {
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
   name: 'Numidian Skirmishers',
   version: '1.0.0',
-  routPenalty: 0,
+  morale: 0,
   stats: {
     attack: 2,
     flexibility: 3,
@@ -115,7 +115,7 @@ export const numidianCavalry: UnitType = {
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
   name: 'Numidian Cavalry',
   version: '1.0.0',
-  routPenalty: 0,
+  morale: 0,
   stats: {
     attack: 2,
     flexibility: 3,
@@ -135,7 +135,7 @@ export const punicCitizenCavalry: UnitType = {
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
   name: 'Punic Citizen Cavalry',
   version: '1.0.0',
-  routPenalty: 2,
+  morale: 2,
   stats: {
     attack: 4,
     flexibility: 2,
@@ -155,7 +155,7 @@ export const punicCitizenSpearmen: UnitType = {
   imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
   name: 'Punic Citizen Spearmen',
   version: '1.0.0',
-  routPenalty: 2,
+  morale: 2,
   stats: {
     attack: 3,
     flexibility: 1,
@@ -175,7 +175,7 @@ export const libyanSpearmen: UnitType = {
   imageUrl: null,
   name: 'Libyan Spearmen',
   version: '1.0.0',
-  routPenalty: 1,
+  morale: 1,
   stats: {
     attack: 4,
     flexibility: 1,
@@ -195,7 +195,7 @@ export const africanVeterans: UnitType = {
   imageUrl: null,
   name: 'African Veterans',
   version: '1.0.0',
-  routPenalty: 2,
+  morale: 2,
   stats: {
     attack: 4,
     flexibility: 2,
@@ -215,7 +215,7 @@ export const africanElephants: UnitType = {
   imageUrl: null,
   name: 'African Elephants',
   version: '1.0.0',
-  routPenalty: 2,
+  morale: 2,
   stats: {
     attack: 6,
     flexibility: 0,

@@ -2,7 +2,12 @@ import type { Army, BoardType, GameModeName } from '@entities';
 import type { AssertExact } from '@utils';
 import type { GameStateForVisibility, GameStateVisibility } from './gameState';
 
-import { armySchema, gameModeNames, gameModes } from '@entities';
+import {
+  armySchema,
+  gameModeNames,
+  gameModes,
+  refineArmyComposition,
+} from '@entities';
 import { z } from 'zod';
 import {
   authoritativeGameStateSchema,
@@ -66,6 +71,20 @@ function refineGameModeBoardSize(
   }
 }
 
+function refineGameModeConstraints(
+  game: {
+    gameMode: GameModeName;
+    gameState: { boardState: { boardType: BoardType } };
+    blackArmy: Army;
+    whiteArmy: Army;
+  },
+  ctx: z.RefinementCtx,
+): void {
+  refineGameModeBoardSize(game, ctx);
+  refineArmyComposition(game.whiteArmy, game.gameMode, ctx, ['whiteArmy']);
+  refineArmyComposition(game.blackArmy, game.gameMode, ctx, ['blackArmy']);
+}
+
 const _authoritativeGameSchemaObject = z
   .object({
     blackArmy: armySchema,
@@ -77,7 +96,7 @@ const _authoritativeGameSchemaObject = z
     whitePlayer: z.uuid(),
   })
   .strict()
-  .superRefine(refineGameModeBoardSize);
+  .superRefine(refineGameModeConstraints);
 
 type AuthoritativeGameSchemaType = z.infer<
   typeof _authoritativeGameSchemaObject
@@ -103,7 +122,7 @@ const _whiteSeenGameSchemaObject = z
     whitePlayer: z.uuid(),
   })
   .strict()
-  .superRefine(refineGameModeBoardSize);
+  .superRefine(refineGameModeConstraints);
 
 type WhiteSeenGameSchemaType = z.infer<typeof _whiteSeenGameSchemaObject>;
 
@@ -126,7 +145,7 @@ const _blackSeenGameSchemaObject = z
     whitePlayer: z.uuid(),
   })
   .strict()
-  .superRefine(refineGameModeBoardSize);
+  .superRefine(refineGameModeConstraints);
 
 type BlackSeenGameSchemaType = z.infer<typeof _blackSeenGameSchemaObject>;
 

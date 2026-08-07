@@ -11,7 +11,7 @@ const unitTypeWithStackedDefense: UnitType = {
   limit: 1,
   name: 'Test stacked defense',
   version: '1.0.0',
-  routPenalty: 0,
+  morale: 0,
   stats: {
     attack: 1,
     flexibility: 1,

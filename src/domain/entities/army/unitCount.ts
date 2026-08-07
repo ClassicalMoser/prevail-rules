@@ -14,17 +14,17 @@ export interface UnitCount {
   count: number;
 }
 
-const _unitCountSchemaObject = z.object(
-  {
+const _unitCountSchemaObject = z
+  .object({
     /** The unit type. */
     unitType: unitTypeSchema,
     /** The number of units. */
     count: z.int().min(1).max(MAX_ARMY_UNIT_TYPE_COUNT),
-  },
-  {
-    message: `Unit must be valid and count must be between 1 and ${MAX_ARMY_UNIT_TYPE_COUNT}.`,
-  },
-);
+  })
+  .refine((data) => data.count <= data.unitType.limit, {
+    message: 'Count must be less than or equal to unit type limit.',
+    path: ['count'],
+  });
 
 type UnitCountSchemaType = z.infer<typeof _unitCountSchemaObject>;
 

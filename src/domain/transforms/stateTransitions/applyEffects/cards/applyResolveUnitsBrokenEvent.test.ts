@@ -15,7 +15,7 @@ import { applyResolveUnitsBrokenEvent } from './applyResolveUnitsBrokenEvent';
 
 /**
  * After listing unsupported types, this effect removes those units from the board, may seed a
- * rout substep when `routPenalty` is positive, and either advances cleanup or stays resolving.
+ * rout substep when `morale` is positive, and either advances cleanup or stays resolving.
  */
 describe(applyResolveUnitsBrokenEvent, () => {
   it('given empty unitTypes list, unitsLostSupport empty set and step advances to second choose rally', () => {
@@ -60,7 +60,7 @@ describe(applyResolveUnitsBrokenEvent, () => {
     expect(rs.routState).toBe('pending');
   });
 
-  it('given white unit on E-5 with positive routPenalty type, unit removed routedUnits set routState seeded same step', () => {
+  it('given white unit on E-5 with positive morale type, unit removed routedUnits set routState seeded same step', () => {
     const base = createEmptyGameState();
     base.currentInitiative = 'white';
     const unit = createTestUnit('white', { attack: 3 });

@@ -32,7 +32,7 @@ export type UnitPlacementSpec =
       rout?: number;
       cost?: number;
       limit?: number;
-      routPenalty?: number;
+      morale?: number;
       instanceNumber?: number;
     };
 

@@ -43,7 +43,7 @@ export function createTestUnit(
     rout?: number;
     cost?: number;
     limit?: number;
-    routPenalty?: number;
+    morale?: number;
   },
 ): UnitInstance {
   const instanceNumber = options?.instanceNumber ?? 1;
@@ -133,7 +133,7 @@ export function createTestUnits(
     rout?: number;
     cost?: number;
     limit?: number;
-    routPenalty?: number;
+    morale?: number;
   },
 ): UnitInstance[] {
   return Array.from({ length: count }, (_, i) =>
