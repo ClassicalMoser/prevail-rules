@@ -97,6 +97,25 @@ describe('schema: armySchema', () => {
 
     expect(armySchema.safeParse(army).success).toBe(false);
   });
+
+  it('rejects duplicate unit types', () => {
+    const army = validStandardArmy();
+    const unitType = baseUnitType({ cost: 10, morale: 2 });
+    army.units = [
+      { count: 1, unitType },
+      { count: 2, unitType },
+    ];
+
+    expect(armySchema.safeParse(army).success).toBe(false);
+  });
+
+  it('rejects duplicate command cards', () => {
+    const army = validStandardArmy();
+    const card = baseCard(1, 1);
+    army.commandCards = [card, { ...card }];
+
+    expect(armySchema.safeParse(army).success).toBe(false);
+  });
 });
 
 describe('schema: armySchemaForMode', () => {
@@ -147,17 +166,6 @@ describe('schema: armySchemaForMode', () => {
     );
 
     expect(armySchemaForMode('standard').safeParse(army).success).toBe(false);
-  });
-
-  it('rejects duplicate unit types', () => {
-    const army = validStandardArmy();
-    const unitType = baseUnitType({ cost: 10, morale: 2 });
-    army.units = [
-      { count: 1, unitType },
-      { count: 2, unitType },
-    ];
-
-    expect(armySchema.safeParse(army).success).toBe(false);
   });
 
   it('mini rejects more distinct unit types than maxUnitTypeCount', () => {
