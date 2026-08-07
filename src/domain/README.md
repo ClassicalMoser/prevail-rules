@@ -101,7 +101,10 @@ Pure functions that extract information from game state without modifying it. Th
   - `getLeftFacing()` / `getRightFacing()` - Get relative directions
   - `getAdjacentFacings()` / `getOrthogonalFacings()` - Get related directions
 
-**Pattern:** Query functions can throw errors for invalid inputs (e.g., invalid coordinates). They are "getters" that assume valid state.
+**Pattern:** Query functions extract information. Failure modes are per-function:
+some throw on invalid input (`getBoardSpace`), some return `undefined` for
+out-of-bounds geometry (`getForwardSpace`) while still throwing on malformed
+coordinates. Do not assume a single getter convention.
 
 #### 4. **Validation** (`validation/`)
 
@@ -128,7 +131,10 @@ Pure functions that check whether game actions, states, or conditions are valid 
   - `matchesUnitRequirements()` - Check unit requirements
   - `isSameUnitInstance()` / `isSameUnitType()` - Unit comparison
 
-**Pattern:** Validation functions **always return boolean** and **never throw errors**. They wrap query functions in try-catch to return `false` on any error.
+**Pattern:** Validation functions return a discriminated **`ValidationResult`**
+(`{ result: true }` | `{ result: false, errorReason }`) and **never throw**.
+They wrap throwing getters in try/catch and map failures to `errorReason`.
+Some validators are generic over `GameStateVisibility` when they must read owned card fields.
 
 #### 5. **Transforms** (`transforms/`)
 
@@ -303,9 +309,11 @@ Full TypeScript coverage:
 
 Clear separation between queries and validation:
 
-- **Queries** can throw (assume valid input)
-- **Validation** never throws (always returns boolean)
-- Validation wraps queries in try-catch
+- **Queries** extract data; each documents whether it throws, returns `undefined`, or both
+- **Validation** never throws — always returns `ValidationResult` with an `errorReason` on failure
+- Validation wraps throwing getters in try-catch; treats `undefined` from directional queries as a normal negative case
+
+See [`validation/README.md`](./validation/README.md).
 
 ### Event-Driven Architecture
 
@@ -321,7 +329,7 @@ All state changes go through events:
 
 ```typescript
 import { RulesEngine } from '@transforms';
-import { createEmptyStandardBoard } from '@queries';
+import { createEmptyStandardBoard } from '@transforms';
 import { MoveUnitEvent } from '@events';
 import type { GameState } from '@entities';
 

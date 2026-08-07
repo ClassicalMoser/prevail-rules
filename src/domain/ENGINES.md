@@ -2,8 +2,6 @@
 
 This project delivers four core engines that work together to provide a complete, deterministic game rules system. These engines enable full event stream processing, deterministic playback, reversibility, and reconstructability.
 
-**📋 See [`ENGINE_CHECKLIST.md`](./ENGINE_CHECKLIST.md) for implementation status and tracking.**
-
 ## 1. Pure Transform Engine
 
 **Location:** `transforms/applyEvent.ts`

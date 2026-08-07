@@ -48,28 +48,27 @@ The engine is **runtime-agnostic** and designed to be shared across browser clie
 
 ### Type Safety
 
-The library uses TypeScript generics to ensure board types match their coordinates:
+Board size is runtime state (`board.boardType`), not a type parameter. Coordinates are a shared union; size bounds are enforced by Zod at boundaries and by layout lookups at runtime:
 
 ```typescript
-// ✅ Type-safe
-const standardBoard: Board = createEmptyStandardBoard();
-const space = getBoardSpace(standardBoard, 'E-5');
-
-// ❌ Type error
-const space = getBoardSpace(standardBoard, 'A-1' as SmallBoardCoordinate);
+const board: Board = createEmptyStandardBoard(); // boardType: 'standard'
+const space = getBoardSpace(board, 'E-5');
+const offBoard = getForwardSpace(board, 'A-1', 'north'); // undefined
 ```
+
+Card visibility *does* earn a type parameter — it constrains which card fields are readable. See [`src/domain/entities/README.md`](./src/domain/entities/README.md).
 
 ### Validation Functions
 
-All validation functions return booleans and never throw:
+Validators return a discriminated `ValidationResult` (`{ result: true }` | `{ result: false, errorReason }`) and never throw:
 
 ```typescript
-canMoveInto(unit, board, coordinate); // true/false
-canMoveThrough(unit, board, coordinate); // true/false
-isLegalMove(moveCommand, boardState); // true/false
+isLegalCommanderMove(event, board); // ValidationResult
+isLegalCardChoice(cardState, event); // ValidationResult
+validateEvent(event, state); // ValidationResult
 ```
 
-See [`src/validation/README.md`](./src/validation/README.md) for the validation pattern.
+See [`src/domain/validation/README.md`](./src/domain/validation/README.md) for the validation pattern.
 
 ### Core Functions
 
