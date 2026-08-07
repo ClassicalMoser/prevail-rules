@@ -117,7 +117,7 @@ describe(applyResolveUnitsBrokenEvent, () => {
       throwIfPending(rs.unitsLostSupport, 'unitsLostSupport').includes(unit),
     ).toBeTruthy();
     const rout = throwIfPending(rs.routState, 'rout');
-    expect(rout.numberToDiscard).toBe(unit.unitType.routPenalty);
+    expect(rout.numberToDiscard).toBe(unit.unitType.morale);
     expect(rout.completed).toBeFalsy();
   });
 });

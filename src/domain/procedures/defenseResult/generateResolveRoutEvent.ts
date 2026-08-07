@@ -56,7 +56,7 @@ export function generateResolveRoutEvent(
   }
 
   const totalPenalty = [...routState.unitsToRout].reduce(
-    (sum, unit) => sum + unit.unitType.routPenalty,
+    (sum, unit) => sum + unit.unitType.morale,
     0,
   );
 

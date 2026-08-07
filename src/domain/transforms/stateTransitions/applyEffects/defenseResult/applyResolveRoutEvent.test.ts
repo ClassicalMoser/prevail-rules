@@ -341,7 +341,7 @@ describe(applyResolveRoutEvent, () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         penalty: rout.unitsToRout.reduce(
-          (sum: number, u) => sum + u.unitType.routPenalty,
+          (sum: number, u) => sum + u.unitType.morale,
           0,
         ),
         routResolutionSource: 'rearEngagementMovement',

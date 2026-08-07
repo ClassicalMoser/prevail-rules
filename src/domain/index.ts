@@ -463,6 +463,8 @@ export { getPositionOfUnit } from '@queries';
 export type { Trait } from '@ruleValues';
 export {
   COMMANDER_MOVE_DISTANCE,
+  LEGAL_INITIATIVES,
+  MAX_ARMY_UNIT_COST,
   MAX_LINE_LENGTH,
   MIN_FLEXIBILITY_THRESHOLD,
   traits,

@@ -58,8 +58,7 @@ export function applyResolveUnitsBrokenEvent<S extends GameState>(
 
   // Calculate total rout penalty
   const totalPenalty = unitsToRout.reduce(
-    (sum, unitWithPlacement) =>
-      sum + unitWithPlacement.unit.unitType.routPenalty,
+    (sum, unitWithPlacement) => sum + unitWithPlacement.unit.unitType.morale,
     0,
   );
 
