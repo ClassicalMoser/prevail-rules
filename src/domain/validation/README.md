@@ -4,81 +4,83 @@ This directory contains validation functions that check whether game actions, st
 
 ## Core Principle
 
-**Validation functions must always return a boolean and never throw errors.**
+**Validation functions return a `ValidationResult` and never throw.**
+
+```typescript
+type ValidationResult =
+  | { result: true }
+  | { result: false; errorReason: string };
+```
+
+Callers branch on `result` and surface `errorReason` when rejecting an event. See `entities/validationResult.ts`.
 
 ## Pattern
 
-All validation functions in this directory follow this pattern:
-
-1. **Return Type**: Always return `ValidationResult` type.
-2. **Error Handling**: Wrap the entire function body in a try-catch that returns `false` on any error
-3. **Naming**: Use `is*`, `can*`, or `matches*` prefixes (e.g., `isAtPlacement`, `canMoveInto`, `matchesUnitRequirements`)
+1. **Return type**: Always `ValidationResult` (never a bare `boolean`, never `throws` for rule failure).
+2. **Failure shape**: Every `result: false` includes a specific `errorReason` string.
+3. **Error handling**: Wrap bodies that call throwing getters in try/catch; map caught errors to `{ result: false, errorReason }`.
+4. **Naming**: Prefer `is*`, `can*`, `matches*`, or `validate*` for the public surface (e.g. `isLegalCommanderMove`, `validateEvent`).
 
 ## Why This Pattern?
 
-- **Validation functions are predicates**: They answer "yes" or "no" questions about game state
-- **Fail-safe behavior**: Invalid inputs or errors should result in `false`, not crash the game
-- **Consistent API**: Callers can always expect a boolean return value without needing try-catch blocks
+- **Actionable failures**: Orchestrators and clients need *why* an event was rejected, not just `false`.
+- **Fail-safe**: Invalid inputs or getter errors become `FailValidationResult`, not crashes.
+- **Engine contract**: `validateEvent` and phase routers all speak `ValidationResult`; keep leaf validators aligned.
 
-## Examples
-
-### ✅ Correct Pattern
+## Example
 
 ```typescript
-export function isAtPlacement(
-  board: Board,
-  unitWithPlacement: UnitWithPlacement,
-): boolean {
+export function isLegalCommanderMove(
+  moveCommanderEvent: MoveCommanderEvent,
+  boardState: Board,
+): ValidationResult {
   try {
-    // All validation logic here
-    const friendlyUnit = getPlayerUnitWithPosition(
-      board,
-      coordinate,
-      playerSide,
-    );
-    // ... validation checks ...
-    return true;
-  } catch {
-    // Any error means validation fails - return false
-    return false;
+    const fromSpace = getBoardSpace(boardState, moveCommanderEvent.from);
+    if (!fromSpace.commanders.includes(moveCommanderEvent.player)) {
+      return {
+        result: false,
+        errorReason: 'Commander is not at the starting position',
+      };
+    }
+    // ...
+    return { result: true };
+  } catch (error) {
+    return {
+      result: false,
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 ```
 
-### ❌ Incorrect Pattern
+## Contrast with Queries
+
+**Queries** (`queries/`) extract information. Failure modes differ by function — document each one; do not assume a single convention:
+
+| Function | Missing / out of bounds | Malformed input |
+|---|---|---|
+| `getBoardSpace` | **throws** (coordinate absent from `board.board`) | n/a (key lookup) |
+| `getForwardSpace` | returns **`undefined`** (step leaves the board) | **throws** (bad coordinate string, row/column outside layout, invalid facing) |
+
+**Validators** catch throws from getters and turn them into `FailValidationResult`. They treat `undefined` from directional queries as a normal negative case (not an exception).
+
+Do not write “queries throw, validation catches” as a blanket rule — only some getters throw.
+
+## Visibility Constraints
+
+Some validators require a visibility-narrowed game state so they can read owned card fields (e.g. `.id` on hand cards):
 
 ```typescript
-// DON'T: Throwing errors in validation functions
-// Missing try-catch - will throw if coordinate doesn't exist
-const friendlyUnit = getPlayerUnitWithPosition(board, coordinate, playerSide);
-// This will crash instead of returning false!
+export function isValidChooseCardEvent<T extends GameStateVisibility>(
+  event: ChooseCardEvent,
+  state: GameStateForVisibility<T>,
+): ValidationResult
 ```
 
-## Contrast with Getter Functions
-
-**Getter functions** (in `src/functions/`) can and should throw errors for invalid inputs:
-
-- `getBoardSpace()` - throws if coordinate doesn't exist
-- `getPlayerUnitWithPosition()` - throws if coordinate doesn't exist
-
-**Validation functions** (in `src/validation/`) must catch these errors and return `false`:
-
-- `isAtPlacement()` - catches errors from getters, returns `false`
-- `canMoveInto()` - catches errors from getters, returns `false`
-
-## When to Use This Pattern
-
-Use this pattern for any function that:
-
-- Validates game rules or constraints
-- Checks if an action is legal
-- Verifies game state conditions
-- Answers "can this happen?" or "is this valid?" questions
+Visibility is a type parameter because it **constrains inputs**. Board size is not — size is asserted at Zod boundaries and via `board.boardType` at runtime. See [`../entities/README.md`](../entities/README.md).
 
 ## Testing
 
-When testing validation functions:
-
-- Test that invalid inputs return `false` (not throw)
-- Test that errors from getter functions are caught and return `false`
-- Test both `true` and `false` cases explicitly
+- Assert `result: false` **and** a meaningful `errorReason` for illegal cases.
+- Assert that getter throws become `result: false`, not uncaught exceptions.
+- Cover both pass and fail paths explicitly; prefer exact `errorReason` matches over substring hedges when the message is stable.

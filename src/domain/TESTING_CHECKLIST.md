@@ -1,7 +1,5 @@
 # Testing Checklist
 
-**Refactor order (before chasing coverage % on procedures):** see [`.cursor/rules/domain-refactor-order.mdc`](../../.cursor/rules/domain-refactor-order.mdc) — dedupe → trust-first → delegate to `@queries` → then deepen coverage.
-
 Systematic unit test coverage following round order. Focus on procedures and expected events.
 
 **Coverage targets (suite):** **80%+** statements, **70%+** branches — met on recent full runs; remaining work is **depth** on thin modules (see [Remaining coverage depth](#remaining-coverage-depth)).
@@ -9,11 +7,11 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 **How we track (this doc):**
 
 - **[x]** = colocated `*.test.ts` exists for that module (deliverable done).
-- **Coverage %** = run **`npm run test:coverage`** and use the report for **what to deepen next**; percentages in this file are not auto-synced.
+- **Coverage %** = run **`pnpm test:coverage`** (or `npm run test:coverage`) and use the report for **what to deepen next**; percentages in this file are not auto-synced.
 
-**Last reconciled:** 2026-03-17 — checkboxes matched to `src/domain` test files.
+**Last reconciled:** 2026-08-07 — checkbox inventory still useful as a module map; after the board-size / visibility refactor, prefer the coverage report over this file for “what’s missing.” Paths below may lag renames.
 
-**Strategy:** Unit tests > Integration tests. Use test helpers + pure transforms. Follow round order.
+**Strategy:** Unit tests > Integration tests. Use test helpers + pure transforms. Follow round order. Depth work now targets routers and branch-thin modules (`validateEvent`, defense-result procedures, sequencing queries) rather than the older dedupe → trust-first → `@queries` refactor order.
 
 ---
 
@@ -34,10 +32,31 @@ Systematic unit test coverage following round order. Focus on procedures and exp
    - **Test helpers** (`@testing`): Convenience wrappers using `@sampleValues`, sensible defaults, test-specific shortcuts
    - **Initializers** (`@transforms/initializations`): Production domain functions, no test dependencies, explicit parameters
 
-5. **Readable tests (commentary):**
+5. **Readable tests (names + commentary):**
    - Restate the **domain contract** the file proves (what is invariant vs what varies across cases).
    - For spatial or facing logic, add a **minimal geometry or state legend** when coordinates or defaults matter; tie expected values to named defaults when factories hide them.
-   - Prefer **precise `it` descriptions** (starting state → action → outcome) over vague names; use short comments where the code alone does not carry the “why.”
+   - Write **`it` titles in natural language** — a short claim about behavior a teammate would say out loud. Prefer starting state → outcome as prose, not a template.
+   - Use short comments where the code alone does not carry the “why.”
+
+   **`it` titles — do this:**
+
+   ```typescript
+   it('an interior space has four orthogonal neighbors', () => { ... });
+   it('asks the first player to commit when their commitment is still pending', () => { ... });
+   it('throws when melee resolution is already complete', () => { ... });
+   it('rotates the defender to face the engager on a flank engagement', () => { ... });
+   ```
+
+   **Not this** (telegraphic case/expect scaffolding — ban it for new and touched tests):
+
+   ```typescript
+   it('given interior coordinate, returns four orthogonals', () => { ... });
+   it('given their commitment is pending, asks the first player to commit', () => { ... });
+   it('given black unit and black side, returns true', () => { ... });
+   it('should return correct event type', () => { ... });
+   ```
+
+   The `given X, returns Y` / `case X expect Y` / bare `should …` shapes read like generator output. If the title only restates the assertion API, rewrite it until it names the **rule or situation**.
 
    Reference example: [`src/domain/procedures/movement/generateResolveFlankEngagementEvent.test.ts`](procedures/movement/generateResolveFlankEngagementEvent.test.ts).
 
@@ -45,7 +64,7 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 
 ### Commentary rollout (all tests)
 
-Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary and setup notes across colocated `*.test.ts`. Full-domain pass added a **first-`describe` block** everywhere it was missing (plus deeper notes on procedures / exemplar). Tighten titles and add setup prose incrementally when touching a file.
+Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary and setup notes across colocated `*.test.ts`. Full-domain pass added a **first-`describe` block** everywhere it was missing (plus deeper notes on procedures / exemplar). When touching a file, retitle mechanical `given…returns…` / `should…` specs into natural-language claims and add setup prose where needed.
 
 - [x] `src/domain/procedures/`
 - [x] `src/domain/transforms/stateTransitions/`
@@ -219,14 +238,14 @@ describe('generateXEvent', () => {
   //   };
   // }
 
-  it('should return correct event type', () => {
+  it('emits a completeXPhase game effect', () => {
     const state = createTestState();
     const event = generateXEvent(state);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('x');
   });
 
-  it('should be deterministic', () => {
+  it('emits the same event for independently built equivalent states', () => {
     // Test determinism if applicable
   });
 });
@@ -250,7 +269,7 @@ describe('getExpectedXEvent', () => {
     return updatePhaseState(stateWithUnit, createXPhaseState(stateWithUnit));
   }
 
-  it('should return expected event info', () => {
+  it('expects effect x when the phase is waiting on that resolution', () => {
     const state = createTestState();
     const result = getExpectedXEvent(state);
     const parsed = expectedGameEffectSchema.safeParse(result);

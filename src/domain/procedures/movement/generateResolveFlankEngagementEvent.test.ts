@@ -20,7 +20,7 @@ import { generateResolveFlankEngagementEvent } from './generateResolveFlankEngag
  * and sets newFacing to the opposite of the engaging facing on targetPlacement (not the defender's on-board facing).
  */
 describe(generateResolveFlankEngagementEvent, () => {
-  it('given flank engagement at default target with defender on that space, event snapshots defender placement and newFacing opposite engaging facing on targetPlacement', () => {
+  it('snapshots the defender and sets newFacing opposite the engager on a flank engagement', () => {
     // Baseline game state (testing helper supplies placeholder cards on inPlay).
     const state = createEmptyGameState();
     // CreateMovementResolutionState reads black.inPlay for commitment.card — required factory input, not part of this procedure's contract.

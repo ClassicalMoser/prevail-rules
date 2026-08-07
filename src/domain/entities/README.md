@@ -58,6 +58,7 @@ const _assertExact: AssertExact<Entity, EntitySchemaType> = true;
 - Infer the schema type with `z.infer<typeof _schemaObject>` and compare it to the manual type with `AssertExact`
 - **Never export** `AssertExact` assertions or inferred `SchemaType` aliases (causes `isolatedDeclarations` errors)
 - Place JSDoc comments on the **exported** schema, not the unexported schema object
+- **Assert against `_fooSchemaObject`, never `typeof fooSchema`**: the export is annotated `z.ZodType<T>`, which erases the inferred shape. Drift checks must use the unannotated internal object.
 
 ### Why This Pattern?
 
@@ -65,7 +66,7 @@ const _assertExact: AssertExact<Entity, EntitySchemaType> = true;
 2. **Compile-Time Safety**: TypeScript interfaces provide type checking during development
 3. **Type-Schema Alignment**: The `AssertExact` assertion ensures bidirectional type equality
 4. **Type Drift Detection**: Inferring from unconstrained schema object ensures `AssertExact` catches mismatches
-5. **isolatedDeclarations Compatibility**: `z.ZodType<T>` constraint on exports provides explicit type annotations required for fast declaration file generation
+5. **isolatedDeclarations Compatibility**: The unannotated-internal / annotated-export split is load-bearing under `isolatedDeclarations`, not stylistic. `z.ZodType<T>` on the export satisfies the explicit-annotation requirement; the internal object preserves inference for `AssertExact`.
 6. **Build Performance**: Explicit annotations enable faster builds (tsdown can work directly from declarations)
 
 ### Benefits
@@ -79,7 +80,7 @@ const _assertExact: AssertExact<Entity, EntitySchemaType> = true;
 
 ### Example
 
-See `src/entities/card/card.ts` for a complete example of this pattern.
+See `src/domain/entities/card/card.ts` for a complete example of this pattern.
 
 ## Discriminated Unions
 
@@ -174,21 +175,43 @@ Each variant has a `presenceType` field that acts as the discriminator.
 - `hasSingleUnit(unitPresence)` - checks for single
 - `hasEngagedUnits(unitPresence)` - checks for engaged
 
-### Board Types
+### Board Size vs Visibility (when to type-parameterize)
 
-Board size is state, not a type parameter:
+**Board size is state, not a type parameter.** The size literal’s job is to index a layout map:
 
 ```typescript
 export interface Board {
   boardType: BoardType; // 'standard' | 'small' | 'large'
   board: Partial<Record<Coordinate, BoardSpace>>;
 }
+
+getCoordinateLayout(board); // → coordinateLayoutMap[board.boardType]
 ```
 
 `Coordinate` is the union of all size coordinate literals (extensionally the large set).
-Per-size key-set completeness is enforced by `boardSchema` (Zod `partialRecord` +
-`superRefine` against `coordinateLayoutMap`) and by runtime bounds checks in geometry
-helpers — not by compile-time narrowing.
+Per-size key-set completeness is enforced by `boardSchema` and by runtime bounds checks
+in geometry helpers — not by compile-time narrowing.
+
+**Why `partialRecord` + `superRefine` instead of per-size schemas?**
+`z.object(shape)` infers literal keys. Factories and discriminated unions that touch a
+per-size object schema leak those narrow keys back through generic inference, fighting
+the unified `Board` type. A single schema with `z.partialRecord(coordinateSchema, …)`
+plus `superRefine` against `coordinateLayoutMap[boardType]` keeps the TypeScript type
+wide and still rejects wrong key sets at parse time.
+
+**`CoordinateLayout<R, C>` uses method syntax deliberately** (`createCoordinate(…)`,
+`getRowIndex(…)`) so parameter checks stay bivariant and per-size layouts remain
+assignable to the shared default type. Changing those to property/function-field syntax
+breaks assignability at the layout map (see `board.ts` / `getCoordinateLayout`) in
+ways that look like an unrelated type error.
+
+**Visibility earns a type parameter; board size did not.**
+Visibility (`authoritative` | `whiteSeen` | `blackSeen`) *constrains inputs* — which
+card fields are readable or writable — so `GameStateForVisibility<V>` / `CardState`
+discrimination removes casts at call sites. Board size *asserted* completeness rather
+than constraining callers; threading it as a type argument inflated signatures without
+cutting casts. Cast count is the readout: keep a parameter only when it narrows what
+callers may pass or read.
 
 ## Entity Categories
 
@@ -215,7 +238,7 @@ helpers — not by compile-time narrowing.
 
 - `Card` - Command card
 - `Command` - Command on a card
-- `CardState` - State of player cards
+- `CardState` - Card visibility regimes (`authoritative` | `whiteSeen` | `blackSeen`)
 
 ### Sequence Entities
 
@@ -242,6 +265,7 @@ helpers — not by compile-time narrowing.
 - ✅ Use explicit array types: `readonly Type[]` instead of inferred types
 - ✅ Use `typeof SOME_CONST` for exported literal constants when the type must stay coupled to the value
 - ✅ Use `(typeof SOME_CONST)[number]` for unions derived from `as const` tuples
-- ✅ Use `z.infer<typeof _schemaObject>` for schema drift checks
+- ✅ Use `z.infer<typeof _schemaObject>` for schema drift checks — never `typeof exportedSchema`
 - ❌ Never use `typeof` as a shortcut for a domain shape when a manual type should own the contract
 - ❌ Never use `any` type assertions
+- ❌ Do not “fix” `CoordinateLayout` methods to property syntax — bivariance depends on method form
