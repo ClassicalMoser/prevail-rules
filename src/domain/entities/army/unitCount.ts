@@ -2,7 +2,7 @@ import type { UnitType } from '@entities/unit';
 import type { AssertExact } from '@utils';
 import { unitTypeSchema } from '@entities/unit';
 import { z } from 'zod';
-import { MAX_ARMY_UNIT_TYPE_COUNT } from '@ruleValues';
+import { MAX_ARMY_UNIT_PER_TYPE_COUNT } from '@ruleValues';
 
 /**
  * A count of units of a specific type.
@@ -19,7 +19,7 @@ const _unitCountSchemaObject = z
     /** The unit type. */
     unitType: unitTypeSchema,
     /** The number of units. */
-    count: z.int().min(1).max(MAX_ARMY_UNIT_TYPE_COUNT),
+    count: z.int().min(1).max(MAX_ARMY_UNIT_PER_TYPE_COUNT),
   })
   .refine((data) => data.count <= data.unitType.limit, {
     message: 'Count must be less than or equal to unit type limit.',

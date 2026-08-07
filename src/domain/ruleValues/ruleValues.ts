@@ -8,12 +8,6 @@ export const COMMANDER_MOVE_DISTANCE = 4 as const;
 /** The maximum number of units that can be included in a line. */
 export const MAX_LINE_LENGTH = 8 as const;
 
-/** The maximum number of a given unit type that can be included in an army. */
-export const MAX_ARMY_UNIT_TYPE_COUNT = 8 as const;
-
-/** The maximum total unit cost permitted in an army. */
-export const MAX_ARMY_UNIT_COST = 200 as const;
-
 /** Legal initiative values for command cards. */
 export const MIN_INITIATIVE_VALUE = 1 as const;
 export const MAX_INITIATIVE_VALUE = 4 as const;
@@ -26,8 +20,47 @@ function constructLegalInitiatives(): readonly number[] {
   return initiatives;
 }
 
+/** The maximum number of a given unit type that can be included in an army. */
+export const MAX_ARMY_UNIT_PER_TYPE_COUNT = 8 as const;
+
 /** Legal initiative values for command cards. */
 export const LEGAL_INITIATIVES: readonly number[] = constructLegalInitiatives();
 
-/** The minimum total morale value permitted in an army. */
-export const MIN_ARMY_MORALE_VALUE = 12 as const;
+// For Standard mode
+/** The number of cards of each initiative value that must be included in an army. */
+export const STANDARD_MIN_ARMY_PER_INITIATIVE_COUNT = 3 as const;
+
+/** The maximum number of a given unit type that can be included in a standard  army. */
+export const STANDARD_MAX_ARMY_UNIT_TYPE_COUNT = 8 as const;
+
+/** The maximum total unit cost permitted in a standard army. */
+export const STANDARD_MAX_ARMY_UNIT_COST = 200 as const;
+
+/** The minimum total morale value permitted in a standard army. */
+export const STANDARD_MIN_ARMY_MORALE_VALUE = 12 as const;
+
+// For Mini mode
+/** The number of cards of each initiative value that must be included in an army. */
+export const MINI_MIN_ARMY_PER_INITIATIVE_COUNT = 2 as const;
+
+/** The maximum number of a given unit type that can be included in a mini army. */
+export const MINI_MAX_ARMY_UNIT_TYPE_COUNT = 4 as const;
+
+/** The maximum total unit cost permitted in a mini army. */
+export const MINI_MAX_ARMY_UNIT_COST = 100 as const;
+
+/** The minimum total morale value permitted in a mini army. */
+export const MINI_MIN_ARMY_MORALE_VALUE = 8 as const;
+
+// For Epic mode
+/** The number of cards of each initiative value that must be included in an army. */
+export const EPIC_MIN_ARMY_PER_INITIATIVE_COUNT = 4 as const;
+
+/** The maximum number of a given unit type that can be included in an epic army. */
+export const EPIC_MAX_ARMY_UNIT_TYPE_COUNT = 12 as const;
+
+/** The maximum total unit cost permitted in an epic army. */
+export const EPIC_MAX_ARMY_UNIT_COST = 300 as const;
+
+/** The minimum total morale value permitted in an epic army. */
+export const EPIC_MIN_ARMY_MORALE_VALUE = 16 as const;

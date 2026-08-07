@@ -1,9 +1,18 @@
 import type { GameModeName } from '@entities/gameModes';
 import {
   LEGAL_INITIATIVES,
-  MAX_ARMY_UNIT_COST,
-  MAX_ARMY_UNIT_TYPE_COUNT,
-  MIN_ARMY_MORALE_VALUE,
+  STANDARD_MAX_ARMY_UNIT_COST,
+  STANDARD_MIN_ARMY_MORALE_VALUE,
+  STANDARD_MAX_ARMY_UNIT_TYPE_COUNT,
+  STANDARD_MIN_ARMY_PER_INITIATIVE_COUNT,
+  MINI_MAX_ARMY_UNIT_TYPE_COUNT,
+  MINI_MAX_ARMY_UNIT_COST,
+  MINI_MIN_ARMY_MORALE_VALUE,
+  MINI_MIN_ARMY_PER_INITIATIVE_COUNT,
+  EPIC_MAX_ARMY_UNIT_TYPE_COUNT,
+  EPIC_MAX_ARMY_UNIT_COST,
+  EPIC_MIN_ARMY_MORALE_VALUE,
+  EPIC_MIN_ARMY_PER_INITIATIVE_COUNT,
 } from '@ruleValues';
 
 /**
@@ -28,28 +37,28 @@ export interface ArmyCompositionRules {
 export const armyCompositionByMode: Record<GameModeName, ArmyCompositionRules> =
   {
     tutorial: {
-      maxUnitCost: null,
-      minMoraleValue: null,
-      cardsPerInitiative: null,
-      maxUnitTypeCount: MAX_ARMY_UNIT_TYPE_COUNT,
+      maxUnitCost: STANDARD_MAX_ARMY_UNIT_COST,
+      minMoraleValue: STANDARD_MIN_ARMY_MORALE_VALUE,
+      cardsPerInitiative: STANDARD_MIN_ARMY_PER_INITIATIVE_COUNT,
+      maxUnitTypeCount: STANDARD_MAX_ARMY_UNIT_TYPE_COUNT,
     },
     mini: {
-      maxUnitCost: 100,
-      minMoraleValue: 6,
-      cardsPerInitiative: 3,
-      maxUnitTypeCount: 4,
+      maxUnitCost: MINI_MAX_ARMY_UNIT_COST,
+      minMoraleValue: MINI_MIN_ARMY_MORALE_VALUE,
+      cardsPerInitiative: MINI_MIN_ARMY_PER_INITIATIVE_COUNT,
+      maxUnitTypeCount: MINI_MAX_ARMY_UNIT_TYPE_COUNT,
     },
     standard: {
-      maxUnitCost: MAX_ARMY_UNIT_COST,
-      minMoraleValue: MIN_ARMY_MORALE_VALUE,
-      cardsPerInitiative: 3,
-      maxUnitTypeCount: MAX_ARMY_UNIT_TYPE_COUNT,
+      maxUnitCost: STANDARD_MAX_ARMY_UNIT_COST,
+      minMoraleValue: STANDARD_MIN_ARMY_MORALE_VALUE,
+      cardsPerInitiative: STANDARD_MIN_ARMY_PER_INITIATIVE_COUNT,
+      maxUnitTypeCount: STANDARD_MAX_ARMY_UNIT_TYPE_COUNT,
     },
     epic: {
-      maxUnitCost: 300,
-      minMoraleValue: 18,
-      cardsPerInitiative: 3,
-      maxUnitTypeCount: MAX_ARMY_UNIT_TYPE_COUNT,
+      maxUnitCost: EPIC_MAX_ARMY_UNIT_COST,
+      minMoraleValue: EPIC_MIN_ARMY_MORALE_VALUE,
+      cardsPerInitiative: EPIC_MIN_ARMY_PER_INITIATIVE_COUNT,
+      maxUnitTypeCount: EPIC_MAX_ARMY_UNIT_TYPE_COUNT,
     },
   };
 
