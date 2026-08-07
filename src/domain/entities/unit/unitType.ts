@@ -1,7 +1,7 @@
 import type { Trait } from '@ruleValues';
 import type { AssertExact } from '@utils';
 import type { UnitStats } from './unitStat';
-import { traitSchema } from '@ruleValues';
+import { MAX_ARMY_UNIT_TYPE_COUNT, traitSchema } from '@ruleValues';
 import { z } from 'zod';
 import { unitStatsSchema } from './unitStat';
 
@@ -50,7 +50,7 @@ const _unitTypeSchemaObject = z.object({
   /** The cost of the unit. */
   cost: z.int().min(5).max(100),
   /** The limit of units that can be included in a standard army. */
-  limit: z.int().min(1).max(20),
+  limit: z.int().min(1).max(MAX_ARMY_UNIT_TYPE_COUNT),
   /** The number of cards the owner must discard when the unit is routed. */
   morale: z.int().min(0).max(5),
 });

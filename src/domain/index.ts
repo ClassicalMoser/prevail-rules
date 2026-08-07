@@ -6,7 +6,11 @@ export {
   whiteTinyStarterArmy,
 } from './tinyStarterArmy';
 export {
+  armyCompositionByMode,
+  armyCompositionInitiatives,
   armySchema,
+  armySchemaForMode,
+  refineArmyComposition,
   attackTypes,
   attackTypeSchema,
   coordinateSchema,
@@ -17,6 +21,7 @@ export {
   largeCoordinateLayout,
   smallCoordinateLayout,
 } from '@entities';
+export type { ArmyCompositionRules } from '@entities';
 export {
   cardSchema,
   cardStateSchema,

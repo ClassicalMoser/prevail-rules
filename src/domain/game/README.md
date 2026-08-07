@@ -28,13 +28,13 @@ Game / GameForVisibility
 
 ### Top level
 
-| Module | Role |
-|---|---|
-| `game.ts` | Full game record (mode, players, armies, `gameState`) |
-| `gameState.ts` | Runtime state for a visibility regime |
-| `roundState.ts` | Current round slice (phase + event stream) |
-| `commitment.ts` | Pending / completed / declined commitments |
-| `attackResult.ts` | Attack outcome value |
+| Module            | Role                                                  |
+| ----------------- | ----------------------------------------------------- |
+| `game.ts`         | Full game record (mode, players, armies, `gameState`) |
+| `gameState.ts`    | Runtime state for a visibility regime                 |
+| `roundState.ts`   | Current round slice (phase + event stream)            |
+| `commitment.ts`   | Pending / completed / declined commitments            |
+| `attackResult.ts` | Attack outcome value                                  |
 
 ### `phases/`
 

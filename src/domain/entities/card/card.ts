@@ -3,13 +3,13 @@ import type { Command } from './command';
 import type { StatModifier } from './modifiers';
 import type { RoundEffect } from './roundEffect';
 
-import { LEGAL_INITIATIVES } from '@ruleValues';
 import { z } from 'zod';
 import { commandSchema } from './command';
 import { statModifierSchema } from './modifiers';
 import { roundEffectSchema } from './roundEffect';
 import type { UnitSupport } from './unitSupport';
 import { unitSupportSchema } from './unitSupport';
+import { MAX_INITIATIVE_VALUE, MIN_INITIATIVE_VALUE } from '@ruleValues';
 
 /** A hidden card, which is not visible to the player. */
 export type HiddenCard = 'hidden';
@@ -59,10 +59,7 @@ const _cardSchemaObject = z.object({
   /** The name of the card, regardless of version. */
   name: z.string().min(3),
   /** The initiative value of the card. */
-  initiative: z
-    .int()
-    .min(LEGAL_INITIATIVES[0])
-    .max(LEGAL_INITIATIVES[LEGAL_INITIATIVES.length - 1]),
+  initiative: z.int().min(MIN_INITIATIVE_VALUE).max(MAX_INITIATIVE_VALUE),
   /** The modifiers the card can discard for. */
   modifiers: z.array(statModifierSchema).min(1).max(2),
   /** The command of the card. */

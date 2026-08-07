@@ -1,6 +1,12 @@
 // Army models.
-export { armySchema } from './army';
-export type { Army, UnitCount } from './army';
+export {
+  armyCompositionByMode,
+  armyCompositionInitiatives,
+  armySchema,
+  armySchemaForMode,
+  refineArmyComposition,
+} from './army';
+export type { Army, ArmyCompositionRules, UnitCount } from './army';
 
 // Attack types.
 export { attackTypes, attackTypeSchema } from './attackType';
