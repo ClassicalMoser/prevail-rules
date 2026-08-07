@@ -1,4 +1,5 @@
-import type { Modifier, ValidationResult } from '@entities';
+import type { Modifier } from '@entities';
+import type { ValidationResult } from '@utils';
 
 /**
  * Compares two Modifier objects for equality by comparing all properties.

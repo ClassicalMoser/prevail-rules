@@ -9,7 +9,7 @@ import { createEmptyStandardBoard } from '@transforms';
  * - Round state has round number 1, no completed phases, no current phase, no commanded units
  * - Initiative starts with black player
  * - Board is an empty standard board
- * - Card state has empty hands, with default cards for awaitingPlay and inPlay
+ * - CommandCard state has empty hands, with default cards for awaitingPlay and inPlay
  * - No routed units
  *
  * @param options - Optional configuration

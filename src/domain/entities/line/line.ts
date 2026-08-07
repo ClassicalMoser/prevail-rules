@@ -1,7 +1,7 @@
 import type { AssertExact } from '@utils';
-import type { UnitWithPlacement } from './unitLocation';
+import type { UnitWithPlacement } from '@entities/unitLocation';
 import { z } from 'zod';
-import { unitWithPlacementSchema } from './unitLocation';
+import { unitWithPlacementSchema } from '@entities/unitLocation';
 
 /**
  * A line is a group of friendly units that are beside each other

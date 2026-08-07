@@ -20,7 +20,7 @@ import { getLegalRetreats } from '@legality';
  * Attack value calculation:
  * - Base attack stat
  * - + Support bonuses (from supportingUnits in state)
- * - + Card modifiers (from committed cards)
+ * - + CommandCard modifiers (from committed cards)
  * - + Active card modifiers (if unit was commanded)
  *
  * @param state - The current game state

@@ -28,7 +28,7 @@ describe(burnCardFromPlayed, () => {
     };
 
     expect(() => burnCardFromPlayed(owned, tempCommandCards[1])).toThrow(
-      `Card ${tempCommandCards[1].id} not found in player's played cards`,
+      `CommandCard ${tempCommandCards[1].id} not found in player's played cards`,
     );
   });
 

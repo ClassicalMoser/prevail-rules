@@ -2,7 +2,7 @@
 
 Composed domain models for a running game: configuration, runtime state, phases, and nested resolution substeps.
 
-These are still **declaration-only** modules (schemas, interfaces, types) — same role as `@entities`, but they depend on entity primitives (`Board`, `Card`, `UnitInstance`, …) and assemble the sequencing tree. Import as `@game`.
+These are still **declaration-only** modules (schemas, interfaces, types) — same role as `@entities`, but they depend on entity primitives (`Board`, `CommandCard`, `UnitInstance`, …) and assemble the sequencing tree. Import as `@game`.
 
 ## Conventions
 

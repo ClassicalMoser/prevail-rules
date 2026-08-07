@@ -1,4 +1,5 @@
-import type { Restrictions, ValidationResult } from '@entities';
+import type { Restrictions } from '@entities';
+import type { ValidationResult } from '@utils';
 
 /**
  * Compares two Restrictions objects for equality by comparing all properties.

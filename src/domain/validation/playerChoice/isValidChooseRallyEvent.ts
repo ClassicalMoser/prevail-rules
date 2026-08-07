@@ -1,4 +1,4 @@
-import type { ValidationResult } from '@entities';
+import type { ValidationResult } from '@utils';
 import type { ChooseRallyEvent } from '@events';
 import type { GameStateForVisibility, GameStateVisibility } from '@game';
 import { getOtherPlayer } from '@queries';

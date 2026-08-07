@@ -1,4 +1,4 @@
-import type { Card, PlayerSide } from '@entities';
+import type { CommandCard, PlayerSide } from '@entities';
 
 /**
  * Calculates which player receives initiative based on card values.
@@ -29,8 +29,8 @@ import type { Card, PlayerSide } from '@entities';
  * ```
  */
 export function calculateInitiative(
-  whiteCard: Card,
-  blackCard: Card,
+  whiteCard: CommandCard,
+  blackCard: CommandCard,
   currentInitiative: PlayerSide,
 ): PlayerSide {
   const whiteInitiative = whiteCard.initiative;

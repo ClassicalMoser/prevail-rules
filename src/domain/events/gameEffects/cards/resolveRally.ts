@@ -1,6 +1,6 @@
-import type { Card, PlayerSide } from '@entities';
+import type { CommandCard, PlayerSide } from '@entities';
 import type { AssertExact } from '@utils';
-import { cardSchema, playerSideSchema } from '@entities';
+import { commandCardSchema, playerSideSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -23,7 +23,7 @@ export interface ResolveRallyEvent {
   /** The player who is resolving the rally. */
   player: PlayerSide;
   /** The card to burn */
-  card: Card;
+  card: CommandCard;
 }
 
 const _resolveRallyEventSchemaObject = z.object({
@@ -36,7 +36,7 @@ const _resolveRallyEventSchemaObject = z.object({
   /** The player who is resolving the rally. */
   player: playerSideSchema,
   /** The card to burn */
-  card: cardSchema,
+  card: commandCardSchema,
 });
 
 type ResolveRallyEventSchemaType = z.infer<
@@ -54,5 +54,5 @@ export const resolveRallyEventSchema: z.ZodObject<{
   effectType: z.ZodLiteral<'resolveRally'>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  card: typeof cardSchema;
+  card: typeof commandCardSchema;
 }> = _resolveRallyEventSchemaObject;

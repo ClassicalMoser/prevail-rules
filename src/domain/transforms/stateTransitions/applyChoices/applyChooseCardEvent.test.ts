@@ -62,11 +62,11 @@ describe(applyChooseCardEvent, () => {
 
       const newState = applyChooseCardEvent(event, state);
 
-      // Card should be removed from hand
+      // CommandCard should be removed from hand
       expect(newState.cardState.black.inHand).toStrictEqual([
         tempCommandCards[1],
       ]);
-      // Card should be in awaitingPlay
+      // CommandCard should be in awaitingPlay
       expect(newState.cardState.black.awaitingPlay).toBe(tempCommandCards[0]);
       // White player's state should be unchanged
       expect(newState.cardState.white.inHand).toStrictEqual([
@@ -91,11 +91,11 @@ describe(applyChooseCardEvent, () => {
 
       const newState = applyChooseCardEvent(event, state);
 
-      // Card should be removed from hand
+      // CommandCard should be removed from hand
       expect(newState.cardState.white.inHand).toStrictEqual([
         tempCommandCards[2],
       ]);
-      // Card should be in awaitingPlay
+      // CommandCard should be in awaitingPlay
       expect(newState.cardState.white.awaitingPlay).toBe(tempCommandCards[1]);
       // Black player's state should be unchanged
       expect(newState.cardState.black.inHand).toStrictEqual([

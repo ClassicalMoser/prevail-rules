@@ -1,4 +1,4 @@
-import type { ValidationResult } from '@entities';
+import type { ValidationResult } from '@utils';
 import type { ChooseRoutDiscardEvent } from '@events';
 import type { GameStateForVisibility, GameStateVisibility } from '@game';
 
@@ -96,7 +96,7 @@ export function isValidChooseRoutDiscardEvent<T extends GameStateVisibility>(
   for (const cardId of cardIds) {
     if (!handCardIds.has(cardId)) {
       return {
-        errorReason: `Card ${cardId} not found in ${player}'s hand`,
+        errorReason: `CommandCard ${cardId} not found in ${player}'s hand`,
         result: false,
       };
     }

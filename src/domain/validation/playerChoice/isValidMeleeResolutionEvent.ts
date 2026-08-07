@@ -1,4 +1,4 @@
-import type { ValidationResult } from '@entities';
+import type { ValidationResult } from '@utils';
 import type { ChooseMeleeResolutionEvent } from '@events';
 import type { GameStateForVisibility, GameStateVisibility } from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';

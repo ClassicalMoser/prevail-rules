@@ -1,5 +1,5 @@
 import type { AssertExact } from '@utils';
-import type { BoardType } from './board';
+import type { BoardType } from '@entities/board';
 import { z } from 'zod';
 
 /**

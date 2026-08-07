@@ -1,4 +1,4 @@
-import type { Card } from '@entities';
+import type { CommandCard } from '@entities';
 import {
   alaeSocii,
   equites,
@@ -30,7 +30,7 @@ const twoManipularSupport = {
   unitTypeId: manipularLegion.id,
 };
 
-export const tempCommandCards: readonly Card[] = [
+export const tempCommandCards: readonly CommandCard[] = [
   {
     command: {
       modifiers: [],
@@ -718,4 +718,4 @@ export const tempCommandCards: readonly Card[] = [
     unitSupport: { count: 1, supportType: 'generic' },
     version: '1.0.0',
   },
-] as const satisfies readonly Card[];
+] as const satisfies readonly CommandCard[];

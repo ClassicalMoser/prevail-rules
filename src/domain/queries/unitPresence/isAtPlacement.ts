@@ -1,4 +1,5 @@
-import type { Board, UnitWithPlacement, ValidationResult } from '@entities';
+import type { Board, UnitWithPlacement } from '@entities';
+import type { ValidationResult } from '@utils';
 import { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
 import { isSameUnitInstance } from '../equivalence/unitEquivalence';
 

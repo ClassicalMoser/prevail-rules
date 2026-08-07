@@ -1,4 +1,5 @@
-import type { UnitType, ValidationResult } from '@entities';
+import type { UnitType } from '@entities';
+import type { ValidationResult } from '@utils';
 import type { Trait } from '@ruleValues';
 
 /**

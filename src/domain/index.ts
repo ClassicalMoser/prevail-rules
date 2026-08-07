@@ -1,10 +1,5 @@
 // Main entry point — explicit re-exports only (no `export *`).
-export {
-  blackArmyUUID,
-  blackTinyStarterArmy,
-  whiteArmyUUID,
-  whiteTinyStarterArmy,
-} from './tinyStarterArmy';
+
 export {
   armyCompositionByMode,
   armyCompositionInitiatives,
@@ -23,7 +18,7 @@ export {
 } from '@entities';
 export type { ArmyCompositionRules } from '@entities';
 export {
-  cardSchema,
+  commandCardSchema,
   cardStateSchema,
   commandSchema,
   commandSizes,
@@ -57,7 +52,6 @@ export {
 } from '@entities';
 export {
   engagedUnitPresenceSchema,
-  failValidationResultSchema,
   noneUnitPresenceSchema,
   singleUnitPresenceSchema,
   unitFacingSchema,
@@ -70,7 +64,11 @@ export {
   unitTypeSchema,
   unitWithPlacementSchema,
 } from '@entities';
-export { passValidationResultSchema, validationResultSchema } from '@entities';
+export {
+  failValidationResultSchema,
+  passValidationResultSchema,
+  validationResultSchema,
+} from '@utils';
 export type {
   Army,
   AttackType,
@@ -82,7 +80,7 @@ export type {
   UnitCount,
 } from '@entities';
 export type {
-  Card,
+  CommandCard,
   CardState,
   Command,
   CommandType,
@@ -98,9 +96,7 @@ export type {
 export type { Line, Player, PlayerSide, UnitFacing } from '@entities';
 export type {
   EngagedUnitPresence,
-  FailValidationResult,
   NoneUnitPresence,
-  PassValidationResult,
   SingleUnitPresence,
   UnitInstance,
   UnitPlacement,
@@ -110,8 +106,12 @@ export type {
   UnitStats,
   UnitType,
   UnitWithPlacement,
-  ValidationResult,
 } from '@entities';
+export type {
+  FailValidationResult,
+  PassValidationResult,
+  ValidationResult,
+} from '@utils';
 export {
   ATTACK_RESOLUTION_CONTEXT_VALUES,
   attackResolutionContextSchema,

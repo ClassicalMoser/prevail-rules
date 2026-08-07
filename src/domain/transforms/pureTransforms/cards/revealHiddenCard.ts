@@ -1,4 +1,4 @@
-import type { Card, HiddenCardState } from '@entities';
+import type { CommandCard, HiddenCardState } from '@entities';
 
 /**
  * Promotes an opponent's hidden awaitingPlay slot to a public inPlay card.
@@ -12,7 +12,7 @@ import type { Card, HiddenCardState } from '@entities';
  */
 export function revealHiddenCard(
   hidden: HiddenCardState,
-  card: Card,
+  card: CommandCard,
 ): HiddenCardState {
   if (hidden.awaitingPlay === null) {
     throw new Error('Player has no card awaiting play');

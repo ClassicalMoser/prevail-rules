@@ -1,5 +1,5 @@
 import type {
-  Card,
+  CommandCard,
   Restrictions,
   UnitSupport,
   Modifier,
@@ -11,15 +11,15 @@ import { tempCommandCards } from '@sampleValues';
 /**
  * Gets cards from the tempCommandCards array by their indices.
  */
-export function getCards(...indices: number[]): Card[] {
+export function getCards(...indices: number[]): CommandCard[] {
   if (indices.length === 0) {
     return [];
   }
-  const cards: Card[] = [];
+  const cards: CommandCard[] = [];
   for (const index of indices) {
     if (index < 0 || index >= tempCommandCards.length) {
       throw new Error(
-        `Card index ${index} is out of bounds. Available cards: 0-${tempCommandCards.length - 1}`,
+        `CommandCard index ${index} is out of bounds. Available cards: 0-${tempCommandCards.length - 1}`,
       );
     }
     cards.push(tempCommandCards[index]);
@@ -30,7 +30,7 @@ export function getCards(...indices: number[]): Card[] {
 /**
  * Gets a specified number of cards from the tempCommandCards array, starting from the beginning.
  */
-export function getCardsByCount(count: number = 1): Card[] {
+export function getCardsByCount(count: number = 1): CommandCard[] {
   if (count < 0) {
     throw new Error(`Count must be non-negative, got ${count}`);
   }
@@ -66,10 +66,12 @@ export interface CreateTestCardOptions {
 /**
  * Creates a test card with sensible defaults.
  */
-export function createTestCard(options: CreateTestCardOptions = {}): Card {
+export function createTestCard(
+  options: CreateTestCardOptions = {},
+): CommandCard {
   const {
     id = 'test-card',
-    name = 'Test Card',
+    name = 'Test CommandCard',
     version = '1.0.0',
     initiative = 1,
     modifiers = [],

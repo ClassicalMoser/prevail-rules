@@ -1,4 +1,5 @@
-import type { UnitStatName, ValidationResult } from '@entities';
+import type { UnitStatName } from '@entities';
+import type { ValidationResult } from '@utils';
 
 /**
  * The defense stat names (reverse, retreat, rout).

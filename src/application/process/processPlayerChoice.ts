@@ -1,4 +1,5 @@
-import type { GameModeName, ValidationResult } from '@entities';
+import type { GameModeName } from '@entities';
+import type { ValidationResult } from '@utils';
 import type { PlayerChoiceEvent } from '@events';
 import { isAuthoritativeGameState } from '@game';
 import type { GameStateForVisibility } from '@game';

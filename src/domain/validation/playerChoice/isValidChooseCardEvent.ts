@@ -1,4 +1,5 @@
-import type { Card, ValidationResult } from '@entities';
+import type { CommandCard } from '@entities';
+import type { ValidationResult } from '@utils';
 import type { ChooseCardEvent } from '@events';
 import type { GameStateForVisibility, GameStateVisibility } from '@game';
 
@@ -64,7 +65,8 @@ export function isValidChooseCardEvent<T extends GameStateVisibility>(
     }
 
     // Check card is in player's hand
-    const playerHand: Card[] | 'hidden'[] = state.cardState[player].inHand;
+    const playerHand: CommandCard[] | 'hidden'[] =
+      state.cardState[player].inHand;
     if (playerHand.every((c) => c === 'hidden')) {
       return {
         errorReason: `Cannot manipulate hidden cards! (${player} player's hand is hidden)`,
@@ -74,7 +76,7 @@ export function isValidChooseCardEvent<T extends GameStateVisibility>(
     const cardInHand = playerHand.some((c) => c.id === card.id);
     if (!cardInHand) {
       return {
-        errorReason: `Card ${card.id} is not in ${player} player's hand`,
+        errorReason: `CommandCard ${card.id} is not in ${player} player's hand`,
         result: false,
       };
     }

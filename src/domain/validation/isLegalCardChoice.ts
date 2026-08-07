@@ -1,4 +1,5 @@
-import type { AuthoritativeCardState, Card, ValidationResult } from '@entities';
+import type { AuthoritativeCardState, CommandCard } from '@entities';
+import type { ValidationResult } from '@utils';
 import type { ChooseCardEvent } from '@events';
 
 /**
@@ -14,7 +15,7 @@ export function isLegalCardChoice(
 ): ValidationResult {
   try {
     const { card } = chooseCardEvent;
-    let playerHand: Card[];
+    let playerHand: CommandCard[];
     switch (chooseCardEvent.player) {
       case 'black': {
         playerHand = cardState.black.inHand;
@@ -32,7 +33,7 @@ export function isLegalCardChoice(
     const isInHand = playerHand.includes(card);
     if (!isInHand) {
       return {
-        errorReason: 'Card is not in player hand',
+        errorReason: 'CommandCard is not in player hand',
         result: false,
       };
     }
