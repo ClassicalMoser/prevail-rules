@@ -7,7 +7,6 @@ import { smallBoardCoordinates } from './smallBoard';
 import { largeBoardCoordinates } from './largeBoard';
 
 import { z } from 'zod';
-import type { AssertExact } from '@utils';
 
 /**
  * All valid board coordinates across all board sizes.
@@ -34,8 +33,3 @@ const allCoordinates = [
  * Schema for any board coordinate
  */
 export const coordinateSchema: z.ZodType<Coordinate> = z.enum(allCoordinates);
-
-const _assertExactCoordinate: AssertExact<
-  Coordinate,
-  z.infer<typeof coordinateSchema>
-> = true;
