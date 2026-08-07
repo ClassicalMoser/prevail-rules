@@ -30,7 +30,7 @@ export const LEGAL_INITIATIVES: readonly number[] = constructLegalInitiatives();
 /** The number of cards of each initiative value that must be included in an army. */
 export const STANDARD_ARMY_CARDS_PER_INITIATIVE_COUNT = 3 as const;
 
-/** The maximum number of a given unit type that can be included in a standard  army. */
+/** The maximum number of different unit types that can be included in a standard army. */
 export const STANDARD_MAX_ARMY_UNIT_TYPE_COUNT = 8 as const;
 
 /** The maximum total unit cost permitted in a standard army. */
@@ -43,7 +43,7 @@ export const STANDARD_MIN_ARMY_MORALE_VALUE = 12 as const;
 /** The number of cards of each initiative value that must be included in an army. */
 export const MINI_ARMY_CARDS_PER_INITIATIVE_COUNT = 2 as const;
 
-/** The maximum number of a given unit type that can be included in a mini army. */
+/** The maximum number of different unit types that can be included in a mini army. */
 export const MINI_MAX_ARMY_UNIT_TYPE_COUNT = 4 as const;
 
 /** The maximum total unit cost permitted in a mini army. */
@@ -56,7 +56,7 @@ export const MINI_MIN_ARMY_MORALE_VALUE = 8 as const;
 /** The number of cards of each initiative value that must be included in an army. */
 export const EPIC_ARMY_CARDS_PER_INITIATIVE_COUNT = 4 as const;
 
-/** The maximum number of a given unit type that can be included in an epic army. */
+/** The maximum number of different unit types that can be included in an epic army. */
 export const EPIC_MAX_ARMY_UNIT_TYPE_COUNT = 12 as const;
 
 /** The maximum total unit cost permitted in an epic army. */

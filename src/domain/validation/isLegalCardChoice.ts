@@ -33,7 +33,7 @@ export function isLegalCardChoice(
     const isInHand = playerHand.includes(card);
     if (!isInHand) {
       return {
-        errorReason: 'CommandCard is not in player hand',
+        errorReason: 'Command card is not in player hand',
         result: false,
       };
     }

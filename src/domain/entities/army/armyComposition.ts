@@ -32,7 +32,6 @@ export interface ArmyCompositionRules {
 
 /**
  * Army composition catalog keyed by game mode.
- * Mini/epic numeric limits are placeholders until final balance values land.
  */
 export const armyCompositionByMode: Record<GameModeName, ArmyCompositionRules> =
   {

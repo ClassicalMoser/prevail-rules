@@ -49,9 +49,9 @@ export function eachCardPresentOnce(
           };
         }
         if (hasSeenCard(card)) {
-          // CommandCard is present more than once in this player's state
+          // Command card is present more than once in this player's state
           return {
-            errorReason: 'CommandCard is present more than once',
+            errorReason: 'Command card is present more than once',
             result: false,
           };
         }

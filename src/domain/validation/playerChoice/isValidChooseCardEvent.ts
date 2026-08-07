@@ -76,7 +76,7 @@ export function isValidChooseCardEvent<T extends GameStateVisibility>(
     const cardInHand = playerHand.some((c) => c.id === card.id);
     if (!cardInHand) {
       return {
-        errorReason: `CommandCard ${card.id} is not in ${player} player's hand`,
+        errorReason: `Command card ${card.id} is not in ${player} player's hand`,
         result: false,
       };
     }

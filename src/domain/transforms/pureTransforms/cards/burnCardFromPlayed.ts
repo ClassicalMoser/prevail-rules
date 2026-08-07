@@ -16,7 +16,7 @@ export function burnCardFromPlayed(
   const cardIndex = owned.played.findIndex((c) => c.id === card.id);
   if (cardIndex === -1) {
     throw new Error(
-      `CommandCard ${card.id} not found in player's played cards`,
+      `Command card ${card.id} not found in player's played cards`,
     );
   }
 

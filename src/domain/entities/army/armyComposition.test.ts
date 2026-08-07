@@ -40,7 +40,7 @@ const baseCard = (initiative: 1 | 2 | 3 | 4, index: number): CommandCard => ({
   id: `22222222-2222-4222-8222-2222222222${String(index).padStart(2, '0')}`,
   initiative,
   modifiers: ['attack'],
-  name: `CommandCard ${initiative}-${index}`,
+  name: `Card ${initiative}-${index}`,
   roundEffect: {
     modifiers: [{ type: 'attack', value: 1 }],
     restrictions: {
@@ -149,17 +149,30 @@ describe('schema: armySchemaForMode', () => {
     expect(armySchemaForMode('standard').safeParse(army).success).toBeFalsy();
   });
 
-  it('mini rejects counts above mode maxUnitTypeCount', () => {
+  it('rejects duplicate unit types', () => {
     const army = validStandardArmy();
+    const unitType = baseUnitType({ cost: 10, morale: 2 });
     army.units = [
-      {
-        count: 5,
-        unitType: baseUnitType({ cost: 10, limit: 8, morale: 2 }),
-      },
+      { count: 1, unitType },
+      { count: 2, unitType },
     ];
 
+    expect(armySchema.safeParse(army).success).toBe(false);
+  });
+
+  it('mini rejects more distinct unit types than maxUnitTypeCount', () => {
+    const army = validStandardArmy();
+    army.units = [1, 2, 3, 4, 5].map((n) => ({
+      count: 1,
+      unitType: baseUnitType({
+        cost: 10,
+        id: `11111111-1111-4111-8111-11111111111${n}`,
+        morale: 2,
+      }),
+    }));
+
     expect(armyCompositionByMode.mini.maxUnitTypeCount).toBe(4);
-    expect(armySchemaForMode('mini').safeParse(army).success).toBeFalsy();
+    expect(armySchemaForMode('mini').safeParse(army).success).toBe(false);
   });
 
   it('tutorial skips cost, morale, and card composition checks', () => {
