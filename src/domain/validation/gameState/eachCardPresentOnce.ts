@@ -1,34 +1,33 @@
 import type {
-  Card,
+  CommandCard,
   AuthoritativeCardState,
-  FailValidationResult,
   OwnedCardState,
-  ValidationResult,
 } from '@entities';
+import type { FailValidationResult, ValidationResult } from '@utils';
 
 export function eachCardPresentOnce(
-  blackStartingHand: Set<Card>,
-  whiteStartingHand: Set<Card>,
+  blackStartingHand: Set<CommandCard>,
+  whiteStartingHand: Set<CommandCard>,
   cardState: AuthoritativeCardState,
 ): ValidationResult {
   try {
     // Helper to validate a single player's card state against their starting hand
     const validatePlayerState = (
-      startingHand: Set<Card>,
+      startingHand: Set<CommandCard>,
       playerState: OwnedCardState,
     ): ValidationResult => {
       // Build expected cards set for this player (we'll use card ID for equality checks)
-      const expectedCards = new Set<Card>();
+      const expectedCards = new Set<CommandCard>();
       for (const card of startingHand) {
         expectedCards.add(card);
       }
 
       // Track cards that have been seen in this player's state
-      const seenInPlayerState: Card[] = [];
+      const seenInPlayerState: CommandCard[] = [];
 
       // Helper to find and remove expected card by ID
       // Since Sets use referential equality, we need to find the matching card first
-      const removeExpectedCard = (card: Card): boolean => {
+      const removeExpectedCard = (card: CommandCard): boolean => {
         for (const expected of expectedCards) {
           if (expected.id === card.id) {
             expectedCards.delete(expected);
@@ -39,20 +38,20 @@ export function eachCardPresentOnce(
       };
 
       // Helper to check if card was already seen in this player's state
-      const hasSeenCard = (card: Card): boolean =>
+      const hasSeenCard = (card: CommandCard): boolean =>
         seenInPlayerState.some((seen) => seen.id === card.id);
 
       // Helper to process a single card
-      const processCard = (card: Card | null): ValidationResult => {
+      const processCard = (card: CommandCard | null): ValidationResult => {
         if (card === null) {
           return {
             result: true,
           };
         }
         if (hasSeenCard(card)) {
-          // Card is present more than once in this player's state
+          // CommandCard is present more than once in this player's state
           return {
-            errorReason: 'Card is present more than once',
+            errorReason: 'CommandCard is present more than once',
             result: false,
           };
         }

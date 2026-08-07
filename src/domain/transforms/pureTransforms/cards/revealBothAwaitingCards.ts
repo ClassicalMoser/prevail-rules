@@ -1,4 +1,4 @@
-import type { Card, CardState } from '@entities';
+import type { CommandCard, CardState } from '@entities';
 
 import { revealCard } from './revealCard';
 import { revealHiddenCard } from './revealHiddenCard';
@@ -14,7 +14,7 @@ import { revealHiddenCard } from './revealHiddenCard';
  */
 export function revealBothAwaitingCards<C extends CardState>(
   cardState: C,
-  revealed: { black: Card; white: Card },
+  revealed: { black: CommandCard; white: CommandCard },
 ): C {
   switch (cardState.visibility) {
     case 'authoritative': {

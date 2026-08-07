@@ -9,7 +9,7 @@ import { revealBothAwaitingCards } from '@transforms/pureTransforms';
  * Advances the play cards phase step to `assignInitiative`.
  *
  * Generic over the game-state **object** (`S extends GameState`): same
- * visibility member out as in. Card branching lives in
+ * visibility member out as in. CommandCard branching lives in
  * {@link revealBothAwaitingCards}.
  *
  * Step is not re-validated; the event is trusted from the procedure / machine-generated

@@ -1,5 +1,5 @@
 import type { Army } from './army';
-import type { Card } from '@entities/card';
+import type { CommandCard } from '@entities/card';
 import type { UnitType } from '@entities/unit';
 import { armyCompositionByMode } from './armyComposition';
 import { armySchema, armySchemaForMode } from './army';
@@ -25,7 +25,7 @@ const baseUnitType = (overrides: Partial<UnitType> = {}): UnitType => ({
   ...overrides,
 });
 
-const baseCard = (initiative: 1 | 2 | 3 | 4, index: number): Card => ({
+const baseCard = (initiative: 1 | 2 | 3 | 4, index: number): CommandCard => ({
   command: {
     modifiers: [],
     number: 1,
@@ -40,7 +40,7 @@ const baseCard = (initiative: 1 | 2 | 3 | 4, index: number): Card => ({
   id: `22222222-2222-4222-8222-2222222222${String(index).padStart(2, '0')}`,
   initiative,
   modifiers: ['attack'],
-  name: `Card ${initiative}-${index}`,
+  name: `CommandCard ${initiative}-${index}`,
   roundEffect: {
     modifiers: [{ type: 'attack', value: 1 }],
     restrictions: {
@@ -53,7 +53,7 @@ const baseCard = (initiative: 1 | 2 | 3 | 4, index: number): Card => ({
   version: '1.0.0',
 });
 
-const balancedCommandCards = (): Card[] =>
+const balancedCommandCards = (): CommandCard[] =>
   ([1, 2, 3, 4] as const).flatMap((initiative) =>
     [0, 1, 2].map((copy) => baseCard(initiative, initiative * 10 + copy)),
   );

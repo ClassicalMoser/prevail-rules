@@ -1,4 +1,5 @@
-import type { Board, ValidationResult } from '@entities';
+import type { Board } from '@entities';
+import type { ValidationResult } from '@utils';
 import type { MoveCommanderEvent } from '@events';
 import { getBoardSpace, getSpacesWithinDistance } from '@queries';
 import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';

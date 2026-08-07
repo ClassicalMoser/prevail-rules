@@ -8,3 +8,13 @@ export {
   throwIfPending,
 } from './serializationSentinels';
 export { throwIfFalsy, throwIfUndefined } from './throwIfMissing';
+export {
+  failValidationResultSchema,
+  passValidationResultSchema,
+  validationResultSchema,
+} from './validationResult';
+export type {
+  FailValidationResult,
+  PassValidationResult,
+  ValidationResult,
+} from './validationResult';

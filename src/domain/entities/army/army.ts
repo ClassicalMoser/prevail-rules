@@ -1,9 +1,9 @@
-import type { Card } from '@entities/card';
+import type { CommandCard } from '@entities/card';
 import type { AssertExact } from '@utils';
 import type { GameModeName } from '@entities/gameModes';
 import type { UnitCount } from './unitCount';
 
-import { cardSchema } from '@entities/card';
+import { commandCardSchema } from '@entities/card';
 import { z } from 'zod';
 import {
   armyCompositionByMode,
@@ -20,7 +20,7 @@ export interface Army {
   /** The units in the army. */
   units: UnitCount[];
   /** The command cards in the army. */
-  commandCards: Card[];
+  commandCards: CommandCard[];
 }
 
 const _armySchemaObject = z.object({
@@ -29,7 +29,7 @@ const _armySchemaObject = z.object({
   /** The units in the army. */
   units: z.array(unitCountSchema),
   /** The command cards in the army. */
-  commandCards: z.array(cardSchema),
+  commandCards: z.array(commandCardSchema),
 });
 
 type ArmySchemaType = z.infer<typeof _armySchemaObject>;

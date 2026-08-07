@@ -1,4 +1,5 @@
-import type { BoardSpace, PlayerSide, ValidationResult } from '@entities';
+import type { BoardSpace, PlayerSide } from '@entities';
+import type { ValidationResult } from '@utils';
 import { hasEngagedUnits, hasSingleUnit } from '@entities';
 
 /**

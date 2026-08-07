@@ -1,6 +1,6 @@
-import type { Card } from '@entities';
+import type { CommandCard } from '@entities';
 import type { AssertExact } from '@utils';
-import { cardSchema } from '@entities';
+import { commandCardSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -21,9 +21,9 @@ export interface RevealCardsEvent {
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
   /** Black's revealed card (was awaiting play). */
-  black: Card;
+  black: CommandCard;
   /** White's revealed card (was awaiting play). */
-  white: Card;
+  white: CommandCard;
 }
 
 const _revealCardsEventSchemaObject = z.object({
@@ -34,9 +34,9 @@ const _revealCardsEventSchemaObject = z.object({
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: z.number(),
   /** Black's revealed card (was awaiting play). */
-  black: cardSchema,
+  black: commandCardSchema,
   /** White's revealed card (was awaiting play). */
-  white: cardSchema,
+  white: commandCardSchema,
 });
 
 type RevealCardsEventSchemaType = z.infer<typeof _revealCardsEventSchemaObject>;
@@ -51,6 +51,6 @@ export const revealCardsEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'revealCards'>;
   eventNumber: z.ZodNumber;
-  black: z.ZodType<Card>;
-  white: z.ZodType<Card>;
+  black: z.ZodType<CommandCard>;
+  white: z.ZodType<CommandCard>;
 }> = _revealCardsEventSchemaObject;

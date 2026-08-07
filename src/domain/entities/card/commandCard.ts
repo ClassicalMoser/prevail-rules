@@ -28,9 +28,9 @@ const _assertExactHiddenCard: AssertExact<HiddenCard, HiddenCardSchemaType> =
 export const hiddenCardSchema: z.ZodType<HiddenCard> = _hiddenCardSchemaObject;
 
 /**
- * A card in the game.
+ * A command card in the game.
  */
-export interface Card {
+export interface CommandCard {
   /** The unique identifier of the card. */
   id: string;
   /** The version of the card. */
@@ -49,7 +49,7 @@ export interface Card {
   unitSupport: UnitSupport;
 }
 
-const _cardSchemaObject = z.object({
+const _commandCardSchemaObject = z.object({
   /** The unique identifier of the card. */
   id: z.uuid(),
   /** The version of the card. */
@@ -70,10 +70,10 @@ const _cardSchemaObject = z.object({
   unitSupport: unitSupportSchema,
 });
 
-type CardSchemaType = z.infer<typeof _cardSchemaObject>;
+type CommandCardSchemaType = z.infer<typeof _commandCardSchemaObject>;
 
 /**
- * The schema for a card.
+ * The schema for a command card.
  *
  * This follows the schema-first type safety pattern used throughout the codebase:
  * 1. Define interface manually (for better IDE support and documentation)
@@ -87,7 +87,9 @@ type CardSchemaType = z.infer<typeof _cardSchemaObject>;
  * Note: We infer from the unconstrained schema object to ensure type inference
  * works correctly with isolatedDeclarations enabled. The constraint is applied on export.
  */
-export const cardSchema: z.ZodType<Card> = _cardSchemaObject;
+export const commandCardSchema: z.ZodType<CommandCard> =
+  _commandCardSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactCard: AssertExact<Card, CardSchemaType> = true;
+const _assertExactCommandCard: AssertExact<CommandCard, CommandCardSchemaType> =
+  true;

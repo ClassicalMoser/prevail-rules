@@ -1,4 +1,4 @@
-import type { Card, OwnedCardState } from '@entities';
+import type { CommandCard, OwnedCardState } from '@entities';
 
 /**
  * Moves a card from a player's hand to awaitingPlay (choosing a card for play).
@@ -9,12 +9,15 @@ import type { Card, OwnedCardState } from '@entities';
  * @returns New owned card state with the card moved
  * @throws Error if card is not in the player's hand
  */
-export function chooseCard(owned: OwnedCardState, card: Card): OwnedCardState {
+export function chooseCard(
+  owned: OwnedCardState,
+  card: CommandCard,
+): OwnedCardState {
   const { inHand } = owned;
   const cardInHand = inHand.find((c) => c.id === card.id);
 
   if (!cardInHand) {
-    throw new Error(`Card ${card.id} not found in player's hand`);
+    throw new Error(`CommandCard ${card.id} not found in player's hand`);
   }
 
   const newHand = inHand.filter((c) => c.id !== card.id);

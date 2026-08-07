@@ -1,4 +1,5 @@
-import type { UnitInstance, ValidationResult } from '@entities';
+import type { UnitInstance } from '@entities';
+import type { ValidationResult } from '@utils';
 
 /**
  * Determines whether two unit instances have the same unit type.

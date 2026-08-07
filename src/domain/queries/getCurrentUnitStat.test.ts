@@ -35,7 +35,7 @@ describe(getCurrentUnitStat, () => {
         id: '2',
         initiative: 2,
         modifiers: ['attack'],
-        name: 'Command Card 2',
+        name: 'Command CommandCard 2',
         roundEffectModifiers: [],
         roundEffectRestrictions: { inspirationRangeRestriction: 1 },
       });

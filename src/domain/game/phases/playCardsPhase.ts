@@ -22,7 +22,7 @@ export const playCardsPhaseStepSchema: z.ZodType<PlayCardsPhaseStep> =
   _playCardsPhaseStepSchemaObject;
 
 // Verify manual type matches schema inference
-const _assertExactCardPhaseStep: AssertExact<
+const _assertExactCommandCardPhaseStep: AssertExact<
   PlayCardsPhaseStep,
   PlayCardsPhaseStepSchemaType
 > = true;

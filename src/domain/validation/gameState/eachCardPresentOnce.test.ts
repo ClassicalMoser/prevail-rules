@@ -1,4 +1,4 @@
-import type { AuthoritativeCardState, Card } from '@entities';
+import type { AuthoritativeCardState, CommandCard } from '@entities';
 import { tempCommandCards } from '@sampleValues';
 
 import { eachCardPresentOnce } from './eachCardPresentOnce';
@@ -8,23 +8,23 @@ import { eachCardPresentOnce } from './eachCardPresentOnce';
  */
 describe(eachCardPresentOnce, () => {
   // Helper to create a card set from indices
-  const cardSet = (...indices: number[]): Set<Card> =>
+  const cardSet = (...indices: number[]): Set<CommandCard> =>
     new Set(indices.map((i) => tempCommandCards[i]));
 
   // Helper to create a card state
   function createCardState(
-    blackHand: Card[],
-    whiteHand: Card[],
-    blackAwaitingPlay?: Card,
-    blackInPlay?: Card,
-    blackPlayed?: Card[],
-    blackDiscarded?: Card[],
-    blackBurnt?: Card[],
-    whiteAwaitingPlay?: Card,
-    whiteInPlay?: Card,
-    whitePlayed?: Card[],
-    whiteDiscarded?: Card[],
-    whiteBurnt?: Card[],
+    blackHand: CommandCard[],
+    whiteHand: CommandCard[],
+    blackAwaitingPlay?: CommandCard,
+    blackInPlay?: CommandCard,
+    blackPlayed?: CommandCard[],
+    blackDiscarded?: CommandCard[],
+    blackBurnt?: CommandCard[],
+    whiteAwaitingPlay?: CommandCard,
+    whiteInPlay?: CommandCard,
+    whitePlayed?: CommandCard[],
+    whiteDiscarded?: CommandCard[],
+    whiteBurnt?: CommandCard[],
   ): AuthoritativeCardState {
     return {
       visibility: 'authoritative',

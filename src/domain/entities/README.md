@@ -206,7 +206,7 @@ What lives in this directory (`@entities`). Sequencing and composed game state l
 
 ### Cards & armies
 
-- `Card` / `Command` - command cards
+- `CommandCard` / `Command` - command cards
 - `CardState` - visibility regimes (`authoritative` | `whiteSeen` | `blackSeen`)
 - `Army` / `UnitCount` - army composition
 - `Player` / `PlayerSide` - player identity

@@ -1,26 +1,26 @@
 import type { AssertExact } from '@utils';
-import type { Card, HiddenCard } from './card';
+import type { CommandCard, HiddenCard } from './commandCard';
 import { z } from 'zod';
-import { cardSchema, hiddenCardSchema } from './card';
+import { commandCardSchema, hiddenCardSchema } from './commandCard';
 
 /** The state of the opposing player's cards. */
 export interface HiddenCardState {
   inHand: HiddenCard[];
   awaitingPlay: HiddenCard | null;
-  inPlay: Card | null;
-  played: Card[];
-  discarded: Card[];
-  burnt: Card[];
+  inPlay: CommandCard | null;
+  played: CommandCard[];
+  discarded: CommandCard[];
+  burnt: CommandCard[];
 }
 
 /** The schema shape for the state of the opposing player's cards. */
 const _hiddenCardStateSchemaObject = z.object({
   inHand: z.array(hiddenCardSchema),
   awaitingPlay: hiddenCardSchema.nullable(),
-  inPlay: cardSchema.nullable(),
-  played: z.array(cardSchema),
-  discarded: z.array(cardSchema),
-  burnt: z.array(cardSchema),
+  inPlay: commandCardSchema.nullable(),
+  played: z.array(commandCardSchema),
+  discarded: z.array(commandCardSchema),
+  burnt: z.array(commandCardSchema),
 });
 
 /** The schema type for the state of the opposing player's cards. */
@@ -39,32 +39,32 @@ const _assertExactHiddenCardState: AssertExact<
 /** The state of a player's own cards, or both players' cards on the authoritative server. */
 export interface OwnedCardState {
   /** The cards in the player's hand, eligible to be played. */
-  inHand: Card[];
+  inHand: CommandCard[];
   /** The facedown card that the player is currently playing. */
-  awaitingPlay: Card | null;
+  awaitingPlay: CommandCard | null;
   /** The faceup card that is in play.*/
-  inPlay: Card | null;
+  inPlay: CommandCard | null;
   /** The cards that have been played and are not currently accessible to the player. */
-  played: Card[];
+  played: CommandCard[];
   /** The cards that have been discarded and are not currently accessible to the player. */
-  discarded: Card[];
+  discarded: CommandCard[];
   /** The cards that have been burnt and cannot be recovered. */
-  burnt: Card[];
+  burnt: CommandCard[];
 }
 
 const _ownedCardStateSchemaObject = z.object({
   /** The cards in the player's hand, eligible to be played. */
-  inHand: z.array(cardSchema),
+  inHand: z.array(commandCardSchema),
   /** The facedown card that the player is currently playing. */
-  awaitingPlay: cardSchema.nullable(),
+  awaitingPlay: commandCardSchema.nullable(),
   /** The faceup card that is in play.*/
-  inPlay: cardSchema.nullable(),
+  inPlay: commandCardSchema.nullable(),
   /** The cards that have been played and are not currently accessible to the player. */
-  played: z.array(cardSchema),
+  played: z.array(commandCardSchema),
   /** The cards that have been discarded and are not currently accessible to the player. */
-  discarded: z.array(cardSchema),
+  discarded: z.array(commandCardSchema),
   /** The cards that have been burnt and cannot be recovered. */
-  burnt: z.array(cardSchema),
+  burnt: z.array(commandCardSchema),
 });
 
 type OwnedCardStateSchemaType = z.infer<typeof _ownedCardStateSchemaObject>;

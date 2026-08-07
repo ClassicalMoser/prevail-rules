@@ -1,4 +1,5 @@
-import type { PlayerSide, ValidationResult } from '@entities';
+import type { PlayerSide } from '@entities';
+import type { ValidationResult } from '@utils';
 import type {
   ExpectedEventInfo,
   PlayerChoiceEvent,

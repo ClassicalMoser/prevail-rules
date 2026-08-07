@@ -1,4 +1,5 @@
-import type { UnitFacing, ValidationResult } from '@entities';
+import type { UnitFacing } from '@entities';
+import type { ValidationResult } from '@utils';
 import { diagonalFacings } from '@entities';
 
 /**

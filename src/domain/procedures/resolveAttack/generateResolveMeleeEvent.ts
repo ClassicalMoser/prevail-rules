@@ -20,7 +20,7 @@ import { getLegalRetreats } from '@legality';
  * Attack value calculation for each unit:
  * - Base attack stat
  * - + Melee support bonuses (from adjacent friendly units)
- * - + Card modifiers (from committed cards)
+ * - + CommandCard modifiers (from committed cards)
  * - + Active card modifiers (if unit was commanded)
  * - + Round effect modifiers (if applicable)
  *

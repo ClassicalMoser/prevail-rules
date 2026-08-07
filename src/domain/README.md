@@ -31,7 +31,7 @@ Domain models representing game concepts. All entities follow a **schema-first t
 - `Game` / `GameState` - Complete game configuration and current state
 - `Board` - Game board with spaces, terrain, and unit positions
 - `UnitType` / `UnitInstance` - Unit definitions and instances on the board
-- `Card` / `CardState` - Command cards and their state
+- `CommandCard` / `CardState` - Command cards and their state
 - `Player` / `PlayerSide` - Player information
 - `RoundState` / `PhaseState` - Round and phase tracking
 
@@ -122,7 +122,7 @@ Pure functions that check whether game actions, states, or conditions are valid 
   - `hasNoUnit()` / `hasSingleUnit()` / `hasEngagedUnits()` - Type guards
   - `isAtPlacement()` - Check if unit is at position
 
-- **Card Validation**: Card choice validation
+- **CommandCard Validation**: CommandCard choice validation
   - `isLegalCardChoice()` - Validate card selection
   - `isLegalCommanderMove()` - Validate commander movement
 
@@ -379,7 +379,7 @@ if (result.success) {
 
 ```
 domain/
-├── entities/          # Domain models (Game, Board, Unit, Card, etc.)
+├── entities/          # Domain models (Game, Board, Unit, CommandCard, etc.)
 ├── events/            # Event definitions (PlayerChoice, GameEffect)
 ├── queries/           # Read operations (getLegalMoves, getBoardSpace, etc.)
 ├── validation/        # Rule validation (canMoveInto, isLegalMove, etc.)

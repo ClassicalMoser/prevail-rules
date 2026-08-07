@@ -29,18 +29,18 @@ describe(getCards, () => {
   });
 
   it('given error when index is out of bounds (negative), throws', () => {
-    expect(() => getCards(-1)).toThrow('Card index -1 is out of bounds');
+    expect(() => getCards(-1)).toThrow('CommandCard index -1 is out of bounds');
   });
 
   it('given error when index is out of bounds (too large), throws', () => {
     expect(() => getCards(tempCommandCards.length)).toThrow(
-      `Card index ${tempCommandCards.length} is out of bounds`,
+      `CommandCard index ${tempCommandCards.length} is out of bounds`,
     );
   });
 
   it('given error when any index is out of bounds, throws', () => {
     expect(() => getCards(0, 1, tempCommandCards.length)).toThrow(
-      `Card index ${tempCommandCards.length} is out of bounds`,
+      `CommandCard index ${tempCommandCards.length} is out of bounds`,
     );
   });
 });
@@ -92,7 +92,7 @@ describe(createTestCard, () => {
   it('given no options, returns card with defaults', () => {
     const card = createTestCard();
     expect(card.id).toBe('test-card');
-    expect(card.name).toBe('Test Card');
+    expect(card.name).toBe('Test CommandCard');
     expect(card.initiative).toBe(1);
     expect(card.command.type).toBe('movement');
   });

@@ -40,9 +40,9 @@ export type {
   Coordinate,
 } from './board';
 
-// Card models.
+// CommandCard models.
 export {
-  cardSchema,
+  commandCardSchema,
   cardStateSchema,
   ownedCardStateSchema,
   authoritativeCardStateSchema,
@@ -60,7 +60,7 @@ export {
   unitSupportSchema,
 } from './card';
 export type {
-  Card,
+  CommandCard,
   CardState,
   OwnedCardState,
   HiddenCardState,
@@ -148,17 +148,6 @@ export type {
   UnitPresence,
   UnitPresenceType,
 } from './unitPresence';
-// Validation results.
-export {
-  failValidationResultSchema,
-  passValidationResultSchema,
-  validationResultSchema,
-} from './validationResult';
 
-export type {
-  FailValidationResult,
-  PassValidationResult,
-  ValidationResult,
-} from './validationResult';
 // Game effect literals (re-export; source is `gameEffectTypes` in @ruleValues — leaf, no cycle).
 export { gameEffects, type GameEffectType } from '@ruleValues';

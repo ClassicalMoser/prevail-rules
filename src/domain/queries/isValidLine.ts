@@ -1,4 +1,5 @@
-import type { Board, Line, ValidationResult } from '@entities';
+import type { Board, Line } from '@entities';
+import type { ValidationResult } from '@utils';
 import { areSameSide } from '@entities';
 import { getFlankingSpaces } from './boardSpace';
 import { getOppositeFacing } from './facings';

@@ -1,4 +1,5 @@
-import type { FailValidationResult, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
+import type { FailValidationResult } from '@utils';
 import { createBoardWithCommander, createEmptyGameState } from '@testing';
 
 import { eachCommanderPresentOnce } from './eachCommanderPresentOnce';

@@ -1,4 +1,4 @@
-import type { Card } from '@entities';
+import type { CommandCard } from '@entities';
 import type { GameState } from '@game';
 
 import { PLAY_CARDS_PHASE } from '@game';
@@ -18,8 +18,8 @@ describe(generateResolveInitiativeEvent, () => {
    * then `currentInitiative` stamped (defaults black).
    */
   function createGameStateInAssignInitiativeStep(
-    whiteCard: Card,
-    blackCard: Card,
+    whiteCard: CommandCard,
+    blackCard: CommandCard,
     currentInitiative: 'black' | 'white' = 'black',
   ): GameState {
     const state = createEmptyGameState();
@@ -56,10 +56,10 @@ describe(generateResolveInitiativeEvent, () => {
       expect.hasAssertions();
       // Sample deck must contain distinct initiative values (1 vs 2).
       const whiteCard = tempCommandCards.find(
-        (card: Card) => card.initiative === 1,
+        (card: CommandCard) => card.initiative === 1,
       );
       const blackCard = tempCommandCards.find(
-        (card: Card) => card.initiative === 2,
+        (card: CommandCard) => card.initiative === 2,
       );
 
       if (!whiteCard || !blackCard) {
@@ -84,10 +84,10 @@ describe(generateResolveInitiativeEvent, () => {
     it('given black inPlay lower initiative than white, resolveInitiative.player is black', () => {
       expect.hasAssertions();
       const whiteCard = tempCommandCards.find(
-        (card: Card) => card.initiative === 2,
+        (card: CommandCard) => card.initiative === 2,
       );
       const blackCard = tempCommandCards.find(
-        (card: Card) => card.initiative === 1,
+        (card: CommandCard) => card.initiative === 1,
       );
 
       if (!whiteCard || !blackCard) {

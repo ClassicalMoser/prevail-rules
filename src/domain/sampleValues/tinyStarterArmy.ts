@@ -1,10 +1,6 @@
-import type { Army, Card, UnitCount, UnitType } from '@entities';
-import {
-  equites,
-  manipularLegion,
-  tempCommandCards,
-  velites,
-} from '@sampleValues';
+import type { Army, CommandCard, UnitCount, UnitType } from '@entities';
+import { equites, manipularLegion, velites } from './tempUnits';
+import { tempCommandCards } from './tempCommandCards';
 
 const makeCounts = (unitType: UnitType, count: number): UnitCount => ({
   count,
@@ -20,8 +16,8 @@ const makeArmyUnits = (): UnitCount[] => [
 const getCardByName = (name: string) =>
   tempCommandCards.find((card) => card.name === name);
 
-const makeArmyCards = (): Card[] => {
-  const cards: (Card | undefined)[] = [
+const makeArmyCards = (): CommandCard[] => {
+  const cards: (CommandCard | undefined)[] = [
     getCardByName('Strike'),
     getCardByName('Screen'),
     getCardByName('Move'),
@@ -30,7 +26,9 @@ const makeArmyCards = (): Card[] => {
     getCardByName('Charge'),
     getCardByName('Organize'),
   ];
-  const filteredCards: Card[] = cards.filter((card) => card !== undefined);
+  const filteredCards: CommandCard[] = cards.filter(
+    (card) => card !== undefined,
+  );
   return filteredCards;
 };
 

@@ -120,4 +120,7 @@ type CardStateSchemaType = z.infer<typeof _cardStateSchemaObject>;
 export const cardStateSchema: z.ZodType<CardState> = _cardStateSchemaObject;
 
 /** Verify manual type matches schema inference. */
-const _assertExactCardState: AssertExact<CardState, CardStateSchemaType> = true;
+const _assertExactCommandCardState: AssertExact<
+  CardState,
+  CardStateSchemaType
+> = true;

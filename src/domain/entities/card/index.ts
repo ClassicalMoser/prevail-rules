@@ -1,5 +1,5 @@
-export { cardSchema, hiddenCardSchema } from './card';
-export type { Card, HiddenCard } from './card';
+export { commandCardSchema, hiddenCardSchema } from './commandCard';
+export type { CommandCard, HiddenCard } from './commandCard';
 export {
   authoritativeCardStateSchema,
   whiteSeenCardStateSchema,

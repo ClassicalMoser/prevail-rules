@@ -1,6 +1,6 @@
-import type { Card, PlayerSide, StatModifier } from '@entities';
+import type { CommandCard, PlayerSide, StatModifier } from '@entities';
 import type { AssertExact } from '@utils';
-import { cardSchema, playerSideSchema } from '@entities';
+import { commandCardSchema, playerSideSchema } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -28,7 +28,7 @@ export interface CommitToMovementEvent {
   /** The player who is committing the card. */
   player: PlayerSide;
   /** The card to commit from the player's hand. */
-  committedCard: Card;
+  committedCard: CommandCard;
   /** The modifier types the card applies. */
   modifierTypes: MovementModifier[];
 }
@@ -48,7 +48,7 @@ const _commitToMovementEventSchemaObject = z.object({
   /** The player who is committing the card. */
   player: playerSideSchema,
   /** The card to commit from the player's hand. */
-  committedCard: cardSchema,
+  committedCard: commandCardSchema,
   /** The modifier types the card applies. */
   modifierTypes: z.array(movementModifierTypesEnum),
 });
@@ -68,6 +68,6 @@ export const commitToMovementEventSchema: z.ZodObject<{
   choiceType: z.ZodLiteral<'commitToMovement'>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  committedCard: typeof cardSchema;
+  committedCard: typeof commandCardSchema;
   modifierTypes: z.ZodArray<typeof movementModifierTypesEnum>;
 }> = _commitToMovementEventSchemaObject;

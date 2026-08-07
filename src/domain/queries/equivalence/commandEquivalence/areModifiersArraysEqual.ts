@@ -1,4 +1,5 @@
-import type { Modifier, ValidationResult } from '@entities';
+import type { Modifier } from '@entities';
+import type { ValidationResult } from '@utils';
 import { areModifiersEqual } from './areModifiersEqual';
 
 /**

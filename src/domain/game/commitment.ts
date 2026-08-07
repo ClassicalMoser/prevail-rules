@@ -1,6 +1,6 @@
-import type { Card } from '@entities';
+import type { CommandCard } from '@entities';
 import type { AssertExact } from '@utils';
-import { cardSchema } from '@entities';
+import { commandCardSchema } from '@entities';
 import { z } from 'zod';
 
 /** A commitment that has not  */
@@ -56,14 +56,14 @@ export interface CompletedCommitment {
   /** The player has committed a card. */
   commitmentType: 'completed';
   /** The card that is being committed. */
-  card: Card;
+  card: CommandCard;
 }
 
 const _completedCommitmentSchemaObject = z.object({
   /** The player has committed a card. */
   commitmentType: z.literal('completed'),
   /** The card that is being committed. */
-  card: cardSchema,
+  card: commandCardSchema,
 });
 
 type CompletedCommitmentSchemaType = z.infer<

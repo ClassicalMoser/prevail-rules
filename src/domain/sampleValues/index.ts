@@ -13,3 +13,9 @@ export {
   tempUnits,
   velites,
 } from './tempUnits';
+export {
+  blackArmyUUID,
+  blackTinyStarterArmy,
+  whiteArmyUUID,
+  whiteTinyStarterArmy,
+} from './tinyStarterArmy';

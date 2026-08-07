@@ -1,4 +1,4 @@
-import type { AuthoritativeCardState, Card } from '@entities';
+import type { AuthoritativeCardState, CommandCard } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import { tempCommandCards } from '@sampleValues';
 
@@ -10,8 +10,8 @@ import { isLegalCardChoice } from './isLegalCardChoice';
 describe(isLegalCardChoice, () => {
   // Helper to create a card state with cards in hand
   function createCardState(
-    blackHand: Card[],
-    whiteHand: Card[],
+    blackHand: CommandCard[],
+    whiteHand: CommandCard[],
   ): AuthoritativeCardState {
     return {
       visibility: 'authoritative',
@@ -83,7 +83,7 @@ describe(isLegalCardChoice, () => {
         choiceType: 'chooseCard',
         eventNumber: 0,
         eventType: 'playerChoice',
-        player: 'black', // Card is in white player's hand, not black's
+        player: 'black', // CommandCard is in white player's hand, not black's
       };
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);
@@ -101,7 +101,7 @@ describe(isLegalCardChoice, () => {
         choiceType: 'chooseCard',
         eventNumber: 0,
         eventType: 'playerChoice',
-        player: 'white', // Card is in black player's hand, not white's
+        player: 'white', // CommandCard is in black player's hand, not white's
       };
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);
@@ -119,7 +119,7 @@ describe(isLegalCardChoice, () => {
         choiceType: 'chooseCard',
         eventNumber: 0,
         eventType: 'playerChoice',
-        player: 'black', // Card is not in either player's hand
+        player: 'black', // CommandCard is not in either player's hand
       };
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);

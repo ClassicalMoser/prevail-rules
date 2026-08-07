@@ -1,4 +1,4 @@
-import type { ValidationResult } from '@entities';
+import type { ValidationResult } from '@utils';
 import type { Event } from '@events';
 import type { CleanupPhaseState, GameState } from '@game';
 import { validatePlayerChoice } from '@validation/playerChoice';
