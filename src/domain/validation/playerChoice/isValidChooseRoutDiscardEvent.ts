@@ -96,7 +96,7 @@ export function isValidChooseRoutDiscardEvent<T extends GameStateVisibility>(
   for (const cardId of cardIds) {
     if (!handCardIds.has(cardId)) {
       return {
-        errorReason: `CommandCard ${cardId} not found in ${player}'s hand`,
+        errorReason: `Command card ${cardId} not found in ${player}'s hand`,
         result: false,
       };
     }

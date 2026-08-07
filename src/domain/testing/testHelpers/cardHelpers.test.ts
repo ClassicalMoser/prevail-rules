@@ -29,18 +29,18 @@ describe(getCards, () => {
   });
 
   it('given error when index is out of bounds (negative), throws', () => {
-    expect(() => getCards(-1)).toThrow('CommandCard index -1 is out of bounds');
+    expect(() => getCards(-1)).toThrow('Command card index -1 is out of bounds');
   });
 
   it('given error when index is out of bounds (too large), throws', () => {
     expect(() => getCards(tempCommandCards.length)).toThrow(
-      `CommandCard index ${tempCommandCards.length} is out of bounds`,
+      `Command card index ${tempCommandCards.length} is out of bounds`,
     );
   });
 
   it('given error when any index is out of bounds, throws', () => {
     expect(() => getCards(0, 1, tempCommandCards.length)).toThrow(
-      `CommandCard index ${tempCommandCards.length} is out of bounds`,
+      `Command card index ${tempCommandCards.length} is out of bounds`,
     );
   });
 });

@@ -24,7 +24,7 @@ export interface UnitType {
   stats: UnitStats;
   /** The cost of the unit. */
   cost: number;
-  /** The limit of units that can be included in a standard army. */
+  /** The per-type copy limit printed on the unit (how many of this type a list may take). */
   limit: number;
   /** The morale value of the unit. Primarily dictates how many cards the owner must discard when the unit is routed.*/
   morale: number;
@@ -49,7 +49,7 @@ const _unitTypeSchemaObject = z.object({
   stats: unitStatsSchema,
   /** The cost of the unit. */
   cost: z.int().min(5).max(100),
-  /** The limit of units that can be included in a standard army. */
+  /** The per-type copy limit printed on the unit (how many of this type a list may take). */
   limit: z.int().min(1).max(MAX_ARMY_UNIT_PER_TYPE_COUNT),
   /** The number of cards the owner must discard when the unit is routed. */
   morale: z.int().min(0).max(5),

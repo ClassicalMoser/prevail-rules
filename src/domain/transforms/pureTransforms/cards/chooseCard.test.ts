@@ -40,7 +40,7 @@ describe(chooseCard, () => {
     const cardNotInHand = tempCommandCards[1];
 
     expect(() => chooseCard(owned, cardNotInHand)).toThrow(
-      `CommandCard ${tempCommandCards[1].id} not found in player's hand`,
+      `Command card ${tempCommandCards[1].id} not found in player's hand`,
     );
   });
 });

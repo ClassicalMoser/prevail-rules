@@ -83,7 +83,7 @@ describe(isLegalCardChoice, () => {
         choiceType: 'chooseCard',
         eventNumber: 0,
         eventType: 'playerChoice',
-        player: 'black', // CommandCard is in white player's hand, not black's
+        player: 'black', // Command card is in white player's hand, not black's
       };
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);
@@ -101,7 +101,7 @@ describe(isLegalCardChoice, () => {
         choiceType: 'chooseCard',
         eventNumber: 0,
         eventType: 'playerChoice',
-        player: 'white', // CommandCard is in black player's hand, not white's
+        player: 'white', // Command card is in black player's hand, not white's
       };
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);
@@ -119,7 +119,7 @@ describe(isLegalCardChoice, () => {
         choiceType: 'chooseCard',
         eventNumber: 0,
         eventType: 'playerChoice',
-        player: 'black', // CommandCard is not in either player's hand
+        player: 'black', // Command card is not in either player's hand
       };
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);

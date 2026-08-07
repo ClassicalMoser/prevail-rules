@@ -23,14 +23,29 @@ export interface Army {
   commandCards: CommandCard[];
 }
 
-const _armySchemaObject = z.object({
-  /** The unique identifier of the army. */
-  id: z.uuid(),
-  /** The units in the army. */
-  units: z.array(unitCountSchema),
-  /** The command cards in the army. */
-  commandCards: z.array(commandCardSchema),
-});
+const _armySchemaObject = z
+  .object({
+    /** The unique identifier of the army. */
+    id: z.uuid(),
+    /** The units in the army. */
+    units: z.array(unitCountSchema),
+    /** The command cards in the army. */
+    commandCards: z.array(commandCardSchema),
+  })
+  .superRefine((army, ctx) => {
+    const seenUnitTypeIds = new Set<string>();
+    for (const [index, unit] of army.units.entries()) {
+      const unitTypeId = unit.unitType.id;
+      if (seenUnitTypeIds.has(unitTypeId)) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'An army cannot duplicate unit types.',
+          path: ['units', index, 'unitType'],
+        });
+      }
+      seenUnitTypeIds.add(unitTypeId);
+    }
+  });
 
 type ArmySchemaType = z.infer<typeof _armySchemaObject>;
 
@@ -56,14 +71,12 @@ export function refineArmyComposition(
   const rules = armyCompositionByMode[mode];
   const modeLabel = `${mode.charAt(0).toUpperCase()}${mode.slice(1)}`;
 
-  for (const [index, unit] of army.units.entries()) {
-    if (unit.count > rules.maxUnitTypeCount) {
-      ctx.addIssue({
-        code: 'custom',
-        message: `${modeLabel} armies may include at most ${rules.maxUnitTypeCount} of a given unit type.`,
-        path: [...pathPrefix, 'units', index, 'count'],
-      });
-    }
+  if (army.units.length > rules.maxUnitTypeCount) {
+    ctx.addIssue({
+      code: 'custom',
+      message: `${modeLabel} armies may include at most ${rules.maxUnitTypeCount} different unit types.`,
+      path: [...pathPrefix, 'units'],
+    });
   }
 
   if (rules.maxUnitCost !== null) {

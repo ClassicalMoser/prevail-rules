@@ -19,7 +19,7 @@ export function getCards(...indices: number[]): CommandCard[] {
   for (const index of indices) {
     if (index < 0 || index >= tempCommandCards.length) {
       throw new Error(
-        `CommandCard index ${index} is out of bounds. Available cards: 0-${tempCommandCards.length - 1}`,
+        `Command card index ${index} is out of bounds. Available cards: 0-${tempCommandCards.length - 1}`,
       );
     }
     cards.push(tempCommandCards[index]);

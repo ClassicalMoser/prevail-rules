@@ -17,7 +17,7 @@ export function chooseCard(
   const cardInHand = inHand.find((c) => c.id === card.id);
 
   if (!cardInHand) {
-    throw new Error(`CommandCard ${card.id} not found in player's hand`);
+    throw new Error(`Command card ${card.id} not found in player's hand`);
   }
 
   const newHand = inHand.filter((c) => c.id !== card.id);
