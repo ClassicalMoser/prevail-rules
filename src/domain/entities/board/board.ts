@@ -1,6 +1,7 @@
 import type { AssertExact } from '@utils';
 import type { Coordinate } from './boardCoordinates';
 import type { BoardSpace } from './boardSpace';
+import type { CoordinateLayout } from './coordinateLayout';
 
 import { z } from 'zod';
 import { boardSpaceSchema } from './boardSpace';
@@ -35,7 +36,7 @@ export interface Board {
 }
 
 function expectedCoordinateKeys(boardTypeValue: BoardType): Set<string> {
-  const layout = coordinateLayoutMap[boardTypeValue];
+  const layout: CoordinateLayout = coordinateLayoutMap[boardTypeValue];
   const keys = new Set<string>();
   for (const row of layout.rowLetters) {
     for (const column of layout.columnNumbers) {

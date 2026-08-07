@@ -49,10 +49,10 @@ export function validateEvent(
     };
   }
 
-  const currentPhase = roundState.currentPhaseState;
+  const currentPhase = roundState.currentPhaseState.phase;
 
   // Route to phase-specific validation
-  switch (currentPhase.phase) {
+  switch (currentPhase) {
     case 'playCards': {
       return validatePlayCardsPhaseEvent(
         event,
