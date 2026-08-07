@@ -101,7 +101,7 @@ describe(applyResolveUnitsBrokenEvent, () => {
     const space = getBoardSpace(next.boardState, 'E-5');
     expect(space.unitPresence.presenceType).toBe('none');
 
-    expect(next.routedUnits.includes(unit)).toBeTruthy();
+    expect(next.routedUnits).toContain(unit);
 
     const phase = throwIfNone(
       next.currentRoundState.currentPhaseState,
@@ -113,11 +113,11 @@ describe(applyResolveUnitsBrokenEvent, () => {
     expect(phase.step).toBe('firstPlayerResolveRally');
 
     const rs = throwIfPending(phase.firstPlayerRallyResolutionState, 'rally');
-    expect(
-      throwIfPending(rs.unitsLostSupport, 'unitsLostSupport').includes(unit),
-    ).toBeTruthy();
+    expect(throwIfPending(rs.unitsLostSupport, 'unitsLostSupport')).toContain(
+      unit,
+    );
     const rout = throwIfPending(rs.routState, 'rout');
     expect(rout.numberToDiscard).toBe(unit.unitType.morale);
-    expect(rout.completed).toBeFalsy();
+    expect(rout.completed).toBe(false);
   });
 });

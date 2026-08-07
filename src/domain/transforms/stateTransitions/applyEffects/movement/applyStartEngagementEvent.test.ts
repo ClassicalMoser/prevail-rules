@@ -149,7 +149,7 @@ describe(applyStartEngagementEvent, () => {
     if (res.engagementType !== 'flank') {
       throw new Error('flank');
     }
-    expect(res.defenderRotated).toBeFalsy();
+    expect(res.defenderRotated).toBe(false);
   });
 
   it('given bogus engagementType siege cast, throws unknown engagement type', () => {

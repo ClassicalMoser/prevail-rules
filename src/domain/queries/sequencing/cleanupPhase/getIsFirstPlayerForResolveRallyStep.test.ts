@@ -16,7 +16,7 @@ describe(getIsFirstPlayerForResolveRallyStep, () => {
       step: 'firstPlayerResolveRally',
     };
 
-    expect(getIsFirstPlayerForResolveRallyStep(state)).toBeTruthy();
+    expect(getIsFirstPlayerForResolveRallyStep(state)).toBe(true);
   });
 
   it('given the second player resolve rally step, returns false', () => {
@@ -28,7 +28,7 @@ describe(getIsFirstPlayerForResolveRallyStep, () => {
       step: 'secondPlayerResolveRally',
     };
 
-    expect(getIsFirstPlayerForResolveRallyStep(state)).toBeFalsy();
+    expect(getIsFirstPlayerForResolveRallyStep(state)).toBe(false);
   });
 
   it('given discardPlayedCards, throws not on resolveRally with step name', () => {

@@ -53,7 +53,7 @@ describe(generateResolveRoutEvent, () => {
     expect(event.effectType).toBe('resolveRout');
     expect(event.routResolutionSource).toBe('rangedAttack');
     expect(event.penalty).toBe(defendingUnit.unitType.morale);
-    expect(event.unitInstances.includes(defendingUnit)).toBeTruthy();
+    expect(event.unitInstances).toContain(defendingUnit);
   });
 
   it('given black initiative and rout on both melee applies, uses black unit and melee source', () => {
@@ -91,7 +91,7 @@ describe(generateResolveRoutEvent, () => {
 
     const event = generateResolveRoutEvent(full, 0);
     expect(event.routResolutionSource).toBe('melee');
-    expect(event.unitInstances.includes(blackUnit)).toBeTruthy();
+    expect(event.unitInstances).toContain(blackUnit);
     expect(event.penalty).toBe(blackUnit.unitType.morale);
   });
 
@@ -125,7 +125,7 @@ describe(generateResolveRoutEvent, () => {
 
     const event = generateResolveRoutEvent(full, 0);
     expect(event.routResolutionSource).toBe('rearEngagementMovement');
-    expect(event.unitInstances.includes(whiteUnit)).toBeTruthy();
+    expect(event.unitInstances).toContain(whiteUnit);
   });
 
   it('given cleanup firstPlayerResolveRally with nested routState, source rally and listed unit', () => {
@@ -154,7 +154,7 @@ describe(generateResolveRoutEvent, () => {
 
     const event = generateResolveRoutEvent(full, 0);
     expect(event.routResolutionSource).toBe('rally');
-    expect(event.unitInstances.includes(unit)).toBeTruthy();
+    expect(event.unitInstances).toContain(unit);
   });
 
   it('given issueCommands with invalid melee-shaped CRS, throws movement/ranged expectation', () => {

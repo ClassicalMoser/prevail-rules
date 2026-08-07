@@ -15,7 +15,7 @@ describe(createFrontEngagementState, () => {
     expect(
       state.engagementResolutionState.defensiveCommitment.commitmentType,
     ).toBe('pending');
-    expect(state.completed).toBeFalsy();
+    expect(state.completed).toBe(false);
   });
 });
 
@@ -23,8 +23,8 @@ describe(createFlankEngagementState, () => {
   it('given context, returns engagement state with flank resolution', () => {
     const state = createFlankEngagementState();
     expect(state.engagementResolutionState.engagementType).toBe('flank');
-    expect(state.engagementResolutionState.defenderRotated).toBeFalsy();
-    expect(state.completed).toBeFalsy();
+    expect(state.engagementResolutionState.defenderRotated).toBe(false);
+    expect(state.completed).toBe(false);
   });
 });
 
@@ -39,7 +39,7 @@ describe(createRearEngagementState, () => {
         substepType: 'rout',
       }),
     );
-    expect(state.engagementResolutionState.completed).toBeFalsy();
-    expect(state.completed).toBeFalsy();
+    expect(state.engagementResolutionState.completed).toBe(false);
+    expect(state.completed).toBe(false);
   });
 });

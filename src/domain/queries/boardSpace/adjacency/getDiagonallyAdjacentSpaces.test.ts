@@ -28,9 +28,9 @@ describe(getDiagonallyAdjacentSpaces, () => {
 
   it('given interior coordinate, excludes orthogonals', () => {
     const result = getDiagonallyAdjacentSpaces(standardBoard, 'E-5');
-    expect(result.has('D-5')).toBeFalsy();
-    expect(result.has('E-4')).toBeFalsy();
-    expect(result.has('E-6')).toBeFalsy();
-    expect(result.has('F-5')).toBeFalsy();
+    expect(result.has('D-5')).toBe(false);
+    expect(result.has('E-4')).toBe(false);
+    expect(result.has('E-6')).toBe(false);
+    expect(result.has('F-5')).toBe(false);
   });
 });

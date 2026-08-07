@@ -169,7 +169,7 @@ describe(applyResolveRetreatEvent, () => {
       const newState = applyResolveRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromRangedAttack(newState);
 
-      expect(newRetreatState.completed).toBeTruthy();
+      expect(newRetreatState.completed).toBe(true);
     });
 
     it('given extra black unit on D-5, after retreat D-5 single presence unchanged', () => {
@@ -236,7 +236,7 @@ describe(applyResolveRetreatEvent, () => {
       const newState = applyResolveRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromMelee(newState, 'black');
 
-      expect(newRetreatState.completed).toBeTruthy();
+      expect(newRetreatState.completed).toBe(true);
       expect(newState.boardState.board['E-5']?.unitPresence.presenceType).toBe(
         'single',
       );
@@ -266,7 +266,7 @@ describe(applyResolveRetreatEvent, () => {
       const newState = applyResolveRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromMelee(newState, 'white');
 
-      expect(newRetreatState.completed).toBeTruthy();
+      expect(newRetreatState.completed).toBe(true);
       expect(newState.boardState.board['E-5']?.unitPresence.presenceType).toBe(
         'single',
       );

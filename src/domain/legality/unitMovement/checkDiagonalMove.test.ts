@@ -29,7 +29,7 @@ describe(checkDiagonalMove, () => {
       ]);
       expect(
         checkDiagonalMove('black', 0, gameState, 'E-5', 'E-6', 'northEast'),
-      ).toBeTruthy();
+      ).toBe(true);
     });
   });
   describe('diagonal facings with enemy units', () => {
@@ -40,7 +40,7 @@ describe(checkDiagonalMove, () => {
       ]);
       expect(
         checkDiagonalMove('black', 0, gameState, 'E-5', 'E-6', 'northEast'),
-      ).toBeTruthy();
+      ).toBe(true);
     });
 
     it('given both adjacent spaces are occupied by enemy units, returns false', () => {
@@ -51,7 +51,7 @@ describe(checkDiagonalMove, () => {
       ]);
       expect(
         checkDiagonalMove('black', 0, gameState, 'E-5', 'E-6', 'northEast'),
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
   describe('diagonal facings with engaged units', () => {
@@ -88,7 +88,7 @@ describe(checkDiagonalMove, () => {
       gameState.boardState = board;
       expect(
         checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6', 'northEast'),
-      ).toBeTruthy();
+      ).toBe(true);
     });
 
     it('given both adjacent spaces are occupied by engaged units, returns false', () => {
@@ -140,7 +140,7 @@ describe(checkDiagonalMove, () => {
       gameState.boardState = board;
       expect(
         checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6', 'northEast'),
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
   describe('diagonal facings with friendly units', () => {
@@ -169,7 +169,7 @@ describe(checkDiagonalMove, () => {
           'D-6',
           'northEast',
         ),
-      ).toBeTruthy();
+      ).toBe(true);
     });
 
     it('given both adjacent spaces have low flexibility friendly units, returns false', () => {
@@ -203,7 +203,7 @@ describe(checkDiagonalMove, () => {
           'D-6',
           'northEast',
         ),
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it('given both adjacent spaces have high flexibility friendly units, returns true', () => {
@@ -237,7 +237,7 @@ describe(checkDiagonalMove, () => {
           'D-6',
           'northEast',
         ),
-      ).toBeTruthy();
+      ).toBe(true);
     });
 
     it('given one adjacent space has low flexibility friendly unit and the other has high flexibility friendly unit, returns true', () => {
@@ -273,7 +273,7 @@ describe(checkDiagonalMove, () => {
           'D-6',
           'northEast',
         ),
-      ).toBeTruthy();
+      ).toBe(true);
     });
   });
 });

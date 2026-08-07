@@ -23,6 +23,6 @@ describe(getBoardCoordinatesWithEngagedUnits, () => {
     const coords = getBoardCoordinatesWithEngagedUnits(state.boardState);
 
     expect(coords.size).toBe(1);
-    expect(coords.has('E-5')).toBeTruthy();
+    expect(coords.has('E-5')).toBe(true);
   });
 });

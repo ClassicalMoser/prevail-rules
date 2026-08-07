@@ -43,7 +43,7 @@ describe(applyChooseWhetherToRetreatEvent, () => {
 
     expect(
       engagementState.engagementResolutionState.defendingUnitRetreats,
-    ).toBeTruthy();
+    ).toBe(true);
   });
 
   it('given same stack and white choosesToRetreat false, defendingUnitRetreats is false', () => {
@@ -61,7 +61,7 @@ describe(applyChooseWhetherToRetreatEvent, () => {
 
     expect(
       engagementState.engagementResolutionState.defendingUnitRetreats,
-    ).toBeFalsy();
+    ).toBe(false);
   });
 
   it('given black defender events, true vs false flip defendingUnitRetreats the same as white', () => {
@@ -82,12 +82,12 @@ describe(applyChooseWhetherToRetreatEvent, () => {
       getFrontEngagementStateFromMovement(
         applyChooseWhetherToRetreatEvent(retreatEvent, state),
       ).engagementResolutionState.defendingUnitRetreats,
-    ).toBeTruthy();
+    ).toBe(true);
     expect(
       getFrontEngagementStateFromMovement(
         applyChooseWhetherToRetreatEvent(stayEvent, state),
       ).engagementResolutionState.defendingUnitRetreats,
-    ).toBeFalsy();
+    ).toBe(false);
   });
 
   it('given engagement snapshot before apply, input movement engagement slice unchanged after apply', () => {

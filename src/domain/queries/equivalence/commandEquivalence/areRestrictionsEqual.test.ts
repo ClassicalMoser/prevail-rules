@@ -18,7 +18,7 @@ describe(areRestrictionsEqual, () => {
       unitRestrictions: [],
     };
     const { result } = areRestrictionsEqual(restrictions1, restrictions2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given comparing restrictions to itself, returns true', () => {
@@ -28,7 +28,7 @@ describe(areRestrictionsEqual, () => {
       unitRestrictions: ['unit-id-1'],
     };
     const { result } = areRestrictionsEqual(restrictions, restrictions);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given different object references with same values, returns true', () => {
@@ -43,7 +43,7 @@ describe(areRestrictionsEqual, () => {
       unitRestrictions: ['unit-id-2'],
     };
     const { result } = areRestrictionsEqual(restrictions1, restrictions2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   describe('inspirationRangeRestriction differences', () => {
@@ -62,7 +62,7 @@ describe(areRestrictionsEqual, () => {
         restrictions1,
         restrictions2,
       );
-      expect(validationResult.result).toBeFalsy();
+      expect(validationResult.result).toBe(false);
       if (!validationResult.result) {
         expect(validationResult.errorReason).toContain(
           'inspirationRangeRestriction',
@@ -82,7 +82,7 @@ describe(areRestrictionsEqual, () => {
         unitRestrictions: [],
       };
       const { result } = areRestrictionsEqual(restrictions1, restrictions2);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given both are undefined, returns true', () => {
@@ -97,7 +97,7 @@ describe(areRestrictionsEqual, () => {
         unitRestrictions: [],
       };
       const { result } = areRestrictionsEqual(restrictions1, restrictions2);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -117,7 +117,7 @@ describe(areRestrictionsEqual, () => {
         restrictions1,
         restrictions2,
       );
-      expect(validationResult.result).toBeFalsy();
+      expect(validationResult.result).toBe(false);
       if (!validationResult.result) {
         expect(validationResult.errorReason).toContain(
           'traitRestrictions array lengths',
@@ -140,7 +140,7 @@ describe(areRestrictionsEqual, () => {
         restrictions1,
         restrictions2,
       );
-      expect(validationResult.result).toBeFalsy();
+      expect(validationResult.result).toBe(false);
       if (!validationResult.result) {
         expect(validationResult.errorReason).toContain(
           'traitRestrictions at index',
@@ -160,7 +160,7 @@ describe(areRestrictionsEqual, () => {
         unitRestrictions: [],
       };
       const { result } = areRestrictionsEqual(restrictions1, restrictions2);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given traitRestrictions have same elements but different order, returns false', () => {
@@ -175,7 +175,7 @@ describe(areRestrictionsEqual, () => {
         unitRestrictions: [],
       };
       const { result } = areRestrictionsEqual(restrictions1, restrictions2);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 
@@ -195,7 +195,7 @@ describe(areRestrictionsEqual, () => {
         restrictions1,
         restrictions2,
       );
-      expect(validationResult.result).toBeFalsy();
+      expect(validationResult.result).toBe(false);
       if (!validationResult.result) {
         expect(validationResult.errorReason).toContain(
           'unitRestrictions array lengths',
@@ -218,7 +218,7 @@ describe(areRestrictionsEqual, () => {
         restrictions1,
         restrictions2,
       );
-      expect(validationResult.result).toBeFalsy();
+      expect(validationResult.result).toBe(false);
       if (!validationResult.result) {
         expect(validationResult.errorReason).toContain(
           'unitRestrictions at index',
@@ -238,7 +238,7 @@ describe(areRestrictionsEqual, () => {
         unitRestrictions: ['unit-id-1', 'unit-id-2'],
       };
       const { result } = areRestrictionsEqual(restrictions1, restrictions2);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given unitRestrictions have same elements but different order, returns false', () => {
@@ -253,7 +253,7 @@ describe(areRestrictionsEqual, () => {
         unitRestrictions: ['unit-id-2', 'unit-id-1'],
       };
       const { result } = areRestrictionsEqual(restrictions1, restrictions2);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 });

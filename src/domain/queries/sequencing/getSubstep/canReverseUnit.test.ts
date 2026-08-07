@@ -40,7 +40,7 @@ describe(canReverseUnit, () => {
       substepType: 'reverse',
     };
 
-    expect(canReverseUnit(reverseState, stateWithUnit)).toBeTruthy();
+    expect(canReverseUnit(reverseState, stateWithUnit)).toBe(true);
   });
 
   it('given primary white engaged on E-5, primary reverse attempt returns false', () => {
@@ -66,7 +66,7 @@ describe(canReverseUnit, () => {
       substepType: 'reverse',
     };
 
-    expect(canReverseUnit(reverseState, state)).toBeFalsy();
+    expect(canReverseUnit(reverseState, state)).toBe(false);
   });
 
   it('given same engagement, secondary black reverse attempt also false', () => {
@@ -92,7 +92,7 @@ describe(canReverseUnit, () => {
       substepType: 'reverse',
     };
 
-    expect(canReverseUnit(reverseState, state)).toBeFalsy();
+    expect(canReverseUnit(reverseState, state)).toBe(false);
   });
 
   it('given empty board but reverseState cites E-5, throws unit not present at coordinate', () => {

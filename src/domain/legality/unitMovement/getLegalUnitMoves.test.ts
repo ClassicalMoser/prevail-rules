@@ -51,7 +51,7 @@ describe(getLegalUnitMoves, () => {
         coordinate: 'D-7',
         facing: 'southEast',
       });
-      expect(hasStartingPosition).toBeTruthy();
+      expect(hasStartingPosition).toBe(true);
     });
   });
 

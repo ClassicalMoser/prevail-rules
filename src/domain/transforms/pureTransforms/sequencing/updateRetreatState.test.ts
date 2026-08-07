@@ -126,9 +126,9 @@ describe(updateRetreatState, () => {
       commandState.attackApplyState,
       'attack apply',
     );
-    expect(
-      throwIfPending(attackApply.retreatState, 'retreat').completed,
-    ).toBeTruthy();
+    expect(throwIfPending(attackApply.retreatState, 'retreat').completed).toBe(
+      true,
+    );
   });
 
   it('given update retreat state in melee resolution for white', () => {
@@ -158,9 +158,9 @@ describe(updateRetreatState, () => {
       melee.whiteAttackApplyState,
       'white apply',
     );
-    expect(
-      throwIfPending(whiteApply.retreatState, 'retreat').completed,
-    ).toBeTruthy();
+    expect(throwIfPending(whiteApply.retreatState, 'retreat').completed).toBe(
+      true,
+    );
   });
 
   it('given update retreat state in melee resolution for black', () => {
@@ -190,9 +190,9 @@ describe(updateRetreatState, () => {
       melee.blackAttackApplyState,
       'black apply',
     );
-    expect(
-      throwIfPending(blackApply.retreatState, 'retreat').completed,
-    ).toBeTruthy();
+    expect(throwIfPending(blackApply.retreatState, 'retreat').completed).toBe(
+      true,
+    );
   });
 
   it('given when ranged attack apply has no retreat state, throws', () => {

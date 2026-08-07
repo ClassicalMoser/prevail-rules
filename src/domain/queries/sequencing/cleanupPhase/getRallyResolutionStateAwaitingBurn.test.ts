@@ -34,8 +34,8 @@ describe(getRallyResolutionStateAwaitingBurn, () => {
   it('given rallied and not rallyResolved, returns first-player rally slice', () => {
     const state = stateFirstPlayerResolveRally();
     const result = getRallyResolutionStateAwaitingBurn(state, 'white');
-    expect(result.playerRallied).toBeTruthy();
-    expect(result.rallyResolved).toBeFalsy();
+    expect(result.playerRallied).toBe(true);
+    expect(result.rallyResolved).toBe(false);
   });
 
   it('given playerRallied false, throws player did not choose to rally', () => {

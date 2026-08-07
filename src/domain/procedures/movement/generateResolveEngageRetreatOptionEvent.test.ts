@@ -62,7 +62,7 @@ describe(generateResolveEngageRetreatOptionEvent, () => {
       engagingSpeed: 2,
     });
     const event = generateResolveEngageRetreatOptionEvent(full, 0);
-    expect(event.defendingUnitCanRetreat).toBeTruthy();
+    expect(event.defendingUnitCanRetreat).toBe(true);
   });
 
   it('given defender speed 2 and engager speed 4, defendingUnitCanRetreat is false', () => {
@@ -71,6 +71,6 @@ describe(generateResolveEngageRetreatOptionEvent, () => {
       engagingSpeed: 4,
     });
     const event = generateResolveEngageRetreatOptionEvent(full, 0);
-    expect(event.defendingUnitCanRetreat).toBeFalsy();
+    expect(event.defendingUnitCanRetreat).toBe(false);
   });
 });

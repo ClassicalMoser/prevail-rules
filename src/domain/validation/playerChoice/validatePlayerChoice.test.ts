@@ -53,7 +53,7 @@ describe(validatePlayerChoice, () => {
     // eslint-disable-next-line no-console
     console.log(validation);
 
-    expect(validation.result).toBeFalsy();
+    expect(validation.result).toBe(false);
     if (validation.result !== false) {
       throw new Error('expected fail');
     }
@@ -95,7 +95,7 @@ describe(validatePlayerChoice, () => {
     // eslint-disable-next-line no-console
     console.log(validation);
 
-    expect(validation.result).toBeFalsy();
+    expect(validation.result).toBe(false);
     if (validation.result !== false) {
       throw new Error('expected fail');
     }
@@ -115,7 +115,7 @@ describe(validatePlayerChoice, () => {
 
     const validation = validatePlayerChoice(event, state);
 
-    expect(validation.result).toBeFalsy();
+    expect(validation.result).toBe(false);
     if (validation.result !== false) {
       throw new Error('expected fail');
     }

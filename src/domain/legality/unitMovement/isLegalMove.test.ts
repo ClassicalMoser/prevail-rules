@@ -40,7 +40,7 @@ describe(isLegalMove, () => {
         },
       };
       const isLegal = isLegalMove(moveUnitEvent, gameState);
-      expect(isLegal).toBeTruthy();
+      expect(isLegal).toBe(true);
     });
   });
   describe('bad inputs', () => {
@@ -66,7 +66,7 @@ describe(isLegalMove, () => {
         },
       };
       const isLegal = isLegalMove(moveUnitEvent, gameState);
-      expect(isLegal).toBeFalsy();
+      expect(isLegal).toBe(false);
     });
   });
 });

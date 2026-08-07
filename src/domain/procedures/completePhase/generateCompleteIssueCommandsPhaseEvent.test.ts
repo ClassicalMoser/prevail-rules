@@ -41,7 +41,7 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
 
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('completeIssueCommandsPhase');
-    expect(event.remainingEngagements.includes('E-5')).toBeTruthy();
+    expect(event.remainingEngagements).toContain('E-5');
   });
 
   it('given empty board and phase complete, remainingEngagements is empty', () => {
@@ -64,6 +64,6 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
     const eventEngaged = generateCompleteIssueCommandsPhaseEvent(engaged, 0);
 
     expect(eventEmpty.remainingEngagements.length).toBe(0);
-    expect(eventEngaged.remainingEngagements.includes('E-5')).toBeTruthy();
+    expect(eventEngaged.remainingEngagements).toContain('E-5');
   });
 });

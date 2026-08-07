@@ -22,7 +22,7 @@ describe('valid moves', () => {
 
     const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given commander moves within distance 4, returns true', () => {
@@ -38,7 +38,7 @@ describe('valid moves', () => {
 
     const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given white commander moves within distance, returns true', () => {
@@ -54,7 +54,7 @@ describe('valid moves', () => {
 
     const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given commander moves diagonally within distance, returns true', () => {
@@ -70,7 +70,7 @@ describe('valid moves', () => {
 
     const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 });
 
@@ -88,7 +88,7 @@ describe('invalid moves', () => {
 
     const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it("given wrong player's commander is at starting position, returns false", () => {
@@ -104,7 +104,7 @@ describe('invalid moves', () => {
 
     const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('given destination is beyond move distance, returns false', () => {
@@ -120,7 +120,7 @@ describe('invalid moves', () => {
 
     const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('given starting coordinate is invalid, returns false', () => {
@@ -136,7 +136,7 @@ describe('invalid moves', () => {
 
     const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('given destination coordinate is invalid, returns false', () => {
@@ -152,6 +152,6 @@ describe('invalid moves', () => {
 
     const { result } = isLegalCommanderMove(moveCommanderEvent, board);
 
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 });

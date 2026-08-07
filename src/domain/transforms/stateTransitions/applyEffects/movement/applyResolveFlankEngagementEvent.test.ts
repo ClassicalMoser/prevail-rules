@@ -78,10 +78,10 @@ describe(applyResolveFlankEngagementEvent, () => {
       throw new Error('movement');
     }
     const es = throwIfPending(cmd.engagementState, 'engagement');
-    expect(es.completed).toBeTruthy();
+    expect(es.completed).toBe(true);
     if (es.engagementResolutionState.engagementType !== 'flank') {
       throw new Error('Expected flank');
     }
-    expect(es.engagementResolutionState.defenderRotated).toBeTruthy();
+    expect(es.engagementResolutionState.defenderRotated).toBe(true);
   });
 });

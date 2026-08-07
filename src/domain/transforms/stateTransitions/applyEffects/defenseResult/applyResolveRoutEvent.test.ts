@@ -204,8 +204,8 @@ describe(applyResolveRoutEvent, () => {
       expect(newRoutState.substepType).toBe('rout');
       expect(newRoutState.player).toBe(routState.player);
       expect(newRoutState.unitsToRout).toStrictEqual(routState.unitsToRout);
-      expect(newRoutState.cardsChosen).toBeFalsy();
-      expect(newRoutState.completed).toBeFalsy();
+      expect(newRoutState.cardsChosen).toBe(false);
+      expect(newRoutState.completed).toBe(false);
     });
   });
 

@@ -62,9 +62,7 @@ describe(applyChooseRoutDiscardEvent, () => {
 
     expect(phase.phase).toBe('cleanup');
     expect(phase.step).toBe('firstPlayerResolveRally');
-    expect(
-      throwIfPending(rallyState.routState, 'rout').cardsChosen,
-    ).toBeTruthy();
+    expect(throwIfPending(rallyState.routState, 'rout').cardsChosen).toBe(true);
   });
 
   it('given secondPlayerResolveRally rout for black, empty cardIds sets cardsChosen and same step', () => {
@@ -89,9 +87,7 @@ describe(applyChooseRoutDiscardEvent, () => {
 
     expect(phase.phase).toBe('cleanup');
     expect(phase.step).toBe('secondPlayerResolveRally');
-    expect(
-      throwIfPending(rallyState.routState, 'rout').cardsChosen,
-    ).toBeTruthy();
+    expect(throwIfPending(rallyState.routState, 'rout').cardsChosen).toBe(true);
   });
 
   it('given playCards phase, throws expected cleanup phase', () => {

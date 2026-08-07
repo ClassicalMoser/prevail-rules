@@ -18,7 +18,7 @@ describe(createRetreatState, () => {
     expect(state.substepType).toBe('retreat');
     expect(state.retreatingUnit).toBe(unit);
     expect(state.legalRetreatOptions.length).toBe(2);
-    expect(state.completed).toBeFalsy();
+    expect(state.completed).toBe(false);
   });
 });
 
@@ -28,8 +28,8 @@ describe(createRoutState, () => {
     const state = createRoutState('white', unit);
     expect(state.substepType).toBe('rout');
     expect(state.player).toBe('white');
-    expect(state.unitsToRout.includes(unit)).toBeTruthy();
-    expect(state.completed).toBeFalsy();
+    expect(state.unitsToRout).toContain(unit);
+    expect(state.completed).toBe(false);
   });
 });
 
@@ -39,20 +39,20 @@ describe(createReverseState, () => {
     const state = createReverseState(unit);
     expect(state.substepType).toBe('reverse');
     expect(state.reversingUnit).toBe(unit);
-    expect(state.completed).toBeFalsy();
+    expect(state.completed).toBe(false);
   });
 });
 
 describe(createRallyResolutionState, () => {
   it('given context, returns rally resolution with defaults', () => {
     const state = createRallyResolutionState();
-    expect(state.playerRallied).toBeFalsy();
-    expect(state.rallyResolved).toBeFalsy();
-    expect(state.completed).toBeFalsy();
+    expect(state.playerRallied).toBe(false);
+    expect(state.rallyResolved).toBe(false);
+    expect(state.completed).toBe(false);
   });
 
   it('given accept overrides', () => {
     const state = createRallyResolutionState({ playerRallied: true });
-    expect(state.playerRallied).toBeTruthy();
+    expect(state.playerRallied).toBe(true);
   });
 });

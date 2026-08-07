@@ -10,7 +10,7 @@ describe(areModifiersArraysEqual, () => {
     const modifiers1: Modifier[] = [];
     const modifiers2: Modifier[] = [];
     const { result } = areModifiersArraysEqual(modifiers1, modifiers2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given both arrays have identical modifiers in same order, returns true', () => {
@@ -23,7 +23,7 @@ describe(areModifiersArraysEqual, () => {
       { type: 'speed', value: 2 },
     ];
     const { result } = areModifiersArraysEqual(modifiers1, modifiers2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given comparing array to itself, returns true', () => {
@@ -32,14 +32,14 @@ describe(areModifiersArraysEqual, () => {
       { type: 'defense', value: 2 },
     ];
     const { result } = areModifiersArraysEqual(modifiers, modifiers);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given different array references with same values, returns true', () => {
     const modifiers1: Modifier[] = [{ type: 'attack', value: 1 }];
     const modifiers2: Modifier[] = [{ type: 'attack', value: 1 }];
     const { result } = areModifiersArraysEqual(modifiers1, modifiers2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given arrays have different lengths, returns false', () => {
@@ -49,7 +49,7 @@ describe(areModifiersArraysEqual, () => {
       { type: 'speed', value: 2 },
     ];
     const validationResult = areModifiersArraysEqual(modifiers1, modifiers2);
-    expect(validationResult.result).toBeFalsy();
+    expect(validationResult.result).toBe(false);
     if (!validationResult.result) {
       expect(validationResult.errorReason).toContain('different lengths');
     }
@@ -65,7 +65,7 @@ describe(areModifiersArraysEqual, () => {
       { type: 'speed', value: 3 },
     ];
     const validationResult = areModifiersArraysEqual(modifiers1, modifiers2);
-    expect(validationResult.result).toBeFalsy();
+    expect(validationResult.result).toBe(false);
     if (!validationResult.result) {
       expect(validationResult.errorReason).toContain('differ at index');
     }
@@ -81,28 +81,28 @@ describe(areModifiersArraysEqual, () => {
       { type: 'attack', value: 1 },
     ];
     const { result } = areModifiersArraysEqual(modifiers1, modifiers2);
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('given first array is empty and second is not, returns false', () => {
     const modifiers1: Modifier[] = [];
     const modifiers2: Modifier[] = [{ type: 'attack', value: 1 }];
     const { result } = areModifiersArraysEqual(modifiers1, modifiers2);
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('given second array is empty and first is not, returns false', () => {
     const modifiers1: Modifier[] = [{ type: 'attack', value: 1 }];
     const modifiers2: Modifier[] = [];
     const { result } = areModifiersArraysEqual(modifiers1, modifiers2);
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('given handle single element arrays correctly', () => {
     const modifiers1: Modifier[] = [{ type: 'defense', value: 2 }];
     const modifiers2: Modifier[] = [{ type: 'defense', value: 2 }];
     const { result } = areModifiersArraysEqual(modifiers1, modifiers2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given handle arrays with multiple identical modifiers', () => {
@@ -117,7 +117,7 @@ describe(areModifiersArraysEqual, () => {
       { type: 'attack', value: 1 },
     ];
     const { result } = areModifiersArraysEqual(modifiers1, modifiers2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given comparing arrays to undefined, returns false', () => {
@@ -127,6 +127,6 @@ describe(areModifiersArraysEqual, () => {
       modifiers,
       undefined as unknown as Modifier[],
     );
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 });

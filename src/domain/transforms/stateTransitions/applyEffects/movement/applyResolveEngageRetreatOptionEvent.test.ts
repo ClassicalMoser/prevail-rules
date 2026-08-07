@@ -79,6 +79,6 @@ describe(applyResolveEngageRetreatOptionEvent, () => {
     if (res.engagementType !== 'front') {
       throw new Error('front');
     }
-    expect(res.defendingUnitCanRetreat).toBeTruthy();
+    expect(res.defendingUnitCanRetreat).toBe(true);
   });
 });

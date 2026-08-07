@@ -6,7 +6,7 @@ import { addCompletedPhase } from '../';
  * AddCompletedPhase: Adds a completed phase to the completed phases set.
  */
 describe(addCompletedPhase, () => {
-  it('given add phase to completed phases set', () => {
+  it('adds the phase to completedPhases without mutating the input', () => {
     const state = createEmptyGameState();
     const phaseState = {
       phase: PLAY_CARDS_PHASE,
@@ -15,15 +15,11 @@ describe(addCompletedPhase, () => {
 
     const newState = addCompletedPhase(state, phaseState);
 
-    expect(
-      newState.currentRoundState.completedPhases.includes(phaseState),
-    ).toBeTruthy();
-    expect(
-      state.currentRoundState.completedPhases.includes(phaseState),
-    ).toBeFalsy();
+    expect(newState.currentRoundState.completedPhases).toContain(phaseState);
+    expect(state.currentRoundState.completedPhases).not.toContain(phaseState);
   });
 
-  it('given not mutate the original state', () => {
+  it('leaves the original completedPhases reference unchanged', () => {
     const state = createEmptyGameState();
     const originalCompletedPhases = state.currentRoundState.completedPhases;
     const phaseState = {
@@ -38,7 +34,7 @@ describe(addCompletedPhase, () => {
     );
   });
 
-  it('given preserve existing completed phases', () => {
+  it('keeps existing completed phases when adding another', () => {
     const state = createEmptyGameState();
     const firstPhase = {
       phase: PLAY_CARDS_PHASE,
@@ -52,11 +48,11 @@ describe(addCompletedPhase, () => {
     } as const;
     const stateWithBoth = addCompletedPhase(stateWithFirst, secondPhase);
 
-    expect(
-      stateWithBoth.currentRoundState.completedPhases.includes(firstPhase),
-    ).toBeTruthy();
-    expect(
-      stateWithBoth.currentRoundState.completedPhases.includes(secondPhase),
-    ).toBeTruthy();
+    expect(stateWithBoth.currentRoundState.completedPhases).toContain(
+      firstPhase,
+    );
+    expect(stateWithBoth.currentRoundState.completedPhases).toContain(
+      secondPhase,
+    );
   });
 });
