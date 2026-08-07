@@ -32,7 +32,7 @@ describe(getRallyResolutionState, () => {
     });
 
     const result = getRallyResolutionState(state, 'black');
-    expect(result.playerRallied).toBeTruthy();
+    expect(result.playerRallied).toBe(true);
   });
 
   it('given white is second player with second bucket set, getRallyState(white) returns it', () => {
@@ -50,7 +50,7 @@ describe(getRallyResolutionState, () => {
     });
 
     const result = getRallyResolutionState(state, 'white');
-    expect(result.playerRallied).toBeFalsy();
+    expect(result.playerRallied).toBe(false);
   });
 
   it('given both rally buckets undefined at chooseRally, getRallyState(black) throws', () => {
@@ -83,7 +83,7 @@ describe(getCurrentRallyResolutionState, () => {
     });
 
     const result = getCurrentRallyResolutionState(state);
-    expect(result.playerRallied).toBeTruthy();
+    expect(result.playerRallied).toBe(true);
   });
 
   it('given firstPlayerResolveRally but first bucket missing, throws', () => {
@@ -114,7 +114,7 @@ describe(getCurrentRallyResolutionState, () => {
     });
 
     const result = getCurrentRallyResolutionState(state);
-    expect(result.playerRallied).toBeTruthy();
+    expect(result.playerRallied).toBe(true);
   });
 
   it('given secondPlayerResolveRally but second bucket missing, throws', () => {
@@ -206,7 +206,7 @@ describe(getRoutStateFromCleanupPhaseForResolveRout, () => {
     });
 
     const rout = getRoutStateFromCleanupPhaseForResolveRout(state);
-    expect(rout.unitsToRout.includes(unit)).toBeTruthy();
+    expect(rout.unitsToRout).toContain(unit);
   });
 
   it('returns rout from second player rally on secondPlayerResolveRally', () => {
@@ -232,7 +232,7 @@ describe(getRoutStateFromCleanupPhaseForResolveRout, () => {
     });
 
     const rout = getRoutStateFromCleanupPhaseForResolveRout(state);
-    expect(rout.unitsToRout.includes(unit)).toBeTruthy();
+    expect(rout.unitsToRout).toContain(unit);
   });
 
   it('throws when rally bucket has no rout state', () => {

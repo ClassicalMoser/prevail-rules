@@ -30,12 +30,12 @@ describe(getPlayerUnitsWithPlacementOnBoard, () => {
       whiteUnitsArray.some(
         (u) => u.unit === unit1 && u.placement.coordinate === 'E-5',
       ),
-    ).toBeTruthy();
+    ).toBe(true);
     expect(
       whiteUnitsArray.some(
         (u) => u.unit === unit2 && u.placement.coordinate === 'F-5',
       ),
-    ).toBeTruthy();
+    ).toBe(true);
   });
 
   it('given player has no units on board, returns empty set', () => {

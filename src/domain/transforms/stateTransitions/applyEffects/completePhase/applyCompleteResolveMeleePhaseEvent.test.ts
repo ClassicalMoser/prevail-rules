@@ -44,6 +44,6 @@ describe(applyCompleteResolveMeleePhaseEvent, () => {
     }
     expect(phase.step).toBe('discardPlayedCards');
     const completed = [...next.currentRoundState.completedPhases];
-    expect(completed.some((p) => p.phase === RESOLVE_MELEE_PHASE)).toBeTruthy();
+    expect(completed.some((p) => p.phase === RESOLVE_MELEE_PHASE)).toBe(true);
   });
 });

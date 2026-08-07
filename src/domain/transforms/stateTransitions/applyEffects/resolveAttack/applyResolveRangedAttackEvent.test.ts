@@ -101,7 +101,7 @@ describe(applyResolveRangedAttackEvent, () => {
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
     const apply = throwIfPending(ra.attackApplyState, 'attack apply');
-    expect(apply.attackResult.unitReversed).toBeTruthy();
+    expect(apply.attackResult.unitReversed).toBe(true);
     expect(throwIfPending(apply.reverseState, 'reverse').substepType).toBe(
       'reverse',
     );
@@ -120,7 +120,7 @@ describe(applyResolveRangedAttackEvent, () => {
     const apply = throwIfPending(ra.attackApplyState, 'attack apply');
     const rout = throwIfPending(apply.routState, 'rout');
     expect(rout.substepType).toBe('rout');
-    expect(rout.unitsToRout.includes(defender)).toBeTruthy();
+    expect(rout.unitsToRout).toContain(defender);
   });
 
   it('given retreated with sole legal E-6 south, retreat finalPosition equals that placement', () => {

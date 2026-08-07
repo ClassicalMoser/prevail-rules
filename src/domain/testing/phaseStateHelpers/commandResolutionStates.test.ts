@@ -17,7 +17,7 @@ describe(createMovementResolutionState, () => {
     expect(resolution.substepType).toBe('commandResolution');
     expect(resolution.movingUnit.placement.coordinate).toBe('E-5');
     expect(resolution.commitment.commitmentType).toBe('completed');
-    expect(resolution.completed).toBeFalsy();
+    expect(resolution.completed).toBe(false);
   });
 });
 
@@ -29,7 +29,7 @@ describe(createRangedAttackResolutionState, () => {
     expect(resolution.substepType).toBe('commandResolution');
     expect(resolution.attackingCommitment.commitmentType).toBe('completed');
     expect(resolution.defendingCommitment.commitmentType).toBe('completed');
-    expect(resolution.completed).toBeFalsy();
+    expect(resolution.completed).toBe(false);
   });
 });
 
@@ -41,6 +41,6 @@ describe(createMeleeResolutionState, () => {
     expect(resolution.location).toBe('E-5');
     expect(resolution.whiteCommitment.commitmentType).toBe('completed');
     expect(resolution.blackCommitment.commitmentType).toBe('completed');
-    expect(resolution.completed).toBeFalsy();
+    expect(resolution.completed).toBe(false);
   });
 });

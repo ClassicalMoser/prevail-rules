@@ -28,7 +28,7 @@ describe(isValidLine, () => {
       const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given two units facing the same direction, returns true', () => {
@@ -48,7 +48,7 @@ describe(isValidLine, () => {
       const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given two units facing opposite directions, returns true', () => {
@@ -68,7 +68,7 @@ describe(isValidLine, () => {
       const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given a line with 8 units, returns true', () => {
@@ -95,7 +95,7 @@ describe(isValidLine, () => {
       const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given a diagonal line (northEast facing), returns true', () => {
@@ -116,7 +116,7 @@ describe(isValidLine, () => {
       const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given a diagonal line with opposite facing (southWest), returns true', () => {
@@ -138,7 +138,7 @@ describe(isValidLine, () => {
       const line = [...lines][0]!;
 
       const { result } = isValidLine(board, line);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -146,7 +146,7 @@ describe(isValidLine, () => {
     it('given an empty line, returns false', () => {
       const invalidLine = { unitPlacements: [] };
       const { result } = isValidLine(standardBoard, invalidLine);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given a line with more than MAX_LINE_LENGTH units, returns false', () => {
@@ -174,7 +174,7 @@ describe(isValidLine, () => {
         })),
       };
       const { result } = isValidLine(standardBoard, invalidLine);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given units on different sides, returns false', () => {
@@ -199,7 +199,7 @@ describe(isValidLine, () => {
         ],
       };
       const { result } = isValidLine(standardBoard, invalidLine);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given units with wrong facing (not same or opposite), returns false', () => {
@@ -229,7 +229,7 @@ describe(isValidLine, () => {
         ],
       };
       const { result } = isValidLine(board, invalidLine);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given non-contiguous units (gap in line), returns false', () => {
@@ -254,7 +254,7 @@ describe(isValidLine, () => {
         ],
       };
       const { result } = isValidLine(standardBoard, invalidLine);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given units not in flanking spaces, returns false', () => {
@@ -279,7 +279,7 @@ describe(isValidLine, () => {
         ],
       };
       const { result } = isValidLine(standardBoard, invalidLine);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given diagonal line with wrong direction, returns false', () => {
@@ -307,7 +307,7 @@ describe(isValidLine, () => {
         ],
       };
       const { result } = isValidLine(standardBoard, invalidLine);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
   describe('edge cases', () => {
@@ -316,7 +316,7 @@ describe(isValidLine, () => {
       const board = undefined as unknown as Board;
       const line = undefined as unknown as Line;
       const { result } = isValidLine(board, line);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 });

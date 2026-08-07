@@ -13,24 +13,24 @@ describe(hasUnitInArray, () => {
       unit,
       createTestUnit('black', { instanceNumber: 2 }),
     ];
-    expect(hasUnitInArray(array, unit)).toBeTruthy();
+    expect(hasUnitInArray(array, unit)).toBe(true);
   });
 
   it('given array member equals argument by value, returns true', () => {
     const array = [createTestUnit('black', { instanceNumber: 1 })];
     const sameValue = createTestUnit('black', { instanceNumber: 1 });
-    expect(hasUnitInArray(array, sameValue)).toBeTruthy();
+    expect(hasUnitInArray(array, sameValue)).toBe(true);
   });
 
   it('given no matching unit, returns false', () => {
     const array = [createTestUnit('black', { instanceNumber: 1 })];
     expect(
       hasUnitInArray(array, createTestUnit('black', { instanceNumber: 2 })),
-    ).toBeFalsy();
+    ).toBe(false);
   });
 
   it('given empty array, returns false', () => {
-    expect(hasUnitInArray([], createTestUnit('black'))).toBeFalsy();
+    expect(hasUnitInArray([], createTestUnit('black'))).toBe(false);
   });
 });
 
@@ -44,8 +44,8 @@ describe(arrayWithoutUnit, () => {
     const array = [unit, other];
     const result = arrayWithoutUnit(array, unit);
     expect(result.length).toBe(1);
-    expect(hasUnitInArray(result, other)).toBeTruthy();
-    expect(hasUnitInArray(result, unit)).toBeFalsy();
+    expect(hasUnitInArray(result, other)).toBe(true);
+    expect(hasUnitInArray(result, unit)).toBe(false);
   });
 
   it('given equal value different reference, removes matching unit', () => {

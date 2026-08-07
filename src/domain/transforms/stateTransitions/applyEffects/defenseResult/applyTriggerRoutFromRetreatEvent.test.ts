@@ -128,9 +128,7 @@ describe(applyTriggerRoutFromRetreatEvent, () => {
       const rout = throwIfPending(newRetreatState.routState, 'rout');
       expect(rout.substepType).toBe('rout');
       expect(rout.player).toBe(retreatState.retreatingUnit.unit.playerSide);
-      expect(
-        rout.unitsToRout.includes(retreatState.retreatingUnit.unit),
-      ).toBeTruthy();
+      expect(rout.unitsToRout).toContain(retreatState.retreatingUnit.unit);
     });
 
     it('given same trigger, new rout has undefined discard count and not completed', () => {
@@ -149,8 +147,8 @@ describe(applyTriggerRoutFromRetreatEvent, () => {
 
       const rout = throwIfPending(newRetreatState.routState, 'rout');
       expect(rout.numberToDiscard).toBe('pending');
-      expect(rout.cardsChosen).toBeFalsy();
-      expect(rout.completed).toBeFalsy();
+      expect(rout.cardsChosen).toBe(false);
+      expect(rout.completed).toBe(false);
     });
   });
 

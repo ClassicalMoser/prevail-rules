@@ -54,7 +54,7 @@ describe(applyResolveRallyEvent, () => {
       phase.firstPlayerRallyResolutionState,
       'rally',
     );
-    expect(rally.rallyResolved).toBeTruthy();
+    expect(rally.rallyResolved).toBe(true);
     expect(rally.unitsLostSupport).toBe('pending');
     expect(next.cardState.white.played).toStrictEqual([]);
   });

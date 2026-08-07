@@ -14,7 +14,7 @@ describe(canMoveThrough, () => {
       const gameState = createGameState([
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
-      expect(canMoveThrough('black', 2, 'D-5', gameState)).toBeTruthy();
+      expect(canMoveThrough('black', 2, 'D-5', gameState)).toBe(true);
     });
   });
 
@@ -48,7 +48,7 @@ describe(canMoveThrough, () => {
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
       gameState.boardState = board;
-      expect(canMoveThrough('black', 2, 'D-5', gameState)).toBeFalsy();
+      expect(canMoveThrough('black', 2, 'D-5', gameState)).toBe(false);
     });
   });
 
@@ -58,7 +58,7 @@ describe(canMoveThrough, () => {
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
         { coord: 'D-5', facing: 'north', player: 'white', speed: 2 },
       ]);
-      expect(canMoveThrough('black', 2, 'D-5', gameState)).toBeFalsy();
+      expect(canMoveThrough('black', 2, 'D-5', gameState)).toBe(false);
     });
   });
 
@@ -79,7 +79,7 @@ describe(canMoveThrough, () => {
           player: 'black',
         },
       ]);
-      expect(canMoveThrough('black', 2, 'D-5', gameState)).toBeTruthy();
+      expect(canMoveThrough('black', 2, 'D-5', gameState)).toBe(true);
     });
 
     it('given combined flexibility exceeds threshold, returns true', () => {
@@ -98,7 +98,7 @@ describe(canMoveThrough, () => {
           player: 'black',
         },
       ]);
-      expect(canMoveThrough('black', 3, 'D-5', gameState)).toBeTruthy();
+      expect(canMoveThrough('black', 3, 'D-5', gameState)).toBe(true);
     });
 
     it('given combined flexibility is below threshold, returns false', () => {
@@ -118,7 +118,7 @@ describe(canMoveThrough, () => {
           player: 'black',
         },
       ]);
-      expect(canMoveThrough('black', 1, 'D-5', gameState)).toBeFalsy();
+      expect(canMoveThrough('black', 1, 'D-5', gameState)).toBe(false);
     });
   });
 
@@ -128,9 +128,9 @@ describe(canMoveThrough, () => {
         { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
       ]);
       const invalidCoordinate = 'Z-99' as Coordinate;
-      expect(
-        canMoveThrough('black', 2, invalidCoordinate, gameState),
-      ).toBeFalsy();
+      expect(canMoveThrough('black', 2, invalidCoordinate, gameState)).toBe(
+        false,
+      );
     });
   });
 });

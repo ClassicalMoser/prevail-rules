@@ -11,34 +11,34 @@ describe(isSameInstanceNumber, () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const unit2 = createTestUnit('black', { attack: 4, instanceNumber: 1 });
     const { result } = isSameInstanceNumber(unit1, unit2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given units have different instance numbers, returns false', () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const { result } = isSameInstanceNumber(unit1, unit2);
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('given comparing a unit to itself, returns true', () => {
     const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const { result } = isSameInstanceNumber(unit, unit);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given different sides with same instance number, returns true', () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     const { result } = isSameInstanceNumber(unit1, unit2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given different instance numbers even with same type, returns false', () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 3 });
     const { result } = isSameInstanceNumber(unit1, unit2);
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('given comparing a unit to undefined, returns false', () => {
@@ -48,6 +48,6 @@ describe(isSameInstanceNumber, () => {
       unit,
       undefined as unknown as UnitInstance,
     );
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 });

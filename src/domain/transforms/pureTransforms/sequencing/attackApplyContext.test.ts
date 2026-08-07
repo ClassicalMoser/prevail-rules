@@ -171,7 +171,7 @@ describe(updateAttackApplySubstep, () => {
       commandState.attackApplyState,
       'attack apply',
     );
-    expect(attackApply.completed).toBeTruthy();
+    expect(attackApply.completed).toBe(true);
   });
 
   it('given update correct player attack apply state in melee context', () => {
@@ -199,8 +199,8 @@ describe(updateAttackApplySubstep, () => {
       melee.whiteAttackApplyState,
       'white apply',
     );
-    expect(blackApply.completed).toBeTruthy();
-    expect(whiteApply.completed).toBeFalsy();
+    expect(blackApply.completed).toBe(true);
+    expect(whiteApply.completed).toBe(false);
   });
 
   it('given when not in issueCommands or resolveMelee phase, throws', () => {

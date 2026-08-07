@@ -101,7 +101,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
         throw new Error('Expected resolveMelee phase');
       }
 
-      expect(phaseState.remainingEngagements.includes('E-5')).toBeTruthy();
+      expect(phaseState.remainingEngagements).toContain('E-5');
     });
 
     it('given event lists E-5 and E-6 after second engagement hacked onto board, set has both', () => {
@@ -158,8 +158,8 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
         throw new Error('Expected resolveMelee phase');
       }
 
-      expect(phaseState.remainingEngagements.includes('E-5')).toBeTruthy();
-      expect(phaseState.remainingEngagements.includes('E-6')).toBeTruthy();
+      expect(phaseState.remainingEngagements).toContain('E-5');
+      expect(phaseState.remainingEngagements).toContain('E-6');
       expect(phaseState.remainingEngagements.length).toBe(2);
     });
 

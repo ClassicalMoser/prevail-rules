@@ -132,9 +132,9 @@ describe(updateReverseState, () => {
       commandState.attackApplyState,
       'attack apply',
     );
-    expect(
-      throwIfPending(attackApply.reverseState, 'reverse').completed,
-    ).toBeTruthy();
+    expect(throwIfPending(attackApply.reverseState, 'reverse').completed).toBe(
+      true,
+    );
   });
 
   it('given update reverse state in melee resolution for white', () => {
@@ -164,9 +164,9 @@ describe(updateReverseState, () => {
       melee.whiteAttackApplyState,
       'white apply',
     );
-    expect(
-      throwIfPending(whiteApply.reverseState, 'reverse').completed,
-    ).toBeTruthy();
+    expect(throwIfPending(whiteApply.reverseState, 'reverse').completed).toBe(
+      true,
+    );
   });
 
   it('given update reverse state in melee resolution for black', () => {
@@ -196,9 +196,9 @@ describe(updateReverseState, () => {
       melee.blackAttackApplyState,
       'black apply',
     );
-    expect(
-      throwIfPending(blackApply.reverseState, 'reverse').completed,
-    ).toBeTruthy();
+    expect(throwIfPending(blackApply.reverseState, 'reverse').completed).toBe(
+      true,
+    );
   });
 
   it('given when ranged attack apply has no reverse state, throws', () => {

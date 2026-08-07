@@ -18,14 +18,14 @@ describe(diagonalIsClear, () => {
   describe('non-diagonal facings', () => {
     it('given orthogonal facing, returns false', () => {
       const { result } = diagonalIsClear('black', board, coordinate, 'E-6');
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 
   describe('diagonal facings with no enemy units', () => {
     it('given diagonal facing with no adjacent enemies, returns true', () => {
       const { result } = diagonalIsClear('black', board, coordinate, 'D-4');
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -40,7 +40,7 @@ describe(diagonalIsClear, () => {
         coordinate,
         'D-4',
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -65,7 +65,7 @@ describe(diagonalIsClear, () => {
         coordinate,
         'D-6',
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given different diagonal directions, returns true', () => {
@@ -83,7 +83,7 @@ describe(diagonalIsClear, () => {
         coordinate,
         'F-4',
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -107,7 +107,7 @@ describe(diagonalIsClear, () => {
         coordinate,
         'D-6',
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -131,7 +131,7 @@ describe(diagonalIsClear, () => {
         coordinate,
         'D-6',
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -144,7 +144,7 @@ describe(diagonalIsClear, () => {
         coordinate,
         invalidCoordinate,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given adjacent coordinate is out of bounds, returns false', () => {
@@ -156,7 +156,7 @@ describe(diagonalIsClear, () => {
         coordinate,
         edgeCoordinate,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given work correctly for both player sides', () => {
@@ -173,7 +173,7 @@ describe(diagonalIsClear, () => {
         coordinate,
         'D-6',
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 });

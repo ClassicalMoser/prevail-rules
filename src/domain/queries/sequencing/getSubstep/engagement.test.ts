@@ -114,7 +114,7 @@ describe(getFlankEngagementStateFromMovement, () => {
 
     const result = getFlankEngagementStateFromMovement(stateInPhase);
     expect(result.engagementResolutionState.engagementType).toBe('flank');
-    expect(result.engagementResolutionState.defenderRotated).toBeFalsy();
+    expect(result.engagementResolutionState.defenderRotated).toBe(false);
   });
 
   it('given front engagement instead of flank, throws engagement type is not flank', () => {

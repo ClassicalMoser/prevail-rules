@@ -33,7 +33,7 @@ describe(getRallyResolutionStateAwaitingUnitsBroken, () => {
   it('given rallyResolved true and unitsLostSupport undefined, returns slice', () => {
     const state = stateFirstPlayerResolveRally();
     const result = getRallyResolutionStateAwaitingUnitsBroken(state, 'white');
-    expect(result.rallyResolved).toBeTruthy();
+    expect(result.rallyResolved).toBe(true);
     expect(result.unitsLostSupport).toBe('pending');
   });
 

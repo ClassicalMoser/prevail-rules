@@ -60,7 +60,7 @@ describe(eachCardPresentOnce, () => {
         whiteStartingHand,
         cardState,
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given all black cards are present once in hand, returns true', () => {
@@ -78,7 +78,7 @@ describe(eachCardPresentOnce, () => {
         whiteStartingHand,
         cardState,
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given all white cards are present once in hand, returns true', () => {
@@ -93,7 +93,7 @@ describe(eachCardPresentOnce, () => {
         whiteStartingHand,
         cardState,
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given both black and white cards are present once, returns true', () => {
@@ -110,7 +110,7 @@ describe(eachCardPresentOnce, () => {
         whiteStartingHand,
         cardState,
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given cards are in different states, returns true', () => {
@@ -136,7 +136,7 @@ describe(eachCardPresentOnce, () => {
         whiteStartingHand,
         cardState,
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given cards are in played, discarded, or burnt states, returns true', () => {
@@ -163,7 +163,7 @@ describe(eachCardPresentOnce, () => {
         whiteStartingHand,
         cardState,
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -180,7 +180,7 @@ describe(eachCardPresentOnce, () => {
         new Set(),
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given a card appears in multiple states, returns false', () => {
@@ -197,7 +197,7 @@ describe(eachCardPresentOnce, () => {
         new Set(),
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given the same card appears in both players states, returns true', () => {
@@ -219,7 +219,7 @@ describe(eachCardPresentOnce, () => {
         whiteStartingHand,
         cardState,
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -233,7 +233,7 @@ describe(eachCardPresentOnce, () => {
         new Set(),
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given black card is missing, returns false', () => {
@@ -246,7 +246,7 @@ describe(eachCardPresentOnce, () => {
         whiteStartingHand,
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given white card is missing, returns false', () => {
@@ -259,7 +259,7 @@ describe(eachCardPresentOnce, () => {
         whiteStartingHand,
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 
@@ -276,7 +276,7 @@ describe(eachCardPresentOnce, () => {
         new Set(),
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given awaitingPlay has unexpected card, returns false', () => {
@@ -293,7 +293,7 @@ describe(eachCardPresentOnce, () => {
         new Set(),
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given inPlay has unexpected card, returns false', () => {
@@ -310,7 +310,7 @@ describe(eachCardPresentOnce, () => {
         new Set(),
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given played array has unexpected card, returns false', () => {
@@ -328,7 +328,7 @@ describe(eachCardPresentOnce, () => {
         new Set(),
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given discarded array has unexpected card, returns false', () => {
@@ -347,7 +347,7 @@ describe(eachCardPresentOnce, () => {
         new Set(),
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given burnt array has unexpected card, returns false', () => {
@@ -367,7 +367,7 @@ describe(eachCardPresentOnce, () => {
         new Set(),
         cardState,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 });

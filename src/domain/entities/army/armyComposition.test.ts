@@ -95,7 +95,7 @@ describe('schema: armySchema', () => {
       units: [{ count: 5, unitType: baseUnitType({ limit: 4 }) }],
     };
 
-    expect(armySchema.safeParse(army).success).toBeFalsy();
+    expect(armySchema.safeParse(army).success).toBe(false);
   });
 });
 
@@ -116,7 +116,7 @@ describe('schema: armySchemaForMode', () => {
     ];
 
     const result = armySchemaForMode('standard').safeParse(army);
-    expect(result.success).toBeFalsy();
+    expect(result.success).toBe(false);
     if (!result.success) {
       expect(
         result.error.issues.some(
@@ -124,7 +124,7 @@ describe('schema: armySchemaForMode', () => {
             issue.path[0] === 'units' &&
             issue.message.includes('Standard armies'),
         ),
-      ).toBeTruthy();
+      ).toBe(true);
     }
   });
 
@@ -137,7 +137,7 @@ describe('schema: armySchemaForMode', () => {
       },
     ];
 
-    expect(armySchemaForMode('standard').safeParse(army).success).toBeFalsy();
+    expect(armySchemaForMode('standard').safeParse(army).success).toBe(false);
   });
 
   it('standard rejects unbalanced initiatives', () => {
@@ -146,7 +146,7 @@ describe('schema: armySchemaForMode', () => {
       index === 0 ? { ...card, initiative: 2 } : card,
     );
 
-    expect(armySchemaForMode('standard').safeParse(army).success).toBeFalsy();
+    expect(armySchemaForMode('standard').safeParse(army).success).toBe(false);
   });
 
   it('rejects duplicate unit types', () => {

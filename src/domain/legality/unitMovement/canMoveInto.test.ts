@@ -16,7 +16,7 @@ describe(canMoveInto, () => {
       const board = gameState.boardState;
       expect(
         canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
-      ).toBeTruthy();
+      ).toBe(true);
     });
   });
 
@@ -48,7 +48,7 @@ describe(canMoveInto, () => {
       });
       expect(
         canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -61,7 +61,7 @@ describe(canMoveInto, () => {
       const board = gameState.boardState;
       expect(
         canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -86,7 +86,7 @@ describe(canMoveInto, () => {
             0,
             'advance',
           ),
-        ).toBeTruthy();
+        ).toBe(true);
       });
 
       it('given enemy cannot be engaged, returns false', () => {
@@ -106,7 +106,7 @@ describe(canMoveInto, () => {
             0,
             'advance',
           ),
-        ).toBeFalsy();
+        ).toBe(false);
       });
     });
 
@@ -128,7 +128,7 @@ describe(canMoveInto, () => {
             0,
             'retreat',
           ),
-        ).toBeFalsy();
+        ).toBe(false);
       });
     });
   });
@@ -151,7 +151,7 @@ describe(canMoveInto, () => {
           0,
           'advance',
         ),
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it('given an invalid unitPresence, returns false', () => {
@@ -168,7 +168,7 @@ describe(canMoveInto, () => {
       };
       expect(
         canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 });

@@ -18,7 +18,7 @@ describe(eachCommanderPresentOnce, () => {
         ...gameState,
         boardState: board,
       });
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given both commanders are in lostCommanders, returns true', () => {
@@ -29,7 +29,7 @@ describe(eachCommanderPresentOnce, () => {
         ...gameState,
         lostCommanders,
       });
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given one commander is on board and one is lost, returns true', () => {
@@ -42,7 +42,7 @@ describe(eachCommanderPresentOnce, () => {
         boardState: board,
         lostCommanders,
       });
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given both commanders are on the same space, returns true', () => {
@@ -57,7 +57,7 @@ describe(eachCommanderPresentOnce, () => {
         ...gameState,
         boardState: board,
       });
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -73,7 +73,7 @@ describe(eachCommanderPresentOnce, () => {
           ...gameState,
           boardState: board,
         });
-        expect(result).toBeFalsy();
+        expect(result).toBe(false);
       },
     );
 
@@ -89,7 +89,7 @@ describe(eachCommanderPresentOnce, () => {
           boardState: board,
           lostCommanders,
         });
-        expect(result).toBeFalsy();
+        expect(result).toBe(false);
       },
     );
   });
@@ -107,7 +107,7 @@ describe(eachCommanderPresentOnce, () => {
           ...gameState,
           boardState: board,
         });
-        expect(result).toBeFalsy();
+        expect(result).toBe(false);
       },
     );
 
@@ -115,7 +115,7 @@ describe(eachCommanderPresentOnce, () => {
       const gameState = createEmptyGameState();
 
       const { result } = eachCommanderPresentOnce(gameState);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 
@@ -129,7 +129,7 @@ describe(eachCommanderPresentOnce, () => {
         ...gameState,
         boardState: board,
       }) as FailValidationResult;
-      expect(validationResult.result).toBeFalsy();
+      expect(validationResult.result).toBe(false);
       expect(validationResult.errorReason.length).toBeGreaterThan(0);
     });
   });

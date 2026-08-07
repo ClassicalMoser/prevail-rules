@@ -71,12 +71,12 @@ describe(applyPerformRangedAttackEvent, () => {
     const ranged = getRangedAttackResolutionState(newState);
 
     expect(ranged.commandResolutionType).toBe('rangedAttack');
-    expect(
-      isSameUnitInstance(ranged.attackingUnit, attacker.unit).result,
-    ).toBeTruthy();
-    expect(
-      isSameUnitInstance(ranged.defendingUnit, defender.unit).result,
-    ).toBeTruthy();
+    expect(isSameUnitInstance(ranged.attackingUnit, attacker.unit).result).toBe(
+      true,
+    );
+    expect(isSameUnitInstance(ranged.defendingUnit, defender.unit).result).toBe(
+      true,
+    );
     expect(ranged.attackingCommitment).toStrictEqual({
       commitmentType: 'pending',
     });
@@ -91,7 +91,7 @@ describe(applyPerformRangedAttackEvent, () => {
       [...remainingFirst].some(
         (u) => isSameUnitInstance(u, attacker.unit).result,
       ),
-    ).toBeFalsy();
+    ).toBe(false);
   });
 
   it('given two black units in remaining but only one attacks, other black stays in remaining', () => {
@@ -136,12 +136,12 @@ describe(applyPerformRangedAttackEvent, () => {
       [...remainingFirst].some(
         (u) => isSameUnitInstance(u, otherUnit.unit).result,
       ),
-    ).toBeTruthy();
+    ).toBe(true);
     expect(
       [...remainingFirst].some(
         (u) => isSameUnitInstance(u, attacker.unit).result,
       ),
-    ).toBeFalsy();
+    ).toBe(false);
   });
 
   it('given defender listed in second-player remaining, after attack second-player remaining loses defender', () => {
@@ -179,7 +179,7 @@ describe(applyPerformRangedAttackEvent, () => {
       [...phaseState.remainingUnitsSecondPlayer].some(
         (u) => isSameUnitInstance(u, defender.unit).result,
       ),
-    ).toBeFalsy();
+    ).toBe(false);
   });
 
   it('given attacker plus one supporter in remaining, both cleared and supporter in ranged.supportingUnits', () => {
@@ -224,7 +224,7 @@ describe(applyPerformRangedAttackEvent, () => {
       [...ranged.supportingUnits].some(
         (u) => isSameUnitInstance(u, supporter.unit).result,
       ),
-    ).toBeTruthy();
+    ).toBe(true);
     expect(phaseState.remainingUnitsFirstPlayer.length).toBe(0);
   });
 
@@ -277,12 +277,12 @@ describe(applyPerformRangedAttackEvent, () => {
       [...phaseState.remainingUnitsFirstPlayer].some(
         (u) => isSameUnitInstance(u, supporter1.unit).result,
       ),
-    ).toBeFalsy();
+    ).toBe(false);
     expect(
       [...phaseState.remainingUnitsFirstPlayer].some(
         (u) => isSameUnitInstance(u, supporter2.unit).result,
       ),
-    ).toBeFalsy();
+    ).toBe(false);
   });
 
   it('given secondPlayerResolveCommands with white attacker, second-player remaining cleared and ranged set', () => {

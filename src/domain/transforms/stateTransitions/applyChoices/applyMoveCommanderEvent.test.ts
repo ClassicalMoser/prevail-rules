@@ -60,15 +60,15 @@ describe(applyMoveCommanderEvent, () => {
       // Commander should be removed from original location
       expect(
         newState.boardState.board['E-5']?.commanders.includes('black'),
-      ).toBeFalsy();
+      ).toBe(false);
       // Commander should be at new location
       expect(
         newState.boardState.board['E-7']?.commanders.includes('black'),
-      ).toBeTruthy();
+      ).toBe(true);
       // White commander should be unchanged
       expect(
         newState.boardState.board['E-6']?.commanders.includes('white'),
-      ).toBeTruthy();
+      ).toBe(true);
     });
 
     it('given moveSecondCommander and white E-6 to E-8, white leaves E-6 and black still on E-5', () => {
@@ -92,15 +92,15 @@ describe(applyMoveCommanderEvent, () => {
       // Commander should be removed from original location
       expect(
         newState.boardState.board['E-6']?.commanders.includes('white'),
-      ).toBeFalsy();
+      ).toBe(false);
       // Commander should be at new location
       expect(
         newState.boardState.board['E-8']?.commanders.includes('white'),
-      ).toBeTruthy();
+      ).toBe(true);
       // Black commander should be unchanged
       expect(
         newState.boardState.board['E-5']?.commanders.includes('black'),
-      ).toBeTruthy();
+      ).toBe(true);
     });
   });
 

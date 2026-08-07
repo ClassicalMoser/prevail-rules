@@ -23,9 +23,9 @@ describe(hasEnemyUnit, () => {
       const board = createEmptyStandardBoard();
       const space: BoardSpace = board.board[coordinate]!;
       const { result: blackResult } = hasEnemyUnit('black', space);
-      expect(blackResult).toBeFalsy();
+      expect(blackResult).toBe(false);
       const { result: whiteResult } = hasEnemyUnit('white', space);
-      expect(whiteResult).toBeFalsy();
+      expect(whiteResult).toBe(false);
     });
   });
 
@@ -34,21 +34,21 @@ describe(hasEnemyUnit, () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
       const space: BoardSpace = board.board[coordinate]!;
       const { result } = hasEnemyUnit('black', space);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given there is an enemy unit, returns true', () => {
       const board = createBoardWithSingleUnit(coordinate, 'white');
       const space: BoardSpace = board.board[coordinate]!;
       const { result } = hasEnemyUnit('black', space);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given there is a black enemy unit, returns true for white player', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
       const space: BoardSpace = board.board[coordinate]!;
       const { result } = hasEnemyUnit('white', space);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -65,9 +65,9 @@ describe(hasEnemyUnit, () => {
 
       // Engaged units always contain an enemy for both sides
       const { result: blackResult } = hasEnemyUnit('black', space);
-      expect(blackResult).toBeTruthy();
+      expect(blackResult).toBe(true);
       const { result: whiteResult } = hasEnemyUnit('white', space);
-      expect(whiteResult).toBeTruthy();
+      expect(whiteResult).toBe(true);
     });
   });
 
@@ -82,7 +82,7 @@ describe(hasEnemyUnit, () => {
       };
 
       const { result } = hasEnemyUnit('black', space);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given unitPresence is missing required properties, returns false', () => {
@@ -95,7 +95,7 @@ describe(hasEnemyUnit, () => {
       } as unknown as SingleUnitPresence;
 
       const { result } = hasEnemyUnit('black', space);
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 });

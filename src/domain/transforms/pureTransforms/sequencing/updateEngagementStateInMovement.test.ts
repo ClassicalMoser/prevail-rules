@@ -39,9 +39,7 @@ describe(updateEngagementStateInMovement, () => {
     );
 
     const updated = getFrontEngagementStateFromMovement(newState);
-    expect(
-      updated.engagementResolutionState.defendingUnitRetreats,
-    ).toBeTruthy();
+    expect(updated.engagementResolutionState.defendingUnitRetreats).toBe(true);
   });
 
   it('throws when not in issueCommands phase', () => {

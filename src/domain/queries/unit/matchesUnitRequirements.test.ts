@@ -21,7 +21,7 @@ describe(matchesUnitRequirements, () => {
   describe('no requirements', () => {
     it('given both traits and unitTypes are empty, returns true', () => {
       const { result } = matchesUnitRequirements(firstUnit, [], []);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -32,7 +32,7 @@ describe(matchesUnitRequirements, () => {
         ['formation'],
         [],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given unit has all multiple required traits, returns true', () => {
@@ -41,7 +41,7 @@ describe(matchesUnitRequirements, () => {
         ['formation', 'phalanx'],
         [],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given unit has all traits in different order, returns true', () => {
@@ -50,7 +50,7 @@ describe(matchesUnitRequirements, () => {
         ['phalanx', 'formation'],
         [],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given unit is missing one trait, returns false', () => {
@@ -59,7 +59,7 @@ describe(matchesUnitRequirements, () => {
         ['formation', 'spear'],
         [],
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given unit has none of the required traits, returns false', () => {
@@ -68,7 +68,7 @@ describe(matchesUnitRequirements, () => {
         ['skirmish'],
         [],
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given unit has some but not all required traits, returns false', () => {
@@ -77,7 +77,7 @@ describe(matchesUnitRequirements, () => {
         ['formation', 'javelin'],
         [],
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 
@@ -88,7 +88,7 @@ describe(matchesUnitRequirements, () => {
         [],
         [unitWithFormation.id],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given unit is in a larger unitTypes array, returns true', () => {
@@ -97,7 +97,7 @@ describe(matchesUnitRequirements, () => {
         [],
         [unitWithFormation.id, unitWithPhalanxTrait.id],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given unit is not in the unitTypes array, returns false', () => {
@@ -106,7 +106,7 @@ describe(matchesUnitRequirements, () => {
         [],
         [unitWithPhalanxTrait.id],
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given unit matches by id (different object reference), returns true', () => {
@@ -119,13 +119,13 @@ describe(matchesUnitRequirements, () => {
         [],
         [unitWithFormation.id],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given unitTypes array is empty but unit is not specified, returns false', () => {
       // This case is handled by the "no requirements" case, but testing edge case
       const { result } = matchesUnitRequirements(unitWithFormation, [], []);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -136,7 +136,7 @@ describe(matchesUnitRequirements, () => {
         ['formation'],
         [unitWithFormation.id],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given unit matches all multiple traits and unitTypes, returns true', () => {
@@ -145,7 +145,7 @@ describe(matchesUnitRequirements, () => {
         ['formation', 'phalanx'],
         [unitWithFormationAndPhalanx.id, unitWithPhalanxTrait.id],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given unit matches traits but not unitTypes, returns false', () => {
@@ -154,7 +154,7 @@ describe(matchesUnitRequirements, () => {
         ['formation'],
         [unitWithPhalanxTrait.id],
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given unit matches unitTypes but not traits, returns false', () => {
@@ -163,7 +163,7 @@ describe(matchesUnitRequirements, () => {
         ['spear'],
         [unitWithFormation.id],
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given unit matches neither traits nor unitTypes, returns false', () => {
@@ -172,7 +172,7 @@ describe(matchesUnitRequirements, () => {
         ['spear'],
         [unitWithPhalanxTrait.id],
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given unit has some but not all required traits, returns false', () => {
@@ -181,7 +181,7 @@ describe(matchesUnitRequirements, () => {
         ['formation', 'javelin'],
         [unitWithPhalanxTrait.id],
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given unit matches both by id (different object reference), returns true', () => {
@@ -194,7 +194,7 @@ describe(matchesUnitRequirements, () => {
         ['formation'],
         [unitWithFormation.id],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -205,7 +205,7 @@ describe(matchesUnitRequirements, () => {
         ['formation', 'phalanx'],
         [],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given handle units with no traits', () => {
@@ -219,7 +219,7 @@ describe(matchesUnitRequirements, () => {
         ['formation'],
         [],
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given handle empty traits array with unitTypes', () => {
@@ -228,7 +228,7 @@ describe(matchesUnitRequirements, () => {
         [],
         [unitWithFormation.id],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given handle empty unitTypes array with traits', () => {
@@ -237,7 +237,7 @@ describe(matchesUnitRequirements, () => {
         ['formation'],
         [],
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 });

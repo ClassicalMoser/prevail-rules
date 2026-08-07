@@ -170,7 +170,7 @@ describe(getLinesFromUnit, () => {
             u.unit.instanceNumber === unitWithPlacement.unit.instanceNumber &&
             u.placement.coordinate === 'E-5',
         );
-        expect(hasOurUnit).toBeTruthy();
+        expect(hasOurUnit).toBe(true);
       }
     });
   });

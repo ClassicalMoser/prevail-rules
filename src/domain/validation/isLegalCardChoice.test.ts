@@ -50,7 +50,7 @@ describe(isLegalCardChoice, () => {
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);
 
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given white player chooses a card in their hand, returns true', () => {
@@ -68,7 +68,7 @@ describe(isLegalCardChoice, () => {
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);
 
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -88,7 +88,7 @@ describe(isLegalCardChoice, () => {
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);
 
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given white player chooses a card not in their hand, returns false', () => {
@@ -106,7 +106,7 @@ describe(isLegalCardChoice, () => {
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);
 
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it("given player chooses a card that doesn't exist in any hand, returns false", () => {
@@ -124,7 +124,7 @@ describe(isLegalCardChoice, () => {
 
       const { result } = isLegalCardChoice(cardState, chooseCardEvent);
 
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 });

@@ -17,16 +17,16 @@ describe(createAttackApplyState, () => {
     const state = createAttackApplyState(unit);
     expect(state.substepType).toBe('attackApply');
     expect(state.defendingUnit).toBe(unit);
-    expect(state.attackResult.unitRouted).toBeFalsy();
-    expect(state.attackResult.unitRetreated).toBeFalsy();
-    expect(state.attackResult.unitReversed).toBeFalsy();
-    expect(state.completed).toBeFalsy();
+    expect(state.attackResult.unitRouted).toBe(false);
+    expect(state.attackResult.unitRetreated).toBe(false);
+    expect(state.attackResult.unitReversed).toBe(false);
+    expect(state.completed).toBe(false);
   });
 
   it('given accept overrides', () => {
     const unit = createTestUnit('white');
     const state = createAttackApplyState(unit, { completed: true });
-    expect(state.completed).toBeTruthy();
+    expect(state.completed).toBe(true);
   });
 });
 
@@ -34,7 +34,7 @@ describe(createAttackApplyStateWithRetreat, () => {
   it('given context, returns state with retreat result and retreatState', () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
     const state = createAttackApplyStateWithRetreat(unit);
-    expect(state.attackResult.unitRetreated).toBeTruthy();
+    expect(state.attackResult.unitRetreated).toBe(true);
     expect(
       state.retreatState !== 'pending' && state.retreatState.retreatingUnit,
     ).toBe(unit);
@@ -45,11 +45,11 @@ describe(createAttackApplyStateWithRout, () => {
   it('given context, returns state with rout result and routState', () => {
     const unit = createTestUnit('white');
     const state = createAttackApplyStateWithRout(unit);
-    expect(state.attackResult.unitRouted).toBeTruthy();
+    expect(state.attackResult.unitRouted).toBe(true);
     expect(
       state.routState !== 'pending' &&
         state.routState.unitsToRout.includes(unit),
-    ).toBeTruthy();
+    ).toBe(true);
   });
 });
 
@@ -57,7 +57,7 @@ describe(createAttackApplyStateWithReverse, () => {
   it('given context, returns state with reverse result and reverseState', () => {
     const unit = createUnitWithPlacement();
     const state = createAttackApplyStateWithReverse(unit);
-    expect(state.attackResult.unitReversed).toBeTruthy();
+    expect(state.attackResult.unitReversed).toBe(true);
     expect(
       state.reverseState !== 'pending' && state.reverseState.reversingUnit,
     ).toBe(unit);

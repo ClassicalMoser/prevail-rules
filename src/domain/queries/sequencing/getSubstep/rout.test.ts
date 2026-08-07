@@ -46,7 +46,7 @@ describe(getRoutStateFromAttackApply, () => {
     const result = getRoutStateFromAttackApply(attackApplyState);
     expect(result.substepType).toBe('rout');
     expect(result.player).toBe('black');
-    expect(result.unitsToRout.includes(unit)).toBeTruthy();
+    expect(result.unitsToRout).toContain(unit);
   });
 
   it('given apply without routState, throws no rout in attack apply', () => {

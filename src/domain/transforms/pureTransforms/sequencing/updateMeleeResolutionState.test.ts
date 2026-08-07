@@ -32,7 +32,7 @@ describe(updateMeleeResolutionState, () => {
       throw new Error('phase');
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
-    expect(melee.completed).toBeTruthy();
+    expect(melee.completed).toBe(true);
   });
 
   it('given not mutate the original state', () => {

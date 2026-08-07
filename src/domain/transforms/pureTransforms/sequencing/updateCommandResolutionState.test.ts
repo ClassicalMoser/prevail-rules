@@ -40,7 +40,7 @@ describe(updateCommandResolutionState, () => {
       phase.currentCommandResolutionState,
       'command',
     );
-    expect(commandState.completed).toBeTruthy();
+    expect(commandState.completed).toBe(true);
   });
 
   it('given not mutate the original state', () => {

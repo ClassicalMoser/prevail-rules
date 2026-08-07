@@ -55,7 +55,7 @@ describe(getLegalChooseMeleeResolutionEvents, () => {
         player: 'white',
         space: o.space,
       });
-      expect(isValidChooseMeleeResolutionEvent(o, state).result).toBeTruthy();
+      expect(isValidChooseMeleeResolutionEvent(o, state).result).toBe(true);
     }
   });
 

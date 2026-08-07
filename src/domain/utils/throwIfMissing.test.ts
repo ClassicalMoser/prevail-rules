@@ -29,7 +29,7 @@ describe(throwIfUndefined, () => {
   });
 
   it('given false, returns false (falsy but defined)', () => {
-    expect(throwIfUndefined<boolean>(false, 'missing')).toBeFalsy();
+    expect(throwIfUndefined<boolean>(false, 'missing')).toBe(false);
   });
 });
 

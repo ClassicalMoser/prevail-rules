@@ -34,6 +34,6 @@ describe(applyCompleteUnitMovementEvent, () => {
 
     const next = applyCompleteUnitMovementEvent(event, full);
     const cmd = getMovementResolutionState(next);
-    expect(cmd.completed).toBeTruthy();
+    expect(cmd.completed).toBe(true);
   });
 });

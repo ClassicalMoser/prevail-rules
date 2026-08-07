@@ -40,7 +40,7 @@ describe(getAttackApplyStateFromRangedAttack, () => {
     );
 
     const result = getAttackApplyStateFromRangedAttack(state);
-    expect(result.completed).toBeFalsy();
+    expect(result.completed).toBe(false);
   });
 
   it('given ranged CRS without apply, throws no attack apply in ranged', () => {
@@ -109,7 +109,7 @@ describe(getAttackApplyStateFromMelee, () => {
     );
 
     const result = getAttackApplyStateFromMelee(state, 'white');
-    expect(result.completed).toBeFalsy();
+    expect(result.completed).toBe(false);
   });
 
   it('given melee with black apply showing rout result, black getter returns that apply', () => {
@@ -147,7 +147,7 @@ describe(getAttackApplyStateFromMelee, () => {
     );
 
     const result = getAttackApplyStateFromMelee(state, 'black');
-    expect(result.attackResult.unitRouted).toBeTruthy();
+    expect(result.attackResult.unitRouted).toBe(true);
   });
 
   it('given melee missing white apply, getAttackApplyFromMelee(white) throws', () => {

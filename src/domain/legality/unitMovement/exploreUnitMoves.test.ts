@@ -62,7 +62,7 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 0,
         speedUsed: 0,
       });
-      expect(hasStartingPosition).toBeTruthy();
+      expect(hasStartingPosition).toBe(true);
     });
 
     it('given not include starting position for retreat', () => {
@@ -81,7 +81,7 @@ describe('exploreUnitMoves function', () => {
       const hasStartingPosition = exploreResultHasMatch(moves, {
         coordinate: 'E-5',
       });
-      expect(hasStartingPosition).toBeFalsy();
+      expect(hasStartingPosition).toBe(false);
     });
 
     it('given allow all turns in place for advance', () => {
@@ -114,7 +114,7 @@ describe('exploreUnitMoves function', () => {
           speedUsed: 0,
         }),
       );
-      expect(allFacingsResults.every((result) => result)).toBeTruthy();
+      expect(allFacingsResults.every((result) => result)).toBe(true);
     });
 
     it('given not include starting position with different speed', () => {
@@ -141,8 +141,8 @@ describe('exploreUnitMoves function', () => {
         facing: 'north',
         speedUsed: 2,
       });
-      expect(hasStartingPositionWithSpeedOne).toBeFalsy();
-      expect(hasStartingPositionWithSpeedTwo).toBeFalsy();
+      expect(hasStartingPositionWithSpeedOne).toBe(false);
+      expect(hasStartingPositionWithSpeedTwo).toBe(false);
     });
   });
   describe('advance direction', () => {
@@ -164,7 +164,7 @@ describe('exploreUnitMoves function', () => {
         coordinate: 'D-5',
         speedUsed: 1,
       });
-      expect(hasForwardMove).toBeTruthy();
+      expect(hasForwardMove).toBe(true);
     });
 
     it('given speed > 1, includes multiple forward moves', () => {
@@ -204,9 +204,9 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 0,
         speedUsed: 3,
       });
-      expect(hasOneMove).toBeTruthy();
-      expect(hasTwoMoves).toBeTruthy();
-      expect(hasThreeMoves).toBeTruthy();
+      expect(hasOneMove).toBe(true);
+      expect(hasTwoMoves).toBe(true);
+      expect(hasThreeMoves).toBe(true);
     });
 
     it('given the unit has speed and flexibility, includes turning moves', () => {
@@ -241,8 +241,8 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 1,
         speedUsed: 1,
       });
-      expect(hasForwardLeftMove).toBeTruthy();
-      expect(hasForwardRightMove).toBeTruthy();
+      expect(hasForwardLeftMove).toBe(true);
+      expect(hasForwardRightMove).toBe(true);
     });
 
     it('given include turn then move sequences in advance', () => {
@@ -280,8 +280,8 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 1,
         speedUsed: 1,
       });
-      expect(hasNorthWestMove).toBeTruthy();
-      expect(hasNorthEastMove).toBeTruthy();
+      expect(hasNorthWestMove).toBe(true);
+      expect(hasNorthEastMove).toBe(true);
     });
 
     it('given not include moves that exceed speed', () => {
@@ -301,7 +301,7 @@ describe('exploreUnitMoves function', () => {
       const hasExcessiveMove = exploreResultHasMatch(moves, {
         coordinate: 'B-5',
       });
-      expect(hasExcessiveMove).toBeFalsy();
+      expect(hasExcessiveMove).toBe(false);
     });
 
     it('given not include moves that exceed flexibility', () => {
@@ -330,7 +330,7 @@ describe('exploreUnitMoves function', () => {
         facing: 'south',
         flexibilityUsed: 2,
       });
-      expect(hasDoubleTurn).toBeFalsy();
+      expect(hasDoubleTurn).toBe(false);
     });
   });
 
@@ -356,7 +356,7 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 0,
         speedUsed: 1,
       });
-      expect(hasRearwardMove).toBeTruthy();
+      expect(hasRearwardMove).toBe(true);
     });
 
     it('given speed > 1, includes multiple rearward moves', () => {
@@ -385,8 +385,8 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 0,
         speedUsed: 2,
       });
-      expect(hasOneMove).toBeTruthy();
-      expect(hasTwoMoves).toBeTruthy();
+      expect(hasOneMove).toBe(true);
+      expect(hasTwoMoves).toBe(true);
     });
 
     it('given the unit has speed and flexibility, includes turning moves', () => {
@@ -424,8 +424,8 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 1,
         speedUsed: 1,
       });
-      expect(hasTurnLeftThenMove).toBeTruthy();
-      expect(hasTurnRightThenMove).toBeTruthy();
+      expect(hasTurnLeftThenMove).toBe(true);
+      expect(hasTurnRightThenMove).toBe(true);
     });
 
     it('given only allow moves to spaces behind starting position', () => {
@@ -454,13 +454,13 @@ describe('exploreUnitMoves function', () => {
         facing: 'north',
         speedUsed: 1,
       });
-      expect(hasForwardMove).toBeFalsy();
+      expect(hasForwardMove).toBe(false);
       // Should not be able to move parallel (east) during retreat
       const hasRightMove = exploreResultHasMatch(moves, { coordinate: 'E-6' });
-      expect(hasRightMove).toBeFalsy();
+      expect(hasRightMove).toBe(false);
       // Should not be able to move parallel (west) during retreat
       const hasLeftMove = exploreResultHasMatch(moves, { coordinate: 'E-4' });
-      expect(hasLeftMove).toBeFalsy();
+      expect(hasLeftMove).toBe(false);
     });
 
     it('given include move then turn sequences for retreat', () => {
@@ -490,7 +490,7 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 1,
         speedUsed: 1,
       });
-      expect(hasMoveThenTurn).toBeTruthy();
+      expect(hasMoveThenTurn).toBe(true);
     });
 
     it('given include turn then move sequences for retreat', () => {
@@ -525,8 +525,8 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 1,
         speedUsed: 1,
       });
-      expect(hasTurnRightThenMove).toBeTruthy();
-      expect(hasTurnLeftThenMove).toBeTruthy();
+      expect(hasTurnRightThenMove).toBe(true);
+      expect(hasTurnLeftThenMove).toBe(true);
     });
 
     it('given not turn in the initial position if no flexibility', () => {
@@ -555,8 +555,8 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 1,
         speedUsed: 1,
       });
-      expect(hasRightTurnAndMove).toBeFalsy();
-      expect(hasLeftTurnAndMove).toBeFalsy();
+      expect(hasRightTurnAndMove).toBe(false);
+      expect(hasLeftTurnAndMove).toBe(false);
     });
   });
   describe('obstacle handling', () => {
@@ -581,7 +581,7 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 0,
         speedUsed: 2,
       });
-      expect(hasMove).toBeFalsy();
+      expect(hasMove).toBe(false);
     });
 
     it('can navigate around an enemy unit', () => {
@@ -611,8 +611,8 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 2,
         speedUsed: 2,
       });
-      expect(hasLeftThenRightMove).toBeTruthy();
-      expect(hasRightThenLeftMove).toBeTruthy();
+      expect(hasLeftThenRightMove).toBe(true);
+      expect(hasRightThenLeftMove).toBe(true);
     });
 
     it('can engage an enemy unit', () => {
@@ -636,7 +636,7 @@ describe('exploreUnitMoves function', () => {
         flexibilityUsed: 0,
         speedUsed: 1,
       });
-      expect(hasMove).toBeTruthy();
+      expect(hasMove).toBe(true);
     });
 
     it('given not pass through diagonal enemy line', () => {
@@ -661,7 +661,7 @@ describe('exploreUnitMoves function', () => {
       const hasMoveThroughEnemyLine = exploreResultHasMatch(moves, {
         coordinate: 'D-6',
       });
-      expect(hasMoveThroughEnemyLine).toBeFalsy();
+      expect(hasMoveThroughEnemyLine).toBe(false);
     });
 
     it('cannot encircle in one turn', () => {
@@ -683,7 +683,7 @@ describe('exploreUnitMoves function', () => {
         coordinate: 'D-4',
         facing: 'south',
       });
-      expect(hasMoveThroughEnemyLine).toBeFalsy();
+      expect(hasMoveThroughEnemyLine).toBe(false);
     });
 
     it('cannot retreat into an enemy unit', () => {
@@ -704,7 +704,7 @@ describe('exploreUnitMoves function', () => {
       const hasMoveIntoEnemyUnit = exploreResultHasMatch(moves, {
         coordinate: 'F-5',
       });
-      expect(hasMoveIntoEnemyUnit).toBeFalsy();
+      expect(hasMoveIntoEnemyUnit).toBe(false);
     });
   });
   describe('edge cases', () => {

@@ -138,7 +138,7 @@ describe(getPositionOfUnit, () => {
 
       // Create a new unit instance with same properties (different reference)
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
-      expect(unit1 !== unit2).toBeTruthy(); // Different references
+      expect(unit1 !== unit2).toBe(true); // Different references
 
       const placement = getPositionOfUnit(board, unit2);
 

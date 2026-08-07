@@ -10,14 +10,14 @@ describe(areModifiersEqual, () => {
     const modifier1: Modifier = { type: 'attack', value: 1 };
     const modifier2: Modifier = { type: 'attack', value: 1 };
     const { result } = areModifiersEqual(modifier1, modifier2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given modifiers have different types, returns false', () => {
     const modifier1: Modifier = { type: 'attack', value: 1 };
     const modifier2: Modifier = { type: 'speed', value: 1 };
     const validationResult = areModifiersEqual(modifier1, modifier2);
-    expect(validationResult.result).toBeFalsy();
+    expect(validationResult.result).toBe(false);
     if (!validationResult.result) {
       expect(validationResult.errorReason).toContain('different types');
     }
@@ -27,7 +27,7 @@ describe(areModifiersEqual, () => {
     const modifier1: Modifier = { type: 'attack', value: 1 };
     const modifier2: Modifier = { type: 'attack', value: 2 };
     const validationResult = areModifiersEqual(modifier1, modifier2);
-    expect(validationResult.result).toBeFalsy();
+    expect(validationResult.result).toBe(false);
     if (!validationResult.result) {
       expect(validationResult.errorReason).toContain('different values');
     }
@@ -36,14 +36,14 @@ describe(areModifiersEqual, () => {
   it('given comparing a modifier to itself, returns true', () => {
     const modifier: Modifier = { type: 'attack', value: 1 };
     const { result } = areModifiersEqual(modifier, modifier);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given different object references with same values, returns true', () => {
     const modifier1: Modifier = { type: 'defense', value: 2 };
     const modifier2: Modifier = { type: 'defense', value: 2 };
     const { result } = areModifiersEqual(modifier1, modifier2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given comparing a modifier to undefined, returns false', () => {
@@ -53,20 +53,20 @@ describe(areModifiersEqual, () => {
       modifier,
       undefined as unknown as Modifier,
     );
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('given handle negative values correctly', () => {
     const modifier1: Modifier = { type: 'attack', value: -1 };
     const modifier2: Modifier = { type: 'attack', value: -1 };
     const { result } = areModifiersEqual(modifier1, modifier2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('given handle zero values correctly', () => {
     const modifier1: Modifier = { type: 'speed', value: 0 };
     const modifier2: Modifier = { type: 'speed', value: 0 };
     const { result } = areModifiersEqual(modifier1, modifier2);
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 });

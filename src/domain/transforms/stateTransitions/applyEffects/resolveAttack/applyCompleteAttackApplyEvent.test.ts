@@ -109,7 +109,7 @@ describe(applyCompleteAttackApplyEvent, () => {
     it('given incomplete ranged apply, event defending white sets completed true', () => {
       const state = createStateWithRangedAttackApply();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-      expect(attackApplyState.completed).toBeFalsy();
+      expect(attackApplyState.completed).toBe(false);
 
       const event: CompleteAttackApplyEvent = {
         attackType: 'ranged',
@@ -122,7 +122,7 @@ describe(applyCompleteAttackApplyEvent, () => {
       const newState = applyCompleteAttackApplyEvent(event, state);
       const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
 
-      expect(newAttackApplyState.completed).toBeTruthy();
+      expect(newAttackApplyState.completed).toBe(true);
     });
 
     it('given same completion, substepType defendingUnit and attackResult unchanged besides completed', () => {
@@ -160,9 +160,9 @@ describe(applyCompleteAttackApplyEvent, () => {
           ? meleeState.whiteAttackApplyState
           : meleeState.blackAttackApplyState;
 
-      expect(
-        throwIfPending(firstPlayerAttackApply, 'apply').completed,
-      ).toBeFalsy();
+      expect(throwIfPending(firstPlayerAttackApply, 'apply').completed).toBe(
+        false,
+      );
 
       const event: CompleteAttackApplyEvent = {
         attackType: 'melee',
@@ -179,9 +179,9 @@ describe(applyCompleteAttackApplyEvent, () => {
           ? newMeleeState.whiteAttackApplyState
           : newMeleeState.blackAttackApplyState;
 
-      expect(
-        throwIfPending(newFirstPlayerAttackApply, 'apply').completed,
-      ).toBeTruthy();
+      expect(throwIfPending(newFirstPlayerAttackApply, 'apply').completed).toBe(
+        true,
+      );
     });
 
     it('given white apply still incomplete after black done, event for white completes white apply', () => {
@@ -194,9 +194,9 @@ describe(applyCompleteAttackApplyEvent, () => {
           ? meleeState.whiteAttackApplyState
           : meleeState.blackAttackApplyState;
 
-      expect(
-        throwIfPending(secondPlayerAttackApply, 'apply').completed,
-      ).toBeFalsy();
+      expect(throwIfPending(secondPlayerAttackApply, 'apply').completed).toBe(
+        false,
+      );
 
       const event: CompleteAttackApplyEvent = {
         attackType: 'melee',
@@ -215,7 +215,7 @@ describe(applyCompleteAttackApplyEvent, () => {
 
       expect(
         throwIfPending(newSecondPlayerAttackApply, 'apply').completed,
-      ).toBeTruthy();
+      ).toBe(true);
     });
   });
 

@@ -85,7 +85,7 @@ describe(updateAttackApplyState, () => {
       commandState.attackApplyState,
       'attack apply',
     );
-    expect(attackApply.completed).toBeTruthy();
+    expect(attackApply.completed).toBe(true);
   });
 
   it('given update white attack apply state in melee resolution', () => {
@@ -108,7 +108,7 @@ describe(updateAttackApplyState, () => {
       melee.whiteAttackApplyState,
       'white apply',
     );
-    expect(whiteApply.completed).toBeTruthy();
+    expect(whiteApply.completed).toBe(true);
   });
 
   it('given update black attack apply state in melee resolution', () => {
@@ -131,7 +131,7 @@ describe(updateAttackApplyState, () => {
       melee.blackAttackApplyState,
       'black apply',
     );
-    expect(blackApply.completed).toBeTruthy();
+    expect(blackApply.completed).toBe(true);
   });
 
   it('given when ranged attack resolution has no attack apply state, throws', () => {

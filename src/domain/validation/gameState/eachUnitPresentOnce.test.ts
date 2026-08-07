@@ -40,7 +40,7 @@ describe(eachUnitPresentOnce, () => {
         createBoardWithUnits([]),
         new Set(),
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given all white units are present once, returns true', () => {
@@ -58,7 +58,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given all black units are present once, returns true', () => {
@@ -74,7 +74,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given both white and black units are present once, returns true', () => {
@@ -93,7 +93,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given engaged units are present, returns true', () => {
@@ -114,7 +114,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given return true with multiple unit types', () => {
@@ -135,7 +135,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -154,7 +154,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given primary unit in engagement appears elsewhere, returns false', () => {
@@ -187,7 +187,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given secondary unit in engagement appears elsewhere, returns false', () => {
@@ -220,7 +220,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 
@@ -238,7 +238,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given white unit is missing, returns false', () => {
@@ -255,7 +255,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given black unit is missing, returns false', () => {
@@ -272,7 +272,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 
@@ -292,7 +292,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given board has unit with wrong instance number, returns false', () => {
@@ -310,7 +310,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         new Set(),
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 
@@ -328,7 +328,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         routedUnits,
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given some units are on board and some are routed, returns true', () => {
@@ -346,7 +346,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         routedUnits,
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given routed units from both sides are valid, returns true', () => {
@@ -363,7 +363,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         routedUnits,
       );
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
 
     it('given routed unit is not in expected units, returns false', () => {
@@ -382,7 +382,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         routedUnits,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given routed unit has wrong instance number, returns false', () => {
@@ -401,7 +401,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         routedUnits,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given routed unit also appears on board, returns false', () => {
@@ -418,7 +418,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         routedUnits,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
 
     it('given same unit is routed twice, returns false', () => {
@@ -441,7 +441,7 @@ describe(eachUnitPresentOnce, () => {
         board,
         routedUnits,
       );
-      expect(result).toBeFalsy();
+      expect(result).toBe(false);
     });
   });
 });

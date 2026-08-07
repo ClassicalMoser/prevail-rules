@@ -69,7 +69,7 @@ describe(generateResolveRangedAttackEvent, () => {
     });
     const full = updatePhaseState(withBoard, phase);
     const event = generateResolveRangedAttackEvent(full, 0);
-    expect(event.retreated).toBeTruthy();
+    expect(event.retreated).toBe(true);
   });
 
   it('given spearmen mirror below retreat threshold, routed/retreated/reversed booleans and empty set', () => {
@@ -78,7 +78,7 @@ describe(generateResolveRangedAttackEvent, () => {
     expect(event.effectType).toBe('resolveRangedAttack');
     expect(event.defenderWithPlacement.unit.playerSide).toBe('white');
     expect(event.defenderWithPlacement.placement.coordinate).toBe('E-5');
-    expect(event.retreated).toBeFalsy();
+    expect(event.retreated).toBe(false);
     expect(event.legalRetreatOptions.length).toBe(0);
   });
 

@@ -16,12 +16,12 @@ describe(getSpacesInDirection, () => {
     const result = getSpacesInDirection(smallBoard, frontSpaces, unitFacing);
 
     expect(result.size).toBe(72);
-    expect(result.has('H-1')).toBeTruthy();
-    expect(result.has('H-12')).toBeTruthy();
-    expect(result.has('A-1')).toBeFalsy();
-    expect(result.has('A-12')).toBeFalsy();
-    expect(result.has('B-1')).toBeFalsy();
-    expect(result.has('B-12')).toBeFalsy();
+    expect(result.has('H-1')).toBe(true);
+    expect(result.has('H-12')).toBe(true);
+    expect(result.has('A-1')).toBe(false);
+    expect(result.has('A-12')).toBe(false);
+    expect(result.has('B-1')).toBe(false);
+    expect(result.has('B-12')).toBe(false);
   });
 
   it('given northWest-facing front spaces from F-7, fills expected wedge', () => {
@@ -31,16 +31,16 @@ describe(getSpacesInDirection, () => {
     const result = getSpacesInDirection(smallBoard, frontSpaces, unitFacing);
 
     expect(result.size).toBe(57);
-    expect(result.has('A-1')).toBeTruthy();
-    expect(result.has('A-11')).toBeTruthy();
-    expect(result.has('A-12')).toBeFalsy();
-    expect(result.has('E-6')).toBeTruthy();
-    expect(result.has('E-7')).toBeTruthy();
-    expect(result.has('E-8')).toBeFalsy();
-    expect(result.has('F-6')).toBeTruthy();
-    expect(result.has('F-7')).toBeFalsy();
-    expect(result.has('F-8')).toBeFalsy();
-    expect(result.has('G-6')).toBeFalsy();
-    expect(result.has('H-12')).toBeFalsy();
+    expect(result.has('A-1')).toBe(true);
+    expect(result.has('A-11')).toBe(true);
+    expect(result.has('A-12')).toBe(false);
+    expect(result.has('E-6')).toBe(true);
+    expect(result.has('E-7')).toBe(true);
+    expect(result.has('E-8')).toBe(false);
+    expect(result.has('F-6')).toBe(true);
+    expect(result.has('F-7')).toBe(false);
+    expect(result.has('F-8')).toBe(false);
+    expect(result.has('G-6')).toBe(false);
+    expect(result.has('H-12')).toBe(false);
   });
 });

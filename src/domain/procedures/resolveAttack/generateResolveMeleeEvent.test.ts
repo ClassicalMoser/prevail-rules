@@ -70,8 +70,8 @@ describe(generateResolveMeleeEvent, () => {
     const phase = createResolveMeleePhaseState(s);
     const full = updatePhaseState(s, phase);
     const event = generateResolveMeleeEvent(full, 0);
-    expect(event.whiteUnitRetreated).toBeTruthy();
-    expect(event.blackUnitRetreated).toBeTruthy();
+    expect(event.whiteUnitRetreated).toBe(true);
+    expect(event.blackUnitRetreated).toBe(true);
   });
 
   it('given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat and empty sets', () => {
@@ -81,8 +81,8 @@ describe(generateResolveMeleeEvent, () => {
     expect(event.location).toBe('E-5');
     expect(event.whiteUnitWithPlacement.unit.playerSide).toBe('white');
     expect(event.blackUnitWithPlacement.unit.playerSide).toBe('black');
-    expect(event.whiteUnitRetreated).toBeFalsy();
-    expect(event.blackUnitRetreated).toBeFalsy();
+    expect(event.whiteUnitRetreated).toBe(false);
+    expect(event.blackUnitRetreated).toBe(false);
     expect(event.whiteLegalRetreatOptions.length).toBe(0);
     expect(event.blackLegalRetreatOptions.length).toBe(0);
   });

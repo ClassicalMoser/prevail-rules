@@ -82,6 +82,9 @@ const config: OxlintConfig = {
     'vitest/require-hook': 'off', // Vitest hooks are not required for tests
     'vitest/no-hooks': 'off', // Vitest hooks can be used for setup and teardown where sensible
     'vitest/prefer-called-once': 'off', // Called times for consistency
+    // Prefer strict toBe(true)/toBe(false); falsy/truthy also match 0, '', null, etc.
+    'vitest/prefer-to-be-falsy': 'off',
+    'vitest/prefer-to-be-truthy': 'off',
 
     // These are styling preferences
     'no-inline-comments': 'off', // Inline comments allowed for short clarifications
@@ -106,7 +109,6 @@ const config: OxlintConfig = {
     'no-null': 'off',
     'no-shadow': 'off',
     'vitest/valid-title': 'off',
-    'vitest/prefer-strict-boolean-matchers': 'off',
     // Priority: MEDIUM
     'consistent-function-scoping': 'off',
     'func-style': 'off',

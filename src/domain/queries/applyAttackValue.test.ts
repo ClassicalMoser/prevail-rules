@@ -34,21 +34,21 @@ describe(applyAttackValue, () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { rout: 3 });
       const result = applyAttackValue(gameState, 4, unit);
-      expect(result.unitRouted).toBeTruthy();
+      expect(result.unitRouted).toBe(true);
     });
 
     it('given reverse threshold passed, unitReversed true', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { reverse: 3 });
       const result = applyAttackValue(gameState, 4, unit);
-      expect(result.unitReversed).toBeTruthy();
+      expect(result.unitReversed).toBe(true);
     });
 
     it('given retreat threshold passed, unitRetreated true', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { retreat: 3 });
       const result = applyAttackValue(gameState, 4, unit);
-      expect(result.unitRetreated).toBeTruthy();
+      expect(result.unitRetreated).toBe(true);
     });
   });
 
@@ -57,21 +57,21 @@ describe(applyAttackValue, () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { rout: 3 });
       const result = applyAttackValue(gameState, 3, unit);
-      expect(result.unitRouted).toBeTruthy();
+      expect(result.unitRouted).toBe(true);
     });
 
     it('given attack equals reverse, unitReversed true', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { reverse: 3 });
       const result = applyAttackValue(gameState, 3, unit);
-      expect(result.unitReversed).toBeTruthy();
+      expect(result.unitReversed).toBe(true);
     });
 
     it('given attack equals retreat, unitRetreated true', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { retreat: 3 });
       const result = applyAttackValue(gameState, 3, unit);
-      expect(result.unitRetreated).toBeTruthy();
+      expect(result.unitRetreated).toBe(true);
     });
   });
 
@@ -80,21 +80,21 @@ describe(applyAttackValue, () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { rout: 3 });
       const result = applyAttackValue(gameState, 2, unit);
-      expect(result.unitRouted).toBeFalsy();
+      expect(result.unitRouted).toBe(false);
     });
 
     it('given attack below reverse, unitReversed false', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { reverse: 3 });
       const result = applyAttackValue(gameState, 2, unit);
-      expect(result.unitReversed).toBeFalsy();
+      expect(result.unitReversed).toBe(false);
     });
 
     it('given attack below retreat, unitRetreated false', () => {
       const gameState = createEmptyGameState();
       const unit = createTestUnit('black', { retreat: 3 });
       const result = applyAttackValue(gameState, 2, unit);
-      expect(result.unitRetreated).toBeFalsy();
+      expect(result.unitRetreated).toBe(false);
     });
   });
 

@@ -52,8 +52,8 @@ describe(updateMeleeAttackApplyState, () => {
       melee.blackAttackApplyState,
       'black apply',
     );
-    expect(whiteApply.completed).toBeTruthy();
-    expect(blackApply.completed).toBeFalsy();
+    expect(whiteApply.completed).toBe(true);
+    expect(blackApply.completed).toBe(false);
   });
 
   it('given update black attack apply state', () => {
@@ -80,8 +80,8 @@ describe(updateMeleeAttackApplyState, () => {
       melee.whiteAttackApplyState,
       'white apply',
     );
-    expect(blackApply.completed).toBeTruthy();
-    expect(whiteApply.completed).toBeFalsy();
+    expect(blackApply.completed).toBe(true);
+    expect(whiteApply.completed).toBe(false);
   });
 
   it('given not mutate the original state', () => {

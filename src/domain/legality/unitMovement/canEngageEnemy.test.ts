@@ -15,7 +15,7 @@ describe(canEngageEnemy, () => {
       const board = gameState.boardState;
       expect(
         canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 'north', 0),
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it('given destination has friendly unit, returns false', () => {
@@ -26,7 +26,7 @@ describe(canEngageEnemy, () => {
       const board = gameState.boardState;
       expect(
         canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 'north', 0),
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -40,7 +40,7 @@ describe(canEngageEnemy, () => {
       const board = gameState.boardState;
       expect(
         canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 'south', 0),
-      ).toBeTruthy();
+      ).toBe(true);
     });
 
     it('given unit has flexibility to rotate to face opposite, returns true', () => {
@@ -52,7 +52,7 @@ describe(canEngageEnemy, () => {
       const board = gameState.boardState;
       expect(
         canEngageEnemy('black', board, 'D-4', 'E-5', 'E-5', 'east', 1),
-      ).toBeTruthy();
+      ).toBe(true);
     });
 
     it('given unit cannot rotate to face opposite, returns false', () => {
@@ -64,7 +64,7 @@ describe(canEngageEnemy, () => {
       const board = gameState.boardState;
       expect(
         canEngageEnemy('black', board, 'D-4', 'E-5', 'E-5', 'east', 0),
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -78,7 +78,7 @@ describe(canEngageEnemy, () => {
       const board = gameState.boardState;
       expect(
         canEngageEnemy('black', board, 'D-5', 'E-5', 'E-5', 'south', 0),
-      ).toBeTruthy();
+      ).toBe(true);
     });
   });
 
@@ -94,7 +94,7 @@ describe(canEngageEnemy, () => {
       // Move started at F-5 (behind enemy), adjacent is E-5 (rear space), destination is D-5
       expect(
         canEngageEnemy('black', board, 'D-5', 'E-5', 'F-5', 'north', 0),
-      ).toBeTruthy();
+      ).toBe(true);
     });
 
     it('given approaching from rear but move started in front of enemy, returns false', () => {
@@ -108,7 +108,7 @@ describe(canEngageEnemy, () => {
       // Move started at C-5 (in front of enemy), adjacent is E-5 (rear space), destination is D-5
       expect(
         canEngageEnemy('black', board, 'D-5', 'E-5', 'C-6', 'north', 0),
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it('given approaching from rear but move started at flank, returns false', () => {
@@ -122,7 +122,7 @@ describe(canEngageEnemy, () => {
       // Move started at D-4 (flank of enemy), adjacent is E-5 (rear space), destination is D-5
       expect(
         canEngageEnemy('black', board, 'D-5', 'E-5', 'D-4', 'north', 0),
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -143,7 +143,7 @@ describe(canEngageEnemy, () => {
           'north',
           0,
         ),
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it('given a non-adjacent coordinate, returns false', () => {
@@ -154,7 +154,7 @@ describe(canEngageEnemy, () => {
       const board = gameState.boardState;
       expect(
         canEngageEnemy('black', board, 'A-1', 'E-5', 'E-5', 'north', 0),
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 });

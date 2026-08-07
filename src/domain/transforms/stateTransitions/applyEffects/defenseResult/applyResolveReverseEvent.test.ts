@@ -176,7 +176,7 @@ describe(applyResolveReverseEvent, () => {
       const newReverseState =
         getReverseStateFromAttackApply(newAttackApplyState);
 
-      expect(newReverseState.completed).toBeTruthy();
+      expect(newReverseState.completed).toBe(true);
       expect(newReverseState.finalPosition).toStrictEqual(
         newPlacement.placement,
       );
@@ -259,7 +259,7 @@ describe(applyResolveReverseEvent, () => {
       const newReverseState =
         getReverseStateFromAttackApply(newAttackApplyState);
 
-      expect(newReverseState.completed).toBeTruthy();
+      expect(newReverseState.completed).toBe(true);
       expect(newReverseState.finalPosition).toStrictEqual(
         newPlacement.placement,
       );
@@ -298,7 +298,7 @@ describe(applyResolveReverseEvent, () => {
       const newReverseState =
         getReverseStateFromAttackApply(newAttackApplyState);
 
-      expect(newReverseState.completed).toBeTruthy();
+      expect(newReverseState.completed).toBe(true);
       expect(newReverseState.finalPosition).toStrictEqual(
         newPlacement.placement,
       );

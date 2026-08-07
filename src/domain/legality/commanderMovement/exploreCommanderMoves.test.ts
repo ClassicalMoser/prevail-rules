@@ -84,9 +84,9 @@ describe(exploreCommanderMoves, () => {
         gameState,
         maxDistance,
       );
-      expect(legalMoves.has('D-5')).toBeFalsy();
-      expect(legalMoves.has('E-6')).toBeFalsy();
-      expect(legalMoves.has('J-8')).toBeFalsy();
+      expect(legalMoves.has('D-5')).toBe(false);
+      expect(legalMoves.has('E-6')).toBe(false);
+      expect(legalMoves.has('J-8')).toBe(false);
     });
 
     it('given not move into engaged spaces', () => {
@@ -115,9 +115,9 @@ describe(exploreCommanderMoves, () => {
         gameState,
         maxDistance,
       );
-      expect(legalMoves.has('D-5')).toBeFalsy();
-      expect(legalMoves.has('E-6')).toBeFalsy();
-      expect(legalMoves.has('J-8')).toBeFalsy();
+      expect(legalMoves.has('D-5')).toBe(false);
+      expect(legalMoves.has('E-6')).toBe(false);
+      expect(legalMoves.has('J-8')).toBe(false);
     });
 
     it('given not move through a line of enemy units', () => {
@@ -144,16 +144,16 @@ describe(exploreCommanderMoves, () => {
         gameState,
         3, // Smaller distance for this test
       );
-      expect(legalMoves.has('C-6')).toBeFalsy();
-      expect(legalMoves.has('D-6')).toBeFalsy();
-      expect(legalMoves.has('E-6')).toBeFalsy();
-      expect(legalMoves.has('F-6')).toBeFalsy();
-      expect(legalMoves.has('G-6')).toBeFalsy();
-      expect(legalMoves.has('C-7')).toBeFalsy();
-      expect(legalMoves.has('D-7')).toBeFalsy();
-      expect(legalMoves.has('E-7')).toBeFalsy();
-      expect(legalMoves.has('F-7')).toBeFalsy();
-      expect(legalMoves.has('G-7')).toBeFalsy();
+      expect(legalMoves.has('C-6')).toBe(false);
+      expect(legalMoves.has('D-6')).toBe(false);
+      expect(legalMoves.has('E-6')).toBe(false);
+      expect(legalMoves.has('F-6')).toBe(false);
+      expect(legalMoves.has('G-6')).toBe(false);
+      expect(legalMoves.has('C-7')).toBe(false);
+      expect(legalMoves.has('D-7')).toBe(false);
+      expect(legalMoves.has('E-7')).toBe(false);
+      expect(legalMoves.has('F-7')).toBe(false);
+      expect(legalMoves.has('G-7')).toBe(false);
     });
 
     it('given not move through a diagonal line of friendly units', () => {
@@ -186,22 +186,22 @@ describe(exploreCommanderMoves, () => {
         gameState,
         maxDistance,
       );
-      expect(legalMoves.has('A-2')).toBeFalsy();
-      expect(legalMoves.has('B-3')).toBeFalsy();
-      expect(legalMoves.has('C-4')).toBeFalsy();
-      expect(legalMoves.has('D-5')).toBeFalsy();
-      expect(legalMoves.has('E-6')).toBeFalsy();
-      expect(legalMoves.has('F-7')).toBeFalsy();
-      expect(legalMoves.has('G-8')).toBeFalsy();
-      expect(legalMoves.has('H-9')).toBeFalsy();
-      expect(legalMoves.has('A-3')).toBeFalsy();
-      expect(legalMoves.has('B-4')).toBeFalsy();
-      expect(legalMoves.has('C-5')).toBeFalsy();
-      expect(legalMoves.has('D-6')).toBeFalsy();
-      expect(legalMoves.has('E-7')).toBeFalsy();
-      expect(legalMoves.has('F-8')).toBeFalsy();
-      expect(legalMoves.has('G-9')).toBeFalsy();
-      expect(legalMoves.has('H-10')).toBeFalsy();
+      expect(legalMoves.has('A-2')).toBe(false);
+      expect(legalMoves.has('B-3')).toBe(false);
+      expect(legalMoves.has('C-4')).toBe(false);
+      expect(legalMoves.has('D-5')).toBe(false);
+      expect(legalMoves.has('E-6')).toBe(false);
+      expect(legalMoves.has('F-7')).toBe(false);
+      expect(legalMoves.has('G-8')).toBe(false);
+      expect(legalMoves.has('H-9')).toBe(false);
+      expect(legalMoves.has('A-3')).toBe(false);
+      expect(legalMoves.has('B-4')).toBe(false);
+      expect(legalMoves.has('C-5')).toBe(false);
+      expect(legalMoves.has('D-6')).toBe(false);
+      expect(legalMoves.has('E-7')).toBe(false);
+      expect(legalMoves.has('F-8')).toBe(false);
+      expect(legalMoves.has('G-9')).toBe(false);
+      expect(legalMoves.has('H-10')).toBe(false);
     });
   });
 });

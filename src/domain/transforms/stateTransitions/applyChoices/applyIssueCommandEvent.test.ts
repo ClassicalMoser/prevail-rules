@@ -77,14 +77,12 @@ describe(applyIssueCommandEvent, () => {
         throw new Error('Expected issueCommands phase');
       }
 
-      expect(
-        phaseState.remainingCommandsFirstPlayer.includes(command),
-      ).toBeFalsy();
+      expect(phaseState.remainingCommandsFirstPlayer).not.toContain(command);
       // Check unit presence using value equality, not reference equality
       const unitInCommandedUnits = [
         ...newState.currentRoundState.commandedUnits,
       ].some((u) => isSameUnitInstance(u, unit).result);
-      expect(unitInCommandedUnits).toBeTruthy();
+      expect(unitInCommandedUnits).toBe(true);
     });
 
     it('given white issues second-player command, remainingCommandsSecondPlayer loses that command', () => {
@@ -111,14 +109,12 @@ describe(applyIssueCommandEvent, () => {
         throw new Error('Expected issueCommands phase');
       }
 
-      expect(
-        phaseState.remainingCommandsSecondPlayer.includes(command),
-      ).toBeFalsy();
+      expect(phaseState.remainingCommandsSecondPlayer).not.toContain(command);
       // Check unit presence using value equality, not reference equality
       const unitInCommandedUnits = [
         ...newState.currentRoundState.commandedUnits,
       ].some((u) => isSameUnitInstance(u, unit).result);
-      expect(unitInCommandedUnits).toBeTruthy();
+      expect(unitInCommandedUnits).toBe(true);
     });
 
     it('given black issues one command for two units, both appear in commandedUnits size 2', () => {
@@ -145,8 +141,8 @@ describe(applyIssueCommandEvent, () => {
       const unit2InCommandedUnits = [
         ...newState.currentRoundState.commandedUnits,
       ].some((u) => isSameUnitInstance(u, unit2).result);
-      expect(unit1InCommandedUnits).toBeTruthy();
-      expect(unit2InCommandedUnits).toBeTruthy();
+      expect(unit1InCommandedUnits).toBe(true);
+      expect(unit2InCommandedUnits).toBe(true);
       expect(newState.currentRoundState.commandedUnits.length).toBe(2);
     });
   });

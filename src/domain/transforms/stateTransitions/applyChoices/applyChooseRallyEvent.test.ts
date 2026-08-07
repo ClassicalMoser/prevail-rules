@@ -34,7 +34,7 @@ describe(applyChooseRallyEvent, () => {
     expect(
       throwIfPending(newPhaseState.firstPlayerRallyResolutionState, 'rally')
         .playerRallied,
-    ).toBeTruthy();
+    ).toBe(true);
   });
 
   it('given firstPlayerChooseRally and performRally false, step secondPlayerChooseRally and playerRallied false', () => {
@@ -58,7 +58,7 @@ describe(applyChooseRallyEvent, () => {
     expect(
       throwIfPending(newPhaseState.firstPlayerRallyResolutionState, 'rally')
         .playerRallied,
-    ).toBeFalsy();
+    ).toBe(false);
   });
 
   it('given secondPlayerChooseRally and performRally true, step secondPlayerResolveRally and playerRallied true', () => {
@@ -82,7 +82,7 @@ describe(applyChooseRallyEvent, () => {
     expect(
       throwIfPending(newPhaseState.secondPlayerRallyResolutionState, 'rally')
         .playerRallied,
-    ).toBeTruthy();
+    ).toBe(true);
   });
 
   it('given secondPlayerChooseRally and performRally false, step complete and second playerRallied false', () => {
@@ -106,7 +106,7 @@ describe(applyChooseRallyEvent, () => {
     expect(
       throwIfPending(newPhaseState.secondPlayerRallyResolutionState, 'rally')
         .playerRallied,
-    ).toBeFalsy();
+    ).toBe(false);
   });
 
   it('given cleanup on discardPlayedCards, throws chooseRally step guard', () => {

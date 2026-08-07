@@ -116,16 +116,16 @@ describe(getSpacesBehind, () => {
     it('given E-6 facing northWest, rear wedge includes southEast quadrant', () => {
       const result = getSpacesBehind(smallBoard, 'E-6', 'northWest');
       expect(result.size).toBeGreaterThan(0);
-      expect(result.has('F-7')).toBeTruthy();
-      expect(result.has('F-6')).toBeTruthy();
-      expect(result.has('F-8')).toBeTruthy();
-      expect(result.has('G-8')).toBeTruthy();
-      expect(result.has('H-9')).toBeTruthy();
-      expect(result.has('D-5')).toBeFalsy();
-      expect(result.has('C-4')).toBeFalsy();
-      expect(result.has('A-18' as Coordinate)).toBeFalsy();
-      expect(result.has('L-18' as Coordinate)).toBeFalsy();
-      expect(result.has('L-1' as Coordinate)).toBeFalsy();
+      expect(result.has('F-7')).toBe(true);
+      expect(result.has('F-6')).toBe(true);
+      expect(result.has('F-8')).toBe(true);
+      expect(result.has('G-8')).toBe(true);
+      expect(result.has('H-9')).toBe(true);
+      expect(result.has('D-5')).toBe(false);
+      expect(result.has('C-4')).toBe(false);
+      expect(result.has('A-18' as Coordinate)).toBe(false);
+      expect(result.has('L-18' as Coordinate)).toBe(false);
+      expect(result.has('L-1' as Coordinate)).toBe(false);
     });
   });
 });
