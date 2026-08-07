@@ -45,6 +45,18 @@ const _armySchemaObject = z
       }
       seenUnitTypeIds.add(unitTypeId);
     }
+
+    const seenCommandCardIds = new Set<string>();
+    for (const [index, card] of army.commandCards.entries()) {
+      if (seenCommandCardIds.has(card.id)) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'An army cannot duplicate command cards.',
+          path: ['commandCards', index],
+        });
+      }
+      seenCommandCardIds.add(card.id);
+    }
   });
 
 type ArmySchemaType = z.infer<typeof _armySchemaObject>;
