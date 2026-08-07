@@ -6,6 +6,7 @@ export {
   armySchema,
   armySchemaForMode,
   refineArmyComposition,
+  unitCountSchema,
   attackTypes,
   attackTypeSchema,
   coordinateSchema,

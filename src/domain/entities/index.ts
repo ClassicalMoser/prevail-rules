@@ -5,6 +5,7 @@ export {
   armySchema,
   armySchemaForMode,
   refineArmyComposition,
+  unitCountSchema,
 } from './army';
 export type { Army, ArmyCompositionRules, UnitCount } from './army';
 
