@@ -11,12 +11,8 @@ import { z } from 'zod';
  * - Used in `EngagementState` (for rear engagements)
  * - Used in `RallyResolutionState` (when units lose support)
  *
- * It demonstrates a **nearly recursive pattern**:
- * - Can be nested within `RetreatState`
- * - This creates a pattern where routing can occur during retreat
- *
- * The expected event query `getExpectedRoutEvent()` is composable and
- * can be called from any parent context that contains this state.
+ * Often nested under `RetreatState` (composition, not recursion).
+ * `getExpectedRoutEvent()` is composable from any parent that holds this slice.
  */
 export interface RoutState {
   /** The type of the substep. */

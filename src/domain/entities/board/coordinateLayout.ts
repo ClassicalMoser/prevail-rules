@@ -5,14 +5,8 @@
  */
 
 import type { Board } from './board';
-import type {
-  LargeBoardColumnNumber,
-  LargeBoardRowLetter,
-} from './largeBoard';
-import type {
-  SmallBoardColumnNumber,
-  SmallBoardRowLetter,
-} from './smallBoard';
+import type { LargeBoardColumnNumber, LargeBoardRowLetter } from './largeBoard';
+import type { SmallBoardColumnNumber, SmallBoardRowLetter } from './smallBoard';
 import type {
   StandardBoardColumnNumber,
   StandardBoardRowLetter,

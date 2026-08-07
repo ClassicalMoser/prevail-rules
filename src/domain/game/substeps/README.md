@@ -26,11 +26,11 @@ These substeps are **reusable** and can appear in multiple contexts. They are de
 
 - **`RetreatState`** - Handles unit retreat after an attack or engagement
   - Used in: `AttackApplyState`, `EngagementState`
-  - Contains: `RoutState` (nested composable substep - nearly recursive pattern)
+  - Contains: `RoutState` (when retreat fails or completes into a rout)
 
 - **`RoutState`** - Handles card discarding when units rout
   - Used in: `RetreatState`, `EngagementState`, `RallyResolutionState`
-  - This is a **nearly recursive** pattern: rout can trigger from retreat, which can contain a rout state
+  - Often nested under retreat: no legal retreats → rout penalty under the retreat slice
 
 - **`ReverseState`** - Handles unit reversal after an attack
   - Used in: `AttackApplyState`
@@ -70,16 +70,10 @@ Composable substeps follow this pattern:
 
 Example: `AttackApplyState` is used in both ranged attacks and melee resolution, and it delegates to `getExpectedRetreatEvent()`, `getExpectedRoutEvent()`, or `getExpectedReverseEvent()` based on the attack result.
 
-## Nearly Recursive Pattern
+## Retreat → rout nesting
 
-Some substeps can contain themselves or similar structures:
+`RetreatState` can hold a nested `RoutState`. That is composition, not recursion: neither type contains itself.
 
-- `RetreatState` can contain `RoutState`
-- `RoutState` can be triggered from `RetreatState` (when no legal retreats exist)
-- This creates a **nearly recursive** pattern where routing can occur during retreat
-
-This pattern is handled by:
-
-1. Checking for nested state existence (`retreatState.routState`)
-2. Delegating to the nested state's expected event query (`getExpectedRoutEvent()`)
-3. Using the `completed` flag to know when to "back out" to the parent state
+- No legal retreats (or retreat leading to rout) → `routState` is seeded under the retreat slice
+- Expected-event queries check for the nested slice (`retreatState.routState`) and delegate to `getExpectedRoutEvent()`
+- The nested `completed` flag tells the parent when to resume / finish
