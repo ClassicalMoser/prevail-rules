@@ -3,6 +3,7 @@ import type { Command } from './command';
 import type { StatModifier } from './modifiers';
 import type { RoundEffect } from './roundEffect';
 
+import { LEGAL_INITIATIVES } from '@ruleValues';
 import { z } from 'zod';
 import { commandSchema } from './command';
 import { statModifierSchema } from './modifiers';
@@ -58,7 +59,10 @@ const _cardSchemaObject = z.object({
   /** The name of the card, regardless of version. */
   name: z.string().min(3),
   /** The initiative value of the card. */
-  initiative: z.int().min(1).max(4),
+  initiative: z
+    .int()
+    .min(LEGAL_INITIATIVES[0])
+    .max(LEGAL_INITIATIVES[LEGAL_INITIATIVES.length - 1]),
   /** The modifiers the card can discard for. */
   modifiers: z.array(statModifierSchema).min(1).max(2),
   /** The command of the card. */

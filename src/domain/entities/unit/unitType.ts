@@ -26,8 +26,8 @@ export interface UnitType {
   cost: number;
   /** The limit of units that can be included in a standard army. */
   limit: number;
-  /** The number of cards the owner must discard when the unit is routed. */
-  routPenalty: number;
+  /** The morale value of the unit. Primarily dictates how many cards the owner must discard when the unit is routed.*/
+  morale: number;
 }
 
 const _unitTypeSchemaObject = z.object({
@@ -52,7 +52,7 @@ const _unitTypeSchemaObject = z.object({
   /** The limit of units that can be included in a standard army. */
   limit: z.int().min(1).max(20),
   /** The number of cards the owner must discard when the unit is routed. */
-  routPenalty: z.int().min(0).max(5),
+  morale: z.int().min(0).max(5),
 });
 
 type UnitTypeSchemaType = z.infer<typeof _unitTypeSchemaObject>;

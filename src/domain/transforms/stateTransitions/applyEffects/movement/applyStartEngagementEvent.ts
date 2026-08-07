@@ -44,7 +44,7 @@ export function applyStartEngagementEvent<S extends GameState>(
           routState: {
             cardsChosen: false,
             completed: false,
-            numberToDiscard: defendingUnit.unitType.routPenalty,
+            numberToDiscard: defendingUnit.unitType.morale,
             player: defendingPlayer,
             substepType: 'rout' as const,
             unitsToRout: [defendingUnit],

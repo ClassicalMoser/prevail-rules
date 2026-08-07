@@ -52,7 +52,7 @@ describe(generateResolveRoutEvent, () => {
     const event = generateResolveRoutEvent(full, 0);
     expect(event.effectType).toBe('resolveRout');
     expect(event.routResolutionSource).toBe('rangedAttack');
-    expect(event.penalty).toBe(defendingUnit.unitType.routPenalty);
+    expect(event.penalty).toBe(defendingUnit.unitType.morale);
     expect(event.unitInstances.includes(defendingUnit)).toBeTruthy();
   });
 
@@ -92,7 +92,7 @@ describe(generateResolveRoutEvent, () => {
     const event = generateResolveRoutEvent(full, 0);
     expect(event.routResolutionSource).toBe('melee');
     expect(event.unitInstances.includes(blackUnit)).toBeTruthy();
-    expect(event.penalty).toBe(blackUnit.unitType.routPenalty);
+    expect(event.penalty).toBe(blackUnit.unitType.morale);
   });
 
   it('given playCards phase, throws rout resolution phase guard', () => {

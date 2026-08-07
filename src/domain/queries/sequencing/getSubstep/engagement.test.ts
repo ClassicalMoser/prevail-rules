@@ -227,7 +227,7 @@ describe(getRearEngagementStateFromMovement, () => {
           engagementState: {
             ...createRearEngagementState({
               routState: createRoutState('white', defendingUnit, {
-                numberToDiscard: defendingUnit.unitType.routPenalty,
+                numberToDiscard: defendingUnit.unitType.morale,
               }),
             }),
             engagingUnit,

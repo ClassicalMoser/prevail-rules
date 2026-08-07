@@ -26,7 +26,7 @@ import { getUnitByStatValue } from './getUnitByStatValue';
  * @param options.rout - Rout stat value (used if unitType not provided)
  * @param options.cost - Cost stat value (used if unitType not provided)
  * @param options.limit - Limit stat value (used if unitType not provided)
- * @param options.routPenalty - Rout penalty stat value (used if unitType not provided)
+ * @param options.morale - Morale stat value (used if unitType not provided)
  * @returns A unit instance configured for testing
  */
 export function createTestUnit(
