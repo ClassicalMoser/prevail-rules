@@ -41,6 +41,12 @@ export async function advanceEffects(
       return processResult;
     }
     currentGameState = processResult.data;
+    if (currentGameState.winner !== undefined) {
+      return {
+        data: undefined,
+        result: true,
+      };
+    }
     expectedEvent = getExpectedEvent(currentGameState);
   }
   return {

@@ -145,6 +145,8 @@ export {
   completeUnitMovementEventSchema,
   DISCARD_PLAYED_CARDS_EFFECT_TYPE,
   discardPlayedCardsEventSchema,
+  GAME_OVER_EFFECT_TYPE,
+  gameOverEventSchema,
   gameEffectEventSchema,
   gameEffects,
   gameEffectTypeSchema,
@@ -229,6 +231,7 @@ export type {
   Event,
   EventType,
   GameEffectEvent,
+  GameOverEvent,
 } from '@events';
 export type {
   GameEffectType,
@@ -391,6 +394,9 @@ export {
 } from '@queries';
 export {
   calculateInitiative,
+  getGameOverWinner,
+  getWinnerFromEmptyHands,
+  getWinnerFromUnpayableRoutDiscard,
   getFrontSpaces,
   getRearwardSpace,
   getSingleUnitWithPlacementAtCoordinate,
@@ -584,6 +590,7 @@ export type { ProjectedEvent } from '@transforms';
 export {
   updateCurrentInitiative,
   updateCurrentRoundNumber,
+  updateWinner,
   updateHiddenPlayerCardState,
   updateMeleeAttackApplyState,
   updateMeleeResolutionState,

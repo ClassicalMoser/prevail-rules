@@ -17,11 +17,15 @@ describe(createEmptyGameState, () => {
     expect(gameState.currentRoundState.commandedUnits.length).toBe(0);
     expect(gameState.currentInitiative).toBe('black');
     expect(gameState.boardState.boardType).toBe('standard');
-    expect(gameState.cardState.black.inHand).toStrictEqual([]);
+    expect(gameState.cardState.black.inHand).toStrictEqual([
+      tempCommandCards[2],
+    ]);
     expect(gameState.cardState.black.played).toStrictEqual([]);
     expect(gameState.cardState.black.discarded).toStrictEqual([]);
     expect(gameState.cardState.black.burnt).toStrictEqual([]);
-    expect(gameState.cardState.white.inHand).toStrictEqual([]);
+    expect(gameState.cardState.white.inHand).toStrictEqual([
+      tempCommandCards[3],
+    ]);
     expect(gameState.cardState.white.played).toStrictEqual([]);
     expect(gameState.cardState.white.discarded).toStrictEqual([]);
     expect(gameState.cardState.white.burnt).toStrictEqual([]);

@@ -15,6 +15,7 @@ export const gameEffects = [
   'completeRangedAttackCommand',
   'completeResolveMeleePhase',
   'discardPlayedCards',
+  'gameOver',
   'resolveEngageRetreatOption',
   'resolveFlankEngagement',
   'resolveInitiative',

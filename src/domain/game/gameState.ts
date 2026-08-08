@@ -56,6 +56,11 @@ export interface GameStateForVisibility<
   lostCommanders: PlayerSide[];
   /** Board and piece layout. */
   boardState: Board;
+  /**
+   * Set by `gameOver` apply. Absent while the game is ongoing;
+   * `PlayerSide` for a win; `null` for a draw.
+   */
+  winner?: PlayerSide | null;
 }
 
 /**
@@ -112,6 +117,7 @@ const _authoritativeGameStateSchemaObject = z
     lostCommanders: z.array(playerSideSchema),
     reservedUnits: z.array(unitInstanceSchema),
     routedUnits: z.array(unitInstanceSchema),
+    winner: playerSideSchema.nullable().optional(),
   })
   .strict();
 
@@ -138,6 +144,7 @@ const _whiteSeenGameStateSchemaObject = z
     lostCommanders: z.array(playerSideSchema),
     reservedUnits: z.array(unitInstanceSchema),
     routedUnits: z.array(unitInstanceSchema),
+    winner: playerSideSchema.nullable().optional(),
   })
   .strict();
 
@@ -164,6 +171,7 @@ const _blackSeenGameStateSchemaObject = z
     lostCommanders: z.array(playerSideSchema),
     reservedUnits: z.array(unitInstanceSchema),
     routedUnits: z.array(unitInstanceSchema),
+    winner: playerSideSchema.nullable().optional(),
   })
   .strict();
 

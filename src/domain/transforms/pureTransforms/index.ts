@@ -47,6 +47,7 @@ export {
   updateRemainingPlayerCommands,
   updateRoundEventStream,
   updateRoundState,
+  updateWinner,
 } from './state';
 export {
   addUnitsToCommandedUnits,

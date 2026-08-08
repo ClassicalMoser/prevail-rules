@@ -1,5 +1,14 @@
 import type { Phase } from '@game';
-import { createEmptyGameState } from '@testing';
+import { tempCommandCards } from '@sampleValues';
+import {
+  createCleanupPhaseState,
+  createEmptyGameState,
+  createRallyResolutionState,
+  createRoutState,
+  createTestUnit,
+  updateCardState,
+} from '@testing';
+import { updatePhaseState } from '@transforms';
 
 import { getExpectedEvent } from './getExpectedEvent';
 
@@ -21,9 +30,13 @@ const {
   getExpectedSetupUnitsEventMock: vi.fn(),
 }));
 
-vi.mock(import('@queries'), () => ({
-  getCurrentPhaseState: getCurrentPhaseStateMock,
-}));
+vi.mock(import('@queries'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    getCurrentPhaseState: getCurrentPhaseStateMock,
+  };
+});
 
 vi.mock(import('./byPhase'), () => ({
   getExpectedCleanupPhaseEvent: getExpectedCleanupPhaseEventMock,
@@ -129,5 +142,94 @@ describe(getExpectedEvent, () => {
     });
     expect(getExpectedSetupUnitsEventMock).toHaveBeenCalledWith(state);
     expect(getCurrentPhaseStateMock).not.toHaveBeenCalled();
+  });
+
+  it('given white hand empty, returns gameOver game effect before phase routing', () => {
+    const base = createEmptyGameState();
+    const state = updateCardState(base, {
+      ...base.cardState,
+      white: { ...base.cardState.white, inHand: [] },
+    });
+
+    expect(getExpectedEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'gameOver',
+      expectedEventNumber: 0,
+    });
+    expect(getExpectedSetupUnitsEventMock).not.toHaveBeenCalled();
+    expect(getCurrentPhaseStateMock).not.toHaveBeenCalled();
+  });
+
+  it('given black hand empty, returns gameOver game effect before phase routing', () => {
+    const base = createEmptyGameState();
+    const state = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inHand: [] },
+    });
+    state.currentRoundState.currentPhaseState = {
+      phase: 'playCards',
+      step: 'complete',
+    };
+
+    expect(getExpectedEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'gameOver',
+      expectedEventNumber: 0,
+    });
+    expect(getExpectedPlayCardsPhaseEventMock).not.toHaveBeenCalled();
+  });
+
+  it('given both hands empty, still returns gameOver game effect', () => {
+    const base = createEmptyGameState();
+    const state = updateCardState(base, {
+      ...base.cardState,
+      black: { ...base.cardState.black, inHand: [] },
+      white: { ...base.cardState.white, inHand: [] },
+    });
+
+    expect(getExpectedEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'gameOver',
+      expectedEventNumber: 0,
+    });
+  });
+
+  it('given unpayable rout discard, returns gameOver game effect before phase routing', () => {
+    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const withCards = updateCardState(base, {
+      ...base.cardState,
+      white: {
+        ...base.cardState.white,
+        awaitingPlay: null,
+        inHand: [tempCommandCards[2]],
+        inPlay: null,
+      },
+    });
+    const state = updatePhaseState(
+      withCards,
+      createCleanupPhaseState({
+        firstPlayerRallyResolutionState: createRallyResolutionState({
+          playerRallied: true,
+          rallyResolved: true,
+          routState: createRoutState('white', createTestUnit('white'), {
+            cardsChosen: false,
+            numberToDiscard: 2,
+          }),
+        }),
+        step: 'firstPlayerResolveRally',
+      }),
+    );
+
+    expect(getExpectedEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'gameOver',
+      expectedEventNumber: 0,
+    });
+    expect(getExpectedCleanupPhaseEventMock).not.toHaveBeenCalled();
+  });
+
+  it('throws when winner is already set', () => {
+    const state = { ...createEmptyGameState(), winner: 'black' as const };
+    expect(() => getExpectedEvent(state)).toThrow('Game is already over');
   });
 });

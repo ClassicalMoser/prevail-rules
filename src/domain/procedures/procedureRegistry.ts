@@ -2,6 +2,7 @@ import type { GameEffectEvent, GameEffectType } from '@events';
 import type { GameStateForVisibility } from '@game';
 import {
   generateDiscardPlayedCardsEvent,
+  generateGameOverEvent,
   generateResolveInitiativeEvent,
   generateResolveRallyEvent,
   generateResolveUnitsBrokenEvent,
@@ -83,6 +84,9 @@ export function generateEventFromProcedure(
     }
     case 'discardPlayedCards': {
       return generateDiscardPlayedCardsEvent(state, eventNumber);
+    }
+    case 'gameOver': {
+      return generateGameOverEvent(state, eventNumber);
     }
     case 'resolveEngageRetreatOption': {
       return generateResolveEngageRetreatOptionEvent(state, eventNumber);

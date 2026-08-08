@@ -9,7 +9,8 @@ import { createEmptyStandardBoard } from '@transforms';
  * - Round state has round number 1, no completed phases, no current phase, no commanded units
  * - Initiative starts with black player
  * - Board is an empty standard board
- * - CommandCard state has empty hands, with default cards for awaitingPlay and inPlay
+ * - CommandCard state seeds one card in each hand (so empty-hand endgame does not fire),
+ *   with default cards for awaitingPlay and inPlay
  * - No routed units
  *
  * @param options - Optional configuration
@@ -27,7 +28,7 @@ export function createEmptyGameState(options?: {
         awaitingPlay: tempCommandCards[0],
         burnt: [],
         discarded: [],
-        inHand: [],
+        inHand: [tempCommandCards[2]],
         inPlay: tempCommandCards[1],
         played: [],
       },
@@ -35,7 +36,7 @@ export function createEmptyGameState(options?: {
         awaitingPlay: tempCommandCards[0],
         burnt: [],
         discarded: [],
-        inHand: [],
+        inHand: [tempCommandCards[3]],
         inPlay: tempCommandCards[1],
         played: [],
       },

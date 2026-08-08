@@ -178,7 +178,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
     return null;
   }
 
-  if (expected.actionType === 'gameEffect') {
+  if (expected.actionType !== 'playerChoice') {
     return null;
   }
 

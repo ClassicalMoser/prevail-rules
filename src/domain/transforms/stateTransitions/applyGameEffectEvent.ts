@@ -15,6 +15,7 @@ import {
   applyCompleteResolveMeleePhaseEvent,
   applyCompleteUnitMovementEvent,
   applyDiscardPlayedCardsEvent,
+  applyGameOverEvent,
   applyResolveEngageRetreatOptionEvent,
   applyResolveFlankEngagementEvent,
   applyResolveInitiativeEvent,
@@ -69,6 +70,9 @@ export function applyGameEffectEvent<S extends GameState>(
     }
     case 'discardPlayedCards': {
       return applyDiscardPlayedCardsEvent(event, state);
+    }
+    case 'gameOver': {
+      return applyGameOverEvent(event, state);
     }
     case 'resolveInitiative': {
       return applyResolveInitiativeEvent(event, state);

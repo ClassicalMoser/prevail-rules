@@ -1,5 +1,4 @@
 import type { ExpectedGameEffect } from './expectedGameEffect';
-
 import type { ExpectedPlayerInput } from './expectedPlayerInput';
 
 /**
