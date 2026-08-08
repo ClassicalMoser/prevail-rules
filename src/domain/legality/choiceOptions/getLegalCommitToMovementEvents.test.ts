@@ -44,7 +44,16 @@ describe(getLegalCommitToMovementEvents, () => {
     );
   }
 
-  it('returns one event per hand card with all of its movement modifiers applied', () => {
+  const refuseBlack = {
+    choiceType: 'commitToMovement' as const,
+    committedCard: null,
+    eventNumber: 0,
+    eventType: 'playerChoice' as const,
+    modifierTypes: [] as const,
+    player: 'black' as const,
+  };
+
+  it('returns one event per eligible card plus a refuse option', () => {
     const state = stateBlackPendingMovementCommit([moveCard]);
 
     expect(getLegalCommitToMovementEvents(state)).toStrictEqual([
@@ -56,10 +65,11 @@ describe(getLegalCommitToMovementEvents, () => {
         modifierTypes: ['speed'],
         player: 'black',
       },
+      refuseBlack,
     ]);
   });
 
-  it('skips cards with no movement-applicable modifiers', () => {
+  it('skips cards with no movement-applicable modifiers but still offers refuse', () => {
     const state = stateBlackPendingMovementCommit([strikeCard, moveCard]);
 
     expect(getLegalCommitToMovementEvents(state)).toStrictEqual([
@@ -71,6 +81,7 @@ describe(getLegalCommitToMovementEvents, () => {
         modifierTypes: ['speed'],
         player: 'black',
       },
+      refuseBlack,
     ]);
   });
 
@@ -104,6 +115,14 @@ describe(getLegalCommitToMovementEvents, () => {
         modifierTypes: ['speed'],
         player: 'white',
       },
+      {
+        choiceType: 'commitToMovement',
+        committedCard: null,
+        eventNumber: 0,
+        eventType: 'playerChoice',
+        modifierTypes: [],
+        player: 'white',
+      },
     ]);
   });
 
@@ -115,8 +134,8 @@ describe(getLegalCommitToMovementEvents, () => {
     expect(getLegalCommitToMovementEvents(state)).toStrictEqual([]);
   });
 
-  it('returns empty when the pending player has no eligible cards in hand', () => {
+  it('returns only refuse when the pending player has no eligible cards in hand', () => {
     const state = stateBlackPendingMovementCommit([strikeCard]);
-    expect(getLegalCommitToMovementEvents(state)).toStrictEqual([]);
+    expect(getLegalCommitToMovementEvents(state)).toStrictEqual([refuseBlack]);
   });
 });

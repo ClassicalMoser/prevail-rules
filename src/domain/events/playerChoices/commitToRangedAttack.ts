@@ -18,7 +18,7 @@ const _assertRangedAttackModifierExtendsStatModifier: [
   ? true
   : never = true;
 
-/** An event to commit a card to a ranged attack. */
+/** An event to commit a card to a ranged attack — or refuse (`committedCard` null). */
 export interface CommitToRangedAttackEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -26,11 +26,14 @@ export interface CommitToRangedAttackEvent {
   choiceType: typeof COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
-  /** The player who is committing the card. */
+  /** The player who is committing (or refusing). */
   player: PlayerSide;
-  /** The card to commit from the player's hand. */
-  committedCard: CommandCard;
-  /** The modifier types the card applies. */
+  /**
+   * Card from hand to commit, or `null` to refuse / decline the commitment
+   * without spending a card.
+   */
+  committedCard: CommandCard | null;
+  /** The modifier types the card applies (empty when refusing). */
   modifierTypes: RangedAttackModifier[];
 }
 
@@ -47,11 +50,14 @@ const _commitToRangedAttackEventSchemaObject = z.object({
   choiceType: z.literal(COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE),
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: z.number(),
-  /** The player who is committing the card. */
+  /** The player who is committing (or refusing). */
   player: playerSideSchema,
-  /** The card to commit from the player's hand. */
-  committedCard: commandCardSchema,
-  /** The modifier types the card applies. */
+  /**
+   * Card from hand to commit, or `null` to refuse / decline the commitment
+   * without spending a card.
+   */
+  committedCard: commandCardSchema.nullable(),
+  /** The modifier types the card applies (empty when refusing). */
   modifierTypes: z.array(rangedAttackModifierTypesEnum),
 });
 
@@ -70,6 +76,6 @@ export const commitToRangedAttackEventSchema: z.ZodObject<{
   choiceType: z.ZodLiteral<'commitToRangedAttack'>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  committedCard: typeof commandCardSchema;
+  committedCard: z.ZodNullable<typeof commandCardSchema>;
   modifierTypes: z.ZodArray<typeof rangedAttackModifierTypesEnum>;
 }> = _commitToRangedAttackEventSchemaObject;

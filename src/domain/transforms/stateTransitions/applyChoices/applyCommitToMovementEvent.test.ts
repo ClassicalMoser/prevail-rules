@@ -1,8 +1,12 @@
 import type { CommitToMovementEvent } from '@events';
-import { getMovementResolutionState } from '@queries';
+import {
+  getFrontEngagementStateFromMovement,
+  getMovementResolutionState,
+} from '@queries';
 import { tempCommandCards } from '@sampleValues';
 import {
   createEmptyGameState,
+  createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   updateCardState,
@@ -85,6 +89,81 @@ describe(applyCommitToMovementEvent, () => {
 
     expect(newMovement.commitment).toStrictEqual({
       card: tempCommandCards[0],
+      commitmentType: 'completed',
+    });
+    expect(newState.cardState.white.inHand).toHaveLength(0);
+  });
+
+  it('given front engagement refuse (null card), declines defensiveCommitment without discarding', () => {
+    const state = createEmptyGameState();
+    const card = tempCommandCards[0]!;
+    const withWhiteCard = updateCardState(state, {
+      ...state.cardState,
+      white: { ...state.cardState.white, inHand: [card] },
+    });
+    const movementState = createMovementResolutionState(withWhiteCard, {
+      commitment: { commitmentType: 'declined' },
+      engagementState: createFrontEngagementState(),
+    });
+    const stateInPhase = updatePhaseState(
+      withWhiteCard,
+      createIssueCommandsPhaseState(withWhiteCard, {
+        currentCommandResolutionState: movementState,
+      }),
+    );
+    const event: CommitToMovementEvent = {
+      choiceType: 'commitToMovement',
+      committedCard: null,
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      modifierTypes: [],
+      player: 'white',
+    };
+
+    const newState = applyCommitToMovementEvent(event, stateInPhase);
+    const front = getFrontEngagementStateFromMovement(newState);
+
+    expect(front.engagementResolutionState.defensiveCommitment).toStrictEqual({
+      commitmentType: 'declined',
+    });
+    expect(newState.cardState.white.inHand).toStrictEqual([card]);
+  });
+
+  it('given front engagement defensive commit pending, completes defensiveCommitment and leaves mover commitment declined', () => {
+    const state = createEmptyGameState();
+    const card = tempCommandCards[0]!;
+    const withWhiteCard = updateCardState(state, {
+      ...state.cardState,
+      white: { ...state.cardState.white, inHand: [card] },
+    });
+    const movementState = createMovementResolutionState(withWhiteCard, {
+      commitment: { commitmentType: 'declined' },
+      engagementState: createFrontEngagementState(),
+    });
+    const stateInPhase = updatePhaseState(
+      withWhiteCard,
+      createIssueCommandsPhaseState(withWhiteCard, {
+        currentCommandResolutionState: movementState,
+      }),
+    );
+    const event: CommitToMovementEvent = {
+      choiceType: 'commitToMovement',
+      committedCard: card,
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      modifierTypes: ['speed'],
+      player: 'white',
+    };
+
+    const newState = applyCommitToMovementEvent(event, stateInPhase);
+    const newMovement = getMovementResolutionState(newState);
+    const front = getFrontEngagementStateFromMovement(newState);
+
+    expect(newMovement.commitment).toStrictEqual({
+      commitmentType: 'declined',
+    });
+    expect(front.engagementResolutionState.defensiveCommitment).toStrictEqual({
+      card,
       commitmentType: 'completed',
     });
     expect(newState.cardState.white.inHand).toHaveLength(0);

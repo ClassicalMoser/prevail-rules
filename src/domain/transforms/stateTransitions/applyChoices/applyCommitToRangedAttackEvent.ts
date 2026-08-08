@@ -1,5 +1,6 @@
 import type { CommitToRangedAttackEvent } from '@events';
 import type {
+  Commitment,
   GameState,
   OwnedPlayerForGameState,
   RangedAttackResolutionState,
@@ -14,10 +15,22 @@ import {
   updatePlayerCardState,
 } from '@transforms/pureTransforms';
 
+function completedOrDeclinedCommitment(
+  event: CommitToRangedAttackEvent,
+): Commitment {
+  if (event.committedCard === null) {
+    return { commitmentType: 'declined' };
+  }
+  return {
+    card: event.committedCard,
+    commitmentType: 'completed',
+  };
+}
+
 /**
  * Applies a CommitToRangedAttackEvent to the game state.
- * Updates the appropriate commitment (attacking or defending) in the ranged attack
- * resolution state and discards the card.
+ * Completes or declines the appropriate commitment (attacking or defending).
+ * When `committedCard` is non-null, discards that card from hand.
  * Event is assumed pre-validated (issueCommands phase, ranged attack, player is
  * attacker or defender).
  *
@@ -32,20 +45,19 @@ export function applyCommitToRangedAttackEvent<S extends GameState>(
   const attackingPlayer = rangedAttackState.attackingUnit.playerSide;
   const isAttackingPlayer = player === attackingPlayer;
 
-  const ownedPlayerCardState = getOwnedPlayerCardState(state.cardState, player);
-  const discardedCardState = discardCardsFromHand(ownedPlayerCardState, [
-    event.committedCard.id,
-  ]);
-  const stateWithCards = updatePlayerCardState(
-    state,
-    player,
-    discardedCardState,
-  );
+  let stateWithCards = state;
+  if (event.committedCard !== null) {
+    const ownedPlayerCardState = getOwnedPlayerCardState(
+      state.cardState,
+      player,
+    );
+    const discardedCardState = discardCardsFromHand(ownedPlayerCardState, [
+      event.committedCard.id,
+    ]);
+    stateWithCards = updatePlayerCardState(state, player, discardedCardState);
+  }
 
-  const newCommitment = {
-    card: event.committedCard,
-    commitmentType: 'completed' as const,
-  };
+  const newCommitment = completedOrDeclinedCommitment(event);
   const newRangedAttackState: RangedAttackResolutionState = {
     ...rangedAttackState,
     ...(isAttackingPlayer

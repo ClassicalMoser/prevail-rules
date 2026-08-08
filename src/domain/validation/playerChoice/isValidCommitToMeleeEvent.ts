@@ -15,7 +15,8 @@ function sameModifierTypes(
 
 /**
  * Validates a CommitToMeleeEvent by membership against
- * {@link getLegalCommitToMeleeEvents} (player, card id, ordered modifierTypes).
+ * {@link getLegalCommitToMeleeEvents} (player, card id or refuse, ordered
+ * modifierTypes).
  */
 export function isValidCommitToMeleeEvent(
   event: CommitToMeleeEvent,
@@ -23,15 +24,25 @@ export function isValidCommitToMeleeEvent(
 ): ValidationResult {
   try {
     const legalOptions = getLegalCommitToMeleeEvents(state);
-    const isLegal = legalOptions.some(
-      (option) =>
-        option.player === event.player &&
-        option.committedCard.id === event.committedCard.id &&
-        sameModifierTypes(option.modifierTypes, event.modifierTypes),
-    );
+    const isLegal = legalOptions.some((option) => {
+      if (option.player !== event.player) {
+        return false;
+      }
+      if (!sameModifierTypes(option.modifierTypes, event.modifierTypes)) {
+        return false;
+      }
+      if (option.committedCard === null || event.committedCard === null) {
+        return option.committedCard === event.committedCard;
+      }
+      return option.committedCard.id === event.committedCard.id;
+    });
     if (!isLegal) {
+      const cardLabel =
+        event.committedCard === null
+          ? 'refuse'
+          : `card ${event.committedCard.id}`;
       return {
-        errorReason: `Commit to melee is not legal for ${event.player} with card ${event.committedCard.id}`,
+        errorReason: `Commit to melee is not legal for ${event.player} with ${cardLabel}`,
         result: false,
       };
     }

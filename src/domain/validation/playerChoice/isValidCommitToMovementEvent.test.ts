@@ -56,6 +56,22 @@ describe(isValidCommitToMovementEvent, () => {
     });
   });
 
+  it('accepts refusing with null card and empty modifiers', () => {
+    const state = stateBlackPendingCommit();
+    const event: CommitToMovementEvent = {
+      choiceType: 'commitToMovement',
+      committedCard: null,
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      modifierTypes: [],
+      player: 'black',
+    };
+
+    expect(isValidCommitToMovementEvent(event, state)).toStrictEqual({
+      result: true,
+    });
+  });
+
   it('rejects committing with an empty modifier list', () => {
     const state = stateBlackPendingCommit();
     const event: CommitToMovementEvent = {

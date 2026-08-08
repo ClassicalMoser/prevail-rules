@@ -19,8 +19,8 @@ const rangeCard = tempCommandCards[15];
 
 /**
  * GetLegalCommitToRangedAttackEvents: one CommitToRangedAttackEvent per
- * eligible in-hand card (has ≥1 ranged modifier); modifierTypes are all of
- * that card's ranged modifiers.
+ * eligible in-hand card (has ≥1 ranged modifier), plus refuse; modifierTypes
+ * are all of that card's ranged modifiers.
  */
 describe(getLegalCommitToRangedAttackEvents, () => {
   function statePendingAttackerCommit(hand = [strikeCard]) {
@@ -67,7 +67,25 @@ describe(getLegalCommitToRangedAttackEvents, () => {
     );
   }
 
-  it('returns one event per hand card with all of its ranged modifiers applied', () => {
+  const refuseBlack = {
+    choiceType: 'commitToRangedAttack' as const,
+    committedCard: null,
+    eventNumber: 0,
+    eventType: 'playerChoice' as const,
+    modifierTypes: [] as const,
+    player: 'black' as const,
+  };
+
+  const refuseWhite = {
+    choiceType: 'commitToRangedAttack' as const,
+    committedCard: null,
+    eventNumber: 0,
+    eventType: 'playerChoice' as const,
+    modifierTypes: [] as const,
+    player: 'white' as const,
+  };
+
+  it('returns one event per hand card with all of its ranged modifiers applied, plus refuse', () => {
     const state = statePendingAttackerCommit([strikeCard]);
 
     expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([
@@ -79,6 +97,7 @@ describe(getLegalCommitToRangedAttackEvents, () => {
         modifierTypes: ['attack'],
         player: 'black',
       },
+      refuseBlack,
     ]);
   });
 
@@ -94,6 +113,7 @@ describe(getLegalCommitToRangedAttackEvents, () => {
         modifierTypes: ['range'],
         player: 'black',
       },
+      refuseBlack,
     ]);
   });
 
@@ -109,6 +129,7 @@ describe(getLegalCommitToRangedAttackEvents, () => {
         modifierTypes: ['attack'],
         player: 'white',
       },
+      refuseWhite,
     ]);
   });
 
@@ -120,8 +141,10 @@ describe(getLegalCommitToRangedAttackEvents, () => {
     expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([]);
   });
 
-  it('returns empty when the pending player has no eligible cards in hand', () => {
+  it('returns only refuse when the pending player has no eligible cards in hand', () => {
     const state = statePendingAttackerCommit([moveCard]);
-    expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([]);
+    expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([
+      refuseBlack,
+    ]);
   });
 });

@@ -86,4 +86,37 @@ describe(applyCommitToMeleeEvent, () => {
     });
     expect(newState.cardState.black.inHand).toHaveLength(0);
   });
+
+  it('given white pending, refuse declines white and leaves hand intact', () => {
+    const state = createEmptyGameState();
+    const stateWithWhiteCardInHand = updateCardState(state, {
+      ...state.cardState,
+      white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },
+    });
+    const meleeState = createMeleeResolutionState(stateWithWhiteCardInHand, {
+      whiteCommitment: { commitmentType: 'pending' },
+    });
+    const stateInPhase = updatePhaseState(
+      stateWithWhiteCardInHand,
+      createResolveMeleePhaseState(stateWithWhiteCardInHand, {
+        currentMeleeResolutionState: meleeState,
+      }),
+    );
+    const event: CommitToMeleeEvent = {
+      choiceType: 'commitToMelee',
+      committedCard: null,
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      modifierTypes: [],
+      player: 'white',
+    };
+
+    const newState = applyCommitToMeleeEvent(event, stateInPhase);
+    const newMelee = getMeleeResolutionState(newState);
+
+    expect(newMelee.whiteCommitment).toStrictEqual({
+      commitmentType: 'declined',
+    });
+    expect(newState.cardState.white.inHand).toHaveLength(1);
+  });
 });
