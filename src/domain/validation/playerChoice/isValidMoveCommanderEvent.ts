@@ -1,79 +1,33 @@
 import type { ValidationResult } from '@utils';
 import type { MoveCommanderEvent } from '@events';
-import type { GameStateForVisibility, GameStateVisibility } from '@game';
-import { getOtherPlayer } from '@queries';
+import type { GameState } from '@game';
+import { getLegalCommanderMoves } from '@legality';
+
 /**
- * Validates whether a MoveCommanderEvent can be applied to the current game state.
- * This is used for proactive validation before attempting to apply the event.
+ * Validates whether a MoveCommanderEvent destination is among the legal
+ * commander moves from the event's starting coordinate.
  *
  * @param event - The move commander event to validate
  * @param state - The current game state
  * @returns ValidationResult indicating if the event is valid
- *
- * @example
- * ```typescript
- * const validation = isValidMoveCommanderEvent(event, state);
- * if (!validation.result) {
- *   // Reject the event without processing
- *   return { success: false, error: validation.errorReason };
- * }
- * // Proceed to apply the event
- * const newState = applyMoveCommanderEvent(event, state);
- * ```
  */
-export function isValidMoveCommanderEvent<T extends GameStateVisibility>(
+export function isValidMoveCommanderEvent(
   event: MoveCommanderEvent,
-  state: GameStateForVisibility<T>,
+  state: GameState,
 ): ValidationResult {
   try {
-    const { player } = event;
-    const { currentPhaseState } = state.currentRoundState;
-
-    // Check phase state exists
-    if (currentPhaseState === 'none') {
+    const legalDestinations = getLegalCommanderMoves(
+      event.player,
+      state,
+      event.from,
+    );
+    if (!legalDestinations.has(event.to)) {
       return {
-        errorReason: 'No current phase state found',
+        errorReason: `Destination ${event.to} is not a legal commander move for ${event.player} from ${event.from}`,
         result: false,
       };
     }
-
-    // Check correct phase
-    if (currentPhaseState.phase !== 'moveCommanders') {
-      return {
-        errorReason: `Current phase is ${currentPhaseState.phase}, not moveCommanders`,
-        result: false,
-      };
-    }
-
-    // Check correct step and player
-    const firstPlayer = state.currentInitiative;
-    const secondPlayer = getOtherPlayer(firstPlayer);
-
-    if (currentPhaseState.step === 'moveFirstCommander') {
-      if (player !== firstPlayer) {
-        return {
-          errorReason: `Expected ${firstPlayer} (initiative player) to move, not ${player}`,
-          result: false,
-        };
-      }
-    } else if (currentPhaseState.step === 'moveSecondCommander') {
-      if (player !== secondPlayer) {
-        return {
-          errorReason: `Expected ${secondPlayer} (non-initiative player) to move, not ${player}`,
-          result: false,
-        };
-      }
-    } else {
-      return {
-        errorReason: `Move commanders phase is on ${currentPhaseState.step} step, not moveFirstCommander or moveSecondCommander`,
-        result: false,
-      };
-    }
-
-    // Valid
-    return {
-      result: true,
-    };
+    return { result: true };
   } catch (error) {
     return {
       errorReason: error instanceof Error ? error.message : 'Unknown error',

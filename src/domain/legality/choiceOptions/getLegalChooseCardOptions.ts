@@ -1,71 +1,77 @@
+import type { PlayerSide } from '@entities';
 import type { ChooseCardEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import type { GameState } from '@game';
-import { getNextEventNumber, getPlayCardsPhaseState } from '@queries';
+import { getNextEventNumber, getOwnedPlayerCardState } from '@queries';
+
+function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
+  const { cardState } = gameState;
+  switch (cardState.visibility) {
+    case 'authoritative': {
+      const pending: PlayerSide[] = [];
+      if (cardState.black.awaitingPlay === null) {
+        pending.push('black');
+      }
+      if (cardState.white.awaitingPlay === null) {
+        pending.push('white');
+      }
+      return pending;
+    }
+    case 'blackSeen': {
+      return cardState.black.awaitingPlay === null ? ['black'] : [];
+    }
+    case 'whiteSeen': {
+      return cardState.white.awaitingPlay === null ? ['white'] : [];
+    }
+    default: {
+      const _exhaustive: never = cardState;
+      return _exhaustive;
+    }
+  }
+}
 
 /**
- * Returns every legal choose-card choice for the current state during the
- * play-cards "chooseCards" step: each pending player's in-hand cards as
- * complete {@link ChooseCardEvent} payloads (with `eventNumber` derived from
- * the round's event stream). Empty when no choice is expected (wrong
- * phase/step or both players have already committed a card for this reveal).
+ * Returns every legal choose-card choice visible under the given game state's
+ * card visibility: each pending owned player's in-hand cards as complete
+ * {@link ChooseCardEvent} payloads (with `eventNumber` from the round stream).
  *
- * Aligns with {@link isValidChooseCardEvent} and
- * {@link getExpectedPlayCardsPhaseEvent} for the chooseCards step.
+ * - Authoritative: options for every player still choosing (`awaitingPlay === null`).
+ * - Player-seen: only the viewing player's options (never reads the hidden hand).
+ *
+ * Returns an empty array when no choose-card input is expected (wrong phase/step,
+ * or every owned pending player has already committed). Does not throw for those
+ * soft conditions so clients can re-enumerate after a peer commits.
+ *
+ * Aligns with {@link isValidChooseCardEvent} membership checks (authoritative)
+ * and {@link getExpectedPlayCardsPhaseEvent} for the chooseCards step.
  */
-export function getLegalChooseCardOptions(
-  gameState: GameState,
+export function getLegalChooseCardOptions<S extends GameState>(
+  gameState: S,
 ): ChooseCardEvent[] {
-  // Make sure we're in the choose cards step
-  const phaseState = getPlayCardsPhaseState(gameState);
+  const phaseState = gameState.currentRoundState.currentPhaseState;
+  if (phaseState === 'none' || phaseState.phase !== 'playCards') {
+    return [];
+  }
   if (phaseState.step !== 'chooseCards') {
-    throw new Error('Not in choose cards step');
+    return [];
   }
 
-  // Get the next event number
   const eventNumber = getNextEventNumber(gameState);
-
-  // Both players' hands are required, so this resolves only against an authoritative card state.
-  if (gameState.cardState.visibility !== 'authoritative') {
-    throw new Error(
-      'getLegalChooseCardOptions requires an authoritative card state',
-    );
-  }
-
-  // See who has legal choices
-  const { black, white } = gameState.cardState;
-  const blackStillChoosing = black.awaitingPlay === null;
-  const whiteStillChoosing = white.awaitingPlay === null;
-
-  // Build the result
+  const pendingPlayers = pendingOwnedPlayers(gameState);
   const result: ChooseCardEvent[] = [];
 
-  // If black is still choosing, add all the cards in their hand as legal choices
-  if (blackStillChoosing) {
-    for (const card of black.inHand) {
+  for (const player of pendingPlayers) {
+    const hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
+    for (const card of hand) {
       result.push({
         card,
         choiceType: 'chooseCard',
         eventNumber,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
-        player: 'black',
+        player,
       });
     }
   }
 
-  // If white is still choosing, add all the cards in their hand as legal choices
-  if (whiteStillChoosing) {
-    for (const card of white.inHand) {
-      result.push({
-        card,
-        choiceType: 'chooseCard',
-        eventNumber,
-        eventType: PLAYER_CHOICE_EVENT_TYPE,
-        player: 'white',
-      });
-    }
-  }
-
-  // Return the result
   return result;
 }

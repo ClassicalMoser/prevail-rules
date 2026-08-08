@@ -1,78 +1,33 @@
 import type { ValidationResult } from '@utils';
 import type { ChooseMeleeResolutionEvent } from '@events';
-import type { GameStateForVisibility, GameStateVisibility } from '@game';
-import { RESOLVE_MELEE_PHASE } from '@game';
+import type { GameState } from '@game';
+import { getLegalChooseMeleeResolutionEvents } from '@legality';
 
 /**
- * Validates whether a choose melee resolution event is legal for the current state.
+ * Validates whether a choose melee resolution event is among the legal options
+ * for the current game state.
  *
  * @param event - The choose melee resolution event to validate
  * @param state - The current game state
  * @returns ValidationResult indicating if the event is valid
  */
-export function isValidChooseMeleeResolutionEvent<
-  T extends GameStateVisibility,
->(
+export function isValidChooseMeleeResolutionEvent(
   event: ChooseMeleeResolutionEvent,
-  state: GameStateForVisibility<T>,
+  state: GameState,
 ): ValidationResult {
   try {
-    const { player, space } = event;
-    const { currentPhaseState } = state.currentRoundState;
-
-    if (currentPhaseState === 'none') {
+    const legalOptions = getLegalChooseMeleeResolutionEvents(state);
+    const isLegal = legalOptions.some(
+      (option) =>
+        option.player === event.player && option.space === event.space,
+    );
+    if (!isLegal) {
       return {
-        errorReason: 'No current phase state found',
+        errorReason: `Space ${event.space} is not a legal melee resolution choice for ${event.player}`,
         result: false,
       };
     }
-
-    if (currentPhaseState.phase !== RESOLVE_MELEE_PHASE) {
-      return {
-        errorReason: `Current phase is ${currentPhaseState.phase}, not resolveMelee`,
-        result: false,
-      };
-    }
-
-    if (currentPhaseState.step !== 'resolveMelee') {
-      return {
-        errorReason: `Resolve melee phase is on ${currentPhaseState.step} step, not resolveMelee`,
-        result: false,
-      };
-    }
-
-    if (currentPhaseState.currentMeleeResolutionState !== 'pending') {
-      return {
-        errorReason:
-          'Melee resolution is already in progress; cannot choose a new engagement',
-        result: false,
-      };
-    }
-
-    if (currentPhaseState.remainingEngagements.length === 0) {
-      return {
-        errorReason: 'No remaining engagements to resolve',
-        result: false,
-      };
-    }
-
-    if (!currentPhaseState.remainingEngagements.includes(space as never)) {
-      return {
-        errorReason: `Space ${space} is not among remaining engagements`,
-        result: false,
-      };
-    }
-
-    if (player !== state.currentInitiative) {
-      return {
-        errorReason: `Expected initiative player ${state.currentInitiative} to choose melee resolution, not ${player}`,
-        result: false,
-      };
-    }
-
-    return {
-      result: true,
-    };
+    return { result: true };
   } catch (error) {
     return {
       errorReason: error instanceof Error ? error.message : 'Unknown error',

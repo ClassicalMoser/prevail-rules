@@ -1,115 +1,65 @@
 import type { ValidationResult } from '@utils';
 import type { ChooseRoutDiscardEvent } from '@events';
-import type { GameStateForVisibility, GameStateVisibility } from '@game';
+import type { GameState } from '@game';
+import { getLegalRoutDiscardCards } from '@legality';
 
-import { getOtherPlayer, getOwnedPlayerCardState } from '@queries';
 /**
- * Validates a ChooseRoutDiscardEvent.
- * Checks that the player matches, cards exist in hand, and count matches penalty.
- *
- * Requires authoritative card visibility so hand cards expose `.id`.
- *
- * @param event - The choose rout discard event to validate
- * @param state - The current game state
- * @returns Validation result
+ * Validates a ChooseRoutDiscardEvent as an integral commit over atomic legal
+ * discard cards from {@link getLegalRoutDiscardCards}:
+ * - discard must be expected for this player
+ * - exactly `numberToDiscard` unique card IDs
+ * - every ID is among the legal hand atoms
  */
-export function isValidChooseRoutDiscardEvent<T extends GameStateVisibility>(
+export function isValidChooseRoutDiscardEvent(
   event: ChooseRoutDiscardEvent,
-  state: GameStateForVisibility<T>,
+  state: GameState,
 ): ValidationResult {
-  const { player, cardIds } = event;
-  const { currentPhaseState } = state.currentRoundState;
-
-  if (currentPhaseState === 'none' || currentPhaseState.phase !== 'cleanup') {
-    return {
-      errorReason: 'Current phase is not cleanup',
-      result: false,
-    };
-  }
-
-  // Determine which rally resolution we're in
-  const firstPlayer = state.currentInitiative;
-  const secondPlayer = getOtherPlayer(firstPlayer);
-  let rallyState;
-
-  if (currentPhaseState.step === 'firstPlayerResolveRally') {
-    if (player !== firstPlayer) {
+  try {
+    const legal = getLegalRoutDiscardCards(state);
+    if (legal === null) {
       return {
-        errorReason: `Expected ${firstPlayer} (first player) for discard, got ${player}`,
+        errorReason: 'Rout discard is not expected in the current state',
         result: false,
       };
     }
-    rallyState = currentPhaseState.firstPlayerRallyResolutionState;
-  } else if (currentPhaseState.step === 'secondPlayerResolveRally') {
-    if (player !== secondPlayer) {
+
+    if (event.player !== legal.player) {
       return {
-        errorReason: `Expected ${secondPlayer} (second player) for discard, got ${player}`,
+        errorReason: `Expected rout discard from ${legal.player}, got ${event.player}`,
         result: false,
       };
     }
-    rallyState = currentPhaseState.secondPlayerRallyResolutionState;
-  } else {
-    return {
-      errorReason: `Cleanup phase is not on a resolveRally step: ${currentPhaseState.step}`,
-      result: false,
-    };
-  }
 
-  if (rallyState === 'pending') {
-    return {
-      errorReason: 'Rally resolution state not found',
-      result: false,
-    };
-  }
-
-  if (rallyState.routState === 'pending') {
-    return {
-      errorReason: 'No rout state found',
-      result: false,
-    };
-  }
-
-  if (rallyState.routState.cardsChosen) {
-    return {
-      errorReason: 'Rout discards already chosen',
-      result: false,
-    };
-  }
-
-  // Validate number of cards
-  const expectedCount = rallyState.routState.numberToDiscard;
-  if (cardIds.length !== expectedCount) {
-    return {
-      errorReason: `Expected ${expectedCount} cards, got ${cardIds.length}`,
-      result: false,
-    };
-  }
-
-  // Validate all cards exist in player's hand
-  const ownedPlayerCardState = getOwnedPlayerCardState(
-    state.cardState,
-    event.player,
-  );
-  const cardsInHand = ownedPlayerCardState.inHand;
-  const handCardIds = new Set(cardsInHand.map((card) => card.id));
-
-  for (const cardId of cardIds) {
-    if (!handCardIds.has(cardId)) {
+    if (event.cardIds.length !== legal.numberToDiscard) {
       return {
-        errorReason: `Command card ${cardId} not found in ${player}'s hand`,
+        errorReason: `Expected ${legal.numberToDiscard} cards, got ${event.cardIds.length}`,
         result: false,
       };
     }
-  }
 
-  // Validate no duplicate card IDs
-  const uniqueCardIds = new Set(cardIds);
-  if (uniqueCardIds.size !== cardIds.length) {
+    const uniqueIds = new Set(event.cardIds);
+    if (uniqueIds.size !== event.cardIds.length) {
+      return {
+        errorReason: 'Duplicate card IDs in discard selection',
+        result: false,
+      };
+    }
+
+    const legalIds = new Set(legal.cardIds);
+    for (const cardId of event.cardIds) {
+      if (!legalIds.has(cardId)) {
+        return {
+          errorReason: `Command card ${cardId} is not a legal discard for ${event.player}`,
+          result: false,
+        };
+      }
+    }
+
+    return { result: true };
+  } catch (error) {
     return {
-      errorReason: 'Duplicate card IDs in discard selection',
+      errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,
     };
   }
-
-  return { result: true };
 }

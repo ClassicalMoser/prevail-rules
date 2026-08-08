@@ -1,32 +1,33 @@
 import type { ValidationResult } from '@utils';
-import type { PlayerChoiceEvent, PlayerChoiceType } from '@events';
-import type { GameStateForVisibility, GameStateVisibility } from '@game';
+import type { PlayerChoiceEvent } from '@events';
+import type { GameState } from '@game';
 import { isValidChooseCardEvent } from './isValidChooseCardEvent';
 import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
 import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
 import { isValidChooseMeleeResolutionEvent } from './isValidMeleeResolutionEvent';
+import { isValidChooseRetreatOptionEvent } from './isValidChooseRetreatOptionEvent';
+import { isValidChooseWhetherToRetreatEvent } from './isValidChooseWhetherToRetreatEvent';
+import { isValidCommitToMeleeEvent } from './isValidCommitToMeleeEvent';
+import { isValidCommitToMovementEvent } from './isValidCommitToMovementEvent';
+import { isValidCommitToRangedAttackEvent } from './isValidCommitToRangedAttackEvent';
+import { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
 import { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
+import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
+import { isValidPerformRangedAttackEvent } from './isValidPerformRangedAttackEvent';
+import { isValidSetupUnitsEvent } from './isValidSetupUnitsEvent';
 
-function legalChoiceNotImplemented(
-  choiceType: PlayerChoiceType,
-): ValidationResult {
-  return {
-    errorReason: `Legal validation not implemented for ${choiceType}`,
-    result: false,
-  };
-}
 /**
- * Validates that a player choice event is legal.
+ * Validates that a player choice event is legal under the rules by checking
+ * membership against the legality layer's enumerated options (where available).
  *
  * @param event - The player choice event to validate
- * @param state - The current game state
+ * @param state - The current authoritative game state
  * @returns ValidationResult indicating if the player choice event is legal
  */
-export function validateLegalPlayerChoice<T extends GameStateVisibility>(
+export function validateLegalPlayerChoice(
   event: PlayerChoiceEvent,
-  state: GameStateForVisibility<T>,
+  state: GameState,
 ): ValidationResult {
-  // Legal validators currently assume authoritative card visibility (card `.id`).
   switch (event.choiceType) {
     case 'chooseCard': {
       return isValidChooseCardEvent(event, state);
@@ -43,16 +44,32 @@ export function validateLegalPlayerChoice<T extends GameStateVisibility>(
     case 'chooseRoutDiscard': {
       return isValidChooseRoutDiscardEvent(event, state);
     }
-    case 'chooseRetreatOption':
-    case 'chooseWhetherToRetreat':
-    case 'commitToMelee':
-    case 'commitToMovement':
-    case 'commitToRangedAttack':
-    case 'issueCommand':
-    case 'moveUnit':
-    case 'performRangedAttack':
+    case 'chooseRetreatOption': {
+      return isValidChooseRetreatOptionEvent(event, state);
+    }
+    case 'chooseWhetherToRetreat': {
+      return isValidChooseWhetherToRetreatEvent(event, state);
+    }
+    case 'commitToMelee': {
+      return isValidCommitToMeleeEvent(event, state);
+    }
+    case 'commitToMovement': {
+      return isValidCommitToMovementEvent(event, state);
+    }
+    case 'commitToRangedAttack': {
+      return isValidCommitToRangedAttackEvent(event, state);
+    }
+    case 'moveUnit': {
+      return isValidMoveUnitEvent(event, state);
+    }
+    case 'issueCommand': {
+      return isValidIssueCommandEvent(event, state);
+    }
     case 'setupUnits': {
-      return legalChoiceNotImplemented(event.choiceType);
+      return isValidSetupUnitsEvent(event, state);
+    }
+    case 'performRangedAttack': {
+      return isValidPerformRangedAttackEvent(event, state);
     }
     default: {
       const _exhaustive: never = event;

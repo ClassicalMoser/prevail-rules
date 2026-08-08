@@ -60,11 +60,11 @@ Card visibility _does_ earn a type parameter — it constrains which card fields
 
 ### Validation Functions
 
-Validators return a discriminated `ValidationResult` (`{ result: true }` | `{ result: false, errorReason }`) and never throw:
+Validators return a discriminated `ValidationResult` (`{ result: true }` | `{ result: false, errorReason }`) and never throw. Player-choice legality is membership against `@legality` enumerators:
 
 ```typescript
-isLegalCommanderMove(event, board); // ValidationResult
-isLegalCardChoice(cardState, event); // ValidationResult
+isValidChooseCardEvent(event, state); // ValidationResult
+isValidMoveCommanderEvent(event, state); // ValidationResult
 validateEvent(event, state); // ValidationResult
 ```
 

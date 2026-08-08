@@ -150,14 +150,44 @@ if (expected.actionType === 'playerChoice') {
 - Delegates to phase-specific `getExpected*PhaseEvent` functions
 - Returns structured information about what's expected next
 
+### Legal choice presentation (actors)
+
+**Location:** `validation/playerChoice/getLegalPlayerChoiceOptions.ts`
+
+**Purpose:** After `getExpectedEvent` says a player choice is next, package the legal option payload for UI and bots from the same `@legality` enumerators validators membership-check. Lives in `@validation` because it composes `@expected` + `@legality` (legality cannot import expected).
+
+**Function:** `getLegalPlayerChoiceOptions(state: GameState): LegalPlayerChoiceOptions | null`
+
+- Returns `null` when the next action is a game effect (or expected throws).
+- Otherwise returns a discriminant by `choiceType` with `playerSource`, `expectedEventNumber`, and either full `events[]` (atomic choices) or named root atoms (compound choices).
+- Selection-dependent follow-ups stay on existing helpers (`getLegalUnitMoves`, `getLegalRangedAttackTargets`, `getLegalLineEndsForIssueCommand`, …).
+
+```typescript
+import { getLegalPlayerChoiceOptions, validatePlayerChoice } from '@validation';
+import { applyEvent } from '@transforms';
+
+const options = getLegalPlayerChoiceOptions(state);
+if (options === null) {
+  // game-effect / procedure path via getExpectedEvent
+} else {
+  // UI highlights options; bot samples from options / follow-up getLegal*
+  // Build PlayerChoiceEvent → validatePlayerChoice → applyEvent
+  const validation = validatePlayerChoice(event, state);
+  if (validation.result) {
+    const newState = applyEvent(event, state);
+  }
+}
+```
+
 ## Engine Integration
 
 These four engines work together to process an event stream:
 
 1. **Next Event Expected Engine** determines what should happen next
-2. **Validation Engine** validates incoming events (from players or procedures)
-3. **Procedure Library** generates game effect events when needed
-4. **Pure Transform Engine** applies validated events to produce new state
+2. **Legal choice presentation** (`getLegalPlayerChoiceOptions`) fills in options when the next action is a player choice (shared by UI and bots)
+3. **Validation Engine** validates incoming events (from players or procedures)
+4. **Procedure Library** generates game effect events when needed
+5. **Pure Transform Engine** applies validated events to produce new state
 
 This architecture enables:
 

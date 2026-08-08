@@ -1,90 +1,37 @@
-import type { CommandCard } from '@entities';
 import type { ValidationResult } from '@utils';
 import type { ChooseCardEvent } from '@events';
-import type { GameStateForVisibility, GameStateVisibility } from '@game';
+import type { GameState } from '@game';
+import { getLegalChooseCardOptions } from '@legality';
 
 /**
- * Validates whether a ChooseCardEvent can be applied to the current game state.
- * This is used for proactive validation before attempting to apply the event.
+ * Validates whether a ChooseCardEvent is among the legal choose-card options
+ * for the current game state (typically authoritative on the engine).
  *
- * Requires authoritative card visibility so hand cards expose `.id`.
+ * Membership is against {@link getLegalChooseCardOptions}: wrong phase/step or
+ * an already-committed player yields an empty option list, so this returns
+ * `result: false` with a “not a legal choice” reason (no throw).
  *
  * @param event - The choose card event to validate
  * @param state - The current game state
  * @returns ValidationResult indicating if the event is valid
- *
- * @example
- * ```typescript
- * const validation = isValidChooseCardEvent(event, state);
- * if (!validation.result) {
- *   // Reject the event without processing
- *   return { success: false, error: validation.errorReason };
- * }
- * // Proceed to apply the event
- * const newState = applyChooseCardEvent(event, state);
- * ```
  */
-export function isValidChooseCardEvent<T extends GameStateVisibility>(
+export function isValidChooseCardEvent(
   event: ChooseCardEvent,
-  state: GameStateForVisibility<T>,
+  state: GameState,
 ): ValidationResult {
   try {
-    const { player, card } = event;
-    const { currentPhaseState } = state.currentRoundState;
-
-    // Check phase state exists
-    if (currentPhaseState === 'none') {
+    const legalOptions = getLegalChooseCardOptions(state);
+    const isLegal = legalOptions.some(
+      (option) =>
+        option.player === event.player && option.card.id === event.card.id,
+    );
+    if (!isLegal) {
       return {
-        errorReason: 'No current phase state found',
+        errorReason: `Command card ${event.card.id} is not a legal choice for ${event.player}`,
         result: false,
       };
     }
-
-    // Check correct phase
-    if (currentPhaseState.phase !== 'playCards') {
-      return {
-        errorReason: `Current phase is ${currentPhaseState.phase}, not playCards`,
-        result: false,
-      };
-    }
-
-    // Check correct step
-    if (currentPhaseState.step !== 'chooseCards') {
-      return {
-        errorReason: `Play cards phase is on ${currentPhaseState.step} step, not chooseCards`,
-        result: false,
-      };
-    }
-
-    // Check player hasn't already chosen
-    if (state.cardState[player].awaitingPlay !== null) {
-      return {
-        errorReason: `Player ${player} has already chosen a card`,
-        result: false,
-      };
-    }
-
-    // Check card is in player's hand
-    const playerHand: CommandCard[] | 'hidden'[] =
-      state.cardState[player].inHand;
-    if (playerHand.every((c) => c === 'hidden')) {
-      return {
-        errorReason: `Cannot manipulate hidden cards! (${player} player's hand is hidden)`,
-        result: false,
-      };
-    }
-    const cardInHand = playerHand.some((c) => c.id === card.id);
-    if (!cardInHand) {
-      return {
-        errorReason: `Command card ${card.id} is not in ${player} player's hand`,
-        result: false,
-      };
-    }
-
-    // Valid
-    return {
-      result: true,
-    };
+    return { result: true };
   } catch (error) {
     return {
       errorReason: error instanceof Error ? error.message : 'Unknown error',

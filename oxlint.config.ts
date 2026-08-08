@@ -82,11 +82,13 @@ const config: OxlintConfig = {
     'vitest/require-hook': 'off', // Vitest hooks are not required for tests
     'vitest/no-hooks': 'off', // Vitest hooks can be used for setup and teardown where sensible
     'vitest/prefer-called-once': 'off', // Called times for consistency
+
     // Prefer strict toBe(true)/toBe(false); falsy/truthy also match 0, '', null, etc.
     'vitest/prefer-to-be-falsy': 'off',
     'vitest/prefer-to-be-truthy': 'off',
 
     // These are styling preferences
+    'capitalized-comments': 'off', // Function and variable references will not match if capitalized.
     'no-inline-comments': 'off', // Inline comments allowed for short clarifications
     'no-warning-comments': 'off', // Warning comments allowed for future reference
     'no-named-export': 'off', // Named exports are preferred for readability

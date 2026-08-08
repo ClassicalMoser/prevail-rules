@@ -1,14 +1,23 @@
 export { eachCardPresentOnce, eachUnitPresentOnce } from './gameState';
-export { isLegalCardChoice } from './isLegalCardChoice';
-export { isLegalCommanderMove } from './isLegalCommanderMove';
 export {
+  getLegalPlayerChoiceOptions,
   isValidChooseCardEvent,
   isValidChooseMeleeResolutionEvent,
   isValidChooseRallyEvent,
+  isValidChooseRetreatOptionEvent,
   isValidChooseRoutDiscardEvent,
+  isValidChooseWhetherToRetreatEvent,
+  isValidCommitToMeleeEvent,
+  isValidCommitToMovementEvent,
+  isValidCommitToRangedAttackEvent,
+  isValidIssueCommandEvent,
   isValidMoveCommanderEvent,
+  isValidMoveUnitEvent,
+  isValidPerformRangedAttackEvent,
+  isValidSetupUnitsEvent,
   validatePlayerChoice,
 } from './playerChoice';
+export type { LegalPlayerChoiceOptions } from './playerChoice';
 export {
   canEngageEnemy,
   canMoveInto,
