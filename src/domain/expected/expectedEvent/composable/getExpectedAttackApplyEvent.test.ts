@@ -296,13 +296,25 @@ describe(getExpectedAttackApplyEvent, () => {
   });
 
   describe('error cases', () => {
-    it('given when no results are reported, throws', () => {
+    it('given when no results are reported, returns completeAttackApply', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const attackApplyState = createAttackApplyState(unit);
 
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        'completeAttackApply',
+      );
+    });
+
+    it('given when no results and attack apply is already complete, throws', () => {
+      const unit = createTestUnit('white', { attack: 2 });
+      const attackApplyState = createAttackApplyState(unit, {
+        completed: true,
+      });
+
       expect(() =>
         getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
-      ).toThrow('Attack apply state not initialized correctly');
+      ).toThrow('Attack apply state is already complete');
     });
 
     it('given when results are reported but no substates are defined, throws', () => {

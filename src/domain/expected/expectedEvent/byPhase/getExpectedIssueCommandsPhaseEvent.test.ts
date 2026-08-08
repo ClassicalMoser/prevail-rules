@@ -127,27 +127,37 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
   });
 
   it('given start command resolution for the first player when units remain', () => {
-    const state = createGameStateInIssueCommandsStep(
+    const onBoard = createUnitWithPlacement({
+      coordinate: 'E-5',
+      facing: 'north',
+      playerSide: 'black',
+      unitOptions: { attack: 3 },
+    });
+    let state = createGameStateInIssueCommandsStep(
       'firstPlayerResolveCommands',
       'black',
       () => ({
-        remainingUnitsFirstPlayer: [createTestUnit('black', { attack: 3 })],
+        remainingUnitsFirstPlayer: [onBoard.unit],
       }),
     );
+    state = updateBoardState(state, addUnitToBoard(state.boardState, onBoard));
 
-    const expectedEvent = getExpectedIssueCommandsPhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('playerChoice');
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'moveUnit',
+      playerSource: 'black',
+    });
   });
 
-  it('given when first player units are exhausted but step did not advance, throws', () => {
+  it('given when first player units are exhausted but step did not advance, expects completeMovementCommand', () => {
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerResolveCommands',
     );
 
-    expect(() => getExpectedIssueCommandsPhaseEvent(state)).toThrow(
-      'All first player units resolved but step not advanced to secondPlayerIssueCommands',
-    );
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeMovementCommand',
+    });
   });
 
   it('given ranged card and remaining units with no legal target, expects completeRangedAttackCommand', () => {
@@ -169,6 +179,28 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
     expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'completeRangedAttackCommand',
+    });
+  });
+
+  it('given movement card and remaining units that cannot move, expects completeMovementCommand', () => {
+    const state = createGameStateInIssueCommandsStep(
+      'secondPlayerResolveCommands',
+      'black',
+      () => ({
+        remainingUnitsSecondPlayer: [createTestUnit('white', { attack: 2 })],
+      }),
+    );
+    state.cardState.white.inPlay = {
+      ...createTestCard(),
+      command: {
+        ...createTestCard().command,
+        type: 'movement',
+      },
+    };
+
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeMovementCommand',
     });
   });
 
@@ -215,27 +247,37 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
   });
 
   it('given start command resolution for the second player when units remain', () => {
-    const state = createGameStateInIssueCommandsStep(
+    const onBoard = createUnitWithPlacement({
+      coordinate: 'E-6',
+      facing: 'south',
+      playerSide: 'white',
+      unitOptions: { attack: 3 },
+    });
+    let state = createGameStateInIssueCommandsStep(
       'secondPlayerResolveCommands',
       'black',
       () => ({
-        remainingUnitsSecondPlayer: [createTestUnit('white', { attack: 3 })],
+        remainingUnitsSecondPlayer: [onBoard.unit],
       }),
     );
+    state = updateBoardState(state, addUnitToBoard(state.boardState, onBoard));
 
-    const expectedEvent = getExpectedIssueCommandsPhaseEvent(state);
-
-    expect(expectedEvent.actionType).toBe('playerChoice');
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'moveUnit',
+      playerSource: 'white',
+    });
   });
 
-  it('given when second player units are exhausted but step did not advance, throws', () => {
+  it('given when second player units are exhausted but step did not advance, expects completeMovementCommand', () => {
     const state = createGameStateInIssueCommandsStep(
       'secondPlayerResolveCommands',
     );
 
-    expect(() => getExpectedIssueCommandsPhaseEvent(state)).toThrow(
-      'All second player units resolved but step not advanced to complete',
-    );
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeMovementCommand',
+    });
   });
 
   it('given context, returns completeIssueCommandsPhase game effect', () => {

@@ -101,6 +101,8 @@ export const procedureRegistryStateFactories: Record<
       step: 'complete',
     }),
 
+  completeMovementCommand: (): GameStateForVisibility => createEmptyGameState(),
+
   completeRangedAttackCommand: (): GameStateForVisibility =>
     createEmptyGameState(),
 

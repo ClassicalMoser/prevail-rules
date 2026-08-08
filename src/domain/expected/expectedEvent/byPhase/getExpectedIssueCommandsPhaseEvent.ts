@@ -1,7 +1,11 @@
 import type { Command, PlayerSide } from '@entities';
 import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
-import { getLegalRangedAttackers, isCommandIssuable } from '@legality';
+import {
+  getLegalMoveUnits,
+  getLegalRangedAttackers,
+  isCommandIssuable,
+} from '@legality';
 import { getIssueCommandsPhaseState, getOtherPlayer } from '@queries';
 import { getExpectedStartCommandResolutionEvent } from '../composable';
 import { getExpectedCommandResolutionEvent } from '../iterated';
@@ -20,6 +24,25 @@ function getExpectedRangedResolveStart(
     return {
       actionType: 'gameEffect',
       effectType: 'completeRangedAttackCommand',
+    };
+  }
+  return getExpectedStartCommandResolutionEvent(state, player);
+}
+
+/**
+ * When resolving a movement command with remaining units but none that can
+ * legally start a move (e.g. all engaged), expect `completeMovementCommand`
+ * so apply can clear those units and advance instead of stalling on `moveUnit`.
+ */
+function getExpectedMovementResolveStart(
+  state: GameState,
+  player: 'black' | 'white',
+): ExpectedEventInfo {
+  const legal = getLegalMoveUnits(state);
+  if (legal === null) {
+    return {
+      actionType: 'gameEffect',
+      effectType: 'completeMovementCommand',
     };
   }
   return getExpectedStartCommandResolutionEvent(state, player);
@@ -97,7 +120,7 @@ export function getExpectedIssueCommandsPhaseEvent(
         if (inPlay?.command.type === 'rangedAttack') {
           return getExpectedRangedResolveStart(state, firstPlayer);
         }
-        return getExpectedStartCommandResolutionEvent(state, firstPlayer);
+        return getExpectedMovementResolveStart(state, firstPlayer);
       }
 
       // Empty remaining after ranged resolve: advance via completeRangedAttackCommand
@@ -107,6 +130,14 @@ export function getExpectedIssueCommandsPhaseEvent(
         return {
           actionType: 'gameEffect',
           effectType: 'completeRangedAttackCommand',
+        };
+      }
+
+      // Empty remaining after movement resolve with no movers: complete command
+      if (state.cardState[firstPlayer].inPlay?.command.type === 'movement') {
+        return {
+          actionType: 'gameEffect',
+          effectType: 'completeMovementCommand',
         };
       }
 
@@ -146,7 +177,7 @@ export function getExpectedIssueCommandsPhaseEvent(
         if (inPlay?.command.type === 'rangedAttack') {
           return getExpectedRangedResolveStart(state, secondPlayer);
         }
-        return getExpectedStartCommandResolutionEvent(state, secondPlayer);
+        return getExpectedMovementResolveStart(state, secondPlayer);
       }
 
       if (
@@ -155,6 +186,13 @@ export function getExpectedIssueCommandsPhaseEvent(
         return {
           actionType: 'gameEffect',
           effectType: 'completeRangedAttackCommand',
+        };
+      }
+
+      if (state.cardState[secondPlayer].inPlay?.command.type === 'movement') {
+        return {
+          actionType: 'gameEffect',
+          effectType: 'completeMovementCommand',
         };
       }
 

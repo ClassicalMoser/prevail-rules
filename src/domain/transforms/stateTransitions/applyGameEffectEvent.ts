@@ -10,6 +10,7 @@ import {
   applyCompleteIssueCommandsPhaseEvent,
   applyCompleteMeleeResolutionEvent,
   applyCompleteMoveCommandersPhaseEvent,
+  applyCompleteMovementCommandEvent,
   applyCompletePlayCardsPhaseEvent,
   applyCompleteRangedAttackCommandEvent,
   applyCompleteResolveMeleePhaseEvent,
@@ -55,6 +56,9 @@ export function applyGameEffectEvent<S extends GameState>(
     }
     case 'completeMoveCommandersPhase': {
       return applyCompleteMoveCommandersPhaseEvent(event, state);
+    }
+    case 'completeMovementCommand': {
+      return applyCompleteMovementCommandEvent(event, state);
     }
     case 'completePlayCardsPhase': {
       return applyCompletePlayCardsPhaseEvent(event, state);

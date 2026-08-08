@@ -5,7 +5,7 @@ import { addUnitToBoard, updateBoardState } from '@transforms';
 import { isCommandIssuable } from './isCommandIssuable';
 
 /**
- * IsCommandIssuable: remaining grant can be spent as a full issueCommand.
+ * IsCommandIssuable: remaining grant can be spent (at least one eligible unit).
  */
 describe(isCommandIssuable, () => {
   const unrestrictedUnits = (number: number): Command => ({
@@ -42,7 +42,7 @@ describe(isCommandIssuable, () => {
     expect(isCommandIssuable(unrestrictedUnits(2), 'black', state)).toBe(true);
   });
 
-  it('given units ×2 and only one eligible unit, returns false', () => {
+  it('given units ×2 and only one eligible unit, returns true', () => {
     let state = createEmptyGameState();
     const a = createUnitWithPlacement({
       coordinate: 'E-5',
@@ -51,7 +51,13 @@ describe(isCommandIssuable, () => {
     });
     state = updateBoardState(state, addUnitToBoard(state.boardState, a));
 
-    expect(isCommandIssuable(unrestrictedUnits(2), 'black', state)).toBe(false);
+    expect(isCommandIssuable(unrestrictedUnits(2), 'black', state)).toBe(true);
+  });
+
+  it('given units ×6 and no eligible units, returns false', () => {
+    const state = createEmptyGameState();
+
+    expect(isCommandIssuable(unrestrictedUnits(6), 'black', state)).toBe(false);
   });
 
   it('given lines ×1 and one eligible start, returns true', () => {

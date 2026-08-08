@@ -37,6 +37,7 @@ import type {
   TriggerRoutFromRetreatEvent,
 } from './defenseResult';
 import type {
+  CompleteMovementCommandEvent,
   CompleteUnitMovementEvent,
   ResolveEngageRetreatOptionEvent,
   ResolveFlankEngagementEvent,
@@ -67,6 +68,7 @@ import {
   completeResolveMeleePhaseEventSchema,
 } from './completePhase';
 import {
+  completeMovementCommandEventSchema,
   completeUnitMovementEventSchema,
   resolveEngageRetreatOptionEventSchema,
   resolveFlankEngagementEventSchema,
@@ -99,6 +101,7 @@ type GameEffectEventUnion =
   | CompleteCleanupPhaseEvent
   | CompleteIssueCommandsPhaseEvent
   | CompleteMoveCommandersPhaseEvent
+  | CompleteMovementCommandEvent
   | CompletePlayCardsPhaseEvent
   | CompleteMeleeResolutionEvent
   | CompleteRangedAttackCommandEvent
@@ -135,6 +138,7 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeCleanupPhaseEventSchema,
   completeIssueCommandsPhaseEventSchema,
   completeMoveCommandersPhaseEventSchema,
+  completeMovementCommandEventSchema,
   completePlayCardsPhaseEventSchema,
   completeMeleeResolutionEventSchema,
   completeRangedAttackCommandEventSchema,

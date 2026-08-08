@@ -1,3 +1,6 @@
+export { COMPLETE_MOVEMENT_COMMAND_EFFECT_TYPE } from './completeMovementCommand';
+export type { CompleteMovementCommandEvent } from './completeMovementCommand';
+export { completeMovementCommandEventSchema } from './completeMovementCommand';
 export { COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE } from './completeUnitMovement';
 export type { CompleteUnitMovementEvent } from './completeUnitMovement';
 export { completeUnitMovementEventSchema } from './completeUnitMovement';
