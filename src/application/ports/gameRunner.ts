@@ -12,6 +12,15 @@ export interface GameRunner {
     playerChoice: PlayerChoiceEvent,
   ) => Promise<PortResponse<void>>;
   /**
+   * Runs chained game effects until the next player-facing choice.
+   * No-op (success) when a player choice is already expected — used to unstick
+   * sessions after refresh / reconnect mid-effect.
+   */
+  advanceUntilPlayerChoice: (
+    gameId: string,
+    gameMode: GameModeName,
+  ) => Promise<PortResponse<void>>;
+  /**
    * Returns the current game projected for `playerSide` (wire reconcile after
    * refresh / missed updates). Opponent cards are hidden; board units are full.
    */
