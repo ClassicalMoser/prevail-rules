@@ -168,6 +168,64 @@ describe(applyChooseCardEvent, () => {
     });
   });
 
+  describe('whiteSeen opponent chooseCard', () => {
+    it('applies projected black chooseCard onto hidden slice and advances when both ready', () => {
+      const authoritative = createGameStateInChooseCardsStep(
+        [tempCommandCards[0]],
+        [tempCommandCards[1]],
+      );
+      const whiteSeen = {
+        ...authoritative,
+        cardState: {
+          visibility: 'whiteSeen' as const,
+          white: {
+            ...authoritative.cardState.white,
+            awaitingPlay: null,
+            inHand: [tempCommandCards[1]],
+          },
+          black: {
+            awaitingPlay: null,
+            burnt: [],
+            discarded: [],
+            inHand: ['hidden' as const],
+            inPlay: null,
+            played: [],
+          },
+        },
+      };
+
+      const afterBlack = applyChooseCardEvent(
+        {
+          card: 'hidden',
+          choiceType: 'chooseCard',
+          eventNumber: 0,
+          eventType: 'playerChoice',
+          player: 'black',
+        },
+        whiteSeen,
+      );
+
+      expect(afterBlack.cardState.black.awaitingPlay).toBe('hidden');
+      expect(afterBlack.cardState.black.inHand).toStrictEqual([]);
+
+      const afterWhite = applyChooseCardEvent(
+        {
+          card: tempCommandCards[1],
+          choiceType: 'chooseCard',
+          eventNumber: 1,
+          eventType: 'playerChoice',
+          player: 'white',
+        },
+        afterBlack,
+      );
+
+      expect(
+        throwIfNone(afterWhite.currentRoundState.currentPhaseState, 'phase')
+          .step,
+      ).toBe('revealCards');
+    });
+  });
+
   describe('structural update', () => {
     it('given prior black hand snapshot, apply leaves input state object unchanged', () => {
       const state = createGameStateInChooseCardsStep(

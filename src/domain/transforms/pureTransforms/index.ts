@@ -2,6 +2,7 @@ export { updateBoardState } from './board';
 export {
   burnCardFromPlayed,
   chooseCard,
+  chooseHiddenCard,
   discardCardsFromHand,
   moveBothInPlayToPlayed,
   moveCardToPlayed,
@@ -10,9 +11,15 @@ export {
   revealBothAwaitingCards,
   revealCard,
   revealHiddenCard,
+  toHiddenCardState,
   updateHiddenPlayerCardState,
   updatePlayerCardState,
 } from './cards';
+export {
+  projectEventForVisibility,
+  projectGameForVisibility,
+} from './visibility';
+export type { ProjectedEvent } from './visibility';
 export {
   addCommanderToBoard,
   addCommanderToLostCommanders,

@@ -137,10 +137,15 @@ export type {
   PlayerChoiceEvent,
   PlayerChoiceEventOfType,
   PlayerChoiceType,
+  ProjectedChooseCardEvent,
+  ProjectedCommitEvent,
+  ProjectedPlayerChoiceEvent,
 } from './playerChoices';
 export {
   playerChoiceEventSchema,
   playerChoiceTypeSchema,
+  projectedChooseCardEventSchema,
+  projectedPlayerChoiceEventSchema,
 } from './playerChoices';
 
 export type { SetupUnitsEvent } from './playerChoices';
