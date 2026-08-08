@@ -111,6 +111,14 @@ export const procedureRegistryStateFactories: Record<
 
   discardPlayedCards: (): GameStateForVisibility => createEmptyGameState(),
 
+  gameOver: (): GameStateForVisibility => {
+    const base = createEmptyGameState();
+    return updateCardState(base, {
+      ...base.cardState,
+      white: { ...base.cardState.white, inHand: [] },
+    });
+  },
+
   resolveEngageRetreatOption: (): GameStateForVisibility => {
     const state = createEmptyGameState();
     state.cardState.black.inPlay = createTestCard();

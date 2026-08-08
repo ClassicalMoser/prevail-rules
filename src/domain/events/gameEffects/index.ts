@@ -11,6 +11,8 @@
 export {
   DISCARD_PLAYED_CARDS_EFFECT_TYPE,
   discardPlayedCardsEventSchema,
+  GAME_OVER_EFFECT_TYPE,
+  gameOverEventSchema,
   RESOLVE_INITIATIVE_EFFECT_TYPE,
   RESOLVE_RALLY_EFFECT_TYPE,
   RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
@@ -22,6 +24,7 @@ export {
 } from './cards';
 export type {
   DiscardPlayedCardsEvent,
+  GameOverEvent,
   ResolveInitiativeEvent,
   ResolveRallyEvent,
   ResolveUnitsBrokenEvent,

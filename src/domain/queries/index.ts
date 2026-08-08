@@ -24,6 +24,11 @@ export {
 export { calculateInitiative } from './calculateInitiative';
 export { getOwnedPlayerCardState } from './cards';
 export {
+  getGameOverWinner,
+  getWinnerFromEmptyHands,
+  getWinnerFromUnpayableRoutDiscard,
+} from './gameOver';
+export {
   isEngagementFromFlank,
   isEngagementFromFront,
   isEngagementFromRear,

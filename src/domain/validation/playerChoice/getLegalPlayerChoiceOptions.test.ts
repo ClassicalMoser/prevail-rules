@@ -88,6 +88,15 @@ describe(getLegalPlayerChoiceOptions, () => {
     expect(getLegalPlayerChoiceOptions(state)).toBeNull();
   });
 
+  it('returns null when the next expected action is gameOver', () => {
+    const base = createEmptyGameState();
+    const state = updateCardState(base, {
+      ...base.cardState,
+      white: { ...base.cardState.white, inHand: [] },
+    });
+    expect(getLegalPlayerChoiceOptions(state)).toBeNull();
+  });
+
   it('returns null when getExpectedEvent throws', () => {
     mocks.getExpectedEventMock.mockImplementation(() => {
       throw new Error('Invalid phase');

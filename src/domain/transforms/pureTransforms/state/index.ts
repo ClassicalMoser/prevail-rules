@@ -7,3 +7,4 @@ export { updatePhaseState } from './updatePhaseState';
 export { updateRemainingPlayerCommands } from './updateRemainingPlayerCommands';
 export { updateRoundEventStream } from './updateRoundEventStream';
 export { updateRoundState } from './updateRoundState';
+export { updateWinner } from './updateWinner';

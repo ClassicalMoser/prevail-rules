@@ -1,6 +1,9 @@
 export { DISCARD_PLAYED_CARDS_EFFECT_TYPE } from './discardPlayedCards';
 export type { DiscardPlayedCardsEvent } from './discardPlayedCards';
 export { discardPlayedCardsEventSchema } from './discardPlayedCards';
+export { GAME_OVER_EFFECT_TYPE } from './gameOver';
+export type { GameOverEvent } from './gameOver';
+export { gameOverEventSchema } from './gameOver';
 export { RESOLVE_INITIATIVE_EFFECT_TYPE } from './resolveInitiative';
 export type { ResolveInitiativeEvent } from './resolveInitiative';
 export { resolveInitiativeEventSchema } from './resolveInitiative';

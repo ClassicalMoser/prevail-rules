@@ -16,6 +16,7 @@ vi.mock(import('./applyEffects'), () => ({
   applyCompleteResolveMeleePhaseEvent: vi.fn(),
   applyCompleteUnitMovementEvent: vi.fn(),
   applyDiscardPlayedCardsEvent: vi.fn(),
+  applyGameOverEvent: vi.fn(),
   applyResolveEngageRetreatOptionEvent: vi.fn(),
   applyResolveFlankEngagementEvent: vi.fn(),
   applyResolveInitiativeEvent: vi.fn(),

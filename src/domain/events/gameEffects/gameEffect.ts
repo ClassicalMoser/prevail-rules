@@ -17,6 +17,7 @@
 import type { GameEffectType } from '@ruleValues';
 import type {
   DiscardPlayedCardsEvent,
+  GameOverEvent,
   ResolveInitiativeEvent,
   ResolveRallyEvent,
   ResolveUnitsBrokenEvent,
@@ -52,6 +53,7 @@ import { gameEffects } from '@ruleValues';
 import { z } from 'zod';
 import {
   discardPlayedCardsEventSchema,
+  gameOverEventSchema,
   resolveInitiativeEventSchema,
   resolveRallyEventSchema,
   resolveUnitsBrokenEventSchema,
@@ -102,6 +104,7 @@ type GameEffectEventUnion =
   | CompleteRangedAttackCommandEvent
   | CompleteResolveMeleePhaseEvent
   | DiscardPlayedCardsEvent
+  | GameOverEvent
   | ResolveEngageRetreatOptionEvent
   | ResolveFlankEngagementEvent
   | ResolveInitiativeEvent
@@ -137,6 +140,7 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeRangedAttackCommandEventSchema,
   completeResolveMeleePhaseEventSchema,
   discardPlayedCardsEventSchema,
+  gameOverEventSchema,
   resolveEngageRetreatOptionEventSchema,
   resolveFlankEngagementEventSchema,
   resolveInitiativeEventSchema,

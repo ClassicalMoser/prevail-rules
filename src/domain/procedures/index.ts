@@ -1,5 +1,6 @@
 export {
   generateDiscardPlayedCardsEvent,
+  generateGameOverEvent,
   generateResolveInitiativeEvent,
   generateResolveRallyEvent,
   generateResolveUnitsBrokenEvent,

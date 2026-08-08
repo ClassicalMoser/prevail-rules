@@ -70,8 +70,10 @@ describe(validatePlayerChoice, () => {
       ...withPhase.cardState,
       black: {
         ...withPhase.cardState.black,
+        // Already chose (awaitingPlay set); hand must stay non-empty so endgame
+        // does not short-circuit before the wrong-player check.
         awaitingPlay: tempCommandCards[0],
-        inHand: [],
+        inHand: [tempCommandCards[4]],
       },
       white: {
         ...withPhase.cardState.white,

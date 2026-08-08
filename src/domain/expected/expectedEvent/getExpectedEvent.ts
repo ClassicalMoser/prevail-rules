@@ -1,6 +1,6 @@
 import type { ExpectedEvent, ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
-import { getCurrentPhaseState } from '@queries';
+import { getCurrentPhaseState, getGameOverWinner } from '@queries';
 import {
   getExpectedCleanupPhaseEvent,
   getExpectedIssueCommandsPhaseEvent,
@@ -13,12 +13,30 @@ import {
 /**
  * Dispatcher function to identify which event to expect next.
  *
+ * Opens with endgame checks (empty hand / unpayable rout discard). When the
+ * game is already finished (`winner` set), throws. Otherwise routes by phase.
+ * Optional commit discards are never treated as forced costs.
+ *
  * @param state - The game state, only argument required.
  * @returns Discriminator information to identify which event and number to expect next,
  * as well as which player(s) to expect input from.
  */
 export function getExpectedEvent(state: GameState): ExpectedEvent {
   const eventNumber = state.currentRoundState.events.length;
+
+  if (state.winner !== undefined) {
+    throw new Error('Game is already over');
+  }
+
+  const gameOverWinner = getGameOverWinner(state);
+  if (gameOverWinner !== undefined) {
+    return {
+      actionType: 'gameEffect',
+      effectType: 'gameOver',
+      expectedEventNumber: eventNumber,
+    };
+  }
+
   const rawPhase = state.currentRoundState.currentPhaseState;
 
   // Pre-round deployment: place reserved units before any phase starts.
