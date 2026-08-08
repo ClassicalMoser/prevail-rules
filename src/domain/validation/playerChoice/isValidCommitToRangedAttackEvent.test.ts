@@ -101,4 +101,20 @@ describe(isValidCommitToRangedAttackEvent, () => {
 
     expect(isValidCommitToRangedAttackEvent(event, state).result).toBe(false);
   });
+
+  it('accepts refusing the ranged commitment', () => {
+    const state = stateBlackPendingAttackerCommit();
+    const event: CommitToRangedAttackEvent = {
+      choiceType: 'commitToRangedAttack',
+      committedCard: null,
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      modifierTypes: [],
+      player: 'black',
+    };
+
+    expect(isValidCommitToRangedAttackEvent(event, state)).toStrictEqual({
+      result: true,
+    });
+  });
 });

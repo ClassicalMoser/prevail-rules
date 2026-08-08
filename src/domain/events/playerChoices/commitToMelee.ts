@@ -17,7 +17,7 @@ const _assertMeleeModifierExtendsStatModifier: [MeleeModifier] extends [
   ? true
   : never = true;
 
-/** An event to commit a card to a unit's melee. */
+/** An event to commit a card to melee — or refuse (`committedCard` null). */
 export interface CommitToMeleeEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -25,11 +25,14 @@ export interface CommitToMeleeEvent {
   choiceType: typeof COMMIT_TO_MELEE_CHOICE_TYPE;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
-  /** The player who is committing the card. */
+  /** The player who is committing (or refusing). */
   player: PlayerSide;
-  /** The card to commit from the player's hand. */
-  committedCard: CommandCard;
-  /** The modifier types the card applies. */
+  /**
+   * Card from hand to commit, or `null` to refuse / decline the commitment
+   * without spending a card.
+   */
+  committedCard: CommandCard | null;
+  /** The modifier types the card applies (empty when refusing). */
   modifierTypes: MeleeModifier[];
 }
 
@@ -46,8 +49,14 @@ const _commitToMeleeEventSchemaObject = z.object({
   choiceType: z.literal(COMMIT_TO_MELEE_CHOICE_TYPE),
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: z.number(),
+  /** The player who is committing (or refusing). */
   player: playerSideSchema,
-  committedCard: commandCardSchema,
+  /**
+   * Card from hand to commit, or `null` to refuse / decline the commitment
+   * without spending a card.
+   */
+  committedCard: commandCardSchema.nullable(),
+  /** The modifier types the card applies (empty when refusing). */
   modifierTypes: z.array(meleeModifierTypesEnum),
 });
 
@@ -66,6 +75,6 @@ export const commitToMeleeEventSchema: z.ZodObject<{
   choiceType: z.ZodLiteral<'commitToMelee'>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  committedCard: typeof commandCardSchema;
+  committedCard: z.ZodNullable<typeof commandCardSchema>;
   modifierTypes: z.ZodArray<typeof meleeModifierTypesEnum>;
 }> = _commitToMeleeEventSchemaObject;

@@ -65,22 +65,26 @@ type CommitChoice =
 
 /** Commit events may redact committedCard for the opposing seat. */
 export type ProjectedCommitEvent = Omit<CommitChoice, 'committedCard'> & {
-  committedCard: CommandCard | HiddenCard;
+  committedCard: CommandCard | HiddenCard | null;
 };
 
-const cardOrHidden = z.union([commandCardSchema, hiddenCardSchema]);
+const cardHiddenOrNull = z.union([
+  commandCardSchema,
+  hiddenCardSchema,
+  z.null(),
+]);
 
 const projectedCommitToMeleeEventSchema = commitToMeleeEventSchema.extend({
-  committedCard: cardOrHidden,
+  committedCard: cardHiddenOrNull,
 });
 const projectedCommitToMovementEventSchema = commitToMovementEventSchema.extend(
   {
-    committedCard: cardOrHidden,
+    committedCard: cardHiddenOrNull,
   },
 );
 const projectedCommitToRangedAttackEventSchema =
   commitToRangedAttackEventSchema.extend({
-    committedCard: cardOrHidden,
+    committedCard: cardHiddenOrNull,
   });
 
 /**

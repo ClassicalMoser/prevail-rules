@@ -33,8 +33,12 @@ export function projectEventForVisibility(
       };
     }
     case 'commitToMelee':
-    case 'commitToMovement':
-    case 'commitToRangedAttack': {
+    case 'commitToRangedAttack':
+    case 'commitToMovement': {
+      // Refuse (`null`) is public; only redact a spent card for the opponent.
+      if (event.committedCard === null) {
+        return event;
+      }
       return {
         ...event,
         committedCard: 'hidden',

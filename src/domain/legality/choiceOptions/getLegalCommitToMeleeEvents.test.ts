@@ -12,7 +12,8 @@ import { getLegalCommitToMeleeEvents } from './getLegalCommitToMeleeEvents';
 
 /**
  * GetLegalCommitToMeleeEvents: one CommitToMeleeEvent per eligible in-hand card
- * (has ≥1 melee modifier); modifierTypes are all of that card's melee modifiers.
+ * (has ≥1 melee modifier), plus a refuse option; modifierTypes are all of that
+ * card's melee modifiers.
  */
 describe(getLegalCommitToMeleeEvents, () => {
   function stateWhitePendingCommit(hand = [tempCommandCards[0]]) {
@@ -37,7 +38,7 @@ describe(getLegalCommitToMeleeEvents, () => {
     );
   }
 
-  it('returns one event per hand card with all of its melee modifiers applied', () => {
+  it('returns one event per hand card with all of its melee modifiers applied, plus refuse', () => {
     // tempCommandCards[0] has modifiers: ['attack']
     const state = stateWhitePendingCommit([tempCommandCards[0]]);
 
@@ -48,6 +49,14 @@ describe(getLegalCommitToMeleeEvents, () => {
         eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['attack'],
+        player: 'white',
+      },
+      {
+        choiceType: 'commitToMelee',
+        committedCard: null,
+        eventNumber: 0,
+        eventType: 'playerChoice',
+        modifierTypes: [],
         player: 'white',
       },
     ]);
@@ -61,8 +70,17 @@ describe(getLegalCommitToMeleeEvents, () => {
     expect(getLegalCommitToMeleeEvents(state)).toStrictEqual([]);
   });
 
-  it('returns empty when the pending player has no cards in hand', () => {
+  it('returns only refuse when the pending player has no cards in hand', () => {
     const state = stateWhitePendingCommit([]);
-    expect(getLegalCommitToMeleeEvents(state)).toStrictEqual([]);
+    expect(getLegalCommitToMeleeEvents(state)).toStrictEqual([
+      {
+        choiceType: 'commitToMelee',
+        committedCard: null,
+        eventNumber: 0,
+        eventType: 'playerChoice',
+        modifierTypes: [],
+        player: 'white',
+      },
+    ]);
   });
 });

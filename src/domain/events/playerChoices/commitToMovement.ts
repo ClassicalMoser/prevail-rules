@@ -17,7 +17,7 @@ const _assertMovementModifierExtendsStatModifier: [MovementModifier] extends [
   ? true
   : never = true;
 
-/** An event to commit a card to a unit's movement. */
+/** An event to commit a card to a unit's movement — or refuse (`committedCard` null). */
 export interface CommitToMovementEvent {
   /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
@@ -25,11 +25,14 @@ export interface CommitToMovementEvent {
   choiceType: typeof COMMIT_TO_MOVEMENT_CHOICE_TYPE;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
-  /** The player who is committing the card. */
+  /** The player who is committing (or refusing). */
   player: PlayerSide;
-  /** The card to commit from the player's hand. */
-  committedCard: CommandCard;
-  /** The modifier types the card applies. */
+  /**
+   * Card from hand to commit, or `null` to refuse / decline the commitment
+   * without spending a card.
+   */
+  committedCard: CommandCard | null;
+  /** The modifier types the card applies (empty when refusing). */
   modifierTypes: MovementModifier[];
 }
 
@@ -45,11 +48,14 @@ const _commitToMovementEventSchemaObject = z.object({
   choiceType: z.literal(COMMIT_TO_MOVEMENT_CHOICE_TYPE),
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: z.number(),
-  /** The player who is committing the card. */
+  /** The player who is committing (or refusing). */
   player: playerSideSchema,
-  /** The card to commit from the player's hand. */
-  committedCard: commandCardSchema,
-  /** The modifier types the card applies. */
+  /**
+   * Card from hand to commit, or `null` to refuse / decline the commitment
+   * without spending a card.
+   */
+  committedCard: commandCardSchema.nullable(),
+  /** The modifier types the card applies (empty when refusing). */
   modifierTypes: z.array(movementModifierTypesEnum),
 });
 
@@ -68,6 +74,6 @@ export const commitToMovementEventSchema: z.ZodObject<{
   choiceType: z.ZodLiteral<'commitToMovement'>;
   eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
-  committedCard: typeof commandCardSchema;
+  committedCard: z.ZodNullable<typeof commandCardSchema>;
   modifierTypes: z.ZodArray<typeof movementModifierTypesEnum>;
 }> = _commitToMovementEventSchemaObject;

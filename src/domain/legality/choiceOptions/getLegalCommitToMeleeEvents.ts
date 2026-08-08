@@ -54,11 +54,11 @@ function pendingCommitPlayer<S extends GameState>(
 /**
  * Returns every legal commit-to-melee event for the player whose melee
  * commitment is still pending: one event per in-hand card that has at least
- * one melee-applicable modifier. `modifierTypes` is exactly that card's
- * melee-applicable modifiers (all applied).
+ * one melee-applicable modifier, plus a refuse option (`committedCard: null`).
+ * `modifierTypes` is exactly that card's melee-applicable modifiers.
  *
- * Returns `[]` when commit is not expected or the pending player's hand is
- * hidden / has no eligible cards.
+ * Returns `[]` when commit is not expected. When the hand is hidden, only the
+ * refuse option is returned (card commits require an owned hand).
  */
 export function getLegalCommitToMeleeEvents<S extends GameState>(
   gameState: S,
@@ -68,30 +68,42 @@ export function getLegalCommitToMeleeEvents<S extends GameState>(
     return [];
   }
 
-  let hand: CommandCard[];
-  try {
-    hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
-  } catch {
-    return [];
-  }
-
   const eventNumber = getNextEventNumber(gameState);
   const result: CommitToMeleeEvent[] = [];
 
-  for (const committedCard of hand) {
-    const modifierTypes = meleeModifiersOnCard(committedCard);
-    if (modifierTypes.length === 0) {
-      continue;
-    }
-    result.push({
-      choiceType: 'commitToMelee',
-      committedCard,
-      eventNumber,
-      eventType: PLAYER_CHOICE_EVENT_TYPE,
-      modifierTypes,
-      player,
-    });
+  let hand: CommandCard[] | undefined;
+  try {
+    hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
+  } catch {
+    hand = undefined;
   }
+
+  if (hand !== undefined) {
+    for (const committedCard of hand) {
+      const modifierTypes = meleeModifiersOnCard(committedCard);
+      if (modifierTypes.length === 0) {
+        continue;
+      }
+      result.push({
+        choiceType: 'commitToMelee',
+        committedCard,
+        eventNumber,
+        eventType: PLAYER_CHOICE_EVENT_TYPE,
+        modifierTypes,
+        player,
+      });
+    }
+  }
+
+  // Always allow refusing / declining without spending a card.
+  result.push({
+    choiceType: 'commitToMelee',
+    committedCard: null,
+    eventNumber,
+    eventType: PLAYER_CHOICE_EVENT_TYPE,
+    modifierTypes: [],
+    player,
+  });
 
   return result;
 }

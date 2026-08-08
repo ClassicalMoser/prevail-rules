@@ -97,4 +97,20 @@ describe(isValidCommitToMeleeEvent, () => {
 
     expect(isValidCommitToMeleeEvent(event, state).result).toBe(false);
   });
+
+  it('accepts refusing the melee commitment', () => {
+    const state = stateWhitePendingCommit();
+    const event: CommitToMeleeEvent = {
+      choiceType: 'commitToMelee',
+      committedCard: null,
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      modifierTypes: [],
+      player: 'white',
+    };
+
+    expect(isValidCommitToMeleeEvent(event, state)).toStrictEqual({
+      result: true,
+    });
+  });
 });

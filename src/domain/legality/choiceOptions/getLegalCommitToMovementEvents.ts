@@ -69,11 +69,12 @@ function pendingCommitPlayer<S extends GameState>(
 /**
  * Returns every legal commit-to-movement event for the player whose movement
  * (or front-engagement defensive) commitment is still pending: one event per
- * in-hand card that has at least one movement-applicable modifier.
+ * in-hand card that has at least one movement-applicable modifier, plus a
+ * refuse option (`committedCard: null`).
  * `modifierTypes` is exactly that card's movement-applicable modifiers.
  *
- * Returns `[]` when commit is not expected or the pending player's hand is
- * hidden / has no eligible cards.
+ * Returns `[]` when commit is not expected. When the hand is hidden, only the
+ * refuse option is returned (card commits require an owned hand).
  */
 export function getLegalCommitToMovementEvents<S extends GameState>(
   gameState: S,
@@ -83,30 +84,42 @@ export function getLegalCommitToMovementEvents<S extends GameState>(
     return [];
   }
 
-  let hand: CommandCard[];
-  try {
-    hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
-  } catch {
-    return [];
-  }
-
   const eventNumber = getNextEventNumber(gameState);
   const result: CommitToMovementEvent[] = [];
 
-  for (const committedCard of hand) {
-    const modifierTypes = movementModifiersOnCard(committedCard);
-    if (modifierTypes.length === 0) {
-      continue;
-    }
-    result.push({
-      choiceType: 'commitToMovement',
-      committedCard,
-      eventNumber,
-      eventType: PLAYER_CHOICE_EVENT_TYPE,
-      modifierTypes,
-      player,
-    });
+  let hand: CommandCard[] | undefined;
+  try {
+    hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
+  } catch {
+    hand = undefined;
   }
+
+  if (hand !== undefined) {
+    for (const committedCard of hand) {
+      const modifierTypes = movementModifiersOnCard(committedCard);
+      if (modifierTypes.length === 0) {
+        continue;
+      }
+      result.push({
+        choiceType: 'commitToMovement',
+        committedCard,
+        eventNumber,
+        eventType: PLAYER_CHOICE_EVENT_TYPE,
+        modifierTypes,
+        player,
+      });
+    }
+  }
+
+  // Always allow refusing / declining without spending a card.
+  result.push({
+    choiceType: 'commitToMovement',
+    committedCard: null,
+    eventNumber,
+    eventType: PLAYER_CHOICE_EVENT_TYPE,
+    modifierTypes: [],
+    player,
+  });
 
   return result;
 }
