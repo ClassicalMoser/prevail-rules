@@ -2,7 +2,10 @@
  * Routes player choice events to their corresponding apply functions.
  */
 
-import type { PlayerChoiceEvent } from '@events';
+import type {
+  PlayerChoiceEvent,
+  ProjectedPlayerChoiceEvent,
+} from '@events';
 import type { GameState, OwnedPlayerForGameState } from '@game';
 import {
   applyChooseCardEvent,
@@ -23,10 +26,12 @@ import {
 
 /**
  * Routes player choice events to their corresponding apply functions.
- * `event.player` must be owned under game state `S`.
+ *
+ * For most choices, `event.player` must be owned under game state `S`.
+ * {@link applyChooseCardEvent} also accepts projected opponent choices on seen views.
  */
 export function applyPlayerChoiceEvent<S extends GameState>(
-  event: PlayerChoiceEvent & { player: OwnedPlayerForGameState<S> },
+  event: PlayerChoiceEvent | ProjectedPlayerChoiceEvent,
   state: S,
 ): S {
   switch (event.choiceType) {
@@ -34,43 +39,82 @@ export function applyPlayerChoiceEvent<S extends GameState>(
       return applyChooseCardEvent(event, state);
     }
     case 'chooseMeleeResolution': {
-      return applyChooseMeleeEvent(event, state);
+      return applyChooseMeleeEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'chooseRally': {
-      return applyChooseRallyEvent(event, state);
+      return applyChooseRallyEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'chooseRetreatOption': {
-      return applyChooseRetreatOptionEvent(event, state);
+      return applyChooseRetreatOptionEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'chooseRoutDiscard': {
-      return applyChooseRoutDiscardEvent(event, state);
+      return applyChooseRoutDiscardEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'chooseWhetherToRetreat': {
-      return applyChooseWhetherToRetreatEvent(event, state);
+      return applyChooseWhetherToRetreatEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'commitToMelee': {
-      return applyCommitToMeleeEvent(event, state);
+      return applyCommitToMeleeEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'commitToMovement': {
-      return applyCommitToMovementEvent(event, state);
+      return applyCommitToMovementEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'commitToRangedAttack': {
-      return applyCommitToRangedAttackEvent(event, state);
+      return applyCommitToRangedAttackEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'issueCommand': {
-      return applyIssueCommandEvent(event, state);
+      return applyIssueCommandEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'moveCommander': {
-      return applyMoveCommanderEvent(event, state);
+      return applyMoveCommanderEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'moveUnit': {
-      return applyMoveUnitEvent(event, state);
+      return applyMoveUnitEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'performRangedAttack': {
-      return applyPerformRangedAttackEvent(event, state);
+      return applyPerformRangedAttackEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     case 'setupUnits': {
-      return applySetupUnitsEvent(event, state);
+      return applySetupUnitsEvent(
+        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        state,
+      );
     }
     default: {
       const _exhaustive: never = event;

@@ -207,6 +207,8 @@ export {
   performRangedAttackEventSchema,
   playerChoiceEventSchema,
   playerChoiceTypeSchema,
+  projectedChooseCardEventSchema,
+  projectedPlayerChoiceEventSchema,
   setupUnitsEventSchema,
 } from '@events';
 export type {
@@ -261,6 +263,9 @@ export type {
   PerformRangedAttackEvent,
   PlayerChoiceEvent,
   PlayerChoiceType,
+  ProjectedChooseCardEvent,
+  ProjectedCommitEvent,
+  ProjectedPlayerChoiceEvent,
   SetupUnitsEvent,
 } from '@events';
 export {
@@ -521,7 +526,12 @@ export {
   traits,
   traitSchema,
 } from '@ruleValues';
-export { tempCommandCards, tempUnits } from '@sampleValues';
+export {
+  blackTinyStarterArmy,
+  tempCommandCards,
+  tempUnits,
+  whiteTinyStarterArmy,
+} from '@sampleValues';
 export {
   addCommanderToBoard,
   addCommanderToLostCommanders,
@@ -537,10 +547,13 @@ export {
   createUnitInstance,
 } from '@transforms';
 export {
+  chooseHiddenCard,
   discardCardsFromHand,
   markPhaseAsComplete,
   moveBothInPlayToPlayed,
   moveCardToPlayed,
+  projectEventForVisibility,
+  projectGameForVisibility,
   removeCommanderFromBoard,
   removeUnitFromBoard,
   removeUnitFromReserve,
@@ -549,10 +562,12 @@ export {
   revealBothAwaitingCards,
   revealCard,
   revealHiddenCard,
+  toHiddenCardState,
   updateAttackApplyState,
   updateBoardState,
   updateCommandResolutionState,
 } from '@transforms';
+export type { ProjectedEvent } from '@transforms';
 export {
   updateCurrentInitiative,
   updateCurrentRoundNumber,

@@ -13,10 +13,13 @@ export {
   addUnitToBoard,
   addUnitToRouted,
   burnCardFromPlayed,
+  chooseHiddenCard,
   discardCardsFromHand,
   markPhaseAsComplete,
   moveBothInPlayToPlayed,
   moveCardToPlayed,
+  projectEventForVisibility,
+  projectGameForVisibility,
   removeCommanderFromBoard,
   removeUnitFromBoard,
   removeUnitFromReserve,
@@ -25,6 +28,7 @@ export {
   revealBothAwaitingCards,
   revealCard,
   revealHiddenCard,
+  toHiddenCardState,
   updateAttackApplyState,
   updateBoardState,
   updateCommandResolutionState,
@@ -44,4 +48,5 @@ export {
   updateRoundState,
   updateRoutState,
 } from './pureTransforms';
+export type { ProjectedEvent } from './pureTransforms';
 export { applyEvent } from './stateTransitions';

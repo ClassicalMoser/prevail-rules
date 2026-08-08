@@ -10,8 +10,13 @@
  * based on the event's discriminated union type.
  */
 
-import type { Event, GameEffectEvent, PlayerChoiceEvent } from '@events';
-import type { GameState, OwnedPlayerForGameState } from '@game';
+import type {
+  Event,
+  GameEffectEvent,
+  PlayerChoiceEvent,
+  ProjectedPlayerChoiceEvent,
+} from '@events';
+import type { GameState } from '@game';
 import { applyGameEffectEvent } from './applyGameEffectEvent';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
@@ -20,6 +25,9 @@ import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
  *
  * This is the pure transform engine - it takes gamestate and event,
  * and returns new gamestate. All state transitions are immutable.
+ *
+ * Accepts projected opponent `chooseCard` events (`card: 'hidden'`) on seen
+ * visibility states so seated clients can fold the wire stream.
  *
  * @param event - The event to apply
  * @param state - The current game state
@@ -33,9 +41,7 @@ import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
  * ```
  */
 export function applyEvent<S extends GameState>(
-  event:
-    | GameEffectEvent
-    | (PlayerChoiceEvent & { player: OwnedPlayerForGameState<S> }),
+  event: GameEffectEvent | PlayerChoiceEvent | ProjectedPlayerChoiceEvent,
   state: S,
 ): S {
   let newState: S;
@@ -52,7 +58,8 @@ export function applyEvent<S extends GameState>(
     ...newState,
     currentRoundState: {
       ...newState.currentRoundState,
-      events: [...newState.currentRoundState.events, event],
+      // Projected wire events may redact card fields; stored for local fold only.
+      events: [...newState.currentRoundState.events, event as Event],
     },
   };
 }

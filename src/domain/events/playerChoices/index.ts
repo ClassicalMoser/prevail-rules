@@ -37,5 +37,14 @@ export type {
 export { playerChoiceEventSchema } from './playerChoice';
 export type { PlayerChoiceType } from './playerChoiceTypes';
 export { playerChoices, playerChoiceTypeSchema } from './playerChoiceTypes';
+export type {
+  ProjectedChooseCardEvent,
+  ProjectedCommitEvent,
+  ProjectedPlayerChoiceEvent,
+} from './projectedPlayerChoice';
+export {
+  projectedChooseCardEventSchema,
+  projectedPlayerChoiceEventSchema,
+} from './projectedPlayerChoice';
 export type { SetupUnitsEvent } from './setupUnit';
 export { setupUnitsEventSchema } from './setupUnit';
