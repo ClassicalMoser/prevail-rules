@@ -1,6 +1,6 @@
-import type { CommandCard } from '@entities';
+import type { CommandCard, HiddenCard } from '@entities';
 import type { AssertExact } from '@utils';
-import { commandCardSchema } from '@entities';
+import { commandCardSchema, hiddenCardSchema } from '@entities';
 import { z } from 'zod';
 
 /** A commitment that has not  */
@@ -55,15 +55,18 @@ const _assertExactDeclinedCommitment: AssertExact<
 export interface CompletedCommitment {
   /** The player has committed a card. */
   commitmentType: 'completed';
-  /** The card that is being committed. */
-  card: CommandCard;
+  /**
+   * The card that is being committed.
+   * Seat-visible folds may carry `'hidden'` for an opponent's commit.
+   */
+  card: CommandCard | HiddenCard;
 }
 
 const _completedCommitmentSchemaObject = z.object({
   /** The player has committed a card. */
   commitmentType: z.literal('completed'),
-  /** The card that is being committed. */
-  card: commandCardSchema,
+  /** The card that is being committed (or `'hidden'` on a seen seat). */
+  card: z.union([commandCardSchema, hiddenCardSchema]),
 });
 
 type CompletedCommitmentSchemaType = z.infer<

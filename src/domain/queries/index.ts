@@ -22,7 +22,7 @@ export {
   getSpacesWithinDistance,
 } from './boardSpace';
 export { calculateInitiative } from './calculateInitiative';
-export { getOwnedPlayerCardState } from './cards';
+export { getHiddenPlayerCardState, getOwnedPlayerCardState } from './cards';
 export {
   getGameOverWinner,
   getWinnerFromEmptyHands,
@@ -86,7 +86,6 @@ export {
   getCurrentInitiative,
   getCurrentPhaseState,
   getCurrentRallyResolutionState,
-  getCurrentStep,
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
   getEngagementStateFromMovement,
   getFlankEngagementStateFromMovement,
@@ -119,5 +118,4 @@ export {
   getRoutStateFromRally,
   getAwaitingRoutDiscardState,
   getRoutStateFromRearEngagement,
-  getCurrentEventStream,
 } from './sequencing';

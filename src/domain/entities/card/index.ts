@@ -12,7 +12,6 @@ export type {
   BlackSeenCardState,
   CardState,
 } from './cardState';
-export { hiddenCardStateSchema, ownedCardStateSchema } from './playerCardState';
 export type { HiddenCardState, OwnedCardState } from './playerCardState';
 export { commandSchema, commandSizes, commandTypes } from './command';
 export type { Command, CommandType, CommandSize } from './command';
@@ -22,10 +21,4 @@ export { restrictionsSchema } from './restrictions';
 export type { Restrictions } from './restrictions';
 export { roundEffectSchema } from './roundEffect';
 export type { RoundEffect } from './roundEffect';
-export { unitSupportSchema } from './unitSupport';
-export type {
-  GenericUnitSupport,
-  TraitUnitSupport,
-  UnitSupport,
-  UnitTypeUnitSupport,
-} from './unitSupport';
+export type { UnitSupport } from './unitSupport';

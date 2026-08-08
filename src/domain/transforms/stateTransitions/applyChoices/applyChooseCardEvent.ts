@@ -1,33 +1,19 @@
-import type { HiddenCardState, PlayerSide } from '@entities';
 import type { ChooseCardEvent, ProjectedChooseCardEvent } from '@events';
-import type {
-  GameState,
-  GameStateForVisibility,
-  OwnedPlayerForGameState,
-  PlayCardsPhaseState,
-  UnownedPlayerForGameState,
-} from '@game';
-import { getOwnedPlayerCardState, getPlayCardsPhaseState } from '@queries';
+import type { GameState, PlayCardsPhaseState } from '@game';
+import {
+  getHiddenPlayerCardState,
+  getOwnedPlayerCardState,
+  getPlayCardsPhaseState,
+} from '@queries';
 import {
   chooseCard,
   chooseHiddenCard,
-  updateHiddenPlayerCardState,
+  replaceHiddenPlayerCardState,
+  replaceOwnedPlayerCardState,
   updatePhaseState,
-  updatePlayerCardState,
 } from '@transforms/pureTransforms';
 
 type ChooseCardApplyEvent = ChooseCardEvent | ProjectedChooseCardEvent;
-
-function isOwnedPlayerForState(state: GameState, player: PlayerSide): boolean {
-  const { visibility } = state.cardState;
-  if (visibility === 'authoritative') {
-    return true;
-  }
-  if (visibility === 'whiteSeen') {
-    return player === 'white';
-  }
-  return player === 'black';
-}
 
 function advanceIfBothChosen<S extends GameState>(
   state: S,
@@ -47,39 +33,12 @@ function advanceIfBothChosen<S extends GameState>(
   });
 }
 
-function applyUnownedChooseCard<
-  S extends
-    | GameStateForVisibility<'whiteSeen'>
-    | GameStateForVisibility<'blackSeen'>,
->(
-  event: ProjectedChooseCardEvent & {
-    player: UnownedPlayerForGameState<S>;
-  },
-  state: S,
-  currentPhaseState: PlayCardsPhaseState,
-): S {
-  if (event.card !== 'hidden') {
-    throw new Error(
-      'Unowned chooseCard apply requires a projected event with card: hidden',
-    );
-  }
-
-  const hiddenSlice = state.cardState[event.player] as HiddenCardState;
-  const chosenHidden = chooseHiddenCard(hiddenSlice);
-  const stateWithUpdatedPlayer = updateHiddenPlayerCardState(
-    state,
-    event.player,
-    chosenHidden,
-  );
-
-  return advanceIfBothChosen(stateWithUpdatedPlayer, currentPhaseState);
-}
-
 /**
  * Applies a choose-card event to authoritative or seat-visible state.
  *
- * Owned seats use the full card identity. Unowned seats on seen views apply a
- * projected event (`card: 'hidden'`) via {@link chooseHiddenCard}.
+ * Concrete cards use the owned slice; `'hidden'` uses the unowned slice via
+ * {@link chooseHiddenCard}. Ownership is proven by
+ * {@link getOwnedPlayerCardState} / {@link getHiddenPlayerCardState}.
  */
 export function applyChooseCardEvent<S extends GameState>(
   event: ChooseCardApplyEvent,
@@ -88,40 +47,27 @@ export function applyChooseCardEvent<S extends GameState>(
   const { player, card } = event;
   const currentPhaseState: PlayCardsPhaseState = getPlayCardsPhaseState(state);
 
-  if (isOwnedPlayerForState(state, player)) {
-    if (card === 'hidden') {
-      throw new Error(
-        'Owned chooseCard apply requires a concrete CommandCard, not hidden',
-      );
-    }
-    const ownedCardState = getOwnedPlayerCardState(state.cardState, player);
-    const chosenCard = chooseCard(ownedCardState, card);
-    const stateWithUpdatedPlayer = updatePlayerCardState(
-      state,
-      player as OwnedPlayerForGameState<S>,
-      chosenCard,
-    );
+  if (card === 'hidden') {
+    const hiddenSlice = getHiddenPlayerCardState(state.cardState, player);
+    const stateWithUpdatedPlayer = {
+      ...state,
+      cardState: replaceHiddenPlayerCardState(
+        state.cardState,
+        player,
+        chooseHiddenCard(hiddenSlice),
+      ),
+    };
     return advanceIfBothChosen(stateWithUpdatedPlayer, currentPhaseState);
   }
 
-  if (
-    state.cardState.visibility !== 'whiteSeen' &&
-    state.cardState.visibility !== 'blackSeen'
-  ) {
-    throw new Error(
-      'Unowned chooseCard apply requires a seen visibility state',
-    );
-  }
-
-  type SeenState =
-    | GameStateForVisibility<'whiteSeen'>
-    | GameStateForVisibility<'blackSeen'>;
-
-  return applyUnownedChooseCard(
-    event as ProjectedChooseCardEvent & {
-      player: UnownedPlayerForGameState<SeenState>;
-    },
-    state as SeenState,
-    currentPhaseState,
-  ) as S;
+  const ownedCardState = getOwnedPlayerCardState(state.cardState, player);
+  const stateWithUpdatedPlayer = {
+    ...state,
+    cardState: replaceOwnedPlayerCardState(
+      state.cardState,
+      player,
+      chooseCard(ownedCardState, card),
+    ),
+  };
+  return advanceIfBothChosen(stateWithUpdatedPlayer, currentPhaseState);
 }

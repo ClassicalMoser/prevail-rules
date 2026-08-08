@@ -1,31 +1,19 @@
-import type { CommitToRangedAttackEvent } from '@events';
 import type {
-  Commitment,
-  GameState,
-  OwnedPlayerForGameState,
-  RangedAttackResolutionState,
-} from '@game';
-import {
-  getOwnedPlayerCardState,
-  getRangedAttackResolutionState,
-} from '@queries';
-import {
-  discardCardsFromHand,
-  updateCommandResolutionState,
-  updatePlayerCardState,
-} from '@transforms/pureTransforms';
+  CommitToRangedAttackEvent,
+  ProjectedCommitToRangedAttackEvent,
+} from '@events';
+import type { GameState, RangedAttackResolutionState } from '@game';
+import { getRangedAttackResolutionState } from '@queries';
+import { updateCommandResolutionState } from '@transforms/pureTransforms';
 
-function completedOrDeclinedCommitment(
-  event: CommitToRangedAttackEvent,
-): Commitment {
-  if (event.committedCard === null) {
-    return { commitmentType: 'declined' };
-  }
-  return {
-    card: event.committedCard,
-    commitmentType: 'completed',
-  };
-}
+import {
+  applyCommitCardDiscard,
+  commitmentFromCommittedCard,
+} from './commitApplyHelpers';
+
+type CommitToRangedAttackApplyEvent =
+  | CommitToRangedAttackEvent
+  | ProjectedCommitToRangedAttackEvent;
 
 /**
  * Applies a CommitToRangedAttackEvent to the game state.
@@ -34,10 +22,11 @@ function completedOrDeclinedCommitment(
  * Event is assumed pre-validated (issueCommands phase, ranged attack, player is
  * attacker or defender).
  *
- * `event.player` must be owned under game state `S`.
+ * Owned seats use full card identity. Unowned seats on seen views apply a
+ * projected event (`committedCard: 'hidden'`).
  */
 export function applyCommitToRangedAttackEvent<S extends GameState>(
-  event: CommitToRangedAttackEvent & { player: OwnedPlayerForGameState<S> },
+  event: CommitToRangedAttackApplyEvent,
   state: S,
 ): S {
   const rangedAttackState = getRangedAttackResolutionState(state);
@@ -45,19 +34,13 @@ export function applyCommitToRangedAttackEvent<S extends GameState>(
   const attackingPlayer = rangedAttackState.attackingUnit.playerSide;
   const isAttackingPlayer = player === attackingPlayer;
 
-  let stateWithCards = state;
-  if (event.committedCard !== null) {
-    const ownedPlayerCardState = getOwnedPlayerCardState(
-      state.cardState,
-      player,
-    );
-    const discardedCardState = discardCardsFromHand(ownedPlayerCardState, [
-      event.committedCard.id,
-    ]);
-    stateWithCards = updatePlayerCardState(state, player, discardedCardState);
-  }
+  const stateWithCards = applyCommitCardDiscard(
+    state,
+    player,
+    event.committedCard,
+  );
 
-  const newCommitment = completedOrDeclinedCommitment(event);
+  const newCommitment = commitmentFromCommittedCard(event.committedCard);
   const newRangedAttackState: RangedAttackResolutionState = {
     ...rangedAttackState,
     ...(isAttackingPlayer

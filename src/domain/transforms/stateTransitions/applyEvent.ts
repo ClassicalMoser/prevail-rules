@@ -26,8 +26,8 @@ import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
  * This is the pure transform engine - it takes gamestate and event,
  * and returns new gamestate. All state transitions are immutable.
  *
- * Accepts projected opponent `chooseCard` events (`card: 'hidden'`) on seen
- * visibility states so seated clients can fold the wire stream.
+ * Accepts projected opponent `chooseCard` / `commit*` events (`'hidden'` card
+ * fields) on seen visibility states so seated clients can fold the wire stream.
  *
  * @param event - The event to apply
  * @param state - The current game state

@@ -11,7 +11,7 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 
 **Last reconciled:** 2026-08-07 — checkbox inventory still useful as a module map; after the board-size / visibility refactor, prefer the coverage report over this file for “what’s missing.” Paths below may lag renames.
 
-**Strategy:** Unit tests > Integration tests. Use test helpers + pure transforms. Follow round order. Depth work now targets routers and branch-thin modules (`validateEvent`, defense-result procedures, sequencing queries) rather than the older dedupe → trust-first → `@queries` refactor order.
+**Strategy:** Unit tests > Integration tests. Use test helpers + pure transforms. Follow round order. Depth work now targets routers and branch-thin modules (`validatePlayerChoice`, defense-result procedures, sequencing queries) rather than the older dedupe → trust-first → `@queries` refactor order.
 
 ---
 
@@ -208,7 +208,7 @@ Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary a
 
 - [x] `procedureRegistry.ts` — `procedureRegistry.test.ts` exercises **every `gameEffects` entry** with a valid state plus the `default` throw path — **still deepen** if new effect types are added (factory map is `satisfies Record<GameEffectType, …>` so TS enforces updates)
 - [x] `getExpectedEvent.ts` — `expectedEvent/getExpectedEvent.test.ts`
-- [ ] `validateEvent.ts` — **no colocated test** yet (`validation/validateEvent.ts`)
+- [x] `validatePlayerChoice.ts` — `playerChoice/validatePlayerChoice.test.ts`
 
 **Note:** These are integration points but can be unit tested with mocks/stubs.
 
@@ -291,12 +291,10 @@ describe('getExpectedXEvent', () => {
 
 **Next focus (by impact):**
 
-1. **`validateIssueCommandsPhaseEvent` / `validateResolveMeleePhaseEvent`** — still stubs; issueCommands is the bulk of a turn.
-2. **Application layer coverage** — `processEvent`, `handleNewRound`, `updateGameState`, `gameRunner` have little/no colocated coverage; ordering bugs (persist-vs-apply, subscribers, round transitions) live here.
-3. **`validation/validateEvent.ts`** — router / representative validation tests.
-4. **Wire `startNewGame` to `createInitialGameState`** — init already seeds reserved units and deals army `commandCards` into hands; `startNewGame` still uses empty `placeholderArmy()` + `createEmptyGameState`.
-5. **`defenseResult` / sequencing / engagement generators** — raise branch % where the coverage report is thin.
-6. **`procedureRegistry.ts`** — when adding a `gameEffects` entry, add a factory in `testing/procedureRegistryStateFactories.ts` (exported from `@testing`).
+1. **Application layer coverage** — `processEvent`, `handleNewRound`, `updateGameState`, `gameRunner` have little/no colocated coverage; ordering bugs (persist-vs-apply, subscribers, round transitions) live here.
+2. **Wire `startNewGame` to `createInitialGameState`** — init already seeds reserved units and deals army `commandCards` into hands; `startNewGame` still uses empty `placeholderArmy()` + `createEmptyGameState`.
+3. **`defenseResult` / sequencing / engagement generators** — raise branch % where the coverage report is thin.
+4. **`procedureRegistry.ts`** — when adding a `gameEffects` entry, add a factory in `testing/procedureRegistryStateFactories.ts` (exported from `@testing`).
 
 **Known incomplete (not test gaps):** terrain entities are modelled (`terrainType` / `elevation` / `waterCover`) but unused by combat/movement; engagement-during-movement retreat still unimplemented.
 
@@ -309,7 +307,6 @@ _Use the latest **`npm run test:coverage`** report as source of truth for number
 | Module                                                                                       | Notes                                                                 |
 | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | `procedures/procedureRegistry.ts`                                                            | Switch + `default` covered; add a factory when new effect types ship. |
-| `validation/validateEvent.ts`                                                                | No dedicated test file yet.                                           |
 | `procedures/defenseResult/generateResolveRoutEvent.ts`                                       | Low statement %; many branches.                                       |
 | `procedures/defenseResult/generateResolveRetreatEvent.ts` / `generateResolveReverseEvent.ts` | Mid statement %; extend throw/edge paths.                             |
 | `procedures/movement/generateStartEngagementEvent.ts`                                        | Several uncovered lines; branch % often ~50%.                         |

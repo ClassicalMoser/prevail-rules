@@ -13,6 +13,10 @@ export function modifiersFromCompletedCommitment(
   if (commitment.commitmentType !== 'completed') {
     return undefined;
   }
+  // Seat folds may complete with `'hidden'`; procedures run on authoritative state.
+  if (commitment.card === 'hidden') {
+    return undefined;
+  }
   const modifiers: Modifier[] = commitment.card.modifiers.map((modifier) => ({
     type: modifier,
     value: 1,

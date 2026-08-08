@@ -10,7 +10,7 @@ Folder names mirror **`applyEffects/`** and **`events/gameEffects/`** so the sam
 ## Entry points
 
 - **`procedureRegistry.ts`** — `generateEventFromProcedure(state, effectType)` dispatches to the right `generate*` function. This is the usual integration surface.
-- **`index.ts`** — Re-exports every `generate*` from topic subfolders plus `generateEventFromProcedure` from the registry. Prefer this barrel or **`generateEventFromProcedure`** over deep imports from outside this package.
+- **`index.ts`** — Public package surface: `generateEventFromProcedure` and `generateStartEngagementEvent` (cross-boundary consumers). Topic subfolder barrels still re-export every `generate*` for the registry and colocated tests; prefer the package barrel or the registry over deep imports from outside this package.
 
 ## Domain helpers (outside this folder)
 

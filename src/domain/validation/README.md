@@ -19,7 +19,7 @@ Callers branch on `result` and surface `errorReason` when rejecting an event. Se
 1. **Return type**: Always `ValidationResult` (never a bare `boolean`, never `throws` for rule failure).
 2. **Failure shape**: Every `result: false` includes a specific `errorReason` string.
 3. **Error handling**: Wrap bodies that call throwing getters / legality enumerators in try/catch; map caught errors to `{ result: false, errorReason }`.
-4. **Naming**: Prefer `is*`, `can*`, `matches*`, or `validate*` for the public surface (e.g. `isValidChooseCardEvent`, `validateEvent`).
+4. **Naming**: Prefer `is*`, `can*`, `matches*`, or `validate*` (e.g. internal `isValidChooseCardEvent`, public `validatePlayerChoice`).
 
 ## Player choices: enumerate then membership
 

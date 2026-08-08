@@ -1,33 +1,25 @@
-import type { CommitToMovementEvent } from '@events';
 import type {
-  Commitment,
-  GameState,
-  MovementResolutionState,
-  OwnedPlayerForGameState,
-} from '@game';
+  CommitToMovementEvent,
+  ProjectedCommitToMovementEvent,
+} from '@events';
+import type { GameState, MovementResolutionState } from '@game';
 import {
   getFrontEngagementStateFromMovement,
   getMovementResolutionState,
-  getOwnedPlayerCardState,
 } from '@queries';
 import {
-  discardCardsFromHand,
   updateCommandResolutionState,
   updateEngagementStateInMovement,
-  updatePlayerCardState,
 } from '@transforms/pureTransforms';
 
-function completedOrDeclinedCommitment(
-  event: CommitToMovementEvent,
-): Commitment {
-  if (event.committedCard === null) {
-    return { commitmentType: 'declined' };
-  }
-  return {
-    card: event.committedCard,
-    commitmentType: 'completed',
-  };
-}
+import {
+  applyCommitCardDiscard,
+  commitmentFromCommittedCard,
+} from './commitApplyHelpers';
+
+type CommitToMovementApplyEvent =
+  | CommitToMovementEvent
+  | ProjectedCommitToMovementEvent;
 
 /**
  * Applies a CommitToMovementEvent to the game state.
@@ -38,28 +30,23 @@ function completedOrDeclinedCommitment(
  * When `committedCard` is non-null, discards that card from hand.
  * Event is assumed pre-validated (issueCommands phase, movement resolution).
  *
- * `event.player` must be owned under game state `S`.
+ * Owned seats use full card identity. Unowned seats on seen views apply a
+ * projected event (`committedCard: 'hidden'`).
  */
 export function applyCommitToMovementEvent<S extends GameState>(
-  event: CommitToMovementEvent & { player: OwnedPlayerForGameState<S> },
+  event: CommitToMovementApplyEvent,
   state: S,
 ): S {
   const movementState = getMovementResolutionState(state);
   const { player } = event;
 
-  let stateWithCards = state;
-  if (event.committedCard !== null) {
-    const ownedPlayerCardState = getOwnedPlayerCardState(
-      state.cardState,
-      player,
-    );
-    const discardedCardState = discardCardsFromHand(ownedPlayerCardState, [
-      event.committedCard.id,
-    ]);
-    stateWithCards = updatePlayerCardState(state, player, discardedCardState);
-  }
+  const stateWithCards = applyCommitCardDiscard(
+    state,
+    player,
+    event.committedCard,
+  );
 
-  const newCommitment = completedOrDeclinedCommitment(event);
+  const newCommitment = commitmentFromCommittedCard(event.committedCard);
 
   // Front-engagement defender commits/refuses into nested defensiveCommitment.
   if (

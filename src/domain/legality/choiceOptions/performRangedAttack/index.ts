@@ -1,7 +1,4 @@
-export {
-  canUnitRangedAttackTarget,
-  isUnengagedUnit,
-} from './canUnitRangedAttackTarget';
+export { canUnitRangedAttackTarget } from './canUnitRangedAttackTarget';
 export {
   getLegalRangedAttackers,
   type LegalRangedAttackers,

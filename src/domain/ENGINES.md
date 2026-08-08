@@ -34,25 +34,25 @@ const newState = applyEvent(event, currentState);
 
 ## 2. Validation Engine
 
-**Location:** `validation/validateEvent.ts`
+**Location:** `validation/playerChoice/validatePlayerChoice.ts`
 
-**Purpose:** Receives gamestate and event, finds correct validation function based on gamestate, runs it, returns validationResult.
+**Purpose:** Validates an incoming player choice against expected sequencing and legal membership, returns `ValidationResult`.
 
-**Function:** `validateEvent(event: Event, state: GameState): ValidationResult`
+**Function:** `validatePlayerChoice(event: PlayerChoiceEvent, state: GameState): ValidationResult`
 
 **Characteristics:**
 
-- Routes to phase-specific validation based on current game state
+- Layers **expected** (`getExpectedEvent`) before **legal** (`isValid*Event` membership against `@legality` `getLegal*`)
 - Returns `ValidationResult` with `result: boolean` and optional `errorReason: string`
 - Never throws errors - always returns a result
-- Validation functions are organized by phase and event type
+- Per-choice `isValid*` helpers stay internal to `@validation`; actors use `validatePlayerChoice` and `getLegalPlayerChoiceOptions`
 
 **Usage:**
 
 ```typescript
-import { validateEvent } from '@validation';
+import { validatePlayerChoice } from '@validation';
 
-const validation = validateEvent(event, state);
+const validation = validatePlayerChoice(event, state);
 if (!validation.result) {
   // Reject the event
   console.error(validation.errorReason);
@@ -64,9 +64,9 @@ const newState = applyEvent(event, state);
 
 **Implementation:**
 
-- Routes based on current phase state (playCards, moveCommanders, issueCommands, resolveMelee, cleanup)
-- Delegates to phase-specific validation functions in `validation/phaseValidation/`
-- Individual event validators in `validation/playerChoice/` and other subdirectories
+- `validateExpectedChoice` checks the event matches what sequencing expects next
+- `validateLegalPlayerChoice` dispatches to membership/integrity validators in `validation/playerChoice/`
+- Legal option payloads for UI/bots come from `getLegalPlayerChoiceOptions` (same `@legality` enumerators)
 
 ## 3. Procedure Library
 
@@ -209,18 +209,12 @@ if (
   // 2. Generate the event using procedure library
   const event = procedureRegistry.resolveRally(state, 'white', randomSeed);
 
-  // 3. Validate the event (optional but recommended)
-  const validation = validateEvent(event, state);
-  if (!validation.result) {
-    throw new Error(
-      `Generated event failed validation: ${validation.errorReason}`,
-    );
-  }
-
-  // 4. Apply the event using transform engine
+  // 3. Apply the event using transform engine
+  // (Player choices go through validatePlayerChoice before apply;
+  //  procedure-generated game effects are trusted from the registry.)
   const newState = applyEvent(event, state);
 
-  // 5. Repeat with new state
+  // 4. Repeat with new state
   const nextExpected = getExpectedEvent(newState);
   // ...
 }
