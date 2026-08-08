@@ -35,9 +35,14 @@ export function applyIssueCommandEvent<S extends GameState>(
 
   // Resolve set member to remove (pre-validated: command is in remaining commands)
   const matchingCommand = findMatchingCommand(remainingCommands, command);
+  if (matchingCommand === undefined) {
+    throw new Error(
+      'applyIssueCommandEvent: command not found in remaining commands',
+    );
+  }
 
-  // Remove the matching command from remaining commands
-  const newRemainingCommands = [...remainingCommands].filter(
+  // Remove the matching command from remaining commands (by reference)
+  const newRemainingCommands = remainingCommands.filter(
     (c) => c !== matchingCommand,
   );
 
