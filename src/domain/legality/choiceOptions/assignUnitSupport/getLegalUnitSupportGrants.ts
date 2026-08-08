@@ -28,7 +28,8 @@ export interface LegalUnitSupportGrant {
  *
  * Does not expand assignment combinations — callers assign up to `count`
  * eligible units per grant; {@link isValidAssignUnitSupportEvent} checks
- * integrity of the committed assignment.
+ * integrity and **maximal cover** (no unused slot may still cover an
+ * uncovered unit; uncoverable units then rout on apply).
  *
  * `null` when assign-unit-support is not expected (wrong step / visibility).
  */
