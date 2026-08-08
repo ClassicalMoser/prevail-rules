@@ -44,7 +44,6 @@ export {
   canMoveInto,
   canMoveThrough,
   checkDiagonalMove,
-  exploreUnitMoves,
   getLegalRetreats,
   getLegalUnitMoves,
   isLegalMove,

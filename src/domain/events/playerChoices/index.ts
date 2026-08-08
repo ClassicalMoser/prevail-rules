@@ -25,34 +25,25 @@ export { commitToMovementEventSchema } from './commitToMovement';
 export type { CommitToRangedAttackEvent } from './commitToRangedAttack';
 export { commitToRangedAttackEventSchema } from './commitToRangedAttack';
 export type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
-export {
-  doneIssuingCommandsEventSchema,
-  DONE_ISSUING_COMMANDS_CHOICE_TYPE,
-} from './doneIssuingCommands';
+export { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 export type { IssueCommandEvent } from './issueCommand';
-export {
-  issueCommandEventSchema,
-  ISSUE_COMMAND_CHOICE_TYPE,
-} from './issueCommand';
+export { issueCommandEventSchema } from './issueCommand';
 export type { MoveCommanderEvent } from './moveCommander';
 export { moveCommanderEventSchema } from './moveCommander';
 export type { MoveUnitEvent } from './moveUnit';
 export { moveUnitEventSchema } from './moveUnit';
 export type { PerformRangedAttackEvent } from './performRangedAttack';
-export {
-  performRangedAttackEventSchema,
-  PERFORM_RANGED_ATTACK_CHOICE_TYPE,
-} from './performRangedAttack';
-export type {
-  PlayerChoiceEvent,
-  PlayerChoiceEventOfType,
-} from './playerChoice';
+export { performRangedAttackEventSchema } from './performRangedAttack';
+export type { PlayerChoiceEvent } from './playerChoice';
 export { playerChoiceEventSchema } from './playerChoice';
 export type { PlayerChoiceType } from './playerChoiceTypes';
 export { playerChoices, playerChoiceTypeSchema } from './playerChoiceTypes';
 export type {
   ProjectedChooseCardEvent,
   ProjectedCommitEvent,
+  ProjectedCommitToMeleeEvent,
+  ProjectedCommitToMovementEvent,
+  ProjectedCommitToRangedAttackEvent,
   ProjectedPlayerChoiceEvent,
 } from './projectedPlayerChoice';
 export {

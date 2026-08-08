@@ -58,15 +58,36 @@ const _assertExactProjectedChooseCardEvent: AssertExact<
 export const projectedChooseCardEventSchema: z.ZodType<ProjectedChooseCardEvent> =
   _projectedChooseCardEventSchemaObject;
 
-type CommitChoice =
-  | CommitToMeleeEvent
-  | CommitToMovementEvent
-  | CommitToRangedAttackEvent;
-
-/** Commit events may redact committedCard for the opposing seat. */
-export type ProjectedCommitEvent = Omit<CommitChoice, 'committedCard'> & {
+/**
+ * Commit events may redact `committedCard` for the opposing seat.
+ * Defined as three members (not `Omit` over a union) so `choiceType` stays a
+ * discriminant for switch narrowing.
+ */
+export type ProjectedCommitToMeleeEvent = Omit<
+  CommitToMeleeEvent,
+  'committedCard'
+> & {
   committedCard: CommandCard | HiddenCard | null;
 };
+
+export type ProjectedCommitToMovementEvent = Omit<
+  CommitToMovementEvent,
+  'committedCard'
+> & {
+  committedCard: CommandCard | HiddenCard | null;
+};
+
+export type ProjectedCommitToRangedAttackEvent = Omit<
+  CommitToRangedAttackEvent,
+  'committedCard'
+> & {
+  committedCard: CommandCard | HiddenCard | null;
+};
+
+export type ProjectedCommitEvent =
+  | ProjectedCommitToMeleeEvent
+  | ProjectedCommitToMovementEvent
+  | ProjectedCommitToRangedAttackEvent;
 
 const cardHiddenOrNull = z.union([
   commandCardSchema,

@@ -1,5 +1,4 @@
-export type { UnitPlacementSpec } from './bootstrapGameState';
-export { createBoard, createGameState } from './bootstrapGameState';
+export { createGameState } from './bootstrapGameState';
 export {
   createBoardWithCommander,
   createBoardWithEngagedUnits,
@@ -34,22 +33,9 @@ export {
   createRoutState,
 } from './phaseStateHelpers';
 export { procedureRegistryStateFactories } from './procedureRegistryStateFactories';
-export type { CreateTestCardOptions } from './testHelpers';
 export {
   createTestCard,
   createUnitWithPlacement,
-  getCards,
-  getCardsByCount,
-  hasMove,
   updateCardState,
 } from './testHelpers';
-export {
-  createTestUnit,
-  createTestUnits,
-  createUnitByStat,
-} from './unitHelpers';
-export {
-  createEngagedUnitPresence,
-  createNoneUnitPresence,
-  createSingleUnitPresence,
-} from './unitPresenceHelpers';
+export { createTestUnit, createUnitByStat } from './unitHelpers';

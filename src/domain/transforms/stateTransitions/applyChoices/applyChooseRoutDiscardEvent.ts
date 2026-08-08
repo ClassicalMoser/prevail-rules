@@ -1,5 +1,5 @@
 import type { ChooseRoutDiscardEvent } from '@events';
-import type { GameState, OwnedPlayerForGameState } from '@game';
+import type { GameState } from '@game';
 import {
   getAwaitingRoutDiscardState,
   getOwnedPlayerCardState,
@@ -11,9 +11,9 @@ import {
   addUnitToRouted,
   discardCardsFromHand,
   removeUnitFromBoard,
+  replaceOwnedPlayerCardState,
   updateBoardState,
   updateEngagementStateInMovement,
-  updatePlayerCardState,
   updateRoutState,
 } from '@transforms/pureTransforms';
 
@@ -25,6 +25,8 @@ import {
  * - for rear engagement, marks the engagement complete so movement can finish
  *
  * Event is assumed pre-validated via {@link isValidChooseRoutDiscardEvent}.
+ * Requires `event.player` to be owned under the state's visibility
+ * ({@link getOwnedPlayerCardState} / {@link replaceOwnedPlayerCardState}).
  */
 export function applyChooseRoutDiscardEvent<S extends GameState>(
   event: ChooseRoutDiscardEvent,
@@ -37,11 +39,14 @@ export function applyChooseRoutDiscardEvent<S extends GameState>(
 
   const owned = getOwnedPlayerCardState(state.cardState, event.player);
   const discardedCardState = discardCardsFromHand(owned, event.cardIds);
-  let next = updatePlayerCardState(
-    state,
-    event.player as OwnedPlayerForGameState<S>,
-    discardedCardState,
-  );
+  let next: S = {
+    ...state,
+    cardState: replaceOwnedPlayerCardState(
+      state.cardState,
+      event.player,
+      discardedCardState,
+    ),
+  };
 
   const completedRout = {
     ...routState,

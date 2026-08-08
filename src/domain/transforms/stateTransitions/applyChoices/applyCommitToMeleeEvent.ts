@@ -1,21 +1,14 @@
-import type { CommitToMeleeEvent } from '@events';
-import type { Commitment, GameState, OwnedPlayerForGameState } from '@game';
-import { getMeleeResolutionState, getOwnedPlayerCardState } from '@queries';
-import {
-  discardCardsFromHand,
-  updateMeleeResolutionState,
-  updatePlayerCardState,
-} from '@transforms/pureTransforms';
+import type { CommitToMeleeEvent, ProjectedCommitToMeleeEvent } from '@events';
+import type { GameState } from '@game';
+import { getMeleeResolutionState } from '@queries';
+import { updateMeleeResolutionState } from '@transforms/pureTransforms';
 
-function completedOrDeclinedCommitment(event: CommitToMeleeEvent): Commitment {
-  if (event.committedCard === null) {
-    return { commitmentType: 'declined' };
-  }
-  return {
-    card: event.committedCard,
-    commitmentType: 'completed',
-  };
-}
+import {
+  applyCommitCardDiscard,
+  commitmentFromCommittedCard,
+} from './commitApplyHelpers';
+
+type CommitToMeleeApplyEvent = CommitToMeleeEvent | ProjectedCommitToMeleeEvent;
 
 /**
  * Applies a CommitToMeleeEvent to the game state.
@@ -23,25 +16,23 @@ function completedOrDeclinedCommitment(event: CommitToMeleeEvent): Commitment {
  * When `committedCard` is non-null, discards that card from hand.
  * Event is assumed pre-validated (resolveMelee phase, player's commitment pending).
  *
- * `event.player` must be owned under game state `S`.
+ * Owned seats use full card identity. Unowned seats on seen views apply a
+ * projected event (`committedCard: 'hidden'`).
  */
 export function applyCommitToMeleeEvent<S extends GameState>(
-  event: CommitToMeleeEvent & { player: OwnedPlayerForGameState<S> },
+  event: CommitToMeleeApplyEvent,
   state: S,
 ): S {
   const meleeState = getMeleeResolutionState(state);
   const { player } = event;
 
-  let stateWithCards = state;
-  if (event.committedCard !== null) {
-    const ownedCardState = getOwnedPlayerCardState(state.cardState, player);
-    const discardedCardState = discardCardsFromHand(ownedCardState, [
-      event.committedCard.id,
-    ]);
-    stateWithCards = updatePlayerCardState(state, player, discardedCardState);
-  }
+  const stateWithCards = applyCommitCardDiscard(
+    state,
+    player,
+    event.committedCard,
+  );
 
-  const newCommitment = completedOrDeclinedCommitment(event);
+  const newCommitment = commitmentFromCommittedCard(event.committedCard);
   const newMeleeState = {
     ...meleeState,
     ...(player === 'white'

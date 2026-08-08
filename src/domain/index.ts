@@ -274,6 +274,9 @@ export type {
   PlayerChoiceType,
   ProjectedChooseCardEvent,
   ProjectedCommitEvent,
+  ProjectedCommitToMeleeEvent,
+  ProjectedCommitToMovementEvent,
+  ProjectedCommitToRangedAttackEvent,
   ProjectedPlayerChoiceEvent,
   SetupUnitsEvent,
 } from '@events';
@@ -420,6 +423,7 @@ export {
   getOrthogonalFacings,
   getOtherPlayer,
   getOwnedPlayerCardState,
+  getHiddenPlayerCardState,
   getRightFacing,
   modifiersFromCompletedCommitment,
   getPlayerUnitsOnBoard,
@@ -478,6 +482,9 @@ export {
   getRoutStateFromRearEngagement,
 } from '@queries';
 export {
+  canEngageEnemy,
+  canMoveInto,
+  canMoveThrough,
   checkDiagonalMove,
   getLegalChooseCardOptions,
   getLegalChooseRetreatOptionEvents,
@@ -503,6 +510,7 @@ export {
   getSetupZoneCoordinates,
   getLegalRetreats,
   getLegalUnitMoves,
+  isLegalMove,
   unitMatchesInspirationRange,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,
@@ -519,8 +527,12 @@ export type {
   LegalUnitSupportGrants,
 } from '@legality';
 export {
+  eachCardPresentOnce,
+  eachUnitPresentOnce,
   getLegalPlayerChoiceOptions,
   type LegalPlayerChoiceOptions,
+  isValidChooseMeleeResolutionEvent,
+  validatePlayerChoice,
 } from '@validation';
 export { getPositionOfUnit } from '@queries';
 export type { Trait } from '@ruleValues';
@@ -568,6 +580,7 @@ export {
 export {
   chooseHiddenCard,
   discardCardsFromHand,
+  discardHiddenCardFromHand,
   markPhaseAsComplete,
   moveBothInPlayToPlayed,
   moveCardToPlayed,
@@ -576,6 +589,7 @@ export {
   removeCommanderFromBoard,
   removeUnitFromBoard,
   removeUnitFromReserve,
+  replaceHiddenPlayerCardState,
   replaceOwnedPlayerCardState,
   returnCardsToHand,
   revealBothAwaitingCards,
@@ -614,27 +628,3 @@ export {
   isValidLine,
   matchesUnitRequirements,
 } from '@queries';
-export {
-  eachCardPresentOnce,
-  eachUnitPresentOnce,
-  canEngageEnemy,
-  canMoveInto,
-  canMoveThrough,
-  isLegalMove,
-  isValidChooseCardEvent,
-  isValidChooseRallyEvent,
-  isValidChooseRoutDiscardEvent,
-  isValidChooseRetreatOptionEvent,
-  isValidChooseWhetherToRetreatEvent,
-  isValidCommitToMeleeEvent,
-  isValidCommitToMovementEvent,
-  isValidCommitToRangedAttackEvent,
-  isValidAssignUnitSupportEvent,
-  isValidDoneIssuingCommandsEvent,
-  isValidIssueCommandEvent,
-  isValidMoveCommanderEvent,
-  isValidMoveUnitEvent,
-  isValidSetupUnitsEvent,
-  validatePlayerChoice,
-  validateEvent,
-} from '@validation';

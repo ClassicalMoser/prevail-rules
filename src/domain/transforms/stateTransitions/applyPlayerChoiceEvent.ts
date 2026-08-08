@@ -2,26 +2,8 @@
  * Routes player choice events to their corresponding apply functions.
  */
 
-import type {
-  AssignUnitSupportEvent,
-  ChooseMeleeResolutionEvent,
-  ChooseRallyEvent,
-  ChooseRetreatOptionEvent,
-  ChooseRoutDiscardEvent,
-  ChooseWhetherToRetreatEvent,
-  CommitToMeleeEvent,
-  CommitToMovementEvent,
-  CommitToRangedAttackEvent,
-  DoneIssuingCommandsEvent,
-  IssueCommandEvent,
-  MoveCommanderEvent,
-  MoveUnitEvent,
-  PerformRangedAttackEvent,
-  PlayerChoiceEvent,
-  ProjectedPlayerChoiceEvent,
-  SetupUnitsEvent,
-} from '@events';
-import type { GameState, OwnedPlayerForGameState } from '@game';
+import type { PlayerChoiceEvent, ProjectedPlayerChoiceEvent } from '@events';
+import type { GameState } from '@game';
 import {
   applyAssignUnitSupportEvent,
   applyChooseCardEvent,
@@ -41,15 +23,13 @@ import {
   applySetupUnitsEvent,
 } from './applyChoices';
 
-type OwnedChoice<E, S extends GameState> = E & {
-  player: OwnedPlayerForGameState<S>;
-};
-
 /**
  * Routes player choice events to their corresponding apply functions.
  *
- * For most choices, `event.player` must be owned under game state `S`.
- * {@link applyChooseCardEvent} also accepts projected opponent choices on seen views.
+ * Most choices assume `event.player` is owned under the state's visibility
+ * (enforced inside card-touching applies via getOwned/getHidden helpers).
+ * {@link applyChooseCardEvent} and commit applies also accept projected opponent
+ * choices on seen views (`card` / `committedCard: 'hidden'`).
  */
 export function applyPlayerChoiceEvent<S extends GameState>(
   event: PlayerChoiceEvent | ProjectedPlayerChoiceEvent,
@@ -57,94 +37,52 @@ export function applyPlayerChoiceEvent<S extends GameState>(
 ): S {
   switch (event.choiceType) {
     case 'assignUnitSupport': {
-      return applyAssignUnitSupportEvent(
-        event as OwnedChoice<AssignUnitSupportEvent, S>,
-        state,
-      );
+      return applyAssignUnitSupportEvent(event, state);
     }
     case 'chooseCard': {
       return applyChooseCardEvent(event, state);
     }
     case 'chooseMeleeResolution': {
-      return applyChooseMeleeEvent(
-        event as OwnedChoice<ChooseMeleeResolutionEvent, S>,
-        state,
-      );
+      return applyChooseMeleeEvent(event, state);
     }
     case 'chooseRally': {
-      return applyChooseRallyEvent(
-        event as OwnedChoice<ChooseRallyEvent, S>,
-        state,
-      );
+      return applyChooseRallyEvent(event, state);
     }
     case 'chooseRetreatOption': {
-      return applyChooseRetreatOptionEvent(
-        event as OwnedChoice<ChooseRetreatOptionEvent, S>,
-        state,
-      );
+      return applyChooseRetreatOptionEvent(event, state);
     }
     case 'chooseRoutDiscard': {
-      return applyChooseRoutDiscardEvent(
-        event as OwnedChoice<ChooseRoutDiscardEvent, S>,
-        state,
-      );
+      return applyChooseRoutDiscardEvent(event, state);
     }
     case 'chooseWhetherToRetreat': {
-      return applyChooseWhetherToRetreatEvent(
-        event as OwnedChoice<ChooseWhetherToRetreatEvent, S>,
-        state,
-      );
+      return applyChooseWhetherToRetreatEvent(event, state);
     }
     case 'commitToMelee': {
-      return applyCommitToMeleeEvent(
-        event as OwnedChoice<CommitToMeleeEvent, S>,
-        state,
-      );
+      return applyCommitToMeleeEvent(event, state);
     }
     case 'commitToMovement': {
-      return applyCommitToMovementEvent(
-        event as OwnedChoice<CommitToMovementEvent, S>,
-        state,
-      );
+      return applyCommitToMovementEvent(event, state);
     }
     case 'commitToRangedAttack': {
-      return applyCommitToRangedAttackEvent(
-        event as OwnedChoice<CommitToRangedAttackEvent, S>,
-        state,
-      );
+      return applyCommitToRangedAttackEvent(event, state);
     }
     case 'doneIssuingCommands': {
-      return applyDoneIssuingCommandsEvent(
-        event as OwnedChoice<DoneIssuingCommandsEvent, S>,
-        state,
-      );
+      return applyDoneIssuingCommandsEvent(event, state);
     }
     case 'issueCommand': {
-      return applyIssueCommandEvent(
-        event as OwnedChoice<IssueCommandEvent, S>,
-        state,
-      );
+      return applyIssueCommandEvent(event, state);
     }
     case 'moveCommander': {
-      return applyMoveCommanderEvent(
-        event as OwnedChoice<MoveCommanderEvent, S>,
-        state,
-      );
+      return applyMoveCommanderEvent(event, state);
     }
     case 'moveUnit': {
-      return applyMoveUnitEvent(event as OwnedChoice<MoveUnitEvent, S>, state);
+      return applyMoveUnitEvent(event, state);
     }
     case 'performRangedAttack': {
-      return applyPerformRangedAttackEvent(
-        event as OwnedChoice<PerformRangedAttackEvent, S>,
-        state,
-      );
+      return applyPerformRangedAttackEvent(event, state);
     }
     case 'setupUnits': {
-      return applySetupUnitsEvent(
-        event as OwnedChoice<SetupUnitsEvent, S>,
-        state,
-      );
+      return applySetupUnitsEvent(event, state);
     }
     default: {
       const _exhaustive: never = event;

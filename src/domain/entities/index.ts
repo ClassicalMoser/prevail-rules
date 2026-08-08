@@ -20,16 +20,9 @@ export {
   boardSpaceSchema,
   boardType,
   boardTypeEnum,
-  coordinateLayoutMap,
   getCoordinateLayout,
-  largeBoardCoordinateSchema,
-  largeBoardCoordinates,
   largeCoordinateLayout,
-  smallBoardCoordinateSchema,
-  smallBoardCoordinates,
   smallCoordinateLayout,
-  standardBoardCoordinateSchema,
-  standardBoardCoordinates,
   standardCoordinateLayout,
 } from './board';
 export type {
@@ -45,7 +38,6 @@ export type {
 export {
   commandCardSchema,
   cardStateSchema,
-  ownedCardStateSchema,
   authoritativeCardStateSchema,
   whiteSeenCardStateSchema,
   blackSeenCardStateSchema,
@@ -58,7 +50,6 @@ export {
   roundEffectSchema,
   statModifiers,
   statModifierSchema,
-  unitSupportSchema,
 } from './card';
 export type {
   CommandCard,
@@ -72,14 +63,11 @@ export type {
   Command,
   CommandType,
   CommandSize,
-  GenericUnitSupport,
   Modifier,
   Restrictions,
   RoundEffect,
   StatModifier,
-  TraitUnitSupport,
   UnitSupport,
-  UnitTypeUnitSupport,
 } from './card';
 
 // Engagement types.
@@ -149,6 +137,3 @@ export type {
   UnitPresence,
   UnitPresenceType,
 } from './unitPresence';
-
-// Game effect literals (re-export; source is `gameEffectTypes` in @ruleValues — leaf, no cycle).
-export { gameEffects, type GameEffectType } from '@ruleValues';

@@ -113,16 +113,14 @@ Pure functions that check whether game actions, states, or conditions are valid 
 **Validation Categories:**
 
 - **Player choice** (`playerChoice/`): Event guards for player input
-  - `validatePlayerChoice()` - Expected choice + legal membership
-  - `isValidChooseCardEvent()` / `isValidChooseRallyEvent()` / … - Membership against `@legality` `getLegal*`
-  - `isValidChooseRoutDiscardEvent()` - Atom membership + integrity over `getLegalRoutDiscardCards`
+  - `validatePlayerChoice()` - Public entry: expected choice + legal membership
+  - `getLegalPlayerChoiceOptions()` - Legal option payloads for UI/bots
+  - Internal `isValid*Event` helpers - Membership/integrity against `@legality` `getLegal*`
 
 - **Game state** (`gameState/`): Invariant checks
-  - `eachCardPresentOnce()` / `eachUnitPresentOnce()` / …
+  - `eachCardPresentOnce()` / `eachUnitPresentOnce()`
 
-- **Phase routers** (`phaseValidation/`, `validateEvent`): Route events to phase-specific validators
-
-Movement legality (`canMoveInto`, `getLegalUnitMoves`, `isLegalMove`, commander moves) lives in **`legality/`**, not here. Validation re-exports a few of those during migration.
+Movement legality (`canMoveInto`, `getLegalUnitMoves`, `isLegalMove`, commander moves) lives in **`legality/`**, not here.
 
 **Pattern:** Validation functions return a discriminated **`ValidationResult`**
 (`{ result: true }` | `{ result: false, errorReason }`) and **never throw**.

@@ -1,4 +1,3 @@
-export { getCurrentStep } from './getCurrentStep';
 export {
   getNextStepForResolveRally,
   getRallyResolutionStateAwaitingBurn,
@@ -12,7 +11,6 @@ export {
   getMovementResolutionState,
   getRangedAttackResolutionState,
 } from './getCommandResolutionState';
-export { getCurrentEventStream } from './getCurrentEventStream';
 export { getCurrentInitiative } from './getCurrentInitiative';
 export { getNextEventNumber } from './getNextEventNumber';
 export {

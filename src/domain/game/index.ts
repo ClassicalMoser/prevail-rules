@@ -27,13 +27,7 @@ export type {
   OwnedPlayerForGameState,
   UnownedPlayerForGameState,
 } from './gameState';
-export {
-  authoritativeGameStateSchema,
-  blackSeenGameStateSchema,
-  gameStateSchema,
-  isAuthoritativeGameState,
-  whiteSeenGameStateSchema,
-} from './gameState';
+export { gameStateSchema, isAuthoritativeGameState } from './gameState';
 export { cleanupPhaseStateSchema, cleanupPhaseSteps } from './phases';
 export type { CleanupPhaseState, CleanupPhaseStep } from './phases';
 export {
