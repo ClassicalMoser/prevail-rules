@@ -8,10 +8,16 @@ import { updatePhaseState } from '@transforms';
 import { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMoveCommandersPhaseEvent';
 
 /**
- * Move-commanders phase complete: each player’s `inPlay` command (if any) becomes a “remaining”
- * command for the next issue-commands round. First vs second player sets follow `currentInitiative`.
+ * Move-commanders phase complete: each player’s `inPlay` command (if any) becomes
+ * remaining issue-commands slots (lines ×N expand to N× number:1). First vs second
+ * player sets follow `currentInitiative`.
  */
 describe(generateCompleteMoveCommandersPhaseEvent, () => {
+  const advanceCard = tempCommandCards.find((card) => card.name === 'Advance');
+  if (advanceCard === undefined) {
+    throw new Error('Expected Advance sample card');
+  }
+
   /** Black initiative, both inPlay set, MOVE_COMMANDERS_PHASE step `complete`. */
   function createGameStateInCompleteStep(): GameState {
     const state = createEmptyGameState({ currentInitiative: 'black' });
@@ -79,5 +85,27 @@ describe(generateCompleteMoveCommandersPhaseEvent, () => {
     expect(event.remainingCommandsSecondPlayer).toStrictEqual([
       tempCommandCards[0].command,
     ]);
+  });
+
+  it('given Advance lines ×2 inPlay, expands into two number:1 remaining slots', () => {
+    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const withAdvance = updateCardState(state, {
+      ...state.cardState,
+      black: { ...state.cardState.black, inPlay: advanceCard },
+      white: { ...state.cardState.white, inPlay: null },
+    });
+    const inComplete = updatePhaseState(withAdvance, {
+      phase: MOVE_COMMANDERS_PHASE,
+      step: 'complete',
+    });
+
+    const event = generateCompleteMoveCommandersPhaseEvent(inComplete, 0);
+
+    const expectedSlot = { ...advanceCard.command, number: 1 };
+    expect(event.remainingCommandsFirstPlayer).toStrictEqual([
+      expectedSlot,
+      expectedSlot,
+    ]);
+    expect(event.remainingCommandsSecondPlayer).toStrictEqual([]);
   });
 });

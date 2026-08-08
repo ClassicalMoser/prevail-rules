@@ -10,7 +10,7 @@ import { applyResolveRallyEvent } from './applyResolveRallyEvent';
 /**
  * Resolving a rally: the chosen card leaves `played`, the engine marks the per-player rally
  * slice `rallyResolved`, and stays on the resolve-rally step so units-broken can run next.
- * `unitsLostSupport` remains `'pending'` until {@link applyResolveUnitsBrokenEvent}.
+ * `unitsLostSupport` remains `'pending'` until {@link applyAssignUnitSupportEvent}.
  */
 describe(applyResolveRallyEvent, () => {
   it('burns the played card, marks rally resolved, and leaves unitsLostSupport pending on the same step', () => {

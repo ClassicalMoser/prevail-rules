@@ -1,3 +1,4 @@
+export { getLegalDoneIssuingCommandsEvents } from './getLegalDoneIssuingCommandsEvents';
 export {
   getLegalIssueCommands,
   type LegalIssueCommands,
@@ -13,3 +14,4 @@ export {
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,
 } from './getLegalUnitsForIssueCommand';
+export { isCommandIssuable } from './isCommandIssuable';

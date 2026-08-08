@@ -1,3 +1,11 @@
+export type {
+  AssignUnitSupportEvent,
+  UnitSupportAssignment,
+} from './assignUnitSupport';
+export {
+  assignUnitSupportEventSchema,
+  ASSIGN_UNIT_SUPPORT_CHOICE_TYPE,
+} from './assignUnitSupport';
 export type { ChooseCardEvent } from './chooseCard';
 export { chooseCardEventSchema } from './chooseCard';
 export type { ChooseMeleeResolutionEvent } from './chooseMeleeResolution';
@@ -16,6 +24,11 @@ export type { CommitToMovementEvent } from './commitToMovement';
 export { commitToMovementEventSchema } from './commitToMovement';
 export type { CommitToRangedAttackEvent } from './commitToRangedAttack';
 export { commitToRangedAttackEventSchema } from './commitToRangedAttack';
+export type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
+export {
+  doneIssuingCommandsEventSchema,
+  DONE_ISSUING_COMMANDS_CHOICE_TYPE,
+} from './doneIssuingCommands';
 export type { IssueCommandEvent } from './issueCommand';
 export {
   issueCommandEventSchema,

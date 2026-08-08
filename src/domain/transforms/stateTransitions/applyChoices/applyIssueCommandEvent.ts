@@ -10,6 +10,8 @@ import {
 /**
  * Applies an IssueCommandEvent to the game state.
  * Removes the command from remaining commands and adds the units to commandedUnits.
+ * When that player's remaining commands are exhausted on their issue step, advances
+ * to the matching resolve-commands step and seeds `remainingUnits*` for resolution.
  * Event is assumed pre-validated (issueCommands phase, command in that player's remaining commands).
  *
  * @param event - The issue command event to apply
@@ -40,12 +42,37 @@ export function applyIssueCommandEvent<S extends GameState>(
   );
 
   // Update phase state with new remaining commands
-  const newPhaseState: IssueCommandsPhaseState = updateRemainingPlayerCommands(
+  let newPhaseState: IssueCommandsPhaseState = updateRemainingPlayerCommands(
     phaseState,
     player,
     state.currentInitiative,
     newRemainingCommands,
   );
+
+  if (newRemainingCommands.length === 0) {
+    const remainingUnits = [
+      ...state.currentRoundState.commandedUnits.filter(
+        (unit) => unit.playerSide === player,
+      ),
+      ...units,
+    ];
+    if (isFirstPlayer && phaseState.step === 'firstPlayerIssueCommands') {
+      newPhaseState = {
+        ...newPhaseState,
+        remainingUnitsFirstPlayer: remainingUnits,
+        step: 'firstPlayerResolveCommands',
+      };
+    } else if (
+      !isFirstPlayer &&
+      phaseState.step === 'secondPlayerIssueCommands'
+    ) {
+      newPhaseState = {
+        ...newPhaseState,
+        remainingUnitsSecondPlayer: remainingUnits,
+        step: 'secondPlayerResolveCommands',
+      };
+    }
+  }
 
   const stateWithPhase = updatePhaseState(state, newPhaseState);
 

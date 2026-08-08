@@ -88,7 +88,7 @@ describe(applyStartEngagementEvent, () => {
     expect(engagement.engagingUnit).toBe(cmd.movingUnit.unit);
   });
 
-  it('given event engagementType rear, rear routState player matches defender side', () => {
+  it('given event engagementType rear, rear routState player matches defender side with pending penalty', () => {
     const { state, defenderWithPlacement } = stateWithMovementToEnemy();
     const event: StartEngagementEvent = {
       defenderWithPlacement,
@@ -116,9 +116,9 @@ describe(applyStartEngagementEvent, () => {
     if (res.engagementType !== 'rear') {
       throw new Error('rear');
     }
-    expect(throwIfPending(res.routState, 'rout').player).toBe(
-      defenderWithPlacement.unit.playerSide,
-    );
+    const rout = throwIfPending(res.routState, 'rout');
+    expect(rout.player).toBe(defenderWithPlacement.unit.playerSide);
+    expect(rout.numberToDiscard).toBe('pending');
   });
 
   it('given event engagementType flank, flank substep present and defenderRotated false', () => {

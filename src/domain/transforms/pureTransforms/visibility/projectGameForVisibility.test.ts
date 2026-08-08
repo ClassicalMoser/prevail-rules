@@ -47,7 +47,10 @@ function authoritativeGame(): GameForVisibility<'authoritative'> {
 
 describe(projectGameForVisibility, () => {
   it('projects whiteSeen with white owned and black hidden', () => {
-    const projected = projectGameForVisibility(authoritativeGame(), 'whiteSeen');
+    const projected = projectGameForVisibility(
+      authoritativeGame(),
+      'whiteSeen',
+    );
 
     expect(projected.gameState.cardState.visibility).toBe('whiteSeen');
     expect(projected.gameState.cardState.white.inHand).toStrictEqual([
@@ -68,7 +71,10 @@ describe(projectGameForVisibility, () => {
   });
 
   it('projects blackSeen with black owned and white hidden', () => {
-    const projected = projectGameForVisibility(authoritativeGame(), 'blackSeen');
+    const projected = projectGameForVisibility(
+      authoritativeGame(),
+      'blackSeen',
+    );
 
     expect(projected.gameState.cardState.visibility).toBe('blackSeen');
     expect(projected.gameState.cardState.black.awaitingPlay).toBe(

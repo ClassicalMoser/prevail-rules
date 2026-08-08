@@ -77,7 +77,8 @@
                   "@events",
                   "@game",
                   "@factories",
-                  "@queries"
+                  "@queries",
+                  "@legality"
                 ],
                 "dir": "domain/expected",
                 "identifier": "@expected"
@@ -135,7 +136,8 @@
                   "@events",
                   "@game",
                   "@queries",
-                  "@factories"
+                  "@factories",
+                  "@legality"
                 ],
                 "dir": "domain/transforms",
                 "identifier": "@transforms"
@@ -273,7 +275,8 @@
                   "@events",
                   "@game",
                   "@factories",
-                  "@queries"
+                  "@queries",
+                  "@legality"
                 ],
                 "dir": "domain/expected",
                 "identifier": "@expected"
@@ -331,7 +334,8 @@
                   "@events",
                   "@game",
                   "@queries",
-                  "@factories"
+                  "@factories",
+                  "@legality"
                 ],
                 "dir": "domain/transforms",
                 "identifier": "@transforms"

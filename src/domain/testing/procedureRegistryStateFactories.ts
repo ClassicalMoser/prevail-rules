@@ -218,7 +218,7 @@ export const procedureRegistryStateFactories: Record<
     });
     return updatePhaseState(
       withPlayed,
-      createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
+      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
   },
 

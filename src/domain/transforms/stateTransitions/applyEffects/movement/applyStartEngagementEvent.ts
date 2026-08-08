@@ -37,14 +37,14 @@ export function applyStartEngagementEvent<S extends GameState>(
   const engagementResolutionState: EngagementResolutionState = (() => {
     switch (event.engagementType) {
       case 'rear': {
-        // Rear engagement: create rout state immediately
+        // Rear engagement: seed rout; penalty filled by resolveRout
         return {
           completed: false,
           engagementType: 'rear' as const,
           routState: {
             cardsChosen: false,
             completed: false,
-            numberToDiscard: defendingUnit.unitType.morale,
+            numberToDiscard: 'pending',
             player: defendingPlayer,
             substepType: 'rout' as const,
             unitsToRout: [defendingUnit],

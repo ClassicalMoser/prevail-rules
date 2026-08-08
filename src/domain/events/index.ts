@@ -104,6 +104,14 @@ export type {
   StartEngagementEvent,
   TriggerRoutFromRetreatEvent,
 } from './gameEffects';
+export type {
+  AssignUnitSupportEvent,
+  UnitSupportAssignment,
+} from './playerChoices';
+export {
+  assignUnitSupportEventSchema,
+  ASSIGN_UNIT_SUPPORT_CHOICE_TYPE,
+} from './playerChoices';
 export type { ChooseCardEvent } from './playerChoices';
 export { chooseCardEventSchema } from './playerChoices';
 export type { ChooseMeleeResolutionEvent } from './playerChoices';
@@ -122,6 +130,11 @@ export type { CommitToMovementEvent } from './playerChoices';
 export { commitToMovementEventSchema } from './playerChoices';
 export type { CommitToRangedAttackEvent } from './playerChoices';
 export { commitToRangedAttackEventSchema } from './playerChoices';
+export type { DoneIssuingCommandsEvent } from './playerChoices';
+export {
+  doneIssuingCommandsEventSchema,
+  DONE_ISSUING_COMMANDS_CHOICE_TYPE,
+} from './playerChoices';
 export type { IssueCommandEvent } from './playerChoices';
 export { issueCommandEventSchema } from './playerChoices';
 export type { MoveCommanderEvent } from './playerChoices';

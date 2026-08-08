@@ -8,6 +8,7 @@ export {
   getLegalCommitToMovementEvents,
   getLegalCommitToRangedAttackEvents,
   canUnitRangedAttackTarget,
+  getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
   getLegalLineEndsForIssueCommand,
   getLegalLineStartsForIssueCommand,
@@ -17,9 +18,11 @@ export {
   getLegalRangedAttackTargets,
   getLegalRoutDiscardCards,
   getLegalSetupUnits,
+  getLegalUnitSupportGrants,
   getLegalUnitsForIssueCommand,
   getLineSegmentFromStart,
   getSetupZoneCoordinates,
+  isCommandIssuable,
   unitMatchesInspirationRange,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,
@@ -32,6 +35,8 @@ export type {
   LegalRangedAttackers,
   LegalRoutDiscardCards,
   LegalSetupUnits,
+  LegalUnitSupportGrant,
+  LegalUnitSupportGrants,
 } from './choiceOptions';
 export { getLegalCommanderMoves } from './commanderMovement';
 export {

@@ -16,21 +16,21 @@ export function applyChooseWhetherToRetreatEvent<S extends GameState>(
   event: ChooseWhetherToRetreatEvent,
   state: S,
 ): S {
-  // Finds the front engagement state from the movement state
   const engagementState = getFrontEngagementStateFromMovement(state);
 
-  // Record retreat decision in front engagement resolution state
+  // Decline retreat → engagement complete (units stay for Phase 4 melee).
+  // Accept retreat → defendingUnitRetreated stays pending for chooseRetreatOption.
   const newEngagementState = {
     ...engagementState,
+    completed: event.choosesToRetreat ? engagementState.completed : true,
     engagementResolutionState: {
       ...engagementState.engagementResolutionState,
+      defendingUnitRetreated: event.choosesToRetreat
+        ? engagementState.engagementResolutionState.defendingUnitRetreated
+        : false,
       defendingUnitRetreats: event.choosesToRetreat,
     },
   };
 
-  const newGameState = updateEngagementStateInMovement(
-    state,
-    newEngagementState,
-  );
-  return newGameState;
+  return updateEngagementStateInMovement(state, newEngagementState);
 }

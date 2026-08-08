@@ -5,10 +5,10 @@ import { createEmptyGameState } from '@transforms/initializations';
 import { createUnitInstance } from '@factories';
 
 /**
- * Builds a {@link GameState} for a new game: empty board and round state, white initiative,
- * and unit instances from each {@link Army} in {@link GameState.reservedUnits}.
+ * Builds a {@link GameState} for a new game: empty board and round state,
+ * unit instances from each {@link Army} in {@link GameState.reservedUnits},
+ * and each army's command cards dealt into that side's `inHand`.
  *
- * Does not deal command cards into `cardState` — callers must populate hands separately.
  * Instance numbers are 1-indexed (`1..count`) to match {@link eachUnitPresentOnce}.
  */
 export function createInitialGameState(options: {
@@ -54,10 +54,23 @@ export function createInitialGameState(options: {
     }
   }
 
-  const gameStateWithReservedUnits = {
+  if (emptyGameState.cardState.visibility !== 'authoritative') {
+    throw new Error('createInitialGameState requires authoritative card state');
+  }
+
+  return {
     ...emptyGameState,
+    cardState: {
+      visibility: 'authoritative',
+      black: {
+        ...emptyGameState.cardState.black,
+        inHand: [...blackArmy.commandCards],
+      },
+      white: {
+        ...emptyGameState.cardState.white,
+        inHand: [...whiteArmy.commandCards],
+      },
+    },
     reservedUnits,
   };
-
-  return gameStateWithReservedUnits;
 }

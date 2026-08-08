@@ -46,7 +46,7 @@ describe(applyChooseWhetherToRetreatEvent, () => {
     ).toBe(true);
   });
 
-  it('given same stack and white choosesToRetreat false, defendingUnitRetreats is false', () => {
+  it('given same stack and white choosesToRetreat false, defendingUnitRetreats is false and engagement completes', () => {
     const state = createStateWithFrontEngagement();
     const event: ChooseWhetherToRetreatEvent = {
       choiceType: 'chooseWhetherToRetreat',
@@ -62,6 +62,7 @@ describe(applyChooseWhetherToRetreatEvent, () => {
     expect(
       engagementState.engagementResolutionState.defendingUnitRetreats,
     ).toBe(false);
+    expect(engagementState.completed).toBe(true);
   });
 
   it('given black defender events, true vs false flip defendingUnitRetreats the same as white', () => {

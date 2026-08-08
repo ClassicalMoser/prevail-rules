@@ -1,4 +1,4 @@
-import type { ExpectedEventInfo } from '@events';
+import type { ExpectedEventInfo, PlayerSource } from '@events';
 import type { RallyResolutionState } from '@game';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 
@@ -8,10 +8,12 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
  * rally resolution state appears.
  *
  * @param rallyState - The rally resolution state
+ * @param player - The player whose rally is being resolved (for support assignment)
  * @returns Information about what event is expected
  */
 export function getExpectedRallyResolutionEvent(
   rallyState: RallyResolutionState,
+  player: PlayerSource,
 ): ExpectedEventInfo {
   // Fast rejection: if already completed, this is an invalid state
   if (rallyState.completed) {
@@ -28,8 +30,9 @@ export function getExpectedRallyResolutionEvent(
 
   if (rallyState.unitsLostSupport === 'pending') {
     return {
-      actionType: 'gameEffect',
-      effectType: 'resolveUnitsBroken',
+      actionType: 'playerChoice',
+      choiceType: 'assignUnitSupport',
+      playerSource: player,
     };
   }
 

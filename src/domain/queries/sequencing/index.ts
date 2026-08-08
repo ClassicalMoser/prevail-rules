@@ -46,5 +46,6 @@ export {
   getRoutStateFromCleanupPhaseForResolveRout,
   getRoutStateFromMeleeResolutionByInitiative,
   getRoutStateFromRally,
+  getAwaitingRoutDiscardState,
   getRoutStateFromRearEngagement,
 } from './getSubstep';

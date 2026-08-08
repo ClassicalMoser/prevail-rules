@@ -3,3 +3,4 @@ export { getExpectedIssueCommandsPhaseEvent } from './getExpectedIssueCommandsPh
 export { getExpectedMoveCommandersPhaseEvent } from './getExpectedMoveCommandersPhaseEvent';
 export { getExpectedPlayCardsPhaseEvent } from './getExpectedPlayCardsPhaseEvent';
 export { getExpectedResolveMeleePhaseEvent } from './getExpectedResolveMeleePhaseEvent';
+export { getExpectedSetupUnitsEvent } from './getExpectedSetupUnitsEvent';

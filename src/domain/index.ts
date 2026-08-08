@@ -198,9 +198,12 @@ export {
   triggerRoutFromRetreatSharedFieldsSchema,
 } from '@events';
 export {
+  assignUnitSupportEventSchema,
+  ASSIGN_UNIT_SUPPORT_CHOICE_TYPE,
   commitToMeleeEventSchema,
   commitToMovementEventSchema,
   commitToRangedAttackEventSchema,
+  doneIssuingCommandsEventSchema,
   issueCommandEventSchema,
   moveCommanderEventSchema,
   moveUnitEventSchema,
@@ -244,6 +247,7 @@ export type {
   RoutResolutionSourceNonAttack,
 } from '@events';
 export type {
+  AssignUnitSupportEvent,
   ChooseCardEvent,
   ChooseMeleeResolutionEvent,
   ChooseRallyEvent,
@@ -253,11 +257,13 @@ export type {
   CommitToMeleeEvent,
   CommitToMovementEvent,
   CommitToRangedAttackEvent,
+  DoneIssuingCommandsEvent,
   IssueCommandEvent,
   MoveCommanderEvent,
   MoveUnitEvent,
   StartEngagementEvent,
   TriggerRoutFromRetreatEvent,
+  UnitSupportAssignment,
 } from '@events';
 export type {
   PerformRangedAttackEvent,
@@ -413,6 +419,7 @@ export {
   getPlayerUnitsOnBoard,
   getPlayerUnitsWithPlacementOnBoard,
   getSupportedUnitTypes,
+  unitMatchesSupport,
   getPlayerUnitWithPosition,
   hasUnitInSet,
   isFriendlyUnit,
@@ -473,8 +480,10 @@ export {
   getLegalCommitToMovementEvents,
   getLegalCommitToRangedAttackEvents,
   canUnitRangedAttackTarget,
+  getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
   getLegalLineEndsForIssueCommand,
+  isCommandIssuable,
   getLegalLineStartsForIssueCommand,
   getLegalMoveUnits,
   getLegalRangedAttackers,
@@ -482,6 +491,7 @@ export {
   getLegalRangedAttackTargets,
   getLegalRoutDiscardCards,
   getLegalSetupUnits,
+  getLegalUnitSupportGrants,
   getLegalUnitsForIssueCommand,
   getLineSegmentFromStart,
   getSetupZoneCoordinates,
@@ -499,6 +509,8 @@ export type {
   LegalRangedAttackers,
   LegalRoutDiscardCards,
   LegalSetupUnits,
+  LegalUnitSupportGrant,
+  LegalUnitSupportGrants,
 } from '@legality';
 export {
   getLegalPlayerChoiceOptions,
@@ -544,6 +556,7 @@ export {
   createEmptyLargeBoard,
   createEmptySmallBoard,
   createEmptyStandardBoard,
+  createInitialGameState,
   createUnitInstance,
 } from '@transforms';
 export {
@@ -609,6 +622,8 @@ export {
   isValidCommitToMeleeEvent,
   isValidCommitToMovementEvent,
   isValidCommitToRangedAttackEvent,
+  isValidAssignUnitSupportEvent,
+  isValidDoneIssuingCommandsEvent,
   isValidIssueCommandEvent,
   isValidMoveCommanderEvent,
   isValidMoveUnitEvent,

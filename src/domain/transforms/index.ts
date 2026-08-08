@@ -14,6 +14,7 @@ export {
   addUnitToRouted,
   burnCardFromPlayed,
   chooseHiddenCard,
+  createInitialGameState,
   discardCardsFromHand,
   markPhaseAsComplete,
   moveBothInPlayToPlayed,

@@ -4,8 +4,8 @@ import { createTestCard, createTestUnit } from '@testing';
 import { createInitialGameState } from './createInitialGameState';
 
 /**
- * Seeds reservedUnits from army unit counts. Instance numbers are 1-indexed;
- * card hands are intentionally left to the caller.
+ * Seeds reservedUnits from army unit counts and deals army command cards
+ * into each side's hand. Instance numbers are 1-indexed.
  */
 describe(createInitialGameState, () => {
   const whiteType = createTestUnit('white').unitType;
@@ -41,19 +41,26 @@ describe(createInitialGameState, () => {
     ).toBe(1);
   });
 
-  it('does not deal army command cards into either hand', () => {
+  it('deals army command cards into each side hand', () => {
+    const whiteCard = createTestCard();
+    const blackCard = createTestCard();
     const armyWithCards: Army = {
       ...whiteArmy,
-      commandCards: [createTestCard()],
+      commandCards: [whiteCard],
+    };
+    const blackWithCards: Army = {
+      ...blackArmy,
+      commandCards: [blackCard],
     };
 
     const state = createInitialGameState({
-      blackArmy,
+      blackArmy: blackWithCards,
       gameMode: 'mini',
       whiteArmy: armyWithCards,
     });
 
-    expect(state.cardState.white.inHand).toStrictEqual([]);
-    expect(state.cardState.black.inHand).toStrictEqual([]);
+    expect(state.cardState.white.inHand).toStrictEqual([whiteCard]);
+    expect(state.cardState.black.inHand).toStrictEqual([blackCard]);
+    expect(state.cardState.white.inHand).not.toBe(armyWithCards.commandCards);
   });
 });

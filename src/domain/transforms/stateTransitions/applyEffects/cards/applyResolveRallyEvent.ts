@@ -18,7 +18,7 @@ import {
  * Burns the specified card from played pile, then returns all remaining played
  * and discarded cards to the player's hand.
  * Marks `rallyResolved` and stays on the resolve-rally step with
- * `unitsLostSupport: 'pending'` so {@link applyResolveUnitsBrokenEvent} can run next.
+ * `unitsLostSupport: 'pending'` so {@link applyAssignUnitSupportEvent} can run next.
  * Uses {@link getRallyResolutionStateAwaitingBurn} for sequencing invariants.
  *
  * Requires `event.player` to be owned under the state's visibility
@@ -49,7 +49,7 @@ export function applyResolveRallyEvent<S extends GameState>(
   const updatedRallyResolutionState: RallyResolutionState = {
     ...rallyState,
     rallyResolved: true,
-    // Still pending — computed by applyResolveUnitsBrokenEvent, not here.
+    // Still pending — populated by applyAssignUnitSupportEvent, not here.
     unitsLostSupport: 'pending',
     routState: 'pending',
   };

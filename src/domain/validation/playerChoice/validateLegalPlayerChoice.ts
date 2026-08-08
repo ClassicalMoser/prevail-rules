@@ -1,6 +1,7 @@
 import type { ValidationResult } from '@utils';
 import type { PlayerChoiceEvent } from '@events';
 import type { GameState } from '@game';
+import { isValidAssignUnitSupportEvent } from './isValidAssignUnitSupportEvent';
 import { isValidChooseCardEvent } from './isValidChooseCardEvent';
 import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
 import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
@@ -10,6 +11,7 @@ import { isValidChooseWhetherToRetreatEvent } from './isValidChooseWhetherToRetr
 import { isValidCommitToMeleeEvent } from './isValidCommitToMeleeEvent';
 import { isValidCommitToMovementEvent } from './isValidCommitToMovementEvent';
 import { isValidCommitToRangedAttackEvent } from './isValidCommitToRangedAttackEvent';
+import { isValidDoneIssuingCommandsEvent } from './isValidDoneIssuingCommandsEvent';
 import { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
 import { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
 import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
@@ -29,6 +31,9 @@ export function validateLegalPlayerChoice(
   state: GameState,
 ): ValidationResult {
   switch (event.choiceType) {
+    case 'assignUnitSupport': {
+      return isValidAssignUnitSupportEvent(event, state);
+    }
     case 'chooseCard': {
       return isValidChooseCardEvent(event, state);
     }
@@ -61,6 +66,9 @@ export function validateLegalPlayerChoice(
     }
     case 'moveUnit': {
       return isValidMoveUnitEvent(event, state);
+    }
+    case 'doneIssuingCommands': {
+      return isValidDoneIssuingCommandsEvent(event, state);
     }
     case 'issueCommand': {
       return isValidIssueCommandEvent(event, state);

@@ -43,11 +43,8 @@ export async function processEvent<S extends GameState>(
     };
   }
 
-  // If we've just started a new round, handle the new round
-  if (
-    event.eventType === 'gameEffect' &&
-    event.effectType === 'completeCleanupPhase'
-  ) {
+  // Round advance (cleanup → next round, or setup → round 1)
+  if (newGameState.currentRoundNumber !== gameState.currentRoundNumber) {
     const handleNewRoundResult = await handleNewRound(
       gameId,
       newGameState,

@@ -14,10 +14,7 @@ describe(toHiddenCardState, () => {
       played: [],
     };
 
-    expect(toHiddenCardState(owned).inHand).toStrictEqual([
-      'hidden',
-      'hidden',
-    ]);
+    expect(toHiddenCardState(owned).inHand).toStrictEqual(['hidden', 'hidden']);
   });
 
   it('maps awaitingPlay to hidden when present', () => {

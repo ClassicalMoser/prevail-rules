@@ -5,11 +5,15 @@ import {
   GAME_EFFECT_EVENT_TYPE,
 } from '@events';
 import { getOtherPlayer } from '@queries';
+
+import { toRemainingCommands } from './toRemainingCommands';
+
 /**
  * Generates a CompleteMoveCommandersPhaseEvent to complete the move commanders phase
  * and advance to issue commands phase.
  *
- * Command sets are computed from each side's in-play card so replay does not re-read cards.
+ * Remaining command sets are derived from each side's in-play card so replay does
+ * not re-read cards. Lines ×N expand into N `number: 1` slots; units ×N stay one grant.
  *
  * @param state - The current game state
  * @returns A complete CompleteMoveCommandersPhaseEvent
@@ -25,9 +29,13 @@ export function generateCompleteMoveCommandersPhaseEvent(
   const secondPlayerCard = state.cardState[secondPlayer].inPlay;
 
   const remainingCommandsFirstPlayer =
-    firstPlayerCard !== null ? [firstPlayerCard.command] : [];
+    firstPlayerCard !== null
+      ? toRemainingCommands(firstPlayerCard.command)
+      : [];
   const remainingCommandsSecondPlayer =
-    secondPlayerCard !== null ? [secondPlayerCard.command] : [];
+    secondPlayerCard !== null
+      ? toRemainingCommands(secondPlayerCard.command)
+      : [];
 
   return {
     effectType: COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE,

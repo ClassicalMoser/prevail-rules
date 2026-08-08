@@ -1,5 +1,6 @@
-import type { GameModeName } from '@entities';
+import type { GameModeName, PlayerSide } from '@entities';
 import type { PlayerChoiceEvent } from '@events';
+import type { Game } from '@game';
 import type { PortResponse } from './portResponse';
 
 export interface GameRunner {
@@ -10,4 +11,13 @@ export interface GameRunner {
     gameMode: GameModeName,
     playerChoice: PlayerChoiceEvent,
   ) => Promise<PortResponse<void>>;
+  /**
+   * Returns the current game projected for `playerSide` (wire reconcile after
+   * refresh / missed updates). Opponent cards are hidden; board units are full.
+   */
+  requestGameStateSnapshot: (
+    gameId: string,
+    gameMode: GameModeName,
+    playerSide: PlayerSide,
+  ) => Promise<PortResponse<Game>>;
 }

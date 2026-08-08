@@ -84,6 +84,8 @@ export const boundaries: BoundaryConfig[] = [
       '@game',
       '@factories',
       '@queries',
+      // Branch expected choice when legality empties (e.g. issue vs doneIssuing).
+      '@legality',
     ],
     dir: 'domain/expected',
     identifier: '@expected',
@@ -146,6 +148,8 @@ export const boundaries: BoundaryConfig[] = [
       '@game',
       '@queries',
       '@factories',
+      // Apply may re-filter remaining actors after a command completes.
+      '@legality',
     ],
     dir: 'domain/transforms',
     identifier: '@transforms',

@@ -8,20 +8,25 @@ import {
 } from '@queries';
 
 import { isUnengagedUnit } from './canUnitRangedAttackTarget';
+import { getLegalRangedAttackTargets } from './getLegalRangedAttackOptions';
 
 /**
  * Atomic perform-ranged-attack context: which player is resolving a ranged
  * command start, and which remaining units may act as the **sole** attacker.
  *
+ * Only units with at least one legal target are included — otherwise the
+ * orchestrator would wait forever on an empty target list.
+ *
  * Targets / supporters are enumerated per chosen attacker (+ target for
  * supporters) via {@link getLegalRangedAttackTargets} /
  * {@link getLegalRangedAttackSupporters}.
  *
- * `null` when a performRangedAttack choice is not expected.
+ * `null` when a performRangedAttack choice is not expected (or no remaining
+ * unit can currently fire at anyone).
  */
 export interface LegalRangedAttackers {
   player: PlayerSide;
-  /** Remaining commanded units that may fire (unengaged, range &gt; 0). */
+  /** Remaining commanded units that may fire at ≥1 legal target. */
   attackers: readonly UnitWithPlacement[];
 }
 
@@ -87,6 +92,11 @@ export function getLegalRangedAttackers<S extends GameState>(
       continue;
     }
     if (getCurrentUnitStat(unit, 'range', gameState) <= 0) {
+      continue;
+    }
+    if (
+      getLegalRangedAttackTargets(unitWithPlacement, gameState).length === 0
+    ) {
       continue;
     }
     attackers.push(unitWithPlacement);

@@ -96,7 +96,7 @@ describe(getLegalRoutDiscardCards, () => {
     });
   });
 
-  it('returns null when not in cleanup resolveRally', () => {
+  it('returns null when no rout discard is awaiting', () => {
     const state = updatePhaseState(createEmptyGameState(), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',

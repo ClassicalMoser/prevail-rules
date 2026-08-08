@@ -17,6 +17,33 @@ describe(isValidSetupUnitsEvent, () => {
     };
     const event: SetupUnitsEvent = {
       choiceType: 'setupUnits',
+      commanderCoordinate: 'A-3',
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      player: 'white',
+      unitPlacements: [
+        {
+          placement: { coordinate: 'A-3', facing: 'south' },
+          unit,
+        },
+      ],
+    };
+
+    expect(isValidSetupUnitsEvent(event, state)).toStrictEqual({
+      result: true,
+    });
+  });
+
+  it('accepts commander alone on an empty setup-zone coordinate', () => {
+    const unit = createTestUnit('white', { attack: 2 });
+    const state = {
+      ...createEmptyGameState(),
+      boardState: createEmptyStandardBoard(),
+      reservedUnits: [unit],
+    };
+    const event: SetupUnitsEvent = {
+      choiceType: 'setupUnits',
+      commanderCoordinate: 'A-4',
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'white',
@@ -42,6 +69,7 @@ describe(isValidSetupUnitsEvent, () => {
     };
     const event: SetupUnitsEvent = {
       choiceType: 'setupUnits',
+      commanderCoordinate: 'E-5',
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'white',
@@ -66,6 +94,7 @@ describe(isValidSetupUnitsEvent, () => {
     };
     const event: SetupUnitsEvent = {
       choiceType: 'setupUnits',
+      commanderCoordinate: 'L-3',
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
@@ -78,5 +107,32 @@ describe(isValidSetupUnitsEvent, () => {
     };
 
     expect(isValidSetupUnitsEvent(event, state).result).toBe(false);
+  });
+
+  it('rejects commander outside the empty setup zone', () => {
+    const unit = createTestUnit('white', { attack: 2 });
+    const state = {
+      ...createEmptyGameState(),
+      boardState: createEmptyStandardBoard(),
+      reservedUnits: [unit],
+    };
+    const event: SetupUnitsEvent = {
+      choiceType: 'setupUnits',
+      commanderCoordinate: 'E-5',
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      player: 'white',
+      unitPlacements: [
+        {
+          placement: { coordinate: 'A-3', facing: 'south' },
+          unit,
+        },
+      ],
+    };
+
+    expect(isValidSetupUnitsEvent(event, state)).toMatchObject({
+      result: false,
+      errorReason: expect.stringContaining('Commander'),
+    });
   });
 });

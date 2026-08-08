@@ -1,36 +1,84 @@
 import type { ChooseRoutDiscardEvent } from '@events';
-import type { GameState } from '@game';
+import type { GameState, OwnedPlayerForGameState } from '@game';
 import {
-  getCurrentRallyResolutionState,
-  getRoutStateFromRally,
+  getAwaitingRoutDiscardState,
+  getOwnedPlayerCardState,
+  getPositionOfUnit,
+  getRearEngagementStateFromMovement,
+  hasUnitInArray,
 } from '@queries';
-import { updateRoutState } from '@transforms/pureTransforms';
+import {
+  addUnitToRouted,
+  discardCardsFromHand,
+  removeUnitFromBoard,
+  updateBoardState,
+  updateEngagementStateInMovement,
+  updatePlayerCardState,
+  updateRoutState,
+} from '@transforms/pureTransforms';
 
 /**
- * Applies a ChooseRoutDiscardEvent to the game state.
- * Marks that the player has chosen which cards to discard for rout penalty.
- * Event is assumed pre-validated (cleanup phase, resolveRally step, player has rout state).
+ * Applies a ChooseRoutDiscardEvent:
+ * - discards the chosen hand cards
+ * - marks the active rout slice cardsChosen + completed
+ * - removes routed units from the board into `routedUnits`
+ * - for rear engagement, marks the engagement complete so movement can finish
  *
- * @param event - The choose rout discard event to apply
- * @param state - The current game state
- * @returns A new game state with the rout discard choice recorded
+ * Event is assumed pre-validated via {@link isValidChooseRoutDiscardEvent}.
  */
 export function applyChooseRoutDiscardEvent<S extends GameState>(
   event: ChooseRoutDiscardEvent,
   state: S,
 ): S {
-  // Find the relevant game states for this event
-  const rallyState = getCurrentRallyResolutionState(state);
-  const routState = getRoutStateFromRally(rallyState);
+  const routState = getAwaitingRoutDiscardState(state);
+  if (routState === null) {
+    throw new Error('No rout discard awaiting choice');
+  }
 
-  // Update the rout state with cardsChosen set to true (step unchanged; awaiting ResolveRoutDiscardEvent)
-  const updatedRoutState = {
+  const owned = getOwnedPlayerCardState(state.cardState, event.player);
+  const discardedCardState = discardCardsFromHand(owned, event.cardIds);
+  let next = updatePlayerCardState(
+    state,
+    event.player as OwnedPlayerForGameState<S>,
+    discardedCardState,
+  );
+
+  const completedRout = {
     ...routState,
     cardsChosen: true,
+    completed: true,
   };
+  next = updateRoutState(next, completedRout);
 
-  // Update the rout state with the new cards chosen
-  const newGameState = updateRoutState(state, updatedRoutState);
-  // Return the new game state with the updated rout state
-  return newGameState;
+  for (const unit of routState.unitsToRout) {
+    try {
+      const placement = getPositionOfUnit(next.boardState, unit);
+      next = updateBoardState(
+        next,
+        removeUnitFromBoard(next.boardState, { placement, unit }),
+      );
+    } catch {
+      // Already off the board (some parents remove before discard).
+    }
+    if (!hasUnitInArray(next.routedUnits, unit)) {
+      next = addUnitToRouted(next, unit);
+    }
+  }
+
+  try {
+    const engagement = getRearEngagementStateFromMovement(next);
+    next = updateEngagementStateInMovement(next, {
+      ...engagement,
+      completed: true,
+      engagementResolutionState: {
+        ...engagement.engagementResolutionState,
+        completed: true,
+        routState: completedRout,
+      },
+    });
+  } catch {
+    // Not a rear-engagement rout parent (rally / attack apply / melee).
+  }
+
+  return next;
 }

@@ -2,6 +2,7 @@ export {
   getLegalPlayerChoiceOptions,
   type LegalPlayerChoiceOptions,
 } from './getLegalPlayerChoiceOptions';
+export { isValidAssignUnitSupportEvent } from './isValidAssignUnitSupportEvent';
 export { isValidChooseCardEvent } from './isValidChooseCardEvent';
 export { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
 export { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
@@ -11,6 +12,7 @@ export { isValidChooseMeleeResolutionEvent } from './isValidMeleeResolutionEvent
 export { isValidCommitToMeleeEvent } from './isValidCommitToMeleeEvent';
 export { isValidCommitToMovementEvent } from './isValidCommitToMovementEvent';
 export { isValidCommitToRangedAttackEvent } from './isValidCommitToRangedAttackEvent';
+export { isValidDoneIssuingCommandsEvent } from './isValidDoneIssuingCommandsEvent';
 export { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
 export { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
 export { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
