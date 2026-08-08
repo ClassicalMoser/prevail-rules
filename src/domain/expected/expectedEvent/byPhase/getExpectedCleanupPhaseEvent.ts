@@ -47,7 +47,7 @@ export function getExpectedCleanupPhaseEvent(
         throw new Error('First player rally resolution state not found');
       }
 
-      return getExpectedRallyResolutionEvent(rallyState);
+      return getExpectedRallyResolutionEvent(rallyState, firstPlayer);
     }
 
     case 'secondPlayerResolveRally': {
@@ -57,7 +57,7 @@ export function getExpectedCleanupPhaseEvent(
         throw new Error('Second player rally resolution state not found');
       }
 
-      return getExpectedRallyResolutionEvent(rallyState);
+      return getExpectedRallyResolutionEvent(rallyState, secondPlayer);
     }
 
     case 'complete': {

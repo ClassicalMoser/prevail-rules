@@ -1,100 +1,27 @@
 import type { ResolveUnitsBrokenEvent } from '@events';
-import type { CleanupPhaseState, GameState, RoutState } from '@game';
-
-import {
-  getCleanupPhaseState,
-  getNextStepForResolveRally,
-  getPlayerUnitsWithPlacementOnBoard,
-  getRallyResolutionStateAwaitingUnitsBroken,
-} from '@queries';
-import { updateRallyResolutionStateForCurrentStep } from '@transforms/pureTransforms/sequencing/updateRallyResolutionStateForCurrentStep';
-import {
-  addUnitToRouted,
-  removeUnitFromBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import type { GameState } from '@game';
+import { getPlayerUnitsWithPlacementOnBoard } from '@queries';
+import { applyUnitsLostSupportAfterRally } from './applyUnitsLostSupportAfterRally';
 
 /**
  * Applies a ResolveUnitsBrokenEvent to the game state.
  * Routes all unit instances of the broken types (removes from board, adds to routed).
- * Updates the rally resolution state and advances to next step.
- * Uses {@link getRallyResolutionStateAwaitingUnitsBroken} for sequencing invariants.
  *
- * @param event - The resolve units broken event to apply
- * @param state - The current game state
- * @returns A new game state with units routed
+ * Prefer the live player-choice path {@link applyAssignUnitSupportEvent}; this
+ * remains for registry / legacy type-based generation.
  */
 export function applyResolveUnitsBrokenEvent<S extends GameState>(
   event: ResolveUnitsBrokenEvent,
   state: S,
 ): S {
   const { player, unitTypes } = event;
-  // Safe broad type cast because we know the event is for the board type
-  const phaseState = getCleanupPhaseState(state);
-
-  const rallyState = getRallyResolutionStateAwaitingUnitsBroken(state, player);
-
-  // Safe broad type cast because we know the event is for the board type
-  const defaultNextStep = getNextStepForResolveRally(state);
-
-  // Find all unit instances of the broken types on the board
   const brokenTypeIds = new Set(unitTypes.map((type) => type.id));
   const playerUnits = getPlayerUnitsWithPlacementOnBoard(state, player);
-  const unitsToRout = [...playerUnits].filter((unitWithPlacement) =>
-    brokenTypeIds.has(unitWithPlacement.unit.unitType.id),
-  );
+  const uncovered = [...playerUnits]
+    .filter((unitWithPlacement) =>
+      brokenTypeIds.has(unitWithPlacement.unit.unitType.id),
+    )
+    .map((u) => u.unit);
 
-  // Rout all broken unit instances
-  let newState = state;
-  for (const unitWithPlacement of unitsToRout) {
-    const newBoardState = removeUnitFromBoard(
-      newState.boardState,
-      unitWithPlacement,
-    );
-    newState = updateBoardState(newState, newBoardState);
-    newState = addUnitToRouted(newState, unitWithPlacement.unit);
-  }
-
-  // Calculate total rout penalty
-  const totalPenalty = unitsToRout.reduce(
-    (sum, unitWithPlacement) => sum + unitWithPlacement.unit.unitType.morale,
-    0,
-  );
-
-  // Initialize rout discard state if penalty exists
-  const routState: RoutState | 'pending' =
-    totalPenalty > 0
-      ? ({
-          cardsChosen: false,
-          completed: false,
-          numberToDiscard: totalPenalty,
-          player,
-          substepType: 'rout' as const,
-          unitsToRout: unitsToRout.map((u) => u.unit),
-        } satisfies RoutState)
-      : 'pending';
-
-  // Update rally resolution state with the instances that were routed
-  const updatedRallyState = {
-    ...rallyState,
-    routState,
-    unitsLostSupport: unitsToRout.map((u) => u.unit),
-  };
-
-  // Next step: stay on same step if penalty, otherwise advance
-  // The orchestrator will check routDiscardState to determine next action
-  const finalNextStep: CleanupPhaseState['step'] =
-    totalPenalty > 0
-      ? phaseState.step // Stay on resolveRally step for discard penalty
-      : defaultNextStep;
-
-  // Update phase state with new rally resolution state
-  const newPhaseState = updateRallyResolutionStateForCurrentStep(
-    phaseState,
-    updatedRallyState,
-    finalNextStep,
-  );
-
-  return updatePhaseState(newState, newPhaseState);
+  return applyUnitsLostSupportAfterRally(state, player, uncovered);
 }

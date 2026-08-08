@@ -35,10 +35,11 @@ export function getExpectedResolveMeleePhaseEvent(
         };
       }
 
-      // All engagements resolved - should have advanced to complete step
-      throw new Error(
-        'All engagements resolved but step not advanced to complete',
-      );
+      // Empty queue (including “no melees this round”): complete the phase.
+      return {
+        actionType: 'gameEffect',
+        effectType: 'completeResolveMeleePhase',
+      };
     }
 
     case 'complete': {

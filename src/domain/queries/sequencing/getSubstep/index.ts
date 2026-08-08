@@ -10,6 +10,7 @@ export {
   getFrontEngagementStateFromMovement,
   getRearEngagementStateFromMovement,
 } from './engagement';
+export { getAwaitingRoutDiscardState } from './getAwaitingRoutDiscardState';
 export { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement';
 export {
   getCurrentRallyResolutionState,

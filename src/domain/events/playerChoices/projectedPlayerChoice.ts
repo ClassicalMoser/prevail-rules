@@ -20,6 +20,8 @@ import type { CommitToMovementEvent } from './commitToMovement';
 import { commitToMovementEventSchema } from './commitToMovement';
 import type { CommitToRangedAttackEvent } from './commitToRangedAttack';
 import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
+import { assignUnitSupportEventSchema } from './assignUnitSupport';
+import { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 import { issueCommandEventSchema } from './issueCommand';
 import { moveCommanderEventSchema } from './moveCommander';
 import { moveUnitEventSchema } from './moveUnit';
@@ -99,6 +101,7 @@ export type ProjectedPlayerChoiceEvent =
 const _projectedPlayerChoiceEventSchemaObject = z.discriminatedUnion(
   'choiceType',
   [
+    assignUnitSupportEventSchema,
     _projectedChooseCardEventSchemaObject,
     chooseMeleeResolutionEventSchema,
     chooseRallyEventSchema,
@@ -108,6 +111,7 @@ const _projectedPlayerChoiceEventSchemaObject = z.discriminatedUnion(
     projectedCommitToMeleeEventSchema,
     projectedCommitToMovementEventSchema,
     projectedCommitToRangedAttackEventSchema,
+    doneIssuingCommandsEventSchema,
     issueCommandEventSchema,
     moveCommanderEventSchema,
     moveUnitEventSchema,

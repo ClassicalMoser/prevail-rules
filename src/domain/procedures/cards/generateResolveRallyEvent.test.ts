@@ -11,12 +11,12 @@ import { updatePhaseState } from '@transforms';
 import { generateResolveRallyEvent } from './generateResolveRallyEvent';
 
 /**
- * Cleanup: choose rally burns one played command card. Procedure picks a card from the
- * acting player’s `played` pile (non-deterministic); player comes from cleanup step + initiative.
+ * Cleanup: resolve rally burns one played command card. Procedure picks a card from the
+ * acting player’s `played` pile (non-deterministic); player comes from resolve-rally step + initiative.
  */
 describe(generateResolveRallyEvent, () => {
-  /** Moves testing-helper `inPlay` card into `played` for `played` side; firstPlayerChooseRally. */
-  function cleanupChooseRallyState(played: 'black' | 'white'): GameState {
+  /** Seeds `played` for `played` side and lands on firstPlayerResolveRally. */
+  function cleanupResolveRallyState(played: 'black' | 'white'): GameState {
     const base = createEmptyGameState();
     const card = base.cardState[played].inPlay!;
     const withPlayed = updateCardState(base, {
@@ -28,19 +28,19 @@ describe(generateResolveRallyEvent, () => {
     });
     return updatePhaseState(
       withPlayed,
-      createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
+      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
   }
 
-  it('given firstPlayerChooseRally with black played pile seeded, event player black and card from that pile', () => {
-    const full = cleanupChooseRallyState('black');
+  it('uses initiative player on firstPlayerResolveRally and burns from their played pile', () => {
+    const full = cleanupResolveRallyState('black');
     const event = generateResolveRallyEvent(full, 0);
     expect(event.effectType).toBe('resolveRally');
     expect(event.player).toBe('black');
     expect(full.cardState.black.played).toContain(event.card);
   });
 
-  it('given white initiative and secondPlayerChooseRally, acting side without initiative (black) supplies card', () => {
+  it('uses non-initiative player on secondPlayerResolveRally', () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const card = base.cardState.black.inPlay!;
     const withPlayed = updateCardState(base, {
@@ -52,25 +52,55 @@ describe(generateResolveRallyEvent, () => {
     });
     const full = updatePhaseState(
       withPlayed,
-      createCleanupPhaseState({ step: 'secondPlayerChooseRally' }),
+      createCleanupPhaseState({ step: 'secondPlayerResolveRally' }),
     );
     const event = generateResolveRallyEvent(full, 0);
     expect(event.player).toBe('black');
     expect(full.cardState.black.played).toContain(event.card);
   });
 
-  it('given chooseRally step but empty played pile for acting player, throws', () => {
+  it('uses white as first player when initiative is white on firstPlayerResolveRally', () => {
+    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const card = base.cardState.white.inPlay!;
+    const withPlayed = updateCardState(base, {
+      ...base.cardState,
+      white: {
+        ...base.cardState.white,
+        played: [card],
+      },
+    });
+    const full = updatePhaseState(
+      withPlayed,
+      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
+    );
+    const event = generateResolveRallyEvent(full, 0);
+    expect(event.player).toBe('white');
+    expect(full.cardState.white.played).toContain(event.card);
+  });
+
+  it('throws when the acting player has an empty played pile', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(
       base,
-      createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
+      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
     expect(() => generateResolveRallyEvent(full, 0)).toThrow(
       'Player black has no played cards to burn for rally',
     );
   });
 
-  it('given playCards phase instead of cleanup, throws phase guard', () => {
+  it('throws when cleanup is still on a chooseRally step', () => {
+    const base = createEmptyGameState();
+    const full = updatePhaseState(
+      base,
+      createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
+    );
+    expect(() => generateResolveRallyEvent(full, 0)).toThrow(
+      'Cleanup phase is not on a resolveRally step: firstPlayerChooseRally',
+    );
+  });
+
+  it('throws when not in cleanup phase', () => {
     const base = createEmptyGameState();
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,

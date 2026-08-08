@@ -5,8 +5,13 @@ import {
   createMovementResolutionState,
   createTestCard,
   createTestUnit,
+  createUnitWithPlacement,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms';
 
 import { getExpectedIssueCommandsPhaseEvent } from './getExpectedIssueCommandsPhaseEvent';
 
@@ -40,7 +45,7 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
     );
   }
 
-  it('given they have remaining commands, returns issueCommand for the first player', () => {
+  it('given remaining commands with no issuable selection, returns doneIssuingCommands', () => {
     const state = createGameStateInIssueCommandsStep(
       'firstPlayerIssueCommands',
       'black',
@@ -49,9 +54,48 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       }),
     );
 
-    const expectedEvent = getExpectedIssueCommandsPhaseEvent(state);
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'doneIssuingCommands',
+      playerSource: 'black',
+    });
+  });
 
-    expect(expectedEvent.actionType).toBe('playerChoice');
+  it('given remaining commands with an issuable selection, returns issueCommand', () => {
+    const command = {
+      ...createTestCard().command,
+      number: 1,
+      restrictions: {
+        inspirationRangeRestriction: -1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      size: 'units' as const,
+    };
+    let state = createGameStateInIssueCommandsStep(
+      'firstPlayerIssueCommands',
+      'black',
+      () => ({
+        remainingCommandsFirstPlayer: [command],
+      }),
+    );
+    state = updateBoardState(
+      state,
+      addUnitToBoard(
+        state.boardState,
+        createUnitWithPlacement({
+          coordinate: 'E-5',
+          facing: 'north',
+          playerSide: 'black',
+        }),
+      ),
+    );
+
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'issueCommand',
+      playerSource: 'black',
+    });
   });
 
   it('given when first player commands are exhausted but step did not advance, throws', () => {
@@ -104,6 +148,28 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
     expect(() => getExpectedIssueCommandsPhaseEvent(state)).toThrow(
       'All first player units resolved but step not advanced to secondPlayerIssueCommands',
     );
+  });
+
+  it('given ranged card and remaining units with no legal target, expects completeRangedAttackCommand', () => {
+    const state = createGameStateInIssueCommandsStep(
+      'firstPlayerResolveCommands',
+      'black',
+      () => ({
+        remainingUnitsFirstPlayer: [createTestUnit('black', { range: 2 })],
+      }),
+    );
+    state.cardState.black.inPlay = {
+      ...createTestCard(),
+      command: {
+        ...createTestCard().command,
+        type: 'rangedAttack',
+      },
+    };
+
+    expect(getExpectedIssueCommandsPhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeRangedAttackCommand',
+    });
   });
 
   it('given they have remaining commands, returns issueCommand for the second player', () => {

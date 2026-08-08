@@ -5,6 +5,7 @@ import {
   getCurrentRallyResolutionState,
   getIssueCommandsPhaseState,
   getMeleeResolutionState,
+  getNextStepForResolveRally,
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
 } from '@queries';
@@ -131,12 +132,16 @@ export function updateRoutState<S extends GameState>(
     }
     const newRallyState = {
       ...rallyState,
+      ...(routState.completed ? { completed: true } : {}),
       routState,
     };
+    const nextStep = routState.completed
+      ? getNextStepForResolveRally(state)
+      : cleanupPhaseState.step;
     const newPhaseState = updateRallyResolutionStateForCurrentStep(
       cleanupPhaseState,
       newRallyState,
-      cleanupPhaseState.step,
+      nextStep,
     );
     return updatePhaseState(state, newPhaseState);
   }

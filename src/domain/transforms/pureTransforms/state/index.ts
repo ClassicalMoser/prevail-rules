@@ -1,4 +1,5 @@
 export { addCompletedPhase } from './addCompletedPhase';
+export { createInitialGameState } from './createInitialGameState';
 export { markPhaseAsComplete } from './markPhaseAsComplete';
 export { updateCurrentInitiative } from './updateCurrentInitiative';
 export { updateCurrentRoundNumber } from './updateCurrentRoundNumber';

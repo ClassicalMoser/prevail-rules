@@ -3,9 +3,10 @@ import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionState
 
 /**
  * Rally resolution state for the current resolve-rally step after the rally burn effect has been
- * applied, but before `resolveUnitsBroken` has populated `unitsLostSupport`.
+ * applied, but before support assignment has populated `unitsLostSupport`.
  *
- * Panicky narrowing for {@link applyResolveUnitsBrokenEvent}.
+ * Panicky narrowing for {@link applyAssignUnitSupportEvent} /
+ * {@link applyUnitsLostSupportAfterRally}.
  *
  * @param state - The current game state
  * @param player - The player whose broken units are being resolved (must match the cleanup step)

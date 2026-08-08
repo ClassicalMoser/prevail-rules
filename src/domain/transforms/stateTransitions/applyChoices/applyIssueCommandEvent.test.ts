@@ -85,6 +85,91 @@ describe(applyIssueCommandEvent, () => {
       expect(unitInCommandedUnits).toBe(true);
     });
 
+    it('exhausting first-player commands advances to firstPlayerResolveCommands and seeds remaining units', () => {
+      const state = createGameStateWithCommands();
+      const unit = createTestUnit('black', { attack: 3 });
+      const { command } = tempCommandCards[0];
+
+      const newState = applyIssueCommandEvent(
+        {
+          choiceType: 'issueCommand',
+          command,
+          eventNumber: 0,
+          eventType: 'playerChoice',
+          player: 'black',
+          units: [unit],
+        },
+        state,
+      );
+      const phaseState = getIssueCommandsPhaseState(newState);
+
+      expect(phaseState).toMatchObject({
+        remainingCommandsFirstPlayer: [],
+        step: 'firstPlayerResolveCommands',
+      });
+      expect(phaseState.remainingUnitsFirstPlayer).toStrictEqual([unit]);
+    });
+
+    it('exhausting second-player commands advances to secondPlayerResolveCommands and seeds remaining units', () => {
+      const base = createGameStateWithCommands();
+      const state = updatePhaseState(base, {
+        ...getIssueCommandsPhaseState(base),
+        remainingCommandsFirstPlayer: [],
+        step: 'secondPlayerIssueCommands',
+      });
+      const unit = createTestUnit('white', { attack: 3 });
+      const { command } = tempCommandCards[1];
+
+      const newState = applyIssueCommandEvent(
+        {
+          choiceType: 'issueCommand',
+          command,
+          eventNumber: 0,
+          eventType: 'playerChoice',
+          player: 'white',
+          units: [unit],
+        },
+        state,
+      );
+      const phaseState = getIssueCommandsPhaseState(newState);
+
+      expect(phaseState).toMatchObject({
+        remainingCommandsSecondPlayer: [],
+        step: 'secondPlayerResolveCommands',
+      });
+      expect(phaseState.remainingUnitsSecondPlayer).toStrictEqual([unit]);
+    });
+
+    it('keeps firstPlayerIssueCommands when more commands remain', () => {
+      const base = createGameStateWithCommands();
+      const first = tempCommandCards[0].command;
+      const second = { ...first, number: 2 };
+      const state = updatePhaseState(base, {
+        ...getIssueCommandsPhaseState(base),
+        remainingCommandsFirstPlayer: [first, second],
+      });
+      const unit = createTestUnit('black', { attack: 3 });
+
+      const newState = applyIssueCommandEvent(
+        {
+          choiceType: 'issueCommand',
+          command: first,
+          eventNumber: 0,
+          eventType: 'playerChoice',
+          player: 'black',
+          units: [unit],
+        },
+        state,
+      );
+      const phaseState = getIssueCommandsPhaseState(newState);
+
+      expect(phaseState).toMatchObject({
+        remainingCommandsFirstPlayer: [second],
+        remainingUnitsFirstPlayer: [],
+        step: 'firstPlayerIssueCommands',
+      });
+    });
+
     it('given white issues second-player command, remainingCommandsSecondPlayer loses that command', () => {
       const state = createGameStateWithCommands();
       const unit = createTestUnit('white', { attack: 3 });

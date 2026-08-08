@@ -1,4 +1,5 @@
 import type { AssertExact } from '@utils';
+import type { AssignUnitSupportEvent } from './assignUnitSupport';
 import type { ChooseCardEvent } from './chooseCard';
 import type { ChooseRallyEvent } from './chooseRally';
 import type { ChooseRoutDiscardEvent } from './chooseRoutDiscard';
@@ -8,6 +9,7 @@ import type { ChooseWhetherToRetreatEvent } from './chooseWhetherToRetreat';
 import type { CommitToMeleeEvent } from './commitToMelee';
 import type { CommitToMovementEvent } from './commitToMovement';
 import type { CommitToRangedAttackEvent } from './commitToRangedAttack';
+import type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
 import type { IssueCommandEvent } from './issueCommand';
 import type { MoveCommanderEvent } from './moveCommander';
 import type { MoveUnitEvent } from './moveUnit';
@@ -16,6 +18,7 @@ import type { SetupUnitsEvent } from './setupUnit';
 import type { PlayerChoiceType } from './playerChoiceTypes';
 
 import { z } from 'zod';
+import { assignUnitSupportEventSchema } from './assignUnitSupport';
 import { chooseCardEventSchema } from './chooseCard';
 import { chooseMeleeResolutionEventSchema } from './chooseMeleeResolution';
 import { chooseRallyEventSchema } from './chooseRally';
@@ -25,6 +28,7 @@ import { chooseWhetherToRetreatEventSchema } from './chooseWhetherToRetreat';
 import { commitToMeleeEventSchema } from './commitToMelee';
 import { commitToMovementEventSchema } from './commitToMovement';
 import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
+import { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
 import { issueCommandEventSchema } from './issueCommand';
 import { moveCommanderEventSchema } from './moveCommander';
 import { moveUnitEventSchema } from './moveUnit';
@@ -36,6 +40,7 @@ export { playerChoices, playerChoiceTypeSchema } from './playerChoiceTypes';
 
 /** An event that represents a player choice. */
 export type PlayerChoiceEvent =
+  | AssignUnitSupportEvent
   | ChooseCardEvent
   | ChooseMeleeResolutionEvent
   | ChooseRallyEvent
@@ -45,6 +50,7 @@ export type PlayerChoiceEvent =
   | CommitToMeleeEvent
   | CommitToMovementEvent
   | CommitToRangedAttackEvent
+  | DoneIssuingCommandsEvent
   | IssueCommandEvent
   | MoveCommanderEvent
   | MoveUnitEvent
@@ -60,6 +66,7 @@ export type PlayerChoiceEventOfType<
 > = Extract<PlayerChoiceEvent, { choiceType: TPlayerChoiceType }>;
 
 const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
+  assignUnitSupportEventSchema,
   chooseCardEventSchema,
   chooseMeleeResolutionEventSchema,
   chooseRallyEventSchema,
@@ -69,6 +76,7 @@ const _playerChoiceEventSchemaObject = z.discriminatedUnion('choiceType', [
   commitToMeleeEventSchema,
   commitToMovementEventSchema,
   commitToRangedAttackEventSchema,
+  doneIssuingCommandsEventSchema,
   issueCommandEventSchema,
   moveCommanderEventSchema,
   moveUnitEventSchema,

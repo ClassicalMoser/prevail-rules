@@ -9,6 +9,7 @@ import { z } from 'zod';
 
 /** Iterable list of valid player choices. Built from individual event constants. */
 export const playerChoices = [
+  'assignUnitSupport',
   'chooseCard',
   'chooseMeleeResolution',
   'chooseRally',
@@ -18,6 +19,7 @@ export const playerChoices = [
   'commitToMovement',
   'chooseWhetherToRetreat',
   'commitToRangedAttack',
+  'doneIssuingCommands',
   'issueCommand',
   'moveCommander',
   'moveUnit',

@@ -60,8 +60,14 @@ export function validateExpectedChoice(
       };
     }
 
-    // Ensure that the choice type matches the expected choice type
-    if (expected.choiceType !== event.choiceType) {
+    // Ensure that the choice type matches the expected choice type.
+    // While issuing, `doneIssuingCommands` is always an accepted alternative to
+    // `issueCommand` (forfeit leftover slots).
+    const choiceTypeMatches =
+      expected.choiceType === event.choiceType ||
+      (expected.choiceType === 'issueCommand' &&
+        event.choiceType === 'doneIssuingCommands');
+    if (!choiceTypeMatches) {
       return {
         errorReason: `Expected ${expected.choiceType}, got ${event.choiceType}`,
         result: false,

@@ -54,6 +54,7 @@ export { getOtherPlayer } from './getOtherPlayer';
 export { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
 export { getPlayerUnitsWithPlacementOnBoard } from './getPlayerUnitsWithPlacementOnBoard';
 export { getSupportedUnitTypes } from './getSupportedUnitTypes';
+export { unitMatchesSupport } from './unitMatchesSupport';
 export { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
 export {
   hasUnitInArray,
@@ -111,6 +112,7 @@ export {
   getRoutStateFromCleanupPhaseForResolveRout,
   getRoutStateFromMeleeResolutionByInitiative,
   getRoutStateFromRally,
+  getAwaitingRoutDiscardState,
   getRoutStateFromRearEngagement,
   getCurrentEventStream,
 } from './sequencing';

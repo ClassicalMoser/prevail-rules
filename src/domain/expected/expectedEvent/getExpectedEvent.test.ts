@@ -10,6 +10,7 @@ const {
   getExpectedMoveCommandersPhaseEventMock,
   getExpectedPlayCardsPhaseEventMock,
   getExpectedResolveMeleePhaseEventMock,
+  getExpectedSetupUnitsEventMock,
 } = vi.hoisted(() => ({
   getCurrentPhaseStateMock: vi.fn(),
   getExpectedCleanupPhaseEventMock: vi.fn(),
@@ -17,6 +18,7 @@ const {
   getExpectedMoveCommandersPhaseEventMock: vi.fn(),
   getExpectedPlayCardsPhaseEventMock: vi.fn(),
   getExpectedResolveMeleePhaseEventMock: vi.fn(),
+  getExpectedSetupUnitsEventMock: vi.fn(),
 }));
 
 vi.mock(import('@queries'), () => ({
@@ -29,6 +31,7 @@ vi.mock(import('./byPhase'), () => ({
   getExpectedMoveCommandersPhaseEvent: getExpectedMoveCommandersPhaseEventMock,
   getExpectedPlayCardsPhaseEvent: getExpectedPlayCardsPhaseEventMock,
   getExpectedResolveMeleePhaseEvent: getExpectedResolveMeleePhaseEventMock,
+  getExpectedSetupUnitsEvent: getExpectedSetupUnitsEventMock,
 }));
 
 /**
@@ -45,6 +48,11 @@ describe(getExpectedEvent, () => {
     delegateReturn: { actionType: 'gameEffect'; effectType: string },
   ) {
     const state = createEmptyGameState();
+    // Real phase must not be `'none'` or pre-round setup short-circuits.
+    state.currentRoundState.currentPhaseState = {
+      phase,
+      step: 'complete',
+    } as typeof state.currentRoundState.currentPhaseState;
     getCurrentPhaseStateMock.mockReturnValue({ phase });
     delegatedMock.mockReturnValue(delegateReturn);
 
@@ -96,8 +104,30 @@ describe(getExpectedEvent, () => {
 
   it('given for an invalid phase, throws', () => {
     const state = createEmptyGameState();
+    state.currentRoundState.currentPhaseState = {
+      phase: 'playCards',
+      step: 'complete',
+    };
     getCurrentPhaseStateMock.mockReturnValue({ phase: 'invalidPhase' });
 
     expect(() => getExpectedEvent(state)).toThrow('Invalid phase');
+  });
+
+  it('given phase none, delegates to setup units handler', () => {
+    const state = createEmptyGameState();
+    getExpectedSetupUnitsEventMock.mockReturnValue({
+      actionType: 'playerChoice',
+      choiceType: 'setupUnits',
+      playerSource: 'white',
+    });
+
+    expect(getExpectedEvent(state)).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'setupUnits',
+      expectedEventNumber: 0,
+      playerSource: 'white',
+    });
+    expect(getExpectedSetupUnitsEventMock).toHaveBeenCalledWith(state);
+    expect(getCurrentPhaseStateMock).not.toHaveBeenCalled();
   });
 });

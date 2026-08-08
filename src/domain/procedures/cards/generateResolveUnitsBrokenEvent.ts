@@ -14,21 +14,12 @@ import type { PlayerSide, UnitType } from '@entities';
 
 /**
  * Generates a ResolveUnitsBrokenEvent for unit types that lost support after a rally.
+ *
+ * **Legacy / registry path.** Live gameplay expects `assignUnitSupport` instead;
+ * this remains so procedure-registry coverage for `resolveUnitsBroken` still works.
+ *
  * Compares units on board against supported unit types from cards in hand.
  * Returns the unit TYPES that are no longer supported (all instances will be routed).
- *
- * @param state - The current game state
- * @returns A complete ResolveUnitsBrokenEvent with unit types that lost support
- *
- * @example
- * ```typescript
- * // After rally, cards returned to hand
- * const event = generateResolveUnitsBrokenEvent(state);
- *
- * // Event contains unit types that no longer have card support
- * // Handler will rout ALL instances of these types
- * const newState = applyEvent(event, state);
- * ```
  */
 export function generateResolveUnitsBrokenEvent(
   state: GameState,

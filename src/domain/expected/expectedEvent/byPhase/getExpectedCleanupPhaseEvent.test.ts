@@ -84,6 +84,27 @@ describe(getExpectedCleanupPhaseEvent, () => {
     ).toBe('resolveRally');
   });
 
+  it('given first player rally resolved awaiting support, returns assignUnitSupport', () => {
+    const state = createEmptyGameState({ currentInitiative: 'white' });
+    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
+      firstPlayerRallyResolutionState: createRallyResolutionState({
+        completed: false,
+        playerRallied: true,
+        rallyResolved: true,
+        unitsLostSupport: 'pending',
+      }),
+      step: 'firstPlayerResolveRally',
+    });
+
+    const expectedEvent = getExpectedCleanupPhaseEvent(state);
+
+    expect(expectedEvent).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'assignUnitSupport',
+      playerSource: 'white',
+    });
+  });
+
   it('given when first player rally resolution state is missing, throws', () => {
     const state = createGameStateInCleanupStep('firstPlayerResolveRally');
     const phaseState = state.currentRoundState.currentPhaseState;

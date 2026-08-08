@@ -1,6 +1,7 @@
 export { eachCardPresentOnce, eachUnitPresentOnce } from './gameState';
 export {
   getLegalPlayerChoiceOptions,
+  isValidAssignUnitSupportEvent,
   isValidChooseCardEvent,
   isValidChooseMeleeResolutionEvent,
   isValidChooseRallyEvent,
@@ -10,6 +11,7 @@ export {
   isValidCommitToMeleeEvent,
   isValidCommitToMovementEvent,
   isValidCommitToRangedAttackEvent,
+  isValidDoneIssuingCommandsEvent,
   isValidIssueCommandEvent,
   isValidMoveCommanderEvent,
   isValidMoveUnitEvent,

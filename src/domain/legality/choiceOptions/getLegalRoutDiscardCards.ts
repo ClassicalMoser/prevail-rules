@@ -1,6 +1,6 @@
 import type { PlayerSide } from '@entities';
 import type { GameState } from '@game';
-import { getOtherPlayer, getOwnedPlayerCardState } from '@queries';
+import { getAwaitingRoutDiscardState, getOwnedPlayerCardState } from '@queries';
 
 /**
  * Atomic rout-discard options for UI and validation: which player must discard,
@@ -16,51 +16,22 @@ export interface LegalRoutDiscardCards {
 }
 
 /**
- * Returns the atomic rout-discard selection context for cleanup resolveRally
- * when a rout substep is awaiting card selection.
+ * Returns the atomic rout-discard selection context whenever an active rout
+ * slice awaits card selection (cleanup rally, rear engagement, attack apply,
+ * melee).
  *
  * Does not expand combinations — callers pick `numberToDiscard` IDs from
  * {@link LegalRoutDiscardCards.cardIds}; {@link isValidChooseRoutDiscardEvent}
  * checks integrity of the committed set.
  *
- * Returns `null` when discard is not expected (wrong phase/step, pending rout,
- * cards already chosen, or the discarding player's hand is hidden).
+ * Returns `null` when discard is not expected or the discarding player's hand
+ * is hidden under this visibility.
  */
 export function getLegalRoutDiscardCards<S extends GameState>(
   gameState: S,
 ): LegalRoutDiscardCards | null {
-  const phaseState = gameState.currentRoundState.currentPhaseState;
-  if (phaseState === 'none' || phaseState.phase !== 'cleanup') {
-    return null;
-  }
-  if (
-    phaseState.step !== 'firstPlayerResolveRally' &&
-    phaseState.step !== 'secondPlayerResolveRally'
-  ) {
-    return null;
-  }
-
-  const firstPlayer = gameState.currentInitiative;
-  const secondPlayer = getOtherPlayer(firstPlayer);
-  const activePlayer =
-    phaseState.step === 'firstPlayerResolveRally' ? firstPlayer : secondPlayer;
-
-  const rallyState =
-    phaseState.step === 'firstPlayerResolveRally'
-      ? phaseState.firstPlayerRallyResolutionState
-      : phaseState.secondPlayerRallyResolutionState;
-
-  if (rallyState === 'pending' || rallyState.routState === 'pending') {
-    return null;
-  }
-
-  const { routState } = rallyState;
-  if (
-    routState.cardsChosen ||
-    routState.completed ||
-    routState.numberToDiscard === 'pending' ||
-    routState.player !== activePlayer
-  ) {
+  const routState = getAwaitingRoutDiscardState(gameState);
+  if (routState === null || routState.numberToDiscard === 'pending') {
     return null;
   }
 

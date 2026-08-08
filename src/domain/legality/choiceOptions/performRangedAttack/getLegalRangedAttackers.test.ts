@@ -56,14 +56,19 @@ describe('performRangedAttack legality atoms', () => {
   }
 
   describe(getLegalRangedAttackers, () => {
-    it('returns remaining unengaged units with range > 0', () => {
+    it('returns remaining unengaged units with range > 0 and a legal target', () => {
       const attacker = createUnitWithPlacement({
         coordinate: 'E-5',
         facing: 'north',
         playerSide: 'black',
         unitOptions: { instanceNumber: 1, range: 2 },
       });
-      const state = awaitingResolve([attacker], [attacker]);
+      const defender = createUnitWithPlacement({
+        coordinate: 'D-5',
+        facing: 'south',
+        playerSide: 'white',
+      });
+      const state = awaitingResolve([attacker], [attacker, defender]);
 
       expect(getLegalRangedAttackers(state)).toStrictEqual({
         attackers: [attacker],
@@ -79,6 +84,17 @@ describe('performRangedAttack legality atoms', () => {
         unitOptions: { range: 0 },
       });
       const state = awaitingResolve([meleeOnly], [meleeOnly]);
+      expect(getLegalRangedAttackers(state)).toBeNull();
+    });
+
+    it('returns null when units have range but no legal target', () => {
+      const attacker = createUnitWithPlacement({
+        coordinate: 'E-5',
+        facing: 'north',
+        playerSide: 'black',
+        unitOptions: { range: 2 },
+      });
+      const state = awaitingResolve([attacker], [attacker]);
       expect(getLegalRangedAttackers(state)).toBeNull();
     });
 

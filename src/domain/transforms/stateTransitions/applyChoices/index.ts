@@ -1,3 +1,4 @@
+export { applyAssignUnitSupportEvent } from './applyAssignUnitSupportEvent';
 export { applyChooseCardEvent } from './applyChooseCardEvent';
 export { applyChooseMeleeEvent } from './applyChooseMeleeEvent';
 export { applyChooseRallyEvent } from './applyChooseRallyEvent';
@@ -7,6 +8,7 @@ export { applyChooseWhetherToRetreatEvent } from './applyChooseWhetherToRetreatE
 export { applyCommitToMeleeEvent } from './applyCommitToMeleeEvent';
 export { applyCommitToMovementEvent } from './applyCommitToMovementEvent';
 export { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent';
+export { applyDoneIssuingCommandsEvent } from './applyDoneIssuingCommandsEvent';
 export { applyIssueCommandEvent } from './applyIssueCommandEvent';
 export { applyMoveCommanderEvent } from './applyMoveCommanderEvent';
 export { applyMoveUnitEvent } from './applyMoveUnitEvent';

@@ -13,9 +13,10 @@ function unitKey(unit: UnitInstance): string {
  * Validates a SetupUnitsEvent as an integral commit over
  * {@link getLegalSetupUnits} atoms:
  * - exact cover of the player's reserved units (each once)
- * - every coordinate in the empty setup zone
- * - unique coordinates
+ * - every unit coordinate in the empty setup zone
+ * - unique unit coordinates
  * - each placement's unit belongs to the event player
+ * - commander on an empty setup-zone coordinate (alone or with a deployed unit)
  */
 export function isValidSetupUnitsEvent(
   event: SetupUnitsEvent,
@@ -96,6 +97,13 @@ export function isValidSetupUnitsEvent(
           result: false,
         };
       }
+    }
+
+    if (!legalCoordinates.has(event.commanderCoordinate)) {
+      return {
+        errorReason: `Commander coordinate ${event.commanderCoordinate} is not an empty setup-zone space for ${event.player}`,
+        result: false,
+      };
     }
 
     return { result: true };

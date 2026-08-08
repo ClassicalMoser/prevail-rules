@@ -294,7 +294,7 @@ describe('getExpectedXEvent', () => {
 1. **`validateIssueCommandsPhaseEvent` / `validateResolveMeleePhaseEvent`** — still stubs; issueCommands is the bulk of a turn.
 2. **Application layer coverage** — `processEvent`, `handleNewRound`, `updateGameState`, `gameRunner` have little/no colocated coverage; ordering bugs (persist-vs-apply, subscribers, round transitions) live here.
 3. **`validation/validateEvent.ts`** — router / representative validation tests.
-4. **Wire real game start** — `createInitialGameState` exists (reserved units from armies) but `startNewGame` still uses empty `placeholderArmy()`; deal hands separately.
+4. **Wire `startNewGame` to `createInitialGameState`** — init already seeds reserved units and deals army `commandCards` into hands; `startNewGame` still uses empty `placeholderArmy()` + `createEmptyGameState`.
 5. **`defenseResult` / sequencing / engagement generators** — raise branch % where the coverage report is thin.
 6. **`procedureRegistry.ts`** — when adding a `gameEffects` entry, add a factory in `testing/procedureRegistryStateFactories.ts` (exported from `@testing`).
 

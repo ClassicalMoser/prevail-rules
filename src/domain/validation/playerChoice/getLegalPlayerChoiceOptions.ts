@@ -8,6 +8,7 @@ import type {
   CommitToMeleeEvent,
   CommitToMovementEvent,
   CommitToRangedAttackEvent,
+  DoneIssuingCommandsEvent,
   PlayerSource,
 } from '@events';
 import { getExpectedEvent } from '@expected';
@@ -22,11 +23,13 @@ import {
   getLegalCommitToMovementEvents,
   getLegalCommitToRangedAttackEvents,
   getLegalCommanderMoves,
+  getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
   getLegalMoveUnits,
   getLegalRangedAttackers,
   getLegalRoutDiscardCards,
   getLegalSetupUnits,
+  getLegalUnitSupportGrants,
 } from '@legality';
 import type {
   LegalIssueCommands,
@@ -34,6 +37,7 @@ import type {
   LegalRangedAttackers,
   LegalRoutDiscardCards,
   LegalSetupUnits,
+  LegalUnitSupportGrants,
 } from '@legality';
 import { getCommanderSpace } from '@queries';
 
@@ -44,6 +48,10 @@ interface LegalPlayerChoiceOptionsBase {
 }
 
 export type LegalPlayerChoiceOptions =
+  | (LegalPlayerChoiceOptionsBase & {
+      choiceType: 'assignUnitSupport';
+      unitSupportGrants: LegalUnitSupportGrants;
+    })
   | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'chooseCard';
       events: ChooseCardEvent[];
@@ -81,7 +89,13 @@ export type LegalPlayerChoiceOptions =
       events: CommitToRangedAttackEvent[];
     })
   | (LegalPlayerChoiceOptionsBase & {
+      choiceType: 'doneIssuingCommands';
+      events: DoneIssuingCommandsEvent[];
+    })
+  | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'issueCommand';
+      /** Always true while issueCommand is expected (forfeit leftover slots). */
+      canDoneIssuing: boolean;
       issueCommands: LegalIssueCommands;
     })
   | (LegalPlayerChoiceOptionsBase & {
@@ -101,6 +115,10 @@ export type LegalPlayerChoiceOptions =
       choiceType: 'setupUnits';
       setupUnits: LegalSetupUnits;
     });
+
+function emptyUnitSupportGrants(player: PlayerSide): LegalUnitSupportGrants {
+  return { grants: [], player };
+}
 
 function concretePlayer(playerSource: PlayerSource): PlayerSide | null {
   if (playerSource === 'bothPlayers') {
@@ -172,6 +190,20 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
     concretePlayer(expected.playerSource) ?? state.currentInitiative;
 
   switch (expected.choiceType) {
+    case 'assignUnitSupport': {
+      let unitSupportGrants: LegalUnitSupportGrants;
+      try {
+        unitSupportGrants =
+          getLegalUnitSupportGrants(state) ?? emptyUnitSupportGrants(player);
+      } catch {
+        unitSupportGrants = emptyUnitSupportGrants(player);
+      }
+      return {
+        ...base,
+        choiceType: 'assignUnitSupport',
+        unitSupportGrants,
+      };
+    }
     case 'chooseCard': {
       return {
         ...base,
@@ -242,6 +274,15 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
         events: softEvents(() => getLegalCommitToRangedAttackEvents(state)),
       };
     }
+    case 'doneIssuingCommands': {
+      return {
+        ...base,
+        choiceType: 'doneIssuingCommands',
+        events: softEvents(
+          () => getLegalDoneIssuingCommandsEvents(state) ?? [],
+        ),
+      };
+    }
     case 'issueCommand': {
       let issueCommands: LegalIssueCommands;
       try {
@@ -252,6 +293,7 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
       }
       return {
         ...base,
+        canDoneIssuing: true,
         choiceType: 'issueCommand',
         issueCommands,
       };

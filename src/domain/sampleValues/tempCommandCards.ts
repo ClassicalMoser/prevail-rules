@@ -95,7 +95,7 @@ export const tempCommandCards: readonly CommandCard[] = [
         unitRestrictions: [],
       },
       size: 'units',
-      type: 'movement',
+      type: 'rangedAttack',
     },
     id: '00000000-0000-4000-8000-000000000003',
     initiative: 3,

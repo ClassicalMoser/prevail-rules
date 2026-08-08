@@ -1,3 +1,8 @@
+export {
+  getLegalUnitSupportGrants,
+  type LegalUnitSupportGrant,
+  type LegalUnitSupportGrants,
+} from './assignUnitSupport';
 export { getLegalChooseCardOptions } from './getLegalChooseCardOptions';
 export { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolutionEvents';
 export { getLegalChooseRallyEvent } from './getLegalChooseRallyEvent';
@@ -7,11 +12,13 @@ export { getLegalCommitToMeleeEvents } from './getLegalCommitToMeleeEvents';
 export { getLegalCommitToMovementEvents } from './getLegalCommitToMovementEvents';
 export { getLegalCommitToRangedAttackEvents } from './getLegalCommitToRangedAttackEvents';
 export {
+  getLegalDoneIssuingCommandsEvents,
   getLegalIssueCommands,
   getLegalLineEndsForIssueCommand,
   getLegalLineStartsForIssueCommand,
   getLegalUnitsForIssueCommand,
   getLineSegmentFromStart,
+  isCommandIssuable,
   unitMatchesInspirationRange,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,

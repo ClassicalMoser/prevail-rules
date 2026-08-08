@@ -13,7 +13,7 @@ describe(getExpectedRallyResolutionEvent, () => {
   it('given resolve rally when the rally has not yet been resolved', () => {
     const rallyState = createRallyResolutionState();
 
-    expect(getExpectedRallyResolutionEvent(rallyState)).toStrictEqual({
+    expect(getExpectedRallyResolutionEvent(rallyState, 'white')).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'resolveRally',
     });
@@ -27,21 +27,22 @@ describe(getExpectedRallyResolutionEvent, () => {
       unitsLostSupport: [unit],
     });
 
-    expect(getExpectedRallyResolutionEvent(rallyState)).toStrictEqual({
+    expect(getExpectedRallyResolutionEvent(rallyState, 'black')).toStrictEqual({
       actionType: 'gameEffect',
       effectType: 'resolveRout',
     });
   });
 
-  it('given resolve broken units when the rally is resolved and no support was lost yet', () => {
+  it('given assign unit support when the rally is resolved and support not yet assigned', () => {
     const rallyState = createRallyResolutionState({
       rallyResolved: true,
       unitsLostSupport: 'pending' as const,
     });
 
-    expect(getExpectedRallyResolutionEvent(rallyState)).toStrictEqual({
-      actionType: 'gameEffect',
-      effectType: 'resolveUnitsBroken',
+    expect(getExpectedRallyResolutionEvent(rallyState, 'white')).toStrictEqual({
+      actionType: 'playerChoice',
+      choiceType: 'assignUnitSupport',
+      playerSource: 'white',
     });
   });
 
@@ -53,7 +54,7 @@ describe(getExpectedRallyResolutionEvent, () => {
       unitsLostSupport: [unit],
     });
 
-    expect(() => getExpectedRallyResolutionEvent(rallyState)).toThrow(
+    expect(() => getExpectedRallyResolutionEvent(rallyState, 'black')).toThrow(
       'Rout state is required when units lost support',
     );
   });
@@ -65,7 +66,7 @@ describe(getExpectedRallyResolutionEvent, () => {
       unitsLostSupport: [],
     });
 
-    expect(() => getExpectedRallyResolutionEvent(rallyState)).toThrow(
+    expect(() => getExpectedRallyResolutionEvent(rallyState, 'white')).toThrow(
       'Rally resolution complete but step not advanced',
     );
   });
@@ -75,7 +76,7 @@ describe(getExpectedRallyResolutionEvent, () => {
       completed: true,
     });
 
-    expect(() => getExpectedRallyResolutionEvent(rallyState)).toThrow(
+    expect(() => getExpectedRallyResolutionEvent(rallyState, 'white')).toThrow(
       'Rally resolution state is already complete',
     );
   });
@@ -92,7 +93,7 @@ describe(getExpectedRallyResolutionEvent, () => {
       unitsLostSupport: [unit],
     });
 
-    expect(() => getExpectedRallyResolutionEvent(rallyState)).toThrow(
+    expect(() => getExpectedRallyResolutionEvent(rallyState, 'black')).toThrow(
       'Rally resolution complete but step not advanced',
     );
   });

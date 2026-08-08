@@ -5,6 +5,7 @@ import { applyChooseCardEvent } from './applyChoices';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
 vi.mock(import('./applyChoices'), () => ({
+  applyAssignUnitSupportEvent: vi.fn(),
   applyChooseCardEvent: vi.fn(),
   applyChooseMeleeEvent: vi.fn(),
   applyChooseRallyEvent: vi.fn(),
@@ -14,6 +15,7 @@ vi.mock(import('./applyChoices'), () => ({
   applyCommitToMeleeEvent: vi.fn(),
   applyCommitToMovementEvent: vi.fn(),
   applyCommitToRangedAttackEvent: vi.fn(),
+  applyDoneIssuingCommandsEvent: vi.fn(),
   applyIssueCommandEvent: vi.fn(),
   applyMoveCommanderEvent: vi.fn(),
   applyMoveUnitEvent: vi.fn(),

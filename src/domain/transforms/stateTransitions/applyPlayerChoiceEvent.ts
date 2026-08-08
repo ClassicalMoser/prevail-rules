@@ -3,11 +3,27 @@
  */
 
 import type {
+  AssignUnitSupportEvent,
+  ChooseMeleeResolutionEvent,
+  ChooseRallyEvent,
+  ChooseRetreatOptionEvent,
+  ChooseRoutDiscardEvent,
+  ChooseWhetherToRetreatEvent,
+  CommitToMeleeEvent,
+  CommitToMovementEvent,
+  CommitToRangedAttackEvent,
+  DoneIssuingCommandsEvent,
+  IssueCommandEvent,
+  MoveCommanderEvent,
+  MoveUnitEvent,
+  PerformRangedAttackEvent,
   PlayerChoiceEvent,
   ProjectedPlayerChoiceEvent,
+  SetupUnitsEvent,
 } from '@events';
 import type { GameState, OwnedPlayerForGameState } from '@game';
 import {
+  applyAssignUnitSupportEvent,
   applyChooseCardEvent,
   applyChooseMeleeEvent,
   applyChooseRallyEvent,
@@ -17,12 +33,17 @@ import {
   applyCommitToMeleeEvent,
   applyCommitToMovementEvent,
   applyCommitToRangedAttackEvent,
+  applyDoneIssuingCommandsEvent,
   applyIssueCommandEvent,
   applyMoveCommanderEvent,
   applyMoveUnitEvent,
   applyPerformRangedAttackEvent,
   applySetupUnitsEvent,
 } from './applyChoices';
+
+type OwnedChoice<E, S extends GameState> = E & {
+  player: OwnedPlayerForGameState<S>;
+};
 
 /**
  * Routes player choice events to their corresponding apply functions.
@@ -35,84 +56,93 @@ export function applyPlayerChoiceEvent<S extends GameState>(
   state: S,
 ): S {
   switch (event.choiceType) {
+    case 'assignUnitSupport': {
+      return applyAssignUnitSupportEvent(
+        event as OwnedChoice<AssignUnitSupportEvent, S>,
+        state,
+      );
+    }
     case 'chooseCard': {
       return applyChooseCardEvent(event, state);
     }
     case 'chooseMeleeResolution': {
       return applyChooseMeleeEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<ChooseMeleeResolutionEvent, S>,
         state,
       );
     }
     case 'chooseRally': {
       return applyChooseRallyEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<ChooseRallyEvent, S>,
         state,
       );
     }
     case 'chooseRetreatOption': {
       return applyChooseRetreatOptionEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<ChooseRetreatOptionEvent, S>,
         state,
       );
     }
     case 'chooseRoutDiscard': {
       return applyChooseRoutDiscardEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<ChooseRoutDiscardEvent, S>,
         state,
       );
     }
     case 'chooseWhetherToRetreat': {
       return applyChooseWhetherToRetreatEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<ChooseWhetherToRetreatEvent, S>,
         state,
       );
     }
     case 'commitToMelee': {
       return applyCommitToMeleeEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<CommitToMeleeEvent, S>,
         state,
       );
     }
     case 'commitToMovement': {
       return applyCommitToMovementEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<CommitToMovementEvent, S>,
         state,
       );
     }
     case 'commitToRangedAttack': {
       return applyCommitToRangedAttackEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<CommitToRangedAttackEvent, S>,
+        state,
+      );
+    }
+    case 'doneIssuingCommands': {
+      return applyDoneIssuingCommandsEvent(
+        event as OwnedChoice<DoneIssuingCommandsEvent, S>,
         state,
       );
     }
     case 'issueCommand': {
       return applyIssueCommandEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<IssueCommandEvent, S>,
         state,
       );
     }
     case 'moveCommander': {
       return applyMoveCommanderEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<MoveCommanderEvent, S>,
         state,
       );
     }
     case 'moveUnit': {
-      return applyMoveUnitEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
-        state,
-      );
+      return applyMoveUnitEvent(event as OwnedChoice<MoveUnitEvent, S>, state);
     }
     case 'performRangedAttack': {
       return applyPerformRangedAttackEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<PerformRangedAttackEvent, S>,
         state,
       );
     }
     case 'setupUnits': {
       return applySetupUnitsEvent(
-        event as typeof event & { player: OwnedPlayerForGameState<S> },
+        event as OwnedChoice<SetupUnitsEvent, S>,
         state,
       );
     }

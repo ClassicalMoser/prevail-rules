@@ -26,7 +26,7 @@ function stateFirstPlayerResolveRally() {
 }
 
 /**
- * Procedure guard before `resolveUnitsBroken`: rally must be resolved and `unitsLostSupport`
+ * Procedure guard before assign-unit-support: rally must be resolved and `unitsLostSupport`
  * must still be unset.
  */
 describe(getRallyResolutionStateAwaitingUnitsBroken, () => {

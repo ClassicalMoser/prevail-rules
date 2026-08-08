@@ -76,15 +76,11 @@ export function validateCleanupPhaseEvent(
       }
 
       if (rallyState.unitsLostSupport === 'pending') {
-        // Expect resolveUnitsBroken
-        if (
-          event.eventType === 'gameEffect' &&
-          event.effectType === 'resolveUnitsBroken'
-        ) {
-          return { result: true };
+        if (event.eventType === 'playerChoice') {
+          return validatePlayerChoice(event, state);
         }
         return {
-          errorReason: 'Expected resolveUnitsBroken game effect',
+          errorReason: 'Expected assignUnitSupport player choice',
           result: false,
         };
       }

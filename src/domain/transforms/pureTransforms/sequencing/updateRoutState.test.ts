@@ -252,6 +252,47 @@ describe(updateRoutState, () => {
       'rally',
     );
     expect(throwIfPending(rally.routState, 'rout').numberToDiscard).toBe(2);
+    expect(phase.step).toBe('firstPlayerResolveRally');
+    expect(rally.completed).toBe(false);
+  });
+
+  it('given completed cleanup rout, marks rally complete and advances step', () => {
+    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const unit = createTestUnit('white', { attack: 2 });
+    const rallyState = createRallyResolutionState({
+      playerRallied: true,
+      rallyResolved: true,
+      routState: createRoutState('white', unit),
+      unitsLostSupport: [unit],
+    });
+    const phaseState = createCleanupPhaseState({
+      firstPlayerRallyResolutionState: rallyState,
+      step: 'firstPlayerResolveRally',
+    });
+    const stateInCleanup = updatePhaseState(state, phaseState);
+    const completedRout = createRoutState('white', unit, {
+      cardsChosen: true,
+      completed: true,
+      numberToDiscard: 1,
+    });
+
+    const newState = updateRoutState(stateInCleanup, completedRout);
+
+    const phase = throwIfNone(
+      newState.currentRoundState.currentPhaseState,
+      'phase',
+    );
+    expect(phase.phase).toBe('cleanup');
+    if (phase.phase !== 'cleanup') {
+      throw new Error('phase');
+    }
+    expect(phase.step).toBe('secondPlayerChooseRally');
+    const rally = throwIfPending(
+      phase.firstPlayerRallyResolutionState,
+      'rally',
+    );
+    expect(rally.completed).toBe(true);
+    expect(throwIfPending(rally.routState, 'rout').completed).toBe(true);
   });
 
   it('given when no rout state in attack apply, throws', () => {

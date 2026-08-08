@@ -3,6 +3,7 @@ import type { ChooseCardEvent, ProjectedChooseCardEvent } from '@events';
 import type {
   GameState,
   GameStateForVisibility,
+  OwnedPlayerForGameState,
   PlayCardsPhaseState,
   UnownedPlayerForGameState,
 } from '@game';
@@ -97,7 +98,7 @@ export function applyChooseCardEvent<S extends GameState>(
     const chosenCard = chooseCard(ownedCardState, card);
     const stateWithUpdatedPlayer = updatePlayerCardState(
       state,
-      player,
+      player as OwnedPlayerForGameState<S>,
       chosenCard,
     );
     return advanceIfBothChosen(stateWithUpdatedPlayer, currentPhaseState);
@@ -107,21 +108,20 @@ export function applyChooseCardEvent<S extends GameState>(
     state.cardState.visibility !== 'whiteSeen' &&
     state.cardState.visibility !== 'blackSeen'
   ) {
-    throw new Error('Unowned chooseCard apply requires a seen visibility state');
+    throw new Error(
+      'Unowned chooseCard apply requires a seen visibility state',
+    );
   }
+
+  type SeenState =
+    | GameStateForVisibility<'whiteSeen'>
+    | GameStateForVisibility<'blackSeen'>;
 
   return applyUnownedChooseCard(
     event as ProjectedChooseCardEvent & {
-      player: UnownedPlayerForGameState<
-        | GameStateForVisibility<'whiteSeen'>
-        | GameStateForVisibility<'blackSeen'>
-      >;
+      player: UnownedPlayerForGameState<SeenState>;
     },
-    state as S &
-      (
-        | GameStateForVisibility<'whiteSeen'>
-        | GameStateForVisibility<'blackSeen'>
-      ),
+    state as SeenState,
     currentPhaseState,
-  );
+  ) as S;
 }

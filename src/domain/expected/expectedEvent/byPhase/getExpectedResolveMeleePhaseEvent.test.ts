@@ -69,15 +69,16 @@ describe(getExpectedResolveMeleePhaseEvent, () => {
     );
   });
 
-  it('given when no engagements remain but the step did not advance, throws', () => {
+  it('given no engagements remain, returns completeResolveMeleePhase', () => {
     const state = createGameStateInResolveMeleeStep('resolveMelee', () => ({
       currentMeleeResolutionState: 'pending' as const,
       remainingEngagements: [] as const,
     }));
 
-    expect(() => getExpectedResolveMeleePhaseEvent(state)).toThrow(
-      'All engagements resolved but step not advanced to complete',
-    );
+    expect(getExpectedResolveMeleePhaseEvent(state)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'completeResolveMeleePhase',
+    });
   });
 
   it('given context, returns completeResolveMeleePhase game effect', () => {

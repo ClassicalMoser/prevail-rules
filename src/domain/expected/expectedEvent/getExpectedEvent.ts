@@ -7,6 +7,7 @@ import {
   getExpectedMoveCommandersPhaseEvent,
   getExpectedPlayCardsPhaseEvent,
   getExpectedResolveMeleePhaseEvent,
+  getExpectedSetupUnitsEvent,
 } from './byPhase';
 
 /**
@@ -17,38 +18,45 @@ import {
  * as well as which player(s) to expect input from.
  */
 export function getExpectedEvent(state: GameState): ExpectedEvent {
-  const phaseState = getCurrentPhaseState(state);
   const eventNumber = state.currentRoundState.events.length;
+  const rawPhase = state.currentRoundState.currentPhaseState;
 
+  // Pre-round deployment: place reserved units before any phase starts.
   let info: ExpectedEventInfo;
-  switch (phaseState.phase) {
-    case 'playCards': {
-      info = getExpectedPlayCardsPhaseEvent(state);
-      break;
-    }
-    case 'moveCommanders': {
-      info = getExpectedMoveCommandersPhaseEvent(state);
-      break;
-    }
-    case 'issueCommands': {
-      info = getExpectedIssueCommandsPhaseEvent(state);
-      break;
-    }
-    case 'resolveMelee': {
-      info = getExpectedResolveMeleePhaseEvent(state);
-      break;
-    }
-    case 'cleanup': {
-      info = getExpectedCleanupPhaseEvent(state);
-      break;
-    }
-    default: {
-      throw new Error('Invalid phase');
+  if (rawPhase === 'none') {
+    info = getExpectedSetupUnitsEvent(state);
+  } else {
+    const phaseState = getCurrentPhaseState(state);
+
+    switch (phaseState.phase) {
+      case 'playCards': {
+        info = getExpectedPlayCardsPhaseEvent(state);
+        break;
+      }
+      case 'moveCommanders': {
+        info = getExpectedMoveCommandersPhaseEvent(state);
+        break;
+      }
+      case 'issueCommands': {
+        info = getExpectedIssueCommandsPhaseEvent(state);
+        break;
+      }
+      case 'resolveMelee': {
+        info = getExpectedResolveMeleePhaseEvent(state);
+        break;
+      }
+      case 'cleanup': {
+        info = getExpectedCleanupPhaseEvent(state);
+        break;
+      }
+      default: {
+        throw new Error('Invalid phase');
+      }
     }
   }
-  const expectedEvent: ExpectedEvent = {
+
+  return {
     ...info,
     expectedEventNumber: eventNumber,
   };
-  return expectedEvent;
 }

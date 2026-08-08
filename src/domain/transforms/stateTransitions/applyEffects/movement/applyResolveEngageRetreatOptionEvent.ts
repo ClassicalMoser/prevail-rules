@@ -31,25 +31,30 @@ export function applyResolveEngageRetreatOptionEvent<S extends GameState>(
 
   const frontResolutionState = engagementState.engagementResolutionState;
 
-  // Update front engagement resolution state with retreat option
+  // Update front engagement resolution state with retreat option.
+  // If the defender cannot retreat, engagement ends here (stay for Phase 4 melee).
   const newFrontResolutionState = {
     ...frontResolutionState,
     defendingUnitCanRetreat: event.defendingUnitCanRetreat,
+    defendingUnitRetreated: event.defendingUnitCanRetreat
+      ? frontResolutionState.defendingUnitRetreated
+      : false,
+    defendingUnitRetreats: event.defendingUnitCanRetreat
+      ? frontResolutionState.defendingUnitRetreats
+      : false,
   };
 
-  // Update engagement state
   const newEngagementState = {
     ...engagementState,
+    completed: event.defendingUnitCanRetreat ? engagementState.completed : true,
     engagementResolutionState: newFrontResolutionState,
   };
 
-  // Update movement resolution state
   const newMovementState: MovementResolutionState = {
     ...movementState,
     engagementState: newEngagementState,
   };
 
-  // Update phase state
   const newPhaseState: IssueCommandsPhaseState = {
     ...phaseState,
     currentCommandResolutionState: newMovementState,

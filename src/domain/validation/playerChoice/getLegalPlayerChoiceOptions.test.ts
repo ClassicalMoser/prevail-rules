@@ -44,6 +44,7 @@ const allChoiceTypes = [
   'commitToMovement',
   'chooseWhetherToRetreat',
   'commitToRangedAttack',
+  'doneIssuingCommands',
   'issueCommand',
   'moveCommander',
   'moveUnit',
@@ -160,12 +161,20 @@ describe(getLegalPlayerChoiceOptions, () => {
       playerSide: 'black',
       unitOptions: { range: 2 },
     });
+    const target = createUnitWithPlacement({
+      coordinate: 'D-5',
+      facing: 'south',
+      playerSide: 'white',
+    });
     let state = createEmptyGameState({ currentInitiative: 'black' });
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: tempCommandCards[15] },
     });
-    state = updateBoardState(state, addUnitToBoard(state.boardState, attacker));
+    state = updateBoardState(
+      state,
+      addUnitToBoard(addUnitToBoard(state.boardState, attacker), target),
+    );
     state = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
@@ -205,7 +214,8 @@ describe(getLegalPlayerChoiceOptions, () => {
           case 'chooseWhetherToRetreat':
           case 'commitToMelee':
           case 'commitToMovement':
-          case 'commitToRangedAttack': {
+          case 'commitToRangedAttack':
+          case 'doneIssuingCommands': {
             expect(options).toHaveProperty('events');
             if (options && 'events' in options) {
               expect(Array.isArray(options.events)).toBe(true);
@@ -224,6 +234,7 @@ describe(getLegalPlayerChoiceOptions, () => {
           }
           case 'issueCommand': {
             expect(options).toMatchObject({
+              canDoneIssuing: true,
               issueCommands: { commands: [], player: 'black' },
             });
             break;

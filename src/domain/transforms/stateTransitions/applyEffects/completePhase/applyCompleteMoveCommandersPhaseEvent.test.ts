@@ -36,8 +36,8 @@ function moveCommandersCompleteEvent(
 
 /**
  * Commander placement done: `moveCommanders` is completed and issue-commands opens with
- * `remainingCommands*` from the event (procedure-aligned with inPlay commands when using the
- * default factory event). Phase guard requires `moveCommanders`.
+ * `remainingCommands*` from the event (procedure-derived; lines ×N already expanded to
+ * number:1 slots). Phase guard requires `moveCommanders`.
  */
 describe(applyCompleteMoveCommandersPhaseEvent, () => {
   /** MoveCommanders.complete, black initiative, tempCommandCards[0]/[1] inPlay. */

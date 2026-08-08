@@ -51,8 +51,9 @@ function sameOrderedUnitKeys(
  *
  * `size: 'lines'`: UI picks start then end (singleton start=end is a line).
  * Inspiration range applies to the **start** only; trait/type restrictions
- * apply along the segment. For `command.number === 1`, `event.units` must be
- * the contiguous start–end segment. Multi-line needs explicit start/end pairs.
+ * apply along the segment. Remaining grants are seeded as `number: 1` slots
+ * (lines ×N expanded when completing move-commanders); `event.units` must be
+ * the contiguous start–end segment for that single line.
  */
 export function isValidIssueCommandEvent(
   event: IssueCommandEvent,
@@ -120,10 +121,10 @@ export function isValidIssueCommandEvent(
       return { result: true };
     }
 
-    // size === 'lines'
+    // size === 'lines' — remaining slots should already be number: 1
     if (matchingCommand.number !== 1) {
       return {
-        errorReason: `Issuing ${matchingCommand.number} lines requires explicit start/end per line`,
+        errorReason: `Line remaining command must be number 1 (got ${matchingCommand.number}); lines ×N should be expanded when seeding remaining commands`,
         result: false,
       };
     }
