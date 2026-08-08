@@ -46,6 +46,7 @@ export {
 } from './equivalence';
 export { findMatchingCommand } from './findMatchingCommand';
 export { getCurrentUnitStat } from './getCurrentUnitStat';
+export { getCommanderSpace } from './getCommanderSpace';
 export { isValidLine } from './isValidLine';
 export { getLinesFromUnit } from './getLine';
 export { getMeleeSupportValue } from './getMeleeSupportValue';

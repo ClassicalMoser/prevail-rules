@@ -12,37 +12,36 @@ type ValidationResult =
   | { result: false; errorReason: string };
 ```
 
-Callers branch on `result` and surface `errorReason` when rejecting an event. See `entities/validationResult.ts`.
+Callers branch on `result` and surface `errorReason` when rejecting an event. See `@utils` (`ValidationResult`).
 
 ## Pattern
 
 1. **Return type**: Always `ValidationResult` (never a bare `boolean`, never `throws` for rule failure).
 2. **Failure shape**: Every `result: false` includes a specific `errorReason` string.
-3. **Error handling**: Wrap bodies that call throwing getters in try/catch; map caught errors to `{ result: false, errorReason }`.
-4. **Naming**: Prefer `is*`, `can*`, `matches*`, or `validate*` for the public surface (e.g. `isLegalCommanderMove`, `validateEvent`).
+3. **Error handling**: Wrap bodies that call throwing getters / legality enumerators in try/catch; map caught errors to `{ result: false, errorReason }`.
+4. **Naming**: Prefer `is*`, `can*`, `matches*`, or `validate*` for the public surface (e.g. `isValidChooseCardEvent`, `validateEvent`).
 
-## Why This Pattern?
+## Player choices: enumerate then membership
 
-- **Actionable failures**: Orchestrators and clients need _why_ an event was rejected, not just `false`.
-- **Fail-safe**: Invalid inputs or getter errors become `FailValidationResult`, not crashes.
-- **Engine contract**: `validateEvent` and phase routers all speak `ValidationResult`; keep leaf validators aligned.
-
-## Example
+Legal player-choice payloads are owned by `@legality` (`getLegal*`). Validators that have an enumerator check **membership** against that list (same idea as `isLegalMove` → `getLegalUnitMoves`):
 
 ```typescript
-export function isLegalCommanderMove(
-  moveCommanderEvent: MoveCommanderEvent,
-  boardState: Board,
+export function isValidChooseCardEvent(
+  event: ChooseCardEvent,
+  state: GameState,
 ): ValidationResult {
   try {
-    const fromSpace = getBoardSpace(boardState, moveCommanderEvent.from);
-    if (!fromSpace.commanders.includes(moveCommanderEvent.player)) {
+    const legalOptions = getLegalChooseCardOptions(state);
+    const isLegal = legalOptions.some(
+      (option) =>
+        option.player === event.player && option.card.id === event.card.id,
+    );
+    if (!isLegal) {
       return {
         result: false,
-        errorReason: 'Commander is not at the starting position',
+        errorReason: `Command card ${event.card.id} is not a legal choice for ${event.player}`,
       };
     }
-    // ...
     return { result: true };
   } catch (error) {
     return {
@@ -52,6 +51,14 @@ export function isLegalCommanderMove(
   }
 }
 ```
+
+`validatePlayerChoice` still layers **expected** (sequencing) before **legal** (membership). Do not re-encode phase/hand rules in `isValid*` when a `getLegal*` already enumerates them.
+
+## Why This Pattern?
+
+- **Actionable failures**: Orchestrators and clients need _why_ an event was rejected, not just `false`.
+- **Fail-safe**: Invalid inputs or getter errors become `FailValidationResult`, not crashes.
+- **Single source of truth**: Legality enumerators define the option set; validators only ask “is this event among them?”
 
 ## Contrast with Queries
 
@@ -66,21 +73,12 @@ export function isLegalCommanderMove(
 
 Do not write “queries throw, validation catches” as a blanket rule — only some getters throw.
 
-## Visibility Constraints
+## Authoritative game state
 
-Some validators require a visibility-narrowed game state so they can read owned card fields (e.g. `.id` on hand cards):
-
-```typescript
-export function isValidChooseCardEvent<T extends GameStateVisibility>(
-  event: ChooseCardEvent,
-  state: GameStateForVisibility<T>,
-): ValidationResult;
-```
-
-Visibility is a type parameter because it **constrains inputs**. Board size is not — size is asserted at Zod boundaries and via `board.boardType` at runtime. See [`../entities/README.md`](../entities/README.md).
+Player-choice legality validators that use `getLegal*` take authoritative `GameState` (both hands readable). Card visibility is still a type parameter elsewhere when a function must constrain readable card fields. Board size is not a type parameter — size is asserted at Zod boundaries and via `board.boardType` at runtime. See [`../entities/README.md`](../entities/README.md).
 
 ## Testing
 
 - Assert `result: false` **and** a meaningful `errorReason` for illegal cases.
-- Assert that getter throws become `result: false`, not uncaught exceptions.
-- Cover both pass and fail paths explicitly; prefer exact `errorReason` matches over substring hedges when the message is stable.
+- Assert that getter / enumerator throws become `result: false`, not uncaught exceptions.
+- Cover membership pass/fail; leave enumeration depth to colocated `getLegal*.test.ts`.

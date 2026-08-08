@@ -462,9 +462,43 @@ export {
 export {
   checkDiagonalMove,
   getLegalChooseCardOptions,
+  getLegalChooseRetreatOptionEvents,
+  getLegalChooseWhetherToRetreatEvents,
+  getLegalCommitToMeleeEvents,
+  getLegalCommitToMovementEvents,
+  getLegalCommitToRangedAttackEvents,
+  canUnitRangedAttackTarget,
+  getLegalIssueCommands,
+  getLegalLineEndsForIssueCommand,
+  getLegalLineStartsForIssueCommand,
+  getLegalMoveUnits,
+  getLegalRangedAttackers,
+  getLegalRangedAttackSupporters,
+  getLegalRangedAttackTargets,
+  getLegalRoutDiscardCards,
+  getLegalSetupUnits,
+  getLegalUnitsForIssueCommand,
+  getLineSegmentFromStart,
+  getSetupZoneCoordinates,
   getLegalRetreats,
   getLegalUnitMoves,
+  unitMatchesInspirationRange,
+  unitMatchesRestrictions,
+  unitMatchesTraitAndTypeRestrictions,
+  SETUP_ZONE_BACK_ROWS,
+  SETUP_ZONE_EXCLUDED_SIDE_RANKS,
 } from '@legality';
+export type {
+  LegalIssueCommands,
+  LegalMoveUnits,
+  LegalRangedAttackers,
+  LegalRoutDiscardCards,
+  LegalSetupUnits,
+} from '@legality';
+export {
+  getLegalPlayerChoiceOptions,
+  type LegalPlayerChoiceOptions,
+} from '@validation';
 export { getPositionOfUnit } from '@queries';
 export type { Trait } from '@ruleValues';
 export {
@@ -548,10 +582,6 @@ export {
 export {
   eachCardPresentOnce,
   eachUnitPresentOnce,
-  isLegalCardChoice,
-  isLegalCommanderMove,
-} from '@validation';
-export {
   canEngageEnemy,
   canMoveInto,
   canMoveThrough,
@@ -559,7 +589,15 @@ export {
   isValidChooseCardEvent,
   isValidChooseRallyEvent,
   isValidChooseRoutDiscardEvent,
+  isValidChooseRetreatOptionEvent,
+  isValidChooseWhetherToRetreatEvent,
+  isValidCommitToMeleeEvent,
+  isValidCommitToMovementEvent,
+  isValidCommitToRangedAttackEvent,
+  isValidIssueCommandEvent,
   isValidMoveCommanderEvent,
+  isValidMoveUnitEvent,
+  isValidSetupUnitsEvent,
   validatePlayerChoice,
   validateEvent,
 } from '@validation';

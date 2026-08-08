@@ -112,29 +112,22 @@ Pure functions that check whether game actions, states, or conditions are valid 
 
 **Validation Categories:**
 
-- **Unit Movement** (`unitMovement/`): Movement rule validation
-  - `canMoveInto()` - Check if unit can move to space
-  - `canMoveThrough()` - Check if unit can pass through space
-  - `canEngageEnemy()` - Check if unit can engage enemy
-  - `isLegalMove()` - Validate complete move command
+- **Player choice** (`playerChoice/`): Event guards for player input
+  - `validatePlayerChoice()` - Expected choice + legal membership
+  - `isValidChooseCardEvent()` / `isValidChooseRallyEvent()` / … - Membership against `@legality` `getLegal*`
+  - `isValidChooseRoutDiscardEvent()` - Atom membership + integrity over `getLegalRoutDiscardCards`
 
-- **Unit Presence** (`unitPresence/`): Unit state validation
-  - `hasNoUnit()` / `hasSingleUnit()` / `hasEngagedUnits()` - Type guards
-  - `isAtPlacement()` - Check if unit is at position
+- **Game state** (`gameState/`): Invariant checks
+  - `eachCardPresentOnce()` / `eachUnitPresentOnce()` / …
 
-- **CommandCard Validation**: CommandCard choice validation
-  - `isLegalCardChoice()` - Validate card selection
-  - `isLegalCommanderMove()` - Validate commander movement
+- **Phase routers** (`phaseValidation/`, `validateEvent`): Route events to phase-specific validators
 
-- **General Validation**: Other rule checks
-  - `isValidLine()` - Validate line formation
-  - `matchesUnitRequirements()` - Check unit requirements
-  - `isSameUnitInstance()` / `isSameUnitType()` - Unit comparison
+Movement legality (`canMoveInto`, `getLegalUnitMoves`, `isLegalMove`, commander moves) lives in **`legality/`**, not here. Validation re-exports a few of those during migration.
 
 **Pattern:** Validation functions return a discriminated **`ValidationResult`**
 (`{ result: true }` | `{ result: false, errorReason }`) and **never throw**.
-They wrap throwing getters in try/catch and map failures to `errorReason`.
-Some validators are generic over `GameStateVisibility` when they must read owned card fields.
+They wrap throwing getters / legality enumerators in try/catch and map failures to `errorReason`.
+Player-choice `isValid*` that have a `getLegal*` enumerator check membership instead of re-encoding rules.
 
 #### 5. **Transforms** (`transforms/`)
 

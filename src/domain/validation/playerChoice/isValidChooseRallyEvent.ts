@@ -1,79 +1,34 @@
 import type { ValidationResult } from '@utils';
 import type { ChooseRallyEvent } from '@events';
-import type { GameStateForVisibility, GameStateVisibility } from '@game';
-import { getOtherPlayer } from '@queries';
+import type { GameState } from '@game';
+import { getLegalChooseRallyEvent } from '@legality';
+
 /**
- * Validates whether a ChooseRallyEvent can be applied to the current game state.
- * This is used for proactive validation before attempting to apply the event.
+ * Validates whether a ChooseRallyEvent is among the legal choose-rally options
+ * for the current game state.
  *
  * @param event - The choose rally event to validate
  * @param state - The current game state
  * @returns ValidationResult indicating if the event is valid
- *
- * @example
- * ```typescript
- * const validation = isValidChooseRallyEvent(event, state);
- * if (!validation.result) {
- *   // Reject the event without processing
- *   return { success: false, error: validation.errorReason };
- * }
- * // Proceed to apply the event
- * const newState = applyChooseRallyEvent(event, state);
- * ```
  */
-export function isValidChooseRallyEvent<T extends GameStateVisibility>(
+export function isValidChooseRallyEvent(
   event: ChooseRallyEvent,
-  state: GameStateForVisibility<T>,
+  state: GameState,
 ): ValidationResult {
   try {
-    const { player } = event;
-    const { currentPhaseState } = state.currentRoundState;
-
-    // Check phase state exists
-    if (currentPhaseState === 'none') {
+    const legalOptions = getLegalChooseRallyEvent(state);
+    const isLegal = legalOptions.some(
+      (option) =>
+        option.player === event.player &&
+        option.performRally === event.performRally,
+    );
+    if (!isLegal) {
       return {
-        errorReason: 'No current phase state found',
+        errorReason: `Choose rally option is not legal for ${event.player}`,
         result: false,
       };
     }
-
-    // Check correct phase
-    if (currentPhaseState.phase !== 'cleanup') {
-      return {
-        errorReason: `Current phase is ${currentPhaseState.phase}, not cleanup`,
-        result: false,
-      };
-    }
-
-    // Check correct step and player
-    const firstPlayer = state.currentInitiative;
-    const secondPlayer = getOtherPlayer(firstPlayer);
-
-    if (currentPhaseState.step === 'firstPlayerChooseRally') {
-      if (player !== firstPlayer) {
-        return {
-          errorReason: `Expected ${firstPlayer} (first player) to choose rally, not ${player}`,
-          result: false,
-        };
-      }
-    } else if (currentPhaseState.step === 'secondPlayerChooseRally') {
-      if (player !== secondPlayer) {
-        return {
-          errorReason: `Expected ${secondPlayer} (second player) to choose rally, not ${player}`,
-          result: false,
-        };
-      }
-    } else {
-      return {
-        errorReason: `Cleanup phase is on ${currentPhaseState.step} step, not a chooseRally step`,
-        result: false,
-      };
-    }
-
-    // Valid
-    return {
-      result: true,
-    };
+    return { result: true };
   } catch (error) {
     return {
       errorReason: error instanceof Error ? error.message : 'Unknown error',
