@@ -84,7 +84,9 @@ export { gameEffectEventSchema, gameEffectTypeSchema } from './gameEffect';
 export type { GameEffectEvent, GameEffectEventOfType } from './gameEffect';
 export { gameEffects, type GameEffectType } from './gameEffect';
 export {
+  COMPLETE_MOVEMENT_COMMAND_EFFECT_TYPE,
   COMPLETE_UNIT_MOVEMENT_EFFECT_TYPE,
+  completeMovementCommandEventSchema,
   completeUnitMovementEventSchema,
   RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE,
   RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE,
@@ -94,6 +96,7 @@ export {
   startEngagementEventSchema,
 } from './movement';
 export type {
+  CompleteMovementCommandEvent,
   CompleteUnitMovementEvent,
   ResolveEngageRetreatOptionEvent,
   ResolveFlankEngagementEvent,

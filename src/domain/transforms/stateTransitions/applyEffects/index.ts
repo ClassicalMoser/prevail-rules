@@ -20,6 +20,7 @@ export {
   applyTriggerRoutFromRetreatEvent,
 } from './defenseResult';
 export {
+  applyCompleteMovementCommandEvent,
   applyCompleteUnitMovementEvent,
   applyResolveEngageRetreatOptionEvent,
   applyResolveFlankEngagementEvent,

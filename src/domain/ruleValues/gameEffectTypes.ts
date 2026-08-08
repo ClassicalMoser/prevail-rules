@@ -10,6 +10,7 @@ export const gameEffects = [
   'completeCleanupPhase',
   'completeIssueCommandsPhase',
   'completeMoveCommandersPhase',
+  'completeMovementCommand',
   'completePlayCardsPhase',
   'completeMeleeResolution',
   'completeRangedAttackCommand',

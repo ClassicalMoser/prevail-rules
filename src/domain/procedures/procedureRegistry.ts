@@ -22,6 +22,7 @@ import {
   generateTriggerRoutFromRetreatEvent,
 } from './defenseResult';
 import {
+  generateCompleteMovementCommandEvent,
   generateCompleteUnitMovementEvent,
   generateResolveEngageRetreatOptionEvent,
   generateResolveFlankEngagementEvent,
@@ -69,6 +70,9 @@ export function generateEventFromProcedure(
     }
     case 'completeMoveCommandersPhase': {
       return generateCompleteMoveCommandersPhaseEvent(state, eventNumber);
+    }
+    case 'completeMovementCommand': {
+      return generateCompleteMovementCommandEvent(eventNumber);
     }
     case 'completePlayCardsPhase': {
       return generateCompletePlayCardsPhaseEvent(state, eventNumber);

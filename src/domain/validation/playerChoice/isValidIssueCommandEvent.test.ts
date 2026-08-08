@@ -70,7 +70,43 @@ describe(isValidIssueCommandEvent, () => {
     });
   });
 
-  it('rejects wrong unit count for size units', () => {
+  it('accepts under-filling a units grant when at least one unit is selected', () => {
+    const command = {
+      ...tempCommandCards[0].command,
+      number: 2,
+      restrictions: {
+        inspirationRangeRestriction: -1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      size: 'units' as const,
+    };
+    const { state, unit } = stateReadyToIssue(command);
+    const other = createUnitWithPlacement({
+      coordinate: 'E-6',
+      facing: 'north',
+      playerSide: 'black',
+      unitOptions: { instanceNumber: 2 },
+    });
+    const withSecond = updateBoardState(
+      state,
+      addUnitToBoard(state.boardState, other),
+    );
+    const event: IssueCommandEvent = {
+      choiceType: 'issueCommand',
+      command,
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      player: 'black',
+      units: [unit.unit],
+    };
+
+    expect(isValidIssueCommandEvent(event, withSecond)).toStrictEqual({
+      result: true,
+    });
+  });
+
+  it('rejects over-filling a units grant past command.number', () => {
     const command = {
       ...tempCommandCards[0].command,
       number: 1,
@@ -101,7 +137,37 @@ describe(isValidIssueCommandEvent, () => {
       units: [unit.unit, other.unit],
     };
 
-    expect(isValidIssueCommandEvent(event, withSecond).result).toBe(false);
+    expect(isValidIssueCommandEvent(event, withSecond)).toStrictEqual({
+      errorReason: 'Expected 1..1 units, got 2',
+      result: false,
+    });
+  });
+
+  it('rejects an empty units selection', () => {
+    const command = {
+      ...tempCommandCards[0].command,
+      number: 6,
+      restrictions: {
+        inspirationRangeRestriction: -1,
+        traitRestrictions: [],
+        unitRestrictions: [],
+      },
+      size: 'units' as const,
+    };
+    const { state } = stateReadyToIssue(command);
+    const event: IssueCommandEvent = {
+      choiceType: 'issueCommand',
+      command,
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      player: 'black',
+      units: [],
+    };
+
+    expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
+      errorReason: 'Expected 1..6 units, got 0',
+      result: false,
+    });
   });
 
   it('rejects a unit outside inspiration range', () => {

@@ -47,7 +47,8 @@ function sameOrderedUnitKeys(
  * - {@link getLegalUnitsForIssueCommand} (units / line **starts**)
  * - {@link getLegalLineEndsForIssueCommand} (ends for a chosen start)
  *
- * `size: 'units'`: exactly `command.number` unique fully-restricted units.
+ * `size: 'units'`: `1..command.number` unique fully-restricted units
+ * (`number` is a **cap**, not a hard quota).
  *
  * `size: 'lines'`: UI picks start then end (singleton start=end is a line).
  * Inspiration range applies to the **start** only; trait/type restrictions
@@ -95,9 +96,12 @@ export function isValidIssueCommandEvent(
     }
 
     if (matchingCommand.size === 'units') {
-      if (event.units.length !== matchingCommand.number) {
+      if (
+        event.units.length < 1 ||
+        event.units.length > matchingCommand.number
+      ) {
         return {
-          errorReason: `Expected ${matchingCommand.number} units, got ${event.units.length}`,
+          errorReason: `Expected 1..${matchingCommand.number} units, got ${event.units.length}`,
           result: false,
         };
       }

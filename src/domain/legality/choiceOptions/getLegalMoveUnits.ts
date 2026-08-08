@@ -1,6 +1,8 @@
 import type { PlayerSide, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
+import { hasSingleUnit } from '@entities';
 import {
+  getBoardSpace,
   getOtherPlayer,
   getOwnedPlayerCardState,
   getPositionOfUnit,
@@ -26,6 +28,7 @@ export interface LegalMoveUnits {
  * of a movement command resolution (CRS pending, remaining units, movement
  * card in play).
  *
+ * Engaged units are excluded — they cannot legally start a move.
  * Does not enumerate destinations or moveCommander flags.
  */
 export function getLegalMoveUnits<S extends GameState>(
@@ -77,6 +80,14 @@ export function getLegalMoveUnits<S extends GameState>(
     }
     try {
       const placement = getPositionOfUnit(gameState.boardState, unit);
+      const presence = getBoardSpace(
+        gameState.boardState,
+        placement.coordinate,
+      ).unitPresence;
+      // Engaged units cannot start a movement resolution.
+      if (!hasSingleUnit(presence)) {
+        continue;
+      }
       units.push({ placement, unit });
     } catch {
       // Not on board (or otherwise unlocatable) — skip.

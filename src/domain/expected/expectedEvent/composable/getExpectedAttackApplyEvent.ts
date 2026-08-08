@@ -10,6 +10,10 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
  * This is a composable function that can be used in any context where
  * attack apply state appears (ranged attack resolution, melee resolution, etc.).
  *
+ * A miss (`hasResults === false`, all nested substeps still `'pending'`) is
+ * valid: expect `completeAttackApply`. Throw only when results are claimed but
+ * no matching substep was opened.
+ *
  * @param attackApplyState - The attack apply state
  * @param gameState - The game state, needed for melee reverse engagement checks
  * @returns Information about what event is expected
@@ -20,19 +24,29 @@ export function getExpectedAttackApplyEvent(
 ): ExpectedEventInfo {
   const { attackResult } = attackApplyState;
 
-  // Check if there are any results
   const hasResults =
     attackResult.unitRouted ||
     attackResult.unitRetreated ||
     attackResult.unitReversed;
 
-  // If no results reported, state was not initialized correctly
-  if (
-    !hasResults ||
-    (attackApplyState.retreatState === 'pending' &&
-      attackApplyState.reverseState === 'pending' &&
-      attackApplyState.routState === 'pending')
-  ) {
+  const allSubstepsPending =
+    attackApplyState.retreatState === 'pending' &&
+    attackApplyState.reverseState === 'pending' &&
+    attackApplyState.routState === 'pending';
+
+  // Miss: nothing to apply — complete the empty apply shell.
+  if (!hasResults) {
+    if (attackApplyState.completed) {
+      throw new Error('Attack apply state is already complete');
+    }
+    return {
+      actionType: 'gameEffect',
+      effectType: 'completeAttackApply',
+    };
+  }
+
+  // Results claimed but no substep opened — corrupt initialization.
+  if (allSubstepsPending) {
     throw new Error('Attack apply state not initialized correctly');
   }
 
