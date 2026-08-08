@@ -19,7 +19,8 @@ export interface UnitSupportAssignment {
 
 /**
  * Player assigns hand support slots to board units after rally.
- * Units not covered lose support and are routed.
+ * Assignment must be maximal (use every slot that can still cover someone);
+ * units left uncovered lose support and are routed.
  */
 export interface AssignUnitSupportEvent {
   /** The type of the event. */

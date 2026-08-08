@@ -1,8 +1,13 @@
+import type { UnitInstance } from '@entities';
 import type { ValidationResult } from '@utils';
 import type { AssignUnitSupportEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalUnitSupportGrants } from '@legality';
-import { isSameUnitInstance, unitMatchesSupport } from '@queries';
+import {
+  getPlayerUnitsOnBoard,
+  isSameUnitInstance,
+  unitMatchesSupport,
+} from '@queries';
 
 function unitKey(unit: {
   playerSide: string;
@@ -16,6 +21,10 @@ function unitKey(unit: {
  * Validates an AssignUnitSupportEvent as an integral commit over grant atoms:
  * - {@link getLegalUnitSupportGrants} (player + hand grants + eligible units)
  * - per-card capacity, eligibility, no duplicate card/unit coverage
+ * - **maximal cover**: no unused slot may still be able to cover an uncovered unit
+ *
+ * Units that no remaining grant capacity can cover must stay uncovered and rout
+ * on apply; wasting support while such a unit sits uncovered is illegal.
  */
 export function isValidAssignUnitSupportEvent(
   event: AssignUnitSupportEvent,
@@ -38,7 +47,8 @@ export function isValidAssignUnitSupportEvent(
     }
 
     const seenCardIds = new Set<string>();
-    const coveredUnitKeys = new Set<string>();
+    const coveredUnits: UnitInstance[] = [];
+    const assignedCountByCardId = new Map<string, number>();
 
     for (const assignment of event.assignments) {
       if (seenCardIds.has(assignment.cardId)) {
@@ -90,14 +100,38 @@ export function isValidAssignUnitSupportEvent(
           };
         }
 
-        const key = unitKey(unit);
-        if (coveredUnitKeys.has(key)) {
+        if (coveredUnits.some((c) => isSameUnitInstance(c, unit).result)) {
           return {
             errorReason: 'Unit is assigned support more than once',
             result: false,
           };
         }
-        coveredUnitKeys.add(key);
+        coveredUnits.push(unit);
+      }
+
+      assignedCountByCardId.set(assignment.cardId, assignment.units.length);
+    }
+
+    const boardUnits = [...getPlayerUnitsOnBoard(state, event.player)];
+    const uncovered = boardUnits.filter(
+      (unit) => !coveredUnits.some((c) => isSameUnitInstance(c, unit).result),
+    );
+
+    for (const grant of legal.grants) {
+      const used = assignedCountByCardId.get(grant.card.id) ?? 0;
+      const remaining = grant.unitSupport.count - used;
+      if (remaining <= 0) {
+        continue;
+      }
+      const canCoverUncovered = uncovered.some((unit) =>
+        unitMatchesSupport(unit, grant.unitSupport),
+      );
+      if (canCoverUncovered) {
+        return {
+          errorReason:
+            'Support assignment is not maximal: unused slots could still cover uncovered units',
+          result: false,
+        };
       }
     }
 
