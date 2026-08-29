@@ -15,20 +15,10 @@ export const statModifiers = [
 
 export type StatModifier = (typeof statModifiers)[number];
 
-const _statModifierSchemaObject = z.enum(statModifiers);
-type StatModifierSchemaType = z.infer<typeof _statModifierSchemaObject>;
-
 /**
  * The schema for a stat modifier.
  */
-export const statModifierSchema: z.ZodType<StatModifier> =
-  _statModifierSchemaObject;
-
-// Verify manual type matches schema inference
-const _assertExactStatModifier: AssertExact<
-  StatModifier,
-  StatModifierSchemaType
-> = true;
+export const statModifierSchema: z.ZodType<StatModifier> = z.enum(statModifiers);
 
 /**
  * A modifier on a card.

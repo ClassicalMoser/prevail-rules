@@ -24,18 +24,19 @@ const computedCoordinates = smallBoardRowLetters.flatMap((row) =>
 export const smallBoardCoordinates =
   computedCoordinates as readonly SmallBoardCoordinate[]; // This cast is safe.
 
-const _smallBoardCoordinatesSchema = z.enum(smallBoardCoordinates);
-type SmallBoardCoordinatesSchemaType = z.infer<
-  typeof _smallBoardCoordinatesSchema
->;
+const _smallBoardCoordinatesSchemaObject = z.enum(smallBoardCoordinates);
 
-const _assertExactSmallBoardCoordinates: AssertExact<
-  SmallBoardCoordinate,
-  SmallBoardCoordinatesSchemaType
-> = true;
+type SmallBoardCoordinatesSchemaType = z.infer<
+  typeof _smallBoardCoordinatesSchemaObject
+>;
 
 /**
  * The schema for a small board coordinate.
  */
 export const smallBoardCoordinateSchema: z.ZodType<SmallBoardCoordinate> =
-  _smallBoardCoordinatesSchema;
+  _smallBoardCoordinatesSchemaObject;
+
+const _assertExactSmallBoardCoordinates: AssertExact<
+  SmallBoardCoordinate,
+  SmallBoardCoordinatesSchemaType
+> = true;

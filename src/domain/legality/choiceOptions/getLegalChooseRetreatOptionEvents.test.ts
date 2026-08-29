@@ -3,7 +3,9 @@ import { PLAY_CARDS_PHASE } from '@game';
 import {
   createAttackApplyStateWithRetreat,
   createEmptyGameState,
+  createFrontEngagementState,
   createIssueCommandsPhaseState,
+  createMovementResolutionState,
   createRangedAttackResolutionState,
   createRetreatState,
   createTestUnit,
@@ -90,5 +92,52 @@ describe(getLegalChooseRetreatOptionEvents, () => {
       step: 'chooseCards',
     });
     expect(getLegalChooseRetreatOptionEvents(state)).toStrictEqual([]);
+  });
+
+  it('returns one event per option for a front-engagement nested retreat', () => {
+    const state = createEmptyGameState();
+    const unit = createTestUnit('white');
+    const placement: UnitWithPlacement = {
+      placement: { coordinate: 'E-5', facing: 'north' },
+      unit,
+    };
+    const withUnit = {
+      ...state,
+      boardState: addUnitToBoard(state.boardState, placement),
+    };
+    const engagementState = updatePhaseState(
+      withUnit,
+      createIssueCommandsPhaseState(withUnit, {
+        currentCommandResolutionState: createMovementResolutionState(
+          withUnit,
+          {
+            engagementState: createFrontEngagementState({
+              defendingUnitRetreats: true,
+              retreatState: createRetreatState(placement, {
+                finalPosition: 'pending',
+                legalRetreatOptions: [optionA, optionB],
+              }),
+            }),
+          },
+        ),
+      }),
+    );
+
+    expect(getLegalChooseRetreatOptionEvents(engagementState)).toStrictEqual([
+      {
+        choiceType: 'chooseRetreatOption',
+        eventNumber: 0,
+        eventType: 'playerChoice',
+        player: 'white',
+        retreatOption: optionA,
+      },
+      {
+        choiceType: 'chooseRetreatOption',
+        eventNumber: 0,
+        eventType: 'playerChoice',
+        player: 'white',
+        retreatOption: optionB,
+      },
+    ]);
   });
 });

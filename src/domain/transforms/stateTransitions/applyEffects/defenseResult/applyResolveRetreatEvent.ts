@@ -1,10 +1,14 @@
 import type { ResolveRetreatEvent } from '@events';
 import type { GameState, RetreatState } from '@game';
-import { findRetreatState } from '@queries';
+import {
+  findRetreatState,
+  getFrontEngagementStateFromMovement,
+} from '@queries';
 import {
   addUnitToBoard,
   removeUnitFromBoard,
   updateBoardState,
+  updateEngagementStateInMovement,
   updateRetreatState,
 } from '@transforms/pureTransforms';
 
@@ -12,6 +16,9 @@ import {
  * Applies a ResolveRetreatEvent to the game state.
  * Moves the retreating unit from startingPosition to finalPosition on the board.
  * Marks the retreat state as completed.
+ *
+ * When the retreat is nested under a front engagement, also marks
+ * `defendingUnitRetreated` and completes the engagement.
  *
  * @param event - The resolve retreat event to apply
  * @param state - The current game state
@@ -39,5 +46,26 @@ export function applyResolveRetreatEvent<S extends GameState>(
   };
 
   const stateWithUpdatedRetreat = updateRetreatState(state, newRetreatState);
-  return updateBoardState(stateWithUpdatedRetreat, addedUnitBoard);
+  let next = updateBoardState(stateWithUpdatedRetreat, addedUnitBoard);
+
+  try {
+    const front = getFrontEngagementStateFromMovement(next);
+    if (
+      front.engagementResolutionState.retreatState !== 'pending' &&
+      front.engagementResolutionState.retreatState.completed
+    ) {
+      next = updateEngagementStateInMovement(next, {
+        ...front,
+        completed: true,
+        engagementResolutionState: {
+          ...front.engagementResolutionState,
+          defendingUnitRetreated: true,
+        },
+      });
+    }
+  } catch {
+    // Not a front-engagement retreat parent (ranged / melee attack-apply).
+  }
+
+  return next;
 }

@@ -1,3 +1,4 @@
+import type { UnitWithPlacement } from '@entities';
 import type { ChooseWhetherToRetreatEvent } from '@events';
 import { getFrontEngagementStateFromMovement } from '@queries';
 import {
@@ -7,29 +8,45 @@ import {
   createMovementResolutionState,
   createPlayCardsPhaseState,
   createRangedAttackResolutionState,
+  createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyChooseWhetherToRetreatEvent } from './applyChooseWhetherToRetreatEvent';
 
 /**
- * Front engagement during movement: defender commits whether to attempt retreat before the
- * engine resolves strike; stored on `engagementResolutionState.defendingUnitRetreats`.
+ * Front engagement during movement: defender commits whether to attempt retreat.
+ * Accepting opens a nested RetreatState with baked legalRetreatOptions.
  */
 describe(applyChooseWhetherToRetreatEvent, () => {
-  /** IssueCommands with movement CRS and default front engagement factory state. */
-  function createStateWithFrontEngagement() {
+  function createStateWithFrontEngagement(
+    defender: UnitWithPlacement = {
+      placement: { coordinate: 'E-5', facing: 'north' },
+      unit: createTestUnit('white', { attack: 2, speed: 3 }),
+    },
+  ) {
     const state = createEmptyGameState();
-    const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: createMovementResolutionState(state, {
-        engagementState: createFrontEngagementState(),
+    const withBoard = {
+      ...state,
+      boardState: addUnitToBoard(state.boardState, defender),
+    };
+    const phaseState = createIssueCommandsPhaseState(withBoard, {
+      currentCommandResolutionState: createMovementResolutionState(withBoard, {
+        engagementState: createFrontEngagementState({
+          defendingUnitCanRetreat: true,
+          defensiveCommitment: { commitmentType: 'declined' },
+        }),
+        targetPlacement: defender.placement,
       }),
     });
-    return updatePhaseState(state, phaseState);
+    return {
+      defender,
+      state: updatePhaseState(withBoard, phaseState),
+    };
   }
 
-  it('given front engagement and white choosesToRetreat true, defendingUnitRetreats is true', () => {
-    const state = createStateWithFrontEngagement();
+  it('accepting retreat opens a nested retreatState and sets defendingUnitRetreats', () => {
+    const { state, defender } = createStateWithFrontEngagement();
     const event: ChooseWhetherToRetreatEvent = {
       choiceType: 'chooseWhetherToRetreat',
       choosesToRetreat: true,
@@ -40,14 +57,21 @@ describe(applyChooseWhetherToRetreatEvent, () => {
 
     const newState = applyChooseWhetherToRetreatEvent(event, state);
     const engagementState = getFrontEngagementStateFromMovement(newState);
+    const { retreatState } = engagementState.engagementResolutionState;
 
     expect(
       engagementState.engagementResolutionState.defendingUnitRetreats,
     ).toBe(true);
+    expect(retreatState).not.toBe('pending');
+    if (retreatState === 'pending') {
+      throw new Error('expected retreatState');
+    }
+    expect(retreatState.retreatingUnit.unit).toStrictEqual(defender.unit);
+    expect(retreatState.legalRetreatOptions.length).toBeGreaterThan(0);
   });
 
-  it('given same stack and white choosesToRetreat false, defendingUnitRetreats is false and engagement completes', () => {
-    const state = createStateWithFrontEngagement();
+  it('declining retreat marks defendingUnitRetreats false and completes engagement', () => {
+    const { state } = createStateWithFrontEngagement();
     const event: ChooseWhetherToRetreatEvent = {
       choiceType: 'chooseWhetherToRetreat',
       choosesToRetreat: false,
@@ -63,36 +87,13 @@ describe(applyChooseWhetherToRetreatEvent, () => {
       engagementState.engagementResolutionState.defendingUnitRetreats,
     ).toBe(false);
     expect(engagementState.completed).toBe(true);
+    expect(engagementState.engagementResolutionState.retreatState).toBe(
+      'pending',
+    );
   });
 
-  it('given black defender events, true vs false flip defendingUnitRetreats the same as white', () => {
-    const state = createStateWithFrontEngagement();
-    const retreatEvent: ChooseWhetherToRetreatEvent = {
-      choiceType: 'chooseWhetherToRetreat',
-      choosesToRetreat: true,
-      eventNumber: 0,
-      eventType: 'playerChoice',
-      player: 'black',
-    };
-    const stayEvent: ChooseWhetherToRetreatEvent = {
-      ...retreatEvent,
-      choosesToRetreat: false,
-    };
-
-    expect(
-      getFrontEngagementStateFromMovement(
-        applyChooseWhetherToRetreatEvent(retreatEvent, state),
-      ).engagementResolutionState.defendingUnitRetreats,
-    ).toBe(true);
-    expect(
-      getFrontEngagementStateFromMovement(
-        applyChooseWhetherToRetreatEvent(stayEvent, state),
-      ).engagementResolutionState.defendingUnitRetreats,
-    ).toBe(false);
-  });
-
-  it('given engagement snapshot before apply, input movement engagement slice unchanged after apply', () => {
-    const state = createStateWithFrontEngagement();
+  it('leaves the input engagement slice unchanged after apply', () => {
+    const { state } = createStateWithFrontEngagement();
     const engagementBefore =
       getFrontEngagementStateFromMovement(state).engagementResolutionState;
     const event: ChooseWhetherToRetreatEvent = {
@@ -110,7 +111,7 @@ describe(applyChooseWhetherToRetreatEvent, () => {
     ).toStrictEqual(engagementBefore);
   });
 
-  it('given playCards phase, throws not in issueCommands', () => {
+  it('throws when not in issueCommands', () => {
     const state = createEmptyGameState();
     const stateInPlayCards = updatePhaseState(
       state,
@@ -129,7 +130,7 @@ describe(applyChooseWhetherToRetreatEvent, () => {
     ).toThrow('Not in issueCommands phase');
   });
 
-  it('given issueCommands ranged CRS, throws current command resolution is not movement', () => {
+  it('throws when current command resolution is not movement', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createRangedAttackResolutionState(state),

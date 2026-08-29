@@ -296,7 +296,7 @@ describe('getExpectedXEvent', () => {
 3. **`defenseResult` / sequencing / engagement generators** — raise branch % where the coverage report is thin.
 4. **`procedureRegistry.ts`** — when adding a `gameEffects` entry, add a factory in `testing/procedureRegistryStateFactories.ts` (exported from `@testing`).
 
-**Known incomplete (not test gaps):** terrain entities are modelled (`terrainType` / `elevation` / `waterCover`) but unused by combat/movement; engagement-during-movement retreat still unimplemented.
+**Known incomplete (not test gaps):** terrain entities are modelled (`terrainType` / `elevation` / `waterCover`) but unused by combat/movement; front-engagement retreat with zero legal destinations still lacks a movement-context `triggerRoutFromRetreat` path (speed/`canRetreat` usually prevents that branch).
 
 ---
 

@@ -2,16 +2,21 @@ import type { UnitWithPlacement } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import {
+  getFrontEngagementStateFromMovement,
+  getRetreatStateFromFrontEngagement,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
 } from '@queries';
 import {
   createAttackApplyStateWithRetreat,
   createEmptyGameState,
+  createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
+  createMovementResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
+  createRetreatState,
   createTestUnit,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
@@ -301,6 +306,66 @@ describe(applyResolveRetreatEvent, () => {
 
       expect(retreatState.completed).toBe(originalCompleted);
       expect(state.boardState).toBe(originalBoardState);
+    });
+  });
+
+  describe('front engagement retreat apply', () => {
+    it('moves the defender and completes the engagement', () => {
+      const state = createEmptyGameState();
+      const unit = createTestUnit('white', { attack: 2 });
+      const placement: UnitWithPlacement = {
+        placement: { coordinate: 'E-5', facing: 'north' },
+        unit,
+      };
+      const withBoard = {
+        ...state,
+        boardState: addUnitToBoard(state.boardState, placement),
+      };
+      const withEngagement = updatePhaseState(
+        withBoard,
+        createIssueCommandsPhaseState(withBoard, {
+          currentCommandResolutionState: createMovementResolutionState(
+            withBoard,
+            {
+              engagementState: createFrontEngagementState({
+                defendingUnitRetreats: true,
+                retreatState: createRetreatState(placement, {
+                  finalPosition: { coordinate: 'E-4', facing: 'north' },
+                  legalRetreatOptions: [
+                    { coordinate: 'E-4', facing: 'north' },
+                  ],
+                }),
+              }),
+            },
+          ),
+        }),
+      );
+      const retreatState = getRetreatStateFromFrontEngagement(withEngagement);
+      const event: ResolveRetreatEvent = {
+        effectType: 'resolveRetreat',
+        eventNumber: 0,
+        eventType: 'gameEffect',
+        finalPosition: {
+          placement: { coordinate: 'E-4', facing: 'north' },
+          unit,
+        },
+        startingPosition: retreatState.retreatingUnit,
+      };
+
+      const next = applyResolveRetreatEvent(event, withEngagement);
+      const engagement = getFrontEngagementStateFromMovement(next);
+
+      expect(next.boardState.board['E-5']?.unitPresence.presenceType).toBe(
+        'none',
+      );
+      expect(next.boardState.board['E-4']?.unitPresence.presenceType).toBe(
+        'single',
+      );
+      expect(getRetreatStateFromFrontEngagement(next).completed).toBe(true);
+      expect(engagement.engagementResolutionState.defendingUnitRetreated).toBe(
+        true,
+      );
+      expect(engagement.completed).toBe(true);
     });
   });
 });

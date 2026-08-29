@@ -24,18 +24,19 @@ const computedCoordinates = largeBoardRowLetters.flatMap((row) =>
 export const largeBoardCoordinates =
   computedCoordinates as readonly LargeBoardCoordinate[]; // This cast is safe.
 
-const _largeBoardCoordinatesSchema = z.enum(largeBoardCoordinates);
-type LargeBoardCoordinatesSchemaType = z.infer<
-  typeof _largeBoardCoordinatesSchema
->;
+const _largeBoardCoordinatesSchemaObject = z.enum(largeBoardCoordinates);
 
-const _assertExactLargeBoardCoordinates: AssertExact<
-  LargeBoardCoordinate,
-  LargeBoardCoordinatesSchemaType
-> = true;
+type LargeBoardCoordinatesSchemaType = z.infer<
+  typeof _largeBoardCoordinatesSchemaObject
+>;
 
 /**
  * The schema for a large board coordinate.
  */
 export const largeBoardCoordinateSchema: z.ZodType<LargeBoardCoordinate> =
-  _largeBoardCoordinatesSchema;
+  _largeBoardCoordinatesSchemaObject;
+
+const _assertExactLargeBoardCoordinates: AssertExact<
+  LargeBoardCoordinate,
+  LargeBoardCoordinatesSchemaType
+> = true;

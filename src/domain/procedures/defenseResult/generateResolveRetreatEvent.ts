@@ -4,9 +4,11 @@ import type { GameState, RetreatState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from '@events';
 import {
   getCurrentPhaseState,
+  getRetreatStateFromFrontEngagement,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,
 } from '@queries';
+
 /**
  * Generates a ResolveRetreatEvent by reading the finalPosition from the retreat state.
  * The finalPosition is already determined (either auto-selected if single option,
@@ -25,7 +27,11 @@ export function generateResolveRetreatEvent(
 
   let retreatState: RetreatState;
   if (phaseState.phase === 'issueCommands') {
-    retreatState = getRetreatStateFromRangedAttack(state);
+    try {
+      retreatState = getRetreatStateFromRangedAttack(state);
+    } catch {
+      retreatState = getRetreatStateFromFrontEngagement(state);
+    }
   } else if (phaseState.phase === 'resolveMelee') {
     retreatState = getRetreatStateReadyForResolveFromMelee(state);
   } else {

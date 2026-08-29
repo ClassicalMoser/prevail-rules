@@ -1,4 +1,4 @@
-import type { HiddenCardState } from '@entities';
+import type { HiddenCardState } from '@game';
 import type { GameStateForVisibility, UnownedPlayerForGameState } from '@game';
 
 /**

@@ -1,9 +1,11 @@
 import type { UnitWithPlacement } from '@entities';
+import { getFrontEngagementStateFromMovement } from '@queries';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
   createEmptyGameState,
+  createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMovementResolutionState,
@@ -218,10 +220,54 @@ describe(updateRetreatState, () => {
     ).toThrow('No retreat state found in attack apply state');
   });
 
-  it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
+  it('updates nested retreatState under front engagement movement CRS', () => {
+    const state = createEmptyGameState();
+    const unit = createTestUnit('white', { attack: 2 });
+    const placement: UnitWithPlacement = {
+      placement: {
+        coordinate: 'E-5',
+        facing: 'north',
+      },
+      unit,
+    };
+    const withBoard = {
+      ...state,
+      boardState: addUnitToBoard(state.boardState, placement),
+    };
+    const opened = createRetreatState(placement);
+    const phaseState = createIssueCommandsPhaseState(withBoard, {
+      currentCommandResolutionState: createMovementResolutionState(withBoard, {
+        engagementState: createFrontEngagementState({
+          defendingUnitRetreats: true,
+          retreatState: opened,
+        }),
+      }),
+    });
+    const stateInPhase = updatePhaseState(withBoard, phaseState);
+    const nextRetreat = createRetreatState(placement, {
+      finalPosition: { coordinate: 'E-4', facing: 'north' },
+    });
+
+    const next = updateRetreatState(stateInPhase, nextRetreat);
+    const { retreatState } =
+      getFrontEngagementStateFromMovement(next).engagementResolutionState;
+
+    expect(retreatState).not.toBe('pending');
+    if (retreatState === 'pending') {
+      throw new Error('expected retreatState');
+    }
+    expect(retreatState.finalPosition).toStrictEqual({
+      coordinate: 'E-4',
+      facing: 'north',
+    });
+  });
+
+  it('throws when movement CRS has front engagement without an opened retreatState', () => {
     const state = createEmptyGameState();
     const phaseState = createIssueCommandsPhaseState(state, {
-      currentCommandResolutionState: createMovementResolutionState(state),
+      currentCommandResolutionState: createMovementResolutionState(state, {
+        engagementState: createFrontEngagementState(),
+      }),
     });
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
@@ -235,9 +281,7 @@ describe(updateRetreatState, () => {
 
     expect(() =>
       updateRetreatState(stateInPhase, createRetreatState(placement)),
-    ).toThrow(
-      'Retreat state update not expected in issueCommands (command type: movement)',
-    );
+    ).toThrow('No retreat state found in front engagement');
   });
 
   it('given when in issueCommands with no command resolution state, throws', () => {

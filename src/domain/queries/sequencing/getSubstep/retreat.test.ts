@@ -3,6 +3,7 @@ import {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
   createEmptyGameState,
+  createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMovementResolutionState,
@@ -16,6 +17,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 import {
   findRetreatState,
   getRetreatStateFromAttackApply,
+  getRetreatStateFromFrontEngagement,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,
@@ -319,6 +321,30 @@ describe(findRetreatState, () => {
     expect(() => findRetreatState(state, 'white')).toThrow(
       'No retreat state found for player white',
     );
+  });
+
+  it('finds a nested retreat under front engagement movement CRS', () => {
+    const defendingUnit = createTestUnit('white', { attack: 2 });
+    const placement: UnitWithPlacement = {
+      placement: { coordinate: 'E-5', facing: 'north' },
+      unit: defendingUnit,
+    };
+    const state = createEmptyGameState();
+    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
+      state,
+      {
+        currentCommandResolutionState: createMovementResolutionState(state, {
+          engagementState: createFrontEngagementState({
+            defendingUnitRetreats: true,
+            retreatState: createRetreatState(placement),
+          }),
+        }),
+      },
+    );
+
+    const result = findRetreatState(state, 'white');
+    expect(result).toStrictEqual(getRetreatStateFromFrontEngagement(state));
+    expect(result.retreatingUnit.unit).toStrictEqual(defendingUnit);
   });
 
   it('given white retreating but findRetreat(black), throws no retreat for black', () => {

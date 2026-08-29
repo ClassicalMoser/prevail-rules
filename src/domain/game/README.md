@@ -12,7 +12,7 @@ Follow the schema-first pattern in [`../entities/README.md`](../entities/README.
 - Discriminated unions for phase/step/visibility variants
 - Declarations only — no business logic here (queries, validation, and transforms live elsewhere)
 
-Visibility (`authoritative` | `whiteSeen` | `blackSeen`) is threaded as a type parameter on `Game` / `GameState` because it constrains which card fields are readable. Board size stays on `boardState.boardType` (see entities README).
+Visibility (`authoritative` | `whiteSeen` | `blackSeen`) lives on `CardState` and is threaded as a type parameter on `Game` / `GameState` because it constrains which card fields are readable. Board size stays on `boardState.boardType` (see entities README).
 
 ## Outline
 
@@ -32,6 +32,8 @@ Game / GameForVisibility
 | ----------------- | ----------------------------------------------------- |
 | `game.ts`         | Full game record (mode, players, armies, `gameState`) |
 | `gameState.ts`    | Runtime state for a visibility regime                 |
+| `cardState.ts`    | Card piles under a visibility regime                  |
+| `playerCardState.ts` | Owned vs hidden per-player piles                   |
 | `roundState.ts`   | Current round slice (phase + event stream)            |
 | `commitment.ts`   | Pending / completed / declined commitments            |
 | `attackResult.ts` | Attack outcome value                                  |

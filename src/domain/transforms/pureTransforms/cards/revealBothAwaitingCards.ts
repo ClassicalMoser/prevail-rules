@@ -1,4 +1,5 @@
-import type { CommandCard, CardState } from '@entities';
+import type { CommandCard } from '@entities';
+import type { CardState } from '@game';
 
 import { revealCard } from './revealCard';
 import { revealHiddenCard } from './revealHiddenCard';

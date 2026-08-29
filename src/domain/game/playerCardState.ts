@@ -1,7 +1,8 @@
+import type { CommandCard, HiddenCard } from '@entities';
 import type { AssertExact } from '@utils';
-import type { CommandCard, HiddenCard } from './commandCard';
+
+import { commandCardSchema, hiddenCardSchema } from '@entities';
 import { z } from 'zod';
-import { commandCardSchema, hiddenCardSchema } from './commandCard';
 
 /** The state of the opposing player's cards. */
 export interface HiddenCardState {

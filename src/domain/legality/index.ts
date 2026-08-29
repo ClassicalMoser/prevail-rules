@@ -1,3 +1,10 @@
+export type { ArmyCompositionRules } from './army';
+export {
+  armyCompositionByMode,
+  armyCompositionInitiatives,
+  armySchemaForMode,
+  refineArmyComposition,
+} from './army';
 export {
   getLegalChooseCardOptions,
   getLegalChooseMeleeResolutionEvents,

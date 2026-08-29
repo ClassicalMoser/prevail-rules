@@ -2,12 +2,8 @@ import type { Army, BoardType, GameModeName } from '@entities';
 import type { AssertExact } from '@utils';
 import type { GameStateForVisibility, GameStateVisibility } from './gameState';
 
-import {
-  armySchema,
-  gameModeNames,
-  gameModes,
-  refineArmyComposition,
-} from '@entities';
+import { armySchema, gameModeNames, gameModes } from '@entities';
+import { refineArmyComposition } from '@legality/army/refineArmyComposition';
 import { z } from 'zod';
 import {
   authoritativeGameStateSchema,

@@ -1,6 +1,7 @@
 import type { ExpectedEventInfo } from '@events';
 import type { EngagementState } from '@game';
 import { getOtherPlayer } from '@queries';
+import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 
 /**
@@ -89,17 +90,19 @@ export function getExpectedEngagementEvent(
         'Front engagement resolution complete but not marked as completed',
       );
     }
-    if (resolutionState.defendingUnitRetreated === 'pending') {
-      return {
-        actionType: 'playerChoice',
-        choiceType: 'chooseRetreatOption',
-        playerSource: defendingPlayer,
-      };
+
+    // Accepted retreat: nested RetreatState drives chooseRetreatOption / resolveRetreat
+    if (resolutionState.retreatState === 'pending') {
+      throw new Error(
+        'Front engagement accepted retreat but retreatState was not opened',
+      );
     }
-    // Defending unit retreated, front engagement resolution should be complete
-    // (but engagementState.completed should be set by the transform)
+    if (!resolutionState.retreatState.completed) {
+      return getExpectedRetreatEvent(resolutionState.retreatState);
+    }
+    // Retreat finished; applyResolveRetreat should have marked engagement complete
     throw new Error(
-      'Front engagement resolution complete but not marked as completed',
+      'Front engagement retreat completed but engagement not marked as completed',
     );
   }
   throw new Error('Invalid engagement type');

@@ -1,4 +1,5 @@
-import type { CommandCard, HiddenCardState } from '@entities';
+import type { CommandCard } from '@entities';
+import type { HiddenCardState } from '@game';
 
 /**
  * Promotes an opponent's hidden awaitingPlay slot to a public inPlay card.

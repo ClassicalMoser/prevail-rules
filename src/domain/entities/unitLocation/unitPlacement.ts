@@ -19,11 +19,11 @@ const _unitPlacementSchemaObject = z.object({
 
 type UnitPlacementSchemaType = z.infer<typeof _unitPlacementSchemaObject>;
 
+/** The schema for a unit placement. */
+export const unitPlacementSchema: z.ZodType<UnitPlacement> =
+  _unitPlacementSchemaObject;
+
 const _assertExactUnitPlacement: AssertExact<
   UnitPlacement,
   UnitPlacementSchemaType
 > = true;
-
-/** The schema for a unit placement. */
-export const unitPlacementSchema: z.ZodType<UnitPlacement> =
-  _unitPlacementSchemaObject;

@@ -1,4 +1,4 @@
-import type { HiddenCardState, OwnedCardState } from '@entities';
+import type { HiddenCardState, OwnedCardState } from '@game';
 
 /**
  * Converts an owned card slice to the hidden perspective: hand and awaiting-play

@@ -17,18 +17,7 @@ export const unitStatNames = [
 
 export type UnitStatName = (typeof unitStatNames)[number];
 
-const _unitStatNameSchemaObject = z.enum(unitStatNames);
-
-type UnitStatNameSchemaType = z.infer<typeof _unitStatNameSchemaObject>;
-
-export const unitStatNameSchema: z.ZodType<UnitStatName> =
-  _unitStatNameSchemaObject;
-
-// Assert type match at compile time
-const _assertExactUnitStatName: AssertExact<
-  UnitStatName,
-  UnitStatNameSchemaType
-> = true;
+export const unitStatNameSchema: z.ZodType<UnitStatName> = z.enum(unitStatNames);
 
 /**
  * Unit stats with all stat names as required keys.

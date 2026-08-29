@@ -1,4 +1,5 @@
-import type { CardState, HiddenCardState, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
+import type { CardState, HiddenCardState } from '@game';
 
 /**
  * Replaces the hidden card slice for `player` within a {@link CardState}.

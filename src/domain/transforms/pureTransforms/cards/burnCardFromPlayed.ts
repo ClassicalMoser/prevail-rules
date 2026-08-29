@@ -1,4 +1,5 @@
-import type { CommandCard, OwnedCardState } from '@entities';
+import type { CommandCard } from '@entities';
+import type { OwnedCardState } from '@game';
 
 /**
  * Burns a specific card from the player's played pile.

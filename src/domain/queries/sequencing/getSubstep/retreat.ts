@@ -5,6 +5,7 @@ import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
 } from './attackApply';
+import { getFrontEngagementStateFromMovement } from './engagement';
 
 /**
  * Gets the retreat state from an attack apply state.
@@ -95,8 +96,25 @@ export function getRetreatStateReadyForResolveFromMelee(
 }
 
 /**
+ * Gets the retreat state nested under a front engagement in movement CRS.
+ *
+ * @param state - The game state
+ * @returns The retreat state
+ * @throws Error if not in front engagement or retreatState is still pending
+ */
+export function getRetreatStateFromFrontEngagement(
+  state: GameState,
+): RetreatState {
+  const engagementState = getFrontEngagementStateFromMovement(state);
+  return throwIfPending(
+    engagementState.engagementResolutionState.retreatState,
+    'No retreat state found in front engagement',
+  );
+}
+
+/**
  * Finds the retreat state from the current game state context.
- * Searches in: ranged attack resolution or melee resolution.
+ * Searches in: ranged attack resolution, front engagement (movement), or melee.
  * Assumes a retreat state exists (validation should happen elsewhere).
  *
  * @param state - The game state
@@ -122,6 +140,15 @@ export function findRetreatState(
       }
     } catch {
       // Not in ranged attack or no retreat state, continue
+    }
+
+    try {
+      const retreatState = getRetreatStateFromFrontEngagement(state);
+      if (retreatState.retreatingUnit.unit.playerSide === player) {
+        return retreatState;
+      }
+    } catch {
+      // Not in front engagement retreat, continue
     }
   }
 

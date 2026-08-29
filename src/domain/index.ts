@@ -1,11 +1,7 @@
 // Main entry point — explicit re-exports only (no `export *`).
 
 export {
-  armyCompositionByMode,
-  armyCompositionInitiatives,
   armySchema,
-  armySchemaForMode,
-  refineArmyComposition,
   unitCountSchema,
   attackTypes,
   attackTypeSchema,
@@ -17,10 +13,15 @@ export {
   largeCoordinateLayout,
   smallCoordinateLayout,
 } from '@entities';
-export type { ArmyCompositionRules } from '@entities';
+export {
+  armyCompositionByMode,
+  armyCompositionInitiatives,
+  armySchemaForMode,
+  refineArmyComposition,
+} from '@legality';
+export type { ArmyCompositionRules } from '@legality';
 export {
   commandCardSchema,
-  cardStateSchema,
   commandSchema,
   commandSizes,
   commandTypes,
@@ -82,7 +83,6 @@ export type {
 } from '@entities';
 export type {
   CommandCard,
-  CardState,
   Command,
   CommandType,
   CommandSize,
@@ -287,17 +287,26 @@ export {
   whiteSeenGameSchema,
 } from '@game';
 export type {
+  AuthoritativeCardState,
+  BlackSeenCardState,
+  CardState,
   CardStateForVisibility,
   Game,
   GameForVisibility,
   GameState,
   GameStateForVisibility,
   GameStateVisibility,
+  HiddenCardState,
+  OwnedCardState,
   OwnedPlayerForGameState,
   UnownedPlayerForGameState,
+  WhiteSeenCardState,
 } from '@game';
 export {
   attackResultSchema,
+  authoritativeCardStateSchema,
+  blackSeenCardStateSchema,
+  cardStateSchema,
   CLEANUP_PHASE,
   cleanupPhaseStateSchema,
   cleanupPhaseSteps,
@@ -305,8 +314,11 @@ export {
   completedCommitmentSchema,
   declinedCommitmentSchema,
   gameStateSchema,
+  hiddenCardStateSchema,
   isAuthoritativeGameState,
+  ownedCardStateSchema,
   pendingCommitmentSchema,
+  whiteSeenCardStateSchema,
 } from '@game';
 export {
   ISSUE_COMMANDS_PHASE,
@@ -470,6 +482,7 @@ export {
   getRearEngagementStateFromMovement,
   getResolveMeleePhaseState,
   getRetreatStateFromAttackApply,
+  getRetreatStateFromFrontEngagement,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,

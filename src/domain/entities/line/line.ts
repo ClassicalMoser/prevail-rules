@@ -19,6 +19,8 @@ type LineSchemaType = z.infer<typeof _lineSchemaObject>;
 
 /**
  * The schema for a line of units.
+ *
+ * Note that this does not enforce correctness of geometry, only object structure.
  */
 export const lineSchema: z.ZodType<Line> = _lineSchemaObject;
 

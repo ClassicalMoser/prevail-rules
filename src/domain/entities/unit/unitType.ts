@@ -41,7 +41,8 @@ const _unitTypeSchemaObject = z.object({
   imageUrl: z.url().nullable(),
   /** The version of the unit. */
   version: z.string().regex(/^\d+\.\d+\.\d+$/u, {
-    message: 'Version must be a valid semver string (e.g., 1.0.0, 1.12.35)',
+    message:
+      'Version must be a valid semver string (e.g., 1.0.0, 1.12.35) and betas are not yet supported.',
   }),
   /** The traits of the unit. */
   traits: z.array(traitSchema).min(1).max(4),

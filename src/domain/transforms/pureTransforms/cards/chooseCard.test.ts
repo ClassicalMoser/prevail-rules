@@ -1,4 +1,4 @@
-import type { OwnedCardState } from '@entities';
+import type { OwnedCardState } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import { createEmptyGameState } from '@testing';
 

@@ -1,3 +1,4 @@
+import type { AssertExact } from '@utils';
 import type { StandardBoardCoordinate } from './standardBoard';
 import type { SmallBoardCoordinate } from './smallBoard';
 import type { LargeBoardCoordinate } from './largeBoard';
@@ -13,7 +14,7 @@ import { z } from 'zod';
  *
  * Coordinate sets are nested (small ⊂ standard ⊂ large), so the union is
  * extensionally equal to {@link LargeBoardCoordinate}. Types no longer express
- * which board size a coordinate belongs to — that is enforced at Zod boundaries
+ * which board size a coordinate belongs to. That is enforced at Zod boundaries
  * and by runtime bounds checks.
  */
 export type Coordinate =
@@ -29,7 +30,14 @@ const allCoordinates = [
   ]),
 ];
 
+const _coordinateSchemaObject = z.enum(allCoordinates);
+
+type CoordinateSchemaType = z.infer<typeof _coordinateSchemaObject>;
+
 /**
  * Schema for any board coordinate
  */
-export const coordinateSchema: z.ZodType<Coordinate> = z.enum(allCoordinates);
+export const coordinateSchema: z.ZodType<Coordinate> = _coordinateSchemaObject;
+
+const _assertExactCoordinate: AssertExact<Coordinate, CoordinateSchemaType> =
+  true;

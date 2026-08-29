@@ -1,17 +1,20 @@
 import type { UnitWithPlacement } from '@entities';
 import type { ChooseRetreatOptionEvent } from '@events';
 import {
+  getRetreatStateFromFrontEngagement,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
 } from '@queries';
 import {
   createAttackApplyStateWithRetreat,
   createEmptyGameState,
+  createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
+  createRetreatState,
   createTestUnit,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
@@ -150,12 +153,32 @@ describe(applyChooseRetreatOptionEvent, () => {
     expect(retreatState.finalPosition).toStrictEqual(chosenPosition);
   });
 
-  it('given movement CRS only, white chooseRetreat throws no retreat state for player', () => {
+  it('writes finalPosition on a front-engagement nested retreat', () => {
     const state = createEmptyGameState();
+    const unit = createTestUnit('white', { attack: 2 });
+    const placement: UnitWithPlacement = {
+      placement: {
+        coordinate: 'E-5',
+        facing: 'north',
+      },
+      unit,
+    };
+    const withBoard = {
+      ...state,
+      boardState: addUnitToBoard(state.boardState, placement),
+    };
     const stateInIssueCommands = updatePhaseState(
-      state,
-      createIssueCommandsPhaseState(state, {
-        currentCommandResolutionState: createMovementResolutionState(state),
+      withBoard,
+      createIssueCommandsPhaseState(withBoard, {
+        currentCommandResolutionState: createMovementResolutionState(
+          withBoard,
+          {
+            engagementState: createFrontEngagementState({
+              defendingUnitRetreats: true,
+              retreatState: createRetreatState(placement),
+            }),
+          },
+        ),
       }),
     );
     const event: ChooseRetreatOptionEvent = {
@@ -166,8 +189,9 @@ describe(applyChooseRetreatOptionEvent, () => {
       retreatOption: chosenPosition,
     };
 
-    expect(() =>
-      applyChooseRetreatOptionEvent(event, stateInIssueCommands),
-    ).toThrow('No retreat state found for player white');
+    const newState = applyChooseRetreatOptionEvent(event, stateInIssueCommands);
+    expect(
+      getRetreatStateFromFrontEngagement(newState).finalPosition,
+    ).toStrictEqual(chosenPosition);
   });
 });

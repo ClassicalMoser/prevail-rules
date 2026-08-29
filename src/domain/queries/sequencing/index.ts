@@ -35,6 +35,7 @@ export {
   getRallyResolutionState,
   getRearEngagementStateFromMovement,
   getRetreatStateFromAttackApply,
+  getRetreatStateFromFrontEngagement,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,

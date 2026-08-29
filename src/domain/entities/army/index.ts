@@ -1,9 +1,7 @@
-export type { Army } from './army';
-export { armySchema, armySchemaForMode, refineArmyComposition } from './army';
-export type { ArmyCompositionRules } from './armyComposition';
-export {
-  armyCompositionByMode,
-  armyCompositionInitiatives,
-} from './armyComposition';
-export type { UnitCount } from './unitCount';
+// Unit counts
 export { unitCountSchema } from './unitCount';
+export type { UnitCount } from './unitCount';
+
+// Army
+export { armySchema } from './army';
+export type { Army } from './army';

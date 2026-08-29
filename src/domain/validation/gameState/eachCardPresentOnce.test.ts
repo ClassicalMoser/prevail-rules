@@ -1,4 +1,5 @@
-import type { AuthoritativeCardState, CommandCard } from '@entities';
+import type { CommandCard } from '@entities';
+import type { AuthoritativeCardState } from '@game';
 import { tempCommandCards } from '@sampleValues';
 
 import { eachCardPresentOnce } from './eachCardPresentOnce';
