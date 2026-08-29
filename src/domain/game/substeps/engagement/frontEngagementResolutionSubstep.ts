@@ -24,20 +24,22 @@ export interface FrontEngagementResolutionState {
   retreatState: RetreatState | 'pending';
 }
 
-const _frontEngagementResolutionStateSchemaObject = z.object({
-  /** The type of engagement. */
-  engagementType: z.literal('front'),
-  /** The commitment of the defending player. */
-  defensiveCommitment: commitmentSchema,
-  /** Whether the defending unit can retreat. */
-  defendingUnitCanRetreat: z.boolean().or(z.literal('pending')),
-  /** Whether the defending unit chooses to retreat. */
-  defendingUnitRetreats: z.boolean().or(z.literal('pending')),
-  /** Whether the defending unit has retreated. */
-  defendingUnitRetreated: z.boolean().or(z.literal('pending')),
-  /** Nested retreat substep once the defender accepts retreat. */
-  retreatState: retreatStateSchema.or(z.literal('pending')),
-});
+const _frontEngagementResolutionStateSchemaObject = z
+  .object({
+    /** The type of engagement. */
+    engagementType: z.literal('front'),
+    /** The commitment of the defending player. */
+    defensiveCommitment: commitmentSchema,
+    /** Whether the defending unit can retreat. */
+    defendingUnitCanRetreat: z.boolean().or(z.literal('pending')),
+    /** Whether the defending unit chooses to retreat. */
+    defendingUnitRetreats: z.boolean().or(z.literal('pending')),
+    /** Whether the defending unit has retreated. */
+    defendingUnitRetreated: z.boolean().or(z.literal('pending')),
+    /** Nested retreat substep once the defender accepts retreat. */
+    retreatState: retreatStateSchema.or(z.literal('pending')),
+  })
+  .strict();
 
 type FrontEngagementResolutionStateSchemaType = z.infer<
   typeof _frontEngagementResolutionStateSchemaObject

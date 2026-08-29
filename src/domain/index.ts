@@ -18,6 +18,11 @@ export {
   armyCompositionInitiatives,
   armySchemaForMode,
   refineArmyComposition,
+  authoritativeGameWithArmyCompositionSchema,
+  blackSeenGameWithArmyCompositionSchema,
+  gameWithArmyCompositionSchema,
+  refineGameArmyComposition,
+  whiteSeenGameWithArmyCompositionSchema,
 } from '@legality';
 export type { ArmyCompositionRules } from '@legality';
 export {

@@ -39,18 +39,20 @@ const _completeMoveCommandersPhaseEventSchemaObject: z.ZodObject<{
   eventNumber: z.ZodNumber;
   remainingCommandsFirstPlayer: z.ZodArray<typeof commandSchema>;
   remainingCommandsSecondPlayer: z.ZodArray<typeof commandSchema>;
-}> = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** Mirrors `remainingCommandsFirstPlayer` on {@link CompleteMoveCommandersPhaseEvent}. */
-  remainingCommandsFirstPlayer: z.array(commandSchema),
-  /** Mirrors `remainingCommandsSecondPlayer` on {@link CompleteMoveCommandersPhaseEvent}. */
-  remainingCommandsSecondPlayer: z.array(commandSchema),
-});
+}> = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(COMPLETE_MOVE_COMMANDERS_PHASE_EFFECT_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** Mirrors `remainingCommandsFirstPlayer` on {@link CompleteMoveCommandersPhaseEvent}. */
+    remainingCommandsFirstPlayer: z.array(commandSchema),
+    /** Mirrors `remainingCommandsSecondPlayer` on {@link CompleteMoveCommandersPhaseEvent}. */
+    remainingCommandsSecondPlayer: z.array(commandSchema),
+  })
+  .strict();
 
 type CompleteMoveCommandersPhaseEventSchemaType = z.infer<
   typeof _completeMoveCommandersPhaseEventSchemaObject

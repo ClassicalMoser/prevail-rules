@@ -35,16 +35,18 @@ export interface MovementResolutionState {
   completed: boolean;
 }
 
-const _movementResolutionStateSchemaObject = z.object({
-  commandResolutionType: z.literal('movement'),
-  commitment: commitmentSchema,
-  completed: z.boolean(),
-  engagementState: engagementStateSchema.or(z.literal('pending')),
-  moveCommander: z.boolean(),
-  movingUnit: unitWithPlacementSchema,
-  substepType: z.literal('commandResolution'),
-  targetPlacement: unitPlacementSchema,
-});
+const _movementResolutionStateSchemaObject = z
+  .object({
+    commandResolutionType: z.literal('movement'),
+    commitment: commitmentSchema,
+    completed: z.boolean(),
+    engagementState: engagementStateSchema.or(z.literal('pending')),
+    moveCommander: z.boolean(),
+    movingUnit: unitWithPlacementSchema,
+    substepType: z.literal('commandResolution'),
+    targetPlacement: unitPlacementSchema,
+  })
+  .strict();
 
 type MovementResolutionStateSchemaType = z.infer<
   typeof _movementResolutionStateSchemaObject

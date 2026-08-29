@@ -27,6 +27,7 @@ const _armySchemaObject = z
     /** The command cards in the army. */
     commandCards: z.array(commandCardSchema),
   })
+  .strict()
   .superRefine((army, ctx) => {
     const seenUnitTypeIds = new Set<string>();
     for (const [index, unit] of army.units.entries()) {

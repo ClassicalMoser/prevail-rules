@@ -17,7 +17,8 @@ export const unitStatNames = [
 
 export type UnitStatName = (typeof unitStatNames)[number];
 
-export const unitStatNameSchema: z.ZodType<UnitStatName> = z.enum(unitStatNames);
+export const unitStatNameSchema: z.ZodType<UnitStatName> =
+  z.enum(unitStatNames);
 
 /**
  * Unit stats with all stat names as required keys.
@@ -32,7 +33,7 @@ for (const statName of unitStatNames) {
   _unitStatsSchemaShape[statName] = z.number();
 }
 
-const _unitStatsSchemaObject = z.object(_unitStatsSchemaShape);
+const _unitStatsSchemaObject = z.object(_unitStatsSchemaShape).strict();
 
 type UnitStatsSchemaType = z.infer<typeof _unitStatsSchemaObject>;
 

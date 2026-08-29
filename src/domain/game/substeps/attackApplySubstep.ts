@@ -43,15 +43,17 @@ export interface AttackApplyState {
   completed: boolean;
 }
 
-const _attackApplyStateSchemaObject = z.object({
-  attackResult: attackResultSchema,
-  completed: z.boolean(),
-  defendingUnit: unitInstanceSchema,
-  retreatState: retreatStateSchema.or(z.literal('pending')),
-  reverseState: reverseStateSchema.or(z.literal('pending')),
-  routState: routStateSchema.or(z.literal('pending')),
-  substepType: z.literal('attackApply'),
-});
+const _attackApplyStateSchemaObject = z
+  .object({
+    attackResult: attackResultSchema,
+    completed: z.boolean(),
+    defendingUnit: unitInstanceSchema,
+    retreatState: retreatStateSchema.or(z.literal('pending')),
+    reverseState: reverseStateSchema.or(z.literal('pending')),
+    routState: routStateSchema.or(z.literal('pending')),
+    substepType: z.literal('attackApply'),
+  })
+  .strict();
 
 type AttackApplyStateSchemaType = z.infer<typeof _attackApplyStateSchemaObject>;
 

@@ -331,9 +331,7 @@ describe(applyResolveRetreatEvent, () => {
                 defendingUnitRetreats: true,
                 retreatState: createRetreatState(placement, {
                   finalPosition: { coordinate: 'E-4', facing: 'north' },
-                  legalRetreatOptions: [
-                    { coordinate: 'E-4', facing: 'north' },
-                  ],
+                  legalRetreatOptions: [{ coordinate: 'E-4', facing: 'north' }],
                 }),
               }),
             },

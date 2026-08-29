@@ -31,14 +31,16 @@ export interface RetreatState {
   completed: boolean;
 }
 
-const _retreatStateSchemaObject = z.object({
-  completed: z.boolean(),
-  finalPosition: unitPlacementSchema.or(z.literal('pending')),
-  legalRetreatOptions: z.array(unitPlacementSchema),
-  retreatingUnit: unitWithPlacementSchema,
-  routState: routStateSchema.or(z.literal('pending')),
-  substepType: z.literal('retreat'),
-});
+const _retreatStateSchemaObject = z
+  .object({
+    completed: z.boolean(),
+    finalPosition: unitPlacementSchema.or(z.literal('pending')),
+    legalRetreatOptions: z.array(unitPlacementSchema),
+    retreatingUnit: unitWithPlacementSchema,
+    routState: routStateSchema.or(z.literal('pending')),
+    substepType: z.literal('retreat'),
+  })
+  .strict();
 
 type RetreatStateSchemaType = z.infer<typeof _retreatStateSchemaObject>;
 

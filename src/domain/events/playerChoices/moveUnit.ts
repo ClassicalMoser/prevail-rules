@@ -28,15 +28,17 @@ export interface MoveUnitEvent {
   player: PlayerSide;
 }
 
-const _moveUnitEventSchemaObject = z.object({
-  choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  moveCommander: z.boolean(),
-  player: playerSideSchema,
-  to: unitPlacementSchema,
-  unit: unitWithPlacementSchema,
-});
+const _moveUnitEventSchemaObject = z
+  .object({
+    choiceType: z.literal(MOVE_UNIT_CHOICE_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    moveCommander: z.boolean(),
+    player: playerSideSchema,
+    to: unitPlacementSchema,
+    unit: unitWithPlacementSchema,
+  })
+  .strict();
 
 type MoveUnitEventSchemaType = z.infer<typeof _moveUnitEventSchemaObject>;
 

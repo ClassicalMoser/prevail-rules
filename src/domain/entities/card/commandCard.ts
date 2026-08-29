@@ -46,26 +46,28 @@ export interface CommandCard {
   unitSupport: UnitSupport;
 }
 
-const _commandCardSchemaObject = z.object({
-  /** The unique identifier of the card. */
-  id: z.uuid(),
-  /** The version of the card. */
-  version: z.string().regex(/^\d+\.\d+\.\d+$/u, {
-    message: 'Version must be a valid semver string (e.g., 1.0.0, 1.12.35)',
-  }),
-  /** The name of the card, regardless of version. */
-  name: z.string().min(3),
-  /** The initiative value of the card. */
-  initiative: z.int().min(MIN_INITIATIVE_VALUE).max(MAX_INITIATIVE_VALUE),
-  /** The modifiers the card can discard for. */
-  modifiers: z.array(statModifierSchema).min(1).max(2),
-  /** The command of the card. */
-  command: commandSchema,
-  /** The round effect of the card, if any. */
-  roundEffect: roundEffectSchema,
-  /** The unit support this card provides */
-  unitSupport: unitSupportSchema,
-});
+const _commandCardSchemaObject = z
+  .object({
+    /** The unique identifier of the card. */
+    id: z.uuid(),
+    /** The version of the card. */
+    version: z.string().regex(/^\d+\.\d+\.\d+$/u, {
+      message: 'Version must be a valid semver string (e.g., 1.0.0, 1.12.35)',
+    }),
+    /** The name of the card, regardless of version. */
+    name: z.string().min(3),
+    /** The initiative value of the card. */
+    initiative: z.int().min(MIN_INITIATIVE_VALUE).max(MAX_INITIATIVE_VALUE),
+    /** The modifiers the card can discard for. */
+    modifiers: z.array(statModifierSchema).min(1).max(2),
+    /** The command of the card. */
+    command: commandSchema,
+    /** The round effect of the card, if any. */
+    roundEffect: roundEffectSchema,
+    /** The unit support this card provides */
+    unitSupport: unitSupportSchema,
+  })
+  .strict();
 
 type CommandCardSchemaType = z.infer<typeof _commandCardSchemaObject>;
 

@@ -13,7 +13,8 @@ export const gameModeNames = ['tutorial', 'mini', 'standard', 'epic'] as const;
 export type GameModeName = (typeof gameModeNames)[number];
 
 /** Schema for a game mode name. */
-export const gameModeNameSchema: z.ZodType<GameModeName> = z.enum(gameModeNames);
+export const gameModeNameSchema: z.ZodType<GameModeName> =
+  z.enum(gameModeNames);
 
 /**
  * Catalog of modes: name ↔ board size lives here (values), not on per-mode interfaces.
@@ -39,14 +40,16 @@ const _assertBoardSizesAreBoardType: AssertExact<
 > = true;
 
 /** One catalog row → exact `{ name, boardSize }` object schema (keeps literals narrow). */
-function gameModeEntrySchema<const B extends string, const N extends string>(mode: {
-  boardSize: B;
-  name: N;
-}) {
-  return z.object({
-    boardSize: z.literal(mode.boardSize),
-    name: z.literal(mode.name),
-  });
+function gameModeEntrySchema<
+  const B extends string,
+  const N extends string,
+>(mode: { boardSize: B; name: N }) {
+  return z
+    .object({
+      boardSize: z.literal(mode.boardSize),
+      name: z.literal(mode.name),
+    })
+    .strict();
 }
 
 const _gameModeSchemaObject = z.union([

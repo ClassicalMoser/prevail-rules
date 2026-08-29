@@ -52,18 +52,20 @@ export interface Command {
   modifiers: Modifier[];
 }
 
-const _commandSchemaObject = z.object({
-  /** The size of the command. */
-  size: commandSizesSchema,
-  /** The type of the command. */
-  type: commandTypesSchema,
-  /** The number of commands of this size to be used. */
-  number: z.int().min(1).max(10),
-  /** The restrictions on the command */
-  restrictions: restrictionsSchema,
-  /** The modifiers the command applies. */
-  modifiers: z.array(modifierSchema).min(0).max(2),
-});
+const _commandSchemaObject = z
+  .object({
+    /** The size of the command. */
+    size: commandSizesSchema,
+    /** The type of the command. */
+    type: commandTypesSchema,
+    /** The number of commands of this size to be used. */
+    number: z.int().min(1).max(10),
+    /** The restrictions on the command */
+    restrictions: restrictionsSchema,
+    /** The modifiers the command applies. */
+    modifiers: z.array(modifierSchema).min(0).max(2),
+  })
+  .strict();
 
 type CommandSchemaType = z.infer<typeof _commandSchemaObject>;
 

@@ -26,18 +26,20 @@ export interface ResolveRallyEvent {
   card: CommandCard;
 }
 
-const _resolveRallyEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(RESOLVE_RALLY_EFFECT_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player who is resolving the rally. */
-  player: playerSideSchema,
-  /** The card to burn */
-  card: commandCardSchema,
-});
+const _resolveRallyEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(RESOLVE_RALLY_EFFECT_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The player who is resolving the rally. */
+    player: playerSideSchema,
+    /** The card to burn */
+    card: commandCardSchema,
+  })
+  .strict();
 
 type ResolveRallyEventSchemaType = z.infer<
   typeof _resolveRallyEventSchemaObject

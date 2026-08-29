@@ -11,9 +11,11 @@ export interface Line {
   unitPlacements: UnitWithPlacement[];
 }
 
-const _lineSchemaObject = z.object({
-  unitPlacements: z.array(unitWithPlacementSchema),
-});
+const _lineSchemaObject = z
+  .object({
+    unitPlacements: z.array(unitWithPlacementSchema),
+  })
+  .strict();
 
 type LineSchemaType = z.infer<typeof _lineSchemaObject>;
 

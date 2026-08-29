@@ -6,6 +6,13 @@ export {
   refineArmyComposition,
 } from './army';
 export {
+  authoritativeGameWithArmyCompositionSchema,
+  blackSeenGameWithArmyCompositionSchema,
+  gameWithArmyCompositionSchema,
+  refineGameArmyComposition,
+  whiteSeenGameWithArmyCompositionSchema,
+} from './game';
+export {
   getLegalChooseCardOptions,
   getLegalChooseMeleeResolutionEvents,
   getLegalChooseRallyEvent,

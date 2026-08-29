@@ -38,23 +38,27 @@ export interface AssignUnitSupportEvent {
 const unitSupportAssignmentSchemaObject: z.ZodObject<{
   cardId: z.ZodString;
   units: z.ZodArray<typeof unitInstanceSchema>;
-}> = z.object({
-  cardId: z.string(),
-  units: z.array(unitInstanceSchema),
-});
+}> = z
+  .object({
+    cardId: z.string(),
+    units: z.array(unitInstanceSchema),
+  })
+  .strict();
 
-const _assignUnitSupportEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  /** The type of player choice. */
-  choiceType: z.literal(ASSIGN_UNIT_SUPPORT_CHOICE_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player assigning support (the rallying player). */
-  player: playerSideSchema,
-  /** Per-card slot assignments (omit unused hand cards). */
-  assignments: z.array(unitSupportAssignmentSchemaObject),
-});
+const _assignUnitSupportEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** The type of player choice. */
+    choiceType: z.literal(ASSIGN_UNIT_SUPPORT_CHOICE_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The player assigning support (the rallying player). */
+    player: playerSideSchema,
+    /** Per-card slot assignments (omit unused hand cards). */
+    assignments: z.array(unitSupportAssignmentSchemaObject),
+  })
+  .strict();
 
 type AssignUnitSupportEventSchemaType = z.infer<
   typeof _assignUnitSupportEventSchemaObject

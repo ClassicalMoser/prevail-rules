@@ -27,14 +27,16 @@ export interface ResolveReverseEvent {
   eventNumber: number;
 }
 
-const _resolveReverseEventSchemaObject = z.object({
-  attackResolutionContext: attackResolutionContextSchema,
-  effectType: z.literal(RESOLVE_REVERSE_EFFECT_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  newUnitPlacement: unitWithPlacementSchema,
-  unitInstance: unitWithPlacementSchema,
-});
+const _resolveReverseEventSchemaObject = z
+  .object({
+    attackResolutionContext: attackResolutionContextSchema,
+    effectType: z.literal(RESOLVE_REVERSE_EFFECT_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    newUnitPlacement: unitWithPlacementSchema,
+    unitInstance: unitWithPlacementSchema,
+  })
+  .strict();
 
 type ResolveReverseEventSchemaType = z.infer<
   typeof _resolveReverseEventSchemaObject

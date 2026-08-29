@@ -30,20 +30,22 @@ export interface RoutState {
 }
 
 /** The schema for the state of the rout discard substep. */
-const _routStateSchemaObject = z.object({
-  /** The type of the substep. */
-  substepType: z.literal('rout'),
-  /** The player that is discarding cards. */
-  player: playerSideSchema,
-  /** The units that are being routed. */
-  unitsToRout: z.array(unitInstanceSchema),
-  /** The number of cards to discard. */
-  numberToDiscard: z.number().or(z.literal('pending')),
-  /** Whether the cards have been chosen. */
-  cardsChosen: z.boolean(),
-  /** Whether the rout has been completed. */
-  completed: z.boolean(),
-});
+const _routStateSchemaObject = z
+  .object({
+    /** The type of the substep. */
+    substepType: z.literal('rout'),
+    /** The player that is discarding cards. */
+    player: playerSideSchema,
+    /** The units that are being routed. */
+    unitsToRout: z.array(unitInstanceSchema),
+    /** The number of cards to discard. */
+    numberToDiscard: z.number().or(z.literal('pending')),
+    /** Whether the cards have been chosen. */
+    cardsChosen: z.boolean(),
+    /** Whether the rout has been completed. */
+    completed: z.boolean(),
+  })
+  .strict();
 
 type RoutStateSchemaType = z.infer<typeof _routStateSchemaObject>;
 

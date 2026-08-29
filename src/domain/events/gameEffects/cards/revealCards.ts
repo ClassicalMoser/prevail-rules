@@ -26,18 +26,20 @@ export interface RevealCardsEvent {
   white: CommandCard;
 }
 
-const _revealCardsEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(REVEAL_CARDS_EFFECT_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** Black's revealed card (was awaiting play). */
-  black: commandCardSchema,
-  /** White's revealed card (was awaiting play). */
-  white: commandCardSchema,
-});
+const _revealCardsEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(REVEAL_CARDS_EFFECT_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** Black's revealed card (was awaiting play). */
+    black: commandCardSchema,
+    /** White's revealed card (was awaiting play). */
+    white: commandCardSchema,
+  })
+  .strict();
 
 type RevealCardsEventSchemaType = z.infer<typeof _revealCardsEventSchemaObject>;
 

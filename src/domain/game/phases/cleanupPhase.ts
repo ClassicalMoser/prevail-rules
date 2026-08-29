@@ -47,20 +47,22 @@ export interface CleanupPhaseState {
   secondPlayerRallyResolutionState: RallyResolutionState | 'pending';
 }
 
-const _cleanupPhaseStateSchemaObject = z.object({
-  /** The current phase of the round. */
-  phase: z.literal('cleanup'),
-  /** The step of the cleanup phase. */
-  step: cleanupPhaseStepSchema,
-  /** The state of the first player's rally resolution (unit support checks). */
-  firstPlayerRallyResolutionState: rallyResolutionStateSchema.or(
-    z.literal('pending'),
-  ),
-  /** The state of the second player's rally resolution (unit support checks). */
-  secondPlayerRallyResolutionState: rallyResolutionStateSchema.or(
-    z.literal('pending'),
-  ),
-});
+const _cleanupPhaseStateSchemaObject = z
+  .object({
+    /** The current phase of the round. */
+    phase: z.literal('cleanup'),
+    /** The step of the cleanup phase. */
+    step: cleanupPhaseStepSchema,
+    /** The state of the first player's rally resolution (unit support checks). */
+    firstPlayerRallyResolutionState: rallyResolutionStateSchema.or(
+      z.literal('pending'),
+    ),
+    /** The state of the second player's rally resolution (unit support checks). */
+    secondPlayerRallyResolutionState: rallyResolutionStateSchema.or(
+      z.literal('pending'),
+    ),
+  })
+  .strict();
 
 type CleanupPhaseStateSchemaType = z.infer<
   typeof _cleanupPhaseStateSchemaObject

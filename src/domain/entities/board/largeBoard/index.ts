@@ -7,7 +7,10 @@ export { largeBoardColumnNumbers } from './largeColumnNumbers';
 export type { LargeBoardColumnNumber } from './largeColumnNumbers';
 
 // Coordinates
-export { largeBoardCoordinateSchema, largeBoardCoordinates } from './largeCoordinates';
+export {
+  largeBoardCoordinateSchema,
+  largeBoardCoordinates,
+} from './largeCoordinates';
 export type { LargeBoardCoordinate } from './largeCoordinates';
 
 // Layout

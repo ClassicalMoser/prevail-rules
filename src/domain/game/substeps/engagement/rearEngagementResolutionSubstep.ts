@@ -13,14 +13,16 @@ export interface RearEngagementResolutionState {
   completed: boolean;
 }
 
-const _rearEngagementResolutionStateSchemaObject = z.object({
-  /** The type of engagement. */
-  engagementType: z.literal('rear'),
-  /** The state of the rout. */
-  routState: routStateSchema,
-  /** Whether the rear engagement resolution substep is complete. */
-  completed: z.boolean(),
-});
+const _rearEngagementResolutionStateSchemaObject = z
+  .object({
+    /** The type of engagement. */
+    engagementType: z.literal('rear'),
+    /** The state of the rout. */
+    routState: routStateSchema,
+    /** Whether the rear engagement resolution substep is complete. */
+    completed: z.boolean(),
+  })
+  .strict();
 
 type RearEngagementResolutionStateSchemaType = z.infer<
   typeof _rearEngagementResolutionStateSchemaObject

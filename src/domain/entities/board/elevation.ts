@@ -23,24 +23,26 @@ export interface Elevation {
   southEast: number;
 }
 
-const _elevationSchemaObject = z.object({
-  /**
-   * The elevation of the north-west corner of the space.
-   */
-  northWest: z.int().min(0).max(5).default(0),
-  /**
-   * The elevation of the north-east corner of the space.
-   */
-  northEast: z.int().min(0).max(5).default(0),
-  /**
-   * The elevation of the south-west corner of the space.
-   */
-  southWest: z.int().min(0).max(5).default(0),
-  /**
-   * The elevation of the south-east corner of the space.
-   */
-  southEast: z.int().min(0).max(5).default(0),
-});
+const _elevationSchemaObject = z
+  .object({
+    /**
+     * The elevation of the north-west corner of the space.
+     */
+    northWest: z.int().min(0).max(5).default(0),
+    /**
+     * The elevation of the north-east corner of the space.
+     */
+    northEast: z.int().min(0).max(5).default(0),
+    /**
+     * The elevation of the south-west corner of the space.
+     */
+    southWest: z.int().min(0).max(5).default(0),
+    /**
+     * The elevation of the south-east corner of the space.
+     */
+    southEast: z.int().min(0).max(5).default(0),
+  })
+  .strict();
 
 type elevationSchemaType = z.infer<typeof _elevationSchemaObject>;
 

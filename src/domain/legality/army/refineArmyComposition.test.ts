@@ -159,7 +159,7 @@ describe(armySchemaForMode, () => {
 /**
  * Entity shape schema still used as the base for mode refinement.
  */
-describe('armySchema', () => {
+describe('entity armySchema shape', () => {
   it('accepts shape without enforcing mode composition', () => {
     const army: Army = {
       commandCards: [],

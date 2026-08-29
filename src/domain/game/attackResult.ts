@@ -12,14 +12,16 @@ export interface AttackResult {
 }
 
 /** The schema for an attack result. */
-const _attackResultSchemaObject = z.object({
-  /** Whether the unit is routed. */
-  unitRouted: z.boolean(),
-  /** Whether the unit is reversed. */
-  unitReversed: z.boolean(),
-  /** Whether the unit is retreated. */
-  unitRetreated: z.boolean(),
-});
+const _attackResultSchemaObject = z
+  .object({
+    /** Whether the unit is routed. */
+    unitRouted: z.boolean(),
+    /** Whether the unit is reversed. */
+    unitReversed: z.boolean(),
+    /** Whether the unit is retreated. */
+    unitRetreated: z.boolean(),
+  })
+  .strict();
 
 /** The type of an attack result. */
 type AttackResultSchemaType = z.infer<typeof _attackResultSchemaObject>;

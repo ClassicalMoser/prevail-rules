@@ -12,10 +12,12 @@ export interface UnitPlacement {
   facing: UnitFacing;
 }
 
-const _unitPlacementSchemaObject = z.object({
-  coordinate: coordinateSchema,
-  facing: unitFacingSchema,
-});
+const _unitPlacementSchemaObject = z
+  .object({
+    coordinate: coordinateSchema,
+    facing: unitFacingSchema,
+  })
+  .strict();
 
 type UnitPlacementSchemaType = z.infer<typeof _unitPlacementSchemaObject>;
 

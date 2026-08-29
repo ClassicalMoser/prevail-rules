@@ -20,13 +20,15 @@ export interface StartEngagementEvent {
   defenderWithPlacement: UnitWithPlacement;
 }
 
-const _startEngagementEventSchemaObject = z.object({
-  defenderWithPlacement: unitWithPlacementSchema,
-  effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
-  engagementType: engagementTypeSchema,
-  eventNumber: z.number(),
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-});
+const _startEngagementEventSchemaObject = z
+  .object({
+    defenderWithPlacement: unitWithPlacementSchema,
+    effectType: z.literal(START_ENGAGEMENT_EFFECT_TYPE),
+    engagementType: engagementTypeSchema,
+    eventNumber: z.number(),
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+  })
+  .strict();
 
 type StartEngagementEventSchemaType = z.infer<
   typeof _startEngagementEventSchemaObject

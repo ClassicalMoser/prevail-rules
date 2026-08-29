@@ -4,9 +4,11 @@ export interface PassValidationResult {
   result: true;
 }
 
-const passValidationResultSchemaObject = z.object({
-  result: z.literal(true),
-});
+const passValidationResultSchemaObject = z
+  .object({
+    result: z.literal(true),
+  })
+  .strict();
 
 export const passValidationResultSchema: z.ZodType<PassValidationResult> =
   passValidationResultSchemaObject;
@@ -16,10 +18,12 @@ export interface FailValidationResult {
   errorReason: string;
 }
 
-const failValidationResultSchemaObject = z.object({
-  errorReason: z.string(),
-  result: z.literal(false),
-});
+const failValidationResultSchemaObject = z
+  .object({
+    errorReason: z.string(),
+    result: z.literal(false),
+  })
+  .strict();
 
 export const failValidationResultSchema: z.ZodType<FailValidationResult> =
   failValidationResultSchemaObject;

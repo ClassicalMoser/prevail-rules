@@ -67,17 +67,19 @@ export interface IssueCommandsPhaseState {
   currentCommandResolutionState: CommandResolutionState | 'pending';
 }
 
-const _issueCommandsPhaseStateSchemaObject = z.object({
-  phase: z.literal('issueCommands'),
-  step: _issueCommandsPhaseStepSchemaObject,
-  remainingCommandsFirstPlayer: z.array(commandSchema),
-  remainingUnitsFirstPlayer: z.array(unitInstanceSchema),
-  remainingCommandsSecondPlayer: z.array(commandSchema),
-  remainingUnitsSecondPlayer: z.array(unitInstanceSchema),
-  currentCommandResolutionState: commandResolutionStateSchema.or(
-    z.literal('pending'),
-  ),
-});
+const _issueCommandsPhaseStateSchemaObject = z
+  .object({
+    phase: z.literal('issueCommands'),
+    step: _issueCommandsPhaseStepSchemaObject,
+    remainingCommandsFirstPlayer: z.array(commandSchema),
+    remainingUnitsFirstPlayer: z.array(unitInstanceSchema),
+    remainingCommandsSecondPlayer: z.array(commandSchema),
+    remainingUnitsSecondPlayer: z.array(unitInstanceSchema),
+    currentCommandResolutionState: commandResolutionStateSchema.or(
+      z.literal('pending'),
+    ),
+  })
+  .strict();
 
 type IssueCommandsPhaseStateSchemaType = z.infer<
   typeof _issueCommandsPhaseStateSchemaObject

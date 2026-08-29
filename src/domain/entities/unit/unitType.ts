@@ -30,31 +30,33 @@ export interface UnitType {
   morale: number;
 }
 
-const _unitTypeSchemaObject = z.object({
-  /** Not sure yet how the units will be identified,
-   * but we need to have a unique identifier for each unit type.
-   */
-  id: z.uuid(),
-  /** The name of the unit, capitalized with spaces. */
-  name: z.string(),
-  /** The link to the unit's image. */
-  imageUrl: z.url().nullable(),
-  /** The version of the unit. */
-  version: z.string().regex(/^\d+\.\d+\.\d+$/u, {
-    message:
-      'Version must be a valid semver string (e.g., 1.0.0, 1.12.35) and betas are not yet supported.',
-  }),
-  /** The traits of the unit. */
-  traits: z.array(traitSchema).min(1).max(4),
-  /** The stats of the unit. */
-  stats: unitStatsSchema,
-  /** The cost of the unit. */
-  cost: z.int().min(5).max(100),
-  /** The per-type copy limit printed on the unit (how many of this type a list may take). */
-  limit: z.int().min(1).max(MAX_ARMY_UNIT_PER_TYPE_COUNT),
-  /** The number of cards the owner must discard when the unit is routed. */
-  morale: z.int().min(0).max(5),
-});
+const _unitTypeSchemaObject = z
+  .object({
+    /** Not sure yet how the units will be identified,
+     * but we need to have a unique identifier for each unit type.
+     */
+    id: z.uuid(),
+    /** The name of the unit, capitalized with spaces. */
+    name: z.string(),
+    /** The link to the unit's image. */
+    imageUrl: z.url().nullable(),
+    /** The version of the unit. */
+    version: z.string().regex(/^\d+\.\d+\.\d+$/u, {
+      message:
+        'Version must be a valid semver string (e.g., 1.0.0, 1.12.35) and betas are not yet supported.',
+    }),
+    /** The traits of the unit. */
+    traits: z.array(traitSchema).min(1).max(4),
+    /** The stats of the unit. */
+    stats: unitStatsSchema,
+    /** The cost of the unit. */
+    cost: z.int().min(5).max(100),
+    /** The per-type copy limit printed on the unit (how many of this type a list may take). */
+    limit: z.int().min(1).max(MAX_ARMY_UNIT_PER_TYPE_COUNT),
+    /** The number of cards the owner must discard when the unit is routed. */
+    morale: z.int().min(0).max(5),
+  })
+  .strict();
 
 type UnitTypeSchemaType = z.infer<typeof _unitTypeSchemaObject>;
 

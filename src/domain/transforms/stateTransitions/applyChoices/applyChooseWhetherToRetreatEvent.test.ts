@@ -19,16 +19,15 @@ import { applyChooseWhetherToRetreatEvent } from './applyChooseWhetherToRetreatE
  * Accepting opens a nested RetreatState with baked legalRetreatOptions.
  */
 describe(applyChooseWhetherToRetreatEvent, () => {
-  function createStateWithFrontEngagement(
-    defender: UnitWithPlacement = {
+  function createStateWithFrontEngagement(defender?: UnitWithPlacement) {
+    const defendingUnit: UnitWithPlacement = defender ?? {
       placement: { coordinate: 'E-5', facing: 'north' },
       unit: createTestUnit('white', { attack: 2, speed: 3 }),
-    },
-  ) {
+    };
     const state = createEmptyGameState();
     const withBoard = {
       ...state,
-      boardState: addUnitToBoard(state.boardState, defender),
+      boardState: addUnitToBoard(state.boardState, defendingUnit),
     };
     const phaseState = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: createMovementResolutionState(withBoard, {
@@ -36,11 +35,11 @@ describe(applyChooseWhetherToRetreatEvent, () => {
           defendingUnitCanRetreat: true,
           defensiveCommitment: { commitmentType: 'declined' },
         }),
-        targetPlacement: defender.placement,
+        targetPlacement: defendingUnit.placement,
       }),
     });
     return {
-      defender,
+      defender: defendingUnit,
       state: updatePhaseState(withBoard, phaseState),
     };
   }

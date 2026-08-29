@@ -29,14 +29,16 @@ export interface SetupUnitsEvent {
   player: PlayerSide;
 }
 
-const _setupUnitsEventSchemaObject = z.object({
-  choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
-  commanderCoordinate: coordinateSchema,
-  eventNumber: z.number(),
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  player: playerSideSchema,
-  unitPlacements: z.array(unitWithPlacementSchema),
-});
+const _setupUnitsEventSchemaObject = z
+  .object({
+    choiceType: z.literal(SETUP_UNITS_CHOICE_TYPE),
+    commanderCoordinate: coordinateSchema,
+    eventNumber: z.number(),
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    player: playerSideSchema,
+    unitPlacements: z.array(unitWithPlacementSchema),
+  })
+  .strict();
 
 type SetupUnitsEventSchemaType = z.infer<typeof _setupUnitsEventSchemaObject>;
 

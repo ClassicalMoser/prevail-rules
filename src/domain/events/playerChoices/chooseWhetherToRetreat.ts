@@ -21,18 +21,20 @@ export interface ChooseWhetherToRetreatEvent {
   choosesToRetreat: boolean;
 }
 
-const _chooseWhetherToRetreatEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  /** The type of player choice. */
-  choiceType: z.literal(CHOOSE_WHETHER_TO_RETREAT_CHOICE_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player who is choosing whether to retreat. */
-  player: playerSideSchema,
-  /** Whether the player chooses to retreat. */
-  choosesToRetreat: z.boolean(),
-});
+const _chooseWhetherToRetreatEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** The type of player choice. */
+    choiceType: z.literal(CHOOSE_WHETHER_TO_RETREAT_CHOICE_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The player who is choosing whether to retreat. */
+    player: playerSideSchema,
+    /** Whether the player chooses to retreat. */
+    choosesToRetreat: z.boolean(),
+  })
+  .strict();
 
 type ChooseWhetherToRetreatEventSchemaType = z.infer<
   typeof _chooseWhetherToRetreatEventSchemaObject

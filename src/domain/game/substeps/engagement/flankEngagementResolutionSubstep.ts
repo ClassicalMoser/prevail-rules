@@ -9,12 +9,14 @@ export interface FlankEngagementResolutionState {
   defenderRotated: boolean;
 }
 
-const _flankEngagementResolutionStateSchemaObject = z.object({
-  /** The type of engagement. */
-  engagementType: z.literal('flank'),
-  /** Whether the defending unit has been rotated. */
-  defenderRotated: z.boolean(),
-});
+const _flankEngagementResolutionStateSchemaObject = z
+  .object({
+    /** The type of engagement. */
+    engagementType: z.literal('flank'),
+    /** Whether the defending unit has been rotated. */
+    defenderRotated: z.boolean(),
+  })
+  .strict();
 
 type FlankEngagementResolutionStateSchemaType = z.infer<
   typeof _flankEngagementResolutionStateSchemaObject

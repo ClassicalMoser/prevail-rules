@@ -16,16 +16,18 @@ export interface ResolveEngageRetreatOptionEvent {
   defendingUnitCanRetreat: boolean;
 }
 
-const _resolveEngageRetreatOptionEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** Whether the defending unit can retreat. */
-  defendingUnitCanRetreat: z.boolean(),
-});
+const _resolveEngageRetreatOptionEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(RESOLVE_ENGAGE_RETREAT_OPTION_EFFECT_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** Whether the defending unit can retreat. */
+    defendingUnitCanRetreat: z.boolean(),
+  })
+  .strict();
 
 type ResolveEngageRetreatOptionEventSchemaType = z.infer<
   typeof _resolveEngageRetreatOptionEventSchemaObject

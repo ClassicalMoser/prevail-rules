@@ -20,13 +20,15 @@ export interface ResolveRetreatEvent {
   eventNumber: number;
 }
 
-const _resolveRetreatEventSchemaObject = z.object({
-  effectType: z.literal(RESOLVE_RETREAT_EFFECT_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  finalPosition: unitWithPlacementSchema,
-  startingPosition: unitWithPlacementSchema,
-});
+const _resolveRetreatEventSchemaObject = z
+  .object({
+    effectType: z.literal(RESOLVE_RETREAT_EFFECT_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    finalPosition: unitWithPlacementSchema,
+    startingPosition: unitWithPlacementSchema,
+  })
+  .strict();
 
 type ResolveRetreatEventSchemaType = z.infer<
   typeof _resolveRetreatEventSchemaObject

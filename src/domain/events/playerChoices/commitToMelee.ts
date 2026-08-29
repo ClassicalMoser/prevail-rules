@@ -42,23 +42,25 @@ const meleeModifierTypesEnum: z.ZodEnum<{
   flexibility: 'flexibility';
 }> = z.enum(meleeModifierTypes);
 
-const _commitToMeleeEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  /** The type of player choice. */
-  choiceType: z.literal(COMMIT_TO_MELEE_CHOICE_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player who is committing (or refusing). */
-  player: playerSideSchema,
-  /**
-   * Card from hand to commit, or `null` to refuse / decline the commitment
-   * without spending a card.
-   */
-  committedCard: commandCardSchema.nullable(),
-  /** The modifier types the card applies (empty when refusing). */
-  modifierTypes: z.array(meleeModifierTypesEnum),
-});
+const _commitToMeleeEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** The type of player choice. */
+    choiceType: z.literal(COMMIT_TO_MELEE_CHOICE_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The player who is committing (or refusing). */
+    player: playerSideSchema,
+    /**
+     * Card from hand to commit, or `null` to refuse / decline the commitment
+     * without spending a card.
+     */
+    committedCard: commandCardSchema.nullable(),
+    /** The modifier types the card applies (empty when refusing). */
+    modifierTypes: z.array(meleeModifierTypesEnum),
+  })
+  .strict();
 
 type CommitToMeleeEventSchemaType = z.infer<
   typeof _commitToMeleeEventSchemaObject

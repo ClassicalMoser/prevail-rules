@@ -23,12 +23,14 @@ export interface ReverseState {
   completed: boolean;
 }
 
-const _reverseStateSchemaObject = z.object({
-  substepType: z.literal('reverse'),
-  reversingUnit: unitWithPlacementSchema,
-  finalPosition: unitPlacementSchema.or(z.literal('pending')),
-  completed: z.boolean(),
-});
+const _reverseStateSchemaObject = z
+  .object({
+    substepType: z.literal('reverse'),
+    reversingUnit: unitWithPlacementSchema,
+    finalPosition: unitPlacementSchema.or(z.literal('pending')),
+    completed: z.boolean(),
+  })
+  .strict();
 
 type ReverseStateSchemaType = z.infer<typeof _reverseStateSchemaObject>;
 

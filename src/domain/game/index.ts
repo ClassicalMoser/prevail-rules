@@ -1,35 +1,14 @@
-export type { AttackResult } from './attackResult';
-export { attackResultSchema } from './attackResult';
-
-// Card piles and visibility regimes
-export {
-  authoritativeCardStateSchema, blackSeenCardStateSchema, cardStateSchema, whiteSeenCardStateSchema,
-} from './cardState';
-export type {
-  AuthoritativeCardState, BlackSeenCardState, CardState, WhiteSeenCardState,
-} from './cardState';
-export { hiddenCardStateSchema, ownedCardStateSchema } from './playerCardState';
-export type { HiddenCardState, OwnedCardState } from './playerCardState';
-
-export type {
-  Commitment,
-  CompletedCommitment,
-  DeclinedCommitment,
-  PendingCommitment,
-} from './commitment';
-export {
-  commitmentSchema,
-  completedCommitmentSchema,
-  declinedCommitmentSchema,
-  pendingCommitmentSchema,
-} from './commitment';
-export type { Game, GameForVisibility } from './game';
+// Game record
 export {
   authoritativeGameSchema,
   blackSeenGameSchema,
   gameSchema,
   whiteSeenGameSchema,
 } from './game';
+export type { Game, GameForVisibility } from './game';
+
+// Runtime state
+export { gameStateSchema } from './gameState';
 export type {
   CardStateForVisibility,
   GameState,
@@ -38,67 +17,115 @@ export type {
   OwnedPlayerForGameState,
   UnownedPlayerForGameState,
 } from './gameState';
-export { gameStateSchema, isAuthoritativeGameState } from './gameState';
-export { cleanupPhaseStateSchema, cleanupPhaseSteps } from './phases';
-export type { CleanupPhaseState, CleanupPhaseStep } from './phases';
+
+// Card piles / visibility
 export {
-  issueCommandsPhaseStateSchema,
-  issueCommandsPhaseSteps,
-} from './phases';
-export type { IssueCommandsPhaseState, IssueCommandsPhaseStep } from './phases';
-export {
-  moveCommandersPhaseStateSchema,
-  moveCommandersPhaseSteps,
-} from './phases';
+  authoritativeCardStateSchema,
+  blackSeenCardStateSchema,
+  cardStateSchema,
+  hiddenCardStateSchema,
+  ownedCardStateSchema,
+  whiteSeenCardStateSchema,
+} from './cardState';
 export type {
-  MoveCommandersPhaseState,
-  MoveCommandersPhaseStep,
-} from './phases';
+  AuthoritativeCardState,
+  BlackSeenCardState,
+  CardState,
+  HiddenCardState,
+  OwnedCardState,
+  WhiteSeenCardState,
+} from './cardState';
+
+// Round
+export { roundStateSchema } from './roundState';
+export type { RoundState } from './roundState';
+
+// Phases (play order)
 export {
   CLEANUP_PHASE,
   ISSUE_COMMANDS_PHASE,
   MOVE_COMMANDERS_PHASE,
-  phases,
-  phaseStateSchema,
   PLAY_CARDS_PHASE,
   RESOLVE_MELEE_PHASE,
+  cleanupPhaseStateSchema,
+  cleanupPhaseSteps,
+  issueCommandsPhaseStateSchema,
+  issueCommandsPhaseSteps,
+  moveCommandersPhaseStateSchema,
+  moveCommandersPhaseSteps,
+  phases,
+  phaseStateSchema,
+  playCardsPhaseStateSchema,
+  playCardsPhaseSteps,
+  resolveMeleePhaseStateSchema,
+  resolveMeleePhaseSteps,
 } from './phases';
-export type { Phase, PhaseState } from './phases';
-export { playCardsPhaseStateSchema, playCardsPhaseSteps } from './phases';
-export type { PlayCardsPhaseState, PlayCardsPhaseStep } from './phases';
-export { resolveMeleePhaseStateSchema, resolveMeleePhaseSteps } from './phases';
-export type { ResolveMeleePhaseState, ResolveMeleePhaseStep } from './phases';
-export type { RoundState } from './roundState';
-export { roundStateSchema } from './roundState';
-export { attackApplyStateSchema } from './substeps';
-export type { AttackApplyState } from './substeps';
-export { commandResolutionStateSchema } from './substeps';
-export type { CommandResolutionState } from './substeps';
+export type {
+  CleanupPhaseState,
+  CleanupPhaseStep,
+  IssueCommandsPhaseState,
+  IssueCommandsPhaseStep,
+  MoveCommandersPhaseState,
+  MoveCommandersPhaseStep,
+  Phase,
+  PhaseState,
+  PlayCardsPhaseState,
+  PlayCardsPhaseStep,
+  ResolveMeleePhaseState,
+  ResolveMeleePhaseStep,
+} from './phases';
+
+// Substeps
 export {
+  attackApplyStateSchema,
+  commandResolutionStateSchema,
   engagementResolutionStateSchema,
   engagementStateSchema,
   flankEngagementResolutionStateSchema,
   frontEngagementResolutionStateSchema,
+  meleeResolutionStateSchema,
+  movementResolutionStateSchema,
+  rallyResolutionStateSchema,
+  rangedAttackResolutionStateSchema,
   rearEngagementResolutionStateSchema,
+  retreatStateSchema,
+  reverseStateSchema,
+  routStateSchema,
 } from './substeps';
 export type {
+  AttackApplyState,
+  CommandResolutionState,
   EngagementResolutionState,
   EngagementState,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
+  MeleeResolutionState,
+  MovementResolutionState,
+  RallyResolutionState,
+  RangedAttackResolutionState,
   RearEngagementResolutionState,
+  RetreatState,
+  ReverseState,
+  RoutState,
 } from './substeps';
-export { meleeResolutionStateSchema } from './substeps';
-export type { MeleeResolutionState } from './substeps';
-export { movementResolutionStateSchema } from './substeps';
-export type { MovementResolutionState } from './substeps';
-export { rallyResolutionStateSchema } from './substeps';
-export type { RallyResolutionState } from './substeps';
-export { rangedAttackResolutionStateSchema } from './substeps';
-export type { RangedAttackResolutionState } from './substeps';
-export { retreatStateSchema } from './substeps';
-export type { RetreatState } from './substeps';
-export { reverseStateSchema } from './substeps';
-export type { ReverseState } from './substeps';
-export { routStateSchema } from './substeps';
-export type { RoutState } from './substeps';
+
+// Commitments
+export {
+  commitmentSchema,
+  completedCommitmentSchema,
+  declinedCommitmentSchema,
+  pendingCommitmentSchema,
+} from './commitment';
+export type {
+  Commitment,
+  CompletedCommitment,
+  DeclinedCommitment,
+  PendingCommitment,
+} from './commitment';
+
+// Attack results
+export { attackResultSchema } from './attackResult';
+export type { AttackResult } from './attackResult';
+
+// Type guards
+export { isAuthoritativeGameState } from './typeGuards';

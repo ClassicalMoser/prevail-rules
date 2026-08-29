@@ -19,13 +19,15 @@ export interface ChooseRetreatOptionEvent {
   player: PlayerSide;
 }
 
-const _chooseRetreatOptionEventSchemaObject = z.object({
-  choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  player: playerSideSchema,
-  retreatOption: unitPlacementSchema,
-});
+const _chooseRetreatOptionEventSchemaObject = z
+  .object({
+    choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    player: playerSideSchema,
+    retreatOption: unitPlacementSchema,
+  })
+  .strict();
 
 type ChooseRetreatOptionEventSchemaType = z.infer<
   typeof _chooseRetreatOptionEventSchemaObject

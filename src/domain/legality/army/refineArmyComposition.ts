@@ -1,6 +1,6 @@
 import type { Army, GameModeName } from '@entities';
 import { armySchema } from '@entities';
-import { z } from 'zod';
+import type { z } from 'zod';
 
 import {
   armyCompositionByMode,

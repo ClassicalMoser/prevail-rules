@@ -22,9 +22,7 @@ export const standardBoardCoordinates: readonly StandardBoardCoordinate[] =
     standardBoardColumnNumbers.map((column) => `${row}-${column}`),
   ) as readonly StandardBoardCoordinate[]; // This cast is safe.
 
-const _standardBoardCoordinatesSchemaObject = z.enum(
-  standardBoardCoordinates,
-);
+const _standardBoardCoordinatesSchemaObject = z.enum(standardBoardCoordinates);
 
 type StandardBoardCoordinatesSchemaType = z.infer<
   typeof _standardBoardCoordinatesSchemaObject
