@@ -22,20 +22,22 @@ export interface IssueCommandEvent {
   units: UnitInstance[];
 }
 
-const _issueCommandEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  /** The type of player choice. */
-  choiceType: z.literal(ISSUE_COMMAND_CHOICE_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player who is issuing the commands. */
-  player: playerSideSchema,
-  /** The commands to issue. */
-  command: commandSchema,
-  /** The units to apply the commands to. */
-  units: z.array(unitInstanceSchema),
-});
+const _issueCommandEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** The type of player choice. */
+    choiceType: z.literal(ISSUE_COMMAND_CHOICE_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The player who is issuing the commands. */
+    player: playerSideSchema,
+    /** The commands to issue. */
+    command: commandSchema,
+    /** The units to apply the commands to. */
+    units: z.array(unitInstanceSchema),
+  })
+  .strict();
 
 type IssueCommandEventSchemaType = z.infer<
   typeof _issueCommandEventSchemaObject

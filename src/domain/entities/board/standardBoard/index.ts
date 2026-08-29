@@ -7,7 +7,10 @@ export { standardBoardColumnNumbers } from './standardColumnNumbers';
 export type { StandardBoardColumnNumber } from './standardColumnNumbers';
 
 // Coordinates
-export { standardBoardCoordinateSchema, standardBoardCoordinates } from './standardCoordinates';
+export {
+  standardBoardCoordinateSchema,
+  standardBoardCoordinates,
+} from './standardCoordinates';
 export type { StandardBoardCoordinate } from './standardCoordinates';
 
 // Layout

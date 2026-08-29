@@ -43,14 +43,16 @@ export interface ResolveMeleePhaseState {
   remainingEngagements: Coordinate[];
 }
 
-const _resolveMeleePhaseStateSchemaObject = z.object({
-  currentMeleeResolutionState: meleeResolutionStateSchema.or(
-    z.literal('pending'),
-  ),
-  phase: z.literal('resolveMelee'),
-  remainingEngagements: z.array(coordinateSchema),
-  step: _resolveMeleePhaseStepSchemaObject,
-});
+const _resolveMeleePhaseStateSchemaObject = z
+  .object({
+    currentMeleeResolutionState: meleeResolutionStateSchema.or(
+      z.literal('pending'),
+    ),
+    phase: z.literal('resolveMelee'),
+    remainingEngagements: z.array(coordinateSchema),
+    step: _resolveMeleePhaseStepSchemaObject,
+  })
+  .strict();
 
 type ResolveMeleePhaseStateSchemaType = z.infer<
   typeof _resolveMeleePhaseStateSchemaObject

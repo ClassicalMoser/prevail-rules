@@ -9,10 +9,12 @@ export interface PendingCommitment {
   commitmentType: 'pending';
 }
 
-const _pendingCommitmentSchemaObject = z.object({
-  /** The player has not yet decided whether to commit a card. */
-  commitmentType: z.literal('pending'),
-});
+const _pendingCommitmentSchemaObject = z
+  .object({
+    /** The player has not yet decided whether to commit a card. */
+    commitmentType: z.literal('pending'),
+  })
+  .strict();
 
 type PendingCommitmentSchemaType = z.infer<
   typeof _pendingCommitmentSchemaObject
@@ -33,10 +35,12 @@ export interface DeclinedCommitment {
   commitmentType: 'declined';
 }
 
-const _declinedCommitmentSchemaObject = z.object({
-  /** The player chooses not to commit a card. */
-  commitmentType: z.literal('declined'),
-});
+const _declinedCommitmentSchemaObject = z
+  .object({
+    /** The player chooses not to commit a card. */
+    commitmentType: z.literal('declined'),
+  })
+  .strict();
 
 type DeclinedCommitmentSchemaType = z.infer<
   typeof _declinedCommitmentSchemaObject
@@ -62,12 +66,14 @@ export interface CompletedCommitment {
   card: CommandCard | HiddenCard;
 }
 
-const _completedCommitmentSchemaObject = z.object({
-  /** The player has committed a card. */
-  commitmentType: z.literal('completed'),
-  /** The card that is being committed (or `'hidden'` on a seen seat). */
-  card: z.union([commandCardSchema, hiddenCardSchema]),
-});
+const _completedCommitmentSchemaObject = z
+  .object({
+    /** The player has committed a card. */
+    commitmentType: z.literal('completed'),
+    /** The card that is being committed (or `'hidden'` on a seen seat). */
+    card: z.union([commandCardSchema, hiddenCardSchema]),
+  })
+  .strict();
 
 type CompletedCommitmentSchemaType = z.infer<
   typeof _completedCommitmentSchemaObject

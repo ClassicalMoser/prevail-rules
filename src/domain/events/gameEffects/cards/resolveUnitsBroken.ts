@@ -27,18 +27,20 @@ export interface ResolveUnitsBrokenEvent {
   unitTypes: UnitType[];
 }
 
-const _resolveUnitsBrokenEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(RESOLVE_UNITS_BROKEN_EFFECT_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player whose units are being checked. */
-  player: playerSideSchema,
-  /** The unit types that are broken. */
-  unitTypes: z.array(unitTypeSchema),
-});
+const _resolveUnitsBrokenEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(RESOLVE_UNITS_BROKEN_EFFECT_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The player whose units are being checked. */
+    player: playerSideSchema,
+    /** The unit types that are broken. */
+    unitTypes: z.array(unitTypeSchema),
+  })
+  .strict();
 
 type ResolveUnitsBrokenEventSchemaType = z.infer<
   typeof _resolveUnitsBrokenEventSchemaObject

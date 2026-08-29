@@ -18,14 +18,16 @@ export interface UnitInstance {
   instanceNumber: number;
 }
 
-const _unitInstanceSchemaObject = z.object({
-  /** Which player the unit belongs to. */
-  playerSide: playerSideSchema,
-  /** The type of unit this is an instance of. */
-  unitType: unitTypeSchema,
-  /** Which instance of the unit this is. */
-  instanceNumber: z.int().min(1).max(20),
-});
+const _unitInstanceSchemaObject = z
+  .object({
+    /** Which player the unit belongs to. */
+    playerSide: playerSideSchema,
+    /** The type of unit this is an instance of. */
+    unitType: unitTypeSchema,
+    /** Which instance of the unit this is. */
+    instanceNumber: z.int().min(1).max(20),
+  })
+  .strict();
 
 type UnitInstanceSchemaType = z.infer<typeof _unitInstanceSchemaObject>;
 

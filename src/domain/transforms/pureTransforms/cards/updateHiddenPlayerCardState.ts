@@ -1,5 +1,8 @@
-import type { HiddenCardState } from '@game';
-import type { GameStateForVisibility, UnownedPlayerForGameState } from '@game';
+import type {
+  HiddenCardState,
+  GameStateForVisibility,
+  UnownedPlayerForGameState,
+} from '@game';
 
 /**
  * Creates a new game state with an **unowned** (hidden) player's card state updated.

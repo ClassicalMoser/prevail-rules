@@ -13,14 +13,16 @@ export interface Player {
   isBot: boolean;
 }
 
-const _playerSchemaObject = z.object({
-  /** The unique identifier of the player. */
-  id: z.uuid(),
-  /** The name of the player. */
-  name: z.string(),
-  /** Whether the player is a bot. */
-  isBot: z.boolean(),
-});
+const _playerSchemaObject = z
+  .object({
+    /** The unique identifier of the player. */
+    id: z.uuid(),
+    /** The name of the player. */
+    name: z.string(),
+    /** Whether the player is a bot. */
+    isBot: z.boolean(),
+  })
+  .strict();
 
 type PlayerSchemaType = z.infer<typeof _playerSchemaObject>;
 

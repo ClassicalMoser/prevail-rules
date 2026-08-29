@@ -97,7 +97,7 @@ export function isValidIssueCommandEvent(
 
     if (matchingCommand.size === 'units') {
       if (
-        event.units.length < 1 ||
+        event.units.length === 0 ||
         event.units.length > matchingCommand.number
       ) {
         return {

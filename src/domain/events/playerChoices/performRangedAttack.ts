@@ -24,15 +24,17 @@ export interface PerformRangedAttackEvent {
   player: PlayerSide;
 }
 
-const _performRangedAttackEventSchemaObject = z.object({
-  choiceType: z.literal(PERFORM_RANGED_ATTACK_CHOICE_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  player: playerSideSchema,
-  supportingUnits: z.array(unitWithPlacementSchema),
-  targetUnit: unitWithPlacementSchema,
-  unit: unitWithPlacementSchema,
-});
+const _performRangedAttackEventSchemaObject = z
+  .object({
+    choiceType: z.literal(PERFORM_RANGED_ATTACK_CHOICE_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    player: playerSideSchema,
+    supportingUnits: z.array(unitWithPlacementSchema),
+    targetUnit: unitWithPlacementSchema,
+    unit: unitWithPlacementSchema,
+  })
+  .strict();
 
 type PerformRangedAttackEventSchemaType = z.infer<
   typeof _performRangedAttackEventSchemaObject

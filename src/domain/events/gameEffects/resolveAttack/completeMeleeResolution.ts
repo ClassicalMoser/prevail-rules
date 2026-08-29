@@ -14,14 +14,16 @@ export interface CompleteMeleeResolutionEvent {
   eventNumber: number;
 }
 
-const _completeMeleeResolutionEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-});
+const _completeMeleeResolutionEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(COMPLETE_MELEE_RESOLUTION_EFFECT_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+  })
+  .strict();
 
 type CompleteMeleeResolutionEventSchemaType = z.infer<
   typeof _completeMeleeResolutionEventSchemaObject

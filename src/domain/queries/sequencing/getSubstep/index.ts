@@ -25,7 +25,8 @@ export {
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,
-} from './retreat';export {
+} from './retreat';
+export {
   getReverseStateFromAttackApply,
   getReverseStateFromMeleeResolutionByInitiative,
 } from './reverse';

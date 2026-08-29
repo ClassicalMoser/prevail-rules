@@ -95,20 +95,22 @@ export interface ResolveRoutEvent {
   penalty: number;
 }
 
-const _resolveRoutEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(RESOLVE_ROUT_EFFECT_TYPE),
-  /** Which part of state owns the in-progress rout substep. */
-  routResolutionSource: routResolutionSourceSchema,
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The unit instances that are being routed. */
-  unitInstances: z.array(unitInstanceSchema),
-  /** The penalty for routing the units (sum of all units' rout penalties). */
-  penalty: z.number(),
-});
+const _resolveRoutEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(RESOLVE_ROUT_EFFECT_TYPE),
+    /** Which part of state owns the in-progress rout substep. */
+    routResolutionSource: routResolutionSourceSchema,
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The unit instances that are being routed. */
+    unitInstances: z.array(unitInstanceSchema),
+    /** The penalty for routing the units (sum of all units' rout penalties). */
+    penalty: z.number(),
+  })
+  .strict();
 
 type ResolveRoutEventSchemaType = z.infer<typeof _resolveRoutEventSchemaObject>;
 

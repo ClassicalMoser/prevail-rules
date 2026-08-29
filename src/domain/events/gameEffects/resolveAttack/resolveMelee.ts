@@ -47,22 +47,24 @@ export interface ResolveMeleeEvent {
   blackUnitReversed: boolean;
 }
 
-const _resolveMeleeEventSchemaObject = z.object({
-  blackLegalRetreatOptions: z.array(unitPlacementSchema),
-  blackUnitRetreated: z.boolean(),
-  blackUnitReversed: z.boolean(),
-  blackUnitRouted: z.boolean(),
-  blackUnitWithPlacement: unitWithPlacementSchema,
-  effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  location: coordinateSchema,
-  whiteLegalRetreatOptions: z.array(unitPlacementSchema),
-  whiteUnitRetreated: z.boolean(),
-  whiteUnitReversed: z.boolean(),
-  whiteUnitRouted: z.boolean(),
-  whiteUnitWithPlacement: unitWithPlacementSchema,
-});
+const _resolveMeleeEventSchemaObject = z
+  .object({
+    blackLegalRetreatOptions: z.array(unitPlacementSchema),
+    blackUnitRetreated: z.boolean(),
+    blackUnitReversed: z.boolean(),
+    blackUnitRouted: z.boolean(),
+    blackUnitWithPlacement: unitWithPlacementSchema,
+    effectType: z.literal(RESOLVE_MELEE_EFFECT_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    location: coordinateSchema,
+    whiteLegalRetreatOptions: z.array(unitPlacementSchema),
+    whiteUnitRetreated: z.boolean(),
+    whiteUnitReversed: z.boolean(),
+    whiteUnitRouted: z.boolean(),
+    whiteUnitWithPlacement: unitWithPlacementSchema,
+  })
+  .strict();
 
 type ResolveMeleeEventSchemaType = z.infer<
   typeof _resolveMeleeEventSchemaObject

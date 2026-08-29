@@ -7,7 +7,10 @@ export { smallBoardColumnNumbers } from './smallColumnNumbers';
 export type { SmallBoardColumnNumber } from './smallColumnNumbers';
 
 // Coordinates
-export { smallBoardCoordinateSchema, smallBoardCoordinates } from './smallCoordinates';
+export {
+  smallBoardCoordinateSchema,
+  smallBoardCoordinates,
+} from './smallCoordinates';
 export type { SmallBoardCoordinate } from './smallCoordinates';
 
 // Layout

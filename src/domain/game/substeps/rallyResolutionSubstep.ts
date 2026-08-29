@@ -30,18 +30,20 @@ export interface RallyResolutionState {
   completed: boolean;
 }
 
-const _rallyResolutionStateSchemaObject = z.object({
-  /** Whether the player chose to rally. */
-  playerRallied: z.boolean(),
-  /** Whether the rally has been resolved. */
-  rallyResolved: z.boolean(),
-  /** Units that lost support after the rally. */
-  unitsLostSupport: z.array(unitInstanceSchema).or(z.literal('pending')),
-  /** The rout discard penalty state (if units were routed). */
-  routState: routStateSchema.or(z.literal('pending')),
-  /** Whether the rally resolution substep is complete. */
-  completed: z.boolean(),
-});
+const _rallyResolutionStateSchemaObject = z
+  .object({
+    /** Whether the player chose to rally. */
+    playerRallied: z.boolean(),
+    /** Whether the rally has been resolved. */
+    rallyResolved: z.boolean(),
+    /** Units that lost support after the rally. */
+    unitsLostSupport: z.array(unitInstanceSchema).or(z.literal('pending')),
+    /** The rout discard penalty state (if units were routed). */
+    routState: routStateSchema.or(z.literal('pending')),
+    /** Whether the rally resolution substep is complete. */
+    completed: z.boolean(),
+  })
+  .strict();
 
 type RallyResolutionStateSchemaType = z.infer<
   typeof _rallyResolutionStateSchemaObject

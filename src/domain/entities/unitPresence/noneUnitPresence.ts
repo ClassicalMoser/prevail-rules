@@ -10,10 +10,12 @@ export interface NoneUnitPresence {
   presenceType: typeof NONE_UNIT_PRESENCE_TYPE;
 }
 
-const _noneUnitPresenceSchemaObject = z.object({
-  /** No unit is present in the space. */
-  presenceType: z.literal(NONE_UNIT_PRESENCE_TYPE),
-});
+const _noneUnitPresenceSchemaObject = z
+  .object({
+    /** No unit is present in the space. */
+    presenceType: z.literal(NONE_UNIT_PRESENCE_TYPE),
+  })
+  .strict();
 
 type NoneUnitPresenceSchemaType = z.infer<typeof _noneUnitPresenceSchemaObject>;
 

@@ -35,12 +35,14 @@ export interface PlayCardsPhaseState {
   step: PlayCardsPhaseStep;
 }
 
-const _playCardsPhaseStateSchemaObject = z.object({
-  /** The current phase of the round. */
-  phase: z.literal('playCards'),
-  /** The step of the card phase. */
-  step: playCardsPhaseStepSchema,
-});
+const _playCardsPhaseStateSchemaObject = z
+  .object({
+    /** The current phase of the round. */
+    phase: z.literal('playCards'),
+    /** The step of the card phase. */
+    step: playCardsPhaseStepSchema,
+  })
+  .strict();
 
 type PlayCardsPhaseStateSchemaType = z.infer<
   typeof _playCardsPhaseStateSchemaObject

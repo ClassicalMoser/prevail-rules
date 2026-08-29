@@ -20,14 +20,16 @@ export interface CompleteCleanupPhaseEvent {
   eventNumber: number;
 }
 
-const _completeCleanupPhaseEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(COMPLETE_CLEANUP_PHASE_EFFECT_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-});
+const _completeCleanupPhaseEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(COMPLETE_CLEANUP_PHASE_EFFECT_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+  })
+  .strict();
 
 type CompleteCleanupPhaseEventSchemaType = z.infer<
   typeof _completeCleanupPhaseEventSchemaObject

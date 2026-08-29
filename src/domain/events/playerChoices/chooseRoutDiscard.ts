@@ -24,18 +24,20 @@ export interface ChooseRoutDiscardEvent {
   cardIds: string[];
 }
 
-const _chooseRoutDiscardEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  /** The type of player choice. */
-  choiceType: z.literal(CHOOSE_ROUT_DISCARD_CHOICE_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player who is discarding cards. */
-  player: playerSideSchema,
-  /** The IDs of the cards being discarded (from hand). */
-  cardIds: z.array(z.string()),
-});
+const _chooseRoutDiscardEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** The type of player choice. */
+    choiceType: z.literal(CHOOSE_ROUT_DISCARD_CHOICE_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The player who is discarding cards. */
+    player: playerSideSchema,
+    /** The IDs of the cards being discarded (from hand). */
+    cardIds: z.array(z.string()),
+  })
+  .strict();
 
 type ChooseRoutDiscardEventSchemaType = z.infer<
   typeof _chooseRoutDiscardEventSchemaObject

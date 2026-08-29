@@ -24,12 +24,14 @@ export interface CompleteIssueCommandsPhaseEvent {
   eventNumber: number;
 }
 
-const _completeIssueCommandsPhaseEventSchemaObject = z.object({
-  effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  remainingEngagements: z.array(coordinateSchema),
-});
+const _completeIssueCommandsPhaseEventSchemaObject = z
+  .object({
+    effectType: z.literal(COMPLETE_ISSUE_COMMANDS_PHASE_EFFECT_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    remainingEngagements: z.array(coordinateSchema),
+  })
+  .strict();
 
 type CompleteIssueCommandsPhaseEventSchemaType = z.infer<
   typeof _completeIssueCommandsPhaseEventSchemaObject

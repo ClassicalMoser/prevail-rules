@@ -13,12 +13,14 @@ export interface GenericUnitSupport {
   count: number;
 }
 
-const _genericUnitSupportSchemaObject = z.object({
-  /** Support applies to any units. */
-  supportType: z.literal('generic'),
-  /** The number of units that this card supports. */
-  count: z.int().min(1).max(4),
-});
+const _genericUnitSupportSchemaObject = z
+  .object({
+    /** Support applies to any units. */
+    supportType: z.literal('generic'),
+    /** The number of units that this card supports. */
+    count: z.int().min(1).max(4),
+  })
+  .strict();
 
 type GenericUnitSupportSchemaType = z.infer<
   typeof _genericUnitSupportSchemaObject
@@ -49,14 +51,16 @@ export interface TraitUnitSupport {
   count: number;
 }
 
-const _traitUnitSupportSchemaObject = z.object({
-  /** Support applies to units with a specific trait. */
-  supportType: z.literal('trait'),
-  /** The trait that this card supports. */
-  trait: traitSchema,
-  /** The number of units that this card supports. */
-  count: z.int().min(1).max(4),
-});
+const _traitUnitSupportSchemaObject = z
+  .object({
+    /** Support applies to units with a specific trait. */
+    supportType: z.literal('trait'),
+    /** The trait that this card supports. */
+    trait: traitSchema,
+    /** The number of units that this card supports. */
+    count: z.int().min(1).max(4),
+  })
+  .strict();
 
 type TraitUnitSupportSchemaType = z.infer<typeof _traitUnitSupportSchemaObject>;
 
@@ -86,14 +90,16 @@ export interface UnitTypeUnitSupport {
   count: number;
 }
 
-const _unitTypeUnitSupportSchemaObject = z.object({
-  /** Support applies to a specific unit type. */
-  supportType: z.literal('unitType'),
-  /** The unit type ID that this card supports. */
-  unitTypeId: z.uuid(),
-  /** The number of units that this card supports. */
-  count: z.int().min(1).max(4),
-});
+const _unitTypeUnitSupportSchemaObject = z
+  .object({
+    /** Support applies to a specific unit type. */
+    supportType: z.literal('unitType'),
+    /** The unit type ID that this card supports. */
+    unitTypeId: z.uuid(),
+    /** The number of units that this card supports. */
+    count: z.int().min(1).max(4),
+  })
+  .strict();
 
 type UnitTypeUnitSupportSchemaType = z.infer<
   typeof _unitTypeUnitSupportSchemaObject

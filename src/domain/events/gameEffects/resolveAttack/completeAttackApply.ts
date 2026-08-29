@@ -33,18 +33,20 @@ const _completeAttackApplyEventSchemaObject: z.ZodObject<{
   eventNumber: z.ZodNumber;
   attackType: typeof attackTypeSchema;
   defendingPlayer: typeof playerSideSchema;
-}> = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(COMPLETE_ATTACK_APPLY_EFFECT_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** Mirrors {@link CompleteAttackApplyEvent.attackType}. */
-  attackType: attackTypeSchema,
-  /** Mirrors {@link CompleteAttackApplyEvent.defendingPlayer}. */
-  defendingPlayer: playerSideSchema,
-});
+}> = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(COMPLETE_ATTACK_APPLY_EFFECT_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** Mirrors {@link CompleteAttackApplyEvent.attackType}. */
+    attackType: attackTypeSchema,
+    /** Mirrors {@link CompleteAttackApplyEvent.defendingPlayer}. */
+    defendingPlayer: playerSideSchema,
+  })
+  .strict();
 
 type CompleteAttackApplyEventSchemaType = z.infer<
   typeof _completeAttackApplyEventSchemaObject

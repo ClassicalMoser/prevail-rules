@@ -18,7 +18,8 @@ export type StatModifier = (typeof statModifiers)[number];
 /**
  * The schema for a stat modifier.
  */
-export const statModifierSchema: z.ZodType<StatModifier> = z.enum(statModifiers);
+export const statModifierSchema: z.ZodType<StatModifier> =
+  z.enum(statModifiers);
 
 /**
  * A modifier on a card.
@@ -30,12 +31,14 @@ export interface Modifier {
   value: number;
 }
 
-const _modifierSchemaObject = z.object({
-  /** The type of the modifier. */
-  type: statModifierSchema,
-  /** The value of the modifier. */
-  value: z.int().min(-2).max(2),
-});
+const _modifierSchemaObject = z
+  .object({
+    /** The type of the modifier. */
+    type: statModifierSchema,
+    /** The value of the modifier. */
+    value: z.int().min(-2).max(2),
+  })
+  .strict();
 
 type ModifierSchemaType = z.infer<typeof _modifierSchemaObject>;
 

@@ -20,13 +20,15 @@ export interface ResolveFlankEngagementEvent {
   newFacing: UnitFacing;
 }
 
-const _resolveFlankEngagementEventSchemaObject = z.object({
-  defenderWithPlacement: unitWithPlacementSchema,
-  effectType: z.literal(RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  newFacing: unitFacingSchema,
-});
+const _resolveFlankEngagementEventSchemaObject = z
+  .object({
+    defenderWithPlacement: unitWithPlacementSchema,
+    effectType: z.literal(RESOLVE_FLANK_ENGAGEMENT_EFFECT_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    newFacing: unitFacingSchema,
+  })
+  .strict();
 
 type ResolveFlankEngagementEventSchemaType = z.infer<
   typeof _resolveFlankEngagementEventSchemaObject

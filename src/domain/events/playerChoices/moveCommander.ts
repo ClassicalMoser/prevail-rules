@@ -22,14 +22,16 @@ export interface MoveCommanderEvent {
   player: PlayerSide;
 }
 
-const _moveCommanderEventSchemaObject = z.object({
-  choiceType: z.literal(MOVE_COMMANDER_CHOICE_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  from: coordinateSchema,
-  player: playerSideSchema,
-  to: coordinateSchema,
-});
+const _moveCommanderEventSchemaObject = z
+  .object({
+    choiceType: z.literal(MOVE_COMMANDER_CHOICE_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    from: coordinateSchema,
+    player: playerSideSchema,
+    to: coordinateSchema,
+  })
+  .strict();
 
 type MoveCommanderEventSchemaType = z.infer<
   typeof _moveCommanderEventSchemaObject

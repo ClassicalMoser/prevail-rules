@@ -16,14 +16,16 @@ export interface CompleteUnitMovementEvent {
   eventNumber: number;
 }
 
-const _completeUnitMovementEventSchemaObject = z.object({
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The type of the event. */
-  eventType: z.literal('gameEffect'),
-  /** The type of game effect. */
-  effectType: z.literal('completeUnitMovement'),
-});
+const _completeUnitMovementEventSchemaObject = z
+  .object({
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The type of the event. */
+    eventType: z.literal('gameEffect'),
+    /** The type of game effect. */
+    effectType: z.literal('completeUnitMovement'),
+  })
+  .strict();
 
 type CompleteUnitMovementEventSchemaType = z.infer<
   typeof _completeUnitMovementEventSchemaObject

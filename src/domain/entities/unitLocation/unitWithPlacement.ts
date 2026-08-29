@@ -11,10 +11,12 @@ export interface UnitWithPlacement {
   placement: UnitPlacement;
 }
 
-const _unitWithPlacementSchemaObject = z.object({
-  unit: unitInstanceSchema,
-  placement: unitPlacementSchema,
-});
+const _unitWithPlacementSchemaObject = z
+  .object({
+    unit: unitInstanceSchema,
+    placement: unitPlacementSchema,
+  })
+  .strict();
 
 type UnitWithPlacementSchemaType = z.infer<
   typeof _unitWithPlacementSchemaObject

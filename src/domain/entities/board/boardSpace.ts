@@ -38,28 +38,30 @@ export interface BoardSpace {
   commanders: PlayerSide[];
 }
 
-const _boardSpaceSchemaObject = z.object({
-  /**
-   * The type of terrain in the space.
-   */
-  terrainType: terrainTypeSchema,
-  /**
-   * The elevation of the space.
-   */
-  elevation: elevationSchema,
-  /**
-   * The water cover of the space.
-   */
-  waterCover: waterCoverSchema,
-  /**
-   * The unit presence in the space.
-   */
-  unitPresence: unitPresenceSchema,
-  /**
-   * The commanders in the space.
-   */
-  commanders: z.array(playerSideSchema),
-});
+const _boardSpaceSchemaObject = z
+  .object({
+    /**
+     * The type of terrain in the space.
+     */
+    terrainType: terrainTypeSchema,
+    /**
+     * The elevation of the space.
+     */
+    elevation: elevationSchema,
+    /**
+     * The water cover of the space.
+     */
+    waterCover: waterCoverSchema,
+    /**
+     * The unit presence in the space.
+     */
+    unitPresence: unitPresenceSchema,
+    /**
+     * The commanders in the space.
+     */
+    commanders: z.array(playerSideSchema),
+  })
+  .strict();
 
 type boardSpaceSchemaType = z.infer<typeof _boardSpaceSchemaObject>;
 

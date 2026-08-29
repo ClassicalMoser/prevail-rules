@@ -33,12 +33,14 @@ export interface MoveCommandersPhaseState {
   step: MoveCommandersPhaseStep;
 }
 
-const _moveCommandersPhaseStateSchemaObject = z.object({
-  /** The current phase of the round. */
-  phase: z.literal('moveCommanders'),
-  /** The step of the move commanders phase. */
-  step: moveCommandersPhaseStepSchema,
-});
+const _moveCommandersPhaseStateSchemaObject = z
+  .object({
+    /** The current phase of the round. */
+    phase: z.literal('moveCommanders'),
+    /** The step of the move commanders phase. */
+    step: moveCommandersPhaseStepSchema,
+  })
+  .strict();
 
 type MoveCommandersPhaseStateSchemaType = z.infer<
   typeof _moveCommandersPhaseStateSchemaObject

@@ -31,13 +31,15 @@ export interface EngagementState {
   completed: boolean;
 }
 
-const _engagementStateSchemaObject = z.object({
-  completed: z.boolean(),
-  engagementResolutionState: engagementResolutionStateSchema,
-  engagingUnit: unitInstanceSchema,
-  substepType: z.literal('engagementResolution'),
-  targetPlacement: unitPlacementSchema,
-});
+const _engagementStateSchemaObject = z
+  .object({
+    completed: z.boolean(),
+    engagementResolutionState: engagementResolutionStateSchema,
+    engagingUnit: unitInstanceSchema,
+    substepType: z.literal('engagementResolution'),
+    targetPlacement: unitPlacementSchema,
+  })
+  .strict();
 
 type EngagementStateSchemaType = z.infer<typeof _engagementStateSchemaObject>;
 

@@ -108,18 +108,15 @@ describe(getLegalChooseRetreatOptionEvents, () => {
     const engagementState = updatePhaseState(
       withUnit,
       createIssueCommandsPhaseState(withUnit, {
-        currentCommandResolutionState: createMovementResolutionState(
-          withUnit,
-          {
-            engagementState: createFrontEngagementState({
-              defendingUnitRetreats: true,
-              retreatState: createRetreatState(placement, {
-                finalPosition: 'pending',
-                legalRetreatOptions: [optionA, optionB],
-              }),
+        currentCommandResolutionState: createMovementResolutionState(withUnit, {
+          engagementState: createFrontEngagementState({
+            defendingUnitRetreats: true,
+            retreatState: createRetreatState(placement, {
+              finalPosition: 'pending',
+              legalRetreatOptions: [optionA, optionB],
             }),
-          },
-        ),
+          }),
+        }),
       }),
     );
 

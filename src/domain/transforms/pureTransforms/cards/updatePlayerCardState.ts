@@ -1,5 +1,4 @@
-import type { OwnedCardState } from '@game';
-import type { GameState, OwnedPlayerForGameState } from '@game';
+import type { GameState, OwnedCardState, OwnedPlayerForGameState } from '@game';
 
 /**
  * Creates a new game state with an **owned** player's card state updated.

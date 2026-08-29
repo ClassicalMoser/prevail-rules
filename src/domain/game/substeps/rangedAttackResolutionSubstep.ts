@@ -37,17 +37,19 @@ export interface RangedAttackResolutionState {
   completed: boolean;
 }
 
-const _rangedAttackResolutionStateSchemaObject = z.object({
-  attackApplyState: attackApplyStateSchema.or(z.literal('pending')),
-  attackingCommitment: commitmentSchema,
-  attackingUnit: unitInstanceSchema,
-  commandResolutionType: z.literal('rangedAttack'),
-  completed: z.boolean(),
-  defendingCommitment: commitmentSchema,
-  defendingUnit: unitInstanceSchema,
-  substepType: z.literal('commandResolution'),
-  supportingUnits: z.array(unitInstanceSchema),
-});
+const _rangedAttackResolutionStateSchemaObject = z
+  .object({
+    attackApplyState: attackApplyStateSchema.or(z.literal('pending')),
+    attackingCommitment: commitmentSchema,
+    attackingUnit: unitInstanceSchema,
+    commandResolutionType: z.literal('rangedAttack'),
+    completed: z.boolean(),
+    defendingCommitment: commitmentSchema,
+    defendingUnit: unitInstanceSchema,
+    substepType: z.literal('commandResolution'),
+    supportingUnits: z.array(unitInstanceSchema),
+  })
+  .strict();
 
 type RangedAttackResolutionStateSchemaType = z.infer<
   typeof _rangedAttackResolutionStateSchemaObject

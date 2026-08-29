@@ -1,18 +1,10 @@
 # Game
 
-Composed domain models for a running game: configuration, runtime state, phases, and nested resolution substeps.
+Composed domain models for a running game. Import as `@game`.
 
-These are still **declaration-only** modules (schemas, interfaces, types) — same role as `@entities`, but they depend on entity primitives (`Board`, `CommandCard`, `UnitInstance`, …) and assemble the sequencing tree. Import as `@game`.
+Same declaration-only role as `@entities` (schemas, interfaces, types), but these depend on entity primitives and assemble the sequencing tree. Follow the schema-first pattern in [`../entities/README.md`](../entities/README.md).
 
-## Conventions
-
-Follow the schema-first pattern in [`../entities/README.md`](../entities/README.md):
-
-- Unannotated `_…SchemaObject` for inference → exported `z.ZodType<T>` / `z.ZodObject<…>` → `AssertExact` against the internal object
-- Discriminated unions for phase/step/visibility variants
-- Declarations only — no business logic here (queries, validation, and transforms live elsewhere)
-
-Visibility (`authoritative` | `whiteSeen` | `blackSeen`) lives on `CardState` and is threaded as a type parameter on `Game` / `GameState` because it constrains which card fields are readable. Board size stays on `boardState.boardType` (see entities README).
+Visibility (`authoritative` | `whiteSeen` | `blackSeen`) lives on `CardState` and is threaded on `Game` / `GameState`. Board size stays on `boardState.boardType`. Mode army composition is validated in `@legality`, not here.
 
 ## Outline
 
@@ -26,22 +18,24 @@ Game / GameForVisibility
                       └─ Substeps (movement, melee, attack apply, engagement, rally, …)
 ```
 
-### Top level
+## Modules
 
-| Module            | Role                                                  |
-| ----------------- | ----------------------------------------------------- |
-| `game.ts`         | Full game record (mode, players, armies, `gameState`) |
-| `gameState.ts`    | Runtime state for a visibility regime                 |
-| `cardState.ts`    | Card piles under a visibility regime                  |
-| `playerCardState.ts` | Owned vs hidden per-player piles                   |
-| `roundState.ts`   | Current round slice (phase + event stream)            |
-| `commitment.ts`   | Pending / completed / declined commitments            |
-| `attackResult.ts` | Attack outcome value                                  |
+| Module            | Role                                                                        |
+| ----------------- | --------------------------------------------------------------------------- |
+| `game/`           | Full game record (mode, players, armies, `gameState`) by visibility         |
+| `gameState/`      | Runtime state by visibility, plus ownership helper types                    |
+| `cardState/`      | Owned/hidden piles and visibility `CardState` union                         |
+| `roundState.ts`   | Current round slice (phase + event stream)                                  |
+| `phases/`         | Phase/step state in play order                                              |
+| `substeps/`       | Nested resolution states (see [`substeps/README.md`](./substeps/README.md)) |
+| `commitment.ts`   | Pending / completed / declined commitments                                  |
+| `attackResult.ts` | Attack outcome value                                                        |
+| `typeGuards/`     | Narrowing helpers (e.g. authoritative game state)                           |
 
 ### `phases/`
 
-Per-phase state and step literals: `playCards`, `moveCommanders`, `issueCommands`, `resolveMelee`, `cleanup`, plus the `PhaseState` union in `phases.ts`.
+`playCards` → `moveCommanders` → `issueCommands` → `resolveMelee` → `cleanup`, plus the `PhaseState` union.
 
 ### `substeps/`
 
-Nested resolution states used inside phase steps. See [`substeps/README.md`](./substeps/README.md) for composable vs context-specific substeps and the nesting hierarchy (engagement, retreat, rout, rally, …).
+Composable pieces (`attackApply`, `retreat`, `rout`, `reverse`, `engagement`) and context-specific ones (`movementResolution`, `rangedAttackResolution`, `meleeResolution`, `rallyResolution`, `commandResolution`).

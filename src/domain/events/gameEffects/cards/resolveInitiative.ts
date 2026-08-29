@@ -23,16 +23,18 @@ export interface ResolveInitiativeEvent {
   player: PlayerSide;
 }
 
-const _resolveInitiativeEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(RESOLVE_INITIATIVE_EFFECT_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player with initiative. */
-  player: playerSideSchema,
-});
+const _resolveInitiativeEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(RESOLVE_INITIATIVE_EFFECT_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The player with initiative. */
+    player: playerSideSchema,
+  })
+  .strict();
 
 type ResolveInitiativeEventSchemaType = z.infer<
   typeof _resolveInitiativeEventSchemaObject

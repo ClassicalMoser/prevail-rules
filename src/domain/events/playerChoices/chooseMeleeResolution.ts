@@ -21,13 +21,15 @@ export interface ChooseMeleeResolutionEvent {
   player: PlayerSide;
 }
 
-const _chooseMeleeResolutionEventSchemaObject = z.object({
-  choiceType: z.literal(CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  player: playerSideSchema,
-  space: coordinateSchema,
-});
+const _chooseMeleeResolutionEventSchemaObject = z
+  .object({
+    choiceType: z.literal(CHOOSE_MELEE_RESOLUTION_CHOICE_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    player: playerSideSchema,
+    space: coordinateSchema,
+  })
+  .strict();
 
 type ChooseMeleeResolutionEventSchemaType = z.infer<
   typeof _chooseMeleeResolutionEventSchemaObject

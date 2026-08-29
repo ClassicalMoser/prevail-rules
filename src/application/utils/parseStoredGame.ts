@@ -1,6 +1,9 @@
 import type { GameMode } from '@entities';
 import type { Game, GameForVisibility } from '@game';
-import { authoritativeGameSchema, gameSchema } from '@game';
+import {
+  authoritativeGameWithArmyCompositionSchema,
+  gameWithArmyCompositionSchema,
+} from '@validation';
 
 /**
  * **Boundary:** validates untrusted / stored data and returns a typed {@link Game}.
@@ -14,7 +17,7 @@ export function parseStoredGameForMode(
   gameMode: GameMode,
   data: unknown,
 ): GameForVisibility<'authoritative'> {
-  const game = authoritativeGameSchema.parse(data);
+  const game = authoritativeGameWithArmyCompositionSchema.parse(data);
   if (game.gameMode !== gameMode.name) {
     throw new Error(
       `Stored game mode mismatch: expected ${gameMode.name}, got ${game.gameMode}`,
@@ -25,5 +28,5 @@ export function parseStoredGameForMode(
 
 /** Broad version of {@link parseStoredGameForMode} that accepts any visibility. */
 export function parseStoredGame(data: unknown): Game {
-  return gameSchema.parse(data);
+  return gameWithArmyCompositionSchema.parse(data);
 }

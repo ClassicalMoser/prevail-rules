@@ -51,12 +51,14 @@ export type TriggerRoutFromRetreatEvent =
 const _triggerRoutFromRetreatSharedFieldsSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   effectType: z.ZodLiteral<typeof TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE>;
-}> = z.object({
-  /** The type of the event. */
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  /** The type of game effect. */
-  effectType: z.literal(TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE),
-});
+}> = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    /** The type of game effect. */
+    effectType: z.literal(TRIGGER_ROUT_FROM_RETREAT_EFFECT_TYPE),
+  })
+  .strict();
 
 const _triggerRoutFromRetreatRangedAttackSchemaObject: z.ZodObject<{
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
@@ -66,12 +68,14 @@ const _triggerRoutFromRetreatRangedAttackSchemaObject: z.ZodObject<{
   >;
   eventNumber: z.ZodNumber;
 }> = _triggerRoutFromRetreatSharedFieldsSchemaObject.merge(
-  z.object({
-    /** Ranged attack resolution path. */
-    retreatResolutionContext: z.literal(RANGED_ATTACK_RESOLUTION_CONTEXT),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
-  }),
+  z
+    .object({
+      /** Ranged attack resolution path. */
+      retreatResolutionContext: z.literal(RANGED_ATTACK_RESOLUTION_CONTEXT),
+      /** The ordered index of the event in the round, zero-indexed. */
+      eventNumber: z.number(),
+    })
+    .strict(),
 );
 
 const _triggerRoutFromRetreatMeleeSchemaObject: z.ZodObject<{
@@ -83,14 +87,16 @@ const _triggerRoutFromRetreatMeleeSchemaObject: z.ZodObject<{
   retreatingPlayer: typeof playerSideSchema;
   eventNumber: z.ZodNumber;
 }> = _triggerRoutFromRetreatSharedFieldsSchemaObject.merge(
-  z.object({
-    /** Melee resolution path. */
-    retreatResolutionContext: z.literal(MELEE_ATTACK_RESOLUTION_CONTEXT),
-    /** The player whose retreat has no legal options. */
-    retreatingPlayer: playerSideSchema,
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
-  }),
+  z
+    .object({
+      /** Melee resolution path. */
+      retreatResolutionContext: z.literal(MELEE_ATTACK_RESOLUTION_CONTEXT),
+      /** The player whose retreat has no legal options. */
+      retreatingPlayer: playerSideSchema,
+      /** The ordered index of the event in the round, zero-indexed. */
+      eventNumber: z.number(),
+    })
+    .strict(),
 );
 
 /** Branches share `effectType`; nested discrimination uses `retreatResolutionContext`. */

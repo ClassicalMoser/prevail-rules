@@ -16,14 +16,16 @@ export interface SingleUnitPresence {
   facing: UnitFacing;
 }
 
-const _singleUnitPresenceSchemaObject = z.object({
-  /** A single unit is present in the space. */
-  presenceType: z.literal(SINGLE_UNIT_PRESENCE_TYPE),
-  /** The unit in the space. */
-  unit: unitInstanceSchema,
-  /** The facing direction of the unit. */
-  facing: unitFacingSchema,
-});
+const _singleUnitPresenceSchemaObject = z
+  .object({
+    /** A single unit is present in the space. */
+    presenceType: z.literal(SINGLE_UNIT_PRESENCE_TYPE),
+    /** The unit in the space. */
+    unit: unitInstanceSchema,
+    /** The facing direction of the unit. */
+    facing: unitFacingSchema,
+  })
+  .strict();
 
 type SingleUnitPresenceSchemaType = z.infer<
   typeof _singleUnitPresenceSchemaObject

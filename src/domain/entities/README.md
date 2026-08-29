@@ -44,6 +44,7 @@ const _assertExact: AssertExact<Entity, EntitySchemaType> = true;
 **Required:**
 
 - Annotate **exports** with `z.ZodType<T>` (or `z.ZodObject<…>` for members of a `discriminatedUnion`).
+- Use `.strict()` on every `z.object(…)` so unknown keys fail at parse time (default Zod strips them).
 - Assert against `_fooSchemaObject`, never `typeof fooSchema`. The export annotation erases the inferred shape.
 - Never export `AssertExact` checks or `*SchemaType` aliases.
 - Define the interface before the schema when that avoids cycles.
@@ -90,13 +91,13 @@ Visibility (`authoritative` | `whiteSeen` | `blackSeen`) constrains which card f
 
 ## What lives here
 
-| Area | Notes |
-| --- | --- |
-| Board | `Board`, `BoardSpace`, `Coordinate`, layouts |
-| Units | `UnitType` / `UnitInstance`, facing, placement, `UnitPresence` |
-| Cards | `CommandCard`, `Command`, modifiers / restrictions / support |
-| Army | `Army` / `UnitCount` (shape + uniqueness only; mode composition in `@legality`) |
-| Players / modes | `Player`, `PlayerSide`, `GameMode` |
-| Shared values | `AttackType`, `EngagementType`, `Line`, … |
+| Area            | Notes                                                                           |
+| --------------- | ------------------------------------------------------------------------------- |
+| Board           | `Board`, `BoardSpace`, `Coordinate`, layouts                                    |
+| Units           | `UnitType` / `UnitInstance`, facing, placement, `UnitPresence`                  |
+| Cards           | `CommandCard`, `Command`, modifiers / restrictions / support                    |
+| Army            | `Army` / `UnitCount` (shape + uniqueness only; mode composition in `@legality`) |
+| Players / modes | `Player`, `PlayerSide`, `GameMode`                                              |
+| Shared values   | `AttackType`, `EngagementType`, `Line`, …                                       |
 
 **Not here:** `Game` / `GameState` / `CardState` / phases (`@game`); `ValidationResult` (`@utils`); army mode limits (`@legality`).

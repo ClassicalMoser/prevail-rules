@@ -34,15 +34,17 @@ export interface MeleeResolutionState {
   completed: boolean;
 }
 
-const _meleeResolutionStateSchemaObject = z.object({
-  blackAttackApplyState: attackApplyStateSchema.or(z.literal('pending')),
-  blackCommitment: commitmentSchema,
-  completed: z.boolean(),
-  location: coordinateSchema,
-  substepType: z.literal('meleeResolution'),
-  whiteAttackApplyState: attackApplyStateSchema.or(z.literal('pending')),
-  whiteCommitment: commitmentSchema,
-});
+const _meleeResolutionStateSchemaObject = z
+  .object({
+    blackAttackApplyState: attackApplyStateSchema.or(z.literal('pending')),
+    blackCommitment: commitmentSchema,
+    completed: z.boolean(),
+    location: coordinateSchema,
+    substepType: z.literal('meleeResolution'),
+    whiteAttackApplyState: attackApplyStateSchema.or(z.literal('pending')),
+    whiteCommitment: commitmentSchema,
+  })
+  .strict();
 
 type MeleeResolutionStateSchemaType = z.infer<
   typeof _meleeResolutionStateSchemaObject

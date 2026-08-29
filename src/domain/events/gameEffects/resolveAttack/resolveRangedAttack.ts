@@ -26,16 +26,18 @@ export interface ResolveRangedAttackEvent {
   eventNumber: number;
 }
 
-const _resolveRangedAttackEventSchemaObject = z.object({
-  defenderWithPlacement: unitWithPlacementSchema,
-  effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
-  eventNumber: z.number(),
-  eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-  legalRetreatOptions: z.array(unitPlacementSchema),
-  retreated: z.boolean(),
-  reversed: z.boolean(),
-  routed: z.boolean(),
-});
+const _resolveRangedAttackEventSchemaObject = z
+  .object({
+    defenderWithPlacement: unitWithPlacementSchema,
+    effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
+    eventNumber: z.number(),
+    eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
+    legalRetreatOptions: z.array(unitPlacementSchema),
+    retreated: z.boolean(),
+    reversed: z.boolean(),
+    routed: z.boolean(),
+  })
+  .strict();
 
 type ResolveRangedAttackEventSchemaType = z.infer<
   typeof _resolveRangedAttackEventSchemaObject

@@ -21,18 +21,20 @@ export interface ChooseRallyEvent {
   performRally: boolean;
 }
 
-const _chooseRallyEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  /** The type of player choice. */
-  choiceType: z.literal(CHOOSE_RALLY_CHOICE_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player who is choosing whether to perform a rally. */
-  player: playerSideSchema,
-  /** Whether the player is performing a rally. */
-  performRally: z.boolean(),
-});
+const _chooseRallyEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** The type of player choice. */
+    choiceType: z.literal(CHOOSE_RALLY_CHOICE_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The player who is choosing whether to perform a rally. */
+    player: playerSideSchema,
+    /** Whether the player is performing a rally. */
+    performRally: z.boolean(),
+  })
+  .strict();
 
 type ChooseRallyEventSchemaType = z.infer<typeof _chooseRallyEventSchemaObject>;
 

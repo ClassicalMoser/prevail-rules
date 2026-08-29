@@ -22,16 +22,18 @@ export interface DoneIssuingCommandsEvent {
   player: PlayerSide;
 }
 
-const _doneIssuingCommandsEventSchemaObject = z.object({
-  /** The type of the event. */
-  eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-  /** The type of player choice. */
-  choiceType: z.literal(DONE_ISSUING_COMMANDS_CHOICE_TYPE),
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: z.number(),
-  /** The player who is done issuing. */
-  player: playerSideSchema,
-});
+const _doneIssuingCommandsEventSchemaObject = z
+  .object({
+    /** The type of the event. */
+    eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    /** The type of player choice. */
+    choiceType: z.literal(DONE_ISSUING_COMMANDS_CHOICE_TYPE),
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
+    /** The player who is done issuing. */
+    player: playerSideSchema,
+  })
+  .strict();
 
 type DoneIssuingCommandsEventSchemaType = z.infer<
   typeof _doneIssuingCommandsEventSchemaObject

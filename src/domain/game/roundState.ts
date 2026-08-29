@@ -27,13 +27,15 @@ export interface RoundState {
   events: readonly Event[];
 }
 
-const _roundStateSchemaObject = z.object({
-  commandedUnits: z.array(unitInstanceSchema),
-  completedPhases: z.array(phaseStateSchema),
-  currentPhaseState: phaseStateSchema.or(z.literal('none')),
-  events: z.array(eventSchema).readonly(),
-  roundNumber: z.int().positive(),
-});
+const _roundStateSchemaObject = z
+  .object({
+    commandedUnits: z.array(unitInstanceSchema),
+    completedPhases: z.array(phaseStateSchema),
+    currentPhaseState: phaseStateSchema.or(z.literal('none')),
+    events: z.array(eventSchema).readonly(),
+    roundNumber: z.int().positive(),
+  })
+  .strict();
 
 type RoundStateSchemaType = z.infer<typeof _roundStateSchemaObject>;
 

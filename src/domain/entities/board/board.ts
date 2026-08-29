@@ -26,6 +26,17 @@ export interface Board {
   board: Partial<Record<Coordinate, BoardSpace>>;
 }
 
+function expectedCoordinateKeys(boardTypeValue: BoardType): Set<string> {
+  const layout: CoordinateLayout = coordinateLayoutMap[boardTypeValue];
+  const keys = new Set<string>();
+  for (const row of layout.rowLetters) {
+    for (const column of layout.columnNumbers) {
+      keys.add(layout.createCoordinate(row, column));
+    }
+  }
+  return keys;
+}
+
 const _boardSchemaObject = z
   .object({
     boardType: boardTypeEnum,
@@ -62,14 +73,3 @@ type BoardSchemaType = z.infer<typeof _boardSchemaObject>;
 export const boardSchema: z.ZodType<Board> = _boardSchemaObject;
 
 const _assertExactBoard: AssertExact<Board, BoardSchemaType> = true;
-
-function expectedCoordinateKeys(boardTypeValue: BoardType): Set<string> {
-  const layout: CoordinateLayout = coordinateLayoutMap[boardTypeValue];
-  const keys = new Set<string>();
-  for (const row of layout.rowLetters) {
-    for (const column of layout.columnNumbers) {
-      keys.add(layout.createCoordinate(row, column));
-    }
-  }
-  return keys;
-}
