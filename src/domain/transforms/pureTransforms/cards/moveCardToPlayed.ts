@@ -1,4 +1,4 @@
-import type { HiddenCardState, OwnedCardState } from '@entities';
+import type { HiddenCardState, OwnedCardState } from '@game';
 
 type PlayerCardSlice = OwnedCardState | HiddenCardState;
 

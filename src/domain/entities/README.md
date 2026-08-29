@@ -1,246 +1,102 @@
 # Entities
 
-This directory contains the domain models (entities) for the Prevail game rules engine.
+Domain models for the Prevail rules engine. Import as `@entities`.
 
 ## Layout conventions
 
-- **Declarations first**: schemas, interfaces, and types—no business logic in entity modules.
-- **Type guards only**: the only functions here live under `typeGuards/` (narrowing entity shapes).
+- **Declarations first**: schemas, interfaces, and types. No business logic in entity modules.
+- **Functions**: almost only `typeGuards/` (narrowing). Thin lookups like `getCoordinateLayout` are fine; mode composition and list-building refines live in `@legality`.
+- **Schema `superRefine`**: allowed for shape invariants (e.g. army uniqueness, board key sets). Not for game-mode or turn rules.
 - **No colocated tests**: specs for `typeGuards` live in [`../testing/entityTypeGuards/`](../testing/entityTypeGuards/).
 
-## Schema-First Type Safety Pattern
+Sequencing and composed game state live in [`../game/`](../game/README.md) (`@game`).
 
-All entities in this directory follow a **schema-first approach** that ensures both runtime validation and compile-time type safety.
+## Schema-first pattern
 
-### Pattern Structure
+Every entity follows this split so runtime validation, IDE types, and `isolatedDeclarations` stay aligned:
 
 ```typescript
-// 1. Define interface manually (for better IDE support)
-/**
- * An entity with a name and id
- */
+// 1. Manual interface (public API / IDE)
 export interface Entity {
   id: string;
   name: string;
-  // ... other fields
 }
 
-// 2. Define unconstrained schema object (for type inference)
+// 2. Unannotated schema object (inference for drift checks)
 const _entitySchemaObject = z.object({
   id: z.uuid(),
   name: z.string(),
-  // ... other fields
 });
 
-// 3. Infer type from unconstrained schema object
+// 3. Inferred type (never export)
 type EntitySchemaType = z.infer<typeof _entitySchemaObject>;
 
-// 4. Export schema with constraint for isolatedDeclarations compatibility
-/**
- * The schema for an entity.
- */
+// 4. Exported schema annotated for isolatedDeclarations
+/** The schema for an entity. */
 export const entitySchema: z.ZodType<Entity> = _entitySchemaObject;
 
-// 5. Assert type match at compile time (bidirectional check)
+// 5. AssertExact (never export)
 const _assertExact: AssertExact<Entity, EntitySchemaType> = true;
 ```
 
-**Declaration Ordering Convention:**
+**Declaration order:** exported literals → interface/type → `_…SchemaObject` → inferred type → exported `z.ZodType<T>` (+ JSDoc) → `AssertExact`.
 
-1. **Exported literal constants / tuples (if any)** - Public API values used as type sources
-2. **Exported interface/type** - Public API, what consumers see
-3. **Unexported schema object** - Implementation detail for type inference
-4. **Inferred type** - Internal implementation detail for `AssertExact`
-5. **Exported schema with JSDoc** - Public API with documentation
-6. **AssertExact check** - Internal verification (never exported)
+**Required:**
 
-**Key Requirements:**
+- Annotate **exports** with `z.ZodType<T>` (or `z.ZodObject<…>` for members of a `discriminatedUnion`).
+- Assert against `_fooSchemaObject`, never `typeof fooSchema`. The export annotation erases the inferred shape.
+- Never export `AssertExact` checks or `*SchemaType` aliases.
+- Define the interface before the schema when that avoids cycles.
+- **Skip AssertExact for `z.enum(literals)` when the type is `(typeof literals)[number]`.** Both sides already share one source; the assert cannot catch drift.
 
-- Use `z.ZodType<T>` constraint on **exported** schemas for `isolatedDeclarations` compatibility
-- Define interface before schema to avoid circular references
-- Infer the schema type with `z.infer<typeof _schemaObject>` and compare it to the manual type with `AssertExact`
-- **Never export** `AssertExact` assertions or inferred `SchemaType` aliases (causes `isolatedDeclarations` errors)
-- Place JSDoc comments on the **exported** schema, not the unexported schema object
-- **Assert against `_fooSchemaObject`, never `typeof fooSchema`**: the export is annotated `z.ZodType<T>`, which erases the inferred shape. Drift checks must use the unannotated internal object.
+See `card/commandCard.ts` for a full example. Discriminated unions use the same pattern (see `unitPresence/unitPresence.ts`). Simple enum catalogs look like `attackType/attackType.ts`.
 
-### Why This Pattern?
+### Why the unannotated / annotated split?
 
-1. **Runtime Validation**: Zod schemas validate data at runtime (e.g., from API responses)
-2. **Compile-Time Safety**: TypeScript interfaces provide type checking during development
-3. **Type-Schema Alignment**: The `AssertExact` assertion ensures bidirectional type equality
-4. **Type Drift Detection**: Inferring from unconstrained schema object ensures `AssertExact` catches mismatches
-5. **isolatedDeclarations Compatibility**: The unannotated-internal / annotated-export split is load-bearing under `isolatedDeclarations`, not stylistic. `z.ZodType<T>` on the export satisfies the explicit-annotation requirement; the internal object preserves inference for `AssertExact`.
-6. **Build Performance**: Explicit annotations enable faster builds (tsdown can work directly from declarations)
+`isolatedDeclarations` needs an explicit type on the export. Putting `z.ZodType<T>` only on the export satisfies that, while the internal object stays free for `z.infer` + `AssertExact`, so type/schema drift fails at compile time.
 
-### Benefits
+## Discriminated unions
 
-- ✅ Catch type mismatches at compile time
-- ✅ Validate data at runtime
-- ✅ Better IDE autocomplete (interfaces are more descriptive than inferred types)
-- ✅ Self-documenting code (schema shows validation rules)
-- ✅ Fast build times with `isolatedDeclarations` enabled
-- ✅ Explicit type annotations improve tooling performance
-
-### Example
-
-See `src/domain/entities/card/card.ts` for a complete example of this pattern.
-
-## Discriminated Unions
-
-Many entities use **discriminated unions** for type-safe variants.
-
-### Pattern for Discriminated Unions
-
-For discriminated unions, follow the same pattern with an unconstrained schema object:
-
-```typescript
-// 1. Define the union type
-export type UnitPresence =
-  | NoneUnitPresence
-  | SingleUnitPresence
-  | EngagedUnitPresence;
-
-// 2. Define unconstrained discriminated union schema object
-const _unitPresenceSchemaObject = z.discriminatedUnion('presenceType', [
-  noneUnitPresenceSchema,
-  singleUnitPresenceSchema,
-  engagedUnitPresenceSchema,
-]);
-
-// 3. Infer type from unconstrained schema object
-type UnitPresenceSchemaType = z.infer<typeof _unitPresenceSchemaObject>;
-
-// 4. Export schema with constraint
-/**
- * The schema for unit presence in a space.
- */
-export const unitPresenceSchema: z.ZodType<UnitPresence> =
-  _unitPresenceSchemaObject;
-
-// 5. Assert type match
-const _assertExactUnitPresence: AssertExact<
-  UnitPresence,
-  UnitPresenceSchemaType
-> = true;
-```
-
-**Why this pattern?**
-
-- `z.discriminatedUnion` requires plain Zod object schemas (not `z.ZodType<T>` wrappers)
-- The parent union uses `z.ZodType<T>` on export for `isolatedDeclarations` compatibility
-- Individual schemas use explicit `z.ZodObject<...>` annotations for type safety
-- Inferring from unconstrained schema object ensures type drift detection works
+`z.discriminatedUnion` needs plain Zod object schemas (not `z.ZodType<T>` wrappers). Variant files export `z.ZodObject<…>`; the parent exports `z.ZodType<Union>` over an unconstrained `_…SchemaObject`.
 
 ### UnitPresence
 
-Represents three possible states of unit presence in a board space:
-
 ```typescript
 export type UnitPresence =
-  | NoneUnitPresence // No unit
-  | SingleUnitPresence // One unit
-  | EngagedUnitPresence; // Two units engaged
+  | NoneUnitPresence // presenceType: 'none'
+  | SingleUnitPresence // 'single'
+  | EngagedUnitPresence; // 'engaged'
 ```
 
-Each variant has a `presenceType` field that acts as the discriminator.
+Type guards in `typeGuards/`: `hasNoUnit`, `hasSingleUnit`, `hasEngagedUnits`, plus `areSameSide` for unit ownership.
 
-**Type guards** are available in `@entities` (`typeGuards/`):
+## Board size vs visibility (when to type-parameterize)
 
-- `hasNoUnit(unitPresence)` - checks for none
-- `hasSingleUnit(unitPresence)` - checks for single
-- `hasEngagedUnits(unitPresence)` - checks for engaged
-
-### Board Size vs Visibility (when to type-parameterize)
-
-**Board size is state, not a type parameter.** The size literal’s job is to index a layout map:
+**Board size is state, not a type parameter.** `boardType` indexes a layout map:
 
 ```typescript
-export interface Board {
-  boardType: BoardType; // 'standard' | 'small' | 'large'
-  board: Partial<Record<Coordinate, BoardSpace>>;
-}
-
 getCoordinateLayout(board); // → coordinateLayoutMap[board.boardType]
 ```
 
-`Coordinate` is the union of all size coordinate literals (extensionally the large set).
-Per-size key-set completeness is enforced by `boardSchema` and by runtime bounds checks
-in geometry helpers — not by compile-time narrowing.
+`Coordinate` is the union across all sizes (extensionally the large set). Completeness is enforced by `boardSchema.superRefine` and geometry helpers, not by per-size TypeScript types.
 
-**Why `partialRecord` + `superRefine` instead of per-size schemas?**
-`z.object(shape)` infers literal keys. Factories and discriminated unions that touch a
-per-size object schema leak those narrow keys back through generic inference, fighting
-the unified `Board` type. A single schema with `z.partialRecord(coordinateSchema, …)`
-plus `superRefine` against `coordinateLayoutMap[boardType]` keeps the TypeScript type
-wide and still rejects wrong key sets at parse time.
+**Why `partialRecord` + `superRefine` instead of per-size schemas?**  
+`z.object(shape)` infers literal keys. Factories and unions that touch a per-size object schema leak those keys through inference and fight the unified `Board` type. One wide schema plus a refine against `coordinateLayoutMap[boardType]` keeps the TypeScript type wide and still rejects wrong keys at parse time.
 
-**`CoordinateLayout<R, C>` uses method syntax deliberately** (`createCoordinate(…)`,
-`getRowIndex(…)`) so parameter checks stay bivariant and per-size layouts remain
-assignable to the shared default type. Changing those to property/function-field syntax
-breaks assignability at the layout map (see `board.ts` / `getCoordinateLayout`) in
-ways that look like an unrelated type error.
+**`CoordinateLayout` method syntax is deliberate** (`createCoordinate`, `getRowIndex`, …) so parameter checks stay bivariant and per-size layouts stay assignable to the shared default. Property or function-field syntax breaks the layout map.
 
-**Visibility earns a type parameter; board size did not.**
-Visibility (`authoritative` | `whiteSeen` | `blackSeen`) _constrains inputs_ — which
-card fields are readable or writable — so `GameStateForVisibility<V>` / `CardState`
-discrimination removes casts at call sites. Board size _asserted_ completeness rather
-than constraining callers; threading it as a type argument inflated signatures without
-cutting casts. Cast count is the readout: keep a parameter only when it narrows what
-callers may pass or read.
+**Visibility earns a type parameter; board size did not.**  
+Visibility (`authoritative` | `whiteSeen` | `blackSeen`) constrains which card fields are readable or writable, so `GameStateForVisibility<V>` / `CardState` remove casts at call sites. Board size only asserted completeness; threading it as a type argument inflated signatures without cutting casts. Keep a parameter only when it narrows what callers may pass or read.
 
-## Entity Categories
+## What lives here
 
-What lives in this directory (`@entities`). Sequencing and composed game state live in [`../game/`](../game/README.md) (`@game`).
+| Area | Notes |
+| --- | --- |
+| Board | `Board`, `BoardSpace`, `Coordinate`, layouts |
+| Units | `UnitType` / `UnitInstance`, facing, placement, `UnitPresence` |
+| Cards | `CommandCard`, `Command`, modifiers / restrictions / support |
+| Army | `Army` / `UnitCount` (shape + uniqueness only; mode composition in `@legality`) |
+| Players / modes | `Player`, `PlayerSide`, `GameMode` |
+| Shared values | `AttackType`, `EngagementType`, `Line`, … |
 
-### Board
-
-- `Board` - Game board (`boardType` + partial coordinate map)
-- `BoardSpace` - Individual space on the board
-- `Coordinate` - Board coordinate (union across all sizes)
-
-### Units
-
-- `UnitType` / `UnitInstance` - definitions and board instances
-- `UnitPresence` - presence in a space (discriminated union)
-- `UnitFacing` / placement helpers - facing and location
-
-### Cards & armies
-
-- `CommandCard` / `Command` - command cards
-- `CardState` - visibility regimes (`authoritative` | `whiteSeen` | `blackSeen`)
-- `Army` / `UnitCount` - army composition
-- `Player` / `PlayerSide` - player identity
-
-### Shared value types
-
-- `GameMode`, `AttackType`, `EngagementType`, `ValidationResult`, `Line`, …
-
-### In `@game` (not here)
-
-- `Game` / `GameState` - full game configuration and runtime state
-- Phases, round state, and resolution substeps (cleanup, melee, engagement, rally, …)
-
-## Best Practices
-
-1. **Always use the schema-first pattern** for new entities
-2. **Follow the declaration ordering convention** - interface, schema object, inferred type, exported schema, AssertExact
-3. **Use `z.ZodType<T>` constraint** on **exported** schemas for `isolatedDeclarations` compatibility
-4. **Infer from unconstrained schema object** to ensure type drift detection works correctly
-5. **Never export** `AssertExact` assertions or inferred `SchemaType` types
-6. **Place JSDoc on exported schema**, not the unexported schema object
-7. **Use discriminated unions** for type-safe variants (with `z.ZodObject<...>` for individual schemas)
-8. **Define interfaces before schemas** to avoid circular references
-9. **Export schemas** for runtime validation
-10. **Export types/interfaces** for compile-time checking
-
-### Type Annotation Rules
-
-- ✅ Use `z.ZodType<T>` for schema constraints
-- ✅ Use `z.ZodObject<...>` for explicit object schema types
-- ✅ Use explicit array types: `readonly Type[]` instead of inferred types
-- ✅ Use `typeof SOME_CONST` for exported literal constants when the type must stay coupled to the value
-- ✅ Use `(typeof SOME_CONST)[number]` for unions derived from `as const` tuples
-- ✅ Use `z.infer<typeof _schemaObject>` for schema drift checks — never `typeof exportedSchema`
-- ❌ Never use `typeof` as a shortcut for a domain shape when a manual type should own the contract
-- ❌ Never use `any` type assertions
-- ❌ Do not “fix” `CoordinateLayout` methods to property syntax — bivariance depends on method form
+**Not here:** `Game` / `GameState` / `CardState` / phases (`@game`); `ValidationResult` (`@utils`); army mode limits (`@legality`).

@@ -1,8 +1,5 @@
-import type {
-  CommandCard,
-  AuthoritativeCardState,
-  OwnedCardState,
-} from '@entities';
+import type { CommandCard } from '@entities';
+import type { AuthoritativeCardState, OwnedCardState } from '@game';
 import type { FailValidationResult, ValidationResult } from '@utils';
 
 export function eachCardPresentOnce(

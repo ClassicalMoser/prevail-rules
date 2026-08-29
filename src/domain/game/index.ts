@@ -1,5 +1,16 @@
 export type { AttackResult } from './attackResult';
 export { attackResultSchema } from './attackResult';
+
+// Card piles and visibility regimes
+export {
+  authoritativeCardStateSchema, blackSeenCardStateSchema, cardStateSchema, whiteSeenCardStateSchema,
+} from './cardState';
+export type {
+  AuthoritativeCardState, BlackSeenCardState, CardState, WhiteSeenCardState,
+} from './cardState';
+export { hiddenCardStateSchema, ownedCardStateSchema } from './playerCardState';
+export type { HiddenCardState, OwnedCardState } from './playerCardState';
+
 export type {
   Commitment,
   CompletedCommitment,

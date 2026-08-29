@@ -1,23 +1,24 @@
+import type { Board, PlayerSide, UnitInstance } from '@entities';
+import type { AssertExact } from '@utils';
 import type {
   AuthoritativeCardState,
   BlackSeenCardState,
-  Board,
   CardState,
-  PlayerSide,
-  UnitInstance,
   WhiteSeenCardState,
-} from '@entities';
-import { z } from 'zod';
+} from './cardState';
 import type { RoundState } from './roundState';
-import type { AssertExact } from '@utils';
+
 import {
-  authoritativeCardStateSchema,
-  blackSeenCardStateSchema,
   boardSchema,
   playerSideSchema,
   unitInstanceSchema,
-  whiteSeenCardStateSchema,
 } from '@entities';
+import { z } from 'zod';
+import {
+  authoritativeCardStateSchema,
+  blackSeenCardStateSchema,
+  whiteSeenCardStateSchema,
+} from './cardState';
 import { roundStateSchema } from './roundState';
 
 /** Visibility regime for {@link CardState}, reused as the game-state visibility axis. */

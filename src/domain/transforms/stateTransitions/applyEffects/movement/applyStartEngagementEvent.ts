@@ -66,6 +66,7 @@ export function applyStartEngagementEvent<S extends GameState>(
           defendingUnitRetreats: 'pending',
           defensiveCommitment: { commitmentType: 'pending' as const },
           engagementType: 'front' as const,
+          retreatState: 'pending',
         };
       }
       default: {

@@ -1,4 +1,4 @@
-import type { OwnedCardState } from '@entities';
+import type { OwnedCardState } from '@game';
 
 /**
  * Pure transform to move specified cards from hand to discarded pile.

@@ -22,16 +22,21 @@ export const standardBoardCoordinates: readonly StandardBoardCoordinate[] =
     standardBoardColumnNumbers.map((column) => `${row}-${column}`),
   ) as readonly StandardBoardCoordinate[]; // This cast is safe.
 
-const _standardBoardCoordinatesSchema = z.enum(standardBoardCoordinates);
-type CoordinatesSchemaType = z.infer<typeof _standardBoardCoordinatesSchema>;
+const _standardBoardCoordinatesSchemaObject = z.enum(
+  standardBoardCoordinates,
+);
 
-const _assertExactStandardBoardCoordinates: AssertExact<
-  StandardBoardCoordinate,
-  CoordinatesSchemaType
-> = true;
+type StandardBoardCoordinatesSchemaType = z.infer<
+  typeof _standardBoardCoordinatesSchemaObject
+>;
 
 /**
  * The schema for a standard board coordinate.
  */
 export const standardBoardCoordinateSchema: z.ZodType<StandardBoardCoordinate> =
-  _standardBoardCoordinatesSchema;
+  _standardBoardCoordinatesSchemaObject;
+
+const _assertExactStandardBoardCoordinates: AssertExact<
+  StandardBoardCoordinate,
+  StandardBoardCoordinatesSchemaType
+> = true;

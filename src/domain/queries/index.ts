@@ -107,6 +107,7 @@ export {
   getRemainingMeleeEngagements,
   getResolveMeleePhaseState,
   getRetreatStateFromAttackApply,
+  getRetreatStateFromFrontEngagement,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,

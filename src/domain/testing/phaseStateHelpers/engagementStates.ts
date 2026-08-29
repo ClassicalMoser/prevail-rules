@@ -33,6 +33,7 @@ export function createFrontEngagementState(
       defendingUnitRetreats: 'pending',
       defensiveCommitment: { commitmentType: 'pending' },
       engagementType: 'front',
+      retreatState: 'pending',
       ...overrides,
     },
     engagingUnit: defaultEngagingUnit(),

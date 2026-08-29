@@ -1,4 +1,5 @@
-import type { CardState, OwnedCardState, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
+import type { CardState, OwnedCardState } from '@game';
 
 /**
  * Returns the owned card slice for `player`, proven via `cardState.visibility`.

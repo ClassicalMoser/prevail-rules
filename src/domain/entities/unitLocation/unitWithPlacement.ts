@@ -20,15 +20,13 @@ type UnitWithPlacementSchemaType = z.infer<
   typeof _unitWithPlacementSchemaObject
 >;
 
+/**
+ * The schema for a unit with its placement (any board type).
+ */
+export const unitWithPlacementSchema: z.ZodType<UnitWithPlacement> =
+  _unitWithPlacementSchemaObject;
+
 const _assertExactUnitWithPlacement: AssertExact<
   UnitWithPlacement,
   UnitWithPlacementSchemaType
 > = true;
-
-/**
- * The schema for a unit with its placement (any board type).
- * Per-variant {@link AssertExact} checks above; wide union not asserted (same reason as
- * unitPlacementSchema).
- */
-export const unitWithPlacementSchema: z.ZodType<UnitWithPlacement> =
-  _unitWithPlacementSchemaObject;

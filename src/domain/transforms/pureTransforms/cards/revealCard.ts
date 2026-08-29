@@ -1,4 +1,4 @@
-import type { OwnedCardState } from '@entities';
+import type { OwnedCardState } from '@game';
 
 /**
  * Moves a player's card from awaitingPlay to inPlay.

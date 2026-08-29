@@ -1,7 +1,9 @@
 import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
+import type { RetreatState } from '../retreatSubstep';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
+import { retreatStateSchema } from '../retreatSubstep';
 
 /** The resolution state of an engagement from the front. */
 export interface FrontEngagementResolutionState {
@@ -15,6 +17,11 @@ export interface FrontEngagementResolutionState {
   defendingUnitRetreats: 'pending' | boolean;
   /** Whether the defending unit has retreated. */
   defendingUnitRetreated: 'pending' | boolean;
+  /**
+   * Nested retreat substep once the defender accepts retreat.
+   * Baked with {@link RetreatState.legalRetreatOptions} like attack-apply.
+   */
+  retreatState: RetreatState | 'pending';
 }
 
 const _frontEngagementResolutionStateSchemaObject = z.object({
@@ -28,6 +35,8 @@ const _frontEngagementResolutionStateSchemaObject = z.object({
   defendingUnitRetreats: z.boolean().or(z.literal('pending')),
   /** Whether the defending unit has retreated. */
   defendingUnitRetreated: z.boolean().or(z.literal('pending')),
+  /** Nested retreat substep once the defender accepts retreat. */
+  retreatState: retreatStateSchema.or(z.literal('pending')),
 });
 
 type FrontEngagementResolutionStateSchemaType = z.infer<
@@ -46,4 +55,5 @@ export const frontEngagementResolutionStateSchema: z.ZodObject<{
   defendingUnitCanRetreat: z.ZodType<'pending' | boolean>;
   defendingUnitRetreats: z.ZodType<'pending' | boolean>;
   defendingUnitRetreated: z.ZodType<'pending' | boolean>;
+  retreatState: z.ZodType<RetreatState | 'pending'>;
 }> = _frontEngagementResolutionStateSchemaObject;

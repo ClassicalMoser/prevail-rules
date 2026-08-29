@@ -2,6 +2,7 @@ import {
   createFlankEngagementState,
   createFrontEngagementState,
   createRearEngagementState,
+  createRetreatState,
   createRoutState,
   createTestCard,
   createUnitWithPlacement,
@@ -131,7 +132,8 @@ describe(getExpectedEngagementEvent, () => {
     });
   });
 
-  it('given ask the defender to choose a retreat option after choosing to retreat', () => {
+  it('asks the defender to choose a retreat option after accepting retreat with multiple destinations', () => {
+    const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: true,
       defendingUnitRetreated: 'pending' as const,
@@ -140,12 +142,41 @@ describe(getExpectedEngagementEvent, () => {
         card: createTestCard(),
         commitmentType: 'completed',
       },
+      retreatState: createRetreatState(retreatingUnit, {
+        finalPosition: 'pending',
+        legalRetreatOptions: [
+          { coordinate: 'E-4', facing: 'north' },
+          { coordinate: 'E-6', facing: 'north' },
+        ],
+      }),
     });
 
     expect(getExpectedEngagementEvent(engagementState)).toStrictEqual({
       actionType: 'playerChoice',
       choiceType: 'chooseRetreatOption',
       playerSource: 'white',
+    });
+  });
+
+  it('expects resolveRetreat when the accepted retreat already has a finalPosition', () => {
+    const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
+    const engagementState = createFrontEngagementState({
+      defendingUnitCanRetreat: true,
+      defendingUnitRetreated: 'pending' as const,
+      defendingUnitRetreats: true,
+      defensiveCommitment: {
+        card: createTestCard(),
+        commitmentType: 'completed',
+      },
+      retreatState: createRetreatState(retreatingUnit, {
+        finalPosition: { coordinate: 'E-4', facing: 'north' },
+        legalRetreatOptions: [{ coordinate: 'E-4', facing: 'north' }],
+      }),
+    });
+
+    expect(getExpectedEngagementEvent(engagementState)).toStrictEqual({
+      actionType: 'gameEffect',
+      effectType: 'resolveRetreat',
     });
   });
 
@@ -181,7 +212,8 @@ describe(getExpectedEngagementEvent, () => {
     );
   });
 
-  it('given when retreat is chosen but the state is not marked complete, throws', () => {
+  it('throws when nested retreat is completed but engagement is not marked complete', () => {
+    const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: true,
       defendingUnitRetreated: true,
@@ -190,10 +222,15 @@ describe(getExpectedEngagementEvent, () => {
         card: createTestCard(),
         commitmentType: 'completed',
       },
+      retreatState: createRetreatState(retreatingUnit, {
+        completed: true,
+        finalPosition: { coordinate: 'E-4', facing: 'north' },
+        legalRetreatOptions: [{ coordinate: 'E-4', facing: 'north' }],
+      }),
     });
 
     expect(() => getExpectedEngagementEvent(engagementState)).toThrow(
-      'Front engagement resolution complete but not marked as completed',
+      'Front engagement retreat completed but engagement not marked as completed',
     );
   });
 

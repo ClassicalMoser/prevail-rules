@@ -1,4 +1,5 @@
-import type { CommandCard, OwnedCardState } from '@entities';
+import type { CommandCard } from '@entities';
+import type { OwnedCardState } from '@game';
 
 /**
  * Moves a card from a player's hand to awaitingPlay (choosing a card for play).

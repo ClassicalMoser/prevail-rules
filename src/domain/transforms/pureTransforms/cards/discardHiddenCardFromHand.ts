@@ -1,4 +1,4 @@
-import type { HiddenCardState } from '@entities';
+import type { HiddenCardState } from '@game';
 
 /**
  * Removes one `'hidden'` placeholder from an unowned seat's hand.

@@ -1,4 +1,4 @@
-import type { OwnedCardState } from '@entities';
+import type { OwnedCardState } from '@game';
 
 /**
  * Returns all played and discarded cards to the player's hand.

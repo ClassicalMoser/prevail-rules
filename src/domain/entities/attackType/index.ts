@@ -1,2 +1,3 @@
-export { attackTypes, attackTypeSchema } from './attackType';
+// Attack types
+export { attackTypeSchema, attackTypes } from './attackType';
 export type { AttackType } from './attackType';

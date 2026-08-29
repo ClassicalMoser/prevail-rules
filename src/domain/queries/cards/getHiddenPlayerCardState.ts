@@ -1,4 +1,5 @@
-import type { CardState, HiddenCardState, PlayerSide } from '@entities';
+import type { PlayerSide } from '@entities';
+import type { CardState, HiddenCardState } from '@game';
 
 /**
  * Returns the hidden card slice for `player`, proven via `cardState.visibility`.

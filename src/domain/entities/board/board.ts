@@ -15,16 +15,7 @@ export const boardType = ['standard', 'small', 'large'] as const;
  */
 export type BoardType = (typeof boardType)[number];
 
-const _boardTypeEnum = z.enum(boardType);
-
-type BoardTypeEnumType = z.infer<typeof _boardTypeEnum>;
-
-/**
- * Assert that the board size type matches the schema.
- */
-const _assertExactBoardType: AssertExact<BoardType, BoardTypeEnumType> = true;
-
-export const boardTypeEnum: z.ZodType<BoardType> = _boardTypeEnum;
+export const boardTypeEnum: z.ZodType<BoardType> = z.enum(boardType);
 
 /**
  * A board of the game. Size is state (`boardType`), not a type parameter.
@@ -33,17 +24,6 @@ export const boardTypeEnum: z.ZodType<BoardType> = _boardTypeEnum;
 export interface Board {
   boardType: BoardType;
   board: Partial<Record<Coordinate, BoardSpace>>;
-}
-
-function expectedCoordinateKeys(boardTypeValue: BoardType): Set<string> {
-  const layout: CoordinateLayout = coordinateLayoutMap[boardTypeValue];
-  const keys = new Set<string>();
-  for (const row of layout.rowLetters) {
-    for (const column of layout.columnNumbers) {
-      keys.add(layout.createCoordinate(row, column));
-    }
-  }
-  return keys;
 }
 
 const _boardSchemaObject = z
@@ -82,3 +62,14 @@ type BoardSchemaType = z.infer<typeof _boardSchemaObject>;
 export const boardSchema: z.ZodType<Board> = _boardSchemaObject;
 
 const _assertExactBoard: AssertExact<Board, BoardSchemaType> = true;
+
+function expectedCoordinateKeys(boardTypeValue: BoardType): Set<string> {
+  const layout: CoordinateLayout = coordinateLayoutMap[boardTypeValue];
+  const keys = new Set<string>();
+  for (const row of layout.rowLetters) {
+    for (const column of layout.columnNumbers) {
+      keys.add(layout.createCoordinate(row, column));
+    }
+  }
+  return keys;
+}

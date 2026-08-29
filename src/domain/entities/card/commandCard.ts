@@ -14,18 +14,15 @@ import { MAX_INITIATIVE_VALUE, MIN_INITIATIVE_VALUE } from '@ruleValues';
 /** A hidden card, which is not visible to the player. */
 export type HiddenCard = 'hidden';
 
-/** The schema shape for a hidden card. */
 const _hiddenCardSchemaObject = z.literal('hidden');
 
-/** The type for a hidden card. */
 type HiddenCardSchemaType = z.infer<typeof _hiddenCardSchemaObject>;
-
-/** Assert that the hidden card type matches the schema. */
-const _assertExactHiddenCard: AssertExact<HiddenCard, HiddenCardSchemaType> =
-  true;
 
 /** The schema for a hidden card. */
 export const hiddenCardSchema: z.ZodType<HiddenCard> = _hiddenCardSchemaObject;
+
+const _assertExactHiddenCard: AssertExact<HiddenCard, HiddenCardSchemaType> =
+  true;
 
 /**
  * A command card in the game.

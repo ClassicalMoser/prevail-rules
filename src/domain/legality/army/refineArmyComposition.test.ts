@@ -1,8 +1,8 @@
-import type { Army } from './army';
-import type { CommandCard } from '@entities/card';
-import type { UnitType } from '@entities/unit';
+import type { Army, CommandCard, UnitType } from '@entities';
+import { armySchema } from '@entities';
+
 import { armyCompositionByMode } from './armyComposition';
-import { armySchema, armySchemaForMode } from './army';
+import { armySchemaForMode } from './refineArmyComposition';
 
 const baseUnitType = (overrides: Partial<UnitType> = {}): UnitType => ({
   cost: 10,
@@ -77,48 +77,10 @@ const validStandardArmy = (): Army => ({
   ],
 });
 
-describe('schema: armySchema', () => {
-  it('accepts shape without enforcing mode composition', () => {
-    const army: Army = {
-      commandCards: [],
-      id: '33333333-3333-4333-8333-333333333333',
-      units: [],
-    };
-
-    expect(armySchema.parse(army)).toEqual(army);
-  });
-
-  it('rejects count above unit type limit', () => {
-    const army: Army = {
-      commandCards: [],
-      id: '33333333-3333-4333-8333-333333333333',
-      units: [{ count: 5, unitType: baseUnitType({ limit: 4 }) }],
-    };
-
-    expect(armySchema.safeParse(army).success).toBe(false);
-  });
-
-  it('rejects duplicate unit types', () => {
-    const army = validStandardArmy();
-    const unitType = baseUnitType({ cost: 10, morale: 2 });
-    army.units = [
-      { count: 1, unitType },
-      { count: 2, unitType },
-    ];
-
-    expect(armySchema.safeParse(army).success).toBe(false);
-  });
-
-  it('rejects duplicate command cards', () => {
-    const army = validStandardArmy();
-    const card = baseCard(1, 1);
-    army.commandCards = [card, { ...card }];
-
-    expect(armySchema.safeParse(army).success).toBe(false);
-  });
-});
-
-describe('schema: armySchemaForMode', () => {
+/**
+ * Mode composition refinements for army list-building (cost, morale, initiative).
+ */
+describe(armySchemaForMode, () => {
   it('standard accepts a legal composition', () => {
     expect(armySchemaForMode('standard').parse(validStandardArmy())).toEqual(
       validStandardArmy(),
@@ -191,5 +153,49 @@ describe('schema: armySchemaForMode', () => {
     };
 
     expect(armySchemaForMode('tutorial').parse(army)).toEqual(army);
+  });
+});
+
+/**
+ * Entity shape schema still used as the base for mode refinement.
+ */
+describe('armySchema', () => {
+  it('accepts shape without enforcing mode composition', () => {
+    const army: Army = {
+      commandCards: [],
+      id: '33333333-3333-4333-8333-333333333333',
+      units: [],
+    };
+
+    expect(armySchema.parse(army)).toEqual(army);
+  });
+
+  it('rejects count above unit type limit', () => {
+    const army: Army = {
+      commandCards: [],
+      id: '33333333-3333-4333-8333-333333333333',
+      units: [{ count: 5, unitType: baseUnitType({ limit: 4 }) }],
+    };
+
+    expect(armySchema.safeParse(army).success).toBe(false);
+  });
+
+  it('rejects duplicate unit types', () => {
+    const army = validStandardArmy();
+    const unitType = baseUnitType({ cost: 10, morale: 2 });
+    army.units = [
+      { count: 1, unitType },
+      { count: 2, unitType },
+    ];
+
+    expect(armySchema.safeParse(army).success).toBe(false);
+  });
+
+  it('rejects duplicate command cards', () => {
+    const army = validStandardArmy();
+    const card = baseCard(1, 1);
+    army.commandCards = [card, { ...card }];
+
+    expect(armySchema.safeParse(army).success).toBe(false);
   });
 });

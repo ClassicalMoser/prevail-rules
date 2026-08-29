@@ -37,7 +37,7 @@ These substeps are **reusable** and can appear in multiple contexts. They are de
 
 - **`EngagementState`** - Handles engagement resolution (flank, front, rear)
   - Used in: `MovementResolutionState`
-  - Contains: `RoutState` (for rear engagements)
+  - Contains: `RoutState` (for rear engagements), `RetreatState` (for front engagements once the defender accepts retreat)
 
 ### Context-Specific Substeps
 

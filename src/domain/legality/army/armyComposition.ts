@@ -1,4 +1,4 @@
-import type { GameModeName } from '@entities/gameModes';
+import type { GameModeName } from '@entities';
 import {
   LEGAL_INITIATIVES,
   STANDARD_MAX_ARMY_UNIT_COST,

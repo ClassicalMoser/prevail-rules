@@ -1,4 +1,4 @@
-import type { CardState } from '@entities';
+import type { CardState } from '@game';
 
 import { moveCardToPlayed } from './moveCardToPlayed';
 

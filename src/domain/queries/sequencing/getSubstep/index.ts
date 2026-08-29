@@ -21,11 +21,11 @@ export {
 export {
   findRetreatState,
   getRetreatStateFromAttackApply,
+  getRetreatStateFromFrontEngagement,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,
-} from './retreat';
-export {
+} from './retreat';export {
   getReverseStateFromAttackApply,
   getReverseStateFromMeleeResolutionByInitiative,
 } from './reverse';

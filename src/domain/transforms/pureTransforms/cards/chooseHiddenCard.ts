@@ -1,4 +1,4 @@
-import type { HiddenCardState } from '@entities';
+import type { HiddenCardState } from '@game';
 
 /**
  * Moves one `'hidden'` placeholder from hand to awaitingPlay for an unowned seat.

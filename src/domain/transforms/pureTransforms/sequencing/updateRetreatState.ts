@@ -1,20 +1,22 @@
 import type { GameState, RetreatState } from '@game';
 import {
   getCurrentPhaseState,
+  getFrontEngagementStateFromMovement,
   getIssueCommandsPhaseState,
   getMeleeResolutionState,
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
 } from '@queries';
 import { throwIfPending } from '@utils';
+import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
 import { updatePhaseState } from '../state';
 
 /**
  * Creates a new game state with the retreat state updated.
  * Retreat can occur in:
  * - Ranged attack resolution (issueCommands phase)
+ * - Front engagement during movement (issueCommands phase)
  * - Melee resolution (resolveMelee phase)
- * - Engagement during movement (issueCommands phase; not yet implemented)
  *
  * @param state - The current game state
  * @param retreatState - The new retreat state to set
@@ -51,10 +53,18 @@ export function updateRetreatState<S extends GameState>(
       });
     }
 
-    // TODO: commandResolutionType === 'movement' with engagement retreat
-    throw new Error(
-      `Retreat state update not expected in issueCommands (command type: ${commandState.commandResolutionType})`,
-    );
+    // movement CRS
+    const engagement = getFrontEngagementStateFromMovement(state);
+    if (engagement.engagementResolutionState.retreatState === 'pending') {
+      throw new Error('No retreat state found in front engagement');
+    }
+    return updateEngagementStateInMovement(state, {
+      ...engagement,
+      engagementResolutionState: {
+        ...engagement.engagementResolutionState,
+        retreatState,
+      },
+    });
   }
 
   if (phaseState.phase === 'resolveMelee') {

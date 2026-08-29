@@ -5,30 +5,23 @@ import { updateRetreatState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ChooseRetreatOptionEvent to the game state.
- * Updates the finalPosition in the retreat state.
+ * Updates the finalPosition in the retreat state (does not move the unit —
+ * {@link applyResolveRetreatEvent} does that).
  *
  * Retreat state can be found in:
- * - AttackApplyState (in ranged attack resolution or melee resolution)
- * - EngagementState (in movement resolution, for front engagements) - TODO: Not yet implemented
+ * - AttackApplyState (ranged attack or melee resolution)
+ * - Front engagement nested retreat (movement resolution)
  *
  * Event is assumed pre-validated (correct phase and player has an active retreat).
- *
- * @param event - The choose retreat option event to apply
- * @param state - The current game state
- * @returns A new game state with the retreat option chosen
  */
 export function applyChooseRetreatOptionEvent<S extends GameState>(
   event: ChooseRetreatOptionEvent,
   state: S,
 ): S {
-  // Finds the retreat state for the player, regardless of the phase
   const retreatState = findRetreatState(state, event.player);
-  // Updates the retreat state with the new final position
   const newRetreatState: RetreatState = {
     ...retreatState,
     finalPosition: event.retreatOption,
   };
-  // Return the new game state with the updated retreat state
-  const newGameState = updateRetreatState(state, newRetreatState);
-  return newGameState;
+  return updateRetreatState(state, newRetreatState);
 }
