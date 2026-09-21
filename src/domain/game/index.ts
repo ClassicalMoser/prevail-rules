@@ -54,6 +54,7 @@ export {
   moveCommandersPhaseStateSchema,
   moveCommandersPhaseSteps,
   phases,
+  phaseSchema,
   phaseStateSchema,
   playCardsPhaseStateSchema,
   playCardsPhaseSteps,
@@ -75,38 +76,40 @@ export type {
   ResolveMeleePhaseStep,
 } from './phases';
 
-// Substeps
+// Substeps (command → melee → rally → shared outcomes → engagement)
 export {
-  attackApplyStateSchema,
   commandResolutionStateSchema,
+  movementResolutionStateSchema,
+  rangedAttackResolutionStateSchema,
+  meleeResolutionStateSchema,
+  rallyResolutionStateSchema,
+  attackResultSchema,
+  attackApplyStateSchema,
+  retreatStateSchema,
+  routStateSchema,
+  reverseStateSchema,
   engagementResolutionStateSchema,
   engagementStateSchema,
   flankEngagementResolutionStateSchema,
   frontEngagementResolutionStateSchema,
-  meleeResolutionStateSchema,
-  movementResolutionStateSchema,
-  rallyResolutionStateSchema,
-  rangedAttackResolutionStateSchema,
   rearEngagementResolutionStateSchema,
-  retreatStateSchema,
-  reverseStateSchema,
-  routStateSchema,
 } from './substeps';
 export type {
-  AttackApplyState,
   CommandResolutionState,
+  MovementResolutionState,
+  RangedAttackResolutionState,
+  MeleeResolutionState,
+  RallyResolutionState,
+  AttackResult,
+  AttackApplyState,
+  RetreatState,
+  RoutState,
+  ReverseState,
   EngagementResolutionState,
   EngagementState,
   FlankEngagementResolutionState,
   FrontEngagementResolutionState,
-  MeleeResolutionState,
-  MovementResolutionState,
-  RallyResolutionState,
-  RangedAttackResolutionState,
   RearEngagementResolutionState,
-  RetreatState,
-  ReverseState,
-  RoutState,
 } from './substeps';
 
 // Commitments
@@ -122,10 +125,6 @@ export type {
   DeclinedCommitment,
   PendingCommitment,
 } from './commitment';
-
-// Attack results
-export { attackResultSchema } from './attackResult';
-export type { AttackResult } from './attackResult';
 
 // Type guards
 export { isAuthoritativeGameState } from './typeGuards';

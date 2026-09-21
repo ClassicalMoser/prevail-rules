@@ -62,7 +62,6 @@ export function applyStartEngagementEvent<S extends GameState>(
         // Front engagement: requires check for defensive commitment
         return {
           defendingUnitCanRetreat: 'pending',
-          defendingUnitRetreated: 'pending',
           defendingUnitRetreats: 'pending',
           defensiveCommitment: { commitmentType: 'pending' as const },
           engagementType: 'front' as const,

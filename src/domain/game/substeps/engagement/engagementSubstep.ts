@@ -43,10 +43,10 @@ const _engagementStateSchemaObject = z
 
 type EngagementStateSchemaType = z.infer<typeof _engagementStateSchemaObject>;
 
+export const engagementStateSchema: z.ZodType<EngagementState> =
+  _engagementStateSchemaObject;
+
 const _assertExactEngagementState: AssertExact<
   EngagementState,
   EngagementStateSchemaType
 > = true;
-
-export const engagementStateSchema: z.ZodType<EngagementState> =
-  _engagementStateSchemaObject;

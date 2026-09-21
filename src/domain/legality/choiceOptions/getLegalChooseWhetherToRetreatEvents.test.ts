@@ -20,7 +20,6 @@ describe(getLegalChooseWhetherToRetreatEvents, () => {
     const movement = createMovementResolutionState(state, {
       engagementState: createFrontEngagementState({
         defendingUnitCanRetreat: true,
-        defendingUnitRetreated: 'pending',
         defendingUnitRetreats: 'pending',
         defensiveCommitment: {
           card: createTestCard(),
@@ -70,7 +69,6 @@ describe(getLegalChooseWhetherToRetreatEvents, () => {
     const movement = createMovementResolutionState(state, {
       engagementState: createFrontEngagementState({
         defendingUnitCanRetreat: false,
-        defendingUnitRetreated: 'pending',
         defendingUnitRetreats: 'pending',
         defensiveCommitment: {
           card: createTestCard(),

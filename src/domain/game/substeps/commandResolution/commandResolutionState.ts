@@ -20,10 +20,10 @@ type CommandResolutionStateSchemaType = z.infer<
   typeof _commandResolutionStateSchemaObject
 >;
 
+export const commandResolutionStateSchema: z.ZodType<CommandResolutionState> =
+  _commandResolutionStateSchemaObject;
+
 const _assertExactCommandResolutionState: AssertExact<
   CommandResolutionState,
   CommandResolutionStateSchemaType
 > = true;
-
-export const commandResolutionStateSchema: z.ZodType<CommandResolutionState> =
-  _commandResolutionStateSchemaObject;

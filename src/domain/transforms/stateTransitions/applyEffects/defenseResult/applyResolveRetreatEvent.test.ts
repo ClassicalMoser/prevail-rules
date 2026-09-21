@@ -360,9 +360,6 @@ describe(applyResolveRetreatEvent, () => {
         'single',
       );
       expect(getRetreatStateFromFrontEngagement(next).completed).toBe(true);
-      expect(engagement.engagementResolutionState.defendingUnitRetreated).toBe(
-        true,
-      );
       expect(engagement.completed).toBe(true);
     });
   });

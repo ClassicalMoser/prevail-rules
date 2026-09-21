@@ -30,7 +30,6 @@ export function applyChooseWhetherToRetreatEvent<S extends GameState>(
       completed: true,
       engagementResolutionState: {
         ...engagementState.engagementResolutionState,
-        defendingUnitRetreated: false,
         defendingUnitRetreats: false,
       },
     });

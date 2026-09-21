@@ -20,17 +20,16 @@ Game / GameForVisibility
 
 ## Modules
 
-| Module            | Role                                                                        |
-| ----------------- | --------------------------------------------------------------------------- |
-| `game/`           | Full game record (mode, players, armies, `gameState`) by visibility         |
-| `gameState/`      | Runtime state by visibility, plus ownership helper types                    |
-| `cardState/`      | Owned/hidden piles and visibility `CardState` union                         |
-| `roundState.ts`   | Current round slice (phase + event stream)                                  |
-| `phases/`         | Phase/step state in play order                                              |
-| `substeps/`       | Nested resolution states (see [`substeps/README.md`](./substeps/README.md)) |
-| `commitment.ts`   | Pending / completed / declined commitments                                  |
-| `attackResult.ts` | Attack outcome value                                                        |
-| `typeGuards/`     | Narrowing helpers (e.g. authoritative game state)                           |
+| Module        | Role                                                                                                                  |
+| ------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `game/`       | Full game record by visibility; `refineGameModeBoardSize` is a shape refine (mode ↔ board size), not army composition |
+| `gameState/`  | Runtime state by visibility, plus ownership helper types                                                              |
+| `cardState/`  | Owned/hidden piles and visibility `CardState` union                                                                   |
+| `roundState/` | Current round slice (phase + event stream)                                                                            |
+| `phases/`     | Phase/step state in play order                                                                                        |
+| `substeps/`   | Nested resolution states (see [`substeps/README.md`](./substeps/README.md))                                           |
+| `commitment/` | Pending / completed / declined commitments (discriminated on `commitmentType`)                                        |
+| `typeGuards/` | Narrowing helpers (e.g. authoritative game state)                                                                     |
 
 ### `phases/`
 
@@ -38,4 +37,4 @@ Game / GameForVisibility
 
 ### `substeps/`
 
-Composable pieces (`attackApply`, `retreat`, `rout`, `reverse`, `engagement`) and context-specific ones (`movementResolution`, `rangedAttackResolution`, `meleeResolution`, `rallyResolution`, `commandResolution`).
+Phase-owned roots (`commandResolution/`, `meleeResolution/`, `rallyResolution/`) plus shared `combatOutcomes/` and `engagement/`. See [`substeps/README.md`](./substeps/README.md).

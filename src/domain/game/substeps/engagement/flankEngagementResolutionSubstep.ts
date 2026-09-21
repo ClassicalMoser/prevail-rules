@@ -22,13 +22,13 @@ type FlankEngagementResolutionStateSchemaType = z.infer<
   typeof _flankEngagementResolutionStateSchemaObject
 >;
 
-const _assertExactFlankEngagementResolutionState: AssertExact<
-  FlankEngagementResolutionState,
-  FlankEngagementResolutionStateSchemaType
-> = true;
-
 /** The schema for the flank engagement resolution state. */
 export const flankEngagementResolutionStateSchema: z.ZodObject<{
   engagementType: z.ZodLiteral<'flank'>;
   defenderRotated: z.ZodType<boolean>;
 }> = _flankEngagementResolutionStateSchemaObject;
+
+const _assertExactFlankEngagementResolutionState: AssertExact<
+  FlankEngagementResolutionState,
+  FlankEngagementResolutionStateSchemaType
+> = true;

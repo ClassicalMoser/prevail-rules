@@ -17,8 +17,7 @@ import {
  * Moves the retreating unit from startingPosition to finalPosition on the board.
  * Marks the retreat state as completed.
  *
- * When the retreat is nested under a front engagement, also marks
- * `defendingUnitRetreated` and completes the engagement.
+ * When the retreat is nested under a front engagement, also completes the engagement.
  *
  * @param event - The resolve retreat event to apply
  * @param state - The current game state
@@ -57,10 +56,6 @@ export function applyResolveRetreatEvent<S extends GameState>(
       next = updateEngagementStateInMovement(next, {
         ...front,
         completed: true,
-        engagementResolutionState: {
-          ...front.engagementResolutionState,
-          defendingUnitRetreated: true,
-        },
       });
     }
   } catch {

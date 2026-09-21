@@ -1,10 +1,10 @@
 import type { UnitInstance } from '@entities';
 import type { AssertExact } from '@utils';
-import type { RoutState } from './routSubstep';
+import type { RoutState } from '../combatOutcomes';
 
 import { unitInstanceSchema } from '@entities';
 import { z } from 'zod';
-import { routStateSchema } from './routSubstep';
+import { routStateSchema } from '../combatOutcomes';
 
 /**
  * Context-specific substep that resolves unit support consequences after a rally.
@@ -49,11 +49,6 @@ type RallyResolutionStateSchemaType = z.infer<
   typeof _rallyResolutionStateSchemaObject
 >;
 
-const _assertExactRallyResolutionState: AssertExact<
-  RallyResolutionState,
-  RallyResolutionStateSchemaType
-> = true;
-
 /** The schema for the rally resolution state. */
 export const rallyResolutionStateSchema: z.ZodObject<{
   playerRallied: z.ZodBoolean;
@@ -62,3 +57,8 @@ export const rallyResolutionStateSchema: z.ZodObject<{
   routState: z.ZodType<RoutState | 'pending'>;
   completed: z.ZodType<boolean>;
 }> = _rallyResolutionStateSchemaObject;
+
+const _assertExactRallyResolutionState: AssertExact<
+  RallyResolutionState,
+  RallyResolutionStateSchemaType
+> = true;

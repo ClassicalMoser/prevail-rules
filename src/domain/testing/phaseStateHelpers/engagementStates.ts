@@ -29,7 +29,6 @@ export function createFrontEngagementState(
     completed: false,
     engagementResolutionState: {
       defendingUnitCanRetreat: 'pending',
-      defendingUnitRetreated: 'pending',
       defendingUnitRetreats: 'pending',
       defensiveCommitment: { commitmentType: 'pending' },
       engagementType: 'front',
