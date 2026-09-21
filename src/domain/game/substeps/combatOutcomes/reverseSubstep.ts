@@ -34,10 +34,10 @@ const _reverseStateSchemaObject = z
 
 type ReverseStateSchemaType = z.infer<typeof _reverseStateSchemaObject>;
 
+export const reverseStateSchema: z.ZodType<ReverseState> =
+  _reverseStateSchemaObject;
+
 const _assertExactReverseState: AssertExact<
   ReverseState,
   ReverseStateSchemaType
 > = true;
-
-export const reverseStateSchema: z.ZodType<ReverseState> =
-  _reverseStateSchemaObject;

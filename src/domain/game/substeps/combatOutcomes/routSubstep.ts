@@ -49,7 +49,7 @@ const _routStateSchemaObject = z
 
 type RoutStateSchemaType = z.infer<typeof _routStateSchemaObject>;
 
-const _assertExactRoutState: AssertExact<RoutState, RoutStateSchemaType> = true;
-
 /** The schema for the state of the rout discard substep. */
 export const routStateSchema: z.ZodType<RoutState> = _routStateSchemaObject;
+
+const _assertExactRoutState: AssertExact<RoutState, RoutStateSchemaType> = true;

@@ -1,10 +1,10 @@
 import type { UnitPlacement, UnitWithPlacement } from '@entities';
 import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
-import type { EngagementState } from './engagement';
+import type { EngagementState } from '../engagement';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
-import { engagementStateSchema } from './engagement';
+import { engagementStateSchema } from '../engagement';
 import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
 
 /**
@@ -52,10 +52,10 @@ type MovementResolutionStateSchemaType = z.infer<
   typeof _movementResolutionStateSchemaObject
 >;
 
+export const movementResolutionStateSchema: z.ZodType<MovementResolutionState> =
+  _movementResolutionStateSchemaObject;
+
 const _assertExactMovementResolutionState: AssertExact<
   MovementResolutionState,
   MovementResolutionStateSchemaType
 > = true;
-
-export const movementResolutionStateSchema: z.ZodType<MovementResolutionState> =
-  _movementResolutionStateSchemaObject;

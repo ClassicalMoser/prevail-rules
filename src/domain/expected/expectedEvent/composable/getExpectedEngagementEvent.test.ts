@@ -100,7 +100,6 @@ describe(getExpectedEngagementEvent, () => {
   it('given resolve the retreat option when the defender can retreat but has not chosen yet', () => {
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: 'pending' as const,
-      defendingUnitRetreated: 'pending' as const,
       defendingUnitRetreats: 'pending' as const,
       defensiveCommitment: {
         card: createTestCard(),
@@ -117,7 +116,6 @@ describe(getExpectedEngagementEvent, () => {
   it('given retreat is still undecided, asks the defender whether to retreat', () => {
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: true,
-      defendingUnitRetreated: 'pending' as const,
       defendingUnitRetreats: 'pending' as const,
       defensiveCommitment: {
         card: createTestCard(),
@@ -136,7 +134,6 @@ describe(getExpectedEngagementEvent, () => {
     const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: true,
-      defendingUnitRetreated: 'pending' as const,
       defendingUnitRetreats: true,
       defensiveCommitment: {
         card: createTestCard(),
@@ -162,7 +159,6 @@ describe(getExpectedEngagementEvent, () => {
     const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: true,
-      defendingUnitRetreated: 'pending' as const,
       defendingUnitRetreats: true,
       defensiveCommitment: {
         card: createTestCard(),
@@ -183,7 +179,6 @@ describe(getExpectedEngagementEvent, () => {
   it('given when the defender cannot retreat, throws', () => {
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: false,
-      defendingUnitRetreated: 'pending' as const,
       defendingUnitRetreats: 'pending' as const,
       defensiveCommitment: {
         card: createTestCard(),
@@ -199,7 +194,6 @@ describe(getExpectedEngagementEvent, () => {
   it('given when retreat is denied but the state is not marked complete, throws', () => {
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: true,
-      defendingUnitRetreated: 'pending' as const,
       defendingUnitRetreats: false,
       defensiveCommitment: {
         card: createTestCard(),
@@ -216,7 +210,6 @@ describe(getExpectedEngagementEvent, () => {
     const retreatingUnit = createUnitWithPlacement({ playerSide: 'white' });
     const engagementState = createFrontEngagementState({
       defendingUnitCanRetreat: true,
-      defendingUnitRetreated: true,
       defendingUnitRetreats: true,
       defensiveCommitment: {
         card: createTestCard(),

@@ -1,79 +1,76 @@
 # Sequence Substeps
 
-This directory contains state definitions for **substeps** - nested states that appear within phases and steps.
+Declaration-only nested states used inside phase steps. Import via `@game` (or `@game/substeps`). Queries and expected-event helpers live under `@queries` / `@expected`, not here.
+
+## Layout
+
+```
+substeps/
+  commandResolution/   # issueCommands command loop
+  meleeResolution/     # resolveMelee
+  rallyResolution/     # cleanup
+  combatOutcomes/      # attack result, attack apply, retreat, rout, reverse
+  engagement/          # movement collision (flank / front / rear)
+```
 
 ## Hierarchy
 
-The game state hierarchy is:
-
 ```
 Round
-  └─ Phase (e.g., playCards, issueCommands, resolveMelee)
-      └─ Step (e.g., chooseCards, revealCards within playCards)
-          └─ Substep (e.g., movementResolution, attackApply)
-              └─ Nested Substep (e.g., retreat, rout, engagement)
+  └─ Phase (e.g. playCards, issueCommands, resolveMelee, cleanup)
+      └─ Step (e.g. firstPlayerResolveCommands, resolveMelee, …)
+          └─ Phase-owned resolution root (movement, ranged, melee, rally)
+              └─ Shared outcome / engagement slices (attack apply, retreat, rout, …)
 ```
 
-## Types of Substeps
+## By role
 
-### Composable Substeps
+### Command resolution (`commandResolution/`)
 
-These substeps are **reusable** and can appear in multiple contexts. They are designed to be composable building blocks:
+Active command loop under `issueCommands`. `CommandResolutionState` is the union hanging on the phase; the two members are the concrete roots.
 
-- **`AttackApplyState`** - Applies the result of an attack (rout, retreat, or reverse)
-  - Used in: `RangedAttackResolutionState`, `MeleeResolutionState`
-  - Contains: `RoutState`, `RetreatState`, `ReverseState` (nested composable substeps)
+| State                         | Role                                  |
+| ----------------------------- | ------------------------------------- |
+| `CommandResolutionState`      | Union: movement \| ranged attack      |
+| `MovementResolutionState`     | Unit move; may nest `EngagementState` |
+| `RangedAttackResolutionState` | Ranged fire; nests `AttackApplyState` |
 
-- **`RetreatState`** - Handles unit retreat after an attack or engagement
-  - Used in: `AttackApplyState`, `EngagementState`
-  - Contains: `RoutState` (when retreat fails or completes into a rout)
+### Melee resolution (`meleeResolution/`)
 
-- **`RoutState`** - Handles card discarding when units rout
-  - Used in: `RetreatState`, `EngagementState`, `RallyResolutionState`
-  - Often nested under retreat: no legal retreats → rout penalty under the retreat slice
+| State                  | Role                                         |
+| ---------------------- | -------------------------------------------- |
+| `MeleeResolutionState` | One melee; nests per-side `AttackApplyState` |
 
-- **`ReverseState`** - Handles unit reversal after an attack
-  - Used in: `AttackApplyState`
+### Rally (`rallyResolution/`)
 
-- **`EngagementState`** - Handles engagement resolution (flank, front, rear)
-  - Used in: `MovementResolutionState`
-  - Contains: `RoutState` (for rear engagements), `RetreatState` (for front engagements once the defender accepts retreat)
+| State                  | Role                                           |
+| ---------------------- | ---------------------------------------------- |
+| `RallyResolutionState` | Post-rally support check; may nest `RoutState` |
 
-### Context-Specific Substeps
+### Shared combat outcomes (`combatOutcomes/`)
 
-These substeps are tied to specific phases or steps:
+Reusable under more than one parent (attack apply, engagement, rally):
 
-- **`MovementResolutionState`** - Resolves movement commands
-  - Used in: `IssueCommandsPhase`
-  - Contains: `EngagementState` (composable)
+| State              | Parents                         | Nested                                      |
+| ------------------ | ------------------------------- | ------------------------------------------- |
+| `AttackResult`     | carried on attack apply         | —                                           |
+| `AttackApplyState` | ranged / melee resolution       | `ReverseState`, `RetreatState`, `RoutState` |
+| `RetreatState`     | attack apply, front engagement  | optional `RoutState`                        |
+| `RoutState`        | retreat, rear engagement, rally | —                                           |
+| `ReverseState`     | attack apply                    | —                                           |
 
-- **`RangedAttackResolutionState`** - Resolves ranged attack commands
-  - Used in: `IssueCommandsPhase`
-  - Contains: `AttackApplyState` (composable)
+### Engagement (`engagement/`)
 
-- **`MeleeResolutionState`** - Resolves melee combat
-  - Used in: `ResolveMeleePhase`
-  - Contains: `AttackApplyState` (composable, one for each player)
+Collision when a move contacts an enemy. Container plus per-angle resolution:
 
-- **`RallyResolutionState`** - Resolves unit support after rally
-  - Used in: `CleanupPhase`
-  - Contains: `RoutState` (composable)
-
-## Composable Pattern
-
-Composable substeps follow this pattern:
-
-1. **Self-contained logic** - They handle their own state transitions
-2. **Reusable queries** - Functions like `getExpectedAttackApplyEvent()` can be called from any context
-3. **Nested composition** - They can contain other composable substeps
-4. **Completion flag** - They use a `completed: boolean` flag to indicate when all nested work is done
-
-Example: `AttackApplyState` is used in both ranged attacks and melee resolution, and it delegates to `getExpectedRetreatEvent()`, `getExpectedRoutEvent()`, or `getExpectedReverseEvent()` based on the attack result.
+| State                            | Role                                                    |
+| -------------------------------- | ------------------------------------------------------- |
+| `EngagementState`                | Container (`engagingUnit`, target, `completed`)         |
+| `EngagementResolutionState`      | Union: flank \| front \| rear                           |
+| `FlankEngagementResolutionState` | Rotate defender                                         |
+| `FrontEngagementResolutionState` | Commit → can-retreat → choose → optional `RetreatState` |
+| `RearEngagementResolutionState`  | Forced `RoutState`                                      |
 
 ## Retreat → rout nesting
 
-`RetreatState` can hold a nested `RoutState`. That is composition, not recursion: neither type contains itself.
-
-- No legal retreats (or retreat leading to rout) → `routState` is seeded under the retreat slice
-- Expected-event queries check for the nested slice (`retreatState.routState`) and delegate to `getExpectedRoutEvent()`
-- The nested `completed` flag tells the parent when to resume / finish
+`RetreatState` may hold a nested `RoutState` (composition, not recursion). No legal retreats (or a retreat that becomes a rout) seeds `routState` under the retreat slice; parent completion waits on the nested `completed` flag.

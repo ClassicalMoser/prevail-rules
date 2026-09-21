@@ -36,9 +36,6 @@ export function applyResolveEngageRetreatOptionEvent<S extends GameState>(
   const newFrontResolutionState = {
     ...frontResolutionState,
     defendingUnitCanRetreat: event.defendingUnitCanRetreat,
-    defendingUnitRetreated: event.defendingUnitCanRetreat
-      ? frontResolutionState.defendingUnitRetreated
-      : false,
     defendingUnitRetreats: event.defendingUnitCanRetreat
       ? frontResolutionState.defendingUnitRetreats
       : false,

@@ -1,20 +1,17 @@
-import type { AssertExact } from '@utils';
 import type { CleanupPhaseState } from './cleanupPhase';
 import type { IssueCommandsPhaseState } from './issueCommandsPhase';
 import type { MoveCommandersPhaseState } from './moveCommandersPhase';
 import type { PlayCardsPhaseState } from './playCardsPhase';
-
 import type { ResolveMeleePhaseState } from './resolveMeleePhase';
+
 import { z } from 'zod';
 import { cleanupPhaseStateSchema } from './cleanupPhase';
+import { issueCommandsPhaseStateSchema } from './issueCommandsPhase';
 import { moveCommandersPhaseStateSchema } from './moveCommandersPhase';
 import { playCardsPhaseStateSchema } from './playCardsPhase';
-import { issueCommandsPhaseStateSchema } from './issueCommandsPhase';
 import { resolveMeleePhaseStateSchema } from './resolveMeleePhase';
 
-/**
- * Iterable list of valid phases for a round.
- */
+/** Iterable list of valid phases for a round. */
 export const phases = [
   'playCards',
   'moveCommanders',
@@ -23,9 +20,7 @@ export const phases = [
   'cleanup',
 ] as const;
 
-/**
- * The type of a phase of a round.
- */
+/** The type of a phase of a round. */
 export type Phase = (typeof phases)[number];
 
 /** The play cards phase. */
@@ -43,21 +38,14 @@ export const RESOLVE_MELEE_PHASE: 'resolveMelee' = phases[3];
 /** The cleanup phase. */
 export const CLEANUP_PHASE: 'cleanup' = phases[4];
 
-const _phaseSchemaObject = z.enum(phases);
-type PhaseSchemaType = z.infer<typeof _phaseSchemaObject>;
-
-/**
- * The schema for a phase of a round.
- */
-export const phaseSchema: z.ZodType<Phase> = _phaseSchemaObject;
-
-// Verify manual type matches schema inference
-const _assertExactPhase: AssertExact<Phase, PhaseSchemaType> = true;
+/** The schema for a phase of a round. */
+export const phaseSchema: z.ZodType<Phase> = z.enum(phases);
 
 /**
  * The state of a phase of a round.
  *
- * Spatial branches (`issueCommands`, `resolveMelee`) correlate nested state with `Board`.
+ * Discriminated on {@link PhaseState.phase}; nested resolution state hangs
+ * off the active step for some phases (issue commands, resolve melee, cleanup).
  */
 export type PhaseState =
   | PlayCardsPhaseState

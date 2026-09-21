@@ -89,7 +89,6 @@ describe(getExpectedMovementResolutionEvent, () => {
           completed: true,
           engagementResolutionState: {
             defendingUnitCanRetreat: true,
-            defendingUnitRetreated: 'pending' as const,
             defendingUnitRetreats: false,
             defensiveCommitment: {
               card: createTestCard(),
@@ -122,7 +121,6 @@ describe(getExpectedMovementResolutionEvent, () => {
         completed: false,
         engagementResolutionState: {
           defendingUnitCanRetreat: 'pending' as const,
-          defendingUnitRetreated: 'pending' as const,
           defendingUnitRetreats: 'pending' as const,
           defensiveCommitment: {
             card: createTestCard(),

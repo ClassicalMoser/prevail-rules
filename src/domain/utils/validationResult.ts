@@ -1,39 +1,84 @@
+import type { AssertExact } from './assertExact';
+
 import { z } from 'zod';
 
+/** Successful validation — no error payload. */
 export interface PassValidationResult {
+  /** Discriminant: validation passed. */
   result: true;
 }
 
-const passValidationResultSchemaObject = z
+const _passValidationResultSchemaObject = z
   .object({
+    /** Discriminant: validation passed. */
     result: z.literal(true),
   })
   .strict();
 
-export const passValidationResultSchema: z.ZodType<PassValidationResult> =
-  passValidationResultSchemaObject;
+type PassValidationResultSchemaType = z.infer<
+  typeof _passValidationResultSchemaObject
+>;
 
+/** Schema for a passing {@link PassValidationResult}. */
+export const passValidationResultSchema: z.ZodObject<{
+  result: z.ZodLiteral<true>;
+}> = _passValidationResultSchemaObject;
+
+const _assertExactPassValidationResult: AssertExact<
+  PassValidationResult,
+  PassValidationResultSchemaType
+> = true;
+
+/** Failed validation — carries a human-readable reason. */
 export interface FailValidationResult {
+  /** Discriminant: validation failed. */
   result: false;
+  /** Why the value or choice was rejected. */
   errorReason: string;
 }
 
-const failValidationResultSchemaObject = z
+const _failValidationResultSchemaObject = z
   .object({
-    errorReason: z.string(),
+    /** Discriminant: validation failed. */
     result: z.literal(false),
+    /** Why the value or choice was rejected. */
+    errorReason: z.string(),
   })
   .strict();
 
-export const failValidationResultSchema: z.ZodType<FailValidationResult> =
-  failValidationResultSchemaObject;
+type FailValidationResultSchemaType = z.infer<
+  typeof _failValidationResultSchemaObject
+>;
 
+/** Schema for a failing {@link FailValidationResult}. */
+export const failValidationResultSchema: z.ZodObject<{
+  result: z.ZodLiteral<false>;
+  errorReason: z.ZodString;
+}> = _failValidationResultSchemaObject;
+
+const _assertExactFailValidationResult: AssertExact<
+  FailValidationResult,
+  FailValidationResultSchemaType
+> = true;
+
+/**
+ * Outcome of a validation check (e.g. player-choice legality).
+ * Discriminated on {@link ValidationResult.result}; never throws.
+ */
 export type ValidationResult = PassValidationResult | FailValidationResult;
 
-const validationResultSchemaObject = z.discriminatedUnion('result', [
-  passValidationResultSchemaObject,
-  failValidationResultSchemaObject,
+const _validationResultSchemaObject = z.discriminatedUnion('result', [
+  passValidationResultSchema,
+  failValidationResultSchema,
 ]);
 
+type ValidationResultSchemaType = z.infer<typeof _validationResultSchemaObject>;
+
+/** Schema for {@link ValidationResult}. */
 export const validationResultSchema: z.ZodType<ValidationResult> =
-  validationResultSchemaObject;
+  _validationResultSchemaObject;
+
+const _assertExactValidationResult: AssertExact<
+  ValidationResult,
+  ValidationResultSchemaType
+> = true;

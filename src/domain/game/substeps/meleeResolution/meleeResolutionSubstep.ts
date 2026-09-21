@@ -1,11 +1,11 @@
 import type { Coordinate } from '@entities';
 import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
-import type { AttackApplyState } from './attackApplySubstep';
+import type { AttackApplyState } from '../combatOutcomes';
 import { coordinateSchema } from '@entities';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
-import { attackApplyStateSchema } from './attackApplySubstep';
+import { attackApplyStateSchema } from '../combatOutcomes';
 
 /**
  * Context-specific substep that resolves melee combat.
@@ -50,10 +50,10 @@ type MeleeResolutionStateSchemaType = z.infer<
   typeof _meleeResolutionStateSchemaObject
 >;
 
+export const meleeResolutionStateSchema: z.ZodType<MeleeResolutionState> =
+  _meleeResolutionStateSchemaObject;
+
 const _assertExactMeleeResolutionState: AssertExact<
   MeleeResolutionState,
   MeleeResolutionStateSchemaType
 > = true;
-
-export const meleeResolutionStateSchema: z.ZodType<MeleeResolutionState> =
-  _meleeResolutionStateSchemaObject;

@@ -44,10 +44,10 @@ const _retreatStateSchemaObject = z
 
 type RetreatStateSchemaType = z.infer<typeof _retreatStateSchemaObject>;
 
+export const retreatStateSchema: z.ZodType<RetreatState> =
+  _retreatStateSchemaObject;
+
 const _assertExactRetreatState: AssertExact<
   RetreatState,
   RetreatStateSchemaType
 > = true;
-
-export const retreatStateSchema: z.ZodType<RetreatState> =
-  _retreatStateSchemaObject;

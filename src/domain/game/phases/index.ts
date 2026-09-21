@@ -1,13 +1,11 @@
-export { cleanupPhaseStateSchema, cleanupPhaseSteps } from './cleanupPhase';
-export type { CleanupPhaseState, CleanupPhaseStep } from './cleanupPhase';
+// Play cards
 export {
-  issueCommandsPhaseStateSchema,
-  issueCommandsPhaseSteps,
-} from './issueCommandsPhase';
-export type {
-  IssueCommandsPhaseState,
-  IssueCommandsPhaseStep,
-} from './issueCommandsPhase';
+  playCardsPhaseStateSchema,
+  playCardsPhaseSteps,
+} from './playCardsPhase';
+export type { PlayCardsPhaseState, PlayCardsPhaseStep } from './playCardsPhase';
+
+// Move commanders
 export {
   moveCommandersPhaseStateSchema,
   moveCommandersPhaseSteps,
@@ -16,21 +14,18 @@ export type {
   MoveCommandersPhaseState,
   MoveCommandersPhaseStep,
 } from './moveCommandersPhase';
+
+// Issue commands
 export {
-  CLEANUP_PHASE,
-  ISSUE_COMMANDS_PHASE,
-  MOVE_COMMANDERS_PHASE,
-  phases,
-  phaseStateSchema,
-  PLAY_CARDS_PHASE,
-  RESOLVE_MELEE_PHASE,
-} from './phases';
-export type { Phase, PhaseState } from './phases';
-export {
-  playCardsPhaseStateSchema,
-  playCardsPhaseSteps,
-} from './playCardsPhase';
-export type { PlayCardsPhaseState, PlayCardsPhaseStep } from './playCardsPhase';
+  issueCommandsPhaseStateSchema,
+  issueCommandsPhaseSteps,
+} from './issueCommandsPhase';
+export type {
+  IssueCommandsPhaseState,
+  IssueCommandsPhaseStep,
+} from './issueCommandsPhase';
+
+// Resolve melee
 export {
   resolveMeleePhaseStateSchema,
   resolveMeleePhaseSteps,
@@ -39,3 +34,20 @@ export type {
   ResolveMeleePhaseState,
   ResolveMeleePhaseStep,
 } from './resolveMeleePhase';
+
+// Cleanup
+export { cleanupPhaseStateSchema, cleanupPhaseSteps } from './cleanupPhase';
+export type { CleanupPhaseState, CleanupPhaseStep } from './cleanupPhase';
+
+// Phase catalog + union
+export {
+  CLEANUP_PHASE,
+  ISSUE_COMMANDS_PHASE,
+  MOVE_COMMANDERS_PHASE,
+  PLAY_CARDS_PHASE,
+  RESOLVE_MELEE_PHASE,
+  phases,
+  phaseSchema,
+  phaseStateSchema,
+} from './phases';
+export type { Phase, PhaseState } from './phases';

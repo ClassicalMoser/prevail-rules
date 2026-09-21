@@ -4,26 +4,17 @@ import { z } from 'zod';
 
 /** Iterable list of valid steps in the move commanders phase. */
 export const moveCommandersPhaseSteps = [
-  'moveFirstCommander', // Needs one player choice: the initiative player's move commander choice
-  'moveSecondCommander', // Needs one player choice: the non-initiative player's move commander choice
-  'complete', // GameEffect, advance phase to issue commands phase
+  'moveFirstCommander', // Expect one player choice: initiative player's move commander
+  'moveSecondCommander', // Expect one player choice: non-initiative player's move commander
+  'complete', // Expect one gameEffect: advance to issue commands phase
 ] as const;
 
-/** The step of the move commanders phase. */
+/** The type of a step in the move commanders phase. */
 export type MoveCommandersPhaseStep = (typeof moveCommandersPhaseSteps)[number];
 
-const _moveCommandersPhaseStepSchemaObject = z.enum(moveCommandersPhaseSteps);
-type MoveCommandersPhaseStepSchemaType = z.infer<
-  typeof _moveCommandersPhaseStepSchemaObject
->;
-
+/** The schema for a step in the move commanders phase. */
 export const moveCommandersPhaseStepSchema: z.ZodType<MoveCommandersPhaseStep> =
-  _moveCommandersPhaseStepSchemaObject;
-
-const _assertExactMoveCommandersPhaseStep: AssertExact<
-  MoveCommandersPhaseStep,
-  MoveCommandersPhaseStepSchemaType
-> = true;
+  z.enum(moveCommandersPhaseSteps);
 
 /** The state of the move commanders phase. */
 export interface MoveCommandersPhaseState {

@@ -6,34 +6,20 @@ import { z } from 'zod';
 
 /** Iterable list of valid steps in the cleanup phase. */
 export const cleanupPhaseSteps = [
-  /** Expect single gameEffect: move played to played cards pile */
-  'discardPlayedCards',
-  /** Expect single player choice: the initiative player's choose rally choice */
-  'firstPlayerChooseRally',
-  /** Expect single gameEffect: the resolve rally effect (includes unit support) */
-  'firstPlayerResolveRally',
-  /** Expect single player choice: the non-initiative player's choose rally choice */
-  'secondPlayerChooseRally',
-  /** Expect single gameEffect: the resolve rally effect (includes unit support) */
-  'secondPlayerResolveRally',
-  /** Expect single gameEffect: advance round and reset phase to play cards phase */
-  'complete',
+  'discardPlayedCards', // Expect one gameEffect: move in-play cards to the played pile
+  'firstPlayerChooseRally', // Expect one player choice: initiative player's choose rally
+  'firstPlayerResolveRally', // Expect one gameEffect: resolve rally (includes unit support)
+  'secondPlayerChooseRally', // Expect one player choice: non-initiative player's choose rally
+  'secondPlayerResolveRally', // Expect one gameEffect: resolve rally (includes unit support)
+  'complete', // Expect one gameEffect: advance round and reset to play cards phase
 ] as const;
 
-/** The step of the cleanup phase. */
+/** The type of a step in the cleanup phase. */
 export type CleanupPhaseStep = (typeof cleanupPhaseSteps)[number];
 
-const _cleanupPhaseStepSchemaObject = z.enum(cleanupPhaseSteps);
-type CleanupPhaseStepSchemaType = z.infer<typeof _cleanupPhaseStepSchemaObject>;
-
-/** The schema for the step of the cleanup phase. */
+/** The schema for a step in the cleanup phase. */
 export const cleanupPhaseStepSchema: z.ZodType<CleanupPhaseStep> =
-  _cleanupPhaseStepSchemaObject;
-
-const _assertExactCleanupPhaseStep: AssertExact<
-  CleanupPhaseStep,
-  CleanupPhaseStepSchemaType
-> = true;
+  z.enum(cleanupPhaseSteps);
 
 /** The state of the cleanup phase. */
 export interface CleanupPhaseState {

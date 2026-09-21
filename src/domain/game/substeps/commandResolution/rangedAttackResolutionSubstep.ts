@@ -1,11 +1,11 @@
 import type { UnitInstance } from '@entities';
 import type { Commitment } from '@game/commitment';
 import type { AssertExact } from '@utils';
-import type { AttackApplyState } from './attackApplySubstep';
+import type { AttackApplyState } from '../combatOutcomes';
 import { unitInstanceSchema } from '@entities';
 import { commitmentSchema } from '@game/commitment';
 import { z } from 'zod';
-import { attackApplyStateSchema } from './attackApplySubstep';
+import { attackApplyStateSchema } from '../combatOutcomes';
 
 /**
  * Context-specific substep that resolves ranged attack commands.
@@ -55,10 +55,10 @@ type RangedAttackResolutionStateSchemaType = z.infer<
   typeof _rangedAttackResolutionStateSchemaObject
 >;
 
+export const rangedAttackResolutionStateSchema: z.ZodType<RangedAttackResolutionState> =
+  _rangedAttackResolutionStateSchemaObject;
+
 const _assertExactRangedAttackResolutionState: AssertExact<
   RangedAttackResolutionState,
   RangedAttackResolutionStateSchemaType
 > = true;
-
-export const rangedAttackResolutionStateSchema: z.ZodType<RangedAttackResolutionState> =
-  _rangedAttackResolutionStateSchemaObject;

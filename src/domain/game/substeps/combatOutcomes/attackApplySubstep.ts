@@ -1,11 +1,11 @@
 import type { UnitInstance } from '@entities';
-import type { AttackResult } from '@game/attackResult';
+import type { AttackResult } from './attackResult';
 import type { AssertExact } from '@utils';
 import type { RetreatState } from './retreatSubstep';
 import type { ReverseState } from './reverseSubstep';
 import type { RoutState } from './routSubstep';
 import { unitInstanceSchema } from '@entities';
-import { attackResultSchema } from '@game/attackResult';
+import { attackResultSchema } from './attackResult';
 import { z } from 'zod';
 import { retreatStateSchema } from './retreatSubstep';
 import { reverseStateSchema } from './reverseSubstep';
@@ -57,10 +57,10 @@ const _attackApplyStateSchemaObject = z
 
 type AttackApplyStateSchemaType = z.infer<typeof _attackApplyStateSchemaObject>;
 
+export const attackApplyStateSchema: z.ZodType<AttackApplyState> =
+  _attackApplyStateSchemaObject;
+
 const _assertExactAttackApplyState: AssertExact<
   AttackApplyState,
   AttackApplyStateSchemaType
 > = true;
-
-export const attackApplyStateSchema: z.ZodType<AttackApplyState> =
-  _attackApplyStateSchemaObject;
