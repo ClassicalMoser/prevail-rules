@@ -36,6 +36,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^4.1.5
         version: 4.1.5(vitest@4.1.5)
+      classicalmoser-oxlint-config:
+        specifier: link:../../classicalmoser-oxlint-config
+        version: link:../../classicalmoser-oxlint-config
       eslint-plugin-command:
         specifier: ^3.5.2
         version: 3.5.2(@typescript-eslint/rule-tester@8.57.0(eslint@9.39.4)(typescript@6.0.3))(@typescript-eslint/typescript-estree@8.59.2(typescript@6.0.3))(@typescript-eslint/utils@8.59.2(eslint@9.39.4)(typescript@6.0.3))(eslint@9.39.4)
