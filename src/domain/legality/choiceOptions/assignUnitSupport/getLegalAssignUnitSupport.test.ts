@@ -6,24 +6,33 @@ import {
   updatePhaseState,
 } from '@transforms';
 
-import { getLegalUnitSupportGrants } from './getLegalUnitSupportGrants';
+import { getLegalAssignUnitSupport } from './getLegalAssignUnitSupport';
 
-describe(getLegalUnitSupportGrants, () => {
+describe(getLegalAssignUnitSupport, () => {
   it('given not on resolve-rally awaiting support, returns null', () => {
-    expect(getLegalUnitSupportGrants(createEmptyGameState())).toBeNull();
+    expect(getLegalAssignUnitSupport(createEmptyGameState())).toBeNull();
   });
 
-  it('given awaiting support assignment, returns grants with eligible units', () => {
+  it('given awaiting support assignment, returns categories with eligible units', () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const unit = createTestUnit('white', { attack: 3 });
-    const card = createTestCard({
+    const cardA = createTestCard({
+      id: 'a',
       unitSupport: {
-        count: 2,
+        count: 1,
         supportType: 'unitType',
         unitTypeId: unit.unitType.id,
       },
     });
-    base.cardState.white.inHand = [card];
+    const cardB = createTestCard({
+      id: 'b',
+      unitSupport: {
+        count: 1,
+        supportType: 'unitType',
+        unitTypeId: unit.unitType.id,
+      },
+    });
+    base.cardState.white.inHand = [cardA, cardB];
     const withBoard = updateBoardState(
       base,
       addUnitToBoard(base.boardState, {
@@ -44,12 +53,16 @@ describe(getLegalUnitSupportGrants, () => {
       step: 'firstPlayerResolveRally',
     });
 
-    const legal = getLegalUnitSupportGrants(state);
+    const legal = getLegalAssignUnitSupport(state);
     expect(legal).not.toBeNull();
     expect(legal?.player).toBe('white');
-    expect(legal?.grants).toHaveLength(1);
-    expect(legal?.grants[0]?.card.id).toBe(card.id);
-    expect(legal?.grants[0]?.eligibleUnits).toContainEqual(unit);
+    expect(legal?.categories).toHaveLength(1);
+    expect(legal?.categories[0]?.unitSupport).toStrictEqual({
+      count: 2,
+      supportType: 'unitType',
+      unitTypeId: unit.unitType.id,
+    });
+    expect(legal?.categories[0]?.eligibleUnits).toContainEqual(unit);
   });
 
   it('given generic support, all board units are eligible', () => {
@@ -87,7 +100,8 @@ describe(getLegalUnitSupportGrants, () => {
       step: 'firstPlayerResolveRally',
     });
 
-    const legal = getLegalUnitSupportGrants(state);
-    expect(legal?.grants[0]?.eligibleUnits).toHaveLength(2);
+    const legal = getLegalAssignUnitSupport(state);
+    expect(legal?.categories[0]?.eligibleUnits).toContainEqual(unitA);
+    expect(legal?.categories[0]?.eligibleUnits).toContainEqual(unitB);
   });
 });

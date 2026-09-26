@@ -1,7 +1,7 @@
 import { CLEANUP_PHASE } from '@game';
 import { createEmptyGameState } from '@testing';
 
-import { getRallyResolutionStateAwaitingUnitsBroken } from './getRallyResolutionStateAwaitingUnitsBroken';
+import { getRallyResolutionStateAwaitingUnitSupport } from './getRallyResolutionStateAwaitingUnitSupport';
 
 /** After card burn: rallyResolved true but unitsLostSupport not computed yet. */
 const afterBurnBeforeUnitsBroken = {
@@ -29,10 +29,10 @@ function stateFirstPlayerResolveRally() {
  * Procedure guard before assign-unit-support: rally must be resolved and `unitsLostSupport`
  * must still be unset.
  */
-describe(getRallyResolutionStateAwaitingUnitsBroken, () => {
+describe(getRallyResolutionStateAwaitingUnitSupport, () => {
   it('given rallyResolved true and unitsLostSupport undefined, returns slice', () => {
     const state = stateFirstPlayerResolveRally();
-    const result = getRallyResolutionStateAwaitingUnitsBroken(state, 'white');
+    const result = getRallyResolutionStateAwaitingUnitSupport(state, 'white');
     expect(result.rallyResolved).toBe(true);
     expect(result.unitsLostSupport).toBe('pending');
   });
@@ -49,7 +49,7 @@ describe(getRallyResolutionStateAwaitingUnitsBroken, () => {
     };
 
     expect(() =>
-      getRallyResolutionStateAwaitingUnitsBroken(state, 'white'),
+      getRallyResolutionStateAwaitingUnitSupport(state, 'white'),
     ).toThrow('Rally has not been resolved yet');
   });
 
@@ -65,7 +65,7 @@ describe(getRallyResolutionStateAwaitingUnitsBroken, () => {
     };
 
     expect(() =>
-      getRallyResolutionStateAwaitingUnitsBroken(state, 'white'),
+      getRallyResolutionStateAwaitingUnitSupport(state, 'white'),
     ).toThrow('Units lost support already resolved');
   });
 });

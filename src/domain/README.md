@@ -65,7 +65,6 @@ Immutable event objects representing all possible game actions. Events are the *
   - `ResolveRoutEvent` - Resolve unit rout
   - `ResolveReverseEvent` - Resolve unit facing reversal
   - `ResolveRallyEvent` - Resolve unit rally
-  - `ResolveUnitsBrokenEvent` - Resolve units that are no longer supported
 
 **Pattern:** Events are discriminated unions with `eventType` and nested `choiceType`/`effectType` fields for efficient validation and type narrowing.
 
@@ -160,7 +159,6 @@ Functions that take a gameState and return a gameEffect event. These are used by
 
 - **Procedure Functions**: Individual procedure generators
   - `generateResolveRallyEvent()` - Generate rally resolution event
-  - `generateResolveUnitsBrokenEvent()` - Generate units broken resolution event
   - (Additional procedures for other game effects)
 
 **Pattern:** Procedures are pure functions that generate game effect events based on game state. They may require external input (e.g., random seed) for deterministic results.

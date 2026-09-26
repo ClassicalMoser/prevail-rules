@@ -1,8 +1,9 @@
-import type { UnitInstance } from '@entities';
+import type { UnitInstance, UnitSupport } from '@entities';
 import type { ValidationResult } from '@utils';
 import type { AssignUnitSupportEvent } from '@events';
 import type { GameState } from '@game';
-import { getLegalUnitSupportGrants } from '@legality';
+import { getLegalAssignUnitSupport } from '@legality';
+import type { LegalSupportCategory } from '@legality';
 import {
   getPlayerUnitsOnBoard,
   isSameUnitInstance,
@@ -17,21 +18,66 @@ function unitKey(unit: {
   return `${unit.playerSide}:${unit.unitType.id}:${unit.instanceNumber}`;
 }
 
+function sameUnitSupport(a: UnitSupport, b: UnitSupport): boolean {
+  if (a.supportType !== b.supportType || a.count !== b.count) {
+    return false;
+  }
+  switch (a.supportType) {
+    case 'generic': {
+      return true;
+    }
+    case 'trait': {
+      return b.supportType === 'trait' && a.trait === b.trait;
+    }
+    case 'unitType': {
+      return b.supportType === 'unitType' && a.unitTypeId === b.unitTypeId;
+    }
+    default: {
+      const _exhaustive: never = a;
+      return _exhaustive;
+    }
+  }
+}
+
+function unitSupportLabel(unitSupport: UnitSupport): string {
+  switch (unitSupport.supportType) {
+    case 'generic': {
+      return `generic:${unitSupport.count}`;
+    }
+    case 'trait': {
+      return `trait:${unitSupport.trait}:${unitSupport.count}`;
+    }
+    case 'unitType': {
+      return `unitType:${unitSupport.unitTypeId}:${unitSupport.count}`;
+    }
+    default: {
+      const _exhaustive: never = unitSupport;
+      return _exhaustive;
+    }
+  }
+}
+
+function findLegalSupportCategory(
+  categories: readonly LegalSupportCategory[],
+  unitSupport: UnitSupport,
+): LegalSupportCategory | undefined {
+  return categories.find((entry) =>
+    sameUnitSupport(entry.unitSupport, unitSupport),
+  );
+}
+
 /**
- * Validates an AssignUnitSupportEvent as an integral commit over grant atoms:
- * - {@link getLegalUnitSupportGrants} (player + hand grants + eligible units)
- * - per-card capacity, eligibility, no duplicate card/unit coverage
- * - **maximal cover**: no unused slot may still be able to cover an uncovered unit
- *
- * Units that no remaining grant capacity can cover must stay uncovered and rout
- * on apply; wasting support while such a unit sits uncovered is illegal.
+ * Validates an AssignUnitSupportEvent as an integral commit over category atoms:
+ * - {@link getLegalAssignUnitSupport} (player + hand grants + eligible units)
+ * - per-grant capacity, eligibility, no duplicate grant/unit coverage
+ * - **local maximality**: no unused slot may still cover an uncovered unit
  */
 export function isValidAssignUnitSupportEvent(
   event: AssignUnitSupportEvent,
   state: GameState,
 ): ValidationResult {
   try {
-    const legal = getLegalUnitSupportGrants(state);
+    const legal = getLegalAssignUnitSupport(state);
     if (legal === null) {
       return {
         errorReason: 'Assign unit support is not expected in the current state',
@@ -46,30 +92,34 @@ export function isValidAssignUnitSupportEvent(
       };
     }
 
-    const seenCardIds = new Set<string>();
+    const seenLabels = new Set<string>();
     const coveredUnits: UnitInstance[] = [];
-    const assignedCountByCardId = new Map<string, number>();
+    const assignedCountByLabel = new Map<string, number>();
 
     for (const assignment of event.assignments) {
-      if (seenCardIds.has(assignment.cardId)) {
+      const label = unitSupportLabel(assignment.unitSupport);
+      if (seenLabels.has(label)) {
         return {
-          errorReason: `Card ${assignment.cardId} appears more than once in assignments`,
+          errorReason: `Unit support ${label} appears more than once in assignments`,
           result: false,
         };
       }
-      seenCardIds.add(assignment.cardId);
+      seenLabels.add(label);
 
-      const grant = legal.grants.find((g) => g.card.id === assignment.cardId);
-      if (grant === undefined) {
+      const entry = findLegalSupportCategory(
+        legal.categories,
+        assignment.unitSupport,
+      );
+      if (entry === undefined) {
         return {
-          errorReason: `Card ${assignment.cardId} is not a legal support grant in hand`,
+          errorReason: `Unit support ${label} is not available from hand`,
           result: false,
         };
       }
 
-      if (assignment.units.length > grant.unitSupport.count) {
+      if (assignment.units.length > entry.unitSupport.count) {
         return {
-          errorReason: `Assignment for ${assignment.cardId} exceeds support count ${grant.unitSupport.count}`,
+          errorReason: `Assignment for ${label} exceeds support count ${entry.unitSupport.count}`,
           result: false,
         };
       }
@@ -77,20 +127,20 @@ export function isValidAssignUnitSupportEvent(
       const uniqueInAssignment = new Set(assignment.units.map(unitKey));
       if (uniqueInAssignment.size !== assignment.units.length) {
         return {
-          errorReason: 'Duplicate units within a single card assignment',
+          errorReason: 'Duplicate units within a single support assignment',
           result: false,
         };
       }
 
       for (const unit of assignment.units) {
-        if (!unitMatchesSupport(unit, grant.unitSupport)) {
+        if (!unitMatchesSupport(unit, entry.unitSupport)) {
           return {
-            errorReason: `Unit does not match support on card ${assignment.cardId}`,
+            errorReason: `Unit does not match support ${label}`,
             result: false,
           };
         }
 
-        const eligible = grant.eligibleUnits.some(
+        const eligible = entry.eligibleUnits.some(
           (candidate) => isSameUnitInstance(candidate, unit).result,
         );
         if (!eligible) {
@@ -109,7 +159,7 @@ export function isValidAssignUnitSupportEvent(
         coveredUnits.push(unit);
       }
 
-      assignedCountByCardId.set(assignment.cardId, assignment.units.length);
+      assignedCountByLabel.set(label, assignment.units.length);
     }
 
     const boardUnits = [...getPlayerUnitsOnBoard(state, event.player)];
@@ -117,14 +167,15 @@ export function isValidAssignUnitSupportEvent(
       (unit) => !coveredUnits.some((c) => isSameUnitInstance(c, unit).result),
     );
 
-    for (const grant of legal.grants) {
-      const used = assignedCountByCardId.get(grant.card.id) ?? 0;
-      const remaining = grant.unitSupport.count - used;
+    for (const entry of legal.categories) {
+      const label = unitSupportLabel(entry.unitSupport);
+      const used = assignedCountByLabel.get(label) ?? 0;
+      const remaining = entry.unitSupport.count - used;
       if (remaining <= 0) {
         continue;
       }
       const canCoverUncovered = uncovered.some((unit) =>
-        unitMatchesSupport(unit, grant.unitSupport),
+        unitMatchesSupport(unit, entry.unitSupport),
       );
       if (canCoverUncovered) {
         return {

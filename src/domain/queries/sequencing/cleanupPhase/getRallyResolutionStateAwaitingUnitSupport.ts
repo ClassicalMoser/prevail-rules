@@ -9,10 +9,10 @@ import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionState
  * {@link applyUnitsLostSupportAfterRally}.
  *
  * @param state - The current game state
- * @param player - The player whose broken units are being resolved (must match the cleanup step)
- * @throws Error if wrong step/player, rally not resolved yet, or units-broken already applied
+ * @param player - The rallying player (must match the cleanup step)
+ * @throws Error if wrong step/player, rally not resolved yet, or support already assigned
  */
-export function getRallyResolutionStateAwaitingUnitsBroken(
+export function getRallyResolutionStateAwaitingUnitSupport(
   state: GameState,
   player: 'white' | 'black',
 ): RallyResolutionState {

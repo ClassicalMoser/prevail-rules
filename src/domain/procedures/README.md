@@ -20,7 +20,7 @@ Folder names mirror **`applyEffects/`** and **`events/gameEffects/`** so the sam
 
 | Folder                               | Generators                                                                                                   |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| [`cards/`](./cards/)                 | discard / reveal played cards, initiative, rally, units broken                                               |
+| [`cards/`](./cards/)                 | discard / reveal played cards, initiative, rally                                                             |
 | [`completePhase/`](./completePhase/) | phase-completion effects (cleanup, issue commands, move commanders, play cards, resolve melee **phase**)     |
 | [`defenseResult/`](./defenseResult/) | retreat, reverse, rout, trigger rout from retreat                                                            |
 | [`movement/`](./movement/)           | complete unit movement, engagements (start, flank, engage-retreat option)                                    |

@@ -16,6 +16,7 @@ export type { RoundEffect } from './roundEffect';
 
 // Unit support
 export type { UnitSupport } from './unitSupport';
+export { unitSupportSchema } from './unitSupport';
 
 // Command cards
 export { commandCardSchema, hiddenCardSchema } from './commandCard';

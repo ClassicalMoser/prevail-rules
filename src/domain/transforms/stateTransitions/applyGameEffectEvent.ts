@@ -26,7 +26,6 @@ import {
   applyResolveRetreatEvent,
   applyResolveReverseEvent,
   applyResolveRoutEvent,
-  applyResolveUnitsBrokenEvent,
   applyRevealCardsEvent,
   applyStartEngagementEvent,
   applyTriggerRoutFromRetreatEvent,
@@ -83,9 +82,6 @@ export function applyGameEffectEvent<S extends GameState>(
     }
     case 'resolveRally': {
       return applyResolveRallyEvent(event, state);
-    }
-    case 'resolveUnitsBroken': {
-      return applyResolveUnitsBrokenEvent(event, state);
     }
     case 'revealCards': {
       return applyRevealCardsEvent(event, state);

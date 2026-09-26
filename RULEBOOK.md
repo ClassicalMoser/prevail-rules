@@ -104,8 +104,8 @@ Let's walk through a complete turn:
 
 **Units Need Support:**
 
-- Cards in your hand "preserve" unit types
-- If a unit type has no preserving cards → all those units rout
+- Cards in hand provide limited support slots (by unit type, trait, or generic)
+- After rallying, you assign those slots to unit instances; uncovered units rout
 - This happens during Cleanup
 
 ### Ready to Play?
@@ -215,9 +215,9 @@ Your hand represents your army's will to fight. Cards are spent for:
 
 ### Strategic Implications
 
-- **Hand Management**: Keep cards that preserve your units
+- **Hand Management**: Keep cards that support your units
 - **Risk vs. Reward**: Powerful actions cost cards
-- **Unit Support**: Losing cards can break unit support → mass routs
+- **Unit Support**: Losing cards can shrink support categories → more routs after rally
 - **Rout Penalties**: Important units cost more when they die
 
 ---
@@ -531,19 +531,19 @@ Before detailing the steps, understand the card zones:
 
 **Only happens after rallying.** If you didn't rally, skip this entirely.
 
-After rallying, check unit support:
+After rallying, cards in hand provide **support capacity** that must be assigned to units on the board:
 
-1. **Look at cards in your hand**
-   - Each card lists unit type IDs it "preserves" (exact matches only)
-   - Collect all preserved unit type IDs → your **supported type IDs**
+1. **Combine support categories from your hand**
+   - Each card contributes slots of one kind: a specific unit type, a trait, or generic (any unit)
+   - Identical kinds **sum** into one category (e.g. two cards that each support 1× Swordsmen → `Swordsmen: 2`)
 
-2. **Look at units on the board**
-   - Group by unit type ID (each unit has a specific type ID)
+2. **Assign categories to unit instances (one commit)**
+   - Each unit may be supported at most once
+   - A unit may only take a slot from a category it matches
+   - You may not leave a usable slot idle while an uncovered unit could still take it (**local maximality**). You are **not** required to maximize how many units survive overall (narrow vs wide categories is a player choice)
 
-3. **Find broken units**
-   - For each unit type ID on board:
-     - If that type ID is NOT in your supported type IDs → **broken**
-   - All instances of broken unit type IDs rout immediately
+3. **Find unsupported units**
+   - Any board unit not covered by the assignment loses support and **routs immediately**
 
 4. **Resolve rout penalties**
    - For each routed unit, discard cards equal to rout penalty
@@ -551,9 +551,10 @@ After rallying, check unit support:
 
 **Example**:
 
-> Your hand has cards preserving: Swordsmen, Spearmen, Cavalry  
-> Your board has: 2× Swordsmen, 1× Spearmen, 1× Archers  
-> **Result**: Archers rout (not preserved). Discard cards equal to Archer rout penalty.
+> Your hand aggregates to: Swordsmen: 2, formation: 1  
+> Your board has: 2× Swordsmen, 1× Spearmen (formation), 1× Archers  
+> You assign both Swordsmen slots and the formation slot (to Spearmen). Archers match neither remaining category and rout.  
+> Discard cards equal to Archer rout penalty.
 
 ---
 
@@ -906,86 +907,54 @@ When a unit retreats, it moves backward:
 
 ### The Core Concept
 
-**Units must be preserved by cards in your hand.**
+**Units need support capacity from cards in your hand.**
 
-Each card lists **unit type IDs** it "preserves" (exact matches only). If a unit type has no preserving cards in your hand, all units of that type rout automatically.
+Each card grants a limited number of slots of one kind: a specific **unit type**, a **trait**, or **generic** (any unit). After rallying, matching cards **combine into support categories** (display rows like “Swordsmen: 2”) and you assign units to those categories. Units left without a slot rout.
 
-### Unit Type Matching
+### Category matching
 
-**Exact-Type Model**: Cards preserve specific unit type IDs. There is no hierarchy or inheritance.
-
-- Each unit has a unique **unit type ID** (e.g., `"hastati-001"`, `"cavalry-002"`)
-- Each card lists specific unit type IDs it preserves (e.g., `["hastati-001", "principes-001"]`)
-- A unit is supported if **at least one card in your hand** lists that unit's exact type ID
-- **No partial matches**: A card preserving `"hastati-001"` does NOT preserve `"hastati-002"` or any other unit type
-
-**Example**:
-
-- Card A preserves: `["hastati-001", "principes-001"]`
-- Card B preserves: `["cavalry-001"]`
-- Your board has: 2× `hastati-001`, 1× `hastati-002`, 1× `cavalry-001`
-- **Result**: `hastati-001` units are supported (Card A), `cavalry-001` is supported (Card B), but `hastati-002` routs (no card preserves it)
+- **Unit type category**: only instances of that exact unit type
+- **Trait category**: any instance whose type includes that trait
+- **Generic category**: any instance
+- A unit may receive at most one slot (one-unit-once)
+- Which category covers a multi-eligible unit is the player’s choice (UI may prompt type → trait → generic; the rules do not require a globally optimal matching)
 
 ### How It Works
 
 **During Cleanup Phase** (after rallying):
 
-1. **Check Your Hand**
-   - Look at all cards currently in your hand
-   - Each card has a "unit preservation" list
-   - Collect all unit types listed → your **supported types**
-
-2. **Check Your Board**
-   - Look at all your units on the board
-   - Group by unit type
-
-3. **Find Broken Units**
-   - For each unit type on board:
-     - If that type is NOT in your supported types → **broken**
-   - All instances of broken unit types rout immediately
-
-4. **Resolve Rout Penalties**
-   - For each routed unit, discard cards equal to its rout penalty
-   - If you don't have enough cards → **you lose immediately**
+1. **Combine categories from your hand** (sum counts by kind)
+2. **Assign** categories to board units in one commit (eligibility, budgets, local maximality)
+3. **Uncovered units rout** immediately
+4. **Resolve rout penalties** (discard; loss if you cannot pay)
 
 ### Example
 
-**Your Hand Contains**:
+**Hand aggregates to**: Swordsmen: 2, formation: 1
 
-- Card A: Preserves `["swordsmen-001", "spearmen-001"]`
-- Card B: Preserves `["swordsmen-001", "cavalry-001"]`
-- Card C: Preserves `["skirmishers-001"]`
+**Board**: 2× Swordsmen, 1× Spearmen (formation), 1× Archers
 
-**Your Supported Type IDs**: `swordsmen-001`, `spearmen-001`, `cavalry-001`, `skirmishers-001`
-
-**Your Units on Board**:
-
-- 2× `swordsmen-001` ✅ (supported by Card A or B)
-- 1× `spearmen-001` ✅ (supported by Card A)
-- 1× `cavalry-001` ✅ (supported by Card B)
-- 1× `skirmishers-001` ✅ (supported by Card C)
-- 1× `archers-001` ❌ (NOT supported → ROUTS)
-
-**Result**: The `archers-001` unit routs. Discard cards equal to its rout penalty. If you don't have enough cards in hand, you lose immediately.
+Assign both Swordsmen slots and the formation slot (to Spearmen). Archers match neither remaining category and rout. Pay Archer rout penalty.
 
 ### Strategic Implications
 
 **Hand Management**:
 
-- Keep cards that preserve your important units
-- Don't discard cards that preserve units you have on the board
+- Keep cards that feed support categories for units you care about
+- Be especially careful what you leave in the **played area**: rally **burns** one of those cards, permanently removing its support capacity from future hands
+- Ordinary discards return on rally; burns do not
 - Plan ahead: What units will you have next round?
 
 **Unit Diversity**:
 
-- Having many different unit types requires diverse card support
-- Specialized armies (few unit types) are easier to support
-- Mixed armies require more card diversity
+- Many different unit types need diverse type categories (or enough trait/generic)
+- Specialized armies are easier to cover with type-specific cards
+- Mixed armies lean more on trait and generic slots
 
 **Rally Decisions**:
 
 - Rallying burns a card (permanently removes it)
-- Burning a card might break unit support
+- Burning a card might shrink your support categories
 - Weigh the benefit (getting cards back) vs. risk (losing support)
 
 **Rout Penalties**:
@@ -1123,8 +1092,8 @@ A: You can rally if you have cards in your **played area** (since you burn from 
 **Q: Do committed cards come back?**  
 A: Committed cards go to your **discard pile** (not permanently removed). They return to your hand when you rally, just like other discarded cards. Committed cards are safe from being burned during rally (only cards in the **played area** can be burned).
 
-**Q: What if I don't have a card that preserves my units?**  
-A: Unit support is checked **after** rallying, so all your cards (from both played area and discard pile) will be in your hand at that moment. If you still don't have a card preserving a unit type after rallying, all units of that type rout. This means you truly don't have any such cards anywhere in your deck. **Note**: If you don't rally, unit support is not checked, so units remain on the board even if you have no preserving cards in hand.
+**Q: What if I don't have enough support capacity for my units?**  
+A: Unit support is checked **after** rallying, so all your cards (from both played area and discard pile) will be in your hand at that moment. Assign every slot you can (local maximality); any unit still uncovered routs. **Note**: If you don't rally, unit support is not checked, so units remain on the board even without hand support.
 
 ### Unit Support
 
@@ -1132,10 +1101,10 @@ A: Unit support is checked **after** rallying, so all your cards (from both play
 A: Only after rallying during Cleanup phase. If you don't rally, the support check is skipped entirely.
 
 **Q: What if I have multiple units of the same type?**  
-A: If that type loses support, ALL units of that type rout (not just one).
+A: Each slot covers one instance. Two Swordsmen and a single Swordsmen slot means you support one and the other routs. Extra instances rout only when there are not enough matching slots left.
 
 **Q: Can I prevent unit support loss?**  
-A: Keep cards in your hand that preserve your unit types. Don't discard them unnecessarily.
+A: Keep cards that provide the support categories your board units need. Be careful what you burn from the played area when you rally.
 
 **Q: What if I can't pay rout penalties?**  
 A: You lose immediately if you don't have enough cards to pay rout penalties.
@@ -1177,7 +1146,7 @@ A: Commanders can be lost if caught in combat (specific rules may vary by scenar
 
 **Support**: Adjacent friendly units providing combat bonuses to an attacking unit.
 
-**Unit Preservation**: System where cards in your hand must "preserve" unit types. Unpreserved unit types rout automatically.
+**Unit Support**: Hand cards provide support categories (type / trait / generic slots). After rally you assign units to categories; uncovered units rout.
 
 ---
 

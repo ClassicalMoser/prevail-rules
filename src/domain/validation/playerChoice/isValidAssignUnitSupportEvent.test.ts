@@ -1,5 +1,6 @@
 import type { AssignUnitSupportEvent } from '@events';
 import { CLEANUP_PHASE } from '@game';
+import { alaeSocii, manipularLegion } from '@sampleValues';
 import { createEmptyGameState, createTestCard, createTestUnit } from '@testing';
 import {
   addUnitToBoard,
@@ -47,7 +48,7 @@ function awaitingSupportState() {
     secondPlayerRallyResolutionState: 'pending',
     step: 'firstPlayerResolveRally',
   });
-  return { card, other, state, unit };
+  return { other, state, unit };
 }
 
 describe(isValidAssignUnitSupportEvent, () => {
@@ -63,10 +64,19 @@ describe(isValidAssignUnitSupportEvent, () => {
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
   });
 
-  it('given covering every unit a grant can cover, leaving uncoverable units, is valid', () => {
-    const { card, state, unit } = awaitingSupportState();
+  it('given covering every unit a pool can cover, leaving uncoverable units, is valid', () => {
+    const { state, unit } = awaitingSupportState();
     const event: AssignUnitSupportEvent = {
-      assignments: [{ cardId: card.id, units: [unit] }],
+      assignments: [
+        {
+          unitSupport: {
+            count: 1,
+            supportType: 'unitType',
+            unitTypeId: unit.unitType.id,
+          },
+          units: [unit],
+        },
+      ],
       choiceType: 'assignUnitSupport',
       eventNumber: 0,
       eventType: 'playerChoice',
@@ -75,7 +85,7 @@ describe(isValidAssignUnitSupportEvent, () => {
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
   });
 
-  it('given empty assignments when no grants can cover anyone, is valid (all rout)', () => {
+  it('given empty assignments when no pools can cover anyone, is valid (all rout)', () => {
     const base = createEmptyGameState({ currentInitiative: 'white' });
     const unit = createTestUnit('white', { attack: 3 });
     base.cardState.white.inHand = [
@@ -144,7 +154,6 @@ describe(isValidAssignUnitSupportEvent, () => {
       secondPlayerRallyResolutionState: 'pending',
       step: 'firstPlayerResolveRally',
     });
-    // Cover nobody — spare generic slot could cover either unit.
     const event: AssignUnitSupportEvent = {
       assignments: [],
       choiceType: 'assignUnitSupport',
@@ -190,7 +199,12 @@ describe(isValidAssignUnitSupportEvent, () => {
       step: 'firstPlayerResolveRally',
     });
     const event: AssignUnitSupportEvent = {
-      assignments: [{ cardId: card.id, units: [unit] }],
+      assignments: [
+        {
+          unitSupport: { count: 1, supportType: 'generic' },
+          units: [unit],
+        },
+      ],
       choiceType: 'assignUnitSupport',
       eventNumber: 0,
       eventType: 'playerChoice',
@@ -234,7 +248,12 @@ describe(isValidAssignUnitSupportEvent, () => {
       step: 'firstPlayerResolveRally',
     });
     const event: AssignUnitSupportEvent = {
-      assignments: [{ cardId: card.id, units: [unit, other] }],
+      assignments: [
+        {
+          unitSupport: { count: 1, supportType: 'generic' },
+          units: [unit, other],
+        },
+      ],
       choiceType: 'assignUnitSupport',
       eventNumber: 0,
       eventType: 'playerChoice',
@@ -244,9 +263,18 @@ describe(isValidAssignUnitSupportEvent, () => {
   });
 
   it('given unit that does not match support type, is invalid', () => {
-    const { card, other, state } = awaitingSupportState();
+    const { other, state, unit } = awaitingSupportState();
     const event: AssignUnitSupportEvent = {
-      assignments: [{ cardId: card.id, units: [other] }],
+      assignments: [
+        {
+          unitSupport: {
+            count: 1,
+            supportType: 'unitType',
+            unitTypeId: unit.unitType.id,
+          },
+          units: [other],
+        },
+      ],
       choiceType: 'assignUnitSupport',
       eventNumber: 0,
       eventType: 'playerChoice',
@@ -255,12 +283,17 @@ describe(isValidAssignUnitSupportEvent, () => {
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
   });
 
-  it('given duplicate card assignments, is invalid', () => {
-    const { card, state, unit } = awaitingSupportState();
+  it('given duplicate unitSupport assignments, is invalid', () => {
+    const { state, unit } = awaitingSupportState();
+    const unitSupport = {
+      count: 1,
+      supportType: 'unitType' as const,
+      unitTypeId: unit.unitType.id,
+    };
     const event: AssignUnitSupportEvent = {
       assignments: [
-        { cardId: card.id, units: [unit] },
-        { cardId: card.id, units: [] },
+        { unitSupport, units: [unit] },
+        { unitSupport, units: [] },
       ],
       choiceType: 'assignUnitSupport',
       eventNumber: 0,
@@ -268,6 +301,85 @@ describe(isValidAssignUnitSupportEvent, () => {
       player: 'white',
     };
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
+  });
+
+  it('given suboptimal trait-on-type while type slot idles and another unit dies, is valid', () => {
+    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const typed = createTestUnit('white', {
+      instanceNumber: 1,
+      unitType: manipularLegion,
+    });
+    const traitOnly = createTestUnit('white', {
+      instanceNumber: 1,
+      unitType: alaeSocii,
+    });
+    expect(typed.unitType.traits).toContain('formation');
+    expect(traitOnly.unitType.traits).toContain('formation');
+
+    base.cardState.white.inHand = [
+      createTestCard({
+        id: 'type',
+        unitSupport: {
+          count: 1,
+          supportType: 'unitType',
+          unitTypeId: typed.unitType.id,
+        },
+      }),
+      createTestCard({
+        id: 'trait',
+        unitSupport: {
+          count: 1,
+          supportType: 'trait',
+          trait: 'formation',
+        },
+      }),
+    ];
+    let withBoard = updateBoardState(
+      base,
+      addUnitToBoard(base.boardState, {
+        placement: { coordinate: 'E-5', facing: 'south' },
+        unit: typed,
+      }),
+    );
+    withBoard = updateBoardState(
+      withBoard,
+      addUnitToBoard(withBoard.boardState, {
+        placement: { coordinate: 'E-6', facing: 'south' },
+        unit: traitOnly,
+      }),
+    );
+    const state = updatePhaseState(withBoard, {
+      firstPlayerRallyResolutionState: {
+        completed: false,
+        playerRallied: true,
+        rallyResolved: true,
+        routState: 'pending',
+        unitsLostSupport: 'pending',
+      },
+      phase: CLEANUP_PHASE,
+      secondPlayerRallyResolutionState: 'pending',
+      step: 'firstPlayerResolveRally',
+    });
+
+    // Burn trait on typed; leave type pool unused; traitOnly uncovered and
+    // no remaining capacity matches them → legal but not globally optimal.
+    const event: AssignUnitSupportEvent = {
+      assignments: [
+        {
+          unitSupport: {
+            count: 1,
+            supportType: 'trait',
+            trait: 'formation',
+          },
+          units: [typed],
+        },
+      ],
+      choiceType: 'assignUnitSupport',
+      eventNumber: 0,
+      eventType: 'playerChoice',
+      player: 'white',
+    };
+    expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
   });
 
   it('given wrong phase, is invalid', () => {

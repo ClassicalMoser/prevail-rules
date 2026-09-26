@@ -58,7 +58,6 @@ export { getMeleeSupportValue } from './getMeleeSupportValue';
 export { getOtherPlayer } from './getOtherPlayer';
 export { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
 export { getPlayerUnitsWithPlacementOnBoard } from './getPlayerUnitsWithPlacementOnBoard';
-export { getSupportedUnitTypes } from './getSupportedUnitTypes';
 export { unitMatchesSupport } from './unitMatchesSupport';
 export { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
 export {
@@ -100,7 +99,7 @@ export {
   getPlayCardsPhaseState,
   getRallyResolutionState,
   getRallyResolutionStateAwaitingBurn,
-  getRallyResolutionStateAwaitingUnitsBroken,
+  getRallyResolutionStateAwaitingUnitSupport,
   getRallyResolutionStateForCurrentStep,
   getRangedAttackResolutionState,
   getRearEngagementStateFromMovement,

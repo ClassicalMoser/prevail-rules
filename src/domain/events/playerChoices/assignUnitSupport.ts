@@ -1,6 +1,10 @@
-import type { PlayerSide, UnitInstance } from '@entities';
+import type { PlayerSide, UnitInstance, UnitSupport } from '@entities';
 import type { AssertExact } from '@utils';
-import { playerSideSchema, unitInstanceSchema } from '@entities';
+import {
+  playerSideSchema,
+  unitInstanceSchema,
+  unitSupportSchema,
+} from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -8,54 +12,45 @@ import { z } from 'zod';
 export const ASSIGN_UNIT_SUPPORT_CHOICE_TYPE = 'assignUnitSupport' as const;
 
 /**
- * One hand card’s support slots assigned to board units (≤ that card’s count).
+ * Units assigned to one summed hand grant (length ≤ that grant’s count).
  */
 export interface UnitSupportAssignment {
-  /** Hand card id providing the support slots. */
-  cardId: string;
-  /** Units covered by this card’s support (length ≤ card.unitSupport.count). */
+  /** Echo of a legal {@link UnitSupport} atom from the hand. */
+  unitSupport: UnitSupport;
   units: UnitInstance[];
 }
 
 /**
- * Player assigns hand support slots to board units after rally.
- * Assignment must be maximal (use every slot that can still cover someone);
- * units left uncovered lose support and are routed.
+ * Player assigns hand support to board units after rally.
+ * Assignment must be locally maximal (use every slot that can still cover
+ * someone uncovered); global allocation optimality is not required.
+ * Units left uncovered lose support and are routed.
  */
 export interface AssignUnitSupportEvent {
-  /** The type of the event. */
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
-  /** The type of player choice. */
   choiceType: typeof ASSIGN_UNIT_SUPPORT_CHOICE_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
-  /** The player assigning support (the rallying player). */
   player: PlayerSide;
-  /** Per-card slot assignments (omit unused hand cards). */
+  /** Per-grant assignments (omit unused grants). */
   assignments: UnitSupportAssignment[];
 }
 
 const unitSupportAssignmentSchemaObject: z.ZodObject<{
-  cardId: z.ZodString;
+  unitSupport: typeof unitSupportSchema;
   units: z.ZodArray<typeof unitInstanceSchema>;
 }> = z
   .object({
-    cardId: z.string(),
+    unitSupport: unitSupportSchema,
     units: z.array(unitInstanceSchema),
   })
   .strict();
 
 const _assignUnitSupportEventSchemaObject = z
   .object({
-    /** The type of the event. */
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
-    /** The type of player choice. */
     choiceType: z.literal(ASSIGN_UNIT_SUPPORT_CHOICE_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
     eventNumber: z.number(),
-    /** The player assigning support (the rallying player). */
     player: playerSideSchema,
-    /** Per-card slot assignments (omit unused hand cards). */
     assignments: z.array(unitSupportAssignmentSchemaObject),
   })
   .strict();
@@ -69,7 +64,6 @@ const _assertExactAssignUnitSupportEvent: AssertExact<
   AssignUnitSupportEventSchemaType
 > = true;
 
-/** The schema for an assign-unit-support event. */
 export const assignUnitSupportEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'assignUnitSupport'>;

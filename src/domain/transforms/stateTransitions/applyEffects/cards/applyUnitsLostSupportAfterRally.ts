@@ -4,7 +4,7 @@ import {
   getCleanupPhaseState,
   getNextStepForResolveRally,
   getPlayerUnitsWithPlacementOnBoard,
-  getRallyResolutionStateAwaitingUnitsBroken,
+  getRallyResolutionStateAwaitingUnitSupport,
   isSameUnitInstance,
 } from '@queries';
 import { updateRallyResolutionStateForCurrentStep } from '@transforms/pureTransforms/sequencing/updateRallyResolutionStateForCurrentStep';
@@ -26,7 +26,7 @@ export function applyUnitsLostSupportAfterRally<S extends GameState>(
   uncoveredUnits: readonly UnitInstance[],
 ): S {
   const phaseState = getCleanupPhaseState(state);
-  const rallyState = getRallyResolutionStateAwaitingUnitsBroken(state, player);
+  const rallyState = getRallyResolutionStateAwaitingUnitSupport(state, player);
   const defaultNextStep = getNextStepForResolveRally(state);
 
   const playerUnits = getPlayerUnitsWithPlacementOnBoard(state, player);

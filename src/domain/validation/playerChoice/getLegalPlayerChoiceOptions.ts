@@ -29,15 +29,15 @@ import {
   getLegalRangedAttackers,
   getLegalRoutDiscardCards,
   getLegalSetupUnits,
-  getLegalUnitSupportGrants,
+  getLegalAssignUnitSupport,
 } from '@legality';
 import type {
+  LegalAssignUnitSupport,
   LegalIssueCommands,
   LegalMoveUnits,
   LegalRangedAttackers,
   LegalRoutDiscardCards,
   LegalSetupUnits,
-  LegalUnitSupportGrants,
 } from '@legality';
 import { getCommanderSpace } from '@queries';
 
@@ -50,7 +50,7 @@ interface LegalPlayerChoiceOptionsBase {
 export type LegalPlayerChoiceOptions =
   | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'assignUnitSupport';
-      unitSupportGrants: LegalUnitSupportGrants;
+      assignUnitSupport: LegalAssignUnitSupport;
     })
   | (LegalPlayerChoiceOptionsBase & {
       choiceType: 'chooseCard';
@@ -116,8 +116,8 @@ export type LegalPlayerChoiceOptions =
       setupUnits: LegalSetupUnits;
     });
 
-function emptyUnitSupportGrants(player: PlayerSide): LegalUnitSupportGrants {
-  return { grants: [], player };
+function emptyAssignUnitSupport(player: PlayerSide): LegalAssignUnitSupport {
+  return { categories: [], player };
 }
 
 function concretePlayer(playerSource: PlayerSource): PlayerSide | null {
@@ -191,17 +191,17 @@ export function getLegalPlayerChoiceOptions<S extends GameState>(
 
   switch (expected.choiceType) {
     case 'assignUnitSupport': {
-      let unitSupportGrants: LegalUnitSupportGrants;
+      let assignUnitSupport: LegalAssignUnitSupport;
       try {
-        unitSupportGrants =
-          getLegalUnitSupportGrants(state) ?? emptyUnitSupportGrants(player);
+        assignUnitSupport =
+          getLegalAssignUnitSupport(state) ?? emptyAssignUnitSupport(player);
       } catch {
-        unitSupportGrants = emptyUnitSupportGrants(player);
+        assignUnitSupport = emptyAssignUnitSupport(player);
       }
       return {
         ...base,
+        assignUnitSupport,
         choiceType: 'assignUnitSupport',
-        unitSupportGrants,
       };
     }
     case 'chooseCard': {

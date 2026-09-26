@@ -10,7 +10,7 @@ Each subfolder has a small `index.ts` barrel; the **only** supported entry for t
 
 | Folder                               | Responsibility                                                                                       |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| [`cards/`](./cards/)                 | Discard / reveal played cards, resolve initiative, rally, units broken                               |
+| [`cards/`](./cards/)                 | Discard / reveal played cards, resolve initiative, rally, unit-support consequences                  |
 | [`completePhase/`](./completePhase/) | Phase-completion effects (cleanup, issue commands, move commanders, play cards, resolve melee phase) |
 | [`defenseResult/`](./defenseResult/) | Retreat, reverse, rout, trigger rout from retreat                                                    |
 | [`movement/`](./movement/)           | Complete unit movement, start engagement, flank engagement, engage-retreat option                    |
@@ -27,7 +27,7 @@ Co-locate each handler with its `*.test.ts` in the same folder.
 
 ## Throws
 
-- **Allowed**: Throws from **narrowing helpers** (`getPlayCardsPhaseState`, `getIssueCommandsPhaseState`, `getCurrentPhaseState`, `getAttackApplyStateFromRangedAttack`, `getAttackApplyStateFromMelee`, `getFrontEngagementStateFromMovement`, `getFlankEngagementStateFromMovement`, `getRallyResolutionStateAwaitingBurn`, `getRallyResolutionStateAwaitingUnitsBroken`, etc.). These are type guards, not business validation.
+- **Allowed**: Throws from **narrowing helpers** (`getPlayCardsPhaseState`, `getIssueCommandsPhaseState`, `getCurrentPhaseState`, `getAttackApplyStateFromRangedAttack`, `getAttackApplyStateFromMelee`, `getFrontEngagementStateFromMovement`, `getFlankEngagementStateFromMovement`, `getRallyResolutionStateAwaitingBurn`, `getRallyResolutionStateAwaitingUnitSupport`, etc.). These are type guards, not business validation.
 - **Avoid**: Defensive throws that only restate rules (“wrong engagement type”, “already resolved”, “wrong phase”) unless they remain as narrowing until payloads replace phase branching.
 
 ## TypeScript

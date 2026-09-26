@@ -9,7 +9,7 @@ import { getCleanupPhaseState, getOtherPlayer } from '@queries';
  * The randomness happens here; the event (with the selected card) is what makes it replayable.
  *
  * Player is taken from the cleanup resolve-rally step + initiative (same as
- * assign-unit-support / legacy {@link generateResolveUnitsBrokenEvent}).
+ * {@link getLegalAssignUnitSupport} / assign-unit-support).
  *
  * @param state - The current game state
  * @returns A complete ResolveRallyEvent with the selected card
