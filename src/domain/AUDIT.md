@@ -60,20 +60,20 @@ Audit in this order (dependencies flow downward):
     - [x] `rallyResolution/`
     - [x] `combatOutcomes/`
     - [x] `engagement/`
-  - [ ] `typeGuards/`
+  - [x] `typeGuards/`
 
 ### `events/` (`@events`)
 
-- [ ] `events/`
-  - [ ] `expectedEvent/`
-  - [ ] `gameEffects/`
-  - [ ] `playerChoices/`
-  - [ ] Root modules (`eventType.ts`, `eventTypeLiterals.ts`, …)
+- [x] `events/`
+  - [x] `expectedEvent/`
+  - [x] `gameEffects/`
+  - [x] `playerChoices/`
+  - [x] Root modules (`eventType.ts`, `eventTypeLiterals.ts`, …)
 
 ### `ruleValues/` (`@ruleValues`)
 
-- [ ] `ruleValues/`
-  - [ ] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
+- [x] `ruleValues/`
+  - [x] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
 
 ### `sampleValues/` (`@sampleValues`)
 
@@ -82,8 +82,10 @@ Audit in this order (dependencies flow downward):
 
 ### `factories/` (`@factories`)
 
-- [ ] `factories/`
-  - [ ] `unit/`
+- [x] `factories/`
+  - [x] `board/`
+  - [x] `game/`
+  - [x] `unit/`
 
 ### `queries/` (`@queries`)
 

@@ -1,4 +1,5 @@
-import { addCommanderToBoard, createEmptyStandardBoard } from '@transforms';
+import { addCommanderToBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 import { getCommanderSpace } from './getCommanderSpace';
 

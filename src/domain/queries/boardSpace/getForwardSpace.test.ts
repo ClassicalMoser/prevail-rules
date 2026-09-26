@@ -1,5 +1,5 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
-import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
 
 import { getForwardSpace } from './getForwardSpace';
 

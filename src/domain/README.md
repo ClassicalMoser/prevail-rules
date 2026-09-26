@@ -318,7 +318,7 @@ All state changes go through events:
 
 ```typescript
 import { RulesEngine } from '@transforms';
-import { createEmptyStandardBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 import { MoveUnitEvent } from '@events';
 import type { GameState } from '@entities';
 

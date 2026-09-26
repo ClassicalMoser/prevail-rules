@@ -1,5 +1,5 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
-import { createEmptyStandardBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 import { getLeftSpace } from './getLeftSpace';
 

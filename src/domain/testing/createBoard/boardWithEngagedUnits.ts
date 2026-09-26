@@ -1,5 +1,5 @@
 import type { Board, Coordinate, UnitFacing, UnitInstance } from '@entities';
-import { createEmptyStandardBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 /**
  * Creates a board with engaged units at a coordinate.

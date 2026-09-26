@@ -5,7 +5,7 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import { createTestUnit } from '@testing';
-import { createEmptyStandardBoard } from '@transforms/initializations';
+import { createEmptyStandardBoard } from '@factories';
 
 import { removeUnitFromBoard } from './removeUnitFromBoard';
 

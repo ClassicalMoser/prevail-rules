@@ -11,7 +11,7 @@ import {
   createBoardWithUnits,
   getUnitByStatValue,
 } from '@testing';
-import { createEmptyStandardBoard, createUnitInstance } from '@transforms';
+import { createEmptyStandardBoard, createUnitInstance } from '@factories';
 
 import { isAtPlacement } from './isAtPlacement';
 

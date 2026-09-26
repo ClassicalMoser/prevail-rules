@@ -4,7 +4,8 @@ import {
   createTestUnit,
   createUnitWithPlacement,
 } from '@testing';
-import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
+import { addUnitToBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 import { getLegalSetupUnits } from './getLegalSetupUnits';
 import { getSetupZoneCoordinates } from './getSetupZoneCoordinates';

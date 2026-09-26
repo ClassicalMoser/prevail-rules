@@ -1,4 +1,4 @@
-import { createEmptyStandardBoard } from '@transforms/initializations';
+import { createEmptyStandardBoard } from '@factories';
 
 import { addCommanderToBoard } from './addCommanderToBoard';
 

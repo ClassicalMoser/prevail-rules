@@ -1,7 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { GameStateForVisibility } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyStandardBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 /**
  * Creates an empty game state with default values.

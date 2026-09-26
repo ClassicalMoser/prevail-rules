@@ -1,7 +1,8 @@
 import type { Coordinate } from '@entities';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
 import { createGameState, createTestUnit } from '@testing';
-import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
+import { addUnitToBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 import { canMoveThrough } from './canMoveThrough';
 

@@ -2,7 +2,7 @@ import {
   createEmptyLargeBoard,
   createEmptySmallBoard,
   createEmptyStandardBoard,
-} from '@transforms';
+} from '@factories';
 
 import {
   getSetupZoneCoordinates,

@@ -579,6 +579,14 @@ export {
   whiteTinyStarterArmy,
 } from '@sampleValues';
 export {
+  createEmptyGameState,
+  createEmptyLargeBoard,
+  createEmptySmallBoard,
+  createEmptyStandardBoard,
+  createInitialGameState,
+  createUnitInstance,
+} from '@factories';
+export {
   addCommanderToBoard,
   addCommanderToLostCommanders,
   addCompletedPhase,
@@ -586,12 +594,6 @@ export {
   addUnitToBoard,
   addUnitToRouted,
   burnCardFromPlayed,
-  createEmptyGameState,
-  createEmptyLargeBoard,
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-  createInitialGameState,
-  createUnitInstance,
 } from '@transforms';
 export {
   chooseHiddenCard,

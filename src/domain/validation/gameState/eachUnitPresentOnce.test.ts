@@ -4,7 +4,7 @@ import {
   createBoardWithUnits,
   getUnitByStatValue,
 } from '@testing';
-import { createUnitInstance } from '@transforms';
+import { createUnitInstance } from '@factories';
 
 import { eachUnitPresentOnce } from './eachUnitPresentOnce';
 

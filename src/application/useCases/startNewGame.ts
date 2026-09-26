@@ -6,7 +6,7 @@ import type {
   GameStateChange,
   PortResponse,
 } from '@application/ports';
-import { createEmptyGameState } from '@transforms';
+import { createEmptyGameState } from '@factories';
 
 const placeholderId = '00000000-0000-0000-0000-000000000000';
 

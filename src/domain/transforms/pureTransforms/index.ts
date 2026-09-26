@@ -41,7 +41,6 @@ export {
 } from './sequencing';
 export {
   addCompletedPhase,
-  createInitialGameState,
   markPhaseAsComplete,
   updateCurrentInitiative,
   updateCurrentRoundNumber,

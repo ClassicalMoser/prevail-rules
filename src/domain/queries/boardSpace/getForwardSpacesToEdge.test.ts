@@ -1,4 +1,4 @@
-import { createEmptyStandardBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 import { getForwardSpacesToEdge } from './getForwardSpacesToEdge';
 

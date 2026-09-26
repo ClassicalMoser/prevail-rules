@@ -1,5 +1,5 @@
 import type { Coordinate } from '@entities';
-import { createEmptyStandardBoard } from '@transforms/initializations';
+import { createEmptyStandardBoard } from '@factories';
 
 import { addCommanderToBoard } from './addCommanderToBoard';
 import { removeCommanderFromBoard } from './removeCommanderFromBoard';

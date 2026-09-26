@@ -1,5 +1,5 @@
 import type { Coordinate } from '@entities';
-import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
 
 import { getSpacesBehind } from './getSpacesBehind';
 

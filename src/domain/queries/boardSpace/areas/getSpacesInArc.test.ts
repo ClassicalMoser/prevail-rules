@@ -1,4 +1,4 @@
-import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
 
 import { getSpacesInArc } from './getSpacesInArc';
 

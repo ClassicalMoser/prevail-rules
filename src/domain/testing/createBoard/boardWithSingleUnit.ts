@@ -6,7 +6,7 @@ import type {
   UnitType,
 } from '@entities';
 import { getUnitByStatValue } from '@testing/getUnitByStatValue';
-import { createUnitInstance } from '@transforms';
+import { createUnitInstance } from '@factories';
 import { createBoardWithUnits } from './boardWithUnits';
 
 /**
