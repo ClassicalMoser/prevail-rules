@@ -2,7 +2,7 @@ import type { Board, Line, Coordinate } from '@entities';
 import { getLinesFromUnit } from './getLine';
 import { getPlayerUnitWithPosition } from './unitPresence';
 import { createBoardWithUnits, createTestUnit } from '@testing';
-import { createEmptyStandardBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 import { isValidLine } from './isValidLine';
 

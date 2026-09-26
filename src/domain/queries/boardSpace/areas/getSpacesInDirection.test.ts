@@ -1,4 +1,4 @@
-import { createEmptySmallBoard } from '@transforms';
+import { createEmptySmallBoard } from '@factories';
 
 import { getFrontSpaces } from '../adjacency';
 import { getSpacesInDirection } from './getSpacesInDirection';

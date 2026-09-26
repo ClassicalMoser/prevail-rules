@@ -5,7 +5,7 @@ import {
   createBoardWithUnits,
   createTestUnit,
 } from '@testing';
-import { createEmptyStandardBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 import { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
 

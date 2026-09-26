@@ -5,7 +5,7 @@ import type {
   UnitType,
 } from '@entities';
 import { tempUnits } from '@sampleValues';
-import { createUnitInstance } from '@transforms';
+import { createUnitInstance } from '@factories';
 import { getUnitByStatValue } from './getUnitByStatValue';
 
 /**

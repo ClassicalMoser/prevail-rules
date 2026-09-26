@@ -4,7 +4,8 @@ import {
   createGameState,
   createTestUnit,
 } from '@testing';
-import { addUnitToBoard, createEmptyStandardBoard } from '@transforms';
+import { addUnitToBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 import { checkDiagonalMove } from './checkDiagonalMove';
 

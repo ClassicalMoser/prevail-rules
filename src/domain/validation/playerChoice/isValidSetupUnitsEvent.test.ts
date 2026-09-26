@@ -1,6 +1,6 @@
 import type { SetupUnitsEvent } from '@events';
 import { createEmptyGameState, createTestUnit } from '@testing';
-import { createEmptyStandardBoard } from '@transforms';
+import { createEmptyStandardBoard } from '@factories';
 
 import { isValidSetupUnitsEvent } from './isValidSetupUnitsEvent';
 

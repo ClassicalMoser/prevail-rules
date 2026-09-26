@@ -1,5 +1,5 @@
 import type { Board } from '@entities';
-import { createEmptySmallBoard, createEmptyStandardBoard } from '@transforms';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
 
 import { getBoardCoordinates } from './getBoardCoordinates';
 
