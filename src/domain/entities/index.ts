@@ -96,6 +96,7 @@ export type {
   StatModifier,
   UnitSupport,
 } from './card';
+export { unitSupportSchema } from './card';
 
 // Army
 export { armySchema, unitCountSchema } from './army';

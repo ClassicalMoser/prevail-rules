@@ -15,10 +15,8 @@ export {
   gameOverEventSchema,
   RESOLVE_INITIATIVE_EFFECT_TYPE,
   RESOLVE_RALLY_EFFECT_TYPE,
-  RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
   resolveInitiativeEventSchema,
   resolveRallyEventSchema,
-  resolveUnitsBrokenEventSchema,
   REVEAL_CARDS_EFFECT_TYPE,
   revealCardsEventSchema,
 } from './cards';
@@ -27,7 +25,6 @@ export type {
   GameOverEvent,
   ResolveInitiativeEvent,
   ResolveRallyEvent,
-  ResolveUnitsBrokenEvent,
   RevealCardsEvent,
 } from './cards';
 export {

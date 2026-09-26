@@ -26,7 +26,6 @@ vi.mock(import('./applyEffects'), () => ({
   applyResolveRetreatEvent: vi.fn(),
   applyResolveReverseEvent: vi.fn(),
   applyResolveRoutEvent: vi.fn(),
-  applyResolveUnitsBrokenEvent: vi.fn(),
   applyRevealCardsEvent: vi.fn(),
   applyStartEngagementEvent: vi.fn(),
   applyTriggerRoutFromRetreatEvent: vi.fn(),

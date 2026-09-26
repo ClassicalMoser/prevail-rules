@@ -20,7 +20,6 @@ import type {
   GameOverEvent,
   ResolveInitiativeEvent,
   ResolveRallyEvent,
-  ResolveUnitsBrokenEvent,
   RevealCardsEvent,
 } from './cards';
 import type {
@@ -57,7 +56,6 @@ import {
   gameOverEventSchema,
   resolveInitiativeEventSchema,
   resolveRallyEventSchema,
-  resolveUnitsBrokenEventSchema,
   revealCardsEventSchema,
 } from './cards';
 import {
@@ -117,7 +115,6 @@ type GameEffectEventUnion =
   | ResolveRetreatEvent
   | ResolveReverseEvent
   | ResolveRoutEvent
-  | ResolveUnitsBrokenEvent
   | RevealCardsEvent
   | CompleteUnitMovementEvent
   | StartEngagementEvent
@@ -154,7 +151,6 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   resolveRetreatEventSchema,
   resolveReverseEventSchema,
   resolveRoutEventSchema,
-  resolveUnitsBrokenEventSchema,
   revealCardsEventSchema,
   completeUnitMovementEventSchema,
   startEngagementEventSchema,

@@ -55,9 +55,18 @@ function awaitingSupportState() {
 
 describe(applyAssignUnitSupportEvent, () => {
   it('given partial cover, only uncovered units rout and routState is seeded', () => {
-    const { card, covered, state, uncovered } = awaitingSupportState();
+    const { covered, state, uncovered } = awaitingSupportState();
     const event: AssignUnitSupportEvent = {
-      assignments: [{ cardId: card.id, units: [covered] }],
+      assignments: [
+        {
+          unitSupport: {
+            count: 1,
+            supportType: 'unitType',
+            unitTypeId: covered.unitType.id,
+          },
+          units: [covered],
+        },
+      ],
       choiceType: 'assignUnitSupport',
       eventNumber: 0,
       eventType: 'playerChoice',

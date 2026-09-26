@@ -1,4 +1,4 @@
 export { getNextStepForResolveRally } from './getNextStepForResolveRally';
 export { getRallyResolutionStateAwaitingBurn } from './getRallyResolutionStateAwaitingBurn';
-export { getRallyResolutionStateAwaitingUnitsBroken } from './getRallyResolutionStateAwaitingUnitsBroken';
+export { getRallyResolutionStateAwaitingUnitSupport } from './getRallyResolutionStateAwaitingUnitSupport';
 export { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';

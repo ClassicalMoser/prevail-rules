@@ -3,7 +3,6 @@ export {
   applyGameOverEvent,
   applyResolveInitiativeEvent,
   applyResolveRallyEvent,
-  applyResolveUnitsBrokenEvent,
   applyRevealCardsEvent,
 } from './cards';
 export {

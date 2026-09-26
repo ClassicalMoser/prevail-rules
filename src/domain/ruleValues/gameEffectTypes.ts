@@ -26,7 +26,6 @@ export const gameEffects = [
   'resolveRetreat',
   'resolveReverse',
   'resolveRout',
-  'resolveUnitsBroken',
   'revealCards',
   'completeUnitMovement',
   'startEngagement',

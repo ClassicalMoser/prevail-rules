@@ -1,7 +1,7 @@
 export {
   getNextStepForResolveRally,
   getRallyResolutionStateAwaitingBurn,
-  getRallyResolutionStateAwaitingUnitsBroken,
+  getRallyResolutionStateAwaitingUnitSupport,
   getRallyResolutionStateForCurrentStep,
 } from './cleanupPhase';
 export {

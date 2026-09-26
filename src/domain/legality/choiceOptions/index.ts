@@ -1,7 +1,8 @@
 export {
-  getLegalUnitSupportGrants,
-  type LegalUnitSupportGrant,
-  type LegalUnitSupportGrants,
+  combineSupportCategoriesFromHand,
+  getLegalAssignUnitSupport,
+  type LegalAssignUnitSupport,
+  type LegalSupportCategory,
 } from './assignUnitSupport';
 export { getLegalChooseCardOptions } from './getLegalChooseCardOptions';
 export { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolutionEvents';

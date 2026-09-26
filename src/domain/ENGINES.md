@@ -98,7 +98,6 @@ const newState = applyEvent(event, state);
 **Current Procedures:**
 
 - `generateResolveRallyEvent` - Generates a rally resolution event
-- `generateResolveUnitsBrokenEvent` - Generates a units broken resolution event
 
 **Registry:**
 

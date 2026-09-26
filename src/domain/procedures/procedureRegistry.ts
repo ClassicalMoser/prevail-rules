@@ -5,7 +5,6 @@ import {
   generateGameOverEvent,
   generateResolveInitiativeEvent,
   generateResolveRallyEvent,
-  generateResolveUnitsBrokenEvent,
   generateRevealCardsEvent,
 } from './cards';
 import {
@@ -118,9 +117,6 @@ export function generateEventFromProcedure(
     }
     case 'resolveRout': {
       return generateResolveRoutEvent(state, eventNumber);
-    }
-    case 'resolveUnitsBroken': {
-      return generateResolveUnitsBrokenEvent(state, eventNumber);
     }
     case 'revealCards': {
       return generateRevealCardsEvent(state, eventNumber);

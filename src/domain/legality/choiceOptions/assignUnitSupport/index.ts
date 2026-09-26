@@ -1,5 +1,6 @@
+export { combineSupportCategoriesFromHand } from './combineSupportCategoriesFromHand';
 export {
-  getLegalUnitSupportGrants,
-  type LegalUnitSupportGrant,
-  type LegalUnitSupportGrants,
-} from './getLegalUnitSupportGrants';
+  getLegalAssignUnitSupport,
+  type LegalAssignUnitSupport,
+  type LegalSupportCategory,
+} from './getLegalAssignUnitSupport';

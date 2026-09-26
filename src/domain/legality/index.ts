@@ -32,7 +32,8 @@ export {
   getLegalRangedAttackTargets,
   getLegalRoutDiscardCards,
   getLegalSetupUnits,
-  getLegalUnitSupportGrants,
+  combineSupportCategoriesFromHand,
+  getLegalAssignUnitSupport,
   getLegalUnitsForIssueCommand,
   getLineSegmentFromStart,
   getSetupZoneCoordinates,
@@ -49,8 +50,8 @@ export type {
   LegalRangedAttackers,
   LegalRoutDiscardCards,
   LegalSetupUnits,
-  LegalUnitSupportGrant,
-  LegalUnitSupportGrants,
+  LegalAssignUnitSupport,
+  LegalSupportCategory,
 } from './choiceOptions';
 export { getLegalCommanderMoves } from './commanderMovement';
 export {

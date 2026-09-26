@@ -175,7 +175,6 @@ Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary a
 
 - [x] `generateDiscardPlayedCardsEvent` ✅ (`cards/generateDiscardPlayedCardsEvent.test.ts`)
 - [x] `generateResolveRallyEvent` ✅ (`cards/generateResolveRallyEvent.test.ts`)
-- [x] `generateResolveUnitsBrokenEvent` ✅ (`cards/generateResolveUnitsBrokenEvent.test.ts`)
 - [x] `generateCompleteCleanupPhaseEvent` ✅ (`completePhase/generateCompleteCleanupPhaseEvent.test.ts`)
 
 ### Expected Events
@@ -183,7 +182,7 @@ Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary a
 - [x] `getExpectedCleanupPhaseEvent` ✅ (`byPhase/getExpectedCleanupPhaseEvent.test.ts`)
 - [x] `getExpectedRallyResolutionEvent` ✅ (`composable/getExpectedRallyResolutionEvent.test.ts`)
 
-**Status:** Colocated tests complete ✅ — `generateResolveUnitsBrokenEvent` / rally still have room for branch coverage
+**Status:** Colocated tests complete ✅ — rally still has room for branch coverage
 
 ---
 
@@ -310,7 +309,6 @@ _Use the latest **`npm run test:coverage`** report as source of truth for number
 | `procedures/defenseResult/generateResolveRoutEvent.ts`                                       | Low statement %; many branches.                                       |
 | `procedures/defenseResult/generateResolveRetreatEvent.ts` / `generateResolveReverseEvent.ts` | Mid statement %; extend throw/edge paths.                             |
 | `procedures/movement/generateStartEngagementEvent.ts`                                        | Several uncovered lines; branch % often ~50%.                         |
-| `procedures/cards/generateResolveUnitsBrokenEvent.ts`                                        | Statements/branches below neighbors.                                  |
 | `queries/sequencing/getCommandResolutionState.ts`                                            | e.g. line ~103 uncovered in one report.                               |
 
 ---

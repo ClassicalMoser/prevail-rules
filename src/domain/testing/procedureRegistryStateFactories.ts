@@ -338,12 +338,6 @@ export const procedureRegistryStateFactories: Record<
     return updatePhaseState(withBoard, phase);
   },
 
-  resolveUnitsBroken: (): GameStateForVisibility =>
-    updatePhaseState(
-      createEmptyGameState({ currentInitiative: 'white' }),
-      createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
-    ),
-
   revealCards: (): GameStateForVisibility => createEmptyGameState(),
 
   startEngagement: (): GameStateForVisibility => {

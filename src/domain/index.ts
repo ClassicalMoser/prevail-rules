@@ -99,6 +99,7 @@ export type {
   StatModifier,
   UnitSupport,
 } from '@entities';
+export { unitSupportSchema } from '@entities';
 export type { Line, Player, PlayerSide, UnitFacing } from '@entities';
 export type {
   EngagedUnitPresence,
@@ -170,7 +171,6 @@ export {
   RESOLVE_RETREAT_EFFECT_TYPE,
   RESOLVE_REVERSE_EFFECT_TYPE,
   RESOLVE_ROUT_EFFECT_TYPE,
-  RESOLVE_UNITS_BROKEN_EFFECT_TYPE,
   resolveEngageRetreatOptionEventSchema,
   resolveFlankEngagementEventSchema,
   resolveInitiativeEventSchema,
@@ -182,7 +182,6 @@ export {
   resolveRetreatEventSchema,
   resolveReverseEventSchema,
   resolveRoutEventSchema,
-  resolveUnitsBrokenEventSchema,
   REVEAL_CARDS_EFFECT_TYPE,
   revealCardsEventSchema,
   ROUT_RESOLUTION_SOURCE_NON_ATTACK_VALUES,
@@ -249,7 +248,6 @@ export type {
   ResolveRetreatEvent,
   ResolveReverseEvent,
   ResolveRoutEvent,
-  ResolveUnitsBrokenEvent,
   RevealCardsEvent,
   RoutResolutionSource,
   RoutResolutionSourceNonAttack,
@@ -445,7 +443,6 @@ export {
   modifiersFromCompletedCommitment,
   getPlayerUnitsOnBoard,
   getPlayerUnitsWithPlacementOnBoard,
-  getSupportedUnitTypes,
   unitMatchesSupport,
   getPlayerUnitWithPosition,
   hasUnitInSet,
@@ -481,7 +478,7 @@ export {
   getPlayCardsPhaseState,
   getRallyResolutionState,
   getRallyResolutionStateAwaitingBurn,
-  getRallyResolutionStateAwaitingUnitsBroken,
+  getRallyResolutionStateAwaitingUnitSupport,
   getRallyResolutionStateForCurrentStep,
   getRangedAttackResolutionState,
   getRearEngagementStateFromMovement,
@@ -522,7 +519,8 @@ export {
   getLegalRangedAttackTargets,
   getLegalRoutDiscardCards,
   getLegalSetupUnits,
-  getLegalUnitSupportGrants,
+  combineSupportCategoriesFromHand,
+  getLegalAssignUnitSupport,
   getLegalUnitsForIssueCommand,
   getLineSegmentFromStart,
   getSetupZoneCoordinates,
@@ -541,8 +539,8 @@ export type {
   LegalRangedAttackers,
   LegalRoutDiscardCards,
   LegalSetupUnits,
-  LegalUnitSupportGrant,
-  LegalUnitSupportGrants,
+  LegalAssignUnitSupport,
+  LegalSupportCategory,
 } from '@legality';
 export {
   eachCardPresentOnce,
