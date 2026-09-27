@@ -1,440 +1,253 @@
+/**
+ * Melee support sums eligible neighbors. A space behind the unit does not
+ * count. Engaged spaces do not count. A diagonal neighbor counts only when
+ * enemies do not block both intervening spaces.
+ *
+ * A neighbor facing the unit adds 2. A neighbor whose flank covers the unit
+ * adds 1. Other facings add nothing. Several neighbors add together.
+ *
+ * Board coordinates are `Letter-Number` (row-column). North is toward A,
+ * south toward higher letters, east toward higher columns.
+ */
+
+import { addUnitToBoard } from '@transforms';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
   createTestUnit,
 } from '@testing';
+import { getPlayerUnitWithPosition } from '@queries/unitPresence';
 
 import { getMeleeSupportValue } from './getMeleeSupportValue';
-import { getPlayerUnitWithPosition } from './unitPresence';
 
-/**
- * GetMeleeSupportValue: melee support total from eligible adjacent unengaged friendlies (strong vs weak facing,
- * diagonal line-of-sight blockers, engaged units excluded).
- *
- * Board coordinates: `Letter-Number` = row-column (e.g. E-5 = row E, column 5).
- * North moves toward lower row letters (toward A); south toward higher letters.
- * East increases column number; west decreases it.
- * A unit “behind” another is in the rear arc: opposite its facing (e.g. south of a unit facing north).
- */
+function supportAt(
+  board: ReturnType<typeof createBoardWithUnits>,
+  coordinate: 'E-5' | 'A-1',
+): number {
+  const unit = getPlayerUnitWithPosition(board, coordinate, 'black');
+  if (!unit) {
+    throw new Error(`Expected a black unit at ${coordinate}`);
+  }
+  return getMeleeSupportValue(board, unit);
+}
+
 describe(getMeleeSupportValue, () => {
-  describe('no support', () => {
-    it('given no adjacent friendlies, returns 0', () => {
-      const unit = createTestUnit('black', { attack: 3 });
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
-      ]);
+  it('returns 0 when there are no adjacent units', () => {
+    const unit = createTestUnit('black', { instanceNumber: 1 });
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit },
+    ]);
 
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      expect(supportValue).toBe(0);
-    });
-
-    it('given only adjacent friendly is in rear arc, returns 0', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      // Primary at E-5 facing north: south is row F. F-5 is orthogonally adjacent and in the rear arc,
-      // So it is excluded before support is evaluated (even though facing north from F-5 would “see” E-5).
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-        { coordinate: 'F-5', facing: 'north', unit: supportUnit },
-      ]);
-
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      expect(supportValue).toBe(0);
-    });
-
-    it('given adjacent units are enemies, returns 0', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const enemyUnit = createTestUnit('white', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      // Enemy unit is adjacent (east of) primary unit
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-        { coordinate: 'D-5', facing: 'south', unit: enemyUnit },
-      ]);
-
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      expect(supportValue).toBe(0);
-    });
+    expect(supportAt(board, 'E-5')).toBe(0);
   });
 
-  describe('strong support', () => {
-    it('given friendly faces toward primary, returns 2', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      // Support unit at E-6 facing west (toward primary unit at E-5)
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-        { coordinate: 'E-6', facing: 'west', unit: supportUnit },
-      ]);
+  it('returns 0 when the only friendly is behind the unit', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // E-5 facing north: F-5 is south, in the rear arc.
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'F-5', facing: 'north', unit: supportUnit },
+    ]);
 
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      expect(supportValue).toBe(2);
-    });
-
-    it('given diagonal adjacent friendly faces toward primary, returns 2', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-        { coordinate: 'D-6', facing: 'southWest', unit: supportUnit },
-      ]);
-
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      expect(supportValue).toBe(2);
-    });
+    expect(supportAt(board, 'E-5')).toBe(0);
   });
 
-  describe('weak support', () => {
-    it('given friendly flanks primary, returns 1', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      // Support unit at E-6 facing north (flanking primary unit at E-5)
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-        { coordinate: 'E-6', facing: 'north', unit: supportUnit },
-      ]);
+  it('returns 0 when the adjacent unit is an enemy', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const enemyUnit = createTestUnit('white', { instanceNumber: 1 });
+    // D-5 is north of E-5.
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'D-5', facing: 'north', unit: enemyUnit },
+    ]);
 
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      expect(supportValue).toBe(1);
-    });
-
-    it('given friendly adjacent but facing away, returns 0', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-        { coordinate: 'E-6', facing: 'east', unit: supportUnit },
-      ]);
-
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      expect(supportValue).toBe(0);
-    });
-
-    it('given diagonal support blocked by enemies on intervening orthogonals, returns 0', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      const blockingEnemy1 = createTestUnit('white', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const blockingEnemy2 = createTestUnit('white', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-        { coordinate: 'D-6', facing: 'southWest', unit: supportUnit },
-        { coordinate: 'D-5', facing: 'south', unit: blockingEnemy1 },
-        { coordinate: 'E-6', facing: 'south', unit: blockingEnemy2 },
-      ]);
-
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      expect(supportValue).toBe(0);
-    });
+    expect(supportAt(board, 'E-5')).toBe(0);
   });
 
-  describe('engaged units', () => {
-    it('given support candidate is engaged, does not count', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      const enemyUnit = createTestUnit('white', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      // Support unit is engaged with enemy unit at E-5
-      const board = createBoardWithEngagedUnits(
-        primaryUnit,
-        enemyUnit,
-        'E-5',
-        'west',
-      );
-      // Add support unit at E-6
-      board.board['E-6'] = {
-        ...board.board['E-6']!,
-        unitPresence: {
-          facing: 'north',
-          presenceType: 'single',
-          unit: supportUnit,
-        },
-      };
+  it('adds 2 when an orthogonally adjacent friendly unit directly faces the unit', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'E-6', facing: 'west', unit: supportUnit },
+    ]);
 
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      expect(supportValue).toBe(0);
-    });
-
-    it('given other adjacent friendlies engaged, still counts unengaged strong support', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      const engagedUnit1 = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 3,
-      });
-      const enemyUnit = createTestUnit('white', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      // Engaged units at F-5
-      const board = createBoardWithEngagedUnits(
-        engagedUnit1,
-        enemyUnit,
-        'F-5',
-        'west',
-      );
-      // Add primary unit at E-5 and unengaged support unit at E-6
-      board.board['E-5'] = {
-        ...board.board['E-5']!,
-        unitPresence: {
-          facing: 'north',
-          presenceType: 'single',
-          unit: primaryUnit,
-        },
-      };
-      board.board['E-6'] = {
-        ...board.board['E-6']!,
-        unitPresence: {
-          facing: 'west',
-          presenceType: 'single',
-          unit: supportUnit,
-        },
-      };
-
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      // Should get support from unengaged unit at E-6, not from engaged unit at F-5
-      expect(supportValue).toBe(2);
-    });
+    expect(supportAt(board, 'E-5')).toBe(2);
   });
 
-  describe('multiple support units', () => {
-    it('given strong and weak support, returns strong value only', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const strongSupportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      const weakSupportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 3,
-      });
-      // Strong support at E-6 facing west, weak support at F-5 facing north
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-        { coordinate: 'E-6', facing: 'west', unit: strongSupportUnit },
-        { coordinate: 'F-5', facing: 'north', unit: weakSupportUnit },
-      ]);
+  it('adds 2 when a diagonally adjacent friendly unit directly faces the unit', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'D-6', facing: 'southWest', unit: supportUnit },
+    ]);
 
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      // Strong support (2) should be returned, weak support (1) is ignored
-      expect(supportValue).toBe(2);
-    });
-
-    it('given only weak supports, sums weak values', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const weakSupportUnit1 = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      const weakSupportUnit2 = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 3,
-      });
-      // Both support units are flanking
-      // Unit at E-6 facing north: flanking spaces are E-5 (west) and E-7 (east) - E-5 is flanking
-      // Unit at F-5 facing north: flanking spaces are F-4 (west) and F-6 (east) - E-5 is not flanking
-      // Need to position units so both provide flanking support
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-        { coordinate: 'E-6', facing: 'north', unit: weakSupportUnit1 }, // Flanking from east
-        { coordinate: 'D-5', facing: 'east', unit: weakSupportUnit2 }, // Flanking from west (facing east, so flanking is north/south)
-      ]);
-
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
-
-      // E-6 facing north flanks E-5 (weak 1); D-5 facing east has flanking spaces north/south including E-5 (weak 1)
-      expect(supportValue).toBe(2);
-    });
+    expect(supportAt(board, 'E-5')).toBe(2);
   });
 
-  describe('edge cases', () => {
-    it('given corner board position, strong support still applies', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
+  it('adds 2 when an orthogonally adjacent friendly unit indirectly faces the unit', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'E-6', facing: 'northWest', unit: supportUnit },
+    ]);
+    expect(supportAt(board, 'E-5')).toBe(2);
+  });
 
-      // Primary unit at A-1 (corner), support unit at A-2
-      const board = createBoardWithUnits([
-        { coordinate: 'A-1', facing: 'north', unit: primaryUnit },
-        { coordinate: 'A-2', facing: 'west', unit: supportUnit },
-      ]);
+  it('adds 2 when a diagonally adjacent friendly unit indirectly faces the unit', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'D-6', facing: 'west', unit: supportUnit },
+    ]);
+    expect(supportAt(board, 'E-5')).toBe(2);
+  });
 
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'A-1',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
+  it('adds 1 when a friendly unit flanks the unit orthogonally', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // E-6 facing north has E-5 on its left flank.
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'E-6', facing: 'north', unit: supportUnit },
+    ]);
+    expect(supportAt(board, 'E-5')).toBe(1);
+  });
 
-      expect(supportValue).toBe(2);
+  it('adds 1 when a friendly unit flanks the unit diagonally', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // D-4 facing northEast has E-5 on its right flank.
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'D-4', facing: 'northEast', unit: supportUnit },
+    ]);
+    expect(supportAt(board, 'E-5')).toBe(1);
+  });
+
+  it('adds 1 when a friendly flanking unit faces opposite the unit', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    // E-6 facing south has E-5 on its right flank.
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'E-6', facing: 'south', unit: supportUnit },
+    ]);
+    expect(supportAt(board, 'E-5')).toBe(1);
+  });
+
+  it('adds nothing when the friendly unit faces indirectly away from the unit', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'E-6', facing: 'northEast', unit: supportUnit },
+    ]);
+    expect(supportAt(board, 'E-5')).toBe(0);
+  });
+
+  it('adds nothing when the friendly unit faces directly away from the unit', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'E-6', facing: 'east', unit: supportUnit },
+    ]);
+    expect(supportAt(board, 'E-5')).toBe(0);
+  });
+
+  it('adds nothing when enemies block both spaces of a diagonal', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const blockingEnemy1 = createTestUnit('white', { instanceNumber: 1 });
+    const blockingEnemy2 = createTestUnit('white', { instanceNumber: 2 });
+    // D-6 is northeast of E-5. D-5 and E-6 are the two orthogonal steps between them.
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'D-6', facing: 'southWest', unit: supportUnit },
+      { coordinate: 'D-5', facing: 'south', unit: blockingEnemy1 },
+      { coordinate: 'E-6', facing: 'south', unit: blockingEnemy2 },
+    ]);
+    expect(supportAt(board, 'E-5')).toBe(0);
+  });
+
+  it('only counts support from friendly units that are not engaged', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const engagedUnit = createTestUnit('black', { instanceNumber: 3 });
+    const enemyUnit = createTestUnit('white', { instanceNumber: 1 });
+    // Would be strong support if unit were not engaged.
+    let board = createBoardWithEngagedUnits(
+      engagedUnit,
+      enemyUnit,
+      'D-5',
+      'south',
+    );
+    // Add the primary unit and support unit to the board.
+    board = addUnitToBoard(board, {
+      placement: { coordinate: 'E-5', facing: 'north' },
+      unit: primaryUnit,
+    });
+    board = addUnitToBoard(board, {
+      placement: { coordinate: 'E-6', facing: 'west' },
+      unit: supportUnit,
     });
 
-    it('given primary facing east, support facing west toward primary, returns 2', () => {
-      const primaryUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 1,
-      });
-      const supportUnit = createTestUnit('black', {
-        attack: 3,
-        instanceNumber: 2,
-      });
-      // Primary unit facing east, support unit at E-6 facing west (toward primary)
-      const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'east', unit: primaryUnit },
-        { coordinate: 'E-6', facing: 'west', unit: supportUnit },
-      ]);
+    expect(supportAt(board, 'E-5')).toBe(2);
+  });
 
-      const unitWithPlacement = getPlayerUnitWithPosition(
-        board,
-        'E-5',
-        'black',
-      )!;
-      const supportValue = getMeleeSupportValue(board, unitWithPlacement);
+  it('counts the friendly facing the unit and ignores the one in the rear arc', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const facingSupport = createTestUnit('black', { instanceNumber: 2 });
+    const rearUnit = createTestUnit('black', { instanceNumber: 3 });
+    // F-5 is south of a north-facing E-5. E-6 faces west, toward E-5.
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'E-6', facing: 'west', unit: facingSupport },
+      { coordinate: 'F-5', facing: 'north', unit: rearUnit },
+    ]);
 
-      expect(supportValue).toBe(2);
-    });
+    expect(supportAt(board, 'E-5')).toBe(2);
+  });
+
+  it('adds weak support from each friendly whose flank covers the unit', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const weakSupportUnit1 = createTestUnit('black', { instanceNumber: 2 });
+    const weakSupportUnit2 = createTestUnit('black', { instanceNumber: 3 });
+    // E-6 facing north flanks E-5 from the east.
+    // D-5 facing east flanks E-5 from the north.
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
+      { coordinate: 'E-6', facing: 'north', unit: weakSupportUnit1 },
+      { coordinate: 'D-5', facing: 'east', unit: weakSupportUnit2 },
+    ]);
+
+    expect(supportAt(board, 'E-5')).toBe(2);
+  });
+
+  it('adds 2 from a friendly facing the unit at a corner', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const board = createBoardWithUnits([
+      { coordinate: 'A-1', facing: 'north', unit: primaryUnit },
+      { coordinate: 'A-2', facing: 'west', unit: supportUnit },
+    ]);
+
+    expect(supportAt(board, 'A-1')).toBe(2);
+  });
+
+  it('adds 2 from a friendly facing the unit when the unit faces that friend', () => {
+    const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
+    const supportUnit = createTestUnit('black', { instanceNumber: 2 });
+    const board = createBoardWithUnits([
+      { coordinate: 'E-5', facing: 'east', unit: primaryUnit },
+      { coordinate: 'E-6', facing: 'west', unit: supportUnit },
+    ]);
+
+    expect(supportAt(board, 'E-5')).toBe(2);
   });
 });

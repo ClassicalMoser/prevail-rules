@@ -9,7 +9,7 @@ const smallBoard = createEmptySmallBoard();
  * GetSpacesInDirection: flood-fill forward from a seed set of coordinates along a facing until board edge.
  */
 describe(getSpacesInDirection, () => {
-  it('given south-facing front spaces from B-2, fills southern half-plane', () => {
+  it('fills southern half-plane when south-facing front spaces from B-2', () => {
     const unitFacing = 'south';
     const unitPosition = 'B-2';
     const frontSpaces = getFrontSpaces(smallBoard, unitPosition, unitFacing);
@@ -24,7 +24,7 @@ describe(getSpacesInDirection, () => {
     expect(result.has('B-12')).toBe(false);
   });
 
-  it('given northWest-facing front spaces from F-7, fills expected wedge', () => {
+  it('fills expected wedge when northWest-facing front spaces from F-7', () => {
     const unitFacing = 'northWest';
     const unitPosition = 'F-7';
     const frontSpaces = getFrontSpaces(smallBoard, unitPosition, unitFacing);

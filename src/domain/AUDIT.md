@@ -6,9 +6,11 @@ Running checklist for a **manual, end-to-end conventions audit** of the rules en
 
 **Criteria (shared):** see `[entities/README.md](./entities/README.md)` (schema-first, declaration order, enum `AssertExact` skip, `.strict()`, barrels). Package-specific notes live in each package README when present.
 
-**Last updated:** 2026-09-20
+**Last updated:** 2026-09-26
 
 ---
+
+
 
 ## Progress order
 
@@ -22,12 +24,18 @@ Audit in this order (dependencies flow downward):
 
 ---
 
+
+
 ## Domain packages
+
+
 
 ### `utils/` (`@utils`)
 
 - [x] `utils/`
   - [x] Root modules (`assertExact`, `validationResult`, `serializationSentinels`, `throwIfMissing`, …)
+
+
 
 ### `entities/` (`@entities`)
 
@@ -44,6 +52,8 @@ Audit in this order (dependencies flow downward):
   - [x] `unit/`
   - [x] `unitLocation/`
   - [x] `unitPresence/`
+
+
 
 ### `game/` (`@game`)
 
@@ -62,6 +72,8 @@ Audit in this order (dependencies flow downward):
     - [x] `engagement/`
   - [x] `typeGuards/`
 
+
+
 ### `events/` (`@events`)
 
 - [x] `events/`
@@ -70,15 +82,21 @@ Audit in this order (dependencies flow downward):
   - [x] `playerChoices/`
   - [x] Root modules (`eventType.ts`, `eventTypeLiterals.ts`, …)
 
+
+
 ### `ruleValues/` (`@ruleValues`)
 
 - [x] `ruleValues/`
   - [x] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
 
+
+
 ### `sampleValues/` (`@sampleValues`)
 
-- [ ] `sampleValues/`
-  - [ ] Root modules (`tempCommandCards`, `tempUnits`, `tinyStarterArmy`, …)
+- [x] `sampleValues/`
+  - [x] Root modules (`tempCommandCards`, `tempUnits`, `tinyStarterArmy`, …)
+
+
 
 ### `factories/` (`@factories`)
 
@@ -87,19 +105,33 @@ Audit in this order (dependencies flow downward):
   - [x] `game/`
   - [x] `unit/`
 
+
+
 ### `queries/` (`@queries`)
 
+Target layout mirrors `entities/` and `game/` nouns. Retire `boardSpace/`, `cards/`, and `equivalence/`. `sequencing/` keeps turn position only; substep narrowers follow `game/substeps`.
+
 - [ ] `queries/`
-  - [ ] `boardSpace/`
-  - [ ] `cards/`
-  - [ ] `engagement/`
-  - [ ] `equivalence/`
+  - [ ] `board/` — spaces, `diagonalIsClear`, `getCommanderSpace`
+    - [ ] `adjacency/`
+    - [ ] `areas/`
+    - [ ] `steps/` — forward, rearward, left, right
   - [ ] `facings/`
+  - [ ] `unit/` — stats, friendliness, support match, units on board, unit identity
+  - [ ] `unitPresence/` — position, enemy in the space, at a placement
+  - [ ] `card/` — owned and hidden slices, command match, initiative, commitment modifiers, modifier and restriction equality
+  - [ ] `line/` — `getLinesFromUnit`, `isValidLine`
+  - [ ] `player/` — `getOtherPlayer`
+  - [ ] `attack/` — `applyAttackValue`, `getMeleeSupportValue`
+  - [ ] `engagement/` — front, flank, rear, plus movement engagement getters
   - [ ] `gameOver/`
-  - [ ] `sequencing/`
-  - [ ] `unit/`
-  - [ ] `unitPresence/`
-  - [ ] Root-level query modules (e.g. `applyAttackValue`, `calculateInitiative`, `getLine`, …)
+  - [ ] `sequencing/` — current phase, step, initiative, event number, event stream
+    - [ ] `commandResolution/`
+    - [ ] `meleeResolution/`
+    - [ ] `rallyResolution/`
+    - [ ] `combatOutcomes/`
+
+
 
 ### `legality/` (`@legality`)
 
@@ -110,10 +142,14 @@ Audit in this order (dependencies flow downward):
   - [ ] `game/`
   - [ ] `unitMovement/`
 
+
+
 ### `expected/` (`@expected`)
 
 - [ ] `expected/`
   - [ ] `expectedEvent/`
+
+
 
 ### `procedures/` (`@procedures`)
 
@@ -125,6 +161,8 @@ Audit in this order (dependencies flow downward):
   - [ ] `resolveAttack/`
   - [ ] Root modules (`procedureRegistry`, …)
 
+
+
 ### `transforms/` (`@transforms`)
 
 - [ ] `transforms/`
@@ -132,12 +170,16 @@ Audit in this order (dependencies flow downward):
   - [ ] `pureTransforms/`
   - [ ] `stateTransitions/`
 
+
+
 ### `validation/` (`@validation`)
 
 - [ ] `validation/`
   - [ ] `game/`
   - [ ] `gameState/`
   - [ ] `playerChoice/`
+
+
 
 ### `testing/` (`@testing`)
 
@@ -150,6 +192,8 @@ Audit in this order (dependencies flow downward):
   - [ ] Root helpers (`createEmptyGameState`, `unitHelpers`, …)
 
 ---
+
+
 
 ## Application (above domain)
 
@@ -164,6 +208,8 @@ Import boundary: application may use `@validation` (and domain barrels), not `@l
 
 ---
 
+
+
 ## Test suite
 
 Colocated `*.test.ts` under `src/domain/**` and `src/application/**` (see `vitest.config.ts`). Depth inventory: `[TESTING_CHECKLIST.md](./TESTING_CHECKLIST.md)`.
@@ -175,8 +221,11 @@ Colocated `*.test.ts` under `src/domain/**` and `src/application/**` (see `vites
 
 ---
 
+
+
 ## Notes / blockers
 
-_Add short dated notes as the audit proceeds._
+*Add short dated notes as the audit proceeds.*
 
 - 2026-09-20 — `entities` + `game` closed for this pass. Next: `events` (or `utils` if wanting a true bottom-up start).
+

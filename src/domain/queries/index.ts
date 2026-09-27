@@ -1,38 +1,57 @@
-export { applyAttackValue } from './applyAttackValue';
-export { diagonalIsClear } from './diagonalIsClear';
+// Attack totals and melee support.
+export { applyAttackValue, getMeleeSupportValue } from './attack';
+
+// Board geometry, occupancy of a coordinate, and a clear diagonal.
 export {
+  diagonalIsClear,
   getAdjacentSpaces,
   getBackSpaces,
   getBoardCoordinates,
   getBoardCoordinatesWithEngagedUnits,
   getBoardSpace,
+  getCommanderSpace,
   getDiagonallyAdjacentSpaces,
   getFlankingSpaces,
   getForwardSpace,
   getForwardSpacesToEdge,
   getFrontSpaces,
   getInlineSpaces,
+  getLeftSpace,
   getOrthogonallyAdjacentSpaces,
   getRearwardSpace,
+  getRightSpace,
   getSingleUnitWithPlacementAtCoordinate,
   getSpacesAhead,
   getSpacesBehind,
   getSpacesInArc,
   getSpacesInDirection,
   getSpacesWithinDistance,
-} from './boardSpace';
-export { calculateInitiative } from './calculateInitiative';
-export { getHiddenPlayerCardState, getOwnedPlayerCardState } from './cards';
+} from './board';
+
+// Card piles, initiative, and command equality.
 export {
-  getGameOverWinner,
-  getWinnerFromEmptyHands,
-  getWinnerFromUnpayableRoutDiscard,
-} from './gameOver';
+  areModifiersArraysEqual,
+  areModifiersEqual,
+  areRestrictionsEqual,
+  calculateInitiative,
+  findMatchingCommand,
+  getHiddenPlayerCardState,
+  getOwnedPlayerCardState,
+  modifiersFromCompletedCommitment,
+} from './card';
+
+// Front, flank, and rear, including movement engagements.
 export {
+  getEngagementStateFromMovement,
+  getFlankEngagementStateFromMovement,
+  getFrontEngagementStateFromMovement,
+  getRearEngagementStateFromMovement,
   isEngagementFromFlank,
   isEngagementFromFront,
   isEngagementFromRear,
 } from './engagement';
+
+// Facing algebra.
 export {
   getAdjacentFacings,
   getLeftFacing,
@@ -41,54 +60,33 @@ export {
   getRightFacing,
   isDiagonalFacing,
 } from './facings';
+
+// Empty hand or an unpayable rout discard.
 export {
-  areModifiersArraysEqual,
-  areModifiersEqual,
-  areRestrictionsEqual,
-  isSameInstanceNumber,
-  isSameUnitInstance,
-  isSameUnitType,
-} from './equivalence';
-export { findMatchingCommand } from './findMatchingCommand';
-export { getCurrentUnitStat } from './getCurrentUnitStat';
-export { getCommanderSpace } from './getCommanderSpace';
-export { isValidLine } from './isValidLine';
-export { getLinesFromUnit } from './getLine';
-export { getMeleeSupportValue } from './getMeleeSupportValue';
-export { getOtherPlayer } from './getOtherPlayer';
-export { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
-export { getPlayerUnitsWithPlacementOnBoard } from './getPlayerUnitsWithPlacementOnBoard';
-export { unitMatchesSupport } from './unitMatchesSupport';
-export { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
-export {
-  hasUnitInArray,
-  hasUnitInSet,
-  arrayWithoutUnit,
-  isDefenseStat,
-  isFriendlyUnit,
-  matchesUnitRequirements,
-  setWithoutUnit,
-} from './unit';
-export {
-  getPlayerUnitWithPosition,
-  getPositionOfUnit,
-  hasEnemyUnit,
-  isAtPlacement,
-} from './unitPresence';
+  getGameOverWinner,
+  getWinnerFromEmptyHands,
+  getWinnerFromUnpayableRoutDiscard,
+} from './gameOver';
+
+// Command lines.
+export { getLinesFromUnit, isValidLine } from './line';
+
+// The other seat.
+export { getOtherPlayer } from './player';
+
+// Where the turn is, and the substep currently in progress.
 export {
   canReverseUnit,
   findRetreatState,
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
+  getAwaitingRoutDiscardState,
   getCleanupPhaseState,
   getCurrentCommandResolutionState,
   getCurrentInitiative,
   getCurrentPhaseState,
   getCurrentRallyResolutionState,
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
-  getEngagementStateFromMovement,
-  getFlankEngagementStateFromMovement,
-  getFrontEngagementStateFromMovement,
   getIssueCommandsPhaseState,
   getMeleeResolutionReadyForAttackCalculation,
   getMeleeResolutionState,
@@ -102,7 +100,6 @@ export {
   getRallyResolutionStateAwaitingUnitSupport,
   getRallyResolutionStateForCurrentStep,
   getRangedAttackResolutionState,
-  getRearEngagementStateFromMovement,
   getRemainingMeleeEngagements,
   getResolveMeleePhaseState,
   getRetreatStateFromAttackApply,
@@ -116,6 +113,31 @@ export {
   getRoutStateFromCleanupPhaseForResolveRout,
   getRoutStateFromMeleeResolutionByInitiative,
   getRoutStateFromRally,
-  getAwaitingRoutDiscardState,
   getRoutStateFromRearEngagement,
 } from './sequencing';
+
+// Unit stats, identity, support, and who is on the board.
+export {
+  arrayWithoutUnit,
+  getCurrentUnitStat,
+  getPlayerUnitsOnBoard,
+  getPlayerUnitsWithPlacementOnBoard,
+  hasUnitInArray,
+  hasUnitInSet,
+  isDefenseStat,
+  isFriendlyUnit,
+  isSameInstanceNumber,
+  isSameUnitInstance,
+  isSameUnitType,
+  matchesUnitRequirements,
+  setWithoutUnit,
+  unitMatchesSupport,
+} from './unit';
+
+// Where a unit is standing, and whether an enemy occupies the space.
+export {
+  getPlayerUnitWithPosition,
+  getPositionOfUnit,
+  hasEnemyUnit,
+  isAtPlacement,
+} from './unitPresence';

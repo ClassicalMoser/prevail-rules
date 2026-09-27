@@ -9,7 +9,7 @@ const standardBoard = createEmptyStandardBoard();
  * GetFlankingSpaces: the two spaces orthogonal to the facing axis (left and right of forward), clipped to board.
  */
 describe(getFlankingSpaces, () => {
-  it('given cardinal facings at E-5, returns two flanking spaces each', () => {
+  it('returns two flanking spaces each when cardinal facings at E-5', () => {
     expect(getFlankingSpaces(standardBoard, 'E-5', 'north')).toStrictEqual(
       new Set(['E-4', 'E-6']),
     );
@@ -24,7 +24,7 @@ describe(getFlankingSpaces, () => {
     );
   });
 
-  it('given diagonal facings at E-5, returns two flanking spaces each', () => {
+  it('returns two flanking spaces each when diagonal facings at E-5', () => {
     expect(getFlankingSpaces(standardBoard, 'E-5', 'northEast')).toStrictEqual(
       new Set(['D-4', 'F-6']),
     );
@@ -39,7 +39,7 @@ describe(getFlankingSpaces, () => {
     );
   });
 
-  it('given corners, clips to in-bounds flank only', () => {
+  it('clips flanking spaces to the in-bounds flank at a corner', () => {
     expect(getFlankingSpaces(standardBoard, 'A-1', 'north')).toStrictEqual(
       new Set(['A-2']),
     );
@@ -54,24 +54,24 @@ describe(getFlankingSpaces, () => {
     );
   });
 
-  it('given both flanks off board, returns empty set', () => {
+  it('returns an empty set when both flanks are off the board', () => {
     expect(getFlankingSpaces(standardBoard, 'A-1', 'northWest').size).toBe(0);
     expect(getFlankingSpaces(standardBoard, 'L-1', 'southWest').size).toBe(0);
   });
 
-  it('given invalid row letter, throws', () => {
+  it('throws when the row letter is invalid', () => {
     expect(() =>
       getFlankingSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
-  it('given invalid column, throws', () => {
+  it('throws when the column is invalid', () => {
     expect(() =>
       getFlankingSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 
-  it('given invalid facing, throws', () => {
+  it('throws when the facing is invalid', () => {
     expect(() =>
       getFlankingSpaces(standardBoard, 'E-9', 'random' as UnitFacing),
     ).toThrow(new Error('Invalid facing: random'));

@@ -7,10 +7,17 @@ import type {
 } from '@entities';
 import type { Trait } from '@ruleValues';
 import { MAX_LINE_LENGTH } from '@ruleValues';
-import { matchesUnitRequirements } from './unit';
-import { getForwardSpacesToEdge } from './boardSpace';
-import { getLeftFacing, getOppositeFacing, getRightFacing } from './facings';
-import { getPlayerUnitWithPosition, isAtPlacement } from './unitPresence';
+import { matchesUnitRequirements } from '@queries/unit';
+import { getForwardSpacesToEdge } from '@queries/board';
+import {
+  getLeftFacing,
+  getOppositeFacing,
+  getRightFacing,
+} from '@queries/facings';
+import {
+  getPlayerUnitWithPosition,
+  isAtPlacement,
+} from '@queries/unitPresence';
 
 /**
  * Get all possible lines that include a given unit.

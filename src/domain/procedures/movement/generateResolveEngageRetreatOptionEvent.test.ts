@@ -1,5 +1,5 @@
-import type { UnitWithPlacement } from '@entities';
-import type { GameState } from '@game';
+import type { StatModifier, UnitWithPlacement } from '@entities';
+import type { Commitment, GameState } from '@game';
 import {
   createEmptyGameState,
   createFrontEngagementState,
@@ -14,16 +14,24 @@ import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngage
 
 /**
  * Minimal front-engagement stack: defender on `createFrontEngagementState` default cell (E-5),
- * engager speeds swapped via createUnitByStat; black.inPlay only feeds movement commitment factory.
+ * engager speeds swapped via createUnitByStat; black.inPlay feeds the mover's commitment factory.
  */
 function buildStateWithFrontEngagement(options: {
   defendingSpeed: number;
   engagingSpeed: number;
+  engagingCardModifiers?: StatModifier[];
+  defensiveCommitment?: Commitment;
 }): GameState {
   const state = createEmptyGameState();
-  state.cardState.black.inPlay = createTestCard();
+  state.cardState.black.inPlay = createTestCard({
+    modifiers: options.engagingCardModifiers ?? [],
+  });
   const defender = createUnitByStat('white', 'speed', options.defendingSpeed);
-  const front = createFrontEngagementState();
+  const front = createFrontEngagementState(
+    options.defensiveCommitment
+      ? { defensiveCommitment: options.defensiveCommitment }
+      : undefined,
+  );
   const engagementState = {
     ...front,
     engagingUnit: createUnitByStat('black', 'speed', options.engagingSpeed),
@@ -53,7 +61,7 @@ function buildStateWithFrontEngagement(options: {
 
 /**
  * Front engagement: defendingUnitCanRetreat is true iff defender’s current speed exceeds
- * engager’s (see procedure). black.inPlay only satisfies movement factory commitment.
+ * engager’s. Each player's committed card applies only to their own unit.
  */
 describe(generateResolveEngageRetreatOptionEvent, () => {
   it('given defender speed 4 and engager speed 2, defendingUnitCanRetreat is true', () => {
@@ -72,5 +80,29 @@ describe(generateResolveEngageRetreatOptionEvent, () => {
     });
     const event = generateResolveEngageRetreatOptionEvent(full, 0);
     expect(event.defendingUnitCanRetreat).toBe(false);
+  });
+
+  it('given the mover committed +1 speed, does not apply that card to the defender', () => {
+    const full = buildStateWithFrontEngagement({
+      defendingSpeed: 4,
+      defensiveCommitment: { commitmentType: 'declined' },
+      engagingCardModifiers: ['speed'],
+      engagingSpeed: 3,
+    });
+    const event = generateResolveEngageRetreatOptionEvent(full, 0);
+    expect(event.defendingUnitCanRetreat).toBe(false);
+  });
+
+  it('given only the defender committed +1 speed, defendingUnitCanRetreat is true', () => {
+    const full = buildStateWithFrontEngagement({
+      defendingSpeed: 3,
+      defensiveCommitment: {
+        card: createTestCard({ modifiers: ['speed'] }),
+        commitmentType: 'completed',
+      },
+      engagingSpeed: 3,
+    });
+    const event = generateResolveEngageRetreatOptionEvent(full, 0);
+    expect(event.defendingUnitCanRetreat).toBe(true);
   });
 });

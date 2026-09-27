@@ -1,11 +1,11 @@
 import type { AttackApplyState, GameState, RetreatState } from '@game';
 import { throwIfPending } from '@utils';
-import { getMeleeResolutionState } from '../getCommandResolutionState';
+import { getMeleeResolutionState } from '../meleeResolution/getMeleeResolutionState';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
 } from './attackApply';
-import { getFrontEngagementStateFromMovement } from './engagement';
+import { getFrontEngagementStateFromMovement } from '@queries/engagement';
 
 /**
  * Gets the retreat state from an attack apply state.

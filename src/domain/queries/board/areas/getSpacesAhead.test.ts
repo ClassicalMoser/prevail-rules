@@ -8,7 +8,7 @@ const standardBoard = createEmptyStandardBoard();
  * GetSpacesAhead: all board spaces strictly forward of the unit's front arc (front spaces extended in facing).
  */
 describe(getSpacesAhead, () => {
-  it('given facing west from F-2, returns wedge west of front arc', () => {
+  it('returns wedge west of front arc when facing west from F-2', () => {
     expect(getSpacesAhead(standardBoard, 'F-2', 'west')).toStrictEqual(
       new Set([
         'A-1',
@@ -27,7 +27,7 @@ describe(getSpacesAhead, () => {
     );
   });
 
-  it('given facing north from B-7, returns wedge north of front arc', () => {
+  it('returns wedge north of front arc when facing north from B-7', () => {
     expect(getSpacesAhead(standardBoard, 'B-7', 'north')).toStrictEqual(
       new Set([
         'A-1',
@@ -52,7 +52,7 @@ describe(getSpacesAhead, () => {
     );
   });
 
-  it('given facing east from F-16, returns wedge east of front arc', () => {
+  it('returns wedge east of front arc when facing east from F-16', () => {
     expect(getSpacesAhead(standardBoard, 'F-16', 'east')).toStrictEqual(
       new Set([
         'A-17',
@@ -83,13 +83,13 @@ describe(getSpacesAhead, () => {
     );
   });
 
-  it('given facing northWest from B-2, returns small forward wedge', () => {
+  it('returns small forward wedge when facing northWest from B-2', () => {
     expect(getSpacesAhead(standardBoard, 'B-2', 'northWest')).toStrictEqual(
       new Set(['A-1', 'B-1', 'A-2']),
     );
   });
 
-  it('given facing southWest from J-3, returns forward wedge toward southwest corner', () => {
+  it('returns forward wedge toward southwest corner when facing southWest from J-3', () => {
     expect(getSpacesAhead(standardBoard, 'J-3', 'southWest')).toStrictEqual(
       new Set([
         'I-1',

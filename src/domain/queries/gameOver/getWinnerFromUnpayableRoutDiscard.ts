@@ -1,7 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { GameState } from '@game';
 
-import { getAwaitingRoutDiscardState } from '../sequencing/getSubstep/getAwaitingRoutDiscardState';
+import { getAwaitingRoutDiscardState } from '../sequencing/combatOutcomes/getAwaitingRoutDiscardState';
 
 /**
  * Forced rout-discard loss: when a player must discard at least as many cards

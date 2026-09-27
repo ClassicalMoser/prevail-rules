@@ -1,154 +1,131 @@
+/**
+ * An attack meets a defense when it is greater than or equal to that stat.
+ * Rout, reverse, and retreat are compared independently. A defending modifier
+ * of type `defense` shifts all three before the comparison; other modifier
+ * types do not.
+ */
+
 import type { UnitType } from '@entities';
 import { createEmptyGameState, createTestUnit } from '@testing';
 
 import { applyAttackValue } from './applyAttackValue';
 
-/** Explicit type: stacked rout/reverse/retreat thresholds come from applyAttackValue rules, not from tempUnits. */
-const unitTypeWithStackedDefense: UnitType = {
-  imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
-  cost: 1,
-  id: '00000000-0000-4000-8000-000000000001',
-  limit: 1,
-  name: 'Test stacked defense',
-  version: '1.0.0',
-  morale: 0,
-  stats: {
-    attack: 1,
-    flexibility: 1,
-    range: 0,
-    retreat: 3,
-    reverse: 4,
-    rout: 5,
-    speed: 1,
-  },
-  traits: [],
-};
+function unitTypeWithDefenses(defenses: {
+  retreat: number;
+  reverse: number;
+  rout: number;
+}): UnitType {
+  return {
+    imageUrl: 'https://assets.prevailgame.com/art/homemade/unit/Hastati.png',
+    cost: 1,
+    id: '00000000-0000-4000-8000-000000000001',
+    limit: 1,
+    name: 'Defenses',
+    version: '1.0.0',
+    morale: 0,
+    stats: {
+      attack: 1,
+      flexibility: 1,
+      range: 0,
+      speed: 1,
+      ...defenses,
+    },
+    traits: [],
+  };
+}
 
-/**
- * ApplyAttackValue: compares attack value to the unit's current rout, reverse, and retreat stats and returns
- * which thresholds are met or exceeded.
- */
 describe(applyAttackValue, () => {
-  describe('when attack strictly exceeds a threshold', () => {
-    it('given rout threshold passed, unitRouted true', () => {
-      const gameState = createEmptyGameState();
+  const gameState = createEmptyGameState();
+
+  describe('an attack above a threshold', () => {
+    it('routs the unit when the attack is above its rout', () => {
       const unit = createTestUnit('black', { rout: 3 });
-      const result = applyAttackValue(gameState, 4, unit);
-      expect(result.unitRouted).toBe(true);
+      expect(applyAttackValue(gameState, 4, unit).unitRouted).toBe(true);
     });
 
-    it('given reverse threshold passed, unitReversed true', () => {
-      const gameState = createEmptyGameState();
+    it('reverses the unit when the attack is above its reverse', () => {
       const unit = createTestUnit('black', { reverse: 3 });
-      const result = applyAttackValue(gameState, 4, unit);
-      expect(result.unitReversed).toBe(true);
+      expect(applyAttackValue(gameState, 4, unit).unitReversed).toBe(true);
     });
 
-    it('given retreat threshold passed, unitRetreated true', () => {
-      const gameState = createEmptyGameState();
+    it('retreats the unit when the attack is above its retreat', () => {
       const unit = createTestUnit('black', { retreat: 3 });
-      const result = applyAttackValue(gameState, 4, unit);
-      expect(result.unitRetreated).toBe(true);
+      expect(applyAttackValue(gameState, 4, unit).unitRetreated).toBe(true);
     });
   });
 
-  describe('when attack equals a threshold', () => {
-    it('given attack equals rout, unitRouted true', () => {
-      const gameState = createEmptyGameState();
+  describe('an attack that lands exactly on a threshold', () => {
+    it('routs the unit when the attack equals its rout', () => {
       const unit = createTestUnit('black', { rout: 3 });
-      const result = applyAttackValue(gameState, 3, unit);
-      expect(result.unitRouted).toBe(true);
+      expect(applyAttackValue(gameState, 3, unit).unitRouted).toBe(true);
     });
 
-    it('given attack equals reverse, unitReversed true', () => {
-      const gameState = createEmptyGameState();
+    it('reverses the unit when the attack equals its reverse', () => {
       const unit = createTestUnit('black', { reverse: 3 });
-      const result = applyAttackValue(gameState, 3, unit);
-      expect(result.unitReversed).toBe(true);
+      expect(applyAttackValue(gameState, 3, unit).unitReversed).toBe(true);
     });
 
-    it('given attack equals retreat, unitRetreated true', () => {
-      const gameState = createEmptyGameState();
+    it('retreats the unit when the attack equals its retreat', () => {
       const unit = createTestUnit('black', { retreat: 3 });
-      const result = applyAttackValue(gameState, 3, unit);
-      expect(result.unitRetreated).toBe(true);
+      expect(applyAttackValue(gameState, 3, unit).unitRetreated).toBe(true);
     });
   });
 
-  describe('when attack is below each threshold', () => {
-    it('given attack below rout, unitRouted false', () => {
-      const gameState = createEmptyGameState();
+  describe('an attack short of a threshold', () => {
+    it('leaves the unit unrouted when the attack is below its rout', () => {
       const unit = createTestUnit('black', { rout: 3 });
-      const result = applyAttackValue(gameState, 2, unit);
-      expect(result.unitRouted).toBe(false);
+      expect(applyAttackValue(gameState, 2, unit).unitRouted).toBe(false);
     });
 
-    it('given attack below reverse, unitReversed false', () => {
-      const gameState = createEmptyGameState();
+    it('leaves the unit unreversed when the attack is below its reverse', () => {
       const unit = createTestUnit('black', { reverse: 3 });
-      const result = applyAttackValue(gameState, 2, unit);
-      expect(result.unitReversed).toBe(false);
+      expect(applyAttackValue(gameState, 2, unit).unitReversed).toBe(false);
     });
 
-    it('given attack below retreat, unitRetreated false', () => {
-      const gameState = createEmptyGameState();
+    it('leaves the unit unretreated when the attack is below its retreat', () => {
       const unit = createTestUnit('black', { retreat: 3 });
-      const result = applyAttackValue(gameState, 2, unit);
-      expect(result.unitRetreated).toBe(false);
+      expect(applyAttackValue(gameState, 2, unit).unitRetreated).toBe(false);
     });
   });
 
-  describe('stacked rout, reverse, retreat on one unit', () => {
-    it('given attack below all three, all flags false', () => {
-      const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', {
-        unitType: unitTypeWithStackedDefense,
-      });
-      const result2 = applyAttackValue(gameState, 2, unit);
-      expect(result2).toStrictEqual({
-        unitRetreated: false,
-        unitReversed: false,
-        unitRouted: false,
-      });
+  it('routs without retreating or reversing when rout is the only defense the attack meets', () => {
+    const unit = createTestUnit('black', {
+      unitType: unitTypeWithDefenses({ retreat: 5, reverse: 6, rout: 2 }),
     });
 
-    it('given attack meets retreat only then retreat and reverse', () => {
-      const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', {
-        unitType: unitTypeWithStackedDefense,
-      });
-      const result3 = applyAttackValue(gameState, 3, unit);
-      const result4 = applyAttackValue(gameState, 4, unit);
-      expect(result3).toStrictEqual({
-        unitRetreated: true,
-        unitReversed: false,
-        unitRouted: false,
-      });
-      expect(result4).toStrictEqual({
-        unitRetreated: true,
-        unitReversed: true,
-        unitRouted: false,
-      });
+    expect(applyAttackValue(gameState, 3, unit)).toStrictEqual({
+      unitRetreated: false,
+      unitReversed: false,
+      unitRouted: true,
+    });
+  });
+
+  it('raises every defense by a defense modifier before comparing', () => {
+    const unit = createTestUnit('black', {
+      unitType: unitTypeWithDefenses({ retreat: 3, reverse: 3, rout: 3 }),
     });
 
-    it('given attack meets rout or higher, all flags true', () => {
-      const gameState = createEmptyGameState();
-      const unit = createTestUnit('black', {
-        unitType: unitTypeWithStackedDefense,
-      });
-      const result5 = applyAttackValue(gameState, 5, unit);
-      const result6 = applyAttackValue(gameState, 6, unit);
+    expect(applyAttackValue(gameState, 4, unit).unitRouted).toBe(true);
+    expect(
+      applyAttackValue(gameState, 4, unit, [{ type: 'defense', value: 2 }]),
+    ).toStrictEqual({
+      unitRetreated: false,
+      unitReversed: false,
+      unitRouted: false,
+    });
+  });
 
-      expect(result5).toStrictEqual({
-        unitRetreated: true,
-        unitReversed: true,
-        unitRouted: true,
-      });
-      expect(result6).toStrictEqual({
-        unitRetreated: true,
-        unitReversed: true,
-        unitRouted: true,
-      });
+  it('ignores a defending modifier that is not defense', () => {
+    const unit = createTestUnit('black', {
+      unitType: unitTypeWithDefenses({ retreat: 3, reverse: 3, rout: 3 }),
+    });
+
+    expect(
+      applyAttackValue(gameState, 3, unit, [{ type: 'attack', value: 2 }]),
+    ).toStrictEqual({
+      unitRetreated: true,
+      unitReversed: true,
+      unitRouted: true,
     });
   });
 });

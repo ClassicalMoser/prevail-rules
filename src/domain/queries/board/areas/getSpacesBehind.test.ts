@@ -10,7 +10,7 @@ const smallBoard = createEmptySmallBoard();
  * GetSpacesBehind: all board spaces strictly forward of the rear arc (same as “ahead” for the opposite facing).
  */
 describe(getSpacesBehind, () => {
-  it('given facing east from F-2, returns wedge behind unit (west of rear arc)', () => {
+  it('returns wedge behind unit (west of rear arc) when facing east from F-2', () => {
     expect(getSpacesBehind(standardBoard, 'F-2', 'east')).toStrictEqual(
       new Set([
         'A-1',
@@ -29,7 +29,7 @@ describe(getSpacesBehind, () => {
     );
   });
 
-  it('given facing south from B-7, returns wedge behind unit', () => {
+  it('returns wedge behind unit when facing south from B-7', () => {
     expect(getSpacesBehind(standardBoard, 'B-7', 'south')).toStrictEqual(
       new Set([
         'A-1',
@@ -54,7 +54,7 @@ describe(getSpacesBehind, () => {
     );
   });
 
-  it('given facing west from F-16, returns wedge behind unit', () => {
+  it('returns wedge behind unit when facing west from F-16', () => {
     expect(getSpacesBehind(standardBoard, 'F-16', 'west')).toStrictEqual(
       new Set([
         'A-17',
@@ -85,13 +85,13 @@ describe(getSpacesBehind, () => {
     );
   });
 
-  it('given facing southEast from B-2, returns small rear wedge', () => {
+  it('returns small rear wedge when facing southEast from B-2', () => {
     expect(getSpacesBehind(standardBoard, 'B-2', 'southEast')).toStrictEqual(
       new Set(['A-1', 'B-1', 'A-2']),
     );
   });
 
-  it('given facing northEast from J-3, returns rear wedge toward northeast', () => {
+  it('returns rear wedge toward northeast when facing northEast from J-3', () => {
     expect(getSpacesBehind(standardBoard, 'J-3', 'northEast')).toStrictEqual(
       new Set([
         'I-1',
@@ -109,11 +109,11 @@ describe(getSpacesBehind, () => {
   });
 
   describe('small board', () => {
-    it('given corner H-12 facing northWest, rear wedge may be empty', () => {
+    it('the rear wedge may be empty from corner H-12 facing northWest', () => {
       expect(getSpacesBehind(smallBoard, 'H-12', 'northWest').size).toBe(0);
     });
 
-    it('given E-6 facing northWest, rear wedge includes southEast quadrant', () => {
+    it('the rear wedge from E-6 facing northWest includes the southEast quadrant', () => {
       const result = getSpacesBehind(smallBoard, 'E-6', 'northWest');
       expect(result.size).toBeGreaterThan(0);
       expect(result.has('F-7')).toBe(true);

@@ -1,6 +1,6 @@
 import type { GameState, RoutState } from '@game';
 import { throwIfPending } from '@utils';
-import { getMovementResolutionState } from '../getCommandResolutionState';
+import { getMovementResolutionState } from '../commandResolution/getCommandResolutionState';
 
 /**
  * Rout state for a **rear** engagement inside the current **movement** command resolution.

@@ -1,7 +1,7 @@
 import type { Board, UnitWithPlacement } from '@entities';
 import type { ValidationResult } from '@utils';
 import { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
-import { isSameUnitInstance } from '../equivalence/unitEquivalence';
+import { isSameUnitInstance } from '../unit/unitEquivalence';
 
 /**
  * Determines whether a unit is at a specific placement on the board.

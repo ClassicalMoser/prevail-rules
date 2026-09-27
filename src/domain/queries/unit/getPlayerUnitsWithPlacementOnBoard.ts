@@ -1,7 +1,7 @@
 import type { PlayerSide, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import { getBoardCoordinates } from './boardSpace';
-import { getPlayerUnitWithPosition } from './unitPresence';
+import { getBoardCoordinates } from '../board/getBoardCoordinates';
+import { getPlayerUnitWithPosition } from '../unitPresence/getPlayerUnitWithPosition';
 
 /**
  * Gets all unit instances with their placements for a player that are currently on the board.

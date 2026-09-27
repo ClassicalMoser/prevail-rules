@@ -1,84 +1,58 @@
 import type { Board, Coordinate, PlayerSide } from '@entities';
-import type { ValidationResult } from '@utils';
 import {
-  getBoardSpace,
   getDiagonallyAdjacentSpaces,
   getOrthogonallyAdjacentSpaces,
-} from './boardSpace';
-import { hasEnemyUnit } from './unitPresence';
+} from './adjacency';
+import { getBoardSpace } from './getBoardSpace';
+import { hasEnemyUnit } from '../unitPresence/hasEnemyUnit';
 
 export function diagonalIsClear(
   playerSide: PlayerSide,
   board: Board,
   originCoordinate: Coordinate,
   targetCoordinate: Coordinate,
-): ValidationResult {
-  try {
-    // Check if the origin space is a diagonal space
-    const originDiagonalSpaces = getDiagonallyAdjacentSpaces(
-      board,
-      originCoordinate,
+): boolean {
+  // Check if the origin space is a diagonally adjacent space
+  const originDiagonalSpaces = getDiagonallyAdjacentSpaces(
+    board,
+    originCoordinate,
+  );
+  if (!originDiagonalSpaces.has(targetCoordinate)) {
+    // Target space is not a diagonal space - check was called in error
+    throw new Error(
+      `Target space ${targetCoordinate} is not diagonally adjacent to ${originCoordinate}`,
     );
-    if (!originDiagonalSpaces.has(targetCoordinate)) {
-      // Target space is not a diagonal space - check is irrelevant
-      return {
-        errorReason: 'Target space is not a diagonal space',
-        result: false,
-      };
-    }
-
-    // Find the shared orthogonal spaces between the origin and target spaces
-    const originOrthogonalSpaces = getOrthogonallyAdjacentSpaces(
-      board,
-      originCoordinate,
-    );
-    const targetOrthogonalSpaces = getOrthogonallyAdjacentSpaces(
-      board,
-      targetCoordinate,
-    );
-    // Find intersection: spaces that are in both sets
-    const sharedOrthogonalSpaces = new Set(
-      [...originOrthogonalSpaces].filter((space) =>
-        targetOrthogonalSpaces.has(space),
-      ),
-    );
-
-    // Check if the spaces are diagonally adjacent
-    // Diagonally adjacent spaces share exactly 2 orthogonal spaces
-    if (sharedOrthogonalSpaces.size !== 2) {
-      // Spaces are not diagonally adjacent - check is irrelevant
-      return {
-        errorReason: 'Spaces are not diagonally adjacent',
-        result: false,
-      };
-    }
-
-    // Get the enemy spaces
-    const enemySpaces = [...sharedOrthogonalSpaces].filter((space) => {
-      // Check if the space has an enemy unit
-      const { result: hasEnemyUnitResult } = hasEnemyUnit(
-        playerSide,
-        getBoardSpace(board, space),
-      );
-      return hasEnemyUnitResult;
-    });
-
-    // If there is more than one enemy space, the enemy blocks the diagonal
-    if (enemySpaces.length > 1) {
-      // Diagonal is blocked by enemy units
-      return {
-        errorReason: 'Diagonal is blocked by enemy units',
-        result: false,
-      };
-    }
-    // Diagonal is not blocked by enemy units
-    return {
-      result: true,
-    };
-  } catch (error) {
-    return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
-      result: false,
-    };
   }
+
+  // Find the shared orthogonal spaces between the origin and target spaces
+  const originOrthogonalSpaces = getOrthogonallyAdjacentSpaces(
+    board,
+    originCoordinate,
+  );
+  const targetOrthogonalSpaces = getOrthogonallyAdjacentSpaces(
+    board,
+    targetCoordinate,
+  );
+  // Find intersection: spaces that are in both sets
+  const sharedOrthogonalSpaces = [...originOrthogonalSpaces].filter((space) =>
+    targetOrthogonalSpaces.has(space),
+  );
+
+  // Get the enemy spaces
+  const enemySpaces = sharedOrthogonalSpaces.filter((space) => {
+    // Check if the space has an enemy unit
+    const { result: hasEnemyUnitResult } = hasEnemyUnit(
+      playerSide,
+      getBoardSpace(board, space),
+    );
+    return hasEnemyUnitResult;
+  });
+
+  // If there is more than one enemy space, the enemy blocks the diagonal
+  if (enemySpaces.length > 1) {
+    // Diagonal is blocked by enemy units
+    return false;
+  }
+  // Diagonal is not blocked by enemy units
+  return true;
 }

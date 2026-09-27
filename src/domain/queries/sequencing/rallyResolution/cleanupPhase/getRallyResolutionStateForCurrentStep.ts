@@ -1,7 +1,7 @@
 import type { GameState, RallyResolutionState } from '@game';
-import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getCleanupPhaseState } from '../getPhaseState';
-import { getCurrentRallyResolutionState } from '../getSubstep';
+import { getOtherPlayer } from '@queries/player';
+import { getCleanupPhaseState } from '@queries/sequencing/getPhaseState';
+import { getCurrentRallyResolutionState } from '../rally';
 
 /**
  * Gets the rally resolution state for the current cleanup phase step.

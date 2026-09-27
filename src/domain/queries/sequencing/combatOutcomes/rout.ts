@@ -1,7 +1,7 @@
 import type { AttackApplyState, GameState, RoutState } from '@game';
 import { throwIfPending } from '@utils';
-import { getOtherPlayer } from '@queries/getOtherPlayer';
-import { getMeleeResolutionState } from '../getCommandResolutionState';
+import { getOtherPlayer } from '@queries/player';
+import { getMeleeResolutionState } from '../meleeResolution/getMeleeResolutionState';
 
 /**
  * Gets the rout state from an attack apply state.

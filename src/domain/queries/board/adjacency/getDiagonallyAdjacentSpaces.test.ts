@@ -8,25 +8,25 @@ const standardBoard = createEmptyStandardBoard();
  * GetDiagonallyAdjacentSpaces: up to four diagonally adjacent coordinates (no orthogonals).
  */
 describe(getDiagonallyAdjacentSpaces, () => {
-  it('given interior coordinate, returns four diagonals', () => {
+  it('an interior space has four diagonal neighbors', () => {
     expect(getDiagonallyAdjacentSpaces(standardBoard, 'E-5')).toStrictEqual(
       new Set(['D-4', 'D-6', 'F-4', 'F-6']),
     );
   });
 
-  it('given edge coordinate, returns fewer diagonals', () => {
+  it('an edge space has fewer than four diagonal neighbors', () => {
     expect(getDiagonallyAdjacentSpaces(standardBoard, 'A-5')).toStrictEqual(
       new Set(['B-4', 'B-6']),
     );
   });
 
-  it('given corner coordinate, returns one diagonal', () => {
+  it('a corner has one diagonal neighbor', () => {
     expect(getDiagonallyAdjacentSpaces(standardBoard, 'L-18')).toStrictEqual(
       new Set(['K-17']),
     );
   });
 
-  it('given interior coordinate, excludes orthogonals', () => {
+  it("an interior space's diagonal neighbors exclude the orthogonals", () => {
     const result = getDiagonallyAdjacentSpaces(standardBoard, 'E-5');
     expect(result.has('D-5')).toBe(false);
     expect(result.has('E-4')).toBe(false);
