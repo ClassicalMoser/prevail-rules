@@ -9,7 +9,7 @@ const standardBoard = createEmptyStandardBoard();
  * GetBackSpaces: the three spaces in the unit's rear arc (mirror of front arc for the opposite facing).
  */
 describe(getBackSpaces, () => {
-  it('given cardinal facings at E-5, returns three-space rear arc each', () => {
+  it('returns three-space rear arc each when cardinal facings at E-5', () => {
     expect(getBackSpaces(standardBoard, 'E-5', 'north')).toStrictEqual(
       new Set(['F-6', 'F-4', 'F-5']),
     );
@@ -24,7 +24,7 @@ describe(getBackSpaces, () => {
     );
   });
 
-  it('given diagonal facings at E-5, returns three-space rear arc each', () => {
+  it('returns three-space rear arc each when diagonal facings at E-5', () => {
     expect(getBackSpaces(standardBoard, 'E-5', 'northEast')).toStrictEqual(
       new Set(['F-5', 'E-4', 'F-4']),
     );
@@ -39,7 +39,7 @@ describe(getBackSpaces, () => {
     );
   });
 
-  it('given corners, clips rear arc to in-bounds spaces', () => {
+  it('clips the rear arc to in-bounds spaces at a corner', () => {
     expect(getBackSpaces(standardBoard, 'A-1', 'north')).toStrictEqual(
       new Set(['B-2', 'B-1']),
     );
@@ -48,19 +48,19 @@ describe(getBackSpaces, () => {
     );
   });
 
-  it('given invalid row letter, throws', () => {
+  it('throws when the row letter is invalid', () => {
     expect(() =>
       getBackSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
-  it('given invalid column, throws', () => {
+  it('throws when the column is invalid', () => {
     expect(() =>
       getBackSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 
-  it('given invalid facing, throws', () => {
+  it('throws when the facing is invalid', () => {
     expect(() =>
       getBackSpaces(standardBoard, 'E-9', 'random' as UnitFacing),
     ).toThrow(new Error('Invalid facing: random'));

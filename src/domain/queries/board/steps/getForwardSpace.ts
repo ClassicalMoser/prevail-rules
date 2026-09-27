@@ -1,6 +1,6 @@
 import type { Board, UnitFacing, Coordinate } from '@entities';
 import { getCoordinateLayout, unitFacingSchema } from '@entities';
-import { getColumnDelta, getRowDelta } from './deltas';
+import { getColumnDelta, getRowDelta } from '../deltas';
 
 /**
  * One step forward from `coordinate` along `facing`, using the active board’s

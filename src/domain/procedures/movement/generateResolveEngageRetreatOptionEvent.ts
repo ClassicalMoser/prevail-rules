@@ -17,7 +17,8 @@ import {
  *
  * @param state - The current game state
  * @returns A complete ResolveEngageRetreatOptionEvent. Retreat is possible if the defending
- * unit has a higher current speed value than the engaging unit.
+ * unit has a higher current speed value than the engaging unit. Each player's committed
+ * card applies only to their own unit.
  * @throws Error if not in issueCommands phase, no movement resolution, or no engagement state
  */
 export function generateResolveEngageRetreatOptionEvent(
@@ -33,23 +34,25 @@ export function generateResolveEngageRetreatOptionEvent(
   );
   const { engagingUnit } = engagementState;
 
-  const commitmentModifiers = modifiersFromCompletedCommitment(
+  const engagingCommitmentModifiers = modifiersFromCompletedCommitment(
     movementResolutionState.commitment,
   );
+  const defendingCommitmentModifiers = modifiersFromCompletedCommitment(
+    engagementState.engagementResolutionState.defensiveCommitment,
+  );
 
-  // Get current speed values for both units
   const defendingSpeed = getCurrentUnitStat(
     defendingUnit,
     'speed',
     state,
-    commitmentModifiers,
+    defendingCommitmentModifiers,
   );
 
   const engagingSpeed = getCurrentUnitStat(
     engagingUnit,
     'speed',
     state,
-    commitmentModifiers,
+    engagingCommitmentModifiers,
   );
 
   // Retreat is possible if defending unit has higher speed than engaging unit

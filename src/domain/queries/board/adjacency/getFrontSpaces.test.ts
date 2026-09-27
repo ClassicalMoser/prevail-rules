@@ -9,7 +9,7 @@ const standardBoard = createEmptyStandardBoard();
  * GetFrontSpaces: the three spaces in the unit's front arc (two flanking diagonals + forward), clipped to the board.
  */
 describe(getFrontSpaces, () => {
-  it('given cardinal facings at E-5, returns three-space front arc each', () => {
+  it('returns three-space front arc each when cardinal facings at E-5', () => {
     expect(getFrontSpaces(standardBoard, 'E-5', 'north')).toStrictEqual(
       new Set(['D-4', 'D-6', 'D-5']),
     );
@@ -24,7 +24,7 @@ describe(getFrontSpaces, () => {
     );
   });
 
-  it('given diagonal facings at E-5, returns three-space front arc each', () => {
+  it('returns three-space front arc each when diagonal facings at E-5', () => {
     expect(getFrontSpaces(standardBoard, 'E-5', 'northEast')).toStrictEqual(
       new Set(['D-5', 'E-6', 'D-6']),
     );
@@ -39,7 +39,7 @@ describe(getFrontSpaces, () => {
     );
   });
 
-  it('given corners, clips arcs to in-bounds spaces', () => {
+  it('clips the front arc to in-bounds spaces at a corner', () => {
     expect(getFrontSpaces(standardBoard, 'A-1', 'south')).toStrictEqual(
       new Set(['B-2', 'B-1']),
     );
@@ -54,24 +54,24 @@ describe(getFrontSpaces, () => {
     );
   });
 
-  it('given edge where entire arc is off board, returns empty set', () => {
+  it('returns an empty set when the whole front arc is off the board', () => {
     expect(getFrontSpaces(standardBoard, 'A-5', 'north').size).toBe(0);
     expect(getFrontSpaces(standardBoard, 'E-18', 'east').size).toBe(0);
   });
 
-  it('given invalid row letter, throws', () => {
+  it('throws when the row letter is invalid', () => {
     expect(() =>
       getFrontSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
-  it('given invalid column, throws', () => {
+  it('throws when the column is invalid', () => {
     expect(() =>
       getFrontSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 
-  it('given invalid facing, throws', () => {
+  it('throws when the facing is invalid', () => {
     expect(() =>
       getFrontSpaces(standardBoard, 'E-9', 'random' as UnitFacing),
     ).toThrow(new Error('Invalid facing: random'));

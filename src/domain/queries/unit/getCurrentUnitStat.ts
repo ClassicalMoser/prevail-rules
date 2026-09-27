@@ -1,9 +1,11 @@
 import type { Modifier, UnitInstance, UnitStatName } from '@entities';
 import type { GameState } from '@game';
-import { isDefenseStat, matchesUnitRequirements, hasUnitInArray } from './unit';
-import { getSpacesWithinDistance } from './boardSpace';
-import { getCommanderSpace } from './getCommanderSpace';
-import { getPositionOfUnit } from './unitPresence';
+import { getCommanderSpace } from '../board/getCommanderSpace';
+import { getSpacesWithinDistance } from '../board/areas/getSpacesWithinDistance';
+import { getPositionOfUnit } from '../unitPresence/getPositionOfUnit';
+import { isDefenseStat } from './isDefenseStat';
+import { matchesUnitRequirements } from './matchesUnitRequirements';
+import { hasUnitInArray } from './unitArray';
 
 /**
  * Gets the current stat value of a unit.

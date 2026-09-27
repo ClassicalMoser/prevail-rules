@@ -1,10 +1,10 @@
 import type { GameState, RoutState } from '@game';
-import { getCurrentCommandResolutionState } from '../getCommandResolutionState';
+import { getCurrentCommandResolutionState } from '../commandResolution/getCommandResolutionState';
 import { getCurrentPhaseState } from '../getPhaseState';
 
 import { getAttackApplyStateFromRangedAttack } from './attackApply';
 import { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement';
-import { getRoutStateFromCleanupPhaseForResolveRout } from './rally';
+import { getRoutStateFromCleanupPhaseForResolveRout } from '../rallyResolution/rally';
 import {
   getRoutStateFromAttackApply,
   getRoutStateFromMeleeResolutionByInitiative,

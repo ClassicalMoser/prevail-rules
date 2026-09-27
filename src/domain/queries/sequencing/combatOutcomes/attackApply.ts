@@ -1,11 +1,9 @@
 import type { PlayerSide } from '@entities';
 import type { AttackApplyState, GameState, MeleeResolutionState } from '@game';
-import { getOtherPlayer } from '@queries/getOtherPlayer';
+import { getOtherPlayer } from '@queries/player';
 import { throwIfPending } from '@utils';
-import {
-  getMeleeResolutionState,
-  getRangedAttackResolutionState,
-} from '../getCommandResolutionState';
+import { getRangedAttackResolutionState } from '../commandResolution/getCommandResolutionState';
+import { getMeleeResolutionState } from '../meleeResolution/getMeleeResolutionState';
 
 /**
  * Gets the attack apply state from a ranged attack resolution.

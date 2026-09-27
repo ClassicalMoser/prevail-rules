@@ -1,6 +1,6 @@
 import type { AttackApplyState, GameState, ReverseState } from '@game';
 import { throwIfPending } from '@utils';
-import { getMeleeResolutionState } from '../getCommandResolutionState';
+import { getMeleeResolutionState } from '../meleeResolution/getMeleeResolutionState';
 
 /**
  * Gets the reverse state from an attack apply state.

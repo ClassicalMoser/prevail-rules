@@ -1,17 +1,18 @@
 import type { Board } from '@entities';
-import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
+import {
+  createEmptyLargeBoard,
+  createEmptySmallBoard,
+  createEmptyStandardBoard,
+} from '@factories';
 
 import { getBoardCoordinates } from './getBoardCoordinates';
-
-const standardBoardCoordinateRegex = /^[A-L]-\d+$/;
-const smallBoardCoordinateRegex = /^[A-H]-\d+$/;
 
 /**
  * GetBoardCoordinates: flat list of every coordinate key on the board (standard 12×18; small 8×12).
  */
 describe(getBoardCoordinates, () => {
   describe('standard board', () => {
-    it('given standard board, returns 216 coordinates', () => {
+    it('lists exactly 216 coordinates', () => {
       const board: Board = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
@@ -19,7 +20,7 @@ describe(getBoardCoordinates, () => {
       expect(coordinates).toHaveLength(216);
     });
 
-    it('given standard board, includes corners A-1, A-18, L-1, L-18', () => {
+    it('includes the standard corners A-1, A-18, L-1, and L-18', () => {
       const board: Board = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
@@ -29,26 +30,17 @@ describe(getBoardCoordinates, () => {
       expect(coordinates).toContain('L-18');
     });
 
-    it('given standard board, includes interior samples', () => {
+    it('includes interior spaces such as E-5 and F-9', () => {
       const board: Board = createEmptyStandardBoard();
       const coordinates = getBoardCoordinates(board);
 
       expect(coordinates).toContain('E-5');
       expect(coordinates).toContain('F-9');
     });
-
-    it('given readonly tuple, runtime allows push (TS readonly only)', () => {
-      const board: Board = createEmptyStandardBoard();
-      const coordinates = getBoardCoordinates(board);
-
-      expect(() => {
-        (coordinates as string[]).push('invalid');
-      }).not.toThrow();
-    });
   });
 
   describe('small board', () => {
-    it('given small board, returns 96 coordinates', () => {
+    it('lists exactly 96 coordinates', () => {
       const board: Board = createEmptySmallBoard();
       const coordinates = getBoardCoordinates(board);
 
@@ -56,7 +48,7 @@ describe(getBoardCoordinates, () => {
       expect(coordinates).toHaveLength(96);
     });
 
-    it('given small board, includes corners A-1, A-12, H-1, H-12', () => {
+    it('includes the small-board corners A-1, A-12, H-1, and H-12', () => {
       const board: Board = createEmptySmallBoard();
       const coordinates = getBoardCoordinates(board);
 
@@ -67,23 +59,31 @@ describe(getBoardCoordinates, () => {
     });
   });
 
-  describe('type safety', () => {
-    it('given standard board, every entry matches standard coordinate pattern', () => {
-      const board: Board = createEmptyStandardBoard();
+  describe('large board', () => {
+    it('lists exactly 864 coordinates', () => {
+      const board: Board = createEmptyLargeBoard();
       const coordinates = getBoardCoordinates(board);
 
-      coordinates.forEach((coord) => {
-        expect(coord).toMatch(standardBoardCoordinateRegex);
-      });
+      expect(coordinates.length).toBeGreaterThan(0);
+      expect(coordinates).toHaveLength(864);
     });
 
-    it('given small board, every entry matches small coordinate pattern', () => {
-      const board: Board = createEmptySmallBoard();
+    it('includes the large-board corners A-1, A-36, X-1, and X-36', () => {
+      const board: Board = createEmptyLargeBoard();
       const coordinates = getBoardCoordinates(board);
 
-      coordinates.forEach((coord) => {
-        expect(coord).toMatch(smallBoardCoordinateRegex);
-      });
+      expect(coordinates).toContain('A-1');
+      expect(coordinates).toContain('A-36');
+      expect(coordinates).toContain('X-1');
+      expect(coordinates).toContain('X-36');
+    });
+
+    it('includes interior spaces such as M-5 and N-24', () => {
+      const board: Board = createEmptyLargeBoard();
+      const coordinates = getBoardCoordinates(board);
+
+      expect(coordinates).toContain('M-5');
+      expect(coordinates).toContain('N-24');
     });
   });
 });

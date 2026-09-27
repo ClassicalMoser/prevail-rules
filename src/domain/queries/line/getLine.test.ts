@@ -2,7 +2,7 @@ import type { Coordinate } from '@entities';
 import { createBoardWithUnits, createTestUnit, getUnitByTrait } from '@testing';
 
 import { getLinesFromUnit } from './getLine';
-import { getPlayerUnitWithPosition } from './unitPresence';
+import { getPlayerUnitWithPosition } from '@queries/unitPresence';
 
 /**
  * GetLinesFromUnit: line segments (max length) along the perpendicular axis for formation / command rules.

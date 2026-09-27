@@ -1,17 +1,7 @@
-export {
-  getNextStepForResolveRally,
-  getRallyResolutionStateAwaitingBurn,
-  getRallyResolutionStateAwaitingUnitSupport,
-  getRallyResolutionStateForCurrentStep,
-} from './cleanupPhase';
-export {
-  getCurrentCommandResolutionState,
-  getMeleeResolutionReadyForAttackCalculation,
-  getMeleeResolutionState,
-  getMovementResolutionState,
-  getRangedAttackResolutionState,
-} from './getCommandResolutionState';
+// Current phase, step, initiative, and the round event stream.
+export { getCurrentEventStream } from './getCurrentEventStream';
 export { getCurrentInitiative } from './getCurrentInitiative';
+export { getCurrentStep } from './getCurrentStep';
 export { getNextEventNumber } from './getNextEventNumber';
 export {
   getCleanupPhaseState,
@@ -21,19 +11,41 @@ export {
   getPlayCardsPhaseState,
   getResolveMeleePhaseState,
 } from './getPhaseState';
-export { getRemainingMeleeEngagements } from './getRemainingMeleeEngagements';
+
+// Issue-commands resolution: movement or ranged attack.
+export {
+  getCurrentCommandResolutionState,
+  getMovementResolutionState,
+  getRangedAttackResolutionState,
+} from './commandResolution';
+
+// Resolve-melee resolution.
+export {
+  getMeleeResolutionReadyForAttackCalculation,
+  getMeleeResolutionState,
+  getRemainingMeleeEngagements,
+} from './meleeResolution';
+
+// Cleanup rally.
+export {
+  getCurrentRallyResolutionState,
+  getNextStepForResolveRally,
+  getRallyResolutionState,
+  getRallyResolutionStateAwaitingBurn,
+  getRallyResolutionStateAwaitingUnitSupport,
+  getRallyResolutionStateForCurrentStep,
+  getRoutStateFromCleanupPhaseForResolveRout,
+  getRoutStateFromRally,
+} from './rallyResolution';
+
+// Retreat, reverse, rout, and attack-apply.
 export {
   canReverseUnit,
   findRetreatState,
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
-  getCurrentRallyResolutionState,
+  getAwaitingRoutDiscardState,
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
-  getEngagementStateFromMovement,
-  getFlankEngagementStateFromMovement,
-  getFrontEngagementStateFromMovement,
-  getRallyResolutionState,
-  getRearEngagementStateFromMovement,
   getRetreatStateFromAttackApply,
   getRetreatStateFromFrontEngagement,
   getRetreatStateFromMelee,
@@ -42,9 +54,6 @@ export {
   getReverseStateFromAttackApply,
   getReverseStateFromMeleeResolutionByInitiative,
   getRoutStateFromAttackApply,
-  getRoutStateFromCleanupPhaseForResolveRout,
   getRoutStateFromMeleeResolutionByInitiative,
-  getRoutStateFromRally,
-  getAwaitingRoutDiscardState,
   getRoutStateFromRearEngagement,
-} from './getSubstep';
+} from './combatOutcomes';

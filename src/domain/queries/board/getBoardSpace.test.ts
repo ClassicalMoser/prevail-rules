@@ -12,7 +12,7 @@ const smallBoard: Board = createEmptySmallBoard();
  */
 describe(getBoardSpace, () => {
   describe('standard board', () => {
-    it('given E-5, returns space with terrain, elevation, unitPresence', () => {
+    it('returns space with terrain, elevation, unitPresence when E-5', () => {
       const space = getBoardSpace(standardBoard, 'E-5');
       expect(space).toBeDefined();
       expect(space.terrainType).toBeDefined();
@@ -20,17 +20,17 @@ describe(getBoardSpace, () => {
       expect(space.unitPresence).toBeDefined();
     });
 
-    it('given A-1, returns defined space', () => {
+    it('returns defined space when A-1', () => {
       const space = getBoardSpace(standardBoard, 'A-1');
       expect(space).toBeDefined();
     });
 
-    it('given L-18, returns defined space', () => {
+    it('returns defined space when L-18', () => {
       const space = getBoardSpace(standardBoard, 'L-18');
       expect(space).toBeDefined();
     });
 
-    it('given coordinate deleted from board map, throws', () => {
+    it('throws when the coordinate has been removed from the board', () => {
       const boardWithMissingSpace: Board = {
         ...standardBoard,
         board: {
@@ -44,7 +44,7 @@ describe(getBoardSpace, () => {
       }).toThrow(new Error('Coordinate E-5 does not exist on standard board.'));
     });
 
-    it('given invalid coordinate string for standard board, throws', () => {
+    it('throws when the coordinate string is not on the standard board', () => {
       expect(() => {
         getBoardSpace(standardBoard, 'Y-55' as Coordinate);
       }).toThrow(
@@ -54,7 +54,7 @@ describe(getBoardSpace, () => {
   });
 
   describe('small board', () => {
-    it('given E-5, returns space with terrain, elevation, unitPresence', () => {
+    it('returns space with terrain, elevation, unitPresence when E-5', () => {
       const space = getBoardSpace(smallBoard, 'E-5');
       expect(space).toBeDefined();
       expect(space.terrainType).toBeDefined();
@@ -62,12 +62,12 @@ describe(getBoardSpace, () => {
       expect(space.unitPresence).toBeDefined();
     });
 
-    it('given A-1, returns defined space', () => {
+    it('returns defined space when A-1', () => {
       const space = getBoardSpace(smallBoard, 'A-1');
       expect(space).toBeDefined();
     });
 
-    it('given H-12, returns defined space', () => {
+    it('returns defined space when H-12', () => {
       const space = getBoardSpace(smallBoard, 'H-12');
       expect(space).toBeDefined();
     });

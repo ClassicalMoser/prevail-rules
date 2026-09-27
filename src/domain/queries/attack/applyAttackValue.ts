@@ -1,6 +1,6 @@
 import type { Modifier, UnitInstance } from '@entities';
 import type { AttackResult, GameState } from '@game';
-import { getCurrentUnitStat } from './getCurrentUnitStat';
+import { getCurrentUnitStat } from '@queries/unit';
 
 /**
  * Applies an attack value to a unit and returns the result.

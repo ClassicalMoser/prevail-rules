@@ -7,7 +7,7 @@ import { getSingleUnitWithPlacementAtCoordinate } from './getSingleUnitWithPlace
  * GetSingleUnitWithPlacementAtCoordinate: unit + placement when presence is exactly one unit; throws otherwise.
  */
 describe(getSingleUnitWithPlacementAtCoordinate, () => {
-  it('given single-unit presence, returns unit and placement', () => {
+  it('returns the unit and its placement when one unit occupies the space', () => {
     const board = createBoardWithSingleUnit('E-5', 'white', {
       facing: 'south',
     });
@@ -17,7 +17,7 @@ describe(getSingleUnitWithPlacementAtCoordinate, () => {
     expect(u.unit.playerSide).toBe('white');
   });
 
-  it('given empty or non-single presence, throws', () => {
+  it('throws when the space is empty or not a single unit', () => {
     const board = createEmptyStandardBoard();
     expect(() => getSingleUnitWithPlacementAtCoordinate(board, 'E-5')).toThrow(
       'Expected exactly one unit at coordinate',

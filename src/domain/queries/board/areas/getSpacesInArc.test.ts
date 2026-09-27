@@ -10,19 +10,19 @@ describe(getSpacesInArc, () => {
   const smallBoard = createEmptySmallBoard();
 
   describe('orthogonal facings, standard board', () => {
-    it('given facing north from B-5 with range 2, returns three-space arc row', () => {
+    it('returns three-space arc row when facing north from B-5 with range 2', () => {
       const spacesInArc = getSpacesInArc(board, 'B-5', 'north', 2);
       expect(spacesInArc).toStrictEqual(new Set(['A-4', 'A-5', 'A-6']));
     });
 
-    it('given facing east from B-5 with range 2, returns stepped arc', () => {
+    it('returns stepped arc when facing east from B-5 with range 2', () => {
       const spacesInArc = getSpacesInArc(board, 'B-5', 'east', 2);
       expect(spacesInArc).toStrictEqual(
         new Set(['A-6', 'B-6', 'C-6', 'A-7', 'B-7', 'C-7', 'D-7']),
       );
     });
 
-    it('given facing south from E-7 with range 2, returns wider arc', () => {
+    it('returns wider arc when facing south from E-7 with range 2', () => {
       const spacesInArc = getSpacesInArc(board, 'E-7', 'south', 2);
       expect(spacesInArc).toStrictEqual(
         new Set(['F-6', 'F-7', 'F-8', 'G-5', 'G-6', 'G-7', 'G-8', 'G-9']),
@@ -31,12 +31,12 @@ describe(getSpacesInArc, () => {
   });
 
   describe('diagonal facings, standard board', () => {
-    it('given facing northEast from E-7 with range 1, returns three-space arc', () => {
+    it('returns three-space arc when facing northEast from E-7 with range 1', () => {
       const spacesInArc = getSpacesInArc(board, 'E-7', 'northEast', 1);
       expect(spacesInArc).toStrictEqual(new Set(['D-7', 'D-8', 'E-8']));
     });
 
-    it('given facing southEast from B-10 with range 3, returns extended arc', () => {
+    it('returns extended arc when facing southEast from B-10 with range 3', () => {
       const spacesInArc = getSpacesInArc(board, 'B-10', 'southEast', 3);
       expect(spacesInArc).toStrictEqual(
         new Set([
@@ -61,7 +61,7 @@ describe(getSpacesInArc, () => {
   });
 
   describe('small board edge', () => {
-    it('given facing southWest from H-12 with range 2, clips to in-bounds', () => {
+    it('clips to in-bounds when facing southWest from H-12 with range 2', () => {
       const spacesInArc = getSpacesInArc(smallBoard, 'H-12', 'southWest', 2);
       expect(spacesInArc).toStrictEqual(new Set(['H-10', 'H-11']));
     });

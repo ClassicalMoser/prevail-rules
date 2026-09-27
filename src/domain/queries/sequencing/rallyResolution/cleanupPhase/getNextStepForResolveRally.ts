@@ -1,5 +1,5 @@
 import type { CleanupPhaseState, GameState } from '@game';
-import { getCleanupPhaseState } from '../getPhaseState';
+import { getCleanupPhaseState } from '@queries/sequencing/getPhaseState';
 
 /**
  * Gets the next step after resolving rally for the current step.

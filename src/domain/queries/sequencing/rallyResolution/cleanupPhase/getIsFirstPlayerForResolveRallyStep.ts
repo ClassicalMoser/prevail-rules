@@ -1,5 +1,5 @@
 import type { GameState } from '@game';
-import { getCleanupPhaseState } from '../getPhaseState';
+import { getCleanupPhaseState } from '@queries/sequencing/getPhaseState';
 
 /**
  * Gets whether the current resolveRally step is for the first player.

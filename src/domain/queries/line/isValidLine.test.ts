@@ -1,6 +1,6 @@
 import type { Board, Line, Coordinate } from '@entities';
 import { getLinesFromUnit } from './getLine';
-import { getPlayerUnitWithPosition } from './unitPresence';
+import { getPlayerUnitWithPosition } from '@queries/unitPresence';
 import { createBoardWithUnits, createTestUnit } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
 

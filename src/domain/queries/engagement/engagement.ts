@@ -6,7 +6,7 @@ import type {
   RearEngagementResolutionState,
 } from '@game';
 import { throwIfPending } from '@utils';
-import { getMovementResolutionState } from '../getCommandResolutionState';
+import { getMovementResolutionState } from '../sequencing/commandResolution/getCommandResolutionState';
 
 /**
  * Gets the engagement state from a movement resolution.

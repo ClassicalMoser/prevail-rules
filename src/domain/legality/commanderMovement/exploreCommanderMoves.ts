@@ -57,13 +57,14 @@ export function exploreCommanderMoves(
       const { result: isDiagonalFacingResult } = isDiagonalFacing(facing);
       if (isDiagonalFacingResult) {
         // Check if the enemy blocks the diagonal
-        const { result: diagonalClearResult } = diagonalIsClear(
-          playerSide,
-          board,
-          currentCoordinate,
-          nextSpace,
-        );
-        if (!diagonalClearResult) {
+        if (
+          !diagonalIsClear(
+            playerSide,
+            board,
+            currentCoordinate,
+            nextSpace,
+          )
+        ) {
           // If we cannot reach the target space, we stop
           continue;
         }

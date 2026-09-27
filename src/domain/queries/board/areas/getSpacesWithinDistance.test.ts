@@ -8,19 +8,19 @@ const standardBoard = createEmptyStandardBoard();
  * GetSpacesWithinDistance: Chebyshev distance (king moves): all coordinates within N steps including diagonals.
  */
 describe(getSpacesWithinDistance, () => {
-  it('given distance 0, returns only start', () => {
+  it('returns only start when distance 0', () => {
     expect(getSpacesWithinDistance(standardBoard, 'E-5', 0)).toStrictEqual(
       new Set(['E-5']),
     );
   });
 
-  it('given negative distance, treats as 0', () => {
+  it('treats a negative distance as zero', () => {
     expect(getSpacesWithinDistance(standardBoard, 'E-5', -1)).toStrictEqual(
       new Set(['E-5']),
     );
   });
 
-  it('given distance 1 from interior, returns start plus eight neighbors', () => {
+  it('returns start plus eight neighbors when distance 1 from interior', () => {
     const result = getSpacesWithinDistance(standardBoard, 'E-5', 1);
     expect(result).toStrictEqual(
       new Set(['E-5', 'D-4', 'D-5', 'D-6', 'E-4', 'E-6', 'F-4', 'F-5', 'F-6']),
@@ -28,7 +28,7 @@ describe(getSpacesWithinDistance, () => {
     expect(result.size).toBe(9);
   });
 
-  it('given distance 2 from interior, includes two-step ring', () => {
+  it('includes two-step ring when distance 2 from interior', () => {
     const result = getSpacesWithinDistance(standardBoard, 'E-5', 2);
     expect(result.has('E-5')).toBe(true);
     expect(result.has('D-5')).toBe(true);
@@ -39,7 +39,7 @@ describe(getSpacesWithinDistance, () => {
     expect(result.size).toBeGreaterThan(9);
   });
 
-  it('given distance 1 from corner, returns only in-bounds neighbors', () => {
+  it('returns only in-bounds neighbors when distance 1 from corner', () => {
     const result = getSpacesWithinDistance(standardBoard, 'A-1', 1);
     expect(result.has('A-1')).toBe(true);
     expect(result.has('A-2')).toBe(true);
@@ -48,7 +48,7 @@ describe(getSpacesWithinDistance, () => {
     expect(result.size).toBe(4);
   });
 
-  it('given distance 1 from edge, returns six neighbors', () => {
+  it('returns six neighbors when distance 1 from edge', () => {
     const result = getSpacesWithinDistance(standardBoard, 'A-5', 1);
     expect(result.has('A-5')).toBe(true);
     expect(result.has('A-4')).toBe(true);
@@ -59,7 +59,7 @@ describe(getSpacesWithinDistance, () => {
     expect(result.size).toBe(6);
   });
 
-  it('given distance 3 from interior, includes third ring', () => {
+  it('includes third ring when distance 3 from interior', () => {
     const result = getSpacesWithinDistance(standardBoard, 'E-5', 3);
     expect(result.has('E-5')).toBe(true);
     expect(result.has('D-5')).toBe(true);
@@ -68,13 +68,13 @@ describe(getSpacesWithinDistance, () => {
     expect(result.size).toBeGreaterThan(20);
   });
 
-  it('given distance 2, excludes tiles beyond 2 steps', () => {
+  it('excludes tiles beyond 2 steps when distance 2', () => {
     const result = getSpacesWithinDistance(standardBoard, 'E-5', 2);
     expect(result.has('B-5')).toBe(false);
     expect(result.has('C-5')).toBe(true);
   });
 
-  it('given different starts, neighbor counts match position (center vs corner)', () => {
+  it('neighbor counts follow the start, fewer at a corner than at the center', () => {
     const result1 = getSpacesWithinDistance(standardBoard, 'F-6', 1);
     expect(result1.has('F-6')).toBe(true);
     expect(result1.size).toBe(9);

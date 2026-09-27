@@ -74,7 +74,7 @@ Pure functions that extract information from game state without modifying it. Th
 
 **Query Categories:**
 
-- **Board Operations** (`boardSpace/`): Coordinate calculations, adjacency, directions, areas
+- **Board Operations** (`board/`): Coordinate calculations, adjacency, directions, areas
   - `getBoardSpace()` - Get space at coordinate
   - `getAdjacentSpaces()` - Get adjacent spaces
   - `getFrontSpaces()` / `getFlankingSpaces()` / `getBackSpaces()` - Directional spaces

@@ -1,75 +1,76 @@
+/**
+ * One step on the board grid. Rows are letters, with A at the north edge, so
+ * north decreases the row index. Columns increase toward the east. A diagonal
+ * steps on both axes; a pure east or west step does not change the row, and a
+ * pure north or south step does not change the column.
+ */
+
 import { getColumnDelta, getRowDelta } from './deltas';
 
-/**
- * GetRowDelta: signed row step for moving one space along a facing on the board grid (north decreases row index).
- */
 describe(getRowDelta, () => {
-  it('given north, returns -1', () => {
+  it('steps one row north when facing north', () => {
     expect(getRowDelta('north')).toBe(-1);
   });
 
-  it('given northEast, returns -1', () => {
+  it('steps one row north when facing northEast', () => {
     expect(getRowDelta('northEast')).toBe(-1);
   });
 
-  it('given northWest, returns -1', () => {
+  it('steps one row north when facing northWest', () => {
     expect(getRowDelta('northWest')).toBe(-1);
   });
 
-  it('given south, returns 1', () => {
+  it('steps one row south when facing south', () => {
     expect(getRowDelta('south')).toBe(1);
   });
 
-  it('given southEast, returns 1', () => {
+  it('steps one row south when facing southEast', () => {
     expect(getRowDelta('southEast')).toBe(1);
   });
 
-  it('given southWest, returns 1', () => {
+  it('steps one row south when facing southWest', () => {
     expect(getRowDelta('southWest')).toBe(1);
   });
 
-  it('given east, returns 0', () => {
+  it('does not change the row when facing east', () => {
     expect(getRowDelta('east')).toBe(0);
   });
 
-  it('given west, returns 0', () => {
+  it('does not change the row when facing west', () => {
     expect(getRowDelta('west')).toBe(0);
   });
 });
 
-/**
- * GetColumnDelta: signed column step for moving one space along a facing on the board grid.
- */
 describe(getColumnDelta, () => {
-  it('given east, returns 1', () => {
+  it('steps one column east when facing east', () => {
     expect(getColumnDelta('east')).toBe(1);
   });
 
-  it('given northEast, returns 1', () => {
+  it('steps one column east when facing northEast', () => {
     expect(getColumnDelta('northEast')).toBe(1);
   });
 
-  it('given southEast, returns 1', () => {
+  it('steps one column east when facing southEast', () => {
     expect(getColumnDelta('southEast')).toBe(1);
   });
 
-  it('given west, returns -1', () => {
+  it('steps one column west when facing west', () => {
     expect(getColumnDelta('west')).toBe(-1);
   });
 
-  it('given northWest, returns -1', () => {
+  it('steps one column west when facing northWest', () => {
     expect(getColumnDelta('northWest')).toBe(-1);
   });
 
-  it('given southWest, returns -1', () => {
+  it('steps one column west when facing southWest', () => {
     expect(getColumnDelta('southWest')).toBe(-1);
   });
 
-  it('given north, returns 0', () => {
+  it('does not change the column when facing north', () => {
     expect(getColumnDelta('north')).toBe(0);
   });
 
-  it('given south, returns 0', () => {
+  it('does not change the column when facing south', () => {
     expect(getColumnDelta('south')).toBe(0);
   });
 });

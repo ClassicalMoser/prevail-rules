@@ -1,6 +1,6 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
 import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
-import { getForwardSpacesToEdge } from '../getForwardSpacesToEdge';
+import { getForwardSpacesToEdge } from '../steps/getForwardSpacesToEdge';
 
 import { getInlineSpaces } from './getInlineSpaces';
 
