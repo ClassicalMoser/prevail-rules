@@ -1,4 +1,3 @@
-import type { Coordinate } from '@entities';
 import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
 
 import { getSpacesBehind } from './getSpacesBehind';
@@ -7,10 +6,11 @@ const standardBoard = createEmptyStandardBoard();
 const smallBoard = createEmptySmallBoard();
 
 /**
- * GetSpacesBehind: all board spaces strictly forward of the rear arc (same as “ahead” for the opposite facing).
+ * GetSpacesBehind: all board spaces strictly behind the unit's inline line.
  */
-describe(getSpacesBehind, () => {
-  it('returns wedge behind unit (west of rear arc) when facing east from F-2', () => {
+describe('getSpacesBehind function', () => {
+  it('column 1 lies behind an east-facing unit at F-2', () => {
+    // Column 1, west of the inline line through F-2.
     expect(getSpacesBehind(standardBoard, 'F-2', 'east')).toStrictEqual(
       new Set([
         'A-1',
@@ -29,7 +29,8 @@ describe(getSpacesBehind, () => {
     );
   });
 
-  it('returns wedge behind unit when facing south from B-7', () => {
+  it('row A lies behind a south-facing unit at B-7', () => {
+    // Row A, north of the inline line through B-7.
     expect(getSpacesBehind(standardBoard, 'B-7', 'south')).toStrictEqual(
       new Set([
         'A-1',
@@ -54,7 +55,8 @@ describe(getSpacesBehind, () => {
     );
   });
 
-  it('returns wedge behind unit when facing west from F-16', () => {
+  it('columns 17 and 18 lie behind a west-facing unit at F-16', () => {
+    // Columns 17 and 18, east of the inline line through F-16.
     expect(getSpacesBehind(standardBoard, 'F-16', 'west')).toStrictEqual(
       new Set([
         'A-17',
@@ -85,13 +87,15 @@ describe(getSpacesBehind, () => {
     );
   });
 
-  it('returns small rear wedge when facing southEast from B-2', () => {
+  it('A-1, B-1, and A-2 lie behind a southEast-facing unit at B-2', () => {
+    // The three spaces northwest of B-2.
     expect(getSpacesBehind(standardBoard, 'B-2', 'southEast')).toStrictEqual(
       new Set(['A-1', 'B-1', 'A-2']),
     );
   });
 
-  it('returns rear wedge toward northeast when facing northEast from J-3', () => {
+  it('the southwest corner lies behind a northEast-facing unit at J-3', () => {
+    // The southwest corner behind J-3.
     expect(getSpacesBehind(standardBoard, 'J-3', 'northEast')).toStrictEqual(
       new Set([
         'I-1',
@@ -108,24 +112,31 @@ describe(getSpacesBehind, () => {
     );
   });
 
-  describe('small board', () => {
-    it('the rear wedge may be empty from corner H-12 facing northWest', () => {
+  describe('on a small board', () => {
+    it('nothing lies behind a northWest-facing unit at corner H-12', () => {
+      // The rear semiplane is empty behind H-12.
       expect(getSpacesBehind(smallBoard, 'H-12', 'northWest').size).toBe(0);
     });
 
-    it('the rear wedge from E-6 facing northWest includes the southEast quadrant', () => {
+    it('the southeast semiplane lies behind a northWest-facing unit at E-6', () => {
       const result = getSpacesBehind(smallBoard, 'E-6', 'northWest');
-      expect(result.size).toBeGreaterThan(0);
+
+      // Spaces behind the unit's inline line.
       expect(result.has('F-7')).toBe(true);
       expect(result.has('F-6')).toBe(true);
       expect(result.has('F-8')).toBe(true);
       expect(result.has('G-8')).toBe(true);
       expect(result.has('H-9')).toBe(true);
+      // Spaces ahead of the unit's inline line.
       expect(result.has('D-5')).toBe(false);
       expect(result.has('C-4')).toBe(false);
-      expect(result.has('A-18' as Coordinate)).toBe(false);
-      expect(result.has('L-18' as Coordinate)).toBe(false);
-      expect(result.has('L-1' as Coordinate)).toBe(false);
+      // Inline spaces should always be excluded.
+      expect(result.has('F-5')).toBe(false);
+      expect(result.has('D-7')).toBe(false);
+      // Coordinates past the edge of the small board.
+      expect(result.has('A-18')).toBe(false);
+      expect(result.has('L-18')).toBe(false);
+      expect(result.has('L-1')).toBe(false);
     });
   });
 });

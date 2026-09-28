@@ -9,20 +9,25 @@ describe(getSpacesInArc, () => {
   const board = createEmptyStandardBoard();
   const smallBoard = createEmptySmallBoard();
 
+  it('nothing lies in the arc of a north-facing unit at A-5', () => {
+    // The first rank is off the board, so later ranks never start.
+    expect(getSpacesInArc(board, 'A-5', 'north', 2)).toStrictEqual(new Set());
+  });
+
   describe('orthogonal facings, standard board', () => {
-    it('returns three-space arc row when facing north from B-5 with range 2', () => {
+    it('range 2 north from B-5 is A-4, A-5, and A-6', () => {
       const spacesInArc = getSpacesInArc(board, 'B-5', 'north', 2);
       expect(spacesInArc).toStrictEqual(new Set(['A-4', 'A-5', 'A-6']));
     });
 
-    it('returns stepped arc when facing east from B-5 with range 2', () => {
+    it('range 2 east from B-5 steps out to column 7', () => {
       const spacesInArc = getSpacesInArc(board, 'B-5', 'east', 2);
       expect(spacesInArc).toStrictEqual(
         new Set(['A-6', 'B-6', 'C-6', 'A-7', 'B-7', 'C-7', 'D-7']),
       );
     });
 
-    it('returns wider arc when facing south from E-7 with range 2', () => {
+    it('range 2 south from E-7 widens on the second rank', () => {
       const spacesInArc = getSpacesInArc(board, 'E-7', 'south', 2);
       expect(spacesInArc).toStrictEqual(
         new Set(['F-6', 'F-7', 'F-8', 'G-5', 'G-6', 'G-7', 'G-8', 'G-9']),
@@ -31,12 +36,12 @@ describe(getSpacesInArc, () => {
   });
 
   describe('diagonal facings, standard board', () => {
-    it('returns three-space arc when facing northEast from E-7 with range 1', () => {
+    it('range 1 northEast from E-7 is D-7, D-8, and E-8', () => {
       const spacesInArc = getSpacesInArc(board, 'E-7', 'northEast', 1);
       expect(spacesInArc).toStrictEqual(new Set(['D-7', 'D-8', 'E-8']));
     });
 
-    it('returns extended arc when facing southEast from B-10 with range 3', () => {
+    it('range 3 southEast from B-10 extends through row E', () => {
       const spacesInArc = getSpacesInArc(board, 'B-10', 'southEast', 3);
       expect(spacesInArc).toStrictEqual(
         new Set([
