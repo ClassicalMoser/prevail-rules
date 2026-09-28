@@ -1,6 +1,8 @@
 import type { Board, UnitFacing, Coordinate } from '@entities';
-import { getCoordinateLayout, unitFacingSchema } from '@entities';
+import { getCoordinateLayout, unitFacings } from '@entities';
 import { getColumnDelta, getRowDelta } from '../deltas';
+
+const facings = new Set<UnitFacing>(unitFacings);
 
 /**
  * One step forward from `coordinate` along `facing`, using the active board’s
@@ -14,13 +16,13 @@ export function getForwardSpace(
   coordinate: Coordinate,
   facing: UnitFacing,
 ): Coordinate | undefined {
-  if (!coordinate.includes('-')) {
+  const parts = coordinate.split('-');
+  if (parts.length !== 2) {
     throw new Error(`Invalid coordinate: ${coordinate}`);
   }
   // Parse coordinate - already validated at boundary, so we trust the format
   // Coordinates are formatted as "Row-Column" (e.g., "E-5" = row E, column 5)
-  const inputRow = coordinate.split('-')[0];
-  const inputColumn = coordinate.split('-')[1];
+  const [inputRow, inputColumn] = parts;
 
   // Get the coordinate layout for the board
   const layout = getCoordinateLayout(board);
@@ -38,8 +40,7 @@ export function getForwardSpace(
   }
 
   // Validate facing (defensive check for invalid facings that bypass TypeScript)
-  const facingResult = unitFacingSchema.safeParse(facing);
-  if (!facingResult.success) {
+  if (!facings.has(facing)) {
     throw new Error(`Invalid facing: ${facing}`);
   }
 

@@ -12,121 +12,121 @@ const smallBoard: Board = createEmptySmallBoard();
  */
 describe(getForwardSpace, () => {
   describe('standard board', () => {
-    it('returns B-1 when facing south from A-1', () => {
+    it('B-1 is one step forward from A-1 when facing south', () => {
       expect(getForwardSpace(standardBoard, 'A-1', 'south')).toBe('B-1');
     });
 
-    it('returns A-2 when facing east from A-1', () => {
+    it('A-2 is one step forward from A-1 when facing east', () => {
       expect(getForwardSpace(standardBoard, 'A-1', 'east')).toBe('A-2');
     });
 
-    it('returns E-4 when facing west from E-5', () => {
+    it('E-4 is one step forward from E-5 when facing west', () => {
       expect(getForwardSpace(standardBoard, 'E-5', 'west')).toBe('E-4');
     });
 
-    it('returns F-10 when facing north from G-10', () => {
+    it('F-10 is one step forward from G-10 when facing north', () => {
       expect(getForwardSpace(standardBoard, 'G-10', 'north')).toBe('F-10');
     });
 
-    it('returns B-2 when facing southEast from A-1', () => {
+    it('B-2 is one step forward from A-1 when facing southEast', () => {
       expect(getForwardSpace(standardBoard, 'A-1', 'southEast')).toBe('B-2');
     });
 
-    it('returns E-3 when facing southWest from D-4', () => {
+    it('E-3 is one step forward from D-4 when facing southWest', () => {
       expect(getForwardSpace(standardBoard, 'D-4', 'southWest')).toBe('E-3');
     });
 
-    it('returns J-12 when facing northEast from K-11', () => {
+    it('J-12 is one step forward from K-11 when facing northEast', () => {
       expect(getForwardSpace(standardBoard, 'K-11', 'northEast')).toBe('J-12');
     });
 
-    it('returns K-17 when facing northWest from L-18', () => {
+    it('K-17 is one step forward from L-18 when facing northWest', () => {
       expect(getForwardSpace(standardBoard, 'L-18', 'northWest')).toBe('K-17');
     });
 
-    it('returns undefined when facing north from A-1', () => {
+    it('there is no forward space from A-1 when facing north', () => {
       expect(getForwardSpace(standardBoard, 'A-1', 'north')).toBeUndefined();
     });
 
-    it('returns undefined when facing west from F-1', () => {
+    it('there is no forward space from F-1 when facing west', () => {
       expect(getForwardSpace(standardBoard, 'F-1', 'west')).toBeUndefined();
     });
 
-    it('returns undefined when facing south from L-5', () => {
+    it('there is no forward space from L-5 when facing south', () => {
       expect(getForwardSpace(standardBoard, 'L-5', 'south')).toBeUndefined();
     });
 
-    it('returns undefined when facing east from E-18', () => {
+    it('there is no forward space from E-18 when facing east', () => {
       expect(getForwardSpace(standardBoard, 'E-18', 'east')).toBeUndefined();
     });
 
-    it('returns undefined when facing northWest from A-1', () => {
+    it('there is no forward space from A-1 when facing northWest', () => {
       expect(
         getForwardSpace(standardBoard, 'A-1', 'northWest'),
       ).toBeUndefined();
     });
 
-    it('returns undefined when facing northEast from A-18', () => {
+    it('there is no forward space from A-18 when facing northEast', () => {
       expect(
         getForwardSpace(standardBoard, 'A-18', 'northEast'),
       ).toBeUndefined();
     });
 
-    it('returns undefined when facing southWest from L-1', () => {
+    it('there is no forward space from L-1 when facing southWest', () => {
       expect(
         getForwardSpace(standardBoard, 'L-1', 'southWest'),
       ).toBeUndefined();
     });
 
-    it('returns undefined when facing southEast from L-18', () => {
+    it('there is no forward space from L-18 when facing southEast', () => {
       expect(
         getForwardSpace(standardBoard, 'L-18', 'southEast'),
       ).toBeUndefined();
     });
 
-    it('returns undefined when facing northWest from F-1', () => {
+    it('there is no forward space from F-1 when facing northWest', () => {
       expect(
         getForwardSpace(standardBoard, 'F-1', 'northWest'),
       ).toBeUndefined();
     });
 
-    it('returns undefined when facing northEast from E-18', () => {
+    it('there is no forward space from E-18 when facing northEast', () => {
       expect(
         getForwardSpace(standardBoard, 'E-18', 'northEast'),
       ).toBeUndefined();
     });
 
-    it('returns undefined when facing southWest from L-5', () => {
+    it('there is no forward space from L-5 when facing southWest', () => {
       expect(
         getForwardSpace(standardBoard, 'L-5', 'southWest'),
       ).toBeUndefined();
     });
 
-    it('returns undefined when facing northWest from E-1', () => {
+    it('there is no forward space from E-1 when facing northWest', () => {
       expect(
         getForwardSpace(standardBoard, 'E-1', 'northWest'),
       ).toBeUndefined();
     });
 
-    it('throws when the coordinate is missing its dash', () => {
+    it('a coordinate without a dash is rejected', () => {
       expect(() =>
         getForwardSpace(standardBoard, 'invalid' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid coordinate: invalid'));
     });
 
-    it('throws when the row letter is invalid', () => {
+    it('row beyond board edge is rejected', () => {
       expect(() =>
         getForwardSpace(standardBoard, 'R-12' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid row: R'));
     });
 
-    it('throws when the column is invalid', () => {
+    it('column beyond board edge is rejected', () => {
       expect(() =>
         getForwardSpace(standardBoard, 'A-19' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid column: 19'));
     });
 
-    it('throws when the facing is invalid', () => {
+    it('invalid facing is rejected', () => {
       expect(() =>
         getForwardSpace(standardBoard, 'E-9', 'random' as UnitFacing),
       ).toThrow(new Error('Invalid facing: random'));
@@ -134,121 +134,121 @@ describe(getForwardSpace, () => {
   });
 
   describe('small board', () => {
-    it('returns B-1 when facing south from A-1', () => {
+    it('B-1 is one step forward from A-1 when facing south', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'south')).toBe('B-1');
     });
 
-    it('returns A-2 when facing east from A-1', () => {
+    it('A-2 is one step forward from A-1 when facing east', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'east')).toBe('A-2');
     });
 
-    it('returns E-4 when facing west from E-5', () => {
+    it('E-4 is one step forward from E-5 when facing west', () => {
       expect(getForwardSpace(smallBoard, 'E-5', 'west')).toBe('E-4');
     });
 
-    it('returns F-10 when facing north from G-10', () => {
+    it('F-10 is one step forward from G-10 when facing north', () => {
       expect(getForwardSpace(smallBoard, 'G-10', 'north')).toBe('F-10');
     });
 
-    it('returns B-2 when facing southEast from A-1', () => {
+    it('B-2 is one step forward from A-1 when facing southEast', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'southEast')).toBe('B-2');
     });
 
-    it('returns E-3 when facing southWest from D-4', () => {
+    it('E-3 is one step forward from D-4 when facing southWest', () => {
       expect(getForwardSpace(smallBoard, 'D-4', 'southWest')).toBe('E-3');
     });
 
-    it('returns G-12 when facing northEast from H-11', () => {
+    it('G-12 is one step forward from H-11 when facing northEast', () => {
       expect(getForwardSpace(smallBoard, 'H-11', 'northEast')).toBe('G-12');
     });
 
-    it('returns G-11 when facing northWest from H-12', () => {
+    it('G-11 is one step forward from H-12 when facing northWest', () => {
       expect(getForwardSpace(smallBoard, 'H-12', 'northWest')).toBe('G-11');
     });
 
-    it('returns undefined when facing south from H-5', () => {
+    it('there is no forward space from H-5 when facing south', () => {
       expect(getForwardSpace(smallBoard, 'H-5', 'south')).toBeUndefined();
     });
 
-    it('returns undefined when facing southEast from H-10', () => {
+    it('there is no forward space from H-10 when facing southEast', () => {
       expect(getForwardSpace(smallBoard, 'H-10', 'southEast')).toBeUndefined();
     });
 
-    it('returns undefined when facing southWest from H-3', () => {
+    it('there is no forward space from H-3 when facing southWest', () => {
       expect(getForwardSpace(smallBoard, 'H-3', 'southWest')).toBeUndefined();
     });
 
-    it('returns undefined when facing east from E-12', () => {
+    it('there is no forward space from E-12 when facing east', () => {
       expect(getForwardSpace(smallBoard, 'E-12', 'east')).toBeUndefined();
     });
 
-    it('returns undefined when facing northEast from A-12', () => {
+    it('there is no forward space from A-12 when facing northEast', () => {
       expect(getForwardSpace(smallBoard, 'A-12', 'northEast')).toBeUndefined();
     });
 
-    it('returns undefined when facing southEast from D-12', () => {
+    it('there is no forward space from D-12 when facing southEast', () => {
       expect(getForwardSpace(smallBoard, 'D-12', 'southEast')).toBeUndefined();
     });
 
-    it('returns undefined when facing south from H-12', () => {
+    it('there is no forward space from H-12 when facing south', () => {
       expect(getForwardSpace(smallBoard, 'H-12', 'south')).toBeUndefined();
     });
 
-    it('returns undefined when facing east from H-12', () => {
+    it('there is no forward space from H-12 when facing east', () => {
       expect(getForwardSpace(smallBoard, 'H-12', 'east')).toBeUndefined();
     });
 
-    it('returns undefined when facing southEast from H-12', () => {
+    it('there is no forward space from H-12 when facing southEast', () => {
       expect(getForwardSpace(smallBoard, 'H-12', 'southEast')).toBeUndefined();
     });
 
-    it('returns undefined when facing north from A-1', () => {
+    it('there is no forward space from A-1 when facing north', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'north')).toBeUndefined();
     });
 
-    it('returns undefined when facing west from F-1', () => {
+    it('there is no forward space from F-1 when facing west', () => {
       expect(getForwardSpace(smallBoard, 'F-1', 'west')).toBeUndefined();
     });
 
-    it('returns undefined when facing northWest from A-1', () => {
+    it('there is no forward space from A-1 when facing northWest', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'northWest')).toBeUndefined();
     });
 
-    it('returns undefined when facing southWest from H-1', () => {
+    it('there is no forward space from H-1 when facing southWest', () => {
       expect(getForwardSpace(smallBoard, 'H-1', 'southWest')).toBeUndefined();
     });
 
-    it('throws when the coordinate is missing its dash', () => {
+    it('a coordinate without a dash is rejected', () => {
       expect(() =>
         getForwardSpace(smallBoard, 'E5' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid coordinate: E5'));
     });
 
-    it('throws on the small board when the row is standard-only I', () => {
+    it('row I is rejected on the small board', () => {
       expect(() =>
         getForwardSpace(smallBoard, 'I-5' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid row: I'));
     });
 
-    it('throws on the small board when the row is standard-only L', () => {
+    it('row L is rejected on the small board', () => {
       expect(() =>
         getForwardSpace(smallBoard, 'L-5' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid row: L'));
     });
 
-    it('throws on the small board when the column is standard-only 13', () => {
+    it('column 13 is rejected on the small board', () => {
       expect(() =>
         getForwardSpace(smallBoard, 'A-13' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid column: 13'));
     });
 
-    it('throws on the small board when the column is standard-only 18', () => {
+    it('column 18 is rejected on the small board', () => {
       expect(() =>
         getForwardSpace(smallBoard, 'A-18' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid column: 18'));
     });
 
-    it('throws when the facing is invalid', () => {
+    it('invalid facing is rejected', () => {
       expect(() =>
         getForwardSpace(smallBoard, 'E-9', 'random' as UnitFacing),
       ).toThrow(new Error('Invalid facing: random'));

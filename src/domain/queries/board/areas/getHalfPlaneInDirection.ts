@@ -1,5 +1,4 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
-import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getFrontSpaces } from '../adjacency';
 import { getForwardSpacesToEdge } from '../steps/getForwardSpacesToEdge';
 
@@ -43,8 +42,8 @@ function getHalfPlaneInDirection(
     }
   }
 
-  // Filter out undefined values
-  return filterUndefinedSpaces(spaces);
+  // Return set of spaces
+  return spaces;
 }
 
 export { getHalfPlaneInDirection };

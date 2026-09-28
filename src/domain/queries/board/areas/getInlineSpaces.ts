@@ -1,6 +1,5 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getOrthogonalFacings } from '@queries/facings';
-import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
 import { getForwardSpacesToEdge } from '../steps/getForwardSpacesToEdge';
 
 /**
@@ -32,9 +31,6 @@ export function getInlineSpaces(
     }
   }
 
-  // Filter out undefined values
-  const validInlineSpaces = filterUndefinedSpaces(inlineSpaces);
-
-  // Return set of valid inline spaces
-  return validInlineSpaces;
+  // Return set of inline spaces
+  return inlineSpaces;
 }

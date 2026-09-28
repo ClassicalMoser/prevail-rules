@@ -12,13 +12,13 @@ describe('diagonalIsClear function', () => {
   const coordinate: Coordinate = 'E-5';
   const board = createEmptyStandardBoard();
 
-  it('throws when the target is an orthogonal neighbor', () => {
+  it('an orthogonal neighbor is rejected', () => {
     expect(() => diagonalIsClear('black', board, coordinate, 'E-6')).toThrow(
       'Target space E-6 is not diagonally adjacent to E-5',
     );
   });
 
-  it('throws when the target is not adjacent', () => {
+  it('a non-adjacent target is rejected', () => {
     // Test at edge of board where one adjacent space might be undefined
     expect(() => diagonalIsClear('black', board, coordinate, 'A-1')).toThrow(
       'Target space A-1 is not diagonally adjacent to E-5',

@@ -8,7 +8,7 @@ const standardBoard = createEmptyStandardBoard();
  * GetForwardSpacesToEdge: all coordinates from a start along a facing until the board edge (exclusive of start).
  */
 describe(getForwardSpacesToEdge, () => {
-  it('returns column to L-1 when facing south from A-1', () => {
+  it('column to L-1 when facing south from A-1', () => {
     expect(getForwardSpacesToEdge(standardBoard, 'A-1', 'south')).toStrictEqual(
       new Set([
         'B-1',
@@ -26,7 +26,7 @@ describe(getForwardSpacesToEdge, () => {
     );
   });
 
-  it('returns E-6 through E-18 when facing east from E-5', () => {
+  it('E-6 through E-18 when facing east from E-5', () => {
     expect(getForwardSpacesToEdge(standardBoard, 'E-5', 'east')).toStrictEqual(
       new Set([
         'E-6',
@@ -46,13 +46,13 @@ describe(getForwardSpacesToEdge, () => {
     );
   });
 
-  it('returns diagonal to A-9 when facing northEast from E-5', () => {
+  it('diagonal to A-9 when facing northEast from E-5', () => {
     expect(
       getForwardSpacesToEdge(standardBoard, 'E-5', 'northEast'),
     ).toStrictEqual(new Set(['D-6', 'C-7', 'B-8', 'A-9']));
   });
 
-  it('returns diagonal to L-12 when facing southEast from E-5', () => {
+  it('diagonal to L-12 when facing southEast from E-5', () => {
     expect(
       getForwardSpacesToEdge(standardBoard, 'E-5', 'southEast'),
     ).toStrictEqual(
@@ -60,13 +60,13 @@ describe(getForwardSpacesToEdge, () => {
     );
   });
 
-  it('returns diagonal to L-4 when facing southWest from G-9', () => {
+  it('diagonal to L-4 when facing southWest from G-9', () => {
     expect(
       getForwardSpacesToEdge(standardBoard, 'G-9', 'southWest'),
     ).toStrictEqual(new Set(['H-8', 'I-7', 'J-6', 'K-5', 'L-4']));
   });
 
-  it('returns diagonal to A-3 when facing northWest from G-9', () => {
+  it('diagonal to A-3 when facing northWest from G-9', () => {
     expect(
       getForwardSpacesToEdge(standardBoard, 'G-9', 'northWest'),
     ).toStrictEqual(new Set(['F-8', 'E-7', 'D-6', 'C-5', 'B-4', 'A-3']));

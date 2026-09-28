@@ -93,9 +93,9 @@ Target layout mirrors `entities/` and `game/` nouns. Retire `boardSpace/`, `card
 
 - [ ] `queries/`
   - [x] `board/` — spaces, `diagonalIsClear`, `getCommanderSpace`
-    - [ ] `adjacency/`
-    - [ ] `areas/`
-    - [ ] `steps/` — forward, rearward, left, right
+    - [x] `adjacency/`
+    - [x] `areas/`
+    - [x] `steps/` — forward, forward to the edge, rearward
   - [ ] `facings/`
   - [ ] `unit/` — stats, friendliness, support match, units on board, unit identity
   - [ ] `unitPresence/` — position, enemy in the space, at a placement

@@ -7,7 +7,7 @@ const standardBoard = createEmptyStandardBoard();
 /**
  * GetDiagonallyAdjacentSpaces: up to four diagonally adjacent coordinates (no orthogonals).
  */
-describe(getDiagonallyAdjacentSpaces, () => {
+describe('getDiagonallyAdjacentSpaces function', () => {
   it('an interior space has four diagonal neighbors', () => {
     expect(getDiagonallyAdjacentSpaces(standardBoard, 'E-5')).toStrictEqual(
       new Set(['D-4', 'D-6', 'F-4', 'F-6']),
