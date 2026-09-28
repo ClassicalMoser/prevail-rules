@@ -14,7 +14,7 @@ describe(getDiagonallyAdjacentSpaces, () => {
     );
   });
 
-  it('an edge space has fewer than four diagonal neighbors', () => {
+  it('an edge space has two diagonal neighbors', () => {
     expect(getDiagonallyAdjacentSpaces(standardBoard, 'A-5')).toStrictEqual(
       new Set(['B-4', 'B-6']),
     );

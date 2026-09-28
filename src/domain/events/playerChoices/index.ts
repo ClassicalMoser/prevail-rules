@@ -1,43 +1,82 @@
+// Place units during setup.
+export type { SetupUnitsEvent } from './setupUnit';
+export { setupUnitsEventSchema } from './setupUnit';
+
+// Choose the command card for the round.
+export type { ChooseCardEvent } from './chooseCard';
+export { chooseCardEventSchema } from './chooseCard';
+
+// Move a commander.
+export type { MoveCommanderEvent } from './moveCommander';
+export { moveCommanderEventSchema } from './moveCommander';
+
+// Issue one command from the active card.
+export type { IssueCommandEvent } from './issueCommand';
+export { issueCommandEventSchema } from './issueCommand';
+
+// Stop issuing commands with slots left unused.
+export type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
+export { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
+
+// Move a unit.
+export type { MoveUnitEvent } from './moveUnit';
+export { moveUnitEventSchema } from './moveUnit';
+
+// Declare a ranged attack.
+export type { PerformRangedAttackEvent } from './performRangedAttack';
+export { performRangedAttackEventSchema } from './performRangedAttack';
+
+// Commit a card to a movement command.
+export type { CommitToMovementEvent } from './commitToMovement';
+export { commitToMovementEventSchema } from './commitToMovement';
+
+// Commit a card to a ranged attack.
+export type { CommitToRangedAttackEvent } from './commitToRangedAttack';
+export { commitToRangedAttackEventSchema } from './commitToRangedAttack';
+
+// Commit a card to a melee defense or attack.
+export type { CommitToMeleeEvent } from './commitToMelee';
+export { commitToMeleeEventSchema } from './commitToMelee';
+
+// Pick which melee engagement to resolve.
+export type { ChooseMeleeResolutionEvent } from './chooseMeleeResolution';
+export { chooseMeleeResolutionEventSchema } from './chooseMeleeResolution';
+
+// Choose whether to attempt the retreat.
+export type { ChooseWhetherToRetreatEvent } from './chooseWhetherToRetreat';
+export { chooseWhetherToRetreatEventSchema } from './chooseWhetherToRetreat';
+
+// Choose which legal retreat square to take.
+export type { ChooseRetreatOptionEvent } from './chooseRetreatOption';
+export { chooseRetreatOptionEventSchema } from './chooseRetreatOption';
+
+// Discard cards to pay a rout penalty.
+export type { ChooseRoutDiscardEvent } from './chooseRoutDiscard';
+export { chooseRoutDiscardEventSchema } from './chooseRoutDiscard';
+
+// Choose whether to rally during cleanup.
+export type { ChooseRallyEvent } from './chooseRally';
+export { chooseRallyEventSchema } from './chooseRally';
+
+// After rally, assign summed hand support to board units.
 export type {
   AssignUnitSupportEvent,
   UnitSupportAssignment,
 } from './assignUnitSupport';
 export {
-  assignUnitSupportEventSchema,
   ASSIGN_UNIT_SUPPORT_CHOICE_TYPE,
+  assignUnitSupportEventSchema,
 } from './assignUnitSupport';
-export type { ChooseCardEvent } from './chooseCard';
-export { chooseCardEventSchema } from './chooseCard';
-export type { ChooseMeleeResolutionEvent } from './chooseMeleeResolution';
-export { chooseMeleeResolutionEventSchema } from './chooseMeleeResolution';
-export type { ChooseRallyEvent } from './chooseRally';
-export { chooseRallyEventSchema } from './chooseRally';
-export type { ChooseRetreatOptionEvent } from './chooseRetreatOption';
-export { chooseRetreatOptionEventSchema } from './chooseRetreatOption';
-export type { ChooseRoutDiscardEvent } from './chooseRoutDiscard';
-export { chooseRoutDiscardEventSchema } from './chooseRoutDiscard';
-export type { ChooseWhetherToRetreatEvent } from './chooseWhetherToRetreat';
-export { chooseWhetherToRetreatEventSchema } from './chooseWhetherToRetreat';
-export type { CommitToMeleeEvent } from './commitToMelee';
-export { commitToMeleeEventSchema } from './commitToMelee';
-export type { CommitToMovementEvent } from './commitToMovement';
-export { commitToMovementEventSchema } from './commitToMovement';
-export type { CommitToRangedAttackEvent } from './commitToRangedAttack';
-export { commitToRangedAttackEventSchema } from './commitToRangedAttack';
-export type { DoneIssuingCommandsEvent } from './doneIssuingCommands';
-export { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
-export type { IssueCommandEvent } from './issueCommand';
-export { issueCommandEventSchema } from './issueCommand';
-export type { MoveCommanderEvent } from './moveCommander';
-export { moveCommanderEventSchema } from './moveCommander';
-export type { MoveUnitEvent } from './moveUnit';
-export { moveUnitEventSchema } from './moveUnit';
-export type { PerformRangedAttackEvent } from './performRangedAttack';
-export { performRangedAttackEventSchema } from './performRangedAttack';
+
+// Any player choice, and the choice-type catalog.
 export type { PlayerChoiceEvent } from './playerChoice';
 export { playerChoiceEventSchema } from './playerChoice';
+
+// Choice-type literal union.
 export type { PlayerChoiceType } from './playerChoiceTypes';
 export { playerChoices, playerChoiceTypeSchema } from './playerChoiceTypes';
+
+// Hidden-card projections of choices the opponent must not read in full.
 export type {
   ProjectedChooseCardEvent,
   ProjectedCommitEvent,
@@ -50,5 +89,3 @@ export {
   projectedChooseCardEventSchema,
   projectedPlayerChoiceEventSchema,
 } from './projectedPlayerChoice';
-export type { SetupUnitsEvent } from './setupUnit';
-export { setupUnitsEventSchema } from './setupUnit';

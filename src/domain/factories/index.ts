@@ -1,11 +1,11 @@
-// Empty large board: plain spaces, no units.
-export { createEmptyLargeBoard } from './board';
-
 // Empty small board: plain spaces, no units.
 export { createEmptySmallBoard } from './board';
 
 // Empty standard board: plain spaces, no units.
 export { createEmptyStandardBoard } from './board';
+
+// Empty large board: plain spaces, no units.
+export { createEmptyLargeBoard } from './board';
 
 // Blank game for a mode: mode-sized board, empty piles, initiative black.
 export { createEmptyGameState } from './game';

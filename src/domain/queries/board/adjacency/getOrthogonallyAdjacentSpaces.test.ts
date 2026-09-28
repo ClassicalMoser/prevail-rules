@@ -14,7 +14,7 @@ describe(getOrthogonallyAdjacentSpaces, () => {
     );
   });
 
-  it('an edge space has fewer than four orthogonal neighbors', () => {
+  it('an edge space has three orthogonal neighbors', () => {
     expect(getOrthogonallyAdjacentSpaces(standardBoard, 'A-5')).toStrictEqual(
       new Set(['B-5', 'A-4', 'A-6']),
     );

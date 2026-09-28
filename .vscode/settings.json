@@ -4,7 +4,6 @@
   },
   "npm.scriptRunner": "pnpm",
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "oxc.fmt.configPath": "./oxfmt.config.ts",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {

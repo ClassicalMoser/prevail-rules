@@ -39,6 +39,21 @@ describe(getFlankingSpaces, () => {
     );
   });
 
+  it('clips flanking spaces to the in-bounds flank at an edge', () => {
+    expect(getFlankingSpaces(standardBoard, 'A-5', 'northEast')).toStrictEqual(
+      new Set(['B-6']),
+    );
+    expect(getFlankingSpaces(standardBoard, 'A-5', 'east')).toStrictEqual(
+      new Set(['B-5']),
+    );
+    expect(getFlankingSpaces(standardBoard, 'D-1', 'north')).toStrictEqual(
+      new Set(['D-2']),
+    );
+    expect(getFlankingSpaces(standardBoard, 'D-1', 'southWest')).toStrictEqual(
+      new Set(['E-2']),
+    );
+  });
+
   it('clips flanking spaces to the in-bounds flank at a corner', () => {
     expect(getFlankingSpaces(standardBoard, 'A-1', 'north')).toStrictEqual(
       new Set(['A-2']),
@@ -60,18 +75,21 @@ describe(getFlankingSpaces, () => {
   });
 
   it('throws when the row letter is invalid', () => {
+    // Intentionally bad type cast to trigger the error
     expect(() =>
       getFlankingSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
   it('throws when the column is invalid', () => {
+    // Intentionally bad type cast to trigger the error
     expect(() =>
       getFlankingSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 
   it('throws when the facing is invalid', () => {
+    // Intentionally bad type cast to trigger the error
     expect(() =>
       getFlankingSpaces(standardBoard, 'E-9', 'random' as UnitFacing),
     ).toThrow(new Error('Invalid facing: random'));

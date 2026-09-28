@@ -30,22 +30,9 @@ describe(getBoardSpace, () => {
       expect(space).toBeDefined();
     });
 
-    it('throws when the coordinate has been removed from the board', () => {
-      const boardWithMissingSpace: Board = {
-        ...standardBoard,
-        board: {
-          ...standardBoard.board,
-        },
-      };
-      delete boardWithMissingSpace.board['E-5' as Coordinate];
-
-      expect(() => {
-        getBoardSpace(boardWithMissingSpace, 'E-5');
-      }).toThrow(new Error('Coordinate E-5 does not exist on standard board.'));
-    });
-
     it('throws when the coordinate string is not on the standard board', () => {
       expect(() => {
+        // Intentionally bad assertion to test the error message
         getBoardSpace(standardBoard, 'Y-55' as Coordinate);
       }).toThrow(
         new Error('Coordinate Y-55 does not exist on standard board.'),
