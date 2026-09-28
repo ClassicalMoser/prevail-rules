@@ -53,9 +53,7 @@ export function getMeleeSupportValue(
     if (diagonalSpaces.has(space)) {
       // Unit is diagonally adjacent to the primary unit
       // Check if the diagonal is clear of enemy units blocking it
-      if (
-        diagonalIsClear(playerSide, board, unitCoordinate, space)
-      ) {
+      if (diagonalIsClear(playerSide, board, unitCoordinate, space)) {
         // Diagonal is clear, add the unit to the possible support units
         potentialSupportUnits.push(unit);
       } else {

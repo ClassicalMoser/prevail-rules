@@ -11,6 +11,15 @@ Domain models for the Prevail rules engine. Import as `@entities`.
 
 Sequencing and composed game state live in [`../game/`](../game/README.md) (`@game`).
 
+## Barrels
+
+Every `index.ts` re-exports by hand (no `export *`).
+
+- **One comment per export**, on the line above it, saying what that name is. Group a `export { a, b }` only when those names are one idea.
+- **Order is how you would explain the folder**, not alphabetical. Put the simple or underlying pieces first, then the ones built from them, then a facing-relative or later group if the folder has one. Parent barrels list a folder's names in that same order.
+
+Example: `queries/board/adjacency/` exports orthogonal neighbors, then diagonal, then all eight; then front, flank, and rear.
+
 ## Schema-first pattern
 
 Every entity follows this split so runtime validation, IDE types, and `isolatedDeclarations` stay aligned:

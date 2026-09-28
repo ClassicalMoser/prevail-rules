@@ -1,3 +1,4 @@
+// Event kinds: a game effect or a player choice.
 export {
   eventSchema,
   eventTypes,
@@ -7,10 +8,12 @@ export {
 } from './eventType';
 export type { Event, EventType } from './eventType';
 
+// What the engine expects next: an effect, a choice, or the union of both.
 export type { ExpectedEvent, ExpectedEventInfo } from './expectedEvent';
 export type { ExpectedPlayerInput, PlayerSource } from './expectedEvent';
 export type { ExpectedGameEffect } from './expectedEvent';
 
+// Game-effect payloads, grouped by the folder they live in.
 export {
   ATTACK_RESOLUTION_CONTEXT_VALUES,
   attackResolutionContextSchema,
@@ -107,42 +110,46 @@ export type {
   StartEngagementEvent,
   TriggerRoutFromRetreatEvent,
 } from './gameEffects';
+
+// Player choices, in round order, then the choice union and projections.
+export type { SetupUnitsEvent } from './playerChoices';
+export { setupUnitsEventSchema } from './playerChoices';
+export type { ChooseCardEvent } from './playerChoices';
+export { chooseCardEventSchema } from './playerChoices';
+export type { MoveCommanderEvent } from './playerChoices';
+export { moveCommanderEventSchema } from './playerChoices';
+export type { IssueCommandEvent } from './playerChoices';
+export { issueCommandEventSchema } from './playerChoices';
+export type { DoneIssuingCommandsEvent } from './playerChoices';
+export { doneIssuingCommandsEventSchema } from './playerChoices';
+export type { MoveUnitEvent } from './playerChoices';
+export { moveUnitEventSchema } from './playerChoices';
+export type { PerformRangedAttackEvent } from './playerChoices';
+export { performRangedAttackEventSchema } from './playerChoices';
+export type { CommitToMovementEvent } from './playerChoices';
+export { commitToMovementEventSchema } from './playerChoices';
+export type { CommitToRangedAttackEvent } from './playerChoices';
+export { commitToRangedAttackEventSchema } from './playerChoices';
+export type { CommitToMeleeEvent } from './playerChoices';
+export { commitToMeleeEventSchema } from './playerChoices';
+export type { ChooseMeleeResolutionEvent } from './playerChoices';
+export { chooseMeleeResolutionEventSchema } from './playerChoices';
+export type { ChooseWhetherToRetreatEvent } from './playerChoices';
+export { chooseWhetherToRetreatEventSchema } from './playerChoices';
+export type { ChooseRetreatOptionEvent } from './playerChoices';
+export { chooseRetreatOptionEventSchema } from './playerChoices';
+export type { ChooseRoutDiscardEvent } from './playerChoices';
+export { chooseRoutDiscardEventSchema } from './playerChoices';
+export type { ChooseRallyEvent } from './playerChoices';
+export { chooseRallyEventSchema } from './playerChoices';
 export type {
   AssignUnitSupportEvent,
   UnitSupportAssignment,
 } from './playerChoices';
 export {
-  assignUnitSupportEventSchema,
   ASSIGN_UNIT_SUPPORT_CHOICE_TYPE,
+  assignUnitSupportEventSchema,
 } from './playerChoices';
-export type { ChooseCardEvent } from './playerChoices';
-export { chooseCardEventSchema } from './playerChoices';
-export type { ChooseMeleeResolutionEvent } from './playerChoices';
-export { chooseMeleeResolutionEventSchema } from './playerChoices';
-export type { ChooseRallyEvent } from './playerChoices';
-export { chooseRallyEventSchema } from './playerChoices';
-export type { ChooseRetreatOptionEvent } from './playerChoices';
-export { chooseRetreatOptionEventSchema } from './playerChoices';
-export type { ChooseRoutDiscardEvent } from './playerChoices';
-export { chooseRoutDiscardEventSchema } from './playerChoices';
-export type { ChooseWhetherToRetreatEvent } from './playerChoices';
-export { chooseWhetherToRetreatEventSchema } from './playerChoices';
-export type { CommitToMeleeEvent } from './playerChoices';
-export { commitToMeleeEventSchema } from './playerChoices';
-export type { CommitToMovementEvent } from './playerChoices';
-export { commitToMovementEventSchema } from './playerChoices';
-export type { CommitToRangedAttackEvent } from './playerChoices';
-export { commitToRangedAttackEventSchema } from './playerChoices';
-export type { DoneIssuingCommandsEvent } from './playerChoices';
-export { doneIssuingCommandsEventSchema } from './playerChoices';
-export type { IssueCommandEvent } from './playerChoices';
-export { issueCommandEventSchema } from './playerChoices';
-export type { MoveCommanderEvent } from './playerChoices';
-export { moveCommanderEventSchema } from './playerChoices';
-export type { MoveUnitEvent } from './playerChoices';
-export { moveUnitEventSchema } from './playerChoices';
-export type { PerformRangedAttackEvent } from './playerChoices';
-export { performRangedAttackEventSchema } from './playerChoices';
 export type {
   PlayerChoiceEvent,
   PlayerChoiceType,
@@ -159,6 +166,3 @@ export {
   projectedChooseCardEventSchema,
   projectedPlayerChoiceEventSchema,
 } from './playerChoices';
-
-export type { SetupUnitsEvent } from './playerChoices';
-export { setupUnitsEventSchema } from './playerChoices';

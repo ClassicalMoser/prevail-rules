@@ -1,11 +1,11 @@
-// Neighbors of a space: orthogonal, diagonal, front, flank, back.
+// Neighbors: orthogonal, diagonal, all eight; then front, flank, and rear arcs.
 export {
-  getAdjacentSpaces,
-  getBackSpaces,
-  getDiagonallyAdjacentSpaces,
-  getFlankingSpaces,
-  getFrontSpaces,
   getOrthogonallyAdjacentSpaces,
+  getDiagonallyAdjacentSpaces,
+  getAdjacentSpaces,
+  getFrontSpaces,
+  getFlankingSpaces,
+  getBackSpaces,
 } from './adjacency';
 
 // Regions: ahead, behind, arc, inline, within distance.

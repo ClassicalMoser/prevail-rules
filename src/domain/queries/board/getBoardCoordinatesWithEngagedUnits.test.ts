@@ -37,6 +37,8 @@ describe(getBoardCoordinatesWithEngagedUnits, () => {
       engagedWhite,
       'E-5',
     );
+
+    // Add unengaged units to the board
     const boardWithUnengagedBlack = addUnitToBoard(state.boardState, {
       placement: { coordinate: 'E-6', facing: 'north' },
       unit: unengagedBlack,
@@ -46,11 +48,8 @@ describe(getBoardCoordinatesWithEngagedUnits, () => {
       unit: unengagedWhite,
     });
 
-    const newState = {
-      ...state,
-      boardState: boardWithUnengagedWhite,
-    };
-    const coords = getBoardCoordinatesWithEngagedUnits(newState.boardState);
+    // Get the coordinates with engaged units
+    const coords = getBoardCoordinatesWithEngagedUnits(boardWithUnengagedWhite);
 
     expect(coords.size).toBe(1);
     expect(coords.has('E-5')).toBe(true);
