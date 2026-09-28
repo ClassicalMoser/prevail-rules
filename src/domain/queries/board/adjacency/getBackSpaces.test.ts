@@ -8,7 +8,7 @@ const standardBoard = createEmptyStandardBoard();
 /**
  * GetBackSpaces: the three spaces in the unit's rear arc (mirror of front arc for the opposite facing).
  */
-describe(getBackSpaces, () => {
+describe('getBackSpaces function', () => {
   it('the rear arc of a north-facing unit at E-5 is the three spaces to the south', () => {
     expect(getBackSpaces(standardBoard, 'E-5', 'north')).toStrictEqual(
       new Set(['F-6', 'F-4', 'F-5']),
@@ -57,39 +57,39 @@ describe(getBackSpaces, () => {
     );
   });
 
-  it('clips the rear arc of a north-facing unit at corner A-1 to the two in-bounds spaces', () => {
+  it('the rear arc of a north-facing unit at corner A-1 clips to the two in-bounds spaces', () => {
     expect(getBackSpaces(standardBoard, 'A-1', 'north')).toStrictEqual(
       new Set(['B-2', 'B-1']),
     );
   });
 
-  it('clips the rear arc of a south-facing unit at corner L-18 to the two in-bounds spaces', () => {
+  it('the rear arc of a south-facing unit at corner L-18 clips to the two in-bounds spaces', () => {
     expect(getBackSpaces(standardBoard, 'L-18', 'south')).toStrictEqual(
       new Set(['K-17', 'K-18']),
     );
   });
 
-  it('returns an empty set when the unit is at a corner and facing the center', () => {
+  it('the rear arc is empty when the unit is at a corner and facing the center', () => {
     expect(getBackSpaces(standardBoard, 'A-1', 'southEast')).toStrictEqual(
       new Set(),
     );
   });
 
-  it('throws when the row letter is invalid', () => {
+  it('row beyond board edge is rejected', () => {
     // Intentionally bad assertion to test the error message
     expect(() =>
       getBackSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
-  it('throws when the column is invalid', () => {
+  it('column beyond board edge is rejected', () => {
     // Intentionally bad assertion to test the error message
     expect(() =>
       getBackSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 
-  it('throws when the facing is invalid', () => {
+  it('invalid facing is rejected', () => {
     // Intentionally bad assertion to test the error message
     expect(() =>
       getBackSpaces(standardBoard, 'E-9', 'random' as UnitFacing),

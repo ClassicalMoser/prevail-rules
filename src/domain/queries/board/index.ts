@@ -18,13 +18,11 @@ export {
   getSpacesWithinDistance,
 } from './areas';
 
-// One step forward, rearward, left, or right.
+// One step forward, forward to the edge, and one step rearward.
 export {
   getForwardSpace,
   getForwardSpacesToEdge,
-  getLeftSpace,
   getRearwardSpace,
-  getRightSpace,
 } from './steps';
 
 // Every coordinate on the board.

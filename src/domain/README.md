@@ -79,7 +79,7 @@ Pure functions that extract information from game state without modifying it. Th
   - `getAdjacentSpaces()` - Get adjacent spaces
   - `getFrontSpaces()` / `getFlankingSpaces()` / `getBackSpaces()` - Directional spaces
   - `getSpacesAhead()` / `getSpacesBehind()` - Area calculations
-  - `getForwardSpace()` / `getLeftSpace()` / `getRightSpace()` - Directional movement
+  - `getForwardSpace()` / `getRearwardSpace()` - One step forward or back
 
 - **Unit Operations** (`unit/`, `unitMovement/`, `unitPresence/`): Unit queries
   - `getLegalUnitMoves()` - Calculate all legal moves for a unit

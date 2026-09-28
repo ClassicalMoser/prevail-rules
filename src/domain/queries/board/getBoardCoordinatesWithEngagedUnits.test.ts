@@ -11,12 +11,12 @@ import { addUnitToBoard } from '@transforms';
  * GetBoardCoordinatesWithEngagedUnits: set of coordinates where the space has an engagement (two units).
  */
 describe(getBoardCoordinatesWithEngagedUnits, () => {
-  it('returns an empty set when the board has no engagements', () => {
+  it('the board has no engagements', () => {
     const state = createEmptyGameState();
     expect(getBoardCoordinatesWithEngagedUnits(state.boardState).size).toBe(0);
   });
 
-  it('includes the coordinate of the one engaged space', () => {
+  it('the one engaged space is included', () => {
     const black = createTestUnit('black', { attack: 3 });
     const white = createTestUnit('white', { attack: 3 });
     const state = createGameStateWithEngagedUnits(black, white, 'E-5');
@@ -27,7 +27,7 @@ describe(getBoardCoordinatesWithEngagedUnits, () => {
     expect(coords.has('E-5')).toBe(true);
   });
 
-  it('excludes the coordinates of units that are not engaged', () => {
+  it('unengaged units are excluded', () => {
     const engagedBlack = createTestUnit('black', { attack: 3 });
     const engagedWhite = createTestUnit('white', { attack: 3 });
     const unengagedBlack = createTestUnit('black', { attack: 3 });

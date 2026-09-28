@@ -8,7 +8,7 @@ import { addUnitToBoard } from '@transforms';
  * GetSingleUnitWithPlacementAtCoordinate: unit + placement when presence is exactly one unit; throws otherwise.
  */
 describe(getSingleUnitWithPlacementAtCoordinate, () => {
-  it('returns the unit and its placement when one unit occupies the space', () => {
+  it('one unit on a space is found, including its placement', () => {
     const board = createBoardWithSingleUnit('E-5', 'white', {
       facing: 'south',
     });
@@ -18,14 +18,14 @@ describe(getSingleUnitWithPlacementAtCoordinate, () => {
     expect(u.unit.playerSide).toBe('white');
   });
 
-  it('throws when the space is empty', () => {
+  it('an empty space is rejected', () => {
     const board = createEmptyStandardBoard();
     expect(() => getSingleUnitWithPlacementAtCoordinate(board, 'E-5')).toThrow(
       'Expected exactly one unit at coordinate',
     );
   });
 
-  it('throws when the space has multiple units', () => {
+  it('multiple units on a space are rejected', () => {
     const board = createBoardWithSingleUnit('E-5', 'white', {
       facing: 'south',
     });

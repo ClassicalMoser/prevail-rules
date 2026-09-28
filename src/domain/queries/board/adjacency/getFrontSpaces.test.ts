@@ -57,53 +57,53 @@ describe('getFrontSpaces function', () => {
     );
   });
 
-  it('clips the front arc of a south-facing unit at corner A-1 to the two in-bounds spaces', () => {
+  it('the front arc of a south-facing unit at corner A-1 clips to the two in-bounds spaces', () => {
     expect(getFrontSpaces(standardBoard, 'A-1', 'south')).toStrictEqual(
       new Set(['B-2', 'B-1']),
     );
   });
 
-  it('clips the front arc of an east-facing unit at corner A-1 to the two in-bounds spaces', () => {
+  it('the front arc of an east-facing unit at corner A-1 clips to the two in-bounds spaces', () => {
     expect(getFrontSpaces(standardBoard, 'A-1', 'east')).toStrictEqual(
       new Set(['B-2', 'A-2']),
     );
   });
 
-  it('clips the front arc of a north-facing unit at corner L-18 to the two in-bounds spaces', () => {
+  it('the front arc of a north-facing unit at corner L-18 clips to the two in-bounds spaces', () => {
     expect(getFrontSpaces(standardBoard, 'L-18', 'north')).toStrictEqual(
       new Set(['K-17', 'K-18']),
     );
   });
 
-  it('clips the front arc of a west-facing unit at corner L-18 to the two in-bounds spaces', () => {
+  it('the front arc of a west-facing unit at corner L-18 clips to the two in-bounds spaces', () => {
     expect(getFrontSpaces(standardBoard, 'L-18', 'west')).toStrictEqual(
       new Set(['K-17', 'L-17']),
     );
   });
 
-  it('returns an empty set when a north-facing unit at A-5 has its front arc off the board', () => {
+  it('a north-facing unit at A-5 has its front arc off the board', () => {
     expect(getFrontSpaces(standardBoard, 'A-5', 'north').size).toBe(0);
   });
 
-  it('returns an empty set when an east-facing unit at E-18 has its front arc off the board', () => {
+  it('an east-facing unit at E-18 has its front arc off the board', () => {
     expect(getFrontSpaces(standardBoard, 'E-18', 'east').size).toBe(0);
   });
 
-  it('throws when the row letter is invalid', () => {
+  it('row beyond board edge is rejected', () => {
     // Intentionally bad assertion to test the error message
     expect(() =>
       getFrontSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
-  it('throws when the column is invalid', () => {
+  it('column beyond board edge is rejected', () => {
     // Intentionally bad assertion to test the error message
     expect(() =>
       getFrontSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 
-  it('throws when the facing is invalid', () => {
+  it('invalid facing is rejected', () => {
     // Intentionally bad assertion to test the error message
     expect(() =>
       getFrontSpaces(standardBoard, 'E-9', 'random' as UnitFacing),
