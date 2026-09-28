@@ -8,13 +8,13 @@ export {
   getBackSpaces,
 } from './adjacency';
 
-// Regions: ahead, behind, arc, inline, within distance.
+// Regions: inline, half-plane, ahead, behind, arc, within distance.
 export {
   getInlineSpaces,
+  getHalfPlaneInDirection,
   getSpacesAhead,
   getSpacesBehind,
   getSpacesInArc,
-  getSpacesInDirection,
   getSpacesWithinDistance,
 } from './areas';
 

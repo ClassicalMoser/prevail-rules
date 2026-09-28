@@ -14,8 +14,12 @@ export function getSpacesWithinDistance(
   coordinate: Coordinate,
   distance: number,
 ): Set<Coordinate> {
-  // If distance is 0 or negative, return only the starting coordinate
-  if (distance <= 0) {
+  // If distance is less than 0, return an empty set.
+  if (distance < 0) {
+    return new Set();
+  }
+  // If distance is exactly 0, return only the starting coordinate
+  if (distance === 0) {
     return new Set([coordinate]);
   }
 

@@ -1,7 +1,7 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getOppositeFacing } from '@queries/facings';
-import { getBackSpaces } from '../adjacency';
-import { getSpacesInDirection } from './getSpacesInDirection';
+
+import { getHalfPlaneInDirection } from './getHalfPlaneInDirection';
 
 /**
  * Get the spaces behind for a given coordinate and facing.
@@ -17,12 +17,6 @@ export function getSpacesBehind(
   coordinate: Coordinate,
   facing: UnitFacing,
 ): Set<Coordinate> {
-  // Start with the back spaces
-  const backSpaces = getBackSpaces(board, coordinate, facing);
-
-  // Get the direction backward from the facing
-  const backwardFacing = getOppositeFacing(facing);
-
-  // Extend spaces in the backward direction
-  return getSpacesInDirection(board, backSpaces, backwardFacing);
+  // The rear half-plane is the front half-plane of the opposite facing.
+  return getHalfPlaneInDirection(board, coordinate, getOppositeFacing(facing));
 }

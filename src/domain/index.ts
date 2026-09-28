@@ -421,7 +421,7 @@ export {
   getSpacesAhead,
   getSpacesBehind,
   getSpacesInArc,
-  getSpacesInDirection,
+  getHalfPlaneInDirection,
   getSpacesWithinDistance,
   isEngagementFromFlank,
   isEngagementFromFront,

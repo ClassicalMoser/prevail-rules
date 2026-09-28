@@ -189,6 +189,8 @@ Test helpers and utilities for writing domain tests.
 - `unitHelpers.ts` - Unit testing utilities
 - `testHelpers.ts` - General test utilities
 
+An `it` title states a fact, and `it` is the subject: "column 1 lies behind an east-facing unit at F-2". "Returns" names the function call. A leading "should" repeats `it` and drops out once every title starts with it.
+
 #### 10. **Utils** (`utils/`)
 
 General utility functions used across the domain.

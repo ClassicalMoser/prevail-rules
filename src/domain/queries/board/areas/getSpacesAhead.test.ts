@@ -1,14 +1,16 @@
-import { createEmptyStandardBoard } from '@factories';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
 
 import { getSpacesAhead } from './getSpacesAhead';
 
 const standardBoard = createEmptyStandardBoard();
+const smallBoard = createEmptySmallBoard();
 
 /**
- * GetSpacesAhead: all board spaces strictly forward of the unit's front arc (front spaces extended in facing).
+ * GetSpacesAhead: all board spaces strictly in front of the unit's inline line.
  */
 describe(getSpacesAhead, () => {
-  it('returns wedge west of front arc when facing west from F-2', () => {
+  it('column 1 lies ahead of a west-facing unit at F-2', () => {
+    // Column 1, west of the inline line through F-2.
     expect(getSpacesAhead(standardBoard, 'F-2', 'west')).toStrictEqual(
       new Set([
         'A-1',
@@ -27,7 +29,8 @@ describe(getSpacesAhead, () => {
     );
   });
 
-  it('returns wedge north of front arc when facing north from B-7', () => {
+  it('row A lies ahead of a north-facing unit at B-7', () => {
+    // Row A, north of the inline line through B-7.
     expect(getSpacesAhead(standardBoard, 'B-7', 'north')).toStrictEqual(
       new Set([
         'A-1',
@@ -52,7 +55,8 @@ describe(getSpacesAhead, () => {
     );
   });
 
-  it('returns wedge east of front arc when facing east from F-16', () => {
+  it('columns 17 and 18 lie ahead of an east-facing unit at F-16', () => {
+    // Columns 17 and 18, east of the inline line through F-16.
     expect(getSpacesAhead(standardBoard, 'F-16', 'east')).toStrictEqual(
       new Set([
         'A-17',
@@ -83,13 +87,15 @@ describe(getSpacesAhead, () => {
     );
   });
 
-  it('returns small forward wedge when facing northWest from B-2', () => {
+  it('A-1, B-1, and A-2 lie ahead of a northWest-facing unit at B-2', () => {
+    // The three spaces northwest of B-2.
     expect(getSpacesAhead(standardBoard, 'B-2', 'northWest')).toStrictEqual(
       new Set(['A-1', 'B-1', 'A-2']),
     );
   });
 
-  it('returns forward wedge toward southwest corner when facing southWest from J-3', () => {
+  it('the southwest corner lies ahead of a southWest-facing unit at J-3', () => {
+    // The southwest corner ahead of J-3.
     expect(getSpacesAhead(standardBoard, 'J-3', 'southWest')).toStrictEqual(
       new Set([
         'I-1',
@@ -104,5 +110,33 @@ describe(getSpacesAhead, () => {
         'L-4',
       ]),
     );
+  });
+
+  describe('on a small board', () => {
+    it('nothing lies ahead of a southEast-facing unit at corner H-12', () => {
+      // The forward semiplane is empty ahead of H-12.
+      expect(getSpacesAhead(smallBoard, 'H-12', 'southEast').size).toBe(0);
+    });
+
+    it('the southeast semiplane lies ahead of a southEast-facing unit at E-6', () => {
+      const result = getSpacesAhead(smallBoard, 'E-6', 'southEast');
+
+      // Spaces ahead of the unit's inline line.
+      expect(result.has('F-7')).toBe(true);
+      expect(result.has('F-6')).toBe(true);
+      expect(result.has('F-8')).toBe(true);
+      expect(result.has('G-8')).toBe(true);
+      expect(result.has('H-9')).toBe(true);
+      // Spaces behind the unit's inline line.
+      expect(result.has('D-5')).toBe(false);
+      expect(result.has('C-4')).toBe(false);
+      // Inline spaces should always be excluded.
+      expect(result.has('F-5')).toBe(false);
+      expect(result.has('D-7')).toBe(false);
+      // Coordinates past the edge of the small board.
+      expect(result.has('A-18')).toBe(false);
+      expect(result.has('L-18')).toBe(false);
+      expect(result.has('L-1')).toBe(false);
+    });
   });
 });

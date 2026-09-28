@@ -1,32 +1,40 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
 import { getFrontSpaces } from '../adjacency';
-import { filterUndefinedSpaces } from '../filterUndefinedSpaces';
-
+/**
+ * For ranged attacks, get the spaces in the arc of the facing, up to a given range.
+ * @param board - The board object
+ * @param coordinate - The coordinate to get the spaces in the arc for
+ * @param facing - The facing to get the spaces in the arc for
+ * @param range - The range of the arc
+ * @returns A set of the space coordinates in the arc
+ */
 export function getSpacesInArc(
   board: Board,
   coordinate: Coordinate,
   facing: UnitFacing,
   range: number,
 ): Set<Coordinate> {
-  // Start with the origin space
-  const spacesInArc = new Set<Coordinate>([coordinate]);
-  // Add the spaces in front of the origin space
-  for (let i = 0; i < range; i++) {
-    // Iterate forward by spaces in front, up to the range.
-    const currentSpacesInArc = [...spacesInArc];
-    for (const space of currentSpacesInArc) {
-      // Get the spaces in front of the current space
+  const spacesInArc = new Set<Coordinate>();
+  // The origin starts the walk. It is not part of the arc.
+  let rank = new Set<Coordinate>([coordinate]);
+
+  // Step forward one rank at a time, up to the range.
+  for (let step = 0; step < range; step++) {
+    const nextRank = new Set<Coordinate>();
+    for (const space of rank) {
+      // Front spaces are already on the board.
       const spacesInFront = getFrontSpaces(board, space, facing);
       // Add the spaces in front of the current space to the set
-      for (const space of spacesInFront) {
-        spacesInArc.add(space);
+      for (const spaceInFront of spacesInFront) {
+        if (spacesInArc.has(spaceInFront)) {
+          continue;
+        }
+        spacesInArc.add(spaceInFront);
+        nextRank.add(spaceInFront);
       }
     }
+    rank = nextRank;
   }
-  // Remove the origin space
-  spacesInArc.delete(coordinate);
-  // Filter out undefined values
-  const validSpacesInArc = filterUndefinedSpaces(spacesInArc);
-  // Return the set of valid spaces in the arc
-  return validSpacesInArc;
+
+  return spacesInArc;
 }

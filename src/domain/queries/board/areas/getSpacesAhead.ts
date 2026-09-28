@@ -1,6 +1,5 @@
 import type { Board, Coordinate, UnitFacing } from '@entities';
-import { getFrontSpaces } from '../adjacency';
-import { getSpacesInDirection } from './getSpacesInDirection';
+import { getHalfPlaneInDirection } from './getHalfPlaneInDirection';
 
 /**
  * Get the spaces ahead for a given coordinate and facing.
@@ -16,9 +15,5 @@ export function getSpacesAhead(
   coordinate: Coordinate,
   facing: UnitFacing,
 ): Set<Coordinate> {
-  // Start with the front spaces
-  const frontSpaces = getFrontSpaces(board, coordinate, facing);
-
-  // Extend spaces in the forward direction
-  return getSpacesInDirection(board, frontSpaces, facing);
+  return getHalfPlaneInDirection(board, coordinate, facing);
 }
