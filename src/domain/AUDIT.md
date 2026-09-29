@@ -6,7 +6,7 @@ Running checklist for a **manual, end-to-end conventions audit** of the rules en
 
 **Criteria (shared):** see `[entities/README.md](./entities/README.md)` (schema-first, declaration order, enum `AssertExact` skip, `.strict()`, barrels). Package-specific notes live in each package README when present.
 
-**Last updated:** 2026-09-27
+**Last updated:** 2026-09-29
 
 ---
 
@@ -99,7 +99,7 @@ Target layout mirrors `entities/` and `game/` nouns. Retire `boardSpace/`, `card
   - [ ] `facings/`
   - [ ] `unit/` — stats, friendliness, support match, units on board, unit identity
   - [ ] `unitPresence/` — position, enemy in the space, at a placement
-  - [ ] `card/` — owned and hidden slices, command match, initiative, commitment modifiers, modifier and restriction equality
+  - [x] `card/` — owned and hidden slices, command match, initiative, commitment modifiers, modifier and restriction equality
   - [ ] `line/` — `getLinesFromUnit`, `isValidLine`
   - [ ] `player/` — `getOtherPlayer`
   - [x] `attack/` — `applyAttackValue`, `getMeleeSupportValue`

@@ -39,7 +39,7 @@ describe(calculateInitiative, () => {
     const whiteCard = createTestCard({ initiative: 2 });
     const blackCard = createTestCard({ initiative: 2 });
 
-    expect(calculateInitiative(whiteCard, blackCard, 'white')).toBe('white');
+    expect(calculateInitiative(whiteCard, blackCard, 'black')).toBe('black');
   });
 
   it('white keeps initiative when tied', () => {
