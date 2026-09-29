@@ -1,14 +1,14 @@
 import { CLEANUP_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
 
 import { getIsFirstPlayerForResolveRallyStep } from './getIsFirstPlayerForResolveRallyStep';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Cleanup resolve-rally steps alternate first vs second player; this boolean matches the step name.
  */
 describe(getIsFirstPlayerForResolveRallyStep, () => {
   it('given firstPlayerResolveRally, returns true', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
@@ -20,7 +20,7 @@ describe(getIsFirstPlayerForResolveRallyStep, () => {
   });
 
   it('given the second player resolve rally step, returns false', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
@@ -32,7 +32,7 @@ describe(getIsFirstPlayerForResolveRallyStep, () => {
   });
 
   it('given discardPlayedCards, throws not on resolveRally with step name', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,

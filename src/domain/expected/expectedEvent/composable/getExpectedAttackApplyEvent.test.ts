@@ -5,7 +5,6 @@ import {
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithReverse,
   createAttackApplyStateWithRout,
-  createEmptyGameState,
   createGameStateWithEngagedUnits,
   createRetreatState,
   createReverseState,
@@ -15,6 +14,7 @@ import {
 
 import { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
 
+import { createEmptyGameState } from '@factories';
 const { canReverseUnitMock } = vi.hoisted(() => ({
   canReverseUnitMock: vi.fn(),
 }));
@@ -66,7 +66,10 @@ describe(getExpectedAttackApplyEvent, () => {
       });
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
         'resolveRout',
       );
     });
@@ -81,7 +84,10 @@ describe(getExpectedAttackApplyEvent, () => {
       });
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
         'completeAttackApply',
       );
     });
@@ -97,7 +103,10 @@ describe(getExpectedAttackApplyEvent, () => {
       });
 
       expect(() =>
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
       ).toThrow('Attack apply state is already complete');
     });
   });
@@ -114,7 +123,10 @@ describe(getExpectedAttackApplyEvent, () => {
       });
 
       expectPlayerChoice(
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
         'white',
         'chooseRetreatOption',
       );
@@ -137,7 +149,10 @@ describe(getExpectedAttackApplyEvent, () => {
       );
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
         'completeAttackApply',
       );
     });
@@ -157,7 +172,10 @@ describe(getExpectedAttackApplyEvent, () => {
       const attackApplyState = createAttackApplyStateWithReverse(unitPlacement);
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
         'resolveReverse',
       );
     });
@@ -204,7 +222,10 @@ describe(getExpectedAttackApplyEvent, () => {
       );
 
       expect(() =>
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
       ).toThrow('Attack apply state is already complete');
     });
 
@@ -231,7 +252,10 @@ describe(getExpectedAttackApplyEvent, () => {
       );
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
         'completeAttackApply',
       );
     });
@@ -261,7 +285,10 @@ describe(getExpectedAttackApplyEvent, () => {
       );
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
         'completeAttackApply',
       );
     });
@@ -290,7 +317,10 @@ describe(getExpectedAttackApplyEvent, () => {
       );
 
       expect(() =>
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
       ).toThrow('Attack apply state is already complete');
     });
   });
@@ -301,7 +331,10 @@ describe(getExpectedAttackApplyEvent, () => {
       const attackApplyState = createAttackApplyState(unit);
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
         'completeAttackApply',
       );
     });
@@ -313,7 +346,10 @@ describe(getExpectedAttackApplyEvent, () => {
       });
 
       expect(() =>
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
       ).toThrow('Attack apply state is already complete');
     });
 
@@ -329,7 +365,10 @@ describe(getExpectedAttackApplyEvent, () => {
       });
 
       expect(() =>
-        getExpectedAttackApplyEvent(attackApplyState, createEmptyGameState()),
+        getExpectedAttackApplyEvent(
+          attackApplyState,
+          createEmptyGameState('standard'),
+        ),
       ).toThrow('Attack apply state not initialized correctly');
     });
   });

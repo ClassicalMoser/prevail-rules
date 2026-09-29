@@ -3,7 +3,6 @@ import { throwIfNone, throwIfPending } from '@utils';
 import type { ResolveEngageRetreatOptionEvent } from '@events';
 import type { GameState } from '@game';
 import {
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -14,6 +13,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyResolveEngageRetreatOptionEvent } from './applyResolveEngageRetreatOptionEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Procedure output for front engagement: copies `defendingUnitCanRetreat` onto the nested
  * front engagement resolution state under the movement CRS.
@@ -29,7 +29,7 @@ describe(applyResolveEngageRetreatOptionEvent, () => {
   }
 
   it('given front engagement and event defendingUnitCanRetreat true, movement slice stores true', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat('white', 'speed', 3);
     const engagementState = baseFrontEngagementState();
@@ -84,7 +84,7 @@ describe(applyResolveEngageRetreatOptionEvent, () => {
   });
 
   it('given defendingUnitCanRetreat false, marks front engagement complete (stay for melee)', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat('white', 'speed', 2);
     const engagementState = {

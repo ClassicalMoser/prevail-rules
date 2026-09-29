@@ -1,12 +1,13 @@
 import type { GameState } from '@game';
 
 import { MOVE_COMMANDERS_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
-import { updatePhaseState } from '@transforms';
+
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getExpectedMoveCommandersPhaseEvent } from './getExpectedMoveCommandersPhaseEvent';
 import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedMoveCommandersPhaseEvent: next event during move-commanders phase.
  */
@@ -18,7 +19,10 @@ describe(getExpectedMoveCommandersPhaseEvent, () => {
     step: 'moveFirstCommander' | 'moveSecondCommander' | 'complete',
     currentInitiative: 'black' | 'white' = 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      currentInitiative,
+    );
 
     const stateWithPhase = updatePhaseState(state, {
       phase: MOVE_COMMANDERS_PHASE,

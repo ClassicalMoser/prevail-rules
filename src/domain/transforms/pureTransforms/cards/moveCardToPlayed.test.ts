@@ -1,15 +1,15 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { moveCardToPlayed } from './moveCardToPlayed';
 
+import { createEmptyGameState } from '@factories';
 /**
  * MoveCardToPlayed: Moves a player's card from inPlay to played pile.
  */
 describe(moveCardToPlayed, () => {
   it('given move card from inPlay to played', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       inPlay: tempCommandCards[0],
       played: [],
     };
@@ -22,7 +22,7 @@ describe(moveCardToPlayed, () => {
 
   it('given append to existing played cards', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       inPlay: tempCommandCards[1],
       played: [tempCommandCards[0]],
     };
@@ -37,7 +37,7 @@ describe(moveCardToPlayed, () => {
 
   it('given context, returns unchanged state if no card in play', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       inPlay: null,
       played: [],
     };
@@ -51,7 +51,7 @@ describe(moveCardToPlayed, () => {
 
   it('given not mutate the original card state', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       inPlay: tempCommandCards[0],
       played: [],
     };

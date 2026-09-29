@@ -2,7 +2,6 @@ import type { Army, GameModeName } from '@entities';
 import type { GameStateForVisibility } from '@game';
 
 import { createUnitInstance } from '@factories/unit';
-
 import { createEmptyGameState } from './createEmptyGameState';
 
 /**

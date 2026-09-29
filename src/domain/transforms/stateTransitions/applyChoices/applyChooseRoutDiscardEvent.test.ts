@@ -4,7 +4,6 @@ import { getIssueCommandsPhaseState } from '@queries';
 import { tempCommandCards } from '@sampleValues';
 import {
   createCleanupPhaseState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createPlayCardsPhaseState,
@@ -24,6 +23,8 @@ import {
 
 import { applyChooseRoutDiscardEvent } from './applyChooseRoutDiscardEvent';
 
+import { createEmptyGameState } from '@factories';
+import { updateCurrentInitiative } from '@transforms/pureTransforms/state/updateCurrentInitiative';
 /**
  * ChooseRoutDiscard completes an awaiting rout: discard cards, remove units,
  * mark rout complete (and rear engagement complete when applicable).
@@ -33,7 +34,10 @@ describe(applyChooseRoutDiscardEvent, () => {
     step: 'firstPlayerResolveRally' | 'secondPlayerResolveRally',
     player: 'white' | 'black',
   ) {
-    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const unit = createTestUnit(player, { attack: 2 });
     const rallyState = createRallyResolutionState({
       playerRallied: true,
@@ -121,7 +125,7 @@ describe(applyChooseRoutDiscardEvent, () => {
       facing: 'north',
       playerSide: 'white',
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     state = updateCardState(state, {
       ...state.cardState,
@@ -182,7 +186,7 @@ describe(applyChooseRoutDiscardEvent, () => {
   });
 
   it('given playCards phase, throws when no rout discard awaits', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),
@@ -201,7 +205,7 @@ describe(applyChooseRoutDiscardEvent, () => {
   });
 
   it('given cleanup discardPlayedCards, throws when no rout discard awaits', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = createCleanupPhaseState({
       step: 'discardPlayedCards',
     });

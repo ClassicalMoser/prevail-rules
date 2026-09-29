@@ -2,7 +2,6 @@ import type { UnitWithPlacement } from '@entities';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
@@ -12,7 +11,11 @@ import {
   createRetreatState,
   createTestUnit,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import {
   findRetreatState,
@@ -23,6 +26,7 @@ import {
   getRetreatStateReadyForResolveFromMelee,
 } from './retreat';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Retreat substeps live under attack-apply (ranged or melee side): unwrap nested state, locate
  * retreat by player across CRS shapes, and pick which melee retreat is ready for `resolveRetreat`.
@@ -57,7 +61,7 @@ describe(getRetreatStateFromRangedAttack, () => {
   it('given ranged CRS with defender retreat apply, returns defender retreat', () => {
     const attackingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -86,7 +90,7 @@ describe(getRetreatStateFromRangedAttack, () => {
   it('given ranged CRS without attackApplyState, throws no attack apply in ranged', () => {
     const attackingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -109,7 +113,7 @@ describe(getRetreatStateFromRangedAttack, () => {
   it('given ranged apply without retreat substep, throws no retreat in attack apply', () => {
     const attackingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -133,7 +137,7 @@ describe(getRetreatStateFromRangedAttack, () => {
 describe(getRetreatStateFromMelee, () => {
   it('given white melee apply in retreat, getRetreatState(melee, white) returns it', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
       {
@@ -170,7 +174,7 @@ describe(getRetreatStateFromMelee, () => {
 
   it('given black melee apply in retreat, getRetreatState(melee, black) returns it', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
       {
@@ -206,7 +210,7 @@ describe(getRetreatStateFromMelee, () => {
   });
 
   it('given melee missing white apply, getRetreatState(melee, white) throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
       {
@@ -238,7 +242,7 @@ describe(getRetreatStateFromMelee, () => {
 
 describe(findRetreatState, () => {
   it('given no phase slice, findRetreat throws no current phase state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     expect(() => findRetreatState(state, 'white')).toThrow(
       'No current phase state found',
@@ -247,7 +251,7 @@ describe(findRetreatState, () => {
 
   it('given ranged CRS with white defender retreat, findRetreat(white) succeeds', () => {
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -274,7 +278,7 @@ describe(findRetreatState, () => {
 
   it('given melee white retreat apply, findRetreat(white) succeeds', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
       {
@@ -310,7 +314,7 @@ describe(findRetreatState, () => {
   });
 
   it('given movement CRS only, findRetreat(white) throws no retreat for player', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -329,7 +333,7 @@ describe(findRetreatState, () => {
       placement: { coordinate: 'E-5', facing: 'north' },
       unit: defendingUnit,
     };
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -349,7 +353,7 @@ describe(findRetreatState, () => {
 
   it('given white retreating but findRetreat(black), throws no retreat for black', () => {
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -382,7 +386,10 @@ describe(getRetreatStateReadyForResolveFromMelee, () => {
   };
 
   it('given white initiative and white retreat final E-6 south ready, returns white retreat', () => {
-    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
@@ -426,7 +433,10 @@ describe(getRetreatStateReadyForResolveFromMelee, () => {
   });
 
   it('given white initiative but white retreat lacks finalPosition, picks black with final set', () => {
-    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
@@ -469,7 +479,10 @@ describe(getRetreatStateReadyForResolveFromMelee, () => {
   });
 
   it('given both retreats without finalPosition, throws no retreat ready to resolve', () => {
-    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
@@ -504,7 +517,7 @@ describe(getRetreatStateReadyForResolveFromMelee, () => {
   });
 
   it('given black initiative and black retreat final ready, returns black retreat first', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {

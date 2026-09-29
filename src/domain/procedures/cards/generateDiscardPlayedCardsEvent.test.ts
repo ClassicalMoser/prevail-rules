@@ -1,8 +1,8 @@
 import type { GameState } from '@game';
-import { createEmptyGameState } from '@testing';
 
 import { generateDiscardPlayedCardsEvent } from './generateDiscardPlayedCardsEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Cleanup phase entry: signal to discard all played command cards from both sides.
  * Payload is a fixed game effect only; handler clears played piles. Implementation ignores
@@ -10,15 +10,21 @@ import { generateDiscardPlayedCardsEvent } from './generateDiscardPlayedCardsEve
  */
 describe(generateDiscardPlayedCardsEvent, () => {
   it('given any game state, emits gameEffect with effectType discardPlayedCards', () => {
-    const state: GameState = createEmptyGameState();
+    const state: GameState = createEmptyGameState('standard');
     const event = generateDiscardPlayedCardsEvent(state, 0);
     expect(event.eventType).toBe('gameEffect');
     expect(event.effectType).toBe('discardPlayedCards');
   });
 
   it('given two separately constructed empty states, emits deeply equal events (state-independent)', () => {
-    const a = generateDiscardPlayedCardsEvent(createEmptyGameState(), 0);
-    const b = generateDiscardPlayedCardsEvent(createEmptyGameState(), 0);
+    const a = generateDiscardPlayedCardsEvent(
+      createEmptyGameState('standard'),
+      0,
+    );
+    const b = generateDiscardPlayedCardsEvent(
+      createEmptyGameState('standard'),
+      0,
+    );
     expect(a).toStrictEqual(b);
   });
 });

@@ -1,11 +1,11 @@
 import type { GameOverEvent } from '@events';
-import { createEmptyGameState } from '@testing';
 
 import { applyGameOverEvent } from './applyGameOverEvent';
 
+import { createEmptyGameState } from '@factories';
 describe(applyGameOverEvent, () => {
   it('assigns the winner from the event', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const event: GameOverEvent = {
       effectType: 'gameOver',
       eventNumber: 0,
@@ -21,7 +21,7 @@ describe(applyGameOverEvent, () => {
   });
 
   it('assigns null for a draw', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const event: GameOverEvent = {
       effectType: 'gameOver',
       eventNumber: 1,
@@ -33,7 +33,7 @@ describe(applyGameOverEvent, () => {
   });
 
   it('does not change phase or initiative', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const event: GameOverEvent = {
       effectType: 'gameOver',
       eventNumber: 0,

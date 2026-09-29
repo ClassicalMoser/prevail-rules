@@ -1,14 +1,15 @@
-import { createEmptyGameState, createTestUnit } from '@testing';
+import { createTestUnit } from '@testing';
 
 import { getExpectedSetupUnitsEvent } from './getExpectedSetupUnitsEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedSetupUnitsEvent: white then black while reserved units remain.
  */
 describe(getExpectedSetupUnitsEvent, () => {
   it('given white reserved units, expects white setupUnits', () => {
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       reservedUnits: [createTestUnit('white')],
     };
 
@@ -21,7 +22,7 @@ describe(getExpectedSetupUnitsEvent, () => {
 
   it('given only black reserved units, expects black setupUnits', () => {
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       reservedUnits: [createTestUnit('black')],
     };
 
@@ -34,7 +35,7 @@ describe(getExpectedSetupUnitsEvent, () => {
 
   it('given both sides reserved, prefers white first', () => {
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       reservedUnits: [createTestUnit('black'), createTestUnit('white')],
     };
 
@@ -46,8 +47,8 @@ describe(getExpectedSetupUnitsEvent, () => {
   });
 
   it('given empty reserve, throws', () => {
-    expect(() => getExpectedSetupUnitsEvent(createEmptyGameState())).toThrow(
-      'No reserved units remaining for setup',
-    );
+    expect(() =>
+      getExpectedSetupUnitsEvent(createEmptyGameState('standard')),
+    ).toThrow('No reserved units remaining for setup');
   });
 });

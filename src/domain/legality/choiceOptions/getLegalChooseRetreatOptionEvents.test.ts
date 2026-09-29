@@ -2,7 +2,6 @@ import type { UnitPlacement, UnitWithPlacement } from '@entities';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
   createAttackApplyStateWithRetreat,
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -14,6 +13,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { getLegalChooseRetreatOptionEvents } from './getLegalChooseRetreatOptionEvents';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetLegalChooseRetreatOptionEvents: full ChooseRetreatOptionEvent payloads from
  * an active retreat substep's legalRetreatOptions.
@@ -32,7 +32,7 @@ describe(getLegalChooseRetreatOptionEvents, () => {
     options: readonly UnitPlacement[] = [optionA, optionB],
     finalPosition: UnitPlacement | 'pending' = 'pending',
   ) {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
     const placement: UnitWithPlacement = {
       placement: { coordinate: 'E-5', facing: 'north' },
@@ -87,7 +87,7 @@ describe(getLegalChooseRetreatOptionEvents, () => {
   });
 
   it('returns empty when not in a retreat-choice context', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
@@ -95,7 +95,7 @@ describe(getLegalChooseRetreatOptionEvents, () => {
   });
 
   it('returns one event per option for a front-engagement nested retreat', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
     const placement: UnitWithPlacement = {
       placement: { coordinate: 'E-5', facing: 'north' },

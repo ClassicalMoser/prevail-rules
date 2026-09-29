@@ -1,6 +1,5 @@
 import { getFrontEngagementStateFromMovement } from '@queries';
 import {
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -11,12 +10,13 @@ import { updatePhaseState } from '../';
 
 import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdateEngagementStateInMovement: Updates the engagement state within the current movement resolution (issue commands phase).
  */
 describe(updateEngagementStateInMovement, () => {
   it('updates engagement state in movement resolution', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createMovementResolutionState(state, {
         engagementState: createFrontEngagementState(),
@@ -43,7 +43,7 @@ describe(updateEngagementStateInMovement, () => {
   });
 
   it('throws when not in issueCommands phase', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),
@@ -56,7 +56,7 @@ describe(updateEngagementStateInMovement, () => {
   });
 
   it('throws when command resolution is not movement', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createRangedAttackResolutionState(state),
     });

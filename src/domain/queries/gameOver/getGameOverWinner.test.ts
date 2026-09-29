@@ -1,25 +1,45 @@
 import { tempCommandCards } from '@sampleValues';
 import {
   createCleanupPhaseState,
-  createEmptyGameState,
   createRallyResolutionState,
   createRoutState,
+  createTestCard,
   createTestUnit,
   updateCardState,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getGameOverWinner } from './getGameOverWinner';
 
+import { createEmptyGameState } from '@factories';
 describe(getGameOverWinner, () => {
   it('returns undefined when the game should continue', () => {
-    expect(getGameOverWinner(createEmptyGameState())).toBeUndefined();
+    const base = createEmptyGameState('standard');
+    const state = updateCardState(base, {
+      ...base.cardState,
+      black: {
+        ...base.cardState.black,
+        inHand: [createTestCard({ id: 'black-hand' })],
+      },
+      white: {
+        ...base.cardState.white,
+        inHand: [createTestCard({ id: 'white-hand' })],
+      },
+    });
+    expect(getGameOverWinner(state)).toBeUndefined();
   });
 
   it('prefers empty-hand result over rout discard', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const withCards = updateCardState(base, {
       ...base.cardState,
+      black: {
+        ...base.cardState.black,
+        inHand: [createTestCard({ id: 'black-hand' })],
+      },
       white: { ...base.cardState.white, inHand: [] },
     });
     const state = updatePhaseState(
@@ -42,9 +62,16 @@ describe(getGameOverWinner, () => {
   });
 
   it('returns unpayable rout winner when hands are non-empty', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const withCards = updateCardState(base, {
       ...base.cardState,
+      black: {
+        ...base.cardState.black,
+        inHand: [createTestCard({ id: 'black-hand' })],
+      },
       white: {
         ...base.cardState.white,
         awaitingPlay: null,

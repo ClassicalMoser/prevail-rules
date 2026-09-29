@@ -1,7 +1,6 @@
 import type { ChooseWhetherToRetreatEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -11,13 +10,14 @@ import { updatePhaseState } from '@transforms';
 
 import { isValidChooseWhetherToRetreatEvent } from './isValidChooseWhetherToRetreatEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseWhetherToRetreatEvent: membership against
  * getLegalChooseWhetherToRetreatEvents.
  */
 describe(isValidChooseWhetherToRetreatEvent, () => {
   function stateAwaitingWhetherToRetreat() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state, {
       engagementState: createFrontEngagementState({
         defendingUnitCanRetreat: true,
@@ -80,7 +80,7 @@ describe(isValidChooseWhetherToRetreatEvent, () => {
   });
 
   it('rejects when the choice is not expected', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

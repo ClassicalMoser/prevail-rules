@@ -1,5 +1,4 @@
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
@@ -13,13 +12,14 @@ import {
   getRangedAttackResolutionState,
 } from './getCommandResolutionState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Command-resolution accessors under issueCommands or resolveMelee: narrow CRS type, validate
  * pending commitments before strike calculation, and surface typed movement/ranged/melee slices.
  */
 describe(getCurrentCommandResolutionState, () => {
   it('given issueCommands with movement CRS, returns movement commandResolutionType', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -32,7 +32,7 @@ describe(getCurrentCommandResolutionState, () => {
   });
 
   it('given resolveMelee phase, throws not in issueCommands phase', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =
       createResolveMeleePhaseState(state);
 
@@ -42,7 +42,7 @@ describe(getCurrentCommandResolutionState, () => {
   });
 
   it('given issueCommands with undefined CRS, throws no current command resolution state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =
       createIssueCommandsPhaseState(state);
 
@@ -56,7 +56,7 @@ describe(getRangedAttackResolutionState, () => {
   it('given issueCommands with ranged CRS, returns attacker defender and ranged type', () => {
     const attackingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -77,7 +77,7 @@ describe(getRangedAttackResolutionState, () => {
   });
 
   it('given movement CRS instead of ranged, throws current command resolution is not ranged attack', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -94,7 +94,7 @@ describe(getRangedAttackResolutionState, () => {
 describe(getMovementResolutionState, () => {
   it('given movement CRS with black mover on E-5 north, returns movement and that unit', () => {
     const movingUnit = createTestUnit('black', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -116,7 +116,7 @@ describe(getMovementResolutionState, () => {
   });
 
   it('given ranged CRS, throws current command resolution is not movement', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {

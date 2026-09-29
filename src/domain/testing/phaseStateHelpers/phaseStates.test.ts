@@ -4,7 +4,6 @@ import {
   PLAY_CARDS_PHASE,
   RESOLVE_MELEE_PHASE,
 } from '@game';
-import { createEmptyGameState } from '@testing/createEmptyGameState';
 
 import {
   createCleanupPhaseState,
@@ -14,6 +13,7 @@ import {
   createResolveMeleePhaseState,
 } from './phaseStates';
 
+import { createEmptyGameState } from '@factories';
 /**
  * CreatePlayCardsPhaseState: Creates a PlayCardsPhaseState with sensible defaults.
  */
@@ -38,7 +38,7 @@ describe('createMoveCommandersPhaseState function', () => {
 describe('createIssueCommandsPhaseState function', () => {
   it('given context, returns issue commands phase with empty remaining sets', () => {
     expect.hasAssertions();
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
     const state = createIssueCommandsPhaseState(gameState);
     expect(state.phase).toBe(ISSUE_COMMANDS_PHASE);
     expect(state.step).toBe('firstPlayerResolveCommands');
@@ -50,7 +50,7 @@ describe('createIssueCommandsPhaseState function', () => {
 describe('createResolveMeleePhaseState function', () => {
   it('given context, returns resolve melee phase with melee resolution state', () => {
     expect.hasAssertions();
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
     const state = createResolveMeleePhaseState(gameState);
     expect(state.phase).toBe(RESOLVE_MELEE_PHASE);
     expect(state.step).toBe('resolveMelee');

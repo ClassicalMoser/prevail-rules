@@ -1,6 +1,5 @@
 import {
   createAttackApplyState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMovementResolutionState,
@@ -13,12 +12,13 @@ import {
   getMeleeResolutionState,
 } from './getMeleeResolutionState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Melee-resolution accessors: the current melee slice, and the slice ready for attack calculation.
  */
 describe(getMeleeResolutionState, () => {
   it('given default resolveMelee factory, returns melee slice with both commitments completed', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =
       createResolveMeleePhaseState(state);
 
@@ -28,7 +28,7 @@ describe(getMeleeResolutionState, () => {
   });
 
   it('given issueCommands phase, throws not in resolveMelee phase', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
       state,
       {
@@ -42,7 +42,7 @@ describe(getMeleeResolutionState, () => {
   });
 
   it('given missing phase slice, throws not in resolveMelee phase', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = 'none';
 
     expect(() => getMeleeResolutionState(state)).toThrow(
@@ -51,7 +51,7 @@ describe(getMeleeResolutionState, () => {
   });
 
   it('given resolveMelee with undefined currentMeleeResolutionState, throws no current melee resolution', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
       {
@@ -67,7 +67,7 @@ describe(getMeleeResolutionState, () => {
 
 describe(getMeleeResolutionReadyForAttackCalculation, () => {
   it('given default resolveMelee with completed commitments and no apply, returns melee at E-5', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =
       createResolveMeleePhaseState(state);
 
@@ -76,7 +76,7 @@ describe(getMeleeResolutionReadyForAttackCalculation, () => {
   });
 
   it('given white commitment pending, throws white commitment is still pending', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(state, {
       whiteCommitment: { commitmentType: 'pending' },
     });
@@ -93,7 +93,7 @@ describe(getMeleeResolutionReadyForAttackCalculation, () => {
   });
 
   it('given black commitment pending, throws black commitment is still pending', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(state, {
       blackCommitment: { commitmentType: 'pending' },
     });
@@ -110,7 +110,7 @@ describe(getMeleeResolutionReadyForAttackCalculation, () => {
   });
 
   it('given white attackApplyState already set, throws attack apply states already exist', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
       whiteAttackApplyState: createAttackApplyState(unit),
@@ -128,7 +128,7 @@ describe(getMeleeResolutionReadyForAttackCalculation, () => {
   });
 
   it('given black attackApplyState already set, throws attack apply states already exist', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
       blackAttackApplyState: createAttackApplyState(unit),

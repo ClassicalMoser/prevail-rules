@@ -1,12 +1,12 @@
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
-  createEmptyGameState,
   createTestUnit,
 } from '@testing';
 
 import { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetPlayerUnitsOnBoard: set of unit instances for a player present on the board (including engaged).
  */
@@ -16,7 +16,7 @@ describe(getPlayerUnitsOnBoard, () => {
     const unit2 = createTestUnit('white', { attack: 3 });
     const unit3 = createTestUnit('black', { attack: 3 });
 
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.boardState = createBoardWithUnits([
       { coordinate: 'E-5', facing: 'north', unit: unit1 },
       { coordinate: 'F-5', facing: 'south', unit: unit2 },
@@ -35,7 +35,7 @@ describe(getPlayerUnitsOnBoard, () => {
   it('given player has no units on board, returns empty set', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.boardState = createBoardWithUnits([
       { coordinate: 'E-5', facing: 'north', unit },
     ]);
@@ -49,7 +49,7 @@ describe(getPlayerUnitsOnBoard, () => {
     const blackUnit = createTestUnit('black', { attack: 3 });
     const whiteUnit = createTestUnit('white', { attack: 3 });
     const supportUnit = createTestUnit('black', { attack: 3 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.boardState = createBoardWithEngagedUnits(
       blackUnit,
       whiteUnit,
@@ -76,7 +76,7 @@ describe(getPlayerUnitsOnBoard, () => {
   it('given include an engaged secondary unit belonging to the player', () => {
     const blackUnit = createTestUnit('black', { attack: 3 });
     const whiteUnit = createTestUnit('white', { attack: 3 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.boardState = createBoardWithEngagedUnits(
       blackUnit,
       whiteUnit,

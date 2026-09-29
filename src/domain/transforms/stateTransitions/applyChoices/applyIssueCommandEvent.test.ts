@@ -4,16 +4,14 @@ import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getIssueCommandsPhaseState, isSameUnitInstance } from '@queries';
 import { tempCommandCards } from '@sampleValues';
-import {
-  createEmptyGameState,
-  createTestUnit,
-  updateCardState,
-} from '@testing';
+import { createTestUnit, updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyIssueCommandEvent } from './applyIssueCommandEvent';
 
+import { createEmptyGameState } from '@factories';
+import { updateCurrentInitiative } from '@transforms/pureTransforms/state/updateCurrentInitiative';
 /**
  * Issue-commands: spending a command type removes it from the side’s remaining set and adds
  * the chosen unit instances to the round’s `commandedUnits` (for later resolution ordering).
@@ -23,7 +21,10 @@ describe(applyIssueCommandEvent, () => {
   function createGameStateWithCommands(
     currentInitiative: 'black' | 'white' = 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      currentInitiative,
+    );
     const stateWithCards = updateCardState(state, {
       ...state.cardState,
       black: {

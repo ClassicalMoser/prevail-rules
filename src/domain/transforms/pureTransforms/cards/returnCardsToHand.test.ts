@@ -1,15 +1,15 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { returnCardsToHand } from './returnCardsToHand';
 
+import { createEmptyGameState } from '@factories';
 /**
  * ReturnCardsToHand: Returns all played and discarded cards to the player's hand.
  */
 describe(returnCardsToHand, () => {
   it('given context, returns all played and discarded cards to hand', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       discarded: [tempCommandCards[2]],
       inHand: [tempCommandCards[0]],
       played: [tempCommandCards[1]],
@@ -28,7 +28,7 @@ describe(returnCardsToHand, () => {
 
   it('given handle empty played and discarded', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       discarded: [],
       inHand: [tempCommandCards[0]],
       played: [],
@@ -43,7 +43,7 @@ describe(returnCardsToHand, () => {
 
   it('given preserve order: hand, then played, then discarded', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       discarded: [tempCommandCards[2]],
       inHand: [tempCommandCards[0]],
       played: [tempCommandCards[1]],
@@ -58,7 +58,7 @@ describe(returnCardsToHand, () => {
 
   it('given not mutate the original card state', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       discarded: [tempCommandCards[2]],
       inHand: [tempCommandCards[0]],
       played: [tempCommandCards[1]],

@@ -9,7 +9,6 @@ import {
 import {
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithReverse,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
@@ -20,6 +19,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyResolveReverseEvent } from './applyResolveReverseEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Defender’s counterattack facing: updates board placement to `newUnitPlacement` and closes the
  * reverse substep (`completed`, `finalPosition`) for ranged or the correct melee apply side.
@@ -27,7 +27,7 @@ import { applyResolveReverseEvent } from './applyResolveReverseEvent';
 describe(applyResolveReverseEvent, () => {
   /** IssueCommands + ranged apply in reverse substep for white on E-5. */
   function createStateWithRangedAttackReverse(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const reversingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -61,7 +61,7 @@ describe(applyResolveReverseEvent, () => {
   function createStateWithMeleeReverse(
     reversingPlayer: 'white' | 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const reversingUnit = createTestUnit(reversingPlayer, { attack: 2 });
     const opponentPlayer = reversingPlayer === 'white' ? 'black' : 'white';
     const opponentUnit = createTestUnit(opponentPlayer, { attack: 2 });

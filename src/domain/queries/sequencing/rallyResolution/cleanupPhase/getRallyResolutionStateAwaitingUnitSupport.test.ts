@@ -1,8 +1,8 @@
 import { CLEANUP_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
 
 import { getRallyResolutionStateAwaitingUnitSupport } from './getRallyResolutionStateAwaitingUnitSupport';
 
+import { createEmptyGameState } from '@factories';
 /** After card burn: rallyResolved true but unitsLostSupport not computed yet. */
 const afterBurnBeforeUnitsBroken = {
   completed: false,
@@ -14,7 +14,7 @@ const afterBurnBeforeUnitsBroken = {
 
 /** FirstPlayerResolveRally with post-burn rally slice. */
 function stateFirstPlayerResolveRally() {
-  const state = createEmptyGameState();
+  const state = createEmptyGameState('standard');
   state.currentInitiative = 'white';
   state.currentRoundState.currentPhaseState = {
     firstPlayerRallyResolutionState: { ...afterBurnBeforeUnitsBroken },

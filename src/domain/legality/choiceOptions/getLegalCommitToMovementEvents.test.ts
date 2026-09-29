@@ -1,7 +1,6 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -11,6 +10,7 @@ import { updatePhaseState } from '@transforms';
 
 import { getLegalCommitToMovementEvents } from './getLegalCommitToMovementEvents';
 
+import { createEmptyGameState } from '@factories';
 /** Move: modifiers ['speed'] — eligible for commitToMovement. */
 const moveCard = tempCommandCards[4];
 /** Strike: modifiers ['attack'] — not eligible for commitToMovement. */
@@ -23,7 +23,7 @@ const strikeCard = tempCommandCards[0];
  */
 describe(getLegalCommitToMovementEvents, () => {
   function stateBlackPendingMovementCommit(hand = [moveCard]) {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
       black: {
@@ -86,7 +86,7 @@ describe(getLegalCommitToMovementEvents, () => {
   });
 
   it('returns events for the front-engagement defender when defensive commitment is pending', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
       white: {
@@ -127,7 +127,7 @@ describe(getLegalCommitToMovementEvents, () => {
   });
 
   it('returns empty when not in issueCommands movement commitment', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

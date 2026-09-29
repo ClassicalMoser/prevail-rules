@@ -1,8 +1,9 @@
 import type { SetupUnitsEvent } from '@events';
-import { createEmptyGameState, createUnitWithPlacement } from '@testing';
+import { createUnitWithPlacement } from '@testing';
 
 import { applySetupUnitsEvent } from './applySetupUnitsEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Pre-game setup: each `setupUnits` choice merges unit placements and the
  * commander into `boardState`, clears those units from reserve, and starts
@@ -16,7 +17,7 @@ describe(applySetupUnitsEvent, () => {
       playerSide: 'black',
     });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       reservedUnits: [unitWithPlacement.unit],
     };
 
@@ -63,7 +64,7 @@ describe(applySetupUnitsEvent, () => {
       playerSide: 'white',
     });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       reservedUnits: [blackUnit.unit, whiteUnit.unit],
     };
 
@@ -93,7 +94,7 @@ describe(applySetupUnitsEvent, () => {
       playerSide: 'black',
     });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       reservedUnits: [unit.unit],
     };
 
@@ -121,7 +122,7 @@ describe(applySetupUnitsEvent, () => {
       playerSide: 'black',
     });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       reservedUnits: [unitWithPlacement.unit],
     };
     const originalBoardRef = state.boardState;

@@ -3,7 +3,6 @@ import type { ResolveRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
 import { getRangedAttackResolutionState } from '@queries';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestCard,
@@ -15,6 +14,7 @@ import { throwIfPending } from '@utils';
 
 import { applyResolveRangedAttackEvent } from './applyResolveRangedAttackEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * First strike resolution: builds `attackApplyState` on the ranged CRS from procedure flags—
  * attack result, optional rout / retreat (auto hex when unique) / reverse substeps.
@@ -26,7 +26,7 @@ describe(applyResolveRangedAttackEvent, () => {
     defender: UnitInstance;
     defenderWithPlacement: UnitWithPlacement;
   } {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inPlay: createTestCard() },

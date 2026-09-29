@@ -1,4 +1,4 @@
-import { createEmptyGameState } from '@testing';
+import { createEmptyGameState } from '@factories';
 
 import { updateCurrentRoundNumber } from './updateCurrentRoundNumber';
 
@@ -7,7 +7,7 @@ import { updateCurrentRoundNumber } from './updateCurrentRoundNumber';
  */
 describe(updateCurrentRoundNumber, () => {
   it('given update the current round number', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const newRoundNumber = 5;
 
     const newState = updateCurrentRoundNumber(state, newRoundNumber);
@@ -17,7 +17,7 @@ describe(updateCurrentRoundNumber, () => {
   });
 
   it('given preserve all other state properties', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const newRoundNumber = 3;
 
     const newState = updateCurrentRoundNumber(state, newRoundNumber);

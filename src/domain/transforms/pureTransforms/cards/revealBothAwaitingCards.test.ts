@@ -1,8 +1,8 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { revealBothAwaitingCards } from './revealBothAwaitingCards';
 
+import { createEmptyGameState } from '@factories';
 /**
  * RevealBothAwaitingCards: visibility-preserving reveal of both awaitingPlay slots.
  */
@@ -13,7 +13,7 @@ describe(revealBothAwaitingCards, () => {
   };
 
   it('given authoritative, reveals both owned awaitingPlay slots from state', () => {
-    const { cardState } = createEmptyGameState();
+    const { cardState } = createEmptyGameState('standard');
     const authoritative = {
       visibility: 'authoritative' as const,
       black: {
@@ -38,7 +38,7 @@ describe(revealBothAwaitingCards, () => {
   });
 
   it('given whiteSeen, reveals owned white from state and black from payload', () => {
-    const { cardState } = createEmptyGameState();
+    const { cardState } = createEmptyGameState('standard');
     const whiteSeen = {
       visibility: 'whiteSeen' as const,
       white: {
@@ -66,7 +66,7 @@ describe(revealBothAwaitingCards, () => {
   });
 
   it('given blackSeen, reveals owned black from state and white from payload', () => {
-    const { cardState } = createEmptyGameState();
+    const { cardState } = createEmptyGameState('standard');
     const blackSeen = {
       visibility: 'blackSeen' as const,
       black: {

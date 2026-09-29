@@ -4,7 +4,6 @@ import { PLAY_CARDS_PHASE } from '@game';
 
 import {
   createCleanupPhaseState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createPlayCardsPhaseState,
   createTestUnit,
@@ -14,6 +13,7 @@ import { throwIfNone } from '@utils';
 
 import { applyCompleteCleanupPhaseEvent } from './applyCompleteCleanupPhaseEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Round rollover: finishing cleanup bumps `roundNumber`, resets per-round bookkeeping
  * (`completedPhases`, `commandedUnits`), and starts the next round in `playCards.chooseCards`.
@@ -22,7 +22,7 @@ import { applyCompleteCleanupPhaseEvent } from './applyCompleteCleanupPhaseEvent
 describe(applyCompleteCleanupPhaseEvent, () => {
   /** Cleanup.complete with default empty game and black initiative. */
   function createGameStateInCleanupCompleteStep(): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     return updatePhaseState(
       state,
       createCleanupPhaseState({ step: 'complete' }),
@@ -98,7 +98,7 @@ describe(applyCompleteCleanupPhaseEvent, () => {
 
   describe('trusted mechanical apply', () => {
     it('given issueCommands first step, still increments round and lands on playCards.chooseCards', () => {
-      const base = createEmptyGameState();
+      const base = createEmptyGameState('standard');
       const state = updatePhaseState(
         base,
         createIssueCommandsPhaseState(base, {
@@ -117,7 +117,7 @@ describe(applyCompleteCleanupPhaseEvent, () => {
     });
 
     it('given bare empty state without phase, still increments round and sets playCards.chooseCards', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const priorRound = state.currentRoundState.roundNumber;
 
       const newState = applyCompleteCleanupPhaseEvent(event, state);

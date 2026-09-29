@@ -3,16 +3,16 @@ import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
   createCleanupPhaseState,
-  createEmptyGameState,
   createRallyResolutionState,
   createRoutState,
   createTestUnit,
   updateCardState,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getLegalRoutDiscardCards } from './getLegalRoutDiscardCards';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetLegalRoutDiscardCards: atomic eligible hand card IDs + required count when
  * cleanup resolveRally awaits a rout discard.
@@ -27,7 +27,10 @@ describe(getLegalRoutDiscardCards, () => {
     initiative?: 'white' | 'black';
   }): GameStateForVisibility<'authoritative'> {
     const initiative = options.initiative ?? 'white';
-    const base = createEmptyGameState({ currentInitiative: initiative });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      initiative,
+    );
     const unit = createTestUnit(options.player);
     const handIndexes = options.handCardIndexes ?? [2, 3, 4];
     const hand = handIndexes.map((i) => tempCommandCards[i]);
@@ -97,7 +100,7 @@ describe(getLegalRoutDiscardCards, () => {
   });
 
   it('returns null when no rout discard is awaiting', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

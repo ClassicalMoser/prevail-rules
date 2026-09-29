@@ -7,25 +7,45 @@ import { calculateInitiative } from './calculateInitiative';
  * the current holder.
  */
 describe(calculateInitiative, () => {
-  it('given white card lower initiative, white takes initiative', () => {
+  it('white takes initiative when its card is lower', () => {
     const whiteCard = createTestCard({ initiative: 2 });
     const blackCard = createTestCard({ initiative: 3 });
 
     expect(calculateInitiative(whiteCard, blackCard, 'black')).toBe('white');
   });
 
-  it('given black card lower initiative, black takes initiative', () => {
+  it('white keeps initiative when its card is lower', () => {
+    const whiteCard = createTestCard({ initiative: 2 });
+    const blackCard = createTestCard({ initiative: 3 });
+
+    expect(calculateInitiative(whiteCard, blackCard, 'white')).toBe('white');
+  });
+
+  it('black takes initiative when its card is lower', () => {
     const whiteCard = createTestCard({ initiative: 4 });
     const blackCard = createTestCard({ initiative: 1 });
 
     expect(calculateInitiative(whiteCard, blackCard, 'white')).toBe('black');
   });
 
-  it('given tied initiative, keeps current initiative', () => {
+  it('black keeps initiative when its card is lower', () => {
+    const whiteCard = createTestCard({ initiative: 4 });
+    const blackCard = createTestCard({ initiative: 1 });
+
+    expect(calculateInitiative(whiteCard, blackCard, 'black')).toBe('black');
+  });
+
+  it('black keeps initiative when tied', () => {
     const whiteCard = createTestCard({ initiative: 2 });
     const blackCard = createTestCard({ initiative: 2 });
 
     expect(calculateInitiative(whiteCard, blackCard, 'white')).toBe('white');
-    expect(calculateInitiative(whiteCard, blackCard, 'black')).toBe('black');
+  });
+
+  it('white keeps initiative when tied', () => {
+    const whiteCard = createTestCard({ initiative: 2 });
+    const blackCard = createTestCard({ initiative: 2 });
+
+    expect(calculateInitiative(whiteCard, blackCard, 'white')).toBe('white');
   });
 });

@@ -1,14 +1,14 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { updateHiddenPlayerCardState } from './updateHiddenPlayerCardState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdateHiddenPlayerCardState: Updates the unowned (hidden) card slice.
  */
 describe(updateHiddenPlayerCardState, () => {
   it('given whiteSeen, updates black hidden slice', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const state = {
       ...base,
       cardState: {
@@ -38,7 +38,7 @@ describe(updateHiddenPlayerCardState, () => {
   });
 
   it('given blackSeen, updates white hidden slice', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const state = {
       ...base,
       cardState: {
@@ -68,7 +68,7 @@ describe(updateHiddenPlayerCardState, () => {
   });
 
   it('given not mutate the original state', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const state = {
       ...base,
       cardState: {

@@ -1,7 +1,6 @@
 import type { UnitFacing } from '@entities';
 import type { GameState } from '@game';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createTestCard,
@@ -11,6 +10,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateStartEngagementEvent } from './generateStartEngagementEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Start of engagement: from movement resolution, classify rear vs flank vs front from
  * defender facing on the board vs engaging facing on targetPlacement.
@@ -25,7 +25,7 @@ describe(generateStartEngagementEvent, () => {
     full: GameState;
     defender: ReturnType<typeof createTestUnit>;
   } {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');
     const withBoard = {

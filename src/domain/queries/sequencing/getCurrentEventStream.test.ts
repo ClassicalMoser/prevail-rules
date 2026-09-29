@@ -1,12 +1,12 @@
 import type { Event } from '@events';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { getCurrentEventStream } from './getCurrentEventStream';
 
+import { createEmptyGameState } from '@factories';
 describe(getCurrentEventStream, () => {
   it('returns the current round events array (same reference)', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stream = getCurrentEventStream(state);
 
     expect(stream).toBe(state.currentRoundState.events);
@@ -14,7 +14,7 @@ describe(getCurrentEventStream, () => {
   });
 
   it('reflects events attached to the round state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const events: readonly Event[] = [
       {
         black: tempCommandCards[0],

@@ -1,4 +1,4 @@
-import { createEmptyGameState } from '@testing';
+import { createEmptyGameState } from '@factories';
 
 import { updateBoardState } from './updateBoardState';
 
@@ -7,7 +7,7 @@ import { updateBoardState } from './updateBoardState';
  */
 describe(updateBoardState, () => {
   it('given update the board state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const newBoard = state.boardState; // Same board for simplicity
 
     const newState = updateBoardState(state, newBoard);
@@ -16,7 +16,7 @@ describe(updateBoardState, () => {
   });
 
   it('given not mutate the original state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const originalBoardState = state.boardState;
     const newBoard = state.boardState;
 

@@ -1,4 +1,4 @@
-import { createEmptyGameState } from '@testing';
+import { createEmptyGameState } from '@factories';
 
 import { addCommanderToLostCommanders } from './addCommanderToLostCommanders';
 
@@ -8,7 +8,7 @@ import { addCommanderToLostCommanders } from './addCommanderToLostCommanders';
 describe(addCommanderToLostCommanders, () => {
   describe('adding commander to empty set', () => {
     it('given add commander to lost commanders set', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
 
       const newGameState = addCommanderToLostCommanders(gameState, 'black');
 
@@ -17,7 +17,7 @@ describe(addCommanderToLostCommanders, () => {
     });
 
     it('given not mutate the original game state', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
 
       addCommanderToLostCommanders(gameState, 'white');
 
@@ -27,7 +27,7 @@ describe(addCommanderToLostCommanders, () => {
 
   describe('adding multiple commanders', () => {
     it('given add second commander while preserving first', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const gameStateWithBlack = addCommanderToLostCommanders(
         gameState,
         'black',
@@ -42,7 +42,7 @@ describe(addCommanderToLostCommanders, () => {
     });
 
     it('given adding second commander, does not mutate the original game state', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const gameStateWithBlack = addCommanderToLostCommanders(
         gameState,
         'black',
@@ -56,7 +56,7 @@ describe(addCommanderToLostCommanders, () => {
 
   describe('error cases', () => {
     it('given error when commander already lost, throws', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const gameStateWithBlack = addCommanderToLostCommanders(
         gameState,
         'black',
@@ -68,7 +68,7 @@ describe(addCommanderToLostCommanders, () => {
     });
 
     it('given error when trying to add already lost white commander, throws', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const gameStateWithWhite = addCommanderToLostCommanders(
         gameState,
         'white',
@@ -82,14 +82,14 @@ describe(addCommanderToLostCommanders, () => {
 
   describe('preserving other game state', () => {
     it('given preserve routed units', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const newGameState = addCommanderToLostCommanders(gameState, 'black');
 
       expect(newGameState.routedUnits).toBe(gameState.routedUnits);
     });
 
     it('given preserve reserved units', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
 
       const newGameState = addCommanderToLostCommanders(gameState, 'black');
 
@@ -97,7 +97,7 @@ describe(addCommanderToLostCommanders, () => {
     });
 
     it('given preserve board state', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
 
       const newGameState = addCommanderToLostCommanders(gameState, 'black');
 
@@ -105,7 +105,7 @@ describe(addCommanderToLostCommanders, () => {
     });
 
     it('given preserve card state', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
 
       const newGameState = addCommanderToLostCommanders(gameState, 'black');
 

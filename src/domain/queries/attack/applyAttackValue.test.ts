@@ -1,3 +1,4 @@
+import { createEmptyGameState } from '@factories';
 /**
  * An attack meets a defense when it is greater than or equal to that stat.
  * Rout, reverse, and retreat are compared independently. A defending modifier
@@ -6,7 +7,7 @@
  */
 
 import type { UnitType } from '@entities';
-import { createEmptyGameState, createTestUnit } from '@testing';
+import { createTestUnit } from '@testing';
 
 import { applyAttackValue } from './applyAttackValue';
 
@@ -35,7 +36,7 @@ function unitTypeWithDefenses(defenses: {
 }
 
 describe(applyAttackValue, () => {
-  const gameState = createEmptyGameState();
+  const gameState = createEmptyGameState('standard');
 
   describe('an attack above a threshold', () => {
     it('routs the unit when the attack is above its rout', () => {

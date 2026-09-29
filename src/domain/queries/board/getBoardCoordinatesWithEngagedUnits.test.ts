@@ -1,18 +1,15 @@
-import {
-  createEmptyGameState,
-  createGameStateWithEngagedUnits,
-  createTestUnit,
-} from '@testing';
+import { createGameStateWithEngagedUnits, createTestUnit } from '@testing';
 
 import { getBoardCoordinatesWithEngagedUnits } from './getBoardCoordinatesWithEngagedUnits';
 import { addUnitToBoard } from '@transforms';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetBoardCoordinatesWithEngagedUnits: set of coordinates where the space has an engagement (two units).
  */
 describe(getBoardCoordinatesWithEngagedUnits, () => {
   it('the board has no engagements', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     expect(getBoardCoordinatesWithEngagedUnits(state.boardState).size).toBe(0);
   });
 

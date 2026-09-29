@@ -1,7 +1,4 @@
-import type {
-  CommitToRangedAttackEvent,
-  ProjectedCommitToRangedAttackEvent,
-} from '@events';
+import type { CommitToRangedAttackEvent } from '@events';
 import type { GameState, RangedAttackResolutionState } from '@game';
 import { getRangedAttackResolutionState } from '@queries';
 import { updateCommandResolutionState } from '@transforms/pureTransforms';
@@ -11,22 +8,15 @@ import {
   commitmentFromCommittedCard,
 } from './commitApplyHelpers';
 
-type CommitToRangedAttackApplyEvent =
-  | CommitToRangedAttackEvent
-  | ProjectedCommitToRangedAttackEvent;
-
 /**
  * Applies a CommitToRangedAttackEvent to the game state.
  * Completes or declines the appropriate commitment (attacking or defending).
  * When `committedCard` is non-null, discards that card from hand.
  * Event is assumed pre-validated (issueCommands phase, ranged attack, player is
- * attacker or defender).
- *
- * Owned seats use full card identity. Unowned seats on seen views apply a
- * projected event (`committedCard: 'hidden'`).
+ * attacker or defender). The committed card is the real card.
  */
 export function applyCommitToRangedAttackEvent<S extends GameState>(
-  event: CommitToRangedAttackApplyEvent,
+  event: CommitToRangedAttackEvent,
   state: S,
 ): S {
   const rangedAttackState = getRangedAttackResolutionState(state);

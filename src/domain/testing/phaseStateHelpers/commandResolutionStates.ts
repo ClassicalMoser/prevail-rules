@@ -1,13 +1,22 @@
+import type { CommandCard } from '@entities';
 import type {
   GameState,
   MeleeResolutionState,
   MovementResolutionState,
   RangedAttackResolutionState,
 } from '@game';
+import { createTestCard } from '../testHelpers/cardHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 
-function authoritativeCards(state: GameState) {
-  return state.cardState;
+/**
+ * Completed commitment from the card the caller put in play.
+ * When that pile is empty, the helper supplies its own +1 attack card.
+ */
+function completedCommitment(inPlay: CommandCard | null) {
+  return {
+    card: inPlay ?? createTestCard({ modifiers: ['attack'] }),
+    commitmentType: 'completed' as const,
+  };
 }
 
 /**
@@ -19,14 +28,7 @@ export function createMovementResolutionState(
 ): MovementResolutionState {
   return {
     commandResolutionType: 'movement' as const,
-    commitment: {
-      // Assertion is only valid because a card is always in play outside of the playCard and cleanup phases.
-      // Will lead to unexpected behavior if called in other phases.
-      // Since this is a test helper, there is no reason for defensive checks.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      card: authoritativeCards(state).black.inPlay!,
-      commitmentType: 'completed',
-    },
+    commitment: completedCommitment(state.cardState.black.inPlay),
     completed: false,
     engagementState: 'pending',
     moveCommander: false,
@@ -53,24 +55,13 @@ export function createRangedAttackResolutionState(
   state: GameState,
   overrides?: Partial<RangedAttackResolutionState>,
 ): RangedAttackResolutionState {
-  const cards = authoritativeCards(state);
   return {
     attackApplyState: 'pending',
-    attackingCommitment: {
-      // Valid assertion, see note in createMovementResolutionState.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      card: cards.black.inPlay!,
-      commitmentType: 'completed',
-    },
+    attackingCommitment: completedCommitment(state.cardState.black.inPlay),
     attackingUnit: createTestUnit('black', { attack: 2 }),
     commandResolutionType: 'rangedAttack' as const,
     completed: false,
-    defendingCommitment: {
-      // Valid assertion, see note in createMovementResolutionState.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      card: cards.white.inPlay!,
-      commitmentType: 'completed',
-    },
+    defendingCommitment: completedCommitment(state.cardState.white.inPlay),
     defendingUnit: createTestUnit('white', { attack: 2 }),
     substepType: 'commandResolution' as const,
     supportingUnits: [],
@@ -85,25 +76,14 @@ export function createMeleeResolutionState(
   state: GameState,
   overrides?: Partial<MeleeResolutionState>,
 ): MeleeResolutionState {
-  const cards = authoritativeCards(state);
   return {
     blackAttackApplyState: 'pending',
-    blackCommitment: {
-      // Valid assertion, see note in createMovementResolutionState.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      card: cards.black.inPlay!,
-      commitmentType: 'completed',
-    },
+    blackCommitment: completedCommitment(state.cardState.black.inPlay),
     completed: false,
     location: 'E-5',
     substepType: 'meleeResolution' as const,
     whiteAttackApplyState: 'pending',
-    whiteCommitment: {
-      // Valid assertion, see note in createMovementResolutionState.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      card: cards.white.inPlay!,
-      commitmentType: 'completed',
-    },
+    whiteCommitment: completedCommitment(state.cardState.white.inPlay),
     ...overrides,
   };
 }

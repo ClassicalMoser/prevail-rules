@@ -1,17 +1,17 @@
 import type { Event } from '@events';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { getNextEventNumber } from './getNextEventNumber';
 
+import { createEmptyGameState } from '@factories';
 describe(getNextEventNumber, () => {
   it('returns 0 when the round has no events yet', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     expect(getNextEventNumber(state)).toBe(0);
   });
 
   it('returns the length of the current round event stream', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const events: readonly Event[] = [
       {
         black: tempCommandCards[0],

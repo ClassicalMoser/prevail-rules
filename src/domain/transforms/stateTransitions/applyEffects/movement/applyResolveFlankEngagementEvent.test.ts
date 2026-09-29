@@ -5,7 +5,6 @@ import type { GameState } from '@game';
 import { hasSingleUnit } from '@entities';
 import { getBoardSpace } from '@queries';
 import {
-  createEmptyGameState,
   createFlankEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -16,13 +15,14 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyResolveFlankEngagementEvent } from './applyResolveFlankEngagementEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Flank engagement resolution: rotates the defender on the board to `newFacing`, marks the
  * flank substep complete with `defenderRotated`, and finishes the movement engagement slice.
  */
 describe(applyResolveFlankEngagementEvent, () => {
   it('given flank engagement and event newFacing south, board and engagement state reflect rotation and completion', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');
     const flank = createFlankEngagementState();

@@ -1,5 +1,5 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, createUnitWithPlacement } from '@testing';
+import { createUnitWithPlacement } from '@testing';
 import {
   addCommanderToBoard,
   addUnitToBoard,
@@ -12,6 +12,7 @@ import {
 } from './getLegalLineEndsForIssueCommand';
 import { getLegalLineStartsForIssueCommand } from './getLegalUnitsForIssueCommand';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Line starts/ends: start needs commander range; end is any unit on the
  * contiguous segment (including the start — singleton lines).
@@ -34,7 +35,7 @@ describe(getLegalLineEndsForIssueCommand, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState();
+    let state = createEmptyGameState('standard');
     let board = addUnitToBoard(state.boardState, start);
     board = addCommanderToBoard(board, 'black', 'E-5');
     state = updateBoardState(state, board);
@@ -53,7 +54,7 @@ describe(getLegalLineEndsForIssueCommand, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState();
+    let state = createEmptyGameState('standard');
     let board = addUnitToBoard(state.boardState, start);
     board = addCommanderToBoard(board, 'black', 'E-5');
     state = updateBoardState(state, board);
@@ -80,7 +81,7 @@ describe(getLegalLineEndsForIssueCommand, () => {
       playerSide: 'black',
       unitOptions: { instanceNumber: 2 },
     });
-    let state = createEmptyGameState();
+    let state = createEmptyGameState('standard');
     let board = addUnitToBoard(state.boardState, start);
     board = addUnitToBoard(board, farEnd);
     // Commander on E-5: start in range 0; E-6 is distance 1 — use range 0 so end is out of range

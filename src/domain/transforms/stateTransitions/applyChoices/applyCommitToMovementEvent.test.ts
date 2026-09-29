@@ -5,7 +5,6 @@ import {
 } from '@queries';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -15,13 +14,14 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCommitToMovementEvent } from './applyCommitToMovementEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Movement command commitment: pending `commitment` on the movement CRS becomes completed with
  * the played card, and that card is removed from the moving player’s hand.
  */
 describe(applyCommitToMovementEvent, () => {
   it('given black pending movement and one card in hand, commitment completed and hand empty', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateWithBlackCardInHand = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
@@ -58,7 +58,7 @@ describe(applyCommitToMovementEvent, () => {
   });
 
   it('given white pending movement and one card in hand, same shape for white side', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateWithWhiteCardInHand = updateCardState(state, {
       ...state.cardState,
       white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },
@@ -95,7 +95,7 @@ describe(applyCommitToMovementEvent, () => {
   });
 
   it('given front engagement refuse (null card), declines defensiveCommitment without discarding', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const card = tempCommandCards[0]!;
     const withWhiteCard = updateCardState(state, {
       ...state.cardState,
@@ -130,7 +130,7 @@ describe(applyCommitToMovementEvent, () => {
   });
 
   it('given front engagement defensive commit pending, completes defensiveCommitment and leaves mover commitment declined', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const card = tempCommandCards[0]!;
     const withWhiteCard = updateCardState(state, {
       ...state.cardState,
@@ -170,7 +170,7 @@ describe(applyCommitToMovementEvent, () => {
   });
 
   it('given hand and commitment snapshot before apply, input state hand and movement slice unchanged', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateWithBlackCardInHand = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },

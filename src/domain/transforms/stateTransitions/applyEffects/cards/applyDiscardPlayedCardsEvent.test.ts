@@ -3,7 +3,6 @@ import type { DiscardPlayedCardsEvent } from '@events';
 import type { GameState, GameStateForVisibility } from '@game';
 import {
   createCleanupPhaseState,
-  createEmptyGameState,
   createTestCard,
   updateCardState,
 } from '@testing';
@@ -11,6 +10,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyDiscardPlayedCardsEvent } from './applyDiscardPlayedCardsEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Cleanup opener: both `inPlay` command cards append to `played` piles, slots clear, and the
  * cleanup step advances to the first rally choice.
@@ -23,7 +23,7 @@ describe(applyDiscardPlayedCardsEvent, () => {
   } satisfies DiscardPlayedCardsEvent;
 
   it('given discardPlayedCards with both inPlay set, played lengths grow and step firstPlayerChooseRally', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inPlay: createTestCard() },
@@ -54,7 +54,7 @@ describe(applyDiscardPlayedCardsEvent, () => {
   });
 
   it('given whiteSeen, moves owned and hidden inPlay to played', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const blackCard = createTestCard();
     const whiteCard = createTestCard();
     const whiteSeen: GameStateForVisibility<'whiteSeen'> = updatePhaseState(

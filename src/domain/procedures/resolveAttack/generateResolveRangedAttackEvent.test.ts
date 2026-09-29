@@ -3,7 +3,6 @@ import type { GameState } from '@game';
 import { equites, punicCitizenSpearmen, velites } from '@sampleValues';
 import {
   createAttackApplyState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestUnit,
@@ -12,6 +11,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateResolveRangedAttackEvent } from './generateResolveRangedAttackEvent';
 
+import { createEmptyGameState } from '@factories';
 /** Citizen spearmen: default `inPlay` (+1 attack) keeps strike below retreat. */
 const spearmenType = punicCitizenSpearmen;
 
@@ -23,7 +23,7 @@ const spearmenType = punicCitizenSpearmen;
 describe(generateResolveRangedAttackEvent, () => {
   /** Spearmen duel on E-5 under issueCommands ranged CRS; default commitments resolved. */
   function rangedResolutionGameState(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { unitType: spearmenType });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -47,7 +47,7 @@ describe(generateResolveRangedAttackEvent, () => {
   }
 
   it('given low-retreat defender vs cavalry attacker, retreated true with legal set', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { unitType: velites });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -83,7 +83,7 @@ describe(generateResolveRangedAttackEvent, () => {
   });
 
   it('given defending commitment pending on ranged CRS, throws defending commitment guard', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -110,7 +110,7 @@ describe(generateResolveRangedAttackEvent, () => {
   });
 
   it('given attacking commitment pending on ranged CRS, throws attacking commitment guard', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -137,7 +137,7 @@ describe(generateResolveRangedAttackEvent, () => {
   });
 
   it('given ranged CRS already holding attackApplyState, throws attack apply already exists', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {

@@ -3,12 +3,13 @@ import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyResolveInitiativeEvent } from './applyResolveInitiativeEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * `resolveInitiative` writes `currentInitiative` from the event and finishes the playCards
  * phase (`complete`). Wrong step still applies mechanically (trusted event path).
@@ -16,7 +17,7 @@ import { applyResolveInitiativeEvent } from './applyResolveInitiativeEvent';
 describe(applyResolveInitiativeEvent, () => {
   /** PlayCards.assignInitiative with both inPlay populated from two command cards. */
   function createGameStateInAssignInitiativeStep(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     const stateWithCards = updateCardState(state, {
       ...state.cardState,

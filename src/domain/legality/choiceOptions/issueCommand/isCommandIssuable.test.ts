@@ -1,9 +1,10 @@
 import type { Command } from '@entities';
-import { createEmptyGameState, createUnitWithPlacement } from '@testing';
+import { createUnitWithPlacement } from '@testing';
 import { addUnitToBoard, updateBoardState } from '@transforms';
 
 import { isCommandIssuable } from './isCommandIssuable';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsCommandIssuable: remaining grant can be spent (at least one eligible unit).
  */
@@ -21,7 +22,7 @@ describe(isCommandIssuable, () => {
   });
 
   it('given units ×2 and two eligible units, returns true', () => {
-    let state = createEmptyGameState();
+    let state = createEmptyGameState('standard');
     const a = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -43,7 +44,7 @@ describe(isCommandIssuable, () => {
   });
 
   it('given units ×2 and only one eligible unit, returns true', () => {
-    let state = createEmptyGameState();
+    let state = createEmptyGameState('standard');
     const a = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -55,13 +56,13 @@ describe(isCommandIssuable, () => {
   });
 
   it('given units ×6 and no eligible units, returns false', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     expect(isCommandIssuable(unrestrictedUnits(6), 'black', state)).toBe(false);
   });
 
   it('given lines ×1 and one eligible start, returns true', () => {
-    let state = createEmptyGameState();
+    let state = createEmptyGameState('standard');
     const a = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',

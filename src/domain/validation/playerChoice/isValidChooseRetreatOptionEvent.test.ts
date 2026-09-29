@@ -3,7 +3,6 @@ import type { ChooseRetreatOptionEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
   createAttackApplyStateWithRetreat,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createRetreatState,
@@ -13,6 +12,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { isValidChooseRetreatOptionEvent } from './isValidChooseRetreatOptionEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseRetreatOptionEvent: membership against getLegalChooseRetreatOptionEvents.
  */
@@ -21,7 +21,7 @@ describe(isValidChooseRetreatOptionEvent, () => {
   const optionB = { coordinate: 'E-6' as const, facing: 'north' as const };
 
   function stateWithRangedRetreat() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
     const placement: UnitWithPlacement = {
       placement: { coordinate: 'E-5', facing: 'north' },
@@ -81,7 +81,7 @@ describe(isValidChooseRetreatOptionEvent, () => {
   });
 
   it('rejects when no retreat choice is expected', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

@@ -1,9 +1,10 @@
 import type { MoveUnitEvent } from '@events';
-import { createEmptyGameState, createTestUnit } from '@testing';
+import { createTestUnit } from '@testing';
 import { addUnitToBoard } from '@transforms';
 
 import { isLegalMove } from './isLegalMove';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsLegalMove: Validates whether a unit move event is legal according to game rules.
  */
@@ -11,7 +12,7 @@ describe(isLegalMove, () => {
   describe('core functionality', () => {
     it('given a legal move, returns true', () => {
       const unitInstance = createTestUnit('black', { speed: 2 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       let board = gameState.boardState;
       board = addUnitToBoard(board, {
         placement: {
@@ -46,7 +47,7 @@ describe(isLegalMove, () => {
   describe('bad inputs', () => {
     it('given a move that is not legal, returns false', () => {
       const unitInstance = createTestUnit('black', { speed: 2 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const moveUnitEvent: MoveUnitEvent = {
         choiceType: 'moveUnit',
         eventNumber: 0,

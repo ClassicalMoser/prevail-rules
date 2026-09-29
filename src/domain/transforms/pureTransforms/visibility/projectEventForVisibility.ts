@@ -10,7 +10,8 @@ export type ProjectedEvent = ProjectedPlayerChoiceEvent | GameEffectEvent;
 
 /**
  * Projects an authoritative event for a seated observer.
- * Opponent chooseCard / commit* card fields become `'hidden'`.
+ * Opponent chooseCard card fields become `'hidden'`.
+ * Commits are public as soon as they are made, so the card is left intact.
  * Game effects (including revealCards) pass through unchanged.
  */
 export function projectEventForVisibility(
@@ -18,33 +19,26 @@ export function projectEventForVisibility(
   observerSide: PlayerSide,
 ): ProjectedEvent {
   if (event.eventType === 'gameEffect') {
+    // Game effects never need redaction.
     return event;
   }
 
   if (event.player === observerSide) {
+    // The event is already visible to the observer.
     return event;
   }
 
+  // Opponent case
   switch (event.choiceType) {
     case 'chooseCard': {
+      // The card is hidden from the observer.
       return {
         ...event,
         card: 'hidden',
       };
     }
-    case 'commitToMelee':
-    case 'commitToRangedAttack':
-    case 'commitToMovement': {
-      // Refuse (`null`) is public; only redact a spent card for the opponent.
-      if (event.committedCard === null) {
-        return event;
-      }
-      return {
-        ...event,
-        committedCard: 'hidden',
-      };
-    }
     default: {
+      // Other event types pass through unchanged.
       return event;
     }
   }

@@ -1,5 +1,4 @@
 import {
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
 } from '@testing';
@@ -8,12 +7,13 @@ import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateMeleeResolutionState } from './updateMeleeResolutionState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdateMeleeResolutionState: Creates a new game state with the melee resolution state updated in the resolve melee phase.
  */
 describe(updateMeleeResolutionState, () => {
   it('given update the melee resolution state in resolve melee phase', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const meleeState = createMeleeResolutionState(state);
     const phaseState = createResolveMeleePhaseState(state, {
       currentMeleeResolutionState: meleeState,
@@ -36,7 +36,7 @@ describe(updateMeleeResolutionState, () => {
   });
 
   it('given not mutate the original state', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const meleeState = createMeleeResolutionState(state);
     const phaseState = createResolveMeleePhaseState(state, {
       currentMeleeResolutionState: meleeState,
@@ -68,7 +68,7 @@ describe(updateMeleeResolutionState, () => {
   });
 
   it('given when no current melee resolution state is set, throws', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const phaseState = createResolveMeleePhaseState(state, {
       currentMeleeResolutionState: 'pending',
     });

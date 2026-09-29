@@ -2,7 +2,8 @@ import type { EnginePorts } from '@application/ports';
 import type { Army } from '@entities';
 import type { GameForVisibility } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, createUnitWithPlacement } from '@testing';
+import { createUnitWithPlacement } from '@testing';
+import { createEmptyGameState } from '@factories';
 import { addUnitToBoard, updateBoardState } from '@transforms';
 
 import { requestGameStateSnapshot } from './requestGameStateSnapshot';
@@ -20,7 +21,7 @@ function authoritativeGame(): GameForVisibility<'authoritative'> {
     facing: 'north',
     playerSide: 'white',
   });
-  let gameState = createEmptyGameState();
+  let gameState = createEmptyGameState('standard');
   gameState = updateBoardState(
     gameState,
     addUnitToBoard(gameState.boardState, unit),

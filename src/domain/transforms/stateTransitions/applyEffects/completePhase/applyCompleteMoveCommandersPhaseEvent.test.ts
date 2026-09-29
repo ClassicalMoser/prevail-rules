@@ -4,12 +4,13 @@ import type { GameState } from '@game';
 import { ISSUE_COMMANDS_PHASE, MOVE_COMMANDERS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyCompleteMoveCommandersPhaseEvent } from './applyCompleteMoveCommandersPhaseEvent';
 
+import { createEmptyGameState } from '@factories';
 /** Matches procedure output for black initiative + tempCommandCards[0]/[1] in play. */
 function moveCommandersCompleteEventFromDefaultCards(): CompleteMoveCommandersPhaseEvent {
   return {
@@ -42,7 +43,7 @@ function moveCommandersCompleteEvent(
 describe(applyCompleteMoveCommandersPhaseEvent, () => {
   /** MoveCommanders.complete, black initiative, tempCommandCards[0]/[1] inPlay. */
   function createGameStateInCompleteStep(): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
 
     const stateWithCards = updateCardState(state, {
       ...state.cardState,
@@ -184,7 +185,7 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
 
   describe('trusted mechanical apply', () => {
     it('given moveFirstCommander step, still reaches issueCommands with same remaining commands', () => {
-      const state = createEmptyGameState({ currentInitiative: 'black' });
+      const state = createEmptyGameState('standard');
       const stateWithCards = updateCardState(state, {
         ...state.cardState,
         black: {
@@ -225,7 +226,7 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
     });
 
     it('given inPlay null both sides and event empty command sets, issueCommands queues empty', () => {
-      const state = createEmptyGameState({ currentInitiative: 'black' });
+      const state = createEmptyGameState('standard');
       const stateWithNoCards = updateCardState(state, {
         ...state.cardState,
         black: {
@@ -280,7 +281,7 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
 
   describe('phase guard', () => {
     it('given issueCommands phase, throws expected moveCommanders phase', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const stateWrongPhase: GameState = updatePhaseState(state, {
         currentCommandResolutionState: 'pending',
         phase: ISSUE_COMMANDS_PHASE,

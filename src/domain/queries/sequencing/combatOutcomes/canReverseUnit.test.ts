@@ -1,13 +1,10 @@
 import type { ReverseState } from '@game';
-import {
-  createEmptyGameState,
-  createGameStateWithEngagedUnits,
-  createTestUnit,
-} from '@testing';
+import { createGameStateWithEngagedUnits, createTestUnit } from '@testing';
 import { addUnitToBoard } from '@transforms';
 
 import { canReverseUnit } from './canReverseUnit';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Reverse is only legal when the reversing unit is alone on its hex (opponent already left
  * after retreat/rout); engaged pairs cannot reverse.
@@ -15,7 +12,7 @@ import { canReverseUnit } from './canReverseUnit';
 describe(canReverseUnit, () => {
   it('given single white on E-5 north in reverseState, returns true', () => {
     const unit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateWithUnit = {
       ...state,
       boardState: addUnitToBoard(state.boardState, {
@@ -97,7 +94,7 @@ describe(canReverseUnit, () => {
 
   it('given empty board but reverseState cites E-5, throws unit not present at coordinate', () => {
     const unit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     const reverseState: ReverseState = {
       completed: false,

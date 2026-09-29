@@ -2,21 +2,24 @@ import type { CommitToMeleeEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   updateCardState,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { isValidCommitToMeleeEvent } from './isValidCommitToMeleeEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidCommitToMeleeEvent: membership against getLegalCommitToMeleeEvents.
  */
 describe(isValidCommitToMeleeEvent, () => {
   function stateWhitePendingCommit() {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const withCards = updateCardState(base, {
       ...base.cardState,
       white: {
@@ -82,7 +85,7 @@ describe(isValidCommitToMeleeEvent, () => {
   });
 
   it('rejects when commit is not expected', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

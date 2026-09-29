@@ -3,7 +3,6 @@ import type { StartEngagementEvent } from '@events';
 import type { GameState } from '@game';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createTestCard,
@@ -13,6 +12,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyStartEngagementEvent } from './applyStartEngagementEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * When a move enters an enemy hex, this seeds `engagementState` on the movement CRS from the
  * procedure’s `engagementType` (front vs rear rout vs flank rotation pipeline).
@@ -23,7 +23,7 @@ describe(applyStartEngagementEvent, () => {
     state: GameState;
     defenderWithPlacement: UnitWithPlacement;
   } {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const defendingUnit = createTestUnit('white');
     const blackMover = createTestUnit('black');

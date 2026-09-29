@@ -2,11 +2,12 @@ import type { Event } from '@events';
 import type { GameState, GameStateForVisibility } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState, updateRoundEventStream } from '@transforms';
 
 import { getLegalChooseCardOptions } from './getLegalChooseCardOptions';
 
+import { createEmptyGameState } from '@factories';
 const chooseCardBase = {
   choiceType: 'chooseCard' as const,
   eventNumber: 0,
@@ -19,7 +20,7 @@ const chooseCardBase = {
  */
 describe(getLegalChooseCardOptions, () => {
   function stateChooseCardsBothPending(): GameState {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -57,7 +58,7 @@ describe(getLegalChooseCardOptions, () => {
   });
 
   it('returns only the other player options when one has already chosen', () => {
-    const withPhase = updatePhaseState(createEmptyGameState(), {
+    const withPhase = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
@@ -82,7 +83,7 @@ describe(getLegalChooseCardOptions, () => {
   });
 
   it('returns empty when not in playCards phase', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: 'moveCommanders',
       step: 'moveFirstCommander',
     });
@@ -90,7 +91,7 @@ describe(getLegalChooseCardOptions, () => {
   });
 
   it('returns empty when playCards is not on chooseCards step', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
     });
@@ -98,7 +99,7 @@ describe(getLegalChooseCardOptions, () => {
   });
 
   it('returns empty when both players already have awaitingPlay set', () => {
-    const withPhase = updatePhaseState(createEmptyGameState(), {
+    const withPhase = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

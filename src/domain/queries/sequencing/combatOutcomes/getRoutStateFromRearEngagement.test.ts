@@ -1,5 +1,4 @@
 import {
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -12,13 +11,14 @@ import { updatePhaseState } from '@transforms';
 
 import { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Rear-contact movement: the nested rear engagement must carry a rout substep; this unwraps it
  * from issueCommands + movement CRS with validation.
  */
 describe(getRoutStateFromRearEngagement, () => {
   it('given rear engagement movement with routState, returns same rout object', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const whiteUnit = createTestUnit('white');
     const routState = createRoutState('white', whiteUnit, {
@@ -38,7 +38,7 @@ describe(getRoutStateFromRearEngagement, () => {
   });
 
   it('given movement without engagementState, throws movement has no engagement', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const movement = createMovementResolutionState(state, {
       engagementState: 'pending' as const,
@@ -56,7 +56,7 @@ describe(getRoutStateFromRearEngagement, () => {
   });
 
   it('throws when engagement is not rear', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const movement = createMovementResolutionState(state, {
       engagementState: createFrontEngagementState(),

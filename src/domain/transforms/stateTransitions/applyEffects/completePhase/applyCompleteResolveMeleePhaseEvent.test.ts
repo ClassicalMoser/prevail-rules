@@ -3,7 +3,6 @@ import type { GameState } from '@game';
 import { CLEANUP_PHASE, RESOLVE_MELEE_PHASE } from '@game';
 
 import {
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestCard,
@@ -13,13 +12,14 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCompleteResolveMeleePhaseEvent } from './applyCompleteResolveMeleePhaseEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * After all melee hexes resolve, this closes `resolveMelee`, logs it completed, and opens
  * cleanup at `discardPlayedCards` (inPlay cards still present for that step).
  */
 describe(applyCompleteResolveMeleePhaseEvent, () => {
   it('given resolveMelee phase with default melee slice, next phase cleanup.discardPlayedCards and melee in completed', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inPlay: createTestCard() },

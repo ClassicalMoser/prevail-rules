@@ -3,18 +3,22 @@ import type { AttackApplyState, GameState } from '@game';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRout,
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import {
   getRoutStateFromAttackApply,
   getRoutStateFromMeleeResolutionByInitiative,
 } from './rout';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Rout substep accessors: read rout from a single apply, or pick melee side by initiative when
  * both players might have rout substeps.
@@ -77,7 +81,10 @@ describe(getRoutStateFromMeleeResolutionByInitiative, () => {
     initiative: 'white' | 'black',
     opts: { whiteHasRout?: boolean; blackHasRout?: boolean },
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: initiative });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      initiative,
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {

@@ -28,8 +28,8 @@ import {
  *
  * Most choices assume `event.player` is owned under the state's visibility
  * (enforced inside card-touching applies via getOwned/getHidden helpers).
- * {@link applyChooseCardEvent} and commit applies also accept projected opponent
- * choices on seen views (`card` / `committedCard: 'hidden'`).
+ * {@link applyChooseCardEvent} also accepts a projected opponent chooseCard
+ * (`card: 'hidden'`). Commits keep the real card.
  */
 export function applyPlayerChoiceEvent<S extends GameState>(
   event: PlayerChoiceEvent | ProjectedPlayerChoiceEvent,

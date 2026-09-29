@@ -2,7 +2,6 @@ import type { Coordinate, UnitPlacement } from '@entities';
 import { getPlayerUnitWithPosition } from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
 import {
-  createEmptyGameState,
   createGameState,
   createGameStateWithEngagedUnits,
   createGameStateWithSingleUnit,
@@ -13,6 +12,7 @@ import { addUnitToBoard } from '@transforms';
 
 import { getLegalRetreats } from './getLegalRetreats';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetLegalRetreats: legal retreat placements for an engaged unit given speed, flexibility, and board occupancy.
  */
@@ -214,7 +214,7 @@ describe(getLegalRetreats, () => {
         playerSide: 'black',
         unitOptions: { flexibility: highFlexibility, instanceNumber: 4 },
       });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       let board = gameState.boardState;
       board = addUnitToBoard(board, primaryUnit);
       board = addUnitToBoard(board, secondaryUnit1);

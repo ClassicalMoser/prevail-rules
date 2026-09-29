@@ -1,4 +1,4 @@
-import { createEmptyGameState } from '@testing';
+import { createEmptyGameState } from '@factories';
 
 import { updateCurrentInitiative } from './updateCurrentInitiative';
 
@@ -7,14 +7,17 @@ import { updateCurrentInitiative } from './updateCurrentInitiative';
  */
 describe(updateCurrentInitiative, () => {
   it('updates the initiative player', () => {
-    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const newState = updateCurrentInitiative(state, 'black');
     expect(newState.currentInitiative).toBe('black');
     expect(newState).not.toBe(state);
   });
 
   it('preserves other top-level fields', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const newState = updateCurrentInitiative(state, 'white');
     expect(newState.currentRoundState).toBe(state.currentRoundState);
     expect(newState.boardState).toBe(state.boardState);

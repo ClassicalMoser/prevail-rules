@@ -1,4 +1,4 @@
-import { createEmptyGameState } from '@testing/createEmptyGameState';
+import { createEmptyGameState } from '@factories';
 
 import {
   createMeleeResolutionState,
@@ -11,7 +11,7 @@ import {
  */
 describe(createMovementResolutionState, () => {
   it('given context, returns movement command resolution with unit and commitment', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const resolution = createMovementResolutionState(state);
     expect(resolution.commandResolutionType).toBe('movement');
     expect(resolution.substepType).toBe('commandResolution');
@@ -23,7 +23,7 @@ describe(createMovementResolutionState, () => {
 
 describe(createRangedAttackResolutionState, () => {
   it('given context, returns rangedAttack command resolution with commitments', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const resolution = createRangedAttackResolutionState(state);
     expect(resolution.commandResolutionType).toBe('rangedAttack');
     expect(resolution.substepType).toBe('commandResolution');
@@ -35,7 +35,7 @@ describe(createRangedAttackResolutionState, () => {
 
 describe(createMeleeResolutionState, () => {
   it('given context, returns melee resolution with location and commitments', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const resolution = createMeleeResolutionState(state);
     expect(resolution.substepType).toBe('meleeResolution');
     expect(resolution.location).toBe('E-5');

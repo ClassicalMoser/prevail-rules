@@ -1,14 +1,14 @@
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
 
 import { updatePhaseState } from './updatePhaseState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdatePhaseState: Creates a new game state with the phase state updated.
  */
 describe(updatePhaseState, () => {
   it('given update the phase state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const newPhaseState = {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -22,7 +22,7 @@ describe(updatePhaseState, () => {
   });
 
   it('given not mutate the original state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const originalPhaseState = state.currentRoundState.currentPhaseState;
     const newPhaseState = {
       phase: MOVE_COMMANDERS_PHASE,
@@ -35,7 +35,7 @@ describe(updatePhaseState, () => {
   });
 
   it('given update to different phase and step', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const newPhaseState = {
       phase: MOVE_COMMANDERS_PHASE,
       step: 'complete',

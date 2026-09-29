@@ -3,10 +3,11 @@ import type { GameStateForVisibility } from '@game';
 import { throwIfNone, throwIfPending } from '@utils';
 import { CLEANUP_PHASE } from '@game';
 
-import { createEmptyGameState, createTestCard } from '@testing';
+import { createTestCard } from '@testing';
 
 import { applyResolveRallyEvent } from './applyResolveRallyEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Resolving a rally: the chosen card leaves `played`, the engine marks the per-player rally
  * slice `rallyResolved`, and stays on the resolve-rally step so units-broken can run next.
@@ -14,7 +15,7 @@ import { applyResolveRallyEvent } from './applyResolveRallyEvent';
  */
 describe(applyResolveRallyEvent, () => {
   it('burns the played card, marks rally resolved, and leaves unitsLostSupport pending on the same step', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentInitiative = 'white';
     const card = createTestCard();
     state.cardState.white.played = [card];
@@ -60,7 +61,7 @@ describe(applyResolveRallyEvent, () => {
   });
 
   it('on whiteSeen, resolves the white owned slice and leaves black hidden intact', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     base.currentInitiative = 'white';
     const card = createTestCard();
     const whiteSeen: GameStateForVisibility<'whiteSeen'> = {
@@ -114,7 +115,7 @@ describe(applyResolveRallyEvent, () => {
   });
 
   it('on whiteSeen, throws when the event player is black (unowned)', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     base.currentInitiative = 'black';
     const card = createTestCard();
     const whiteSeen: GameStateForVisibility<'whiteSeen'> = {

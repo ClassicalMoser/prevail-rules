@@ -1,17 +1,18 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { generateRevealCardsEvent } from './generateRevealCardsEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Reveal cards step: both players’ awaitingPlay cards become public knowledge.
  * The procedure bakes both card identities into the event payload.
  */
 describe(generateRevealCardsEvent, () => {
   function createStateWithAwaitingPlay() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateWithCards = updateCardState(state, {
       ...state.cardState,
       black: {

@@ -1,15 +1,12 @@
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
-import {
-  createCleanupPhaseState,
-  createEmptyGameState,
-  updateCardState,
-} from '@testing';
-import { updatePhaseState } from '@transforms';
+import { createCleanupPhaseState, updateCardState } from '@testing';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { generateResolveRallyEvent } from './generateResolveRallyEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Cleanup: resolve rally burns one played command card. Procedure picks a card from the
  * acting player’s `played` pile (non-deterministic); player comes from resolve-rally step + initiative.
@@ -17,7 +14,7 @@ import { generateResolveRallyEvent } from './generateResolveRallyEvent';
 describe(generateResolveRallyEvent, () => {
   /** Seeds `played` for `played` side and lands on firstPlayerResolveRally. */
   function cleanupResolveRallyState(played: 'black' | 'white'): GameState {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const card = base.cardState[played].inPlay!;
     const withPlayed = updateCardState(base, {
       ...base.cardState,
@@ -41,7 +38,10 @@ describe(generateResolveRallyEvent, () => {
   });
 
   it('uses non-initiative player on secondPlayerResolveRally', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const card = base.cardState.black.inPlay!;
     const withPlayed = updateCardState(base, {
       ...base.cardState,
@@ -60,7 +60,10 @@ describe(generateResolveRallyEvent, () => {
   });
 
   it('uses white as first player when initiative is white on firstPlayerResolveRally', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const card = base.cardState.white.inPlay!;
     const withPlayed = updateCardState(base, {
       ...base.cardState,
@@ -79,7 +82,7 @@ describe(generateResolveRallyEvent, () => {
   });
 
   it('throws when the acting player has an empty played pile', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const full = updatePhaseState(
       base,
       createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
@@ -90,7 +93,7 @@ describe(generateResolveRallyEvent, () => {
   });
 
   it('throws when cleanup is still on a chooseRally step', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const full = updatePhaseState(
       base,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
@@ -101,7 +104,7 @@ describe(generateResolveRallyEvent, () => {
   });
 
   it('throws when not in cleanup phase', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',

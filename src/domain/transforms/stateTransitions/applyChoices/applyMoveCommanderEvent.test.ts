@@ -3,12 +3,13 @@ import type { MoveCommanderEvent } from '@events';
 import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 
-import { createBoardWithCommander, createEmptyGameState } from '@testing';
+import { createBoardWithCommander } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyMoveCommanderEvent } from './applyMoveCommanderEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Move-commanders phase: each side relocates their commander token on the board; after the
  * second move the step becomes `complete`.
@@ -20,7 +21,7 @@ describe(applyMoveCommanderEvent, () => {
     blackCommanderCoord: Coordinate = 'E-5',
     whiteCommanderCoord: Coordinate = 'E-6',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
 
     let board = createBoardWithCommander('black', blackCommanderCoord);
     board = createBoardWithCommander('white', whiteCommanderCoord, board);

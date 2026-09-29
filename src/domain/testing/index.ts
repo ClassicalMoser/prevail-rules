@@ -8,7 +8,6 @@ export {
   createGameStateWithSingleUnit,
   createGameStateWithUnits,
 } from './createBoard';
-export { createEmptyGameState } from './createEmptyGameState';
 export { getUnitByStatValue } from './getUnitByStatValue';
 export { getUnitByTrait } from './getUnitByTrait';
 export {
@@ -35,6 +34,7 @@ export {
 export { procedureRegistryStateFactories } from './procedureRegistryStateFactories';
 export {
   createTestCard,
+  createTestCommand,
   createUnitWithPlacement,
   updateCardState,
 } from './testHelpers';

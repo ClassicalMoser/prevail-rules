@@ -1,6 +1,5 @@
 import type { GameState, MovementResolutionState } from '@game';
 import {
-  createEmptyGameState,
   createGameStateWithUnits,
   createMovementResolutionState,
   createTestCard,
@@ -10,6 +9,7 @@ import {
 
 import { getExpectedMovementResolutionEvent } from './getExpectedMovementResolutionEvent';
 
+import { createEmptyGameState } from '@factories';
 const { getExpectedEngagementEventMock } = vi.hoisted(() => ({
   getExpectedEngagementEventMock: vi.fn(),
 }));
@@ -69,7 +69,7 @@ describe(getExpectedMovementResolutionEvent, () => {
   });
 
   it('given complete unit movement when the target space has no enemy unit', () => {
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
     gameState.cardState.black.inPlay = createTestCard();
     const resolutionState = createMovementResolutionState(gameState);
 

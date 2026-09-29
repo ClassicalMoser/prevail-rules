@@ -1,14 +1,14 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { updatePlayerCardState } from './updatePlayerCardState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdatePlayerCardState: Creates a new game state with a player's card state updated.
  */
 describe(updatePlayerCardState, () => {
   it('given update player card state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     const newState = updatePlayerCardState(state, 'black', {
       ...state.cardState.black,
@@ -22,7 +22,7 @@ describe(updatePlayerCardState, () => {
   });
 
   it('given not mutate the original state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const originalBlackCardState = state.cardState.black;
 
     updatePlayerCardState(state, 'black', {
@@ -35,7 +35,7 @@ describe(updatePlayerCardState, () => {
   });
 
   it('given update correct player', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     const newState = updatePlayerCardState(state, 'white', {
       ...state.cardState.white,

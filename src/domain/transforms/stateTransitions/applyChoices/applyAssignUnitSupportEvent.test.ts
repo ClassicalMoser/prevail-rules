@@ -2,7 +2,7 @@ import type { AssignUnitSupportEvent } from '@events';
 import { throwIfNone, throwIfPending } from '@utils';
 import { CLEANUP_PHASE } from '@game';
 import { getBoardSpace } from '@queries';
-import { createEmptyGameState, createTestCard, createTestUnit } from '@testing';
+import { createTestCard, createTestUnit } from '@testing';
 import {
   addUnitToBoard,
   updateBoardState,
@@ -11,8 +11,13 @@ import {
 
 import { applyAssignUnitSupportEvent } from './applyAssignUnitSupportEvent';
 
+import { createEmptyGameState } from '@factories';
+import { updateCurrentInitiative } from '@transforms/pureTransforms/state/updateCurrentInitiative';
 function awaitingSupportState() {
-  const base = createEmptyGameState({ currentInitiative: 'white' });
+  const base = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'white',
+  );
   const covered = createTestUnit('white', { attack: 3, instanceNumber: 1 });
   // attack 4 → positive morale (rout discard seeded); attack 2 units have morale 0.
   const uncovered = createTestUnit('white', { attack: 4, instanceNumber: 1 });
@@ -103,7 +108,10 @@ describe(applyAssignUnitSupportEvent, () => {
   });
 
   it('given empty board and empty assignments, advances cleanup with no rout', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const state = updatePhaseState(base, {
       firstPlayerRallyResolutionState: {
         completed: false,

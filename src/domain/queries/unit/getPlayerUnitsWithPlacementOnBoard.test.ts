@@ -1,11 +1,8 @@
-import {
-  createBoardWithUnits,
-  createEmptyGameState,
-  createTestUnit,
-} from '@testing';
+import { createBoardWithUnits, createTestUnit } from '@testing';
 
 import { getPlayerUnitsWithPlacementOnBoard } from './getPlayerUnitsWithPlacementOnBoard';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetPlayerUnitsWithPlacementOnBoard: all of a player's units on the board with coordinates and facings.
  */
@@ -15,7 +12,7 @@ describe(getPlayerUnitsWithPlacementOnBoard, () => {
     const unit2 = createTestUnit('white', { attack: 3 });
     const unit3 = createTestUnit('black', { attack: 3 });
 
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.boardState = createBoardWithUnits([
       { coordinate: 'E-5', facing: 'north', unit: unit1 },
       { coordinate: 'F-5', facing: 'south', unit: unit2 },
@@ -41,7 +38,7 @@ describe(getPlayerUnitsWithPlacementOnBoard, () => {
   it('given player has no units on board, returns empty set', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.boardState = createBoardWithUnits([
       { coordinate: 'E-5', facing: 'north', unit },
     ]);
@@ -54,7 +51,7 @@ describe(getPlayerUnitsWithPlacementOnBoard, () => {
   it('given include placement information', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.boardState = createBoardWithUnits([
       { coordinate: 'E-5', facing: 'north', unit },
     ]);

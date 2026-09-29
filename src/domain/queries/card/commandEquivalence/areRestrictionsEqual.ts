@@ -1,82 +1,64 @@
 import type { Restrictions } from '@entities';
-import type { ValidationResult } from '@utils';
 
 /**
- * Compares two Restrictions objects for equality by comparing all properties.
+ * Compares two Restrictions objects for equivalence (not reference equality) by comparing all properties.
+ * Current use case is to find a matching command to remove from pending on issue.
  *
  * @param restrictions1 - First restrictions object
  * @param restrictions2 - Second restrictions object
- * @returns ValidationResult indicating if restrictions match, with error reason if not
+ * @returns Whether the two restrictions have the same range and the same traits and unit types
  */
 export function areRestrictionsEqual(
   restrictions1: Restrictions,
   restrictions2: Restrictions,
-): ValidationResult {
-  try {
-    // Compare inspirationRangeRestriction
-    if (
-      restrictions1.inspirationRangeRestriction !==
-      restrictions2.inspirationRangeRestriction
-    ) {
-      return {
-        errorReason:
-          'Restrictions have different inspirationRangeRestriction values',
-        result: false,
-      };
+): boolean {
+  // Helper function to compare two arrays of literals (strings, numbers, booleans, etc.).
+  function sameMembers<T>(left: readonly T[], right: readonly T[]): boolean {
+    // Different lengths cannot be the same members
+    if (left.length !== right.length) {
+      return false;
     }
-
-    // Compare traitRestrictions arrays (order matters for arrays)
-    if (
-      restrictions1.traitRestrictions.length !==
-      restrictions2.traitRestrictions.length
-    ) {
-      return {
-        errorReason:
-          'Restrictions have different traitRestrictions array lengths',
-        result: false,
-      };
-    }
-    for (let i = 0; i < restrictions1.traitRestrictions.length; i++) {
-      if (
-        restrictions1.traitRestrictions[i] !==
-        restrictions2.traitRestrictions[i]
-      ) {
-        return {
-          errorReason: `Restrictions have different traitRestrictions at index ${i}`,
-          result: false,
-        };
+    // Copy the second list so each match can be taken out of it
+    const remaining = [...right];
+    for (const item of left) {
+      const matchIndex = remaining.indexOf(item);
+      // No remaining copy of this member
+      if (matchIndex === -1) {
+        return false;
       }
+      // Take that match, so a repeated member needs its own copy
+      remaining.splice(matchIndex, 1);
     }
-
-    // Compare unitRestrictions arrays (order matters for arrays)
-    if (
-      restrictions1.unitRestrictions.length !==
-      restrictions2.unitRestrictions.length
-    ) {
-      return {
-        errorReason:
-          'Restrictions have different unitRestrictions array lengths',
-        result: false,
-      };
-    }
-    for (let i = 0; i < restrictions1.unitRestrictions.length; i++) {
-      if (
-        restrictions1.unitRestrictions[i] !== restrictions2.unitRestrictions[i]
-      ) {
-        return {
-          errorReason: `Restrictions have different unitRestrictions at index ${i}`,
-          result: false,
-        };
-      }
-    }
-
-    return {
-      result: true,
-    };
-  } catch (error) {
-    return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
-      result: false,
-    };
+    return true;
   }
+
+  // Compare inspirationRangeRestriction
+  if (
+    restrictions1.inspirationRangeRestriction !==
+    restrictions2.inspirationRangeRestriction
+  ) {
+    // Does not match, so we end here.
+    return false;
+  }
+
+  // Compare traitRestrictions. Order does not matter.
+  if (
+    !sameMembers(
+      restrictions1.traitRestrictions,
+      restrictions2.traitRestrictions,
+    )
+  ) {
+    // Does not match, so we end here.
+    return false;
+  }
+
+  // Compare unitRestrictions. Order does not matter.
+  if (
+    !sameMembers(restrictions1.unitRestrictions, restrictions2.unitRestrictions)
+  ) {
+    // Does not match, so we end here.
+    return false;
+  }
+  // All checks passed, so we return true.
+  return true;
 }

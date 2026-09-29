@@ -1,5 +1,5 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, createUnitWithPlacement } from '@testing';
+import { createUnitWithPlacement } from '@testing';
 import {
   addCommanderToBoard,
   addUnitToBoard,
@@ -8,6 +8,7 @@ import {
 
 import { getLegalUnitsForIssueCommand } from './getLegalUnitsForIssueCommand';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetLegalUnitsForIssueCommand: on-board units matching command restrictions.
  */
@@ -28,7 +29,7 @@ describe(getLegalUnitsForIssueCommand, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState();
+    let state = createEmptyGameState('standard');
     state = updateBoardState(state, addUnitToBoard(state.boardState, unit));
 
     expect(
@@ -57,7 +58,7 @@ describe(getLegalUnitsForIssueCommand, () => {
         unitRestrictions: [],
       },
     };
-    let state = createEmptyGameState();
+    let state = createEmptyGameState('standard');
     let board = addUnitToBoard(state.boardState, near);
     board = addUnitToBoard(board, far);
     board = addCommanderToBoard(board, 'black', 'E-5');
@@ -74,7 +75,7 @@ describe(getLegalUnitsForIssueCommand, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState();
+    let state = createEmptyGameState('standard');
     state = updateBoardState(state, addUnitToBoard(state.boardState, unit));
     state = {
       ...state,

@@ -1,14 +1,15 @@
-import { createEmptyGameState, createTestUnit } from '@testing';
+import { createTestUnit } from '@testing';
 
 import { removeUnitFromReserve } from './removeUnitFromReserve';
 
+import { createEmptyGameState } from '@factories';
 /**
  * RemoveUnitFromReserve: removeUnitFromReserve.
  */
 describe(removeUnitFromReserve, () => {
   describe('removing unit from reserve with one unit', () => {
     it('given remove unit and leave empty set', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
       gameState.reservedUnits = [unit];
 
@@ -19,7 +20,7 @@ describe(removeUnitFromReserve, () => {
     });
 
     it('given not mutate the original game state', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
       gameState.reservedUnits = [unit];
 
@@ -32,7 +33,7 @@ describe(removeUnitFromReserve, () => {
 
   describe('removing unit from reserve with multiple units', () => {
     it('given remove one unit and preserve others', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
       gameState.reservedUnits = [unit1, unit2];
@@ -45,7 +46,7 @@ describe(removeUnitFromReserve, () => {
     });
 
     it('given remove by value equality when passing different reference', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unitInReserve = createTestUnit('black', {
         attack: 3,
         instanceNumber: 1,
@@ -67,7 +68,7 @@ describe(removeUnitFromReserve, () => {
     });
 
     it('given removing from multiple units, does not mutate the original game state', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
       gameState.reservedUnits = [unit1, unit2];
@@ -82,7 +83,7 @@ describe(removeUnitFromReserve, () => {
 
   describe('error cases', () => {
     it('given error when unit not present in reserve, throws', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
 
       expect(() => removeUnitFromReserve(gameState, unit)).toThrow(
@@ -91,7 +92,7 @@ describe(removeUnitFromReserve, () => {
     });
 
     it('given error when trying to remove unit with different instance number, throws', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       gameState.reservedUnits = [unit1];
@@ -102,7 +103,7 @@ describe(removeUnitFromReserve, () => {
     });
 
     it('given error when trying to remove already removed unit, throws', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
       gameState.reservedUnits = [unit];
       const gameStateAfterRemoval = removeUnitFromReserve(gameState, unit);
@@ -115,7 +116,7 @@ describe(removeUnitFromReserve, () => {
 
   describe('preserving other game state', () => {
     it('given preserve routed units', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
       gameState.reservedUnits = [unit];
 

@@ -1,11 +1,8 @@
-import {
-  createEmptyGameState,
-  createRangedAttackResolutionState,
-  createTestCard,
-} from '@testing';
+import { createRangedAttackResolutionState, createTestCard } from '@testing';
 
 import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttackResolutionEvent';
 
+import { createEmptyGameState } from '@factories';
 const { getExpectedAttackApplyEventMock } = vi.hoisted(() => ({
   getExpectedAttackApplyEventMock: vi.fn(),
 }));
@@ -23,7 +20,7 @@ describe(getExpectedRangedAttackResolutionEvent, () => {
   });
 
   function createGameState() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     state.cardState.white.inPlay = createTestCard();
     return state;

@@ -4,7 +4,6 @@ import { PLAY_CARDS_PHASE } from '@game';
 import {
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMovementResolutionState,
@@ -19,6 +18,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateResolveRoutEvent } from './generateResolveRoutEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * `resolveRout` materializes rout discards: penalty and affected units come from whichever
  * rout substep is active—ranged attack-apply, melee (initiative player’s apply first),
@@ -26,7 +26,7 @@ import { generateResolveRoutEvent } from './generateResolveRoutEvent';
  */
 describe(generateResolveRoutEvent, () => {
   it('given ranged resolution with rout substep on white defender, source rangedAttack and that unit', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -57,7 +57,7 @@ describe(generateResolveRoutEvent, () => {
   });
 
   it('given black initiative and rout on both melee applies, uses black unit and melee source', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
@@ -96,7 +96,7 @@ describe(generateResolveRoutEvent, () => {
   });
 
   it('given playCards phase, throws rout resolution phase guard', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
@@ -107,7 +107,7 @@ describe(generateResolveRoutEvent, () => {
   });
 
   it('given issueCommands movement with rear engagement routState, source rearEngagementMovement', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const whiteUnit = createTestUnit('white');
     const routState = createRoutState('white', whiteUnit, {
@@ -130,7 +130,7 @@ describe(generateResolveRoutEvent, () => {
 
   it('given cleanup firstPlayerResolveRally with nested routState, source rally and listed unit', () => {
     const unit = createTestUnit('white', { attack: 2 });
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const full = updatePhaseState(
       base,
       createCleanupPhaseState({
@@ -158,7 +158,7 @@ describe(generateResolveRoutEvent, () => {
   });
 
   it('given issueCommands with invalid melee-shaped CRS, throws movement/ranged expectation', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const full = updatePhaseState(
       state,

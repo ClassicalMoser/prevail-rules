@@ -1,14 +1,15 @@
-import { createEmptyGameState, createTestUnit } from '@testing';
+import { createTestUnit } from '@testing';
 
 import { addUnitToRouted } from './addUnitToRouted';
 
+import { createEmptyGameState } from '@factories';
 /**
  * AddUnitToRouted: addUnitToRouted.
  */
 describe(addUnitToRouted, () => {
   describe('adding unit to empty set', () => {
     it('given add unit to routed units set', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
 
       const newGameState = addUnitToRouted(gameState, unit);
@@ -19,7 +20,7 @@ describe(addUnitToRouted, () => {
     });
 
     it('given not mutate the original game state', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
 
       addUnitToRouted(gameState, unit);
@@ -30,7 +31,7 @@ describe(addUnitToRouted, () => {
 
   describe('adding multiple units', () => {
     it('given add second unit while preserving first', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
       const gameStateWithUnit1 = addUnitToRouted(gameState, unit1);
@@ -43,7 +44,7 @@ describe(addUnitToRouted, () => {
     });
 
     it('given adding second unit, does not mutate the original game state', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
       const gameStateWithUnit1 = addUnitToRouted(gameState, unit1);
@@ -57,7 +58,7 @@ describe(addUnitToRouted, () => {
 
   describe('error cases', () => {
     it('given error when unit already routed, throws', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
       const gameStateWithUnit = addUnitToRouted(gameState, unit);
 
@@ -67,7 +68,7 @@ describe(addUnitToRouted, () => {
     });
 
     it('given when adding different reference with same value (value equality), throws', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const gameStateWithUnit = addUnitToRouted(gameState, unit);
       const sameValueDifferentRef = createTestUnit('black', {
@@ -83,7 +84,7 @@ describe(addUnitToRouted, () => {
 
   describe('preserving other game state', () => {
     it('given preserve lost commanders', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
 
       const newGameState = addUnitToRouted(gameState, unit);
@@ -92,7 +93,7 @@ describe(addUnitToRouted, () => {
     });
 
     it('given preserve reserved units', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
 
       const newGameState = addUnitToRouted(gameState, unit);
@@ -101,7 +102,7 @@ describe(addUnitToRouted, () => {
     });
 
     it('given preserve board state', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
 
       const newGameState = addUnitToRouted(gameState, unit);
@@ -110,7 +111,7 @@ describe(addUnitToRouted, () => {
     });
 
     it('given preserve card state', () => {
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const unit = createTestUnit('black', { attack: 3 });
 
       const newGameState = addUnitToRouted(gameState, unit);

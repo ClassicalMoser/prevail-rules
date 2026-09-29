@@ -1,39 +1,26 @@
 import type { Modifier } from '@entities';
-import type { ValidationResult } from '@utils';
 
 /**
- * Compares two Modifier objects for equality by comparing all properties.
+ * Compares two Modifier objects for equivalence (not reference equality) by comparing all properties.
+ * Current use case is to find a matching command to remove from pending on issue.
  *
  * @param modifier1 - First modifier object
  * @param modifier2 - Second modifier object
- * @returns ValidationResult indicating if modifiers match, with error reason if not
+ * @returns Whether the two modifiers have the same type and value
  */
 export function areModifiersEqual(
   modifier1: Modifier,
   modifier2: Modifier,
-): ValidationResult {
-  try {
-    if (modifier1.type !== modifier2.type) {
-      return {
-        errorReason: `Modifiers have different types: ${modifier1.type} vs ${modifier2.type}`,
-        result: false,
-      };
-    }
-
-    if (modifier1.value !== modifier2.value) {
-      return {
-        errorReason: `Modifiers have different values: ${modifier1.value} vs ${modifier2.value}`,
-        result: false,
-      };
-    }
-
-    return {
-      result: true,
-    };
-  } catch (error) {
-    return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
-      result: false,
-    };
+): boolean {
+  // Different types cannot be the same modifier
+  if (modifier1.type !== modifier2.type) {
+    return false;
   }
+  // Same type with a different value cannot match
+  if (modifier1.value !== modifier2.value) {
+    return false;
+  }
+
+  // All checks passed, so we return true.
+  return true;
 }

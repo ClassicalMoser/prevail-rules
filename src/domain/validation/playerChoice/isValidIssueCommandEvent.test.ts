@@ -2,7 +2,6 @@ import type { IssueCommandEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createUnitWithPlacement,
   updateCardState,
@@ -16,6 +15,7 @@ import {
 
 import { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidIssueCommandEvent: remaining command + restriction integrity.
  */
@@ -26,7 +26,7 @@ describe(isValidIssueCommandEvent, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
@@ -186,7 +186,7 @@ describe(isValidIssueCommandEvent, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     let board = addUnitToBoard(state.boardState, far);
     board = addCommanderToBoard(board, 'black', 'E-5');
     state = updateBoardState(state, board);
@@ -216,7 +216,7 @@ describe(isValidIssueCommandEvent, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

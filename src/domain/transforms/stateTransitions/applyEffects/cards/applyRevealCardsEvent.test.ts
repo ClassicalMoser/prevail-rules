@@ -3,12 +3,13 @@ import type { GameStateForVisibility } from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyRevealCardsEvent } from './applyRevealCardsEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * After simultaneous picks, `revealCards` promotes both `awaitingPlay` slots to `inPlay` and
  * advances playCards to `assignInitiative`. Guards ensure both sides had a pending card when
@@ -30,8 +31,9 @@ describe(applyRevealCardsEvent, () => {
 
   /** PlayCards.revealCards with black/white awaitingPlay set and inPlay empty. */
   function createGameStateInRevealCardsStep(): GameStateForVisibility<'authoritative'> {
-    const state =
-      createEmptyGameState() as GameStateForVisibility<'authoritative'>;
+    const state = createEmptyGameState(
+      'standard',
+    ) as GameStateForVisibility<'authoritative'>;
 
     const stateWithCards = updateCardState(state, {
       ...state.cardState,
@@ -155,7 +157,7 @@ describe(applyRevealCardsEvent, () => {
 
   describe('guards and mechanical reveal', () => {
     it('given no current phase slice, throws no current phase state', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
 
       expect(() => applyRevealCardsEvent(createRevealEvent(), state)).toThrow(
         'No current phase state found',
@@ -163,7 +165,7 @@ describe(applyRevealCardsEvent, () => {
     });
 
     it('given moveCommanders phase, throws expected playCards phase', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const stateWithWrongPhase = updatePhaseState(state, {
         phase: MOVE_COMMANDERS_PHASE,
         step: 'moveFirstCommander',
@@ -175,7 +177,12 @@ describe(applyRevealCardsEvent, () => {
     });
 
     it('given playCards chooseCards step, still flips cards and jumps to assignInitiative', () => {
-      const state = createEmptyGameState();
+      const base = createEmptyGameState('standard');
+      const state = updateCardState(base, {
+        ...base.cardState,
+        black: { ...base.cardState.black, awaitingPlay: tempCommandCards[0] },
+        white: { ...base.cardState.white, awaitingPlay: tempCommandCards[1] },
+      });
       const stateWithWrongStep = updatePhaseState(state, {
         phase: PLAY_CARDS_PHASE,
         step: 'chooseCards',
@@ -192,7 +199,7 @@ describe(applyRevealCardsEvent, () => {
     });
 
     it('given revealCards step but white awaitingPlay null, throws white awaiting guard', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const stateWithCards = updateCardState(state, {
         ...state.cardState,
         black: {
@@ -215,7 +222,7 @@ describe(applyRevealCardsEvent, () => {
     });
 
     it('given revealCards step but black awaitingPlay null, throws black awaiting guard', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const stateWithCards = updateCardState(state, {
         ...state.cardState,
         black: {

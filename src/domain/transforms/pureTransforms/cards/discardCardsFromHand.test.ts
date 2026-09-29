@@ -1,15 +1,15 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { discardCardsFromHand } from './discardCardsFromHand';
 
+import { createEmptyGameState } from '@factories';
 /**
  * DiscardCardsFromHand: Pure transform to move specified cards from hand to discarded pile.
  */
 describe(discardCardsFromHand, () => {
   it('given move cards from hand to discarded', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       discarded: [],
       inHand: [tempCommandCards[0], tempCommandCards[1], tempCommandCards[2]],
     };
@@ -28,7 +28,7 @@ describe(discardCardsFromHand, () => {
 
   it('given not mutate the original card state', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       discarded: [],
       inHand: [tempCommandCards[0], tempCommandCards[1]],
     };
@@ -43,7 +43,7 @@ describe(discardCardsFromHand, () => {
 
   it('given append to existing discarded cards', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       discarded: [tempCommandCards[2]],
       inHand: [tempCommandCards[0], tempCommandCards[1]],
     };
@@ -58,7 +58,7 @@ describe(discardCardsFromHand, () => {
 
   it('given handle multiple cards', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       discarded: [],
       inHand: [tempCommandCards[0], tempCommandCards[1], tempCommandCards[2]],
     };

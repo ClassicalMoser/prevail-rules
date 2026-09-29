@@ -1,15 +1,15 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { burnCardFromPlayed } from './burnCardFromPlayed';
 
+import { createEmptyGameState } from '@factories';
 /**
  * BurnCardFromPlayed: Burns a specific card from the player's played pile.
  */
 describe(burnCardFromPlayed, () => {
   it('given move card from played to burnt', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       burnt: [],
       played: [tempCommandCards[0], tempCommandCards[1]],
     };
@@ -22,7 +22,7 @@ describe(burnCardFromPlayed, () => {
 
   it('given if card is not in played pile, throws', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       burnt: [],
       played: [tempCommandCards[0]],
     };
@@ -34,7 +34,7 @@ describe(burnCardFromPlayed, () => {
 
   it('given not mutate the original card state', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       burnt: [],
       played: [tempCommandCards[0]],
     };
@@ -49,7 +49,7 @@ describe(burnCardFromPlayed, () => {
 
   it('given append to existing burnt cards', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       burnt: [tempCommandCards[2]],
       played: [tempCommandCards[0], tempCommandCards[1]],
     };

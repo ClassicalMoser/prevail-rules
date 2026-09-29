@@ -2,17 +2,18 @@ import type { ChooseCardEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { isValidChooseCardEvent } from './isValidChooseCardEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseCardEvent: membership against getLegalChooseCardOptions.
  */
 describe(isValidChooseCardEvent, () => {
   function stateChooseCardsBothPending(): GameState {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -66,7 +67,7 @@ describe(isValidChooseCardEvent, () => {
   });
 
   it('rejects when not in the chooseCards step', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
     });

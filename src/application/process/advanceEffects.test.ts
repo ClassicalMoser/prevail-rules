@@ -1,5 +1,6 @@
 import type { EnginePorts } from '@application/ports';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
+import { createEmptyGameState } from '@factories';
 
 import { advanceEffects } from './advanceEffects';
 
@@ -33,7 +34,7 @@ describe(advanceEffects, () => {
   });
 
   it('stops after applying gameOver without re-querying expected event', async () => {
-    const initial = createEmptyGameState();
+    const initial = createEmptyGameState('standard');
     const withEmptyWhite = updateCardState(initial, {
       ...initial.cardState,
       white: { ...initial.cardState.white, inHand: [] },
@@ -70,7 +71,7 @@ describe(advanceEffects, () => {
   });
 
   it('continues the loop for non-terminal game effects until a non-effect', async () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const afterReveal = { ...state };
 
     getExpectedEventMock

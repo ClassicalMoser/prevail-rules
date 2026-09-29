@@ -1,6 +1,5 @@
 import type { GameState, IssueCommandsPhaseStep } from '@game';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createTestCard,
@@ -11,10 +10,12 @@ import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms';
 
 import { getExpectedIssueCommandsPhaseEvent } from './getExpectedIssueCommandsPhaseEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedIssueCommandsPhaseEvent: next event during the issue-commands phase from phase state.
  */
@@ -26,7 +27,10 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       state: GameState,
     ) => Parameters<typeof createIssueCommandsPhaseState>[1],
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      currentInitiative,
+    );
     state.cardState.black.inPlay = createTestCard();
     state.cardState.white.inPlay = createTestCard();
 

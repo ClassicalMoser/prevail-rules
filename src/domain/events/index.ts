@@ -154,10 +154,6 @@ export type {
   PlayerChoiceEvent,
   PlayerChoiceType,
   ProjectedChooseCardEvent,
-  ProjectedCommitEvent,
-  ProjectedCommitToMeleeEvent,
-  ProjectedCommitToMovementEvent,
-  ProjectedCommitToRangedAttackEvent,
   ProjectedPlayerChoiceEvent,
 } from './playerChoices';
 export {

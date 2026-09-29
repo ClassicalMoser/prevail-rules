@@ -3,7 +3,6 @@ import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
   createAttackApplyStateWithReverse,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMovementResolutionState,
@@ -17,12 +16,13 @@ import { addUnitToBoard, updatePhaseState } from '../';
 
 import { updateReverseState } from './updateReverseState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdateReverseState: Creates a new game state with the reverse state updated in an attack apply state.
  */
 describe(updateReverseState, () => {
   function createStateWithRangedAttackReverse() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement = {
       placement: {
@@ -48,7 +48,7 @@ describe(updateReverseState, () => {
   }
 
   function createStateWithMeleeReverse(reversingPlayer: 'white' | 'black') {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const reversingUnit = createTestUnit(reversingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       reversingPlayer === 'white' ? 'black' : 'white',
@@ -202,7 +202,7 @@ describe(updateReverseState, () => {
   });
 
   it('given when ranged attack apply has no reverse state, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement = {
       placement: {
@@ -225,7 +225,7 @@ describe(updateReverseState, () => {
   });
 
   it('given when in issueCommands but command type is not rangedAttack (movement), throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createMovementResolutionState(state),
     });
@@ -247,7 +247,7 @@ describe(updateReverseState, () => {
   });
 
   it('given when in issueCommands with no command resolution state, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = createIssueCommandsPhaseState(state);
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
@@ -265,7 +265,7 @@ describe(updateReverseState, () => {
   });
 
   it('given when melee white attack apply has no reverse state, throws', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement: UnitWithPlacement = {
@@ -299,7 +299,7 @@ describe(updateReverseState, () => {
   });
 
   it('given when melee black attack apply has no reverse state, throws', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement: UnitWithPlacement = {
@@ -333,7 +333,7 @@ describe(updateReverseState, () => {
   });
 
   it('given when not in issueCommands or resolveMelee phase, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),

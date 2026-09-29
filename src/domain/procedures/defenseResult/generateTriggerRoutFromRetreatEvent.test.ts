@@ -4,17 +4,21 @@ import { PLAY_CARDS_PHASE } from '@game';
 
 import {
   createAttackApplyStateWithRetreat,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import { generateTriggerRoutFromRetreatEvent } from './generateTriggerRoutFromRetreatEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * When the defender cannot retreat legally, the engine emits `triggerRoutFromRetreat` so the
  * rout flow can start instead. Context is ranged vs melee; in melee the retreating player is
@@ -22,7 +26,7 @@ import { generateTriggerRoutFromRetreatEvent } from './generateTriggerRoutFromRe
  */
 describe(generateTriggerRoutFromRetreatEvent, () => {
   function stateWithRangedRetreat(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -49,7 +53,7 @@ describe(generateTriggerRoutFromRetreatEvent, () => {
   function stateWithMeleeRetreat(
     retreatingPlayer: 'white' | 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       retreatingPlayer === 'white' ? 'black' : 'white',
@@ -108,7 +112,10 @@ describe(generateTriggerRoutFromRetreatEvent, () => {
   });
 
   it('given white initiative and both could retreat, picks white retreat path for melee context', () => {
-    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
@@ -144,7 +151,7 @@ describe(generateTriggerRoutFromRetreatEvent, () => {
   });
 
   it('given playCards phase, throws retreat rout phase guard', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',

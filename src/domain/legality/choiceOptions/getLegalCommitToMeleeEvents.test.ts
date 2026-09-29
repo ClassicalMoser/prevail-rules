@@ -1,15 +1,15 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   updateCardState,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getLegalCommitToMeleeEvents } from './getLegalCommitToMeleeEvents';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetLegalCommitToMeleeEvents: one CommitToMeleeEvent per eligible in-hand card
  * (has ≥1 melee modifier), plus a refuse option; modifierTypes are all of that
@@ -17,7 +17,10 @@ import { getLegalCommitToMeleeEvents } from './getLegalCommitToMeleeEvents';
  */
 describe(getLegalCommitToMeleeEvents, () => {
   function stateWhitePendingCommit(hand = [tempCommandCards[0]]) {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const withCards = updateCardState(base, {
       ...base.cardState,
       white: {
@@ -63,7 +66,7 @@ describe(getLegalCommitToMeleeEvents, () => {
   });
 
   it('returns empty when not in resolveMelee commitment', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

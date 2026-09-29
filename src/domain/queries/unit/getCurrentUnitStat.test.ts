@@ -1,13 +1,13 @@
 import {
   createBoardWithCommander,
   createBoardWithUnits,
-  createEmptyGameState,
   createTestCard,
   createTestUnit,
 } from '@testing';
 
 import { getCurrentUnitStat } from './getCurrentUnitStat';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetCurrentUnitStat: effective stat with base unit type, round effects, command modifiers, and extra modifiers.
  */
@@ -15,7 +15,7 @@ describe(getCurrentUnitStat, () => {
   describe('base stat without modifiers', () => {
     it('given no card is in play, returns base stat', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -26,7 +26,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given in-play round effect has no modifier for that stat, returns base attack', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -46,7 +46,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given no modifiers apply, returns base stat for white inPlay', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -61,7 +61,7 @@ describe(getCurrentUnitStat, () => {
   describe('round effect modifiers', () => {
     it('given unrestricted round effect modifier, applies to stat', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -75,7 +75,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given unit does not match stat, does not apply round effect modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -89,7 +89,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given defense-type round modifier, applies to reverse/rout/retreat', () => {
       const unit = createTestUnit('black', { reverse: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -105,7 +105,7 @@ describe(getCurrentUnitStat, () => {
   describe('round effect with inspiration range restriction', () => {
     it('given unit is within inspiration range, applies modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -125,7 +125,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given unit is outside inspiration range, does not apply modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -145,7 +145,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given commander is not on board, does not apply modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -162,7 +162,7 @@ describe(getCurrentUnitStat, () => {
   describe('round effect with unit restrictions', () => {
     it('given trait and unit restriction lists are empty, applies round effect modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -176,7 +176,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given unit does not match unit restrictions, does not apply modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -193,7 +193,7 @@ describe(getCurrentUnitStat, () => {
   describe('active command modifiers', () => {
     it('given no card is in play, ignores command modifiers', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -206,7 +206,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given missing command.modifiers on in-play card, treats as empty list', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -226,7 +226,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given unit was commanded, applies command modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -241,7 +241,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given unit was not commanded, does not apply command modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -256,7 +256,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given stat does not match, does not apply command modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -273,7 +273,7 @@ describe(getCurrentUnitStat, () => {
   describe('additional modifiers', () => {
     it('given extra modifier list with matching stat, stacks on base', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -287,7 +287,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given defense extra modifier, applies to defense stat', () => {
       const unit = createTestUnit('black', { reverse: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -301,7 +301,7 @@ describe(getCurrentUnitStat, () => {
 
     it('given non-matching extra modifiers, ignores them', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
@@ -317,7 +317,7 @@ describe(getCurrentUnitStat, () => {
   describe('multiple modifiers stacking', () => {
     it('given round effect and command modifiers, stacks both', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
         { coordinate: 'E-5', facing: 'north', unit },
       ]);
