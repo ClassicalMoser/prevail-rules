@@ -20,8 +20,8 @@ export function getFlankingSpaces(
   const orthogonalFacings = [...getOrthogonalFacings(facing)];
   // Set of coordinates and undefined values
   const flankingSpaces = new Set(
-    orthogonalFacings.map((facing) =>
-      getForwardSpace(board, coordinate, facing),
+    orthogonalFacings.map((flankFacing) =>
+      getForwardSpace(board, coordinate, flankFacing),
     ),
   );
   // Filter out undefined values

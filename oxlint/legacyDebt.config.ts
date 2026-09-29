@@ -12,8 +12,6 @@ const config: OxlintConfig = {
     'init-declarations': 'off',
     'max-params': 'off',
     'max-depth': 'off',
-    'unicorn/no-null': 'off',
-    'no-shadow': 'off',
     'vitest/valid-title': 'off',
     // Priority: MEDIUM
     'consistent-function-scoping': 'off',

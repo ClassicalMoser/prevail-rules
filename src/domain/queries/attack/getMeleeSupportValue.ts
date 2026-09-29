@@ -43,8 +43,8 @@ export function getMeleeSupportValue(
     }
 
     // Otherwise, get the friendly unit at the space
-    const unit = getPlayerUnitWithPosition(board, space, playerSide);
-    if (unit === undefined) {
+    const friendlyUnit = getPlayerUnitWithPosition(board, space, playerSide);
+    if (friendlyUnit === undefined) {
       // Unit is not friendly and so cannot support, skip
       continue;
     }
@@ -55,7 +55,7 @@ export function getMeleeSupportValue(
       // Check if the diagonal is clear of enemy units blocking it
       if (diagonalIsClear(playerSide, board, unitCoordinate, space)) {
         // Diagonal is clear, add the unit to the possible support units
-        potentialSupportUnits.push(unit);
+        potentialSupportUnits.push(friendlyUnit);
       } else {
         // Diagonal is blocked, skip
         continue;
@@ -63,7 +63,7 @@ export function getMeleeSupportValue(
     } else {
       // Unit is orthogonally adjacent to the primary unit
       // Add the unit to the possible support units
-      potentialSupportUnits.push(unit);
+      potentialSupportUnits.push(friendlyUnit);
     }
   }
 

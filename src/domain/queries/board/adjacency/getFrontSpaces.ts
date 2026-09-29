@@ -21,7 +21,9 @@ export function getFrontSpaces(
 
   // Array of coordinates and undefined values
   const forwardSpaces = new Set(
-    forwardFacings.map((facing) => getForwardSpace(board, coordinate, facing)),
+    forwardFacings.map((forwardFacing) =>
+      getForwardSpace(board, coordinate, forwardFacing),
+    ),
   );
 
   // Filter out undefined values
