@@ -41,11 +41,11 @@ export {
 // Front, flank, and rear, including movement engagements.
 export {
   getEngagementStateFromMovement,
-  getFlankEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
+  getFlankEngagementStateFromMovement,
   getRearEngagementStateFromMovement,
-  isEngagementFromFlank,
   isEngagementFromFront,
+  isEngagementFromFlank,
   isEngagementFromRear,
 } from './engagement';
 

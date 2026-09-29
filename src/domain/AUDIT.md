@@ -91,25 +91,27 @@ Audit in this order (dependencies flow downward):
 
 Target layout mirrors `entities/` and `game/` nouns. Retire `boardSpace/`, `cards/`, and `equivalence/`. `sequencing/` keeps turn position only; substep narrowers follow `game/substeps`.
 
+Walk folders in IDE order (alphabetical).
+
 - [ ] `queries/`
+  - [x] `attack/` — `applyAttackValue`, `getMeleeSupportValue`
   - [x] `board/` — spaces, `diagonalIsClear`, `getCommanderSpace`
     - [x] `adjacency/`
     - [x] `areas/`
     - [x] `steps/` — forward, forward to the edge, rearward
-  - [ ] `facings/`
-  - [ ] `unit/` — stats, friendliness, support match, units on board, unit identity
-  - [ ] `unitPresence/` — position, enemy in the space, at a placement
   - [x] `card/` — owned and hidden slices, command match, initiative, commitment modifiers, modifier and restriction equality
+  - [ ] `engagement/` — front, flank, rear, plus movement engagement getters
+  - [ ] `facings/`
+  - [ ] `gameOver/`
   - [ ] `line/` — `getLinesFromUnit`, `isValidLine`
   - [ ] `player/` — `getOtherPlayer`
-  - [x] `attack/` — `applyAttackValue`, `getMeleeSupportValue`
-  - [ ] `engagement/` — front, flank, rear, plus movement engagement getters
-  - [ ] `gameOver/`
   - [ ] `sequencing/` — current phase, step, initiative, event number, event stream
+    - [ ] `combatOutcomes/`
     - [ ] `commandResolution/`
     - [ ] `meleeResolution/`
     - [ ] `rallyResolution/`
-    - [ ] `combatOutcomes/`
+  - [ ] `unit/` — stats, friendliness, support match, units on board, unit identity
+  - [ ] `unitPresence/` — position, enemy in the space, at a placement
 
 ### `legality/` (`@legality`)
 

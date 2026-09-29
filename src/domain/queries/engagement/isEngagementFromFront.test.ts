@@ -1,18 +1,38 @@
 import { isEngagementFromFront } from './isEngagementFromFront';
 
 /**
- * IsEngagementFromFront: true when the attacker's facing is opposite the defender's (head-on engagement along
- * the defender's front).
+ * Front engagement: the attacker faces opposite the defender.
  */
 describe(isEngagementFromFront, () => {
-  it('given attacker opposite defender, returns success', () => {
+  it('an attacker facing the defender is a front engagement', () => {
     expect(isEngagementFromFront('south', 'north')).toStrictEqual({
       result: true,
     });
   });
 
-  it('given attacker not opposite defender, returns false with reason', () => {
+  it('an attacker nearly facing the defender is not a front engagement', () => {
+    expect(isEngagementFromFront('north', 'southEast')).toStrictEqual({
+      errorReason: 'Attacker is not facing opposite the defender',
+      result: false,
+    });
+  });
+
+  it('an attacker facing orthogonally to the defender is not a front engagement', () => {
+    expect(isEngagementFromFront('north', 'east')).toStrictEqual({
+      errorReason: 'Attacker is not facing opposite the defender',
+      result: false,
+    });
+  });
+
+  it('an attacker facing the same way as the defender is not a front engagement', () => {
     expect(isEngagementFromFront('north', 'north')).toStrictEqual({
+      errorReason: 'Attacker is not facing opposite the defender',
+      result: false,
+    });
+  });
+
+  it('an attacker facing one facing off the defender is a front engagement', () => {
+    expect(isEngagementFromFront('north', 'southWest')).toStrictEqual({
       errorReason: 'Attacker is not facing opposite the defender',
       result: false,
     });

@@ -1,17 +1,30 @@
 import { isEngagementFromFlank } from './isEngagementFromFlank';
 
 /**
- * IsEngagementFromFlank: true when the attacker's facing is orthogonal to the defender's (flank engagement).
+ * Flank engagement: the attacker faces perpendicular to the defender.
  */
 describe(isEngagementFromFlank, () => {
-  it('given attacker orthogonal to defender, returns success', () => {
+  it('an attacker facing perpendicular right of the defender is a flank engagement', () => {
     expect(isEngagementFromFlank('east', 'north')).toStrictEqual({
       result: true,
     });
   });
 
-  it('given attacker not orthogonal to defender, returns false with reason', () => {
+  it('an attacker facing perpendicular left of the defender is a flank engagement', () => {
+    expect(isEngagementFromFlank('west', 'north')).toStrictEqual({
+      result: true,
+    });
+  });
+
+  it('an attacker facing the defender head-on is not a flank engagement', () => {
     expect(isEngagementFromFlank('south', 'north')).toStrictEqual({
+      errorReason: 'Attacker is not facing orthogonal to the defender',
+      result: false,
+    });
+  });
+
+  it('an attacker facing the same way as the defender is not a flank engagement', () => {
+    expect(isEngagementFromFlank('north', 'north')).toStrictEqual({
       errorReason: 'Attacker is not facing orthogonal to the defender',
       result: false,
     });

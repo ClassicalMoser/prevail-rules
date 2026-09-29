@@ -3,10 +3,8 @@ import type { ValidationResult } from '@utils';
 import { getAdjacentFacings } from '@queries/facings';
 
 /**
- * Determines if an engagement is from the rear.
- * @param attackerFacing - The target facing of the attacking unit
- * @param defenderFacing - The current facing of the defending unit
- * @returns ValidationResult indicating if the engagement is from the rear
+ * Whether the attacker meets the defender from the rear.
+ * The attacker faces the same way as the defender, or one facing off that way.
  */
 export function isEngagementFromRear(
   attackerFacing: UnitFacing,

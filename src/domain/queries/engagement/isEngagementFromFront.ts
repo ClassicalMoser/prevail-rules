@@ -3,10 +3,8 @@ import type { ValidationResult } from '@utils';
 import { getOppositeFacing } from '@queries/facings';
 
 /**
- * Determines if an engagement is from the front.
- * @param attackerFacing - The target facing of the attacking unit
- * @param defenderFacing - The current facing of the defending unit
- * @returns ValidationResult indicating if the engagement is from the front
+ * Whether the attacker meets the defender head-on.
+ * The attacker's facing must be the opposite of the defender's facing.
  */
 export function isEngagementFromFront(
   attackerFacing: UnitFacing,

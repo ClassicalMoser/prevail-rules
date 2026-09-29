@@ -5,21 +5,20 @@ import type {
   GameState,
   RearEngagementResolutionState,
 } from '@game';
-import { throwIfPending } from '@utils';
 import { getMovementResolutionState } from '../sequencing/commandResolution/getCommandResolutionState';
+import { throwIfPending } from '@utils';
 
 /**
- * Gets the engagement state from a movement resolution.
- * Assumes we're resolving a movement with an engagement state (validation should happen elsewhere).
+ * Returns the engagement nested in the current movement.
  *
- * @param state - The game state
- * @returns The engagement state
- * @throws Error if not resolving a movement or engagement state is missing
+ * Throws when that command is not a movement, or when the movement has not
+ * opened an engagement yet.
  */
 export function getEngagementStateFromMovement(
   state: GameState,
 ): EngagementState {
   const movementState = getMovementResolutionState(state);
+  // 'pending' means this movement has not reached an engagement.
   return throwIfPending(
     movementState.engagementState,
     'No engagement state found in movement resolution',
@@ -27,76 +26,73 @@ export function getEngagementStateFromMovement(
 }
 
 /**
- * Gets the flank engagement state from a movement resolution.
- * Assumes we're resolving a movement with a flank engagement (validation should happen elsewhere).
- *
- * @param state - The game state
- * @returns The engagement state with flank engagement resolution state
- * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not flank
+ * `EngagementState` carries every resolution type. The type below names the one
+ * member this getter proved, because the discriminant sits on the nested
+ * `engagementResolutionState`.
  */
-export function getFlankEngagementStateFromMovement(
-  state: GameState,
-): EngagementState & {
+type FrontEngagementState = EngagementState & {
+  engagementResolutionState: FrontEngagementResolutionState;
+};
+type FlankEngagementState = EngagementState & {
   engagementResolutionState: FlankEngagementResolutionState;
-} {
-  const engagementState = getEngagementStateFromMovement(state);
-  if (engagementState.engagementResolutionState.engagementType !== 'flank') {
-    throw new Error('Engagement type is not flank');
-  }
-  // Spread back into object for cleaner type inference
-  const flankEngagementState = {
-    ...engagementState,
-    engagementResolutionState: engagementState.engagementResolutionState,
-  };
-  return flankEngagementState;
-}
+};
+type RearEngagementState = EngagementState & {
+  engagementResolutionState: RearEngagementResolutionState;
+};
 
 /**
- * Gets the front engagement state from a movement resolution.
- * Assumes we're resolving a movement with a front engagement (validation should happen elsewhere).
- *
- * @param state - The game state
- * @returns The engagement state with front engagement resolution state
- * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not front
+ * Front engagement on the current movement.
+ * Throws when that engagement is flank or rear.
  */
 export function getFrontEngagementStateFromMovement(
   state: GameState,
-): EngagementState & {
-  engagementResolutionState: FrontEngagementResolutionState;
-} {
+): FrontEngagementState {
   const engagementState = getEngagementStateFromMovement(state);
-  if (engagementState.engagementResolutionState.engagementType !== 'front') {
+  const resolution = engagementState.engagementResolutionState;
+  if (resolution.engagementType !== 'front') {
     throw new Error('Engagement type is not front');
   }
-  // Spread back into object for cleaner type inference
-  const frontEngagementState = {
+  // `resolution` is a front engagement. Rebuilding the parent carries that type.
+  return {
     ...engagementState,
-    engagementResolutionState: engagementState.engagementResolutionState,
+    engagementResolutionState: resolution,
   };
-  return frontEngagementState;
 }
 
 /**
- * Gets the rear engagement state from a movement resolution.
- * Assumes we're resolving a movement with a rear engagement (validation should happen elsewhere).
- *
- * @param state - The game state
- * @returns The engagement state with rear engagement resolution state
- * @throws Error if not resolving a movement, engagement state is missing, or engagement type is not rear
+ * Flank engagement on the current movement.
+ * Throws when that engagement is front or rear.
+ */
+export function getFlankEngagementStateFromMovement(
+  state: GameState,
+): FlankEngagementState {
+  const engagementState = getEngagementStateFromMovement(state);
+  const resolution = engagementState.engagementResolutionState;
+  if (resolution.engagementType !== 'flank') {
+    throw new Error('Engagement type is not flank');
+  }
+  // `resolution` is a flank engagement. Rebuilding the parent carries that type.
+  return {
+    ...engagementState,
+    engagementResolutionState: resolution,
+  };
+}
+
+/**
+ * Rear engagement on the current movement.
+ * Throws when that engagement is front or flank.
  */
 export function getRearEngagementStateFromMovement(
   state: GameState,
-): EngagementState & {
-  engagementResolutionState: RearEngagementResolutionState;
-} {
+): RearEngagementState {
   const engagementState = getEngagementStateFromMovement(state);
-  if (engagementState.engagementResolutionState.engagementType !== 'rear') {
+  const resolution = engagementState.engagementResolutionState;
+  if (resolution.engagementType !== 'rear') {
     throw new Error('Engagement type is not rear');
   }
-  // Spread back into object for cleaner type inference
-  const rearEngagementState = {
+  // `resolution` is a rear engagement. Rebuilding the parent carries that type.
+  return {
     ...engagementState,
-    engagementResolutionState: engagementState.engagementResolutionState,
+    engagementResolutionState: resolution,
   };
-  return rearEngagementState;
 }
