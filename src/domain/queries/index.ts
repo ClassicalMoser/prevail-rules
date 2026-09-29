@@ -49,13 +49,13 @@ export {
   isEngagementFromRear,
 } from './engagement';
 
-// Facing algebra.
+// Opposite, left, right, neighbors, and the diagonal check.
 export {
-  getAdjacentFacings,
-  getLeftFacing,
   getOppositeFacing,
-  getOrthogonalFacings,
+  getLeftFacing,
   getRightFacing,
+  getAdjacentFacings,
+  getOrthogonalFacings,
   isDiagonalFacing,
 } from './facings';
 

@@ -100,7 +100,7 @@ Walk folders in IDE order (alphabetical).
     - [x] `areas/`
     - [x] `steps/` — forward, forward to the edge, rearward
   - [x] `card/` — owned and hidden slices, command match, initiative, commitment modifiers, modifier and restriction equality
-  - [ ] `engagement/` — front, flank, rear, plus movement engagement getters
+  - [x] `engagement/` — front, flank, rear, plus movement engagement getters
   - [ ] `facings/`
   - [ ] `gameOver/`
   - [ ] `line/` — `getLinesFromUnit`, `isValidLine`

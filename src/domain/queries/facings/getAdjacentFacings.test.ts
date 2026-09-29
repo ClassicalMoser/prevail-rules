@@ -3,11 +3,10 @@ import type { UnitFacing } from '@entities';
 import { getAdjacentFacings } from './getAdjacentFacings';
 
 /**
- * GetAdjacentFacings: the two facings that bracket this facing on the compass (each cardinal shares its two
- * diagonal neighbors; each diagonal shares its two axis neighbors).
+ * Adjacent facings: the two neighbors one step, 45 degrees, to either side.
  */
 describe(getAdjacentFacings, () => {
-  it('given each cardinal facing, returns the two flanking diagonals', () => {
+  it('each cardinal facing has its two diagonal neighbors', () => {
     expect(getAdjacentFacings('north')).toStrictEqual(
       new Set(['northWest', 'northEast']),
     );
@@ -22,7 +21,7 @@ describe(getAdjacentFacings, () => {
     );
   });
 
-  it('given each diagonal facing, returns the two bounding cardinals', () => {
+  it('each diagonal facing has its two cardinal neighbors', () => {
     expect(getAdjacentFacings('northEast')).toStrictEqual(
       new Set(['north', 'east']),
     );
@@ -37,9 +36,9 @@ describe(getAdjacentFacings, () => {
     );
   });
 
-  it('given invalid facing, throws', () => {
+  it('an unknown facing is rejected', () => {
     expect(() => getAdjacentFacings('invalid' as UnitFacing)).toThrow(
-      new Error('Invalid facing: invalid'),
+      'Invalid facing: invalid',
     );
   });
 });
