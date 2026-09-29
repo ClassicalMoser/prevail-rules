@@ -3,17 +3,21 @@ import { PLAY_CARDS_PHASE } from '@game';
 
 import {
   createAttackApplyStateWithReverse,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import { generateResolveReverseEvent } from './generateResolveReverseEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * `resolveReverse` is the defender pivoting to strike back: context is ranged vs melee,
  * unit is the reversing defender’s board placement, and new placement is the factory default
@@ -21,7 +25,7 @@ import { generateResolveReverseEvent } from './generateResolveReverseEvent';
  */
 describe(generateResolveReverseEvent, () => {
   it('given ranged attack-apply in reverse substep, context rangedAttack and E-5 south facing', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -53,7 +57,10 @@ describe(generateResolveReverseEvent, () => {
   });
 
   it('given white initiative and both melee applies in reverse, uses white unit and west facing', () => {
-    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
@@ -93,14 +100,14 @@ describe(generateResolveReverseEvent, () => {
   });
 
   it('given empty game with no phase slice, throws no current phase state', () => {
-    const full = createEmptyGameState();
+    const full = createEmptyGameState('standard');
     expect(() => generateResolveReverseEvent(full, 0)).toThrow(
       'No current phase state found',
     );
   });
 
   it('given playCards phase, throws reverse resolution phase guard', () => {
-    const full = updatePhaseState(createEmptyGameState(), {
+    const full = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });

@@ -1,44 +1,38 @@
 import type { Modifier } from '@entities';
-import type { ValidationResult } from '@utils';
 import { areModifiersEqual } from './areModifiersEqual';
 
 /**
- * Compares two arrays of Modifiers for equality.
- * Arrays are compared element-by-element in order.
+ * Compares two arrays of Modifiers for equivalence (not reference equality) by comparing all properties.
+ * Current use case is to find a matching command to remove from pending on issue.
+ * Order does not matter.
  *
  * @param modifiers1 - First modifiers array
  * @param modifiers2 - Second modifiers array
- * @returns ValidationResult indicating if modifier arrays match, with error reason if not
+ * @returns Whether the two arrays contain the same modifiers
  */
 export function areModifiersArraysEqual(
   modifiers1: Modifier[],
   modifiers2: Modifier[],
-): ValidationResult {
-  try {
-    if (modifiers1.length !== modifiers2.length) {
-      return {
-        errorReason: `Modifier arrays have different lengths: ${modifiers1.length} vs ${modifiers2.length}`,
-        result: false,
-      };
-    }
-
-    for (let i = 0; i < modifiers1.length; i++) {
-      const comparison = areModifiersEqual(modifiers1[i], modifiers2[i]);
-      if (!comparison.result) {
-        return {
-          errorReason: `Modifier arrays differ at index ${i}: ${comparison.errorReason}`,
-          result: false,
-        };
-      }
-    }
-
-    return {
-      result: true,
-    };
-  } catch (error) {
-    return {
-      errorReason: error instanceof Error ? error.message : 'Unknown error',
-      result: false,
-    };
+): boolean {
+  // Different lengths cannot be the same modifiers
+  if (modifiers1.length !== modifiers2.length) {
+    return false;
   }
+  // Copy the second array so each match can be taken out of it
+  const remaining = [...modifiers2];
+  for (const modifier of modifiers1) {
+    // Same type and value counts as a match, whatever the order
+    const matchIndex = remaining.findIndex((candidate) =>
+      areModifiersEqual(modifier, candidate),
+    );
+    // No remaining modifier of this type and value
+    if (matchIndex === -1) {
+      return false;
+    }
+    // Take that match, so a repeated modifier needs its own copy
+    remaining.splice(matchIndex, 1);
+  }
+
+  // All checks passed, so we return true.
+  return true;
 }

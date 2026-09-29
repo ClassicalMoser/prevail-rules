@@ -1,13 +1,17 @@
-import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { createTestCard, updateCardState } from '@testing';
 
 import { generateGameOverEvent } from './generateGameOverEvent';
 
+import { createEmptyGameState } from '@factories';
 describe(generateGameOverEvent, () => {
   it('bakes black as winner when white hand is empty', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
       ...base.cardState,
+      black: {
+        ...base.cardState.black,
+        inHand: [createTestCard({ id: 'black-hand' })],
+      },
       white: { ...base.cardState.white, inHand: [] },
     });
 
@@ -20,7 +24,7 @@ describe(generateGameOverEvent, () => {
   });
 
   it('bakes null winner for a draw when both hands are empty', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inHand: [] },
@@ -31,8 +35,18 @@ describe(generateGameOverEvent, () => {
   });
 
   it('throws when the game is not over', () => {
-    const state = createEmptyGameState();
-    expect(state.cardState.white.inHand).toStrictEqual([tempCommandCards[3]]);
+    const base = createEmptyGameState('standard');
+    const state = updateCardState(base, {
+      ...base.cardState,
+      black: {
+        ...base.cardState.black,
+        inHand: [createTestCard({ id: 'black-hand' })],
+      },
+      white: {
+        ...base.cardState.white,
+        inHand: [createTestCard({ id: 'white-hand' })],
+      },
+    });
     expect(() => generateGameOverEvent(state, 0)).toThrow(
       'Game over is not expected for the current game state',
     );

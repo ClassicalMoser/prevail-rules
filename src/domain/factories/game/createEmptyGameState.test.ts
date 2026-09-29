@@ -1,10 +1,10 @@
+import { createEmptyGameState } from './createEmptyGameState';
+
 /**
  * Empty game state maps each catalog mode onto a board size and otherwise blank scaffolding.
  * Tutorial and mini share the small board. Standard and epic use their own sizes.
  * A value outside GameModeName is rejected so a drifted catalog fails at runtime.
  */
-
-import { createEmptyGameState } from './createEmptyGameState';
 
 describe(createEmptyGameState, () => {
   it('starts black on a standard board with empty piles and no phase', () => {

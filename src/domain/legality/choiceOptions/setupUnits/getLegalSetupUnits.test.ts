@@ -1,11 +1,7 @@
 import type { Coordinate } from '@entities';
-import {
-  createEmptyGameState,
-  createTestUnit,
-  createUnitWithPlacement,
-} from '@testing';
+import { createTestUnit, createUnitWithPlacement } from '@testing';
 import { addUnitToBoard } from '@transforms';
-import { createEmptyStandardBoard } from '@factories';
+import { createEmptyStandardBoard, createEmptyGameState } from '@factories';
 
 import { getLegalSetupUnits } from './getLegalSetupUnits';
 import { getSetupZoneCoordinates } from './getSetupZoneCoordinates';
@@ -17,7 +13,7 @@ describe(getLegalSetupUnits, () => {
   it('returns reserved units and empty zone coordinates for the player', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit],
     };
@@ -39,7 +35,7 @@ describe(getLegalSetupUnits, () => {
       unitOptions: { instanceNumber: 2 },
     });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       boardState: addUnitToBoard(createEmptyStandardBoard(), blocker),
       reservedUnits: [reserved],
     };
@@ -52,7 +48,7 @@ describe(getLegalSetupUnits, () => {
   });
 
   it('returns null when the player has no reserved units', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     expect(getLegalSetupUnits(state, 'white')).toBeNull();
   });
 });

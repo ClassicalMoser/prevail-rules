@@ -1,8 +1,8 @@
 import { CLEANUP_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
 
 import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Ensures the acting player matches initiative ordering for the current resolve-rally step,
  * then returns the corresponding first/second rally bucket.
@@ -17,7 +17,7 @@ describe(getRallyResolutionStateForCurrentStep, () => {
       unitsLostSupport: 'pending' as const,
     };
 
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentInitiative = 'white';
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: rallyState,
@@ -39,7 +39,7 @@ describe(getRallyResolutionStateForCurrentStep, () => {
       unitsLostSupport: 'pending' as const,
     };
 
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentInitiative = 'white';
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: 'pending' as const,
@@ -53,7 +53,7 @@ describe(getRallyResolutionStateForCurrentStep, () => {
   });
 
   it('given firstPlayerResolveRally but caller black, throws expected first player white', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentInitiative = 'white';
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: {
@@ -74,7 +74,7 @@ describe(getRallyResolutionStateForCurrentStep, () => {
   });
 
   it('given secondPlayerResolveRally but caller white, throws expected second player black', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentInitiative = 'white';
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: 'pending' as const,
@@ -89,7 +89,7 @@ describe(getRallyResolutionStateForCurrentStep, () => {
   });
 
   it('given discardPlayedCards, throws not on resolveRally step with step name', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentInitiative = 'white';
     state.currentRoundState = {
       commandedUnits: [],

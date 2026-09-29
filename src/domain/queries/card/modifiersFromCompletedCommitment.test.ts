@@ -8,19 +8,19 @@ import { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommit
  * pending or declined yield nothing.
  */
 describe(modifiersFromCompletedCommitment, () => {
-  it('given pending commitment, returns undefined', () => {
+  it('a pending commitment has no modifiers', () => {
     expect(
       modifiersFromCompletedCommitment({ commitmentType: 'pending' }),
     ).toBeUndefined();
   });
 
-  it('given declined commitment, returns undefined', () => {
+  it('a declined commitment has no modifiers', () => {
     expect(
       modifiersFromCompletedCommitment({ commitmentType: 'declined' }),
     ).toBeUndefined();
   });
 
-  it('given completed commitment with card, returns that card modifiers', () => {
+  it('a completed commitment yields its card modifiers', () => {
     const card = tempCommandCards[0];
     const expected: Modifier[] = card.modifiers.map((type) => ({
       type,

@@ -1,4 +1,4 @@
-import { createEmptyGameState } from '@testing';
+import { createEmptyGameState } from '@factories';
 
 import { updateWinner } from './updateWinner';
 
@@ -7,19 +7,19 @@ import { updateWinner } from './updateWinner';
  */
 describe(updateWinner, () => {
   it('sets the winner', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const newState = updateWinner(state, 'black');
     expect(newState.winner).toBe('black');
     expect(newState).not.toBe(state);
   });
 
   it('allows a null winner for draws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     expect(updateWinner(state, null).winner).toBeNull();
   });
 
   it('preserves other top-level fields', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const newState = updateWinner(state, 'white');
     expect(newState.currentRoundState).toBe(state.currentRoundState);
     expect(newState.boardState).toBe(state.boardState);

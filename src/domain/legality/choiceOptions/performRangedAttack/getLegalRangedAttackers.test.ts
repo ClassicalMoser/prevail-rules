@@ -1,7 +1,6 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createUnitWithPlacement,
   updateCardState,
@@ -18,6 +17,7 @@ import {
   getLegalRangedAttackTargets,
 } from './getLegalRangedAttackOptions';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Perform-ranged-attack atoms: one attacker, one defender, supporters that
  * can independently hit that defender.
@@ -28,7 +28,7 @@ describe('performRangedAttack legality atoms', () => {
   const rangedCard = tempCommandCards[15];
 
   function place(...units: ReturnType<typeof createUnitWithPlacement>[]) {
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: rangedCard },
@@ -99,7 +99,7 @@ describe('performRangedAttack legality atoms', () => {
     });
 
     it('returns null when not awaiting performRangedAttack', () => {
-      const state = updatePhaseState(createEmptyGameState(), {
+      const state = updatePhaseState(createEmptyGameState('standard'), {
         phase: PLAY_CARDS_PHASE,
         step: 'chooseCards',
       });
@@ -113,7 +113,7 @@ describe('performRangedAttack legality atoms', () => {
         playerSide: 'black',
         unitOptions: { range: 2 },
       });
-      let state = createEmptyGameState({ currentInitiative: 'black' });
+      let state = createEmptyGameState('standard');
       state = updateCardState(state, {
         ...state.cardState,
         black: { ...state.cardState.black, inPlay: tempCommandCards[0] },

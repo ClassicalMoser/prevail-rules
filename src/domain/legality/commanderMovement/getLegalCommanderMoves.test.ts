@@ -1,8 +1,9 @@
 import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';
-import { createBoardWithCommander, createEmptyGameState } from '@testing';
+import { createBoardWithCommander } from '@testing';
 
 import { getLegalCommanderMoves } from './getLegalCommanderMoves';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetLegalCommanderMoves: legal commander destination coordinates within the move square.
  */
@@ -10,7 +11,7 @@ describe(getLegalCommanderMoves, () => {
   it('given context, returns all moves on an empty board', () => {
     const playerSide = 'white';
     const startingCoordinate = 'E-5';
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
     gameState.boardState = createBoardWithCommander(
       playerSide,
       startingCoordinate,
@@ -27,7 +28,7 @@ describe(getLegalCommanderMoves, () => {
   it('given if no commander is at the starting position, throws', () => {
     const playerSide = 'white';
     const startingCoordinate = 'E-5';
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
     expect(() =>
       getLegalCommanderMoves(playerSide, gameState, startingCoordinate),
     ).toThrow('Starting position does not contain specified commander');
@@ -36,7 +37,7 @@ describe(getLegalCommanderMoves, () => {
   it('given if the wrong commander is at the starting position, throws', () => {
     const playerSide = 'white';
     const startingCoordinate = 'E-5';
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
     gameState.boardState = createBoardWithCommander(
       'black',
       startingCoordinate,

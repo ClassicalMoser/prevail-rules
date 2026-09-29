@@ -1,13 +1,11 @@
 import type { GameState } from '@game';
 import type { GameEffectType } from '@events';
 import { gameEffects } from '@events';
-import {
-  createEmptyGameState,
-  procedureRegistryStateFactories,
-} from '@testing';
+import { procedureRegistryStateFactories } from '@testing';
 
 import { generateEventFromProcedure } from './procedureRegistry';
 
+import { createEmptyGameState } from '@factories';
 /**
  * For each registered game effect, builds factory state and asserts the procedure emits a
  * matching `gameEffect` with the same `effectType`.
@@ -26,7 +24,7 @@ describe(generateEventFromProcedure, () => {
 
   it('given effectType not in registry, throws naming the non-existent key', () => {
     expect.hasAssertions();
-    const state: GameState = createEmptyGameState();
+    const state: GameState = createEmptyGameState('standard');
     // Deliberate use of unsafe cast to GameEffectType to test the error message
     expect(() =>
       generateEventFromProcedure(state, 0, 'notARealEffect' as GameEffectType),

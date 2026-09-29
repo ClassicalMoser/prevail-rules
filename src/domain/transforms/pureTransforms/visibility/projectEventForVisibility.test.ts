@@ -25,6 +25,19 @@ describe(projectEventForVisibility, () => {
     });
   });
 
+  it('keeps an opponent commit card', () => {
+    const commit = {
+      choiceType: 'commitToMovement' as const,
+      committedCard: tempCommandCards[0],
+      eventNumber: 1,
+      eventType: 'playerChoice' as const,
+      modifierTypes: ['speed' as const],
+      player: 'white' as const,
+    };
+
+    expect(projectEventForVisibility(commit, 'black')).toStrictEqual(commit);
+  });
+
   it('passes revealCards through unchanged', () => {
     const reveal: RevealCardsEvent = {
       black: tempCommandCards[1],

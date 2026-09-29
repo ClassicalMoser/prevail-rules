@@ -3,7 +3,6 @@ import { PLAY_CARDS_PHASE } from '@game';
 
 import {
   createAttackApplyStateWithRetreat,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
@@ -11,10 +10,15 @@ import {
   createRetreatState,
   createTestUnit,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import { generateResolveRetreatEvent } from './generateResolveRetreatEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * `resolveRetreat` closes a legal retreat: starting placement is the defender on the board,
  * final placement is whatever the retreat substep recorded. Ranged stacks nest retreat under
@@ -28,7 +32,7 @@ describe(generateResolveRetreatEvent, () => {
   };
 
   it('given ranged attack-apply with retreat substep and E-6 south final, event carries that placement', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -63,7 +67,10 @@ describe(generateResolveRetreatEvent, () => {
   });
 
   it('given white initiative and both sides in retreat substep, uses white final E-6 not black E-4', () => {
-    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
@@ -115,7 +122,7 @@ describe(generateResolveRetreatEvent, () => {
   });
 
   it('given playCards phase, throws retreat resolution phase guard', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
@@ -126,7 +133,7 @@ describe(generateResolveRetreatEvent, () => {
   });
 
   it('given ranged apply with retreat substep but no finalPosition yet, still emits with undefined placement', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {

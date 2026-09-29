@@ -7,7 +7,6 @@ import {
 } from '@queries';
 import {
   createAttackApplyState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
@@ -19,6 +18,7 @@ import { throwIfPending } from '@utils';
 
 import { applyCompleteAttackApplyEvent } from './applyCompleteAttackApplyEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Marks the active attack-apply substep finished for the defending player named in the event
  * (ranged single apply vs melee side chosen by initiative order).
@@ -26,7 +26,7 @@ import { applyCompleteAttackApplyEvent } from './applyCompleteAttackApplyEvent';
 describe(applyCompleteAttackApplyEvent, () => {
   /** IssueCommands + ranged CRS + incomplete apply for white defender on E-5. */
   function createStateWithRangedAttackApply(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -56,7 +56,7 @@ describe(applyCompleteAttackApplyEvent, () => {
   function createStateWithMeleeApply(
     incompletePlayer?: 'white' | 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
 
@@ -265,7 +265,7 @@ describe(applyCompleteAttackApplyEvent, () => {
     });
 
     it('given attackType siege cast, throws unknown attack type for completeAttackApply', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const event: CompleteAttackApplyEvent = {
         eventNumber: 0,
         eventType: 'gameEffect' as const,

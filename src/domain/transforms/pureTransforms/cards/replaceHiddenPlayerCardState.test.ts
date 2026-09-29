@@ -1,4 +1,4 @@
-import { createEmptyGameState } from '@testing';
+import { createEmptyGameState } from '@factories';
 
 import { replaceHiddenPlayerCardState } from './replaceHiddenPlayerCardState';
 
@@ -7,7 +7,7 @@ import { replaceHiddenPlayerCardState } from './replaceHiddenPlayerCardState';
  */
 describe(replaceHiddenPlayerCardState, () => {
   it('given authoritative, rejects either player', () => {
-    const { cardState } = createEmptyGameState();
+    const { cardState } = createEmptyGameState('standard');
     const nextHidden = {
       awaitingPlay: 'hidden' as const,
       burnt: [],
@@ -26,7 +26,7 @@ describe(replaceHiddenPlayerCardState, () => {
   });
 
   it('given whiteSeen, replaces black and rejects white', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const whiteSeen = {
       visibility: 'whiteSeen' as const,
       white: base.cardState.white,
@@ -54,7 +54,7 @@ describe(replaceHiddenPlayerCardState, () => {
   });
 
   it('given blackSeen, replaces white and rejects black', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const blackSeen = {
       visibility: 'blackSeen' as const,
       black: base.cardState.black,

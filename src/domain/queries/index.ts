@@ -28,8 +28,8 @@ export {
 
 // Card piles, initiative, and command equality.
 export {
-  areModifiersArraysEqual,
   areModifiersEqual,
+  areModifiersArraysEqual,
   areRestrictionsEqual,
   calculateInitiative,
   findMatchingCommand,

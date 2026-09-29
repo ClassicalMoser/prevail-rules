@@ -3,11 +3,16 @@ import type { GameState } from '@game';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createCleanupPhaseState, createEmptyGameState } from '@testing';
-import { updatePhaseState, updateRoundEventStream } from '@transforms';
+import { createCleanupPhaseState } from '@testing';
+import {
+  updatePhaseState,
+  updateRoundEventStream,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import { getLegalChooseRallyEvent } from './getLegalChooseRallyEvent';
 
+import { createEmptyGameState } from '@factories';
 const chooseRallyBase = {
   choiceType: 'chooseRally' as const,
   eventType: PLAYER_CHOICE_EVENT_TYPE,
@@ -23,9 +28,10 @@ describe(getLegalChooseRallyEvent, () => {
     initiative?: 'black' | 'white';
     eventStream?: readonly Event[];
   }): GameState {
-    const base = createEmptyGameState({
-      currentInitiative: options.initiative ?? 'black',
-    });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      options.initiative ?? 'black',
+    );
     const phase = createCleanupPhaseState({ step: options.step });
     let state = updatePhaseState(base, phase);
     if (options.eventStream) {
@@ -102,7 +108,7 @@ describe(getLegalChooseRallyEvent, () => {
 
   it('throws when cleanup step is not a choose-rally step', () => {
     const state = updatePhaseState(
-      createEmptyGameState(),
+      createEmptyGameState('standard'),
       createCleanupPhaseState({ step: 'discardPlayedCards' }),
     );
 
@@ -112,7 +118,7 @@ describe(getLegalChooseRallyEvent, () => {
   });
 
   it('throws when not in cleanup phase', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

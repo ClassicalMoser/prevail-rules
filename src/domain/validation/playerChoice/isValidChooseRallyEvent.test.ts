@@ -1,17 +1,21 @@
 import type { ChooseRallyEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
-import { createCleanupPhaseState, createEmptyGameState } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { createCleanupPhaseState } from '@testing';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseRallyEvent: membership against getLegalChooseRallyEvent.
  */
 describe(isValidChooseRallyEvent, () => {
   it('accepts either performRally option for the active player', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const state = updatePhaseState(
       base,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
@@ -30,7 +34,10 @@ describe(isValidChooseRallyEvent, () => {
   });
 
   it('rejects when the wrong player tries to choose rally', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const state = updatePhaseState(
       base,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
@@ -52,7 +59,7 @@ describe(isValidChooseRallyEvent, () => {
   });
 
   it('rejects when not in a chooseRally step', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

@@ -1,8 +1,8 @@
 import { CLEANUP_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
 
 import { getRallyResolutionStateAwaitingBurn } from './getRallyResolutionStateAwaitingBurn';
 
+import { createEmptyGameState } from '@factories';
 /** Rally slice ready for resolveRally card burn: rallied yes, not yet rallyResolved. */
 const readyToBurn = {
   completed: false,
@@ -14,7 +14,7 @@ const readyToBurn = {
 
 /** Cleanup on firstPlayerResolveRally with white initiative. */
 function stateFirstPlayerResolveRally() {
-  const state = createEmptyGameState();
+  const state = createEmptyGameState('standard');
   state.currentInitiative = 'white';
   state.currentRoundState.currentPhaseState = {
     firstPlayerRallyResolutionState: { ...readyToBurn },
@@ -71,7 +71,7 @@ describe(getRallyResolutionStateAwaitingBurn, () => {
   });
 
   it('given wrong cleanup step discardPlayedCards, throws resolveRally step guard from delegate', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentInitiative = 'white';
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: 'pending' as const,

@@ -2,7 +2,6 @@ import type { UnitWithPlacement } from '@entities';
 import type { ChooseWhetherToRetreatEvent } from '@events';
 import { getFrontEngagementStateFromMovement } from '@queries';
 import {
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -14,6 +13,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyChooseWhetherToRetreatEvent } from './applyChooseWhetherToRetreatEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Front engagement during movement: defender commits whether to attempt retreat.
  * Accepting opens a nested RetreatState with baked legalRetreatOptions.
@@ -24,7 +24,7 @@ describe(applyChooseWhetherToRetreatEvent, () => {
       placement: { coordinate: 'E-5', facing: 'north' },
       unit: createTestUnit('white', { attack: 2, speed: 3 }),
     };
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, defendingUnit),
@@ -111,7 +111,7 @@ describe(applyChooseWhetherToRetreatEvent, () => {
   });
 
   it('throws when not in issueCommands', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),
@@ -130,7 +130,7 @@ describe(applyChooseWhetherToRetreatEvent, () => {
   });
 
   it('throws when current command resolution is not movement', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createRangedAttackResolutionState(state),
     });

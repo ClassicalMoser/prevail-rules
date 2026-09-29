@@ -2,7 +2,6 @@ import type { CommitToMovementEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   updateCardState,
@@ -11,6 +10,7 @@ import { updatePhaseState } from '@transforms';
 
 import { isValidCommitToMovementEvent } from './isValidCommitToMovementEvent';
 
+import { createEmptyGameState } from '@factories';
 const moveCard = tempCommandCards[4];
 const strikeCard = tempCommandCards[0];
 
@@ -19,7 +19,7 @@ const strikeCard = tempCommandCards[0];
  */
 describe(isValidCommitToMovementEvent, () => {
   function stateBlackPendingCommit() {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
       black: {
@@ -101,7 +101,7 @@ describe(isValidCommitToMovementEvent, () => {
   });
 
   it('rejects when commit is not expected', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

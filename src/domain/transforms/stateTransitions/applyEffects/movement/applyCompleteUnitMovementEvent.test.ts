@@ -1,7 +1,6 @@
 import type { GameState } from '@game';
 import { getIssueCommandsPhaseState } from '@queries';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createTestUnit,
@@ -15,6 +14,7 @@ import {
 
 import { applyCompleteUnitMovementEvent } from './applyCompleteUnitMovementEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * After path + engagement finish, completeUnitMovement clears CRS and either
  * waits for the next moveUnit or advances the issue-commands step.
@@ -27,7 +27,7 @@ describe(applyCompleteUnitMovementEvent, () => {
   };
 
   it('clears CRS to pending when more units remain to resolve', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const leftover = createTestUnit('black', { attack: 2 });
     const movement = createMovementResolutionState(state);
     const full: GameState = updatePhaseState(
@@ -47,7 +47,7 @@ describe(applyCompleteUnitMovementEvent, () => {
   });
 
   it('advances to secondPlayerIssueCommands when first player has no remaining units', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state);
     const full: GameState = updatePhaseState(
       state,
@@ -71,7 +71,7 @@ describe(applyCompleteUnitMovementEvent, () => {
       playerSide: 'white',
     });
     const mover = createTestUnit('black', { attack: 2 });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateBoardState(state, addUnitToBoard(state.boardState, defender));
     const movement = createMovementResolutionState(state, {
       movingUnit: {

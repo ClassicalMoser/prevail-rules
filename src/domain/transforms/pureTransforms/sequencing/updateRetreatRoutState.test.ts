@@ -2,7 +2,6 @@ import type { UnitWithPlacement } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyStateWithRetreat,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createRetreatState,
@@ -13,12 +12,13 @@ import { addUnitToBoard, updatePhaseState } from '../';
 
 import { updateRetreatRoutState } from './updateRetreatRoutState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdateRetreatRoutState: Creates a new game state with the rout state updated within a retreat state.
  */
 describe(updateRetreatRoutState, () => {
   function createStateWithRangedAttackRetreat() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement = {
       placement: {

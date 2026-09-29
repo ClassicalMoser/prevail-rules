@@ -1,7 +1,6 @@
 import type { UnitWithPlacement } from '@entities';
 import {
   createAttackApplyState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createPlayCardsPhaseState,
@@ -14,12 +13,13 @@ import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateAttackApplyState } from './updateAttackApplyState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdateAttackApplyState: Creates a new game state with the attack apply state updated.
  */
 describe(updateAttackApplyState, () => {
   function createStateWithRangedAttackApply() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement = {
       placement: {
@@ -43,7 +43,7 @@ describe(updateAttackApplyState, () => {
   }
 
   function createStateWithMeleeApply() {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
@@ -135,7 +135,7 @@ describe(updateAttackApplyState, () => {
   });
 
   it('given when ranged attack resolution has no attack apply state, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const ranged = createRangedAttackResolutionState(state, {
       attackApplyState: 'pending',
     });
@@ -151,7 +151,7 @@ describe(updateAttackApplyState, () => {
   });
 
   it('given when not in issueCommands or resolveMelee phase, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),

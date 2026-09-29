@@ -1,15 +1,15 @@
 import type { OwnedCardState } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { chooseCard } from './chooseCard';
 
+import { createEmptyGameState } from '@factories';
 /**
  * ChooseCard: Moves a card from a player's hand to awaitingPlay (choosing a card for play).
  */
 describe(chooseCard, () => {
   function ownedWithHand(hand: typeof tempCommandCards): OwnedCardState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     return {
       ...state.cardState.black,
       awaitingPlay: null,

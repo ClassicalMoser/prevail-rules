@@ -3,22 +3,25 @@ import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
   createCleanupPhaseState,
-  createEmptyGameState,
   createRallyResolutionState,
   createRoutState,
   createTestUnit,
   updateCardState,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseRoutDiscardEvent: atom membership + integrity over getLegalRoutDiscardCards.
  */
 describe(isValidChooseRoutDiscardEvent, () => {
   function stateAwaitingWhiteDiscard(numberToDiscard: number) {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const withCards = updateCardState(base, {
       ...base.cardState,
       white: {
@@ -129,7 +132,7 @@ describe(isValidChooseRoutDiscardEvent, () => {
   });
 
   it('rejects when rout discard is not expected', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

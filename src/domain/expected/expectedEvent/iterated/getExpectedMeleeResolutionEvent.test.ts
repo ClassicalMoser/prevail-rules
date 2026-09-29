@@ -1,6 +1,5 @@
 import {
   createAttackApplyState,
-  createEmptyGameState,
   createMeleeResolutionState,
   createTestCard,
   createTestUnit,
@@ -8,6 +7,7 @@ import {
 
 import { getExpectedMeleeResolutionEvent } from './getExpectedMeleeResolutionEvent';
 
+import { createEmptyGameState } from '@factories';
 const { getExpectedAttackApplyEventMock } = vi.hoisted(() => ({
   getExpectedAttackApplyEventMock: vi.fn(),
 }));
@@ -25,7 +25,7 @@ describe(getExpectedMeleeResolutionEvent, () => {
   });
 
   function createGameState() {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     state.cardState.white.inPlay = createTestCard();
     return state;

@@ -1,5 +1,4 @@
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
 } from '@testing';
@@ -8,12 +7,13 @@ import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateCommandResolutionState } from './updateCommandResolutionState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdateCommandResolutionState: Creates a new game state with the command resolution state updated in the issue commands phase.
  */
 describe(updateCommandResolutionState, () => {
   it('given update the command resolution state in issue commands phase', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const commandResolution = createMovementResolutionState(state);
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: commandResolution,
@@ -44,7 +44,7 @@ describe(updateCommandResolutionState, () => {
   });
 
   it('given not mutate the original state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const commandResolution = createMovementResolutionState(state);
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: commandResolution,
@@ -76,7 +76,7 @@ describe(updateCommandResolutionState, () => {
   });
 
   it('given when no current command resolution state is set, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: 'pending',
     });

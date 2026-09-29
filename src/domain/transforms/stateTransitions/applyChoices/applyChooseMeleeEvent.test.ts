@@ -4,12 +4,13 @@ import type { GameState } from '@game';
 import { RESOLVE_MELEE_PHASE } from '@game';
 
 import { getResolveMeleePhaseState } from '@queries';
-import { createEmptyGameState } from '@testing';
+
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
 
 import { applyChooseMeleeEvent } from './applyChooseMeleeEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Resolve-melee phase: player picks which contested hex to resolve next. That coordinate is
  * removed from `remainingEngagements` and becomes `currentMeleeResolutionState.location`.
@@ -19,7 +20,7 @@ describe(applyChooseMeleeEvent, () => {
   function createStateInResolveMeleeStep(
     remainingSpaces: Coordinate[],
   ): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     return updatePhaseState(state, {
       currentMeleeResolutionState: 'pending',
       phase: RESOLVE_MELEE_PHASE,

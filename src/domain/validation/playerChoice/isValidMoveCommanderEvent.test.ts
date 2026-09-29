@@ -1,15 +1,16 @@
 import type { MoveCommanderEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
-import { createBoardWithCommander, createEmptyGameState } from '@testing';
+import { createBoardWithCommander } from '@testing';
 
 import { isValidMoveCommanderEvent } from './isValidMoveCommanderEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidMoveCommanderEvent: membership against getLegalCommanderMoves.
  */
 describe(isValidMoveCommanderEvent, () => {
   function stateWithCommanderAt(coordinate: 'A-1' | 'E-5') {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.boardState = createBoardWithCommander('white', coordinate);
     return state;
   }

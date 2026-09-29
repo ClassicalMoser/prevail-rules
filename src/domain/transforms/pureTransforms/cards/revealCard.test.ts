@@ -1,4 +1,6 @@
-import { createEmptyGameState } from '@testing';
+import { createTestCard } from '@testing';
+
+import { createEmptyGameState } from '@factories';
 
 import { revealCard } from './revealCard';
 
@@ -7,12 +9,11 @@ import { revealCard } from './revealCard';
  */
 describe(revealCard, () => {
   it('given move card from awaitingPlay to inPlay', () => {
-    const owned = createEmptyGameState().cardState.black;
-    const awaitingCard = owned.awaitingPlay;
-
-    if (!awaitingCard) {
-      throw new Error('Expected card to be awaiting play');
-    }
+    const awaitingCard = createTestCard({ id: 'awaiting' });
+    const owned = {
+      ...createEmptyGameState('standard').cardState.black,
+      awaitingPlay: awaitingCard,
+    };
 
     const result = revealCard(owned);
 
@@ -22,7 +23,7 @@ describe(revealCard, () => {
 
   it('given if player has no card awaiting play, throws', () => {
     const owned = {
-      ...createEmptyGameState().cardState.black,
+      ...createEmptyGameState('standard').cardState.black,
       awaitingPlay: null,
     };
 
@@ -30,8 +31,11 @@ describe(revealCard, () => {
   });
 
   it('given not mutate the original card state', () => {
-    const owned = createEmptyGameState().cardState.black;
-    const originalAwaiting = owned.awaitingPlay;
+    const originalAwaiting = createTestCard({ id: 'awaiting' });
+    const owned = {
+      ...createEmptyGameState('standard').cardState.black,
+      awaitingPlay: originalAwaiting,
+    };
 
     revealCard(owned);
 

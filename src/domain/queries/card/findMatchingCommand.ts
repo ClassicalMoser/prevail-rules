@@ -28,23 +28,16 @@ export function findMatchingCommand(
     }
 
     // Compare restrictions object
-    const restrictionsComparison = areRestrictionsEqual(
-      c.restrictions,
-      targetCommand.restrictions,
-    );
-    if (!restrictionsComparison.result) {
+    if (!areRestrictionsEqual(c.restrictions, targetCommand.restrictions)) {
       return false;
     }
 
     // Compare modifiers array
-    const modifiersComparison = areModifiersArraysEqual(
-      c.modifiers,
-      targetCommand.modifiers,
-    );
-    if (!modifiersComparison.result) {
+    if (!areModifiersArraysEqual(c.modifiers, targetCommand.modifiers)) {
       return false;
     }
 
+    // If all checks pass, the commands are equivalent.
     return true;
   });
 }

@@ -5,11 +5,12 @@ import {
   GAME_EFFECT_EVENT_TYPE,
 } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
-import { updatePhaseState } from '@transforms';
+
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { generateCompletePlayCardsPhaseEvent } from './generateCompletePlayCardsPhaseEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * After both sides have played cards, this effect closes the play-cards phase. The generator
  * returns a constant payload only — it does not read initiative, round, or card fields.
@@ -17,7 +18,7 @@ import { generateCompletePlayCardsPhaseEvent } from './generateCompletePlayCards
 describe(generateCompletePlayCardsPhaseEvent, () => {
   /** Minimal valid snapshot: PLAY_CARDS_PHASE + step `complete` (other fields default). */
   function createGameStateInCompleteStep(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     const stateWithPhase = updatePhaseState(state, {
       phase: PLAY_CARDS_PHASE,
@@ -43,10 +44,10 @@ describe(generateCompletePlayCardsPhaseEvent, () => {
     });
 
     it('given different initiative, round counters, or same phase shape, still emits identical effect', () => {
-      const base = createEmptyGameState();
+      const base = createEmptyGameState('standard');
       const stateBlackInit = createGameStateInCompleteStep();
       const stateWhiteInit = updatePhaseState(
-        createEmptyGameState({ currentInitiative: 'white' }),
+        updateCurrentInitiative(createEmptyGameState('standard'), 'white'),
         {
           phase: PLAY_CARDS_PHASE,
           step: 'complete',

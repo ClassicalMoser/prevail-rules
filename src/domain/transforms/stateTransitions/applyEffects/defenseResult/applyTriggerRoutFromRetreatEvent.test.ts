@@ -7,7 +7,6 @@ import {
 } from '@queries';
 import {
   createAttackApplyStateWithRetreat,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
@@ -19,6 +18,7 @@ import { throwIfPending } from '@utils';
 
 import { applyTriggerRoutFromRetreatEvent } from './applyTriggerRoutFromRetreatEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Illegal retreat: nests a fresh `rout` substep under the existing retreat apply (ranged) or
  * the indicated melee side, preserving retreat metadata until rout resolution runs.
@@ -26,7 +26,7 @@ import { applyTriggerRoutFromRetreatEvent } from './applyTriggerRoutFromRetreatE
 describe(applyTriggerRoutFromRetreatEvent, () => {
   /** IssueCommands + ranged retreat substep only (no rout yet). */
   function createStateWithRangedAttackRetreat(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -57,7 +57,7 @@ describe(applyTriggerRoutFromRetreatEvent, () => {
   function createStateWithMeleeRetreat(
     retreatingPlayer: 'white' | 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       retreatingPlayer === 'white' ? 'black' : 'white',

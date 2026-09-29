@@ -1,11 +1,7 @@
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
-import {
-  createEmptyGameState,
-  createGameState,
-  createTestUnit,
-} from '@testing';
+import { createGameState, createTestUnit } from '@testing';
 import { addUnitToBoard } from '@transforms';
-import { createEmptyStandardBoard } from '@factories';
+import { createEmptyStandardBoard, createEmptyGameState } from '@factories';
 
 import { checkDiagonalMove } from './checkDiagonalMove';
 
@@ -85,7 +81,7 @@ describe(checkDiagonalMove, () => {
         unit: createTestUnit('black', { instanceNumber: 3, speed: 2 }),
       });
 
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = board;
       expect(
         checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6', 'northEast'),
@@ -137,7 +133,7 @@ describe(checkDiagonalMove, () => {
         unit: createTestUnit('black', { instanceNumber: 3, speed: 2 }),
       });
 
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = board;
       expect(
         checkDiagonalMove('black', 0, gameState, 'E-5', 'D-6', 'northEast'),

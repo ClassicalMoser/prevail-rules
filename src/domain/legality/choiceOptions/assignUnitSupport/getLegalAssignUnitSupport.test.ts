@@ -1,20 +1,27 @@
 import { CLEANUP_PHASE } from '@game';
-import { createEmptyGameState, createTestCard, createTestUnit } from '@testing';
+import { createTestCard, createTestUnit } from '@testing';
 import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms';
 
 import { getLegalAssignUnitSupport } from './getLegalAssignUnitSupport';
 
+import { createEmptyGameState } from '@factories';
 describe(getLegalAssignUnitSupport, () => {
   it('given not on resolve-rally awaiting support, returns null', () => {
-    expect(getLegalAssignUnitSupport(createEmptyGameState())).toBeNull();
+    expect(
+      getLegalAssignUnitSupport(createEmptyGameState('standard')),
+    ).toBeNull();
   });
 
   it('given awaiting support assignment, returns categories with eligible units', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const unit = createTestUnit('white', { attack: 3 });
     const cardA = createTestCard({
       id: 'a',
@@ -66,7 +73,10 @@ describe(getLegalAssignUnitSupport, () => {
   });
 
   it('given generic support, all board units are eligible', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const unitA = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     const unitB = createTestUnit('white', { attack: 2, instanceNumber: 1 });
     const card = createTestCard({

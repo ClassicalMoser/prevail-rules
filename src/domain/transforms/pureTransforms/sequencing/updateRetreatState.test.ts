@@ -4,7 +4,6 @@ import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
@@ -19,12 +18,13 @@ import { addUnitToBoard, updatePhaseState } from '../';
 
 import { updateRetreatState } from './updateRetreatState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdateRetreatState: Creates a new game state with the retreat state updated.
  */
 describe(updateRetreatState, () => {
   function createStateWithRangedAttackRetreat() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement = {
       placement: {
@@ -50,7 +50,7 @@ describe(updateRetreatState, () => {
   }
 
   function createStateWithMeleeRetreat(retreatingPlayer: 'white' | 'black') {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       retreatingPlayer === 'white' ? 'black' : 'white',
@@ -198,7 +198,7 @@ describe(updateRetreatState, () => {
   });
 
   it('given when ranged attack apply has no retreat state, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement = {
       placement: {
@@ -221,7 +221,7 @@ describe(updateRetreatState, () => {
   });
 
   it('updates nested retreatState under front engagement movement CRS', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement = {
       placement: {
@@ -263,7 +263,7 @@ describe(updateRetreatState, () => {
   });
 
   it('throws when movement CRS has front engagement without an opened retreatState', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: createMovementResolutionState(state, {
         engagementState: createFrontEngagementState(),
@@ -285,7 +285,7 @@ describe(updateRetreatState, () => {
   });
 
   it('given when in issueCommands with no command resolution state, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = createIssueCommandsPhaseState(state);
     const stateInPhase = updatePhaseState(state, phaseState);
     const unit = createTestUnit('white', { attack: 2 });
@@ -303,7 +303,7 @@ describe(updateRetreatState, () => {
   });
 
   it('given when melee white attack apply has no retreat state, throws', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement: UnitWithPlacement = {
@@ -336,7 +336,7 @@ describe(updateRetreatState, () => {
   });
 
   it('given when melee black attack apply has no retreat state, throws', () => {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const blackPlacement: UnitWithPlacement = {
@@ -369,7 +369,7 @@ describe(updateRetreatState, () => {
   });
 
   it('given when not in issueCommands or resolveMelee phase, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),

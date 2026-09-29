@@ -1,4 +1,5 @@
 import type {
+  Command,
   CommandCard,
   Restrictions,
   UnitSupport,
@@ -64,6 +65,24 @@ export interface CreateTestCardOptions {
 }
 
 /**
+ * A command with empty modifiers and restrictions, so a test can build a command without a card.
+ */
+export function createTestCommand(overrides: Partial<Command> = {}): Command {
+  return {
+    modifiers: [],
+    number: 1,
+    restrictions: {
+      inspirationRangeRestriction: -1,
+      traitRestrictions: [],
+      unitRestrictions: [],
+    },
+    size: 'units',
+    type: 'movement',
+    ...overrides,
+  };
+}
+
+/**
  * Creates a test card with sensible defaults.
  */
 export function createTestCard(
@@ -92,13 +111,10 @@ export function createTestCard(
   });
 
   return {
-    command: {
+    command: createTestCommand({
       modifiers: commandModifiers,
-      number: 1,
       restrictions: createRestrictions(commandRestrictions),
-      size: 'units',
-      type: 'movement',
-    },
+    }),
     id,
     initiative,
     modifiers,

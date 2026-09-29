@@ -1,13 +1,14 @@
-import { createEmptyGameState, createTestUnit } from '@testing';
+import { createTestUnit } from '@testing';
 
 import { addUnitsToCommandedUnits } from './addUnitsToCommandedUnits';
 
+import { createEmptyGameState } from '@factories';
 /**
  * AddUnitsToCommandedUnits: Adds units to the commandedUnits set in the current round state.
  */
 describe(addUnitsToCommandedUnits, () => {
   it('given add units to commandedUnits set', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit1 = createTestUnit('black', { attack: 3 });
     const unit2 = createTestUnit('white', { attack: 4 });
     const units = [unit1, unit2];
@@ -18,7 +19,7 @@ describe(addUnitsToCommandedUnits, () => {
   });
 
   it('given not mutate the original state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('black', { attack: 3 });
     const units = [unit];
 
@@ -28,7 +29,7 @@ describe(addUnitsToCommandedUnits, () => {
   });
 
   it('given add to existing commandedUnits', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit1 = createTestUnit('black', { attack: 2 });
     const unit2 = createTestUnit('white', { attack: 3 });
     const unit3 = createTestUnit('black', { attack: 4 });

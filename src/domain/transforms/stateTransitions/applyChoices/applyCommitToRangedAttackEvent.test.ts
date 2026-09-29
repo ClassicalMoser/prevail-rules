@@ -2,7 +2,6 @@ import type { CommitToRangedAttackEvent } from '@events';
 import { getRangedAttackResolutionState } from '@queries';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   updateCardState,
@@ -11,13 +10,14 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Ranged strike commitments: attacker or defender locks in their reaction card; the matching
  * `attackingCommitment` / `defendingCommitment` flips to completed and the card leaves hand.
  */
 describe(applyCommitToRangedAttackEvent, () => {
   it('given pending attackingCommitment and black holds the card, attacking completed and black hand empty', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateWithBlackCardInHand = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
@@ -54,7 +54,7 @@ describe(applyCommitToRangedAttackEvent, () => {
   });
 
   it('given pending defendingCommitment and white holds the card, defending completed and white hand empty', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateWithWhiteCardInHand = updateCardState(state, {
       ...state.cardState,
       white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },

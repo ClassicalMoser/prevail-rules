@@ -5,68 +5,45 @@ import { areModifiersEqual } from './areModifiersEqual';
 /**
  * AreModifiersEqual: Compares two Modifier objects for equality by comparing all properties.
  */
-describe(areModifiersEqual, () => {
-  it('given both modifiers have the same type and value, returns true', () => {
-    const modifier1: Modifier = { type: 'attack', value: 1 };
-    const modifier2: Modifier = { type: 'attack', value: 1 };
-    const { result } = areModifiersEqual(modifier1, modifier2);
-    expect(result).toBe(true);
-  });
-
-  it('given modifiers have different types, returns false', () => {
-    const modifier1: Modifier = { type: 'attack', value: 1 };
-    const modifier2: Modifier = { type: 'speed', value: 1 };
-    const validationResult = areModifiersEqual(modifier1, modifier2);
-    expect(validationResult.result).toBe(false);
-    if (!validationResult.result) {
-      expect(validationResult.errorReason).toContain('different types');
-    }
-  });
-
-  it('given modifiers have different values, returns false', () => {
-    const modifier1: Modifier = { type: 'attack', value: 1 };
-    const modifier2: Modifier = { type: 'attack', value: 2 };
-    const validationResult = areModifiersEqual(modifier1, modifier2);
-    expect(validationResult.result).toBe(false);
-    if (!validationResult.result) {
-      expect(validationResult.errorReason).toContain('different values');
-    }
-  });
-
-  it('given comparing a modifier to itself, returns true', () => {
+describe('areModifiersEqual function', () => {
+  it('a modifier matches itself', () => {
     const modifier: Modifier = { type: 'attack', value: 1 };
-    const { result } = areModifiersEqual(modifier, modifier);
-    expect(result).toBe(true);
+    expect(areModifiersEqual(modifier, modifier)).toBe(true);
   });
-
-  it('given different object references with same values, returns true', () => {
+  it('different objects with the same type and value match', () => {
     const modifier1: Modifier = { type: 'defense', value: 2 };
     const modifier2: Modifier = { type: 'defense', value: 2 };
-    const { result } = areModifiersEqual(modifier1, modifier2);
-    expect(result).toBe(true);
+    expect(areModifiersEqual(modifier1, modifier2)).toBe(true);
   });
 
-  it('given comparing a modifier to undefined, returns false', () => {
-    const modifier: Modifier = { type: 'attack', value: 1 };
-    // Intentional type error to test the function
-    const { result } = areModifiersEqual(
-      modifier,
-      undefined as unknown as Modifier,
-    );
-    expect(result).toBe(false);
-  });
-
-  it('given handle negative values correctly', () => {
+  it('negative values match', () => {
     const modifier1: Modifier = { type: 'attack', value: -1 };
     const modifier2: Modifier = { type: 'attack', value: -1 };
-    const { result } = areModifiersEqual(modifier1, modifier2);
-    expect(result).toBe(true);
+    expect(areModifiersEqual(modifier1, modifier2)).toBe(true);
   });
 
-  it('given handle zero values correctly', () => {
+  it('zero values match', () => {
     const modifier1: Modifier = { type: 'speed', value: 0 };
     const modifier2: Modifier = { type: 'speed', value: 0 };
-    const { result } = areModifiersEqual(modifier1, modifier2);
-    expect(result).toBe(true);
+    expect(areModifiersEqual(modifier1, modifier2)).toBe(true);
+  });
+
+  it('different types do not match', () => {
+    const modifier1: Modifier = { type: 'attack', value: 1 };
+    const modifier2: Modifier = { type: 'speed', value: 1 };
+    expect(areModifiersEqual(modifier1, modifier2)).toBe(false);
+  });
+
+  it('different values do not match', () => {
+    const modifier1: Modifier = { type: 'attack', value: 1 };
+    const modifier2: Modifier = { type: 'attack', value: 2 };
+    expect(areModifiersEqual(modifier1, modifier2)).toBe(false);
+  });
+
+  it('invalid modifiers do not match', () => {
+    const modifier1: Modifier = { type: 'attack', value: 1 };
+    // Intentional type error to test invalid modifiers
+    const modifier2: Modifier = 'invalid' as unknown as Modifier;
+    expect(areModifiersEqual(modifier1, modifier2)).toBe(false);
   });
 });

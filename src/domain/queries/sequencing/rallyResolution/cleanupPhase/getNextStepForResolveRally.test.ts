@@ -1,15 +1,15 @@
 import { CLEANUP_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
 
 import { getNextStepForResolveRally } from './getNextStepForResolveRally';
 
+import { createEmptyGameState } from '@factories';
 /**
  * After finishing one side’s resolve-rally work, which cleanup step comes next (second chooser
  * vs phase complete).
  */
 describe(getNextStepForResolveRally, () => {
   it('given firstPlayerResolveRally, next step is secondPlayerChooseRally', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: {
         completed: false,
@@ -28,7 +28,7 @@ describe(getNextStepForResolveRally, () => {
   });
 
   it('given step is secondPlayerResolveRally, returns complete', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,
@@ -47,7 +47,7 @@ describe(getNextStepForResolveRally, () => {
   });
 
   it('given discardPlayedCards, throws not on resolveRally step', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = {
       firstPlayerRallyResolutionState: 'pending' as const,
       phase: CLEANUP_PHASE,

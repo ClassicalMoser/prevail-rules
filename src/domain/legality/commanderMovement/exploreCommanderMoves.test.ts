@@ -1,7 +1,6 @@
 import { COMMANDER_MOVE_DISTANCE } from '@ruleValues';
 import {
   createBoardWithCommander,
-  createEmptyGameState,
   createGameStateWithUnits,
   createTestUnit,
 } from '@testing';
@@ -9,6 +8,7 @@ import { addCommanderToBoard } from '@transforms';
 
 import { exploreCommanderMoves } from './exploreCommanderMoves';
 
+import { createEmptyGameState } from '@factories';
 /**
  * ExploreCommanderMoves: BFS reachable commander coordinates within move distance with blocking rules.
  */
@@ -18,7 +18,7 @@ describe(exploreCommanderMoves, () => {
     it('given context, returns all moves on an empty board', () => {
       const playerSide = 'white';
       const startingCoordinate = 'E-5';
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       const legalMoves = exploreCommanderMoves(
         playerSide,
         startingCoordinate,
@@ -32,7 +32,7 @@ describe(exploreCommanderMoves, () => {
     it('given work correctly near the board edge', () => {
       const playerSide = 'white';
       const startingCoordinate = 'E-2';
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithCommander(
         playerSide,
         startingCoordinate,
@@ -49,7 +49,7 @@ describe(exploreCommanderMoves, () => {
     it('given work correctly in the corner of the board', () => {
       const playerSide = 'white';
       const startingCoordinate = 'A-1';
-      const gameState = createEmptyGameState();
+      const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithCommander(
         playerSide,
         startingCoordinate,

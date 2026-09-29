@@ -1,12 +1,10 @@
 import type { CleanupPhaseStep, GameState } from '@game';
-import {
-  createCleanupPhaseState,
-  createEmptyGameState,
-  createRallyResolutionState,
-} from '@testing';
+import { createCleanupPhaseState, createRallyResolutionState } from '@testing';
+import { createEmptyGameState } from '@factories';
 
 import { getExpectedCleanupPhaseEvent } from './getExpectedCleanupPhaseEvent';
 
+import { updateCurrentInitiative } from '@transforms';
 /**
  * GetExpectedCleanupPhaseEvent: next cleanup-phase event from cleanup step and rally state.
  */
@@ -15,7 +13,10 @@ describe(getExpectedCleanupPhaseEvent, () => {
     step: CleanupPhaseStep,
     currentInitiative: 'black' | 'white' = 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      currentInitiative,
+    );
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       firstPlayerRallyResolutionState: createRallyResolutionState({
         completed: false,
@@ -85,7 +86,10 @@ describe(getExpectedCleanupPhaseEvent, () => {
   });
 
   it('given first player rally resolved awaiting support, returns assignUnitSupport', () => {
-    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
       firstPlayerRallyResolutionState: createRallyResolutionState({
         completed: false,

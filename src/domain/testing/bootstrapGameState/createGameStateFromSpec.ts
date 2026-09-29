@@ -2,12 +2,14 @@ import type { PlayerSide, Board } from '@entities';
 import type { GameStateForVisibility } from '@game';
 import type { UnitPlacementSpec } from './unitPlacementSpec';
 import { createBoardWithUnits } from '@testing/createBoard';
-import { createEmptyGameState } from '@testing/createEmptyGameState';
+
 import {
   assignInstanceNumbers,
   normalizeUnitPlacement,
 } from './unitPlacementSpec';
 
+import { createEmptyGameState } from '@factories';
+import { updateCurrentInitiative } from '@transforms';
 /**
  * Creates a game state with units placed according to the provided specifications.
  */
@@ -15,7 +17,13 @@ export function createGameState(
   units: UnitPlacementSpec[],
   options?: { currentInitiative?: PlayerSide },
 ): GameStateForVisibility {
-  const gameState = createEmptyGameState(options);
+  const gameState =
+    options?.currentInitiative === undefined
+      ? createEmptyGameState('standard')
+      : updateCurrentInitiative(
+          createEmptyGameState('standard'),
+          options.currentInitiative,
+        );
   const assignments = assignInstanceNumbers(units);
   const normalizedUnits = assignments.map(({ spec, instanceNumber }) =>
     normalizeUnitPlacement(spec, instanceNumber),

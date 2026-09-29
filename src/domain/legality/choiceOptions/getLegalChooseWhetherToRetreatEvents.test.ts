@@ -1,6 +1,5 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import {
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -10,13 +9,14 @@ import { updatePhaseState } from '@transforms';
 
 import { getLegalChooseWhetherToRetreatEvents } from './getLegalChooseWhetherToRetreatEvents';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetLegalChooseWhetherToRetreatEvents: yes/no for the front-engagement
  * defender when defendingUnitRetreats is pending and retreat is allowed.
  */
 describe(getLegalChooseWhetherToRetreatEvents, () => {
   function stateAwaitingWhetherToRetreat() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state, {
       engagementState: createFrontEngagementState({
         defendingUnitCanRetreat: true,
@@ -57,7 +57,7 @@ describe(getLegalChooseWhetherToRetreatEvents, () => {
   });
 
   it('returns empty when not awaiting the retreat decision', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
@@ -65,7 +65,7 @@ describe(getLegalChooseWhetherToRetreatEvents, () => {
   });
 
   it('returns empty when the defender cannot retreat', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state, {
       engagementState: createFrontEngagementState({
         defendingUnitCanRetreat: false,

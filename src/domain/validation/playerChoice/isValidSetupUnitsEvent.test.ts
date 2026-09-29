@@ -1,6 +1,6 @@
 import type { SetupUnitsEvent } from '@events';
-import { createEmptyGameState, createTestUnit } from '@testing';
-import { createEmptyStandardBoard } from '@factories';
+import { createTestUnit } from '@testing';
+import { createEmptyStandardBoard, createEmptyGameState } from '@factories';
 
 import { isValidSetupUnitsEvent } from './isValidSetupUnitsEvent';
 
@@ -11,7 +11,7 @@ describe(isValidSetupUnitsEvent, () => {
   it('accepts placing all reserved units into empty zone spaces', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit],
     };
@@ -37,7 +37,7 @@ describe(isValidSetupUnitsEvent, () => {
   it('accepts commander alone on an empty setup-zone coordinate', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit],
     };
@@ -63,7 +63,7 @@ describe(isValidSetupUnitsEvent, () => {
   it('rejects a coordinate outside the setup zone', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit],
     };
@@ -88,7 +88,7 @@ describe(isValidSetupUnitsEvent, () => {
     const unit1 = createTestUnit('black', { attack: 2, instanceNumber: 1 });
     const unit2 = createTestUnit('black', { attack: 2, instanceNumber: 2 });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit1, unit2],
     };
@@ -112,7 +112,7 @@ describe(isValidSetupUnitsEvent, () => {
   it('rejects commander outside the empty setup zone', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = {
-      ...createEmptyGameState(),
+      ...createEmptyGameState('standard'),
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit],
     };

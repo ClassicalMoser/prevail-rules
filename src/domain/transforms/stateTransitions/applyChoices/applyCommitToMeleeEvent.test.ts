@@ -2,7 +2,6 @@ import type { CommitToMeleeEvent } from '@events';
 import { getMeleeResolutionState } from '@queries';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   updateCardState,
@@ -11,13 +10,14 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCommitToMeleeEvent } from './applyCommitToMeleeEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Melee commitment: pending side locks in their played command card (and empty modifiers here),
  * moves the card out of hand, and marks `whiteCommitment` / `blackCommitment` completed.
  */
 describe(applyCommitToMeleeEvent, () => {
   it('given white pending and one card in hand, commit completes white and empties white hand', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateWithWhiteCardInHand = updateCardState(state, {
       ...state.cardState,
       white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },
@@ -54,7 +54,7 @@ describe(applyCommitToMeleeEvent, () => {
   });
 
   it('given black pending and one card in hand, commit completes black and empties black hand', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateWithBlackCardInHand = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inHand: [tempCommandCards[0]] },
@@ -88,7 +88,7 @@ describe(applyCommitToMeleeEvent, () => {
   });
 
   it('given white pending, refuse declines white and leaves hand intact', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateWithWhiteCardInHand = updateCardState(state, {
       ...state.cardState,
       white: { ...state.cardState.white, inHand: [tempCommandCards[0]] },

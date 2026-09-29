@@ -4,8 +4,8 @@ import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
   createBoardWithCommander,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
+  createTestCard,
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
@@ -17,6 +17,7 @@ import {
 
 import { getLegalPlayerChoiceOptions } from './getLegalPlayerChoiceOptions';
 
+import { createEmptyGameState } from '@factories';
 const mocks = vi.hoisted(() => ({
   getExpectedEventMock: vi.fn(),
   actualGetExpectedEvent: undefined as
@@ -80,7 +81,7 @@ describe(getLegalPlayerChoiceOptions, () => {
   }
 
   it('returns null when the next expected action is a game effect', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
     });
@@ -89,7 +90,7 @@ describe(getLegalPlayerChoiceOptions, () => {
   });
 
   it('returns null when the next expected action is gameOver', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
       ...base.cardState,
       white: { ...base.cardState.white, inHand: [] },
@@ -101,11 +102,13 @@ describe(getLegalPlayerChoiceOptions, () => {
     mocks.getExpectedEventMock.mockImplementation(() => {
       throw new Error('Invalid phase');
     });
-    expect(getLegalPlayerChoiceOptions(createEmptyGameState())).toBeNull();
+    expect(
+      getLegalPlayerChoiceOptions(createEmptyGameState('standard')),
+    ).toBeNull();
   });
 
   it('packages chooseCard events from the live enumerator', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -140,7 +143,18 @@ describe(getLegalPlayerChoiceOptions, () => {
   });
 
   it('packages moveCommander destinations from the commander space', () => {
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
+    state = updateCardState(state, {
+      ...state.cardState,
+      black: {
+        ...state.cardState.black,
+        inHand: [createTestCard({ id: 'black-hand' })],
+      },
+      white: {
+        ...state.cardState.white,
+        inHand: [createTestCard({ id: 'white-hand' })],
+      },
+    });
     state = {
       ...state,
       boardState: createBoardWithCommander('black', 'E-5'),
@@ -175,10 +189,18 @@ describe(getLegalPlayerChoiceOptions, () => {
       facing: 'south',
       playerSide: 'white',
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateCardState(state, {
       ...state.cardState,
-      black: { ...state.cardState.black, inPlay: tempCommandCards[15] },
+      black: {
+        ...state.cardState.black,
+        inHand: [createTestCard({ id: 'black-hand' })],
+        inPlay: tempCommandCards[15],
+      },
+      white: {
+        ...state.cardState.white,
+        inHand: [createTestCard({ id: 'white-hand' })],
+      },
     });
     state = updateBoardState(
       state,
@@ -209,7 +231,9 @@ describe(getLegalPlayerChoiceOptions, () => {
       'returns choiceType %s with the expected payload shape',
       (choiceType) => {
         stubExpected(choiceType, 'black');
-        const options = getLegalPlayerChoiceOptions(createEmptyGameState());
+        const options = getLegalPlayerChoiceOptions(
+          createEmptyGameState('standard'),
+        );
         expect(options).not.toBeNull();
         expect(options?.choiceType).toBe(choiceType);
         expect(options?.playerSource).toBe('black');

@@ -3,8 +3,9 @@ import type { GameState } from '@game';
 
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms';
+import { createEmptyGameState } from '@factories';
 
 import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent';
 
@@ -22,7 +23,7 @@ describe(generateResolveInitiativeEvent, () => {
     blackCard: CommandCard,
     currentInitiative: 'black' | 'white' = 'black',
   ): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     const stateWithCards = updateCardState(state, {
       ...state.cardState,
@@ -136,7 +137,7 @@ describe(generateResolveInitiativeEvent, () => {
   describe('preconditions', () => {
     it('given playCards but wrong step, throws assignInitiative guard', () => {
       expect.hasAssertions();
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const stateWithWrongStep = updatePhaseState(state, {
         phase: PLAY_CARDS_PHASE,
         step: 'chooseCards',
@@ -150,7 +151,7 @@ describe(generateResolveInitiativeEvent, () => {
     it('given white inPlay null at assignInitiative, throws', () => {
       expect.hasAssertions();
       const blackCard = tempCommandCards[0];
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
 
       const stateWithCards = updateCardState(state, {
         ...state.cardState,
@@ -179,7 +180,7 @@ describe(generateResolveInitiativeEvent, () => {
     it('given black inPlay null at assignInitiative, throws', () => {
       expect.hasAssertions();
       const whiteCard = tempCommandCards[0];
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
 
       const stateWithCards = updateCardState(state, {
         ...state.cardState,

@@ -2,16 +2,17 @@ import type { Phase } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
   createCleanupPhaseState,
-  createEmptyGameState,
   createRallyResolutionState,
   createRoutState,
+  createTestCard,
   createTestUnit,
   updateCardState,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getExpectedEvent } from './getExpectedEvent';
 
+import { createEmptyGameState } from '@factories';
 const {
   getCurrentPhaseStateMock,
   getExpectedCleanupPhaseEventMock,
@@ -55,12 +56,28 @@ describe(getExpectedEvent, () => {
     vi.clearAllMocks();
   });
 
+  /** Both hands hold a card so empty-hand game over does not short-circuit. */
+  function gameStillGoing() {
+    const state = createEmptyGameState('standard');
+    return updateCardState(state, {
+      ...state.cardState,
+      black: {
+        ...state.cardState.black,
+        inHand: [createTestCard({ id: 'black-hand' })],
+      },
+      white: {
+        ...state.cardState.white,
+        inHand: [createTestCard({ id: 'white-hand' })],
+      },
+    });
+  }
+
   function expectDelegation(
     phase: Phase,
     delegatedMock: ReturnType<typeof vi.fn>,
     delegateReturn: { actionType: 'gameEffect'; effectType: string },
   ) {
-    const state = createEmptyGameState();
+    const state = gameStillGoing();
     // Real phase must not be `'none'` or pre-round setup short-circuits.
     state.currentRoundState.currentPhaseState = {
       phase,
@@ -116,7 +133,7 @@ describe(getExpectedEvent, () => {
   });
 
   it('given for an invalid phase, throws', () => {
-    const state = createEmptyGameState();
+    const state = gameStillGoing();
     state.currentRoundState.currentPhaseState = {
       phase: 'playCards',
       step: 'complete',
@@ -127,7 +144,7 @@ describe(getExpectedEvent, () => {
   });
 
   it('given phase none, delegates to setup units handler', () => {
-    const state = createEmptyGameState();
+    const state = gameStillGoing();
     getExpectedSetupUnitsEventMock.mockReturnValue({
       actionType: 'playerChoice',
       choiceType: 'setupUnits',
@@ -145,7 +162,7 @@ describe(getExpectedEvent, () => {
   });
 
   it('given white hand empty, returns gameOver game effect before phase routing', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
       ...base.cardState,
       white: { ...base.cardState.white, inHand: [] },
@@ -161,7 +178,7 @@ describe(getExpectedEvent, () => {
   });
 
   it('given black hand empty, returns gameOver game effect before phase routing', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inHand: [] },
@@ -180,7 +197,7 @@ describe(getExpectedEvent, () => {
   });
 
   it('given both hands empty, still returns gameOver game effect', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const state = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inHand: [] },
@@ -195,7 +212,10 @@ describe(getExpectedEvent, () => {
   });
 
   it('given unpayable rout discard, returns gameOver game effect before phase routing', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const withCards = updateCardState(base, {
       ...base.cardState,
       white: {
@@ -229,7 +249,10 @@ describe(getExpectedEvent, () => {
   });
 
   it('throws when winner is already set', () => {
-    const state = { ...createEmptyGameState(), winner: 'black' as const };
+    const state = {
+      ...createEmptyGameState('standard'),
+      winner: 'black' as const,
+    };
     expect(() => getExpectedEvent(state)).toThrow('Game is already over');
   });
 });

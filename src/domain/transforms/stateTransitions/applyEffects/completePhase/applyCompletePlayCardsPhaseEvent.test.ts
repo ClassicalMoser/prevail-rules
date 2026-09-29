@@ -3,18 +3,19 @@ import type { CompletePlayCardsPhaseEvent } from '@events';
 import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 
-import { createEmptyGameState, createPlayCardsPhaseState } from '@testing';
+import { createPlayCardsPhaseState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCompletePlayCardsPhaseEvent } from './applyCompletePlayCardsPhaseEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * End of simultaneous card play: `playCards` is recorded in `completedPhases` and the round
  * advances to `moveCommanders.moveFirstCommander`.
  */
 describe(applyCompletePlayCardsPhaseEvent, () => {
   it('given playCards complete step, next phase moveCommanders and completedPhases lists playCards', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const full: GameState = updatePhaseState(
       state,
       createPlayCardsPhaseState({ step: 'complete' }),

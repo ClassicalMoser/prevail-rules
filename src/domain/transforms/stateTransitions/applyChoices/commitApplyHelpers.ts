@@ -1,15 +1,13 @@
-import type { CommandCard, HiddenCard, PlayerSide } from '@entities';
+import type { CommandCard, PlayerSide } from '@entities';
 import type { Commitment, GameState } from '@game';
-import { getHiddenPlayerCardState, getOwnedPlayerCardState } from '@queries';
+import { getOwnedPlayerCardState } from '@queries';
 import {
   discardCardsFromHand,
-  discardHiddenCardFromHand,
-  replaceHiddenPlayerCardState,
   replaceOwnedPlayerCardState,
 } from '@transforms/pureTransforms';
 
 export function commitmentFromCommittedCard(
-  committedCard: CommandCard | HiddenCard | null,
+  committedCard: CommandCard | null,
 ): Commitment {
   if (committedCard === null) {
     return { commitmentType: 'declined' };
@@ -22,29 +20,17 @@ export function commitmentFromCommittedCard(
 
 /**
  * Discards the committed card from the acting player's hand.
- * Concrete cards use the owned slice; `'hidden'` uses the unowned slice.
- * Ownership is proven by {@link getOwnedPlayerCardState} /
- * {@link getHiddenPlayerCardState} (visibility discriminant — no casts).
+ * Concrete cards are discarded from the owned slice.
+ * Ownership is proven by {@link getOwnedPlayerCardState}
+ * (visibility discriminant — no casts).
  */
 export function applyCommitCardDiscard<S extends GameState>(
   state: S,
   player: PlayerSide,
-  committedCard: CommandCard | HiddenCard | null,
+  committedCard: CommandCard | null,
 ): S {
   if (committedCard === null) {
     return state;
-  }
-
-  if (committedCard === 'hidden') {
-    const hiddenSlice = getHiddenPlayerCardState(state.cardState, player);
-    return {
-      ...state,
-      cardState: replaceHiddenPlayerCardState(
-        state.cardState,
-        player,
-        discardHiddenCardFromHand(hiddenSlice),
-      ),
-    };
   }
 
   const ownedPlayerCardState = getOwnedPlayerCardState(state.cardState, player);

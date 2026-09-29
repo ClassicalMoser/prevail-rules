@@ -221,7 +221,7 @@ Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary a
 describe('generateXEvent', () => {
   // ✅ GOOD: Use existing helpers from @testing
   function createTestState(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = createXPhaseState(state);
     return updatePhaseState(state, phaseState);
   }
@@ -229,9 +229,9 @@ describe('generateXEvent', () => {
   // ❌ BAD: Don't inline helpers - extract to @testing if reused
   // function createTestState() {
   //   return {
-  //     ...createEmptyGameState(),
+  //     ...createEmptyGameState('standard'),
   //     currentRoundState: {
-  //       ...createEmptyGameState().currentRoundState,
+  //       ...createEmptyGameState('standard').currentRoundState,
   //       currentPhaseState: { /* verbose manual construction */ }
   //     }
   //   };
@@ -256,7 +256,7 @@ describe('generateXEvent', () => {
 describe('getExpectedXEvent', () => {
   // ✅ GOOD: Use existing helpers + pure transforms
   function createTestState(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const stateWithUnit = {
       ...state,

@@ -1,13 +1,14 @@
-import { createEmptyGameState, createTestCard } from '@testing';
+import { createTestCard } from '@testing';
 
 import { getExpectedStartCommandResolutionEvent } from './getExpectedStartCommandResolutionEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedStartCommandResolutionEvent: first command-resolution choice from active card command type.
  */
 describe(getExpectedStartCommandResolutionEvent, () => {
   it('given ask the player to move a unit for a movement card', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     // CreateTestCard() defaults command.type to 'movement'
     state.cardState.black.inPlay = createTestCard();
 
@@ -21,7 +22,7 @@ describe(getExpectedStartCommandResolutionEvent, () => {
   });
 
   it('given ask the player to perform a ranged attack for a ranged attack card', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.white.inPlay = {
       ...createTestCard(),
       command: {
@@ -40,7 +41,7 @@ describe(getExpectedStartCommandResolutionEvent, () => {
   });
 
   it('given when the player has no active card, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = null;
 
     expect(() =>
@@ -49,7 +50,7 @@ describe(getExpectedStartCommandResolutionEvent, () => {
   });
 
   it('given when the command type is invalid, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = {
       ...createTestCard(),
       command: {

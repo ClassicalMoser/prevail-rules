@@ -4,7 +4,6 @@ import { PLAY_CARDS_PHASE } from '@game';
 
 import { equites, punicCitizenSpearmen } from '@sampleValues';
 import {
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
@@ -13,6 +12,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateResolveMeleeEvent } from './generateResolveMeleeEvent';
 
+import { createEmptyGameState } from '@factories';
 /** Citizen spearmen (retreat 6, attack 3): with default test `inPlay` (+1 attack), strike stays below retreat. */
 const spearmenType = punicCitizenSpearmen;
 
@@ -24,7 +24,7 @@ const spearmenType = punicCitizenSpearmen;
 describe(generateResolveMeleeEvent, () => {
   /** Default spearmen mirror match on E-5 with empty resolve-melee phase (no pending commitments). */
   function meleeResolutionGameState(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { unitType: spearmenType });
     const blackUnit = createTestUnit('black', { unitType: spearmenType });
     const whiteWp: UnitWithPlacement = {
@@ -48,7 +48,7 @@ describe(generateResolveMeleeEvent, () => {
   }
 
   it('given cavalry vs cavalry on E-5, both retreated true and each gets a non-empty legal set', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { unitType: equites });
     const blackUnit = createTestUnit('black', { unitType: equites });
     const whiteWp: UnitWithPlacement = {
@@ -88,7 +88,7 @@ describe(generateResolveMeleeEvent, () => {
   });
 
   it('given melee CRS with white commitment pending, throws white commitment guard', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
@@ -120,7 +120,7 @@ describe(generateResolveMeleeEvent, () => {
   });
 
   it('given playCards phase, throws not in resolveMelee', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
@@ -131,7 +131,7 @@ describe(generateResolveMeleeEvent, () => {
   });
 
   it('given only white on E-5 in resolveMelee phase, throws units not found on board', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
       placement: {

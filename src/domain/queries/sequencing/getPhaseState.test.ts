@@ -1,6 +1,5 @@
 import {
   createCleanupPhaseState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMoveCommandersPhaseState,
   createPlayCardsPhaseState,
@@ -16,13 +15,14 @@ import {
   getResolveMeleePhaseState,
 } from './getPhaseState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Phase narrowing helpers: each getter asserts `currentPhaseState.phase` matches the expected
  * tag before returning the typed slice (or throws with expected vs actual).
  */
 describe(getCurrentPhaseState, () => {
   it('given playCards phase slice, returns same phase and step', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createPlayCardsPhaseState();
 
     const result = getCurrentPhaseState(state);
@@ -31,7 +31,7 @@ describe(getCurrentPhaseState, () => {
   });
 
   it('given missing phase slice, throws no current phase state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = 'none';
 
     expect(() => getCurrentPhaseState(state)).toThrow(
@@ -42,7 +42,7 @@ describe(getCurrentPhaseState, () => {
 
 describe(getPlayCardsPhaseState, () => {
   it('given playCards factory, returns playCards chooseCards', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createPlayCardsPhaseState();
 
     const result = getPlayCardsPhaseState(state);
@@ -51,7 +51,7 @@ describe(getPlayCardsPhaseState, () => {
   });
 
   it('given issueCommands slice, throws expected playCards got issueCommands', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =
       createIssueCommandsPhaseState(state);
 
@@ -61,7 +61,7 @@ describe(getPlayCardsPhaseState, () => {
   });
 
   it('given missing phase slice, throws no current phase state for playCards getter', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = 'none';
 
     expect(() => getPlayCardsPhaseState(state)).toThrow(
@@ -72,7 +72,7 @@ describe(getPlayCardsPhaseState, () => {
 
 describe(getMoveCommandersPhaseState, () => {
   it('given default moveCommanders factory, step moveFirstCommander', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =
       createMoveCommandersPhaseState();
 
@@ -82,7 +82,7 @@ describe(getMoveCommandersPhaseState, () => {
   });
 
   it('given moveSecondCommander step in slice, getter returns that step', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createMoveCommandersPhaseState({
       step: 'moveSecondCommander',
     });
@@ -93,7 +93,7 @@ describe(getMoveCommandersPhaseState, () => {
   });
 
   it('given playCards slice, throws expected moveCommanders got playCards', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createPlayCardsPhaseState();
 
     expect(() => getMoveCommandersPhaseState(state)).toThrow(
@@ -104,7 +104,7 @@ describe(getMoveCommandersPhaseState, () => {
 
 describe(getIssueCommandsPhaseState, () => {
   it('given default issueCommands factory, phase and first resolve step', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =
       createIssueCommandsPhaseState(state);
 
@@ -114,7 +114,7 @@ describe(getIssueCommandsPhaseState, () => {
   });
 
   it('given resolveMelee slice, throws expected issueCommands got resolveMelee', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =
       createResolveMeleePhaseState(state);
 
@@ -126,7 +126,7 @@ describe(getIssueCommandsPhaseState, () => {
 
 describe(getResolveMeleePhaseState, () => {
   it('given default resolveMelee factory, phase and resolveMelee step', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =
       createResolveMeleePhaseState(state);
 
@@ -136,7 +136,7 @@ describe(getResolveMeleePhaseState, () => {
   });
 
   it('given cleanup slice, throws expected resolveMelee got cleanup', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createCleanupPhaseState();
 
     expect(() => getResolveMeleePhaseState(state)).toThrow(
@@ -147,7 +147,7 @@ describe(getResolveMeleePhaseState, () => {
 
 describe(getCleanupPhaseState, () => {
   it('given default cleanup factory, phase cleanup discardPlayedCards', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createCleanupPhaseState();
 
     const result = getCleanupPhaseState(state);
@@ -156,7 +156,7 @@ describe(getCleanupPhaseState, () => {
   });
 
   it('given playCards slice, throws expected cleanup got playCards', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createPlayCardsPhaseState();
 
     expect(() => getCleanupPhaseState(state)).toThrow(

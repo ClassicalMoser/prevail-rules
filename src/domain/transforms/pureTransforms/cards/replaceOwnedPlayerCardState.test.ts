@@ -1,14 +1,14 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { replaceOwnedPlayerCardState } from './replaceOwnedPlayerCardState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * ReplaceOwnedPlayerCardState: swaps one owned slice inside CardState.
  */
 describe(replaceOwnedPlayerCardState, () => {
   it('given authoritative, replaces the named player slice', () => {
-    const { cardState } = createEmptyGameState();
+    const { cardState } = createEmptyGameState('standard');
     const nextBlack = {
       ...cardState.black,
       inHand: [tempCommandCards[0]],
@@ -22,7 +22,7 @@ describe(replaceOwnedPlayerCardState, () => {
   });
 
   it('given whiteSeen, replaces white and rejects black', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const whiteSeen = {
       visibility: 'whiteSeen' as const,
       white: base.cardState.white,
@@ -49,7 +49,7 @@ describe(replaceOwnedPlayerCardState, () => {
   });
 
   it('given blackSeen, replaces black and rejects white', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const blackSeen = {
       visibility: 'blackSeen' as const,
       black: base.cardState.black,

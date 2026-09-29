@@ -2,7 +2,6 @@ import type { UnitWithPlacement } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createPlayCardsPhaseState,
@@ -17,12 +16,13 @@ import {
   updateAttackApplySubstep,
 } from './attackApplyContext';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetAttackApplyStateFromContext: Gets the attack apply state from the current game state context.
  */
 describe(getAttackApplyStateFromContext, () => {
   function createStateWithRangedAttack() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement = {
       placement: {
@@ -48,7 +48,7 @@ describe(getAttackApplyStateFromContext, () => {
   }
 
   function createStateWithMelee() {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
@@ -90,7 +90,7 @@ describe(getAttackApplyStateFromContext, () => {
   });
 
   it('given when not in issueCommands or resolveMelee phase, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),
@@ -103,7 +103,7 @@ describe(getAttackApplyStateFromContext, () => {
 
 describe(updateAttackApplySubstep, () => {
   function createStateWithRangedAttack() {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
     const placement: UnitWithPlacement = {
       placement: {
@@ -129,7 +129,7 @@ describe(updateAttackApplySubstep, () => {
   }
 
   function createStateWithMelee() {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
@@ -204,7 +204,7 @@ describe(updateAttackApplySubstep, () => {
   });
 
   it('given when not in issueCommands or resolveMelee phase, throws', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const stateInPlayCards = updatePhaseState(
       state,
       createPlayCardsPhaseState(),

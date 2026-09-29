@@ -14,11 +14,8 @@ import { chooseRallyEventSchema } from './chooseRally';
 import { chooseRetreatOptionEventSchema } from './chooseRetreatOption';
 import { chooseRoutDiscardEventSchema } from './chooseRoutDiscard';
 import { chooseWhetherToRetreatEventSchema } from './chooseWhetherToRetreat';
-import type { CommitToMeleeEvent } from './commitToMelee';
 import { commitToMeleeEventSchema } from './commitToMelee';
-import type { CommitToMovementEvent } from './commitToMovement';
 import { commitToMovementEventSchema } from './commitToMovement';
-import type { CommitToRangedAttackEvent } from './commitToRangedAttack';
 import { commitToRangedAttackEventSchema } from './commitToRangedAttack';
 import { assignUnitSupportEventSchema } from './assignUnitSupport';
 import { doneIssuingCommandsEventSchema } from './doneIssuingCommands';
@@ -61,69 +58,13 @@ export const projectedChooseCardEventSchema: z.ZodType<ProjectedChooseCardEvent>
   _projectedChooseCardEventSchemaObject;
 
 /**
- * Commit events may redact `committedCard` for the opposing seat.
- * Defined as three members (not `Omit` over a union) so `choiceType` stays a
- * discriminant for switch narrowing.
- */
-export type ProjectedCommitToMeleeEvent = Omit<
-  CommitToMeleeEvent,
-  'committedCard'
-> & {
-  committedCard: CommandCard | HiddenCard | null;
-};
-
-export type ProjectedCommitToMovementEvent = Omit<
-  CommitToMovementEvent,
-  'committedCard'
-> & {
-  committedCard: CommandCard | HiddenCard | null;
-};
-
-export type ProjectedCommitToRangedAttackEvent = Omit<
-  CommitToRangedAttackEvent,
-  'committedCard'
-> & {
-  committedCard: CommandCard | HiddenCard | null;
-};
-
-export type ProjectedCommitEvent =
-  | ProjectedCommitToMeleeEvent
-  | ProjectedCommitToMovementEvent
-  | ProjectedCommitToRangedAttackEvent;
-
-const cardHiddenOrNull = z.union([
-  commandCardSchema,
-  hiddenCardSchema,
-  z.null(),
-]);
-
-const projectedCommitToMeleeEventSchema = commitToMeleeEventSchema.extend({
-  committedCard: cardHiddenOrNull,
-});
-const projectedCommitToMovementEventSchema = commitToMovementEventSchema.extend(
-  {
-    committedCard: cardHiddenOrNull,
-  },
-);
-const projectedCommitToRangedAttackEventSchema =
-  commitToRangedAttackEventSchema.extend({
-    committedCard: cardHiddenOrNull,
-  });
-
-/**
  * Player choice as delivered to a seated client after visibility projection.
- * Same as {@link PlayerChoiceEvent} except card-bearing fields may be `'hidden'`.
+ * Same as {@link PlayerChoiceEvent} except an opponent's chooseCard may be `'hidden'`.
+ * Commits are public and keep the real card.
  */
 export type ProjectedPlayerChoiceEvent =
-  | Exclude<
-      PlayerChoiceEvent,
-      | ChooseCardEvent
-      | CommitToMeleeEvent
-      | CommitToMovementEvent
-      | CommitToRangedAttackEvent
-    >
-  | ProjectedChooseCardEvent
-  | ProjectedCommitEvent;
+  | Exclude<PlayerChoiceEvent, ChooseCardEvent>
+  | ProjectedChooseCardEvent;
 
 const _projectedPlayerChoiceEventSchemaObject = z.discriminatedUnion(
   'choiceType',
@@ -135,9 +76,9 @@ const _projectedPlayerChoiceEventSchemaObject = z.discriminatedUnion(
     chooseRetreatOptionEventSchema,
     chooseRoutDiscardEventSchema,
     chooseWhetherToRetreatEventSchema,
-    projectedCommitToMeleeEventSchema,
-    projectedCommitToMovementEventSchema,
-    projectedCommitToRangedAttackEventSchema,
+    commitToMeleeEventSchema,
+    commitToMovementEventSchema,
+    commitToRangedAttackEventSchema,
     doneIssuingCommandsEventSchema,
     issueCommandEventSchema,
     moveCommanderEventSchema,

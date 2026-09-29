@@ -2,19 +2,23 @@ import type { UnitWithPlacement } from '@entities';
 import type { AttackApplyState, GameState } from '@game';
 import {
   createAttackApplyStateWithReverse,
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createReverseState,
   createTestUnit,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  updatePhaseState,
+  updateCurrentInitiative,
+} from '@transforms';
 
 import {
   getReverseStateFromAttackApply,
   getReverseStateFromMeleeResolutionByInitiative,
 } from './reverse';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Reverse substep accessors: unwrap reverse from one apply, or choose melee side by initiative
  * and whether the first player’s reverse already has a final facing committed.
@@ -82,7 +86,10 @@ describe(getReverseStateFromMeleeResolutionByInitiative, () => {
     initiative: 'white' | 'black',
     firstFinal?: 'set',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: initiative });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      initiative,
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {
@@ -159,7 +166,10 @@ describe(getReverseStateFromMeleeResolutionByInitiative, () => {
 
   it('given both reverses already have finalPosition, throws no reverse in melee', () => {
     expect.hasAssertions();
-    const state = createEmptyGameState({ currentInitiative: 'white' });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whiteWp: UnitWithPlacement = {

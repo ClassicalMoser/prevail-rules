@@ -1,6 +1,5 @@
 import {
   createAttackApplyState,
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
@@ -10,12 +9,13 @@ import { throwIfNone, throwIfPending } from '@utils';
 
 import { updateMeleeAttackApplyState } from './updateMeleeAttackApplyState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * UpdateMeleeAttackApplyState: Creates a new game state with the attack apply state updated for a specific player in melee resolution.
  */
 describe(updateMeleeAttackApplyState, () => {
   function createStateInResolveMelee() {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const meleeState = createMeleeResolutionState(state, {

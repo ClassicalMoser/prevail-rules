@@ -9,7 +9,6 @@ import {
 } from '@queries';
 import {
   createAttackApplyStateWithRetreat,
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
@@ -23,6 +22,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyResolveRetreatEvent } from './applyResolveRetreatEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Applies a committed retreat: removes the unit from `startingPosition`, places it at
  * `finalPosition`, and marks the nested retreat substep completed (ranged or melee side).
@@ -30,7 +30,7 @@ import { applyResolveRetreatEvent } from './applyResolveRetreatEvent';
 describe(applyResolveRetreatEvent, () => {
   /** IssueCommands + ranged CRS + retreat substep for white on E-5. */
   function createStateWithRangedAttackRetreat(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -63,7 +63,7 @@ describe(applyResolveRetreatEvent, () => {
   function createStateWithMeleeRetreat(
     retreatingPlayer: 'white' | 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit(retreatingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       retreatingPlayer === 'white' ? 'black' : 'white',
@@ -311,7 +311,7 @@ describe(applyResolveRetreatEvent, () => {
 
   describe('front engagement retreat apply', () => {
     it('moves the defender and completes the engagement', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const unit = createTestUnit('white', { attack: 2 });
       const placement: UnitWithPlacement = {
         placement: { coordinate: 'E-5', facing: 'north' },

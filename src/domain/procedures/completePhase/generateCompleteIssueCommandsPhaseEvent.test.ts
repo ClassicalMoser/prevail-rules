@@ -1,15 +1,12 @@
 import type { GameState, IssueCommandsPhaseState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
-import {
-  createEmptyGameState,
-  createGameStateWithEngagedUnits,
-  createTestUnit,
-} from '@testing';
+import { createGameStateWithEngagedUnits, createTestUnit } from '@testing';
 
 import { generateCompleteIssueCommandsPhaseEvent } from './generateCompleteIssueCommandsPhaseEvent';
 import { updatePhaseState } from '@transforms';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Issue-commands phase is done: emit `completeIssueCommandsPhase` with `remainingEngagements`
  * — a set of board coordinates that still hold engaged units (from live board scan).
@@ -17,7 +14,7 @@ import { updatePhaseState } from '@transforms';
 describe(generateCompleteIssueCommandsPhaseEvent, () => {
   /** Puts `state` in ISSUE_COMMANDS_PHASE step `complete` with empty command queues. */
   function stateInIssueCommandsComplete(
-    state = createEmptyGameState(),
+    state = createEmptyGameState('standard'),
   ): GameState {
     const initialPhaseState: IssueCommandsPhaseState = {
       currentCommandResolutionState: 'pending',

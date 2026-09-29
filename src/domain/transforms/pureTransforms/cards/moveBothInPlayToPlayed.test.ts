@@ -1,14 +1,14 @@
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { moveBothInPlayToPlayed } from './moveBothInPlayToPlayed';
 
+import { createEmptyGameState } from '@factories';
 /**
  * MoveBothInPlayToPlayed: visibility-preserving move of both inPlay cards to played.
  */
 describe(moveBothInPlayToPlayed, () => {
   it('given authoritative, moves both inPlay to played', () => {
-    const { cardState } = createEmptyGameState();
+    const { cardState } = createEmptyGameState('standard');
     const authoritative = {
       visibility: 'authoritative' as const,
       black: {
@@ -33,7 +33,7 @@ describe(moveBothInPlayToPlayed, () => {
   });
 
   it('given whiteSeen, moves owned and hidden inPlay to played', () => {
-    const { cardState } = createEmptyGameState();
+    const { cardState } = createEmptyGameState('standard');
     const whiteSeen = {
       visibility: 'whiteSeen' as const,
       white: {

@@ -1,7 +1,6 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   updateCardState,
@@ -10,6 +9,7 @@ import { updatePhaseState } from '@transforms';
 
 import { getLegalCommitToRangedAttackEvents } from './getLegalCommitToRangedAttackEvents';
 
+import { createEmptyGameState } from '@factories';
 /** Strike: modifiers ['attack'] — eligible for commitToRangedAttack. */
 const strikeCard = tempCommandCards[0];
 /** Move: modifiers ['speed'] — not eligible for commitToRangedAttack. */
@@ -24,7 +24,7 @@ const rangeCard = tempCommandCards[15];
  */
 describe(getLegalCommitToRangedAttackEvents, () => {
   function statePendingAttackerCommit(hand = [strikeCard]) {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
       black: {
@@ -46,7 +46,7 @@ describe(getLegalCommitToRangedAttackEvents, () => {
   }
 
   function statePendingDefenderCommit(hand = [strikeCard]) {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
       white: {
@@ -134,7 +134,7 @@ describe(getLegalCommitToRangedAttackEvents, () => {
   });
 
   it('returns empty when not in issueCommands ranged commitment', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

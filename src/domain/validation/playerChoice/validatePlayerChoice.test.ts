@@ -2,16 +2,17 @@ import type { ChooseCardEvent, PlayerChoiceEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms';
 import { validatePlayerChoice } from './validatePlayerChoice';
 
+import { createEmptyGameState } from '@factories';
 /**
  * ValidatePlayerChoice: Validates a player choice against the current game state.
  */
 describe(validatePlayerChoice, () => {
   function stateInPlayCardsChooseCards(): GameState {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withPhase = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
@@ -36,7 +37,7 @@ describe(validatePlayerChoice, () => {
   });
 
   it('fails when a game effect is expected instead of player input', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
     });
@@ -62,7 +63,7 @@ describe(validatePlayerChoice, () => {
   });
 
   it('fails when the wrong player acts for the expected source', () => {
-    const withPhase = updatePhaseState(createEmptyGameState(), {
+    const withPhase = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

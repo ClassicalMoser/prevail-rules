@@ -2,17 +2,18 @@ import type { Coordinate } from '@entities';
 import type { ChooseMeleeResolutionEvent } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
-import { createEmptyGameState, createResolveMeleePhaseState } from '@testing';
+import { createResolveMeleePhaseState } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { isValidChooseMeleeResolutionEvent } from './isValidMeleeResolutionEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseMeleeResolutionEvent: membership against getLegalChooseMeleeResolutionEvents.
  */
 describe(isValidChooseMeleeResolutionEvent, () => {
   function stateWithRemaining(remaining: readonly Coordinate[]) {
-    const base = createEmptyGameState({ currentInitiative: 'black' });
+    const base = createEmptyGameState('standard');
     const phase = createResolveMeleePhaseState(base, {
       currentMeleeResolutionState: 'pending',
       remainingEngagements: [...remaining],
@@ -54,7 +55,7 @@ describe(isValidChooseMeleeResolutionEvent, () => {
   });
 
   it('rejects when not in resolveMelee', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

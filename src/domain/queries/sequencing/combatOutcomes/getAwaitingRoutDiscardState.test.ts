@@ -1,5 +1,4 @@
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createRearEngagementState,
@@ -16,13 +15,14 @@ import {
 
 import { getAwaitingRoutDiscardState } from './getAwaitingRoutDiscardState';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetAwaitingRoutDiscardState: finds rout slices that need chooseRoutDiscard.
  */
 describe(getAwaitingRoutDiscardState, () => {
   it('returns rear-engagement rout when penalty is set and cards not chosen', () => {
     const defender = createTestUnit('white', { attack: 2 });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     state = updateBoardState(
       state,
@@ -54,7 +54,7 @@ describe(getAwaitingRoutDiscardState, () => {
 
   it('returns null when rear rout penalty is still pending', () => {
     const defender = createTestUnit('white', { attack: 2 });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const routState = createRoutState('white', defender, {
       numberToDiscard: 'pending',

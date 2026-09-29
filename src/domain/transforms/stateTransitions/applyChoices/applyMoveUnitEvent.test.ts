@@ -3,9 +3,10 @@ import { getLegalMoveUnits } from '@legality';
 import { generateStartEngagementEvent } from '@procedures';
 import { getIssueCommandsPhaseState } from '@queries';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
+  createTestCard,
   createUnitWithPlacement,
+  updateCardState,
 } from '@testing';
 import {
   addUnitToBoard,
@@ -16,6 +17,7 @@ import { applyCompleteUnitMovementEvent } from '../applyEffects/movement/applyCo
 
 import { applyMoveUnitEvent } from './applyMoveUnitEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * During command resolution, a commanded unit’s `moveUnit` choice rewrites board
  * presence and opens a movement CRS (mover commitment declined) while removing
@@ -28,7 +30,7 @@ describe(applyMoveUnitEvent, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateBoardState(
       state,
       addUnitToBoard(state.boardState, unitWithPlacement),
@@ -94,7 +96,7 @@ describe(applyMoveUnitEvent, () => {
       facing: 'south',
       playerSide: 'white',
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateBoardState(
       state,
       addUnitToBoard(addUnitToBoard(state.boardState, engager), defender),
@@ -148,7 +150,14 @@ describe(applyMoveUnitEvent, () => {
       playerSide: 'black',
       unitOptions: { instanceNumber: 2, speed: 2 },
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
+    state = updateCardState(state, {
+      ...state.cardState,
+      black: {
+        ...state.cardState.black,
+        inPlay: createTestCard({ id: 'movement' }),
+      },
+    });
     state = updateBoardState(
       state,
       addUnitToBoard(

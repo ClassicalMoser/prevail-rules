@@ -2,7 +2,6 @@ import type { MoveUnitEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createUnitWithPlacement,
   updateCardState,
@@ -16,6 +15,7 @@ import {
 
 import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidMoveUnitEvent: unit atom + destination + moveCommander integrity.
  */
@@ -27,7 +27,7 @@ describe(isValidMoveUnitEvent, () => {
       playerSide: 'black',
       unitOptions: { speed: 2 },
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateCardState(state, {
       ...state.cardState,
       black: {
@@ -119,7 +119,7 @@ describe(isValidMoveUnitEvent, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });

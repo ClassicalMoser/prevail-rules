@@ -1,6 +1,5 @@
 import type { GameState, ResolveMeleePhaseStep } from '@game';
 import {
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestCard,
@@ -9,6 +8,7 @@ import {
 import { getExpectedResolveMeleePhaseEvent } from './getExpectedResolveMeleePhaseEvent';
 import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedResolveMeleePhaseEvent: next event during resolve-melee phase.
  */
@@ -19,7 +19,7 @@ describe(getExpectedResolveMeleePhaseEvent, () => {
       state: GameState,
     ) => Parameters<typeof createResolveMeleePhaseState>[1],
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     state.cardState.white.inPlay = createTestCard();
     const overrides = buildOverrides?.(state);

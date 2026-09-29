@@ -1,11 +1,11 @@
 import type { Event } from '@events';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { applyEvent } from './applyEvent';
 import { applyGameEffectEvent } from './applyGameEffectEvent';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
+import { createEmptyGameState } from '@factories';
 vi.mock(import('./applyPlayerChoiceEvent'));
 vi.mock(import('./applyGameEffectEvent'));
 
@@ -20,7 +20,7 @@ describe(applyEvent, () => {
   });
 
   it('given playerChoice chooseCard event, delegates to applyPlayerChoiceEvent and appends event', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const event: Event = {
       card: tempCommandCards[0],
       choiceType: 'chooseCard',
@@ -43,7 +43,7 @@ describe(applyEvent, () => {
   });
 
   it('given gameEffect revealCards event, delegates to applyGameEffectEvent and appends event', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const event: Event = {
       black: tempCommandCards[0],
       effectType: 'revealCards' as const,
@@ -66,7 +66,7 @@ describe(applyEvent, () => {
   });
 
   it('accumulates events across multiple applyEvent calls', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const event1: Event = {
       card: tempCommandCards[0],
       choiceType: 'chooseCard',
@@ -92,7 +92,7 @@ describe(applyEvent, () => {
   });
 
   it('given event with unknown eventType cast, throws and does not call choice or effect applier', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     // Use bad cast to trigger type error
     const event = { eventType: 'unknown' } as unknown as Event;
 

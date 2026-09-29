@@ -3,12 +3,13 @@ import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 
 import { applyChooseCardEvent } from './applyChooseCardEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Play-cards `chooseCards`: the chosen command card leaves `inHand` and sits in `awaitingPlay`
  * until both sides pick; then the round step advances to `revealCards`.
@@ -19,7 +20,7 @@ describe(applyChooseCardEvent, () => {
     blackHand: typeof tempCommandCards,
     whiteHand: typeof tempCommandCards,
   ): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     // Set up card state with hands and no awaiting cards
     const stateWithCards = updateCardState(state, {

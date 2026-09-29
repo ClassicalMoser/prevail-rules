@@ -1,7 +1,6 @@
 import type { StatModifier, UnitWithPlacement } from '@entities';
 import type { Commitment, GameState } from '@game';
 import {
-  createEmptyGameState,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -12,6 +11,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Minimal front-engagement stack: defender on `createFrontEngagementState` default cell (E-5),
  * engager speeds swapped via createUnitByStat; black.inPlay feeds the mover's commitment factory.
@@ -22,7 +22,7 @@ function buildStateWithFrontEngagement(options: {
   engagingCardModifiers?: StatModifier[];
   defensiveCommitment?: Commitment;
 }): GameState {
-  const state = createEmptyGameState();
+  const state = createEmptyGameState('standard');
   state.cardState.black.inPlay = createTestCard({
     modifiers: options.engagingCardModifiers ?? [],
   });

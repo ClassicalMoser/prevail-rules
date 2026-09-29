@@ -1,7 +1,6 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createUnitWithPlacement,
   updateCardState,
@@ -14,6 +13,7 @@ import {
 
 import { getLegalMoveUnits } from './getLegalMoveUnits';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetLegalMoveUnits: atomic remaining units (with placements) when awaiting
  * moveUnit to start a movement command resolution.
@@ -26,7 +26,7 @@ describe(getLegalMoveUnits, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     // Ensure movement command in play (factory default is movement, but be explicit).
     state = updateCardState(state, {
       ...state.cardState,
@@ -62,7 +62,7 @@ describe(getLegalMoveUnits, () => {
   });
 
   it('returns null when not awaiting moveUnit', () => {
-    const state = updatePhaseState(createEmptyGameState(), {
+    const state = updatePhaseState(createEmptyGameState('standard'), {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
@@ -80,7 +80,7 @@ describe(getLegalMoveUnits, () => {
       facing: 'north',
       playerSide: 'black',
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateCardState(state, {
       ...state.cardState,
       black: {

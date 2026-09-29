@@ -1,10 +1,10 @@
 import type { Army } from '@entities';
 import type { GameForVisibility } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { projectGameForVisibility } from './projectGameForVisibility';
 
+import { createEmptyGameState } from '@factories';
 const placeholderArmy: Army = {
   commandCards: [],
   id: '00000000-0000-0000-0000-000000000000',
@@ -12,7 +12,7 @@ const placeholderArmy: Army = {
 };
 
 function authoritativeGame(): GameForVisibility<'authoritative'> {
-  const gameState = createEmptyGameState();
+  const gameState = createEmptyGameState('standard');
   return {
     blackArmy: placeholderArmy,
     blackPlayer: 'black-user',

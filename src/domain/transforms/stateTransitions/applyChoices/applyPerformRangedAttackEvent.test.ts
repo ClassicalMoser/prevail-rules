@@ -7,7 +7,6 @@ import {
   getRangedAttackResolutionState,
 } from '@queries';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createUnitWithPlacement,
 } from '@testing';
@@ -15,6 +14,8 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyPerformRangedAttackEvent } from './applyPerformRangedAttackEvent';
 
+import { createEmptyGameState } from '@factories';
+import { updateCurrentInitiative } from '@transforms/pureTransforms/state/updateCurrentInitiative';
 /**
  * Starting a ranged resolution: CRS becomes rangedAttack with attacker/defender units, both
  * commitments pending, supporting units recorded, and every participating unit stripped from
@@ -28,7 +29,10 @@ describe(applyPerformRangedAttackEvent, () => {
     remainingUnitsSecondPlayer: UnitInstance[],
     currentInitiative: 'black' | 'white' = 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative });
+    const state = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      currentInitiative,
+    );
     return updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {

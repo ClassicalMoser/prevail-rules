@@ -1,7 +1,6 @@
 import type { UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
-  createEmptyGameState,
   createFlankEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -12,6 +11,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateResolveFlankEngagementEvent } from './generateResolveFlankEngagementEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * When a unit moves into a single enemy's space, it must engage.
  * From the flank, the defender is rotated to face the engager — in state that means
@@ -22,7 +22,7 @@ import { generateResolveFlankEngagementEvent } from './generateResolveFlankEngag
 describe(generateResolveFlankEngagementEvent, () => {
   it('snapshots the defender and sets newFacing opposite the engager on a flank engagement', () => {
     // Baseline game state (testing helper supplies placeholder cards on inPlay).
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     // CreateMovementResolutionState reads black.inPlay for commitment.card — required factory input, not part of this procedure's contract.
     state.cardState.black.inPlay = createTestCard();
 

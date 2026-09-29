@@ -3,7 +3,6 @@ import type { GameState } from '@game';
 import {
   createAttackApplyState,
   createCleanupPhaseState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
@@ -14,6 +13,7 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateCompleteAttackApplyEvent } from './generateCompleteAttackApplyEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * `completeAttackApply` is the bookkeeping tick after both sides have committed in ranged
  * or after each melee defender finishes their apply substep. Payload names attack type and
@@ -22,7 +22,7 @@ import { generateCompleteAttackApplyEvent } from './generateCompleteAttackApplyE
 describe(generateCompleteAttackApplyEvent, () => {
   /** IssueCommands + ranged CRS + default incomplete attack apply for one white defender on E-5. */
   function createStateWithRangedAttackApply(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -52,7 +52,7 @@ describe(generateCompleteAttackApplyEvent, () => {
   function createStateWithMeleeApply(
     incompletePlayer?: 'white' | 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
 
@@ -146,7 +146,7 @@ describe(generateCompleteAttackApplyEvent, () => {
   });
 
   it('given bare empty state without phase, throws no current phase state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     expect(() => generateCompleteAttackApplyEvent(state, 0)).toThrow(
       'No current phase state found',
@@ -154,7 +154,7 @@ describe(generateCompleteAttackApplyEvent, () => {
   });
 
   it('given cleanup phase, throws completeAttackApply phase guard', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const full = updatePhaseState(base, createCleanupPhaseState());
     expect(() => generateCompleteAttackApplyEvent(full, 0)).toThrow(
       'completeAttackApply not expected in phase: cleanup',

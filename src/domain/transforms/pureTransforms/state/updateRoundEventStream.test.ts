@@ -1,12 +1,12 @@
 import type { Event } from '@events';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState } from '@testing';
 
 import { updateRoundEventStream } from './updateRoundEventStream';
 
+import { createEmptyGameState } from '@factories';
 describe(updateRoundEventStream, () => {
   it('sets currentRoundState.events to the given stream', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const events: readonly Event[] = [
       {
         black: tempCommandCards[0],
@@ -24,7 +24,7 @@ describe(updateRoundEventStream, () => {
   });
 
   it('does not mutate the original state', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     updateRoundEventStream(state, []);
 
     expect(state.currentRoundState.events).toStrictEqual([]);

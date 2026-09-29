@@ -2,7 +2,6 @@ import type { CompleteRangedAttackCommandEvent } from '@events';
 import type { GameState } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestCard,
@@ -17,6 +16,7 @@ import {
 
 import { applyCompleteRangedAttackCommandEvent } from './applyCompleteRangedAttackCommandEvent';
 
+import { createEmptyGameState } from '@factories';
 const event = {
   effectType: 'completeRangedAttackCommand' as const,
   eventNumber: 0,
@@ -33,7 +33,7 @@ const rangedCard =
  */
 describe(applyCompleteRangedAttackCommandEvent, () => {
   it('given issueCommands holding ranged CRS, after effect currentCommandResolutionState is pending', () => {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inPlay: createTestCard() },
@@ -62,7 +62,7 @@ describe(applyCompleteRangedAttackCommandEvent, () => {
       playerSide: 'black',
       unitOptions: { range: 2 },
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: rangedCard },
@@ -100,7 +100,7 @@ describe(applyCompleteRangedAttackCommandEvent, () => {
       facing: 'south',
       playerSide: 'white',
     });
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: rangedCard },

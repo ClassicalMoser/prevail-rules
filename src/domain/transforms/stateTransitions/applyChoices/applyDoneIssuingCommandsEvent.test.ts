@@ -1,10 +1,6 @@
 import type { DoneIssuingCommandsEvent } from '@events';
 import { tempCommandCards } from '@sampleValues';
-import {
-  createEmptyGameState,
-  createIssueCommandsPhaseState,
-  createTestUnit,
-} from '@testing';
+import { createIssueCommandsPhaseState, createTestUnit } from '@testing';
 import { getIssueCommandsPhaseState } from '@queries';
 import {
   addUnitsToCommandedUnits,
@@ -13,12 +9,13 @@ import {
 
 import { applyDoneIssuingCommandsEvent } from './applyDoneIssuingCommandsEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * ApplyDoneIssuingCommandsEvent: forfeit leftover slots and open resolve.
  */
 describe(applyDoneIssuingCommandsEvent, () => {
   function createFirstPlayerIssueState() {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     return updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {

@@ -1,4 +1,4 @@
-import type { CommitToMeleeEvent, ProjectedCommitToMeleeEvent } from '@events';
+import type { CommitToMeleeEvent } from '@events';
 import type { GameState } from '@game';
 import { getMeleeResolutionState } from '@queries';
 import { updateMeleeResolutionState } from '@transforms/pureTransforms';
@@ -8,19 +8,15 @@ import {
   commitmentFromCommittedCard,
 } from './commitApplyHelpers';
 
-type CommitToMeleeApplyEvent = CommitToMeleeEvent | ProjectedCommitToMeleeEvent;
-
 /**
  * Applies a CommitToMeleeEvent to the game state.
  * Completes or declines the player's pending melee commitment.
  * When `committedCard` is non-null, discards that card from hand.
  * Event is assumed pre-validated (resolveMelee phase, player's commitment pending).
- *
- * Owned seats use full card identity. Unowned seats on seen views apply a
- * projected event (`committedCard: 'hidden'`).
+ * The committed card is the real card.
  */
 export function applyCommitToMeleeEvent<S extends GameState>(
-  event: CommitToMeleeApplyEvent,
+  event: CommitToMeleeEvent,
   state: S,
 ): S {
   const meleeState = getMeleeResolutionState(state);

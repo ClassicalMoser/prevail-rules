@@ -2,12 +2,13 @@ import type { GameStateForVisibility } from '@game';
 
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { createEmptyGameState, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { getExpectedPlayCardsPhaseEvent } from './getExpectedPlayCardsPhaseEvent';
 import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
 
+import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedPlayCardsPhaseEvent: next event during play-cards phase from phase state.
  */
@@ -18,7 +19,7 @@ describe(getExpectedPlayCardsPhaseEvent, () => {
   function createGameStateInPlayCardsStep(
     step: 'chooseCards' | 'revealCards' | 'assignInitiative' | 'complete',
   ): GameStateForVisibility {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
 
     const stateWithPhase = updatePhaseState(state, {
       phase: PLAY_CARDS_PHASE,
@@ -135,7 +136,7 @@ describe(getExpectedPlayCardsPhaseEvent, () => {
 
   describe('error cases', () => {
     it('given if not in playCards phase, throws', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       // State has no phase state
 
       expect(() => getExpectedPlayCardsPhaseEvent(state)).toThrow(
@@ -144,7 +145,7 @@ describe(getExpectedPlayCardsPhaseEvent, () => {
     });
 
     it('given if in wrong phase, throws', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const stateWithWrongPhase = updatePhaseState(state, {
         phase: MOVE_COMMANDERS_PHASE,
         step: 'moveFirstCommander',

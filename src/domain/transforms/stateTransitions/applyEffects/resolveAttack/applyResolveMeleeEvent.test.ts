@@ -3,7 +3,6 @@ import type { ResolveMeleeEvent } from '@events';
 import type { GameState } from '@game';
 import { getMeleeResolutionState } from '@queries';
 import {
-  createEmptyGameState,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestCard,
@@ -15,6 +14,7 @@ import { throwIfPending } from '@utils';
 
 import { applyResolveMeleeEvent } from './applyResolveMeleeEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Materializes procedure `resolveMelee` into per-side `attackApplyState` substeps (rout,
  * retreat with optional auto final hex, reverse) or clears applies when nothing branches.
@@ -22,7 +22,7 @@ import { applyResolveMeleeEvent } from './applyResolveMeleeEvent';
 describe(applyResolveMeleeEvent, () => {
   /** ResolveMelee phase with default melee CRS and both inPlay command cards set. */
   function baseMeleeGameState(): GameState {
-    const base = createEmptyGameState();
+    const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inPlay: createTestCard() },

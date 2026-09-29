@@ -76,13 +76,9 @@ export { playerChoiceEventSchema } from './playerChoice';
 export type { PlayerChoiceType } from './playerChoiceTypes';
 export { playerChoices, playerChoiceTypeSchema } from './playerChoiceTypes';
 
-// Hidden-card projections of choices the opponent must not read in full.
+// Projected choose-card, where the opponent's card is hidden. Commits stay public.
 export type {
   ProjectedChooseCardEvent,
-  ProjectedCommitEvent,
-  ProjectedCommitToMeleeEvent,
-  ProjectedCommitToMovementEvent,
-  ProjectedCommitToRangedAttackEvent,
   ProjectedPlayerChoiceEvent,
 } from './projectedPlayerChoice';
 export {

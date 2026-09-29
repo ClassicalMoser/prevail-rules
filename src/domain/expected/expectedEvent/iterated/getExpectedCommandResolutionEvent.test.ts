@@ -1,11 +1,11 @@
 import {
-  createEmptyGameState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
 } from '@testing';
 
 import { getExpectedCommandResolutionEvent } from './getExpectedCommandResolutionEvent';
 
+import { createEmptyGameState } from '@factories';
 const {
   getExpectedMovementResolutionEventMock,
   getExpectedRangedAttackResolutionEventMock,
@@ -31,7 +31,7 @@ describe(getExpectedCommandResolutionEvent, () => {
   });
 
   it('given delegate movement command resolution to the movement resolver', () => {
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
     const resolutionState = createMovementResolutionState(gameState);
     const expectedEvent = {
       actionType: 'gameEffect',
@@ -50,7 +50,7 @@ describe(getExpectedCommandResolutionEvent, () => {
   });
 
   it('given delegate ranged attack command resolution to the ranged attack resolver', () => {
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
     const resolutionState = createRangedAttackResolutionState(gameState);
     const expectedEvent = {
       actionType: 'gameEffect',
@@ -69,7 +69,7 @@ describe(getExpectedCommandResolutionEvent, () => {
   });
 
   it('given when no command resolution state exists, throws', () => {
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
 
     expect(() =>
       getExpectedCommandResolutionEvent(gameState, 'pending', 'black'),
@@ -77,7 +77,7 @@ describe(getExpectedCommandResolutionEvent, () => {
   });
 
   it('given for an invalid command resolution type, throws', () => {
-    const gameState = createEmptyGameState();
+    const gameState = createEmptyGameState('standard');
     const resolutionState = {
       ...createMovementResolutionState(gameState),
       commandResolutionType: 'invalid',

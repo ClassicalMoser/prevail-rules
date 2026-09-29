@@ -1,13 +1,14 @@
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
-import { createEmptyGameState } from '@testing';
+
 import { addCompletedPhase } from '../';
 
+import { createEmptyGameState } from '@factories';
 /**
  * AddCompletedPhase: Adds a completed phase to the completed phases set.
  */
 describe(addCompletedPhase, () => {
   it('adds the phase to completedPhases without mutating the input', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const phaseState = {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
@@ -20,7 +21,7 @@ describe(addCompletedPhase, () => {
   });
 
   it('leaves the original completedPhases reference unchanged', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const originalCompletedPhases = state.currentRoundState.completedPhases;
     const phaseState = {
       phase: MOVE_COMMANDERS_PHASE,
@@ -35,7 +36,7 @@ describe(addCompletedPhase, () => {
   });
 
   it('keeps existing completed phases when adding another', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const firstPhase = {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',

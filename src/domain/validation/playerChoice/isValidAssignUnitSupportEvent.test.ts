@@ -1,17 +1,22 @@
 import type { AssignUnitSupportEvent } from '@events';
 import { CLEANUP_PHASE } from '@game';
 import { alaeSocii, manipularLegion } from '@sampleValues';
-import { createEmptyGameState, createTestCard, createTestUnit } from '@testing';
+import { createTestCard, createTestUnit } from '@testing';
 import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
+  updateCurrentInitiative,
 } from '@transforms';
 
 import { isValidAssignUnitSupportEvent } from './isValidAssignUnitSupportEvent';
 
+import { createEmptyGameState } from '@factories';
 function awaitingSupportState() {
-  const base = createEmptyGameState({ currentInitiative: 'white' });
+  const base = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'white',
+  );
   const unit = createTestUnit('white', { attack: 3 });
   const other = createTestUnit('white', { attack: 2, instanceNumber: 1 });
   const card = createTestCard({
@@ -86,7 +91,10 @@ describe(isValidAssignUnitSupportEvent, () => {
   });
 
   it('given empty assignments when no pools can cover anyone, is valid (all rout)', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const unit = createTestUnit('white', { attack: 3 });
     base.cardState.white.inHand = [
       createTestCard({ unitSupport: { count: 0, supportType: 'generic' } }),
@@ -121,7 +129,10 @@ describe(isValidAssignUnitSupportEvent, () => {
   });
 
   it('given generic slot left unused while a unit is uncovered, is invalid', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const unit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     const other = createTestUnit('white', { attack: 2, instanceNumber: 1 });
     const card = createTestCard({
@@ -165,7 +176,10 @@ describe(isValidAssignUnitSupportEvent, () => {
   });
 
   it('given one generic slot covering one of two units, is valid (excess must rout)', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const unit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     const other = createTestUnit('white', { attack: 2, instanceNumber: 1 });
     const card = createTestCard({
@@ -214,7 +228,10 @@ describe(isValidAssignUnitSupportEvent, () => {
   });
 
   it('given exceeding support count, is invalid', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const unit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     const other = createTestUnit('white', { attack: 2, instanceNumber: 1 });
     const card = createTestCard({
@@ -304,7 +321,10 @@ describe(isValidAssignUnitSupportEvent, () => {
   });
 
   it('given suboptimal trait-on-type while type slot idles and another unit dies, is valid', () => {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const typed = createTestUnit('white', {
       instanceNumber: 1,
       unitType: manipularLegion,
@@ -391,7 +411,8 @@ describe(isValidAssignUnitSupportEvent, () => {
       player: 'white',
     };
     expect(
-      isValidAssignUnitSupportEvent(event, createEmptyGameState()).result,
+      isValidAssignUnitSupportEvent(event, createEmptyGameState('standard'))
+        .result,
     ).toBe(false);
   });
 });

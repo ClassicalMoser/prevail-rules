@@ -1,23 +1,26 @@
 import { tempCommandCards } from '@sampleValues';
 import {
   createCleanupPhaseState,
-  createEmptyGameState,
   createRallyResolutionState,
   createRoutState,
   createTestUnit,
   updateCardState,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getWinnerFromUnpayableRoutDiscard } from './getWinnerFromUnpayableRoutDiscard';
 
+import { createEmptyGameState } from '@factories';
 describe(getWinnerFromUnpayableRoutDiscard, () => {
   function stateAwaitingDiscard(options: {
     player: 'white' | 'black';
     numberToDiscard: number;
     handCardIndexes: readonly number[];
   }) {
-    const base = createEmptyGameState({ currentInitiative: 'white' });
+    const base = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const hand = options.handCardIndexes.map((i) => tempCommandCards[i]);
     const withCards = updateCardState(base, {
       ...base.cardState,
@@ -86,7 +89,7 @@ describe(getWinnerFromUnpayableRoutDiscard, () => {
 
   it('returns undefined when no rout discard is awaiting', () => {
     expect(
-      getWinnerFromUnpayableRoutDiscard(createEmptyGameState()),
+      getWinnerFromUnpayableRoutDiscard(createEmptyGameState('standard')),
     ).toBeUndefined();
   });
 });

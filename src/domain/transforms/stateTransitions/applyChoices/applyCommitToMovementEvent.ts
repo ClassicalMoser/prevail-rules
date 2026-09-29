@@ -1,7 +1,4 @@
-import type {
-  CommitToMovementEvent,
-  ProjectedCommitToMovementEvent,
-} from '@events';
+import type { CommitToMovementEvent } from '@events';
 import type { GameState, MovementResolutionState } from '@game';
 import {
   getFrontEngagementStateFromMovement,
@@ -17,10 +14,6 @@ import {
   commitmentFromCommittedCard,
 } from './commitApplyHelpers';
 
-type CommitToMovementApplyEvent =
-  | CommitToMovementEvent
-  | ProjectedCommitToMovementEvent;
-
 /**
  * Applies a CommitToMovementEvent to the game state.
  * Completes or declines either:
@@ -29,12 +22,10 @@ type CommitToMovementApplyEvent =
  *
  * When `committedCard` is non-null, discards that card from hand.
  * Event is assumed pre-validated (issueCommands phase, movement resolution).
- *
- * Owned seats use full card identity. Unowned seats on seen views apply a
- * projected event (`committedCard: 'hidden'`).
+ * The committed card is the real card.
  */
 export function applyCommitToMovementEvent<S extends GameState>(
-  event: CommitToMovementApplyEvent,
+  event: CommitToMovementEvent,
   state: S,
 ): S {
   const movementState = getMovementResolutionState(state);

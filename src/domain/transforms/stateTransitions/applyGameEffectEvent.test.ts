@@ -1,10 +1,10 @@
 import type { GameEffectEvent } from '@events';
-import { createEmptyGameState } from '@testing';
 
 import { applyDiscardPlayedCardsEvent } from './applyEffects';
 import { applyGameEffectEvent } from './applyGameEffectEvent';
 import type { PlayerSide } from '@entities';
 
+import { createEmptyGameState } from '@factories';
 vi.mock(import('./applyEffects'), () => ({
   applyCompleteAttackApplyEvent: vi.fn(),
   applyCompleteCleanupPhaseEvent: vi.fn(),
@@ -40,7 +40,7 @@ describe(applyGameEffectEvent, () => {
   });
 
   it('delegates to the handler for the matching effectType and returns its result', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const event = {
       effectType: 'discardPlayedCards' as const,
       eventNumber: 0,
@@ -56,7 +56,7 @@ describe(applyGameEffectEvent, () => {
   });
 
   it('throws when effectType is not handled by the switch', () => {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const event = {
       effectType: 'unknown',
       eventNumber: 0,

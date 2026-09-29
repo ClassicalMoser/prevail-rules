@@ -11,7 +11,6 @@ import {
   createAttackApplyState,
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMovementResolutionState,
@@ -26,6 +25,7 @@ import { throwIfNone, throwIfPending } from '@utils';
 
 import { applyResolveRoutEvent } from './applyResolveRoutEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * Writes `numberToDiscard` (and related rout bookkeeping) onto the active rout substep for
  * the matching source: ranged/melee apply, cleanup rally, or rear engagement under movement.
@@ -33,7 +33,7 @@ import { applyResolveRoutEvent } from './applyResolveRoutEvent';
 describe(applyResolveRoutEvent, () => {
   /** IssueCommands + ranged apply with rout substep on white at E-5. */
   function createStateWithRangedAttackRout(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const routedUnit = createTestUnit('white', { attack: 2 });
     const unitWithPlacement: UnitWithPlacement = {
       placement: {
@@ -63,7 +63,7 @@ describe(applyResolveRoutEvent, () => {
   function createStateWithMeleeRout(
     routingPlayer: 'white' | 'black',
   ): GameState {
-    const state = createEmptyGameState({ currentInitiative: 'black' });
+    const state = createEmptyGameState('standard');
     const routedUnit = createTestUnit(routingPlayer, { attack: 2 });
     const otherUnit = createTestUnit(
       routingPlayer === 'white' ? 'black' : 'white',
@@ -112,7 +112,7 @@ describe(applyResolveRoutEvent, () => {
   }
 
   function createStateWithRearEngagementRoutAwaitingPenalty(): GameState {
-    const state = createEmptyGameState();
+    const state = createEmptyGameState('standard');
     const defender = createTestUnit('white', { attack: 2 });
     const attacker = createTestUnit('black', { attack: 2 });
     const movement = createMovementResolutionState(state, {
@@ -267,7 +267,7 @@ describe(applyResolveRoutEvent, () => {
 
   describe('cleanup rally rout', () => {
     it('given firstPlayerResolveRally with routState, event penalty 2 lands on rally rout', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const routedUnit = createTestUnit('white', { attack: 2 });
       const routState = createRoutState('white', routedUnit);
 
@@ -415,7 +415,7 @@ describe(applyResolveRoutEvent, () => {
     });
 
     it('given ranged apply without rout substep, throws no rout state in attack apply', () => {
-      const state = createEmptyGameState();
+      const state = createEmptyGameState('standard');
       const unit = createTestUnit('white', { attack: 2 });
       const attackApplyState = createAttackApplyState(unit, {
         routState: 'pending',

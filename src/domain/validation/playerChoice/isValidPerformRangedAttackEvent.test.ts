@@ -1,7 +1,6 @@
 import type { PerformRangedAttackEvent } from '@events';
 import { tempCommandCards } from '@sampleValues';
 import {
-  createEmptyGameState,
   createIssueCommandsPhaseState,
   createUnitWithPlacement,
   updateCardState,
@@ -14,6 +13,7 @@ import {
 
 import { isValidPerformRangedAttackEvent } from './isValidPerformRangedAttackEvent';
 
+import { createEmptyGameState } from '@factories';
 /**
  * IsValidPerformRangedAttackEvent: one attacker, one defender, supporters
  * that independently can hit that defender.
@@ -25,7 +25,7 @@ describe(isValidPerformRangedAttackEvent, () => {
     remaining: ReturnType<typeof createUnitWithPlacement>[],
     board: ReturnType<typeof createUnitWithPlacement>[],
   ) {
-    let state = createEmptyGameState({ currentInitiative: 'black' });
+    let state = createEmptyGameState('standard');
     state = updateCardState(state, {
       ...state.cardState,
       black: { ...state.cardState.black, inPlay: rangedCard },
