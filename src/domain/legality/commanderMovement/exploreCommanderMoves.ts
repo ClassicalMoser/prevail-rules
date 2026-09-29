@@ -55,12 +55,10 @@ export function exploreCommanderMoves(
       // If the facing is diagonal,
       // We need to check if we can even reach the target space
       const { result: isDiagonalFacingResult } = isDiagonalFacing(facing);
-      if (isDiagonalFacingResult) {
-        // Check if the enemy blocks the diagonal
-        if (!diagonalIsClear(playerSide, board, currentCoordinate, nextSpace)) {
+        // Check if the move is a diagonal and an the enemy blocks it
+        if (isDiagonalFacingResult && !diagonalIsClear(playerSide, board, currentCoordinate, nextSpace)) {
           // If we cannot reach the target space, we stop
           continue;
-        }
       }
       // Check if we can enter the space
       const { result: hasEnemyUnitResult } = hasEnemyUnit(

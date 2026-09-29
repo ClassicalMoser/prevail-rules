@@ -41,12 +41,8 @@ export function getCurrentUnitStat(
   /**
    * Helper function to find a matching modifier in an array of modifiers.
    */
-  const findMatchingModifier = (
-    modifiers: Modifier[],
-    stat: UnitStatName,
-    statIsDefense: boolean,
-  ) =>
-    modifiers.find(
+  const findMatchingModifier = (modifierList: Modifier[]) =>
+    modifierList.find(
       (modifier) =>
         modifier.type === stat ||
         (statIsDefense && modifier.type === 'defense'),
@@ -60,11 +56,7 @@ export function getCurrentUnitStat(
 
   // First check if there is a matching modifier in the round effect
   if (activeRoundEffect) {
-    const matchingModifier = findMatchingModifier(
-      activeRoundEffect.modifiers,
-      stat,
-      statIsDefense,
-    );
+    const matchingModifier = findMatchingModifier(activeRoundEffect.modifiers);
     // If there is a matching modifier, check if the unit satisfies the restrictions
     if (matchingModifier) {
       let satisfiesAllRestrictions = true;
@@ -124,11 +116,7 @@ export function getCurrentUnitStat(
 
   // If the unit was commanded, check if there is a matching modifier
   if (unitWasCommanded) {
-    const matchingModifier = findMatchingModifier(
-      activeCommandModifiers,
-      stat,
-      statIsDefense,
-    );
+    const matchingModifier = findMatchingModifier(activeCommandModifiers);
     // If there is, add the modifier to the total
     if (matchingModifier) {
       totalModifier += matchingModifier.value;
@@ -137,11 +125,7 @@ export function getCurrentUnitStat(
 
   // Step 4: Additional modifiers
   if (modifiers) {
-    const matchingModifier = findMatchingModifier(
-      modifiers,
-      stat,
-      statIsDefense,
-    );
+    const matchingModifier = findMatchingModifier(modifiers);
     if (matchingModifier) {
       totalModifier += matchingModifier.value;
     }
