@@ -1,12 +1,12 @@
 // Front, flank, or rear relative to the defender's facing.
-export { isEngagementFromFlank } from './isEngagementFromFlank';
 export { isEngagementFromFront } from './isEngagementFromFront';
+export { isEngagementFromFlank } from './isEngagementFromFlank';
 export { isEngagementFromRear } from './isEngagementFromRear';
 
-// Engagement slice nested under a movement resolution.
+// The engagement on the current movement, then front, flank, and rear.
 export {
   getEngagementStateFromMovement,
-  getFlankEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
+  getFlankEngagementStateFromMovement,
   getRearEngagementStateFromMovement,
 } from './engagement';

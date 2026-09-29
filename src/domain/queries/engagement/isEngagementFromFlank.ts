@@ -3,10 +3,8 @@ import type { ValidationResult } from '@utils';
 import { getOrthogonalFacings } from '@queries/facings';
 
 /**
- * Determines if an engagement is from the flank.
- * @param attackerFacing - The target facing of the attacking unit
- * @param defenderFacing - The current facing of the defending unit
- * @returns ValidationResult indicating if the engagement is from the flank
+ * Whether the attacker meets the defender from the flank.
+ * The attacker's facing must be one of the two facings perpendicular to the defender.
  */
 export function isEngagementFromFlank(
   attackerFacing: UnitFacing,
