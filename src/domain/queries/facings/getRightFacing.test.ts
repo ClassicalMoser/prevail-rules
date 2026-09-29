@@ -3,42 +3,42 @@ import type { UnitFacing } from '@entities';
 import { getRightFacing } from './getRightFacing';
 
 /**
- * GetRightFacing: maps a unit facing to the facing 45° clockwise (right relative to the unit's front arc).
+ * Right facing: 90 degrees clockwise.
  */
 describe(getRightFacing, () => {
-  it('given north, returns east', () => {
+  it('right of north is east', () => {
     expect(getRightFacing('north')).toBe('east');
   });
 
-  it('given northEast, returns southEast', () => {
+  it('right of northEast is southEast', () => {
     expect(getRightFacing('northEast')).toBe('southEast');
   });
 
-  it('given east, returns south', () => {
+  it('right of east is south', () => {
     expect(getRightFacing('east')).toBe('south');
   });
 
-  it('given southEast, returns southWest', () => {
+  it('right of southEast is southWest', () => {
     expect(getRightFacing('southEast')).toBe('southWest');
   });
 
-  it('given south, returns west', () => {
+  it('right of south is west', () => {
     expect(getRightFacing('south')).toBe('west');
   });
 
-  it('given southWest, returns northWest', () => {
+  it('right of southWest is northWest', () => {
     expect(getRightFacing('southWest')).toBe('northWest');
   });
 
-  it('given west, returns north', () => {
+  it('right of west is north', () => {
     expect(getRightFacing('west')).toBe('north');
   });
 
-  it('given northWest, returns northEast', () => {
+  it('right of northWest is northEast', () => {
     expect(getRightFacing('northWest')).toBe('northEast');
   });
 
-  it('given invalid facing, throws', () => {
+  it('an unknown facing is rejected', () => {
     expect(() => getRightFacing('invalid' as UnitFacing)).toThrow(
       'Invalid facing: invalid',
     );

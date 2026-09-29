@@ -1,38 +1,46 @@
+import type { UnitFacing } from '@entities';
+
 import { getOppositeFacing } from './getOppositeFacing';
 
 /**
- * GetOppositeFacing: maps a facing to the one 180° opposite on the eight-direction compass.
+ * Opposite facing: 180 degrees around the compass.
  */
 describe(getOppositeFacing, () => {
-  it('given north, returns south', () => {
+  it('the opposite of north is south', () => {
     expect(getOppositeFacing('north')).toBe('south');
   });
 
-  it('given northEast, returns southWest', () => {
+  it('the opposite of northEast is southWest', () => {
     expect(getOppositeFacing('northEast')).toBe('southWest');
   });
 
-  it('given east, returns west', () => {
+  it('the opposite of east is west', () => {
     expect(getOppositeFacing('east')).toBe('west');
   });
 
-  it('given southEast, returns northWest', () => {
+  it('the opposite of southEast is northWest', () => {
     expect(getOppositeFacing('southEast')).toBe('northWest');
   });
 
-  it('given south, returns north', () => {
+  it('the opposite of south is north', () => {
     expect(getOppositeFacing('south')).toBe('north');
   });
 
-  it('given southWest, returns northEast', () => {
+  it('the opposite of southWest is northEast', () => {
     expect(getOppositeFacing('southWest')).toBe('northEast');
   });
 
-  it('given west, returns east', () => {
+  it('the opposite of west is east', () => {
     expect(getOppositeFacing('west')).toBe('east');
   });
 
-  it('given northWest, returns southEast', () => {
+  it('the opposite of northWest is southEast', () => {
     expect(getOppositeFacing('northWest')).toBe('southEast');
+  });
+
+  it('an unknown facing is rejected', () => {
+    expect(() => getOppositeFacing('invalid' as UnitFacing)).toThrow(
+      'Invalid facing: invalid',
+    );
   });
 });

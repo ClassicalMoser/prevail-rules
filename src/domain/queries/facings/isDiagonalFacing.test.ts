@@ -3,21 +3,26 @@ import type { UnitFacing } from '@entities';
 import { isDiagonalFacing } from './isDiagonalFacing';
 
 /**
- * IsDiagonalFacing: Check if a facing is a diagonal facing.
+ * Diagonal facing: one of the four diagonals.
  */
 describe(isDiagonalFacing, () => {
-  it('given a diagonal facing, returns true', () => {
-    const { result } = isDiagonalFacing('northEast');
-    expect(result).toBe(true);
+  it('northEast is a diagonal facing', () => {
+    expect(isDiagonalFacing('northEast')).toStrictEqual({
+      result: true,
+    });
   });
 
-  it('given an orthogonal facing, returns false', () => {
-    const { result } = isDiagonalFacing('north');
-    expect(result).toBe(false);
+  it('north is not a diagonal facing', () => {
+    expect(isDiagonalFacing('north')).toStrictEqual({
+      errorReason: 'Facing is not a diagonal facing',
+      result: false,
+    });
   });
 
-  it('given an invalid facing, returns false', () => {
-    const { result } = isDiagonalFacing('invalid' as UnitFacing);
-    expect(result).toBe(false);
+  it('an unknown facing is not a diagonal facing', () => {
+    expect(isDiagonalFacing('invalid' as UnitFacing)).toStrictEqual({
+      errorReason: 'Facing is not a diagonal facing',
+      result: false,
+    });
   });
 });
