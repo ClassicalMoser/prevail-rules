@@ -30,7 +30,8 @@ Each subfolder has a small `index.ts` barrel. Co-locate each `generate*` with it
 
 ## Tests and coverage
 
-- **Plan / progress:** [`../TESTING_CHECKLIST.md`](../TESTING_CHECKLIST.md) — phase checkboxes + remaining coverage depth.
+- **How to write one:** [`STYLE.md`](../../../STYLE.md).
+- **Plan / progress:** [`../TESTING_CHECKLIST.md`](../TESTING_CHECKLIST.md) — phase checkboxes and remaining coverage depth.
 - Every **`generate*.ts`** has a colocated **`generate*.test.ts`** (happy paths + important throws where applicable).
 - **`procedureRegistry.test.ts`** — smoke dispatch for state-independent effect types via `generateEventFromProcedure`.
 - Same Vitest coverage rules as the rest of `src/domain` ([`vitest.config.ts`](../../../vitest.config.ts) `include` / `exclude`).

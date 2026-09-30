@@ -61,9 +61,9 @@ export {
 
 // Empty hand or an unpayable rout discard.
 export {
-  getGameOverWinner,
   getWinnerFromEmptyHands,
   getWinnerFromUnpayableRoutDiscard,
+  getGameOverWinner,
 } from './gameOver';
 
 // Command lines.

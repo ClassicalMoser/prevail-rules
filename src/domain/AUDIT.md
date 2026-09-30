@@ -2,9 +2,9 @@
 
 Running checklist for a **manual, end-to-end conventions audit** of the rules engine (declarations, schema-first, import boundaries, barrels, commentary, colocated tests). Work **up the dependency tree**; check a box only when that package (or subdirectory) has been walked and brought in line.
 
-**Not** the per-module unit-test inventory — that remains `[TESTING_CHECKLIST.md](./TESTING_CHECKLIST.md)`. Suite health for this audit means: relevant tests still pass, coverage gaps noted, and `@testing` helpers match current types.
+How to write a test is [`STYLE.md`](../../STYLE.md). This file tracks which modules have a colocated spec, and where coverage is still thin.
 
-**Criteria (shared):** see `[entities/README.md](./entities/README.md)` (schema-first, declaration order, enum `AssertExact` skip, `.strict()`, barrels). Package-specific notes live in each package README when present.
+**Criteria (shared):** [`STYLE.md`](../../STYLE.md), [`DESIGN.md`](../../DESIGN.md), [`entities/README.md`](./entities/README.md), and [`boundaries.ts`](../../boundaries.ts). Package-specific notes live in each package README when present.
 
 **Last updated:** 2026-09-29
 
@@ -101,8 +101,8 @@ Walk folders in IDE order (alphabetical).
     - [x] `steps/` — forward, forward to the edge, rearward
   - [x] `card/` — owned and hidden slices, command match, initiative, commitment modifiers, modifier and restriction equality
   - [x] `engagement/` — front, flank, rear, plus movement engagement getters
-  - [ ] `facings/`
-  - [ ] `gameOver/`
+  - [x] `facings/`
+  - [x] `gameOver/` — empty hand, unpayable rout discard, then the composed check
   - [ ] `line/` — `getLinesFromUnit`, `isValidLine`
   - [ ] `player/` — `getOtherPlayer`
   - [ ] `sequencing/` — current phase, step, initiative, event number, event stream
@@ -192,3 +192,4 @@ Colocated `*.test.ts` under `src/domain/**` and `src/application/**` (see `vites
 _Add short dated notes as the audit proceeds._
 
 - 2026-09-20 — `entities` + `game` closed for this pass. Next: `events` (or `utils` if wanting a true bottom-up start).
+- 2026-09-29 — `queries/gameOver` closed. Next: `line/`.

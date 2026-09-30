@@ -54,7 +54,13 @@ export function isValidChooseCardEvent(
 
 `validatePlayerChoice` still layers **expected** (sequencing) before **legal** (membership). Do not re-encode phase/hand rules in `isValid*` when a `getLegal*` already enumerates them.
 
-## Why This Pattern?
+Movement legality (`getLegalUnitMoves`, `isLegalMove`, commander moves) lives in `@legality`, not here.
+
+## Game state invariants
+
+`gameState/` checks that a state is internally consistent, including `eachCardPresentOnce` and `eachUnitPresentOnce`.
+
+## Why this pattern
 
 - **Actionable failures**: Orchestrators and clients need _why_ an event was rejected, not just `false`.
 - **Fail-safe**: Invalid inputs or getter errors become `FailValidationResult`, not crashes.
@@ -78,6 +84,8 @@ Do not write “queries throw, validation catches” as a blanket rule — only 
 Player-choice legality validators that use `getLegal*` take authoritative `GameState` (both hands readable). Card visibility is still a type parameter elsewhere when a function must constrain readable card fields. Board size is not a type parameter — size is asserted at Zod boundaries and via `board.boardType` at runtime. See [`../entities/README.md`](../entities/README.md).
 
 ## Testing
+
+Titles, fixtures, and setup follow [`STYLE.md`](../../../STYLE.md). For this layer specifically:
 
 - Assert `result: false` **and** a meaningful `errorReason` for illegal cases.
 - Assert that getter / enumerator throws become `result: false`, not uncaught exceptions.

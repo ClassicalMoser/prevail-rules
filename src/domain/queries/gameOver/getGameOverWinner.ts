@@ -8,6 +8,7 @@ import { getWinnerFromUnpayableRoutDiscard } from './getWinnerFromUnpayableRoutD
  * Composed endgame check for router + `gameOver` procedure.
  * Empty-hand first, then unpayable forced rout discard.
  *
+ * @param state - The current game state.
  * @returns Winning side, `null` for draw, or `undefined` if the game continues.
  */
 export function getGameOverWinner(
@@ -17,5 +18,6 @@ export function getGameOverWinner(
   if (emptyHandWinner !== undefined) {
     return emptyHandWinner;
   }
-  return getWinnerFromUnpayableRoutDiscard(state);
+  const routDiscardWinner = getWinnerFromUnpayableRoutDiscard(state);
+  return routDiscardWinner;
 }

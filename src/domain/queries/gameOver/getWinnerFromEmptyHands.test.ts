@@ -1,80 +1,67 @@
-import { tempCommandCards } from '@sampleValues';
-import { createTestCard, updateCardState } from '@testing';
+import type { CommandCard } from '@entities';
+import { createEmptyGameState } from '@factories';
+import type { GameState } from '@game';
+import { createTestCard } from '@testing';
+import { updatePlayerCardState } from '@transforms';
 
 import { getWinnerFromEmptyHands } from './getWinnerFromEmptyHands';
 
-import { createEmptyGameState } from '@factories';
+/**
+ * Empty-hand loss: one empty hand means the other player wins.
+ * Both empty is a draw. Cards outside the hand do not count.
+ */
+function withHands(
+  whiteHand: CommandCard[],
+  blackHand: CommandCard[],
+  blackPlayed: CommandCard[] = [],
+): GameState {
+  const base = createEmptyGameState('standard');
+  const white = updatePlayerCardState(base, 'white', {
+    ...base.cardState.white,
+    inHand: whiteHand,
+  });
+  const next = updatePlayerCardState(white, 'black', {
+    ...white.cardState.black,
+    inHand: blackHand,
+    played: blackPlayed,
+  });
+  return next;
+}
+
 describe(getWinnerFromEmptyHands, () => {
-  it('returns undefined when both hands have cards', () => {
-    const base = createEmptyGameState('standard');
-    const state = updateCardState(base, {
-      ...base.cardState,
-      black: {
-        ...base.cardState.black,
-        inHand: [createTestCard({ id: 'black-hand' })],
-      },
-      white: {
-        ...base.cardState.white,
-        inHand: [createTestCard({ id: 'white-hand' })],
-      },
-    });
+  it('continues when both hands have cards', () => {
+    const state = withHands(
+      [createTestCard({ id: 'white-hand' })],
+      [createTestCard({ id: 'black-hand' })],
+    );
 
     expect(getWinnerFromEmptyHands(state)).toBeUndefined();
   });
 
-  it('returns black when white hand is empty', () => {
-    const base = createEmptyGameState('standard');
-    const state = updateCardState(base, {
-      ...base.cardState,
-      black: {
-        ...base.cardState.black,
-        inHand: [createTestCard({ id: 'black-hand' })],
-      },
-      white: { ...base.cardState.white, inHand: [] },
-    });
+  it('black wins when the white hand is empty', () => {
+    const state = withHands([], [createTestCard({ id: 'black-hand' })]);
 
     expect(getWinnerFromEmptyHands(state)).toBe('black');
   });
 
-  it('returns white when black hand is empty', () => {
-    const base = createEmptyGameState('standard');
-    const state = updateCardState(base, {
-      ...base.cardState,
-      black: { ...base.cardState.black, inHand: [] },
-      white: {
-        ...base.cardState.white,
-        inHand: [createTestCard({ id: 'white-hand' })],
-      },
-    });
+  it('white wins when the black hand is empty', () => {
+    const state = withHands([createTestCard({ id: 'white-hand' })], []);
 
     expect(getWinnerFromEmptyHands(state)).toBe('white');
   });
 
-  it('returns null (draw) when both hands are empty', () => {
-    const base = createEmptyGameState('standard');
-    const state = updateCardState(base, {
-      ...base.cardState,
-      black: { ...base.cardState.black, inHand: [] },
-      white: { ...base.cardState.white, inHand: [] },
-    });
+  it('both empty hands are a draw', () => {
+    const state = withHands([], []);
 
     expect(getWinnerFromEmptyHands(state)).toBeNull();
   });
 
-  it('treats hand length only (ignores other card zones)', () => {
-    const base = createEmptyGameState('standard');
-    const state = updateCardState(base, {
-      ...base.cardState,
-      black: {
-        ...base.cardState.black,
-        inHand: [],
-        played: [tempCommandCards[4]],
-      },
-      white: {
-        ...base.cardState.white,
-        inHand: [createTestCard({ id: 'white-hand' })],
-      },
-    });
+  it('a card in the played pile does not fill the hand', () => {
+    const state = withHands(
+      [createTestCard({ id: 'white-hand' })],
+      [],
+      [createTestCard({ id: 'black-played' })],
+    );
 
     expect(getWinnerFromEmptyHands(state)).toBe('white');
   });

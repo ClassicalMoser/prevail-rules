@@ -7,64 +7,21 @@ Systematic unit test coverage following round order. Focus on procedures and exp
 **How we track (this doc):**
 
 - **[x]** = colocated `*.test.ts` exists for that module (deliverable done).
-- **Coverage %** = run **`pnpm test:coverage`** (or `npm run test:coverage`) and use the report for **what to deepen next**; percentages in this file are not auto-synced.
+- **Coverage %** = run **`pnpm test:coverage`** and use the report for **what to deepen next**; percentages in this file are not auto-synced.
 
 **Last reconciled:** 2026-08-07 — checkbox inventory still useful as a module map; after the board-size / visibility refactor, prefer the coverage report over this file for “what’s missing.” Paths below may lag renames.
 
-**Strategy:** Unit tests > Integration tests. Use test helpers + pure transforms. Follow round order. Depth work now targets routers and branch-thin modules (`validatePlayerChoice`, defense-result procedures, sequencing queries) rather than the older dedupe → trust-first → `@queries` refactor order.
+**Strategy:** Unit tests, then integration tests. Depth work targets routers and branch-thin modules. How to write a test is [`STYLE.md`](../../STYLE.md). This file is the coverage inventory.
 
 ---
 
 ## Testing Philosophy
 
-**When writing new tests:**
-
-1. **Extract helpers, don't inline:** If you find yourself writing verbose or repetitive code, or creating inline helper functions, extract them into reusable test helpers in `@testing`.
-
-2. **Improve the system, don't bypass it:** Adding test helpers improves the testing infrastructure for everyone. Inlining helpers or writing verbose code bypasses the system and makes future tests harder.
-
-3. **Pattern to follow:**
-   - First test: Write inline helper if needed
-   - Second test: Extract to shared helper
-   - Use existing helpers: Check `@testing` first before creating new ones
-
-4. **Test helpers vs initializers:**
-   - **Test helpers** (`@testing`): Convenience wrappers using `@sampleValues`, sensible defaults, test-specific shortcuts
-   - **Initializers** (`@transforms/initializations`): Production domain functions, no test dependencies, explicit parameters
-
-5. **Readable tests (names + commentary):**
-   - Restate the **domain contract** the file proves (what is invariant vs what varies across cases).
-   - For spatial or facing logic, add a **minimal geometry or state legend** when coordinates or defaults matter; tie expected values to named defaults when factories hide them.
-   - Write **`it` titles in natural language** — a short claim about behavior a teammate would say out loud. Prefer starting state → outcome as prose, not a template.
-   - Use short comments where the code alone does not carry the “why.”
-
-   **`it` titles — do this:**
-
-   ```typescript
-   it('an interior space has four orthogonal neighbors', () => { ... });
-   it('asks the first player to commit when their commitment is still pending', () => { ... });
-   it('throws when melee resolution is already complete', () => { ... });
-   it('rotates the defender to face the engager on a flank engagement', () => { ... });
-   ```
-
-   **Not this** (telegraphic case/expect scaffolding — ban it for new and touched tests):
-
-   ```typescript
-   it('given interior coordinate, returns four orthogonals', () => { ... });
-   it('given their commitment is pending, asks the first player to commit', () => { ... });
-   it('given black unit and black side, returns true', () => { ... });
-   it('should return correct event type', () => { ... });
-   ```
-
-   The `given X, returns Y` / `case X expect Y` / bare `should …` shapes read like generator output. If the title only restates the assertion API, rewrite it until it names the **rule or situation**.
-
-   Reference example: [`src/domain/procedures/movement/generateResolveFlankEngagementEvent.test.ts`](procedures/movement/generateResolveFlankEngagementEvent.test.ts).
-
-**Remember:** If you're copying code between tests or writing a helper function inside a test file, that's a signal to extract it to `@testing`.
+See [`STYLE.md`](../../STYLE.md). Titles, commentary, shared fixtures, and writing state through transforms are defined there. Do not add a second set of rules here.
 
 ### Commentary rollout (all tests)
 
-Per [§5](#testing-philosophy): proportionate **describe** / **it** commentary and setup notes across colocated `*.test.ts`. Full-domain pass added a **first-`describe` block** everywhere it was missing (plus deeper notes on procedures / exemplar). When touching a file, retitle mechanical `given…returns…` / `should…` specs into natural-language claims and add setup prose where needed.
+A pass added a block comment on the first `describe` where it was missing. When touching a file, follow `STYLE.md` for the title and for setup notes.
 
 - [x] `src/domain/procedures/`
 - [x] `src/domain/transforms/stateTransitions/`
@@ -301,7 +258,7 @@ describe('getExpectedXEvent', () => {
 
 ## Remaining coverage depth
 
-_Use the latest **`npm run test:coverage`** report as source of truth for numbers; the table below is guidance from a recent run and will drift._
+_Use the latest **`pnpm test:coverage`** report as source of truth for numbers; the table below is guidance from a recent run and will drift._
 
 | Module                                                                                       | Notes                                                                 |
 | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
@@ -315,8 +272,4 @@ _Use the latest **`npm run test:coverage`** report as source of truth for number
 
 ## Notes
 
-- **Extract Helpers, Don't Inline:** When writing tests, if you find yourself writing verbose/repetitive code or creating inline helper functions, extract them to `@testing`. This improves the system rather than bypassing it.
-- **Test Helpers vs Initializers:** Test helpers use `@sampleValues` and convenience defaults. Initializers are production code in `@transforms/initializations`.
-- **Use Pure Transforms:** Build state using `addUnitToBoard`, `updatePhaseState`, etc. Don't manually construct state.
-- **Round Order:** Follow game flow - easier to reason about and catch integration issues.
-- **Unit Tests First:** Integration tests can come later. Unit tests are faster and easier to debug.
+How to write a test is [`STYLE.md`](../../STYLE.md). This checklist is ordered by the round, because that is how the missing coverage is grouped. Unit tests come before integration tests: they are faster to debug.

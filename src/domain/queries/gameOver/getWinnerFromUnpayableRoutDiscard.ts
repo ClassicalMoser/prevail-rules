@@ -9,6 +9,7 @@ import { getAwaitingRoutDiscardState } from '../sequencing/combatOutcomes/getAwa
  *
  * Optional commit discards are not checked here.
  *
+ * @param state - The current game state.
  * @returns Winning side, or `undefined` when no unpayable rout discard is pending.
  */
 export function getWinnerFromUnpayableRoutDiscard(
@@ -24,5 +25,6 @@ export function getWinnerFromUnpayableRoutDiscard(
     return undefined;
   }
 
-  return routState.player === 'white' ? 'black' : 'white';
+  const winner = routState.player === 'white' ? 'black' : 'white';
+  return winner;
 }
