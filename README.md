@@ -69,53 +69,30 @@ getLegalPlayerChoiceOptions(state); // LegalPlayerChoiceOptions | null
 
 See [`src/domain/validation/README.md`](./src/domain/validation/README.md) for the validation pattern.
 
-### Core Functions
+### Core entry points
 
-- `getLegalUnitMoves()` - Calculate all legal moves for a unit
-- `getBoardSpace()` - Get board space at coordinate
-- `getPlayerUnitWithPosition()` - Get friendly unit at position
-- Board operations: adjacency, areas, directions, facing calculations
+The readers and the legal-move lists are in the layer READMEs (`@queries`, `@legality`). The four engines are [`src/domain/ENGINES.md`](./src/domain/ENGINES.md).
 
-## Project Structure
+## Project structure
 
-```
-src/domain/
-├── entities/      # Domain models (Game, Board, Unit, Card, etc.)
-├── events/        # Event definitions (PlayerChoice, GameEffect)
-├── queries/       # Read operations (getLegalMoves, getBoardSpace, etc.)
-├── validation/    # Rule validation (canMoveInto, isLegalMove, etc.)
-├── transforms/    # State transitions (RulesEngine, applyEvent, etc.)
-├── ruleValues/    # Game constants and configuration
-├── sampleValues/  # Placeholder data for development
-├── testing/       # Test helpers and utilities
-└── utils/         # General utilities
-```
-
-See [`src/domain/README.md`](./src/domain/README.md) for detailed architecture documentation.
+Each package is one layer. The index is [`LAYERS.md`](./LAYERS.md).
 
 ## Development
 
-```bash
-# Install
-pnpm install
+How to run checks, and the standards for a change: [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
-# Type check
-pnpm typecheck
-
-# Test
-pnpm test
-
-# Lint & format
-pnpm validate
-```
-
-The project uses path aliases (`@entities`, `@queries`, `@validation`, etc.) - see `tsconfig.json` for the full list.
+The project uses path aliases (`@entities`, `@queries`, `@validation`, etc.) — see `tsconfig.json` for the full list.
 
 ## Documentation
 
-- [`src/domain/README.md`](./src/domain/README.md) - Domain layer architecture and design
-- [`src/domain/validation/README.md`](./src/domain/validation/README.md) - Validation function patterns
-- [`src/domain/entities/README.md`](./src/domain/entities/README.md) - Entity patterns and type safety
+- [`CONTRIBUTING.md`](./CONTRIBUTING.md) — scripts and review checks
+- [`STYLE.md`](./STYLE.md) — functions, files, commentary, tests
+- [`DESIGN.md`](./DESIGN.md) — pure functions, immutability, events
+- [`LAYERS.md`](./LAYERS.md) — what each layer is for
+- [`src/domain/README.md`](./src/domain/README.md) — what sits above the domain
+- [`src/domain/ENGINES.md`](./src/domain/ENGINES.md) — the four engines
+- [`src/domain/entities/README.md`](./src/domain/entities/README.md) — entity patterns and type safety
+- [`src/domain/validation/README.md`](./src/domain/validation/README.md) — validation function patterns
 
 ## License
 

@@ -4,6 +4,9 @@ import type { GameState } from '@game';
 /**
  * Empty-hand loss rule: either hand empty means the other player wins.
  * Both empty is a draw (`null`). Neither empty → game continues (`undefined`).
+ *
+ * @param state - The current game state.
+ * @returns Winning side, `null` for a draw, or `undefined` if the game continues.
  */
 export function getWinnerFromEmptyHands(
   state: GameState,
