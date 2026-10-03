@@ -9,7 +9,7 @@ import {
   createTestUnit,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
-import { throwIfNone } from '@utils';
+import { throwIfNone, throwIfUndefined } from '@utils';
 
 import { applyCompleteIssueCommandsPhaseEvent } from './applyCompleteIssueCommandsPhaseEvent';
 
@@ -122,7 +122,10 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
         instanceNumber: 2,
       });
       state.boardState.board['E-6'] = {
-        ...state.boardState.board['E-6']!,
+        ...throwIfUndefined(
+          state.boardState.board['E-6'],
+          'expected board space at E-6',
+        ),
         unitPresence: {
           presenceType: 'engaged',
           primaryFacing: 'north',

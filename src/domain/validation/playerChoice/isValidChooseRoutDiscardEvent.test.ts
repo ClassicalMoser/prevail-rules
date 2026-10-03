@@ -92,7 +92,7 @@ describe(isValidChooseRoutDiscardEvent, () => {
     if (validation.result !== false) {
       throw new Error('expected fail');
     }
-    expect(validation.errorReason).toMatch(/Expected 2 cards/);
+    expect(validation.errorReason).toMatch(/Expected 2 cards/u);
   });
 
   it('rejects duplicate card IDs', () => {
@@ -110,7 +110,7 @@ describe(isValidChooseRoutDiscardEvent, () => {
     if (validation.result !== false) {
       throw new Error('expected fail');
     }
-    expect(validation.errorReason).toMatch(/Duplicate/);
+    expect(validation.errorReason).toMatch(/Duplicate/u);
   });
 
   it('rejects a card not in the legal atom set', () => {
@@ -149,6 +149,6 @@ describe(isValidChooseRoutDiscardEvent, () => {
     if (validation.result !== false) {
       throw new Error('expected fail');
     }
-    expect(validation.errorReason).toMatch(/not expected/i);
+    expect(validation.errorReason).toMatch(/not expected/iu);
   });
 });

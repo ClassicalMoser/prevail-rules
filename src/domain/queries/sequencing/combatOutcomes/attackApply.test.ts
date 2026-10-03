@@ -5,6 +5,7 @@ import {
   createMovementResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
+  createTestCard,
   createTestUnit,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
@@ -84,6 +85,8 @@ describe(getAttackApplyStateFromRangedAttack, () => {
 describe(getAttackApplyStateFromMelee, () => {
   it('given melee with white apply, getAttackApplyFromMelee(white) returns white slice', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackCommitmentCard = createTestCard();
+    const whiteCommitmentCard = createTestCard();
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
@@ -93,7 +96,7 @@ describe(getAttackApplyStateFromMelee, () => {
             createTestUnit('black', { attack: 2 }),
           ),
           blackCommitment: {
-            card: state.cardState.black.inPlay!,
+            card: blackCommitmentCard,
             commitmentType: 'completed',
           },
           completed: false,
@@ -101,7 +104,7 @@ describe(getAttackApplyStateFromMelee, () => {
           substepType: 'meleeResolution' as const,
           whiteAttackApplyState: createAttackApplyState(whiteUnit),
           whiteCommitment: {
-            card: state.cardState.white.inPlay!,
+            card: whiteCommitmentCard,
             commitmentType: 'completed',
           },
         },
@@ -113,6 +116,8 @@ describe(getAttackApplyStateFromMelee, () => {
   });
 
   it('given melee with black apply showing rout result, black getter returns that apply', () => {
+    const blackCommitmentCard = createTestCard();
+    const whiteCommitmentCard = createTestCard();
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
@@ -129,7 +134,7 @@ describe(getAttackApplyStateFromMelee, () => {
             },
           ),
           blackCommitment: {
-            card: state.cardState.black.inPlay!,
+            card: blackCommitmentCard,
             commitmentType: 'completed',
           },
           completed: false,
@@ -139,7 +144,7 @@ describe(getAttackApplyStateFromMelee, () => {
             createTestUnit('white', { attack: 2 }),
           ),
           whiteCommitment: {
-            card: state.cardState.white.inPlay!,
+            card: whiteCommitmentCard,
             commitmentType: 'completed',
           },
         },
@@ -151,6 +156,8 @@ describe(getAttackApplyStateFromMelee, () => {
   });
 
   it('given melee missing white apply, getAttackApplyFromMelee(white) throws', () => {
+    const blackCommitmentCard = createTestCard();
+    const whiteCommitmentCard = createTestCard();
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
@@ -160,7 +167,7 @@ describe(getAttackApplyStateFromMelee, () => {
             createTestUnit('black', { attack: 2 }),
           ),
           blackCommitment: {
-            card: state.cardState.black.inPlay!,
+            card: blackCommitmentCard,
             commitmentType: 'completed',
           },
           completed: false,
@@ -168,7 +175,7 @@ describe(getAttackApplyStateFromMelee, () => {
           substepType: 'meleeResolution' as const,
           whiteAttackApplyState: 'pending' as const,
           whiteCommitment: {
-            card: state.cardState.white.inPlay!,
+            card: whiteCommitmentCard,
             commitmentType: 'completed',
           },
         },

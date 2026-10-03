@@ -1,12 +1,17 @@
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
-import { createCleanupPhaseState, updateCardState } from '@testing';
+import {
+  createCleanupPhaseState,
+  createTestCard,
+  updateCardState,
+} from '@testing';
 import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { generateResolveRallyEvent } from './generateResolveRallyEvent';
 
 import { createEmptyGameState } from '@factories';
+
 /**
  * Cleanup: resolve rally burns one played command card. Procedure picks a card from the
  * acting player’s `played` pile (non-deterministic); player comes from resolve-rally step + initiative.
@@ -15,12 +20,12 @@ describe(generateResolveRallyEvent, () => {
   /** Seeds `played` for `played` side and lands on firstPlayerResolveRally. */
   function cleanupResolveRallyState(played: 'black' | 'white'): GameState {
     const base = createEmptyGameState('standard');
-    const card = base.cardState[played].inPlay!;
+    const playedCard = createTestCard();
     const withPlayed = updateCardState(base, {
       ...base.cardState,
       [played]: {
         ...base.cardState[played],
-        played: [card],
+        played: [playedCard],
       },
     });
     return updatePhaseState(
@@ -42,12 +47,12 @@ describe(generateResolveRallyEvent, () => {
       createEmptyGameState('standard'),
       'white',
     );
-    const card = base.cardState.black.inPlay!;
+    const playedCard = createTestCard();
     const withPlayed = updateCardState(base, {
       ...base.cardState,
       black: {
         ...base.cardState.black,
-        played: [card],
+        played: [playedCard],
       },
     });
     const full = updatePhaseState(
@@ -64,12 +69,12 @@ describe(generateResolveRallyEvent, () => {
       createEmptyGameState('standard'),
       'white',
     );
-    const card = base.cardState.white.inPlay!;
+    const playedCard = createTestCard();
     const withPlayed = updateCardState(base, {
       ...base.cardState,
       white: {
         ...base.cardState.white,
-        played: [card],
+        played: [playedCard],
       },
     });
     const full = updatePhaseState(

@@ -10,13 +10,9 @@ const config: OxlintConfig = {
   rules: {
     // Priority: HIGH
     'init-declarations': 'off',
-    'max-params': 'off',
-    'max-depth': 'off',
     'vitest/valid-title': 'off',
     // Priority: MEDIUM
     'consistent-function-scoping': 'off',
-    'func-style': 'off',
-    'no-continue': 'off',
     'import/exports-last': 'off',
     'import/group-exports': 'off',
     'typescript/explicit-function-return-type': 'off',

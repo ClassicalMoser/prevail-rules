@@ -18,7 +18,7 @@ describe(createEmptyStandardBoard, () => {
 
   it('satisfies boardSchema', () => {
     const board = createEmptyStandardBoard();
-    expect(boardSchema.parse(board)).toEqual(board);
+    expect(boardSchema.parse(board)).toStrictEqual(board);
   });
 });
 
@@ -31,7 +31,7 @@ describe(createEmptySmallBoard, () => {
 
   it('satisfies boardSchema', () => {
     const board = createEmptySmallBoard();
-    expect(boardSchema.parse(board)).toEqual(board);
+    expect(boardSchema.parse(board)).toStrictEqual(board);
   });
 });
 
@@ -44,6 +44,6 @@ describe(createEmptyLargeBoard, () => {
 
   it('satisfies boardSchema', () => {
     const board = createEmptyLargeBoard();
-    expect(boardSchema.parse(board)).toEqual(board);
+    expect(boardSchema.parse(board)).toStrictEqual(board);
   });
 });

@@ -23,7 +23,7 @@ describe(getLineSegmentContainingUnit, () => {
 
     const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
 
-    expect(coordinatesOfSegment(segment)).toEqual(['E-5']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5']);
   });
 
   it('two units facing north, side by side, are one segment', () => {
@@ -33,7 +33,7 @@ describe(getLineSegmentContainingUnit, () => {
 
     const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
 
-    expect(coordinatesOfSegment(segment)).toEqual(['E-5', 'E-6']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
 
   it('units on both sides keep left-to-right order', () => {
@@ -43,7 +43,7 @@ describe(getLineSegmentContainingUnit, () => {
 
     const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
 
-    expect(coordinatesOfSegment(segment)).toEqual(['E-4', 'E-5', 'E-6']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-4', 'E-5', 'E-6']);
   });
 
   it('two units facing opposite ways stay in the segment', () => {
@@ -60,7 +60,7 @@ describe(getLineSegmentContainingUnit, () => {
 
     const segment = getLineSegmentContainingUnit(board, anchor, [], []);
 
-    expect(coordinatesOfSegment(segment)).toEqual(['E-5', 'E-6']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
 
   it('an empty space ends the segment', () => {
@@ -70,7 +70,7 @@ describe(getLineSegmentContainingUnit, () => {
 
     const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
 
-    expect(coordinatesOfSegment(segment)).toEqual(['E-5', 'E-6']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
 
   it('an enemy ends the segment', () => {
@@ -91,7 +91,7 @@ describe(getLineSegmentContainingUnit, () => {
 
     const segment = getLineSegmentContainingUnit(board, anchor, [], []);
 
-    expect(coordinatesOfSegment(segment)).toEqual(['E-5', 'E-6']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
 
   it('a unit facing east ends a segment of units facing north', () => {
@@ -110,7 +110,7 @@ describe(getLineSegmentContainingUnit, () => {
 
     const segment = getLineSegmentContainingUnit(board, anchor, [], []);
 
-    expect(coordinatesOfSegment(segment)).toEqual(['E-5', 'E-6']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
 
   it('a mounted requirement stops at the first unit without that trait', () => {
@@ -149,7 +149,7 @@ describe(getLineSegmentContainingUnit, () => {
       [],
     );
 
-    expect(coordinatesOfSegment(segment)).toEqual(['E-5']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5']);
   });
 
   it('a unit-type requirement stops at the first other type', () => {
@@ -181,7 +181,7 @@ describe(getLineSegmentContainingUnit, () => {
       [requiredType],
     );
 
-    expect(coordinatesOfSegment(segment)).toEqual(['E-5']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5']);
   });
 
   it('a unit on the north edge, facing north, is a segment of one', () => {
@@ -191,7 +191,7 @@ describe(getLineSegmentContainingUnit, () => {
 
     const segment = getLineSegmentContainingUnit(board, unitAt('A-5'), [], []);
 
-    expect(coordinatesOfSegment(segment)).toEqual(['A-5']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['A-5']);
   });
 
   it('two units facing east, one rank apart, are one segment', () => {
@@ -202,7 +202,7 @@ describe(getLineSegmentContainingUnit, () => {
 
     const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
 
-    expect(coordinatesOfSegment(segment)).toEqual(['E-5', 'F-5']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'F-5']);
   });
 
   it('two units facing north-east, one step north-west apart, are one segment', () => {
@@ -213,7 +213,7 @@ describe(getLineSegmentContainingUnit, () => {
 
     const segment = getLineSegmentContainingUnit(board, unitAt('E-5'), [], []);
 
-    expect(coordinatesOfSegment(segment)).toEqual(['D-4', 'E-5']);
+    expect(coordinatesOfSegment(segment)).toStrictEqual(['D-4', 'E-5']);
   });
 
   it('a row of ten is still one uncapped segment', () => {

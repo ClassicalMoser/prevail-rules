@@ -68,7 +68,7 @@ describe(isValidMoveCommanderEvent, () => {
       throw new Error('expected fail');
     }
     expect(validation.errorReason).toMatch(
-      /Starting position does not contain specified commander/i,
+      /Starting position does not contain specified commander/iu,
     );
   });
 });

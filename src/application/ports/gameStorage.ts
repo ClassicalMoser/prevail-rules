@@ -8,11 +8,11 @@ import type { GameModeName } from '@entities';
  * Parse and narrow with `parseStoredGame` (e.g. via `getGame`) before driving rules.
  */
 export interface GameStorage {
-  getGame(
+  getGame: (
     gameId: string,
     gameMode: GameModeName,
-  ): Promise<PortResponse<Game> | undefined>;
-  saveNewGame(game: Game): Promise<PortResponse<void>>;
+  ) => Promise<PortResponse<Game> | undefined>;
+  saveNewGame: (game: Game) => Promise<PortResponse<void>>;
   /**
    * `gameState` is intentionally wide. Merge into an existing {@link Game} via
    * `{ ...game, gameState }` or re-parse through {@link parseStoredGame}.

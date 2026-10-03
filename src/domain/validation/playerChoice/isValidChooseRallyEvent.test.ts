@@ -77,7 +77,7 @@ describe(isValidChooseRallyEvent, () => {
       throw new Error('expected fail');
     }
     expect(validation.errorReason).toMatch(
-      /Expected cleanup phase|Not in choose rally step/i,
+      /Expected cleanup phase|Not in choose rally step/iu,
     );
   });
 });

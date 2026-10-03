@@ -1,5 +1,6 @@
 import type { Coordinate } from '@entities';
 import { createEmptyStandardBoard } from '@factories';
+import { throwIfUndefined } from '@utils';
 
 import { addCommanderToBoard } from './addCommanderToBoard';
 import { removeCommanderFromBoard } from './removeCommanderFromBoard';
@@ -173,7 +174,10 @@ describe(removeCommanderFromBoard, () => {
       );
       // Add a unit to another space
       boardWithCommander.board[otherCoord] = {
-        ...boardWithCommander.board[otherCoord]!,
+        ...throwIfUndefined(
+          boardWithCommander.board[otherCoord],
+          `expected board space at ${otherCoord}`,
+        ),
         unitPresence: {
           presenceType: 'none',
         },

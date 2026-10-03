@@ -110,7 +110,7 @@ describe(getLegalLineEndsForIssueCommand, () => {
       state,
       start,
     );
-    expect(ends).toEqual(
+    expect(ends).toStrictEqual(
       expect.arrayContaining([
         expect.objectContaining({ unit: start.unit }),
         expect.objectContaining({ unit: farEnd.unit }),

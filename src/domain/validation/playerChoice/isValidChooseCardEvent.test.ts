@@ -85,6 +85,6 @@ describe(isValidChooseCardEvent, () => {
       throw new Error('expected fail');
     }
     expect(validation.errorReason).toContain(tempCommandCards[2].id);
-    expect(validation.errorReason).toMatch(/not a legal choice/i);
+    expect(validation.errorReason).toMatch(/not a legal choice/iu);
   });
 });

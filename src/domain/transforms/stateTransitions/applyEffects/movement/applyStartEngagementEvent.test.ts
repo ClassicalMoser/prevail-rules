@@ -158,7 +158,7 @@ describe(applyStartEngagementEvent, () => {
       eventNumber: 0,
       eventType: 'gameEffect' as const,
       effectType: 'startEngagement' as const,
-      // Intentionally bad cast to test failure path
+      // Intentionally bad type cast to test error path
       engagementType: 'siege' as unknown as EngagementType,
       defenderWithPlacement,
     };

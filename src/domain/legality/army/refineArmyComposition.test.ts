@@ -82,9 +82,9 @@ const validStandardArmy = (): Army => ({
  */
 describe(armySchemaForMode, () => {
   it('standard accepts a legal composition', () => {
-    expect(armySchemaForMode('standard').parse(validStandardArmy())).toEqual(
-      validStandardArmy(),
-    );
+    expect(
+      armySchemaForMode('standard').parse(validStandardArmy()),
+    ).toStrictEqual(validStandardArmy());
   });
 
   it('standard rejects over-cost armies', () => {
@@ -152,7 +152,7 @@ describe(armySchemaForMode, () => {
       units: [{ count: 1, unitType: baseUnitType({ cost: 100, morale: 0 }) }],
     };
 
-    expect(armySchemaForMode('tutorial').parse(army)).toEqual(army);
+    expect(armySchemaForMode('tutorial').parse(army)).toStrictEqual(army);
   });
 });
 
@@ -167,7 +167,7 @@ describe('entity armySchema shape', () => {
       units: [],
     };
 
-    expect(armySchema.parse(army)).toEqual(army);
+    expect(armySchema.parse(army)).toStrictEqual(army);
   });
 
   it('rejects count above unit type limit', () => {

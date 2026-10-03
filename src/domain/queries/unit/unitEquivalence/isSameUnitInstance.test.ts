@@ -49,7 +49,7 @@ describe(isSameUnitInstance, () => {
     const unit1 = createUnitInstance('black', flexibility1UnitType, 1);
     // Create a new unit with same properties (different reference)
     const unit2 = createUnitInstance('black', flexibility1UnitType, 1);
-    expect(unit1 !== unit2).toBe(true); // Different references
+    expect(unit1).not.toBe(unit2); // Different references
     const { result } = isSameUnitInstance(unit1, unit2);
     expect(result).toBe(true); // But same by value
   });

@@ -99,10 +99,7 @@ describe(getExpectedResolveMeleePhaseEvent, () => {
     if (phaseState === 'none') {
       throw new Error('expected phase state');
     }
-    state.currentRoundState.currentPhaseState = {
-      ...phaseState,
-      step: 'invalidStep',
-    } as any;
+    phaseState.step = 'invalidStep' as unknown as typeof phaseState.step; // Intentionally bad type cast to test error path
 
     expect(() => getExpectedResolveMeleePhaseEvent(state)).toThrow(
       'Invalid resolveMelee phase step: invalidStep',

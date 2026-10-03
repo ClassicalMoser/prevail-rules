@@ -32,7 +32,7 @@ describe(getBoardSpace, () => {
 
     it('a coordinate off the standard board is rejected', () => {
       expect(() => {
-        // Intentionally bad assertion to test the error message
+        // Intentionally bad type cast to test error path
         getBoardSpace(standardBoard, 'Y-55' as Coordinate);
       }).toThrow(
         new Error('Coordinate Y-55 does not exist on standard board.'),

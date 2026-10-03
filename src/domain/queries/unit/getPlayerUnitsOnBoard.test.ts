@@ -3,6 +3,7 @@ import {
   createBoardWithUnits,
   createTestUnit,
 } from '@testing';
+import { throwIfUndefined } from '@utils';
 
 import { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
 
@@ -57,7 +58,10 @@ describe(getPlayerUnitsOnBoard, () => {
       'north',
     );
     state.boardState.board['F-5'] = {
-      ...state.boardState.board['F-5']!,
+      ...throwIfUndefined(
+        state.boardState.board['F-5'],
+        'expected board space at F-5',
+      ),
       unitPresence: {
         facing: 'south',
         presenceType: 'single',

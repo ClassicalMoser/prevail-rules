@@ -32,7 +32,7 @@ describe(linesIncludingUnitFromSegment, () => {
 
     const lines = linesIncludingUnitFromSegment(segment, unit);
 
-    expect(coordinatesOfLines(lines)).toEqual([['E-5']]);
+    expect(coordinatesOfLines(lines)).toStrictEqual([['E-5']]);
   });
 
   it('a segment of eight is one line of eight', () => {
@@ -53,7 +53,7 @@ describe(linesIncludingUnitFromSegment, () => {
 
     const lines = linesIncludingUnitFromSegment(segment, unit);
 
-    expect(coordinatesOfLines(lines)).toEqual([
+    expect(coordinatesOfLines(lines)).toStrictEqual([
       ['E-1', 'E-2', 'E-3', 'E-4', 'E-5', 'E-6', 'E-7', 'E-8'],
     ]);
   });
@@ -79,7 +79,7 @@ describe(linesIncludingUnitFromSegment, () => {
     // E-5 is in the middle. Windows that include it start at 0, 1, and 2.
     const lines = linesIncludingUnitFromSegment(segment, unit);
 
-    expect(coordinatesOfLines(lines)).toEqual([
+    expect(coordinatesOfLines(lines)).toStrictEqual([
       ['E-1', 'E-2', 'E-3', 'E-4', 'E-5', 'E-6', 'E-7', 'E-8'],
       ['E-2', 'E-3', 'E-4', 'E-5', 'E-6', 'E-7', 'E-8', 'E-9'],
       ['E-3', 'E-4', 'E-5', 'E-6', 'E-7', 'E-8', 'E-9', 'E-10'],
@@ -106,7 +106,7 @@ describe(linesIncludingUnitFromSegment, () => {
 
     const lines = linesIncludingUnitFromSegment(segment, unit);
 
-    expect(coordinatesOfLines(lines)).toEqual([
+    expect(coordinatesOfLines(lines)).toStrictEqual([
       ['E-1', 'E-2', 'E-3', 'E-4', 'E-5', 'E-6', 'E-7', 'E-8'],
     ]);
   });

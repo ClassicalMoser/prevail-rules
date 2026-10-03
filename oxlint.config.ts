@@ -13,6 +13,18 @@ const config: OxlintConfig = {
   rules: {
     ...base.rules,
     ...legacyDebt.rules,
+    // Suite-local helpers wrap expect(); name them so the rule can see them.
+    'vitest/expect-expect': [
+      'error',
+      {
+        assertFunctionNames: [
+          'expect',
+          'expectDelegation',
+          'expectGameEffect',
+          'expectPlayerChoice',
+        ],
+      },
+    ],
   },
 };
 

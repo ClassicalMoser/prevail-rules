@@ -35,7 +35,7 @@ describe(getLinesFromUnit, () => {
 
     const lines = getLinesFromUnit(board, unitAt('E-5'));
 
-    expect(coordinatesOfLines(lines)).toEqual([['E-5', 'E-6']]);
+    expect(coordinatesOfLines(lines)).toStrictEqual([['E-5', 'E-6']]);
   });
 
   it('wires the windows when the segment is longer than eight', () => {

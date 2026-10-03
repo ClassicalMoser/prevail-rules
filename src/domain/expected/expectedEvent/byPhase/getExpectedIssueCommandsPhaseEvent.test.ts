@@ -300,14 +300,11 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
 
   it('given for invalid step, throws', () => {
     const state = createGameStateInIssueCommandsStep('complete');
-    // Force an invalid issue commands step to hit the default branch.
     const phaseState = state.currentRoundState.currentPhaseState;
-    if (phaseState !== 'none') {
-      state.currentRoundState.currentPhaseState = {
-        ...phaseState,
-        step: 'invalidStep',
-      } as any;
+    if (phaseState === 'none') {
+      throw new Error('expected issueCommands phase state');
     }
+    phaseState.step = 'invalidStep' as unknown as typeof phaseState.step; // Intentionally bad type cast to test error path
 
     expect(() => getExpectedIssueCommandsPhaseEvent(state)).toThrow(
       'Invalid issueCommands phase state: invalidStep',

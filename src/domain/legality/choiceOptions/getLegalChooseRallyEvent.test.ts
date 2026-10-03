@@ -13,6 +13,7 @@ import {
 import { getLegalChooseRallyEvent } from './getLegalChooseRallyEvent';
 
 import { createEmptyGameState } from '@factories';
+import { throwIfUndefined } from '@utils';
 
 const chooseRallyBase = {
   choiceType: 'chooseRally' as const,
@@ -103,8 +104,12 @@ describe(getLegalChooseRallyEvent, () => {
     const options = getLegalChooseRallyEvent(state);
 
     expect(options).toHaveLength(2);
-    expect(options[0]!.eventNumber).toBe(1);
-    expect(options[1]!.eventNumber).toBe(1);
+    expect(
+      throwIfUndefined(options[0], 'expected first rally option').eventNumber,
+    ).toBe(1);
+    expect(
+      throwIfUndefined(options[1], 'expected second rally option').eventNumber,
+    ).toBe(1);
   });
 
   it('throws when cleanup step is not a choose-rally step', () => {

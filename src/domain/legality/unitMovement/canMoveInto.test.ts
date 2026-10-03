@@ -1,4 +1,5 @@
 import type { Coordinate } from '@entities';
+import { throwIfUndefined } from '@utils';
 import { createGameState, createTestUnit } from '@testing';
 import { addUnitToBoard } from '@transforms';
 import { createEmptyStandardBoard } from '@factories';
@@ -164,9 +165,13 @@ describe(canMoveInto, () => {
         },
         unit: createTestUnit('black'),
       });
-      board.board['D-5']!.unitPresence = {
-        presenceType: 'invalid' as any, // Bad type assertion to test error case
-      };
+      const space = throwIfUndefined(
+        board.board['D-5'],
+        'expected board space at D-5',
+      );
+      space.unitPresence = {
+        presenceType: 'invalid',
+      } as unknown as typeof space.unitPresence; // Intentionally bad type cast to test error path
       expect(
         canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
       ).toBe(false);

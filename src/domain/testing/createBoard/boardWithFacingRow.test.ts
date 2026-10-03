@@ -10,7 +10,7 @@ describe(createBoardWithFacingRow, () => {
       coordinates: ['E-5', 'E-6'],
     });
 
-    expect(unitAt('E-5').placement).toEqual({
+    expect(unitAt('E-5').placement).toStrictEqual({
       coordinate: 'E-5',
       facing: 'north',
     });

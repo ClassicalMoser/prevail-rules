@@ -11,6 +11,7 @@ import {
   updateCurrentInitiative,
 } from '@transforms';
 import { isValidChooseMeleeResolutionEvent } from '@validation';
+import { throwIfUndefined } from '@utils';
 
 import { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolutionEvents';
 
@@ -98,7 +99,9 @@ describe(getLegalChooseMeleeResolutionEvents, () => {
     const options = getLegalChooseMeleeResolutionEvents(state);
 
     expect(options).toHaveLength(1);
-    expect(options[0]!.eventNumber).toBe(2);
+    expect(
+      throwIfUndefined(options[0], 'expected one legal option').eventNumber,
+    ).toBe(2);
   });
 
   it('throws when there is no current phase state', () => {
