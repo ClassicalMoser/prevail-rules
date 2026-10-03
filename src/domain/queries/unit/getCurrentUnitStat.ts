@@ -98,8 +98,7 @@ export function getCurrentUnitStat(
       ).result;
 
       // Combine the existing restriction satisfaction with the new one.
-      satisfiesAllRestrictions =
-        satisfiesAllRestrictions && satisfiesUnitRestrictions;
+      satisfiesAllRestrictions &&= satisfiesUnitRestrictions;
 
       // If the unit satisfies the restrictions, add the modifier to the total
       if (satisfiesAllRestrictions) {

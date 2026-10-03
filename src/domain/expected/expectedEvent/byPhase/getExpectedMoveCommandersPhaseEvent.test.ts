@@ -108,25 +108,15 @@ describe(getExpectedMoveCommandersPhaseEvent, () => {
   describe('error cases', () => {
     it('given for invalid step, throws', () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
-      // Bad type cast to test default case
       const phaseState = state.currentRoundState.currentPhaseState;
       if (phaseState === 'none') {
         throw new Error('expected phase state');
       }
-      const stateWithInvalidStep = {
-        ...state,
-        currentRoundState: {
-          ...state.currentRoundState,
-          currentPhaseState: {
-            ...phaseState,
-            step: 'invalidStep' as any,
-          },
-        },
-      };
+      phaseState.step = 'invalidStep' as unknown as typeof phaseState.step; // Intentionally bad type cast to test error path
 
-      expect(() =>
-        getExpectedMoveCommandersPhaseEvent(stateWithInvalidStep),
-      ).toThrow('Invalid moveCommanders phase step: invalidStep');
+      expect(() => getExpectedMoveCommandersPhaseEvent(state)).toThrow(
+        'Invalid moveCommanders phase step: invalidStep',
+      );
     });
   });
 });

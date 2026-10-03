@@ -102,7 +102,7 @@ describe('getHiddenPlayerCardState function', () => {
     const { cardState } = createEmptyGameState('standard');
     expect(() =>
       getHiddenPlayerCardState(
-        // Intentionally bad assertion to test the error message
+        // Intentionally bad type cast to test error path
         { ...cardState, visibility: 'nobody' } as unknown as CardState,
         'white',
       ),

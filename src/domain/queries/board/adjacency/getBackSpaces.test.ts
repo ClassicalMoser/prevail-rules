@@ -76,21 +76,21 @@ describe('getBackSpaces function', () => {
   });
 
   it('row beyond board edge is rejected', () => {
-    // Intentionally bad assertion to test the error message
+    // Intentionally bad type cast to test error path
     expect(() =>
       getBackSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
   it('column beyond board edge is rejected', () => {
-    // Intentionally bad assertion to test the error message
+    // Intentionally bad type cast to test error path
     expect(() =>
       getBackSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 
   it('invalid facing is rejected', () => {
-    // Intentionally bad assertion to test the error message
+    // Intentionally bad type cast to test error path
     expect(() =>
       getBackSpaces(standardBoard, 'E-9', 'random' as UnitFacing),
     ).toThrow(new Error('Invalid facing: random'));

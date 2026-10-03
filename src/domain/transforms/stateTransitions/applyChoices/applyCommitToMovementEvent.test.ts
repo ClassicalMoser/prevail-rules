@@ -11,6 +11,7 @@ import {
   updateCardState,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
+import { throwIfUndefined } from '@utils';
 
 import { applyCommitToMovementEvent } from './applyCommitToMovementEvent';
 
@@ -96,7 +97,10 @@ describe(applyCommitToMovementEvent, () => {
 
   it('given front engagement refuse (null card), declines defensiveCommitment without discarding', () => {
     const state = createEmptyGameState('standard');
-    const card = tempCommandCards[0]!;
+    const card = throwIfUndefined(
+      tempCommandCards[0],
+      'expected temp command card',
+    );
     const withWhiteCard = updateCardState(state, {
       ...state.cardState,
       white: { ...state.cardState.white, inHand: [card] },
@@ -131,7 +135,10 @@ describe(applyCommitToMovementEvent, () => {
 
   it('given front engagement defensive commit pending, completes defensiveCommitment and leaves mover commitment declined', () => {
     const state = createEmptyGameState('standard');
-    const card = tempCommandCards[0]!;
+    const card = throwIfUndefined(
+      tempCommandCards[0],
+      'expected temp command card',
+    );
     const withWhiteCard = updateCardState(state, {
       ...state.cardState,
       white: { ...state.cardState.white, inHand: [card] },

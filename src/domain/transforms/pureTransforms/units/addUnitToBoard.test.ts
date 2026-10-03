@@ -6,6 +6,7 @@ import type {
 } from '@entities';
 import { createTestUnit } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
+import { throwIfUndefined } from '@utils';
 
 import { addUnitToBoard } from './addUnitToBoard';
 
@@ -66,7 +67,10 @@ describe(addUnitToBoard, () => {
       const otherCoord: Coordinate = 'D-4';
       const otherUnit = createTestUnit('white', { attack: 3 });
       board.board[otherCoord] = {
-        ...board.board[otherCoord]!,
+        ...throwIfUndefined(
+          board.board[otherCoord],
+          `expected board space at ${otherCoord}`,
+        ),
         unitPresence: {
           facing: 'south',
           presenceType: 'single',
@@ -103,7 +107,10 @@ describe(addUnitToBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           presenceType: 'engaged',
           primaryFacing: 'north',
@@ -133,7 +140,10 @@ describe(addUnitToBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           facing: 'north',
           presenceType: 'single',
@@ -162,7 +172,10 @@ describe(addUnitToBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           facing: 'north',
           presenceType: 'single',
@@ -194,7 +207,10 @@ describe(addUnitToBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           facing: 'north',
           presenceType: 'single',
@@ -221,7 +237,10 @@ describe(addUnitToBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           facing: 'north',
           presenceType: 'single',

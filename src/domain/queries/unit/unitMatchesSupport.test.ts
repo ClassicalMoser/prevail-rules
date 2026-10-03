@@ -1,4 +1,5 @@
 import type { UnitSupport } from '@entities';
+import { throwIfUndefined } from '@utils';
 import { createTestUnit } from '@testing';
 
 import { unitMatchesSupport } from './unitMatchesSupport';
@@ -33,7 +34,10 @@ describe(unitMatchesSupport, () => {
     const support: UnitSupport = {
       count: 1,
       supportType: 'trait',
-      trait: unit.unitType.traits[0]!,
+      trait: throwIfUndefined(
+        unit.unitType.traits[0],
+        'test unit must have a trait',
+      ),
     };
     expect(unitMatchesSupport(unit, support)).toBe(true);
   });

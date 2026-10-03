@@ -157,14 +157,11 @@ describe(getExpectedCleanupPhaseEvent, () => {
 
   it('given for invalid step, throws', () => {
     const state = createGameStateInCleanupStep('discardPlayedCards');
-    // Force an invalid cleanup step to hit the default branch.
     const phaseState = state.currentRoundState.currentPhaseState;
-    if (phaseState !== 'none') {
-      state.currentRoundState.currentPhaseState = {
-        ...phaseState,
-        step: 'invalidStep',
-      } as any; // Bad type cast to test default case
+    if (phaseState === 'none') {
+      throw new Error('expected cleanup phase state');
     }
+    phaseState.step = 'invalidStep' as unknown as typeof phaseState.step; // Intentionally bad type cast to test error path
 
     expect(() => getExpectedCleanupPhaseEvent(state)).toThrow(
       'Invalid cleanup phase step: invalidStep',

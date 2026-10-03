@@ -51,13 +51,13 @@ describe(isValidLine, () => {
   it('one unit is a valid line', () => {
     const line = lineAlong(['E-5'], 'north');
 
-    expect(isValidLine(board, line)).toEqual({ result: true });
+    expect(isValidLine(board, line)).toStrictEqual({ result: true });
   });
 
   it('two units facing the same way are a valid line', () => {
     const line = lineAlong(['E-5', 'E-6'], 'north');
 
-    expect(isValidLine(board, line)).toEqual({ result: true });
+    expect(isValidLine(board, line)).toStrictEqual({ result: true });
   });
 
   it('two units facing opposite ways are a valid line', () => {
@@ -68,7 +68,7 @@ describe(isValidLine, () => {
       { placement: { coordinate: 'E-6', facing: 'south' }, unit: second },
     );
 
-    expect(isValidLine(board, line)).toEqual({ result: true });
+    expect(isValidLine(board, line)).toStrictEqual({ result: true });
   });
 
   it('eight units in a row are a valid line', () => {
@@ -77,14 +77,14 @@ describe(isValidLine, () => {
       'north',
     );
 
-    expect(isValidLine(board, line)).toEqual({ result: true });
+    expect(isValidLine(board, line)).toStrictEqual({ result: true });
   });
 
   it('two units on the perpendicular of a diagonal facing are a valid line', () => {
     // North-east facing lines up north-west to south-east. D-4 is one step north-west of E-5.
     const line = lineAlong(['E-5', 'D-4'], 'northEast');
 
-    expect(isValidLine(board, line)).toEqual({ result: true });
+    expect(isValidLine(board, line)).toStrictEqual({ result: true });
   });
 
   it('a unit facing the opposite way on that diagonal is a valid line', () => {
@@ -95,13 +95,13 @@ describe(isValidLine, () => {
       { placement: { coordinate: 'D-4', facing: 'southWest' }, unit: second },
     );
 
-    expect(isValidLine(board, line)).toEqual({ result: true });
+    expect(isValidLine(board, line)).toStrictEqual({ result: true });
   });
 
   it('an empty line is invalid', () => {
     const line: Line = { unitPlacements: [] };
 
-    expect(isValidLine(board, line)).toEqual({
+    expect(isValidLine(board, line)).toStrictEqual({
       errorReason: 'Line length is invalid',
       result: false,
     });
@@ -113,7 +113,7 @@ describe(isValidLine, () => {
       'north',
     );
 
-    expect(isValidLine(board, line)).toEqual({
+    expect(isValidLine(board, line)).toStrictEqual({
       errorReason: 'Line length is invalid',
       result: false,
     });
@@ -127,7 +127,7 @@ describe(isValidLine, () => {
       { placement: { coordinate: 'E-6', facing: 'north' }, unit: white },
     );
 
-    expect(isValidLine(board, line)).toEqual({
+    expect(isValidLine(board, line)).toStrictEqual({
       errorReason: 'Units are not on the same side',
       result: false,
     });
@@ -141,7 +141,7 @@ describe(isValidLine, () => {
       { placement: { coordinate: 'E-6', facing: 'east' }, unit: second },
     );
 
-    expect(isValidLine(board, line)).toEqual({
+    expect(isValidLine(board, line)).toStrictEqual({
       errorReason: 'Invalid facings present',
       result: false,
     });
@@ -150,7 +150,7 @@ describe(isValidLine, () => {
   it('a gap between units is invalid', () => {
     const line = lineAlong(['E-5', 'E-7'], 'north');
 
-    expect(isValidLine(board, line)).toEqual({
+    expect(isValidLine(board, line)).toStrictEqual({
       errorReason: 'Units are not contiguous',
       result: false,
     });
@@ -159,7 +159,7 @@ describe(isValidLine, () => {
   it('a unit straight ahead is not beside its neighbor', () => {
     const line = lineAlong(['E-5', 'F-5'], 'north');
 
-    expect(isValidLine(board, line)).toEqual({
+    expect(isValidLine(board, line)).toStrictEqual({
       errorReason: 'Units are not contiguous',
       result: false,
     });
@@ -169,7 +169,7 @@ describe(isValidLine, () => {
     // North-east flanking spaces of E-5 are D-4 and F-6. D-5 is not one of them.
     const line = lineAlong(['E-5', 'D-5'], 'northEast');
 
-    expect(isValidLine(board, line)).toEqual({
+    expect(isValidLine(board, line)).toStrictEqual({
       errorReason: 'Units are not contiguous',
       result: false,
     });
@@ -190,7 +190,7 @@ describe(isValidLine, () => {
       },
     );
 
-    expect(isValidLine(board, line)).toEqual({
+    expect(isValidLine(board, line)).toStrictEqual({
       errorReason: 'Invalid row: R',
       result: false,
     });

@@ -93,7 +93,7 @@ getCoordinateLayout(board); // → coordinateLayoutMap[board.boardType]
 **Why `partialRecord` + `superRefine` instead of per-size schemas?**  
 `z.object(shape)` infers literal keys. Factories and unions that touch a per-size object schema leak those keys through inference and fight the unified `Board` type. One wide schema plus a refine against `coordinateLayoutMap[boardType]` keeps the TypeScript type wide and still rejects wrong keys at parse time.
 
-**`CoordinateLayout` method syntax is deliberate** (`createCoordinate`, `getRowIndex`, …) so parameter checks stay bivariant and per-size layouts stay assignable to the shared default. Property or function-field syntax breaks the layout map.
+**`CoordinateLayout` method syntax is deliberate** (`createCoordinate`, `getRowIndex`, …) so parameter checks stay bivariant and per-size layouts stay assignable to the shared default. Property or function-field syntax breaks the layout map under `strictFunctionTypes`. That fights `typescript/method-signature-style`; keep the methods until layouts are redesigned (e.g. wide `string` callables or a discriminated per-size API) — do not suppress the rule per line.
 
 **Visibility earns a type parameter; board size did not.**  
 Visibility (`authoritative` | `whiteSeen` | `blackSeen`) constrains which card fields are readable or writable, so `GameStateForVisibility<V>` / `CardState` remove casts at call sites. Board size only asserted completeness; threading it as a type argument inflated signatures without cutting casts. Keep a parameter only when it narrows what callers may pass or read.

@@ -6,6 +6,7 @@ import type {
 } from '@entities';
 import { createTestUnit } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
+import { throwIfUndefined } from '@utils';
 
 import { removeUnitFromBoard } from './removeUnitFromBoard';
 
@@ -46,7 +47,10 @@ describe(removeUnitFromBoard, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           facing: 'north',
           presenceType: 'single',
@@ -74,7 +78,10 @@ describe(removeUnitFromBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           facing: 'north',
           presenceType: 'single',
@@ -101,7 +108,10 @@ describe(removeUnitFromBoard, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           facing: 'north',
           presenceType: 'single',
@@ -127,7 +137,10 @@ describe(removeUnitFromBoard, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           facing: 'north',
           presenceType: 'single',
@@ -138,7 +151,10 @@ describe(removeUnitFromBoard, () => {
       const otherCoord: Coordinate = 'D-4';
       const otherUnit = createTestUnit('white', { attack: 3 });
       board.board[otherCoord] = {
-        ...board.board[otherCoord]!,
+        ...throwIfUndefined(
+          board.board[otherCoord],
+          `expected board space at ${otherCoord}`,
+        ),
         unitPresence: {
           facing: 'south',
           presenceType: 'single',
@@ -174,7 +190,10 @@ describe(removeUnitFromBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           presenceType: 'engaged',
           primaryFacing: 'north',
@@ -209,7 +228,10 @@ describe(removeUnitFromBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           presenceType: 'engaged',
           primaryFacing: 'east',
@@ -243,7 +265,10 @@ describe(removeUnitFromBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           presenceType: 'engaged',
           primaryFacing: 'north',
@@ -280,7 +305,10 @@ describe(removeUnitFromBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           presenceType: 'engaged',
           primaryFacing: 'north',
@@ -315,7 +343,10 @@ describe(removeUnitFromBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           presenceType: 'engaged',
           primaryFacing: 'north',
@@ -352,7 +383,10 @@ describe(removeUnitFromBoard, () => {
       });
       const board = createEmptyStandardBoard();
       board.board[coordinate] = {
-        ...board.board[coordinate]!,
+        ...throwIfUndefined(
+          board.board[coordinate],
+          `expected board space at ${coordinate}`,
+        ),
         unitPresence: {
           presenceType: 'engaged',
           primaryFacing: 'north',
@@ -378,18 +412,15 @@ describe(removeUnitFromBoard, () => {
 
     it('given error for invalid unit presence type, throws', () => {
       const board = createEmptyStandardBoard();
-      // Create an invalid unit presence that passes the 'none' and 'single' checks
-      // But fails the 'engaged' check - this is a TypeScript exhaustiveness guard
-      board.board[coordinate] = {
-        ...board.board[coordinate]!,
-        unitPresence: {
-          facing: 'north',
-          presenceType: 'single',
-          unit: createTestUnit('black', { attack: 3 }),
-        } as any,
-      };
-      // Override to invalid type after creation
-      (board.board[coordinate]!.unitPresence as any).presenceType = 'invalid';
+      const boardSpace = throwIfUndefined(
+        board.board[coordinate],
+        `expected board space at ${coordinate}`,
+      );
+      boardSpace.unitPresence = {
+        facing: 'north',
+        presenceType: 'invalid',
+        unit: createTestUnit('black', { attack: 3 }),
+      } as unknown as typeof boardSpace.unitPresence; // Intentionally bad type cast to test error path
 
       const unit = createTestUnit('black', { attack: 3 });
       const unitWithPlacement = createUnitWithPlacement(

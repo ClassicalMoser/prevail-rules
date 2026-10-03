@@ -9,6 +9,7 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createRetreatState,
+  createTestCard,
   createTestUnit,
 } from '@testing';
 import {
@@ -137,6 +138,8 @@ describe(getRetreatStateFromRangedAttack, () => {
 describe(getRetreatStateFromMelee, () => {
   it('given white melee apply in retreat, getRetreatState(melee, white) returns it', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackCommitmentCard = createTestCard();
+    const whiteCommitmentCard = createTestCard();
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
@@ -146,7 +149,7 @@ describe(getRetreatStateFromMelee, () => {
             createTestUnit('black', { attack: 2 }),
           ),
           blackCommitment: {
-            card: state.cardState.black.inPlay!,
+            card: blackCommitmentCard,
             commitmentType: 'completed',
           },
           completed: false,
@@ -160,7 +163,7 @@ describe(getRetreatStateFromMelee, () => {
             unit: whiteUnit,
           }),
           whiteCommitment: {
-            card: state.cardState.white.inPlay!,
+            card: whiteCommitmentCard,
             commitmentType: 'completed',
           },
         },
@@ -174,6 +177,8 @@ describe(getRetreatStateFromMelee, () => {
 
   it('given black melee apply in retreat, getRetreatState(melee, black) returns it', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
+    const blackCommitmentCard = createTestCard();
+    const whiteCommitmentCard = createTestCard();
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
@@ -187,7 +192,7 @@ describe(getRetreatStateFromMelee, () => {
             unit: blackUnit,
           }),
           blackCommitment: {
-            card: state.cardState.black.inPlay!,
+            card: blackCommitmentCard,
             commitmentType: 'completed',
           },
           completed: false,
@@ -197,7 +202,7 @@ describe(getRetreatStateFromMelee, () => {
             createTestUnit('white', { attack: 2 }),
           ),
           whiteCommitment: {
-            card: state.cardState.white.inPlay!,
+            card: whiteCommitmentCard,
             commitmentType: 'completed',
           },
         },
@@ -210,6 +215,8 @@ describe(getRetreatStateFromMelee, () => {
   });
 
   it('given melee missing white apply, getRetreatState(melee, white) throws', () => {
+    const blackCommitmentCard = createTestCard();
+    const whiteCommitmentCard = createTestCard();
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
@@ -219,7 +226,7 @@ describe(getRetreatStateFromMelee, () => {
             createTestUnit('black', { attack: 2 }),
           ),
           blackCommitment: {
-            card: state.cardState.black.inPlay!,
+            card: blackCommitmentCard,
             commitmentType: 'completed',
           },
           completed: false,
@@ -227,7 +234,7 @@ describe(getRetreatStateFromMelee, () => {
           substepType: 'meleeResolution' as const,
           whiteAttackApplyState: 'pending' as const,
           whiteCommitment: {
-            card: state.cardState.white.inPlay!,
+            card: whiteCommitmentCard,
             commitmentType: 'completed',
           },
         },
@@ -278,6 +285,8 @@ describe(findRetreatState, () => {
 
   it('given melee white retreat apply, findRetreat(white) succeeds', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
+    const blackCommitmentCard = createTestCard();
+    const whiteCommitmentCard = createTestCard();
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
       state,
@@ -287,7 +296,7 @@ describe(findRetreatState, () => {
             createTestUnit('black', { attack: 2 }),
           ),
           blackCommitment: {
-            card: state.cardState.black.inPlay!,
+            card: blackCommitmentCard,
             commitmentType: 'completed',
           },
           completed: false,
@@ -301,7 +310,7 @@ describe(findRetreatState, () => {
             unit: whiteUnit,
           }),
           whiteCommitment: {
-            card: state.cardState.white.inPlay!,
+            card: whiteCommitmentCard,
             commitmentType: 'completed',
           },
         },

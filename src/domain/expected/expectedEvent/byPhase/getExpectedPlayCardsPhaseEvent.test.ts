@@ -158,25 +158,15 @@ describe(getExpectedPlayCardsPhaseEvent, () => {
 
     it('given for invalid step, throws', () => {
       const state = createGameStateInPlayCardsStep('chooseCards');
-      // Bad type cast to test default case
       const phaseState = state.currentRoundState.currentPhaseState;
       if (phaseState === 'none') {
         throw new Error('expected phase state');
       }
-      const stateWithInvalidStep = {
-        ...state,
-        currentRoundState: {
-          ...state.currentRoundState,
-          currentPhaseState: {
-            ...phaseState,
-            step: 'invalidStep' as any,
-          },
-        },
-      };
+      phaseState.step = 'invalidStep' as unknown as typeof phaseState.step; // Intentionally bad type cast to test error path
 
-      expect(() =>
-        getExpectedPlayCardsPhaseEvent(stateWithInvalidStep),
-      ).toThrow('Invalid playCards phase step: invalidStep');
+      expect(() => getExpectedPlayCardsPhaseEvent(state)).toThrow(
+        'Invalid playCards phase step: invalidStep',
+      );
     });
   });
 });

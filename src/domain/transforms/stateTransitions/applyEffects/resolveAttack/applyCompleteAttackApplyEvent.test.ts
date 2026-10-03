@@ -270,7 +270,7 @@ describe(applyCompleteAttackApplyEvent, () => {
         eventNumber: 0,
         eventType: 'gameEffect' as const,
         effectType: 'completeAttackApply',
-        // Intentionally bad cast to test failure path
+        // Intentionally bad type cast to test error path
         attackType: 'siege' as unknown as AttackType,
         defendingPlayer: 'white',
       };

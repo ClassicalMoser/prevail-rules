@@ -83,7 +83,7 @@ describe(getOwnedPlayerCardState, () => {
     const { cardState } = createEmptyGameState('standard');
     expect(() =>
       getOwnedPlayerCardState(
-        // Intentionally bad assertion to test the error message
+        // Intentionally bad type cast to test error path
         { ...cardState, visibility: 'nobody' } as unknown as CardState,
         'white',
       ),

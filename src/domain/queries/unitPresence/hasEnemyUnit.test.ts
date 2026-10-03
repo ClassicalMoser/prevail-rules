@@ -1,16 +1,21 @@
-import type {
-  BoardSpace,
-  SingleUnitPresence,
-  UnitPresenceType,
-} from '@entities';
+import type { Board, BoardSpace, Coordinate } from '@entities';
 import {
   createBoardWithEngagedUnits,
   createBoardWithSingleUnit,
   createTestUnit,
 } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
+import { throwIfUndefined } from '@utils';
 
 import { hasEnemyUnit } from './hasEnemyUnit';
+
+function boardSpaceAt(board: Board, coord: Coordinate): BoardSpace {
+  const space = throwIfUndefined(
+    board.board[coord],
+    `expected board space at ${coord}`,
+  );
+  return space;
+}
 
 /**
  * HasEnemyUnit: Checks if an enemy unit is found in the space.
@@ -21,7 +26,7 @@ describe(hasEnemyUnit, () => {
   describe('none unit presence', () => {
     it('given there is no unit, returns false', () => {
       const board = createEmptyStandardBoard();
-      const space: BoardSpace = board.board[coordinate]!;
+      const space = boardSpaceAt(board, coordinate);
       const { result: blackResult } = hasEnemyUnit('black', space);
       expect(blackResult).toBe(false);
       const { result: whiteResult } = hasEnemyUnit('white', space);
@@ -32,21 +37,21 @@ describe(hasEnemyUnit, () => {
   describe('single unit presence', () => {
     it('given there is a friendly unit, returns false', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
-      const space: BoardSpace = board.board[coordinate]!;
+      const space = boardSpaceAt(board, coordinate);
       const { result } = hasEnemyUnit('black', space);
       expect(result).toBe(false);
     });
 
     it('given there is an enemy unit, returns true', () => {
       const board = createBoardWithSingleUnit(coordinate, 'white');
-      const space: BoardSpace = board.board[coordinate]!;
+      const space = boardSpaceAt(board, coordinate);
       const { result } = hasEnemyUnit('black', space);
       expect(result).toBe(true);
     });
 
     it('given there is a black enemy unit, returns true for white player', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
-      const space: BoardSpace = board.board[coordinate]!;
+      const space = boardSpaceAt(board, coordinate);
       const { result } = hasEnemyUnit('white', space);
       expect(result).toBe(true);
     });
@@ -61,7 +66,7 @@ describe(hasEnemyUnit, () => {
         whiteUnit,
         coordinate,
       );
-      const space: BoardSpace = board.board[coordinate]!;
+      const space = boardSpaceAt(board, coordinate);
 
       // Engaged units always contain an enemy for both sides
       const { result: blackResult } = hasEnemyUnit('black', space);
@@ -74,12 +79,10 @@ describe(hasEnemyUnit, () => {
   describe('error handling', () => {
     it('given unitPresence has invalid type, returns false', () => {
       const board = createEmptyStandardBoard();
-      const space: BoardSpace = board.board[coordinate]!;
-      // Use type assertion to bypass TypeScript's type checking and set unitPresence to an invalid value
-      // This tests the catch block - validation functions never throw
-      (space as any).unitPresence = {
-        presenceType: 'invalid' as unknown as UnitPresenceType,
-      };
+      const space = boardSpaceAt(board, coordinate);
+      space.unitPresence = {
+        presenceType: 'invalid',
+      } as unknown as typeof space.unitPresence; // Intentionally bad type cast to test error path
 
       const { result } = hasEnemyUnit('black', space);
       expect(result).toBe(false);
@@ -87,12 +90,10 @@ describe(hasEnemyUnit, () => {
 
     it('given unitPresence is missing required properties, returns false', () => {
       const board = createEmptyStandardBoard();
-      const space: BoardSpace = board.board[coordinate]!;
-      // Create a malformed unitPresence that might cause errors when accessing properties
+      const space = boardSpaceAt(board, coordinate);
       space.unitPresence = {
         presenceType: 'single',
-        // Missing 'unit' property - would cause error when accessing unit.playerSide
-      } as unknown as SingleUnitPresence;
+      } as unknown as typeof space.unitPresence; // Intentionally bad type cast to test error path
 
       const { result } = hasEnemyUnit('black', space);
       expect(result).toBe(false);

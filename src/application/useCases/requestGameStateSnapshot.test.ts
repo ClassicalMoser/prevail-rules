@@ -127,9 +127,9 @@ describe(requestGameStateSnapshot, () => {
     expect(result.data.gameState.cardState.white.inHand).toStrictEqual([
       'hidden',
     ]);
-    expect(result.data.gameState.boardState.board['E-5']?.unitPresence).toEqual(
-      game.gameState.boardState.board['E-5']?.unitPresence,
-    );
+    expect(
+      result.data.gameState.boardState.board['E-5']?.unitPresence,
+    ).toStrictEqual(game.gameState.boardState.board['E-5']?.unitPresence);
   });
 
   it('returns failure when the game is missing', async () => {

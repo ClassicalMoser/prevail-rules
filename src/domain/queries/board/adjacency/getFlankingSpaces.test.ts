@@ -75,21 +75,21 @@ describe('getFlankingSpaces function', () => {
   });
 
   it('row beyond board edge is rejected', () => {
-    // Intentionally bad type cast to trigger the error
+    // Intentionally bad type cast to test error path
     expect(() =>
       getFlankingSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid row: R'));
   });
 
   it('column beyond board edge is rejected', () => {
-    // Intentionally bad type cast to trigger the error
+    // Intentionally bad type cast to test error path
     expect(() =>
       getFlankingSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
     ).toThrow(new Error('Invalid column: 19'));
   });
 
   it('invalid facing is rejected', () => {
-    // Intentionally bad type cast to trigger the error
+    // Intentionally bad type cast to test error path
     expect(() =>
       getFlankingSpaces(standardBoard, 'E-9', 'random' as UnitFacing),
     ).toThrow(new Error('Invalid facing: random'));
