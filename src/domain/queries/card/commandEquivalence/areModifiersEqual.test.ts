@@ -10,6 +10,7 @@ describe('areModifiersEqual function', () => {
     const modifier: Modifier = { type: 'attack', value: 1 };
     expect(areModifiersEqual(modifier, modifier)).toBe(true);
   });
+
   it('different objects with the same type and value match', () => {
     const modifier1: Modifier = { type: 'defense', value: 2 };
     const modifier2: Modifier = { type: 'defense', value: 2 };

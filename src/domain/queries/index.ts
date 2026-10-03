@@ -66,8 +66,8 @@ export {
   getGameOverWinner,
 } from './gameOver';
 
-// Command lines.
-export { getLinesFromUnit, isValidLine } from './line';
+// Command lines present on the board from a unit.
+export { getLinesFromUnit } from './line';
 
 // The other seat.
 export { getOtherPlayer } from './player';

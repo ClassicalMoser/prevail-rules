@@ -20,12 +20,12 @@ describe(getBoardSpace, () => {
       expect(space.unitPresence).toBeDefined();
     });
 
-    it('A-1 is a defined space', () => {
+    it('a-1 is a defined space', () => {
       const space = getBoardSpace(standardBoard, 'A-1');
       expect(space).toBeDefined();
     });
 
-    it('L-18 is a defined space', () => {
+    it('l-18 is a defined space', () => {
       const space = getBoardSpace(standardBoard, 'L-18');
       expect(space).toBeDefined();
     });
@@ -49,12 +49,12 @@ describe(getBoardSpace, () => {
       expect(space.unitPresence).toBeDefined();
     });
 
-    it('A-1 is a defined space', () => {
+    it('a-1 is a defined space', () => {
       const space = getBoardSpace(smallBoard, 'A-1');
       expect(space).toBeDefined();
     });
 
-    it('H-12 is a defined space', () => {
+    it('h-12 is a defined space', () => {
       const space = getBoardSpace(smallBoard, 'H-12');
       expect(space).toBeDefined();
     });

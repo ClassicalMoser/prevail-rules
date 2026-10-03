@@ -69,9 +69,9 @@ describe(exploreCommanderMoves, () => {
       const enemyUnit2 = createTestUnit('black');
       const enemyUnit3 = createTestUnit('black');
       const gameState = createGameStateWithUnits([
-        { coordinate: 'D-5', facing: 'north', unit: enemyUnit1 },
-        { coordinate: 'E-6', facing: 'north', unit: enemyUnit2 },
-        { coordinate: 'J-8', facing: 'south', unit: enemyUnit3 },
+        { placement: { coordinate: 'D-5', facing: 'north' }, unit: enemyUnit1 },
+        { placement: { coordinate: 'E-6', facing: 'north' }, unit: enemyUnit2 },
+        { placement: { coordinate: 'J-8', facing: 'south' }, unit: enemyUnit3 },
       ]);
       gameState.boardState = addCommanderToBoard(
         gameState.boardState,
@@ -97,12 +97,24 @@ describe(exploreCommanderMoves, () => {
       const friendlyUnit3 = createTestUnit('white');
       const enemyUnit3 = createTestUnit('black');
       const gameState = createGameStateWithUnits([
-        { coordinate: 'D-5', facing: 'northEast', unit: friendlyUnit1 },
-        { coordinate: 'E-6', facing: 'north', unit: friendlyUnit2 },
-        { coordinate: 'J-8', facing: 'south', unit: friendlyUnit3 },
-        { coordinate: 'D-5', facing: 'southWest', unit: enemyUnit1 },
-        { coordinate: 'E-6', facing: 'south', unit: enemyUnit2 },
-        { coordinate: 'J-8', facing: 'north', unit: enemyUnit3 },
+        {
+          placement: { coordinate: 'D-5', facing: 'northEast' },
+          unit: friendlyUnit1,
+        },
+        {
+          placement: { coordinate: 'E-6', facing: 'north' },
+          unit: friendlyUnit2,
+        },
+        {
+          placement: { coordinate: 'J-8', facing: 'south' },
+          unit: friendlyUnit3,
+        },
+        {
+          placement: { coordinate: 'D-5', facing: 'southWest' },
+          unit: enemyUnit1,
+        },
+        { placement: { coordinate: 'E-6', facing: 'south' }, unit: enemyUnit2 },
+        { placement: { coordinate: 'J-8', facing: 'north' }, unit: enemyUnit3 },
       ]);
       gameState.boardState = addCommanderToBoard(
         gameState.boardState,
@@ -127,11 +139,11 @@ describe(exploreCommanderMoves, () => {
       const enemyUnit4 = createTestUnit('black');
       const enemyUnit5 = createTestUnit('black');
       const gameState = createGameStateWithUnits([
-        { coordinate: 'C-6', facing: 'north', unit: enemyUnit1 },
-        { coordinate: 'D-6', facing: 'north', unit: enemyUnit2 },
-        { coordinate: 'E-6', facing: 'north', unit: enemyUnit3 },
-        { coordinate: 'F-6', facing: 'north', unit: enemyUnit4 },
-        { coordinate: 'G-6', facing: 'north', unit: enemyUnit5 },
+        { placement: { coordinate: 'C-6', facing: 'north' }, unit: enemyUnit1 },
+        { placement: { coordinate: 'D-6', facing: 'north' }, unit: enemyUnit2 },
+        { placement: { coordinate: 'E-6', facing: 'north' }, unit: enemyUnit3 },
+        { placement: { coordinate: 'F-6', facing: 'north' }, unit: enemyUnit4 },
+        { placement: { coordinate: 'G-6', facing: 'north' }, unit: enemyUnit5 },
       ]);
       gameState.boardState = addCommanderToBoard(
         gameState.boardState,
@@ -166,14 +178,38 @@ describe(exploreCommanderMoves, () => {
       const friendlyUnit7 = createTestUnit('white');
       const friendlyUnit8 = createTestUnit('white');
       const gameState = createGameStateWithUnits([
-        { coordinate: 'A-2', facing: 'northEast', unit: friendlyUnit1 },
-        { coordinate: 'B-3', facing: 'northEast', unit: friendlyUnit2 },
-        { coordinate: 'C-4', facing: 'northEast', unit: friendlyUnit3 },
-        { coordinate: 'D-5', facing: 'northEast', unit: friendlyUnit4 },
-        { coordinate: 'E-6', facing: 'northEast', unit: friendlyUnit5 },
-        { coordinate: 'F-7', facing: 'northEast', unit: friendlyUnit6 },
-        { coordinate: 'G-8', facing: 'northEast', unit: friendlyUnit7 },
-        { coordinate: 'H-9', facing: 'northEast', unit: friendlyUnit8 },
+        {
+          placement: { coordinate: 'A-2', facing: 'northEast' },
+          unit: friendlyUnit1,
+        },
+        {
+          placement: { coordinate: 'B-3', facing: 'northEast' },
+          unit: friendlyUnit2,
+        },
+        {
+          placement: { coordinate: 'C-4', facing: 'northEast' },
+          unit: friendlyUnit3,
+        },
+        {
+          placement: { coordinate: 'D-5', facing: 'northEast' },
+          unit: friendlyUnit4,
+        },
+        {
+          placement: { coordinate: 'E-6', facing: 'northEast' },
+          unit: friendlyUnit5,
+        },
+        {
+          placement: { coordinate: 'F-7', facing: 'northEast' },
+          unit: friendlyUnit6,
+        },
+        {
+          placement: { coordinate: 'G-8', facing: 'northEast' },
+          unit: friendlyUnit7,
+        },
+        {
+          placement: { coordinate: 'H-9', facing: 'northEast' },
+          unit: friendlyUnit8,
+        },
       ]);
       gameState.boardState = addCommanderToBoard(
         gameState.boardState,

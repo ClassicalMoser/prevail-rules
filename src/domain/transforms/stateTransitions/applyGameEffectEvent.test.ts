@@ -5,6 +5,7 @@ import { applyGameEffectEvent } from './applyGameEffectEvent';
 import type { PlayerSide } from '@entities';
 
 import { createEmptyGameState } from '@factories';
+
 vi.mock(import('./applyEffects'), () => ({
   applyCompleteAttackApplyEvent: vi.fn(),
   applyCompleteCleanupPhaseEvent: vi.fn(),

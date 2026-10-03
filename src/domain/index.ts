@@ -523,6 +523,7 @@ export {
   getLegalRetreats,
   getLegalUnitMoves,
   isLegalMove,
+  isValidLine,
   unitMatchesInspirationRange,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,
@@ -639,6 +640,5 @@ export {
   isAtPlacement,
   isDefenseStat,
   isDiagonalFacing,
-  isValidLine,
   matchesUnitRequirements,
 } from '@queries';

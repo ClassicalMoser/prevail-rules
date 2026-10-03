@@ -137,8 +137,8 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
         throw new Error('Expected issueCommands phase');
       }
 
-      expect(phaseState.remainingUnitsFirstPlayer.length).toBe(0);
-      expect(phaseState.remainingUnitsSecondPlayer.length).toBe(0);
+      expect(phaseState.remainingUnitsFirstPlayer).toHaveLength(0);
+      expect(phaseState.remainingUnitsSecondPlayer).toHaveLength(0);
     });
 
     it('given default event, issueCommands has no currentCommandResolutionState', () => {
@@ -177,7 +177,7 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
       expect(
         throwIfNone(state.currentRoundState.currentPhaseState, 'phase').phase,
       ).toBe(originalPhase);
-      expect(state.currentRoundState.completedPhases.length).toBe(
+      expect(state.currentRoundState.completedPhases).toHaveLength(
         originalCompletedPhasesSize,
       );
     });
@@ -257,8 +257,8 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
       if (phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
-      expect(phaseState.remainingCommandsFirstPlayer.length).toBe(0);
-      expect(phaseState.remainingCommandsSecondPlayer.length).toBe(0);
+      expect(phaseState.remainingCommandsFirstPlayer).toHaveLength(0);
+      expect(phaseState.remainingCommandsSecondPlayer).toHaveLength(0);
     });
 
     it('given cards still inPlay but event passes empty sets, issueCommands ignores inPlay', () => {
@@ -274,8 +274,8 @@ describe(applyCompleteMoveCommandersPhaseEvent, () => {
       if (phaseState.phase !== 'issueCommands') {
         throw new Error('Expected issueCommands phase');
       }
-      expect(phaseState.remainingCommandsFirstPlayer.length).toBe(0);
-      expect(phaseState.remainingCommandsSecondPlayer.length).toBe(0);
+      expect(phaseState.remainingCommandsFirstPlayer).toHaveLength(0);
+      expect(phaseState.remainingCommandsSecondPlayer).toHaveLength(0);
     });
   });
 

@@ -73,8 +73,8 @@ describe(applyCompleteCleanupPhaseEvent, () => {
 
       const newState = applyCompleteCleanupPhaseEvent(event, state);
 
-      expect(newState.currentRoundState.completedPhases.length).toBe(0);
-      expect(newState.currentRoundState.commandedUnits.length).toBe(0);
+      expect(newState.currentRoundState.completedPhases).toHaveLength(0);
+      expect(newState.currentRoundState.commandedUnits).toHaveLength(0);
     });
   });
 

@@ -18,6 +18,7 @@ import {
 import { getLegalPlayerChoiceOptions } from './getLegalPlayerChoiceOptions';
 
 import { createEmptyGameState } from '@factories';
+
 const mocks = vi.hoisted(() => ({
   getExpectedEventMock: vi.fn(),
   actualGetExpectedEvent: undefined as

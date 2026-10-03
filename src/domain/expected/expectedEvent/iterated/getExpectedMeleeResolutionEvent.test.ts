@@ -8,6 +8,7 @@ import {
 import { getExpectedMeleeResolutionEvent } from './getExpectedMeleeResolutionEvent';
 
 import { createEmptyGameState } from '@factories';
+
 const { getExpectedAttackApplyEventMock } = vi.hoisted(() => ({
   getExpectedAttackApplyEventMock: vi.fn(),
 }));

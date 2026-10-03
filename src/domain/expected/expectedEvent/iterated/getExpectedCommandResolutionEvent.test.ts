@@ -6,6 +6,7 @@ import {
 import { getExpectedCommandResolutionEvent } from './getExpectedCommandResolutionEvent';
 
 import { createEmptyGameState } from '@factories';
+
 const {
   getExpectedMovementResolutionEventMock,
   getExpectedRangedAttackResolutionEventMock,

@@ -43,7 +43,7 @@ describe(arrayWithoutUnit, () => {
     const other = createTestUnit('white');
     const array = [unit, other];
     const result = arrayWithoutUnit(array, unit);
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(hasUnitInArray(result, other)).toBe(true);
     expect(hasUnitInArray(result, unit)).toBe(false);
   });
@@ -53,12 +53,12 @@ describe(arrayWithoutUnit, () => {
     const array = [unit];
     const sameValue = createTestUnit('black', { instanceNumber: 1 });
     const result = arrayWithoutUnit(array, sameValue);
-    expect(result.length).toBe(0);
+    expect(result).toHaveLength(0);
   });
 
   it('given unit not in array, leaves length unchanged', () => {
     const array = [createTestUnit('black')];
     const result = arrayWithoutUnit(array, createTestUnit('white'));
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
   });
 });

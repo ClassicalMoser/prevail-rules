@@ -229,7 +229,7 @@ describe(applyIssueCommandEvent, () => {
       ].some((u) => isSameUnitInstance(u, unit2).result);
       expect(unit1InCommandedUnits).toBe(true);
       expect(unit2InCommandedUnits).toBe(true);
-      expect(newState.currentRoundState.commandedUnits.length).toBe(2);
+      expect(newState.currentRoundState.commandedUnits).toHaveLength(2);
     });
   });
 
@@ -257,10 +257,10 @@ describe(applyIssueCommandEvent, () => {
 
       // Original state should be unchanged
       const phaseStateAfter = getIssueCommandsPhaseState(state);
-      expect(phaseStateAfter.remainingCommandsFirstPlayer.length).toBe(
+      expect(phaseStateAfter.remainingCommandsFirstPlayer).toHaveLength(
         originalRemainingCommandsSize,
       );
-      expect(state.currentRoundState.commandedUnits.length).toBe(
+      expect(state.currentRoundState.commandedUnits).toHaveLength(
         originalCommandedUnitsSize,
       );
     });

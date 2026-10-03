@@ -3,6 +3,7 @@ import { createEmptyGameState } from '@factories';
 import { getCurrentInitiative } from './getCurrentInitiative';
 
 import { updateCurrentInitiative } from '@transforms';
+
 describe(getCurrentInitiative, () => {
   it('returns the value on game state (same as reading currentInitiative)', () => {
     const state = updateCurrentInitiative(

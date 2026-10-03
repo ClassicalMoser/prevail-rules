@@ -77,7 +77,7 @@ describe(getInlineSpaces, () => {
     );
   });
 
-  it('A-1 is its own inline line when facing northWest', () => {
+  it('a-1 is its own inline line when facing northWest', () => {
     expect(getInlineSpaces(standardBoard, 'A-1', 'northWest')).toStrictEqual(
       new Set(['A-1']),
     );

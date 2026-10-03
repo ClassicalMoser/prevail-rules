@@ -11,6 +11,7 @@ import { updatePhaseState } from '@transforms';
 import { isValidCommitToRangedAttackEvent } from './isValidCommitToRangedAttackEvent';
 
 import { createEmptyGameState } from '@factories';
+
 const strikeCard = tempCommandCards[0];
 const moveCard = tempCommandCards[4];
 

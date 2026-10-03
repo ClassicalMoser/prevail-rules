@@ -25,7 +25,7 @@ describe(addUnitsToCommandedUnits, () => {
 
     addUnitsToCommandedUnits(state, units);
 
-    expect(state.currentRoundState.commandedUnits.length).toBe(0);
+    expect(state.currentRoundState.commandedUnits).toHaveLength(0);
   });
 
   it('given add to existing commandedUnits', () => {
@@ -37,7 +37,7 @@ describe(addUnitsToCommandedUnits, () => {
     const stateWithUnit1 = addUnitsToCommandedUnits(state, [unit1]);
     const newState = addUnitsToCommandedUnits(stateWithUnit1, [unit2, unit3]);
 
-    expect(newState.currentRoundState.commandedUnits.length).toBe(3);
+    expect(newState.currentRoundState.commandedUnits).toHaveLength(3);
     expect([...newState.currentRoundState.commandedUnits]).toContain(unit1);
     expect([...newState.currentRoundState.commandedUnits]).toContain(unit2);
     expect([...newState.currentRoundState.commandedUnits]).toContain(unit3);

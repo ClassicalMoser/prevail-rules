@@ -103,7 +103,7 @@ Walk folders in IDE order (alphabetical).
   - [x] `engagement/` — front, flank, rear, plus movement engagement getters
   - [x] `facings/`
   - [x] `gameOver/` — empty hand, unpayable rout discard, then the composed check
-  - [ ] `line/` — `getLinesFromUnit`, `isValidLine`
+  - [ ] `line/` — `getLinesFromUnit` (`isValidLine` moved to `@legality` issueCommand)
   - [ ] `player/` — `getOtherPlayer`
   - [ ] `sequencing/` — current phase, step, initiative, event number, event stream
     - [ ] `combatOutcomes/`

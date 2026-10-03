@@ -39,5 +39,7 @@ export function createBoardWithSingleUnit(
   }
   const unit = createUnitInstance(playerSide, unitType, instanceNumber);
 
-  return createBoardWithUnits([{ coordinate: coord, facing, unit }]);
+  return createBoardWithUnits([
+    { placement: { coordinate: coord, facing }, unit },
+  ]);
 }

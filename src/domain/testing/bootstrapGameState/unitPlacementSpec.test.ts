@@ -32,15 +32,15 @@ describe(getExplicitInstanceNumber, () => {
 describe(normalizeUnitPlacement, () => {
   it('given normalize tuple syntax with default facing', () => {
     const result = normalizeUnitPlacement(['E-5', 'black'], 1);
-    expect(result.coordinate).toBe('E-5');
-    expect(result.facing).toBe('north');
+    expect(result.placement.coordinate).toBe('E-5');
+    expect(result.placement.facing).toBe('north');
     expect(result.unit.playerSide).toBe('black');
     expect(result.unit.instanceNumber).toBe(1);
   });
 
   it('given normalize tuple syntax with explicit facing', () => {
     const result = normalizeUnitPlacement(['E-5', 'white', 'south'], 1);
-    expect(result.facing).toBe('south');
+    expect(result.placement.facing).toBe('south');
   });
 
   it('given normalize object syntax with unit options', () => {
@@ -48,7 +48,7 @@ describe(normalizeUnitPlacement, () => {
       { attack: 3, coord: 'E-6', player: 'white' },
       1,
     );
-    expect(result.coordinate).toBe('E-6');
+    expect(result.placement.coordinate).toBe('E-6');
     expect(result.unit.unitType.stats.attack).toBe(3);
   });
 

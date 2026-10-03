@@ -17,7 +17,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
@@ -28,7 +28,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       // RoundEffect exists (inspiration restriction present) but modifiers omit attack — only command modifiers apply when commanded
       gameState.cardState.black.inPlay = createTestCard({
@@ -48,7 +48,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('white', { attack: 2 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.cardState.white.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'speed', value: 1 }],
@@ -63,7 +63,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 2 }],
@@ -77,7 +77,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'speed', value: 1 }], // Different stat
@@ -91,7 +91,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { reverse: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'defense', value: 1 }],
@@ -107,7 +107,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.boardState = createBoardWithCommander(
         'black',
@@ -127,7 +127,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.boardState = createBoardWithCommander(
         'black',
@@ -147,7 +147,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
@@ -164,7 +164,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
@@ -178,7 +178,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.cardState.black.inPlay = createTestCard({
         roundEffectModifiers: [{ type: 'attack', value: 1 }],
@@ -195,7 +195,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.currentRoundState.commandedUnits = [unit];
 
@@ -208,7 +208,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.currentRoundState.commandedUnits = [unit];
       gameState.cardState.black.inPlay = {
@@ -228,7 +228,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.currentRoundState.commandedUnits = [unit];
       gameState.cardState.black.inPlay = createTestCard({
@@ -243,7 +243,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.currentRoundState.commandedUnits = []; // Empty
       gameState.cardState.black.inPlay = createTestCard({
@@ -258,7 +258,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.currentRoundState.commandedUnits = [unit];
       gameState.cardState.black.inPlay = createTestCard({
@@ -275,7 +275,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
 
       const result = getCurrentUnitStat(unit, 'attack', gameState, [
@@ -289,7 +289,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { reverse: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
 
       const result = getCurrentUnitStat(unit, 'reverse', gameState, [
@@ -303,7 +303,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
 
       const result = getCurrentUnitStat(unit, 'attack', gameState, [
@@ -319,7 +319,7 @@ describe(getCurrentUnitStat, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const gameState = createEmptyGameState('standard');
       gameState.boardState = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
       gameState.currentRoundState.commandedUnits = [unit];
       gameState.cardState.black.inPlay = createTestCard({

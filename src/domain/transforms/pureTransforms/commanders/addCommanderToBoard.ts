@@ -1,5 +1,6 @@
 import type { Board, Coordinate, PlayerSide } from '@entities';
 import { getBoardSpace } from '@queries';
+
 export function addCommanderToBoard(
   board: Board,
   playerSide: PlayerSide,

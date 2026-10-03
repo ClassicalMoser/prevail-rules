@@ -4,7 +4,7 @@ Import as `@queries`.
 
 Pure reads. A query looks at a `GameState` (or a smaller value) and returns something about it. It does not write.
 
-A query reports what is already the case. What a player may do is `@legality`. What happens next is `@expected`. 
+A query reports what is already the case. What a player may do is `@legality`. What happens next is `@expected`.
 
 Folders follow the game nouns, in the same order as the directory: `attack`, `board`, `card`, and so on. Substep readers under `sequencing/` follow `game/substeps`.
 

@@ -117,11 +117,14 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       'firstPlayerResolveCommands',
       'black',
       (gameState) => ({
-        currentCommandResolutionState: createMovementResolutionState(gameState, {
-          commitment: {
-            commitmentType: 'pending' as const,
+        currentCommandResolutionState: createMovementResolutionState(
+          gameState,
+          {
+            commitment: {
+              commitmentType: 'pending' as const,
+            },
           },
-        }),
+        ),
       }),
     );
 
@@ -237,11 +240,14 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       'secondPlayerResolveCommands',
       'black',
       (gameState) => ({
-        currentCommandResolutionState: createMovementResolutionState(gameState, {
-          commitment: {
-            commitmentType: 'pending' as const,
+        currentCommandResolutionState: createMovementResolutionState(
+          gameState,
+          {
+            commitment: {
+              commitmentType: 'pending' as const,
+            },
           },
-        }),
+        ),
       }),
     );
 

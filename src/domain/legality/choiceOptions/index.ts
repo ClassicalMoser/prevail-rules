@@ -20,6 +20,7 @@ export {
   getLegalUnitsForIssueCommand,
   getLineSegmentFromStart,
   isCommandIssuable,
+  isValidLine,
   unitMatchesInspirationRange,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,

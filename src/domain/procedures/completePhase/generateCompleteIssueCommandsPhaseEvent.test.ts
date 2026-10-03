@@ -46,7 +46,7 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
 
     const event = generateCompleteIssueCommandsPhaseEvent(stateWithPhase, 0);
 
-    expect(event.remainingEngagements.length).toBe(0);
+    expect(event.remainingEngagements).toHaveLength(0);
   });
 
   it('given same phase shell, engaged vs empty board yields different remainingEngagements', () => {
@@ -60,7 +60,7 @@ describe(generateCompleteIssueCommandsPhaseEvent, () => {
     const eventEmpty = generateCompleteIssueCommandsPhaseEvent(empty, 0);
     const eventEngaged = generateCompleteIssueCommandsPhaseEvent(engaged, 0);
 
-    expect(eventEmpty.remainingEngagements.length).toBe(0);
+    expect(eventEmpty.remainingEngagements).toHaveLength(0);
     expect(eventEngaged.remainingEngagements).toContain('E-5');
   });
 });

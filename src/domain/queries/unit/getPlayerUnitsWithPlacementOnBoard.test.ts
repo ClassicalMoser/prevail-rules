@@ -14,9 +14,9 @@ describe(getPlayerUnitsWithPlacementOnBoard, () => {
 
     const state = createEmptyGameState('standard');
     state.boardState = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: unit1 },
-      { coordinate: 'F-5', facing: 'south', unit: unit2 },
-      { coordinate: 'G-5', facing: 'east', unit: unit3 },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
+      { placement: { coordinate: 'F-5', facing: 'south' }, unit: unit2 },
+      { placement: { coordinate: 'G-5', facing: 'east' }, unit: unit3 },
     ]);
 
     const whiteUnits = getPlayerUnitsWithPlacementOnBoard(state, 'white');
@@ -40,7 +40,7 @@ describe(getPlayerUnitsWithPlacementOnBoard, () => {
 
     const state = createEmptyGameState('standard');
     state.boardState = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit },
     ]);
 
     const blackUnits = getPlayerUnitsWithPlacementOnBoard(state, 'black');
@@ -53,7 +53,7 @@ describe(getPlayerUnitsWithPlacementOnBoard, () => {
 
     const state = createEmptyGameState('standard');
     state.boardState = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit },
     ]);
 
     const whiteUnits = getPlayerUnitsWithPlacementOnBoard(state, 'white');

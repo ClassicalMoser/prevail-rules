@@ -8,6 +8,7 @@ import { updatePhaseState, updateRoundEventStream } from '@transforms';
 import { getLegalChooseCardOptions } from './getLegalChooseCardOptions';
 
 import { createEmptyGameState } from '@factories';
+
 const chooseCardBase = {
   choiceType: 'chooseCard' as const,
   eventNumber: 0,

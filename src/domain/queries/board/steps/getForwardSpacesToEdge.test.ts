@@ -26,7 +26,7 @@ describe(getForwardSpacesToEdge, () => {
     );
   });
 
-  it('E-6 through E-18 when facing east from E-5', () => {
+  it('e-6 through E-18 when facing east from E-5', () => {
     expect(getForwardSpacesToEdge(standardBoard, 'E-5', 'east')).toStrictEqual(
       new Set([
         'E-6',

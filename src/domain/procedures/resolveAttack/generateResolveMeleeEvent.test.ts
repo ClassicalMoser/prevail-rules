@@ -83,8 +83,8 @@ describe(generateResolveMeleeEvent, () => {
     expect(event.blackUnitWithPlacement.unit.playerSide).toBe('black');
     expect(event.whiteUnitRetreated).toBe(false);
     expect(event.blackUnitRetreated).toBe(false);
-    expect(event.whiteLegalRetreatOptions.length).toBe(0);
-    expect(event.blackLegalRetreatOptions.length).toBe(0);
+    expect(event.whiteLegalRetreatOptions).toHaveLength(0);
+    expect(event.blackLegalRetreatOptions).toHaveLength(0);
   });
 
   it('given melee CRS with white commitment pending, throws white commitment guard', () => {

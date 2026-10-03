@@ -87,7 +87,7 @@ describe('getSpacesBehind function', () => {
     );
   });
 
-  it('A-1, B-1, and A-2 lie behind a southEast-facing unit at B-2', () => {
+  it('a-1, B-1, and A-2 lie behind a southEast-facing unit at B-2', () => {
     // The three spaces northwest of B-2.
     expect(getSpacesBehind(standardBoard, 'B-2', 'southEast')).toStrictEqual(
       new Set(['A-1', 'B-1', 'A-2']),

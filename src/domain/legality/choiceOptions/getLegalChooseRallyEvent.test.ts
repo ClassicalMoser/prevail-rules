@@ -13,6 +13,7 @@ import {
 import { getLegalChooseRallyEvent } from './getLegalChooseRallyEvent';
 
 import { createEmptyGameState } from '@factories';
+
 const chooseRallyBase = {
   choiceType: 'chooseRally' as const,
   eventType: PLAYER_CHOICE_EVENT_TYPE,

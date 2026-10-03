@@ -7,6 +7,7 @@ import {
   getBoardSpace,
   isSameUnitInstance,
 } from '@queries';
+
 export function eachUnitPresentOnce(
   whiteArmy: Set<UnitCount>,
   blackArmy: Set<UnitCount>,
@@ -104,8 +105,7 @@ export function eachUnitPresentOnce(
           // Unexpected unit on board
           return removeExpectedSecondaryUnitResult;
         }
-        seenInGame.push(primaryUnit);
-        seenInGame.push(secondaryUnit);
+        seenInGame.push(primaryUnit, secondaryUnit);
       }
     }
 
