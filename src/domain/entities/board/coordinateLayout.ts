@@ -5,6 +5,7 @@
  */
 
 import type { Board } from './board';
+import type { Coordinate } from './boardCoordinates';
 import type { LargeBoardColumnNumber, LargeBoardRowLetter } from './largeBoard';
 import type { SmallBoardColumnNumber, SmallBoardRowLetter } from './smallBoard';
 import type {
@@ -17,14 +18,18 @@ import { smallCoordinateLayout } from './smallBoard';
 import { standardCoordinateLayout } from './standardBoard';
 
 /**
- * Bundle of a board's row/column definitions plus createCoordinate.
- * Used to iterate the grid or for coordinate arithmetic
- * (getRowIndex/getColumnIndex O(1)).
+ * Bundle of a board's row/column definitions plus coordinate ops.
  *
- * Defaults to the large-board letter/number unions: coordinate sets nest
- * (small ⊂ standard ⊂ large), so {@link Coordinate} is extensionally that
- * product. Method syntax keeps parameter checks bivariant so per-size
- * layouts remain assignable to the shared default type.
+ * Board size is a **value** on each layout instance (`rowLetters` /
+ * `columnNumbers`), not a type parameter that callables must re-prove.
+ * `createCoordinate` therefore takes `string` parts: callers pass letters and
+ * numbers from this layout's arrays (or from index math already bounded
+ * against them). {@link Coordinate} remains the typed vocabulary of joined
+ * strings; which keys exist on a given board is enforced at Zod / runtime.
+ *
+ * Defaults to the large-board letter/number unions because coordinate sets
+ * nest (small ⊂ standard ⊂ large), so {@link Coordinate} is extensionally
+ * that product. The generics still label each layout's array element types.
  */
 export interface CoordinateLayout<
   R extends string = LargeBoardRowLetter,
@@ -32,11 +37,11 @@ export interface CoordinateLayout<
 > {
   readonly rowLetters: readonly R[];
   readonly columnNumbers: readonly C[];
-  createCoordinate(row: R, column: C): `${R}-${C}`;
-  /** O(1) row string → index; -1 if not valid. */
-  getRowIndex(row: string): number;
-  /** O(1) column string → index; -1 if not valid. */
-  getColumnIndex(column: string): number;
+  createCoordinate: (row: string, column: string) => Coordinate;
+  /** O(1) row string → index; -1 if not valid for this layout. */
+  getRowIndex: (row: string) => number;
+  /** O(1) column string → index; -1 if not valid for this layout. */
+  getColumnIndex: (column: string) => number;
 }
 
 export interface CoordinateLayoutMap {

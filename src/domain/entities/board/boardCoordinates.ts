@@ -1,11 +1,11 @@
 import type { AssertExact } from '@utils';
-import type { StandardBoardCoordinate } from './standardBoard';
-import type { SmallBoardCoordinate } from './smallBoard';
-import type { LargeBoardCoordinate } from './largeBoard';
-
-import { standardBoardCoordinates } from './standardBoard';
-import { smallBoardCoordinates } from './smallBoard';
-import { largeBoardCoordinates } from './largeBoard';
+// Leaf modules only — avoid size barrels (they re-export layouts that import us).
+import type { LargeBoardCoordinate } from './largeBoard/largeCoordinates';
+import { largeBoardCoordinates } from './largeBoard/largeCoordinates';
+import type { SmallBoardCoordinate } from './smallBoard/smallCoordinates';
+import { smallBoardCoordinates } from './smallBoard/smallCoordinates';
+import type { StandardBoardCoordinate } from './standardBoard/standardCoordinates';
+import { standardBoardCoordinates } from './standardBoard/standardCoordinates';
 
 import { z } from 'zod';
 
@@ -29,6 +29,27 @@ const allCoordinates = [
     ...largeBoardCoordinates,
   ]),
 ];
+
+/** O(1) lookup so joined row/column strings narrow to {@link Coordinate} without a cast. */
+const coordinateByKey = new Map<string, Coordinate>(
+  allCoordinates.map((coordinate) => [coordinate, coordinate]),
+);
+
+/**
+ * Join a row letter and column number into a {@link Coordinate}.
+ * Layout modules only — not part of the public `@entities` surface.
+ * Size membership is a value concern: layouts pass parts from their own arrays.
+ *
+ * @throws {Error} When the joined string is not a known coordinate
+ */
+export function joinCoordinate(row: string, column: string): Coordinate {
+  const joined = `${row}-${column}`;
+  const coordinate = coordinateByKey.get(joined);
+  if (coordinate === undefined) {
+    throw new Error(`Invalid coordinate: ${joined}`);
+  }
+  return coordinate;
+}
 
 const _coordinateSchemaObject = z.enum(allCoordinates);
 
