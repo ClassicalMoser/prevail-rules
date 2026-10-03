@@ -1,3 +1,4 @@
+import { joinCoordinate } from '../boardCoordinates';
 import type { CoordinateLayout } from '../coordinateLayout';
 
 import type { SmallBoardColumnNumber } from './smallColumnNumbers';
@@ -17,7 +18,7 @@ export const smallCoordinateLayout: CoordinateLayout<
   SmallBoardColumnNumber
 > = {
   columnNumbers: smallBoardColumnNumbers,
-  createCoordinate: (row, column) => `${row}-${column}`,
+  createCoordinate: (row, column) => joinCoordinate(row, column),
   getColumnIndex: (col) => columnIndexMap.get(col) ?? -1,
   getRowIndex: (row) => rowIndexMap.get(row) ?? -1,
   rowLetters: smallBoardRowLetters,

@@ -58,10 +58,15 @@ export function getForwardSpace(
     return undefined;
   }
 
-  // Convert the calculated indices back to string coordinates
+  // Convert the calculated indices back to string coordinates.
+  // Bounds were checked above; throw if the arrays disagree with their length.
   const newRow = layout.rowLetters[newRowIndex];
   const newColumn = layout.columnNumbers[newColumnIndex];
+  if (newRow === undefined || newColumn === undefined) {
+    throw new Error(
+      `Layout missing row/column at indices ${newRowIndex},${newColumnIndex}`,
+    );
+  }
 
-  // Reconstruct the coordinate string
   return layout.createCoordinate(newRow, newColumn);
 }
