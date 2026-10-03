@@ -2,6 +2,7 @@ export { createGameState } from './bootstrapGameState';
 export {
   createBoardWithCommander,
   createBoardWithEngagedUnits,
+  createBoardWithFacingRow,
   createBoardWithSingleUnit,
   createBoardWithUnits,
   createGameStateWithEngagedUnits,
@@ -33,6 +34,9 @@ export {
 } from './phaseStateHelpers';
 export { procedureRegistryStateFactories } from './procedureRegistryStateFactories';
 export {
+  coordinatesOfLine,
+  coordinatesOfLines,
+  coordinatesOfSegment,
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,

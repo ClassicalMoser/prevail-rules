@@ -35,7 +35,7 @@ describe(getMeleeSupportValue, () => {
   it('returns 0 when there are no adjacent units', () => {
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit },
     ]);
 
     expect(supportAt(board, 'E-5')).toBe(0);
@@ -46,8 +46,8 @@ describe(getMeleeSupportValue, () => {
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     // E-5 facing north: F-5 is south, in the rear arc.
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'F-5', facing: 'north', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      { placement: { coordinate: 'F-5', facing: 'north' }, unit: supportUnit },
     ]);
 
     expect(supportAt(board, 'E-5')).toBe(0);
@@ -58,8 +58,8 @@ describe(getMeleeSupportValue, () => {
     const enemyUnit = createTestUnit('white', { instanceNumber: 1 });
     // D-5 is north of E-5.
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'D-5', facing: 'north', unit: enemyUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      { placement: { coordinate: 'D-5', facing: 'north' }, unit: enemyUnit },
     ]);
 
     expect(supportAt(board, 'E-5')).toBe(0);
@@ -69,8 +69,8 @@ describe(getMeleeSupportValue, () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'E-6', facing: 'west', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      { placement: { coordinate: 'E-6', facing: 'west' }, unit: supportUnit },
     ]);
 
     expect(supportAt(board, 'E-5')).toBe(2);
@@ -80,8 +80,11 @@ describe(getMeleeSupportValue, () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'D-6', facing: 'southWest', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      {
+        placement: { coordinate: 'D-6', facing: 'southWest' },
+        unit: supportUnit,
+      },
     ]);
 
     expect(supportAt(board, 'E-5')).toBe(2);
@@ -91,8 +94,11 @@ describe(getMeleeSupportValue, () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'E-6', facing: 'northWest', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      {
+        placement: { coordinate: 'E-6', facing: 'northWest' },
+        unit: supportUnit,
+      },
     ]);
     expect(supportAt(board, 'E-5')).toBe(2);
   });
@@ -101,8 +107,8 @@ describe(getMeleeSupportValue, () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'D-6', facing: 'west', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      { placement: { coordinate: 'D-6', facing: 'west' }, unit: supportUnit },
     ]);
     expect(supportAt(board, 'E-5')).toBe(2);
   });
@@ -112,8 +118,8 @@ describe(getMeleeSupportValue, () => {
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     // E-6 facing north has E-5 on its left flank.
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'E-6', facing: 'north', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      { placement: { coordinate: 'E-6', facing: 'north' }, unit: supportUnit },
     ]);
     expect(supportAt(board, 'E-5')).toBe(1);
   });
@@ -123,8 +129,11 @@ describe(getMeleeSupportValue, () => {
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     // D-4 facing northEast has E-5 on its right flank.
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'D-4', facing: 'northEast', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      {
+        placement: { coordinate: 'D-4', facing: 'northEast' },
+        unit: supportUnit,
+      },
     ]);
     expect(supportAt(board, 'E-5')).toBe(1);
   });
@@ -134,8 +143,8 @@ describe(getMeleeSupportValue, () => {
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     // E-6 facing south has E-5 on its right flank.
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'E-6', facing: 'south', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      { placement: { coordinate: 'E-6', facing: 'south' }, unit: supportUnit },
     ]);
     expect(supportAt(board, 'E-5')).toBe(1);
   });
@@ -144,8 +153,11 @@ describe(getMeleeSupportValue, () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'E-6', facing: 'northEast', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      {
+        placement: { coordinate: 'E-6', facing: 'northEast' },
+        unit: supportUnit,
+      },
     ]);
     expect(supportAt(board, 'E-5')).toBe(0);
   });
@@ -154,8 +166,8 @@ describe(getMeleeSupportValue, () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'E-6', facing: 'east', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      { placement: { coordinate: 'E-6', facing: 'east' }, unit: supportUnit },
     ]);
     expect(supportAt(board, 'E-5')).toBe(0);
   });
@@ -167,10 +179,19 @@ describe(getMeleeSupportValue, () => {
     const blockingEnemy2 = createTestUnit('white', { instanceNumber: 2 });
     // D-6 is northeast of E-5. D-5 and E-6 are the two orthogonal steps between them.
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'D-6', facing: 'southWest', unit: supportUnit },
-      { coordinate: 'D-5', facing: 'south', unit: blockingEnemy1 },
-      { coordinate: 'E-6', facing: 'south', unit: blockingEnemy2 },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      {
+        placement: { coordinate: 'D-6', facing: 'southWest' },
+        unit: supportUnit,
+      },
+      {
+        placement: { coordinate: 'D-5', facing: 'south' },
+        unit: blockingEnemy1,
+      },
+      {
+        placement: { coordinate: 'E-6', facing: 'south' },
+        unit: blockingEnemy2,
+      },
     ]);
     expect(supportAt(board, 'E-5')).toBe(0);
   });
@@ -206,9 +227,9 @@ describe(getMeleeSupportValue, () => {
     const rearUnit = createTestUnit('black', { instanceNumber: 3 });
     // F-5 is south of a north-facing E-5. E-6 faces west, toward E-5.
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'E-6', facing: 'west', unit: facingSupport },
-      { coordinate: 'F-5', facing: 'north', unit: rearUnit },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      { placement: { coordinate: 'E-6', facing: 'west' }, unit: facingSupport },
+      { placement: { coordinate: 'F-5', facing: 'north' }, unit: rearUnit },
     ]);
 
     expect(supportAt(board, 'E-5')).toBe(2);
@@ -221,9 +242,15 @@ describe(getMeleeSupportValue, () => {
     // E-6 facing north flanks E-5 from the east.
     // D-5 facing east flanks E-5 from the north.
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: primaryUnit },
-      { coordinate: 'E-6', facing: 'north', unit: weakSupportUnit1 },
-      { coordinate: 'D-5', facing: 'east', unit: weakSupportUnit2 },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: primaryUnit },
+      {
+        placement: { coordinate: 'E-6', facing: 'north' },
+        unit: weakSupportUnit1,
+      },
+      {
+        placement: { coordinate: 'D-5', facing: 'east' },
+        unit: weakSupportUnit2,
+      },
     ]);
 
     expect(supportAt(board, 'E-5')).toBe(2);
@@ -233,8 +260,8 @@ describe(getMeleeSupportValue, () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     const board = createBoardWithUnits([
-      { coordinate: 'A-1', facing: 'north', unit: primaryUnit },
-      { coordinate: 'A-2', facing: 'west', unit: supportUnit },
+      { placement: { coordinate: 'A-1', facing: 'north' }, unit: primaryUnit },
+      { placement: { coordinate: 'A-2', facing: 'west' }, unit: supportUnit },
     ]);
 
     expect(supportAt(board, 'A-1')).toBe(2);
@@ -244,8 +271,8 @@ describe(getMeleeSupportValue, () => {
     const primaryUnit = createTestUnit('black', { instanceNumber: 1 });
     const supportUnit = createTestUnit('black', { instanceNumber: 2 });
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'east', unit: primaryUnit },
-      { coordinate: 'E-6', facing: 'west', unit: supportUnit },
+      { placement: { coordinate: 'E-5', facing: 'east' }, unit: primaryUnit },
+      { placement: { coordinate: 'E-6', facing: 'west' }, unit: supportUnit },
     ]);
 
     expect(supportAt(board, 'E-5')).toBe(2);

@@ -15,6 +15,7 @@ import {
 import { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
 
 import { createEmptyGameState } from '@factories';
+
 const { canReverseUnitMock } = vi.hoisted(() => ({
   canReverseUnitMock: vi.fn(),
 }));

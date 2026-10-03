@@ -4,6 +4,7 @@ import { tempCommandCards } from '@sampleValues';
 import { getNextEventNumber } from './getNextEventNumber';
 
 import { createEmptyGameState } from '@factories';
+
 describe(getNextEventNumber, () => {
   it('returns 0 when the round has no events yet', () => {
     const state = createEmptyGameState('standard');

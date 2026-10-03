@@ -3,6 +3,7 @@ import type { GameOverEvent } from '@events';
 import { applyGameOverEvent } from './applyGameOverEvent';
 
 import { createEmptyGameState } from '@factories';
+
 describe(applyGameOverEvent, () => {
   it('assigns the winner from the event', () => {
     const state = createEmptyGameState('standard');

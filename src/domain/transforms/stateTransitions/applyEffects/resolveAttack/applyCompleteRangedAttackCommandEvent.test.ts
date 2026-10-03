@@ -17,6 +17,7 @@ import {
 import { applyCompleteRangedAttackCommandEvent } from './applyCompleteRangedAttackCommandEvent';
 
 import { createEmptyGameState } from '@factories';
+
 const event = {
   effectType: 'completeRangedAttackCommand' as const,
   eventNumber: 0,

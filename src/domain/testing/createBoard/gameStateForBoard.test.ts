@@ -36,8 +36,8 @@ describe(createGameStateWithUnits, () => {
     const unit1 = createTestUnit('black');
     const unit2 = createTestUnit('white');
     const state = createGameStateWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: unit1 },
-      { coordinate: 'E-6', facing: 'south', unit: unit2 },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
+      { placement: { coordinate: 'E-6', facing: 'south' }, unit: unit2 },
     ]);
     expect(
       getPlayerUnitWithPosition(state.boardState, 'E-5', 'black'),

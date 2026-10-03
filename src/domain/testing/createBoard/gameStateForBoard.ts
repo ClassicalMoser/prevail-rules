@@ -4,6 +4,7 @@ import type {
   UnitFacing,
   UnitInstance,
   UnitType,
+  UnitWithPlacement,
 } from '@entities';
 import type { GameStateForVisibility } from '@game';
 
@@ -54,11 +55,7 @@ export function createGameStateWithEngagedUnits(
  * Creates a game state with units at specified positions.
  */
 export function createGameStateWithUnits(
-  units: {
-    unit: UnitInstance;
-    coordinate: Coordinate;
-    facing: UnitFacing;
-  }[],
+  units: UnitWithPlacement[],
 ): GameStateForVisibility {
   const gameState = createEmptyGameState('standard');
   const board = createBoardWithUnits(units);

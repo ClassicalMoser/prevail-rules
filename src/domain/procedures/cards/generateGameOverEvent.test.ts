@@ -3,6 +3,7 @@ import { createTestCard, updateCardState } from '@testing';
 import { generateGameOverEvent } from './generateGameOverEvent';
 
 import { createEmptyGameState } from '@factories';
+
 describe(generateGameOverEvent, () => {
   it('bakes black as winner when white hand is empty', () => {
     const base = createEmptyGameState('standard');

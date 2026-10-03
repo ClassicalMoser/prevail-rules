@@ -4,9 +4,9 @@ Import as `@testing`.
 
 A fixture does what a factory and a transform cannot. How a spec uses one is [`STYLE.md`](../../../STYLE.md).
 
-- `createBoard` — boards
+- `createBoard` — boards, including a facing row
 - `createUnitInstance` and `unitHelpers` — units
-- `testHelpers` — cards and `updateCardState`
+- `testHelpers` — cards, `updateCardState`, and line coordinate readers
 - `phaseStateHelpers` — phase and substep shells
 - `bootstrapGameState` — a game far enough along to exercise a phase
 

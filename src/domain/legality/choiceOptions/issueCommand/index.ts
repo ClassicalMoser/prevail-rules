@@ -15,3 +15,4 @@ export {
   unitMatchesTraitAndTypeRestrictions,
 } from './getLegalUnitsForIssueCommand';
 export { isCommandIssuable } from './isCommandIssuable';
+export { isValidLine } from './isValidLine';

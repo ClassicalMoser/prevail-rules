@@ -17,7 +17,9 @@ describe(getPositionOfUnit, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: Coordinate = 'E-5';
       const facing = 'north';
-      const board = createBoardWithUnits([{ coordinate, facing, unit }]);
+      const board = createBoardWithUnits([
+        { placement: { coordinate, facing }, unit },
+      ]);
 
       const placement = getPositionOfUnit(board, unit);
 
@@ -29,7 +31,9 @@ describe(getPositionOfUnit, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: Coordinate = 'E-5';
       const facing = 'southEast';
-      const board = createBoardWithUnits([{ coordinate, facing, unit }]);
+      const board = createBoardWithUnits([
+        { placement: { coordinate, facing }, unit },
+      ]);
 
       const placement = getPositionOfUnit(board, unit);
 
@@ -41,7 +45,7 @@ describe(getPositionOfUnit, () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: Coordinate = 'A-1';
       const board = createBoardWithUnits([
-        { coordinate, facing: 'north', unit },
+        { placement: { coordinate, facing: 'north' }, unit },
       ]);
 
       const placement = getPositionOfUnit(board, unit);
@@ -120,7 +124,7 @@ describe(getPositionOfUnit, () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: unit2 },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit2 },
       ]);
 
       expect(() => {
@@ -133,7 +137,7 @@ describe(getPositionOfUnit, () => {
     it('given find unit by value even with different object reference', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: unit1 },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
       ]);
 
       // Create a new unit instance with same properties (different reference)

@@ -7,6 +7,7 @@ import {
   getLegalLineEndsForIssueCommand,
   getLegalUnitsForIssueCommand,
   getLineSegmentFromStart,
+  isValidLine,
   unitMatchesInspirationRange,
   unitMatchesTraitAndTypeRestrictions,
 } from '@legality';
@@ -14,7 +15,6 @@ import {
   findMatchingCommand,
   getPositionOfUnit,
   isSameUnitInstance,
-  isValidLine,
 } from '@queries';
 
 function unitKey(unit: UnitInstance): string {

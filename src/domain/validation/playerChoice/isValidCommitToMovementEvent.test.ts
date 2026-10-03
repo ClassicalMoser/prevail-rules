@@ -11,6 +11,7 @@ import { updatePhaseState } from '@transforms';
 import { isValidCommitToMovementEvent } from './isValidCommitToMovementEvent';
 
 import { createEmptyGameState } from '@factories';
+
 const moveCard = tempCommandCards[4];
 const strikeCard = tempCommandCards[0];
 

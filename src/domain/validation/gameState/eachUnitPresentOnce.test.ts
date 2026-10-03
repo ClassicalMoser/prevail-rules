@@ -48,8 +48,8 @@ describe(eachUnitPresentOnce, () => {
       const unit2 = createExpectedUnit('white', attack2UnitType, 2);
       const whiteArmy = createArmy(attack2UnitType, 2);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: unit1 },
-        { coordinate: 'E-6', facing: 'north', unit: unit2 },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
+        { placement: { coordinate: 'E-6', facing: 'north' }, unit: unit2 },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -65,7 +65,7 @@ describe(eachUnitPresentOnce, () => {
       const unit1 = createExpectedUnit('black', attack2UnitType, 1);
       const blackArmy = createArmy(attack2UnitType, 1);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: unit1 },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -83,8 +83,8 @@ describe(eachUnitPresentOnce, () => {
       const whiteArmy = createArmy(attack2UnitType, 1);
       const blackArmy = createArmy(attack2UnitType, 1);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: whiteUnit },
-        { coordinate: 'E-6', facing: 'south', unit: blackUnit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: whiteUnit },
+        { placement: { coordinate: 'E-6', facing: 'south' }, unit: blackUnit },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -125,8 +125,8 @@ describe(eachUnitPresentOnce, () => {
         { count: 1, unitType: attack3UnitType },
       ]);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: whiteUnit1 },
-        { coordinate: 'E-6', facing: 'north', unit: whiteUnit2 },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: whiteUnit1 },
+        { placement: { coordinate: 'E-6', facing: 'north' }, unit: whiteUnit2 },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -144,8 +144,8 @@ describe(eachUnitPresentOnce, () => {
       const unit1 = createExpectedUnit('white', attack2UnitType, 1);
       const whiteArmy = createArmy(attack2UnitType, 1);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: unit1 },
-        { coordinate: 'E-6', facing: 'north', unit: unit1 },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
+        { placement: { coordinate: 'E-6', facing: 'north' }, unit: unit1 },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -229,7 +229,7 @@ describe(eachUnitPresentOnce, () => {
       const unit1 = createExpectedUnit('white', attack2UnitType, 1);
       const whiteArmy = createArmy(attack2UnitType, 2);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: unit1 },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -246,7 +246,7 @@ describe(eachUnitPresentOnce, () => {
       const whiteArmy = createArmy(attack2UnitType, 1);
       const blackArmy = createArmy(attack2UnitType, 1);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'south', unit: blackUnit },
+        { placement: { coordinate: 'E-5', facing: 'south' }, unit: blackUnit },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -263,7 +263,7 @@ describe(eachUnitPresentOnce, () => {
       const whiteArmy = createArmy(attack2UnitType, 1);
       const blackArmy = createArmy(attack2UnitType, 1);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: whiteUnit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: whiteUnit },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -282,8 +282,11 @@ describe(eachUnitPresentOnce, () => {
       const unexpectedUnit = createExpectedUnit('white', attack3UnitType, 1);
       const whiteArmy = createArmy(attack2UnitType, 1);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: unit1 },
-        { coordinate: 'E-6', facing: 'north', unit: unexpectedUnit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
+        {
+          placement: { coordinate: 'E-6', facing: 'north' },
+          unit: unexpectedUnit,
+        },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -300,8 +303,11 @@ describe(eachUnitPresentOnce, () => {
       const wrongInstanceUnit = createUnitInstance('white', attack2UnitType, 3); // Should be 2
       const whiteArmy = createArmy(attack2UnitType, 2);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: unit1 },
-        { coordinate: 'E-6', facing: 'north', unit: wrongInstanceUnit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
+        {
+          placement: { coordinate: 'E-6', facing: 'north' },
+          unit: wrongInstanceUnit,
+        },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -337,7 +343,7 @@ describe(eachUnitPresentOnce, () => {
       const whiteArmy = createArmy(attack2UnitType, 2);
       const routedUnits = new Set([routedUnit]);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit: boardUnit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: boardUnit },
       ]);
 
       const { result } = eachUnitPresentOnce(
@@ -409,7 +415,7 @@ describe(eachUnitPresentOnce, () => {
       const whiteArmy = createArmy(attack2UnitType, 1);
       const routedUnits = new Set([unit]);
       const board = createBoardWithUnits([
-        { coordinate: 'E-5', facing: 'north', unit },
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
       ]);
 
       const { result } = eachUnitPresentOnce(

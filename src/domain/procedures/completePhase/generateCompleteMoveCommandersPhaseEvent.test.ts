@@ -62,8 +62,8 @@ describe(generateCompleteMoveCommandersPhaseEvent, () => {
 
     const event = generateCompleteMoveCommandersPhaseEvent(stateWithPhase, 0);
 
-    expect(event.remainingCommandsFirstPlayer.length).toBe(0);
-    expect(event.remainingCommandsSecondPlayer.length).toBe(0);
+    expect(event.remainingCommandsFirstPlayer).toHaveLength(0);
+    expect(event.remainingCommandsSecondPlayer).toHaveLength(0);
   });
 
   it('given white initiative, white command is first-player set and black is second', () => {

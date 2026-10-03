@@ -11,8 +11,8 @@ describe(createBoardWithUnits, () => {
     const unit1 = createTestUnit('black');
     const unit2 = createTestUnit('white');
     const board = createBoardWithUnits([
-      { coordinate: 'E-5', facing: 'north', unit: unit1 },
-      { coordinate: 'E-6', facing: 'south', unit: unit2 },
+      { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
+      { placement: { coordinate: 'E-6', facing: 'south' }, unit: unit2 },
     ]);
     expect(board.boardType).toBe('standard');
     const atE5 = getPlayerUnitWithPosition(board, 'E-5', 'black');

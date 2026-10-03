@@ -1,27 +1,18 @@
-import type { Board, Coordinate, UnitFacing, UnitInstance } from '@entities';
-import { addUnitToBoard } from '@transforms';
+import type { Board, UnitWithPlacement } from '@entities';
 import { createEmptyStandardBoard } from '@factories';
+import { addUnitToBoard } from '@transforms';
 
 /**
  * Creates a board with units at specified positions.
  * Composes the pure transform addUnitToBoard for each placement.
  *
- * @param units - Array of unit placements, each specifying unit, coordinate, and facing
+ * @param units - Units with their placements on the board
  * @returns A standard board with the specified units placed
  */
-export function createBoardWithUnits(
-  units: {
-    unit: UnitInstance;
-    coordinate: Coordinate;
-    facing: UnitFacing;
-  }[],
-): Board {
+export function createBoardWithUnits(units: UnitWithPlacement[]): Board {
   let board = createEmptyStandardBoard();
-  for (const { unit, coordinate, facing } of units) {
-    board = addUnitToBoard(board, {
-      placement: { coordinate, facing },
-      unit,
-    });
+  for (const unitWithPlacement of units) {
+    board = addUnitToBoard(board, unitWithPlacement);
   }
   return board;
 }

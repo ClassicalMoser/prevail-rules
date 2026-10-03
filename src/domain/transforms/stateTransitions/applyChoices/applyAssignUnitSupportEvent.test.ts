@@ -13,6 +13,7 @@ import { applyAssignUnitSupportEvent } from './applyAssignUnitSupportEvent';
 
 import { createEmptyGameState } from '@factories';
 import { updateCurrentInitiative } from '@transforms/pureTransforms/state/updateCurrentInitiative';
+
 function awaitingSupportState() {
   const base = updateCurrentInitiative(
     createEmptyGameState('standard'),

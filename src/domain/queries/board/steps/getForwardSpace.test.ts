@@ -12,35 +12,35 @@ const smallBoard: Board = createEmptySmallBoard();
  */
 describe(getForwardSpace, () => {
   describe('standard board', () => {
-    it('B-1 is one step forward from A-1 when facing south', () => {
+    it('b-1 is one step forward from A-1 when facing south', () => {
       expect(getForwardSpace(standardBoard, 'A-1', 'south')).toBe('B-1');
     });
 
-    it('A-2 is one step forward from A-1 when facing east', () => {
+    it('a-2 is one step forward from A-1 when facing east', () => {
       expect(getForwardSpace(standardBoard, 'A-1', 'east')).toBe('A-2');
     });
 
-    it('E-4 is one step forward from E-5 when facing west', () => {
+    it('e-4 is one step forward from E-5 when facing west', () => {
       expect(getForwardSpace(standardBoard, 'E-5', 'west')).toBe('E-4');
     });
 
-    it('F-10 is one step forward from G-10 when facing north', () => {
+    it('f-10 is one step forward from G-10 when facing north', () => {
       expect(getForwardSpace(standardBoard, 'G-10', 'north')).toBe('F-10');
     });
 
-    it('B-2 is one step forward from A-1 when facing southEast', () => {
+    it('b-2 is one step forward from A-1 when facing southEast', () => {
       expect(getForwardSpace(standardBoard, 'A-1', 'southEast')).toBe('B-2');
     });
 
-    it('E-3 is one step forward from D-4 when facing southWest', () => {
+    it('e-3 is one step forward from D-4 when facing southWest', () => {
       expect(getForwardSpace(standardBoard, 'D-4', 'southWest')).toBe('E-3');
     });
 
-    it('J-12 is one step forward from K-11 when facing northEast', () => {
+    it('j-12 is one step forward from K-11 when facing northEast', () => {
       expect(getForwardSpace(standardBoard, 'K-11', 'northEast')).toBe('J-12');
     });
 
-    it('K-17 is one step forward from L-18 when facing northWest', () => {
+    it('k-17 is one step forward from L-18 when facing northWest', () => {
       expect(getForwardSpace(standardBoard, 'L-18', 'northWest')).toBe('K-17');
     });
 
@@ -134,35 +134,35 @@ describe(getForwardSpace, () => {
   });
 
   describe('small board', () => {
-    it('B-1 is one step forward from A-1 when facing south', () => {
+    it('b-1 is one step forward from A-1 when facing south', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'south')).toBe('B-1');
     });
 
-    it('A-2 is one step forward from A-1 when facing east', () => {
+    it('a-2 is one step forward from A-1 when facing east', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'east')).toBe('A-2');
     });
 
-    it('E-4 is one step forward from E-5 when facing west', () => {
+    it('e-4 is one step forward from E-5 when facing west', () => {
       expect(getForwardSpace(smallBoard, 'E-5', 'west')).toBe('E-4');
     });
 
-    it('F-10 is one step forward from G-10 when facing north', () => {
+    it('f-10 is one step forward from G-10 when facing north', () => {
       expect(getForwardSpace(smallBoard, 'G-10', 'north')).toBe('F-10');
     });
 
-    it('B-2 is one step forward from A-1 when facing southEast', () => {
+    it('b-2 is one step forward from A-1 when facing southEast', () => {
       expect(getForwardSpace(smallBoard, 'A-1', 'southEast')).toBe('B-2');
     });
 
-    it('E-3 is one step forward from D-4 when facing southWest', () => {
+    it('e-3 is one step forward from D-4 when facing southWest', () => {
       expect(getForwardSpace(smallBoard, 'D-4', 'southWest')).toBe('E-3');
     });
 
-    it('G-12 is one step forward from H-11 when facing northEast', () => {
+    it('g-12 is one step forward from H-11 when facing northEast', () => {
       expect(getForwardSpace(smallBoard, 'H-11', 'northEast')).toBe('G-12');
     });
 
-    it('G-11 is one step forward from H-12 when facing northWest', () => {
+    it('g-11 is one step forward from H-12 when facing northWest', () => {
       expect(getForwardSpace(smallBoard, 'H-12', 'northWest')).toBe('G-11');
     });
 

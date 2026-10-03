@@ -160,7 +160,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
 
       expect(phaseState.remainingEngagements).toContain('E-5');
       expect(phaseState.remainingEngagements).toContain('E-6');
-      expect(phaseState.remainingEngagements.length).toBe(2);
+      expect(phaseState.remainingEngagements).toHaveLength(2);
     });
 
     it('given standard handoff, new resolveMelee slice has no currentMeleeResolutionState', () => {
@@ -203,7 +203,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
       expect(
         throwIfNone(state.currentRoundState.currentPhaseState, 'phase').phase,
       ).toBe(originalPhase);
-      expect(state.currentRoundState.completedPhases.length).toBe(
+      expect(state.currentRoundState.completedPhases).toHaveLength(
         originalCompletedPhasesSize,
       );
     });
@@ -225,7 +225,7 @@ describe(applyCompleteIssueCommandsPhaseEvent, () => {
       if (phaseState.phase !== 'resolveMelee') {
         throw new Error('Expected resolveMelee phase');
       }
-      expect(phaseState.remainingEngagements.length).toBe(0);
+      expect(phaseState.remainingEngagements).toHaveLength(0);
     });
 
     it('given issueCommands firstPlayerIssueCommands step, still advances to resolveMelee phase', () => {

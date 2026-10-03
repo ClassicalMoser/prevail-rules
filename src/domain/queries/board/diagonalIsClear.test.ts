@@ -42,13 +42,11 @@ describe('diagonalIsClear function', () => {
     // NorthEast at E-5 has adjacent orthogonal spaces: D-5 (north) and E-6 (east)
     const boardWithEnemies = createBoardWithUnits([
       {
-        coordinate: 'D-5',
-        facing: 'north',
+        placement: { coordinate: 'D-5', facing: 'north' },
         unit: createTestUnit('white', { attack: 3 }),
       },
       {
-        coordinate: 'E-6',
-        facing: 'north',
+        placement: { coordinate: 'E-6', facing: 'north' },
         unit: createTestUnit('white', { attack: 3, instanceNumber: 2 }),
       },
     ]);
@@ -61,8 +59,7 @@ describe('diagonalIsClear function', () => {
     // SouthWest at E-5 has adjacent orthogonal spaces: F-5 (south) and E-4 (west)
     const boardWithEnemies = createBoardWithUnits([
       {
-        coordinate: 'F-5',
-        facing: 'north',
+        placement: { coordinate: 'F-5', facing: 'north' },
         unit: createTestUnit('white', { attack: 3 }),
       },
     ]);
@@ -74,13 +71,11 @@ describe('diagonalIsClear function', () => {
   it('stays clear when friendlies occupy both intervening spaces', () => {
     const boardWithFriendlies = createBoardWithUnits([
       {
-        coordinate: 'D-5',
-        facing: 'north',
+        placement: { coordinate: 'D-5', facing: 'north' },
         unit: createTestUnit('black', { attack: 3 }),
       },
       {
-        coordinate: 'E-6',
-        facing: 'north',
+        placement: { coordinate: 'E-6', facing: 'north' },
         unit: createTestUnit('black', { attack: 3, instanceNumber: 2 }),
       },
     ]);
@@ -92,13 +87,11 @@ describe('diagonalIsClear function', () => {
   it('stays clear when one intervening space is friendly and the other is an enemy', () => {
     const boardWithMixed = createBoardWithUnits([
       {
-        coordinate: 'D-5',
-        facing: 'north',
+        placement: { coordinate: 'D-5', facing: 'north' },
         unit: createTestUnit('black', { attack: 3 }),
       },
       {
-        coordinate: 'E-6',
-        facing: 'north',
+        placement: { coordinate: 'E-6', facing: 'north' },
         unit: createTestUnit('white', { attack: 3 }),
       },
     ]);

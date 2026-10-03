@@ -15,7 +15,7 @@ describe(addUnitToRouted, () => {
       const newGameState = addUnitToRouted(gameState, unit);
 
       expect(newGameState).not.toBe(gameState);
-      expect(newGameState.routedUnits.length).toBe(1);
+      expect(newGameState.routedUnits).toHaveLength(1);
       expect([...newGameState.routedUnits]).toContain(unit);
     });
 
@@ -25,7 +25,7 @@ describe(addUnitToRouted, () => {
 
       addUnitToRouted(gameState, unit);
 
-      expect(gameState.routedUnits.length).toBe(0);
+      expect(gameState.routedUnits).toHaveLength(0);
     });
   });
 
@@ -38,7 +38,7 @@ describe(addUnitToRouted, () => {
 
       const newGameState = addUnitToRouted(gameStateWithUnit1, unit2);
 
-      expect(newGameState.routedUnits.length).toBe(2);
+      expect(newGameState.routedUnits).toHaveLength(2);
       expect([...newGameState.routedUnits]).toContain(unit1);
       expect([...newGameState.routedUnits]).toContain(unit2);
     });
@@ -51,7 +51,7 @@ describe(addUnitToRouted, () => {
 
       addUnitToRouted(gameStateWithUnit1, unit2);
 
-      expect(gameStateWithUnit1.routedUnits.length).toBe(1);
+      expect(gameStateWithUnit1.routedUnits).toHaveLength(1);
       expect([...gameStateWithUnit1.routedUnits]).toContain(unit1);
     });
   });

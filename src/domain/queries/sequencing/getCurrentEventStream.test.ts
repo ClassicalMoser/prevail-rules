@@ -4,6 +4,7 @@ import { tempCommandCards } from '@sampleValues';
 import { getCurrentEventStream } from './getCurrentEventStream';
 
 import { createEmptyGameState } from '@factories';
+
 describe(getCurrentEventStream, () => {
   it('returns the current round events array (same reference)', () => {
     const state = createEmptyGameState('standard');

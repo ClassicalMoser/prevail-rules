@@ -87,10 +87,10 @@ describe(applyPerformRangedAttackEvent, () => {
     expect(ranged.defendingCommitment).toStrictEqual({
       commitmentType: 'pending',
     });
-    expect(ranged.supportingUnits.length).toBe(0);
+    expect(ranged.supportingUnits).toHaveLength(0);
 
     const remainingFirst = phaseState.remainingUnitsFirstPlayer;
-    expect(remainingFirst.length).toBe(0);
+    expect(remainingFirst).toHaveLength(0);
     expect(
       [...remainingFirst].some(
         (u) => isSameUnitInstance(u, attacker.unit).result,
@@ -135,7 +135,7 @@ describe(applyPerformRangedAttackEvent, () => {
     const phaseState = getIssueCommandsPhaseState(newState);
     const remainingFirst = phaseState.remainingUnitsFirstPlayer;
 
-    expect(remainingFirst.length).toBe(1);
+    expect(remainingFirst).toHaveLength(1);
     expect(
       [...remainingFirst].some(
         (u) => isSameUnitInstance(u, otherUnit.unit).result,
@@ -178,7 +178,7 @@ describe(applyPerformRangedAttackEvent, () => {
     const newState = applyPerformRangedAttackEvent(event, state);
     const phaseState = getIssueCommandsPhaseState(newState);
 
-    expect(phaseState.remainingUnitsSecondPlayer.length).toBe(0);
+    expect(phaseState.remainingUnitsSecondPlayer).toHaveLength(0);
     expect(
       [...phaseState.remainingUnitsSecondPlayer].some(
         (u) => isSameUnitInstance(u, defender.unit).result,
@@ -223,13 +223,13 @@ describe(applyPerformRangedAttackEvent, () => {
     const phaseState = getIssueCommandsPhaseState(newState);
     const ranged = getRangedAttackResolutionState(newState);
 
-    expect(ranged.supportingUnits.length).toBe(1);
+    expect(ranged.supportingUnits).toHaveLength(1);
     expect(
       [...ranged.supportingUnits].some(
         (u) => isSameUnitInstance(u, supporter.unit).result,
       ),
     ).toBe(true);
-    expect(phaseState.remainingUnitsFirstPlayer.length).toBe(0);
+    expect(phaseState.remainingUnitsFirstPlayer).toHaveLength(0);
   });
 
   it('given two supporters in remaining, ranged holds both and first-player remaining ends empty', () => {
@@ -275,8 +275,8 @@ describe(applyPerformRangedAttackEvent, () => {
     const phaseState = getIssueCommandsPhaseState(newState);
     const ranged = getRangedAttackResolutionState(newState);
 
-    expect(ranged.supportingUnits.length).toBe(2);
-    expect(phaseState.remainingUnitsFirstPlayer.length).toBe(0);
+    expect(ranged.supportingUnits).toHaveLength(2);
+    expect(phaseState.remainingUnitsFirstPlayer).toHaveLength(0);
     expect(
       [...phaseState.remainingUnitsFirstPlayer].some(
         (u) => isSameUnitInstance(u, supporter1.unit).result,
@@ -320,7 +320,7 @@ describe(applyPerformRangedAttackEvent, () => {
     const newState = applyPerformRangedAttackEvent(event, state);
     const phaseState = getIssueCommandsPhaseState(newState);
 
-    expect(phaseState.remainingUnitsSecondPlayer.length).toBe(0);
+    expect(phaseState.remainingUnitsSecondPlayer).toHaveLength(0);
     expect(
       getRangedAttackResolutionState(newState).attackingUnit,
     ).toBeDefined();

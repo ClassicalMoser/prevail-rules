@@ -6,6 +6,7 @@ import { applyGameEffectEvent } from './applyGameEffectEvent';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
 import { createEmptyGameState } from '@factories';
+
 vi.mock(import('./applyPlayerChoiceEvent'));
 vi.mock(import('./applyGameEffectEvent'));
 

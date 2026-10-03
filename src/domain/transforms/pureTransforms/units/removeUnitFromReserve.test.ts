@@ -16,7 +16,7 @@ describe(removeUnitFromReserve, () => {
       const newGameState = removeUnitFromReserve(gameState, unit);
 
       expect(newGameState).not.toBe(gameState);
-      expect(newGameState.reservedUnits.length).toBe(0);
+      expect(newGameState.reservedUnits).toHaveLength(0);
     });
 
     it('given not mutate the original game state', () => {
@@ -26,7 +26,7 @@ describe(removeUnitFromReserve, () => {
 
       removeUnitFromReserve(gameState, unit);
 
-      expect(gameState.reservedUnits.length).toBe(1);
+      expect(gameState.reservedUnits).toHaveLength(1);
       expect([...gameState.reservedUnits]).toContain(unit);
     });
   });
@@ -40,7 +40,7 @@ describe(removeUnitFromReserve, () => {
 
       const newGameState = removeUnitFromReserve(gameState, unit1);
 
-      expect(newGameState.reservedUnits.length).toBe(1);
+      expect(newGameState.reservedUnits).toHaveLength(1);
       expect([...newGameState.reservedUnits]).toContain(unit2);
       expect([...newGameState.reservedUnits]).not.toContain(unit1);
     });
@@ -63,7 +63,7 @@ describe(removeUnitFromReserve, () => {
         sameValueDifferentRef,
       );
 
-      expect(newGameState.reservedUnits.length).toBe(1);
+      expect(newGameState.reservedUnits).toHaveLength(1);
       expect([...newGameState.reservedUnits]).toContain(unit2);
     });
 
@@ -75,7 +75,7 @@ describe(removeUnitFromReserve, () => {
 
       removeUnitFromReserve(gameState, unit1);
 
-      expect(gameState.reservedUnits.length).toBe(2);
+      expect(gameState.reservedUnits).toHaveLength(2);
       expect([...gameState.reservedUnits]).toContain(unit1);
       expect([...gameState.reservedUnits]).toContain(unit2);
     });

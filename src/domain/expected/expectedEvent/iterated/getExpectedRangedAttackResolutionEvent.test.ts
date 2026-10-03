@@ -3,6 +3,7 @@ import { createRangedAttackResolutionState, createTestCard } from '@testing';
 import { getExpectedRangedAttackResolutionEvent } from './getExpectedRangedAttackResolutionEvent';
 
 import { createEmptyGameState } from '@factories';
+
 const { getExpectedAttackApplyEventMock } = vi.hoisted(() => ({
   getExpectedAttackApplyEventMock: vi.fn(),
 }));

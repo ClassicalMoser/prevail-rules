@@ -1,9 +1,8 @@
 import type { Board, Line } from '@entities';
-import type { ValidationResult } from '@utils';
 import { areSameSide } from '@entities';
-import { getFlankingSpaces } from '@queries/board';
-import { getOppositeFacing } from '@queries/facings';
+import { getFlankingSpaces, getOppositeFacing } from '@queries';
 import { MAX_LINE_LENGTH } from '@ruleValues';
+import type { ValidationResult } from '@utils';
 
 /**
  * Determines whether a line is valid according to game rules.
@@ -13,6 +12,10 @@ import { MAX_LINE_LENGTH } from '@ruleValues';
  * - All units must be on the same side (friendly)
  * - All units must face the same or opposite direction
  * - Units must be contiguous (adjacent to each other)
+ *
+ * Returns {@link ValidationResult} and does not throw. Contiguity uses
+ * {@link getFlankingSpaces}; a malformed coordinate or facing from that getter
+ * (or from {@link getOppositeFacing}) becomes `result: false`.
  *
  * @param board - The board state (needed to check adjacency)
  * @param line - The line to validate
@@ -91,7 +94,7 @@ export function isValidLine(board: Board, line: Line): ValidationResult {
       result: true,
     };
   } catch (error) {
-    // Any error means the line is invalid
+    // Throwing getters (facing / board geometry) are not line-rule failures to rethrow.
     return {
       errorReason: error instanceof Error ? error.message : 'Unknown error',
       result: false,

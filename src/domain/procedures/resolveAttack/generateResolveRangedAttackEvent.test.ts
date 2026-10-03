@@ -79,7 +79,7 @@ describe(generateResolveRangedAttackEvent, () => {
     expect(event.defenderWithPlacement.unit.playerSide).toBe('white');
     expect(event.defenderWithPlacement.placement.coordinate).toBe('E-5');
     expect(event.retreated).toBe(false);
-    expect(event.legalRetreatOptions.length).toBe(0);
+    expect(event.legalRetreatOptions).toHaveLength(0);
   });
 
   it('given defending commitment pending on ranged CRS, throws defending commitment guard', () => {

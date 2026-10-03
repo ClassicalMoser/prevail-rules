@@ -10,35 +10,35 @@ const standardBoard: Board = createEmptyStandardBoard();
  * throws on invalid coordinate or facing.
  */
 describe('getRearwardSpace function', () => {
-  it('F-5 is one step backward from E-5 when facing north', () => {
+  it('f-5 is one step backward from E-5 when facing north', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'north')).toBe('F-5');
   });
 
-  it('E-4 is one step backward from E-5 when facing east', () => {
+  it('e-4 is one step backward from E-5 when facing east', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'east')).toBe('E-4');
   });
 
-  it('D-5 is one step backward from E-5 when facing south', () => {
+  it('d-5 is one step backward from E-5 when facing south', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'south')).toBe('D-5');
   });
 
-  it('E-6 is one step backward from E-5 when facing west', () => {
+  it('e-6 is one step backward from E-5 when facing west', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'west')).toBe('E-6');
   });
 
-  it('F-4 is one step backward from E-5 when facing northEast', () => {
+  it('f-4 is one step backward from E-5 when facing northEast', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'northEast')).toBe('F-4');
   });
 
-  it('D-4 is one step backward from E-5 when facing southEast', () => {
+  it('d-4 is one step backward from E-5 when facing southEast', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'southEast')).toBe('D-4');
   });
 
-  it('D-6 is one step backward from E-5 when facing southWest', () => {
+  it('d-6 is one step backward from E-5 when facing southWest', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'southWest')).toBe('D-6');
   });
 
-  it('F-6 is one step backward from E-5 when facing northWest', () => {
+  it('f-6 is one step backward from E-5 when facing northWest', () => {
     expect(getRearwardSpace(standardBoard, 'E-5', 'northWest')).toBe('F-6');
   });
 

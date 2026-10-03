@@ -76,7 +76,7 @@ describe(isAtPlacement, () => {
     it('given unit matches exactly, returns true', () => {
       const unit = createUnit('black');
       const board = createBoardWithUnits([
-        { coordinate, facing: 'north', unit },
+        { placement: { coordinate, facing: 'north' }, unit },
       ]);
       const unitWithPlacement = createUnitWithPlacement(
         unit,
@@ -91,7 +91,7 @@ describe(isAtPlacement, () => {
     it('given facing does not match, returns false', () => {
       const unit = createUnit('black');
       const board = createBoardWithUnits([
-        { coordinate, facing: 'north', unit },
+        { placement: { coordinate, facing: 'north' }, unit },
       ]);
       const unitWithPlacement = createUnitWithPlacement(
         unit,
@@ -107,7 +107,7 @@ describe(isAtPlacement, () => {
       const unit = createUnit('black');
       const differentPlayerUnit = createUnit('white');
       const board = createBoardWithUnits([
-        { coordinate, facing: 'north', unit },
+        { placement: { coordinate, facing: 'north' }, unit },
       ]);
       const unitWithPlacement = createUnitWithPlacement(
         differentPlayerUnit,
@@ -123,7 +123,7 @@ describe(isAtPlacement, () => {
       const unit = createUnit('black', flexibility1UnitType);
       const differentTypeUnit = createUnit('black', flexibility2UnitType);
       const board = createBoardWithUnits([
-        { coordinate, facing: 'north', unit },
+        { placement: { coordinate, facing: 'north' }, unit },
       ]);
       const unitWithPlacement = createUnitWithPlacement(
         differentTypeUnit,
@@ -143,7 +143,7 @@ describe(isAtPlacement, () => {
         2,
       );
       const board = createBoardWithUnits([
-        { coordinate, facing: 'north', unit },
+        { placement: { coordinate, facing: 'north' }, unit },
       ]);
       const unitWithPlacement = createUnitWithPlacement(
         differentInstanceUnit,
@@ -158,7 +158,7 @@ describe(isAtPlacement, () => {
     it('given unit matches by value (different object reference), returns true', () => {
       const unit = createUnit('black', flexibility1UnitType, 1);
       const board = createBoardWithUnits([
-        { coordinate, facing: 'north', unit },
+        { placement: { coordinate, facing: 'north' }, unit },
       ]);
       // Create a new unit instance with the same properties
       const sameUnit = createUnit('black', flexibility1UnitType, 1);
@@ -178,7 +178,7 @@ describe(isAtPlacement, () => {
       const enemyUnit = createUnit('white');
       const friendlyUnit = createUnit('black');
       const board = createBoardWithUnits([
-        { coordinate, facing: 'north', unit: enemyUnit },
+        { placement: { coordinate, facing: 'north' }, unit: enemyUnit },
       ]);
       const unitWithPlacement = createUnitWithPlacement(
         friendlyUnit,

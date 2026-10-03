@@ -12,6 +12,7 @@ import {
 import { isValidAssignUnitSupportEvent } from './isValidAssignUnitSupportEvent';
 
 import { createEmptyGameState } from '@factories';
+
 function awaitingSupportState() {
   const base = updateCurrentInitiative(
     createEmptyGameState('standard'),

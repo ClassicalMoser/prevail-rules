@@ -13,6 +13,7 @@ import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 import { getExpectedEvent } from './getExpectedEvent';
 
 import { createEmptyGameState } from '@factories';
+
 const {
   getCurrentPhaseStateMock,
   getExpectedCleanupPhaseEventMock,

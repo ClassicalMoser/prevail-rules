@@ -10,6 +10,7 @@ import {
 import { getExpectedMovementResolutionEvent } from './getExpectedMovementResolutionEvent';
 
 import { createEmptyGameState } from '@factories';
+
 const { getExpectedEngagementEventMock } = vi.hoisted(() => ({
   getExpectedEngagementEventMock: vi.fn(),
 }));
@@ -21,8 +22,7 @@ vi.mock(import('../composable'), () => ({
 function createGameStateWithTargetEnemy(): GameState {
   const state = createGameStateWithUnits([
     {
-      coordinate: 'E-6',
-      facing: 'north',
+      placement: { coordinate: 'E-6', facing: 'north' },
       unit: createTestUnit('white'),
     },
   ]);

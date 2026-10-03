@@ -83,6 +83,6 @@ describe('updateRemainingCommandsForPlayer', () => {
 
     updateRemainingPlayerCommands(phaseState, 'black', 'black', newCommands);
 
-    expect(phaseState.remainingCommandsFirstPlayer.length).toBe(0);
+    expect(phaseState.remainingCommandsFirstPlayer).toHaveLength(0);
   });
 });

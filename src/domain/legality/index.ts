@@ -38,6 +38,7 @@ export {
   getLineSegmentFromStart,
   getSetupZoneCoordinates,
   isCommandIssuable,
+  isValidLine,
   unitMatchesInspirationRange,
   unitMatchesRestrictions,
   unitMatchesTraitAndTypeRestrictions,

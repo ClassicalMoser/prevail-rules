@@ -2,8 +2,8 @@ import type {
   PlayerSide,
   Coordinate,
   UnitFacing,
-  UnitInstance,
   UnitType,
+  UnitWithPlacement,
 } from '@entities';
 import { createTestUnit } from '@testing/unitHelpers';
 
@@ -49,20 +49,20 @@ export function getExplicitInstanceNumber(
 }
 
 /**
- * Normalizes a unit placement spec into a full unit placement object.
+ * Normalizes a unit placement spec into a {@link UnitWithPlacement}.
  */
 export function normalizeUnitPlacement(
   spec: UnitPlacementSpec,
   instanceNumber: number,
-): {
-  unit: UnitInstance;
-  coordinate: Coordinate;
-  facing: UnitFacing;
-} {
+): UnitWithPlacement {
   if (Array.isArray(spec)) {
     const [coord, player, facing = 'north'] = spec;
     const unit = createTestUnit(player, { instanceNumber });
-    return { coordinate: coord, facing, unit };
+    const withPlacement: UnitWithPlacement = {
+      placement: { coordinate: coord, facing },
+      unit,
+    };
+    return withPlacement;
   }
 
   const {
@@ -77,12 +77,11 @@ export function normalizeUnitPlacement(
     instanceNumber: explicitInstanceNumber,
     ...unitOptions,
   });
-
-  return {
-    coordinate: coord,
-    facing,
+  const withPlacement: UnitWithPlacement = {
+    placement: { coordinate: coord, facing },
     unit,
   };
+  return withPlacement;
 }
 
 /**

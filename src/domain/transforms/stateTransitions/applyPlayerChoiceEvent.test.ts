@@ -4,6 +4,7 @@ import { applyChooseCardEvent } from './applyChoices';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
 import { createEmptyGameState } from '@factories';
+
 vi.mock(import('./applyChoices'), () => ({
   applyAssignUnitSupportEvent: vi.fn(),
   applyChooseCardEvent: vi.fn(),
