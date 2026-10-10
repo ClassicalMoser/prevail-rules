@@ -12,6 +12,8 @@ import { unitCountSchema } from './unitCount';
 export interface Army {
   /** The unique identifier of the army. */
   id: string;
+  /** The name of the army. */
+  name: string;
   /** The units in the army. */
   units: UnitCount[];
   /** The command cards in the army. */
@@ -22,6 +24,8 @@ const _armySchemaObject = z
   .object({
     /** The unique identifier of the army. */
     id: z.uuid(),
+    /** The name of the army. */
+    name: z.string(),
     /** The units in the army. */
     units: z.array(unitCountSchema),
     /** The command cards in the army. */

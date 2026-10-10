@@ -37,6 +37,7 @@ const baseCard = (initiative: 1 | 2 | 3 | 4, index: number): CommandCard => ({
     size: 'units',
     type: 'movement',
   },
+  cost: 10,
   id: `22222222-2222-4222-8222-2222222222${String(index).padStart(2, '0')}`,
   initiative,
   modifiers: ['attack'],
@@ -58,18 +59,24 @@ const balancedCommandCards = (): CommandCard[] =>
     [0, 1, 2].map((copy) => baseCard(initiative, initiative * 10 + copy)),
   );
 
+/**
+ * Standard cap is 300 for units and command cards together.
+ * Units: 4×10 + 4×10 = 80. Cards: 12×10 = 120. Total 200.
+ * Morale: 4×4 + 4×1 = 20.
+ */
 const validStandardArmy = (): Army => ({
   commandCards: balancedCommandCards(),
   id: '33333333-3333-4333-8333-333333333333',
+  name: 'Test Army',
   units: [
     {
       count: 4,
-      unitType: baseUnitType({ cost: 20, morale: 2 }),
+      unitType: baseUnitType({ cost: 10, morale: 4 }),
     },
     {
       count: 4,
       unitType: baseUnitType({
-        cost: 15,
+        cost: 10,
         id: '44444444-4444-4444-8444-444444444444',
         morale: 1,
       }),
@@ -100,10 +107,33 @@ describe(armySchemaForMode, () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(
-        result.error.issues.some(
-          (issue) =>
-            issue.path[0] === 'units' &&
-            issue.message.includes('Standard armies'),
+        result.error.issues.some((issue) =>
+          issue.message.includes('cannot cost more than 300'),
+        ),
+      ).toBe(true);
+    }
+  });
+
+  it('standard rejects command card cost that crosses the shared cap', () => {
+    const army = validStandardArmy();
+    const units = [
+      {
+        count: 4,
+        unitType: baseUnitType({ cost: 45, morale: 5 }),
+      },
+    ];
+    const [firstCard, ...restCards] = balancedCommandCards();
+    const commandCards = [{ ...firstCard, cost: 11 }, ...restCards];
+    army.units = units;
+    army.commandCards = commandCards;
+
+    const result = armySchemaForMode('standard').safeParse(army);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(
+        result.error.issues.some((issue) =>
+          issue.message.includes('cannot cost more than 300'),
         ),
       ).toBe(true);
     }
@@ -149,6 +179,7 @@ describe(armySchemaForMode, () => {
     const army: Army = {
       commandCards: [baseCard(1, 1)],
       id: '33333333-3333-4333-8333-333333333333',
+      name: 'Test Army',
       units: [{ count: 1, unitType: baseUnitType({ cost: 100, morale: 0 }) }],
     };
 
@@ -164,6 +195,7 @@ describe('entity armySchema shape', () => {
     const army: Army = {
       commandCards: [],
       id: '33333333-3333-4333-8333-333333333333',
+      name: 'Test Army',
       units: [],
     };
 
@@ -174,6 +206,7 @@ describe('entity armySchema shape', () => {
     const army: Army = {
       commandCards: [],
       id: '33333333-3333-4333-8333-333333333333',
+      name: 'Test Army',
       units: [{ count: 5, unitType: baseUnitType({ limit: 4 }) }],
     };
 

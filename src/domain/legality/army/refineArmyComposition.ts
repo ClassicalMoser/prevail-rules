@@ -28,16 +28,21 @@ export function refineArmyComposition(
     });
   }
 
-  if (rules.maxUnitCost !== null) {
+  if (rules.maxArmyCost !== null) {
     const unitCost = army.units.reduce(
       (acc, unit) => acc + unit.count * unit.unitType.cost,
       0,
     );
-    if (unitCost > rules.maxUnitCost) {
+    const cardCost = army.commandCards.reduce(
+      (acc, card) => acc + card.cost,
+      0,
+    );
+    const armyCost = unitCost + cardCost;
+    if (armyCost > rules.maxArmyCost) {
       ctx.addIssue({
         code: 'custom',
-        message: `${modeLabel} armies cannot cost more than ${rules.maxUnitCost}.`,
-        path: [...pathPrefix, 'units'],
+        message: `${modeLabel} armies cannot cost more than ${rules.maxArmyCost}.`,
+        path: pathPrefix,
       });
     }
   }

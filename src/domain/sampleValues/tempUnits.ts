@@ -3,6 +3,8 @@ import type { UnitType } from '@entities';
 /**
  * Punic War roster. Stats match the design sheet; `stats.rout` is the "Remove" column.
  * Dashes in Reverse/Range are stored as 0.
+ * Flexibility is raised above that sheet so a pair can still meet the pass-through
+ * threshold of 6. Elephants stay at 0, the phalanx at 1, and the manipular legion at 2.
  *
  * Traits use prevail-rules `Trait` ids: Missile → javelin; Elephant → mounted
  * (until rules add dedicated traits).
@@ -18,7 +20,7 @@ export const velites: UnitType = {
   morale: 0,
   stats: {
     attack: 2,
-    flexibility: 3,
+    flexibility: 5,
     range: 2,
     retreat: 1,
     reverse: 0,
@@ -58,7 +60,7 @@ export const alaeSocii: UnitType = {
   morale: 1,
   stats: {
     attack: 4,
-    flexibility: 2,
+    flexibility: 4,
     range: 0,
     retreat: 5,
     reverse: 6,
@@ -78,7 +80,7 @@ export const equites: UnitType = {
   morale: 2,
   stats: {
     attack: 4,
-    flexibility: 2,
+    flexibility: 4,
     range: 0,
     retreat: 3,
     reverse: 5,
@@ -98,7 +100,7 @@ export const numidianSkirmishers: UnitType = {
   morale: 0,
   stats: {
     attack: 2,
-    flexibility: 3,
+    flexibility: 5,
     range: 2,
     retreat: 1,
     reverse: 0,
@@ -118,7 +120,7 @@ export const numidianCavalry: UnitType = {
   morale: 0,
   stats: {
     attack: 2,
-    flexibility: 3,
+    flexibility: 5,
     range: 1,
     retreat: 2,
     reverse: 0,
@@ -138,7 +140,7 @@ export const punicCitizenCavalry: UnitType = {
   morale: 2,
   stats: {
     attack: 4,
-    flexibility: 2,
+    flexibility: 4,
     range: 0,
     retreat: 3,
     reverse: 5,
@@ -198,7 +200,7 @@ export const africanVeterans: UnitType = {
   morale: 2,
   stats: {
     attack: 4,
-    flexibility: 2,
+    flexibility: 3,
     range: 0,
     retreat: 5,
     reverse: 6,

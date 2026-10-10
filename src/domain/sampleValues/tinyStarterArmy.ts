@@ -32,8 +32,9 @@ const makeArmyCards = (): CommandCard[] => {
   return filteredCards;
 };
 
-const makeArmy = (id: string): Army => ({
+const makeArmy = (id: string, name: string): Army => ({
   id,
+  name,
   commandCards: makeArmyCards(),
   units: makeArmyUnits(),
 });
@@ -41,6 +42,6 @@ const makeArmy = (id: string): Army => ({
 export const whiteArmyUUID = '00000010-0000-1234-0000-000000000001';
 export const blackArmyUUID = '00000020-0000-1234-0000-000000000002';
 
-export const whiteTinyStarterArmy: Army = makeArmy(whiteArmyUUID);
+export const whiteTinyStarterArmy: Army = makeArmy(whiteArmyUUID, 'White');
 
-export const blackTinyStarterArmy: Army = makeArmy(blackArmyUUID);
+export const blackTinyStarterArmy: Army = makeArmy(blackArmyUUID, 'Black');
