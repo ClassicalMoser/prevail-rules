@@ -95,6 +95,7 @@ describe(createTestCard, () => {
     const card = createTestCard();
     expect(card.id).toBe('test-card');
     expect(card.name).toBe('Test CommandCard');
+    expect(card.cost).toBe(10);
     expect(card.initiative).toBe(1);
     expect(card.command.type).toBe('movement');
   });

@@ -80,7 +80,9 @@ describe(canMoveThrough, () => {
           player: 'black',
         },
       ]);
-      expect(canMoveThrough('black', 2, 'D-5', gameState)).toBe(true);
+      expect(canMoveThrough('black', halfFlexibility, 'D-5', gameState)).toBe(
+        true,
+      );
     });
 
     it('given combined flexibility exceeds threshold, returns true', () => {
@@ -99,7 +101,9 @@ describe(canMoveThrough, () => {
           player: 'black',
         },
       ]);
-      expect(canMoveThrough('black', 3, 'D-5', gameState)).toBe(true);
+      expect(
+        canMoveThrough('black', overHalfFlexibility, 'D-5', gameState),
+      ).toBe(true);
     });
 
     it('given combined flexibility is below threshold, returns false', () => {
@@ -119,7 +123,9 @@ describe(canMoveThrough, () => {
           player: 'black',
         },
       ]);
-      expect(canMoveThrough('black', 1, 'D-5', gameState)).toBe(false);
+      expect(
+        canMoveThrough('black', underHalfFlexibility, 'D-5', gameState),
+      ).toBe(false);
     });
   });
 

@@ -12,6 +12,7 @@ const gameId = 'game-snapshot-1';
 const placeholderArmy: Army = {
   commandCards: [],
   id: '00000000-0000-0000-0000-000000000000',
+  name: 'Placeholder',
   units: [],
 };
 

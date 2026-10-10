@@ -22,12 +22,12 @@ export interface UnitType {
   traits: Trait[];
   /** The stats of the unit. */
   stats: UnitStats;
-  /** The cost of the unit. */
-  cost: number;
-  /** The per-type copy limit printed on the unit (how many of this type a list may take). */
-  limit: number;
   /** The morale value of the unit. Primarily dictates how many cards the owner must discard when the unit is routed.*/
   morale: number;
+  /** The cost of the unit. */
+  cost: number;
+  /** The per-type copy limit of the unit (how many of this type a list may take). */
+  limit: number;
 }
 
 const _unitTypeSchemaObject = z
@@ -49,12 +49,12 @@ const _unitTypeSchemaObject = z
     traits: z.array(traitSchema).min(1).max(4),
     /** The stats of the unit. */
     stats: unitStatsSchema,
-    /** The cost of the unit. */
-    cost: z.int().min(5).max(100),
-    /** The per-type copy limit printed on the unit (how many of this type a list may take). */
-    limit: z.int().min(1).max(MAX_ARMY_UNIT_PER_TYPE_COUNT),
     /** The number of cards the owner must discard when the unit is routed. */
     morale: z.int().min(0).max(5),
+    /** The cost of the unit. */
+    cost: z.int().min(1).max(100),
+    /** The per-type copy limit of the unit (how many of this type a list may take). */
+    limit: z.int().min(1).max(MAX_ARMY_UNIT_PER_TYPE_COUNT),
   })
   .strict();
 

@@ -47,6 +47,8 @@ export interface CreateTestCardOptions {
   id?: string;
   name?: string;
   version?: string;
+  /** Army-building cost. Defaults to 10. */
+  cost?: number;
   initiative?: number;
   modifiers?: StatModifier[];
   roundEffectModifiers?: Modifier[];
@@ -92,6 +94,7 @@ export function createTestCard(
     id = 'test-card',
     name = 'Test CommandCard',
     version = '1.0.0',
+    cost = 10,
     initiative = 1,
     modifiers = [],
     roundEffectModifiers = [],
@@ -119,6 +122,7 @@ export function createTestCard(
     initiative,
     modifiers,
     name,
+    cost,
     roundEffect:
       roundEffectModifiers.length > 0 ||
       roundEffectRestrictions.inspirationRangeRestriction !== -1 ||

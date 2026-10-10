@@ -44,6 +44,8 @@ export interface CommandCard {
   roundEffect: RoundEffect;
   /** The unit support this card provides */
   unitSupport: UnitSupport;
+  /** The cost of the card in army building. */
+  cost: number;
 }
 
 const _commandCardSchemaObject = z
@@ -66,6 +68,8 @@ const _commandCardSchemaObject = z
     roundEffect: roundEffectSchema,
     /** The unit support this card provides */
     unitSupport: unitSupportSchema,
+    /** The cost of the card in army building. Same bounds as a unit's cost. */
+    cost: z.int().min(0).max(100),
   })
   .strict();
 

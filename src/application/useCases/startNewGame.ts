@@ -13,6 +13,7 @@ const placeholderId = '00000000-0000-0000-0000-000000000000';
 function placeholderArmy(): Army {
   return {
     id: placeholderId,
+    name: 'Placeholder',
     units: [],
     commandCards: [],
   };

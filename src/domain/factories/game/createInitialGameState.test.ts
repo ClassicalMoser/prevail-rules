@@ -17,11 +17,13 @@ describe(createInitialGameState, () => {
   const whiteArmy: Army = {
     commandCards: [],
     id: '00000010-0000-1234-0000-000000000001',
+    name: 'White',
     units: [{ count: 2, unitType: whiteType }],
   };
   const blackArmy: Army = {
     commandCards: [],
     id: '00000020-0000-1234-0000-000000000002',
+    name: 'Black',
     units: [{ count: 1, unitType: blackType }],
   };
 
