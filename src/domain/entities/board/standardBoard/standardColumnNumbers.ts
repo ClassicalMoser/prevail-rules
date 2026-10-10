@@ -1,5 +1,8 @@
 /**
- * Valid column numbers for a standard board (1-18).
+ * Ordered column numbers for the standard board (1–18), as digit strings.
+ *
+ * Index in this array is the column index for the standard layout. Includes
+ * the small board's 1–12 and is a prefix of the large board's 1–36.
  */
 export const standardBoardColumnNumbers = [
   '1',
@@ -22,8 +25,6 @@ export const standardBoardColumnNumbers = [
   '18',
 ] as const;
 
-/**
- * A column number on a standard board (1-18).
- */
+/** One column number on a standard board. */
 export type StandardBoardColumnNumber =
   (typeof standardBoardColumnNumbers)[number];

@@ -1,5 +1,9 @@
 /**
- * Valid row letters for a small board (A through H).
+ * Ordered row letters for the small board (A–H).
+ *
+ * Order matters: index in this array is the row index used by step / arc math
+ * via the small layout's `getRowIndex`. Small ⊂ standard ⊂ large — these
+ * letters are a prefix of the wider boards' row lists.
  */
 export const smallBoardRowLetters = [
   'A',
@@ -12,7 +16,5 @@ export const smallBoardRowLetters = [
   'H',
 ] as const;
 
-/**
- * A row letter on a small board (A-H).
- */
+/** One row letter on a small board. */
 export type SmallBoardRowLetter = (typeof smallBoardRowLetters)[number];

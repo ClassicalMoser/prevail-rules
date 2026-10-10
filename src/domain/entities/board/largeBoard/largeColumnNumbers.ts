@@ -1,5 +1,8 @@
 /**
- * Valid column numbers for a large board (1-36).
+ * Ordered column numbers for the large board (1–36), as digit strings.
+ *
+ * Widest column set; small and standard columns are prefixes of this list.
+ * Index in this array is the column index for the large layout.
  */
 export const largeBoardColumnNumbers = [
   '1',
@@ -40,7 +43,5 @@ export const largeBoardColumnNumbers = [
   '36',
 ] as const;
 
-/**
- * A column number on a large board (1-36).
- */
+/** One column number on a large board. */
 export type LargeBoardColumnNumber = (typeof largeBoardColumnNumbers)[number];

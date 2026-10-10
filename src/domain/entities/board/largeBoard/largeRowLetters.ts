@@ -1,5 +1,8 @@
 /**
- * Valid row letters for a large board (A through X).
+ * Ordered row letters for the large board (A–X).
+ *
+ * Widest row set; small and standard rows are prefixes of this list. Index in
+ * this array is the row index for the large layout.
  */
 export const largeBoardRowLetters = [
   'A',
@@ -28,7 +31,5 @@ export const largeBoardRowLetters = [
   'X',
 ] as const;
 
-/**
- * A row letter on a large board (A-X).
- */
+/** One row letter on a large board. */
 export type LargeBoardRowLetter = (typeof largeBoardRowLetters)[number];
