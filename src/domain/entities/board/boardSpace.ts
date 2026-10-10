@@ -1,3 +1,14 @@
+/**
+ * One cell of the board: terrain, elevation, water, and who occupies it.
+ *
+ * Coordinates key spaces on {@link Board.board}; this type is the value at
+ * each key. Ground cover ({@link TerrainType}), corner heights
+ * ({@link Elevation}), and edge water ({@link WaterCover}) are separate so
+ * queries can reason about each independently. Occupancy is
+ * {@link UnitPresence} (none / single / engaged) plus a list of commander
+ * sides currently on the space.
+ */
+
 import type { PlayerSide } from '@entities/player';
 import type { UnitPresence } from '@entities/unitPresence';
 import type { AssertExact } from '@utils';
@@ -14,26 +25,35 @@ import { waterCoverSchema } from './waterCover';
 
 /**
  * A space of the game board.
+ *
+ * Field roles:
+ * - `terrainType` — ground cover (plain, forest, …); not elevation or water
+ * - `elevation` — height at each of the four corners (0–5)
+ * - `waterCover` — which of the eight edges are water
+ * - `unitPresence` — empty, one unit, or two engaged units
+ * - `commanders` — player sides whose commanders occupy this space (may be empty)
  */
 export interface BoardSpace {
   /**
-   * The type of terrain in the space.
+   * Ground cover for this space.
+   * Elevation and water are separate fields.
    */
   terrainType: TerrainType;
   /**
-   * The elevation of the space.
+   * Corner elevations for this space (NW / NE / SW / SE).
    */
   elevation: Elevation;
   /**
-   * The water cover of the space.
+   * Which edges of this space are covered by water.
    */
   waterCover: WaterCover;
   /**
-   * The unit presence in the space.
+   * Units in this space (none, single, or engaged pair).
    */
   unitPresence: UnitPresence;
   /**
-   * The commanders in the space.
+   * Commanders present on this space, by player side.
+   * Distinct from unit presence — commanders stack on spaces independently.
    */
   commanders: PlayerSide[];
 }
@@ -41,23 +61,24 @@ export interface BoardSpace {
 const _boardSpaceSchemaObject = z
   .object({
     /**
-     * The type of terrain in the space.
+     * Ground cover for this space.
+     * Elevation and water are separate fields.
      */
     terrainType: terrainTypeSchema,
     /**
-     * The elevation of the space.
+     * Corner elevations for this space (NW / NE / SW / SE).
      */
     elevation: elevationSchema,
     /**
-     * The water cover of the space.
+     * Which edges of this space are covered by water.
      */
     waterCover: waterCoverSchema,
     /**
-     * The unit presence in the space.
+     * Units in this space (none, single, or engaged pair).
      */
     unitPresence: unitPresenceSchema,
     /**
-     * The commanders in the space.
+     * Commanders present on this space, by player side.
      */
     commanders: z.array(playerSideSchema),
   })
@@ -66,7 +87,9 @@ const _boardSpaceSchemaObject = z
 type boardSpaceSchemaType = z.infer<typeof _boardSpaceSchemaObject>;
 
 /**
- * The schema for a space of the game board.
+ * Zod schema for a board space.
+ * Strict object: unknown keys fail. Nested schemas supply defaults where the
+ * rules allow (e.g. elevation 0, water false, terrain plain).
  */
 export const boardSpaceSchema: z.ZodType<BoardSpace> = _boardSpaceSchemaObject;
 

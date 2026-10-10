@@ -1,24 +1,36 @@
+/**
+ * Corner heights for a board space.
+ *
+ * Elevation is not a single number on the space: each of the four corners
+ * has its own integer height. Queries that care about slopes, LOS, or
+ * cresting read these corners rather than a flat “space elevation” field.
+ * Range is 0–5 (inclusive); Zod defaults missing corners to `0`.
+ */
+
 import type { AssertExact } from '@utils';
 import { z } from 'zod';
 
 /**
- * The elevation of each corner of a space.
+ * Elevation of each corner of a space.
+ *
+ * Corners are named by compass from the space’s center. Values are small
+ * non-negative integers; the schema clamps the allowed range.
  */
 export interface Elevation {
   /**
-   * The elevation of the north-west corner of the space.
+   * Height of the north-west corner of the space.
    */
   northWest: number;
   /**
-   * The elevation of the north-east corner of the space.
+   * Height of the north-east corner of the space.
    */
   northEast: number;
   /**
-   * The elevation of the south-west corner of the space.
+   * Height of the south-west corner of the space.
    */
   southWest: number;
   /**
-   * The elevation of the south-east corner of the space.
+   * Height of the south-east corner of the space.
    */
   southEast: number;
 }
@@ -26,19 +38,19 @@ export interface Elevation {
 const _elevationSchemaObject = z
   .object({
     /**
-     * The elevation of the north-west corner of the space.
+     * Height of the north-west corner (0–5; default 0).
      */
     northWest: z.int().min(0).max(5).default(0),
     /**
-     * The elevation of the north-east corner of the space.
+     * Height of the north-east corner (0–5; default 0).
      */
     northEast: z.int().min(0).max(5).default(0),
     /**
-     * The elevation of the south-west corner of the space.
+     * Height of the south-west corner (0–5; default 0).
      */
     southWest: z.int().min(0).max(5).default(0),
     /**
-     * The elevation of the south-east corner of the space.
+     * Height of the south-east corner (0–5; default 0).
      */
     southEast: z.int().min(0).max(5).default(0),
   })
@@ -47,7 +59,8 @@ const _elevationSchemaObject = z
 type elevationSchemaType = z.infer<typeof _elevationSchemaObject>;
 
 /**
- * The schema for the elevation of a space.
+ * Zod schema for space-corner elevations.
+ * Integers 0–5; each corner defaults to 0 when omitted at parse time.
  */
 export const elevationSchema: z.ZodType<Elevation> = _elevationSchemaObject;
 

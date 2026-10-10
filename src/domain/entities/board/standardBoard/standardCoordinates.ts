@@ -1,3 +1,10 @@
+/**
+ * Cartesian product of standard row letters × column numbers (`"A-1"` … `"L-18"`).
+ *
+ * Same role as the small/large coordinate modules: closed list for Zod and for
+ * the shared {@link Coordinate} union. See {@link smallBoardCoordinates}.
+ */
+
 import type { AssertExact } from '@utils';
 import type { StandardBoardColumnNumber } from './standardColumnNumbers';
 import type { StandardBoardRowLetter } from './standardRowLetters';
@@ -6,21 +13,15 @@ import { z } from 'zod';
 import { standardBoardColumnNumbers } from './standardColumnNumbers';
 import { standardBoardRowLetters } from './standardRowLetters';
 
-/**
- * A valid coordinate on a standard board (A-1 through L-18).
- */
+/** A coordinate that exists on a standard board. */
 export type StandardBoardCoordinate =
   `${StandardBoardRowLetter}-${StandardBoardColumnNumber}`;
 
-/**
- * An iterable array of all valid coordinates on a standard board (A-1 through L-18), generated from row letters and column numbers.
- *
- * Runtime validation ensures all coordinates match the Coordinate type pattern.
- */
+/** Every standard-board coordinate, in row-major order from the letter/number lists. */
 export const standardBoardCoordinates: readonly StandardBoardCoordinate[] =
   standardBoardRowLetters.flatMap((row) =>
     standardBoardColumnNumbers.map((column) => `${row}-${column}`),
-  ) as readonly StandardBoardCoordinate[]; // This cast is safe.
+  ) as readonly StandardBoardCoordinate[]; // Intentionally safe: same consts as the template type.
 
 const _standardBoardCoordinatesSchemaObject = z.enum(standardBoardCoordinates);
 
@@ -28,9 +29,7 @@ type StandardBoardCoordinatesSchemaType = z.infer<
   typeof _standardBoardCoordinatesSchemaObject
 >;
 
-/**
- * The schema for a standard board coordinate.
- */
+/** Zod enum over {@link standardBoardCoordinates}. */
 export const standardBoardCoordinateSchema: z.ZodType<StandardBoardCoordinate> =
   _standardBoardCoordinatesSchemaObject;
 

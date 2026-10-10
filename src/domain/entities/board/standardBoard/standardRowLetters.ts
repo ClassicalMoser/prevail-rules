@@ -1,5 +1,8 @@
 /**
- * Valid row letters for a standard board (A through L).
+ * Ordered row letters for the standard board (A–L).
+ *
+ * Index in this array is the row index for the standard layout. Includes the
+ * small board's A–H and is a prefix of the large board's A–X.
  */
 export const standardBoardRowLetters = [
   'A',
@@ -16,7 +19,5 @@ export const standardBoardRowLetters = [
   'L',
 ] as const;
 
-/**
- * A row letter on a standard board (A-L).
- */
+/** One row letter on a standard board. */
 export type StandardBoardRowLetter = (typeof standardBoardRowLetters)[number];

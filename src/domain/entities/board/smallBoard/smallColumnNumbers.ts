@@ -1,5 +1,9 @@
 /**
- * Valid column numbers for a small board (1-12).
+ * Ordered column numbers for the small board (1–12), stored as digit strings
+ * so they compose cleanly into `"E-5"` coordinates.
+ *
+ * Order matters for column indices in the small layout. Small ⊂ standard ⊂
+ * large — these columns are a prefix of the wider boards' column lists.
  */
 export const smallBoardColumnNumbers = [
   '1',
@@ -16,7 +20,5 @@ export const smallBoardColumnNumbers = [
   '12',
 ] as const;
 
-/**
- * A column number on a small board (1-12).
- */
+/** One column number on a small board. */
 export type SmallBoardColumnNumber = (typeof smallBoardColumnNumbers)[number];
