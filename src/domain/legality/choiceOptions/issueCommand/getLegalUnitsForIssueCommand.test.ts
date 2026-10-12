@@ -18,8 +18,7 @@ describe(getLegalUnitsForIssueCommand, () => {
     number: 1,
     restrictions: {
       inspirationRangeRestriction: -1,
-      traitRestrictions: [],
-      unitRestrictions: [],
+      restrictionType: 'none' as const,
     },
   };
 
@@ -54,8 +53,7 @@ describe(getLegalUnitsForIssueCommand, () => {
       ...unrestrictedCommand,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none' as const,
       },
     };
     let state = createEmptyGameState('standard');

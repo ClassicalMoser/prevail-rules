@@ -10,21 +10,19 @@ import {
   getPlayerUnitsWithPlacementOnBoard,
   getSpacesWithinDistance,
   hasUnitInArray,
-  matchesUnitRequirements,
+  unitTypeMatchesRestrictions,
 } from '@queries';
 
 /**
- * Trait + unit-type id restrictions only (no inspiration range).
+ * Trait or unit-type filter only (no inspiration range).
  */
 export function unitMatchesTraitAndTypeRestrictions(
   unitWithPlacement: UnitWithPlacement,
   restrictions: Restrictions,
 ): boolean {
-  return matchesUnitRequirements(
-    unitWithPlacement.unit.unitType,
-    restrictions.traitRestrictions,
-    restrictions.unitRestrictions,
-  ).result;
+  const unitType = unitWithPlacement.unit.unitType;
+  const matches = unitTypeMatchesRestrictions(unitType, restrictions);
+  return matches;
 }
 
 /**

@@ -6,7 +6,7 @@ import type { Restrictions } from '@entities';
  *
  * @param restrictions1 - First restrictions object
  * @param restrictions2 - Second restrictions object
- * @returns Whether the two restrictions have the same range and the same traits and unit types
+ * @returns Whether the two restrictions have the same range and the same filter
  */
 export function areRestrictionsEqual(
   restrictions1: Restrictions,
@@ -41,24 +41,40 @@ export function areRestrictionsEqual(
     return false;
   }
 
-  // Compare traitRestrictions. Order does not matter.
-  if (
-    !sameMembers(
-      restrictions1.traitRestrictions,
-      restrictions2.traitRestrictions,
-    )
-  ) {
-    // Does not match, so we end here.
+  // A trait filter is not the same restriction as a unit-type filter.
+  if (restrictions1.restrictionType !== restrictions2.restrictionType) {
     return false;
   }
 
-  // Compare unitRestrictions. Order does not matter.
-  if (
-    !sameMembers(restrictions1.unitRestrictions, restrictions2.unitRestrictions)
-  ) {
-    // Does not match, so we end here.
-    return false;
+  switch (restrictions1.restrictionType) {
+    case 'none': {
+      return true;
+    }
+    case 'trait': {
+      if (restrictions2.restrictionType !== 'trait') {
+        return false;
+      }
+      // Compare traitRestrictions. Order does not matter.
+      const sameTraits = sameMembers(
+        restrictions1.traitRestrictions,
+        restrictions2.traitRestrictions,
+      );
+      return sameTraits;
+    }
+    case 'unitType': {
+      if (restrictions2.restrictionType !== 'unitType') {
+        return false;
+      }
+      // Compare unitRestrictions. Order does not matter.
+      const sameUnits = sameMembers(
+        restrictions1.unitRestrictions,
+        restrictions2.unitRestrictions,
+      );
+      return sameUnits;
+    }
+    default: {
+      const unreachable: never = restrictions1;
+      return unreachable;
+    }
   }
-  // All checks passed, so we return true.
-  return true;
 }

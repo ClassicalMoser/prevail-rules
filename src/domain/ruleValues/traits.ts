@@ -1,20 +1,20 @@
 import { z } from 'zod';
 
 export const traits = [
-  'formation',
-  'phalanx',
-  'warband',
-  'skirmish',
-  'cavalry',
-  'chariot',
-  'beast',
-  'shock',
-  'melee',
-  'missile',
   'bow',
   'sling',
-  'pike',
   'javelin',
+  'pike',
+  'melee',
+  'missile',
+  'shock',
+  'beast',
+  'chariot',
+  'cavalry',
+  'skirmisher',
+  'phalanx',
+  'formation',
+  'warband',
 ] as const;
 
 /**

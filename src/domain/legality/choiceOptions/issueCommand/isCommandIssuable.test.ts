@@ -14,8 +14,7 @@ describe(isCommandIssuable, () => {
     number,
     restrictions: {
       inspirationRangeRestriction: -1,
-      traitRestrictions: [],
-      unitRestrictions: [],
+      restrictionType: 'none',
     },
     size: 'units',
     type: 'movement',

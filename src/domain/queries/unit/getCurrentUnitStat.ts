@@ -4,7 +4,7 @@ import { getCommanderSpace } from '../board/getCommanderSpace';
 import { getSpacesWithinDistance } from '../board/areas/getSpacesWithinDistance';
 import { getPositionOfUnit } from '../unitPresence/getPositionOfUnit';
 import { isDefenseStat } from './isDefenseStat';
-import { matchesUnitRequirements } from './matchesUnitRequirements';
+import { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
 import { hasUnitInArray } from './unitArray';
 
 /**
@@ -90,12 +90,13 @@ export function getCurrentUnitStat(
         satisfiesAllRestrictions = satisfiesInspirationRangeRestriction;
       }
 
-      // Check if the unit satisfies the trait restrictions.
-      satisfiesUnitRestrictions = matchesUnitRequirements(
-        unit.unitType,
-        activeRoundEffect.restrictions.traitRestrictions,
-        activeRoundEffect.restrictions.unitRestrictions,
-      ).result;
+      // Check if the unit satisfies the trait or unit-type filter.
+      const unitType = unit.unitType;
+      const restrictions = activeRoundEffect.restrictions;
+      satisfiesUnitRestrictions = unitTypeMatchesRestrictions(
+        unitType,
+        restrictions,
+      );
 
       // Combine the existing restriction satisfaction with the new one.
       satisfiesAllRestrictions &&= satisfiesUnitRestrictions;

@@ -130,6 +130,7 @@ export {
   matchesUnitRequirements,
   setWithoutUnit,
   unitMatchesSupport,
+  unitTypeMatchesRestrictions,
 } from './unit';
 
 // Where a unit is standing, and whether an enemy occupies the space.

@@ -4,8 +4,11 @@ export { isDefenseStat } from './isDefenseStat';
 // Same side as another unit.
 export { isFriendlyUnit } from './isFriendlyUnit';
 
-// Trait and unit-type restrictions.
+// Trait and unit-type id lists.
 export { matchesUnitRequirements } from './matchesUnitRequirements';
+
+// A unit type against one restriction variant.
+export { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
 
 // Membership in a unit list.
 export { arrayWithoutUnit, hasUnitInArray } from './unitArray';

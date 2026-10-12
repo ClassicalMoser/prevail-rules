@@ -31,8 +31,7 @@ const baseCard = (initiative: 1 | 2 | 3 | 4, index: number): CommandCard => ({
     number: 1,
     restrictions: {
       inspirationRangeRestriction: 1,
-      traitRestrictions: [],
-      unitRestrictions: [],
+      restrictionType: 'none',
     },
     size: 'units',
     type: 'movement',
@@ -46,8 +45,7 @@ const baseCard = (initiative: 1 | 2 | 3 | 4, index: number): CommandCard => ({
     modifiers: [{ type: 'attack', value: 1 }],
     restrictions: {
       inspirationRangeRestriction: 1,
-      traitRestrictions: [],
-      unitRestrictions: [],
+      restrictionType: 'none',
     },
   },
   unitSupport: { count: 1, supportType: 'generic' },
