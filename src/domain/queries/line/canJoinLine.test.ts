@@ -168,9 +168,9 @@ describe(canJoinLine, () => {
   it('a friendly unit missing a required trait does not join', () => {
     const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     // Require a trait this roster row does not have. Do not assume the default.
-    const requiredTrait: Trait = unit.unitType.traits.includes('mounted')
+    const requiredTrait: Trait = unit.unitType.traits.includes('cavalry')
       ? 'phalanx'
-      : 'mounted';
+      : 'cavalry';
     expect(unit.unitType.traits).not.toContain(requiredTrait);
     const board = boardWithOccupant(unit, lineFacing);
     const traitRequirements: Trait[] = [requiredTrait];
@@ -189,7 +189,7 @@ describe(canJoinLine, () => {
   });
 
   it('a friendly unit of the wrong type does not join', () => {
-    const requiredType = getUnitByTrait('mounted');
+    const requiredType = getUnitByTrait('cavalry');
     const neighborType = getUnitByTrait('phalanx');
     // The case needs two different roster rows. Call that out; do not assume it.
     expect(neighborType.id).not.toBe(requiredType.id);

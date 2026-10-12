@@ -11,8 +11,7 @@ describe(toRemainingCommands, () => {
     number: 2,
     restrictions: {
       inspirationRangeRestriction: 1,
-      traitRestrictions: [],
-      unitRestrictions: [],
+      restrictionType: 'none',
     },
     size: 'lines',
     type: 'movement',

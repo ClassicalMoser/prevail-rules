@@ -23,15 +23,15 @@ describe('findMatchingCommand function', () => {
     const member = createTestCommand({
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['sword', 'skirmish'],
-        unitRestrictions: ['restriction-id-1', 'restriction-id-2'],
+        restrictionType: 'trait',
+        traitRestrictions: ['formation', 'skirmisher'],
       },
     });
     const alternateCopy = createTestCommand({
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['skirmish', 'sword'],
-        unitRestrictions: ['restriction-id-2', 'restriction-id-1'],
+        restrictionType: 'trait',
+        traitRestrictions: ['skirmisher', 'formation'],
       },
     });
 
@@ -73,16 +73,14 @@ describe('findMatchingCommand function', () => {
     const member = createTestCommand({
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     });
 
     const searchCommand = createTestCommand({
       restrictions: {
         inspirationRangeRestriction: 2,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     });
 

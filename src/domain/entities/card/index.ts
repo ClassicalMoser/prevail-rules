@@ -6,9 +6,19 @@ export type { Command, CommandSize, CommandType } from './command';
 export { modifierSchema, statModifierSchema, statModifiers } from './modifiers';
 export type { Modifier, StatModifier } from './modifiers';
 
-// Restrictions
-export { restrictionsSchema } from './restrictions';
-export type { Restrictions } from './restrictions';
+// Restrictions: no filter, trait filter, unit-type filter, then the union.
+export {
+  noTypeRestrictionsSchema,
+  traitRestrictionsSchema,
+  unitTypeRestrictionsSchema,
+  restrictionsSchema,
+} from './restrictions';
+export type {
+  NoTypeRestrictions,
+  TraitRestrictions,
+  UnitTypeRestrictions,
+  Restrictions,
+} from './restrictions';
 
 // Round effects
 export { roundEffectSchema } from './roundEffect';

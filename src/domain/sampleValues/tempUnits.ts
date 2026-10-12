@@ -6,8 +6,7 @@ import type { UnitType } from '@entities';
  * Flexibility is raised above that sheet so a pair can still meet the pass-through
  * threshold of 6. Elephants stay at 0, the phalanx at 1, and the manipular legion at 2.
  *
- * Traits use prevail-rules `Trait` ids: Missile → javelin; Elephant → mounted
- * (until rules add dedicated traits).
+ * Traits use prevail-rules `Trait` ids: Missile → javelin; Elephant → beast.
  * Each `id` is a stable UUID (not derived from the display name).
  */
 export const velites: UnitType = {
@@ -87,7 +86,7 @@ export const equites: UnitType = {
     rout: 7,
     speed: 4,
   },
-  traits: ['mounted'],
+  traits: ['cavalry'],
 };
 
 export const numidianSkirmishers: UnitType = {
@@ -127,7 +126,7 @@ export const numidianCavalry: UnitType = {
     rout: 4,
     speed: 5,
   },
-  traits: ['mounted', 'javelin'],
+  traits: ['cavalry', 'javelin'],
 };
 
 export const punicCitizenCavalry: UnitType = {
@@ -147,7 +146,7 @@ export const punicCitizenCavalry: UnitType = {
     rout: 7,
     speed: 4,
   },
-  traits: ['mounted'],
+  traits: ['cavalry'],
 };
 
 export const punicCitizenSpearmen: UnitType = {
@@ -227,7 +226,7 @@ export const africanElephants: UnitType = {
     rout: 7,
     speed: 3,
   },
-  traits: ['mounted'],
+  traits: ['beast'],
 };
 
 /** All defined unit types in sheet order. */

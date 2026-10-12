@@ -43,6 +43,23 @@ export function getCardsByCount(count: number = 1): CommandCard[] {
   return tempCommandCards.slice(0, count);
 }
 
+/**
+ * Input for a test restriction. Trait and unit-type filters are separate
+ * variants, matching {@link Restrictions}.
+ */
+export type TestRestrictionsInput =
+  | {
+      inspirationRangeRestriction?: number;
+    }
+  | {
+      inspirationRangeRestriction?: number;
+      traitRestrictions: Trait[];
+    }
+  | {
+      inspirationRangeRestriction?: number;
+      unitRestrictions: string[];
+    };
+
 export interface CreateTestCardOptions {
   id?: string;
   name?: string;
@@ -52,32 +69,65 @@ export interface CreateTestCardOptions {
   initiative?: number;
   modifiers?: StatModifier[];
   roundEffectModifiers?: Modifier[];
-  roundEffectRestrictions?: {
-    inspirationRangeRestriction?: number;
-    traitRestrictions?: Trait[];
-    unitRestrictions?: string[];
-  };
+  roundEffectRestrictions?: TestRestrictionsInput;
   commandModifiers?: Modifier[];
-  commandRestrictions?: {
-    inspirationRangeRestriction?: number;
-    traitRestrictions?: Trait[];
-    unitRestrictions?: string[];
-  };
+  commandRestrictions?: TestRestrictionsInput;
   unitSupport?: UnitSupport;
+}
+
+/**
+ * Builds a restriction from test input. An empty filter list is no filter.
+ */
+function createRestrictions(
+  restrictions: TestRestrictionsInput | undefined,
+): Restrictions {
+  const inspirationRangeRestriction =
+    restrictions?.inspirationRangeRestriction ?? -1;
+  if (
+    restrictions !== undefined &&
+    'traitRestrictions' in restrictions &&
+    restrictions.traitRestrictions.length > 0
+  ) {
+    const traitRestrictions = restrictions.traitRestrictions;
+    const traitResult: Restrictions = {
+      inspirationRangeRestriction,
+      restrictionType: 'trait',
+      traitRestrictions,
+    };
+    return traitResult;
+  }
+  if (
+    restrictions !== undefined &&
+    'unitRestrictions' in restrictions &&
+    restrictions.unitRestrictions.length > 0
+  ) {
+    const unitRestrictions = restrictions.unitRestrictions;
+    const unitResult: Restrictions = {
+      inspirationRangeRestriction,
+      restrictionType: 'unitType',
+      unitRestrictions,
+    };
+    return unitResult;
+  }
+  const noneResult: Restrictions = {
+    inspirationRangeRestriction,
+    restrictionType: 'none',
+  };
+  return noneResult;
 }
 
 /**
  * A command with empty modifiers and restrictions, so a test can build a command without a card.
  */
 export function createTestCommand(overrides: Partial<Command> = {}): Command {
+  const restrictions: Restrictions = {
+    inspirationRangeRestriction: -1,
+    restrictionType: 'none',
+  };
   return {
     modifiers: [],
     number: 1,
-    restrictions: {
-      inspirationRangeRestriction: -1,
-      traitRestrictions: [],
-      unitRestrictions: [],
-    },
+    restrictions,
     size: 'units',
     type: 'movement',
     ...overrides,
@@ -104,42 +154,43 @@ export function createTestCard(
     unitSupport = { count: 0, supportType: 'generic' },
   } = options;
 
-  const createRestrictions = (
-    restrictions: CreateTestCardOptions['roundEffectRestrictions'],
-  ): Restrictions => ({
-    inspirationRangeRestriction:
-      restrictions?.inspirationRangeRestriction ?? -1,
-    traitRestrictions: restrictions?.traitRestrictions ?? [],
-    unitRestrictions: restrictions?.unitRestrictions ?? [],
+  const command = createTestCommand({
+    modifiers: commandModifiers,
+    restrictions: createRestrictions(commandRestrictions),
   });
+  const hasTraitFilter =
+    'traitRestrictions' in roundEffectRestrictions &&
+    roundEffectRestrictions.traitRestrictions.length > 0;
+  const hasUnitFilter =
+    'unitRestrictions' in roundEffectRestrictions &&
+    roundEffectRestrictions.unitRestrictions.length > 0;
+  const roundEffectIsSpecified =
+    roundEffectModifiers.length > 0 ||
+    roundEffectRestrictions.inspirationRangeRestriction !== -1 ||
+    hasTraitFilter ||
+    hasUnitFilter;
+  const emptyRoundEffectRestrictions: Restrictions = {
+    inspirationRangeRestriction: -1,
+    restrictionType: 'none',
+  };
+  const roundEffect = roundEffectIsSpecified
+    ? {
+        modifiers: roundEffectModifiers,
+        restrictions: createRestrictions(roundEffectRestrictions),
+      }
+    : {
+        modifiers: [],
+        restrictions: emptyRoundEffectRestrictions,
+      };
 
   return {
-    command: createTestCommand({
-      modifiers: commandModifiers,
-      restrictions: createRestrictions(commandRestrictions),
-    }),
+    command,
     id,
     initiative,
     modifiers,
     name,
     cost,
-    roundEffect:
-      roundEffectModifiers.length > 0 ||
-      roundEffectRestrictions.inspirationRangeRestriction !== -1 ||
-      (roundEffectRestrictions.traitRestrictions?.length ?? 0) > 0 ||
-      (roundEffectRestrictions.unitRestrictions?.length ?? 0) > 0
-        ? {
-            modifiers: roundEffectModifiers,
-            restrictions: createRestrictions(roundEffectRestrictions),
-          }
-        : {
-            modifiers: [],
-            restrictions: {
-              inspirationRangeRestriction: -1,
-              traitRestrictions: [],
-              unitRestrictions: [],
-            },
-          },
+    roundEffect,
     unitSupport,
     version,
   };

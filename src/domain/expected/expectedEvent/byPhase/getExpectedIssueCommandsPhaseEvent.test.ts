@@ -71,8 +71,7 @@ describe(getExpectedIssueCommandsPhaseEvent, () => {
       number: 1,
       restrictions: {
         inspirationRangeRestriction: -1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none' as const,
       },
       size: 'units' as const,
     };

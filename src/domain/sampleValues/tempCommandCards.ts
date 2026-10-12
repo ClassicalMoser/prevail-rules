@@ -38,8 +38,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'units',
       type: 'movement',
@@ -53,8 +52,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'attack', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 0, supportType: 'generic' },
@@ -66,8 +64,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'units',
       type: 'movement',
@@ -81,8 +78,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 0, supportType: 'generic' },
@@ -94,8 +90,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'units',
       type: 'rangedAttack',
@@ -109,8 +104,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 0, supportType: 'generic' },
@@ -122,8 +116,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'units',
       type: 'movement',
@@ -137,8 +130,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 0, supportType: 'generic' },
@@ -150,8 +142,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'lines',
       type: 'movement',
@@ -165,8 +156,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'flexibility', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 3,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: twoManipularSupport,
@@ -181,8 +171,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
+        restrictionType: 'trait',
         traitRestrictions: ['phalanx'],
-        unitRestrictions: [],
       },
       size: 'lines',
       type: 'movement',
@@ -196,7 +186,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'attack', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 0,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [...spearOrPike],
       },
     },
@@ -209,8 +199,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 4,
       restrictions: {
         inspirationRangeRestriction: 1,
+        restrictionType: 'trait',
         traitRestrictions: ['javelin'],
-        unitRestrictions: [],
       },
       size: 'units',
       type: 'movement',
@@ -224,8 +214,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'attack', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
+        restrictionType: 'trait',
         traitRestrictions: ['javelin'],
-        unitRestrictions: [],
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -240,8 +230,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
+        restrictionType: 'trait',
         traitRestrictions: ['formation'],
-        unitRestrictions: [],
       },
       size: 'lines',
       type: 'movement',
@@ -255,8 +245,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'defense', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
+        restrictionType: 'trait',
         traitRestrictions: ['formation'],
-        unitRestrictions: [],
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -268,8 +258,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 4,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'units',
       type: 'movement',
@@ -283,8 +272,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'speed', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 3,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -296,8 +284,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'units',
       type: 'movement',
@@ -311,8 +298,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'speed', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 4,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -324,8 +310,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 4,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['mounted'],
-        unitRestrictions: [],
+        restrictionType: 'trait',
+        traitRestrictions: ['cavalry'],
       },
       size: 'units',
       type: 'movement',
@@ -339,8 +325,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'defense', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['mounted'],
-        unitRestrictions: [],
+        restrictionType: 'trait',
+        traitRestrictions: ['cavalry'],
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -352,8 +338,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 2,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'lines',
       type: 'movement',
@@ -367,8 +352,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'attack', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -380,8 +364,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 3,
       restrictions: {
         inspirationRangeRestriction: 2,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'lines',
       type: 'movement',
@@ -395,8 +378,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'defense', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 2,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -408,7 +390,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 2,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [equites.id],
       },
       size: 'units',
@@ -423,7 +405,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'attack', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 0,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [equites.id],
       },
     },
@@ -436,7 +418,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 6,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [velites.id],
       },
       size: 'units',
@@ -451,7 +433,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'attack', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [velites.id],
       },
     },
@@ -464,7 +446,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [...manipularOrAlae],
       },
       size: 'lines',
@@ -479,7 +461,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'range', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['formation'],
+        restrictionType: 'unitType',
         unitRestrictions: [...manipularOrAlae],
       },
     },
@@ -492,7 +474,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 8,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [manipularLegion.id],
       },
       size: 'units',
@@ -507,7 +489,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [...manipularOrAlae],
       },
     },
@@ -520,7 +502,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 3,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [manipularLegion.id],
       },
       size: 'lines',
@@ -535,7 +517,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'speed', value: -1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: ['formation'],
+        restrictionType: 'unitType',
         unitRestrictions: [...manipularOrAlae],
       },
     },
@@ -548,7 +530,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 8,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [manipularLegion.id, alaeSocii.id],
       },
       size: 'units',
@@ -563,7 +545,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'defense', value: 2 }],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
+        restrictionType: 'unitType',
         unitRestrictions: [manipularLegion.id],
       },
     },
@@ -576,8 +558,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'units',
       type: 'movement',
@@ -591,8 +572,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'speed', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 3,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -604,8 +584,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 2,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'lines',
       type: 'movement',
@@ -619,8 +598,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'flexibility', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -635,8 +613,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 4,
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'units',
       type: 'movement',
@@ -650,8 +627,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'attack', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -666,8 +642,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 1,
+        restrictionType: 'trait',
         traitRestrictions: ['phalanx'],
-        unitRestrictions: [],
       },
       size: 'lines',
       type: 'movement',
@@ -681,8 +657,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'defense', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 1,
+        restrictionType: 'trait',
         traitRestrictions: ['phalanx'],
-        unitRestrictions: [],
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -694,8 +670,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 4,
       restrictions: {
         inspirationRangeRestriction: 1,
+        restrictionType: 'trait',
         traitRestrictions: ['phalanx'],
-        unitRestrictions: [],
       },
       size: 'units',
       type: 'movement',
@@ -709,8 +685,8 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'defense', value: 2 }],
       restrictions: {
         inspirationRangeRestriction: 1,
+        restrictionType: 'trait',
         traitRestrictions: ['phalanx'],
-        unitRestrictions: [],
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },
@@ -722,8 +698,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       number: 3,
       restrictions: {
         inspirationRangeRestriction: 2,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
       size: 'lines',
       type: 'movement',
@@ -737,8 +712,7 @@ export const tempCommandCards: readonly CommandCard[] = [
       modifiers: [{ type: 'flexibility', value: 1 }],
       restrictions: {
         inspirationRangeRestriction: 2,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none',
       },
     },
     unitSupport: { count: 1, supportType: 'generic' },

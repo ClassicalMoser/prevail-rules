@@ -50,8 +50,7 @@ describe(isValidIssueCommandEvent, () => {
       number: 1,
       restrictions: {
         inspirationRangeRestriction: -1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none' as const,
       },
       size: 'units' as const,
     };
@@ -76,8 +75,7 @@ describe(isValidIssueCommandEvent, () => {
       number: 2,
       restrictions: {
         inspirationRangeRestriction: -1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none' as const,
       },
       size: 'units' as const,
     };
@@ -112,8 +110,7 @@ describe(isValidIssueCommandEvent, () => {
       number: 1,
       restrictions: {
         inspirationRangeRestriction: -1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none' as const,
       },
       size: 'units' as const,
     };
@@ -149,8 +146,7 @@ describe(isValidIssueCommandEvent, () => {
       number: 6,
       restrictions: {
         inspirationRangeRestriction: -1,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none' as const,
       },
       size: 'units' as const,
     };
@@ -176,8 +172,7 @@ describe(isValidIssueCommandEvent, () => {
       number: 1,
       restrictions: {
         inspirationRangeRestriction: 0,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none' as const,
       },
       size: 'units' as const,
     };

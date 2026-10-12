@@ -113,8 +113,8 @@ describe(getLineSegmentContainingUnit, () => {
     expect(coordinatesOfSegment(segment)).toStrictEqual(['E-5', 'E-6']);
   });
 
-  it('a mounted requirement stops at the first unit without that trait', () => {
-    const requiredTrait: Trait = 'mounted';
+  it('a cavalry requirement stops at the first unit without that trait', () => {
+    const requiredTrait: Trait = 'cavalry';
     const withTrait = getUnitByTrait(requiredTrait);
     const withoutTrait = getUnitByTrait('phalanx');
     // The gap unit must lack the required trait. Call that out; do not assume it.
@@ -153,7 +153,7 @@ describe(getLineSegmentContainingUnit, () => {
   });
 
   it('a unit-type requirement stops at the first other type', () => {
-    const requiredType = getUnitByTrait('mounted');
+    const requiredType = getUnitByTrait('cavalry');
     const otherType = getUnitByTrait('phalanx');
     // The case needs two different roster rows. Call that out; do not assume it.
     expect(otherType.id).not.toBe(requiredType.id);

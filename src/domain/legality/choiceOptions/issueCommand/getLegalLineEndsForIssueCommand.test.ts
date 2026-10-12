@@ -23,8 +23,7 @@ describe(getLegalLineEndsForIssueCommand, () => {
     number: 1,
     restrictions: {
       inspirationRangeRestriction: 1,
-      traitRestrictions: [],
-      unitRestrictions: [],
+      restrictionType: 'none' as const,
     },
     size: 'lines' as const,
   };
@@ -92,8 +91,7 @@ describe(getLegalLineEndsForIssueCommand, () => {
       ...rangedLineCommand,
       restrictions: {
         inspirationRangeRestriction: 0,
-        traitRestrictions: [],
-        unitRestrictions: [],
+        restrictionType: 'none' as const,
       },
     };
 

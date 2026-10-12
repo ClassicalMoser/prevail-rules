@@ -56,7 +56,7 @@ describe(matchesUnitRequirements, () => {
     it('given unit is missing one trait, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
-        ['formation', 'spear'],
+        ['formation', 'pike'],
         [],
       );
       expect(result).toBe(false);
@@ -65,7 +65,7 @@ describe(matchesUnitRequirements, () => {
     it('given unit has none of the required traits, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
-        ['skirmish'],
+        ['skirmisher'],
         [],
       );
       expect(result).toBe(false);
@@ -160,7 +160,7 @@ describe(matchesUnitRequirements, () => {
     it('given unit matches unitTypes but not traits, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
-        ['spear'],
+        ['pike'],
         [unitWithFormation.id],
       );
       expect(result).toBe(false);
@@ -169,7 +169,7 @@ describe(matchesUnitRequirements, () => {
     it('given unit matches neither traits nor unitTypes, returns false', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
-        ['spear'],
+        ['pike'],
         [unitWithPhalanxTrait.id],
       );
       expect(result).toBe(false);

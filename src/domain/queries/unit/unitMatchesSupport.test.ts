@@ -43,9 +43,9 @@ describe(unitMatchesSupport, () => {
   });
 
   it('given trait support the unit lacks, returns false', () => {
-    const missingTrait = unit.unitType.traits.includes('mounted')
+    const missingTrait = unit.unitType.traits.includes('cavalry')
       ? 'phalanx'
-      : 'mounted';
+      : 'cavalry';
     const support: UnitSupport = {
       count: 1,
       supportType: 'trait',
