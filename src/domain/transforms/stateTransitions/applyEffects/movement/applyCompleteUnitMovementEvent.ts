@@ -5,20 +5,23 @@ import {
   getBoardSpace,
   getIssueCommandsPhaseState,
   getMovementResolutionState,
+  isAtPlacement,
   isSameUnitInstance,
 } from '@queries';
 import {
   addUnitToBoard,
+  removeUnitFromBoard,
   updateBoardState,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
 /**
  * Finishes a movement command-resolution slice:
- * ensures the mover is on the target hex (needed after engage moves that kept
- * the defender alone during engagement resolution), clears CRS back to
- * `pending`, then either waits for the next `moveUnit` or advances the
- * issue-commands step when this player's resolve queue is empty.
+ * ensures the mover is on the target hex. An engage move leaves the mover on
+ * its starting hex until now, so that hex is cleared before the unit is placed
+ * on the defender. Clears CRS back to `pending`, then either waits for the
+ * next `moveUnit` or advances the issue-commands step when this player's
+ * resolve queue is empty.
  *
  * Mirrors {@link applyCompleteRangedAttackCommandEvent} bookkeeping for movement.
  */
@@ -33,23 +36,34 @@ export function applyCompleteUnitMovementEvent<S extends GameState>(
     state.boardState,
     targetPlacement.coordinate,
   ).unitPresence;
-  const mover = movementState.movingUnit.unit;
+  const moverWithPlacement = movementState.movingUnit;
+  const mover = moverWithPlacement.unit;
   const moverAlreadyPresent =
     (hasSingleUnit(targetPresence) &&
       isSameUnitInstance(targetPresence.unit, mover).result) ||
     (hasEngagedUnits(targetPresence) &&
       (isSameUnitInstance(targetPresence.primaryUnit, mover).result ||
         isSameUnitInstance(targetPresence.secondaryUnit, mover).result));
-
-  const stateWithMover = moverAlreadyPresent
-    ? state
-    : updateBoardState(
-        state,
-        addUnitToBoard(state.boardState, {
-          placement: targetPlacement,
-          unit: mover,
-        }),
-      );
+  // Still standing on the hex it started from. The move has not been applied.
+  const stillOnStartingHex = isAtPlacement(
+    state.boardState,
+    moverWithPlacement,
+  ).result;
+  const leavingStartingHex = stillOnStartingHex && !moverAlreadyPresent;
+  const boardAfterLift = leavingStartingHex
+    ? removeUnitFromBoard(state.boardState, moverWithPlacement)
+    : state.boardState;
+  const arrival = {
+    placement: targetPlacement,
+    unit: mover,
+  };
+  const boardWithMover = moverAlreadyPresent
+    ? state.boardState
+    : addUnitToBoard(boardAfterLift, arrival);
+  const stateWithMover =
+    boardWithMover === state.boardState
+      ? state
+      : updateBoardState(state, boardWithMover);
 
   const clearedCrs: IssueCommandsPhaseState = {
     ...phaseState,

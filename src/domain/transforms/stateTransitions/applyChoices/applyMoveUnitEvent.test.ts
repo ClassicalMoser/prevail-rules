@@ -84,7 +84,7 @@ describe(applyMoveUnitEvent, () => {
     expect(crs.targetPlacement).toStrictEqual(event.to);
   });
 
-  it('entering an enemy hex leaves the defender alone so startEngagement can classify', () => {
+  it('entering an enemy hex leaves the mover on its current hex and the defender alone', () => {
     const engager = createUnitWithPlacement({
       coordinate: 'E-5',
       facing: 'north',
@@ -123,13 +123,29 @@ describe(applyMoveUnitEvent, () => {
       state,
     );
 
-    expect(state.boardState.board['E-5']?.unitPresence.presenceType).toBe(
-      'none',
-    );
+    expect(state.boardState.board['E-5']?.unitPresence).toMatchObject({
+      facing: 'north',
+      presenceType: 'single',
+      unit: engager.unit,
+    });
     expect(state.boardState.board['D-5']?.unitPresence).toMatchObject({
       facing: 'south',
       presenceType: 'single',
       unit: defender.unit,
+    });
+
+    const phase = getIssueCommandsPhaseState(state);
+    if (phase.currentCommandResolutionState === 'pending') {
+      throw new Error('Expected movement CRS');
+    }
+    const crs = phase.currentCommandResolutionState;
+    if (crs.commandResolutionType !== 'movement') {
+      throw new Error('Expected movement CRS');
+    }
+    expect(crs.movingUnit.placement).toStrictEqual(engager.placement);
+    expect(crs.targetPlacement).toStrictEqual({
+      coordinate: 'D-5',
+      facing: 'north',
     });
 
     const start = generateStartEngagementEvent(state, 1);
