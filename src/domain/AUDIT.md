@@ -6,7 +6,7 @@ How to write a test is [`STYLE.md`](../../STYLE.md). This file tracks which modu
 
 **Criteria (shared):** [`STYLE.md`](../../STYLE.md), [`DESIGN.md`](../../DESIGN.md), [`entities/README.md`](./entities/README.md), and [`boundaries.ts`](../../boundaries.ts). Package-specific notes live in each package README when present.
 
-**Last updated:** 2026-09-29
+**Last updated:** 2026-10-12
 
 ---
 
@@ -120,7 +120,7 @@ Walk folders in IDE order (alphabetical).
   - [ ] `choiceOptions/`
   - [ ] `commanderMovement/`
   - [ ] `game/`
-  - [ ] `unitMovement/`
+  - [ ] `unitMovement/` — turning, path, terrain (2026-10-12 notes)
 
 ### `expected/` (`@expected`)
 
@@ -133,7 +133,7 @@ Walk folders in IDE order (alphabetical).
   - [ ] `cards/`
   - [ ] `completePhase/`
   - [ ] `defenseResult/`
-  - [ ] `movement/`
+  - [ ] `movement/` — path on the mover (2026-10-12 notes)
   - [ ] `resolveAttack/`
   - [ ] Root modules (`procedureRegistry`, …)
 
@@ -193,3 +193,7 @@ _Add short dated notes as the audit proceeds._
 
 - 2026-09-20 — `entities` + `game` closed for this pass. Next: `events` (or `utils` if wanting a true bottom-up start).
 - 2026-09-29 — `queries/gameOver` closed. Next: `line/`.
+- 2026-10-12 — Movement is not settled. Revisit when auditing `legality/unitMovement`, `procedures/movement`, and the movement transforms:
+  1. A flexibility spend turns 45° or 180°, not an arbitrary amount.
+  2. Keep a canonical path on the moving unit, written by hand or generated, for engagement and animation. The mover currently stays on its start hex while the target is stored beside it, so the move is only half-applied.
+  3. Terrain rules have firmed up and are not in the code yet.
