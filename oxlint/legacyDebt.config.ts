@@ -8,8 +8,6 @@ import type { OxlintConfig } from 'oxlint';
  */
 const config: OxlintConfig = {
   rules: {
-    // Priority: HIGH
-    'init-declarations': 'off',
     // Priority: MEDIUM
     'consistent-function-scoping': 'off',
     'import/exports-last': 'off',
