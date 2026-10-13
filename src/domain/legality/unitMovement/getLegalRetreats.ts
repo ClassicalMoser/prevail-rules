@@ -56,7 +56,7 @@ export function getLegalRetreats(
     throw new Error('No unit present at starting position');
   }
 
-  let foundMatchFacing: UnitFacing | undefined;
+  let foundMatchFacing: UnitFacing;
   if (hasSingleUnit(boardSpace.unitPresence)) {
     if (isSameUnitInstance(boardSpace.unitPresence.unit, unit).result) {
       foundMatchFacing = boardSpace.unitPresence.facing;
@@ -85,7 +85,7 @@ export function getLegalRetreats(
     }
   }
 
-  if (!foundMatchFacing || foundMatchFacing !== facing) {
+  if (foundMatchFacing !== facing) {
     throw new Error('Unit facing mismatch');
   }
 
