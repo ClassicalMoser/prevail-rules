@@ -1,3 +1,4 @@
+import type { Board, UnitWithPlacement } from '@entities';
 import type { MoveUnitEvent } from '@events';
 import type {
   GameState,
@@ -18,15 +19,30 @@ import {
 } from '@transforms/pureTransforms';
 
 /**
+ * Empty destination: take the mover off its current hex and set it on the target.
+ */
+function boardWithMoverOnEmptyHex(
+  board: Board,
+  from: UnitWithPlacement,
+  to: UnitWithPlacement,
+): Board {
+  const boardWithoutMover = removeUnitFromBoard(board, from);
+  const occupied = addUnitToBoard(boardWithoutMover, to);
+  return occupied;
+}
+
+/**
  * Applies a MoveUnitEvent to the game state.
  *
- * - Removes the mover from its origin; if the destination is empty, places it
- *   there. If the destination holds an enemy, the mover stays off-board in the
- *   movement CRS so `startEngagement` can still read a lone defender (board
- *   stacking / facing happens when movement completes).
+ * - Empty destination: the mover leaves its current hex and occupies the target.
+ * - Enemy destination: the mover has not moved yet. It stays on its current hex
+ *   so stat lookups (inspiration range) still find it. The defender remains the
+ *   only unit on the target until movement completes.
  * - Removes the moving unit from that player's `remainingUnits*`
  * - Starts a movement CRS so `advanceEffects` can continue through engagement
  *   (if any) / complete. Mover card commitment is declined by default.
+ *   `movingUnit.placement` is where the unit is now. `targetPlacement` is where
+ *   the move is going.
  *
  * Event is assumed pre-validated (legal move, unit at event.unit.placement).
  */
@@ -35,20 +51,24 @@ export function applyMoveUnitEvent<S extends GameState>(
   state: S,
 ): S {
   const originalUnitWithPlacement = event.unit;
-  const newUnitWithPlacement = {
+  const movedUnitWithPlacement = {
     ...originalUnitWithPlacement,
     placement: event.to,
   };
 
-  const removedUnitBoard = removeUnitFromBoard(
-    state.boardState,
-    originalUnitWithPlacement,
-  );
-  const targetSpace = getBoardSpace(removedUnitBoard, event.to.coordinate);
+  const targetSpace = getBoardSpace(state.boardState, event.to.coordinate);
   const enteringEnemy = hasEnemyUnit(event.player, targetSpace).result;
+  // An enemy hex is not entered yet. The mover stays where it stands.
+  const movingUnit = enteringEnemy
+    ? originalUnitWithPlacement
+    : movedUnitWithPlacement;
   const newBoard = enteringEnemy
-    ? removedUnitBoard
-    : addUnitToBoard(removedUnitBoard, newUnitWithPlacement);
+    ? state.boardState
+    : boardWithMoverOnEmptyHex(
+        state.boardState,
+        originalUnitWithPlacement,
+        movedUnitWithPlacement,
+      );
   const stateWithBoard = updateBoardState(state, newBoard);
 
   const phaseState = getIssueCommandsPhaseState(stateWithBoard);
@@ -67,7 +87,7 @@ export function applyMoveUnitEvent<S extends GameState>(
     completed: false,
     engagementState: 'pending',
     moveCommander: event.moveCommander,
-    movingUnit: newUnitWithPlacement,
+    movingUnit,
     substepType: 'commandResolution',
     targetPlacement: event.to,
   };

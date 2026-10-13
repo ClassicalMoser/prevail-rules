@@ -1,14 +1,22 @@
 import type { StatModifier, UnitWithPlacement } from '@entities';
 import type { Commitment, GameState } from '@game';
 import {
+  createBoardWithCommander,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   createTestCard,
   createUnitByStat,
+  createUnitWithPlacement,
 } from '@testing';
-import { addUnitToBoard, updatePhaseState } from '@transforms';
+import {
+  addUnitToBoard,
+  applyEvent,
+  updateBoardState,
+  updatePhaseState,
+} from '@transforms';
 
+import { generateStartEngagementEvent } from './generateStartEngagementEvent';
 import { generateResolveEngageRetreatOptionEvent } from './generateResolveEngageRetreatOptionEvent';
 
 import { createEmptyGameState } from '@factories';
@@ -104,5 +112,59 @@ describe(generateResolveEngageRetreatOptionEvent, () => {
     });
     const event = generateResolveEngageRetreatOptionEvent(full, 0);
     expect(event.defendingUnitCanRetreat).toBe(true);
+  });
+
+  it('a speed round effect in inspiration range uses the engager hex it has not left yet', () => {
+    const engager = createUnitWithPlacement({
+      coordinate: 'E-5',
+      facing: 'north',
+      playerSide: 'black',
+      unitOptions: { speed: 3 },
+    });
+    const defender = createUnitWithPlacement({
+      coordinate: 'D-5',
+      facing: 'south',
+      playerSide: 'white',
+      unitOptions: { speed: 4 },
+    });
+    let state = createEmptyGameState('standard');
+    state.cardState.black.inPlay = createTestCard({
+      roundEffectModifiers: [{ type: 'speed', value: 1 }],
+      roundEffectRestrictions: { inspirationRangeRestriction: 0 },
+    });
+    const withUnits = addUnitToBoard(
+      addUnitToBoard(state.boardState, engager),
+      defender,
+    );
+    const withCommander = createBoardWithCommander('black', 'E-5', withUnits);
+    state = updateBoardState(state, withCommander);
+    state = updatePhaseState(
+      state,
+      createIssueCommandsPhaseState(state, {
+        currentCommandResolutionState: 'pending',
+        remainingUnitsFirstPlayer: [engager.unit],
+        step: 'firstPlayerResolveCommands',
+      }),
+    );
+    state = applyEvent(
+      {
+        choiceType: 'moveUnit',
+        eventNumber: 0,
+        eventType: 'playerChoice',
+        moveCommander: false,
+        player: 'black',
+        to: { coordinate: 'D-5', facing: 'north' },
+        unit: engager,
+      },
+      state,
+    );
+    const start = generateStartEngagementEvent(state, 1);
+    state = applyEvent(start, state);
+
+    const event = generateResolveEngageRetreatOptionEvent(state, 2);
+
+    // Commander is on E-5. Range 0 reaches that hex and not D-5.
+    // Engager 3+1 is not slower than defender 4.
+    expect(event.defendingUnitCanRetreat).toBe(false);
   });
 });
