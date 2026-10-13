@@ -155,7 +155,8 @@ describe(getLineSegmentContainingUnit, () => {
   it('a unit-type requirement stops at the first other type', () => {
     const requiredType = getUnitByTrait('cavalry');
     const otherType = getUnitByTrait('phalanx');
-    // The case needs two different roster rows. Call that out; do not assume it.
+    // It is assumed that a cavalry phalanx will never appear.
+    // If one does, it will break this test. Expect here clarifies that.
     expect(otherType.id).not.toBe(requiredType.id);
     const first = createTestUnit('black', {
       instanceNumber: 1,

@@ -103,8 +103,8 @@ Walk folders in IDE order (alphabetical).
   - [x] `engagement/` — front, flank, rear, plus movement engagement getters
   - [x] `facings/`
   - [x] `gameOver/` — empty hand, unpayable rout discard, then the composed check
-  - [ ] `line/` — `getLinesFromUnit` (`isValidLine` moved to `@legality` issueCommand)
-  - [ ] `player/` — `getOtherPlayer`
+  - [x] `line/` — segment, index, windows of at most 8, then `getLinesFromUnit` (`isValidLine` lives in `@legality`)
+  - [x] `player/` — `getOtherPlayer`
   - [ ] `sequencing/` — current phase, step, initiative, event number, event stream
     - [ ] `combatOutcomes/`
     - [ ] `commandResolution/`
@@ -193,6 +193,7 @@ _Add short dated notes as the audit proceeds._
 
 - 2026-09-20 — `entities` + `game` closed for this pass. Next: `events` (or `utils` if wanting a true bottom-up start).
 - 2026-09-29 — `queries/gameOver` closed. Next: `line/`.
+- 2026-10-12 — `queries/line` and `queries/player` closed. Next: `sequencing/`.
 - 2026-10-12 — Movement is not settled. Revisit when auditing `legality/unitMovement`, `procedures/movement`, and the movement transforms:
   1. A flexibility spend turns 45° or 180°, not an arbitrary amount.
   2. Keep a canonical path on the moving unit, written by hand or generated, for engagement and animation. The mover currently stays on its start hex while the target is stored beside it, so the move is only half-applied.
