@@ -45,7 +45,7 @@ function pair(first: UnitWithPlacement, second: UnitWithPlacement): Line {
  * A line holds one to eight units of one side, contiguous on the perpendicular
  * of their facing, each facing that way or the opposite.
  */
-describe(isValidLine, () => {
+describe('isValidLine function', () => {
   const board: Board = createEmptyStandardBoard();
 
   it('one unit is a valid line', () => {

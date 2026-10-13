@@ -11,7 +11,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * UpdateMeleeResolutionState: Creates a new game state with the melee resolution state updated in the resolve melee phase.
  */
-describe(updateMeleeResolutionState, () => {
+describe('updateMeleeResolutionState function', () => {
   it('given update the melee resolution state in resolve melee phase', () => {
     const state = createEmptyGameState('standard');
     const meleeState = createMeleeResolutionState(state);

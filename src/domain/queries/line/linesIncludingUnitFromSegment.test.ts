@@ -22,7 +22,7 @@ function segmentAlong(
  * A short segment is one line. A longer segment yields every eight-unit window
  * that still contains the given unit.
  */
-describe(linesIncludingUnitFromSegment, () => {
+describe('linesIncludingUnitFromSegment function', () => {
   it('a segment of one is one line of one', () => {
     const segment = segmentAlong(['E-5']);
     const unit = segment[0];

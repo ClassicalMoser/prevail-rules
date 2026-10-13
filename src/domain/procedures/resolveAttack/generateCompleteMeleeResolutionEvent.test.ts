@@ -5,7 +5,7 @@ import { generateCompleteMeleeResolutionEvent } from './generateCompleteMeleeRes
  * engagement or complete the resolve-melee phase. Emits only `completeMeleeResolution`;
  * no inputs from `state` in the procedure body.
  */
-describe(generateCompleteMeleeResolutionEvent, () => {
+describe('generateCompleteMeleeResolutionEvent function', () => {
   it('given any game state, emits gameEffect with effectType completeMeleeResolution', () => {
     const event = generateCompleteMeleeResolutionEvent(0);
     expect(event.eventType).toBe('gameEffect');

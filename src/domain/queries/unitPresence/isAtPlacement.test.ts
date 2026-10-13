@@ -18,7 +18,7 @@ import { isAtPlacement } from './isAtPlacement';
 /**
  * IsAtPlacement: Determines whether a unit is at a specific placement on the board.
  */
-describe(isAtPlacement, () => {
+describe('isAtPlacement function', () => {
   const standardBoard: Board = createEmptyStandardBoard();
   const coordinate: Coordinate = 'E-5';
 

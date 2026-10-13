@@ -11,7 +11,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * UpdateCommandResolutionState: Creates a new game state with the command resolution state updated in the issue commands phase.
  */
-describe(updateCommandResolutionState, () => {
+describe('updateCommandResolutionState function', () => {
   it('given update the command resolution state in issue commands phase', () => {
     const state = createEmptyGameState('standard');
     const commandResolution = createMovementResolutionState(state);

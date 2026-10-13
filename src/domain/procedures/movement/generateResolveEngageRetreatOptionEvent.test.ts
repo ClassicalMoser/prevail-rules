@@ -71,7 +71,7 @@ function buildStateWithFrontEngagement(options: {
  * Front engagement: defendingUnitCanRetreat is true iff defender’s current speed exceeds
  * engager’s. Each player's committed card applies only to their own unit.
  */
-describe(generateResolveEngageRetreatOptionEvent, () => {
+describe('generateResolveEngageRetreatOptionEvent function', () => {
   it('given defender speed 4 and engager speed 2, defendingUnitCanRetreat is true', () => {
     const full = buildStateWithFrontEngagement({
       defendingSpeed: 4,

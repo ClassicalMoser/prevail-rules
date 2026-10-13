@@ -16,7 +16,7 @@ import { getExpectedEngagementEvent } from './getExpectedEngagementEvent';
  * Does not validate board context (empty square, already engaged, friendly unit): that belongs to callers
  * that build `EngagementState` from live game state.
  */
-describe(getExpectedEngagementEvent, () => {
+describe('getExpectedEngagementEvent function', () => {
   it('given resolve flank engagement when the defender has not rotated yet', () => {
     const engagementState = createFlankEngagementState({
       defenderRotated: false,

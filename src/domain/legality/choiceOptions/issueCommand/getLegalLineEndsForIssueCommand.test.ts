@@ -17,7 +17,7 @@ import { createEmptyGameState } from '@factories';
  * Line starts/ends: start needs commander range; end is any unit on the
  * contiguous segment (including the start — singleton lines).
  */
-describe(getLegalLineEndsForIssueCommand, () => {
+describe('getLegalLineEndsForIssueCommand function', () => {
   const rangedLineCommand = {
     ...tempCommandCards[4].command,
     number: 1,

@@ -11,7 +11,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetPlayerUnitsOnBoard: set of unit instances for a player present on the board (including engaged).
  */
-describe(getPlayerUnitsOnBoard, () => {
+describe('getPlayerUnitsOnBoard function', () => {
   it('given a player, returns all units', () => {
     const unit1 = createTestUnit('white', { attack: 3 });
     const unit2 = createTestUnit('white', { attack: 3 });

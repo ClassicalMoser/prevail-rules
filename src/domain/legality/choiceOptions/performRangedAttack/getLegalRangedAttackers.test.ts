@@ -55,7 +55,7 @@ describe('performRangedAttack legality atoms', () => {
     return state;
   }
 
-  describe(getLegalRangedAttackers, () => {
+  describe('getLegalRangedAttackers function', () => {
     it('returns remaining unengaged units with range > 0 and a legal target', () => {
       const attacker = createUnitWithPlacement({
         coordinate: 'E-5',
@@ -134,7 +134,7 @@ describe('performRangedAttack legality atoms', () => {
     });
   });
 
-  describe(getLegalRangedAttackTargets, () => {
+  describe('getLegalRangedAttackTargets function', () => {
     it('includes an enemy in the attacker front arc within range', () => {
       const attacker = createUnitWithPlacement({
         coordinate: 'E-5',
@@ -172,7 +172,7 @@ describe('performRangedAttack legality atoms', () => {
     });
   });
 
-  describe(getLegalRangedAttackSupporters, () => {
+  describe('getLegalRangedAttackSupporters function', () => {
     it('includes a remaining friendly that can also hit the same target', () => {
       const attacker = createUnitWithPlacement({
         coordinate: 'E-5',

@@ -19,7 +19,7 @@ import { createEmptyGameState } from '@factories';
  * or after each melee defender finishes their apply substep. Payload names attack type and
  * which player’s apply just completed (melee uses initiative order when both are pending).
  */
-describe(generateCompleteAttackApplyEvent, () => {
+describe('generateCompleteAttackApplyEvent function', () => {
   /** IssueCommands + ranged CRS + default incomplete attack apply for one white defender on E-5. */
   function createStateWithRangedAttackApply(): GameState {
     const state = createEmptyGameState('standard');

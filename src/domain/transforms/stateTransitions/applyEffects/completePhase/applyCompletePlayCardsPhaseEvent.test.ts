@@ -13,7 +13,7 @@ import { createEmptyGameState } from '@factories';
  * End of simultaneous card play: `playCards` is recorded in `completedPhases` and the round
  * advances to `moveCommanders.moveFirstCommander`.
  */
-describe(applyCompletePlayCardsPhaseEvent, () => {
+describe('applyCompletePlayCardsPhaseEvent function', () => {
   it('given playCards complete step, next phase moveCommanders and completedPhases lists playCards', () => {
     const state = createEmptyGameState('standard');
     const full: GameState = updatePhaseState(

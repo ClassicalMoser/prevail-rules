@@ -10,7 +10,7 @@ import { getBoardCoordinates } from './getBoardCoordinates';
 /**
  * GetBoardCoordinates: flat list of every coordinate key on the board (standard 12×18; small 8×12).
  */
-describe(getBoardCoordinates, () => {
+describe('getBoardCoordinates function', () => {
   describe('standard board', () => {
     it('lists exactly 216 coordinates', () => {
       const board: Board = createEmptyStandardBoard();

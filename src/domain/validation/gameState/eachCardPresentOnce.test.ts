@@ -7,7 +7,7 @@ import { eachCardPresentOnce } from './eachCardPresentOnce';
 /**
  * EachCardPresentOnce: eachCardPresentOnce.
  */
-describe(eachCardPresentOnce, () => {
+describe('eachCardPresentOnce function', () => {
   // Helper to create a card set from indices
   const cardSet = (...indices: number[]): Set<CommandCard> =>
     new Set(indices.map((i) => tempCommandCards[i]));

@@ -21,7 +21,7 @@ const strikeCard = tempCommandCards[0];
  * in-hand card (has ≥1 movement modifier); modifierTypes are all of that
  * card's movement modifiers.
  */
-describe(getLegalCommitToMovementEvents, () => {
+describe('getLegalCommitToMovementEvents function', () => {
   function stateBlackPendingMovementCommit(hand = [moveCard]) {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {

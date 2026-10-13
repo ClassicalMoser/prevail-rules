@@ -11,7 +11,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetCurrentUnitStat: effective stat with base unit type, round effects, command modifiers, and extra modifiers.
  */
-describe(getCurrentUnitStat, () => {
+describe('getCurrentUnitStat function', () => {
   describe('base stat without modifiers', () => {
     it('given no card is in play, returns base stat', () => {
       const unit = createTestUnit('black', { attack: 3 });

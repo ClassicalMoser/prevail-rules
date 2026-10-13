@@ -26,7 +26,7 @@ vi.mock(import('./getExpectedRangedAttackResolutionEvent'), () => ({
 /**
  * GetExpectedCommandResolutionEvent: next event while resolving the active command (nested by sub-step).
  */
-describe(getExpectedCommandResolutionEvent, () => {
+describe('getExpectedCommandResolutionEvent function', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

@@ -5,7 +5,7 @@ import { arrayWithoutUnit, hasUnitInArray } from './unitArray';
 /**
  * HasUnitInArray: membership test for UnitInstance in an array using value equality (not reference identity).
  */
-describe(hasUnitInArray, () => {
+describe('hasUnitInArray function', () => {
   it('given array contains same instance, returns true', () => {
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const array = [
@@ -37,7 +37,7 @@ describe(hasUnitInArray, () => {
 /**
  * ArrayWithoutUnit: copy of the array without one unit (matched by value).
  */
-describe(arrayWithoutUnit, () => {
+describe('arrayWithoutUnit function', () => {
   it('given unit present, returns new array without it', () => {
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const other = createTestUnit('white');

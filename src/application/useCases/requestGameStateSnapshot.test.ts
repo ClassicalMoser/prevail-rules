@@ -103,7 +103,7 @@ function projectAsBlackSeen(
 /**
  * RequestGameStateSnapshot: seat-projected current game for client reconcile.
  */
-describe(requestGameStateSnapshot, () => {
+describe('requestGameStateSnapshot function', () => {
   it('returns blackSeen projection including opponent units on the board', async () => {
     const game = authoritativeGame();
     const ports = createPorts(

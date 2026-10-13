@@ -26,7 +26,7 @@ vi.mock(import('./processEvent'), () => ({
   processEvent: processEventMock,
 }));
 
-describe(advanceEffects, () => {
+describe('advanceEffects function', () => {
   const ports = {} as EnginePorts;
 
   beforeEach(() => {

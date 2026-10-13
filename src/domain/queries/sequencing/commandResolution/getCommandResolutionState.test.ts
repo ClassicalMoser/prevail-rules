@@ -17,7 +17,7 @@ import { createEmptyGameState } from '@factories';
  * Command-resolution accessors under issueCommands or resolveMelee: narrow CRS type, validate
  * pending commitments before strike calculation, and surface typed movement/ranged/melee slices.
  */
-describe(getCurrentCommandResolutionState, () => {
+describe('getCurrentCommandResolutionState function', () => {
   it('given issueCommands with movement CRS, returns movement commandResolutionType', () => {
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
@@ -52,7 +52,7 @@ describe(getCurrentCommandResolutionState, () => {
   });
 });
 
-describe(getRangedAttackResolutionState, () => {
+describe('getRangedAttackResolutionState function', () => {
   it('given issueCommands with ranged CRS, returns attacker defender and ranged type', () => {
     const attackingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
@@ -91,7 +91,7 @@ describe(getRangedAttackResolutionState, () => {
   });
 });
 
-describe(getMovementResolutionState, () => {
+describe('getMovementResolutionState function', () => {
   it('given movement CRS with black mover on E-5 north, returns movement and that unit', () => {
     const movingUnit = createTestUnit('black', { attack: 2 });
     const state = createEmptyGameState('standard');

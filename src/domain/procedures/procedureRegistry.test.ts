@@ -10,7 +10,7 @@ import { createEmptyGameState } from '@factories';
  * For each registered game effect, builds factory state and asserts the procedure emits a
  * matching `gameEffect` with the same `effectType`.
  */
-describe(generateEventFromProcedure, () => {
+describe('generateEventFromProcedure function', () => {
   it.each([...gameEffects])(
     'given factory state for %s, returns gameEffect with matching effectType',
     (effectType) => {

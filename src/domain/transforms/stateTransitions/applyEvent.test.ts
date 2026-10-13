@@ -15,7 +15,7 @@ vi.mock(import('./applyGameEffectEvent'));
  * `eventType` and delegates to `applyPlayerChoiceEvent` or `applyGameEffectEvent`. Anything
  * else should fail fast (exhaustiveness / unknown tag).
  */
-describe(applyEvent, () => {
+describe('applyEvent function', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

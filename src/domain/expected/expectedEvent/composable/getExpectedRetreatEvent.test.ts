@@ -9,7 +9,7 @@ import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
 /**
  * GetExpectedRetreatEvent: next retreat-resolution event from retreat substate.
  */
-describe(getExpectedRetreatEvent, () => {
+describe('getExpectedRetreatEvent function', () => {
   const unitPlacement = createUnitWithPlacement();
 
   it('given trigger rout when there are no legal retreat options and no rout state', () => {

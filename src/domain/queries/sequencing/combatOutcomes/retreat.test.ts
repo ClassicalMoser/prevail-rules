@@ -32,7 +32,7 @@ import { createEmptyGameState } from '@factories';
  * Retreat substeps live under attack-apply (ranged or melee side): unwrap nested state, locate
  * retreat by player across CRS shapes, and pick which melee retreat is ready for `resolveRetreat`.
  */
-describe(getRetreatStateFromAttackApply, () => {
+describe('getRetreatStateFromAttackApply function', () => {
   it('given apply with retreat substep, returns retreat with same retreating unit', () => {
     const unit = createTestUnit('black', { attack: 2 });
     const attackApplyState = createAttackApplyStateWithRetreat({
@@ -58,7 +58,7 @@ describe(getRetreatStateFromAttackApply, () => {
   });
 });
 
-describe(getRetreatStateFromRangedAttack, () => {
+describe('getRetreatStateFromRangedAttack function', () => {
   it('given ranged CRS with defender retreat apply, returns defender retreat', () => {
     const attackingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
@@ -135,7 +135,7 @@ describe(getRetreatStateFromRangedAttack, () => {
   });
 });
 
-describe(getRetreatStateFromMelee, () => {
+describe('getRetreatStateFromMelee function', () => {
   it('given white melee apply in retreat, getRetreatState(melee, white) returns it', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackCommitmentCard = createTestCard();
@@ -247,7 +247,7 @@ describe(getRetreatStateFromMelee, () => {
   });
 });
 
-describe(findRetreatState, () => {
+describe('findRetreatState function', () => {
   it('given no phase slice, findRetreat throws no current phase state', () => {
     const state = createEmptyGameState('standard');
 
@@ -388,7 +388,7 @@ describe(findRetreatState, () => {
   });
 });
 
-describe(getRetreatStateReadyForResolveFromMelee, () => {
+describe('getRetreatStateReadyForResolveFromMelee function', () => {
   const finalPos = {
     coordinate: 'E-6' as const,
     facing: 'south' as const,

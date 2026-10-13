@@ -16,7 +16,7 @@ import { createEmptyGameState } from '@factories';
  * defender facing on the board vs engaging facing on targetPlacement.
  * Geometry here: engager at E-5 facing east, defender at E-6 (adjacent east); facings vary per case.
  */
-describe(generateStartEngagementEvent, () => {
+describe('generateStartEngagementEvent function', () => {
   /** IssueCommands + movement targeting E-6; black.inPlay satisfies movement factory commitment.card. */
   function stateEnteringDefenderAt(options: {
     defenderFacing: UnitFacing;

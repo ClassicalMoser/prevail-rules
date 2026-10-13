@@ -5,7 +5,7 @@ import { isDefenseStat } from './isDefenseStat';
 /**
  * IsDefenseStat: The defense stat names (reverse, retreat, rout).
  */
-describe(isDefenseStat, () => {
+describe('isDefenseStat function', () => {
   it('given defense stats, returns true', () => {
     const { result: reverseResult } = isDefenseStat('reverse');
     expect(reverseResult).toBe(true);

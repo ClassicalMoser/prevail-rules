@@ -12,7 +12,7 @@ import { getLegalUnitMoves } from './getLegalUnitMoves';
 /**
  * GetLegalUnitMoves: legal placements (coordinate + facing) for a unit under movement rules.
  */
-describe(getLegalUnitMoves, () => {
+describe('getLegalUnitMoves function', () => {
   // Test helper to check if a placement exists in the set
   function placementHasMatch(
     placements: Set<UnitPlacement>,

@@ -2,7 +2,7 @@ import type { HiddenCardState } from '@game';
 
 import { chooseHiddenCard } from './chooseHiddenCard';
 
-describe(chooseHiddenCard, () => {
+describe('chooseHiddenCard function', () => {
   it('moves one hidden card from hand to awaitingPlay', () => {
     const hidden: HiddenCardState = {
       awaitingPlay: null,

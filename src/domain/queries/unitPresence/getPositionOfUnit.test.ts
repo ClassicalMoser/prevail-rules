@@ -11,7 +11,7 @@ import { getPositionOfUnit } from './getPositionOfUnit';
 /**
  * GetPositionOfUnit: coordinate and facing for a unit instance on the board, if present.
  */
-describe(getPositionOfUnit, () => {
+describe('getPositionOfUnit function', () => {
   describe('single unit presence', () => {
     it('given find unit at its position', () => {
       const unit = createTestUnit('black', { attack: 3 });

@@ -5,7 +5,7 @@ import { getRemainingMeleeEngagements } from './getRemainingMeleeEngagements';
 
 import { createEmptyGameState } from '@factories';
 
-describe(getRemainingMeleeEngagements, () => {
+describe('getRemainingMeleeEngagements function', () => {
   it('returns remainingEngagements from resolve-melee phase state (same reference)', () => {
     const state = createEmptyGameState('standard');
     const remaining: Coordinate[] = ['E-5', 'E-6'];

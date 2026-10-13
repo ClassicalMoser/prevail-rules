@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * Cleanup resolve-rally steps alternate first vs second player; this boolean matches the step name.
  */
-describe(getIsFirstPlayerForResolveRallyStep, () => {
+describe('getIsFirstPlayerForResolveRallyStep function', () => {
   it('given firstPlayerResolveRally, returns true', () => {
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = {

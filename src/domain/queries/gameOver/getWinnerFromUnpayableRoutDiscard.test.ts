@@ -81,7 +81,7 @@ function stateAwaitingDiscard(options: {
  * An unpayable rout discard: a penalty that meets or exceeds the hand wins for
  * the other player. A smaller penalty continues.
  */
-describe(getWinnerFromUnpayableRoutDiscard, () => {
+describe('getWinnerFromUnpayableRoutDiscard function', () => {
   it('continues when the penalty is smaller than the hand', () => {
     const state = stateAwaitingDiscard({
       handSize: 3,

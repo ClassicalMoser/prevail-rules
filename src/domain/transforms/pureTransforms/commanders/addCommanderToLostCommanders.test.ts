@@ -5,7 +5,7 @@ import { addCommanderToLostCommanders } from './addCommanderToLostCommanders';
 /**
  * AddCommanderToLostCommanders: addCommanderToLostCommanders.
  */
-describe(addCommanderToLostCommanders, () => {
+describe('addCommanderToLostCommanders function', () => {
   describe('adding commander to empty set', () => {
     it('given add commander to lost commanders set', () => {
       const gameState = createEmptyGameState('standard');

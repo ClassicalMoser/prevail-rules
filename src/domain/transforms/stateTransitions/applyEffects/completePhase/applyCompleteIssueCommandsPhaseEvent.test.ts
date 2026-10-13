@@ -28,7 +28,7 @@ function issueCommandsCompleteEvent(
  * End of issuing: transitions to `resolveMelee` with `remainingEngagements` taken from the
  * event (trusted list—empty set means no melees queued even if board still shows engagement).
  */
-describe(applyCompleteIssueCommandsPhaseEvent, () => {
+describe('applyCompleteIssueCommandsPhaseEvent function', () => {
   /** IssueCommands.complete with E-5 engaged pair from factory and empty command queues. */
   function createGameStateInCompleteStep(): GameState {
     const blackUnit = createTestUnit('black', { attack: 3 });

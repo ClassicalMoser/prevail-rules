@@ -16,7 +16,7 @@ import { createEmptyGameState } from '@factories';
  * Cleanup: resolve rally burns one played command card. Procedure picks a card from the
  * acting player’s `played` pile (non-deterministic); player comes from resolve-rally step + initiative.
  */
-describe(generateResolveRallyEvent, () => {
+describe('generateResolveRallyEvent function', () => {
   /** Seeds `played` for `played` side and lands on firstPlayerResolveRally. */
   function cleanupResolveRallyState(played: 'black' | 'white'): GameState {
     const base = createEmptyGameState('standard');

@@ -11,7 +11,7 @@ import {
 /**
  * CreateRetreatState: Creates a RetreatState with sensible defaults.
  */
-describe(createRetreatState, () => {
+describe('createRetreatState function', () => {
   it('given context, returns retreat substep with unit and legal options', () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
     const state = createRetreatState(unit);
@@ -22,7 +22,7 @@ describe(createRetreatState, () => {
   });
 });
 
-describe(createRoutState, () => {
+describe('createRoutState function', () => {
   it('given context, returns rout substep with player and unit', () => {
     const unit = createTestUnit('white');
     const state = createRoutState('white', unit);
@@ -33,7 +33,7 @@ describe(createRoutState, () => {
   });
 });
 
-describe(createReverseState, () => {
+describe('createReverseState function', () => {
   it('given context, returns reverse substep with unit', () => {
     const unit = createUnitWithPlacement();
     const state = createReverseState(unit);
@@ -43,7 +43,7 @@ describe(createReverseState, () => {
   });
 });
 
-describe(createRallyResolutionState, () => {
+describe('createRallyResolutionState function', () => {
   it('given context, returns rally resolution with defaults', () => {
     const state = createRallyResolutionState();
     expect(state.playerRallied).toBe(false);

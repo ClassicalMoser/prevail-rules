@@ -9,7 +9,7 @@ import { createEmptyGameState } from '@factories';
  * Reverse is only legal when the reversing unit is alone on its hex (opponent already left
  * after retreat/rout); engaged pairs cannot reverse.
  */
-describe(canReverseUnit, () => {
+describe('canReverseUnit function', () => {
   it('given single white on E-5 north in reverseState, returns true', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState('standard');

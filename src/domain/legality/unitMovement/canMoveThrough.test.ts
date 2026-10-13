@@ -9,7 +9,7 @@ import { canMoveThrough } from './canMoveThrough';
 /**
  * CanMoveThrough: Determines whether a unit can move through (pass over) a specific coordinate.
  */
-describe(canMoveThrough, () => {
+describe('canMoveThrough function', () => {
   describe('empty space', () => {
     it('given the space has no unit, returns true', () => {
       const gameState = createGameState([

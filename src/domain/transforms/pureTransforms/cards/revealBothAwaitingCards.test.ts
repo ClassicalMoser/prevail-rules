@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * RevealBothAwaitingCards: visibility-preserving reveal of both awaitingPlay slots.
  */
-describe(revealBothAwaitingCards, () => {
+describe('revealBothAwaitingCards function', () => {
   const revealed = {
     black: tempCommandCards[0],
     white: tempCommandCards[1],

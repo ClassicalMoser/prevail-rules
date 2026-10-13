@@ -6,7 +6,7 @@ import { indexOfUnitInSegment } from './indexOfUnitInSegment';
  * A segment holds one unit per space. The index is the place of that
  * coordinate in the ordered segment.
  */
-describe(indexOfUnitInSegment, () => {
+describe('indexOfUnitInSegment function', () => {
   it('a lone unit is at index 0', () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
     const segment = [unit];

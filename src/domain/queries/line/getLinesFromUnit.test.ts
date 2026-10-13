@@ -12,7 +12,7 @@ import { getLinesFromUnit } from './getLinesFromUnit';
  * Placement check, then the segment, then the windows for that unit. Join
  * rules, segment growth, index lookup, and window math live in their own suites.
  */
-describe(getLinesFromUnit, () => {
+describe('getLinesFromUnit function', () => {
   it('throws when the unit is not at the reported coordinate', () => {
     const unit = createTestUnit('black', { attack: 3 });
     const board = createBoardWithUnits([

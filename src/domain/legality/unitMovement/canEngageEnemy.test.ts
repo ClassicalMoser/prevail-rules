@@ -6,7 +6,7 @@ import { canEngageEnemy } from './canEngageEnemy';
 /**
  * CanEngageEnemy: Incremental function to check whether engagement is legal from an adjacent space.
  */
-describe(canEngageEnemy, () => {
+describe('canEngageEnemy function', () => {
   describe('invalid destination', () => {
     it('given destination has no unit, returns false', () => {
       const gameState = createGameState([

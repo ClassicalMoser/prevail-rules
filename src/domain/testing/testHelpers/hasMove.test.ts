@@ -3,7 +3,7 @@ import { hasMove } from './hasMove';
 /**
  * HasMove: Checks if a coordinate (and optionally facing) is present in a set of legal moves.
  */
-describe(hasMove, () => {
+describe('hasMove function', () => {
   it('given coordinate and facing match, returns true', () => {
     const legalMoves = new Set([
       { coordinate: 'E-5', facing: 'north' as const },

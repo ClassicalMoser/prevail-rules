@@ -7,7 +7,7 @@ const standardBoard = createEmptyStandardBoard();
 /**
  * GetSpacesWithinDistance: Chebyshev distance (king moves): all coordinates within N steps including diagonals.
  */
-describe(getSpacesWithinDistance, () => {
+describe('getSpacesWithinDistance function', () => {
   it('nothing is within a negative distance', () => {
     expect(getSpacesWithinDistance(standardBoard, 'E-5', -1)).toStrictEqual(
       new Set(),

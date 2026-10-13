@@ -9,7 +9,7 @@ import {
   createEmptyStandardBoard,
 } from './createEmptyBoard';
 
-describe(createEmptyStandardBoard, () => {
+describe('createEmptyStandardBoard function', () => {
   it('fills the standard layout and labels the board standard', () => {
     const board = createEmptyStandardBoard();
     expect(board.boardType).toBe('standard');
@@ -22,7 +22,7 @@ describe(createEmptyStandardBoard, () => {
   });
 });
 
-describe(createEmptySmallBoard, () => {
+describe('createEmptySmallBoard function', () => {
   it('fills the small layout and labels the board small', () => {
     const board = createEmptySmallBoard();
     expect(board.boardType).toBe('small');
@@ -35,7 +35,7 @@ describe(createEmptySmallBoard, () => {
   });
 });
 
-describe(createEmptyLargeBoard, () => {
+describe('createEmptyLargeBoard function', () => {
   it('fills the large layout and labels the board large', () => {
     const board = createEmptyLargeBoard();
     expect(board.boardType).toBe('large');

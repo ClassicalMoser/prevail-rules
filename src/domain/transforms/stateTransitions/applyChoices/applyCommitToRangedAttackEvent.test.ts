@@ -15,7 +15,7 @@ import { createEmptyGameState } from '@factories';
  * Ranged strike commitments: attacker or defender locks in their reaction card; the matching
  * `attackingCommitment` / `defendingCommitment` flips to completed and the card leaves hand.
  */
-describe(applyCommitToRangedAttackEvent, () => {
+describe('applyCommitToRangedAttackEvent function', () => {
   it('given pending attackingCommitment and black holds the card, attacking completed and black hand empty', () => {
     const state = createEmptyGameState('standard');
     const stateWithBlackCardInHand = updateCardState(state, {

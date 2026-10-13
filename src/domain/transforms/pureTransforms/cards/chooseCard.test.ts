@@ -7,7 +7,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * ChooseCard: Moves a card from a player's hand to awaitingPlay (choosing a card for play).
  */
-describe(chooseCard, () => {
+describe('chooseCard function', () => {
   function ownedWithHand(hand: typeof tempCommandCards): OwnedCardState {
     const state = createEmptyGameState('standard');
     return {

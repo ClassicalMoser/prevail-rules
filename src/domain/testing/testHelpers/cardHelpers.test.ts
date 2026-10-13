@@ -5,7 +5,7 @@ import { createTestCard, getCards, getCardsByCount } from './cardHelpers';
 /**
  * GetCards: Gets cards from the tempCommandCards array by their indices.
  */
-describe(getCards, () => {
+describe('getCards function', () => {
   it('given context, returns cards at specified indices', () => {
     const cards = getCards(0, 1, 2);
 
@@ -47,7 +47,7 @@ describe(getCards, () => {
   });
 });
 
-describe(getCardsByCount, () => {
+describe('getCardsByCount function', () => {
   it('given context, returns specified number of cards', () => {
     const cards = getCardsByCount(3);
 
@@ -90,7 +90,7 @@ describe(getCardsByCount, () => {
   });
 });
 
-describe(createTestCard, () => {
+describe('createTestCard function', () => {
   it('given no options, returns card with defaults', () => {
     const card = createTestCard();
     expect(card.id).toBe('test-card');

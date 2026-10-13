@@ -7,7 +7,7 @@ import { isSameUnitType } from './isSameUnitType';
 /**
  * IsSameUnitType: Determines whether two unit instances have the same unit type.
  */
-describe(isSameUnitType, () => {
+describe('isSameUnitType function', () => {
   const flexibility1UnitType = getUnitByStatValue('flexibility', 1);
   const flexibility2UnitType = getUnitByStatValue('flexibility', 2);
 

@@ -15,7 +15,7 @@ vi.mock(import('../composable'), () => ({
 /**
  * GetExpectedRangedAttackResolutionEvent: next event while resolving a ranged attack command.
  */
-describe(getExpectedRangedAttackResolutionEvent, () => {
+describe('getExpectedRangedAttackResolutionEvent function', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

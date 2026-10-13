@@ -7,7 +7,7 @@ import { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
  * UnitTypeMatchesRestrictions: a unit type against a trait filter, a unit-type
  * filter, or neither.
  */
-describe(unitTypeMatchesRestrictions, () => {
+describe('unitTypeMatchesRestrictions function', () => {
   const unitWithFormation = getUnitByTrait('formation');
 
   it('matches any unit when there is no trait or unit-type filter', () => {

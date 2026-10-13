@@ -16,7 +16,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseRetreatOptionEvent: membership against getLegalChooseRetreatOptionEvents.
  */
-describe(isValidChooseRetreatOptionEvent, () => {
+describe('isValidChooseRetreatOptionEvent function', () => {
   const optionA = { coordinate: 'E-4' as const, facing: 'north' as const };
   const optionB = { coordinate: 'E-6' as const, facing: 'north' as const };
 

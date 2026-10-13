@@ -35,7 +35,7 @@ function unitTypeWithDefenses(defenses: {
   };
 }
 
-describe(applyAttackValue, () => {
+describe('applyAttackValue function', () => {
   const gameState = createEmptyGameState('standard');
 
   describe('an attack above a threshold', () => {

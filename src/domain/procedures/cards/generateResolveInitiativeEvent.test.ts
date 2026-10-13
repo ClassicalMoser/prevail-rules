@@ -13,7 +13,7 @@ import { generateResolveInitiativeEvent } from './generateResolveInitiativeEvent
  * Play cards, assignInitiative: compare each side’s revealed in-play card `initiative` number.
  * Lower wins the round’s tempo; equal numbers leave `currentInitiative` unchanged.
  */
-describe(generateResolveInitiativeEvent, () => {
+describe('generateResolveInitiativeEvent function', () => {
   /**
    * Both `inPlay` set to the given cards, awaitingPlay cleared, phase step assignInitiative,
    * then `currentInitiative` stamped (defaults black).

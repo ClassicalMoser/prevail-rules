@@ -23,7 +23,7 @@ import { createEmptyGameState } from '@factories';
  * Marks the active attack-apply substep finished for the defending player named in the event
  * (ranged single apply vs melee side chosen by initiative order).
  */
-describe(applyCompleteAttackApplyEvent, () => {
+describe('applyCompleteAttackApplyEvent function', () => {
   /** IssueCommands + ranged CRS + incomplete apply for white defender on E-5. */
   function createStateWithRangedAttackApply(): GameState {
     const state = createEmptyGameState('standard');

@@ -29,7 +29,7 @@ function stateFirstPlayerResolveRally() {
  * Procedure guard before assign-unit-support: rally must be resolved and `unitsLostSupport`
  * must still be unset.
  */
-describe(getRallyResolutionStateAwaitingUnitSupport, () => {
+describe('getRallyResolutionStateAwaitingUnitSupport function', () => {
   it('given rallyResolved true and unitsLostSupport undefined, returns slice', () => {
     const state = stateFirstPlayerResolveRally();
     const result = getRallyResolutionStateAwaitingUnitSupport(state, 'white');

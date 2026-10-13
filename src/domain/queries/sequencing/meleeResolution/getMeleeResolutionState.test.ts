@@ -16,7 +16,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * Melee-resolution accessors: the current melee slice, and the slice ready for attack calculation.
  */
-describe(getMeleeResolutionState, () => {
+describe('getMeleeResolutionState function', () => {
   it('given default resolveMelee factory, returns melee slice with both commitments completed', () => {
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =
@@ -65,7 +65,7 @@ describe(getMeleeResolutionState, () => {
   });
 });
 
-describe(getMeleeResolutionReadyForAttackCalculation, () => {
+describe('getMeleeResolutionReadyForAttackCalculation function', () => {
   it('given default resolveMelee with completed commitments and no apply, returns melee at E-5', () => {
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState =

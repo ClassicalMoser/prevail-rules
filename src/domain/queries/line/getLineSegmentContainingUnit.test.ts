@@ -15,7 +15,7 @@ import { getLineSegmentContainingUnit } from './getLineSegmentContainingUnit';
  * A gap, an enemy, a wrong facing, or a missed requirement ends that side.
  * Length is not capped here.
  */
-describe(getLineSegmentContainingUnit, () => {
+describe('getLineSegmentContainingUnit function', () => {
   it('a lone unit is a segment of one', () => {
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-5'],

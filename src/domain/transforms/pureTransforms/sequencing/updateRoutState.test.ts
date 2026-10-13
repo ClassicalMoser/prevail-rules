@@ -26,7 +26,7 @@ import { updateCurrentInitiative } from '../state/updateCurrentInitiative';
 /**
  * UpdateRoutState: Creates a new game state with the rout state updated.
  */
-describe(updateRoutState, () => {
+describe('updateRoutState function', () => {
   function createStateWithRangedAttackRout() {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });

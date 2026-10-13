@@ -52,7 +52,7 @@ vi.mock(import('./byPhase'), () => ({
 /**
  * GetExpectedEvent: top-level router to the next expected event from full game state.
  */
-describe(getExpectedEvent, () => {
+describe('getExpectedEvent function', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

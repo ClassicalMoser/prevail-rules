@@ -6,7 +6,7 @@ import { createBoardWithSingleUnit } from './boardWithSingleUnit';
 /**
  * CreateBoardWithSingleUnit: Creates a board with a single unit at a coordinate.
  */
-describe(createBoardWithSingleUnit, () => {
+describe('createBoardWithSingleUnit function', () => {
   it('given place single unit at coordinate with defaults', () => {
     const board = createBoardWithSingleUnit('E-5', 'black');
     const atE5 = getPlayerUnitWithPosition(board, 'E-5', 'black');

@@ -21,7 +21,7 @@ import { createEmptyGameState } from '@factories';
  * Attack-apply getters: ranged CRS slice, per-player melee apply, and which defender still owes
  * an incomplete melee apply given initiative order.
  */
-describe(getAttackApplyStateFromRangedAttack, () => {
+describe('getAttackApplyStateFromRangedAttack function', () => {
   it('given ranged CRS with nested apply, returns that attackApplyState', () => {
     const attackingUnit = createTestUnit('black', { attack: 2 });
     const defendingUnit = createTestUnit('white', { attack: 2 });
@@ -82,7 +82,7 @@ describe(getAttackApplyStateFromRangedAttack, () => {
   });
 });
 
-describe(getAttackApplyStateFromMelee, () => {
+describe('getAttackApplyStateFromMelee function', () => {
   it('given melee with white apply, getAttackApplyFromMelee(white) returns white slice', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackCommitmentCard = createTestCard();
@@ -188,7 +188,7 @@ describe(getAttackApplyStateFromMelee, () => {
   });
 });
 
-describe(getDefendingPlayerForNextIncompleteMeleeAttackApply, () => {
+describe('getDefendingPlayerForNextIncompleteMeleeAttackApply function', () => {
   it('given black initiative and black apply incomplete, next defender is black', () => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });

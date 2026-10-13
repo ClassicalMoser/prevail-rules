@@ -14,7 +14,7 @@ import { createEmptyGameState } from '@factories';
  * `resolveInitiative` writes `currentInitiative` from the event and finishes the playCards
  * phase (`complete`). Wrong step still applies mechanically (trusted event path).
  */
-describe(applyResolveInitiativeEvent, () => {
+describe('applyResolveInitiativeEvent function', () => {
   /** PlayCards.assignInitiative with both inPlay populated from two command cards. */
   function createGameStateInAssignInitiativeStep(): GameState {
     const state = createEmptyGameState('standard');

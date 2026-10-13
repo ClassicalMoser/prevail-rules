@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * MoveCardToPlayed: Moves a player's card from inPlay to played pile.
  */
-describe(moveCardToPlayed, () => {
+describe('moveCardToPlayed function', () => {
   it('given move card from inPlay to played', () => {
     const owned = {
       ...createEmptyGameState('standard').cardState.black,

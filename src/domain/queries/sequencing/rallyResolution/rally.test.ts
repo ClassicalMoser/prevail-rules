@@ -13,7 +13,7 @@ import { createEmptyGameState } from '@factories';
  * Cleanup rally helpers: map player or current resolve-rally step to the right rally slice,
  * and unwrap nested rout state for rally-driven rout effects.
  */
-describe(getRallyResolutionState, () => {
+describe('getRallyResolutionState function', () => {
   it('given black is first player at chooseRally, getRallyState(black) returns first bucket', () => {
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
@@ -64,7 +64,7 @@ describe(getRallyResolutionState, () => {
   });
 });
 
-describe(getCurrentRallyResolutionState, () => {
+describe('getCurrentRallyResolutionState function', () => {
   it('given step firstPlayerResolveRally with first bucket, returns that rally slice', () => {
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createCleanupPhaseState({
@@ -141,7 +141,7 @@ describe(getCurrentRallyResolutionState, () => {
   });
 });
 
-describe(getRoutStateFromRally, () => {
+describe('getRoutStateFromRally function', () => {
   it('given rally slice with rout nested, returns that rout object', () => {
     const unit = createTestUnit('black', { attack: 2 });
     const rallyState: RallyResolutionState = {
@@ -179,7 +179,7 @@ describe(getRoutStateFromRally, () => {
   });
 });
 
-describe(getRoutStateFromCleanupPhaseForResolveRout, () => {
+describe('getRoutStateFromCleanupPhaseForResolveRout function', () => {
   it('returns rout from first player rally on firstPlayerResolveRally', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = createEmptyGameState('standard');

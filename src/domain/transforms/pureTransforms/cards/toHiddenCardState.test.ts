@@ -3,7 +3,7 @@ import { tempCommandCards } from '@sampleValues';
 
 import { toHiddenCardState } from './toHiddenCardState';
 
-describe(toHiddenCardState, () => {
+describe('toHiddenCardState function', () => {
   it('maps hand cards to hidden placeholders of the same count', () => {
     const owned: OwnedCardState = {
       awaitingPlay: null,

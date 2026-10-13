@@ -28,7 +28,7 @@ function withHands(
   return next;
 }
 
-describe(getWinnerFromEmptyHands, () => {
+describe('getWinnerFromEmptyHands function', () => {
   it('continues when both hands have cards', () => {
     const state = withHands(
       [createTestCard({ id: 'white-hand' })],

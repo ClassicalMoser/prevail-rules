@@ -15,7 +15,7 @@ import { createEmptyGameState } from '@factories';
  * One melee hex is fully resolved: drop `currentMeleeResolutionState` so the phase can pick
  * the next engagement or eventually complete the resolve-melee phase.
  */
-describe(applyCompleteMeleeResolutionEvent, () => {
+describe('applyCompleteMeleeResolutionEvent function', () => {
   it('given resolveMelee with an active melee slice, after effect currentMeleeResolutionState is undefined', () => {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {

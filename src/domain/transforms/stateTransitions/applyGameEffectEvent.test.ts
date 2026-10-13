@@ -35,7 +35,7 @@ vi.mock(import('./applyEffects'), () => ({
 /**
  * Smoke tests only: real routing coverage lives on each `applyEffects/*` module.
  */
-describe(applyGameEffectEvent, () => {
+describe('applyGameEffectEvent function', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

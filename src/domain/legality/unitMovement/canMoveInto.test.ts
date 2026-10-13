@@ -9,7 +9,7 @@ import { canMoveInto } from './canMoveInto';
 /**
  * CanMoveInto: Determines whether a unit can move into (end its movement at) a specific coordinate.
  */
-describe(canMoveInto, () => {
+describe('canMoveInto function', () => {
   describe('empty space', () => {
     it('given the space has no unit, returns true', () => {
       const gameState = createGameState([

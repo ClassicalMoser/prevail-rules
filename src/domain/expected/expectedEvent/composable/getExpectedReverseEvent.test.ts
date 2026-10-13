@@ -5,7 +5,7 @@ import { getExpectedReverseEvent } from './getExpectedReverseEvent';
 /**
  * GetExpectedReverseEvent: next reverse-resolution event from reverse substate.
  */
-describe(getExpectedReverseEvent, () => {
+describe('getExpectedReverseEvent function', () => {
   const unitPlacement = createUnitWithPlacement();
 
   it('given resolve reverse when the final position has not been determined yet', () => {

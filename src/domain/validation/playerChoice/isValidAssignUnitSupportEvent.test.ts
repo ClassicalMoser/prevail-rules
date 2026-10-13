@@ -57,7 +57,7 @@ function awaitingSupportState() {
   return { other, state, unit };
 }
 
-describe(isValidAssignUnitSupportEvent, () => {
+describe('isValidAssignUnitSupportEvent function', () => {
   it('given empty assignments while a slot could cover a unit, is invalid (not maximal)', () => {
     const { state } = awaitingSupportState();
     const event: AssignUnitSupportEvent = {

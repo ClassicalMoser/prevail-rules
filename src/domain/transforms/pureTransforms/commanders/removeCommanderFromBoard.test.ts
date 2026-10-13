@@ -8,7 +8,7 @@ import { removeCommanderFromBoard } from './removeCommanderFromBoard';
 /**
  * RemoveCommanderFromBoard: removeCommanderFromBoard.
  */
-describe(removeCommanderFromBoard, () => {
+describe('removeCommanderFromBoard function', () => {
   const coordinate: Coordinate = 'E-5';
 
   describe('removing commander from space with one commander', () => {

@@ -5,7 +5,7 @@ import { isFriendlyUnit } from './isFriendlyUnit';
 /**
  * IsFriendlyUnit: true when the unit's playerSide matches the queried side.
  */
-describe(isFriendlyUnit, () => {
+describe('isFriendlyUnit function', () => {
   it('given black unit and black side, returns true', () => {
     const unit = createTestUnit('black', { attack: 3 });
     expect(isFriendlyUnit(unit, 'black')).toBe(true);

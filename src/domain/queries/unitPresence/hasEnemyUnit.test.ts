@@ -20,7 +20,7 @@ function boardSpaceAt(board: Board, coord: Coordinate): BoardSpace {
 /**
  * HasEnemyUnit: Checks if an enemy unit is found in the space.
  */
-describe(hasEnemyUnit, () => {
+describe('hasEnemyUnit function', () => {
   const coordinate = 'E-5';
 
   describe('none unit presence', () => {

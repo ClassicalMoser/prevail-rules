@@ -3,7 +3,7 @@ import { createUnitWithPlacement } from './unitWithPlacement';
 /**
  * CreateUnitWithPlacement: Creates a UnitWithPlacement for testing with sensible defaults.
  */
-describe(createUnitWithPlacement, () => {
+describe('createUnitWithPlacement function', () => {
   it('given no options, returns unit with default placement', () => {
     const result = createUnitWithPlacement();
     expect(result.placement.coordinate).toBe('E-5');

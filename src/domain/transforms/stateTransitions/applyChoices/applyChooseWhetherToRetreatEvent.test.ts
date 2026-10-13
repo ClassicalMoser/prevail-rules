@@ -18,7 +18,7 @@ import { createEmptyGameState } from '@factories';
  * Front engagement during movement: defender commits whether to attempt retreat.
  * Accepting opens a nested RetreatState with baked legalRetreatOptions.
  */
-describe(applyChooseWhetherToRetreatEvent, () => {
+describe('applyChooseWhetherToRetreatEvent function', () => {
   function createStateWithFrontEngagement(defender?: UnitWithPlacement) {
     const defendingUnit: UnitWithPlacement = defender ?? {
       placement: { coordinate: 'E-5', facing: 'north' },

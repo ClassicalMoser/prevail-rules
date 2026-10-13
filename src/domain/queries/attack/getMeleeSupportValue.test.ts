@@ -31,7 +31,7 @@ function supportAt(
   return getMeleeSupportValue(board, unit);
 }
 
-describe(getMeleeSupportValue, () => {
+describe('getMeleeSupportValue function', () => {
   it('returns 0 when there are no adjacent units', () => {
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const board = createBoardWithUnits([

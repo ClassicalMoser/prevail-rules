@@ -13,7 +13,7 @@ import { addUnitToBoard } from './addUnitToBoard';
 /**
  * AddUnitToBoard: Adds a unit to a board (pure function, returns new board).
  */
-describe(addUnitToBoard, () => {
+describe('addUnitToBoard function', () => {
   const coordinate: Coordinate = 'E-5';
 
   // Helper function to create a UnitWithPlacement

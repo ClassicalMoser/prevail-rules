@@ -5,7 +5,7 @@ import { updateRoundState } from './updateRoundState';
 /**
  * UpdateRoundState: Creates a new game state with the round state updated.
  */
-describe(updateRoundState, () => {
+describe('updateRoundState function', () => {
   it('given update the round state', () => {
     const state = createEmptyGameState('standard');
     const newRoundState = {

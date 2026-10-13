@@ -13,7 +13,7 @@ import { createEmptyGameState } from '@factories';
  * slice `rallyResolved`, and stays on the resolve-rally step so units-broken can run next.
  * `unitsLostSupport` remains `'pending'` until {@link applyAssignUnitSupportEvent}.
  */
-describe(applyResolveRallyEvent, () => {
+describe('applyResolveRallyEvent function', () => {
   it('burns the played card, marks rally resolved, and leaves unitsLostSupport pending on the same step', () => {
     const state = createEmptyGameState('standard');
     state.currentInitiative = 'white';

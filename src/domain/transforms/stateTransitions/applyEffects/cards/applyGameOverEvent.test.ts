@@ -4,7 +4,7 @@ import { applyGameOverEvent } from './applyGameOverEvent';
 
 import { createEmptyGameState } from '@factories';
 
-describe(applyGameOverEvent, () => {
+describe('applyGameOverEvent function', () => {
   it('assigns the winner from the event', () => {
     const state = createEmptyGameState('standard');
     const event: GameOverEvent = {

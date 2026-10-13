@@ -19,7 +19,7 @@ const moveCard = tempCommandCards[4];
  * IsValidCommitToRangedAttackEvent: membership against
  * getLegalCommitToRangedAttackEvents.
  */
-describe(isValidCommitToRangedAttackEvent, () => {
+describe('isValidCommitToRangedAttackEvent function', () => {
   function stateBlackPendingAttackerCommit() {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {

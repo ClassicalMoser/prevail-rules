@@ -10,7 +10,6 @@ const config: OxlintConfig = {
   rules: {
     // Priority: HIGH
     'init-declarations': 'off',
-    'vitest/valid-title': 'off',
     // Priority: MEDIUM
     'consistent-function-scoping': 'off',
     'import/exports-last': 'off',

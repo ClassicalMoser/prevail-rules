@@ -6,7 +6,7 @@ import { isSameInstanceNumber } from './isSameInstanceNumber';
 /**
  * IsSameInstanceNumber: Determines whether two unit instances have the same instance number.
  */
-describe(isSameInstanceNumber, () => {
+describe('isSameInstanceNumber function', () => {
   it('given both units have the same instance number, returns true', () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const unit2 = createTestUnit('black', { attack: 4, instanceNumber: 1 });

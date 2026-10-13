@@ -17,7 +17,7 @@ import { createEmptyGameState } from '@factories';
  * GetLegalRoutDiscardCards: atomic eligible hand card IDs + required count when
  * cleanup resolveRally awaits a rout discard.
  */
-describe(getLegalRoutDiscardCards, () => {
+describe('getLegalRoutDiscardCards function', () => {
   function stateAwaitingDiscard(options: {
     step: 'firstPlayerResolveRally' | 'secondPlayerResolveRally';
     player: 'white' | 'black';

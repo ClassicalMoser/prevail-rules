@@ -5,7 +5,7 @@ import { getNextEventNumber } from './getNextEventNumber';
 
 import { createEmptyGameState } from '@factories';
 
-describe(getNextEventNumber, () => {
+describe('getNextEventNumber function', () => {
   it('returns 0 when the round has no events yet', () => {
     const state = createEmptyGameState('standard');
     expect(getNextEventNumber(state)).toBe(0);

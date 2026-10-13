@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * AddUnitsToCommandedUnits: Adds units to the commandedUnits set in the current round state.
  */
-describe(addUnitsToCommandedUnits, () => {
+describe('addUnitsToCommandedUnits function', () => {
   it('given add units to commandedUnits set', () => {
     const state = createEmptyGameState('standard');
     const unit1 = createTestUnit('black', { attack: 3 });

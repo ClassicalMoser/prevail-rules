@@ -14,7 +14,7 @@ import { createEmptyGameState } from '@factories';
  * Play-cards `chooseCards`: the chosen command card leaves `inHand` and sits in `awaitingPlay`
  * until both sides pick; then the round step advances to `revealCards`.
  */
-describe(applyChooseCardEvent, () => {
+describe('applyChooseCardEvent function', () => {
   /** PlayCards.chooseCards with the supplied hands and no card awaiting play yet. */
   function createGameStateInChooseCardsStep(
     blackHand: typeof tempCommandCards,

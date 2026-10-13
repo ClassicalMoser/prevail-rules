@@ -5,7 +5,7 @@ import { updateRoundEventStream } from './updateRoundEventStream';
 
 import { createEmptyGameState } from '@factories';
 
-describe(updateRoundEventStream, () => {
+describe('updateRoundEventStream function', () => {
   it('sets currentRoundState.events to the given stream', () => {
     const state = createEmptyGameState('standard');
     const events: readonly Event[] = [

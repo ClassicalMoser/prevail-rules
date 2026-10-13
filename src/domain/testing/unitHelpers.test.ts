@@ -9,7 +9,7 @@ import {
 /**
  * CreateTestUnit: Creates a unit instance for testing with sensible defaults.
  */
-describe(createTestUnit, () => {
+describe('createTestUnit function', () => {
   it('given no options, creates unit with default attack 3', () => {
     const unit = createTestUnit('black');
     expect(unit.playerSide).toBe('black');
@@ -47,7 +47,7 @@ describe(createTestUnit, () => {
   });
 });
 
-describe(createUnitByStat, () => {
+describe('createUnitByStat function', () => {
   it('given defaults, creates unit by stat and value', () => {
     const unit = createUnitByStat('black', 'attack', 3);
     expect(unit.playerSide).toBe('black');
@@ -67,7 +67,7 @@ describe(createUnitByStat, () => {
   });
 });
 
-describe(createTestUnits, () => {
+describe('createTestUnits function', () => {
   it('given defaults, creates multiple units with sequential instance numbers', () => {
     const units = createTestUnits('black', 3);
     expect(units).toHaveLength(3);

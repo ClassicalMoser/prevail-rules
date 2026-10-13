@@ -11,7 +11,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseMeleeResolutionEvent: membership against getLegalChooseMeleeResolutionEvents.
  */
-describe(isValidChooseMeleeResolutionEvent, () => {
+describe('isValidChooseMeleeResolutionEvent function', () => {
   function stateWithRemaining(remaining: readonly Coordinate[]) {
     const base = createEmptyGameState('standard');
     const phase = createResolveMeleePhaseState(base, {

@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedSetupUnitsEvent: white then black while reserved units remain.
  */
-describe(getExpectedSetupUnitsEvent, () => {
+describe('getExpectedSetupUnitsEvent function', () => {
   it('given white reserved units, expects white setupUnits', () => {
     const state = {
       ...createEmptyGameState('standard'),

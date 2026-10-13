@@ -7,7 +7,7 @@ import { revealCard } from './revealCard';
 /**
  * RevealCard: Moves a player's card from awaitingPlay to inPlay.
  */
-describe(revealCard, () => {
+describe('revealCard function', () => {
   it('given move card from awaitingPlay to inPlay', () => {
     const awaitingCard = createTestCard({ id: 'awaiting' });
     const owned = {

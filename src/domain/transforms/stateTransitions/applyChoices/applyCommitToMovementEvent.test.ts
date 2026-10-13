@@ -20,7 +20,7 @@ import { createEmptyGameState } from '@factories';
  * Movement command commitment: pending `commitment` on the movement CRS becomes completed with
  * the played card, and that card is removed from the moving player’s hand.
  */
-describe(applyCommitToMovementEvent, () => {
+describe('applyCommitToMovementEvent function', () => {
   it('given black pending movement and one card in hand, commitment completed and hand empty', () => {
     const state = createEmptyGameState('standard');
     const stateWithBlackCardInHand = updateCardState(state, {

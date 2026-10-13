@@ -9,7 +9,7 @@ import {
 /**
  * CreateMovementResolutionState: Creates a MovementResolutionState with sensible defaults.
  */
-describe(createMovementResolutionState, () => {
+describe('createMovementResolutionState function', () => {
   it('given context, returns movement command resolution with unit and commitment', () => {
     const state = createEmptyGameState('standard');
     const resolution = createMovementResolutionState(state);
@@ -21,7 +21,7 @@ describe(createMovementResolutionState, () => {
   });
 });
 
-describe(createRangedAttackResolutionState, () => {
+describe('createRangedAttackResolutionState function', () => {
   it('given context, returns rangedAttack command resolution with commitments', () => {
     const state = createEmptyGameState('standard');
     const resolution = createRangedAttackResolutionState(state);
@@ -33,7 +33,7 @@ describe(createRangedAttackResolutionState, () => {
   });
 });
 
-describe(createMeleeResolutionState, () => {
+describe('createMeleeResolutionState function', () => {
   it('given context, returns melee resolution with location and commitments', () => {
     const state = createEmptyGameState('standard');
     const resolution = createMeleeResolutionState(state);

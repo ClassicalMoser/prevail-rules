@@ -8,7 +8,7 @@ import { updateCurrentInitiative } from '@transforms';
 /**
  * GetExpectedCleanupPhaseEvent: next cleanup-phase event from cleanup step and rally state.
  */
-describe(getExpectedCleanupPhaseEvent, () => {
+describe('getExpectedCleanupPhaseEvent function', () => {
   function createGameStateInCleanupStep(
     step: CleanupPhaseStep,
     currentInitiative: 'black' | 'white' = 'black',

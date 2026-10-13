@@ -13,7 +13,7 @@ import { removeUnitFromBoard } from './removeUnitFromBoard';
 /**
  * RemoveUnitFromBoard: removeUnitFromBoard.
  */
-describe(removeUnitFromBoard, () => {
+describe('removeUnitFromBoard function', () => {
   const coordinate: Coordinate = 'E-5';
 
   // Helper function to create a UnitWithPlacement

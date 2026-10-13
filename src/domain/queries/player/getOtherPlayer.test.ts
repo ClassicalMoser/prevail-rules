@@ -5,7 +5,7 @@ import { getOtherPlayer } from './getOtherPlayer';
 /**
  * GetOtherPlayer: maps black ↔ white for two-player sides; throws on unknown side.
  */
-describe(getOtherPlayer, () => {
+describe('getOtherPlayer function', () => {
   it('given black, returns white', () => {
     expect(getOtherPlayer('black')).toBe('white');
   });

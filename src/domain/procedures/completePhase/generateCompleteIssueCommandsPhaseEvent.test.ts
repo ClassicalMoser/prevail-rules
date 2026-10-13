@@ -11,7 +11,7 @@ import { createEmptyGameState } from '@factories';
  * Issue-commands phase is done: emit `completeIssueCommandsPhase` with `remainingEngagements`
  * — a set of board coordinates that still hold engaged units (from live board scan).
  */
-describe(generateCompleteIssueCommandsPhaseEvent, () => {
+describe('generateCompleteIssueCommandsPhaseEvent function', () => {
   /** Puts `state` in ISSUE_COMMANDS_PHASE step `complete` with empty command queues. */
   function stateInIssueCommandsComplete(
     state = createEmptyGameState('standard'),

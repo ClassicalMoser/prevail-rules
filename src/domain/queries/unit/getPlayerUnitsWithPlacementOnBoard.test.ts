@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetPlayerUnitsWithPlacementOnBoard: all of a player's units on the board with coordinates and facings.
  */
-describe(getPlayerUnitsWithPlacementOnBoard, () => {
+describe('getPlayerUnitsWithPlacementOnBoard function', () => {
   it('given a player, returns all units with placement', () => {
     const unit1 = createTestUnit('white', { attack: 3 });
     const unit2 = createTestUnit('white', { attack: 3 });

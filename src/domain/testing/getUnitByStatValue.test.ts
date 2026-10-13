@@ -3,7 +3,7 @@ import { getUnitByStatValue } from './getUnitByStatValue';
 /**
  * GetUnitByStatValue: Finds a unit type by matching a specific stat value.
  */
-describe(getUnitByStatValue, () => {
+describe('getUnitByStatValue function', () => {
   it('given context, returns unit type matching attack value', () => {
     const unitType = getUnitByStatValue('attack', 3);
     expect(unitType).toBeDefined();

@@ -68,7 +68,7 @@ function gameOverState(options: {
   return next;
 }
 
-describe(getGameOverWinner, () => {
+describe('getGameOverWinner function', () => {
   it('continues when both hands have cards', () => {
     const state = gameOverState({
       blackHand: [createTestCard({ id: 'black-hand' })],

@@ -14,7 +14,7 @@ import { createEmptyGameState } from '@factories';
  * GetLegalChooseWhetherToRetreatEvents: yes/no for the front-engagement
  * defender when defendingUnitRetreats is pending and retreat is allowed.
  */
-describe(getLegalChooseWhetherToRetreatEvents, () => {
+describe('getLegalChooseWhetherToRetreatEvents function', () => {
   function stateAwaitingWhetherToRetreat() {
     const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state, {

@@ -5,7 +5,7 @@ import { createEngagedUnitPresence } from '@testing/unitPresenceHelpers';
 /**
  * HasSingleUnit: type guard — unit presence is a single (non-engaged) unit.
  */
-describe(hasSingleUnit, () => {
+describe('hasSingleUnit function', () => {
   it('given engaged unit presence, returns false', () => {
     const unit1 = createTestUnit('black', { attack: 3 });
     const unit2 = createTestUnit('white', { attack: 3 });

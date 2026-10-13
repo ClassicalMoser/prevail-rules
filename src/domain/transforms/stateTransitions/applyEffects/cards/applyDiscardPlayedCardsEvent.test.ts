@@ -15,7 +15,7 @@ import { createEmptyGameState } from '@factories';
  * Cleanup opener: both `inPlay` command cards append to `played` piles, slots clear, and the
  * cleanup step advances to the first rally choice.
  */
-describe(applyDiscardPlayedCardsEvent, () => {
+describe('applyDiscardPlayedCardsEvent function', () => {
   const event = {
     effectType: 'discardPlayedCards' as const,
     eventNumber: 0,

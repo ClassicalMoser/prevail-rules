@@ -23,7 +23,7 @@ import { createEmptyGameState } from '@factories';
  * presence and opens a movement CRS (mover commitment declined) while removing
  * the unit from remaining resolve units.
  */
-describe(applyMoveUnitEvent, () => {
+describe('applyMoveUnitEvent function', () => {
   it('moves the unit on the board, starts movement CRS, and clears it from remaining', () => {
     const unitWithPlacement = createUnitWithPlacement({
       coordinate: 'E-5',

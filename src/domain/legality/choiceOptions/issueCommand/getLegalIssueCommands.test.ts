@@ -9,7 +9,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetLegalIssueCommands: remaining command atoms for the active issue step.
  */
-describe(getLegalIssueCommands, () => {
+describe('getLegalIssueCommands function', () => {
   it('returns remaining commands for the first player issue step', () => {
     const command = tempCommandCards[0].command;
     let state = createEmptyGameState('standard');

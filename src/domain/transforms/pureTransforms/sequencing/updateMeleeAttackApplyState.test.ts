@@ -13,7 +13,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * UpdateMeleeAttackApplyState: Creates a new game state with the attack apply state updated for a specific player in melee resolution.
  */
-describe(updateMeleeAttackApplyState, () => {
+describe('updateMeleeAttackApplyState function', () => {
   function createStateInResolveMelee() {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });

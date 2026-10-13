@@ -10,7 +10,7 @@ const smallBoard: Board = createEmptySmallBoard();
  * GetBoardSpace: looks up the tile record at a coordinate; throws if the coordinate is missing from the board
  * map or not a valid coordinate for that board shape.
  */
-describe(getBoardSpace, () => {
+describe('getBoardSpace function', () => {
   describe('standard board', () => {
     it('the space at E-5 has terrain, elevation, and unit presence', () => {
       const space = getBoardSpace(standardBoard, 'E-5');

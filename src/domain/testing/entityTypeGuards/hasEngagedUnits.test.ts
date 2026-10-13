@@ -9,7 +9,7 @@ import {
 /**
  * HasEngagedUnits: type guard — unit presence is an engagement (two units).
  */
-describe(hasEngagedUnits, () => {
+describe('hasEngagedUnits function', () => {
   it('given none unit presence, returns false', () => {
     const unitPresence = createNoneUnitPresence();
     expect(hasEngagedUnits(unitPresence)).toBe(false);

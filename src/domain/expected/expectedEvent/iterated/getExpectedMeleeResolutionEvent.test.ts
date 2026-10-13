@@ -20,7 +20,7 @@ vi.mock(import('../composable'), () => ({
 /**
  * GetExpectedMeleeResolutionEvent: next event while resolving a melee attack.
  */
-describe(getExpectedMeleeResolutionEvent, () => {
+describe('getExpectedMeleeResolutionEvent function', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

@@ -2,7 +2,7 @@ import type { HiddenCardState } from '@game';
 
 import { discardHiddenCardFromHand } from './discardHiddenCardFromHand';
 
-describe(discardHiddenCardFromHand, () => {
+describe('discardHiddenCardFromHand function', () => {
   it('removes one hidden placeholder from hand', () => {
     const hidden: HiddenCardState = {
       awaitingPlay: null,

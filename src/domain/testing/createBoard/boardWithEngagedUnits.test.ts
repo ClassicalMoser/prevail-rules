@@ -5,7 +5,7 @@ import { createBoardWithEngagedUnits } from './boardWithEngagedUnits';
 /**
  * CreateBoardWithEngagedUnits: Creates a board with engaged units at a coordinate.
  */
-describe(createBoardWithEngagedUnits, () => {
+describe('createBoardWithEngagedUnits function', () => {
   it('given defaults, creates board with engaged presence at default coord', () => {
     const primary = createTestUnit('black');
     const secondary = createTestUnit('white');

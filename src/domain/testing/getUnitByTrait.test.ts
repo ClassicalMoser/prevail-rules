@@ -5,7 +5,7 @@ import { getUnitByTrait } from './getUnitByTrait';
 /**
  * GetUnitByTrait: Finds a unit type by matching one or more traits.
  */
-describe(getUnitByTrait, () => {
+describe('getUnitByTrait function', () => {
   it('given context, returns unit type with single trait', () => {
     const unitType = getUnitByTrait('formation');
     expect(unitType).toBeDefined();

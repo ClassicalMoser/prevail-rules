@@ -12,7 +12,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * ExploreCommanderMoves: BFS reachable commander coordinates within move distance with blocking rules.
  */
-describe(exploreCommanderMoves, () => {
+describe('exploreCommanderMoves function', () => {
   const maxDistance = COMMANDER_MOVE_DISTANCE;
   describe('core functionality', () => {
     it('given context, returns all moves on an empty board', () => {

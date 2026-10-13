@@ -5,7 +5,7 @@ import { createUnitInstance } from './createUnitInstance';
 /**
  * CreateUnitInstance: Creates a unit instance with the specified properties.
  */
-describe(createUnitInstance, () => {
+describe('createUnitInstance function', () => {
   it('given defaults, creates a unit instance with the specified properties', () => {
     const unitType = getUnitByStatValue('attack', 3);
     if (!unitType) {

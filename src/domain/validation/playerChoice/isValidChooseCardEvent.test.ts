@@ -11,7 +11,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseCardEvent: membership against getLegalChooseCardOptions.
  */
-describe(isValidChooseCardEvent, () => {
+describe('isValidChooseCardEvent function', () => {
   function stateChooseCardsBothPending(): GameState {
     const base = createEmptyGameState('standard');
     const withPhase = updatePhaseState(base, {

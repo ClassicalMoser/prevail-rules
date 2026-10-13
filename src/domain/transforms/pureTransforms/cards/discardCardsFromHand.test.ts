@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * DiscardCardsFromHand: Pure transform to move specified cards from hand to discarded pile.
  */
-describe(discardCardsFromHand, () => {
+describe('discardCardsFromHand function', () => {
   it('given move cards from hand to discarded', () => {
     const owned = {
       ...createEmptyGameState('standard').cardState.black,

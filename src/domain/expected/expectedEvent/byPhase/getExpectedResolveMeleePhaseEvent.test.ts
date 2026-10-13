@@ -12,7 +12,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedResolveMeleePhaseEvent: next event during resolve-melee phase.
  */
-describe(getExpectedResolveMeleePhaseEvent, () => {
+describe('getExpectedResolveMeleePhaseEvent function', () => {
   function createGameStateInResolveMeleeStep(
     step: ResolveMeleePhaseStep,
     buildOverrides?: (

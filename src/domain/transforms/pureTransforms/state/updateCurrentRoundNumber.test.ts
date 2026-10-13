@@ -5,7 +5,7 @@ import { updateCurrentRoundNumber } from './updateCurrentRoundNumber';
 /**
  * UpdateCurrentRoundNumber: Creates a new game state with the current round number updated.
  */
-describe(updateCurrentRoundNumber, () => {
+describe('updateCurrentRoundNumber function', () => {
   it('given update the current round number', () => {
     const state = createEmptyGameState('standard');
     const newRoundNumber = 5;

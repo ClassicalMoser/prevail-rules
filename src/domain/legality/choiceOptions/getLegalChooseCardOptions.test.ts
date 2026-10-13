@@ -19,7 +19,7 @@ const chooseCardBase = {
  * GetLegalChooseCardOptions: pending owned players' in-hand cards during
  * playCards / chooseCards, including player-seen visibility.
  */
-describe(getLegalChooseCardOptions, () => {
+describe('getLegalChooseCardOptions function', () => {
   function stateChooseCardsBothPending(): GameState {
     const base = createEmptyGameState('standard');
     const withPhase = updatePhaseState(base, {

@@ -35,7 +35,7 @@ function gameWithMovementEngagement(
   );
 }
 
-describe(getEngagementStateFromMovement, () => {
+describe('getEngagementStateFromMovement function', () => {
   it('returns the engagement on the movement', () => {
     const engagement = createFrontEngagementState();
     const state = gameWithMovementEngagement(engagement);
@@ -66,7 +66,7 @@ describe(getEngagementStateFromMovement, () => {
   });
 });
 
-describe(getFlankEngagementStateFromMovement, () => {
+describe('getFlankEngagementStateFromMovement function', () => {
   it('returns the flank engagement on the movement', () => {
     const engagement = createFlankEngagementState();
     const state = gameWithMovementEngagement(engagement);
@@ -88,7 +88,7 @@ describe(getFlankEngagementStateFromMovement, () => {
   });
 });
 
-describe(getFrontEngagementStateFromMovement, () => {
+describe('getFrontEngagementStateFromMovement function', () => {
   it('returns the front engagement on the movement', () => {
     const engagement = createFrontEngagementState();
     const state = gameWithMovementEngagement(engagement);
@@ -110,7 +110,7 @@ describe(getFrontEngagementStateFromMovement, () => {
   });
 });
 
-describe(getRearEngagementStateFromMovement, () => {
+describe('getRearEngagementStateFromMovement function', () => {
   it('returns the rear engagement on the movement', () => {
     const engagement = createRearEngagementState();
     const state = gameWithMovementEngagement(engagement);
