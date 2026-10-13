@@ -10,7 +10,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * ValidatePlayerChoice: Validates a player choice against the current game state.
  */
-describe(validatePlayerChoice, () => {
+describe('validatePlayerChoice function', () => {
   function stateInPlayCardsChooseCards(): GameState {
     const base = createEmptyGameState('standard');
     const withPhase = updatePhaseState(base, {

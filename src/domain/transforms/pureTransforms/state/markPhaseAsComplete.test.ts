@@ -6,7 +6,7 @@ import { markPhaseAsComplete } from './markPhaseAsComplete';
 /**
  * MarkPhaseAsComplete: Creates a new phase state with the step set to 'complete'.
  */
-describe(markPhaseAsComplete, () => {
+describe('markPhaseAsComplete function', () => {
   it('given mark play cards phase as complete', () => {
     const phaseState: PlayCardsPhaseState = {
       phase: PLAY_CARDS_PHASE,

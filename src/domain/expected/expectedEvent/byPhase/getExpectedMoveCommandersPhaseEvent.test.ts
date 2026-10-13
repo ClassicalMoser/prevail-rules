@@ -11,7 +11,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedMoveCommandersPhaseEvent: next event during move-commanders phase.
  */
-describe(getExpectedMoveCommandersPhaseEvent, () => {
+describe('getExpectedMoveCommandersPhaseEvent function', () => {
   /**
    * Helper to create a game state in the moveCommanders phase with a specific step
    */

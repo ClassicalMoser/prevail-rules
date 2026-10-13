@@ -17,7 +17,7 @@ import { createEmptyGameState } from '@factories';
  * When a move enters an enemy hex, this seeds `engagementState` on the movement CRS from the
  * procedure’s `engagementType` (front vs rear rout vs flank rotation pipeline).
  */
-describe(applyStartEngagementEvent, () => {
+describe('applyStartEngagementEvent function', () => {
   /** Black E-5 moving into white on E-6 with north-facing target placement. */
   function stateWithMovementToEnemy(): {
     state: GameState;

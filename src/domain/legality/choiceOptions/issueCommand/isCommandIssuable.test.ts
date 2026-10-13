@@ -8,7 +8,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsCommandIssuable: remaining grant can be spent (at least one eligible unit).
  */
-describe(isCommandIssuable, () => {
+describe('isCommandIssuable function', () => {
   const unrestrictedUnits = (number: number): Command => ({
     modifiers: [],
     number,

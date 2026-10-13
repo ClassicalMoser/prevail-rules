@@ -6,7 +6,7 @@ import { createEmptyGameState } from './createEmptyGameState';
  * A value outside GameModeName is rejected so a drifted catalog fails at runtime.
  */
 
-describe(createEmptyGameState, () => {
+describe('createEmptyGameState function', () => {
   it('starts black on a standard board with empty piles and no phase', () => {
     const gameState = createEmptyGameState('standard');
 

@@ -27,7 +27,7 @@ vi.mock(import('@queries'), () => ({
 /**
  * GetExpectedAttackApplyEvent: next attack-apply step (melee/ranged) from attack-apply substate.
  */
-describe(getExpectedAttackApplyEvent, () => {
+describe('getExpectedAttackApplyEvent function', () => {
   beforeEach(() => {
     canReverseUnitMock.mockReset();
   });

@@ -27,7 +27,7 @@ vi.mock(import('./applyChoices'), () => ({
 /**
  * Smoke tests only: real routing coverage lives on each `applyChoices/*` module.
  */
-describe(applyPlayerChoiceEvent, () => {
+describe('applyPlayerChoiceEvent function', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

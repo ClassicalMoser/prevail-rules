@@ -3,7 +3,7 @@ import { isEngagementFromFlank } from './isEngagementFromFlank';
 /**
  * Flank engagement: the attacker faces perpendicular to the defender.
  */
-describe(isEngagementFromFlank, () => {
+describe('isEngagementFromFlank function', () => {
   it('an attacker facing perpendicular right of the defender is a flank engagement', () => {
     expect(isEngagementFromFlank('east', 'north')).toStrictEqual({
       result: true,

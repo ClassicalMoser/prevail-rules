@@ -20,7 +20,7 @@ import { createEmptyGameState } from '@factories';
  * GetLegalChooseMeleeResolutionEvents: initiative player’s legal choose-engagement payloads
  * during resolveMelee / resolveMelee (no melee slice in progress).
  */
-describe(getLegalChooseMeleeResolutionEvents, () => {
+describe('getLegalChooseMeleeResolutionEvents function', () => {
   function stateChoosingMeleeEngagement(options?: {
     initiative?: 'black' | 'white';
     remaining?: Iterable<Coordinate>;

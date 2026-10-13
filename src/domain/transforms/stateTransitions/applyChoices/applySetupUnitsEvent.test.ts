@@ -9,7 +9,7 @@ import { createEmptyGameState } from '@factories';
  * commander into `boardState`, clears those units from reserve, and starts
  * round 1 playCards when reserve is empty.
  */
-describe(applySetupUnitsEvent, () => {
+describe('applySetupUnitsEvent function', () => {
   it('given one black unit E-5 north, board shows unit and black commander and starts round 1', () => {
     const unitWithPlacement = createUnitWithPlacement({
       coordinate: 'E-5',

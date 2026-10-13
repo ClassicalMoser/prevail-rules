@@ -16,7 +16,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetLegalRetreats: legal retreat placements for an engaged unit given speed, flexibility, and board occupancy.
  */
-describe(getLegalRetreats, () => {
+describe('getLegalRetreats function', () => {
   // Test helper to check if a placement exists in the set
   function _placementHasMatch(
     placements: Set<UnitPlacement>,

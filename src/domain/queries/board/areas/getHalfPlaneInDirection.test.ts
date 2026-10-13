@@ -11,7 +11,7 @@ const smallBoard = createEmptySmallBoard();
  * the edge. The coordinate's own inline line stays out. When nothing lies
  * ahead, the semiplane is empty.
  */
-describe(getHalfPlaneInDirection, () => {
+describe('getHalfPlaneInDirection function', () => {
   it('nothing lies ahead of a north-facing unit at A-1', () => {
     expect(getHalfPlaneInDirection(smallBoard, 'A-1', 'north').size).toBe(0);
   });

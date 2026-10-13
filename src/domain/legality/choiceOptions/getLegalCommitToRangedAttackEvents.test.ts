@@ -22,7 +22,7 @@ const rangeCard = tempCommandCards[15];
  * eligible in-hand card (has ≥1 ranged modifier), plus refuse; modifierTypes
  * are all of that card's ranged modifiers.
  */
-describe(getLegalCommitToRangedAttackEvents, () => {
+describe('getLegalCommitToRangedAttackEvents function', () => {
   function statePendingAttackerCommit(hand = [strikeCard]) {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {

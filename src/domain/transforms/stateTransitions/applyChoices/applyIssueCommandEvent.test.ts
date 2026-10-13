@@ -16,7 +16,7 @@ import { updateCurrentInitiative } from '@transforms/pureTransforms/state/update
  * Issue-commands: spending a command type removes it from the side’s remaining set and adds
  * the chosen unit instances to the round’s `commandedUnits` (for later resolution ordering).
  */
-describe(applyIssueCommandEvent, () => {
+describe('applyIssueCommandEvent function', () => {
   /** FirstPlayerIssueCommands with one command left per side from two inPlay cards. */
   function createGameStateWithCommands(
     currentInitiative: 'black' | 'white' = 'black',

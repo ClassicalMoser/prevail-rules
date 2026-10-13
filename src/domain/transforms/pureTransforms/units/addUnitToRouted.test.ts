@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * AddUnitToRouted: addUnitToRouted.
  */
-describe(addUnitToRouted, () => {
+describe('addUnitToRouted function', () => {
   describe('adding unit to empty set', () => {
     it('given add unit to routed units set', () => {
       const gameState = createEmptyGameState('standard');

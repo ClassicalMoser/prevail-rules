@@ -13,7 +13,7 @@ import { createEmptyGameState } from '@factories';
  * remaining issue-commands slots (lines ×N expand to N× number:1). First vs second
  * player sets follow `currentInitiative`.
  */
-describe(generateCompleteMoveCommandersPhaseEvent, () => {
+describe('generateCompleteMoveCommandersPhaseEvent function', () => {
   const advanceCard = tempCommandCards.find((card) => card.name === 'Advance');
   if (advanceCard === undefined) {
     throw new Error('Expected Advance sample card');

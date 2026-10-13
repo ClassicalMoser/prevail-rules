@@ -18,7 +18,7 @@ const strikeCard = tempCommandCards[0];
 /**
  * IsValidCommitToMovementEvent: membership against getLegalCommitToMovementEvents.
  */
-describe(isValidCommitToMovementEvent, () => {
+describe('isValidCommitToMovementEvent function', () => {
   function stateBlackPendingCommit() {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {

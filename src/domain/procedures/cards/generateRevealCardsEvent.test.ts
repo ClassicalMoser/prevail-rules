@@ -10,7 +10,7 @@ import { createEmptyGameState } from '@factories';
  * Reveal cards step: both players’ awaitingPlay cards become public knowledge.
  * The procedure bakes both card identities into the event payload.
  */
-describe(generateRevealCardsEvent, () => {
+describe('generateRevealCardsEvent function', () => {
   function createStateWithAwaitingPlay() {
     const state = createEmptyGameState('standard');
     const stateWithCards = updateCardState(state, {

@@ -5,7 +5,7 @@ import { replaceHiddenPlayerCardState } from './replaceHiddenPlayerCardState';
 /**
  * ReplaceHiddenPlayerCardState: swaps one hidden slice inside CardState.
  */
-describe(replaceHiddenPlayerCardState, () => {
+describe('replaceHiddenPlayerCardState function', () => {
   it('given authoritative, rejects either player', () => {
     const { cardState } = createEmptyGameState('standard');
     const nextHidden = {

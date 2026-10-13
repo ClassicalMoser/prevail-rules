@@ -13,7 +13,7 @@ import { createEmptyGameState } from '@factories';
  * Cleanup rally prompts: `performRally` seeds the per-player rally resolution slice and moves
  * the cleanup step forward (resolve rally vs skip to next chooser or complete).
  */
-describe(applyChooseRallyEvent, () => {
+describe('applyChooseRallyEvent function', () => {
   it('given firstPlayerChooseRally and performRally true, step firstPlayerResolveRally and playerRallied true', () => {
     const state = createEmptyGameState('standard');
     const phaseState = createCleanupPhaseState({

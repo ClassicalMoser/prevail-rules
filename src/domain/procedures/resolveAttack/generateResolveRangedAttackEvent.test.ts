@@ -20,7 +20,7 @@ const spearmenType = punicCitizenSpearmen;
  * settled, and there must be no attack-apply substep yet. Outcome exposes rout/retreat/reverse
  * flags and optional legal retreat cells when retreat applies.
  */
-describe(generateResolveRangedAttackEvent, () => {
+describe('generateResolveRangedAttackEvent function', () => {
   /** Spearmen duel on E-5 under issueCommands ranged CRS; default commitments resolved. */
   function rangedResolutionGameState(): GameState {
     const state = createEmptyGameState('standard');

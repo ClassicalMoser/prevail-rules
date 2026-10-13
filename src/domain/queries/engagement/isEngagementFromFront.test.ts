@@ -3,7 +3,7 @@ import { isEngagementFromFront } from './isEngagementFromFront';
 /**
  * Front engagement: the attacker faces opposite the defender.
  */
-describe(isEngagementFromFront, () => {
+describe('isEngagementFromFront function', () => {
   it('an attacker facing the defender is a front engagement', () => {
     expect(isEngagementFromFront('south', 'north')).toStrictEqual({
       result: true,

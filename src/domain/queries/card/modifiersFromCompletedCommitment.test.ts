@@ -7,7 +7,7 @@ import { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommit
  * ModifiersFromCompletedCommitment: only a completed commitment yields the committed card's modifiers;
  * pending or declined yield nothing.
  */
-describe(modifiersFromCompletedCommitment, () => {
+describe('modifiersFromCompletedCommitment function', () => {
   it('a pending commitment has no modifiers', () => {
     expect(
       modifiersFromCompletedCommitment({ commitmentType: 'pending' }),

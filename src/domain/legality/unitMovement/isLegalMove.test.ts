@@ -8,7 +8,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsLegalMove: Validates whether a unit move event is legal according to game rules.
  */
-describe(isLegalMove, () => {
+describe('isLegalMove function', () => {
   describe('core functionality', () => {
     it('given a legal move, returns true', () => {
       const unitInstance = createTestUnit('black', { speed: 2 });

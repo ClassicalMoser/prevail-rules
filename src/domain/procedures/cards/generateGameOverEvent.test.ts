@@ -4,7 +4,7 @@ import { generateGameOverEvent } from './generateGameOverEvent';
 
 import { createEmptyGameState } from '@factories';
 
-describe(generateGameOverEvent, () => {
+describe('generateGameOverEvent function', () => {
   it('bakes black as winner when white hand is empty', () => {
     const base = createEmptyGameState('standard');
     const state = updateCardState(base, {

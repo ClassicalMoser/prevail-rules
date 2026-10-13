@@ -21,7 +21,7 @@ import { updateCurrentInitiative } from '@transforms/pureTransforms/state/update
  * commitments pending, supporting units recorded, and every participating unit stripped from
  * the active player’s `remainingUnits*` (and defender from the opponent’s set when listed).
  */
-describe(applyPerformRangedAttackEvent, () => {
+describe('applyPerformRangedAttackEvent function', () => {
   /** IssueCommands at first or second resolve step with the given remaining unit sets. */
   function createStateInResolveStep(
     step: 'firstPlayerResolveCommands' | 'secondPlayerResolveCommands',

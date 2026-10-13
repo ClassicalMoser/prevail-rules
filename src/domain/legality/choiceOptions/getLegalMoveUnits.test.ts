@@ -18,7 +18,7 @@ import { createEmptyGameState } from '@factories';
  * GetLegalMoveUnits: atomic remaining units (with placements) when awaiting
  * moveUnit to start a movement command resolution.
  */
-describe(getLegalMoveUnits, () => {
+describe('getLegalMoveUnits function', () => {
   function stateAwaitingMoveUnit(options?: { withUnitOnBoard?: boolean }) {
     const withUnitOnBoard = options?.withUnitOnBoard ?? true;
     const unitWithPlacement = createUnitWithPlacement({

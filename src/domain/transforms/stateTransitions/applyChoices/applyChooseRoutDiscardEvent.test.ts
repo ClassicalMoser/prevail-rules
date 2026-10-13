@@ -29,7 +29,7 @@ import { updateCurrentInitiative } from '@transforms/pureTransforms/state/update
  * ChooseRoutDiscard completes an awaiting rout: discard cards, remove units,
  * mark rout complete (and rear engagement complete when applicable).
  */
-describe(applyChooseRoutDiscardEvent, () => {
+describe('applyChooseRoutDiscardEvent function', () => {
   function createStateInResolveRallyWithRout(
     step: 'firstPlayerResolveRally' | 'secondPlayerResolveRally',
     player: 'white' | 'black',

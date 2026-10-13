@@ -5,7 +5,7 @@ import { generateCompleteUnitMovementEvent } from './generateCompleteUnitMovemen
  * Fixed `completeUnitMovement` effect only; apply layer finalizes movement bookkeeping.
  * Generator does not inspect board or phase beyond accepting GameState.
  */
-describe(generateCompleteUnitMovementEvent, () => {
+describe('generateCompleteUnitMovementEvent function', () => {
   it('emits gameEffect with effectType completeUnitMovement', () => {
     const event = generateCompleteUnitMovementEvent(0);
     expect(event.eventType).toBe('gameEffect');

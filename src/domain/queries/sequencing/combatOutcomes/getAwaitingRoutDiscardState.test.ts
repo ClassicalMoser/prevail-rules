@@ -19,7 +19,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetAwaitingRoutDiscardState: finds rout slices that need chooseRoutDiscard.
  */
-describe(getAwaitingRoutDiscardState, () => {
+describe('getAwaitingRoutDiscardState function', () => {
   it('returns rear-engagement rout when penalty is set and cards not chosen', () => {
     const defender = createTestUnit('white', { attack: 2 });
     let state = createEmptyGameState('standard');

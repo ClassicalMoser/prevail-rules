@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * UpdatePlayerCardState: Creates a new game state with a player's card state updated.
  */
-describe(updatePlayerCardState, () => {
+describe('updatePlayerCardState function', () => {
   it('given update player card state', () => {
     const state = createEmptyGameState('standard');
 

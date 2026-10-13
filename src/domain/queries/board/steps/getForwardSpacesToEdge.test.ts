@@ -7,7 +7,7 @@ const standardBoard = createEmptyStandardBoard();
 /**
  * GetForwardSpacesToEdge: all coordinates from a start along a facing until the board edge (exclusive of start).
  */
-describe(getForwardSpacesToEdge, () => {
+describe('getForwardSpacesToEdge function', () => {
   it('column to L-1 when facing south from A-1', () => {
     expect(getForwardSpacesToEdge(standardBoard, 'A-1', 'south')).toStrictEqual(
       new Set([

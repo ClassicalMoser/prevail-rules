@@ -11,7 +11,7 @@ import {
 /**
  * CreateAttackApplyState: Creates an AttackApplyState with sensible defaults.
  */
-describe(createAttackApplyState, () => {
+describe('createAttackApplyState function', () => {
   it('given context, returns attackApply substep with defending unit and default result', () => {
     const unit = createTestUnit('black');
     const state = createAttackApplyState(unit);
@@ -30,7 +30,7 @@ describe(createAttackApplyState, () => {
   });
 });
 
-describe(createAttackApplyStateWithRetreat, () => {
+describe('createAttackApplyStateWithRetreat function', () => {
   it('given context, returns state with retreat result and retreatState', () => {
     const unit = createUnitWithPlacement({ coordinate: 'E-5' });
     const state = createAttackApplyStateWithRetreat(unit);
@@ -41,7 +41,7 @@ describe(createAttackApplyStateWithRetreat, () => {
   });
 });
 
-describe(createAttackApplyStateWithRout, () => {
+describe('createAttackApplyStateWithRout function', () => {
   it('given context, returns state with rout result and routState', () => {
     const unit = createTestUnit('white');
     const state = createAttackApplyStateWithRout(unit);
@@ -53,7 +53,7 @@ describe(createAttackApplyStateWithRout, () => {
   });
 });
 
-describe(createAttackApplyStateWithReverse, () => {
+describe('createAttackApplyStateWithReverse function', () => {
   it('given context, returns state with reverse result and reverseState', () => {
     const unit = createUnitWithPlacement();
     const state = createAttackApplyStateWithReverse(unit);

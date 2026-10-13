@@ -11,7 +11,7 @@ import { getLegalAssignUnitSupport } from './getLegalAssignUnitSupport';
 
 import { createEmptyGameState } from '@factories';
 
-describe(getLegalAssignUnitSupport, () => {
+describe('getLegalAssignUnitSupport function', () => {
   it('given not on resolve-rally awaiting support, returns null', () => {
     expect(
       getLegalAssignUnitSupport(createEmptyGameState('standard')),

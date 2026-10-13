@@ -9,7 +9,7 @@ import { getExpectedRallyResolutionEvent } from './getExpectedRallyResolutionEve
 /**
  * GetExpectedRallyResolutionEvent: next rally-resolution step as choice or effect from rally state.
  */
-describe(getExpectedRallyResolutionEvent, () => {
+describe('getExpectedRallyResolutionEvent function', () => {
   it('given resolve rally when the rally has not yet been resolved', () => {
     const rallyState = createRallyResolutionState();
 

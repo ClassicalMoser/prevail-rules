@@ -16,7 +16,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseRoutDiscardEvent: atom membership + integrity over getLegalRoutDiscardCards.
  */
-describe(isValidChooseRoutDiscardEvent, () => {
+describe('isValidChooseRoutDiscardEvent function', () => {
   function stateAwaitingWhiteDiscard(numberToDiscard: number) {
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),

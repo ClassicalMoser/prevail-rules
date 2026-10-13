@@ -15,7 +15,7 @@ import { createEmptyGameState } from '@factories';
  * Resolve-melee phase: player picks which contested hex to resolve next. That coordinate is
  * removed from `remainingEngagements` and becomes `currentMeleeResolutionState.location`.
  */
-describe(applyChooseMeleeEvent, () => {
+describe('applyChooseMeleeEvent function', () => {
   /** ResolveMelee step with the given engagement queue and no current resolution yet. */
   function createStateInResolveMeleeStep(
     remainingSpaces: Coordinate[],

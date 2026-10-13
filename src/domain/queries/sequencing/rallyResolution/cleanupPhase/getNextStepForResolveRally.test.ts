@@ -7,7 +7,7 @@ import { createEmptyGameState } from '@factories';
  * After finishing one side’s resolve-rally work, which cleanup step comes next (second chooser
  * vs phase complete).
  */
-describe(getNextStepForResolveRally, () => {
+describe('getNextStepForResolveRally function', () => {
   it('given firstPlayerResolveRally, next step is secondPlayerChooseRally', () => {
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = {

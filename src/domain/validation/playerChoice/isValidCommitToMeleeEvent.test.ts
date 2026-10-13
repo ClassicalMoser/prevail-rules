@@ -14,7 +14,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsValidCommitToMeleeEvent: membership against getLegalCommitToMeleeEvents.
  */
-describe(isValidCommitToMeleeEvent, () => {
+describe('isValidCommitToMeleeEvent function', () => {
   function stateWhitePendingCommit() {
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),

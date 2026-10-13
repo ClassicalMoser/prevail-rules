@@ -9,7 +9,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetLegalDoneIssuingCommandsEvents: forfeit leftover issue slots.
  */
-describe(getLegalDoneIssuingCommandsEvents, () => {
+describe('getLegalDoneIssuingCommandsEvents function', () => {
   it('returns a done event for the first player when commands remain', () => {
     const state = updatePhaseState(
       createEmptyGameState('standard'),

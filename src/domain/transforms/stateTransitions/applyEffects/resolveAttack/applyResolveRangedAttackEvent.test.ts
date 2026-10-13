@@ -19,7 +19,7 @@ import { createEmptyGameState } from '@factories';
  * First strike resolution: builds `attackApplyState` on the ranged CRS from procedure flags—
  * attack result, optional rout / retreat (auto hex when unique) / reverse substeps.
  */
-describe(applyResolveRangedAttackEvent, () => {
+describe('applyResolveRangedAttackEvent function', () => {
   /** IssueCommands + ranged CRS with white defender on E-5 and both inPlay cards. */
   function createRangedResolutionFixture(): {
     full: GameState;

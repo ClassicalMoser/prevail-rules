@@ -13,7 +13,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * ApplyDoneIssuingCommandsEvent: forfeit leftover slots and open resolve.
  */
-describe(applyDoneIssuingCommandsEvent, () => {
+describe('applyDoneIssuingCommandsEvent function', () => {
   function createFirstPlayerIssueState() {
     const state = createEmptyGameState('standard');
     return updatePhaseState(

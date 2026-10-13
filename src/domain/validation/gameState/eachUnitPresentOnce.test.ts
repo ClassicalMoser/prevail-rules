@@ -11,7 +11,7 @@ import { eachUnitPresentOnce } from './eachUnitPresentOnce';
 /**
  * EachUnitPresentOnce: eachUnitPresentOnce.
  */
-describe(eachUnitPresentOnce, () => {
+describe('eachUnitPresentOnce function', () => {
   const attack2UnitType = getUnitByStatValue('attack', 2);
   const attack3UnitType = getUnitByStatValue('attack', 3);
 

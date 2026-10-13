@@ -23,7 +23,7 @@ import { createEmptyGameState } from '@factories';
  * unit is the reversing defender’s board placement, and new placement is the factory default
  * from the reverse substep (facing flips for the shown geometries).
  */
-describe(generateResolveReverseEvent, () => {
+describe('generateResolveReverseEvent function', () => {
   it('given ranged attack-apply in reverse substep, context rangedAttack and E-5 south facing', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });

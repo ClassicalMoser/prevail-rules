@@ -30,7 +30,7 @@ function stateFirstPlayerResolveRally() {
  * a resolveRally step and that player has chosen to rally but the burn has not been applied yet. Throws if the
  * player did not rally, rally is already resolved, or the phase step is wrong.
  */
-describe(getRallyResolutionStateAwaitingBurn, () => {
+describe('getRallyResolutionStateAwaitingBurn function', () => {
   it('given rallied and not rallyResolved, returns first-player rally slice', () => {
     const state = stateFirstPlayerResolveRally();
     const result = getRallyResolutionStateAwaitingBurn(state, 'white');

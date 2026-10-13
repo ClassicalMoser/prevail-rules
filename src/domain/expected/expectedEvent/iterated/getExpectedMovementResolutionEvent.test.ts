@@ -33,7 +33,7 @@ function createGameStateWithTargetEnemy(): GameState {
 /**
  * GetExpectedMovementResolutionEvent: next event while resolving a movement command.
  */
-describe(getExpectedMovementResolutionEvent, () => {
+describe('getExpectedMovementResolutionEvent function', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

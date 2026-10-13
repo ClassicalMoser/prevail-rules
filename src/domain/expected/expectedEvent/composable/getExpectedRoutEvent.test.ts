@@ -5,7 +5,7 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 /**
  * GetExpectedRoutEvent: next rout sub-step as a game effect or player choice from rout-resolution state.
  */
-describe(getExpectedRoutEvent, () => {
+describe('getExpectedRoutEvent function', () => {
   it('given the rout has not been resolved yet, requests rout resolution', () => {
     const routState = createRoutState('black', createTestUnit('white'));
 

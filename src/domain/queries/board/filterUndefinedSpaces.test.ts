@@ -5,7 +5,7 @@ import { filterUndefinedSpaces } from './filterUndefinedSpaces';
 /**
  * FilterUndefinedSpaces: narrows a coordinate set by dropping undefined entries (Set typing allows undefined).
  */
-describe(filterUndefinedSpaces, () => {
+describe('filterUndefinedSpaces function', () => {
   it('undefined coordinates are dropped', () => {
     const spaces = new Set<Coordinate | undefined>([
       'A-1',

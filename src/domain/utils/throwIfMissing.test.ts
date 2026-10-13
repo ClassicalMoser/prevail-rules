@@ -1,6 +1,6 @@
 import { throwIfFalsy, throwIfUndefined } from './throwIfMissing';
 
-describe(throwIfUndefined, () => {
+describe('throwIfUndefined function', () => {
   it('returns the same reference when defined', () => {
     const value = { tag: 'kept' };
     expect(throwIfUndefined(value, 'missing')).toBe(value);
@@ -29,7 +29,7 @@ describe(throwIfUndefined, () => {
   });
 });
 
-describe(throwIfFalsy, () => {
+describe('throwIfFalsy function', () => {
   it('returns the same reference when truthy', () => {
     const value = { tag: 'kept' };
     expect(throwIfFalsy(value, 'missing')).toBe(value);

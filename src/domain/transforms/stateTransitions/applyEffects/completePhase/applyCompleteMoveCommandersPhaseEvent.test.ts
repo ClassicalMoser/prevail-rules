@@ -40,7 +40,7 @@ function moveCommandersCompleteEvent(
  * `remainingCommands*` from the event (procedure-derived; lines ×N already expanded to
  * number:1 slots). Phase guard requires `moveCommanders`.
  */
-describe(applyCompleteMoveCommandersPhaseEvent, () => {
+describe('applyCompleteMoveCommandersPhaseEvent function', () => {
   /** MoveCommanders.complete, black initiative, tempCommandCards[0]/[1] inPlay. */
   function createGameStateInCompleteStep(): GameState {
     const state = createEmptyGameState('standard');

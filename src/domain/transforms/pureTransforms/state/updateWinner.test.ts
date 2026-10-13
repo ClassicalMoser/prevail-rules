@@ -5,7 +5,7 @@ import { updateWinner } from './updateWinner';
 /**
  * UpdateWinner: assigns GameState.winner (PlayerSide or null draw).
  */
-describe(updateWinner, () => {
+describe('updateWinner function', () => {
   it('sets the winner', () => {
     const state = createEmptyGameState('standard');
     const newState = updateWinner(state, 'black');

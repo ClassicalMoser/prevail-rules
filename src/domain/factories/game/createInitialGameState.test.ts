@@ -10,7 +10,7 @@ import { createTestCard, createTestUnit } from '@testing';
 
 import { createInitialGameState } from './createInitialGameState';
 
-describe(createInitialGameState, () => {
+describe('createInitialGameState function', () => {
   const whiteType = createTestUnit('white').unitType;
   const blackType = createTestUnit('black').unitType;
 

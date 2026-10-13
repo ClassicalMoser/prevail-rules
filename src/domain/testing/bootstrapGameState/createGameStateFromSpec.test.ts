@@ -4,7 +4,7 @@ import { createBoard, createGameState } from './createGameStateFromSpec';
 /**
  * CreateGameState: Creates a game state with units placed according to the provided specifications.
  */
-describe(createGameState, () => {
+describe('createGameState function', () => {
   it('given defaults, creates a game state with units using tuple syntax', () => {
     const gameState = createGameState([
       ['E-5', 'black'],
@@ -219,7 +219,7 @@ describe(createGameState, () => {
   });
 });
 
-describe(createBoard, () => {
+describe('createBoard function', () => {
   it('given defaults, creates a board with units using tuple syntax', () => {
     const board = createBoard([
       ['E-5', 'black'],

@@ -8,7 +8,7 @@ const smallBoard = createEmptySmallBoard();
 /**
  * GetSpacesAhead: all board spaces strictly in front of the unit's inline line.
  */
-describe(getSpacesAhead, () => {
+describe('getSpacesAhead function', () => {
   it('column 1 lies ahead of a west-facing unit at F-2', () => {
     // Column 1, west of the inline line through F-2.
     expect(getSpacesAhead(standardBoard, 'F-2', 'west')).toStrictEqual(

@@ -27,7 +27,7 @@ import { createEmptyGameState } from '@factories';
  * Applies a committed retreat: removes the unit from `startingPosition`, places it at
  * `finalPosition`, and marks the nested retreat substep completed (ranged or melee side).
  */
-describe(applyResolveRetreatEvent, () => {
+describe('applyResolveRetreatEvent function', () => {
   /** IssueCommands + ranged CRS + retreat substep for white on E-5. */
   function createStateWithRangedAttackRetreat(): GameState {
     const state = createEmptyGameState('standard');

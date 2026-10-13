@@ -12,7 +12,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedPlayCardsPhaseEvent: next event during play-cards phase from phase state.
  */
-describe(getExpectedPlayCardsPhaseEvent, () => {
+describe('getExpectedPlayCardsPhaseEvent function', () => {
   /**
    * Helper to create a game state in the playCards phase with a specific step
    */

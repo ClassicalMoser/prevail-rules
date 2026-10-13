@@ -5,7 +5,7 @@ import { getOppositeFacing } from './getOppositeFacing';
 /**
  * Opposite facing: 180 degrees around the compass.
  */
-describe(getOppositeFacing, () => {
+describe('getOppositeFacing function', () => {
   it('the opposite of north is south', () => {
     expect(getOppositeFacing('north')).toBe('south');
   });

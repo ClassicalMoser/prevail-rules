@@ -6,7 +6,7 @@ import { calculateInitiative } from './calculateInitiative';
  * CalculateInitiative: compares played cards' initiative values; lower wins; on a tie, initiative stays with
  * the current holder.
  */
-describe(calculateInitiative, () => {
+describe('calculateInitiative function', () => {
   it('white takes initiative when its card is lower', () => {
     const whiteCard = createTestCard({ initiative: 2 });
     const blackCard = createTestCard({ initiative: 3 });

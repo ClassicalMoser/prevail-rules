@@ -5,7 +5,7 @@ import { hasUnitInSet, setWithoutUnit } from './unitSet';
 /**
  * HasUnitInSet: membership test for UnitInstance in a Set using value equality (not reference identity).
  */
-describe(hasUnitInSet, () => {
+describe('hasUnitInSet function', () => {
   it('given set contains same instance, returns true', () => {
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const set = new Set([
@@ -37,7 +37,7 @@ describe(hasUnitInSet, () => {
 /**
  * SetWithoutUnit: copy of the set without one unit (matched by value).
  */
-describe(setWithoutUnit, () => {
+describe('setWithoutUnit function', () => {
   it('given unit present, returns new set without it', () => {
     const unit = createTestUnit('black', { instanceNumber: 1 });
     const other = createTestUnit('white');

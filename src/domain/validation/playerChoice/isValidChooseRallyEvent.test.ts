@@ -10,7 +10,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsValidChooseRallyEvent: membership against getLegalChooseRallyEvent.
  */
-describe(isValidChooseRallyEvent, () => {
+describe('isValidChooseRallyEvent function', () => {
   it('accepts either performRally option for the active player', () => {
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),

@@ -19,7 +19,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedIssueCommandsPhaseEvent: next event during the issue-commands phase from phase state.
  */
-describe(getExpectedIssueCommandsPhaseEvent, () => {
+describe('getExpectedIssueCommandsPhaseEvent function', () => {
   function createGameStateInIssueCommandsStep(
     step: IssueCommandsPhaseStep,
     currentInitiative: 'black' | 'white' = 'black',

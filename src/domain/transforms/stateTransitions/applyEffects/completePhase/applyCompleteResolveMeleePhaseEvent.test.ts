@@ -17,7 +17,7 @@ import { createEmptyGameState } from '@factories';
  * After all melee hexes resolve, this closes `resolveMelee`, logs it completed, and opens
  * cleanup at `discardPlayedCards` (inPlay cards still present for that step).
  */
-describe(applyCompleteResolveMeleePhaseEvent, () => {
+describe('applyCompleteResolveMeleePhaseEvent function', () => {
   it('given resolveMelee phase with default melee slice, next phase cleanup.discardPlayedCards and melee in completed', () => {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {

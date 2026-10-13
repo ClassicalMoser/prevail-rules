@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * UpdatePhaseState: Creates a new game state with the phase state updated.
  */
-describe(updatePhaseState, () => {
+describe('updatePhaseState function', () => {
   it('given update the phase state', () => {
     const state = createEmptyGameState('standard');
     const newPhaseState = {

@@ -5,7 +5,7 @@ import { updateCurrentInitiative } from './updateCurrentInitiative';
 /**
  * UpdateCurrentInitiative: Creates a new game state with the current initiative player updated.
  */
-describe(updateCurrentInitiative, () => {
+describe('updateCurrentInitiative function', () => {
   it('updates the initiative player', () => {
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),

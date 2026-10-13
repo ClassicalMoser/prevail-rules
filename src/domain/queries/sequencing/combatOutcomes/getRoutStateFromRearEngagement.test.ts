@@ -16,7 +16,7 @@ import { createEmptyGameState } from '@factories';
  * Rear-contact movement: the nested rear engagement must carry a rout substep; this unwraps it
  * from issueCommands + movement CRS with validation.
  */
-describe(getRoutStateFromRearEngagement, () => {
+describe('getRoutStateFromRearEngagement function', () => {
   it('given rear engagement movement with routState, returns same rout object', () => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();

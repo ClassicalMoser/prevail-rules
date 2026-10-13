@@ -10,7 +10,7 @@ import {
 /**
  * CreateGameStateWithSingleUnit: Creates a game state with a single unit at a coordinate.
  */
-describe(createGameStateWithSingleUnit, () => {
+describe('createGameStateWithSingleUnit function', () => {
   it('given context, returns game state with single unit on board', () => {
     const state = createGameStateWithSingleUnit('E-5', 'black');
     expect(state.boardState.boardType).toBe('standard');
@@ -20,7 +20,7 @@ describe(createGameStateWithSingleUnit, () => {
   });
 });
 
-describe(createGameStateWithEngagedUnits, () => {
+describe('createGameStateWithEngagedUnits function', () => {
   it('given context, returns game state with engaged units', () => {
     const primary = createTestUnit('black');
     const secondary = createTestUnit('white');
@@ -31,7 +31,7 @@ describe(createGameStateWithEngagedUnits, () => {
   });
 });
 
-describe(createGameStateWithUnits, () => {
+describe('createGameStateWithUnits function', () => {
   it('given context, returns game state with multiple units', () => {
     const unit1 = createTestUnit('black');
     const unit2 = createTestUnit('white');

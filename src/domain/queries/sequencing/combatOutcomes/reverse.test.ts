@@ -23,7 +23,7 @@ import { createEmptyGameState } from '@factories';
  * Reverse substep accessors: unwrap reverse from one apply, or choose melee side by initiative
  * and whether the first player’s reverse already has a final facing committed.
  */
-describe(getReverseStateFromAttackApply, () => {
+describe('getReverseStateFromAttackApply function', () => {
   it('given apply with reverse substep, returns reverseState', () => {
     expect.hasAssertions();
     const unit = createTestUnit('black', { attack: 2 });
@@ -80,7 +80,7 @@ describe(getReverseStateFromAttackApply, () => {
   });
 });
 
-describe(getReverseStateFromMeleeResolutionByInitiative, () => {
+describe('getReverseStateFromMeleeResolutionByInitiative function', () => {
   /** Both sides in reverse substeps; optional finalPosition on initiative side to simulate done. */
   function stateWithReverse(
     initiative: 'white' | 'black',

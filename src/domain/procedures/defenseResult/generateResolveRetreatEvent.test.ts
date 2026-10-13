@@ -25,7 +25,7 @@ import { createEmptyGameState } from '@factories';
  * one defender’s attack-apply; melee can hold two retreats and the procedure picks the
  * initiative player’s path first.
  */
-describe(generateResolveRetreatEvent, () => {
+describe('generateResolveRetreatEvent function', () => {
   const finalPos = {
     coordinate: 'E-6' as const,
     facing: 'south' as const,

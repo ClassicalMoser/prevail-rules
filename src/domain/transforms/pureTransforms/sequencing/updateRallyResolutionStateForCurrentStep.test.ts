@@ -7,7 +7,7 @@ import { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutio
  * Immutable cleanup phase update: writes the new rally slice for the active resolve-rally step
  * and advances `step` in the same object shape.
  */
-describe(updateRallyResolutionStateForCurrentStep, () => {
+describe('updateRallyResolutionStateForCurrentStep function', () => {
   it('given firstPlayerResolveRally, replaces first bucket and sets next step secondPlayerChooseRally', () => {
     const phaseState = {
       firstPlayerRallyResolutionState: {

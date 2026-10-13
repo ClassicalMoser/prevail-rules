@@ -12,7 +12,7 @@ import { getPlayerUnitWithPosition } from './getPlayerUnitWithPosition';
 /**
  * GetPlayerUnitWithPosition: unit + placement at a coordinate for a player (single or engaged slot).
  */
-describe(getPlayerUnitWithPosition, () => {
+describe('getPlayerUnitWithPosition function', () => {
   const coordinate: Coordinate = 'E-5';
 
   describe('empty space', () => {

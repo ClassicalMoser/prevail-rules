@@ -5,7 +5,7 @@ import { revealHiddenCard } from './revealHiddenCard';
 /**
  * RevealHiddenCard: Promotes hidden awaitingPlay to inPlay using event payload.
  */
-describe(revealHiddenCard, () => {
+describe('revealHiddenCard function', () => {
   const hiddenBase = {
     awaitingPlay: 'hidden' as const,
     burnt: [],

@@ -24,7 +24,7 @@ import { createEmptyGameState } from '@factories';
  * Defender’s counterattack facing: updates board placement to `newUnitPlacement` and closes the
  * reverse substep (`completed`, `finalPosition`) for ranged or the correct melee apply side.
  */
-describe(applyResolveReverseEvent, () => {
+describe('applyResolveReverseEvent function', () => {
   /** IssueCommands + ranged apply in reverse substep for white on E-5. */
   function createStateWithRangedAttackReverse(): GameState {
     const state = createEmptyGameState('standard');

@@ -5,7 +5,7 @@ import { getLeftFacing } from './getLeftFacing';
 /**
  * Left facing: 90 degrees counterclockwise.
  */
-describe(getLeftFacing, () => {
+describe('getLeftFacing function', () => {
   it('left of north is west', () => {
     expect(getLeftFacing('north')).toBe('west');
   });

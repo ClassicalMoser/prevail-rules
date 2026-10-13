@@ -5,7 +5,7 @@ import { getAdjacentFacings } from './getAdjacentFacings';
 /**
  * Adjacent facings: the two neighbors one step, 45 degrees, to either side.
  */
-describe(getAdjacentFacings, () => {
+describe('getAdjacentFacings function', () => {
   it('each cardinal facing has its two diagonal neighbors', () => {
     expect(getAdjacentFacings('north')).toStrictEqual(
       new Set(['northWest', 'northEast']),

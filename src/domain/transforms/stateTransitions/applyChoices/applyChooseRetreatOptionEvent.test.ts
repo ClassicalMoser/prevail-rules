@@ -25,7 +25,7 @@ import { createEmptyGameState } from '@factories';
  * After `resolveRetreat` lists legal cells, the defender picks one: this choice writes
  * `finalPosition` on the active retreat substep (ranged attack-apply or the correct melee side).
  */
-describe(applyChooseRetreatOptionEvent, () => {
+describe('applyChooseRetreatOptionEvent function', () => {
   const chosenPosition = {
     coordinate: 'E-4' as const,
     facing: 'north' as const,

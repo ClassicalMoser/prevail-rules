@@ -15,7 +15,7 @@ import { createEmptyGameState } from '@factories';
  * advances playCards to `assignInitiative`. Guards ensure both sides had a pending card when
  * the step really is revealCards.
  */
-describe(applyRevealCardsEvent, () => {
+describe('applyRevealCardsEvent function', () => {
   function createRevealEvent(
     black = tempCommandCards[0],
     white = tempCommandCards[1],

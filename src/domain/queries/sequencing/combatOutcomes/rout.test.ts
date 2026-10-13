@@ -23,7 +23,7 @@ import { createEmptyGameState } from '@factories';
  * Rout substep accessors: read rout from a single apply, or pick melee side by initiative when
  * both players might have rout substeps.
  */
-describe(getRoutStateFromAttackApply, () => {
+describe('getRoutStateFromAttackApply function', () => {
   it('given apply with rout nested, returns that rout substep', () => {
     const unit = createTestUnit('black', { attack: 2 });
     const attackApplyState: AttackApplyState = {
@@ -75,7 +75,7 @@ describe(getRoutStateFromAttackApply, () => {
   });
 });
 
-describe(getRoutStateFromMeleeResolutionByInitiative, () => {
+describe('getRoutStateFromMeleeResolutionByInitiative function', () => {
   /** Engaged E-5 pair; toggle which side’s apply uses createAttackApplyStateWithRout. */
   function meleeStateWithRouts(
     initiative: 'white' | 'black',

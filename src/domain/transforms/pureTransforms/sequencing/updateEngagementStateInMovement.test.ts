@@ -14,7 +14,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * UpdateEngagementStateInMovement: Updates the engagement state within the current movement resolution (issue commands phase).
  */
-describe(updateEngagementStateInMovement, () => {
+describe('updateEngagementStateInMovement function', () => {
   it('updates engagement state in movement resolution', () => {
     const state = createEmptyGameState('standard');
     const phaseState = createIssueCommandsPhaseState(state, {

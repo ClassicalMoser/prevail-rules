@@ -3,7 +3,7 @@ import { tempCommandCards } from '@sampleValues';
 
 import { projectEventForVisibility } from './projectEventForVisibility';
 
-describe(projectEventForVisibility, () => {
+describe('projectEventForVisibility function', () => {
   const chooseCard: ChooseCardEvent = {
     card: tempCommandCards[0],
     choiceType: 'chooseCard',

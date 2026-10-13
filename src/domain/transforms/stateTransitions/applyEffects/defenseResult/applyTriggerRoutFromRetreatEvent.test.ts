@@ -23,7 +23,7 @@ import { createEmptyGameState } from '@factories';
  * Illegal retreat: nests a fresh `rout` substep under the existing retreat apply (ranged) or
  * the indicated melee side, preserving retreat metadata until rout resolution runs.
  */
-describe(applyTriggerRoutFromRetreatEvent, () => {
+describe('applyTriggerRoutFromRetreatEvent function', () => {
   /** IssueCommands + ranged retreat substep only (no rout yet). */
   function createStateWithRangedAttackRetreat(): GameState {
     const state = createEmptyGameState('standard');

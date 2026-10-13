@@ -6,7 +6,7 @@ import { matchesUnitRequirements } from './matchesUnitRequirements';
 /**
  * MatchesUnitRequirements: Determines whether a unit type matches the specified requirements.
  */
-describe(matchesUnitRequirements, () => {
+describe('matchesUnitRequirements function', () => {
   // Find units by their unique traits rather than by name
   // This makes tests more resilient to changes in sample data
   // GetUnitByTrait throws if not found, ensuring test failures are clear

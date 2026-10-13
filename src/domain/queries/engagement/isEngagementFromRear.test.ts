@@ -3,7 +3,7 @@ import { isEngagementFromRear } from './isEngagementFromRear';
 /**
  * Rear engagement: the attacker faces the same way as the defender, or one facing off that way.
  */
-describe(isEngagementFromRear, () => {
+describe('isEngagementFromRear function', () => {
   it('an attacker facing the same way as the defender is a rear engagement', () => {
     expect(isEngagementFromRear('north', 'north')).toStrictEqual({
       result: true,

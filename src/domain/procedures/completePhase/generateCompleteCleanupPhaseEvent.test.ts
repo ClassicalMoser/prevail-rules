@@ -8,7 +8,7 @@ import { createEmptyGameState } from '@factories';
  * `completeCleanupPhase` tag only — round/phase mutation happens in apply. Deliberately
  * does not branch on current `state` in the generator.
  */
-describe(generateCompleteCleanupPhaseEvent, () => {
+describe('generateCompleteCleanupPhaseEvent function', () => {
   it('given any game state, emits gameEffect with effectType completeCleanupPhase', () => {
     const state: GameState = createEmptyGameState('standard');
     const event = generateCompleteCleanupPhaseEvent(state, 0);

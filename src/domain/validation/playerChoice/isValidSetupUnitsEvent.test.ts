@@ -7,7 +7,7 @@ import { isValidSetupUnitsEvent } from './isValidSetupUnitsEvent';
 /**
  * IsValidSetupUnitsEvent: reserved cover + setup-zone membership.
  */
-describe(isValidSetupUnitsEvent, () => {
+describe('isValidSetupUnitsEvent function', () => {
   it('accepts placing all reserved units into empty zone spaces', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = {

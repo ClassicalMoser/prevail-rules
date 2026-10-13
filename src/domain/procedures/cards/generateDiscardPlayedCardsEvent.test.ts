@@ -8,7 +8,7 @@ import { createEmptyGameState } from '@factories';
  * Payload is a fixed game effect only; handler clears played piles. Implementation ignores
  * `state` beyond the parameter shape — tests document that contract.
  */
-describe(generateDiscardPlayedCardsEvent, () => {
+describe('generateDiscardPlayedCardsEvent function', () => {
   it('given any game state, emits gameEffect with effectType discardPlayedCards', () => {
     const state: GameState = createEmptyGameState('standard');
     const event = generateDiscardPlayedCardsEvent(state, 0);

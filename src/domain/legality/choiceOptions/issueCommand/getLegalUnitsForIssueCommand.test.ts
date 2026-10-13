@@ -12,7 +12,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetLegalUnitsForIssueCommand: on-board units matching command restrictions.
  */
-describe(getLegalUnitsForIssueCommand, () => {
+describe('getLegalUnitsForIssueCommand function', () => {
   const unrestrictedCommand = {
     ...tempCommandCards[0].command,
     number: 1,

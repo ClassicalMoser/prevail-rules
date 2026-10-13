@@ -7,7 +7,7 @@ const standardBoard = createEmptyStandardBoard();
 /**
  * GetInlineSpaces: full line through the coordinate along the facing axis (both directions), clipped to board.
  */
-describe(getInlineSpaces, () => {
+describe('getInlineSpaces function', () => {
   it('row A is the inline line through A-1 facing south', () => {
     expect(getInlineSpaces(standardBoard, 'A-1', 'south')).toStrictEqual(
       new Set([

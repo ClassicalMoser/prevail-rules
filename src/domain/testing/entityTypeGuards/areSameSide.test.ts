@@ -4,7 +4,7 @@ import { createTestUnit } from '@testing/unitHelpers';
 /**
  * AreSameSide: checks whether two units belong to the same player side (type-guard overloads for narrowing).
  */
-describe(areSameSide, () => {
+describe('areSameSide function', () => {
   it('given both units belong to the same side, returns true', () => {
     const unit1 = createTestUnit('black', { attack: 3 });
     const unit2 = createTestUnit('black', { attack: 4 });

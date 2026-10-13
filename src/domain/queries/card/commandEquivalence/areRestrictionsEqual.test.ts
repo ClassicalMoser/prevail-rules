@@ -5,7 +5,7 @@ import { areRestrictionsEqual } from './areRestrictionsEqual';
 /**
  * AreRestrictionsEqual: Compares two Restrictions objects for equality by comparing all properties.
  */
-describe(areRestrictionsEqual, () => {
+describe('areRestrictionsEqual function', () => {
   it('restrictions match themselves', () => {
     const restrictions: Restrictions = {
       inspirationRangeRestriction: 2,

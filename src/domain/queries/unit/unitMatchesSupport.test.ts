@@ -4,7 +4,7 @@ import { createTestUnit } from '@testing';
 
 import { unitMatchesSupport } from './unitMatchesSupport';
 
-describe(unitMatchesSupport, () => {
+describe('unitMatchesSupport function', () => {
   const unit = createTestUnit('white', { attack: 3 });
 
   it('given generic support, matches any unit', () => {

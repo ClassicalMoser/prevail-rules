@@ -24,7 +24,7 @@ import { createEmptyGameState } from '@factories';
  * rout substep is active—ranged attack-apply, melee (initiative player’s apply first),
  * rear engagement during movement, or cleanup rally after failed support.
  */
-describe(generateResolveRoutEvent, () => {
+describe('generateResolveRoutEvent function', () => {
   it('given ranged resolution with rout substep on white defender, source rangedAttack and that unit', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });

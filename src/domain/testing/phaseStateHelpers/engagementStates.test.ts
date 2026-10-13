@@ -7,7 +7,7 @@ import {
 /**
  * CreateFrontEngagementState: Creates a front EngagementState with sensible defaults.
  */
-describe(createFrontEngagementState, () => {
+describe('createFrontEngagementState function', () => {
   it('given context, returns engagement state with front resolution', () => {
     const state = createFrontEngagementState();
     expect(state.substepType).toBe('engagementResolution');
@@ -19,7 +19,7 @@ describe(createFrontEngagementState, () => {
   });
 });
 
-describe(createFlankEngagementState, () => {
+describe('createFlankEngagementState function', () => {
   it('given context, returns engagement state with flank resolution', () => {
     const state = createFlankEngagementState();
     expect(state.engagementResolutionState.engagementType).toBe('flank');
@@ -28,7 +28,7 @@ describe(createFlankEngagementState, () => {
   });
 });
 
-describe(createRearEngagementState, () => {
+describe('createRearEngagementState function', () => {
   it('given context, returns engagement state with rear resolution and rout state', () => {
     const state = createRearEngagementState();
     expect(state.engagementResolutionState.engagementType).toBe('rear');

@@ -7,7 +7,7 @@ import { addUnitToBoard } from '@transforms';
 /**
  * GetSingleUnitWithPlacementAtCoordinate: unit + placement when presence is exactly one unit; throws otherwise.
  */
-describe(getSingleUnitWithPlacementAtCoordinate, () => {
+describe('getSingleUnitWithPlacementAtCoordinate function', () => {
   it('one unit on a space is found, including its placement', () => {
     const board = createBoardWithSingleUnit('E-5', 'white', {
       facing: 'south',

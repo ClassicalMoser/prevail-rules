@@ -31,7 +31,7 @@ function createEnginePorts(overrides: {
   };
 }
 
-describe(startNewGame, () => {
+describe('startNewGame function', () => {
   it('notifies matching subscribers with initial game state after save succeeds', async () => {
     expect.hasAssertions();
     const onGameStateChange = vi.fn();

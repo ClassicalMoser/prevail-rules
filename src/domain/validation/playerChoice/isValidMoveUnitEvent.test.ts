@@ -19,7 +19,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsValidMoveUnitEvent: unit atom + destination + moveCommander integrity.
  */
-describe(isValidMoveUnitEvent, () => {
+describe('isValidMoveUnitEvent function', () => {
   function stateAwaitingMoveUnit(options?: { withCommander?: boolean }) {
     const unitWithPlacement = createUnitWithPlacement({
       coordinate: 'E-5',

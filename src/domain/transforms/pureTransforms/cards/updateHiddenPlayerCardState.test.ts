@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * UpdateHiddenPlayerCardState: Updates the unowned (hidden) card slice.
  */
-describe(updateHiddenPlayerCardState, () => {
+describe('updateHiddenPlayerCardState function', () => {
   it('given whiteSeen, updates black hidden slice', () => {
     const base = createEmptyGameState('standard');
     const state = {

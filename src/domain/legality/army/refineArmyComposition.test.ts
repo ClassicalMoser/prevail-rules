@@ -85,7 +85,7 @@ const validStandardArmy = (): Army => ({
 /**
  * Mode composition refinements for army list-building (cost, morale, initiative).
  */
-describe(armySchemaForMode, () => {
+describe('armySchemaForMode function', () => {
   it('standard accepts a legal composition', () => {
     expect(
       armySchemaForMode('standard').parse(validStandardArmy()),

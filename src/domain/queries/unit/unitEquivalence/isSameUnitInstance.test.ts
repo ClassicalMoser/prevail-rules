@@ -7,7 +7,7 @@ import type { UnitInstance } from '@entities';
 /**
  * IsSameUnitInstance: Determines whether two unit instances are the same unit.
  */
-describe(isSameUnitInstance, () => {
+describe('isSameUnitInstance function', () => {
   const flexibility1UnitType = getUnitByStatValue('flexibility', 1);
   const flexibility2UnitType = getUnitByStatValue('flexibility', 2);
 

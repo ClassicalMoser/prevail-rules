@@ -5,7 +5,7 @@ import { getSpacesInArc } from './getSpacesInArc';
 /**
  * GetSpacesInArc: ranged-attack style arc: spaces within range along front spread, bounded by board.
  */
-describe(getSpacesInArc, () => {
+describe('getSpacesInArc function', () => {
   const board = createEmptyStandardBoard();
   const smallBoard = createEmptySmallBoard();
 

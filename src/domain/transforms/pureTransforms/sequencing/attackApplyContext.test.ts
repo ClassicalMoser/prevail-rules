@@ -20,7 +20,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetAttackApplyStateFromContext: Gets the attack apply state from the current game state context.
  */
-describe(getAttackApplyStateFromContext, () => {
+describe('getAttackApplyStateFromContext function', () => {
   function createStateWithRangedAttack() {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
@@ -101,7 +101,7 @@ describe(getAttackApplyStateFromContext, () => {
   });
 });
 
-describe(updateAttackApplySubstep, () => {
+describe('updateAttackApplySubstep function', () => {
   function createStateWithRangedAttack() {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });

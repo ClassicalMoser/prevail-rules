@@ -9,7 +9,7 @@ import { getSetupZoneCoordinates } from './getSetupZoneCoordinates';
 /**
  * GetLegalSetupUnits: reserved units + empty setup-zone coordinates.
  */
-describe(getLegalSetupUnits, () => {
+describe('getLegalSetupUnits function', () => {
   it('returns reserved units and empty zone coordinates for the player', () => {
     const unit = createTestUnit('white', { attack: 2 });
     const state = {

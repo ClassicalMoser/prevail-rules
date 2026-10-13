@@ -16,7 +16,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * UpdateRetreatRoutState: Creates a new game state with the rout state updated within a retreat state.
  */
-describe(updateRetreatRoutState, () => {
+describe('updateRetreatRoutState function', () => {
   function createStateWithRangedAttackRetreat() {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });

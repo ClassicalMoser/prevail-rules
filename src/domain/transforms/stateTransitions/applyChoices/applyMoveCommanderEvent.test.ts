@@ -14,7 +14,7 @@ import { createEmptyGameState } from '@factories';
  * Move-commanders phase: each side relocates their commander token on the board; after the
  * second move the step becomes `complete`.
  */
-describe(applyMoveCommanderEvent, () => {
+describe('applyMoveCommanderEvent function', () => {
   /** MoveCommanders phase at the given step with default black E-5 / white E-6 commanders. */
   function createGameStateInMoveCommandersStep(
     step: 'moveFirstCommander' | 'moveSecondCommander',

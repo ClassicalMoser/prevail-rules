@@ -19,7 +19,7 @@ import { createEmptyGameState } from '@factories';
  * Materializes procedure `resolveMelee` into per-side `attackApplyState` substeps (rout,
  * retreat with optional auto final hex, reverse) or clears applies when nothing branches.
  */
-describe(applyResolveMeleeEvent, () => {
+describe('applyResolveMeleeEvent function', () => {
   /** ResolveMelee phase with default melee CRS and both inPlay command cards set. */
   function baseMeleeGameState(): GameState {
     const base = createEmptyGameState('standard');

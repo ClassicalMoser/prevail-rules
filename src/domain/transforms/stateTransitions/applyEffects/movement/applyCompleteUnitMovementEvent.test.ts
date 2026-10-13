@@ -19,7 +19,7 @@ import { createEmptyGameState } from '@factories';
  * After path + engagement finish, completeUnitMovement clears CRS and either
  * waits for the next moveUnit or advances the issue-commands step.
  */
-describe(applyCompleteUnitMovementEvent, () => {
+describe('applyCompleteUnitMovementEvent function', () => {
   const event = {
     effectType: 'completeUnitMovement' as const,
     eventNumber: 0,

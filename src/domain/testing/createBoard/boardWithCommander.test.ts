@@ -5,7 +5,7 @@ import { createBoardWithSingleUnit } from './boardWithSingleUnit';
 /**
  * CreateBoardWithCommander: Creates a board with a commander at a coordinate.
  */
-describe(createBoardWithCommander, () => {
+describe('createBoardWithCommander function', () => {
   it('given add commander to empty board', () => {
     const board = createBoardWithCommander('white', 'E-5');
     expect(board.board['E-5']?.commanders).toStrictEqual(['white']);

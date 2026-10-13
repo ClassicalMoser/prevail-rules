@@ -9,7 +9,7 @@ import {
 /**
  * HasNoUnit: type guard — unit presence is empty (none).
  */
-describe(hasNoUnit, () => {
+describe('hasNoUnit function', () => {
   it('given none unit presence, returns true', () => {
     const unitPresence = createNoneUnitPresence();
     expect(hasNoUnit(unitPresence)).toBe(true);

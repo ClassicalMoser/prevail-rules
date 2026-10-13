@@ -30,7 +30,7 @@ import { createEmptyGameState } from '@factories';
  * Writes `numberToDiscard` (and related rout bookkeeping) onto the active rout substep for
  * the matching source: ranged/melee apply, cleanup rally, or rear engagement under movement.
  */
-describe(applyResolveRoutEvent, () => {
+describe('applyResolveRoutEvent function', () => {
   /** IssueCommands + ranged apply with rout substep on white at E-5. */
   function createStateWithRangedAttackRout(): GameState {
     const state = createEmptyGameState('standard');

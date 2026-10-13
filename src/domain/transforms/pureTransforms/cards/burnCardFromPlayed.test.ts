@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * BurnCardFromPlayed: Burns a specific card from the player's played pile.
  */
-describe(burnCardFromPlayed, () => {
+describe('burnCardFromPlayed function', () => {
   it('given move card from played to burnt', () => {
     const owned = {
       ...createEmptyGameState('standard').cardState.black,

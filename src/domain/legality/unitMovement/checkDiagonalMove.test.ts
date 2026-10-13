@@ -8,7 +8,7 @@ import { checkDiagonalMove } from './checkDiagonalMove';
 /**
  * CheckDiagonalMove: whether a diagonal step is legal given the two bracketing orthogonals and occupancy.
  */
-describe(checkDiagonalMove, () => {
+describe('checkDiagonalMove function', () => {
   describe('non-diagonal facings', () => {
     it('given the facing is not diagonal, throws', () => {
       const gameState = createGameState([

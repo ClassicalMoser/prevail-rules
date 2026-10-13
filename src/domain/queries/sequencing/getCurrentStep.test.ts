@@ -12,7 +12,7 @@ import { createEmptyGameState } from '@factories';
  * Reads the active round step string from whatever phase object is current (playCards,
  * issueCommands, resolveMelee, cleanup, etc.).
  */
-describe(getCurrentStep, () => {
+describe('getCurrentStep function', () => {
   it('given playCards chooseCards factory, step is chooseCards', () => {
     const state = createEmptyGameState('standard');
     state.currentRoundState.currentPhaseState = createPlayCardsPhaseState();

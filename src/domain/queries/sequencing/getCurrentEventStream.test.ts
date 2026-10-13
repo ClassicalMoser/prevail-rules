@@ -5,7 +5,7 @@ import { getCurrentEventStream } from './getCurrentEventStream';
 
 import { createEmptyGameState } from '@factories';
 
-describe(getCurrentEventStream, () => {
+describe('getCurrentEventStream function', () => {
   it('returns the current round events array (same reference)', () => {
     const state = createEmptyGameState('standard');
     const stream = getCurrentEventStream(state);

@@ -5,7 +5,7 @@ import { toRemainingCommands } from './toRemainingCommands';
 /**
  * ToRemainingCommands: lines ×N become N issuable number:1 slots; units stay one grant.
  */
-describe(toRemainingCommands, () => {
+describe('toRemainingCommands function', () => {
   const lineBase: Command = {
     modifiers: [{ type: 'attack', value: 1 }],
     number: 2,

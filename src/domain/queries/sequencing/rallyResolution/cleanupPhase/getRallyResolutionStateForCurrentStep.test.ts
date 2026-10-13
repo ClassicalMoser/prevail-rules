@@ -7,7 +7,7 @@ import { createEmptyGameState } from '@factories';
  * Ensures the acting player matches initiative ordering for the current resolve-rally step,
  * then returns the corresponding first/second rally bucket.
  */
-describe(getRallyResolutionStateForCurrentStep, () => {
+describe('getRallyResolutionStateForCurrentStep function', () => {
   it('given firstPlayerResolveRally and white is first, returns first bucket for white', () => {
     const rallyState = {
       completed: false,

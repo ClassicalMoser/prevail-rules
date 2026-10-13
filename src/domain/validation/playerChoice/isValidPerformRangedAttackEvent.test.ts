@@ -18,7 +18,7 @@ import { createEmptyGameState } from '@factories';
  * IsValidPerformRangedAttackEvent: one attacker, one defender, supporters
  * that independently can hit that defender.
  */
-describe(isValidPerformRangedAttackEvent, () => {
+describe('isValidPerformRangedAttackEvent function', () => {
   const rangedCard = tempCommandCards[15];
 
   function stateWithUnits(

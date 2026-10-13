@@ -8,14 +8,14 @@ import {
 /**
  * CreateNoneUnitPresence: Creates a none unit presence for testing.
  */
-describe(createNoneUnitPresence, () => {
+describe('createNoneUnitPresence function', () => {
   it('given context, returns none presence', () => {
     const presence = createNoneUnitPresence();
     expect(presence.presenceType).toBe('none');
   });
 });
 
-describe(createSingleUnitPresence, () => {
+describe('createSingleUnitPresence function', () => {
   it('given context, returns single unit presence', () => {
     const unit = createTestUnit('black');
     const presence = createSingleUnitPresence(unit, 'north');
@@ -25,7 +25,7 @@ describe(createSingleUnitPresence, () => {
   });
 });
 
-describe(createEngagedUnitPresence, () => {
+describe('createEngagedUnitPresence function', () => {
   it('given context, returns engaged unit presence', () => {
     const primary = createTestUnit('black');
     const secondary = createTestUnit('white');

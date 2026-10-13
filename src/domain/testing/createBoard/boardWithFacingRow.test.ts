@@ -4,7 +4,7 @@ import { createBoardWithFacingRow } from './boardWithFacingRow';
  * A facing row places one unit per coordinate, all on one side, all facing
  * the same way. `unitAt` returns the placement this helper wrote.
  */
-describe(createBoardWithFacingRow, () => {
+describe('createBoardWithFacingRow function', () => {
   it('places black units facing north along the coordinates', () => {
     const { board, unitAt } = createBoardWithFacingRow({
       coordinates: ['E-5', 'E-6'],

@@ -17,7 +17,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * UpdateAttackApplyState: Creates a new game state with the attack apply state updated.
  */
-describe(updateAttackApplyState, () => {
+describe('updateAttackApplyState function', () => {
   function createStateWithRangedAttackApply() {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });

@@ -15,7 +15,7 @@ import { createEmptyGameState } from '@factories';
  * (has ≥1 melee modifier), plus a refuse option; modifierTypes are all of that
  * card's melee modifiers.
  */
-describe(getLegalCommitToMeleeEvents, () => {
+describe('getLegalCommitToMeleeEvents function', () => {
   function stateWhitePendingCommit(hand = [tempCommandCards[0]]) {
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),

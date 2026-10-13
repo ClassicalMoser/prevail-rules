@@ -47,7 +47,7 @@ function authoritativeGame(): GameForVisibility<'authoritative'> {
   };
 }
 
-describe(projectGameForVisibility, () => {
+describe('projectGameForVisibility function', () => {
   it('projects whiteSeen with white owned and black hidden', () => {
     const projected = projectGameForVisibility(
       authoritativeGame(),

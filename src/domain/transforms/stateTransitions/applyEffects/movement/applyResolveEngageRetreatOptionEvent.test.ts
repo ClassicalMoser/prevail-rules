@@ -18,7 +18,7 @@ import { createEmptyGameState } from '@factories';
  * Procedure output for front engagement: copies `defendingUnitCanRetreat` onto the nested
  * front engagement resolution state under the movement CRS.
  */
-describe(applyResolveEngageRetreatOptionEvent, () => {
+describe('applyResolveEngageRetreatOptionEvent function', () => {
   /** Default front engagement factory with black engager speed 2 for retreat eligibility math. */
   function baseFrontEngagementState() {
     const front = createFrontEngagementState();

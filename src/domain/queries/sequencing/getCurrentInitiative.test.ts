@@ -4,7 +4,7 @@ import { getCurrentInitiative } from './getCurrentInitiative';
 
 import { updateCurrentInitiative } from '@transforms';
 
-describe(getCurrentInitiative, () => {
+describe('getCurrentInitiative function', () => {
   it('returns the value on game state (same as reading currentInitiative)', () => {
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),

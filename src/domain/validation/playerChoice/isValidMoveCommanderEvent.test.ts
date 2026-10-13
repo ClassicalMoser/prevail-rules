@@ -8,7 +8,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsValidMoveCommanderEvent: membership against getLegalCommanderMoves.
  */
-describe(isValidMoveCommanderEvent, () => {
+describe('isValidMoveCommanderEvent function', () => {
   function stateWithCommanderAt(coordinate: 'A-1' | 'E-5') {
     const state = createEmptyGameState('standard');
     state.boardState = createBoardWithCommander('white', coordinate);

@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * RemoveUnitFromReserve: removeUnitFromReserve.
  */
-describe(removeUnitFromReserve, () => {
+describe('removeUnitFromReserve function', () => {
   describe('removing unit from reserve with one unit', () => {
     it('given remove unit and leave empty set', () => {
       const gameState = createEmptyGameState('standard');

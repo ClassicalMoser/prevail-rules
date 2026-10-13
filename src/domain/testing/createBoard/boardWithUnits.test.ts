@@ -6,7 +6,7 @@ import { createBoardWithUnits } from './boardWithUnits';
 /**
  * CreateBoardWithUnits: Creates a board with units at specified positions.
  */
-describe(createBoardWithUnits, () => {
+describe('createBoardWithUnits function', () => {
   it('given place multiple units on board', () => {
     const unit1 = createTestUnit('black');
     const unit2 = createTestUnit('white');

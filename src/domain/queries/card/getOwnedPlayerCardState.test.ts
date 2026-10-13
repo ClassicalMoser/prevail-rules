@@ -20,7 +20,7 @@ function secretPiles(): OwnedCardState {
 /**
  * GetOwnedPlayerCardState: owned slice via visibility discriminant (no casts).
  */
-describe(getOwnedPlayerCardState, () => {
+describe('getOwnedPlayerCardState function', () => {
   const whiteSeen = () => {
     const white = secretPiles();
     return {

@@ -21,7 +21,7 @@ const spearmenType = punicCitizenSpearmen;
  * precomputes legal retreat hex sets when retreat is allowed. Commitments must be resolved
  * first; the board must hold both combatants at the melee coordinate.
  */
-describe(generateResolveMeleeEvent, () => {
+describe('generateResolveMeleeEvent function', () => {
   /** Default spearmen mirror match on E-5 with empty resolve-melee phase (no pending commitments). */
   function meleeResolutionGameState(): GameState {
     const state = createEmptyGameState('standard');

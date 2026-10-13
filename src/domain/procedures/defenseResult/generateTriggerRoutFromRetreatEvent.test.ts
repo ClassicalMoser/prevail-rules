@@ -24,7 +24,7 @@ import { createEmptyGameState } from '@factories';
  * rout flow can start instead. Context is ranged vs melee; in melee the retreating player is
  * explicit when both sides could theoretically be in retreat substeps.
  */
-describe(generateTriggerRoutFromRetreatEvent, () => {
+describe('generateTriggerRoutFromRetreatEvent function', () => {
   function stateWithRangedRetreat(): GameState {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });

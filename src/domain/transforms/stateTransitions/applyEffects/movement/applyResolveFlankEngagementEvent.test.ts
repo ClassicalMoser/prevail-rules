@@ -20,7 +20,7 @@ import { createEmptyGameState } from '@factories';
  * Flank engagement resolution: rotates the defender on the board to `newFacing`, marks the
  * flank substep complete with `defenderRotated`, and finishes the movement engagement slice.
  */
-describe(applyResolveFlankEngagementEvent, () => {
+describe('applyResolveFlankEngagementEvent function', () => {
   it('given flank engagement and event newFacing south, board and engagement state reflect rotation and completion', () => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();

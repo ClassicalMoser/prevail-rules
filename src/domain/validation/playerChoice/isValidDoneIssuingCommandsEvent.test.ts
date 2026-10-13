@@ -8,7 +8,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsValidDoneIssuingCommandsEvent: membership against legal done events.
  */
-describe(isValidDoneIssuingCommandsEvent, () => {
+describe('isValidDoneIssuingCommandsEvent function', () => {
   it('accepts done issuing for the active issue player with remaining slots', () => {
     const state = updatePhaseState(
       createEmptyGameState('standard'),

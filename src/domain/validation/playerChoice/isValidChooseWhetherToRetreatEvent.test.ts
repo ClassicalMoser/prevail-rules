@@ -15,7 +15,7 @@ import { createEmptyGameState } from '@factories';
  * IsValidChooseWhetherToRetreatEvent: membership against
  * getLegalChooseWhetherToRetreatEvents.
  */
-describe(isValidChooseWhetherToRetreatEvent, () => {
+describe('isValidChooseWhetherToRetreatEvent function', () => {
   function stateAwaitingWhetherToRetreat() {
     const state = createEmptyGameState('standard');
     const movement = createMovementResolutionState(state, {

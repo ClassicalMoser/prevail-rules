@@ -32,7 +32,7 @@ function boardWithOccupant(unit: UnitInstance, facing: UnitFacing) {
  * opposite, and meeting any trait or type filter. Engagement does not block
  * membership. Otherwise it does not join.
  */
-describe(canJoinLine, () => {
+describe('canJoinLine function', () => {
   it('a friendly unit facing the line way joins', () => {
     const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const board = boardWithOccupant(unit, lineFacing);

@@ -13,7 +13,7 @@ import {
 /**
  * GetSetupZoneCoordinates: provisional back-3 / trim-2 deployment belts.
  */
-describe(getSetupZoneCoordinates, () => {
+describe('getSetupZoneCoordinates function', () => {
   it('gives white the northernmost three rows on a standard board, columns 3–16', () => {
     const board = createEmptyStandardBoard();
     const zone = getSetupZoneCoordinates(board, 'white');

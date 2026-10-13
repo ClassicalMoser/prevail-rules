@@ -7,7 +7,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetLegalCommanderMoves: legal commander destination coordinates within the move square.
  */
-describe(getLegalCommanderMoves, () => {
+describe('getLegalCommanderMoves function', () => {
   it('given context, returns all moves on an empty board', () => {
     const playerSide = 'white';
     const startingCoordinate = 'E-5';

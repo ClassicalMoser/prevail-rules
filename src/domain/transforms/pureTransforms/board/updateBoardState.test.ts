@@ -5,7 +5,7 @@ import { updateBoardState } from './updateBoardState';
 /**
  * UpdateBoardState: Creates a new game state with the board state updated.
  */
-describe(updateBoardState, () => {
+describe('updateBoardState function', () => {
   it('given update the board state', () => {
     const state = createEmptyGameState('standard');
     const newBoard = state.boardState; // Same board for simplicity

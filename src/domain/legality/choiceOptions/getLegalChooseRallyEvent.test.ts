@@ -24,7 +24,7 @@ const chooseRallyBase = {
  * GetLegalChooseRallyEvent: both performRally choices for whichever player may choose
  * during cleanup firstPlayerChooseRally / secondPlayerChooseRally.
  */
-describe(getLegalChooseRallyEvent, () => {
+describe('getLegalChooseRallyEvent function', () => {
   function stateChooseRally(options: {
     step: 'firstPlayerChooseRally' | 'secondPlayerChooseRally';
     initiative?: 'black' | 'white';

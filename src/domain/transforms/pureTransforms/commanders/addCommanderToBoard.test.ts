@@ -5,7 +5,7 @@ import { addCommanderToBoard } from './addCommanderToBoard';
 /**
  * AddCommanderToBoard: addCommanderToBoard.
  */
-describe(addCommanderToBoard, () => {
+describe('addCommanderToBoard function', () => {
   it('given add a commander to an empty space', () => {
     const board = createEmptyStandardBoard();
     const newBoard = addCommanderToBoard(board, 'white', 'E-5');

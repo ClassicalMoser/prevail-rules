@@ -7,7 +7,7 @@
 
 import { getColumnDelta, getRowDelta } from './deltas';
 
-describe(getRowDelta, () => {
+describe('getRowDelta function', () => {
   it('steps one row north when facing north', () => {
     expect(getRowDelta('north')).toBe(-1);
   });
@@ -41,7 +41,7 @@ describe(getRowDelta, () => {
   });
 });
 
-describe(getColumnDelta, () => {
+describe('getColumnDelta function', () => {
   it('steps one column east when facing east', () => {
     expect(getColumnDelta('east')).toBe(1);
   });

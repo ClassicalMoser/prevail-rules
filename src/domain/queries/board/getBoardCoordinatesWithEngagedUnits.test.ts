@@ -7,7 +7,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetBoardCoordinatesWithEngagedUnits: set of coordinates where the space has an engagement (two units).
  */
-describe(getBoardCoordinatesWithEngagedUnits, () => {
+describe('getBoardCoordinatesWithEngagedUnits function', () => {
   it('the board has no engagements', () => {
     const state = createEmptyGameState('standard');
     expect(getBoardCoordinatesWithEngagedUnits(state.boardState).size).toBe(0);

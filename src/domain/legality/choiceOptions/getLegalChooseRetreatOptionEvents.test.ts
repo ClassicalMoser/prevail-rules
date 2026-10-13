@@ -18,7 +18,7 @@ import { createEmptyGameState } from '@factories';
  * GetLegalChooseRetreatOptionEvents: full ChooseRetreatOptionEvent payloads from
  * an active retreat substep's legalRetreatOptions.
  */
-describe(getLegalChooseRetreatOptionEvents, () => {
+describe('getLegalChooseRetreatOptionEvents function', () => {
   const optionA: UnitPlacement = {
     coordinate: 'E-4',
     facing: 'north',

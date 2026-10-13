@@ -15,7 +15,7 @@ import { createEmptyGameState } from '@factories';
  * Melee commitment: pending side locks in their played command card (and empty modifiers here),
  * moves the card out of hand, and marks `whiteCommitment` / `blackCommitment` completed.
  */
-describe(applyCommitToMeleeEvent, () => {
+describe('applyCommitToMeleeEvent function', () => {
   it('given white pending and one card in hand, commit completes white and empties white hand', () => {
     const state = createEmptyGameState('standard');
     const stateWithWhiteCardInHand = updateCardState(state, {

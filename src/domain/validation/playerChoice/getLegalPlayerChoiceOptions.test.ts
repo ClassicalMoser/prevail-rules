@@ -58,7 +58,7 @@ const allChoiceTypes = [
  * GetLegalPlayerChoiceOptions: presentation router from expected choice →
  * legal option payload (events or compound root atoms).
  */
-describe(getLegalPlayerChoiceOptions, () => {
+describe('getLegalPlayerChoiceOptions function', () => {
   beforeEach(() => {
     mocks.getExpectedEventMock.mockReset();
     if (mocks.actualGetExpectedEvent !== undefined) {

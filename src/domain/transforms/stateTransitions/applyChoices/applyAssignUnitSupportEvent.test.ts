@@ -59,7 +59,7 @@ function awaitingSupportState() {
   return { card, covered, state, uncovered };
 }
 
-describe(applyAssignUnitSupportEvent, () => {
+describe('applyAssignUnitSupportEvent function', () => {
   it('given partial cover, only uncovered units rout and routState is seeded', () => {
     const { covered, state, uncovered } = awaitingSupportState();
     const event: AssignUnitSupportEvent = {

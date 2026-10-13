@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * ReturnCardsToHand: Returns all played and discarded cards to the player's hand.
  */
-describe(returnCardsToHand, () => {
+describe('returnCardsToHand function', () => {
   it('given context, returns all played and discarded cards to hand', () => {
     const owned = {
       ...createEmptyGameState('standard').cardState.black,

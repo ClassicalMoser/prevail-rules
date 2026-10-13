@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * GetExpectedStartCommandResolutionEvent: first command-resolution choice from active card command type.
  */
-describe(getExpectedStartCommandResolutionEvent, () => {
+describe('getExpectedStartCommandResolutionEvent function', () => {
   it('given ask the player to move a unit for a movement card', () => {
     const state = createEmptyGameState('standard');
     // CreateTestCard() defaults command.type to 'movement'

@@ -5,7 +5,7 @@ import { isDiagonalFacing } from './isDiagonalFacing';
 /**
  * Diagonal facing: one of the four diagonals.
  */
-describe(isDiagonalFacing, () => {
+describe('isDiagonalFacing function', () => {
   it('northEast is a diagonal facing', () => {
     expect(isDiagonalFacing('northEast')).toStrictEqual({
       result: true,

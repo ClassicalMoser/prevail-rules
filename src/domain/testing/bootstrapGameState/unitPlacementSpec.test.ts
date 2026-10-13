@@ -7,7 +7,7 @@ import {
 /**
  * GetExplicitInstanceNumber: Short-hand unit placement specification for bootstrapping test scenarios.
  */
-describe(getExplicitInstanceNumber, () => {
+describe('getExplicitInstanceNumber function', () => {
   it('given tuple spec, returns undefined', () => {
     expect(getExplicitInstanceNumber(['E-5', 'black'])).toBeUndefined();
   });
@@ -29,7 +29,7 @@ describe(getExplicitInstanceNumber, () => {
   });
 });
 
-describe(normalizeUnitPlacement, () => {
+describe('normalizeUnitPlacement function', () => {
   it('given normalize tuple syntax with default facing', () => {
     const result = normalizeUnitPlacement(['E-5', 'black'], 1);
     expect(result.placement.coordinate).toBe('E-5');
@@ -61,7 +61,7 @@ describe(normalizeUnitPlacement, () => {
   });
 });
 
-describe(assignInstanceNumbers, () => {
+describe('assignInstanceNumbers function', () => {
   it('given auto-assign sequential numbers when not specified', () => {
     const result = assignInstanceNumbers([
       ['E-5', 'black'],

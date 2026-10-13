@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * MoveBothInPlayToPlayed: visibility-preserving move of both inPlay cards to played.
  */
-describe(moveBothInPlayToPlayed, () => {
+describe('moveBothInPlayToPlayed function', () => {
   it('given authoritative, moves both inPlay to played', () => {
     const { cardState } = createEmptyGameState('standard');
     const authoritative = {

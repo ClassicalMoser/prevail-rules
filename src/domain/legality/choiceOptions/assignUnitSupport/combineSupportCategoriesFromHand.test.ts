@@ -2,7 +2,7 @@ import { createTestCard } from '@testing';
 
 import { combineSupportCategoriesFromHand } from './combineSupportCategoriesFromHand';
 
-describe(combineSupportCategoriesFromHand, () => {
+describe('combineSupportCategoriesFromHand function', () => {
   it('given an empty hand, returns no categories', () => {
     expect(combineSupportCategoriesFromHand([])).toStrictEqual([]);
   });

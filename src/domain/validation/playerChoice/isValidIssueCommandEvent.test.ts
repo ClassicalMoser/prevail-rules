@@ -19,7 +19,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * IsValidIssueCommandEvent: remaining command + restriction integrity.
  */
-describe(isValidIssueCommandEvent, () => {
+describe('isValidIssueCommandEvent function', () => {
   function stateReadyToIssue(command = tempCommandCards[0].command) {
     const unit = createUnitWithPlacement({
       coordinate: 'E-5',

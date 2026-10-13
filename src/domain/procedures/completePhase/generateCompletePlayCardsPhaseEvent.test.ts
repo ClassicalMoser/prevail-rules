@@ -15,7 +15,7 @@ import { createEmptyGameState } from '@factories';
  * After both sides have played cards, this effect closes the play-cards phase. The generator
  * returns a constant payload only — it does not read initiative, round, or card fields.
  */
-describe(generateCompletePlayCardsPhaseEvent, () => {
+describe('generateCompletePlayCardsPhaseEvent function', () => {
   /** Minimal valid snapshot: PLAY_CARDS_PHASE + step `complete` (other fields default). */
   function createGameStateInCompleteStep(): GameState {
     const state = createEmptyGameState('standard');

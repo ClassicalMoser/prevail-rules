@@ -32,7 +32,7 @@ const rangedCard =
  * Ranged command finished or unfireable remaining: clear CRS; keep shooters or
  * advance the resolve step when nobody has a legal target.
  */
-describe(applyCompleteRangedAttackCommandEvent, () => {
+describe('applyCompleteRangedAttackCommandEvent function', () => {
   it('given issueCommands holding ranged CRS, after effect currentCommandResolutionState is pending', () => {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {

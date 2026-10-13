@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * ReplaceOwnedPlayerCardState: swaps one owned slice inside CardState.
  */
-describe(replaceOwnedPlayerCardState, () => {
+describe('replaceOwnedPlayerCardState function', () => {
   it('given authoritative, replaces the named player slice', () => {
     const { cardState } = createEmptyGameState('standard');
     const nextBlack = {

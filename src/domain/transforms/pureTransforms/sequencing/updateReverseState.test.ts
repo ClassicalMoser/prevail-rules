@@ -20,7 +20,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * UpdateReverseState: Creates a new game state with the reverse state updated in an attack apply state.
  */
-describe(updateReverseState, () => {
+describe('updateReverseState function', () => {
   function createStateWithRangedAttackReverse() {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });

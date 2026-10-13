@@ -10,7 +10,7 @@ const smallBoard: Board = createEmptySmallBoard();
  * GetForwardSpace: one step forward along facing using the active board’s layout;
  * undefined off that board’s edge; throws on malformed coord / invalid facing.
  */
-describe(getForwardSpace, () => {
+describe('getForwardSpace function', () => {
   describe('standard board', () => {
     it('b-1 is one step forward from A-1 when facing south', () => {
       expect(getForwardSpace(standardBoard, 'A-1', 'south')).toBe('B-1');

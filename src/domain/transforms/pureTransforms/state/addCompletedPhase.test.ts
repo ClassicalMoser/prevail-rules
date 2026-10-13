@@ -6,7 +6,7 @@ import { createEmptyGameState } from '@factories';
 /**
  * AddCompletedPhase: Adds a completed phase to the completed phases set.
  */
-describe(addCompletedPhase, () => {
+describe('addCompletedPhase function', () => {
   it('adds the phase to completedPhases without mutating the input', () => {
     const state = createEmptyGameState('standard');
     const phaseState = {
