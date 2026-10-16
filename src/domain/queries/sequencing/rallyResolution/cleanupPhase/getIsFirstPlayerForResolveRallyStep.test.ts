@@ -1,44 +1,32 @@
-import { CLEANUP_PHASE } from '@game';
+import { createEmptyGameState } from '@factories';
+import { createCleanupPhaseState } from '@testing';
+import { updatePhaseState } from '@transforms';
 
 import { getIsFirstPlayerForResolveRallyStep } from './getIsFirstPlayerForResolveRallyStep';
 
-import { createEmptyGameState } from '@factories';
 /**
- * Cleanup resolve-rally steps alternate first vs second player; this boolean matches the step name.
+ * True on the first player's resolve-rally step, false on the second player's.
  */
 describe('getIsFirstPlayerForResolveRallyStep function', () => {
-  it('given firstPlayerResolveRally, returns true', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: 'pending' as const,
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'firstPlayerResolveRally',
-    };
+  it('returns true on the first player resolve step', () => {
+    const phase = createCleanupPhaseState({ step: 'firstPlayerResolveRally' });
+    const state = updatePhaseState(createEmptyGameState('standard'), phase);
 
     expect(getIsFirstPlayerForResolveRallyStep(state)).toBe(true);
   });
 
-  it('given the second player resolve rally step, returns false', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: 'pending' as const,
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending' as const,
+  it('returns false on the second player resolve step', () => {
+    const phase = createCleanupPhaseState({
       step: 'secondPlayerResolveRally',
-    };
+    });
+    const state = updatePhaseState(createEmptyGameState('standard'), phase);
 
     expect(getIsFirstPlayerForResolveRallyStep(state)).toBe(false);
   });
 
-  it('given discardPlayedCards, throws not on resolveRally with step name', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: 'pending' as const,
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'discardPlayedCards',
-    };
+  it('throws when cleanup is discarding played cards', () => {
+    const phase = createCleanupPhaseState({ step: 'discardPlayedCards' });
+    const state = updatePhaseState(createEmptyGameState('standard'), phase);
 
     expect(() => getIsFirstPlayerForResolveRallyStep(state)).toThrow(
       'Cleanup phase is not on a resolveRally step: discardPlayedCards',

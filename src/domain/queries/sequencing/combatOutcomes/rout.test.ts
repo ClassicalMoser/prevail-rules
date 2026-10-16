@@ -1,151 +1,101 @@
-import type { UnitWithPlacement } from '@entities';
-import type { AttackApplyState, GameState } from '@game';
+import type { GameState, RoutState } from '@game';
+import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyState,
-  createAttackApplyStateWithRout,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
+  createRoutState,
   createTestUnit,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updatePhaseState,
-  updateCurrentInitiative,
-} from '@transforms';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import {
   getRoutStateFromAttackApply,
   getRoutStateFromMeleeResolutionByInitiative,
 } from './rout';
 
-import { createEmptyGameState } from '@factories';
 /**
- * Rout substep accessors: read rout from a single apply, or pick melee side by initiative when
- * both players might have rout substeps.
+ * Rout readers. One unwraps the rout on an attack apply.
+ * The melee reader takes the first player's rout, then the second player's.
  */
 describe('getRoutStateFromAttackApply function', () => {
-  it('given apply with rout nested, returns that rout substep', () => {
+  it('returns the rout on the attack apply', () => {
     const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyState = {
+    const rout = createRoutState('black', unit, { numberToDiscard: 1 });
+    const apply = createAttackApplyState(unit, {
       attackResult: {
         unitRetreated: false,
         unitReversed: false,
         unitRouted: true,
       },
-      completed: false,
-      defendingUnit: unit,
-      retreatState: 'pending' as const,
-      reverseState: 'pending' as const,
-      routState: {
-        cardsChosen: false,
-        completed: false,
-        numberToDiscard: 1,
-        player: 'black' as const,
-        substepType: 'rout' as const,
-        unitsToRout: [unit],
-      },
-      substepType: 'attackApply' as const,
-    };
+      routState: rout,
+    });
 
-    const result = getRoutStateFromAttackApply(attackApplyState);
-    expect(result.substepType).toBe('rout');
-    expect(result.player).toBe('black');
-    expect(result.unitsToRout).toContain(unit);
+    expect(getRoutStateFromAttackApply(apply)).toBe(rout);
   });
 
-  it('given apply without routState, throws no rout in attack apply', () => {
-    const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyState = {
-      attackResult: {
-        unitRetreated: false,
-        unitReversed: false,
-        unitRouted: false,
-      },
-      completed: false,
-      defendingUnit: unit,
-      retreatState: 'pending' as const,
-      reverseState: 'pending' as const,
-      routState: 'pending' as const,
-      substepType: 'attackApply' as const,
-    };
+  it('throws when the attack apply has no rout', () => {
+    const apply = createAttackApplyState(
+      createTestUnit('black', { attack: 2 }),
+      { routState: 'pending' },
+    );
 
-    expect(() => getRoutStateFromAttackApply(attackApplyState)).toThrow(
+    expect(() => getRoutStateFromAttackApply(apply)).toThrow(
       'No rout state found in attack apply state',
     );
   });
 });
 
 describe('getRoutStateFromMeleeResolutionByInitiative function', () => {
-  /** Engaged E-5 pair; toggle which side’s apply uses createAttackApplyStateWithRout. */
-  function meleeStateWithRouts(
+  function meleeWithRouts(
     initiative: 'white' | 'black',
-    opts: { whiteHasRout?: boolean; blackHasRout?: boolean },
+    routs: { white?: RoutState; black?: RoutState },
   ): GameState {
-    const state = updateCurrentInitiative(
+    const empty = updateCurrentInitiative(
       createEmptyGameState('standard'),
       initiative,
     );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
-
-    const whiteApply = opts.whiteHasRout
-      ? createAttackApplyStateWithRout(whiteUnit)
-      : createAttackApplyState(whiteUnit);
-    const blackApply = opts.blackHasRout
-      ? createAttackApplyStateWithRout(blackUnit)
-      : createAttackApplyState(blackUnit);
-
-    const melee = createMeleeResolutionState(s, {
-      blackAttackApplyState: blackApply,
-      whiteAttackApplyState: whiteApply,
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: createAttackApplyState(blackUnit, {
+        routState: routs.black ?? 'pending',
+      }),
+      whiteAttackApplyState: createAttackApplyState(whiteUnit, {
+        routState: routs.white ?? 'pending',
+      }),
     });
-    const phase = createResolveMeleePhaseState(s, {
+    const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,
     });
-    return updatePhaseState(s, phase);
+    return updatePhaseState(empty, phase);
   }
 
-  it('given black initiative and only black rout, returns black rout', () => {
-    const state = meleeStateWithRouts('black', {
-      blackHasRout: true,
-      whiteHasRout: false,
-    });
-    const rout = getRoutStateFromMeleeResolutionByInitiative(state);
-    expect(rout.player).toBe('black');
-    expect(rout.unitsToRout.length).toBeGreaterThan(0);
+  it('returns the first player rout', () => {
+    const rout = createRoutState(
+      'black',
+      createTestUnit('black', { attack: 2 }),
+      { numberToDiscard: 1 },
+    );
+    const state = meleeWithRouts('black', { black: rout });
+
+    expect(getRoutStateFromMeleeResolutionByInitiative(state)).toBe(rout);
   });
 
-  it('given black initiative but black has no rout, falls back to white rout', () => {
-    const state = meleeStateWithRouts('black', {
-      blackHasRout: false,
-      whiteHasRout: true,
-    });
-    const rout = getRoutStateFromMeleeResolutionByInitiative(state);
-    expect(rout.player).toBe('white');
-    expect(rout.unitsToRout.length).toBeGreaterThan(0);
+  it('returns the second player rout when the first apply has none', () => {
+    const rout = createRoutState(
+      'white',
+      createTestUnit('white', { attack: 2 }),
+      { numberToDiscard: 1 },
+    );
+    const state = meleeWithRouts('black', { white: rout });
+
+    expect(getRoutStateFromMeleeResolutionByInitiative(state)).toBe(rout);
   });
 
-  it('given neither apply has rout, throws no rout in melee resolution', () => {
-    const state = meleeStateWithRouts('white', {
-      blackHasRout: false,
-      whiteHasRout: false,
-    });
+  it('throws when neither apply has a rout', () => {
+    const state = meleeWithRouts('white', {});
+
     expect(() => getRoutStateFromMeleeResolutionByInitiative(state)).toThrow(
       'No rout state found in melee resolution',
     );

@@ -1,28 +1,84 @@
+import type { PlayerSide } from '@entities';
 import type { ResolveRallyEvent } from '@events';
-import type { GameState, RallyResolutionState } from '@game';
+import type { CardState, GameState, RallyResolutionState } from '@game';
 import {
   getCleanupPhaseState,
+  getHiddenPlayerCardState,
   getOwnedPlayerCardState,
   getRallyResolutionStateAwaitingBurn,
 } from '@queries';
 import { updateRallyResolutionStateForCurrentStep } from '@transforms/pureTransforms/sequencing/updateRallyResolutionStateForCurrentStep';
 import {
   burnCardFromPlayed,
+  burnHiddenCardFromPlayed,
+  replaceHiddenPlayerCardState,
   replaceOwnedPlayerCardState,
   returnCardsToHand,
+  returnHiddenCardsToHand,
   updatePhaseState,
 } from '@transforms/pureTransforms';
 
 /**
+ * True when `player` is the unowned slice under this card-state visibility.
+ * Authoritative games have no hidden seat.
+ */
+function eventPlayerIsHidden(
+  cardState: CardState,
+  player: PlayerSide,
+): boolean {
+  switch (cardState.visibility) {
+    case 'authoritative': {
+      return false;
+    }
+    case 'whiteSeen': {
+      return player === 'black';
+    }
+    case 'blackSeen': {
+      return player === 'white';
+    }
+    default: {
+      const _exhaustive: never = cardState;
+      throw new Error(`Invalid card state: ${_exhaustive}`);
+    }
+  }
+}
+
+/**
+ * Burns `card` and returns the rest of played and discarded to hand.
+ * An owned slice keeps card identities. A hidden slice keeps the burnt card
+ * public and turns the returned cards into `'hidden'` placeholders.
+ */
+function cardStateAfterRallyBurn(
+  cardState: CardState,
+  player: PlayerSide,
+  card: ResolveRallyEvent['card'],
+): CardState {
+  if (eventPlayerIsHidden(cardState, player)) {
+    const hidden = getHiddenPlayerCardState(cardState, player);
+    const burned = burnHiddenCardFromPlayed(hidden, card);
+    const returned = returnHiddenCardsToHand(burned);
+    const next = replaceHiddenPlayerCardState(cardState, player, returned);
+    return next;
+  }
+
+  const owned = getOwnedPlayerCardState(cardState, player);
+  const burned = burnCardFromPlayed(owned, card);
+  const returned = returnCardsToHand(burned);
+  const next = replaceOwnedPlayerCardState(cardState, player, returned);
+  return next;
+}
+
+/**
  * Applies a ResolveRallyEvent to the game state.
- * Burns the specified card from played pile, then returns all remaining played
+ * Burns the specified card from the played pile, then returns all remaining played
  * and discarded cards to the player's hand.
  * Marks `rallyResolved` and stays on the resolve-rally step with
  * `unitsLostSupport: 'pending'` so {@link applyAssignUnitSupportEvent} can run next.
  * Uses {@link getRallyResolutionStateAwaitingBurn} for sequencing invariants.
  *
- * Requires `event.player` to be owned under the state's visibility
- * ({@link getOwnedPlayerCardState} / {@link replaceOwnedPlayerCardState}).
+ * Works for the owned slice and for the opponent's hidden slice on a seat view.
+ * On a hidden slice the burnt card stays public; cards returned to hand become
+ * `'hidden'` placeholders.
  */
 export function applyResolveRallyEvent<S extends GameState>(
   event: ResolveRallyEvent,
@@ -31,19 +87,12 @@ export function applyResolveRallyEvent<S extends GameState>(
   const { player, card } = event;
   const phaseState = getCleanupPhaseState(state);
 
-  const ownedPlayerCardState = getOwnedPlayerCardState(state.cardState, player);
   const rallyState = getRallyResolutionStateAwaitingBurn(state, player);
-  const returnedCardsState = returnCardsToHand(
-    burnCardFromPlayed(ownedPlayerCardState, card),
-  );
+  const cardState = cardStateAfterRallyBurn(state.cardState, player, card);
 
   const stateWithCards = {
     ...state,
-    cardState: replaceOwnedPlayerCardState(
-      state.cardState,
-      player,
-      returnedCardsState,
-    ),
+    cardState,
   };
 
   const updatedRallyResolutionState: RallyResolutionState = {

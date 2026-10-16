@@ -3,7 +3,6 @@ import {
   createMovementResolutionState,
   createRearEngagementState,
   createRoutState,
-  createTestCard,
   createTestUnit,
   createUnitWithPlacement,
 } from '@testing';
@@ -23,7 +22,6 @@ describe('getAwaitingRoutDiscardState function', () => {
   it('returns rear-engagement rout when penalty is set and cards not chosen', () => {
     const defender = createTestUnit('white', { attack: 2 });
     let state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
     state = updateBoardState(
       state,
       addUnitToBoard(state.boardState, {
@@ -55,7 +53,6 @@ describe('getAwaitingRoutDiscardState function', () => {
   it('returns null when rear rout penalty is still pending', () => {
     const defender = createTestUnit('white', { attack: 2 });
     let state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
     const routState = createRoutState('white', defender, {
       numberToDiscard: 'pending',
     });

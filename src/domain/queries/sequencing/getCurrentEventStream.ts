@@ -8,5 +8,6 @@ import type { GameState } from '@game';
  * @returns The current event stream
  */
 export function getCurrentEventStream(state: GameState): readonly Event[] {
-  return state.currentRoundState.events;
+  const events = state.currentRoundState.events;
+  return events;
 }

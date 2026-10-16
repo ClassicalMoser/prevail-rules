@@ -1,108 +1,73 @@
-import { CLEANUP_PHASE } from '@game';
+import type { GameState, RallyResolutionState } from '@game';
+import { createEmptyGameState } from '@factories';
+import { createCleanupPhaseState, createRallyResolutionState } from '@testing';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { getRallyResolutionStateForCurrentStep } from './getRallyResolutionStateForCurrentStep';
 
-import { createEmptyGameState } from '@factories';
+function cleanup(
+  step:
+    | 'firstPlayerResolveRally'
+    | 'secondPlayerResolveRally'
+    | 'discardPlayedCards',
+  buckets: {
+    first?: RallyResolutionState | 'pending';
+    second?: RallyResolutionState | 'pending';
+  } = {},
+): GameState {
+  const empty = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'white',
+  );
+  return updatePhaseState(
+    empty,
+    createCleanupPhaseState({
+      firstPlayerRallyResolutionState: buckets.first ?? 'pending',
+      secondPlayerRallyResolutionState: buckets.second ?? 'pending',
+      step,
+    }),
+  );
+}
+
 /**
- * Ensures the acting player matches initiative ordering for the current resolve-rally step,
- * then returns the corresponding first/second rally bucket.
+ * The rally slice for the resolve step, when the caller is the player
+ * that step belongs to.
  */
 describe('getRallyResolutionStateForCurrentStep function', () => {
-  it('given firstPlayerResolveRally and white is first, returns first bucket for white', () => {
-    const rallyState = {
-      completed: false,
-      playerRallied: true,
-      rallyResolved: false,
-      routState: 'pending' as const,
-      unitsLostSupport: 'pending' as const,
-    };
+  it('returns the first player rally when that player is resolving', () => {
+    const rally = createRallyResolutionState({ playerRallied: true });
+    const state = cleanup('firstPlayerResolveRally', { first: rally });
 
-    const state = createEmptyGameState('standard');
-    state.currentInitiative = 'white';
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: rallyState,
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'firstPlayerResolveRally',
-    };
-
-    const result = getRallyResolutionStateForCurrentStep(state, 'white');
-    expect(result).toStrictEqual(rallyState);
+    expect(getRallyResolutionStateForCurrentStep(state, 'white')).toBe(rally);
   });
 
-  it('given secondPlayerResolveRally and black is second, returns second bucket for black', () => {
-    const rallyState = {
-      completed: false,
-      playerRallied: true,
-      rallyResolved: false,
-      routState: 'pending' as const,
-      unitsLostSupport: 'pending' as const,
-    };
+  it('returns the second player rally when that player is resolving', () => {
+    const rally = createRallyResolutionState({ playerRallied: true });
+    const state = cleanup('secondPlayerResolveRally', { second: rally });
 
-    const state = createEmptyGameState('standard');
-    state.currentInitiative = 'white';
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: 'pending' as const,
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: rallyState,
-      step: 'secondPlayerResolveRally',
-    };
-
-    const result = getRallyResolutionStateForCurrentStep(state, 'black');
-    expect(result).toStrictEqual(rallyState);
+    expect(getRallyResolutionStateForCurrentStep(state, 'black')).toBe(rally);
   });
 
-  it('given firstPlayerResolveRally but caller black, throws expected first player white', () => {
-    const state = createEmptyGameState('standard');
-    state.currentInitiative = 'white';
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: false,
-        routState: 'pending' as const,
-        unitsLostSupport: 'pending' as const,
-      },
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'firstPlayerResolveRally',
-    };
+  it('throws when the second player calls during the first resolve', () => {
+    const state = cleanup('firstPlayerResolveRally', {
+      first: createRallyResolutionState({ playerRallied: true }),
+    });
 
     expect(() => getRallyResolutionStateForCurrentStep(state, 'black')).toThrow(
       'Expected white (first player) to resolve rally, got black',
     );
   });
 
-  it('given secondPlayerResolveRally but caller white, throws expected second player black', () => {
-    const state = createEmptyGameState('standard');
-    state.currentInitiative = 'white';
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: 'pending' as const,
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'secondPlayerResolveRally',
-    };
+  it('throws when the first player calls during the second resolve', () => {
+    const state = cleanup('secondPlayerResolveRally');
 
     expect(() => getRallyResolutionStateForCurrentStep(state, 'white')).toThrow(
       'Expected black (second player) to resolve rally, got white',
     );
   });
 
-  it('given discardPlayedCards, throws not on resolveRally step with step name', () => {
-    const state = createEmptyGameState('standard');
-    state.currentInitiative = 'white';
-    state.currentRoundState = {
-      commandedUnits: [],
-      completedPhases: [],
-      currentPhaseState: {
-        firstPlayerRallyResolutionState: 'pending' as const,
-        phase: CLEANUP_PHASE,
-        secondPlayerRallyResolutionState: 'pending' as const,
-        step: 'discardPlayedCards',
-      },
-      events: [],
-      roundNumber: 1,
-    };
+  it('throws when cleanup is discarding played cards', () => {
+    const state = cleanup('discardPlayedCards');
 
     expect(() => getRallyResolutionStateForCurrentStep(state, 'white')).toThrow(
       'Cleanup phase is not on a resolveRally step: discardPlayedCards',

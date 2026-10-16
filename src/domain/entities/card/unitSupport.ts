@@ -18,7 +18,7 @@ const _genericUnitSupportSchemaObject = z
     /** Support applies to any units. */
     supportType: z.literal('generic'),
     /** The number of units that this card supports. */
-    count: z.int().min(1).max(4),
+    count: z.int().min(1),
   })
   .strict();
 
@@ -58,7 +58,7 @@ const _traitUnitSupportSchemaObject = z
     /** The trait that this card supports. */
     trait: traitSchema,
     /** The number of units that this card supports. */
-    count: z.int().min(1).max(4),
+    count: z.int().min(1),
   })
   .strict();
 
@@ -97,7 +97,7 @@ const _unitTypeUnitSupportSchemaObject = z
     /** The unit type ID that this card supports. */
     unitTypeId: z.uuid(),
     /** The number of units that this card supports. */
-    count: z.int().min(1).max(4),
+    count: z.int().min(1),
   })
   .strict();
 

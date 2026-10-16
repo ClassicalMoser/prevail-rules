@@ -1,18 +1,16 @@
 import type { GameState } from '@game';
+import { getCurrentPhaseState } from './getPhaseState';
 
 /**
  * Gets the current step from the phase state.
- * Assumes we're in a phase with steps (validation should happen elsewhere).
+ * Every phase slice has a step. Throws when the round has not entered a phase.
  *
  * @param state - The game state
  * @returns The current step
  * @throws Error if phase state is missing
  */
 export function getCurrentStep(state: GameState): string {
-  const phaseState = state.currentRoundState.currentPhaseState;
-  if (phaseState === 'none') {
-    throw new Error('No current phase state found');
-  }
-  // All phase states have a step property
-  return phaseState.step;
+  const phaseState = getCurrentPhaseState(state);
+  const step = phaseState.step;
+  return step;
 }

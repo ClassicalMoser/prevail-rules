@@ -8,5 +8,6 @@ import type { GameState } from '@game';
  * @returns The player side with initiative
  */
 export function getCurrentInitiative(state: GameState): PlayerSide {
-  return state.currentInitiative;
+  const initiative = state.currentInitiative;
+  return initiative;
 }

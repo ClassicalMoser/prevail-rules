@@ -1,4 +1,5 @@
 export { burnCardFromPlayed } from './burnCardFromPlayed';
+export { burnHiddenCardFromPlayed } from './burnHiddenCardFromPlayed';
 export { chooseCard } from './chooseCard';
 export { chooseHiddenCard } from './chooseHiddenCard';
 export { discardCardsFromHand } from './discardCardsFromHand';
@@ -8,6 +9,7 @@ export { moveCardToPlayed } from './moveCardToPlayed';
 export { replaceHiddenPlayerCardState } from './replaceHiddenPlayerCardState';
 export { replaceOwnedPlayerCardState } from './replaceOwnedPlayerCardState';
 export { returnCardsToHand } from './returnCardsToHand';
+export { returnHiddenCardsToHand } from './returnHiddenCardsToHand';
 export { revealBothAwaitingCards } from './revealBothAwaitingCards';
 export { revealCard } from './revealCard';
 export { revealHiddenCard } from './revealHiddenCard';

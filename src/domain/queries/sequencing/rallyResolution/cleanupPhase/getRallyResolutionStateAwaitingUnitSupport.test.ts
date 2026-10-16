@@ -1,68 +1,62 @@
-import { CLEANUP_PHASE } from '@game';
+import type { GameState } from '@game';
+import { createEmptyGameState } from '@factories';
+import { createCleanupPhaseState, createRallyResolutionState } from '@testing';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { getRallyResolutionStateAwaitingUnitSupport } from './getRallyResolutionStateAwaitingUnitSupport';
 
-import { createEmptyGameState } from '@factories';
-/** After card burn: rallyResolved true but unitsLostSupport not computed yet. */
-const afterBurnBeforeUnitsBroken = {
-  completed: false,
-  playerRallied: true,
-  rallyResolved: true,
-  routState: 'pending' as const,
-  unitsLostSupport: 'pending' as const,
-};
-
-/** FirstPlayerResolveRally with post-burn rally slice. */
-function stateFirstPlayerResolveRally() {
-  const state = createEmptyGameState('standard');
-  state.currentInitiative = 'white';
-  state.currentRoundState.currentPhaseState = {
-    firstPlayerRallyResolutionState: { ...afterBurnBeforeUnitsBroken },
-    phase: CLEANUP_PHASE,
-    secondPlayerRallyResolutionState: 'pending' as const,
-    step: 'firstPlayerResolveRally',
-  };
-  return state;
+function firstPlayerResolving(
+  rally: ReturnType<typeof createRallyResolutionState>,
+): GameState {
+  const empty = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'white',
+  );
+  return updatePhaseState(
+    empty,
+    createCleanupPhaseState({
+      firstPlayerRallyResolutionState: rally,
+      step: 'firstPlayerResolveRally',
+    }),
+  );
 }
 
 /**
- * Procedure guard before assign-unit-support: rally must be resolved and `unitsLostSupport`
- * must still be unset.
+ * The rally slice after the burn and before units lost support are recorded.
  */
 describe('getRallyResolutionStateAwaitingUnitSupport function', () => {
-  it('given rallyResolved true and unitsLostSupport undefined, returns slice', () => {
-    const state = stateFirstPlayerResolveRally();
-    const result = getRallyResolutionStateAwaitingUnitSupport(state, 'white');
-    expect(result.rallyResolved).toBe(true);
-    expect(result.unitsLostSupport).toBe('pending');
+  it('returns the rally slice waiting for unit support', () => {
+    const rally = createRallyResolutionState({
+      playerRallied: true,
+      rallyResolved: true,
+      unitsLostSupport: 'pending',
+    });
+    const state = firstPlayerResolving(rally);
+
+    expect(getRallyResolutionStateAwaitingUnitSupport(state, 'white')).toBe(
+      rally,
+    );
   });
 
-  it('given rallyResolved false, throws rally not resolved yet', () => {
-    const state = stateFirstPlayerResolveRally();
-    const ps = state.currentRoundState.currentPhaseState;
-    if (ps === 'none' || ps.phase !== CLEANUP_PHASE) {
-      throw new Error('expected cleanup');
-    }
-    ps.firstPlayerRallyResolutionState = {
-      ...afterBurnBeforeUnitsBroken,
+  it('throws when the rally burn is not done', () => {
+    const rally = createRallyResolutionState({
+      playerRallied: true,
       rallyResolved: false,
-    };
+    });
+    const state = firstPlayerResolving(rally);
 
     expect(() =>
       getRallyResolutionStateAwaitingUnitSupport(state, 'white'),
     ).toThrow('Rally has not been resolved yet');
   });
 
-  it('given unitsLostSupport already an array, throws units lost support already resolved', () => {
-    const state = stateFirstPlayerResolveRally();
-    const ps = state.currentRoundState.currentPhaseState;
-    if (ps === 'none' || ps.phase !== CLEANUP_PHASE) {
-      throw new Error('expected cleanup');
-    }
-    ps.firstPlayerRallyResolutionState = {
-      ...afterBurnBeforeUnitsBroken,
+  it('throws when units lost support are already recorded', () => {
+    const rally = createRallyResolutionState({
+      playerRallied: true,
+      rallyResolved: true,
       unitsLostSupport: [],
-    };
+    });
+    const state = firstPlayerResolving(rally);
 
     expect(() =>
       getRallyResolutionStateAwaitingUnitSupport(state, 'white'),

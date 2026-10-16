@@ -1,4 +1,10 @@
 import type { UnitWithPlacement } from '@entities';
+import type {
+  CommandResolutionState,
+  GameState,
+  MeleeResolutionState,
+} from '@game';
+import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
@@ -9,125 +15,120 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createRetreatState,
-  createTestCard,
   createTestUnit,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updatePhaseState,
-  updateCurrentInitiative,
-} from '@transforms';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import {
   findRetreatState,
   getRetreatStateFromAttackApply,
-  getRetreatStateFromFrontEngagement,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
   getRetreatStateReadyForResolveFromMelee,
 } from './retreat';
 
-import { createEmptyGameState } from '@factories';
+function issueCommands(resolution: CommandResolutionState): GameState {
+  const empty = createEmptyGameState('standard');
+  return updatePhaseState(
+    empty,
+    createIssueCommandsPhaseState(empty, {
+      currentCommandResolutionState: resolution,
+    }),
+  );
+}
+
+function resolveMelee(
+  melee: MeleeResolutionState,
+  initiative: 'white' | 'black' = 'white',
+): GameState {
+  const empty = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    initiative,
+  );
+  return updatePhaseState(
+    empty,
+    createResolveMeleePhaseState(empty, {
+      currentMeleeResolutionState: melee,
+    }),
+  );
+}
+
+function placed(
+  player: 'white' | 'black',
+  facing: UnitWithPlacement['placement']['facing'],
+): UnitWithPlacement {
+  return {
+    placement: { coordinate: 'E-5', facing },
+    unit: createTestUnit(player, { attack: 2 }),
+  };
+}
+
 /**
- * Retreat substeps live under attack-apply (ranged or melee side): unwrap nested state, locate
- * retreat by player across CRS shapes, and pick which melee retreat is ready for `resolveRetreat`.
+ * Retreat readers unwrap a retreat from an attack apply, a ranged resolution,
+ * a melee side, or whichever of those is current. The ready reader returns
+ * the initiative-order retreat whose final placement is set.
  */
 describe('getRetreatStateFromAttackApply function', () => {
-  it('given apply with retreat substep, returns retreat with same retreating unit', () => {
-    const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState = createAttackApplyStateWithRetreat({
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit,
+  it('returns the retreat on the attack apply', () => {
+    const unit = placed('black', 'north');
+    const retreat = createRetreatState(unit);
+    const apply = createAttackApplyStateWithRetreat(unit, {
+      retreatState: retreat,
     });
 
-    const result = getRetreatStateFromAttackApply(attackApplyState);
-    expect(result.substepType).toBe('retreat');
-    expect(result.retreatingUnit.unit).toStrictEqual(unit);
+    expect(getRetreatStateFromAttackApply(apply)).toBe(retreat);
   });
 
-  it('given apply without retreat substep, throws no retreat in attack apply', () => {
-    const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState = createAttackApplyState(unit);
+  it('throws when the attack apply has no retreat', () => {
+    const apply = createAttackApplyState(
+      createTestUnit('black', { attack: 2 }),
+      { retreatState: 'pending' },
+    );
 
-    expect(() => getRetreatStateFromAttackApply(attackApplyState)).toThrow(
+    expect(() => getRetreatStateFromAttackApply(apply)).toThrow(
       'No retreat state found in attack apply state',
     );
   });
 });
 
 describe('getRetreatStateFromRangedAttack function', () => {
-  it('given ranged CRS with defender retreat apply, returns defender retreat', () => {
-    const attackingUnit = createTestUnit('black', { attack: 2 });
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
-      state,
-      {
-        currentCommandResolutionState: createRangedAttackResolutionState(
-          state,
-          {
-            attackApplyState: createAttackApplyStateWithRetreat({
-              placement: {
-                coordinate: 'E-5',
-                facing: 'north',
-              },
-              unit: defendingUnit,
-            }),
-            attackingUnit,
-            defendingUnit,
-          },
-        ),
-      },
-    );
+  it('returns the retreat on the ranged attack apply', () => {
+    const empty = createEmptyGameState('standard');
+    const defender = placed('white', 'north');
+    const retreat = createRetreatState(defender);
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: createAttackApplyStateWithRetreat(defender, {
+        retreatState: retreat,
+      }),
+      defendingUnit: defender.unit,
+    });
+    const state = issueCommands(resolution);
 
-    const result = getRetreatStateFromRangedAttack(state);
-    expect(result.substepType).toBe('retreat');
-    expect(result.retreatingUnit.unit).toStrictEqual(defendingUnit);
+    expect(getRetreatStateFromRangedAttack(state)).toBe(retreat);
   });
 
-  it('given ranged CRS without attackApplyState, throws no attack apply in ranged', () => {
-    const attackingUnit = createTestUnit('black', { attack: 2 });
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
-      state,
-      {
-        currentCommandResolutionState: createRangedAttackResolutionState(
-          state,
-          {
-            attackApplyState: 'pending' as const,
-            attackingUnit,
-            defendingUnit,
-          },
-        ),
-      },
-    );
+  it('throws when the ranged attack apply is still pending', () => {
+    const empty = createEmptyGameState('standard');
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: 'pending',
+    });
+    const state = issueCommands(resolution);
 
     expect(() => getRetreatStateFromRangedAttack(state)).toThrow(
       'No attack apply state found in ranged attack resolution',
     );
   });
 
-  it('given ranged apply without retreat substep, throws no retreat in attack apply', () => {
-    const attackingUnit = createTestUnit('black', { attack: 2 });
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
-      state,
-      {
-        currentCommandResolutionState: createRangedAttackResolutionState(
-          state,
-          {
-            attackApplyState: createAttackApplyState(defendingUnit),
-            attackingUnit,
-            defendingUnit,
-          },
-        ),
-      },
-    );
+  it('throws when the ranged attack apply has no retreat', () => {
+    const empty = createEmptyGameState('standard');
+    const defender = createTestUnit('white', { attack: 2 });
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: createAttackApplyState(defender, {
+        retreatState: 'pending',
+      }),
+      defendingUnit: defender,
+    });
+    const state = issueCommands(resolution);
 
     expect(() => getRetreatStateFromRangedAttack(state)).toThrow(
       'No retreat state found in attack apply state',
@@ -136,110 +137,40 @@ describe('getRetreatStateFromRangedAttack function', () => {
 });
 
 describe('getRetreatStateFromMelee function', () => {
-  it('given white melee apply in retreat, getRetreatState(melee, white) returns it', () => {
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackCommitmentCard = createTestCard();
-    const whiteCommitmentCard = createTestCard();
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
-      state,
-      {
-        currentMeleeResolutionState: {
-          blackAttackApplyState: createAttackApplyState(
-            createTestUnit('black', { attack: 2 }),
-          ),
-          blackCommitment: {
-            card: blackCommitmentCard,
-            commitmentType: 'completed',
-          },
-          completed: false,
-          location: 'E-5',
-          substepType: 'meleeResolution' as const,
-          whiteAttackApplyState: createAttackApplyStateWithRetreat({
-            placement: {
-              coordinate: 'E-5',
-              facing: 'north',
-            },
-            unit: whiteUnit,
-          }),
-          whiteCommitment: {
-            card: whiteCommitmentCard,
-            commitmentType: 'completed',
-          },
-        },
-      },
-    );
+  it('returns the white retreat', () => {
+    const empty = createEmptyGameState('standard');
+    const white = placed('white', 'north');
+    const retreat = createRetreatState(white);
+    const melee = createMeleeResolutionState(empty, {
+      whiteAttackApplyState: createAttackApplyStateWithRetreat(white, {
+        retreatState: retreat,
+      }),
+    });
+    const state = resolveMelee(melee);
 
-    const result = getRetreatStateFromMelee(state, 'white');
-    expect(result.substepType).toBe('retreat');
-    expect(result.retreatingUnit.unit).toStrictEqual(whiteUnit);
+    expect(getRetreatStateFromMelee(state, 'white')).toBe(retreat);
   });
 
-  it('given black melee apply in retreat, getRetreatState(melee, black) returns it', () => {
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const blackCommitmentCard = createTestCard();
-    const whiteCommitmentCard = createTestCard();
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
-      state,
-      {
-        currentMeleeResolutionState: {
-          blackAttackApplyState: createAttackApplyStateWithRetreat({
-            placement: {
-              coordinate: 'E-5',
-              facing: 'north',
-            },
-            unit: blackUnit,
-          }),
-          blackCommitment: {
-            card: blackCommitmentCard,
-            commitmentType: 'completed',
-          },
-          completed: false,
-          location: 'E-5',
-          substepType: 'meleeResolution' as const,
-          whiteAttackApplyState: createAttackApplyState(
-            createTestUnit('white', { attack: 2 }),
-          ),
-          whiteCommitment: {
-            card: whiteCommitmentCard,
-            commitmentType: 'completed',
-          },
-        },
-      },
-    );
+  it('returns the black retreat', () => {
+    const empty = createEmptyGameState('standard');
+    const black = placed('black', 'south');
+    const retreat = createRetreatState(black);
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: createAttackApplyStateWithRetreat(black, {
+        retreatState: retreat,
+      }),
+    });
+    const state = resolveMelee(melee);
 
-    const result = getRetreatStateFromMelee(state, 'black');
-    expect(result.substepType).toBe('retreat');
-    expect(result.retreatingUnit.unit).toStrictEqual(blackUnit);
+    expect(getRetreatStateFromMelee(state, 'black')).toBe(retreat);
   });
 
-  it('given melee missing white apply, getRetreatState(melee, white) throws', () => {
-    const blackCommitmentCard = createTestCard();
-    const whiteCommitmentCard = createTestCard();
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
-      state,
-      {
-        currentMeleeResolutionState: {
-          blackAttackApplyState: createAttackApplyState(
-            createTestUnit('black', { attack: 2 }),
-          ),
-          blackCommitment: {
-            card: blackCommitmentCard,
-            commitmentType: 'completed',
-          },
-          completed: false,
-          location: 'E-5',
-          substepType: 'meleeResolution' as const,
-          whiteAttackApplyState: 'pending' as const,
-          whiteCommitment: {
-            card: whiteCommitmentCard,
-            commitmentType: 'completed',
-          },
-        },
-      },
-    );
+  it('throws when the white attack apply is still pending', () => {
+    const empty = createEmptyGameState('standard');
+    const melee = createMeleeResolutionState(empty, {
+      whiteAttackApplyState: 'pending',
+    });
+    const state = resolveMelee(melee);
 
     expect(() => getRetreatStateFromMelee(state, 'white')).toThrow(
       'No white attack apply state found in melee resolution',
@@ -248,7 +179,7 @@ describe('getRetreatStateFromMelee function', () => {
 });
 
 describe('findRetreatState function', () => {
-  it('given no phase slice, findRetreat throws no current phase state', () => {
+  it('throws when the round has no phase', () => {
     const state = createEmptyGameState('standard');
 
     expect(() => findRetreatState(state, 'white')).toThrow(
@@ -256,131 +187,70 @@ describe('findRetreatState function', () => {
     );
   });
 
-  it('given ranged CRS with white defender retreat, findRetreat(white) succeeds', () => {
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
-      state,
-      {
-        currentCommandResolutionState: createRangedAttackResolutionState(
-          state,
-          {
-            attackApplyState: createAttackApplyStateWithRetreat({
-              placement: {
-                coordinate: 'E-5',
-                facing: 'north',
-              },
-              unit: defendingUnit,
-            }),
-            defendingUnit,
-          },
-        ),
-      },
-    );
+  it('returns the white retreat on a ranged attack', () => {
+    const empty = createEmptyGameState('standard');
+    const defender = placed('white', 'north');
+    const retreat = createRetreatState(defender);
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: createAttackApplyStateWithRetreat(defender, {
+        retreatState: retreat,
+      }),
+      defendingUnit: defender.unit,
+    });
+    const state = issueCommands(resolution);
 
-    const result = findRetreatState(state, 'white');
-    expect(result.substepType).toBe('retreat');
-    expect(result.retreatingUnit.unit).toStrictEqual(defendingUnit);
+    expect(findRetreatState(state, 'white')).toBe(retreat);
   });
 
-  it('given melee white retreat apply, findRetreat(white) succeeds', () => {
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackCommitmentCard = createTestCard();
-    const whiteCommitmentCard = createTestCard();
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
-      state,
-      {
-        currentMeleeResolutionState: {
-          blackAttackApplyState: createAttackApplyState(
-            createTestUnit('black', { attack: 2 }),
-          ),
-          blackCommitment: {
-            card: blackCommitmentCard,
-            commitmentType: 'completed',
-          },
-          completed: false,
-          location: 'E-5',
-          substepType: 'meleeResolution' as const,
-          whiteAttackApplyState: createAttackApplyStateWithRetreat({
-            placement: {
-              coordinate: 'E-5',
-              facing: 'north',
-            },
-            unit: whiteUnit,
-          }),
-          whiteCommitment: {
-            card: whiteCommitmentCard,
-            commitmentType: 'completed',
-          },
-        },
-      },
-    );
+  it('returns the white retreat on a melee', () => {
+    const empty = createEmptyGameState('standard');
+    const white = placed('white', 'north');
+    const retreat = createRetreatState(white);
+    const melee = createMeleeResolutionState(empty, {
+      whiteAttackApplyState: createAttackApplyStateWithRetreat(white, {
+        retreatState: retreat,
+      }),
+    });
+    const state = resolveMelee(melee);
 
-    const result = findRetreatState(state, 'white');
-    expect(result.substepType).toBe('retreat');
-    expect(result.retreatingUnit.unit).toStrictEqual(whiteUnit);
+    expect(findRetreatState(state, 'white')).toBe(retreat);
   });
 
-  it('given movement CRS only, findRetreat(white) throws no retreat for player', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
-      state,
-      {
-        currentCommandResolutionState: createMovementResolutionState(state),
-      },
-    );
+  it('throws when the command resolution is movement without a retreat', () => {
+    const empty = createEmptyGameState('standard');
+    const state = issueCommands(createMovementResolutionState(empty));
 
     expect(() => findRetreatState(state, 'white')).toThrow(
       'No retreat state found for player white',
     );
   });
 
-  it('finds a nested retreat under front engagement movement CRS', () => {
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement = {
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit: defendingUnit,
-    };
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
-      state,
-      {
-        currentCommandResolutionState: createMovementResolutionState(state, {
-          engagementState: createFrontEngagementState({
-            defendingUnitRetreats: true,
-            retreatState: createRetreatState(placement),
-          }),
-        }),
-      },
-    );
+  it('returns the retreat nested on a front engagement', () => {
+    const empty = createEmptyGameState('standard');
+    const defender = placed('white', 'north');
+    const retreat = createRetreatState(defender);
+    const resolution = createMovementResolutionState(empty, {
+      engagementState: createFrontEngagementState({
+        defendingUnitRetreats: true,
+        retreatState: retreat,
+      }),
+    });
+    const state = issueCommands(resolution);
 
-    const result = findRetreatState(state, 'white');
-    expect(result).toStrictEqual(getRetreatStateFromFrontEngagement(state));
-    expect(result.retreatingUnit.unit).toStrictEqual(defendingUnit);
+    expect(findRetreatState(state, 'white')).toBe(retreat);
   });
 
-  it('given white retreating but findRetreat(black), throws no retreat for black', () => {
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
-      state,
-      {
-        currentCommandResolutionState: createRangedAttackResolutionState(
-          state,
-          {
-            attackApplyState: createAttackApplyStateWithRetreat({
-              placement: {
-                coordinate: 'E-5',
-                facing: 'north',
-              },
-              unit: defendingUnit,
-            }),
-            defendingUnit,
-          },
-        ),
-      },
-    );
+  it('throws when the retreat belongs to the other player', () => {
+    const empty = createEmptyGameState('standard');
+    const defender = placed('white', 'north');
+    const retreat = createRetreatState(defender);
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: createAttackApplyStateWithRetreat(defender, {
+        retreatState: retreat,
+      }),
+      defendingUnit: defender.unit,
+    });
+    const state = issueCommands(resolution);
 
     expect(() => findRetreatState(state, 'black')).toThrow(
       'No retreat state found for player black',
@@ -389,182 +259,73 @@ describe('findRetreatState function', () => {
 });
 
 describe('getRetreatStateReadyForResolveFromMelee function', () => {
-  const finalPos = {
-    coordinate: 'E-6' as const,
-    facing: 'south' as const,
-  };
+  const finalPlacement = {
+    coordinate: 'E-6',
+    facing: 'south',
+  } satisfies UnitWithPlacement['placement'];
 
-  it('given white initiative and white retreat final E-6 south ready, returns white retreat', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
+  it('returns the first player retreat whose final placement is set', () => {
+    const empty = createEmptyGameState('standard');
+    const white = placed('white', 'north');
+    const retreat = createRetreatState(white, {
+      finalPosition: finalPlacement,
+    });
+    const melee = createMeleeResolutionState(empty, {
+      whiteAttackApplyState: createAttackApplyStateWithRetreat(white, {
+        retreatState: retreat,
+      }),
+    });
+    const state = resolveMelee(melee, 'white');
 
-    const whiteRetreat = createRetreatState(whiteWp, {
-      completed: false,
-      finalPosition: finalPos,
-    });
-    const whiteApply = createAttackApplyStateWithRetreat(whiteWp, {
-      retreatState: whiteRetreat,
-    });
-    const blackApply = createAttackApplyState(blackUnit);
-
-    const melee = createMeleeResolutionState(s, {
-      blackAttackApplyState: blackApply,
-      whiteAttackApplyState: whiteApply,
-    });
-    const phase = createResolveMeleePhaseState(s, {
-      currentMeleeResolutionState: melee,
-    });
-    const full = updatePhaseState(s, phase);
-
-    const r = getRetreatStateReadyForResolveFromMelee(full);
-    expect(r.retreatingUnit.unit).toBe(whiteUnit);
-    expect(r.finalPosition).toStrictEqual(finalPos);
+    expect(getRetreatStateReadyForResolveFromMelee(state)).toBe(retreat);
   });
 
-  it('given white initiative but white retreat lacks finalPosition, picks black with final set', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
+  it('returns the second player retreat when the first final placement is still pending', () => {
+    const empty = createEmptyGameState('standard');
+    const white = placed('white', 'north');
+    const black = placed('black', 'south');
+    const retreat = createRetreatState(black, {
+      finalPosition: finalPlacement,
+    });
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: createAttackApplyStateWithRetreat(black, {
+        retreatState: retreat,
+      }),
+      whiteAttackApplyState: createAttackApplyStateWithRetreat(white),
+    });
+    const state = resolveMelee(melee, 'white');
 
-    const whiteApply = createAttackApplyStateWithRetreat(whiteWp);
-    const blackRetreat = createRetreatState(blackWp, {
-      completed: false,
-      finalPosition: finalPos,
-    });
-    const blackApply = createAttackApplyStateWithRetreat(blackWp, {
-      retreatState: blackRetreat,
-    });
-
-    const melee = createMeleeResolutionState(s, {
-      blackAttackApplyState: blackApply,
-      whiteAttackApplyState: whiteApply,
-    });
-    const phase = createResolveMeleePhaseState(s, {
-      currentMeleeResolutionState: melee,
-    });
-    const full = updatePhaseState(s, phase);
-
-    const r = getRetreatStateReadyForResolveFromMelee(full);
-    expect(r.retreatingUnit.unit).toBe(blackUnit);
+    expect(getRetreatStateReadyForResolveFromMelee(state)).toBe(retreat);
   });
 
-  it('given both retreats without finalPosition, throws no retreat ready to resolve', () => {
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
-
-    const melee = createMeleeResolutionState(s, {
-      blackAttackApplyState: createAttackApplyStateWithRetreat(blackWp),
-      whiteAttackApplyState: createAttackApplyStateWithRetreat(whiteWp),
+  it('throws when neither retreat has a final placement', () => {
+    const empty = createEmptyGameState('standard');
+    const white = placed('white', 'north');
+    const black = placed('black', 'south');
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: createAttackApplyStateWithRetreat(black),
+      whiteAttackApplyState: createAttackApplyStateWithRetreat(white),
     });
-    const phase = createResolveMeleePhaseState(s, {
-      currentMeleeResolutionState: melee,
-    });
-    const full = updatePhaseState(s, phase);
+    const state = resolveMelee(melee, 'white');
 
-    expect(() => getRetreatStateReadyForResolveFromMelee(full)).toThrow(
+    expect(() => getRetreatStateReadyForResolveFromMelee(state)).toThrow(
       'No retreat state with finalPosition found in melee resolution',
     );
   });
 
-  it('given black initiative and black retreat final ready, returns black retreat first', () => {
-    const state = createEmptyGameState('standard');
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
+  it('returns the black retreat when black has initiative and that final placement is set', () => {
+    const empty = createEmptyGameState('standard');
+    const black = placed('black', 'south');
+    const retreat = createRetreatState(black, {
+      finalPosition: finalPlacement,
+    });
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: createAttackApplyStateWithRetreat(black, {
+        retreatState: retreat,
+      }),
+    });
+    const state = resolveMelee(melee, 'black');
 
-    const blackRetreat = createRetreatState(blackWp, {
-      completed: false,
-      finalPosition: finalPos,
-    });
-    const blackApply = createAttackApplyStateWithRetreat(blackWp, {
-      retreatState: blackRetreat,
-    });
-    const whiteApply = createAttackApplyState(whiteUnit);
-
-    const melee = createMeleeResolutionState(s, {
-      blackAttackApplyState: blackApply,
-      whiteAttackApplyState: whiteApply,
-    });
-    const phase = createResolveMeleePhaseState(s, {
-      currentMeleeResolutionState: melee,
-    });
-    const full = updatePhaseState(s, phase);
-
-    const r = getRetreatStateReadyForResolveFromMelee(full);
-    expect(r.retreatingUnit.unit).toBe(blackUnit);
+    expect(getRetreatStateReadyForResolveFromMelee(state)).toBe(retreat);
   });
 });

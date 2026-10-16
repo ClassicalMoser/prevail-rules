@@ -1,35 +1,27 @@
 import type { Event } from '@events';
-import { tempCommandCards } from '@sampleValues';
+import { createEmptyGameState } from '@factories';
+import { updateRoundEventStream } from '@transforms';
 
 import { getCurrentEventStream } from './getCurrentEventStream';
 
-import { createEmptyGameState } from '@factories';
-
+/**
+ * The ordered event log on the current round.
+ */
 describe('getCurrentEventStream function', () => {
-  it('returns the current round events array (same reference)', () => {
-    const state = createEmptyGameState('standard');
-    const stream = getCurrentEventStream(state);
-
-    expect(stream).toBe(state.currentRoundState.events);
-    expect(stream).toStrictEqual([]);
-  });
-
-  it('reflects events attached to the round state', () => {
-    const state = createEmptyGameState('standard');
+  it('returns the event stream on the round', () => {
+    // Any event shape works. The query returns the array it was given.
     const events: readonly Event[] = [
       {
-        black: tempCommandCards[0],
-        effectType: 'revealCards',
+        effectType: 'completeMovementCommand',
         eventNumber: 0,
         eventType: 'gameEffect',
-        white: tempCommandCards[1],
       },
     ];
-    state.currentRoundState = {
-      ...state.currentRoundState,
+    const state = updateRoundEventStream(
+      createEmptyGameState('standard'),
       events,
-    };
+    );
 
-    expect(getCurrentEventStream(state)).toStrictEqual(events);
+    expect(getCurrentEventStream(state)).toBe(events);
   });
 });
