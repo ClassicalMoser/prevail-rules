@@ -4,7 +4,6 @@ import {
   createMovementResolutionState,
   createRearEngagementState,
   createRoutState,
-  createTestCard,
   createTestUnit,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
@@ -17,9 +16,8 @@ import { createEmptyGameState } from '@factories';
  * from issueCommands + movement CRS with validation.
  */
 describe('getRoutStateFromRearEngagement function', () => {
-  it('given rear engagement movement with routState, returns same rout object', () => {
+  it('returns the rout on the rear engagement', () => {
     const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
     const whiteUnit = createTestUnit('white');
     const routState = createRoutState('white', whiteUnit, {
       numberToDiscard: 2,
@@ -37,11 +35,10 @@ describe('getRoutStateFromRearEngagement function', () => {
     expect(getRoutStateFromRearEngagement(full)).toBe(routState);
   });
 
-  it('given movement without engagementState, throws movement has no engagement', () => {
+  it('throws when the movement has no engagement', () => {
     const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
     const movement = createMovementResolutionState(state, {
-      engagementState: 'pending' as const,
+      engagementState: 'pending',
     });
     const full = updatePhaseState(
       state,
@@ -55,9 +52,8 @@ describe('getRoutStateFromRearEngagement function', () => {
     );
   });
 
-  it('throws when engagement is not rear', () => {
+  it('throws when the engagement is a front engagement', () => {
     const state = createEmptyGameState('standard');
-    state.cardState.black.inPlay = createTestCard();
     const movement = createMovementResolutionState(state, {
       engagementState: createFrontEngagementState(),
     });

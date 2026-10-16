@@ -1,57 +1,24 @@
-import {
-  createCleanupPhaseState,
-  createIssueCommandsPhaseState,
-  createPlayCardsPhaseState,
-  createResolveMeleePhaseState,
-} from '@testing';
+import { createEmptyGameState } from '@factories';
+import { createPlayCardsPhaseState } from '@testing';
+import { updatePhaseState } from '@transforms';
 
 import { getCurrentStep } from './getCurrentStep';
 
-import { createEmptyGameState } from '@factories';
 /**
- * Reads the active round step string from whatever phase object is current (playCards,
- * issueCommands, resolveMelee, cleanup, etc.).
+ * The step string on the current phase. An empty round has no phase.
  */
 describe('getCurrentStep function', () => {
-  it('given playCards chooseCards factory, step is chooseCards', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createPlayCardsPhaseState();
+  it('returns the step on the current phase', () => {
+    // The step is the value under test. The phase factory only carries it.
+    const phase = createPlayCardsPhaseState({ step: 'revealCards' });
+    const state = updatePhaseState(createEmptyGameState('standard'), phase);
 
-    const result = getCurrentStep(state);
-    expect(result).toBe('chooseCards');
+    expect(getCurrentStep(state)).toBe('revealCards');
   });
 
-  it('given default issueCommands factory, step is firstPlayerResolveCommands', () => {
+  it('throws when the round has no phase', () => {
+    // An empty game is still on `'none'`. The step reader uses the phase reader.
     const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState =
-      createIssueCommandsPhaseState(state);
-
-    const result = getCurrentStep(state);
-    expect(result).toBe('firstPlayerResolveCommands');
-  });
-
-  it('given default resolveMelee phase, step is resolveMelee', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState =
-      createResolveMeleePhaseState(state);
-
-    const result = getCurrentStep(state);
-    expect(result).toBe('resolveMelee');
-  });
-
-  it('given cleanup firstPlayerChooseRally, step matches that step', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      step: 'firstPlayerChooseRally',
-    });
-
-    const result = getCurrentStep(state);
-    expect(result).toBe('firstPlayerChooseRally');
-  });
-
-  it('given undefined currentPhaseState, throws no current phase state', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = 'none';
 
     expect(() => getCurrentStep(state)).toThrow('No current phase state found');
   });

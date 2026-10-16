@@ -1,59 +1,30 @@
-import { CLEANUP_PHASE } from '@game';
+import { createEmptyGameState } from '@factories';
+import { createCleanupPhaseState } from '@testing';
+import { updatePhaseState } from '@transforms';
 
 import { getNextStepForResolveRally } from './getNextStepForResolveRally';
 
-import { createEmptyGameState } from '@factories';
 /**
- * After finishing one side’s resolve-rally work, which cleanup step comes next (second chooser
- * vs phase complete).
+ * The cleanup step that follows a resolve-rally step.
  */
 describe('getNextStepForResolveRally function', () => {
-  it('given firstPlayerResolveRally, next step is secondPlayerChooseRally', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: false,
-        routState: 'pending' as const,
-        unitsLostSupport: 'pending' as const,
-      },
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'firstPlayerResolveRally',
-    };
+  it('returns the second player choose step after the first resolve', () => {
+    const phase = createCleanupPhaseState({ step: 'firstPlayerResolveRally' });
+    const state = updatePhaseState(createEmptyGameState('standard'), phase);
 
-    const result = getNextStepForResolveRally(state);
-    expect(result).toBe('secondPlayerChooseRally');
+    expect(getNextStepForResolveRally(state)).toBe('secondPlayerChooseRally');
   });
 
-  it('given step is secondPlayerResolveRally, returns complete', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: 'pending' as const,
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: false,
-        routState: 'pending' as const,
-        unitsLostSupport: 'pending' as const,
-      },
-      step: 'secondPlayerResolveRally',
-    };
+  it('returns complete after the second resolve', () => {
+    const phase = createCleanupPhaseState({ step: 'secondPlayerResolveRally' });
+    const state = updatePhaseState(createEmptyGameState('standard'), phase);
 
-    const result = getNextStepForResolveRally(state);
-    expect(result).toBe('complete');
+    expect(getNextStepForResolveRally(state)).toBe('complete');
   });
 
-  it('given discardPlayedCards, throws not on resolveRally step', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: 'pending' as const,
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'discardPlayedCards',
-    };
+  it('throws when cleanup is discarding played cards', () => {
+    const phase = createCleanupPhaseState({ step: 'discardPlayedCards' });
+    const state = updatePhaseState(createEmptyGameState('standard'), phase);
 
     expect(() => getNextStepForResolveRally(state)).toThrow(
       'Cleanup phase is not on a resolveRally step',

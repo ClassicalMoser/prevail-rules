@@ -597,6 +597,7 @@ export {
   addUnitToBoard,
   addUnitToRouted,
   burnCardFromPlayed,
+  burnHiddenCardFromPlayed,
 } from '@transforms';
 export {
   chooseHiddenCard,
@@ -613,6 +614,7 @@ export {
   replaceHiddenPlayerCardState,
   replaceOwnedPlayerCardState,
   returnCardsToHand,
+  returnHiddenCardsToHand,
   revealBothAwaitingCards,
   revealCard,
   revealHiddenCard,

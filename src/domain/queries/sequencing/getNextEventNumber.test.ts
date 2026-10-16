@@ -1,37 +1,33 @@
 import type { Event } from '@events';
-import { tempCommandCards } from '@sampleValues';
+import { createEmptyGameState } from '@factories';
+import { updateRoundEventStream } from '@transforms';
 
 import { getNextEventNumber } from './getNextEventNumber';
 
-import { createEmptyGameState } from '@factories';
-
+/**
+ * The next event number is the length of the round's event stream.
+ * The query does not read `eventNumber` on the events already stored.
+ */
 describe('getNextEventNumber function', () => {
-  it('returns 0 when the round has no events yet', () => {
-    const state = createEmptyGameState('standard');
+  it('returns 0 for an empty stream', () => {
+    // An empty round has not recorded an event, so the first index is 0.
+    const state = updateRoundEventStream(createEmptyGameState('standard'), []);
+
     expect(getNextEventNumber(state)).toBe(0);
   });
 
-  it('returns the length of the current round event stream', () => {
-    const state = createEmptyGameState('standard');
-    const events: readonly Event[] = [
-      {
-        black: tempCommandCards[0],
-        effectType: 'revealCards',
-        eventNumber: 0,
-        eventType: 'gameEffect',
-        white: tempCommandCards[1],
-      },
-      {
-        effectType: 'resolveInitiative',
-        eventNumber: 1,
-        eventType: 'gameEffect',
-        player: 'black',
-      },
-    ];
-    state.currentRoundState = {
-      ...state.currentRoundState,
-      events,
+  it('returns 2 when the stream has two events', () => {
+    // Any event shape works. The query counts entries and ignores their fields.
+    const event: Event = {
+      effectType: 'completeMovementCommand',
+      eventNumber: 0,
+      eventType: 'gameEffect',
     };
+    // Two entries, numbered 0 and 1. The next index is the count, 2.
+    const state = updateRoundEventStream(createEmptyGameState('standard'), [
+      event,
+      { ...event, eventNumber: 1 },
+    ]);
 
     expect(getNextEventNumber(state)).toBe(2);
   });

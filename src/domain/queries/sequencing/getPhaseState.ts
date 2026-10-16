@@ -11,7 +11,7 @@ import { throwIfNone } from '@utils';
 
 /**
  * Gets the current phase state from the game state.
- * Assumes the phase state exists (validation should happen elsewhere).
+ * Throws when the round has not entered a phase (`'none'`).
  *
  * @param state - The game state
  * @returns The current phase state
@@ -20,15 +20,14 @@ import { throwIfNone } from '@utils';
 export function getCurrentPhaseState<S extends GameState>(
   state: S,
 ): PhaseState {
-  return throwIfNone(
-    state.currentRoundState.currentPhaseState,
-    'No current phase state found',
-  );
+  const current = state.currentRoundState.currentPhaseState;
+  const phaseState = throwIfNone(current, 'No current phase state found');
+  return phaseState;
 }
 
 /**
  * Gets the play cards phase state from the game state.
- * Assumes we're in the playCards phase (validation should happen elsewhere).
+ * Throws when the current phase is anything else.
  *
  * @param state - The game state
  * @returns The play cards phase state
@@ -46,7 +45,7 @@ export function getPlayCardsPhaseState<S extends GameState>(
 
 /**
  * Gets the move commanders phase state from the game state.
- * Assumes we're in the moveCommanders phase (validation should happen elsewhere).
+ * Throws when the current phase is anything else.
  *
  * @param state - The game state
  * @returns The move commanders phase state
@@ -64,7 +63,7 @@ export function getMoveCommandersPhaseState<S extends GameState>(
 
 /**
  * Gets the issue commands phase state from the game state.
- * Assumes we're in the issueCommands phase (validation should happen elsewhere).
+ * Throws when the current phase is anything else.
  *
  * @param state - The game state
  * @returns The issue commands phase state
@@ -82,7 +81,7 @@ export function getIssueCommandsPhaseState<S extends GameState>(
 
 /**
  * Gets the resolve melee phase state from the game state.
- * Assumes we're in the resolveMelee phase (validation should happen elsewhere).
+ * Throws when the current phase is anything else.
  *
  * @param state - The game state
  * @returns The resolve melee phase state
@@ -100,7 +99,7 @@ export function getResolveMeleePhaseState<S extends GameState>(
 
 /**
  * Gets the cleanup phase state from the game state.
- * Assumes we're in the cleanup phase (validation should happen elsewhere).
+ * Throws when the current phase is anything else.
  *
  * @param state - The game state
  * @returns The cleanup phase state

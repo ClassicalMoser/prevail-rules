@@ -1,221 +1,137 @@
 import type { UnitWithPlacement } from '@entities';
-import type { AttackApplyState, GameState } from '@game';
+import type { GameState, ReverseState } from '@game';
+import { createEmptyGameState } from '@factories';
 import {
+  createAttackApplyState,
   createAttackApplyStateWithReverse,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createReverseState,
   createTestUnit,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updatePhaseState,
-  updateCurrentInitiative,
-} from '@transforms';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import {
   getReverseStateFromAttackApply,
   getReverseStateFromMeleeResolutionByInitiative,
 } from './reverse';
 
-import { createEmptyGameState } from '@factories';
 /**
- * Reverse substep accessors: unwrap reverse from one apply, or choose melee side by initiative
- * and whether the first player’s reverse already has a final facing committed.
+ * Reverse readers. One unwraps the reverse on an attack apply.
+ * The melee reader walks initiative and skips a reverse whose facing is set.
  */
 describe('getReverseStateFromAttackApply function', () => {
-  it('given apply with reverse substep, returns reverseState', () => {
-    expect.hasAssertions();
+  it('returns the reverse on the attack apply', () => {
     const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyState = {
-      attackResult: {
-        unitRetreated: false,
-        unitReversed: true,
-        unitRouted: false,
-      },
-      completed: false,
-      defendingUnit: unit,
-      retreatState: 'pending' as const,
-      reverseState: {
-        completed: false,
-        finalPosition: 'pending' as const,
-        reversingUnit: {
-          placement: {
-            coordinate: 'E-5',
-            facing: 'north',
-          },
-          unit,
-        },
-        substepType: 'reverse' as const,
-      },
-      routState: 'pending' as const,
-      substepType: 'attackApply' as const,
-    };
+    const reverse = createReverseState({
+      placement: { coordinate: 'D-4', facing: 'south' },
+      unit,
+    });
+    const apply = createAttackApplyStateWithReverse(
+      { placement: { coordinate: 'D-4', facing: 'south' }, unit },
+      { reverseState: reverse },
+    );
 
-    const result = getReverseStateFromAttackApply(attackApplyState);
-    expect(result.substepType).toBe('reverse');
-    expect(result.reversingUnit.unit).toStrictEqual(unit);
+    expect(getReverseStateFromAttackApply(apply)).toBe(reverse);
   });
 
-  it('given error when reverse state is missing, throws', () => {
-    expect.hasAssertions();
-    const unit = createTestUnit('black', { attack: 2 });
-    const attackApplyState: AttackApplyState = {
-      attackResult: {
-        unitRetreated: false,
-        unitReversed: false,
-        unitRouted: false,
-      },
-      completed: false,
-      defendingUnit: unit,
-      retreatState: 'pending' as const,
-      reverseState: 'pending' as const,
-      routState: 'pending' as const,
-      substepType: 'attackApply' as const,
-    };
+  it('throws when the attack apply has no reverse', () => {
+    const apply = createAttackApplyState(
+      createTestUnit('black', { attack: 2 }),
+      { reverseState: 'pending' },
+    );
 
-    expect(() => getReverseStateFromAttackApply(attackApplyState)).toThrow(
+    expect(() => getReverseStateFromAttackApply(apply)).toThrow(
       'No reverse state found in attack apply state',
     );
   });
 });
 
 describe('getReverseStateFromMeleeResolutionByInitiative function', () => {
-  /** Both sides in reverse substeps; optional finalPosition on initiative side to simulate done. */
-  function stateWithReverse(
+  function meleeWithReverses(
     initiative: 'white' | 'black',
-    firstFinal?: 'set',
-  ): GameState {
-    const state = updateCurrentInitiative(
+    finals: {
+      white?: ReverseState['finalPosition'];
+      black?: ReverseState['finalPosition'];
+    },
+  ): { state: GameState; white: ReverseState; black: ReverseState } {
+    const empty = updateCurrentInitiative(
       createEmptyGameState('standard'),
       initiative,
     );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'east',
-      },
+    const whitePlacement: UnitWithPlacement = {
+      placement: { coordinate: 'E-5', facing: 'east' },
       unit: whiteUnit,
     };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'west',
-      },
+    const blackPlacement: UnitWithPlacement = {
+      placement: { coordinate: 'E-5', facing: 'west' },
       unit: blackUnit,
     };
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
-
-    const whiteRev = createAttackApplyStateWithReverse(whiteWp, {
-      reverseState: createReverseState(whiteWp, {
-        finalPosition:
-          initiative === 'white' && firstFinal === 'set'
-            ? whiteWp.placement
-            : 'pending',
+    const white = createReverseState(whitePlacement, {
+      finalPosition: finals.white ?? 'pending',
+    });
+    const black = createReverseState(blackPlacement, {
+      finalPosition: finals.black ?? 'pending',
+    });
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: createAttackApplyStateWithReverse(blackPlacement, {
+        reverseState: black,
+      }),
+      whiteAttackApplyState: createAttackApplyStateWithReverse(whitePlacement, {
+        reverseState: white,
       }),
     });
-    const blackRev = createAttackApplyStateWithReverse(blackWp, {
-      reverseState: createReverseState(blackWp, {
-        finalPosition:
-          initiative === 'black' && firstFinal === 'set'
-            ? blackWp.placement
-            : 'pending',
-      }),
-    });
-
-    const melee = createMeleeResolutionState(s, {
-      blackAttackApplyState: blackRev,
-      whiteAttackApplyState: whiteRev,
-    });
-    const phase = createResolveMeleePhaseState(s, {
+    const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,
     });
-    return updatePhaseState(s, phase);
+    return { black, state: updatePhaseState(empty, phase), white };
   }
 
-  it('given white initiative and both reverses pending, picks white', () => {
-    expect.hasAssertions();
-    const state = stateWithReverse('white');
-    const rev = getReverseStateFromMeleeResolutionByInitiative(state);
-    expect(rev.reversingUnit.unit.playerSide).toBe('white');
+  it('returns the first player reverse while its facing is unset', () => {
+    const { state, white } = meleeWithReverses('white', {});
+
+    expect(getReverseStateFromMeleeResolutionByInitiative(state)).toBe(white);
   });
 
-  it('given black initiative and both reverses pending, picks black', () => {
-    expect.hasAssertions();
-    const state = stateWithReverse('black');
-    const rev = getReverseStateFromMeleeResolutionByInitiative(state);
-    expect(rev.reversingUnit.unit.playerSide).toBe('black');
+  it('returns the first player reverse when that player is black', () => {
+    const { black, state } = meleeWithReverses('black', {});
+
+    expect(getReverseStateFromMeleeResolutionByInitiative(state)).toBe(black);
   });
 
-  it('given white initiative but white reverse already has finalPosition, picks black', () => {
-    expect.hasAssertions();
-    const state = stateWithReverse('white', 'set');
-    const rev = getReverseStateFromMeleeResolutionByInitiative(state);
-    expect(rev.reversingUnit.unit.playerSide).toBe('black');
+  it('returns the second player reverse when the first facing is set', () => {
+    const whiteFacing = {
+      coordinate: 'E-4',
+      facing: 'east',
+    } satisfies ReverseState['finalPosition'];
+    const { black, state } = meleeWithReverses('white', {
+      white: whiteFacing,
+    });
+
+    expect(getReverseStateFromMeleeResolutionByInitiative(state)).toBe(black);
   });
 
-  it('given black initiative but black reverse already has finalPosition, picks white', () => {
-    expect.hasAssertions();
-    const state = stateWithReverse('black', 'set');
-    const rev = getReverseStateFromMeleeResolutionByInitiative(state);
-    expect(rev.reversingUnit.unit.playerSide).toBe('white');
+  it('returns the second player reverse when the first player is black and that facing is set', () => {
+    const blackFacing = {
+      coordinate: 'E-4',
+      facing: 'west',
+    } satisfies ReverseState['finalPosition'];
+    const { state, white } = meleeWithReverses('black', {
+      black: blackFacing,
+    });
+
+    expect(getReverseStateFromMeleeResolutionByInitiative(state)).toBe(white);
   });
 
-  it('given both reverses already have finalPosition, throws no reverse in melee', () => {
-    expect.hasAssertions();
-    const state = updateCurrentInitiative(
-      createEmptyGameState('standard'),
-      'white',
-    );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'east',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'west',
-      },
-      unit: blackUnit,
-    };
-    let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
-    s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
-
-    const doneWhite = createAttackApplyStateWithReverse(whiteWp, {
-      reverseState: {
-        completed: false,
-        finalPosition: whiteWp.placement,
-        reversingUnit: whiteWp,
-        substepType: 'reverse',
-      },
-    });
-    const doneBlack = createAttackApplyStateWithReverse(blackWp, {
-      reverseState: {
-        completed: false,
-        finalPosition: blackWp.placement,
-        reversingUnit: blackWp,
-        substepType: 'reverse',
-      },
+  it('throws when both reverses already have a facing', () => {
+    const { state } = meleeWithReverses('white', {
+      black: { coordinate: 'E-6', facing: 'west' },
+      white: { coordinate: 'E-4', facing: 'east' },
     });
 
-    const melee = createMeleeResolutionState(s, {
-      blackAttackApplyState: doneBlack,
-      whiteAttackApplyState: doneWhite,
-    });
-    const phase = createResolveMeleePhaseState(s, {
-      currentMeleeResolutionState: melee,
-    });
-    const full = updatePhaseState(s, phase);
-
-    expect(() => getReverseStateFromMeleeResolutionByInitiative(full)).toThrow(
+    expect(() => getReverseStateFromMeleeResolutionByInitiative(state)).toThrow(
       'No reverse state found in melee resolution',
     );
   });

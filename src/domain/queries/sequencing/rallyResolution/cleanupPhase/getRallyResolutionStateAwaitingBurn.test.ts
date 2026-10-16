@@ -1,84 +1,67 @@
-import { CLEANUP_PHASE } from '@game';
+import type { GameState } from '@game';
+import { createEmptyGameState } from '@factories';
+import { createCleanupPhaseState, createRallyResolutionState } from '@testing';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { getRallyResolutionStateAwaitingBurn } from './getRallyResolutionStateAwaitingBurn';
 
-import { createEmptyGameState } from '@factories';
-/** Rally slice ready for resolveRally card burn: rallied yes, not yet rallyResolved. */
-const readyToBurn = {
-  completed: false,
-  playerRallied: true,
-  rallyResolved: false,
-  routState: 'pending' as const,
-  unitsLostSupport: 'pending' as const,
-};
-
-/** Cleanup on firstPlayerResolveRally with white initiative. */
-function stateFirstPlayerResolveRally() {
-  const state = createEmptyGameState('standard');
-  state.currentInitiative = 'white';
-  state.currentRoundState.currentPhaseState = {
-    firstPlayerRallyResolutionState: { ...readyToBurn },
-    phase: CLEANUP_PHASE,
-    secondPlayerRallyResolutionState: 'pending' as const,
-    step: 'firstPlayerResolveRally',
-  };
-  return state;
+function firstPlayerResolving(
+  rally = createRallyResolutionState({ playerRallied: true }),
+): GameState {
+  const empty = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    'white',
+  );
+  return updatePhaseState(
+    empty,
+    createCleanupPhaseState({
+      firstPlayerRallyResolutionState: rally,
+      step: 'firstPlayerResolveRally',
+    }),
+  );
 }
 
 /**
- * GetRallyResolutionStateAwaitingBurn: returns the rally-resolution slice for the given player when cleanup is on
- * a resolveRally step and that player has chosen to rally but the burn has not been applied yet. Throws if the
- * player did not rally, rally is already resolved, or the phase step is wrong.
+ * The rally slice after the player has chosen to rally and before the burn.
  */
 describe('getRallyResolutionStateAwaitingBurn function', () => {
-  it('given rallied and not rallyResolved, returns first-player rally slice', () => {
-    const state = stateFirstPlayerResolveRally();
-    const result = getRallyResolutionStateAwaitingBurn(state, 'white');
-    expect(result.playerRallied).toBe(true);
-    expect(result.rallyResolved).toBe(false);
+  it('returns the rally slice waiting for the burn', () => {
+    const rally = createRallyResolutionState({ playerRallied: true });
+    const state = firstPlayerResolving(rally);
+
+    expect(getRallyResolutionStateAwaitingBurn(state, 'white')).toBe(rally);
   });
 
-  it('given playerRallied false, throws player did not choose to rally', () => {
-    const state = stateFirstPlayerResolveRally();
-    const ps = state.currentRoundState.currentPhaseState;
-    if (ps === 'none' || ps.phase !== CLEANUP_PHASE) {
-      throw new Error('expected cleanup');
-    }
-    ps.firstPlayerRallyResolutionState = {
-      ...readyToBurn,
-      playerRallied: false,
-    };
+  it('throws when the player did not rally', () => {
+    const rally = createRallyResolutionState({ playerRallied: false });
+    const state = firstPlayerResolving(rally);
 
     expect(() => getRallyResolutionStateAwaitingBurn(state, 'white')).toThrow(
       'Player did not choose to rally',
     );
   });
 
-  it('given rallyResolved true, throws rally already resolved', () => {
-    const state = stateFirstPlayerResolveRally();
-    const ps = state.currentRoundState.currentPhaseState;
-    if (ps === 'none' || ps.phase !== CLEANUP_PHASE) {
-      throw new Error('expected cleanup');
-    }
-    ps.firstPlayerRallyResolutionState = {
-      ...readyToBurn,
+  it('throws when the rally burn is already done', () => {
+    const rally = createRallyResolutionState({
+      playerRallied: true,
       rallyResolved: true,
-    };
+    });
+    const state = firstPlayerResolving(rally);
 
     expect(() => getRallyResolutionStateAwaitingBurn(state, 'white')).toThrow(
       'Rally has already been resolved',
     );
   });
 
-  it('given wrong cleanup step discardPlayedCards, throws resolveRally step guard from delegate', () => {
-    const state = createEmptyGameState('standard');
-    state.currentInitiative = 'white';
-    state.currentRoundState.currentPhaseState = {
-      firstPlayerRallyResolutionState: 'pending' as const,
-      phase: CLEANUP_PHASE,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'discardPlayedCards',
-    };
+  it('throws when cleanup is discarding played cards', () => {
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
+    const state = updatePhaseState(
+      empty,
+      createCleanupPhaseState({ step: 'discardPlayedCards' }),
+    );
 
     expect(() => getRallyResolutionStateAwaitingBurn(state, 'white')).toThrow(
       'Cleanup phase is not on a resolveRally step: discardPlayedCards',

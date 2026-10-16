@@ -1,23 +1,18 @@
 import { createEmptyGameState } from '@factories';
+import { updateCurrentInitiative } from '@transforms';
 
 import { getCurrentInitiative } from './getCurrentInitiative';
 
-import { updateCurrentInitiative } from '@transforms';
-
+/**
+ * The initiative side stored on the game.
+ */
 describe('getCurrentInitiative function', () => {
-  it('returns the value on game state (same as reading currentInitiative)', () => {
+  it('returns the initiative on the game', () => {
+    // An empty game starts on black. White is the value this test wrote.
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
     );
-
-    expect(getCurrentInitiative(state)).toBe('white');
-    expect(getCurrentInitiative(state)).toBe(state.currentInitiative);
-  });
-
-  it('reflects initiative updates on the state object', () => {
-    const state = createEmptyGameState('standard');
-    state.currentInitiative = 'white';
 
     expect(getCurrentInitiative(state)).toBe('white');
   });

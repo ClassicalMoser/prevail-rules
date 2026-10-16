@@ -114,22 +114,27 @@ describe('applyResolveRallyEvent function', () => {
     expect(next.cardState.black.awaitingPlay).toBe('hidden');
   });
 
-  it('on whiteSeen, throws when the event player is black (unowned)', () => {
+  it('on whiteSeen, burns the hidden opponent card and returns the rest as hidden hand cards', () => {
     const base = createEmptyGameState('standard');
     base.currentInitiative = 'black';
-    const card = createTestCard();
+    const burned = createTestCard({ id: 'burned' });
+    const stillPlayed = createTestCard({ id: 'still-played' });
+    const discarded = createTestCard({ id: 'discarded' });
     const whiteSeen: GameStateForVisibility<'whiteSeen'> = {
       ...base,
       cardState: {
         visibility: 'whiteSeen',
-        white: base.cardState.white,
+        white: {
+          ...base.cardState.white,
+          played: [createTestCard({ id: 'white-played' })],
+        },
         black: {
           awaitingPlay: 'hidden',
           burnt: [],
-          discarded: [],
+          discarded: [discarded],
           inHand: ['hidden'],
           inPlay: null,
-          played: [card],
+          played: [burned, stillPlayed],
         },
       },
       currentRoundState: {
@@ -150,15 +155,92 @@ describe('applyResolveRallyEvent function', () => {
     };
 
     const event: ResolveRallyEvent = {
-      card,
+      card: burned,
       effectType: 'resolveRally',
       eventNumber: 0,
       eventType: 'gameEffect',
       player: 'black',
     };
 
-    expect(() => applyResolveRallyEvent(event, whiteSeen)).toThrow(
-      'Player black is not owned under whiteSeen visibility',
+    const next = applyResolveRallyEvent(event, whiteSeen);
+    const phase = throwIfNone(
+      next.currentRoundState.currentPhaseState,
+      'phase',
     );
+    if (phase.phase !== CLEANUP_PHASE) {
+      throw new Error('cleanup');
+    }
+    const rally = throwIfPending(
+      phase.firstPlayerRallyResolutionState,
+      'rally',
+    );
+
+    expect(next.cardState.visibility).toBe('whiteSeen');
+    expect(next.cardState.black.played).toStrictEqual([]);
+    expect(next.cardState.black.discarded).toStrictEqual([]);
+    expect(next.cardState.black.burnt).toStrictEqual([burned]);
+    expect(next.cardState.black.inHand).toStrictEqual([
+      'hidden',
+      'hidden',
+      'hidden',
+    ]);
+    expect(next.cardState.white.played).toStrictEqual(
+      whiteSeen.cardState.white.played,
+    );
+    expect(phase.step).toBe('firstPlayerResolveRally');
+    expect(rally.rallyResolved).toBe(true);
+  });
+
+  it('on blackSeen, burns the hidden opponent card and returns the rest as hidden hand cards', () => {
+    const base = createEmptyGameState('standard');
+    base.currentInitiative = 'white';
+    const burned = createTestCard({ id: 'burned' });
+    const discarded = createTestCard({ id: 'discarded' });
+    const blackSeen: GameStateForVisibility<'blackSeen'> = {
+      ...base,
+      cardState: {
+        visibility: 'blackSeen',
+        black: base.cardState.black,
+        white: {
+          awaitingPlay: null,
+          burnt: [],
+          discarded: [discarded],
+          inHand: [],
+          inPlay: null,
+          played: [burned],
+        },
+      },
+      currentRoundState: {
+        ...base.currentRoundState,
+        currentPhaseState: {
+          firstPlayerRallyResolutionState: {
+            completed: false,
+            playerRallied: true,
+            rallyResolved: false,
+            routState: 'pending',
+            unitsLostSupport: 'pending',
+          },
+          phase: CLEANUP_PHASE,
+          secondPlayerRallyResolutionState: 'pending',
+          step: 'firstPlayerResolveRally',
+        },
+      },
+    };
+
+    const event: ResolveRallyEvent = {
+      card: burned,
+      effectType: 'resolveRally',
+      eventNumber: 0,
+      eventType: 'gameEffect',
+      player: 'white',
+    };
+
+    const next = applyResolveRallyEvent(event, blackSeen);
+
+    expect(next.cardState.visibility).toBe('blackSeen');
+    expect(next.cardState.white.burnt).toStrictEqual([burned]);
+    expect(next.cardState.white.inHand).toStrictEqual(['hidden']);
+    expect(next.cardState.white.played).toStrictEqual([]);
+    expect(next.cardState.white.discarded).toStrictEqual([]);
   });
 });

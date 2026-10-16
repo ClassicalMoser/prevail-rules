@@ -31,11 +31,11 @@ Commentary is extensive. 25% comments is not too much. Leave existing function c
 
 ## Tests
 
-A test should be almost as easy to read as its name. The `it` title states the fact. The body shows that fact and little else. Do not start a title with "given" or "should".
+A test should be almost as easy to read as its name. The `it` title states the fact. Build that fact with a few factories, transforms, and fixtures. What remains in the body must be clear: the values this test chose, a comment on each step saying what it writes, and the assertion the title names. Setup that cannot be that clear belongs in one of those three. A stand-in value needs a comment saying why it is enough. Do not start a title with "given" or "should".
 
 The `describe` title is a string, the function name plus the word "function": `'getCurrentPhaseState function'`. Do not pass the function. Vitest would use `function.name` as the title, and `vitest/valid-title` rejects a name that is not a string.
 
-A factory builds a value from raw inputs. A transform changes an existing state. A fixture in `@testing` does what neither of those can. Do not give two of them the same job. If a factory or a transform can do it, there is no fixture for it.
+A factory builds a value from raw inputs. A transform changes an existing state. A fixture in `@testing` does what neither of those can. Do not give two of them the same job. If a factory or a transform can do it, there is no fixture for it. Do not inline the behavior one of them already owns.
 
 Assert a value this test wrote. Do not assert a default some other helper filled in.
 

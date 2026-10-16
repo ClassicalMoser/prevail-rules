@@ -1,5 +1,12 @@
-import type { RallyResolutionState } from '@game';
-import { createCleanupPhaseState, createTestUnit } from '@testing';
+import type { GameState, RallyResolutionState } from '@game';
+import { createEmptyGameState } from '@factories';
+import {
+  createCleanupPhaseState,
+  createRallyResolutionState,
+  createRoutState,
+  createTestUnit,
+} from '@testing';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import {
   getCurrentRallyResolutionState,
@@ -8,118 +15,87 @@ import {
   getRoutStateFromRally,
 } from './rally';
 
-import { createEmptyGameState } from '@factories';
+function withCleanup(
+  step:
+    | 'firstPlayerChooseRally'
+    | 'firstPlayerResolveRally'
+    | 'secondPlayerResolveRally'
+    | 'discardPlayedCards',
+  buckets: {
+    first?: RallyResolutionState | 'pending';
+    second?: RallyResolutionState | 'pending';
+  },
+  initiative: 'white' | 'black' = 'white',
+): GameState {
+  const empty = updateCurrentInitiative(
+    createEmptyGameState('standard'),
+    initiative,
+  );
+  return updatePhaseState(
+    empty,
+    createCleanupPhaseState({
+      firstPlayerRallyResolutionState: buckets.first ?? 'pending',
+      secondPlayerRallyResolutionState: buckets.second ?? 'pending',
+      step,
+    }),
+  );
+}
+
 /**
- * Cleanup rally helpers: map player or current resolve-rally step to the right rally slice,
- * and unwrap nested rout state for rally-driven rout effects.
+ * Cleanup rally readers. A player reads the bucket for their seat.
+ * The current step reads the bucket for that step. Rout readers unwrap
+ * the rout nested on a rally slice.
  */
 describe('getRallyResolutionState function', () => {
-  it('given black is first player at chooseRally, getRallyState(black) returns first bucket', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: false,
-        routState: 'pending' as const,
-        unitsLostSupport: 'pending' as const,
-      },
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'firstPlayerChooseRally',
-    });
+  it('returns the first player rally slice', () => {
+    const rally = createRallyResolutionState({ playerRallied: true });
+    const state = withCleanup('firstPlayerChooseRally', { first: rally });
 
-    const result = getRallyResolutionState(state, 'black');
-    expect(result.playerRallied).toBe(true);
+    expect(getRallyResolutionState(state, 'white')).toBe(rally);
   });
 
-  it('given white is second player with second bucket set, getRallyState(white) returns it', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: 'pending' as const,
-      secondPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: false,
-        rallyResolved: false,
-        routState: 'pending' as const,
-        unitsLostSupport: 'pending' as const,
-      },
-      step: 'firstPlayerChooseRally',
-    });
+  it('returns the second player rally slice', () => {
+    const rally = createRallyResolutionState({ playerRallied: true });
+    const state = withCleanup('firstPlayerChooseRally', { second: rally });
 
-    const result = getRallyResolutionState(state, 'white');
-    expect(result.playerRallied).toBe(false);
+    expect(getRallyResolutionState(state, 'black')).toBe(rally);
   });
 
-  it('given both rally buckets undefined at chooseRally, getRallyState(black) throws', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: 'pending' as const,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'firstPlayerChooseRally',
-    });
+  it('throws when the first player rally is still pending', () => {
+    const state = withCleanup('firstPlayerChooseRally', { first: 'pending' });
 
-    expect(() => getRallyResolutionState(state, 'black')).toThrow(
-      'No black rally resolution state found',
+    expect(() => getRallyResolutionState(state, 'white')).toThrow(
+      'No white rally resolution state found',
     );
   });
 });
 
 describe('getCurrentRallyResolutionState function', () => {
-  it('given step firstPlayerResolveRally with first bucket, returns that rally slice', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: false,
-        routState: 'pending' as const,
-        unitsLostSupport: 'pending' as const,
-      },
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'firstPlayerResolveRally',
-    });
+  it('returns the first player rally on the first resolve step', () => {
+    const rally = createRallyResolutionState({ playerRallied: true });
+    const state = withCleanup('firstPlayerResolveRally', { first: rally });
 
-    const result = getCurrentRallyResolutionState(state);
-    expect(result.playerRallied).toBe(true);
+    expect(getCurrentRallyResolutionState(state)).toBe(rally);
   });
 
-  it('given firstPlayerResolveRally but first bucket missing, throws', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: 'pending' as const,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'firstPlayerResolveRally',
-    });
+  it('throws when the first player rally is still pending', () => {
+    const state = withCleanup('firstPlayerResolveRally', { first: 'pending' });
 
     expect(() => getCurrentRallyResolutionState(state)).toThrow(
       'No first player rally resolution state found',
     );
   });
 
-  it('given secondPlayerResolveRally with second bucket, returns that slice', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: 'pending' as const,
-      secondPlayerRallyResolutionState: {
-        completed: false,
-        playerRallied: true,
-        rallyResolved: false,
-        routState: 'pending' as const,
-        unitsLostSupport: 'pending' as const,
-      },
-      step: 'secondPlayerResolveRally',
-    });
+  it('returns the second player rally on the second resolve step', () => {
+    const rally = createRallyResolutionState({ playerRallied: true });
+    const state = withCleanup('secondPlayerResolveRally', { second: rally });
 
-    const result = getCurrentRallyResolutionState(state);
-    expect(result.playerRallied).toBe(true);
+    expect(getCurrentRallyResolutionState(state)).toBe(rally);
   });
 
-  it('given secondPlayerResolveRally but second bucket missing, throws', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: 'pending' as const,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'secondPlayerResolveRally',
+  it('throws when the second player rally is still pending', () => {
+    const state = withCleanup('secondPlayerResolveRally', {
+      second: 'pending',
     });
 
     expect(() => getCurrentRallyResolutionState(state)).toThrow(
@@ -127,13 +103,8 @@ describe('getCurrentRallyResolutionState function', () => {
     );
   });
 
-  it('given cleanup discardPlayedCards step, getCurrentRally throws not resolveRally step', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: 'pending' as const,
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'discardPlayedCards',
-    });
+  it('throws when cleanup is discarding played cards', () => {
+    const state = withCleanup('discardPlayedCards', {});
 
     expect(() => getCurrentRallyResolutionState(state)).toThrow(
       'Not in a resolveRally step',
@@ -142,108 +113,78 @@ describe('getCurrentRallyResolutionState function', () => {
 });
 
 describe('getRoutStateFromRally function', () => {
-  it('given rally slice with rout nested, returns that rout object', () => {
-    const unit = createTestUnit('black', { attack: 2 });
-    const rallyState: RallyResolutionState = {
-      completed: false,
+  it('returns the rout on the rally slice', () => {
+    const rout = createRoutState(
+      'black',
+      createTestUnit('black', { attack: 2 }),
+      {
+        numberToDiscard: 1,
+      },
+    );
+    const rally = createRallyResolutionState({
       playerRallied: true,
       rallyResolved: true,
-      routState: {
-        cardsChosen: false,
-        completed: false,
-        numberToDiscard: 1,
-        player: 'black' as const,
-        substepType: 'rout' as const,
-        unitsToRout: [unit],
-      },
-      unitsLostSupport: [],
-    };
+      routState: rout,
+    });
 
-    const result = getRoutStateFromRally(rallyState);
-    expect(result.substepType).toBe('rout');
-    expect(result.player).toBe('black');
+    expect(getRoutStateFromRally(rally)).toBe(rout);
   });
 
-  it('given rally slice without routState, throws no rout in rally resolution', () => {
-    const rallyState: RallyResolutionState = {
-      completed: false,
+  it('throws when the rally rout is still pending', () => {
+    const rally = createRallyResolutionState({
       playerRallied: true,
       rallyResolved: true,
-      routState: 'pending' as const,
-      unitsLostSupport: [],
-    };
+      routState: 'pending',
+    });
 
-    expect(() => getRoutStateFromRally(rallyState)).toThrow(
+    expect(() => getRoutStateFromRally(rally)).toThrow(
       'No rout state found in rally resolution state',
     );
   });
 });
 
 describe('getRoutStateFromCleanupPhaseForResolveRout function', () => {
-  it('returns rout from first player rally on firstPlayerResolveRally', () => {
-    const unit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: {
-        completed: false,
+  it('returns the rout on the first player rally', () => {
+    const rout = createRoutState(
+      'white',
+      createTestUnit('white', { attack: 2 }),
+      { numberToDiscard: 1 },
+    );
+    const state = withCleanup('firstPlayerResolveRally', {
+      first: createRallyResolutionState({
         playerRallied: true,
         rallyResolved: true,
-        routState: {
-          cardsChosen: false,
-          completed: false,
-          numberToDiscard: 'pending' as const,
-          player: 'white',
-          substepType: 'rout',
-          unitsToRout: [unit],
-        },
-        unitsLostSupport: [],
-      },
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'firstPlayerResolveRally',
+        routState: rout,
+      }),
     });
 
-    const rout = getRoutStateFromCleanupPhaseForResolveRout(state);
-    expect(rout.unitsToRout).toContain(unit);
+    expect(getRoutStateFromCleanupPhaseForResolveRout(state)).toBe(rout);
   });
 
-  it('returns rout from second player rally on secondPlayerResolveRally', () => {
-    const unit = createTestUnit('black', { attack: 2 });
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: 'pending' as const,
-      secondPlayerRallyResolutionState: {
-        completed: false,
+  it('returns the rout on the second player rally', () => {
+    const rout = createRoutState(
+      'black',
+      createTestUnit('black', { attack: 2 }),
+      { numberToDiscard: 1 },
+    );
+    const state = withCleanup('secondPlayerResolveRally', {
+      second: createRallyResolutionState({
         playerRallied: true,
         rallyResolved: true,
-        routState: {
-          cardsChosen: false,
-          completed: false,
-          numberToDiscard: 'pending' as const,
-          player: 'black',
-          substepType: 'rout',
-          unitsToRout: [unit],
-        },
-        unitsLostSupport: [],
-      },
-      step: 'secondPlayerResolveRally',
+        routState: rout,
+      }),
     });
 
-    const rout = getRoutStateFromCleanupPhaseForResolveRout(state);
-    expect(rout.unitsToRout).toContain(unit);
+    expect(getRoutStateFromCleanupPhaseForResolveRout(state)).toBe(rout);
   });
 
-  it('throws when rally bucket has no rout state', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createCleanupPhaseState({
-      firstPlayerRallyResolutionState: {
-        completed: false,
+  it('throws when the rally rout is still pending', () => {
+    const state = withCleanup('firstPlayerResolveRally', {
+      first: createRallyResolutionState({
         playerRallied: true,
         rallyResolved: true,
-        routState: 'pending' as const,
-        unitsLostSupport: [],
-      },
-      secondPlayerRallyResolutionState: 'pending' as const,
-      step: 'firstPlayerResolveRally',
+        routState: 'pending',
+      }),
     });
 
     expect(() => getRoutStateFromCleanupPhaseForResolveRout(state)).toThrow(

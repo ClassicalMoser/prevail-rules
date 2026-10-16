@@ -1,14 +1,15 @@
+import { createEmptyGameState } from '@factories';
 import {
   createAttackApplyState,
+  createAttackApplyStateWithRout,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createMovementResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
-  createTestCard,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import {
   getAttackApplyStateFromMelee,
@@ -16,65 +17,50 @@ import {
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
 } from './attackApply';
 
-import { createEmptyGameState } from '@factories';
 /**
- * Attack-apply getters: ranged CRS slice, per-player melee apply, and which defender still owes
- * an incomplete melee apply given initiative order.
+ * Attack-apply readers. Ranged and melee readers return the slice the test
+ * installed. The defender reader walks initiative order.
  */
 describe('getAttackApplyStateFromRangedAttack function', () => {
-  it('given ranged CRS with nested apply, returns that attackApplyState', () => {
-    const attackingUnit = createTestUnit('black', { attack: 2 });
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
-      state,
-      {
-        currentCommandResolutionState: createRangedAttackResolutionState(
-          state,
-          {
-            attackApplyState: createAttackApplyState(defendingUnit),
-            attackingUnit,
-            defendingUnit,
-          },
-        ),
-      },
+  it('returns the attack apply on the ranged resolution', () => {
+    const empty = createEmptyGameState('standard');
+    const apply = createAttackApplyState(
+      createTestUnit('white', { attack: 2 }),
+      { completed: true },
     );
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: apply,
+    });
+    const phase = createIssueCommandsPhaseState(empty, {
+      currentCommandResolutionState: resolution,
+    });
+    const state = updatePhaseState(empty, phase);
 
-    const result = getAttackApplyStateFromRangedAttack(state);
-    expect(result.completed).toBe(false);
+    expect(getAttackApplyStateFromRangedAttack(state)).toBe(apply);
   });
 
-  it('given ranged CRS without apply, throws no attack apply in ranged', () => {
-    const attackingUnit = createTestUnit('black', { attack: 2 });
-    const defendingUnit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
-      state,
-      {
-        currentCommandResolutionState: createRangedAttackResolutionState(
-          state,
-          {
-            attackApplyState: 'pending' as const,
-            attackingUnit,
-            defendingUnit,
-          },
-        ),
-      },
-    );
+  it('throws when the ranged attack apply is still pending', () => {
+    const empty = createEmptyGameState('standard');
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: 'pending',
+    });
+    const phase = createIssueCommandsPhaseState(empty, {
+      currentCommandResolutionState: resolution,
+    });
+    const state = updatePhaseState(empty, phase);
 
     expect(() => getAttackApplyStateFromRangedAttack(state)).toThrow(
       'No attack apply state found in ranged attack resolution',
     );
   });
 
-  it('given movement CRS, throws current command resolution is not ranged attack', () => {
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createIssueCommandsPhaseState(
-      state,
-      {
-        currentCommandResolutionState: createMovementResolutionState(state),
-      },
-    );
+  it('throws when the command resolution is movement', () => {
+    const empty = createEmptyGameState('standard');
+    const resolution = createMovementResolutionState(empty);
+    const phase = createIssueCommandsPhaseState(empty, {
+      currentCommandResolutionState: resolution,
+    });
+    const state = updatePhaseState(empty, phase);
 
     expect(() => getAttackApplyStateFromRangedAttack(state)).toThrow(
       'Current command resolution is not a ranged attack',
@@ -83,104 +69,48 @@ describe('getAttackApplyStateFromRangedAttack function', () => {
 });
 
 describe('getAttackApplyStateFromMelee function', () => {
-  it('given melee with white apply, getAttackApplyFromMelee(white) returns white slice', () => {
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackCommitmentCard = createTestCard();
-    const whiteCommitmentCard = createTestCard();
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
-      state,
-      {
-        currentMeleeResolutionState: {
-          blackAttackApplyState: createAttackApplyState(
-            createTestUnit('black', { attack: 2 }),
-          ),
-          blackCommitment: {
-            card: blackCommitmentCard,
-            commitmentType: 'completed',
-          },
-          completed: false,
-          location: 'E-5',
-          substepType: 'meleeResolution' as const,
-          whiteAttackApplyState: createAttackApplyState(whiteUnit),
-          whiteCommitment: {
-            card: whiteCommitmentCard,
-            commitmentType: 'completed',
-          },
-        },
-      },
+  it('returns the white attack apply', () => {
+    const empty = createEmptyGameState('standard');
+    const apply = createAttackApplyState(
+      createTestUnit('white', { attack: 2 }),
+      { completed: true },
     );
+    const melee = createMeleeResolutionState(empty, {
+      whiteAttackApplyState: apply,
+    });
+    const phase = createResolveMeleePhaseState(empty, {
+      currentMeleeResolutionState: melee,
+    });
+    const state = updatePhaseState(empty, phase);
 
-    const result = getAttackApplyStateFromMelee(state, 'white');
-    expect(result.completed).toBe(false);
+    expect(getAttackApplyStateFromMelee(state, 'white')).toBe(apply);
   });
 
-  it('given melee with black apply showing rout result, black getter returns that apply', () => {
-    const blackCommitmentCard = createTestCard();
-    const whiteCommitmentCard = createTestCard();
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
-      state,
-      {
-        currentMeleeResolutionState: {
-          blackAttackApplyState: createAttackApplyState(
-            createTestUnit('black', { attack: 2 }),
-            {
-              attackResult: {
-                unitRetreated: false,
-                unitReversed: false,
-                unitRouted: true,
-              },
-            },
-          ),
-          blackCommitment: {
-            card: blackCommitmentCard,
-            commitmentType: 'completed',
-          },
-          completed: false,
-          location: 'E-5',
-          substepType: 'meleeResolution' as const,
-          whiteAttackApplyState: createAttackApplyState(
-            createTestUnit('white', { attack: 2 }),
-          ),
-          whiteCommitment: {
-            card: whiteCommitmentCard,
-            commitmentType: 'completed',
-          },
-        },
-      },
+  it('returns the black attack apply', () => {
+    const empty = createEmptyGameState('standard');
+    const apply = createAttackApplyStateWithRout(
+      createTestUnit('black', { attack: 2 }),
     );
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: apply,
+    });
+    const phase = createResolveMeleePhaseState(empty, {
+      currentMeleeResolutionState: melee,
+    });
+    const state = updatePhaseState(empty, phase);
 
-    const result = getAttackApplyStateFromMelee(state, 'black');
-    expect(result.attackResult.unitRouted).toBe(true);
+    expect(getAttackApplyStateFromMelee(state, 'black')).toBe(apply);
   });
 
-  it('given melee missing white apply, getAttackApplyFromMelee(white) throws', () => {
-    const blackCommitmentCard = createTestCard();
-    const whiteCommitmentCard = createTestCard();
-    const state = createEmptyGameState('standard');
-    state.currentRoundState.currentPhaseState = createResolveMeleePhaseState(
-      state,
-      {
-        currentMeleeResolutionState: {
-          blackAttackApplyState: createAttackApplyState(
-            createTestUnit('black', { attack: 2 }),
-          ),
-          blackCommitment: {
-            card: blackCommitmentCard,
-            commitmentType: 'completed',
-          },
-          completed: false,
-          location: 'E-5',
-          substepType: 'meleeResolution' as const,
-          whiteAttackApplyState: 'pending' as const,
-          whiteCommitment: {
-            card: whiteCommitmentCard,
-            commitmentType: 'completed',
-          },
-        },
-      },
-    );
+  it('throws when the white attack apply is still pending', () => {
+    const empty = createEmptyGameState('standard');
+    const melee = createMeleeResolutionState(empty, {
+      whiteAttackApplyState: 'pending',
+    });
+    const phase = createResolveMeleePhaseState(empty, {
+      currentMeleeResolutionState: melee,
+    });
+    const state = updatePhaseState(empty, phase);
 
     expect(() => getAttackApplyStateFromMelee(state, 'white')).toThrow(
       'No white attack apply state found in melee resolution',
@@ -189,84 +119,80 @@ describe('getAttackApplyStateFromMelee function', () => {
 });
 
 describe('getDefendingPlayerForNextIncompleteMeleeAttackApply function', () => {
-  it('given black initiative and black apply incomplete, next defender is black', () => {
-    const state = createEmptyGameState('standard');
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const meleeState = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyState(blackUnit, {
-        completed: false,
-      }),
-      whiteAttackApplyState: createAttackApplyState(whiteUnit, {
-        completed: true,
-      }),
+  it('returns the first player while that apply is incomplete', () => {
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: createAttackApplyState(
+        createTestUnit('black', { attack: 2 }),
+        { completed: true },
+      ),
+      whiteAttackApplyState: createAttackApplyState(
+        createTestUnit('white', { attack: 2 }),
+        { completed: false },
+      ),
     });
-    const phaseState = createResolveMeleePhaseState(state, {
-      currentMeleeResolutionState: meleeState,
-    });
-    const gameState = updatePhaseState(state, phaseState);
 
     expect(
-      getDefendingPlayerForNextIncompleteMeleeAttackApply(
-        gameState,
-        meleeState,
-      ),
-    ).toBe('black');
-  });
-
-  it('given black initiative with black complete and white incomplete, next defender is white', () => {
-    const state = createEmptyGameState('standard');
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const meleeState = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyState(blackUnit, {
-        completed: true,
-      }),
-      whiteAttackApplyState: createAttackApplyState(whiteUnit, {
-        completed: false,
-      }),
-    });
-    const phaseState = createResolveMeleePhaseState(state, {
-      currentMeleeResolutionState: meleeState,
-    });
-    const gameState = updatePhaseState(state, phaseState);
-
-    expect(
-      getDefendingPlayerForNextIncompleteMeleeAttackApply(
-        gameState,
-        meleeState,
-      ),
+      getDefendingPlayerForNextIncompleteMeleeAttackApply(empty, melee),
     ).toBe('white');
   });
 
-  it('given both applies completed, returns null', () => {
-    const state = createEmptyGameState('standard');
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const meleeState = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyState(blackUnit, {
-        completed: true,
-      }),
-      whiteAttackApplyState: createAttackApplyState(whiteUnit, {
-        completed: true,
-      }),
+  it('returns the second player when the first apply is complete', () => {
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: createAttackApplyState(
+        createTestUnit('black', { attack: 2 }),
+        { completed: false },
+      ),
+      whiteAttackApplyState: createAttackApplyState(
+        createTestUnit('white', { attack: 2 }),
+        { completed: true },
+      ),
     });
 
     expect(
-      getDefendingPlayerForNextIncompleteMeleeAttackApply(state, meleeState),
+      getDefendingPlayerForNextIncompleteMeleeAttackApply(empty, melee),
+    ).toBe('black');
+  });
+
+  it('returns null when both applies are complete', () => {
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: createAttackApplyState(
+        createTestUnit('black', { attack: 2 }),
+        { completed: true },
+      ),
+      whiteAttackApplyState: createAttackApplyState(
+        createTestUnit('white', { attack: 2 }),
+        { completed: true },
+      ),
+    });
+
+    expect(
+      getDefendingPlayerForNextIncompleteMeleeAttackApply(empty, melee),
     ).toBeNull();
   });
 
-  it('given missing white apply, returns null', () => {
-    const state = createEmptyGameState('standard');
-    const blackUnit = createTestUnit('black', { attack: 2 });
-    const meleeState = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyState(blackUnit),
-      whiteAttackApplyState: 'pending' as const,
+  it('returns null when an apply is still pending', () => {
+    const empty = createEmptyGameState('standard');
+    const melee = createMeleeResolutionState(empty, {
+      blackAttackApplyState: createAttackApplyState(
+        createTestUnit('black', { attack: 2 }),
+      ),
+      whiteAttackApplyState: 'pending',
     });
 
     expect(
-      getDefendingPlayerForNextIncompleteMeleeAttackApply(state, meleeState),
+      getDefendingPlayerForNextIncompleteMeleeAttackApply(empty, melee),
     ).toBeNull();
   });
 });

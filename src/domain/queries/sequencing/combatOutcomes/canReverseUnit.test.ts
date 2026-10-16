@@ -1,116 +1,77 @@
-import type { ReverseState } from '@game';
-import { createGameStateWithEngagedUnits, createTestUnit } from '@testing';
-import { addUnitToBoard } from '@transforms';
+import type { UnitWithPlacement } from '@entities';
+import { createEmptyGameState } from '@factories';
+import {
+  createGameStateWithEngagedUnits,
+  createReverseState,
+  createTestUnit,
+} from '@testing';
+import { addUnitToBoard, updateBoardState } from '@transforms';
 
 import { canReverseUnit } from './canReverseUnit';
 
-import { createEmptyGameState } from '@factories';
 /**
- * Reverse is only legal when the reversing unit is alone on its hex (opponent already left
- * after retreat/rout); engaged pairs cannot reverse.
+ * A unit can reverse once it is alone on its hex. An engagement blocks it.
+ * An empty hex is not a reverse.
  */
 describe('canReverseUnit function', () => {
-  it('given single white on E-5 north in reverseState, returns true', () => {
+  it('returns true when the reversing unit is alone on its hex', () => {
     const unit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState('standard');
-    const stateWithUnit = {
-      ...state,
-      boardState: addUnitToBoard(state.boardState, {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      }),
-    };
+    const placement = {
+      coordinate: 'E-5',
+      facing: 'north',
+    } satisfies UnitWithPlacement['placement'];
+    const reverse = createReverseState({ placement, unit });
+    const empty = createEmptyGameState('standard');
+    const state = updateBoardState(
+      empty,
+      addUnitToBoard(empty.boardState, { placement, unit }),
+    );
 
-    const reverseState: ReverseState = {
-      completed: false,
-      finalPosition: 'pending' as const,
-      reversingUnit: {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      },
-      substepType: 'reverse',
-    };
-
-    expect(canReverseUnit(reverseState, stateWithUnit)).toBe(true);
+    expect(canReverseUnit(reverse, state)).toBe(true);
   });
 
-  it('given primary white engaged on E-5, primary reverse attempt returns false', () => {
-    const primaryUnit = createTestUnit('white', { attack: 2 });
-    const secondaryUnit = createTestUnit('black', { attack: 2 });
+  it('returns false when the reversing unit is the primary of an engagement', () => {
+    const primary = createTestUnit('white', { attack: 2 });
+    const secondary = createTestUnit('black', { attack: 2 });
     const state = createGameStateWithEngagedUnits(
-      primaryUnit,
-      secondaryUnit,
+      primary,
+      secondary,
       'E-5',
       'north',
     );
+    const reverse = createReverseState({
+      placement: { coordinate: 'E-5', facing: 'north' },
+      unit: primary,
+    });
 
-    const reverseState: ReverseState = {
-      completed: false,
-      finalPosition: 'pending' as const,
-      reversingUnit: {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit: primaryUnit,
-      },
-      substepType: 'reverse',
-    };
-
-    expect(canReverseUnit(reverseState, state)).toBe(false);
+    expect(canReverseUnit(reverse, state)).toBe(false);
   });
 
-  it('given same engagement, secondary black reverse attempt also false', () => {
-    const primaryUnit = createTestUnit('white', { attack: 2 });
-    const secondaryUnit = createTestUnit('black', { attack: 2 });
+  it('returns false when the reversing unit is the secondary of an engagement', () => {
+    const primary = createTestUnit('white', { attack: 2 });
+    const secondary = createTestUnit('black', { attack: 2 });
     const state = createGameStateWithEngagedUnits(
-      primaryUnit,
-      secondaryUnit,
+      primary,
+      secondary,
       'E-5',
       'north',
     );
+    const reverse = createReverseState({
+      placement: { coordinate: 'E-5', facing: 'south' },
+      unit: secondary,
+    });
 
-    const reverseState: ReverseState = {
-      completed: false,
-      finalPosition: 'pending' as const,
-      reversingUnit: {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'south',
-        },
-        unit: secondaryUnit,
-      },
-      substepType: 'reverse',
-    };
-
-    expect(canReverseUnit(reverseState, state)).toBe(false);
+    expect(canReverseUnit(reverse, state)).toBe(false);
   });
 
-  it('given empty board but reverseState cites E-5, throws unit not present at coordinate', () => {
-    const unit = createTestUnit('white', { attack: 2 });
-    const state = createEmptyGameState('standard');
+  it('throws when the reversing hex is empty', () => {
+    const reverse = createReverseState({
+      placement: { coordinate: 'E-5', facing: 'north' },
+      unit: createTestUnit('white', { attack: 2 }),
+    });
 
-    const reverseState: ReverseState = {
-      completed: false,
-      finalPosition: 'pending' as const,
-      reversingUnit: {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      },
-      substepType: 'reverse',
-    };
-
-    expect(() => canReverseUnit(reverseState, state)).toThrow(
-      'Unit not present at coordinate',
-    );
+    expect(() =>
+      canReverseUnit(reverse, createEmptyGameState('standard')),
+    ).toThrow('Unit not present at coordinate');
   });
 });
