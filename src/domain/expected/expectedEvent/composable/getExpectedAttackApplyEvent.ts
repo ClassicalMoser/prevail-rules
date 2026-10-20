@@ -1,6 +1,7 @@
 import type { ExpectedEventInfo } from '@events';
 import type { AttackApplyState, GameState } from '@game';
 import { canReverseUnit } from '@queries';
+import { isOpenSubstep } from '@utils';
 import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
 import { getExpectedReverseEvent } from './getExpectedReverseEvent';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
@@ -52,9 +53,10 @@ export function getExpectedAttackApplyEvent(
 
   // Results reported, check which need resolution
   // Priority: rout > retreat > reverse (rout is most severe)
-  if (attackResult.unitRouted && attackApplyState.routState !== 'pending') {
-    if (!attackApplyState.routState.completed) {
-      return getExpectedRoutEvent(attackApplyState.routState);
+  const routState = attackApplyState.routState;
+  if (attackResult.unitRouted && isOpenSubstep(routState)) {
+    if (!routState.completed) {
+      return getExpectedRoutEvent(routState);
     }
     // If unit was routed, no further resolution is needed
     if (!attackApplyState.completed) {
@@ -66,21 +68,23 @@ export function getExpectedAttackApplyEvent(
     throw new Error('Attack apply state is already complete');
   }
 
+  const retreatState = attackApplyState.retreatState;
   if (
     attackResult.unitRetreated &&
-    attackApplyState.retreatState !== 'pending' &&
-    !attackApplyState.retreatState.completed
+    isOpenSubstep(retreatState) &&
+    !retreatState.completed
   ) {
-    return getExpectedRetreatEvent(attackApplyState.retreatState);
+    return getExpectedRetreatEvent(retreatState);
   }
 
+  const reverseState = attackApplyState.reverseState;
   if (
     attackResult.unitReversed &&
-    attackApplyState.reverseState !== 'pending' &&
-    !attackApplyState.reverseState.completed
+    isOpenSubstep(reverseState) &&
+    !reverseState.completed
   ) {
     // In melee, if units are still engaged, reverse cannot happen
-    if (!canReverseUnit(attackApplyState.reverseState, gameState)) {
+    if (!canReverseUnit(reverseState, gameState)) {
       // Units are still engaged - reverse cannot happen, skip to completeAttackApply
       if (attackApplyState.completed) {
         throw new Error('Attack apply state is already complete');
@@ -90,7 +94,7 @@ export function getExpectedAttackApplyEvent(
         effectType: 'completeAttackApply',
       };
     }
-    return getExpectedReverseEvent(attackApplyState.reverseState);
+    return getExpectedReverseEvent(reverseState);
     // Reverse is complete, continue to check if attack apply is complete
   }
 

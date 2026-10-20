@@ -10,7 +10,7 @@ import {
   getResolveMeleePhaseState,
 } from '@queries';
 import { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
-import { throwIfPending } from '@utils';
+import { isOpenSubstep, throwIfPending } from '@utils';
 import { updatePhaseState } from '../state';
 
 /**
@@ -44,7 +44,8 @@ export function updateRoutState<S extends GameState>(
         ranged.attackApplyState,
         'No attack apply state found',
       );
-      if (attackApply.routState === 'pending') {
+      // 'miss' is a finished attack with no rout to update.
+      if (!isOpenSubstep(attackApply.routState)) {
         throw new Error('No rout state found in attack apply state');
       }
       return updatePhaseState(state, {
@@ -95,7 +96,7 @@ export function updateRoutState<S extends GameState>(
         melee.whiteAttackApplyState,
         'No white attack apply state found',
       );
-      if (whiteApply.routState === 'pending') {
+      if (!isOpenSubstep(whiteApply.routState)) {
         throw new Error('No rout state found in attack apply state');
       }
       return updatePhaseState(state, {
@@ -111,7 +112,7 @@ export function updateRoutState<S extends GameState>(
       melee.blackAttackApplyState,
       'No black attack apply state found',
     );
-    if (blackApply.routState === 'pending') {
+    if (!isOpenSubstep(blackApply.routState)) {
       throw new Error('No rout state found in attack apply state');
     }
     return updatePhaseState(state, {

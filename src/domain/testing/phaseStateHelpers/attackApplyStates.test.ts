@@ -1,3 +1,4 @@
+import { isOpenSubstep } from '@utils';
 import { createUnitWithPlacement } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 
@@ -36,7 +37,7 @@ describe('createAttackApplyStateWithRetreat function', () => {
     const state = createAttackApplyStateWithRetreat(unit);
     expect(state.attackResult.unitRetreated).toBe(true);
     expect(
-      state.retreatState !== 'pending' && state.retreatState.retreatingUnit,
+      isOpenSubstep(state.retreatState) && state.retreatState.retreatingUnit,
     ).toBe(unit);
   });
 });
@@ -47,7 +48,7 @@ describe('createAttackApplyStateWithRout function', () => {
     const state = createAttackApplyStateWithRout(unit);
     expect(state.attackResult.unitRouted).toBe(true);
     expect(
-      state.routState !== 'pending' &&
+      isOpenSubstep(state.routState) &&
         state.routState.unitsToRout.includes(unit),
     ).toBe(true);
   });
@@ -59,7 +60,7 @@ describe('createAttackApplyStateWithReverse function', () => {
     const state = createAttackApplyStateWithReverse(unit);
     expect(state.attackResult.unitReversed).toBe(true);
     expect(
-      state.reverseState !== 'pending' && state.reverseState.reversingUnit,
+      isOpenSubstep(state.reverseState) && state.reverseState.reversingUnit,
     ).toBe(unit);
   });
 });

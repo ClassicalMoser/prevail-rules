@@ -1,5 +1,5 @@
 import type { AttackApplyState, GameState, RoutState } from '@game';
-import { throwIfPending } from '@utils';
+import { isOpenSubstep, throwIfPending } from '@utils';
 import { getOtherPlayer } from '@queries/player';
 import { getMeleeResolutionState } from '../meleeResolution/getMeleeResolutionState';
 
@@ -34,10 +34,11 @@ export function getRoutStateFromMeleeResolutionByInitiative(
   const firstApply = meleeState[`${firstPlayer}AttackApplyState`];
   const secondApply = meleeState[`${secondPlayer}AttackApplyState`];
 
-  if (firstApply !== 'pending' && firstApply.routState !== 'pending') {
+  // A miss apply has routState 'miss'. That side has nothing to rout.
+  if (firstApply !== 'pending' && isOpenSubstep(firstApply.routState)) {
     return firstApply.routState;
   }
-  if (secondApply !== 'pending' && secondApply.routState !== 'pending') {
+  if (secondApply !== 'pending' && isOpenSubstep(secondApply.routState)) {
     return secondApply.routState;
   }
   throw new Error('No rout state found in melee resolution');

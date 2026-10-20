@@ -1,5 +1,5 @@
 import type { AttackApplyState, GameState, ReverseState } from '@game';
-import { throwIfPending } from '@utils';
+import { isOpenSubstep, throwIfPending } from '@utils';
 import { getMeleeResolutionState } from '../meleeResolution/getMeleeResolutionState';
 
 /**
@@ -36,19 +36,21 @@ export function getReverseStateFromMeleeResolutionByInitiative(
       ? meleeState.blackAttackApplyState
       : meleeState.whiteAttackApplyState;
 
-  if (
-    firstPlayerAttackApply !== 'pending' &&
-    firstPlayerAttackApply.reverseState !== 'pending' &&
-    firstPlayerAttackApply.reverseState.finalPosition === 'pending'
-  ) {
-    return firstPlayerAttackApply.reverseState;
+  // A miss apply has reverseState 'miss'. That side has nothing to reverse.
+  if (firstPlayerAttackApply !== 'pending') {
+    const firstReverse = firstPlayerAttackApply.reverseState;
+    if (isOpenSubstep(firstReverse) && firstReverse.finalPosition === 'pending') {
+      return firstReverse;
+    }
   }
-  if (
-    secondPlayerAttackApply !== 'pending' &&
-    secondPlayerAttackApply.reverseState !== 'pending' &&
-    secondPlayerAttackApply.reverseState.finalPosition === 'pending'
-  ) {
-    return secondPlayerAttackApply.reverseState;
+  if (secondPlayerAttackApply !== 'pending') {
+    const secondReverse = secondPlayerAttackApply.reverseState;
+    if (
+      isOpenSubstep(secondReverse) &&
+      secondReverse.finalPosition === 'pending'
+    ) {
+      return secondReverse;
+    }
   }
   throw new Error('No reverse state found in melee resolution');
 }
