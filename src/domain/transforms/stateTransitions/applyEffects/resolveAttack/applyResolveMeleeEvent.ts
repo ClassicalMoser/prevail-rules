@@ -13,7 +13,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveMeleeEvent to the game state.
- * Creates AttackApplyStates for both players with nested substeps (rout/retreat/reverse) based on the attack results.
+ * Creates AttackApplyStates for both players. A hit opens the matching rout, retreat, or reverse substep. A miss writes a completed apply with those slots set to `'miss'`.
  *
  * @param event - The resolve melee event to apply
  * @param state - The current game state
@@ -42,18 +42,11 @@ export function applyResolveMeleeEvent<S extends GameState>(
     unitWithPlacement: UnitWithPlacement,
     attackResult: AttackResult,
     legalRetreatOptionsFromEvent: UnitPlacement[],
-  ): AttackApplyState | 'pending' => {
-    if (
-      !attackResult.unitRouted &&
-      !attackResult.unitRetreated &&
-      !attackResult.unitReversed
-    ) {
-      return 'pending';
-    }
-
-    let routState: RoutState | 'pending' = 'pending';
-    let retreatState: RetreatState | 'pending' = 'pending';
-    let reverseState: ReverseState | 'pending' = 'pending';
+  ): AttackApplyState => {
+    let routState: RoutState | 'pending' | 'miss' = 'pending';
+    let retreatState: RetreatState | 'pending' | 'miss' = 'pending';
+    let reverseState: ReverseState | 'pending' | 'miss' = 'pending';
+    let completed = false;
 
     if (attackResult.unitRouted) {
       routState = {
@@ -79,26 +72,32 @@ export function applyResolveMeleeEvent<S extends GameState>(
         routState: 'pending',
         substepType: 'retreat',
       };
-    } else {
-      // Invariant: at least one of rout/retreat/reverse is true (see guard above), and
-      // We are not in rout or retreat, so this must be reverse.
+    } else if (attackResult.unitReversed) {
       reverseState = {
         completed: false,
         finalPosition: 'pending',
         reversingUnit: unitWithPlacement,
         substepType: 'reverse',
       };
+    } else {
+      // A miss has nothing left to apply. The slot must exist so the sequencer
+      // does not ask for resolveMelee again, and it is already complete.
+      routState = 'miss';
+      retreatState = 'miss';
+      reverseState = 'miss';
+      completed = true;
     }
 
-    return {
+    const attackApplyState: AttackApplyState = {
       attackResult,
-      completed: false,
+      completed,
       defendingUnit: unitWithPlacement.unit,
       retreatState,
       reverseState,
       routState,
       substepType: 'attackApply',
     };
+    return attackApplyState;
   };
 
   const whiteAttackApplyState = createAttackApplyState(

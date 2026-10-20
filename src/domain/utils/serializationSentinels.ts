@@ -13,6 +13,17 @@ export function isResolved<T>(value: T | 'pending'): value is T {
   return value !== 'pending';
 }
 
+/**
+ * Narrows away `'pending'` and `'miss'`.
+ * `'pending'` has not been written yet. `'miss'` is a finished attack with no substep to run.
+ */
+export function isOpenSubstep<T>(
+  value: T | 'pending' | 'miss',
+): value is T {
+  const open = value !== 'pending' && value !== 'miss';
+  return open;
+}
+
 /** Narrows `T | 'none'` to `'none'`. */
 export function isNone<T>(value: T | 'none'): value is 'none' {
   return value === 'none';
@@ -24,10 +35,14 @@ export function isActive<T>(value: T | 'none'): value is T {
 }
 
 /**
- * Narrows `T | 'pending'` to `T` by throwing when the value is `'pending'`.
+ * Narrows `T | 'pending' | 'miss'` to `T` by throwing when the value is not an open substep.
+ * `'miss'` is included so a finished empty outcome is not treated as the substep object.
  */
-export function throwIfPending<T>(value: T | 'pending', message: string): T {
-  if (value === 'pending') {
+export function throwIfPending<T>(
+  value: T | 'pending' | 'miss',
+  message: string,
+): T {
+  if (!isOpenSubstep(value)) {
     throw new Error(message);
   }
   return value;

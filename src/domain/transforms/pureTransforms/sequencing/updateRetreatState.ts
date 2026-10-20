@@ -7,7 +7,7 @@ import {
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
 } from '@queries';
-import { throwIfPending } from '@utils';
+import { isOpenSubstep, throwIfPending } from '@utils';
 import { updateEngagementStateInMovement } from './updateEngagementStateInMovement';
 import { updatePhaseState } from '../state';
 
@@ -41,7 +41,8 @@ export function updateRetreatState<S extends GameState>(
         ranged.attackApplyState,
         'No attack apply state found',
       );
-      if (attackApply.retreatState === 'pending') {
+      // 'miss' is a finished attack with no retreat to update.
+      if (!isOpenSubstep(attackApply.retreatState)) {
         throw new Error('No retreat state found in attack apply state');
       }
       return updatePhaseState(state, {
@@ -77,7 +78,7 @@ export function updateRetreatState<S extends GameState>(
         melee.whiteAttackApplyState,
         'No white attack apply state found',
       );
-      if (whiteApply.retreatState === 'pending') {
+      if (!isOpenSubstep(whiteApply.retreatState)) {
         throw new Error('No retreat state found in attack apply state');
       }
       return updatePhaseState(state, {
@@ -93,7 +94,7 @@ export function updateRetreatState<S extends GameState>(
       melee.blackAttackApplyState,
       'No black attack apply state found',
     );
-    if (blackApply.retreatState === 'pending') {
+    if (!isOpenSubstep(blackApply.retreatState)) {
       throw new Error('No retreat state found in attack apply state');
     }
     return updatePhaseState(state, {

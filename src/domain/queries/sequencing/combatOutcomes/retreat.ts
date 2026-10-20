@@ -1,5 +1,5 @@
 import type { AttackApplyState, GameState, RetreatState } from '@game';
-import { throwIfPending } from '@utils';
+import { isOpenSubstep, throwIfPending } from '@utils';
 import { getMeleeResolutionState } from '../meleeResolution/getMeleeResolutionState';
 import {
   getAttackApplyStateFromMelee,
@@ -74,21 +74,26 @@ export function getRetreatStateReadyForResolveFromMelee(
       ? meleeState.blackAttackApplyState
       : meleeState.whiteAttackApplyState;
 
-  if (
-    firstPlayerAttackApply !== 'pending' &&
-    firstPlayerAttackApply.retreatState !== 'pending' &&
-    firstPlayerAttackApply.retreatState.finalPosition !== 'pending' &&
-    !firstPlayerAttackApply.retreatState.completed
-  ) {
-    return firstPlayerAttackApply.retreatState;
+  // A miss apply has retreatState 'miss'. That side has nothing to retreat.
+  if (firstPlayerAttackApply !== 'pending') {
+    const firstRetreat = firstPlayerAttackApply.retreatState;
+    if (
+      isOpenSubstep(firstRetreat) &&
+      firstRetreat.finalPosition !== 'pending' &&
+      !firstRetreat.completed
+    ) {
+      return firstRetreat;
+    }
   }
-  if (
-    secondPlayerAttackApply !== 'pending' &&
-    secondPlayerAttackApply.retreatState !== 'pending' &&
-    secondPlayerAttackApply.retreatState.finalPosition !== 'pending' &&
-    !secondPlayerAttackApply.retreatState.completed
-  ) {
-    return secondPlayerAttackApply.retreatState;
+  if (secondPlayerAttackApply !== 'pending') {
+    const secondRetreat = secondPlayerAttackApply.retreatState;
+    if (
+      isOpenSubstep(secondRetreat) &&
+      secondRetreat.finalPosition !== 'pending' &&
+      !secondRetreat.completed
+    ) {
+      return secondRetreat;
+    }
   }
   throw new Error(
     'No retreat state with finalPosition found in melee resolution',

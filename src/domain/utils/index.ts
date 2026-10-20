@@ -1,8 +1,12 @@
 // Compile-time check that a manual type and its schema infer the same shape.
 export type { AssertExact } from './assertExact';
 
-// Narrow `'none'` and `'pending'` sentinels, or throw.
-export { throwIfNone, throwIfPending } from './serializationSentinels';
+// Narrow `'none'`, `'pending'`, and `'miss'` sentinels, or throw.
+export {
+  isOpenSubstep,
+  throwIfNone,
+  throwIfPending,
+} from './serializationSentinels';
 
 // Narrow away `undefined` (or falsy for throwIfFalsy), or throw.
 export { throwIfFalsy, throwIfUndefined } from './throwIfMissing';

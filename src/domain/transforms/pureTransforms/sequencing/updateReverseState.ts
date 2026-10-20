@@ -6,7 +6,7 @@ import {
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
 } from '@queries';
-import { throwIfPending } from '@utils';
+import { isOpenSubstep, throwIfPending } from '@utils';
 import { updatePhaseState } from '../state';
 
 /**
@@ -36,7 +36,8 @@ export function updateReverseState<S extends GameState>(
         ranged.attackApplyState,
         'No attack apply state found',
       );
-      if (attackApply.reverseState === 'pending') {
+      // 'miss' is a finished attack with no reverse to update.
+      if (!isOpenSubstep(attackApply.reverseState)) {
         throw new Error('No reverse state found in attack apply state');
       }
       return updatePhaseState(state, {
@@ -63,7 +64,7 @@ export function updateReverseState<S extends GameState>(
         melee.whiteAttackApplyState,
         'No white attack apply state found',
       );
-      if (whiteApply.reverseState === 'pending') {
+      if (!isOpenSubstep(whiteApply.reverseState)) {
         throw new Error('No reverse state found in attack apply state');
       }
       return updatePhaseState(state, {
@@ -79,7 +80,7 @@ export function updateReverseState<S extends GameState>(
       melee.blackAttackApplyState,
       'No black attack apply state found',
     );
-    if (blackApply.reverseState === 'pending') {
+    if (!isOpenSubstep(blackApply.reverseState)) {
       throw new Error('No reverse state found in attack apply state');
     }
     return updatePhaseState(state, {
