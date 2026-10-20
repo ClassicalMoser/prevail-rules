@@ -92,6 +92,25 @@ describe('getHiddenPlayerCardState function', () => {
     expect(hidden.inPlay).toBe(source.inPlay);
   });
 
+  it('both players are hidden for a spectator', () => {
+    const blackSource = secretPiles();
+    const whiteSource = secretPiles();
+    const seen = {
+      black: toHiddenCardState(blackSource),
+      visibility: 'spectator' as const,
+      white: toHiddenCardState(whiteSource),
+    };
+
+    const hiddenBlack = getHiddenPlayerCardState(seen, 'black');
+    const hiddenWhite = getHiddenPlayerCardState(seen, 'white');
+
+    expect(hiddenBlack).toBe(seen.black);
+    expect(hiddenWhite).toBe(seen.white);
+    expect(hiddenBlack.inHand).toStrictEqual(['hidden']);
+    expect(hiddenWhite.awaitingPlay).toBe('hidden');
+    expect(hiddenWhite.inPlay).toBe(whiteSource.inPlay);
+  });
+
   it('black is not hidden when black is seen', () => {
     expect(() => getHiddenPlayerCardState(blackSeen().seen, 'black')).toThrow(
       'Player black is not hidden under blackSeen visibility',

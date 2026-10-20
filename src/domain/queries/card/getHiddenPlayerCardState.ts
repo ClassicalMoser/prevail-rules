@@ -33,6 +33,10 @@ export function getHiddenPlayerCardState(
       }
       return cardState.white;
     }
+    case 'spectator': {
+      // Both seats are hidden, so either slice is readable as hidden.
+      return cardState[player];
+    }
     default: {
       const _exhaustiveCheck: never = visibility;
       throw new Error(`Invalid visibility: ${_exhaustiveCheck}`);

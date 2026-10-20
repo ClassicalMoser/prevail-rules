@@ -23,6 +23,10 @@ function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
     case 'whiteSeen': {
       return cardState.white.awaitingPlay === null ? ['white'] : [];
     }
+    case 'spectator': {
+      // Neither hand is readable, so a spectator is offered no card to choose.
+      return [];
+    }
     default: {
       const _exhaustive: never = cardState;
       return _exhaustive;
@@ -37,6 +41,7 @@ function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
  *
  * - Authoritative: options for every player still choosing (`awaitingPlay === null`).
  * - Player-seen: only the viewing player's options (never reads the hidden hand).
+ * - Spectator: no options, because neither hand is readable.
  *
  * Returns an empty array when no choose-card input is expected (wrong phase/step,
  * or every owned pending player has already committed). Does not throw for those

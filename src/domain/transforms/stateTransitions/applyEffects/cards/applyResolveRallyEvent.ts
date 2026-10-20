@@ -19,8 +19,8 @@ import {
 } from '@transforms/pureTransforms';
 
 /**
- * True when `player` is the unowned slice under this card-state visibility.
- * Authoritative games have no hidden seat.
+ * True when `player` is an unowned slice under this card-state visibility.
+ * Authoritative games have no hidden seat. A spectator hides both seats.
  */
 function eventPlayerIsHidden(
   cardState: CardState,
@@ -35,6 +35,10 @@ function eventPlayerIsHidden(
     }
     case 'blackSeen': {
       return player === 'white';
+    }
+    case 'spectator': {
+      // Both hands are hidden, so a rally burn uses the hidden-card path.
+      return true;
     }
     default: {
       const _exhaustive: never = cardState;

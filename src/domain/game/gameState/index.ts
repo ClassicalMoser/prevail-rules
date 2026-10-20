@@ -16,6 +16,9 @@ export { whiteSeenGameStateSchema } from './whiteSeenGameState';
 // Black seen
 export { blackSeenGameStateSchema } from './blackSeenGameState';
 
+// Spectator (both hands hidden)
+export { spectatorGameStateSchema } from './spectatorGameState';
+
 // Union
 export { gameStateSchema } from './gameState';
 export type {

@@ -4,7 +4,7 @@ Composed domain models for a running game. Import as `@game`.
 
 Same declaration-only role as `@entities` (schemas, interfaces, types), but these depend on entity primitives and assemble the sequencing tree. Follow the schema-first pattern in [`../entities/README.md`](../entities/README.md).
 
-Visibility (`authoritative` | `whiteSeen` | `blackSeen`) lives on `CardState` and is threaded on `Game` / `GameState`. Board size stays on `boardState.boardType`. Mode army composition is validated in `@legality`, not here.
+Visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`) lives on `CardState` and is threaded on `Game` / `GameState`. `spectator` hides both hands. Board size stays on `boardState.boardType`. Mode army composition is validated in `@legality`, not here.
 
 ## Outline
 

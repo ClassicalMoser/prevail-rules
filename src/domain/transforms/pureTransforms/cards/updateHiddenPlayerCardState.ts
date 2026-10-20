@@ -11,7 +11,7 @@ import type {
  * may be updated ({@link UnownedPlayerForGameState}). Authoritative has no
  * unowned side.
  *
- * @param state - The current game state (`whiteSeen` or `blackSeen`)
+ * @param state - The current game state (`whiteSeen`, `blackSeen`, or `spectator`)
  * @param player - Unowned-side player for this game state
  * @param playerCardState - The new hidden card state to set for the player
  * @returns A new game state with the updated player card state
@@ -19,7 +19,8 @@ import type {
 export function updateHiddenPlayerCardState<
   S extends
     | GameStateForVisibility<'whiteSeen'>
-    | GameStateForVisibility<'blackSeen'>,
+    | GameStateForVisibility<'blackSeen'>
+    | GameStateForVisibility<'spectator'>,
 >(
   state: S,
   player: UnownedPlayerForGameState<S>,

@@ -5,7 +5,7 @@ import type { GameState, OwnedCardState, OwnedPlayerForGameState } from '@game';
  *
  * Only players with an {@link OwnedCardState} slice under the state's visibility
  * may be updated ({@link OwnedPlayerForGameState}). Opponent slices on
- * `whiteSeen` / `blackSeen` stay hidden.
+ * `whiteSeen` / `blackSeen` stay hidden. A spectator owns neither side.
  *
  * @param state - The current game state
  * @param player - Owned-side player for this game state

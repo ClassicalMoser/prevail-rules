@@ -133,6 +133,35 @@ describe('requestGameStateSnapshot function', () => {
     ).toStrictEqual(game.gameState.boardState.board['E-5']?.unitPresence);
   });
 
+  it('returns a spectator projection with both hands hidden and units on the board', async () => {
+    const game = authoritativeGame();
+    const ports = createPorts(
+      vi.fn().mockResolvedValue({ data: game, result: true as const }),
+    );
+
+    const result = await requestGameStateSnapshot(
+      gameId,
+      'standard',
+      'spectator',
+      ports,
+    );
+
+    expect(result.result).toBe(true);
+    if (!result.result) {
+      throw new Error('expected success');
+    }
+    expect(result.data.gameState.cardState.visibility).toBe('spectator');
+    expect(result.data.gameState.cardState.black.inHand).toStrictEqual([
+      'hidden',
+    ]);
+    expect(result.data.gameState.cardState.white.inHand).toStrictEqual([
+      'hidden',
+    ]);
+    expect(
+      result.data.gameState.boardState.board['E-5']?.unitPresence,
+    ).toStrictEqual(game.gameState.boardState.board['E-5']?.unitPresence);
+  });
+
   it('returns failure when the game is missing', async () => {
     const ports = createPorts(vi.fn().mockResolvedValue(null));
 

@@ -9,7 +9,7 @@ import type { RoundState } from '@game/roundState';
  * Game state for a card visibility regime.
  * Board size lives only on {@link Board.boardType} (`boardState.boardType`).
  *
- * @param V - Card visibility (`authoritative` | `whiteSeen` | `blackSeen`)
+ * @param V - Card visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`)
  */
 export interface GameStateForVisibility<
   V extends GameStateVisibility = 'authoritative',

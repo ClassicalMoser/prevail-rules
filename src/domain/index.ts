@@ -22,6 +22,7 @@ export {
   blackSeenGameWithArmyCompositionSchema,
   gameWithArmyCompositionSchema,
   refineGameArmyComposition,
+  spectatorGameWithArmyCompositionSchema,
   whiteSeenGameWithArmyCompositionSchema,
 } from '@legality';
 export type { ArmyCompositionRules } from '@legality';
@@ -289,6 +290,7 @@ export {
   authoritativeGameSchema,
   blackSeenGameSchema,
   gameSchema,
+  spectatorGameSchema,
   whiteSeenGameSchema,
 } from '@game';
 export type {
@@ -304,6 +306,7 @@ export type {
   HiddenCardState,
   OwnedCardState,
   OwnedPlayerForGameState,
+  SpectatorCardState,
   UnownedPlayerForGameState,
   WhiteSeenCardState,
 } from '@game';
@@ -323,6 +326,7 @@ export {
   isAuthoritativeGameState,
   ownedCardStateSchema,
   pendingCommitmentSchema,
+  spectatorCardStateSchema,
   whiteSeenCardStateSchema,
 } from '@game';
 export {

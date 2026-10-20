@@ -41,6 +41,12 @@ export function replaceOwnedPlayerCardState(
         black: owned,
       };
     }
+    case 'spectator': {
+      // Neither slice is owned, so an owned write is rejected for both seats.
+      throw new Error(
+        `Player ${player} is not owned under spectator visibility`,
+      );
+    }
     default: {
       const _exhaustive: never = cardState;
       throw new Error(`Invalid card state: ${_exhaustive}`);

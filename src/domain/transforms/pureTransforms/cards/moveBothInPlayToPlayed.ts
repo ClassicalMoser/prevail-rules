@@ -30,6 +30,14 @@ export function moveBothInPlayToPlayed(cardState: CardState): CardState {
         white: moveCardToPlayed(cardState.white),
       };
     }
+    case 'spectator': {
+      // inPlay and played are public on a hidden slice, so both seats move.
+      return {
+        visibility: 'spectator',
+        black: moveCardToPlayed(cardState.black),
+        white: moveCardToPlayed(cardState.white),
+      };
+    }
     default: {
       const _exhaustive: never = cardState;
       throw new Error(`Invalid card state: ${_exhaustive}`);

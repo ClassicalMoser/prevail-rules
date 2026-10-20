@@ -74,4 +74,34 @@ describe('replaceOwnedPlayerCardState function', () => {
       replaceOwnedPlayerCardState(blackSeen, 'white', nextBlack),
     ).toThrow('Player white is not owned under blackSeen visibility');
   });
+
+  it('given spectator, rejects either player', () => {
+    const base = createEmptyGameState('standard');
+    const spectator = {
+      visibility: 'spectator' as const,
+      black: {
+        awaitingPlay: 'hidden' as const,
+        burnt: [],
+        discarded: [],
+        inHand: ['hidden' as const],
+        inPlay: null,
+        played: [],
+      },
+      white: {
+        awaitingPlay: null,
+        burnt: [],
+        discarded: [],
+        inHand: ['hidden' as const],
+        inPlay: null,
+        played: [],
+      },
+    };
+
+    expect(() =>
+      replaceOwnedPlayerCardState(spectator, 'black', base.cardState.black),
+    ).toThrow('Player black is not owned under spectator visibility');
+    expect(() =>
+      replaceOwnedPlayerCardState(spectator, 'white', base.cardState.white),
+    ).toThrow('Player white is not owned under spectator visibility');
+  });
 });

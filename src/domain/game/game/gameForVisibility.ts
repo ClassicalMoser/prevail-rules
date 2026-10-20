@@ -11,7 +11,7 @@ import type {
  *
  * Mode army composition limits live in `@legality` (`refineGameArmyComposition`).
  *
- * @param V - Card visibility (`authoritative` | `whiteSeen` | `blackSeen`)
+ * @param V - Card visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`)
  */
 export interface GameForVisibility<
   V extends GameStateVisibility = 'authoritative',

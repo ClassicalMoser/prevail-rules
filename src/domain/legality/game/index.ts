@@ -3,5 +3,6 @@ export {
   blackSeenGameWithArmyCompositionSchema,
   gameWithArmyCompositionSchema,
   refineGameArmyComposition,
+  spectatorGameWithArmyCompositionSchema,
   whiteSeenGameWithArmyCompositionSchema,
 } from './refineGameArmyComposition';

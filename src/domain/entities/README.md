@@ -96,7 +96,7 @@ getCoordinateLayout(board); // → coordinateLayoutMap[board.boardType]
 **Layout callables take `string`, not size-branded letter unions.** Board size lives on the layout **value** (`rowLetters` / `columnNumbers`). Layouts join parts into a {@link Coordinate} internally; callers do not re-prove "this is a small-board row." That keeps property-signature typing and avoids treating size as a type parameter again.
 
 **Visibility earns a type parameter; board size did not.**  
-Visibility (`authoritative` | `whiteSeen` | `blackSeen`) constrains which card fields are readable or writable, so `GameStateForVisibility<V>` / `CardState` remove casts at call sites. Board size only asserted completeness; threading it as a type argument inflated signatures without cutting casts. Keep a parameter only when it narrows what callers may pass or read.
+Visibility (`authoritative` | `whiteSeen` | `blackSeen` | `spectator`) constrains which card fields are readable or writable, so `GameStateForVisibility<V>` / `CardState` remove casts at call sites. `spectator` hides both hands. Board size only asserted completeness; threading it as a type argument inflated signatures without cutting casts. Keep a parameter only when it narrows what callers may pass or read.
 
 ## What lives here
 
