@@ -3,6 +3,7 @@ export {
   authoritativeGameSchema,
   blackSeenGameSchema,
   gameSchema,
+  spectatorGameSchema,
   whiteSeenGameSchema,
 } from './game';
 export type { Game, GameForVisibility } from './game';
@@ -25,6 +26,7 @@ export {
   cardStateSchema,
   hiddenCardStateSchema,
   ownedCardStateSchema,
+  spectatorCardStateSchema,
   whiteSeenCardStateSchema,
 } from './cardState';
 export type {
@@ -33,6 +35,7 @@ export type {
   CardState,
   HiddenCardState,
   OwnedCardState,
+  SpectatorCardState,
   WhiteSeenCardState,
 } from './cardState';
 

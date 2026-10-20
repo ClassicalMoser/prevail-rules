@@ -92,4 +92,34 @@ describe('revealBothAwaitingCards function', () => {
     expect(result.white.inPlay).toBe(revealed.white);
     expect(result.white.awaitingPlay).toBeNull();
   });
+
+  it('given spectator, reveals both awaitingPlay slots from the payload', () => {
+    const spectator = {
+      visibility: 'spectator' as const,
+      black: {
+        awaitingPlay: 'hidden' as const,
+        burnt: [],
+        discarded: [],
+        inHand: ['hidden' as const],
+        inPlay: null,
+        played: [],
+      },
+      white: {
+        awaitingPlay: 'hidden' as const,
+        burnt: [],
+        discarded: [],
+        inHand: ['hidden' as const],
+        inPlay: null,
+        played: [],
+      },
+    };
+
+    const result = revealBothAwaitingCards(spectator, revealed);
+
+    expect(result.visibility).toBe('spectator');
+    expect(result.black.inPlay).toBe(revealed.black);
+    expect(result.black.awaitingPlay).toBeNull();
+    expect(result.white.inPlay).toBe(revealed.white);
+    expect(result.white.awaitingPlay).toBeNull();
+  });
 });

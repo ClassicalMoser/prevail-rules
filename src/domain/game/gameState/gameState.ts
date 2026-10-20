@@ -5,45 +5,53 @@ import type { GameStateForVisibility } from './gameStateForVisibility';
 import { z } from 'zod';
 import { authoritativeGameStateSchema } from './authoritativeGameState';
 import { blackSeenGameStateSchema } from './blackSeenGameState';
+import { spectatorGameStateSchema } from './spectatorGameState';
 import { whiteSeenGameStateSchema } from './whiteSeenGameState';
 
 /**
  * Game state at any visibility.
- * Union of three concrete visibility states (not an object-of-unions), so a
+ * Union of four concrete visibility states (not an object-of-unions), so a
  * wide {@link GameState} is not assignable to {@link GameStateForVisibility}
  * for a specific visibility without narrowing.
  */
 export type GameState =
   | GameStateForVisibility<'authoritative'>
   | GameStateForVisibility<'whiteSeen'>
-  | GameStateForVisibility<'blackSeen'>;
+  | GameStateForVisibility<'blackSeen'>
+  | GameStateForVisibility<'spectator'>;
 
 /**
  * Players whose card slice is owned (full card info) under game state `S`.
  * Opponent slices on seen views are hidden and must not be written as owned.
+ * A spectator view owns neither side.
  */
 export type OwnedPlayerForGameState<S extends GameState> =
-  S extends GameStateForVisibility<'whiteSeen'>
-    ? 'white'
-    : S extends GameStateForVisibility<'blackSeen'>
-      ? 'black'
-      : PlayerSide;
+  S extends GameStateForVisibility<'authoritative'>
+    ? PlayerSide
+    : S extends GameStateForVisibility<'whiteSeen'>
+      ? 'white'
+      : S extends GameStateForVisibility<'blackSeen'>
+        ? 'black'
+        : never;
 
 /**
  * Players whose card slice is hidden under game state `S`.
- * Authoritative has no hidden side (`never`).
+ * Authoritative has no hidden side (`never`). A spectator hides both.
  */
 export type UnownedPlayerForGameState<S extends GameState> =
   S extends GameStateForVisibility<'whiteSeen'>
     ? 'black'
     : S extends GameStateForVisibility<'blackSeen'>
       ? 'white'
-      : never;
+      : S extends GameStateForVisibility<'spectator'>
+        ? PlayerSide
+        : never;
 
 const _gameStateSchemaObject = z.union([
   authoritativeGameStateSchema,
   whiteSeenGameStateSchema,
   blackSeenGameStateSchema,
+  spectatorGameStateSchema,
 ]);
 
 type GameStateSchemaType = z.infer<typeof _gameStateSchemaObject>;

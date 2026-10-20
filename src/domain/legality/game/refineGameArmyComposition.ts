@@ -5,6 +5,7 @@ import {
   authoritativeGameSchema,
   blackSeenGameSchema,
   gameSchema,
+  spectatorGameSchema,
   whiteSeenGameSchema,
 } from '@game';
 import type { z } from 'zod';
@@ -41,6 +42,11 @@ export const whiteSeenGameWithArmyCompositionSchema: z.ZodType<
 export const blackSeenGameWithArmyCompositionSchema: z.ZodType<
   GameForVisibility<'blackSeen'>
 > = blackSeenGameSchema.superRefine(refineGameArmyComposition);
+
+/** Spectator {@link Game} schema including army composition limits. */
+export const spectatorGameWithArmyCompositionSchema: z.ZodType<
+  GameForVisibility<'spectator'>
+> = spectatorGameSchema.superRefine(refineGameArmyComposition);
 
 /** Any-visibility {@link Game} schema including army composition limits. */
 export const gameWithArmyCompositionSchema: z.ZodType<Game> =

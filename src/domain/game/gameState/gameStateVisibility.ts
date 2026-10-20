@@ -2,6 +2,7 @@ import type {
   AuthoritativeCardState,
   BlackSeenCardState,
   CardState,
+  SpectatorCardState,
   WhiteSeenCardState,
 } from '@game/cardState';
 
@@ -14,4 +15,8 @@ export type CardStateForVisibility<V extends GameStateVisibility> =
     ? AuthoritativeCardState
     : V extends 'whiteSeen'
       ? WhiteSeenCardState
-      : BlackSeenCardState;
+      : V extends 'blackSeen'
+        ? BlackSeenCardState
+        : V extends 'spectator'
+          ? SpectatorCardState
+          : never;

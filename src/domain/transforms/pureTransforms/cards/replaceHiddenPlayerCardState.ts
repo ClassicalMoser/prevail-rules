@@ -39,6 +39,13 @@ export function replaceHiddenPlayerCardState(
         white: hidden,
       };
     }
+    case 'spectator': {
+      // Both slices are hidden, so either seat can be replaced.
+      return {
+        ...cardState,
+        [player]: hidden,
+      };
+    }
     default: {
       const _exhaustive: never = cardState;
       throw new Error(`Invalid card state: ${_exhaustive}`);

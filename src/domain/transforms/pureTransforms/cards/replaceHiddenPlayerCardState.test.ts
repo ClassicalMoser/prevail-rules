@@ -80,4 +80,52 @@ describe('replaceHiddenPlayerCardState function', () => {
       replaceHiddenPlayerCardState(blackSeen, 'black', nextWhite),
     ).toThrow('Player black is not hidden under blackSeen visibility');
   });
+
+  it('given spectator, replaces either hidden slice', () => {
+    const spectator = {
+      visibility: 'spectator' as const,
+      black: {
+        awaitingPlay: null,
+        burnt: [],
+        discarded: [],
+        inHand: ['hidden' as const],
+        inPlay: null,
+        played: [],
+      },
+      white: {
+        awaitingPlay: 'hidden' as const,
+        burnt: [],
+        discarded: [],
+        inHand: ['hidden' as const],
+        inPlay: null,
+        played: [],
+      },
+    };
+    const nextBlack = {
+      ...spectator.black,
+      inHand: [] as 'hidden'[],
+    };
+
+    const nextWhite = {
+      ...spectator.white,
+      awaitingPlay: null,
+    };
+
+    const withBlack = replaceHiddenPlayerCardState(
+      spectator,
+      'black',
+      nextBlack,
+    );
+    const withWhite = replaceHiddenPlayerCardState(
+      spectator,
+      'white',
+      nextWhite,
+    );
+
+    expect(withBlack.visibility).toBe('spectator');
+    expect(withBlack.black).toStrictEqual(nextBlack);
+    expect(withBlack.white).toBe(spectator.white);
+    expect(withWhite.white).toStrictEqual(nextWhite);
+    expect(withWhite.black).toBe(spectator.black);
+  });
 });

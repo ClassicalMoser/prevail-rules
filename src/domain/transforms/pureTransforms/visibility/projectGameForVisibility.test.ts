@@ -90,4 +90,24 @@ describe('projectGameForVisibility function', () => {
       tempCommandCards[2],
     ]);
   });
+
+  it('projects spectator with both hands hidden and public piles intact', () => {
+    const game = authoritativeGame();
+    const projected = projectGameForVisibility(game, 'spectator');
+
+    expect(projected.gameState.cardState.visibility).toBe('spectator');
+    expect(projected.gameState.cardState.white.inHand).toStrictEqual([
+      'hidden',
+      'hidden',
+    ]);
+    expect(projected.gameState.cardState.black.inHand).toStrictEqual([
+      'hidden',
+    ]);
+    expect(projected.gameState.cardState.black.awaitingPlay).toBe('hidden');
+    expect(projected.gameState.cardState.white.awaitingPlay).toBeNull();
+    expect(projected.gameState.cardState.white.discarded).toStrictEqual([
+      tempCommandCards[2],
+    ]);
+    expect(projected.gameState.boardState).toBe(game.gameState.boardState);
+  });
 });

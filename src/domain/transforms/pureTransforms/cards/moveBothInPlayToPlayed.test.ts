@@ -59,4 +59,35 @@ describe('moveBothInPlayToPlayed function', () => {
     expect(result.black.inPlay).toBeNull();
     expect(result.black.played).toStrictEqual([tempCommandCards[0]]);
   });
+
+  it('given spectator, moves both hidden inPlay cards to played', () => {
+    const spectator = {
+      visibility: 'spectator' as const,
+      black: {
+        awaitingPlay: 'hidden' as const,
+        burnt: [],
+        discarded: [],
+        inHand: ['hidden' as const],
+        inPlay: tempCommandCards[0],
+        played: [],
+      },
+      white: {
+        awaitingPlay: null,
+        burnt: [],
+        discarded: [],
+        inHand: ['hidden' as const],
+        inPlay: tempCommandCards[1],
+        played: [],
+      },
+    };
+
+    const result = moveBothInPlayToPlayed(spectator);
+
+    expect(result.visibility).toBe('spectator');
+    expect(result.black.inPlay).toBeNull();
+    expect(result.black.played).toStrictEqual([tempCommandCards[0]]);
+    expect(result.white.inPlay).toBeNull();
+    expect(result.white.played).toStrictEqual([tempCommandCards[1]]);
+    expect(result.black.inHand).toStrictEqual(['hidden']);
+  });
 });

@@ -73,6 +73,21 @@ describe('getOwnedPlayerCardState function', () => {
     expect(cardState.white.awaitingPlay).toBe('hidden');
   });
 
+  it('neither player is owned for a spectator', () => {
+    const seen = {
+      black: toHiddenCardState(secretPiles()),
+      visibility: 'spectator' as const,
+      white: toHiddenCardState(secretPiles()),
+    };
+
+    expect(() => getOwnedPlayerCardState(seen, 'black')).toThrow(
+      'Player black is not owned under spectator visibility',
+    );
+    expect(() => getOwnedPlayerCardState(seen, 'white')).toThrow(
+      'Player white is not owned under spectator visibility',
+    );
+  });
+
   it('white is not owned when black is seen', () => {
     expect(() => getOwnedPlayerCardState(blackSeen(), 'white')).toThrow(
       'Player white is not owned under blackSeen visibility',

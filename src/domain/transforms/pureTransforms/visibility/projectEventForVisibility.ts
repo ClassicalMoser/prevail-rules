@@ -9,22 +9,23 @@ import type {
 export type ProjectedEvent = ProjectedPlayerChoiceEvent | GameEffectEvent;
 
 /**
- * Projects an authoritative event for a seated observer.
- * Opponent chooseCard card fields become `'hidden'`.
+ * Projects an authoritative event for one observer.
+ * A seated observer sees their own chooseCard; the other seat's card becomes `'hidden'`.
+ * A spectator sees neither chooseCard.
  * Commits are public as soon as they are made, so the card is left intact.
  * Game effects (including revealCards) pass through unchanged.
  */
 export function projectEventForVisibility(
   event: Event,
-  observerSide: PlayerSide,
+  observer: PlayerSide | 'spectator',
 ): ProjectedEvent {
   if (event.eventType === 'gameEffect') {
     // Game effects never need redaction.
     return event;
   }
 
-  if (event.player === observerSide) {
-    // The event is already visible to the observer.
+  if (observer !== 'spectator' && event.player === observer) {
+    // The acting seat already sees this event. A spectator is neither seat.
     return event;
   }
 

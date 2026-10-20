@@ -42,6 +42,15 @@ export function revealBothAwaitingCards<C extends CardState>(
       };
       return blackSeenCardState;
     }
+    case 'spectator': {
+      // Neither awaiting card is stored, so both identities come from the payload.
+      const spectatorCardState: C = {
+        ...cardState,
+        black: revealHiddenCard(cardState.black, revealed.black),
+        white: revealHiddenCard(cardState.white, revealed.white),
+      };
+      return spectatorCardState;
+    }
     default: {
       const _exhaustive: never = cardState;
       throw new Error(`Invalid card state: ${_exhaustive}`);

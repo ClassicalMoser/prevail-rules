@@ -10,6 +10,7 @@ export {
   blackSeenGameWithArmyCompositionSchema,
   gameWithArmyCompositionSchema,
   refineGameArmyComposition,
+  spectatorGameWithArmyCompositionSchema,
   whiteSeenGameWithArmyCompositionSchema,
 } from './game';
 export {

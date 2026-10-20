@@ -18,6 +18,10 @@ export type { WhiteSeenCardState } from './whiteSeenCardState';
 export { blackSeenCardStateSchema } from './blackSeenCardState';
 export type { BlackSeenCardState } from './blackSeenCardState';
 
+// Spectator (both hands hidden)
+export { spectatorCardStateSchema } from './spectatorCardState';
+export type { SpectatorCardState } from './spectatorCardState';
+
 // Union
 export { cardStateSchema } from './cardState';
 export type { CardState } from './cardState';

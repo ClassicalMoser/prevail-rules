@@ -243,4 +243,65 @@ describe('applyResolveRallyEvent function', () => {
     expect(next.cardState.white.played).toStrictEqual([]);
     expect(next.cardState.white.discarded).toStrictEqual([]);
   });
+
+  it('on spectator, burns a hidden card and returns the rest as hidden hand cards', () => {
+    const base = createEmptyGameState('standard');
+    base.currentInitiative = 'white';
+    const burned = createTestCard({ id: 'burned' });
+    const discarded = createTestCard({ id: 'discarded' });
+    const spectator: GameStateForVisibility<'spectator'> = {
+      ...base,
+      cardState: {
+        visibility: 'spectator',
+        black: {
+          awaitingPlay: 'hidden',
+          burnt: [],
+          discarded: [],
+          inHand: ['hidden'],
+          inPlay: null,
+          played: [],
+        },
+        white: {
+          awaitingPlay: null,
+          burnt: [],
+          discarded: [discarded],
+          inHand: [],
+          inPlay: null,
+          played: [burned],
+        },
+      },
+      currentRoundState: {
+        ...base.currentRoundState,
+        currentPhaseState: {
+          firstPlayerRallyResolutionState: {
+            completed: false,
+            playerRallied: true,
+            rallyResolved: false,
+            routState: 'pending',
+            unitsLostSupport: 'pending',
+          },
+          phase: CLEANUP_PHASE,
+          secondPlayerRallyResolutionState: 'pending',
+          step: 'firstPlayerResolveRally',
+        },
+      },
+    };
+
+    const event: ResolveRallyEvent = {
+      card: burned,
+      effectType: 'resolveRally',
+      eventNumber: 0,
+      eventType: 'gameEffect',
+      player: 'white',
+    };
+
+    const next = applyResolveRallyEvent(event, spectator);
+
+    expect(next.cardState.visibility).toBe('spectator');
+    expect(next.cardState.white.burnt).toStrictEqual([burned]);
+    expect(next.cardState.white.inHand).toStrictEqual(['hidden']);
+    expect(next.cardState.white.played).toStrictEqual([]);
+    expect(next.cardState.white.discarded).toStrictEqual([]);
+    expect(next.cardState.black.inHand).toStrictEqual(['hidden']);
+  });
 });

@@ -32,6 +32,12 @@ export function getOwnedPlayerCardState(
       }
       return cardState.white;
     }
+    case 'spectator': {
+      // A spectator view has no owned slice.
+      throw new Error(
+        `Player ${player} is not owned under spectator visibility`,
+      );
+    }
     default: {
       const _exhaustiveCheck: never = visibility;
       throw new Error(`Invalid visibility: ${_exhaustiveCheck}`);

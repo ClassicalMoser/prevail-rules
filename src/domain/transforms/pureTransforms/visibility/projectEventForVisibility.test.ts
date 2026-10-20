@@ -25,6 +25,24 @@ describe('projectEventForVisibility function', () => {
     });
   });
 
+  it('redacts chooseCard card for a spectator', () => {
+    const blackChooseCard: ChooseCardEvent = {
+      ...chooseCard,
+      player: 'black',
+    };
+
+    expect(projectEventForVisibility(chooseCard, 'spectator')).toStrictEqual({
+      ...chooseCard,
+      card: 'hidden',
+    });
+    expect(
+      projectEventForVisibility(blackChooseCard, 'spectator'),
+    ).toStrictEqual({
+      ...blackChooseCard,
+      card: 'hidden',
+    });
+  });
+
   it('keeps an opponent commit card', () => {
     const commit = {
       choiceType: 'commitToMovement' as const,
@@ -36,6 +54,9 @@ describe('projectEventForVisibility function', () => {
     };
 
     expect(projectEventForVisibility(commit, 'black')).toStrictEqual(commit);
+    expect(projectEventForVisibility(commit, 'spectator')).toStrictEqual(
+      commit,
+    );
   });
 
   it('passes revealCards through unchanged', () => {
@@ -49,5 +70,8 @@ describe('projectEventForVisibility function', () => {
 
     expect(projectEventForVisibility(reveal, 'black')).toStrictEqual(reveal);
     expect(projectEventForVisibility(reveal, 'white')).toStrictEqual(reveal);
+    expect(projectEventForVisibility(reveal, 'spectator')).toStrictEqual(
+      reveal,
+    );
   });
 });

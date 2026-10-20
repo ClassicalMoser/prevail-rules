@@ -177,6 +177,34 @@ describe('getLegalChooseCardOptions function', () => {
       ]);
     });
 
+    it('spectator returns no options while both players are still choosing', () => {
+      const base = stateChooseCardsBothPending();
+      const state: GameStateForVisibility<'spectator'> = {
+        ...base,
+        cardState: {
+          visibility: 'spectator',
+          black: {
+            awaitingPlay: null,
+            burnt: [],
+            discarded: [],
+            inHand: ['hidden'],
+            inPlay: null,
+            played: [],
+          },
+          white: {
+            awaitingPlay: null,
+            burnt: [],
+            discarded: [],
+            inHand: ['hidden', 'hidden'],
+            inPlay: null,
+            played: [],
+          },
+        },
+      };
+
+      expect(getLegalChooseCardOptions(state)).toStrictEqual([]);
+    });
+
     it('whiteSeen returns empty when white has already committed', () => {
       const base = stateChooseCardsBothPending();
       const state: GameStateForVisibility<'whiteSeen'> = {
