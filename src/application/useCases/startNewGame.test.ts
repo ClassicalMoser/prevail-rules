@@ -1,4 +1,5 @@
 import type { EnginePorts } from '@application/ports';
+import { defaultRandom } from '@utils';
 
 import { startNewGame } from './startNewGame';
 import { gameModes } from '@entities';
@@ -17,6 +18,7 @@ function createEnginePorts(overrides: {
       truncateEventStream: vi.fn(),
     },
     gameStateSubscribers: overrides.gameStateSubscribers ?? [],
+    random: defaultRandom,
     gameStorage: {
       getGame: vi.fn(),
       saveNewGame: vi

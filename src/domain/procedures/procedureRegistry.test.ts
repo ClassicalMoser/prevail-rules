@@ -1,6 +1,7 @@
 import type { GameState } from '@game';
 import type { GameEffectType } from '@events';
 import { gameEffects } from '@events';
+import { defaultRandom } from '@utils';
 import { procedureRegistryStateFactories } from '@testing';
 
 import { generateEventFromProcedure } from './procedureRegistry';
@@ -16,7 +17,12 @@ describe('generateEventFromProcedure function', () => {
     (effectType) => {
       expect.hasAssertions();
       const state = procedureRegistryStateFactories[effectType]();
-      const event = generateEventFromProcedure(state, 0, effectType);
+      const event = generateEventFromProcedure(
+        state,
+        0,
+        effectType,
+        defaultRandom,
+      );
       expect(event.eventType).toBe('gameEffect');
       expect(event.effectType).toBe(effectType);
     },
@@ -27,7 +33,12 @@ describe('generateEventFromProcedure function', () => {
     const state: GameState = createEmptyGameState('standard');
     // Deliberate use of unsafe cast to GameEffectType to test the error message
     expect(() =>
-      generateEventFromProcedure(state, 0, 'notARealEffect' as GameEffectType),
+      generateEventFromProcedure(
+        state,
+        0,
+        'notARealEffect' as GameEffectType,
+        defaultRandom,
+      ),
     ).toThrow('No procedure exists for effect type: notARealEffect');
   });
 });

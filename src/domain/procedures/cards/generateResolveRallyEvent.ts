@@ -1,3 +1,4 @@
+import type { RandomSource } from '@utils';
 import type { ResolveRallyEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RALLY_EFFECT_TYPE } from '@events';
@@ -6,12 +7,15 @@ import { getCleanupPhaseState, getOtherPlayer } from '@queries';
 
 /**
  * Generates a ResolveRallyEvent by randomly selecting a card to burn.
- * The randomness happens here; the event (with the selected card) is what makes it replayable.
+ * The draw happens here; the event (with the selected card) is what makes it
+ * replayable. The source is the caller's, so a fixed one burns the same card.
  *
  * Player is taken from the cleanup resolve-rally step + initiative (same as
  * {@link getLegalAssignUnitSupport} / assign-unit-support).
  *
  * @param state - The current game state
+ * @param eventNumber - The ordered index of this event in the round (zero-indexed)
+ * @param random - The source of the draw that picks the burnt card
  * @returns A complete ResolveRallyEvent with the selected card
  * @throws Error if player has no played cards to burn
  *
@@ -29,6 +33,7 @@ import { getCleanupPhaseState, getOtherPlayer } from '@queries';
 export function generateResolveRallyEvent(
   state: GameState,
   eventNumber: number,
+  random: RandomSource,
 ): ResolveRallyEvent {
   const phaseState = getCleanupPhaseState(state);
   const firstPlayer = state.currentInitiative;
@@ -52,8 +57,8 @@ export function generateResolveRallyEvent(
     );
   }
 
-  // Randomly select card (at most 11 cards, so Math.random() is sufficient)
-  const index = Math.floor(Math.random() * playedCards.length);
+  // The draw belongs to the caller: a fixed source replays the same burn.
+  const index = Math.floor(random.nextFloat() * playedCards.length);
   const cardToBurn = playedCards[index];
 
   return {

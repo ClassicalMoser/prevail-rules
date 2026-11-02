@@ -1,3 +1,4 @@
+import type { RandomSource } from '@utils';
 import type { EventStreamStorage } from './eventStreamStorage';
 import type { GameStateSubscriber } from './gameStateSubscriber';
 import type { GameStorage } from './gameStorage';
@@ -9,4 +10,10 @@ export interface EnginePorts {
   roundSnapshotStorage: RoundSnapshotStorage;
   eventStreamStorage: EventStreamStorage;
   gameStateSubscribers: GameStateSubscriber[];
+  /**
+   * The draw for procedures that roll (currently the rally burn).
+   * Production passes `defaultRandom`; a recorded flow passes a fixed source
+   * so the same transcript produces the same game.
+   */
+  random: RandomSource;
 }

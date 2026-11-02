@@ -1,4 +1,5 @@
 import type { EnginePorts } from '@application/ports';
+import { defaultRandom } from '@utils';
 import type { Army } from '@entities';
 import type { GameForVisibility } from '@game';
 import { tempCommandCards } from '@sampleValues';
@@ -71,6 +72,7 @@ function createPorts(
       truncateEventStream: vi.fn(),
     },
     gameStateSubscribers: [],
+    random: defaultRandom,
     gameStorage: {
       getGame: getGameImpl,
       saveNewGame: vi.fn(),

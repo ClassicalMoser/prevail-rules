@@ -29,6 +29,7 @@ export async function advanceEffects(
       currentGameState,
       expectedEvent.expectedEventNumber,
       expectedEvent.effectType,
+      ports.random,
     );
     const processResult = await processEvent(
       gameId,

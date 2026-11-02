@@ -8,6 +8,10 @@ export {
   throwIfPending,
 } from './serializationSentinels';
 
+// An injectable `[0, 1)` draw, so a caller can fix what a procedure rolls.
+export { defaultRandom } from './randomSource';
+export type { RandomSource } from './randomSource';
+
 // Narrow away `undefined` (or falsy for throwIfFalsy), or throw.
 export { throwIfFalsy, throwIfUndefined } from './throwIfMissing';
 

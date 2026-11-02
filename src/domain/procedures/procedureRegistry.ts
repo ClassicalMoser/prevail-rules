@@ -1,4 +1,5 @@
 import type { GameEffectEvent, GameEffectType } from '@events';
+import type { RandomSource } from '@utils';
 import type { GameStateForVisibility } from '@game';
 import {
   generateDiscardPlayedCardsEvent,
@@ -38,12 +39,14 @@ import {
 /**
  * Generates a game effect event using the appropriate procedure
  * based on the effect type.
- * Procedures are not strictly deterministic (some generate randomness);
- * the event (with results) is what makes it deterministically replayable.
+ * Procedures are not strictly deterministic (some draw at random); the event
+ * (with results) is what makes it deterministically replayable. The draw is
+ * taken from `random`, so a caller that fixes the source fixes the game.
  *
  * @param state - The current game state
  * @param eventNumber - The ordered index of this event in the round (zero-indexed)
  * @param effectType - The type of game effect to generate
+ * @param random - The source any drawing procedure takes its draw from
  * @returns The generated game effect event with the specific type for the effect
  * @throws Error if the effect type doesn't have a procedure
  *
@@ -53,6 +56,7 @@ export function generateEventFromProcedure(
   state: GameStateForVisibility<'authoritative'>,
   eventNumber: number,
   effectType: GameEffectType,
+  random: RandomSource,
 ): GameEffectEvent {
   switch (effectType) {
     case 'completeAttackApply': {
@@ -104,7 +108,7 @@ export function generateEventFromProcedure(
       return generateResolveMeleeEvent(state, eventNumber);
     }
     case 'resolveRally': {
-      return generateResolveRallyEvent(state, eventNumber);
+      return generateResolveRallyEvent(state, eventNumber, random);
     }
     case 'resolveRangedAttack': {
       return generateResolveRangedAttackEvent(state, eventNumber);

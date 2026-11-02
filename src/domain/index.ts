@@ -76,6 +76,7 @@ export {
   unitWithPlacementSchema,
 } from '@entities';
 export {
+  defaultRandom,
   failValidationResultSchema,
   passValidationResultSchema,
   validationResultSchema,
@@ -124,6 +125,7 @@ export type {
 export type {
   FailValidationResult,
   PassValidationResult,
+  RandomSource,
   ValidationResult,
 } from '@utils';
 export {
