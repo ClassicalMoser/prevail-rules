@@ -11,5 +11,6 @@ export function isFriendlyUnit(
   unit: UnitInstance,
   playerSide: PlayerSide,
 ): boolean {
-  return unit.playerSide === playerSide;
+  const friendly = unit.playerSide === playerSide;
+  return friendly;
 }

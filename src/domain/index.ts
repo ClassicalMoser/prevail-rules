@@ -463,7 +463,6 @@ export {
 } from '@queries';
 export { getExpectedEvent } from '@expected';
 export {
-  canReverseUnit,
   findRetreatState,
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
@@ -506,6 +505,7 @@ export {
   canEngageEnemy,
   canMoveInto,
   canMoveThrough,
+  canReverseUnit,
   checkDiagonalMove,
   getLegalChooseCardOptions,
   getLegalChooseRetreatOptionEvents,

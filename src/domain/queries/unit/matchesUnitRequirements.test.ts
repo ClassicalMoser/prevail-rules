@@ -19,14 +19,14 @@ describe('matchesUnitRequirements function', () => {
   const firstUnit = getUnitByStatValue('attack', 3);
 
   describe('no requirements', () => {
-    it('given both traits and unitTypes are empty, returns true', () => {
+    it('returns true when both traits and unitTypes are empty', () => {
       const { result } = matchesUnitRequirements(firstUnit, [], []);
       expect(result).toBe(true);
     });
   });
 
   describe('traits only', () => {
-    it('given unit has all required traits, returns true', () => {
+    it('returns true when unit has all required traits', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         ['formation'],
@@ -35,7 +35,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(true);
     });
 
-    it('given unit has all multiple required traits, returns true', () => {
+    it('returns true when unit has all multiple required traits', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormationAndPhalanx,
         ['formation', 'phalanx'],
@@ -44,7 +44,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(true);
     });
 
-    it('given unit has all traits in different order, returns true', () => {
+    it('returns true when unit has all traits in different order', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormationAndPhalanx,
         ['phalanx', 'formation'],
@@ -53,7 +53,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(true);
     });
 
-    it('given unit is missing one trait, returns false', () => {
+    it('returns false when unit is missing one trait', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         ['formation', 'pike'],
@@ -62,7 +62,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(false);
     });
 
-    it('given unit has none of the required traits, returns false', () => {
+    it('returns false when unit has none of the required traits', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         ['skirmisher'],
@@ -71,7 +71,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(false);
     });
 
-    it('given unit has some but not all required traits, returns false', () => {
+    it('returns false when unit has some but not all required traits', () => {
       const { result } = matchesUnitRequirements(
         unitWithPhalanxTrait,
         ['formation', 'javelin'],
@@ -82,7 +82,7 @@ describe('matchesUnitRequirements function', () => {
   });
 
   describe('unitTypes only', () => {
-    it('given unit is in the unitTypes array, returns true', () => {
+    it('returns true when unit is in the unitTypes array', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         [],
@@ -91,7 +91,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(true);
     });
 
-    it('given unit is in a larger unitTypes array, returns true', () => {
+    it('returns true when unit is in a larger unitTypes array', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         [],
@@ -100,7 +100,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(true);
     });
 
-    it('given unit is not in the unitTypes array, returns false', () => {
+    it('returns false when unit is not in the unitTypes array', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         [],
@@ -109,7 +109,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(false);
     });
 
-    it('given unit matches by id (different object reference), returns true', () => {
+    it('returns true when unit matches by id (different object reference)', () => {
       // Create a new UnitType object with the same id but different reference
       const sameUnitTypeDifferentRef: UnitType = {
         ...unitWithFormation,
@@ -122,7 +122,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(true);
     });
 
-    it('given unitTypes array is empty but unit is not specified, returns false', () => {
+    it('returns true when both the trait list and the type-id list are empty', () => {
       // This case is handled by the "no requirements" case, but testing edge case
       const { result } = matchesUnitRequirements(unitWithFormation, [], []);
       expect(result).toBe(true);
@@ -130,7 +130,7 @@ describe('matchesUnitRequirements function', () => {
   });
 
   describe('both traits and unitTypes', () => {
-    it('given unit matches both traits and unitTypes, returns true', () => {
+    it('returns true when unit matches both traits and unitTypes', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         ['formation'],
@@ -139,7 +139,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(true);
     });
 
-    it('given unit matches all multiple traits and unitTypes, returns true', () => {
+    it('returns true when unit matches all multiple traits and unitTypes', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormationAndPhalanx,
         ['formation', 'phalanx'],
@@ -148,7 +148,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(true);
     });
 
-    it('given unit matches traits but not unitTypes, returns false', () => {
+    it('returns false when unit matches traits but not unitTypes', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         ['formation'],
@@ -157,7 +157,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(false);
     });
 
-    it('given unit matches unitTypes but not traits, returns false', () => {
+    it('returns false when unit matches unitTypes but not traits', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         ['pike'],
@@ -166,7 +166,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(false);
     });
 
-    it('given unit matches neither traits nor unitTypes, returns false', () => {
+    it('returns false when unit matches neither traits nor unitTypes', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         ['pike'],
@@ -175,7 +175,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(false);
     });
 
-    it('given unit has some but not all required traits, returns false', () => {
+    it('returns false when unit has some but not all required traits', () => {
       const { result } = matchesUnitRequirements(
         unitWithPhalanxTrait,
         ['formation', 'javelin'],
@@ -184,7 +184,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(false);
     });
 
-    it('given unit matches both by id (different object reference), returns true', () => {
+    it('returns true when unit matches both by id (different object reference)', () => {
       // Create a new UnitType object with the same id but different reference
       const sameUnitTypeDifferentRef: UnitType = {
         ...unitWithFormation,
@@ -199,16 +199,16 @@ describe('matchesUnitRequirements function', () => {
   });
 
   describe('edge cases', () => {
-    it('given handle units with many traits', () => {
+    it('returns true when the type has every trait in a two-trait list', () => {
       const { result } = matchesUnitRequirements(
-        unitWithPhalanxTrait,
+        unitWithFormationAndPhalanx,
         ['formation', 'phalanx'],
         [],
       );
       expect(result).toBe(true);
     });
 
-    it('given handle units with no traits', () => {
+    it('returns false when the type has no traits and formation is required', () => {
       // Create a unit type with no traits for testing
       const unitWithNoTraits: UnitType = {
         ...unitWithFormation,
@@ -222,7 +222,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(false);
     });
 
-    it('given handle empty traits array with unitTypes', () => {
+    it('returns true when the trait list is empty and the type id is listed', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         [],
@@ -231,7 +231,7 @@ describe('matchesUnitRequirements function', () => {
       expect(result).toBe(true);
     });
 
-    it('given handle empty unitTypes array with traits', () => {
+    it('returns true when the type-id list is empty and the unit has the trait', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
         ['formation'],

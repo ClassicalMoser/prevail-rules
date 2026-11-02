@@ -1,12 +1,10 @@
 // The phase in progress. A named getter throws unless that phase is current.
-export {
-  getCurrentPhaseState,
-  getPlayCardsPhaseState,
-  getMoveCommandersPhaseState,
-  getIssueCommandsPhaseState,
-  getResolveMeleePhaseState,
-  getCleanupPhaseState,
-} from './getPhaseState';
+export { getCurrentPhaseState } from './phases';
+export { getPlayCardsPhaseState } from './phases';
+export { getMoveCommandersPhaseState } from './phases';
+export { getIssueCommandsPhaseState } from './phases';
+export { getResolveMeleePhaseState } from './phases';
+export { getCleanupPhaseState } from './phases';
 
 // The step of that phase.
 export { getCurrentStep } from './getCurrentStep';
@@ -79,9 +77,6 @@ export { getReverseStateFromAttackApply } from './combatOutcomes';
 
 // The reverse still open in the current melee, initiative first.
 export { getReverseStateFromMeleeResolutionByInitiative } from './combatOutcomes';
-
-// Whether that reversing unit is free of the engagement.
-export { canReverseUnit } from './combatOutcomes';
 
 // Retreat stored on an attack-apply.
 export { getRetreatStateFromAttackApply } from './combatOutcomes';

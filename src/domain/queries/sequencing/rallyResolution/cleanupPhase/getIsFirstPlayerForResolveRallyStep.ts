@@ -1,5 +1,5 @@
 import type { GameState } from '@game';
-import { getCleanupPhaseState } from '@queries/sequencing/getPhaseState';
+import { getCleanupPhaseState } from '@queries/sequencing/phases/getCleanupPhaseState';
 
 /**
  * Gets whether the current resolveRally step is for the first player.
@@ -11,6 +11,7 @@ import { getCleanupPhaseState } from '@queries/sequencing/getPhaseState';
 export function getIsFirstPlayerForResolveRallyStep(state: GameState): boolean {
   const phaseState = getCleanupPhaseState(state);
 
+  // Choose-rally is not this check. Only the two resolve steps answer.
   if (phaseState.step === 'firstPlayerResolveRally') {
     return true;
   }

@@ -1,27 +1,23 @@
-import type { CleanupPhaseState, GameState } from '@game';
-import { getCleanupPhaseState } from '@queries/sequencing/getPhaseState';
+import type { GameState } from '@game';
+import { getCleanupPhaseState } from '@queries/sequencing/phases/getCleanupPhaseState';
 
 /**
  * Gets the next step after resolving rally for the current step.
  *
+ * The first player's resolve is followed by the second player's choose.
+ * The only other resolve is the second player's, which is followed by complete.
+ *
  * @param state - The game state
  * @returns The next step to transition to
- * @throws Error if not in a resolveRally step
  */
 export function getNextStepForResolveRally(
   state: GameState,
-): CleanupPhaseState['step'] {
+): 'secondPlayerChooseRally' | 'complete' {
   const phaseState = getCleanupPhaseState(state);
 
   if (phaseState.step === 'firstPlayerResolveRally') {
     return 'secondPlayerChooseRally';
   }
 
-  if (phaseState.step === 'secondPlayerResolveRally') {
-    return 'complete';
-  }
-
-  throw new Error(
-    `Cleanup phase is not on a resolveRally step: ${phaseState.step}`,
-  );
+  return 'complete';
 }

@@ -67,7 +67,7 @@ export function getPlayerUnitWithPosition(
     // Enemy unit - return undefined
     return undefined;
   }
-  // Check primary unit first
+  // Primary first. Its facing is the engagement's primary facing.
   if (isFriendlyUnit(unitPresence.primaryUnit, playerSide)) {
     return {
       placement: {
@@ -77,11 +77,14 @@ export function getPlayerUnitWithPosition(
       unit: unitPresence.primaryUnit,
     };
   }
-  return {
+  // Otherwise the secondary is returned, facing opposite the primary.
+  // Its side is not checked.
+  const secondary: UnitWithPlacement = {
     placement: {
       coordinate,
       facing: getOppositeFacing(unitPresence.primaryFacing),
     },
     unit: unitPresence.secondaryUnit,
   };
+  return secondary;
 }

@@ -1,282 +1,345 @@
+import type { PlayerSide, UnitInstance } from '@entities';
+
+import { createEmptyGameState } from '@factories';
 import {
   createBoardWithCommander,
   createBoardWithUnits,
   createTestCard,
   createTestUnit,
 } from '@testing';
+import {
+  addUnitsToCommandedUnits,
+  updateBoardState,
+  updatePlayerCardState,
+  updateRoundState,
+} from '@transforms';
 
 import { getCurrentUnitStat } from './getCurrentUnitStat';
 
-import { createEmptyGameState } from '@factories';
+type StandardState = ReturnType<typeof createEmptyGameState>;
+type InPlayCard = NonNullable<StandardState['cardState']['black']['inPlay']>;
+
+/**
+ * A standard game with this unit alone on E-5, facing north.
+ */
+function stateWithUnit(unit: UnitInstance): StandardState {
+  const board = createBoardWithUnits([
+    { placement: { coordinate: 'E-5', facing: 'north' }, unit },
+  ]);
+  return updateBoardState(createEmptyGameState('standard'), board);
+}
+
+/**
+ * The same board, plus this side's commander on the given hex.
+ */
+function stateWithUnitAndCommander(
+  unit: UnitInstance,
+  commanderCoordinate: 'E-6' | 'E-8',
+): StandardState {
+  const boardWithUnit = createBoardWithUnits([
+    { placement: { coordinate: 'E-5', facing: 'north' }, unit },
+  ]);
+  const board = createBoardWithCommander(
+    'black',
+    commanderCoordinate,
+    boardWithUnit,
+  );
+  return updateBoardState(createEmptyGameState('standard'), board);
+}
+
+/**
+ * Puts this card in play for the side. The rest of that side's card state stays.
+ */
+function withInPlay(
+  state: StandardState,
+  player: PlayerSide,
+  card: InPlayCard,
+): StandardState {
+  return updatePlayerCardState(state, player, {
+    ...state.cardState[player],
+    inPlay: card,
+  });
+}
+
+/**
+ * Records that this unit was commanded this round.
+ */
+function withCommandedUnit(
+  state: StandardState,
+  unit: UnitInstance,
+): StandardState {
+  return addUnitsToCommandedUnits(state, [unit]);
+}
+
 /**
  * GetCurrentUnitStat: effective stat with base unit type, round effects, command modifiers, and extra modifiers.
  */
 describe('getCurrentUnitStat function', () => {
   describe('base stat without modifiers', () => {
-    it('given no card is in play, returns base stat', () => {
+    it('returns the base attack when no card is in play', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
+      const gameState = stateWithUnit(unit);
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
       expect(result).toBe(3);
     });
 
-    it('given in-play round effect has no modifier for that stat, returns base attack', () => {
+    it('returns the base attack when the round-effect modifier list is empty', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      // RoundEffect exists (inspiration restriction present) but modifiers omit attack — only command modifiers apply when commanded
-      gameState.cardState.black.inPlay = createTestCard({
-        id: '2',
-        initiative: 2,
-        modifiers: ['attack'],
-        name: 'Command CommandCard 2',
-        roundEffectModifiers: [],
-        roundEffectRestrictions: { inspirationRangeRestriction: 1 },
-      });
+      // The command lists attack. The unit is not commanded, so that modifier is not applied.
+      let gameState = stateWithUnit(unit);
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          id: '2',
+          initiative: 2,
+          modifiers: ['attack'],
+          name: 'Command CommandCard 2',
+          roundEffectModifiers: [],
+          roundEffectRestrictions: { inspirationRangeRestriction: 1 },
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
       expect(result).toBe(3);
     });
 
-    it('given no modifiers apply, returns base stat for white inPlay', () => {
+    it('returns the base attack when the only round modifier is speed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.cardState.white.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'speed', value: 1 }],
-      });
+      let gameState = stateWithUnit(unit);
+      gameState = withInPlay(
+        gameState,
+        'white',
+        createTestCard({
+          roundEffectModifiers: [{ type: 'speed', value: 1 }],
+        }),
+      );
 
       expect(getCurrentUnitStat(unit, 'attack', gameState)).toBe(2);
     });
   });
 
   describe('round effect modifiers', () => {
-    it('given unrestricted round effect modifier, applies to stat', () => {
+    it('adds an unrestricted attack round modifier to the base', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'attack', value: 2 }],
-      });
+      let gameState = stateWithUnit(unit);
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          roundEffectModifiers: [{ type: 'attack', value: 2 }],
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(5); // 3 base + 2 modifier
+      expect(result).toBe(5);
     });
 
-    it('given unit does not match stat, does not apply round effect modifier', () => {
+    it('leaves the base attack when the round modifier is for speed', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'speed', value: 1 }], // Different stat
-      });
+      let gameState = stateWithUnit(unit);
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          roundEffectModifiers: [{ type: 'speed', value: 1 }],
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(3); // No modifier applied
+      expect(result).toBe(3);
     });
 
-    it('given defense-type round modifier, applies to reverse/rout/retreat', () => {
+    it('adds a defense round modifier to reverse', () => {
       const unit = createTestUnit('black', { reverse: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'defense', value: 1 }],
-      });
+      let gameState = stateWithUnit(unit);
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          roundEffectModifiers: [{ type: 'defense', value: 1 }],
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'reverse', gameState);
-      expect(result).toBe(4); // 3 base + 1 modifier
+      expect(result).toBe(4);
     });
   });
 
   describe('round effect with inspiration range restriction', () => {
-    it('given unit is within inspiration range, applies modifier', () => {
+    it('adds the attack round modifier when the unit is within inspiration range', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.boardState = createBoardWithCommander(
+      // Commander on E-6 is one hex from the unit on E-5. Range is 1.
+      let gameState = stateWithUnitAndCommander(unit, 'E-6');
+      gameState = withInPlay(
+        gameState,
         'black',
-        'E-6',
-        gameState.boardState,
+        createTestCard({
+          roundEffectModifiers: [{ type: 'attack', value: 1 }],
+          roundEffectRestrictions: { inspirationRangeRestriction: 1 },
+        }),
       );
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'attack', value: 1 }],
-        roundEffectRestrictions: { inspirationRangeRestriction: 1 },
-      });
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(4); // 3 base + 1 modifier
+      expect(result).toBe(4);
     });
 
-    it('given unit is outside inspiration range, does not apply modifier', () => {
+    it('leaves the base attack when the unit is outside inspiration range', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.boardState = createBoardWithCommander(
+      // Commander on E-8 is farther than range 1 from E-5.
+      let gameState = stateWithUnitAndCommander(unit, 'E-8');
+      gameState = withInPlay(
+        gameState,
         'black',
-        'E-8',
-        gameState.boardState,
+        createTestCard({
+          roundEffectModifiers: [{ type: 'attack', value: 1 }],
+          roundEffectRestrictions: { inspirationRangeRestriction: 1 },
+        }),
       );
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'attack', value: 1 }],
-        roundEffectRestrictions: { inspirationRangeRestriction: 1 },
-      });
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(3); // No modifier applied
+      expect(result).toBe(3);
     });
 
-    it('given commander is not on board, does not apply modifier', () => {
+    it('leaves the base attack when the commander is off the board', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'attack', value: 1 }],
-        roundEffectRestrictions: { inspirationRangeRestriction: 1 },
-      });
+      let gameState = stateWithUnit(unit);
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          roundEffectModifiers: [{ type: 'attack', value: 1 }],
+          roundEffectRestrictions: { inspirationRangeRestriction: 1 },
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(3); // No modifier applied (commander defeated)
+      expect(result).toBe(3);
     });
   });
 
   describe('round effect with unit restrictions', () => {
-    it('given trait and unit restriction lists are empty, applies round effect modifier', () => {
+    it('adds the attack round modifier when both restriction lists are empty', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'attack', value: 1 }],
-      });
+      let gameState = stateWithUnit(unit);
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          roundEffectModifiers: [{ type: 'attack', value: 1 }],
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(4); // 3 base + 1 modifier
+      expect(result).toBe(4);
     });
 
-    it('given unit does not match unit restrictions, does not apply modifier', () => {
+    it('leaves the base attack when the unit type is not in the restriction list', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.cardState.black.inPlay = createTestCard({
-        roundEffectModifiers: [{ type: 'attack', value: 1 }],
-        roundEffectRestrictions: { unitRestrictions: ['different-unit-id'] },
-      });
+      let gameState = stateWithUnit(unit);
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          roundEffectModifiers: [{ type: 'attack', value: 1 }],
+          roundEffectRestrictions: { unitRestrictions: ['different-unit-id'] },
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(3); // No modifier applied
+      expect(result).toBe(3);
     });
   });
 
   describe('active command modifiers', () => {
-    it('given no card is in play, ignores command modifiers', () => {
+    it('leaves the base attack when the unit was commanded and no card is in play', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.currentRoundState.commandedUnits = [unit];
+      let gameState = stateWithUnit(unit);
+      gameState = withCommandedUnit(gameState, unit);
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
 
       expect(result).toBe(3);
     });
 
-    it('given missing command.modifiers on in-play card, treats as empty list', () => {
+    it('leaves the base attack when the command modifier list is empty', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.currentRoundState.commandedUnits = [unit];
-      gameState.cardState.black.inPlay = {
-        ...createTestCard(),
+      const card = createTestCard();
+      // The list is present and empty. This is not a missing modifiers field.
+      const inPlay = {
+        ...card,
         command: {
-          ...createTestCard().command,
+          ...card.command,
           modifiers: [],
         },
       };
+      let gameState = stateWithUnit(unit);
+      gameState = withCommandedUnit(gameState, unit);
+      gameState = withInPlay(gameState, 'black', inPlay);
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
 
       expect(result).toBe(3);
     });
 
-    it('given unit was commanded, applies command modifier', () => {
+    it('adds the command modifier when the unit was commanded', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.currentRoundState.commandedUnits = [unit];
-      gameState.cardState.black.inPlay = createTestCard({
-        commandModifiers: [{ type: 'attack', value: 2 }],
-      });
+      let gameState = stateWithUnit(unit);
+      gameState = withCommandedUnit(gameState, unit);
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          commandModifiers: [{ type: 'attack', value: 2 }],
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(5); // 3 base + 2 modifier
+      expect(result).toBe(5);
     });
 
-    it('given unit was not commanded, does not apply command modifier', () => {
+    it('leaves the base attack when the unit was not commanded', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.currentRoundState.commandedUnits = []; // Empty
-      gameState.cardState.black.inPlay = createTestCard({
-        commandModifiers: [{ type: 'attack', value: 2 }],
+      let gameState = stateWithUnit(unit);
+      // The round starts with no commanded units. Write that list so the fact is on the page.
+      gameState = updateRoundState(gameState, {
+        ...gameState.currentRoundState,
+        commandedUnits: [],
       });
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          commandModifiers: [{ type: 'attack', value: 2 }],
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(3); // No modifier applied
+      expect(result).toBe(3);
     });
 
-    it('given stat does not match, does not apply command modifier', () => {
+    it('leaves the base attack when the command modifier is for speed', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.currentRoundState.commandedUnits = [unit];
-      gameState.cardState.black.inPlay = createTestCard({
-        commandModifiers: [{ type: 'speed', value: 1 }], // Different stat
-      });
+      let gameState = stateWithUnit(unit);
+      gameState = withCommandedUnit(gameState, unit);
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          commandModifiers: [{ type: 'speed', value: 1 }],
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(3); // No modifier applied
+      expect(result).toBe(3);
     });
   });
 
   describe('additional modifiers', () => {
-    it('given extra modifier list with matching stat, stacks on base', () => {
+    it('adds an extra attack modifier to the base', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
+      const gameState = stateWithUnit(unit);
 
       const result = getCurrentUnitStat(unit, 'attack', gameState, [
         { type: 'attack', value: 2 },
@@ -285,12 +348,9 @@ describe('getCurrentUnitStat function', () => {
       expect(result).toBe(5);
     });
 
-    it('given defense extra modifier, applies to defense stat', () => {
+    it('adds an extra defense modifier to reverse', () => {
       const unit = createTestUnit('black', { reverse: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
+      const gameState = stateWithUnit(unit);
 
       const result = getCurrentUnitStat(unit, 'reverse', gameState, [
         { type: 'defense', value: 1 },
@@ -299,12 +359,9 @@ describe('getCurrentUnitStat function', () => {
       expect(result).toBe(4);
     });
 
-    it('given non-matching extra modifiers, ignores them', () => {
+    it('leaves the base attack when the extra modifier is for speed', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
+      const gameState = stateWithUnit(unit);
 
       const result = getCurrentUnitStat(unit, 'attack', gameState, [
         { type: 'speed', value: 1 },
@@ -315,20 +372,21 @@ describe('getCurrentUnitStat function', () => {
   });
 
   describe('multiple modifiers stacking', () => {
-    it('given round effect and command modifiers, stacks both', () => {
+    it('adds the round modifier and the command modifier', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const gameState = createEmptyGameState('standard');
-      gameState.boardState = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
-      gameState.currentRoundState.commandedUnits = [unit];
-      gameState.cardState.black.inPlay = createTestCard({
-        commandModifiers: [{ type: 'attack', value: 1 }],
-        roundEffectModifiers: [{ type: 'attack', value: 2 }],
-      });
+      let gameState = stateWithUnit(unit);
+      gameState = withCommandedUnit(gameState, unit);
+      gameState = withInPlay(
+        gameState,
+        'black',
+        createTestCard({
+          commandModifiers: [{ type: 'attack', value: 1 }],
+          roundEffectModifiers: [{ type: 'attack', value: 2 }],
+        }),
+      );
 
       const result = getCurrentUnitStat(unit, 'attack', gameState);
-      expect(result).toBe(6); // 3 base + 2 round effect + 1 command
+      expect(result).toBe(6);
     });
   });
 });

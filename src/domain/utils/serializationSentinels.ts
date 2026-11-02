@@ -17,9 +17,7 @@ export function isResolved<T>(value: T | 'pending'): value is T {
  * Narrows away `'pending'` and `'miss'`.
  * `'pending'` has not been written yet. `'miss'` is a finished attack with no substep to run.
  */
-export function isOpenSubstep<T>(
-  value: T | 'pending' | 'miss',
-): value is T {
+export function isOpenSubstep<T>(value: T | 'pending' | 'miss'): value is T {
   const open = value !== 'pending' && value !== 'miss';
   return open;
 }

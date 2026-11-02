@@ -1,8 +1,12 @@
-import type { Phase } from '@game';
+import type { GameState, Phase, PhaseState } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
   createCleanupPhaseState,
+  createIssueCommandsPhaseState,
+  createMoveCommandersPhaseState,
+  createPlayCardsPhaseState,
   createRallyResolutionState,
+  createResolveMeleePhaseState,
   createRoutState,
   createTestCard,
   createTestUnit,
@@ -73,17 +77,32 @@ describe('getExpectedEvent function', () => {
     });
   }
 
+  /** A real phase whose rout slice is not open, so the win check continues. */
+  function phaseWithNoOpenRout(phase: Phase, state: GameState): PhaseState {
+    if (phase === 'playCards') {
+      return createPlayCardsPhaseState();
+    }
+    if (phase === 'moveCommanders') {
+      return createMoveCommandersPhaseState();
+    }
+    if (phase === 'issueCommands') {
+      return createIssueCommandsPhaseState(state);
+    }
+    if (phase === 'resolveMelee') {
+      return createResolveMeleePhaseState(state);
+    }
+    return createCleanupPhaseState();
+  }
+
   function expectDelegation(
     phase: Phase,
     delegatedMock: ReturnType<typeof vi.fn>,
     delegateReturn: { actionType: 'gameEffect'; effectType: string },
   ) {
-    const state = gameStillGoing();
-    // Real phase must not be `'none'` or pre-round setup short-circuits.
-    state.currentRoundState.currentPhaseState = {
-      phase,
-      step: 'complete',
-    } as typeof state.currentRoundState.currentPhaseState;
+    const going = gameStillGoing();
+    // The win check reads this phase. No rout slice is open, so it continues
+    // and the mock still selects the handler.
+    const state = updatePhaseState(going, phaseWithNoOpenRout(phase, going));
     getCurrentPhaseStateMock.mockReturnValue({ phase });
     delegatedMock.mockReturnValue(delegateReturn);
 

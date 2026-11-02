@@ -12,6 +12,7 @@ export function getMeleeResolutionState<S extends GameState>(
   state: S,
 ): MeleeResolutionState {
   const phaseState = state.currentRoundState.currentPhaseState;
+  // `'none'` and any other phase are both "not resolve melee".
   if (phaseState === 'none' || phaseState.phase !== 'resolveMelee') {
     throw new Error('Not in resolveMelee phase');
   }
@@ -19,29 +20,4 @@ export function getMeleeResolutionState<S extends GameState>(
     throw new Error('No current melee resolution state');
   }
   return phaseState.currentMeleeResolutionState;
-}
-
-/**
- * Narrowing helper for melee attack-value generation: in resolve melee phase,
- * both commitments are resolved and attack-apply substeps have not been created yet.
- *
- * @throws Error if commitments are pending or attack apply already exists
- */
-export function getMeleeResolutionReadyForAttackCalculation<
-  S extends GameState,
->(state: S): MeleeResolutionState {
-  const meleeState = getMeleeResolutionState(state);
-  if (meleeState.whiteCommitment.commitmentType === 'pending') {
-    throw new Error('White commitment is still pending');
-  }
-  if (meleeState.blackCommitment.commitmentType === 'pending') {
-    throw new Error('Black commitment is still pending');
-  }
-  if (
-    meleeState.whiteAttackApplyState !== 'pending' ||
-    meleeState.blackAttackApplyState !== 'pending'
-  ) {
-    throw new Error('Attack apply states already exist');
-  }
-  return meleeState;
 }

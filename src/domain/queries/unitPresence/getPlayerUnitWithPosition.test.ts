@@ -16,7 +16,7 @@ describe('getPlayerUnitWithPosition function', () => {
   const coordinate: Coordinate = 'E-5';
 
   describe('empty space', () => {
-    it('given empty space, returns undefined', () => {
+    it('returns undefined for an empty space', () => {
       const board = createEmptyStandardBoard();
       const result = getPlayerUnitWithPosition(board, coordinate, 'black');
 
@@ -25,7 +25,7 @@ describe('getPlayerUnitWithPosition function', () => {
   });
 
   describe('single unit presence', () => {
-    it('given single friendly unit, returns placement', () => {
+    it('returns the friendly unit and its facing', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([
         { placement: { coordinate, facing: 'north' }, unit },
@@ -39,7 +39,7 @@ describe('getPlayerUnitWithPosition function', () => {
       expect(result?.placement.facing).toBe('north');
     });
 
-    it('given single enemy unit only, returns undefined', () => {
+    it('returns undefined when the only unit is the other side', () => {
       const enemyUnit = createTestUnit('white', { attack: 3 });
       const board = createBoardWithUnits([
         { placement: { coordinate, facing: 'north' }, unit: enemyUnit },
@@ -50,7 +50,7 @@ describe('getPlayerUnitWithPosition function', () => {
       expect(result).toBeUndefined();
     });
 
-    it('given different facings, returns the unit with correct facing', () => {
+    it('returns the facing the unit was placed with', () => {
       const facings: UnitFacing[] = [
         'north',
         'northEast',
@@ -75,7 +75,7 @@ describe('getPlayerUnitWithPosition function', () => {
       }
     });
 
-    it('given context, returns the unit with correct coordinate', () => {
+    it('returns the coordinate the unit was placed on', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const testCoordinate: Coordinate = 'A-1';
       const board = createBoardWithUnits([
@@ -90,7 +90,7 @@ describe('getPlayerUnitWithPosition function', () => {
   });
 
   describe('engaged unit presence', () => {
-    it('given primary is friendly, returns the primary unit', () => {
+    it('returns the primary unit when primary is friendly', () => {
       const primaryUnit = createTestUnit('black', { attack: 3 });
       const secondaryUnit = createTestUnit('white', { attack: 3 });
       const board = createBoardWithEngagedUnits(
@@ -108,7 +108,7 @@ describe('getPlayerUnitWithPosition function', () => {
       expect(result?.placement.facing).toBe('north');
     });
 
-    it('given secondary is friendly, returns the secondary unit', () => {
+    it('returns the secondary unit when secondary is friendly', () => {
       const primaryUnit = createTestUnit('white', { attack: 3 });
       const secondaryUnit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithEngagedUnits(
@@ -126,7 +126,7 @@ describe('getPlayerUnitWithPosition function', () => {
       expect(result?.placement.facing).toBe('south'); // Secondary faces opposite primary
     });
 
-    it('given context, returns secondary unit with correct opposite facing', () => {
+    it('returns the secondary facing opposite the primary', () => {
       const primaryUnit = createTestUnit('white', { attack: 3 });
       const secondaryUnit = createTestUnit('black', { attack: 3 });
       const primaryFacing: UnitFacing = 'east';
@@ -144,7 +144,7 @@ describe('getPlayerUnitWithPosition function', () => {
       expect(result?.placement.facing).toBe('west'); // Opposite of east
     });
 
-    it('given handle all facings correctly for engaged units', () => {
+    it('returns the opposite facing for every primary facing', () => {
       const facings: UnitFacing[] = [
         'north',
         'northEast',
@@ -178,7 +178,7 @@ describe('getPlayerUnitWithPosition function', () => {
   });
 
   describe('different player sides', () => {
-    it('given black unit is present, returns unit for black player', () => {
+    it('returns unit for black player when black unit is present', () => {
       const blackUnit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([
         { placement: { coordinate, facing: 'north' }, unit: blackUnit },
@@ -190,7 +190,7 @@ describe('getPlayerUnitWithPosition function', () => {
       expect(result?.unit.playerSide).toBe('black');
     });
 
-    it('given white unit is present, returns unit for white player', () => {
+    it('returns unit for white player when white unit is present', () => {
       const whiteUnit = createTestUnit('white', { attack: 3 });
       const board = createBoardWithUnits([
         { placement: { coordinate, facing: 'north' }, unit: whiteUnit },
@@ -202,7 +202,7 @@ describe('getPlayerUnitWithPosition function', () => {
       expect(result?.unit.playerSide).toBe('white');
     });
 
-    it('given only white unit is present, returns undefined for black player', () => {
+    it('returns undefined for black player when only white unit is present', () => {
       const whiteUnit = createTestUnit('white', { attack: 3 });
       const board = createBoardWithUnits([
         { placement: { coordinate, facing: 'north' }, unit: whiteUnit },
@@ -213,7 +213,7 @@ describe('getPlayerUnitWithPosition function', () => {
       expect(result).toBeUndefined();
     });
 
-    it('given only black unit is present, returns undefined for white player', () => {
+    it('returns undefined for white player when only black unit is present', () => {
       const blackUnit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([
         { placement: { coordinate, facing: 'north' }, unit: blackUnit },
@@ -226,7 +226,7 @@ describe('getPlayerUnitWithPosition function', () => {
   });
 
   describe('edge cases', () => {
-    it('given handle different coordinates correctly', () => {
+    it('returns the unit at each corner and at the center', () => {
       const coordinates: Coordinate[] = ['A-1', 'A-18', 'L-1', 'L-18', 'E-5'];
 
       for (const coord of coordinates) {
@@ -242,7 +242,7 @@ describe('getPlayerUnitWithPosition function', () => {
       }
     });
 
-    it('given checking wrong coordinate, returns undefined', () => {
+    it('returns undefined when checking wrong coordinate', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([
         { placement: { coordinate: 'E-5', facing: 'north' }, unit },
@@ -253,7 +253,7 @@ describe('getPlayerUnitWithPosition function', () => {
       expect(result).toBeUndefined();
     });
 
-    it('given when space is invalid, throws', () => {
+    it('throws when space is invalid', () => {
       const board = createEmptyStandardBoard();
       expect(() =>
         getPlayerUnitWithPosition(board, 'invalid' as Coordinate, 'black'),

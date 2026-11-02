@@ -14,5 +14,6 @@ import { getCurrentEventStream } from './getCurrentEventStream';
  */
 export function getNextEventNumber(gameState: GameState): number {
   const eventStream = getCurrentEventStream(gameState);
-  return eventStream.length;
+  const nextEventNumber = eventStream.length;
+  return nextEventNumber;
 }

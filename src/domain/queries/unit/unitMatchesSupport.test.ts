@@ -7,12 +7,12 @@ import { unitMatchesSupport } from './unitMatchesSupport';
 describe('unitMatchesSupport function', () => {
   const unit = createTestUnit('white', { attack: 3 });
 
-  it('given generic support, matches any unit', () => {
+  it('matches any unit for generic support', () => {
     const support: UnitSupport = { count: 1, supportType: 'generic' };
     expect(unitMatchesSupport(unit, support)).toBe(true);
   });
 
-  it('given unitType support matching the unit type id, returns true', () => {
+  it('returns true when unit-type support uses this type id', () => {
     const support: UnitSupport = {
       count: 2,
       supportType: 'unitType',
@@ -21,7 +21,7 @@ describe('unitMatchesSupport function', () => {
     expect(unitMatchesSupport(unit, support)).toBe(true);
   });
 
-  it('given unitType support for a different type, returns false', () => {
+  it('returns false when unit-type support names a different id', () => {
     const support: UnitSupport = {
       count: 1,
       supportType: 'unitType',
@@ -30,7 +30,7 @@ describe('unitMatchesSupport function', () => {
     expect(unitMatchesSupport(unit, support)).toBe(false);
   });
 
-  it('given trait support the unit has, returns true', () => {
+  it('returns true when trait support names a trait on the unit', () => {
     const support: UnitSupport = {
       count: 1,
       supportType: 'trait',
@@ -42,7 +42,7 @@ describe('unitMatchesSupport function', () => {
     expect(unitMatchesSupport(unit, support)).toBe(true);
   });
 
-  it('given trait support the unit lacks, returns false', () => {
+  it('returns false when trait support names a trait the unit lacks', () => {
     const missingTrait = unit.unitType.traits.includes('cavalry')
       ? 'phalanx'
       : 'cavalry';

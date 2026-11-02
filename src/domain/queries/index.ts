@@ -104,7 +104,6 @@ export {
   getDefendingPlayerForNextIncompleteMeleeAttackApply,
   getReverseStateFromAttackApply,
   getReverseStateFromMeleeResolutionByInitiative,
-  canReverseUnit,
   getRetreatStateFromAttackApply,
   getRetreatStateFromRangedAttack,
   getRetreatStateFromMelee,

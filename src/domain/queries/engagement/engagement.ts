@@ -5,7 +5,7 @@ import type {
   GameState,
   RearEngagementResolutionState,
 } from '@game';
-import { getMovementResolutionState } from '../sequencing/commandResolution/getCommandResolutionState';
+import { getMovementResolutionState } from '../sequencing/commandResolution/getMovementResolutionState';
 import { throwIfPending } from '@utils';
 
 /**

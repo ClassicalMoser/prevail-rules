@@ -10,5 +10,6 @@ import type { ResolveMeleePhaseState } from '@game';
 export function getRemainingMeleeEngagements(
   phaseState: ResolveMeleePhaseState,
 ): Coordinate[] {
-  return phaseState.remainingEngagements;
+  const remainingEngagements = phaseState.remainingEngagements;
+  return remainingEngagements;
 }
