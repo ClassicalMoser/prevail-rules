@@ -1,14 +1,10 @@
 # Domain audit
 
-The purpose of this audit is that the author personally reads and comprehends every line of code in this repo. The checklist is the order of that reading. A box is checked only when the author has read that package or subdirectory and it has been brought in line.
+The author personally reads and comprehends every line of code in this repo. This file tracks that reading. The process is [`AUDIT_PROCESS.md`](../../AUDIT_PROCESS.md).
 
-The pass is a manual, end-to-end conventions audit of the rules engine (declarations, schema-first, import boundaries, barrels, commentary, colocated tests). Work **up the dependency tree**.
+This audit requires the human read on every directory. A box is checked only after that read. Closed boxes stay closed.
 
-How to write a test is [`STYLE.md`](../../STYLE.md). This file tracks which modules have a colocated spec, and where coverage is still thin.
-
-**Criteria (shared):** [`STYLE.md`](../../STYLE.md), [`DESIGN.md`](../../DESIGN.md), [`entities/README.md`](./entities/README.md), and [`boundaries.ts`](../../boundaries.ts). Package-specific notes live in each package README when present.
-
-**Last updated:** 2026-10-14
+**Last updated:** 2026-11-01
 
 ---
 
@@ -109,9 +105,9 @@ Walk folders in IDE order (alphabetical).
   - [x] `player/` — `getOtherPlayer`
   - [ ] `sequencing/` — current phase, step, initiative, event number, event stream
     - [ ] `combatOutcomes/`
-    - [ ] `commandResolution/`
-    - [ ] `meleeResolution/`
-    - [ ] `rallyResolution/`
+    - [x] `commandResolution/`
+    - [x] `meleeResolution/`
+    - [x] `rallyResolution/`
   - [ ] `unit/` — stats, friendliness, support match, units on board, unit identity
   - [ ] `unitPresence/` — position, enemy in the space, at a placement
 
@@ -189,15 +185,35 @@ Colocated `*.test.ts` under `src/domain/**` and `src/application/**` (see `vites
 
 ---
 
-## Notes / blockers
+## Open findings
 
-_Add short dated notes as the audit proceeds._
+Each finding stays here until the human read closes it.
 
-- 2026-09-20 — `entities` + `game` closed for this pass. Next: `events` (or `utils` if wanting a true bottom-up start).
-- 2026-09-29 — `queries/gameOver` closed. Next: `line/`.
-- 2026-10-12 — `queries/line` and `queries/player` closed. Next: `sequencing/`.
-- 2026-10-14 — `queries/sequencing` root readers (phase, step, initiative, event stream, next event number) are in line. Next: `sequencing/commandResolution`, then melee, rally, and combat outcomes.
-- 2026-10-12 — Movement is not settled. Revisit when auditing `legality/unitMovement`, `procedures/movement`, and the movement transforms:
-  1. A flexibility spend turns 45° or 180°, not an arbitrary amount.
-  2. Keep a canonical path on the moving unit, written by hand or generated, for engagement and animation. The mover currently stays on its start hex while the target is stored beside it, so the move is only half-applied.
-  3. Terrain rules have firmed up and are not in the code yet.
+### `queries/sequencing`
+
+- `getAwaitingRoutDiscardState` throws when the slice it selected is absent. `getWinnerFromUnpayableRoutDiscard` catches only those absence messages, because the win check runs on states where no rout slice is open. Any other throw propagates.
+
+### `queries/unit` and `queries/unitPresence`
+
+- `getCurrentUnitStat` still has a terrain step that adds nothing.
+- `getPlayerUnitWithPosition` returns the secondary unit without checking its side when the primary is not the asked side.
+- `hasEnemyUnit` treats any engagement as an enemy for both players and does not compare the two sides.
+- `matchesUnitRequirements` requires every listed trait. An older note said "at least one". The comment now matches the code. Confirm that the code is right.
+- One `matchesUnitRequirements` case expected `true` under a title that said it returns false. The title now matches the assertion. Confirm the fact.
+- The command-modifier case titled as a missing `modifiers` field sets that list to `[]`. The `?? []` branch is not what that case builds.
+
+### Movement (not settled)
+
+Revisit in `legality/unitMovement`, `procedures/movement`, and the movement transforms. Move this to the design document when that exists.
+
+1. A flexibility spend turns 45° or 180°, not an arbitrary amount.
+2. Keep a canonical path on the moving unit, written by hand or generated, for engagement and animation. The mover currently stays on its start hex while the target is stored beside it, so the move is only half-applied.
+3. Terrain rules have firmed up and are not in the code yet.
+
+---
+
+## Stuck list
+
+Questions from the human read that did not resolve in time. See [`AUDIT_PROCESS.md`](../../AUDIT_PROCESS.md).
+
+_None yet._

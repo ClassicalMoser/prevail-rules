@@ -11,4 +11,5 @@ In particular, models rarely comment enough, and never do without prompting. Eve
 - [`LAYERS.md`](./LAYERS.md) — Documentation of this project's structure
 - [`boundaries.ts`](./boundaries.ts) — Enforced dependency directions
 - [`src/domain/entities/README.md`](./src/domain/entities/README.md) — Intro to domain docs
+- [`AUDIT_PROCESS.md`](./AUDIT_PROCESS.md) — Rules for running an audit
 - [`src/domain/AUDIT.md`](./src/domain/AUDIT.md) — Main WIP at the moment
