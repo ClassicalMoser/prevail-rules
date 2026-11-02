@@ -30,8 +30,6 @@ export default defineConfig({
       // Game State (sequence types)
       '@game': path.resolve(__dirname, './src/domain/game'),
       '@game/*': path.resolve(__dirname, './src/domain/game/*'),
-      '@commands': path.resolve(__dirname, './src/domain/events'),
-      '@commands/*': path.resolve(__dirname, './src/domain/events/*'),
       // Testing
       '@testing': path.resolve(__dirname, './src/domain/testing'),
       '@testing/*': path.resolve(__dirname, './src/domain/testing/*'),
