@@ -3,26 +3,28 @@ import {
   createBoardWithUnits,
   createTestUnit,
 } from '@testing';
+import { createEmptyGameState } from '@factories';
+import { updateBoardState } from '@transforms';
 import { throwIfUndefined } from '@utils';
 
 import { getPlayerUnitsOnBoard } from './getPlayerUnitsOnBoard';
-
-import { createEmptyGameState } from '@factories';
 /**
  * GetPlayerUnitsOnBoard: set of unit instances for a player present on the board (including engaged).
  */
 describe('getPlayerUnitsOnBoard function', () => {
-  it('given a player, returns all units', () => {
+  it('returns the white units on the board', () => {
     const unit1 = createTestUnit('white', { attack: 3 });
     const unit2 = createTestUnit('white', { attack: 3 });
     const unit3 = createTestUnit('black', { attack: 3 });
 
-    const state = createEmptyGameState('standard');
-    state.boardState = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
-      { placement: { coordinate: 'F-5', facing: 'south' }, unit: unit2 },
-      { placement: { coordinate: 'G-5', facing: 'east' }, unit: unit3 },
-    ]);
+    const state = updateBoardState(
+      createEmptyGameState('standard'),
+      createBoardWithUnits([
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
+        { placement: { coordinate: 'F-5', facing: 'south' }, unit: unit2 },
+        { placement: { coordinate: 'G-5', facing: 'east' }, unit: unit3 },
+      ]),
+    );
 
     const whiteUnits = getPlayerUnitsOnBoard(state, 'white');
 
@@ -33,41 +35,52 @@ describe('getPlayerUnitsOnBoard function', () => {
     expect(whiteUnitsArray).not.toContain(unit3);
   });
 
-  it('given player has no units on board, returns empty set', () => {
+  it('returns an empty set when the asked side has no unit on the board', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
-    const state = createEmptyGameState('standard');
-    state.boardState = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-    ]);
+    const state = updateBoardState(
+      createEmptyGameState('standard'),
+      createBoardWithUnits([
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
+      ]),
+    );
 
     const blackUnits = getPlayerUnitsOnBoard(state, 'black');
 
     expect(blackUnits.size).toBe(0);
   });
 
-  it('given include engaged units belonging to the player', () => {
+  it('returns the engaged primary and a single unit of the same side', () => {
     const blackUnit = createTestUnit('black', { attack: 3 });
     const whiteUnit = createTestUnit('white', { attack: 3 });
     const supportUnit = createTestUnit('black', { attack: 3 });
-    const state = createEmptyGameState('standard');
-    state.boardState = createBoardWithEngagedUnits(
+    const engaged = createBoardWithEngagedUnits(
       blackUnit,
       whiteUnit,
       'E-5',
       'north',
     );
-    state.boardState.board['F-5'] = {
-      ...throwIfUndefined(
-        state.boardState.board['F-5'],
-        'expected board space at F-5',
-      ),
-      unitPresence: {
-        facing: 'south',
-        presenceType: 'single',
-        unit: supportUnit,
+    // F-5 is a single black unit beside the engagement.
+    // No factory places an engagement and a single unit on one board.
+    const spaceAtF5 = throwIfUndefined(
+      engaged.board['F-5'],
+      'expected board space at F-5',
+    );
+    const board = {
+      ...engaged,
+      board: {
+        ...engaged.board,
+        'F-5': {
+          ...spaceAtF5,
+          unitPresence: {
+            facing: 'south' as const,
+            presenceType: 'single' as const,
+            unit: supportUnit,
+          },
+        },
       },
     };
+    const state = updateBoardState(createEmptyGameState('standard'), board);
 
     const blackUnits = getPlayerUnitsOnBoard(state, 'black');
 
@@ -77,15 +90,12 @@ describe('getPlayerUnitsOnBoard function', () => {
     expect(blackUnits).not.toContain(whiteUnit);
   });
 
-  it('given include an engaged secondary unit belonging to the player', () => {
+  it('returns the engaged secondary when that unit is the asked side', () => {
     const blackUnit = createTestUnit('black', { attack: 3 });
     const whiteUnit = createTestUnit('white', { attack: 3 });
-    const state = createEmptyGameState('standard');
-    state.boardState = createBoardWithEngagedUnits(
-      blackUnit,
-      whiteUnit,
-      'E-5',
-      'north',
+    const state = updateBoardState(
+      createEmptyGameState('standard'),
+      createBoardWithEngagedUnits(blackUnit, whiteUnit, 'E-5', 'north'),
     );
 
     const whiteUnits = getPlayerUnitsOnBoard(state, 'white');

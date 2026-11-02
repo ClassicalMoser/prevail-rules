@@ -24,7 +24,7 @@ describe('hasEnemyUnit function', () => {
   const coordinate = 'E-5';
 
   describe('none unit presence', () => {
-    it('given there is no unit, returns false', () => {
+    it('returns false when there is no unit', () => {
       const board = createEmptyStandardBoard();
       const space = boardSpaceAt(board, coordinate);
       const { result: blackResult } = hasEnemyUnit('black', space);
@@ -35,21 +35,21 @@ describe('hasEnemyUnit function', () => {
   });
 
   describe('single unit presence', () => {
-    it('given there is a friendly unit, returns false', () => {
+    it('returns false when there is a friendly unit', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
       const space = boardSpaceAt(board, coordinate);
       const { result } = hasEnemyUnit('black', space);
       expect(result).toBe(false);
     });
 
-    it('given there is an enemy unit, returns true', () => {
+    it('returns true when there is an enemy unit', () => {
       const board = createBoardWithSingleUnit(coordinate, 'white');
       const space = boardSpaceAt(board, coordinate);
       const { result } = hasEnemyUnit('black', space);
       expect(result).toBe(true);
     });
 
-    it('given there is a black enemy unit, returns true for white player', () => {
+    it('returns true for white player when there is a black enemy unit', () => {
       const board = createBoardWithSingleUnit(coordinate, 'black');
       const space = boardSpaceAt(board, coordinate);
       const { result } = hasEnemyUnit('white', space);
@@ -58,7 +58,7 @@ describe('hasEnemyUnit function', () => {
   });
 
   describe('engaged unit presence', () => {
-    it('given units are engaged (always contains an enemy), returns true', () => {
+    it('returns true when units are engaged (always contains an enemy)', () => {
       const blackUnit = createTestUnit('black', { attack: 3 });
       const whiteUnit = createTestUnit('white', { attack: 3 });
       const board = createBoardWithEngagedUnits(
@@ -77,7 +77,7 @@ describe('hasEnemyUnit function', () => {
   });
 
   describe('error handling', () => {
-    it('given unitPresence has invalid type, returns false', () => {
+    it('returns false when unitPresence has invalid type', () => {
       const board = createEmptyStandardBoard();
       const space = boardSpaceAt(board, coordinate);
       space.unitPresence = {
@@ -88,7 +88,7 @@ describe('hasEnemyUnit function', () => {
       expect(result).toBe(false);
     });
 
-    it('given unitPresence is missing required properties, returns false', () => {
+    it('returns false when unitPresence is missing required properties', () => {
       const board = createEmptyStandardBoard();
       const space = boardSpaceAt(board, coordinate);
       space.unitPresence = {

@@ -17,7 +17,8 @@ export function unitTypeMatchesRestrictions(
 ): boolean {
   switch (restrictions.restrictionType) {
     case 'none': {
-      return true;
+      const unrestricted = true;
+      return unrestricted;
     }
     case 'trait': {
       const traits = restrictions.traitRestrictions;

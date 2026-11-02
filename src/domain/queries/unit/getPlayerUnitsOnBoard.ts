@@ -28,7 +28,7 @@ export function getPlayerUnitsOnBoard(
     const space = getBoardSpace(state.boardState, coordinate);
     const { unitPresence } = space;
 
-    // Check if this space has units for the player
+    // An empty space matches neither guard and adds nothing.
     if (
       hasSingleUnit(unitPresence) &&
       unitPresence.unit.playerSide === player

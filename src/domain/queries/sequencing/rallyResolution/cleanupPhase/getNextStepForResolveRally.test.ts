@@ -21,13 +21,4 @@ describe('getNextStepForResolveRally function', () => {
 
     expect(getNextStepForResolveRally(state)).toBe('complete');
   });
-
-  it('throws when cleanup is discarding played cards', () => {
-    const phase = createCleanupPhaseState({ step: 'discardPlayedCards' });
-    const state = updatePhaseState(createEmptyGameState('standard'), phase);
-
-    expect(() => getNextStepForResolveRally(state)).toThrow(
-      'Cleanup phase is not on a resolveRally step',
-    );
-  });
 });

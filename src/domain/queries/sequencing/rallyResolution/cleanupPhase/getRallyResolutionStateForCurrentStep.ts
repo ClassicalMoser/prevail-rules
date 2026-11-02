@@ -1,7 +1,7 @@
 import type { GameState, RallyResolutionState } from '@game';
 import { getOtherPlayer } from '@queries/player';
-import { getCleanupPhaseState } from '@queries/sequencing/getPhaseState';
-import { getCurrentRallyResolutionState } from '../rally';
+import { getCleanupPhaseState } from '@queries/sequencing/phases/getCleanupPhaseState';
+import { getCurrentRallyResolutionState } from '../getCurrentRallyResolutionState';
 
 /**
  * Gets the rally resolution state for the current cleanup phase step.
@@ -16,7 +16,7 @@ export function getRallyResolutionStateForCurrentStep(
   state: GameState,
   player: 'white' | 'black',
 ): RallyResolutionState {
-  // Safe type broadening for more generic function signature
+  // The step must be that player's resolve step. The rally itself is read next.
   const phaseState = getCleanupPhaseState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);

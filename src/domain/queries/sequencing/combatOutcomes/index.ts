@@ -13,9 +13,6 @@ export { getReverseStateFromAttackApply } from './reverse';
 // The reverse still open in the current melee, initiative first.
 export { getReverseStateFromMeleeResolutionByInitiative } from './reverse';
 
-// Whether that reversing unit is free of the engagement.
-export { canReverseUnit } from './canReverseUnit';
-
 // Retreat stored on an attack-apply.
 export { getRetreatStateFromAttackApply } from './retreat';
 
@@ -41,7 +38,7 @@ export { getRoutStateFromAttackApply } from './rout';
 export { getRoutStateFromMeleeResolutionByInitiative } from './rout';
 
 // Rout forced by the current rear engagement.
-export { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement';
+export { getRoutStateFromRearEngagement } from './rout';
 
 // The rout that still needs a discard, from issue-commands, melee, or cleanup.
-export { getAwaitingRoutDiscardState } from './getAwaitingRoutDiscardState';
+export { getAwaitingRoutDiscardState } from './rout';

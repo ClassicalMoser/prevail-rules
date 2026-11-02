@@ -10,13 +10,15 @@ export { matchesUnitRequirements } from './matchesUnitRequirements';
 // A unit type against one restriction variant.
 export { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
 
-// Membership in a unit list.
-export { arrayWithoutUnit, hasUnitInArray } from './unitArray';
+// Membership in a unit list, by value rather than reference.
+export { hasUnitInArray } from './hasUnitInArray';
+export { arrayWithoutUnit } from './arrayWithoutUnit';
 
-// Membership in a unit set.
-export { hasUnitInSet, setWithoutUnit } from './unitSet';
+// Membership in a unit set, by value rather than reference.
+export { hasUnitInSet } from './hasUnitInSet';
+export { setWithoutUnit } from './setWithoutUnit';
 
-// A unit's stat after range and commander effects.
+// A unit's stat after round, command, and extra modifiers.
 export { getCurrentUnitStat } from './getCurrentUnitStat';
 
 // Whether a unit fits a support grant.

@@ -10,22 +10,23 @@ import type { Trait } from '@ruleValues';
  * @param unitTypeIds - Array of unit type ids that the unit must match (unit must be in the array)
  * @returns True if the unit matches all requirements, false otherwise
  *
- * NOTES:
- * - If both traits and unitTypes are empty arrays, returns true (no requirements)
- * - If only traits are specified, checks that the unit has at least one of the specified traits
- * - If only unitTypes are specified, checks that the unit is in the specified array
- * - If both are specified, both conditions must be satisfied
+ * Empty lists are no requirement and match.
+ * A trait list matches only when the unit type has every listed trait.
+ * A unit-type list matches when this type's id is in the list.
+ * When both lists are present, both conditions must hold.
  */
 export function matchesUnitRequirements(
   unitType: UnitType,
   traits: Trait[],
   unitTypeIds: string[],
 ): ValidationResult {
+  // No trait list and no type list: nothing to fail.
   if (traits.length === 0 && unitTypeIds.length === 0) {
     return {
       result: true,
     };
   }
+  // Traits only. Every listed trait has to be on the type.
   if (traits.length > 0 && unitTypeIds.length === 0) {
     const hasAllTraits = traits.every((trait) =>
       unitType.traits.includes(trait),
@@ -40,8 +41,8 @@ export function matchesUnitRequirements(
       result: true,
     };
   }
+  // Type ids only. Match the id, not the object.
   if (traits.length === 0 && unitTypeIds.length > 0) {
-    // Compare by id since UnitType is identified by its unique id field
     const isInUnitTypeIds = unitTypeIds.includes(unitType.id);
     if (!isInUnitTypeIds) {
       return {
@@ -53,6 +54,7 @@ export function matchesUnitRequirements(
       result: true,
     };
   }
+  // Both lists are present. Traits fail first, then the type id.
   const hasAllTraits = traits.every((trait) => unitType.traits.includes(trait));
   if (!hasAllTraits) {
     return {

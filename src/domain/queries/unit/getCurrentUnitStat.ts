@@ -5,7 +5,7 @@ import { getSpacesWithinDistance } from '../board/areas/getSpacesWithinDistance'
 import { getPositionOfUnit } from '../unitPresence/getPositionOfUnit';
 import { isDefenseStat } from './isDefenseStat';
 import { unitTypeMatchesRestrictions } from './unitTypeMatchesRestrictions';
-import { hasUnitInArray } from './unitArray';
+import { hasUnitInArray } from './hasUnitInArray';
 
 /**
  * Gets the current stat value of a unit.
@@ -32,11 +32,11 @@ export function getCurrentUnitStat(
   // Get the active card
   const activeCard = gameState.cardState[unitSide].inPlay;
 
-  // Three possible sources of modifiers:
-  // 1. Terrain effects (not yet implemented)
-  // 2. Round effect
-  // 3. Active command effects
-  // 4. Additional modifiers, such as commitment modifiers.
+  // Four modifier sources, in this order:
+  // 1. Terrain. Not implemented; this step adds nothing.
+  // 2. The in-play card's round effect, when the unit meets its restrictions.
+  // 3. The in-play card's command modifiers, and only if this unit was commanded.
+  // 4. Extra modifiers passed in, such as a commitment.
 
   /**
    * Helper function to find a matching modifier in an array of modifiers.
@@ -64,6 +64,8 @@ export function getCurrentUnitStat(
       let satisfiesUnitRestrictions = true;
       const inspirationRange =
         activeRoundEffect.restrictions.inspirationRangeRestriction;
+      // A negative range means there is no inspiration restriction.
+      // Zero or more is a range, and a missing commander fails it.
       if (inspirationRange >= 0) {
         const unitPlacement = getPositionOfUnit(gameState.boardState, unit);
         const unitPosition = unitPlacement.coordinate;
@@ -71,8 +73,8 @@ export function getCurrentUnitStat(
           unit.playerSide,
           gameState.boardState,
         );
-        // Don't throw if commander is not on board.
-        // It means the commander was defeated.
+        // A missing commander is a defeated commander.
+        // The range then fails, and the round modifier is not applied.
 
         if (commanderSpace) {
           // If the commander is on board, find all spaces within the range.
@@ -108,7 +110,9 @@ export function getCurrentUnitStat(
     }
   }
 
-  // Step 3: Active command
+  // Step 3: Active command.
+  // These apply only to a commanded unit.
+  // They do not re-check the round-effect restrictions.
   const activeCommandModifiers = activeCard?.command.modifiers ?? [];
   // First check if the unit was commanded
   const { commandedUnits } = gameState.currentRoundState;
@@ -131,6 +135,6 @@ export function getCurrentUnitStat(
     }
   }
 
-  // Return the base stat plus the total modifier
-  return baseStat + totalModifier;
+  const currentStat = baseStat + totalModifier;
+  return currentStat;
 }

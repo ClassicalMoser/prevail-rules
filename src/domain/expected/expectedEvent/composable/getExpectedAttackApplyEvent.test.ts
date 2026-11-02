@@ -20,7 +20,7 @@ const { canReverseUnitMock } = vi.hoisted(() => ({
   canReverseUnitMock: vi.fn(),
 }));
 
-vi.mock(import('@queries'), () => ({
+vi.mock(import('@legality'), () => ({
   canReverseUnit: canReverseUnitMock,
 }));
 

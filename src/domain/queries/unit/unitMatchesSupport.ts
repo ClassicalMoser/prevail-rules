@@ -2,6 +2,14 @@ import type { UnitInstance, UnitSupport } from '@entities';
 
 /**
  * Whether a unit instance is eligible for a card’s unit-support grant.
+ *
+ * Generic support matches every unit.
+ * Trait support matches when the unit type lists that trait.
+ * Unit-type support matches the type id.
+ *
+ * @param unit - The unit to check
+ * @param support - The grant on the card
+ * @returns True when the unit fits the grant
  */
 export function unitMatchesSupport(
   unit: UnitInstance,

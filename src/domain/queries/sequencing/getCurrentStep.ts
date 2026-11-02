@@ -1,5 +1,5 @@
 import type { GameState } from '@game';
-import { getCurrentPhaseState } from './getPhaseState';
+import { getCurrentPhaseState } from './phases/getCurrentPhaseState';
 
 /**
  * Gets the current step from the phase state.

@@ -13,7 +13,8 @@ export function hasEnemyUnit(
   space: BoardSpace,
 ): ValidationResult {
   try {
-    // If the space has engaged units, there is an enemy unit.
+    // An engagement counts as an enemy for either player.
+    // The two sides are not compared.
     if (hasEngagedUnits(space.unitPresence)) {
       return {
         result: true,

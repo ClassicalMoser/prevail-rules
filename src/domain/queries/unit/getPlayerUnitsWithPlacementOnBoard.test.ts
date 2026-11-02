@@ -1,23 +1,25 @@
 import { createBoardWithUnits, createTestUnit } from '@testing';
+import { createEmptyGameState } from '@factories';
+import { updateBoardState } from '@transforms';
 
 import { getPlayerUnitsWithPlacementOnBoard } from './getPlayerUnitsWithPlacementOnBoard';
-
-import { createEmptyGameState } from '@factories';
 /**
  * GetPlayerUnitsWithPlacementOnBoard: all of a player's units on the board with coordinates and facings.
  */
 describe('getPlayerUnitsWithPlacementOnBoard function', () => {
-  it('given a player, returns all units with placement', () => {
+  it('returns each white unit with the coordinate it occupies', () => {
     const unit1 = createTestUnit('white', { attack: 3 });
     const unit2 = createTestUnit('white', { attack: 3 });
     const unit3 = createTestUnit('black', { attack: 3 });
 
-    const state = createEmptyGameState('standard');
-    state.boardState = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
-      { placement: { coordinate: 'F-5', facing: 'south' }, unit: unit2 },
-      { placement: { coordinate: 'G-5', facing: 'east' }, unit: unit3 },
-    ]);
+    const state = updateBoardState(
+      createEmptyGameState('standard'),
+      createBoardWithUnits([
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
+        { placement: { coordinate: 'F-5', facing: 'south' }, unit: unit2 },
+        { placement: { coordinate: 'G-5', facing: 'east' }, unit: unit3 },
+      ]),
+    );
 
     const whiteUnits = getPlayerUnitsWithPlacementOnBoard(state, 'white');
 
@@ -35,26 +37,30 @@ describe('getPlayerUnitsWithPlacementOnBoard function', () => {
     ).toBe(true);
   });
 
-  it('given player has no units on board, returns empty set', () => {
+  it('returns an empty set when the asked side has no unit on the board', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
-    const state = createEmptyGameState('standard');
-    state.boardState = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-    ]);
+    const state = updateBoardState(
+      createEmptyGameState('standard'),
+      createBoardWithUnits([
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
+      ]),
+    );
 
     const blackUnits = getPlayerUnitsWithPlacementOnBoard(state, 'black');
 
     expect(blackUnits.size).toBe(0);
   });
 
-  it('given include placement information', () => {
+  it('returns the coordinate and facing the unit was placed with', () => {
     const unit = createTestUnit('white', { attack: 3 });
 
-    const state = createEmptyGameState('standard');
-    state.boardState = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-    ]);
+    const state = updateBoardState(
+      createEmptyGameState('standard'),
+      createBoardWithUnits([
+        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
+      ]),
+    );
 
     const whiteUnits = getPlayerUnitsWithPlacementOnBoard(state, 'white');
 

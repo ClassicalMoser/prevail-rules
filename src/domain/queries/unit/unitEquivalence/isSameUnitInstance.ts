@@ -11,6 +11,8 @@ import { isSameUnitType } from './isSameUnitType';
  * @param unit1 - The first unit instance
  * @param unit2 - The second unit instance
  * @returns True if both units have the same playerSide, unitType, and instanceNumber, false otherwise
+ *
+ * A throw from a helper becomes a failed result. It is not rethrown.
  */
 export function isSameUnitInstance(
   unit1: UnitInstance,

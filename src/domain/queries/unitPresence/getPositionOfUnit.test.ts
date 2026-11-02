@@ -13,7 +13,7 @@ import { getPositionOfUnit } from './getPositionOfUnit';
  */
 describe('getPositionOfUnit function', () => {
   describe('single unit presence', () => {
-    it('given find unit at its position', () => {
+    it('returns the coordinate and facing of a single unit', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: Coordinate = 'E-5';
       const facing = 'north';
@@ -27,7 +27,7 @@ describe('getPositionOfUnit function', () => {
       expect(placement.facing).toBe(facing);
     });
 
-    it('given find unit with different facing', () => {
+    it('returns the facing the unit was placed with', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: Coordinate = 'E-5';
       const facing = 'southEast';
@@ -41,7 +41,7 @@ describe('getPositionOfUnit function', () => {
       expect(placement.facing).toBe(facing);
     });
 
-    it('given find unit at different coordinates', () => {
+    it('returns the coordinate the unit was placed on', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: Coordinate = 'A-1';
       const board = createBoardWithUnits([
@@ -55,7 +55,7 @@ describe('getPositionOfUnit function', () => {
   });
 
   describe('engaged unit presence', () => {
-    it('given find primary unit in engagement', () => {
+    it('returns the primary facing for the primary unit', () => {
       const primaryUnit = createTestUnit('black', { attack: 3 });
       const secondaryUnit = createTestUnit('white', { attack: 3 });
       const coordinate: Coordinate = 'E-5';
@@ -73,7 +73,7 @@ describe('getPositionOfUnit function', () => {
       expect(placement.facing).toBe(primaryFacing);
     });
 
-    it('given find secondary unit in engagement', () => {
+    it('returns the opposite facing for the secondary unit', () => {
       const primaryUnit = createTestUnit('white', { attack: 3 });
       const secondaryUnit = createTestUnit('black', { attack: 3 });
       const coordinate: Coordinate = 'E-5';
@@ -92,7 +92,7 @@ describe('getPositionOfUnit function', () => {
       expect(placement.facing).toBe('south');
     });
 
-    it('given if neither unit matches, throws', () => {
+    it('throws when the searched unit matches neither engaged unit', () => {
       const primaryUnit = createTestUnit('black', { attack: 3 });
       const secondaryUnit = createTestUnit('white', { attack: 3 });
       const coordinate: Coordinate = 'E-5';
@@ -111,7 +111,7 @@ describe('getPositionOfUnit function', () => {
   });
 
   describe('unit not found', () => {
-    it('given error when unit is not on board, throws', () => {
+    it('throws when unit is not on board', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const board = createEmptyStandardBoard();
 
@@ -120,7 +120,7 @@ describe('getPositionOfUnit function', () => {
       }).toThrow(new Error('Unit not found on board'));
     });
 
-    it('given error when unit with same properties but different instance is on board, throws', () => {
+    it('throws when a same-side unit with a different instance number is the one on the board', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
       const board = createBoardWithUnits([
@@ -134,7 +134,7 @@ describe('getPositionOfUnit function', () => {
   });
 
   describe('value-based comparison', () => {
-    it('given find unit by value even with different object reference', () => {
+    it('returns the placement when a different object has the same side, type, and instance number', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const board = createBoardWithUnits([
         { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },

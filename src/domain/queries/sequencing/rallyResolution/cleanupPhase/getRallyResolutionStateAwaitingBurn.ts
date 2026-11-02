@@ -16,6 +16,7 @@ export function getRallyResolutionStateAwaitingBurn(
   player: 'white' | 'black',
 ): RallyResolutionState {
   const rallyState = getRallyResolutionStateForCurrentStep(state, player);
+  // Burn runs only after the player chose to rally, and only once.
   if (!rallyState.playerRallied) {
     throw new Error('Player did not choose to rally');
   }

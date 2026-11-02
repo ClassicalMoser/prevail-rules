@@ -7,41 +7,41 @@ import { isSameInstanceNumber } from './isSameInstanceNumber';
  * IsSameInstanceNumber: Determines whether two unit instances have the same instance number.
  */
 describe('isSameInstanceNumber function', () => {
-  it('given both units have the same instance number, returns true', () => {
+  it('returns true when both units have the same instance number', () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const unit2 = createTestUnit('black', { attack: 4, instanceNumber: 1 });
     const { result } = isSameInstanceNumber(unit1, unit2);
     expect(result).toBe(true);
   });
 
-  it('given units have different instance numbers, returns false', () => {
+  it('returns false when units have different instance numbers', () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const { result } = isSameInstanceNumber(unit1, unit2);
     expect(result).toBe(false);
   });
 
-  it('given comparing a unit to itself, returns true', () => {
+  it('returns true when comparing a unit to itself', () => {
     const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const { result } = isSameInstanceNumber(unit, unit);
     expect(result).toBe(true);
   });
 
-  it('given different sides with same instance number, returns true', () => {
+  it('returns true when the sides differ and the instance number matches', () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const unit2 = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     const { result } = isSameInstanceNumber(unit1, unit2);
     expect(result).toBe(true);
   });
 
-  it('given different instance numbers even with same type, returns false', () => {
+  it('returns false when the instance numbers differ and the type matches', () => {
     const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 3 });
     const { result } = isSameInstanceNumber(unit1, unit2);
     expect(result).toBe(false);
   });
 
-  it('given comparing a unit to undefined, returns false', () => {
+  it('returns false when comparing a unit to undefined', () => {
     const unit = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     // Intentional type error to test the function
     const { result } = isSameInstanceNumber(

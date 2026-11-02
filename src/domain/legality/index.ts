@@ -56,6 +56,7 @@ export type {
   LegalSupportCategory,
 } from './choiceOptions';
 export { getLegalCommanderMoves } from './commanderMovement';
+export { canReverseUnit } from './combatOutcomes';
 export {
   canEngageEnemy,
   canMoveInto,

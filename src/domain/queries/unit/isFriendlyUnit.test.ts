@@ -6,22 +6,22 @@ import { isFriendlyUnit } from './isFriendlyUnit';
  * IsFriendlyUnit: true when the unit's playerSide matches the queried side.
  */
 describe('isFriendlyUnit function', () => {
-  it('given black unit and black side, returns true', () => {
+  it('returns true when the unit and the side are both black', () => {
     const unit = createTestUnit('black', { attack: 3 });
     expect(isFriendlyUnit(unit, 'black')).toBe(true);
   });
 
-  it('given black unit and white side, returns false', () => {
+  it('returns false when a black unit is checked against white', () => {
     const unit = createTestUnit('black', { attack: 3 });
     expect(isFriendlyUnit(unit, 'white')).toBe(false);
   });
 
-  it('given white unit and white side, returns true', () => {
+  it('returns true when the unit and the side are both white', () => {
     const unit = createTestUnit('white', { attack: 3 });
     expect(isFriendlyUnit(unit, 'white')).toBe(true);
   });
 
-  it('given white unit and black side, returns false', () => {
+  it('returns false when a white unit is checked against black', () => {
     const unit = createTestUnit('white', { attack: 3 });
     expect(isFriendlyUnit(unit, 'black')).toBe(false);
   });

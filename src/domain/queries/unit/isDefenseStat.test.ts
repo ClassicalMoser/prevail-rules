@@ -6,7 +6,7 @@ import { isDefenseStat } from './isDefenseStat';
  * IsDefenseStat: The defense stat names (reverse, retreat, rout).
  */
 describe('isDefenseStat function', () => {
-  it('given defense stats, returns true', () => {
+  it('returns true for reverse, retreat, and rout', () => {
     const { result: reverseResult } = isDefenseStat('reverse');
     expect(reverseResult).toBe(true);
     const { result: retreatResult } = isDefenseStat('retreat');
@@ -15,7 +15,7 @@ describe('isDefenseStat function', () => {
     expect(routResult).toBe(true);
   });
 
-  it('given non-defense stats, returns false', () => {
+  it('returns false for attack, range, speed, and the defense modifier name', () => {
     const { result: attackResult } = isDefenseStat('attack');
     expect(attackResult).toBe(false);
     const { result: rangeResult } = isDefenseStat('range');

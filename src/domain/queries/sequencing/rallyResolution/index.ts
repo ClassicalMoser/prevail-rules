@@ -1,14 +1,14 @@
 // One player's rally during cleanup.
-export { getRallyResolutionState } from './rally';
+export { getRallyResolutionState } from './getRallyResolutionState';
 
 // The rally for the cleanup step now in progress.
-export { getCurrentRallyResolutionState } from './rally';
+export { getCurrentRallyResolutionState } from './getCurrentRallyResolutionState';
 
 // The rout stored on a rally.
-export { getRoutStateFromRally } from './rally';
+export { getRoutStateFromRally } from './getRoutStateFromRally';
 
 // The rout for the cleanup step that is resolving a rally, including choose-rally.
-export { getRoutStateFromCleanupPhaseForResolveRout } from './rally';
+export { getRoutStateFromCleanupPhaseForResolveRout } from './getRoutStateFromCleanupPhaseForResolveRout';
 
 // The rally for this resolve step, for the player whose step it is.
 export { getRallyResolutionStateForCurrentStep } from './cleanupPhase';

@@ -3,6 +3,7 @@ import { createEmptyGameState } from '@factories';
 import type { GameState } from '@game';
 import {
   createCleanupPhaseState,
+  createIssueCommandsPhaseState,
   createRallyResolutionState,
   createRoutState,
   createTestCard,
@@ -116,5 +117,23 @@ describe('getWinnerFromUnpayableRoutDiscard function', () => {
     expect(
       getWinnerFromUnpayableRoutDiscard(createEmptyGameState('standard')),
     ).toBeUndefined();
+  });
+
+  it('continues when issue commands has not opened a command', () => {
+    const empty = createEmptyGameState('standard');
+    // Pending command resolution throws. That slice is not open, so the
+    // discard is not pending.
+    const state = updatePhaseState(empty, createIssueCommandsPhaseState(empty));
+    expect(getWinnerFromUnpayableRoutDiscard(state)).toBeUndefined();
+  });
+
+  it('rethrows when the issue-commands phase has no command resolution field', () => {
+    const state = createEmptyGameState('standard');
+    state.currentRoundState.currentPhaseState = {
+      phase: 'issueCommands',
+      step: 'firstPlayerResolveCommands',
+    } as typeof state.currentRoundState.currentPhaseState; // omits currentCommandResolutionState; not 'pending'
+
+    expect(() => getWinnerFromUnpayableRoutDiscard(state)).toThrow(TypeError);
   });
 });
