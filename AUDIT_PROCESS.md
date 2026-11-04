@@ -85,18 +85,28 @@ it.
 
 ### What it may change
 
-**Tests.** A spec is its assertions. Setup that is not the fact under test is
-config, and config belongs in a factory, a transform, or `@testing` — not in the
-spec. Across this repo 9% of spec lines are assertions, so there is a great deal of
-it to move.
+**Tests.** A spec needs config, and the config should be simple to read. Build it
+from the shared helpers rather than by hand, and the spec stays about its
+assertions.
 
-Extract a fixture used by a second suite into `@testing`. Delete a duplicate
-helper. Rewrite a title that states no fact. Compose factories and transforms
-instead of building the same shell by hand. Much of this suite was machine-written
-and readable tests are the point, so the pass has real latitude here.
+The helpers exist and are substantially unused. `createGameState` with a
+`UnitPlacementSpec` list appears in 8 specs, while 58 place units through
+`addUnitToBoard` and 39 write a placement literal. 57 specs hand-build a phase
+state that `createCleanupPhaseState` and its siblings already build. 50 lines
+assign into state directly, which `DESIGN.md` rules out and `updateCardState` and
+the transforms exist to avoid.
 
-A spec the author can assess at a glance is the goal, and it is also how the
-author checks the pass's own work cheaply.
+So: compose setup from factories, transforms and `@testing`. Extract a fixture used
+by a second suite. Delete a duplicate helper. Rewrite a title that states no fact.
+Much of this suite was machine-written and readable tests are the point, so the
+pass has real latitude here.
+
+Consistency is part of it. Specs that build the same state the same way make the
+second one cheaper to read than the first; specs that each invent their own setup
+give no reading that carries.
+
+A spec the author can assess at a glance is the goal, and it is also how the author
+checks the pass's own work cheaply.
 
 The never-overwrite rule still holds. A spec that reads as authored — a title that
 states a real fact, a comment explaining why a case exists, a deliberate value —
