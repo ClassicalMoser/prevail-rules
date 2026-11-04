@@ -3,9 +3,12 @@
 An audit brings code back in line with the standards in this repo. It runs on one
 scope at a time, on the same branch, one scope ahead of the human read.
 
+The read is for comprehension: the author understands the scope well enough to
+change it unaided. The scout pass exists to make that reading cheap. Everything
+below serves that, and a step that does not is noise.
+
 The machine scouts. It makes the scope readable, fixes what is obviously wrong, and
-leaves everything else marked where it stands. The read follows behind and closes
-the scope.
+leaves what it must not touch marked where it stands.
 
 ## Criteria
 
@@ -52,13 +55,15 @@ mark it.
 Where a comment is missing, write one. It will be clarified later; absent is worse
 than approximate.
 
-Headers across most of this repo are sufficient or longer than they need to be, so
-the pass does not add `@param` or `@returns` where they are missing. Add the line
-inside the function that says why the check is there instead. In-body commentary is
-what is thin, and it is what a reader needs.
+Function JSDoc is the practice here and the IDE reads it; keep writing it. Only 6%
+of modules carry a block above the imports, and that is not a gap to fill.
 
-Some packages are thin on both — `@validation` carries 8% commentary against 14–26%
-elsewhere. There, a missing header is worth writing too.
+What is thin is in-body commentary: 5,216 lines of JSDoc against 764 lines inside
+functions. Add the line that says why the check is there.
+
+A comment has to be legible to someone who does not know this code. Simple, and
+about what is happening. Not a reference chain — `Navigates: MeleeResolutionState
+-> AttackApplyState -> RetreatState` is accurate and tells a reader nothing.
 
 A comment must match the check the code makes.
 
@@ -80,11 +85,18 @@ it.
 
 ### What it may change
 
-**Tests.** Extract a fixture used by a second suite into `@testing`. Delete a
-duplicate helper. Rewrite a title that states no fact. Compose factories and
-transforms instead of building the same shell by hand. Much of this suite was
-machine-written and readable tests are the point, so the pass has real latitude
-here.
+**Tests.** A spec is its assertions. Setup that is not the fact under test is
+config, and config belongs in a factory, a transform, or `@testing` — not in the
+spec. Across this repo 9% of spec lines are assertions, so there is a great deal of
+it to move.
+
+Extract a fixture used by a second suite into `@testing`. Delete a duplicate
+helper. Rewrite a title that states no fact. Compose factories and transforms
+instead of building the same shell by hand. Much of this suite was machine-written
+and readable tests are the point, so the pass has real latitude here.
+
+A spec the author can assess at a glance is the goal, and it is also how the
+author checks the pass's own work cheaply.
 
 The never-overwrite rule still holds. A spec that reads as authored — a title that
 states a real fact, a comment explaining why a case exists, a deliberate value —
@@ -154,12 +166,10 @@ Do not change production code to make it pass unless that is an allowed fix.
 Read the commits in order.
 
 Read the scope for what it does. Then write the line the machine could not: why the
-module exists. For a query or a transform that reason is usually about play; for a
-sentinel, a factory, or anything in `@application` it is about keeping the code
-honest, and that is a complete answer.
+module exists, in terms a reader outside this code would follow.
 
-The finding is a module whose reason you cannot state at all, or whose only
-statable reason is the shape of another type. Say that in place of the reason.
+The finding is a module whose reason you cannot state simply, or whose only
+statable reason is a path through another type. Say that in place of the reason.
 
 A module with a header and no reason is a module to come back to. Treat it as a
 marker, not a verdict: a reason can be missing because nothing needed saying.
