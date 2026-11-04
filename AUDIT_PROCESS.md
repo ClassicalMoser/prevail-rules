@@ -24,9 +24,10 @@ run downhill.
 
 Two things to check before opening a scope:
 
-- Do the module names describe gameplay, or state access? A scope of state access
-  will not accumulate in a reader's head. Its output is a design finding, not
-  comprehension, and it should be marked as such rather than ground through.
+- Do the module names describe gameplay, or state access? `queries/sequencing` was
+  the latter and took six weeks: thirty-six modules whose only statable reason was
+  a path through a type. Where a scope looks like that, expect its useful output to
+  be a design finding rather than comprehension, and mark it rather than grinding.
 - How many local helpers are defined in more than one of its specs? Specs that
   share no vocabulary give no second reading cheaper than the first.
 
@@ -51,10 +52,13 @@ mark it.
 Where a comment is missing, write one. It will be clarified later; absent is worse
 than approximate.
 
-Headers are already sufficient across this repo, and already too long. Do not add
-`@param` or `@returns` where they are missing. Add the line inside the function
-that says why the check is there. In-body commentary is what is thin, and it is
-what a reader needs.
+Headers across most of this repo are sufficient or longer than they need to be, so
+the pass does not add `@param` or `@returns` where they are missing. Add the line
+inside the function that says why the check is there instead. In-body commentary is
+what is thin, and it is what a reader needs.
+
+Some packages are thin on both — `@validation` carries 8% commentary against 14–26%
+elsewhere. There, a missing header is worth writing too.
 
 A comment must match the check the code makes.
 
@@ -70,15 +74,21 @@ Anything the pass must not change itself is marked where it stands:
 A mark names what is wrong and what would settle it. Marks are the report: they
 sit where the work is, so a reader checks one by glancing rather than navigating.
 
-A scope with marks left in it has not been read. A scope with none has been.
+Marks left in a scope are the simplest signal that it is still open. It is a
+marker and not a verdict — a mark can outlive a read because you decided to leave
+it.
 
 ### What it may change
 
 **Tests.** Extract a fixture used by a second suite into `@testing`. Delete a
-duplicate helper. Rewrite a title to state the fact the assertion proves. Compose
-factories and transforms instead of building the same shell by hand. Most of this
-suite was machine-written and readable tests are the point, so there is little
-authored meaning to preserve here. List any case dropped or merged.
+duplicate helper. Rewrite a title that states no fact. Compose factories and
+transforms instead of building the same shell by hand. Much of this suite was
+machine-written and readable tests are the point, so the pass has real latitude
+here.
+
+The never-overwrite rule still holds. A spec that reads as authored — a title that
+states a real fact, a comment explaining why a case exists, a deliberate value —
+gets marked, not rewritten. List any case dropped or merged.
 
 **Structure, without changing behaviour.**
 
@@ -144,9 +154,15 @@ Do not change production code to make it pass unless that is an allowed fix.
 Read the commits in order.
 
 Read the scope for what it does. Then write the line the machine could not: why the
-module exists, in terms of play. A module with a header and no reason has not been
-read. A module whose reason is not about gameplay is a finding — say so in place of
-the reason.
+module exists. For a query or a transform that reason is usually about play; for a
+sentinel, a factory, or anything in `@application` it is about keeping the code
+honest, and that is a complete answer.
+
+The finding is a module whose reason you cannot state at all, or whose only
+statable reason is the shape of another type. Say that in place of the reason.
+
+A module with a header and no reason is a module to come back to. Treat it as a
+marker, not a verdict: a reason can be missing because nothing needed saying.
 
 Decide each mark. A mark closes as a fix, a comment worth keeping, or a deletion.
 
