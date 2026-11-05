@@ -15,7 +15,7 @@
     "!**/index.{js,ts}"
   ],
   "reporters": ["html", "clear-text", "progress"],
-  "timeoutMS": 5000,
+  "timeoutMS": 20000,
   "tsconfigFile": "tsconfig.json",
   "testRunner": "vitest",
   "ignoreStatic": false,
