@@ -24,11 +24,12 @@ today.
 
 ## The baseline: does the setup path reach the subject?
 
-**This governs every point below.** A spec's layer sets what it may reach for;
-`boundaries.ts` and [`LAYERS.md`](./LAYERS.md) are the authority, and the table
-follows. But the table is the cheap check, not the real one. The real one is
-whether the spec can **prove itself**: whether anything it imports ends up
-calling the function under test.
+**This governs every point below.** The question to ask of a spec's imports is
+not whether they respect the layer order. It is whether the spec can **prove
+itself**: whether anything it imports ends up calling the function under test.
+`boundaries.ts` and [`LAYERS.md`](./LAYERS.md) still say what each layer may
+reach for, and the table below repeats it for specs, but for a spec that is a
+guide to what is normal, not a constraint to satisfy.
 
 **There is no cycle risk, and an earlier draft of this note was wrong to raise
 one.** Nothing imports a spec file, so a spec can never sit on an import cycle —
@@ -77,11 +78,11 @@ Two worked cases, because they land on opposite sides:
   `import { addUnitToBoard } from '@transforms'` to `isFriendlyUnit.test.ts`
   takes the count from 1 to 2.
 
-**`@testing` launders the layer, not the proof.** `@testing` may import every
-layer, which is why it is the licensed route from a lower-layer spec to a
-higher-layer capability. But that also means a `@testing` helper can carry a
-dependency on the subject without the spec showing it, which is worse than a
-direct import because it is invisible at the call site.
+**A `@testing` helper hides the path rather than removing it.** `@testing` may
+import every layer, which is what lets a fixture compose anything. It also
+means a helper can carry a dependency on the subject without the spec showing
+it, which is worse than a direct import, because at the call site there is
+nothing to see.
 `createBoardWithUnits` composes `addUnitToBoard`, so routing those seven specs
 through `createGameStateWithUnits` would introduce exactly the self-proof they
 currently avoid. Check what a helper composes before substituting it in, and
@@ -108,15 +109,26 @@ reading any of it.
 `@entities`, `@events` and `@game` carry "no functions, no tests" in
 `boundaries.ts`, so no spec should live there at all.
 
-**The suite already reaches upward, and the lint does not catch it.** Spec files
-get `enforceBoundaries: false`, so only the ancestor and circular checks still
-run on them. 146 specs import `@transforms`; **109 of them sit below it** — 47 in
-`@queries`, 25 in `@legality`, 16 in `@validation`, 16 in `@procedures`, 5 in
-`@expected`. Too large to unwind inside this pass, and most of it is probably
-harmless by the test above. The instruction is narrower and firm: **add none,
-and do not route a spec through a helper whose path reaches its subject.**
-Record the 109 in `src/domain/AUDIT.md` as a finding for the human read, worth
-sorting by whether each one can actually close a loop.
+**For a spec, that table is a prompt to think, not a rule to enforce — and an
+earlier draft of this note had that wrong too.** 146 specs import
+`@transforms`, and 109 of them sit below it: 47 in `@queries`, 25 in
+`@legality`, 16 in `@validation`, 16 in `@procedures`, 5 in `@expected`. The
+first draft called those 109 findings and said to record them. They are not
+findings, for three reasons:
+
+- Specs carry `enforceBoundaries: false` **by design**, in the shared config.
+  That is a decision someone made, not a gap someone left.
+- A spec is in no graph that ships. It is not in `dist`, not in a build entry,
+  not in `mutate`, and nothing imports it. An upward edge from a spec cannot
+  reach production code or put a layer in a cycle.
+- The one harm anyone has actually named is self-proof, and the check now
+  measures it directly. It says zero across all 109.
+
+So do not restructure a spec to satisfy the table. What the table is good for
+is noticing when a spec reaches unusually far for its layer, which is worth a
+sentence on why — that is the whole of it. Especially in `@queries`, where
+reaching up into `@transforms` for setup is where self-proof becomes possible
+at all.
 
 ## Run `pnpm validate` often
 
@@ -199,14 +211,16 @@ already exports `addUnitToBoard`, `removeUnitFromBoard`, `addCommanderToBoard`,
 `addCompletedPhase` and the card movers. No spec should write a
 `{ ...state, … }` literal where one of those applies.
 
-**But only specs in `@transforms` and `@application` may call them directly.**
-Everywhere below, the same spread goes through a `@testing` helper instead —
+`@testing` already has the composed version of the commonest case:
 `createGameStateWithUnits`, `createGameStateWithSingleUnit` and
-`createGameStateWithEngagedUnits` already exist and already compose
-`createEmptyGameState` with `addUnitToBoard`. A `@queries` spec that writes
-`createEmptyGameState('standard')` and then respreads `boardState` is doing by
-hand, backward across a layer, what one `@testing` call does legitimately. That
-is the substitution for those 47 files, not an `@transforms` import.
+`createGameStateWithEngagedUnits` compose `createEmptyGameState` with
+`addUnitToBoard`. Reach for those when they read better than the two transform
+calls, which below `@transforms` they usually do.
+
+**Reach for them because they read better, not to tidy a layer.** Those three
+compose `addUnitToBoard`, which reads seven queries, so substituting them into
+a `@queries` spec can hand that spec its own subject. An `@transforms` import
+that the check passes is fine where it is clearer.
 
 ---
 
@@ -255,13 +269,13 @@ spec cannot call it. See point 4.
 in total **3,382 lines of helper definitions across 120 spec files** (the other
 238 define none).
 
-Do this point **after** 1 to 3. Its size depends on the layer, and this reverses
-what an earlier draft of this note said. In `@transforms` and `@application`,
-points 1 to 3 do most of the work and little residue is left. **Below
-`@transforms`, a `@testing` helper is the only legitimate way for a spec to
-reach a state that a transform builds** — so for the 47 `@queries` specs, the 25
-in `@legality` and the rest, the fixture is not a leftover. It is the fix. Build
-it rather than letting those specs keep importing upward.
+Do this point **after** 1 to 3, once those have shown what is actually left.
+In `@transforms` and `@application` they do most of the work and little residue
+remains. Further down, a named `@testing` helper usually beats five lines of
+transform calls in a spec whose subject is nowhere near them — not because the
+layer table says so, but because the spec reads as the situation it is about
+instead of the plumbing that builds it. That is the case for building the tier,
+and it is a readability case, which is this whole pass.
 
 These helpers are not missing abstractions in themselves — each is a factory
 call, two transform calls and a query read, done by hand. Every one walks the
