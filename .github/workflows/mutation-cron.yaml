@@ -1,6 +1,11 @@
-# One Stryker run over everything `stryker.config.json` mutates. Static mutants (schemas and
-# module-level constants) are ignored there: each one reruns the whole suite, and they were
-# what pushed the old four-shard run past the job limit.
+# One Stryker run per boundary in `boundaries.ts`, in parallel, then one merged report.
+#
+# Static mutants (schemas, module-level constants) are tested, and each reruns the whole
+# suite. They sit almost entirely in `entities`, `events` and `game`, so those shards are
+# the long ones; a shard per boundary keeps each job well inside the limit.
+#
+# The matrix is generated from `boundaries.ts` and the exclusions in `stryker.config.json`,
+# so a new boundary is mutated without editing this file.
 name: Mutation tests
 
 on:
@@ -10,8 +15,35 @@ on:
   workflow_dispatch:
 
 jobs:
+  plan:
+    name: Plan shards
+    runs-on: ubuntu-latest
+    outputs:
+      shards: ${{ steps.list.outputs.shards }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: List shards
+        id: list
+        run: echo "shards=$(pnpm exec tsx scripts/mutation/listMutationShards.ts)" >> "$GITHUB_OUTPUT"
+
   mutation:
-    name: Mutation
+    name: Mutation (${{ matrix.shard.boundary }})
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.plan.outputs.shards) }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -28,12 +60,47 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Mutation tests
-        run: pnpm exec stryker run
+        env:
+          MUTATE: ${{ matrix.shard.mutate }}
+        run: pnpm exec stryker run --mutate "$MUTATE" --reporters json,progress
 
-      - name: Upload mutation report
+      - name: Upload shard report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: stryker-mutation-report
-          path: reports/
+          name: mutation-${{ matrix.shard.boundary }}
+          path: reports/mutation/mutation.json
           if-no-files-found: warn
+
+  merge:
+    name: Merge reports
+    needs: mutation
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download shard reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: mutation-*
+          path: shards
+
+      - name: Merge
+        run: pnpm exec tsx scripts/mutation/mergeMutationReports.ts >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload merged report
+        uses: actions/upload-artifact@v4
+        with:
+          name: stryker-mutation-report
+          path: reports/mutation/
