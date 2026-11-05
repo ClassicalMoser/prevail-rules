@@ -11,7 +11,7 @@ export {
   coordinatesOfLines,
   coordinatesOfSegment,
 } from './lineCoordinates';
-export { updateCardState } from './updateCardState';
+export { updateCardState, withCards } from './updateCardState';
 export {
   createUnitWithPlacement,
   placed,
