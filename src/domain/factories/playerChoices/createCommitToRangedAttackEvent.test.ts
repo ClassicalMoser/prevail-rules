@@ -1,0 +1,28 @@
+import type { RangedAttackModifier } from '@events';
+import { tempCommandCards } from '@sampleValues';
+
+import { createCommitToRangedAttackEvent } from './createCommitToRangedAttackEvent';
+
+describe('createCommitToRangedAttackEvent function', () => {
+  it('fills in the event and choice types and keeps every other field', () => {
+    expect.hasAssertions();
+    const committedCard = tempCommandCards[0];
+    const modifierTypes: RangedAttackModifier[] = ['range', 'attack'];
+
+    const event = createCommitToRangedAttackEvent({
+      committedCard,
+      eventNumber: 3,
+      modifierTypes,
+      player: 'white',
+    });
+
+    expect(event).toStrictEqual({
+      choiceType: 'commitToRangedAttack',
+      committedCard,
+      eventNumber: 3,
+      eventType: 'playerChoice',
+      modifierTypes,
+      player: 'white',
+    });
+  });
+});
