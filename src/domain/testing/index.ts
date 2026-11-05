@@ -42,6 +42,9 @@ export {
   createUnitWithPlacement,
   placed,
   placement,
+  cardState,
+  hiddenCards,
+  ownedCards,
   updateCardState,
   withCards,
 } from './testHelpers';
