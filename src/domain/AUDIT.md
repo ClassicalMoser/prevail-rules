@@ -4,7 +4,7 @@ The author personally reads and comprehends every line of code in this repo. Thi
 
 This audit requires the human read on every directory. A box is checked only after that read. Closed boxes stay closed.
 
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-04
 
 ---
 
@@ -82,8 +82,10 @@ Audit in this order (dependencies flow downward):
 
 - [x] `factories/`
   - [x] `board/`
-  - [x] `game/`
+  - [ ] `game/` — reopened: `createOwnedCardState` and `createCardState` arrived
+        after the read
   - [x] `unit/`
+  - [ ] `unitLocation/` — new: `createUnitPlacement`
 
 ### `queries/` (`@queries`)
 
@@ -201,6 +203,21 @@ Each finding stays here until the human read closes it.
 - `matchesUnitRequirements` requires every listed trait. An older note said "at least one". The comment now matches the code. Confirm that the code is right.
 - One `matchesUnitRequirements` case expected `true` under a title that said it returns false. The title now matches the assertion. Confirm the fact.
 - The command-modifier case titled as a missing `modifiers` field sets that list to `[]`. The `?? []` branch is not what that case builds.
+
+### `factories` and `testing`
+
+- `UnitPlacement` carries a `unit` prefix for a value that is a coordinate and a
+  facing, with nothing unit-specific in it. Renaming the entity reaches every
+  layer, so it is recorded rather than done.
+- `@testing`'s `createUnitWithPlacement` fabricates the unit through
+  `createTestUnit`, which its name does not say. `createTestUnitWithPlacement`
+  would match `createTestUnit` and `createTestCard`. 34 specs call it, so the
+  rename is its own decision.
+- `@testing`'s `hiddenCards` was written and removed in the same pass. Production
+  derives a hidden card state through `toHiddenCardState` and
+  `projectGameForVisibility` and never constructs one, so a builder for it would
+  be a second authority on a value the engine computes — the same shape of
+  problem as `createRetreatState` inventing `legalRetreatOptions`.
 
 ### Movement (not settled)
 
