@@ -27,7 +27,9 @@ The project is strict about both. Do not use a type assertion (`as`, `!`) or `@t
 
 ## Commentary
 
-Commentary is extensive. 25% comments is not too much. Leave existing function commentary in place, including `@param` and `@returns`. JSDoc-style comments ahead of declarations are good for IDE readability. A shorter header is not a cleanup. When a helper does several steps, comment each step: what it writes, and why a factory is still there.
+Commentary is extensive. 25% comments inside a function body is not too much; JSDoc does not count toward it. Leave existing function commentary in place, including `@param` and `@returns`. JSDoc-style comments ahead of declarations are good for IDE readability. A shorter header is not a cleanup. When a helper does several steps, comment each step: what it writes, and why a factory is still there.
+
+As much as possible comments are meant to convey gameplay meaning: what happens in the game, and why the rules want it. A reader who knows the game but not the rest of the codebase should still be able to follow it. Technical detail, such as the chain of states a lookup passes through, is where human meaning gets lost. Names and test titles follow the same rule.
 
 ## Tests
 
@@ -35,8 +37,8 @@ A test should be almost as easy to read as its name. The `it` title states the f
 
 The `describe` title is a string, the function name plus the word "function": `'getCurrentPhaseState function'`. Do not pass the function. Vitest would use `function.name` as the title, and `vitest/valid-title` rejects a name that is not a string.
 
-A factory builds a value from raw inputs. A transform changes an existing state. A fixture in `@testing` does what neither of those can. Do not give two of them the same job. If a factory or a transform can do it, there is no fixture for it. Do not inline the behavior one of them already owns.
+A factory builds a value from raw inputs. A transform changes an existing state. A fixture in `@testing` does what neither of those can. Do not give two of them the same job. If a factory or a transform can do it, there is no fixture for it. Do not inline the behavior one of them already owns. None of them supplies a value the engine computes, such as legal retreat options. Run the function that computes it.
 
-Assert a value this test wrote. Do not assert a default some other helper filled in.
+Assert a value this test wrote. Do not assert a default some other helper filled in. Read it through the query that owns it, unless that query is the subject under test. The expected value is a literal: one built from the setup's fixture agrees with the fixture instead of checking the code.
 
-A helper used by one suite may stay in that file. The same helper in a second suite, when no factory or transform covers it, belongs in `@testing`. See [`src/domain/testing/README.md`](./src/domain/testing/README.md).
+A helper stays in a spec only when its meaning is strictly limited to the module under test. That case is rare. Otherwise its job belongs to a factory, a transform, or `@testing`, even if one suite is currently the only caller. See [`src/domain/testing/README.md`](./src/domain/testing/README.md).

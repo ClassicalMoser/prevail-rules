@@ -1,6 +1,6 @@
 # Agents
 
-Read the human docs and follow them. Value rigor and clarity over brevity. Be explicit. ALWAYS follow the style guide when producing any code.
+Read the human docs and follow them. Value rigor and clarity over brevity. Be explicit. ALWAYS follow the [`STYLE.md`](./STYLE.md) guide when producing any code.
 
 In particular, models rarely comment enough, and never do without prompting. Every step of a function should have a comment clarifying why it is there. Readability is more important than optimization. Alignment quality is proportionate to comment density.
 

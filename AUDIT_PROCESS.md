@@ -61,9 +61,11 @@ of modules carry a block above the imports, and that is not a gap to fill.
 What is thin is in-body commentary: 5,216 lines of JSDoc against 764 lines inside
 functions. Add the line that says why the check is there.
 
-A comment has to be legible to someone who does not know this code. Simple, and
-about what is happening. Not a reference chain — `Navigates: MeleeResolutionState
--> AttackApplyState -> RetreatState` is accurate and tells a reader nothing.
+A comment traces the code to the gameplay it serves and makes that link obvious,
+as `STYLE.md` describes. Code that only reaches through the state still serves a
+rule. `Navigates: MeleeResolutionState -> AttackApplyState -> RetreatState` is
+accurate, but a reader needs to know which retreat this finds and why the game
+needs it at this point.
 
 A comment must match the check the code makes.
 
@@ -99,10 +101,10 @@ the transforms exist to avoid.
 Setup only. An assertion's expected value stays a literal: an assertion built from
 the same fixture as its setup agrees with the fixture instead of checking the code.
 
-So: compose setup from factories, transforms and `@testing`. Extract a fixture used
-by a second suite. Delete a duplicate helper. Rewrite a title that states no fact.
-Much of this suite was machine-written and readable tests are the point, so the
-pass has real latitude here.
+So: compose setup from factories, transforms and `@testing`. Extract a local helper
+whose meaning reaches past the module under test. Delete a duplicate helper.
+Rewrite a title that states no fact. Much of this suite was machine-written and
+readable tests are the point, so the pass has real latitude here.
 
 Consistency is part of it. Specs that build the same state the same way make the
 second one cheaper to read than the first; specs that each invent their own setup
