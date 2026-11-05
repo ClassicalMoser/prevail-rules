@@ -31,39 +31,14 @@ const _armySchemaObject = z
     /** The command cards in the army. */
     commandCards: z.array(commandCardSchema),
   })
-  .strict()
-  .superRefine((army, ctx) => {
-    const seenUnitTypeIds = new Set<string>();
-    for (const [index, unit] of army.units.entries()) {
-      const unitTypeId = unit.unitType.id;
-      if (seenUnitTypeIds.has(unitTypeId)) {
-        ctx.addIssue({
-          code: 'custom',
-          message: 'An army cannot duplicate unit types.',
-          path: ['units', index, 'unitType'],
-        });
-      }
-      seenUnitTypeIds.add(unitTypeId);
-    }
-
-    const seenCommandCardIds = new Set<string>();
-    for (const [index, card] of army.commandCards.entries()) {
-      if (seenCommandCardIds.has(card.id)) {
-        ctx.addIssue({
-          code: 'custom',
-          message: 'An army cannot duplicate command cards.',
-          path: ['commandCards', index],
-        });
-      }
-      seenCommandCardIds.add(card.id);
-    }
-  });
+  .strict();
 
 type ArmySchemaType = z.infer<typeof _armySchemaObject>;
 
 /**
- * Shape-only schema for an army (plus uniqueness of unit types / command cards).
- * Mode composition limits live in `@legality` (`refineArmyComposition`).
+ * Shape-only schema for an army.
+ * The rules every army keeps live in `@legality` (`refineArmyRules`), and so
+ * do the mode composition limits (`refineArmyComposition`).
  */
 export const armySchema: z.ZodType<Army> = _armySchemaObject;
 

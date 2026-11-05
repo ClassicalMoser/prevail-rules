@@ -6,6 +6,7 @@ import {
   armyCompositionByMode,
   armyCompositionInitiatives,
 } from './armyComposition';
+import { refineArmyRules } from './refineArmyRules';
 
 /**
  * Adds Zod issues for army composition rules that fail for {@link mode}.
@@ -85,6 +86,9 @@ export function refineArmyComposition(
  */
 export function armySchemaForMode(mode: GameModeName): z.ZodType<Army> {
   return armySchema.superRefine((army, ctx) => {
+    // The rules every army keeps, whatever the mode.
+    refineArmyRules(army, ctx);
+    // The limits this mode adds on top.
     refineArmyComposition(army, mode, ctx);
   });
 }

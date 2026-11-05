@@ -7,3 +7,4 @@ export {
   armySchemaForMode,
   refineArmyComposition,
 } from './refineArmyComposition';
+export { legalArmySchema, refineArmyRules } from './refineArmyRules';

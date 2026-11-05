@@ -3,7 +3,9 @@ export {
   armyCompositionByMode,
   armyCompositionInitiatives,
   armySchemaForMode,
+  legalArmySchema,
   refineArmyComposition,
+  refineArmyRules,
 } from './army';
 export {
   authoritativeGameWithArmyCompositionSchema,

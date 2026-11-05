@@ -21,11 +21,7 @@ const _unitCountSchemaObject = z
     /** The number of units. */
     count: z.int().min(1).max(MAX_ARMY_UNIT_PER_TYPE_COUNT),
   })
-  .strict()
-  .refine((data) => data.count <= data.unitType.limit, {
-    message: 'Count must be less than or equal to unit type limit.',
-    path: ['count'],
-  });
+  .strict();
 
 type UnitCountSchemaType = z.infer<typeof _unitCountSchemaObject>;
 

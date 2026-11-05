@@ -183,6 +183,18 @@ describe('armySchemaForMode function', () => {
 
     expect(armySchemaForMode('tutorial').parse(army)).toStrictEqual(army);
   });
+
+  it('applies the army rules even where tutorial skips composition', () => {
+    // Tutorial has no composition limits, but a unit limit still holds.
+    const army: Army = {
+      commandCards: [],
+      id: '33333333-3333-4333-8333-333333333333',
+      name: 'Test Army',
+      units: [{ count: 5, unitType: baseUnitType({ limit: 4 }) }],
+    };
+
+    expect(armySchemaForMode('tutorial').safeParse(army).success).toBe(false);
+  });
 });
 
 /**
@@ -200,7 +212,8 @@ describe('entity armySchema shape', () => {
     expect(armySchema.parse(army)).toStrictEqual(army);
   });
 
-  it('rejects count above unit type limit', () => {
+  it('leaves the army rules to legality', () => {
+    // Over the unit limit, which only legalArmySchema and armySchemaForMode reject.
     const army: Army = {
       commandCards: [],
       id: '33333333-3333-4333-8333-333333333333',
@@ -208,25 +221,6 @@ describe('entity armySchema shape', () => {
       units: [{ count: 5, unitType: baseUnitType({ limit: 4 }) }],
     };
 
-    expect(armySchema.safeParse(army).success).toBe(false);
-  });
-
-  it('rejects duplicate unit types', () => {
-    const army = validStandardArmy();
-    const unitType = baseUnitType({ cost: 10, morale: 2 });
-    army.units = [
-      { count: 1, unitType },
-      { count: 2, unitType },
-    ];
-
-    expect(armySchema.safeParse(army).success).toBe(false);
-  });
-
-  it('rejects duplicate command cards', () => {
-    const army = validStandardArmy();
-    const card = baseCard(1, 1);
-    army.commandCards = [card, { ...card }];
-
-    expect(armySchema.safeParse(army).success).toBe(false);
+    expect(armySchema.parse(army)).toStrictEqual(army);
   });
 });
