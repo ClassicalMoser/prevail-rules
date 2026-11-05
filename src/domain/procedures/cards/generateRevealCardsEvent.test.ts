@@ -1,6 +1,6 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { updateCardState } from '@testing';
+import { withCards } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { generateRevealCardsEvent } from './generateRevealCardsEvent';
@@ -13,16 +13,9 @@ import { createEmptyGameState } from '@factories';
 describe('generateRevealCardsEvent function', () => {
   function createStateWithAwaitingPlay() {
     const state = createEmptyGameState('standard');
-    const stateWithCards = updateCardState(state, {
-      ...state.cardState,
-      black: {
-        ...state.cardState.black,
-        awaitingPlay: tempCommandCards[0],
-      },
-      white: {
-        ...state.cardState.white,
-        awaitingPlay: tempCommandCards[1],
-      },
+    const stateWithCards = withCards(state, {
+      black: { awaitingPlay: tempCommandCards[0] },
+      white: { awaitingPlay: tempCommandCards[1] },
     });
     return updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
@@ -42,12 +35,8 @@ describe('generateRevealCardsEvent function', () => {
 
   it('given black awaitingPlay missing, throws', () => {
     const state = createStateWithAwaitingPlay();
-    const stateMissingBlack = updateCardState(state, {
-      ...state.cardState,
-      black: {
-        ...state.cardState.black,
-        awaitingPlay: null,
-      },
+    const stateMissingBlack = withCards(state, {
+      black: { awaitingPlay: null },
     });
 
     expect(() => generateRevealCardsEvent(stateMissingBlack, 0)).toThrow(
@@ -57,12 +46,8 @@ describe('generateRevealCardsEvent function', () => {
 
   it('given white awaitingPlay missing, throws', () => {
     const state = createStateWithAwaitingPlay();
-    const stateMissingWhite = updateCardState(state, {
-      ...state.cardState,
-      white: {
-        ...state.cardState.white,
-        awaitingPlay: null,
-      },
+    const stateMissingWhite = withCards(state, {
+      white: { awaitingPlay: null },
     });
 
     expect(() => generateRevealCardsEvent(stateMissingWhite, 0)).toThrow(
