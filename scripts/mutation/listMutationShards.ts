@@ -9,7 +9,7 @@ const strykerConfigSchema = z.object({ mutate: z.array(z.string()) });
  * One Stryker run: a boundary's directory, with the config's own exclusions.
  */
 interface MutationShard {
-  /** The boundary's alias without the `@`, used to name the job and its report. */
+  /** The boundary's identifier without the `@`, used to name the job and its report. */
   boundary: string;
   /** The `--mutate` list for this shard, comma-separated. */
   mutate: string;
@@ -70,7 +70,7 @@ export async function listMutationShards(): Promise<MutationShard[]> {
       expandBraces(pattern),
     );
     const shard: MutationShard = {
-      boundary: boundary.alias.replace(/^@/u, ''),
+      boundary: boundary.identifier.replace(/^@/u, ''),
       mutate: patterns.join(','),
     };
     return shard;
