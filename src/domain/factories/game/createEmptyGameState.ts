@@ -1,11 +1,19 @@
-import type { Board, GameModeName } from '@entities';
+import type { Board, BoardType, GameModeName } from '@entities';
 import type { GameStateForVisibility } from '@game';
+import { gameModes } from '@entities';
 import { createCardState } from './createCardState';
 import {
   createEmptyLargeBoard,
   createEmptySmallBoard,
   createEmptyStandardBoard,
 } from '@factories/board';
+
+/** The empty board for each size. Keyed by every size, so none is missed. */
+const emptyBoardBySize: Record<BoardType, () => Board> = {
+  large: createEmptyLargeBoard,
+  small: createEmptySmallBoard,
+  standard: createEmptyStandardBoard,
+};
 
 function shell(board: Board): GameStateForVisibility<'authoritative'> {
   return {
@@ -39,25 +47,15 @@ function shell(board: Board): GameStateForVisibility<'authoritative'> {
 export function createEmptyGameState(
   name: GameModeName,
 ): GameStateForVisibility<'authoritative'> {
-  switch (name) {
-    // Tutorial uses the small board.
-    case 'tutorial':
-    // Mini uses the small board.
-    case 'mini': {
-      return shell(createEmptySmallBoard());
-    }
-    // Standard uses the standard board.
-    case 'standard': {
-      return shell(createEmptyStandardBoard());
-    }
-    // Epic uses the large board.
-    case 'epic': {
-      return shell(createEmptyLargeBoard());
-    }
-    // GameModeName is a closed catalog; this keeps a drifted value from building a shell.
-    default: {
-      const _exhaustive: never = name;
-      throw new Error(`Unknown gameMode: ${_exhaustive}`);
-    }
+  // The mode catalog is the one place a mode's board size is written down;
+  // the game rules check a game's board against the same catalog.
+  const mode = gameModes.find((entry) => entry.name === name);
+  // GameModeName is a closed catalog; this keeps a drifted value from building a shell.
+  if (!mode) {
+    throw new Error(`Unknown gameMode: ${name}`);
   }
+  // Lay out an empty board of the size that mode is played on.
+  const board = emptyBoardBySize[mode.boardSize]();
+  const gameState = shell(board);
+  return gameState;
 }
