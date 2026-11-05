@@ -19,10 +19,10 @@ describe('generateRevealCardsEvent function', () => {
     const state = createEmptyGameState('standard');
     const stateWithCards = updateCardState(
       state,
-      createCardState(
-        createOwnedCardState({ awaitingPlay: tempCommandCards[0] }),
-        createOwnedCardState({ awaitingPlay: tempCommandCards[1] }),
-      ),
+      createCardState({
+        black: createOwnedCardState({ awaitingPlay: tempCommandCards[0] }),
+        white: createOwnedCardState({ awaitingPlay: tempCommandCards[1] }),
+      }),
     );
     return updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,

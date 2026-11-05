@@ -9,19 +9,19 @@ import { createOwnedCardState } from './createOwnedCardState';
  * `HiddenCardState.inHand` holds the `'hidden'` sentinel, so an empty hidden
  * hand could not be told from an empty owned one anyway.
  *
- * A side left out starts empty.
+ * A side left out starts empty. Named rather than positional: two owned card
+ * states are the same shape, so an order would have to be remembered.
  *
- * @param black - Black's piles
- * @param white - White's piles
+ * @param sides - The piles to set, per side
  * @returns The authoritative card state
  */
-export function createCardState(
-  black?: OwnedCardState,
-  white?: OwnedCardState,
-): AuthoritativeCardState {
+export function createCardState(sides?: {
+  black?: OwnedCardState;
+  white?: OwnedCardState;
+}): AuthoritativeCardState {
   return {
-    black: black ?? createOwnedCardState(),
+    black: sides?.black ?? createOwnedCardState(),
     visibility: 'authoritative',
-    white: white ?? createOwnedCardState(),
+    white: sides?.white ?? createOwnedCardState(),
   };
 }

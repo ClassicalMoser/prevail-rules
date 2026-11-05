@@ -14,15 +14,15 @@ describe('createCardState function', () => {
     expect(cardState.white.inHand).toStrictEqual([]);
   });
 
-  it('takes black first and white second', () => {
+  it('sets each side from the piles named for it', () => {
     expect.hasAssertions();
     const blackCard = tempCommandCards[0];
     const whiteCard = tempCommandCards[1];
 
-    const cardState = createCardState(
-      createOwnedCardState({ inHand: [blackCard] }),
-      createOwnedCardState({ inHand: [whiteCard] }),
-    );
+    const cardState = createCardState({
+      black: createOwnedCardState({ inHand: [blackCard] }),
+      white: createOwnedCardState({ inHand: [whiteCard] }),
+    });
 
     expect(cardState.black.inHand).toStrictEqual([blackCard]);
     expect(cardState.white.inHand).toStrictEqual([whiteCard]);
@@ -32,7 +32,9 @@ describe('createCardState function', () => {
     expect.hasAssertions();
     const card = tempCommandCards[0];
 
-    const cardState = createCardState(createOwnedCardState({ inHand: [card] }));
+    const cardState = createCardState({
+      black: createOwnedCardState({ inHand: [card] }),
+    });
 
     expect(cardState.black.inHand).toStrictEqual([card]);
     expect(cardState.white.inHand).toStrictEqual([]);
