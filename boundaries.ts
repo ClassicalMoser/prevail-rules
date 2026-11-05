@@ -99,6 +99,7 @@ export const boundaries: BoundaryConfig[] = [
       '@entities',
       '@events',
       '@game',
+      '@factories',
       '@queries',
       '@legality',
     ],
@@ -176,10 +177,12 @@ export const boundaries: BoundaryConfig[] = [
   },
   {
     alias: '@sampleValues',
-    allowTypeImportsFrom: ['@entities'],
+    allowImportsFrom: ['@entities'],
     dir: 'domain/sampleValues',
     identifier: '@sampleValues',
     // Database surrogate for development and testing.
+    // Only @testing imports it. It has no other outgoing edge, so it cannot
+    // put a layer in a cycle.
   },
   {
     alias: '@testing',

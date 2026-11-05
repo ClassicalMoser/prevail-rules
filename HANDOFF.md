@@ -22,38 +22,74 @@ a spec needs, in this order:
 Work the points in order, one commit each. Measurements below are from `main`
 today.
 
-## The baseline: a spec's layer decides what it may reach for
+## The baseline: does the setup path reach the subject?
 
-**This governs every point below.** Which tool a spec may use is set by the
-layer the spec lives in, not by which tool reads best. `boundaries.ts` and
-[`LAYERS.md`](./LAYERS.md) are the authority. A spec may use what its own layer
-may import, plus `@testing` — and `@testing` is the only layer allowed to import
-all the others, which is exactly why it exists. It is the licensed route from a
-lower-layer spec to a higher-layer capability. A direct import is not.
+**This governs every point below.** A spec's layer sets what it may reach for;
+`boundaries.ts` and [`LAYERS.md`](./LAYERS.md) are the authority, and the table
+follows. But the table is the cheap check, not the real one. What matters about
+an out-of-order import is whether it puts a layer in a **cycle**, or lets the
+spec **prove itself**. Order for its own sake is not the concern.
 
-| A spec in | `@factories` | `@queries` | `@legality` | `@transforms` |
-| --- | --- | --- | --- | --- |
-| `@utils`, `@ruleValues` | no | no | no | no |
-| `@entities`, `@events`, `@game` | no | no | no | no |
-| `@factories` | own | no | no | no |
-| `@queries` | yes | own | no | **no** |
-| `@legality` | yes | yes | own | **no** |
-| `@expected` | yes | yes | yes | **no** |
-| `@procedures` | **no** | yes | yes | **no** |
-| `@validation` | yes | yes | yes | **no** |
-| `@transforms` | yes | yes | yes | own |
-| `@application` | yes | yes | **no** | yes |
+So before reaching out of order, say what in the spec needs it and why it is
+needed out of order — and then trace the path. **If the setup reaches the
+subject, the test proves nothing**, and the state gets built literally instead.
+
+Two worked cases, because they land on opposite sides:
+
+- **`@sampleValues` is always safe.** It has no outgoing edge but `@entities`,
+  so it cannot be in a cycle and cannot reach any subject. 78 specs import it
+  across nine layers; all of them are fine, whatever the table says.
+- **`addUnitToBoard` is not.** It imports `@queries` — `getBoardSpace`,
+  `getOppositeFacing`, `hasEngagedUnits`, `hasSingleUnit`, `isFriendlyUnit`.
+  `removeUnitFromBoard` adds `hasNoUnit` and `isSameUnitInstance`. For the
+  specs of **those seven queries**, building a board with that transform makes
+  the setup run the subject.
+
+  I checked all seven: none of them does. `getBoardSpace`,
+  `getOppositeFacing`, `hasEngagedUnits`, `hasSingleUnit`, `hasNoUnit`,
+  `isFriendlyUnit` and `isSameUnitInstance` each build their state literally
+  today. **Leave them that way.** They are the specs this pass is most likely
+  to "improve" into uselessness.
+
+**`@testing` launders the layer, not the cycle.** `@testing` may import every
+layer, which is why it is the licensed route from a lower-layer spec to a
+higher-layer capability. But that also means a `@testing` helper can carry a
+dependency on the subject without the spec showing it, which is worse than a
+direct import because it is invisible at the call site.
+`createBoardWithUnits` composes `addUnitToBoard`, so routing those seven specs
+through `createGameStateWithUnits` would introduce exactly the self-proof they
+currently avoid. Check what a helper composes before substituting it in.
+
+A useful discriminator for `@queries` specs: **55 of the 95 transform modules
+import `@queries`**, and the board and apply transforms are among them.
+`updatePhaseState` is not — it imports only `@game`, so it writes state without
+reading any of it.
+
+| A spec in                       | `@factories` | `@queries` | `@legality` | `@transforms` |
+| ------------------------------- | ------------ | ---------- | ----------- | ------------- |
+| `@utils`, `@ruleValues`         | no           | no         | no          | no            |
+| `@entities`, `@events`, `@game` | no           | no         | no          | no            |
+| `@factories`                    | own          | no         | no          | no            |
+| `@queries`                      | yes          | own        | no          | **no**        |
+| `@legality`                     | yes          | yes        | own         | **no**        |
+| `@expected`                     | yes          | yes        | yes         | **no**        |
+| `@procedures`                   | yes          | yes        | yes         | **no**        |
+| `@validation`                   | yes          | yes        | yes         | **no**        |
+| `@transforms`                   | yes          | yes        | yes         | own           |
+| `@application`                  | yes          | yes        | **no**      | yes           |
 
 `@entities`, `@events` and `@game` carry "no functions, no tests" in
 `boundaries.ts`, so no spec should live there at all.
 
-**The suite already breaks this, and the lint does not catch it.** Spec files get
-`enforceBoundaries: false`, so only the ancestor and circular checks still run on
-them. 146 specs import `@transforms`; **109 of them sit below it** — 47 in
+**The suite already reaches upward, and the lint does not catch it.** Spec files
+get `enforceBoundaries: false`, so only the ancestor and circular checks still
+run on them. 146 specs import `@transforms`; **109 of them sit below it** — 47 in
 `@queries`, 25 in `@legality`, 16 in `@validation`, 16 in `@procedures`, 5 in
-`@expected`. That is pre-existing and too large to unwind inside this pass. The
-instruction for this pass is narrower and firm: **do not add one more.** Record
-the 109 in `src/domain/AUDIT.md` as a finding for the human read.
+`@expected`. Too large to unwind inside this pass, and most of it is probably
+harmless by the test above. The instruction is narrower and firm: **add none,
+and do not route a spec through a helper whose path reaches its subject.**
+Record the 109 in `src/domain/AUDIT.md` as a finding for the human read, worth
+sorting by whether each one can actually close a loop.
 
 Baseline for `pnpm validate` after each commit: 358 files, 1,894 tests. The
 count must not drop except for the single assertion named under point 4.
@@ -137,16 +173,16 @@ This is the point the earlier draft understated. `@queries` exports **37
 state-reading getters**. Specs read nested state by property path **256 times
 across 52 files**, and only **32 spec files import `@queries` at all**.
 
-| Hand-drilled path | Hits | The query that owns it |
-| --- | --- | --- |
-| `.currentPhaseState` | 112 | `getCurrentPhaseState`, or the per-phase getters |
-| `.routState` | 41 | `getRoutStateFromRally` / `FromAttackApply` / `FromRearEngagement` / `FromMeleeResolutionByInitiative` |
-| `.currentCommandResolutionState` | 30 | `getCurrentCommandResolutionState` |
-| `.currentMeleeResolutionState` | 20 | `getMeleeResolutionState` |
-| `.retreatState` | 16 | `findRetreatState`, `getRetreatStateFromMelee` / `FromRangedAttack` / `FromAttackApply` / `FromFrontEngagement` |
-| `.engagementState` | 13 | `getEngagementStateFromMovement`, plus the front / flank / rear variants |
-| `.attackApplyState` | 12 | `getAttackApplyStateFromMelee` / `FromRangedAttack` |
-| `.reverseState` | 12 | `getReverseStateFromAttackApply` / `FromMeleeResolutionByInitiative` |
+| Hand-drilled path                | Hits | The query that owns it                                                                                          |
+| -------------------------------- | ---- | --------------------------------------------------------------------------------------------------------------- |
+| `.currentPhaseState`             | 112  | `getCurrentPhaseState`, or the per-phase getters                                                                |
+| `.routState`                     | 41   | `getRoutStateFromRally` / `FromAttackApply` / `FromRearEngagement` / `FromMeleeResolutionByInitiative`          |
+| `.currentCommandResolutionState` | 30   | `getCurrentCommandResolutionState`                                                                              |
+| `.currentMeleeResolutionState`   | 20   | `getMeleeResolutionState`                                                                                       |
+| `.retreatState`                  | 16   | `findRetreatState`, `getRetreatStateFromMelee` / `FromRangedAttack` / `FromAttackApply` / `FromFrontEngagement` |
+| `.engagementState`               | 13   | `getEngagementStateFromMovement`, plus the front / flank / rear variants                                        |
+| `.attackApplyState`              | 12   | `getAttackApplyStateFromMelee` / `FromRangedAttack`                                                             |
+| `.reverseState`                  | 12   | `getReverseStateFromAttackApply` / `FromMeleeResolutionByInitiative`                                            |
 
 Two directions, both of them this point:
 
@@ -156,7 +192,7 @@ Two directions, both of them this point:
   state once, then look up the slice.
 
 **The exception, and Cursor must honour it.** `STYLE.md`: read it through the
-query that owns it *unless that query is the subject under test*, and below
+query that owns it _unless that query is the subject under test_, and below
 `@queries` there is no such query — there, read the field the subject writes. So
 `getCurrentPhaseState`'s own spec drills, and a `@transforms` or `@entities`
 spec reads the field directly. Do not make a spec assert through its own
@@ -261,21 +297,24 @@ expression gets simpler. An assertion's expected value stays a literal — one
 built from the same fixture as its setup agrees with the fixture instead of
 checking the code.
 
-## Boundary observations — record, do not change
+## Boundary edges opened, already done
 
-Two edges in `boundaries.ts` look worth a human decision. Both are findings for
-`src/domain/AUDIT.md`, not work for this pass.
+Two edges in `boundaries.ts` were missing rather than withheld. Both are now
+open, and `pnpm validate` is clean.
 
-- `@procedures` may import `@queries` but **not** `@factories`, although
-  `@factories` sits below `@queries` and the transitive dependency already
-  exists. 16 procedure specs are affected; a procedure spec that needs a choice
-  event cannot reach the factory for it. This reads as an omission rather than
-  an intent.
-- `@sampleValues` may only type-import `@entities`, yet
-  `miniStarterArmy.test.ts` imports `armySchemaForMode` from `@legality` to
-  prove the army legal. The assertion genuinely needs legality. Either the
-  sample's spec is a licensed exception or that proof belongs in a `@legality`
-  spec.
+- **`@procedures` may import `@factories`.** `@factories` sits below `@queries`,
+  which `@procedures` already imported, so the transitive dependency existed and
+  only the direct edge was missing — it had never been needed, so nobody had
+  noticed. A procedure that builds an event may now reach the factory for it.
+- **`@sampleValues` imports `@entities` as values, not types only.** It needs
+  the schemas, not just the shapes. Its only importer is `@testing` (five
+  modules) plus the domain barrel, and it has no other outgoing edge, which is
+  what makes it cycle-proof.
+
+One thing left to decide, not for this pass: the domain barrel re-exports the
+sample armies, so they are part of this package's public surface and the client
+leans on `tinyStarterArmy` in about twenty specs. If `@sampleValues` is meant
+for `@testing` only, that re-export is the thing to look at.
 
 ## Still open, not part of this task
 
