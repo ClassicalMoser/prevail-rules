@@ -96,6 +96,9 @@ state that `createCleanupPhaseState` and its siblings already build. 50 lines
 assign into state directly, which `DESIGN.md` rules out and `updateCardState` and
 the transforms exist to avoid.
 
+Setup only. An assertion's expected value stays a literal: an assertion built from
+the same fixture as its setup agrees with the fixture instead of checking the code.
+
 So: compose setup from factories, transforms and `@testing`. Extract a fixture used
 by a second suite. Delete a duplicate helper. Rewrite a title that states no fact.
 Much of this suite was machine-written and readable tests are the point, so the
