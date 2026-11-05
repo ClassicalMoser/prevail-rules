@@ -118,8 +118,24 @@ and do not route a spec through a helper whose path reaches its subject.**
 Record the 109 in `src/domain/AUDIT.md` as a finding for the human read, worth
 sorting by whether each one can actually close a loop.
 
-Baseline for `pnpm validate` after each commit: 358 files, 1,894 tests. The
-count must not drop except for the single assertion named under point 4.
+## Run `pnpm validate` often
+
+Not once per commit. Often, inside each point, on whatever is half done. It
+carries lint, format, typecheck and the self-proof check, and all four answer
+questions that get much more expensive once a substitution has been repeated
+across seventy files:
+
+- A self-proof is cheapest to find in the edit that introduced it. The suite is
+  at zero, so any hit belongs to the change in front of you.
+- `format` runs as part of it, so a formatting drift never lands mixed into a
+  substitution diff and muddies the read.
+- A substitution that typechecks in one file and not the next means the two
+  sites were not the same shape, which is the signal to stop and look rather
+  than push the pattern through.
+
+`pnpm test` is the other half, and the baseline is 358 files, 1,894 tests. The
+count must not drop: this pass changes how a test is expressed, never whether
+it exists.
 
 ---
 
@@ -402,16 +418,49 @@ entry, so that condition points at a file the build never writes. Anything
 importing the bare package name resolves to nothing. Worth removing or giving a
 real entry.
 
+## Keep the legal samples, drop the rest
+
+Decided: what is legal stays and gets used, and what is not goes. Surveyed
+against the schemas today, after the move of the army rules into `@legality`.
+
+**Keep `miniStarterArmy`, and invoke it.** `armySchemaForMode('mini')` accepts
+both sides. Nothing calls it outside the barrel, and the one spec in this
+package that needs an army —
+`application/useCases/requestGameStateSnapshot.test.ts` — builds a local
+`placeholderArmy` instead. That is the invocation: a legal army now exists, so
+no spec needs to invent one, and a game-level test has something to start from.
+
+**Drop `tinyStarterArmy`,** both sides and its spec. It is illegal for mini: it
+names seven cards, one of them `'Rally'`, which is not among the samples, and a
+silent `.filter(card => card !== undefined)` leaves six where mini requires
+eight. Its spec asserts only that the ids are well formed, so it passes while
+the value it guards is unusable.
+
+**Drop the five command cards that fail `commandCardSchema`,** leaving twenty:
+
+| Card               | Fails on                                     |
+| ------------------ | -------------------------------------------- |
+| Strike             | `unitSupport.count`                          |
+| Evade              | `roundEffect.modifiers`, `unitSupport.count` |
+| Volley             | `roundEffect.modifiers`, `unitSupport.count` |
+| Charge             | `roundEffect.modifiers`, `unitSupport.count` |
+| Quincunx Formation | `roundEffect.modifiers`                      |
+
+`miniStarterArmy` names none of the five, so it survives the cut untouched.
+
+**The ordering matters, and here is why.** `tempCommandCards` begins Strike,
+Evade, Volley, Charge — so its **first four entries are all illegal**, and
+`tempCommandCards[0]` is Strike. `[0]` is the dominant pattern across the
+consumer suites. Around sixty consumer specs are built on a command card that
+does not parse, which is the strongest argument yet for giving them their own
+builders. Dropping the five also shifts every index after it.
+
+So: consumers off the samples first, then these drops, then the barrel block.
+Doing it the other way round breaks sixty specs on values they should not have
+been using.
+
 ## Still open, not part of this task
 
-- `tinyStarterArmy` is illegal and pinned there by a spec that checks only its
-  ids: it still asks for `'Rally'`, which is not among the 25 sample cards, and
-  silently filters it out to six cards where mini needs eight. ~20 client specs
-  depend on it. `miniStarterArmy` is legal and proved so against
-  `armySchemaForMode('mini')`, but has no callers outside the barrel.
-- 5 of the 25 sample command cards fail `commandCardSchema`. `miniStarterArmy`
-  routes around them rather than settling whether the samples or the schema is
-  wrong.
 - The audit is suspended at `queries/sequencing/combatOutcomes`, `queries/unit`
   and `queries/unitPresence`, with four findings already written against them in
   `src/domain/AUDIT.md`. `factories/game` and `factories/unitLocation` are
