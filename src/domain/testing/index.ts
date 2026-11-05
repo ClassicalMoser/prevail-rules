@@ -40,6 +40,8 @@ export {
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
+  placed,
+  placement,
   updateCardState,
 } from './testHelpers';
 export { createTestUnit, createUnitByStat } from './unitHelpers';

@@ -12,4 +12,8 @@ export {
   coordinatesOfSegment,
 } from './lineCoordinates';
 export { updateCardState } from './updateCardState';
-export { createUnitWithPlacement } from './unitWithPlacement';
+export {
+  createUnitWithPlacement,
+  placed,
+  placement,
+} from './unitWithPlacement';
