@@ -1,6 +1,6 @@
 import type { GameModeName, PlayerSide } from '@entities';
 import type { Game, GameForVisibility, GameStateVisibility } from '@game';
-import { isAuthoritativeGameState } from '@game';
+import { isAuthoritativeGameState } from '@queries';
 import type { EnginePorts, PortResponse } from '@application/ports';
 import { getGame } from '@application/composable';
 import { projectGameForVisibility } from '@transforms';

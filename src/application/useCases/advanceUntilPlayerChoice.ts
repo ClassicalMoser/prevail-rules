@@ -2,7 +2,7 @@ import type { GameModeName } from '@entities';
 import type { EnginePorts, PortResponse } from '@application/ports';
 import { getGame } from '@application/composable';
 import { advanceEffects } from '@application/process';
-import { isAuthoritativeGameState } from '@game';
+import { isAuthoritativeGameState } from '@queries';
 
 /**
  * Runs chained game effects until the next player-facing choice (or failure).

@@ -128,6 +128,3 @@ export type {
   DeclinedCommitment,
   PendingCommitment,
 } from './commitment';
-
-// Type guards
-export { isAuthoritativeGameState } from './typeGuards';

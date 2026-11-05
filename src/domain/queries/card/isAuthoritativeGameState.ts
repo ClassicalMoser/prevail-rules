@@ -1,4 +1,4 @@
-import type { GameState, GameStateForVisibility } from '@game/gameState';
+import type { GameState, GameStateForVisibility } from '@game';
 
 /** Narrows {@link GameState} to the authoritative visibility member. */
 export function isAuthoritativeGameState(

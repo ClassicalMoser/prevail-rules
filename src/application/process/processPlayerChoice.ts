@@ -1,7 +1,7 @@
 import type { GameModeName } from '@entities';
 import type { ValidationResult } from '@utils';
 import type { PlayerChoiceEvent } from '@events';
-import { isAuthoritativeGameState } from '@game';
+import { isAuthoritativeGameState } from '@queries';
 import type { GameStateForVisibility } from '@game';
 import type { EnginePorts, PortResponse } from '@application/ports';
 import { getExpectedEvent } from '@expected';

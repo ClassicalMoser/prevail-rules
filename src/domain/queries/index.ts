@@ -35,6 +35,7 @@ export {
   findMatchingCommand,
   getHiddenPlayerCardState,
   getOwnedPlayerCardState,
+  isAuthoritativeGameState,
   modifiersFromCompletedCommitment,
 } from './card';
 

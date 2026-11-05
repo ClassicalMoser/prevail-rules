@@ -57,7 +57,6 @@ Audit in this order (dependencies flow downward):
     - [x] `rallyResolution/`
     - [x] `combatOutcomes/`
     - [x] `engagement/`
-  - [x] `typeGuards/`
 
 ### `events/` (`@events`)
 

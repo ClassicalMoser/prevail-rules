@@ -29,7 +29,6 @@ Game / GameForVisibility
 | `phases/`     | Phase/step state in play order                                                                                                |
 | `substeps/`   | Nested resolution states (see [`substeps/README.md`](./substeps/README.md))                                                   |
 | `commitment/` | Pending / completed / declined commitments (discriminated on `commitmentType`)                                                |
-| `typeGuards/` | Narrowing helpers (e.g. authoritative game state)                                                                             |
 
 ### `phases/`
 
