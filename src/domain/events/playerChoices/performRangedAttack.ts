@@ -12,24 +12,24 @@ export interface PerformRangedAttackEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE;
+  /** The player who is performing the ranged attack. */
+  player: PlayerSide;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The unit that is performing the ranged attack. */
   unit: UnitWithPlacement;
   /** The target unit that is being attacked. */
   targetUnit: UnitWithPlacement;
   /** Any supporting units. */
   supportingUnits: UnitWithPlacement[];
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
-  /** The player who is performing the ranged attack. */
-  player: PlayerSide;
 }
 
 const _performRangedAttackEventSchemaObject = z
   .object({
-    choiceType: z.literal(PERFORM_RANGED_ATTACK_CHOICE_TYPE),
-    eventNumber: z.number(),
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    choiceType: z.literal(PERFORM_RANGED_ATTACK_CHOICE_TYPE),
     player: playerSideSchema,
+    eventNumber: z.number(),
     supportingUnits: z.array(unitWithPlacementSchema),
     targetUnit: unitWithPlacementSchema,
     unit: unitWithPlacementSchema,
@@ -47,10 +47,10 @@ const _assertExactPerformRangedAttackEvent: AssertExact<
 
 /** The schema for a perform ranged attack event. */
 export const performRangedAttackEventSchema: z.ZodObject<{
-  choiceType: z.ZodLiteral<typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE>;
-  eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  choiceType: z.ZodLiteral<typeof PERFORM_RANGED_ATTACK_CHOICE_TYPE>;
   player: typeof playerSideSchema;
+  eventNumber: z.ZodNumber;
   supportingUnits: z.ZodArray<typeof unitWithPlacementSchema>;
   targetUnit: typeof unitWithPlacementSchema;
   unit: typeof unitWithPlacementSchema;

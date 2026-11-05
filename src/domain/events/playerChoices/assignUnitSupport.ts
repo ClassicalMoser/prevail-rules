@@ -29,8 +29,8 @@ export interface UnitSupportAssignment {
 export interface AssignUnitSupportEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   choiceType: typeof ASSIGN_UNIT_SUPPORT_CHOICE_TYPE;
-  eventNumber: number;
   player: PlayerSide;
+  eventNumber: number;
   /** Per-grant assignments (omit unused grants). */
   assignments: UnitSupportAssignment[];
 }

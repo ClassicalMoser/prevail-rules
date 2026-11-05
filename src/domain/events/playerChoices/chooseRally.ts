@@ -13,10 +13,10 @@ export interface ChooseRallyEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof CHOOSE_RALLY_CHOICE_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The player who is choosing whether to perform a rally. */
   player: PlayerSide;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** Whether the player is performing a rally. */
   performRally: boolean;
 }
@@ -27,10 +27,10 @@ const _chooseRallyEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     /** The type of player choice. */
     choiceType: z.literal(CHOOSE_RALLY_CHOICE_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** The player who is choosing whether to perform a rally. */
     player: playerSideSchema,
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
     /** Whether the player is performing a rally. */
     performRally: z.boolean(),
   })
@@ -48,7 +48,7 @@ const _assertExactChooseRallyEvent: AssertExact<
 export const chooseRallyEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'chooseRally'>;
-  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
+  eventNumber: z.ZodNumber;
   performRally: z.ZodBoolean;
 }> = _chooseRallyEventSchemaObject;

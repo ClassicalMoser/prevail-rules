@@ -24,10 +24,10 @@ export interface CommitToRangedAttackEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The player who is committing (or refusing). */
   player: PlayerSide;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /**
    * Card from hand to commit, or `null` to refuse / decline the commitment
    * without spending a card.
@@ -49,10 +49,10 @@ const _commitToRangedAttackEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     /** The type of player choice. */
     choiceType: z.literal(COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** The player who is committing (or refusing). */
     player: playerSideSchema,
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
     /**
      * Card from hand to commit, or `null` to refuse / decline the commitment
      * without spending a card.
@@ -76,8 +76,8 @@ const _assertExactCommitToRangedAttackEvent: AssertExact<
 export const commitToRangedAttackEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'commitToRangedAttack'>;
-  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
+  eventNumber: z.ZodNumber;
   committedCard: z.ZodNullable<typeof commandCardSchema>;
   modifierTypes: z.ZodArray<typeof rangedAttackModifierTypesEnum>;
 }> = _commitToRangedAttackEventSchemaObject;

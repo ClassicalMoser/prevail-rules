@@ -12,10 +12,10 @@ export interface IssueCommandEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof ISSUE_COMMAND_CHOICE_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The player who is issuing the commands. */
   player: PlayerSide;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The commands to issue. */
   command: Command;
   /** The units to apply the commands to. */
@@ -28,10 +28,10 @@ const _issueCommandEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     /** The type of player choice. */
     choiceType: z.literal(ISSUE_COMMAND_CHOICE_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** The player who is issuing the commands. */
     player: playerSideSchema,
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
     /** The commands to issue. */
     command: commandSchema,
     /** The units to apply the commands to. */
@@ -52,8 +52,8 @@ const _assertExactIssueCommandEvent: AssertExact<
 export const issueCommandEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'issueCommand'>;
-  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
+  eventNumber: z.ZodNumber;
   command: typeof commandSchema;
   units: z.ZodArray<typeof unitInstanceSchema>;
 }> = _issueCommandEventSchemaObject;

@@ -11,20 +11,20 @@ export interface ChooseRetreatOptionEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE;
-  /** The retreat option to choose from. */
-  retreatOption: UnitPlacement;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The player who is choosing the retreat option. */
   player: PlayerSide;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
+  /** The retreat option to choose from. */
+  retreatOption: UnitPlacement;
 }
 
 const _chooseRetreatOptionEventSchemaObject = z
   .object({
-    choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
-    eventNumber: z.number(),
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
+    choiceType: z.literal(CHOOSE_RETREAT_OPTION_CHOICE_TYPE),
     player: playerSideSchema,
+    eventNumber: z.number(),
     retreatOption: unitPlacementSchema,
   })
   .strict();
@@ -40,9 +40,9 @@ const _assertExactChooseRetreatOptionEvent: AssertExact<
 
 /** The schema for a player choice to retreat. */
 export const chooseRetreatOptionEventSchema: z.ZodObject<{
-  choiceType: z.ZodLiteral<typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE>;
-  eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof PLAYER_CHOICE_EVENT_TYPE>;
+  choiceType: z.ZodLiteral<typeof CHOOSE_RETREAT_OPTION_CHOICE_TYPE>;
   player: typeof playerSideSchema;
+  eventNumber: z.ZodNumber;
   retreatOption: typeof unitPlacementSchema;
 }> = _chooseRetreatOptionEventSchemaObject;

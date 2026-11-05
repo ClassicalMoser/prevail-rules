@@ -16,10 +16,10 @@ export interface ChooseRoutDiscardEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof CHOOSE_ROUT_DISCARD_CHOICE_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The player who is discarding cards. */
   player: PlayerSide;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
   /** The IDs of the cards being discarded (from hand). */
   cardIds: string[];
 }
@@ -30,10 +30,10 @@ const _chooseRoutDiscardEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     /** The type of player choice. */
     choiceType: z.literal(CHOOSE_ROUT_DISCARD_CHOICE_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** The player who is discarding cards. */
     player: playerSideSchema,
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
     /** The IDs of the cards being discarded (from hand). */
     cardIds: z.array(z.string()),
   })
@@ -47,8 +47,8 @@ type ChooseRoutDiscardEventSchemaType = z.infer<
 export const chooseRoutDiscardEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'chooseRoutDiscard'>;
-  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
+  eventNumber: z.ZodNumber;
   cardIds: z.ZodArray<z.ZodString>;
 }> = _chooseRoutDiscardEventSchemaObject;
 

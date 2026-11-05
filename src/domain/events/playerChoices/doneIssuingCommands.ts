@@ -16,10 +16,10 @@ export interface DoneIssuingCommandsEvent {
   eventType: typeof PLAYER_CHOICE_EVENT_TYPE;
   /** The type of player choice. */
   choiceType: typeof DONE_ISSUING_COMMANDS_CHOICE_TYPE;
-  /** The ordered index of the event in the round, zero-indexed. */
-  eventNumber: number;
   /** The player who is done issuing. */
   player: PlayerSide;
+  /** The ordered index of the event in the round, zero-indexed. */
+  eventNumber: number;
 }
 
 const _doneIssuingCommandsEventSchemaObject = z
@@ -28,10 +28,10 @@ const _doneIssuingCommandsEventSchemaObject = z
     eventType: z.literal(PLAYER_CHOICE_EVENT_TYPE),
     /** The type of player choice. */
     choiceType: z.literal(DONE_ISSUING_COMMANDS_CHOICE_TYPE),
-    /** The ordered index of the event in the round, zero-indexed. */
-    eventNumber: z.number(),
     /** The player who is done issuing. */
     player: playerSideSchema,
+    /** The ordered index of the event in the round, zero-indexed. */
+    eventNumber: z.number(),
   })
   .strict();
 
@@ -48,6 +48,6 @@ const _assertExactDoneIssuingCommandsEvent: AssertExact<
 export const doneIssuingCommandsEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'playerChoice'>;
   choiceType: z.ZodLiteral<'doneIssuingCommands'>;
-  eventNumber: z.ZodNumber;
   player: typeof playerSideSchema;
+  eventNumber: z.ZodNumber;
 }> = _doneIssuingCommandsEventSchemaObject;
