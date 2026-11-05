@@ -1,5 +1,5 @@
-import { areSameSide } from '@entities';
-import { createTestUnit } from '@testing/unitHelpers';
+import { createTestUnit } from '@testing';
+import { areSameSide } from './areSameSide';
 
 /**
  * AreSameSide: checks whether two units belong to the same player side (type-guard overloads for narrowing).

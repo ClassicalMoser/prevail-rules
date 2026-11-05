@@ -1,5 +1,4 @@
-import type { PlayerSide } from '@entities/player';
-import type { UnitInstance } from '@entities/unit';
+import type { PlayerSide, UnitInstance } from '@entities';
 
 /**
  * Checks if two units belong to the same player side.

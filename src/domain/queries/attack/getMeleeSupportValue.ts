@@ -1,5 +1,4 @@
 import type { Board, UnitWithPlacement } from '@entities';
-import { hasEngagedUnits, hasNoUnit } from '@entities';
 import {
   diagonalIsClear,
   getAdjacentSpaces,
@@ -9,7 +8,11 @@ import {
   getFrontSpaces,
   getSpacesBehind,
 } from '@queries/board';
-import { getPlayerUnitWithPosition } from '@queries/unitPresence';
+import {
+  getPlayerUnitWithPosition,
+  hasEngagedUnits,
+  hasNoUnit,
+} from '@queries/unitPresence';
 
 export function getMeleeSupportValue(
   board: Board,

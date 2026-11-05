@@ -1,6 +1,5 @@
 import type { Board, Line } from '@entities';
-import { areSameSide } from '@entities';
-import { getFlankingSpaces, getOppositeFacing } from '@queries';
+import { areSameSide, getFlankingSpaces, getOppositeFacing } from '@queries';
 import { MAX_LINE_LENGTH } from '@ruleValues';
 import type { ValidationResult } from '@utils';
 

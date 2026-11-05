@@ -44,3 +44,8 @@ export {
   updateCardState,
 } from './testHelpers';
 export { createTestUnit, createUnitByStat } from './unitHelpers';
+export {
+  createEngagedUnitPresence,
+  createNoneUnitPresence,
+  createSingleUnitPresence,
+} from './unitPresenceHelpers';

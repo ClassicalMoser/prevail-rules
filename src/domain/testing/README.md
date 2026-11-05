@@ -14,4 +14,4 @@ A fixture does what a factory and a transform cannot. How a spec uses one is [`S
 
 Only tests may import this layer. Production code does not.
 
-Entity `typeGuards` specs live in `entityTypeGuards/` rather than next to the entity modules. Other tests are colocated with the code they exercise.
+Tests are colocated with the code they exercise.

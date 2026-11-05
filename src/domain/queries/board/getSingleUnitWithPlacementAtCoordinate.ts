@@ -1,6 +1,6 @@
 import type { Board, Coordinate, UnitWithPlacement } from '@entities';
-import { hasSingleUnit } from '@entities';
 import { getBoardSpace } from './getBoardSpace';
+import { hasSingleUnit } from '@queries/unitPresence';
 
 /**
  * Unit with placement at a coordinate when the space holds exactly one unit.

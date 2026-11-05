@@ -57,15 +57,7 @@ export {
 } from '@entities';
 export type { GameMode, GameModeName } from '@entities';
 export { playerSchema, playerSides, playerSideSchema } from '@entities';
-export {
-  areSameSide,
-  diagonalFacings,
-  hasEngagedUnits,
-  hasNoUnit,
-  hasSingleUnit,
-  orthogonalFacings,
-  unitFacings,
-} from '@entities';
+export { diagonalFacings, orthogonalFacings, unitFacings } from '@entities';
 export {
   engagedUnitPresenceSchema,
   noneUnitPresenceSchema,
@@ -457,7 +449,11 @@ export {
   getPlayerUnitsOnBoard,
   getPlayerUnitsWithPlacementOnBoard,
   unitMatchesSupport,
+  areSameSide,
   getPlayerUnitWithPosition,
+  hasEngagedUnits,
+  hasNoUnit,
+  hasSingleUnit,
   hasUnitInSet,
   isFriendlyUnit,
   setWithoutUnit,

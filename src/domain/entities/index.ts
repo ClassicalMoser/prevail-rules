@@ -119,11 +119,3 @@ export type { EngagementType } from './engagementType';
 // Lines
 export { lineSchema } from './line';
 export type { Line } from './line';
-
-// Type guards
-export {
-  areSameSide,
-  hasEngagedUnits,
-  hasNoUnit,
-  hasSingleUnit,
-} from './typeGuards';

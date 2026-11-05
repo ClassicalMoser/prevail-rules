@@ -1,10 +1,11 @@
 import type { UnitWithPlacement } from '@entities';
-import { hasEngagedUnits, hasSingleUnit } from '@entities';
 import type { GameState } from '@game';
 import {
   getBoardSpace,
   getCurrentUnitStat,
   getSpacesInArc,
+  hasEngagedUnits,
+  hasSingleUnit,
   isSameUnitInstance,
 } from '@queries';
 

@@ -1,10 +1,11 @@
 import type { CompleteUnitMovementEvent } from '@events';
 import type { GameState, IssueCommandsPhaseState } from '@game';
-import { hasEngagedUnits, hasSingleUnit } from '@entities';
 import {
   getBoardSpace,
   getIssueCommandsPhaseState,
   getMovementResolutionState,
+  hasEngagedUnits,
+  hasSingleUnit,
   isAtPlacement,
   isSameUnitInstance,
 } from '@queries';

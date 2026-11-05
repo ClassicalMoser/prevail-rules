@@ -4,8 +4,13 @@ import type {
   SingleUnitPresence,
   UnitWithPlacement,
 } from '@entities';
-import { hasEngagedUnits, hasSingleUnit } from '@entities';
-import { getBoardSpace, getOppositeFacing, isFriendlyUnit } from '@queries';
+import {
+  getBoardSpace,
+  getOppositeFacing,
+  hasEngagedUnits,
+  hasSingleUnit,
+  isFriendlyUnit,
+} from '@queries';
 /**
  * Adds a unit to a board (pure function, returns new board).
  */

@@ -1,6 +1,5 @@
-import { hasSingleUnit } from '@entities';
-import { createTestUnit } from '@testing/unitHelpers';
-import { createEngagedUnitPresence } from '@testing/unitPresenceHelpers';
+import { createEngagedUnitPresence, createTestUnit } from '@testing';
+import { hasSingleUnit } from './hasSingleUnit';
 
 /**
  * HasSingleUnit: type guard — unit presence is a single (non-engaged) unit.

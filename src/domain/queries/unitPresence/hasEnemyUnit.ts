@@ -1,6 +1,7 @@
 import type { BoardSpace, PlayerSide } from '@entities';
 import type { ValidationResult } from '@utils';
-import { hasEngagedUnits, hasSingleUnit } from '@entities';
+import { hasEngagedUnits } from './hasEngagedUnits';
+import { hasSingleUnit } from './hasSingleUnit';
 
 /**
  * Checks if an enemy unit is found in the space.

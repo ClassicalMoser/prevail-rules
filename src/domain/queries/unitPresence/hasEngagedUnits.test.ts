@@ -1,10 +1,10 @@
-import { hasEngagedUnits } from '@entities';
-import { createTestUnit } from '@testing/unitHelpers';
 import {
   createEngagedUnitPresence,
   createNoneUnitPresence,
   createSingleUnitPresence,
-} from '@testing/unitPresenceHelpers';
+  createTestUnit,
+} from '@testing';
+import { hasEngagedUnits } from './hasEngagedUnits';
 
 /**
  * HasEngagedUnits: type guard — unit presence is an engagement (two units).

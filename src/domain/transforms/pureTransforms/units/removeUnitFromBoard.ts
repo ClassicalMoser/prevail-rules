@@ -4,8 +4,14 @@ import type {
   SingleUnitPresence,
   UnitWithPlacement,
 } from '@entities';
-import { hasEngagedUnits, hasNoUnit, hasSingleUnit } from '@entities';
-import { getBoardSpace, getOppositeFacing, isSameUnitInstance } from '@queries';
+import {
+  getBoardSpace,
+  getOppositeFacing,
+  hasEngagedUnits,
+  hasNoUnit,
+  hasSingleUnit,
+  isSameUnitInstance,
+} from '@queries';
 /* Pure transform to remove a unit from the board immutably with no side effects. */
 export function removeUnitFromBoard(
   board: Board,

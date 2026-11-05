@@ -1,6 +1,5 @@
 import type { GameState, ReverseState } from '@game';
-import { hasEngagedUnits, hasNoUnit } from '@entities';
-import { getBoardSpace } from '@queries';
+import { getBoardSpace, hasEngagedUnits, hasNoUnit } from '@queries';
 
 /**
  * Checks if a unit can be reversed in the current game state.

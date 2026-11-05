@@ -1,9 +1,10 @@
 import type { Board, UnitInstance, UnitPlacement } from '@entities';
-import { hasNoUnit, hasSingleUnit } from '@entities';
 import { getBoardCoordinates } from '../board/getBoardCoordinates';
 import { getBoardSpace } from '../board/getBoardSpace';
 import { getOppositeFacing } from '@queries/facings';
 import { isSameUnitInstance } from '../unit/unitEquivalence';
+import { hasNoUnit } from './hasNoUnit';
+import { hasSingleUnit } from './hasSingleUnit';
 
 /**
  * Finds the position of a unit on the board by searching all coordinates.

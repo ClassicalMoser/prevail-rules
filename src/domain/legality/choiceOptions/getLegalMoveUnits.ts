@@ -1,11 +1,11 @@
 import type { PlayerSide, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import { hasSingleUnit } from '@entities';
 import {
   getBoardSpace,
   getOtherPlayer,
   getOwnedPlayerCardState,
   getPositionOfUnit,
+  hasSingleUnit,
 } from '@queries';
 
 /**

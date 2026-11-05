@@ -4,10 +4,11 @@ import type {
   PlayerSide,
   UnitWithPlacement,
 } from '@entities';
-import { hasNoUnit, hasSingleUnit } from '@entities';
 import { getBoardSpace } from '../board/getBoardSpace';
 import { getOppositeFacing } from '@queries/facings';
 import { isFriendlyUnit } from '../unit/isFriendlyUnit';
+import { hasNoUnit } from './hasNoUnit';
+import { hasSingleUnit } from './hasSingleUnit';
 
 /**
  * Extracts the friendly unit and its placement from a board space for a given player side.

@@ -118,6 +118,7 @@ export {
 
 // Unit stats, identity, support, and who is on the board.
 export {
+  areSameSide,
   arrayWithoutUnit,
   getCurrentUnitStat,
   getPlayerUnitsOnBoard,
@@ -135,10 +136,14 @@ export {
   unitTypeMatchesRestrictions,
 } from './unit';
 
-// Where a unit is standing, and whether an enemy occupies the space.
+// What stands on a space, where a unit is standing, and whether an enemy
+// occupies the space.
 export {
   getPlayerUnitWithPosition,
   getPositionOfUnit,
+  hasEngagedUnits,
   hasEnemyUnit,
+  hasNoUnit,
+  hasSingleUnit,
   isAtPlacement,
 } from './unitPresence';

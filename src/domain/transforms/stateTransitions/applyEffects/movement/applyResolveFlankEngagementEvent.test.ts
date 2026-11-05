@@ -2,8 +2,7 @@ import type { UnitWithPlacement } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
 import type { ResolveFlankEngagementEvent } from '@events';
 import type { GameState } from '@game';
-import { hasSingleUnit } from '@entities';
-import { getBoardSpace } from '@queries';
+import { getBoardSpace, hasSingleUnit } from '@queries';
 import {
   createFlankEngagementState,
   createIssueCommandsPhaseState,

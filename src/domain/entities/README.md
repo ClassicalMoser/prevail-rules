@@ -5,9 +5,7 @@ Domain models for the Prevail rules engine. Import as `@entities`.
 ## Layout conventions
 
 - **Declarations first**: schemas, interfaces, and types. No business logic in entity modules.
-- **Functions**: almost only `typeGuards/` (narrowing). Thin lookups like `getCoordinateLayout` are fine; mode composition and list-building refines live in `@legality`.
-- **Schema `superRefine`**: allowed for shape invariants (e.g. army uniqueness, board key sets). Not for game-mode or turn rules.
-- **No colocated tests**: specs for `typeGuards` live in [`../testing/entityTypeGuards/`](../testing/entityTypeGuards/).
+- **Shape only**: a schema says what a value looks like. Every rule about which values are allowed, from army uniqueness to a whole board, is a refine in `@legality`. Reads over a value, type guards included, are `@queries`.
 
 Sequencing and composed game state live in [`../game/`](../game/README.md) (`@game`).
 
@@ -78,7 +76,7 @@ export type UnitPresence =
   | EngagedUnitPresence; // 'engaged'
 ```
 
-Type guards in `typeGuards/`: `hasNoUnit`, `hasSingleUnit`, `hasEngagedUnits`, plus `areSameSide` for unit ownership.
+To narrow a presence, use `hasNoUnit`, `hasSingleUnit` and `hasEngagedUnits` in `@queries`.
 
 ## Board size vs visibility (when to type-parameterize)
 
@@ -90,8 +88,8 @@ getCoordinateLayout(board); // → coordinateLayoutMap[board.boardType]
 
 `Coordinate` is the union across all sizes (extensionally the large set). Completeness is enforced by `refineBoardLayout` in `@legality` and geometry helpers, not by per-size TypeScript types.
 
-**Why `partialRecord` + `superRefine` instead of per-size schemas?**  
-`z.object(shape)` infers literal keys. Factories and unions that touch a per-size object schema leak those keys through inference and fight the unified `Board` type. One wide schema plus a refine against `coordinateLayoutMap[boardType]` keeps the TypeScript type wide and still rejects wrong keys at parse time.
+**Why one wide `partialRecord` instead of per-size schemas?**  
+`z.object(shape)` infers literal keys. Factories and unions that touch a per-size object schema leak those keys through inference and fight the unified `Board` type. One wide schema keeps the TypeScript type wide; `refineBoardLayout` in `@legality` rejects wrong keys at parse time.
 
 **Layout callables take `string`, not size-branded letter unions.** Board size lives on the layout **value** (`rowLetters` / `columnNumbers`). Layouts join parts into a {@link Coordinate} internally; callers do not re-prove "this is a small-board row." That keeps property-signature typing and avoids treating size as a type parameter again.
 

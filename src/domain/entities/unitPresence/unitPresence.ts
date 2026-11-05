@@ -33,7 +33,7 @@ type UnitPresenceTypeSchemaType = z.infer<typeof _unitPresenceSchemaObject>;
  * - `"single"`: One unit in the space
  * - `"engaged"`: Two units engaged in combat
  *
- * Type guards are available in `@validation`:
+ * Type guards are available in `@queries`:
  * - `hasNoUnit()` - checks for none
  * - `hasSingleUnit()` - checks for single
  * - `hasEngagedUnits()` - checks for engaged

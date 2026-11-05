@@ -1,5 +1,4 @@
 import type { Board, Coordinate, PlayerSide, UnitFacing } from '@entities';
-import { hasSingleUnit } from '@entities';
 import {
   getBackSpaces,
   getBoardSpace,
@@ -7,6 +6,7 @@ import {
   getFrontSpaces,
   getOppositeFacing,
   getSpacesBehind,
+  hasSingleUnit,
 } from '@queries';
 
 /**

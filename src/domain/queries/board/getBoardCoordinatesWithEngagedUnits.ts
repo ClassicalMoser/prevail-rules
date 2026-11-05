@@ -1,7 +1,7 @@
 import type { Board, Coordinate } from '@entities';
-import { hasEngagedUnits } from '@entities';
 import { getBoardCoordinates } from './getBoardCoordinates';
 import { getBoardSpace } from './getBoardSpace';
+import { hasEngagedUnits } from '@queries/unitPresence';
 
 /**
  * Returns every board coordinate whose space has engaged units.

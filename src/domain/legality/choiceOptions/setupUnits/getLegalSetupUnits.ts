@@ -1,7 +1,6 @@
 import type { Coordinate, PlayerSide, UnitInstance } from '@entities';
-import { hasNoUnit } from '@entities';
 import type { GameState } from '@game';
-import { getBoardSpace } from '@queries';
+import { getBoardSpace, hasNoUnit } from '@queries';
 
 import { getSetupZoneCoordinates } from './getSetupZoneCoordinates';
 

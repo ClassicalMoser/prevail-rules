@@ -38,7 +38,6 @@ Audit in this order (dependencies flow downward):
   - [x] `gameModes/`
   - [x] `line/`
   - [x] `player/`
-  - [x] `typeGuards/`
   - [x] `unit/`
   - [x] `unitLocation/`
   - [x] `unitPresence/`
@@ -156,7 +155,6 @@ Walk folders in IDE order (alphabetical).
 - [ ] `testing/` — helpers / fixtures align with current `@game` / `@entities` types
   - [ ] `bootstrapGameState/`
   - [ ] `createBoard/`
-  - [ ] `entityTypeGuards/`
   - [ ] `phaseStateHelpers/`
   - [ ] `testHelpers/`
   - [ ] Root helpers (`createEmptyGameState`, `unitHelpers`, …)

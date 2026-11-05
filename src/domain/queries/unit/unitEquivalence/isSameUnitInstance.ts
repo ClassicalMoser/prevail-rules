@@ -1,8 +1,8 @@
 import type { UnitInstance } from '@entities';
 import type { ValidationResult } from '@utils';
-import { areSameSide } from '@entities';
 import { isSameInstanceNumber } from './isSameInstanceNumber';
 import { isSameUnitType } from './isSameUnitType';
+import { areSameSide } from '../areSameSide';
 
 /**
  * Determines whether two unit instances are the same unit.

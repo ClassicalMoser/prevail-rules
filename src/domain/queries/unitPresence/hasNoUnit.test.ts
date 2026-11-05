@@ -1,10 +1,10 @@
-import { hasNoUnit } from '@entities';
-import { createTestUnit } from '@testing/unitHelpers';
 import {
   createEngagedUnitPresence,
   createNoneUnitPresence,
   createSingleUnitPresence,
-} from '@testing/unitPresenceHelpers';
+  createTestUnit,
+} from '@testing';
+import { hasNoUnit } from './hasNoUnit';
 
 /**
  * HasNoUnit: type guard — unit presence is empty (none).

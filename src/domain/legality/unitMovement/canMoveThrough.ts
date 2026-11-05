@@ -1,7 +1,11 @@
 import type { Coordinate, PlayerSide } from '@entities';
 import type { GameState } from '@game';
-import { hasEngagedUnits, hasNoUnit } from '@entities';
-import { getBoardSpace, getCurrentUnitStat } from '@queries';
+import {
+  getBoardSpace,
+  getCurrentUnitStat,
+  hasEngagedUnits,
+  hasNoUnit,
+} from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
 
 /**

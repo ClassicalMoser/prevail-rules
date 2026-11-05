@@ -1,13 +1,15 @@
 import type { UnitFacing, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import type { MoveResult } from './exploreUnitMoves';
-import { areSameSide, hasNoUnit, hasSingleUnit } from '@entities';
 import {
+  areSameSide,
   getBoardSpace,
   getCurrentUnitStat,
   getFrontSpaces,
   getOppositeFacing,
   getSpacesBehind,
+  hasNoUnit,
+  hasSingleUnit,
   isSameUnitInstance,
 } from '@queries';
 import { exploreUnitMoves } from './exploreUnitMoves';

@@ -1,7 +1,6 @@
 import type { BoardSpace, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import { hasSingleUnit } from '@entities';
-import { getBoardSpace, isSameUnitInstance } from '@queries';
+import { getBoardSpace, hasSingleUnit, isSameUnitInstance } from '@queries';
 import { exploreUnitMoves } from './exploreUnitMoves';
 
 /**

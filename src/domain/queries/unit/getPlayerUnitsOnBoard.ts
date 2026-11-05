@@ -1,8 +1,9 @@
 import type { PlayerSide, UnitInstance } from '@entities';
 import type { GameState } from '@game';
-import { hasEngagedUnits, hasSingleUnit } from '@entities';
 import { getBoardCoordinates } from '../board/getBoardCoordinates';
 import { getBoardSpace } from '../board/getBoardSpace';
+import { hasEngagedUnits } from '../unitPresence/hasEngagedUnits';
+import { hasSingleUnit } from '../unitPresence/hasSingleUnit';
 
 /**
  * Gets all unit instances for a player that are currently on the board.
