@@ -6,6 +6,7 @@ import {
   getSpacesInArc,
   hasEngagedUnits,
   hasSingleUnit,
+  isFriendlyUnit,
   isSameUnitInstance,
 } from '@queries';
 
@@ -41,7 +42,9 @@ export function canUnitRangedAttackTarget(
   target: UnitWithPlacement,
   gameState: GameState,
 ): boolean {
-  if (attacker.unit.playerSide === target.unit.playerSide) {
+  // A unit cannot fire on a friend.
+  const sameSide = isFriendlyUnit(attacker.unit, target.unit.playerSide);
+  if (sameSide) {
     return false;
   }
   if (!isUnengagedUnit(gameState, attacker)) {

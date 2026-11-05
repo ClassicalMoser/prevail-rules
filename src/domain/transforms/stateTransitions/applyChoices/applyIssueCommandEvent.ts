@@ -1,6 +1,10 @@
 import type { IssueCommandEvent } from '@events';
 import type { GameState, IssueCommandsPhaseState } from '@game';
-import { findMatchingCommand, getIssueCommandsPhaseState } from '@queries';
+import {
+  findMatchingCommand,
+  getIssueCommandsPhaseState,
+  isFriendlyUnit,
+} from '@queries';
 import {
   addUnitsToCommandedUnits,
   updatePhaseState,
@@ -56,9 +60,10 @@ export function applyIssueCommandEvent<S extends GameState>(
 
   if (newRemainingCommands.length === 0) {
     const remainingUnits = [
-      ...state.currentRoundState.commandedUnits.filter(
-        (unit) => unit.playerSide === player,
-      ),
+      ...state.currentRoundState.commandedUnits.filter((unit) => {
+        const belongsToPlayer = isFriendlyUnit(unit, player);
+        return belongsToPlayer;
+      }),
       ...units,
     ];
     if (isFirstPlayer && phaseState.step === 'firstPlayerIssueCommands') {

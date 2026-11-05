@@ -445,7 +445,6 @@ export {
   getPlayerUnitsOnBoard,
   getPlayerUnitsWithPlacementOnBoard,
   unitMatchesSupport,
-  areSameSide,
   getPlayerUnitWithPosition,
   isAuthoritativeGameState,
   hasEngagedUnits,

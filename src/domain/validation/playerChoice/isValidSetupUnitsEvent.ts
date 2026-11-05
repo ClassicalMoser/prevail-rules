@@ -3,7 +3,7 @@ import type { ValidationResult } from '@utils';
 import type { SetupUnitsEvent } from '@events';
 import type { GameState } from '@game';
 import { getLegalSetupUnits } from '@legality';
-import { isSameUnitInstance } from '@queries';
+import { isFriendlyUnit, isSameUnitInstance } from '@queries';
 
 function unitKey(unit: UnitInstance): string {
   return `${unit.playerSide}:${unit.unitType.id}:${unit.instanceNumber}`;
@@ -51,7 +51,7 @@ export function isValidSetupUnitsEvent(
     const legalCoordinates = new Set(legal.coordinates);
 
     for (const placement of event.unitPlacements) {
-      if (placement.unit.playerSide !== event.player) {
+      if (!isFriendlyUnit(placement.unit, event.player)) {
         return {
           errorReason: 'Setup placement unit does not belong to the player',
           result: false,

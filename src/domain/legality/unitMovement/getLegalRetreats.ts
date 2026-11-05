@@ -2,7 +2,6 @@ import type { UnitFacing, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import type { MoveResult } from './exploreUnitMoves';
 import {
-  areSameSide,
   getBoardSpace,
   getCurrentUnitStat,
   getFrontSpaces,
@@ -10,6 +9,7 @@ import {
   getSpacesBehind,
   hasNoUnit,
   hasSingleUnit,
+  isFriendlyUnit,
   isSameUnitInstance,
 } from '@queries';
 import { exploreUnitMoves } from './exploreUnitMoves';
@@ -104,7 +104,7 @@ export function getLegalRetreats(
     const spaceUnitPresence = getBoardSpace(board, space).unitPresence;
     if (
       hasSingleUnit(spaceUnitPresence) &&
-      !areSameSide(spaceUnitPresence.unit, unit)
+      !isFriendlyUnit(spaceUnitPresence.unit, unit.playerSide)
     ) {
       // Single enemy unit found.
       // Check if it's facing us

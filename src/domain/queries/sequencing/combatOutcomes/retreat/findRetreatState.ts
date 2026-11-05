@@ -1,4 +1,5 @@
 import type { GameState, RetreatState } from '@game';
+import { isFriendlyUnit } from '@queries/unit';
 import { getRetreatStateFromFrontEngagement } from './getRetreatStateFromFrontEngagement';
 import { getRetreatStateFromMelee } from './getRetreatStateFromMelee';
 import { getRetreatStateFromRangedAttack } from './getRetreatStateFromRangedAttack';
@@ -27,7 +28,7 @@ export function findRetreatState(
   if (phaseState.phase === 'issueCommands') {
     try {
       const retreatState = getRetreatStateFromRangedAttack(state);
-      if (retreatState.retreatingUnit.unit.playerSide === player) {
+      if (isFriendlyUnit(retreatState.retreatingUnit.unit, player)) {
         return retreatState;
       }
     } catch {
@@ -36,7 +37,7 @@ export function findRetreatState(
 
     try {
       const retreatState = getRetreatStateFromFrontEngagement(state);
-      if (retreatState.retreatingUnit.unit.playerSide === player) {
+      if (isFriendlyUnit(retreatState.retreatingUnit.unit, player)) {
         return retreatState;
       }
     } catch {

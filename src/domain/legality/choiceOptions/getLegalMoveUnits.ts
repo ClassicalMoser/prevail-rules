@@ -6,6 +6,7 @@ import {
   getOwnedPlayerCardState,
   getPositionOfUnit,
   hasSingleUnit,
+  isFriendlyUnit,
 } from '@queries';
 
 /**
@@ -75,7 +76,7 @@ export function getLegalMoveUnits<S extends GameState>(
 
   const units: UnitWithPlacement[] = [];
   for (const unit of remainingUnits) {
-    if (unit.playerSide !== player) {
+    if (!isFriendlyUnit(unit, player)) {
       continue;
     }
     try {

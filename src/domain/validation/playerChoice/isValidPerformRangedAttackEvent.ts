@@ -6,7 +6,7 @@ import {
   getLegalRangedAttackSupporters,
   getLegalRangedAttackTargets,
 } from '@legality';
-import { isSameUnitInstance } from '@queries';
+import { isFriendlyUnit, isSameUnitInstance } from '@queries';
 
 function samePlacement(
   a: PerformRangedAttackEvent['unit'],
@@ -48,7 +48,7 @@ export function isValidPerformRangedAttackEvent(
       };
     }
 
-    if (event.unit.unit.playerSide !== event.player) {
+    if (!isFriendlyUnit(event.unit.unit, event.player)) {
       return {
         errorReason: 'Attacker does not belong to the event player',
         result: false,

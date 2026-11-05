@@ -1,5 +1,6 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState } from '@game';
+import { isFriendlyUnit } from '@queries';
 
 /**
  * Pre-round deployment (`currentPhaseState === 'none'`): white sets up first,
@@ -12,9 +13,10 @@ import type { GameState } from '@game';
 export function getExpectedSetupUnitsEvent(
   state: GameState,
 ): ExpectedEventInfo {
-  const whiteNeedsSetup = state.reservedUnits.some(
-    (unit) => unit.playerSide === 'white',
-  );
+  const whiteNeedsSetup = state.reservedUnits.some((unit) => {
+    const belongsToWhite = isFriendlyUnit(unit, 'white');
+    return belongsToWhite;
+  });
   if (whiteNeedsSetup) {
     return {
       actionType: 'playerChoice',
@@ -23,9 +25,10 @@ export function getExpectedSetupUnitsEvent(
     };
   }
 
-  const blackNeedsSetup = state.reservedUnits.some(
-    (unit) => unit.playerSide === 'black',
-  );
+  const blackNeedsSetup = state.reservedUnits.some((unit) => {
+    const belongsToBlack = isFriendlyUnit(unit, 'black');
+    return belongsToBlack;
+  });
   if (blackNeedsSetup) {
     return {
       actionType: 'playerChoice',

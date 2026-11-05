@@ -3,6 +3,7 @@ import type { GameState } from '@game';
 import { getBoardCoordinates } from '../board/getBoardCoordinates';
 import { getBoardSpace } from '../board/getBoardSpace';
 import { hasEngagedUnits } from '../unitPresence/hasEngagedUnits';
+import { isFriendlyUnit } from './isFriendlyUnit';
 import { hasSingleUnit } from '../unitPresence/hasSingleUnit';
 
 /**
@@ -32,15 +33,15 @@ export function getPlayerUnitsOnBoard(
     // An empty space matches neither guard and adds nothing.
     if (
       hasSingleUnit(unitPresence) &&
-      unitPresence.unit.playerSide === player
+      isFriendlyUnit(unitPresence.unit, player)
     ) {
       units.add(unitPresence.unit);
     }
     if (hasEngagedUnits(unitPresence)) {
-      if (unitPresence.primaryUnit.playerSide === player) {
+      if (isFriendlyUnit(unitPresence.primaryUnit, player)) {
         units.add(unitPresence.primaryUnit);
       }
-      if (unitPresence.secondaryUnit.playerSide === player) {
+      if (isFriendlyUnit(unitPresence.secondaryUnit, player)) {
         units.add(unitPresence.secondaryUnit);
       }
     }

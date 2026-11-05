@@ -5,6 +5,7 @@ import {
   getOtherPlayer,
   getOwnedPlayerCardState,
   getPositionOfUnit,
+  isFriendlyUnit,
 } from '@queries';
 
 import { isUnengagedUnit } from './canUnitRangedAttackTarget';
@@ -78,7 +79,7 @@ export function getLegalRangedAttackers<S extends GameState>(
 
   const attackers: UnitWithPlacement[] = [];
   for (const unit of remainingUnits) {
-    if (unit.playerSide !== player) {
+    if (!isFriendlyUnit(unit, player)) {
       continue;
     }
     let unitWithPlacement: UnitWithPlacement;

@@ -1,6 +1,6 @@
 import type { DoneIssuingCommandsEvent } from '@events';
 import type { GameState, IssueCommandsPhaseState } from '@game';
-import { getIssueCommandsPhaseState } from '@queries';
+import { getIssueCommandsPhaseState, isFriendlyUnit } from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
@@ -16,7 +16,10 @@ export function applyDoneIssuingCommandsEvent<S extends GameState>(
   const { player } = event;
   const isFirstPlayer = player === state.currentInitiative;
   const remainingUnits = state.currentRoundState.commandedUnits.filter(
-    (unit) => unit.playerSide === player,
+    (unit) => {
+      const belongsToPlayer = isFriendlyUnit(unit, player);
+      return belongsToPlayer;
+    },
   );
 
   let newPhaseState: IssueCommandsPhaseState;

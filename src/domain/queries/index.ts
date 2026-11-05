@@ -119,7 +119,6 @@ export {
 
 // Unit stats, identity, support, and who is on the board.
 export {
-  areSameSide,
   arrayWithoutUnit,
   getCurrentUnitStat,
   getPlayerUnitsOnBoard,

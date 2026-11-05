@@ -6,6 +6,7 @@ import {
   getOtherPlayer,
   getPositionOfUnit,
   hasSingleUnit,
+  isFriendlyUnit,
   isSameUnitInstance,
 } from '@queries';
 
@@ -29,7 +30,7 @@ export function getLegalRangedAttackTargets(
       if (!hasSingleUnit(space.unitPresence)) {
         continue;
       }
-      if (space.unitPresence.unit.playerSide !== enemy) {
+      if (!isFriendlyUnit(space.unitPresence.unit, enemy)) {
         continue;
       }
       const target: UnitWithPlacement = {
@@ -74,7 +75,7 @@ export function getLegalRangedAttackSupporters(
     if (isSameUnitInstance(unit, attacker.unit).result) {
       continue;
     }
-    if (unit.playerSide !== player) {
+    if (!isFriendlyUnit(unit, player)) {
       continue;
     }
     let unitWithPlacement: UnitWithPlacement;

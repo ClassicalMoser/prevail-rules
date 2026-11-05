@@ -1,9 +1,8 @@
 // Defense-stat check.
 export { isDefenseStat } from './isDefenseStat';
 
-// Same side as another unit.
+// Whether a unit fights for this side.
 export { isFriendlyUnit } from './isFriendlyUnit';
-export { areSameSide } from './areSameSide';
 
 // Trait and unit-type id lists.
 export { matchesUnitRequirements } from './matchesUnitRequirements';

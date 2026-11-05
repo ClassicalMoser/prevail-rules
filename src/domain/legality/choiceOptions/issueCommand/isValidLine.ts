@@ -1,5 +1,5 @@
 import type { Board, Line } from '@entities';
-import { areSameSide, getFlankingSpaces, getOppositeFacing } from '@queries';
+import { getFlankingSpaces, getOppositeFacing, isFriendlyUnit } from '@queries';
 import { MAX_LINE_LENGTH } from '@ruleValues';
 import type { ValidationResult } from '@utils';
 
@@ -50,8 +50,8 @@ export function isValidLine(board: Board, line: Line): ValidationResult {
     for (let i = 1; i < unitPlacements.length; i++) {
       const unit = unitPlacements[i];
 
-      // Check same side
-      if (!areSameSide(firstUnit.unit, unit.unit)) {
+      // Every unit in the line fights for the first unit's side.
+      if (!isFriendlyUnit(unit.unit, firstUnit.unit.playerSide)) {
         return {
           errorReason: 'Units are not on the same side',
           result: false,

@@ -7,6 +7,7 @@ import {
   getOppositeFacing,
   getSpacesBehind,
   hasSingleUnit,
+  isFriendlyUnit,
 } from '@queries';
 
 /**
@@ -35,7 +36,7 @@ export function canEngageEnemy(
     const destinationSpace = getBoardSpace(board, destinationCoordinate);
     if (
       !hasSingleUnit(destinationSpace.unitPresence) ||
-      destinationSpace.unitPresence.unit.playerSide === unitSide
+      isFriendlyUnit(destinationSpace.unitPresence.unit, unitSide)
     ) {
       // Destination space is not a single enemy unit
       // So we can't engage an enemy here

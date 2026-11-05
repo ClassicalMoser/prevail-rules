@@ -5,6 +5,7 @@ import {
   getCurrentUnitStat,
   hasEngagedUnits,
   hasNoUnit,
+  isFriendlyUnit,
 } from '@queries';
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
 
@@ -40,8 +41,8 @@ export function canMoveThrough(
     if (hasEngagedUnits(spaceUnitPresence)) {
       return false;
     }
-    // Player cannot move through an unfriendly unit.
-    if (spaceUnitPresence.unit.playerSide !== unitSide) {
+    // An enemy occupant cannot be passed through.
+    if (!isFriendlyUnit(spaceUnitPresence.unit, unitSide)) {
       return false;
     }
     // A player can only move through their own unit if the combined

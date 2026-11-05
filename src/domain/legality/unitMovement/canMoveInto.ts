@@ -4,6 +4,7 @@ import {
   hasEngagedUnits,
   hasNoUnit,
   hasSingleUnit,
+  isFriendlyUnit,
 } from '@queries';
 import { canEngageEnemy } from './canEngageEnemy';
 
@@ -46,8 +47,8 @@ export function canMoveInto(
 
     // If the space has a single unit, further checks are needed.
     if (hasSingleUnit(spaceUnitPresence)) {
-      // Player cannot move into a space with a friendly unit.
-      if (spaceUnitPresence.unit.playerSide === unitSide) {
+      // A friendly occupant blocks the end of the move.
+      if (isFriendlyUnit(spaceUnitPresence.unit, unitSide)) {
         return false;
       }
       // Player can advance into a space with an enemy unit

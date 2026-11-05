@@ -1,6 +1,6 @@
 import type { Coordinate, PlayerSide, UnitInstance } from '@entities';
 import type { GameState } from '@game';
-import { getBoardSpace, hasNoUnit } from '@queries';
+import { getBoardSpace, hasNoUnit, isFriendlyUnit } from '@queries';
 
 import { getSetupZoneCoordinates } from './getSetupZoneCoordinates';
 
@@ -35,9 +35,11 @@ export function getLegalSetupUnits<S extends GameState>(
   gameState: S,
   player: PlayerSide,
 ): LegalSetupUnits | null {
-  const units = gameState.reservedUnits.filter(
-    (unit) => unit.playerSide === player,
-  );
+  const units = gameState.reservedUnits.filter((unit) => {
+    // Only this player's reserved units remain to place.
+    const belongsToPlayer = isFriendlyUnit(unit, player);
+    return belongsToPlayer;
+  });
   if (units.length === 0) {
     return null;
   }
