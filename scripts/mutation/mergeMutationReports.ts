@@ -3,21 +3,19 @@ import path from 'node:path';
 import { z } from 'zod';
 
 /**
- * The parts of a Stryker JSON report this script reads. Everything else in a
- * file entry (source, language) is carried through untouched by `passthrough`.
+ * The parts of a Stryker JSON report this script reads. The objects are loose,
+ * so everything else in a report (source, locations, thresholds) is carried
+ * through to the merged report untouched.
  */
-const reportSchema = z
-  .object({
-    files: z.record(
-      z.string(),
-      z
-        .object({
-          mutants: z.array(z.object({ status: z.string() }).passthrough()),
-        })
-        .passthrough(),
-    ),
-  })
-  .passthrough();
+const reportSchema = z.looseObject({
+  files: z.record(
+    z.string(),
+    z.looseObject({
+      mutants: z.array(z.looseObject({ status: z.string() })),
+    }),
+  ),
+  testFiles: z.record(z.string(), z.unknown()).optional(),
+});
 
 type MutationReport = z.infer<typeof reportSchema>;
 
@@ -125,7 +123,14 @@ export async function mergeMutationReports(
   outDir: string,
 ): Promise<string> {
   // Every shard that produced a report, by the boundary its directory names.
-  const entries = await readdir(shardsDir);
+  // The directory only exists once the workflow has downloaded the shard
+  // reports, so a missing one says what was expected rather than ENOENT.
+  const entries = await readdir(shardsDir).catch((error: unknown) => {
+    throw new Error(
+      `No shard reports: expected ${shardsDir}/mutation-<boundary>/mutation.json, which the mutation workflow downloads before merging`,
+      { cause: error },
+    );
+  });
   const shardNames = entries.filter((name) => name.startsWith('mutation-'));
   const shards = await Promise.all(
     shardNames.map(async (name) => {
@@ -143,7 +148,15 @@ export async function mergeMutationReports(
     throw new Error(`No mutation-* reports found in ${shardsDir}`);
   }
   const files = Object.assign({}, ...shards.map((shard) => shard.report.files));
-  const merged: MutationReport = { ...first.report, files };
+
+  // Every shard's tests too: a mutant's `killedBy` and `coveredBy` name tests in
+  // its own shard's `testFiles`, and the viewer resolves them in the merged one.
+  // Shards ran the same suite, so a test file two shards share is the same entry.
+  const testFiles = Object.assign(
+    {},
+    ...shards.map((shard) => shard.report.testFiles ?? {}),
+  );
+  const merged: MutationReport = { ...first.report, files, testFiles };
 
   // The merged JSON, and an HTML page that renders it with Stryker's own viewer.
   const mergedJson = JSON.stringify(merged);
@@ -161,4 +174,5 @@ export async function mergeMutationReports(
 
 // `shards/` and `reports/mutation/` are where the workflow downloads and uploads.
 const summary = await mergeMutationReports('shards', 'reports/mutation');
+// eslint-disable-next-line no-console
 console.log(summary);
