@@ -10,15 +10,17 @@ import {
   updateRoundEventStream,
   updateCurrentInitiative,
 } from '@transforms';
-import { isValidChooseMeleeResolutionEvent } from '@validation';
 import { throwIfUndefined } from '@utils';
+import { createEmptyGameState } from '@factories';
 
 import { getLegalChooseMeleeResolutionEvents } from './getLegalChooseMeleeResolutionEvents';
 
-import { createEmptyGameState } from '@factories';
 /**
- * GetLegalChooseMeleeResolutionEvents: initiative player’s legal choose-engagement payloads
- * during resolveMelee / resolveMelee (no melee slice in progress).
+ * Melees are resolved one at a time, and the player holding initiative chooses
+ * the order. These are the choices that player may make: one per engagement on
+ * the board that has not been resolved yet. Asking when none is left is a
+ * mistake by the caller, which should have moved the game on instead, so it
+ * throws rather than returning nothing.
  */
 describe('getLegalChooseMeleeResolutionEvents function', () => {
   function stateChoosingMeleeEngagement(options?: {
@@ -44,7 +46,7 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
     return state;
   }
 
-  it('returns one full ChooseMeleeResolutionEvent per remaining engagement for initiative player', () => {
+  it('offers the player with initiative one choice per engagement still unresolved', () => {
     const state = stateChoosingMeleeEngagement({
       initiative: 'white',
       remaining: ['E-4', 'E-5', 'E-6'] as const,
@@ -52,18 +54,32 @@ describe('getLegalChooseMeleeResolutionEvents function', () => {
 
     const options = getLegalChooseMeleeResolutionEvents(state);
 
-    expect(options).toHaveLength(3);
-    expect(options.map((o) => o.space)).toStrictEqual(['E-4', 'E-5', 'E-6']);
-    for (const o of options) {
-      expect(o).toStrictEqual({
+    // Three melees are waiting, so white may name any one of them to resolve
+    // next. Every choice carries the same player and event number; only the
+    // space differs, since the space is the engagement being picked.
+    expect(options).toStrictEqual([
+      {
         choiceType: 'chooseMeleeResolution',
         eventNumber: 0,
         eventType: PLAYER_CHOICE_EVENT_TYPE,
         player: 'white',
-        space: o.space,
-      });
-      expect(isValidChooseMeleeResolutionEvent(o, state).result).toBe(true);
-    }
+        space: 'E-4',
+      },
+      {
+        choiceType: 'chooseMeleeResolution',
+        eventNumber: 0,
+        eventType: PLAYER_CHOICE_EVENT_TYPE,
+        player: 'white',
+        space: 'E-5',
+      },
+      {
+        choiceType: 'chooseMeleeResolution',
+        eventNumber: 0,
+        eventType: PLAYER_CHOICE_EVENT_TYPE,
+        player: 'white',
+        space: 'E-6',
+      },
+    ]);
   });
 
   it('throws when there are no remaining engagements (caller should advance phase)', () => {
