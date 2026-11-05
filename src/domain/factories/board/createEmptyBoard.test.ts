@@ -10,10 +10,12 @@ import {
 } from './createEmptyBoard';
 
 describe('createEmptyStandardBoard function', () => {
-  it('fills the standard layout and labels the board standard', () => {
+  it('lays out 12 rows of 18 spaces and labels the board standard', () => {
     const board = createEmptyStandardBoard();
     expect(board.boardType).toBe('standard');
-    expect(Object.keys(board.board).length).toBeGreaterThan(0);
+    // Rows A to L, columns 1 to 18: L-18 is the far corner.
+    expect(Object.keys(board.board)).toHaveLength(216);
+    expect(board.board).toHaveProperty('L-18');
   });
 
   it('satisfies boardSchema', () => {
@@ -23,10 +25,12 @@ describe('createEmptyStandardBoard function', () => {
 });
 
 describe('createEmptySmallBoard function', () => {
-  it('fills the small layout and labels the board small', () => {
+  it('lays out 8 rows of 12 spaces and labels the board small', () => {
     const board = createEmptySmallBoard();
     expect(board.boardType).toBe('small');
-    expect(Object.keys(board.board).length).toBeGreaterThan(0);
+    // Rows A to H, columns 1 to 12: H-12 is the far corner.
+    expect(Object.keys(board.board)).toHaveLength(96);
+    expect(board.board).toHaveProperty('H-12');
   });
 
   it('satisfies boardSchema', () => {
@@ -36,10 +40,12 @@ describe('createEmptySmallBoard function', () => {
 });
 
 describe('createEmptyLargeBoard function', () => {
-  it('fills the large layout and labels the board large', () => {
+  it('lays out 24 rows of 36 spaces and labels the board large', () => {
     const board = createEmptyLargeBoard();
     expect(board.boardType).toBe('large');
-    expect(Object.keys(board.board).length).toBeGreaterThan(0);
+    // Rows A to X, columns 1 to 36: X-36 is the far corner.
+    expect(Object.keys(board.board)).toHaveLength(864);
+    expect(board.board).toHaveProperty('X-36');
   });
 
   it('satisfies boardSchema', () => {

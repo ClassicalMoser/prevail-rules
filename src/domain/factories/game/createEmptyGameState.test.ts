@@ -10,13 +10,17 @@ describe('createEmptyGameState function', () => {
   it('starts black on a standard board with empty piles and no phase', () => {
     const gameState = createEmptyGameState('standard');
 
+    // Setup is round 0. The round state already waits for round 1, the first
+    // round played, and nothing has happened in it yet.
     expect(gameState.currentRoundNumber).toBe(0);
     expect(gameState.currentRoundState.roundNumber).toBe(1);
     expect(gameState.currentRoundState.completedPhases).toStrictEqual([]);
     expect(gameState.currentRoundState.currentPhaseState).toBe('none');
     expect(gameState.currentRoundState.commandedUnits).toStrictEqual([]);
+    // Black always begins the game with the initiative.
     expect(gameState.currentInitiative).toBe('black');
     expect(gameState.boardState.boardType).toBe('standard');
+    // The engine's own view, before any card has been dealt to either side.
     expect(gameState.cardState.visibility).toBe('authoritative');
     expect(gameState.cardState.black.inHand).toStrictEqual([]);
     expect(gameState.cardState.black.played).toStrictEqual([]);
@@ -30,6 +34,8 @@ describe('createEmptyGameState function', () => {
     expect(gameState.cardState.white.burnt).toStrictEqual([]);
     expect(gameState.cardState.white.awaitingPlay).toBeNull();
     expect(gameState.cardState.white.inPlay).toBeNull();
+    // No army has been mustered: no unit waits in reserve or has routed, and
+    // no commander is lost.
     expect(gameState.reservedUnits).toStrictEqual([]);
     expect(gameState.routedUnits).toStrictEqual([]);
     expect(gameState.lostCommanders).toStrictEqual([]);

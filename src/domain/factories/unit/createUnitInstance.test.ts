@@ -6,11 +6,9 @@ import { createUnitInstance } from './createUnitInstance';
  * CreateUnitInstance: Creates a unit instance with the specified properties.
  */
 describe('createUnitInstance function', () => {
-  it('given defaults, creates a unit instance with the specified properties', () => {
+  it('fields the given unit type for one side, with its instance number', () => {
+    // Any unit type will do: the factory carries it through unchanged.
     const unitType = getUnitByStatValue('attack', 3);
-    if (!unitType) {
-      throw new Error('No unit found with attack value 3');
-    }
 
     const unit = createUnitInstance('black', unitType, 1);
 

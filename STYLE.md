@@ -39,6 +39,6 @@ The `describe` title is a string, the function name plus the word "function": `'
 
 A factory builds a value from raw inputs. A transform changes an existing state. A fixture in `@testing` does what neither of those can. Do not give two of them the same job. If a factory or a transform can do it, there is no fixture for it. Do not inline the behavior one of them already owns. None of them supplies a value the engine computes, such as legal retreat options. Run the function that computes it.
 
-Assert a value this test wrote. Do not assert a default some other helper filled in. Read it through the query that owns it, unless that query is the subject under test. The expected value is a literal: one built from the setup's fixture agrees with the fixture instead of checking the code.
+Assert a value this test wrote. Do not assert a default some other helper filled in. Read it through the query that owns it, unless that query is the subject under test. Below `@queries` there is no such query; read the field the subject writes. The expected value is a literal: one built from the setup's fixture agrees with the fixture instead of checking the code.
 
 A helper stays in a spec only when its meaning is strictly limited to the module under test. That case is rare. Otherwise its job belongs to a factory, a transform, or `@testing`, even if one suite is currently the only caller. See [`src/domain/testing/README.md`](./src/domain/testing/README.md).

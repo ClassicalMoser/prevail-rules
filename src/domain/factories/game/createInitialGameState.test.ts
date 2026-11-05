@@ -11,18 +11,20 @@ import { createTestCard, createTestUnit } from '@testing';
 import { createInitialGameState } from './createInitialGameState';
 
 describe('createInitialGameState function', () => {
+  // Any unit types will do: this suite counts and numbers the units dealt,
+  // and never reads their stats.
   const whiteType = createTestUnit('white').unitType;
   const blackType = createTestUnit('black').unitType;
 
   const whiteArmy: Army = {
     commandCards: [],
-    id: '00000010-0000-1234-0000-000000000001',
+    id: '10000000-0000-4000-8000-000000000001',
     name: 'White',
     units: [{ count: 2, unitType: whiteType }],
   };
   const blackArmy: Army = {
     commandCards: [],
-    id: '00000020-0000-1234-0000-000000000002',
+    id: '20000000-0000-4000-8000-000000000002',
     name: 'Black',
     units: [{ count: 1, unitType: blackType }],
   };
@@ -47,7 +49,7 @@ describe('createInitialGameState function', () => {
     ).toBe(1);
   });
 
-  it('copies each army hand instead of sharing the army array', () => {
+  it("deals each army's command cards into its own side's hand, as a copy", () => {
     const whiteCard = createTestCard();
     const blackCard = createTestCard();
     const armyWithCards: Army = {
