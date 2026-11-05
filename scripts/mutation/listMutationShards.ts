@@ -1,4 +1,5 @@
-import { readFile } from 'node:fs/promises';
+import { glob, readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { z } from 'zod';
 import { boundaries } from '../../boundaries';
 
@@ -42,42 +43,67 @@ function expandBraces(pattern: string): string[] {
 }
 
 /**
+ * Whether the config's `mutate` list selects a file, the way Stryker reads it:
+ * some pattern includes it and no `!` pattern excludes it.
+ *
+ * @param file - A path relative to the repository root
+ * @param mutate - The config's `mutate` list
+ * @returns Whether Stryker would mutate the file
+ */
+function isMutated(file: string, mutate: string[]): boolean {
+  // Positive patterns select, negated ones remove, regardless of order.
+  const included = mutate
+    .filter((pattern) => !pattern.startsWith('!'))
+    .some((pattern) => path.matchesGlob(file, pattern));
+  const excluded = mutate
+    .filter((pattern) => pattern.startsWith('!'))
+    .some((pattern) => path.matchesGlob(file, pattern.slice(1)));
+  const mutated = included && !excluded;
+  return mutated;
+}
+
+/**
  * The shards for the nightly mutation run, one per boundary in `boundaries.ts`.
  *
  * `--mutate` replaces the config's list rather than narrowing it, so each shard
- * carries the config's exclusions with it. A boundary the config excludes whole
- * (`@testing`, `@sampleValues`) gets no shard. Reading both files means a new
- * boundary is mutated without anyone editing the workflow.
+ * carries the config's exclusions with it. A boundary gets a shard only when
+ * the config would mutate at least one of its files; that is decided by
+ * matching its files against the config, so it holds however an exclusion is
+ * written. Reading both files means a new boundary is mutated without anyone
+ * editing the workflow.
  *
  * @returns The shards, in `boundaries.ts` order
  */
 export async function listMutationShards(): Promise<MutationShard[]> {
-  // The config's negated patterns are the exclusions every shard must repeat.
+  // The config's patterns decide which files are mutated at all.
   const configText = await readFile('stryker.config.json', 'utf8');
   const config = strykerConfigSchema.parse(JSON.parse(configText));
   const exclusions = config.mutate.filter((pattern) => pattern.startsWith('!'));
 
-  // A boundary is skipped when the config already excludes its whole directory.
-  const mutated = boundaries.filter(
-    (boundary) => !exclusions.includes(`!src/${boundary.dir}/**/*.{js,ts}`),
-  );
+  // A boundary is mutated when the config selects any file in its directory.
+  const shards: MutationShard[] = [];
+  for (const boundary of boundaries) {
+    const files = await Array.fromAsync(glob(`src/${boundary.dir}/**/*`));
+    const mutated = files.some((file) => isMutated(file, config.mutate));
+    if (!mutated) {
+      continue;
+    }
 
-  // Each shard mutates its own directory, minus the shared exclusions. The CLI
-  // splits `--mutate` on commas, so a `{js,ts}` group has to become two globs.
-  const shards = mutated.map((boundary) => {
+    // The shard mutates its own directory, minus the shared exclusions. The CLI
+    // splits `--mutate` on commas, so a `{js,ts}` group has to become two globs.
     const include = `src/${boundary.dir}/**/*.{js,ts}`;
     const patterns = [include, ...exclusions].flatMap((pattern) =>
       expandBraces(pattern),
     );
-    const shard: MutationShard = {
+    shards.push({
       boundary: boundary.identifier.replace(/^@/u, ''),
       mutate: patterns.join(','),
-    };
-    return shard;
-  });
+    });
+  }
   return shards;
 }
 
 // Printed as one JSON line so the workflow can pass it to `fromJSON`.
 const shardsJson = JSON.stringify(await listMutationShards());
+// eslint-disable-next-line no-console
 console.log(shardsJson);

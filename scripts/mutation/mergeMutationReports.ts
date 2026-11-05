@@ -1,105 +1,109 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import path from 'node:path';
-import { z } from 'zod';
+import {
+  aggregateResultsByModule,
+  calculateMetrics,
+} from 'mutation-testing-metrics';
+import type { MutationTestResult } from 'mutation-testing-report-schema';
 
 /**
- * The parts of a Stryker JSON report this script reads. The objects are loose,
- * so everything else in a report (source, locations, thresholds) is carried
- * through to the merged report untouched.
+ * Whether a parsed file is a Stryker JSON report. Stryker wrote it, so this
+ * checks the fields the merge depends on rather than the whole schema.
+ *
+ * @param value - The parsed contents of a `mutation.json`
+ * @returns Whether it has a schema version, thresholds and a files map
  */
-const reportSchema = z.looseObject({
-  files: z.record(
-    z.string(),
-    z.looseObject({
-      mutants: z.array(z.looseObject({ status: z.string() })),
-    }),
-  ),
-  testFiles: z.record(z.string(), z.unknown()).optional(),
-});
+function isMutationTestResult(value: unknown): value is MutationTestResult {
+  // Objects only; arrays and null are not reports.
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return false;
+  }
 
-type MutationReport = z.infer<typeof reportSchema>;
-
-/** One boundary's line in the summary. */
-interface ShardScore {
-  boundary: string;
-  killed: number;
-  noCoverage: number;
-  score: string;
-  survived: number;
+  // The three fields every report carries.
+  const hasVersion =
+    'schemaVersion' in value && typeof value.schemaVersion === 'string';
+  const hasThresholds =
+    'thresholds' in value && typeof value.thresholds === 'object';
+  const hasFiles = 'files' in value && typeof value.files === 'object';
+  const isReport = hasVersion && hasThresholds && hasFiles;
+  return isReport;
 }
 
 /**
- * A boundary's counts and score, by Stryker's definition: killed and timed-out
- * mutants over every mutant that was tested or had no test reach it. `Ignored`,
- * `CompileError` and `RuntimeError` mutants are outside the score.
+ * Reads one shard's report from `mutation-<boundary>/mutation.json`.
+ *
+ * @param shardsDir - The directory the workflow downloaded the shards into
+ * @param name - The shard's directory name, `mutation-<boundary>`
+ * @returns The boundary and its report
+ */
+async function readShard(
+  shardsDir: string,
+  name: string,
+): Promise<{ boundary: string; report: MutationTestResult }> {
+  // The report, checked to be one before anything trusts its shape.
+  const reportPath = path.join(shardsDir, name, 'mutation.json');
+  const parsed: unknown = JSON.parse(await readFile(reportPath, 'utf8'));
+  if (!isMutationTestResult(parsed)) {
+    throw new Error(`${reportPath} is not a Stryker JSON report`);
+  }
+
+  // The directory name carries the boundary, which becomes the module name.
+  const boundary = name.replace(/^mutation-/u, '');
+  const shard = { boundary, report: parsed };
+  return shard;
+}
+
+/**
+ * One boundary's row in the summary, from Stryker's own metrics. The score is
+ * undefined (`NaN`) when no mutant was tested or uncovered.
  *
  * @param boundary - The boundary the report covers
  * @param report - That boundary's shard report
- * @returns The boundary's row in the summary
+ * @returns The Markdown table row
  */
-function scoreShard(boundary: string, report: MutationReport): ShardScore {
-  // Every mutant in the boundary, across its files.
-  const mutants = Object.values(report.files).flatMap((file) => file.mutants);
-  const count = (status: string): number =>
-    mutants.filter((mutant) => mutant.status === status).length;
+function toSummaryRow(boundary: string, report: MutationTestResult): string {
+  // Stryker's metrics for this shard's files.
+  const { metrics } = calculateMetrics(report.files);
+  const score = Number.isNaN(metrics.mutationScore)
+    ? 'n/a'
+    : `${metrics.mutationScore.toFixed(2)}%`;
 
-  // Detected mutants are the numerator; detected plus undetected the denominator.
-  const detected = count('Killed') + count('Timeout');
-  const survived = count('Survived');
-  const noCoverage = count('NoCoverage');
-  const valid = detected + survived + noCoverage;
-  const score =
-    valid === 0 ? 'n/a' : `${((100 * detected) / valid).toFixed(2)}%`;
-
-  const shardScore: ShardScore = {
-    boundary,
-    killed: detected,
-    noCoverage,
-    score,
-    survived,
-  };
-  return shardScore;
+  // Killed counts timeouts too, as the score does.
+  const detected = metrics.killed + metrics.timeout;
+  const row = `| ${boundary} | ${score} | ${detected} | ${metrics.survived} | ${metrics.noCoverage} |`;
+  return row;
 }
 
 /**
- * The scores as a Markdown table for the job summary.
+ * A self-contained page that renders a report with Stryker's own viewer,
+ * inlined from the installed `mutation-testing-elements` so the page works
+ * offline and matches the version Stryker uses. `<` in the report is escaped so
+ * source text containing `</script>` cannot end the inline script early.
  *
- * @param scores - One row per boundary
- * @returns The table
- */
-function toMarkdownTable(scores: ShardScore[]): string {
-  const header = [
-    '| Boundary | Score | Killed | Survived | No coverage |',
-    '| --- | --- | --- | --- | --- |',
-  ];
-  const rows = scores.map(
-    (s) =>
-      `| ${s.boundary} | ${s.score} | ${s.killed} | ${s.survived} | ${s.noCoverage} |`,
-  );
-  const table = [...header, ...rows].join('\n');
-  return table;
-}
-
-/**
- * A self-contained page for the merged report. `<` is escaped so a `</script>`
- * inside source text cannot end the inline script early.
- *
- * @param reportJson - The merged report, serialized
+ * @param report - The merged report
  * @returns The page
  */
-function toHtml(reportJson: string): string {
-  const safeJson = reportJson.replaceAll('<', String.raw`\u003c`);
+async function toHtml(report: MutationTestResult): Promise<string> {
+  // The viewer bundle, resolved from this project's dependencies.
+  const require = createRequire(import.meta.url);
+  const bundlePath =
+    require.resolve('mutation-testing-elements/dist/mutation-test-elements.js');
+  const bundle = await readFile(bundlePath, 'utf8');
+
+  // The report as an inline script value.
+  const reportJson = JSON.stringify(report).replaceAll('<', String.raw`\u003c`);
   const html = `<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
     <title>prevail-rules mutation report</title>
-    <script src="https://www.unpkg.com/mutation-testing-elements"></script>
+    <script>${bundle}</script>
   </head>
   <body>
     <mutation-test-report-app title-postfix="prevail-rules"></mutation-test-report-app>
     <script>
-      document.querySelector('mutation-test-report-app').report = ${safeJson};
+      document.querySelector('mutation-test-report-app').report = ${reportJson};
     </script>
   </body>
 </html>
@@ -110,9 +114,10 @@ function toHtml(reportJson: string): string {
 /**
  * Merges the per-boundary Stryker reports into one report and a score table.
  *
- * Each shard mutated a different directory, so the `files` maps never share a
- * key and merging them is a union. The shard directories are named
- * `mutation-<boundary>` by the workflow; that name is the boundary in the table.
+ * The merge is Stryker's `aggregateResultsByModule`, with each boundary as a
+ * module. Every shard is a separate run that numbers its mutants and tests from
+ * the start, so the aggregate prefixes each id with the module name, rewrites
+ * `killedBy` and `coveredBy` to match, and files each shard's paths under it.
  *
  * @param shardsDir - The directory holding one `mutation-<boundary>/mutation.json` per shard
  * @param outDir - Where the merged `mutation.json` and `mutation.html` are written
@@ -122,9 +127,8 @@ export async function mergeMutationReports(
   shardsDir: string,
   outDir: string,
 ): Promise<string> {
-  // Every shard that produced a report, by the boundary its directory names.
-  // The directory only exists once the workflow has downloaded the shard
-  // reports, so a missing one says what was expected rather than ENOENT.
+  // Every shard that produced a report. The directory only exists once the
+  // workflow has downloaded them, so a missing one says what was expected.
   const entries = await readdir(shardsDir).catch((error: unknown) => {
     throw new Error(
       `No shard reports: expected ${shardsDir}/mutation-<boundary>/mutation.json, which the mutation workflow downloads before merging`,
@@ -132,43 +136,33 @@ export async function mergeMutationReports(
     );
   });
   const shardNames = entries.filter((name) => name.startsWith('mutation-'));
-  const shards = await Promise.all(
-    shardNames.map(async (name) => {
-      const reportPath = path.join(shardsDir, name, 'mutation.json');
-      const text = await readFile(reportPath, 'utf8');
-      const report = reportSchema.parse(JSON.parse(text));
-      const boundary = name.replace(/^mutation-/u, '');
-      return { boundary, report };
-    }),
-  );
-
-  // One report: the first shard's header, every shard's files.
-  const [first] = shards;
-  if (first === undefined) {
+  if (shardNames.length === 0) {
     throw new Error(`No mutation-* reports found in ${shardsDir}`);
   }
-  const files = Object.assign({}, ...shards.map((shard) => shard.report.files));
-
-  // Every shard's tests too: a mutant's `killedBy` and `coveredBy` name tests in
-  // its own shard's `testFiles`, and the viewer resolves them in the merged one.
-  // Shards ran the same suite, so a test file two shards share is the same entry.
-  const testFiles = Object.assign(
-    {},
-    ...shards.map((shard) => shard.report.testFiles ?? {}),
+  const shards = await Promise.all(
+    shardNames.map((name) => readShard(shardsDir, name)),
   );
-  const merged: MutationReport = { ...first.report, files, testFiles };
 
-  // The merged JSON, and an HTML page that renders it with Stryker's own viewer.
-  const mergedJson = JSON.stringify(merged);
+  // One report, by Stryker's aggregation, with each boundary as a module.
+  const byBoundary = Object.fromEntries(
+    shards.map((shard) => [shard.boundary, shard.report]),
+  );
+  const merged = aggregateResultsByModule(byBoundary);
+
+  // The merged JSON, and a page that renders it.
   await mkdir(outDir, { recursive: true });
-  await writeFile(path.join(outDir, 'mutation.json'), mergedJson);
-  await writeFile(path.join(outDir, 'mutation.html'), toHtml(mergedJson));
+  await writeFile(path.join(outDir, 'mutation.json'), JSON.stringify(merged));
+  await writeFile(path.join(outDir, 'mutation.html'), await toHtml(merged));
 
   // One row per boundary, so a weak boundary is visible without opening the report.
-  const scores = shards.map((shard) =>
-    scoreShard(shard.boundary, shard.report),
+  const header = [
+    '| Boundary | Score | Killed | Survived | No coverage |',
+    '| --- | --- | --- | --- | --- |',
+  ];
+  const rows = shards.map((shard) =>
+    toSummaryRow(shard.boundary, shard.report),
   );
-  const table = toMarkdownTable(scores);
+  const table = [...header, ...rows].join('\n');
   return table;
 }
 
