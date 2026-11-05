@@ -1,5 +1,5 @@
 import type { CommandCard, PlayerSide } from '@entities';
-import type { CommitToMeleeEvent } from '@events';
+import type { CommitToMeleeEvent, MeleeModifier } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
 /**
@@ -11,14 +11,18 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * A `committedCard` of `null` is a refusal — declining the commitment without
  * spending a card — and `modifierTypes` is empty in that case.
  *
- * @param fields - The committed card or null, the modifiers it applies, the
+ * @param fields - `committedCard` card from hand to commit, or `null` to
+ * refuse / decline the commitment without spending a card; `eventNumber` the
+ * ordered index of the event in the round, zero-indexed; `modifierTypes` the
+ * modifier types the card applies (empty when refusing); `player` the player
+ * who is committing (or refusing)
  * event's index in the round, and the committing player
  * @returns The event
  */
 export function createCommitToMeleeEvent(fields: {
   committedCard: CommandCard | null;
   eventNumber: number;
-  modifierTypes: CommitToMeleeEvent['modifierTypes'];
+  modifierTypes: MeleeModifier[];
   player: PlayerSide;
 }): CommitToMeleeEvent {
   return {

@@ -9,7 +9,10 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required,
  * `eventNumber` included: a default would hide an ordering the caller means.
  *
- * @param fields - eventNumber, from, player, to
+ * @param fields - `eventNumber` the ordered index of the event in the round,
+ * zero-indexed; `from` the coordinate the commander is moving from; `player`
+ * the player who is moving the commander; `to` the coordinate the commander
+ * is moving to
  * @returns The event
  */
 export function createMoveCommanderEvent(fields: {

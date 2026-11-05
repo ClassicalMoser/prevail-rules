@@ -206,6 +206,10 @@ Each finding stays here until the human read closes it.
 
 ### `factories` and `testing`
 
+- `AssignUnitSupportEvent` documents one of its five fields. Every other player
+  choice event documents all of them. `entities` and `events` are closed, so
+  this is recorded rather than filled in.
+
 - `UnitPlacement` carries a `unit` prefix for a value that is a coordinate and a
   facing, with nothing unit-specific in it. Renaming the entity reaches every
   layer, so it is recorded rather than done.

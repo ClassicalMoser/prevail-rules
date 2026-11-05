@@ -9,7 +9,9 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required,
  * `eventNumber` included: a default would hide an ordering the caller means.
  *
- * @param fields - eventNumber, performRally, player
+ * @param fields - `eventNumber` the ordered index of the event in the round,
+ * zero-indexed; `performRally` whether the player is performing a rally;
+ * `player` the player who is choosing whether to perform a rally
  * @returns The event
  */
 export function createChooseRallyEvent(fields: {

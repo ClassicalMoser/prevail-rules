@@ -9,7 +9,10 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required,
  * `eventNumber` included: a default would hide an ordering the caller means.
  *
- * @param fields - eventNumber, moveCommander, player, to, unit
+ * @param fields - `eventNumber` the ordered index of the event in the round,
+ * zero-indexed; `moveCommander` whether to move the commander with the unit;
+ * `player` the player who is moving the unit; `to` the space the unit is
+ * moving to; `unit` the unit to move
  * @returns The event
  */
 export function createMoveUnitEvent(fields: {

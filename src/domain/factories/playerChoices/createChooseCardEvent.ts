@@ -9,7 +9,9 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required,
  * including `eventNumber`: a default would hide an ordering the caller means.
  *
- * @param fields - The card, the event's index in the round, and the chooser
+ * @param fields - `card` the card to choose from the player's hand;
+ * `eventNumber` the ordered index of the event in the round, zero-indexed;
+ * `player` the player who is choosing the card
  * @returns The event
  */
 export function createChooseCardEvent(fields: {

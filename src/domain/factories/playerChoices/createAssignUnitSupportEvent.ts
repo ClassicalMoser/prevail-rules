@@ -1,5 +1,5 @@
 import type { PlayerSide } from '@entities';
-import type { AssignUnitSupportEvent } from '@events';
+import type { AssignUnitSupportEvent, UnitSupportAssignment } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 
 /**
@@ -9,11 +9,12 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required,
  * `eventNumber` included: a default would hide an ordering the caller means.
  *
- * @param fields - assignments, eventNumber, player
+ * @param fields - `assignments` per-grant assignments (omit unused grants);
+ * `eventNumber`; `player`
  * @returns The event
  */
 export function createAssignUnitSupportEvent(fields: {
-  assignments: AssignUnitSupportEvent['assignments'];
+  assignments: UnitSupportAssignment[];
   eventNumber: number;
   player: PlayerSide;
 }): AssignUnitSupportEvent {

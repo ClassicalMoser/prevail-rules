@@ -9,7 +9,9 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * vary, so they are filled in here. Everything that can vary is required,
  * `eventNumber` included: a default would hide an ordering the caller means.
  *
- * @param fields - command, eventNumber, player, units
+ * @param fields - `command` the commands to issue; `eventNumber` the ordered
+ * index of the event in the round, zero-indexed; `player` the player who is
+ * issuing the commands; `units` the units to apply the commands to
  * @returns The event
  */
 export function createIssueCommandEvent(fields: {
