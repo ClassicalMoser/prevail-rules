@@ -11,10 +11,5 @@ export {
   coordinatesOfLines,
   coordinatesOfSegment,
 } from './lineCoordinates';
-export { cardState, hiddenCards, ownedCards } from './cardStates';
 export { updateCardState } from './updateCardState';
-export {
-  createUnitWithPlacement,
-  placed,
-  placement,
-} from './unitWithPlacement';
+export { createUnitWithPlacement, placed } from './unitWithPlacement';

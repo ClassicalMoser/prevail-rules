@@ -13,13 +13,12 @@ import {
   createRetreatState,
   createTestUnit,
   placed,
-  placement,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '../';
 
 import { updateRetreatState } from './updateRetreatState';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createUnitPlacement } from '@factories';
 /**
  * UpdateRetreatState: Creates a new game state with the retreat state updated.
  */
@@ -198,7 +197,7 @@ describe('updateRetreatState function', () => {
     });
     const stateInPhase = updatePhaseState(withBoard, phaseState);
     const nextRetreat = createRetreatState(placedUnit, {
-      finalPosition: placement('E-4', 'north'),
+      finalPosition: createUnitPlacement('E-4', 'north'),
     });
 
     const next = updateRetreatState(stateInPhase, nextRetreat);
@@ -250,7 +249,7 @@ describe('updateRetreatState function', () => {
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
     const melee = createMeleeResolutionState(state, {
       blackAttackApplyState: createAttackApplyStateWithRetreat({
-        placement: placement('E-5', 'south'),
+        placement: createUnitPlacement('E-5', 'south'),
         unit: blackUnit,
       }),
       whiteAttackApplyState: createAttackApplyState(whiteUnit),
@@ -275,7 +274,7 @@ describe('updateRetreatState function', () => {
     const melee = createMeleeResolutionState(state, {
       blackAttackApplyState: createAttackApplyState(blackUnit),
       whiteAttackApplyState: createAttackApplyStateWithRetreat({
-        placement: placement('E-5', 'north'),
+        placement: createUnitPlacement('E-5', 'north'),
         unit: whiteUnit,
       }),
     });

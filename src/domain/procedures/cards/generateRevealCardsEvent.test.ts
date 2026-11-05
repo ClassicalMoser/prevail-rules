@@ -1,11 +1,15 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { cardState, ownedCards, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
 import { updatePhaseState, updatePlayerCardState } from '@transforms';
 
 import { generateRevealCardsEvent } from './generateRevealCardsEvent';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createCardState,
+  createEmptyGameState,
+  createOwnedCardState,
+} from '@factories';
 /**
  * Reveal cards step: both players’ awaitingPlay cards become public knowledge.
  * The procedure bakes both card identities into the event payload.
@@ -15,9 +19,9 @@ describe('generateRevealCardsEvent function', () => {
     const state = createEmptyGameState('standard');
     const stateWithCards = updateCardState(
       state,
-      cardState(
-        ownedCards({ awaitingPlay: tempCommandCards[0] }),
-        ownedCards({ awaitingPlay: tempCommandCards[1] }),
+      createCardState(
+        createOwnedCardState({ awaitingPlay: tempCommandCards[0] }),
+        createOwnedCardState({ awaitingPlay: tempCommandCards[1] }),
       ),
     );
     return updatePhaseState(stateWithCards, {
@@ -41,7 +45,7 @@ describe('generateRevealCardsEvent function', () => {
     const stateMissingBlack = updatePlayerCardState(
       state,
       'black',
-      ownedCards({ awaitingPlay: null }),
+      createOwnedCardState({ awaitingPlay: null }),
     );
 
     expect(() => generateRevealCardsEvent(stateMissingBlack, 0)).toThrow(
@@ -54,7 +58,7 @@ describe('generateRevealCardsEvent function', () => {
     const stateMissingWhite = updatePlayerCardState(
       state,
       'white',
-      ownedCards({ awaitingPlay: null }),
+      createOwnedCardState({ awaitingPlay: null }),
     );
 
     expect(() => generateRevealCardsEvent(stateMissingWhite, 0)).toThrow(

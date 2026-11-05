@@ -41,10 +41,6 @@ export {
   createTestCommand,
   createUnitWithPlacement,
   placed,
-  placement,
-  cardState,
-  hiddenCards,
-  ownedCards,
   updateCardState,
 } from './testHelpers';
 export { createTestUnit, createUnitByStat } from './unitHelpers';

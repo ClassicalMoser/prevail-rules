@@ -2,10 +2,10 @@ import type {
   Coordinate,
   UnitFacing,
   UnitInstance,
-  UnitPlacement,
   UnitType,
   UnitWithPlacement,
 } from '@entities';
+import { createUnitPlacement } from '@factories';
 import { createTestUnit } from '@testing/unitHelpers';
 
 /**
@@ -42,28 +42,11 @@ export function createUnitWithPlacement(options?: {
 }
 
 /**
- * A placement from its two parts.
- *
- * Both arguments are string literal types, so the call states the fact and the
- * keys add nothing to it: `placement('E-5', 'north')`.
- *
- * @param coordinate - The space stood on
- * @param facing - The direction faced
- * @returns The placement
- */
-export function placement(
-  coordinate: Coordinate,
-  facing: UnitFacing,
-): UnitPlacement {
-  return { coordinate, facing };
-}
-
-/**
  * A unit the caller already has, put at a coordinate and facing.
  *
+ * Composes {@link createUnitPlacement} with the unit, which is the whole of
+ * what a spec needs when two units must be positioned relative to each other.
  * {@link createUnitWithPlacement} builds the unit as well, from stat options.
- * This one places a unit that already exists, which is what a spec needs when
- * two units have to be positioned relative to each other.
  *
  * @param unit - The unit to place
  * @param coordinate - The space it stands on
@@ -75,5 +58,5 @@ export function placed(
   coordinate: Coordinate,
   facing: UnitFacing,
 ): UnitWithPlacement {
-  return { placement: placement(coordinate, facing), unit };
+  return { placement: createUnitPlacement(coordinate, facing), unit };
 }
