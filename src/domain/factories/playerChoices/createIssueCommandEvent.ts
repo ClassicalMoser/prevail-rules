@@ -15,17 +15,17 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createIssueCommandEvent(fields: {
-  command: Command;
-  eventNumber: number;
   player: PlayerSide;
+  eventNumber: number;
+  command: Command;
   units: UnitInstance[];
 }): IssueCommandEvent {
   return {
-    choiceType: 'issueCommand',
-    command: fields.command,
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
+    choiceType: 'issueCommand',
     player: fields.player,
+    eventNumber: fields.eventNumber,
+    command: fields.command,
     units: fields.units,
   };
 }

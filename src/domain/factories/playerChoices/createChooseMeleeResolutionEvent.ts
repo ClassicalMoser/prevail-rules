@@ -15,15 +15,15 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createChooseMeleeResolutionEvent(fields: {
-  eventNumber: number;
   player: PlayerSide;
+  eventNumber: number;
   space: Coordinate;
 }): ChooseMeleeResolutionEvent {
   return {
-    choiceType: 'chooseMeleeResolution',
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
+    choiceType: 'chooseMeleeResolution',
     player: fields.player,
+    eventNumber: fields.eventNumber,
     space: fields.space,
   };
 }

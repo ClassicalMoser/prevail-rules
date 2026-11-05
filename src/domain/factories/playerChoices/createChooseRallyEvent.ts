@@ -15,15 +15,15 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createChooseRallyEvent(fields: {
+  player: PlayerSide;
   eventNumber: number;
   performRally: boolean;
-  player: PlayerSide;
 }): ChooseRallyEvent {
   return {
-    choiceType: 'chooseRally',
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
-    performRally: fields.performRally,
+    choiceType: 'chooseRally',
     player: fields.player,
+    eventNumber: fields.eventNumber,
+    performRally: fields.performRally,
   };
 }

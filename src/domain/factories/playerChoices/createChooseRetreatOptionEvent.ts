@@ -15,15 +15,15 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createChooseRetreatOptionEvent(fields: {
-  eventNumber: number;
   player: PlayerSide;
+  eventNumber: number;
   retreatOption: UnitPlacement;
 }): ChooseRetreatOptionEvent {
   return {
-    choiceType: 'chooseRetreatOption',
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
+    choiceType: 'chooseRetreatOption',
     player: fields.player,
+    eventNumber: fields.eventNumber,
     retreatOption: fields.retreatOption,
   };
 }

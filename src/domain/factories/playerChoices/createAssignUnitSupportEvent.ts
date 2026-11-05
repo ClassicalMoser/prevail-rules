@@ -14,15 +14,15 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createAssignUnitSupportEvent(fields: {
-  assignments: UnitSupportAssignment[];
-  eventNumber: number;
   player: PlayerSide;
+  eventNumber: number;
+  assignments: UnitSupportAssignment[];
 }): AssignUnitSupportEvent {
   return {
-    assignments: fields.assignments,
-    choiceType: 'assignUnitSupport',
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
+    choiceType: 'assignUnitSupport',
     player: fields.player,
+    eventNumber: fields.eventNumber,
+    assignments: fields.assignments,
   };
 }

@@ -14,13 +14,13 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createDoneIssuingCommandsEvent(fields: {
-  eventNumber: number;
   player: PlayerSide;
+  eventNumber: number;
 }): DoneIssuingCommandsEvent {
   return {
-    choiceType: 'doneIssuingCommands',
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
+    choiceType: 'doneIssuingCommands',
     player: fields.player,
+    eventNumber: fields.eventNumber,
   };
 }

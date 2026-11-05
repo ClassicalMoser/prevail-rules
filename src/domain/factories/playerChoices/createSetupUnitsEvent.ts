@@ -18,17 +18,17 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createSetupUnitsEvent(fields: {
-  commanderCoordinate: Coordinate;
-  eventNumber: number;
   player: PlayerSide;
+  eventNumber: number;
+  commanderCoordinate: Coordinate;
   unitPlacements: UnitWithPlacement[];
 }): SetupUnitsEvent {
   return {
-    choiceType: 'setupUnits',
-    commanderCoordinate: fields.commanderCoordinate,
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
+    choiceType: 'setupUnits',
     player: fields.player,
+    eventNumber: fields.eventNumber,
+    commanderCoordinate: fields.commanderCoordinate,
     unitPlacements: fields.unitPlacements,
   };
 }

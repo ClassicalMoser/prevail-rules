@@ -15,15 +15,15 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createChooseCardEvent(fields: {
-  card: CommandCard;
-  eventNumber: number;
   player: PlayerSide;
+  eventNumber: number;
+  card: CommandCard;
 }): ChooseCardEvent {
   return {
-    card: fields.card,
-    choiceType: 'chooseCard',
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
+    choiceType: 'chooseCard',
     player: fields.player,
+    eventNumber: fields.eventNumber,
+    card: fields.card,
   };
 }

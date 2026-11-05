@@ -16,18 +16,18 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createMoveUnitEvent(fields: {
+  player: PlayerSide;
   eventNumber: number;
   moveCommander: boolean;
-  player: PlayerSide;
   to: UnitPlacement;
   unit: UnitWithPlacement;
 }): MoveUnitEvent {
   return {
-    choiceType: 'moveUnit',
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
-    moveCommander: fields.moveCommander,
+    choiceType: 'moveUnit',
     player: fields.player,
+    eventNumber: fields.eventNumber,
+    moveCommander: fields.moveCommander,
     to: fields.to,
     unit: fields.unit,
   };

@@ -16,17 +16,17 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createPerformRangedAttackEvent(fields: {
-  eventNumber: number;
   player: PlayerSide;
+  eventNumber: number;
   supportingUnits: UnitWithPlacement[];
   targetUnit: UnitWithPlacement;
   unit: UnitWithPlacement;
 }): PerformRangedAttackEvent {
   return {
-    choiceType: 'performRangedAttack',
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
+    choiceType: 'performRangedAttack',
     player: fields.player,
+    eventNumber: fields.eventNumber,
     supportingUnits: fields.supportingUnits,
     targetUnit: fields.targetUnit,
     unit: fields.unit,

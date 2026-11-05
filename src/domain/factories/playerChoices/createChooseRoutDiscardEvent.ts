@@ -15,15 +15,15 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createChooseRoutDiscardEvent(fields: {
-  cardIds: string[];
-  eventNumber: number;
   player: PlayerSide;
+  eventNumber: number;
+  cardIds: string[];
 }): ChooseRoutDiscardEvent {
   return {
-    cardIds: fields.cardIds,
-    choiceType: 'chooseRoutDiscard',
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
+    choiceType: 'chooseRoutDiscard',
     player: fields.player,
+    eventNumber: fields.eventNumber,
+    cardIds: fields.cardIds,
   };
 }

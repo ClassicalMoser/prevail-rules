@@ -20,17 +20,17 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createCommitToMeleeEvent(fields: {
-  committedCard: CommandCard | null;
-  eventNumber: number;
-  modifierTypes: MeleeModifier[];
   player: PlayerSide;
+  eventNumber: number;
+  committedCard: CommandCard | null;
+  modifierTypes: MeleeModifier[];
 }): CommitToMeleeEvent {
   return {
-    choiceType: 'commitToMelee',
-    committedCard: fields.committedCard,
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
-    modifierTypes: fields.modifierTypes,
+    choiceType: 'commitToMelee',
     player: fields.player,
+    eventNumber: fields.eventNumber,
+    committedCard: fields.committedCard,
+    modifierTypes: fields.modifierTypes,
   };
 }

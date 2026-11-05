@@ -16,17 +16,17 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createMoveCommanderEvent(fields: {
+  player: PlayerSide;
   eventNumber: number;
   from: Coordinate;
-  player: PlayerSide;
   to: Coordinate;
 }): MoveCommanderEvent {
   return {
-    choiceType: 'moveCommander',
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
-    from: fields.from,
+    choiceType: 'moveCommander',
     player: fields.player,
+    eventNumber: fields.eventNumber,
+    from: fields.from,
     to: fields.to,
   };
 }

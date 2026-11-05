@@ -17,17 +17,17 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * @returns The event
  */
 export function createCommitToMovementEvent(fields: {
-  committedCard: CommandCard | null;
-  eventNumber: number;
-  modifierTypes: MovementModifier[];
   player: PlayerSide;
+  eventNumber: number;
+  committedCard: CommandCard | null;
+  modifierTypes: MovementModifier[];
 }): CommitToMovementEvent {
   return {
-    choiceType: 'commitToMovement',
-    committedCard: fields.committedCard,
-    eventNumber: fields.eventNumber,
     eventType: PLAYER_CHOICE_EVENT_TYPE,
-    modifierTypes: fields.modifierTypes,
+    choiceType: 'commitToMovement',
     player: fields.player,
+    eventNumber: fields.eventNumber,
+    committedCard: fields.committedCard,
+    modifierTypes: fields.modifierTypes,
   };
 }
