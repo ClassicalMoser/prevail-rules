@@ -38,24 +38,26 @@ boundary violated, lint clean. Cycle detection cannot see it because there is no
 cycle to see. Self-proof and circularity are different problems and only one of
 them exists here.
 
-**`pnpm check:selfProof` now enforces it** (`scripts/checkSelfProvingSpecs.ts`).
+**`pnpm validate` now enforces it** (`scripts/selfProof/`).
 It builds the import graph from `boundaries.ts` and the imports themselves,
 resolves each name through the barrels to the module that declares it, drops
 type-only edges, and asks whether any non-subject import reaches the subject.
-Nothing to keep in step by hand. Run it after every commit in this pass.
+Nothing to keep in step by hand, and it runs in about a second.
 
-It flags exactly one spec today, and it is a real tautology:
-`legality/choiceOptions/getLegalChooseMeleeResolutionEvents.test.ts:65` asserts
-`isValidChooseMeleeResolutionEvent(o, state).result` is true for each option
-`o` the subject returned — and `isValidMeleeResolutionEvent.ts:19` computes
-`getLegalChooseMeleeResolutionEvents(state)` and checks membership. The
-assertion is "every option the subject returned is among the options the
-subject returned." It holds for any implementation. Fixing it means naming the
-legal engagements as a literal; which engagements those are is a rules
-question, so leave it for the human read unless told otherwise.
+It found exactly one spec, a real tautology, and it is fixed (`6749201`).
+`getLegalChooseMeleeResolutionEvents.test.ts` asked
+`isValidChooseMeleeResolutionEvent` whether each returned option was valid —
+and that validator computes the legal options by calling the subject, so the
+assertion said every option returned was among the options returned. The three
+choices are literals now. The same block also read `space` from the actual
+value, which the import graph cannot see; that is gone too.
+
+**The suite is at zero, so any new hit is something this pass introduced.**
 
 So: before reaching out of order, say what in the spec needs it and why — then
-let the check answer whether it closes the loop.
+let the check answer whether it closes the loop. What the check cannot see is a
+single assertion reading its expected value off the actual one, as that spec
+also did. That stays a reading job.
 
 Two worked cases, because they land on opposite sides:
 
@@ -361,9 +363,12 @@ in three steps and the order matters.
   statement as real domain symbols, so this is splitting an import rather than
   swapping a specifier. `pnpm validate` in each repo. The client and server
   depend on this package by `link:`, so `pnpm build` here first.
-- **Step 3 — this package.** Delete the `@sampleValues` block from
-  `src/domain/index.ts` and point this repo's own 78 specs at `@sampleValues`
-  directly, which they may already do. Then `/domain` carries engine only.
+- **Step 3 — this package.** Delete the `@sampleValues` block at
+  `src/domain/index.ts:582-588`. Nothing inside this package is affected: all 78
+  specs here already import `@sampleValues`, and no module in `src` imports the
+  domain root barrel at all, because reaching it from inside would be an
+  ancestor import and the lint stops that even in specs. So the only thing
+  holding step 3 back is step 2. Then `/domain` carries engine only.
 
 `@testing` is deliberately not exported, and this does not change that. If
 consumers' tests later want the fixtures, that is a second subpath and a
