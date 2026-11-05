@@ -45,8 +45,9 @@ export interface CoordinateLayout<
   /** Ordered column numbers (digit strings) for this size; index = column index. */
   readonly columnNumbers: readonly C[];
   /**
-   * Join a row letter and column number into a {@link Coordinate}.
-   * Implementations delegate to `joinCoordinate` in `@factories`; unknown pairs throw.
+   * Names the space at a row letter and column number on this board.
+   * Throws when the row or column is not this size's, including a space only
+   * a larger board has.
    */
   createCoordinate: (row: string, column: string) => Coordinate;
   /** O(1) row string → index; `-1` if not valid for this layout. */

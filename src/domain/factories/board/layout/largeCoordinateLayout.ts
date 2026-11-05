@@ -1,41 +1,17 @@
-/**
- * Large-board {@link CoordinateLayout} value.
- *
- * Same contract as the small/standard layouts: row/column arrays are the size
- * identity; callables take `string` and join/lookup without re-proving size
- * in the type system. Large's letter/number sets are the widest; nested sizes
- * are subsets. See {@link smallCoordinateLayout} for the pattern.
- *
- * Index maps are built once at module load; unknown part strings return `-1`.
- */
-
 import type {
   CoordinateLayout,
   LargeBoardColumnNumber,
   LargeBoardRowLetter,
 } from '@entities';
 import { largeBoardColumnNumbers, largeBoardRowLetters } from '@entities';
-import { joinCoordinate } from './joinCoordinate';
+import { buildCoordinateLayout } from './buildCoordinateLayout';
 
-// Prebuilt for O(1) getRowIndex / getColumnIndex (hot path in step queries).
-const rowIndexMap = new Map<string, number>(
-  largeBoardRowLetters.map((s, i) => [s, i]),
-);
-const columnIndexMap = new Map<string, number>(
-  largeBoardColumnNumbers.map((s, i) => [s, i]),
-);
-
+/** The large board: rows A–X, columns 1–36. */
 export const largeCoordinateLayout: CoordinateLayout<
   LargeBoardRowLetter,
   LargeBoardColumnNumber
-> = {
-  /** Large columns 1–36; identity of this size together with `rowLetters`. */
-  columnNumbers: largeBoardColumnNumbers,
-  // Unknown pairs throw inside joinCoordinate; callers should pass parts from
-  // these arrays (or indices already bounded against them).
-  createCoordinate: (row, column) => joinCoordinate(row, column),
-  getColumnIndex: (col) => columnIndexMap.get(col) ?? -1,
-  getRowIndex: (row) => rowIndexMap.get(row) ?? -1,
-  /** Large rows A–X; identity of this size together with `columnNumbers`. */
-  rowLetters: largeBoardRowLetters,
-};
+> = buildCoordinateLayout(
+  'large',
+  largeBoardRowLetters,
+  largeBoardColumnNumbers,
+);

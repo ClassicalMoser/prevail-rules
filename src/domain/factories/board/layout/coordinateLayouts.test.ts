@@ -29,6 +29,15 @@ describe('the small board layout', () => {
   it('names the space at a row and column', () => {
     expect(smallCoordinateLayout.createCoordinate('H', '12')).toBe('H-12');
   });
+
+  it('refuses to name a space off the small board, even one larger boards have', () => {
+    expect(() => smallCoordinateLayout.createCoordinate('I', '1')).toThrow(
+      'Invalid coordinate for small board: I-1',
+    );
+    expect(() => smallCoordinateLayout.createCoordinate('A', '13')).toThrow(
+      'Invalid coordinate for small board: A-13',
+    );
+  });
 });
 
 describe('the standard board layout', () => {
@@ -47,6 +56,15 @@ describe('the standard board layout', () => {
   it('names the space at a row and column', () => {
     expect(standardCoordinateLayout.createCoordinate('L', '18')).toBe('L-18');
   });
+
+  it('refuses to name a space off the standard board, even one the large board has', () => {
+    expect(() => standardCoordinateLayout.createCoordinate('M', '1')).toThrow(
+      'Invalid coordinate for standard board: M-1',
+    );
+    expect(() => standardCoordinateLayout.createCoordinate('A', '19')).toThrow(
+      'Invalid coordinate for standard board: A-19',
+    );
+  });
 });
 
 describe('the large board layout', () => {
@@ -64,6 +82,15 @@ describe('the large board layout', () => {
 
   it('names the space at a row and column', () => {
     expect(largeCoordinateLayout.createCoordinate('X', '36')).toBe('X-36');
+  });
+
+  it('refuses to name a space off the large board', () => {
+    expect(() => largeCoordinateLayout.createCoordinate('Y', '1')).toThrow(
+      'Invalid coordinate for large board: Y-1',
+    );
+    expect(() => largeCoordinateLayout.createCoordinate('A', '37')).toThrow(
+      'Invalid coordinate for large board: A-37',
+    );
   });
 });
 
