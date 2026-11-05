@@ -39,8 +39,8 @@ const makeArmy = (id: string, name: string): Army => ({
   units: makeArmyUnits(),
 });
 
-export const whiteArmyUUID = '00000010-0000-1234-0000-000000000001';
-export const blackArmyUUID = '00000020-0000-1234-0000-000000000002';
+export const whiteArmyUUID = '10000000-0000-4000-8000-000000000001';
+export const blackArmyUUID = '20000000-0000-4000-8000-000000000002';
 
 export const whiteTinyStarterArmy: Army = makeArmy(whiteArmyUUID, 'White');
 

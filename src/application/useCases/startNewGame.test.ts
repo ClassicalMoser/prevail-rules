@@ -74,7 +74,7 @@ describe('startNewGame function', () => {
           onGameStateChange: matching,
         },
         {
-          gameId: '11111111-1111-1111-1111-111111111111',
+          gameId: '11111111-1111-4111-8111-111111111111',
           gameMode: gameModes[1].name,
           onError: vi.fn(),
           onGameStateChange: wrongId,
