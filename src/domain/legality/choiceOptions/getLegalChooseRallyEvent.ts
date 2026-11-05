@@ -1,6 +1,6 @@
 import type { ChooseRallyEvent } from '@events';
 import type { GameState } from '@game';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
+import { createChooseRallyEvent } from '@factories';
 import {
   getCleanupPhaseState,
   getCurrentInitiative,
@@ -32,13 +32,13 @@ export function getLegalChooseRallyEvent(
   // If the active player is the first player, add a legal choose rally event
   if (phaseState.step === 'firstPlayerChooseRally') {
     for (const performRally of [true, false]) {
-      result.push({
-        choiceType: 'chooseRally',
-        eventNumber,
-        eventType: PLAYER_CHOICE_EVENT_TYPE,
-        performRally,
-        player: firstPlayer,
-      });
+      result.push(
+        createChooseRallyEvent({
+          player: firstPlayer,
+          eventNumber,
+          performRally,
+        }),
+      );
     }
   }
 
@@ -47,13 +47,13 @@ export function getLegalChooseRallyEvent(
   // If the active player is the second player, add a legal choose rally event
   if (phaseState.step === 'secondPlayerChooseRally') {
     for (const performRally of [true, false]) {
-      result.push({
-        choiceType: 'chooseRally',
-        eventNumber,
-        eventType: PLAYER_CHOICE_EVENT_TYPE,
-        performRally,
-        player: secondPlayer,
-      });
+      result.push(
+        createChooseRallyEvent({
+          player: secondPlayer,
+          eventNumber,
+          performRally,
+        }),
+      );
     }
   }
 

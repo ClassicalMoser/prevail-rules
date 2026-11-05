@@ -1,7 +1,7 @@
 import type { CommandCard, PlayerSide, StatModifier } from '@entities';
 import type { CommitToRangedAttackEvent } from '@events';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import type { GameState } from '@game';
+import { createCommitToRangedAttackEvent } from '@factories';
 import { getNextEventNumber, getOwnedPlayerCardState } from '@queries';
 
 /** Modifier types that may appear on a commitToRangedAttack event. */
@@ -81,26 +81,26 @@ export function getLegalCommitToRangedAttackEvents<S extends GameState>(
       if (modifierTypes.length === 0) {
         continue;
       }
-      result.push({
-        choiceType: 'commitToRangedAttack',
-        committedCard,
-        eventNumber,
-        eventType: PLAYER_CHOICE_EVENT_TYPE,
-        modifierTypes,
-        player,
-      });
+      result.push(
+        createCommitToRangedAttackEvent({
+          player,
+          eventNumber,
+          committedCard,
+          modifierTypes,
+        }),
+      );
     }
   }
 
   // Always allow refusing / declining without spending a card.
-  result.push({
-    choiceType: 'commitToRangedAttack',
-    committedCard: null,
-    eventNumber,
-    eventType: PLAYER_CHOICE_EVENT_TYPE,
-    modifierTypes: [],
-    player,
-  });
+  result.push(
+    createCommitToRangedAttackEvent({
+      player,
+      eventNumber,
+      committedCard: null,
+      modifierTypes: [],
+    }),
+  );
 
   return result;
 }

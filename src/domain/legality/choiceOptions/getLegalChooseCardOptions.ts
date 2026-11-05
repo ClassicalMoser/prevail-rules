@@ -1,7 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { ChooseCardEvent } from '@events';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import type { GameState } from '@game';
+import { createChooseCardEvent } from '@factories';
 import { getNextEventNumber, getOwnedPlayerCardState } from '@queries';
 
 function pendingOwnedPlayers<S extends GameState>(gameState: S): PlayerSide[] {
@@ -68,13 +68,7 @@ export function getLegalChooseCardOptions<S extends GameState>(
   for (const player of pendingPlayers) {
     const hand = getOwnedPlayerCardState(gameState.cardState, player).inHand;
     for (const card of hand) {
-      result.push({
-        card,
-        choiceType: 'chooseCard',
-        eventNumber,
-        eventType: PLAYER_CHOICE_EVENT_TYPE,
-        player,
-      });
+      result.push(createChooseCardEvent({ player, eventNumber, card }));
     }
   }
 

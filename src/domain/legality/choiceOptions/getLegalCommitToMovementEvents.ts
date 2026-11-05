@@ -1,7 +1,7 @@
 import type { CommandCard, PlayerSide, StatModifier } from '@entities';
 import type { CommitToMovementEvent } from '@events';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import type { GameState } from '@game';
+import { createCommitToMovementEvent } from '@factories';
 import {
   getNextEventNumber,
   getOtherPlayer,
@@ -100,26 +100,26 @@ export function getLegalCommitToMovementEvents<S extends GameState>(
       if (modifierTypes.length === 0) {
         continue;
       }
-      result.push({
-        choiceType: 'commitToMovement',
-        committedCard,
-        eventNumber,
-        eventType: PLAYER_CHOICE_EVENT_TYPE,
-        modifierTypes,
-        player,
-      });
+      result.push(
+        createCommitToMovementEvent({
+          player,
+          eventNumber,
+          committedCard,
+          modifierTypes,
+        }),
+      );
     }
   }
 
   // Always allow refusing / declining without spending a card.
-  result.push({
-    choiceType: 'commitToMovement',
-    committedCard: null,
-    eventNumber,
-    eventType: PLAYER_CHOICE_EVENT_TYPE,
-    modifierTypes: [],
-    player,
-  });
+  result.push(
+    createCommitToMovementEvent({
+      player,
+      eventNumber,
+      committedCard: null,
+      modifierTypes: [],
+    }),
+  );
 
   return result;
 }

@@ -1,7 +1,7 @@
 import type { ChooseRetreatOptionEvent } from '@events';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import type { GameState, RetreatState } from '@game';
 import { findRetreatState, getNextEventNumber } from '@queries';
+import { createChooseRetreatOptionEvent } from '@factories';
 
 /**
  * Finds a retreat substep that is awaiting a player choice of retreat option
@@ -51,11 +51,7 @@ export function getLegalChooseRetreatOptionEvents<S extends GameState>(
   const eventNumber = getNextEventNumber(gameState);
   const player = retreatState.retreatingUnit.unit.playerSide;
 
-  return retreatState.legalRetreatOptions.map((retreatOption) => ({
-    choiceType: 'chooseRetreatOption',
-    eventNumber,
-    eventType: PLAYER_CHOICE_EVENT_TYPE,
-    player,
-    retreatOption,
-  }));
+  return retreatState.legalRetreatOptions.map((retreatOption) =>
+    createChooseRetreatOptionEvent({ player, eventNumber, retreatOption }),
+  );
 }

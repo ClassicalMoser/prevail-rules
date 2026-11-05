@@ -1,6 +1,6 @@
 import type { DoneIssuingCommandsEvent } from '@events';
 import type { GameState } from '@game';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
+import { createDoneIssuingCommandsEvent } from '@factories';
 import { getNextEventNumber, getOtherPlayer } from '@queries';
 
 /**
@@ -39,11 +39,9 @@ export function getLegalDoneIssuingCommandsEvents(
   }
 
   return [
-    {
-      choiceType: 'doneIssuingCommands',
-      eventNumber: getNextEventNumber(gameState),
-      eventType: PLAYER_CHOICE_EVENT_TYPE,
+    createDoneIssuingCommandsEvent({
       player,
-    },
+      eventNumber: getNextEventNumber(gameState),
+    }),
   ];
 }

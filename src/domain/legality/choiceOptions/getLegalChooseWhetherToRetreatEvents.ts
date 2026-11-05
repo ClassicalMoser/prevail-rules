@@ -1,7 +1,7 @@
 import type { PlayerSide } from '@entities';
 import type { ChooseWhetherToRetreatEvent } from '@events';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import type { GameState } from '@game';
+import { createChooseWhetherToRetreatEvent } from '@factories';
 import { getNextEventNumber, getOtherPlayer } from '@queries';
 
 /**
@@ -60,11 +60,11 @@ export function getLegalChooseWhetherToRetreatEvents<S extends GameState>(
   }
 
   const eventNumber = getNextEventNumber(gameState);
-  return [true, false].map((choosesToRetreat) => ({
-    choiceType: 'chooseWhetherToRetreat',
-    choosesToRetreat,
-    eventNumber,
-    eventType: PLAYER_CHOICE_EVENT_TYPE,
-    player,
-  }));
+  return [true, false].map((choosesToRetreat) =>
+    createChooseWhetherToRetreatEvent({
+      player,
+      eventNumber,
+      choosesToRetreat,
+    }),
+  );
 }

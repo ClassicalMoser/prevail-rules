@@ -1,6 +1,6 @@
 import type { ChooseMeleeResolutionEvent } from '@events';
 import type { GameState } from '@game';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
+import { createChooseMeleeResolutionEvent } from '@factories';
 import {
   getCurrentInitiative,
   getNextEventNumber,
@@ -31,13 +31,13 @@ export function getLegalChooseMeleeResolutionEvents(
 
   // For each remaining engagement, add a legal choose melee resolution event
   for (const engagementCoordinate of remainingEngagementCoordinates) {
-    result.push({
-      choiceType: 'chooseMeleeResolution',
-      eventNumber,
-      eventType: PLAYER_CHOICE_EVENT_TYPE,
-      player: activePlayer,
-      space: engagementCoordinate,
-    });
+    result.push(
+      createChooseMeleeResolutionEvent({
+        player: activePlayer,
+        eventNumber,
+        space: engagementCoordinate,
+      }),
+    );
   }
 
   // If there are no legal choose melee resolution events,
