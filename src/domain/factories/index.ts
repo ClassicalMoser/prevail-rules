@@ -19,6 +19,12 @@ export { createOwnedCardState } from './game';
 // Authoritative card state from up to two players' piles, black first.
 export { createCardState } from './game';
 
+// Choose-card event from the card, the round index, and the chooser.
+export { createChooseCardEvent } from './playerChoices';
+
+// Commit-to-melee event, or a refusal when the committed card is null.
+export { createCommitToMeleeEvent } from './playerChoices';
+
 // Placement from a coordinate and a facing.
 export { createUnitPlacement } from './unitLocation';
 
