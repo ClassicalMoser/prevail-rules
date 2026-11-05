@@ -12,7 +12,7 @@ export {
   coordinatesOfSegment,
 } from './lineCoordinates';
 export { cardState, hiddenCards, ownedCards } from './cardStates';
-export { updateCardState, withCards } from './updateCardState';
+export { updateCardState } from './updateCardState';
 export {
   createUnitWithPlacement,
   placed,

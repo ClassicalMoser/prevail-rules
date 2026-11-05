@@ -1,7 +1,7 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { cardState, ownedCards, updateCardState, withCards } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { cardState, ownedCards, updateCardState } from '@testing';
+import { updatePhaseState, updatePlayerCardState } from '@transforms';
 
 import { generateRevealCardsEvent } from './generateRevealCardsEvent';
 
@@ -38,9 +38,11 @@ describe('generateRevealCardsEvent function', () => {
 
   it('given black awaitingPlay missing, throws', () => {
     const state = createStateWithAwaitingPlay();
-    const stateMissingBlack = withCards(state, {
-      black: { awaitingPlay: null },
-    });
+    const stateMissingBlack = updatePlayerCardState(
+      state,
+      'black',
+      ownedCards({ awaitingPlay: null }),
+    );
 
     expect(() => generateRevealCardsEvent(stateMissingBlack, 0)).toThrow(
       'Black player has no card awaiting play',
@@ -49,9 +51,11 @@ describe('generateRevealCardsEvent function', () => {
 
   it('given white awaitingPlay missing, throws', () => {
     const state = createStateWithAwaitingPlay();
-    const stateMissingWhite = withCards(state, {
-      white: { awaitingPlay: null },
-    });
+    const stateMissingWhite = updatePlayerCardState(
+      state,
+      'white',
+      ownedCards({ awaitingPlay: null }),
+    );
 
     expect(() => generateRevealCardsEvent(stateMissingWhite, 0)).toThrow(
       'White player has no card awaiting play',

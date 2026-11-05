@@ -187,7 +187,7 @@ zod schemas). The suite's problem is readability and provenance, not vacuity.
   a missing one. In-body is the target; JSDoc is the practice and stays.
 - **A comment must be legible to a reader who does not know the code.** Not
   "gameplay meaning" — `Navigates: MeleeResolutionState -> AttackApplyState ->
-  RetreatState` is accurate and useless.
+RetreatState` is accurate and useless.
 - **Test config is necessary**; judge it by composition, not volume.
 - **Prefer signals expensive to fake.** Adjacency, passing tests and line coverage
   are free to a machine. A rule cited to a test, or a surviving mutant, is not.

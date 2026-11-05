@@ -46,6 +46,5 @@ export {
   hiddenCards,
   ownedCards,
   updateCardState,
-  withCards,
 } from './testHelpers';
 export { createTestUnit, createUnitByStat } from './unitHelpers';
