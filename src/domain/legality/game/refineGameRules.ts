@@ -42,25 +42,25 @@ export function refineGameRules(
 }
 
 /** Authoritative {@link Game} schema including the game rules. */
-export const authoritativeGameWithArmyCompositionSchema: z.ZodType<
+export const legalAuthoritativeGameSchema: z.ZodType<
   GameForVisibility<'authoritative'>
 > = authoritativeGameSchema.superRefine(refineGameRules);
 
 /** White-seen {@link Game} schema including the game rules. */
-export const whiteSeenGameWithArmyCompositionSchema: z.ZodType<
+export const legalWhiteSeenGameSchema: z.ZodType<
   GameForVisibility<'whiteSeen'>
 > = whiteSeenGameSchema.superRefine(refineGameRules);
 
 /** Black-seen {@link Game} schema including the game rules. */
-export const blackSeenGameWithArmyCompositionSchema: z.ZodType<
+export const legalBlackSeenGameSchema: z.ZodType<
   GameForVisibility<'blackSeen'>
 > = blackSeenGameSchema.superRefine(refineGameRules);
 
 /** Spectator {@link Game} schema including the game rules. */
-export const spectatorGameWithArmyCompositionSchema: z.ZodType<
+export const legalSpectatorGameSchema: z.ZodType<
   GameForVisibility<'spectator'>
 > = spectatorGameSchema.superRefine(refineGameRules);
 
 /** Any-visibility {@link Game} schema including the game rules. */
-export const gameWithArmyCompositionSchema: z.ZodType<Game> =
+export const legalGameSchema: z.ZodType<Game> =
   gameSchema.superRefine(refineGameRules);

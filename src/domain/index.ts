@@ -20,15 +20,15 @@ export {
   legalArmySchema,
   refineArmyComposition,
   refineArmyRules,
-  authoritativeGameWithArmyCompositionSchema,
-  blackSeenGameWithArmyCompositionSchema,
-  gameWithArmyCompositionSchema,
+  legalAuthoritativeGameSchema,
+  legalBlackSeenGameSchema,
+  legalGameSchema,
   refineBoardLayout,
   refineGameArmyComposition,
   refineGameModeBoardSize,
   refineGameRules,
-  spectatorGameWithArmyCompositionSchema,
-  whiteSeenGameWithArmyCompositionSchema,
+  legalSpectatorGameSchema,
+  legalWhiteSeenGameSchema,
 } from '@legality';
 export type { ArmyCompositionRules } from '@legality';
 export {

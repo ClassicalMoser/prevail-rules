@@ -1,8 +1,8 @@
 export { eachCardPresentOnce, eachUnitPresentOnce } from './gameState';
 export {
-  authoritativeGameWithArmyCompositionSchema,
-  gameWithArmyCompositionSchema,
-} from './game/withArmyComposition';
+  legalAuthoritativeGameSchema,
+  legalGameSchema,
+} from './game/legalGameSchemas';
 export {
   getLegalPlayerChoiceOptions,
   isValidChooseMeleeResolutionEvent,

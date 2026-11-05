@@ -1,10 +1,10 @@
 export { refineGameArmyComposition } from './refineGameArmyComposition';
 export { refineGameModeBoardSize } from './refineGameModeBoardSize';
 export {
-  authoritativeGameWithArmyCompositionSchema,
-  blackSeenGameWithArmyCompositionSchema,
-  gameWithArmyCompositionSchema,
+  legalAuthoritativeGameSchema,
+  legalBlackSeenGameSchema,
+  legalGameSchema,
   refineGameRules,
-  spectatorGameWithArmyCompositionSchema,
-  whiteSeenGameWithArmyCompositionSchema,
+  legalSpectatorGameSchema,
+  legalWhiteSeenGameSchema,
 } from './refineGameRules';
