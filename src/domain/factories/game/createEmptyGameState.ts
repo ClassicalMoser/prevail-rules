@@ -1,5 +1,6 @@
 import type { Board, GameModeName } from '@entities';
 import type { GameStateForVisibility } from '@game';
+import { createCardState } from './createCardState';
 import {
   createEmptyLargeBoard,
   createEmptySmallBoard,
@@ -9,27 +10,9 @@ import {
 function shell(board: Board): GameStateForVisibility<'authoritative'> {
   return {
     boardState: board,
-    cardState: {
-      // Game is created by authoritative engine; non-authoritative states are passed, not created.
-      visibility: 'authoritative',
-      // Card states begin empty before initialization.
-      black: {
-        awaitingPlay: null,
-        burnt: [],
-        discarded: [],
-        inHand: [],
-        inPlay: null,
-        played: [],
-      },
-      white: {
-        awaitingPlay: null,
-        burnt: [],
-        discarded: [],
-        inHand: [],
-        inPlay: null,
-        played: [],
-      },
-    },
+    // Authoritative because the engine creates the game; a seat's view is
+    // projected from this, never created. Both sides start with empty piles.
+    cardState: createCardState(),
     // Black always begins the game with the initiative.
     currentInitiative: 'black',
     // Round number is zero during setup.
