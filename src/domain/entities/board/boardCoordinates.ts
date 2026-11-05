@@ -8,7 +8,7 @@
  * Nesting: small ⊂ standard ⊂ large, so the union is extensionally the large
  * product. Types do **not** brand a coordinate with board size — size is a
  * value on {@link Board.boardType} / the layout instance. Membership for a
- * given board is checked at Zod boundaries (`boardSchema`) and by layout
+ * given board is checked by `refineBoardLayout` in `@legality` and by layout
  * index lookups returning `-1` for out-of-range parts.
  *
  * Imports size **leaf** coordinate modules only — size barrels also re-export

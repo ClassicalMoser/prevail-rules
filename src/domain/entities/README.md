@@ -88,7 +88,7 @@ Type guards in `typeGuards/`: `hasNoUnit`, `hasSingleUnit`, `hasEngagedUnits`, p
 getCoordinateLayout(board); // → coordinateLayoutMap[board.boardType]
 ```
 
-`Coordinate` is the union across all sizes (extensionally the large set). Completeness is enforced by `boardSchema.superRefine` and geometry helpers, not by per-size TypeScript types.
+`Coordinate` is the union across all sizes (extensionally the large set). Completeness is enforced by `refineBoardLayout` in `@legality` and geometry helpers, not by per-size TypeScript types.
 
 **Why `partialRecord` + `superRefine` instead of per-size schemas?**  
 `z.object(shape)` infers literal keys. Factories and unions that touch a per-size object schema leak those keys through inference and fight the unified `Board` type. One wide schema plus a refine against `coordinateLayoutMap[boardType]` keeps the TypeScript type wide and still rejects wrong keys at parse time.

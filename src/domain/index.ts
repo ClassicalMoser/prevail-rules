@@ -23,7 +23,9 @@ export {
   authoritativeGameWithArmyCompositionSchema,
   blackSeenGameWithArmyCompositionSchema,
   gameWithArmyCompositionSchema,
+  refineBoardLayout,
   refineGameArmyComposition,
+  refineGameRules,
   spectatorGameWithArmyCompositionSchema,
   whiteSeenGameWithArmyCompositionSchema,
 } from '@legality';

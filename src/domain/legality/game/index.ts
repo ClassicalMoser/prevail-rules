@@ -1,8 +1,9 @@
+export { refineGameArmyComposition } from './refineGameArmyComposition';
 export {
   authoritativeGameWithArmyCompositionSchema,
   blackSeenGameWithArmyCompositionSchema,
   gameWithArmyCompositionSchema,
-  refineGameArmyComposition,
+  refineGameRules,
   spectatorGameWithArmyCompositionSchema,
   whiteSeenGameWithArmyCompositionSchema,
-} from './refineGameArmyComposition';
+} from './refineGameRules';

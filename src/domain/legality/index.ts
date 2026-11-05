@@ -12,9 +12,11 @@ export {
   blackSeenGameWithArmyCompositionSchema,
   gameWithArmyCompositionSchema,
   refineGameArmyComposition,
+  refineGameRules,
   spectatorGameWithArmyCompositionSchema,
   whiteSeenGameWithArmyCompositionSchema,
 } from './game';
+export { refineBoardLayout } from './board';
 export {
   getLegalChooseCardOptions,
   getLegalChooseMeleeResolutionEvents,
