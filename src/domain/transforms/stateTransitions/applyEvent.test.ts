@@ -5,7 +5,7 @@ import { applyEvent } from './applyEvent';
 import { applyGameEffectEvent } from './applyGameEffectEvent';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createChooseCardEvent, createEmptyGameState } from '@factories';
 
 vi.mock(import('./applyPlayerChoiceEvent'));
 vi.mock(import('./applyGameEffectEvent'));
@@ -22,13 +22,11 @@ describe('applyEvent function', () => {
 
   it('given playerChoice chooseCard event, delegates to applyPlayerChoiceEvent and appends event', () => {
     const state = createEmptyGameState('standard');
-    const event: Event = {
+    const event: Event = createChooseCardEvent({
       card: tempCommandCards[0],
-      choiceType: 'chooseCard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
-    };
+    });
     const mockReturnState = {
       ...state,
       currentRoundNumber: 99,

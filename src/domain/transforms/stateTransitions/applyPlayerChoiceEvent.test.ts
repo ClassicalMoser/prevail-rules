@@ -3,7 +3,9 @@ import type { PlayerChoiceEvent } from '@events';
 import { applyChooseCardEvent } from './applyChoices';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
 
-import { createEmptyGameState } from '@factories';
+import { tempCommandCards } from '@sampleValues';
+
+import { createChooseCardEvent, createEmptyGameState } from '@factories';
 
 vi.mock(import('./applyChoices'), () => ({
   applyAssignUnitSupportEvent: vi.fn(),
@@ -34,12 +36,11 @@ describe('applyPlayerChoiceEvent function', () => {
 
   it('delegates to the handler for the matching choiceType and returns its result', () => {
     const state = createEmptyGameState('standard');
-    const event = {
-      choiceType: 'chooseCard' as const,
+    const event = createChooseCardEvent({
+      card: tempCommandCards[0],
       eventNumber: 0,
-      eventType: 'playerChoice' as const,
-      player: 'black' as const,
-    } as PlayerChoiceEvent;
+      player: 'black',
+    });
 
     vi.mocked(applyChooseCardEvent).mockReturnValue(state);
 
@@ -56,6 +57,7 @@ describe('applyPlayerChoiceEvent function', () => {
       eventNumber: 0,
       eventType: 'playerChoice',
       player: 'black',
+      // The default branch needs a choiceType the union forbids.
     } as unknown as PlayerChoiceEvent;
 
     expect(() => applyPlayerChoiceEvent(event, state)).toThrow(
