@@ -3,21 +3,19 @@
   "_comment": "This config was generated using 'stryker init'. Please take a look at: https://stryker-mutator.io/docs/stryker-js/configuration/ for more information.",
   "packageManager": "pnpm",
   "mutate": [
-    "src/domain/**/*.{js,ts}",
-    "!src/domain/**/*.test.{js,ts}",
+    "src/**/*.{js,ts}",
+    "!src/**/*.test.{js,ts}",
+    "!src/vitest.d.ts",
     "!dist/**/*.{js,ts}",
-    "!src/domain/entities/**/*.{js,ts}",
-    "!src/domain/events/**/*.{js,ts}",
     "!src/domain/testing/**/*.{js,ts}",
     "!src/domain/sampleValues/**/*.{js,ts}",
     "!**/index.{js,ts}"
   ],
   "reporters": ["html", "clear-text", "progress"],
   "timeoutMS": 5000,
-  "concurrency": 2,
   "tsconfigFile": "tsconfig.json",
   "testRunner": "vitest",
-  "ignoreStatic": false,
+  "ignoreStatic": true,
   "vitest": {
     "configFile": "vitest.config.ts"
   },
