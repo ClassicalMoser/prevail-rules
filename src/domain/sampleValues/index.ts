@@ -10,6 +10,7 @@ export {
 
 // Starter armies built from those unit types.
 export { blackTinyStarterArmy, whiteTinyStarterArmy } from './tinyStarterArmy';
+export { blackMiniStarterArmy, whiteMiniStarterArmy } from './miniStarterArmy';
 
 // Sample command cards.
 export { tempCommandCards } from './tempCommandCards';

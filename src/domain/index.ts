@@ -587,9 +587,11 @@ export {
   traitSchema,
 } from '@ruleValues';
 export {
+  blackMiniStarterArmy,
   blackTinyStarterArmy,
   tempCommandCards,
   tempUnits,
+  whiteMiniStarterArmy,
   whiteTinyStarterArmy,
 } from '@sampleValues';
 export {

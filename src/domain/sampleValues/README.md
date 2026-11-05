@@ -7,3 +7,4 @@ Stand-in catalogs until a real source of cards and units exists. Type imports on
 - `tempCommandCards`
 - `tempUnits`
 - `tinyStarterArmy`
+- `miniStarterArmy` — a starter army each side may bring to a mini game
