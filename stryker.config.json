@@ -15,7 +15,6 @@
   "reporters": ["html", "clear-text", "progress"],
   "timeoutMS": 5000,
   "concurrency": 2,
-  "checkers": ["typescript"],
   "tsconfigFile": "tsconfig.json",
   "testRunner": "vitest",
   "ignoreStatic": false,
@@ -25,8 +24,5 @@
   "testRunner_comment": "Take a look at https://stryker-mutator.io/docs/stryker-js/vitest-runner for information about the vitest plugin.",
   "coverageAnalysis": "perTest",
   "buildCommand": "pnpm run build",
-  "plugins": [
-    "@stryker-mutator/vitest-runner",
-    "@stryker-mutator/typescript-checker"
-  ]
+  "plugins": ["@stryker-mutator/vitest-runner"]
 }
