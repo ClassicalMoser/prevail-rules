@@ -311,10 +311,43 @@ open, and `pnpm validate` is clean.
   modules) plus the domain barrel, and it has no other outgoing edge, which is
   what makes it cycle-proof.
 
-One thing left to decide, not for this pass: the domain barrel re-exports the
-sample armies, so they are part of this package's public surface and the client
-leans on `tinyStarterArmy` in about twenty specs. If `@sampleValues` is meant
-for `@testing` only, that re-export is the thing to look at.
+## Get the samples out of the root barrel
+
+Nothing in `@sampleValues` belongs in this package's production surface.
+`src/domain/index.ts:582-588` re-exports `blackMiniStarterArmy`,
+`blackTinyStarterArmy`, `tempCommandCards`, `tempUnits`, `whiteMiniStarterArmy`
+and `whiteTinyStarterArmy`, so every consumer of `/domain` gets stand-in data
+alongside the engine.
+
+**Nothing uses a sample outside a spec** — 78 spec files here, 25 in the client,
+37 in the server, and zero production modules in any repo. Consumers use exactly
+four symbols: `tempCommandCards` (104 references), `tempUnits` (88),
+`whiteTinyStarterArmy` (25) and `blackTinyStarterArmy` (4).
+
+Removing the re-export breaks 62 consumer specs the moment it lands, so it goes
+in three steps and the order matters.
+
+- **Step 1 is done** (`79968b2`). `./sampleValues` is now its own build entry
+  and package export, verified resolving from the client:
+  `import { tempUnits } from '@classicalmoser/prevail-rules/sampleValues'`.
+  Purely additive; nothing broke.
+- **Step 2 — the consumers.** Point all 62 spec files at the new subpath: 25
+  client test files, 37 server test files. Most import samples in the same
+  statement as real domain symbols, so this is splitting an import rather than
+  swapping a specifier. `pnpm validate` in each repo. The client and server
+  depend on this package by `link:`, so `pnpm build` here first.
+- **Step 3 — this package.** Delete the `@sampleValues` block from
+  `src/domain/index.ts` and point this repo's own 78 specs at `@sampleValues`
+  directly, which they may already do. Then `/domain` carries engine only.
+
+`@testing` is deliberately not exported, and this does not change that. If
+consumers' tests later want the fixtures, that is a second subpath and a
+separate decision.
+
+While you are in `package.json`: the `exports` map declares `"."` →
+`./dist/index.d.ts`, but there is no `src/index.ts` and tsdown has no root
+entry, so that condition points at a file the build never writes. Worth either
+removing or giving a real entry.
 
 ## Still open, not part of this task
 
