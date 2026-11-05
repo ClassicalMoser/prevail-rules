@@ -165,8 +165,3 @@ export async function mergeMutationReports(
   const table = [...header, ...rows].join('\n');
   return table;
 }
-
-// `shards/` and `reports/mutation/` are where the workflow downloads and uploads.
-const summary = await mergeMutationReports('shards', 'reports/mutation');
-// eslint-disable-next-line no-console
-console.log(summary);

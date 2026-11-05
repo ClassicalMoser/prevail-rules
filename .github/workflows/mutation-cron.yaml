@@ -35,7 +35,7 @@ jobs:
 
       - name: List shards
         id: list
-        run: echo "shards=$(pnpm exec tsx scripts/mutation/listMutationShards.ts)" >> "$GITHUB_OUTPUT"
+        run: echo "shards=$(pnpm exec tsx scripts/main.ts mutationShards)" >> "$GITHUB_OUTPUT"
 
   mutation:
     name: Mutation (${{ matrix.shard.boundary }})
@@ -97,7 +97,7 @@ jobs:
           path: shards
 
       - name: Merge
-        run: pnpm exec tsx scripts/mutation/mergeMutationReports.ts >> "$GITHUB_STEP_SUMMARY"
+        run: pnpm exec tsx scripts/main.ts mutationSummary >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload merged report
         uses: actions/upload-artifact@v6

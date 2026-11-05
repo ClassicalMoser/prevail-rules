@@ -48,9 +48,7 @@
     "build": "tsdown",
     "prepublishOnly": "npm run build",
     "validate": "npm run lint && npm run format && npm run typecheck && npm run check:selfProof",
-    "version:patch": "tsx scripts/version-bump.ts patch",
-    "version:minor": "tsx scripts/version-bump.ts minor",
-    "check:selfProof": "tsx scripts/selfProof/checkSelfProvingSpecs.ts"
+    "check:selfProof": "tsx scripts/main.ts selfProof"
   },
   "dependencies": {
     "vite-plus": "^0.1.20",

@@ -2,19 +2,11 @@ import { glob, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
 import { boundaries } from '../../boundaries';
+import type { CommandResult } from '../commandResult';
+import type { MutationShard } from './mutationShard';
 
 /** The one field of `stryker.config.json` the shards are built from. */
 const strykerConfigSchema = z.object({ mutate: z.array(z.string()) });
-
-/**
- * One Stryker run: a boundary's directory, with the config's own exclusions.
- */
-interface MutationShard {
-  /** The boundary's identifier without the `@`, used to name the job and its report. */
-  boundary: string;
-  /** The `--mutate` list for this shard, comma-separated. */
-  mutate: string;
-}
 
 /**
  * A glob with each `{a,b}` group written out as separate globs, so the list can
@@ -74,7 +66,7 @@ function isMutated(file: string, mutate: string[]): boolean {
  *
  * @returns The shards, in `boundaries.ts` order
  */
-export async function listMutationShards(): Promise<MutationShard[]> {
+async function buildMutationShards(): Promise<MutationShard[]> {
   // The config's patterns decide which files are mutated at all.
   const configText = await readFile('stryker.config.json', 'utf8');
   const config = strykerConfigSchema.parse(JSON.parse(configText));
@@ -103,7 +95,17 @@ export async function listMutationShards(): Promise<MutationShard[]> {
   return shards;
 }
 
-// Printed as one JSON line so the workflow can pass it to `fromJSON`.
-const shardsJson = JSON.stringify(await listMutationShards());
-// eslint-disable-next-line no-console
-console.log(shardsJson);
+/**
+ * Lists the nightly mutation shards for the workflow.
+ *
+ * One JSON line, because the workflow passes it straight to `fromJSON` to
+ * build its job matrix.
+ *
+ * @returns The shards as JSON, which cannot fail
+ */
+export async function listMutationShards(): Promise<CommandResult> {
+  const shards = await buildMutationShards();
+  const output = JSON.stringify(shards);
+  const result: CommandResult = { failure: null, output };
+  return result;
+}

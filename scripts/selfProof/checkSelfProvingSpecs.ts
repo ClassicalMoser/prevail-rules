@@ -1,8 +1,12 @@
 import path from 'node:path';
 import { buildCallGraph } from './buildCallGraph';
+import type { CommandResult } from '../commandResult';
 import { readSourceTree } from './readSourceTree';
 import { reportSelfProofs } from './reportSelfProofs';
 import { selfProvingSpecs } from './selfProvingSpecs';
+
+/** The source tree this check reads, relative to this file. */
+const SRC = path.resolve(import.meta.dirname, '..', '..', 'src');
 
 /**
  * Fails when any spec proves itself.
@@ -16,44 +20,38 @@ import { selfProvingSpecs } from './selfProvingSpecs';
  * `isFriendlyUnit.test.ts -> addUnitToBoard -> isFriendlyUnit` is a legal DAG
  * that keeps every boundary rule. Only reachability finds it.
  *
- * Run by `pnpm check:selfProof`, which `pnpm validate` includes.
+ * @returns The report, with a failure when any spec reaches its own subject
  */
+export async function checkSelfProvingSpecs(): Promise<CommandResult> {
+  // Read every module once, so neither step below goes back to the disk.
+  const tree = await readSourceTree(SRC);
 
-const SRC = path.resolve(import.meta.dirname, '..', '..', 'src');
+  // Resolve each import to the module that declares what it names, which is
+  // what a call actually runs.
+  const graph = buildCallGraph(tree);
 
-// Read every module once, so neither step below goes back to the disk.
-const tree = await readSourceTree(SRC);
+  // Then ask, of each spec, whether anything but its subject leads back to it.
+  const proofs = selfProvingSpecs(tree, graph, SRC);
 
-// Resolve each import to the module that declares what it names, which is what
-// a call actually runs.
-const graph = buildCallGraph(tree);
-
-// Then ask, of each spec, whether anything but its subject leads back to it.
-const proofs = selfProvingSpecs(tree, graph, SRC);
-
-// The report says how many specs were checked as well as how many failed,
-// because a spec with no module beside it has no one subject and is skipped.
-// Without the first number the second one reads as a clean bill of health.
-let specs = 0;
-let checked = 0;
-for (const file of tree.files) {
-  if (!file.endsWith('.test.ts')) {
-    continue;
+  // The report says how many specs were checked as well as how many failed,
+  // because a spec with no module beside it has no one subject and is skipped.
+  // Without the first number the second one reads as a clean bill of health.
+  let specs = 0;
+  let checked = 0;
+  for (const file of tree.files) {
+    if (!file.endsWith('.test.ts')) {
+      continue;
+    }
+    specs++;
+    const subject = file.replace(/\.test\.ts$/u, '.ts');
+    if (tree.files.has(subject)) {
+      checked++;
+    }
   }
-  specs++;
-  const subject = file.replace(/\.test\.ts$/u, '.ts');
-  if (tree.files.has(subject)) {
-    checked++;
-  }
-}
 
-const report = reportSelfProofs(proofs, checked, specs);
-
-// One write, so a single print site carries the rule.
-// eslint-disable-next-line no-console
-console.log(report.join('\n'));
-
-// Throwing is what fails `pnpm validate`; the report above says what to fix.
-if (proofs.length > 0) {
-  throw new Error(`${proofs.length} self-proving spec(s)`);
+  const report = reportSelfProofs(proofs, checked, specs);
+  const failure =
+    proofs.length > 0 ? `${proofs.length} self-proving spec(s)` : null;
+  const result: CommandResult = { failure, output: report.join('\n') };
+  return result;
 }
