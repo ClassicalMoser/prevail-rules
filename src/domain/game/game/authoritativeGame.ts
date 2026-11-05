@@ -4,7 +4,6 @@ import type { GameForVisibility } from './gameForVisibility';
 import { armySchema, gameModeNames } from '@entities';
 import { z } from 'zod';
 import { authoritativeGameStateSchema } from '@game/gameState';
-import { refineGameModeBoardSize } from './refineGameModeBoardSize';
 
 const _authoritativeGameSchemaObject = z
   .object({
@@ -16,8 +15,7 @@ const _authoritativeGameSchemaObject = z
     whiteArmy: armySchema,
     whitePlayer: z.uuid(),
   })
-  .strict()
-  .superRefine(refineGameModeBoardSize);
+  .strict();
 
 type AuthoritativeGameSchemaType = z.infer<
   typeof _authoritativeGameSchemaObject

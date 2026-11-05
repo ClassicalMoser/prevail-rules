@@ -1,5 +1,5 @@
 import type { Army, Board } from '@entities';
-import { createEmptySmallBoard } from '@factories';
+import { createEmptySmallBoard, createEmptyStandardBoard } from '@factories';
 import { tempUnits } from '@sampleValues';
 import { throwIfUndefined } from '@utils';
 import { z } from 'zod';
@@ -58,6 +58,23 @@ describe('refineGameRules function', () => {
       {
         message: 'Missing coordinate H-12 for small board.',
         path: ['gameState', 'boardState', 'board', 'H-12'],
+      },
+    ]);
+  });
+
+  it('reports a board the wrong size for the mode', () => {
+    // Tutorial is played on the small board, not the standard one.
+    const result = gameRules.safeParse({
+      blackArmy: legalArmy,
+      gameMode: 'tutorial',
+      gameState: { boardState: createEmptyStandardBoard() },
+      whiteArmy: legalArmy,
+    });
+
+    expect(result.error?.issues).toMatchObject([
+      {
+        message: 'gameMode tutorial requires board size small, got standard.',
+        path: ['gameState', 'boardState', 'boardType'],
       },
     ]);
   });

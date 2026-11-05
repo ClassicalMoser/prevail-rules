@@ -25,6 +25,7 @@ export {
   gameWithArmyCompositionSchema,
   refineBoardLayout,
   refineGameArmyComposition,
+  refineGameModeBoardSize,
   refineGameRules,
   spectatorGameWithArmyCompositionSchema,
   whiteSeenGameWithArmyCompositionSchema,

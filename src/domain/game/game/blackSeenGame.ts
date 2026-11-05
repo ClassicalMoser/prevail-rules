@@ -4,7 +4,6 @@ import type { GameForVisibility } from './gameForVisibility';
 import { armySchema, gameModeNames } from '@entities';
 import { z } from 'zod';
 import { blackSeenGameStateSchema } from '@game/gameState';
-import { refineGameModeBoardSize } from './refineGameModeBoardSize';
 
 const _blackSeenGameSchemaObject = z
   .object({
@@ -16,8 +15,7 @@ const _blackSeenGameSchemaObject = z
     whiteArmy: armySchema,
     whitePlayer: z.uuid(),
   })
-  .strict()
-  .superRefine(refineGameModeBoardSize);
+  .strict();
 
 type BlackSeenGameSchemaType = z.infer<typeof _blackSeenGameSchemaObject>;
 

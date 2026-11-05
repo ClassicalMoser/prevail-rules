@@ -11,6 +11,7 @@ import {
 import type { z } from 'zod';
 import { refineBoardLayout } from '../board/refineBoardLayout';
 import { refineGameArmyComposition } from './refineGameArmyComposition';
+import { refineGameModeBoardSize } from './refineGameModeBoardSize';
 
 /** The parts of a game the game rules read. */
 interface GameRulesInput {
@@ -21,13 +22,16 @@ interface GameRulesInput {
 }
 
 /**
- * Adds Zod issues for every rule a whole game record must keep: a board laid
- * out for its size, and armies that keep the army rules and the mode's limits.
+ * Adds Zod issues for every rule a whole game record must keep: a board of
+ * the mode's size laid out for that size, and armies that keep the army rules
+ * and the mode's limits.
  */
 export function refineGameRules(
   game: GameRulesInput,
   ctx: z.RefinementCtx,
 ): void {
+  // The game is played on the board size its mode calls for.
+  refineGameModeBoardSize(game, ctx);
   // The field is whole: every space of its size, and none from another size.
   refineBoardLayout(game.gameState.boardState, ctx, [
     'gameState',

@@ -20,16 +20,16 @@ Game / GameForVisibility
 
 ## Modules
 
-| Module        | Role                                                                                                                  |
-| ------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `game/`       | Full game record by visibility; `refineGameModeBoardSize` is a shape refine (mode ↔ board size), not army composition |
-| `gameState/`  | Runtime state by visibility, plus ownership helper types                                                              |
-| `cardState/`  | Owned/hidden piles and visibility `CardState` union                                                                   |
-| `roundState/` | Current round slice (phase + event stream)                                                                            |
-| `phases/`     | Phase/step state in play order                                                                                        |
-| `substeps/`   | Nested resolution states (see [`substeps/README.md`](./substeps/README.md))                                           |
-| `commitment/` | Pending / completed / declined commitments (discriminated on `commitmentType`)                                        |
-| `typeGuards/` | Narrowing helpers (e.g. authoritative game state)                                                                     |
+| Module        | Role                                                                                                                          |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `game/`       | Full game record by visibility. Shape only; the game rules, including mode ↔ board size, are `refineGameRules` in `@legality` |
+| `gameState/`  | Runtime state by visibility, plus ownership helper types                                                                      |
+| `cardState/`  | Owned/hidden piles and visibility `CardState` union                                                                           |
+| `roundState/` | Current round slice (phase + event stream)                                                                                    |
+| `phases/`     | Phase/step state in play order                                                                                                |
+| `substeps/`   | Nested resolution states (see [`substeps/README.md`](./substeps/README.md))                                                   |
+| `commitment/` | Pending / completed / declined commitments (discriminated on `commitmentType`)                                                |
+| `typeGuards/` | Narrowing helpers (e.g. authoritative game state)                                                                             |
 
 ### `phases/`
 

@@ -12,6 +12,7 @@ export {
   blackSeenGameWithArmyCompositionSchema,
   gameWithArmyCompositionSchema,
   refineGameArmyComposition,
+  refineGameModeBoardSize,
   refineGameRules,
   spectatorGameWithArmyCompositionSchema,
   whiteSeenGameWithArmyCompositionSchema,
