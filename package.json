@@ -51,10 +51,10 @@
     "typecheck": "tsc --noEmit && tsc -p scripts",
     "build": "tsdown",
     "prepublishOnly": "npm run build",
-    "validate": "npm run lint && npm run format && npm run typecheck",
+    "validate": "npm run lint && npm run format && npm run typecheck && npm run check:selfProof",
     "version:patch": "tsx scripts/version-bump.ts patch",
     "version:minor": "tsx scripts/version-bump.ts minor",
-    "check:selfProof": "tsx scripts/checkSelfProvingSpecs.ts"
+    "check:selfProof": "tsx scripts/selfProof/checkSelfProvingSpecs.ts"
   },
   "dependencies": {
     "vite-plus": "^0.1.20",
