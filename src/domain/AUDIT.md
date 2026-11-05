@@ -4,7 +4,7 @@ The author personally reads and comprehends every line of code in this repo. Thi
 
 This audit requires the human read on every directory. A box is checked only after that read. Closed boxes stay closed.
 
-**Last updated:** 2026-11-04
+**Last updated:** 2026-11-05
 
 ---
 
@@ -231,6 +231,18 @@ Each finding stays here until the human read closes it.
   `Quincunx Formation` have no round effect modifiers where the schema asks
   for one. Either the samples or the schema is wrong. An army holding any of
   them fails `armySchema`.
+
+### Downstream (out of scope here)
+
+- The server does not run this package's load parse. `parseStoredGame` /
+  `parseStoredGameForMode` already parse stored JSON through
+  `legalAuthoritativeGameSchema` (shape plus the game rules). The
+  `GameStorage` port says to do that after `getGame`. Server
+  `load-authoritative-game` casts `gameResult.data as GameForVisibility<'authoritative'>`
+  instead. Game creation still checks armies with `armySchemaForMode`. A
+  stored game that later breaks the rules (or was written without this
+  parse) is trusted on load. Client and server stay out of this repo's
+  work; this is the gap if a load path is added later.
 
 ### Movement (not settled)
 
