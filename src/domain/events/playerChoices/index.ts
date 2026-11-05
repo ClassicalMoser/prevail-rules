@@ -85,3 +85,8 @@ export {
   projectedChooseCardEventSchema,
   projectedPlayerChoiceEventSchema,
 } from './projectedPlayerChoice';
+
+// The modifier kinds each commitment may apply.
+export type { MeleeModifier } from './commitToMelee';
+export type { MovementModifier } from './commitToMovement';
+export type { RangedAttackModifier } from './commitToRangedAttack';

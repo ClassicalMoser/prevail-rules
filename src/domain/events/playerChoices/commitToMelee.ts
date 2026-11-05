@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const COMMIT_TO_MELEE_CHOICE_TYPE = 'commitToMelee' as const;
 
 const meleeModifierTypes = ['attack', 'defense', 'flexibility'] as const;
-type MeleeModifier = (typeof meleeModifierTypes)[number];
+export type MeleeModifier = (typeof meleeModifierTypes)[number];
 
 // Type-level guarantee that MeleeModifier extends StatModifier
 const _assertMeleeModifierExtendsStatModifier: [MeleeModifier] extends [

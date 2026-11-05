@@ -9,7 +9,7 @@ export const COMMIT_TO_RANGED_ATTACK_CHOICE_TYPE =
   'commitToRangedAttack' as const;
 
 const rangedAttackModifierTypes = ['range', 'attack', 'flexibility'] as const;
-type RangedAttackModifier = (typeof rangedAttackModifierTypes)[number];
+export type RangedAttackModifier = (typeof rangedAttackModifierTypes)[number];
 
 // Type-level guarantee that RangedAttackModifier extends StatModifier
 const _assertRangedAttackModifierExtendsStatModifier: [

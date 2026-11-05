@@ -144,6 +144,9 @@ export type { ChooseRallyEvent } from './playerChoices';
 export { chooseRallyEventSchema } from './playerChoices';
 export type {
   AssignUnitSupportEvent,
+  MeleeModifier,
+  MovementModifier,
+  RangedAttackModifier,
   UnitSupportAssignment,
 } from './playerChoices';
 export {

@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const COMMIT_TO_MOVEMENT_CHOICE_TYPE = 'commitToMovement' as const;
 
 const movementModifierTypes = ['speed', 'flexibility'] as const;
-type MovementModifier = (typeof movementModifierTypes)[number];
+export type MovementModifier = (typeof movementModifierTypes)[number];
 
 // Type-level guarantee that MovementModifier extends StatModifier
 const _assertMovementModifierExtendsStatModifier: [MovementModifier] extends [
