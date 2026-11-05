@@ -1,6 +1,6 @@
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { withCards } from '@testing';
+import { cardState, ownedCards, updateCardState, withCards } from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { generateRevealCardsEvent } from './generateRevealCardsEvent';
@@ -13,10 +13,13 @@ import { createEmptyGameState } from '@factories';
 describe('generateRevealCardsEvent function', () => {
   function createStateWithAwaitingPlay() {
     const state = createEmptyGameState('standard');
-    const stateWithCards = withCards(state, {
-      black: { awaitingPlay: tempCommandCards[0] },
-      white: { awaitingPlay: tempCommandCards[1] },
-    });
+    const stateWithCards = updateCardState(
+      state,
+      cardState(
+        ownedCards({ awaitingPlay: tempCommandCards[0] }),
+        ownedCards({ awaitingPlay: tempCommandCards[1] }),
+      ),
+    );
     return updatePhaseState(stateWithCards, {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
