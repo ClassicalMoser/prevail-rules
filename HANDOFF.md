@@ -340,44 +340,67 @@ open, and `pnpm validate` is clean.
 
 ## Get the samples out of the root barrel
 
-Nothing in `@sampleValues` belongs in this package's production surface.
+`@sampleValues` is a database surrogate. Nothing in it belongs in this
+package's production surface, and no consumer should reach it either:
 `src/domain/index.ts:582-588` re-exports `blackMiniStarterArmy`,
 `blackTinyStarterArmy`, `tempCommandCards`, `tempUnits`, `whiteMiniStarterArmy`
 and `whiteTinyStarterArmy`, so every consumer of `/domain` gets stand-in data
-alongside the engine.
+alongside the engine, and 62 consumer specs have grown to depend on it.
 
 **Nothing uses a sample outside a spec** — 78 spec files here, 25 in the client,
-37 in the server, and zero production modules in any repo. Consumers use exactly
-four symbols: `tempCommandCards` (104 references), `tempUnits` (88),
-`whiteTinyStarterArmy` (25) and `blackTinyStarterArmy` (4).
+37 in the server, zero production modules anywhere. Consumers use four symbols:
+`tempCommandCards` (104 references), `tempUnits` (88), `whiteTinyStarterArmy`
+(25) and `blackTinyStarterArmy` (4).
 
-Removing the re-export breaks 62 consumer specs the moment it lands, so it goes
-in three steps and the order matters.
+A `./sampleValues` subpath was briefly added and has been reverted, because a
+consumer's tests should not reach this package's sample data by any route. They
+build their own values instead, and the shape they actually need is small: the
+dominant pattern across those 62 files is `tempUnits[0]` and
+`tempCommandCards[0]`, which is not a need for this catalog at all. It is a
+need for one valid unit type and one valid command card. A local builder states
+what the test cares about, where sample index 0 only happens to carry it.
 
-- **Step 1 is done** (`79968b2`). `./sampleValues` is now its own build entry
-  and package export, verified resolving from the client:
-  `import { tempUnits } from '@classicalmoser/prevail-rules/sampleValues'`.
-  Purely additive; nothing broke.
-- **Step 2 — the consumers.** Point all 62 spec files at the new subpath: 25
-  client test files, 37 server test files. Most import samples in the same
-  statement as real domain symbols, so this is splitting an import rather than
-  swapping a specifier. `pnpm validate` in each repo. The client and server
-  depend on this package by `link:`, so `pnpm build` here first.
-- **Step 3 — this package.** Delete the `@sampleValues` block at
-  `src/domain/index.ts:582-588`. Nothing inside this package is affected: all 78
-  specs here already import `@sampleValues`, and no module in `src` imports the
-  domain root barrel at all, because reaching it from inside would be an
-  ancestor import and the lint stops that even in specs. So the only thing
-  holding step 3 back is step 2. Then `/domain` carries engine only.
+Only **12 of the 62** want the catalog as a collection — 8 client, 4 server,
+including `get-command-card-unit-ids`, `command-card-project-ops`,
+`replace-command-card-unit-ids-with-names`, `select-random-player-choice`,
+`validateArmyDraft` and `assignUnitSupportSelection`. Those need a set of cards,
+which a builder makes by mapping over initiatives.
 
-`@testing` is deliberately not exported, and this does not change that. If
-consumers' tests later want the fixtures, that is a second subpath and a
-separate decision.
+### The server is most of the way there
+
+`prevail-server/src/testing/game-session-armies.ts` already defines
+`unitType(overrides)`, `commandCard(initiative, index)`,
+`commandSet(perInitiative)` and `miniArmy` — exactly the right builders, but
+only `army`, `miniArmy` and `standardArmy` are in
+`prevail-server/src/testing/index.ts`. Export `unitType`, `commandCard` and
+`commandSet`, then replace `tempUnits[0]` with `unitType()` and
+`tempCommandCards[0]` with `commandCard(1, 0)`. Where a spec asserts on a
+cost, a morale or a trait, pass it as an override so the test says what it
+depends on.
+
+### The client has no fixtures at all
+
+There is no `src/testing` in `prevail-client`. Add one, with the same two
+builders, written for the client's own needs rather than copied. The 25 client
+spec files then stop importing from this package's samples.
+
+### Then this package
+
+Delete the `@sampleValues` block at `src/domain/index.ts:582-588`. Nothing
+inside this package is affected: all 78 specs here already import
+`@sampleValues`, and no module in `src` imports the domain root barrel at all,
+because reaching it from inside would be an ancestor import and the lint stops
+that even in specs. The consumers are the only thing holding this step.
+
+`@testing` is not exported either, and this does not change that. If a
+consumer's tests ever want these fixtures, that is its own decision and its own
+subpath, not a side effect of this.
 
 While you are in `package.json`: the `exports` map declares `"."` →
 `./dist/index.d.ts`, but there is no `src/index.ts` and tsdown has no root
-entry, so that condition points at a file the build never writes. Worth either
-removing or giving a real entry.
+entry, so that condition points at a file the build never writes. Anything
+importing the bare package name resolves to nothing. Worth removing or giving a
+real entry.
 
 ## Still open, not part of this task
 

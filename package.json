@@ -31,10 +31,6 @@
     "./application": {
       "types": "./dist/application/index.d.ts",
       "import": "./dist/application/index.js"
-    },
-    "./sampleValues": {
-      "types": "./dist/domain/sampleValues/index.d.ts",
-      "import": "./dist/domain/sampleValues/index.js"
     }
   },
   "publishConfig": {
