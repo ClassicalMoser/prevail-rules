@@ -19,10 +19,41 @@ a spec needs, in this order:
 5. **Commentary** says what is happening in the game and why the rules want it.
 6. **Naming** says it in the game's words, not the code's.
 
-Work the points in order, one commit each. Points 1 to 3 are substitutions
-against modules that already exist and add no new files; point 4 is whatever is
-left after them, which is less than it looks like now. Measurements below are
-from `main` today.
+Work the points in order, one commit each. Measurements below are from `main`
+today.
+
+## The baseline: a spec's layer decides what it may reach for
+
+**This governs every point below.** Which tool a spec may use is set by the
+layer the spec lives in, not by which tool reads best. `boundaries.ts` and
+[`LAYERS.md`](./LAYERS.md) are the authority. A spec may use what its own layer
+may import, plus `@testing` — and `@testing` is the only layer allowed to import
+all the others, which is exactly why it exists. It is the licensed route from a
+lower-layer spec to a higher-layer capability. A direct import is not.
+
+| A spec in | `@factories` | `@queries` | `@legality` | `@transforms` |
+| --- | --- | --- | --- | --- |
+| `@utils`, `@ruleValues` | no | no | no | no |
+| `@entities`, `@events`, `@game` | no | no | no | no |
+| `@factories` | own | no | no | no |
+| `@queries` | yes | own | no | **no** |
+| `@legality` | yes | yes | own | **no** |
+| `@expected` | yes | yes | yes | **no** |
+| `@procedures` | **no** | yes | yes | **no** |
+| `@validation` | yes | yes | yes | **no** |
+| `@transforms` | yes | yes | yes | own |
+| `@application` | yes | yes | **no** | yes |
+
+`@entities`, `@events` and `@game` carry "no functions, no tests" in
+`boundaries.ts`, so no spec should live there at all.
+
+**The suite already breaks this, and the lint does not catch it.** Spec files get
+`enforceBoundaries: false`, so only the ancestor and circular checks still run on
+them. 146 specs import `@transforms`; **109 of them sit below it** — 47 in
+`@queries`, 25 in `@legality`, 16 in `@validation`, 16 in `@procedures`, 5 in
+`@expected`. That is pre-existing and too large to unwind inside this pass. The
+instruction for this pass is narrower and firm: **do not add one more.** Record
+the 109 in `src/domain/AUDIT.md` as a finding for the human read.
 
 Baseline for `pnpm validate` after each commit: 358 files, 1,894 tests. The
 count must not drop except for the single assertion named under point 4.
@@ -86,8 +117,17 @@ stateWithUnits = {
 Two units, eight lines, the state respread twice. `@transforms/pureTransforms`
 already exports `addUnitToBoard`, `removeUnitFromBoard`, `addCommanderToBoard`,
 `removeCommanderFromBoard`, `updatePhaseState`, `markPhaseAsComplete`,
-`addCompletedPhase` and the card movers. Nothing in a spec should be writing a
+`addCompletedPhase` and the card movers. No spec should write a
 `{ ...state, … }` literal where one of those applies.
+
+**But only specs in `@transforms` and `@application` may call them directly.**
+Everywhere below, the same spread goes through a `@testing` helper instead —
+`createGameStateWithUnits`, `createGameStateWithSingleUnit` and
+`createGameStateWithEngagedUnits` already exist and already compose
+`createEmptyGameState` with `addUnitToBoard`. A `@queries` spec that writes
+`createEmptyGameState('standard')` and then respreads `boardState` is doing by
+hand, backward across a layer, what one `@testing` call does legitimately. That
+is the substitution for those 47 files, not an `@transforms` import.
 
 ---
 
@@ -122,18 +162,31 @@ query that owns it *unless that query is the subject under test*, and below
 spec reads the field directly. Do not make a spec assert through its own
 subject; that proves nothing.
 
+The layer baseline applies here too, and it is why `@factories` and `@game`
+specs are not in scope for this point — `@queries` is above them. Almost all 256
+drill sites sit in `@queries` and above, so most of this stands as written. The
+one place it does not: `getLegalRetreats` lives in `@legality`, so a `@queries`
+spec cannot call it. See point 4.
+
 ---
 
-## 4. Fixtures, for what is left
+## 4. Fixtures, for what the layer rule leaves
 
 30 `createStateWith*` definitions under 13 names sit inside `describe` blocks;
 in total **3,382 lines of helper definitions across 120 spec files** (the other
 238 define none).
 
-Do this point **after** 1 to 3, and expect it to shrink. These helpers are not
-missing abstractions — they are a factory call, two transform calls and a query
-read, each done by hand. Every one of them walks the same chain, threading the
-state and respreading it at each step:
+Do this point **after** 1 to 3. Its size depends on the layer, and this reverses
+what an earlier draft of this note said. In `@transforms` and `@application`,
+points 1 to 3 do most of the work and little residue is left. **Below
+`@transforms`, a `@testing` helper is the only legitimate way for a spec to
+reach a state that a transform builds** — so for the 47 `@queries` specs, the 25
+in `@legality` and the rest, the fixture is not a leftover. It is the fix. Build
+it rather than letting those specs keep importing upward.
+
+These helpers are not missing abstractions in themselves — each is a factory
+call, two transform calls and a query read, done by hand. Every one walks the
+same chain, threading the state and respreading it at each step:
 
 ```
 createEmptyGameState(mode)
@@ -143,12 +196,11 @@ createEmptyGameState(mode)
   → updatePhaseState(state, phaseState)
 ```
 
-The state is passed three times. Once points 1 to 3 have run, what remains is
-the genuine fixture: the convenient composition that no factory, transform or
-query covers. Add `src/domain/testing/situations/` for that residue only, and
-only once you can see what it is. `@testing` already exports 19 phase and
-substep helpers and 8 board helpers, so check those first — the gap is a name
-for the assembled situation, not new primitives.
+The state is passed three times. Add `src/domain/testing/situations/` for the
+assembled situation, once points 1 to 3 have shown you what each one actually
+needs. `@testing` already exports 19 phase and substep helpers and 8 board
+helpers, so check those first — the gap is a name for the whole situation, not
+new primitives. A situation helper may import any layer, which is the point.
 
 **One fixture is doing a query's job and must stop.**
 `testing/phaseStateHelpers/substepStates.ts` defaults `createRetreatState`'s
@@ -160,6 +212,10 @@ correct and stays. Make the parameter required, per the project's explicitness
 rule, so no spec inherits two options it never asked for.
 `substepStates.test.ts:20` asserts the default has length 2 — that assertion
 goes with the default. It is the fixture agreeing with itself.
+
+`getLegalRetreats` is in `@legality`, so only `@legality` and above may call it
+directly. `@testing` may, which is where a helper that needs computed retreat
+options belongs.
 
 Four sites in three files bypass the substep helpers entirely and inline a raw
 literal — `createStateWithRearEngagementRoutAwaitingPenalty` in
@@ -204,6 +260,22 @@ Source code does not change. Assertions keep their meaning; only their
 expression gets simpler. An assertion's expected value stays a literal — one
 built from the same fixture as its setup agrees with the fixture instead of
 checking the code.
+
+## Boundary observations — record, do not change
+
+Two edges in `boundaries.ts` look worth a human decision. Both are findings for
+`src/domain/AUDIT.md`, not work for this pass.
+
+- `@procedures` may import `@queries` but **not** `@factories`, although
+  `@factories` sits below `@queries` and the transitive dependency already
+  exists. 16 procedure specs are affected; a procedure spec that needs a choice
+  event cannot reach the factory for it. This reads as an omission rather than
+  an intent.
+- `@sampleValues` may only type-import `@entities`, yet
+  `miniStarterArmy.test.ts` imports `armySchemaForMode` from `@legality` to
+  prove the army legal. The assertion genuinely needs legality. Either the
+  sample's spec is a licensed exception or that proof belongs in a `@legality`
+  spec.
 
 ## Still open, not part of this task
 
