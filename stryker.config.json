@@ -15,7 +15,7 @@
   "timeoutMS": 5000,
   "tsconfigFile": "tsconfig.json",
   "testRunner": "vitest",
-  "ignoreStatic": true,
+  "ignoreStatic": false,
   "vitest": {
     "configFile": "vitest.config.ts"
   },
