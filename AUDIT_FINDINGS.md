@@ -3,6 +3,11 @@
 Record of a session's measurement, 2026-11-02 to 2026-11-04. Draft: fold what is
 worth keeping into [`src/domain/AUDIT.md`](./src/domain/AUDIT.md) and delete the rest.
 
+These numbers are a dated snapshot, not a dashboard. They are here to show why a
+decision was made, and they are not meant to be re-measured or tracked. Once the
+fixtures are in place and the standard holds, a spec that does not meet it should be
+visible by reading it.
+
 ## Where the audit actually stands
 
 **31% done by volume, not 55% by checkbox.** 56 of 101 boxes closed, but the closed
