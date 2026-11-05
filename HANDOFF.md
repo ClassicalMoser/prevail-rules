@@ -26,39 +26,64 @@ today.
 
 **This governs every point below.** A spec's layer sets what it may reach for;
 `boundaries.ts` and [`LAYERS.md`](./LAYERS.md) are the authority, and the table
-follows. But the table is the cheap check, not the real one. What matters about
-an out-of-order import is whether it puts a layer in a **cycle**, or lets the
-spec **prove itself**. Order for its own sake is not the concern.
+follows. But the table is the cheap check, not the real one. The real one is
+whether the spec can **prove itself**: whether anything it imports ends up
+calling the function under test.
 
-So before reaching out of order, say what in the spec needs it and why it is
-needed out of order — and then trace the path. **If the setup reaches the
-subject, the test proves nothing**, and the state gets built literally instead.
+**There is no cycle risk, and an earlier draft of this note was wrong to raise
+one.** Nothing imports a spec file, so a spec can never sit on an import cycle —
+not rarely, but structurally. A path like
+`isFriendlyUnit.test.ts -> addUnitToBoard -> isFriendlyUnit` is a legal DAG, no
+boundary violated, lint clean. Cycle detection cannot see it because there is no
+cycle to see. Self-proof and circularity are different problems and only one of
+them exists here.
+
+**`pnpm check:selfProof` now enforces it** (`scripts/checkSelfProvingSpecs.ts`).
+It builds the import graph from `boundaries.ts` and the imports themselves,
+resolves each name through the barrels to the module that declares it, drops
+type-only edges, and asks whether any non-subject import reaches the subject.
+Nothing to keep in step by hand. Run it after every commit in this pass.
+
+It flags exactly one spec today, and it is a real tautology:
+`legality/choiceOptions/getLegalChooseMeleeResolutionEvents.test.ts:65` asserts
+`isValidChooseMeleeResolutionEvent(o, state).result` is true for each option
+`o` the subject returned — and `isValidMeleeResolutionEvent.ts:19` computes
+`getLegalChooseMeleeResolutionEvents(state)` and checks membership. The
+assertion is "every option the subject returned is among the options the
+subject returned." It holds for any implementation. Fixing it means naming the
+legal engagements as a literal; which engagements those are is a rules
+question, so leave it for the human read unless told otherwise.
+
+So: before reaching out of order, say what in the spec needs it and why — then
+let the check answer whether it closes the loop.
 
 Two worked cases, because they land on opposite sides:
 
-- **`@sampleValues` is always safe.** It has no outgoing edge but `@entities`,
-  so it cannot be in a cycle and cannot reach any subject. 78 specs import it
-  across nine layers; all of them are fine, whatever the table says.
+- **`@sampleValues` is always safe.** Its only outgoing edge is `@entities`, so
+  it can never reach any subject. 78 specs import it across nine layers; every
+  one is fine, whatever the table says.
 - **`addUnitToBoard` is not.** It imports `@queries` — `getBoardSpace`,
   `getOppositeFacing`, `hasEngagedUnits`, `hasSingleUnit`, `isFriendlyUnit`.
   `removeUnitFromBoard` adds `hasNoUnit` and `isSameUnitInstance`. For the
   specs of **those seven queries**, building a board with that transform makes
   the setup run the subject.
 
-  I checked all seven: none of them does. `getBoardSpace`,
-  `getOppositeFacing`, `hasEngagedUnits`, `hasSingleUnit`, `hasNoUnit`,
-  `isFriendlyUnit` and `isSameUnitInstance` each build their state literally
-  today. **Leave them that way.** They are the specs this pass is most likely
-  to "improve" into uselessness.
+  None of the seven does today — each builds its state literally, which is why
+  the check comes back with one hit and not eight. **Leave them that way.**
+  They are the specs this pass is most likely to "improve" into uselessness,
+  and the check is what tells you if it happens: adding
+  `import { addUnitToBoard } from '@transforms'` to `isFriendlyUnit.test.ts`
+  takes the count from 1 to 2.
 
-**`@testing` launders the layer, not the cycle.** `@testing` may import every
+**`@testing` launders the layer, not the proof.** `@testing` may import every
 layer, which is why it is the licensed route from a lower-layer spec to a
 higher-layer capability. But that also means a `@testing` helper can carry a
 dependency on the subject without the spec showing it, which is worse than a
 direct import because it is invisible at the call site.
 `createBoardWithUnits` composes `addUnitToBoard`, so routing those seven specs
 through `createGameStateWithUnits` would introduce exactly the self-proof they
-currently avoid. Check what a helper composes before substituting it in.
+currently avoid. Check what a helper composes before substituting it in, and
+let `pnpm check:selfProof` confirm it.
 
 A useful discriminator for `@queries` specs: **55 of the 95 transform modules
 import `@queries`**, and the board and apply transforms are among them.
