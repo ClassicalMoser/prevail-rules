@@ -19,11 +19,23 @@ export { createOwnedCardState } from './game';
 // Authoritative card state from up to two players' piles, black first.
 export { createCardState } from './game';
 
-// Choose-card event from the card, the round index, and the chooser.
+// Player choice events, each with its fixed eventType and choiceType filled in.
+export { createAssignUnitSupportEvent } from './playerChoices';
 export { createChooseCardEvent } from './playerChoices';
-
-// Commit-to-melee event, or a refusal when the committed card is null.
+export { createChooseMeleeResolutionEvent } from './playerChoices';
+export { createChooseRallyEvent } from './playerChoices';
+export { createChooseRetreatOptionEvent } from './playerChoices';
+export { createChooseRoutDiscardEvent } from './playerChoices';
+export { createChooseWhetherToRetreatEvent } from './playerChoices';
 export { createCommitToMeleeEvent } from './playerChoices';
+export { createCommitToMovementEvent } from './playerChoices';
+export { createCommitToRangedAttackEvent } from './playerChoices';
+export { createDoneIssuingCommandsEvent } from './playerChoices';
+export { createIssueCommandEvent } from './playerChoices';
+export { createMoveCommanderEvent } from './playerChoices';
+export { createMoveUnitEvent } from './playerChoices';
+export { createPerformRangedAttackEvent } from './playerChoices';
+export { createSetupUnitsEvent } from './playerChoices';
 
 // Placement from a coordinate and a facing.
 export { createUnitPlacement } from './unitLocation';
