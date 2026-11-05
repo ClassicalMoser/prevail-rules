@@ -1,9 +1,8 @@
 /**
- * Standard-board size barrel: row/column lists, coordinate product, layout value.
+ * Standard-board size barrel: row/column lists and the coordinate product.
  *
- * Prefer the parent board barrel for shared {@link Coordinate} and
- * {@link getCoordinateLayout}. Import this barrel when building or testing
- * the standard size specifically.
+ * Prefer the parent board barrel for the shared {@link Coordinate}. The
+ * standard layout itself is in `@factories`.
  */
 
 /** Ordered row letters A–L; index = row index for the standard layout. */
@@ -23,6 +22,3 @@ export {
 } from './standardCoordinates';
 /** A coordinate that exists on a standard board. */
 export type { StandardBoardCoordinate } from './standardCoordinates';
-
-/** Runtime layout: arrays + createCoordinate / index lookups. */
-export { standardCoordinateLayout } from './standardCoordinateLayout';

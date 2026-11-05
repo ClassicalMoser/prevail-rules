@@ -8,13 +8,13 @@
  * Index maps are built once at module load; unknown part strings return `-1`.
  */
 
-import { joinCoordinate } from '../boardCoordinates';
-import type { CoordinateLayout } from '../coordinateLayout';
-
-import type { StandardBoardColumnNumber } from './standardColumnNumbers';
-import { standardBoardColumnNumbers } from './standardColumnNumbers';
-import type { StandardBoardRowLetter } from './standardRowLetters';
-import { standardBoardRowLetters } from './standardRowLetters';
+import type {
+  CoordinateLayout,
+  StandardBoardColumnNumber,
+  StandardBoardRowLetter,
+} from '@entities';
+import { standardBoardColumnNumbers, standardBoardRowLetters } from '@entities';
+import { joinCoordinate } from './joinCoordinate';
 
 // Prebuilt for O(1) getRowIndex / getColumnIndex (hot path in step queries).
 const rowIndexMap = new Map<string, number>(

@@ -1,6 +1,6 @@
 import type { Board } from '@entities';
-import { getCoordinateLayout } from '@entities';
 import type { z } from 'zod';
+import { getCoordinateLayout } from '@factories';
 
 /**
  * Adds Zod issues when a board's spaces differ from the spaces its size lays

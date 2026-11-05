@@ -1,6 +1,7 @@
 import type { Board, UnitFacing, Coordinate } from '@entities';
-import { getCoordinateLayout, unitFacings } from '@entities';
+import { unitFacings } from '@entities';
 import { getColumnDelta, getRowDelta } from '../deltas';
+import { getCoordinateLayout } from '@factories';
 
 const facings = new Set<UnitFacing>(unitFacings);
 

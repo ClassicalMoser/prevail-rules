@@ -13,15 +13,18 @@ export type { Player, PlayerSide } from './player';
 
 // Board
 export {
+  allCoordinates,
   boardSchema,
   boardSpaceSchema,
   boardType,
   boardTypeEnum,
   coordinateSchema,
-  getCoordinateLayout,
-  largeCoordinateLayout,
-  smallCoordinateLayout,
-  standardCoordinateLayout,
+  largeBoardColumnNumbers,
+  largeBoardRowLetters,
+  smallBoardColumnNumbers,
+  smallBoardRowLetters,
+  standardBoardColumnNumbers,
+  standardBoardRowLetters,
 } from './board';
 export type {
   Board,
@@ -30,6 +33,12 @@ export type {
   Coordinate,
   CoordinateLayout,
   CoordinateLayoutMap,
+  LargeBoardColumnNumber,
+  LargeBoardRowLetter,
+  SmallBoardColumnNumber,
+  SmallBoardRowLetter,
+  StandardBoardColumnNumber,
+  StandardBoardRowLetter,
 } from './board';
 
 // Units

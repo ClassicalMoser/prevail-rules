@@ -3,7 +3,7 @@ import {
   largeCoordinateLayout,
   smallCoordinateLayout,
   standardCoordinateLayout,
-} from '@entities';
+} from './layout';
 
 /**
  * Creates an empty board space with default values.

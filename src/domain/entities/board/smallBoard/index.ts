@@ -1,9 +1,8 @@
 /**
- * Small-board size barrel: row/column lists, coordinate product, layout value.
+ * Small-board size barrel: row/column lists and the coordinate product.
  *
- * Prefer the parent board barrel for shared {@link Coordinate} and
- * {@link getCoordinateLayout}. Import this barrel when building or testing
- * the small size specifically.
+ * Prefer the parent board barrel for the shared {@link Coordinate}. The
+ * small layout itself is in `@factories`.
  */
 
 /** Ordered row letters A–H; index = row index for the small layout. */
@@ -23,6 +22,3 @@ export {
 } from './smallCoordinates';
 /** A coordinate that exists on a small board. */
 export type { SmallBoardCoordinate } from './smallCoordinates';
-
-/** Runtime layout: arrays + createCoordinate / index lookups. */
-export { smallCoordinateLayout } from './smallCoordinateLayout';

@@ -12,13 +12,13 @@
  * off-board for this size).
  */
 
-import { joinCoordinate } from '../boardCoordinates';
-import type { CoordinateLayout } from '../coordinateLayout';
-
-import type { SmallBoardColumnNumber } from './smallColumnNumbers';
-import { smallBoardColumnNumbers } from './smallColumnNumbers';
-import type { SmallBoardRowLetter } from './smallRowLetters';
-import { smallBoardRowLetters } from './smallRowLetters';
+import type {
+  CoordinateLayout,
+  SmallBoardColumnNumber,
+  SmallBoardRowLetter,
+} from '@entities';
+import { smallBoardColumnNumbers, smallBoardRowLetters } from '@entities';
+import { joinCoordinate } from './joinCoordinate';
 
 // Prebuilt for O(1) getRowIndex / getColumnIndex (hot path in step queries).
 const rowIndexMap = new Map<string, number>(

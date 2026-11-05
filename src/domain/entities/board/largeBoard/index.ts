@@ -1,10 +1,9 @@
 /**
- * Large-board size barrel: row/column lists, coordinate product, layout value.
+ * Large-board size barrel: row/column lists and the coordinate product.
  *
  * Widest size; small and standard letter/number sets are prefixes of these.
- * Prefer the parent board barrel for shared {@link Coordinate} and
- * {@link getCoordinateLayout}. Import this barrel when building or testing
- * the large size specifically.
+ * Prefer the parent board barrel for the shared {@link Coordinate}. The
+ * large layout itself is in `@factories`.
  */
 
 /** Ordered row letters A–X; index = row index for the large layout. */
@@ -24,6 +23,3 @@ export {
 } from './largeCoordinates';
 /** A coordinate that exists on a large board. */
 export type { LargeBoardCoordinate } from './largeCoordinates';
-
-/** Runtime layout: arrays + createCoordinate / index lookups. */
-export { largeCoordinateLayout } from './largeCoordinateLayout';

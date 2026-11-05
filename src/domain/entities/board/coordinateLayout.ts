@@ -1,17 +1,15 @@
 /**
- * Shared coordinate-layout contract and the `boardType` → layout map.
+ * Shared coordinate-layout contract and the `boardType` → layout map type.
  *
  * A layout is the runtime identity of a board size: ordered row letters,
  * ordered column numbers, and the ops geometry queries need (join parts into
  * a {@link Coordinate}, map a part string to an index for step/arc math).
  *
- * Per-size values live beside their row/column definitions under
- * `smallBoard/`, `standardBoard/`, and `largeBoard/`. This file only defines
- * the shared shape, the map keyed by {@link Board.boardType}, and
- * {@link getCoordinateLayout}.
+ * The layout values, their map and `getCoordinateLayout` are functions, so
+ * they live in `@factories` (`factories/board/layout/`). This file only
+ * declares their shape.
  */
 
-import type { Board } from './board';
 import type { Coordinate } from './boardCoordinates';
 import type { LargeBoardColumnNumber, LargeBoardRowLetter } from './largeBoard';
 import type { SmallBoardColumnNumber, SmallBoardRowLetter } from './smallBoard';
@@ -19,10 +17,6 @@ import type {
   StandardBoardColumnNumber,
   StandardBoardRowLetter,
 } from './standardBoard';
-
-import { largeCoordinateLayout } from './largeBoard';
-import { smallCoordinateLayout } from './smallBoard';
-import { standardCoordinateLayout } from './standardBoard';
 
 /**
  * Bundle of a board's row/column definitions plus coordinate ops.
@@ -52,7 +46,7 @@ export interface CoordinateLayout<
   readonly columnNumbers: readonly C[];
   /**
    * Join a row letter and column number into a {@link Coordinate}.
-   * Implementations delegate to {@link joinCoordinate}; unknown pairs throw.
+   * Implementations delegate to `joinCoordinate` in `@factories`; unknown pairs throw.
    */
   createCoordinate: (row: string, column: string) => Coordinate;
   /** O(1) row string → index; `-1` if not valid for this layout. */
@@ -69,29 +63,4 @@ export interface CoordinateLayoutMap {
   large: CoordinateLayout<LargeBoardRowLetter, LargeBoardColumnNumber>;
   small: CoordinateLayout<SmallBoardRowLetter, SmallBoardColumnNumber>;
   standard: CoordinateLayout<StandardBoardRowLetter, StandardBoardColumnNumber>;
-}
-
-/**
- * Singleton map of the three size layouts.
- * Prefer {@link getCoordinateLayout} at call sites that already have a board.
- */
-export const coordinateLayoutMap: CoordinateLayoutMap = {
-  large: largeCoordinateLayout,
-  small: smallCoordinateLayout,
-  standard: standardCoordinateLayout,
-};
-
-/**
- * Layout for the board's current `boardType`.
- *
- * Thin lookup — no cloning. Callers use `rowLetters` / `columnNumbers` for
- * bounds and the create/index ops for geometry. The return type is the
- * unspecialized {@link CoordinateLayout} (large defaults) so callers do not
- * need a generic tied to `boardType`.
- *
- * @param board - Board whose `boardType` selects the layout
- * @returns The shared layout value for that size
- */
-export function getCoordinateLayout(board: Board): CoordinateLayout {
-  return coordinateLayoutMap[board.boardType];
 }

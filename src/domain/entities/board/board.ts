@@ -6,8 +6,8 @@
  * kept partial in the type; `refineBoardLayout` in `@legality` checks that
  * the keys present match exactly the layout for `boardType`.
  *
- * Factories build boards from {@link getCoordinateLayout} / the size layouts;
- * this module only defines the persisted shape.
+ * Factories build boards from the size layouts in `@factories`; this module
+ * only defines the persisted shape.
  */
 
 import type { AssertExact } from '@utils';
@@ -23,7 +23,7 @@ export const boardType = ['standard', 'small', 'large'] as const;
 
 /**
  * Which coordinate layout this board uses.
- * Indexes {@link coordinateLayoutMap}; does not change the `Board` type shape.
+ * Selects the board's layout in `@factories`; does not change the `Board` type shape.
  */
 export type BoardType = (typeof boardType)[number];
 

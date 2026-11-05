@@ -10,8 +10,6 @@ export {
   boardSpaceSchema,
   boardType,
   boardTypeEnum,
-  largeCoordinateLayout,
-  smallCoordinateLayout,
 } from '@entities';
 export {
   armyCompositionByMode,
@@ -42,7 +40,6 @@ export {
   unitTypeRestrictionsSchema,
   restrictionsSchema,
   roundEffectSchema,
-  standardCoordinateLayout,
   statModifiers,
   statModifierSchema,
 } from '@entities';
@@ -597,6 +594,9 @@ export {
   createEmptyStandardBoard,
   createInitialGameState,
   createUnitInstance,
+  largeCoordinateLayout,
+  smallCoordinateLayout,
+  standardCoordinateLayout,
 } from '@factories';
 export {
   addCommanderToBoard,

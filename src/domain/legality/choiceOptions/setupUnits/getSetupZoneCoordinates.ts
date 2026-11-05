@@ -1,5 +1,5 @@
 import type { Board, Coordinate, PlayerSide } from '@entities';
-import { getCoordinateLayout } from '@entities';
+import { getCoordinateLayout } from '@factories';
 
 /** Depth of each side's deployment belt (KISS provisional). */
 export const SETUP_ZONE_BACK_ROWS = 3 as const;

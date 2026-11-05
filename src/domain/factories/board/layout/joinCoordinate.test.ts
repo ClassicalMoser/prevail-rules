@@ -1,4 +1,4 @@
-import { joinCoordinate } from './boardCoordinates';
+import { joinCoordinate } from './joinCoordinate';
 
 /**
  * joinCoordinate: row + column strings become a Coordinate when known.

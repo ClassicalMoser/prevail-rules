@@ -7,6 +7,16 @@ export { createEmptyStandardBoard } from './board';
 // Empty large board: plain spaces, no units.
 export { createEmptyLargeBoard } from './board';
 
+// Each board size's rows, columns, and the spaces they name.
+export {
+  largeCoordinateLayout,
+  smallCoordinateLayout,
+  standardCoordinateLayout,
+} from './board';
+
+// The layout for a board's size.
+export { getCoordinateLayout } from './board';
+
 // Blank game for a mode: mode-sized board, empty piles, initiative black.
 export { createEmptyGameState } from './game';
 

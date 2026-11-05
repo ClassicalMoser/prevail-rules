@@ -80,7 +80,7 @@ To narrow a presence, use `hasNoUnit`, `hasSingleUnit` and `hasEngagedUnits` in 
 
 ## Board size vs visibility (when to type-parameterize)
 
-**Board size is state, not a type parameter.** `boardType` indexes a layout map:
+**Board size is state, not a type parameter.** `boardType` selects a layout, through `getCoordinateLayout` in `@factories`:
 
 ```typescript
 getCoordinateLayout(board); // → coordinateLayoutMap[board.boardType]
