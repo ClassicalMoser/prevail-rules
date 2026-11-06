@@ -27,9 +27,28 @@ The project is strict about both. Do not use a type assertion (`as`, `!`) or `@t
 
 ## Commentary
 
-Commentary is extensive. 25% comments inside a function body is not too much; JSDoc does not count toward it. The measure is comment lines inside bodies over code lines inside bodies: nothing outside a body is in either count, and blank lines are in neither. In a struct the lines inside the body are the JSDoc on each member, so those count; the block above a declaration does not, however long it is. `pnpm check:commentary` reports it per layer and fails when a layer falls below the density it has already reached. Leave existing function commentary in place, including `@param` and `@returns`. JSDoc-style comments ahead of declarations are good for IDE readability, and every function and every struct has one. That is a separate requirement from the 25%, and neither one discharges the other. Keep a new header short: a few lines saying what the thing is and why it exists. Three paragraphs is not a better header. A shorter header is not a cleanup, so leave a long one alone. When a helper does several steps, comment each step: what it writes, and why a factory is still there.
+Commentary is extensive. 25% comments inside a function body is not too much; JSDoc does not count toward it. The measure is comment lines inside bodies over code lines inside bodies: nothing outside a body is in either count, and blank lines are in neither. In a struct the lines inside the body are the JSDoc on each member, so those count; the block above a declaration does not, however long it is. `pnpm check:commentary` reports it per layer. It renders no verdict and gates nothing: a comment restating the code raises the number and makes the file worse, so whether commentary is any good is a judgment for the read, not a measure. Leave existing function commentary in place, including `@param` and `@returns`. JSDoc-style comments ahead of declarations are good for IDE readability, and every function and every struct has one. That is a separate requirement from the 25%, and neither one discharges the other. Keep a new header short: a few lines saying what the thing is and why it exists. Three paragraphs is not a better header. A shorter header is not a cleanup, so leave a long one alone. When a helper does several steps, comment each step: what it writes, and why a factory is still there.
 
-A comment that restates the code, names the obvious, or stands in for one later is worse than no comment at all: it costs a line, survives review because something is there, and teaches a reader to skim. Density is a symptom of explanation, never the goal. If there is nothing to say about a step, say nothing and leave the density low; a scope that is honestly thin is a scope someone can still fix. Never write a comment to move a number.
+A comment says the rule, not the call. It sits above the step it explains rather than trailing it, and it reads in the game's vocabulary:
+
+```typescript
+// Lower initiative value wins
+if (whiteInitiative < blackInitiative) {
+
+// Spaces behind the unit are filtered out: a unit in the rear cannot support
+const adjacentSpacesNotBehind = [...adjacentSpaces].filter(
+```
+
+Against the shape to avoid, which names the operation the reader can already see:
+
+```typescript
+// Get the adjacent spaces
+const adjacentSpaces = getAdjacentSpaces(board, unitCoordinate);
+```
+
+A new comment that restates the code, labels the obvious, or holds a place for a real one later is worse than none: it costs a line, passes review because something is there, and teaches a reader to skim. Write the first shape.
+
+This is a rule for what you add. It is not a licence to audit what is already here. Existing commentary is authored, and the never-overwrite rule above governs it: a comment that reads thin to you may be carrying a distinction you have not met yet, so leave it and mark it if you must. The remedy for a weak comment is a better comment, never a deleted one. Density is a symptom of explanation rather than the goal, and a comment is never written to move a number; but this is a rules engine, and nearly every step serves a rule, so a step with nothing worth saying is rare and usually means the rule has not been found yet. Where you cannot name it, leave a `TODO(misleading)` or `TODO(composition)` mark saying what you could not state. That is a finding, and it is worth more than either a bare step or a comment that fills the line.
 
 As much as possible comments are meant to convey gameplay meaning: what happens in the game, and why the rules want it. A reader who knows the game but not the rest of the codebase should still be able to follow it. Technical detail, such as the chain of states a lookup passes through, is where human meaning gets lost. Names and test titles follow the same rule.
 

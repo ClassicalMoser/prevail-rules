@@ -1,32 +1,8 @@
 import { densityPercent } from './densityPercent';
 import type { ScopeDensity } from './scopeDensity';
-import type { ScopeFloor } from './scopeFloor';
 
-/** The standard in `STYLE.md`, which is the target rather than the gate. */
+/** The standard in `STYLE.md`, shown for reference rather than enforced. */
 const TARGET = 25;
-
-/**
- * The flag beside one number: past the target, or below its floor.
- *
- * @param percent - The measured density
- * @param floor - The recorded floor, or undefined when none is recorded
- * @returns A one-character mark, or a space when there is nothing to say
- */
-function markFor(percent: number, floor: number | undefined): string {
-  // A loss of ground is the only thing this check fails on, so it is marked
-  // first and distinctly, even on a scope that is otherwise doing well. A
-  // scope can be past the target and still have slipped below its own floor.
-  if (floor !== undefined && percent < floor) {
-    return '!';
-  }
-
-  // A scope at the standard is the worked example the rest should look like.
-  if (percent >= TARGET) {
-    return '*';
-  }
-
-  return ' ';
-}
 
 /**
  * Writes the per-scope densities as lines to print.
@@ -35,18 +11,18 @@ function markFor(percent: number, floor: number | undefined): string {
  * audit has read runs several times the density of one it has not, and the
  * specs trail both. Averaging them would hide exactly that.
  *
+ * No scope is marked as passing or failing. The number says how much was
+ * written, never whether it was worth writing, and a reader who wants the
+ * second question has to open the file.
+ *
  * @param measured - Every scope's density, in boundary order
- * @param floors - The recorded floor per scope
  * @returns The report, one line per scope plus a header and a summary
  */
-export function reportCommentary(
-  measured: ScopeDensity[],
-  floors: Map<string, ScopeFloor>,
-): string[] {
+export function reportCommentary(measured: ScopeDensity[]): string[] {
   // The header states the measure, because the same number read against whole
   // files is roughly a third of this one and the two get confused.
   const lines = [
-    `In-body commentary, comments over code, against ${TARGET}%.`,
+    `In-body commentary, comments over code. ${TARGET}% is the standard in STYLE.md.`,
     '',
     '  scope           source   specs',
   ];
@@ -61,17 +37,13 @@ export function reportCommentary(
   for (const entry of measured) {
     const source = densityPercent(entry.source);
     const specs = densityPercent(entry.specs);
-    const floor = floors.get(entry.scope);
 
-    // A scope at or past the target is worth seeing; so is one below its floor.
-    const sourceMark = markFor(source, floor?.source);
-    const specMark = markFor(specs, floor?.specs);
-    // Padded to the width of the longest boundary alias, so the two columns
-    // line up and a scope that has slipped is visible by scanning down.
+    // Padded to the width of the longest boundary alias, so the columns line up
+    // and a layer can be compared against its neighbours by scanning down.
     const name = entry.scope.padEnd(14, ' ');
     const sourceText = String(source).padStart(5, ' ');
     const specText = String(specs).padStart(5, ' ');
-    lines.push(`  ${name} ${sourceText}%${sourceMark} ${specText}%${specMark}`);
+    lines.push(`  ${name} ${sourceText}%  ${specText}%`);
 
     sourceComments += entry.source.comments;
     sourceCode += entry.source.code;
@@ -91,6 +63,9 @@ export function reportCommentary(
   lines.push(
     '',
     `  source ${sourceTotal}% of ${sourceLines} body lines, specs ${specTotal}% of ${specLines}.`,
+    '',
+    'A number is not a verdict. A comment that restates the code raises it and',
+    'makes the file worse; see STYLE.md on commentary before writing any.',
   );
   return lines;
 }

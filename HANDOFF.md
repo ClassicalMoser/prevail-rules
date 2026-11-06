@@ -107,17 +107,24 @@ inside the body that says why a check is there. A header block above any
 declaration, struct or function, is the module saying what it is, and does not
 count toward the quota.
 
-**`pnpm check:commentary` is the authority on these numbers now**, and
-`STYLE.md` carries the definition beside the 25%. It reports every boundary and
-fails when one falls below the density it has already reached, with the floors
-in `scripts/commentary/baseline.json`. It is deliberately **not** in `validate`:
-nothing is near 25% yet, so a gate on the standard would fail every run. The
-ratchet never fails on today's code, so wiring it in is one line whenever you
-want it. Raise a floor whenever a scope improves.
+**`pnpm check:commentary` reports these numbers per layer**, and `STYLE.md`
+carries the definition beside the 25%. It renders no verdict, it gates nothing,
+and it is in neither `validate` nor CI. Run it to see where a layer stands
+before and after working on it.
 
-What it catches is the failure this repo has already had. `3845d55` rewrote
-14,170 lines across 90 spec files and added no commentary; the suite stayed
-green and `validate` stayed clean, because nothing measured it.
+That is deliberate, and an earlier draft of this file had it wrong. It recorded
+a floor per layer and failed when a layer fell below it, on the reasoning that
+`3845d55` rewrote 14,170 lines and added no commentary with every check still
+green. The floor was the wrong answer: a comment that restates the line beneath
+it raises the number and makes the file worse, so a gate on density can be
+satisfied by exactly what `STYLE.md` calls worse than silence. A floor also
+treats authored commentary as a number to defend rather than meaning someone
+wrote.
+
+Commentary quality is not mechanizable. It belongs in the docs and in the human
+read, with judgment. What the machines gate is what is objective — imports,
+types, formatting, and whether a spec proves itself — and `validate` now runs in
+CI, which it did not before.
 
 **The denominator is lines inside bodies, not lines in the file.** Three drafts
 of this handoff got the numbers wrong by measuring in-body comments against whole
@@ -149,17 +156,25 @@ at 1%** (382 against 29,647).
 Those three are the declaration layers, where a member costs one line of code and
 earns three of documentation. The engine layers below them are the gap.
 
-**Both forms have a worked example, and they are the thing to copy:**
+**A density figure cannot tell you whether commentary is any good**, so do not
+work to one. Two examples of the voice to write in:
 
-- `entities/board/waterCover.ts` — **72%** of its bodies, a struct. Eight edges
-  documented inside the interface and again inside the Zod object, and a header
-  saying why water is not a terrain type.
-- `queries/attack/getMeleeSupportValue.ts` — **28%** of its body, a function. 26
-  in-body comment lines against 66 of code, and no JSDoc at all.
+- `entities/board/waterCover.ts` — a struct. Eight edges documented inside the
+  interface and again inside the Zod object, each saying what `true` means for
+  that edge, with a header explaining why water is not a terrain type.
+- `queries/card/calculateInitiative.ts` — a function, and the voice to match.
+  Two comments in the whole body, both stating a rule rather than an operation:
+  `// Lower initiative value wins` above a comparison of two card values, and
+  `// Tie: current holder keeps it` above the fallback.
 
-The second is the one that answers whether 25% is sane for executable code. It
-is: a function body carrying a comment roughly every three lines reads well and
-is already in the repo.
+The second is the one to study, and what makes it readable is not a comment
+every three lines — it is that both comments are in the game's vocabulary. Two
+lines of that beat twenty naming the calls beneath them.
+
+**This governs what you write, not what is already there.** Commentary in the
+files is authored and the never-overwrite rule covers it: a comment that reads
+thin to you may carry a distinction you have not met yet. Leave it, and mark it
+if you must. Do not go looking for comments to improve.
 
 **The audit is what moves this number.** The scopes the human read has passed run
 10% to 11% — `queries`, `legality`, `expected` — against 2% to 3% for the scopes
