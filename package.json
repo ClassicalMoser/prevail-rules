@@ -38,6 +38,7 @@
   },
   "scripts": {
     "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "test": "vitest",
@@ -47,7 +48,7 @@
     "typecheck": "tsc --noEmit && tsc -p scripts",
     "build": "tsdown",
     "prepublishOnly": "npm run build",
-    "validate": "npm run lint && npm run format && npm run typecheck && npm run check:selfProof",
+    "validate": "npm run lint && npm run format:check && npm run typecheck && npm run check:selfProof",
     "check:commentary": "tsx scripts/main.ts commentary",
     "check:selfProof": "tsx scripts/main.ts selfProof"
   },

@@ -1,0 +1,18 @@
+#!/bin/sh
+# Runs this repository's gate before every commit.
+#
+# Inert until someone points git at this directory, which is deliberate: a
+# hook that installs itself is a surprise, and this one is a local choice.
+#
+#   git config core.hooksPath .githooks
+#
+# It exists because the gate was skippable. `pnpm validate` ran only when
+# someone chose to run it, so a commit that failed lint, formatting, types or
+# the self-proof check landed anyway, and this repository has had that happen.
+# It takes about two seconds.
+#
+# To commit without it, deliberately:
+#
+#   git commit --no-verify
+set -e
+pnpm validate

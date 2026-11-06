@@ -22,5 +22,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Validate
+        run: pnpm validate
+
       - name: Test
         run: pnpm test
+
+      # Reports in-body commentary per layer and fails only when a layer drops
+      # below the density it already had. It does not gate on the 25% standard,
+      # which nothing has reached yet.
+      - name: Commentary density
+        run: pnpm check:commentary
