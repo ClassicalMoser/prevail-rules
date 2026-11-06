@@ -1,0 +1,62 @@
+{
+  "application": {
+    "source": 7,
+    "specs": 0
+  },
+  "entities": {
+    "source": 47,
+    "specs": 0
+  },
+  "events": {
+    "source": 28,
+    "specs": 0
+  },
+  "expected": {
+    "source": 12,
+    "specs": 1
+  },
+  "factories": {
+    "source": 6,
+    "specs": 2
+  },
+  "game": {
+    "source": 29,
+    "specs": 0
+  },
+  "legality": {
+    "source": 11,
+    "specs": 2
+  },
+  "procedures": {
+    "source": 3,
+    "specs": 2
+  },
+  "queries": {
+    "source": 11,
+    "specs": 2
+  },
+  "ruleValues": {
+    "source": 0,
+    "specs": 0
+  },
+  "sampleValues": {
+    "source": 1,
+    "specs": 13
+  },
+  "testing": {
+    "source": 0,
+    "specs": 0
+  },
+  "transforms": {
+    "source": 3,
+    "specs": 1
+  },
+  "utils": {
+    "source": 12,
+    "specs": 0
+  },
+  "validation": {
+    "source": 3,
+    "specs": 1
+  }
+}

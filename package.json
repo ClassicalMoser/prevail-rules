@@ -48,6 +48,7 @@
     "build": "tsdown",
     "prepublishOnly": "npm run build",
     "validate": "npm run lint && npm run format && npm run typecheck && npm run check:selfProof",
+    "check:commentary": "tsx scripts/main.ts commentary",
     "check:selfProof": "tsx scripts/main.ts selfProof"
   },
   "dependencies": {

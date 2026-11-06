@@ -107,6 +107,18 @@ inside the body that says why a check is there. A header block above any
 declaration, struct or function, is the module saying what it is, and does not
 count toward the quota.
 
+**`pnpm check:commentary` is the authority on these numbers now**, and
+`STYLE.md` carries the definition beside the 25%. It reports every boundary and
+fails when one falls below the density it has already reached, with the floors
+in `scripts/commentary/baseline.json`. It is deliberately **not** in `validate`:
+nothing is near 25% yet, so a gate on the standard would fail every run. The
+ratchet never fails on today's code, so wiring it in is one line whenever you
+want it. Raise a floor whenever a scope improves.
+
+What it catches is the failure this repo has already had. `3845d55` rewrote
+14,170 lines across 90 spec files and added no commentary; the suite stayed
+green and `validate` stayed clean, because nothing measured it.
+
 **The denominator is lines inside bodies, not lines in the file.** Three drafts
 of this handoff got the numbers wrong by measuring in-body comments against whole
 files, which mixes a numerator restricted to bodies with a denominator full of
@@ -187,12 +199,18 @@ worst offenders:
 |    28 | `legality/unitMovement/getLegalRetreats.ts`         |
 |    25 | `procedures/cards/generateResolveRallyEvent.ts`     |
 
-**Those 201 blocks are the cheapest progress on the quota, and it is not
-additive.** Much of what sits in a 32-line header is step-by-step explanation
-that belongs beside the step it explains. Moving it into the body shortens the
-header toward its job — what this is and why it exists — and raises in-body
-density with prose that is already written and already correct. That is a
-reading job, which is what this track is.
+**Do not shorten them.** An earlier draft of this file said to relocate that
+prose into the bodies, which was wrong twice over: `STYLE.md` says in as many
+words that a shorter header is not a cleanup, and cutting authored prose out of
+a header is overwriting it, which the never-overwrite rule forbids. Leave every
+long header exactly where it is.
+
+What the 201 are good for is a hint about where the bodies are bare. A header
+that grew to 32 lines usually did so because the explanation had nowhere else to
+go, so those modules are the ones whose bodies most want the in-body line — and
+writing it is additive, with the header untouched. The rule going forward is for
+new headers only: a few lines saying what the thing is and why it exists, never
+three paragraphs.
 
 Note where the first one leads: `getPlayerUnitWithPosition` carries the longest
 header in the repo and is also an open finding in `AUDIT.md` for returning the
