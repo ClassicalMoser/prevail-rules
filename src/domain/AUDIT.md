@@ -2,9 +2,11 @@
 
 The author personally reads and comprehends every line of code in this repo. This file tracks that reading. The process is [`AUDIT_PROCESS.md`](../../AUDIT_PROCESS.md).
 
-This audit requires the human read on every directory. A box is checked only after that read. Closed boxes stay closed.
+This audit requires the human read on every directory. A box is checked only after that read. A restart opens a closed box only by saying so here.
 
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-06
+
+**Restart.** `entities`, `game`, and `events` stay closed. Every other checked box is open again. The scout starts at `utils`.
 
 ---
 
@@ -24,8 +26,8 @@ Audit in this order (dependencies flow downward):
 
 ### `utils/` (`@utils`)
 
-- [x] `utils/`
-  - [x] Root modules (`assertExact`, `validationResult`, `serializationSentinels`, `throwIfMissing`, …)
+- [ ] `utils/` — scout resumed 2026-11-06
+  - [ ] Root modules (`assertExact`, `validationResult`, `stateSentinels`, `throwIfMissing`, `randomSource`)
 
 ### `entities/` (`@entities`)
 
@@ -68,21 +70,21 @@ Audit in this order (dependencies flow downward):
 
 ### `ruleValues/` (`@ruleValues`)
 
-- [x] `ruleValues/`
-  - [x] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
+- [ ] `ruleValues/`
+  - [ ] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
 
 ### `sampleValues/` (`@sampleValues`)
 
-- [x] `sampleValues/`
-  - [x] Root modules (`tempCommandCards`, `tempUnits`, `tinyStarterArmy`, …)
+- [ ] `sampleValues/`
+  - [ ] Root modules (`tempCommandCards`, `tempUnits`, `tinyStarterArmy`, …)
 
 ### `factories/` (`@factories`)
 
-- [x] `factories/`
-  - [x] `board/`
+- [ ] `factories/`
+  - [ ] `board/`
   - [ ] `game/` — reopened: `createOwnedCardState` and `createCardState` arrived
         after the read
-  - [x] `unit/`
+  - [ ] `unit/`
   - [ ] `unitLocation/` — new: `createUnitPlacement`
 
 ### `queries/` (`@queries`)
@@ -92,22 +94,22 @@ Target layout mirrors `entities/` and `game/` nouns. Retire `boardSpace/`, `card
 Walk folders in IDE order (alphabetical).
 
 - [ ] `queries/`
-  - [x] `attack/` — `applyAttackValue`, `getMeleeSupportValue`
-  - [x] `board/` — spaces, `diagonalIsClear`, `getCommanderSpace`
-    - [x] `adjacency/`
-    - [x] `areas/`
-    - [x] `steps/` — forward, forward to the edge, rearward
-  - [x] `card/` — owned and hidden slices, command match, initiative, commitment modifiers, modifier and restriction equality
-  - [x] `engagement/` — front, flank, rear, plus movement engagement getters
-  - [x] `facings/`
-  - [x] `gameOver/` — empty hand, unpayable rout discard, then the composed check
-  - [x] `line/` — segment, index, windows of at most 8, then `getLinesFromUnit` (`isValidLine` lives in `@legality`)
-  - [x] `player/` — `getOtherPlayer`
+  - [ ] `attack/` — `applyAttackValue`, `getMeleeSupportValue`
+  - [ ] `board/` — spaces, `diagonalIsClear`, `getCommanderSpace`
+    - [ ] `adjacency/`
+    - [ ] `areas/`
+    - [ ] `steps/` — forward, forward to the edge, rearward
+  - [ ] `card/` — owned and hidden slices, command match, initiative, commitment modifiers, modifier and restriction equality
+  - [ ] `engagement/` — front, flank, rear, plus movement engagement getters
+  - [ ] `facings/`
+  - [ ] `gameOver/` — empty hand, unpayable rout discard, then the composed check
+  - [ ] `line/` — segment, index, windows of at most 8, then `getLinesFromUnit` (`isValidLine` lives in `@legality`)
+  - [ ] `player/` — `getOtherPlayer`
   - [ ] `sequencing/` — current phase, step, initiative, event number, event stream
     - [ ] `combatOutcomes/`
-    - [x] `commandResolution/`
-    - [x] `meleeResolution/`
-    - [x] `rallyResolution/`
+    - [ ] `commandResolution/`
+    - [ ] `meleeResolution/`
+    - [ ] `rallyResolution/`
   - [ ] `unit/` — stats, friendliness, support match, units on board, unit identity
   - [ ] `unitPresence/` — position, enemy in the space, at a placement
 
@@ -187,6 +189,14 @@ Colocated `*.test.ts` under `src/domain/**` and `src/application/**` (see `vites
 ## Open findings
 
 Each finding stays here until the human read closes it.
+
+### `utils`
+
+- The guards compare a value to a string. `isPending` is `=== 'pending'`, `isResolved` is `!== 'pending'`, `isNone` is `=== 'none'`, `isActive` is `!== 'none'`. `throwIfPending` throws on `'pending'`. `throwIfNone` throws on `'none'`. The message on a throw is the caller's.
+- Those strings are not one behavior. `Value | 'pending'` is an unwritten slot. `currentPhaseState` is the only `Value | 'none'`. `'miss'` is only on `retreatState`, `reverseState`, and `routState`. `defendingUnitCanRetreat` and `defendingUnitRetreats` are `'pending' | boolean`, and `false` there is a decision.
+- The same words name other facts. `commitmentType: 'pending'` means the player has not chosen. `restrictionType: 'none'` means the card has no trait filter. `presenceType: 'none'` means the space has no unit. `isNone` typechecks on the last two and answers those other facts.
+- The comparison does not know the field. Passing `'miss'` to `isResolved` or `throwIfPending` returns it, because those guards only compare against `'pending'`. On `defendingUnitCanRetreat` and `defendingUnitRetreats`, `false` is a decision. The open check for a retreat, reverse, or rout lives with those queries.
+- Inline comparisons on the real slots are the duplicates, to mark in `@expected`, `@legality`, `@queries`, `@transforms`, and `@procedures`. A count of every `=== 'pending'` includes `commitmentType`.
 
 ### `queries/sequencing`
 
