@@ -100,6 +100,7 @@ export {
   getRallyResolutionStateAwaitingUnitSupport,
   getIsFirstPlayerForResolveRallyStep,
   getNextStepForResolveRally,
+  isOpenSubstep,
   getAttackApplyStateFromRangedAttack,
   getAttackApplyStateFromMelee,
   getDefendingPlayerForNextIncompleteMeleeAttackApply,

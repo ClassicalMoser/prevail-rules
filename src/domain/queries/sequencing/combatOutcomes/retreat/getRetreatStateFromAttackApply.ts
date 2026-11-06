@@ -1,5 +1,5 @@
 import type { AttackApplyState, RetreatState } from '@game';
-import { throwIfPending } from '@utils';
+import { isOpenSubstep } from '../isOpenSubstep';
 
 /**
  * Gets the retreat state from an attack apply state.
@@ -12,9 +12,10 @@ import { throwIfPending } from '@utils';
 export function getRetreatStateFromAttackApply(
   attackApplyState: AttackApplyState,
 ): RetreatState {
-  const retreatState = throwIfPending(
-    attackApplyState.retreatState,
-    'No retreat state found in attack apply state',
-  );
+  const retreatState = attackApplyState.retreatState;
+  // Pending has not been written. Miss means this attack did not retreat.
+  if (!isOpenSubstep(retreatState)) {
+    throw new Error('No retreat state found in attack apply state');
+  }
   return retreatState;
 }

@@ -1,7 +1,7 @@
 import type { ExpectedEventInfo } from '@events';
 import type { AttackApplyState, GameState } from '@game';
 import { canReverseUnit } from '@legality';
-import { isOpenSubstep } from '@utils';
+import { isOpenSubstep } from '@queries';
 import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
 import { getExpectedReverseEvent } from './getExpectedReverseEvent';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';

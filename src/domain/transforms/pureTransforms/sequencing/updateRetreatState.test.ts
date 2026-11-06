@@ -1,4 +1,7 @@
-import { getFrontEngagementStateFromMovement } from '@queries';
+import {
+  getFrontEngagementStateFromMovement,
+  getRetreatStateFromAttackApply,
+} from '@queries';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
@@ -104,9 +107,7 @@ describe('updateRetreatState function', () => {
       commandState.attackApplyState,
       'attack apply',
     );
-    expect(throwIfPending(attackApply.retreatState, 'retreat').completed).toBe(
-      true,
-    );
+    expect(getRetreatStateFromAttackApply(attackApply).completed).toBe(true);
   });
 
   it('given update retreat state in melee resolution for white', () => {
@@ -130,9 +131,7 @@ describe('updateRetreatState function', () => {
       melee.whiteAttackApplyState,
       'white apply',
     );
-    expect(throwIfPending(whiteApply.retreatState, 'retreat').completed).toBe(
-      true,
-    );
+    expect(getRetreatStateFromAttackApply(whiteApply).completed).toBe(true);
   });
 
   it('given update retreat state in melee resolution for black', () => {
@@ -156,9 +155,7 @@ describe('updateRetreatState function', () => {
       melee.blackAttackApplyState,
       'black apply',
     );
-    expect(throwIfPending(blackApply.retreatState, 'retreat').completed).toBe(
-      true,
-    );
+    expect(getRetreatStateFromAttackApply(blackApply).completed).toBe(true);
   });
 
   it('given when ranged attack apply has no retreat state, throws', () => {

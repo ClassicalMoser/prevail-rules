@@ -1,4 +1,4 @@
-import { isOpenSubstep } from '@utils';
+import { isOpenSubstep } from '@queries';
 import { createUnitWithPlacement } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 

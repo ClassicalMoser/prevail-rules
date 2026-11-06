@@ -2,11 +2,7 @@
 export type { AssertExact } from './assertExact';
 
 // Narrow `'none'`, `'pending'`, and `'miss'` sentinels, or throw.
-export {
-  isOpenSubstep,
-  throwIfNone,
-  throwIfPending,
-} from './serializationSentinels';
+export { throwIfNone, throwIfPending } from './serializationSentinels';
 
 // An injectable `[0, 1)` draw, so a caller can fix what a procedure rolls.
 export { defaultRandom } from './randomSource';

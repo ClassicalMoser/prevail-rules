@@ -1,3 +1,4 @@
+import { getReverseStateFromAttackApply } from '@queries';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
@@ -108,9 +109,7 @@ describe('updateReverseState function', () => {
       commandState.attackApplyState,
       'attack apply',
     );
-    expect(throwIfPending(attackApply.reverseState, 'reverse').completed).toBe(
-      true,
-    );
+    expect(getReverseStateFromAttackApply(attackApply).completed).toBe(true);
   });
 
   it('given update reverse state in melee resolution for white', () => {
@@ -134,9 +133,7 @@ describe('updateReverseState function', () => {
       melee.whiteAttackApplyState,
       'white apply',
     );
-    expect(throwIfPending(whiteApply.reverseState, 'reverse').completed).toBe(
-      true,
-    );
+    expect(getReverseStateFromAttackApply(whiteApply).completed).toBe(true);
   });
 
   it('given update reverse state in melee resolution for black', () => {
@@ -160,9 +157,7 @@ describe('updateReverseState function', () => {
       melee.blackAttackApplyState,
       'black apply',
     );
-    expect(throwIfPending(blackApply.reverseState, 'reverse').completed).toBe(
-      true,
-    );
+    expect(getReverseStateFromAttackApply(blackApply).completed).toBe(true);
   });
 
   it('given when ranged attack apply has no reverse state, throws', () => {

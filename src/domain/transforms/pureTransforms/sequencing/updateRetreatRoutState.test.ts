@@ -1,3 +1,4 @@
+import { getRetreatStateFromAttackApply } from '@queries';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyStateWithRetreat,
@@ -69,7 +70,7 @@ describe('updateRetreatRoutState function', () => {
       commandState.attackApplyState,
       'attack apply',
     );
-    const retreat = throwIfPending(attackApply.retreatState, 'retreat');
+    const retreat = getRetreatStateFromAttackApply(attackApply);
     expect(throwIfPending(retreat.routState, 'rout').numberToDiscard).toBe(2);
   });
 });

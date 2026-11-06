@@ -1,6 +1,6 @@
 import type { GameState, RoutState } from '@game';
 import { getOtherPlayer } from '@queries/player';
-import { isOpenSubstep } from '@utils';
+import { isOpenSubstep } from '../isOpenSubstep';
 import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/getMeleeResolutionState';
 
 /**

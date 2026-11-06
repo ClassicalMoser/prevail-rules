@@ -63,6 +63,9 @@ export { getIsFirstPlayerForResolveRallyStep } from './rallyResolution';
 // The cleanup step that follows the current resolve-rally step.
 export { getNextStepForResolveRally } from './rallyResolution';
 
+// Whether a retreat, reverse, or rout substep has been written.
+export { isOpenSubstep } from './combatOutcomes';
+
 // Attack-apply on the current ranged attack.
 export { getAttackApplyStateFromRangedAttack } from './combatOutcomes';
 

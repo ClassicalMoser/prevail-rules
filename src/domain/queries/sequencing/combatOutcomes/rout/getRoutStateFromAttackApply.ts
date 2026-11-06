@@ -1,5 +1,5 @@
 import type { AttackApplyState, RoutState } from '@game';
-import { throwIfPending } from '@utils';
+import { isOpenSubstep } from '../isOpenSubstep';
 
 /**
  * Gets the rout state from an attack apply state.
@@ -12,9 +12,10 @@ import { throwIfPending } from '@utils';
 export function getRoutStateFromAttackApply(
   attackApplyState: AttackApplyState,
 ): RoutState {
-  const routState = throwIfPending(
-    attackApplyState.routState,
-    'No rout state found in attack apply state',
-  );
+  const routState = attackApplyState.routState;
+  // Pending has not been written. Miss means this attack did not rout.
+  if (!isOpenSubstep(routState)) {
+    throw new Error('No rout state found in attack apply state');
+  }
   return routState;
 }

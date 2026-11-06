@@ -1,7 +1,12 @@
 import type { UnitInstance, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
-import { getRangedAttackResolutionState } from '@queries';
+import {
+  getRangedAttackResolutionState,
+  getRetreatStateFromAttackApply,
+  getReverseStateFromAttackApply,
+  getRoutStateFromAttackApply,
+} from '@queries';
 import {
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
@@ -97,9 +102,7 @@ describe('applyResolveRangedAttackEvent function', () => {
     const ra = getRangedAttackResolutionState(next);
     const apply = throwIfPending(ra.attackApplyState, 'attack apply');
     expect(apply.attackResult.unitReversed).toBe(true);
-    expect(throwIfPending(apply.reverseState, 'reverse').substepType).toBe(
-      'reverse',
-    );
+    expect(getReverseStateFromAttackApply(apply).substepType).toBe('reverse');
   });
 
   it('given routed true, rout substep lists defending unit instance', () => {
@@ -113,7 +116,7 @@ describe('applyResolveRangedAttackEvent function', () => {
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
     const apply = throwIfPending(ra.attackApplyState, 'attack apply');
-    const rout = throwIfPending(apply.routState, 'rout');
+    const rout = getRoutStateFromAttackApply(apply);
     expect(rout.substepType).toBe('rout');
     expect(rout.unitsToRout).toContain(defender);
   });
@@ -132,9 +135,9 @@ describe('applyResolveRangedAttackEvent function', () => {
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
     const apply = throwIfPending(ra.attackApplyState, 'attack apply');
-    expect(
-      throwIfPending(apply.retreatState, 'retreat').finalPosition,
-    ).toStrictEqual(onlyOption);
+    expect(getRetreatStateFromAttackApply(apply).finalPosition).toStrictEqual(
+      onlyOption,
+    );
   });
 
   it.each<{
@@ -164,7 +167,7 @@ describe('applyResolveRangedAttackEvent function', () => {
       const next = applyResolveRangedAttackEvent(event, full);
       const ra = getRangedAttackResolutionState(next);
       const apply = throwIfPending(ra.attackApplyState, 'attack apply');
-      expect(throwIfPending(apply.retreatState, 'retreat').finalPosition).toBe(
+      expect(getRetreatStateFromAttackApply(apply).finalPosition).toBe(
         'pending',
       );
     },

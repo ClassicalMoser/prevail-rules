@@ -1,3 +1,6 @@
+// Whether a retreat, reverse, or rout substep has been written.
+export { isOpenSubstep } from './isOpenSubstep';
+
 // Attack-apply on the current ranged attack.
 export { getAttackApplyStateFromRangedAttack } from './attackApply';
 

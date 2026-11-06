@@ -1,7 +1,12 @@
 import type { UnitWithPlacement } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
 import type { GameState } from '@game';
-import { getMeleeResolutionState } from '@queries';
+import {
+  getMeleeResolutionState,
+  getRetreatStateFromAttackApply,
+  getReverseStateFromAttackApply,
+  getRoutStateFromAttackApply,
+} from '@queries';
 import {
   createMeleeResolutionState,
   createResolveMeleePhaseState,
@@ -105,7 +110,7 @@ describe('applyResolveMeleeEvent function', () => {
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
     const blackApply = throwIfPending(melee.blackAttackApplyState, 'apply');
-    expect(throwIfPending(whiteApply.reverseState, 'reverse').substepType).toBe(
+    expect(getReverseStateFromAttackApply(whiteApply).substepType).toBe(
       'reverse',
     );
     expect(blackApply.completed).toBe(true);
@@ -126,9 +131,7 @@ describe('applyResolveMeleeEvent function', () => {
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
     const blackApply = throwIfPending(melee.blackAttackApplyState, 'apply');
-    expect(throwIfPending(whiteApply.routState, 'rout').substepType).toBe(
-      'rout',
-    );
+    expect(getRoutStateFromAttackApply(whiteApply).substepType).toBe('rout');
     expect(blackApply.completed).toBe(true);
     expect(blackApply.routState).toBe('miss');
     expect(blackApply.retreatState).toBe('miss');
@@ -152,7 +155,7 @@ describe('applyResolveMeleeEvent function', () => {
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
     expect(
-      throwIfPending(whiteApply.retreatState, 'retreat').finalPosition,
+      getRetreatStateFromAttackApply(whiteApply).finalPosition,
     ).toStrictEqual(only);
   });
 
@@ -171,8 +174,8 @@ describe('applyResolveMeleeEvent function', () => {
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
-    expect(
-      throwIfPending(whiteApply.retreatState, 'retreat').finalPosition,
-    ).toBe('pending');
+    expect(getRetreatStateFromAttackApply(whiteApply).finalPosition).toBe(
+      'pending',
+    );
   });
 });

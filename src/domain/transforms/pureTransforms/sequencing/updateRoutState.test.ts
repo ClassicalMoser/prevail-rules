@@ -1,3 +1,4 @@
+import { getRoutStateFromAttackApply } from '@queries';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
@@ -150,9 +151,7 @@ describe('updateRoutState function', () => {
       commandState.attackApplyState,
       'attack apply',
     );
-    expect(throwIfPending(attackApply.routState, 'rout').numberToDiscard).toBe(
-      2,
-    );
+    expect(getRoutStateFromAttackApply(attackApply).numberToDiscard).toBe(2);
   });
 
   it('given update rout state in melee resolution for white', () => {
@@ -175,9 +174,7 @@ describe('updateRoutState function', () => {
       melee.whiteAttackApplyState,
       'white apply',
     );
-    expect(throwIfPending(whiteApply.routState, 'rout').numberToDiscard).toBe(
-      1,
-    );
+    expect(getRoutStateFromAttackApply(whiteApply).numberToDiscard).toBe(1);
   });
 
   it('given update rout state in melee resolution for black', () => {
@@ -200,9 +197,7 @@ describe('updateRoutState function', () => {
       melee.blackAttackApplyState,
       'black apply',
     );
-    expect(throwIfPending(blackApply.routState, 'rout').numberToDiscard).toBe(
-      2,
-    );
+    expect(getRoutStateFromAttackApply(blackApply).numberToDiscard).toBe(2);
   });
 
   it('given update rout state in cleanup phase (routs from lost support)', () => {

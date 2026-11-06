@@ -5,8 +5,9 @@ import {
   getMeleeResolutionState,
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
+  isOpenSubstep,
 } from '@queries';
-import { isOpenSubstep, throwIfPending } from '@utils';
+import { throwIfPending } from '@utils';
 import { updatePhaseState } from '../state';
 
 /**

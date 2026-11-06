@@ -8,9 +8,10 @@ import {
   getNextStepForResolveRally,
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
+  isOpenSubstep,
 } from '@queries';
+import { throwIfPending } from '@utils';
 import { updateRallyResolutionStateForCurrentStep } from './updateRallyResolutionStateForCurrentStep';
-import { isOpenSubstep, throwIfPending } from '@utils';
 import { updatePhaseState } from '../state';
 
 /**

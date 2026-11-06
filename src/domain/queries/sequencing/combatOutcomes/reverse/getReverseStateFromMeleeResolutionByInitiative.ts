@@ -1,5 +1,5 @@
 import type { GameState, ReverseState } from '@game';
-import { isOpenSubstep } from '@utils';
+import { isOpenSubstep } from '../isOpenSubstep';
 import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/getMeleeResolutionState';
 
 /**
