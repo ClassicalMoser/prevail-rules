@@ -1,26 +1,145 @@
 # Handoff — test readability overhaul
 
-**State:** `main` clean and in sync with `origin/main`. 358 spec files, 1,894
-tests, green in 12s. Typecheck, lint and format clean.
+**State:** `main` clean and in sync with `origin/main` at `a6c8c12`. 358 spec
+files, 1,894 tests, green in 12s. `pnpm validate` clean — lint, format,
+typecheck and the self-proof check.
 
 This is the work the audit is waiting on. The audit stalled at
 `queries/sequencing` because the specs there were unreadable, and the same shape
 repeats across the suite.
 
-## The one rule this pass applies
+**The slice has changed.** The first draft of this handoff ordered the work by
+point: factories everywhere, then transforms everywhere, and so on. `3845d55`
+ran point 1 that way, and what it produced is the reason the rest does not go
+that way. Read the next section before starting.
 
-Every change below is an instance of a single order of preference. For anything
-a spec needs, in this order:
+## Why the slice is a layer, not a point
 
-1. **A factory** builds a value from raw inputs.
-2. **A transform** changes an existing state.
-3. **A query** reads a state out of a state. Look it up; do not rebuild it.
-4. **A fixture** in `@testing` does only what none of the first three can.
-5. **Commentary** says what is happening in the game and why the rules want it.
-6. **Naming** says it in the game's words, not the code's.
+`3845d55` is good work. 90 spec files, +918/−2,201, suite green, self-proof
+still at zero, and the substitution is the right shape with assertions left as
+literals. Measured across the whole suite, before it and after it:
 
-Work the points in order, one commit each. Measurements below are from `main`
-today.
+| Point                    | before |     after |
+| ------------------------ | -----: | --------: |
+| 1 factory calls          |    860 | **1,209** |
+| 1 hand-written `facing:` |    681 |   **339** |
+| 2 `...state` spreads     |    196 |       196 |
+| 3 state property drills  |    238 |       238 |
+| 4 local spec helpers     |    109 |       109 |
+| 5 comment lines          |  1,494 |     1,492 |
+
+Five of the six points are unchanged — not approximately, identically. 14,170
+lines of test code were rewritten, and those files carry 117 line comments
+between them, 0.8%.
+
+**74 of the 90 touched files still carry a point 1, 2, 3 or 4 item.** Sixteen
+are finished. The other 74 get opened again at transforms, again at queries,
+again at fixtures, again at commentary — and their diffs get read four more
+times, which is the opposite of what this pass is for. Comprehension comes from
+reading a file once and knowing it is done.
+
+Two specifics make the case better than the totals do.
+
+**`legality/unitMovement/exploreUnitMoves.test.ts` was skipped.** It is the
+single heaviest file in the suite on that axis — 60 hand-written facings and 25
+property drills — and it is not in the commit, while six lighter files in the
+same directory were half-converted.
+
+**`legality/unitMovement/canMoveInto.test.ts` shows why a horizontal sweep
+cannot finish a file.** Its ten remaining `facing:` fields are not point-1
+leftovers. Every one is an argument to a local helper:
+
+```ts
+const gameState = createGameState([
+  { coord: 'E-5', facing: 'north', player: 'black', speed: 2 },
+]);
+```
+
+A bespoke mini-DSL for units, carrying a `speed` the engine owns. That is what
+makes the file hard to read, it is a point-4 item, and point 1 could not reach
+it — but point 4 will rewrite every line point 1 just touched. There are 109
+such helpers in 81 spec files, 56 of them named `create*`.
+
+So: **one file at a time, all six points in order, and the file is left done.**
+
+## What "done" means for a file
+
+Walk the six points in order on a single file, then do not open it again:
+
+1. Every value a factory builds comes from the factory.
+2. Every state change comes from a transform.
+3. Every state read comes from the query that owns it, unless that query is the
+   subject.
+4. What is left over, and only that, is a `@testing` fixture.
+5. The body carries gameplay commentary at `STYLE.md`'s 25%.
+6. Names say the moment in the game.
+
+Then `pnpm validate` clean, and `pnpm test` still at 358 files and 1,894 tests.
+
+A layer is finished when every spec under it is finished. One commit per layer,
+except `queries`, `legality` and `transforms`, which are too big for one — those
+commit per directory.
+
+## The order is the audit's order
+
+From `src/domain/AUDIT.md`. Layers with no specs (`entities`, `events`, `game`,
+`ruleValues`) are not in the pass.
+
+| #   | Layer         | Specs | `facing:` | spreads | drills | helpers |  lines | `//` |
+| --- | ------------- | ----: | --------: | ------: | -----: | ------: | -----: | ---: |
+| 1   | `factories`   |    25 |         2 |       0 |      4 |       0 |    941 |   1% |
+| 2   | `queries`     |   114 |        34 |       2 |      4 |       2 |  8,950 |   1% |
+| 3   | `legality`    |    38 |       167 |      14 |     95 |      15 |  5,603 |   1% |
+| 4   | `expected`    |    18 |        23 |      11 |      3 |      12 |  2,736 |   0% |
+| 5   | `procedures`  |    25 |         7 |      42 |     25 |      15 |  2,227 |   0% |
+| 6   | `transforms`  |    91 |        73 |     107 |     64 |      49 | 12,161 |   0% |
+| 7   | `validation`  |    20 |        21 |      14 |      9 |      16 |  3,256 |   0% |
+| 8   | `testing`     |    21 |        11 |       4 |     29 |       0 |  1,244 |   0% |
+| 9   | `application` |     3 |         1 |       2 |      5 |       0 |    450 |   0% |
+
+Plus two specs in `sampleValues` and one in `utils`, which the sample work below
+covers. 358 in all.
+
+**Why this order rather than easiest-first or heaviest-first:**
+
+- It is the audit's order, and the audit is what this pass exists to unblock.
+  The audit is parked at `queries/sequencing/combatOutcomes`, `queries/unit` and
+  `queries/unitPresence`. Finishing step 2 hands it back exactly the three
+  directories it stopped on.
+- It is dependency order, so each point's tools are themselves read before the
+  layer that leans on them. Point 1's factories are read at step 1; point 3's
+  queries at step 2.
+- It keeps the test pass one layer ahead of the human read, so every layer
+  arrives at that read already legible.
+
+**Start with `factories`.** 25 specs, 941 lines, 2 facings, 4 drills, no local
+helpers at all. It is nearly clean, which makes it the shape-setting commit: do
+it whole, read the diff end to end, and settle what "done" looks like there
+before 114 query specs go through on the same pattern.
+
+`legality` and `transforms` hold most of the remaining work — 240 of the 339
+facings, 121 of the 196 spreads, 159 of the 238 drills, 64 of the 109 helpers.
+They are steps 3 and 6, and they stay there. Taking them early would mean
+rebuilding each spec against factories and queries that have not been read yet.
+
+## Run `pnpm validate` often
+
+Not once per commit. Often, inside each file, on whatever is half done. It
+carries lint, format, typecheck and the self-proof check, and all four answer
+questions that get much more expensive once a substitution has been repeated
+across a directory:
+
+- A self-proof is cheapest to find in the edit that introduced it. The suite is
+  at zero, so any hit belongs to the change in front of you.
+- `format` runs as part of it, so formatting drift never lands mixed into a
+  substitution diff and muddies the read.
+- A substitution that typechecks in one file and not the next means the two sites
+  were not the same shape, which is the signal to stop and look rather than push
+  the pattern through.
+
+`pnpm test` is the other half, and the baseline is 358 files, 1,894 tests. The
+count must not drop: this pass changes how a test is expressed, never whether it
+exists.
 
 ## The baseline: does the setup path reach the subject?
 
@@ -39,16 +158,16 @@ boundary violated, lint clean. Cycle detection cannot see it because there is no
 cycle to see. Self-proof and circularity are different problems and only one of
 them exists here.
 
-**`pnpm validate` now enforces it** (`scripts/selfProof/`).
-It builds the import graph from `boundaries.ts` and the imports themselves,
-resolves each name through the barrels to the module that declares it, drops
-type-only edges, and asks whether any non-subject import reaches the subject.
-Nothing to keep in step by hand, and it runs in about a second.
+**`pnpm validate` now enforces it** (`scripts/selfProof/`). It builds the import
+graph from `boundaries.ts` and the imports themselves, resolves each name
+through the barrels to the module that declares it, drops type-only edges, and
+asks whether any non-subject import reaches the subject. Nothing to keep in step
+by hand, and it runs in about a second.
 
 It found exactly one spec, a real tautology, and it is fixed (`6749201`).
 `getLegalChooseMeleeResolutionEvents.test.ts` asked
-`isValidChooseMeleeResolutionEvent` whether each returned option was valid —
-and that validator computes the legal options by calling the subject, so the
+`isValidChooseMeleeResolutionEvent` whether each returned option was valid — and
+that validator computes the legal options by calling the subject, so the
 assertion said every option returned was among the options returned. The three
 choices are literals now. The same block also read `space` from the actual
 value, which the import graph cannot see; that is gone too.
@@ -67,26 +186,25 @@ Two worked cases, because they land on opposite sides:
   one is fine, whatever the table says.
 - **`addUnitToBoard` is not.** It imports `@queries` — `getBoardSpace`,
   `getOppositeFacing`, `hasEngagedUnits`, `hasSingleUnit`, `isFriendlyUnit`.
-  `removeUnitFromBoard` adds `hasNoUnit` and `isSameUnitInstance`. For the
-  specs of **those seven queries**, building a board with that transform makes
-  the setup run the subject.
+  `removeUnitFromBoard` adds `hasNoUnit` and `isSameUnitInstance`. For the specs
+  of **those seven queries**, building a board with that transform makes the
+  setup run the subject.
 
   None of the seven does today — each builds its state literally, which is why
-  the check comes back with one hit and not eight. **Leave them that way.**
-  They are the specs this pass is most likely to "improve" into uselessness,
-  and the check is what tells you if it happens: adding
+  the check comes back with one hit and not eight. **Leave them that way.** They
+  are the specs this pass is most likely to "improve" into uselessness, and the
+  check is what tells you if it happens: adding
   `import { addUnitToBoard } from '@transforms'` to `isFriendlyUnit.test.ts`
   takes the count from 1 to 2.
 
 **A `@testing` helper hides the path rather than removing it.** `@testing` may
-import every layer, which is what lets a fixture compose anything. It also
-means a helper can carry a dependency on the subject without the spec showing
-it, which is worse than a direct import, because at the call site there is
-nothing to see.
-`createBoardWithUnits` composes `addUnitToBoard`, so routing those seven specs
-through `createGameStateWithUnits` would introduce exactly the self-proof they
-currently avoid. Check what a helper composes before substituting it in, and
-let `pnpm check:selfProof` confirm it.
+import every layer, which is what lets a fixture compose anything. It also means
+a helper can carry a dependency on the subject without the spec showing it,
+which is worse than a direct import, because at the call site there is nothing
+to see. `createBoardWithUnits` composes `addUnitToBoard`, so routing those seven
+specs through `createGameStateWithUnits` would introduce exactly the self-proof
+they currently avoid. Check what a helper composes before substituting it in,
+and let `pnpm check:selfProof` confirm it.
 
 A useful discriminator for `@queries` specs: **55 of the 95 transform modules
 import `@queries`**, and the board and apply transforms are among them.
@@ -110,11 +228,11 @@ reading any of it.
 `boundaries.ts`, so no spec should live there at all.
 
 **For a spec, that table is a prompt to think, not a rule to enforce — and an
-earlier draft of this note had that wrong too.** 146 specs import
-`@transforms`, and 109 of them sit below it: 47 in `@queries`, 25 in
-`@legality`, 16 in `@validation`, 16 in `@procedures`, 5 in `@expected`. The
-first draft called those 109 findings and said to record them. They are not
-findings, for three reasons:
+earlier draft of this note had that wrong too.** 146 specs import `@transforms`,
+and 109 of them sit below it: 47 in `@queries`, 25 in `@legality`, 16 in
+`@validation`, 16 in `@procedures`, 5 in `@expected`. The first draft called
+those 109 findings and said to record them. They are not findings, for three
+reasons:
 
 - Specs carry `enforceBoundaries: false` **by design**, in the shared config.
   That is a decision someone made, not a gap someone left.
@@ -124,39 +242,19 @@ findings, for three reasons:
 - The one harm anyone has actually named is self-proof, and the check now
   measures it directly. It says zero across all 109.
 
-So do not restructure a spec to satisfy the table. What the table is good for
-is noticing when a spec reaches unusually far for its layer, which is worth a
+So do not restructure a spec to satisfy the table. What the table is good for is
+noticing when a spec reaches unusually far for its layer, which is worth a
 sentence on why — that is the whole of it. Especially in `@queries`, where
-reaching up into `@transforms` for setup is where self-proof becomes possible
-at all.
-
-## Run `pnpm validate` often
-
-Not once per commit. Often, inside each point, on whatever is half done. It
-carries lint, format, typecheck and the self-proof check, and all four answer
-questions that get much more expensive once a substitution has been repeated
-across seventy files:
-
-- A self-proof is cheapest to find in the edit that introduced it. The suite is
-  at zero, so any hit belongs to the change in front of you.
-- `format` runs as part of it, so a formatting drift never lands mixed into a
-  substitution diff and muddies the read.
-- A substitution that typechecks in one file and not the next means the two
-  sites were not the same shape, which is the signal to stop and look rather
-  than push the pattern through.
-
-`pnpm test` is the other half, and the baseline is 358 files, 1,894 tests. The
-count must not drop: this pass changes how a test is expressed, never whether
-it exists.
+reaching up into `@transforms` for setup is where self-proof becomes possible at
+all.
 
 ---
 
 ## 1. Factories
 
 `placed(unit, coordinate, facing)` in `@testing` composes `@factories`'
-`createUnitPlacement`. It is used **32 times in 6 files**. Hand-rolled
-`placement: { … }` literals: **339 across 72 files** — 205 on one line, 132
-spread over several.
+`createUnitPlacement`. After `3845d55` the factories are called 1,209 times, and
+**339 hand-written `facing:` fields remain across 75 files**.
 
 ```ts
 const unitWithPlacement: UnitWithPlacement = {
@@ -171,16 +269,22 @@ becomes
 const unitWithPlacement = placed(routedUnit, 'E-5', 'north');
 ```
 
-Heaviest: `queries/attack/getMeleeSupportValue.test.ts` (39),
-`legality/commanderMovement/exploreCommanderMoves.test.ts` (22),
-`queries/line/getLineSegmentContainingUnit.test.ts` (19),
-`validation/gameState/eachUnitPresentOnce.test.ts` (18),
-`transforms/pureTransforms/sequencing/updateReverseState.test.ts` (14).
+Heaviest remaining, all of them in step 3 and step 6:
+`legality/unitMovement/exploreUnitMoves.test.ts` (60),
+`legality/unitMovement/canEngageEnemy.test.ts` (20),
+`legality/unitMovement/checkDiagonalMove.test.ts` (18),
+`legality/choiceOptions/performRangedAttack/getLegalRangedAttackers.test.ts`
+(17),
+`transforms/stateTransitions/applyChoices/applyPerformRangedAttackEvent.test.ts`
+(16).
 
-**Not all 339 are a `UnitWithPlacement`.** Some are overrides into a
-`Partial<…>`; some are a bare `UnitPlacement` in a field such as a
-`MoveUnitEvent`'s `to`. Those take `createUnitPlacement(coordinate, facing)`
-from `@factories`. Check each site; do not pattern-replace blind.
+**Not every remaining site is a `UnitWithPlacement`, and some are not point 1 at
+all.** Some are overrides into a `Partial<…>`; some are a bare `UnitPlacement`
+in a field such as a `MoveUnitEvent`'s `to`, which take
+`createUnitPlacement(coordinate, facing)` from `@factories`; and some, as in
+`canMoveInto.test.ts`, are arguments to a local helper that point 4 dissolves.
+Check each site. Do not pattern-replace blind, and do not force a factory into a
+call that point 4 is about to delete.
 
 Also in scope: the 16 `create*Event` player-choice factories and
 `createEmptyGameState` / `createCardState` / `createOwnedCardState`. A spec that
@@ -190,8 +294,8 @@ casts or hand-writes a choice event uses the factory.
 
 ## 2. Transforms
 
-Specs hand-roll the immutable updates the transforms own: **190 `...state`
-spreads**, and **79 `boardState:` rebuilds across 30 files**. The canonical bad
+Specs hand-roll the immutable updates the transforms own: **196 `...state`
+spreads across 63 files**, and **91 `boardState:` writes**. The canonical bad
 shape, from `applyResolveRoutEvent.test.ts`:
 
 ```ts
@@ -218,17 +322,16 @@ already exports `addUnitToBoard`, `removeUnitFromBoard`, `addCommanderToBoard`,
 calls, which below `@transforms` they usually do.
 
 **Reach for them because they read better, not to tidy a layer.** Those three
-compose `addUnitToBoard`, which reads seven queries, so substituting them into
-a `@queries` spec can hand that spec its own subject. An `@transforms` import
-that the check passes is fine where it is clearer.
+compose `addUnitToBoard`, which reads seven queries, so substituting them into a
+`@queries` spec can hand that spec its own subject. An `@transforms` import that
+the check passes is fine where it is clearer.
 
 ---
 
 ## 3. Queries
 
-This is the point the earlier draft understated. `@queries` exports **37
-state-reading getters**. Specs read nested state by property path **256 times
-across 52 files**, and only **32 spec files import `@queries` at all**.
+`@queries` exports **37 state-reading getters**. Specs read nested state by
+property path **238 times**, and the heavy paths are concentrated:
 
 | Hand-drilled path                | Hits | The query that owns it                                                                                          |
 | -------------------------------- | ---- | --------------------------------------------------------------------------------------------------------------- |
@@ -248,34 +351,31 @@ Two directions, both of them this point:
 - **Reaching.** Do not rebuild a nested state a getter can hand you. Build the
   state once, then look up the slice.
 
-**The exception, and Cursor must honour it.** `STYLE.md`: read it through the
-query that owns it _unless that query is the subject under test_, and below
-`@queries` there is no such query — there, read the field the subject writes. So
-`getCurrentPhaseState`'s own spec drills, and a `@transforms` or `@entities`
-spec reads the field directly. Do not make a spec assert through its own
-subject; that proves nothing.
+**The exception.** `STYLE.md`: read it through the query that owns it _unless
+that query is the subject under test_, and below `@queries` there is no such
+query — there, read the field the subject writes. So `getCurrentPhaseState`'s own
+spec drills, and a `@transforms` or `@factories` spec reads the field directly.
+Do not make a spec assert through its own subject; that proves nothing.
 
-The layer baseline applies here too, and it is why `@factories` and `@game`
-specs are not in scope for this point — `@queries` is above them. Almost all 256
-drill sites sit in `@queries` and above, so most of this stands as written. The
-one place it does not: `getLegalRetreats` lives in `@legality`, so a `@queries`
-spec cannot call it. See point 4.
+The layer baseline applies here too, which is why step 1 has only four drills in
+scope — `@queries` is above `@factories`. Almost all 238 sites sit in `@queries`
+and above. The one place the point does not reach: `getLegalRetreats` lives in
+`@legality`, so a `@queries` spec cannot call it. See point 4.
 
 ---
 
-## 4. Fixtures, for what the layer rule leaves
+## 4. Fixtures, for what the first three leave
 
-30 `createStateWith*` definitions under 13 names sit inside `describe` blocks;
-in total **3,382 lines of helper definitions across 120 spec files** (the other
-238 define none).
+**109 local helper definitions across 81 spec files**, 56 of them named
+`create*`, and 30 `createStateWith*` definitions under 13 names sitting inside
+`describe` blocks. The other 277 spec files define none.
 
-Do this point **after** 1 to 3, once those have shown what is actually left.
-In `@transforms` and `@application` they do most of the work and little residue
-remains. Further down, a named `@testing` helper usually beats five lines of
-transform calls in a spec whose subject is nowhere near them — not because the
-layer table says so, but because the spec reads as the situation it is about
-instead of the plumbing that builds it. That is the case for building the tier,
-and it is a readability case, which is this whole pass.
+Do this point **after** 1 to 3 on the same file, once those have shown what is
+actually left. In `@transforms` and `@application` they do most of the work and
+little residue remains. Further down, a named `@testing` helper usually beats
+five lines of transform calls in a spec whose subject is nowhere near them — not
+because the layer table says so, but because the spec then reads as the
+situation it is about instead of the plumbing that builds it.
 
 These helpers are not missing abstractions in themselves — each is a factory
 call, two transform calls and a query read, done by hand. Every one walks the
@@ -290,12 +390,19 @@ createEmptyGameState(mode)
 ```
 
 The state is passed three times. Add `src/domain/testing/situations/` for the
-assembled situation, once points 1 to 3 have shown you what each one actually
-needs. `@testing` already exports 19 phase and substep helpers and 8 board
-helpers, so check those first — the gap is a name for the whole situation, not
-new primitives. A situation helper may import any layer, which is the point.
+assembled situation, once points 1 to 3 have shown what each one actually needs.
+`@testing` already exports 19 phase and substep helpers and 8 board helpers, so
+check those first — the gap is a name for the whole situation, not new
+primitives. A situation helper may import any layer, which is the point.
 
-**One fixture is doing a query's job and must stop.**
+**A local helper that invents engine-owned values is the worst case, and
+`canMoveInto.test.ts` has one.** `createGameState([{ coord, facing, player,
+speed }])` is a private unit shape carrying a `speed` the unit type owns.
+Helpers of this kind are why point 1 leaves 339 facings standing: those sites
+are not placements, they are arguments to a DSL. Replace the DSL with real units
+through the factories and the facings go with it.
+
+**One shared fixture is doing a query's job and must stop.**
 `testing/phaseStateHelpers/substepStates.ts` defaults `createRetreatState`'s
 `legalRetreatOptions` to E-4 and E-6 facing north. `@legality`'s
 `getLegalRetreats(unitWithPlacement, gameState)` computes them, returning a
@@ -319,8 +426,17 @@ Route those through `createRoutState`.
 
 ## 5. Commentary
 
-**322 in-body comment lines, 0.8% of 38,940 spec lines**, against `STYLE.md`'s
-25% in-body standard with JSDoc not counting toward it.
+**323 line comments, 0.9% of 37,673 spec lines**, against `STYLE.md`'s 25%
+in-body standard. The 1,169 JSDoc lines do not count toward it.
+
+Decided: the 25% binds spec bodies as it binds source. This is the point that
+actually produces comprehension, and it is the one no substitution helps with —
+`3845d55` rewrote 14,170 lines and added none of it.
+
+**The target is a third of the body, not a quarter of today's file.** Commentary
+adds lines, so 25% of the finished file puts the comment count at about one
+third of the non-comment lines. For `queries` that is roughly 2,950 lines of
+prose against 90 today.
 
 Additive only. Never overwrite an existing human comment — the standing
 invariant in `AUDIT_PROCESS.md`. A comment traces the code to the gameplay it
@@ -345,6 +461,9 @@ decisions, not cleanups — read them before renaming:
   all three, so a spec that asks for a limit gets whatever the sample unit
   carries.
 
+Both live in `@testing`, which is step 8 — the renames can land there, once
+every caller has been read.
+
 ---
 
 ## Out of scope
@@ -363,15 +482,18 @@ open, and `pnpm validate` is clean.
   which `@procedures` already imported, so the transitive dependency existed and
   only the direct edge was missing — it had never been needed, so nobody had
   noticed. A procedure that builds an event may now reach the factory for it.
-- **`@sampleValues` imports `@entities` as values, not types only.** It needs
-  the schemas, not just the shapes. Its only importer is `@testing` (five
-  modules) plus the domain barrel, and it has no other outgoing edge, which is
-  what makes it cycle-proof.
+- **`@sampleValues` imports `@entities` as values, not types only.** It needs the
+  schemas, not just the shapes. Its only importer is `@testing` (five modules)
+  plus the domain barrel, and it has no other outgoing edge, which is what makes
+  it cycle-proof.
 
 ## Get the samples out of the root barrel
 
-`@sampleValues` is a database surrogate. Nothing in it belongs in this
-package's production surface, and no consumer should reach it either:
+Independent of the layer pass, and blocked on the consumers rather than on this
+repo.
+
+`@sampleValues` is a database surrogate. Nothing in it belongs in this package's
+production surface, and no consumer should reach it either:
 `src/domain/index.ts:582-588` re-exports `blackMiniStarterArmy`,
 `blackTinyStarterArmy`, `tempCommandCards`, `tempUnits`, `whiteMiniStarterArmy`
 and `whiteTinyStarterArmy`, so every consumer of `/domain` gets stand-in data
@@ -386,9 +508,9 @@ A `./sampleValues` subpath was briefly added and has been reverted, because a
 consumer's tests should not reach this package's sample data by any route. They
 build their own values instead, and the shape they actually need is small: the
 dominant pattern across those 62 files is `tempUnits[0]` and
-`tempCommandCards[0]`, which is not a need for this catalog at all. It is a
-need for one valid unit type and one valid command card. A local builder states
-what the test cares about, where sample index 0 only happens to carry it.
+`tempCommandCards[0]`, which is not a need for this catalog at all. It is a need
+for one valid unit type and one valid command card. A local builder states what
+the test cares about, where sample index 0 only happens to carry it.
 
 Only **12 of the 62** want the catalog as a collection — 8 client, 4 server,
 including `get-command-card-unit-ids`, `command-card-project-ops`,
@@ -404,9 +526,8 @@ which a builder makes by mapping over initiatives.
 only `army`, `miniArmy` and `standardArmy` are in
 `prevail-server/src/testing/index.ts`. Export `unitType`, `commandCard` and
 `commandSet`, then replace `tempUnits[0]` with `unitType()` and
-`tempCommandCards[0]` with `commandCard(1, 0)`. Where a spec asserts on a
-cost, a morale or a trait, pass it as an override so the test says what it
-depends on.
+`tempCommandCards[0]` with `commandCard(1, 0)`. Where a spec asserts on a cost, a
+morale or a trait, pass it as an override so the test says what it depends on.
 
 ### The client has no fixtures at all
 
@@ -427,10 +548,10 @@ consumer's tests ever want these fixtures, that is its own decision and its own
 subpath, not a side effect of this.
 
 While you are in `package.json`: the `exports` map declares `"."` →
-`./dist/index.d.ts`, but there is no `src/index.ts` and tsdown has no root
-entry, so that condition points at a file the build never writes. Anything
-importing the bare package name resolves to nothing. Worth removing or giving a
-real entry.
+`./dist/index.d.ts`, but there is no `src/index.ts` and tsdown has no root entry,
+so that condition points at a file the build never writes. Anything importing
+the bare package name resolves to nothing. Worth removing or giving a real
+entry.
 
 ## Keep the legal samples, drop the rest
 
@@ -441,14 +562,15 @@ against the schemas today, after the move of the army rules into `@legality`.
 both sides. Nothing calls it outside the barrel, and the one spec in this
 package that needs an army —
 `application/useCases/requestGameStateSnapshot.test.ts` — builds a local
-`placeholderArmy` instead. That is the invocation: a legal army now exists, so
-no spec needs to invent one, and a game-level test has something to start from.
+`placeholderArmy` instead. That is the invocation: a legal army now exists, so no
+spec needs to invent one, and a game-level test has something to start from. It
+lands in step 9.
 
 **Drop `tinyStarterArmy`,** both sides and its spec. It is illegal for mini: it
 names seven cards, one of them `'Rally'`, which is not among the samples, and a
 silent `.filter(card => card !== undefined)` leaves six where mini requires
-eight. Its spec asserts only that the ids are well formed, so it passes while
-the value it guards is unusable.
+eight. Its spec asserts only that the ids are well formed, so it passes while the
+value it guards is unusable.
 
 **Drop the five command cards that fail `commandCardSchema`,** leaving twenty:
 
@@ -477,8 +599,8 @@ been using.
 
 - The audit is suspended at `queries/sequencing/combatOutcomes`, `queries/unit`
   and `queries/unitPresence`, with four findings already written against them in
-  `src/domain/AUDIT.md`. `factories/game` and `factories/unitLocation` are
-  marked reopened, about 45 lines.
+  `src/domain/AUDIT.md`. `factories/game` and `factories/unitLocation` are marked
+  reopened, about 45 lines.
 
 ## Mutation testing
 
