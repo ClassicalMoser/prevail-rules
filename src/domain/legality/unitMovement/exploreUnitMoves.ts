@@ -20,13 +20,13 @@ import { checkDiagonalMove } from './checkDiagonalMove';
 
 /**
  * Represents the result of an explored move.
- * @param placement - The placement of the unit after the move.
- * @param flexibilityUsed - The amount of flexibility used to reach the placement.
- * @param speedUsed - The amount of speed used to reach the placement.
  */
 export interface MoveResult {
+  /** The placement of the unit after the move. */
   placement: UnitPlacement;
+  /** The amount of flexibility used to reach the placement. */
   flexibilityUsed: number;
+  /** The amount of speed used to reach the placement. */
   speedUsed: number;
 }
 

@@ -6,8 +6,10 @@ import type { ReverseState } from '@game';
  * This is a composable function that can be used in any context where
  * reverse state appears (ranged attack resolution, etc.).
  *
+ * Takes the reverse state alone and no game state: the engagement check is the
+ * caller's responsibility, so nothing here needs to see the board.
+ *
  * @param reverseState - The reverse state
- * @param _gameState - The game state (required for consistency, engagement check handled by caller)
  * @returns Information about what event is expected
  */
 export function getExpectedReverseEvent(

@@ -19,7 +19,9 @@ import {
  * Step is not re-validated; the event is trusted from the procedure / machine-generated
  * log. Phase is narrowed via `getResolveMeleePhaseState` (throws if not `resolveMelee`).
  *
- * @param _event - Present for `applyGameEffectEvent` dispatch; this effect has no payload fields.
+ * Takes no event, because this effect carries no payload fields; the dispatch in
+ * `applyGameEffectEvent` has nothing to hand it.
+ *
  * @param state - The current game state
  * @returns A new game state with the phase advanced
  */

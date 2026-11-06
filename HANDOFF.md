@@ -295,36 +295,45 @@ names in scope, and when two definitions look alike, say how they differ — two
 can agree everywhere except on `'miss'`, `'pending'`, or whether they throw.
 Duplicated **test** helpers are the exception: those get extracted, not marked.
 
-**Five commentary defects are already found, verified by reading the
-signature.** Each is a comment describing a parameter the function does not
-take, which is the one commentary failure that needs no judgment about voice:
-the doc is checkable against the code and disagrees with it. Mark them
-`TODO(misleading)` rather than correcting them — they are still authored text,
-and clearing a stale `@param` is a quick decision for the read rather than one
-for this pass.
+**A comment that contradicts the signature is a fix, not a mark.** It meets the
+bar in `AUDIT_PROCESS.md` exactly: the code contradicts its own comment, the
+right answer is not in question, and nothing about behaviour changes.
+Never-overwrite guards meaning that is in doubt — not a `@param` naming a
+parameter that demonstrably is not there. Correct those where you find them, and
+keep whatever the stale tag asserted if it is still true: move the claim into
+the description rather than deleting it along with the tag.
 
-| Module                                                                 | The comment                                                   |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `expected/expectedEvent/composable/getExpectedReverseEvent.ts`         | `@param _gameState` — takes `reverseState` only               |
-| `transforms/.../completePhase/applyCompleteResolveMeleePhaseEvent.ts`  | `@param _event` — takes `state` only, and documents it second |
-| `procedures/resolveAttack/generateCompleteMeleeResolutionEvent.ts`     | `@param state` — takes `eventNumber` only                     |
-| `procedures/resolveAttack/generateCompleteRangedAttackCommandEvent.ts` | `@param state` — takes `eventNumber` only                     |
-| `legality/unitMovement/exploreUnitMoves.ts`                            | `MoveResult` documented with `@param`, not member JSDoc       |
+Five were found and corrected that way already, so the shape is on record:
 
-The first two are the worst of them, because neither merely names a parameter
-that is absent — each explains why it is there. `_gameState` is documented as
-"required for consistency, engagement check handled by caller", and `_event` as
-"present for `applyGameEffectEvent` dispatch". A reader trusts that and goes
-looking for a parameter the signature does not have.
+| Module                                                                 | Was                                                       |
+| ---------------------------------------------------------------------- | --------------------------------------------------------- |
+| `expected/expectedEvent/composable/getExpectedReverseEvent.ts`         | `@param _gameState`, takes `reverseState` only            |
+| `transforms/.../completePhase/applyCompleteResolveMeleePhaseEvent.ts`  | `@param _event`, takes `state` only and documented second |
+| `procedures/resolveAttack/generateCompleteMeleeResolutionEvent.ts`     | `@param state`, takes `eventNumber`                       |
+| `procedures/resolveAttack/generateCompleteRangedAttackCommandEvent.ts` | `@param state`, takes `eventNumber`                       |
+| `legality/unitMovement/exploreUnitMoves.ts`                            | `MoveResult` members documented with `@param`             |
 
-The last is a different defect with a practical cost: `@param` on an interface
-is the wrong tag, so none of `MoveResult`'s three members gets an IDE hover,
-which is the reason header JSDoc is required in the first place. Those belong
-inside the braces, where the in-body rule counts them.
+The first two were the instructive ones. Neither merely named an absent
+parameter; each explained why it was there — `_gameState` as "required for
+consistency, engagement check handled by caller", `_event` as "present for
+`applyGameEffectEvent` dispatch". Both claims were true about the function and
+false about its signature, so both moved into the description and only the tag
+went. The last was `@param` on an interface, which the IDE shows nowhere; its
+three members now carry the author's own wording verbatim, relocated inside the
+braces where the in-body rule counts it.
 
-All four of the first kind sit in `expected`, `procedures` and `transforms` —
-scopes the read has not reached — and none is in a spec, since the specs carry
-no `@param` at all.
+**A missing `@param` is a different thing and is not a contradiction.** 34
+functions in `factories` and `procedures` take `eventNumber` and do not document
+it, and 41 event interfaces in `events` declare an `eventNumber` member with no
+JSDoc on it. The first is a documentation gap in those scopes, the second is
+in-body commentary work. Neither is a fix, and both wait their turn in the order.
+
+**Scripted detection of this needs reading before acting.** The scan that found
+the five reported eight, and three were the script pairing a JSDoc with the
+wrong function — a private helper sitting above the exported one, or a signature
+truncated at a nested `)`. `createTestUnit`, `validateExpectedChoice` and
+`updateAttackApplySubstep` all document their parameters correctly. Check every
+hit against the signature before touching it.
 
 Marks use the doc's three kinds, each naming what is wrong and what would settle
 it:

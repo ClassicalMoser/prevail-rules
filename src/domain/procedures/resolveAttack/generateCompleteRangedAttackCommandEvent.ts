@@ -9,7 +9,7 @@ import {
  * This clears the ranged attack resolution state and allows the command resolution
  * to advance to the next command.
  *
- * @param state - The current game state
+ * @param eventNumber - The position this event takes in the round's event stream
  * @returns A complete CompleteRangedAttackCommandEvent
  */
 export function generateCompleteRangedAttackCommandEvent(
