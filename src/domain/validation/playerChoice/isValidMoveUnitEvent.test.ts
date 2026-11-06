@@ -1,4 +1,3 @@
-import type { MoveUnitEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
@@ -15,7 +14,11 @@ import {
 
 import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createEmptyGameState,
+  createMoveUnitEvent,
+  createUnitPlacement,
+} from '@factories';
 /**
  * IsValidMoveUnitEvent: unit atom + destination + moveCommander integrity.
  */
@@ -53,15 +56,13 @@ describe('isValidMoveUnitEvent function', () => {
 
   it('accepts a legal destination without moving the commander', () => {
     const { state, unitWithPlacement } = stateAwaitingMoveUnit();
-    const event: MoveUnitEvent = {
-      choiceType: 'moveUnit',
+    const event = createMoveUnitEvent({
       eventNumber: 0,
-      eventType: 'playerChoice',
       moveCommander: false,
       player: 'black',
-      to: { coordinate: 'E-4', facing: 'north' },
+      to: createUnitPlacement('E-4', 'north'),
       unit: unitWithPlacement,
-    };
+    });
 
     expect(isValidMoveUnitEvent(event, state)).toStrictEqual({ result: true });
   });
@@ -70,45 +71,39 @@ describe('isValidMoveUnitEvent function', () => {
     const { state, unitWithPlacement } = stateAwaitingMoveUnit({
       withCommander: true,
     });
-    const event: MoveUnitEvent = {
-      choiceType: 'moveUnit',
+    const event = createMoveUnitEvent({
       eventNumber: 0,
-      eventType: 'playerChoice',
       moveCommander: true,
       player: 'black',
-      to: { coordinate: 'E-4', facing: 'north' },
+      to: createUnitPlacement('E-4', 'north'),
       unit: unitWithPlacement,
-    };
+    });
 
     expect(isValidMoveUnitEvent(event, state)).toStrictEqual({ result: true });
   });
 
   it('rejects moveCommander when the commander is not co-located', () => {
     const { state, unitWithPlacement } = stateAwaitingMoveUnit();
-    const event: MoveUnitEvent = {
-      choiceType: 'moveUnit',
+    const event = createMoveUnitEvent({
       eventNumber: 0,
-      eventType: 'playerChoice',
       moveCommander: true,
       player: 'black',
-      to: { coordinate: 'E-4', facing: 'north' },
+      to: createUnitPlacement('E-4', 'north'),
       unit: unitWithPlacement,
-    };
+    });
 
     expect(isValidMoveUnitEvent(event, state).result).toBe(false);
   });
 
   it('rejects an illegal destination', () => {
     const { state, unitWithPlacement } = stateAwaitingMoveUnit();
-    const event: MoveUnitEvent = {
-      choiceType: 'moveUnit',
+    const event = createMoveUnitEvent({
       eventNumber: 0,
-      eventType: 'playerChoice',
       moveCommander: false,
       player: 'black',
-      to: { coordinate: 'A-1', facing: 'north' },
+      to: createUnitPlacement('A-1', 'north'),
       unit: unitWithPlacement,
-    };
+    });
 
     expect(isValidMoveUnitEvent(event, state).result).toBe(false);
   });
@@ -123,15 +118,13 @@ describe('isValidMoveUnitEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    const event: MoveUnitEvent = {
-      choiceType: 'moveUnit',
+    const event = createMoveUnitEvent({
       eventNumber: 0,
-      eventType: 'playerChoice',
       moveCommander: false,
       player: 'black',
-      to: { coordinate: 'E-4', facing: 'north' },
+      to: createUnitPlacement('E-4', 'north'),
       unit: unitWithPlacement,
-    };
+    });
 
     expect(isValidMoveUnitEvent(event, state).result).toBe(false);
   });

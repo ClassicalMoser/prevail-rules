@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { TriggerRoutFromRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -12,6 +11,7 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
@@ -28,13 +28,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
   function createStateWithRangedAttackRetreat(): GameState {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
+    const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
 
     const stateWithUnit = {
       ...state,
@@ -66,20 +60,8 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       },
     );
 
-    const retreatingUnitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
-    const otherUnitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: otherUnit,
-    };
+    const retreatingUnitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
+    const otherUnitWithPlacement = placed(otherUnit, 'E-5', 'south');
 
     let stateWithUnits = {
       ...state,

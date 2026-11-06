@@ -8,6 +8,7 @@ import {
   createTestCard,
   createTestUnit,
   updateCardState,
+  placed,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
@@ -33,13 +34,7 @@ describe('applyResolveRangedAttackEvent function', () => {
       white: { ...base.cardState.white, inPlay: createTestCard() },
     });
     const defender = createTestUnit('white', { attack: 2 });
-    const defenderWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defender,
-    };
+    const defenderWithPlacement = placed(defender, 'E-5', 'north');
     const ranged = createRangedAttackResolutionState(withCards, {
       defendingUnit: defender,
     });

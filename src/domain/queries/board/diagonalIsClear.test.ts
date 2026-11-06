@@ -3,6 +3,7 @@ import {
   createBoardWithSingleUnit,
   createBoardWithUnits,
   createTestUnit,
+  placed,
 } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
 
@@ -41,14 +42,12 @@ describe('diagonalIsClear function', () => {
   it('is blocked when enemies occupy both intervening spaces', () => {
     // NorthEast at E-5 has adjacent orthogonal spaces: D-5 (north) and E-6 (east)
     const boardWithEnemies = createBoardWithUnits([
-      {
-        placement: { coordinate: 'D-5', facing: 'north' },
-        unit: createTestUnit('white', { attack: 3 }),
-      },
-      {
-        placement: { coordinate: 'E-6', facing: 'north' },
-        unit: createTestUnit('white', { attack: 3, instanceNumber: 2 }),
-      },
+      placed(createTestUnit('white', { attack: 3 }), 'D-5', 'north'),
+      placed(
+        createTestUnit('white', { attack: 3, instanceNumber: 2 }),
+        'E-6',
+        'north',
+      ),
     ]);
     expect(diagonalIsClear('black', boardWithEnemies, coordinate, 'D-6')).toBe(
       false,
@@ -58,10 +57,7 @@ describe('diagonalIsClear function', () => {
   it('is clear on a different diagonal when only one intervening space holds an enemy', () => {
     // SouthWest at E-5 has adjacent orthogonal spaces: F-5 (south) and E-4 (west)
     const boardWithEnemies = createBoardWithUnits([
-      {
-        placement: { coordinate: 'F-5', facing: 'north' },
-        unit: createTestUnit('white', { attack: 3 }),
-      },
+      placed(createTestUnit('white', { attack: 3 }), 'F-5', 'north'),
     ]);
     expect(diagonalIsClear('black', boardWithEnemies, coordinate, 'F-4')).toBe(
       true,
@@ -70,14 +66,12 @@ describe('diagonalIsClear function', () => {
 
   it('stays clear when friendlies occupy both intervening spaces', () => {
     const boardWithFriendlies = createBoardWithUnits([
-      {
-        placement: { coordinate: 'D-5', facing: 'north' },
-        unit: createTestUnit('black', { attack: 3 }),
-      },
-      {
-        placement: { coordinate: 'E-6', facing: 'north' },
-        unit: createTestUnit('black', { attack: 3, instanceNumber: 2 }),
-      },
+      placed(createTestUnit('black', { attack: 3 }), 'D-5', 'north'),
+      placed(
+        createTestUnit('black', { attack: 3, instanceNumber: 2 }),
+        'E-6',
+        'north',
+      ),
     ]);
     expect(
       diagonalIsClear('black', boardWithFriendlies, coordinate, 'D-6'),
@@ -86,14 +80,8 @@ describe('diagonalIsClear function', () => {
 
   it('stays clear when one intervening space is friendly and the other is an enemy', () => {
     const boardWithMixed = createBoardWithUnits([
-      {
-        placement: { coordinate: 'D-5', facing: 'north' },
-        unit: createTestUnit('black', { attack: 3 }),
-      },
-      {
-        placement: { coordinate: 'E-6', facing: 'north' },
-        unit: createTestUnit('white', { attack: 3 }),
-      },
+      placed(createTestUnit('black', { attack: 3 }), 'D-5', 'north'),
+      placed(createTestUnit('white', { attack: 3 }), 'E-6', 'north'),
     ]);
     expect(diagonalIsClear('black', boardWithMixed, coordinate, 'D-6')).toBe(
       true,

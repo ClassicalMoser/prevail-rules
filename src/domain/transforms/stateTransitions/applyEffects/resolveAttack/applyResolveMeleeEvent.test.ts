@@ -8,6 +8,7 @@ import {
   createTestCard,
   createTestUnit,
   updateCardState,
+  placed,
 } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
@@ -46,20 +47,8 @@ describe('applyResolveMeleeEvent function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     return {
-      blackUnitWithPlacement: {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'south',
-        },
-        unit: blackUnit,
-      },
-      whiteUnitWithPlacement: {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit: whiteUnit,
-      },
+      blackUnitWithPlacement: placed(blackUnit, 'E-5', 'south'),
+      whiteUnitWithPlacement: placed(whiteUnit, 'E-5', 'north'),
     };
   }
 

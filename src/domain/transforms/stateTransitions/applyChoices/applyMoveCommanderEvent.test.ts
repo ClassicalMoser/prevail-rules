@@ -1,5 +1,4 @@
 import type { Coordinate } from '@entities';
-import type { MoveCommanderEvent } from '@events';
 import type { GameState } from '@game';
 import { MOVE_COMMANDERS_PHASE } from '@game';
 
@@ -9,7 +8,7 @@ import { throwIfNone } from '@utils';
 
 import { applyMoveCommanderEvent } from './applyMoveCommanderEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createMoveCommanderEvent } from '@factories';
 /**
  * Move-commanders phase: each side relocates their commander token on the board; after the
  * second move the step becomes `complete`.
@@ -47,14 +46,12 @@ describe('applyMoveCommanderEvent function', () => {
         'E-6',
       );
 
-      const event: MoveCommanderEvent = {
-        choiceType: 'moveCommander',
+      const event = createMoveCommanderEvent({
         eventNumber: 0,
-        eventType: 'playerChoice',
         from: 'E-5',
         player: 'black',
         to: 'E-7',
-      };
+      });
 
       const newState = applyMoveCommanderEvent(event, state);
 
@@ -79,14 +76,12 @@ describe('applyMoveCommanderEvent function', () => {
         'E-6',
       );
 
-      const event: MoveCommanderEvent = {
-        choiceType: 'moveCommander',
+      const event = createMoveCommanderEvent({
         eventNumber: 0,
-        eventType: 'playerChoice',
         from: 'E-6',
         player: 'white',
         to: 'E-8',
-      };
+      });
 
       const newState = applyMoveCommanderEvent(event, state);
 
@@ -109,14 +104,12 @@ describe('applyMoveCommanderEvent function', () => {
     it('given black completes first commander move, phase step is moveSecondCommander', () => {
       const state = createGameStateInMoveCommandersStep('moveFirstCommander');
 
-      const event: MoveCommanderEvent = {
-        choiceType: 'moveCommander',
+      const event = createMoveCommanderEvent({
         eventNumber: 0,
-        eventType: 'playerChoice',
         from: 'E-5',
         player: 'black',
         to: 'E-7',
-      };
+      });
 
       const newState = applyMoveCommanderEvent(event, state);
 
@@ -128,14 +121,12 @@ describe('applyMoveCommanderEvent function', () => {
     it('given white completes second commander move, phase step is complete', () => {
       const state = createGameStateInMoveCommandersStep('moveSecondCommander');
 
-      const event: MoveCommanderEvent = {
-        choiceType: 'moveCommander',
+      const event = createMoveCommanderEvent({
         eventNumber: 0,
-        eventType: 'playerChoice',
         from: 'E-6',
         player: 'white',
         to: 'E-8',
-      };
+      });
 
       const newState = applyMoveCommanderEvent(event, state);
 
@@ -155,14 +146,12 @@ describe('applyMoveCommanderEvent function', () => {
         'phase',
       ).step;
 
-      const event: MoveCommanderEvent = {
-        choiceType: 'moveCommander',
+      const event = createMoveCommanderEvent({
         eventNumber: 0,
-        eventType: 'playerChoice',
         from: 'E-5',
         player: 'black',
         to: 'E-7',
-      };
+      });
 
       applyMoveCommanderEvent(event, state);
 

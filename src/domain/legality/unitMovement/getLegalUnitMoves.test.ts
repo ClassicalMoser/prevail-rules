@@ -5,6 +5,7 @@ import {
   createGameStateWithEngagedUnits,
   createTestUnit,
   createUnitWithPlacement,
+  placed,
 } from '@testing';
 
 import { getLegalUnitMoves } from './getLegalUnitMoves';
@@ -152,13 +153,7 @@ describe('getLegalUnitMoves function', () => {
         'southEast',
       );
 
-      const unitWithPlacement = {
-        placement: {
-          coordinate: 'D-7' as const,
-          facing: 'southEast' as const,
-        },
-        unit: primaryUnit,
-      };
+      const unitWithPlacement = placed(primaryUnit, 'D-7', 'southEast');
 
       expect(() => getLegalUnitMoves(unitWithPlacement, gameState)).toThrow(
         'No movable unit at starting position',

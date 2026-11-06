@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
 import type { ResolveEngageRetreatOptionEvent } from '@events';
 import type { GameState } from '@game';
@@ -8,6 +7,7 @@ import {
   createMovementResolutionState,
   createTestCard,
   createUnitByStat,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
@@ -33,13 +33,11 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
     state.cardState.black.inPlay = createTestCard();
     const defender = createUnitByStat('white', 'speed', 3);
     const engagementState = baseFrontEngagementState();
-    const defenderWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: engagementState.targetPlacement.coordinate,
-        facing: 'south',
-      },
-      unit: defender,
-    };
+    const defenderWithPlacement = placed(
+      defender,
+      engagementState.targetPlacement.coordinate,
+      'south',
+    );
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
@@ -91,13 +89,11 @@ describe('applyResolveEngageRetreatOptionEvent function', () => {
       ...baseFrontEngagementState(),
       engagingUnit: createUnitByStat('black', 'speed', 4),
     };
-    const defenderWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: engagementState.targetPlacement.coordinate,
-        facing: 'south',
-      },
-      unit: defender,
-    };
+    const defenderWithPlacement = placed(
+      defender,
+      engagementState.targetPlacement.coordinate,
+      'south',
+    );
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, defenderWithPlacement),

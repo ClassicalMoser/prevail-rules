@@ -1,6 +1,6 @@
 import type { Coordinate } from '@entities';
 import { throwIfUndefined } from '@utils';
-import { createGameState, createTestUnit } from '@testing';
+import { createGameState, createTestUnit, placed } from '@testing';
 import { addUnitToBoard } from '@transforms';
 import { createEmptyStandardBoard } from '@factories';
 
@@ -26,28 +26,19 @@ describe('canMoveInto function', () => {
     it('given the space has engaged units, returns false', () => {
       let board = createEmptyStandardBoard();
       // Add engaged units at D-5
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'D-5',
-          facing: 'north',
-        },
-        unit: createTestUnit('black'),
-      });
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'D-5',
-          facing: 'south',
-        },
-        unit: createTestUnit('white'),
-      });
+      board = addUnitToBoard(
+        board,
+        placed(createTestUnit('black'), 'D-5', 'north'),
+      );
+      board = addUnitToBoard(
+        board,
+        placed(createTestUnit('white'), 'D-5', 'south'),
+      );
       // Add unit attempting to move into
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit: createTestUnit('black'),
-      });
+      board = addUnitToBoard(
+        board,
+        placed(createTestUnit('black'), 'E-5', 'north'),
+      );
       expect(
         canMoveInto('black', board, 'D-5', 'E-5', 'E-5', 'north', 0, 'advance'),
       ).toBe(false);
@@ -158,13 +149,10 @@ describe('canMoveInto function', () => {
 
     it('given an invalid unitPresence, returns false', () => {
       let board = createEmptyStandardBoard();
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit: createTestUnit('black'),
-      });
+      board = addUnitToBoard(
+        board,
+        placed(createTestUnit('black'), 'E-5', 'north'),
+      );
       const space = throwIfUndefined(
         board.board['D-5'],
         'expected board space at D-5',

@@ -5,12 +5,13 @@ import {
   createMovementResolutionState,
   createTestCard,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
 
 import { generateStartEngagementEvent } from './generateStartEngagementEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createUnitPlacement } from '@factories';
 /**
  * Start of engagement: from movement resolution, classify rear vs flank vs front from
  * defender facing on the board vs engaging facing on targetPlacement.
@@ -30,26 +31,14 @@ describe('generateStartEngagementEvent function', () => {
     const defender = createTestUnit('white');
     const withBoard = {
       ...state,
-      boardState: addUnitToBoard(state.boardState, {
-        placement: {
-          coordinate: 'E-6',
-          facing: options.defenderFacing,
-        },
-        unit: defender,
-      }),
+      boardState: addUnitToBoard(
+        state.boardState,
+        placed(defender, 'E-6', options.defenderFacing),
+      ),
     };
     const movement = createMovementResolutionState(withBoard, {
-      movingUnit: {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'east',
-        },
-        unit: createTestUnit('black'),
-      },
-      targetPlacement: {
-        coordinate: 'E-6',
-        facing: options.engagingFacing,
-      },
+      movingUnit: placed(createTestUnit('black'), 'E-5', 'east'),
+      targetPlacement: createUnitPlacement('E-6', options.engagingFacing),
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: movement,

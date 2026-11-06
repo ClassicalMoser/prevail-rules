@@ -6,16 +6,18 @@ import {
   createTestUnit,
 } from '@testing';
 
+import { createUnitPlacement } from '@factories';
+
 import { getRetreatStateFromAttackApply } from './getRetreatStateFromAttackApply';
 
 function placed(
   player: 'white' | 'black',
   facing: UnitWithPlacement['placement']['facing'],
 ): UnitWithPlacement {
-  return {
-    placement: { coordinate: 'E-5', facing },
-    unit: createTestUnit(player, { attack: 2 }),
-  };
+  const unit = createTestUnit(player, { attack: 2 });
+  const placement = createUnitPlacement('E-5', facing);
+  const standing = { placement, unit };
+  return standing;
 }
 
 describe('getRetreatStateFromAttackApply function', () => {

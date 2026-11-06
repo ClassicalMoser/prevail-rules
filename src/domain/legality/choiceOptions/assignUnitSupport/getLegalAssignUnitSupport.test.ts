@@ -1,5 +1,5 @@
 import { CLEANUP_PHASE } from '@game';
-import { createTestCard, createTestUnit } from '@testing';
+import { createTestCard, createTestUnit, placed } from '@testing';
 import {
   addUnitToBoard,
   updateBoardState,
@@ -43,10 +43,7 @@ describe('getLegalAssignUnitSupport function', () => {
     base.cardState.white.inHand = [cardA, cardB];
     const withBoard = updateBoardState(
       base,
-      addUnitToBoard(base.boardState, {
-        placement: { coordinate: 'E-5', facing: 'south' },
-        unit,
-      }),
+      addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
     );
     const state = updatePhaseState(withBoard, {
       firstPlayerRallyResolutionState: {
@@ -86,17 +83,11 @@ describe('getLegalAssignUnitSupport function', () => {
     base.cardState.white.inHand = [card];
     let withBoard = updateBoardState(
       base,
-      addUnitToBoard(base.boardState, {
-        placement: { coordinate: 'E-5', facing: 'south' },
-        unit: unitA,
-      }),
+      addUnitToBoard(base.boardState, placed(unitA, 'E-5', 'south')),
     );
     withBoard = updateBoardState(
       withBoard,
-      addUnitToBoard(withBoard.boardState, {
-        placement: { coordinate: 'E-6', facing: 'south' },
-        unit: unitB,
-      }),
+      addUnitToBoard(withBoard.boardState, placed(unitB, 'E-6', 'south')),
     );
     const state = updatePhaseState(withBoard, {
       firstPlayerRallyResolutionState: {

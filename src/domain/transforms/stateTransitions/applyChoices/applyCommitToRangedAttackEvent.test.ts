@@ -1,4 +1,3 @@
-import type { CommitToRangedAttackEvent } from '@events';
 import { getRangedAttackResolutionState } from '@queries';
 import { tempCommandCards } from '@sampleValues';
 import {
@@ -10,7 +9,10 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createCommitToRangedAttackEvent,
+  createEmptyGameState,
+} from '@factories';
 /**
  * Ranged strike commitments: attacker or defender locks in their reaction card; the matching
  * `attackingCommitment` / `defendingCommitment` flips to completed and the card leaves hand.
@@ -34,14 +36,12 @@ describe('applyCommitToRangedAttackEvent function', () => {
         currentCommandResolutionState: rangedState,
       }),
     );
-    const event: CommitToRangedAttackEvent = {
-      choiceType: 'commitToRangedAttack',
+    const event = createCommitToRangedAttackEvent({
       committedCard: tempCommandCards[0],
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: [],
       player: 'black',
-    };
+    });
 
     const newState = applyCommitToRangedAttackEvent(event, stateInPhase);
     const newRanged = getRangedAttackResolutionState(newState);
@@ -71,14 +71,12 @@ describe('applyCommitToRangedAttackEvent function', () => {
         currentCommandResolutionState: rangedState,
       }),
     );
-    const event: CommitToRangedAttackEvent = {
-      choiceType: 'commitToRangedAttack',
+    const event = createCommitToRangedAttackEvent({
       committedCard: tempCommandCards[0],
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: [],
       player: 'white',
-    };
+    });
 
     const newState = applyCommitToRangedAttackEvent(event, stateInPhase);
     const newRanged = getRangedAttackResolutionState(newState);

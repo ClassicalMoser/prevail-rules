@@ -1,4 +1,3 @@
-import type { CommitToRangedAttackEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
@@ -10,7 +9,10 @@ import { updatePhaseState } from '@transforms';
 
 import { isValidCommitToRangedAttackEvent } from './isValidCommitToRangedAttackEvent';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createCommitToRangedAttackEvent,
+  createEmptyGameState,
+} from '@factories';
 
 const strikeCard = tempCommandCards[0];
 const moveCard = tempCommandCards[4];
@@ -44,14 +46,12 @@ describe('isValidCommitToRangedAttackEvent function', () => {
 
   it('accepts committing the in-hand card with all of its ranged modifiers', () => {
     const state = stateBlackPendingAttackerCommit();
-    const event: CommitToRangedAttackEvent = {
-      choiceType: 'commitToRangedAttack',
+    const event = createCommitToRangedAttackEvent({
       committedCard: strikeCard,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: ['attack'],
       player: 'black',
-    };
+    });
 
     expect(isValidCommitToRangedAttackEvent(event, state)).toStrictEqual({
       result: true,
@@ -60,28 +60,24 @@ describe('isValidCommitToRangedAttackEvent function', () => {
 
   it('rejects committing with an empty modifier list', () => {
     const state = stateBlackPendingAttackerCommit();
-    const event: CommitToRangedAttackEvent = {
-      choiceType: 'commitToRangedAttack',
+    const event = createCommitToRangedAttackEvent({
       committedCard: strikeCard,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: [],
       player: 'black',
-    };
+    });
 
     expect(isValidCommitToRangedAttackEvent(event, state).result).toBe(false);
   });
 
   it('rejects a card that is not in hand', () => {
     const state = stateBlackPendingAttackerCommit();
-    const event: CommitToRangedAttackEvent = {
-      choiceType: 'commitToRangedAttack',
+    const event = createCommitToRangedAttackEvent({
       committedCard: moveCard,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: ['attack'],
       player: 'black',
-    };
+    });
 
     expect(isValidCommitToRangedAttackEvent(event, state).result).toBe(false);
   });
@@ -91,28 +87,24 @@ describe('isValidCommitToRangedAttackEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    const event: CommitToRangedAttackEvent = {
-      choiceType: 'commitToRangedAttack',
+    const event = createCommitToRangedAttackEvent({
       committedCard: strikeCard,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: ['attack'],
       player: 'black',
-    };
+    });
 
     expect(isValidCommitToRangedAttackEvent(event, state).result).toBe(false);
   });
 
   it('accepts refusing the ranged commitment', () => {
     const state = stateBlackPendingAttackerCommit();
-    const event: CommitToRangedAttackEvent = {
-      choiceType: 'commitToRangedAttack',
+    const event = createCommitToRangedAttackEvent({
       committedCard: null,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: [],
       player: 'black',
-    };
+    });
 
     expect(isValidCommitToRangedAttackEvent(event, state)).toStrictEqual({
       result: true,

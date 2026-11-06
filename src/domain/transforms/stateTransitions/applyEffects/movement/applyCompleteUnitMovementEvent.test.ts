@@ -5,6 +5,7 @@ import {
   createMovementResolutionState,
   createTestUnit,
   createUnitWithPlacement,
+  placed,
 } from '@testing';
 import {
   addUnitToBoard,
@@ -14,7 +15,7 @@ import {
 
 import { applyCompleteUnitMovementEvent } from './applyCompleteUnitMovementEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createUnitPlacement } from '@factories';
 /**
  * After path + engagement finish, completeUnitMovement clears CRS and either
  * waits for the next moveUnit or advances the issue-commands step.
@@ -74,11 +75,8 @@ describe('applyCompleteUnitMovementEvent function', () => {
     let state = createEmptyGameState('standard');
     state = updateBoardState(state, addUnitToBoard(state.boardState, defender));
     const movement = createMovementResolutionState(state, {
-      movingUnit: {
-        placement: { coordinate: 'E-6', facing: 'north' },
-        unit: mover,
-      },
-      targetPlacement: { coordinate: 'E-6', facing: 'north' },
+      movingUnit: placed(mover, 'E-6', 'north'),
+      targetPlacement: createUnitPlacement('E-6', 'north'),
     });
     state = updatePhaseState(
       state,

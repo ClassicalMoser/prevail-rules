@@ -4,6 +4,7 @@ import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
   createTestUnit,
+  placed,
 } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
 
@@ -27,9 +28,7 @@ describe('getPlayerUnitWithPosition function', () => {
   describe('single unit presence', () => {
     it('returns the friendly unit and its facing', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit },
-      ]);
+      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
 
       const result = getPlayerUnitWithPosition(board, coordinate, 'black');
 
@@ -42,7 +41,7 @@ describe('getPlayerUnitWithPosition function', () => {
     it('returns undefined when the only unit is the other side', () => {
       const enemyUnit = createTestUnit('white', { attack: 3 });
       const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit: enemyUnit },
+        placed(enemyUnit, coordinate, 'north'),
       ]);
 
       const result = getPlayerUnitWithPosition(board, coordinate, 'black');
@@ -64,9 +63,7 @@ describe('getPlayerUnitWithPosition function', () => {
 
       for (const facing of facings) {
         const unit = createTestUnit('black', { attack: 3 });
-        const board = createBoardWithUnits([
-          { placement: { coordinate, facing }, unit },
-        ]);
+        const board = createBoardWithUnits([placed(unit, coordinate, facing)]);
 
         const result = getPlayerUnitWithPosition(board, coordinate, 'black');
 
@@ -79,7 +76,7 @@ describe('getPlayerUnitWithPosition function', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const testCoordinate: Coordinate = 'A-1';
       const board = createBoardWithUnits([
-        { placement: { coordinate: testCoordinate, facing: 'north' }, unit },
+        placed(unit, testCoordinate, 'north'),
       ]);
 
       const result = getPlayerUnitWithPosition(board, testCoordinate, 'black');
@@ -181,7 +178,7 @@ describe('getPlayerUnitWithPosition function', () => {
     it('returns unit for black player when black unit is present', () => {
       const blackUnit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit: blackUnit },
+        placed(blackUnit, coordinate, 'north'),
       ]);
 
       const result = getPlayerUnitWithPosition(board, coordinate, 'black');
@@ -193,7 +190,7 @@ describe('getPlayerUnitWithPosition function', () => {
     it('returns unit for white player when white unit is present', () => {
       const whiteUnit = createTestUnit('white', { attack: 3 });
       const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit: whiteUnit },
+        placed(whiteUnit, coordinate, 'north'),
       ]);
 
       const result = getPlayerUnitWithPosition(board, coordinate, 'white');
@@ -205,7 +202,7 @@ describe('getPlayerUnitWithPosition function', () => {
     it('returns undefined for black player when only white unit is present', () => {
       const whiteUnit = createTestUnit('white', { attack: 3 });
       const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit: whiteUnit },
+        placed(whiteUnit, coordinate, 'north'),
       ]);
 
       const result = getPlayerUnitWithPosition(board, coordinate, 'black');
@@ -216,7 +213,7 @@ describe('getPlayerUnitWithPosition function', () => {
     it('returns undefined for white player when only black unit is present', () => {
       const blackUnit = createTestUnit('black', { attack: 3 });
       const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit: blackUnit },
+        placed(blackUnit, coordinate, 'north'),
       ]);
 
       const result = getPlayerUnitWithPosition(board, coordinate, 'white');
@@ -231,9 +228,7 @@ describe('getPlayerUnitWithPosition function', () => {
 
       for (const coord of coordinates) {
         const unit = createTestUnit('black', { attack: 3 });
-        const board = createBoardWithUnits([
-          { placement: { coordinate: coord, facing: 'north' }, unit },
-        ]);
+        const board = createBoardWithUnits([placed(unit, coord, 'north')]);
 
         const result = getPlayerUnitWithPosition(board, coord, 'black');
 
@@ -244,9 +239,7 @@ describe('getPlayerUnitWithPosition function', () => {
 
     it('returns undefined when checking wrong coordinate', () => {
       const unit = createTestUnit('black', { attack: 3 });
-      const board = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]);
+      const board = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
 
       const result = getPlayerUnitWithPosition(board, 'A-1', 'black');
 

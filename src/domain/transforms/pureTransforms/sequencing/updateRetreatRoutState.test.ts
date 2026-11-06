@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyStateWithRetreat,
@@ -7,6 +6,7 @@ import {
   createRetreatState,
   createRoutState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '../';
 
@@ -20,13 +20,7 @@ describe('updateRetreatRoutState function', () => {
   function createStateWithRangedAttackRetreat() {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit,
-    };
+    const placement = placed(unit, 'E-5', 'north');
     const stateWithUnit = {
       ...state,
       boardState: addUnitToBoard(state.boardState, placement),

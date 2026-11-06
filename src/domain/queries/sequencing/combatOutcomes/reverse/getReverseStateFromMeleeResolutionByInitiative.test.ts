@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { GameState, ReverseState } from '@game';
 import { createEmptyGameState } from '@factories';
 import {
@@ -7,6 +6,7 @@ import {
   createResolveMeleePhaseState,
   createReverseState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
@@ -26,14 +26,8 @@ describe('getReverseStateFromMeleeResolutionByInitiative function', () => {
     );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whitePlacement: UnitWithPlacement = {
-      placement: { coordinate: 'E-5', facing: 'east' },
-      unit: whiteUnit,
-    };
-    const blackPlacement: UnitWithPlacement = {
-      placement: { coordinate: 'E-5', facing: 'west' },
-      unit: blackUnit,
-    };
+    const whitePlacement = placed(whiteUnit, 'E-5', 'east');
+    const blackPlacement = placed(blackUnit, 'E-5', 'west');
     const white = createReverseState(whitePlacement, {
       finalPosition: finals.white ?? 'pending',
     });

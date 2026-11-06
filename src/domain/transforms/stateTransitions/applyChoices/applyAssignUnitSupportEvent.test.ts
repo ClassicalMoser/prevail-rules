@@ -2,7 +2,7 @@ import type { AssignUnitSupportEvent } from '@events';
 import { throwIfNone, throwIfPending } from '@utils';
 import { CLEANUP_PHASE } from '@game';
 import { getBoardSpace } from '@queries';
-import { createTestCard, createTestUnit } from '@testing';
+import { createTestCard, createTestUnit, placed } from '@testing';
 import {
   addUnitToBoard,
   updateBoardState,
@@ -32,17 +32,11 @@ function awaitingSupportState() {
   base.cardState.white.inHand = [card];
   let withBoard = updateBoardState(
     base,
-    addUnitToBoard(base.boardState, {
-      placement: { coordinate: 'E-5', facing: 'south' },
-      unit: covered,
-    }),
+    addUnitToBoard(base.boardState, placed(covered, 'E-5', 'south')),
   );
   withBoard = updateBoardState(
     withBoard,
-    addUnitToBoard(withBoard.boardState, {
-      placement: { coordinate: 'E-6', facing: 'south' },
-      unit: uncovered,
-    }),
+    addUnitToBoard(withBoard.boardState, placed(uncovered, 'E-6', 'south')),
   );
   const state = updatePhaseState(withBoard, {
     firstPlayerRallyResolutionState: {

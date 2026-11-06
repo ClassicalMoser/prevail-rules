@@ -1,6 +1,9 @@
-import type { SetupUnitsEvent } from '@events';
-import { createTestUnit } from '@testing';
-import { createEmptyStandardBoard, createEmptyGameState } from '@factories';
+import { createTestUnit, placed } from '@testing';
+import {
+  createEmptyGameState,
+  createEmptyStandardBoard,
+  createSetupUnitsEvent,
+} from '@factories';
 
 import { isValidSetupUnitsEvent } from './isValidSetupUnitsEvent';
 
@@ -15,19 +18,12 @@ describe('isValidSetupUnitsEvent function', () => {
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit],
     };
-    const event: SetupUnitsEvent = {
-      choiceType: 'setupUnits',
+    const event = createSetupUnitsEvent({
       commanderCoordinate: 'A-3',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-      unitPlacements: [
-        {
-          placement: { coordinate: 'A-3', facing: 'south' },
-          unit,
-        },
-      ],
-    };
+      unitPlacements: [placed(unit, 'A-3', 'south')],
+    });
 
     expect(isValidSetupUnitsEvent(event, state)).toStrictEqual({
       result: true,
@@ -41,19 +37,12 @@ describe('isValidSetupUnitsEvent function', () => {
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit],
     };
-    const event: SetupUnitsEvent = {
-      choiceType: 'setupUnits',
+    const event = createSetupUnitsEvent({
       commanderCoordinate: 'A-4',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-      unitPlacements: [
-        {
-          placement: { coordinate: 'A-3', facing: 'south' },
-          unit,
-        },
-      ],
-    };
+      unitPlacements: [placed(unit, 'A-3', 'south')],
+    });
 
     expect(isValidSetupUnitsEvent(event, state)).toStrictEqual({
       result: true,
@@ -67,19 +56,12 @@ describe('isValidSetupUnitsEvent function', () => {
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit],
     };
-    const event: SetupUnitsEvent = {
-      choiceType: 'setupUnits',
+    const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-      unitPlacements: [
-        {
-          placement: { coordinate: 'E-5', facing: 'south' },
-          unit,
-        },
-      ],
-    };
+      unitPlacements: [placed(unit, 'E-5', 'south')],
+    });
 
     expect(isValidSetupUnitsEvent(event, state).result).toBe(false);
   });
@@ -92,19 +74,12 @@ describe('isValidSetupUnitsEvent function', () => {
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit1, unit2],
     };
-    const event: SetupUnitsEvent = {
-      choiceType: 'setupUnits',
+    const event = createSetupUnitsEvent({
       commanderCoordinate: 'L-3',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
-      unitPlacements: [
-        {
-          placement: { coordinate: 'L-3', facing: 'north' },
-          unit: unit1,
-        },
-      ],
-    };
+      unitPlacements: [placed(unit1, 'L-3', 'north')],
+    });
 
     expect(isValidSetupUnitsEvent(event, state).result).toBe(false);
   });
@@ -116,19 +91,12 @@ describe('isValidSetupUnitsEvent function', () => {
       boardState: createEmptyStandardBoard(),
       reservedUnits: [unit],
     };
-    const event: SetupUnitsEvent = {
-      choiceType: 'setupUnits',
+    const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-      unitPlacements: [
-        {
-          placement: { coordinate: 'A-3', facing: 'south' },
-          unit,
-        },
-      ],
-    };
+      unitPlacements: [placed(unit, 'A-3', 'south')],
+    });
 
     expect(isValidSetupUnitsEvent(event, state)).toMatchObject({
       result: false,

@@ -1,10 +1,5 @@
-import type {
-  Coordinate,
-  UnitFacing,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
-import { createTestUnit } from '@testing';
+import type { Coordinate } from '@entities';
+import { createTestUnit, placed } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
 import { throwIfUndefined } from '@utils';
 
@@ -16,25 +11,11 @@ import { addUnitToBoard } from './addUnitToBoard';
 describe('addUnitToBoard function', () => {
   const coordinate: Coordinate = 'E-5';
 
-  // Helper function to create a UnitWithPlacement
-  const createUnitWithPlacement = (
-    unit: UnitInstance,
-    coord: Coordinate,
-    facing: UnitFacing,
-  ): UnitWithPlacement => ({
-    placement: { coordinate: coord, facing },
-    unit,
-  });
-
   describe('empty space', () => {
     it('given add a single unit to an empty space', () => {
       const board = createEmptyStandardBoard();
       const unit = createTestUnit('black', { attack: 3 });
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(unit, coordinate, 'north');
 
       const newBoard = addUnitToBoard(board, unitWithPlacement);
 
@@ -49,11 +30,7 @@ describe('addUnitToBoard function', () => {
     it('given not mutate the original board', () => {
       const board = createEmptyStandardBoard();
       const unit = createTestUnit('black', { attack: 3 });
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(unit, coordinate, 'north');
 
       addUnitToBoard(board, unitWithPlacement);
 
@@ -79,11 +56,7 @@ describe('addUnitToBoard function', () => {
       };
 
       const unit = createTestUnit('black', { attack: 3 });
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(unit, coordinate, 'north');
 
       const newBoard = addUnitToBoard(board, unitWithPlacement);
 
@@ -120,11 +93,7 @@ describe('addUnitToBoard function', () => {
       };
 
       const newUnit = createTestUnit('black', { attack: 3, instanceNumber: 2 });
-      const unitWithPlacement = createUnitWithPlacement(
-        newUnit,
-        coordinate,
-        'south',
-      );
+      const unitWithPlacement = placed(newUnit, coordinate, 'south');
 
       expect(() => addUnitToBoard(board, unitWithPlacement)).toThrow(
         'Cannot add unit to space with engaged units',
@@ -152,11 +121,7 @@ describe('addUnitToBoard function', () => {
       };
 
       const newUnit = createTestUnit('black', { attack: 3, instanceNumber: 2 });
-      const unitWithPlacement = createUnitWithPlacement(
-        newUnit,
-        coordinate,
-        'south',
-      );
+      const unitWithPlacement = placed(newUnit, coordinate, 'south');
 
       expect(() => addUnitToBoard(board, unitWithPlacement)).toThrow(
         'Cannot add unit to space with friendly unit',
@@ -184,11 +149,7 @@ describe('addUnitToBoard function', () => {
       };
 
       const newUnit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-      const unitWithPlacement = createUnitWithPlacement(
-        newUnit,
-        coordinate,
-        'south',
-      );
+      const unitWithPlacement = placed(newUnit, coordinate, 'south');
 
       const newBoard = addUnitToBoard(board, unitWithPlacement);
 
@@ -219,11 +180,7 @@ describe('addUnitToBoard function', () => {
       };
 
       const newUnit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-      const unitWithPlacement = createUnitWithPlacement(
-        newUnit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(newUnit, coordinate, 'north');
 
       expect(() => addUnitToBoard(board, unitWithPlacement)).toThrow(
         'Engaged unit must have opposite facing',
@@ -249,11 +206,7 @@ describe('addUnitToBoard function', () => {
       };
 
       const newUnit = createTestUnit('white', { attack: 3, instanceNumber: 1 });
-      const unitWithPlacement = createUnitWithPlacement(
-        newUnit,
-        coordinate,
-        'south',
-      );
+      const unitWithPlacement = placed(newUnit, coordinate, 'south');
 
       addUnitToBoard(board, unitWithPlacement);
 

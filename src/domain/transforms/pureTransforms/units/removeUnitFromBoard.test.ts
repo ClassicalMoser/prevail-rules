@@ -1,10 +1,5 @@
-import type {
-  Coordinate,
-  UnitFacing,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
-import { createTestUnit } from '@testing';
+import type { Coordinate } from '@entities';
+import { createTestUnit, placed } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
 import { throwIfUndefined } from '@utils';
 
@@ -16,25 +11,11 @@ import { removeUnitFromBoard } from './removeUnitFromBoard';
 describe('removeUnitFromBoard function', () => {
   const coordinate: Coordinate = 'E-5';
 
-  // Helper function to create a UnitWithPlacement
-  const createUnitWithPlacement = (
-    unit: UnitInstance,
-    coord: Coordinate,
-    facing: UnitFacing,
-  ): UnitWithPlacement => ({
-    placement: { coordinate: coord, facing },
-    unit,
-  });
-
   describe('empty space', () => {
     it('given error when trying to remove unit from empty space, throws', () => {
       const board = createEmptyStandardBoard();
       const unit = createTestUnit('black', { attack: 3 });
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(unit, coordinate, 'north');
 
       expect(() => removeUnitFromBoard(board, unitWithPlacement)).toThrow(
         'Cannot remove unit from space with no unit',
@@ -57,11 +38,7 @@ describe('removeUnitFromBoard function', () => {
           unit,
         },
       };
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(unit, coordinate, 'north');
 
       const newBoard = removeUnitFromBoard(board, unitWithPlacement);
 
@@ -93,11 +70,7 @@ describe('removeUnitFromBoard function', () => {
         attack: 3,
         instanceNumber: 2,
       });
-      const unitWithPlacement = createUnitWithPlacement(
-        differentUnit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(differentUnit, coordinate, 'north');
 
       expect(() => removeUnitFromBoard(board, unitWithPlacement)).toThrow(
         'Unit mismatch',
@@ -118,11 +91,7 @@ describe('removeUnitFromBoard function', () => {
           unit,
         },
       };
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(unit, coordinate, 'north');
 
       removeUnitFromBoard(board, unitWithPlacement);
 
@@ -162,11 +131,7 @@ describe('removeUnitFromBoard function', () => {
         },
       };
 
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(unit, coordinate, 'north');
 
       const newBoard = removeUnitFromBoard(board, unitWithPlacement);
 
@@ -201,11 +166,7 @@ describe('removeUnitFromBoard function', () => {
           secondaryUnit,
         },
       };
-      const unitWithPlacement = createUnitWithPlacement(
-        primaryUnit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(primaryUnit, coordinate, 'north');
 
       const newBoard = removeUnitFromBoard(board, unitWithPlacement);
 
@@ -239,11 +200,7 @@ describe('removeUnitFromBoard function', () => {
           secondaryUnit,
         },
       };
-      const unitWithPlacement = createUnitWithPlacement(
-        primaryUnit,
-        coordinate,
-        'east',
-      );
+      const unitWithPlacement = placed(primaryUnit, coordinate, 'east');
 
       const newBoard = removeUnitFromBoard(board, unitWithPlacement);
 
@@ -276,11 +233,7 @@ describe('removeUnitFromBoard function', () => {
           secondaryUnit,
         },
       };
-      const unitWithPlacement = createUnitWithPlacement(
-        primaryUnit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(primaryUnit, coordinate, 'north');
 
       removeUnitFromBoard(board, unitWithPlacement);
 
@@ -316,11 +269,7 @@ describe('removeUnitFromBoard function', () => {
           secondaryUnit,
         },
       };
-      const unitWithPlacement = createUnitWithPlacement(
-        secondaryUnit,
-        coordinate,
-        'south',
-      );
+      const unitWithPlacement = placed(secondaryUnit, coordinate, 'south');
 
       const newBoard = removeUnitFromBoard(board, unitWithPlacement);
 
@@ -354,11 +303,7 @@ describe('removeUnitFromBoard function', () => {
           secondaryUnit,
         },
       };
-      const unitWithPlacement = createUnitWithPlacement(
-        secondaryUnit,
-        coordinate,
-        'south',
-      );
+      const unitWithPlacement = placed(secondaryUnit, coordinate, 'south');
 
       removeUnitFromBoard(board, unitWithPlacement);
 
@@ -399,11 +344,7 @@ describe('removeUnitFromBoard function', () => {
         attack: 3,
         instanceNumber: 2,
       });
-      const unitWithPlacement = createUnitWithPlacement(
-        differentUnit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(differentUnit, coordinate, 'north');
 
       expect(() => removeUnitFromBoard(board, unitWithPlacement)).toThrow(
         'Unit mismatch',
@@ -423,11 +364,7 @@ describe('removeUnitFromBoard function', () => {
       } as unknown as typeof boardSpace.unitPresence; // Intentionally bad type cast to test error path
 
       const unit = createTestUnit('black', { attack: 3 });
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(unit, coordinate, 'north');
 
       expect(() => removeUnitFromBoard(board, unitWithPlacement)).toThrow(
         'Invalid unit presence',

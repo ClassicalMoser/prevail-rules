@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
@@ -16,6 +15,7 @@ import {
   createRoutState,
   createTestCard,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '../';
 
@@ -30,13 +30,7 @@ describe('updateRoutState function', () => {
   function createStateWithRangedAttackRout() {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit,
-    };
+    const placement = placed(unit, 'E-5', 'north');
     const stateWithUnit = {
       ...state,
       boardState: addUnitToBoard(state.boardState, placement),
@@ -60,20 +54,8 @@ describe('updateRoutState function', () => {
       routingPlayer === 'white' ? 'black' : 'white',
       { attack: 2 },
     );
-    const routedPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: routedUnit,
-    };
-    const otherPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: otherUnit,
-    };
+    const routedPlacement = placed(routedUnit, 'E-5', 'north');
+    const otherPlacement = placed(otherUnit, 'E-5', 'south');
     let stateWithUnits = {
       ...state,
       boardState: addUnitToBoard(state.boardState, routedPlacement),

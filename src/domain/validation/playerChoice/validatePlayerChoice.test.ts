@@ -1,4 +1,4 @@
-import type { ChooseCardEvent, PlayerChoiceEvent } from '@events';
+import type { PlayerChoiceEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
@@ -6,7 +6,11 @@ import { updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms';
 import { validatePlayerChoice } from './validatePlayerChoice';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createChooseCardEvent,
+  createEmptyGameState,
+  createMoveCommanderEvent,
+} from '@factories';
 /**
  * ValidatePlayerChoice: Validates a player choice against the current game state.
  */
@@ -41,13 +45,11 @@ describe('validatePlayerChoice function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
     });
-    const event: ChooseCardEvent = {
+    const event = createChooseCardEvent({
       card: tempCommandCards[0],
-      choiceType: 'chooseCard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
-    };
+    });
 
     const validation = validatePlayerChoice(event, state);
 
@@ -83,13 +85,11 @@ describe('validatePlayerChoice function', () => {
       },
     });
 
-    const event: ChooseCardEvent = {
+    const event = createChooseCardEvent({
       card: tempCommandCards[0],
-      choiceType: 'chooseCard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
-    };
+    });
 
     const validation = validatePlayerChoice(event, state);
 
@@ -107,14 +107,12 @@ describe('validatePlayerChoice function', () => {
 
   it('fails when choice type does not match the expected choice', () => {
     const state = stateInPlayCardsChooseCards();
-    const event = {
-      choiceType: 'moveCommander' as const,
+    const event: PlayerChoiceEvent = createMoveCommanderEvent({
       eventNumber: 0,
-      eventType: 'playerChoice' as const,
-      from: 'E-5' as const,
-      player: 'black' as const,
-      to: 'E-6' as const,
-    } satisfies PlayerChoiceEvent;
+      from: 'E-5',
+      player: 'black',
+      to: 'E-6',
+    });
 
     const validation = validatePlayerChoice(event, state);
 

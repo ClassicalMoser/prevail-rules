@@ -1,5 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
-import type { ChooseRetreatOptionEvent } from '@events';
 import {
   getRetreatStateFromFrontEngagement,
   getRetreatStateFromMelee,
@@ -15,12 +13,16 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyChooseRetreatOptionEvent } from './applyChooseRetreatOptionEvent';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createChooseRetreatOptionEvent,
+  createEmptyGameState,
+} from '@factories';
 /**
  * After `resolveRetreat` lists legal cells, the defender picks one: this choice writes
  * `finalPosition` on the active retreat substep (ranged attack-apply or the correct melee side).
@@ -35,13 +37,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
   function createStateWithRangedAttackRetreat() {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit,
-    };
+    const placement = placed(unit, 'E-5', 'north');
     const stateWithUnit = {
       ...state,
       boardState: addUnitToBoard(state.boardState, placement),
@@ -60,13 +56,11 @@ describe('applyChooseRetreatOptionEvent function', () => {
 
   it('given ranged retreat flow, white chooses E-4 north, retreat substep finalPosition matches', () => {
     const state = createStateWithRangedAttackRetreat();
-    const event: ChooseRetreatOptionEvent = {
-      choiceType: 'chooseRetreatOption',
+    const event = createChooseRetreatOptionEvent({
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
       retreatOption: chosenPosition,
-    };
+    });
 
     const newState = applyChooseRetreatOptionEvent(event, state);
     const retreatState = getRetreatStateFromRangedAttack(newState);
@@ -84,20 +78,8 @@ describe('applyChooseRetreatOptionEvent function', () => {
         attack: 2,
       },
     );
-    const retreatingPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
-    const otherPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: otherUnit,
-    };
+    const retreatingPlacement = placed(retreatingUnit, 'E-5', 'north');
+    const otherPlacement = placed(otherUnit, 'E-5', 'south');
     let stateWithUnits = {
       ...state,
       boardState: addUnitToBoard(state.boardState, retreatingPlacement),
@@ -123,13 +105,11 @@ describe('applyChooseRetreatOptionEvent function', () => {
 
   it('given white melee retreat apply, white chooses E-4 north, white retreat finalPosition matches', () => {
     const state = createStateWithMeleeRetreat('white');
-    const event: ChooseRetreatOptionEvent = {
-      choiceType: 'chooseRetreatOption',
+    const event = createChooseRetreatOptionEvent({
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
       retreatOption: chosenPosition,
-    };
+    });
 
     const newState = applyChooseRetreatOptionEvent(event, state);
     const retreatState = getRetreatStateFromMelee(newState, 'white');
@@ -139,13 +119,11 @@ describe('applyChooseRetreatOptionEvent function', () => {
 
   it('given black melee retreat apply, black chooses E-4 north, black retreat finalPosition matches', () => {
     const state = createStateWithMeleeRetreat('black');
-    const event: ChooseRetreatOptionEvent = {
-      choiceType: 'chooseRetreatOption',
+    const event = createChooseRetreatOptionEvent({
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       retreatOption: chosenPosition,
-    };
+    });
 
     const newState = applyChooseRetreatOptionEvent(event, state);
     const retreatState = getRetreatStateFromMelee(newState, 'black');
@@ -156,13 +134,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
   it('writes finalPosition on a front-engagement nested retreat', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white', { attack: 2 });
-    const placement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit,
-    };
+    const placement = placed(unit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, placement),
@@ -181,13 +153,11 @@ describe('applyChooseRetreatOptionEvent function', () => {
         ),
       }),
     );
-    const event: ChooseRetreatOptionEvent = {
-      choiceType: 'chooseRetreatOption',
+    const event = createChooseRetreatOptionEvent({
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
       retreatOption: chosenPosition,
-    };
+    });
 
     const newState = applyChooseRetreatOptionEvent(event, stateInIssueCommands);
     expect(

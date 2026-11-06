@@ -1,15 +1,9 @@
-import type {
-  PlayerSide,
-  Board,
-  Coordinate,
-  UnitFacing,
-  UnitInstance,
-  UnitWithPlacement,
-} from '@entities';
+import type { PlayerSide, Board, Coordinate, UnitInstance } from '@entities';
 import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
   getUnitByStatValue,
+  placed,
 } from '@testing';
 import { createEmptyStandardBoard, createUnitInstance } from '@factories';
 
@@ -33,25 +27,11 @@ describe('isAtPlacement function', () => {
     instanceNumber = 1,
   ): UnitInstance => createUnitInstance(playerSide, unitType, instanceNumber);
 
-  // Helper function to create a UnitWithPlacement
-  const createUnitWithPlacement = (
-    unit: UnitInstance,
-    coord: Coordinate,
-    facing: UnitFacing,
-  ): UnitWithPlacement => ({
-    placement: { coordinate: coord, facing },
-    unit,
-  });
-
   describe('invalid inputs', () => {
     it('returns false for a non-existent coordinate', () => {
       const unit = createUnit('black');
       const invalidCoordinate = 'Z-99' as Coordinate;
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        invalidCoordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(unit, invalidCoordinate, 'north');
 
       const { result } = isAtPlacement(standardBoard, unitWithPlacement);
       expect(result).toBe(false);
@@ -61,11 +41,7 @@ describe('isAtPlacement function', () => {
   describe('empty space', () => {
     it('returns false for an empty space with no unit presence', () => {
       const unit = createUnit('black');
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(unit, coordinate, 'north');
 
       const { result } = isAtPlacement(standardBoard, unitWithPlacement);
       expect(result).toBe(false);
@@ -75,14 +51,8 @@ describe('isAtPlacement function', () => {
   describe('single friendly unit', () => {
     it('returns true when unit matches exactly', () => {
       const unit = createUnit('black');
-      const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit },
-      ]);
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'north',
-      );
+      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
+      const unitWithPlacement = placed(unit, coordinate, 'north');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(true);
@@ -90,14 +60,8 @@ describe('isAtPlacement function', () => {
 
     it('returns false when facing does not match', () => {
       const unit = createUnit('black');
-      const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit },
-      ]);
-      const unitWithPlacement = createUnitWithPlacement(
-        unit,
-        coordinate,
-        'south',
-      );
+      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
+      const unitWithPlacement = placed(unit, coordinate, 'south');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(false);
@@ -106,10 +70,8 @@ describe('isAtPlacement function', () => {
     it('returns false when playerSide does not match', () => {
       const unit = createUnit('black');
       const differentPlayerUnit = createUnit('white');
-      const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit },
-      ]);
-      const unitWithPlacement = createUnitWithPlacement(
+      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
+      const unitWithPlacement = placed(
         differentPlayerUnit,
         coordinate,
         'north',
@@ -122,14 +84,8 @@ describe('isAtPlacement function', () => {
     it('returns false when unitType does not match', () => {
       const unit = createUnit('black', flexibility1UnitType);
       const differentTypeUnit = createUnit('black', flexibility2UnitType);
-      const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit },
-      ]);
-      const unitWithPlacement = createUnitWithPlacement(
-        differentTypeUnit,
-        coordinate,
-        'north',
-      );
+      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
+      const unitWithPlacement = placed(differentTypeUnit, coordinate, 'north');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(false);
@@ -142,10 +98,8 @@ describe('isAtPlacement function', () => {
         flexibility1UnitType,
         2,
       );
-      const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit },
-      ]);
-      const unitWithPlacement = createUnitWithPlacement(
+      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
+      const unitWithPlacement = placed(
         differentInstanceUnit,
         coordinate,
         'north',
@@ -157,16 +111,10 @@ describe('isAtPlacement function', () => {
 
     it('returns true when unit matches by value (different object reference)', () => {
       const unit = createUnit('black', flexibility1UnitType, 1);
-      const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit },
-      ]);
+      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
       // Create a new unit instance with the same properties
       const sameUnit = createUnit('black', flexibility1UnitType, 1);
-      const unitWithPlacement = createUnitWithPlacement(
-        sameUnit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(sameUnit, coordinate, 'north');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(true);
@@ -178,13 +126,9 @@ describe('isAtPlacement function', () => {
       const enemyUnit = createUnit('white');
       const friendlyUnit = createUnit('black');
       const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit: enemyUnit },
+        placed(enemyUnit, coordinate, 'north'),
       ]);
-      const unitWithPlacement = createUnitWithPlacement(
-        friendlyUnit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(friendlyUnit, coordinate, 'north');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(false);
@@ -201,11 +145,7 @@ describe('isAtPlacement function', () => {
         coordinate,
         'north',
       );
-      const unitWithPlacement = createUnitWithPlacement(
-        primaryUnit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(primaryUnit, coordinate, 'north');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(true);
@@ -220,11 +160,7 @@ describe('isAtPlacement function', () => {
         coordinate,
         'north',
       );
-      const unitWithPlacement = createUnitWithPlacement(
-        primaryUnit,
-        coordinate,
-        'south',
-      );
+      const unitWithPlacement = placed(primaryUnit, coordinate, 'south');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(false);
@@ -240,7 +176,7 @@ describe('isAtPlacement function', () => {
         coordinate,
         'north',
       );
-      const unitWithPlacement = createUnitWithPlacement(
+      const unitWithPlacement = placed(
         differentPlayerUnit,
         coordinate,
         'north',
@@ -260,11 +196,7 @@ describe('isAtPlacement function', () => {
         coordinate,
         'north',
       );
-      const unitWithPlacement = createUnitWithPlacement(
-        differentTypeUnit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(differentTypeUnit, coordinate, 'north');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(false);
@@ -284,7 +216,7 @@ describe('isAtPlacement function', () => {
         coordinate,
         'north',
       );
-      const unitWithPlacement = createUnitWithPlacement(
+      const unitWithPlacement = placed(
         differentInstanceUnit,
         coordinate,
         'north',
@@ -306,7 +238,7 @@ describe('isAtPlacement function', () => {
         'north',
       );
       // Secondary unit facing is opposite of primary facing
-      const unitWithPlacement = createUnitWithPlacement(
+      const unitWithPlacement = placed(
         secondaryUnit,
         coordinate,
         'south', // Opposite of "north"
@@ -326,11 +258,7 @@ describe('isAtPlacement function', () => {
         'north',
       );
       // Wrong facing (should be "south" which is opposite of "north")
-      const unitWithPlacement = createUnitWithPlacement(
-        secondaryUnit,
-        coordinate,
-        'north',
-      );
+      const unitWithPlacement = placed(secondaryUnit, coordinate, 'north');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(false);
@@ -346,7 +274,7 @@ describe('isAtPlacement function', () => {
         coordinate,
         'north',
       );
-      const unitWithPlacement = createUnitWithPlacement(
+      const unitWithPlacement = placed(
         differentPlayerUnit,
         coordinate,
         'south',
@@ -366,11 +294,7 @@ describe('isAtPlacement function', () => {
         coordinate,
         'north',
       );
-      const unitWithPlacement = createUnitWithPlacement(
-        differentTypeUnit,
-        coordinate,
-        'south',
-      );
+      const unitWithPlacement = placed(differentTypeUnit, coordinate, 'south');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(false);
@@ -390,7 +314,7 @@ describe('isAtPlacement function', () => {
         coordinate,
         'north',
       );
-      const unitWithPlacement = createUnitWithPlacement(
+      const unitWithPlacement = placed(
         differentInstanceUnit,
         coordinate,
         'south',
@@ -410,11 +334,7 @@ describe('isAtPlacement function', () => {
         'northEast',
       );
       // Secondary unit facing is opposite of primary facing ("northEast" -> "southWest")
-      const unitWithPlacement = createUnitWithPlacement(
-        secondaryUnit,
-        coordinate,
-        'southWest',
-      );
+      const unitWithPlacement = placed(secondaryUnit, coordinate, 'southWest');
 
       const { result } = isAtPlacement(board, unitWithPlacement);
       expect(result).toBe(true);

@@ -1,4 +1,5 @@
 import { getPlayerUnitWithPosition } from '@queries';
+import { placed } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 
 import { createBoardWithUnits } from './boardWithUnits';
@@ -11,8 +12,8 @@ describe('createBoardWithUnits function', () => {
     const unit1 = createTestUnit('black');
     const unit2 = createTestUnit('white');
     const board = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
-      { placement: { coordinate: 'E-6', facing: 'south' }, unit: unit2 },
+      placed(unit1, 'E-5', 'north'),
+      placed(unit2, 'E-6', 'south'),
     ]);
     expect(board.boardType).toBe('standard');
     const atE5 = getPlayerUnitWithPosition(board, 'E-5', 'black');

@@ -1,9 +1,8 @@
-import type { SetupUnitsEvent } from '@events';
 import { createUnitWithPlacement } from '@testing';
 
 import { applySetupUnitsEvent } from './applySetupUnitsEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createSetupUnitsEvent } from '@factories';
 /**
  * Pre-game setup: each `setupUnits` choice merges unit placements and the
  * commander into `boardState`, clears those units from reserve, and starts
@@ -21,14 +20,12 @@ describe('applySetupUnitsEvent function', () => {
       reservedUnits: [unitWithPlacement.unit],
     };
 
-    const event: SetupUnitsEvent = {
-      choiceType: 'setupUnits',
+    const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       unitPlacements: [unitWithPlacement],
-    };
+    });
 
     const newState = applySetupUnitsEvent(event, state);
 
@@ -68,14 +65,12 @@ describe('applySetupUnitsEvent function', () => {
       reservedUnits: [blackUnit.unit, whiteUnit.unit],
     };
 
-    const event: SetupUnitsEvent = {
-      choiceType: 'setupUnits',
+    const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       unitPlacements: [blackUnit],
-    };
+    });
 
     const newState = applySetupUnitsEvent(event, state);
 
@@ -98,14 +93,12 @@ describe('applySetupUnitsEvent function', () => {
       reservedUnits: [unit.unit],
     };
 
-    const event: SetupUnitsEvent = {
-      choiceType: 'setupUnits',
+    const event = createSetupUnitsEvent({
       commanderCoordinate: 'L-4',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       unitPlacements: [unit],
-    };
+    });
 
     const newState = applySetupUnitsEvent(event, state);
 
@@ -127,14 +120,12 @@ describe('applySetupUnitsEvent function', () => {
     };
     const originalBoardRef = state.boardState;
 
-    const event: SetupUnitsEvent = {
-      choiceType: 'setupUnits',
+    const event = createSetupUnitsEvent({
       commanderCoordinate: 'E-5',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       unitPlacements: [unitWithPlacement],
-    };
+    });
 
     applySetupUnitsEvent(event, state);
 

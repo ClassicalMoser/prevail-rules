@@ -5,6 +5,7 @@ import {
   createRoutState,
   createTestUnit,
   createUnitWithPlacement,
+  placed,
 } from '@testing';
 import {
   addUnitToBoard,
@@ -24,10 +25,7 @@ describe('getAwaitingRoutDiscardState function', () => {
     let state = createEmptyGameState('standard');
     state = updateBoardState(
       state,
-      addUnitToBoard(state.boardState, {
-        placement: { coordinate: 'E-6', facing: 'north' },
-        unit: defender,
-      }),
+      addUnitToBoard(state.boardState, placed(defender, 'E-6', 'north')),
     );
     const routState = createRoutState('white', defender, {
       numberToDiscard: 2,

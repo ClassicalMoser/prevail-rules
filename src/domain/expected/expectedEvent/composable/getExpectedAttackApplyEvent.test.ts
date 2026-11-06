@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
 import {
   createAttackApplyState,
@@ -10,6 +9,7 @@ import {
   createReverseState,
   createRoutState,
   createTestUnit,
+  placed,
 } from '@testing';
 
 import { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
@@ -48,13 +48,7 @@ describe('getExpectedAttackApplyEvent function', () => {
   describe('rout priority', () => {
     it('given prioritize rout over retreat and reverse', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      };
+      const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyState(unit, {
         attackResult: {
           unitRetreated: true,
@@ -115,13 +109,9 @@ describe('getExpectedAttackApplyEvent function', () => {
   describe('retreat', () => {
     it('given retreat is not completed, returns expected retreat event', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const attackApplyState = createAttackApplyStateWithRetreat({
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      });
+      const attackApplyState = createAttackApplyStateWithRetreat(
+        placed(unit, 'E-5', 'north'),
+      );
 
       expectPlayerChoice(
         getExpectedAttackApplyEvent(
@@ -135,13 +125,7 @@ describe('getExpectedAttackApplyEvent function', () => {
 
     it('given continue to completeAttackApply when retreat is completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      };
+      const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyStateWithRetreat(
         unitPlacement,
         {
@@ -163,13 +147,7 @@ describe('getExpectedAttackApplyEvent function', () => {
     it('given reverse is not completed and unit can reverse, returns expected reverse event', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(true);
-      const unitPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      };
+      const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyStateWithReverse(unitPlacement);
 
       expectGameEffect(
@@ -184,13 +162,7 @@ describe('getExpectedAttackApplyEvent function', () => {
     it('given reverse cannot happen due to engagement, returns completeAttackApply', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(false);
-      const unitPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      };
+      const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyStateWithReverse(unitPlacement);
       const gameState = createGameStateWithEngagedUnits(
         unit,
@@ -208,13 +180,7 @@ describe('getExpectedAttackApplyEvent function', () => {
     it('given when reverse cannot happen and attack apply is already complete, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(false);
-      const unitPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      };
+      const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyStateWithReverse(
         unitPlacement,
         {
@@ -232,13 +198,7 @@ describe('getExpectedAttackApplyEvent function', () => {
 
     it('given continue to completeAttackApply when reverse is completed', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      };
+      const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyStateWithReverse(
         unitPlacement,
         {
@@ -265,13 +225,7 @@ describe('getExpectedAttackApplyEvent function', () => {
   describe('completion', () => {
     it('given all substeps are completed, returns completeAttackApply', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      };
+      const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyStateWithRetreat(
         unitPlacement,
         {
@@ -296,13 +250,7 @@ describe('getExpectedAttackApplyEvent function', () => {
 
     it('given when attack apply is already completed, throws', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      const unitPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit,
-      };
+      const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyStateWithRetreat(
         unitPlacement,
         {

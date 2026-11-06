@@ -1,12 +1,10 @@
-import type { ChooseRallyEvent } from '@events';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { createCleanupPhaseState } from '@testing';
 import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { isValidChooseRallyEvent } from './isValidChooseRallyEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createChooseRallyEvent, createEmptyGameState } from '@factories';
 /**
  * IsValidChooseRallyEvent: membership against getLegalChooseRallyEvent.
  */
@@ -20,13 +18,11 @@ describe('isValidChooseRallyEvent function', () => {
       base,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
     );
-    const event: ChooseRallyEvent = {
-      choiceType: 'chooseRally',
+    const event = createChooseRallyEvent({
       eventNumber: 0,
-      eventType: PLAYER_CHOICE_EVENT_TYPE,
       performRally: false,
       player: 'white',
-    };
+    });
 
     expect(isValidChooseRallyEvent(event, state)).toStrictEqual({
       result: true,
@@ -42,13 +38,11 @@ describe('isValidChooseRallyEvent function', () => {
       base,
       createCleanupPhaseState({ step: 'firstPlayerChooseRally' }),
     );
-    const event: ChooseRallyEvent = {
-      choiceType: 'chooseRally',
+    const event = createChooseRallyEvent({
       eventNumber: 0,
-      eventType: PLAYER_CHOICE_EVENT_TYPE,
       performRally: true,
       player: 'black',
-    };
+    });
 
     const validation = isValidChooseRallyEvent(event, state);
     expect(validation.result).toBe(false);
@@ -63,13 +57,11 @@ describe('isValidChooseRallyEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    const event: ChooseRallyEvent = {
-      choiceType: 'chooseRally',
+    const event = createChooseRallyEvent({
       eventNumber: 0,
-      eventType: PLAYER_CHOICE_EVENT_TYPE,
       performRally: true,
       player: 'black',
-    };
+    });
 
     const validation = isValidChooseRallyEvent(event, state);
     expect(validation.result).toBe(false);

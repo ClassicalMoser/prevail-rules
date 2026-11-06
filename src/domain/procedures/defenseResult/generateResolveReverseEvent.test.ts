@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import {
@@ -8,6 +7,7 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
+  placed,
 } from '@testing';
 import {
   addUnitToBoard,
@@ -27,13 +27,7 @@ describe('generateResolveReverseEvent function', () => {
   it('given ranged attack-apply in reverse substep, context rangedAttack and E-5 south facing', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
+    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
@@ -63,20 +57,8 @@ describe('generateResolveReverseEvent function', () => {
     );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'east',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'west',
-      },
-      unit: blackUnit,
-    };
+    const whiteWp = placed(whiteUnit, 'E-5', 'east');
+    const blackWp = placed(blackUnit, 'E-5', 'west');
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
 

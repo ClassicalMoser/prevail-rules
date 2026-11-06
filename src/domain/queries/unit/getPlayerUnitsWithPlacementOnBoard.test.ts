@@ -1,4 +1,4 @@
-import { createBoardWithUnits, createTestUnit } from '@testing';
+import { createBoardWithUnits, createTestUnit, placed } from '@testing';
 import { createEmptyGameState } from '@factories';
 import { updateBoardState } from '@transforms';
 
@@ -15,9 +15,9 @@ describe('getPlayerUnitsWithPlacementOnBoard function', () => {
     const state = updateBoardState(
       createEmptyGameState('standard'),
       createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
-        { placement: { coordinate: 'F-5', facing: 'south' }, unit: unit2 },
-        { placement: { coordinate: 'G-5', facing: 'east' }, unit: unit3 },
+        placed(unit1, 'E-5', 'north'),
+        placed(unit2, 'F-5', 'south'),
+        placed(unit3, 'G-5', 'east'),
       ]),
     );
 
@@ -42,9 +42,7 @@ describe('getPlayerUnitsWithPlacementOnBoard function', () => {
 
     const state = updateBoardState(
       createEmptyGameState('standard'),
-      createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]),
+      createBoardWithUnits([placed(unit, 'E-5', 'north')]),
     );
 
     const blackUnits = getPlayerUnitsWithPlacementOnBoard(state, 'black');
@@ -57,9 +55,7 @@ describe('getPlayerUnitsWithPlacementOnBoard function', () => {
 
     const state = updateBoardState(
       createEmptyGameState('standard'),
-      createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-      ]),
+      createBoardWithUnits([placed(unit, 'E-5', 'north')]),
     );
 
     const whiteUnits = getPlayerUnitsWithPlacementOnBoard(state, 'white');

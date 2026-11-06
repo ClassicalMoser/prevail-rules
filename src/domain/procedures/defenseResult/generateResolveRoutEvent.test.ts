@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import {
@@ -13,6 +12,7 @@ import {
   createRoutState,
   createTestCard,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
 
@@ -28,13 +28,7 @@ describe('generateResolveRoutEvent function', () => {
   it('given ranged resolution with rout substep on white defender, source rangedAttack and that unit', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
+    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
@@ -60,20 +54,8 @@ describe('generateResolveRoutEvent function', () => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
+    const whiteWp = placed(whiteUnit, 'E-5', 'north');
+    const blackWp = placed(blackUnit, 'E-5', 'south');
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
 

@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import { throwIfNone, throwIfPending } from '@utils';
 import type { ResolveFlankEngagementEvent } from '@events';
 import type { GameState } from '@game';
@@ -9,6 +8,7 @@ import {
   createMovementResolutionState,
   createTestCard,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
@@ -25,13 +25,11 @@ describe('applyResolveFlankEngagementEvent function', () => {
     state.cardState.black.inPlay = createTestCard();
     const defender = createTestUnit('white');
     const flank = createFlankEngagementState();
-    const defenderWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: flank.targetPlacement.coordinate,
-        facing: 'east',
-      },
-      unit: defender,
-    };
+    const defenderWithPlacement = placed(
+      defender,
+      flank.targetPlacement.coordinate,
+      'east',
+    );
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, defenderWithPlacement),

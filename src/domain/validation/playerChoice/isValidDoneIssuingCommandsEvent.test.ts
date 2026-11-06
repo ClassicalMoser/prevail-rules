@@ -4,7 +4,10 @@ import { updatePhaseState } from '@transforms';
 
 import { isValidDoneIssuingCommandsEvent } from './isValidDoneIssuingCommandsEvent';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createDoneIssuingCommandsEvent,
+  createEmptyGameState,
+} from '@factories';
 /**
  * IsValidDoneIssuingCommandsEvent: membership against legal done events.
  */
@@ -20,12 +23,10 @@ describe('isValidDoneIssuingCommandsEvent function', () => {
 
     expect(
       isValidDoneIssuingCommandsEvent(
-        {
-          choiceType: 'doneIssuingCommands',
+        createDoneIssuingCommandsEvent({
           eventNumber: 0,
-          eventType: 'playerChoice',
           player: 'black',
-        },
+        }),
         state,
       ),
     ).toStrictEqual({ result: true });
@@ -42,12 +43,10 @@ describe('isValidDoneIssuingCommandsEvent function', () => {
 
     expect(
       isValidDoneIssuingCommandsEvent(
-        {
-          choiceType: 'doneIssuingCommands',
+        createDoneIssuingCommandsEvent({
           eventNumber: 0,
-          eventType: 'playerChoice',
           player: 'white',
-        },
+        }),
         state,
       ).result,
     ).toBe(false);

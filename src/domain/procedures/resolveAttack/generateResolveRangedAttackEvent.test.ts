@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import { equites, punicCitizenSpearmen, velites } from '@sampleValues';
 import {
@@ -6,6 +5,7 @@ import {
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
 
@@ -25,13 +25,7 @@ describe('generateResolveRangedAttackEvent function', () => {
   function rangedResolutionGameState(): GameState {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { unitType: spearmenType });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
+    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
@@ -49,13 +43,7 @@ describe('generateResolveRangedAttackEvent function', () => {
   it('given low-retreat defender vs cavalry attacker, retreated true with legal set', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { unitType: velites });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
+    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
@@ -85,13 +73,7 @@ describe('generateResolveRangedAttackEvent function', () => {
   it('given defending commitment pending on ranged CRS, throws defending commitment guard', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
+    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
@@ -112,13 +94,7 @@ describe('generateResolveRangedAttackEvent function', () => {
   it('given attacking commitment pending on ranged CRS, throws attacking commitment guard', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
+    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
@@ -139,13 +115,7 @@ describe('generateResolveRangedAttackEvent function', () => {
   it('given ranged CRS already holding attackApplyState, throws attack apply already exists', () => {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
+    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),

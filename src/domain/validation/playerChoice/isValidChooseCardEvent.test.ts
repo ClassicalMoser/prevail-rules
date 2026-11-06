@@ -1,4 +1,3 @@
-import type { ChooseCardEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
@@ -7,7 +6,7 @@ import { updatePhaseState } from '@transforms';
 
 import { isValidChooseCardEvent } from './isValidChooseCardEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createChooseCardEvent, createEmptyGameState } from '@factories';
 /**
  * IsValidChooseCardEvent: membership against getLegalChooseCardOptions.
  */
@@ -35,13 +34,11 @@ describe('isValidChooseCardEvent function', () => {
 
   it('accepts a card that is in the pending player hand', () => {
     const state = stateChooseCardsBothPending();
-    const event: ChooseCardEvent = {
+    const event = createChooseCardEvent({
       card: tempCommandCards[2],
-      choiceType: 'chooseCard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
-    };
+    });
 
     expect(isValidChooseCardEvent(event, state)).toStrictEqual({
       result: true,
@@ -50,13 +47,11 @@ describe('isValidChooseCardEvent function', () => {
 
   it('rejects a card that is not in the player hand', () => {
     const state = stateChooseCardsBothPending();
-    const event: ChooseCardEvent = {
+    const event = createChooseCardEvent({
       card: tempCommandCards[0],
-      choiceType: 'chooseCard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
-    };
+    });
 
     const validation = isValidChooseCardEvent(event, state);
     expect(validation.result).toBe(false);
@@ -71,13 +66,11 @@ describe('isValidChooseCardEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'revealCards',
     });
-    const event: ChooseCardEvent = {
+    const event = createChooseCardEvent({
       card: tempCommandCards[2],
-      choiceType: 'chooseCard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
-    };
+    });
 
     const validation = isValidChooseCardEvent(event, state);
     expect(validation.result).toBe(false);

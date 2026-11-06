@@ -5,6 +5,7 @@ import {
   createTestCard,
   createTestUnit,
   createUnitWithPlacement,
+  placed,
 } from '@testing';
 
 import { getExpectedMovementResolutionEvent } from './getExpectedMovementResolutionEvent';
@@ -21,10 +22,7 @@ vi.mock(import('../composable'), () => ({
 
 function createGameStateWithTargetEnemy(): GameState {
   const state = createGameStateWithUnits([
-    {
-      placement: { coordinate: 'E-6', facing: 'north' },
-      unit: createTestUnit('white'),
-    },
+    placed(createTestUnit('white'), 'E-6', 'north'),
   ]);
   state.cardState.black.inPlay = createTestCard();
   return state;

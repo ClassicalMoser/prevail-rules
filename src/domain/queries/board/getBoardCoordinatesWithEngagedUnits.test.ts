@@ -1,4 +1,8 @@
-import { createGameStateWithEngagedUnits, createTestUnit } from '@testing';
+import {
+  createGameStateWithEngagedUnits,
+  createTestUnit,
+  placed,
+} from '@testing';
 
 import { getBoardCoordinatesWithEngagedUnits } from './getBoardCoordinatesWithEngagedUnits';
 import { addUnitToBoard } from '@transforms';
@@ -36,14 +40,14 @@ describe('getBoardCoordinatesWithEngagedUnits function', () => {
     );
 
     // Add unengaged units to the board
-    const boardWithUnengagedBlack = addUnitToBoard(state.boardState, {
-      placement: { coordinate: 'E-6', facing: 'north' },
-      unit: unengagedBlack,
-    });
-    const boardWithUnengagedWhite = addUnitToBoard(boardWithUnengagedBlack, {
-      placement: { coordinate: 'E-8', facing: 'north' },
-      unit: unengagedWhite,
-    });
+    const boardWithUnengagedBlack = addUnitToBoard(
+      state.boardState,
+      placed(unengagedBlack, 'E-6', 'north'),
+    );
+    const boardWithUnengagedWhite = addUnitToBoard(
+      boardWithUnengagedBlack,
+      placed(unengagedWhite, 'E-8', 'north'),
+    );
 
     // Get the coordinates with engaged units
     const coords = getBoardCoordinatesWithEngagedUnits(boardWithUnengagedWhite);

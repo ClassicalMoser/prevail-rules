@@ -6,6 +6,7 @@ import {
   createBoardWithUnits,
   createTestCard,
   createTestUnit,
+  placed,
 } from '@testing';
 import {
   addUnitsToCommandedUnits,
@@ -23,9 +24,7 @@ type InPlayCard = NonNullable<StandardState['cardState']['black']['inPlay']>;
  * A standard game with this unit alone on E-5, facing north.
  */
 function stateWithUnit(unit: UnitInstance): StandardState {
-  const board = createBoardWithUnits([
-    { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-  ]);
+  const board = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
   return updateBoardState(createEmptyGameState('standard'), board);
 }
 
@@ -36,9 +35,7 @@ function stateWithUnitAndCommander(
   unit: UnitInstance,
   commanderCoordinate: 'E-6' | 'E-8',
 ): StandardState {
-  const boardWithUnit = createBoardWithUnits([
-    { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-  ]);
+  const boardWithUnit = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
   const board = createBoardWithCommander(
     'black',
     commanderCoordinate,

@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
   createFlankEngagementState,
@@ -6,6 +5,7 @@ import {
   createMovementResolutionState,
   createTestCard,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
 
@@ -29,13 +29,11 @@ describe('generateResolveFlankEngagementEvent function', () => {
     const defender = createTestUnit('white');
     const flank = createFlankEngagementState();
     // Factory default: targetPlacement E-5 facing north (engaging facing). If that default changes, expected newFacing below must change with it.
-    const defenderPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: flank.targetPlacement.coordinate,
-        facing: 'east',
-      },
-      unit: defender,
-    };
+    const defenderPlacement = placed(
+      defender,
+      flank.targetPlacement.coordinate,
+      'east',
+    );
 
     // Defender must occupy the engagement target cell so getSingleUnitWithPlacementAtCoordinate can resolve them.
     const withBoard = {

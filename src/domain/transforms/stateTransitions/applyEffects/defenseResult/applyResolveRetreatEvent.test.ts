@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { ResolveRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -17,6 +16,7 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
@@ -32,13 +32,7 @@ describe('applyResolveRetreatEvent function', () => {
   function createStateWithRangedAttackRetreat(): GameState {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
+    const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
 
     // Add unit to board
     const stateWithUnit = {
@@ -72,20 +66,8 @@ describe('applyResolveRetreatEvent function', () => {
       },
     );
 
-    const retreatingUnitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
-    const otherUnitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: otherUnit,
-    };
+    const retreatingUnitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
+    const otherUnitWithPlacement = placed(otherUnit, 'E-5', 'south');
 
     // Add both units to board (engaged)
     let stateWithUnits = {
@@ -126,13 +108,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: {
-          placement: {
-            coordinate: 'E-4',
-            facing: 'north',
-          },
-          unit: retreatState.retreatingUnit.unit,
-        },
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-4', 'north'),
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -161,13 +137,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: {
-          placement: {
-            coordinate: 'E-4',
-            facing: 'north',
-          },
-          unit: retreatState.retreatingUnit.unit,
-        },
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-4', 'north'),
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -185,26 +155,17 @@ describe('applyResolveRetreatEvent function', () => {
       const otherUnit = createTestUnit('black', { attack: 2 });
       const stateWithOtherUnit = {
         ...state,
-        boardState: addUnitToBoard(state.boardState, {
-          placement: {
-            coordinate: 'D-5',
-            facing: 'north',
-          },
-          unit: otherUnit,
-        }),
+        boardState: addUnitToBoard(
+          state.boardState,
+          placed(otherUnit, 'D-5', 'north'),
+        ),
       };
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: {
-          placement: {
-            coordinate: 'E-4',
-            facing: 'north',
-          },
-          unit: retreatState.retreatingUnit.unit,
-        },
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-4', 'north'),
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -228,13 +189,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: {
-          placement: {
-            coordinate: 'E-4',
-            facing: 'north',
-          },
-          unit: retreatState.retreatingUnit.unit,
-        },
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-4', 'north'),
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -258,13 +213,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: {
-          placement: {
-            coordinate: 'E-6',
-            facing: 'south',
-          },
-          unit: retreatState.retreatingUnit.unit,
-        },
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-6', 'south'),
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -292,13 +241,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: {
-          placement: {
-            coordinate: 'E-4',
-            facing: 'north',
-          },
-          unit: retreatState.retreatingUnit.unit,
-        },
+        finalPosition: placed(retreatState.retreatingUnit.unit, 'E-4', 'north'),
         startingPosition: retreatState.retreatingUnit,
       };
 
@@ -313,10 +256,7 @@ describe('applyResolveRetreatEvent function', () => {
     it('moves the defender and completes the engagement', () => {
       const state = createEmptyGameState('standard');
       const unit = createTestUnit('white', { attack: 2 });
-      const placement: UnitWithPlacement = {
-        placement: { coordinate: 'E-5', facing: 'north' },
-        unit,
-      };
+      const placement = placed(unit, 'E-5', 'north');
       const withBoard = {
         ...state,
         boardState: addUnitToBoard(state.boardState, placement),
@@ -343,10 +283,7 @@ describe('applyResolveRetreatEvent function', () => {
         effectType: 'resolveRetreat',
         eventNumber: 0,
         eventType: 'gameEffect',
-        finalPosition: {
-          placement: { coordinate: 'E-4', facing: 'north' },
-          unit,
-        },
+        finalPosition: placed(unit, 'E-4', 'north'),
         startingPosition: retreatState.retreatingUnit,
       };
 

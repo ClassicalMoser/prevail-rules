@@ -1,10 +1,13 @@
-import type { MoveUnitEvent } from '@events';
-import { createTestUnit } from '@testing';
+import { createTestUnit, placed } from '@testing';
 import { addUnitToBoard } from '@transforms';
 
 import { isLegalMove } from './isLegalMove';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createEmptyGameState,
+  createMoveUnitEvent,
+  createUnitPlacement,
+} from '@factories';
 /**
  * IsLegalMove: Validates whether a unit move event is legal according to game rules.
  */
@@ -14,32 +17,15 @@ describe('isLegalMove function', () => {
       const unitInstance = createTestUnit('black', { speed: 2 });
       const gameState = createEmptyGameState('standard');
       let board = gameState.boardState;
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit: unitInstance,
-      });
+      board = addUnitToBoard(board, placed(unitInstance, 'E-5', 'north'));
       gameState.boardState = board;
-      const moveUnitEvent: MoveUnitEvent = {
-        choiceType: 'moveUnit',
+      const moveUnitEvent = createMoveUnitEvent({
         eventNumber: 0,
-        eventType: 'playerChoice',
         moveCommander: false,
         player: 'black',
-        to: {
-          coordinate: 'E-4',
-          facing: 'north',
-        },
-        unit: {
-          placement: {
-            coordinate: 'E-5',
-            facing: 'north',
-          },
-          unit: unitInstance,
-        },
-      };
+        to: createUnitPlacement('E-4', 'north'),
+        unit: placed(unitInstance, 'E-5', 'north'),
+      });
       const isLegal = isLegalMove(moveUnitEvent, gameState);
       expect(isLegal).toBe(true);
     });
@@ -48,24 +34,13 @@ describe('isLegalMove function', () => {
     it('given a move that is not legal, returns false', () => {
       const unitInstance = createTestUnit('black', { speed: 2 });
       const gameState = createEmptyGameState('standard');
-      const moveUnitEvent: MoveUnitEvent = {
-        choiceType: 'moveUnit',
+      const moveUnitEvent = createMoveUnitEvent({
         eventNumber: 0,
-        eventType: 'playerChoice',
         moveCommander: false,
         player: 'black',
-        to: {
-          coordinate: 'E-6',
-          facing: 'north',
-        },
-        unit: {
-          placement: {
-            coordinate: 'E-5',
-            facing: 'north',
-          },
-          unit: unitInstance,
-        },
-      };
+        to: createUnitPlacement('E-6', 'north'),
+        unit: placed(unitInstance, 'E-5', 'north'),
+      });
       const isLegal = isLegalMove(moveUnitEvent, gameState);
       expect(isLegal).toBe(false);
     });

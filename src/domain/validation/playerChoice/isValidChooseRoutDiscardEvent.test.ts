@@ -1,4 +1,3 @@
-import type { ChooseRoutDiscardEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
@@ -12,7 +11,7 @@ import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createChooseRoutDiscardEvent, createEmptyGameState } from '@factories';
 /**
  * IsValidChooseRoutDiscardEvent: atom membership + integrity over getLegalRoutDiscardCards.
  */
@@ -49,13 +48,11 @@ describe('isValidChooseRoutDiscardEvent function', () => {
 
   it('accepts a legal selection regardless of cardId order', () => {
     const state = stateAwaitingWhiteDiscard(2);
-    const event: ChooseRoutDiscardEvent = {
+    const event = createChooseRoutDiscardEvent({
       cardIds: [tempCommandCards[4].id, tempCommandCards[2].id],
-      choiceType: 'chooseRoutDiscard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
 
     expect(isValidChooseRoutDiscardEvent(event, state)).toStrictEqual({
       result: true,
@@ -64,13 +61,11 @@ describe('isValidChooseRoutDiscardEvent function', () => {
 
   it('accepts an empty selection when numberToDiscard is 0', () => {
     const state = stateAwaitingWhiteDiscard(0);
-    const event: ChooseRoutDiscardEvent = {
+    const event = createChooseRoutDiscardEvent({
       cardIds: [],
-      choiceType: 'chooseRoutDiscard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
 
     expect(isValidChooseRoutDiscardEvent(event, state)).toStrictEqual({
       result: true,
@@ -79,13 +74,11 @@ describe('isValidChooseRoutDiscardEvent function', () => {
 
   it('rejects a selection with the wrong count', () => {
     const state = stateAwaitingWhiteDiscard(2);
-    const event: ChooseRoutDiscardEvent = {
+    const event = createChooseRoutDiscardEvent({
       cardIds: [tempCommandCards[2].id],
-      choiceType: 'chooseRoutDiscard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
 
     const validation = isValidChooseRoutDiscardEvent(event, state);
     expect(validation.result).toBe(false);
@@ -97,13 +90,11 @@ describe('isValidChooseRoutDiscardEvent function', () => {
 
   it('rejects duplicate card IDs', () => {
     const state = stateAwaitingWhiteDiscard(2);
-    const event: ChooseRoutDiscardEvent = {
+    const event = createChooseRoutDiscardEvent({
       cardIds: [tempCommandCards[2].id, tempCommandCards[2].id],
-      choiceType: 'chooseRoutDiscard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
 
     const validation = isValidChooseRoutDiscardEvent(event, state);
     expect(validation.result).toBe(false);
@@ -115,13 +106,11 @@ describe('isValidChooseRoutDiscardEvent function', () => {
 
   it('rejects a card not in the legal atom set', () => {
     const state = stateAwaitingWhiteDiscard(1);
-    const event: ChooseRoutDiscardEvent = {
+    const event = createChooseRoutDiscardEvent({
       cardIds: [tempCommandCards[0].id],
-      choiceType: 'chooseRoutDiscard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
 
     const validation = isValidChooseRoutDiscardEvent(event, state);
     expect(validation.result).toBe(false);
@@ -136,13 +125,11 @@ describe('isValidChooseRoutDiscardEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    const event: ChooseRoutDiscardEvent = {
+    const event = createChooseRoutDiscardEvent({
       cardIds: [tempCommandCards[2].id],
-      choiceType: 'chooseRoutDiscard',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
 
     const validation = isValidChooseRoutDiscardEvent(event, state);
     expect(validation.result).toBe(false);

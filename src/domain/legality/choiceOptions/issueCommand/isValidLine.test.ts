@@ -6,7 +6,7 @@ import type {
   UnitWithPlacement,
 } from '@entities';
 import { createEmptyStandardBoard } from '@factories';
-import { createTestUnit } from '@testing';
+import { createTestUnit, placed } from '@testing';
 
 import { isValidLine } from './isValidLine';
 
@@ -24,10 +24,7 @@ function lineAlong(
       attack: 3,
       instanceNumber: index + 1,
     });
-    const withPlacement: UnitWithPlacement = {
-      placement: { coordinate, facing },
-      unit,
-    };
+    const withPlacement = placed(unit, coordinate, facing);
     return withPlacement;
   });
   const line: Line = { unitPlacements };
@@ -64,8 +61,8 @@ describe('isValidLine function', () => {
     const first = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const second = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const line = pair(
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: first },
-      { placement: { coordinate: 'E-6', facing: 'south' }, unit: second },
+      placed(first, 'E-5', 'north'),
+      placed(second, 'E-6', 'south'),
     );
 
     expect(isValidLine(board, line)).toStrictEqual({ result: true });
@@ -91,8 +88,8 @@ describe('isValidLine function', () => {
     const first = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const second = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const line = pair(
-      { placement: { coordinate: 'E-5', facing: 'northEast' }, unit: first },
-      { placement: { coordinate: 'D-4', facing: 'southWest' }, unit: second },
+      placed(first, 'E-5', 'northEast'),
+      placed(second, 'D-4', 'southWest'),
     );
 
     expect(isValidLine(board, line)).toStrictEqual({ result: true });
@@ -123,8 +120,8 @@ describe('isValidLine function', () => {
     const black = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const white = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     const line = pair(
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: black },
-      { placement: { coordinate: 'E-6', facing: 'north' }, unit: white },
+      placed(black, 'E-5', 'north'),
+      placed(white, 'E-6', 'north'),
     );
 
     expect(isValidLine(board, line)).toStrictEqual({
@@ -137,8 +134,8 @@ describe('isValidLine function', () => {
     const first = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const second = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const line = pair(
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: first },
-      { placement: { coordinate: 'E-6', facing: 'east' }, unit: second },
+      placed(first, 'E-5', 'north'),
+      placed(second, 'E-6', 'east'),
     );
 
     expect(isValidLine(board, line)).toStrictEqual({
@@ -179,15 +176,13 @@ describe('isValidLine function', () => {
     const first = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const second = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const line = pair(
-      {
+      placed(
+        first,
         // The type forbids this row; getFlankingSpaces throws, and the catch maps it.
-        placement: { coordinate: 'R-12' as Coordinate, facing: 'north' },
-        unit: first,
-      },
-      {
-        placement: { coordinate: 'E-6', facing: 'north' },
-        unit: second,
-      },
+        'R-12' as Coordinate,
+        'north',
+      ),
+      placed(second, 'E-6', 'north'),
     );
 
     expect(isValidLine(board, line)).toStrictEqual({

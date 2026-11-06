@@ -1,4 +1,5 @@
 import { getPlayerUnitWithPosition } from '@queries';
+import { placed } from '@testing/testHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 
 import {
@@ -36,8 +37,8 @@ describe('createGameStateWithUnits function', () => {
     const unit1 = createTestUnit('black');
     const unit2 = createTestUnit('white');
     const state = createGameStateWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
-      { placement: { coordinate: 'E-6', facing: 'south' }, unit: unit2 },
+      placed(unit1, 'E-5', 'north'),
+      placed(unit2, 'E-6', 'south'),
     ]);
     expect(
       getPlayerUnitWithPosition(state.boardState, 'E-5', 'black'),

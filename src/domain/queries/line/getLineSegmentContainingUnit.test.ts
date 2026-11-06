@@ -1,10 +1,10 @@
-import type { UnitWithPlacement } from '@entities';
 import {
   coordinatesOfSegment,
   createBoardWithFacingRow,
   createBoardWithUnits,
   createTestUnit,
   getUnitByTrait,
+  placed,
 } from '@testing';
 import type { Trait } from '@ruleValues';
 
@@ -50,13 +50,10 @@ describe('getLineSegmentContainingUnit function', () => {
     const first = createTestUnit('black', { attack: 3, instanceNumber: 1 });
     const second = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const board = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: first },
-      { placement: { coordinate: 'E-6', facing: 'south' }, unit: second },
+      placed(first, 'E-5', 'north'),
+      placed(second, 'E-6', 'south'),
     ]);
-    const anchor: UnitWithPlacement = {
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit: first,
-    };
+    const anchor = placed(first, 'E-5', 'north');
 
     const segment = getLineSegmentContainingUnit(board, anchor, [], []);
 
@@ -79,15 +76,12 @@ describe('getLineSegmentContainingUnit function', () => {
     const enemy = createTestUnit('white', { attack: 3, instanceNumber: 1 });
     const beyond = createTestUnit('black', { attack: 3, instanceNumber: 3 });
     const board = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: first },
-      { placement: { coordinate: 'E-6', facing: 'north' }, unit: second },
-      { placement: { coordinate: 'E-7', facing: 'north' }, unit: enemy },
-      { placement: { coordinate: 'E-8', facing: 'north' }, unit: beyond },
+      placed(first, 'E-5', 'north'),
+      placed(second, 'E-6', 'north'),
+      placed(enemy, 'E-7', 'north'),
+      placed(beyond, 'E-8', 'north'),
     ]);
-    const anchor: UnitWithPlacement = {
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit: first,
-    };
+    const anchor = placed(first, 'E-5', 'north');
 
     const segment = getLineSegmentContainingUnit(board, anchor, [], []);
 
@@ -99,14 +93,11 @@ describe('getLineSegmentContainingUnit function', () => {
     const second = createTestUnit('black', { attack: 3, instanceNumber: 2 });
     const turned = createTestUnit('black', { attack: 3, instanceNumber: 3 });
     const board = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: first },
-      { placement: { coordinate: 'E-6', facing: 'north' }, unit: second },
-      { placement: { coordinate: 'E-7', facing: 'east' }, unit: turned },
+      placed(first, 'E-5', 'north'),
+      placed(second, 'E-6', 'north'),
+      placed(turned, 'E-7', 'east'),
     ]);
-    const anchor: UnitWithPlacement = {
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit: first,
-    };
+    const anchor = placed(first, 'E-5', 'north');
 
     const segment = getLineSegmentContainingUnit(board, anchor, [], []);
 
@@ -133,14 +124,11 @@ describe('getLineSegmentContainingUnit function', () => {
       unitType: withTrait,
     });
     const board = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: first },
-      { placement: { coordinate: 'E-6', facing: 'north' }, unit: second },
-      { placement: { coordinate: 'E-7', facing: 'north' }, unit: third },
+      placed(first, 'E-5', 'north'),
+      placed(second, 'E-6', 'north'),
+      placed(third, 'E-7', 'north'),
     ]);
-    const anchor: UnitWithPlacement = {
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit: first,
-    };
+    const anchor = placed(first, 'E-5', 'north');
 
     const segment = getLineSegmentContainingUnit(
       board,
@@ -167,13 +155,10 @@ describe('getLineSegmentContainingUnit function', () => {
       unitType: otherType,
     });
     const board = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit: first },
-      { placement: { coordinate: 'E-6', facing: 'north' }, unit: second },
+      placed(first, 'E-5', 'north'),
+      placed(second, 'E-6', 'north'),
     ]);
-    const anchor: UnitWithPlacement = {
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit: first,
-    };
+    const anchor = placed(first, 'E-5', 'north');
 
     const segment = getLineSegmentContainingUnit(
       board,

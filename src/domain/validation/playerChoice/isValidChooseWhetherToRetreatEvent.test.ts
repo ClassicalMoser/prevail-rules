@@ -1,4 +1,3 @@
-import type { ChooseWhetherToRetreatEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
   createFrontEngagementState,
@@ -10,7 +9,10 @@ import { updatePhaseState } from '@transforms';
 
 import { isValidChooseWhetherToRetreatEvent } from './isValidChooseWhetherToRetreatEvent';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createChooseWhetherToRetreatEvent,
+  createEmptyGameState,
+} from '@factories';
 /**
  * IsValidChooseWhetherToRetreatEvent: membership against
  * getLegalChooseWhetherToRetreatEvents.
@@ -38,13 +40,11 @@ describe('isValidChooseWhetherToRetreatEvent function', () => {
 
   it('accepts choosing to retreat', () => {
     const state = stateAwaitingWhetherToRetreat();
-    const event: ChooseWhetherToRetreatEvent = {
-      choiceType: 'chooseWhetherToRetreat',
+    const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
 
     expect(isValidChooseWhetherToRetreatEvent(event, state)).toStrictEqual({
       result: true,
@@ -53,13 +53,11 @@ describe('isValidChooseWhetherToRetreatEvent function', () => {
 
   it('accepts choosing not to retreat', () => {
     const state = stateAwaitingWhetherToRetreat();
-    const event: ChooseWhetherToRetreatEvent = {
-      choiceType: 'chooseWhetherToRetreat',
+    const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: false,
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
 
     expect(isValidChooseWhetherToRetreatEvent(event, state)).toStrictEqual({
       result: true,
@@ -68,13 +66,11 @@ describe('isValidChooseWhetherToRetreatEvent function', () => {
 
   it('rejects the wrong player', () => {
     const state = stateAwaitingWhetherToRetreat();
-    const event: ChooseWhetherToRetreatEvent = {
-      choiceType: 'chooseWhetherToRetreat',
+    const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
-    };
+    });
 
     expect(isValidChooseWhetherToRetreatEvent(event, state).result).toBe(false);
   });
@@ -84,13 +80,11 @@ describe('isValidChooseWhetherToRetreatEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    const event: ChooseWhetherToRetreatEvent = {
-      choiceType: 'chooseWhetherToRetreat',
+    const event = createChooseWhetherToRetreatEvent({
       choosesToRetreat: true,
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
 
     expect(isValidChooseWhetherToRetreatEvent(event, state).result).toBe(false);
   });

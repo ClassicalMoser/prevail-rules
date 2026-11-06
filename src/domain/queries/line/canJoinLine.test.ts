@@ -5,6 +5,7 @@ import {
   createBoardWithUnits,
   createTestUnit,
   getUnitByTrait,
+  placed,
 } from '@testing';
 import type { Trait } from '@ruleValues';
 
@@ -18,12 +19,7 @@ const oppositeFacing = getOppositeFacing(lineFacing);
  * Board with one unit at the coordinate under test.
  */
 function boardWithOccupant(unit: UnitInstance, facing: UnitFacing) {
-  const board = createBoardWithUnits([
-    {
-      placement: { coordinate, facing },
-      unit,
-    },
-  ]);
+  const board = createBoardWithUnits([placed(unit, coordinate, facing)]);
   return board;
 }
 

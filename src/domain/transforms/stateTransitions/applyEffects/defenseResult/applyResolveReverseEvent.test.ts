@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -14,6 +13,7 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
@@ -29,13 +29,7 @@ describe('applyResolveReverseEvent function', () => {
   function createStateWithRangedAttackReverse(): GameState {
     const state = createEmptyGameState('standard');
     const reversingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: reversingUnit,
-    };
+    const unitWithPlacement = placed(reversingUnit, 'E-5', 'north');
 
     const stateWithUnit = {
       ...state,
@@ -66,21 +60,13 @@ describe('applyResolveReverseEvent function', () => {
     const opponentPlayer = reversingPlayer === 'white' ? 'black' : 'white';
     const opponentUnit = createTestUnit(opponentPlayer, { attack: 2 });
 
-    const reversingUnitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: reversingUnit,
-    };
+    const reversingUnitWithPlacement = placed(reversingUnit, 'E-5', 'north');
     // Opponent was at E-5 but has already retreated/routed to a different coordinate
-    const opponentUnitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-4',
-        facing: 'south',
-      },
-      unit: opponentUnit, // Moved away after retreat/rout
-    };
+    const opponentUnitWithPlacement = placed(
+      opponentUnit, // Moved away after retreat/rout
+      'E-4',
+      'south',
+    );
 
     // Only the reversing unit is on the board (opponent has already retreated/routed)
     const stateWithUnit = {
@@ -120,13 +106,11 @@ describe('applyResolveReverseEvent function', () => {
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'south',
-        },
-        unit: reverseState.reversingUnit.unit,
-      };
+      const newPlacement = placed(
+        reverseState.reversingUnit.unit,
+        'E-5',
+        'south',
+      );
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
@@ -154,13 +138,11 @@ describe('applyResolveReverseEvent function', () => {
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'south',
-        },
-        unit: reverseState.reversingUnit.unit,
-      };
+      const newPlacement = placed(
+        reverseState.reversingUnit.unit,
+        'E-5',
+        'south',
+      );
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
@@ -191,22 +173,17 @@ describe('applyResolveReverseEvent function', () => {
       const otherUnit = createTestUnit('black', { attack: 2 });
       const stateWithOtherUnit = {
         ...state,
-        boardState: addUnitToBoard(state.boardState, {
-          placement: {
-            coordinate: 'D-5',
-            facing: 'north',
-          },
-          unit: otherUnit,
-        }),
+        boardState: addUnitToBoard(
+          state.boardState,
+          placed(otherUnit, 'D-5', 'north'),
+        ),
       };
 
-      const newPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'south',
-        },
-        unit: reverseState.reversingUnit.unit,
-      };
+      const newPlacement = placed(
+        reverseState.reversingUnit.unit,
+        'E-5',
+        'south',
+      );
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
@@ -234,13 +211,11 @@ describe('applyResolveReverseEvent function', () => {
       const attackApplyState = getAttackApplyStateFromMelee(state, 'black');
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'south',
-        },
-        unit: reverseState.reversingUnit.unit,
-      };
+      const newPlacement = placed(
+        reverseState.reversingUnit.unit,
+        'E-5',
+        'south',
+      );
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'melee',
@@ -273,13 +248,11 @@ describe('applyResolveReverseEvent function', () => {
       const attackApplyState = getAttackApplyStateFromMelee(state, 'white');
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'east',
-        },
-        unit: reverseState.reversingUnit.unit,
-      };
+      const newPlacement = placed(
+        reverseState.reversingUnit.unit,
+        'E-5',
+        'east',
+      );
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'melee',
@@ -313,13 +286,11 @@ describe('applyResolveReverseEvent function', () => {
       const originalCompleted = reverseState.completed;
       const originalBoardState = state.boardState;
 
-      const newPlacement: UnitWithPlacement = {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'south',
-        },
-        unit: reverseState.reversingUnit.unit,
-      };
+      const newPlacement = placed(
+        reverseState.reversingUnit.unit,
+        'E-5',
+        'south',
+      );
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',

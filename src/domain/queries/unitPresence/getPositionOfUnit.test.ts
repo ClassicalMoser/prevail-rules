@@ -3,6 +3,7 @@ import {
   createBoardWithEngagedUnits,
   createBoardWithUnits,
   createTestUnit,
+  placed,
 } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
 
@@ -17,9 +18,7 @@ describe('getPositionOfUnit function', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: Coordinate = 'E-5';
       const facing = 'north';
-      const board = createBoardWithUnits([
-        { placement: { coordinate, facing }, unit },
-      ]);
+      const board = createBoardWithUnits([placed(unit, coordinate, facing)]);
 
       const placement = getPositionOfUnit(board, unit);
 
@@ -31,9 +30,7 @@ describe('getPositionOfUnit function', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: Coordinate = 'E-5';
       const facing = 'southEast';
-      const board = createBoardWithUnits([
-        { placement: { coordinate, facing }, unit },
-      ]);
+      const board = createBoardWithUnits([placed(unit, coordinate, facing)]);
 
       const placement = getPositionOfUnit(board, unit);
 
@@ -44,9 +41,7 @@ describe('getPositionOfUnit function', () => {
     it('returns the coordinate the unit was placed on', () => {
       const unit = createTestUnit('black', { attack: 3 });
       const coordinate: Coordinate = 'A-1';
-      const board = createBoardWithUnits([
-        { placement: { coordinate, facing: 'north' }, unit },
-      ]);
+      const board = createBoardWithUnits([placed(unit, coordinate, 'north')]);
 
       const placement = getPositionOfUnit(board, unit);
 
@@ -123,9 +118,7 @@ describe('getPositionOfUnit function', () => {
     it('throws when a same-side unit with a different instance number is the one on the board', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 2 });
-      const board = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit2 },
-      ]);
+      const board = createBoardWithUnits([placed(unit2, 'E-5', 'north')]);
 
       expect(() => {
         getPositionOfUnit(board, unit1);
@@ -136,9 +129,7 @@ describe('getPositionOfUnit function', () => {
   describe('value-based comparison', () => {
     it('returns the placement when a different object has the same side, type, and instance number', () => {
       const unit1 = createTestUnit('black', { attack: 3, instanceNumber: 1 });
-      const board = createBoardWithUnits([
-        { placement: { coordinate: 'E-5', facing: 'north' }, unit: unit1 },
-      ]);
+      const board = createBoardWithUnits([placed(unit1, 'E-5', 'north')]);
 
       // Create a new unit instance with same properties (different reference)
       const unit2 = createTestUnit('black', { attack: 3, instanceNumber: 1 });

@@ -1,4 +1,4 @@
-import type { StatModifier, UnitWithPlacement } from '@entities';
+import type { StatModifier } from '@entities';
 import type { Commitment, GameState } from '@game';
 import {
   createBoardWithCommander,
@@ -8,6 +8,7 @@ import {
   createTestCard,
   createUnitByStat,
   createUnitWithPlacement,
+  placed,
 } from '@testing';
 import {
   addUnitToBoard,
@@ -44,13 +45,11 @@ function buildStateWithFrontEngagement(options: {
     ...front,
     engagingUnit: createUnitByStat('black', 'speed', options.engagingSpeed),
   };
-  const defenderWithPlacement: UnitWithPlacement = {
-    placement: {
-      coordinate: engagementState.targetPlacement.coordinate,
-      facing: 'south',
-    },
-    unit: defender,
-  };
+  const defenderWithPlacement = placed(
+    defender,
+    engagementState.targetPlacement.coordinate,
+    'south',
+  );
   const withBoard = {
     ...state,
     boardState: addUnitToBoard(state.boardState, defenderWithPlacement),

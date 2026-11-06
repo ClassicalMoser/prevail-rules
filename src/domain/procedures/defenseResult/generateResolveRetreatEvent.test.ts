@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import {
@@ -9,6 +8,7 @@ import {
   createResolveMeleePhaseState,
   createRetreatState,
   createTestUnit,
+  placed,
 } from '@testing';
 import {
   addUnitToBoard,
@@ -34,13 +34,7 @@ describe('generateResolveRetreatEvent function', () => {
   it('given ranged attack-apply with retreat substep and E-6 south final, event carries that placement', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
+    const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
@@ -73,20 +67,8 @@ describe('generateResolveRetreatEvent function', () => {
     );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
+    const whiteWp = placed(whiteUnit, 'E-5', 'north');
+    const blackWp = placed(blackUnit, 'E-5', 'south');
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
 
@@ -135,13 +117,7 @@ describe('generateResolveRetreatEvent function', () => {
   it('given ranged apply with retreat substep but no finalPosition yet, still emits with undefined placement', () => {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
+    const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),

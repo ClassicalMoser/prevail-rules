@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
@@ -9,6 +8,7 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
+  placed,
 } from '@testing';
 import {
   addUnitToBoard,
@@ -28,13 +28,7 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
   function stateWithRangedRetreat(): GameState {
     const state = createEmptyGameState('standard');
     const retreatingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
+    const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
@@ -61,20 +55,8 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
         attack: 2,
       },
     );
-    const retreatingWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: retreatingUnit,
-    };
-    const otherWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: otherUnit,
-    };
+    const retreatingWp = placed(retreatingUnit, 'E-5', 'north');
+    const otherWp = placed(otherUnit, 'E-5', 'south');
     let s = {
       ...state,
       boardState: addUnitToBoard(state.boardState, retreatingWp),
@@ -118,20 +100,8 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     );
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
+    const whiteWp = placed(whiteUnit, 'E-5', 'north');
+    const blackWp = placed(blackUnit, 'E-5', 'south');
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
     const attackApply = createAttackApplyStateWithRetreat(whiteWp);

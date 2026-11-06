@@ -1,4 +1,4 @@
-import type { UnitPlacement, UnitWithPlacement } from '@entities';
+import type { UnitPlacement } from '@entities';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
   createAttackApplyStateWithRetreat,
@@ -8,6 +8,7 @@ import {
   createRangedAttackResolutionState,
   createRetreatState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
 
@@ -34,10 +35,7 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
   ) {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
-    const placement: UnitWithPlacement = {
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit,
-    };
+    const placement = placed(unit, 'E-5', 'north');
     const withUnit = {
       ...state,
       boardState: addUnitToBoard(state.boardState, placement),
@@ -97,10 +95,7 @@ describe('getLegalChooseRetreatOptionEvents function', () => {
   it('returns one event per option for a front-engagement nested retreat', () => {
     const state = createEmptyGameState('standard');
     const unit = createTestUnit('white');
-    const placement: UnitWithPlacement = {
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit,
-    };
+    const placement = placed(unit, 'E-5', 'north');
     const withUnit = {
       ...state,
       boardState: addUnitToBoard(state.boardState, placement),

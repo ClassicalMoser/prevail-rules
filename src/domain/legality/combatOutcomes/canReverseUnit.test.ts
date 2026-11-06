@@ -4,6 +4,7 @@ import {
   createGameStateWithEngagedUnits,
   createReverseState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updateBoardState } from '@transforms';
 
@@ -39,10 +40,7 @@ describe('canReverseUnit function', () => {
       'E-5',
       'north',
     );
-    const reverse = createReverseState({
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit: primary,
-    });
+    const reverse = createReverseState(placed(primary, 'E-5', 'north'));
 
     expect(canReverseUnit(reverse, state)).toBe(false);
   });
@@ -56,19 +54,15 @@ describe('canReverseUnit function', () => {
       'E-5',
       'north',
     );
-    const reverse = createReverseState({
-      placement: { coordinate: 'E-5', facing: 'south' },
-      unit: secondary,
-    });
+    const reverse = createReverseState(placed(secondary, 'E-5', 'south'));
 
     expect(canReverseUnit(reverse, state)).toBe(false);
   });
 
   it('throws when the reversing hex is empty', () => {
-    const reverse = createReverseState({
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit: createTestUnit('white', { attack: 2 }),
-    });
+    const reverse = createReverseState(
+      placed(createTestUnit('white', { attack: 2 }), 'E-5', 'north'),
+    );
 
     expect(() =>
       canReverseUnit(reverse, createEmptyGameState('standard')),

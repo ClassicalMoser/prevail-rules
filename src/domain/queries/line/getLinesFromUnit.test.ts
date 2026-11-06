@@ -1,9 +1,9 @@
-import type { UnitWithPlacement } from '@entities';
 import {
   coordinatesOfLines,
   createBoardWithFacingRow,
   createBoardWithUnits,
   createTestUnit,
+  placed,
 } from '@testing';
 
 import { getLinesFromUnit } from './getLinesFromUnit';
@@ -15,13 +15,8 @@ import { getLinesFromUnit } from './getLinesFromUnit';
 describe('getLinesFromUnit function', () => {
   it('throws when the unit is not at the reported coordinate', () => {
     const unit = createTestUnit('black', { attack: 3 });
-    const board = createBoardWithUnits([
-      { placement: { coordinate: 'E-5', facing: 'north' }, unit },
-    ]);
-    const reportedElsewhere: UnitWithPlacement = {
-      placement: { coordinate: 'A-1', facing: 'north' },
-      unit,
-    };
+    const board = createBoardWithUnits([placed(unit, 'E-5', 'north')]);
+    const reportedElsewhere = placed(unit, 'A-1', 'north');
 
     expect(() => getLinesFromUnit(board, reportedElsewhere)).toThrow(
       'Unit is not at reported placement',

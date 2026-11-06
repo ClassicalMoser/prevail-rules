@@ -1,4 +1,4 @@
-import { createBoardWithSingleUnit, createTestUnit } from '@testing';
+import { createBoardWithSingleUnit, createTestUnit, placed } from '@testing';
 import { createEmptyStandardBoard } from '@factories';
 
 import { getSingleUnitWithPlacementAtCoordinate } from './getSingleUnitWithPlacementAtCoordinate';
@@ -29,10 +29,10 @@ describe('getSingleUnitWithPlacementAtCoordinate function', () => {
     const board = createBoardWithSingleUnit('E-5', 'white', {
       facing: 'south',
     });
-    const boardWithMultipleUnits = addUnitToBoard(board, {
-      placement: { coordinate: 'E-5', facing: 'north' },
-      unit: createTestUnit('black', { attack: 3 }),
-    });
+    const boardWithMultipleUnits = addUnitToBoard(
+      board,
+      placed(createTestUnit('black', { attack: 3 }), 'E-5', 'north'),
+    );
     expect(() =>
       getSingleUnitWithPlacementAtCoordinate(boardWithMultipleUnits, 'E-5'),
     ).toThrow('Expected exactly one unit at coordinate');

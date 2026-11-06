@@ -1,5 +1,5 @@
 import { MIN_FLEXIBILITY_THRESHOLD } from '@ruleValues';
-import { createGameState, createTestUnit } from '@testing';
+import { createGameState, createTestUnit, placed } from '@testing';
 import { addUnitToBoard } from '@transforms';
 import { createEmptyStandardBoard, createEmptyGameState } from '@factories';
 
@@ -57,29 +57,24 @@ describe('checkDiagonalMove function', () => {
       let board = createEmptyStandardBoard();
 
       // Add engaged units at D-5 (first unit, then second with opposite facing creates engagement)
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'D-5',
-          facing: 'north',
-        },
-        unit: createTestUnit('black', { speed: 2 }),
-      });
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'D-5',
-          facing: 'south',
-        },
-        unit: createTestUnit('white', { speed: 2 }),
-      });
+      board = addUnitToBoard(
+        board,
+        placed(createTestUnit('black', { speed: 2 }), 'D-5', 'north'),
+      );
+      board = addUnitToBoard(
+        board,
+        placed(createTestUnit('white', { speed: 2 }), 'D-5', 'south'),
+      );
 
       // Add unit under test at E-5
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'northEast',
-        },
-        unit: createTestUnit('black', { instanceNumber: 3, speed: 2 }),
-      });
+      board = addUnitToBoard(
+        board,
+        placed(
+          createTestUnit('black', { instanceNumber: 3, speed: 2 }),
+          'E-5',
+          'northEast',
+        ),
+      );
 
       const gameState = createEmptyGameState('standard');
       gameState.boardState = board;
@@ -93,45 +88,42 @@ describe('checkDiagonalMove function', () => {
       let board = createEmptyStandardBoard();
 
       // Add engaged units at D-5 (first unit, then second with opposite facing creates engagement)
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'D-5',
-          facing: 'north',
-        },
-        unit: createTestUnit('black', { speed: 2 }),
-      });
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'D-5',
-          facing: 'south',
-        },
-        unit: createTestUnit('white', { speed: 2 }),
-      });
+      board = addUnitToBoard(
+        board,
+        placed(createTestUnit('black', { speed: 2 }), 'D-5', 'north'),
+      );
+      board = addUnitToBoard(
+        board,
+        placed(createTestUnit('white', { speed: 2 }), 'D-5', 'south'),
+      );
 
       // Add engaged units at E-6
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'E-6',
-          facing: 'north',
-        },
-        unit: createTestUnit('black', { instanceNumber: 2, speed: 2 }),
-      });
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'E-6',
-          facing: 'south',
-        },
-        unit: createTestUnit('white', { instanceNumber: 2, speed: 2 }),
-      });
+      board = addUnitToBoard(
+        board,
+        placed(
+          createTestUnit('black', { instanceNumber: 2, speed: 2 }),
+          'E-6',
+          'north',
+        ),
+      );
+      board = addUnitToBoard(
+        board,
+        placed(
+          createTestUnit('white', { instanceNumber: 2, speed: 2 }),
+          'E-6',
+          'south',
+        ),
+      );
 
       // Add unit under test at E-5
-      board = addUnitToBoard(board, {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'northEast',
-        },
-        unit: createTestUnit('black', { instanceNumber: 3, speed: 2 }),
-      });
+      board = addUnitToBoard(
+        board,
+        placed(
+          createTestUnit('black', { instanceNumber: 3, speed: 2 }),
+          'E-5',
+          'northEast',
+        ),
+      );
 
       const gameState = createEmptyGameState('standard');
       gameState.boardState = board;

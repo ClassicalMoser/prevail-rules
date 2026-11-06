@@ -1,4 +1,3 @@
-import type { IssueCommandEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
@@ -15,7 +14,7 @@ import {
 
 import { isValidIssueCommandEvent } from './isValidIssueCommandEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createIssueCommandEvent } from '@factories';
 /**
  * IsValidIssueCommandEvent: remaining command + restriction integrity.
  */
@@ -55,14 +54,12 @@ describe('isValidIssueCommandEvent function', () => {
       size: 'units' as const,
     };
     const { state, unit } = stateReadyToIssue(command);
-    const event: IssueCommandEvent = {
-      choiceType: 'issueCommand',
+    const event = createIssueCommandEvent({
       command,
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       units: [unit.unit],
-    };
+    });
 
     expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
       result: true,
@@ -90,14 +87,12 @@ describe('isValidIssueCommandEvent function', () => {
       state,
       addUnitToBoard(state.boardState, other),
     );
-    const event: IssueCommandEvent = {
-      choiceType: 'issueCommand',
+    const event = createIssueCommandEvent({
       command,
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       units: [unit.unit],
-    };
+    });
 
     expect(isValidIssueCommandEvent(event, withSecond)).toStrictEqual({
       result: true,
@@ -125,14 +120,12 @@ describe('isValidIssueCommandEvent function', () => {
       state,
       addUnitToBoard(state.boardState, other),
     );
-    const event: IssueCommandEvent = {
-      choiceType: 'issueCommand',
+    const event = createIssueCommandEvent({
       command,
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       units: [unit.unit, other.unit],
-    };
+    });
 
     expect(isValidIssueCommandEvent(event, withSecond)).toStrictEqual({
       errorReason: 'Expected 1..1 units, got 2',
@@ -151,14 +144,12 @@ describe('isValidIssueCommandEvent function', () => {
       size: 'units' as const,
     };
     const { state } = stateReadyToIssue(command);
-    const event: IssueCommandEvent = {
-      choiceType: 'issueCommand',
+    const event = createIssueCommandEvent({
       command,
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       units: [],
-    };
+    });
 
     expect(isValidIssueCommandEvent(event, state)).toStrictEqual({
       errorReason: 'Expected 1..6 units, got 0',
@@ -192,14 +183,12 @@ describe('isValidIssueCommandEvent function', () => {
         step: 'firstPlayerIssueCommands',
       }),
     );
-    const event: IssueCommandEvent = {
-      choiceType: 'issueCommand',
+    const event = createIssueCommandEvent({
       command,
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       units: [far.unit],
-    };
+    });
 
     expect(isValidIssueCommandEvent(event, state).result).toBe(false);
   });
@@ -215,14 +204,12 @@ describe('isValidIssueCommandEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    const event: IssueCommandEvent = {
-      choiceType: 'issueCommand',
+    const event = createIssueCommandEvent({
       command,
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'black',
       units: [unit.unit],
-    };
+    });
 
     expect(isValidIssueCommandEvent(event, state).result).toBe(false);
   });

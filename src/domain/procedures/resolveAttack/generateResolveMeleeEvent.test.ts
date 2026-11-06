@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
@@ -7,6 +6,7 @@ import {
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
 
@@ -27,20 +27,8 @@ describe('generateResolveMeleeEvent function', () => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { unitType: spearmenType });
     const blackUnit = createTestUnit('black', { unitType: spearmenType });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
+    const whiteWp = placed(whiteUnit, 'E-5', 'north');
+    const blackWp = placed(blackUnit, 'E-5', 'south');
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
     const phase = createResolveMeleePhaseState(s);
@@ -51,20 +39,8 @@ describe('generateResolveMeleeEvent function', () => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { unitType: equites });
     const blackUnit = createTestUnit('black', { unitType: equites });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
+    const whiteWp = placed(whiteUnit, 'E-5', 'north');
+    const blackWp = placed(blackUnit, 'E-5', 'south');
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
     const phase = createResolveMeleePhaseState(s);
@@ -91,20 +67,8 @@ describe('generateResolveMeleeEvent function', () => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
+    const whiteWp = placed(whiteUnit, 'E-5', 'north');
+    const blackWp = placed(blackUnit, 'E-5', 'south');
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
     const melee = createMeleeResolutionState(s, {
@@ -133,13 +97,7 @@ describe('generateResolveMeleeEvent function', () => {
   it('given only white on E-5 in resolveMelee phase, throws units not found on board', () => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
-    const whiteWp: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
+    const whiteWp = placed(whiteUnit, 'E-5', 'north');
     const s = {
       ...state,
       boardState: addUnitToBoard(state.boardState, whiteWp),

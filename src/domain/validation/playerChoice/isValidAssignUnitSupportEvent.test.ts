@@ -1,7 +1,6 @@
-import type { AssignUnitSupportEvent } from '@events';
 import { CLEANUP_PHASE } from '@game';
 import { alaeSocii, manipularLegion } from '@sampleValues';
-import { createTestCard, createTestUnit } from '@testing';
+import { createTestCard, createTestUnit, placed } from '@testing';
 import {
   addUnitToBoard,
   updateBoardState,
@@ -11,7 +10,7 @@ import {
 
 import { isValidAssignUnitSupportEvent } from './isValidAssignUnitSupportEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createAssignUnitSupportEvent, createEmptyGameState } from '@factories';
 
 function awaitingSupportState() {
   const base = updateCurrentInitiative(
@@ -30,17 +29,11 @@ function awaitingSupportState() {
   base.cardState.white.inHand = [card];
   let withBoard = updateBoardState(
     base,
-    addUnitToBoard(base.boardState, {
-      placement: { coordinate: 'E-5', facing: 'south' },
-      unit,
-    }),
+    addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
   );
   withBoard = updateBoardState(
     withBoard,
-    addUnitToBoard(withBoard.boardState, {
-      placement: { coordinate: 'E-6', facing: 'south' },
-      unit: other,
-    }),
+    addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
   );
   const state = updatePhaseState(withBoard, {
     firstPlayerRallyResolutionState: {
@@ -60,19 +53,17 @@ function awaitingSupportState() {
 describe('isValidAssignUnitSupportEvent function', () => {
   it('given empty assignments while a slot could cover a unit, is invalid (not maximal)', () => {
     const { state } = awaitingSupportState();
-    const event: AssignUnitSupportEvent = {
+    const event = createAssignUnitSupportEvent({
       assignments: [],
-      choiceType: 'assignUnitSupport',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
   });
 
   it('given covering every unit a pool can cover, leaving uncoverable units, is valid', () => {
     const { state, unit } = awaitingSupportState();
-    const event: AssignUnitSupportEvent = {
+    const event = createAssignUnitSupportEvent({
       assignments: [
         {
           unitSupport: {
@@ -83,11 +74,9 @@ describe('isValidAssignUnitSupportEvent function', () => {
           units: [unit],
         },
       ],
-      choiceType: 'assignUnitSupport',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
   });
 
@@ -102,10 +91,7 @@ describe('isValidAssignUnitSupportEvent function', () => {
     ];
     const withBoard = updateBoardState(
       base,
-      addUnitToBoard(base.boardState, {
-        placement: { coordinate: 'E-5', facing: 'south' },
-        unit,
-      }),
+      addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
     );
     const state = updatePhaseState(withBoard, {
       firstPlayerRallyResolutionState: {
@@ -119,13 +105,11 @@ describe('isValidAssignUnitSupportEvent function', () => {
       secondPlayerRallyResolutionState: 'pending',
       step: 'firstPlayerResolveRally',
     });
-    const event: AssignUnitSupportEvent = {
+    const event = createAssignUnitSupportEvent({
       assignments: [],
-      choiceType: 'assignUnitSupport',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
   });
 
@@ -142,17 +126,11 @@ describe('isValidAssignUnitSupportEvent function', () => {
     base.cardState.white.inHand = [card];
     let withBoard = updateBoardState(
       base,
-      addUnitToBoard(base.boardState, {
-        placement: { coordinate: 'E-5', facing: 'south' },
-        unit,
-      }),
+      addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
     );
     withBoard = updateBoardState(
       withBoard,
-      addUnitToBoard(withBoard.boardState, {
-        placement: { coordinate: 'E-6', facing: 'south' },
-        unit: other,
-      }),
+      addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
     );
     const state = updatePhaseState(withBoard, {
       firstPlayerRallyResolutionState: {
@@ -166,13 +144,11 @@ describe('isValidAssignUnitSupportEvent function', () => {
       secondPlayerRallyResolutionState: 'pending',
       step: 'firstPlayerResolveRally',
     });
-    const event: AssignUnitSupportEvent = {
+    const event = createAssignUnitSupportEvent({
       assignments: [],
-      choiceType: 'assignUnitSupport',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
   });
 
@@ -189,17 +165,11 @@ describe('isValidAssignUnitSupportEvent function', () => {
     base.cardState.white.inHand = [card];
     let withBoard = updateBoardState(
       base,
-      addUnitToBoard(base.boardState, {
-        placement: { coordinate: 'E-5', facing: 'south' },
-        unit,
-      }),
+      addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
     );
     withBoard = updateBoardState(
       withBoard,
-      addUnitToBoard(withBoard.boardState, {
-        placement: { coordinate: 'E-6', facing: 'south' },
-        unit: other,
-      }),
+      addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
     );
     const state = updatePhaseState(withBoard, {
       firstPlayerRallyResolutionState: {
@@ -213,18 +183,16 @@ describe('isValidAssignUnitSupportEvent function', () => {
       secondPlayerRallyResolutionState: 'pending',
       step: 'firstPlayerResolveRally',
     });
-    const event: AssignUnitSupportEvent = {
+    const event = createAssignUnitSupportEvent({
       assignments: [
         {
           unitSupport: { count: 1, supportType: 'generic' },
           units: [unit],
         },
       ],
-      choiceType: 'assignUnitSupport',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
   });
 
@@ -241,17 +209,11 @@ describe('isValidAssignUnitSupportEvent function', () => {
     base.cardState.white.inHand = [card];
     let withBoard = updateBoardState(
       base,
-      addUnitToBoard(base.boardState, {
-        placement: { coordinate: 'E-5', facing: 'south' },
-        unit,
-      }),
+      addUnitToBoard(base.boardState, placed(unit, 'E-5', 'south')),
     );
     withBoard = updateBoardState(
       withBoard,
-      addUnitToBoard(withBoard.boardState, {
-        placement: { coordinate: 'E-6', facing: 'south' },
-        unit: other,
-      }),
+      addUnitToBoard(withBoard.boardState, placed(other, 'E-6', 'south')),
     );
     const state = updatePhaseState(withBoard, {
       firstPlayerRallyResolutionState: {
@@ -265,24 +227,22 @@ describe('isValidAssignUnitSupportEvent function', () => {
       secondPlayerRallyResolutionState: 'pending',
       step: 'firstPlayerResolveRally',
     });
-    const event: AssignUnitSupportEvent = {
+    const event = createAssignUnitSupportEvent({
       assignments: [
         {
           unitSupport: { count: 1, supportType: 'generic' },
           units: [unit, other],
         },
       ],
-      choiceType: 'assignUnitSupport',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
   });
 
   it('given unit that does not match support type, is invalid', () => {
     const { other, state, unit } = awaitingSupportState();
-    const event: AssignUnitSupportEvent = {
+    const event = createAssignUnitSupportEvent({
       assignments: [
         {
           unitSupport: {
@@ -293,11 +253,9 @@ describe('isValidAssignUnitSupportEvent function', () => {
           units: [other],
         },
       ],
-      choiceType: 'assignUnitSupport',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
   });
 
@@ -308,16 +266,14 @@ describe('isValidAssignUnitSupportEvent function', () => {
       supportType: 'unitType' as const,
       unitTypeId: unit.unitType.id,
     };
-    const event: AssignUnitSupportEvent = {
+    const event = createAssignUnitSupportEvent({
       assignments: [
         { unitSupport, units: [unit] },
         { unitSupport, units: [] },
       ],
-      choiceType: 'assignUnitSupport',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(false);
   });
 
@@ -357,17 +313,11 @@ describe('isValidAssignUnitSupportEvent function', () => {
     ];
     let withBoard = updateBoardState(
       base,
-      addUnitToBoard(base.boardState, {
-        placement: { coordinate: 'E-5', facing: 'south' },
-        unit: typed,
-      }),
+      addUnitToBoard(base.boardState, placed(typed, 'E-5', 'south')),
     );
     withBoard = updateBoardState(
       withBoard,
-      addUnitToBoard(withBoard.boardState, {
-        placement: { coordinate: 'E-6', facing: 'south' },
-        unit: traitOnly,
-      }),
+      addUnitToBoard(withBoard.boardState, placed(traitOnly, 'E-6', 'south')),
     );
     const state = updatePhaseState(withBoard, {
       firstPlayerRallyResolutionState: {
@@ -384,7 +334,7 @@ describe('isValidAssignUnitSupportEvent function', () => {
 
     // Burn trait on typed; leave type pool unused; traitOnly uncovered and
     // no remaining capacity matches them → legal but not globally optimal.
-    const event: AssignUnitSupportEvent = {
+    const event = createAssignUnitSupportEvent({
       assignments: [
         {
           unitSupport: {
@@ -395,22 +345,18 @@ describe('isValidAssignUnitSupportEvent function', () => {
           units: [typed],
         },
       ],
-      choiceType: 'assignUnitSupport',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
     expect(isValidAssignUnitSupportEvent(event, state).result).toBe(true);
   });
 
   it('given wrong phase, is invalid', () => {
-    const event: AssignUnitSupportEvent = {
+    const event = createAssignUnitSupportEvent({
       assignments: [],
-      choiceType: 'assignUnitSupport',
       eventNumber: 0,
-      eventType: 'playerChoice',
       player: 'white',
-    };
+    });
     expect(
       isValidAssignUnitSupportEvent(event, createEmptyGameState('standard'))
         .result,

@@ -1,4 +1,3 @@
-import type { UnitWithPlacement } from '@entities';
 import type { ResolveRoutEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -19,13 +18,14 @@ import {
   createResolveMeleePhaseState,
   createRoutState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone, throwIfPending } from '@utils';
 
 import { applyResolveRoutEvent } from './applyResolveRoutEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createUnitPlacement } from '@factories';
 /**
  * Writes `numberToDiscard` (and related rout bookkeeping) onto the active rout substep for
  * the matching source: ranged/melee apply, cleanup rally, or rear engagement under movement.
@@ -35,13 +35,7 @@ describe('applyResolveRoutEvent function', () => {
   function createStateWithRangedAttackRout(): GameState {
     const state = createEmptyGameState('standard');
     const routedUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: routedUnit,
-    };
+    const unitWithPlacement = placed(routedUnit, 'E-5', 'north');
 
     const stateWithUnit = {
       ...state,
@@ -70,20 +64,8 @@ describe('applyResolveRoutEvent function', () => {
       { attack: 2 },
     );
 
-    const routedUnitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: routedUnit,
-    };
-    const otherUnitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: otherUnit,
-    };
+    const routedUnitWithPlacement = placed(routedUnit, 'E-5', 'north');
+    const otherUnitWithPlacement = placed(otherUnit, 'E-5', 'south');
 
     let stateWithUnits = {
       ...state,
@@ -132,22 +114,10 @@ describe('applyResolveRoutEvent function', () => {
         },
         engagingUnit: attacker,
         substepType: 'engagementResolution',
-        targetPlacement: {
-          coordinate: 'E-5',
-          facing: 'south',
-        },
+        targetPlacement: createUnitPlacement('E-5', 'south'),
       },
-      movingUnit: {
-        placement: {
-          coordinate: 'E-4',
-          facing: 'south',
-        },
-        unit: attacker,
-      },
-      targetPlacement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
+      movingUnit: placed(attacker, 'E-4', 'south'),
+      targetPlacement: createUnitPlacement('E-5', 'south'),
     });
     const phaseState = createIssueCommandsPhaseState(state, {
       currentCommandResolutionState: movement,

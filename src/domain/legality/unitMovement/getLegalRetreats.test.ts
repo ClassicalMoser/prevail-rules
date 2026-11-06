@@ -7,6 +7,7 @@ import {
   createGameStateWithSingleUnit,
   createTestUnit,
   createUnitWithPlacement,
+  placed,
 } from '@testing';
 import { addUnitToBoard } from '@transforms';
 
@@ -75,13 +76,7 @@ describe('getLegalRetreats function', () => {
         'west',
       );
 
-      const unitWithPlacement = {
-        placement: {
-          coordinate: 'G-8' as const,
-          facing: 'west' as const,
-        },
-        unit: primaryUnit,
-      };
+      const unitWithPlacement = placed(primaryUnit, 'G-8', 'west');
 
       const retreats = getLegalRetreats(unitWithPlacement, gameState);
       // Should only return retreats with minimum flexibility and speed
@@ -238,13 +233,7 @@ describe('getLegalRetreats function', () => {
     it('given an error when no unit is present at starting position, throws', () => {
       const gameState = createGameState([]);
       const unit = createTestUnit('black');
-      const unitWithPlacement = {
-        placement: {
-          coordinate: 'G-8' as const,
-          facing: 'west' as const,
-        },
-        unit,
-      };
+      const unitWithPlacement = placed(unit, 'G-8', 'west');
 
       expect(() => getLegalRetreats(unitWithPlacement, gameState)).toThrow(
         'No unit present at starting position',
@@ -263,13 +252,7 @@ describe('getLegalRetreats function', () => {
 
       // Create a different unit instance
       const differentUnit = createTestUnit('black', { instanceNumber: 999 });
-      const unitWithPlacement = {
-        placement: {
-          coordinate: 'G-8' as const,
-          facing: 'west' as const,
-        },
-        unit: differentUnit,
-      };
+      const unitWithPlacement = placed(differentUnit, 'G-8', 'west');
 
       expect(() => getLegalRetreats(unitWithPlacement, gameState)).toThrow(
         'Unit is not present at the starting position',
@@ -285,16 +268,11 @@ describe('getLegalRetreats function', () => {
         'G-8',
         'west',
       );
-      const unitWithPlacement = {
-        placement: {
-          coordinate: 'G-8' as const,
-          facing: 'east' as const,
-        },
-        unit: {
-          ...secondaryUnit,
-          instanceNumber: secondaryUnit.instanceNumber + 1,
-        },
+      const absentSecondary = {
+        ...secondaryUnit,
+        instanceNumber: secondaryUnit.instanceNumber + 1,
       };
+      const unitWithPlacement = placed(absentSecondary, 'G-8', 'east');
       expect(() => getLegalRetreats(unitWithPlacement, gameState)).toThrow(
         'Unit is not present at the starting position',
       );
@@ -312,17 +290,11 @@ describe('getLegalRetreats function', () => {
       if (!unit) {
         throw new Error('Unit not found');
       }
-      const otherUnitWithPlacement = {
-        ...unit,
-        placement: {
-          coordinate: 'G-8' as const,
-          facing: 'west' as const,
-        },
-        unit: {
-          ...unit.unit,
-          instanceNumber: unit.unit.instanceNumber + 1,
-        },
+      const absentInstance = {
+        ...unit.unit,
+        instanceNumber: unit.unit.instanceNumber + 1,
       };
+      const otherUnitWithPlacement = placed(absentInstance, 'G-8', 'west');
       expect(() => getLegalRetreats(otherUnitWithPlacement, gameState)).toThrow(
         'Unit is not present at the starting position',
       );
@@ -338,13 +310,7 @@ describe('getLegalRetreats function', () => {
         'west',
       );
 
-      const unitWithPlacement = {
-        placement: {
-          coordinate: 'G-8' as const,
-          facing: 'north' as const,
-        },
-        unit: primaryUnit,
-      };
+      const unitWithPlacement = placed(primaryUnit, 'G-8', 'north');
 
       expect(() => getLegalRetreats(unitWithPlacement, gameState)).toThrow(
         'Unit facing mismatch',
@@ -364,13 +330,11 @@ describe('getLegalRetreats function', () => {
       );
 
       // Secondary unit faces opposite to primary (east)
-      const unitWithPlacement = {
-        placement: {
-          coordinate: 'G-8' as const,
-          facing: 'east' as const, // Opposite of west
-        },
-        unit: secondaryUnit,
-      };
+      const unitWithPlacement = placed(
+        secondaryUnit,
+        'G-8',
+        'east', // Opposite of west
+      );
 
       const retreats = getLegalRetreats(unitWithPlacement, gameState);
       // Secondary (white) faces east; backward is west — one minimal legal retreat from engaged G-8

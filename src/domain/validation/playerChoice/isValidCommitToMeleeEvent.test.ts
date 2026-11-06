@@ -1,4 +1,3 @@
-import type { CommitToMeleeEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
@@ -10,7 +9,7 @@ import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { isValidCommitToMeleeEvent } from './isValidCommitToMeleeEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createCommitToMeleeEvent, createEmptyGameState } from '@factories';
 /**
  * IsValidCommitToMeleeEvent: membership against getLegalCommitToMeleeEvents.
  */
@@ -42,14 +41,12 @@ describe('isValidCommitToMeleeEvent function', () => {
 
   it('accepts committing the in-hand card with all of its melee modifiers', () => {
     const state = stateWhitePendingCommit();
-    const event: CommitToMeleeEvent = {
-      choiceType: 'commitToMelee',
+    const event = createCommitToMeleeEvent({
       committedCard: tempCommandCards[0],
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: ['attack'],
       player: 'white',
-    };
+    });
 
     expect(isValidCommitToMeleeEvent(event, state)).toStrictEqual({
       result: true,
@@ -58,28 +55,24 @@ describe('isValidCommitToMeleeEvent function', () => {
 
   it('rejects committing with an empty modifier list', () => {
     const state = stateWhitePendingCommit();
-    const event: CommitToMeleeEvent = {
-      choiceType: 'commitToMelee',
+    const event = createCommitToMeleeEvent({
       committedCard: tempCommandCards[0],
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: [],
       player: 'white',
-    };
+    });
 
     expect(isValidCommitToMeleeEvent(event, state).result).toBe(false);
   });
 
   it('rejects a card that is not in hand', () => {
     const state = stateWhitePendingCommit();
-    const event: CommitToMeleeEvent = {
-      choiceType: 'commitToMelee',
+    const event = createCommitToMeleeEvent({
       committedCard: tempCommandCards[2],
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: ['attack'],
       player: 'white',
-    };
+    });
 
     expect(isValidCommitToMeleeEvent(event, state).result).toBe(false);
   });
@@ -89,28 +82,24 @@ describe('isValidCommitToMeleeEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    const event: CommitToMeleeEvent = {
-      choiceType: 'commitToMelee',
+    const event = createCommitToMeleeEvent({
       committedCard: tempCommandCards[0],
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: ['attack'],
       player: 'white',
-    };
+    });
 
     expect(isValidCommitToMeleeEvent(event, state).result).toBe(false);
   });
 
   it('accepts refusing the melee commitment', () => {
     const state = stateWhitePendingCommit();
-    const event: CommitToMeleeEvent = {
-      choiceType: 'commitToMelee',
+    const event = createCommitToMeleeEvent({
       committedCard: null,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: [],
       player: 'white',
-    };
+    });
 
     expect(isValidCommitToMeleeEvent(event, state)).toStrictEqual({
       result: true,

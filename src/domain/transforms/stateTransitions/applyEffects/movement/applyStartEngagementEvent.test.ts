@@ -7,12 +7,13 @@ import {
   createMovementResolutionState,
   createTestCard,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyStartEngagementEvent } from './applyStartEngagementEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createUnitPlacement } from '@factories';
 /**
  * When a move enters an enemy hex, this seeds `engagementState` on the movement CRS from the
  * procedure’s `engagementType` (front vs rear rout vs flank rotation pipeline).
@@ -27,29 +28,14 @@ describe('applyStartEngagementEvent function', () => {
     state.cardState.black.inPlay = createTestCard();
     const defendingUnit = createTestUnit('white');
     const blackMover = createTestUnit('black');
-    const defenderWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-6',
-        facing: 'south',
-      },
-      unit: defendingUnit,
-    };
+    const defenderWithPlacement = placed(defendingUnit, 'E-6', 'south');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, defenderWithPlacement),
     };
     const movement = createMovementResolutionState(withBoard, {
-      movingUnit: {
-        placement: {
-          coordinate: 'E-5',
-          facing: 'north',
-        },
-        unit: blackMover,
-      },
-      targetPlacement: {
-        coordinate: 'E-6',
-        facing: 'north',
-      },
+      movingUnit: placed(blackMover, 'E-5', 'north'),
+      targetPlacement: createUnitPlacement('E-6', 'north'),
     });
     const phase = createIssueCommandsPhaseState(withBoard, {
       currentCommandResolutionState: movement,

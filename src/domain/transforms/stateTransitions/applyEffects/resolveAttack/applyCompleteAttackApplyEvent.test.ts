@@ -1,4 +1,4 @@
-import type { AttackType, UnitWithPlacement } from '@entities';
+import type { AttackType } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -12,6 +12,7 @@ import {
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
+  placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfPending } from '@utils';
@@ -28,13 +29,7 @@ describe('applyCompleteAttackApplyEvent function', () => {
   function createStateWithRangedAttackApply(): GameState {
     const state = createEmptyGameState('standard');
     const defendingUnit = createTestUnit('white', { attack: 2 });
-    const unitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: defendingUnit,
-    };
+    const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
 
     const stateWithUnit = {
       ...state,
@@ -60,20 +55,8 @@ describe('applyCompleteAttackApplyEvent function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
 
-    const whiteUnitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'north',
-      },
-      unit: whiteUnit,
-    };
-    const blackUnitWithPlacement: UnitWithPlacement = {
-      placement: {
-        coordinate: 'E-5',
-        facing: 'south',
-      },
-      unit: blackUnit,
-    };
+    const whiteUnitWithPlacement = placed(whiteUnit, 'E-5', 'north');
+    const blackUnitWithPlacement = placed(blackUnit, 'E-5', 'south');
 
     let stateWithUnits = {
       ...state,

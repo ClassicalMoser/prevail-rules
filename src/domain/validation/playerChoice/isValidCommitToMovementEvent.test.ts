@@ -1,4 +1,3 @@
-import type { CommitToMovementEvent } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
 import {
@@ -10,7 +9,7 @@ import { updatePhaseState } from '@transforms';
 
 import { isValidCommitToMovementEvent } from './isValidCommitToMovementEvent';
 
-import { createEmptyGameState } from '@factories';
+import { createCommitToMovementEvent, createEmptyGameState } from '@factories';
 
 const moveCard = tempCommandCards[4];
 const strikeCard = tempCommandCards[0];
@@ -43,14 +42,12 @@ describe('isValidCommitToMovementEvent function', () => {
 
   it('accepts committing the in-hand card with all of its movement modifiers', () => {
     const state = stateBlackPendingCommit();
-    const event: CommitToMovementEvent = {
-      choiceType: 'commitToMovement',
+    const event = createCommitToMovementEvent({
       committedCard: moveCard,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: ['speed'],
       player: 'black',
-    };
+    });
 
     expect(isValidCommitToMovementEvent(event, state)).toStrictEqual({
       result: true,
@@ -59,14 +56,12 @@ describe('isValidCommitToMovementEvent function', () => {
 
   it('accepts refusing with null card and empty modifiers', () => {
     const state = stateBlackPendingCommit();
-    const event: CommitToMovementEvent = {
-      choiceType: 'commitToMovement',
+    const event = createCommitToMovementEvent({
       committedCard: null,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: [],
       player: 'black',
-    };
+    });
 
     expect(isValidCommitToMovementEvent(event, state)).toStrictEqual({
       result: true,
@@ -75,28 +70,24 @@ describe('isValidCommitToMovementEvent function', () => {
 
   it('rejects committing with an empty modifier list', () => {
     const state = stateBlackPendingCommit();
-    const event: CommitToMovementEvent = {
-      choiceType: 'commitToMovement',
+    const event = createCommitToMovementEvent({
       committedCard: moveCard,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: [],
       player: 'black',
-    };
+    });
 
     expect(isValidCommitToMovementEvent(event, state).result).toBe(false);
   });
 
   it('rejects a card that is not in hand', () => {
     const state = stateBlackPendingCommit();
-    const event: CommitToMovementEvent = {
-      choiceType: 'commitToMovement',
+    const event = createCommitToMovementEvent({
       committedCard: strikeCard,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: ['speed'],
       player: 'black',
-    };
+    });
 
     expect(isValidCommitToMovementEvent(event, state).result).toBe(false);
   });
@@ -106,14 +97,12 @@ describe('isValidCommitToMovementEvent function', () => {
       phase: PLAY_CARDS_PHASE,
       step: 'chooseCards',
     });
-    const event: CommitToMovementEvent = {
-      choiceType: 'commitToMovement',
+    const event = createCommitToMovementEvent({
       committedCard: moveCard,
       eventNumber: 0,
-      eventType: 'playerChoice',
       modifierTypes: ['speed'],
       player: 'black',
-    };
+    });
 
     expect(isValidCommitToMovementEvent(event, state).result).toBe(false);
   });

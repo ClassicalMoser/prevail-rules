@@ -13,7 +13,10 @@ import {
 
 import { isValidPerformRangedAttackEvent } from './isValidPerformRangedAttackEvent';
 
-import { createEmptyGameState } from '@factories';
+import {
+  createEmptyGameState,
+  createPerformRangedAttackEvent,
+} from '@factories';
 /**
  * IsValidPerformRangedAttackEvent: one attacker, one defender, supporters
  * that independently can hit that defender.
@@ -49,12 +52,11 @@ describe('isValidPerformRangedAttackEvent function', () => {
       'choiceType' | 'eventType' | 'eventNumber'
     >,
   ): PerformRangedAttackEvent {
-    return {
-      choiceType: 'performRangedAttack',
+    // Every case in this file is the first event of the round.
+    return createPerformRangedAttackEvent({
       eventNumber: 0,
-      eventType: 'playerChoice',
       ...partial,
-    };
+    });
   }
 
   it('accepts a sole attacker vs a legal defender with no supporters', () => {
