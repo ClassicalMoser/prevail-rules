@@ -1,4 +1,4 @@
-import type { CallGraph } from './callGraph';
+import type { CallGraph } from './callGraph/callGraph';
 
 /**
  * Whether any call path from one module arrives at another.

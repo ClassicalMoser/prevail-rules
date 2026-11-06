@@ -1,8 +1,8 @@
 import path from 'node:path';
-import type { CallGraph } from './callGraph';
+import type { CallGraph } from './callGraph/callGraph';
 import type { SelfProof } from './selfProof';
 import { reachesModule } from './reachesModule';
-import type { SourceTree } from './sourceTree';
+import type { SourceTree } from './sourceTree/sourceTree';
 
 /**
  * Finds the specs that prove themselves.

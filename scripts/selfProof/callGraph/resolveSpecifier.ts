@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { SourceTree } from './sourceTree';
+import type { SourceTree } from '../sourceTree/sourceTree';
 
 /**
  * Turns one import specifier into the file it loads.

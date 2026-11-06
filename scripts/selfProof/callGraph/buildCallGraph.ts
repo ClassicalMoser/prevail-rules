@@ -1,6 +1,6 @@
 import type { CallGraph } from './callGraph';
 import { findDeclaringModule } from './findDeclaringModule';
-import type { SourceTree } from './sourceTree';
+import type { SourceTree } from '../sourceTree/sourceTree';
 import { resolveSpecifier } from './resolveSpecifier';
 
 /**

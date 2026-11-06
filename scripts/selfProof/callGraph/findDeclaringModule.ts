@@ -1,4 +1,4 @@
-import type { SourceTree } from './sourceTree';
+import type { SourceTree } from '../sourceTree/sourceTree';
 import { resolveSpecifier } from './resolveSpecifier';
 
 /** Matches a value declaration of one name, which ends the search for it. */

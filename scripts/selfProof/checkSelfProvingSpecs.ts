@@ -1,7 +1,7 @@
 import path from 'node:path';
-import { buildCallGraph } from './buildCallGraph';
+import { buildCallGraph } from './callGraph/buildCallGraph';
 import type { CommandResult } from '../commandResult';
-import { readSourceTree } from './readSourceTree';
+import { readSourceTree } from './sourceTree/readSourceTree';
 import { reportSelfProofs } from './reportSelfProofs';
 import { selfProvingSpecs } from './selfProvingSpecs';
 

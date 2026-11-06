@@ -1,6 +1,6 @@
 import { glob, readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { boundaries } from '../../boundaries';
+import { boundaries } from '../../../boundaries';
 import type { ImportEdge } from './importEdge';
 import { readImportEdges } from './readImportEdges';
 import type { SourceTree } from './sourceTree';
