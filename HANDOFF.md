@@ -295,6 +295,37 @@ names in scope, and when two definitions look alike, say how they differ — two
 can agree everywhere except on `'miss'`, `'pending'`, or whether they throw.
 Duplicated **test** helpers are the exception: those get extracted, not marked.
 
+**Five commentary defects are already found, verified by reading the
+signature.** Each is a comment describing a parameter the function does not
+take, which is the one commentary failure that needs no judgment about voice:
+the doc is checkable against the code and disagrees with it. Mark them
+`TODO(misleading)` rather than correcting them — they are still authored text,
+and clearing a stale `@param` is a quick decision for the read rather than one
+for this pass.
+
+| Module                                                                 | The comment                                                   |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `expected/expectedEvent/composable/getExpectedReverseEvent.ts`         | `@param _gameState` — takes `reverseState` only               |
+| `transforms/.../completePhase/applyCompleteResolveMeleePhaseEvent.ts`  | `@param _event` — takes `state` only, and documents it second |
+| `procedures/resolveAttack/generateCompleteMeleeResolutionEvent.ts`     | `@param state` — takes `eventNumber` only                     |
+| `procedures/resolveAttack/generateCompleteRangedAttackCommandEvent.ts` | `@param state` — takes `eventNumber` only                     |
+| `legality/unitMovement/exploreUnitMoves.ts`                            | `MoveResult` documented with `@param`, not member JSDoc       |
+
+The first two are the worst of them, because neither merely names a parameter
+that is absent — each explains why it is there. `_gameState` is documented as
+"required for consistency, engagement check handled by caller", and `_event` as
+"present for `applyGameEffectEvent` dispatch". A reader trusts that and goes
+looking for a parameter the signature does not have.
+
+The last is a different defect with a practical cost: `@param` on an interface
+is the wrong tag, so none of `MoveResult`'s three members gets an IDE hover,
+which is the reason header JSDoc is required in the first place. Those belong
+inside the braces, where the in-body rule counts them.
+
+All four of the first kind sit in `expected`, `procedures` and `transforms` —
+scopes the read has not reached — and none is in a spec, since the specs carry
+no `@param` at all.
+
 Marks use the doc's three kinds, each naming what is wrong and what would settle
 it:
 

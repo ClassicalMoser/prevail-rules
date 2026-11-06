@@ -8,9 +8,9 @@ This is a rules engine for a board game, and the goal of the whole codebase is t
 
 So the test of any module is whether its gameplay reason is on the page. [`README.md`](./README.md) is the register to write in — "your hand represents your army's will to fight; when it's gone, the battle is over" — not the chain of states a lookup passes through.
 
-Models rarely comment enough, and never do without prompting. Readability is more important than optimization. But density only counts when the comments say something, and the thing they must say is what happens in the game and why the rules want it. `// Lower initiative value wins` earns its line; `// Get the adjacent spaces` above a call to `getAdjacentSpaces` does not. Read [`STYLE.md`](./STYLE.md) on commentary before writing any, and match the examples there. Judge only what you are about to write: commentary already in the file is authored, and you do not rewrite or remove it.
+Models rarely comment enough, and never do without prompting. Readability is more important than optimization. But density only counts when the comments say something, and the thing they must say is what happens in the game and why the rules want it. Where a step encodes a rule, name the rule; where it is mechanical, a short label is enough and no rule should be invented for it. Judging which is which is the work. Read [`STYLE.md`](./STYLE.md) on commentary before writing any. Judge only what you are about to write: commentary already in the file is authored, and you do not rewrite or remove it.
 
-Padding a body to raise a number is a failure, not a fix. But the remedy for a weak comment is a better one, not a deleted one: nearly every step here serves a rule, so if you cannot name the rule, leave a `TODO` mark saying what you could not state rather than leaving the step bare.
+Padding a body to raise a number is a failure, not a fix. But the remedy for a weak comment is a better one, not a deleted one: nearly every step here serves a rule. If you're struggling to place the rule, check call sites. If you can't answer it at all, leave a `TODO`.
 
 ## Two practices that make that happen
 
