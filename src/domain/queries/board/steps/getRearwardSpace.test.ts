@@ -1,4 +1,4 @@
-import type { Board, Coordinate, UnitFacing } from '@entities';
+import type { Board, UnitFacing } from '@entities';
 import { createEmptyStandardBoard } from '@factories';
 
 import { getRearwardSpace } from './getRearwardSpace';
@@ -79,18 +79,19 @@ describe('getRearwardSpace function', () => {
   });
 
   it('row beyond board edge is rejected', () => {
-    expect(() =>
-      getRearwardSpace(standardBoard, 'R-12' as Coordinate, 'north'),
-    ).toThrow(new Error('Invalid row: R'));
+    expect(() => getRearwardSpace(standardBoard, 'R-12', 'north')).toThrow(
+      new Error('Invalid row: R'),
+    );
   });
 
   it('column beyond board edge is rejected', () => {
-    expect(() =>
-      getRearwardSpace(standardBoard, 'A-19' as Coordinate, 'north'),
-    ).toThrow(new Error('Invalid column: 19'));
+    expect(() => getRearwardSpace(standardBoard, 'A-19', 'north')).toThrow(
+      new Error('Invalid column: 19'),
+    );
   });
 
   it('invalid facing is rejected', () => {
+    // 'random' is not a facing, so the cast is what reaches the rejection.
     expect(() =>
       getRearwardSpace(standardBoard, 'E-9', 'random' as UnitFacing),
     ).toThrow(new Error('Invalid facing: random'));

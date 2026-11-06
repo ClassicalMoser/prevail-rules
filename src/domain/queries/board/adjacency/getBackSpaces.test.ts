@@ -1,4 +1,4 @@
-import type { Coordinate, UnitFacing } from '@entities';
+import type { UnitFacing } from '@entities';
 import { createEmptyStandardBoard } from '@factories';
 
 import { getBackSpaces } from './getBackSpaces';
@@ -76,17 +76,15 @@ describe('getBackSpaces function', () => {
   });
 
   it('row beyond board edge is rejected', () => {
-    // Intentionally bad type cast to test error path
-    expect(() =>
-      getBackSpaces(standardBoard, 'R-12' as Coordinate, 'north'),
-    ).toThrow(new Error('Invalid row: R'));
+    expect(() => getBackSpaces(standardBoard, 'R-12', 'north')).toThrow(
+      new Error('Invalid row: R'),
+    );
   });
 
   it('column beyond board edge is rejected', () => {
-    // Intentionally bad type cast to test error path
-    expect(() =>
-      getBackSpaces(standardBoard, 'A-19' as Coordinate, 'north'),
-    ).toThrow(new Error('Invalid column: 19'));
+    expect(() => getBackSpaces(standardBoard, 'A-19', 'north')).toThrow(
+      new Error('Invalid column: 19'),
+    );
   });
 
   it('invalid facing is rejected', () => {

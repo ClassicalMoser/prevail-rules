@@ -15,6 +15,7 @@ describe('getOtherPlayer function', () => {
   });
 
   it('given invalid player side, throws', () => {
+    // 'invalid' is not a side, so the cast is what reaches the rejection.
     expect(() => getOtherPlayer('invalid' as PlayerSide)).toThrow(
       'Invalid player side: invalid',
     );

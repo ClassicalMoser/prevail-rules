@@ -20,6 +20,7 @@ describe('isDiagonalFacing function', () => {
   });
 
   it('an unknown facing is not a diagonal facing', () => {
+    // 'invalid' is not a facing. The cast is what lets the check see a value outside the eight.
     expect(isDiagonalFacing('invalid' as UnitFacing)).toStrictEqual({
       errorReason: 'Facing is not a diagonal facing',
       result: false,

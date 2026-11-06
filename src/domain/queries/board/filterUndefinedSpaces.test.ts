@@ -12,7 +12,7 @@ describe('filterUndefinedSpaces function', () => {
       'A-2',
       undefined,
       'A-3',
-    ]) as Set<Coordinate>;
+    ]);
     expect(filterUndefinedSpaces(spaces)).toStrictEqual(
       new Set(['A-1', 'A-2', 'A-3']),
     );

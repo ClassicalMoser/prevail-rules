@@ -109,24 +109,26 @@ describe('getForwardSpace function', () => {
     });
 
     it('a coordinate without a dash is rejected', () => {
+      // 'invalid' is not a coordinate, so the cast is what reaches the rejection.
       expect(() =>
         getForwardSpace(standardBoard, 'invalid' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid coordinate: invalid'));
     });
 
     it('row beyond board edge is rejected', () => {
-      expect(() =>
-        getForwardSpace(standardBoard, 'R-12' as Coordinate, 'north'),
-      ).toThrow(new Error('Invalid row: R'));
+      expect(() => getForwardSpace(standardBoard, 'R-12', 'north')).toThrow(
+        new Error('Invalid row: R'),
+      );
     });
 
     it('column beyond board edge is rejected', () => {
-      expect(() =>
-        getForwardSpace(standardBoard, 'A-19' as Coordinate, 'north'),
-      ).toThrow(new Error('Invalid column: 19'));
+      expect(() => getForwardSpace(standardBoard, 'A-19', 'north')).toThrow(
+        new Error('Invalid column: 19'),
+      );
     });
 
     it('invalid facing is rejected', () => {
+      // 'random' is not a facing, so the cast is what reaches the rejection.
       expect(() =>
         getForwardSpace(standardBoard, 'E-9', 'random' as UnitFacing),
       ).toThrow(new Error('Invalid facing: random'));
@@ -219,36 +221,38 @@ describe('getForwardSpace function', () => {
     });
 
     it('a coordinate without a dash is rejected', () => {
+      // 'E5' has no dash, so it is not a coordinate. The cast is what reaches the rejection.
       expect(() =>
         getForwardSpace(smallBoard, 'E5' as Coordinate, 'north'),
       ).toThrow(new Error('Invalid coordinate: E5'));
     });
 
     it('row I is rejected on the small board', () => {
-      expect(() =>
-        getForwardSpace(smallBoard, 'I-5' as Coordinate, 'north'),
-      ).toThrow(new Error('Invalid row: I'));
+      expect(() => getForwardSpace(smallBoard, 'I-5', 'north')).toThrow(
+        new Error('Invalid row: I'),
+      );
     });
 
     it('row L is rejected on the small board', () => {
-      expect(() =>
-        getForwardSpace(smallBoard, 'L-5' as Coordinate, 'north'),
-      ).toThrow(new Error('Invalid row: L'));
+      expect(() => getForwardSpace(smallBoard, 'L-5', 'north')).toThrow(
+        new Error('Invalid row: L'),
+      );
     });
 
     it('column 13 is rejected on the small board', () => {
-      expect(() =>
-        getForwardSpace(smallBoard, 'A-13' as Coordinate, 'north'),
-      ).toThrow(new Error('Invalid column: 13'));
+      expect(() => getForwardSpace(smallBoard, 'A-13', 'north')).toThrow(
+        new Error('Invalid column: 13'),
+      );
     });
 
     it('column 18 is rejected on the small board', () => {
-      expect(() =>
-        getForwardSpace(smallBoard, 'A-18' as Coordinate, 'north'),
-      ).toThrow(new Error('Invalid column: 18'));
+      expect(() => getForwardSpace(smallBoard, 'A-18', 'north')).toThrow(
+        new Error('Invalid column: 18'),
+      );
     });
 
     it('invalid facing is rejected', () => {
+      // 'random' is not a facing, so the cast is what reaches the rejection.
       expect(() =>
         getForwardSpace(smallBoard, 'E-9', 'random' as UnitFacing),
       ).toThrow(new Error('Invalid facing: random'));

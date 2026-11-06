@@ -39,6 +39,7 @@ describe('getRightFacing function', () => {
   });
 
   it('an unknown facing is rejected', () => {
+    // 'invalid' is not a facing, so the cast is what reaches the rejection.
     expect(() => getRightFacing('invalid' as UnitFacing)).toThrow(
       'Invalid facing: invalid',
     );
