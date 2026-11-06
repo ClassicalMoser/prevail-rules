@@ -107,34 +107,104 @@ inside the body that says why a check is there. A header block above any
 declaration, struct or function, is the module saying what it is, and does not
 count toward the quota.
 
-Measured that way — per-member JSDoc plus comments inside bodies, excluding every
-header block — **source is at 5%**: 838 member-JSDoc lines and 752 in-body lines
-across 546 modules and 29,515 lines. The 4,925 header lines are not in it.
-`AUDIT_PROCESS.md` recorded 764 in-body lines when it was written, so that number
-has not moved.
+**The denominator is lines inside bodies, not lines in the file.** Three drafts
+of this handoff got the numbers wrong by measuring in-body comments against whole
+files, which mixes a numerator restricted to bodies with a denominator full of
+imports, header blocks, signatures and closing braces. For a struct that skew is
+enormous: `entities` reads as 11% against its files and **46%** against its
+bodies. Blank lines make no difference either way — at most one point — so the
+only choice that matters is the one above.
 
-**Both forms of the quota already have a worked example in this repo, and they
-are the thing to copy:**
+So: **in-body comment lines ÷ in-body code lines**, header blocks excluded from
+both. If that definition is worth keeping, it belongs in `STYLE.md` beside the
+number, because the number alone has now been misread three times.
 
-- `entities/board/waterCover.ts` — **46%**, a struct. Eight edges, each documented
-  inside the interface and again inside the Zod object, and the header says why
-  water is not a terrain type.
-- `queries/attack/getMeleeSupportValue.ts` — **24%**, a function. 26 in-body
-  comment lines, no JSDoc at all.
+Measured that way, **source is at 9%** (1,590 against 14,460) and **the specs are
+at 1%** (382 against 29,647).
 
-So neither form is a special case and neither layer is exempt. Scope averages are
-well below both: `entities` 11%, `events` 11%, `game` 9%, `expected` 7%,
-`legality` 6%, `queries` 5%, and `transforms`, `procedures`, `validation` and
-`testing` at 1% or less.
+**And the standard is not an aspiration — three scopes already clear it:**
 
-Keep writing header JSDoc; the IDE reads it and it is the practice here. It just
-is not what the quota measures. A comment traces the code to the gameplay it
-serves and makes that link obvious.
+| Scope      | In-body comments | In-body code | Density |
+| ---------- | ---------------: | -----------: | ------: |
+| `entities` |              248 |          284 | **46%** |
+| `game`     |              192 |          467 | **29%** |
+| `events`   |              355 |          892 | **28%** |
+| `utils`    |                7 |           50 |     12% |
+| `queries`  |              233 |        1,853 |     11% |
+| `expected` |              102 |          775 |     11% |
+| `legality` |              223 |        1,866 |     10% |
+
+Those three are the declaration layers, where a member costs one line of code and
+earns three of documentation. The engine layers below them are the gap.
+
+**Both forms have a worked example, and they are the thing to copy:**
+
+- `entities/board/waterCover.ts` — **72%** of its bodies, a struct. Eight edges
+  documented inside the interface and again inside the Zod object, and a header
+  saying why water is not a terrain type.
+- `queries/attack/getMeleeSupportValue.ts` — **28%** of its body, a function. 26
+  in-body comment lines against 66 of code, and no JSDoc at all.
+
+The second is the one that answers whether 25% is sane for executable code. It
+is: a function body carrying a comment roughly every three lines reads well and
+is already in the repo.
+
+**The audit is what moves this number.** The scopes the human read has passed run
+10% to 11% — `queries`, `legality`, `expected` — against 2% to 3% for the scopes
+it has not: `transforms` 3%, `procedures` 2%, `validation` 2%, `testing` 0%. Three
+to five times, by the same hands, on the same kind of code.
+
+A comment traces the code to the gameplay it serves and makes that link obvious.
 `Navigates: MeleeResolutionState -> AttackApplyState -> RetreatState` is
 accurate and still does not say which retreat this finds or why the game needs
 one at this point.
 
 A comment must match the check the code makes.
+
+#### Header JSDoc is a separate requirement, and a short one
+
+Every function and every struct wants a JSDoc block above it, for the IDE hover
+and to state intent. That requirement stands on its own: **it is not discharged
+by in-body commentary, and it does not discharge the quota.** A fully documented
+header on an uncommented body still fails the quota, and a well-commented body
+with no header still fails this.
+
+Coverage is already good — **836 of 932 exported declarations carry one, 89%**.
+The 96 that do not are 44 `const`, 20 `interface`, 18 `function` and 14 `type`,
+and filling them is cheap.
+
+**Length is the actual problem.** Of 1,598 blocks the median is one line, but
+**201 run past eight lines** and the longest is 32. A three-paragraph tooltip is
+an undesirable pattern: it is not what a hover is for, and it is where prose goes
+to look like documentation without being placed near the code it explains. The
+worst offenders:
+
+| Lines | Module                                              |
+| ----: | --------------------------------------------------- |
+|    32 | `queries/unitPresence/getPlayerUnitWithPosition.ts` |
+|    32 | `entities/unitPresence/unitPresence.ts`             |
+|    28 | `queries/card/calculateInitiative.ts`               |
+|    28 | `legality/unitMovement/getLegalRetreats.ts`         |
+|    25 | `procedures/cards/generateResolveRallyEvent.ts`     |
+
+**Those 201 blocks are the cheapest progress on the quota, and it is not
+additive.** Much of what sits in a 32-line header is step-by-step explanation
+that belongs beside the step it explains. Moving it into the body shortens the
+header toward its job — what this is and why it exists — and raises in-body
+density with prose that is already written and already correct. That is a
+reading job, which is what this track is.
+
+Note where the first one leads: `getPlayerUnitWithPosition` carries the longest
+header in the repo and is also an open finding in `AUDIT.md` for returning the
+secondary unit without checking its side. The header grew while the behaviour
+stayed wrong, which is the argument for the rule that a comment must match the
+check the code makes.
+
+The specs do not have this problem — 371 blocks, median 3 lines, one over eight.
+They have the opposite one.
+
+`AUDIT_PROCESS.md` adds that file-level blocks above the imports sit at 6% of
+modules "and that is not a gap to fill." Leave that alone.
 
 One gap inside a closed box, recorded rather than acted on: `ruleValues/traits.ts`
 lists all fifteen traits as a bare tuple with no per-trait documentation, while
@@ -198,20 +268,19 @@ Three things, and the setup one is the largest piece of work in the repo.
 - **Setup mostly needs reconfiguring to the minimalist baseline** — the six
   points below, applied in order.
 - **Extensive commentary, saying which gameplay behaviour or rule is under
-  test.** Measured as the quota measures — in-body, excluding the 1,110 header
-  blocks — the specs are at **1%**: 323 in-body lines and 59 member-JSDoc lines
-  across 37,673. No scope is above 1%. This is the point that actually produces
-  comprehension and the one no substitution helps with: `3845d55` rewrote 14,170
-  lines and added none of it.
+  test.** The specs are at **1%** — 382 in-body comment lines against 29,647 of
+  in-body code — and no spec scope is above 2%. This is the point that actually
+  produces comprehension and the one no substitution helps with: `3845d55`
+  rewrote 14,170 lines and added none of it.
 
-**This is where most of the writing in the pass lives.** Source sits at 5% and
-the specs at 1%, against 25% for both, so the specs need roughly a quarter more
-prose per line than source does on a body half again as large.
+**This is where most of the writing in the pass lives.** Source is at 9% on
+14,460 in-body code lines; the specs are at 1% on 29,647. Twice the code at a
+ninth the density.
 
-**And the target is a third of the body, not a quarter of today's file.**
-Commentary adds lines, so 25% of the finished file puts the comment count at
-roughly a third of the non-comment lines. For the `queries` specs that is about
-2,940 lines of prose against 132 today.
+**The target is a third of the code, since commentary adds lines.** A quarter of
+the finished body means comments equal to about a third of the code in it. For
+the `queries` specs — 6,607 in-body code lines — that is roughly 2,200 lines of
+prose against 132 today.
 
 The suite baseline is **358 files, 1,894 tests**, and the count must not drop.
 This track changes how a test is expressed, never whether it exists.
@@ -258,40 +327,41 @@ From [`src/domain/AUDIT.md`](./src/domain/AUDIT.md), which already runs in
 dependency order because comprehension does not run downhill. Box state is that
 file's; closed boxes stay closed.
 
-Commentary columns are in-body density as the quota defines it — per-member
-JSDoc plus comments inside bodies, header blocks excluded — against `STYLE.md`'s
-25%.
+Commentary columns are in-body comment lines over in-body code lines, header
+blocks excluded from both, against `STYLE.md`'s 25%. Line counts are whole files,
+so the two are not a ratio of each other.
 
 | Scope          | Box      | Src mods | Src lines | Src in-body | Splits | Specs | Spec lines | Spec in-body |
 | -------------- | -------- | -------: | --------: | ----------: | -----: | ----: | ---------: | -----------: |
-| `utils`        | closed   |        5 |       221 |          3% |      3 |     1 |         71 |           0% |
-| `entities`     | closed   |       41 |     2,116 |     **11%** |     17 |     0 |          — |            — |
-| `game`         | closed   |       46 |     2,017 |          9% |      6 |     0 |          — |            — |
-| `events`       | closed   |       50 |     2,981 |     **11%** |     46 |     0 |          — |            — |
+| `utils`        | closed   |        5 |       221 |         12% |      3 |     1 |         71 |           0% |
+| `entities`     | closed   |       41 |     2,116 |     **46%** |     17 |     0 |          — |            — |
+| `game`         | closed   |       46 |     2,017 |     **29%** |      6 |     0 |          — |            — |
+| `events`       | closed   |       50 |     2,981 |     **28%** |     46 |     0 |          — |            — |
 | `ruleValues`   | closed   |        3 |       130 |          0% |      2 |     0 |          — |            — |
-| `sampleValues` | closed   |        4 |     1,072 |          0% |      3 |     2 |         34 |           8% |
-| `factories`    | reopened |       29 |       972 |          2% |      2 |    25 |        941 |           1% |
-| `queries`      | open     |      115 |     4,117 |          5% |      2 |   114 |      8,950 |           1% |
-| `legality`     | open     |       41 |     3,282 |          6% |      9 |    38 |      5,603 |           1% |
-| `expected`     | open     |       18 |     1,292 |          7% |      0 |    18 |      2,736 |           0% |
-| `procedures`   | open     |       26 |     1,378 |          1% |      0 |    25 |      2,227 |           1% |
-| `transforms`   | open     |       95 |     4,934 |          1% |      2 |    91 |     12,161 |           0% |
-| `validation`   | open     |       23 |     2,147 |          1% |      0 |    20 |      3,256 |           0% |
+| `sampleValues` | closed   |        4 |     1,072 |          0% |      3 |     2 |         34 |          12% |
+| `factories`    | reopened |       29 |       972 |          6% |      2 |    25 |        941 |           2% |
+| `queries`      | open     |      115 |     4,117 |         11% |      2 |   114 |      8,950 |           1% |
+| `legality`     | open     |       41 |     3,282 |         10% |      9 |    38 |      5,603 |           1% |
+| `expected`     | open     |       18 |     1,292 |         11% |      0 |    18 |      2,736 |           0% |
+| `procedures`   | open     |       26 |     1,378 |          2% |      0 |    25 |      2,227 |           1% |
+| `transforms`   | open     |       95 |     4,934 |          3% |      2 |    91 |     12,161 |           0% |
+| `validation`   | open     |       23 |     2,147 |          2% |      0 |    20 |      3,256 |           0% |
 | `testing`      | open     |       23 |     1,845 |          0% |     13 |    21 |      1,244 |           0% |
-| `application`  | open     |       26 |     1,010 |          3% |      1 |     3 |        450 |           0% |
+| `application`  | open     |       26 |     1,010 |          6% |      1 |     3 |        450 |           0% |
 
 A dash is where the measure does not apply: the declaration layers carry no
 specs at all.
 
-**Nothing in the repo meets the quota at scope level — not source, not specs,
-not one of fifteen scopes.** The best are `entities` and `events` at 11%, where
-structs document their members; the engine scopes run 1% to 7%; the specs run 0%
-to 1%. Individual files reach it (`waterCover.ts` 46%, `getMeleeSupportValue.ts`
-24%), which is what makes it a reachable standard rather than an aspiration, but
-no scope does.
+**Three source scopes clear the quota and every spec scope is at 2% or below.**
+`entities` 46%, `game` 29% and `events` 28% are the declaration layers, where a
+member costs one line of code and earns three of documentation. Then a clear
+band: `queries` 11%, `expected` 11%, `legality` 10% — the scopes the human read
+has passed — against `transforms` 3%, `validation` 2%, `procedures` 2% and
+`testing` 0%, which it has not. The audit moves this number by three to five
+times, which is the best evidence of what the pass is actually for.
 
-So commentary is the largest single piece of work in the pass, on both tracks,
-and the specs are the larger half: 37,673 lines at 1% against 29,515 at 5%.
+So commentary is the largest single piece of work here, and the specs are much
+the larger half: 29,647 in-body code lines at 1% against source's 14,460 at 9%.
 
 Three source scopes are the exception and want real prose: **`validation` at
 9%**, the lowest live scope; **`testing` at 14%**, which is the fixture layer
