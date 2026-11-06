@@ -12,8 +12,8 @@ export {
 export { defaultRandom } from './randomSource';
 export type { RandomSource } from './randomSource';
 
-// Narrow away `undefined` (or falsy for throwIfFalsy), or throw.
-export { throwIfFalsy, throwIfUndefined } from './throwIfMissing';
+// Narrow away `undefined`, or throw.
+export { throwIfUndefined } from './throwIfMissing';
 
 // Pass, fail, and the union. Validators return this and do not throw.
 export {

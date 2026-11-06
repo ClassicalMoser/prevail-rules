@@ -1,4 +1,4 @@
-import { throwIfFalsy, throwIfUndefined } from './throwIfMissing';
+import { throwIfUndefined } from './throwIfMissing';
 
 describe('throwIfUndefined function', () => {
   it('returns the same reference when defined', () => {
@@ -26,46 +26,5 @@ describe('throwIfUndefined function', () => {
 
   it('returns false when defined but falsy', () => {
     expect(throwIfUndefined<boolean>(false, 'missing')).toBe(false);
-  });
-});
-
-describe('throwIfFalsy function', () => {
-  it('returns the same reference when truthy', () => {
-    const value = { tag: 'kept' };
-    expect(throwIfFalsy(value, 'missing')).toBe(value);
-  });
-
-  it('returns a non-empty string', () => {
-    expect(throwIfFalsy('hello', 'missing')).toBe('hello');
-  });
-
-  it('throws with the given message when undefined', () => {
-    expect(() => throwIfFalsy<string>(undefined, 'no value here')).toThrow(
-      'no value here',
-    );
-  });
-
-  it('throws with the given message when null', () => {
-    expect(() => throwIfFalsy<string>(null, 'no value here')).toThrow(
-      'no value here',
-    );
-  });
-
-  it('throws when 0', () => {
-    expect(() => throwIfFalsy<number>(0, 'no value here')).toThrow(
-      'no value here',
-    );
-  });
-
-  it('throws when empty string', () => {
-    expect(() => throwIfFalsy<string>('', 'no value here')).toThrow(
-      'no value here',
-    );
-  });
-
-  it('throws when false', () => {
-    expect(() => throwIfFalsy<boolean>(false, 'no value here')).toThrow(
-      'no value here',
-    );
   });
 });

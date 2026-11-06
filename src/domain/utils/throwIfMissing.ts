@@ -24,25 +24,3 @@ export function throwIfUndefined<T>(value: T | undefined, message: string): T {
   }
   return value;
 }
-
-/**
- * Narrows `T | null | undefined` to `T` by throwing when the value is falsy.
- * Use when "absent" includes both `null` and `undefined` (e.g., third-party
- * APIs, `Array.prototype.find` results). Note: `0`, `""`, and `false` will
- * also throw — prefer {@link throwIfUndefined} when only `undefined` should
- * trigger the throw.
- *
- * @param value - The value to check
- * @param message - Error message used when `value` is falsy
- * @returns The same value, narrowed to `T`
- * @throws Error with the supplied message when `value` is falsy
- */
-export function throwIfFalsy<T>(
-  value: T | null | undefined,
-  message: string,
-): T {
-  if (!value) {
-    throw new Error(message);
-  }
-  return value;
-}
