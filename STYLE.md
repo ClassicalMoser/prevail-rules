@@ -50,7 +50,13 @@ A new comment that restates the code, labels the obvious, or holds a place for a
 
 This is a rule for what you add. It is not a licence to audit what is already here. Existing commentary is authored, and the never-overwrite rule above governs it: a comment that reads thin to you may be carrying a distinction you have not met yet, so leave it and mark it if you must. The remedy for a weak comment is a better comment, never a deleted one. Density is a symptom of explanation rather than the goal, and a comment is never written to move a number; but this is a rules engine, and nearly every step serves a rule, so a step with nothing worth saying is rare and usually means the rule has not been found yet. Where you cannot name it, leave a `TODO(misleading)` or `TODO(composition)` mark saying what you could not state. That is a finding, and it is worth more than either a bare step or a comment that fills the line.
 
-As much as possible comments are meant to convey gameplay meaning: what happens in the game, and why the rules want it. A reader who knows the game but not the rest of the codebase should still be able to follow it. Technical detail, such as the chain of states a lookup passes through, is where human meaning gets lost. Names and test titles follow the same rule.
+Comments are meant to convey gameplay meaning: what happens in the game, and why the rules want it. A reader who knows the game but not the rest of the codebase should still be able to follow it. Technical detail, such as the chain of states a lookup passes through, is where human meaning gets lost. Names and test titles follow the same rule. This is not a standard for the commentary alone — a readable codebase that holds the meaning of the game is what this project is for, so it governs every change rather than a pass of cleanup.
+
+Two practices get it written, and both apply to every change:
+
+**Write the comment before the code.** State the gameplay reason for a step first, then write or change the code so it matches that reason. Done the other way round the comment describes the code that was just written, which is how a line naming the call beneath it gets there. Done this way, a step with no reason to introduce does not get introduced, and a comment that stops matching its check shows up at once.
+
+**State the gameplay meaning before a file is done.** For each finished file, say which rule of the game each commented step serves — the rule, per step, in the game's terms, not a summary of the module. A step whose rule you cannot name gets a `TODO` saying what could not be stated. The same sentence repeated for every step, or the function's own name written back, means the commentary is not carrying meaning yet and the file is not finished.
 
 ## Tests
 

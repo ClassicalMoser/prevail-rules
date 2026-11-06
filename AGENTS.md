@@ -2,11 +2,23 @@
 
 Read the human docs and follow them. Value rigor and clarity over brevity. Be explicit. ALWAYS follow the [`STYLE.md`](./STYLE.md) guide when producing any code.
 
-In particular, models rarely comment enough, and never do without prompting. Every step of a function should have a comment clarifying why it is there. Readability is more important than optimization.
+## The point of this project
 
-Alignment quality tracks comment density only when the comments say something, and the thing they must say is gameplay meaning: what happens in the game, and why the rules want it. `// Lower initiative value wins` earns its line; `// Get the adjacent spaces` above a call to `getAdjacentSpaces` does not. Read [`STYLE.md`](./STYLE.md) on commentary before writing any, and match the examples there. Judge only what you are about to write: commentary already in the file is authored, and you do not rewrite or remove it.
+This is a rules engine for a board game, and the goal of the whole codebase is that it holds the meaning of that game readably. A reader who knows Prevail but has never seen this code should be able to follow why a module exists and what rule it serves. That is not a phase of the work or a standard to reach later; it is what the code is for, and it governs every change you make to it.
+
+So the test of any module is whether its gameplay reason is on the page. [`README.md`](./README.md) is the register to write in — "your hand represents your army's will to fight; when it's gone, the battle is over" — not the chain of states a lookup passes through.
+
+Models rarely comment enough, and never do without prompting. Readability is more important than optimization. But density only counts when the comments say something, and the thing they must say is what happens in the game and why the rules want it. `// Lower initiative value wins` earns its line; `// Get the adjacent spaces` above a call to `getAdjacentSpaces` does not. Read [`STYLE.md`](./STYLE.md) on commentary before writing any, and match the examples there. Judge only what you are about to write: commentary already in the file is authored, and you do not rewrite or remove it.
 
 Padding a body to raise a number is a failure, not a fix. But the remedy for a weak comment is a better one, not a deleted one: nearly every step here serves a rule, so if you cannot name the rule, leave a `TODO` mark saying what you could not state rather than leaving the step bare.
+
+## Two practices that make that happen
+
+Both are required, on every change, not only during an audit.
+
+**Write the comment before the code.** For each step, state the gameplay reason first, then write or change the code so it matches that reason. Done the other way round, the comment describes the code you just wrote, which is how `// Get the adjacent spaces` gets written. Done this way, a step you cannot introduce has no reason to exist, and a comment that stops matching its check is visible immediately.
+
+**State the gameplay meaning before you call a file done.** For each file you finish, say which rule of the game each commented step serves. Not a summary of the module — the rule, per step, in the game's terms. Any step whose rule you cannot name gets a `TODO` saying what you could not state. If you find yourself writing the same sentence for every step, or writing the function's name back, the commentary is not carrying meaning yet and the file is not done.
 
 Before you commit, `pnpm validate` must pass: lint, formatting, types, and the self-proof check that no spec reaches its own subject. A pre-commit hook runs it. `pnpm check:commentary` reports in-body commentary density per layer. It cannot fail, and it is not a target to hit: padding a body raises the number and breaks the rule above.
 
