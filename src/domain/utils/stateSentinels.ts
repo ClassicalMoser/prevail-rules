@@ -1,6 +1,6 @@
 /**
- * Type guards and throw helpers for JSON-serializable sentinel values that
- * replace `undefined` in game state (which does not survive JSON round-trips).
+ * Guards for a state field that holds either its value or a sentinel string.
+ * Each function compares against the strings in its own signature.
  */
 
 /** Narrows `T | 'pending'` to `'pending'`. */
@@ -24,14 +24,10 @@ export function isActive<T>(value: T | 'none'): value is T {
 }
 
 /**
- * Narrows `T | 'pending' | 'miss'` to `T` by throwing when the value is not an open substep.
- * `'miss'` is included so a finished empty outcome is not treated as the substep object.
+ * Narrows `T | 'pending'` to `T` by throwing when the value is `'pending'`.
  */
-export function throwIfPending<T>(
-  value: T | 'pending' | 'miss',
-  message: string,
-): T {
-  if (value === 'pending' || value === 'miss') {
+export function throwIfPending<T>(value: T | 'pending', message: string): T {
+  if (isPending(value)) {
     throw new Error(message);
   }
   return value;

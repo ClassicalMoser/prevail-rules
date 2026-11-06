@@ -1,8 +1,15 @@
 // Compile-time check that a manual type and its schema infer the same shape.
 export type { AssertExact } from './assertExact';
 
-// Narrow `'none'`, `'pending'`, and `'miss'` sentinels, or throw.
-export { throwIfNone, throwIfPending } from './serializationSentinels';
+// Compare a value to the strings in each function's signature.
+export {
+  isPending,
+  isResolved,
+  isNone,
+  isActive,
+  throwIfPending,
+  throwIfNone,
+} from './stateSentinels';
 
 // An injectable `[0, 1)` draw, so a caller can fix what a procedure rolls.
 export { defaultRandom } from './randomSource';
