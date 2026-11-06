@@ -31,19 +31,39 @@ existing to make that reading cheap.
 
 Everything below happens inside those two.
 
-## Four tracks, in commit order
-
-`AUDIT_PROCESS.md` fixes the order, one kind per commit:
+## Four tracks, applied per file
 
 1. Refiling and splits
 2. Source commentary and marks
 3. Specs
-4. Fixes, one per commit
+4. Fixes
 
-The split is the read's interface, not bookkeeping. A commentary commit should
-read in a minute; a fix commit gets full attention. A behaviour change has
-nowhere to hide in a commentary commit, and a production hunk inside one is a
-diff error rather than a judgement call.
+**Work a directory; approve a file.** The scope you take on is a directory, in
+the order below. The gate is per file: a file is done when all four tracks are
+done on it, commentary included, and checked against `STYLE.md` — and you do
+that check yourself, before moving to the next file, rather than leaving every
+judgment to the read that follows. Say per file what you checked and what you
+could not resolve.
+
+That is harder than it looks, and it is what `3845d55` missed. A file left
+half-converted is not partial progress: it has to be opened again from scratch
+by whoever touches it next, and nothing can be said about it until then. Of the
+90 files that commit touched, 74 are in that state and 16 are finished.
+Finishing 16 files is worth more than advancing 90.
+
+**Self-approval is not self-certification.** Checking a file against the style
+guide means reading what you wrote as a reader would, not asserting that you
+followed the rules. The commentary clause is the one that needs it: every
+comment has to name something that happens in the game, and a comment you
+cannot defend that way is one to rewrite or drop before the file is called
+done.
+
+**Commits stay small, one kind each.** `AUDIT_PROCESS.md` sets the order, and
+small commits are worth keeping for their own sake: each one is a thing that can
+be understood, reverted or bisected on its own. The hard rule inside it is that
+a behaviour change never rides along in a mechanical commit — a production hunk
+inside a commentary or formatting commit is a diff error rather than a
+judgement call.
 
 ---
 
@@ -466,7 +486,8 @@ Two specifics make the case better than the totals:
   the file hard to read, it is a point-4 item, and point 1 could not reach it —
   but point 4 rewrites every line point 1 just touched.
 
-So: one scope at a time, all four tracks, and the scope is left done.
+So: one file at a time, all four tracks, and the file is left done — then the
+next, until the layer is finished.
 
 ## Run `pnpm validate` often
 
