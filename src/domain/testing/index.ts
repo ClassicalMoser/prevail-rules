@@ -14,6 +14,7 @@ export { getUnitByTrait } from './getUnitByTrait';
 export {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
+  createAttackApplyStateWithRetreatAndReverse,
   createAttackApplyStateWithReverse,
   createAttackApplyStateWithRout,
   createCleanupPhaseState,

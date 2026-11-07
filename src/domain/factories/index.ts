@@ -52,3 +52,6 @@ export { createUnitPlacement } from './unitLocation';
 
 // Unit instance from side, unit type, and instance number.
 export { createUnitInstance } from './unit';
+
+// The attack-apply an attack leaves behind, with each outcome due or bypassed.
+export { createAttackApplyState } from './substeps';

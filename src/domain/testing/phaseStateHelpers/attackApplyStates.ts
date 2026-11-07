@@ -1,91 +1,153 @@
 import type { UnitInstance, UnitWithPlacement } from '@entities';
-import type { AttackApplyState } from '@game';
+import type { AttackApplyState, AttackResult } from '@game';
+import { createAttackApplyState as attackApplyFromResult } from '@factories';
 import {
   createRetreatState,
   createReverseState,
   createRoutState,
 } from './substepStates';
 
-function baseAttackApplyState(
-  defendingUnit: UnitInstance,
-  overrides?: Partial<AttackApplyState>,
-): AttackApplyState {
-  return {
-    attackResult: {
-      unitRetreated: false,
-      unitReversed: false,
-      unitRouted: false,
-    },
-    completed: false,
-    defendingUnit,
-    retreatState: 'pending',
-    reverseState: 'pending',
-    routState: 'pending',
-    substepType: 'attackApply' as const,
-    ...overrides,
-  };
-}
+/**
+ * Attack-apply states partway through resolution, for specs that need a step
+ * already open.
+ *
+ * The factory decides which outcomes an attack is due to resolve, and these
+ * helpers do not second-guess it: each passes what the attack measured and then
+ * writes the one substep its name promises. The rest of the slots come from the
+ * factory, so a helper here cannot disagree with the rules about what is due.
+ *
+ * Opening a step is the engine's work, which is why these are fixtures and not
+ * factories. A spec that only needs the state an attack leaves behind should
+ * call the factory instead.
+ */
+
+/** Nothing reached, so the defender stands and no step is due. */
+const nothingReached: AttackResult = {
+  unitRetreated: false,
+  unitReversed: false,
+  unitRouted: false,
+};
 
 /**
- * Creates an AttackApplyState for the standard board (test harness default).
+ * An attack that reached none of the three thresholds.
+ *
+ * @param defendingUnit - The unit that was attacked and left where it stood
+ * @param overrides - Fields to replace, for a state the game cannot reach
+ * @returns The attack-apply with every outcome bypassed
  */
 export function createAttackApplyState(
   defendingUnit: UnitInstance,
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
-  return baseAttackApplyState(defendingUnit, overrides);
+  const apply = attackApplyFromResult(defendingUnit, nothingReached);
+  const unhit: AttackApplyState = { ...apply, ...overrides };
+  return unhit;
 }
 
 /**
- * Creates an AttackApplyState with a retreat state.
+ * An attack that reached the retreat threshold, with the retreat open.
+ *
+ * @param retreatingUnit - The defender and where it stands before retreating
+ * @param overrides - Fields to replace, for a state the game cannot reach
+ * @returns The attack-apply with its retreat written
  */
 export function createAttackApplyStateWithRetreat(
   retreatingUnit: UnitWithPlacement,
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
-  return baseAttackApplyState(retreatingUnit.unit, {
-    attackResult: {
-      unitRetreated: true,
-      unitReversed: false,
-      unitRouted: false,
-    },
+  const measured: AttackResult = {
+    unitRetreated: true,
+    unitReversed: false,
+    unitRouted: false,
+  };
+  const apply = attackApplyFromResult(retreatingUnit.unit, measured);
+  const withRetreat: AttackApplyState = {
+    ...apply,
     retreatState: createRetreatState(retreatingUnit),
     ...overrides,
-  });
+  };
+  return withRetreat;
 }
 
 /**
- * Creates an AttackApplyState with a rout state (standard board; test harness default).
+ * An attack that reached both the retreat and the reverse threshold, with the
+ * retreat open and the reverse still due. A reverse holds the unit's placement,
+ * which is not known until the retreat has moved it.
+ *
+ * @param retreatingUnit - The defender and where it stands before retreating
+ * @param overrides - Fields to replace, for a state the game cannot reach
+ * @returns The attack-apply with its retreat written and its reverse pending
  */
-export function createAttackApplyStateWithRout(
-  defendingUnit: UnitInstance,
+export function createAttackApplyStateWithRetreatAndReverse(
+  retreatingUnit: UnitWithPlacement,
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
-  return baseAttackApplyState(defendingUnit, {
-    attackResult: {
-      unitRetreated: false,
-      unitReversed: false,
-      unitRouted: true,
-    },
-    routState: createRoutState(defendingUnit.playerSide, defendingUnit),
+  // Both thresholds were met, and both steps resolve: the retreat first, then
+  // the reverse from wherever the retreat left the unit.
+  const measured: AttackResult = {
+    unitRetreated: true,
+    unitReversed: true,
+    unitRouted: false,
+  };
+  const apply = attackApplyFromResult(retreatingUnit.unit, measured);
+  const withRetreat: AttackApplyState = {
+    ...apply,
+    retreatState: createRetreatState(retreatingUnit),
     ...overrides,
-  });
+  };
+  return withRetreat;
 }
 
 /**
- * Creates an AttackApplyState with a reverse state.
+ * An attack that reached the reverse threshold and no higher, with the reverse
+ * open.
+ *
+ * @param reversingUnit - The defender and where it stands before reversing
+ * @param overrides - Fields to replace, for a state the game cannot reach
+ * @returns The attack-apply with its reverse written
  */
 export function createAttackApplyStateWithReverse(
   reversingUnit: UnitWithPlacement,
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
-  return baseAttackApplyState(reversingUnit.unit, {
-    attackResult: {
-      unitRetreated: false,
-      unitReversed: true,
-      unitRouted: false,
-    },
+  const measured: AttackResult = {
+    unitRetreated: false,
+    unitReversed: true,
+    unitRouted: false,
+  };
+  const apply = attackApplyFromResult(reversingUnit.unit, measured);
+  const withReverse: AttackApplyState = {
+    ...apply,
     reverseState: createReverseState(reversingUnit),
     ...overrides,
-  });
+  };
+  return withReverse;
+}
+
+/**
+ * An attack that reached the rout threshold, with the rout open. The retreat and
+ * reverse steps are bypassed however their thresholds fell.
+ *
+ * @param defendingUnit - The unit being routed
+ * @param overrides - Fields to replace, for a state the game cannot reach
+ * @returns The attack-apply with its rout written
+ */
+export function createAttackApplyStateWithRout(
+  defendingUnit: UnitInstance,
+  overrides?: Partial<AttackApplyState>,
+): AttackApplyState {
+  // Rout is the hardest threshold to reach, so a real rout cleared the other
+  // two on the way up. The factory bypasses them all the same.
+  const measured: AttackResult = {
+    unitRetreated: true,
+    unitReversed: true,
+    unitRouted: true,
+  };
+  const apply = attackApplyFromResult(defendingUnit, measured);
+  const withRout: AttackApplyState = {
+    ...apply,
+    routState: createRoutState(defendingUnit.playerSide, defendingUnit),
+    ...overrides,
+  };
+  return withRout;
 }

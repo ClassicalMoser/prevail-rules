@@ -302,14 +302,20 @@ describe('getExpectedAttackApplyEvent function', () => {
       ).toThrow('Attack apply state is already complete');
     });
 
-    it('given when results are reported but no substates are defined, throws', () => {
+    it('throws when a result is claimed and no outcome was opened', () => {
       const unit = createTestUnit('white', { attack: 2 });
+      // The game cannot reach this: an attack that routs opens its rout and
+      // bypasses the rest. Every slot is overridden by hand to leave the apply
+      // claiming a rout with nothing written anywhere, which is the one state
+      // this guard exists to reject.
       const attackApplyState = createAttackApplyState(unit, {
         attackResult: {
           unitRetreated: false,
           unitReversed: false,
           unitRouted: true,
         },
+        retreatState: 'pending' as const,
+        reverseState: 'pending' as const,
         routState: 'pending' as const,
       });
 

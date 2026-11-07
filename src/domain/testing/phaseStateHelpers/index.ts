@@ -1,6 +1,7 @@
 export {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
+  createAttackApplyStateWithRetreatAndReverse,
   createAttackApplyStateWithReverse,
   createAttackApplyStateWithRout,
 } from './attackApplyStates';
