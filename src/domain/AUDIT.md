@@ -9,9 +9,9 @@ opens a closed box only by saying so here.
 
 **Last updated:** 2026-11-07
 
-**Restart.** `entities`, `game`, and `events` stay closed. Every other checked box is open again. `utils` closed 2026-11-07; scout is at `ruleValues`.
+**Restart.** `entities`, `game`, and `events` stay closed. Every other checked box is open again. `utils` and `ruleValues` closed 2026-11-07; scout is at `sampleValues`.
 
-**Scout baseline (2026-11-07, before `ruleValues`):** `pnpm test` 379 files / 1993 tests passed; `pnpm validate` clean.
+**Scout baseline (2026-11-07, before `sampleValues`):** `pnpm test` 379 files / 1993 tests passed; `pnpm validate` clean.
 
 ---
 
@@ -75,12 +75,12 @@ Audit in this order (dependencies flow downward):
 
 ### `ruleValues/` (`@ruleValues`)
 
-- [ ] `ruleValues/` — scout complete 2026-11-07 (awaiting human read)
-  - [ ] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
+- [x] `ruleValues/` — closed 2026-11-07
+  - [x] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
 
 ### `sampleValues/` (`@sampleValues`)
 
-- [ ] `sampleValues/`
+- [ ] `sampleValues/` — scout complete 2026-11-07 (awaiting human read)
   - [ ] Root modules (`tempCommandCards`, `tempUnits`, `miniStarterArmy`, …)
 
 ### `factories/` (`@factories`)
