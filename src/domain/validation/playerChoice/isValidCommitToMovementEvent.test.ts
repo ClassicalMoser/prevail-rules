@@ -1,8 +1,8 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
   createIssueCommandsPhaseState,
   createMovementResolutionState,
+  createTestCard,
   updateCardState,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
@@ -11,8 +11,16 @@ import { isValidCommitToMovementEvent } from './isValidCommitToMovementEvent';
 
 import { createCommitToMovementEvent, createEmptyGameState } from '@factories';
 
-const moveCard = tempCommandCards[4];
-const strikeCard = tempCommandCards[0];
+/** Eligible: carries a movement-applicable speed modifier. */
+const speedCard = createTestCard({ modifiers: ['speed'] });
+/**
+ * Not the hand card. A different id so membership (by id) rejects it even when
+ * the event copies the hand card's legal modifierTypes.
+ */
+const otherCard = createTestCard({
+  id: '00000000-0000-4000-8000-ffff00000001',
+  modifiers: ['attack'],
+});
 
 /**
  * IsValidCommitToMovementEvent: membership against getLegalCommitToMovementEvents.
@@ -25,7 +33,7 @@ describe('isValidCommitToMovementEvent function', () => {
       black: {
         ...base.cardState.black,
         awaitingPlay: null,
-        inHand: [moveCard],
+        inHand: [speedCard],
         inPlay: null,
       },
     });
@@ -43,7 +51,7 @@ describe('isValidCommitToMovementEvent function', () => {
   it('accepts committing the in-hand card with all of its movement modifiers', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
-      committedCard: moveCard,
+      committedCard: speedCard,
       eventNumber: 0,
       modifierTypes: ['speed'],
       player: 'black',
@@ -71,7 +79,7 @@ describe('isValidCommitToMovementEvent function', () => {
   it('rejects committing with an empty modifier list', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
-      committedCard: moveCard,
+      committedCard: speedCard,
       eventNumber: 0,
       modifierTypes: [],
       player: 'black',
@@ -83,7 +91,7 @@ describe('isValidCommitToMovementEvent function', () => {
   it('rejects a card that is not in hand', () => {
     const state = stateBlackPendingCommit();
     const event = createCommitToMovementEvent({
-      committedCard: strikeCard,
+      committedCard: otherCard,
       eventNumber: 0,
       modifierTypes: ['speed'],
       player: 'black',
@@ -98,7 +106,7 @@ describe('isValidCommitToMovementEvent function', () => {
       step: 'chooseCards',
     });
     const event = createCommitToMovementEvent({
-      committedCard: moveCard,
+      committedCard: speedCard,
       eventNumber: 0,
       modifierTypes: ['speed'],
       player: 'black',

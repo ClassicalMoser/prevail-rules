@@ -1,7 +1,8 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
   createIssueCommandsPhaseState,
+  createTestCard,
+  createTestCommand,
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
@@ -25,7 +26,13 @@ import { createEmptyGameState } from '@factories';
  * Board: letters decrease toward north (A is northernmost).
  */
 describe('performRangedAttack legality atoms', () => {
-  const rangedCard = tempCommandCards[15];
+  /** In-play command must be rangedAttack for these atoms to open. */
+  const rangedCard = {
+    ...createTestCard(),
+    command: createTestCommand({ type: 'rangedAttack' }),
+  };
+  /** Default createTestCard command type is movement. */
+  const movementCard = createTestCard();
 
   function place(...units: ReturnType<typeof createUnitWithPlacement>[]) {
     let state = createEmptyGameState('standard');
@@ -116,7 +123,7 @@ describe('performRangedAttack legality atoms', () => {
       let state = createEmptyGameState('standard');
       state = updateCardState(state, {
         ...state.cardState,
-        black: { ...state.cardState.black, inPlay: tempCommandCards[0] },
+        black: { ...state.cardState.black, inPlay: movementCard },
       });
       state = updateBoardState(
         state,

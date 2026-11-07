@@ -2,7 +2,7 @@ import type { GameState } from '@game';
 
 import { MOVE_COMMANDERS_PHASE } from '@game';
 import { tempCommandCards } from '@sampleValues';
-import { updateCardState } from '@testing';
+import { createTestCard, createTestCommand, updateCardState } from '@testing';
 import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMoveCommandersPhaseEvent';
@@ -14,10 +14,11 @@ import { createEmptyGameState } from '@factories';
  * player sets follow `currentInitiative`.
  */
 describe('generateCompleteMoveCommandersPhaseEvent function', () => {
-  const advanceCard = tempCommandCards.find((card) => card.name === 'Advance');
-  if (advanceCard === undefined) {
-    throw new Error('Expected Advance sample card');
-  }
+  // Lines ×2 expands into two remaining number:1 slots.
+  const multiLineCard = {
+    ...createTestCard(),
+    command: createTestCommand({ number: 2, size: 'lines' }),
+  };
 
   /** Black initiative, both inPlay set, MOVE_COMMANDERS_PHASE step `complete`. */
   function createGameStateInCompleteStep(): GameState {
@@ -91,21 +92,21 @@ describe('generateCompleteMoveCommandersPhaseEvent function', () => {
     ]);
   });
 
-  it('given Advance lines ×2 inPlay, expands into two number:1 remaining slots', () => {
+  it('given lines ×2 inPlay, expands into two number:1 remaining slots', () => {
     const state = createEmptyGameState('standard');
-    const withAdvance = updateCardState(state, {
+    const withMultiLine = updateCardState(state, {
       ...state.cardState,
-      black: { ...state.cardState.black, inPlay: advanceCard },
+      black: { ...state.cardState.black, inPlay: multiLineCard },
       white: { ...state.cardState.white, inPlay: null },
     });
-    const inComplete = updatePhaseState(withAdvance, {
+    const inComplete = updatePhaseState(withMultiLine, {
       phase: MOVE_COMMANDERS_PHASE,
       step: 'complete',
     });
 
     const event = generateCompleteMoveCommandersPhaseEvent(inComplete, 0);
 
-    const expectedSlot = { ...advanceCard.command, number: 1 };
+    const expectedSlot = { ...multiLineCard.command, number: 1 };
     expect(event.remainingCommandsFirstPlayer).toStrictEqual([
       expectedSlot,
       expectedSlot,

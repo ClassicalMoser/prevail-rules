@@ -1,7 +1,8 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
   createIssueCommandsPhaseState,
+  createTestCard,
+  createTestCommand,
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
@@ -14,6 +15,14 @@ import {
 import { getLegalMoveUnits } from './getLegalMoveUnits';
 
 import { createEmptyGameState } from '@factories';
+
+/** Default createTestCard command type is movement. */
+const movementCard = createTestCard();
+/** In-play command that is not movement. */
+const rangedCard = {
+  ...createTestCard(),
+  command: createTestCommand({ type: 'rangedAttack' }),
+};
 /**
  * GetLegalMoveUnits: atomic remaining units (with placements) when awaiting
  * moveUnit to start a movement command resolution.
@@ -32,7 +41,7 @@ describe('getLegalMoveUnits function', () => {
       ...state.cardState,
       black: {
         ...state.cardState.black,
-        inPlay: tempCommandCards[0],
+        inPlay: movementCard,
       },
     });
     if (withUnitOnBoard) {
@@ -85,7 +94,7 @@ describe('getLegalMoveUnits function', () => {
       ...state.cardState,
       black: {
         ...state.cardState.black,
-        inPlay: tempCommandCards[15],
+        inPlay: rangedCard,
       },
     });
     state = updateBoardState(

@@ -1,8 +1,8 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
+  createTestCard,
   updateCardState,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
@@ -14,8 +14,16 @@ import {
   createEmptyGameState,
 } from '@factories';
 
-const strikeCard = tempCommandCards[0];
-const moveCard = tempCommandCards[4];
+/** Eligible: carries a ranged-applicable attack modifier. */
+const attackCard = createTestCard({ modifiers: ['attack'] });
+/**
+ * Same modifiers as the hand card; a different id so membership (by id) can
+ * treat it as not in hand.
+ */
+const otherCard = createTestCard({
+  id: '00000000-0000-4000-8000-ffff00000001',
+  modifiers: ['attack'],
+});
 
 /**
  * IsValidCommitToRangedAttackEvent: membership against
@@ -29,7 +37,7 @@ describe('isValidCommitToRangedAttackEvent function', () => {
       black: {
         ...base.cardState.black,
         awaitingPlay: null,
-        inHand: [strikeCard],
+        inHand: [attackCard],
         inPlay: null,
       },
     });
@@ -47,7 +55,7 @@ describe('isValidCommitToRangedAttackEvent function', () => {
   it('accepts committing the in-hand card with all of its ranged modifiers', () => {
     const state = stateBlackPendingAttackerCommit();
     const event = createCommitToRangedAttackEvent({
-      committedCard: strikeCard,
+      committedCard: attackCard,
       eventNumber: 0,
       modifierTypes: ['attack'],
       player: 'black',
@@ -61,7 +69,7 @@ describe('isValidCommitToRangedAttackEvent function', () => {
   it('rejects committing with an empty modifier list', () => {
     const state = stateBlackPendingAttackerCommit();
     const event = createCommitToRangedAttackEvent({
-      committedCard: strikeCard,
+      committedCard: attackCard,
       eventNumber: 0,
       modifierTypes: [],
       player: 'black',
@@ -73,7 +81,7 @@ describe('isValidCommitToRangedAttackEvent function', () => {
   it('rejects a card that is not in hand', () => {
     const state = stateBlackPendingAttackerCommit();
     const event = createCommitToRangedAttackEvent({
-      committedCard: moveCard,
+      committedCard: otherCard,
       eventNumber: 0,
       modifierTypes: ['attack'],
       player: 'black',
@@ -88,7 +96,7 @@ describe('isValidCommitToRangedAttackEvent function', () => {
       step: 'chooseCards',
     });
     const event = createCommitToRangedAttackEvent({
-      committedCard: strikeCard,
+      committedCard: attackCard,
       eventNumber: 0,
       modifierTypes: ['attack'],
       player: 'black',

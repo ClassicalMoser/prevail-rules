@@ -1,10 +1,10 @@
 import type { CompleteRangedAttackCommandEvent } from '@events';
 import type { GameState } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestCard,
+  createTestCommand,
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
@@ -24,9 +24,11 @@ const event = {
   eventType: 'gameEffect' as const,
 } satisfies CompleteRangedAttackCommandEvent;
 
-const rangedCard =
-  tempCommandCards.find((card) => card.command.type === 'rangedAttack') ??
-  tempCommandCards[15];
+/** In-play command must be rangedAttack for this complete-effect path. */
+const rangedCard = {
+  ...createTestCard(),
+  command: createTestCommand({ type: 'rangedAttack' }),
+};
 
 /**
  * Ranged command finished or unfireable remaining: clear CRS; keep shooters or

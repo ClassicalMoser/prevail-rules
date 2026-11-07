@@ -1,5 +1,4 @@
-import { tempCommandCards } from '@sampleValues';
-import { createUnitWithPlacement } from '@testing';
+import { createTestCommand, createUnitWithPlacement } from '@testing';
 import {
   addCommanderToBoard,
   addUnitToBoard,
@@ -18,15 +17,15 @@ import { createEmptyGameState } from '@factories';
  * contiguous segment (including the start — singleton lines).
  */
 describe('getLegalLineEndsForIssueCommand function', () => {
-  const rangedLineCommand = {
-    ...tempCommandCards[4].command,
+  // A lines movement order with inspiration range 1.
+  const rangedLineCommand = createTestCommand({
     number: 1,
     restrictions: {
       inspirationRangeRestriction: 1,
-      restrictionType: 'none' as const,
+      restrictionType: 'none',
     },
-    size: 'lines' as const,
-  };
+    size: 'lines',
+  });
 
   it('allows a singleton end equal to a start within commander range', () => {
     const start = createUnitWithPlacement({

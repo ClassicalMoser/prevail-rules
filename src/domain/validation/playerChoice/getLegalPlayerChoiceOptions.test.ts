@@ -6,6 +6,7 @@ import {
   createBoardWithCommander,
   createIssueCommandsPhaseState,
   createTestCard,
+  createTestCommand,
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
@@ -196,7 +197,11 @@ describe('getLegalPlayerChoiceOptions function', () => {
       black: {
         ...state.cardState.black,
         inHand: [createTestCard({ id: 'black-hand' })],
-        inPlay: tempCommandCards[15],
+        // In-play command must be rangedAttack for this choice to open.
+        inPlay: {
+          ...createTestCard(),
+          command: createTestCommand({ type: 'rangedAttack' }),
+        },
       },
       white: {
         ...state.cardState.white,

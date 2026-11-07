@@ -1,7 +1,8 @@
 import type { PerformRangedAttackEvent } from '@events';
-import { tempCommandCards } from '@sampleValues';
 import {
   createIssueCommandsPhaseState,
+  createTestCard,
+  createTestCommand,
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
@@ -22,7 +23,11 @@ import {
  * that independently can hit that defender.
  */
 describe('isValidPerformRangedAttackEvent function', () => {
-  const rangedCard = tempCommandCards[15];
+  /** In-play command must be rangedAttack for performRangedAttack to be expected. */
+  const rangedCard = {
+    ...createTestCard(),
+    command: createTestCommand({ type: 'rangedAttack' }),
+  };
 
   function stateWithUnits(
     remaining: ReturnType<typeof createUnitWithPlacement>[],

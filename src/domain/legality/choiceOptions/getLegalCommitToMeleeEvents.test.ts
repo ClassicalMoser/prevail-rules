@@ -1,8 +1,8 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
   createMeleeResolutionState,
   createResolveMeleePhaseState,
+  createTestCard,
   updateCardState,
 } from '@testing';
 import { updatePhaseState, updateCurrentInitiative } from '@transforms';
@@ -16,7 +16,10 @@ import { createEmptyGameState } from '@factories';
  * card's melee modifiers.
  */
 describe('getLegalCommitToMeleeEvents function', () => {
-  function stateWhitePendingCommit(hand = [tempCommandCards[0]]) {
+  /** Eligible: carries a melee-applicable attack modifier. */
+  const attackCard = createTestCard({ modifiers: ['attack'] });
+
+  function stateWhitePendingCommit(hand = [attackCard]) {
     const base = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
@@ -42,13 +45,12 @@ describe('getLegalCommitToMeleeEvents function', () => {
   }
 
   it('returns one event per hand card with all of its melee modifiers applied, plus refuse', () => {
-    // tempCommandCards[0] has modifiers: ['attack']
-    const state = stateWhitePendingCommit([tempCommandCards[0]]);
+    const state = stateWhitePendingCommit([attackCard]);
 
     expect(getLegalCommitToMeleeEvents(state)).toStrictEqual([
       {
         choiceType: 'commitToMelee',
-        committedCard: tempCommandCards[0],
+        committedCard: attackCard,
         eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['attack'],

@@ -1,8 +1,8 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
   createMeleeResolutionState,
   createResolveMeleePhaseState,
+  createTestCard,
   updateCardState,
 } from '@testing';
 import { updatePhaseState, updateCurrentInitiative } from '@transforms';
@@ -10,6 +10,18 @@ import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 import { isValidCommitToMeleeEvent } from './isValidCommitToMeleeEvent';
 
 import { createCommitToMeleeEvent, createEmptyGameState } from '@factories';
+
+/** Eligible: carries a melee-applicable attack modifier. */
+const attackCard = createTestCard({ modifiers: ['attack'] });
+/**
+ * Same modifiers as the hand card; a different id so membership (by id) can
+ * treat it as not in hand.
+ */
+const otherCard = createTestCard({
+  id: '00000000-0000-4000-8000-ffff00000001',
+  modifiers: ['attack'],
+});
+
 /**
  * IsValidCommitToMeleeEvent: membership against getLegalCommitToMeleeEvents.
  */
@@ -24,7 +36,7 @@ describe('isValidCommitToMeleeEvent function', () => {
       white: {
         ...base.cardState.white,
         awaitingPlay: null,
-        inHand: [tempCommandCards[0]],
+        inHand: [attackCard],
         inPlay: null,
       },
     });
@@ -42,7 +54,7 @@ describe('isValidCommitToMeleeEvent function', () => {
   it('accepts committing the in-hand card with all of its melee modifiers', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
-      committedCard: tempCommandCards[0],
+      committedCard: attackCard,
       eventNumber: 0,
       modifierTypes: ['attack'],
       player: 'white',
@@ -56,7 +68,7 @@ describe('isValidCommitToMeleeEvent function', () => {
   it('rejects committing with an empty modifier list', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
-      committedCard: tempCommandCards[0],
+      committedCard: attackCard,
       eventNumber: 0,
       modifierTypes: [],
       player: 'white',
@@ -68,7 +80,7 @@ describe('isValidCommitToMeleeEvent function', () => {
   it('rejects a card that is not in hand', () => {
     const state = stateWhitePendingCommit();
     const event = createCommitToMeleeEvent({
-      committedCard: tempCommandCards[2],
+      committedCard: otherCard,
       eventNumber: 0,
       modifierTypes: ['attack'],
       player: 'white',
@@ -83,7 +95,7 @@ describe('isValidCommitToMeleeEvent function', () => {
       step: 'chooseCards',
     });
     const event = createCommitToMeleeEvent({
-      committedCard: tempCommandCards[0],
+      committedCard: attackCard,
       eventNumber: 0,
       modifierTypes: ['attack'],
       player: 'white',

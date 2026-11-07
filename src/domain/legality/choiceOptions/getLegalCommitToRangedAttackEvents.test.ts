@@ -1,8 +1,8 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
+  createTestCard,
   updateCardState,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
@@ -10,12 +10,12 @@ import { updatePhaseState } from '@transforms';
 import { getLegalCommitToRangedAttackEvents } from './getLegalCommitToRangedAttackEvents';
 
 import { createEmptyGameState } from '@factories';
-/** Strike: modifiers ['attack'] — eligible for commitToRangedAttack. */
-const strikeCard = tempCommandCards[0];
-/** Move: modifiers ['speed'] — not eligible for commitToRangedAttack. */
-const moveCard = tempCommandCards[4];
-/** Socketed Pilum: modifiers ['range'] — eligible. */
-const rangeCard = tempCommandCards[15];
+/** Eligible: carries a ranged-applicable attack modifier. */
+const attackCard = createTestCard({ modifiers: ['attack'] });
+/** Not eligible: speed is a movement modifier, not a ranged one. */
+const speedCard = createTestCard({ modifiers: ['speed'] });
+/** Eligible: carries a range modifier. */
+const rangeCard = createTestCard({ modifiers: ['range'] });
 
 /**
  * GetLegalCommitToRangedAttackEvents: one CommitToRangedAttackEvent per
@@ -23,7 +23,7 @@ const rangeCard = tempCommandCards[15];
  * are all of that card's ranged modifiers.
  */
 describe('getLegalCommitToRangedAttackEvents function', () => {
-  function statePendingAttackerCommit(hand = [strikeCard]) {
+  function statePendingAttackerCommit(hand = [attackCard]) {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
@@ -45,7 +45,7 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
     );
   }
 
-  function statePendingDefenderCommit(hand = [strikeCard]) {
+  function statePendingDefenderCommit(hand = [attackCard]) {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
@@ -86,12 +86,12 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
   };
 
   it('returns one event per hand card with all of its ranged modifiers applied, plus refuse', () => {
-    const state = statePendingAttackerCommit([strikeCard]);
+    const state = statePendingAttackerCommit([attackCard]);
 
     expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([
       {
         choiceType: 'commitToRangedAttack',
-        committedCard: strikeCard,
+        committedCard: attackCard,
         eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['attack'],
@@ -102,7 +102,7 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
   });
 
   it('skips cards with no ranged-applicable modifiers', () => {
-    const state = statePendingAttackerCommit([moveCard, rangeCard]);
+    const state = statePendingAttackerCommit([speedCard, rangeCard]);
 
     expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([
       {
@@ -118,12 +118,12 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
   });
 
   it('enumerates for the defender when defending commitment is pending', () => {
-    const state = statePendingDefenderCommit([strikeCard]);
+    const state = statePendingDefenderCommit([attackCard]);
 
     expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([
       {
         choiceType: 'commitToRangedAttack',
-        committedCard: strikeCard,
+        committedCard: attackCard,
         eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['attack'],
@@ -142,7 +142,7 @@ describe('getLegalCommitToRangedAttackEvents function', () => {
   });
 
   it('returns only refuse when the pending player has no eligible cards in hand', () => {
-    const state = statePendingAttackerCommit([moveCard]);
+    const state = statePendingAttackerCommit([speedCard]);
     expect(getLegalCommitToRangedAttackEvents(state)).toStrictEqual([
       refuseBlack,
     ]);

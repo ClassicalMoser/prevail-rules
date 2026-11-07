@@ -1,9 +1,9 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
+  createTestCard,
   updateCardState,
 } from '@testing';
 import { updatePhaseState } from '@transforms';
@@ -11,10 +11,10 @@ import { updatePhaseState } from '@transforms';
 import { getLegalCommitToMovementEvents } from './getLegalCommitToMovementEvents';
 
 import { createEmptyGameState } from '@factories';
-/** Move: modifiers ['speed'] — eligible for commitToMovement. */
-const moveCard = tempCommandCards[4];
-/** Strike: modifiers ['attack'] — not eligible for commitToMovement. */
-const strikeCard = tempCommandCards[0];
+/** Eligible: carries a movement-applicable speed modifier. */
+const speedCard = createTestCard({ modifiers: ['speed'] });
+/** Not eligible: attack is a combat modifier, not a movement one. */
+const attackCard = createTestCard({ modifiers: ['attack'] });
 
 /**
  * GetLegalCommitToMovementEvents: one CommitToMovementEvent per eligible
@@ -22,7 +22,7 @@ const strikeCard = tempCommandCards[0];
  * card's movement modifiers.
  */
 describe('getLegalCommitToMovementEvents function', () => {
-  function stateBlackPendingMovementCommit(hand = [moveCard]) {
+  function stateBlackPendingMovementCommit(hand = [speedCard]) {
     const base = createEmptyGameState('standard');
     const withCards = updateCardState(base, {
       ...base.cardState,
@@ -54,12 +54,12 @@ describe('getLegalCommitToMovementEvents function', () => {
   };
 
   it('returns one event per eligible card plus a refuse option', () => {
-    const state = stateBlackPendingMovementCommit([moveCard]);
+    const state = stateBlackPendingMovementCommit([speedCard]);
 
     expect(getLegalCommitToMovementEvents(state)).toStrictEqual([
       {
         choiceType: 'commitToMovement',
-        committedCard: moveCard,
+        committedCard: speedCard,
         eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['speed'],
@@ -70,12 +70,12 @@ describe('getLegalCommitToMovementEvents function', () => {
   });
 
   it('skips cards with no movement-applicable modifiers but still offers refuse', () => {
-    const state = stateBlackPendingMovementCommit([strikeCard, moveCard]);
+    const state = stateBlackPendingMovementCommit([attackCard, speedCard]);
 
     expect(getLegalCommitToMovementEvents(state)).toStrictEqual([
       {
         choiceType: 'commitToMovement',
-        committedCard: moveCard,
+        committedCard: speedCard,
         eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['speed'],
@@ -92,7 +92,7 @@ describe('getLegalCommitToMovementEvents function', () => {
       white: {
         ...base.cardState.white,
         awaitingPlay: null,
-        inHand: [moveCard],
+        inHand: [speedCard],
         inPlay: null,
       },
     });
@@ -109,7 +109,7 @@ describe('getLegalCommitToMovementEvents function', () => {
     expect(getLegalCommitToMovementEvents(state)).toStrictEqual([
       {
         choiceType: 'commitToMovement',
-        committedCard: moveCard,
+        committedCard: speedCard,
         eventNumber: 0,
         eventType: 'playerChoice',
         modifierTypes: ['speed'],
@@ -135,7 +135,7 @@ describe('getLegalCommitToMovementEvents function', () => {
   });
 
   it('returns only refuse when the pending player has no eligible cards in hand', () => {
-    const state = stateBlackPendingMovementCommit([strikeCard]);
+    const state = stateBlackPendingMovementCommit([attackCard]);
     expect(getLegalCommitToMovementEvents(state)).toStrictEqual([refuseBlack]);
   });
 });
