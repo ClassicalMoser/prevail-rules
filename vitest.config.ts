@@ -62,6 +62,9 @@ export default defineConfig({
         'src/domain/game/**/*.{js,ts}',
         // Exclude declaration-only events
         'src/domain/events/**/*.{js,ts}',
+        // Exclude shared rule constants (coverage on catalogs is tautological;
+        // mutation still targets this layer)
+        'src/domain/ruleValues/**/*.{js,ts}',
         // Exclude sample value files
         'src/domain/sampleValues/**/*.{js,ts}',
         // Exclude barrel files
