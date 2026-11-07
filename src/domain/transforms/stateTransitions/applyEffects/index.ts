@@ -13,6 +13,9 @@ export {
   applyCompleteResolveMeleePhaseEvent,
 } from './completePhase';
 export {
+  applyOpenRetreatFromAttackApplyEvent,
+  applyOpenReverseFromAttackApplyEvent,
+  applyOpenRoutFromAttackApplyEvent,
   applyResolveRetreatEvent,
   applyResolveReverseEvent,
   applyResolveRoutEvent,

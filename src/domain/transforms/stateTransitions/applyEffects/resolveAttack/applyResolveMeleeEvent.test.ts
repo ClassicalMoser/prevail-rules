@@ -1,12 +1,8 @@
 import type { UnitWithPlacement } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
 import type { GameState } from '@game';
-import {
-  getMeleeResolutionState,
-  getRetreatStateFromAttackApply,
-  getReverseStateFromAttackApply,
-  getRoutStateFromAttackApply,
-} from '@queries';
+import { createEmptyGameState } from '@factories';
+import { getMeleeResolutionState } from '@queries';
 import {
   createMeleeResolutionState,
   createResolveMeleePhaseState,
@@ -20,12 +16,9 @@ import { throwIfPending } from '@utils';
 
 import { applyResolveMeleeEvent } from './applyResolveMeleeEvent';
 
-import { createEmptyGameState } from '@factories';
 /**
- * Materializes procedure `resolveMelee` into per-side `attackApplyState` values.
- * An attack that reaches no threshold writes a completed apply with rout,
- * retreat, and reverse all `'bypassed'`.
- * A hit opens the matching nested substep.
+ * Materializes procedure `resolveMelee` into per-side attack-apply shells.
+ * The factory records which outcomes are due; openers write the substeps later.
  */
 describe('applyResolveMeleeEvent function', () => {
   /** ResolveMelee phase with default melee CRS and both inPlay command cards set. */
@@ -58,12 +51,11 @@ describe('applyResolveMeleeEvent function', () => {
     };
   }
 
-  /** Neutral resolveMelee event: no rout/retreat/reverse, empty legal retreat sets. */
+  /** Neutral resolveMelee event: no rout/retreat/reverse. */
   function baseMeleeEvent(
     placements: ReturnType<typeof unitPlacements>,
   ): ResolveMeleeEvent {
     return {
-      blackLegalRetreatOptions: [],
       blackUnitRetreated: false,
       blackUnitReversed: false,
       blackUnitRouted: false,
@@ -72,7 +64,6 @@ describe('applyResolveMeleeEvent function', () => {
       eventNumber: 0,
       eventType: 'gameEffect',
       location: 'E-5',
-      whiteLegalRetreatOptions: [],
       whiteUnitRetreated: false,
       whiteUnitReversed: false,
       whiteUnitRouted: false,
@@ -89,17 +80,18 @@ describe('applyResolveMeleeEvent function', () => {
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
     const blackApply = throwIfPending(melee.blackAttackApplyState, 'apply');
-    expect(whiteApply.completed).toBe(true);
+    // A miss still needs completeAttackApply to close the shell.
+    expect(whiteApply.completed).toBe(false);
     expect(whiteApply.routState).toBe('bypassed');
     expect(whiteApply.retreatState).toBe('bypassed');
     expect(whiteApply.reverseState).toBe('bypassed');
-    expect(blackApply.completed).toBe(true);
+    expect(blackApply.completed).toBe(false);
     expect(blackApply.routState).toBe('bypassed');
     expect(blackApply.retreatState).toBe('bypassed');
     expect(blackApply.reverseState).toBe('bypassed');
   });
 
-  it('opens a white reverse substep and bypasses the black outcomes when only white reverses', () => {
+  it('leaves a pending reverse for white when only white reverses', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const event: ResolveMeleeEvent = {
@@ -111,16 +103,15 @@ describe('applyResolveMeleeEvent function', () => {
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
     const blackApply = throwIfPending(melee.blackAttackApplyState, 'apply');
-    expect(getReverseStateFromAttackApply(whiteApply).substepType).toBe(
-      'reverse',
-    );
-    expect(blackApply.completed).toBe(true);
+    expect(whiteApply.reverseState).toBe('pending');
+    expect(whiteApply.retreatState).toBe('bypassed');
+    expect(whiteApply.routState).toBe('bypassed');
     expect(blackApply.routState).toBe('bypassed');
     expect(blackApply.retreatState).toBe('bypassed');
     expect(blackApply.reverseState).toBe('bypassed');
   });
 
-  it('opens a white rout substep and bypasses the black outcomes when only white routes', () => {
+  it('leaves a pending rout for white when only white routes', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const event: ResolveMeleeEvent = {
@@ -132,51 +123,29 @@ describe('applyResolveMeleeEvent function', () => {
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
     const blackApply = throwIfPending(melee.blackAttackApplyState, 'apply');
-    expect(getRoutStateFromAttackApply(whiteApply).substepType).toBe('rout');
-    expect(blackApply.completed).toBe(true);
+    // A rout supersedes retreat and reverse even if those thresholds also fell.
+    expect(whiteApply.routState).toBe('pending');
+    expect(whiteApply.retreatState).toBe('bypassed');
+    expect(whiteApply.reverseState).toBe('bypassed');
     expect(blackApply.routState).toBe('bypassed');
     expect(blackApply.retreatState).toBe('bypassed');
     expect(blackApply.reverseState).toBe('bypassed');
   });
 
-  it('given white retreated with one legal hex E-6 south, retreat finalPosition auto-fills', () => {
+  it('leaves a pending retreat when white retreated', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
-    const only = {
-      coordinate: 'E-6' as const,
-      facing: 'south' as const,
-    };
     const event: ResolveMeleeEvent = {
       ...baseMeleeEvent(placements),
-      whiteLegalRetreatOptions: [only],
       whiteUnitRetreated: true,
     };
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
     const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
-    expect(
-      getRetreatStateFromAttackApply(whiteApply).finalPosition,
-    ).toStrictEqual(only);
-  });
-
-  it('given white retreated with two legal hexes, retreat finalPosition stays undefined', () => {
-    const full = baseMeleeGameState();
-    const placements = unitPlacements();
-    const event: ResolveMeleeEvent = {
-      ...baseMeleeEvent(placements),
-      whiteLegalRetreatOptions: [
-        { coordinate: 'E-6', facing: 'south' },
-        { coordinate: 'E-4', facing: 'south' },
-      ],
-      whiteUnitRetreated: true,
-    };
-
-    const next = applyResolveMeleeEvent(event, full);
-    const melee = getMeleeResolutionState(next);
-    const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
-    expect(getRetreatStateFromAttackApply(whiteApply).finalPosition).toBe(
-      'pending',
-    );
+    // Legal options are not recorded here — the retreat opener computes them.
+    expect(whiteApply.retreatState).toBe('pending');
+    expect(whiteApply.routState).toBe('bypassed');
+    expect(whiteApply.reverseState).toBe('bypassed');
   });
 });

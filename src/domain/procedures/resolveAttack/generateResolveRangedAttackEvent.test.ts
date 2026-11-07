@@ -18,7 +18,7 @@ const spearmenType = punicCitizenSpearmen;
 /**
  * `resolveRangedAttack` is the first ranged strike roll: attacker/defender commitments must be
  * settled, and there must be no attack-apply substep yet. Outcome exposes rout/retreat/reverse
- * flags and optional legal retreat cells when retreat applies.
+ * flags. TODO(misleading): legal retreat cells are no longer on this event.
  */
 describe('generateResolveRangedAttackEvent function', () => {
   /** Spearmen duel on E-5 under issueCommands ranged CRS; default commitments resolved. */
@@ -60,14 +60,13 @@ describe('generateResolveRangedAttackEvent function', () => {
     expect(event.retreated).toBe(true);
   });
 
-  it('given spearmen mirror below retreat threshold, routed/retreated/reversed booleans and empty set', () => {
+  it('given spearmen mirror below retreat threshold, retreated is false', () => {
     const full = rangedResolutionGameState();
     const event = generateResolveRangedAttackEvent(full, 0);
     expect(event.effectType).toBe('resolveRangedAttack');
     expect(event.defenderWithPlacement.unit.playerSide).toBe('white');
     expect(event.defenderWithPlacement.placement.coordinate).toBe('E-5');
     expect(event.retreated).toBe(false);
-    expect(event.legalRetreatOptions).toHaveLength(0);
   });
 
   it('given defending commitment pending on ranged CRS, throws defending commitment guard', () => {

@@ -1,6 +1,9 @@
 import type { UnitWithPlacement } from '@entities';
 import type { GameEffectType } from '@events';
-import { createEmptyGameState } from '@factories';
+import {
+  createAttackApplyState as createPendingAttackApply,
+  createEmptyGameState,
+} from '@factories';
 /**
  * Minimal `GameState` builders for each `GameEffectType`, used to drive
  * `generateEventFromProcedure` in registry tests.
@@ -128,6 +131,96 @@ export const procedureRegistryStateFactories: Record<
       ...base.cardState,
       white: { ...base.cardState.white, inHand: [] },
     });
+  },
+
+  openRetreatFromAttackApply: (): GameStateForVisibility => {
+    const state = createEmptyGameState('standard');
+    const defendingUnit = createTestUnit('white', { attack: 2 });
+    const unitWithPlacement: UnitWithPlacement = {
+      placement: {
+        coordinate: 'E-5',
+        facing: 'north',
+      },
+      unit: defendingUnit,
+    };
+    const withBoard = {
+      ...state,
+      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
+    };
+    // Retreat still due: the factory leaves that slot pending until the opener runs.
+    const attackApply = createPendingAttackApply(defendingUnit, {
+      unitRetreated: true,
+      unitReversed: false,
+      unitRouted: false,
+    });
+    const ranged = createRangedAttackResolutionState(withBoard, {
+      attackApplyState: attackApply,
+      defendingUnit,
+    });
+    const phase = createIssueCommandsPhaseState(withBoard, {
+      currentCommandResolutionState: ranged,
+    });
+    return updatePhaseState(withBoard, phase);
+  },
+
+  openReverseFromAttackApply: (): GameStateForVisibility => {
+    const state = createEmptyGameState('standard');
+    const defendingUnit = createTestUnit('white', { attack: 2 });
+    const unitWithPlacement: UnitWithPlacement = {
+      placement: {
+        coordinate: 'E-5',
+        facing: 'north',
+      },
+      unit: defendingUnit,
+    };
+    const withBoard = {
+      ...state,
+      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
+    };
+    // Reverse still due: the factory leaves that slot pending until the opener runs.
+    const attackApply = createPendingAttackApply(defendingUnit, {
+      unitRetreated: false,
+      unitReversed: true,
+      unitRouted: false,
+    });
+    const ranged = createRangedAttackResolutionState(withBoard, {
+      attackApplyState: attackApply,
+      defendingUnit,
+    });
+    const phase = createIssueCommandsPhaseState(withBoard, {
+      currentCommandResolutionState: ranged,
+    });
+    return updatePhaseState(withBoard, phase);
+  },
+
+  openRoutFromAttackApply: (): GameStateForVisibility => {
+    const state = createEmptyGameState('standard');
+    const defendingUnit = createTestUnit('white', { attack: 2 });
+    const unitWithPlacement: UnitWithPlacement = {
+      placement: {
+        coordinate: 'E-5',
+        facing: 'north',
+      },
+      unit: defendingUnit,
+    };
+    const withBoard = {
+      ...state,
+      boardState: addUnitToBoard(state.boardState, unitWithPlacement),
+    };
+    // Rout still due: the factory leaves that slot pending until the opener runs.
+    const attackApply = createPendingAttackApply(defendingUnit, {
+      unitRetreated: true,
+      unitReversed: true,
+      unitRouted: true,
+    });
+    const ranged = createRangedAttackResolutionState(withBoard, {
+      attackApplyState: attackApply,
+      defendingUnit,
+    });
+    const phase = createIssueCommandsPhaseState(withBoard, {
+      currentCommandResolutionState: ranged,
+    });
+    return updatePhaseState(withBoard, phase);
   },
 
   resolveEngageRetreatOption: (): GameStateForVisibility => {

@@ -1,6 +1,5 @@
 import type { ExpectedEventInfo } from '@events';
-import type { AttackApplyState, GameState } from '@game';
-import { canReverseUnit } from '@legality';
+import type { AttackApplyState } from '@game';
 import { isOpenSubstep } from '@queries';
 import { getExpectedRetreatEvent } from './getExpectedRetreatEvent';
 import { getExpectedReverseEvent } from './getExpectedReverseEvent';
@@ -14,14 +13,14 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
  * An attack that reached no threshold (`hasResults === false`, every outcome
  * `'bypassed'`) is valid: expect `completeAttackApply`. Throw only when results
  * are claimed but no matching substep was opened.
+ * TODO(misleading): a claimed result with its slot still `'pending'` is now a
+ * fresh apply — emit the opener, not a corruption throw.
  *
  * @param attackApplyState - The attack apply state
- * @param gameState - The game state, needed for melee reverse engagement checks
  * @returns Information about what event is expected
  */
 export function getExpectedAttackApplyEvent(
   attackApplyState: AttackApplyState,
-  gameState: GameState,
 ): ExpectedEventInfo {
   const { attackResult } = attackApplyState;
 
@@ -29,11 +28,6 @@ export function getExpectedAttackApplyEvent(
     attackResult.unitRouted ||
     attackResult.unitRetreated ||
     attackResult.unitReversed;
-
-  const allSubstepsPending =
-    attackApplyState.retreatState === 'pending' &&
-    attackApplyState.reverseState === 'pending' &&
-    attackApplyState.routState === 'pending';
 
   // Miss: nothing to apply — complete the empty apply shell.
   if (!hasResults) {
@@ -46,56 +40,61 @@ export function getExpectedAttackApplyEvent(
     };
   }
 
-  // Results claimed but no substep opened — corrupt initialization.
-  if (allSubstepsPending) {
-    throw new Error('Attack apply state not initialized correctly');
-  }
+  // Priority: rout > retreat > reverse (rout is most severe). A pending slot
+  // means that step is still due and must open before it can resolve.
 
-  // Results reported, check which need resolution
-  // Priority: rout > retreat > reverse (rout is most severe)
   const routState = attackApplyState.routState;
-  if (attackResult.unitRouted && isOpenSubstep(routState)) {
-    if (!routState.completed) {
-      return getExpectedRoutEvent(routState);
-    }
-    // If unit was routed, no further resolution is needed
-    if (!attackApplyState.completed) {
+  if (attackResult.unitRouted) {
+    // The attack routed the defender; open the rout before asking to resolve it.
+    if (routState === 'pending') {
       return {
         actionType: 'gameEffect',
-        effectType: 'completeAttackApply',
+        effectType: 'openRoutFromAttackApply',
       };
     }
-    throw new Error('Attack apply state is already complete');
+    if (isOpenSubstep(routState)) {
+      if (!routState.completed) {
+        return getExpectedRoutEvent(routState);
+      }
+      // If unit was routed, no further resolution is needed
+      if (!attackApplyState.completed) {
+        return {
+          actionType: 'gameEffect',
+          effectType: 'completeAttackApply',
+        };
+      }
+      throw new Error('Attack apply state is already complete');
+    }
   }
 
   const retreatState = attackApplyState.retreatState;
-  if (
-    attackResult.unitRetreated &&
-    isOpenSubstep(retreatState) &&
-    !retreatState.completed
-  ) {
-    return getExpectedRetreatEvent(retreatState);
+  if (attackResult.unitRetreated) {
+    // The attack forced a retreat; open it before asking where the unit goes.
+    if (retreatState === 'pending') {
+      return {
+        actionType: 'gameEffect',
+        effectType: 'openRetreatFromAttackApply',
+      };
+    }
+    if (isOpenSubstep(retreatState) && !retreatState.completed) {
+      return getExpectedRetreatEvent(retreatState);
+    }
   }
 
   const reverseState = attackApplyState.reverseState;
-  if (
-    attackResult.unitReversed &&
-    isOpenSubstep(reverseState) &&
-    !reverseState.completed
-  ) {
-    // In melee, if units are still engaged, reverse cannot happen
-    if (!canReverseUnit(reverseState, gameState)) {
-      // Units are still engaged - reverse cannot happen, skip to completeAttackApply
-      if (attackApplyState.completed) {
-        throw new Error('Attack apply state is already complete');
-      }
+  if (attackResult.unitReversed) {
+    // The attack forced a reverse; open it after any retreat has moved the unit.
+    if (reverseState === 'pending') {
       return {
         actionType: 'gameEffect',
-        effectType: 'completeAttackApply',
+        effectType: 'openReverseFromAttackApply',
       };
     }
-    return getExpectedReverseEvent(reverseState);
-    // Reverse is complete, continue to check if attack apply is complete
+    // A unit still locked with an opponent resolves its reverse without
+    // turning, so the event is asked for either way and records which happened.
+    if (isOpenSubstep(reverseState) && !reverseState.completed) {
+      return getExpectedReverseEvent(reverseState);
+    }
   }
 
   if (!attackApplyState.completed) {

@@ -15,19 +15,16 @@ import {
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
-import {
-  addUnitToBoard,
-  updateBoardState,
-  updatePhaseState,
-} from '@transforms/pureTransforms';
+import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyChooseRoutDiscardEvent } from './applyChooseRoutDiscardEvent';
 
 import { createEmptyGameState } from '@factories';
 import { updateCurrentInitiative } from '@transforms/pureTransforms/state/updateCurrentInitiative';
 /**
- * ChooseRoutDiscard completes an awaiting rout: discard cards, remove units,
- * mark rout complete (and rear engagement complete when applicable).
+ * ChooseRoutDiscard completes an awaiting rout: discard cards and mark the rout
+ * complete (and rear engagement complete when applicable). Units already left
+ * the board when the rout opened.
  */
 describe('applyChooseRoutDiscardEvent function', () => {
   function createStateInResolveRallyWithRout(
@@ -119,7 +116,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
     expect(throwIfPending(rallyState.routState, 'rout').completed).toBe(true);
   });
 
-  it('given rear engagement rout, discards, removes defender, and completes engagement', () => {
+  it('given rear engagement rout, discards and completes engagement', () => {
     const defender = createUnitWithPlacement({
       coordinate: 'E-6',
       facing: 'north',
@@ -134,7 +131,8 @@ describe('applyChooseRoutDiscardEvent function', () => {
         inHand: [tempCommandCards[2], tempCommandCards[3]],
       },
     });
-    state = updateBoardState(state, addUnitToBoard(state.boardState, defender));
+    // The unit already left when the rout opened; only the discard remains.
+    state = { ...state, routedUnits: [defender.unit] };
     const routState = createRoutState('white', defender.unit, {
       numberToDiscard: 1,
     });
@@ -176,9 +174,6 @@ describe('applyChooseRoutDiscardEvent function', () => {
     }
     expect(engagement.engagementResolutionState.completed).toBe(true);
     expect(engagement.engagementResolutionState.routState.completed).toBe(true);
-    expect(next.boardState.board['E-6']?.unitPresence.presenceType).toBe(
-      'none',
-    );
     expect(next.routedUnits).toContainEqual(defender.unit);
     expect(next.cardState.white.inHand.map((c) => c.id)).toStrictEqual([
       tempCommandCards[3].id,

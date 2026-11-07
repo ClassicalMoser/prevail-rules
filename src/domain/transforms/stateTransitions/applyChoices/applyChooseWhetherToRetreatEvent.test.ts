@@ -69,6 +69,24 @@ describe('applyChooseWhetherToRetreatEvent function', () => {
     expect(retreatState.legalRetreatOptions.length).toBeGreaterThan(0);
   });
 
+  it('accepting a retreat with legal hexes bypasses the nested rout — it will never rout', () => {
+    const { state } = createStateWithFrontEngagement();
+    const event = createChooseWhetherToRetreatEvent({
+      choosesToRetreat: true,
+      eventNumber: 0,
+      player: 'white',
+    });
+
+    const newState = applyChooseWhetherToRetreatEvent(event, state);
+    const { retreatState } =
+      getFrontEngagementStateFromMovement(newState).engagementResolutionState;
+    if (retreatState === 'pending') {
+      throw new Error('expected retreatState');
+    }
+    expect(retreatState.legalRetreatOptions.length).toBeGreaterThan(0);
+    expect(retreatState.routState).toBe('bypassed');
+  });
+
   it('declining retreat marks defendingUnitRetreats false and completes engagement', () => {
     const { state } = createStateWithFrontEngagement();
     const event = createChooseWhetherToRetreatEvent({

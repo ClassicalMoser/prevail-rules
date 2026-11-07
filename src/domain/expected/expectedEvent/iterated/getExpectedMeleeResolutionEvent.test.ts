@@ -96,7 +96,6 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     );
     expect(getExpectedAttackApplyEventMock).toHaveBeenCalledWith(
       meleeState.blackAttackApplyState,
-      gameState,
     );
   });
 
@@ -119,7 +118,6 @@ describe('getExpectedMeleeResolutionEvent function', () => {
     );
     expect(getExpectedAttackApplyEventMock).toHaveBeenCalledWith(
       meleeState.whiteAttackApplyState,
-      gameState,
     );
   });
 

@@ -75,7 +75,6 @@ export function getExpectedMeleeResolutionEvent(
         meleeState[`${nextDefendingPlayer}AttackApplyState`],
         `No ${nextDefendingPlayer} attack apply state found in melee resolution`,
       ),
-      gameState,
     );
   }
 

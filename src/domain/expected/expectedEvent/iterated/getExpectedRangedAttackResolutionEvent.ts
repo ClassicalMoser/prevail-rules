@@ -54,10 +54,7 @@ export function getExpectedRangedAttackResolutionEvent(
   if (!resolutionState.attackApplyState.completed) {
     // ResolveRangedAttack has been applied (attackApplyState exists)
     // Use composable function to determine next expected event
-    return getExpectedAttackApplyEvent(
-      resolutionState.attackApplyState,
-      gameState,
-    );
+    return getExpectedAttackApplyEvent(resolutionState.attackApplyState);
   }
 
   // Attack apply state is complete, ranged attack resolution should be complete

@@ -115,7 +115,6 @@ describe('getExpectedRangedAttackResolutionEvent function', () => {
     ).toBe(expectedEvent);
     expect(getExpectedAttackApplyEventMock).toHaveBeenCalledWith(
       resolutionState.attackApplyState,
-      gameState,
     );
   });
 

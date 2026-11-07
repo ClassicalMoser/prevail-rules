@@ -3,16 +3,11 @@ import type { GameState } from '@game';
 import {
   getAwaitingRoutDiscardState,
   getOwnedPlayerCardState,
-  getPositionOfUnit,
   getRearEngagementStateFromMovement,
-  hasUnitInArray,
 } from '@queries';
 import {
-  addUnitToRouted,
   discardCardsFromHand,
-  removeUnitFromBoard,
   replaceOwnedPlayerCardState,
-  updateBoardState,
   updateEngagementStateInMovement,
   updateRoutState,
 } from '@transforms/pureTransforms';
@@ -21,8 +16,10 @@ import {
  * Applies a ChooseRoutDiscardEvent:
  * - discards the chosen hand cards
  * - marks the active rout slice cardsChosen + completed
- * - removes routed units from the board into `routedUnits`
  * - for rear engagement, marks the engagement complete so movement can finish
+ *
+ * Routed units already left the board when the rout opened. This event only
+ * settles the discard debt and closes the substep.
  *
  * Event is assumed pre-validated via {@link isValidChooseRoutDiscardEvent}.
  * Requires `event.player` to be owned under the state's visibility
@@ -54,21 +51,6 @@ export function applyChooseRoutDiscardEvent<S extends GameState>(
     completed: true,
   };
   next = updateRoutState(next, completedRout);
-
-  for (const unit of routState.unitsToRout) {
-    try {
-      const placement = getPositionOfUnit(next.boardState, unit);
-      next = updateBoardState(
-        next,
-        removeUnitFromBoard(next.boardState, { placement, unit }),
-      );
-    } catch {
-      // Already off the board (some parents remove before discard).
-    }
-    if (!hasUnitInArray(next.routedUnits, unit)) {
-      next = addUnitToRouted(next, unit);
-    }
-  }
 
   try {
     const engagement = getRearEngagementStateFromMovement(next);

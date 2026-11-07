@@ -58,4 +58,5 @@ export {
   addUnitToRouted,
   removeUnitFromBoard,
   removeUnitFromReserve,
+  removeUnitsLeavingUnderRout,
 } from './units';

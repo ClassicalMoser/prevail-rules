@@ -16,6 +16,9 @@ import {
   generateCompleteResolveMeleePhaseEvent,
 } from './completePhase';
 import {
+  generateOpenRetreatFromAttackApplyEvent,
+  generateOpenReverseFromAttackApplyEvent,
+  generateOpenRoutFromAttackApplyEvent,
   generateResolveRetreatEvent,
   generateResolveReverseEvent,
   generateResolveRoutEvent,
@@ -94,6 +97,15 @@ export function generateEventFromProcedure(
     }
     case 'gameOver': {
       return generateGameOverEvent(state, eventNumber);
+    }
+    case 'openRetreatFromAttackApply': {
+      return generateOpenRetreatFromAttackApplyEvent(state, eventNumber);
+    }
+    case 'openReverseFromAttackApply': {
+      return generateOpenReverseFromAttackApplyEvent(state, eventNumber);
+    }
+    case 'openRoutFromAttackApply': {
+      return generateOpenRoutFromAttackApplyEvent(state, eventNumber);
     }
     case 'resolveEngageRetreatOption': {
       return generateResolveEngageRetreatOptionEvent(state, eventNumber);

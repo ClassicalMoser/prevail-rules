@@ -1,6 +1,7 @@
 import type { UnitWithPlacement } from '@entities';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState, ReverseState } from '@game';
+import { canReverseUnit } from '@legality';
 import {
   GAME_EFFECT_EVENT_TYPE,
   MELEE_ATTACK_RESOLUTION_CONTEXT,
@@ -49,7 +50,13 @@ export function generateResolveReverseEvent(
     state.boardState,
     reverseState.reversingUnit,
   );
-  const newFacing = getOppositeFacing(placement.facing);
+  // A unit still locked with an opponent holds its facing: the reverse is
+  // reached and resolved, and it turns nobody. The facing on the event is the
+  // record of which happened.
+  const canTurn = canReverseUnit(reverseState, state);
+  const newFacing = canTurn
+    ? getOppositeFacing(placement.facing)
+    : placement.facing;
 
   // The event records where the unit stood when it turned.
   const reversingUnit: UnitWithPlacement = {

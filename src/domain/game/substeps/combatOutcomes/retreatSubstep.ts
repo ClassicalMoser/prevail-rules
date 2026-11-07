@@ -25,8 +25,12 @@ export interface RetreatState {
   legalRetreatOptions: UnitPlacement[];
   /** The final position of the retreating unit. */
   finalPosition: UnitPlacement | 'pending';
-  /** The state of a rout caused by the retreat. */
-  routState: RoutState | 'pending';
+  /**
+   * Rout nested under this retreat: `'pending'` when the unit has nowhere to
+   * go (a rout is still due), `'bypassed'` when it has legal hexes (a retreat
+   * with somewhere to go will never rout), or the open `RoutState`.
+   */
+  routState: RoutState | 'pending' | 'bypassed';
   /** Whether the retreat has been completed. */
   completed: boolean;
 }
@@ -37,7 +41,9 @@ const _retreatStateSchemaObject = z
     finalPosition: unitPlacementSchema.or(z.literal('pending')),
     legalRetreatOptions: z.array(unitPlacementSchema),
     retreatingUnit: unitWithPlacementSchema,
-    routState: routStateSchema.or(z.literal('pending')),
+    routState: routStateSchema
+      .or(z.literal('pending'))
+      .or(z.literal('bypassed')),
     substepType: z.literal('retreat'),
   })
   .strict();

@@ -14,6 +14,7 @@ import { updateRoutState } from '@transforms/pureTransforms';
  * Applies a ResolveRoutEvent to the game state.
  * Sets the numberToDiscard on the rout state based on the penalty.
  * The penalty is the sum of all routed units' rout penalties.
+ * A zero penalty is not a choice — the rout closes in the same write.
  *
  * @param event - The resolve rout event to apply
  * @param state - The current game state
@@ -58,8 +59,12 @@ export function applyResolveRoutEvent<S extends GameState>(
     }
   }
 
+  // A zero penalty has nothing to choose, so the rout finishes here.
+  const closesWithoutDiscard = event.penalty === 0;
   const newRoutState: RoutState = {
     ...currentRoutState,
+    cardsChosen: closesWithoutDiscard ? true : currentRoutState.cardsChosen,
+    completed: closesWithoutDiscard ? true : currentRoutState.completed,
     numberToDiscard: event.penalty,
   };
 

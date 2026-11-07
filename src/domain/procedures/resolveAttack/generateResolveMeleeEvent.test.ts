@@ -17,9 +17,10 @@ import { createEmptyGameState } from '@factories';
 const spearmenType = punicCitizenSpearmen;
 
 /**
- * `resolveMelee` compares strike vs retreat at a shared cell, sets rout/retreat booleans, and
- * precomputes legal retreat hex sets when retreat is allowed. Commitments must be resolved
- * first; the board must hold both combatants at the melee coordinate.
+ * `resolveMelee` compares strike vs retreat at a shared cell and sets rout/retreat
+ * booleans. Commitments must be resolved first; the board must hold both combatants
+ * at the melee coordinate.
+ * TODO(misleading): legal retreat hex sets are no longer precomputed on this event.
  */
 describe('generateResolveMeleeEvent function', () => {
   /** Default spearmen mirror match on E-5 with empty resolve-melee phase (no pending commitments). */
@@ -35,7 +36,7 @@ describe('generateResolveMeleeEvent function', () => {
     return updatePhaseState(s, phase);
   }
 
-  it('given cavalry vs cavalry on E-5, both retreated true and each gets a non-empty legal set', () => {
+  it('given cavalry vs cavalry on E-5, both retreated true', () => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { unitType: equites });
     const blackUnit = createTestUnit('black', { unitType: equites });
@@ -50,7 +51,7 @@ describe('generateResolveMeleeEvent function', () => {
     expect(event.blackUnitRetreated).toBe(true);
   });
 
-  it('given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat and empty sets', () => {
+  it('given spearmen mirror and in-play +1 attack still under retreat 5, no rout/retreat', () => {
     const full = meleeResolutionGameState();
     const event = generateResolveMeleeEvent(full, 0);
     expect(event.effectType).toBe('resolveMelee');
@@ -59,8 +60,6 @@ describe('generateResolveMeleeEvent function', () => {
     expect(event.blackUnitWithPlacement.unit.playerSide).toBe('black');
     expect(event.whiteUnitRetreated).toBe(false);
     expect(event.blackUnitRetreated).toBe(false);
-    expect(event.whiteLegalRetreatOptions).toHaveLength(0);
-    expect(event.blackLegalRetreatOptions).toHaveLength(0);
   });
 
   it('given melee CRS with white commitment pending, throws white commitment guard', () => {

@@ -1,12 +1,8 @@
-import type { UnitInstance, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { UnitInstance, UnitWithPlacement } from '@entities';
 import type { ResolveRangedAttackEvent } from '@events';
 import type { GameState } from '@game';
-import {
-  getRangedAttackResolutionState,
-  getRetreatStateFromAttackApply,
-  getReverseStateFromAttackApply,
-  getRoutStateFromAttackApply,
-} from '@queries';
+import { createEmptyGameState } from '@factories';
+import { getRangedAttackResolutionState } from '@queries';
 import {
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
@@ -20,10 +16,9 @@ import { throwIfPending } from '@utils';
 
 import { applyResolveRangedAttackEvent } from './applyResolveRangedAttackEvent';
 
-import { createEmptyGameState } from '@factories';
 /**
- * First strike resolution: builds `attackApplyState` on the ranged CRS from procedure flags—
- * attack result, optional rout / retreat (auto hex when unique) / reverse substeps.
+ * First strike resolution: builds an attack-apply shell from the procedure's
+ * measured thresholds. Openers write the substeps later.
  */
 describe('applyResolveRangedAttackEvent function', () => {
   /** IssueCommands + ranged CRS with white defender on E-5 and both inPlay cards. */
@@ -52,18 +47,15 @@ describe('applyResolveRangedAttackEvent function', () => {
     return { defender, defenderWithPlacement, full };
   }
 
-  type RangedEventPatch = Partial<
-    Omit<
-      ResolveRangedAttackEvent,
-      'defenderWithPlacement' | 'eventType' | 'effectType'
-    >
-  > &
-    Pick<ResolveRangedAttackEvent, 'legalRetreatOptions'>;
-
-  /** Game effect merge: defaults plus patch (legalRetreatOptions required in patch). */
+  /** Game effect merge: defaults plus patch. */
   function rangedEvent(
     defenderWithPlacement: UnitWithPlacement,
-    patch: RangedEventPatch,
+    patch: Partial<
+      Omit<
+        ResolveRangedAttackEvent,
+        'defenderWithPlacement' | 'eventType' | 'effectType'
+      >
+    > = {},
   ): ResolveRangedAttackEvent {
     return {
       defenderWithPlacement,
@@ -77,24 +69,22 @@ describe('applyResolveRangedAttackEvent function', () => {
     };
   }
 
-  it('given no branch flags and empty legal retreats, attackApply has no rout retreat reverse substeps', () => {
+  it('bypasses every outcome when the attack reaches no threshold', () => {
     const { full, defenderWithPlacement } = createRangedResolutionFixture();
-    const event = rangedEvent(defenderWithPlacement, {
-      legalRetreatOptions: [],
-    });
+    const event = rangedEvent(defenderWithPlacement);
 
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
     const apply = throwIfPending(ra.attackApplyState, 'attack apply');
-    expect(apply.routState).toBe('pending');
-    expect(apply.retreatState).toBe('pending');
-    expect(apply.reverseState).toBe('pending');
+    expect(apply.routState).toBe('bypassed');
+    expect(apply.retreatState).toBe('bypassed');
+    expect(apply.reverseState).toBe('bypassed');
+    expect(apply.completed).toBe(false);
   });
 
-  it('given reversed true, attackResult unitReversed and reverse substep present', () => {
+  it('leaves a pending reverse when the attack reversed the defender', () => {
     const { full, defenderWithPlacement } = createRangedResolutionFixture();
     const event = rangedEvent(defenderWithPlacement, {
-      legalRetreatOptions: [],
       reversed: true,
     });
 
@@ -102,74 +92,41 @@ describe('applyResolveRangedAttackEvent function', () => {
     const ra = getRangedAttackResolutionState(next);
     const apply = throwIfPending(ra.attackApplyState, 'attack apply');
     expect(apply.attackResult.unitReversed).toBe(true);
-    expect(getReverseStateFromAttackApply(apply).substepType).toBe('reverse');
+    expect(apply.reverseState).toBe('pending');
+    expect(apply.retreatState).toBe('bypassed');
+    expect(apply.routState).toBe('bypassed');
   });
 
-  it('given routed true, rout substep lists defending unit instance', () => {
+  it('leaves a pending rout when the attack routed the defender', () => {
     const { full, defender, defenderWithPlacement } =
       createRangedResolutionFixture();
     const event = rangedEvent(defenderWithPlacement, {
-      legalRetreatOptions: [],
       routed: true,
     });
 
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
     const apply = throwIfPending(ra.attackApplyState, 'attack apply');
-    const rout = getRoutStateFromAttackApply(apply);
-    expect(rout.substepType).toBe('rout');
-    expect(rout.unitsToRout).toContain(defender);
+    expect(apply.attackResult.unitRouted).toBe(true);
+    expect(apply.routState).toBe('pending');
+    expect(apply.defendingUnit).toBe(defender);
+    // A rout supersedes retreat and reverse.
+    expect(apply.retreatState).toBe('bypassed');
+    expect(apply.reverseState).toBe('bypassed');
   });
 
-  it('given retreated with sole legal E-6 south, retreat finalPosition equals that placement', () => {
+  it('leaves a pending retreat when the attack retreated the defender', () => {
     const { full, defenderWithPlacement } = createRangedResolutionFixture();
-    const onlyOption = {
-      coordinate: 'E-6' as const,
-      facing: 'south' as const,
-    };
     const event = rangedEvent(defenderWithPlacement, {
-      legalRetreatOptions: [onlyOption],
       retreated: true,
     });
 
     const next = applyResolveRangedAttackEvent(event, full);
     const ra = getRangedAttackResolutionState(next);
     const apply = throwIfPending(ra.attackApplyState, 'attack apply');
-    expect(getRetreatStateFromAttackApply(apply).finalPosition).toStrictEqual(
-      onlyOption,
-    );
+    // Legal options are not recorded here — the retreat opener computes them.
+    expect(apply.retreatState).toBe('pending');
+    expect(apply.routState).toBe('bypassed');
+    expect(apply.reverseState).toBe('bypassed');
   });
-
-  it.each<{
-    description: string;
-    legalRetreatOptions: UnitPlacement[];
-  }>([
-    {
-      description: 'multiple legal retreats',
-      legalRetreatOptions: [
-        { coordinate: 'E-6', facing: 'south' },
-        { coordinate: 'E-4', facing: 'south' },
-      ],
-    },
-    {
-      description: 'no legal retreat options',
-      legalRetreatOptions: [],
-    },
-  ])(
-    'given retreated true and $description, retreat finalPosition is undefined',
-    ({ legalRetreatOptions }) => {
-      const { full, defenderWithPlacement } = createRangedResolutionFixture();
-      const event = rangedEvent(defenderWithPlacement, {
-        legalRetreatOptions,
-        retreated: true,
-      });
-
-      const next = applyResolveRangedAttackEvent(event, full);
-      const ra = getRangedAttackResolutionState(next);
-      const apply = throwIfPending(ra.attackApplyState, 'attack apply');
-      expect(getRetreatStateFromAttackApply(apply).finalPosition).toBe(
-        'pending',
-      );
-    },
-  );
 });

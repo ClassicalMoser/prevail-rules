@@ -42,3 +42,16 @@ export {
   triggerRoutFromRetreatRangedAttackSchema,
   triggerRoutFromRetreatSharedFieldsSchema,
 } from './triggerRoutFromRetreat';
+
+// An attack apply opens a still-pending outcome when that step's turn comes.
+export { OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE } from './openRoutFromAttackApply';
+export type { OpenRoutFromAttackApplyEvent } from './openRoutFromAttackApply';
+export { openRoutFromAttackApplyEventSchema } from './openRoutFromAttackApply';
+
+export { OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE } from './openRetreatFromAttackApply';
+export type { OpenRetreatFromAttackApplyEvent } from './openRetreatFromAttackApply';
+export { openRetreatFromAttackApplyEventSchema } from './openRetreatFromAttackApply';
+
+export { OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE } from './openReverseFromAttackApply';
+export type { OpenReverseFromAttackApplyEvent } from './openReverseFromAttackApply';
+export { openReverseFromAttackApplyEventSchema } from './openReverseFromAttackApply';

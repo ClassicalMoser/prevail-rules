@@ -52,7 +52,7 @@ describe('generateResolveReverseEvent function', () => {
     expect(event.newUnitPlacement.placement.coordinate).toBe('E-5');
   });
 
-  it('given white initiative and both melee applies in reverse, uses white unit and west facing', () => {
+  it('picks the initiative player and holds the facing of a unit still engaged', () => {
     const state = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'white',
@@ -80,7 +80,9 @@ describe('generateResolveReverseEvent function', () => {
     expect(event.effectType).toBe('resolveReverse');
     expect(event.attackResolutionContext).toBe('melee');
     expect(event.unitInstance.unit).toBe(whiteUnit);
-    expect(event.newUnitPlacement.placement.facing).toBe('west');
+    // Both units share E-5, so the white unit is engaged and holds the facing
+    // it had. The reverse still resolves; it just turns nobody.
+    expect(event.newUnitPlacement.placement.facing).toBe('east');
   });
 
   it('given empty game with no phase slice, throws no current phase state', () => {

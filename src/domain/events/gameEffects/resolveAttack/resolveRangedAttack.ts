@@ -1,6 +1,6 @@
-import type { UnitPlacement, UnitWithPlacement } from '@entities';
+import type { UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
-import { unitPlacementSchema, unitWithPlacementSchema } from '@entities';
+import { unitWithPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -20,8 +20,6 @@ export interface ResolveRangedAttackEvent {
   retreated: boolean;
   /** The defender with placement. */
   defenderWithPlacement: UnitWithPlacement;
-  /** The legal retreat options. */
-  legalRetreatOptions: UnitPlacement[];
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
 }
@@ -32,7 +30,6 @@ const _resolveRangedAttackEventSchemaObject = z
     effectType: z.literal(RESOLVE_RANGED_ATTACK_EFFECT_TYPE),
     eventNumber: z.number(),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
-    legalRetreatOptions: z.array(unitPlacementSchema),
     retreated: z.boolean(),
     reversed: z.boolean(),
     routed: z.boolean(),
@@ -54,7 +51,6 @@ export const resolveRangedAttackEventSchema: z.ZodObject<{
   effectType: z.ZodLiteral<typeof RESOLVE_RANGED_ATTACK_EFFECT_TYPE>;
   eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
-  legalRetreatOptions: z.ZodArray<typeof unitPlacementSchema>;
   retreated: z.ZodBoolean;
   reversed: z.ZodBoolean;
   routed: z.ZodBoolean;

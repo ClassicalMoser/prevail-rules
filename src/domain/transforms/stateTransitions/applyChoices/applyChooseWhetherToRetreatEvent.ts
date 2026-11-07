@@ -45,12 +45,17 @@ export function applyChooseWhetherToRetreatEvent<S extends GameState>(
   const finalPosition: UnitPlacement | 'pending' =
     legalRetreatOptions.length === 1 ? legalRetreatOptions[0] : 'pending';
 
+  // A retreat with somewhere to go will never rout, so that slot is bypassed.
+  // Nowhere to go leaves the rout pending until triggerRoutFromRetreat opens it.
+  const nestedRoutState: 'pending' | 'bypassed' =
+    legalRetreatOptions.length === 0 ? 'pending' : 'bypassed';
+
   const retreatState: RetreatState = {
     completed: false,
     finalPosition,
     legalRetreatOptions,
     retreatingUnit,
-    routState: 'pending',
+    routState: nestedRoutState,
     substepType: 'retreat',
   };
 

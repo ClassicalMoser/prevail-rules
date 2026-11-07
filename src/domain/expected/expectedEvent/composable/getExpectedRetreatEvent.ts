@@ -27,6 +27,12 @@ export function getExpectedRetreatEvent(
         effectType: 'triggerRoutFromRetreat',
       };
     }
+    // A retreat with nowhere to go must still rout — bypassed here is corrupt.
+    if (retreatState.routState === 'bypassed') {
+      throw new Error(
+        'Retreat with no legal options cannot have a bypassed rout',
+      );
+    }
     // If the rout state is populated, check if it's completed
     if (!retreatState.routState.completed) {
       return getExpectedRoutEvent(retreatState.routState);

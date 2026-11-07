@@ -1,20 +1,23 @@
 import type { TriggerRoutFromRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import {
+  getAttackApplyStateFromRangedAttack,
   getRetreatStateFromMelee,
   getRetreatStateFromRangedAttack,
+  isOpenSubstep,
 } from '@queries';
 import {
   createAttackApplyStateWithRetreat,
+  createAttackApplyStateWithRetreatAndReverse,
   createIssueCommandsPhaseState,
   createMeleeResolutionState,
   createRangedAttackResolutionState,
   createResolveMeleePhaseState,
+  createRetreatState,
   createTestUnit,
   placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms/pureTransforms';
-import { throwIfPending } from '@utils';
 
 import { applyTriggerRoutFromRetreatEvent } from './applyTriggerRoutFromRetreatEvent';
 
@@ -35,8 +38,15 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
 
-    const attackApplyState =
-      createAttackApplyStateWithRetreat(unitWithPlacement);
+    // Nowhere to go: the nested rout is still due, so it stays pending.
+    const attackApplyState = createAttackApplyStateWithRetreat(
+      unitWithPlacement,
+      {
+        retreatState: createRetreatState(unitWithPlacement, {
+          legalRetreatOptions: [],
+        }),
+      },
+    );
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
       attackApplyState,
     });
@@ -75,8 +85,14 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       ),
     };
 
+    // Nowhere to go: the nested rout is still due, so it stays pending.
     const attackApplyState = createAttackApplyStateWithRetreat(
       retreatingUnitWithPlacement,
+      {
+        retreatState: createRetreatState(retreatingUnitWithPlacement, {
+          legalRetreatOptions: [],
+        }),
+      },
     );
     const meleeState = createMeleeResolutionState(
       stateWithUnits,
@@ -107,7 +123,12 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromRangedAttack(newState);
 
-      const rout = throwIfPending(newRetreatState.routState, 'rout');
+      // triggerRoutFromRetreat opens the nested rout under this retreat.
+      const rout = newRetreatState.routState;
+      expect(isOpenSubstep(rout)).toBe(true);
+      if (!isOpenSubstep(rout)) {
+        throw new Error('expected open rout');
+      }
       expect(rout.substepType).toBe('rout');
       expect(rout.player).toBe(retreatState.retreatingUnit.unit.playerSide);
       expect(rout.unitsToRout).toContain(retreatState.retreatingUnit.unit);
@@ -127,7 +148,12 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromRangedAttack(newState);
 
-      const rout = throwIfPending(newRetreatState.routState, 'rout');
+      // triggerRoutFromRetreat opens the nested rout under this retreat.
+      const rout = newRetreatState.routState;
+      expect(isOpenSubstep(rout)).toBe(true);
+      if (!isOpenSubstep(rout)) {
+        throw new Error('expected open rout');
+      }
       expect(rout.numberToDiscard).toBe('pending');
       expect(rout.cardsChosen).toBe(false);
       expect(rout.completed).toBe(false);
@@ -150,9 +176,13 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromMelee(newState, 'black');
 
-      expect(throwIfPending(newRetreatState.routState, 'rout').player).toBe(
-        'black',
-      );
+      // triggerRoutFromRetreat opens the nested rout under this retreat.
+      const rout = newRetreatState.routState;
+      expect(isOpenSubstep(rout)).toBe(true);
+      if (!isOpenSubstep(rout)) {
+        throw new Error('expected open rout');
+      }
+      expect(rout.player).toBe('black');
     });
 
     it('given white melee retreat, melee trigger with retreatingPlayer white seeds rout', () => {
@@ -170,9 +200,54 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
       const newRetreatState = getRetreatStateFromMelee(newState, 'white');
 
-      expect(throwIfPending(newRetreatState.routState, 'rout').player).toBe(
-        'white',
+      // triggerRoutFromRetreat opens the nested rout under this retreat.
+      const rout = newRetreatState.routState;
+      expect(isOpenSubstep(rout)).toBe(true);
+      if (!isOpenSubstep(rout)) {
+        throw new Error('expected open rout');
+      }
+      expect(rout.player).toBe('white');
+    });
+  });
+
+  describe('rout supersedes reverse', () => {
+    it('bypasses a still-pending reverse on the apply when the retreat routs', () => {
+      const state = createEmptyGameState('standard');
+      const retreatingUnit = createTestUnit('white', { attack: 2 });
+      const unitWithPlacement = placed(retreatingUnit, 'E-5', 'north');
+      const stateWithUnit = {
+        ...state,
+        boardState: addUnitToBoard(state.boardState, unitWithPlacement),
+      };
+      // Retreat and reverse were both due; nowhere to go opens a rout instead.
+      const attackApplyState = createAttackApplyStateWithRetreatAndReverse(
+        unitWithPlacement,
+        {
+          retreatState: createRetreatState(unitWithPlacement, {
+            legalRetreatOptions: [],
+          }),
+        },
       );
+      expect(attackApplyState.reverseState).toBe('pending');
+      const ranged = createRangedAttackResolutionState(stateWithUnit, {
+        attackApplyState,
+      });
+      const full = updatePhaseState(
+        stateWithUnit,
+        createIssueCommandsPhaseState(stateWithUnit, {
+          currentCommandResolutionState: ranged,
+        }),
+      );
+      const event: TriggerRoutFromRetreatEvent = {
+        effectType: 'triggerRoutFromRetreat',
+        eventNumber: 0,
+        eventType: 'gameEffect',
+        retreatResolutionContext: 'rangedAttack',
+      };
+
+      const next = applyTriggerRoutFromRetreatEvent(event, full);
+      const apply = getAttackApplyStateFromRangedAttack(next);
+      expect(apply.reverseState).toBe('bypassed');
     });
   });
 

@@ -18,7 +18,7 @@ export function createRetreatState(
   unit: UnitWithPlacement,
   overrides?: Partial<RetreatState>,
 ): RetreatState {
-  const legalRetreatOptions: UnitPlacement[] = [
+  const defaultLegalRetreatOptions: UnitPlacement[] = [
     {
       coordinate: 'E-4' as const,
       facing: 'north',
@@ -28,14 +28,26 @@ export function createRetreatState(
       facing: 'north',
     },
   ];
+  const {
+    legalRetreatOptions: overrideLegalRetreatOptions,
+    routState: overrideRoutState,
+    ...restOverrides
+  } = overrides ?? {};
+  const legalRetreatOptions =
+    overrideLegalRetreatOptions ?? defaultLegalRetreatOptions;
+  // A retreat with somewhere to go will never rout, so that slot is bypassed.
+  // Nowhere to go leaves the rout pending until triggerRoutFromRetreat opens it.
+  const routState =
+    overrideRoutState ??
+    (legalRetreatOptions.length === 0 ? 'pending' : 'bypassed');
   return {
     completed: false,
     finalPosition: 'pending',
     legalRetreatOptions,
     retreatingUnit: unit,
-    routState: 'pending',
+    routState,
     substepType: 'retreat' as const,
-    ...overrides,
+    ...restOverrides,
   };
 }
 

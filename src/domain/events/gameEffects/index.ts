@@ -53,6 +53,12 @@ export {
   RALLY_ROUT_RESOLUTION_SOURCE,
   RANGED_ATTACK_RESOLUTION_CONTEXT,
   REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE,
+  OPEN_RETREAT_FROM_ATTACK_APPLY_EFFECT_TYPE,
+  OPEN_REVERSE_FROM_ATTACK_APPLY_EFFECT_TYPE,
+  OPEN_ROUT_FROM_ATTACK_APPLY_EFFECT_TYPE,
+  openRetreatFromAttackApplyEventSchema,
+  openReverseFromAttackApplyEventSchema,
+  openRoutFromAttackApplyEventSchema,
   RESOLVE_RETREAT_EFFECT_TYPE,
   RESOLVE_REVERSE_EFFECT_TYPE,
   RESOLVE_ROUT_EFFECT_TYPE,
@@ -70,6 +76,9 @@ export {
 } from './defenseResult';
 export type {
   AttackResolutionContext,
+  OpenRetreatFromAttackApplyEvent,
+  OpenReverseFromAttackApplyEvent,
+  OpenRoutFromAttackApplyEvent,
   ResolveRetreatEvent,
   ResolveReverseEvent,
   ResolveRoutEvent,

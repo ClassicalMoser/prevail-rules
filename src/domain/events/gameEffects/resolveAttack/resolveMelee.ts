@@ -1,10 +1,6 @@
-import type { Coordinate, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { Coordinate, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
-import {
-  coordinateSchema,
-  unitPlacementSchema,
-  unitWithPlacementSchema,
-} from '@entities';
+import { coordinateSchema, unitWithPlacementSchema } from '@entities';
 import { GAME_EFFECT_EVENT_TYPE } from '@events/eventTypeLiterals';
 import { z } from 'zod';
 
@@ -15,6 +11,8 @@ export const RESOLVE_MELEE_EFFECT_TYPE = 'resolveMelee' as const;
  * Deterministic melee resolution after engagement, supports, and committed cards.
  * Initiative orders substeps; the procedure computes attack outcomes and snapshots anything
  * apply would otherwise have to re-query from the board.
+ * TODO(misleading): legal retreat options are no longer snapshotted here — the
+ * retreat opener computes them when that step opens.
  */
 export interface ResolveMeleeEvent {
   /** The type of the event. */
@@ -29,10 +27,6 @@ export interface ResolveMeleeEvent {
   whiteUnitWithPlacement: UnitWithPlacement;
   /** The black player's unit with placement. */
   blackUnitWithPlacement: UnitWithPlacement;
-  /** The white player's legal retreat options. */
-  whiteLegalRetreatOptions: UnitPlacement[];
-  /** The black player's legal retreat options. */
-  blackLegalRetreatOptions: UnitPlacement[];
   /** Whether the white player's unit is routed. */
   whiteUnitRouted: boolean;
   /** Whether the black player's unit is routed. */
@@ -49,7 +43,6 @@ export interface ResolveMeleeEvent {
 
 const _resolveMeleeEventSchemaObject = z
   .object({
-    blackLegalRetreatOptions: z.array(unitPlacementSchema),
     blackUnitRetreated: z.boolean(),
     blackUnitReversed: z.boolean(),
     blackUnitRouted: z.boolean(),
@@ -58,7 +51,6 @@ const _resolveMeleeEventSchemaObject = z
     eventNumber: z.number(),
     eventType: z.literal(GAME_EFFECT_EVENT_TYPE),
     location: coordinateSchema,
-    whiteLegalRetreatOptions: z.array(unitPlacementSchema),
     whiteUnitRetreated: z.boolean(),
     whiteUnitReversed: z.boolean(),
     whiteUnitRouted: z.boolean(),
@@ -77,7 +69,6 @@ const _assertExactResolveMeleeEvent: AssertExact<
 
 /** The schema for a resolve melee event. */
 export const resolveMeleeEventSchema: z.ZodObject<{
-  blackLegalRetreatOptions: z.ZodArray<typeof unitPlacementSchema>;
   blackUnitRetreated: z.ZodBoolean;
   blackUnitReversed: z.ZodBoolean;
   blackUnitRouted: z.ZodBoolean;
@@ -86,7 +77,6 @@ export const resolveMeleeEventSchema: z.ZodObject<{
   eventNumber: z.ZodNumber;
   eventType: z.ZodLiteral<typeof GAME_EFFECT_EVENT_TYPE>;
   location: typeof coordinateSchema;
-  whiteLegalRetreatOptions: z.ZodArray<typeof unitPlacementSchema>;
   whiteUnitRetreated: z.ZodBoolean;
   whiteUnitReversed: z.ZodBoolean;
   whiteUnitRouted: z.ZodBoolean;

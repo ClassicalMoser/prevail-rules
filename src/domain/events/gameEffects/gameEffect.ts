@@ -30,6 +30,9 @@ import type {
   CompleteResolveMeleePhaseEvent,
 } from './completePhase';
 import type {
+  OpenRetreatFromAttackApplyEvent,
+  OpenReverseFromAttackApplyEvent,
+  OpenRoutFromAttackApplyEvent,
   ResolveRetreatEvent,
   ResolveReverseEvent,
   ResolveRoutEvent,
@@ -80,6 +83,9 @@ import {
   resolveRangedAttackEventSchema,
 } from './resolveAttack';
 import {
+  openRetreatFromAttackApplyEventSchema,
+  openReverseFromAttackApplyEventSchema,
+  openRoutFromAttackApplyEventSchema,
   resolveRetreatEventSchema,
   resolveReverseEventSchema,
   resolveRoutEventSchema,
@@ -106,6 +112,9 @@ type GameEffectEventUnion =
   | CompleteResolveMeleePhaseEvent
   | DiscardPlayedCardsEvent
   | GameOverEvent
+  | OpenRetreatFromAttackApplyEvent
+  | OpenReverseFromAttackApplyEvent
+  | OpenRoutFromAttackApplyEvent
   | ResolveEngageRetreatOptionEvent
   | ResolveFlankEngagementEvent
   | ResolveInitiativeEvent
@@ -142,6 +151,9 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   completeResolveMeleePhaseEventSchema,
   discardPlayedCardsEventSchema,
   gameOverEventSchema,
+  openRetreatFromAttackApplyEventSchema,
+  openReverseFromAttackApplyEventSchema,
+  openRoutFromAttackApplyEventSchema,
   resolveEngageRetreatOptionEventSchema,
   resolveFlankEngagementEventSchema,
   resolveInitiativeEventSchema,
@@ -156,7 +168,6 @@ const _gameEffectEventSchemaObject = z.discriminatedUnion('effectType', [
   startEngagementEventSchema,
   triggerRoutFromRetreatEventSchema,
 ]);
-
 type GameEffectEventSchemaType = z.infer<typeof _gameEffectEventSchemaObject>;
 
 const _assertExactGameEffect: AssertExact<

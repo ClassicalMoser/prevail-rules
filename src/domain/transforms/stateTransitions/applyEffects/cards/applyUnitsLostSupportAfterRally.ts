@@ -47,23 +47,14 @@ export function applyUnitsLostSupportAfterRally<S extends GameState>(
     newState = addUnitToRouted(newState, unitWithPlacement.unit);
   }
 
-  const totalPenalty = unitsToRout.reduce(
-    (sum, unitWithPlacement) => sum + unitWithPlacement.unit.unitType.morale,
-    0,
-  );
-
-  // FIXME: Morale is the discard penalty, so units with zero morale rout with nothing
-  // to pay and open no rout substep. Only the step advance below keeps the
-  // sequencer off this state: asked again with a non-empty unitsLostSupport and
-  // this slot still 'pending', getExpectedRallyResolutionEvent throws 'Rout
-  // state is required when units lost support'. Known regression from a
-  // behaviour change, left as is.
+  // Uncovered units always open a rout. The discard debt (possibly zero) is
+  // filled by resolveRout; a zero penalty closes that substep without a choice.
   const routState: RoutState | 'pending' =
-    totalPenalty > 0
+    unitsToRout.length > 0
       ? ({
           cardsChosen: false,
           completed: false,
-          numberToDiscard: totalPenalty,
+          numberToDiscard: 'pending',
           player,
           substepType: 'rout' as const,
           unitsToRout: unitsToRout.map((u) => u.unit),
@@ -76,8 +67,9 @@ export function applyUnitsLostSupportAfterRally<S extends GameState>(
     unitsLostSupport: unitsToRout.map((u) => u.unit),
   };
 
+  // Stay on this step while a rout is open; otherwise advance cleanup.
   const finalNextStep: CleanupPhaseState['step'] =
-    totalPenalty > 0 ? phaseState.step : defaultNextStep;
+    unitsToRout.length > 0 ? phaseState.step : defaultNextStep;
 
   const newPhaseState = updateRallyResolutionStateForCurrentStep(
     phaseState,

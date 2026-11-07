@@ -1,4 +1,4 @@
-import { getRetreatStateFromAttackApply } from '@queries';
+import { getRetreatStateFromAttackApply, isOpenSubstep } from '@queries';
 import { throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyStateWithRetreat,
@@ -71,6 +71,12 @@ describe('updateRetreatRoutState function', () => {
       'attack apply',
     );
     const retreat = getRetreatStateFromAttackApply(attackApply);
-    expect(throwIfPending(retreat.routState, 'rout').numberToDiscard).toBe(2);
+    const rout = retreat.routState;
+    // The update wrote an open rout under the retreat; pending and bypassed are not readable.
+    expect(isOpenSubstep(rout)).toBe(true);
+    if (!isOpenSubstep(rout)) {
+      throw new Error('expected open rout');
+    }
+    expect(rout.numberToDiscard).toBe(2);
   });
 });

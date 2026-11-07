@@ -1,10 +1,10 @@
 import type { ExpectedGameEffect, ExpectedPlayerInput } from '@events';
+import { createAttackApplyState as createPendingAttackApply } from '@factories';
 import {
   createAttackApplyState,
   createAttackApplyStateWithRetreat,
   createAttackApplyStateWithReverse,
   createAttackApplyStateWithRout,
-  createGameStateWithEngagedUnits,
   createRetreatState,
   createReverseState,
   createRoutState,
@@ -14,24 +14,10 @@ import {
 
 import { getExpectedAttackApplyEvent } from './getExpectedAttackApplyEvent';
 
-import { createEmptyGameState } from '@factories';
-
-const { canReverseUnitMock } = vi.hoisted(() => ({
-  canReverseUnitMock: vi.fn(),
-}));
-
-vi.mock(import('@legality'), () => ({
-  canReverseUnit: canReverseUnitMock,
-}));
-
 /**
  * GetExpectedAttackApplyEvent: next attack-apply step (melee/ranged) from attack-apply substate.
  */
 describe('getExpectedAttackApplyEvent function', () => {
-  beforeEach(() => {
-    canReverseUnitMock.mockReset();
-  });
-
   function expectGameEffect(result: unknown, effectType: string) {
     expect((result as ExpectedGameEffect).effectType).toBe(effectType);
   }
@@ -44,6 +30,71 @@ describe('getExpectedAttackApplyEvent function', () => {
     expect((result as ExpectedPlayerInput).playerSource).toBe(playerSource);
     expect((result as ExpectedPlayerInput).choiceType).toBe(choiceType);
   }
+
+  describe('openers for pending slots', () => {
+    it('a fresh rout opens before it can resolve', () => {
+      const unit = createTestUnit('white', { attack: 2 });
+      // Factory leaves the rout pending; nothing is written yet.
+      const attackApplyState = createPendingAttackApply(unit, {
+        unitRetreated: true,
+        unitReversed: true,
+        unitRouted: true,
+      });
+
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState),
+        'openRoutFromAttackApply',
+      );
+    });
+
+    it('a fresh retreat opens before the player is asked where to go', () => {
+      const unit = createTestUnit('white', { attack: 2 });
+      const attackApplyState = createPendingAttackApply(unit, {
+        unitRetreated: true,
+        unitReversed: false,
+        unitRouted: false,
+      });
+
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState),
+        'openRetreatFromAttackApply',
+      );
+    });
+
+    it('a fresh reverse opens after any higher outcome is done', () => {
+      const unit = createTestUnit('white', { attack: 2 });
+      const attackApplyState = createPendingAttackApply(unit, {
+        unitRetreated: false,
+        unitReversed: true,
+        unitRouted: false,
+      });
+
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState),
+        'openReverseFromAttackApply',
+      );
+    });
+
+    it('a pending rout beats a pending retreat and reverse on the same apply', () => {
+      const unit = createTestUnit('white', { attack: 2 });
+      // Hand-built: all three still pending. Rout is the most severe, so it opens first.
+      const attackApplyState = createAttackApplyState(unit, {
+        attackResult: {
+          unitRetreated: true,
+          unitReversed: true,
+          unitRouted: true,
+        },
+        retreatState: 'pending',
+        reverseState: 'pending',
+        routState: 'pending',
+      });
+
+      expectGameEffect(
+        getExpectedAttackApplyEvent(attackApplyState),
+        'openRoutFromAttackApply',
+      );
+    });
+  });
 
   describe('rout priority', () => {
     it('given prioritize rout over retreat and reverse', () => {
@@ -61,10 +112,7 @@ describe('getExpectedAttackApplyEvent function', () => {
       });
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
+        getExpectedAttackApplyEvent(attackApplyState),
         'resolveRout',
       );
     });
@@ -79,10 +127,7 @@ describe('getExpectedAttackApplyEvent function', () => {
       });
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
+        getExpectedAttackApplyEvent(attackApplyState),
         'completeAttackApply',
       );
     });
@@ -97,12 +142,9 @@ describe('getExpectedAttackApplyEvent function', () => {
         }),
       });
 
-      expect(() =>
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
-      ).toThrow('Attack apply state is already complete');
+      expect(() => getExpectedAttackApplyEvent(attackApplyState)).toThrow(
+        'Attack apply state is already complete',
+      );
     });
   });
 
@@ -114,10 +156,7 @@ describe('getExpectedAttackApplyEvent function', () => {
       );
 
       expectPlayerChoice(
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
+        getExpectedAttackApplyEvent(attackApplyState),
         'white',
         'chooseRetreatOption',
       );
@@ -134,10 +173,7 @@ describe('getExpectedAttackApplyEvent function', () => {
       );
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
+        getExpectedAttackApplyEvent(attackApplyState),
         'completeAttackApply',
       );
     });
@@ -146,58 +182,15 @@ describe('getExpectedAttackApplyEvent function', () => {
   describe('reverse', () => {
     it('given reverse is not completed and unit can reverse, returns expected reverse event', () => {
       const unit = createTestUnit('white', { attack: 2 });
-      canReverseUnitMock.mockReturnValue(true);
       const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyStateWithReverse(
         unitPlacement.unit,
       );
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
+        getExpectedAttackApplyEvent(attackApplyState),
         'resolveReverse',
       );
-    });
-
-    it('given reverse cannot happen due to engagement, returns completeAttackApply', () => {
-      const unit = createTestUnit('white', { attack: 2 });
-      canReverseUnitMock.mockReturnValue(false);
-      const unitPlacement = placed(unit, 'E-5', 'north');
-      const attackApplyState = createAttackApplyStateWithReverse(
-        unitPlacement.unit,
-      );
-      const gameState = createGameStateWithEngagedUnits(
-        unit,
-        createTestUnit('black', { attack: 2 }),
-        'E-5',
-        'north',
-      );
-
-      expectGameEffect(
-        getExpectedAttackApplyEvent(attackApplyState, gameState),
-        'completeAttackApply',
-      );
-    });
-
-    it('given when reverse cannot happen and attack apply is already complete, throws', () => {
-      const unit = createTestUnit('white', { attack: 2 });
-      canReverseUnitMock.mockReturnValue(false);
-      const unitPlacement = placed(unit, 'E-5', 'north');
-      const attackApplyState = createAttackApplyStateWithReverse(
-        unitPlacement.unit,
-        {
-          completed: true,
-        },
-      );
-
-      expect(() =>
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
-      ).toThrow('Attack apply state is already complete');
     });
 
     it('given continue to completeAttackApply when reverse is completed', () => {
@@ -217,10 +210,7 @@ describe('getExpectedAttackApplyEvent function', () => {
       );
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
+        getExpectedAttackApplyEvent(attackApplyState),
         'completeAttackApply',
       );
     });
@@ -244,10 +234,7 @@ describe('getExpectedAttackApplyEvent function', () => {
       );
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
+        getExpectedAttackApplyEvent(attackApplyState),
         'completeAttackApply',
       );
     });
@@ -269,12 +256,9 @@ describe('getExpectedAttackApplyEvent function', () => {
         },
       );
 
-      expect(() =>
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
-      ).toThrow('Attack apply state is already complete');
+      expect(() => getExpectedAttackApplyEvent(attackApplyState)).toThrow(
+        'Attack apply state is already complete',
+      );
     });
   });
 
@@ -284,10 +268,7 @@ describe('getExpectedAttackApplyEvent function', () => {
       const attackApplyState = createAttackApplyState(unit);
 
       expectGameEffect(
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
+        getExpectedAttackApplyEvent(attackApplyState),
         'completeAttackApply',
       );
     });
@@ -298,37 +279,9 @@ describe('getExpectedAttackApplyEvent function', () => {
         completed: true,
       });
 
-      expect(() =>
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
-      ).toThrow('Attack apply state is already complete');
-    });
-
-    it('throws when a result is claimed and no outcome was opened', () => {
-      const unit = createTestUnit('white', { attack: 2 });
-      // The game cannot reach this: an attack that routs opens its rout and
-      // bypasses the rest. Every slot is overridden by hand to leave the apply
-      // claiming a rout with nothing written anywhere, which is the one state
-      // this guard exists to reject.
-      const attackApplyState = createAttackApplyState(unit, {
-        attackResult: {
-          unitRetreated: false,
-          unitReversed: false,
-          unitRouted: true,
-        },
-        retreatState: 'pending' as const,
-        reverseState: 'pending' as const,
-        routState: 'pending' as const,
-      });
-
-      expect(() =>
-        getExpectedAttackApplyEvent(
-          attackApplyState,
-          createEmptyGameState('standard'),
-        ),
-      ).toThrow('Attack apply state not initialized correctly');
+      expect(() => getExpectedAttackApplyEvent(attackApplyState)).toThrow(
+        'Attack apply state is already complete',
+      );
     });
   });
 });

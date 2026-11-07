@@ -148,6 +148,29 @@ describe('applyResolveRoutEvent function', () => {
       expect(newRoutState.numberToDiscard).toBe(2);
     });
 
+    it('a zero penalty closes the rout — there is nothing to choose', () => {
+      const state = createStateWithRangedAttackRout();
+      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const routState = getRoutStateFromAttackApply(attackApplyState);
+
+      const event: ResolveRoutEvent = {
+        effectType: 'resolveRout',
+        eventNumber: 0,
+        eventType: 'gameEffect',
+        penalty: 0,
+        routResolutionSource: 'rangedAttack',
+        unitInstances: [routState.unitsToRout[0]],
+      };
+
+      const newState = applyResolveRoutEvent(event, state);
+      const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
+      const newRoutState = getRoutStateFromAttackApply(newAttackApplyState);
+
+      expect(newRoutState.numberToDiscard).toBe(0);
+      expect(newRoutState.cardsChosen).toBe(true);
+      expect(newRoutState.completed).toBe(true);
+    });
+
     it('given penalty 3, player unitsToRout and cardsChosen unchanged besides numberToDiscard', () => {
       const state = createStateWithRangedAttackRout();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);

@@ -1,4 +1,3 @@
-import type { UnitPlacement } from '@entities';
 import type { GameState } from '@game';
 import {
   GAME_EFFECT_EVENT_TYPE,
@@ -12,7 +11,6 @@ import {
   getRangedAttackResolutionState,
   modifiersFromCompletedCommitment,
 } from '@queries';
-import { getLegalRetreats } from '@legality';
 /**
  * Generates a ResolveRangedAttackEvent by calculating the attack value
  * and determining the results (routed, reversed, retreated).
@@ -87,19 +85,12 @@ export function generateResolveRangedAttackEvent(
     unit: defendingUnit,
   };
 
-  let legalRetreatOptions: Set<UnitPlacement>;
-  if (attackResult.unitRetreated) {
-    legalRetreatOptions = getLegalRetreats(defenderWithPlacement, state);
-  } else {
-    legalRetreatOptions = new Set();
-  }
-
+  // Legal retreat hexes are computed when the retreat opens, not on this event.
   return {
     defenderWithPlacement,
     effectType: RESOLVE_RANGED_ATTACK_EFFECT_TYPE,
     eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
-    legalRetreatOptions: [...legalRetreatOptions],
     retreated: attackResult.unitRetreated,
     reversed: attackResult.unitReversed,
     routed: attackResult.unitRouted,

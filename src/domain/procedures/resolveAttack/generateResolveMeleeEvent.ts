@@ -1,4 +1,3 @@
-import type { UnitPlacement } from '@entities';
 import type { ResolveMeleeEvent } from '@events';
 import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_MELEE_EFFECT_TYPE } from '@events';
@@ -10,7 +9,6 @@ import {
   getPlayerUnitWithPosition,
   modifiersFromCompletedCommitment,
 } from '@queries';
-import { getLegalRetreats } from '@legality';
 /**
  * Generates a ResolveMeleeEvent by calculating attack values for both units
  * and determining the results (routed, reversed, retreated for each).
@@ -94,22 +92,8 @@ export function generateResolveMeleeEvent(
     whiteUnit.unit,
   );
 
-  let whiteLegalRetreatOptions: Set<UnitPlacement>;
-  if (whiteUnitResult.unitRetreated) {
-    whiteLegalRetreatOptions = getLegalRetreats(whiteUnit, state);
-  } else {
-    whiteLegalRetreatOptions = new Set();
-  }
-
-  let blackLegalRetreatOptions: Set<UnitPlacement>;
-  if (blackUnitResult.unitRetreated) {
-    blackLegalRetreatOptions = getLegalRetreats(blackUnit, state);
-  } else {
-    blackLegalRetreatOptions = new Set();
-  }
-
+  // Legal retreat hexes are computed when the retreat opens, not on this event.
   return {
-    blackLegalRetreatOptions: [...blackLegalRetreatOptions],
     blackUnitRetreated: blackUnitResult.unitRetreated,
     blackUnitReversed: blackUnitResult.unitReversed,
     blackUnitRouted: blackUnitResult.unitRouted,
@@ -118,7 +102,6 @@ export function generateResolveMeleeEvent(
     eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     location: meleeCoordinate,
-    whiteLegalRetreatOptions: [...whiteLegalRetreatOptions],
     whiteUnitRetreated: whiteUnitResult.unitRetreated,
     whiteUnitReversed: whiteUnitResult.unitReversed,
     whiteUnitRouted: whiteUnitResult.unitRouted,

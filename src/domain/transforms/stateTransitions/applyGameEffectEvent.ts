@@ -17,6 +17,9 @@ import {
   applyCompleteUnitMovementEvent,
   applyDiscardPlayedCardsEvent,
   applyGameOverEvent,
+  applyOpenRetreatFromAttackApplyEvent,
+  applyOpenReverseFromAttackApplyEvent,
+  applyOpenRoutFromAttackApplyEvent,
   applyResolveEngageRetreatOptionEvent,
   applyResolveFlankEngagementEvent,
   applyResolveInitiativeEvent,
@@ -76,6 +79,15 @@ export function applyGameEffectEvent<S extends GameState>(
     }
     case 'gameOver': {
       return applyGameOverEvent(event, state);
+    }
+    case 'openRetreatFromAttackApply': {
+      return applyOpenRetreatFromAttackApplyEvent(event, state);
+    }
+    case 'openReverseFromAttackApply': {
+      return applyOpenReverseFromAttackApplyEvent(event, state);
+    }
+    case 'openRoutFromAttackApply': {
+      return applyOpenRoutFromAttackApplyEvent(event, state);
     }
     case 'resolveInitiative': {
       return applyResolveInitiativeEvent(event, state);

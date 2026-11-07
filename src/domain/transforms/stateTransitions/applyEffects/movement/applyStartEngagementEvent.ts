@@ -10,7 +10,10 @@ import {
   getIssueCommandsPhaseState,
   getMovementResolutionState,
 } from '@queries';
-import { updatePhaseState } from '@transforms/pureTransforms';
+import {
+  removeUnitsLeavingUnderRout,
+  updatePhaseState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a StartEngagementEvent to the game state.
@@ -97,5 +100,12 @@ export function applyStartEngagementEvent<S extends GameState>(
     currentCommandResolutionState: newMovementState,
   };
 
-  return updatePhaseState(state, newPhaseState);
+  const withEngagement = updatePhaseState(state, newPhaseState);
+
+  // A rear engagement opens a rout immediately — the defender leaves then.
+  if (event.engagementType === 'rear') {
+    return removeUnitsLeavingUnderRout(withEngagement, [defendingUnit]);
+  }
+
+  return withEngagement;
 }
