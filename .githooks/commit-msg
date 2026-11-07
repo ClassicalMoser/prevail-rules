@@ -1,0 +1,48 @@
+#!/bin/sh
+# Checks the commit subject against Conventional Commits.
+#
+# Inert until someone points git at this directory, the same as the
+# pre-commit hook beside it:
+#
+#   git config core.hooksPath .githooks
+#
+# It exists because the convention lived only in the log. Nothing read it and
+# nothing checked it, so it held for forty commits and then quietly lapsed for
+# four when whoever was committing had not just read the history.
+#
+# To commit without it, deliberately:
+#
+#   git commit --no-verify
+set -e
+
+subject=$(sed -n '1p' "$1")
+
+# Messages git writes itself, and the autosquash markers, are not ours to shape.
+case "$subject" in
+  "Merge "* | "Revert \""* | "fixup!"* | "squash!"* | "amend!"*) exit 0 ;;
+esac
+
+# type(optional scope)(optional !): description
+if printf '%s\n' "$subject" | grep -Eq '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9@/._-]+\))?!?: .+'; then
+  exit 0
+fi
+
+cat >&2 <<EOF
+The commit subject does not follow Conventional Commits:
+
+  $subject
+
+Use one of these types, a colon, a space, and a description:
+
+  feat fix docs style refactor perf test build ci chore revert
+
+For example:
+
+  refactor: name the combat outcome queries by what they are
+  docs(style): say what a comment must carry
+  fix!: stop routing the wrong unit in a double melee rout
+
+A scope in parentheses is optional. A \`!\` before the colon marks a breaking
+change.
+EOF
+exit 1

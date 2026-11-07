@@ -17,9 +17,19 @@ pnpm check:commentary
 
 Lint is Oxlint. The config is [`oxlint.config.ts`](./oxlint.config.ts), built from `classicalmoser-oxlint-config`, with import boundaries from [`boundaries.ts`](./boundaries.ts) and camelCase filenames. Format is Oxfmt. In an editor that type-checks as you type and applies fixes on save, a lot of this happens before you notice it. Agents and other setups do not share those defaults. Run `pnpm lint:fix` and `pnpm validate` yourself.
 
-`pnpm validate` is lint, formatting, typecheck, and the self-proof check that no spec reaches its own subject. Run it often, and before a commit. A pre-commit hook runs it, so a commit that does not pass does not land.
+`pnpm validate` is lint, formatting, typecheck, and the self-proof check that no spec reaches its own subject. Run it often, and before a commit. [`.githooks/pre-commit`](./.githooks/pre-commit) runs it for you once git is pointed at the hooks, so a commit that does not pass does not land.
 
 `pnpm check:commentary` reports in-body commentary density per layer. It cannot fail, and it is not a target to hit: padding a body raises the number and makes the file worse.
+
+## Commits
+
+Subjects follow [Conventional Commits](https://www.conventionalcommits.org): a type, an optional scope in parentheses, an optional `!` for a breaking change, then a colon, a space and a description. The types are `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`. [`.githooks/commit-msg`](./.githooks/commit-msg) checks it.
+
+Both hooks are inert until git is pointed at them, which is a local choice and not done for you:
+
+```bash
+git config core.hooksPath .githooks
+```
 
 ## Standards
 
