@@ -71,7 +71,7 @@ export function throwIfBypassed<T>(value: T | 'bypassed', message: string): T {
  */
 export function throwIfNone<T>(value: T | 'none', message: string): T {
   // A caller that needs the present value stops while the slot is still absent.
-  if (value === 'none') {
+  if (isNone(value)) {
     throw new Error(message);
   }
   return value;
