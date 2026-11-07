@@ -1,17 +1,12 @@
 import { CLEANUP_PHASE } from '@game';
-import {
-  alaeSocii,
-  manipularLegion,
-  createTestCard,
-  createTestUnit,
-  placed,
-} from '@testing';
+import { createTestCard, createTestUnit, placed, tempUnits } from '@testing';
 import {
   addUnitToBoard,
   updateBoardState,
   updatePhaseState,
   updateCurrentInitiative,
 } from '@transforms';
+import { throwIfUndefined } from '@utils';
 
 import { isValidAssignUnitSupportEvent } from './isValidAssignUnitSupportEvent';
 
@@ -287,13 +282,25 @@ describe('isValidAssignUnitSupportEvent function', () => {
       createEmptyGameState('standard'),
       'white',
     );
+    // Two different formation rows: one fills a unit-type slot, the other a trait slot.
+    const formationTypes = tempUnits.filter((unit) =>
+      unit.traits.includes('formation'),
+    );
+    const typedType = throwIfUndefined(
+      formationTypes[0],
+      'expected a formation unit',
+    );
+    const traitOnlyType = throwIfUndefined(
+      formationTypes[1],
+      'expected a second formation unit',
+    );
     const typed = createTestUnit('white', {
       instanceNumber: 1,
-      unitType: manipularLegion,
+      unitType: typedType,
     });
     const traitOnly = createTestUnit('white', {
       instanceNumber: 1,
-      unitType: alaeSocii,
+      unitType: traitOnlyType,
     });
     expect(typed.unitType.traits).toContain('formation');
     expect(traitOnly.unitType.traits).toContain('formation');

@@ -1,12 +1,11 @@
 import type { GameState } from '@game';
 import {
-  equites,
-  punicCitizenSpearmen,
-  velites,
   createAttackApplyState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   createTestUnit,
+  getUnitByStatValue,
+  getUnitByTrait,
   placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
@@ -14,8 +13,12 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 import { generateResolveRangedAttackEvent } from './generateResolveRangedAttackEvent';
 
 import { createEmptyGameState } from '@factories';
-/** Citizen spearmen: default `inPlay` (+1 attack) keeps strike below retreat. */
-const spearmenType = punicCitizenSpearmen;
+/** Phalanx spearmen: default `inPlay` (+1 attack) keeps strike below retreat. */
+const spearmenType = getUnitByTrait('formation', 'phalanx');
+/** Low retreat so a cavalry strike forces the defender back. */
+const lowRetreatType = getUnitByStatValue('retreat', 1);
+/** Cavalry attacker for that low-retreat case. */
+const cavalryType = getUnitByTrait('cavalry');
 
 /**
  * `resolveRangedAttack` is the first ranged strike roll: attacker/defender commitments must be
@@ -44,14 +47,14 @@ describe('generateResolveRangedAttackEvent function', () => {
 
   it('given low-retreat defender vs cavalry attacker, retreated true with legal set', () => {
     const state = createEmptyGameState('standard');
-    const defendingUnit = createTestUnit('white', { unitType: velites });
+    const defendingUnit = createTestUnit('white', { unitType: lowRetreatType });
     const unitWithPlacement = placed(defendingUnit, 'E-5', 'north');
     const withBoard = {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
     const ranged = createRangedAttackResolutionState(withBoard, {
-      attackingUnit: createTestUnit('black', { unitType: equites }),
+      attackingUnit: createTestUnit('black', { unitType: cavalryType }),
       defendingUnit,
     });
     const phase = createIssueCommandsPhaseState(withBoard, {

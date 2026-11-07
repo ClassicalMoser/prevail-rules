@@ -5,7 +5,7 @@ import {
   tempCommandCards,
   tempUnits,
   whiteMiniStarterArmy,
-} from './sampleCatalog';
+} from '@sampleValues';
 
 describe('tempUnits catalog', () => {
   it('every sample unit satisfies the unit type schema', () => {

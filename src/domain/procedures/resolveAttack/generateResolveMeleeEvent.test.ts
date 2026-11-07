@@ -2,11 +2,10 @@ import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
 import {
-  equites,
-  punicCitizenSpearmen,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,
+  getUnitByTrait,
   placed,
 } from '@testing';
 import { addUnitToBoard, updatePhaseState } from '@transforms';
@@ -14,8 +13,10 @@ import { addUnitToBoard, updatePhaseState } from '@transforms';
 import { generateResolveMeleeEvent } from './generateResolveMeleeEvent';
 
 import { createEmptyGameState } from '@factories';
-/** Citizen spearmen (retreat 6, attack 3): with default test `inPlay` (+1 attack), strike stays below retreat. */
-const spearmenType = punicCitizenSpearmen;
+/** Phalanx spearmen: with default test `inPlay` (+1 attack), strike stays below retreat. */
+const spearmenType = getUnitByTrait('formation', 'phalanx');
+/** Cavalry mirror match. */
+const cavalryType = getUnitByTrait('cavalry');
 
 /**
  * `resolveMelee` compares strike vs retreat at a shared cell and sets rout/retreat
@@ -39,8 +40,8 @@ describe('generateResolveMeleeEvent function', () => {
 
   it('given cavalry vs cavalry on E-5, both retreated true', () => {
     const state = createEmptyGameState('standard');
-    const whiteUnit = createTestUnit('white', { unitType: equites });
-    const blackUnit = createTestUnit('black', { unitType: equites });
+    const whiteUnit = createTestUnit('white', { unitType: cavalryType });
+    const blackUnit = createTestUnit('black', { unitType: cavalryType });
     const whiteWp = placed(whiteUnit, 'E-5', 'north');
     const blackWp = placed(blackUnit, 'E-5', 'south');
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
