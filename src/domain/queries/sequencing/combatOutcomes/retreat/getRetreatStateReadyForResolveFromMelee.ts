@@ -24,7 +24,8 @@ export function getRetreatStateReadyForResolveFromMelee(
       ? meleeState.blackAttackApplyState
       : meleeState.whiteAttackApplyState;
 
-  // A miss apply has retreatState 'miss'. That side has nothing to retreat.
+  // An attack that reached no threshold leaves retreatState 'bypassed', so
+  // that side has nothing to retreat.
   // Ready means a destination is chosen and the retreat move is not finished.
   if (firstPlayerAttackApply !== 'pending') {
     const firstRetreat = firstPlayerAttackApply.retreatState;

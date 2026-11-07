@@ -23,7 +23,8 @@ import { applyResolveMeleeEvent } from './applyResolveMeleeEvent';
 import { createEmptyGameState } from '@factories';
 /**
  * Materializes procedure `resolveMelee` into per-side `attackApplyState` values.
- * A miss writes a completed apply with rout, retreat, and reverse set to `'miss'`.
+ * An attack that reaches no threshold writes a completed apply with rout,
+ * retreat, and reverse all `'bypassed'`.
  * A hit opens the matching nested substep.
  */
 describe('applyResolveMeleeEvent function', () => {
@@ -79,7 +80,7 @@ describe('applyResolveMeleeEvent function', () => {
     };
   }
 
-  it('writes a completed miss apply for each side when neither unit is hit', () => {
+  it('bypasses every outcome on both sides when neither unit is hit', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const event = baseMeleeEvent(placements);
@@ -89,16 +90,16 @@ describe('applyResolveMeleeEvent function', () => {
     const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
     const blackApply = throwIfPending(melee.blackAttackApplyState, 'apply');
     expect(whiteApply.completed).toBe(true);
-    expect(whiteApply.routState).toBe('miss');
-    expect(whiteApply.retreatState).toBe('miss');
-    expect(whiteApply.reverseState).toBe('miss');
+    expect(whiteApply.routState).toBe('bypassed');
+    expect(whiteApply.retreatState).toBe('bypassed');
+    expect(whiteApply.reverseState).toBe('bypassed');
     expect(blackApply.completed).toBe(true);
-    expect(blackApply.routState).toBe('miss');
-    expect(blackApply.retreatState).toBe('miss');
-    expect(blackApply.reverseState).toBe('miss');
+    expect(blackApply.routState).toBe('bypassed');
+    expect(blackApply.retreatState).toBe('bypassed');
+    expect(blackApply.reverseState).toBe('bypassed');
   });
 
-  it('opens a white reverse substep and a completed black miss when only white reverses', () => {
+  it('opens a white reverse substep and bypasses the black outcomes when only white reverses', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const event: ResolveMeleeEvent = {
@@ -114,12 +115,12 @@ describe('applyResolveMeleeEvent function', () => {
       'reverse',
     );
     expect(blackApply.completed).toBe(true);
-    expect(blackApply.routState).toBe('miss');
-    expect(blackApply.retreatState).toBe('miss');
-    expect(blackApply.reverseState).toBe('miss');
+    expect(blackApply.routState).toBe('bypassed');
+    expect(blackApply.retreatState).toBe('bypassed');
+    expect(blackApply.reverseState).toBe('bypassed');
   });
 
-  it('opens a white rout substep and a completed black miss when only white routes', () => {
+  it('opens a white rout substep and bypasses the black outcomes when only white routes', () => {
     const full = baseMeleeGameState();
     const placements = unitPlacements();
     const event: ResolveMeleeEvent = {
@@ -133,9 +134,9 @@ describe('applyResolveMeleeEvent function', () => {
     const blackApply = throwIfPending(melee.blackAttackApplyState, 'apply');
     expect(getRoutStateFromAttackApply(whiteApply).substepType).toBe('rout');
     expect(blackApply.completed).toBe(true);
-    expect(blackApply.routState).toBe('miss');
-    expect(blackApply.retreatState).toBe('miss');
-    expect(blackApply.reverseState).toBe('miss');
+    expect(blackApply.routState).toBe('bypassed');
+    expect(blackApply.retreatState).toBe('bypassed');
+    expect(blackApply.reverseState).toBe('bypassed');
   });
 
   it('given white retreated with one legal hex E-6 south, retreat finalPosition auto-fills', () => {

@@ -37,7 +37,7 @@ export function updateReverseState<S extends GameState>(
         ranged.attackApplyState,
         'No attack apply state found',
       );
-      // 'miss' is a finished attack with no reverse to update.
+      // 'bypassed' is a reverse this attack will never resolve.
       if (!isOpenSubstep(attackApply.reverseState)) {
         throw new Error('No reverse state found in attack apply state');
       }

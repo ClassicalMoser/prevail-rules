@@ -45,7 +45,7 @@ export function updateRoutState<S extends GameState>(
         ranged.attackApplyState,
         'No attack apply state found',
       );
-      // 'miss' is a finished attack with no rout to update.
+      // 'bypassed' is a rout this attack will never resolve.
       if (!isOpenSubstep(attackApply.routState)) {
         throw new Error('No rout state found in attack apply state');
       }

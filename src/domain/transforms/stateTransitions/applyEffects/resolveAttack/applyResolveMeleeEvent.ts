@@ -13,7 +13,7 @@ import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveMeleeEvent to the game state.
- * Creates AttackApplyStates for both players. A hit opens the matching rout, retreat, or reverse substep. A miss writes a completed apply with those slots set to `'miss'`.
+ * Creates AttackApplyStates for both players. A hit opens the matching rout, retreat, or reverse substep. An attack that reaches no threshold writes a completed apply with those slots `'bypassed'`.
  *
  * @param event - The resolve melee event to apply
  * @param state - The current game state
@@ -43,9 +43,9 @@ export function applyResolveMeleeEvent<S extends GameState>(
     attackResult: AttackResult,
     legalRetreatOptionsFromEvent: UnitPlacement[],
   ): AttackApplyState => {
-    let routState: RoutState | 'pending' | 'miss' = 'pending';
-    let retreatState: RetreatState | 'pending' | 'miss' = 'pending';
-    let reverseState: ReverseState | 'pending' | 'miss' = 'pending';
+    let routState: RoutState | 'pending' | 'bypassed' = 'pending';
+    let retreatState: RetreatState | 'pending' | 'bypassed' = 'pending';
+    let reverseState: ReverseState | 'pending' | 'bypassed' = 'pending';
     let completed = false;
 
     if (attackResult.unitRouted) {
@@ -82,9 +82,9 @@ export function applyResolveMeleeEvent<S extends GameState>(
     } else {
       // A miss has nothing left to apply. The slot must exist so the sequencer
       // does not ask for resolveMelee again, and it is already complete.
-      routState = 'miss';
-      retreatState = 'miss';
-      reverseState = 'miss';
+      routState = 'bypassed';
+      retreatState = 'bypassed';
+      reverseState = 'bypassed';
       completed = true;
     }
 

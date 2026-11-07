@@ -33,12 +33,12 @@ export interface AttackApplyState {
   defendingUnit: UnitInstance;
   /** The result of the attack. */
   attackResult: AttackResult;
-  /** Reverse substep, `'pending'` before it is written, or `'miss'` when the attack did not reverse. */
-  reverseState: ReverseState | 'pending' | 'miss';
-  /** Retreat substep, `'pending'` before it is written, or `'miss'` when the attack did not retreat. */
-  retreatState: RetreatState | 'pending' | 'miss';
-  /** Rout substep, `'pending'` before it is written, or `'miss'` when the attack did not rout. */
-  routState: RoutState | 'pending' | 'miss';
+  /** Reverse substep, `'pending'` before it is written, or `'bypassed'` when the attack did not reverse. */
+  reverseState: ReverseState | 'pending' | 'bypassed';
+  /** Retreat substep, `'pending'` before it is written, or `'bypassed'` when the attack did not retreat. */
+  retreatState: RetreatState | 'pending' | 'bypassed';
+  /** Rout substep, `'pending'` before it is written, or `'bypassed'` when the attack did not rout. */
+  routState: RoutState | 'pending' | 'bypassed';
   /** Whether the attack apply substep is complete. */
   completed: boolean;
 }
@@ -50,11 +50,13 @@ const _attackApplyStateSchemaObject = z
     defendingUnit: unitInstanceSchema,
     retreatState: retreatStateSchema
       .or(z.literal('pending'))
-      .or(z.literal('miss')),
+      .or(z.literal('bypassed')),
     reverseState: reverseStateSchema
       .or(z.literal('pending'))
-      .or(z.literal('miss')),
-    routState: routStateSchema.or(z.literal('pending')).or(z.literal('miss')),
+      .or(z.literal('bypassed')),
+    routState: routStateSchema
+      .or(z.literal('pending'))
+      .or(z.literal('bypassed')),
     substepType: z.literal('attackApply'),
   })
   .strict();

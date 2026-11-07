@@ -23,7 +23,8 @@ export function getReverseStateFromMeleeResolutionByInitiative(
       ? meleeState.blackAttackApplyState
       : meleeState.whiteAttackApplyState;
 
-  // A miss apply has reverseState 'miss'. That side has nothing to reverse.
+  // An attack that reached no threshold leaves reverseState 'bypassed', so
+  // that side has nothing to reverse.
   // finalPosition `'pending'` means the facing has not been chosen yet.
 
   // We resolve in order; return first if open, otherwise second.

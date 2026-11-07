@@ -42,7 +42,7 @@ export function updateRetreatState<S extends GameState>(
         ranged.attackApplyState,
         'No attack apply state found',
       );
-      // 'miss' is a finished attack with no retreat to update.
+      // 'bypassed' is a retreat this attack will never resolve.
       if (!isOpenSubstep(attackApply.retreatState)) {
         throw new Error('No retreat state found in attack apply state');
       }

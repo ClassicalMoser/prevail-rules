@@ -17,8 +17,8 @@ describe('isOpenSubstep function', () => {
     expect(isOpenSubstep('pending')).toBe(false);
   });
 
-  it('a miss means that outcome did not happen', () => {
-    // The slot holds miss, so there is no substep to read.
-    expect(isOpenSubstep('miss')).toBe(false);
+  it('a bypassed outcome did not happen', () => {
+    // The attack reached no threshold here, so there is no substep to read.
+    expect(isOpenSubstep('bypassed')).toBe(false);
   });
 });

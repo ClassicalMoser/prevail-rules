@@ -11,9 +11,9 @@ import { getExpectedRoutEvent } from './getExpectedRoutEvent';
  * This is a composable function that can be used in any context where
  * attack apply state appears (ranged attack resolution, melee resolution, etc.).
  *
- * A miss (`hasResults === false`, all nested substeps still `'pending'`) is
- * valid: expect `completeAttackApply`. Throw only when results are claimed but
- * no matching substep was opened.
+ * An attack that reached no threshold (`hasResults === false`, every outcome
+ * `'bypassed'`) is valid: expect `completeAttackApply`. Throw only when results
+ * are claimed but no matching substep was opened.
  *
  * @param attackApplyState - The attack apply state
  * @param gameState - The game state, needed for melee reverse engagement checks
