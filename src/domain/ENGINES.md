@@ -1,220 +1,152 @@
 # The Four Engines
 
-This project delivers four core engines that work together to provide a complete, deterministic game rules system. These engines enable full event stream processing, deterministic playback, reversibility, and reconstructability.
+Four engines carry the whole rules system between them. Each takes game state
+and returns something, and none of them keeps any state of its own, which is
+what makes an event stream replayable: apply the same events to the same start
+and you get the same game.
 
 ## 1. Pure Transform Engine
 
-**Location:** `transforms/applyEvent.ts`
-
-**Purpose:** Takes gamestate and event, returns new gamestate (immutable).
+**Location:** [`transforms/stateTransitions/applyEvent.ts`](./transforms/stateTransitions/applyEvent.ts)
 
 **Function:** `applyEvent(event: Event, state: GameState): GameState`
 
-**Characteristics:**
+Takes a state and an event, returns a new state. Pure, immutable, no side
+effects. It routes on the event's discriminated union — `applyPlayerChoiceEvent`
+for a choice, `applyGameEffectEvent` for an effect — and each of those
+dispatches to one `apply*Event` function. It throws when an event type has no
+transition.
 
-- Pure function with no side effects
-- Immutable state transitions
-- Routes events to appropriate state transition functions
-- Enables deterministic replay of event streams
-
-**Usage:**
+It also accepts a seated client's projected opponent events, the `chooseCard`
+and `commit*` ones whose card fields read `'hidden'`, against a state of seen
+visibility. That is how a client folds the wire stream without the authoritative
+cards.
 
 ```typescript
 import { applyEvent } from '@transforms';
 
 const newState = applyEvent(event, currentState);
-// newState is a new immutable object, currentState is unchanged
+// newState is a new object; currentState is untouched
 ```
-
-**Implementation:**
-
-- Routes based on event type (playerChoice vs gameEffect)
-- Delegates to specific `apply*Event` functions in `stateTransitions/`
-- All state transitions are pure functions that return new state objects
 
 ## 2. Validation Engine
 
-**Location:** `validation/playerChoice/validatePlayerChoice.ts`
-
-**Purpose:** Validates an incoming player choice against expected sequencing and legal membership, returns `ValidationResult`.
+**Location:** [`validation/playerChoice/validatePlayerChoice.ts`](./validation/playerChoice/validatePlayerChoice.ts)
 
 **Function:** `validatePlayerChoice(event: PlayerChoiceEvent, state: GameState): ValidationResult`
 
-**Characteristics:**
+Asks two separate questions in order: is this choice **expected**, from
+`getExpectedEvent`, and is it **legal**, by membership against the same
+`@legality` enumerators that build the option payloads. A failure of either
+returns a reason.
 
-- Layers **expected** (`getExpectedEvent`) before **legal** (`isValid*Event` membership against `@legality` `getLegal*`)
-- Returns `ValidationResult` with `result: boolean` and optional `errorReason: string`
-- Never throws errors - always returns a result
-- Per-choice `isValid*` helpers stay internal to `@validation`; actors use `validatePlayerChoice` and `getLegalPlayerChoiceOptions`
-
-**Usage:**
+It never throws. Queries beneath it do, so it wraps them and turns a throw into
+an `errorReason`. Everything a caller needs is in the returned
+`ValidationResult`.
 
 ```typescript
 import { validatePlayerChoice } from '@validation';
 
 const validation = validatePlayerChoice(event, state);
 if (!validation.result) {
-  // Reject the event
-  console.error(validation.errorReason);
-  return;
+  return validation.errorReason;
 }
-// Proceed to apply the event
 const newState = applyEvent(event, state);
 ```
 
-**Implementation:**
-
-- `validateExpectedChoice` checks the event matches what sequencing expects next
-- `validateLegalPlayerChoice` dispatches to membership/integrity validators in `validation/playerChoice/`
-- Legal option payloads for UI/bots come from `getLegalPlayerChoiceOptions` (same `@legality` enumerators)
+Per-choice `isValid*Event` helpers stay inside `@validation`. Callers use
+`validatePlayerChoice` and `getLegalPlayerChoiceOptions`.
 
 ## 3. Procedure Library
 
-**Location:** `procedures/`
+**Location:** [`procedures/procedureRegistry.ts`](./procedures/procedureRegistry.ts)
 
-**Purpose:** Supply of functions to take a gameState and return a gameEffect event.
+**Function:** `generateEventFromProcedure(state, eventNumber, effectType, random): GameEffectEvent`
 
-**Function:** `generate*Event(state: GameState, ...params): GameEffectEvent`
+When the game owes an effect rather than waiting on a player, a procedure builds
+the event. There are 27 generators, each named for the event it produces, and the
+registry is a switch over `GameEffectType` — not a map, so it cannot be indexed.
 
-**Characteristics:**
+The switch is exhaustive: its default assigns `effectType` to `never`. Every
+game effect has a procedure, which is why there is no predicate asking whether
+one exists. If a new effect type is added without a generator, the typecheck
+fails rather than the game.
 
-- Generates deterministic game effect events based on game state
-- Procedures are registered in `procedureRegistry.ts`
-- Used when the game needs to produce an effect (not player input)
-- May require external input (e.g., random seed) for deterministic results
+A procedure is not required to be deterministic. Some draw at random, and the
+draw is taken from the `RandomSource` passed in, so a caller that fixes the
+source fixes the game. What makes the stream replayable is that the _event_
+records the result.
 
-**Usage:**
+Procedures trust the state they are given as internally consistent. Validation
+happens before a choice is applied, not again here.
 
 ```typescript
-import { procedureRegistry } from '@procedures';
+import { generateEventFromProcedure } from '@procedures';
 
-// Generate a game effect event
-const event = procedureRegistry.resolveRally(state, 'white', randomSeed);
-
-// Apply the generated event
+const event = generateEventFromProcedure(
+  state,
+  expected.expectedEventNumber,
+  expected.effectType,
+  random,
+);
 const newState = applyEvent(event, state);
 ```
 
-**Current Procedures:**
-
-- `generateResolveRallyEvent` - Generates a rally resolution event
-
-**Registry:**
-
-- `procedureRegistry` maps effect types to their generator functions
-- `requiresProcedure()` helper checks if an effect type needs a procedure
-
 ## 4. Next Event Expected Engine
 
-**Location:** `queries/expectedEvent/getExpectedEvent.ts`
+**Location:** [`expected/expectedEvent/getExpectedEvent.ts`](./expected/expectedEvent/getExpectedEvent.ts)
 
-**Purpose:** Takes gamestate only, determines the expected source of the next event (player, players, or game) and if game, specifies the procedure to produce the next gameEffect.
+**Function:** `getExpectedEvent(state: GameState): ExpectedEvent`
 
-**Function:** `getExpectedEvent(state: GameState): ExpectedEventInfo`
+Takes state alone and says what comes next. `ExpectedEvent` is
+`ExpectedEventInfo` — `ExpectedPlayerInput | ExpectedGameEffect` — plus the
+`expectedEventNumber` the next event will take in the round.
 
-**Characteristics:**
-
-- Returns `ExpectedEventInfo` which is a discriminated union:
-  - `ExpectedPlayerInput` - indicates which player(s) should provide input
-  - `ExpectedGameEffect` - indicates which game effect should be generated
-- Routes based on current phase and step
-- Enables orchestrator to know what action to take next
-
-**Usage:**
+It checks the endgame first, and throws when the game has already been won,
+because a finished game expects nothing. From there it reads the current phase
+and delegates to the phase and substep queries, which is why this layer reads
+sequencing and leaves rules to `@legality`.
 
 ```typescript
-import { getExpectedEvent } from '@expected/expectedEvent';
+import { getExpectedEvent } from '@expected';
 
 const expected = getExpectedEvent(state);
-
 if (expected.actionType === 'playerChoice') {
-  // Wait for player input
-  console.log(`Waiting for ${expected.playerSource} to ${expected.choiceType}`);
-} else if (expected.actionType === 'gameEffect') {
-  // Generate game effect
-  if (requiresProcedure(expected.effectType)) {
-    const event = procedureRegistry[expected.effectType](state, ...params);
-    const newState = applyEvent(event, state);
-  } else {
-    // Direct game effect (no procedure needed)
-    const event = createGameEffectEvent(expected.effectType);
-    const newState = applyEvent(event, state);
-  }
+  // wait for expected.playerSource to send expected.choiceType
+} else {
+  // the game owes expected.effectType; generate it with a procedure
 }
 ```
 
-**Implementation:**
+### Legal choice presentation
 
-- Routes based on current phase state
-- Delegates to phase-specific `getExpected*PhaseEvent` functions
-- Returns structured information about what's expected next
-
-### Legal choice presentation (actors)
-
-**Location:** `validation/playerChoice/getLegalPlayerChoiceOptions.ts`
-
-**Purpose:** After `getExpectedEvent` says a player choice is next, package the legal option payload for UI and bots from the same `@legality` enumerators validators membership-check. Lives in `@validation` because it composes `@expected` + `@legality` (legality cannot import expected).
+**Location:** [`validation/playerChoice/getLegalPlayerChoiceOptions.ts`](./validation/playerChoice/getLegalPlayerChoiceOptions.ts)
 
 **Function:** `getLegalPlayerChoiceOptions(state: GameState): LegalPlayerChoiceOptions | null`
 
-- Returns `null` when the next action is a game effect (or expected throws).
-- Otherwise returns a discriminant by `choiceType` with `playerSource`, `expectedEventNumber`, and either full `events[]` (atomic choices) or named root atoms (compound choices).
-- Selection-dependent follow-ups stay on existing helpers (`getLegalUnitMoves`, `getLegalRangedAttackTargets`, `getLegalLineEndsForIssueCommand`, …).
+Once a player choice is expected, this packages the legal options for a UI or a
+bot from the same enumerators the validators check membership against. It lives
+in `@validation` because it composes `@expected` and `@legality`, and legality
+may not import expected.
 
-```typescript
-import { getLegalPlayerChoiceOptions, validatePlayerChoice } from '@validation';
-import { applyEvent } from '@transforms';
+It returns `null` when the next action is a game effect, and also when
+`getExpectedEvent` throws. Otherwise it discriminates by `choiceType` and
+carries `playerSource`, `expectedEventNumber`, and either the full `events[]`
+for an atomic choice or named root atoms for a compound one. Follow-ups that
+depend on a selection stay on their own helpers — `getLegalUnitMoves`,
+`getLegalRangedAttackTargets`, `getLegalLineEndsForIssueCommand`.
 
-const options = getLegalPlayerChoiceOptions(state);
-if (options === null) {
-  // game-effect / procedure path via getExpectedEvent
-} else {
-  // UI highlights options; bot samples from options / follow-up getLegal*
-  // Build PlayerChoiceEvent → validatePlayerChoice → applyEvent
-  const validation = validatePlayerChoice(event, state);
-  if (validation.result) {
-    const newState = applyEvent(event, state);
-  }
-}
-```
+## How they fit
 
-## Engine Integration
+1. **Expected** says what should happen next.
+2. **Legal options** fill in the choices when that is a player's turn to act.
+3. **Validation** checks an incoming choice against both.
+4. **Procedures** build the event when the game owes an effect.
+5. **Transform** applies the event and returns the next state.
 
-These four engines work together to process an event stream:
+A player choice is validated before it is applied. An effect generated by a
+procedure is trusted, because a procedure reads the same state the sequencer
+read. Repeat from step 1 with the new state, and the loop runs a whole game.
 
-1. **Next Event Expected Engine** determines what should happen next
-2. **Legal choice presentation** (`getLegalPlayerChoiceOptions`) fills in options when the next action is a player choice (shared by UI and bots)
-3. **Validation Engine** validates incoming events (from players or procedures)
-4. **Procedure Library** generates game effect events when needed
-5. **Pure Transform Engine** applies validated events to produce new state
-
-This architecture enables:
-
-- **Deterministic playback**: Replay any game by applying the same event stream
-- **Reversibility**: Track events to enable undo/redo
-- **Reconstructability**: Rebuild game state from event log
-- **Additional insights**: Analyze event streams for game analytics
-
-## Example Flow
-
-```typescript
-// 1. Determine what's expected next
-const expected = getExpectedEvent(state);
-
-if (
-  expected.actionType === 'gameEffect' &&
-  expected.effectType === 'resolveRally'
-) {
-  // 2. Generate the event using procedure library
-  const event = procedureRegistry.resolveRally(state, 'white', randomSeed);
-
-  // 3. Apply the event using transform engine
-  // (Player choices go through validatePlayerChoice before apply;
-  //  procedure-generated game effects are trusted from the registry.)
-  const newState = applyEvent(event, state);
-
-  // 4. Repeat with new state
-  const nextExpected = getExpectedEvent(newState);
-  // ...
-}
-```
+What this buys: a game replays from its event stream, state rebuilds from the
+log, and a stream can be read back for analysis or undo.

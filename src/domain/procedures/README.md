@@ -38,4 +38,4 @@ Each subfolder has a small `index.ts` barrel. Co-locate each `generate*` with it
 
 ## Related queries
 
-- **`getMeleeResolutionReadyForAttackCalculation`** ([`@queries` sequencing](../queries/sequencing/getCommandResolutionState.ts)) — narrowing helper used by `generateResolveMeleeEvent` (commitments resolved, no attack-apply yet), aligned with `getRangedAttackResolutionState` style.
+- **`getMeleeResolutionReadyForAttackCalculation`** ([`@queries` sequencing](../queries/sequencing/meleeResolution/getMeleeResolutionReadyForAttackCalculation.ts)) — narrowing helper used by `generateResolveMeleeEvent` (commitments resolved, no attack-apply yet), aligned with `getRangedAttackResolutionState` style.
