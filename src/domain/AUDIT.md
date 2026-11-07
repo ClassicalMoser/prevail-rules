@@ -76,7 +76,7 @@ Audit in this order (dependencies flow downward):
 ### `sampleValues/` (`@sampleValues`)
 
 - [ ] `sampleValues/`
-  - [ ] Root modules (`tempCommandCards`, `tempUnits`, `tinyStarterArmy`, …)
+  - [ ] Root modules (`tempCommandCards`, `tempUnits`, `miniStarterArmy`, …)
 
 ### `factories/` (`@factories`)
 
@@ -232,15 +232,6 @@ Each finding stays here until the human read closes it.
 - `@testing`'s `createTestUnit` accepts `cost`, `limit` and `morale` and
   ignores all three. A spec that asks for a limit gets whatever the sample unit
   carries.
-
-### `sampleValues`
-
-- 5 of the 25 sample command cards fail `commandCardSchema`. `Strike`,
-  `Evade`, `Volley` and `Charge` have a unit support count of 0 where the
-  schema asks for at least 1. `Evade`, `Volley`, `Charge` and
-  `Quincunx Formation` have no round effect modifiers where the schema asks
-  for one. Either the samples or the schema is wrong. An army holding any of
-  them fails `armySchema`.
 
 ### Downstream (out of scope here)
 

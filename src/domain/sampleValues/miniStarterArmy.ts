@@ -3,16 +3,20 @@ import { tempCommandCards } from './tempCommandCards';
 import { equites, manipularLegion } from './tempUnits';
 
 /**
- * Finds a sample command card by name.
- * Throws rather than skipping, since a missing card would unbalance the
- * army's cards per initiative without anyone noticing.
+ * Takes the first `count` sample cards at a given initiative.
+ * Throws when the catalog is short, so a sample reshuffle cannot silently
+ * unbalance the army's cards-per-initiative.
  */
-function cardNamed(name: string): CommandCard {
-  const card = tempCommandCards.find((entry) => entry.name === name);
-  if (!card) {
-    throw new Error(`Unknown sample command card: ${name}`);
+function cardsAtInitiative(initiative: number, count: number): CommandCard[] {
+  const atInitiative = tempCommandCards.filter(
+    (card) => card.initiative === initiative,
+  );
+  if (atInitiative.length < count) {
+    throw new Error(
+      `Need at least ${count} sample cards at initiative ${initiative}, found ${atInitiative.length}`,
+    );
   }
-  return card;
+  return atInitiative.slice(0, count);
 }
 
 /**
@@ -29,19 +33,12 @@ function makeMiniStarterArmy(id: string, name: string): Army {
   ];
 
   // Mini asks for exactly two cards at each initiative, 1 through 4.
+  // Pick by initiative value from the sample catalog — not by printed name.
   const commandCards: CommandCard[] = [
-    // Initiative 1.
-    cardNamed('Move'),
-    cardNamed('Brace'),
-    // Initiative 2.
-    cardNamed('Organize'),
-    cardNamed('Advance'),
-    // Initiative 3.
-    cardNamed('Triplex Acies'),
-    cardNamed('Socketed Pilum'),
-    // Initiative 4.
-    cardNamed('Brace for Impact'),
-    cardNamed('Persistent Formation'),
+    ...cardsAtInitiative(1, 2),
+    ...cardsAtInitiative(2, 2),
+    ...cardsAtInitiative(3, 2),
+    ...cardsAtInitiative(4, 2),
   ];
 
   const army: Army = { id, name, units, commandCards };

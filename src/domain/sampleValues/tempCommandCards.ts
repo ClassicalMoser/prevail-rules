@@ -10,7 +10,6 @@ import {
 
 /**
  * Sample command deck translated from the design sheet.
- * - First four cards keep legacy UUIDs and baseline mechanics so existing tests stay stable.
  * - “Skirmisher” → `javelin` trait. “Spear / Pike” → phalanx unit rows. “Manipular Alae” → {@link alaeSocii}.
  * - “0 Units” cards use `command.number: 1` (schema minimum) until commands support zero-sized orders.
  * - “RAMPAGE” has no trait id yet; encoded as open movement + command modifiers only.
@@ -32,110 +31,6 @@ const twoManipularSupport = {
 };
 
 export const tempCommandCards: readonly CommandCard[] = [
-  {
-    command: {
-      modifiers: [],
-      number: 1,
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'none',
-      },
-      size: 'units',
-      type: 'movement',
-    },
-    cost: 10,
-    id: '00000000-0000-4000-8000-000000000001',
-    initiative: 1,
-    modifiers: ['attack'],
-    name: 'Strike',
-    roundEffect: {
-      modifiers: [{ type: 'attack', value: 1 }],
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'none',
-      },
-    },
-    unitSupport: { count: 0, supportType: 'generic' },
-    version: '1.0.0',
-  },
-  {
-    command: {
-      modifiers: [],
-      number: 1,
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'none',
-      },
-      size: 'units',
-      type: 'movement',
-    },
-    cost: 10,
-    id: '00000000-0000-4000-8000-000000000002',
-    initiative: 2,
-    modifiers: ['attack'],
-    name: 'Evade',
-    roundEffect: {
-      modifiers: [],
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'none',
-      },
-    },
-    unitSupport: { count: 0, supportType: 'generic' },
-    version: '1.0.0',
-  },
-  {
-    command: {
-      modifiers: [],
-      number: 1,
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'none',
-      },
-      size: 'units',
-      type: 'rangedAttack',
-    },
-    cost: 10,
-    id: '00000000-0000-4000-8000-000000000003',
-    initiative: 3,
-    modifiers: ['attack'],
-    name: 'Volley',
-    roundEffect: {
-      modifiers: [],
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'none',
-      },
-    },
-    unitSupport: { count: 0, supportType: 'generic' },
-    version: '1.0.0',
-  },
-  {
-    command: {
-      modifiers: [],
-      number: 1,
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'none',
-      },
-      size: 'units',
-      type: 'movement',
-    },
-    cost: 10,
-    id: '00000000-0000-4000-8000-000000000004',
-    initiative: 4,
-    modifiers: ['attack'],
-    name: 'Charge',
-    roundEffect: {
-      modifiers: [],
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'none',
-      },
-    },
-    unitSupport: { count: 0, supportType: 'generic' },
-    version: '1.0.0',
-  },
   {
     command: {
       modifiers: [],
@@ -459,34 +354,6 @@ export const tempCommandCards: readonly CommandCard[] = [
     name: 'Socketed Pilum',
     roundEffect: {
       modifiers: [{ type: 'range', value: 1 }],
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'unitType',
-        unitRestrictions: [...manipularOrAlae],
-      },
-    },
-    unitSupport: twoManipularSupport,
-    version: '1.0.0',
-  },
-  {
-    command: {
-      modifiers: [],
-      number: 8,
-      restrictions: {
-        inspirationRangeRestriction: 1,
-        restrictionType: 'unitType',
-        unitRestrictions: [manipularLegion.id],
-      },
-      size: 'units',
-      type: 'movement',
-    },
-    cost: 10,
-    id: '00000000-0000-4000-8000-000000000011',
-    initiative: 3,
-    modifiers: ['flexibility'],
-    name: 'Quincunx Formation',
-    roundEffect: {
-      modifiers: [],
       restrictions: {
         inspirationRangeRestriction: 1,
         restrictionType: 'unitType',
