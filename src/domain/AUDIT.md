@@ -75,7 +75,7 @@ Audit in this order (dependencies flow downward):
 
 ### `ruleValues/` (`@ruleValues`)
 
-- [ ] `ruleValues/` — scout started 2026-11-07
+- [ ] `ruleValues/` — scout complete 2026-11-07 (awaiting human read)
   - [ ] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
 
 ### `sampleValues/` (`@sampleValues`)
