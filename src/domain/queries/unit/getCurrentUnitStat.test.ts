@@ -126,6 +126,8 @@ describe('getCurrentUnitStat function', () => {
         'black',
         createTestCard({
           roundEffectModifiers: [{ type: 'attack', value: 2 }],
+          // -1: no inspiration range; the fixture default is a tight 0.
+          roundEffectRestrictions: { inspirationRangeRestriction: -1 },
         }),
       );
 
@@ -156,6 +158,8 @@ describe('getCurrentUnitStat function', () => {
         'black',
         createTestCard({
           roundEffectModifiers: [{ type: 'defense', value: 1 }],
+          // -1: no inspiration range; the fixture default is a tight 0.
+          roundEffectRestrictions: { inspirationRangeRestriction: -1 },
         }),
       );
 
@@ -225,6 +229,8 @@ describe('getCurrentUnitStat function', () => {
         'black',
         createTestCard({
           roundEffectModifiers: [{ type: 'attack', value: 1 }],
+          // -1: no inspiration range; the fixture default is a tight 0.
+          roundEffectRestrictions: { inspirationRangeRestriction: -1 },
         }),
       );
 
@@ -379,6 +385,8 @@ describe('getCurrentUnitStat function', () => {
         createTestCard({
           commandModifiers: [{ type: 'attack', value: 1 }],
           roundEffectModifiers: [{ type: 'attack', value: 2 }],
+          // -1: no inspiration range; the fixture default is a tight 0.
+          roundEffectRestrictions: { inspirationRangeRestriction: -1 },
         }),
       );
 

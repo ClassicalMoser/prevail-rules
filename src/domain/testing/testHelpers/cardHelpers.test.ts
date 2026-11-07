@@ -1,3 +1,4 @@
+import { commandCardSchema } from '@entities';
 import { tempCommandCards } from '@sampleValues';
 
 import { createTestCard, getCards, getCardsByCount } from './cardHelpers';
@@ -91,13 +92,18 @@ describe('getCardsByCount function', () => {
 });
 
 describe('createTestCard function', () => {
-  it('given no options, returns card with defaults', () => {
-    const card = createTestCard();
-    expect(card.id).toBe('test-card');
-    expect(card.name).toBe('Test CommandCard');
-    expect(card.cost).toBe(10);
-    expect(card.initiative).toBe(1);
-    expect(card.command.type).toBe('movement');
+  it('mints a distinct parseable card each call', () => {
+    const first = createTestCard();
+    const second = createTestCard();
+
+    // Fresh uuid every call — membership compares cards by id.
+    expect(first.id).not.toBe(second.id);
+    expect(commandCardSchema.safeParse(first).success).toBe(true);
+    expect(commandCardSchema.safeParse(second).success).toBe(true);
+    expect(first.name).toBe('Test CommandCard');
+    expect(first.cost).toBe(10);
+    expect(first.initiative).toBe(1);
+    expect(first.command.type).toBe('movement');
   });
 
   it('given apply round effect modifiers and restrictions', () => {

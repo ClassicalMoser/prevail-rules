@@ -8,6 +8,7 @@ import type {
 } from '@entities';
 import type { Trait } from '@ruleValues';
 import { tempCommandCards } from '@sampleValues';
+import { randomUUID } from 'node:crypto';
 
 /**
  * Gets cards from the tempCommandCards array by their indices.
@@ -135,53 +136,41 @@ export function createTestCommand(overrides: Partial<Command> = {}): Command {
 }
 
 /**
- * Creates a test card with sensible defaults.
+ * Creates a test card that parses as a {@link CommandCard}.
+ * Each call mints a fresh id so two bare createTestCard() results cannot
+ * collide under membership-by-id. Pass `id` only when a case needs a known
+ * value; hard-coding breaks as soon as the helper is called twice.
  */
 export function createTestCard(
   options: CreateTestCardOptions = {},
 ): CommandCard {
+  // Stand-in values satisfy commandCardSchema; override per case for the fact
+  // under test. A new uuid every call keeps two defaults from sharing an id.
   const {
-    id = 'test-card',
+    id = randomUUID(),
     name = 'Test CommandCard',
     version = '1.0.0',
     cost = 10,
     initiative = 1,
-    modifiers = [],
-    roundEffectModifiers = [],
-    roundEffectRestrictions = {},
+    modifiers = ['attack'],
+    // Round effect is schema-required. Range 0 limits it to the commander's
+    // space — do not seat the commander on a unit you do not want affected.
+    // Even a flexibility stand-in can change outcomes if that range is open.
+    roundEffectModifiers = [{ type: 'flexibility', value: 1 }],
+    roundEffectRestrictions = { inspirationRangeRestriction: 0 },
     commandModifiers = [],
     commandRestrictions = {},
-    unitSupport = { count: 0, supportType: 'generic' },
+    unitSupport = { count: 1, supportType: 'generic' },
   } = options;
 
   const command = createTestCommand({
     modifiers: commandModifiers,
     restrictions: createRestrictions(commandRestrictions),
   });
-  const hasTraitFilter =
-    'traitRestrictions' in roundEffectRestrictions &&
-    roundEffectRestrictions.traitRestrictions.length > 0;
-  const hasUnitFilter =
-    'unitRestrictions' in roundEffectRestrictions &&
-    roundEffectRestrictions.unitRestrictions.length > 0;
-  const roundEffectIsSpecified =
-    roundEffectModifiers.length > 0 ||
-    roundEffectRestrictions.inspirationRangeRestriction !== -1 ||
-    hasTraitFilter ||
-    hasUnitFilter;
-  const emptyRoundEffectRestrictions: Restrictions = {
-    inspirationRangeRestriction: -1,
-    restrictionType: 'none',
+  const roundEffect = {
+    modifiers: roundEffectModifiers,
+    restrictions: createRestrictions(roundEffectRestrictions),
   };
-  const roundEffect = roundEffectIsSpecified
-    ? {
-        modifiers: roundEffectModifiers,
-        restrictions: createRestrictions(roundEffectRestrictions),
-      }
-    : {
-        modifiers: [],
-        restrictions: emptyRoundEffectRestrictions,
-      };
 
   return {
     command,

@@ -289,11 +289,11 @@ export const procedureRegistryStateFactories: Record<
       ...base.cardState,
       black: {
         ...base.cardState.black,
-        inPlay: createTestCard({ id: 'black-in-play' }),
+        inPlay: createTestCard(),
       },
       white: {
         ...base.cardState.white,
-        inPlay: createTestCard({ id: 'white-in-play' }),
+        inPlay: createTestCard(),
       },
     });
     return updatePhaseState(withCards, {
@@ -457,11 +457,11 @@ export const procedureRegistryStateFactories: Record<
       ...base.cardState,
       black: {
         ...base.cardState.black,
-        awaitingPlay: createTestCard({ id: 'black-awaiting' }),
+        awaitingPlay: createTestCard(),
       },
       white: {
         ...base.cardState.white,
-        awaitingPlay: createTestCard({ id: 'white-awaiting' }),
+        awaitingPlay: createTestCard(),
       },
     });
   },
