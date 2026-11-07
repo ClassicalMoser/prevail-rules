@@ -10,8 +10,6 @@ This is a rules engine for a board game, and the goal of the whole codebase is t
 
 Models rarely comment enough, and never do without prompting. [`STYLE.md`](./STYLE.md) says what a comment must carry and what a test must state. Read it before writing either.
 
-Before you commit, `pnpm validate` must pass: lint, formatting, types, and the self-proof check that no spec reaches its own subject. A pre-commit hook runs it. `pnpm check:commentary` reports in-body commentary density per layer. It cannot fail, and it is not a target to hit: padding a body raises the number and makes the file worse.
-
 - [`README.md`](./README.md) – Background and intent for the project
 - [`STYLE.md`](./STYLE.md) — Rules for how code is written
 - [`DESIGN.md`](./DESIGN.md) — Rules for how code is organized
