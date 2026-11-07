@@ -1,6 +1,6 @@
 # Combat outcome queries
 
-An attack, an engagement, or a rally can end with a unit routed, retreated, or
+An attack, an engagement or a rally can end with a unit routed, retreated or
 reversed. Each of those is a substep stored on whichever parent caused it, and
 the queries here reach them.
 
@@ -15,25 +15,55 @@ the queries here reach them.
 
 The parent is part of the answer. A rout reached through a rear engagement is a
 different fact about the game than a rout reached through a rally, even though
-both return a `RoutState`, so each pair gets its own getter and the name says
-which pair it is. That is why there is no single `getRoutState(state, parent)`.
+both return a `RoutState`, so each pair gets its own query and the name says
+which pair it is.
 
-The retreat-held rout has no getter. `getExpectedRetreatEvent` reads
+The retreat-held rout has no query of its own. `getExpectedRetreatEvent` reads
 `retreatState.routState` directly, because it needs to tell a rout that has not
-opened yet from one that will never open, and a getter that throws cannot say
-which it found.
+opened from one that will never open, and a getter that throws cannot say which
+it found.
 
-## Routes and selections
+## Four kinds, and how to tell them apart
 
-Each substep's index lists its queries in two groups, and the distinction is
-worth keeping when adding one.
+Every name here is one of four shapes. Adding a query means choosing one.
 
-A **route** descends to a named parent and reads its slot. It encodes position
-and nothing else: `getRoutStateFromRally` knows where a rally keeps its rout.
+**A parent reader takes the parent and says `From`.**
+`getRetreatStateFromAttackApply`, `getRoutStateFromRally`. The parent is the
+argument, so there is no descent and no phase to consider. These are the only
+queries that answer `'bypassed'`: the rules apply no such step to this attack,
+which is a fact the caller can use. They throw only when the step is due and
+has not been opened, because asking then is out of sequence.
 
-A **selection** decides which of several candidates to answer about, and that
-decision is a rule of the game. `getNextMeleeRoutState`
-resolves the initiative player's side first because the rules say so;
-`getNextMeleeRetreatStateAwaitingMove` knows which retreats are waiting on a
-move rather than a choice. These are the queries that carry gameplay, and they
-are the ones to read first when the sequencing is unclear.
+**A scoped getter descends from the game state and leads with its context.**
+`getMeleeRetreatState`, `getRangedAttackRoutState`. The caller already knows
+where it is — usually because an event told it — and wants the substep there.
+These throw when the context does not hold what they name.
+
+**A selection picks among candidates by a rule of the game, and says `Next`.**
+`getNextMeleeRoutState` resolves the initiative player's side first because the
+rules say so. `getNextMeleeRetreatStateAwaitingMove` knows which retreats are
+waiting on a move rather than a choice. These are the queries that carry
+gameplay rather than position, and they are the ones to read first when the
+sequencing is unclear.
+
+**A router walks every context and answers.** `findRoutState` and
+`findRetreatState` return `null` when nothing is routing or retreating, because
+most of a game has neither and asking is fair. `getRoutState` and
+`getRetreatState` are the same walk for a caller that knows there must be one,
+and throw when there is not. `find` returns `null`; `get` throws; nothing else
+in the folder returns `null`.
+
+A router reads each slot's own sentinel rather than calling the scoped getters,
+so it needs no `try`. That duplicates a little descent knowledge against the
+scoped getters, which is the price of one query that answers and one that
+insists.
+
+## Conditions are predicates, not getters
+
+`isAwaitingRoutDiscard` takes a rout and answers whether its owner still owes
+cards. It does not take a game state and it does not find anything.
+
+A getter that also filtered used to live here, and every caller unwound it: one
+re-checked the condition it had already applied, one turned its `null` straight
+back into a throw, and the endgame check kept a list of error message strings to
+work out which throws meant absence. Keep the walk and the question apart.
