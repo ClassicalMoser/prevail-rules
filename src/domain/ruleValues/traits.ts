@@ -2,10 +2,7 @@ import { z } from 'zod';
 
 /** Unit traits a card restriction or unit type may list. */
 export const traits = [
-  'bow',
-  'sling',
   'javelin',
-  'pike',
   'melee',
   'missile',
   'shock',
@@ -14,8 +11,8 @@ export const traits = [
   'cavalry',
   'skirmisher',
   'phalanx',
-  'formation',
   'warband',
+  'formation',
 ] as const;
 
 /**

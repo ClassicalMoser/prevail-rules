@@ -56,7 +56,7 @@ describe('matchesUnitRequirements function', () => {
     it('returns false when unit is missing one trait', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
-        ['formation', 'pike'],
+        ['formation', 'missile'],
         [],
       );
       expect(result).toBe(false);
@@ -160,7 +160,7 @@ describe('matchesUnitRequirements function', () => {
     it('returns false when unit matches unitTypes but not traits', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
-        ['pike'],
+        ['javelin'],
         [unitWithFormation.id],
       );
       expect(result).toBe(false);
@@ -169,7 +169,7 @@ describe('matchesUnitRequirements function', () => {
     it('returns false when unit matches neither traits nor unitTypes', () => {
       const { result } = matchesUnitRequirements(
         unitWithFormation,
-        ['pike'],
+        ['phalanx'],
         [unitWithPhalanxTrait.id],
       );
       expect(result).toBe(false);
