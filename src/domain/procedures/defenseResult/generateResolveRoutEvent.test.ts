@@ -77,14 +77,14 @@ describe('generateResolveRoutEvent function', () => {
     expect(event.penalty).toBe(blackUnit.unitType.morale);
   });
 
-  it('given playCards phase, throws rout resolution phase guard', () => {
+  it('throws in a phase that routs nobody', () => {
     const base = createEmptyGameState('standard');
     const full = updatePhaseState(base, {
       phase: PLAY_CARDS_PHASE,
       step: 'complete',
     });
     expect(() => generateResolveRoutEvent(full, 0)).toThrow(
-      'Rout resolution not expected in phase: playCards',
+      'No rout is awaiting its penalty',
     );
   });
 
@@ -92,9 +92,8 @@ describe('generateResolveRoutEvent function', () => {
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const whiteUnit = createTestUnit('white');
-    const routState = createRoutState('white', whiteUnit, {
-      numberToDiscard: 2,
-    });
+    // The penalty is what this effect works out, so the rout reaches it unpaid.
+    const routState = createRoutState('white', whiteUnit);
     const movement = createMovementResolutionState(state, {
       engagementState: createRearEngagementState({ routState }),
     });
@@ -139,13 +138,14 @@ describe('generateResolveRoutEvent function', () => {
     expect(event.unitInstances).toContain(unit);
   });
 
-  it('given issueCommands with invalid melee-shaped CRS, throws movement/ranged expectation', () => {
+  it('throws when the command being resolved holds no rout', () => {
+    // Where a rout can sit is the query's answer, so a command that holds none
+    // leaves this procedure with no penalty to work out.
     const state = createEmptyGameState('standard');
     state.cardState.black.inPlay = createTestCard();
     const full = updatePhaseState(
       state,
       createIssueCommandsPhaseState(state, {
-        // Intentionally invalid CRS shape to cover the defensive branch in generateResolveRoutEvent.
         currentCommandResolutionState: {
           commandResolutionType: 'melee',
         } as never,
@@ -153,7 +153,7 @@ describe('generateResolveRoutEvent function', () => {
     );
 
     expect(() => generateResolveRoutEvent(full, 0)).toThrow(
-      'Current command resolution is not movement or ranged attack',
+      'No rout is awaiting its penalty',
     );
   });
 });

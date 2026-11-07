@@ -1,58 +1,34 @@
-import type { ResolveRoutEvent, RoutResolutionSource } from '@events';
-import type { GameState, RoutState } from '@game';
+import type { ResolveRoutEvent } from '@events';
+import type { GameState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ROUT_EFFECT_TYPE } from '@events';
-import {
-  getCurrentCommandResolutionState,
-  getCurrentPhaseState,
-  getNextMeleeRoutState,
-  getRallyStepRoutState,
-  getRangedAttackRoutState,
-  getRearEngagementRoutState,
-} from '@queries';
+import { findRoutAwaitingPenalty } from '@queries';
+
 /**
  * Generates a ResolveRoutEvent by calculating the rout penalty
  * for the unit(s) being routed.
  * The penalty is the sum of all units' morale values.
  *
+ * Where the rout sits is the query's answer, not this procedure's: a rout can
+ * be held by an attack apply, a rear engagement, a rally, or a retreat that
+ * found nowhere to go, and the parent comes back with it so that applying the
+ * effect writes the penalty to the slot it came from.
+ *
  * @param state - The current game state
+ * @param eventNumber - The ordered index of the event in the round
  * @returns A complete ResolveRoutEvent with the routed unit and penalty
- * @throws Error if not in a valid state for rout resolution
+ * @throws Error if no rout is awaiting its penalty
  */
 export function generateResolveRoutEvent(
   state: GameState,
   eventNumber: number,
 ): ResolveRoutEvent {
-  const phaseState = getCurrentPhaseState(state);
-
-  let routState: RoutState;
-  let routResolutionSource: RoutResolutionSource;
-
-  if (phaseState.phase === 'issueCommands') {
-    const crs = getCurrentCommandResolutionState(state);
-    if (crs.commandResolutionType === 'movement') {
-      routState = getRearEngagementRoutState(state);
-      routResolutionSource = 'rearEngagementMovement';
-    } else if (crs.commandResolutionType === 'rangedAttack') {
-      routState = getRangedAttackRoutState(state);
-      routResolutionSource = 'rangedAttack';
-    } else {
-      throw new Error(
-        'Current command resolution is not movement or ranged attack',
-      );
-    }
-  } else if (phaseState.phase === 'resolveMelee') {
-    routState = getNextMeleeRoutState(state);
-    routResolutionSource = 'melee';
-  } else if (phaseState.phase === 'cleanup') {
-    routState = getRallyStepRoutState(state);
-    routResolutionSource = 'rally';
-  } else {
-    throw new Error(
-      `Rout resolution not expected in phase: ${phaseState.phase}`,
-    );
+  const location = findRoutAwaitingPenalty(state);
+  if (location === undefined) {
+    throw new Error('No rout is awaiting its penalty');
   }
 
-  const totalPenalty = [...routState.unitsToRout].reduce(
+  const { routState, source } = location;
+  const totalPenalty = routState.unitsToRout.reduce(
     (sum, unit) => sum + unit.unitType.morale,
     0,
   );
@@ -62,7 +38,7 @@ export function generateResolveRoutEvent(
     eventNumber,
     eventType: GAME_EFFECT_EVENT_TYPE,
     penalty: totalPenalty,
-    routResolutionSource,
+    routResolutionSource: source,
     unitInstances: routState.unitsToRout,
   };
 }

@@ -2,9 +2,10 @@
  * Resolve-rout effect: remove routed units and drive discard / rout substep state.
  *
  * **Why `routResolutionSource`**: Rout can start from ranged attack apply, melee attack apply,
- * cleanup rally, or rear engagement during movement. Apply must clear the correct `routState`
- * bucket; the procedure encodes which branch is active. The first two literals reuse
- * `attackResolutionContext.ts`; the rest are rout-specific (see non-attack constants below).
+ * cleanup rally, rear engagement during movement, or a retreat that found nowhere to go. Apply
+ * must clear the correct `routState` bucket; the procedure encodes which branch is active. The
+ * first two literals reuse `attackResolutionContext.ts`; the rest are rout-specific (see
+ * non-attack constants below).
  *
  * Tuple-typed value arrays satisfy `--isolatedDeclarations` (no spread-composed exports).
  */
@@ -31,15 +32,28 @@ export const RALLY_ROUT_RESOLUTION_SOURCE = 'rally' as const;
 export const REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE =
   'rearEngagementMovement' as const;
 
+/**
+ * Rout originating from a retreat with nowhere to go. The rout is nested on the
+ * retreat, so it outlives the attack or engagement that forced the retreat and
+ * is resolved against the retreat instead.
+ */
+export const RETREAT_ROUT_RESOLUTION_SOURCE = 'retreat' as const;
+
 export type RoutResolutionSourceNonAttack =
   | typeof RALLY_ROUT_RESOLUTION_SOURCE
-  | typeof REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE;
+  | typeof REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE
+  | typeof RETREAT_ROUT_RESOLUTION_SOURCE;
 
 /** Values for `z.enum` on the non-attack branch only. */
 export const ROUT_RESOLUTION_SOURCE_NON_ATTACK_VALUES: readonly [
   typeof RALLY_ROUT_RESOLUTION_SOURCE,
   typeof REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE,
-] = [RALLY_ROUT_RESOLUTION_SOURCE, REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE];
+  typeof RETREAT_ROUT_RESOLUTION_SOURCE,
+] = [
+  RALLY_ROUT_RESOLUTION_SOURCE,
+  REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE,
+  RETREAT_ROUT_RESOLUTION_SOURCE,
+];
 
 /** Attack-apply paths plus rally / rear-engagement movement. */
 export type RoutResolutionSource =
@@ -55,11 +69,13 @@ export const ROUT_RESOLUTION_SOURCE_VALUES: readonly [
   typeof MELEE_ATTACK_RESOLUTION_CONTEXT,
   typeof RALLY_ROUT_RESOLUTION_SOURCE,
   typeof REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE,
+  typeof RETREAT_ROUT_RESOLUTION_SOURCE,
 ] = [
   RANGED_ATTACK_RESOLUTION_CONTEXT,
   MELEE_ATTACK_RESOLUTION_CONTEXT,
   RALLY_ROUT_RESOLUTION_SOURCE,
   REAR_ENGAGEMENT_MOVEMENT_ROUT_SOURCE,
+  RETREAT_ROUT_RESOLUTION_SOURCE,
 ];
 
 const _routResolutionSourceNonAttackSchemaObject: z.ZodType<RoutResolutionSourceNonAttack> =

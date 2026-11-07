@@ -118,6 +118,9 @@ export {
   getFrontEngagementRetreatState,
   findRetreatState,
   getRetreatState,
+  findRoutAwaitingPenalty,
+  findRoutLocation,
+  findRoutOwingDiscard,
   findRoutState,
   isAwaitingRoutDiscard,
   getRoutState,
@@ -125,6 +128,7 @@ export {
   getNextMeleeRoutState,
   getRearEngagementRoutState,
 } from './sequencing';
+export type { RoutLocation } from './sequencing';
 
 // Unit stats, identity, support, and who is on the board.
 export {

@@ -1,10 +1,6 @@
 import type { PlayerSide } from '@entities';
 import type { GameState } from '@game';
-import {
-  findRoutState,
-  getOwnedPlayerCardState,
-  isAwaitingRoutDiscard,
-} from '@queries';
+import { findRoutOwingDiscard, getOwnedPlayerCardState } from '@queries';
 
 /**
  * Atomic rout-discard options for UI and validation: which player must discard,
@@ -22,7 +18,7 @@ export interface LegalRoutDiscardCards {
 /**
  * Returns the atomic rout-discard selection context whenever an active rout
  * slice awaits card selection (cleanup rally, rear engagement, attack apply,
- * melee).
+ * melee, or a retreat that found nowhere to go).
  *
  * Does not expand combinations — callers pick `numberToDiscard` IDs from
  * {@link LegalRoutDiscardCards.cardIds}; {@link isValidChooseRoutDiscardEvent}
@@ -34,9 +30,9 @@ export interface LegalRoutDiscardCards {
 export function getLegalRoutDiscardCards<S extends GameState>(
   gameState: S,
 ): LegalRoutDiscardCards | null {
-  const routState = findRoutState(gameState);
+  const routState = findRoutOwingDiscard(gameState);
   // Nothing routing, or a rout that owes no cards, means no discard to offer.
-  if (routState === undefined || !isAwaitingRoutDiscard(routState)) {
+  if (routState === undefined) {
     return null;
   }
   if (routState.numberToDiscard === 'pending') {

@@ -30,10 +30,19 @@ export { getRallyStepRoutState } from './getRallyStepRoutState';
 // Whether a rout still owes its owner's discard.
 export { isAwaitingRoutDiscard } from './isAwaitingRoutDiscard';
 
-// Routers. The rout in play, wherever it sits.
+// Selections. Which player's rout a given step is due for.
+export { findRoutOwingDiscard } from './findRoutOwingDiscard';
+export { findRoutAwaitingPenalty } from './findRoutAwaitingPenalty';
 
-// `undefined` when nothing is routing.
+// Routers. This player's rout, wherever it sits.
+
+// The rout and the parent accountable for resolving it. Every layer that has
+// to locate a rout descends here.
+export { findRoutLocation } from './findRoutLocation';
+export type { RoutLocation } from './findRoutLocation';
+
+// Just the rout. `undefined` when this player is not routing.
 export { findRoutState } from './findRoutState';
 
-// Throws when nothing is routing.
+// Throws when this player is not routing.
 export { getRoutState } from './getRoutState';

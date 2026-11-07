@@ -1,19 +1,21 @@
 import type { ResolveRoutEvent } from '@events';
 import type { GameState, RoutState } from '@game';
+import { getRoutState } from '@queries';
 import {
-  getCurrentRallyResolutionState,
-  getMeleeRoutState,
-  getRangedAttackRoutState,
-  getRearEngagementRoutState,
-  getRoutStateFromRally,
-} from '@queries';
-import { updateRoutState } from '@transforms/pureTransforms';
+  updateRetreatRoutState,
+  updateRoutState,
+} from '@transforms/pureTransforms';
 
 /**
  * Applies a ResolveRoutEvent to the game state.
  * Sets the numberToDiscard on the rout state based on the penalty.
  * The penalty is the sum of all routed units' rout penalties.
  * A zero penalty is not a choice — the rout closes in the same write.
+ *
+ * The routed units name their owner, and that owner names the rout, so reading
+ * it needs no knowledge of where it sits. `routResolutionSource` is still
+ * needed to write it back: a rout nested on a retreat is replaced through the
+ * retreat holding it, and every other rout through its own parent.
  *
  * @param event - The resolve rout event to apply
  * @param state - The current game state
@@ -23,38 +25,11 @@ export function applyResolveRoutEvent<S extends GameState>(
   event: ResolveRoutEvent,
   state: S,
 ): S {
-  let currentRoutState: RoutState;
-
-  switch (event.routResolutionSource) {
-    case 'rangedAttack': {
-      currentRoutState = getRangedAttackRoutState(state);
-      break;
-    }
-    case 'melee': {
-      const routedUnit = event.unitInstances.values().next().value;
-      const meleePlayer = routedUnit?.playerSide;
-      if (meleePlayer === undefined) {
-        throw new Error(
-          'Melee rout resolution requires at least one unit instance',
-        );
-      }
-      currentRoutState = getMeleeRoutState(state, meleePlayer);
-      break;
-    }
-    case 'rally': {
-      const rallyState = getCurrentRallyResolutionState(state);
-      currentRoutState = getRoutStateFromRally(rallyState);
-      break;
-    }
-    case 'rearEngagementMovement': {
-      currentRoutState = getRearEngagementRoutState(state);
-      break;
-    }
-    default: {
-      const _exhaustive: never = event.routResolutionSource;
-      throw new Error(`Unknown rout resolution source: ${_exhaustive}`);
-    }
+  const routedUnit = event.unitInstances[0];
+  if (routedUnit === undefined) {
+    throw new Error('Rout resolution requires at least one unit instance');
   }
+  const currentRoutState = getRoutState(state, routedUnit.playerSide);
 
   // A zero penalty has nothing to choose, so the rout finishes here.
   const closesWithoutDiscard = event.penalty === 0;
@@ -65,5 +40,10 @@ export function applyResolveRoutEvent<S extends GameState>(
     numberToDiscard: event.penalty,
   };
 
+  // A retreat with nowhere to go holds its own rout, and outlives the attack
+  // that forced it, so the write goes through the retreat.
+  if (event.routResolutionSource === 'retreat') {
+    return updateRetreatRoutState(state, newRoutState);
+  }
   return updateRoutState(state, newRoutState);
 }

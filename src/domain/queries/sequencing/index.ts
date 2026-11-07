@@ -111,7 +111,17 @@ export { getRetreatState } from './combatOutcomes';
 // Whether a rout still owes a discard.
 export { isAwaitingRoutDiscard } from './combatOutcomes';
 
-// The rout in play, or null when nothing is routing.
+// The rout owing a discard, whichever player owes it.
+export { findRoutOwingDiscard } from './combatOutcomes';
+
+// The rout whose penalty resolveRout is due to work out.
+export { findRoutAwaitingPenalty } from './combatOutcomes';
+
+// This player's rout and the parent accountable for resolving it.
+export { findRoutLocation } from './combatOutcomes';
+export type { RoutLocation } from './combatOutcomes';
+
+// Just the rout, or undefined when this player is not routing.
 export { findRoutState } from './combatOutcomes';
 
 // That rout, where a caller knows there is one.

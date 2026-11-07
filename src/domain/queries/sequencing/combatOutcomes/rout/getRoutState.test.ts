@@ -29,15 +29,17 @@ describe('getRoutState function', () => {
       }),
     );
 
-    expect(getRoutState(state)).toBe(rout);
+    expect(getRoutState(state, 'white')).toBe(rout);
   });
 
-  it('throws when nothing is routing', () => {
+  it('throws when that player is not routing', () => {
     const empty = createEmptyGameState('standard');
     // Every step that resolves a rout runs after one was opened, so a caller
     // reaching here without one is out of sequence.
     const state = updatePhaseState(empty, createPlayCardsPhaseState());
 
-    expect(() => getRoutState(state)).toThrow('No rout is in play');
+    expect(() => getRoutState(state, 'white')).toThrow(
+      'No rout is in play for white',
+    );
   });
 });

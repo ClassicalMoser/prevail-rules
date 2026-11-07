@@ -29,7 +29,8 @@ export function applyChooseRoutDiscardEvent<S extends GameState>(
   event: ChooseRoutDiscardEvent,
   state: S,
 ): S {
-  const routState = getRoutState(state);
+  // The event names the player, and in a melee each side can be routing.
+  const routState = getRoutState(state, event.player);
 
   const owned = getOwnedPlayerCardState(state.cardState, event.player);
   const discardedCardState = discardCardsFromHand(owned, event.cardIds);

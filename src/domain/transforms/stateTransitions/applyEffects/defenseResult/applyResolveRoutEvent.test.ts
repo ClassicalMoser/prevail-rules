@@ -406,7 +406,7 @@ describe('applyResolveRoutEvent function', () => {
   });
 
   describe('errors', () => {
-    it('given melee rout event with empty unitInstances, throws melee rout requires unit', () => {
+    it('throws when the event names no routed unit', () => {
       const state = createStateWithMeleeRout('black');
 
       const event: ResolveRoutEvent = {
@@ -418,8 +418,10 @@ describe('applyResolveRoutEvent function', () => {
         unitInstances: [],
       };
 
+      // The routed units are what name their owner, and the owner is what
+      // finds the rout, so an event without one cannot be applied anywhere.
       expect(() => applyResolveRoutEvent(event, state)).toThrow(
-        'Melee rout resolution requires at least one unit instance',
+        'Rout resolution requires at least one unit instance',
       );
     });
 
@@ -447,7 +449,7 @@ describe('applyResolveRoutEvent function', () => {
       };
 
       expect(() => applyResolveRoutEvent(event, stateWithoutRout)).toThrow(
-        'The rout on this attack apply has not been opened yet',
+        'No rout is in play for white',
       );
     });
   });

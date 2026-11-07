@@ -1,7 +1,9 @@
+import type { UnitWithPlacement } from '@entities';
 import type { CommandResolutionState, GameState } from '@game';
-import { createEmptyGameState } from '@factories';
+import { createEmptyGameState, createUnitPlacement } from '@factories';
 import {
   createAttackApplyState,
+  createAttackApplyStateWithRetreat,
   createAttackApplyStateWithRout,
   createCleanupPhaseState,
   createIssueCommandsPhaseState,
@@ -12,6 +14,7 @@ import {
   createRangedAttackResolutionState,
   createRearEngagementState,
   createResolveMeleePhaseState,
+  createRetreatState,
   createRoutState,
   createTestUnit,
 } from '@testing';
@@ -41,7 +44,7 @@ describe('findRoutState function', () => {
       defendingUnit: defender,
     });
 
-    expect(findRoutState(issueCommands(resolution))).toBe(rout);
+    expect(findRoutState(issueCommands(resolution), 'white')).toBe(rout);
   });
 
   it('finds the rout a rear engagement forced', () => {
@@ -50,12 +53,14 @@ describe('findRoutState function', () => {
     const resolution = createMovementResolutionState(empty, {
       engagementState: createRearEngagementState(),
     });
-    const found = findRoutState(issueCommands(resolution));
+    const found = findRoutState(issueCommands(resolution), 'white');
 
     expect(found?.substepType).toBe('rout');
   });
 
-  it('finds the melee rout in initiative order', () => {
+  it('answers each side about its own rout when a melee routs both', () => {
+    // Both units strike at once, so a melee can hold a rout for each side.
+    // Initiative decides which resolves first and not which rout is whose.
     const empty = updateCurrentInitiative(
       createEmptyGameState('standard'),
       'black',
@@ -64,7 +69,6 @@ describe('findRoutState function', () => {
     const whiteDefender = createTestUnit('white', { attack: 2 });
     const blackRout = createRoutState('black', blackDefender);
     const whiteRout = createRoutState('white', whiteDefender);
-    // Black holds initiative, so black's apply is answered about first.
     const melee = createMeleeResolutionState(empty, {
       blackAttackApplyState: createAttackApplyStateWithRout(blackDefender, {
         routState: blackRout,
@@ -80,7 +84,46 @@ describe('findRoutState function', () => {
       }),
     );
 
-    expect(findRoutState(state)).toBe(blackRout);
+    expect(findRoutState(state, 'black')).toBe(blackRout);
+    expect(findRoutState(state, 'white')).toBe(whiteRout);
+  });
+
+  it('finds the rout a retreat with nowhere to go fell into', () => {
+    const empty = createEmptyGameState('standard');
+    const defender = createTestUnit('black', { attack: 2 });
+    const standing: UnitWithPlacement = {
+      placement: createUnitPlacement('E-5', 'north'),
+      unit: defender,
+    };
+    // The attack forced a retreat and reached no rout of its own, so the rout
+    // is held by the retreat rather than by the attack.
+    const nested = createRoutState('black', defender);
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: createAttackApplyStateWithRetreat(standing, {
+        retreatState: createRetreatState(standing, {
+          legalRetreatOptions: [],
+          routState: nested,
+        }),
+      }),
+      defendingUnit: defender,
+    });
+
+    expect(findRoutState(issueCommands(resolution), 'black')).toBe(nested);
+  });
+
+  it('answers undefined when the rout belongs to the other player', () => {
+    const empty = createEmptyGameState('standard');
+    const defender = createTestUnit('white', { attack: 2 });
+    const rout = createRoutState('white', defender);
+    // One rout, and it is white's to pay for.
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: createAttackApplyStateWithRout(defender, {
+        routState: rout,
+      }),
+      defendingUnit: defender,
+    });
+
+    expect(findRoutState(issueCommands(resolution), 'black')).toBeUndefined();
   });
 
   it('finds the rout a rally opened during cleanup', () => {
@@ -98,7 +141,7 @@ describe('findRoutState function', () => {
       }),
     );
 
-    expect(findRoutState(state)).toBe(rout);
+    expect(findRoutState(state, 'white')).toBe(rout);
   });
 
   it('answers undefined when the attack routed nobody', () => {
@@ -110,7 +153,7 @@ describe('findRoutState function', () => {
       defendingUnit: defender,
     });
 
-    expect(findRoutState(issueCommands(resolution))).toBeUndefined();
+    expect(findRoutState(issueCommands(resolution), 'white')).toBeUndefined();
   });
 
   it('answers undefined in a phase that routs nobody', () => {
@@ -118,6 +161,6 @@ describe('findRoutState function', () => {
     // Play-cards moves no units and so routs none.
     const state = updatePhaseState(empty, createPlayCardsPhaseState());
 
-    expect(findRoutState(state)).toBeUndefined();
+    expect(findRoutState(state, 'white')).toBeUndefined();
   });
 });
