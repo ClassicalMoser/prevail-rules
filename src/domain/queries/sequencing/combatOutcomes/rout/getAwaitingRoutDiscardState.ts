@@ -1,7 +1,7 @@
 import type { GameState, RoutState } from '@game';
 import { getCurrentCommandResolutionState } from '@queries/sequencing/commandResolution/getCurrentCommandResolutionState';
 import { getCurrentPhaseState } from '@queries/sequencing/phases/getCurrentPhaseState';
-import { getRoutStateFromCleanupPhaseForResolveRout } from '@queries/sequencing/rallyResolution/getRoutStateFromCleanupPhaseForResolveRout';
+import { getRoutStateFromCleanupPhaseForResolveRout } from './getRoutStateFromCleanupPhaseForResolveRout';
 import { getAttackApplyStateFromRangedAttack } from '../attackApply/getAttackApplyStateFromRangedAttack';
 import { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement';
 import { getRoutStateFromAttackApply } from './getRoutStateFromAttackApply';

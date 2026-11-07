@@ -1,5 +1,5 @@
 import type { GameState, RoutState } from '@game';
-import { getCleanupPhaseState } from '../phases/getCleanupPhaseState';
+import { getCleanupPhaseState } from '@queries/sequencing/phases/getCleanupPhaseState';
 
 /**
  * The rout on the rally for the current cleanup step.

@@ -1,47 +1,36 @@
+// The three outcome substeps and the parents that hold them. Which parent a slot
+// belongs to is part of what the query answers, so there is one getter per parent
+// rather than one getter with a parent argument. [`README.md`](./README.md) has
+// the map.
+//
+// Within each substep, routes come first: they descend to a named parent and read
+// its slot. Selections come after: a rule of the game decides which candidate to
+// answer about, so those carry sequencing meaning that the routes do not.
+
 // Whether a retreat, reverse, or rout substep has been written.
 export { isOpenSubstep } from './isOpenSubstep';
 
-// Attack-apply on the current ranged attack.
+// Attack-apply: on the ranged attack, or on either side of a melee.
 export { getAttackApplyStateFromRangedAttack } from './attackApply';
-
-// Attack-apply for one side of the current melee.
 export { getAttackApplyStateFromMelee } from './attackApply';
-
-// The defender whose melee attack-apply is still open, initiative first.
 export { getDefendingPlayerForNextIncompleteMeleeAttackApply } from './attackApply';
 
-// Reverse stored on an attack-apply.
-export { getReverseStateFromAttackApply } from './reverse';
-
-// The reverse still open in the current melee, initiative first.
-export { getReverseStateFromMeleeResolutionByInitiative } from './reverse';
-
-// Retreat stored on an attack-apply.
+// Retreat: on an attack-apply, or on a front engagement.
 export { getRetreatStateFromAttackApply } from './retreat';
-
-// Retreat on the current ranged attack.
 export { getRetreatStateFromRangedAttack } from './retreat';
-
-// Retreat for one side of the current melee.
 export { getRetreatStateFromMelee } from './retreat';
-
-// The melee retreat whose destination is chosen and whose move is not finished.
-export { getRetreatStateReadyForResolveFromMelee } from './retreat';
-
-// Retreat on the current front engagement.
 export { getRetreatStateFromFrontEngagement } from './retreat';
-
-// The retreat for one player, from ranged attack, front engagement, or melee.
+export { getRetreatStateReadyForResolveFromMelee } from './retreat';
 export { findRetreatState } from './retreat';
 
-// Rout stored on an attack-apply.
+// Reverse: on an attack-apply only.
+export { getReverseStateFromAttackApply } from './reverse';
+export { getReverseStateFromMeleeResolutionByInitiative } from './reverse';
+
+// Rout: on an attack-apply, a rear engagement, a rally, or a retreat.
 export { getRoutStateFromAttackApply } from './rout';
-
-// The rout still open in the current melee, initiative first.
-export { getRoutStateFromMeleeResolutionByInitiative } from './rout';
-
-// Rout forced by the current rear engagement.
 export { getRoutStateFromRearEngagement } from './rout';
-
-// The rout that still needs a discard, from issue-commands, melee, or cleanup.
+export { getRoutStateFromRally } from './rout';
+export { getRoutStateFromMeleeResolutionByInitiative } from './rout';
+export { getRoutStateFromCleanupPhaseForResolveRout } from './rout';
 export { getAwaitingRoutDiscardState } from './rout';

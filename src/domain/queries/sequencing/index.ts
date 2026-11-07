@@ -42,12 +42,6 @@ export { getRallyResolutionState } from './rallyResolution';
 // The rally for the cleanup step now in progress.
 export { getCurrentRallyResolutionState } from './rallyResolution';
 
-// The rout stored on a rally.
-export { getRoutStateFromRally } from './rallyResolution';
-
-// The rout for the cleanup step that is resolving a rally, including choose-rally.
-export { getRoutStateFromCleanupPhaseForResolveRout } from './rallyResolution';
-
 // The rally for this resolve step, for the player whose step it is.
 export { getRallyResolutionStateForCurrentStep } from './rallyResolution';
 
@@ -107,6 +101,12 @@ export { getRoutStateFromMeleeResolutionByInitiative } from './combatOutcomes';
 
 // Rout forced by the current rear engagement.
 export { getRoutStateFromRearEngagement } from './combatOutcomes';
+
+// The rout stored on a rally.
+export { getRoutStateFromRally } from './combatOutcomes';
+
+// The rout for the cleanup step that is resolving a rally, including choose-rally.
+export { getRoutStateFromCleanupPhaseForResolveRout } from './combatOutcomes';
 
 // The rout that still needs a discard, from issue-commands, melee, or cleanup.
 export { getAwaitingRoutDiscardState } from './combatOutcomes';

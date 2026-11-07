@@ -4,11 +4,8 @@ export { getRallyResolutionState } from './getRallyResolutionState';
 // The rally for the cleanup step now in progress.
 export { getCurrentRallyResolutionState } from './getCurrentRallyResolutionState';
 
-// The rout stored on a rally.
-export { getRoutStateFromRally } from './getRoutStateFromRally';
-
-// The rout for the cleanup step that is resolving a rally, including choose-rally.
-export { getRoutStateFromCleanupPhaseForResolveRout } from './getRoutStateFromCleanupPhaseForResolveRout';
+// A rally's rout is exported from `combatOutcomes/rout`, beside the other
+// parents that can hold one.
 
 // The rally for this resolve step, for the player whose step it is.
 export { getRallyResolutionStateForCurrentStep } from './cleanupPhase';
