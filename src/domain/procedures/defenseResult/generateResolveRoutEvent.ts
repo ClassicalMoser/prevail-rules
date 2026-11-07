@@ -1,14 +1,12 @@
 import type { ResolveRoutEvent, RoutResolutionSource } from '@events';
 import type { GameState, RoutState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ROUT_EFFECT_TYPE } from '@events';
-import { throwIfBypassed } from '@utils';
 import {
-  getRangedAttackApplyState,
   getCurrentCommandResolutionState,
   getCurrentPhaseState,
-  getRoutStateFromAttackApply,
-  getRallyStepRoutState,
   getNextMeleeRoutState,
+  getRallyStepRoutState,
+  getRangedAttackRoutState,
   getRearEngagementRoutState,
 } from '@queries';
 /**
@@ -35,10 +33,7 @@ export function generateResolveRoutEvent(
       routState = getRearEngagementRoutState(state);
       routResolutionSource = 'rearEngagementMovement';
     } else if (crs.commandResolutionType === 'rangedAttack') {
-      routState = throwIfBypassed(
-        getRoutStateFromAttackApply(getRangedAttackApplyState(state)),
-        'The ranged attack applied no rout to resolve',
-      );
+      routState = getRangedAttackRoutState(state);
       routResolutionSource = 'rangedAttack';
     } else {
       throw new Error(

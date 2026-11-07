@@ -2,11 +2,9 @@ import type { GameState, RoutState } from '@game';
 import { getCurrentCommandResolutionState } from '@queries/sequencing/commandResolution/getCurrentCommandResolutionState';
 import { getCurrentPhaseState } from '@queries/sequencing/phases/getCurrentPhaseState';
 import { getRallyStepRoutState } from './getRallyStepRoutState';
-import { getRangedAttackApplyState } from '../attackApply/getRangedAttackApplyState';
+import { getRangedAttackRoutState } from './getRangedAttackRoutState';
 import { getRearEngagementRoutState } from './getRearEngagementRoutState';
-import { getRoutStateFromAttackApply } from './getRoutStateFromAttackApply';
 import { getNextMeleeRoutState } from './getNextMeleeRoutState';
-import { throwIfBypassed } from '@utils';
 
 /**
  * Active {@link RoutState} awaiting `chooseRoutDiscard` (penalty known, cards
@@ -28,10 +26,7 @@ export function getAwaitingRoutDiscardState(
     if (crs.commandResolutionType === 'movement') {
       routState = getRearEngagementRoutState(state);
     } else if (crs.commandResolutionType === 'rangedAttack') {
-      routState = throwIfBypassed(
-        getRoutStateFromAttackApply(getRangedAttackApplyState(state)),
-        'The ranged attack applied no rout',
-      );
+      routState = getRangedAttackRoutState(state);
     } else {
       return null;
     }

@@ -84,6 +84,14 @@ export { getRangedAttackRetreatState } from './combatOutcomes';
 // Retreat for one side of the current melee.
 export { getMeleeRetreatState } from './combatOutcomes';
 
+// Rout on the ranged attack's apply, and on one side of the melee's.
+export { getRangedAttackRoutState } from './combatOutcomes';
+export { getMeleeRoutState } from './combatOutcomes';
+
+// Reverse on the ranged attack's apply, and on one side of the melee's.
+export { getRangedAttackReverseState } from './combatOutcomes';
+export { getMeleeReverseState } from './combatOutcomes';
+
 // The melee retreat whose destination is chosen and whose move is not finished.
 export { getNextMeleeRetreatStateAwaitingMove } from './combatOutcomes';
 

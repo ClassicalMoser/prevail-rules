@@ -6,6 +6,12 @@
 // Rout stored on an attack-apply.
 export { getRoutStateFromAttackApply } from './getRoutStateFromAttackApply';
 
+// Rout on the ranged attack's apply.
+export { getRangedAttackRoutState } from './getRangedAttackRoutState';
+
+// Rout on one side of the melee's apply.
+export { getMeleeRoutState } from './getMeleeRoutState';
+
 // Rout forced by the current rear engagement.
 export { getRearEngagementRoutState } from './getRearEngagementRoutState';
 
@@ -18,7 +24,7 @@ export { getRoutStateFromRally } from './getRoutStateFromRally';
 // The rout still open in the current melee, initiative first.
 export { getNextMeleeRoutState } from './getNextMeleeRoutState';
 
-// The rout for the cleanup step that is resolving a rally, including choose-rally.
+// The rout on the rally for the cleanup step now resolving.
 export { getRallyStepRoutState } from './getRallyStepRoutState';
 
 // The rout that still needs a discard, from issue-commands, melee, or cleanup.
