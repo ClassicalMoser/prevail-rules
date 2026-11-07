@@ -6,18 +6,18 @@
 export { getRetreatStateFromAttackApply } from './getRetreatStateFromAttackApply';
 
 // Retreat on the current ranged attack.
-export { getRetreatStateFromRangedAttack } from './getRetreatStateFromRangedAttack';
+export { getRangedAttackRetreatState } from './getRangedAttackRetreatState';
 
 // Retreat for one side of the current melee.
-export { getRetreatStateFromMelee } from './getRetreatStateFromMelee';
+export { getMeleeRetreatState } from './getMeleeRetreatState';
 
 // Retreat on the current front engagement.
-export { getRetreatStateFromFrontEngagement } from './getRetreatStateFromFrontEngagement';
+export { getFrontEngagementRetreatState } from './getFrontEngagementRetreatState';
 
 // Selections. A rule of the game decides which candidate is answered about.
 
 // The melee retreat whose destination is chosen and whose move is not finished.
-export { getRetreatStateReadyForResolveFromMelee } from './getRetreatStateReadyForResolveFromMelee';
+export { getNextMeleeRetreatStateAwaitingMove } from './getNextMeleeRetreatStateAwaitingMove';
 
 // The retreat for one player, from ranged attack, front engagement, or melee.
 export { findRetreatState } from './findRetreatState';

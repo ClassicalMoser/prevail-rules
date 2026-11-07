@@ -1,9 +1,6 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState, MeleeResolutionState } from '@game';
-import {
-  getDefendingPlayerForNextIncompleteMeleeAttackApply,
-  getOtherPlayer,
-} from '@queries';
+import { getNextMeleeDefendingPlayer, getOtherPlayer } from '@queries';
 import { throwIfPending } from '@utils';
 import { getExpectedAttackApplyEvent } from '../composable';
 
@@ -67,8 +64,10 @@ export function getExpectedMeleeResolutionEvent(
   }
 
   // ResolveMelee has been applied (both attackApplyStates exist)
-  const nextDefendingPlayer =
-    getDefendingPlayerForNextIncompleteMeleeAttackApply(gameState, meleeState);
+  const nextDefendingPlayer = getNextMeleeDefendingPlayer(
+    gameState,
+    meleeState,
+  );
   if (nextDefendingPlayer !== null) {
     return getExpectedAttackApplyEvent(
       throwIfPending(

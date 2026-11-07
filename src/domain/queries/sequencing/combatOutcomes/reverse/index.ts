@@ -6,4 +6,4 @@ export { getReverseStateFromAttackApply } from './getReverseStateFromAttackApply
 // Selection. A rule of the game decides which candidate is answered about.
 
 // The reverse still open in the current melee, initiative first.
-export { getReverseStateFromMeleeResolutionByInitiative } from './getReverseStateFromMeleeResolutionByInitiative';
+export { getNextMeleeReverseState } from './getNextMeleeReverseState';

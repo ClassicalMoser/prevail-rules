@@ -3,7 +3,7 @@ import type { OpenRoutFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { createAttackApplyState, createEmptyGameState } from '@factories';
 import {
-  getAttackApplyStateFromRangedAttack,
+  getRangedAttackApplyState,
   getRoutStateFromAttackApply,
 } from '@queries';
 import {
@@ -59,7 +59,7 @@ describe('applyOpenRoutFromAttackApplyEvent function', () => {
     };
 
     const next = applyOpenRoutFromAttackApplyEvent(event, state);
-    const apply = getAttackApplyStateFromRangedAttack(next);
+    const apply = getRangedAttackApplyState(next);
     const rout = throwIfBypassed(
       getRoutStateFromAttackApply(apply),
       'the attack applies a rout',
@@ -84,7 +84,7 @@ describe('applyOpenRoutFromAttackApplyEvent function', () => {
     };
 
     const next = applyOpenRoutFromAttackApplyEvent(event, state);
-    const apply = getAttackApplyStateFromRangedAttack(next);
+    const apply = getRangedAttackApplyState(next);
     expect(apply.retreatState).toBe('bypassed');
     expect(apply.reverseState).toBe('bypassed');
   });

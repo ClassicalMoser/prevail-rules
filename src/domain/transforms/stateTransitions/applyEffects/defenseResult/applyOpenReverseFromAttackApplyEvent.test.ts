@@ -3,7 +3,7 @@ import type { OpenReverseFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { createAttackApplyState, createEmptyGameState } from '@factories';
 import {
-  getAttackApplyStateFromRangedAttack,
+  getRangedAttackApplyState,
   getReverseStateFromAttackApply,
 } from '@queries';
 import {
@@ -60,7 +60,7 @@ describe('applyOpenReverseFromAttackApplyEvent function', () => {
     };
 
     const next = applyOpenReverseFromAttackApplyEvent(event, state);
-    const apply = getAttackApplyStateFromRangedAttack(next);
+    const apply = getRangedAttackApplyState(next);
     const reverse = throwIfBypassed(
       getReverseStateFromAttackApply(apply),
       'the attack applies a reverse',

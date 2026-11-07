@@ -9,9 +9,7 @@ import { throwIfPending } from '@utils';
  * @returns The retreat state
  * @throws Error if not in front engagement or retreatState is still pending
  */
-export function getRetreatStateFromFrontEngagement(
-  state: GameState,
-): RetreatState {
+export function getFrontEngagementRetreatState(state: GameState): RetreatState {
   const engagementState = getFrontEngagementStateFromMovement(state);
   const retreatState = throwIfPending(
     engagementState.engagementResolutionState.retreatState,

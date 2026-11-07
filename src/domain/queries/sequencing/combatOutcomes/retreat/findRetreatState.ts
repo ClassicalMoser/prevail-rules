@@ -1,8 +1,8 @@
 import type { GameState, RetreatState } from '@game';
 import { isFriendlyUnit } from '@queries/unit';
-import { getRetreatStateFromFrontEngagement } from './getRetreatStateFromFrontEngagement';
-import { getRetreatStateFromMelee } from './getRetreatStateFromMelee';
-import { getRetreatStateFromRangedAttack } from './getRetreatStateFromRangedAttack';
+import { getFrontEngagementRetreatState } from './getFrontEngagementRetreatState';
+import { getMeleeRetreatState } from './getMeleeRetreatState';
+import { getRangedAttackRetreatState } from './getRangedAttackRetreatState';
 
 /**
  * Finds the retreat state from the current game state context.
@@ -27,7 +27,7 @@ export function findRetreatState(
   // A miss in one search continues to the next. The retreat must belong to `player`.
   if (phaseState.phase === 'issueCommands') {
     try {
-      const retreatState = getRetreatStateFromRangedAttack(state);
+      const retreatState = getRangedAttackRetreatState(state);
       if (isFriendlyUnit(retreatState.retreatingUnit.unit, player)) {
         return retreatState;
       }
@@ -36,7 +36,7 @@ export function findRetreatState(
     }
 
     try {
-      const retreatState = getRetreatStateFromFrontEngagement(state);
+      const retreatState = getFrontEngagementRetreatState(state);
       if (isFriendlyUnit(retreatState.retreatingUnit.unit, player)) {
         return retreatState;
       }
@@ -48,7 +48,7 @@ export function findRetreatState(
   // Melee stores one retreat per side. The player argument selects the side.
   if (phaseState.phase === 'resolveMelee') {
     try {
-      const retreatState = getRetreatStateFromMelee(state, player);
+      const retreatState = getMeleeRetreatState(state, player);
       return retreatState;
     } catch {
       // Not found, continue

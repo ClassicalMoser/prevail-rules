@@ -3,13 +3,13 @@ import type { GameState, RoutState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_ROUT_EFFECT_TYPE } from '@events';
 import { throwIfBypassed } from '@utils';
 import {
-  getAttackApplyStateFromRangedAttack,
+  getRangedAttackApplyState,
   getCurrentCommandResolutionState,
   getCurrentPhaseState,
   getRoutStateFromAttackApply,
-  getRoutStateFromCleanupPhaseForResolveRout,
-  getRoutStateFromMeleeResolutionByInitiative,
-  getRoutStateFromRearEngagement,
+  getRallyStepRoutState,
+  getNextMeleeRoutState,
+  getRearEngagementRoutState,
 } from '@queries';
 /**
  * Generates a ResolveRoutEvent by calculating the rout penalty
@@ -32,11 +32,11 @@ export function generateResolveRoutEvent(
   if (phaseState.phase === 'issueCommands') {
     const crs = getCurrentCommandResolutionState(state);
     if (crs.commandResolutionType === 'movement') {
-      routState = getRoutStateFromRearEngagement(state);
+      routState = getRearEngagementRoutState(state);
       routResolutionSource = 'rearEngagementMovement';
     } else if (crs.commandResolutionType === 'rangedAttack') {
       routState = throwIfBypassed(
-        getRoutStateFromAttackApply(getAttackApplyStateFromRangedAttack(state)),
+        getRoutStateFromAttackApply(getRangedAttackApplyState(state)),
         'The ranged attack applied no rout to resolve',
       );
       routResolutionSource = 'rangedAttack';
@@ -46,10 +46,10 @@ export function generateResolveRoutEvent(
       );
     }
   } else if (phaseState.phase === 'resolveMelee') {
-    routState = getRoutStateFromMeleeResolutionByInitiative(state);
+    routState = getNextMeleeRoutState(state);
     routResolutionSource = 'melee';
   } else if (phaseState.phase === 'cleanup') {
-    routState = getRoutStateFromCleanupPhaseForResolveRout(state);
+    routState = getRallyStepRoutState(state);
     routResolutionSource = 'rally';
   } else {
     throw new Error(

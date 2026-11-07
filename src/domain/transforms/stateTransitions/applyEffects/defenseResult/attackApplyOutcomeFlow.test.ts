@@ -8,7 +8,7 @@ import type {
 import type { GameState } from '@game';
 import { createAttackApplyState, createEmptyGameState } from '@factories';
 import {
-  getAttackApplyStateFromRangedAttack,
+  getRangedAttackApplyState,
   getPositionOfUnit,
   getRetreatStateFromAttackApply,
   getReverseStateFromAttackApply,
@@ -83,7 +83,7 @@ describe('attack apply outcome flow', () => {
     );
     const retreat = throwIfBypassed(
       getRetreatStateFromAttackApply(
-        getAttackApplyStateFromRangedAttack(withRetreatOpen),
+        getRangedAttackApplyState(withRetreatOpen),
       ),
       'the attack applies a retreat',
     );
@@ -104,7 +104,7 @@ describe('attack apply outcome flow', () => {
     );
 
     // Reverse is still due after the retreat; open it from the square just reached.
-    expect(getAttackApplyStateFromRangedAttack(afterRetreat).reverseState).toBe(
+    expect(getRangedAttackApplyState(afterRetreat).reverseState).toBe(
       'pending',
     );
 
@@ -120,7 +120,7 @@ describe('attack apply outcome flow', () => {
     );
     const reverse = throwIfBypassed(
       getReverseStateFromAttackApply(
-        getAttackApplyStateFromRangedAttack(afterReverseOpen),
+        getRangedAttackApplyState(afterReverseOpen),
       ),
       'the attack applies a reverse',
     );
@@ -153,8 +153,6 @@ describe('attack apply outcome flow', () => {
       retreatResolutionContext: 'rangedAttack',
     };
     const next = applyTriggerRoutFromRetreatEvent(event, full);
-    expect(getAttackApplyStateFromRangedAttack(next).reverseState).toBe(
-      'bypassed',
-    );
+    expect(getRangedAttackApplyState(next).reverseState).toBe('bypassed');
   });
 });

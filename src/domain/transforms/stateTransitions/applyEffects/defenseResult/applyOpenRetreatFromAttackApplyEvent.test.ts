@@ -3,7 +3,7 @@ import type { OpenRetreatFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { createAttackApplyState, createEmptyGameState } from '@factories';
 import {
-  getAttackApplyStateFromRangedAttack,
+  getRangedAttackApplyState,
   getRetreatStateFromAttackApply,
 } from '@queries';
 import {
@@ -55,7 +55,7 @@ describe('applyOpenRetreatFromAttackApplyEvent function', () => {
     };
 
     const next = applyOpenRetreatFromAttackApplyEvent(event, state);
-    const apply = getAttackApplyStateFromRangedAttack(next);
+    const apply = getRangedAttackApplyState(next);
     const retreat = throwIfBypassed(
       getRetreatStateFromAttackApply(apply),
       'the attack applies a retreat',

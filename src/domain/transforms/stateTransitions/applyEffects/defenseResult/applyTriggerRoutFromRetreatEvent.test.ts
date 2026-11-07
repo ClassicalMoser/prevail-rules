@@ -1,9 +1,9 @@
 import type { TriggerRoutFromRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import {
-  getAttackApplyStateFromRangedAttack,
-  getRetreatStateFromMelee,
-  getRetreatStateFromRangedAttack,
+  getRangedAttackApplyState,
+  getMeleeRetreatState,
+  getRangedAttackRetreatState,
   isOpenSubstep,
 } from '@queries';
 import {
@@ -110,7 +110,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
   describe('ranged retreat context', () => {
     it('given ranged retreat flow, trigger adds rout substep targeting retreating player unit', () => {
       const state = createStateWithRangedAttackRetreat();
-      const retreatState = getRetreatStateFromRangedAttack(state);
+      const retreatState = getRangedAttackRetreatState(state);
 
       // Event does not specify player - function determines it from state
       const event: TriggerRoutFromRetreatEvent = {
@@ -121,7 +121,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
-      const newRetreatState = getRetreatStateFromRangedAttack(newState);
+      const newRetreatState = getRangedAttackRetreatState(newState);
 
       // triggerRoutFromRetreat opens the nested rout under this retreat.
       const rout = newRetreatState.routState;
@@ -146,7 +146,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
-      const newRetreatState = getRetreatStateFromRangedAttack(newState);
+      const newRetreatState = getRangedAttackRetreatState(newState);
 
       // triggerRoutFromRetreat opens the nested rout under this retreat.
       const rout = newRetreatState.routState;
@@ -174,7 +174,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
-      const newRetreatState = getRetreatStateFromMelee(newState, 'black');
+      const newRetreatState = getMeleeRetreatState(newState, 'black');
 
       // triggerRoutFromRetreat opens the nested rout under this retreat.
       const rout = newRetreatState.routState;
@@ -198,7 +198,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       };
 
       const newState = applyTriggerRoutFromRetreatEvent(event, state);
-      const newRetreatState = getRetreatStateFromMelee(newState, 'white');
+      const newRetreatState = getMeleeRetreatState(newState, 'white');
 
       // triggerRoutFromRetreat opens the nested rout under this retreat.
       const rout = newRetreatState.routState;
@@ -246,7 +246,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
       };
 
       const next = applyTriggerRoutFromRetreatEvent(event, full);
-      const apply = getAttackApplyStateFromRangedAttack(next);
+      const apply = getRangedAttackApplyState(next);
       expect(apply.reverseState).toBe('bypassed');
     });
   });
@@ -254,7 +254,7 @@ describe('applyTriggerRoutFromRetreatEvent function', () => {
   describe('structural update', () => {
     it('given retreat routState ref before ranged trigger, input retreat unchanged after apply', () => {
       const state = createStateWithRangedAttackRetreat();
-      const retreatState = getRetreatStateFromRangedAttack(state);
+      const retreatState = getRangedAttackRetreatState(state);
       const originalRoutState = retreatState.routState;
 
       // Event does not specify player - function determines it from state

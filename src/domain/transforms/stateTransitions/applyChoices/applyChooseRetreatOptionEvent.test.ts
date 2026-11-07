@@ -1,7 +1,7 @@
 import {
-  getRetreatStateFromFrontEngagement,
-  getRetreatStateFromMelee,
-  getRetreatStateFromRangedAttack,
+  getFrontEngagementRetreatState,
+  getMeleeRetreatState,
+  getRangedAttackRetreatState,
 } from '@queries';
 import {
   createAttackApplyStateWithRetreat,
@@ -63,7 +63,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
     });
 
     const newState = applyChooseRetreatOptionEvent(event, state);
-    const retreatState = getRetreatStateFromRangedAttack(newState);
+    const retreatState = getRangedAttackRetreatState(newState);
 
     expect(retreatState.finalPosition).toStrictEqual(chosenPosition);
   });
@@ -112,7 +112,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
     });
 
     const newState = applyChooseRetreatOptionEvent(event, state);
-    const retreatState = getRetreatStateFromMelee(newState, 'white');
+    const retreatState = getMeleeRetreatState(newState, 'white');
 
     expect(retreatState.finalPosition).toStrictEqual(chosenPosition);
   });
@@ -126,7 +126,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
     });
 
     const newState = applyChooseRetreatOptionEvent(event, state);
-    const retreatState = getRetreatStateFromMelee(newState, 'black');
+    const retreatState = getMeleeRetreatState(newState, 'black');
 
     expect(retreatState.finalPosition).toStrictEqual(chosenPosition);
   });
@@ -161,7 +161,7 @@ describe('applyChooseRetreatOptionEvent function', () => {
 
     const newState = applyChooseRetreatOptionEvent(event, stateInIssueCommands);
     expect(
-      getRetreatStateFromFrontEngagement(newState).finalPosition,
+      getFrontEngagementRetreatState(newState).finalPosition,
     ).toStrictEqual(chosenPosition);
   });
 });

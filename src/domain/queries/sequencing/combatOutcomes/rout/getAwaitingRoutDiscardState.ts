@@ -1,11 +1,11 @@
 import type { GameState, RoutState } from '@game';
 import { getCurrentCommandResolutionState } from '@queries/sequencing/commandResolution/getCurrentCommandResolutionState';
 import { getCurrentPhaseState } from '@queries/sequencing/phases/getCurrentPhaseState';
-import { getRoutStateFromCleanupPhaseForResolveRout } from './getRoutStateFromCleanupPhaseForResolveRout';
-import { getAttackApplyStateFromRangedAttack } from '../attackApply/getAttackApplyStateFromRangedAttack';
-import { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement';
+import { getRallyStepRoutState } from './getRallyStepRoutState';
+import { getRangedAttackApplyState } from '../attackApply/getRangedAttackApplyState';
+import { getRearEngagementRoutState } from './getRearEngagementRoutState';
 import { getRoutStateFromAttackApply } from './getRoutStateFromAttackApply';
-import { getRoutStateFromMeleeResolutionByInitiative } from './getRoutStateFromMeleeResolutionByInitiative';
+import { getNextMeleeRoutState } from './getNextMeleeRoutState';
 import { throwIfBypassed } from '@utils';
 
 /**
@@ -26,19 +26,19 @@ export function getAwaitingRoutDiscardState(
     const crs = getCurrentCommandResolutionState(state);
     // Movement routs from the rear. A ranged rout sits on the attack apply.
     if (crs.commandResolutionType === 'movement') {
-      routState = getRoutStateFromRearEngagement(state);
+      routState = getRearEngagementRoutState(state);
     } else if (crs.commandResolutionType === 'rangedAttack') {
       routState = throwIfBypassed(
-        getRoutStateFromAttackApply(getAttackApplyStateFromRangedAttack(state)),
+        getRoutStateFromAttackApply(getRangedAttackApplyState(state)),
         'The ranged attack applied no rout',
       );
     } else {
       return null;
     }
   } else if (phaseState.phase === 'resolveMelee') {
-    routState = getRoutStateFromMeleeResolutionByInitiative(state);
+    routState = getNextMeleeRoutState(state);
   } else if (phaseState.phase === 'cleanup') {
-    routState = getRoutStateFromCleanupPhaseForResolveRout(state);
+    routState = getRallyStepRoutState(state);
   } else {
     return null;
   }

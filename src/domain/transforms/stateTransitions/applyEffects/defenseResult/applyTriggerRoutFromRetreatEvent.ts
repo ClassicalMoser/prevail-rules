@@ -2,10 +2,10 @@ import type { TriggerRoutFromRetreatEvent } from '@events';
 import type { GameState, RoutState } from '@game';
 import { RANGED_ATTACK_RESOLUTION_CONTEXT } from '@events';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
-  getRetreatStateFromMelee,
-  getRetreatStateFromRangedAttack,
+  getMeleeAttackApplyState,
+  getRangedAttackApplyState,
+  getMeleeRetreatState,
+  getRangedAttackRetreatState,
 } from '@queries';
 import {
   removeUnitsLeavingUnderRout,
@@ -29,8 +29,8 @@ export function applyTriggerRoutFromRetreatEvent<S extends GameState>(
 ): S {
   const retreatState =
     event.retreatResolutionContext === RANGED_ATTACK_RESOLUTION_CONTEXT
-      ? getRetreatStateFromRangedAttack(state)
-      : getRetreatStateFromMelee(state, event.retreatingPlayer);
+      ? getRangedAttackRetreatState(state)
+      : getMeleeRetreatState(state, event.retreatingPlayer);
 
   const routState: RoutState = {
     cardsChosen: false,
@@ -47,8 +47,8 @@ export function applyTriggerRoutFromRetreatEvent<S extends GameState>(
   // cannot still be due once the unit is routing off the board.
   const apply =
     event.retreatResolutionContext === RANGED_ATTACK_RESOLUTION_CONTEXT
-      ? getAttackApplyStateFromRangedAttack(withNestedRout)
-      : getAttackApplyStateFromMelee(withNestedRout, event.retreatingPlayer);
+      ? getRangedAttackApplyState(withNestedRout)
+      : getMeleeAttackApplyState(withNestedRout, event.retreatingPlayer);
 
   const nextApply = {
     ...apply,

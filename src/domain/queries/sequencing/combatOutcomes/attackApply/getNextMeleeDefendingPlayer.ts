@@ -8,7 +8,7 @@ import { getOtherPlayer } from '@queries/player';
  *
  * @returns `null` if either attack-apply state is missing, or both are already complete
  */
-export function getDefendingPlayerForNextIncompleteMeleeAttackApply(
+export function getNextMeleeDefendingPlayer(
   gameState: GameState,
   meleeState: MeleeResolutionState,
 ): PlayerSide | null {

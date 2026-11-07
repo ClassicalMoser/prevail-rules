@@ -8,14 +8,14 @@ import {
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
-import { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement';
+import { getRearEngagementRoutState } from './getRearEngagementRoutState';
 
 import { createEmptyGameState } from '@factories';
 /**
  * Rear-contact movement: the nested rear engagement must carry a rout substep; this unwraps it
  * from issueCommands + movement CRS with validation.
  */
-describe('getRoutStateFromRearEngagement function', () => {
+describe('getRearEngagementRoutState function', () => {
   it('returns the rout on the rear engagement', () => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white');
@@ -32,7 +32,7 @@ describe('getRoutStateFromRearEngagement function', () => {
       }),
     );
 
-    expect(getRoutStateFromRearEngagement(full)).toBe(routState);
+    expect(getRearEngagementRoutState(full)).toBe(routState);
   });
 
   it('throws when the movement has no engagement', () => {
@@ -47,7 +47,7 @@ describe('getRoutStateFromRearEngagement function', () => {
       }),
     );
 
-    expect(() => getRoutStateFromRearEngagement(full)).toThrow(
+    expect(() => getRearEngagementRoutState(full)).toThrow(
       'Movement resolution has no engagement state',
     );
   });
@@ -64,7 +64,7 @@ describe('getRoutStateFromRearEngagement function', () => {
       }),
     );
 
-    expect(() => getRoutStateFromRearEngagement(full)).toThrow(
+    expect(() => getRearEngagementRoutState(full)).toThrow(
       'Expected rear engagement for movement rout, got front',
     );
   });

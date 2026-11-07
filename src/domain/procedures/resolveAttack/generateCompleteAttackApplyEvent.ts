@@ -4,9 +4,9 @@ import {
   GAME_EFFECT_EVENT_TYPE,
 } from '@events';
 import {
-  getAttackApplyStateFromRangedAttack,
+  getRangedAttackApplyState,
   getCurrentPhaseState,
-  getDefendingPlayerForNextIncompleteMeleeAttackApply,
+  getNextMeleeDefendingPlayer,
   getMeleeResolutionState,
 } from '@queries';
 import type { GameState } from '@game';
@@ -25,7 +25,7 @@ export function generateCompleteAttackApplyEvent(
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
-    const attackApply = getAttackApplyStateFromRangedAttack(state);
+    const attackApply = getRangedAttackApplyState(state);
     return {
       attackType: 'ranged',
       defendingPlayer: attackApply.defendingUnit.playerSide,
@@ -38,10 +38,7 @@ export function generateCompleteAttackApplyEvent(
   if (phaseState.phase === 'resolveMelee') {
     const meleeState = getMeleeResolutionState(state);
     // Safe type broadening for more generic function signature
-    const defendingPlayer = getDefendingPlayerForNextIncompleteMeleeAttackApply(
-      state,
-      meleeState,
-    );
+    const defendingPlayer = getNextMeleeDefendingPlayer(state, meleeState);
 
     if (defendingPlayer === null) {
       throw new Error(

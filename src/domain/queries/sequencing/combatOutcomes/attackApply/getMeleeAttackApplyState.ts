@@ -12,7 +12,7 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
  * @returns The attack apply state for the player
  * @throws Error if not in resolveMelee phase or attack apply state is missing
  */
-export function getAttackApplyStateFromMelee(
+export function getMeleeAttackApplyState(
   state: GameState,
   player: 'white' | 'black',
 ): AttackApplyState {

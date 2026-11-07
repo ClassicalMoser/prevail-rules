@@ -10,9 +10,9 @@ import {
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
-import { getReverseStateFromMeleeResolutionByInitiative } from './getReverseStateFromMeleeResolutionByInitiative';
+import { getNextMeleeReverseState } from './getNextMeleeReverseState';
 
-describe('getReverseStateFromMeleeResolutionByInitiative function', () => {
+describe('getNextMeleeReverseState function', () => {
   function meleeWithReverses(
     initiative: 'white' | 'black',
     finals: {
@@ -57,13 +57,13 @@ describe('getReverseStateFromMeleeResolutionByInitiative function', () => {
   it('returns the first player reverse while its facing is unset', () => {
     const { state, white } = meleeWithReverses('white', {});
 
-    expect(getReverseStateFromMeleeResolutionByInitiative(state)).toBe(white);
+    expect(getNextMeleeReverseState(state)).toBe(white);
   });
 
   it('returns the first player reverse when that player is black', () => {
     const { black, state } = meleeWithReverses('black', {});
 
-    expect(getReverseStateFromMeleeResolutionByInitiative(state)).toBe(black);
+    expect(getNextMeleeReverseState(state)).toBe(black);
   });
 
   it('returns the second player reverse when the first facing is set', () => {
@@ -75,7 +75,7 @@ describe('getReverseStateFromMeleeResolutionByInitiative function', () => {
       white: whiteFacing,
     });
 
-    expect(getReverseStateFromMeleeResolutionByInitiative(state)).toBe(black);
+    expect(getNextMeleeReverseState(state)).toBe(black);
   });
 
   it('returns the second player reverse when the first player is black and that facing is set', () => {
@@ -87,7 +87,7 @@ describe('getReverseStateFromMeleeResolutionByInitiative function', () => {
       black: blackFacing,
     });
 
-    expect(getReverseStateFromMeleeResolutionByInitiative(state)).toBe(white);
+    expect(getNextMeleeReverseState(state)).toBe(white);
   });
 
   it('throws when both reverses already have a facing', () => {
@@ -96,7 +96,7 @@ describe('getReverseStateFromMeleeResolutionByInitiative function', () => {
       white: { coordinate: 'E-4', facing: 'east' },
     });
 
-    expect(() => getReverseStateFromMeleeResolutionByInitiative(state)).toThrow(
+    expect(() => getNextMeleeReverseState(state)).toThrow(
       'No reverse state found in melee resolution',
     );
   });

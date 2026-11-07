@@ -10,7 +10,7 @@ import {
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
-import { getRetreatStateFromMelee } from './getRetreatStateFromMelee';
+import { getMeleeRetreatState } from './getMeleeRetreatState';
 
 function resolveMelee(
   melee: MeleeResolutionState,
@@ -37,7 +37,7 @@ function placed(
   return standing;
 }
 
-describe('getRetreatStateFromMelee function', () => {
+describe('getMeleeRetreatState function', () => {
   it('returns the white retreat', () => {
     const empty = createEmptyGameState('standard');
     const white = placed('white', 'north');
@@ -49,7 +49,7 @@ describe('getRetreatStateFromMelee function', () => {
     });
     const state = resolveMelee(melee);
 
-    expect(getRetreatStateFromMelee(state, 'white')).toBe(retreat);
+    expect(getMeleeRetreatState(state, 'white')).toBe(retreat);
   });
 
   it('returns the black retreat', () => {
@@ -63,7 +63,7 @@ describe('getRetreatStateFromMelee function', () => {
     });
     const state = resolveMelee(melee);
 
-    expect(getRetreatStateFromMelee(state, 'black')).toBe(retreat);
+    expect(getMeleeRetreatState(state, 'black')).toBe(retreat);
   });
 
   it('throws when the white attack apply is still pending', () => {
@@ -73,7 +73,7 @@ describe('getRetreatStateFromMelee function', () => {
     });
     const state = resolveMelee(melee);
 
-    expect(() => getRetreatStateFromMelee(state, 'white')).toThrow(
+    expect(() => getMeleeRetreatState(state, 'white')).toThrow(
       'No white attack apply state found in melee resolution',
     );
   });

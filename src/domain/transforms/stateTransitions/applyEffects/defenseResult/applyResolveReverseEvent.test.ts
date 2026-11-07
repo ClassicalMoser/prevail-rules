@@ -2,8 +2,8 @@ import { throwIfBypassed } from '@utils';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState } from '@game';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
+  getMeleeAttackApplyState,
+  getRangedAttackApplyState,
   getPositionOfUnit,
   getReverseStateFromAttackApply,
 } from '@queries';
@@ -103,7 +103,7 @@ describe('applyResolveReverseEvent function', () => {
   describe('ranged reverse substep', () => {
     it('given event south facing on E-5, board single presence faces south for reversing unit', () => {
       const state = createStateWithRangedAttackReverse();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       const reverseState = throwIfBypassed(
         getReverseStateFromAttackApply(attackApplyState),
         'the attack applies a reverse',
@@ -142,7 +142,7 @@ describe('applyResolveReverseEvent function', () => {
 
     it('given same event, reverse substep completed and finalPosition matches placement', () => {
       const state = createStateWithRangedAttackReverse();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       const reverseState = throwIfBypassed(
         getReverseStateFromAttackApply(attackApplyState),
         'the attack applies a reverse',
@@ -168,7 +168,7 @@ describe('applyResolveReverseEvent function', () => {
       };
 
       const newState = applyResolveReverseEvent(event, state);
-      const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
+      const newAttackApplyState = getRangedAttackApplyState(newState);
       const newReverseState = throwIfBypassed(
         getReverseStateFromAttackApply(newAttackApplyState),
         'the attack applies a reverse',
@@ -182,7 +182,7 @@ describe('applyResolveReverseEvent function', () => {
 
     it('given black observer on D-5, reverse apply leaves D-5 untouched', () => {
       const state = createStateWithRangedAttackReverse();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       const reverseState = throwIfBypassed(
         getReverseStateFromAttackApply(attackApplyState),
         'the attack applies a reverse',
@@ -231,7 +231,7 @@ describe('applyResolveReverseEvent function', () => {
   describe('melee reverse substep', () => {
     it('given black reverses south on E-5, black apply reverse completed and board updated', () => {
       const state = createStateWithMeleeReverse('black');
-      const attackApplyState = getAttackApplyStateFromMelee(state, 'black');
+      const attackApplyState = getMeleeAttackApplyState(state, 'black');
       const reverseState = throwIfBypassed(
         getReverseStateFromAttackApply(attackApplyState),
         'the attack applies a reverse',
@@ -257,10 +257,7 @@ describe('applyResolveReverseEvent function', () => {
       };
 
       const newState = applyResolveReverseEvent(event, state);
-      const newAttackApplyState = getAttackApplyStateFromMelee(
-        newState,
-        'black',
-      );
+      const newAttackApplyState = getMeleeAttackApplyState(newState, 'black');
       const newReverseState = throwIfBypassed(
         getReverseStateFromAttackApply(newAttackApplyState),
         'the attack applies a reverse',
@@ -277,7 +274,7 @@ describe('applyResolveReverseEvent function', () => {
 
     it('given white reverses east on E-5, white reverse completed and finalPosition east', () => {
       const state = createStateWithMeleeReverse('white');
-      const attackApplyState = getAttackApplyStateFromMelee(state, 'white');
+      const attackApplyState = getMeleeAttackApplyState(state, 'white');
       const reverseState = throwIfBypassed(
         getReverseStateFromAttackApply(attackApplyState),
         'the attack applies a reverse',
@@ -303,10 +300,7 @@ describe('applyResolveReverseEvent function', () => {
       };
 
       const newState = applyResolveReverseEvent(event, state);
-      const newAttackApplyState = getAttackApplyStateFromMelee(
-        newState,
-        'white',
-      );
+      const newAttackApplyState = getMeleeAttackApplyState(newState, 'white');
       const newReverseState = throwIfBypassed(
         getReverseStateFromAttackApply(newAttackApplyState),
         'the attack applies a reverse',
@@ -322,7 +316,7 @@ describe('applyResolveReverseEvent function', () => {
   describe('structural update', () => {
     it('given reverse completed and board ref before apply, input slice unchanged after apply', () => {
       const state = createStateWithRangedAttackReverse();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       const reverseState = throwIfBypassed(
         getReverseStateFromAttackApply(attackApplyState),
         'the attack applies a reverse',

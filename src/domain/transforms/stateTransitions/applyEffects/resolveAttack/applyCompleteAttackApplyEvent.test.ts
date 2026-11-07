@@ -1,10 +1,7 @@
 import type { AttackType } from '@entities';
 import type { CompleteAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
-import {
-  getAttackApplyStateFromRangedAttack,
-  getMeleeResolutionState,
-} from '@queries';
+import { getRangedAttackApplyState, getMeleeResolutionState } from '@queries';
 import {
   createAttackApplyState,
   createIssueCommandsPhaseState,
@@ -91,7 +88,7 @@ describe('applyCompleteAttackApplyEvent function', () => {
   describe('ranged apply', () => {
     it('given incomplete ranged apply, event defending white sets completed true', () => {
       const state = createStateWithRangedAttackApply();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       expect(attackApplyState.completed).toBe(false);
 
       const event: CompleteAttackApplyEvent = {
@@ -103,14 +100,14 @@ describe('applyCompleteAttackApplyEvent function', () => {
       };
 
       const newState = applyCompleteAttackApplyEvent(event, state);
-      const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
+      const newAttackApplyState = getRangedAttackApplyState(newState);
 
       expect(newAttackApplyState.completed).toBe(true);
     });
 
     it('given same completion, substepType defendingUnit and attackResult unchanged besides completed', () => {
       const state = createStateWithRangedAttackApply();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
 
       const event: CompleteAttackApplyEvent = {
         attackType: 'ranged',
@@ -121,7 +118,7 @@ describe('applyCompleteAttackApplyEvent function', () => {
       };
 
       const newState = applyCompleteAttackApplyEvent(event, state);
-      const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
+      const newAttackApplyState = getRangedAttackApplyState(newState);
 
       expect(newAttackApplyState.substepType).toBe('attackApply');
       expect(newAttackApplyState.defendingUnit).toStrictEqual(
@@ -205,7 +202,7 @@ describe('applyCompleteAttackApplyEvent function', () => {
   describe('structural update', () => {
     it('given ranged apply completed false before apply, input apply object unchanged after apply', () => {
       const state = createStateWithRangedAttackApply();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       const originalCompleted = attackApplyState.completed;
 
       const event: CompleteAttackApplyEvent = {

@@ -723,16 +723,16 @@ that spec its own subject.
 `@queries` exports **37 state-reading getters**. Specs read nested state by
 property path **238 times**, concentrated in a few paths:
 
-| Hand-drilled path                | Hits | The query that owns it                                                                                          |
-| -------------------------------- | ---- | --------------------------------------------------------------------------------------------------------------- |
-| `.currentPhaseState`             | 112  | `getCurrentPhaseState`, or the per-phase getters                                                                |
-| `.routState`                     | 41   | `getRoutStateFromRally` / `FromAttackApply` / `FromRearEngagement` / `FromMeleeResolutionByInitiative`          |
-| `.currentCommandResolutionState` | 30   | `getCurrentCommandResolutionState`                                                                              |
-| `.currentMeleeResolutionState`   | 20   | `getMeleeResolutionState`                                                                                       |
-| `.retreatState`                  | 16   | `findRetreatState`, `getRetreatStateFromMelee` / `FromRangedAttack` / `FromAttackApply` / `FromFrontEngagement` |
-| `.engagementState`               | 13   | `getEngagementStateFromMovement`, plus the front / flank / rear variants                                        |
-| `.attackApplyState`              | 12   | `getAttackApplyStateFromMelee` / `FromRangedAttack`                                                             |
-| `.reverseState`                  | 12   | `getReverseStateFromAttackApply` / `FromMeleeResolutionByInitiative`                                            |
+| Hand-drilled path                | Hits | The query that owns it                                                                                      |
+| -------------------------------- | ---- | ----------------------------------------------------------------------------------------------------------- |
+| `.currentPhaseState`             | 112  | `getCurrentPhaseState`, or the per-phase getters                                                            |
+| `.routState`                     | 41   | `getRoutStateFromRally` / `FromAttackApply` / `FromRearEngagement` / `FromMeleeResolutionByInitiative`      |
+| `.currentCommandResolutionState` | 30   | `getCurrentCommandResolutionState`                                                                          |
+| `.currentMeleeResolutionState`   | 20   | `getMeleeResolutionState`                                                                                   |
+| `.retreatState`                  | 16   | `findRetreatState`, `getMeleeRetreatState` / `FromRangedAttack` / `FromAttackApply` / `FromFrontEngagement` |
+| `.engagementState`               | 13   | `getEngagementStateFromMovement`, plus the front / flank / rear variants                                    |
+| `.attackApplyState`              | 12   | `getMeleeAttackApplyState` / `FromRangedAttack`                                                             |
+| `.reverseState`                  | 12   | `getReverseStateFromAttackApply` / `FromMeleeResolutionByInitiative`                                        |
 
 Two directions, both of them this point:
 

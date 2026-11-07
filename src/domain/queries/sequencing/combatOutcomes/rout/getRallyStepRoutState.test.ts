@@ -8,7 +8,7 @@ import {
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
-import { getRoutStateFromCleanupPhaseForResolveRout } from './getRoutStateFromCleanupPhaseForResolveRout';
+import { getRallyStepRoutState } from './getRallyStepRoutState';
 
 function withCleanup(
   step:
@@ -39,7 +39,7 @@ function withCleanup(
 /**
  * The current cleanup step picks one rally, then this returns its rout.
  */
-describe('getRoutStateFromCleanupPhaseForResolveRout function', () => {
+describe('getRallyStepRoutState function', () => {
   it('returns the rout on the first player rally', () => {
     const rout = createRoutState(
       'white',
@@ -54,7 +54,7 @@ describe('getRoutStateFromCleanupPhaseForResolveRout function', () => {
       }),
     });
 
-    expect(getRoutStateFromCleanupPhaseForResolveRout(state)).toBe(rout);
+    expect(getRallyStepRoutState(state)).toBe(rout);
   });
 
   it('returns the rout on the second player rally', () => {
@@ -71,7 +71,7 @@ describe('getRoutStateFromCleanupPhaseForResolveRout function', () => {
       }),
     });
 
-    expect(getRoutStateFromCleanupPhaseForResolveRout(state)).toBe(rout);
+    expect(getRallyStepRoutState(state)).toBe(rout);
   });
 
   it('throws when the rally rout is still pending', () => {
@@ -83,7 +83,7 @@ describe('getRoutStateFromCleanupPhaseForResolveRout function', () => {
       }),
     });
 
-    expect(() => getRoutStateFromCleanupPhaseForResolveRout(state)).toThrow(
+    expect(() => getRallyStepRoutState(state)).toThrow(
       'No rout state found in rally resolution',
     );
   });

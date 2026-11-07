@@ -12,9 +12,7 @@ import { getCleanupPhaseState } from '@queries/sequencing/phases/getCleanupPhase
  * @returns The rout on that slot
  * @throws Error when the phase is not cleanup, or that rally has no rout yet
  */
-export function getRoutStateFromCleanupPhaseForResolveRout(
-  state: GameState,
-): RoutState {
+export function getRallyStepRoutState(state: GameState): RoutState {
   const phaseState = getCleanupPhaseState(state);
 
   // Choose and resolve for the first player share one slot.

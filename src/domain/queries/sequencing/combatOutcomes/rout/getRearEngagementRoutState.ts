@@ -6,7 +6,7 @@ import { getMovementResolutionState } from '@queries/sequencing/commandResolutio
  * Rout state for a **rear** engagement inside the current **movement** command resolution.
  * Narrowing helper when `routResolutionSource` is `rearEngagementMovement`.
  */
-export function getRoutStateFromRearEngagement(state: GameState): RoutState {
+export function getRearEngagementRoutState(state: GameState): RoutState {
   const movement = getMovementResolutionState(state);
   const engagement = throwIfPending(
     movement.engagementState,

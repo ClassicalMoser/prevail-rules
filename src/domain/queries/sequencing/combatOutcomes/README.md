@@ -32,8 +32,8 @@ A **route** descends to a named parent and reads its slot. It encodes position
 and nothing else: `getRoutStateFromRally` knows where a rally keeps its rout.
 
 A **selection** decides which of several candidates to answer about, and that
-decision is a rule of the game. `getRoutStateFromMeleeResolutionByInitiative`
+decision is a rule of the game. `getNextMeleeRoutState`
 resolves the initiative player's side first because the rules say so;
-`getRetreatStateReadyForResolveFromMelee` knows which retreats are waiting on a
+`getNextMeleeRetreatStateAwaitingMove` knows which retreats are waiting on a
 move rather than a choice. These are the queries that carry gameplay, and they
 are the ones to read first when the sequencing is unclear.

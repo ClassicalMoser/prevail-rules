@@ -1,9 +1,6 @@
 import type { CompleteAttackApplyEvent } from '@events';
 import type { AttackApplyState, GameState } from '@game';
-import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
-} from '@queries';
+import { getMeleeAttackApplyState, getRangedAttackApplyState } from '@queries';
 import {
   updateAttackApplyState,
   updateMeleeAttackApplyState,
@@ -14,8 +11,8 @@ import {
  * Marks the attack apply state as completed.
  * Can be in ranged attack resolution (issueCommands phase) or melee resolution (resolveMelee phase).
  *
- * Melee uses {@link getAttackApplyStateFromMelee}; ranged uses
- * {@link getAttackApplyStateFromRangedAttack}. Remaining `attackType` exhaustiveness is a
+ * Melee uses {@link getMeleeAttackApplyState}; ranged uses
+ * {@link getRangedAttackApplyState}. Remaining `attackType` exhaustiveness is a
  * schema / replay guard only.
  *
  * @param event - The complete attack apply event to apply
@@ -27,7 +24,7 @@ export function applyCompleteAttackApplyEvent<S extends GameState>(
   state: S,
 ): S {
   if (event.attackType === 'ranged') {
-    const currentAttackApplyState = getAttackApplyStateFromRangedAttack(state);
+    const currentAttackApplyState = getRangedAttackApplyState(state);
 
     const newAttackApplyState: AttackApplyState = {
       ...currentAttackApplyState,
@@ -38,7 +35,7 @@ export function applyCompleteAttackApplyEvent<S extends GameState>(
   }
 
   if (event.attackType === 'melee') {
-    const current = getAttackApplyStateFromMelee(state, event.defendingPlayer);
+    const current = getMeleeAttackApplyState(state, event.defendingPlayer);
 
     const newAttackApplyState: AttackApplyState = {
       ...current,

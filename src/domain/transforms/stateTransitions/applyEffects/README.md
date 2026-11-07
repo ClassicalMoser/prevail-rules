@@ -27,7 +27,7 @@ Co-locate each handler with its `*.test.ts` in the same folder.
 
 ## Throws
 
-- **Allowed**: Throws from **narrowing helpers** (`getPlayCardsPhaseState`, `getIssueCommandsPhaseState`, `getCurrentPhaseState`, `getAttackApplyStateFromRangedAttack`, `getAttackApplyStateFromMelee`, `getFrontEngagementStateFromMovement`, `getFlankEngagementStateFromMovement`, `getRallyResolutionStateAwaitingBurn`, `getRallyResolutionStateAwaitingUnitSupport`, etc.). These are type guards, not business validation.
+- **Allowed**: Throws from **narrowing helpers** (`getPlayCardsPhaseState`, `getIssueCommandsPhaseState`, `getCurrentPhaseState`, `getRangedAttackApplyState`, `getMeleeAttackApplyState`, `getFrontEngagementStateFromMovement`, `getFlankEngagementStateFromMovement`, `getRallyResolutionStateAwaitingBurn`, `getRallyResolutionStateAwaitingUnitSupport`, etc.). These are type guards, not business validation.
 - **Avoid**: Defensive throws that only restate rules (“wrong engagement type”, “already resolved”, “wrong phase”) unless they remain as narrowing until payloads replace phase branching.
 
 ## TypeScript

@@ -8,9 +8,9 @@ import {
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
-import { getAttackApplyStateFromRangedAttack } from './getAttackApplyStateFromRangedAttack';
+import { getRangedAttackApplyState } from './getRangedAttackApplyState';
 
-describe('getAttackApplyStateFromRangedAttack function', () => {
+describe('getRangedAttackApplyState function', () => {
   it('returns the attack apply on the ranged resolution', () => {
     const empty = createEmptyGameState('standard');
     const apply = createAttackApplyState(
@@ -25,7 +25,7 @@ describe('getAttackApplyStateFromRangedAttack function', () => {
     });
     const state = updatePhaseState(empty, phase);
 
-    expect(getAttackApplyStateFromRangedAttack(state)).toBe(apply);
+    expect(getRangedAttackApplyState(state)).toBe(apply);
   });
 
   it('throws when the ranged attack apply is still pending', () => {
@@ -38,7 +38,7 @@ describe('getAttackApplyStateFromRangedAttack function', () => {
     });
     const state = updatePhaseState(empty, phase);
 
-    expect(() => getAttackApplyStateFromRangedAttack(state)).toThrow(
+    expect(() => getRangedAttackApplyState(state)).toThrow(
       'No attack apply state found in ranged attack resolution',
     );
   });
@@ -51,7 +51,7 @@ describe('getAttackApplyStateFromRangedAttack function', () => {
     });
     const state = updatePhaseState(empty, phase);
 
-    expect(() => getAttackApplyStateFromRangedAttack(state)).toThrow(
+    expect(() => getRangedAttackApplyState(state)).toThrow(
       'Current command resolution is not a ranged attack',
     );
   });

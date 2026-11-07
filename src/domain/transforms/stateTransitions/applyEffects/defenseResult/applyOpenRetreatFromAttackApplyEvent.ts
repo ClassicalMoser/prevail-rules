@@ -4,8 +4,8 @@ import type { GameState, RetreatState } from '@game';
 import { RANGED_ATTACK_RESOLUTION_CONTEXT } from '@events';
 import { getLegalRetreats } from '@legality';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
+  getMeleeAttackApplyState,
+  getRangedAttackApplyState,
   getPositionOfUnit,
 } from '@queries';
 import { updateAttackApplyState } from '@transforms/pureTransforms';
@@ -27,8 +27,8 @@ export function applyOpenRetreatFromAttackApplyEvent<S extends GameState>(
 ): S {
   const apply =
     event.attackResolutionContext === RANGED_ATTACK_RESOLUTION_CONTEXT
-      ? getAttackApplyStateFromRangedAttack(state)
-      : getAttackApplyStateFromMelee(state, event.defendingPlayer);
+      ? getRangedAttackApplyState(state)
+      : getMeleeAttackApplyState(state, event.defendingPlayer);
 
   // A retreat opens only from a pending slot — already open or bypassed is wrong.
   if (apply.retreatState !== 'pending') {

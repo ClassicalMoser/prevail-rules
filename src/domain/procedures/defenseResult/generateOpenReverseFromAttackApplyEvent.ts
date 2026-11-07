@@ -6,8 +6,8 @@ import {
   RANGED_ATTACK_RESOLUTION_CONTEXT,
 } from '@events';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
+  getMeleeAttackApplyState,
+  getRangedAttackApplyState,
   getCurrentPhaseState,
   getOtherPlayer,
 } from '@queries';
@@ -26,7 +26,7 @@ export function generateOpenReverseFromAttackApplyEvent(
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
-    const apply = getAttackApplyStateFromRangedAttack(state);
+    const apply = getRangedAttackApplyState(state);
     // A reverse opens only while its slot is still waiting to be written.
     if (apply.reverseState !== 'pending') {
       throw new Error('Reverse is not pending on the ranged attack apply');
@@ -43,7 +43,7 @@ export function generateOpenReverseFromAttackApplyEvent(
     // Initiative order: the first defender still waiting on a reverse opens next.
     const firstPlayer = state.currentInitiative;
     const secondPlayer = getOtherPlayer(firstPlayer);
-    const firstApply = getAttackApplyStateFromMelee(state, firstPlayer);
+    const firstApply = getMeleeAttackApplyState(state, firstPlayer);
     if (firstApply.reverseState === 'pending') {
       return {
         attackResolutionContext: 'melee',
@@ -53,7 +53,7 @@ export function generateOpenReverseFromAttackApplyEvent(
         eventType: GAME_EFFECT_EVENT_TYPE,
       };
     }
-    const secondApply = getAttackApplyStateFromMelee(state, secondPlayer);
+    const secondApply = getMeleeAttackApplyState(state, secondPlayer);
     if (secondApply.reverseState === 'pending') {
       return {
         attackResolutionContext: 'melee',

@@ -6,9 +6,9 @@ import {
 } from '@testing';
 import { updateCurrentInitiative } from '@transforms';
 
-import { getDefendingPlayerForNextIncompleteMeleeAttackApply } from './getDefendingPlayerForNextIncompleteMeleeAttackApply';
+import { getNextMeleeDefendingPlayer } from './getNextMeleeDefendingPlayer';
 
-describe('getDefendingPlayerForNextIncompleteMeleeAttackApply function', () => {
+describe('getNextMeleeDefendingPlayer function', () => {
   it('returns the first player while that apply is incomplete', () => {
     const empty = updateCurrentInitiative(
       createEmptyGameState('standard'),
@@ -25,9 +25,7 @@ describe('getDefendingPlayerForNextIncompleteMeleeAttackApply function', () => {
       ),
     });
 
-    expect(
-      getDefendingPlayerForNextIncompleteMeleeAttackApply(empty, melee),
-    ).toBe('white');
+    expect(getNextMeleeDefendingPlayer(empty, melee)).toBe('white');
   });
 
   it('returns the second player when the first apply is complete', () => {
@@ -46,9 +44,7 @@ describe('getDefendingPlayerForNextIncompleteMeleeAttackApply function', () => {
       ),
     });
 
-    expect(
-      getDefendingPlayerForNextIncompleteMeleeAttackApply(empty, melee),
-    ).toBe('black');
+    expect(getNextMeleeDefendingPlayer(empty, melee)).toBe('black');
   });
 
   it('returns null when both applies are complete', () => {
@@ -67,9 +63,7 @@ describe('getDefendingPlayerForNextIncompleteMeleeAttackApply function', () => {
       ),
     });
 
-    expect(
-      getDefendingPlayerForNextIncompleteMeleeAttackApply(empty, melee),
-    ).toBeNull();
+    expect(getNextMeleeDefendingPlayer(empty, melee)).toBeNull();
   });
 
   it('returns null when an apply is still pending', () => {
@@ -81,8 +75,6 @@ describe('getDefendingPlayerForNextIncompleteMeleeAttackApply function', () => {
       whiteAttackApplyState: 'pending',
     });
 
-    expect(
-      getDefendingPlayerForNextIncompleteMeleeAttackApply(empty, melee),
-    ).toBeNull();
+    expect(getNextMeleeDefendingPlayer(empty, melee)).toBeNull();
   });
 });

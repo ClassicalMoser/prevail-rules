@@ -10,7 +10,7 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
  * @returns The first retreat in initiative order that has a destination and is not finished
  * @throws Error when neither side has such a retreat
  */
-export function getRetreatStateReadyForResolveFromMelee(
+export function getNextMeleeRetreatStateAwaitingMove(
   state: GameState,
 ): RetreatState {
   const meleeState = getMeleeResolutionState(state);

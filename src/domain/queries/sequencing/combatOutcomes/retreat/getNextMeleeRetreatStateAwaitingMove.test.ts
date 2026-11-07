@@ -10,7 +10,7 @@ import {
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
-import { getRetreatStateReadyForResolveFromMelee } from './getRetreatStateReadyForResolveFromMelee';
+import { getNextMeleeRetreatStateAwaitingMove } from './getNextMeleeRetreatStateAwaitingMove';
 
 function resolveMelee(
   melee: MeleeResolutionState,
@@ -37,7 +37,7 @@ function placed(
   return standing;
 }
 
-describe('getRetreatStateReadyForResolveFromMelee function', () => {
+describe('getNextMeleeRetreatStateAwaitingMove function', () => {
   const finalPlacement = {
     coordinate: 'E-6',
     facing: 'south',
@@ -56,7 +56,7 @@ describe('getRetreatStateReadyForResolveFromMelee function', () => {
     });
     const state = resolveMelee(melee, 'white');
 
-    expect(getRetreatStateReadyForResolveFromMelee(state)).toBe(retreat);
+    expect(getNextMeleeRetreatStateAwaitingMove(state)).toBe(retreat);
   });
 
   it('returns the second player retreat when the first final placement is still pending', () => {
@@ -74,7 +74,7 @@ describe('getRetreatStateReadyForResolveFromMelee function', () => {
     });
     const state = resolveMelee(melee, 'white');
 
-    expect(getRetreatStateReadyForResolveFromMelee(state)).toBe(retreat);
+    expect(getNextMeleeRetreatStateAwaitingMove(state)).toBe(retreat);
   });
 
   it('throws when neither retreat has a final placement', () => {
@@ -87,7 +87,7 @@ describe('getRetreatStateReadyForResolveFromMelee function', () => {
     });
     const state = resolveMelee(melee, 'white');
 
-    expect(() => getRetreatStateReadyForResolveFromMelee(state)).toThrow(
+    expect(() => getNextMeleeRetreatStateAwaitingMove(state)).toThrow(
       'No retreat state with finalPosition found in melee resolution',
     );
   });
@@ -105,6 +105,6 @@ describe('getRetreatStateReadyForResolveFromMelee function', () => {
     });
     const state = resolveMelee(melee, 'black');
 
-    expect(getRetreatStateReadyForResolveFromMelee(state)).toBe(retreat);
+    expect(getNextMeleeRetreatStateAwaitingMove(state)).toBe(retreat);
   });
 });

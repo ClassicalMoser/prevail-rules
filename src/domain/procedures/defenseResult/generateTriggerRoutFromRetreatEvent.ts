@@ -6,8 +6,8 @@ import {
 } from '@events';
 import {
   getCurrentPhaseState,
-  getRetreatStateFromMelee,
-  getRetreatStateFromRangedAttack,
+  getMeleeRetreatState,
+  getRangedAttackRetreatState,
 } from '@queries';
 /**
  * Builds the trigger-rout-from-retreat effect with explicit resolution context
@@ -20,7 +20,7 @@ export function generateTriggerRoutFromRetreatEvent(
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
-    getRetreatStateFromRangedAttack(state);
+    getRangedAttackRetreatState(state);
     return {
       effectType: 'triggerRoutFromRetreat',
       eventNumber,
@@ -34,7 +34,7 @@ export function generateTriggerRoutFromRetreatEvent(
     const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
 
     try {
-      getRetreatStateFromMelee(state, firstPlayer);
+      getMeleeRetreatState(state, firstPlayer);
       return {
         effectType: 'triggerRoutFromRetreat',
         eventNumber,
@@ -43,7 +43,7 @@ export function generateTriggerRoutFromRetreatEvent(
         retreatingPlayer: firstPlayer,
       };
     } catch {
-      getRetreatStateFromMelee(state, secondPlayer);
+      getMeleeRetreatState(state, secondPlayer);
       return {
         effectType: 'triggerRoutFromRetreat',
         eventNumber,

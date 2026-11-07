@@ -1,8 +1,8 @@
 import type { PlayerSide } from '@entities';
 import type { AttackApplyState, GameState } from '@game';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
+  getMeleeAttackApplyState,
+  getRangedAttackApplyState,
   getCurrentPhaseState,
 } from '@queries';
 import { updateAttackApplyState } from './updateAttackApplyState';
@@ -27,7 +27,7 @@ export function getAttackApplyStateFromContext(
 
   // Handle ranged attack resolution (in issueCommands phase)
   if (phaseState.phase === 'issueCommands') {
-    return getAttackApplyStateFromRangedAttack(state);
+    return getRangedAttackApplyState(state);
   }
 
   // Handle melee resolution (in resolveMelee phase)
@@ -37,7 +37,7 @@ export function getAttackApplyStateFromContext(
         'Player parameter required for melee attack apply state context',
       );
     }
-    return getAttackApplyStateFromMelee(state, player);
+    return getMeleeAttackApplyState(state, player);
   }
 
   throw new Error(
@@ -68,7 +68,7 @@ export function updateAttackApplySubstep<TSubstep>(
 
   // Handle ranged attack resolution (in issueCommands phase)
   if (phaseState.phase === 'issueCommands') {
-    const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+    const attackApplyState = getRangedAttackApplyState(state);
     const updatedAttackApplyState = updateFn(attackApplyState);
     return updateAttackApplyState(state, updatedAttackApplyState);
   }
@@ -76,7 +76,7 @@ export function updateAttackApplySubstep<TSubstep>(
   // Handle melee resolution (in resolveMelee phase)
   if (phaseState.phase === 'resolveMelee') {
     const player = getPlayer(substepState);
-    const attackApplyState = getAttackApplyStateFromMelee(state, player);
+    const attackApplyState = getMeleeAttackApplyState(state, player);
     const updatedAttackApplyState = updateFn(attackApplyState);
     return updateAttackApplyState(state, updatedAttackApplyState);
   }

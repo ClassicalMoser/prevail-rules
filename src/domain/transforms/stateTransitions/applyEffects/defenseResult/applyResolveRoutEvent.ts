@@ -1,12 +1,12 @@
 import type { ResolveRoutEvent } from '@events';
 import type { GameState, RoutState } from '@game';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
+  getMeleeAttackApplyState,
+  getRangedAttackApplyState,
   getCurrentRallyResolutionState,
   getRoutStateFromAttackApply,
   getRoutStateFromRally,
-  getRoutStateFromRearEngagement,
+  getRearEngagementRoutState,
 } from '@queries';
 import { updateRoutState } from '@transforms/pureTransforms';
 import { throwIfBypassed } from '@utils';
@@ -29,7 +29,7 @@ export function applyResolveRoutEvent<S extends GameState>(
 
   switch (event.routResolutionSource) {
     case 'rangedAttack': {
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       currentRoutState = throwIfBypassed(
         getRoutStateFromAttackApply(attackApplyState),
         'The ranged attack applied no rout to resolve',
@@ -44,7 +44,7 @@ export function applyResolveRoutEvent<S extends GameState>(
           'Melee rout resolution requires at least one unit instance',
         );
       }
-      const attackApplyState = getAttackApplyStateFromMelee(state, meleePlayer);
+      const attackApplyState = getMeleeAttackApplyState(state, meleePlayer);
       currentRoutState = throwIfBypassed(
         getRoutStateFromAttackApply(attackApplyState),
         `The melee attack on ${meleePlayer} applied no rout to resolve`,
@@ -57,7 +57,7 @@ export function applyResolveRoutEvent<S extends GameState>(
       break;
     }
     case 'rearEngagementMovement': {
-      currentRoutState = getRoutStateFromRearEngagement(state);
+      currentRoutState = getRearEngagementRoutState(state);
       break;
     }
     default: {

@@ -11,7 +11,7 @@ import {
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
-import { getRetreatStateFromRangedAttack } from './getRetreatStateFromRangedAttack';
+import { getRangedAttackRetreatState } from './getRangedAttackRetreatState';
 
 function issueCommands(resolution: CommandResolutionState): GameState {
   const empty = createEmptyGameState('standard');
@@ -32,7 +32,7 @@ function placed(
   return standing;
 }
 
-describe('getRetreatStateFromRangedAttack function', () => {
+describe('getRangedAttackRetreatState function', () => {
   it('returns the retreat on the ranged attack apply', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
@@ -45,7 +45,7 @@ describe('getRetreatStateFromRangedAttack function', () => {
     });
     const state = issueCommands(resolution);
 
-    expect(getRetreatStateFromRangedAttack(state)).toBe(retreat);
+    expect(getRangedAttackRetreatState(state)).toBe(retreat);
   });
 
   it('throws when the ranged attack apply is still pending', () => {
@@ -55,7 +55,7 @@ describe('getRetreatStateFromRangedAttack function', () => {
     });
     const state = issueCommands(resolution);
 
-    expect(() => getRetreatStateFromRangedAttack(state)).toThrow(
+    expect(() => getRangedAttackRetreatState(state)).toThrow(
       'No attack apply state found in ranged attack resolution',
     );
   });
@@ -71,7 +71,7 @@ describe('getRetreatStateFromRangedAttack function', () => {
     });
     const state = issueCommands(resolution);
 
-    expect(() => getRetreatStateFromRangedAttack(state)).toThrow(
+    expect(() => getRangedAttackRetreatState(state)).toThrow(
       'The retreat on this attack apply has not been opened yet',
     );
   });
@@ -87,7 +87,7 @@ describe('getRetreatStateFromRangedAttack function', () => {
     });
     const state = issueCommands(resolution);
 
-    expect(() => getRetreatStateFromRangedAttack(state)).toThrow(
+    expect(() => getRangedAttackRetreatState(state)).toThrow(
       'The ranged attack applied no retreat',
     );
   });

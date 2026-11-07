@@ -11,9 +11,7 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
  * @returns The first open rout in initiative order
  * @throws Error when neither apply has an open rout
  */
-export function getRoutStateFromMeleeResolutionByInitiative(
-  state: GameState,
-): RoutState {
+export function getNextMeleeRoutState(state: GameState): RoutState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);

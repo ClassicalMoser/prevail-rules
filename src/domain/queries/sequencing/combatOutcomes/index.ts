@@ -11,26 +11,26 @@
 export { isOpenSubstep } from './isOpenSubstep';
 
 // Attack-apply: on the ranged attack, or on either side of a melee.
-export { getAttackApplyStateFromRangedAttack } from './attackApply';
-export { getAttackApplyStateFromMelee } from './attackApply';
-export { getDefendingPlayerForNextIncompleteMeleeAttackApply } from './attackApply';
+export { getRangedAttackApplyState } from './attackApply';
+export { getMeleeAttackApplyState } from './attackApply';
+export { getNextMeleeDefendingPlayer } from './attackApply';
 
 // Retreat: on an attack-apply, or on a front engagement.
 export { getRetreatStateFromAttackApply } from './retreat';
-export { getRetreatStateFromRangedAttack } from './retreat';
-export { getRetreatStateFromMelee } from './retreat';
-export { getRetreatStateFromFrontEngagement } from './retreat';
-export { getRetreatStateReadyForResolveFromMelee } from './retreat';
+export { getRangedAttackRetreatState } from './retreat';
+export { getMeleeRetreatState } from './retreat';
+export { getFrontEngagementRetreatState } from './retreat';
+export { getNextMeleeRetreatStateAwaitingMove } from './retreat';
 export { findRetreatState } from './retreat';
 
 // Reverse: on an attack-apply only.
 export { getReverseStateFromAttackApply } from './reverse';
-export { getReverseStateFromMeleeResolutionByInitiative } from './reverse';
+export { getNextMeleeReverseState } from './reverse';
 
 // Rout: on an attack-apply, a rear engagement, a rally, or a retreat.
 export { getRoutStateFromAttackApply } from './rout';
-export { getRoutStateFromRearEngagement } from './rout';
+export { getRearEngagementRoutState } from './rout';
 export { getRoutStateFromRally } from './rout';
-export { getRoutStateFromMeleeResolutionByInitiative } from './rout';
-export { getRoutStateFromCleanupPhaseForResolveRout } from './rout';
+export { getNextMeleeRoutState } from './rout';
+export { getRallyStepRoutState } from './rout';
 export { getAwaitingRoutDiscardState } from './rout';

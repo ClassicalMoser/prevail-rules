@@ -8,9 +8,9 @@ import {
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
-import { getAttackApplyStateFromMelee } from './getAttackApplyStateFromMelee';
+import { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 
-describe('getAttackApplyStateFromMelee function', () => {
+describe('getMeleeAttackApplyState function', () => {
   it('returns the white attack apply', () => {
     const empty = createEmptyGameState('standard');
     const apply = createAttackApplyState(
@@ -25,7 +25,7 @@ describe('getAttackApplyStateFromMelee function', () => {
     });
     const state = updatePhaseState(empty, phase);
 
-    expect(getAttackApplyStateFromMelee(state, 'white')).toBe(apply);
+    expect(getMeleeAttackApplyState(state, 'white')).toBe(apply);
   });
 
   it('returns the black attack apply', () => {
@@ -41,7 +41,7 @@ describe('getAttackApplyStateFromMelee function', () => {
     });
     const state = updatePhaseState(empty, phase);
 
-    expect(getAttackApplyStateFromMelee(state, 'black')).toBe(apply);
+    expect(getMeleeAttackApplyState(state, 'black')).toBe(apply);
   });
 
   it('throws when the white attack apply is still pending', () => {
@@ -54,7 +54,7 @@ describe('getAttackApplyStateFromMelee function', () => {
     });
     const state = updatePhaseState(empty, phase);
 
-    expect(() => getAttackApplyStateFromMelee(state, 'white')).toThrow(
+    expect(() => getMeleeAttackApplyState(state, 'white')).toThrow(
       'No white attack apply state found in melee resolution',
     );
   });

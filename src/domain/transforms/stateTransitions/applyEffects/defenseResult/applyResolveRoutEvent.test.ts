@@ -1,8 +1,8 @@
 import type { ResolveRoutEvent } from '@events';
 import type { GameState } from '@game';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
+  getMeleeAttackApplyState,
+  getRangedAttackApplyState,
   getIssueCommandsPhaseState,
   getRoutStateFromAttackApply,
   getRoutStateFromRally,
@@ -129,7 +129,7 @@ describe('applyResolveRoutEvent function', () => {
   describe('ranged rout substep', () => {
     it('given ranged rout and event penalty 2, nested routState.numberToDiscard is 2', () => {
       const state = createStateWithRangedAttackRout();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       const routState = throwIfBypassed(
         getRoutStateFromAttackApply(attackApplyState),
         'the attack applies a rout',
@@ -145,7 +145,7 @@ describe('applyResolveRoutEvent function', () => {
       };
 
       const newState = applyResolveRoutEvent(event, state);
-      const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
+      const newAttackApplyState = getRangedAttackApplyState(newState);
       const newRoutState = throwIfBypassed(
         getRoutStateFromAttackApply(newAttackApplyState),
         'the attack applies a rout',
@@ -156,7 +156,7 @@ describe('applyResolveRoutEvent function', () => {
 
     it('a zero penalty closes the rout — there is nothing to choose', () => {
       const state = createStateWithRangedAttackRout();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       const routState = throwIfBypassed(
         getRoutStateFromAttackApply(attackApplyState),
         'the attack applies a rout',
@@ -172,7 +172,7 @@ describe('applyResolveRoutEvent function', () => {
       };
 
       const newState = applyResolveRoutEvent(event, state);
-      const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
+      const newAttackApplyState = getRangedAttackApplyState(newState);
       const newRoutState = throwIfBypassed(
         getRoutStateFromAttackApply(newAttackApplyState),
         'the attack applies a rout',
@@ -185,7 +185,7 @@ describe('applyResolveRoutEvent function', () => {
 
     it('given penalty 3, player unitsToRout and cardsChosen unchanged besides numberToDiscard', () => {
       const state = createStateWithRangedAttackRout();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       const routState = throwIfBypassed(
         getRoutStateFromAttackApply(attackApplyState),
         'the attack applies a rout',
@@ -201,7 +201,7 @@ describe('applyResolveRoutEvent function', () => {
       };
 
       const newState = applyResolveRoutEvent(event, state);
-      const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
+      const newAttackApplyState = getRangedAttackApplyState(newState);
       const newRoutState = throwIfBypassed(
         getRoutStateFromAttackApply(newAttackApplyState),
         'the attack applies a rout',
@@ -218,7 +218,7 @@ describe('applyResolveRoutEvent function', () => {
   describe('melee rout substep', () => {
     it('given black melee rout, event penalty 2 updates black apply rout numberToDiscard', () => {
       const state = createStateWithMeleeRout('black');
-      const attackApplyState = getAttackApplyStateFromMelee(state, 'black');
+      const attackApplyState = getMeleeAttackApplyState(state, 'black');
       const routState = throwIfBypassed(
         getRoutStateFromAttackApply(attackApplyState),
         'the attack applies a rout',
@@ -234,10 +234,7 @@ describe('applyResolveRoutEvent function', () => {
       };
 
       const newState = applyResolveRoutEvent(event, state);
-      const newAttackApplyState = getAttackApplyStateFromMelee(
-        newState,
-        'black',
-      );
+      const newAttackApplyState = getMeleeAttackApplyState(newState, 'black');
       const newRoutState = throwIfBypassed(
         getRoutStateFromAttackApply(newAttackApplyState),
         'the attack applies a rout',
@@ -248,7 +245,7 @@ describe('applyResolveRoutEvent function', () => {
 
     it('given white melee rout, event penalty 1 updates white apply rout numberToDiscard', () => {
       const state = createStateWithMeleeRout('white');
-      const attackApplyState = getAttackApplyStateFromMelee(state, 'white');
+      const attackApplyState = getMeleeAttackApplyState(state, 'white');
       const routState = throwIfBypassed(
         getRoutStateFromAttackApply(attackApplyState),
         'the attack applies a rout',
@@ -264,10 +261,7 @@ describe('applyResolveRoutEvent function', () => {
       };
 
       const newState = applyResolveRoutEvent(event, state);
-      const newAttackApplyState = getAttackApplyStateFromMelee(
-        newState,
-        'white',
-      );
+      const newAttackApplyState = getMeleeAttackApplyState(newState, 'white');
       const newRoutState = throwIfBypassed(
         getRoutStateFromAttackApply(newAttackApplyState),
         'the attack applies a rout',
@@ -389,7 +383,7 @@ describe('applyResolveRoutEvent function', () => {
   describe('structural update', () => {
     it('given original rout numberToDiscard undefined, input rout object unchanged after apply', () => {
       const state = createStateWithRangedAttackRout();
-      const attackApplyState = getAttackApplyStateFromRangedAttack(state);
+      const attackApplyState = getRangedAttackApplyState(state);
       const routState = throwIfBypassed(
         getRoutStateFromAttackApply(attackApplyState),
         'the attack applies a rout',

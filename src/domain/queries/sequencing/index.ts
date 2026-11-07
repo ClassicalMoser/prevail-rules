@@ -61,34 +61,34 @@ export { getNextStepForResolveRally } from './rallyResolution';
 export { isOpenSubstep } from './combatOutcomes';
 
 // Attack-apply on the current ranged attack.
-export { getAttackApplyStateFromRangedAttack } from './combatOutcomes';
+export { getRangedAttackApplyState } from './combatOutcomes';
 
 // Attack-apply for one side of the current melee.
-export { getAttackApplyStateFromMelee } from './combatOutcomes';
+export { getMeleeAttackApplyState } from './combatOutcomes';
 
 // The defender whose melee attack-apply is still open, initiative first.
-export { getDefendingPlayerForNextIncompleteMeleeAttackApply } from './combatOutcomes';
+export { getNextMeleeDefendingPlayer } from './combatOutcomes';
 
 // Reverse stored on an attack-apply.
 export { getReverseStateFromAttackApply } from './combatOutcomes';
 
 // The reverse still open in the current melee, initiative first.
-export { getReverseStateFromMeleeResolutionByInitiative } from './combatOutcomes';
+export { getNextMeleeReverseState } from './combatOutcomes';
 
 // Retreat stored on an attack-apply.
 export { getRetreatStateFromAttackApply } from './combatOutcomes';
 
 // Retreat on the current ranged attack.
-export { getRetreatStateFromRangedAttack } from './combatOutcomes';
+export { getRangedAttackRetreatState } from './combatOutcomes';
 
 // Retreat for one side of the current melee.
-export { getRetreatStateFromMelee } from './combatOutcomes';
+export { getMeleeRetreatState } from './combatOutcomes';
 
 // The melee retreat whose destination is chosen and whose move is not finished.
-export { getRetreatStateReadyForResolveFromMelee } from './combatOutcomes';
+export { getNextMeleeRetreatStateAwaitingMove } from './combatOutcomes';
 
 // Retreat on the current front engagement.
-export { getRetreatStateFromFrontEngagement } from './combatOutcomes';
+export { getFrontEngagementRetreatState } from './combatOutcomes';
 
 // The retreat for one player, from ranged attack, front engagement, or melee.
 export { findRetreatState } from './combatOutcomes';
@@ -97,16 +97,16 @@ export { findRetreatState } from './combatOutcomes';
 export { getRoutStateFromAttackApply } from './combatOutcomes';
 
 // The rout still open in the current melee, initiative first.
-export { getRoutStateFromMeleeResolutionByInitiative } from './combatOutcomes';
+export { getNextMeleeRoutState } from './combatOutcomes';
 
 // Rout forced by the current rear engagement.
-export { getRoutStateFromRearEngagement } from './combatOutcomes';
+export { getRearEngagementRoutState } from './combatOutcomes';
 
 // The rout stored on a rally.
 export { getRoutStateFromRally } from './combatOutcomes';
 
 // The rout for the cleanup step that is resolving a rally, including choose-rally.
-export { getRoutStateFromCleanupPhaseForResolveRout } from './combatOutcomes';
+export { getRallyStepRoutState } from './combatOutcomes';
 
 // The rout that still needs a discard, from issue-commands, melee, or cleanup.
 export { getAwaitingRoutDiscardState } from './combatOutcomes';

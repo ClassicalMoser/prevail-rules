@@ -11,7 +11,7 @@ import {
 } from '@testing';
 import { updatePhaseState } from '@transforms';
 
-import { getRetreatStateFromFrontEngagement } from './getRetreatStateFromFrontEngagement';
+import { getFrontEngagementRetreatState } from './getFrontEngagementRetreatState';
 
 /**
  * A movement command mid-resolution, having engaged what this test placed in
@@ -37,7 +37,7 @@ function defender(): UnitWithPlacement {
   return standing;
 }
 
-describe('getRetreatStateFromFrontEngagement function', () => {
+describe('getFrontEngagementRetreatState function', () => {
   it('returns the retreat opened when the defender gave ground', () => {
     const defendingUnit = defender();
     // A front engagement the defender yields to opens a retreat for that unit.
@@ -47,7 +47,7 @@ describe('getRetreatStateFromFrontEngagement function', () => {
       createFrontEngagementState({ retreatState: retreat }),
     );
 
-    expect(getRetreatStateFromFrontEngagement(state)).toBe(retreat);
+    expect(getFrontEngagementRetreatState(state)).toBe(retreat);
   });
 
   it('throws when the defender has not yet been offered the retreat', () => {
@@ -55,7 +55,7 @@ describe('getRetreatStateFromFrontEngagement function', () => {
     // so its retreat slot holds 'pending'.
     const state = stateEngaging(createFrontEngagementState());
 
-    expect(() => getRetreatStateFromFrontEngagement(state)).toThrow(
+    expect(() => getFrontEngagementRetreatState(state)).toThrow(
       'No retreat state found in front engagement',
     );
   });
@@ -65,7 +65,7 @@ describe('getRetreatStateFromFrontEngagement function', () => {
     // this getter has nothing to answer about.
     const state = stateEngaging(createRearEngagementState());
 
-    expect(() => getRetreatStateFromFrontEngagement(state)).toThrow(
+    expect(() => getFrontEngagementRetreatState(state)).toThrow(
       'Engagement type is not front',
     );
   });
@@ -74,7 +74,7 @@ describe('getRetreatStateFromFrontEngagement function', () => {
     // A move into an empty space never opens an engagement.
     const state = stateEngaging('pending');
 
-    expect(() => getRetreatStateFromFrontEngagement(state)).toThrow(
+    expect(() => getFrontEngagementRetreatState(state)).toThrow(
       'No engagement state found in movement resolution',
     );
   });

@@ -2,9 +2,9 @@ import type { ResolveRetreatEvent } from '@events';
 import type { GameState } from '@game';
 import {
   getFrontEngagementStateFromMovement,
-  getRetreatStateFromFrontEngagement,
-  getRetreatStateFromMelee,
-  getRetreatStateFromRangedAttack,
+  getFrontEngagementRetreatState,
+  getMeleeRetreatState,
+  getRangedAttackRetreatState,
 } from '@queries';
 import {
   createAttackApplyStateWithRetreat,
@@ -102,7 +102,7 @@ describe('applyResolveRetreatEvent function', () => {
   describe('ranged retreat apply', () => {
     it('given ranged retreat and event E-4 north, E-5 clears and E-4 holds retreating unit', () => {
       const state = createStateWithRangedAttackRetreat();
-      const retreatState = getRetreatStateFromRangedAttack(state);
+      const retreatState = getRangedAttackRetreatState(state);
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
@@ -131,7 +131,7 @@ describe('applyResolveRetreatEvent function', () => {
 
     it('given same flow, ranged retreat substep completed becomes true', () => {
       const state = createStateWithRangedAttackRetreat();
-      const retreatState = getRetreatStateFromRangedAttack(state);
+      const retreatState = getRangedAttackRetreatState(state);
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
@@ -142,14 +142,14 @@ describe('applyResolveRetreatEvent function', () => {
       };
 
       const newState = applyResolveRetreatEvent(event, state);
-      const newRetreatState = getRetreatStateFromRangedAttack(newState);
+      const newRetreatState = getRangedAttackRetreatState(newState);
 
       expect(newRetreatState.completed).toBe(true);
     });
 
     it('given extra black unit on D-5, after retreat D-5 single presence unchanged', () => {
       const state = createStateWithRangedAttackRetreat();
-      const retreatState = getRetreatStateFromRangedAttack(state);
+      const retreatState = getRangedAttackRetreatState(state);
 
       // Add another unit at a different location
       const otherUnit = createTestUnit('black', { attack: 2 });
@@ -183,7 +183,7 @@ describe('applyResolveRetreatEvent function', () => {
   describe('melee retreat apply', () => {
     it('given black retreats off E-5 to E-4, retreat completed and both hexes single occupancy', () => {
       const state = createStateWithMeleeRetreat('black');
-      const retreatState = getRetreatStateFromMelee(state, 'black');
+      const retreatState = getMeleeRetreatState(state, 'black');
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
@@ -194,7 +194,7 @@ describe('applyResolveRetreatEvent function', () => {
       };
 
       const newState = applyResolveRetreatEvent(event, state);
-      const newRetreatState = getRetreatStateFromMelee(newState, 'black');
+      const newRetreatState = getMeleeRetreatState(newState, 'black');
 
       expect(newRetreatState.completed).toBe(true);
       expect(newState.boardState.board['E-5']?.unitPresence.presenceType).toBe(
@@ -207,7 +207,7 @@ describe('applyResolveRetreatEvent function', () => {
 
     it('given white retreats to E-6 south, retreat completed and white on E-6', () => {
       const state = createStateWithMeleeRetreat('white');
-      const retreatState = getRetreatStateFromMelee(state, 'white');
+      const retreatState = getMeleeRetreatState(state, 'white');
 
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
@@ -218,7 +218,7 @@ describe('applyResolveRetreatEvent function', () => {
       };
 
       const newState = applyResolveRetreatEvent(event, state);
-      const newRetreatState = getRetreatStateFromMelee(newState, 'white');
+      const newRetreatState = getMeleeRetreatState(newState, 'white');
 
       expect(newRetreatState.completed).toBe(true);
       expect(newState.boardState.board['E-5']?.unitPresence.presenceType).toBe(
@@ -233,7 +233,7 @@ describe('applyResolveRetreatEvent function', () => {
   describe('structural update', () => {
     it('given retreat completed flag and board ref before apply, input unchanged after apply', () => {
       const state = createStateWithRangedAttackRetreat();
-      const retreatState = getRetreatStateFromRangedAttack(state);
+      const retreatState = getRangedAttackRetreatState(state);
       const originalCompleted = retreatState.completed;
       const originalBoardState = state.boardState;
 
@@ -278,7 +278,7 @@ describe('applyResolveRetreatEvent function', () => {
           ),
         }),
       );
-      const retreatState = getRetreatStateFromFrontEngagement(withEngagement);
+      const retreatState = getFrontEngagementRetreatState(withEngagement);
       const event: ResolveRetreatEvent = {
         effectType: 'resolveRetreat',
         eventNumber: 0,
@@ -296,7 +296,7 @@ describe('applyResolveRetreatEvent function', () => {
       expect(next.boardState.board['E-4']?.unitPresence.presenceType).toBe(
         'single',
       );
-      expect(getRetreatStateFromFrontEngagement(next).completed).toBe(true);
+      expect(getFrontEngagementRetreatState(next).completed).toBe(true);
       expect(engagement.completed).toBe(true);
     });
   });

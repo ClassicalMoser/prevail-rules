@@ -11,9 +11,7 @@ import { getRangedAttackResolutionState } from '@queries/sequencing/commandResol
  * @returns The attack apply state
  * @throws Error if not resolving a ranged attack or attack apply state is missing
  */
-export function getAttackApplyStateFromRangedAttack(
-  state: GameState,
-): AttackApplyState {
+export function getRangedAttackApplyState(state: GameState): AttackApplyState {
   const rangedAttackState = getRangedAttackResolutionState(state);
   const attackApplyState = throwIfPending(
     rangedAttackState.attackApplyState,

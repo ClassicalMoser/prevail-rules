@@ -4,9 +4,9 @@ import type { GameState, RetreatState } from '@game';
 import { GAME_EFFECT_EVENT_TYPE, RESOLVE_RETREAT_EFFECT_TYPE } from '@events';
 import {
   getCurrentPhaseState,
-  getRetreatStateFromFrontEngagement,
-  getRetreatStateFromRangedAttack,
-  getRetreatStateReadyForResolveFromMelee,
+  getFrontEngagementRetreatState,
+  getRangedAttackRetreatState,
+  getNextMeleeRetreatStateAwaitingMove,
 } from '@queries';
 
 /**
@@ -28,12 +28,12 @@ export function generateResolveRetreatEvent(
   let retreatState: RetreatState;
   if (phaseState.phase === 'issueCommands') {
     try {
-      retreatState = getRetreatStateFromRangedAttack(state);
+      retreatState = getRangedAttackRetreatState(state);
     } catch {
-      retreatState = getRetreatStateFromFrontEngagement(state);
+      retreatState = getFrontEngagementRetreatState(state);
     }
   } else if (phaseState.phase === 'resolveMelee') {
-    retreatState = getRetreatStateReadyForResolveFromMelee(state);
+    retreatState = getNextMeleeRetreatStateAwaitingMove(state);
   } else {
     throw new Error(
       `Retreat resolution not expected in phase: ${phaseState.phase}`,

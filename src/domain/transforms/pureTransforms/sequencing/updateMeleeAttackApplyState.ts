@@ -15,7 +15,7 @@ import { updatePhaseState } from '../state';
  * @example
  * ```ts
  * const newState = updateMeleeAttackApplyState(state, 'white', {
- *   ...getAttackApplyStateFromMelee(state, 'white'),
+ *   ...getMeleeAttackApplyState(state, 'white'),
  *   completed: true,
  * });
  * ```

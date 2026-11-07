@@ -9,9 +9,9 @@ import {
 } from '@testing';
 import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
-import { getRoutStateFromMeleeResolutionByInitiative } from './getRoutStateFromMeleeResolutionByInitiative';
+import { getNextMeleeRoutState } from './getNextMeleeRoutState';
 
-describe('getRoutStateFromMeleeResolutionByInitiative function', () => {
+describe('getNextMeleeRoutState function', () => {
   function meleeWithRouts(
     initiative: 'white' | 'black',
     routs: { white?: RoutState; black?: RoutState },
@@ -44,7 +44,7 @@ describe('getRoutStateFromMeleeResolutionByInitiative function', () => {
     );
     const state = meleeWithRouts('black', { black: rout });
 
-    expect(getRoutStateFromMeleeResolutionByInitiative(state)).toBe(rout);
+    expect(getNextMeleeRoutState(state)).toBe(rout);
   });
 
   it('returns the second player rout when the first apply has none', () => {
@@ -55,13 +55,13 @@ describe('getRoutStateFromMeleeResolutionByInitiative function', () => {
     );
     const state = meleeWithRouts('black', { white: rout });
 
-    expect(getRoutStateFromMeleeResolutionByInitiative(state)).toBe(rout);
+    expect(getNextMeleeRoutState(state)).toBe(rout);
   });
 
   it('throws when neither apply has a rout', () => {
     const state = meleeWithRouts('white', {});
 
-    expect(() => getRoutStateFromMeleeResolutionByInitiative(state)).toThrow(
+    expect(() => getNextMeleeRoutState(state)).toThrow(
       'No rout state found in melee resolution',
     );
   });

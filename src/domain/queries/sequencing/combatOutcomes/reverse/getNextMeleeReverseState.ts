@@ -9,9 +9,7 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
  * @returns The reverse whose facing has not been chosen
  * @throws Error when neither side has an open reverse waiting on a facing
  */
-export function getReverseStateFromMeleeResolutionByInitiative(
-  state: GameState,
-): ReverseState {
+export function getNextMeleeReverseState(state: GameState): ReverseState {
   const meleeState = getMeleeResolutionState(state);
   const firstPlayer = state.currentInitiative;
   const firstPlayerAttackApply =

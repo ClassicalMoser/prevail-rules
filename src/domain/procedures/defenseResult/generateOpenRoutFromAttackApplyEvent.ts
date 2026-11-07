@@ -6,8 +6,8 @@ import {
   RANGED_ATTACK_RESOLUTION_CONTEXT,
 } from '@events';
 import {
-  getAttackApplyStateFromMelee,
-  getAttackApplyStateFromRangedAttack,
+  getMeleeAttackApplyState,
+  getRangedAttackApplyState,
   getCurrentPhaseState,
   getOtherPlayer,
 } from '@queries';
@@ -26,7 +26,7 @@ export function generateOpenRoutFromAttackApplyEvent(
   const phaseState = getCurrentPhaseState(state);
 
   if (phaseState.phase === 'issueCommands') {
-    const apply = getAttackApplyStateFromRangedAttack(state);
+    const apply = getRangedAttackApplyState(state);
     // A rout opens only while its slot is still waiting to be written.
     if (apply.routState !== 'pending') {
       throw new Error('Rout is not pending on the ranged attack apply');
@@ -43,7 +43,7 @@ export function generateOpenRoutFromAttackApplyEvent(
     // Initiative order: the first defender still waiting on a rout opens next.
     const firstPlayer = state.currentInitiative;
     const secondPlayer = getOtherPlayer(firstPlayer);
-    const firstApply = getAttackApplyStateFromMelee(state, firstPlayer);
+    const firstApply = getMeleeAttackApplyState(state, firstPlayer);
     if (firstApply.routState === 'pending') {
       return {
         attackResolutionContext: 'melee',
@@ -53,7 +53,7 @@ export function generateOpenRoutFromAttackApplyEvent(
         eventType: GAME_EFFECT_EVENT_TYPE,
       };
     }
-    const secondApply = getAttackApplyStateFromMelee(state, secondPlayer);
+    const secondApply = getMeleeAttackApplyState(state, secondPlayer);
     if (secondApply.routState === 'pending') {
       return {
         attackResolutionContext: 'melee',

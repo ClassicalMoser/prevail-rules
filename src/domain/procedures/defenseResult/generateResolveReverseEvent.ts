@@ -10,12 +10,12 @@ import {
 } from '@events';
 import { throwIfBypassed } from '@utils';
 import {
-  getAttackApplyStateFromRangedAttack,
+  getRangedAttackApplyState,
   getCurrentPhaseState,
   getOppositeFacing,
   getPositionOfUnit,
   getReverseStateFromAttackApply,
-  getReverseStateFromMeleeResolutionByInitiative,
+  getNextMeleeReverseState,
 } from '@queries';
 /**
  * Generates a ResolveReverseEvent by calculating the new facing
@@ -35,13 +35,11 @@ export function generateResolveReverseEvent(
 
   if (phaseState.phase === 'issueCommands') {
     reverseState = throwIfBypassed(
-      getReverseStateFromAttackApply(
-        getAttackApplyStateFromRangedAttack(state),
-      ),
+      getReverseStateFromAttackApply(getRangedAttackApplyState(state)),
       'The ranged attack applied no reverse to resolve',
     );
   } else if (phaseState.phase === 'resolveMelee') {
-    reverseState = getReverseStateFromMeleeResolutionByInitiative(state);
+    reverseState = getNextMeleeReverseState(state);
   } else {
     throw new Error(
       `Reverse resolution not expected in phase: ${phaseState.phase}`,
