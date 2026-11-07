@@ -1,12 +1,17 @@
-// Sample unit types, and the list of all of them.
+// Sample unit types in sheet order, and the list of all of them.
 export {
-  africanElephants,
+  velites,
+  manipularLegion,
   alaeSocii,
   equites,
-  manipularLegion,
+  numidianSkirmishers,
+  numidianCavalry,
+  punicCitizenCavalry,
   punicCitizenSpearmen,
+  libyanSpearmen,
+  africanVeterans,
+  africanElephants,
   tempUnits,
-  velites,
 } from './tempUnits';
 
 // Starter armies built from those unit types.
