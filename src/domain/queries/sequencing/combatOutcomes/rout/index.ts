@@ -27,5 +27,13 @@ export { getNextMeleeRoutState } from './getNextMeleeRoutState';
 // The rout on the rally for the cleanup step now resolving.
 export { getRallyStepRoutState } from './getRallyStepRoutState';
 
-// The rout that still needs a discard, from issue-commands, melee, or cleanup.
-export { getAwaitingRoutDiscardState } from './getAwaitingRoutDiscardState';
+// Whether a rout still owes its owner's discard.
+export { isAwaitingRoutDiscard } from './isAwaitingRoutDiscard';
+
+// Routers. The rout in play, wherever it sits.
+
+// `null` when nothing is routing.
+export { findRoutState } from './findRoutState';
+
+// Throws when nothing is routing.
+export { getRoutState } from './getRoutState';

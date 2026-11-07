@@ -1,7 +1,7 @@
 import type { ChooseRoutDiscardEvent } from '@events';
 import type { GameState } from '@game';
 import {
-  getAwaitingRoutDiscardState,
+  getRoutState,
   getOwnedPlayerCardState,
   getRearEngagementStateFromMovement,
 } from '@queries';
@@ -29,10 +29,7 @@ export function applyChooseRoutDiscardEvent<S extends GameState>(
   event: ChooseRoutDiscardEvent,
   state: S,
 ): S {
-  const routState = getAwaitingRoutDiscardState(state);
-  if (routState === null) {
-    throw new Error('No rout discard awaiting choice');
-  }
+  const routState = getRoutState(state);
 
   const owned = getOwnedPlayerCardState(state.cardState, event.player);
   const discardedCardState = discardCardsFromHand(owned, event.cardIds);

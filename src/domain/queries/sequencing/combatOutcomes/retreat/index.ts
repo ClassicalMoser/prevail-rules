@@ -19,5 +19,10 @@ export { getFrontEngagementRetreatState } from './getFrontEngagementRetreatState
 // The melee retreat whose destination is chosen and whose move is not finished.
 export { getNextMeleeRetreatStateAwaitingMove } from './getNextMeleeRetreatStateAwaitingMove';
 
-// The retreat for one player, from ranged attack, front engagement, or melee.
+// Routers. The retreat this player is making, wherever it sits.
+
+// `null` when they are not retreating.
 export { findRetreatState } from './findRetreatState';
+
+// Throws when they are not retreating.
+export { getRetreatState } from './getRetreatState';

@@ -24,6 +24,7 @@ export { getMeleeRetreatState } from './retreat';
 export { getFrontEngagementRetreatState } from './retreat';
 export { getNextMeleeRetreatStateAwaitingMove } from './retreat';
 export { findRetreatState } from './retreat';
+export { getRetreatState } from './retreat';
 
 // Reverse: on an attack-apply only.
 export { getReverseStateFromAttackApply } from './reverse';
@@ -39,4 +40,6 @@ export { getRearEngagementRoutState } from './rout';
 export { getRoutStateFromRally } from './rout';
 export { getNextMeleeRoutState } from './rout';
 export { getRallyStepRoutState } from './rout';
-export { getAwaitingRoutDiscardState } from './rout';
+export { isAwaitingRoutDiscard } from './rout';
+export { findRoutState } from './rout';
+export { getRoutState } from './rout';

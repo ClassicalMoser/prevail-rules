@@ -12,17 +12,17 @@ function findAwaitingRetreatOptionChoice<S extends GameState>(
   gameState: S,
 ): RetreatState | null {
   for (const player of ['black', 'white'] as const) {
-    try {
-      const retreatState = findRetreatState(gameState, player);
-      if (
-        !retreatState.completed &&
-        retreatState.finalPosition === 'pending' &&
-        retreatState.legalRetreatOptions.length > 0
-      ) {
-        return retreatState;
-      }
-    } catch {
-      // No retreat for this player in the current phase context.
+    const retreatState = findRetreatState(gameState, player);
+    // Neither player is obliged to be retreating, so a null here is an answer.
+    if (retreatState === null) {
+      continue;
+    }
+    if (
+      !retreatState.completed &&
+      retreatState.finalPosition === 'pending' &&
+      retreatState.legalRetreatOptions.length > 0
+    ) {
+      return retreatState;
     }
   }
   return null;

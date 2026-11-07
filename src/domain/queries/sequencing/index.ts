@@ -101,6 +101,18 @@ export { getFrontEngagementRetreatState } from './combatOutcomes';
 // The retreat for one player, from ranged attack, front engagement, or melee.
 export { findRetreatState } from './combatOutcomes';
 
+// That retreat, where a caller knows there is one.
+export { getRetreatState } from './combatOutcomes';
+
+// Whether a rout still owes a discard.
+export { isAwaitingRoutDiscard } from './combatOutcomes';
+
+// The rout in play, or null when nothing is routing.
+export { findRoutState } from './combatOutcomes';
+
+// That rout, where a caller knows there is one.
+export { getRoutState } from './combatOutcomes';
+
 // Rout stored on an attack-apply.
 export { getRoutStateFromAttackApply } from './combatOutcomes';
 
@@ -115,6 +127,3 @@ export { getRoutStateFromRally } from './combatOutcomes';
 
 // The rout for the cleanup step that is resolving a rally, including choose-rally.
 export { getRallyStepRoutState } from './combatOutcomes';
-
-// The rout that still needs a discard, from issue-commands, melee, or cleanup.
-export { getAwaitingRoutDiscardState } from './combatOutcomes';

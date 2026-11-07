@@ -1,6 +1,6 @@
 import type { ChooseRetreatOptionEvent } from '@events';
 import type { GameState, RetreatState } from '@game';
-import { findRetreatState } from '@queries';
+import { getRetreatState } from '@queries';
 import { updateRetreatState } from '@transforms/pureTransforms';
 
 /**
@@ -18,7 +18,7 @@ export function applyChooseRetreatOptionEvent<S extends GameState>(
   event: ChooseRetreatOptionEvent,
   state: S,
 ): S {
-  const retreatState = findRetreatState(state, event.player);
+  const retreatState = getRetreatState(state, event.player);
   const newRetreatState: RetreatState = {
     ...retreatState,
     finalPosition: event.retreatOption,

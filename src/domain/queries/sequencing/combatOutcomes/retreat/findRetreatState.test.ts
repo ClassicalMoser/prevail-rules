@@ -55,12 +55,11 @@ function placed(
 }
 
 describe('findRetreatState function', () => {
-  it('throws when the round has no phase', () => {
+  it('answers null before the round has a phase', () => {
+    // Setup has no phase yet, and the endgame check asks on every state.
     const state = createEmptyGameState('standard');
 
-    expect(() => findRetreatState(state, 'white')).toThrow(
-      'No current phase state found',
-    );
+    expect(findRetreatState(state, 'white')).toBeNull();
   });
 
   it('returns the white retreat on a ranged attack', () => {
@@ -92,13 +91,12 @@ describe('findRetreatState function', () => {
     expect(findRetreatState(state, 'white')).toBe(retreat);
   });
 
-  it('throws when the command resolution is movement without a retreat', () => {
+  it('answers null when a movement has engaged nobody', () => {
     const empty = createEmptyGameState('standard');
+    // A move that opened no engagement forces no retreat, which is ordinary.
     const state = issueCommands(createMovementResolutionState(empty));
 
-    expect(() => findRetreatState(state, 'white')).toThrow(
-      'No retreat state found for player white',
-    );
+    expect(findRetreatState(state, 'white')).toBeNull();
   });
 
   it('returns the retreat nested on a front engagement', () => {
@@ -116,7 +114,7 @@ describe('findRetreatState function', () => {
     expect(findRetreatState(state, 'white')).toBe(retreat);
   });
 
-  it('throws when the retreat belongs to the other player', () => {
+  it('answers null when the retreat belongs to the other player', () => {
     const empty = createEmptyGameState('standard');
     const defender = placed('white', 'north');
     const retreat = createRetreatState(defender);
@@ -128,8 +126,8 @@ describe('findRetreatState function', () => {
     });
     const state = issueCommands(resolution);
 
-    expect(() => findRetreatState(state, 'black')).toThrow(
-      'No retreat state found for player black',
-    );
+    // The defender of a ranged attack may be either side's unit, so black is
+    // entitled to ask and entitled to a no.
+    expect(findRetreatState(state, 'black')).toBeNull();
   });
 });

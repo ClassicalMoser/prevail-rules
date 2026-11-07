@@ -1,9 +1,6 @@
 import type { ResolveRetreatEvent } from '@events';
 import type { GameState, RetreatState } from '@game';
-import {
-  findRetreatState,
-  getFrontEngagementStateFromMovement,
-} from '@queries';
+import { getRetreatState, getFrontEngagementStateFromMovement } from '@queries';
 import {
   addUnitToBoard,
   removeUnitFromBoard,
@@ -36,7 +33,7 @@ export function applyResolveRetreatEvent<S extends GameState>(
 
   // Get the current retreat state to update
   const retreatingPlayer = event.startingPosition.unit.playerSide;
-  const currentRetreatState = findRetreatState(state, retreatingPlayer);
+  const currentRetreatState = getRetreatState(state, retreatingPlayer);
 
   // Mark retreat as completed
   const newRetreatState: RetreatState = {

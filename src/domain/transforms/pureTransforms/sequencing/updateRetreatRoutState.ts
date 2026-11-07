@@ -1,5 +1,5 @@
 import type { GameState, RetreatState, RoutState } from '@game';
-import { findRetreatState } from '@queries';
+import { getRetreatState } from '@queries';
 import { updateRetreatState } from './updateRetreatState';
 
 /**
@@ -27,10 +27,7 @@ export function updateRetreatRoutState<S extends GameState>(
   state: S,
   routState: RoutState,
 ): S {
-  const currentRetreat: RetreatState = findRetreatState(
-    state,
-    routState.player,
-  );
+  const currentRetreat: RetreatState = getRetreatState(state, routState.player);
   const newState = updateRetreatState(state, { ...currentRetreat, routState });
   return newState;
 }

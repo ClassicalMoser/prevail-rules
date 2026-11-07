@@ -180,7 +180,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
     ]);
   });
 
-  it('given playCards phase, throws when no rout discard awaits', () => {
+  it('throws when nothing is routing', () => {
     const state = createEmptyGameState('standard');
     const stateInPlayCards = updatePhaseState(
       state,
@@ -195,11 +195,11 @@ describe('applyChooseRoutDiscardEvent function', () => {
     };
 
     expect(() => applyChooseRoutDiscardEvent(event, stateInPlayCards)).toThrow(
-      'No rout discard awaiting choice',
+      'No rout is in play',
     );
   });
 
-  it('throws when cleanup is discarding played cards and the rally has no rout', () => {
+  it('throws when the cleanup step holds no rout', () => {
     const state = createEmptyGameState('standard');
     const phaseState = createCleanupPhaseState({
       step: 'discardPlayedCards',
@@ -214,7 +214,7 @@ describe('applyChooseRoutDiscardEvent function', () => {
     };
 
     expect(() => applyChooseRoutDiscardEvent(event, stateInCleanup)).toThrow(
-      'No rout state found in rally resolution',
+      'No rout is in play',
     );
   });
 });

@@ -116,10 +116,13 @@ export {
   getNextMeleeRetreatStateAwaitingMove,
   getFrontEngagementRetreatState,
   findRetreatState,
+  getRetreatState,
+  findRoutState,
+  isAwaitingRoutDiscard,
+  getRoutState,
   getRoutStateFromAttackApply,
   getNextMeleeRoutState,
   getRearEngagementRoutState,
-  getAwaitingRoutDiscardState,
 } from './sequencing';
 
 // Unit stats, identity, support, and who is on the board.

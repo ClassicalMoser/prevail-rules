@@ -472,6 +472,10 @@ export {
 export { getExpectedEvent } from '@expected';
 export {
   findRetreatState,
+  findRoutState,
+  isAwaitingRoutDiscard,
+  getRetreatState,
+  getRoutState,
   getMeleeAttackApplyState,
   getRangedAttackApplyState,
   getCleanupPhaseState,

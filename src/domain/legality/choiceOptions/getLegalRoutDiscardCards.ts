@@ -1,6 +1,10 @@
 import type { PlayerSide } from '@entities';
 import type { GameState } from '@game';
-import { getAwaitingRoutDiscardState, getOwnedPlayerCardState } from '@queries';
+import {
+  findRoutState,
+  getOwnedPlayerCardState,
+  isAwaitingRoutDiscard,
+} from '@queries';
 
 /**
  * Atomic rout-discard options for UI and validation: which player must discard,
@@ -30,8 +34,12 @@ export interface LegalRoutDiscardCards {
 export function getLegalRoutDiscardCards<S extends GameState>(
   gameState: S,
 ): LegalRoutDiscardCards | null {
-  const routState = getAwaitingRoutDiscardState(gameState);
-  if (routState === null || routState.numberToDiscard === 'pending') {
+  const routState = findRoutState(gameState);
+  // Nothing routing, or a rout that owes no cards, means no discard to offer.
+  if (routState === null || !isAwaitingRoutDiscard(routState)) {
+    return null;
+  }
+  if (routState.numberToDiscard === 'pending') {
     return null;
   }
 

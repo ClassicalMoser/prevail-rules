@@ -1,59 +1,93 @@
 import type { GameState, RetreatState } from '@game';
+import { isNone, isPending } from '@utils';
 import { isFriendlyUnit } from '@queries/unit';
-import { getFrontEngagementRetreatState } from './getFrontEngagementRetreatState';
-import { getMeleeRetreatState } from './getMeleeRetreatState';
-import { getRangedAttackRetreatState } from './getRangedAttackRetreatState';
+import { isOpenSubstep } from '../isOpenSubstep';
 
 /**
- * Finds the retreat state from the current game state context.
- * Searches in: ranged attack resolution, front engagement (movement), or melee.
- * Assumes a retreat state exists (validation should happen elsewhere).
+ * The retreat this player is making, or `null` when they are not retreating.
+ *
+ * Three places hold a retreat: the apply on a ranged attack, a front engagement
+ * the defender gave ground to, and either side's apply in a melee. Which one is
+ * live follows from the phase and the command being resolved.
+ *
+ * Not retreating is an ordinary state, so this reads each slot's own sentinel
+ * rather than asking a getter that would throw. Callers that know a retreat
+ * must be there use `getRetreatState`.
  *
  * @param state - The game state
- * @param player - The player whose retreat state to find
- * @returns The retreat state
- * @throws Error if retreat state not found in any context
+ * @param player - The player whose retreat to find
+ * @returns That player's retreat, or `null` when they have none
  */
 export function findRetreatState(
   state: GameState,
   player: 'white' | 'black',
-): RetreatState {
+): RetreatState | null {
+  // Setup has no phase yet, and asking before the round starts is fair.
   const phaseState = state.currentRoundState.currentPhaseState;
-  if (phaseState === 'none') {
-    throw new Error('No current phase state found');
+  if (isNone(phaseState)) {
+    return null;
   }
 
-  // Issue-commands can hold a ranged retreat or a front-engagement retreat.
-  // A miss in one search continues to the next. The retreat must belong to `player`.
   if (phaseState.phase === 'issueCommands') {
-    try {
-      const retreatState = getRangedAttackRetreatState(state);
-      if (isFriendlyUnit(retreatState.retreatingUnit.unit, player)) {
-        return retreatState;
-      }
-    } catch {
-      // Not in ranged attack or no retreat state, continue
+    const commandResolution = phaseState.currentCommandResolutionState;
+    // Between commands nobody is retreating.
+    if (isPending(commandResolution)) {
+      return null;
     }
 
-    try {
-      const retreatState = getFrontEngagementRetreatState(state);
-      if (isFriendlyUnit(retreatState.retreatingUnit.unit, player)) {
-        return retreatState;
+    if (commandResolution.commandResolutionType === 'rangedAttack') {
+      const apply = commandResolution.attackApplyState;
+      if (isPending(apply)) {
+        return null;
       }
-    } catch {
-      // Not in front engagement retreat, continue
+      const rangedRetreat = apply.retreatState;
+      if (!isOpenSubstep(rangedRetreat)) {
+        return null;
+      }
+      // The defender of a ranged attack may be either player's unit.
+      if (!isFriendlyUnit(rangedRetreat.retreatingUnit.unit, player)) {
+        return null;
+      }
+      return rangedRetreat;
     }
+
+    // A movement forces a retreat only when it engages from the front and the
+    // defender gives ground rather than holding.
+    const engagement = commandResolution.engagementState;
+    if (isPending(engagement)) {
+      return null;
+    }
+    const resolution = engagement.engagementResolutionState;
+    if (resolution.engagementType !== 'front') {
+      return null;
+    }
+    const frontRetreat = resolution.retreatState;
+    if (isPending(frontRetreat)) {
+      return null;
+    }
+    if (!isFriendlyUnit(frontRetreat.retreatingUnit.unit, player)) {
+      return null;
+    }
+    return frontRetreat;
   }
 
-  // Melee stores one retreat per side. The player argument selects the side.
   if (phaseState.phase === 'resolveMelee') {
-    try {
-      const retreatState = getMeleeRetreatState(state, player);
-      return retreatState;
-    } catch {
-      // Not found, continue
+    const melee = phaseState.currentMeleeResolutionState;
+    if (isPending(melee)) {
+      return null;
     }
+    // Melee holds one apply per side, so the player names the side.
+    const sideApply = melee[`${player}AttackApplyState`];
+    if (isPending(sideApply)) {
+      return null;
+    }
+    const meleeRetreat = sideApply.retreatState;
+    if (!isOpenSubstep(meleeRetreat)) {
+      return null;
+    }
+    return meleeRetreat;
   }
 
-  throw new Error(`No retreat state found for player ${player}`);
+  // No other phase moves a unit by retreat.
+  return null;
 }
