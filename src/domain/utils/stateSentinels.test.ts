@@ -20,6 +20,16 @@ describe('isPending function', () => {
     // A filled value, or another sentinel, is not waiting.
     expect(isPending('other')).toBe(false);
   });
+
+  it("does not match 'bypassed'", () => {
+    // Bypassed is not pending, since the outcome has already been decided.
+    expect(isPending('bypassed')).toBe(false);
+  });
+
+  it("does not match 'none'", () => {
+    // Absence is not pending, since nothing will be filled.
+    expect(isPending('none')).toBe(false);
+  });
 });
 
 describe('isResolved function', () => {
@@ -34,20 +44,35 @@ describe('isResolved function', () => {
   });
 
   it("treats 'bypassed' as resolved", () => {
-    // A skipped combat outcome is a different string; this guard does not know it.
+    // Bypassed has already been decided.
     expect(isResolved('bypassed')).toBe(true);
+  });
+
+  it("treats 'none' as resolved", () => {
+    // Absence has already been decided.
+    expect(isResolved('none')).toBe(true);
   });
 });
 
 describe('isBypassed function', () => {
   it("matches the string 'bypassed'", () => {
-    // A combat outcome that did not happen is stored as this string.
+    // An outcome that did not happen is stored as this string.
     expect(isBypassed('bypassed')).toBe(true);
   });
 
   it('does not match a different value', () => {
     // An open outcome object, or another sentinel, is not a skip.
     expect(isBypassed('other')).toBe(false);
+  });
+
+  it("does not match 'pending'", () => {
+    // Pending is not a skip, since it implies that it will be resolved.
+    expect(isBypassed('pending')).toBe(false);
+  });
+
+  it("does not match 'none'", () => {
+    // Absence is not a skip, since nothing was opened to skip.
+    expect(isBypassed('none')).toBe(false);
   });
 });
 
@@ -61,17 +86,37 @@ describe('isApplied function', () => {
     // The skip string is the only negative case.
     expect(isApplied('bypassed')).toBe(false);
   });
+
+  it("treats 'pending' as applied", () => {
+    // Pending implies that it will be resolved.
+    expect(isApplied('pending')).toBe(true);
+  });
+
+  it("treats 'none' as applied", () => {
+    // Absence is not a skip.
+    expect(isApplied('none')).toBe(true);
+  });
 });
 
 describe('isNone function', () => {
   it("matches the string 'none'", () => {
-    // Phase absence and other facts that reuse the word both hit this.
+    // Slots and other facts that reuse the word both hit this.
     expect(isNone('none')).toBe(true);
   });
 
   it('does not match a different value', () => {
     // A present value, or another sentinel, is not absent.
     expect(isNone('other')).toBe(false);
+  });
+
+  it("does not match 'pending'", () => {
+    // Pending is not absence, since it implies that it will be filled.
+    expect(isNone('pending')).toBe(false);
+  });
+
+  it("does not match 'bypassed'", () => {
+    // Bypassed is not absence, since it has already been decided.
+    expect(isNone('bypassed')).toBe(false);
   });
 });
 
@@ -84,6 +129,16 @@ describe('isActive function', () => {
   it("does not match the string 'none'", () => {
     // The absent string is the only negative case.
     expect(isActive('none')).toBe(false);
+  });
+
+  it("treats 'pending' as active", () => {
+    // Pending implies that it will be filled.
+    expect(isActive('pending')).toBe(true);
+  });
+
+  it("treats 'bypassed' as active", () => {
+    // Bypassed has already been filled.
+    expect(isActive('bypassed')).toBe(true);
   });
 });
 
@@ -101,14 +156,19 @@ describe('throwIfPending function', () => {
   });
 
   it("returns 'bypassed' without throwing", () => {
-    // A skipped outcome is not waiting; this throw does not police that string.
+    // Bypassed is not pending, since the outcome has already been decided.
     expect(throwIfPending('bypassed', 'pending message')).toBe('bypassed');
+  });
+
+  it("returns 'none' without throwing", () => {
+    // Absence is not pending, since nothing will be filled.
+    expect(throwIfPending('none', 'pending message')).toBe('none');
   });
 });
 
 describe('throwIfBypassed function', () => {
   it("returns a value other than 'bypassed'", () => {
-    // The caller asked for the outcome object and has one.
+    // The caller asked for the value and has one.
     expect(throwIfBypassed('other', 'message')).toBe('other');
   });
 
@@ -117,6 +177,16 @@ describe('throwIfBypassed function', () => {
     expect(() => throwIfBypassed('bypassed', 'bypassed message')).toThrow(
       new Error('bypassed message'),
     );
+  });
+
+  it("returns 'pending' without throwing", () => {
+    // Pending is not a skip, since it implies that it will be resolved.
+    expect(throwIfBypassed('pending', 'bypassed message')).toBe('pending');
+  });
+
+  it("returns 'none' without throwing", () => {
+    // Absence is not a skip, since nothing was opened to skip.
+    expect(throwIfBypassed('none', 'bypassed message')).toBe('none');
   });
 });
 
@@ -131,5 +201,15 @@ describe('throwIfNone function', () => {
     expect(() => throwIfNone('none', 'none message')).toThrow(
       new Error('none message'),
     );
+  });
+
+  it("returns 'pending' without throwing", () => {
+    // Pending is not absence, since it implies that it will be filled.
+    expect(throwIfNone('pending', 'none message')).toBe('pending');
+  });
+
+  it("returns 'bypassed' without throwing", () => {
+    // Bypassed is not absence, since it has already been decided.
+    expect(throwIfNone('bypassed', 'none message')).toBe('bypassed');
   });
 });

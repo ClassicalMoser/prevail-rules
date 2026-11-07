@@ -2,7 +2,7 @@
 
 Import as `@utils`.
 
-Small helpers with no domain schemas and no imports from other layers.
+Small technical helpers with no domain schemas and no imports from other layers.
 
 - `assertExact` — schema and type stay aligned
 - `validationResult` — `ValidationResult`

@@ -3,9 +3,8 @@
  * `=== undefined`. Falsy-but-defined values (`null`, `0`, `""`, `false`) pass
  * through unchanged — this is "absent", not "falsy".
  *
- * Centralizes the "extract sub-shape, assert present, return" pattern that
- * recurs across navigation queries. Type-preserving: the input's `T` threads
- * through to the return type, including any generic correlation on the caller.
+ * Type-preserving: the input's `T` threads through to the return type,
+ * including any generic correlation on the caller.
  *
  * @param value - The value to check
  * @param message - Error message used when `value === undefined`
@@ -13,10 +12,7 @@
  * @throws Error with the supplied message when `value === undefined`
  *
  * Typical usage example:
- * const phaseState = throwIfUndefined(
- *   state.currentRoundState.currentPhaseState,
- *   "No current phase state found",
- * );
+ * const value = throwIfUndefined(maybeValue, "No value found");
  */
 export function throwIfUndefined<T>(value: T | undefined, message: string): T {
   // Only missing counts — a defined falsy value is still the value asked for.

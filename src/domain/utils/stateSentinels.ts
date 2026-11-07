@@ -5,8 +5,8 @@
 
 // TODO(composition): these compare strings, not slots. The same word names
 // unrelated facts (`commitmentType: 'pending'`, `restrictionType: 'none'`,
-// `presenceType: 'none'`). A combat-outcome slot also uses `'bypassed'`, which
-// `isResolved` / `throwIfPending` treat as a filled value. See AUDIT.md `utils`.
+// `presenceType: 'none'`). A slot that also uses `'bypassed'` is treated as
+// filled by `isResolved` / `throwIfPending`. See AUDIT.md `utils`.
 
 /** Narrows `T | 'pending'` to `'pending'`. */
 export function isPending<T>(value: T | 'pending'): value is 'pending' {
@@ -22,19 +22,19 @@ export function isResolved<T>(value: T | 'pending'): value is T {
 
 /** Narrows `T | 'bypassed'` to `'bypassed'`. */
 export function isBypassed<T>(value: T | 'bypassed'): value is 'bypassed' {
-  // A combat outcome that did not happen is stored as this string, not as absent.
+  // A value that did not happen is stored as this string, not as absent.
   return value === 'bypassed';
 }
 
 /** Narrows `T | 'bypassed'` to `T`. */
 export function isApplied<T>(value: T | 'bypassed'): value is T {
-  // The outcome object is present only when the attack did not skip that result.
+  // The value is present only when that result was not skipped.
   return value !== 'bypassed';
 }
 
 /** Narrows `T | 'none'` to `'none'`. */
 export function isNone<T>(value: T | 'none'): value is 'none' {
-  // Equality with that string alone — phase absence, and other `'none'` facts.
+  // Equality with that string alone — which field used it is the caller's.
   return value === 'none';
 }
 
@@ -59,7 +59,7 @@ export function throwIfPending<T>(value: T | 'pending', message: string): T {
  * Narrows `T | 'bypassed'` to `T` by throwing when the value is `'bypassed'`.
  */
 export function throwIfBypassed<T>(value: T | 'bypassed', message: string): T {
-  // A caller that needs the outcome object stops when that result was skipped.
+  // A caller that needs the value stops when that result was skipped.
   if (isBypassed(value)) {
     throw new Error(message);
   }
