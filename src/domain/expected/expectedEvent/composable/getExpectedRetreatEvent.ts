@@ -1,5 +1,6 @@
 import type { ExpectedEventInfo } from '@events';
 import type { RetreatState } from '@game';
+import { isBypassed, isPending } from '@utils';
 import { getExpectedRoutEvent } from './getExpectedRoutEvent';
 
 /**
@@ -21,14 +22,14 @@ export function getExpectedRetreatEvent(
   // Check if there are no legal retreat options
   if (retreatState.legalRetreatOptions.length === 0) {
     // If the rout state is not populated, trigger a rout from the retreat
-    if (retreatState.routState === 'pending') {
+    if (isPending(retreatState.routState)) {
       return {
         actionType: 'gameEffect',
         effectType: 'triggerRoutFromRetreat',
       };
     }
     // A retreat with nowhere to go must still rout — bypassed here is corrupt.
-    if (retreatState.routState === 'bypassed') {
+    if (isBypassed(retreatState.routState)) {
       throw new Error(
         'Retreat with no legal options cannot have a bypassed rout',
       );
