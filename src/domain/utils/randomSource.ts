@@ -13,5 +13,6 @@ export interface RandomSource {
 
 /** The production source. Delegates to `Math.random`. */
 export const defaultRandom: RandomSource = {
+  // Live play draws here; a fixed source in a spec or recording replaces it.
   nextFloat: () => Math.random(),
 };

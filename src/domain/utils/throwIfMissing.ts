@@ -19,6 +19,7 @@
  * );
  */
 export function throwIfUndefined<T>(value: T | undefined, message: string): T {
+  // Only missing counts — a defined falsy value is still the value asked for.
   if (value === undefined) {
     throw new Error(message);
   }
