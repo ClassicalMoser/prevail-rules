@@ -21,7 +21,7 @@ Prevail: Ancient Battles is a two-player tactical board game designed as a respo
 
 #### Historical Accuracy
 
-- **Authentic unit types**: Units represent historical formations (Polybian Hastatii, Hellenistic Thureophoroi, etc.)
+- **Authentic unit types**: Units represent historical formations (Manipular Legions, Balearic Slingers, Hellenistic Thureophoroi, etc.)
 - **Tactical positioning**: Facing, flanking, and engagement rules reflect historical combat dynamics
 - **Command structure**: Command cards and initiative system model historical command and control
 - **Terrain effects**: Board terrain (elevation, water, terrain types) affects movement and combat
