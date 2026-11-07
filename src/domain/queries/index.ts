@@ -102,6 +102,7 @@ export {
   getNextStepForResolveRally,
   isOpenSubstep,
   getRangedAttackApplyState,
+  getAttackApplyStateAt,
   getMeleeAttackApplyState,
   getNextMeleeDefendingPlayer,
   getReverseStateFromAttackApply,

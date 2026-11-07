@@ -1,7 +1,6 @@
 import type { OpenReverseFromAttackApplyEvent } from '@events';
 import type { GameState, ReverseState } from '@game';
-import { RANGED_ATTACK_RESOLUTION_CONTEXT } from '@events';
-import { getMeleeAttackApplyState, getRangedAttackApplyState } from '@queries';
+import { getAttackApplyStateAt } from '@queries';
 import { updateAttackApplyState } from '@transforms/pureTransforms';
 
 /**
@@ -20,10 +19,7 @@ export function applyOpenReverseFromAttackApplyEvent<S extends GameState>(
   event: OpenReverseFromAttackApplyEvent,
   state: S,
 ): S {
-  const apply =
-    event.attackResolutionContext === RANGED_ATTACK_RESOLUTION_CONTEXT
-      ? getRangedAttackApplyState(state)
-      : getMeleeAttackApplyState(state, event.defendingPlayer);
+  const apply = getAttackApplyStateAt(state, event);
 
   // A reverse opens only from a pending slot — already open or bypassed is wrong.
   if (apply.reverseState !== 'pending') {

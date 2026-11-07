@@ -476,6 +476,7 @@ export {
   isAwaitingRoutDiscard,
   getRetreatState,
   getRoutState,
+  getAttackApplyStateAt,
   getMeleeAttackApplyState,
   getRangedAttackApplyState,
   getCleanupPhaseState,

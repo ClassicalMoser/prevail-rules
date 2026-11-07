@@ -1,8 +1,7 @@
 import type { ResolveReverseEvent } from '@events';
 import type { GameState, ReverseState } from '@game';
 import {
-  getMeleeAttackApplyState,
-  getRangedAttackApplyState,
+  getAttackApplyStateAt,
   getReverseStateFromAttackApply,
 } from '@queries';
 import { throwIfBypassed } from '@utils';
@@ -34,10 +33,10 @@ export function applyResolveReverseEvent<S extends GameState>(
     event.newUnitPlacement,
   );
 
-  const attackApplyState =
-    event.attackResolutionContext === 'rangedAttack'
-      ? getRangedAttackApplyState(state)
-      : getMeleeAttackApplyState(state, event.unitInstance.unit.playerSide);
+  const attackApplyState = getAttackApplyStateAt(state, {
+    attackResolutionContext: event.attackResolutionContext,
+    defendingPlayer: event.unitInstance.unit.playerSide,
+  });
 
   const currentReverseState = throwIfBypassed(
     getReverseStateFromAttackApply(attackApplyState),

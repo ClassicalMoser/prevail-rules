@@ -63,6 +63,10 @@ export { isOpenSubstep } from './combatOutcomes';
 // Attack-apply on the current ranged attack.
 export { getRangedAttackApplyState } from './combatOutcomes';
 
+// The attack-apply a resolution context names.
+export { getAttackApplyStateAt } from './combatOutcomes';
+export type { AttackApplyLocation } from './combatOutcomes';
+
 // Attack-apply for one side of the current melee.
 export { getMeleeAttackApplyState } from './combatOutcomes';
 

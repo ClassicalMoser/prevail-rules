@@ -1,7 +1,6 @@
 import type { OpenRoutFromAttackApplyEvent } from '@events';
 import type { GameState, RoutState } from '@game';
-import { RANGED_ATTACK_RESOLUTION_CONTEXT } from '@events';
-import { getMeleeAttackApplyState, getRangedAttackApplyState } from '@queries';
+import { getAttackApplyStateAt } from '@queries';
 import {
   removeUnitsLeavingUnderRout,
   updateAttackApplyState,
@@ -22,10 +21,7 @@ export function applyOpenRoutFromAttackApplyEvent<S extends GameState>(
   event: OpenRoutFromAttackApplyEvent,
   state: S,
 ): S {
-  const apply =
-    event.attackResolutionContext === RANGED_ATTACK_RESOLUTION_CONTEXT
-      ? getRangedAttackApplyState(state)
-      : getMeleeAttackApplyState(state, event.defendingPlayer);
+  const apply = getAttackApplyStateAt(state, event);
 
   // A rout opens only from a pending slot — already open or bypassed is wrong.
   if (apply.routState !== 'pending') {

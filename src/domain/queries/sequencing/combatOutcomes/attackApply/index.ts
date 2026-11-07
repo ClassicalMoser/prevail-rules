@@ -4,6 +4,10 @@
 // Attack-apply on the current ranged attack.
 export { getRangedAttackApplyState } from './getRangedAttackApplyState';
 
+// The attack-apply a resolution context names, for an event that carries one.
+export { getAttackApplyStateAt } from './getAttackApplyStateAt';
+export type { AttackApplyLocation } from './getAttackApplyStateAt';
+
 // Attack-apply for one side of the current melee.
 export { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 
