@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+/** Unit traits a card restriction or unit type may list. */
 export const traits = [
   'bow',
   'sling',

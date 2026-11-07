@@ -13,6 +13,7 @@ export const MIN_INITIATIVE_VALUE = 1 as const;
 export const MAX_INITIATIVE_VALUE = 4 as const;
 
 function constructLegalInitiatives(): readonly number[] {
+  // Every integer from the minimum initiative through the maximum is legal.
   const initiatives: number[] = [];
   for (let i = MIN_INITIATIVE_VALUE; i <= MAX_INITIATIVE_VALUE; i++) {
     initiatives.push(i);

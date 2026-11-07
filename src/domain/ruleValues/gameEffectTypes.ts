@@ -35,4 +35,5 @@ export const gameEffects = [
   'triggerRoutFromRetreat',
 ] as const;
 
+/** Discriminator string for a game-effect event (`effectType`). */
 export type GameEffectType = (typeof gameEffects)[number];
