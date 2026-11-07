@@ -41,7 +41,7 @@ describe('isValidCommitToMeleeEvent function', () => {
       },
     });
     const melee = createMeleeResolutionState(withCards, {
-      whiteCommitment: { commitmentType: 'pending' },
+      firstPlayerCommitment: { commitmentType: 'pending' },
     });
     return updatePhaseState(
       withCards,

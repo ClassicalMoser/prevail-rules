@@ -11,15 +11,8 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
  */
 export function getNextMeleeReverseState(state: GameState): ReverseState {
   const meleeState = getMeleeResolutionState(state);
-  const firstPlayer = state.currentInitiative;
-  const firstPlayerAttackApply =
-    firstPlayer === 'white'
-      ? meleeState.whiteAttackApplyState
-      : meleeState.blackAttackApplyState;
-  const secondPlayerAttackApply =
-    firstPlayer === 'white'
-      ? meleeState.blackAttackApplyState
-      : meleeState.whiteAttackApplyState;
+  const firstPlayerAttackApply = meleeState.firstPlayerAttackApplyState;
+  const secondPlayerAttackApply = meleeState.secondPlayerAttackApplyState;
 
   // An attack that reached no threshold leaves reverseState 'bypassed', so
   // that side has nothing to reverse.

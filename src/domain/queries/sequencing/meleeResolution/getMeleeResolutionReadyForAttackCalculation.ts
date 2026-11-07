@@ -12,16 +12,16 @@ export function getMeleeResolutionReadyForAttackCalculation<
 >(state: S): MeleeResolutionState {
   const meleeState = getMeleeResolutionState(state);
   // Attack values are calculated only after both players have committed.
-  if (meleeState.whiteCommitment.commitmentType === 'pending') {
-    throw new Error('White commitment is still pending');
+  if (meleeState.firstPlayerCommitment.commitmentType === 'pending') {
+    throw new Error('First player commitment is still pending');
   }
-  if (meleeState.blackCommitment.commitmentType === 'pending') {
-    throw new Error('Black commitment is still pending');
+  if (meleeState.secondPlayerCommitment.commitmentType === 'pending') {
+    throw new Error('Second player commitment is still pending');
   }
   // And only before either attack-apply has been opened.
   if (
-    meleeState.whiteAttackApplyState !== 'pending' ||
-    meleeState.blackAttackApplyState !== 'pending'
+    meleeState.firstPlayerAttackApplyState !== 'pending' ||
+    meleeState.secondPlayerAttackApplyState !== 'pending'
   ) {
     throw new Error('Attack apply states already exist');
   }

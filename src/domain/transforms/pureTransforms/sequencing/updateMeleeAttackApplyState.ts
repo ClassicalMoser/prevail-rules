@@ -1,6 +1,10 @@
 import type { PlayerSide } from '@entities';
 import type { AttackApplyState, GameState } from '@game';
-import { getMeleeResolutionState, getResolveMeleePhaseState } from '@queries';
+import {
+  getMeleeResolutionState,
+  getResolveMeleePhaseState,
+  hasInitiative,
+} from '@queries';
 import { updatePhaseState } from '../state';
 
 /**
@@ -30,9 +34,9 @@ export function updateMeleeAttackApplyState<S extends GameState>(
 
   const newMeleeState = {
     ...meleeState,
-    ...(player === 'white'
-      ? { whiteAttackApplyState: attackApplyState }
-      : { blackAttackApplyState: attackApplyState }),
+    ...(hasInitiative(state, player)
+      ? { firstPlayerAttackApplyState: attackApplyState }
+      : { secondPlayerAttackApplyState: attackApplyState }),
   };
 
   const newPhaseState = {

@@ -38,7 +38,7 @@ export function generateCompleteAttackApplyEvent(
   if (phaseState.phase === 'resolveMelee') {
     const meleeState = getMeleeResolutionState(state);
     // Safe type broadening for more generic function signature
-    const defendingPlayer = findNextMeleeDefendingPlayer(state, meleeState);
+    const defendingPlayer = findNextMeleeDefendingPlayer(meleeState);
 
     if (defendingPlayer === undefined) {
       throw new Error(

@@ -69,8 +69,8 @@ describe('updateRoutState function', () => {
     const melee = createMeleeResolutionState(
       stateWithUnits,
       routingPlayer === 'white'
-        ? { whiteAttackApplyState: attackApply }
-        : { blackAttackApplyState: attackApply },
+        ? { secondPlayerAttackApplyState: attackApply }
+        : { firstPlayerAttackApplyState: attackApply },
     );
     return updatePhaseState(
       stateWithUnits,
@@ -176,7 +176,7 @@ describe('updateRoutState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const whiteApply = throwIfPending(
-      melee.whiteAttackApplyState,
+      melee.secondPlayerAttackApplyState,
       'white apply',
     );
     expect(
@@ -204,7 +204,7 @@ describe('updateRoutState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const blackApply = throwIfPending(
-      melee.blackAttackApplyState,
+      melee.firstPlayerAttackApplyState,
       'black apply',
     );
     expect(
@@ -343,8 +343,8 @@ describe('updateRoutState function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyStateWithRout(blackUnit),
-      whiteAttackApplyState: createAttackApplyState(whiteUnit),
+      firstPlayerAttackApplyState: createAttackApplyStateWithRout(blackUnit),
+      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
       state,
@@ -363,8 +363,8 @@ describe('updateRoutState function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const melee = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyState(blackUnit),
-      whiteAttackApplyState: createAttackApplyStateWithRout(whiteUnit),
+      firstPlayerAttackApplyState: createAttackApplyState(blackUnit),
+      secondPlayerAttackApplyState: createAttackApplyStateWithRout(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
       state,

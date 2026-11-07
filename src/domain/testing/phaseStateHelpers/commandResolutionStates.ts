@@ -5,6 +5,7 @@ import type {
   MovementResolutionState,
   RangedAttackResolutionState,
 } from '@game';
+import { getOtherPlayer } from '@queries';
 import { createTestCard } from '../testHelpers/cardHelpers';
 import { createTestUnit } from '@testing/unitHelpers';
 
@@ -77,13 +78,17 @@ export function createMeleeResolutionState(
   overrides?: Partial<MeleeResolutionState>,
 ): MeleeResolutionState {
   return {
-    blackAttackApplyState: 'pending',
-    blackCommitment: completedCommitment(state.cardState.black.inPlay),
     completed: false,
+    firstPlayerAttackApplyState: 'pending',
+    firstPlayerCommitment: completedCommitment(
+      state.cardState[state.currentInitiative].inPlay,
+    ),
     location: 'E-5',
+    secondPlayerAttackApplyState: 'pending',
+    secondPlayerCommitment: completedCommitment(
+      state.cardState[getOtherPlayer(state.currentInitiative)].inPlay,
+    ),
     substepType: 'meleeResolution' as const,
-    whiteAttackApplyState: 'pending',
-    whiteCommitment: completedCommitment(state.cardState.white.inPlay),
     ...overrides,
   };
 }

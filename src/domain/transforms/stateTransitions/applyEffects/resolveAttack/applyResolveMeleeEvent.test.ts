@@ -78,8 +78,14 @@ describe('applyResolveMeleeEvent function', () => {
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
-    const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
-    const blackApply = throwIfPending(melee.blackAttackApplyState, 'apply');
+    const whiteApply = throwIfPending(
+      melee.secondPlayerAttackApplyState,
+      'apply',
+    );
+    const blackApply = throwIfPending(
+      melee.firstPlayerAttackApplyState,
+      'apply',
+    );
     // A miss still needs completeAttackApply to close the shell.
     expect(whiteApply.completed).toBe(false);
     expect(whiteApply.routState).toBe('bypassed');
@@ -101,8 +107,14 @@ describe('applyResolveMeleeEvent function', () => {
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
-    const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
-    const blackApply = throwIfPending(melee.blackAttackApplyState, 'apply');
+    const whiteApply = throwIfPending(
+      melee.secondPlayerAttackApplyState,
+      'apply',
+    );
+    const blackApply = throwIfPending(
+      melee.firstPlayerAttackApplyState,
+      'apply',
+    );
     expect(whiteApply.reverseState).toBe('pending');
     expect(whiteApply.retreatState).toBe('bypassed');
     expect(whiteApply.routState).toBe('bypassed');
@@ -121,8 +133,14 @@ describe('applyResolveMeleeEvent function', () => {
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
-    const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
-    const blackApply = throwIfPending(melee.blackAttackApplyState, 'apply');
+    const whiteApply = throwIfPending(
+      melee.secondPlayerAttackApplyState,
+      'apply',
+    );
+    const blackApply = throwIfPending(
+      melee.firstPlayerAttackApplyState,
+      'apply',
+    );
     // A rout supersedes retreat and reverse even if those thresholds also fell.
     expect(whiteApply.routState).toBe('pending');
     expect(whiteApply.retreatState).toBe('bypassed');
@@ -142,7 +160,10 @@ describe('applyResolveMeleeEvent function', () => {
 
     const next = applyResolveMeleeEvent(event, full);
     const melee = getMeleeResolutionState(next);
-    const whiteApply = throwIfPending(melee.whiteAttackApplyState, 'apply');
+    const whiteApply = throwIfPending(
+      melee.secondPlayerAttackApplyState,
+      'apply',
+    );
     // Legal options are not recorded here — the retreat opener computes them.
     expect(whiteApply.retreatState).toBe('pending');
     expect(whiteApply.routState).toBe('bypassed');

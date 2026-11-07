@@ -62,7 +62,7 @@ describe('generateResolveMeleeEvent function', () => {
     expect(event.blackUnitRetreated).toBe(false);
   });
 
-  it('given melee CRS with white commitment pending, throws white commitment guard', () => {
+  it('given melee CRS with a second player commitment pending, throws that guard', () => {
     const state = createEmptyGameState('standard');
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
@@ -71,14 +71,14 @@ describe('generateResolveMeleeEvent function', () => {
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
     const melee = createMeleeResolutionState(s, {
-      whiteCommitment: { commitmentType: 'pending' },
+      secondPlayerCommitment: { commitmentType: 'pending' },
     });
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,
     });
     const full = updatePhaseState(s, phase);
     expect(() => generateResolveMeleeEvent(full, 0)).toThrow(
-      'White commitment is still pending',
+      'Second player commitment is still pending',
     );
   });
 

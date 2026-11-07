@@ -28,13 +28,13 @@ export function applyChooseMeleeEvent<S extends GameState>(
 
   // Create a new melee resolution state for the space chosen
   const newMeleeResolutionState: MeleeResolutionState = {
-    blackAttackApplyState: 'pending',
-    blackCommitment: { commitmentType: 'pending' as const },
     completed: false,
+    firstPlayerAttackApplyState: 'pending',
+    firstPlayerCommitment: { commitmentType: 'pending' as const },
     location: space,
+    secondPlayerAttackApplyState: 'pending',
+    secondPlayerCommitment: { commitmentType: 'pending' as const },
     substepType: 'meleeResolution' as const,
-    whiteAttackApplyState: 'pending',
-    whiteCommitment: { commitmentType: 'pending' as const },
   };
 
   // Update the phase state with the two new values

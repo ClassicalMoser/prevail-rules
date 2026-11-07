@@ -1,5 +1,4 @@
 import type { GameState, RoutState } from '@game';
-import { getOtherPlayer } from '@queries/player';
 import { isOpenSubstep } from '../isOpenSubstep';
 import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/getMeleeResolutionState';
 
@@ -13,11 +12,8 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
  */
 export function getNextMeleeRoutState(state: GameState): RoutState {
   const meleeState = getMeleeResolutionState(state);
-  const firstPlayer = state.currentInitiative;
-  const secondPlayer = getOtherPlayer(firstPlayer);
-
-  const firstApply = meleeState[`${firstPlayer}AttackApplyState`];
-  const secondApply = meleeState[`${secondPlayer}AttackApplyState`];
+  const firstApply = meleeState.firstPlayerAttackApplyState;
+  const secondApply = meleeState.secondPlayerAttackApplyState;
 
   // An attack that reached no threshold leaves routState 'bypassed', so that
   // side has nothing to rout.

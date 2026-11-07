@@ -42,10 +42,10 @@ function pendingCommitPlayer<S extends GameState>(
   const firstPlayer = gameState.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 
-  if (meleeState[`${firstPlayer}Commitment`].commitmentType === 'pending') {
+  if (meleeState.firstPlayerCommitment.commitmentType === 'pending') {
     return firstPlayer;
   }
-  if (meleeState[`${secondPlayer}Commitment`].commitmentType === 'pending') {
+  if (meleeState.secondPlayerCommitment.commitmentType === 'pending') {
     return secondPlayer;
   }
   return null;

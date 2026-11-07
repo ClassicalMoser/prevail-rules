@@ -73,8 +73,8 @@ describe('generateCompleteAttackApplyEvent function', () => {
     });
 
     const meleeState = createMeleeResolutionState(stateWithUnits, {
-      blackAttackApplyState: blackAttackApply,
-      whiteAttackApplyState: whiteAttackApply,
+      firstPlayerAttackApplyState: blackAttackApply,
+      secondPlayerAttackApplyState: whiteAttackApply,
     });
     const phaseState = createResolveMeleePhaseState(stateWithUnits, {
       currentMeleeResolutionState: meleeState,

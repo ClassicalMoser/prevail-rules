@@ -6,6 +6,7 @@ import {
   getMeleeResolutionState,
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
+  hasInitiative,
   isOpenSubstep,
 } from '@queries';
 import { throwIfPending } from '@utils';
@@ -74,35 +75,25 @@ export function updateRetreatState<S extends GameState>(
     const melee = getMeleeResolutionState(state);
     const player = retreatState.retreatingUnit.unit.playerSide;
 
-    if (player === 'white') {
-      const whiteApply = throwIfPending(
-        melee.whiteAttackApplyState,
-        'No white attack apply state found',
-      );
-      if (!isOpenSubstep(whiteApply.retreatState)) {
-        throw new Error('No retreat state found in attack apply state');
-      }
-      return updatePhaseState(state, {
-        ...resolveMelee,
-        currentMeleeResolutionState: {
-          ...melee,
-          whiteAttackApplyState: { ...whiteApply, retreatState },
-        },
-      });
-    }
-
-    const blackApply = throwIfPending(
-      melee.blackAttackApplyState,
-      'No black attack apply state found',
+    // The slots are named for the order they resolve in, so the owner has to
+    // be placed in that order first.
+    const isFirstPlayer = hasInitiative(state, player);
+    const apply = throwIfPending(
+      isFirstPlayer
+        ? melee.firstPlayerAttackApplyState
+        : melee.secondPlayerAttackApplyState,
+      `No ${player} attack apply state found`,
     );
-    if (!isOpenSubstep(blackApply.retreatState)) {
+    if (!isOpenSubstep(apply.retreatState)) {
       throw new Error('No retreat state found in attack apply state');
     }
     return updatePhaseState(state, {
       ...resolveMelee,
       currentMeleeResolutionState: {
         ...melee,
-        blackAttackApplyState: { ...blackApply, retreatState },
+        ...(isFirstPlayer
+          ? { firstPlayerAttackApplyState: { ...apply, retreatState } }
+          : { secondPlayerAttackApplyState: { ...apply, retreatState } }),
       },
     });
   }

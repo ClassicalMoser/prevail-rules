@@ -85,12 +85,12 @@ describe('applyResolveReverseEvent function', () => {
       stateWithUnit,
       reversingPlayer === 'white'
         ? {
-            blackAttackApplyState: opponentAttackApplyState,
-            whiteAttackApplyState: reversingAttackApplyState,
+            firstPlayerAttackApplyState: opponentAttackApplyState,
+            secondPlayerAttackApplyState: reversingAttackApplyState,
           }
         : {
-            blackAttackApplyState: reversingAttackApplyState,
-            whiteAttackApplyState: opponentAttackApplyState,
+            firstPlayerAttackApplyState: reversingAttackApplyState,
+            secondPlayerAttackApplyState: opponentAttackApplyState,
           },
     );
     const phaseState = createResolveMeleePhaseState(stateWithUnit, {

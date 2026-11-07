@@ -32,10 +32,10 @@ describe('findRoutOwingDiscard function', () => {
     });
     const owed = createRoutState('black', blackUnit, { numberToDiscard: 2 });
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyStateWithRout(blackUnit, {
+      secondPlayerAttackApplyState: createAttackApplyStateWithRout(blackUnit, {
         routState: owed,
       }),
-      whiteAttackApplyState: paid,
+      firstPlayerAttackApplyState: paid,
     });
     const state = updatePhaseState(
       empty,
@@ -49,10 +49,13 @@ describe('findRoutOwingDiscard function', () => {
 
   it('answers undefined while the penalty is still unknown', () => {
     // `resolveRout` has not run, so there is no count to discard against yet.
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const unit = createTestUnit('white', { attack: 2 });
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: createAttackApplyStateWithRout(unit, {
+      firstPlayerAttackApplyState: createAttackApplyStateWithRout(unit, {
         routState: createRoutState('white', unit),
       }),
     });

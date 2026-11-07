@@ -50,7 +50,7 @@ describe('getNextMeleeRetreatStateAwaitingMove function', () => {
       finalPosition: finalPlacement,
     });
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: createAttackApplyStateWithRetreat(white, {
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white, {
         retreatState: retreat,
       }),
     });
@@ -67,10 +67,10 @@ describe('getNextMeleeRetreatStateAwaitingMove function', () => {
       finalPosition: finalPlacement,
     });
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyStateWithRetreat(black, {
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white),
+      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(black, {
         retreatState: retreat,
       }),
-      whiteAttackApplyState: createAttackApplyStateWithRetreat(white),
     });
     const state = resolveMelee(melee, 'white');
 
@@ -82,8 +82,8 @@ describe('getNextMeleeRetreatStateAwaitingMove function', () => {
     const white = placed('white', 'north');
     const black = placed('black', 'south');
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyStateWithRetreat(black),
-      whiteAttackApplyState: createAttackApplyStateWithRetreat(white),
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white),
+      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(black),
     });
     const state = resolveMelee(melee, 'white');
 
@@ -92,14 +92,16 @@ describe('getNextMeleeRetreatStateAwaitingMove function', () => {
     );
   });
 
-  it('returns the black retreat when black has initiative and that final placement is set', () => {
+  it('answers about the first player whichever colour that is', () => {
+    // The slot carries the order, so black holding the initiative is read the
+    // same way white holding it is.
     const empty = createEmptyGameState('standard');
     const black = placed('black', 'south');
     const retreat = createRetreatState(black, {
       finalPosition: finalPlacement,
     });
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyStateWithRetreat(black, {
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(black, {
         retreatState: retreat,
       }),
     });

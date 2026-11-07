@@ -7,6 +7,7 @@ import type {
   RoutState,
 } from '@game';
 import { isNone, isPending } from '@utils';
+import { hasInitiative } from '@queries/player';
 import { isOpenSubstep } from '../isOpenSubstep';
 
 /** A rout slot, as a parent holds it before and after the substep opens. */
@@ -142,9 +143,11 @@ function routInCurrentContext(
     if (isPending(melee)) {
       return undefined;
     }
-    // Melee holds one apply per side, so the player names the side. Both sides
-    // strike at once, so both can be routing.
-    const sideApply = melee[`${player}AttackApplyState`];
+    // Both sides strike at once, so both can be routing. The slots are named
+    // for the order they resolve in, so the owner is placed in that order.
+    const sideApply = hasInitiative(state, player)
+      ? melee.firstPlayerAttackApplyState
+      : melee.secondPlayerAttackApplyState;
     if (isPending(sideApply)) {
       return undefined;
     }

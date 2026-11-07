@@ -29,7 +29,7 @@ describe('getMeleeRoutState function', () => {
     // A melee holds one apply per side, so the player argument picks the side.
     const rout = createRoutState('white', defender);
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: createAttackApplyStateWithRout(defender, {
+      secondPlayerAttackApplyState: createAttackApplyStateWithRout(defender, {
         routState: rout,
       }),
     });
@@ -41,7 +41,7 @@ describe('getMeleeRoutState function', () => {
   it('throws when that side has not opened its attack apply', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: 'pending',
+      secondPlayerAttackApplyState: 'pending',
     });
     const state = resolveMelee(melee);
 
@@ -55,7 +55,7 @@ describe('getMeleeRoutState function', () => {
     const defender = createTestUnit('white', { attack: 2 });
     // The attack reached nothing, so every outcome on it is bypassed.
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: createAttackApplyState(defender),
+      secondPlayerAttackApplyState: createAttackApplyState(defender),
     });
     const state = resolveMelee(melee);
 

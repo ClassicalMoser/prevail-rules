@@ -1,6 +1,6 @@
 import type { CommitToMeleeEvent } from '@events';
 import type { GameState } from '@game';
-import { getMeleeResolutionState } from '@queries';
+import { getMeleeResolutionState, hasInitiative } from '@queries';
 import { updateMeleeResolutionState } from '@transforms/pureTransforms';
 
 import {
@@ -31,9 +31,9 @@ export function applyCommitToMeleeEvent<S extends GameState>(
   const newCommitment = commitmentFromCommittedCard(event.committedCard);
   const newMeleeState = {
     ...meleeState,
-    ...(player === 'white'
-      ? { whiteCommitment: newCommitment }
-      : { blackCommitment: newCommitment }),
+    ...(hasInitiative(state, player)
+      ? { firstPlayerCommitment: newCommitment }
+      : { secondPlayerCommitment: newCommitment }),
   };
 
   return updateMeleeResolutionState(stateWithCards, newMeleeState);

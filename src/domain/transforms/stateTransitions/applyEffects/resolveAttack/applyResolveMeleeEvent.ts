@@ -1,7 +1,11 @@
 import type { ResolveMeleeEvent } from '@events';
 import type { AttackResult, GameState } from '@game';
 import { createAttackApplyState } from '@factories';
-import { getMeleeResolutionState, getResolveMeleePhaseState } from '@queries';
+import {
+  getMeleeResolutionState,
+  getResolveMeleePhaseState,
+  hasInitiative,
+} from '@queries';
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 /**
@@ -44,10 +48,17 @@ export function applyResolveMeleeEvent<S extends GameState>(
     blackAttackResult,
   );
 
+  // The event records what happened to each side's unit; the slots are named
+  // for the order the applies resolve in, so each one is placed by its owner.
+  const whiteIsFirst = hasInitiative(state, 'white');
   const newMeleeState = {
     ...meleeState,
-    blackAttackApplyState,
-    whiteAttackApplyState,
+    firstPlayerAttackApplyState: whiteIsFirst
+      ? whiteAttackApplyState
+      : blackAttackApplyState,
+    secondPlayerAttackApplyState: whiteIsFirst
+      ? blackAttackApplyState
+      : whiteAttackApplyState,
   };
 
   const newPhaseState = {

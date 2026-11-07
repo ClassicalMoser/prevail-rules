@@ -8,6 +8,7 @@ import {
   getNextStepForResolveRally,
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
+  hasInitiative,
   isOpenSubstep,
 } from '@queries';
 import { throwIfPending } from '@utils';
@@ -92,35 +93,25 @@ export function updateRoutState<S extends GameState>(
     const melee = getMeleeResolutionState(state);
     const { player } = routState;
 
-    if (player === 'white') {
-      const whiteApply = throwIfPending(
-        melee.whiteAttackApplyState,
-        'No white attack apply state found',
-      );
-      if (!isOpenSubstep(whiteApply.routState)) {
-        throw new Error('No rout state found in attack apply state');
-      }
-      return updatePhaseState(state, {
-        ...resolveMelee,
-        currentMeleeResolutionState: {
-          ...melee,
-          whiteAttackApplyState: { ...whiteApply, routState },
-        },
-      });
-    }
-
-    const blackApply = throwIfPending(
-      melee.blackAttackApplyState,
-      'No black attack apply state found',
+    // The slots are named for the order they resolve in, so the owner has to
+    // be placed in that order first.
+    const isFirstPlayer = hasInitiative(state, player);
+    const apply = throwIfPending(
+      isFirstPlayer
+        ? melee.firstPlayerAttackApplyState
+        : melee.secondPlayerAttackApplyState,
+      `No ${player} attack apply state found`,
     );
-    if (!isOpenSubstep(blackApply.routState)) {
+    if (!isOpenSubstep(apply.routState)) {
       throw new Error('No rout state found in attack apply state');
     }
     return updatePhaseState(state, {
       ...resolveMelee,
       currentMeleeResolutionState: {
         ...melee,
-        blackAttackApplyState: { ...blackApply, routState },
+        ...(isFirstPlayer
+          ? { firstPlayerAttackApplyState: { ...apply, routState } }
+          : { secondPlayerAttackApplyState: { ...apply, routState } }),
       },
     });
   }

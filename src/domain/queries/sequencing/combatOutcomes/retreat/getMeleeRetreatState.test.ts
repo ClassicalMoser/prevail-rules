@@ -43,7 +43,7 @@ describe('getMeleeRetreatState function', () => {
     const white = placed('white', 'north');
     const retreat = createRetreatState(white);
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: createAttackApplyStateWithRetreat(white, {
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white, {
         retreatState: retreat,
       }),
     });
@@ -57,7 +57,7 @@ describe('getMeleeRetreatState function', () => {
     const black = placed('black', 'south');
     const retreat = createRetreatState(black);
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyStateWithRetreat(black, {
+      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat(black, {
         retreatState: retreat,
       }),
     });
@@ -69,7 +69,7 @@ describe('getMeleeRetreatState function', () => {
   it('throws when the white attack apply is still pending', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: 'pending',
+      firstPlayerAttackApplyState: 'pending',
     });
     const state = resolveMelee(melee);
 

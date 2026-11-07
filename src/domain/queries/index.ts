@@ -72,6 +72,7 @@ export { getLinesFromUnit } from './line';
 
 // The other seat.
 export { getOtherPlayer } from './player';
+export { hasInitiative } from './player';
 
 // Where the turn is, and the substep currently in progress.
 export {

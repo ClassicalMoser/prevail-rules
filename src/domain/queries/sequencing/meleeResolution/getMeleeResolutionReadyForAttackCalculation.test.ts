@@ -21,10 +21,10 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
     expect(getMeleeResolutionReadyForAttackCalculation(state)).toBe(melee);
   });
 
-  it('throws when the white commitment is still pending', () => {
+  it('throws when the second player commitment is still pending', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      whiteCommitment: { commitmentType: 'pending' },
+      secondPlayerCommitment: { commitmentType: 'pending' },
     });
     const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,
@@ -32,14 +32,14 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
     const state = updatePhaseState(empty, phase);
 
     expect(() => getMeleeResolutionReadyForAttackCalculation(state)).toThrow(
-      'White commitment is still pending',
+      'Second player commitment is still pending',
     );
   });
 
-  it('throws when the black commitment is still pending', () => {
+  it('throws when the first player commitment is still pending', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      blackCommitment: { commitmentType: 'pending' },
+      firstPlayerCommitment: { commitmentType: 'pending' },
     });
     const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,
@@ -47,14 +47,14 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
     const state = updatePhaseState(empty, phase);
 
     expect(() => getMeleeResolutionReadyForAttackCalculation(state)).toThrow(
-      'Black commitment is still pending',
+      'First player commitment is still pending',
     );
   });
 
   it('throws when the white attack apply already exists', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyState(
         createTestUnit('white', { attack: 2 }),
         { completed: true },
       ),
@@ -72,7 +72,7 @@ describe('getMeleeResolutionReadyForAttackCalculation function', () => {
   it('throws when the black attack apply already exists', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyState(
         createTestUnit('black', { attack: 2 }),
         { completed: true },
       ),

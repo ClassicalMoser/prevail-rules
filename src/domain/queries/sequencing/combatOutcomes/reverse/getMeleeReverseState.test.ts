@@ -29,7 +29,7 @@ describe('getMeleeReverseState function', () => {
     // A melee holds one apply per side, so the player argument picks the side.
     const reverse = createReverseState(defender);
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyStateWithReverse(defender, {
+      firstPlayerAttackApplyState: createAttackApplyStateWithReverse(defender, {
         reverseState: reverse,
       }),
     });
@@ -41,7 +41,7 @@ describe('getMeleeReverseState function', () => {
   it('throws when that side has not opened its attack apply', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: 'pending',
+      firstPlayerAttackApplyState: 'pending',
     });
     const state = resolveMelee(melee);
 
@@ -55,7 +55,7 @@ describe('getMeleeReverseState function', () => {
     const defender = createTestUnit('black', { attack: 2 });
     // The attack reached nothing, so every outcome on it is bypassed.
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyState(defender),
+      firstPlayerAttackApplyState: createAttackApplyState(defender),
     });
     const state = resolveMelee(melee);
 

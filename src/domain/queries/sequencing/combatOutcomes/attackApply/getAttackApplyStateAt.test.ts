@@ -40,7 +40,7 @@ describe('getAttackApplyStateAt function', () => {
     const blackApply = createAttackApplyState(blackDefender);
     // A melee holds an apply per side, so the location carries the side.
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: blackApply,
+      firstPlayerAttackApplyState: blackApply,
     });
     const state = updatePhaseState(
       empty,

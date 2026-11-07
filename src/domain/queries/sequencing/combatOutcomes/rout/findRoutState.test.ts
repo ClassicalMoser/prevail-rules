@@ -70,12 +70,18 @@ describe('findRoutState function', () => {
     const blackRout = createRoutState('black', blackDefender);
     const whiteRout = createRoutState('white', whiteDefender);
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyStateWithRout(blackDefender, {
-        routState: blackRout,
-      }),
-      whiteAttackApplyState: createAttackApplyStateWithRout(whiteDefender, {
-        routState: whiteRout,
-      }),
+      firstPlayerAttackApplyState: createAttackApplyStateWithRout(
+        blackDefender,
+        {
+          routState: blackRout,
+        },
+      ),
+      secondPlayerAttackApplyState: createAttackApplyStateWithRout(
+        whiteDefender,
+        {
+          routState: whiteRout,
+        },
+      ),
     });
     const state = updatePhaseState(
       empty,

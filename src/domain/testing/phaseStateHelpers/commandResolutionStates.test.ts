@@ -39,8 +39,8 @@ describe('createMeleeResolutionState function', () => {
     const resolution = createMeleeResolutionState(state);
     expect(resolution.substepType).toBe('meleeResolution');
     expect(resolution.location).toBe('E-5');
-    expect(resolution.whiteCommitment.commitmentType).toBe('completed');
-    expect(resolution.blackCommitment.commitmentType).toBe('completed');
+    expect(resolution.secondPlayerCommitment.commitmentType).toBe('completed');
+    expect(resolution.firstPlayerCommitment.commitmentType).toBe('completed');
     expect(resolution.completed).toBe(false);
   });
 });

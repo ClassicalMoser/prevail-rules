@@ -68,8 +68,8 @@ describe('generateResolveReverseEvent function', () => {
     const blackApply = createAttackApplyStateWithReverse(blackWp.unit);
 
     const melee = createMeleeResolutionState(s, {
-      blackAttackApplyState: blackApply,
-      whiteAttackApplyState: whiteApply,
+      secondPlayerAttackApplyState: blackApply,
+      firstPlayerAttackApplyState: whiteApply,
     });
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,

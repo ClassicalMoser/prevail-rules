@@ -12,22 +12,27 @@ import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 import { getNextMeleeRoutState } from './getNextMeleeRoutState';
 
 describe('getNextMeleeRoutState function', () => {
+  /**
+   * A melee holding the given routs. `firstPlayer` says which colour holds the
+   * initiative, so a test can show the answer follows the slot, not the colour.
+   */
   function meleeWithRouts(
-    initiative: 'white' | 'black',
-    routs: { white?: RoutState; black?: RoutState },
+    firstPlayer: 'white' | 'black',
+    routs: { first?: RoutState; second?: RoutState },
   ): GameState {
     const empty = updateCurrentInitiative(
       createEmptyGameState('standard'),
-      initiative,
+      firstPlayer,
     );
-    const whiteUnit = createTestUnit('white', { attack: 2 });
-    const blackUnit = createTestUnit('black', { attack: 2 });
+    const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
+    const firstUnit = createTestUnit(firstPlayer, { attack: 2 });
+    const secondUnit = createTestUnit(secondPlayer, { attack: 2 });
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyState(blackUnit, {
-        routState: routs.black ?? 'pending',
+      firstPlayerAttackApplyState: createAttackApplyState(firstUnit, {
+        routState: routs.first ?? 'pending',
       }),
-      whiteAttackApplyState: createAttackApplyState(whiteUnit, {
-        routState: routs.white ?? 'pending',
+      secondPlayerAttackApplyState: createAttackApplyState(secondUnit, {
+        routState: routs.second ?? 'pending',
       }),
     });
     const phase = createResolveMeleePhaseState(empty, {
@@ -42,7 +47,7 @@ describe('getNextMeleeRoutState function', () => {
       createTestUnit('black', { attack: 2 }),
       { numberToDiscard: 1 },
     );
-    const state = meleeWithRouts('black', { black: rout });
+    const state = meleeWithRouts('black', { first: rout });
 
     expect(getNextMeleeRoutState(state)).toBe(rout);
   });
@@ -53,7 +58,7 @@ describe('getNextMeleeRoutState function', () => {
       createTestUnit('white', { attack: 2 }),
       { numberToDiscard: 1 },
     );
-    const state = meleeWithRouts('black', { white: rout });
+    const state = meleeWithRouts('black', { second: rout });
 
     expect(getNextMeleeRoutState(state)).toBe(rout);
   });

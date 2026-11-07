@@ -65,9 +65,10 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     const attackApply = createAttackApplyStateWithRetreat(retreatingWp);
     const melee = createMeleeResolutionState(
       s,
+      // Black holds the initiative by default here, so black resolves first.
       retreatingPlayer === 'white'
-        ? { whiteAttackApplyState: attackApply }
-        : { blackAttackApplyState: attackApply },
+        ? { secondPlayerAttackApplyState: attackApply }
+        : { firstPlayerAttackApplyState: attackApply },
     );
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,
@@ -106,7 +107,7 @@ describe('generateTriggerRoutFromRetreatEvent function', () => {
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
     const attackApply = createAttackApplyStateWithRetreat(whiteWp);
     const melee = createMeleeResolutionState(s, {
-      whiteAttackApplyState: attackApply,
+      firstPlayerAttackApplyState: attackApply,
     });
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,

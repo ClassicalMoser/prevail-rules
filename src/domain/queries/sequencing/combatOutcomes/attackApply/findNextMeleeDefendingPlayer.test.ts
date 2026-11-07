@@ -15,17 +15,17 @@ describe('findNextMeleeDefendingPlayer function', () => {
       'white',
     );
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyState(
         createTestUnit('black', { attack: 2 }),
         { completed: true },
       ),
-      whiteAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyState(
         createTestUnit('white', { attack: 2 }),
         { completed: false },
       ),
     });
 
-    expect(findNextMeleeDefendingPlayer(empty, melee)).toBe('white');
+    expect(findNextMeleeDefendingPlayer(melee)).toBe('white');
   });
 
   it('returns the second player when the first apply is complete', () => {
@@ -34,17 +34,17 @@ describe('findNextMeleeDefendingPlayer function', () => {
       'white',
     );
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyState(
         createTestUnit('black', { attack: 2 }),
         { completed: false },
       ),
-      whiteAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyState(
         createTestUnit('white', { attack: 2 }),
         { completed: true },
       ),
     });
 
-    expect(findNextMeleeDefendingPlayer(empty, melee)).toBe('black');
+    expect(findNextMeleeDefendingPlayer(melee)).toBe('black');
   });
 
   it('returns undefined when both applies are complete', () => {
@@ -53,28 +53,31 @@ describe('findNextMeleeDefendingPlayer function', () => {
       'white',
     );
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyState(
         createTestUnit('black', { attack: 2 }),
         { completed: true },
       ),
-      whiteAttackApplyState: createAttackApplyState(
+      firstPlayerAttackApplyState: createAttackApplyState(
         createTestUnit('white', { attack: 2 }),
         { completed: true },
       ),
     });
 
-    expect(findNextMeleeDefendingPlayer(empty, melee)).toBeUndefined();
+    expect(findNextMeleeDefendingPlayer(melee)).toBeUndefined();
   });
 
   it('returns undefined when an apply is still pending', () => {
-    const empty = createEmptyGameState('standard');
+    const empty = updateCurrentInitiative(
+      createEmptyGameState('standard'),
+      'white',
+    );
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyState(
+      secondPlayerAttackApplyState: createAttackApplyState(
         createTestUnit('black', { attack: 2 }),
       ),
-      whiteAttackApplyState: 'pending',
+      firstPlayerAttackApplyState: 'pending',
     });
 
-    expect(findNextMeleeDefendingPlayer(empty, melee)).toBeUndefined();
+    expect(findNextMeleeDefendingPlayer(melee)).toBeUndefined();
   });
 });

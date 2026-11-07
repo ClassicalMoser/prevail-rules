@@ -19,8 +19,8 @@ describe('updateMeleeAttackApplyState function', () => {
     const whiteUnit = createTestUnit('white', { attack: 2 });
     const blackUnit = createTestUnit('black', { attack: 2 });
     const meleeState = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyState(blackUnit),
-      whiteAttackApplyState: createAttackApplyState(whiteUnit),
+      firstPlayerAttackApplyState: createAttackApplyState(blackUnit),
+      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit),
     });
     const phaseState = createResolveMeleePhaseState(state, {
       currentMeleeResolutionState: meleeState,
@@ -45,11 +45,11 @@ describe('updateMeleeAttackApplyState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const whiteApply = throwIfPending(
-      melee.whiteAttackApplyState,
+      melee.secondPlayerAttackApplyState,
       'white apply',
     );
     const blackApply = throwIfPending(
-      melee.blackAttackApplyState,
+      melee.firstPlayerAttackApplyState,
       'black apply',
     );
     expect(whiteApply.completed).toBe(true);
@@ -73,11 +73,11 @@ describe('updateMeleeAttackApplyState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const blackApply = throwIfPending(
-      melee.blackAttackApplyState,
+      melee.firstPlayerAttackApplyState,
       'black apply',
     );
     const whiteApply = throwIfPending(
-      melee.whiteAttackApplyState,
+      melee.secondPlayerAttackApplyState,
       'white apply',
     );
     expect(blackApply.completed).toBe(true);
@@ -95,7 +95,7 @@ describe('updateMeleeAttackApplyState function', () => {
       origPhase.phase === 'resolveMelee'
         ? throwIfPending(
             throwIfPending(origPhase.currentMeleeResolutionState, 'melee')
-              .whiteAttackApplyState,
+              .secondPlayerAttackApplyState,
             'white apply',
           ).completed
         : undefined;
@@ -114,7 +114,7 @@ describe('updateMeleeAttackApplyState function', () => {
       checkPhase.phase === 'resolveMelee'
         ? throwIfPending(
             throwIfPending(checkPhase.currentMeleeResolutionState, 'melee')
-              .whiteAttackApplyState,
+              .secondPlayerAttackApplyState,
             'white apply',
           ).completed
         : undefined;

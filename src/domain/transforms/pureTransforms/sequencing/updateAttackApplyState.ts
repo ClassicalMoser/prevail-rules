@@ -5,6 +5,7 @@ import {
   getMeleeResolutionState,
   getRangedAttackResolutionState,
   getResolveMeleePhaseState,
+  hasInitiative,
 } from '@queries';
 import { updatePhaseState } from '../state';
 
@@ -44,21 +45,15 @@ export function updateAttackApplyState<S extends GameState>(
     const melee = getMeleeResolutionState(state);
     const player = attackApplyState.defendingUnit.playerSide;
 
-    if (player === 'white') {
-      return updatePhaseState(state, {
-        ...resolveMelee,
-        currentMeleeResolutionState: {
-          ...melee,
-          whiteAttackApplyState: attackApplyState,
-        },
-      });
-    }
-
+    // The slots are named for the order they resolve in, so the owner has to
+    // be placed in that order first.
     return updatePhaseState(state, {
       ...resolveMelee,
       currentMeleeResolutionState: {
         ...melee,
-        blackAttackApplyState: attackApplyState,
+        ...(hasInitiative(state, player)
+          ? { firstPlayerAttackApplyState: attackApplyState }
+          : { secondPlayerAttackApplyState: attackApplyState }),
       },
     });
   }

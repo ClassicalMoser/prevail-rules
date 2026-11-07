@@ -82,7 +82,7 @@ describe('findRetreatState function', () => {
     const white = placed('white', 'north');
     const retreat = createRetreatState(white);
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: createAttackApplyStateWithRetreat(white, {
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat(white, {
         retreatState: retreat,
       }),
     });

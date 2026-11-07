@@ -7,6 +7,7 @@ import {
   getMeleeResolutionReadyForAttackCalculation,
   getMeleeSupportValue,
   getPlayerUnitWithPosition,
+  hasInitiative,
   modifiersFromCompletedCommitment,
 } from '@queries';
 /**
@@ -47,8 +48,13 @@ export function generateResolveMeleeEvent(
   if (!whiteUnit || !blackUnit) {
     throw new Error('Units not found on board');
   }
+  // Commitments sit in the order the applies resolve in, so each side's own
+  // commitment is found by asking who is first.
+  const whiteIsFirst = hasInitiative(state, 'white');
   const whiteCommitmentModifiers = modifiersFromCompletedCommitment(
-    meleeState.whiteCommitment,
+    whiteIsFirst
+      ? meleeState.firstPlayerCommitment
+      : meleeState.secondPlayerCommitment,
   );
 
   const whiteAttackValue = getCurrentUnitStat(
@@ -63,7 +69,9 @@ export function generateResolveMeleeEvent(
   const totalWhiteAttackValue = whiteAttackValue + whiteSupportValue;
 
   const blackCommitmentModifiers = modifiersFromCompletedCommitment(
-    meleeState.blackCommitment,
+    whiteIsFirst
+      ? meleeState.secondPlayerCommitment
+      : meleeState.firstPlayerCommitment,
   );
 
   const blackAttackValue = getCurrentUnitStat(

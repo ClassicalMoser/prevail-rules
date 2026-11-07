@@ -92,8 +92,8 @@ describe('applyChooseRetreatOptionEvent function', () => {
     const melee = createMeleeResolutionState(
       stateWithUnits,
       retreatingPlayer === 'white'
-        ? { whiteAttackApplyState: attackApply }
-        : { blackAttackApplyState: attackApply },
+        ? { secondPlayerAttackApplyState: attackApply }
+        : { firstPlayerAttackApplyState: attackApply },
     );
     return updatePhaseState(
       stateWithUnits,

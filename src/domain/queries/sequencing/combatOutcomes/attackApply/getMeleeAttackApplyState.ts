@@ -1,5 +1,6 @@
 import type { AttackApplyState, GameState } from '@game';
 import { throwIfPending } from '@utils';
+import { hasInitiative } from '@queries/player';
 import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/getMeleeResolutionState';
 
 /**
@@ -17,11 +18,11 @@ export function getMeleeAttackApplyState(
   player: 'white' | 'black',
 ): AttackApplyState {
   const meleeState = getMeleeResolutionState(state);
-  // Each side has its own attack-apply slot on the melee.
-  const attackApplyState =
-    player === 'white'
-      ? meleeState.whiteAttackApplyState
-      : meleeState.blackAttackApplyState;
+  // The slots are named for the order they resolve in, so the owner has to be
+  // placed in that order first.
+  const attackApplyState = hasInitiative(state, player)
+    ? meleeState.firstPlayerAttackApplyState
+    : meleeState.secondPlayerAttackApplyState;
   const opened = throwIfPending(
     attackApplyState,
     `No ${player} attack apply state found in melee resolution`,

@@ -1,5 +1,6 @@
 import type { GameState, RetreatState } from '@game';
 import { isNone, isPending } from '@utils';
+import { hasInitiative } from '@queries/player';
 import { isFriendlyUnit } from '@queries/unit';
 import { isOpenSubstep } from '../isOpenSubstep';
 
@@ -77,8 +78,11 @@ export function findRetreatState(
     if (isPending(melee)) {
       return undefined;
     }
-    // Melee holds one apply per side, so the player names the side.
-    const sideApply = melee[`${player}AttackApplyState`];
+    // The slots are named for the order they resolve in, so the owner has to
+    // be placed in that order first.
+    const sideApply = hasInitiative(state, player)
+      ? melee.firstPlayerAttackApplyState
+      : melee.secondPlayerAttackApplyState;
     if (isPending(sideApply)) {
       return undefined;
     }

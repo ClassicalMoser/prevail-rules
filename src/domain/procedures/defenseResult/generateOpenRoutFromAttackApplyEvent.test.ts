@@ -69,12 +69,10 @@ describe('generateOpenRoutFromAttackApplyEvent function', () => {
       unitReversed: true,
       unitRouted: true,
     });
-    const melee = createMeleeResolutionState(
-      s,
-      defendingPlayer === 'white'
-        ? { whiteAttackApplyState: attackApply }
-        : { blackAttackApplyState: attackApply },
-    );
+    // The defender was given the initiative above, so its apply resolves first.
+    const melee = createMeleeResolutionState(s, {
+      firstPlayerAttackApplyState: attackApply,
+    });
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,
     });

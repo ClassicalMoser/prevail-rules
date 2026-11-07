@@ -1,25 +1,22 @@
 import type { PlayerSide } from '@entities';
-import type { GameState, MeleeResolutionState } from '@game';
-import { getOtherPlayer } from '@queries/player';
+import type { MeleeResolutionState } from '@game';
 
 /**
- * The defending player side for the next incomplete melee attack-apply substep,
- * in initiative order (matches `getExpectedMeleeResolutionEvent` when both apply states exist).
+ * The player whose unit is defending in the next incomplete melee attack-apply
+ * substep, in the order the slots are named in.
  *
+ * The slots carry the order and each apply carries its own defender, so this
+ * needs no game state and no initiative lookup.
+ *
+ * @param meleeState - The melee resolution being sequenced
  * @returns `undefined` if either attack-apply state is missing, or both are
  * already complete
  */
 export function findNextMeleeDefendingPlayer(
-  gameState: GameState,
   meleeState: MeleeResolutionState,
 ): PlayerSide | undefined {
-  const firstPlayer = gameState.currentInitiative;
-  const secondPlayer = getOtherPlayer(firstPlayer);
-
-  const firstPlayerAttackApplyState =
-    meleeState[`${firstPlayer}AttackApplyState`];
-  const secondPlayerAttackApplyState =
-    meleeState[`${secondPlayer}AttackApplyState`];
+  const { firstPlayerAttackApplyState, secondPlayerAttackApplyState } =
+    meleeState;
 
   // Initiative order only applies once both applies have been opened.
   if (
@@ -30,11 +27,11 @@ export function findNextMeleeDefendingPlayer(
   }
 
   if (!firstPlayerAttackApplyState.completed) {
-    return firstPlayer;
+    return firstPlayerAttackApplyState.defendingUnit.playerSide;
   }
 
   if (!secondPlayerAttackApplyState.completed) {
-    return secondPlayer;
+    return secondPlayerAttackApplyState.defendingUnit.playerSide;
   }
 
   // Both applies are finished.

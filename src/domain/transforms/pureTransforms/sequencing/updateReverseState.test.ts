@@ -67,8 +67,8 @@ describe('updateReverseState function', () => {
     const melee = createMeleeResolutionState(
       stateWithUnits,
       reversingPlayer === 'white'
-        ? { whiteAttackApplyState: attackApply }
-        : { blackAttackApplyState: attackApply },
+        ? { secondPlayerAttackApplyState: attackApply }
+        : { firstPlayerAttackApplyState: attackApply },
     );
     return updatePhaseState(
       stateWithUnits,
@@ -137,7 +137,7 @@ describe('updateReverseState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const whiteApply = throwIfPending(
-      melee.whiteAttackApplyState,
+      melee.secondPlayerAttackApplyState,
       'white apply',
     );
     expect(
@@ -166,7 +166,7 @@ describe('updateReverseState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const blackApply = throwIfPending(
-      melee.blackAttackApplyState,
+      melee.firstPlayerAttackApplyState,
       'black apply',
     );
     expect(
@@ -229,10 +229,10 @@ describe('updateReverseState function', () => {
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
     const melee = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyStateWithReverse(
+      firstPlayerAttackApplyState: createAttackApplyStateWithReverse(
         blackPlacement.unit,
       ),
-      whiteAttackApplyState: createAttackApplyState(whiteUnit),
+      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
       state,
@@ -253,8 +253,8 @@ describe('updateReverseState function', () => {
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
     const melee = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyState(blackUnit),
-      whiteAttackApplyState: createAttackApplyStateWithReverse(
+      firstPlayerAttackApplyState: createAttackApplyState(blackUnit),
+      secondPlayerAttackApplyState: createAttackApplyStateWithReverse(
         whitePlacement.unit,
       ),
     });

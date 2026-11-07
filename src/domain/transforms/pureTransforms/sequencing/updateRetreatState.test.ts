@@ -69,8 +69,8 @@ describe('updateRetreatState function', () => {
     const melee = createMeleeResolutionState(
       stateWithUnits,
       retreatingPlayer === 'white'
-        ? { whiteAttackApplyState: attackApply }
-        : { blackAttackApplyState: attackApply },
+        ? { secondPlayerAttackApplyState: attackApply }
+        : { firstPlayerAttackApplyState: attackApply },
     );
     return updatePhaseState(
       stateWithUnits,
@@ -133,7 +133,7 @@ describe('updateRetreatState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const whiteApply = throwIfPending(
-      melee.whiteAttackApplyState,
+      melee.secondPlayerAttackApplyState,
       'white apply',
     );
     expect(
@@ -162,7 +162,7 @@ describe('updateRetreatState function', () => {
     }
     const melee = throwIfPending(phase.currentMeleeResolutionState, 'melee');
     const blackApply = throwIfPending(
-      melee.blackAttackApplyState,
+      melee.firstPlayerAttackApplyState,
       'black apply',
     );
     expect(
@@ -260,11 +260,11 @@ describe('updateRetreatState function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
     const melee = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyStateWithRetreat({
+      firstPlayerAttackApplyState: createAttackApplyStateWithRetreat({
         placement: createUnitPlacement('E-5', 'south'),
         unit: blackUnit,
       }),
-      whiteAttackApplyState: createAttackApplyState(whiteUnit),
+      secondPlayerAttackApplyState: createAttackApplyState(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
       state,
@@ -284,8 +284,8 @@ describe('updateRetreatState function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
     const melee = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyState(blackUnit),
-      whiteAttackApplyState: createAttackApplyStateWithRetreat({
+      firstPlayerAttackApplyState: createAttackApplyState(blackUnit),
+      secondPlayerAttackApplyState: createAttackApplyStateWithRetreat({
         placement: createUnitPlacement('E-5', 'north'),
         unit: whiteUnit,
       }),

@@ -35,7 +35,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
   it('given their commitment is pending, asks the first player to commit', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      blackCommitment: { commitmentType: 'pending' },
+      firstPlayerCommitment: { commitmentType: 'pending' },
     });
 
     expect(
@@ -50,7 +50,7 @@ describe('getExpectedMeleeResolutionEvent function', () => {
   it('given their commitment is pending, asks the second player to commit', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      whiteCommitment: { commitmentType: 'pending' },
+      secondPlayerCommitment: { commitmentType: 'pending' },
     });
 
     expect(
@@ -65,8 +65,8 @@ describe('getExpectedMeleeResolutionEvent function', () => {
   it('given resolve melee when both commitments are complete and no attack apply state exists', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      blackAttackApplyState: 'pending' as const,
-      whiteAttackApplyState: 'pending' as const,
+      firstPlayerAttackApplyState: 'pending' as const,
+      secondPlayerAttackApplyState: 'pending' as const,
     });
 
     expect(
@@ -80,10 +80,15 @@ describe('getExpectedMeleeResolutionEvent function', () => {
   it('given delegate to the first player attack apply state when it is incomplete', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      blackAttackApplyState: createAttackApplyState(createTestUnit('white')),
-      whiteAttackApplyState: createAttackApplyState(createTestUnit('black'), {
-        completed: true,
-      }),
+      firstPlayerAttackApplyState: createAttackApplyState(
+        createTestUnit('white'),
+      ),
+      secondPlayerAttackApplyState: createAttackApplyState(
+        createTestUnit('black'),
+        {
+          completed: true,
+        },
+      ),
     });
     const expectedEvent = {
       actionType: 'gameEffect',
@@ -95,17 +100,22 @@ describe('getExpectedMeleeResolutionEvent function', () => {
       expectedEvent,
     );
     expect(getExpectedAttackApplyEventMock).toHaveBeenCalledWith(
-      meleeState.blackAttackApplyState,
+      meleeState.firstPlayerAttackApplyState,
     );
   });
 
   it('given delegate to the second player attack apply state when the first one is complete', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      blackAttackApplyState: createAttackApplyState(createTestUnit('white'), {
-        completed: true,
-      }),
-      whiteAttackApplyState: createAttackApplyState(createTestUnit('black')),
+      firstPlayerAttackApplyState: createAttackApplyState(
+        createTestUnit('white'),
+        {
+          completed: true,
+        },
+      ),
+      secondPlayerAttackApplyState: createAttackApplyState(
+        createTestUnit('black'),
+      ),
     });
     const expectedEvent = {
       actionType: 'gameEffect',
@@ -117,19 +127,25 @@ describe('getExpectedMeleeResolutionEvent function', () => {
       expectedEvent,
     );
     expect(getExpectedAttackApplyEventMock).toHaveBeenCalledWith(
-      meleeState.whiteAttackApplyState,
+      meleeState.secondPlayerAttackApplyState,
     );
   });
 
   it('given both attack apply states are complete, returns completeMeleeResolution', () => {
     const gameState = createGameState();
     const meleeState = createMeleeResolutionState(gameState, {
-      blackAttackApplyState: createAttackApplyState(createTestUnit('white'), {
-        completed: true,
-      }),
-      whiteAttackApplyState: createAttackApplyState(createTestUnit('black'), {
-        completed: true,
-      }),
+      firstPlayerAttackApplyState: createAttackApplyState(
+        createTestUnit('white'),
+        {
+          completed: true,
+        },
+      ),
+      secondPlayerAttackApplyState: createAttackApplyState(
+        createTestUnit('black'),
+        {
+          completed: true,
+        },
+      ),
     });
 
     expect(

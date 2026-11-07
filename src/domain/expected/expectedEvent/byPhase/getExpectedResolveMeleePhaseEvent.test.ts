@@ -38,7 +38,7 @@ describe('getExpectedResolveMeleePhaseEvent function', () => {
       'resolveMelee',
       (gameState) => ({
         currentMeleeResolutionState: createMeleeResolutionState(gameState, {
-          blackCommitment: {
+          firstPlayerCommitment: {
             commitmentType: 'pending' as const,
           },
         }),

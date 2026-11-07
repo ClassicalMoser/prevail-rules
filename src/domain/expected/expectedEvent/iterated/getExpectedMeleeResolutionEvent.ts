@@ -1,7 +1,6 @@
 import type { ExpectedEventInfo } from '@events';
 import type { GameState, MeleeResolutionState } from '@game';
-import { findNextMeleeDefendingPlayer, getOtherPlayer } from '@queries';
-import { throwIfPending } from '@utils';
+import { getOtherPlayer } from '@queries';
 import { getExpectedAttackApplyEvent } from '../composable';
 
 /**
@@ -25,13 +24,9 @@ export function getExpectedMeleeResolutionEvent(
   const firstPlayer = gameState.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 
-  // Get commitments and attack apply states based on initiative order
-  const firstPlayerCommitment = meleeState[`${firstPlayer}Commitment`];
-  const secondPlayerCommitment = meleeState[`${secondPlayer}Commitment`];
-  const firstPlayerAttackApplyState =
-    meleeState[`${firstPlayer}AttackApplyState`];
-  const secondPlayerAttackApplyState =
-    meleeState[`${secondPlayer}AttackApplyState`];
+  const { firstPlayerCommitment, secondPlayerCommitment } = meleeState;
+  const { firstPlayerAttackApplyState, secondPlayerAttackApplyState } =
+    meleeState;
 
   // Check first player's commitment
   if (firstPlayerCommitment.commitmentType === 'pending') {
@@ -63,18 +58,12 @@ export function getExpectedMeleeResolutionEvent(
     };
   }
 
-  // ResolveMelee has been applied (both attackApplyStates exist)
-  const nextDefendingPlayer = findNextMeleeDefendingPlayer(
-    gameState,
-    meleeState,
-  );
-  if (nextDefendingPlayer !== undefined) {
-    return getExpectedAttackApplyEvent(
-      throwIfPending(
-        meleeState[`${nextDefendingPlayer}AttackApplyState`],
-        `No ${nextDefendingPlayer} attack apply state found in melee resolution`,
-      ),
-    );
+  // Both applies exist, so they resolve in the order the slots are named in.
+  if (!firstPlayerAttackApplyState.completed) {
+    return getExpectedAttackApplyEvent(firstPlayerAttackApplyState);
+  }
+  if (!secondPlayerAttackApplyState.completed) {
+    return getExpectedAttackApplyEvent(secondPlayerAttackApplyState);
   }
 
   // Both attack apply states are complete, melee resolution should be complete

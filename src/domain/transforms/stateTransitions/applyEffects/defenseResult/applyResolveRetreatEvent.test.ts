@@ -89,8 +89,8 @@ describe('applyResolveRetreatEvent function', () => {
     const meleeState = createMeleeResolutionState(
       stateWithUnits,
       retreatingPlayer === 'white'
-        ? { whiteAttackApplyState: attackApplyState }
-        : { blackAttackApplyState: attackApplyState },
+        ? { secondPlayerAttackApplyState: attackApplyState }
+        : { firstPlayerAttackApplyState: attackApplyState },
     );
     const phaseState = createResolveMeleePhaseState(stateWithUnits, {
       currentMeleeResolutionState: meleeState,

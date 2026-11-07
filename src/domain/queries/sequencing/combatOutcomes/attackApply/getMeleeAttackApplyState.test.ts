@@ -6,7 +6,7 @@ import {
   createResolveMeleePhaseState,
   createTestUnit,
 } from '@testing';
-import { updatePhaseState } from '@transforms';
+import { updateCurrentInitiative, updatePhaseState } from '@transforms';
 
 import { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 
@@ -18,7 +18,7 @@ describe('getMeleeAttackApplyState function', () => {
       { completed: true },
     );
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: apply,
+      secondPlayerAttackApplyState: apply,
     });
     const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,
@@ -34,7 +34,7 @@ describe('getMeleeAttackApplyState function', () => {
       createTestUnit('black', { attack: 2 }),
     );
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: apply,
+      firstPlayerAttackApplyState: apply,
     });
     const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,
@@ -44,10 +44,47 @@ describe('getMeleeAttackApplyState function', () => {
     expect(getMeleeAttackApplyState(state, 'black')).toBe(apply);
   });
 
+  it.each(['white', 'black'] as const)(
+    'returns each side its own apply when %s holds the initiative',
+    (firstPlayer) => {
+      // The slots carry the order and the applies carry their owners, so the
+      // two must agree whichever colour is first. An inverted mapping would
+      // hand each side the other side's apply and still typecheck.
+      const empty = updateCurrentInitiative(
+        createEmptyGameState('standard'),
+        firstPlayer,
+      );
+      const secondPlayer = firstPlayer === 'white' ? 'black' : 'white';
+      const firstApply = createAttackApplyState(
+        createTestUnit(firstPlayer, { attack: 2 }),
+      );
+      const secondApply = createAttackApplyState(
+        createTestUnit(secondPlayer, { attack: 2 }),
+      );
+      const melee = createMeleeResolutionState(empty, {
+        firstPlayerAttackApplyState: firstApply,
+        secondPlayerAttackApplyState: secondApply,
+      });
+      const state = updatePhaseState(
+        empty,
+        createResolveMeleePhaseState(empty, {
+          currentMeleeResolutionState: melee,
+        }),
+      );
+
+      expect(
+        getMeleeAttackApplyState(state, firstPlayer).defendingUnit.playerSide,
+      ).toBe(firstPlayer);
+      expect(
+        getMeleeAttackApplyState(state, secondPlayer).defendingUnit.playerSide,
+      ).toBe(secondPlayer);
+    },
+  );
+
   it('throws when the white attack apply is still pending', () => {
     const empty = createEmptyGameState('standard');
     const melee = createMeleeResolutionState(empty, {
-      whiteAttackApplyState: 'pending',
+      secondPlayerAttackApplyState: 'pending',
     });
     const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,

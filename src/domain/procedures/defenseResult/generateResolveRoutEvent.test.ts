@@ -63,8 +63,8 @@ describe('generateResolveRoutEvent function', () => {
     const whiteApply = createAttackApplyStateWithRout(whiteUnit);
 
     const melee = createMeleeResolutionState(s, {
-      blackAttackApplyState: blackApply,
-      whiteAttackApplyState: whiteApply,
+      firstPlayerAttackApplyState: blackApply,
+      secondPlayerAttackApplyState: whiteApply,
     });
     const phase = createResolveMeleePhaseState(s, {
       currentMeleeResolutionState: melee,
