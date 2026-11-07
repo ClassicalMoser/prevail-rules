@@ -9,9 +9,9 @@ opens a closed box only by saying so here.
 
 **Last updated:** 2026-11-07
 
-**Restart.** `entities`, `game`, and `events` stay closed. Every other checked box is open again. The scout starts at `utils`.
+**Restart.** `entities`, `game`, and `events` stay closed. Every other checked box is open again. `utils` closed 2026-11-07; scout is at `ruleValues`.
 
-**Scout baseline (2026-11-07, before `utils`):** `pnpm test` 379 files / 1969 tests passed; `pnpm validate` clean.
+**Scout baseline (2026-11-07, before `ruleValues`):** `pnpm test` 379 files / 1993 tests passed; `pnpm validate` clean.
 
 ---
 
@@ -31,8 +31,8 @@ Audit in this order (dependencies flow downward):
 
 ### `utils/` (`@utils`)
 
-- [ ] `utils/` — scout complete 2026-11-07 (awaiting human read)
-  - [ ] Root modules (`assertExact`, `validationResult`, `stateSentinels`, `throwIfMissing`, `randomSource`)
+- [x] `utils/` — closed 2026-11-07 (composition mark left on `stateSentinels`)
+  - [x] Root modules (`assertExact`, `validationResult`, `stateSentinels`, `throwIfMissing`, `randomSource`)
 
 ### `entities/` (`@entities`)
 
@@ -75,7 +75,7 @@ Audit in this order (dependencies flow downward):
 
 ### `ruleValues/` (`@ruleValues`)
 
-- [ ] `ruleValues/`
+- [ ] `ruleValues/` — scout started 2026-11-07
   - [ ] Root modules (`ruleValues`, `traits`, `gameEffectTypes`, …)
 
 ### `sampleValues/` (`@sampleValues`)
@@ -88,7 +88,9 @@ Audit in this order (dependencies flow downward):
 - [ ] `factories/`
   - [ ] `board/`
   - [ ] `game/` — reopened: `createOwnedCardState` and `createCardState` arrived
-        after the read
+    ```
+    after the read
+    ```
   - [ ] `unit/`
   - [ ] `unitLocation/` — new: `createUnitPlacement`
 
@@ -254,7 +256,6 @@ read closes it.
 - `AssignUnitSupportEvent` documents one of its five fields. Every other player
   choice event documents all of them. `entities` and `events` are closed, so
   this is recorded rather than filled in.
-
 - `UnitPlacement` carries a `unit` prefix for a value that is a coordinate and a
   facing, with nothing unit-specific in it. Renaming the entity reaches every
   layer, so it is recorded rather than done.
@@ -295,6 +296,6 @@ Revisit in `legality/unitMovement`, `procedures/movement`, and the movement tran
 
 ## Stuck list
 
-Questions from the human read that did not resolve in time. See [`AUDIT_PROCESS.md`](../../AUDIT_PROCESS.md).
+Questions from the human read that did not resolve in time. See `[AUDIT_PROCESS.md](../../AUDIT_PROCESS.md)`.
 
 _None yet._
