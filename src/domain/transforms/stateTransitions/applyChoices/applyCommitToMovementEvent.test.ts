@@ -3,8 +3,8 @@ import {
   getFrontEngagementStateFromMovement,
   getMovementResolutionState,
 } from '@queries';
-import { tempCommandCards } from '@sampleValues';
 import {
+  tempCommandCards,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,

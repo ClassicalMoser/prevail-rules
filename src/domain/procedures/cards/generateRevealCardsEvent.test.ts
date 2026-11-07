@@ -1,6 +1,5 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
-import { updateCardState } from '@testing';
+import { tempCommandCards, updateCardState } from '@testing';
 import { updatePhaseState, updatePlayerCardState } from '@transforms';
 
 import { generateRevealCardsEvent } from './generateRevealCardsEvent';

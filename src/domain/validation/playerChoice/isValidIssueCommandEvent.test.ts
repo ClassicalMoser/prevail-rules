@@ -1,6 +1,6 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
+  tempCommandCards,
   createIssueCommandsPhaseState,
   createUnitWithPlacement,
   updateCardState,

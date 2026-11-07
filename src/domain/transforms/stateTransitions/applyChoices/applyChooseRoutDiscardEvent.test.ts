@@ -1,8 +1,8 @@
 import type { ChooseRoutDiscardEvent } from '@events';
 import { throwIfNone, throwIfPending } from '@utils';
 import { getIssueCommandsPhaseState } from '@queries';
-import { tempCommandCards } from '@sampleValues';
 import {
+  tempCommandCards,
   createCleanupPhaseState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,

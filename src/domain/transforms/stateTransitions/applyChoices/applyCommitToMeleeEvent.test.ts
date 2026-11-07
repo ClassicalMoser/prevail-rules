@@ -1,7 +1,7 @@
 import type { CommitToMeleeEvent } from '@events';
 import { getMeleeResolutionState } from '@queries';
-import { tempCommandCards } from '@sampleValues';
 import {
+  tempCommandCards,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   updateCardState,

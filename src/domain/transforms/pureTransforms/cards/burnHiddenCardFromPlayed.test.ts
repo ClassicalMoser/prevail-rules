@@ -1,5 +1,5 @@
 import type { HiddenCardState } from '@game';
-import { tempCommandCards } from '@sampleValues';
+import { tempCommandCards } from '@testing';
 
 import { burnHiddenCardFromPlayed } from './burnHiddenCardFromPlayed';
 

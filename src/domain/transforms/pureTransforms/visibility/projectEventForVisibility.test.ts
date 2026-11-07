@@ -1,5 +1,5 @@
 import type { ChooseCardEvent, RevealCardsEvent } from '@events';
-import { tempCommandCards } from '@sampleValues';
+import { tempCommandCards } from '@testing';
 
 import { projectEventForVisibility } from './projectEventForVisibility';
 

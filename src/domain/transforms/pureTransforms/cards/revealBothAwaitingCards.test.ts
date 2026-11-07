@@ -1,4 +1,4 @@
-import { tempCommandCards } from '@sampleValues';
+import { tempCommandCards } from '@testing';
 
 import { revealBothAwaitingCards } from './revealBothAwaitingCards';
 

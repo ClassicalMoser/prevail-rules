@@ -1,6 +1,6 @@
 import type { Army } from '@entities';
 import type { GameForVisibility } from '@game';
-import { tempCommandCards } from '@sampleValues';
+import { tempCommandCards } from '@testing';
 
 import { projectGameForVisibility } from './projectGameForVisibility';
 

@@ -171,7 +171,7 @@ describe('applyMoveUnitEvent function', () => {
       ...state.cardState,
       black: {
         ...state.cardState.black,
-        inPlay: createTestCard({ id: 'movement' }),
+        inPlay: createTestCard(),
       },
     });
     state = updateBoardState(

@@ -1,5 +1,5 @@
 import type { Event } from '@events';
-import { tempCommandCards } from '@sampleValues';
+import { tempCommandCards } from '@testing';
 
 import { applyEvent } from './applyEvent';
 import { applyGameEffectEvent } from './applyGameEffectEvent';

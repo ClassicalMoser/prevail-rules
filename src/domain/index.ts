@@ -597,12 +597,6 @@ export {
   traitSchema,
 } from '@ruleValues';
 export {
-  blackMiniStarterArmy,
-  tempCommandCards,
-  tempUnits,
-  whiteMiniStarterArmy,
-} from '@sampleValues';
-export {
   createEmptyGameState,
   createEmptyLargeBoard,
   createEmptySmallBoard,

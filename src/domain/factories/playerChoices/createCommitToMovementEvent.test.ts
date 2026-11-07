@@ -1,5 +1,5 @@
 import type { MovementModifier } from '@events';
-import { tempCommandCards } from '@sampleValues';
+import { tempCommandCards } from '@testing';
 
 import { createCommitToMovementEvent } from './createCommitToMovementEvent';
 

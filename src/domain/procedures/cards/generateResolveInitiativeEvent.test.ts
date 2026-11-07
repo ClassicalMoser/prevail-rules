@@ -2,8 +2,7 @@ import type { CommandCard } from '@entities';
 import type { GameState } from '@game';
 
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
-import { updateCardState } from '@testing';
+import { tempCommandCards, updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms';
 import { createEmptyGameState } from '@factories';
 

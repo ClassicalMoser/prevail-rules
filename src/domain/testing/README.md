@@ -9,6 +9,9 @@ A fixture does what a factory and a transform cannot. How a spec uses one is [`S
 - `testHelpers` — cards, `updateCardState`, and line coordinate readers
 - `phaseStateHelpers` — phase and substep shells
 - `bootstrapGameState` — a game far enough along to exercise a phase
+- `sampleCatalog` — re-exports of `@sampleValues` for specs that need a catalog entry
+
+Prefer `createTestCard` / `createTestUnit` when the test does not depend on a particular catalog entry. Specs do not import `@sampleValues` directly; only this layer does.
 
 `updateCardState` replaces the whole card state and is for fixtures only. A production write of one player's cards is `updatePlayerCardState` in `@transforms`.
 

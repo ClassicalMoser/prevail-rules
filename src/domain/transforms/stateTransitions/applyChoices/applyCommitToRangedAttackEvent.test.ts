@@ -1,6 +1,6 @@
 import { getRangedAttackResolutionState } from '@queries';
-import { tempCommandCards } from '@sampleValues';
 import {
+  tempCommandCards,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   updateCardState,

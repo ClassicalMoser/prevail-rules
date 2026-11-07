@@ -3,8 +3,7 @@ import type { GameState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getIssueCommandsPhaseState, isSameUnitInstance } from '@queries';
-import { tempCommandCards } from '@sampleValues';
-import { createTestUnit, updateCardState } from '@testing';
+import { tempCommandCards, createTestUnit, updateCardState } from '@testing';
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 

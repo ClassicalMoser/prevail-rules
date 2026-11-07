@@ -1,8 +1,9 @@
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
-import { equites, punicCitizenSpearmen } from '@sampleValues';
 import {
+  equites,
+  punicCitizenSpearmen,
   createMeleeResolutionState,
   createResolveMeleePhaseState,
   createTestUnit,

@@ -1,8 +1,7 @@
 import type { Event } from '@events';
 import type { GameState, GameStateForVisibility } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
-import { updateCardState } from '@testing';
+import { tempCommandCards, updateCardState } from '@testing';
 import { updatePhaseState, updateRoundEventStream } from '@transforms';
 
 import { getLegalChooseCardOptions } from './getLegalChooseCardOptions';

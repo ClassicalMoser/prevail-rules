@@ -1,5 +1,4 @@
-import { tempCommandCards } from '@sampleValues';
-import { createUnitWithPlacement } from '@testing';
+import { tempCommandCards, createUnitWithPlacement } from '@testing';
 import {
   addCommanderToBoard,
   addUnitToBoard,

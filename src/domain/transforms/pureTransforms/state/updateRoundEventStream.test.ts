@@ -1,5 +1,5 @@
 import type { Event } from '@events';
-import { tempCommandCards } from '@sampleValues';
+import { tempCommandCards } from '@testing';
 
 import { updateRoundEventStream } from './updateRoundEventStream';
 

@@ -10,7 +10,7 @@ Each directory is one layer. Import edges are enforced from [`boundaries.ts`](./
 | [Events](./src/domain/events/README.md)              | `@events`       | Player choices and game effects.                            |
 | [Game](./src/domain/game/README.md)                  | `@game`         | Composed game, round, phase, and substep state.             |
 | [Factories](./src/domain/factories/README.md)        | `@factories`    | Build a value from raw inputs.                              |
-| [Sample values](./src/domain/sampleValues/README.md) | `@sampleValues` | Stand-in cards and units until a real catalog exists.       |
+| [Sample values](./src/domain/sampleValues/README.md) | `@sampleValues` | Stand-in catalogs. Only `@testing` imports this layer.      |
 | [Queries](./src/domain/queries/README.md)            | `@queries`      | Read the current state.                                     |
 | [Legality](./src/domain/legality/README.md)          | `@legality`     | Enumerate what a player may do.                             |
 | [Expected](./src/domain/expected/README.md)          | `@expected`     | Decide the next event.                                      |

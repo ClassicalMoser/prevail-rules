@@ -181,8 +181,8 @@ export const boundaries: BoundaryConfig[] = [
     dir: 'domain/sampleValues',
     identifier: '@sampleValues',
     // Database surrogate for development and testing.
-    // Only @testing imports it. It has no other outgoing edge, so it cannot
-    // put a layer in a cycle.
+    // Only @testing imports it (specs go through @testing, not here). It has
+    // no other outgoing edge, so it cannot put a layer in a cycle.
   },
   {
     alias: '@testing',
