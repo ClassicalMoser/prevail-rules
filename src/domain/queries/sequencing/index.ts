@@ -71,7 +71,7 @@ export type { AttackApplyLocation } from './combatOutcomes';
 export { getMeleeAttackApplyState } from './combatOutcomes';
 
 // The defender whose melee attack-apply is still open, initiative first.
-export { getNextMeleeDefendingPlayer } from './combatOutcomes';
+export { findNextMeleeDefendingPlayer } from './combatOutcomes';
 
 // Reverse stored on an attack-apply.
 export { getReverseStateFromAttackApply } from './combatOutcomes';

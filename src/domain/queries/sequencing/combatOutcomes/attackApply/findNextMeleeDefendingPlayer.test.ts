@@ -6,9 +6,9 @@ import {
 } from '@testing';
 import { updateCurrentInitiative } from '@transforms';
 
-import { getNextMeleeDefendingPlayer } from './getNextMeleeDefendingPlayer';
+import { findNextMeleeDefendingPlayer } from './findNextMeleeDefendingPlayer';
 
-describe('getNextMeleeDefendingPlayer function', () => {
+describe('findNextMeleeDefendingPlayer function', () => {
   it('returns the first player while that apply is incomplete', () => {
     const empty = updateCurrentInitiative(
       createEmptyGameState('standard'),
@@ -25,7 +25,7 @@ describe('getNextMeleeDefendingPlayer function', () => {
       ),
     });
 
-    expect(getNextMeleeDefendingPlayer(empty, melee)).toBe('white');
+    expect(findNextMeleeDefendingPlayer(empty, melee)).toBe('white');
   });
 
   it('returns the second player when the first apply is complete', () => {
@@ -44,7 +44,7 @@ describe('getNextMeleeDefendingPlayer function', () => {
       ),
     });
 
-    expect(getNextMeleeDefendingPlayer(empty, melee)).toBe('black');
+    expect(findNextMeleeDefendingPlayer(empty, melee)).toBe('black');
   });
 
   it('returns null when both applies are complete', () => {
@@ -63,7 +63,7 @@ describe('getNextMeleeDefendingPlayer function', () => {
       ),
     });
 
-    expect(getNextMeleeDefendingPlayer(empty, melee)).toBeNull();
+    expect(findNextMeleeDefendingPlayer(empty, melee)).toBeNull();
   });
 
   it('returns null when an apply is still pending', () => {
@@ -75,6 +75,6 @@ describe('getNextMeleeDefendingPlayer function', () => {
       whiteAttackApplyState: 'pending',
     });
 
-    expect(getNextMeleeDefendingPlayer(empty, melee)).toBeNull();
+    expect(findNextMeleeDefendingPlayer(empty, melee)).toBeNull();
   });
 });

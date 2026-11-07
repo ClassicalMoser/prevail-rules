@@ -6,7 +6,7 @@ import {
 import {
   getRangedAttackApplyState,
   getCurrentPhaseState,
-  getNextMeleeDefendingPlayer,
+  findNextMeleeDefendingPlayer,
   getMeleeResolutionState,
 } from '@queries';
 import type { GameState } from '@game';
@@ -38,7 +38,7 @@ export function generateCompleteAttackApplyEvent(
   if (phaseState.phase === 'resolveMelee') {
     const meleeState = getMeleeResolutionState(state);
     // Safe type broadening for more generic function signature
-    const defendingPlayer = getNextMeleeDefendingPlayer(state, meleeState);
+    const defendingPlayer = findNextMeleeDefendingPlayer(state, meleeState);
 
     if (defendingPlayer === null) {
       throw new Error(

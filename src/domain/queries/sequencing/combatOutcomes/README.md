@@ -44,14 +44,15 @@ These throw when the context does not hold what they name.
 rules say so. `getNextMeleeRetreatStateAwaitingMove` knows which retreats are
 waiting on a move rather than a choice. These are the queries that carry
 gameplay rather than position, and they are the ones to read first when the
-sequencing is unclear.
+sequencing is unclear. A selection with no candidate to pick takes the `find`
+prefix and answers `null`, like `findNextMeleeDefendingPlayer`.
 
 **A router walks every context and answers.** `findRoutState` and
 `findRetreatState` return `null` when nothing is routing or retreating, because
 most of a game has neither and asking is fair. `getRoutState` and
 `getRetreatState` are the same walk for a caller that knows there must be one,
-and throw when there is not. `find` returns `null`; `get` throws; nothing else
-in the folder returns `null`.
+and throw when there is not. `find` returns `null`; `get` throws; no `get` in the folder
+returns `null`.
 
 A router reads each slot's own sentinel rather than calling the scoped getters,
 so it needs no `try`. That duplicates a little descent knowledge against the

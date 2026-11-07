@@ -104,7 +104,7 @@ export {
   getRangedAttackApplyState,
   getAttackApplyStateAt,
   getMeleeAttackApplyState,
-  getNextMeleeDefendingPlayer,
+  findNextMeleeDefendingPlayer,
   getReverseStateFromAttackApply,
   getNextMeleeReverseState,
   getRetreatStateFromAttackApply,

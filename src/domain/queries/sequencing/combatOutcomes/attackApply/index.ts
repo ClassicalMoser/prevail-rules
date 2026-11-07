@@ -14,4 +14,4 @@ export { getMeleeAttackApplyState } from './getMeleeAttackApplyState';
 // Selection. A rule of the game decides which candidate is answered about.
 
 // The defender whose melee attack-apply is still open, initiative first.
-export { getNextMeleeDefendingPlayer } from './getNextMeleeDefendingPlayer';
+export { findNextMeleeDefendingPlayer } from './findNextMeleeDefendingPlayer';

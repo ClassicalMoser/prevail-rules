@@ -483,7 +483,7 @@ export {
   getCurrentCommandResolutionState,
   getCurrentPhaseState,
   getCurrentRallyResolutionState,
-  getNextMeleeDefendingPlayer,
+  findNextMeleeDefendingPlayer,
   getEngagementStateFromMovement,
   getFlankEngagementStateFromMovement,
   getFrontEngagementStateFromMovement,
