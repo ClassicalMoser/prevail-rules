@@ -9,7 +9,7 @@ A fixture does what a factory and a transform cannot. How a spec uses one is [`S
 - `testHelpers` — cards, `updateCardState`, and line coordinate readers
 - `phaseStateHelpers` — phase and substep shells
 - `bootstrapGameState` — a game far enough along to exercise a phase
-- `sampleCatalog` — re-exports of `@sampleValues` for specs that need a catalog entry
+- `sampleCatalog` — re-exports of `@sampleValues` for specs that need a catalog entry; its spec checks catalog shape and mini-starter legality
 
 Prefer `createTestCard` / `createTestUnit` when the test does not depend on a particular catalog entry. Specs do not import `@sampleValues` directly; only this layer does.
 

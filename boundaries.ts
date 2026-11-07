@@ -177,12 +177,13 @@ export const boundaries: BoundaryConfig[] = [
   },
   {
     alias: '@sampleValues',
-    allowImportsFrom: ['@entities'],
+    allowTypeImportsFrom: ['@entities'],
     dir: 'domain/sampleValues',
     identifier: '@sampleValues',
-    // Database surrogate for development and testing.
-    // Only @testing imports it (specs go through @testing, not here). It has
-    // no other outgoing edge, so it cannot put a layer in a cycle.
+    // Stand-in catalogs. Type imports only from @entities — same posture as
+    // @ruleValues. Only @testing imports this layer (specs go through
+    // @testing, not here). It has no other outgoing edge, so it cannot put a
+    // layer in a cycle.
   },
   {
     alias: '@testing',
