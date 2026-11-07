@@ -52,6 +52,12 @@ export function applyUnitsLostSupportAfterRally<S extends GameState>(
     0,
   );
 
+  // FIXME: Morale is the discard penalty, so units with zero morale rout with nothing
+  // to pay and open no rout substep. Only the step advance below keeps the
+  // sequencer off this state: asked again with a non-empty unitsLostSupport and
+  // this slot still 'pending', getExpectedRallyResolutionEvent throws 'Rout
+  // state is required when units lost support'. Known regression from a
+  // behaviour change, left as is.
   const routState: RoutState | 'pending' =
     totalPenalty > 0
       ? ({
