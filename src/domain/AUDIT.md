@@ -8,6 +8,8 @@ This audit requires the human read on every directory. A box is checked only aft
 
 **Restart.** `entities`, `game`, and `events` stay closed. Every other checked box is open again. The scout starts at `utils`.
 
+**Scout baseline (2026-11-07, before `utils`):** `pnpm test` 379 files / 1969 tests passed; `pnpm validate` clean.
+
 ---
 
 ## Progress order
@@ -26,7 +28,7 @@ Audit in this order (dependencies flow downward):
 
 ### `utils/` (`@utils`)
 
-- [ ] `utils/` — scout resumed 2026-11-06
+- [ ] `utils/` — scout complete 2026-11-07 (awaiting human read)
   - [ ] Root modules (`assertExact`, `validationResult`, `stateSentinels`, `throwIfMissing`, `randomSource`)
 
 ### `entities/` (`@entities`)
@@ -192,10 +194,10 @@ Each finding stays here until the human read closes it.
 
 ### `utils`
 
-- The guards compare a value to a string. `isPending` is `=== 'pending'`, `isResolved` is `!== 'pending'`, `isNone` is `=== 'none'`, `isActive` is `!== 'none'`. `throwIfPending` throws on `'pending'`. `throwIfNone` throws on `'none'`. The message on a throw is the caller's.
+- Marked in `stateSentinels.ts` as `TODO(composition)`. The guards compare a value to a string. `isPending` is `=== 'pending'`, `isResolved` is `!== 'pending'`, `isBypassed` is `=== 'bypassed'`, `isApplied` is `!== 'bypassed'`, `isNone` is `=== 'none'`, `isActive` is `!== 'none'`. `throwIfPending` / `throwIfBypassed` / `throwIfNone` throw on their own string. The message on a throw is the caller's.
 - Those strings are not one behavior. `Value | 'pending'` is an unwritten slot. `currentPhaseState` is the only `Value | 'none'`. `'bypassed'` is only on `retreatState`, `reverseState`, and `routState`. `defendingUnitCanRetreat` and `defendingUnitRetreats` are `'pending' | boolean`, and `false` there is a decision.
 - The same words name other facts. `commitmentType: 'pending'` means the player has not chosen. `restrictionType: 'none'` means the card has no trait filter. `presenceType: 'none'` means the space has no unit. `isNone` typechecks on the last two and answers those other facts.
-- The comparison does not know the field. Passing `'bypassed'` to `isResolved` or `throwIfPending` returns it, because those guards only compare against `'pending'`. On `defendingUnitCanRetreat` and `defendingUnitRetreats`, `false` is a decision. The open check for a retreat, reverse, or rout lives with those queries.
+- The comparison does not know the field. Passing `'bypassed'` to `isResolved` or `throwIfPending` returns it, because those guards only compare against `'pending'`. Specs now cover that cross-sentinel case. On `defendingUnitCanRetreat` and `defendingUnitRetreats`, `false` is a decision. The open check for a retreat, reverse, or rout lives with those queries (`isOpenSubstep`).
 - Inline comparisons on the real slots are the duplicates, to mark in `@expected`, `@legality`, `@queries`, `@transforms`, and `@procedures`. A count of every `=== 'pending'` includes `commitmentType`.
 
 ### `queries/sequencing`
