@@ -11,7 +11,7 @@ describe('generateGameOverEvent function', () => {
       ...base.cardState,
       black: {
         ...base.cardState.black,
-        inHand: [createTestCard({ id: 'black-hand' })],
+        inHand: [createTestCard()],
       },
       white: { ...base.cardState.white, inHand: [] },
     });
@@ -41,11 +41,11 @@ describe('generateGameOverEvent function', () => {
       ...base.cardState,
       black: {
         ...base.cardState.black,
-        inHand: [createTestCard({ id: 'black-hand' })],
+        inHand: [createTestCard()],
       },
       white: {
         ...base.cardState.white,
-        inHand: [createTestCard({ id: 'white-hand' })],
+        inHand: [createTestCard()],
       },
     });
     expect(() => generateGameOverEvent(state, 0)).toThrow(

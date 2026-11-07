@@ -1,5 +1,6 @@
 // Sample unit types, and the list of all of them.
 export {
+  africanElephants,
   alaeSocii,
   equites,
   manipularLegion,

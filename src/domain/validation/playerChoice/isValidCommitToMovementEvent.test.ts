@@ -14,13 +14,10 @@ import { createCommitToMovementEvent, createEmptyGameState } from '@factories';
 /** Eligible: carries a movement-applicable speed modifier. */
 const speedCard = createTestCard({ modifiers: ['speed'] });
 /**
- * Not the hand card. A different id so membership (by id) rejects it even when
+ * Not the hand card. A fresh id keeps membership from matching it even when
  * the event copies the hand card's legal modifierTypes.
  */
-const otherCard = createTestCard({
-  id: '00000000-0000-4000-8000-ffff00000001',
-  modifiers: ['attack'],
-});
+const otherCard = createTestCard({ modifiers: ['attack'] });
 
 /**
  * IsValidCommitToMovementEvent: membership against getLegalCommitToMovementEvents.

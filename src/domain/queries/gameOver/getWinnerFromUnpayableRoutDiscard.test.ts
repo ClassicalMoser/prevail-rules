@@ -18,11 +18,9 @@ import {
 
 import { getWinnerFromUnpayableRoutDiscard } from './getWinnerFromUnpayableRoutDiscard';
 
-/** A hand of `count` cards. The query reads the length; each card still needs its own id. */
-function cards(count: number, id: string): CommandCard[] {
-  const hand = Array.from({ length: count }, (_, index) =>
-    createTestCard({ id: `${id}-${index}` }),
-  );
+/** A hand of `count` cards. The query reads the length; each card mints its own id. */
+function cards(count: number): CommandCard[] {
+  const hand = Array.from({ length: count }, () => createTestCard());
   return hand;
 }
 
@@ -48,12 +46,12 @@ function stateAwaitingDiscard(options: {
   // The routed player's hand is exactly `handSize`.
   const routed = updatePlayerCardState(base, options.player, {
     ...base.cardState[options.player],
-    inHand: cards(options.handSize, options.player),
+    inHand: cards(options.handSize),
   });
   // One card in the other hand, so an empty hand is not also a loss.
   const withHands = updatePlayerCardState(routed, other, {
     ...routed.cardState[other],
-    inHand: [createTestCard({ id: `${other}-hand` })],
+    inHand: [createTestCard()],
   });
   // Rally is already accepted. The rout slot has to exist before it can be replaced.
   const cleanup = updatePhaseState(

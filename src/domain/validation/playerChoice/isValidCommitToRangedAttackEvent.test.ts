@@ -16,14 +16,8 @@ import {
 
 /** Eligible: carries a ranged-applicable attack modifier. */
 const attackCard = createTestCard({ modifiers: ['attack'] });
-/**
- * Same modifiers as the hand card; a different id so membership (by id) can
- * treat it as not in hand.
- */
-const otherCard = createTestCard({
-  id: '00000000-0000-4000-8000-ffff00000001',
-  modifiers: ['attack'],
-});
+/** Same modifiers as the hand card; a fresh id keeps it out of membership. */
+const otherCard = createTestCard({ modifiers: ['attack'] });
 
 /**
  * IsValidCommitToRangedAttackEvent: membership against

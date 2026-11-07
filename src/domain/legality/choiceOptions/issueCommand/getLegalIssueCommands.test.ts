@@ -1,6 +1,9 @@
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
-import { createIssueCommandsPhaseState, updateCardState } from '@testing';
+import {
+  tempCommandCards,
+  createIssueCommandsPhaseState,
+  updateCardState,
+} from '@testing';
 import { updatePhaseState } from '@transforms';
 
 import { getLegalIssueCommands } from './getLegalIssueCommands';

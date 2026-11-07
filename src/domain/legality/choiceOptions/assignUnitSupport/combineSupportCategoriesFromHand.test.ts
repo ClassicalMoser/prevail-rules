@@ -19,11 +19,9 @@ describe('combineSupportCategoriesFromHand function', () => {
     const unitTypeId = '00000000-0000-4000-8000-000000000001';
     const categories = combineSupportCategoriesFromHand([
       createTestCard({
-        id: 'a',
         unitSupport: { count: 1, supportType: 'unitType', unitTypeId },
       }),
       createTestCard({
-        id: 'b',
         unitSupport: { count: 2, supportType: 'unitType', unitTypeId },
       }),
     ]);
@@ -56,11 +54,9 @@ describe('combineSupportCategoriesFromHand function', () => {
     expect(
       combineSupportCategoriesFromHand([
         createTestCard({
-          id: 'g1',
           unitSupport: { count: 1, supportType: 'generic' },
         }),
         createTestCard({
-          id: 'g2',
           unitSupport: { count: 1, supportType: 'generic' },
         }),
       ]),

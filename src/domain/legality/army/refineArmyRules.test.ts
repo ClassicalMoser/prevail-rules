@@ -1,20 +1,42 @@
-import type { Army } from '@entities';
-import { tempCommandCards, tempUnits } from '@sampleValues';
-import { throwIfUndefined } from '@utils';
+import type { Army, UnitType } from '@entities';
+import { createTestCard } from '@testing';
 import { z } from 'zod';
 
 import { legalArmySchema, refineArmyRules } from './refineArmyRules';
 
-/** African Elephants may be fielded at most twice in any army. */
-const elephants = throwIfUndefined(
-  tempUnits.find((unitType) => unitType.name === 'African Elephants'),
-  'African Elephants are missing from the sample units.',
-);
+/**
+ * A unit type whose only gameplay fact for these cases is its fielding limit.
+ */
+function unitTypeWithLimit(limit: number, id: string): UnitType {
+  const unitType: UnitType = {
+    cost: 10,
+    id,
+    imageUrl: null,
+    limit,
+    morale: 1,
+    name: 'Test Unit',
+    stats: {
+      attack: 1,
+      flexibility: 1,
+      range: 0,
+      retreat: 1,
+      reverse: 1,
+      rout: 1,
+      speed: 1,
+    },
+    traits: ['formation'],
+    version: '1.0.0',
+  };
+  return unitType;
+}
 
-/** Any second unit type will do: the rules only compare it with the first. */
-const velites = throwIfUndefined(
-  tempUnits.find((unitType) => unitType.name === 'Velites'),
-  'Velites are missing from the sample units.',
+/** Limit 2 — cases at or past that bound write the count against this. */
+const limitTwo = unitTypeWithLimit(2, '00000000-0000-4000-8000-ffff00000010');
+
+/** A second type, so an army can hold two entries without duplicating. */
+const anotherType = unitTypeWithLimit(
+  8,
+  '00000000-0000-4000-8000-ffff00000011',
 );
 
 /**
@@ -27,12 +49,12 @@ const armyRules = z
 
 describe('refineArmyRules function', () => {
   it('accepts an army within every unit limit, with nothing listed twice', () => {
-    // Two elephants is exactly the limit; each card appears once.
+    // Two of a limit-2 type is exactly the bound; each card appears once.
     const army = {
-      commandCards: [tempCommandCards[0], tempCommandCards[1]],
+      commandCards: [createTestCard(), createTestCard()],
       units: [
-        { count: 2, unitType: elephants },
-        { count: 3, unitType: velites },
+        { count: 2, unitType: limitTwo },
+        { count: 3, unitType: anotherType },
       ],
     };
 
@@ -42,10 +64,10 @@ describe('refineArmyRules function', () => {
   });
 
   it('rejects more of a unit type than its limit allows', () => {
-    // A third elephant is one past the limit of two.
+    // A third copy is one past the limit of two.
     const army = {
       commandCards: [],
-      units: [{ count: 3, unitType: elephants }],
+      units: [{ count: 3, unitType: limitTwo }],
     };
 
     const result = armyRules.safeParse(army);
@@ -59,12 +81,12 @@ describe('refineArmyRules function', () => {
   });
 
   it('rejects the same unit type listed twice', () => {
-    // Splitting velites over two entries would dodge the per-type limit.
+    // Splitting one type over two entries would dodge the per-type limit.
     const army = {
       commandCards: [],
       units: [
-        { count: 1, unitType: velites },
-        { count: 2, unitType: velites },
+        { count: 1, unitType: anotherType },
+        { count: 2, unitType: anotherType },
       ],
     };
 
@@ -80,8 +102,9 @@ describe('refineArmyRules function', () => {
 
   it('rejects the same command card listed twice', () => {
     // An army holds one copy of each command card.
+    const card = createTestCard();
     const army = {
-      commandCards: [tempCommandCards[0], tempCommandCards[0]],
+      commandCards: [card, card],
       units: [],
     };
 
@@ -103,7 +126,7 @@ describe('legalArmySchema schema', () => {
     commandCards: [],
     id: '33333333-3333-4333-8333-333333333333',
     name: 'Test Army',
-    units: [{ count: 2, unitType: elephants }],
+    units: [{ count: 2, unitType: limitTwo }],
   };
 
   it('accepts a well-formed army that keeps the army rules', () => {
@@ -113,10 +136,10 @@ describe('legalArmySchema schema', () => {
   });
 
   it('rejects a well-formed army that breaks an army rule', () => {
-    // A third elephant passes the shape checks but breaks the unit limit.
+    // A third copy passes the shape checks but breaks the unit limit.
     const overLimit: Army = {
       ...army,
-      units: [{ count: 3, unitType: elephants }],
+      units: [{ count: 3, unitType: limitTwo }],
     };
 
     const result = legalArmySchema.safeParse(overLimit);

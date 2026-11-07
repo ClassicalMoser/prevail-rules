@@ -117,16 +117,16 @@ describe('applyResolveRallyEvent function', () => {
   it('on whiteSeen, burns the hidden opponent card and returns the rest as hidden hand cards', () => {
     const base = createEmptyGameState('standard');
     base.currentInitiative = 'black';
-    const burned = createTestCard({ id: 'burned' });
-    const stillPlayed = createTestCard({ id: 'still-played' });
-    const discarded = createTestCard({ id: 'discarded' });
+    const burned = createTestCard();
+    const stillPlayed = createTestCard();
+    const discarded = createTestCard();
     const whiteSeen: GameStateForVisibility<'whiteSeen'> = {
       ...base,
       cardState: {
         visibility: 'whiteSeen',
         white: {
           ...base.cardState.white,
-          played: [createTestCard({ id: 'white-played' })],
+          played: [createTestCard()],
         },
         black: {
           awaitingPlay: 'hidden',
@@ -194,8 +194,8 @@ describe('applyResolveRallyEvent function', () => {
   it('on blackSeen, burns the hidden opponent card and returns the rest as hidden hand cards', () => {
     const base = createEmptyGameState('standard');
     base.currentInitiative = 'white';
-    const burned = createTestCard({ id: 'burned' });
-    const discarded = createTestCard({ id: 'discarded' });
+    const burned = createTestCard();
+    const discarded = createTestCard();
     const blackSeen: GameStateForVisibility<'blackSeen'> = {
       ...base,
       cardState: {
@@ -247,8 +247,8 @@ describe('applyResolveRallyEvent function', () => {
   it('on spectator, burns a hidden card and returns the rest as hidden hand cards', () => {
     const base = createEmptyGameState('standard');
     base.currentInitiative = 'white';
-    const burned = createTestCard({ id: 'burned' });
-    const discarded = createTestCard({ id: 'discarded' });
+    const burned = createTestCard();
+    const discarded = createTestCard();
     const spectator: GameStateForVisibility<'spectator'> = {
       ...base,
       cardState: {

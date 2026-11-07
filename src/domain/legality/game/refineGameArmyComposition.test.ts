@@ -1,29 +1,42 @@
-import type { Army } from '@entities';
-import { tempUnits } from '@sampleValues';
-import { throwIfUndefined } from '@utils';
+import type { Army, UnitType } from '@entities';
 import { z } from 'zod';
 
 import { refineGameArmyComposition } from './refineGameArmyComposition';
 
-/** African Elephants may be fielded at most twice in any army. */
-const elephants = throwIfUndefined(
-  tempUnits.find((unitType) => unitType.name === 'African Elephants'),
-  'African Elephants are missing from the sample units.',
-);
+/** Limit 2 — over-limit cases write count 3 against this. */
+const limitTwo: UnitType = {
+  cost: 10,
+  id: '00000000-0000-4000-8000-ffff00000010',
+  imageUrl: null,
+  limit: 2,
+  morale: 1,
+  name: 'Test Unit',
+  stats: {
+    attack: 1,
+    flexibility: 1,
+    range: 0,
+    retreat: 1,
+    reverse: 1,
+    rout: 1,
+    speed: 1,
+  },
+  traits: ['formation'],
+  version: '1.0.0',
+};
 
-/** Two elephants: exactly the limit. */
+/** Two copies: exactly the limit. */
 const legalArmy: Army = {
   commandCards: [],
   id: '33333333-3333-4333-8333-333333333333',
   name: 'Legal Army',
-  units: [{ count: 2, unitType: elephants }],
+  units: [{ count: 2, unitType: limitTwo }],
 };
 
-/** Three elephants: one past the limit. */
+/** Three copies: one past the limit. */
 const overLimitArmy: Army = {
   ...legalArmy,
   name: 'Over-limit Army',
-  units: [{ count: 3, unitType: elephants }],
+  units: [{ count: 3, unitType: limitTwo }],
 };
 
 /**

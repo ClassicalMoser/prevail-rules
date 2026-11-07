@@ -71,8 +71,8 @@ function gameOverState(options: {
 describe('getGameOverWinner function', () => {
   it('continues when both hands have cards', () => {
     const state = gameOverState({
-      blackHand: [createTestCard({ id: 'black-hand' })],
-      whiteHand: [createTestCard({ id: 'white-hand' })],
+      blackHand: [createTestCard()],
+      whiteHand: [createTestCard()],
     });
 
     expect(getGameOverWinner(state)).toBeUndefined();
@@ -89,7 +89,7 @@ describe('getGameOverWinner function', () => {
 
   it('black wins on an empty white hand before black pays a rout of 99', () => {
     const state = gameOverState({
-      blackHand: [createTestCard({ id: 'black-hand' })],
+      blackHand: [createTestCard()],
       rout: { numberToDiscard: 99, player: 'black' },
       whiteHand: [],
     });
@@ -99,9 +99,9 @@ describe('getGameOverWinner function', () => {
 
   it('black wins when white cannot pay a rout of 2', () => {
     const state = gameOverState({
-      blackHand: [createTestCard({ id: 'black-hand' })],
+      blackHand: [createTestCard()],
       rout: { numberToDiscard: 2, player: 'white' },
-      whiteHand: [createTestCard({ id: 'white-hand' })],
+      whiteHand: [createTestCard()],
     });
 
     expect(getGameOverWinner(state)).toBe('black');

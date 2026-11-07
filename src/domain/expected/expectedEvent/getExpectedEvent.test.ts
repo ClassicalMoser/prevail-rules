@@ -1,6 +1,6 @@
 import type { GameState, Phase, PhaseState } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
+  tempCommandCards,
   createCleanupPhaseState,
   createIssueCommandsPhaseState,
   createMoveCommandersPhaseState,
@@ -68,11 +68,11 @@ describe('getExpectedEvent function', () => {
       ...state.cardState,
       black: {
         ...state.cardState.black,
-        inHand: [createTestCard({ id: 'black-hand' })],
+        inHand: [createTestCard()],
       },
       white: {
         ...state.cardState.white,
-        inHand: [createTestCard({ id: 'white-hand' })],
+        inHand: [createTestCard()],
       },
     });
   }

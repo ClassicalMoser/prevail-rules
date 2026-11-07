@@ -9,7 +9,7 @@ import { revealCard } from './revealCard';
  */
 describe('revealCard function', () => {
   it('given move card from awaitingPlay to inPlay', () => {
-    const awaitingCard = createTestCard({ id: 'awaiting' });
+    const awaitingCard = createTestCard();
     const owned = {
       ...createEmptyGameState('standard').cardState.black,
       awaitingPlay: awaitingCard,
@@ -31,7 +31,7 @@ describe('revealCard function', () => {
   });
 
   it('given not mutate the original card state', () => {
-    const originalAwaiting = createTestCard({ id: 'awaiting' });
+    const originalAwaiting = createTestCard();
     const owned = {
       ...createEmptyGameState('standard').cardState.black,
       awaitingPlay: originalAwaiting,

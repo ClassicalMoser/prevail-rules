@@ -1,8 +1,8 @@
 import type { ExpectedEvent, PlayerChoiceType, PlayerSource } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards } from '@sampleValues';
 import {
+  tempCommandCards,
   createBoardWithCommander,
   createIssueCommandsPhaseState,
   createTestCard,
@@ -150,11 +150,11 @@ describe('getLegalPlayerChoiceOptions function', () => {
       ...state.cardState,
       black: {
         ...state.cardState.black,
-        inHand: [createTestCard({ id: 'black-hand' })],
+        inHand: [createTestCard()],
       },
       white: {
         ...state.cardState.white,
-        inHand: [createTestCard({ id: 'white-hand' })],
+        inHand: [createTestCard()],
       },
     });
     state = {
@@ -196,7 +196,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
       ...state.cardState,
       black: {
         ...state.cardState.black,
-        inHand: [createTestCard({ id: 'black-hand' })],
+        inHand: [createTestCard()],
         // In-play command must be rangedAttack for this choice to open.
         inPlay: {
           ...createTestCard(),
@@ -205,7 +205,7 @@ describe('getLegalPlayerChoiceOptions function', () => {
       },
       white: {
         ...state.cardState.white,
-        inHand: [createTestCard({ id: 'white-hand' })],
+        inHand: [createTestCard()],
       },
     });
     state = updateBoardState(

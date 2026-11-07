@@ -50,3 +50,15 @@ export {
   createNoneUnitPresence,
   createSingleUnitPresence,
 } from './unitPresenceHelpers';
+export {
+  africanElephants,
+  alaeSocii,
+  blackMiniStarterArmy,
+  equites,
+  manipularLegion,
+  punicCitizenSpearmen,
+  tempCommandCards,
+  tempUnits,
+  velites,
+  whiteMiniStarterArmy,
+} from './sampleCatalog';

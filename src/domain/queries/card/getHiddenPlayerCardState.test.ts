@@ -8,11 +8,11 @@ import { createEmptyGameState } from '@factories';
 
 function secretPiles(): OwnedCardState {
   return {
-    awaitingPlay: createTestCard({ id: 'awaiting' }),
+    awaitingPlay: createTestCard(),
     burnt: [],
     discarded: [],
-    inHand: [createTestCard({ id: 'hand' })],
-    inPlay: createTestCard({ id: 'in-play' }),
+    inHand: [createTestCard()],
+    inPlay: createTestCard(),
     played: [],
   };
 }

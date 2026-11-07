@@ -1,6 +1,11 @@
 import { CLEANUP_PHASE } from '@game';
-import { alaeSocii, manipularLegion } from '@sampleValues';
-import { createTestCard, createTestUnit, placed } from '@testing';
+import {
+  alaeSocii,
+  manipularLegion,
+  createTestCard,
+  createTestUnit,
+  placed,
+} from '@testing';
 import {
   addUnitToBoard,
   updateBoardState,
@@ -295,7 +300,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
 
     base.cardState.white.inHand = [
       createTestCard({
-        id: 'type',
         unitSupport: {
           count: 1,
           supportType: 'unitType',
@@ -303,7 +307,6 @@ describe('isValidAssignUnitSupportEvent function', () => {
         },
       }),
       createTestCard({
-        id: 'trait',
         unitSupport: {
           count: 1,
           supportType: 'trait',

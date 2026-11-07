@@ -1,3 +1,4 @@
+import type { CommandCard } from '@entities';
 import type { GameState } from '@game';
 import type { RandomSource } from '@utils';
 import { defaultRandom } from '@utils';
@@ -94,39 +95,43 @@ describe('generateResolveRallyEvent function', () => {
   }
 
   /** Three distinguishable cards in black's played pile, on resolve-rally. */
-  function cleanupWithThreePlayed(): GameState {
+  function cleanupWithThreePlayed(): {
+    first: CommandCard;
+    full: GameState;
+    third: CommandCard;
+  } {
+    const first = createTestCard();
+    const second = createTestCard();
+    const third = createTestCard();
     const base = createEmptyGameState('standard');
     const withPlayed = updateCardState(base, {
       ...base.cardState,
       black: {
         ...base.cardState.black,
-        played: [
-          createTestCard({ id: 'first' }),
-          createTestCard({ id: 'second' }),
-          createTestCard({ id: 'third' }),
-        ],
+        played: [first, second, third],
       },
     });
-    return updatePhaseState(
+    const full = updatePhaseState(
       withPlayed,
       createCleanupPhaseState({ step: 'firstPlayerResolveRally' }),
     );
+    return { first, full, third };
   }
 
   it('burns the first played card when the source draws zero', () => {
-    const full = cleanupWithThreePlayed();
+    const { first, full } = cleanupWithThreePlayed();
     const event = generateResolveRallyEvent(full, 0, fixedRandom(0));
-    expect(event.card.id).toBe('first');
+    expect(event.card.id).toBe(first.id);
   });
 
   it('burns the last played card when the source draws near one', () => {
-    const full = cleanupWithThreePlayed();
+    const { full, third } = cleanupWithThreePlayed();
     const event = generateResolveRallyEvent(full, 0, fixedRandom(0.99));
-    expect(event.card.id).toBe('third');
+    expect(event.card.id).toBe(third.id);
   });
 
   it('burns the same card twice from one fixed source', () => {
-    const full = cleanupWithThreePlayed();
+    const { full } = cleanupWithThreePlayed();
     const first = generateResolveRallyEvent(full, 0, fixedRandom(0.5));
     const second = generateResolveRallyEvent(full, 0, fixedRandom(0.5));
     expect(second.card.id).toBe(first.card.id);

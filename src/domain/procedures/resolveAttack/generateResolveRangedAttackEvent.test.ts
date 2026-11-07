@@ -1,6 +1,8 @@
 import type { GameState } from '@game';
-import { equites, punicCitizenSpearmen, velites } from '@sampleValues';
 import {
+  equites,
+  punicCitizenSpearmen,
+  velites,
   createAttackApplyState,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
