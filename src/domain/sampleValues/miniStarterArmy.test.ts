@@ -13,6 +13,7 @@ describe('mini starter armies', () => {
   });
 
   it('the two sides bring different armies', () => {
+    // Each side needs its own army id when both sit in one game.
     expect(whiteMiniStarterArmy.id).not.toBe(blackMiniStarterArmy.id);
   });
 });

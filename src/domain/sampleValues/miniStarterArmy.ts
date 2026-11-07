@@ -8,15 +8,18 @@ import { equites, manipularLegion } from './tempUnits';
  * unbalance the army's cards-per-initiative.
  */
 function cardsAtInitiative(initiative: number, count: number): CommandCard[] {
+  // Mini balances the deck by initiative value, not by printed card name.
   const atInitiative = tempCommandCards.filter(
     (card) => card.initiative === initiative,
   );
+  // A short catalog would leave a side short of the mode's cards-per-initiative.
   if (atInitiative.length < count) {
     throw new Error(
       `Need at least ${count} sample cards at initiative ${initiative}, found ${atInitiative.length}`,
     );
   }
-  return atInitiative.slice(0, count);
+  const cards = atInitiative.slice(0, count);
+  return cards;
 }
 
 /**
