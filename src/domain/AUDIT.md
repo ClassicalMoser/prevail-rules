@@ -4,7 +4,7 @@ The author personally reads and comprehends every line of code in this repo. Thi
 
 This audit requires the human read on every directory. A box is checked only after that read. A restart opens a closed box only by saying so here.
 
-**Last updated:** 2026-11-06
+**Last updated:** 2026-11-07
 
 **Restart.** `entities`, `game`, and `events` stay closed. Every other checked box is open again. The scout starts at `utils`.
 
@@ -104,7 +104,7 @@ Walk folders in IDE order (alphabetical).
   - [ ] `facings/`
   - [ ] `gameOver/` — empty hand, unpayable rout discard, then the composed check
   - [ ] `line/` — segment, index, windows of at most 8, then `getLinesFromUnit` (`isValidLine` lives in `@legality`)
-  - [ ] `player/` — `getOtherPlayer`
+  - [ ] `player/` — `getOtherPlayer`, `hasInitiative`
   - [ ] `sequencing/` — current phase, step, initiative, event number, event stream
     - [ ] `combatOutcomes/`
     - [ ] `commandResolution/`
@@ -193,14 +193,22 @@ Each finding stays here until the human read closes it.
 ### `utils`
 
 - The guards compare a value to a string. `isPending` is `=== 'pending'`, `isResolved` is `!== 'pending'`, `isNone` is `=== 'none'`, `isActive` is `!== 'none'`. `throwIfPending` throws on `'pending'`. `throwIfNone` throws on `'none'`. The message on a throw is the caller's.
-- Those strings are not one behavior. `Value | 'pending'` is an unwritten slot. `currentPhaseState` is the only `Value | 'none'`. `'miss'` is only on `retreatState`, `reverseState`, and `routState`. `defendingUnitCanRetreat` and `defendingUnitRetreats` are `'pending' | boolean`, and `false` there is a decision.
+- Those strings are not one behavior. `Value | 'pending'` is an unwritten slot. `currentPhaseState` is the only `Value | 'none'`. `'bypassed'` is only on `retreatState`, `reverseState`, and `routState`. `defendingUnitCanRetreat` and `defendingUnitRetreats` are `'pending' | boolean`, and `false` there is a decision.
 - The same words name other facts. `commitmentType: 'pending'` means the player has not chosen. `restrictionType: 'none'` means the card has no trait filter. `presenceType: 'none'` means the space has no unit. `isNone` typechecks on the last two and answers those other facts.
-- The comparison does not know the field. Passing `'miss'` to `isResolved` or `throwIfPending` returns it, because those guards only compare against `'pending'`. On `defendingUnitCanRetreat` and `defendingUnitRetreats`, `false` is a decision. The open check for a retreat, reverse, or rout lives with those queries.
+- The comparison does not know the field. Passing `'bypassed'` to `isResolved` or `throwIfPending` returns it, because those guards only compare against `'pending'`. On `defendingUnitCanRetreat` and `defendingUnitRetreats`, `false` is a decision. The open check for a retreat, reverse, or rout lives with those queries.
 - Inline comparisons on the real slots are the duplicates, to mark in `@expected`, `@legality`, `@queries`, `@transforms`, and `@procedures`. A count of every `=== 'pending'` includes `commitmentType`.
 
 ### `queries/sequencing`
 
-- `getAwaitingRoutDiscardState` throws when the slice it selected is absent. `getWinnerFromUnpayableRoutDiscard` catches only those absence messages, because the win check runs on states where no rout slice is open. Any other throw propagates.
+- Closed 2026-11-07. `getAwaitingRoutDiscardState` and the absence-message set in
+  `getWinnerFromUnpayableRoutDiscard` are both gone. The walk and the question are
+  separate now: `findRoutLocation` descends, `isAwaitingRoutDiscard` asks.
+- `findRoutLocation` knows the four parents that hold a rout. `updateRoutState`
+  descends to the same places to write, and the retreat-held one is written
+  through `updateRetreatRoutState` instead. Two descents that have to agree, and
+  nothing makes them.
+- Three exports have no production caller: `getCurrentStep`,
+  `getIsFirstPlayerForResolveRallyStep`, `getRallyResolutionState`.
 
 ### `queries/unit` and `queries/unitPresence`
 
@@ -210,6 +218,30 @@ Each finding stays here until the human read closes it.
 - `matchesUnitRequirements` requires every listed trait. An older note said "at least one". The comment now matches the code. Confirm that the code is right.
 - One `matchesUnitRequirements` case expected `true` under a title that said it returns false. The title now matches the assertion. Confirm the fact.
 - The command-modifier case titled as a missing `modifiers` field sets that list to `[]`. The `?? []` branch is not what that case builds.
+
+### `legality`
+
+- Twenty catches across fourteen files. Five wrap a whole function body; nine are
+  scoped to a single call.
+- Four of the five discard the fault entirely — `catch { return false }` — so any
+  error inside becomes a legal answer about the game: `canEngageEnemy` (74 guarded
+  lines), `canMoveInto` (39), `canMoveThrough` (32), `isLegalMove` (6). All four
+  are in `unitMovement/`. Two say so in their comments: "Any error means we cannot
+  engage the enemy", "Any error means the unit cannot move into this coordinate".
+- The fifth, `isValidLine`, wraps 70 lines but keeps the message in `errorReason`,
+  so a fault there is reported rather than answered. That is the shape the other
+  four should take if they keep the catch at all.
+
+### `transforms`
+
+- A rout held by a retreat can be opened and can have its penalty worked out, and
+  then cannot be paid. `applyChooseRoutDiscardEvent` reads it correctly and hands
+  it to `updateRoutState`, which knows the other three parents only and throws
+  "No rout state found in attack apply state".
+- A zero penalty closes that rout in the same write and leaves the retreat holding
+  it open, which `getExpectedRetreatEvent` then refuses: "Retreat state has
+  completed rout but not marked as completed". Closing a nested rout has to close
+  its retreat.
 
 ### `factories` and `testing`
 

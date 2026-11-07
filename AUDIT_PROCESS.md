@@ -149,7 +149,7 @@ a shared helper is a finding.
 
 Search the whole package for the helper. Do not rely on the names in scope. Mark
 the duplicate in production code and do not replace it. Two definitions can look
-the same and differ on `'miss'`, `'pending'`, or whether they throw — say which
+the same and differ on `'bypassed'`, `'pending'`, or whether they throw — say which
 ones you compared and how.
 
 Duplicated test helpers are the exception. Those are extracted, not marked.
