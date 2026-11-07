@@ -31,14 +31,26 @@ describe('getRetreatStateFromAttackApply function', () => {
     expect(getRetreatStateFromAttackApply(apply)).toBe(retreat);
   });
 
-  it('throws when the attack apply has no retreat', () => {
+  it('answers bypassed when the attack applied no retreat', () => {
+    // The threshold went unmet, or a rout superseded this step. Either way the
+    // rules apply no retreat here, and that is an answer rather than a fault.
+    const apply = createAttackApplyState(
+      createTestUnit('black', { attack: 2 }),
+    );
+
+    expect(getRetreatStateFromAttackApply(apply)).toBe('bypassed');
+  });
+
+  it('throws when the retreat is due and has not been opened', () => {
+    // A pending slot means the sequencer owes an opener, so a caller asking
+    // for the substep now is out of order.
     const apply = createAttackApplyState(
       createTestUnit('black', { attack: 2 }),
       { retreatState: 'pending' },
     );
 
     expect(() => getRetreatStateFromAttackApply(apply)).toThrow(
-      'No retreat state found in attack apply state',
+      'The retreat on this attack apply has not been opened yet',
     );
   });
 });

@@ -1,3 +1,4 @@
+import { throwIfBypassed } from '@utils';
 import type { OpenRetreatFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { createAttackApplyState, createEmptyGameState } from '@factories';
@@ -55,7 +56,10 @@ describe('applyOpenRetreatFromAttackApplyEvent function', () => {
 
     const next = applyOpenRetreatFromAttackApplyEvent(event, state);
     const apply = getAttackApplyStateFromRangedAttack(next);
-    const retreat = getRetreatStateFromAttackApply(apply);
+    const retreat = throwIfBypassed(
+      getRetreatStateFromAttackApply(apply),
+      'the attack applies a retreat',
+    );
     expect(retreat.substepType).toBe('retreat');
     expect(retreat.retreatingUnit.unit.playerSide).toBe('white');
   });

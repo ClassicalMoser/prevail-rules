@@ -60,7 +60,7 @@ describe('getRetreatStateFromRangedAttack function', () => {
     );
   });
 
-  it('throws when the ranged attack apply has no retreat', () => {
+  it('throws when the retreat is due and has not been opened', () => {
     const empty = createEmptyGameState('standard');
     const defender = createTestUnit('white', { attack: 2 });
     const resolution = createRangedAttackResolutionState(empty, {
@@ -72,7 +72,23 @@ describe('getRetreatStateFromRangedAttack function', () => {
     const state = issueCommands(resolution);
 
     expect(() => getRetreatStateFromRangedAttack(state)).toThrow(
-      'No retreat state found in attack apply state',
+      'The retreat on this attack apply has not been opened yet',
+    );
+  });
+
+  it('throws when the ranged attack applied no retreat', () => {
+    const empty = createEmptyGameState('standard');
+    // This getter names a route to a retreat. An attack that applied none has
+    // no retreat to route to, so the route is the thing that fails.
+    const defender = createTestUnit('white', { attack: 2 });
+    const resolution = createRangedAttackResolutionState(empty, {
+      attackApplyState: createAttackApplyState(defender),
+      defendingUnit: defender,
+    });
+    const state = issueCommands(resolution);
+
+    expect(() => getRetreatStateFromRangedAttack(state)).toThrow(
+      'The ranged attack applied no retreat',
     );
   });
 });

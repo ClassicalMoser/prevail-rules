@@ -1,21 +1,24 @@
 import type { AttackApplyState, ReverseState } from '@game';
-import { isOpenSubstep } from '../isOpenSubstep';
+import { throwIfPending } from '@utils';
 
 /**
- * Gets the reverse state from an attack apply state.
- * Assumes the attack apply state has a reverse state (validation should happen elsewhere).
+ * The reverse on an attack apply, or `'bypassed'` when this attack has none.
+ *
+ * `'bypassed'` is an answer: the rules apply no reverse to this attack, whether
+ * its threshold went unmet or a rout superseded it. `'pending'` is not an
+ * answer — that step is still due and nothing has opened it, so asking for the
+ * substep then is a sequencing fault rather than a fact about the game.
  *
  * @param attackApplyState - The attack apply state
- * @returns The reverse state
- * @throws Error if reverse state is missing
+ * @returns The reverse substep, or `'bypassed'` when no reverse applies
+ * @throws Error when the reverse is due and has not been opened yet
  */
 export function getReverseStateFromAttackApply(
   attackApplyState: AttackApplyState,
-): ReverseState {
-  const reverseState = attackApplyState.reverseState;
-  // Pending has not been written. Miss means this attack did not reverse.
-  if (!isOpenSubstep(reverseState)) {
-    throw new Error('No reverse state found in attack apply state');
-  }
+): ReverseState | 'bypassed' {
+  const reverseState = throwIfPending(
+    attackApplyState.reverseState,
+    'The reverse on this attack apply has not been opened yet',
+  );
   return reverseState;
 }

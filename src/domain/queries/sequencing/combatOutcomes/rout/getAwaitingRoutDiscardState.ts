@@ -6,6 +6,7 @@ import { getAttackApplyStateFromRangedAttack } from '../attackApply/getAttackApp
 import { getRoutStateFromRearEngagement } from './getRoutStateFromRearEngagement';
 import { getRoutStateFromAttackApply } from './getRoutStateFromAttackApply';
 import { getRoutStateFromMeleeResolutionByInitiative } from './getRoutStateFromMeleeResolutionByInitiative';
+import { throwIfBypassed } from '@utils';
 
 /**
  * Active {@link RoutState} awaiting `chooseRoutDiscard` (penalty known, cards
@@ -27,8 +28,9 @@ export function getAwaitingRoutDiscardState(
     if (crs.commandResolutionType === 'movement') {
       routState = getRoutStateFromRearEngagement(state);
     } else if (crs.commandResolutionType === 'rangedAttack') {
-      routState = getRoutStateFromAttackApply(
-        getAttackApplyStateFromRangedAttack(state),
+      routState = throwIfBypassed(
+        getRoutStateFromAttackApply(getAttackApplyStateFromRangedAttack(state)),
+        'The ranged attack applied no rout',
       );
     } else {
       return null;

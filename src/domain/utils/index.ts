@@ -5,9 +5,12 @@ export type { AssertExact } from './assertExact';
 export {
   isPending,
   isResolved,
+  isBypassed,
+  isApplied,
   isNone,
   isActive,
   throwIfPending,
+  throwIfBypassed,
   throwIfNone,
 } from './stateSentinels';
 

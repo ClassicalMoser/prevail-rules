@@ -9,6 +9,7 @@ import {
   getRoutStateFromRearEngagement,
 } from '@queries';
 import { updateRoutState } from '@transforms/pureTransforms';
+import { throwIfBypassed } from '@utils';
 
 /**
  * Applies a ResolveRoutEvent to the game state.
@@ -29,7 +30,10 @@ export function applyResolveRoutEvent<S extends GameState>(
   switch (event.routResolutionSource) {
     case 'rangedAttack': {
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-      currentRoutState = getRoutStateFromAttackApply(attackApplyState);
+      currentRoutState = throwIfBypassed(
+        getRoutStateFromAttackApply(attackApplyState),
+        'The ranged attack applied no rout to resolve',
+      );
       break;
     }
     case 'melee': {
@@ -41,7 +45,10 @@ export function applyResolveRoutEvent<S extends GameState>(
         );
       }
       const attackApplyState = getAttackApplyStateFromMelee(state, meleePlayer);
-      currentRoutState = getRoutStateFromAttackApply(attackApplyState);
+      currentRoutState = throwIfBypassed(
+        getRoutStateFromAttackApply(attackApplyState),
+        `The melee attack on ${meleePlayer} applied no rout to resolve`,
+      );
       break;
     }
     case 'rally': {

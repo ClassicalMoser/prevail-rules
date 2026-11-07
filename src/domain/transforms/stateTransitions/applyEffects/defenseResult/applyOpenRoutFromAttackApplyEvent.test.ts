@@ -1,3 +1,4 @@
+import { throwIfBypassed } from '@utils';
 import type { OpenRoutFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { createAttackApplyState, createEmptyGameState } from '@factories';
@@ -59,7 +60,10 @@ describe('applyOpenRoutFromAttackApplyEvent function', () => {
 
     const next = applyOpenRoutFromAttackApplyEvent(event, state);
     const apply = getAttackApplyStateFromRangedAttack(next);
-    const rout = getRoutStateFromAttackApply(apply);
+    const rout = throwIfBypassed(
+      getRoutStateFromAttackApply(apply),
+      'the attack applies a rout',
+    );
     expect(rout.substepType).toBe('rout');
     expect(rout.unitsToRout).toContain(defendingUnit);
     expect(rout.player).toBe('white');

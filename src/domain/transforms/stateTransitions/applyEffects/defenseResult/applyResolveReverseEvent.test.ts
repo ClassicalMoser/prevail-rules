@@ -1,3 +1,4 @@
+import { throwIfBypassed } from '@utils';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState } from '@game';
 import {
@@ -103,7 +104,10 @@ describe('applyResolveReverseEvent function', () => {
     it('given event south facing on E-5, board single presence faces south for reversing unit', () => {
       const state = createStateWithRangedAttackReverse();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-      const reverseState = getReverseStateFromAttackApply(attackApplyState);
+      const reverseState = throwIfBypassed(
+        getReverseStateFromAttackApply(attackApplyState),
+        'the attack applies a reverse',
+      );
 
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
@@ -139,7 +143,10 @@ describe('applyResolveReverseEvent function', () => {
     it('given same event, reverse substep completed and finalPosition matches placement', () => {
       const state = createStateWithRangedAttackReverse();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-      const reverseState = getReverseStateFromAttackApply(attackApplyState);
+      const reverseState = throwIfBypassed(
+        getReverseStateFromAttackApply(attackApplyState),
+        'the attack applies a reverse',
+      );
 
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
@@ -162,8 +169,10 @@ describe('applyResolveReverseEvent function', () => {
 
       const newState = applyResolveReverseEvent(event, state);
       const newAttackApplyState = getAttackApplyStateFromRangedAttack(newState);
-      const newReverseState =
-        getReverseStateFromAttackApply(newAttackApplyState);
+      const newReverseState = throwIfBypassed(
+        getReverseStateFromAttackApply(newAttackApplyState),
+        'the attack applies a reverse',
+      );
 
       expect(newReverseState.completed).toBe(true);
       expect(newReverseState.finalPosition).toStrictEqual(
@@ -174,7 +183,10 @@ describe('applyResolveReverseEvent function', () => {
     it('given black observer on D-5, reverse apply leaves D-5 untouched', () => {
       const state = createStateWithRangedAttackReverse();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-      const reverseState = getReverseStateFromAttackApply(attackApplyState);
+      const reverseState = throwIfBypassed(
+        getReverseStateFromAttackApply(attackApplyState),
+        'the attack applies a reverse',
+      );
 
       // Add another unit at a different location
       const otherUnit = createTestUnit('black', { attack: 2 });
@@ -220,7 +232,10 @@ describe('applyResolveReverseEvent function', () => {
     it('given black reverses south on E-5, black apply reverse completed and board updated', () => {
       const state = createStateWithMeleeReverse('black');
       const attackApplyState = getAttackApplyStateFromMelee(state, 'black');
-      const reverseState = getReverseStateFromAttackApply(attackApplyState);
+      const reverseState = throwIfBypassed(
+        getReverseStateFromAttackApply(attackApplyState),
+        'the attack applies a reverse',
+      );
 
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
@@ -246,8 +261,10 @@ describe('applyResolveReverseEvent function', () => {
         newState,
         'black',
       );
-      const newReverseState =
-        getReverseStateFromAttackApply(newAttackApplyState);
+      const newReverseState = throwIfBypassed(
+        getReverseStateFromAttackApply(newAttackApplyState),
+        'the attack applies a reverse',
+      );
 
       expect(newReverseState.completed).toBe(true);
       expect(newReverseState.finalPosition).toStrictEqual(
@@ -261,7 +278,10 @@ describe('applyResolveReverseEvent function', () => {
     it('given white reverses east on E-5, white reverse completed and finalPosition east', () => {
       const state = createStateWithMeleeReverse('white');
       const attackApplyState = getAttackApplyStateFromMelee(state, 'white');
-      const reverseState = getReverseStateFromAttackApply(attackApplyState);
+      const reverseState = throwIfBypassed(
+        getReverseStateFromAttackApply(attackApplyState),
+        'the attack applies a reverse',
+      );
 
       const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'east');
 
@@ -287,8 +307,10 @@ describe('applyResolveReverseEvent function', () => {
         newState,
         'white',
       );
-      const newReverseState =
-        getReverseStateFromAttackApply(newAttackApplyState);
+      const newReverseState = throwIfBypassed(
+        getReverseStateFromAttackApply(newAttackApplyState),
+        'the attack applies a reverse',
+      );
 
       expect(newReverseState.completed).toBe(true);
       expect(newReverseState.finalPosition).toStrictEqual(
@@ -301,7 +323,10 @@ describe('applyResolveReverseEvent function', () => {
     it('given reverse completed and board ref before apply, input slice unchanged after apply', () => {
       const state = createStateWithRangedAttackReverse();
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
-      const reverseState = getReverseStateFromAttackApply(attackApplyState);
+      const reverseState = throwIfBypassed(
+        getReverseStateFromAttackApply(attackApplyState),
+        'the attack applies a reverse',
+      );
       const originalCompleted = reverseState.completed;
       const originalBoardState = state.boardState;
 

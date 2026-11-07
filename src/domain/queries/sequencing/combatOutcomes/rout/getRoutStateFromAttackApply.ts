@@ -1,21 +1,24 @@
 import type { AttackApplyState, RoutState } from '@game';
-import { isOpenSubstep } from '../isOpenSubstep';
+import { throwIfPending } from '@utils';
 
 /**
- * Gets the rout state from an attack apply state.
- * Assumes the attack apply state has a rout state (validation should happen elsewhere).
+ * The rout on an attack apply, or `'bypassed'` when this attack has none.
+ *
+ * `'bypassed'` is an answer: the rules apply no rout to this attack, whether
+ * its threshold went unmet or a rout superseded it. `'pending'` is not an
+ * answer — that step is still due and nothing has opened it, so asking for the
+ * substep then is a sequencing fault rather than a fact about the game.
  *
  * @param attackApplyState - The attack apply state
- * @returns The rout state
- * @throws Error if rout state is missing
+ * @returns The rout substep, or `'bypassed'` when no rout applies
+ * @throws Error when the rout is due and has not been opened yet
  */
 export function getRoutStateFromAttackApply(
   attackApplyState: AttackApplyState,
-): RoutState {
-  const routState = attackApplyState.routState;
-  // Pending has not been written. Miss means this attack did not rout.
-  if (!isOpenSubstep(routState)) {
-    throw new Error('No rout state found in attack apply state');
-  }
+): RoutState | 'bypassed' {
+  const routState = throwIfPending(
+    attackApplyState.routState,
+    'The rout on this attack apply has not been opened yet',
+  );
   return routState;
 }

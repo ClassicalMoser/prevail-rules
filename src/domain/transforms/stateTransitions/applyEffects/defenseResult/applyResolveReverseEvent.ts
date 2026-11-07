@@ -5,6 +5,7 @@ import {
   getAttackApplyStateFromRangedAttack,
   getReverseStateFromAttackApply,
 } from '@queries';
+import { throwIfBypassed } from '@utils';
 import {
   addUnitToBoard,
   removeUnitFromBoard,
@@ -38,7 +39,10 @@ export function applyResolveReverseEvent<S extends GameState>(
       ? getAttackApplyStateFromRangedAttack(state)
       : getAttackApplyStateFromMelee(state, event.unitInstance.unit.playerSide);
 
-  const currentReverseState = getReverseStateFromAttackApply(attackApplyState);
+  const currentReverseState = throwIfBypassed(
+    getReverseStateFromAttackApply(attackApplyState),
+    'This attack apply applied no reverse to resolve',
+  );
 
   const newReverseState: ReverseState = {
     ...currentReverseState,

@@ -1,5 +1,5 @@
 import { getReverseStateFromAttackApply } from '@queries';
-import { throwIfNone, throwIfPending } from '@utils';
+import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyState,
   createAttackApplyStateWithReverse,
@@ -111,7 +111,12 @@ describe('updateReverseState function', () => {
       commandState.attackApplyState,
       'attack apply',
     );
-    expect(getReverseStateFromAttackApply(attackApply).completed).toBe(true);
+    expect(
+      throwIfBypassed(
+        getReverseStateFromAttackApply(attackApply),
+        'the attack applies a reverse',
+      ).completed,
+    ).toBe(true);
   });
 
   it('given update reverse state in melee resolution for white', () => {
@@ -135,7 +140,12 @@ describe('updateReverseState function', () => {
       melee.whiteAttackApplyState,
       'white apply',
     );
-    expect(getReverseStateFromAttackApply(whiteApply).completed).toBe(true);
+    expect(
+      throwIfBypassed(
+        getReverseStateFromAttackApply(whiteApply),
+        'the attack applies a reverse',
+      ).completed,
+    ).toBe(true);
   });
 
   it('given update reverse state in melee resolution for black', () => {
@@ -159,7 +169,12 @@ describe('updateReverseState function', () => {
       melee.blackAttackApplyState,
       'black apply',
     );
-    expect(getReverseStateFromAttackApply(blackApply).completed).toBe(true);
+    expect(
+      throwIfBypassed(
+        getReverseStateFromAttackApply(blackApply),
+        'the attack applies a reverse',
+      ).completed,
+    ).toBe(true);
   });
 
   it('given when ranged attack apply has no reverse state, throws', () => {

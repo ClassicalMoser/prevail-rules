@@ -13,6 +13,16 @@ export function isResolved<T>(value: T | 'pending'): value is T {
   return value !== 'pending';
 }
 
+/** Narrows `T | 'bypassed'` to `'bypassed'`. */
+export function isBypassed<T>(value: T | 'bypassed'): value is 'bypassed' {
+  return value === 'bypassed';
+}
+
+/** Narrows `T | 'bypassed'` to `T`. */
+export function isApplied<T>(value: T | 'bypassed'): value is T {
+  return value !== 'bypassed';
+}
+
 /** Narrows `T | 'none'` to `'none'`. */
 export function isNone<T>(value: T | 'none'): value is 'none' {
   return value === 'none';
@@ -28,6 +38,16 @@ export function isActive<T>(value: T | 'none'): value is T {
  */
 export function throwIfPending<T>(value: T | 'pending', message: string): T {
   if (isPending(value)) {
+    throw new Error(message);
+  }
+  return value;
+}
+
+/**
+ * Narrows `T | 'bypassed'` to `T` by throwing when the value is `'bypassed'`.
+ */
+export function throwIfBypassed<T>(value: T | 'bypassed', message: string): T {
+  if (isBypassed(value)) {
     throw new Error(message);
   }
   return value;

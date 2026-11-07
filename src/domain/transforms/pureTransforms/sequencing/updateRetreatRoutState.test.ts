@@ -1,5 +1,5 @@
 import { getRetreatStateFromAttackApply, isOpenSubstep } from '@queries';
-import { throwIfNone, throwIfPending } from '@utils';
+import { throwIfBypassed, throwIfNone, throwIfPending } from '@utils';
 import {
   createAttackApplyStateWithRetreat,
   createIssueCommandsPhaseState,
@@ -70,7 +70,10 @@ describe('updateRetreatRoutState function', () => {
       commandState.attackApplyState,
       'attack apply',
     );
-    const retreat = getRetreatStateFromAttackApply(attackApply);
+    const retreat = throwIfBypassed(
+      getRetreatStateFromAttackApply(attackApply),
+      'the attack applies a retreat',
+    );
     const rout = retreat.routState;
     // The update wrote an open rout under the retreat; pending and bypassed are not readable.
     expect(isOpenSubstep(rout)).toBe(true);

@@ -1,3 +1,4 @@
+import { throwIfBypassed } from '@utils';
 import type { OpenReverseFromAttackApplyEvent } from '@events';
 import type { GameState } from '@game';
 import { createAttackApplyState, createEmptyGameState } from '@factories';
@@ -60,7 +61,10 @@ describe('applyOpenReverseFromAttackApplyEvent function', () => {
 
     const next = applyOpenReverseFromAttackApplyEvent(event, state);
     const apply = getAttackApplyStateFromRangedAttack(next);
-    const reverse = getReverseStateFromAttackApply(apply);
+    const reverse = throwIfBypassed(
+      getReverseStateFromAttackApply(apply),
+      'the attack applies a reverse',
+    );
     expect(reverse.substepType).toBe('reverse');
     expect(reverse.reversingUnit).toBe(defendingUnit);
   });

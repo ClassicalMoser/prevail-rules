@@ -1,3 +1,4 @@
+import { throwIfBypassed } from '@utils';
 import type {
   OpenRetreatFromAttackApplyEvent,
   OpenReverseFromAttackApplyEvent,
@@ -80,8 +81,11 @@ describe('attack apply outcome flow', () => {
       openRetreat,
       start,
     );
-    const retreat = getRetreatStateFromAttackApply(
-      getAttackApplyStateFromRangedAttack(withRetreatOpen),
+    const retreat = throwIfBypassed(
+      getRetreatStateFromAttackApply(
+        getAttackApplyStateFromRangedAttack(withRetreatOpen),
+      ),
+      'the attack applies a retreat',
     );
     // The engine computed where this unit can go; this case picks one of them.
     expect(retreat.legalRetreatOptions.length).toBeGreaterThan(0);
@@ -114,8 +118,11 @@ describe('attack apply outcome flow', () => {
       openReverse,
       afterRetreat,
     );
-    const reverse = getReverseStateFromAttackApply(
-      getAttackApplyStateFromRangedAttack(afterReverseOpen),
+    const reverse = throwIfBypassed(
+      getReverseStateFromAttackApply(
+        getAttackApplyStateFromRangedAttack(afterReverseOpen),
+      ),
+      'the attack applies a reverse',
     );
     // The reverse holds the unit by identity; its square is where the retreat left it.
     expect(reverse.reversingUnit).toBe(defendingUnit);
