@@ -1,6 +1,6 @@
 # Agents
 
-Do not start work until you have read the linked documents. Follow them strictly.
+Never start work until you have read ALL of the linked documents COMPLETELY. Follow them strictly. Failure to do so will terminate session.
 
 ## The point of this project
 
