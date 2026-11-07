@@ -30,7 +30,7 @@ describe('updateReverseState function', () => {
       ...state,
       boardState: addUnitToBoard(state.boardState, placement),
     };
-    const attackApply = createAttackApplyStateWithReverse(placement);
+    const attackApply = createAttackApplyStateWithReverse(placement.unit);
     const phaseState = createIssueCommandsPhaseState(stateWithUnit, {
       currentCommandResolutionState: createRangedAttackResolutionState(
         stateWithUnit,
@@ -61,7 +61,9 @@ describe('updateReverseState function', () => {
       ...stateWithUnits,
       boardState: addUnitToBoard(stateWithUnits.boardState, otherPlacement),
     };
-    const attackApply = createAttackApplyStateWithReverse(reversingPlacement);
+    const attackApply = createAttackApplyStateWithReverse(
+      reversingPlacement.unit,
+    );
     const melee = createMeleeResolutionState(
       stateWithUnits,
       reversingPlayer === 'white'
@@ -80,7 +82,7 @@ describe('updateReverseState function', () => {
     const state = createStateWithRangedAttackReverse();
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const newReverse = createReverseState(placement, {
+    const newReverse = createReverseState(placement.unit, {
       completed: true,
       finalPosition: {
         coordinate: 'E-5',
@@ -116,7 +118,7 @@ describe('updateReverseState function', () => {
     const state = createStateWithMeleeReverse('white');
     const unit = createTestUnit('white', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const newReverse = createReverseState(placement, { completed: true });
+    const newReverse = createReverseState(placement.unit, { completed: true });
 
     const newState = updateReverseState(state, newReverse);
 
@@ -140,7 +142,7 @@ describe('updateReverseState function', () => {
     const state = createStateWithMeleeReverse('black');
     const unit = createTestUnit('black', { attack: 2 });
     const placement = placed(unit, 'E-5', 'north');
-    const newReverse = createReverseState(placement, { completed: true });
+    const newReverse = createReverseState(placement.unit, { completed: true });
 
     const newState = updateReverseState(state, newReverse);
 
@@ -173,7 +175,7 @@ describe('updateReverseState function', () => {
     const stateInPhase = updatePhaseState(state, phaseState);
 
     expect(() =>
-      updateReverseState(stateInPhase, createReverseState(placement)),
+      updateReverseState(stateInPhase, createReverseState(placement.unit)),
     ).toThrow('No reverse state found in attack apply state');
   });
 
@@ -187,7 +189,7 @@ describe('updateReverseState function', () => {
     const placement = placed(unit, 'E-5', 'north');
 
     expect(() =>
-      updateReverseState(stateInPhase, createReverseState(placement)),
+      updateReverseState(stateInPhase, createReverseState(placement.unit)),
     ).toThrow(
       'Reverse state update not expected in issueCommands (command type: movement)',
     );
@@ -201,7 +203,7 @@ describe('updateReverseState function', () => {
     const placement = placed(unit, 'E-5', 'north');
 
     expect(() =>
-      updateReverseState(stateInPhase, createReverseState(placement)),
+      updateReverseState(stateInPhase, createReverseState(placement.unit)),
     ).toThrow('No command resolution state found');
   });
 
@@ -212,7 +214,9 @@ describe('updateReverseState function', () => {
     const whitePlacement = placed(whiteUnit, 'E-5', 'north');
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
     const melee = createMeleeResolutionState(state, {
-      blackAttackApplyState: createAttackApplyStateWithReverse(blackPlacement),
+      blackAttackApplyState: createAttackApplyStateWithReverse(
+        blackPlacement.unit,
+      ),
       whiteAttackApplyState: createAttackApplyState(whiteUnit),
     });
     const stateInPhase = updatePhaseState(
@@ -223,7 +227,7 @@ describe('updateReverseState function', () => {
     );
 
     expect(() =>
-      updateReverseState(stateInPhase, createReverseState(whitePlacement)),
+      updateReverseState(stateInPhase, createReverseState(whitePlacement.unit)),
     ).toThrow('No reverse state found in attack apply state');
   });
 
@@ -235,7 +239,9 @@ describe('updateReverseState function', () => {
     const blackPlacement = placed(blackUnit, 'E-5', 'south');
     const melee = createMeleeResolutionState(state, {
       blackAttackApplyState: createAttackApplyState(blackUnit),
-      whiteAttackApplyState: createAttackApplyStateWithReverse(whitePlacement),
+      whiteAttackApplyState: createAttackApplyStateWithReverse(
+        whitePlacement.unit,
+      ),
     });
     const stateInPhase = updatePhaseState(
       state,
@@ -245,7 +251,7 @@ describe('updateReverseState function', () => {
     );
 
     expect(() =>
-      updateReverseState(stateInPhase, createReverseState(blackPlacement)),
+      updateReverseState(stateInPhase, createReverseState(blackPlacement.unit)),
     ).toThrow('No reverse state found in attack apply state');
   });
 
@@ -259,7 +265,7 @@ describe('updateReverseState function', () => {
     const placement = placed(unit, 'E-5', 'north');
 
     expect(() =>
-      updateReverseState(stateInPlayCards, createReverseState(placement)),
+      updateReverseState(stateInPlayCards, createReverseState(placement.unit)),
     ).toThrow('Reverse state update not expected in phase: playCards');
   });
 });

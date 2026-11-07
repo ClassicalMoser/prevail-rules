@@ -76,7 +76,7 @@ export function applyResolveMeleeEvent<S extends GameState>(
       reverseState = {
         completed: false,
         finalPosition: 'pending',
-        reversingUnit: unitWithPlacement,
+        reversingUnit: unitWithPlacement.unit,
         substepType: 'reverse',
       };
     } else {

@@ -56,7 +56,7 @@ describe('getExpectedAttackApplyEvent function', () => {
           unitRouted: true,
         },
         retreatState: createRetreatState(unitPlacement),
-        reverseState: createReverseState(unitPlacement),
+        reverseState: createReverseState(unitPlacement.unit),
         routState: createRoutState('white', unit),
       });
 
@@ -148,7 +148,9 @@ describe('getExpectedAttackApplyEvent function', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(true);
       const unitPlacement = placed(unit, 'E-5', 'north');
-      const attackApplyState = createAttackApplyStateWithReverse(unitPlacement);
+      const attackApplyState = createAttackApplyStateWithReverse(
+        unitPlacement.unit,
+      );
 
       expectGameEffect(
         getExpectedAttackApplyEvent(
@@ -163,7 +165,9 @@ describe('getExpectedAttackApplyEvent function', () => {
       const unit = createTestUnit('white', { attack: 2 });
       canReverseUnitMock.mockReturnValue(false);
       const unitPlacement = placed(unit, 'E-5', 'north');
-      const attackApplyState = createAttackApplyStateWithReverse(unitPlacement);
+      const attackApplyState = createAttackApplyStateWithReverse(
+        unitPlacement.unit,
+      );
       const gameState = createGameStateWithEngagedUnits(
         unit,
         createTestUnit('black', { attack: 2 }),
@@ -182,7 +186,7 @@ describe('getExpectedAttackApplyEvent function', () => {
       canReverseUnitMock.mockReturnValue(false);
       const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyStateWithReverse(
-        unitPlacement,
+        unitPlacement.unit,
         {
           completed: true,
         },
@@ -200,9 +204,9 @@ describe('getExpectedAttackApplyEvent function', () => {
       const unit = createTestUnit('white', { attack: 2 });
       const unitPlacement = placed(unit, 'E-5', 'north');
       const attackApplyState = createAttackApplyStateWithReverse(
-        unitPlacement,
+        unitPlacement.unit,
         {
-          reverseState: createReverseState(unitPlacement, {
+          reverseState: createReverseState(unitPlacement.unit, {
             completed: true,
             finalPosition: {
               coordinate: 'E-5',

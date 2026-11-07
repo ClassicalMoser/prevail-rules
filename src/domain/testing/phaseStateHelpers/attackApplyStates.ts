@@ -102,12 +102,12 @@ export function createAttackApplyStateWithRetreatAndReverse(
  * An attack that reached the reverse threshold and no higher, with the reverse
  * open.
  *
- * @param reversingUnit - The defender and where it stands before reversing
+ * @param reversingUnit - The defender that is turning to face away
  * @param overrides - Fields to replace, for a state the game cannot reach
  * @returns The attack-apply with its reverse written
  */
 export function createAttackApplyStateWithReverse(
-  reversingUnit: UnitWithPlacement,
+  reversingUnit: UnitInstance,
   overrides?: Partial<AttackApplyState>,
 ): AttackApplyState {
   const measured: AttackResult = {
@@ -115,7 +115,7 @@ export function createAttackApplyStateWithReverse(
     unitReversed: true,
     unitRouted: false,
   };
-  const apply = attackApplyFromResult(reversingUnit.unit, measured);
+  const apply = attackApplyFromResult(reversingUnit, measured);
   const withReverse: AttackApplyState = {
     ...apply,
     reverseState: createReverseState(reversingUnit),

@@ -34,11 +34,12 @@ describe('createRoutState function', () => {
 });
 
 describe('createReverseState function', () => {
-  it('given context, returns reverse substep with unit', () => {
+  it('holds the reversing unit by identity, without a placement', () => {
     const unit = createUnitWithPlacement();
-    const state = createReverseState(unit);
+    const state = createReverseState(unit.unit);
     expect(state.substepType).toBe('reverse');
-    expect(state.reversingUnit).toBe(unit);
+    // Where the unit stands is read from the board when the reverse resolves.
+    expect(state.reversingUnit).toBe(unit.unit);
     expect(state.completed).toBe(false);
   });
 });

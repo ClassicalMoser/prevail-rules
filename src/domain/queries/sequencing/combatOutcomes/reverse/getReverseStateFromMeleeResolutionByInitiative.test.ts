@@ -28,19 +28,25 @@ describe('getReverseStateFromMeleeResolutionByInitiative function', () => {
     const blackUnit = createTestUnit('black', { attack: 2 });
     const whitePlacement = placed(whiteUnit, 'E-5', 'east');
     const blackPlacement = placed(blackUnit, 'E-5', 'west');
-    const white = createReverseState(whitePlacement, {
+    const white = createReverseState(whitePlacement.unit, {
       finalPosition: finals.white ?? 'pending',
     });
-    const black = createReverseState(blackPlacement, {
+    const black = createReverseState(blackPlacement.unit, {
       finalPosition: finals.black ?? 'pending',
     });
     const melee = createMeleeResolutionState(empty, {
-      blackAttackApplyState: createAttackApplyStateWithReverse(blackPlacement, {
-        reverseState: black,
-      }),
-      whiteAttackApplyState: createAttackApplyStateWithReverse(whitePlacement, {
-        reverseState: white,
-      }),
+      blackAttackApplyState: createAttackApplyStateWithReverse(
+        blackPlacement.unit,
+        {
+          reverseState: black,
+        },
+      ),
+      whiteAttackApplyState: createAttackApplyStateWithReverse(
+        whitePlacement.unit,
+        {
+          reverseState: white,
+        },
+      ),
     });
     const phase = createResolveMeleePhaseState(empty, {
       currentMeleeResolutionState: melee,

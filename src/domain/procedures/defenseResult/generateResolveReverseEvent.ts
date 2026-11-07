@@ -1,3 +1,4 @@
+import type { UnitWithPlacement } from '@entities';
 import type { ResolveReverseEvent } from '@events';
 import type { GameState, ReverseState } from '@game';
 import {
@@ -10,6 +11,7 @@ import {
   getAttackApplyStateFromRangedAttack,
   getCurrentPhaseState,
   getOppositeFacing,
+  getPositionOfUnit,
   getReverseStateFromAttackApply,
   getReverseStateFromMeleeResolutionByInitiative,
 } from '@queries';
@@ -41,8 +43,19 @@ export function generateResolveReverseEvent(
     );
   }
 
-  const currentFacing = reverseState.reversingUnit.placement.facing;
-  const newFacing = getOppositeFacing(currentFacing);
+  // A reverse can come due after a retreat has already moved the unit, so the
+  // square it turns on is read off the board rather than taken from the substep.
+  const placement = getPositionOfUnit(
+    state.boardState,
+    reverseState.reversingUnit,
+  );
+  const newFacing = getOppositeFacing(placement.facing);
+
+  // The event records where the unit stood when it turned.
+  const reversingUnit: UnitWithPlacement = {
+    placement,
+    unit: reverseState.reversingUnit,
+  };
 
   const attackResolutionContext =
     phaseState.phase === 'issueCommands'
@@ -56,11 +69,11 @@ export function generateResolveReverseEvent(
     eventType: GAME_EFFECT_EVENT_TYPE,
     newUnitPlacement: {
       placement: {
-        coordinate: reverseState.reversingUnit.placement.coordinate,
+        coordinate: placement.coordinate,
         facing: newFacing,
       },
-      unit: reverseState.reversingUnit.unit,
+      unit: reverseState.reversingUnit,
     },
-    unitInstance: reverseState.reversingUnit,
+    unitInstance: reversingUnit,
   };
 }

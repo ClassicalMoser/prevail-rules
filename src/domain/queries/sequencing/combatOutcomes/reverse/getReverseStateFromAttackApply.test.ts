@@ -3,7 +3,6 @@ import {
   createAttackApplyStateWithReverse,
   createReverseState,
   createTestUnit,
-  placed,
 } from '@testing';
 
 import { getReverseStateFromAttackApply } from './getReverseStateFromAttackApply';
@@ -11,11 +10,10 @@ import { getReverseStateFromAttackApply } from './getReverseStateFromAttackApply
 describe('getReverseStateFromAttackApply function', () => {
   it('returns the reverse on the attack apply', () => {
     const unit = createTestUnit('black', { attack: 2 });
-    const reverse = createReverseState(placed(unit, 'D-4', 'south'));
-    const apply = createAttackApplyStateWithReverse(
-      placed(unit, 'D-4', 'south'),
-      { reverseState: reverse },
-    );
+    const reverse = createReverseState(unit);
+    const apply = createAttackApplyStateWithReverse(unit, {
+      reverseState: reverse,
+    });
 
     expect(getReverseStateFromAttackApply(apply)).toBe(reverse);
   });

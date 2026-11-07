@@ -72,7 +72,7 @@ export function applyResolveRangedAttackEvent<S extends GameState>(
     reverseState = {
       completed: false,
       finalPosition: 'pending',
-      reversingUnit: unitWithPlacement,
+      reversingUnit: unitWithPlacement.unit,
       substepType: 'reverse',
     };
   }

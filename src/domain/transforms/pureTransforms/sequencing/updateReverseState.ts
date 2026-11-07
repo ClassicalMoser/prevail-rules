@@ -58,7 +58,7 @@ export function updateReverseState<S extends GameState>(
   if (phaseState.phase === 'resolveMelee') {
     const resolveMelee = getResolveMeleePhaseState(state);
     const melee = getMeleeResolutionState(state);
-    const player = reverseState.reversingUnit.unit.playerSide;
+    const player = reverseState.reversingUnit.playerSide;
 
     if (player === 'white') {
       const whiteApply = throwIfPending(

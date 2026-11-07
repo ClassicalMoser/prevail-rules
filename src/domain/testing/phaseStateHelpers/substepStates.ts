@@ -62,7 +62,7 @@ export function createRoutState(
  * Creates a ReverseState with sensible defaults.
  */
 export function createReverseState(
-  unit: UnitWithPlacement,
+  unit: UnitInstance,
   overrides?: Partial<ReverseState>,
 ): ReverseState {
   return {

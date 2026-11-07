@@ -3,6 +3,7 @@ import type { GameState } from '@game';
 import {
   getAttackApplyStateFromMelee,
   getAttackApplyStateFromRangedAttack,
+  getPositionOfUnit,
   getReverseStateFromAttackApply,
 } from '@queries';
 import {
@@ -36,8 +37,7 @@ describe('applyResolveReverseEvent function', () => {
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
 
-    const attackApplyState =
-      createAttackApplyStateWithReverse(unitWithPlacement);
+    const attackApplyState = createAttackApplyStateWithReverse(reversingUnit);
     const rangedAttackState = createRangedAttackResolutionState(stateWithUnit, {
       attackApplyState,
     });
@@ -77,9 +77,8 @@ describe('applyResolveReverseEvent function', () => {
     const opponentAttackApplyState = createAttackApplyStateWithRetreat(
       opponentUnitWithPlacement,
     );
-    const reversingAttackApplyState = createAttackApplyStateWithReverse(
-      reversingUnitWithPlacement,
-    );
+    const reversingAttackApplyState =
+      createAttackApplyStateWithReverse(reversingUnit);
 
     const meleeState = createMeleeResolutionState(
       stateWithUnit,
@@ -106,11 +105,7 @@ describe('applyResolveReverseEvent function', () => {
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement = placed(
-        reverseState.reversingUnit.unit,
-        'E-5',
-        'south',
-      );
+      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
@@ -118,7 +113,15 @@ describe('applyResolveReverseEvent function', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
-        unitInstance: reverseState.reversingUnit,
+        // The event records where the unit stood when it turned, which the
+        // substep no longer carries.
+        unitInstance: {
+          placement: getPositionOfUnit(
+            state.boardState,
+            reverseState.reversingUnit,
+          ),
+          unit: reverseState.reversingUnit,
+        },
       };
 
       const newState = applyResolveReverseEvent(event, state);
@@ -128,7 +131,7 @@ describe('applyResolveReverseEvent function', () => {
       if (boardSpace?.unitPresence.presenceType === 'single') {
         expect(boardSpace.unitPresence.facing).toBe('south');
         expect(boardSpace.unitPresence.unit).toStrictEqual(
-          reverseState.reversingUnit.unit,
+          reverseState.reversingUnit,
         );
       }
     });
@@ -138,11 +141,7 @@ describe('applyResolveReverseEvent function', () => {
       const attackApplyState = getAttackApplyStateFromRangedAttack(state);
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement = placed(
-        reverseState.reversingUnit.unit,
-        'E-5',
-        'south',
-      );
+      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
@@ -150,7 +149,15 @@ describe('applyResolveReverseEvent function', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
-        unitInstance: reverseState.reversingUnit,
+        // The event records where the unit stood when it turned, which the
+        // substep no longer carries.
+        unitInstance: {
+          placement: getPositionOfUnit(
+            state.boardState,
+            reverseState.reversingUnit,
+          ),
+          unit: reverseState.reversingUnit,
+        },
       };
 
       const newState = applyResolveReverseEvent(event, state);
@@ -179,11 +186,7 @@ describe('applyResolveReverseEvent function', () => {
         ),
       };
 
-      const newPlacement = placed(
-        reverseState.reversingUnit.unit,
-        'E-5',
-        'south',
-      );
+      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
@@ -191,7 +194,15 @@ describe('applyResolveReverseEvent function', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
-        unitInstance: reverseState.reversingUnit,
+        // The event records where the unit stood when it turned, which the
+        // substep no longer carries.
+        unitInstance: {
+          placement: getPositionOfUnit(
+            state.boardState,
+            reverseState.reversingUnit,
+          ),
+          unit: reverseState.reversingUnit,
+        },
       };
 
       const newState = applyResolveReverseEvent(event, stateWithOtherUnit);
@@ -211,11 +222,7 @@ describe('applyResolveReverseEvent function', () => {
       const attackApplyState = getAttackApplyStateFromMelee(state, 'black');
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement = placed(
-        reverseState.reversingUnit.unit,
-        'E-5',
-        'south',
-      );
+      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'melee',
@@ -223,7 +230,15 @@ describe('applyResolveReverseEvent function', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
-        unitInstance: reverseState.reversingUnit,
+        // The event records where the unit stood when it turned, which the
+        // substep no longer carries.
+        unitInstance: {
+          placement: getPositionOfUnit(
+            state.boardState,
+            reverseState.reversingUnit,
+          ),
+          unit: reverseState.reversingUnit,
+        },
       };
 
       const newState = applyResolveReverseEvent(event, state);
@@ -248,11 +263,7 @@ describe('applyResolveReverseEvent function', () => {
       const attackApplyState = getAttackApplyStateFromMelee(state, 'white');
       const reverseState = getReverseStateFromAttackApply(attackApplyState);
 
-      const newPlacement = placed(
-        reverseState.reversingUnit.unit,
-        'E-5',
-        'east',
-      );
+      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'east');
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'melee',
@@ -260,7 +271,15 @@ describe('applyResolveReverseEvent function', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
-        unitInstance: reverseState.reversingUnit,
+        // The event records where the unit stood when it turned, which the
+        // substep no longer carries.
+        unitInstance: {
+          placement: getPositionOfUnit(
+            state.boardState,
+            reverseState.reversingUnit,
+          ),
+          unit: reverseState.reversingUnit,
+        },
       };
 
       const newState = applyResolveReverseEvent(event, state);
@@ -286,11 +305,7 @@ describe('applyResolveReverseEvent function', () => {
       const originalCompleted = reverseState.completed;
       const originalBoardState = state.boardState;
 
-      const newPlacement = placed(
-        reverseState.reversingUnit.unit,
-        'E-5',
-        'south',
-      );
+      const newPlacement = placed(reverseState.reversingUnit, 'E-5', 'south');
 
       const event: ResolveReverseEvent = {
         attackResolutionContext: 'rangedAttack',
@@ -298,7 +313,15 @@ describe('applyResolveReverseEvent function', () => {
         eventNumber: 0,
         eventType: 'gameEffect',
         newUnitPlacement: newPlacement,
-        unitInstance: reverseState.reversingUnit,
+        // The event records where the unit stood when it turned, which the
+        // substep no longer carries.
+        unitInstance: {
+          placement: getPositionOfUnit(
+            state.boardState,
+            reverseState.reversingUnit,
+          ),
+          unit: reverseState.reversingUnit,
+        },
       };
 
       applyResolveReverseEvent(event, state);

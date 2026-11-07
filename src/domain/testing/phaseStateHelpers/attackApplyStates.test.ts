@@ -55,12 +55,13 @@ describe('createAttackApplyStateWithRout function', () => {
 });
 
 describe('createAttackApplyStateWithReverse function', () => {
-  it('given context, returns state with reverse result and reverseState', () => {
+  it('reports the reverse threshold met and opens the reverse', () => {
     const unit = createUnitWithPlacement();
-    const state = createAttackApplyStateWithReverse(unit);
+    const state = createAttackApplyStateWithReverse(unit.unit);
     expect(state.attackResult.unitReversed).toBe(true);
+    // The substep names the unit; its square comes from the board later.
     expect(
       isOpenSubstep(state.reverseState) && state.reverseState.reversingUnit,
-    ).toBe(unit);
+    ).toBe(unit.unit);
   });
 });

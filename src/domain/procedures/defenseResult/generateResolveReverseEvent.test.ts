@@ -32,7 +32,9 @@ describe('generateResolveReverseEvent function', () => {
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
-    const attackApply = createAttackApplyStateWithReverse(unitWithPlacement);
+    const attackApply = createAttackApplyStateWithReverse(
+      unitWithPlacement.unit,
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
       defendingUnit,
@@ -62,8 +64,8 @@ describe('generateResolveReverseEvent function', () => {
     let s = { ...state, boardState: addUnitToBoard(state.boardState, whiteWp) };
     s = { ...s, boardState: addUnitToBoard(s.boardState, blackWp) };
 
-    const whiteApply = createAttackApplyStateWithReverse(whiteWp);
-    const blackApply = createAttackApplyStateWithReverse(blackWp);
+    const whiteApply = createAttackApplyStateWithReverse(whiteWp.unit);
+    const blackApply = createAttackApplyStateWithReverse(blackWp.unit);
 
     const melee = createMeleeResolutionState(s, {
       blackAttackApplyState: blackApply,

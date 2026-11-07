@@ -320,7 +320,9 @@ export const procedureRegistryStateFactories: Record<
       ...state,
       boardState: addUnitToBoard(state.boardState, unitWithPlacement),
     };
-    const attackApply = createAttackApplyStateWithReverse(unitWithPlacement);
+    const attackApply = createAttackApplyStateWithReverse(
+      unitWithPlacement.unit,
+    );
     const ranged = createRangedAttackResolutionState(withBoard, {
       attackApplyState: attackApply,
       defendingUnit,
