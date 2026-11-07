@@ -4,7 +4,8 @@ import { isFriendlyUnit } from '@queries/unit';
 import { isOpenSubstep } from '../isOpenSubstep';
 
 /**
- * The retreat this player is making, or `null` when they are not retreating.
+ * The retreat this player is making, or `undefined` when they are not
+ * retreating.
  *
  * Three places hold a retreat: the apply on a ranged attack, a front engagement
  * the defender gave ground to, and either side's apply in a melee. Which one is
@@ -16,37 +17,37 @@ import { isOpenSubstep } from '../isOpenSubstep';
  *
  * @param state - The game state
  * @param player - The player whose retreat to find
- * @returns That player's retreat, or `null` when they have none
+ * @returns That player's retreat, or `undefined` when they have none
  */
 export function findRetreatState(
   state: GameState,
   player: 'white' | 'black',
-): RetreatState | null {
+): RetreatState | undefined {
   // Setup has no phase yet, and asking before the round starts is fair.
   const phaseState = state.currentRoundState.currentPhaseState;
   if (isNone(phaseState)) {
-    return null;
+    return undefined;
   }
 
   if (phaseState.phase === 'issueCommands') {
     const commandResolution = phaseState.currentCommandResolutionState;
     // Between commands nobody is retreating.
     if (isPending(commandResolution)) {
-      return null;
+      return undefined;
     }
 
     if (commandResolution.commandResolutionType === 'rangedAttack') {
       const apply = commandResolution.attackApplyState;
       if (isPending(apply)) {
-        return null;
+        return undefined;
       }
       const rangedRetreat = apply.retreatState;
       if (!isOpenSubstep(rangedRetreat)) {
-        return null;
+        return undefined;
       }
       // The defender of a ranged attack may be either player's unit.
       if (!isFriendlyUnit(rangedRetreat.retreatingUnit.unit, player)) {
-        return null;
+        return undefined;
       }
       return rangedRetreat;
     }
@@ -55,18 +56,18 @@ export function findRetreatState(
     // defender gives ground rather than holding.
     const engagement = commandResolution.engagementState;
     if (isPending(engagement)) {
-      return null;
+      return undefined;
     }
     const resolution = engagement.engagementResolutionState;
     if (resolution.engagementType !== 'front') {
-      return null;
+      return undefined;
     }
     const frontRetreat = resolution.retreatState;
     if (isPending(frontRetreat)) {
-      return null;
+      return undefined;
     }
     if (!isFriendlyUnit(frontRetreat.retreatingUnit.unit, player)) {
-      return null;
+      return undefined;
     }
     return frontRetreat;
   }
@@ -74,20 +75,20 @@ export function findRetreatState(
   if (phaseState.phase === 'resolveMelee') {
     const melee = phaseState.currentMeleeResolutionState;
     if (isPending(melee)) {
-      return null;
+      return undefined;
     }
     // Melee holds one apply per side, so the player names the side.
     const sideApply = melee[`${player}AttackApplyState`];
     if (isPending(sideApply)) {
-      return null;
+      return undefined;
     }
     const meleeRetreat = sideApply.retreatState;
     if (!isOpenSubstep(meleeRetreat)) {
-      return null;
+      return undefined;
     }
     return meleeRetreat;
   }
 
   // No other phase moves a unit by retreat.
-  return null;
+  return undefined;
 }

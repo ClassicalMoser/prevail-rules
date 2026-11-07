@@ -19,7 +19,7 @@ export function getWinnerFromUnpayableRoutDiscard(
   // This is asked on every state, and most of a game has no rout open, so a
   // missing rout is an answer rather than something to recover from.
   const routState = findRoutState(state);
-  if (routState === null || !isAwaitingRoutDiscard(routState)) {
+  if (routState === undefined || !isAwaitingRoutDiscard(routState)) {
     return undefined;
   }
 

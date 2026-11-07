@@ -40,7 +40,7 @@ export function generateCompleteAttackApplyEvent(
     // Safe type broadening for more generic function signature
     const defendingPlayer = findNextMeleeDefendingPlayer(state, meleeState);
 
-    if (defendingPlayer === null) {
+    if (defendingPlayer === undefined) {
       throw new Error(
         'No incomplete attack apply state found in melee resolution',
       );

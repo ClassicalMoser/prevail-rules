@@ -36,7 +36,7 @@ export function getLegalRoutDiscardCards<S extends GameState>(
 ): LegalRoutDiscardCards | null {
   const routState = findRoutState(gameState);
   // Nothing routing, or a rout that owes no cards, means no discard to offer.
-  if (routState === null || !isAwaitingRoutDiscard(routState)) {
+  if (routState === undefined || !isAwaitingRoutDiscard(routState)) {
     return null;
   }
   if (routState.numberToDiscard === 'pending') {

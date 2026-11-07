@@ -6,12 +6,13 @@ import { getOtherPlayer } from '@queries/player';
  * The defending player side for the next incomplete melee attack-apply substep,
  * in initiative order (matches `getExpectedMeleeResolutionEvent` when both apply states exist).
  *
- * @returns `null` if either attack-apply state is missing, or both are already complete
+ * @returns `undefined` if either attack-apply state is missing, or both are
+ * already complete
  */
 export function findNextMeleeDefendingPlayer(
   gameState: GameState,
   meleeState: MeleeResolutionState,
-): PlayerSide | null {
+): PlayerSide | undefined {
   const firstPlayer = gameState.currentInitiative;
   const secondPlayer = getOtherPlayer(firstPlayer);
 
@@ -25,7 +26,7 @@ export function findNextMeleeDefendingPlayer(
     firstPlayerAttackApplyState === 'pending' ||
     secondPlayerAttackApplyState === 'pending'
   ) {
-    return null;
+    return undefined;
   }
 
   if (!firstPlayerAttackApplyState.completed) {
@@ -37,5 +38,5 @@ export function findNextMeleeDefendingPlayer(
   }
 
   // Both applies are finished.
-  return null;
+  return undefined;
 }

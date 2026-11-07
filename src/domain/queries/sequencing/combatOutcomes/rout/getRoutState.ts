@@ -14,7 +14,7 @@ import { findRoutState } from './findRoutState';
  */
 export function getRoutState(state: GameState): RoutState {
   const routState = findRoutState(state);
-  if (routState === null) {
+  if (routState === undefined) {
     throw new Error('No rout is in play');
   }
   return routState;

@@ -32,7 +32,7 @@ export { isAwaitingRoutDiscard } from './isAwaitingRoutDiscard';
 
 // Routers. The rout in play, wherever it sits.
 
-// `null` when nothing is routing.
+// `undefined` when nothing is routing.
 export { findRoutState } from './findRoutState';
 
 // Throws when nothing is routing.

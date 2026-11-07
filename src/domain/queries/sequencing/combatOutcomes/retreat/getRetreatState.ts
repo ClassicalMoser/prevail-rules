@@ -19,7 +19,7 @@ export function getRetreatState(
   player: 'white' | 'black',
 ): RetreatState {
   const retreatState = findRetreatState(state, player);
-  if (retreatState === null) {
+  if (retreatState === undefined) {
     throw new Error(`No retreat is in play for ${player}`);
   }
   return retreatState;

@@ -68,7 +68,7 @@ export function getExpectedMeleeResolutionEvent(
     gameState,
     meleeState,
   );
-  if (nextDefendingPlayer !== null) {
+  if (nextDefendingPlayer !== undefined) {
     return getExpectedAttackApplyEvent(
       throwIfPending(
         meleeState[`${nextDefendingPlayer}AttackApplyState`],

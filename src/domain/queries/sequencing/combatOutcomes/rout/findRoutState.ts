@@ -4,7 +4,7 @@ import { getOtherPlayer } from '@queries/player';
 import { isOpenSubstep } from '../isOpenSubstep';
 
 /**
- * The rout in play, or `null` when nothing is routing.
+ * The rout in play, or `undefined` when nothing is routing.
  *
  * Four places hold a rout: a rear engagement during a movement, the apply on a
  * ranged attack, either side's apply in a melee, and a rally during cleanup.
@@ -15,31 +15,31 @@ import { isOpenSubstep } from '../isOpenSubstep';
  * throw. Callers that know a rout must be there use `getRoutState`.
  *
  * @param state - The game state
- * @returns The rout in play, or `null` when none is
+ * @returns The rout in play, or `undefined` when none is
  */
-export function findRoutState(state: GameState): RoutState | null {
+export function findRoutState(state: GameState): RoutState | undefined {
   // Setup has no phase yet, and asking before the round starts is fair.
   const phaseState = state.currentRoundState.currentPhaseState;
   if (isNone(phaseState)) {
-    return null;
+    return undefined;
   }
 
   if (phaseState.phase === 'issueCommands') {
     const commandResolution = phaseState.currentCommandResolutionState;
     // Between commands there is nothing to rout from.
     if (isPending(commandResolution)) {
-      return null;
+      return undefined;
     }
 
     if (commandResolution.commandResolutionType === 'movement') {
       // A movement routs the defender only by engaging it from the rear.
       const engagement = commandResolution.engagementState;
       if (isPending(engagement)) {
-        return null;
+        return undefined;
       }
       const resolution = engagement.engagementResolutionState;
       if (resolution.engagementType !== 'rear') {
-        return null;
+        return undefined;
       }
       const rearRout = resolution.routState;
       return rearRout;
@@ -48,11 +48,11 @@ export function findRoutState(state: GameState): RoutState | null {
     // A ranged rout sits on the attack apply.
     const apply = commandResolution.attackApplyState;
     if (isPending(apply)) {
-      return null;
+      return undefined;
     }
     const rangedRout = apply.routState;
     if (!isOpenSubstep(rangedRout)) {
-      return null;
+      return undefined;
     }
     return rangedRout;
   }
@@ -60,7 +60,7 @@ export function findRoutState(state: GameState): RoutState | null {
   if (phaseState.phase === 'resolveMelee') {
     const melee = phaseState.currentMeleeResolutionState;
     if (isPending(melee)) {
-      return null;
+      return undefined;
     }
 
     // Initiative order, matching the order the applies resolve in.
@@ -75,7 +75,7 @@ export function findRoutState(state: GameState): RoutState | null {
         return sideRout;
       }
     }
-    return null;
+    return undefined;
   }
 
   if (phaseState.phase === 'cleanup') {
@@ -87,15 +87,15 @@ export function findRoutState(state: GameState): RoutState | null {
       ? phaseState.firstPlayerRallyResolutionState
       : phaseState.secondPlayerRallyResolutionState;
     if (isPending(rally)) {
-      return null;
+      return undefined;
     }
     const rallyRout = rally.routState;
     if (isPending(rallyRout)) {
-      return null;
+      return undefined;
     }
     return rallyRout;
   }
 
   // Play-cards and move-commanders rout nobody.
-  return null;
+  return undefined;
 }

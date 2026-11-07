@@ -13,8 +13,9 @@ function findAwaitingRetreatOptionChoice<S extends GameState>(
 ): RetreatState | null {
   for (const player of ['black', 'white'] as const) {
     const retreatState = findRetreatState(gameState, player);
-    // Neither player is obliged to be retreating, so a null here is an answer.
-    if (retreatState === null) {
+    // Neither player is obliged to be retreating, so an absent retreat here
+    // is an answer.
+    if (retreatState === undefined) {
       continue;
     }
     if (

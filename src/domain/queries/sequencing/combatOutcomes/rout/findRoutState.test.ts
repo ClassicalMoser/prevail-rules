@@ -101,7 +101,7 @@ describe('findRoutState function', () => {
     expect(findRoutState(state)).toBe(rout);
   });
 
-  it('answers null when the attack routed nobody', () => {
+  it('answers undefined when the attack routed nobody', () => {
     const empty = createEmptyGameState('standard');
     const defender = createTestUnit('white', { attack: 2 });
     // The attack reached no threshold, so its rout slot is bypassed.
@@ -110,14 +110,14 @@ describe('findRoutState function', () => {
       defendingUnit: defender,
     });
 
-    expect(findRoutState(issueCommands(resolution))).toBeNull();
+    expect(findRoutState(issueCommands(resolution))).toBeUndefined();
   });
 
-  it('answers null in a phase that routs nobody', () => {
+  it('answers undefined in a phase that routs nobody', () => {
     const empty = createEmptyGameState('standard');
     // Play-cards moves no units and so routs none.
     const state = updatePhaseState(empty, createPlayCardsPhaseState());
 
-    expect(findRoutState(state)).toBeNull();
+    expect(findRoutState(state)).toBeUndefined();
   });
 });

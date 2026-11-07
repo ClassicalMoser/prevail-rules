@@ -21,7 +21,7 @@ export { getNextMeleeRetreatStateAwaitingMove } from './getNextMeleeRetreatState
 
 // Routers. The retreat this player is making, wherever it sits.
 
-// `null` when they are not retreating.
+// `undefined` when they are not retreating.
 export { findRetreatState } from './findRetreatState';
 
 // Throws when they are not retreating.

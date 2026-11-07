@@ -45,14 +45,19 @@ rules say so. `getNextMeleeRetreatStateAwaitingMove` knows which retreats are
 waiting on a move rather than a choice. These are the queries that carry
 gameplay rather than position, and they are the ones to read first when the
 sequencing is unclear. A selection with no candidate to pick takes the `find`
-prefix and answers `null`, like `findNextMeleeDefendingPlayer`.
+prefix and answers `undefined`, like `findNextMeleeDefendingPlayer`.
 
 **A router walks every context and answers.** `findRoutState` and
-`findRetreatState` return `null` when nothing is routing or retreating, because
-most of a game has neither and asking is fair. `getRoutState` and
+`findRetreatState` return `undefined` when nothing is routing or retreating,
+because most of a game has neither and asking is fair. `getRoutState` and
 `getRetreatState` are the same walk for a caller that knows there must be one,
-and throw when there is not. `find` returns `null`; `get` throws; no `get` in the folder
-returns `null`.
+and throw when there is not.
+
+`find` and `get` are not a fifth kind. They are a separate axis — whether the
+query is total — and it crosses all four: `findNextMeleeDefendingPlayer` is a
+selection, not a router. Absence is `undefined`, which is what
+[`DESIGN.md`](../../../../../DESIGN.md) asks of a query. `null` is left to mean
+something, as it does in the endgame check, where it is a draw.
 
 A router reads each slot's own sentinel rather than calling the scoped getters,
 so it needs no `try`. That duplicates a little descent knowledge against the
@@ -65,6 +70,6 @@ insists.
 cards. It does not take a game state and it does not find anything.
 
 A getter that also filtered used to live here, and every caller unwound it: one
-re-checked the condition it had already applied, one turned its `null` straight
-back into a throw, and the endgame check kept a list of error message strings to
+re-checked the condition it had already applied, one turned its absent answer
+straight back into a throw, and the endgame check kept a list of error message strings to
 work out which throws meant absence. Keep the walk and the question apart.
