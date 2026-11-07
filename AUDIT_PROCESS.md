@@ -78,8 +78,11 @@ Anything the pass must not change itself is marked where it stands:
 - `TODO(composition)` — duplication, a predicate in the wrong layer, a shape that
   repeats
 
-A mark names what is wrong and what would settle it. Marks are the report: they
-sit where the work is, so a reader checks one by glancing rather than navigating.
+A mark names what is wrong and what would settle it. Marks in the files are the
+report the human reads: they sit where the work is, so a reader checks one by
+glancing rather than cross-referencing a separate list. An entry in
+[`AUDIT.md`](./src/domain/AUDIT.md) may index a finding; it does not replace the
+mark.
 
 Marks left in a scope are the simplest signal that it is still open. It is a
 marker and not a verdict — a mark can outlive a read because you decided to leave
@@ -163,10 +166,10 @@ One kind per commit, in this order where they apply:
 3. Specs
 4. Fixes, one per commit
 
-The split is the read's interface, not bookkeeping. A commentary commit should read
-in a minute; a fix commit gets full attention. A behaviour change has nowhere to
-hide in a commentary commit, and a production hunk inside one is a diff error, not
-a judgement call.
+The split is scout discipline, not the human reading path. A commentary commit
+should stay free of behaviour changes; a fix commit is the only place a behaviour
+change belongs. A production hunk inside a commentary commit is a diff error, not
+a judgement call. The human does not read by commit.
 
 ### Before finishing
 
@@ -178,9 +181,11 @@ Do not change production code to make it pass unless that is an allowed fix.
 
 ## The human read
 
-Read the commits in order.
+Read by file. Open each module in the scope and read it where it stands — source,
+colocated spec, and the marks in those files. Do not read by commit, by PR, or by
+walking a findings list first; those are secondary if used at all.
 
-Read the scope for what it does. Then write the line the machine could not: why the
+Read the file for what it does. Then write the line the machine could not: why the
 module exists, in terms a reader outside this code would follow.
 
 The finding is a module whose reason you cannot state simply, or whose only
@@ -189,7 +194,8 @@ statable reason is a path through another type. Say that in place of the reason.
 A module with a header and no reason is a module to come back to. Treat it as a
 marker, not a verdict: a reason can be missing because nothing needed saying.
 
-Decide each mark. A mark closes as a fix, a comment worth keeping, or a deletion.
+Decide each mark in the file. A mark closes as a fix, a comment worth keeping, or
+a deletion.
 
 Change production code only where the implementation is wrong.
 

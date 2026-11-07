@@ -2,7 +2,10 @@
 
 The author personally reads and comprehends every line of code in this repo. This file tracks that reading. The process is [`AUDIT_PROCESS.md`](../../AUDIT_PROCESS.md).
 
-This audit requires the human read on every directory. A box is checked only after that read. A restart opens a closed box only by saying so here.
+This audit requires the human read on every directory. The read is by file, not by
+commit. Marks in the files are what the read decides; the open findings below are
+an index, not the reading path. A box is checked only after that read. A restart
+opens a closed box only by saying so here.
 
 **Last updated:** 2026-11-07
 
@@ -190,7 +193,8 @@ Colocated `*.test.ts` under `src/domain/**` and `src/application/**` (see `vites
 
 ## Open findings
 
-Each finding stays here until the human read closes it.
+Index only. Prefer the mark in the file. Each entry stays here until the human
+read closes it.
 
 ### `utils`
 
