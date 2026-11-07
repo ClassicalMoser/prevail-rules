@@ -180,7 +180,7 @@ function routInCurrentContext(
  * The rout this player owes cards for and the parent accountable for it, or
  * `undefined` when they are not routing.
  *
- * Five parents hold a rout: the apply on a ranged attack, either side's apply
+ * Five places hold a rout: the apply on a ranged attack, either side's apply
  * in a melee, a rear engagement during a movement, a rally during cleanup, and
  * a retreat that found nowhere to go — that last one nested inside a retreat,
  * which itself sits on an apply or a front engagement.

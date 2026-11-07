@@ -37,9 +37,15 @@ Active command loop under `issueCommands`. `CommandResolutionState` is the union
 
 ### Melee resolution (`meleeResolution/`)
 
-| State                  | Role                                         |
-| ---------------------- | -------------------------------------------- |
-| `MeleeResolutionState` | One melee; nests per-side `AttackApplyState` |
+| State                  | Role                                            |
+| ---------------------- | ----------------------------------------------- |
+| `MeleeResolutionState` | One melee; nests an `AttackApplyState` per side |
+
+Both units strike at once and their applies resolve one at a time, so the two
+slots and the two commitments are named for the order they resolve in —
+`firstPlayer…` / `secondPlayer…`, as the phase steps already are. Which colour
+holds the initiative is a rule of the version being played; who owns an apply is
+read from its `defendingUnit`.
 
 ### Rally (`rallyResolution/`)
 
@@ -49,15 +55,22 @@ Active command loop under `issueCommands`. `CommandResolutionState` is the union
 
 ### Shared combat outcomes (`combatOutcomes/`)
 
-Reusable under more than one parent (attack apply, engagement, rally):
+Reusable under more than one parent (attack apply, retreat, engagement, rally):
 
-| State              | Parents                         | Nested                                      |
-| ------------------ | ------------------------------- | ------------------------------------------- |
-| `AttackResult`     | carried on attack apply         | —                                           |
-| `AttackApplyState` | ranged / melee resolution       | `ReverseState`, `RetreatState`, `RoutState` |
-| `RetreatState`     | attack apply, front engagement  | optional `RoutState`                        |
-| `RoutState`        | retreat, rear engagement, rally | —                                           |
-| `ReverseState`     | attack apply                    | —                                           |
+| State              | Parents                                       | Nested                                      |
+| ------------------ | --------------------------------------------- | ------------------------------------------- |
+| `AttackResult`     | carried on attack apply                       | —                                           |
+| `AttackApplyState` | ranged / melee resolution                     | `ReverseState`, `RetreatState`, `RoutState` |
+| `RetreatState`     | attack apply, front engagement                | optional `RoutState`                        |
+| `RoutState`        | attack apply, retreat, rear engagement, rally | —                                           |
+| `ReverseState`     | attack apply                                  | —                                           |
+
+A rout has four parent states, and the one that gets forgotten is the retreat:
+a defender with nowhere to go routs from inside its own retreat slice. Those
+four are five places to descend, because an attack apply sits on a ranged attack
+and on each side of a melee. Anything that has to _locate_ a rout rather than
+arriving at its parent reads `findRoutLocation`, which walks all five and says
+which parent it found.
 
 ### Engagement (`engagement/`)
 
