@@ -3,11 +3,6 @@
  * Each function compares against the strings in its own signature.
  */
 
-// TODO(composition): these compare strings, not slots. The same word names
-// unrelated facts (`commitmentType: 'pending'`, `restrictionType: 'none'`,
-// `presenceType: 'none'`). A slot that also uses `'bypassed'` is treated as
-// filled by `isResolved` / `throwIfPending`. See AUDIT.md `utils`.
-
 /** Narrows `T | 'pending'` to `'pending'`. */
 export function isPending<T>(value: T | 'pending'): value is 'pending' {
   // Equality with that string alone — which field used it is the caller's.

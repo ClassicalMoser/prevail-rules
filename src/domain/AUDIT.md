@@ -31,7 +31,7 @@ Audit in this order (dependencies flow downward):
 
 ### `utils/` (`@utils`)
 
-- [x] `utils/` — closed 2026-11-07 (composition mark left on `stateSentinels`)
+- [x] `utils/` — closed 2026-11-07
   - [x] Root modules (`assertExact`, `validationResult`, `stateSentinels`, `throwIfMissing`, `randomSource`)
 
 ### `entities/` (`@entities`)
@@ -198,9 +198,11 @@ Colocated `*.test.ts` under `src/domain/**` and `src/application/**` (see `vites
 Index only. Prefer the mark in the file. Each entry stays here until the human
 read closes it.
 
-### `utils`
+### Sentinel guards (design, not `utils`)
 
-- Marked in `stateSentinels.ts` as `TODO(composition)`. The guards compare a value to a string. `isPending` is `=== 'pending'`, `isResolved` is `!== 'pending'`, `isBypassed` is `=== 'bypassed'`, `isApplied` is `!== 'bypassed'`, `isNone` is `=== 'none'`, `isActive` is `!== 'none'`. `throwIfPending` / `throwIfBypassed` / `throwIfNone` throw on their own string. The message on a throw is the caller's.
+No mark: `stateSentinels.ts` is correct for what it is, a comparison to a string. The question is how the slots that use these strings should be typed, and that is decided where they are declared and read (`@game`, `@queries`), not in `utils`.
+
+- The guards compare a value to a string. `isPending` is `=== 'pending'`, `isResolved` is `!== 'pending'`, `isBypassed` is `=== 'bypassed'`, `isApplied` is `!== 'bypassed'`, `isNone` is `=== 'none'`, `isActive` is `!== 'none'`. `throwIfPending` / `throwIfBypassed` / `throwIfNone` throw on their own string. The message on a throw is the caller's.
 - Those strings are not one behavior. `Value | 'pending'` is an unwritten slot. `currentPhaseState` is the only `Value | 'none'`. `'bypassed'` is only on `retreatState`, `reverseState`, and `routState`. `defendingUnitCanRetreat` and `defendingUnitRetreats` are `'pending' | boolean`, and `false` there is a decision.
 - The same words name other facts. `commitmentType: 'pending'` means the player has not chosen. `restrictionType: 'none'` means the card has no trait filter. `presenceType: 'none'` means the space has no unit. `isNone` typechecks on the last two and answers those other facts.
 - The comparison does not know the field. Passing `'bypassed'` to `isResolved` or `throwIfPending` returns it, because those guards only compare against `'pending'`. Specs now cover that cross-sentinel case. On `defendingUnitCanRetreat` and `defendingUnitRetreats`, `false` is a decision. The open check for a retreat, reverse, or rout lives with those queries (`isOpenSubstep`).
