@@ -7,11 +7,13 @@ commit. Marks in the files are what the read decides; the open findings below ar
 an index, not the reading path. A box is checked only after that read. A restart
 opens a closed box only by saying so here.
 
-**Last updated:** 2026-11-07
+**Last updated:** 2026-11-08
 
-**Restart.** `entities`, `game`, and `events` stay closed. Every other checked box is open again. `utils` and `ruleValues` closed 2026-11-07; scout is at `sampleValues`.
+**Restart.** `entities`, `game`, and `events` stay closed. Every other checked box is open again. `utils` and `ruleValues` closed 2026-11-07, `sampleValues` 2026-11-08; scout is at `factories`.
 
 **Scout baseline (2026-11-07, before `sampleValues`):** `pnpm test` 379 files / 1993 tests passed; `pnpm validate` clean.
+
+**Scout baseline (2026-11-08, before `factories`):** `pnpm test` 379 files / 1995 tests passed; `pnpm validate` clean.
 
 ---
 
@@ -80,8 +82,8 @@ Audit in this order (dependencies flow downward):
 
 ### `sampleValues/` (`@sampleValues`)
 
-- [ ] `sampleValues/` — scout complete 2026-11-07 (awaiting human read)
-  - [ ] Root modules (`tempCommandCards`, `tempUnits`, `miniStarterArmy`, …)
+- [x] `sampleValues/` — closed 2026-11-08
+  - [x] Root modules (`tempCommandCards`, `tempUnits`, `miniStarterArmy`, …)
 
 ### `factories/` (`@factories`)
 
