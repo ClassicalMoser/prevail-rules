@@ -8,6 +8,9 @@
 // with the context it descends into. A **selection** picks among candidates by a
 // rule of the game and says `Next`. All three throw when what they name is
 // absent.
+// TODO(misleading): the `find` queries here answer `undefined` and the `From`
+// readers answer `'bypassed'`; the README names four kinds and the find/get
+// split. Settled by matching this to the README.
 
 // Whether a retreat, reverse, or rout substep has been written.
 export { isOpenSubstep } from './isOpenSubstep';

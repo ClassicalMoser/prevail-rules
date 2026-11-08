@@ -64,6 +64,9 @@ export function getCurrentUnitStat(
       let satisfiesUnitRestrictions = true;
       const inspirationRange =
         activeRoundEffect.restrictions.inspirationRangeRestriction;
+      // TODO(composition): this range check repeats `unitMatchesInspirationRange`
+      // in `getLegalUnitsForIssueCommand`, which reads the placement it is given
+      // instead of searching the board. Settled by one helper in queries.
       // A negative range means there is no inspiration restriction.
       // Zero or more is a range, and a missing commander fails it.
       if (inspirationRange >= 0) {

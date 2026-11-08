@@ -1,3 +1,8 @@
+// TODO(composition): `getRangedAttackRoutState`, `getMeleeRoutState`,
+// `getRearEngagementRoutState`, `getRoutStateFromRally`, `getRallyStepRoutState`
+// and `getNextMeleeRoutState` have no production caller; `findRoutLocation`
+// replaced them. Same for `getMeleeReverseState` in `reverse/`. Settled per
+// export: delete it or name the caller it waits for.
 // Routes. One per parent slot that can hold a rout. The route is the fact: which
 // parent's rout this is, and therefore what caused it.
 // A retreat with nowhere to go also holds a rout. That slot has no route getter;

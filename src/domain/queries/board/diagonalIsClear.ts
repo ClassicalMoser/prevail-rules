@@ -13,6 +13,7 @@ export function diagonalIsClear(
   targetCoordinate: Coordinate,
 ): boolean {
   // Check if the origin space is a diagonally adjacent space
+  // TODO(misleading): the check is that the target is diagonal to the origin.
   const originDiagonalSpaces = getDiagonallyAdjacentSpaces(
     board,
     originCoordinate,

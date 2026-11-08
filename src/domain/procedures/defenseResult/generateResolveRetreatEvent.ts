@@ -27,6 +27,10 @@ export function generateResolveRetreatEvent(
 
   let retreatState: RetreatState;
   if (phaseState.phase === 'issueCommands') {
+    // TODO(composition): any ranged fault, including a retreat not yet opened,
+    // falls through to the front engagement. `findRetreatState` walks both
+    // parents without throwing but needs a player. Settled by passing the
+    // retreating player, or a player-free total query.
     try {
       retreatState = getRangedAttackRetreatState(state);
     } catch {

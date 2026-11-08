@@ -33,6 +33,8 @@ export function getWinnerFromUnpayableRoutDiscard(
     return undefined;
   }
 
+  // TODO(composition): hand-rolls `getOtherPlayer`, which throws on a bad side
+  // where this ternary does not. Settled by calling it.
   const winner = routState.player === 'white' ? 'black' : 'white';
   return winner;
 }

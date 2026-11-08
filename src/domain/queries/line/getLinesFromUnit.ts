@@ -27,6 +27,10 @@ import { linesIncludingUnitFromSegment } from './linesIncludingUnitFromSegment';
  * @returns Set of all lines that include the given unit
  * @throws {Error} If the unit is not at its reported placement
  */
+// TODO(composition): no production caller. The line rule the engine uses is
+// `getLineSegmentFromStart` in `getLegalLineEndsForIssueCommand`, which differs:
+// it skips commanded units, filters by `Restrictions`, and caps greedily rather
+// than returning every window. Settled by choosing one as the line rule.
 export function getLinesFromUnit(
   board: Board,
   unit: UnitWithPlacement,

@@ -86,6 +86,11 @@ export function generateResolveMeleeEvent(
   const totalBlackAttackValue = blackAttackValue + blackSupportValue;
 
   // Apply attack values to determine results
+  // TODO(wrong): neither call passes the defender's commitment modifiers, so
+  // a melee commitment's `defense` modifier never raises the defender's
+  // reverse, retreat or rout threshold. The ranged procedure passes them.
+  // Settled by a spec with a committed `defense` modifier: is defense from a
+  // melee commitment meant to apply?
   // White unit attacks black unit
   const blackUnitResult = applyAttackValue(
     state,

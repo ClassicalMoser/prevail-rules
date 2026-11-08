@@ -10,6 +10,11 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
  * @returns The first open rout in initiative order
  * @throws Error when neither apply has an open rout
  */
+// TODO(wrong): an open rout is returned even when it is already paid
+// (`completed`), so once the first side's rout is settled this still answers
+// with it. Its retreat and reverse siblings filter on what is still owed. No
+// production caller, so nothing breaks yet. Settled by a spec with the first
+// rout completed and the second open, then a filter, or deleting it.
 export function getNextMeleeRoutState(state: GameState): RoutState {
   const meleeState = getMeleeResolutionState(state);
   const firstApply = meleeState.firstPlayerAttackApplyState;

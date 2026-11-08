@@ -19,5 +19,9 @@ export function getNextStepForResolveRally(
     return 'secondPlayerChooseRally';
   }
 
+  // TODO(wrong): any step that is not the first player's resolve lands here,
+  // including steps that are not a resolve at all; the JSDoc assumes a check
+  // the code does not make. Both callers read a throwing getter first, so it is
+  // latent. Settled by a spec on a non-resolve step: throw, or this default.
   return 'complete';
 }

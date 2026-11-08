@@ -5,6 +5,11 @@ import { getMeleeResolutionState } from '@queries/sequencing/meleeResolution/get
 
 /**
  * Gets the attack apply state from melee resolution for a specific player.
+ * TODO(misleading): `player` is the defender, the side the apply is written
+ * against (`getAttackApplyStateAt` passes `defendingPlayer`), not the attacker.
+ * The defender-to-slot ternary below is also written inline in the two
+ * melee routers here and in four `@transforms` updaters. Settled by naming the
+ * parameter `defendingPlayer`, and a total `find` variant the routers can share.
  * Assumes we're in resolveMelee phase with a melee resolution state
  * (validation should happen elsewhere).
  *

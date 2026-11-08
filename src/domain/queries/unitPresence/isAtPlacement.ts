@@ -14,6 +14,10 @@ export function isAtPlacement(
   board: Board,
   unitWithPlacement: UnitWithPlacement,
 ): ValidationResult {
+  // TODO(composition): the catch turns any fault (a missing coordinate
+  // included) into "not at the placement", the shape AUDIT.md flags in
+  // `legality`; `applyCompleteUnitMovementEvent` then skips the removal.
+  // Settled by catching only the expected negative, or reporting the message.
   try {
     // Get the declared coordinate of the unit on the board.
     const boardCoordinate = unitWithPlacement.placement.coordinate;

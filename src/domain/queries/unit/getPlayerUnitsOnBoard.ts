@@ -19,6 +19,9 @@ import { hasSingleUnit } from '../unitPresence/hasSingleUnit';
  * // Returns Set([unitInstance1, unitInstance2, ...])
  * ```
  */
+// TODO(composition): a second board walk for "this side's units on the
+// board"; `getPlayerUnitsWithPlacementOnBoard` answers it through
+// `getPlayerUnitWithPosition`. Settled by one owning the definition.
 export function getPlayerUnitsOnBoard(
   state: GameState,
   player: PlayerSide,

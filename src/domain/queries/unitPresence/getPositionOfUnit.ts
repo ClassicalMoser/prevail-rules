@@ -9,6 +9,9 @@ import { hasSingleUnit } from './hasSingleUnit';
 /**
  * Finds the position of a unit on the board by searching all coordinates.
  * Optimized to check unitPresence directly instead of using helper functions.
+ * TODO(misleading): the body does use helpers (`hasNoUnit`, `hasSingleUnit`,
+ * `isSameUnitInstance`), and the "generic type alignment" comment below refers
+ * to a board type parameter that no longer exists. Settled by rewording both.
  *
  * @param board - The board to search
  * @param unit - The unit to find
