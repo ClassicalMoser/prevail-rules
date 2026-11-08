@@ -25,6 +25,10 @@ export function isLegalMove(
     );
   } catch {
     // If getLegalUnitMoves throws (invalid starting position, etc.), the move is not legal
+    // TODO(wrong): the catch also hides faults unrelated to the start
+    // position, so a broken state reads as an illegal move. Settled by
+    // letting `validation` own the try/catch (DESIGN.md: validation wraps
+    // throwing getters), leaving this predicate to throw. See AUDIT.md `legality`.
     return false;
   }
 }

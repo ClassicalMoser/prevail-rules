@@ -62,6 +62,9 @@ export function canMoveThrough(
     return true;
   } catch {
     // If the coordinate doesn't exist, the unit cannot move through it.
+    // TODO(wrong): the comment names one throw, but the catch answers every
+    // fault in the body as "cannot move through". Settled by catching only
+    // the off-board case, or by reporting the message. See AUDIT.md `legality`.
     return false;
   }
 }

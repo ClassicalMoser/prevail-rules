@@ -48,6 +48,10 @@ export function createTestUnit(
 ): UnitInstance {
   const instanceNumber = options?.instanceNumber ?? 1;
 
+  // TODO(misleading): `cost`, `limit` and `morale` are accepted and documented
+  // but never read below, so a spec asking for one gets the default unit.
+  // Settled by looking them up like the other stats, or dropping them from
+  // the options. See AUDIT.md `factories and testing`.
   if (options?.unitType) {
     return createUnitInstance(playerSide, options.unitType, instanceNumber);
   }

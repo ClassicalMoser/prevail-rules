@@ -72,6 +72,9 @@ export function canMoveInto(
     return false;
   } catch {
     // Any error means the unit cannot move into this coordinate.
+    // TODO(wrong): a fault in the state (not a rule) is answered as an illegal
+    // move. Settled by catching only the expected off-board lookup, or by
+    // reporting the message. See AUDIT.md `legality`.
     return false;
   }
 }

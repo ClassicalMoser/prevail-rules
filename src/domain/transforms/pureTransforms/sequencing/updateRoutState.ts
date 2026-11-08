@@ -23,6 +23,13 @@ import { updatePhaseState } from '../state';
  * - Melee resolution (resolveMelee phase)
  * - Rally resolution / lost support (cleanup phase)
  *
+ * TODO(wrong): a rout nested in a retreat (the defender had nowhere to go) is
+ * a fifth location `findRoutLocation` can find but this cannot write. In an
+ * attack apply or a front engagement it throws, so `applyChooseRoutDiscardEvent`
+ * cannot pay that rout. A zero penalty also closes the nested rout without
+ * closing its retreat. Settled by a failing spec for a retreat-held rout, then
+ * writing through `updateRetreatRoutState`. See AUDIT.md `transforms`.
+ *
  * @param state - The current game state
  * @param routState - The new rout state to set
  * @returns A new game state with the updated rout state
