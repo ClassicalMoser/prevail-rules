@@ -87,8 +87,8 @@ Audit in this order (dependencies flow downward):
 
 ### `factories/` (`@factories`)
 
-- [ ] `factories/`
-  - [ ] `board/`
+- [ ] `factories/` — scout complete 2026-11-08 (awaiting human read)
+  - [ ] `board/` — split to one empty-board export per file
   - [ ] `game/` — reopened: `createOwnedCardState` and `createCardState` arrived
     ```
     after the read
@@ -236,6 +236,10 @@ read closes it.
 ### `factories` and `testing`
 
 Each is marked in its file.
+
+- `createInitialGameState` (`factories`): four mode cases that call the same function.
+- `createEmptyGameState` (`factories`): re-keys the board factories by size, as `coordinateLayoutMap` does for layouts. Its round-state comment calls the round completed; the round is the first one to be played.
+- `createCommitToMeleeEvent` (`factories`): a stray fragment in the `@param` tag.
 
 - `UnitPlacement` (`entities`): a `unit` prefix on a coordinate and a facing.
 - `AssignUnitSupportEvent` (`events`): one of five fields documented.
