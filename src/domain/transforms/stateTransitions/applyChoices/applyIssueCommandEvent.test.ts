@@ -1,9 +1,11 @@
+import { tempCommandCards } from '@sampleValues';
 import type { IssueCommandEvent } from '@events';
 import type { GameState } from '@game';
 import { ISSUE_COMMANDS_PHASE } from '@game';
 
 import { getIssueCommandsPhaseState, isSameUnitInstance } from '@queries';
-import { tempCommandCards, createTestUnit, updateCardState } from '@testing';
+import { createTestUnit, updateCardState } from '@testing';
+
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 

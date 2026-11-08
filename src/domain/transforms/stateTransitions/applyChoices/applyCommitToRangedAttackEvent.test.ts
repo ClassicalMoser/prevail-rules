@@ -1,10 +1,11 @@
+import { tempCommandCards } from '@sampleValues';
 import { getRangedAttackResolutionState } from '@queries';
 import {
-  tempCommandCards,
   createIssueCommandsPhaseState,
   createRangedAttackResolutionState,
   updateCardState,
 } from '@testing';
+
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyCommitToRangedAttackEvent } from './applyCommitToRangedAttackEvent';

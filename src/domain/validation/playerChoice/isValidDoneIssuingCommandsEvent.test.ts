@@ -1,4 +1,6 @@
-import { tempCommandCards, createIssueCommandsPhaseState } from '@testing';
+import { tempCommandCards } from '@sampleValues';
+import { createIssueCommandsPhaseState } from '@testing';
+
 import { updatePhaseState } from '@transforms';
 
 import { isValidDoneIssuingCommandsEvent } from './isValidDoneIssuingCommandsEvent';

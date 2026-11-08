@@ -1,9 +1,8 @@
+import { tempCommandCards } from '@sampleValues';
 import type { PlayerChoiceEvent } from '@events';
 
 import { applyChooseCardEvent } from './applyChoices';
 import { applyPlayerChoiceEvent } from './applyPlayerChoiceEvent';
-
-import { tempCommandCards } from '@testing';
 
 import { createChooseCardEvent, createEmptyGameState } from '@factories';
 

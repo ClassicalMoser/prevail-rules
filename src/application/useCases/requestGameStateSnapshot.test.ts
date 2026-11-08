@@ -1,8 +1,10 @@
+import { tempCommandCards } from '@sampleValues';
 import type { EnginePorts } from '@application/ports';
 import { defaultRandom } from '@utils';
 import type { Army } from '@entities';
 import type { GameForVisibility } from '@game';
-import { tempCommandCards, createUnitWithPlacement } from '@testing';
+import { createUnitWithPlacement } from '@testing';
+
 import { createEmptyGameState } from '@factories';
 import { addUnitToBoard, updateBoardState } from '@transforms';
 

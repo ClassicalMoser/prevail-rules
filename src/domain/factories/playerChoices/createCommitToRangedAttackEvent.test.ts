@@ -1,5 +1,5 @@
+import { tempCommandCards } from '@sampleValues';
 import type { RangedAttackModifier } from '@events';
-import { tempCommandCards } from '@testing';
 
 import { createCommitToRangedAttackEvent } from './createCommitToRangedAttackEvent';
 

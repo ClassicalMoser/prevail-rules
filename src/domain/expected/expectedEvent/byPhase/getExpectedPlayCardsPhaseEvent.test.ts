@@ -1,7 +1,9 @@
+import { tempCommandCards } from '@sampleValues';
 import type { GameStateForVisibility } from '@game';
 
 import { MOVE_COMMANDERS_PHASE, PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
+
 import { updatePhaseState } from '@transforms';
 
 import { getExpectedPlayCardsPhaseEvent } from './getExpectedPlayCardsPhaseEvent';

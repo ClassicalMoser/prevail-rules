@@ -1,5 +1,4 @@
-import { tempCommandCards } from '@testing';
-
+import { tempCommandCards } from '@sampleValues';
 import { burnCardFromPlayed } from './burnCardFromPlayed';
 
 import { createEmptyGameState } from '@factories';

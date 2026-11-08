@@ -1,12 +1,13 @@
+import { tempCommandCards } from '@sampleValues';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
-  tempCommandCards,
   createCleanupPhaseState,
   createRallyResolutionState,
   createRoutState,
   createTestUnit,
   updateCardState,
 } from '@testing';
+
 import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { isValidChooseRoutDiscardEvent } from './isValidChooseRoutDiscardEvent';

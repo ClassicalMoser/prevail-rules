@@ -1,8 +1,8 @@
+import { tempCommandCards } from '@sampleValues';
 import type { ChooseRoutDiscardEvent } from '@events';
 import { throwIfNone, throwIfPending } from '@utils';
 import { getIssueCommandsPhaseState } from '@queries';
 import {
-  tempCommandCards,
   createCleanupPhaseState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
@@ -15,6 +15,7 @@ import {
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
+
 import { updatePhaseState } from '@transforms/pureTransforms';
 
 import { applyChooseRoutDiscardEvent } from './applyChooseRoutDiscardEvent';

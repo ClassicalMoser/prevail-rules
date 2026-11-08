@@ -1,13 +1,14 @@
+import { tempCommandCards } from '@sampleValues';
 import type { GameStateForVisibility } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
-  tempCommandCards,
   createCleanupPhaseState,
   createRallyResolutionState,
   createRoutState,
   createTestUnit,
   updateCardState,
 } from '@testing';
+
 import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getLegalRoutDiscardCards } from './getLegalRoutDiscardCards';

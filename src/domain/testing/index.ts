@@ -50,9 +50,3 @@ export {
   createNoneUnitPresence,
   createSingleUnitPresence,
 } from './unitPresenceHelpers';
-export {
-  blackMiniStarterArmy,
-  tempCommandCards,
-  tempUnits,
-  whiteMiniStarterArmy,
-} from '@sampleValues';

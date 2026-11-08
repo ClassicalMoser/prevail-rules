@@ -1,5 +1,7 @@
+import { tempUnits } from '@sampleValues';
 import { CLEANUP_PHASE } from '@game';
-import { createTestCard, createTestUnit, placed, tempUnits } from '@testing';
+import { createTestCard, createTestUnit, placed } from '@testing';
+
 import {
   addUnitToBoard,
   updateBoardState,

@@ -1,5 +1,4 @@
-import { tempCommandCards } from '@testing';
-
+import { tempCommandCards } from '@sampleValues';
 import { revealBothAwaitingCards } from './revealBothAwaitingCards';
 
 import { createEmptyGameState } from '@factories';

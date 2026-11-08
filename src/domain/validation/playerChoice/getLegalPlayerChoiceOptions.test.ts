@@ -1,8 +1,8 @@
+import { tempCommandCards } from '@sampleValues';
 import type { ExpectedEvent, PlayerChoiceType, PlayerSource } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
-  tempCommandCards,
   createBoardWithCommander,
   createIssueCommandsPhaseState,
   createTestCard,
@@ -10,6 +10,7 @@ import {
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
+
 import {
   addUnitToBoard,
   updateBoardState,

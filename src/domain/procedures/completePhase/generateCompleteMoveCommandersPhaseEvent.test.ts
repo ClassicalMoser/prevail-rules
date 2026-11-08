@@ -1,12 +1,9 @@
+import { tempCommandCards } from '@sampleValues';
 import type { GameState } from '@game';
 
 import { MOVE_COMMANDERS_PHASE } from '@game';
-import {
-  tempCommandCards,
-  createTestCard,
-  createTestCommand,
-  updateCardState,
-} from '@testing';
+import { createTestCard, createTestCommand, updateCardState } from '@testing';
+
 import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { generateCompleteMoveCommandersPhaseEvent } from './generateCompleteMoveCommandersPhaseEvent';

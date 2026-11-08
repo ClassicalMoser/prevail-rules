@@ -1,6 +1,6 @@
+import { tempCommandCards } from '@sampleValues';
 import type { GameState, Phase, PhaseState } from '@game';
 import {
-  tempCommandCards,
   createCleanupPhaseState,
   createIssueCommandsPhaseState,
   createMoveCommandersPhaseState,
@@ -12,6 +12,7 @@ import {
   createTestUnit,
   updateCardState,
 } from '@testing';
+
 import { updatePhaseState, updateCurrentInitiative } from '@transforms';
 
 import { getExpectedEvent } from './getExpectedEvent';

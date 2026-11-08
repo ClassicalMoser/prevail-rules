@@ -1,5 +1,4 @@
-import { tempCommandCards } from '@testing';
-
+import { tempCommandCards } from '@sampleValues';
 import { createChooseCardEvent } from './createChooseCardEvent';
 
 describe('createChooseCardEvent function', () => {

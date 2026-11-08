@@ -1,8 +1,10 @@
+import { tempCommandCards } from '@sampleValues';
 import type { ResolveInitiativeEvent } from '@events';
 import type { GameState } from '@game';
 import { PLAY_CARDS_PHASE } from '@game';
 
-import { tempCommandCards, updateCardState } from '@testing';
+import { updateCardState } from '@testing';
+
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfNone } from '@utils';
 

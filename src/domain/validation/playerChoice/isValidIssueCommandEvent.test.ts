@@ -1,10 +1,11 @@
+import { tempCommandCards } from '@sampleValues';
 import { PLAY_CARDS_PHASE } from '@game';
 import {
-  tempCommandCards,
   createIssueCommandsPhaseState,
   createUnitWithPlacement,
   updateCardState,
 } from '@testing';
+
 import {
   addCommanderToBoard,
   addUnitToBoard,

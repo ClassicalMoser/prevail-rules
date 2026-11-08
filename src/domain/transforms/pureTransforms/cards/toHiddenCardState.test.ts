@@ -1,5 +1,5 @@
+import { tempCommandCards } from '@sampleValues';
 import type { OwnedCardState } from '@game';
-import { tempCommandCards } from '@testing';
 
 import { toHiddenCardState } from './toHiddenCardState';
 

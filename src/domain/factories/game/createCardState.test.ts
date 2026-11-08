@@ -1,5 +1,4 @@
-import { tempCommandCards } from '@testing';
-
+import { tempCommandCards } from '@sampleValues';
 import { createCardState } from './createCardState';
 import { createOwnedCardState } from './createOwnedCardState';
 

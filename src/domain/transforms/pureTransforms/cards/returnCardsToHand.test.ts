@@ -1,5 +1,4 @@
-import { tempCommandCards } from '@testing';
-
+import { tempCommandCards } from '@sampleValues';
 import { returnCardsToHand } from './returnCardsToHand';
 
 import { createEmptyGameState } from '@factories';

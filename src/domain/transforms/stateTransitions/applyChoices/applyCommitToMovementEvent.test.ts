@@ -1,15 +1,16 @@
+import { tempCommandCards } from '@sampleValues';
 import type { CommitToMovementEvent } from '@events';
 import {
   getFrontEngagementStateFromMovement,
   getMovementResolutionState,
 } from '@queries';
 import {
-  tempCommandCards,
   createFrontEngagementState,
   createIssueCommandsPhaseState,
   createMovementResolutionState,
   updateCardState,
 } from '@testing';
+
 import { updatePhaseState } from '@transforms/pureTransforms';
 import { throwIfUndefined } from '@utils';
 

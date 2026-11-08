@@ -1,9 +1,11 @@
+import { tempCommandCards } from '@sampleValues';
 import type { Coordinate } from '@entities';
 import type { GameState } from '@game';
 import type { Event } from '@events';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
 import { PLAY_CARDS_PHASE } from '@game';
-import { tempCommandCards, createResolveMeleePhaseState } from '@testing';
+import { createResolveMeleePhaseState } from '@testing';
+
 import {
   updatePhaseState,
   updateRoundEventStream,

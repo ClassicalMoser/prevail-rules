@@ -1,5 +1,5 @@
+import { tempCommandCards } from '@sampleValues';
 import type { Modifier } from '@entities';
-import { tempCommandCards } from '@testing';
 
 import { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
 
