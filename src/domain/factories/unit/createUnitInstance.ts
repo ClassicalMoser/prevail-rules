@@ -13,5 +13,9 @@ export function createUnitInstance(
   unitType: UnitType,
   instanceNumber: number,
 ): UnitInstance {
-  return { instanceNumber, playerSide, unitType };
+  // A unit has no id of its own. It is the side that fields it, its type and
+  // its number among that side's units of the type, and that triple is how
+  // `isSameUnitInstance` recognizes it again after it has moved.
+  const unit = { instanceNumber, playerSide, unitType };
+  return unit;
 }

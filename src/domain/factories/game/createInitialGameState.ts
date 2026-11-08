@@ -18,6 +18,10 @@ export function createInitialGameState(options: {
 }): GameStateForVisibility<'authoritative'> {
   const { whiteArmy, blackArmy } = options;
 
+  // TODO(composition): the four cases below call the same function with the
+  // same argument; `createEmptyGameState` already looks the board size up from
+  // the mode, so this switch adds only the exhaustiveness check. Settled by
+  // dropping it, or by saying what a mode will add beyond its board size.
   let emptyGameState;
   switch (options.gameMode) {
     // Tutorial shell: small board, empty piles. Hand and reserves are filled below.
@@ -47,7 +51,11 @@ export function createInitialGameState(options: {
     }
   }
 
-  // Create unit instances for each unit in each army.
+  // An army is a list of unit types with a count of each. Every one of those
+  // units is a separate piece to be placed, so each gets its own instance.
+  // Numbering from 1 per type is how a unit of that type is told apart from
+  // its siblings, and `eachUnitPresentOnce` rebuilds the same list to check
+  // that every unit is accounted for.
   const reservedUnits = [];
   for (const unit of whiteArmy.units) {
     for (let i = 1; i <= unit.count; i++) {
@@ -65,6 +73,8 @@ export function createInitialGameState(options: {
     cardState: {
       // Game is created by authoritative engine; non-authoritative states are passed, not created.
       visibility: 'authoritative',
+      // The army's command cards are the hand it takes into battle, and the
+      // hand is its will to fight: a side whose hand is empty has lost.
       // Black command cards are added to their hand.
       black: {
         ...emptyGameState.cardState.black,
@@ -76,7 +86,8 @@ export function createInitialGameState(options: {
         inHand: [...whiteArmy.commandCards],
       },
     },
-    // All units start out in reserve, awaiting setup.
+    // All units start out in reserve, awaiting setup. Neither side has a unit
+    // on the board until it is placed in the setup phase.
     reservedUnits,
   };
 }

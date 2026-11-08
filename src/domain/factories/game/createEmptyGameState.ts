@@ -8,6 +8,10 @@ import {
   createEmptyStandardBoard,
 } from '@factories/board';
 
+// TODO(composition): this re-keys the three board factories by size, and
+// `coordinateLayoutMap` already keys the layouts the same way. A board built
+// from a `BoardType` would own the lookup. Settled by deciding whether
+// `@factories/board` exports one.
 /** The empty board for each size. Keyed by every size, so none is missed. */
 const emptyBoardBySize: Record<BoardType, () => Board> = {
   large: createEmptyLargeBoard,
@@ -15,6 +19,10 @@ const emptyBoardBySize: Record<BoardType, () => Board> = {
   standard: createEmptyStandardBoard,
 };
 
+/**
+ * The game before anyone has mustered: the board it is played on, empty hands
+ * and piles, and a round that has not begun.
+ */
 function shell(board: Board): GameStateForVisibility<'authoritative'> {
   return {
     boardState: board,
@@ -26,6 +34,10 @@ function shell(board: Board): GameStateForVisibility<'authoritative'> {
     // Round number is zero during setup.
     currentRoundNumber: 0,
     // Subject to change, as this usually represents a completed round.
+    // TODO(misleading): this round is the first one to be played, not a
+    // completed one, and it waits for round 1 while `currentRoundNumber` above
+    // is 0 (setup). The spec says the same. Settled by stating which round
+    // this slot holds before the first round starts.
     currentRoundState: {
       commandedUnits: [],
       completedPhases: [],

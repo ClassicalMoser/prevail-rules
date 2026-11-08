@@ -16,6 +16,8 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@events';
  * ordered index of the event in the round, zero-indexed; `modifierTypes` the
  * modifier types the card applies (empty when refusing); `player` the player
  * who is committing (or refusing)
+ * TODO(misleading): the line below is a leftover fragment from an earlier
+ * version of this tag and describes nothing in `fields`. Settled by deleting it.
  * event's index in the round, and the committing player
  * @returns The event
  */
