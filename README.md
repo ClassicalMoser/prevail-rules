@@ -88,6 +88,7 @@ The project uses path aliases (`@entities`, `@queries`, `@validation`, etc.) —
 - [`CONTRIBUTING.md`](./CONTRIBUTING.md) — scripts and review checks
 - [`STYLE.md`](./STYLE.md) — functions, files, commentary, tests
 - [`DESIGN.md`](./DESIGN.md) — pure functions, immutability, events
+- [`ROADMAP.md`](./ROADMAP.md) — terrain, line of sight, hidden units and setup: the next features after the audit
 - [`LAYERS.md`](./LAYERS.md) — what each layer is for
 - [`src/domain/README.md`](./src/domain/README.md) — what sits above the domain
 - [`src/domain/ENGINES.md`](./src/domain/ENGINES.md) — the four engines
