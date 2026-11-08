@@ -218,71 +218,37 @@ read closes it.
 - Three exports have no production caller: `getCurrentStep`,
   `getIsFirstPlayerForResolveRallyStep`, `getRallyResolutionState`.
 
-### `queries/unit` and `queries/unitPresence`
-
-- `getCurrentUnitStat` still has a terrain step that adds nothing.
-- `getPlayerUnitWithPosition` returns the secondary unit without checking its side when the primary is not the asked side.
-- `hasEnemyUnit` treats any engagement as an enemy for both players and does not compare the two sides.
-- `matchesUnitRequirements` requires every listed trait. An older note said "at least one". The comment now matches the code. Confirm that the code is right.
-- One `matchesUnitRequirements` case expected `true` under a title that said it returns false. The title now matches the assertion. Confirm the fact.
-- The command-modifier case titled as a missing `modifiers` field sets that list to `[]`. The `?? []` branch is not what that case builds.
-
 ### `legality`
 
-- Twenty catches across fourteen files. Five wrap a whole function body; nine are
-  scoped to a single call.
-- Four of the five discard the fault entirely — `catch { return false }` — so any
-  error inside becomes a legal answer about the game: `canEngageEnemy` (74 guarded
-  lines), `canMoveInto` (39), `canMoveThrough` (32), `isLegalMove` (6). All four
-  are in `unitMovement/`. Two say so in their comments: "Any error means we cannot
-  engage the enemy", "Any error means the unit cannot move into this coordinate".
-- The fifth, `isValidLine`, wraps 70 lines but keeps the message in `errorReason`,
-  so a fault there is reported rather than answered. That is the shape the other
-  four should take if they keep the catch at all.
+- Twenty catches across fifteen files. Five wrap a whole function body; the rest
+  are scoped to a single call.
+- Four of the five discard the fault entirely, so any error inside becomes a
+  legal answer about the game. All four are in `unitMovement/` and each carries
+  a `TODO(wrong)`: `canEngageEnemy`, `canMoveInto`, `canMoveThrough`,
+  `isLegalMove`.
+- The fifth, `isValidLine`, keeps the message in `errorReason`, so a fault there
+  is reported rather than answered. That is the shape the other four should take
+  if they keep the catch at all.
 
 ### `transforms`
 
-- A rout held by a retreat can be opened and can have its penalty worked out, and
-  then cannot be paid. `applyChooseRoutDiscardEvent` reads it correctly and hands
-  it to `updateRoutState`, which knows the other three parents only and throws
-  "No rout state found in attack apply state".
-- A zero penalty closes that rout in the same write and leaves the retreat holding
-  it open, which `getExpectedRetreatEvent` then refuses: "Retreat state has
-  completed rout but not marked as completed". Closing a nested rout has to close
-  its retreat.
+- Marked in `updateRoutState.ts` as `TODO(wrong)`. A rout held by a retreat can
+  be opened and can have its penalty worked out, and then cannot be paid:
+  `applyChooseRoutDiscardEvent` hands it to `updateRoutState`, which throws for
+  it. A zero penalty also closes the nested rout without closing its retreat,
+  which `getExpectedRetreatEvent` then refuses. Related to the two descents in
+  `queries/sequencing`, above.
 
 ### `factories` and `testing`
 
-- `AssignUnitSupportEvent` documents one of its five fields. Every other player
-  choice event documents all of them. `entities` and `events` are closed, so
-  this is recorded rather than filled in.
-- `UnitPlacement` carries a `unit` prefix for a value that is a coordinate and a
-  facing, with nothing unit-specific in it. Renaming the entity reaches every
-  layer, so it is recorded rather than done.
-- `@testing`'s `createUnitWithPlacement` fabricates the unit through
-  `createTestUnit`, which its name does not say. `createTestUnitWithPlacement`
-  would match `createTestUnit` and `createTestCard`. 34 specs call it, so the
-  rename is its own decision.
-- `@testing`'s `hiddenCards` was written and removed in the same pass. Production
-  derives a hidden card state through `toHiddenCardState` and
-  `projectGameForVisibility` and never constructs one, so a builder for it would
-  be a second authority on a value the engine computes — the same shape of
-  problem as `createRetreatState` inventing `legalRetreatOptions`.
-- `@testing`'s `createTestUnit` accepts `cost`, `limit` and `morale` and
-  ignores all three. A spec that asks for a limit gets whatever the sample unit
-  carries.
+Each is marked in its file.
 
-### Downstream (out of scope here)
-
-- The server does not run this package's load parse. `parseStoredGame` /
-  `parseStoredGameForMode` already parse stored JSON through
-  `legalAuthoritativeGameSchema` (shape plus the game rules). The
-  `GameStorage` port says to do that after `getGame`. Server
-  `load-authoritative-game` casts `gameResult.data as GameForVisibility<'authoritative'>`
-  instead. Game creation still checks armies with `armySchemaForMode`. A
-  stored game that later breaks the rules (or was written without this
-  parse) is trusted on load. Client and server stay out of this repo's
-  work; this is the gap if a load path is added later.
+- `UnitPlacement` (`entities`): a `unit` prefix on a coordinate and a facing.
+- `AssignUnitSupportEvent` (`events`): one of five fields documented.
+- `createUnitWithPlacement` (`testing`): fabricates the unit through
+  `createTestUnit`, which its name does not say.
+- `createTestUnit` (`testing`): accepts `cost`, `limit` and `morale` and ignores
+  all three.
 
 ### Movement (not settled)
 
@@ -290,7 +256,7 @@ Revisit in `legality/unitMovement`, `procedures/movement`, and the movement tran
 
 1. A flexibility spend turns 45° or 180°, not an arbitrary amount.
 2. Keep a canonical path on the moving unit, written by hand or generated, for engagement and animation. The mover currently stays on its start hex while the target is stored beside it, so the move is only half-applied.
-3. Terrain rules have firmed up and are not in the code yet.
+3. Terrain rules have firmed up and are not in the code yet. `getCurrentUnitStat` carries a terrain step that adds nothing until they are.
 
 ---
 
