@@ -1,11 +1,11 @@
 // Empty small board.
-export { createEmptySmallBoard } from './createEmptyBoard';
+export { createEmptySmallBoard } from './createEmptySmallBoard';
 
 // Empty standard board.
-export { createEmptyStandardBoard } from './createEmptyBoard';
+export { createEmptyStandardBoard } from './createEmptyStandardBoard';
 
 // Empty large board.
-export { createEmptyLargeBoard } from './createEmptyBoard';
+export { createEmptyLargeBoard } from './createEmptyLargeBoard';
 
 // Each board size's rows, columns, and the spaces they name; and the layout
 // for a board's size.

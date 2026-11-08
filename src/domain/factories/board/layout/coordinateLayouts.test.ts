@@ -3,11 +3,9 @@
  * the spaces they name.
  */
 
-import {
-  createEmptyLargeBoard,
-  createEmptySmallBoard,
-  createEmptyStandardBoard,
-} from '../createEmptyBoard';
+import { createEmptyLargeBoard } from '../createEmptyLargeBoard';
+import { createEmptySmallBoard } from '../createEmptySmallBoard';
+import { createEmptyStandardBoard } from '../createEmptyStandardBoard';
 import { getCoordinateLayout } from './coordinateLayoutMap';
 import { largeCoordinateLayout } from './largeCoordinateLayout';
 import { smallCoordinateLayout } from './smallCoordinateLayout';

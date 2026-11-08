@@ -1,9 +1,4 @@
 import type { Board, BoardSpace, CoordinateLayout } from '@entities';
-import {
-  largeCoordinateLayout,
-  smallCoordinateLayout,
-  standardCoordinateLayout,
-} from './layout';
 
 /**
  * Creates an empty board space with default values.
@@ -39,7 +34,7 @@ function createEmptyBoardSpace(): BoardSpace {
  * Creates an empty board using the coordinate layout.
  * Generates all coordinates and initializes them with empty spaces.
  */
-function createEmptyBoardWithLayout(
+export function createEmptyBoardWithLayout(
   boardType: Board['boardType'],
   layout: CoordinateLayout,
 ): Board {
@@ -56,25 +51,4 @@ function createEmptyBoardWithLayout(
     board,
     boardType,
   };
-}
-
-/**
- * Creates an empty standard board with all coordinates initialized to default spaces.
- */
-export function createEmptyStandardBoard(): Board {
-  return createEmptyBoardWithLayout('standard', standardCoordinateLayout);
-}
-
-/**
- * Creates an empty small board with all coordinates initialized to default spaces.
- */
-export function createEmptySmallBoard(): Board {
-  return createEmptyBoardWithLayout('small', smallCoordinateLayout);
-}
-
-/**
- * Creates an empty large board with all coordinates initialized to default spaces.
- */
-export function createEmptyLargeBoard(): Board {
-  return createEmptyBoardWithLayout('large', largeCoordinateLayout);
 }
