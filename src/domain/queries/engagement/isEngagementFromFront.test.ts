@@ -31,7 +31,7 @@ describe('isEngagementFromFront function', () => {
     });
   });
 
-  it('an attacker facing one facing off the defender is a front engagement', () => {
+  it('an attacker facing one facing off head-on is not a front engagement', () => {
     expect(isEngagementFromFront('north', 'southWest')).toStrictEqual({
       errorReason: 'Attacker is not facing opposite the defender',
       result: false,
