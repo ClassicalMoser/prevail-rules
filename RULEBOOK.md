@@ -34,25 +34,24 @@ That is the whole game. The rest is how it plays.
 
 ## 2. Set up your first battle
 
-**The board.** Put it between you. It is wider than it is deep; you each sit at a long edge. It needs no markings — nothing in this game is described by naming a square.
+**The board.** Put it between you. It is wider than it is deep; you each sit at a long edge. It needs no markings — nothing in this game is described by naming a square. Leave it bare for your first battle. Terrain, scenarios and the bidding for position (§2.5–2.8, §3.2–3.6) come later.
 
-**Your armies.** For a first game, use these two. Each is a legal Mini army with no Morale to spare.
+**Your armies.** For a first game, use these two. Each carries exactly the Morale a Mini army needs (§3.1.3).
 
-| White — Rome     |     | Black — Carthage       |     |
+| Rome             |     | Carthage               |     |
 | ---------------- | --- | ---------------------- | --- |
 | Manipular Legion | ×4  | Punic Citizen Spearmen | ×4  |
-| Equites          | ×1  | Punic Citizen Cavalry  | ×1  |
-| **114 points**   |     | **109 points**         |     |
+| Equites          | ×1  | Iberian Cavalry        | ×1  |
 
-The points shown are for the units; your cards count toward the limit too (§3.1.3). For a mirror match, both of you can take the Roman list.
+Their numbers are in §15. For a mirror match, both of you can take the Roman list.
 
 **Your cards.** Take eight command cards: two showing initiative 1, two showing 2, two showing 3, two showing 4. For a first game, prefer cards whose command says _Move_, and read the small print: a card that names a kind of unit you do not have cannot order anyone. These eight cards are your hand for the whole battle. There is no pile to draw from — what you hold is what you get, and the only way to get spent cards back is to rally, which you will meet in Phase 5.
 
-**Deploy.** White places the whole army first, then Black. Place your units in the three rows nearest your own edge, one to a space. Stay clear of the two columns at each end — those are the open flanks, and nobody starts in them. Point every unit at the enemy. Black gets to see where White stands before choosing.
+**Deploy.** White places the whole army first, then Black. Place your units in the three rows nearest your own edge, one to a space. Stay clear of the two columns at each end — those are the open flanks, and nobody starts in them. Point every unit at the enemy. Black deploys seeing where White stands; White moves first in return.<sup>[A5](#a5)</sup>
 
 **Your general.** Put it anywhere in those same three rows. It can share a space with one of your units.
 
-**Black has initiative** for the first round.
+**White has initiative** for the first round, as in chess.<sup>[A5](#a5)</sup>
 
 ## 3. Your units
 
@@ -138,7 +137,7 @@ The first player goes first, then the second.
 
 Your general moves up to **4 spaces**, any direction, and can walk over and stop on your own units. It cannot enter a space with an enemy unit in it. It can also stay where it is.
 
-Generals never fight. They are there because most cards only reach units standing near them.
+Generals never fight. They are there because most cards only reach units standing near them. A general sharing a space with a unit can also move with it when it moves or retreats.
 
 ### Phase 3 — Give orders
 
@@ -155,7 +154,7 @@ A unit cannot be ordered twice in a round, and a unit already locked in a fight 
 
 You cannot walk through an enemy, and you cannot stop on a friend. You _can_ walk through a friend if your Flexibility and theirs add up to 6 or more.
 
-> _A Manipular Legion has Speed 2, Flexibility 2. It can step two spaces straight ahead. Or turn, step, turn, step. Or step, step, turn, turn. Any order works, so long as it spends no more than two of each. It cannot walk through another Legion either: 2 and 2 make only 4. An Equites (Flexibility 4) can slip through a Legion: 4 and 2 make 6._
+> _A Manipular Legion has Speed 2, Flexibility 3. It can step two spaces straight ahead. Or turn, step, turn, step. Or step, step, turn, turn, turn. Any order works, so long as it spends no more than two steps and three turns. Two Legions can pass through each other — 3 and 3 make 6 — which is exactly what the manipular lines were drilled to do. Equites (Flexibility 2) cannot pass through a Legion: 2 and 3 make only 5._
 
 **Walking into the enemy.** Step into a space with an enemy in it and you are **engaged**: you both stand in that one space until the fight resolves in Phase 4. What you get depends on which way the two of you end up facing.
 
@@ -198,9 +197,9 @@ Now take each unit's total and compare it against **the other unit's** three thr
 
 The results are carried out a stage at a time: both retreats, then both reverses, then both routs. In each stage the first player's unit goes first. A unit that is going to rout anyway can ignore its own retreat and reverse.
 
-> **A worked fight.** _Your Legion (Attack 4) charges a Spearmen unit (Attack 3). The Spearmen are no faster than your Legion (both Speed 2), so they cannot back off and the two of you lock in. Two more of your Legions stand beside the fight: one is looking straight at it, one is side-on. That is +2 and +1, so your total is 4 + 3 = **7**. The Spearmen have nobody beside them: their total is **3**._
+> **A worked fight.** _Your Legion (Attack 4) charges a Spearmen unit (Attack 3). The Spearmen are slower than your Legion (Speed 1 against 2), so they cannot back off and the two of you lock in. Two more of your Legions stand beside the fight: one is looking straight at it, one is side-on. That is +2 and +1, so your total is 4 + 3 = **7**. The Spearmen have nobody beside them: their total is **3**._
 >
-> _Spearmen thresholds are Retreat 6, Reverse 7, Rout 8. Your 7 reaches Retreat and Reverse but not Rout — so they give ground, then spin round. Badly placed now._
+> _Spearmen thresholds are Retreat 6, Reverse 5, Rout 8 — a phalanx is easier to shake than to push back. Your 7 reaches Retreat and Reverse but not Rout — so they give ground, then spin round. Badly placed now._
 >
 > _Your Legion's thresholds are Retreat 5, Reverse 6, Rout 8. Their 3 reaches none of them. Your Legion is untouched._
 >
@@ -238,7 +237,7 @@ When something comes up that this part does not answer — where exactly a retre
 
 **1.3** Where two effects would resolve at the same moment and the order matters, the **first player resolves first** (§4.1.5).
 
-**1.4** All information on the board is open. Hands are secret. A card played face down in Phase 1 is secret until revealed. Committed cards are revealed as they are committed.
+**1.4** All information on the board is open, except what a hidden stand conceals (§3.6). Hands are secret. A card played face down in Phase 1 is secret until revealed. Committed cards are revealed as they are committed.
 
 **1.5** Nothing is remembered between rounds except what is physically on the table: positions, facings, card piles, whose initiative it is, and any engagement that was not settled. There is no tracking of damage, fatigue, or previous orders.
 
@@ -258,13 +257,13 @@ When something comes up that this part does not answer — where exactly a retre
 | Standard | 12 × 18 | 216    | Standard       |
 | Large    | 24 × 36 | 864    | Epic           |
 
-**2.1.4** Every space is bare, open, level ground. Nothing on the board slows a unit, hides it, or lifts it, and nothing stands between a shooter and its target.<sup>[A3](#a3)</sup>
+**2.1.4** A space is open, level ground unless a terrain piece says otherwise (§2.5–2.8). Learn on a bare board.
 
 ### 2.2 Occupancy
 
 **2.2.1** A space holds **at most one unit**, with one exception: two enemy units may occupy the same space while **engaged** (§6). Such a space is an **engaged space**.
 
-**2.2.2** Commanders do not occupy space. A commander may share a space with a friendly unit, and more than one thing may stand in a space if one of them is a commander.<sup>[A4](#a4)</sup>
+**2.2.2** Commanders do not occupy space. A commander may share a space with a friendly unit, and more than one thing may stand in a space if one of them is a commander. A commander in a unit's space may move with that unit (§4.3.10, §9.1.8).<sup>[A4](#a4)</sup>
 
 **2.2.3** No unit may enter or pass through an engaged space, for any reason, until that engagement is resolved. Neither may a commander.
 
@@ -308,13 +307,74 @@ When something comes up that this part does not answer — where exactly a retre
    An enemy in only one:     fine.
 ```
 
+### 2.5 Terrain
+
+Rough ground does not stop an army. It disorders it. A loose screen of skirmishers threads through scrub without breaking stride; a phalanx forty ranks deep comes out the other side as a crowd. The rules model that with one comparison, and the cost shows up everywhere the unit goes.
+
+**2.5.1 Two numbers.** Every kind of terrain has a **terrain threshold**, how badly it disorders a formation, and a **speed limit**, how much it slows everyone whatever their order.<sup>[A3](#a3)</sup>
+
+| Terrain                                      | Terrain threshold | Speed limit |
+| -------------------------------------------- | ----------------- | ----------- |
+| Road                                         | 0                 | none        |
+| Open                                         | 1                 | none        |
+| Fields (ploughed or irrigated, with ditches) | 2                 | 3           |
+| Ford                                         | 2                 | 2           |
+| Scrub                                        | 3                 | 3           |
+| Stony                                        | 3                 | 3           |
+| Mud                                          | 3                 | 2           |
+| Light forest                                 | 4                 | 2           |
+| Crags                                        | 4                 | 2           |
+| Bank                                         | 4                 | 2           |
+| Marsh                                        | 4                 | 1           |
+| Dense forest                                 | 5                 | 1           |
+
+**2.5.2 Deficit.** A unit whose current Flexibility is below the terrain threshold of its ground has a **deficit** equal to the difference. While it stands there it takes that deficit as a penalty to **every other stat**: Attack, all three of its combat thresholds, Speed and Range. Flexibility itself is not reduced — it is the measure, not the casualty.
+
+> _A Manipular Legion (Flexibility 3) standing in light forest (terrain threshold 4) has a deficit of 1: it fights at Attack 3 instead of 4, and its thresholds drop from 5 / 6 / 8 to 4 / 5 / 7. Punic Citizen Spearmen (Flexibility 1) in the same wood have a deficit of 3: Attack 0, thresholds 3 / 2 / 5. Velites (Flexibility 5) have no deficit at all._
+
+**2.5.3** Cards and commitments can lift a stat by 1 (§8). +1 Flexibility shrinks a deficit by one. That is the reason Flexibility is worth committing even when nobody is turning.
+
+**2.5.4 Nothing is impassable except the board edge.** Every terrain can be crossed by someone; some units will need a lift to do it. A flank that cannot be turned is one that rests on the edge of the board.
+
+**2.5.5 Roads.** A road has terrain threshold 0, so no unit has a deficit on it, even a unit whose card has dropped its Flexibility to 0. A rigid army can trade Flexibility for Speed and march on a road; the same trade on open ground costs it a deficit.
+
+**2.5.6** Plain crops and stubble are open ground. Fields means ground with ditches and furrows a long rigid front cannot absorb. Stony ground is small loose stone; crags are large broken rock. Mud is the milder form of marsh. Terrains that share both numbers (stony and scrub) differ only in look.
+
+### 2.6 Elevation
+
+**2.6.1 Corners.** Each corner of a space is **high (+1)**, **level (0)** or **low (−1)**. Elevation belongs to corners, not whole spaces, because a melee happens inside one space and never across a border; a slope has to be able to run through the space where the fight is.<sup>[A16](#a16)</sup>
+
+**2.6.2** No space has alternating corners (high, low, high, low round the square). A space split two and two runs high on one side and low on the other, and occurs only along a straight passage such as a valley or a ridge line.
+
+**2.6.3 On the board.** Shade shows height: lighter for high, darker for low, graded where a space slopes. In a space that is not level, a faint triangle marks a high corner and a faint circle a low one. Unit bases are octagonal, so corners are never covered.
+
+**2.6.4** Elevation does not slow a unit. It matters in combat (§7.6) and for line of sight (§7.4.6).
+
+### 2.7 Rivers
+
+**2.7.1 Water is low ground.** A wet corner is a low corner (−1). Wetness belongs to each space's own corner, so two neighbours can differ across the same point.
+
+**2.7.2 Banks and fords.** Every space a river touches, on both sides, is **bank** or **ford** (§2.5.1). A river's depth shows in its mix: a shallow river is mostly ford, a deep one mostly bank. Crossing costs what entering those spaces costs; there is no separate crossing charge.
+
+**2.7.3** A river running at 45° alternates spaces with one low corner on one side and three on the other. A space the river touches only at a point, on the outside of a bend, stays dry.
+
+**2.7.4 Holding the bank.** A unit on the bank holds the high side of the slope down to the water (§7.6.1), but shares the bank's deficit. Standing one space back trades that height for time.
+
+### 2.8 Terrain pieces
+
+**2.8.1** Terrain comes on separate pieces, none more than five spaces across. Larger features come in several parts that join at marked points. Pieces never overlap and are never stacked.
+
+**2.8.2** Everything about a space — its terrain, its corners, its water — is printed on the piece. There are no badges or numbers on the board: the art says what the ground is, and the scenario card lists each feature's terrain threshold and speed limit.
+
+**2.8.3** Pieces are two-sided and asymmetrical, so each one offers choices when placed. Open-ground pieces exist too, for denying the enemy a place to put something worse (§3.4.6).
+
 ## 3. Armies and setup
 
 ### 3.1 Building an army
 
-**3.1.1** An army is a list of units and a set of command cards, built to the limits of the chosen game mode.
+**3.1.1** An army is a list of units, a set of command cards and a few scenario cards (§3.1.8), built to the limits of the chosen game mode.
 
-**3.1.2** The cards you choose **are** your hand. You hold all of them from the first round. There is no pile to draw from, nothing in reserve, and no way to add a card once the battle has begun.
+**3.1.2** The cards you choose **are** your hand. You hold all of them from the start, less any you discard in the bid for colour (§3.3.1). There is no pile to draw from, nothing in reserve, and no way to add a card once the battle has begun.
 
 **3.1.3** Mode limits:
 
@@ -327,7 +387,7 @@ When something comes up that this part does not answer — where exactly a retre
 | Cards of _each_ initiative value     | any      | 2     | 3        | 4     |
 | Total cards in hand                  | any      | 8     | 12       | 16    |
 
-Total cost adds up the cost of every unit you field, counting each copy, **and** the cost of every command card you bring. Total Morale adds up the Morale of every unit you field, counting each copy.
+Total cost adds up the cost of every unit you field, counting each copy, **and** the cost of every command card and scenario card you bring. Total Morale adds up the Morale of every unit you field, counting each copy.
 
 **3.1.4** Each unit type shows a **limit** — the most copies of it one army may field (never more than 12).
 
@@ -337,11 +397,67 @@ Total cost adds up the cost of every unit you field, counting each copy, **and**
 
 **3.1.7 The initiative spread is also a leash.** You must take an equal number of cards at each initiative value 1 through 4. No army can be built to always go first.
 
-### 3.2 Deployment
+**3.1.8 Scenario cards.** Your list also carries **three scenario cards** (§3.2), bought from the same points as your units and command cards. Scenario cards are not command cards: they never enter your hand.<sup>[A5](#a5)</sup>
 
-**3.2.1** Decide which long edge each player takes. One is **White**, one is **Black**.
+### 3.2 Scenarios
 
-**3.2.2** Your **deployment zone** is the band of **three rows nearest your own edge**, less the **outermost two columns at each end**. The same rule gives the zone on every board size; only the width changes.
+Most battles are fought from a scenario. Where you fight matters as much as how you fight and with which troops, and both players buy a say in it before the first unit is placed.
+
+**3.2.1** A scenario card shows a deployment zone for Black and one for White, a set of **primary** terrain features, used if this scenario is the one played, and a set of **secondary** features, used when White picks the card to supply terrain for someone else's scenario (§3.3.5). A feature may be a piece of open ground.
+
+**3.2.3** Scenario cards are **public**. Both lists' cards are on the table before the bid, so each player bids knowing what the other could choose.
+
+**3.2.2** Weather belongs to the day, so features that depend on it, such as mud, appear only as primary terrain. Secondary terrain is standing landform.
+
+### 3.3 The setup sequence
+
+Setup is a short series of decisions, each made once, in this order. The sequence is settled in outline; its details are still being playtested.<sup>[A5](#a5)</sup>
+
+**3.3.1 Bid.** The two players bid for the choice of colour, with command cards.
+
+- The player whose army costs more bids first. Bidding first reveals intent, which compensates the smaller army. With equal costs, decide at random.
+- The first bidder may open, or may cede the colour choice to the opponent outright.
+- A bid is the **total number of command cards you have discarded**, face down. Each raise must beat your opponent's total.
+- You may never bid your hand down below **two cards**, since an empty hand loses (§11.1).
+- Holding exactly two cards, before raising you may **burn** one of your discarded cards at random and take the rest back into your hand, then keep discarding. Cards taken back still count toward your bid, so a burn lets a bid run past the size of your hand.
+- Either player may pass at any time, conceding.
+- Discarded bid cards come back at your first rally (§10.3), like any discard. A burn here is not a rally and triggers no support check, but the card is gone, and whatever units it held together will be exposed at your next one (§10.4).
+
+**3.3.2 Colour.** The winner of the bid chooses to be White or Black. **White holds initiative** going into round one; Black chooses the battlefield and deploys first.
+
+**3.3.3 Veto.** White vetoes one of Black's scenario cards.
+
+**3.3.4 Scenario.** Black chooses the scenario from its remaining cards. That sets both deployment zones and the primary terrain.
+
+**3.3.5 White's terrain.** Knowing Black's choice, White chooses which of its own scenario cards supplies the secondary terrain.
+
+**3.3.6 Placement** (§3.4).
+
+**3.3.7 Deployment** (§3.5–3.6).
+
+### 3.4 Placing terrain
+
+**3.4.1** The players take turns placing features, **White first**. Black places the primary features of the chosen scenario; White places the secondary features of its own card. Place them in any order. You need not place them all.
+
+**3.4.2** A feature is one or more pieces placed together. Features may touch the board edge but never each other, not even at a corner.
+
+**3.4.3** A feature made of several parts joins only at its marked points, in its printed shape. You may place a part on its own only if its join point lies on the board edge, so the rest of the feature runs off the board.
+
+**3.4.4** A feature that cannot be placed anywhere is lost.
+
+**3.4.5 Passing.** Passing ends your placement for good. When one player passes or runs out, the other places the rest of their features one after another, as far as they fit.
+
+**3.4.6** The ground no one places is open. A player who passes gives up control of where that open ground lies; an open-ground piece is how you buy it back. Large features claim the most space but may not fit if left late, so the order you place in is a real decision.
+
+### 3.5 Deployment
+
+**3.5.1** **Black deploys first**, then White. Each player places their whole army at once, every unit in their own zone, one per space, each facing any direction they choose. White deploys last, seeing the whole board except what stands conceal (§3.6).<sup>[A5](#a5)</sup>
+
+**3.5.2** Units may deploy into terrain, but not where they would stand at a deficit (§2.5.2) unless every other space in the zone is already taken.
+
+**3.5.3** Place your commander on any space in your zone. It may share that space with one of your own units.
+
+**3.5.4 Without a scenario.** On a bare board, each deployment zone is the band of **three rows nearest your own edge**, less the **outermost two columns at each end**:
 
 | Board    | Zone        | Frontage       |
 | -------- | ----------- | -------------- |
@@ -349,15 +465,27 @@ Total cost adds up the cost of every unit you field, counting each copy, **and**
 | Standard | 3 rows deep | 14 spaces wide |
 | Large    | 3 rows deep | 32 spaces wide |
 
-The two columns at each end lie outside both deployment zones. They are the open flanks: nobody begins there, and getting into them is most of what fast troops are for.
+The two columns at each end lie outside both zones. They are the open flanks: nobody begins there, and getting into them is most of what fast troops are for. Choose colours any way you like. With no battlefield to choose, the trade is simpler: **White deploys first and holds initiative**, so whoever shows their hand first also moves first. Black deploys seeing White's whole army.<sup>[A5](#a5)</sup>
 
-**3.2.3** **White deploys first, then Black.** Each player places their whole army at once: every unit in their zone, one per space, each facing any direction they choose. Black has seen White's army before placing.<sup>[A5](#a5)</sup>
+### 3.6 Hidden units
 
-**3.2.4** Place your commander on any space in your zone. It may share that space with one of your own units.
+An army in a wood or behind a ridge cannot be seen from across the field. A **stand** marks a place where something might be waiting.<sup>[A17](#a17)</sup>
 
-**3.2.5** **Black holds initiative** going into round one. Play begins at Phase 1, where the cards may take it away again.
+**3.6.1 Components.** Each colour has a matched set of numbered stands and numbered cards.
 
-> **Designer's note.** Deployment is deliberately crude in this draft: a flat belt, both sides symmetrical, no scenario terrain, no screening rules, no hidden setup. Scenario-specific zones are the obvious next thing to build.
+**3.6.2 Where.** At deployment, a space that is **hidden** and legal for you to deploy into may take a stand instead of a unit. A space is hidden if no line of sight (§7.4.6) reaches it. Black, deploying first, judges this against White's deployment zone. White, deploying last, judges it against Black's actual deployment, stands included.
+
+**3.6.3 Decoys.** The unit a stand represents is placed face down on the card with the stand's number. A stand may also be a **decoy**, with no unit at all. Not knowing which is the point.
+
+**3.6.4** A hidden unit cannot move. Every stand counts as an enemy unit for movement, for both players: nothing passes through one.
+
+**3.6.5 Reveal.** A stand is revealed when an opposing unit gains line of sight to it or becomes adjacent to it. Its owner may also reveal it at the end of Phase 2. The owner chooses its facing as it is revealed, and from then on it is an ordinary unit.
+
+**3.6.6 Moves are not interrupted.** A unit completes its move before anything is revealed; every stand it can then see or touch is revealed at the end of the move. A unit that wants to look before committing itself should stop short.
+
+**3.6.7 Moving into a stand.** A unit that moves directly into a stand's space reveals it. A real unit there turns to face the mover, and the two resolve a front engagement (§6.3.2), whichever side the mover came from. Here §6.2 and §6.3.1 do not apply. A decoy is removed, and the move ends there.
+
+**3.6.8** Stands can only go in hidden spaces inside your own zone, which in practice means forests and the far side of hills. Most scenarios offer few such spaces, and terrain, not a rule, is what limits them.
 
 ## 4. The round
 
@@ -393,7 +521,7 @@ A battle is fought in rounds. Each round has five phases, resolved in order, and
 
 **4.2.6** A commander may stay where it is.
 
-**4.2.7 Why this matters.** A card's command and its round effect each may carry an **inspiration range**, measured from your commander. A printed range of _none_ means no restriction. A printed range of 0 means the same space as your commander. Where a range is printed, your general's position decides which of your troops it reaches.<sup>[A6](#a6)</sup>
+**4.2.7 Why this matters.** A card's command and its round effect each may carry an **inspiration range**, measured from your commander. A range printed as **—** means no restriction. A range of **0** means the same space as your commander. A round effect that applies to **all** of a trait reaches every unit of that trait, wherever it stands. Where a range is printed, your general's position decides which of your troops it reaches.<sup>[A6](#a6)</sup>
 
 **4.2.8 Commander defeat.** A commander is defeated if it stands in a space where a unit routs in combat. A unit that routs at the support check (§10.4) does not defeat it.<sup>[A15](#a15)</sup> What defeat costs the player is not yet written (see Open design questions). A commander absent from the board reaches no unit with an inspiration range.
 
@@ -451,25 +579,27 @@ If an unbroken rank is longer than eight units, you choose which eight.<sup>[A7]
 3. Move the unit (§5).
 4. If it moved into an enemy-occupied space, an **engagement** begins and is set up now (§6).
 
-Your commander stays where it is; it moves only in Phase 2.<sup>[A9](#a9)</sup>
+A commander standing in the unit's space may move with it, and ends in the unit's final space. It may stay behind instead. Otherwise your commander moves only in Phase 2.<sup>[A9](#a9)</sup>
+
+**Not yet settled:** whether a commander may ride along when the unit moves into an engagement.<sup>[A9](#a9)</sup>
 
 **4.3.11 Resolving a ranged attack order** (§7.4):
 
 1. Choose the firing unit. It must be unengaged and have Range of at least 1. A unit with no legal target, even counting a +1 Range commitment (step 2), is skipped. A Range commitment may therefore be what gives a unit its target.
-2. Before choosing a target, the **attacker** may commit a card for **+1 Range**, which widens the forward arc by one space (§8, §2.4.3). Optional.<sup>[B7](#b7)</sup>
+2. Before choosing a target, the **attacker** may commit a card for **+1 Range**, which widens the forward arc by one space (§8, §2.4.3). Optional.<sup>[B6](#b6)</sup>
 3. Choose one enemy target within its forward arc (§2.4.3). You cannot shoot into a melee: a unit in an engaged space is never a target.
 4. Optionally name **supporters** — other units you ordered with this same command that have not yet fired, and that could each independently shoot that same target. Each supporter adds **+1**, and naming it spends that unit's own shot (§7.3.4).
 5. The **attacker** may commit a card for **+1 Attack** (§8). Optional.
 6. The **defender** may then commit a card for **+1 Defence** (§8.5). Optional.<sup>[B1](#b1)</sup>
 7. Resolve the attack (§7).
 
-A card naming Flexibility adds nothing to a shot until the terrain rules land (§8.4).
+A card naming Flexibility helps a shooter standing at a deficit: +1 Flexibility shrinks the deficit, and with it the penalty to Range and Attack (§2.5.2).
 
 **⚠ Edge case.** An engaged unit can neither shoot nor support a shot. It is busy.
 
 **⚠ Edge case.** Shooting is never automatic. Units with Range do nothing at all unless a Shoot command orders them to fire.
 
-**⚠ Edge case.** **Line of sight is not yet part of the game.** Nothing blocks a shot: intervening units, friendly or enemy, are ignored, and if the target is in the arc and within Range it can be hit. Line of sight is planned, as terrain is; until it arrives, play it as written here.<sup>[A3](#a3)</sup>
+**⚠ Edge case.** The target must also be in **line of sight** (§7.4.6). Units never block sight: you may always shoot over your own line, or over a melee.
 
 ### 4.4 Phase 4 — Resolve Melee
 
@@ -537,6 +667,35 @@ A unit may **never** end its move in a space occupied by another friendly unit, 
 
 **⚠ Edge case.** If you pass through several friendly units in one move, check the combined-Flexibility test **separately for each one**.
 
+### 5.5 Terrain and movement
+
+**5.5.1 The worst ground counts.** Look at every space the move touches: where it starts, every space it passes through, and where it ends. The **highest terrain threshold** and the **lowest speed limit** among them both count, even if they come from different spaces.<sup>[A3](#a3)</sup>
+
+**5.5.2 Work out the move's Speed in this order:**
+
+1. Cap the unit's printed Speed at that lowest speed limit.
+2. Subtract the deficit from that highest terrain threshold (§2.5.2), but not below 0.
+3. Add modifiers: round effect, command and commitment.
+
+The result is the unit's Speed for this move, and only this move. After it, the unit's deficit comes only from the space it stands in. A step the move's Speed does not cover cannot be taken.
+
+Because modifiers come last, a speed bonus can move a unit the deficit had stopped, and can carry a unit past the speed limit.
+
+> _Light horse (Speed 5, Flexibility 3) entering light forest (threshold 4, limit 2): cap at 2, deficit 1, Speed 1. Chariots (4, 1) in fields (2, 3): cap at 3, deficit 1, Speed 2. A pike phalanx (1, 1) cannot enter fields at all — cap 1, deficit 1, Speed 0 — unless a card or commitment lifts its Speed or its Flexibility._
+
+| Unit (Speed, Flexibility) | Fields | Scrub | Light forest, bank | Dense forest |
+| ------------------------- | ------ | ----- | ------------------ | ------------ |
+| Light horse (5, 3)        | 3      | 3     | 1                  | —            |
+| Close cavalry (4, 2)      | 3      | 2     | —                  | —            |
+| Chariots (4, 1)           | 2      | 1     | —                  | —            |
+| Phalanx (1, 1)            | —      | —     | —                  | —            |
+
+A dash means the unit cannot enter without a lift.
+
+**5.5.3 Diagonal steps** count as passing through one of the two orthogonal spaces they cut between, your choice, and pay that space's terrain. A diagonal never crosses a river for free, just as it never slips between two enemies (§5.4.5).
+
+**5.5.4 No exceptions by unit type.** Cavalry, elephants and chariots follow the same rule as everyone else. Their low Flexibility does the work.
+
 **⚠ Edge case.** A unit may be ordered and then not move at all — a legal move of zero steps and zero turns. It still counts as commanded, and still receives the Command's modifiers (§4.3.8). Ordering a unit to stand still and gain +1 Attack is a real and often correct play.
 
 ## 6. Engagements
@@ -578,7 +737,7 @@ Read it as a picture: if the two units are looking at each other, that is a Fron
 **6.3.2 Front engagement.** The defender may be offered the chance to fall back:
 
 1. The defender may **commit** a card for +1 Speed or +1 Flexibility (§8). Optional. (The engaging player had their chance before moving, §4.3.10.)
-2. Compare current **Speed**: each unit's full Speed, including round effects and command modifiers, not what is left of its move. The defender may retreat **only if its Speed is strictly greater** than the engaging unit's.<sup>[A11](#a11)</sup>
+2. Compare current **Speed**: each unit's full Speed, including round effects, command modifiers and the deficit of the ground it stands on (§2.5.2), not what is left of its move. Ground counts here as it does everywhere. The defender may retreat **only if its Speed is strictly greater** than the engaging unit's.<sup>[A11](#a11)</sup>
 3. If it may and chooses to, it makes a retreat move (§9.1). The engagement ends at once; no melee is fought.
 4. Otherwise both units stay locked and fight in Phase 4.
 
@@ -607,12 +766,13 @@ All combat, melee or ranged, works the same way: build an attack value, compare 
 1. **Round Effect** of the attacker's own in-play card, if the unit meets its restrictions (§4.3.7).
 2. **Command modifiers** of that same card, if the unit was commanded this round (§4.3.8).
 3. **Committed card**, if one was committed for this combat (§8).
+4. **Ground**: minus the unit's deficit (§2.5.2), plus or minus elevation (§7.6).
 
 **7.1.3** Then add **support** (§7.3).
 
 **7.1.4** The result is the attack value. Modifiers may be negative, and an attack value cannot be reduced below zero.<sup>[B2](#b2)</sup>
 
-**7.1.5** The same three sources can change a unit's **thresholds**. A Round Effect or Command modifier that names Defence raises Retreat, Reverse and Rout together, for as long as the card is in play. The same inspiration range and unit restrictions apply as for any Round Effect.
+**7.1.5** A deficit also lowers all three of the unit's **thresholds** while it stands on that ground (§2.5.2). The same three card sources can change a unit's **thresholds**. A Round Effect or Command modifier that names Defence raises Retreat, Reverse and Rout together, for as long as the card is in play. The same inspiration range and unit restrictions apply as for any Round Effect.
 
 ### 7.2 Melee
 
@@ -626,7 +786,7 @@ All combat, melee or ranged, works the same way: build an attack value, compare 
 4. Compare each unit's attack value against the **other** unit's thresholds.<sup>[B3](#b3)</sup>
 5. Apply the results a stage at a time: both retreats, then both reverses, then both routs. In each stage the **first player's unit goes first** (§7.5.6).
 
-A card naming Flexibility adds nothing to a melee until the terrain rules land (§8.4).
+A card naming Flexibility helps a unit fighting at a deficit: +1 Flexibility shrinks the deficit, and with it the penalty to Attack and thresholds (§2.5.2).
 
 **7.2.3** If neither unit routs or retreats, they remain engaged and will fight again next round.
 
@@ -638,8 +798,8 @@ A card naming Flexibility adds nothing to a melee until the terrain rules land (
 > _8 meets the defender's Rout: the defender breaks._
 > _6 meets the attacker's Retreat and Reverse but not its Rout: the attacker falls back, then turns about._
 
-> _A real pairing. A **Manipular Legion** (Attack 4; thresholds 5 / 6 / 8) with +3 support strikes **Libyan Spearmen** (Attack 4; thresholds 6 / 7 / 8) with +2 support. The Legion's value is 7, the Spearmen's is 6._
-> _7 meets the Spearmen's Retreat (6) and Reverse (7), but not Rout (8). 6 meets the Legion's Retreat (5) and Reverse (6), but not Rout (8). Both units fall back and turn about. Nobody is removed, and nobody pays Morale._
+> _A real pairing. A **Manipular Legion** (Attack 4; thresholds 5 / 6 / 8) with +3 support strikes **Hellenistic Hoplites** (Attack 3; thresholds 7 / 6 / 8) with +2 support. The Legion's value is 7, the Hoplites' is 5._
+> _7 meets the Hoplites' Retreat (7) and Reverse (6), but not Rout (8): they fall back and turn about. 5 meets the Legion's Retreat (5) but not its Reverse (6): it falls back and stays facing the enemy. Nobody is removed, and nobody pays Morale._
 
 ### 7.3 Support
 
@@ -699,13 +859,23 @@ Naming a unit as a supporter **spends its shot**. A command that orders four arc
 
 **7.4.1** The firing unit must be **unengaged** and have current **Range** of at least 1.
 
-**7.4.2** The target must be an **unengaged** enemy unit in the firer's **forward arc** (§2.4.3) out to its current Range. A unit locked in an engagement cannot be shot. Nothing else blocks the shot; line of sight is not yet in the game (§4.3.11).<sup>[A3](#a3)</sup>
+**7.4.2** The target must be an **unengaged** enemy unit in the firer's **forward arc** (§2.4.3), out to its current Range, and in **line of sight** (§7.4.6). A unit locked in an engagement cannot be shot, though it can be shot over.
 
 **7.4.3** Attack value = the firer's Attack (with its modifiers, §7.1) + 1 per supporter (§7.3.4).
 
 **7.4.4** Ranged fire is **one way**. The target does not shoot back.
 
 **7.4.5** The attacker commits first, for Range before choosing the target and for Attack after; then the defender, for Defence, raising the target's thresholds against this shot (§8.5).<sup>[B1](#b1)</sup>
+
+**7.4.6 Line of sight.** A shooter can see a target if a straight line can be drawn from **any corner of the shooter's space** to **any corner of the target's space** without touching a blocking space.<sup>[A18](#a18)</sup>
+
+- **What blocks:** light forest, dense forest, and any space higher than both ends of the line (compare the sum of each space's four corners).
+- **Any contact blocks.** A line that touches a blocking space anywhere, along an edge or at a single corner, is blocked. Touching it at the line's own end points does not count.
+- **The target's own space always counts.** So a unit can see out of a forest, but cannot be seen in one, until the shooter is adjacent.
+- **Adjacent spaces** always have line of sight.
+- **Units never block sight**, friend or enemy. Distance is the cost of a shot, not the bodies in between.
+
+> _Skirmishers at the edge of a wood can shoot out at anyone in their arc. Nobody can shoot back at them unless they come right up to the trees._
 
 ### 7.5 Applying the result
 
@@ -717,7 +887,7 @@ Naming a unit as a supporter **spends its shot**. A command that orders four arc
 | **Reverse**   | The unit is turned 180° on the spot (§9.2).                                               |
 | **Rout**      | The unit is removed from the battle; its owner discards cards equal to its Morale (§9.3). |
 
-A printed threshold of **0** is met by any attack at all, even an attack of zero.<sup>[B4](#b4)</sup>
+No unit prints a threshold of 0.
 
 **7.5.2** An attack will often meet more than one threshold. A unit's results come in this order: **retreat, then reverse, then rout.** In a melee the two units' results are interleaved (§7.5.6).
 
@@ -727,9 +897,17 @@ A printed threshold of **0** is met by any attack at all, even an attack of zero
 
 **7.5.5** **A unit that is still sharing a space with an enemy does not reverse.** The reverse is checked at the moment it comes due. If the unit is still engaged then, it simply stays as it is. Within an engagement the two units are in the same situation and are suffering similar fatigue, so neither is yet worse off than the other. What the blow did to a unit shows on the battlefield once the engagement is resolved. A unit whose enemy has since fallen back or been removed is no longer engaged, so it does reverse, and that includes a unit that has just driven its enemy back.
 
-**7.5.6** In a melee, both units' results are decided from the same two attack values, then **carried out a stage at a time: both retreats, then both reverses, then both routs.** In each stage the **first player's unit goes first**. The full order is first player's retreat, second player's retreat, first player's reverse, second player's reverse, first player's rout, second player's rout. Alternating at every step is how initiative counts in a melee: the first player's blow takes effect first at each one. This matters in three places. A unit that has already fallen back is no longer there to keep the other engaged, so the other can reverse (§7.5.5). A unit that is going to rout is still on the board until the rout stage, so the unit engaged with it is still engaged at the reverse stage and does not reverse. And if the first player's Morale payment is more than its owner can bear, the game ends there (§11.2), before the second unit's rout is carried out.
+**7.5.6** In a melee, both units' results are decided from the same two attack values, then **carried out a stage at a time: both retreats, then both reverses, then both routs.** In each stage the **first player's unit goes first**. The full order is first player's retreat, second player's retreat, first player's reverse, second player's reverse, first player's rout, second player's rout. Alternating at every step is how initiative counts in a melee: the first player's blow takes effect first at each one. This matters in three places. A unit that has already fallen back is no longer there to keep the other engaged, so the other can reverse (§7.5.5). A unit that is going to rout is still on the board until the rout stage, so the unit engaged with it is still engaged at the reverse stage and does not reverse. And if the first player's Morale payment is more than its owner can bear, the game ends there (§11.2), before the second unit's rout is carried out.<sup>[B9](#b9)</sup>
 
-**⚠ Edge case.** A unit that **must** retreat but **has no legal retreat** (§9.1.5) **routs instead** — the one case where a result early in the order escalates into the last one. It is among the most dangerous situations in the game, and the reason a unit's back should never be against something it cannot cross.<sup>[B5](#b5)</sup>
+**⚠ Edge case.** A unit that **must** retreat but **has no legal retreat** (§9.1.5) **routs instead** — the one case where a result early in the order escalates into the last one. It is among the most dangerous situations in the game, and the reason a unit's back should never be against something it cannot cross.<sup>[B4](#b4)</sup>
+
+### 7.6 Elevation in combat
+
+**7.6.1 Melee.** For each unit in the fight, add up the corners of the shared space that lie **behind it**, on its back side. The side with more gets **+1 Attack**, however large the difference. Holding the slope counts; how steep it is does not. A unit facing a corner has fewer corners behind it than one facing a side, and the rule takes no exception for that.<sup>[A16](#a16)</sup>
+
+**7.6.2 Shooting.** Add up all four corners of the shooter's space and all four of the target's. A shooter standing higher gets **+1 Attack**; one standing lower takes **−1 Attack**.
+
+> _A unit driven back uphill from a fight gains the slope if it is caught again. One pushed off a crest loses it. A ridge in mid-field swings the +1 to whoever holds it._
 
 ## 8. Commitments
 
@@ -739,18 +917,18 @@ It is always optional, it is always worth exactly +1, and the card comes back at
 
 **8.1** A **commitment** is discarding one card from your hand to squeeze +1 out of a unit for one action. Committed cards go to your **discard pile** and come back when you rally (§10.3).
 
-**8.2** A card names the stat it may be committed for — normally exactly one, and no card names more than two. Committing gives **+1** to every stat the card names. The value is never anything but +1. Only stats the moment actually uses can matter, so a second stat on the card is simply ignored where it is no use.<sup>[B6](#b6)</sup>
+**8.2** A card names the stat it may be committed for — normally exactly one, and no card names more than two. Committing gives **+1** to every stat the card names. The value is never anything but +1. Only stats the moment actually uses can matter, so a second stat on the card is simply ignored where it is no use.<sup>[B5](#b5)</sup>
 
 **8.3** Commitment is **always optional** and always declinable, including when your opponent has already committed. Committing your last card empties your hand and loses the game (§11.1).
 
-**8.4** Each moment accepts only certain stats, so a card is committable there only if it names at least one of them. A card whose only stat is Range is no use in a melee, and is not offered. Flexibility does nothing in a shot or a melee until the terrain rules land (§A3), so a card whose only stat is Flexibility adds nothing there either.<sup>[B7](#b7)</sup>
+**8.4** Each moment accepts only certain stats, so a card is committable there only if it names at least one of them. A card whose only stat is Range is no use in a melee, and is not offered. Flexibility counts in a shot or a melee only for a unit at a deficit (§2.5.2); on ground it already handles, a Flexibility card adds nothing.<sup>[B6](#b6)</sup>
 
-| Moment                                     | Stats it accepts                               | Who commits first             |
-| ------------------------------------------ | ---------------------------------------------- | ----------------------------- |
-| Before a movement order resolves (§4.3.10) | Speed, Flexibility                             | The moving player             |
-| Defending a front engagement (§6.3.2)      | Speed, Flexibility                             | The defender                  |
-| A ranged attack (§4.3.11)                  | Attack or Range (attacker), Defence (defender) | Attacker, then defender       |
-| A melee (§7.2.2)                           | Attack, Defence                                | First player, then the second |
+| Moment                                     | Stats it accepts                                                           | Who commits first             |
+| ------------------------------------------ | -------------------------------------------------------------------------- | ----------------------------- |
+| Before a movement order resolves (§4.3.10) | Speed, Flexibility                                                         | The moving player             |
+| Defending a front engagement (§6.3.2)      | Speed, Flexibility                                                         | The defender                  |
+| A ranged attack (§4.3.11)                  | Attack, Range or Flexibility (attacker); Defence or Flexibility (defender) | Attacker, then defender       |
+| A melee (§7.2.2)                           | Attack, Defence, Flexibility                                               | First player, then the second |
 
 **8.4.1** A commitment helps **your own unit only**. In a front engagement, the mover's Speed commitment (made before it moved) and the defender's are each added to their own unit before the two Speeds are compared (§6.3.2).
 
@@ -758,7 +936,7 @@ It is always optional, it is always worth exactly +1, and the card comes back at
 
 **8.6** A card in play (§4.1.6) cannot be committed. Only cards in hand can.
 
-> _Example. Your hand holds **Brace** (commit stat: Defence) and **Fearless Velites** (commit stat: Attack). In a melee you commit Fearless Velites: +1 Attack for your unit. Next round you commit Brace instead. Both cards sit in your discard pile until you rally._
+> _Example. Your hand holds **Brace** (commit stat: Defence) and **Strike** (commit stat: Attack). In a melee you commit Strike: +1 Attack for your unit. Next round you commit Brace instead. Both cards sit in your discard pile until you rally. **Stand and Fight** names two stats, Attack + Defence, and gives both (§8.2)._
 
 **⚠ Edge case.** Commitments come back on your next rally, so a committed card is lent, not spent. What it costs you is the interval: until you rally, that card cannot be played, cannot be committed again, and cannot break a tie for initiative.
 
@@ -779,11 +957,15 @@ The three things an attack can do to a unit, in the order they are carried out (
 **9.1.5** A unit **cannot retreat at all** if:
 
 - an **unengaged enemy unit stands in one of its back spaces, facing it** — its line of withdrawal is cut; or
-- no legal backward move exists — the board edge, friendly units it cannot pass, or enemies are in the way.
+- no legal backward move exists — the board edge, friendly units it cannot pass, enemies or ground it cannot cover are in the way.
 
-**9.1.6** A unit that is required to retreat and cannot, **routs** (§7.5, edge case).<sup>[B5](#b5)</sup>
+**9.1.6** A unit that is required to retreat and cannot, **routs** (§7.5, edge case).<sup>[B4](#b4)</sup>
 
-**9.1.7** A retreating unit may not enter an enemy-occupied space. A retreat never creates an engagement.
+**9.1.7** A retreating unit may not enter an enemy-occupied space, or a hidden stand (§3.6.4). A retreat never creates an engagement.
+
+**9.1.8** A commander standing in the retreating unit's space may retreat with it, and ends in the unit's final space. It may stay behind instead.<sup>[A9](#a9)</sup>
+
+**9.1.9** A retreat is an ordinary move for terrain (§5.5). A unit that cannot cover the ground behind it has no legal retreat, and routs (§9.1.6). A river at your back is a trap.<sup>[A3](#a3)</sup>
 
 ### 9.2 Reverse
 
@@ -813,17 +995,17 @@ A reverse stands for a unit that has been worn down, thrown into disorder or sha
 
 There is one set of cards and it does everything: it is your hand, your losses, your recovery, and the measure of how much army you can keep on the table. Cards move between a few places, and only one of those moves is permanent.
 
-Cards leave your hand three ways — played, committed, or discarded to pay for a rout. All three come back when you rally. Rallying destroys one card, at random, forever. That single burnt card per rally is the only permanent loss in the whole system, and it is the reason a long battle grinds an army down.
+Cards leave your hand four ways — played, committed, discarded to pay for a rout, or discarded in the bid before the battle. All of them come back when you rally. Rallying destroys one card, at random, forever. That burnt card, and any burnt during the bid (§3.3.1), are the only permanent losses in the whole system; and it is the reason a long battle grinds an army down.
 
 ### 10.1 The five places a card can be
 
-| Place                                              | In your hand? | Comes back?                   |
-| -------------------------------------------------- | ------------- | ----------------------------- |
-| **Hand**                                           | yes           | —                             |
-| **In play** — this round's card                    | no            | to the played pile at Cleanup |
-| **Played pile** — cards played in earlier rounds   | no            | on rally, minus one burnt     |
-| **Discard pile** — commitments and Morale payments | no            | on rally, all of it           |
-| **Burnt**                                          | no            | **never**                     |
+| Place                                                    | In your hand? | Comes back?                   |
+| -------------------------------------------------------- | ------------- | ----------------------------- |
+| **Hand**                                                 | yes           | —                             |
+| **In play** — this round's card                          | no            | to the played pile at Cleanup |
+| **Played pile** — cards played in earlier rounds         | no            | on rally, minus one burnt     |
+| **Discard pile** — commitments, Morale payments and bids | no            | on rally, all of it           |
+| **Burnt**                                                | no            | **never**                     |
 
 **10.1.1** Only cards **in your hand** can be played or committed.
 
@@ -834,6 +1016,7 @@ Cards leave your hand three ways — played, committed, or discarded to pay for 
 - **Played** in Phase 1 → in play → played pile.
 - **Committed** for a bonus (§8) → discard pile.
 - **Discarded to pay Morale** when a unit routs (§9.3) → discard pile.
+- **Discarded in the bid** for colour (§3.3.1) → discard pile, or burnt if the bid runs past your hand.
 
 A card is never burnt from your hand. The card burnt at a rally comes from your played pile (§10.3), and is gone for good.
 
@@ -870,15 +1053,15 @@ Three things make it less alarming than it sounds. It only happens when you rall
 
 **10.4.2 What a card holds.** Each card names one kind of unit it can steady, and how many:
 
-- a **named unit type** — _Manipular Legion ×2_
-- a **trait** — _phalanx ×1_
-- **any unit at all** — _generic ×1_
+- **any unit at all** — _generic ×1_, on every generic card
+- a **trait** — _formation ×2_, on every trait card
+- a **named unit type** — on unit cards, which are still being designed
 
 A card always holds at least one place, so every card in your hand contributes.
 
-**10.4.3 Add them up into pools.** Cards naming the same thing combine. Two cards each holding _Velites ×2_ make a single pool of _Velites ×4_. Cards naming different things stay separate: a _phalanx_ pool and a _generic_ pool are two pools, not one.
+**10.4.3 Add them up into pools.** Cards naming the same thing combine. Two cards each holding _formation ×2_ make a single pool of _formation ×4_. Cards naming different things stay separate: a _phalanx_ pool and a _generic_ pool are two pools, not one.
 
-**10.4.4 Assign your units to the pools.** You do this yourself: for each pool, name which of your units fill its places. Every unit on your board needs a place in one pool. A unit may take **only one** place, and only in a pool it matches — a Libyan Spearman can go in a _Libyan Spearmen_ pool, a _phalanx_ pool, or a _generic_ pool, but into exactly one of them. A pool need not be filled if you have no unit that matches it.
+**10.4.4 Assign your units to the pools.** You do this yourself: for each pool, name which of your units fill its places. Every unit on your board needs a place in one pool. A unit may take **only one** place, and only in a pool it matches — Punic Citizen Spearmen can go in a _formation_ pool, a _phalanx_ pool, a _melee_ pool or a _generic_ pool, but into exactly one of them. A pool need not be filled if you have no unit that matches it.
 
 **10.4.5 Use what you have.** If a place is still open and any uncovered unit could fill it, you must fill it. You are **not** required to find the arrangement that saves the most units. Where a unit could go into either a narrow pool or a broad one, that is your call, and a bad call is allowed to cost you.
 
@@ -886,16 +1069,14 @@ A card always holds at least one place, so every card in your hand contributes.
 
 **10.4.7 Pay for them together.** Add up the Morale of everything that just routed and discard that many cards. If you cannot, you lose (§11.2).
 
-> _Your cards hold: Manipular Legion ×2, formation ×1, generic ×1 — four places in three pools._
-> _Your board has five units: 3 Manipular Legions, 1 Libyan Spearmen (formation), 1 Velites._
+> _Your cards hold: **Form Up** (formation ×2), **Dash** (generic ×1), **Strike** (generic ×1) — four places in two pools._
+> _Your board has five units: 3 Manipular Legions (formation), 1 Velites, 1 Equites._
 >
 > _Five units, four places. Something is going to break; the only question is what._
 >
-> _The two Legion places take two Legions. The formation place can take the third Legion or the Spearmen — both qualify. The generic place takes whichever of those two is left. The Velites fit nowhere: they match no remaining pool, and they rout. Pay their Morale, which is nothing._
+> _The formation pool takes two Legions. The generic pool's two places can take any two of the third Legion, the Velites and the Equites. Put the Legion and the Equites there, and the Velites rout. Pay their Morale, which is nothing._
 >
-> _Note what you could have done instead. Put the Velites in the generic place and the Spearmen in the formation place, and it is the third Legion that routs — two Morale instead of none. That assignment is perfectly legal; §10.4.5 does not oblige you to find the better one._
-
-> _From the sample deck. **Move**, **Socketed Pilum** and **Triplex Acies** each hold Manipular Legion ×2, and together make one pool of ×6. **Fearless Velites** holds Velites ×4 alone. Most other sample cards hold one generic place. No sample card holds a trait yet; the trait examples above are illustrative._
+> _Put the Velites in the generic pool instead, and a Legion or the Equites routs — two Morale instead of none. That assignment is perfectly legal; §10.4.5 does not oblige you to find the better one._
 
 **10.4.8 What this costs you over a battle.** Nothing you commit and nothing you pay in Morale reduces your support, because those cards return. Only burning does, and you burn exactly one card per rally. An army's capacity to hold itself together therefore declines slowly, predictably, and entirely as a consequence of how often you have needed to rally.
 
@@ -903,13 +1084,13 @@ A card always holds at least one place, so every card in your hand contributes.
 
 Your hand is your army's will to fight. The game ends the instant it gives out. There is no grace period.
 
-**11.1 An empty hand loses at once.** The moment your hand is empty, you **lose**. It does not matter how many cards wait in your played pile or discard: an army with nothing in hand has nothing left to fight with. That includes playing your last card in Phase 1 and committing your last card (§8).<sup>[B8](#b8)</sup>
+**11.1 An empty hand loses at once.** The moment your hand is empty, you **lose**. It does not matter how many cards wait in your played pile or discard: an army with nothing in hand has nothing left to fight with. That includes playing your last card in Phase 1 and committing your last card (§8).<sup>[B7](#b7)</sup>
 
 **11.2 A cost you cannot survive.** If you must discard cards for Morale (§9.3) and the number owed is **equal to or greater than** the cards in your hand, you **lose immediately**. Paying with your last card is already a loss, which is §11.1 applied: you must survive the payment, not merely make it. A Morale debt of zero costs nothing.
 
-**11.3 Both at once.** If both players' hands become empty at the same moment, which can only happen when both play their last card in Phase 1, the player who **held initiative going into the round** wins, since the cards were committed before they were revealed.<sup>[B8](#b8)</sup>
+**11.3 Both at once.** If both players' hands become empty at the same moment, which can only happen when both play their last card in Phase 1, the player who **held initiative going into the round** wins, since the cards were committed before they were revealed.<sup>[B7](#b7)</sup>
 
-**11.4 No units left.** A player with no units on the board **loses immediately**, however many cards they hold. This will almost never come up, and it is not there for the cases where it does: it closes the door on feeding your own army to the enemy so that you can go on cycling a small hand indefinitely.<sup>[B9](#b9)</sup>
+**11.4 No units left.** A player with no units on the board **loses immediately**, however many cards they hold. This will almost never come up, and it is not there for the cases where it does: it closes the door on feeding your own army to the enemy so that you can go on cycling a small hand indefinitely.<sup>[B8](#b8)</sup>
 
 **11.5** There is no other way to win: no points, no objectives, no territory. Wiping out an army does end the game (§11.4), but as an accident rather than a plan. Long before that, the fighting has usually cost your opponent the cards they needed.
 
@@ -921,7 +1102,19 @@ Your hand is your army's will to fight. The game ends the instant it gives out. 
 
 ## 12. Player aid
 
-### 12.1 The round at a glance
+### 12.1 Before the battle
+
+```
+BID          higher-cost army bids first · bid = cards discarded · keep 2 in hand
+COLOUR       winner chooses · White: initiative, deploys last · Black: picks battlefield, deploys first
+VETO         White strikes one of Black's scenario cards
+SCENARIO     Black picks: zones + primary terrain
+TERRAIN      White picks one of its cards for secondary terrain
+PLACEMENT    alternate, White first · features never touch · pass = done
+DEPLOYMENT   Black, then White · stands in hidden spaces
+```
+
+### 12.2 The round at a glance
 
 ```
 @@FIG phases@@
@@ -948,7 +1141,7 @@ Your hand is your army's will to fight. The game ends the instant it gives out. 
                      then second player: same
 ```
 
-### 12.2 Quick tables
+### 12.3 Quick tables
 
 **Initiative** — card values run 1 to 4. Lower wins; tie goes to the current holder.
 
@@ -960,13 +1153,25 @@ Your hand is your army's will to fight. The game ends the instant it gives out. 
 | One turn: 45° either way, or 180° | 1 Flexibility            |
 | Passing through a friendly unit   | combined Flexibility ≥ 6 |
 
+**Ground** — deficit = terrain threshold − Flexibility. A deficit is a penalty to Attack, thresholds, Speed and Range. A move takes the worst threshold and the worst speed limit it touches: cap Speed at the limit, subtract the deficit, then add modifiers (§5.5).
+
+| Road | Open | Fields, ford | Scrub, stony, mud | Light forest, crags, bank, marsh | Dense forest |
+| ---- | ---- | ------------ | ----------------- | -------------------------------- | ------------ |
+| 0    | 1    | 2            | 3                 | 4                                | 5            |
+
+Speed limits: fields, scrub, stony 3 · ford, mud, light forest, crags, bank 2 · marsh, dense forest 1.
+
+**Elevation** — melee: more corners behind you, +1 Attack. Shooting: higher space +1 Attack, lower −1.
+
+**Line of sight** — any corner to any corner. Blocked by forest and by ground higher than both ends; touching counts. Units never block. Adjacent always sees.
+
 **Engagement type** — engaging unit's facing vs. defender's facing
 
 | Same or 45° off                   | 90° off                                 | Opposite                                     |
 | --------------------------------- | --------------------------------------- | -------------------------------------------- |
 | **Rear** — defender routs at once | **Flank** — defender wheels, no retreat | **Front** — defender may fall back if faster |
 
-**Attack value** — Attack + Round Effect + Command modifiers + committed card + support.
+**Attack value** — Attack + Round Effect + Command modifiers + committed card − deficit ± elevation + support.
 
 **Melee support**
 
@@ -990,9 +1195,9 @@ A unit that will rout can ignore its own retreat and reverse. A forced retreat w
 
 **Commitments** — +1 to each stat the card names, always optional. Each moment accepts only some stats:
 
-| Before moving      | Front-engagement defence | Shooting / being shot     | Melee           |
-| ------------------ | ------------------------ | ------------------------- | --------------- |
-| Speed, Flexibility | Speed, Flexibility       | Attack or Range / Defence | Attack, Defence |
+| Before moving      | Front-engagement defence | Shooting / being shot                             | Melee                        |
+| ------------------ | ------------------------ | ------------------------------------------------- | ---------------------------- |
+| Speed, Flexibility | Speed, Flexibility       | Attack, Range, Flexibility / Defence, Flexibility | Attack, Defence, Flexibility |
 
 **You lose when** your hand is empty at any moment, whether you played, committed or paid away your last card, or when you have no units left on the board. If both hands empty at once, initiative wins.
 
@@ -1020,7 +1225,13 @@ Things that come up, in the order players tend to hit them.
 
 **"My unit was hit hard enough to reverse, but it didn't turn."** It was still sharing a space with an enemy when its turn came. Only a unit that has fallen back, or whose enemy has gone, turns about. §7.5.5
 
-**"Can my archers shoot through my own line?"** Yes, for now. Line of sight is not yet in the game, so anything in the forward arc and within Range can be shot. §4.3.11
+**"Can my archers shoot through my own line?"** Yes. Units never block line of sight; only ground does. §7.4.6
+
+**"Can I shoot into the wood at their skirmishers?"** Not unless you are adjacent. The target's own space counts as blocking, so a unit in a forest can see out but cannot be seen in. §7.4.6
+
+**"My phalanx won't go into the fields."** A unit with Speed 1 and Flexibility 1 stops dead at a terrain threshold of 2. Give it +1 Speed or +1 Flexibility, by card or commitment, or go round. §5.5.2
+
+**"Who has initiative in the first round?"** White, always. In a full setup Black has chosen the battlefield in exchange, and deploys first. On a bare board White deploys first, and initiative is the compensation. §3.3.2, §3.5.4
 
 **"Can my archers shoot at a unit that is already engaged?"** No. The target must be alone in its space. §7.4.2
 
@@ -1046,7 +1257,7 @@ Things that come up, in the order players tend to hit them.
 
 **"Can I play or commit my last card?"** You can, and you lose on the spot. An empty hand is an instant loss. Keep a card back. §11.1, §11.6
 
-**"Can I rally with an empty hand?"** No. An empty hand has already lost the game. You can rally with a single card left: your played pile always holds at least this round's card to burn. §10.3, §11.1<sup>[B8](#b8)</sup>
+**"Can I rally with an empty hand?"** No. An empty hand has already lost the game. You can rally with a single card left: your played pile always holds at least this round's card to burn. §10.3, §11.1<sup>[B7](#b7)</sup>
 
 **"If I never rally, do I ever lose units to the support check?"** No. The support check happens only after a rally. Declining to rally is a way to keep units on the board with a hand too thin to justify them — for exactly as long as you can afford to hold cards. §10.3.4
 
@@ -1064,6 +1275,8 @@ Things that come up, in the order players tend to hit them.
 
 **Arc** — the widening cone in front of a unit, used for shooting. §2.4.3
 
+**Bid** — the cards each player discards before the battle for the choice of colour. §3.3.1
+
 **Attack value** — the total a unit brings to one combat: Attack plus modifiers plus support. §7.1
 
 **Back spaces** — the three spaces behind a unit. §2.3.2
@@ -1074,7 +1287,11 @@ Things that come up, in the order players tend to hit them.
 
 **Commit** — to discard a card from hand for +1 to the stat it names, for one action. Always optional. §8
 
-**Discard pile** — cards spent on commitments and Morale. Returns entirely on a rally. §10.1
+**Deficit** — how far a unit's Flexibility falls short of its ground's terrain threshold. A penalty to every other stat while it stands there. §2.5.2
+
+**Discard pile** — cards spent on commitments, Morale and bids. Returns entirely on a rally. §10.1
+
+**Elevation** — high, level or low, marked on each corner of a space. §2.6
 
 **Engagement** — two enemy units locked in the same space. Created in Phase 3, fought in Phase 4. §6
 
@@ -1104,37 +1321,41 @@ Things that come up, in the order players tend to hit them.
 
 **Rout** — removed from the battle; pay Morale. §9.3
 
+**Scenario card** — a deployment map with primary and secondary terrain. Part of your army list, never part of your hand. §3.2
+
 **Round Effect** — a standing modifier from your in-play card, applying to qualifying units whether commanded or not. §4.3.7
+
+**Speed limit** — a cap on a unit's printed Speed for any move that touches that terrain, applied before deficit and modifiers. §2.5.1, §5.5.2
+
+**Stand** — a numbered marker for a hidden unit, or a decoy. §3.6
 
 **Support (combat)** — the bonus adjacent friends lend to a fight. §7.3
 
 **Support (unit)** — the places your cards offer to keep units on the board, filled by you after a rally. A unit with no place routs. §10.4
 
-**Threshold** — Retreat, Reverse, or Rout. Met when the attack value equals or exceeds it. Rout is applied first, then Retreat, then Reverse. §7.5
+**Terrain threshold** — how badly a kind of ground disorders a formation. Not to be confused with a unit's combat thresholds. §2.5.1
 
-**Traits** — the groups cards use to name units: _formation_, _phalanx_, _javelin_, _cavalry_ and _beast_ in this roster. Other armies will use _melee_, _missile_, _shock_, _chariot_, _skirmisher_ and _warband_. §10.4.2
+**Threshold** — Retreat, Reverse, or Rout. Met when the attack value equals or exceeds it. Results are carried out retreat, then reverse, then rout. §7.5
 
-## 15. Unit roster — the Punic Wars
+**Traits** — the groups cards use to name units: _formation, phalanx, warband, skirmish, cavalry, chariot, beast, shock, melee, missile_ and _javelin_. A unit usually has several. §10.4.2
 
-| Unit                   | Cost | Max | Atk | Rng | Spd | Flex | Ret | Rev  | Rout | Morale | Traits             |
-| ---------------------- | ---- | --- | --- | --- | --- | ---- | --- | ---- | ---- | ------ | ------------------ |
-| Velites                | 10   | 8   | 2   | 2   | 3   | 5    | 1   | 0 \* | 3    | 0      | javelin            |
-| Numidian Skirmishers   | 10   | 8   | 2   | 2   | 3   | 5    | 1   | 0 \* | 3    | 0      | javelin            |
-| Alae Socii             | 20   | 8   | 4   | —   | 2   | 4    | 5   | 6    | 7    | 1      | formation          |
-| Libyan Spearmen        | 20   | 8   | 4   | —   | 2   | 1    | 6   | 7    | 8    | 1      | formation, phalanx |
-| Punic Citizen Spearmen | 21   | 8   | 3   | —   | 2   | 1    | 6   | 7    | 8    | 2      | formation, phalanx |
-| Manipular Legion       | 22   | 8   | 4   | —   | 2   | 2    | 5   | 6    | 8    | 2      | formation          |
-| Numidian Cavalry       | 24   | 4   | 2   | 1   | 5   | 5    | 2   | 0 \* | 4    | 0      | cavalry, javelin   |
-| Punic Citizen Cavalry  | 25   | 4   | 4   | —   | 4   | 4    | 3   | 5    | 7    | 2      | cavalry            |
-| Equites                | 26   | 4   | 4   | —   | 4   | 4    | 3   | 5    | 7    | 2      | cavalry            |
-| African Veterans       | 28   | 4   | 4   | —   | 2   | 3    | 5   | 6    | 8    | 2      | formation          |
-| African Elephants      | 45   | 2   | 6   | —   | 3   | 0    | 3   | 3    | 7    | 2      | beast              |
+## 15. Units in this book
 
-\* As printed, a Reverse of 0 is met by any attack (§7.5.1). It may be meant as "never reverses".<sup>[B4](#b4)</sup>
+The full roster — four boxes, 57 unit types — is printed on the unit cards. These are the units this book uses in its examples.
 
-**Reading the roster.** Heavy foot are slow and stiff but hard to break from the front. Skirmishers are fast, nimble, cheap and cost no Morale when they rout, but break to almost anything. Cavalry buys Speed. Elephants buy Attack at the cost of every facing change — Flexibility 0 means an elephant can never turn, and can pass through a friend only if that friend has Flexibility 6.
+| Unit                    | Limit | Morale | Atk | Rng | Spd | Flex | Ret | Rev | Rout | Traits                            |
+| ----------------------- | ----- | ------ | --- | --- | --- | ---- | --- | --- | ---- | --------------------------------- |
+| Manipular Legion        | 12    | 2      | 4   | —   | 2   | 3    | 5   | 6   | 8    | formation, melee, javelin         |
+| Velites                 | 8     | 0      | 2   | 1   | 3   | 5    | 2   | 4   | 5    | skirmish, melee, missile, javelin |
+| Equites                 | 4     | 2      | 4   | —   | 4   | 2    | 4   | 5   | 7    | cavalry, shock, melee             |
+| Punic Citizen Spearmen  | 6     | 2      | 3   | —   | 1   | 1    | 6   | 5   | 8    | formation, phalanx, melee         |
+| Hellenistic Hoplites    | 8     | 2      | 3   | —   | 1   | 2    | 7   | 6   | 8    | formation, phalanx, melee         |
+| Iberian Cavalry         | 5     | 2      | 3   | —   | 4   | 2    | 3   | 4   | 6    | cavalry, melee, javelin           |
+| North African Elephants | 4     | 3      | 5   | —   | 3   | 1    | 7   | 4   | 8    | beast, shock                      |
 
-**Sample cards.** The sample deck has 20 cards: three at initiative 1 (Move, Brace, Screen), seven at 2, seven at 3 and three at 4. Only Socketed Pilum carries a Shoot command; the rest are Move commands. Each card has a Round Effect, a commit stat, and one support grant. Most grant one generic place; Move, Socketed Pilum and Triplex Acies grant Manipular Legion ×2, and Fearless Velites grants Velites ×4.
+**Reading the roster.** Heavy foot are slow and stiff but hard to break from the front; a phalanx is harder to push back than to shake. Skirmishers are fast and nimble and cost little or no Morale when they rout, but break to almost anything. Cavalry buys Speed and pays for it in Flexibility. Elephants hit hardest of all and are very hard to drive back, but are easily thrown into disorder and turn with difficulty. Morale runs from 0 to 3.
+
+**The cards.** Each box has 24 generic cards, six at each initiative. All of them are Move commands, and each holds one place for any unit. There are 72 trait cards, 18 at each initiative. Each is gated to one trait, holds two places for that trait, and is the only kind of card that can carry a Shoot command. A Shoot command moves no units, and no command names more than six individual units.
 
 ---
 
@@ -1166,11 +1387,11 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Also:** The engine explores one turn at the start and one after each step, so it offers no second turn in a row. §5.2.2 lets turns and steps come in any order, including two turns on the spot. This is read from `exploreUnitMoves`, not probed.
 - **To settle:** Restrict the facings `exploreUnitMoves` offers per spend to the two 45° neighbours and the reverse, and let turns repeat in any order within the Flexibility available. Read retreat turning (A14) against the same rule.
 
-<a id="a3"></a>**A3. Terrain, elevation, water and line of sight are planned and absent.** _Code lags rule._ (Draft §16.7; `AUDIT.md` item 3.)
+<a id="a3"></a>**A3. Terrain does nothing yet.** _Code lags rule._ (`ROADMAP.md` §1; `AUDIT.md`, Movement item 3.)
 
-- **Rule:** Ground is bare and transparent; shots ignore everything between firer and target.
-- **Code does:** Board spaces carry terrain, elevation and water fields that no rule reads (`src/domain/entities/board/`). `getCurrentUnitStat` has a terrain step "not yet implemented; this step adds nothing" (`queries/unit/getCurrentUnitStat.ts`). Shooting checks only the arc and range (`legality/choiceOptions/performRangedAttack/canUnitRangedAttackTarget.ts`, "No line-of-sight check"). `AUDIT.md` says the terrain rules "have firmed up" but are not written down in the code.
-- **To settle:** Write the terrain and line-of-sight rules, then revisit Range, the forward arc and the value of fast troops. Until then, §2.1.4 and the §4.3.11 edge case stand.
+- **Rule:** §2.5, §5.5, §9.1.9: twelve terrains, each with a terrain threshold and a speed limit; a deficit penalises every stat but Flexibility; a move takes the worst threshold and limit it touches, caps Speed, subtracts the deficit, then adds modifiers; a diagonal pays one corner space's terrain, mover's choice. Closed design (`ROADMAP.md` §1).
+- **Code does:** The terrain list is `plain, rocks, scrub, lightForest, denseForest`, with no numbers attached (`entities/board/terrainTypes.ts`). The terrain step in `getCurrentUnitStat` adds nothing (`queries/unit/getCurrentUnitStat.ts`). `canMoveThrough` answers only yes or no, so a move has no cost to compare (`legality/unitMovement/canMoveThrough.ts`, `checkDiagonalMove.ts`, `exploreUnitMoves.ts`). Retreats already go through `exploreUnitMoves`, so terrain should reach them for free (`getLegalRetreats.ts`).
+- **To settle:** Follow `ROADMAP.md` §6.1 in order: terrain types with their two numbers, then the deficit in `getCurrentUnitStat` (Range included, Flexibility excluded), then movement cost. Add retreat specs for a river at the back. The deficit applies everywhere a stat is read, the front-engagement Speed comparison included (§6.3.2; author, 2026-11-08). The string terrain types and the eight-direction water cover (`entities/board/waterCover.ts`) are placeholders and can go: water is a low corner on a bank or ford.
 
 <a id="a4"></a>**A4. Commanders can share a space with the enemy commander.** _Rule open._
 
@@ -1178,17 +1399,17 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** Commander movement only refuses enemy units, so it may end on, or pass through, a space holding the enemy commander (`legality/commanderMovement/exploreCommanderMoves.ts`, `exploreCommanderMoves`, `hasEnemyUnit`). Nothing refers to two commanders in one space.
 - **To settle:** Allow it, or forbid ending a move there. Related: the engine never defeats a commander (A15), so a shared space has no consequence today.
 
-<a id="a5"></a>**A5. Deployment is a placeholder, and White deploys first.** _Rule open._ (Draft §16.8.)
+<a id="a5"></a>**A5. The setup sequence does not exist; the engine gives Black initiative and has White deploy first.** _Code lags rule._
 
-- **Rule:** A flat three-row belt, symmetrical, whole army placed at once.
-- **Code does:** The belt is "KISS provisional" and "per-mode / scenario zones will replace this later" (`legality/choiceOptions/setupUnits/getSetupZoneCoordinates.ts`). White sets up first and Black second, whatever the initiative; the comment calls the asymmetry deliberate: seeing the opponent deploy against striking first (`expected/expectedEvent/byPhase/getExpectedSetupUnitsEvent.ts`). Each player places all units and the commander in one go, with any facing, and the commander's space may repeat a unit's (`validation/playerChoice/isValidSetupUnitsEvent.ts`). Draft 3 never said who deploys first.
-- **To settle:** Decide whether deploying first against holding initiative is the intended trade, and say so in the rulebook when the setup rules are rebuilt.
+- **Rule:** §3.2–3.5: scenario cards bought with the army, a bid in discarded cards for colour, White's veto, Black's scenario, White's secondary terrain, alternating placement, then Black deploys and White deploys last. White holds initiative in round one. Closed in outline (`ROADMAP.md` §4). Three scenario cards per list, public before the bid (author, 2026-11-08). The card format is deferred.
+- **Code does:** Setup is one step: White places all units, then Black, in a fixed three-row belt marked "KISS provisional" (`expected/expectedEvent/byPhase/getExpectedSetupUnitsEvent.ts`; `legality/choiceOptions/setupUnits/getSetupZoneCoordinates.ts`). Black starts with initiative (`factories/game/createEmptyGameState.ts`: "Black always begins the game with the initiative"). No bid, scenario, veto or placement phase exists, and the army schema has no scenario cards.
+- **To settle:** Swap the deployment order and the starting initiative now; they are one-line changes and the rest of the sequence depends on them. Then build the phases in `ROADMAP.md` §4.2. Run the paper test of setup time (`ROADMAP.md` §6.3) before the engine work. On a bare board the engine's order is already right (White first); only the starting initiative changes. In a full setup Black deploys first.
 
-<a id="a6"></a>**A6. Inspiration range: "none" is −1, "0" means the commander's own space, and nearly every sample card prints a range.** _Rule open._ (Draft §16.3.)
+<a id="a6"></a>**A6. Inspiration range: the stand-in cards print a range almost everywhere.** _Code lags rule._ (Draft §16.3.)
 
-- **Rule:** A range of none means no restriction; 0 means the commander's space. Draft 3 said most commands print no range.
-- **Code does:** A negative value (−1 is the lowest the schema allows) means no restriction; 0 or more is a range; a missing commander fails every range (`entities/card/restrictions.ts`; `legality/choiceOptions/issueCommand/getLegalUnitsForIssueCommand.ts`, `unitMatchesInspirationRange`; `queries/unit/getCurrentUnitStat.ts`). No sample card uses −1: every command and round effect prints 0 to 4, most commands a 1, so a unit must stand next to the commander to be ordered (`sampleValues/tempCommandCards.ts`). Two round effects print 0 (Brace, Noble Cavalry). The check is made once at issue time for commands, but each time a stat is read for round effects, from wherever the unit then stands. For a unit walking into an enemy the stat is read from its **starting** space (see A11). The same range test is written twice (`TODO(composition)` in `getCurrentUnitStat.ts`); the copies agree today.
-- **To settle:** Decide the printed convention (blank versus −1 versus 0) and whether any shipped card is meant to be unrestricted; then keep one copy of the range test.
+- **Rule:** §4.2.7: a range printed **—** is unrestricted; 0 is the commander's own space; "all" on a round effect reaches every unit of its trait. Most generic commands and many trait commands print —. (Cycle 1 roster, "Generic cards" notes.)
+- **Code does:** A negative value (−1, the schema minimum) means unrestricted, which matches — (`entities/card/restrictions.ts`; `getLegalUnitsForIssueCommand.ts`, `unitMatchesInspirationRange`; `queries/unit/getCurrentUnitStat.ts`). But the stand-in deck never uses it: every command and round effect prints 0 to 4 (`sampleValues/tempCommandCards.ts`), so engine play is far more commander-bound than the real cards. There is no "all of a trait" range at all. The commands are checked once, when issued; round effects are checked every time their stat is read, from wherever the unit then stands (for an engaging unit, its starting space; see A11). The range test is written twice (`TODO(composition)` in `getCurrentUnitStat.ts`).
+- **To settle:** Add an "all" range to round-effect restrictions; keep one copy of the range test.
 
 <a id="a7"></a>**A7. Which eight units a long rank offers depends on where you start; the line rule exists twice.** _Code and rule disagree._
 
@@ -1202,11 +1423,11 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** The destination is chosen first, and `applyMoveUnitEvent` records the mover's commitment as declined (`transforms/stateTransitions/applyChoices/applyMoveUnitEvent.ts`, since `d455135`). The pending-commit branch in `getLegalCommitToMovementEvents.ts` and `getExpectedMovementResolutionEvent.ts` is unreachable, though its tests still build it. Only the front-engagement defender is ever asked.
 - **To settle:** Ask for the commitment before the destination, and read it in the move search (`getLegalUnitMoves`, `exploreUnitMoves`) as well as the Speed contest.
 
-<a id="a9"></a>**A9. A movement order carries a flag to bring the commander along; nothing uses it.** _Rule open._
+<a id="a9"></a>**A9. A commander may ride with a unit; the engine checks a flag for it and never moves the commander.** _Code lags rule._
 
-- **Rule:** None; the commander moves only in Phase 2.
-- **Code does:** The `moveUnit` choice has a `moveCommander` flag, stored in the movement state and never read (`events/playerChoices/moveUnit.ts`; `applyMoveUnitEvent.ts`; `game/substeps/commandResolution/movementResolutionSubstep.ts`).
-- **To settle:** Decide whether a commander may ride with a unit. If not, remove the flag; if so, write the rule (range, engagement, facing).
+- **Rule:** §4.3.10 and §9.1.8: a commander in a unit's space may move with it when the unit moves or retreats, and ends in the unit's final space. (Author decision.)
+- **Code does:** The `moveUnit` choice has a `moveCommander` flag. Validation accepts it only when the player's commander shares the unit's space (`validation/playerChoice/isValidMoveUnitEvent.ts`), and the move stores it in the movement state (`transforms/stateTransitions/applyChoices/applyMoveUnitEvent.ts`; `game/substeps/commandResolution/movementResolutionSubstep.ts`), but nothing moves the commander. Retreat choices have no such flag (`events/playerChoices/chooseRetreatOption.ts`). Read, not probed.
+- **To settle:** Apply the flag by moving the commander to the unit's destination, and give retreats the same option. Decide the engagement case, which runs into §2.2.3 and §4.2.4 (a commander may not enter an engaged or enemy-occupied space).
 
 <a id="a10"></a>**A10. Units and the "blocked diagonal" test do not agree with commanders and support.** _Code and rule disagree._
 
@@ -1244,6 +1465,24 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** The game state carries `lostCommanders`, and `addCommanderToLostCommanders` exists, but nothing in production calls it: a rout never touches a commander (`game/gameState/`; `transforms/pureTransforms/commanders/addCommanderToLostCommanders.ts`). Read, not probed. What a lost commander should change is not written anywhere.
 - **To settle:** Decide what defeat costs, then call the transform from the combat rout path only, keeping the support-check rout out of it.
 
+<a id="a16"></a>**A16. Elevation is a 0–5 height per corner and nothing reads it.** _Code lags rule._
+
+- **Rule:** §2.6, §7.6: each corner is +1, 0 or −1, with no alternating corners. In melee, the side with more corners behind it gets +1 Attack; in shooting, the higher space gets +1 Attack and the lower −1. Closed design (`ROADMAP.md` §1.3). The melee bonus is to Attack (author, 2026-11-08).
+- **Code does:** Corners are integers 0 to 5 (`entities/board/elevation.ts`) and no rule reads them.
+- **To settle:** Change the corner range to −1, 0, +1, enforce no alternating corners, then add both combat comparisons.
+
+<a id="a17"></a>**A17. Hidden units do not exist.** _Code lags rule._
+
+- **Rule:** §3.6: numbered stands and decoys placed in hidden deployment spaces; they cannot move and block all movement; revealed by sight, adjacency, the owner's choice after Phase 2, or a unit moving in. Closed design (`ROADMAP.md` §3). The number of stands per colour is deferred.
+- **Code does:** Nothing. The visibility-split state (`GameStateVisibility`) that hides hands is the obvious home for a stand's identity.
+- **To settle:** Build after line of sight, which decides what is hidden.
+
+<a id="a18"></a>**A18. No line-of-sight check.** _Code lags rule._
+
+- **Rule:** §7.4.6: trace any corner to any corner; forest and higher ground block on any contact; the target's own space counts; adjacent always sees; units never block. Closed design (`ROADMAP.md` §2).
+- **Code does:** Targeting checks side, the attacker's engagement, Range and the arc only (`legality/choiceOptions/performRangedAttack/canUnitRangedAttackTarget.ts`, "No line-of-sight check"). The engaged-target refusal lives elsewhere (`getLegalRangedAttackTargets`, `hasSingleUnit`).
+- **To settle:** Add corner-to-corner tracing after elevation lands, since higher ground blocks. Move the engaged-target refusal into the same predicate, as `ROADMAP.md` §6.1 suggests.
+
 ## B — Combat, commitments, cards, endgame
 
 <a id="b1"></a>**B1. The target of a shot is never offered a Defence card.** _Code lags rule._
@@ -1256,7 +1495,7 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 
 - **Rule:** 7.1.4, an attack value cannot be reduced below zero.
 - **Code does:** sums base, modifiers and support with no floor. `getCurrentUnitStat` returns `baseStat + totalModifier` and `applyAttackValue` compares the raw sum. A negative value fails every threshold, including a printed Reverse of 0, whereas a value of exactly 0 meets it. (`src/domain/queries/unit/getCurrentUnitStat.ts`, `src/domain/queries/attack/applyAttackValue.ts:14`)
-- **To settle:** either add the floor (so a negative attack behaves as 0, and still reverses a 0-threshold unit), or drop the sentence. Settle together with B4.
+- **To settle:** either add the floor (so a negative attack behaves as 0, and still reverses a 0-threshold unit), or drop the sentence.
 
 <a id="b3"></a>**B3. Defence commitments do nothing in melee.** _Code lags rule._
 
@@ -1264,44 +1503,38 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** `generateResolveMeleeEvent` passes no defending modifiers to `applyAttackValue`, so a melee Defence card is discarded for nothing (`procedures/resolveAttack/generateResolveMeleeEvent.ts`; `TODO(wrong)`; unchanged since `f69a8d1`). The ranged path does pass them, and the old rulebook lists Defence as a melee commit.
 - **To settle:** Pass each side's own commitment as that unit's defending modifiers; add a spec with a committed Defence card.
 
-<a id="b4"></a>**B4. Reverse threshold of 0.** _Rule open._ (Draft 16.2; still current.)
-
-- **Rule:** 7.5.1, a threshold is met when the attack value is equal or greater, so 0 is always met.
-- **Code does:** Velites, Numidian Skirmishers and Numidian Cavalry store Reverse 0 and the data comment says dashes are stored as 0, so any non-negative attack meets it. Their thresholds read 1 / 0 / 3, the only non-ascending set. Effect is mostly hidden by 7.5.5 (a unit still engaged does not turn), so it bites on ranged hits and after a retreat. (`src/domain/sampleValues/tempUnits.ts:25,105,125`; `src/domain/queries/attack/applyAttackValue.ts:44-46`)
-- **To settle:** decide whether 0 means "never reverses" (needs a clause or a sentinel) or a real threshold (then print it honestly). Interacts with B2.
-
-<a id="b5"></a>**B5. A rout forced by a blocked retreat cannot be paid.** _Bug._
+<a id="b4"></a>**B4. A rout forced by a blocked retreat cannot be paid.** _Bug._
 
 - **Rule:** 7.5 edge case and 9.1.6, a unit that must retreat and cannot routs and its owner pays Morale (9.3).
 - **Code does:** the engine opens the rout (`triggerRoutFromRetreat`) and `findRoutLocation` can find it, but the rout sits inside the retreat and `updateRoutState` has no case for writing it. For an attack-apply or front-engagement parent it throws, so `applyChooseRoutDiscardEvent` cannot pay it. A zero penalty also closes the nested rout without closing its retreat, which `getExpectedRetreatEvent` then refuses. Marked `TODO(wrong)`. (`src/domain/transforms/pureTransforms/sequencing/updateRoutState.ts:26-37`; AUDIT.md `transforms`)
 - **Probe:** a unit at the board edge hit to Retreat runs `openRetreat → triggerRoutFromRetreat → resolveRout → chooseRoutDiscard`; the discard throws "No rout state found in attack apply state" (`updateRoutState.ts:113`). With Morale 0, `getExpectedEvent` throws instead. The game stalls either way.
 - **To settle:** a failing spec for a retreat-held rout, then write through `updateRetreatRoutState`. Until then the rulebook states the intent; the engine would crash at the payment.
 
-<a id="b6"></a>**B6. A card with two commit stats applies both.** _Rule open._ (Draft 8.2 offered a choice.)
+<a id="b5"></a>**B5. A card with two commit stats applies both.** _Rule open._
 
-- **Rule:** draft 8.2, "where one does, choose as you commit."
-- **Code does:** `modifiersFromCompletedCommitment` turns every stat on the card into +1, and the events offer no choice between them. A card may name one or two stats (`min(1).max(2)`). No sample card names two. (`src/domain/queries/card/modifiersFromCompletedCommitment.ts:10-20`; `src/domain/entities/card/commandCard.ts:64`)
-- **To settle:** decide between "both apply" (as written in 8.2 now) and "choose one", then make the legal-events list and the modifier query agree. Note too that a two-stat card committed where one stat is not accepted still lends the other.
+- **Rule:** §8.2: committing gives +1 to every stat the card names. The roster prints such cards as "attack + defense" (Stand and Fight) and "speed + defense" (Evade), which reads as both at once. Draft 3 offered a choice instead.
+- **Code does:** `modifiersFromCompletedCommitment` turns every stat on the card into +1, with no choice (`queries/card/modifiersFromCompletedCommitment.ts`; a card may name one or two, `entities/card/commandCard.ts`). No stand-in card names two, so it is untested in play.
+- **To settle:** Confirm "both". Then decide whether a two-stat card is offered at a moment that accepts only one of its stats. Today it would be, and it would lend both.
 
-<a id="b7"></a>**B7. Flexibility and Range commitments are offered and never read.** _Rule open._
+<a id="b6"></a>**B6. Flexibility and Range commitments are offered and never read.** _Code lags rule._
 
-- **Rule:** §8.4 lists the stats each moment accepts. Flexibility counts before a move (once A8 is fixed). Range widens a shot's forward arc by one (§4.3.11, committed before the target is chosen). Flexibility has no use in a shot or a melee until the terrain rules land.
+- **Rule:** §8.4 lists the stats each moment accepts. Flexibility counts before a move (once A8 is fixed). Range widens a shot's forward arc by one (§4.3.11, committed before the target is chosen). In a shot or a melee, +1 Flexibility shrinks a deficit (§2.5.2), so it matters only on rough ground.
 - **Code does:** Commitments are read only in the front-engagement Speed contest, the ranged attack value and target thresholds, and the melee attack value (`procedures/movement/generateResolveEngageRetreatOptionEvent.ts`; `resolveAttack/`). The engine still accepts Range and Flexibility in shooting, and Flexibility in melee (`getLegalCommitTo*Events.ts`).
-- **To settle:** Make the engine read +1 Range when it builds the forward arc, which means offering the commitment before the target is chosen. Let a Range commitment count when deciding whether a unit has a target at all. Leave Flexibility inert in a shot or a melee until terrain, or stop offering it there.
+- **To settle:** Make the engine read +1 Range when it builds the forward arc, which means offering the commitment before the target is chosen. Let a Range commitment count when deciding whether a unit has a target at all. Keep offering Flexibility in a shot and a melee; it starts to count when the deficit lands (A3).
 
-<a id="b8"></a>**B8. Both hands empty at once is a draw in the engine; the rule gives it to initiative.** _Code lags rule._
+<a id="b7"></a>**B7. Both hands empty at once is a draw in the engine; the rule gives it to initiative.** _Code lags rule._
 
 - **Rule:** §11.1: an empty hand loses at once, so playing or committing your last card loses. §11.3: if both hands empty at the same moment, the player who held initiative going into the round wins (author decision 2026-11-08).
 - **Code does:** `getExpectedEvent` asks `getGameOverWinner` before every event, so playing or committing your last card ends the game at once, as the rule says (`expected/expectedEvent/getExpectedEvent.ts`). Both empty is scored a draw (`queries/gameOver/getWinnerFromEmptyHands.ts`). Probe: an empty hand at the rally choice yields `gameOver`.
 - **To settle:** Give the tie to the player who held initiative going into the round.
 
-<a id="b9"></a>**B9. No-units-left is not a loss.** _Code lags rule._
+<a id="b8"></a>**B8. No-units-left is not a loss.** _Code lags rule._
 
 - **Rule:** §11.4: a player with no units loses. First stated in Draft 3; the old book did not have it, so confidence in intent is moderate.
 - **Code does:** `getGameOverWinner` has two arms, empty hand and unpayable rout; nothing counts units (`queries/gameOver/getGameOverWinner.ts`).
 - **To settle:** Confirm the rule, then add the arm.
 
-<a id="b10"></a>**B10. Melee results are carried out unit by unit; the rule is stage by stage.** _Code lags rule._
+<a id="b9"></a>**B9. Melee results are carried out unit by unit; the rule is stage by stage.** _Code lags rule._
 
 - **Rule:** §7.5.6: both retreats, then both reverses, then both routs, with the first player's unit first in each stage.
 - **Code does:** The engine carries out the first player's unit's results in full (retreat, reverse, rout), then the second player's. A probe on 2026-11-08 confirmed that order; the stage order is read, not probed. The two differ when one unit's retreat would end the other's engagement before its reverse: a first-player unit that only reverses is judged before the second player's unit falls back, so it is still engaged and does not turn, where the rule has it turn.
@@ -1313,7 +1546,7 @@ These were errors in the earlier books, not in the engine. The engine's values a
 
 - **Army limits** (§3.1.3): cost cap 200 / 300 / 500 including cards, Morale floor 10 / 20 / 30, up to 12 copies of a type; Tutorial has no cost, Morale or spread limit (`ruleValues/ruleValues.ts`, `legality/army/`; set in `48aba02`). Draft 3's first-game armies were short of the Morale floor; Part I now fields 4 + 1.
 - **Passing through a friend** (§5.4.2) needs combined Flexibility **6**, not 4 (`MIN_FLEXIBILITY_THRESHOLD`; `48aba02`). Roster Flexibility values were raised to match (§15).
-- **Traits** are _javelin, melee, missile, shock, beast, chariot, cavalry, skirmisher, phalanx, warband, formation_ (`ruleValues/traits.ts`).
+- **Units, cards and traits** now come from the cycle 1 roster, not from Draft 3's Punic Wars table or the engine's stand-ins. The examples in Part I, §2.5.2, §7.2, §8 and §10.4 were reworked to match. Notably, two Manipular Legions can now pass through each other (Flexibility 3 + 3), and Punic Citizen Spearmen have Speed 1.
 - **"The spaces behind"** a unit is the whole half of the board beyond its back rank, not a wedge (`queries/board/areas/getSpacesBehind.ts`) (§2.3.3).
 - **Shooting into a melee** is forbidden (§4.3.11). Draft 3 was silent; the engine has required a lone target since `cd05333`. Confirmed as intended 2026-11-08.
 - **An unresolved engagement is fought again next round** (§7.2.3). Confirmed by probe.
@@ -1323,10 +1556,18 @@ These were errors in the earlier books, not in the engine. The engine's values a
 
 These do not change how the game plays today, but they are worth the next read of the code.
 
+- **Stand-in units and cards.** The engine's sample catalog (`sampleValues/tempUnits.ts`, `tempCommandCards.ts`, `miniStarterArmy.ts`) is test-fixture data, not the game's units. The authoritative units and cards live in version control and change faster than fixtures should. The cycle 1 roster is a more representative source for placeholder values: it would remove the Reverse-0 units, the Flexibility-0 elephants and the deck where nearly every range is 1. The trait list in `ruleValues/traits.ts` says `skirmisher` where the roster says `skirmish`.
+
 - **Faults inside movement checks read as "illegal move".** `canEngageEnemy`, `canMoveInto`, `canMoveThrough` and `isLegalMove` catch everything and return false (`legality/unitMovement/`; `TODO(wrong)` in each). `isValidLine` reports the fault instead, which is the shape the others should take.
 - **Rally offered with an empty played pile, then throws** (`getLegalChooseRallyEvent.ts`, `generateResolveRallyEvent.ts`). Unreachable in play, because the round's card is always in the pile by then (probe-confirmed throw on a constructed state). Offer only "no rally" when the pile is empty.
 - **`getNextMeleeRoutState` returns a rout already paid**, and has no production caller (`queries/sequencing/combatOutcomes/rout/`; `TODO(wrong)`).
 - **`getNextStepForResolveRally` defaults any non-resolve step to complete** (`queries/sequencing/rallyResolution/cleanupPhase/`; `TODO(wrong)`). Callers guard it today.
+
+## Deferred
+
+- The number of hidden stands per colour (§3.6.1).
+- The scenario card format (§3.2).
+- What a terrain piece is as an entity, and how it relates to the board spaces it covers (§2.8).
 
 ## Open design questions
 
