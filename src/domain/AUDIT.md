@@ -102,7 +102,7 @@ Target layout mirrors `entities/` and `game/` nouns. Retire `boardSpace/`, `card
 
 Walk folders in IDE order (alphabetical).
 
-- [ ] `queries/`
+- [ ] `queries/` — scout (adversarial review) 2026-11-08; marks in place, awaiting human read
   - [ ] `attack/` — `applyAttackValue`, `getMeleeSupportValue`
   - [ ] `board/` — spaces, `diagonalIsClear`, `getCommanderSpace`
     - [ ] `adjacency/`
@@ -211,6 +211,25 @@ read closes it.
   nothing makes them.
 - Three exports have no production caller: `getCurrentStep`,
   `getIsFirstPlayerForResolveRallyStep`, `getRallyResolutionState`.
+
+### `queries` (scout 2026-11-08)
+
+Marked in place. Highest weight first:
+
+- `generateResolveMeleeEvent` (`procedures`): no defensive commitment modifiers in melee. `TODO(wrong)`.
+- `isEngagementFromFront`: front/flank/rear cover six of eight facings; 135° throws in `generateStartEngagementEvent`. `TODO(wrong)`.
+- `getNextMeleeRoutState`: returns a paid rout. `getNextStepForResolveRally`: defaults non-resolve steps to `'complete'`. Both `TODO(wrong)`, both latent.
+- Seven more sequencing exports with no production caller (`rout/index.ts`).
+- Line rule exists twice: `queries/line` (no caller) and `getLegalLineEndsForIssueCommand`.
+- Duplicates: inspiration range, units-on-board walk, melee defender-to-slot ternary (7 copies), next-open-apply selection (3 variants), `getOtherPlayer` hand-rolled.
+- Catch-to-false outside `legality`: `isAtPlacement`, `generateResolveRetreatEvent`.
+
+Not marked; for the read:
+
+- Melee/rally specs name a colour where the slot comes from the default `'black'` initiative (`getMeleeAttackApplyState`, `findRoutLocation`, `findRoutState`, `getNextMeleeRetreatStateAwaitingMove`, others). Some build states the game cannot reach.
+- `getMeleeSupportValue` vs RULEBOOK.md's support example (D-4/E-5): the example looks inconsistent with back-space exclusion. Unverified.
+- `engagement/engagement.ts` holds four exports; a split is due.
+- Path-only modules (design finding): the `get…From…` field readers, the `…RoutState` / `…RetreatState` / `…ReverseState` descents, the five phase getters, `getCurrentInitiative`, `getCurrentEventStream`; outside sequencing, `getSpacesAhead`, `hasUnitInSet`, `setWithoutUnit` (no callers), `isSameUnitType` / `isSameInstanceNumber` (internal only).
 
 ### `legality`
 
