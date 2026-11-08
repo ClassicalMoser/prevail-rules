@@ -181,9 +181,9 @@ export const boundaries: BoundaryConfig[] = [
     dir: 'domain/sampleValues',
     identifier: '@sampleValues',
     // Stand-in catalogs. Type imports only from @entities — same posture as
-    // @ruleValues. Only @testing imports this layer (specs go through
-    // @testing, not here). It has no other outgoing edge, so it cannot put a
-    // layer in a cycle.
+    // @ruleValues. Production never imports this layer; @testing helpers and
+    // specs may (test files do not enforce layer edges). It has no other
+    // outgoing edge, so it cannot put a layer in a cycle.
   },
   {
     alias: '@testing',
