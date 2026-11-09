@@ -1512,11 +1512,12 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Probe:** a unit at the board edge hit to Retreat runs `openRetreat → triggerRoutFromRetreat → resolveRout → chooseRoutDiscard`; the discard throws "No rout state found in attack apply state" (`updateRoutState.ts:113`). With Morale 0, `getExpectedEvent` throws instead. The game stalls either way.
 - **Closed:** `updateRoutState` now finds a rout held by a retreat and writes through `updateRetreatRoutState`, which closes the retreat when its rout completes, whether paid or a zero penalty. Specs: `applyChooseRoutDiscardEvent.test.ts`, `updateRetreatRoutState.test.ts`.
 
-<a id="b5"></a>**B5. A card with two commit stats applies both.** _Settled: both at once._
+<a id="b5"></a>**B5. A card with two commit stats applies both.** _Settled: both at once; proved in S17._
 
 - **Rule:** §8.2: committing gives +1 to every stat the card names, and both of a two-stat card's stats land at once (author, 2026-11-08: if too strong, rework later). The card may be committed at any moment where it can contribute **something**, and it contributes only what that moment uses — the spare stat is simply ignored, which §8.2 already prints.
 - **Code does:** `modifiersFromCompletedCommitment` turns every stat on the card into +1, with no choice (`queries/card/modifiersFromCompletedCommitment.ts`; a card may name one or two, `entities/card/commandCard.ts`). No stand-in card names two, so it is untested in play.
 - **To settle:** Nothing but proof: a spec with a two-stat card committed at a moment that uses one stat, and one that uses both.
+- **Proved (S17):** `modifiersFromCompletedCommitment.test.ts` (a Range and Attack card gives +1 to both) and `getCurrentUnitStat.test.ts` (each stat takes its own +1; a stat the card does not name is untouched).
 
 <a id="b6"></a>**B6. Flexibility and Range commitments are offered and never read.** _Range closed in S15; Flexibility waits for the deficit (A3)._
 

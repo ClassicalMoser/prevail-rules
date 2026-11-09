@@ -219,7 +219,7 @@ Files: `queries/unit/getCurrentUnitStat.ts`,
 `queries/attack/applyAttackValue.ts`.
 Blocks: `queries/attack`, `queries/unit`.
 
-**S17. A two-stat commitment gives both** — §8.2, B5. Decided 2026-11-08:
+**S17. A two-stat commitment gives both** — §8.2, B5. **Done 2026-11-09.** Decided 2026-11-08:
 both at once; usable wherever it contributes something; contributes only what
 the moment uses. The code already does all of this — the slice is proof: a
 spec committing a two-stat card where one stat applies, and one where both do.

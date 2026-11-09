@@ -1,5 +1,6 @@
 import { tempCommandCards } from '@sampleValues';
 import type { Modifier } from '@entities';
+import { createTestCard } from '@testing';
 
 import { modifiersFromCompletedCommitment } from './modifiersFromCompletedCommitment';
 
@@ -32,5 +33,20 @@ describe('modifiersFromCompletedCommitment function', () => {
         commitmentType: 'completed',
       }),
     ).toStrictEqual(expected);
+  });
+
+  it('a card naming two stats gives +1 to both (§8.2)', () => {
+    // A Range and Attack card committed to a shot: both land at once (B5).
+    const card = createTestCard({ modifiers: ['range', 'attack'] });
+
+    expect(
+      modifiersFromCompletedCommitment({
+        card,
+        commitmentType: 'completed',
+      }),
+    ).toStrictEqual([
+      { type: 'range', value: 1 },
+      { type: 'attack', value: 1 },
+    ]);
   });
 });

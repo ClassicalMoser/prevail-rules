@@ -117,6 +117,39 @@ describe('getCurrentUnitStat function', () => {
     });
   });
 
+  describe('a committed card naming two stats (§8.2, B5)', () => {
+    // The card's modifiers as a commitment passes them: +1 Range, +1 Attack.
+    const rangeAndAttack = [
+      { type: 'range' as const, value: 1 },
+      { type: 'attack' as const, value: 1 },
+    ];
+
+    it('gives both, where the moment reads both', () => {
+      // A shot reads Range for its reach and Attack for its blow: each
+      // takes its own +1. Velites print Range 2 and Attack 2.
+      const unit = createTestUnit('black', { attack: 2, range: 2 });
+      const gameState = stateWithUnit(unit);
+
+      expect(getCurrentUnitStat(unit, 'range', gameState, rangeAndAttack)).toBe(
+        3,
+      );
+      expect(
+        getCurrentUnitStat(unit, 'attack', gameState, rangeAndAttack),
+      ).toBe(3);
+    });
+
+    it('gives only what the moment reads', () => {
+      // Speed is on neither of the card's stats, so it is untouched: the
+      // card contributes what it can, and nothing more. Velites print Speed 3.
+      const unit = createTestUnit('black', { attack: 2, range: 2 });
+      const gameState = stateWithUnit(unit);
+
+      expect(getCurrentUnitStat(unit, 'speed', gameState, rangeAndAttack)).toBe(
+        3,
+      );
+    });
+  });
+
   describe('the floor at zero (§7.1.4)', () => {
     it('a stat pushed below zero counts as zero', () => {
       // Range 2 with a −3 modifier sums to −1; no stat goes below zero, so
