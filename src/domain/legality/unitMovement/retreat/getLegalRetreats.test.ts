@@ -228,7 +228,7 @@ describe('getLegalRetreats function', () => {
       const unitWithPlacement = placed(unit, 'G-8', 'west');
 
       expect(() => getLegalRetreats(unitWithPlacement, gameState)).toThrow(
-        'No unit present at starting position',
+        'No friendly unit at coordinate',
       );
     });
 
@@ -247,7 +247,7 @@ describe('getLegalRetreats function', () => {
       const unitWithPlacement = placed(differentUnit, 'G-8', 'west');
 
       expect(() => getLegalRetreats(unitWithPlacement, gameState)).toThrow(
-        'Unit is not present at the starting position',
+        'Unit is not at the placement',
       );
     });
 
@@ -266,7 +266,7 @@ describe('getLegalRetreats function', () => {
       };
       const unitWithPlacement = placed(absentSecondary, 'G-8', 'east');
       expect(() => getLegalRetreats(unitWithPlacement, gameState)).toThrow(
-        'Unit is not present at the starting position',
+        'Unit is not at the placement',
       );
     });
 
@@ -284,7 +284,7 @@ describe('getLegalRetreats function', () => {
       };
       const otherUnitWithPlacement = placed(absentInstance, 'G-8', 'west');
       expect(() => getLegalRetreats(otherUnitWithPlacement, gameState)).toThrow(
-        'Unit is not present at the starting position',
+        'Unit is not at the placement',
       );
     });
 
@@ -301,7 +301,7 @@ describe('getLegalRetreats function', () => {
       const unitWithPlacement = placed(primaryUnit, 'G-8', 'north');
 
       expect(() => getLegalRetreats(unitWithPlacement, gameState)).toThrow(
-        'Unit facing mismatch',
+        'Declared facing does not match facing of unit present',
       );
     });
   });

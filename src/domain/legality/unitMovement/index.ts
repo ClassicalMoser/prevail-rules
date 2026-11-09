@@ -9,7 +9,7 @@ export { canEngageEnemy, getEngagementEndFacing } from './engaging';
 export { getLegalUnitMoves } from './getLegalUnitMoves';
 
 // The smallest legal fall-backs when combat forces a retreat.
-export { getLegalRetreats } from './getLegalRetreats';
+export { getLegalRetreats } from './retreat';
 
 // Whether one proposed move is among the legal ones.
 export { isLegalMove } from './isLegalMove';
