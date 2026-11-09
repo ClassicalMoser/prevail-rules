@@ -235,10 +235,11 @@ Not marked; for the read:
 
 - Twenty catches across fifteen files. Five wrap a whole function body; the rest
   are scoped to a single call.
-- Four of the five discard the fault entirely, so any error inside becomes a
-  legal answer about the game. All four are in `unitMovement/` and each carries
-  a `TODO(wrong)`: `canEngageEnemy`, `canMoveInto`, `canMoveThrough`,
-  `isLegalMove`.
+- Four of the five discarded the fault entirely, so any error inside became a
+  legal answer about the game. Three remain, all in `unitMovement/`, each
+  with a `TODO(wrong)`: `canEngageEnemy`, `canMoveInto`, `canMoveThrough`.
+  The fourth, `isLegalMove`, was removed in S8 (2026-11-09): a move's path is
+  judged by `traceMovePath`, which throws and leaves the catch to validation.
 - The fifth, `isValidLine`, keeps the message in `errorReason`, so a fault there
   is reported rather than answered. That is the shape the other four should take
   if they keep the catch at all.

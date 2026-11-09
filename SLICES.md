@@ -40,9 +40,9 @@ Blocks: `queries/gameOver`.
 ## Cluster 2 — Movement rework (§5–§6)
 
 The big one. Every slice here rewrites or reads `exploreUnitMoves`, so the
-order runs from the turning rule outward. The four catch-to-false
+order runs from the turning rule outward. The catch-to-false
 `TODO(wrong)`s in `legality/unitMovement/` (`canEngageEnemy`, `canMoveInto`,
-`canMoveThrough`, `isLegalMove`) are not their own slice: each is fixed in
+`canMoveThrough`; `isLegalMove`'s went with it in S8) are not their own slice: each is fixed in
 whichever slice rewrites its file, taking `isValidLine`'s report-the-fault
 shape.
 
@@ -100,7 +100,7 @@ The engine already plays both; §2.4.4 now states it. What remains is the
 `TODO(misleading)` comment on `diagonalIsClear` (Pass B) and distinct names
 for the two tests someday (nomenclature, not design).
 
-**S8. The trajectory rides on the move event, as deltas** — A11, §5.1.4;
+**S8. The trajectory rides on the move event, as deltas** — A11, §5.1.4. **Done 2026-11-09** (`b03fe05`, `7ad0b18`, `333eebc`): path replaces the destination, the squaring turn is in the path, every legal move carries its path, and traceMovePath validates. **One question open:** whether the mover should stand in the penultimate space before the engagement (see A11); it still waits on its start space, which keeps the §5.1.4 Speed read right.
 AUDIT.md Movement item 2. Settled in full 2026-11-08: the `moveUnit` event
 (and later the retreat choice, Cluster 3) carries the path **atomically as
 deltas** — step, turn 45° either way, turn about — resolved to spaces by one
