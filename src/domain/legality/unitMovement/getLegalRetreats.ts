@@ -1,6 +1,6 @@
 import type { UnitFacing, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import type { MoveResult } from './moveResult';
+import type { MoveResult } from './explore';
 import {
   getBoardSpace,
   getCurrentUnitStat,
@@ -12,7 +12,7 @@ import {
   isFriendlyUnit,
   isSameUnitInstance,
 } from '@queries';
-import { exploreUnitMoves } from './exploreUnitMoves';
+import { exploreUnitMoves } from './explore';
 
 /**
  * Finds all legal retreat moves for a unit.

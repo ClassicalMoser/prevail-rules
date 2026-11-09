@@ -1,7 +1,7 @@
 import type { BoardSpace, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import { getBoardSpace, hasSingleUnit, isSameUnitInstance } from '@queries';
-import { exploreUnitMoves } from './exploreUnitMoves';
+import { exploreUnitMoves } from './explore';
 
 /**
  * Calculates all legal moves for a unit from a given starting position.

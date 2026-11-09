@@ -67,20 +67,20 @@ special-casing (`isTruePosition`) exists only because any-facing turns made
 sequential turns meaningless. The rework is a uniform walk over
 (space, facing, budgets) with two edge types — step, and turn to one of
 three facings.
-Files: `legality/unitMovement/exploreUnitMoves.ts`.
+Files: `legality/unitMovement/explore/exploreUnitMoves.ts`.
 Blocks: `legality/unitMovement`, `queries` (facings).
 
 **S4. A diagonal step can end on an enemy** — §6.2.1, §5.4.5, A12. **Done.**
 Check the destination with `canMoveInto`/`canEngageEnemy`, not
 `canMoveThrough`.
-Files: `legality/unitMovement/checkDiagonalMove.ts`, `exploreUnitMoves.ts`.
+Files: `legality/unitMovement/passage/checkDiagonalMove.ts`, `exploreUnitMoves.ts`.
 Blocks: `legality/unitMovement`.
 
 **S5. The squaring-up turn is made, not just checked** — §6.2.3, §6.3.1, A13.
 **Done** (`getEngagementEndFacing` + the walk).
 _Bug: 135° approach crashes._ Apply the turn and spend the point as part of
 the engaging move, so `isEngagementFromFront` never sees 135°.
-Files: `legality/unitMovement/canEngageEnemy.ts`,
+Files: `legality/unitMovement/engaging/canEngageEnemy.ts`,
 `queries/engagement/isEngagementFromFront.ts`,
 `procedures/.../generateStartEngagementEvent`.
 Blocks: `legality/unitMovement`, `queries/engagement`, `procedures`.
@@ -119,7 +119,7 @@ Files: `events/playerChoices/` (moveUnit payload — delta list),
 `entities` or `events` (the delta vocabulary),
 `transforms/stateTransitions/applyChoices/applyMoveUnitEvent.ts`,
 engagement setup, the movement state in `game/substeps/commandResolution/`,
-`legality/unitMovement/exploreUnitMoves.ts` (shares its edges with the fold),
+`legality/unitMovement/explore/exploreUnitMoves.ts` (shares its edges with the fold),
 `validation/playerChoice/isValidMoveUnitEvent.ts` (fold validation).
 Blocks: `transforms`, `queries` (unit stats), `expected`, `events`, `game`,
 `validation`.

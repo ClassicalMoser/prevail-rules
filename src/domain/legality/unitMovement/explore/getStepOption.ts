@@ -1,8 +1,7 @@
 import { getForwardSpace, getRearwardSpace, isDiagonalFacing } from '@queries';
 import type { MoveContext } from './moveContext';
 import type { MoveState } from './moveState';
-import { canMoveThrough } from './canMoveThrough';
-import { checkDiagonalMove } from './checkDiagonalMove';
+import { canMoveThrough, checkDiagonalMove } from '../passage';
 import { isWithinMoveBounds } from './isWithinMoveBounds';
 
 /**

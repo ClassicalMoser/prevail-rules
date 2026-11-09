@@ -1,8 +1,8 @@
 import type { MoveContext } from './moveContext';
 import type { MoveResult } from './moveResult';
 import type { MoveState } from './moveState';
-import { canMoveInto } from './canMoveInto';
-import { getEngagementEndFacing } from './getEngagementEndFacing';
+import { canMoveInto } from '../passage';
+import { getEngagementEndFacing } from '../engaging';
 import { isWithinMoveBounds } from './isWithinMoveBounds';
 
 /**
