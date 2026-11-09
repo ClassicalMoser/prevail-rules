@@ -1,8 +1,8 @@
-import type { PlayerSide, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { MoveDelta, PlayerSide, UnitWithPlacement } from '@entities';
 import type { AssertExact } from '@utils';
 import {
+  moveDeltaSchema,
   playerSideSchema,
-  unitPlacementSchema,
   unitWithPlacementSchema,
 } from '@entities';
 import { PLAYER_CHOICE_EVENT_TYPE } from '@events/eventTypeLiterals';
@@ -20,10 +20,15 @@ export interface MoveUnitEvent {
   player: PlayerSide;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
-  /** The unit to move. */
+  /** The unit to move, and where it starts. */
   unit: UnitWithPlacement;
-  /** The space the unit is moving to. */
-  to: UnitPlacement;
+  /**
+   * The whole move, step by step and turn by turn (A11). Where the unit
+   * ends is wherever the path leaves it; an oblique front approach to an
+   * enemy ends with its squaring turn (§6.2.3). An empty path stands the
+   * unit in place.
+   */
+  path: MoveDelta[];
   /** Whether to move the commander with the unit. */
   moveCommander: boolean;
 }
@@ -35,7 +40,7 @@ const _moveUnitEventSchemaObject = z
     player: playerSideSchema,
     eventNumber: z.number(),
     moveCommander: z.boolean(),
-    to: unitPlacementSchema,
+    path: z.array(moveDeltaSchema),
     unit: unitWithPlacementSchema,
   })
   .strict();
@@ -54,6 +59,6 @@ export const moveUnitEventSchema: z.ZodObject<{
   player: typeof playerSideSchema;
   eventNumber: z.ZodNumber;
   moveCommander: z.ZodBoolean;
-  to: typeof unitPlacementSchema;
+  path: z.ZodArray<typeof moveDeltaSchema>;
   unit: typeof unitWithPlacementSchema;
 }> = _moveUnitEventSchemaObject;

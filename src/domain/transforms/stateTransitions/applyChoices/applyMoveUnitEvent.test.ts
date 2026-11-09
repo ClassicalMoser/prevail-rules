@@ -50,10 +50,10 @@ describe('applyMoveUnitEvent function', () => {
       eventType: 'playerChoice',
       moveCommander: false,
       player: 'black',
-      to: {
-        coordinate: 'E-7',
-        facing: 'north',
-      },
+      // From E-5: wheel right to east, two steps to E-7, wheel back to
+      // north. The transform reads where the path leads; legality was
+      // settled before the event arrived.
+      path: ['turnRight', 'turnRight', 'step', 'step', 'turnLeft', 'turnLeft'],
       unit: unitWithPlacement,
     };
 
@@ -81,7 +81,10 @@ describe('applyMoveUnitEvent function', () => {
       throw new Error('Expected movement CRS');
     }
     expect(crs.commitment.commitmentType).toBe('declined');
-    expect(crs.targetPlacement).toStrictEqual(event.to);
+    expect(crs.targetPlacement).toStrictEqual({
+      coordinate: 'E-7',
+      facing: 'north',
+    });
   });
 
   it('entering an enemy hex leaves the mover on its current hex and the defender alone', () => {
@@ -117,7 +120,8 @@ describe('applyMoveUnitEvent function', () => {
         eventType: 'playerChoice',
         moveCommander: false,
         player: 'black',
-        to: { coordinate: 'D-5', facing: 'north' },
+        // One step from E-5 into the enemy on D-5, already head-on.
+        path: ['step'],
         unit: engager,
       },
       state,
@@ -196,7 +200,8 @@ describe('applyMoveUnitEvent function', () => {
       eventType: 'playerChoice',
       moveCommander: false,
       player: 'black',
-      to: { coordinate: 'E-7', facing: 'north' },
+      // Wheel right, two steps east to E-7, wheel back to north.
+      path: ['turnRight', 'turnRight', 'step', 'step', 'turnLeft', 'turnLeft'],
       unit: unitWithPlacement,
     };
 

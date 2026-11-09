@@ -14,5 +14,6 @@ export { getLegalUnitMoves } from './getLegalUnitMoves';
 // The smallest legal fall-backs when combat forces a retreat.
 export { getLegalRetreats } from './retreat';
 
-// Whether one proposed move is among the legal ones.
-export { isLegalMove } from './isLegalMove';
+// Whether a submitted path is a legal move, and where it ends if so.
+export type { PathTrace } from './path';
+export { traceMovePath } from './path';

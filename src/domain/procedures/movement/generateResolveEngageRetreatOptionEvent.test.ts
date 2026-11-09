@@ -152,7 +152,8 @@ describe('generateResolveEngageRetreatOptionEvent function', () => {
         eventType: 'playerChoice',
         moveCommander: false,
         player: 'black',
-        to: { coordinate: 'D-5', facing: 'north' },
+        // One step from E-5 into the enemy on D-5, already head-on.
+        path: ['step'],
         unit: engager,
       },
       state,

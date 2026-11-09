@@ -8,6 +8,7 @@ import type {
 import {
   getBoardSpace,
   getIssueCommandsPhaseState,
+  getPlacementAfterPath,
   hasEnemyUnit,
   isSameUnitInstance,
 } from '@queries';
@@ -51,12 +52,23 @@ export function applyMoveUnitEvent<S extends GameState>(
   state: S,
 ): S {
   const originalUnitWithPlacement = event.unit;
+  // The event was validated before it reached here, so the destination is
+  // simply wherever its path leads (A11) — read by geometry, not judged again.
+  const destination = getPlacementAfterPath(
+    state.boardState,
+    originalUnitWithPlacement.placement,
+    event.path,
+    'advance',
+  );
+  if (destination === undefined) {
+    throw new Error('The move path leaves the board');
+  }
   const movedUnitWithPlacement = {
     ...originalUnitWithPlacement,
-    placement: event.to,
+    placement: destination,
   };
 
-  const targetSpace = getBoardSpace(state.boardState, event.to.coordinate);
+  const targetSpace = getBoardSpace(state.boardState, destination.coordinate);
   const enteringEnemy = hasEnemyUnit(event.player, targetSpace).result;
   // An enemy hex is not entered yet. The mover stays where it stands.
   const movingUnit = enteringEnemy
@@ -89,7 +101,7 @@ export function applyMoveUnitEvent<S extends GameState>(
     moveCommander: event.moveCommander,
     movingUnit,
     substepType: 'commandResolution',
-    targetPlacement: event.to,
+    targetPlacement: destination,
   };
 
   const newPhaseState: IssueCommandsPhaseState = {

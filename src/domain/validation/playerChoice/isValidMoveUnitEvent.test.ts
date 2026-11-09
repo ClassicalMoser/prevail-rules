@@ -15,11 +15,7 @@ import {
 
 import { isValidMoveUnitEvent } from './isValidMoveUnitEvent';
 
-import {
-  createEmptyGameState,
-  createMoveUnitEvent,
-  createUnitPlacement,
-} from '@factories';
+import { createEmptyGameState, createMoveUnitEvent } from '@factories';
 /**
  * IsValidMoveUnitEvent: unit atom + destination + moveCommander integrity.
  */
@@ -61,9 +57,8 @@ describe('isValidMoveUnitEvent function', () => {
       eventNumber: 0,
       moveCommander: false,
       player: 'black',
-      // A step straight ahead: the old E-4 target was a sidestep, which the
-      // 45°/180° turn rule (§5.2.1) prices out of a Flexibility-2 unit.
-      to: createUnitPlacement('D-5', 'north'),
+      // One step straight ahead, from E-5 to D-5.
+      path: ['step'],
       unit: unitWithPlacement,
     });
 
@@ -78,7 +73,7 @@ describe('isValidMoveUnitEvent function', () => {
       eventNumber: 0,
       moveCommander: true,
       player: 'black',
-      to: createUnitPlacement('D-5', 'north'),
+      path: ['step'],
       unit: unitWithPlacement,
     });
 
@@ -91,20 +86,21 @@ describe('isValidMoveUnitEvent function', () => {
       eventNumber: 0,
       moveCommander: true,
       player: 'black',
-      to: createUnitPlacement('D-5', 'north'),
+      path: ['step'],
       unit: unitWithPlacement,
     });
 
     expect(isValidMoveUnitEvent(event, state).result).toBe(false);
   });
 
-  it('rejects an illegal destination', () => {
+  it('rejects a path the unit cannot walk', () => {
     const { state, unitWithPlacement } = stateAwaitingMoveUnit();
     const event = createMoveUnitEvent({
       eventNumber: 0,
       moveCommander: false,
       player: 'black',
-      to: createUnitPlacement('A-1', 'north'),
+      // Nine steps: more Speed than any unit has.
+      path: Array.from({ length: 9 }, () => 'step' as const),
       unit: unitWithPlacement,
     });
 
@@ -125,7 +121,7 @@ describe('isValidMoveUnitEvent function', () => {
       eventNumber: 0,
       moveCommander: false,
       player: 'black',
-      to: createUnitPlacement('D-5', 'north'),
+      path: ['step'],
       unit: unitWithPlacement,
     });
 

@@ -154,8 +154,13 @@ export {
   unitTypeMatchesRestrictions,
 } from './unit';
 
-// Whether two placements, or two units with their placements, are the same.
-export { isSamePlacement, isSameUnitWithPlacement } from './unitLocation';
+// Whether two placements, or two units with their placements, are the same;
+// and where a path of steps and turns leaves a unit.
+export {
+  getPlacementAfterPath,
+  isSamePlacement,
+  isSameUnitWithPlacement,
+} from './unitLocation';
 
 // What stands on a space, where a unit is standing, and whether an enemy
 // occupies the space.

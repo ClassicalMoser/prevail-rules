@@ -102,7 +102,15 @@ export type {
   UnitSupport,
 } from '@entities';
 export { unitSupportSchema } from '@entities';
-export type { Line, Player, PlayerSide, UnitFacing } from '@entities';
+export type {
+  Line,
+  MoveDelta,
+  MoveTurn,
+  Player,
+  PlayerSide,
+  UnitFacing,
+} from '@entities';
+export { moveDeltas } from '@entities';
 export type {
   EngagedUnitPresence,
   NoneUnitPresence,
@@ -549,7 +557,7 @@ export {
   getSetupZoneCoordinates,
   getLegalRetreats,
   getLegalUnitMoves,
-  isLegalMove,
+  traceMovePath,
   isValidLine,
   unitMatchesInspirationRange,
   unitMatchesRestrictions,
@@ -565,6 +573,8 @@ export type {
   LegalSetupUnits,
   LegalAssignUnitSupport,
   LegalSupportCategory,
+  MoveResult,
+  PathTrace,
 } from '@legality';
 export {
   eachCardPresentOnce,
