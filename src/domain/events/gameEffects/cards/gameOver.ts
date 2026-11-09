@@ -9,7 +9,8 @@ export const GAME_OVER_EFFECT_TYPE = 'gameOver' as const;
 
 /**
  * Event that ends the game and records the winner.
- * `winner` is null for a draw (both hands empty).
+ * Every ending names a winner — there is no draw in this game: both hands
+ * emptying at once goes to the holder of initiative (§11.3).
  */
 export interface GameOverEvent {
   /** The type of the event. */
@@ -18,8 +19,8 @@ export interface GameOverEvent {
   effectType: typeof GAME_OVER_EFFECT_TYPE;
   /** The ordered index of the event in the round, zero-indexed. */
   eventNumber: number;
-  /** Winning player, or null for a draw. */
-  winner: PlayerSide | null;
+  /** The winning player. */
+  winner: PlayerSide;
 }
 
 const _gameOverEventSchemaObject = z
@@ -30,8 +31,8 @@ const _gameOverEventSchemaObject = z
     effectType: z.literal(GAME_OVER_EFFECT_TYPE),
     /** The ordered index of the event in the round, zero-indexed. */
     eventNumber: z.number(),
-    /** Winning player, or null for a draw. */
-    winner: playerSideSchema.nullable(),
+    /** The winning player. */
+    winner: playerSideSchema,
   })
   .strict();
 
@@ -47,5 +48,5 @@ export const gameOverEventSchema: z.ZodObject<{
   eventType: z.ZodLiteral<'gameEffect'>;
   effectType: z.ZodLiteral<'gameOver'>;
   eventNumber: z.ZodNumber;
-  winner: z.ZodNullable<typeof playerSideSchema>;
+  winner: typeof playerSideSchema;
 }> = _gameOverEventSchemaObject;

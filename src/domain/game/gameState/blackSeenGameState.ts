@@ -16,7 +16,7 @@ const _blackSeenGameStateSchemaObject = z
     lostCommanders: z.array(playerSideSchema),
     reservedUnits: z.array(unitInstanceSchema),
     routedUnits: z.array(unitInstanceSchema),
-    winner: playerSideSchema.nullable().optional(),
+    winner: playerSideSchema.optional(),
   })
   .strict();
 

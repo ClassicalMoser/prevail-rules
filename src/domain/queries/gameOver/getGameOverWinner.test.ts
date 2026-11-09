@@ -19,7 +19,8 @@ import { getGameOverWinner } from './getGameOverWinner';
 
 /**
  * Game over asks empty hands first, then an unpayable rout discard.
- * A side wins, both empty hands draw, and otherwise the game continues.
+ * A side wins, both hands empty at once go to the holder of initiative
+ * (§11.3), and otherwise the game continues. There is no draw.
  *
  * The cleanup factory only opens a rout slot. `updateRoutState` will not
  * create one from `'pending'`, so the penalty is written through that transform.
@@ -78,13 +79,14 @@ describe('getGameOverWinner function', () => {
     expect(getGameOverWinner(state)).toBeUndefined();
   });
 
-  it('draws when both hands are empty', () => {
+  it('both hands empty at once go to the holder of initiative', () => {
+    // The helper's base state gives white the initiative going into the round.
     const state = gameOverState({
       blackHand: [],
       whiteHand: [],
     });
 
-    expect(getGameOverWinner(state)).toBeNull();
+    expect(getGameOverWinner(state)).toBe('white');
   });
 
   it('black wins on an empty white hand before black pays a rout of 99', () => {

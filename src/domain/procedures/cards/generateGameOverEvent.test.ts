@@ -1,4 +1,5 @@
 import { createTestCard, updateCardState } from '@testing';
+import { updateCurrentInitiative } from '@transforms';
 
 import { generateGameOverEvent } from './generateGameOverEvent';
 
@@ -24,15 +25,19 @@ describe('generateGameOverEvent function', () => {
     });
   });
 
-  it('bakes null winner for a draw when both hands are empty', () => {
+  it('bakes the holder of initiative as winner when both hands are empty', () => {
+    // Both hands emptying at once goes to the initiative held going into
+    // the round (§11.3); the event bakes that winner in for replay.
     const base = createEmptyGameState('standard');
-    const state = updateCardState(base, {
+    const emptyHands = updateCardState(base, {
       ...base.cardState,
       black: { ...base.cardState.black, inHand: [] },
       white: { ...base.cardState.white, inHand: [] },
     });
+    // White held initiative going into this round.
+    const state = updateCurrentInitiative(emptyHands, 'white');
 
-    expect(generateGameOverEvent(state, 0).winner).toBeNull();
+    expect(generateGameOverEvent(state, 0).winner).toBe('white');
   });
 
   it('throws when the game is not over', () => {

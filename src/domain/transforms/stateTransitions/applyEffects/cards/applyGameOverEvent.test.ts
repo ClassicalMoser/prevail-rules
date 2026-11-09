@@ -21,18 +21,6 @@ describe('applyGameOverEvent function', () => {
     expect(state.winner).toBeUndefined();
   });
 
-  it('assigns null for a draw', () => {
-    const state = createEmptyGameState('standard');
-    const event: GameOverEvent = {
-      effectType: 'gameOver',
-      eventNumber: 1,
-      eventType: 'gameEffect',
-      winner: null,
-    };
-
-    expect(applyGameOverEvent(event, state).winner).toBeNull();
-  });
-
   it('does not change phase or initiative', () => {
     const state = createEmptyGameState('standard');
     const event: GameOverEvent = {

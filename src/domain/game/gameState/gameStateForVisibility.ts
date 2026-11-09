@@ -31,8 +31,8 @@ export interface GameStateForVisibility<
   /** Board and piece layout. */
   boardState: Board;
   /**
-   * Set by `gameOver` apply. Absent while the game is ongoing;
-   * `PlayerSide` for a win; `null` for a draw.
+   * Set by `gameOver` apply. Absent while the game is ongoing. Every
+   * ending names a winner — there is no draw in this game (§11.3).
    */
-  winner?: PlayerSide | null;
+  winner?: PlayerSide;
 }

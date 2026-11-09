@@ -2,13 +2,14 @@ import type { CommandCard } from '@entities';
 import { createEmptyGameState } from '@factories';
 import type { GameState } from '@game';
 import { createTestCard } from '@testing';
-import { updatePlayerCardState } from '@transforms';
+import { updateCurrentInitiative, updatePlayerCardState } from '@transforms';
 
 import { getWinnerFromEmptyHands } from './getWinnerFromEmptyHands';
 
 /**
  * Empty-hand loss: one empty hand means the other player wins.
- * Both empty is a draw. Cards outside the hand do not count.
+ * Both empty at once goes to the holder of initiative (§11.3) —
+ * there is no draw in this game. Cards outside the hand do not count.
  */
 function withHands(
   whiteHand: CommandCard[],
@@ -47,10 +48,22 @@ describe('getWinnerFromEmptyHands function', () => {
     expect(getWinnerFromEmptyHands(state)).toBe('white');
   });
 
-  it('both empty hands are a draw', () => {
-    const state = withHands([], []);
+  it('both hands empty at once go to the player who held initiative', () => {
+    // Both last cards were committed face-down before either was revealed,
+    // so the tie goes to the initiative held going into the round (§11.3).
+    const bothEmpty = withHands([], []);
+    // White held initiative going into this round.
+    const state = updateCurrentInitiative(bothEmpty, 'white');
 
-    expect(getWinnerFromEmptyHands(state)).toBeNull();
+    expect(getWinnerFromEmptyHands(state)).toBe('white');
+  });
+
+  it('the empty-hands tie follows the initiative, not a fixed colour', () => {
+    const bothEmpty = withHands([], []);
+    // Black held initiative going into this round.
+    const state = updateCurrentInitiative(bothEmpty, 'black');
+
+    expect(getWinnerFromEmptyHands(state)).toBe('black');
   });
 
   it('a card in the played pile does not fill the hand', () => {

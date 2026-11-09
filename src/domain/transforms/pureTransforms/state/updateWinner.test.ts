@@ -3,7 +3,8 @@ import { createEmptyGameState } from '@factories';
 import { updateWinner } from './updateWinner';
 
 /**
- * UpdateWinner: assigns GameState.winner (PlayerSide or null draw).
+ * UpdateWinner: assigns GameState.winner. Every ending names a side —
+ * there is no draw in this game (§11.3).
  */
 describe('updateWinner function', () => {
   it('sets the winner', () => {
@@ -11,11 +12,6 @@ describe('updateWinner function', () => {
     const newState = updateWinner(state, 'black');
     expect(newState.winner).toBe('black');
     expect(newState).not.toBe(state);
-  });
-
-  it('allows a null winner for draws', () => {
-    const state = createEmptyGameState('standard');
-    expect(updateWinner(state, null).winner).toBeNull();
   });
 
   it('preserves other top-level fields', () => {

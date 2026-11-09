@@ -52,6 +52,13 @@ move-start. This cluster now runs **right after the warm-ups and before
 Cluster 3**, because retreat events grow the same delta payload — specs built
 against the old retreat shape would churn.
 
+**Author's design note (2026-11-08):** `exploreUnitMoves.ts` is one of the
+least readable files in the repo — too big, and confusing. The revamp should
+land as bite-sized modules where feasible (the uniform two-edge walk invites
+it: the edge rules, the fold, and the walk itself are separable), without
+heavy argument plumbing. If small pieces would mean threading six parameters
+everywhere, prefer a narrow explicit context value over either extreme.
+
 **S3. A turn is 45° or 180°** — §5.2.1–§5.2.2, A2; AUDIT.md Movement item 1.
 Turns repeat in any order within Flexibility; no more free 90° wheels. This
 _simplifies_ the explorer: the turn-only-at-start-or-after-a-step
