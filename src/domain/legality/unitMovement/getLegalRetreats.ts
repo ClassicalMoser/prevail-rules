@@ -1,6 +1,6 @@
 import type { UnitFacing, UnitPlacement, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
-import type { MoveResult } from './exploreUnitMoves';
+import type { MoveResult } from './moveResult';
 import {
   getBoardSpace,
   getCurrentUnitStat,

@@ -1,5 +1,5 @@
 import type { Coordinate, UnitFacing } from '@entities';
-import type { MoveResult } from './exploreUnitMoves';
+import type { MoveResult } from './moveResult';
 import { unitFacings } from '@entities';
 import { getPlayerUnitWithPosition } from '@queries';
 import { createGameState } from '@testing';
