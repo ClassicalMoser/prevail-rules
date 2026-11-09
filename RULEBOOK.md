@@ -1530,17 +1530,15 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** Commitments are read only in the front-engagement Speed contest, the ranged attack value and target thresholds, and the melee attack value (`procedures/movement/generateResolveEngageRetreatOptionEvent.ts`; `resolveAttack/`). The engine still accepts Range and Flexibility in shooting, and Flexibility in melee (`getLegalCommitTo*Events.ts`).
 - **To settle:** Make the engine read +1 Range when it builds the forward arc, which means offering the commitment before the target is chosen. Let a Range commitment count when deciding whether a unit has a target at all. Keep offering Flexibility in a shot and a melee; it starts to count when the deficit lands (A3).
 
-<a id="b7"></a>**B7. Both hands empty at once is a draw in the engine; the rule gives it to initiative.** _Code lags rule._
+<a id="b7"></a>**B7. Both hands empty at once is a draw in the engine; the rule gives it to initiative.** _Closed 2026-11-08._
 
 - **Rule:** §11.1: an empty hand loses at once, so playing or committing your last card loses. §11.3: if both hands empty at the same moment, the player who held initiative going into the round wins (author decision 2026-11-08).
-- **Code does:** `getExpectedEvent` asks `getGameOverWinner` before every event, so playing or committing your last card ends the game at once, as the rule says (`expected/expectedEvent/getExpectedEvent.ts`). Both empty is scored a draw (`queries/gameOver/getWinnerFromEmptyHands.ts`). Probe: an empty hand at the rally choice yields `gameOver`.
-- **To settle:** Give the tie to the player who held initiative going into the round.
+- **Closed:** The engine now gives the tie to the holder of initiative — still the previous round's at that moment, since the new initiative is only assigned after the reveal — and the draw is gone from the whole chain: query, event schema, and `GameState.winner` (slice S1, `51c5521`). `getExpectedEvent` asks `getGameOverWinner` before every event, so playing or committing your last card ends the game at once, as the rule says.
 
-<a id="b8"></a>**B8. No-units-left is not a loss.** _Code lags rule._
+<a id="b8"></a>**B8. No-units-left is not a loss.** _Closed 2026-11-08._
 
 - **Rule:** §11.4: a player with no units loses. Confirmed as intended (author, 2026-11-08): it will almost never come up, but it is true.
-- **Code does:** `getGameOverWinner` has two arms, empty hand and unpayable rout; nothing counts units (`queries/gameOver/getGameOverWinner.ts`).
-- **To settle:** Add the arm.
+- **Closed:** `getWinnerFromNoUnits` asks last, after the hand arms, in the rulebook's own order (slice S2). An army still in reserve has not been fielded, so setup never reads as a loss.
 
 <a id="b9"></a>**B9. Melee results are carried out unit by unit; the rule is stage by stage.** _Code lags rule._
 

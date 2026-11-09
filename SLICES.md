@@ -29,11 +29,11 @@ Deferred). No slice touches it.
 Two tiny, fully specified slices. Good for establishing the rhythm before the
 movement rework.
 
-**S1. Both hands empty goes to initiative** — §11.3, B7.
+**S1. Both hands empty goes to initiative** — §11.3, B7. **Done** (`51c5521`).
 Files: `queries/gameOver/getWinnerFromEmptyHands.ts`.
 Blocks: `queries/gameOver`.
 
-**S2. No units left is a loss** — §11.4, B8. Confirmed 2026-11-08.
+**S2. No units left is a loss** — §11.4, B8. **Done.**
 Files: `queries/gameOver/getGameOverWinner.ts` (new arm).
 Blocks: `queries/gameOver`.
 
