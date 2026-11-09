@@ -79,7 +79,7 @@ export function canEngageEnemy(
       );
       const canSquareUp =
         squaring !== undefined &&
-        squaring.flexibilitySpent <= remainingFlexibility;
+        (squaring.squaringTurn === null || remainingFlexibility > 0);
       return canSquareUp;
     }
 

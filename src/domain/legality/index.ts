@@ -62,6 +62,7 @@ export type {
 } from './choiceOptions';
 export { getLegalCommanderMoves } from './commanderMovement';
 export { canReverseUnit } from './combatOutcomes';
+export type { MoveResult } from './unitMovement';
 export {
   canEngageEnemy,
   canMoveInto,

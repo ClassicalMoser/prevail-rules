@@ -26,23 +26,28 @@ describe('getTurnOptions function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      path: [],
       remainingFlexibility: 2,
       remainingSpeed: 2,
     };
 
     const options = getTurnOptions(context, state);
 
-    expect(options).toStrictEqual(new Set(['northWest', 'northEast', 'south']));
+    expect(options).toStrictEqual(
+      new Set(['turnLeft', 'turnRight', 'turnAbout']),
+    );
   });
 
   it('a unit with no Flexibility left cannot turn', () => {
     // Build the context of an advance begun on E-5.
     const context = createMoveContext(gameState, unit, 'advance');
-    // Stand facing north with the Flexibility spent.
+    // Facing north again after turning left and back right, both points
+    // spent.
     const state: MoveState = {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      path: ['turnLeft', 'turnRight'],
       remainingFlexibility: 0,
       remainingSpeed: 2,
     };
@@ -60,13 +65,14 @@ describe('getTurnOptions function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      path: [],
       remainingFlexibility: 2,
       remainingSpeed: 2,
     };
 
     const options = getTurnOptions(context, state);
 
-    expect(options).toStrictEqual(new Set(['northWest', 'northEast']));
+    expect(options).toStrictEqual(new Set(['turnLeft', 'turnRight']));
   });
 
   it('a retreat that has made its opening turn may turn no further before stepping back', () => {
@@ -77,6 +83,7 @@ describe('getTurnOptions function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'northEast',
+      path: ['turnRight'],
       remainingFlexibility: 1,
       remainingSpeed: 2,
     };
@@ -94,12 +101,15 @@ describe('getTurnOptions function', () => {
       cameFrom: 'E-5',
       coordinate: 'F-5',
       facing: 'north',
+      path: ['step'],
       remainingFlexibility: 2,
       remainingSpeed: 1,
     };
 
     const options = getTurnOptions(context, state);
 
-    expect(options).toStrictEqual(new Set(['northWest', 'northEast', 'south']));
+    expect(options).toStrictEqual(
+      new Set(['turnLeft', 'turnRight', 'turnAbout']),
+    );
   });
 });

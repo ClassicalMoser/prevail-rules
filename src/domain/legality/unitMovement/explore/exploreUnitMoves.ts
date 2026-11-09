@@ -1,5 +1,6 @@
 import type { UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
+import { getTurnedFacing } from '@queries';
 import type { MoveResult } from './moveResult';
 import type { MoveState } from './moveState';
 import { createMoveContext } from './createMoveContext';
@@ -55,10 +56,11 @@ export function exploreUnitMoves(
     }
 
     // Or it may turn, for a point of Flexibility each.
-    for (const facing of getTurnOptions(context, state)) {
+    for (const turn of getTurnOptions(context, state)) {
       explore({
         ...state,
-        facing,
+        facing: getTurnedFacing(state.facing, turn),
+        path: [...state.path, turn],
         remainingFlexibility: state.remainingFlexibility - 1,
       });
     }
@@ -84,6 +86,7 @@ export function exploreUnitMoves(
     cameFrom: context.start.coordinate,
     coordinate: context.start.coordinate,
     facing: context.start.facing,
+    path: [],
     remainingFlexibility: context.totalFlexibility,
     remainingSpeed: context.totalSpeed,
   };

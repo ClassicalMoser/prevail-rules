@@ -31,6 +31,7 @@ export function getMoveEnding(
     }
     const standing: MoveResult = {
       flexibilityUsed,
+      path: state.path,
       placement: { coordinate: state.coordinate, facing: state.facing },
       speedUsed,
     };
@@ -69,10 +70,16 @@ export function getMoveEnding(
     state.facing,
   );
   const endFacing = engagementEnd?.facing ?? state.facing;
-  const squaringCost = engagementEnd?.flexibilitySpent ?? 0;
+  // The squaring turn is written into the path like any other turn, so the
+  // event records the whole motion and costs its point (A11).
+  const squaringTurn = engagementEnd?.squaringTurn ?? null;
+  const path =
+    squaringTurn === null ? state.path : [...state.path, squaringTurn];
+  const squaringCost = squaringTurn === null ? 0 : 1;
 
   const ending: MoveResult = {
     flexibilityUsed: flexibilityUsed + squaringCost,
+    path,
     placement: { coordinate: state.coordinate, facing: endFacing },
     speedUsed,
   };

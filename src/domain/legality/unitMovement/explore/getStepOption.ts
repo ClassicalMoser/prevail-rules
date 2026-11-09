@@ -75,6 +75,7 @@ export function getStepOption(
     cameFrom: state.coordinate,
     coordinate: nextCoordinate,
     facing: state.facing,
+    path: [...state.path, 'step'],
     remainingFlexibility: state.remainingFlexibility,
     remainingSpeed: state.remainingSpeed - 1,
   };

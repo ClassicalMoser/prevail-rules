@@ -22,7 +22,9 @@ export function isLegalMove(
     const legalMoves = getLegalUnitMoves(unitWithPlacement, gameState);
     // The legal moves are freshly built placements, so the destination is
     // matched by value, not by `Set.has`.
-    const isOffered = [...legalMoves].some((move) => isSamePlacement(move, to));
+    const isOffered = [...legalMoves].some((move) =>
+      isSamePlacement(move.placement, to),
+    );
     return isOffered;
   } catch {
     // If getLegalUnitMoves throws (invalid starting position, etc.), the move is not legal

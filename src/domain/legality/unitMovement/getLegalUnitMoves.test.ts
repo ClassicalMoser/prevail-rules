@@ -1,40 +1,20 @@
 import { getSingleUnitWithPlacementAtCoordinate } from '@queries';
-import type { Coordinate, UnitPlacement } from '@entities';
 import {
   createGameState,
   createGameStateWithEngagedUnits,
   createTestUnit,
   createUnitWithPlacement,
+  hasMove,
   placed,
 } from '@testing';
 
 import { getLegalUnitMoves } from './getLegalUnitMoves';
 
 /**
- * GetLegalUnitMoves: legal placements (coordinate + facing) for a unit under movement rules.
+ * GetLegalUnitMoves: every ending an ordered move may reach, each with the
+ * path a player submits to make it (A11).
  */
 describe('getLegalUnitMoves function', () => {
-  // Test helper to check if a placement exists in the set
-  function placementHasMatch(
-    placements: Set<UnitPlacement>,
-    match: {
-      coordinate?: Coordinate;
-      facing?: string;
-    },
-  ): boolean {
-    const { coordinate, facing } = match;
-    const result = [...placements].find((p) => {
-      if (coordinate !== undefined && p.coordinate !== coordinate) {
-        return false;
-      }
-      if (facing !== undefined && p.facing !== facing) {
-        return false;
-      }
-      return true;
-    });
-    return result !== undefined;
-  }
-
   describe('basic functionality', () => {
     it('given context, returns legal moves including starting position', () => {
       const gameState = createGameState([['D-7', 'black', 'southEast']]);
@@ -44,11 +24,26 @@ describe('getLegalUnitMoves function', () => {
       );
 
       const moves = getLegalUnitMoves(unit, gameState);
-      const hasStartingPosition = placementHasMatch(moves, {
-        coordinate: 'D-7',
-        facing: 'southEast',
-      });
-      expect(hasStartingPosition).toBe(true);
+      expect(hasMove(moves, 'D-7', 'southEast')).toBe(true);
+    });
+
+    it('each legal move carries the path that makes it', () => {
+      // A lone unit on E-5 facing north; one step ahead reaches D-5.
+      const gameState = createGameState([['E-5', 'black', 'north']]);
+      const unit = getSingleUnitWithPlacementAtCoordinate(
+        gameState.boardState,
+        'E-5',
+      );
+
+      const moves = getLegalUnitMoves(unit, gameState);
+      const stepAhead = [...moves].find(
+        (move) =>
+          move.placement.coordinate === 'D-5' &&
+          move.placement.facing === 'north' &&
+          move.speedUsed === 1,
+      );
+
+      expect(stepAhead?.path).toStrictEqual(['step']);
     });
   });
 

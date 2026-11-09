@@ -1,4 +1,4 @@
-import type { Coordinate, UnitFacing } from '@entities';
+import type { Coordinate, MoveDelta, UnitFacing } from '@entities';
 
 /**
  * One point in a move in progress. A move is a run of steps and turns
@@ -21,4 +21,9 @@ export interface MoveState {
   remainingSpeed: number;
   /** Flexibility still unspent; each turn costs 1 (§5.2.1). */
   remainingFlexibility: number;
+  /**
+   * The steps and turns taken to reach this point, in order — the path a
+   * move event records (A11), so a player can make exactly this move.
+   */
+  path: readonly MoveDelta[];
 }

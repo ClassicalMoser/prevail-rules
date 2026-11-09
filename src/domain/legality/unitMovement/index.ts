@@ -5,7 +5,10 @@ export { canMoveInto, canMoveThrough, checkDiagonalMove } from './passage';
 // Stepping into an enemy: whether it is legal, and the facing it ends on.
 export { canEngageEnemy, getEngagementEndFacing } from './engaging';
 
-// Every placement a unit may end an ordered move on.
+// One legal ending of a move, with its cost and the path that reaches it.
+export type { MoveResult } from './explore';
+
+// Every ending a unit may reach with an ordered move.
 export { getLegalUnitMoves } from './getLegalUnitMoves';
 
 // The smallest legal fall-backs when combat forces a retreat.

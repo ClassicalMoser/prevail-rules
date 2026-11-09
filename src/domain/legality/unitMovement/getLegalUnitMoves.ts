@@ -1,6 +1,7 @@
-import type { BoardSpace, UnitPlacement, UnitWithPlacement } from '@entities';
+import type { BoardSpace, UnitWithPlacement } from '@entities';
 import type { GameState } from '@game';
 import { getBoardSpace, hasSingleUnit, isSameUnitInstance } from '@queries';
+import type { MoveResult } from './explore';
 import { exploreUnitMoves } from './explore';
 
 /**
@@ -18,13 +19,13 @@ import { exploreUnitMoves } from './explore';
  *
  * @param unitWithPlacement - The unit and its starting position for which to calculate legal moves
  * @param gameState - The current game state
- * @returns A set of all legal unit placements (coordinate + facing) the unit can reach
+ * @returns Every legal ending the unit can reach, each with its cost and a path a player can submit to make it
  * @throws {Error} If the unit is not free to move, not present, or facing mismatch
  */
 export function getLegalUnitMoves(
   unitWithPlacement: UnitWithPlacement,
   gameState: GameState,
-): Set<UnitPlacement> {
+): Set<MoveResult> {
   const { unit, placement: startingPosition } = unitWithPlacement;
   // Get the board state
   const board = gameState.boardState;
@@ -50,16 +51,9 @@ export function getLegalUnitMoves(
     throw new Error('Reported facing is inaccurate');
   }
 
-  // Get the legal moves by exploring all combinations of speed and flexibility
+  // Every ending of an ordered advance, each with the path that reaches it.
+  // Two paths to one placement are offered separately: they cost
+  // differently, and the player chooses (A11).
   const legalMoves = exploreUnitMoves(gameState, unitWithPlacement, 'advance');
-
-  // Convert the legal moves to an array for iteration
-  const legalMovesArray = [...legalMoves];
-
-  // Convert the move results to final placements
-  const legalPlacements = new Set<UnitPlacement>(
-    legalMovesArray.map((result) => result.placement),
-  );
-
-  return legalPlacements;
+  return legalMoves;
 }

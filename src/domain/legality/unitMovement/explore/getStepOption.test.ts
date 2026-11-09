@@ -25,6 +25,7 @@ describe('getStepOption function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      path: [],
       remainingFlexibility: 1,
       remainingSpeed: 2,
     };
@@ -37,6 +38,7 @@ describe('getStepOption function', () => {
         cameFrom: 'E-5',
         coordinate: 'D-5',
         facing: 'north',
+        path: ['step'],
         remainingFlexibility: 1,
         remainingSpeed: 1,
       },
@@ -57,6 +59,7 @@ describe('getStepOption function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      path: [],
       remainingFlexibility: 1,
       remainingSpeed: 2,
     };
@@ -69,6 +72,7 @@ describe('getStepOption function', () => {
         cameFrom: 'E-5',
         coordinate: 'F-5',
         facing: 'north',
+        path: ['step'],
         remainingFlexibility: 1,
         remainingSpeed: 1,
       },
@@ -89,6 +93,7 @@ describe('getStepOption function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      path: [],
       remainingFlexibility: 1,
       remainingSpeed: 0,
     };
@@ -112,6 +117,7 @@ describe('getStepOption function', () => {
       cameFrom: 'A-5',
       coordinate: 'A-5',
       facing: 'north',
+      path: [],
       remainingFlexibility: 1,
       remainingSpeed: 2,
     };
@@ -139,6 +145,7 @@ describe('getStepOption function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      path: [],
       remainingFlexibility: 1,
       remainingSpeed: 2,
     };
@@ -151,6 +158,7 @@ describe('getStepOption function', () => {
         cameFrom: 'E-5',
         coordinate: 'D-5',
         facing: 'north',
+        path: ['step'],
         remainingFlexibility: 1,
         remainingSpeed: 1,
       },
@@ -176,6 +184,7 @@ describe('getStepOption function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'northEast',
+      path: [],
       remainingFlexibility: 1,
       remainingSpeed: 2,
     };

@@ -34,6 +34,7 @@ describe('getMoveEnding function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      path: [],
       remainingFlexibility: 2,
       remainingSpeed: 2,
     };
@@ -42,6 +43,7 @@ describe('getMoveEnding function', () => {
 
     expect(ending).toStrictEqual({
       flexibilityUsed: 0,
+      path: [],
       placement: { coordinate: 'E-5', facing: 'north' },
       speedUsed: 0,
     });
@@ -69,6 +71,7 @@ describe('getMoveEnding function', () => {
       cameFrom: 'E-5',
       coordinate: 'E-5',
       facing: 'north',
+      path: [],
       remainingFlexibility: 2,
       remainingSpeed: 2,
     };
@@ -101,6 +104,7 @@ describe('getMoveEnding function', () => {
       cameFrom: 'D-5',
       coordinate: 'E-5',
       facing: 'south',
+      path: ['step', 'turnAbout', 'step'],
       remainingFlexibility: 1,
       remainingSpeed: 0,
     };
@@ -132,6 +136,7 @@ describe('getMoveEnding function', () => {
       cameFrom: 'E-5',
       coordinate: 'D-6',
       facing: 'northEast',
+      path: ['turnRight', 'step'],
       remainingFlexibility: 1,
       remainingSpeed: 1,
     };
@@ -140,6 +145,7 @@ describe('getMoveEnding function', () => {
 
     expect(ending).toStrictEqual({
       flexibilityUsed: 1,
+      path: ['turnRight', 'step'],
       placement: { coordinate: 'D-6', facing: 'northEast' },
       speedUsed: 1,
     });
@@ -168,6 +174,7 @@ describe('getMoveEnding function', () => {
       cameFrom: 'E-5',
       coordinate: 'D-5',
       facing: 'north',
+      path: ['step'],
       remainingFlexibility: 2,
       remainingSpeed: 1,
     };
@@ -201,6 +208,7 @@ describe('getMoveEnding function', () => {
       cameFrom: 'E-4',
       coordinate: 'D-5',
       facing: 'northEast',
+      path: ['step'],
       remainingFlexibility: 2,
       remainingSpeed: 1,
     };
@@ -209,6 +217,7 @@ describe('getMoveEnding function', () => {
 
     expect(ending).toStrictEqual({
       flexibilityUsed: 1,
+      path: ['step', 'turnLeft'],
       placement: { coordinate: 'D-5', facing: 'north' },
       speedUsed: 1,
     });
@@ -232,11 +241,13 @@ describe('getMoveEnding function', () => {
     );
     // Build the context of an advance begun on E-4.
     const context = createMoveContext(gameState, unit, 'advance');
-    // The same diagonal step, with no Flexibility left to square up.
+    // Both points spent turning left and back right to northEast, then the
+    // same diagonal step, with nothing left to square up.
     const state: MoveState = {
       cameFrom: 'E-4',
       coordinate: 'D-5',
       facing: 'northEast',
+      path: ['turnLeft', 'turnRight', 'step'],
       remainingFlexibility: 0,
       remainingSpeed: 1,
     };

@@ -41,6 +41,7 @@ export {
   createTestCard,
   createTestCommand,
   createUnitWithPlacement,
+  hasMove,
   placed,
   updateCardState,
 } from './testHelpers';

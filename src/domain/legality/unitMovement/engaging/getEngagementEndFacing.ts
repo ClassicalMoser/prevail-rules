@@ -1,8 +1,9 @@
-import type { Board, Coordinate, UnitFacing } from '@entities';
+import type { Board, Coordinate, MoveTurn, UnitFacing } from '@entities';
 import {
   getBoardSpace,
   getNeighbourSide,
   getOppositeFacing,
+  getTurnedFacing,
   hasSingleUnit,
 } from '@queries';
 
@@ -19,14 +20,14 @@ import {
  * @param defenderCoordinate - The space being stepped into
  * @param approachCoordinate - The space the last step left
  * @param steppedFacing - The facing the step arrived on
- * @returns The final facing and the Flexibility the squaring turn spends, or `undefined` when the space holds no lone unit to engage
+ * @returns The final facing and the squaring turn the move must include (`null` when none is needed, which costs nothing), or `undefined` when the space holds no lone unit to engage
  */
 export function getEngagementEndFacing(
   board: Board,
   defenderCoordinate: Coordinate,
   approachCoordinate: Coordinate,
   steppedFacing: UnitFacing,
-): { facing: UnitFacing; flexibilitySpent: number } | undefined {
+): { facing: UnitFacing; squaringTurn: MoveTurn | null } | undefined {
   // Only a lone unit can be engaged; open ground and engaged spaces have
   // no defender to square up against.
   const destinationSpace = getBoardSpace(board, defenderCoordinate);
@@ -46,14 +47,24 @@ export function getEngagementEndFacing(
   if (approach !== 'front') {
     // Flank and rear approaches fight as they arrived: the flanked
     // defender is the one dragged around, not the attacker (§6.3.4).
-    const kept = { facing: steppedFacing, flexibilitySpent: 0 };
+    const kept = { facing: steppedFacing, squaringTurn: null };
     return kept;
   }
 
   // §6.2.3: squared up, head on. From the centre front space the step
-  // already faces that way and the turn costs nothing.
+  // already faces that way and no turn is needed.
   const squaredFacing = getOppositeFacing(defenderFacing);
-  const flexibilitySpent = squaredFacing === steppedFacing ? 0 : 1;
-  const squared = { facing: squaredFacing, flexibilitySpent };
+  if (squaredFacing === steppedFacing) {
+    const alreadySquare = { facing: squaredFacing, squaringTurn: null };
+    return alreadySquare;
+  }
+  // From either corner front space the step arrives exactly 45° off
+  // head-on, so one turn to the side squares it — the turn the move's path
+  // must record, for 1 Flexibility.
+  const squaringTurn: MoveTurn =
+    getTurnedFacing(steppedFacing, 'turnLeft') === squaredFacing
+      ? 'turnLeft'
+      : 'turnRight';
+  const squared = { facing: squaredFacing, squaringTurn };
   return squared;
 }
