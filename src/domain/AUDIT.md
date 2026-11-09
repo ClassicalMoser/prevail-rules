@@ -216,7 +216,7 @@ read closes it.
 
 Marked in place. Highest weight first:
 
-- `generateResolveMeleeEvent` (`procedures`): no defensive commitment modifiers in melee. `TODO(wrong)`.
+- `generateResolveMeleeEvent` (`procedures`): melee Defence commitments fixed in S14.
 - `isEngagementFromFront`: front/flank/rear cover six of eight facings; 135° throws in `generateStartEngagementEvent`. `TODO(wrong)`.
 - `getNextMeleeRoutState` and `getNextStepForResolveRally`: fixed in S13 (a paid rout is passed over; a non-resolve step throws).
 - Seven more sequencing exports with no production caller (`rout/index.ts`).

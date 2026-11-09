@@ -193,12 +193,12 @@ Blocks: `queries/sequencing`, `legality/choiceOptions`, `procedures`.
 Small, mostly independent slices. S15 mirrors S9's offer-before-choice shape,
 so it reads best after Cluster 2 lands.
 
-**S14. A melee Defence commitment defends** — §8.5, B3. Pass each side's own
+**S14. A melee Defence commitment defends** — §8.5, B3. **Done 2026-11-09.** Pass each side's own
 commitment as that unit's defending modifiers.
 Files: `procedures/resolveAttack/generateResolveMeleeEvent.ts`.
 Blocks: `procedures`.
 
-**S15. The shot's target may commit Defence; Range widens the arc** — §4.3.11,
+**S15. The shot's target may commit Defence; Range extends the arc** — §4.3.11,
 §7.4.5, §8.4, B1 + B6. Separate accepted-stat lists for attacker and defender;
 offer the Range commitment before the target is chosen and read it when
 building the arc. Flexibility commitments stay offered and dormant until

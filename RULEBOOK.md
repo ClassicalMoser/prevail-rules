@@ -592,7 +592,7 @@ A commander may ride along even when the unit moves **into an engagement**. This
 **4.3.11 Resolving a ranged attack order** (§7.4):
 
 1. Choose the firing unit. It must be unengaged and have Range of at least 1. A unit with no legal target, even counting a +1 Range commitment (step 2), is skipped. A Range commitment may therefore be what gives a unit its target.
-2. Before choosing a target, the **attacker** may commit a card for **+1 Range**, which widens the forward arc by one space (§8, §2.4.3). Optional.<sup>[B6](#b6)</sup>
+2. Before choosing a target, the **attacker** may commit a card for **+1 Range**, which extends the forward arc one space further out (§8, §2.4.3). Optional.<sup>[B6](#b6)</sup>
 3. Choose one enemy target within its forward arc (§2.4.3). You cannot shoot into a melee: a unit in an engaged space is never a target.
 4. Optionally name **supporters** — other units you ordered with this same command that have not yet fired, and that could each independently shoot that same target. Each supporter adds **+1**, and naming it spends that unit's own shot (§7.3.4).
 5. The **attacker** may commit a card for **+1 Attack** (§8). Optional.
@@ -1499,11 +1499,11 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 - **Code does:** sums base, modifiers and support with no floor. `getCurrentUnitStat` returns `baseStat + totalModifier` and `applyAttackValue` compares the raw sum. A negative value fails every threshold, including a printed Reverse of 0, whereas a value of exactly 0 meets it. (`src/domain/queries/unit/getCurrentUnitStat.ts`, `src/domain/queries/attack/applyAttackValue.ts:14`)
 - **To settle:** Floor the finished total in `getCurrentUnitStat` and `applyAttackValue`, so a negative attack behaves as 0 and still reverses a 0-threshold unit. One wrinkle: the engine encodes an **unrestricted** inspiration range as −1 (A6), while the author reads a negative range as _no range_. The sentinel must be exempted from the floor or re-encoded before range is ever modified — today nothing modifies it, so the collision is latent.
 
-<a id="b3"></a>**B3. Defence commitments do nothing in melee.** _Code lags rule._
+<a id="b3"></a>**B3. Defence commitments do nothing in melee.** _Closed: S14._
 
 - **Rule:** §8.5: a Defence commitment raises its own unit's thresholds by 1 for that combat, in melee as in ranged.
 - **Code does:** `generateResolveMeleeEvent` passes no defending modifiers to `applyAttackValue`, so a melee Defence card is discarded for nothing (`procedures/resolveAttack/generateResolveMeleeEvent.ts`; `TODO(wrong)`; unchanged since `f69a8d1`). The ranged path does pass them, and the old rulebook lists Defence as a melee commit.
-- **To settle:** Pass each side's own commitment as that unit's defending modifiers; add a spec with a committed Defence card.
+- **Closed:** `generateResolveMeleeEvent` passes each side's own commitment as that unit's defending modifiers. Specs in `generateResolveMeleeEvent.test.ts`: a blow of 5 turns a cavalry unit with Reverse 5, and does not once it commits Defence; its card adds nothing to the enemy's thresholds.
 
 <a id="b4"></a>**B4. A rout forced by a blocked retreat cannot be paid.** _Closed: S11._
 
@@ -1520,7 +1520,7 @@ Each entry is keyed to a mark in the rules. It says what the rule is, what the r
 
 <a id="b6"></a>**B6. Flexibility and Range commitments are offered and never read.** _Code lags rule._
 
-- **Rule:** §8.4 lists the stats each moment accepts. Flexibility counts before a move (once A8 is fixed). Range widens a shot's forward arc by one (§4.3.11, committed before the target is chosen). In a shot or a melee, +1 Flexibility shrinks a deficit (§2.5.2), so it matters only on rough ground.
+- **Rule:** §8.4 lists the stats each moment accepts. Flexibility counts before a move (once A8 is fixed). Range extends a shot's forward arc one space further out (§4.3.11, committed before the target is chosen). In a shot or a melee, +1 Flexibility shrinks a deficit (§2.5.2), so it matters only on rough ground.
 - **Code does:** Commitments are read only in the front-engagement Speed contest, the ranged attack value and target thresholds, and the melee attack value (`procedures/movement/generateResolveEngageRetreatOptionEvent.ts`; `resolveAttack/`). The engine still accepts Range and Flexibility in shooting, and Flexibility in melee (`getLegalCommitTo*Events.ts`).
 - **To settle:** Make the engine read +1 Range when it builds the forward arc, which means offering the commitment before the target is chosen. Let a Range commitment count when deciding whether a unit has a target at all. Keep offering Flexibility in a shot and a melee; it starts to count when the deficit lands (A3).
 

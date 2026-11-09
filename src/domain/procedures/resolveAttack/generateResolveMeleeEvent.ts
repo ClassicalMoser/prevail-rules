@@ -85,17 +85,15 @@ export function generateResolveMeleeEvent(
 
   const totalBlackAttackValue = blackAttackValue + blackSupportValue;
 
-  // Apply attack values to determine results
-  // TODO(wrong): neither call passes the defender's commitment modifiers, so
-  // a melee commitment's `defense` modifier never raises the defender's
-  // reverse, retreat or rout threshold. The ranged procedure passes them.
-  // Settled by a spec with a committed `defense` modifier: is defense from a
-  // melee commitment meant to apply?
+  // Each side's blow is measured against the other unit's thresholds. A
+  // Defence card committed by a side raises its own unit's thresholds for
+  // this fight (§8.5); the rest of its card does nothing to the enemy's blow.
   // White unit attacks black unit
   const blackUnitResult = applyAttackValue(
     state,
     totalWhiteAttackValue,
     blackUnit.unit,
+    blackCommitmentModifiers,
   );
 
   // Black unit attacks white unit
@@ -103,6 +101,7 @@ export function generateResolveMeleeEvent(
     state,
     totalBlackAttackValue,
     whiteUnit.unit,
+    whiteCommitmentModifiers,
   );
 
   // Legal retreat hexes are computed when the retreat opens, not on this event.
