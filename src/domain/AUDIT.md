@@ -267,13 +267,13 @@ Each is marked in its file.
 - `createTestUnit` (`testing`): accepts `cost`, `limit` and `morale` and ignores
   all three.
 
-### Movement (not settled)
+### Movement (settled 2026-11-08)
 
-Revisit in `legality/unitMovement`, `procedures/movement`, and the movement transforms. Move this to the design document when that exists.
+The design document exists now: the decisions live in `RULEBOOK.md` (§5.1.4, §5.2, §6.3.2; appendix A2, A11, A3), and the work is cut in `SLICES.md`, Cluster 2.
 
-1. A flexibility spend turns 45° or 180°, not an arbitrary amount.
-2. Keep a canonical path on the moving unit, written by hand or generated, for engagement and animation. The mover currently stays on its start hex while the target is stored beside it, so the move is only half-applied.
-3. Terrain rules have firmed up and are not in the code yet. `getCurrentUnitStat` carries a terrain step that adds nothing until they are.
+1. A flexibility spend turns 45° or 180° (A2; slice S3).
+2. The move event carries the path atomically, as deltas; the mover advances along it; movement stats sample once at move-start (A11, §5.1.4; slice S8).
+3. Terrain stays deferred this pass; the stub in `getCurrentUnitStat` keeps its mark (A3).
 
 ---
 
